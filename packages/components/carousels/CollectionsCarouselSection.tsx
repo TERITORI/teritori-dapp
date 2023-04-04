@@ -16,7 +16,7 @@ import {
   CollectionView,
 } from "../CollectionView";
 
-const gap = 24;
+const gap = 20;
 
 const defaultRequest: CollectionsRequest = {
   networkId: "fake",
@@ -40,9 +40,13 @@ export const CollectionsCarouselSection: React.FC<{
 
   const renderItem = useCallback(
     (props: { item: Collection }) => (
-      <CollectionView item={props.item} linkToMint={linkToMint} />
+      <CollectionView
+        item={props.item}
+        linkToMint={linkToMint}
+        mintState={req.mintState}
+      />
     ),
-    [linkToMint]
+    [linkToMint, req.mintState]
   );
 
   return (
@@ -52,7 +56,7 @@ export const CollectionsCarouselSection: React.FC<{
       width={COLLECTION_VIEW_XL_WIDTH + gap}
       height={COLLECTION_VIEW_XL_HEIGHT}
       onScrollEnd={fetchMore}
-      pagingEnabled
+      pagingEnabled={collections.length > 4}
       loop={false}
       style={{
         width,
