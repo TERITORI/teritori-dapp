@@ -1,5 +1,5 @@
 import React from "react";
-import { View } from "react-native";
+import { useWindowDimensions, View } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
 import { SearchInput } from "../../../components/sorts/SearchInput";
@@ -15,6 +15,8 @@ export function Header({
   const handleChangeText = (e: string) => {
     setSearchInput(e);
   };
+  const { width } = useWindowDimensions();
+  const isMobile = width < 720;
   return (
     <View
       style={{
@@ -31,7 +33,7 @@ export function Header({
 
       <SearchInput
         style={{
-          width: 432,
+          width: isMobile ? "100%" : 432,
           marginTop: layout.padding_x3,
           marginBottom: layout.padding_x1,
           height: 40,

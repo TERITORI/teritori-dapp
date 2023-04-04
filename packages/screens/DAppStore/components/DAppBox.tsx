@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { StyleProp, TouchableHighlight, View, ViewStyle } from "react-native";
+import {
+  StyleProp,
+  TouchableHighlight,
+  useWindowDimensions,
+  View,
+  ViewStyle,
+} from "react-native";
 import { useSelector } from "react-redux";
 
 import { BrandText } from "../../../components/BrandText";
@@ -41,12 +47,14 @@ export const DAppBox: React.FC<{
   useEffect(() => {
     setChecked(selectedApps.includes(draggableId));
   }, [selectedApps, draggableId]);
+  const { width } = useWindowDimensions();
+  const isMobile = width < 760;
 
   return (
     <TouchableHighlight onPress={handleClick} disabled={alwaysOn}>
       <TertiaryBox
         height={88}
-        width={306}
+        width={isMobile ? width * 0.8 : 306}
         noBrokenCorners
         style={style}
         mainContainerStyle={{

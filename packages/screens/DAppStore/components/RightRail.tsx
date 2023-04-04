@@ -1,5 +1,5 @@
 import React from "react";
-import { View } from "react-native";
+import { useWindowDimensions, View } from "react-native";
 import { useSelector } from "react-redux";
 
 import { BrandText } from "../../../components/BrandText";
@@ -11,15 +11,17 @@ import { DAppBox } from "./DAppBox";
 
 export const RightRail = ({ searchInput }: { searchInput: string }) => {
   const availableApps = useSelector(selectAvailableApps);
-
+  const { width } = useWindowDimensions();
+  const isMobile = width < 760;
   return (
     <View
       style={{
         flex: 1,
         minHeight: 250,
-        maxWidth: 1024,
-        paddingLeft: layout.padding_x3,
+        maxWidth: isMobile ? "100%" : 1024,
+        paddingLeft: isMobile ? 0 : layout.padding_x3,
         paddingTop: layout.padding_x4,
+        justifyContent: isMobile ? "flex-end" : "flex-start",
       }}
     >
       {availableApps
@@ -30,6 +32,7 @@ export const RightRail = ({ searchInput }: { searchInput: string }) => {
                   style={{
                     flexDirection: "row",
                     alignItems: "center",
+                    marginLeft: isMobile ? layout.padding_x1_5 : 0,
                     marginBottom: layout.padding_x2_5,
                   }}
                 >
@@ -49,6 +52,7 @@ export const RightRail = ({ searchInput }: { searchInput: string }) => {
                     marginBottom: layout.padding_x2_5,
                     flexDirection: "row",
                     flexWrap: "wrap",
+                    justifyContent: isMobile ? "center" : "flex-start",
                   }}
                 >
                   {Object.values(element.options)
