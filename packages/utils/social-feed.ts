@@ -84,9 +84,9 @@ export const postResultToPost = (
     parentPostIdentifier: postResult.parent_post_identifier || "",
     subPostLength: postResult.sub_post_length,
     reactions: postResult.reactions,
-    // TODO: We need to parse, because we're using Post[] from social-feed API and PostResult[] from social-feed contract
     createdBy: getUserId(networkId, postResult.post_by),
     createdAt: JSON.parse(postResult.metadata).createdAt,
+    tipAmount: parseFloat(postResult.tip_amount),
   };
   if ("isInLocal" in postResult) {
     return { ...post, isInLocal: postResult.isInLocal } as PostExtra;

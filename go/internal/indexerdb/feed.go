@@ -21,4 +21,5 @@ type Post struct {
 	CreatedAt            int64
 	IsDeleted            bool
 	IsFree               bool
+	TipAmount            int64
 }

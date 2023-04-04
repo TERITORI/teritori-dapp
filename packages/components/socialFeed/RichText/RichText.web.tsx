@@ -470,7 +470,8 @@ export const RichText: React.FC<RichTextProps> = ({
           <SpacerRow size={3} />
           <PrimaryButton
             disabled={publishDisabled}
-            loader={loading}
+            loader
+            isLoading={loading}
             text="Publish"
             size="M"
             onPress={handlePublish}
@@ -513,6 +514,9 @@ const createHTMLFromState = (state: ContentState) =>
     entityToHTML: (entity, originalText) => {
       if (entity.type === "IMAGE") {
         return <img src={entity.data.src} />;
+      }
+      if (entity.type === "LINK") {
+        return <a href={entity.data.url}>{originalText}</a>;
       }
       // TODO: Here, check entity.type === "LINK" and add URLRenderer with href ?
       return originalText;

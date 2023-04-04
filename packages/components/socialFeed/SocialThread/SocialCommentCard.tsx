@@ -59,7 +59,6 @@ export interface SocialCommentCardProps {
   isLast?: boolean;
   onPressReply: OnPressReplyType;
   overrideParentId?: string;
-  refresh?: number;
   onScrollTo?: (y: number) => void;
   parentOffsetValue?: number;
 }
@@ -70,7 +69,6 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
   isLast,
   onPressReply,
   overrideParentId,
-  refresh,
   onScrollTo,
   parentOffsetValue = 0,
 }) => {
@@ -242,15 +240,16 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
                 <SpacerRow size={2.5} />
                 <CommentsCount count={localComment.subPostLength} />
 
-                {authorNSInfo.metadata?.tokenId !==
-                  userInfo?.metadata?.tokenId && (
-                  <>
-                    <SpacerRow size={2.5} />
-                    <TipButton
-                      postTokenId={authorNSInfo?.metadata?.tokenId || ""}
-                    />
-                  </>
-                )}
+                <SpacerRow size={2.5} />
+                <TipButton
+                  disabled={
+                    authorNSInfo?.metadata?.tokenId ===
+                    userInfo?.metadata?.tokenId
+                  }
+                  amount={localComment.tipAmount}
+                  author={username}
+                  postId={localComment.identifier}
+                />
 
                 <SpacerRow size={2.5} />
                 <ShareButton postId={localComment.identifier} />

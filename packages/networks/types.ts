@@ -45,6 +45,7 @@ export type CosmosNetworkInfo = NetworkInfoBase & {
   riotSquadStakingContractAddressV1?: string;
   riotSquadStakingContractAddressV2?: string;
   riotersFooterContractAddress?: string;
+  socialFeedContractAddress?: string;
 };
 
 export type EthereumNetworkInfo = NetworkInfoBase & {

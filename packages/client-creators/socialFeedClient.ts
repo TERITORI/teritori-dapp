@@ -5,6 +5,7 @@ import {
 import {
   getKeplrSigningCosmWasmClient,
   mustGetNonSigningCosmWasmClient,
+  mustGetCosmosNetwork,
 } from "../networks";
 
 interface SigningSocialFeedClientParams {
@@ -20,8 +21,9 @@ export const signingSocialFeedClient = async ({
   networkId,
   walletAddress,
 }: SigningSocialFeedClientParams) => {
-  const socialFeedContractAddress =
-    process.env.TERITORI_SOCIAL_FEED_CONTRACT_ADDRESS || "";
+  const network = mustGetCosmosNetwork(networkId);
+  const socialFeedContractAddress = network.socialFeedContractAddress || "";
+
   const cachedSigningClients: { [key: string]: TeritoriSocialFeedClient } = {};
   const cacheKey = `${walletAddress}${socialFeedContractAddress}`;
 
@@ -45,8 +47,8 @@ export const signingSocialFeedClient = async ({
 export const nonSigningSocialFeedClient = async ({
   networkId,
 }: NonSigningSocialFeedClientParams) => {
-  const socialFeedContractAddress =
-    process.env.TERITORI_SOCIAL_FEED_CONTRACT_ADDRESS || "";
+  const network = mustGetCosmosNetwork(networkId);
+  const socialFeedContractAddress = network.socialFeedContractAddress || "";
 
   const nonSigningCosmWasmClient = await mustGetNonSigningCosmWasmClient(
     networkId
