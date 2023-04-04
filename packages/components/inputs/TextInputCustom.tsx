@@ -1,5 +1,12 @@
 import { Currency } from "@keplr-wallet/types";
-import React, { useEffect, useMemo, useRef } from "react";
+import React, {
+  Dispatch,
+  RefObject,
+  SetStateAction,
+  useEffect,
+  useMemo,
+  useRef,
+} from "react";
 import {
   RegisterOptions,
   useController,
@@ -25,6 +32,7 @@ import {
   additionalRed,
   neutral22,
   neutral77,
+  neutralA3,
   secondaryColor,
 } from "../../utils/style/colors";
 import {
@@ -45,13 +53,14 @@ export interface TextInputCustomProps<T extends FieldValues>
   placeHolder?: string;
   squaresBackgroundColor?: string;
   style?: StyleProp<ViewStyle>;
+  textInputStyle?: StyleProp<TextStyle>;
   onPressEnter?: () => void;
   currency?: Currency;
   disabled?: boolean;
   regexp?: RegExp;
   width?: number;
   height?: number;
-  variant?: "regular" | "labelOutside";
+  variant?: "regular" | "labelOutside" | "noStyle";
   control?: Control<T>;
   name: Path<T>;
   rules?: Omit<RegisterOptions, "valueAsNumber" | "valueAsDate" | "setValueAs">;
@@ -63,6 +72,7 @@ export interface TextInputCustomProps<T extends FieldValues>
   noBrokenCorners?: boolean;
   error?: string;
   fullWidth?: boolean;
+  setRef?: Dispatch<SetStateAction<RefObject<any> | null>>;
 }
 
 export const Label: React.FC<{
@@ -78,7 +88,7 @@ export const Label: React.FC<{
     <BrandText style={[styles.labelText, fontSemibold14, style]}>
       {children}
     </BrandText>
-    {!!isRequired && (
+    {!!isRequired && children && (
       <BrandText
         style={[
           fontSemibold20,
@@ -97,6 +107,7 @@ export const TextInputCustom = <T extends FieldValues>({
   placeHolder,
   onPressEnter,
   style,
+  textInputStyle,
   regexp,
   children,
   currency,
@@ -116,6 +127,7 @@ export const TextInputCustom = <T extends FieldValues>({
   error,
   noBrokenCorners,
   fullWidth,
+  setRef,
   ...restProps
 }: TextInputCustomProps<T>) => {
   // variables
@@ -126,8 +138,13 @@ export const TextInputCustom = <T extends FieldValues>({
     defaultValue,
   });
   const inputRef = useRef<TextInput>(null);
+  // Passing ref to parent since I didn't find a pattern to handle generic argument <T extends FieldValues> AND forwardRef
+  useEffect(() => {
+    if (inputRef.current && setRef) {
+      setRef(inputRef);
+    }
+  }, [setRef]);
 
-  // hooks
   useEffect(() => {
     if (defaultValue) {
       handleChangeText(defaultValue);
@@ -174,6 +191,21 @@ export const TextInputCustom = <T extends FieldValues>({
     }
   };
 
+  if (variant === "noStyle")
+    return (
+      <TextInput
+        ref={inputRef}
+        editable={!disabled}
+        placeholder={placeHolder}
+        onChangeText={handleChangeText}
+        onKeyPress={(event) => handleKeyPress({ event, onPressEnter })}
+        placeholderTextColor={neutralA3}
+        value={field.value}
+        style={[styles.textInput, textInputStyle]}
+        {...restProps}
+      />
+    );
+
   return (
     <View style={containerStyle}>
       {variant === "labelOutside" && (
@@ -211,12 +243,12 @@ export const TextInputCustom = <T extends FieldValues>({
               ref={inputRef}
               editable={!disabled}
               placeholder={placeHolder}
-              onKeyPress={(event) => handleKeyPress({ event, onPressEnter })}
-              placeholderTextColor="#999999"
-              value={field.value}
-              style={styles.textInput}
-              {...restProps}
               onChangeText={handleChangeText}
+              onKeyPress={(event) => handleKeyPress({ event, onPressEnter })}
+              placeholderTextColor={neutralA3}
+              value={field.value}
+              style={[styles.textInput, textInputStyle]}
+              {...restProps}
             />
           </View>
 

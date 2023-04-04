@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { TouchableOpacity, View, Image } from "react-native";
 
+import { FileUploaderProps } from "./FileUploader.type";
 import gradientDottedCardSVG from "../../../assets/cards/gradient-dotted-card.svg";
 import bucketSVG from "../../../assets/icons/bucket.svg";
 import uploadSVG from "../../../assets/icons/upload.svg";
@@ -10,7 +11,6 @@ import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { GradientText } from "../gradientText";
 import { Label } from "../inputs/TextInputCustom";
-import { FileUploaderProps } from "./FileUploader.type";
 
 const FILE_HEIGHT = 256;
 

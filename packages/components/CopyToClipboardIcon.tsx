@@ -2,11 +2,11 @@ import Clipboard from "@react-native-clipboard/clipboard";
 import React from "react";
 import { TouchableOpacity } from "react-native";
 
+import { SVG } from "./SVG";
+import { TertiaryBox } from "./boxes/TertiaryBox";
 import copySVG from "../../assets/icons/copy.svg";
 import { useFeedbacks } from "../context/FeedbacksProvider";
 import { neutral22 } from "../utils/style/colors";
-import { SVG } from "./SVG";
-import { TertiaryBox } from "./boxes/TertiaryBox";
 
 export const CopyToClipboardIcon: React.FC<{
   text: string;

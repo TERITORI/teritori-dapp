@@ -1,12 +1,12 @@
 import React from "react";
 import { View } from "react-native";
 
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import { getCollectionId, getCosmosNetwork } from "../../networks";
-import { ScreenFC } from "../../utils/navigation";
 import { CollectionThumb } from "./component/CollectionThumb";
 import { CollectionView } from "./component/CollectionView";
 import { GameContentView } from "./component/GameContentView";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import { getCollectionId, getCosmosNetwork } from "../../networks";
+import { ScreenFC } from "../../utils/navigation";
 
 export const RiotGameMarketplaceScreen: ScreenFC<"RiotGameMarketplace"> = ({
   route,

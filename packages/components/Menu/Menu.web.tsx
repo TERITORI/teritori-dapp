@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { View, TouchableOpacity } from "react-native";
 
+import { MenuProps } from "./Menu";
 import { neutral33 } from "../../utils/style/colors";
 import { BrandText } from "../BrandText";
 import { PrimaryBox } from "../boxes/PrimaryBox";
-import { MenuProps } from "./Menu";
 
 const DEFAULT_WIDTH = 164;
 

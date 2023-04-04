@@ -2,6 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 import { BigNumber } from "ethers";
 import Long from "long";
 
+import { TeritoriMinter__factory } from "./../evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
+import { TeritoriNft__factory } from "./../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
 import { TeritoriBreedingQueryClient } from "../contracts-clients/teritori-breeding/TeritoriBreeding.client";
 import { TeritoriBunkerMinterQueryClient } from "../contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.client";
 import { TeritoriNftQueryClient } from "../contracts-clients/teritori-nft/TeritoriNft.client";
@@ -16,8 +18,6 @@ import {
 import { prettyPrice } from "../utils/coins";
 import { getEthereumProvider } from "../utils/ethereum";
 import { ipfsURLToHTTPURL } from "../utils/ipfs";
-import { TeritoriMinter__factory } from "./../evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
-import { TeritoriNft__factory } from "./../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
 
 export type MintState = "not-started" | "whitelist" | "public-sale" | "ended";
 

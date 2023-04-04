@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View } from "react-native";
 
+import { ProfileButton } from "./ProfileButton";
 import logoSVG from "../../../assets/logos/logo.svg";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
@@ -17,7 +18,6 @@ import { Section } from "../Section";
 import { MainConnectWalletButton } from "../connectWallet/MainConnectWalletButton";
 import { AvatarWithFrame } from "../images/AvatarWithFrame";
 import { Tabs } from "../tabs/Tabs";
-import { ProfileButton } from "./ProfileButton";
 
 const walletsManagerTabItems = {
   overview: {

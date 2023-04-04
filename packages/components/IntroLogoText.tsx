@@ -1,10 +1,10 @@
 import React from "react";
 import { StyleProp, ViewStyle, ImageBackground } from "react-native";
 
-import logoSVG from "../../assets/logos/logo-white.svg";
-import { fontSemibold28 } from "../utils/style/fonts";
 import { BrandText } from "./BrandText";
 import { SVG } from "./SVG";
+import logoSVG from "../../assets/logos/logo-white.svg";
+import { fontSemibold28 } from "../utils/style/fonts";
 
 export const IntroLogoText: React.FC<{
   title: string;

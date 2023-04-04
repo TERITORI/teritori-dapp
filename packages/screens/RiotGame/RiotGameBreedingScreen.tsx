@@ -2,6 +2,14 @@ import { coin } from "cosmwasm";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { View } from "react-native";
 
+import {
+  BreedingResultModal,
+  TokenInfo,
+} from "./component/BreedingResultModal";
+import { BreedingSlot } from "./component/BreedingSlot";
+import { GameContentView } from "./component/GameContentView";
+import { InfoBox } from "./component/InfoBox";
+import { RipperSelectorModal } from "./component/RipperSelectorModal";
 import breedSVG from "../../../assets/game/breed.svg";
 import chevronDownLineSVG from "../../../assets/game/chevron-down-line.svg";
 import { NFT } from "../../api/marketplace/v1/marketplace";
@@ -10,7 +18,6 @@ import { ExternalLink } from "../../components/ExternalLink";
 import FlexRow from "../../components/FlexRow";
 import { SVG } from "../../components/SVG";
 import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
-import { LoaderFullScreen } from "../../components/loaders/LoaderFullScreen";
 import { SpacerRow } from "../../components/spacer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { ConfigResponse } from "../../contracts-clients/teritori-breeding/TeritoriBreeding.types";
@@ -24,14 +31,6 @@ import { getRipperTokenId } from "../../utils/game";
 import { neutral33, neutralA3, yellowDefault } from "../../utils/style/colors";
 import { fontMedium14, fontMedium48 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import {
-  BreedingResultModal,
-  TokenInfo,
-} from "./component/BreedingResultModal";
-import { BreedingSlot } from "./component/BreedingSlot";
-import { GameContentView } from "./component/GameContentView";
-import { InfoBox } from "./component/InfoBox";
-import { RipperSelectorModal } from "./component/RipperSelectorModal";
 
 export const RiotGameBreedingScreen = () => {
   const { myAvailableRippers } = useRippers();
@@ -212,7 +211,11 @@ export const RiotGameBreedingScreen = () => {
       intervalRef.current && clearInterval(intervalRef.current);
     };
   }, []);
-
+  const LoaderFullScreen = React.lazy(() =>
+    import("../../components/loaders/LoaderFullScreen").then((module) => ({
+      default: module.LoaderFullScreen,
+    }))
+  );
   return (
     <GameContentView>
       <LoaderFullScreen visible={isBreeding} />

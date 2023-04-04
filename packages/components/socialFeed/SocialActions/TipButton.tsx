@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { TouchableOpacity } from "react-native";
 
+import { TipModal } from "./TipModal";
 import tipSVG from "../../../../assets/icons/tip.svg";
 import { useCoingeckoPrices } from "../../../hooks/useCoingeckoPrices";
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
@@ -10,7 +11,6 @@ import { fontSemibold14 } from "../../../utils/style/fonts";
 import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
 import { SpacerRow } from "../../spacer";
-import { TipModal } from "./TipModal";
 
 export const TipButton: React.FC<{
   postId: string;

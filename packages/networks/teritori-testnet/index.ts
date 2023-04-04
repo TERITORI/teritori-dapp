@@ -1,5 +1,5 @@
-import { NetworkInfo, NetworkKind } from "../types";
 import { teritoriTestnetCurrencies } from "./currencies";
+import { NetworkInfo, NetworkKind } from "../types";
 
 const nameServiceContractAddress =
   "tori18etjzrma5604af50jjklk3wlkqcsxdrvmy6jzw5naw2t7kyv4rys3kpwky";
