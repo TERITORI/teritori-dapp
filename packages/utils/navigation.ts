@@ -55,6 +55,7 @@ export type RootStackParamList = {
   ComingSoon: undefined;
 
   Settings: undefined;
+
   DAppStore: undefined;
 };
 
