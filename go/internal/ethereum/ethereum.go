@@ -44,8 +44,8 @@ type Volume struct {
 	volume int64
 }
 
-func (p *Provider) GetCollections(ctx context.Context, networkId string) ([]marketplacepb.Collection, error) {
-	cacheKey := fmt.Sprintf("col_%s", networkId)
+func (p *Provider) GetCollections(ctx context.Context, networkId string, req *marketplacepb.CollectionsRequest) ([]marketplacepb.Collection, error) {
+	cacheKey := fmt.Sprintf("col_%s_mint_%s", networkId, req.GetMintState())
 	data, ok := p.cache.Get(cacheKey)
 	if ok {
 		return data.([]marketplacepb.Collection), nil
@@ -80,6 +80,9 @@ func (p *Provider) GetCollections(ctx context.Context, networkId string) ([]mark
 	// Fix: currently it does not support multiple denoms
 	res := make([]marketplacepb.Collection, 0, len(collections.NftContracts))
 	for _, contract := range collections.NftContracts {
+		if req.GetMintState() == marketplacepb.MintState_MINT_STATE_ENDED && volumeByCollection[contract.Id].volume == 0 {
+			continue
+		}
 		res = append(res, marketplacepb.Collection{
 			NetworkId:      networkId,
 			Id:             string(network.CollectionID(contract.Minter)),

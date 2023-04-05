@@ -30,6 +30,7 @@ import {
 } from "../../networks";
 import { getMetaMaskEthereumSigner } from "../../utils/ethereum";
 import { ScreenFC } from "../../utils/navigation";
+import { setDocumentTitle } from "../../utils/setDocumentTitle";
 import { NFTAttribute } from "../../utils/types/nft";
 
 export interface NFTInfo {
@@ -65,6 +66,7 @@ const Content: React.FC<{
   const { setToastError } = useFeedbacks();
   const wallet = useSelectedWallet();
   const { info, refresh, notFound } = useNFTInfo(id, wallet?.userId);
+  setDocumentTitle(`NFT: ${info?.name}`);
   const { width } = useMaxResolution({ noMargin: true });
 
   const [network, collectionAddress] = parseNftId(id);
@@ -205,8 +207,8 @@ const Content: React.FC<{
                 justifyContent: "flex-end",
                 width: "100%",
               }}
+              tabContainerStyle={{ height: 60 }}
               onSelect={setSelectedTab}
-              hideSelector
             />
           </View>
 
