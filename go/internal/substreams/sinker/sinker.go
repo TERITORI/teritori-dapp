@@ -20,6 +20,7 @@ import (
 	"github.com/streamingfast/substreams/client"
 	"github.com/streamingfast/substreams/manifest"
 	pbsubstreams "github.com/streamingfast/substreams/pb/sf/substreams/v1"
+	"gorm.io/gorm"
 
 	"go.uber.org/zap"
 	"google.golang.org/protobuf/proto"
@@ -40,6 +41,7 @@ func GetLocalABI(path string) string {
 }
 
 type Config struct {
+	IndexerDB        *gorm.DB
 	DBLoader         *db.Loader
 	BlockRange       string
 	Pkg              *pbsubstreams.Package
@@ -83,7 +85,7 @@ type PostgresSinker struct {
 	logger *zap.Logger
 	tracer logging.Tracer
 
-	squadStakingABI abi.ABI
+	squadStakingABI *abi.ABI
 }
 
 func New(config *Config, logger *zap.Logger, tracer logging.Tracer) (*PostgresSinker, error) {
@@ -110,7 +112,7 @@ func New(config *Config, logger *zap.Logger, tracer logging.Tracer) (*PostgresSi
 		UndoBufferSize:  config.UndoBufferSize,
 		LivenessTracker: sink.NewLivenessChecker(config.LiveBlockTimeDelta),
 
-		squadStakingABI: squadStakingABI,
+		squadStakingABI: &squadStakingABI,
 	}
 
 	s.OnTerminating(func(err error) {
@@ -297,20 +299,8 @@ func (s *PostgresSinker) handleBlockScopeData(ctx context.Context, cursor *sink.
 		}
 
 		for _, txnData := range txns.Data {
-			DecodeTransactionInputData(&s.squadStakingABI, txnData.Calldata)
+			DecodeTransactionInputData(s.squadStakingABI, txnData.Calldata)
 		}
-
-		return nil
-
-		// dbChanges := &pbddatabase.DatabaseChanges{}
-		// err := proto.Unmarshal(output.GetMapOutput().GetValue(), dbChanges)
-		// if err != nil {
-		// 	return fmt.Errorf("unmarshal database changes: %w", err)
-		// }
-		// err = s.applyDatabaseChanges(dbChanges)
-		// if err != nil {
-		// 	return fmt.Errorf("apply database changes: %w", err)
-		// }
 	}
 
 	s.lastCursor = cursor

@@ -50,6 +50,9 @@ func sinkRunE(cmd *cobra.Command, args []string) error {
 	MustLoadEnv()
 
 	networkID := args[0]
+	if networkID != "ethereum" && networkID != "ethereum-goerli" {
+		panic("given network is not supported")
+	}
 
 	// load networks
 	networksFile := MustGetFlagString("networks-file")
@@ -156,6 +159,7 @@ func sinkRunE(cmd *cobra.Command, args []string) error {
 	}
 
 	config := &sinker.Config{
+		IndexerDB:          indexerDB,
 		DBLoader:           dbLoader,
 		BlockRange:         blockRange,
 		Pkg:                pkg,

@@ -1,6 +1,6 @@
 specVersion: v0.1.0
 package:
-  name: "substreams_ethereum"
+  name: "substreams_ethereum_goerli"
   version: v0.1.0
 
 protobuf:
