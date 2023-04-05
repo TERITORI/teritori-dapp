@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package teritori.substreams.txns.v1;
+
+option go_package = "./txnspb;txnspb";
+
+message Txns {
+   repeated TxnData data = 1;
+}
+
+message TxnData {
+  bytes calldata = 1;
+}

@@ -82,9 +82,14 @@ type PostgresSinker struct {
 
 	logger *zap.Logger
 	tracer logging.Tracer
+
+	squadStakingABI abi.ABI
 }
 
 func New(config *Config, logger *zap.Logger, tracer logging.Tracer) (*PostgresSinker, error) {
+	SQUAD_STAKING_ABI_PATH := "go/internal/substreams/ethereum/abi/squad_staking.json"
+	squadStakingABI := MustLoadABI(SQUAD_STAKING_ABI_PATH)
+
 	s := &PostgresSinker{
 		Shutter: shutter.New(),
 		stats:   NewStats(logger),
@@ -104,6 +109,8 @@ func New(config *Config, logger *zap.Logger, tracer logging.Tracer) (*PostgresSi
 
 		UndoBufferSize:  config.UndoBufferSize,
 		LivenessTracker: sink.NewLivenessChecker(config.LiveBlockTimeDelta),
+
+		squadStakingABI: squadStakingABI,
 	}
 
 	s.OnTerminating(func(err error) {
@@ -290,20 +297,7 @@ func (s *PostgresSinker) handleBlockScopeData(ctx context.Context, cursor *sink.
 		}
 
 		for _, txnData := range txns.Data {
-			fmt.Printf("%+v", txnData)
-
-			contractABI, err := abi.JSON(
-				strings.NewReader(GetLocalABI("substreams-ethereum/abi/squad_staking.json")),
-			)
-
-			if err != nil {
-				panic("stop=========")
-			}
-			fmt.Printf("=================================")
-			fmt.Printf("%+v", contractABI)
-
-			DecodeTransactionInputData(&contractABI, txnData.Calldata)
-
+			DecodeTransactionInputData(&s.squadStakingABI, txnData.Calldata)
 		}
 
 		return nil

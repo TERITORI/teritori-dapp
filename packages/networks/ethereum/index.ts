@@ -21,4 +21,11 @@ export const ethereumNetwork: NetworkInfo = {
   vaultContractAddress: "0x6251B3384c8eD53e2Cc38d34c1f26ffE8d461B94",
   riotContractAddressGen0: "0x8f8304ea566affeb96ad0ffb593bbebd8876d124",
   riotSquadStakingContractAddress: "<must_fill>",
+  // Substreams
+  firehoseEndpoint: "<must_fill>",
+  indexStartBlock: "<must_fill>",
+  indexStopBlock: "<must_fill>",
+  indexBlockProgress: 0,
+  indexLiveBlockProgress: 0,
+  substreamsManifest: "<must_fill>",
 };

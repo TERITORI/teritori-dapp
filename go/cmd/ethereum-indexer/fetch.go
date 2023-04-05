@@ -141,7 +141,7 @@ func SinkFetchE(cmd *cobra.Command, args []string) error {
 	zlog.Info("fetching offchain data...")
 
 	network := args[0]
-	MustLoadEnv(network)
+	MustLoadEnv()
 
 	database := MustGetFlagString("indexer-database")
 	indexerDB := db.MustConnectIndexerDB(database)

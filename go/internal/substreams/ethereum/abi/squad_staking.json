@@ -271,6 +271,27 @@
   },
   {
     "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "collection",
+            "type": "address"
+          },
+          { "internalType": "uint256", "name": "tokenId", "type": "uint256" }
+        ],
+        "internalType": "struct SquadStakingV3.NftInfo[]",
+        "name": "nfts",
+        "type": "tuple[]"
+      }
+    ],
+    "name": "stake",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
       { "internalType": "address", "name": "collection", "type": "address" },
       { "internalType": "uint256", "name": "tokenId", "type": "uint256" },
       { "internalType": "uint256", "name": "size", "type": "uint256" }
@@ -342,6 +363,43 @@
     ],
     "name": "userSquadCount",
     "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "user", "type": "address" }
+    ],
+    "name": "userSquadInfo",
+    "outputs": [
+      {
+        "components": [
+          { "internalType": "uint256", "name": "index", "type": "uint256" },
+          { "internalType": "uint256", "name": "startTime", "type": "uint256" },
+          { "internalType": "uint256", "name": "endTime", "type": "uint256" },
+          {
+            "components": [
+              {
+                "internalType": "address",
+                "name": "collection",
+                "type": "address"
+              },
+              {
+                "internalType": "uint256",
+                "name": "tokenId",
+                "type": "uint256"
+              }
+            ],
+            "internalType": "struct SquadStakingV3.NftInfo[]",
+            "name": "nfts",
+            "type": "tuple[]"
+          }
+        ],
+        "internalType": "struct SquadStakingV3.SquadInfoWithIndex[]",
+        "name": "squads",
+        "type": "tuple[]"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   }

@@ -26,4 +26,11 @@ export const ethereumGoerliNetwork: NetworkInfo = {
   riotContractAddressGen1,
   excludeFromLaunchpadList: [riotContractAddressGen1],
   riotSquadStakingContractAddress: "0xdfA5cbcD0Db5d966E68dd143c6441eC47e2777bE",
+  // Substreams
+  firehoseEndpoint: "goerli.eth.streamingfast.io:443",
+  indexStartBlock: "8694034",
+  indexStopBlock: "+1",
+  indexBlockProgress: 1000,
+  indexLiveBlockProgress: 1,
+  substreamsManifest: 'go/internal/substreams/ethereum/ethereum_goerli.yaml'
 };

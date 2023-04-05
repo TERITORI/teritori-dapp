@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"os"
-	"path/filepath"
 	"strconv"
 	"strings"
 
@@ -90,14 +89,9 @@ func MustGetFlagUint64(flagName string) uint64 {
 	return flagValUint64
 }
 
-func MustLoadEnv(network string) {
-	if !SUPPORTED_NETWORKS[network] {
-		panic(fmt.Errorf("network %s is not supported for now", network))
-	}
-
+func MustLoadEnv() {
 	globalEnv := ".env"
-	envForNetwork := filepath.Join("substreams-"+network, ".env")
-	err := godotenv.Load(globalEnv, envForNetwork)
+	err := godotenv.Load(globalEnv)
 	if err != nil {
 		panic(fmt.Errorf("failed to load env files: %s", err))
 	}

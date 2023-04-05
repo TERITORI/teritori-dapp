@@ -47,8 +47,8 @@ export type CosmosNetworkInfo = NetworkInfoBase & {
   riotersFooterContractAddress?: string;
   socialFeedContractAddress?: string;
 
-  riotSquadStakingContractAddressV1: string;
-  riotSquadStakingContractAddressV2: string;
+  riotSquadStakingContractAddressV1?: string;
+  riotSquadStakingContractAddressV2?: string;
 };
 
 export type EthereumNetworkInfo = NetworkInfoBase & {
@@ -58,8 +58,13 @@ export type EthereumNetworkInfo = NetworkInfoBase & {
   alchemyApiKey: string;
   theGraphEndpoint: string;
   vaultContractAddress: string;
-
   riotSquadStakingContractAddress: string;
+  firehoseEndpoint: string;
+  indexStartBlock: string;
+  indexStopBlock: string;
+  indexBlockProgress: number;
+  indexLiveBlockProgress: number;
+  substreamsManifest: string;
 };
 
 export type SolanaNetworkInfo = NetworkInfoBase & {

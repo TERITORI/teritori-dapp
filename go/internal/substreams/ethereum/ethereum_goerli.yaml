@@ -1,0 +1,25 @@
+specVersion: v0.1.0
+package:
+  name: "substreams_ethereum"
+  version: v0.1.0
+
+protobuf:
+  files:
+    - txns.proto
+  importPaths:
+    - ../proto
+
+binaries:
+  default:
+    type: wasm/rust-v1
+    file: ./ethereum_goerli.wasm
+
+modules:
+  - name: txns_out
+    kind: map
+    initialBlock: 8218450 # goerli: 8218450 # mainnet: 16341067
+    inputs:
+      - source: sf.ethereum.type.v2.Block
+      - source: sf.substreams.v1.Clock
+    output:
+      type: proto:teritori.substreams.txns.v1.Txns

@@ -42,12 +42,18 @@ var _ Network = &CosmosNetwork{}
 type EthereumNetwork struct {
 	*NetworkBase
 
-	Endpoint             string `json:"endpoint"`
-	ChainID              int32  `json:"chainId"`
-	AlchemyAPIKey        string `json:"alchemyApiKey"`
-	TheGraphEndpoint     string `json:"theGraphEndpoint"`
-	VaultContractAddress string `json:"vaultContractAddress"`
-	RiotContractAddress  string `json:"riotContractAddress"`
+	Endpoint               string `json:"endpoint"`
+	ChainID                int32  `json:"chainId"`
+	AlchemyAPIKey          string `json:"alchemyApiKey"`
+	TheGraphEndpoint       string `json:"theGraphEndpoint"`
+	VaultContractAddress   string `json:"vaultContractAddress"`
+	RiotContractAddress    string `json:"riotContractAddress"`
+	FirehoseEndpoint       string `json:"firehoseEndpoint"`
+	SubstreamsManifest     string `json:"substreamsManifest"`
+	IndexStartBlock        string `json:"indexStartBlock"`
+	IndexStopBlock         string `json:"indexStopBlock"`
+	IndexBlockProgress     uint64 `json:"indexBlockProgress"`
+	IndexLiveBlockProgress uint64 `json:"indexLiveBlockProgress"`
 }
 
 var _ Network = &EthereumNetwork{}

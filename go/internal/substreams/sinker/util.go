@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/streamingfast/bstream"
 	pbsubstreams "github.com/streamingfast/substreams/pb/sf/substreams/v1"
 )
@@ -66,4 +67,14 @@ func resolveBlockNumber(value int64, defaultIfNegative uint64, relative bool, ag
 		return uint64(value)
 	}
 	return uint64(int64(against) + value)
+}
+
+func MustLoadABI(abiPath string) abi.ABI {
+	ABI, err := abi.JSON(
+		strings.NewReader(GetLocalABI(abiPath)),
+	)
+	if err != nil {
+		panic("failed to load squad staking ABI")
+	}
+	return ABI
 }
