@@ -1,12 +1,12 @@
 import { useFonts } from "expo-font";
 import { View, ViewStyle } from "react-native";
 
+import { LoadingGame } from "./Loading";
+import { Route } from "./Route";
 import { Background } from "../components/background/Background";
 import { Footer } from "../components/footer/Footer";
 import { MenuLink } from "../components/menu-link/MenuLink";
 import { useContentContext } from "../context/ContentProvider";
-import { LoadingGame } from "./Loading";
-import { Route } from "./Route";
 
 export const Content = () => {
   const { selectedSection, isMinimunWindowWidth, loadingGame } =

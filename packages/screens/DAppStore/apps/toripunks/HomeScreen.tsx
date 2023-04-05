@@ -1,10 +1,10 @@
 import React from "react";
 
+import { Content } from "./content/Content";
+import { ContentContextProvider } from "./context/ContentProvider";
 import { ScreenContainer } from "../../../../components/ScreenContainer";
 import { TopLogo } from "../../../../components/navigation/components/TopLogo";
 import { ScreenFC, useAppNavigation } from "../../../../utils/navigation";
-import { Content } from "./content/Content";
-import { ContentContextProvider } from "./context/ContentProvider";
 
 export const ToriPunks: ScreenFC<"ToriPunks"> = ({ route }) => {
   const navigation = useAppNavigation();

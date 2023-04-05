@@ -12,8 +12,7 @@ interface HistoryItem {
   round: number;
   text: string;
 }
-const datumWidth = 320; //720;
-const roundWidth = 52;
+
 const data: HistoryItem[] = [
   {
     round: 1,

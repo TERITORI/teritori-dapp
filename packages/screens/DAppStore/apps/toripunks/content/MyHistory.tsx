@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { FlatList, View } from "react-native";
-import { useMyHistoryData } from "../../../query/useHistoryData";
 
+import { useMyHistoryData } from "../../../query/useHistoryData";
 import { Label } from "../components/label/Label";
 import { Datum } from "../components/table/Datum";
 import { HeaderItem } from "../components/table/HeaderItem";
@@ -15,73 +15,6 @@ interface HistoryItem {
   };
   toriWon: number;
 }
-
-const data: HistoryItem[] = [
-  {
-    round: 1,
-    tickets: {
-      bought: 107,
-      won: 40,
-    },
-    toriWon: 3000,
-  },
-  {
-    round: 2,
-    tickets: {
-      bought: 107,
-      won: 40,
-    },
-    toriWon: 3000,
-  },
-  {
-    round: 3,
-    tickets: {
-      bought: 107,
-      won: 40,
-    },
-    toriWon: 3000,
-  },
-  {
-    round: 4,
-    tickets: {
-      bought: 107,
-      won: 40,
-    },
-    toriWon: 3000,
-  },
-  {
-    round: 5,
-    tickets: {
-      bought: 107,
-      won: 40,
-    },
-    toriWon: 3000,
-  },
-  {
-    round: 6,
-    tickets: {
-      bought: 107,
-      won: 40,
-    },
-    toriWon: 3000,
-  },
-  {
-    round: 7,
-    tickets: {
-      bought: 107,
-      won: 40,
-    },
-    toriWon: 3000,
-  },
-  {
-    round: 8,
-    tickets: {
-      bought: 107,
-      won: 40,
-    },
-    toriWon: 3000,
-  },
-];
 
 const ListItem: React.FC<{
   item: HistoryItem;

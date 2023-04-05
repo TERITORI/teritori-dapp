@@ -1,11 +1,15 @@
 import { View } from "react-native";
 
+import { setIsKeplrConnected } from "../../../../../store/slices/settings";
+import { useAppDispatch } from "../../../../../store/store";
 import { ButtonLabel } from "../components/buttonLabel/ButtonLabel";
 import { Label } from "../components/label/Label";
 import { useContentContext } from "../context/ContentProvider";
 
 export const Disconnect = () => {
-  const { isMinimunWindowWidth } = useContentContext();
+  const { isMinimunWindowWidth, setSelectedSectionHandler } =
+    useContentContext();
+  const dispatch = useAppDispatch();
 
   const styleTypeSize = isMinimunWindowWidth ? "80" : "40";
   return (
@@ -47,7 +51,7 @@ export const Disconnect = () => {
           }}
           actionable
           onPress={() => {
-            debugger;
+            dispatch(setIsKeplrConnected(false));
           }}
         />
         <ButtonLabel
@@ -55,7 +59,7 @@ export const Disconnect = () => {
           size="S"
           actionable
           onPress={() => {
-            debugger;
+            setSelectedSectionHandler("lottery");
           }}
         />
       </View>
