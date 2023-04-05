@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package teritori.substreams.ethereum.txns.v1;
+
+message Txns {
+   repeated TxnData txns_data = 1;
+}
+
+message TxnData {
+  string from = 1;
+  string to = 2;
+  string hash = 3;
+  string value = 4;
+  string contract = 5;
+  uint64 timestamp = 6;
+  bytes input_data = 7;
+}
