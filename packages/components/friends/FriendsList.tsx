@@ -9,7 +9,6 @@ type Props = {
   name: string;
   isOnline: boolean;
   avatar: any;
-  message: string;
 };
 
 const FriendList: React.FC<Props> = ({ avatar, name, isOnline }) => {

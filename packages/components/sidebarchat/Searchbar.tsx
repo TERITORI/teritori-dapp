@@ -39,10 +39,10 @@ const styles = StyleSheet.create({
   friendBox: {
     flexDirection: "row",
     backgroundColor: "#222222",
-    width: 230,
+
     padding: 8,
-    height: 30,
-    borderRadius: 10,
+    height: 40,
+    borderRadius: 6,
     justifyContent: "space-between",
     marginTop: 20,
   },

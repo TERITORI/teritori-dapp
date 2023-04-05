@@ -10,7 +10,6 @@ type Props = {
   name: string;
   isOnline: boolean;
   avatar: any;
-  message: string;
 };
 
 const AddFriendList: React.FC<Props> = ({ avatar, name, isOnline }) => {
@@ -40,14 +39,23 @@ const AddFriendList: React.FC<Props> = ({ avatar, name, isOnline }) => {
           <TertiaryBox
             height={40}
             mainContainerStyle={{
-              backgroundColor: "#16BBFF",
+              backgroundColor: "#2B2B33",
               padding: 12,
               flexDirection: "row",
               alignItems: "center",
             }}
             fullWidth
           >
-            <Text style={{ color: "#2B0945" }}>Send Request</Text>
+            <Text
+              style={{
+                color: "#16BBFF",
+                fontSize: 14,
+                fontWeight: "600",
+                lineHeight: 16,
+              }}
+            >
+              Send Request
+            </Text>
           </TertiaryBox>
         </TouchableOpacity>
       </View>

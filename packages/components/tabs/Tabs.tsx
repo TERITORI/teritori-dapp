@@ -22,6 +22,7 @@ import {
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
+import { SVG } from "../SVG";
 import { PrimaryBadge } from "../badges/PrimaryBadge";
 import { TertiaryBadge } from "../badges/TertiaryBadge";
 import { GradientText } from "../gradientText";
@@ -32,6 +33,7 @@ export interface TabDefinition {
   badgeCount?: number;
   disabled?: boolean;
   scrollTo?: string;
+  icon: any;
 }
 
 export const Tabs = <T extends { [key: string]: TabDefinition }>({

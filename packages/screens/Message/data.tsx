@@ -6,10 +6,12 @@ const data = [
   {
     title: "Create a conversation",
     icon: chat,
+    onPress: () => console.log("CreateConversationScreen"),
   },
   {
     title: "Create a group",
     icon: group,
+    onPress: () => console.log("CreateGroupScreen"),
   },
   {
     title: "Add a friend",

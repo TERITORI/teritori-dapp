@@ -161,7 +161,6 @@ export const NetworkSelector: React.FC<{
                   onPress={() => onPressNetwork(network.id)}
                 >
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    {console.log(network.id, "hello network")}
                     {iconHide ? (
                       ""
                     ) : (
