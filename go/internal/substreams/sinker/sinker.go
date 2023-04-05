@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/TERITORI/teritori-dapp/go/internal/substreams/db"
+	pb "github.com/TERITORI/teritori-dapp/go/internal/substreams/pb"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/streamingfast/bstream"
 	"github.com/streamingfast/logging"
@@ -90,7 +91,7 @@ type PostgresSinker struct {
 
 func New(config *Config, logger *zap.Logger, tracer logging.Tracer) (*PostgresSinker, error) {
 	SQUAD_STAKING_ABI_PATH := "go/internal/substreams/ethereum/abi/squad_staking.json"
-	squadStakingABI := MustLoadABI(SQUAD_STAKING_ABI_PATH)
+	squadStakingABI := mustLoadABI(SQUAD_STAKING_ABI_PATH)
 
 	s := &PostgresSinker{
 		Shutter: shutter.New(),
@@ -291,7 +292,7 @@ func (s *PostgresSinker) handleBlockScopeData(ctx context.Context, cursor *sink.
 			continue
 		}
 
-		var txns Txns
+		var txns pb.Txns
 
 		err := proto.Unmarshal(output.GetMapOutput().GetValue(), &txns)
 		if err != nil {

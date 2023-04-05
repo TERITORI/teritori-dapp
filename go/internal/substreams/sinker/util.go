@@ -69,7 +69,7 @@ func resolveBlockNumber(value int64, defaultIfNegative uint64, relative bool, ag
 	return uint64(int64(against) + value)
 }
 
-func MustLoadABI(abiPath string) abi.ABI {
+func mustLoadABI(abiPath string) abi.ABI {
 	ABI, err := abi.JSON(
 		strings.NewReader(GetLocalABI(abiPath)),
 	)
