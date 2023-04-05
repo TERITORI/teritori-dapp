@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { StyleProp, TouchableHighlight, View, ViewStyle } from "react-native";
+import {
+  StyleProp,
+  TouchableHighlight,
+  useWindowDimensions,
+  View,
+  ViewStyle,
+} from "react-native";
 import { useSelector } from "react-redux";
 
+import { CheckboxDappStore } from "./CheckboxDappStore";
 import { BrandText } from "../../../components/BrandText";
 import { SVGorImageIcon } from "../../../components/SVG/SVGorImageIcon";
 import { SecondaryBox } from "../../../components/boxes/SecondaryBox";
@@ -16,7 +23,6 @@ import { fontSemibold13, fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { SEPARATOR } from "../query/util";
 import { dAppType } from "../types";
-import { CheckboxDappStore } from "./CheckboxDappStore";
 
 export const DAppBox: React.FC<{
   option: dAppType;
@@ -41,12 +47,14 @@ export const DAppBox: React.FC<{
   useEffect(() => {
     setChecked(selectedApps.includes(draggableId));
   }, [selectedApps, draggableId]);
+  const { width } = useWindowDimensions();
+  const isMobile = width < 760;
 
   return (
     <TouchableHighlight onPress={handleClick} disabled={alwaysOn}>
       <TertiaryBox
         height={88}
-        width={306}
+        width={isMobile ? width * 0.8 : 306}
         noBrokenCorners
         style={style}
         mainContainerStyle={{
@@ -96,7 +104,7 @@ export const DAppBox: React.FC<{
           </View>
         </View>
 
-        {!alwaysOn ? <CheckboxDappStore isChecked={isChecked} /> : null}
+        {!alwaysOn && <CheckboxDappStore isChecked={isChecked} />}
       </TertiaryBox>
     </TouchableHighlight>
   );

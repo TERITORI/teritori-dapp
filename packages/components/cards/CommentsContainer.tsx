@@ -2,6 +2,8 @@ import React from "react";
 import { StyleSheet, View } from "react-native";
 
 import { PostResult } from "../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import { postResultToPost } from "../../utils/social-feed";
 import { neutral22 } from "../../utils/style/colors";
 import {
   SocialCommentCard,
@@ -18,10 +20,11 @@ export const CommentsContainer: React.FC<CommentsContainerProps> = ({
   comments,
   ...restProps
 }) => {
+  const selectedNetworkId = useSelectedNetworkId();
+
   if (!comments?.length) {
     return null;
   }
-
   return (
     <View style={styles.container}>
       <View style={styles.conversationLine} />
@@ -29,9 +32,9 @@ export const CommentsContainer: React.FC<CommentsContainerProps> = ({
       <View style={{ flex: 1 }}>
         {comments.map((comment, index) => (
           <React.Fragment key={index}>
-            <SpacerColumn size={3} />
+            <SpacerColumn size={2.5} />
             <SocialCommentCard
-              comment={comment}
+              comment={postResultToPost(selectedNetworkId, comment)}
               isLast={comments?.length === index + 1}
               {...restProps}
             />

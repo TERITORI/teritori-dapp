@@ -11,6 +11,18 @@ import {
 import Animated, { useSharedValue } from "react-native-reanimated";
 import { v4 as uuidv4 } from "uuid";
 
+import {
+  NewPostFormValues,
+  PostCategory,
+  ReplyToType,
+  SocialFeedMetadata,
+} from "./NewsFeed.type";
+import {
+  generatePostMetadata,
+  getPostCategory,
+  uploadPostFilesToPinata,
+} from "./NewsFeedQueries";
+import { NotEnoughFundModal } from "./NotEnoughFundModal";
 import audioSVG from "../../../../assets/icons/audio.svg";
 import cameraSVG from "../../../../assets/icons/camera.svg";
 import penSVG from "../../../../assets/icons/pen.svg";
@@ -63,6 +75,7 @@ import { LocalFileData, RemoteFileData } from "../../../utils/types/feed";
 import { BrandText } from "../../BrandText";
 import { FilesPreviewsContainer } from "../../FilePreview/FilesPreviewsContainer";
 import { IconBox } from "../../IconBox";
+import { OmniLink } from "../../OmniLink";
 import { SVG } from "../../SVG";
 import { TertiaryBox } from "../../boxes/TertiaryBox";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
@@ -71,18 +84,6 @@ import { FileUploader } from "../../fileUploader";
 import { SpacerRow } from "../../spacer";
 import { EmojiSelector } from "../EmojiSelector";
 import { GIFSelector } from "../GIFSelector";
-import {
-  NewPostFormValues,
-  PostCategory,
-  ReplyToType,
-  SocialFeedMetadata,
-} from "./NewsFeed.type";
-import {
-  generatePostMetadata,
-  getPostCategory,
-  uploadPostFilesToPinata,
-} from "./NewsFeedQueries";
-import { NotEnoughFundModal } from "./NotEnoughFundModal";
 
 interface NewsFeedInputProps {
   type: "comment" | "post";
@@ -92,7 +93,6 @@ interface NewsFeedInputProps {
   onSubmitInProgress?: () => void;
   replyTo?: ReplyToType;
   onCloseCreateModal?: () => void;
-  onPressCreateArticle?: (formValues: NewPostFormValues) => void;
   // Receive this if the post is created from HashFeedScreen
   additionalHashtag?: string;
   // Receive this if the post is created from UserPublicProfileScreen (If the user doesn't own the UPP)
@@ -121,7 +121,6 @@ export const NewsFeedInput = React.forwardRef<
       replyTo,
       onSubmitInProgress,
       onCloseCreateModal,
-      onPressCreateArticle,
       additionalHashtag,
       additionalMention,
     },
@@ -590,33 +589,29 @@ export const NewsFeedInput = React.forwardRef<
             </FileUploader>
 
             {type === "post" && (
-              <SecondaryButtonOutline
-                size="M"
-                color={
-                  formValues?.message.length >
-                  SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
-                    ? primaryTextColor
-                    : primaryColor
-                }
-                borderColor={primaryColor}
-                touchableStyle={{
-                  marginRight: layout.padding_x2_5,
-                }}
-                backgroundColor={
-                  formValues?.message.length >
-                  SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
-                    ? primaryColor
-                    : neutral17
-                }
-                text="Create an Article"
-                onPress={
-                  onPressCreateArticle
-                    ? () =>
-                        onPressCreateArticle && onPressCreateArticle(formValues)
-                    : undefined
-                }
-                squaresBackgroundColor={neutral17}
-              />
+              <OmniLink to={{ screen: "FeedNewArticle" }}>
+                <SecondaryButtonOutline
+                  size="M"
+                  color={
+                    formValues?.message.length >
+                    SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
+                      ? primaryTextColor
+                      : primaryColor
+                  }
+                  borderColor={primaryColor}
+                  touchableStyle={{
+                    marginRight: layout.padding_x2_5,
+                  }}
+                  backgroundColor={
+                    formValues?.message.length >
+                    SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
+                      ? primaryColor
+                      : neutral17
+                  }
+                  text="Create an Article"
+                  squaresBackgroundColor={neutral17}
+                />
+              </OmniLink>
             )}
 
             <PrimaryButton
@@ -629,6 +624,7 @@ export const NewsFeedInput = React.forwardRef<
                 !wallet
               }
               isLoading={isLoading || isMutateLoading}
+              loader
               size="M"
               text={type === "comment" ? "Comment" : "Publish"}
               squaresBackgroundColor={neutral17}

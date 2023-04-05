@@ -1,12 +1,12 @@
 import React from "react";
 import { View } from "react-native";
 
+import { MoreReactionsButton } from "./MoreReactionsButton";
+import { NB_REACTIONS_SHOWN } from "./Reactions";
 import { Reaction } from "../../../api/feed/v1/feed";
 import { neutral15, neutral22 } from "../../../utils/style/colors";
 import { layout } from "../../../utils/style/layout";
 import { SocialStat } from "../SocialStat";
-import { MoreReactionsButton } from "./MoreReactionsButton";
-import { NB_REACTIONS_SHOWN } from "./Reactions";
 
 export const MoreReactionsMenu: React.FC<{
   sortedReactions: Reaction[];

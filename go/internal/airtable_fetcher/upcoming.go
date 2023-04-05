@@ -35,6 +35,16 @@ func (c *Client) FetchUpcomingLaunches(logger *zap.Logger) ([]*marketplacepb.Col
 			continue
 		}
 
+		websiteUrl, ok := record.Fields["WebsiteURL"].(string)
+		if !ok {
+			websiteUrl = ""
+		}
+
+		twitterUrl, ok := record.Fields["TwitterURL"].(string)
+		if !ok {
+			twitterUrl = ""
+		}
+
 		pfpArray, ok := record.Fields["CollectionPFP"].([]interface{})
 		if !ok {
 			continue
@@ -57,6 +67,8 @@ func (c *Client) FetchUpcomingLaunches(logger *zap.Logger) ([]*marketplacepb.Col
 			ImageUri:       imageURI,
 			CollectionName: collectionName,
 			CreatorName:    creatorName,
+			TwitterUrl:     twitterUrl,
+			WebsiteUrl:     websiteUrl,
 		})
 	}
 	return upcomingLaunches, nil

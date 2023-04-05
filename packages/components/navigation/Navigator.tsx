@@ -30,6 +30,7 @@ import { RiotGameScreen } from "../../screens/RiotGame/RiotGameScreen.web";
 import { RiotersFooterScreen } from "../../screens/RiotersFooter/RiotersFooterScreen";
 import { SettingsScreen } from "../../screens/Settings/SettingsScreen";
 import { StakeScreen } from "../../screens/Stake";
+import { SwapScreen } from "../../screens/Swap/SwapScreen";
 import { TNSHomeScreen } from "../../screens/TeritoriNameService/TNSHomeScreen";
 import { UserPublicProfileScreen } from "../../screens/UserPublicProfile/UserPublicProfileScreen";
 import { WalletManagerScreen } from "../../screens/WalletManager/WalletManagerScreen";
@@ -200,6 +201,12 @@ export const Navigator: React.FC = () => {
         name="Staking"
         component={StakeScreen}
         options={{ header: () => null, title: screenTitle("Staking") }}
+      />
+      {/* ==== Swap*/}
+      <Stack.Screen
+        name="Swap"
+        component={SwapScreen}
+        options={{ header: () => null, title: screenTitle("Swap") }}
       />
       <Stack.Screen
         name="ComingSoon"

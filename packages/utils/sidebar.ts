@@ -7,6 +7,8 @@ import launchpadApplySVG from "../../assets/icons/launchpad-apply.svg";
 import launchpadLaunchpadSVG from "../../assets/icons/launchpad-launchpad.svg";
 import launchpadSVG from "../../assets/icons/launchpad.svg";
 import messagesSVG from "../../assets/icons/messages.svg";
+import osmosisCircleSVG from "../../assets/icons/networks/osmosis-circle.svg";
+import pathwarSVG from "../../assets/icons/pathwar.svg";
 import riotersGameSVG from "../../assets/icons/rioters-game.svg";
 import stakingSVG from "../../assets/icons/staking.svg";
 import tnsServiceSVG from "../../assets/icons/tns-service.svg";
@@ -18,9 +20,8 @@ import { NetworkKind } from "../networks";
 export const SIDEBAR_LIST: SidebarRecordType = {
   feed: {
     title: "Feed",
-    // route: "Feed",
+    route: "Feed",
     id: "Feed",
-    route: "ComingSoon",
     icon: feedSVG,
   },
   messages: {
@@ -89,6 +90,18 @@ export const SIDEBAR_LIST: SidebarRecordType = {
     route: "Governance",
     icon: governanceSVG,
     disabledOn: [NetworkKind.Ethereum],
+  },
+  swap: {
+    title: "Swap Osmosis",
+    id: "Swap",
+    route: "Swap",
+    icon: osmosisCircleSVG,
+  },
+  pathwar: {
+    title: "Pathwar",
+    id: "Pathwar",
+    route: "ComingSoon",
+    icon: pathwarSVG,
   },
   riotersGame: {
     title: "Join The R!ot",

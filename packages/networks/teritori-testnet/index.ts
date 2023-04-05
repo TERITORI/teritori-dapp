@@ -1,5 +1,5 @@
-import { NetworkInfo, NetworkKind } from "../types";
 import { teritoriTestnetCurrencies } from "./currencies";
+import { NetworkInfo, NetworkKind } from "../types";
 
 const nameServiceContractAddress =
   "tori18etjzrma5604af50jjklk3wlkqcsxdrvmy6jzw5naw2t7kyv4rys3kpwky";
@@ -60,4 +60,6 @@ export const teritoriTestnetNetwork: NetworkInfo = {
     riotContractAddressGen1,
   ],
   excludeFromLaunchpadList: [riotContractAddressGen1],
+  socialFeedContractAddress:
+    "tori19y3xr6lghw04tj2ets8y70mrynlnflejanl2ys3n3c5vaasj358shjsk20",
 };

@@ -29,6 +29,7 @@ message Post {
   uint32 sub_post_length = 6;
   string created_by = 7;
   int64 created_at = 8;
+  int64 tip_amount = 10;
   repeated Reaction reactions = 9;
 }
 

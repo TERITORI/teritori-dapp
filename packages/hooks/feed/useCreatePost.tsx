@@ -1,10 +1,10 @@
 import { useQueryClient } from "@tanstack/react-query";
 
+import { FetchCommentResponse } from "./useFetchComments";
 import { PostResultExtra } from "../../components/socialFeed/NewsFeed/NewsFeed.type";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useTeritoriSocialFeedCreatePostMutation } from "../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.react-query";
 import useSelectedWallet from "../useSelectedWallet";
-import { FetchCommentResponse } from "./useFetchComments";
 
 // =============== Used only for Simple Post for now. (Sorry for the mess)
 export const useCreatePost = ({
@@ -31,6 +31,7 @@ export const useCreatePost = ({
         isInLocal: true,
         reactions: [],
         user_reactions: [],
+        tip_amount: "0",
       };
 
       const prevData = addUpdateNewComment(

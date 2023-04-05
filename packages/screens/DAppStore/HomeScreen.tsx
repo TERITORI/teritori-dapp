@@ -1,18 +1,19 @@
 import React, { useState } from "react";
-import { View } from "react-native";
+import { useWindowDimensions, View } from "react-native";
 
+import { Header } from "./components/Header";
+import { LeftRail } from "./components/LeftRail";
+import { RightRail } from "./components/RightRail";
 import { BrandText } from "../../components/BrandText";
 import { FullWidthSeparator } from "../../components/FullWidthSeparator";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { Separator } from "../../components/Separator";
 import { ScreenFC } from "../../utils/navigation";
-import { Header } from "./components/Header";
-import { LeftRail } from "./components/LeftRail";
-import { RightRail } from "./components/RightRail";
 
 export const DAppStore: ScreenFC<"DAppStore"> = () => {
   const [searchInput, setSearchInput] = useState("");
-
+  const { width } = useWindowDimensions();
+  const isMobile = width < 720;
   return (
     <ScreenContainer
       fullWidth
@@ -22,10 +23,15 @@ export const DAppStore: ScreenFC<"DAppStore"> = () => {
 
       <FullWidthSeparator />
 
-      <View style={{ flexDirection: "row", minHeight: "inherit" }}>
+      <View
+        style={{
+          flexDirection: isMobile ? "column" : "row",
+          minHeight: "inherit",
+        }}
+      >
         <LeftRail />
 
-        <Separator horizontal />
+        <Separator horizontal={!isMobile} />
 
         <RightRail searchInput={searchInput} />
       </View>

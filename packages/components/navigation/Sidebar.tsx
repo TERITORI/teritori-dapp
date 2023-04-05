@@ -8,6 +8,11 @@ import Animated, {
 } from "react-native-reanimated";
 import { useSelector } from "react-redux";
 
+import { SideNotch } from "./components/SideNotch";
+import { SidebarButton } from "./components/SidebarButton";
+import { SidebarProfileButton } from "./components/SidebarProfileButton";
+import { TopLogo } from "./components/TopLogo";
+import { SidebarType } from "./types";
 import addSVG from "../../../assets/icons/add-circle.svg";
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
 import { useSidebar } from "../../context/SidebarProvider";
@@ -34,11 +39,6 @@ import {
 import { SVG } from "../SVG";
 import { Separator } from "../Separator";
 import { SpacerColumn } from "../spacer";
-import { SideNotch } from "./components/SideNotch";
-import { SidebarButton } from "./components/SidebarButton";
-import { SidebarProfileButton } from "./components/SidebarProfileButton";
-import { TopLogo } from "./components/TopLogo";
-import { SidebarType } from "./types";
 
 const SpringConfig: WithSpringConfig = {
   stiffness: 100,
@@ -83,6 +83,7 @@ export const Sidebar: React.FC = () => {
   );
 
   const onRouteChange = (name: SidebarType["route"]) => {
+    // @ts-expect-error
     navigation.navigate(name);
   };
 

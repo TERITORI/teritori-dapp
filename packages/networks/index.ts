@@ -3,14 +3,14 @@ import { SigningStargateClient, StargateClient } from "@cosmjs/stargate";
 import { ChainInfo, Currency as KeplrCurrency } from "@keplr-wallet/types";
 import { CosmWasmClient, GasPrice, SigningCosmWasmClient } from "cosmwasm";
 
-import { getKeplr } from "../utils/keplr";
 import { cosmosNetwork } from "./cosmos-hub";
 import { cosmosThetaNetwork } from "./cosmos-hub-theta";
 import { ethereumNetwork } from "./ethereum";
 import { ethereumGoerliNetwork } from "./ethereum-goerli";
 import { junoNetwork } from "./juno";
 import { osmosisNetwork } from "./osmosis";
-import { solanaNetwork } from "./solana";
+import { osmosisTestnetNetwork } from "./osmosis-testnet";
+// import { solanaNetwork } from "./solana";
 import { teritoriNetwork } from "./teritori";
 import { teritoriTestnetNetwork } from "./teritori-testnet";
 import {
@@ -20,6 +20,7 @@ import {
   NetworkInfo,
   NetworkKind,
 } from "./types";
+import { getKeplr } from "../utils/keplr";
 
 export * from "./types";
 
@@ -34,7 +35,8 @@ export const allNetworks = [
   ethereumNetwork,
   junoNetwork,
   osmosisNetwork,
-  solanaNetwork,
+  osmosisTestnetNetwork,
+  // solanaNetwork,
 ];
 
 export const getCurrency = (

@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { ActivityIndicator, StyleSheet, View } from "react-native";
 import Animated, {
   useAnimatedRef,
   useAnimatedScrollHandler,
@@ -33,6 +33,7 @@ import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { getUserId, NetworkKind, parseUserId } from "../../networks";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { DEFAULT_USERNAME, postResultToPost } from "../../utils/social-feed";
+import { primaryColor } from "../../utils/style/colors";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import {
   layout,
@@ -48,7 +49,6 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
 }) => {
   const navigation = useAppNavigation();
   const selectedNetworkId = useSelectedNetworkId();
-  const [refresh, setRefresh] = useState(0);
   const [parentOffsetValue, setParentOffsetValue] = useState(0);
   const [postResult, setPostResult] = useState<PostResult>();
   const authorNSInfo = useNSUserInfo(
@@ -64,7 +64,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
   const isGoingUp = useSharedValue(false);
   const isFirstLoad = useSharedValue(true);
   const { setToastError } = useFeedbacks();
-  const { data, refetch, hasNextPage, fetchNextPage, isFetching } =
+  const { data, refetch, hasNextPage, fetchNextPage, isFetching, isLoading } =
     useFetchComments({
       parentId: postResult?.identifier,
       totalCount: postResult?.sub_post_length,
@@ -120,13 +120,13 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
   }, [hasNextPage, isNextPageAvailable]);
 
   useEffect(() => {
-    if (isFetching) {
+    if (isFetching || isLoading) {
       isGoingUp.value = false;
       isLoadingValue.value = true;
     } else {
       isLoadingValue.value = false;
     }
-  }, [isFetching, isGoingUp, isLoadingValue]);
+  }, [isFetching, isLoading, isGoingUp, isLoadingValue]);
 
   const scrollHandler = useAnimatedScrollHandler(
     {
@@ -158,14 +158,20 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
   };
 
   const headerLabel = useMemo(() => {
-    if (!postResult) return "Post not found";
+    if (isLoadingValue.value) return "Loading Post...";
+    else if (!postResult) return "Post not found";
     const author =
       authorNSInfo?.metadata?.tokenId || userAddress || DEFAULT_USERNAME;
     if (postResult.category === PostCategory.Article)
       return `Article by ${author}`;
     if (postResult?.parent_post_identifier) return `Comment by ${author}`;
     return `Post by ${author}`;
-  }, [postResult, authorNSInfo?.metadata?.tokenId, userAddress]);
+  }, [
+    postResult,
+    authorNSInfo?.metadata?.tokenId,
+    userAddress,
+    isLoadingValue,
+  ]);
 
   return (
     <ScreenContainer
@@ -175,17 +181,25 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
         <BrandText style={fontSemibold20}>{headerLabel}</BrandText>
       }
       onBackPress={() =>
-        postResult?.parentPostIdentifier
+        postResult?.parent_post_identifier
           ? navigation.navigate("FeedPostView", {
               id: postResult?.parent_post_identifier || "",
             })
+          : navigation.canGoBack()
+          ? navigation.goBack()
           : navigation.navigate("Feed")
       }
       footerChildren
       fullWidth
       noScroll
     >
-      {!postResult ? (
+      {isLoadingValue.value ? (
+        <ActivityIndicator
+          color={primaryColor}
+          size="large"
+          style={{ marginTop: layout.padding_x4 }}
+        />
+      ) : !postResult ? (
         <NotFound label="Post" />
       ) : (
         <>
@@ -206,7 +220,6 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
                 <SocialThreadCard
                   post={postResultToPost(selectedNetworkId, postResult)}
                   isPostConsultation
-                  refresh={refresh}
                   onPressReply={onPressReply}
                 />
               </View>
@@ -217,7 +230,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
               style={[
                 {
                   position: "absolute",
-                  top: threadCardOffsetY + layout.contentPadding - 22,
+                  top: threadCardOffsetY + layout.contentPadding - 20,
                   flexDirection: "row",
                   width: "100%",
                   alignItems: "center",
@@ -231,7 +244,6 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
                 isRefreshing={isLoadingValue}
                 onPress={() => {
                   refetch();
-                  setRefresh((prev) => ++prev);
                 }}
               />
             </Animated.View>
@@ -242,7 +254,6 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
               <CommentsContainer
                 comments={comments}
                 onPressReply={onPressReply}
-                refresh={refresh}
                 onScrollTo={(y: number) => aref.current?.scrollTo(y)}
                 parentOffsetValue={parentOffsetValue}
               />

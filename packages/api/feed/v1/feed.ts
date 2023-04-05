@@ -28,6 +28,7 @@ export interface Post {
   subPostLength: number;
   createdBy: string;
   createdAt: number;
+  tipAmount: number;
   reactions: Reaction[];
 }
 
@@ -210,6 +211,7 @@ function createBasePost(): Post {
     subPostLength: 0,
     createdBy: "",
     createdAt: 0,
+    tipAmount: 0,
     reactions: [],
   };
 }
@@ -239,6 +241,9 @@ export const Post = {
     }
     if (message.createdAt !== 0) {
       writer.uint32(64).int64(message.createdAt);
+    }
+    if (message.tipAmount !== 0) {
+      writer.uint32(80).int64(message.tipAmount);
     }
     for (const v of message.reactions) {
       Reaction.encode(v!, writer.uint32(74).fork()).ldelim();
@@ -277,6 +282,9 @@ export const Post = {
         case 8:
           message.createdAt = longToNumber(reader.int64() as Long);
           break;
+        case 10:
+          message.tipAmount = longToNumber(reader.int64() as Long);
+          break;
         case 9:
           message.reactions.push(Reaction.decode(reader, reader.uint32()));
           break;
@@ -298,6 +306,7 @@ export const Post = {
       subPostLength: isSet(object.subPostLength) ? Number(object.subPostLength) : 0,
       createdBy: isSet(object.createdBy) ? String(object.createdBy) : "",
       createdAt: isSet(object.createdAt) ? Number(object.createdAt) : 0,
+      tipAmount: isSet(object.tipAmount) ? Number(object.tipAmount) : 0,
       reactions: Array.isArray(object?.reactions) ? object.reactions.map((e: any) => Reaction.fromJSON(e)) : [],
     };
   },
@@ -312,6 +321,7 @@ export const Post = {
     message.subPostLength !== undefined && (obj.subPostLength = Math.round(message.subPostLength));
     message.createdBy !== undefined && (obj.createdBy = message.createdBy);
     message.createdAt !== undefined && (obj.createdAt = Math.round(message.createdAt));
+    message.tipAmount !== undefined && (obj.tipAmount = Math.round(message.tipAmount));
     if (message.reactions) {
       obj.reactions = message.reactions.map((e) => e ? Reaction.toJSON(e) : undefined);
     } else {
@@ -330,6 +340,7 @@ export const Post = {
     message.subPostLength = object.subPostLength ?? 0;
     message.createdBy = object.createdBy ?? "";
     message.createdAt = object.createdAt ?? 0;
+    message.tipAmount = object.tipAmount ?? 0;
     message.reactions = object.reactions?.map((e) => Reaction.fromPartial(e)) || [];
     return message;
   },

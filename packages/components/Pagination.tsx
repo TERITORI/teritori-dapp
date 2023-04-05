@@ -2,6 +2,11 @@
 import React, { useRef } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 
+import { BrandText } from "./BrandText";
+import { SVG } from "./SVG";
+import { SecondaryBox } from "./boxes/SecondaryBox";
+import { TertiaryBox } from "./boxes/TertiaryBox";
+import { SpacerRow } from "./spacer";
 import chevronDownSVG from "../../assets/icons/chevron-down.svg";
 import chevronLeftDoubleSVG from "../../assets/icons/chevron-left-double.svg";
 import chevronLeftSVG from "../../assets/icons/chevron-left.svg";
@@ -17,11 +22,6 @@ import {
 } from "../utils/style/colors";
 import { fontSemibold13, fontSemibold14 } from "../utils/style/fonts";
 import { layout } from "../utils/style/layout";
-import { BrandText } from "./BrandText";
-import { SVG } from "./SVG";
-import { SecondaryBox } from "./boxes/SecondaryBox";
-import { TertiaryBox } from "./boxes/TertiaryBox";
-import { SpacerRow } from "./spacer";
 
 interface PaginationProps {
   currentPage: number;

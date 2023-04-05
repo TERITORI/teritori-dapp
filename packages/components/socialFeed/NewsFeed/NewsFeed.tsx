@@ -5,20 +5,19 @@ import Animated, {
   useSharedValue,
 } from "react-native-reanimated";
 
-import { Post, PostsRequest } from "../../../api/feed/v1/feed";
-import {
-  combineFetchFeedPages,
-  useFetchFeed,
-} from "../../../hooks/feed/useFetchFeed";
-import { useAppNavigation } from "../../../utils/navigation";
-import { layout, NEWS_FEED_MAX_WIDTH } from "../../../utils/style/layout";
-import { SpacerColumn } from "../../spacer";
-import { SocialThreadCard } from "../SocialThread/SocialThreadCard";
 import { CreateShortPostButtonRound } from "./CreateShortPost/CreateShortPostButtonRound";
 import { CreateShortPostModal } from "./CreateShortPost/CreateShortPostModal";
 import { NewsFeedInput } from "./NewsFeedInput";
 import { RefreshButton } from "./RefreshButton/RefreshButton";
 import { RefreshButtonRound } from "./RefreshButton/RefreshButtonRound";
+import { Post, PostsRequest } from "../../../api/feed/v1/feed";
+import {
+  combineFetchFeedPages,
+  useFetchFeed,
+} from "../../../hooks/feed/useFetchFeed";
+import { layout, NEWS_FEED_MAX_WIDTH } from "../../../utils/style/layout";
+import { SpacerColumn } from "../../spacer";
+import { SocialThreadCard } from "../SocialThread/SocialThreadCard";
 
 const OFFSET_Y_LIMIT_FLOATING = 224;
 
@@ -39,7 +38,6 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
 }) => {
   const { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading } =
     useFetchFeed(req);
-  const navigation = useAppNavigation();
   const isLoadingValue = useSharedValue(false);
   const isGoingUp = useSharedValue(false);
   const posts = useMemo(
@@ -97,7 +95,6 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
           ]}
         >
           <NewsFeedInput
-            onPressCreateArticle={() => navigation.navigate("FeedNewArticle")}
             type="post"
             onSubmitSuccess={refetch}
             style={{ width: "100%", maxWidth: NEWS_FEED_MAX_WIDTH }}
@@ -110,14 +107,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
         <SpacerColumn size={1.5} />
       </>
     ),
-    [
-      isLoadingValue,
-      Header,
-      additionalMention,
-      additionalHashtag,
-      refetch,
-      navigation,
-    ]
+    [isLoadingValue, Header, additionalMention, additionalHashtag, refetch]
   );
 
   return (
@@ -128,7 +118,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
         renderItem={({ item: post }) => (
           <>
             <SocialThreadCard post={post} isPreview />
-            <SpacerColumn size={3} />
+            <SpacerColumn size={2.5} />
           </>
         )}
         ListHeaderComponentStyle={{ zIndex: 1 }}

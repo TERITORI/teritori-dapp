@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
 import { useSelector } from "react-redux";
 
+import { CheckboxDappStore } from "./CheckboxDappStore";
 import chevronDownSVG from "../../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../../assets/icons/chevron-up.svg";
 import { BrandText } from "../../../components/BrandText";
@@ -20,7 +21,6 @@ import {
 } from "../../../utils/style/colors";
 import { fontSemibold13, fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { CheckboxDappStore } from "./CheckboxDappStore";
 
 const SelectableOption: React.FC<{
   name: string;

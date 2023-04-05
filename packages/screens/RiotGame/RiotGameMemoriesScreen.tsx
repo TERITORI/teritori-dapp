@@ -9,6 +9,7 @@ import {
   View,
 } from "react-native";
 
+import { GameContentView } from "./component/GameContentView";
 import defaultSendToFightPNG from "../../../assets/game/default-video-send-to-fight.png";
 import { BrandText } from "../../components/BrandText";
 import { EmbeddedWeb } from "../../components/EmbeddedWeb";
@@ -16,7 +17,6 @@ import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { SpacerColumn } from "../../components/spacer";
 import { fontMedium32 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { GameContentView } from "./component/GameContentView";
 
 const seasonVideoUri =
   "https://www.youtube.com/embed/videoseries?list=PLRcO8OPsbd7zhj7PDysX2XIh095tazSWM";

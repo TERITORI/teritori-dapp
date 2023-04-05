@@ -21,6 +21,14 @@ type CreatePostMsg struct {
 	Metadata             string `json:"metadata"`
 }
 
+type TipPostMsg struct {
+	Identifier string `json:"identifier"`
+}
+
+type ExecTipPostMsg struct {
+	TipPost TipPostMsg `json:"tip_post"`
+}
+
 type ExecCreatePostMsg struct {
 	CreatePost CreatePostMsg `json:"create_post"`
 }
@@ -174,6 +182,30 @@ func (h *Handler) createPost(
 
 	if err := h.db.Create(&post).Error; err != nil {
 		return errors.Wrap(err, "failed to create post")
+	}
+
+	return nil
+}
+
+func (h *Handler) handleExecuteTipPost(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
+	var execTipPostMsg ExecTipPostMsg
+	if err := json.Unmarshal(execMsg.Msg, &execTipPostMsg); err != nil {
+		return errors.Wrap(err, "failed to unmarshal execute tip post msg")
+	}
+
+	post := indexerdb.Post{
+		Identifier: execTipPostMsg.TipPost.Identifier,
+	}
+
+	if err := h.db.First(&post).Error; err != nil {
+		return errors.Wrap(err, "post not found")
+	}
+
+	post.TipAmount += execMsg.Funds[0].Amount.Int64()
+	h.db.Save(&post)
+
+	if err := h.db.Save(&post).Error; err != nil {
+		return errors.Wrap(err, "failed to update tip amount")
 	}
 
 	return nil

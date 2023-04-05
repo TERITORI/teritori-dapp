@@ -40,6 +40,21 @@ import React, {
 } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 
+import { RichHashtagRenderer } from "./RichRenderer/RichHashtagRenderer";
+import { RichHashtagRendererConsultation } from "./RichRenderer/RichHashtagRendererConsultation";
+import { RichMentionRenderer } from "./RichRenderer/RichMentionRenderer";
+import { RichMentionRendererConsultation } from "./RichRenderer/RichMentionRendererConsultation";
+import { RichURLRenderer } from "./RichRenderer/RichURLRenderer";
+import { RichURLRendererConsultation } from "./RichRenderer/RichURLRendererConsultation";
+import {
+  FoundEntity,
+  PublishValues,
+  RichTextProps,
+  SelectedEntity,
+} from "./RichText.type";
+import { ActionsContainer } from "./Toolbar/ActionsContainer";
+import { ToolbarContainer } from "./ToolbarContainer";
+import createInlineToolbarPlugin from "./inline-toolbar";
 import audioSVG from "../../../../assets/icons/audio.svg";
 import cameraSVG from "../../../../assets/icons/camera.svg";
 import videoSVG from "../../../../assets/icons/video.svg";
@@ -71,21 +86,6 @@ import { FileUploader } from "../../fileUploader";
 import { SpacerColumn, SpacerRow } from "../../spacer";
 import { EmojiSelector } from "../EmojiSelector";
 import { GIFSelector } from "../GIFSelector";
-import { RichHashtagRenderer } from "./RichRenderer/RichHashtagRenderer";
-import { RichHashtagRendererConsultation } from "./RichRenderer/RichHashtagRendererConsultation";
-import { RichMentionRenderer } from "./RichRenderer/RichMentionRenderer";
-import { RichMentionRendererConsultation } from "./RichRenderer/RichMentionRendererConsultation";
-import { RichURLRenderer } from "./RichRenderer/RichURLRenderer";
-import { RichURLRendererConsultation } from "./RichRenderer/RichURLRendererConsultation";
-import {
-  FoundEntity,
-  PublishValues,
-  RichTextProps,
-  SelectedEntity,
-} from "./RichText.type";
-import { ActionsContainer } from "./Toolbar/ActionsContainer";
-import { ToolbarContainer } from "./ToolbarContainer";
-import createInlineToolbarPlugin from "./inline-toolbar";
 
 const VIDEOTYPE = "draft-js-video-plugin-video"; // See @draft-js-plugins/video/lib/video/constants
 const MAX_IMAGES = 8;
@@ -443,6 +443,7 @@ export const RichText: React.FC<RichTextProps> = ({
           <View key={index}>
             <SpacerColumn size={2} />
             <AudioView file={file} />
+            <SpacerColumn size={2} />
           </View>
         ))}
       {!isPostConsultation &&
@@ -454,10 +455,9 @@ export const RichText: React.FC<RichTextProps> = ({
               onDelete={removeAudio}
               onUploadThumbnail={addThumbnailToAddedAudio}
             />
+            <SpacerColumn size={2} />
           </View>
         ))}
-
-      <SpacerColumn size={2} />
 
       {!isPostConsultation && (
         <ActionsContainer>
@@ -470,7 +470,8 @@ export const RichText: React.FC<RichTextProps> = ({
           <SpacerRow size={3} />
           <PrimaryButton
             disabled={publishDisabled}
-            loader={loading}
+            loader
+            isLoading={loading}
             text="Publish"
             size="M"
             onPress={handlePublish}
@@ -513,6 +514,9 @@ const createHTMLFromState = (state: ContentState) =>
     entityToHTML: (entity, originalText) => {
       if (entity.type === "IMAGE") {
         return <img src={entity.data.src} />;
+      }
+      if (entity.type === "LINK") {
+        return <a href={entity.data.url}>{originalText}</a>;
       }
       // TODO: Here, check entity.type === "LINK" and add URLRenderer with href ?
       return originalText;
