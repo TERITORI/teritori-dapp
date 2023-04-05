@@ -1,20 +1,22 @@
 import React from "react";
-import { View, StyleSheet, Text } from "react-native";
+import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
 
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { Separator } from "../../components/Separator";
+import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import MessageCard from "../../components/cards/MessageCard";
-import { SearchInput } from "../../components/sorts/SearchInput";
+import { SpacerRow } from "../../components/spacer";
 import { MessageHeader } from "./MessageHeader";
 import SideBarChats from "./SideBarChats";
 import TopHeaderButtonChat from "./TopHeaderButtonChat";
 import data from "./data";
-export const MessageScreen: ScreenFC<"Message"> = () => {
+export const MessageScreen: ScreenFC<"Message"> = ({ navigation }) => {
   return (
     <ScreenContainer
       footerChildren
       headerChildren={<MessageHeader />}
-      style={{ flex: 1 }}
+      responsive
+      smallMargin={false}
     >
       <View
         style={{
@@ -23,25 +25,35 @@ export const MessageScreen: ScreenFC<"Message"> = () => {
         }}
       >
         {data.map((item) => (
-          <MessageCard
-            text={item.title}
-            icon={item.icon}
-            subtext={item.subtitle}
-            containerStyle={{
-              height: 56,
-            }}
-          />
+          <TouchableOpacity key={item.title} onPress={item.onPress}>
+            <MessageCard
+              text={item.title}
+              icon={item.icon}
+              subtext={item.subtitle}
+              containerStyle={{
+                height: 56,
+              }}
+            />
+          </TouchableOpacity>
         ))}
       </View>
-
+      <TertiaryBox
+        mainContainerStyle={{
+          flexDirection: "row",
+          paddingHorizontal: 12,
+        }}
+        height={400}
+        width={200}
+      />
       <Separator style={{ marginTop: 20, left: 0 }} horizontal={false} />
       <View style={{ flexDirection: "row" }}>
         <SideBarChats />
+        <SpacerRow size={2} />
+        <Separator horizontal />
+        <SpacerRow size={2} />
 
-        <Separator style={{ marginLeft: 20, height: 500 }} horizontal />
         <View style={{ flex: 1 }}>
           <TopHeaderButtonChat />
-          {/* <SearchInput style={{ top: -100 }} /> */}
         </View>
       </View>
     </ScreenContainer>

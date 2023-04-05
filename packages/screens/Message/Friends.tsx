@@ -1,17 +1,29 @@
 import React from "react";
 import { View } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 
+import { Separator } from "../../components/Separator";
 import FriendList from "../../components/friends/FriendsList";
 import data from "../../components/friends/data";
+import { SearchInput } from "../../components/sorts/SearchInput";
+import { SpacerColumn } from "../../components/spacer";
 const Friends = () => {
   return (
     <View style={{ flex: 1, backgroundColor: "#000" }}>
+      <Separator horizontal={false} />
+      <SpacerColumn size={2} />
+      <SearchInput />
+      <SpacerColumn size={1} />
       {data.map((item) => (
-        <FriendList
-          avatar={item.avatar}
-          name={item.name}
-          isOnline={item.isOnline}
-        />
+        <View>
+          <ScrollView>
+            <FriendList
+              avatar={item.avatar}
+              name={item.name}
+              isOnline={item.isOnline}
+            />
+          </ScrollView>
+        </View>
       ))}
     </View>
   );

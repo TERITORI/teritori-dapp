@@ -1,16 +1,18 @@
 import React from "react";
-import { View, Image, Text, StyleSheet } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { View, Text, StyleSheet } from "react-native";
 import { Avatar, Badge } from "react-native-paper";
 
+import doublecheck from "../../../assets/icons/doublecheck.svg";
 import { Separator } from "../../components/Separator";
+import { SVG } from "../SVG";
 
 type Props = {
   name: string;
   isOnline: boolean;
   avatar: any;
-  message: string;
+
   chat: string;
+  time: string;
 };
 
 const SideBarChatConversation: React.FC<Props> = ({
@@ -18,6 +20,7 @@ const SideBarChatConversation: React.FC<Props> = ({
   name,
   isOnline,
   chat,
+  time,
 }) => {
   const onlineStatusBadgeColor = isOnline ? "green" : "yellow";
   return (
@@ -40,16 +43,24 @@ const SideBarChatConversation: React.FC<Props> = ({
             <Text style={styles.online}>{chat}</Text>
           </View>
         </View>
-        <Text
-          style={{
-            color: "#FFFFFF",
-            fontWeight: "500",
-            fontSize: 10,
-            lineHeight: 12,
-          }}
-        >
-          9:30
-        </Text>
+        <View style={{ flexDirection: "row" }}>
+          <Text
+            style={{
+              color: "#FFFFFF",
+              fontWeight: "500",
+              fontSize: 10,
+              lineHeight: 12,
+            }}
+          >
+            {time}
+          </Text>
+          <SVG
+            width={24}
+            height={24}
+            source={doublecheck}
+            style={{ marginRight: 2, marginLeft: 4 }}
+          />
+        </View>
       </View>
       <View style={{ marginTop: 10 }}>
         <Separator color="#222222" />
