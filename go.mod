@@ -107,6 +107,7 @@ require (
 )
 
 require (
+	github.com/streamingfast/bstream v0.0.2-0.20221117104246-5660c4ba5e8c
 	filippo.io/edwards25519 v1.0.0-rc.1 // indirect
 	github.com/99designs/keyring v1.1.6 // indirect
 	github.com/ChainSafe/go-schnorrkel v0.0.0-20200405005733-88cbf1b4c40d // indirect
