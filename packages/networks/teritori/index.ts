@@ -22,7 +22,7 @@ export const teritoriNetwork: NetworkInfo = {
   backendEndpoint: "https://dapp-backend.mainnet.teritori.com",
   addressPrefix: "tori",
   restEndpoint: "https://rest.mainnet.teritori.com",
-  rpcEndpoint: "https://rpc.mainnet.teritori.com",
+  rpcEndpoint: "https://rpclb.mainnet.teritori.com",
   stakeCurrency: "utori",
   gasPriceStep: {
     low: 0.0,
