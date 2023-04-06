@@ -7,7 +7,7 @@ import { Separator } from "../../components/Separator";
 import AddFriendList from "../../components/addfriend/AddFriendList";
 import data from "../../components/addfriend/data";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
-import { SearchInput } from "../../components/sorts/SearchInput";
+import { TextInputCustomBorder } from "../../components/inputs/TextInputCustomBorder";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
 const AddFriend = () => {
   return (
@@ -36,9 +36,13 @@ const AddFriend = () => {
         You can find a friend using .tori directory service.
       </Text>
       <SpacerColumn size={2} />
-      <View style={{ maxWidth: "84%" }}>
+      <View>
         <FlexRow>
-          <SearchInput />
+          <TextInputCustomBorder
+            placeHolder="Search..."
+            style={{ backgroundColor: "#000" }}
+          />
+
           <SpacerRow size={2} />
           <TouchableOpacity>
             <TertiaryBox
