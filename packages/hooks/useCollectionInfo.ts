@@ -308,7 +308,7 @@ const getEthereumTeritoriBunkerCollectionInfo = async (
 };
 
 // NOTE: consider using the indexer for this
-export const useCollectionInfo = (id: string, forceInterval: number) => {
+export const useCollectionInfo = (id: string, forceInterval?: number) => {
   const [network, mintAddress] = parseNetworkObjectId(id);
 
   // Request to ETH blockchain is not free so for ETH we do not re-fetch much
