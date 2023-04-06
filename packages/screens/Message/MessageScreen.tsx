@@ -1,16 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
 
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { Separator } from "../../components/Separator";
-import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import MessageCard from "../../components/cards/MessageCard";
 import { SpacerRow } from "../../components/spacer";
+import CreateGroup from "./CreateGroup";
 import { MessageHeader } from "./MessageHeader";
 import SideBarChats from "./SideBarChats";
 import TopHeaderButtonChat from "./TopHeaderButtonChat";
 import data from "./data";
 export const MessageScreen: ScreenFC<"Message"> = ({ navigation }) => {
+  const [showTertiaryBox, setShowTertiaryBox] = useState(false);
   return (
     <ScreenContainer
       footerChildren
@@ -25,7 +26,16 @@ export const MessageScreen: ScreenFC<"Message"> = ({ navigation }) => {
         }}
       >
         {data.map((item) => (
-          <TouchableOpacity key={item.title} onPress={item.onPress}>
+          <TouchableOpacity
+            key={item.title}
+            onPress={() => {
+              if (item.id === 2) {
+                setShowTertiaryBox(true);
+              } else {
+                setShowTertiaryBox(false);
+              }
+            }}
+          >
             <MessageCard
               text={item.title}
               icon={item.icon}
@@ -37,14 +47,10 @@ export const MessageScreen: ScreenFC<"Message"> = ({ navigation }) => {
           </TouchableOpacity>
         ))}
       </View>
-      <TertiaryBox
-        mainContainerStyle={{
-          flexDirection: "row",
-          paddingHorizontal: 12,
-        }}
-        height={400}
-        width={200}
-      />
+      {showTertiaryBox && (
+        <CreateGroup setShowTertiaryBox={setShowTertiaryBox} />
+      )}
+
       <Separator style={{ marginTop: 20, left: 0 }} horizontal={false} />
       <View style={{ flexDirection: "row" }}>
         <SideBarChats />
