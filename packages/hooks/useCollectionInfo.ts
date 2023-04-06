@@ -313,7 +313,7 @@ export const useCollectionInfo = (id: string, forceInterval: number) => {
 
   // Request to ETH blockchain is not free so for ETH we do not re-fetch much
   const refetchInterval =
-    forceInterval || network?.kind === NetworkKind.Ethereum ? 60_000 : 5000;
+    forceInterval || (network?.kind === NetworkKind.Ethereum ? 60_000 : 5000);
 
   const { data, error, refetch } = useQuery(
     ["collectionInfo", id],
