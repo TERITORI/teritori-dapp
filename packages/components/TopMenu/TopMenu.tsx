@@ -57,27 +57,26 @@ export const TopMenu: React.FC<{
         </TertiaryBox>
       </TouchableOpacity>
 
-      <TertiaryBox
-        width={topMenuWidth}
-        noBrokenCorners
-        style={[
-          styles.menuBox,
-          !isDropdownOpen(dropdownRef) && { display: "none" },
-        ]}
-      >
-        <TopMenuAccount />
-        <TopMenuMyWallets />
-        <TopMenuMyTeritories />
-        <TopMenuHighlightedNews />
-        <TopMenuLiveMint />
+      {isDropdownOpen(dropdownRef) && (
+        <TertiaryBox
+          width={topMenuWidth}
+          noBrokenCorners
+          style={[styles.menuBox]}
+        >
+          <TopMenuAccount />
+          <TopMenuMyWallets />
+          <TopMenuMyTeritories />
+          <TopMenuHighlightedNews />
+          <TopMenuLiveMint />
 
-        <Separator />
-        <OmniLink to={{ screen: "Settings" }}>
-          <FlexCol style={{ paddingVertical: layout.padding_x1_5 }}>
-            <BrandText style={styles.settingsText}>Settings</BrandText>
-          </FlexCol>
-        </OmniLink>
-      </TertiaryBox>
+          <Separator />
+          <OmniLink to={{ screen: "Settings" }}>
+            <FlexCol style={{ paddingVertical: layout.padding_x1_5 }}>
+              <BrandText style={styles.settingsText}>Settings</BrandText>
+            </FlexCol>
+          </OmniLink>
+        </TertiaryBox>
+      )}
     </View>
   );
 };
