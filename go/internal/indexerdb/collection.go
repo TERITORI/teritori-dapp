@@ -1,8 +1,9 @@
 package indexerdb
 
 import (
-	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
 	"time"
+
+	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
 )
 
 type Collection struct {
@@ -13,9 +14,9 @@ type Collection struct {
 	NetworkId           string
 	Name                string
 	ImageURI            string
-	MaxSupply           int
+	MaxSupply           int `gorm:"index"`
 	SecondaryDuringMint bool
-	Paused              bool
+	Paused              bool `gorm:"index"`
 	Time                time.Time
 
 	// "has one" relations
