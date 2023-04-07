@@ -1,4 +1,4 @@
-import { coin } from "cosmwasm";
+import { coin } from "@cosmjs/amino";
 import { omit } from "lodash";
 import { v4 as uuidv4 } from "uuid";
 

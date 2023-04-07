@@ -1,4 +1,4 @@
-import { Decimal } from "cosmwasm";
+import { Decimal } from "@cosmjs/math";
 import { useMemo } from "react";
 
 import { useCosmosDelegations } from "./useCosmosDelegations";

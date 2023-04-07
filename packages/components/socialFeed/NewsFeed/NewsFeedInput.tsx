@@ -1,4 +1,4 @@
-import { coin } from "cosmwasm";
+import { coin } from "@cosmjs/amino";
 import React, { useEffect, useImperativeHandle, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import {

@@ -1,4 +1,4 @@
-import { coin } from "cosmwasm";
+import { coin } from "@cosmjs/amino";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { View } from "react-native";
 
