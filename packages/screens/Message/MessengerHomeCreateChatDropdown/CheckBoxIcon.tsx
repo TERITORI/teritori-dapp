@@ -1,24 +1,65 @@
-import React from "react";
+import React, { useRef } from "react";
+import { View, TouchableWithoutFeedback, Animated } from "react-native";
 import Svg, { Path } from "react-native-svg";
 
 interface CustomIconProps {
-  width?: number;
-  height?: number;
+  size?: number;
   color?: string;
+  isChecked?: boolean;
+  onPress?: () => void;
 }
 
 const CustomIcon: React.FC<CustomIconProps> = ({
-  width = 40,
-  height = 24,
-  color = "#000000",
+  size = 24,
+  color = "#fff",
+  isChecked = false,
+  onPress = () => {},
 }) => {
+  const scaleValue = useRef(new Animated.Value(1)).current;
+
+  const onPressIn = () => {
+    Animated.timing(scaleValue, {
+      toValue: 0.9,
+      duration: 200,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const onPressOut = () => {
+    Animated.timing(scaleValue, {
+      toValue: 1,
+      duration: 200,
+      useNativeDriver: true,
+    }).start();
+    onPress();
+  };
+
   return (
-    <Svg width={width} height={height} viewBox="0 0 24 24" fill="none">
-      <Path
-        d="M12 22C6.5 22 2 17.5 2 12C2 6.5 6.5 2 12 2C17.5 2 22 6.5 22 12C22 17.5 17.5 22 12 22ZM11 7H13V13H11V7ZM11 15H13V17H11V15Z"
-        fill={color}
-      />
-    </Svg>
+    <TouchableWithoutFeedback onPressIn={onPressIn} onPressOut={onPressOut}>
+      <Animated.View
+        style={{
+          transform: [{ scale: scaleValue }],
+          width: size,
+          height: size,
+          borderWidth: 1,
+          borderColor: color,
+          backgroundColor: isChecked ? color : "transparent",
+          borderRadius: 6,
+        }}
+      >
+        {isChecked && (
+          <Svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+            <Path
+              d="M1 5.5L5.5 10L15 1"
+              stroke="#FFFFFF"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </Svg>
+        )}
+      </Animated.View>
+    </TouchableWithoutFeedback>
   );
 };
 
