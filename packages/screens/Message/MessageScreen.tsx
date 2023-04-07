@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
+import { View, StyleSheet, TouchableOpacity, Modal } from "react-native";
 
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { Separator } from "../../components/Separator";
@@ -47,10 +47,21 @@ export const MessageScreen: ScreenFC<"Message"> = ({ navigation }) => {
           </TouchableOpacity>
         ))}
       </View>
-      {showTertiaryBox && (
+      {/* {showTertiaryBox && (
         <CreateGroup setShowTertiaryBox={setShowTertiaryBox} />
-      )}
-
+      )} */}
+      <Modal visible={showTertiaryBox} animationType="none" transparent>
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+          }}
+        >
+          <CreateGroup setShowTertiaryBox={setShowTertiaryBox} />
+        </View>
+      </Modal>
       <Separator style={{ marginTop: 20, left: 0 }} horizontal={false} />
       <View style={{ flexDirection: "row" }}>
         <SideBarChats />

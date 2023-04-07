@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import Icon from "react-native-vector-icons/Ionicons";
 
 import avatar from "../../../../assets/icons/avatar.svg";
 import FlexRow from "../../../components/FlexRow";
@@ -31,7 +30,7 @@ const CheckboxGroup: React.FC<CheckboxGroupProps> = ({ items, onChange }) => {
   return (
     <View>
       {checkboxItems.map((item, index) => (
-        <View>
+        <View style={{ marginTop: 10 }}>
           <FlexRow>
             <TouchableOpacity
               key={index}
@@ -40,9 +39,9 @@ const CheckboxGroup: React.FC<CheckboxGroupProps> = ({ items, onChange }) => {
             >
               <View style={styles.checkbox}>
                 {item.checked ? (
-                  <CustomIcon width={32} height={32} color="#16BBFF" />
+                  <CustomIcon size={20} color="#16BBFF" />
                 ) : (
-                  <CustomIcon width={32} height={32} color="grey" />
+                  <CustomIcon size={20} color="grey" />
                 )}
               </View>
             </TouchableOpacity>
@@ -68,6 +67,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
     color: "#fff",
+    marginLeft: 20,
   },
 });
 
