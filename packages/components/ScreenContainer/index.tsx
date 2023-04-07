@@ -8,14 +8,14 @@ import {
 } from "react-native";
 
 import { Header } from "./Header";
-import { NetworkInfo, NetworkKind } from "../../networks";
-import { DAppStoreData } from "../../screens/DAppStore/components/DAppStoreData";
 import { ScreenContainerMobile } from "./ScreenContainerMobile";
 import { useForceNetworkKind } from "../../hooks/useForceNetworkKind";
 import { useForceNetworkSelection } from "../../hooks/useForceNetworkSelection";
 import { useForceUnselectNetworks } from "../../hooks/useForceUnselectNetworks";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
+import { NetworkInfo, NetworkKind } from "../../networks";
+import { DAppStoreData } from "../../screens/DAppStore/components/DAppStoreData";
 import {
   getResponsiveScreenContainerMarginHorizontal,
   headerHeight,

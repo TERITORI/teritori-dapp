@@ -1,11 +1,4 @@
-import React, {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  useMemo,
-} from "react";
-import { useWindowDimensions } from "react-native";
+import { useMemo } from "react";
 import { useSelector } from "react-redux";
 
 import { getValuesFromId, SEPARATOR } from "../screens/DAppStore/query/util";
@@ -17,28 +10,7 @@ import {
 import { useAppDispatch } from "../store/store";
 import { SIDEBAR_LIST } from "../utils/sidebar";
 
-interface DefaultValue {
-  isSidebarExpanded: boolean;
-  toggleSidebar: () => void;
-  dynamicSidebar: { [p: string]: any };
-}
-
-const defaultValue: DefaultValue = {
-  isSidebarExpanded: true,
-  toggleSidebar: () => {},
-  dynamicSidebar: {},
-};
-
-const SidebarContext = createContext(defaultValue);
-
-const MOBILE_WIDTH = 768;
-
-export const SidebarContextProvider: React.FC = ({ children }) => {
-  // The entered isSidebarExpanded
-  const [isSidebarExpanded, setIsSidebarExpanded] = useState<boolean>(
-    defaultValue.isSidebarExpanded
-  );
-
+export const useDynamicSidebar = () => {
   const selectedApps = useSelector(selectCheckedApps);
   const availableApps = useSelector(selectAvailableApps);
   const dispatch = useAppDispatch();
@@ -87,27 +59,5 @@ export const SidebarContextProvider: React.FC = ({ children }) => {
 
     return dynamicAppsSelection;
   }, [selectedApps, availableApps, dispatch]);
-  const { width: windowWidth } = useWindowDimensions();
-
-  useEffect(() => {
-    setIsSidebarExpanded(
-      windowWidth >= MOBILE_WIDTH ? defaultValue.isSidebarExpanded : false
-    );
-  }, [windowWidth]);
-
-  const toggleSidebar = () => setIsSidebarExpanded(!isSidebarExpanded);
-
-  return (
-    <SidebarContext.Provider
-      value={{
-        isSidebarExpanded,
-        toggleSidebar,
-        dynamicSidebar,
-      }}
-    >
-      {children}
-    </SidebarContext.Provider>
-  );
+  return { dynamicSidebar };
 };
-
-export const useSidebar = () => useContext(SidebarContext);

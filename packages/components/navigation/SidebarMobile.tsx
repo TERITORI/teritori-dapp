@@ -1,5 +1,5 @@
-import { FC } from "react";
-import { View, StyleSheet, FlatList, useWindowDimensions } from "react-native";
+import React, { FC } from "react";
+import { StyleSheet, FlatList, useWindowDimensions } from "react-native";
 import Animated, {
   useAnimatedStyle,
   withSpring,
@@ -7,16 +7,12 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { SidebarButton } from "./components/SidebarButton";
-import { SidebarProfileButton } from "./components/SidebarProfileButton";
 import { SidebarType } from "./types";
 import addSVG from "../../../assets/icons/add-circle.svg";
 import { useSidebar } from "../../context/SidebarProvider";
-import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useSelectedNetworkKind } from "../../hooks/useSelectedNetwork";
-import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkKind } from "../../networks";
-import { useAppNavigation } from "../../utils/navigation";
-import { SIDEBAR_LIST } from "../../utils/sidebar";
+import { RouteName, useAppNavigation } from "../../utils/navigation";
 import { neutral00, neutral17, neutral33 } from "../../utils/style/colors";
 import { layout, MOBILE_HEADER_HEIGHT } from "../../utils/style/layout";
 import { SpacerColumn } from "../spacer";
@@ -29,13 +25,14 @@ const SpringConfig: WithSpringConfig = {
 
 export const SidebarMobile: FC = () => {
   const { height: windowHeight, width: windowWidth } = useWindowDimensions();
-  const selectedWallet = useSelectedWallet();
-  const userInfo = useNSUserInfo(selectedWallet?.userId);
   const selectedNetworkKind = useSelectedNetworkKind();
-  const connected = selectedWallet?.connected;
   const navigation = useAppNavigation();
-  const { isSidebarExpanded, toggleSidebar } = useSidebar();
+  const { isSidebarExpanded, toggleSidebar, dynamicSidebar } = useSidebar();
 
+  console.log(
+    "dynamicSidebardynamicSidebardynamicSidebardynamicSidebar",
+    dynamicSidebar
+  );
   const layoutStyle = useAnimatedStyle(
     () => ({
       width: isSidebarExpanded
@@ -46,6 +43,7 @@ export const SidebarMobile: FC = () => {
   );
 
   const onRouteChange = (name: SidebarType["route"]) => {
+    // @ts-expect-error
     navigation.navigate(name);
   };
 
@@ -60,8 +58,8 @@ export const SidebarMobile: FC = () => {
     >
       <FlatList
         showsVerticalScrollIndicator={false}
-        data={Object.values(SIDEBAR_LIST)}
-        keyExtractor={(item) => item.title}
+        data={Object.values(dynamicSidebar)}
+        keyExtractor={(item) => item.id}
         renderItem={({ item }) => {
           let { route } = item;
           if (
@@ -74,8 +72,8 @@ export const SidebarMobile: FC = () => {
 
           return (
             <SidebarButton
-              key={item.title}
-              onPress={(routeName) => {
+              key={item.id}
+              onPress={(routeName: RouteName) => {
                 isSidebarExpanded && toggleSidebar();
                 onRouteChange(routeName);
               }}
@@ -91,6 +89,8 @@ export const SidebarMobile: FC = () => {
               icon={addSVG}
               iconSize={36}
               route="ComingSoon"
+              key="ComingSoon2"
+              id="ComingSoon2"
               title=""
               onPress={() => navigation.navigate("ComingSoon")}
             />
@@ -98,30 +98,6 @@ export const SidebarMobile: FC = () => {
           </>
         }
       />
-      {isSidebarExpanded && (
-        <View>
-          <View
-            style={{
-              height: 1,
-              marginHorizontal: 18,
-              backgroundColor: neutral33,
-              marginBottom: layout.padding_x1,
-            }}
-          />
-
-          {selectedNetworkKind === NetworkKind.Cosmos &&
-            connected &&
-            userInfo.metadata && (
-              <SidebarProfileButton
-                isLoading={userInfo.loading}
-                userId={selectedWallet?.userId || ""}
-                tokenId={userInfo.metadata.tokenId || ""}
-                image={userInfo.metadata.image || ""}
-                isExpanded={isSidebarExpanded}
-              />
-            )}
-        </View>
-      )}
     </Animated.View>
   );
 };

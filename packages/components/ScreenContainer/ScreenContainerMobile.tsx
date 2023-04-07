@@ -9,6 +9,7 @@ import {
 
 import { HeaderMobile } from "./HeaderMobile";
 import { NetworkInfo, NetworkKind } from "../../networks";
+import { DAppStoreData } from "../../screens/DAppStore/components/DAppStoreData";
 import {
   getMobileScreenContainerMarginHorizontal,
   MOBILE_HEADER_HEIGHT,
@@ -32,6 +33,7 @@ export const ScreenContainerMobile: FC<{
 
   return (
     <SafeAreaView style={styles.container}>
+      <DAppStoreData />
       <HeaderMobile
         forceNetworkId={forceNetworkId}
         forceNetworkKind={forceNetworkKind}
