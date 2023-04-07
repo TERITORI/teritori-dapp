@@ -13,11 +13,11 @@
     "postinstall": "patch-package"
   },
   "dependencies": {
-    "@cosmjs/cosmwasm-stargate": "^0.28.13",
-    "@cosmjs/math": "^0.28.13",
-    "@cosmjs/proto-signing": "^0.28.13",
-    "@cosmjs/stargate": "^0.28.13",
-    "@cosmology/core": "^1.20.0",
+    "@cosmjs/amino": "0.29.3",
+    "@cosmjs/cosmwasm-stargate": "0.29.3",
+    "@cosmjs/proto-signing": "0.29.3",
+    "@cosmjs/stargate": "0.29.3",
+    "@cosmology/core": "1.20.0",
     "@draft-js-plugins/anchor": "^4.2.0",
     "@draft-js-plugins/editor": "^4.1.3",
     "@draft-js-plugins/image": "^4.1.3",
