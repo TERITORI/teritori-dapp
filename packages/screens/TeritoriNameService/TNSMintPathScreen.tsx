@@ -1,112 +1,96 @@
 import { useFocusEffect } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { View } from "react-native";
 
-import { ScreenContainer } from "../../components/ScreenContainer";
-import { BackTo } from "../../components/navigation/BackTo";
+import { TNSModalCommonProps } from "./TNSHomeScreen";
+import ModalBase from "../../components/modals/ModalBase";
 import { NameDataForm } from "../../components/teritoriNameService/NameDataForm";
 import { NameNFT } from "../../components/teritoriNameService/NameNFT";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useTNS } from "../../context/TNSProvider";
-import { useTokenList } from "../../hooks/tokens";
-import { useAreThereWallets } from "../../hooks/useAreThereWallets";
-import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
-import { defaultMintFee } from "../../utils/fee";
+import { TeritoriNameServiceQueryClient } from "../../contracts-clients/teritori-name-service/TeritoriNameService.client";
+import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
-  getFirstKeplrAccount,
-  getSigningCosmWasmClient,
-} from "../../utils/keplr";
-import { defaultMemo } from "../../utils/memo";
-import { ScreenFC, useAppNavigation } from "../../utils/navigation";
-import { isTokenOwnedByUser, tokenWithoutTld } from "../../utils/tns";
-import { defaultMetaData, Metadata } from "../../utils/types/tns";
+  getKeplrSigningCosmWasmClient,
+  mustGetNonSigningCosmWasmClient,
+  mustGetCosmosNetwork,
+  getCosmosNetwork,
+} from "../../networks";
+import { useAppNavigation } from "../../utils/navigation";
+import { neutral17 } from "../../utils/style/colors";
+import { nsTokenWithoutTLD } from "../../utils/tns";
+import { defaultMetaData } from "../../utils/types/tns";
 
 const normalize = (inputString: string) => {
   const invalidChrsRemoved = inputString.replace(/[^a-z0-9\-_]/g, "");
   return invalidChrsRemoved.replace(/[_-]{2,}/g, "");
 };
 
+interface TNSMintPathScreenProps extends TNSModalCommonProps {}
+
 // Can edit if the current user is owner and the name is minted. Can create if the name is available
-export const TNSMintPathScreen: ScreenFC<"TNSMintPath"> = ({ route }) => {
+export const TNSMintPathScreen: React.FC<TNSMintPathScreenProps> = ({
+  onClose,
+  navigateBackTo,
+}) => {
   const [initialData, setInitialData] = useState(defaultMetaData);
   const [initialized, setInitialized] = useState(false);
   const { name, setName } = useTNS();
-  const { setLoadingFullScreen, setToastError, setToastSuccess } =
-    useFeedbacks();
-  const { tokens, loadingTokens } = useTokenList();
+  const { setToastError, setToastSuccess } = useFeedbacks();
   const navigation = useAppNavigation();
-  const isKeplrConnected = useIsKeplrConnected();
-  const userHasCoWallet = useAreThereWallets();
-  const contractAddress = process.env
-    .TERITORI_NAME_SERVICE_CONTRACT_ADDRESS as string;
+  const selectedWallet = useSelectedWallet();
+  const { tokens } = useNSTokensByOwner(selectedWallet?.userId);
+  const network = getCosmosNetwork(selectedWallet?.networkId);
+  const walletAddress = selectedWallet?.address;
 
-  const normalizedTokenId = (name + process.env.TLD).toLowerCase();
+  const normalizedTokenId = (
+    name + network?.nameServiceTLD || ""
+  ).toLowerCase();
 
   const initData = async () => {
     try {
-      const signingClient = await getSigningCosmWasmClient();
+      const network = mustGetCosmosNetwork(selectedWallet?.networkId);
+      if (!network.nameServiceContractAddress) {
+        throw new Error("network not supported");
+      }
+
+      const cosmwasmClient = await mustGetNonSigningCosmWasmClient(network.id);
+
+      const client = new TeritoriNameServiceQueryClient(
+        cosmwasmClient,
+        network.nameServiceContractAddress
+      );
 
       // If this query fails it means that the token does not exist.
-      const token = await signingClient.queryContractSmart(contractAddress, {
-        nft_info: {
-          token_id: normalizedTokenId,
-        },
+      const { extension } = await client.nftInfo({
+        tokenId: normalizedTokenId,
       });
-      // return token.extension;
-      const tokenData: Metadata = {
-        image: token.extension.image,
-        image_data: token.extension.image_data,
-        email: token.extension.email,
-        external_url: token.extension.external_url,
-        public_name: token.extension.public_name,
-        public_bio: token.extension.public_bio,
-        twitter_id: token.extension.twitter_id,
-        discord_id: token.extension.discord_id,
-        telegram_id: token.extension.telegram_id,
-        keybase_id: token.extension.keybase_id,
-        validator_operator_address: token.extension.validator_operator_address,
-      };
       setInitialized(true);
-      setLoadingFullScreen(false);
-      setInitialData(tokenData);
+      setInitialData(extension);
     } catch {
       setInitialized(true);
-      setLoadingFullScreen(false);
       // ---- If here, "cannot contract", so the token is considered as available
       // return undefined;
     }
   };
 
-  // Sync loadingFullScreen
-  useEffect(() => {
-    setLoadingFullScreen(loadingTokens);
-  }, [loadingTokens]);
-
   // ==== Init
   useFocusEffect(() => {
-    // ---- Setting the name from TNSContext. Redirects to TNSHome if this screen is called when the user doesn't own the token
-    setName(route.params.name);
     // ===== Controls many things, be careful
-    if (
-      (name &&
-        tokens.length &&
-        (!userHasCoWallet || !isTokenOwnedByUser(tokens, name))) ||
-      !isKeplrConnected
-    ) {
+    if (name && tokens.length && !tokens.includes(normalizedTokenId)) {
       navigation.navigate("TNSHome");
     }
     if (!initialized) {
-      setLoadingFullScreen(true);
       initData();
     }
   });
 
   // FIXME: typesafe data
   const submitData = async (data: any) => {
-    if (!isKeplrConnected) {
+    if (!walletAddress) {
       return;
     }
-    setLoadingFullScreen(true);
     const {
       token_id: pathId,
       image, // TODO - support later
@@ -125,7 +109,10 @@ export const TNSMintPathScreen: ScreenFC<"TNSMintPath"> = ({ route }) => {
     const normalizedPathId = normalize(pathId.toLowerCase());
 
     try {
-      const walletAddress = (await getFirstKeplrAccount()).address;
+      const network = mustGetCosmosNetwork(selectedWallet?.networkId);
+      if (!network.nameServiceContractAddress) {
+        throw new Error("network not supported");
+      }
 
       const msg = {
         update_metadata: {
@@ -149,14 +136,13 @@ export const TNSMintPathScreen: ScreenFC<"TNSMintPath"> = ({ route }) => {
         },
       };
 
-      const signingClient = await getSigningCosmWasmClient();
+      const signingClient = await getKeplrSigningCosmWasmClient(network.id);
 
       const mintedToken = await signingClient.execute(
-        walletAddress!,
-        contractAddress,
+        walletAddress,
+        network.nameServiceContractAddress,
         msg,
-        defaultMintFee,
-        defaultMemo
+        "auto"
       );
       if (mintedToken) {
         console.log(normalizedPathId + " successfully minted"); //TODO: redirect to the token
@@ -164,10 +150,8 @@ export const TNSMintPathScreen: ScreenFC<"TNSMintPath"> = ({ route }) => {
           title: normalizedPathId + " successfully minted",
           message: "",
         });
-        navigation.navigate("TNSConsultName", {
-          name: tokenWithoutTld(pathId),
-        });
-        setLoadingFullScreen(false);
+        setName(nsTokenWithoutTLD(pathId));
+        onClose("TNSConsultName");
       }
     } catch (err) {
       console.warn(err);
@@ -181,20 +165,20 @@ export const TNSMintPathScreen: ScreenFC<"TNSMintPath"> = ({ route }) => {
         title: "Something went wrong!",
         message,
       });
-      setLoadingFullScreen(false);
     }
   };
 
   return (
-    <ScreenContainer
-      hideSidebar
-      headerStyle={{ borderBottomColor: "transparent" }}
-      footerChildren={
-        <BackTo
-          label={"Back to " + name}
-          onPress={() => navigation.navigate("TNSConsultName", { name })}
-        />
-      }
+    <ModalBase
+      onClose={() => onClose()}
+      onBackPress={() => onClose(navigateBackTo)}
+      width={480}
+      scrollable
+      label={name}
+      hideMainSeparator
+      contentStyle={{
+        backgroundColor: neutral17,
+      }}
     >
       <View style={{ flex: 1, alignItems: "center", marginTop: 32 }}>
         <View
@@ -215,6 +199,6 @@ export const TNSMintPathScreen: ScreenFC<"TNSMintPath"> = ({ route }) => {
           />
         </View>
       </View>
-    </ScreenContainer>
+    </ModalBase>
   );
 };

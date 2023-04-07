@@ -1,5 +1,5 @@
 import { useIsFocused, useRoute } from "@react-navigation/native";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import Animated, {
   // Extrapolate,
@@ -9,6 +9,8 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
+import { SideNotch } from "./SideNotch";
+import { SidebarNestedButton } from "./SidebarNestedButton";
 import chevronDownSVG from "../../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../../assets/icons/chevron-up.svg";
 import { useSidebar } from "../../../context/SidebarProvider";
@@ -26,8 +28,6 @@ import { SVG } from "../../SVG";
 import { CustomPressable } from "../../buttons/CustomPressable";
 import { SpacerRow } from "../../spacer";
 import { SidebarType } from "../types";
-import { SideNotch } from "./SideNotch";
-import { SidebarNestedButton } from "./SidebarNestedButton";
 
 export interface SidebarButtonProps extends SidebarType {
   onPress?: (routeName: SidebarType["route"]) => void;
@@ -62,35 +62,43 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
     } else {
       return route === currentRouteName;
     }
-  }, [isNestedBarExpanded, currentRouteName, nested]);
+  }, [nested, allNestedRoutes, currentRouteName, isNestedBarExpanded, route]);
 
   // hooks
   useEffect(() => {
-    if (
-      allNestedRoutes &&
-      allNestedRoutes.includes(currentRouteName as SidebarType["route"]) &&
-      !isNestedBarExpanded
-    ) {
-      setIsNestedBarExpanded(true);
-    } else if (!isFocused && isNestedBarExpanded) {
-      setIsNestedBarExpanded(false);
-    }
-  }, [currentRouteName, isFocused]);
+    setIsNestedBarExpanded((isNestedBarExpanded) => {
+      if (
+        allNestedRoutes &&
+        allNestedRoutes.includes(currentRouteName as SidebarType["route"]) &&
+        !isNestedBarExpanded
+      ) {
+        return true;
+      } else if (!isFocused && isNestedBarExpanded) {
+        return false;
+      }
+      return isNestedBarExpanded;
+    });
+  }, [allNestedRoutes, currentRouteName, isFocused]);
 
   // functions
-  const toggleNestedSidebar = () =>
-    setIsNestedBarExpanded(!isNestedBarExpanded);
+  const toggleNestedSidebar = useCallback(
+    () => setIsNestedBarExpanded((isNestedBarExpanded) => !isNestedBarExpanded),
+    []
+  );
 
   // animations
-  const opacityStyle = useAnimatedStyle(() => ({
-    opacity: isSidebarExpanded
-      ? withTiming(1, {
-          duration: 500,
-        })
-      : withTiming(0, {
-          duration: 100,
-        }),
-  }));
+  const opacityStyle = useAnimatedStyle(
+    () => ({
+      opacity: isSidebarExpanded
+        ? withTiming(1, {
+            duration: 500,
+          })
+        : withTiming(0, {
+            duration: 100,
+          }),
+    }),
+    [isSidebarExpanded]
+  );
 
   // const nestedBarStyle = useAnimatedStyle(
   //   () => ({

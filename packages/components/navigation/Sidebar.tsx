@@ -1,22 +1,24 @@
 import { useRoute } from "@react-navigation/native";
 import React from "react";
-import {
-  View,
-  TouchableOpacity,
-  StyleSheet,
-  Pressable,
-  FlatList,
-} from "react-native";
+import { View, StyleSheet, Pressable, FlatList } from "react-native";
 import Animated, {
   useAnimatedStyle,
   withSpring,
   WithSpringConfig,
 } from "react-native-reanimated";
 
-import addSVG from "../../../assets/icons/add.svg";
+import { SideNotch } from "./components/SideNotch";
+import { SidebarButton } from "./components/SidebarButton";
+import { SidebarProfileButton } from "./components/SidebarProfileButton";
+import { TopLogo } from "./components/TopLogo";
+import { SidebarType } from "./types";
+import addSVG from "../../../assets/icons/add-circle.svg";
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
-import logoTopSVG from "../../../assets/logos/logo-hexagon.svg";
 import { useSidebar } from "../../context/SidebarProvider";
+import { useNSUserInfo } from "../../hooks/useNSUserInfo";
+import { useSelectedNetworkKind } from "../../hooks/useSelectedNetwork";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { NetworkKind } from "../../networks";
 import { useAppNavigation } from "../../utils/navigation";
 import { SIDEBAR_LIST } from "../../utils/sidebar";
 import { neutral17, neutral33 } from "../../utils/style/colors";
@@ -29,9 +31,6 @@ import {
 import { SVG } from "../SVG";
 import { Separator } from "../Separator";
 import { SpacerColumn } from "../spacer";
-import { SideNotch } from "./components/SideNotch";
-import { SidebarButton } from "./components/SidebarButton";
-import { SidebarType } from "./types";
 
 const SpringConfig: WithSpringConfig = {
   stiffness: 100,
@@ -40,6 +39,11 @@ const SpringConfig: WithSpringConfig = {
 };
 
 export const Sidebar: React.FC = () => {
+  const selectedWallet = useSelectedWallet();
+  const userInfo = useNSUserInfo(selectedWallet?.userId);
+  const selectedNetworkKind = useSelectedNetworkKind();
+  const connected = selectedWallet?.connected;
+
   // variables
   const navigation = useAppNavigation();
   const { name: currentRouteName } = useRoute();
@@ -80,15 +84,7 @@ export const Sidebar: React.FC = () => {
       <View style={styles.headerContainer}>
         {currentRouteName === "Home" && <SideNotch />}
 
-        <View style={styles.topDetailContainer}>
-          <TouchableOpacity
-            style={styles.topIconContainer}
-            onPress={() => navigation.navigate("Home")}
-          >
-            <SVG width={68} height={68} source={logoTopSVG} />
-          </TouchableOpacity>
-        </View>
-
+        <TopLogo />
         <Animated.View
           style={[styles.toggleButtonContainer, toggleButtonStyle]}
         >
@@ -100,22 +96,64 @@ export const Sidebar: React.FC = () => {
         <Separator color={neutral33} />
       </View>
       <FlatList
+        showsVerticalScrollIndicator={false}
         data={Object.values(SIDEBAR_LIST)}
         keyExtractor={(item) => item.title}
-        renderItem={({ item }) => (
-          <SidebarButton key={item.title} onPress={onRouteChange} {...item} />
-        )}
+        renderItem={({ item }) => {
+          let { route } = item;
+          if (
+            item.disabledOn?.includes(
+              selectedNetworkKind || NetworkKind.Unknown
+            )
+          ) {
+            route = "ComingSoon";
+          }
+
+          return (
+            <SidebarButton
+              key={item.title}
+              onPress={onRouteChange}
+              {...item}
+              route={route}
+            />
+          );
+        }}
         ListHeaderComponent={<SpacerColumn size={1} />}
         ListFooterComponent={
-          <SidebarButton
-            icon={addSVG}
-            iconSize={36}
-            route="ComingSoon"
-            title=""
-            onPress={() => navigation.navigate("ComingSoon")}
-          />
+          <>
+            <SidebarButton
+              icon={addSVG}
+              iconSize={36}
+              route="ComingSoon"
+              title=""
+              onPress={() => navigation.navigate("ComingSoon")}
+            />
+            <SpacerColumn size={1} />
+          </>
         }
       />
+      <View>
+        <View
+          style={{
+            height: 1,
+            marginHorizontal: 18,
+            backgroundColor: neutral33,
+            marginBottom: layout.padding_x1,
+          }}
+        />
+
+        {selectedNetworkKind === NetworkKind.Cosmos &&
+          connected &&
+          userInfo.metadata && (
+            <SidebarProfileButton
+              isLoading={userInfo.loading}
+              userId={selectedWallet?.userId || ""}
+              tokenId={userInfo.metadata.tokenId || ""}
+              image={userInfo.metadata.image || ""}
+              isExpanded={isSidebarExpanded}
+            />
+          )}
+      </View>
     </Animated.View>
   );
 };
@@ -128,13 +166,6 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     height: headerHeight,
-  },
-  topDetailContainer: {
-    flex: 1,
-    justifyContent: "center",
-  },
-  topIconContainer: {
-    paddingLeft: layout.padding_x0_5,
   },
   toggleButtonContainer: {
     position: "absolute",

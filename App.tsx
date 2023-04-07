@@ -7,9 +7,11 @@ import {
 import { NavigationContainer } from "@react-navigation/native";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { StatusBar } from "expo-status-bar";
-import React from "react";
+import { MetaMaskProvider } from "metamask-react";
+import React, { Suspense } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { Platform } from "react-native";
+import { MenuProvider } from "react-native-popup-menu";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider as ReduxProvider } from "react-redux";
 
@@ -17,6 +19,7 @@ import { Navigator } from "./packages/components/navigation/Navigator";
 import { DropdownsContextProvider } from "./packages/context/DropdownsProvider";
 import { FeedbacksContextProvider } from "./packages/context/FeedbacksProvider";
 import { SidebarContextProvider } from "./packages/context/SidebarProvider";
+import { TNSMetaDataListContextProvider } from "./packages/context/TNSMetaDataListProvider";
 import { TNSContextProvider } from "./packages/context/TNSProvider";
 import { TransactionModalsProvider } from "./packages/context/TransactionModalsProvider";
 import { WalletsProvider } from "./packages/context/WalletsProvider";
@@ -46,26 +49,34 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <FormProvider<DefaultForm> {...methods}>
-        <NavigationContainer linking={linking}>
-          <SafeAreaProvider>
-            <ReduxProvider store={store}>
-              <FeedbacksContextProvider>
-                <DropdownsContextProvider>
-                  <WalletsProvider>
-                    <TransactionModalsProvider>
-                      <TNSContextProvider>
-                        <SidebarContextProvider>
-                          <StatusBar style="inverted" />
-                          <Navigator />
-                        </SidebarContextProvider>
-                      </TNSContextProvider>
-                    </TransactionModalsProvider>
-                  </WalletsProvider>
-                </DropdownsContextProvider>
-              </FeedbacksContextProvider>
-            </ReduxProvider>
-          </SafeAreaProvider>
-        </NavigationContainer>
+        <Suspense fallback={<></>}>
+          <MetaMaskProvider>
+            <NavigationContainer linking={linking}>
+              <SafeAreaProvider>
+                <ReduxProvider store={store}>
+                  <FeedbacksContextProvider>
+                    <DropdownsContextProvider>
+                      <WalletsProvider>
+                        <TransactionModalsProvider>
+                          <TNSContextProvider>
+                            <TNSMetaDataListContextProvider>
+                              <MenuProvider>
+                                <SidebarContextProvider>
+                                  <StatusBar style="inverted" />
+                                  <Navigator />
+                                </SidebarContextProvider>
+                              </MenuProvider>
+                            </TNSMetaDataListContextProvider>
+                          </TNSContextProvider>
+                        </TransactionModalsProvider>
+                      </WalletsProvider>
+                    </DropdownsContextProvider>
+                  </FeedbacksContextProvider>
+                </ReduxProvider>
+              </SafeAreaProvider>
+            </NavigationContainer>
+          </MetaMaskProvider>
+        </Suspense>
       </FormProvider>
     </QueryClientProvider>
   );

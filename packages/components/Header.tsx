@@ -1,6 +1,7 @@
 import React from "react";
 import { View, ViewStyle, StyleProp } from "react-native";
 
+import { BackButton } from "./navigation/components/BackButton";
 import { neutral33 } from "../utils/style/colors";
 import {
   headerHeight,
@@ -10,7 +11,8 @@ import {
 export const Header: React.FC<{
   smallMargin?: boolean;
   style?: StyleProp<ViewStyle>;
-}> = ({ children, style }) => {
+  onBackPress?: () => void;
+}> = ({ children, style, onBackPress }) => {
   return (
     <View
       style={[
@@ -37,7 +39,8 @@ export const Header: React.FC<{
           marginLeft: screenContainerContentMarginHorizontal,
         }}
       >
-        <>{children}</>
+        {onBackPress && <BackButton onPress={onBackPress} />}
+        {children}
       </View>
 
       {/* Wallet selector placeholder */}

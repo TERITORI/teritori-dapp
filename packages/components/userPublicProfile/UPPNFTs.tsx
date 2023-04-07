@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import { View } from "react-native";
 
-import { NFTsRequest } from "../../api/marketplace/v1/marketplace";
+import {
+  NFTsRequest,
+  Sort,
+  SortDirection,
+} from "../../api/marketplace/v1/marketplace";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { alignDown } from "../../utils/align";
 import { layout } from "../../utils/style/layout";
@@ -28,6 +32,8 @@ const SelectedTabContent: React.FC<{
     ownerId: userId,
     limit: alignDown(20, numColumns) || numColumns,
     offset: 0,
+    sort: Sort.SORTING_PRICE,
+    sortDirection: SortDirection.SORT_DIRECTION_ASCENDING,
   };
 
   switch (selectedTab) {
@@ -60,13 +66,14 @@ export const UPPNFTs: React.FC<{ userId: string }> = ({ userId }) => {
           alignItems: "center",
           height: 64,
           marginTop: layout.padding_x2_5 / 2,
+          marginBottom: 16,
         }}
       >
         <Tabs
           selected={selectedTab}
           items={tabItemsNFTs}
           onSelect={setSelectedTab}
-          style={{ width: 436, height: 44, alignSelf: "flex-end" }}
+          style={{ width: 436, alignSelf: "flex-end" }}
         />
       </View>
 

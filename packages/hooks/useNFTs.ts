@@ -1,45 +1,57 @@
-import { useCallback, useEffect, useState } from "react";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { useMemo, useRef } from "react";
 
 import { NFTsRequest, NFT } from "../api/marketplace/v1/marketplace";
-import { backendClient } from "../utils/backend";
+import { parseNetworkObjectId } from "../networks";
+import { mustGetMarketplaceClient } from "../utils/backend";
+import { addNftListMetadata } from "../utils/ethereum";
 
 export const useNFTs = (req: NFTsRequest) => {
-  const [nfts, setNFTs] = useState<NFT[]>([]);
-  const [firstLoading, setFirstLoading] = useState(false);
-  const [isFirstLoadDone, setIsFirstLoadDone] = useState(false);
+  const baseOffset = useRef(req.offset);
 
-  const fetchMore = useCallback(async () => {
-    if (!isFirstLoadDone) setFirstLoading(true);
-    try {
-      const offsetReq = {
+  const { data, fetchNextPage } = useInfiniteQuery(
+    ["nfts", { ...req, offset: baseOffset.current }],
+    async ({ pageParam = 0 }) => {
+      let nfts: NFT[] = [];
+
+      const objectId = req.ownerId || req.collectionId;
+      const [network] = parseNetworkObjectId(objectId);
+
+      if (!network) {
+        return { nextCursor: pageParam + req.limit, nfts };
+      }
+
+      const marketplaceClient = mustGetMarketplaceClient(network.id);
+
+      const pageReq = {
         ...req,
-        offset: req.offset + nfts.length,
+        offset: baseOffset.current + pageParam,
       };
-      console.log("fetching", offsetReq);
-      const stream = backendClient.NFTs(offsetReq);
-
-      let newNFTS: NFT[] = [];
+      const stream = marketplaceClient.NFTs(pageReq);
       await stream.forEach((response) => {
         if (!response.nft) {
           return;
         }
-        newNFTS = [...newNFTS, response.nft];
+        nfts.push(response.nft);
       });
 
-      setNFTs((collec) => [...collec, ...newNFTS]);
-    } catch (err) {
-      console.warn("failed to fetch collection nfts:", err);
-    }
-    if (!isFirstLoadDone) {
-      setFirstLoading(false);
-      setIsFirstLoadDone(true);
-    }
-  }, [req, nfts]);
+      nfts = await addNftListMetadata(nfts);
 
-  useEffect(() => {
-    setNFTs([]);
-    fetchMore();
-  }, [req.collectionId, req.ownerId]);
+      return { nextCursor: pageParam + req.limit, nfts };
+    },
+    { getNextPageParam: (lastPage) => lastPage.nextCursor }
+  );
 
-  return { nfts, fetchMore, firstLoading };
+  const nfts = useMemo(() => {
+    if (!data?.pages) {
+      return [];
+    }
+    const flat = [];
+    for (const page of data.pages) {
+      flat.push(...page.nfts);
+    }
+    return flat;
+  }, [data?.pages]);
+
+  return { nfts, fetchMore: fetchNextPage };
 };

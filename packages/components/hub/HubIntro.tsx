@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { View, Image } from "react-native";
+import { View } from "react-native";
 
-import connectedImagePNG from "../../../assets/default-images/connected-image-bad.png";
+import { ProfileButton } from "./ProfileButton";
 import logoSVG from "../../../assets/logos/logo.svg";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
+import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { MyNFTs } from "../../screens/WalletManager/MyNFTs";
 import { WalletDashboardHeader } from "../../screens/WalletManager/WalletDashboardHeader";
@@ -15,8 +16,8 @@ import { Quests } from "../Quests";
 import { SVG } from "../SVG";
 import { Section } from "../Section";
 import { MainConnectWalletButton } from "../connectWallet/MainConnectWalletButton";
+import { AvatarWithFrame } from "../images/AvatarWithFrame";
 import { Tabs } from "../tabs/Tabs";
-import { ProfileButton } from "./ProfileButton";
 
 const walletsManagerTabItems = {
   overview: {
@@ -27,11 +28,14 @@ const walletsManagerTabItems = {
   },
 };
 
+// FIXME: fetch quests count
+
 const ConnectedIntro: React.FC = () => {
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof walletsManagerTabItems>("overview");
 
   const selectedWallet = useSelectedWallet();
+  const userInfo = useNSUserInfo(selectedWallet?.userId);
 
   return (
     <View
@@ -41,16 +45,17 @@ const ConnectedIntro: React.FC = () => {
         width: "100%",
       }}
     >
-      <Image
-        source={connectedImagePNG}
-        style={{ width: 200, aspectRatio: 1, marginBottom: 20 }}
+      <AvatarWithFrame
+        isLoading={userInfo?.loading}
+        image={userInfo?.metadata?.image}
+        size="XL"
       />
 
       <ProfileButton style={{ marginTop: 40 }} />
 
-      <Section title="Quests" subtitle="6">
+      <Section title="Quests" subtitle="4">
         <FullWidthSeparator />
-        <Quests userId={`tori-${selectedWallet?.address}`} />
+        <Quests userId={selectedWallet?.userId} />
       </Section>
 
       <Section title="Wallets manager">
@@ -59,7 +64,7 @@ const ConnectedIntro: React.FC = () => {
         <Tabs
           items={walletsManagerTabItems}
           selected={selectedTab}
-          style={{ marginTop: 24, height: 40 }}
+          style={{ marginTop: 24 }}
           onSelect={setSelectedTab}
         />
         {selectedTab === "overview" && <Overview />}

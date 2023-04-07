@@ -1,9 +1,5 @@
 [
   {
-    "id": "claim_airdrop",
-    "title": "Claim Teritori Airdrop"
-  },
-  {
     "id": "book_tns",
     "title": "Book a Handle on Teritori Name Service"
   },
@@ -18,9 +14,5 @@
    {
     "id":"sell_nft",
     "title": "Sell your 1st NFT on Marketplace"
-  },
-  {
-    "id": "rioters_footer",
-    "title": "Put your Graffiti on Rioters Footer"
   }
 ]

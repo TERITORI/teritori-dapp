@@ -1,48 +1,71 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { StyleProp, ViewStyle } from "react-native";
 
-import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { useTNSMetadata } from "../../hooks/useTNSMetadata";
-import { useAppNavigation } from "../../utils/navigation";
+import { getCosmosNetwork } from "../../networks";
 import { neutral00 } from "../../utils/style/colors";
+import { OmniLink } from "../OmniLink";
 import { SecondaryButtonOutline } from "../buttons/SecondaryButtonOutline";
 
-export const ProfileButton: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
-  style,
-}) => {
-  const navigation = useAppNavigation();
+export const ProfileButton: React.FC<{
+  style?: StyleProp<ViewStyle>;
+  isEdit?: boolean;
+}> = ({ style, isEdit }) => {
   const selectedWallet = useSelectedWallet();
-  const { loading, metadata } = useTNSMetadata(selectedWallet?.address);
-  const { setLoadingFullScreen } = useFeedbacks();
+  const network = getCosmosNetwork(selectedWallet?.networkId);
+  const { metadata } = useNSUserInfo(selectedWallet?.userId);
 
-  // Sync loadingFullScreen
-  useEffect(() => {
-    setLoadingFullScreen(loading);
-  }, [loading]);
-
-  if (loading) return null;
-  if (selectedWallet && metadata)
+  if (selectedWallet && metadata?.tokenId)
     return (
-      <SecondaryButtonOutline
-        size="XL"
-        text="My profile"
-        backgroundColor={neutral00}
-        onPress={() =>
-          navigation.navigate("UserPublicProfile", {
-            id: `tori-${selectedWallet?.address}`,
-          })
-        }
+      <OmniLink
         style={style}
-      />
+        to={
+          !isEdit
+            ? {
+                screen: "UserPublicProfile",
+                params: {
+                  id: selectedWallet.userId,
+                },
+              }
+            : metadata.tokenId
+            ? {
+                screen: "TNSHome",
+                params: {
+                  modal: "update-name",
+                  name: metadata.tokenId.replace(".tori", ""),
+                },
+              }
+            : { screen: "ComingSoon" }
+        }
+      >
+        <SecondaryButtonOutline
+          size="XL"
+          text={isEdit ? "Edit profile" : "My profile"}
+          backgroundColor={neutral00}
+        />
+      </OmniLink>
     );
-  return (
-    <SecondaryButtonOutline
-      size="XL"
-      text="Create profile"
-      backgroundColor={neutral00}
-      onPress={() => navigation.navigate("TNSRegister")}
-      style={style}
-    />
-  );
+
+  if (network?.nameServiceContractAddress) {
+    return (
+      <OmniLink
+        to={{
+          screen: "TNSHome",
+          params: {
+            modal: "register",
+          },
+        }}
+        style={style}
+      >
+        <SecondaryButtonOutline
+          size="XL"
+          text="Create profile"
+          backgroundColor={neutral00}
+        />
+      </OmniLink>
+    );
+  }
+
+  return null;
 };

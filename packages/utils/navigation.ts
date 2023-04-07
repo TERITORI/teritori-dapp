@@ -2,12 +2,18 @@ import { RouteProp, useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React from "react";
 
+import { PickByValue } from "./types/helper";
+import { NewPostFormValues } from "../components/socialFeed/NewsFeed/NewsFeed.type";
+
+export type RouteName =
+  | keyof PickByValue<RootStackParamList, undefined>
+  | "TNSHome";
+
 export type RootStackParamList = {
   Home: undefined;
   MyCollection: undefined;
   Activity: undefined;
   Guardians: undefined;
-  GuardiansGame: undefined;
   WalletManager: undefined;
   WalletManagerWallets: undefined;
   WalletManagerChains: undefined;
@@ -20,26 +26,39 @@ export type RootStackParamList = {
   Statistics: undefined;
 
   Launchpad: undefined;
+  LaunchpadApply: undefined;
   MintCollection: { id: string };
-
-  TNSHome: undefined;
-  TNSExplore: undefined;
-  TNSManage: undefined;
-  TNSRegister: undefined;
-  TNSConsultName: { name: string };
-  TNSMintName: { name: string };
-  TNSUpdateName: { name: string };
-  TNSBurnName: { name: string };
-  TNSMintPath: { name: string };
+  TNSHome: { modal: string; name?: string } | undefined;
 
   Marketplace: undefined;
   Collection: { id: string };
-  CollectionActivity: { id: string };
-  NFTDetail: { id: string };
+  CollectionTools: { id: string };
+  NFTDetail: { id: string; openBuy?: boolean };
+  Feed: undefined;
+  FeedNewArticle:
+    | (NewPostFormValues & {
+        additionalMention?: string;
+        additionalHashtag?: string;
+      })
+    | undefined;
+  FeedPostView: { id: string };
+  HashtagFeed: { hashtag: string };
 
+  RiotGame: undefined;
+  RiotGameEnroll: undefined;
+  RiotGameFight: undefined;
+  RiotGameBreeding: undefined;
+  RiotGameMemories: undefined;
+  RiotGameMarketplace: { collectionId?: string } | undefined;
+  RiotGameLeaderboard: undefined;
+  RiotGameInventory: undefined;
+
+  Swap: undefined;
   Staking: undefined;
 
   ComingSoon: undefined;
+
+  Settings: undefined;
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -62,10 +81,19 @@ const navConfig: {
     WalletManager: "wallet-manager",
     WalletManagerWallets: "wallet-manager/wallets",
     WalletManagerChains: "wallet-manager/chains",
-    GuardiansGame: "guardians-game",
     Governance: "governance",
     UserPublicProfile: "user/:id",
     RiotersFooter: "rioters-footer",
+    // === RiotGame
+    RiotGame: "riot-game",
+    RiotGameEnroll: "riot-game/enroll",
+    RiotGameFight: "riot-game/fight",
+    RiotGameBreeding: "riot-game/breeding",
+    RiotGameMemories: "riot-game/memories",
+    RiotGameMarketplace: "riot-game/marketplace",
+    RiotGameLeaderboard: "riot-game/leaderboard",
+    RiotGameInventory: "riot-game/inventory",
+
     // === Pathwar
     Pathwar: "pathwar",
     Resources: "ressources",
@@ -73,29 +101,29 @@ const navConfig: {
     Statistics: "statistics",
     // ==== Launchpad
     Launchpad: "launchpad",
+    LaunchpadApply: "launchpad/apply",
     // Mint NFT collection
     MintCollection: "collection/:id/mint",
     // ==== Teritori Name Service
-    TNSHome: "tns",
-    TNSExplore: "tns/explore",
-    TNSManage: "tns/manage",
-    TNSRegister: "tns/register",
-    // Consult token
-    TNSConsultName: "tns/token/:name",
-    // Do things on token (Necessary minted and owned by the user)
-    TNSMintName: "tns/tokens/:name/mint",
-    TNSUpdateName: "tns/tokens/:name/update",
-    TNSBurnName: "tns/tokens/:name/burn",
-    TNSMintPath: "tns/tokens/:name/mint-path",
+    TNSHome: "tns/:modal?",
+
     // ==== Marketplace
     Marketplace: "marketplace",
     Collection: "collection/:id",
-    CollectionActivity: "collection/:id/activity",
+    CollectionTools: "collection/:id/tools",
     NFTDetail: "nft/:id",
+    Feed: "feed",
+    FeedNewArticle: "feed/new",
+    FeedPostView: "feed/post/:id",
+    HashtagFeed: "feed/hashtag/:hashtag",
+
     // ==== Staking
     Staking: "staking",
+    // ==== Swap
+    Swap: "swap",
     // ==== ComingSoon
     ComingSoon: "coming-soon",
+    Settings: "settings",
   },
 };
 

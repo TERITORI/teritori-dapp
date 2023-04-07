@@ -4,11 +4,11 @@ import {
   Image,
   View,
   StyleProp,
-  TouchableOpacity,
   StyleSheet,
   Pressable,
 } from "react-native";
 
+import { NFTTransferModal } from "./NFTTransferModal";
 import dotsCircleSVG from "../../../assets/icons/dots-circle.svg";
 import footerSVG from "../../../assets/icons/footer-regular.svg";
 import gridSVG from "../../../assets/icons/grid.svg";
@@ -17,23 +17,23 @@ import raffleSVG from "../../../assets/icons/raffle.svg";
 import sendSVG from "../../../assets/icons/send.svg";
 import { NFT } from "../../api/marketplace/v1/marketplace";
 import { useDropdowns } from "../../context/DropdownsProvider";
-import { useTNSMetadata } from "../../hooks/useTNSMetadata";
+import { useNSUserInfo } from "../../hooks/useNSUserInfo";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { getCosmosNetwork, parseUserId } from "../../networks";
 import { prettyPrice } from "../../utils/coins";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
-import { useAppNavigation } from "../../utils/navigation";
-import { protobufNetworkToNetwork } from "../../utils/network";
 import { neutral00, neutral33, neutral77 } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { CurrencyIcon } from "../CurrencyIcon";
 import { DropdownOption } from "../DropdownOption";
 import { ImageWithTextInsert } from "../ImageWithTextInsert";
+import { NetworkIcon } from "../NetworkIcon";
+import { OmniLink } from "../OmniLink";
 import { SVG } from "../SVG";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { SecondaryButton } from "../buttons/SecondaryButton";
-import { NetworkIcon } from "../images/NetworkIcon";
-import { SpacerColumn } from "../spacer";
-import { NFTTransferModal } from "./NFTTransferModal";
+import { SpacerColumn, SpacerRow } from "../spacer";
 
 export const NFTView: React.FC<{
   data: NFT;
@@ -43,14 +43,19 @@ export const NFTView: React.FC<{
   const cardWidth = 258;
   const insideMargin = layout.padding_x2;
   const contentWidth = cardWidth - insideMargin * 2;
-  const navigation = useAppNavigation();
   const flatStyle = StyleSheet.flatten(style);
-  const tnsMetadata = useTNSMetadata(nft.ownerId.replace("tori-", ""));
+  const selectedWallet = useSelectedWallet();
+  const userInfo = useNSUserInfo(nft.ownerId);
+  const cosmosNetwork = getCosmosNetwork(nft.id);
   const { onPressDropdownButton, isDropdownOpen, closeOpenedDropdown } =
     useDropdowns();
   const [isTransferNFTVisible, setIsTransferNFTVisible] =
     useState<boolean>(false);
-  const dropdownRef = useRef<TouchableOpacity>(null);
+  const dropdownRef = useRef<View>(null);
+
+  const isOwner = nft.ownerId === selectedWallet?.userId;
+
+  const isOwnerAndNotListed = isOwner && !nft.isListed;
 
   // put margins on touchable opacity
   const {
@@ -71,9 +76,8 @@ export const NFTView: React.FC<{
   // returns
   return (
     <>
-      <TouchableOpacity
+      <View
         ref={dropdownRef}
-        onPress={() => navigation.navigate("NFTDetail", { id: nft.id })}
         style={{
           margin,
           marginBottom,
@@ -90,7 +94,7 @@ export const NFTView: React.FC<{
           width={cardWidth}
           style={styleWithoutMargins}
         >
-          <View>
+          <View style={{ width: "100%" }}>
             <View
               style={{
                 paddingTop: insideMargin,
@@ -117,10 +121,9 @@ export const NFTView: React.FC<{
                   <Image
                     source={{
                       uri: ipfsURLToHTTPURL(
-                        tnsMetadata.metadata?.image
-                          ? tnsMetadata.metadata.image
-                          : process.env
-                              .TERITORI_NAME_SERVICE_DEFAULT_IMAGE_URL || ""
+                        userInfo.metadata?.image
+                          ? userInfo.metadata.image
+                          : cosmosNetwork?.nameServiceDefaultImage || ""
                       ),
                     }} // TODO: proper fallback
                     style={{
@@ -130,7 +133,12 @@ export const NFTView: React.FC<{
                       marginRight: 6,
                     }}
                   />
-                  <View>
+                  <OmniLink
+                    to={{
+                      screen: "UserPublicProfile",
+                      params: { id: nft.ownerId },
+                    }}
+                  >
                     <BrandText
                       style={{
                         fontSize: 10,
@@ -145,98 +153,108 @@ export const NFTView: React.FC<{
                         lineHeight: 16,
                       }}
                     >
-                      {tnsMetadata.metadata?.tokenId ||
+                      {userInfo.metadata?.tokenId ||
                         shortUserAddressFromID(nft.ownerId, 10)}
                     </BrandText>
+                  </OmniLink>
+                </View>
+                {isOwnerAndNotListed && (
+                  <View style={{ position: "relative", zIndex: 1000 }}>
+                    <Pressable
+                      onPress={() => onPressDropdownButton(dropdownRef)}
+                    >
+                      <SVG source={dotsCircleSVG} height={32} width={32} />
+                    </Pressable>
+                    {isDropdownOpen(dropdownRef) && (
+                      <View style={styles.optionContainer}>
+                        <DropdownOption
+                          onPress={closeOpenedDropdown}
+                          icon={octagonSVG}
+                          isComingSoon
+                          label="Set as Avatar"
+                        />
+                        <SpacerColumn size={0.5} />
+                        <DropdownOption
+                          onPress={closeOpenedDropdown}
+                          isComingSoon
+                          icon={gridSVG}
+                          label="List this NFT"
+                        />
+                        <SpacerColumn size={0.5} />
+                        <DropdownOption
+                          onPress={closeOpenedDropdown}
+                          icon={raffleSVG}
+                          isComingSoon
+                          label="Create Raffle with this NFT"
+                        />
+                        <SpacerColumn size={0.5} />
+                        <DropdownOption
+                          onPress={() => {
+                            closeOpenedDropdown();
+                            toggleTransferNFT();
+                          }}
+                          icon={sendSVG}
+                          label="Send & Transfer this NFT"
+                        />
+                        <SpacerColumn size={0.5} />
+                        <DropdownOption
+                          onPress={closeOpenedDropdown}
+                          icon={footerSVG}
+                          isComingSoon
+                          label="Put this NFT in the Rioters Footer"
+                        />
+                      </View>
+                    )}
                   </View>
-                </View>
-                <View style={{ position: "relative", zIndex: 1000 }}>
-                  <Pressable onPress={() => onPressDropdownButton(dropdownRef)}>
-                    <SVG source={dotsCircleSVG} height={32} width={32} />
-                  </Pressable>
-                  {isDropdownOpen(dropdownRef) && (
-                    <View style={styles.optionContainer}>
-                      <DropdownOption
-                        onPress={closeOpenedDropdown}
-                        icon={octagonSVG}
-                        isComingSoon
-                        label="Set as Avatar"
-                      />
-                      <SpacerColumn size={0.5} />
-                      <DropdownOption
-                        onPress={closeOpenedDropdown}
-                        isComingSoon
-                        icon={gridSVG}
-                        label="List this NFT"
-                      />
-                      <SpacerColumn size={0.5} />
-                      <DropdownOption
-                        onPress={closeOpenedDropdown}
-                        icon={raffleSVG}
-                        isComingSoon
-                        label="Create Raffle with this NFT"
-                      />
-                      <SpacerColumn size={0.5} />
-                      <DropdownOption
-                        onPress={() => {
-                          closeOpenedDropdown();
-                          toggleTransferNFT();
-                        }}
-                        icon={sendSVG}
-                        label="Send & Transfer this NFT"
-                      />
-                      <SpacerColumn size={0.5} />
-                      <DropdownOption
-                        onPress={closeOpenedDropdown}
-                        icon={footerSVG}
-                        isComingSoon
-                        label="Put this NFT in the Rioters Footer"
-                      />
-                    </View>
-                  )}
-                </View>
+                )}
               </View>
-              <ImageWithTextInsert
-                size={contentWidth}
-                imageURL={nft.imageUri}
-                textInsert={nft.textInsert}
-                style={{ marginTop: 15, marginBottom: 20, borderRadius: 12 }}
-              />
-              <BrandText
-                style={{
-                  fontSize: 14,
-                  marginBottom: 12,
+              <OmniLink
+                to={{
+                  screen: "NFTDetail",
+                  params: { id: nft.id },
                 }}
               >
-                {nft.name}
-              </BrandText>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
-              >
+                <ImageWithTextInsert
+                  size={contentWidth}
+                  imageURL={nft.imageUri}
+                  textInsert={nft.textInsert}
+                  style={{ marginTop: 15, marginBottom: 20, borderRadius: 12 }}
+                />
+                <BrandText
+                  style={{
+                    fontSize: 14,
+                    marginBottom: 12,
+                  }}
+                >
+                  {nft.name}
+                </BrandText>
                 <View
                   style={{
                     flexDirection: "row",
                     alignItems: "center",
+                    justifyContent: "space-between",
                   }}
                 >
-                  <NetworkIcon
-                    size={12}
-                    network={protobufNetworkToNetwork(nft.network)}
-                  />
-                  <BrandText
+                  <View
                     style={{
-                      fontSize: 12,
-                      marginLeft: 10,
+                      flexDirection: "row",
+                      alignItems: "center",
+                      flex: 1,
                     }}
                   >
-                    {nft.collectionName}
-                  </BrandText>
+                    <NetworkIcon size={12} networkId={nft.networkId} />
+                    <BrandText
+                      numberOfLines={1}
+                      style={{
+                        fontSize: 12,
+                        marginLeft: layout.padding_x1,
+                      }}
+                    >
+                      {nft.collectionName}
+                    </BrandText>
+                  </View>
                 </View>
-              </View>
+              </OmniLink>
             </View>
             <View
               style={{
@@ -247,6 +265,7 @@ export const NFTView: React.FC<{
                 flexDirection: "row",
                 justifyContent: "space-between",
                 alignItems: "center",
+                width: "100%",
               }}
             >
               <View
@@ -259,7 +278,7 @@ export const NFTView: React.FC<{
                   <>
                     <CurrencyIcon
                       size={24}
-                      networkId={process.env.TERITORI_NETWORK_ID || ""}
+                      networkId={nft.networkId}
                       denom={nft.denom}
                     />
                     {/* FIXME: should come from price denom */}
@@ -284,21 +303,29 @@ export const NFTView: React.FC<{
                   </BrandText>
                 )}
               </View>
+              <SpacerRow size={2} />
               {nft.isListed && (
-                <SecondaryButton
-                  size="XS"
-                  text={prettyPrice(
-                    process.env.TERITORI_NETWORK_ID || "",
-                    nft.price,
-                    nft.denom
-                  )}
-                  onPress={() => {}}
-                />
+                <View style={{ flex: 1 }}>
+                  <OmniLink
+                    to={{
+                      screen: "NFTDetail",
+                      params: { id: nft.id, openBuy: !isOwner },
+                    }}
+                  >
+                    <SecondaryButton
+                      size="XS"
+                      text={prettyPrice(nft.networkId, nft.price, nft.denom)}
+                      fullWidth
+                      numberOfLines={1}
+                      activeOpacity={1}
+                    />
+                  </OmniLink>
+                </View>
               )}
             </View>
           </View>
         </TertiaryBox>
-      </TouchableOpacity>
+      </View>
       <NFTTransferModal
         nft={nft}
         isVisible={isTransferNFTVisible}
@@ -326,8 +353,14 @@ const styles = StyleSheet.create({
 
 // using this because ellipizeMode seems broken
 const shortUserAddressFromID = (id: string, size: number) => {
-  if (id.startsWith("tori-")) {
-    return id.substring(5, 5 + size) + "..." + id.substring(id.length - size);
+  const [network] = parseUserId(id);
+  if (network) {
+    const prefixLen = network.idPrefix.length + 1;
+    return (
+      id.substring(prefixLen, prefixLen + size) +
+      "..." +
+      id.substring(id.length - size)
+    );
   }
   return id.substring(0, size) + "..." + id.substring(id.length - size);
 };

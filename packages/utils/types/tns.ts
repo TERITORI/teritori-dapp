@@ -1,6 +1,8 @@
+import { Metadata } from "../../contracts-clients/teritori-name-service/TeritoriNameService.types";
+
 export const defaultMetaData: Metadata = {
   image: "",
-  image_data: "",
+  public_profile_header: "",
   email: "",
   external_url: "",
   public_name: "",
@@ -11,22 +13,6 @@ export const defaultMetaData: Metadata = {
   keybase_id: "",
   validator_operator_address: "",
 };
-
-export interface Metadata {
-  contract_address?: string | null;
-  image: string | null;
-  image_data: string | null;
-  email: string | null;
-  external_url: string | null;
-  public_name: string | null;
-  public_bio: string | null;
-  twitter_id: string | null;
-  discord_id: string | null;
-  telegram_id: string | null;
-  keybase_id: string | null;
-  validator_operator_address: string | null;
-}
-
 // interface MintMsg {
 //   owner: string;
 //   token_id: string;
@@ -38,7 +24,7 @@ export interface MetadataWithTokenId extends Metadata {
   token_id: string;
 }
 
-export type SendFundFormType = {
+export type TNSSendFundsFormType = {
   comment: string;
   amount: string;
 };

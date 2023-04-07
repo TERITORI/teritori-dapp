@@ -1,11 +1,14 @@
-import { ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 import { Target } from "@nandorojo/anchor";
-import React, { useState } from "react";
+import { RouteProp, useRoute } from "@react-navigation/native";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 
+import { NFTAttributes } from "./NFTAttributes";
+import { CollapsablePiceHistory } from "./components/CollapsablePriceHistory";
 import starSVG from "../../../assets/icons/star.svg";
 import { useTransactionModals } from "../../context/TransactionModalsProvider";
 import { NFTInfo } from "../../screens/Marketplace/NFTDetailScreen";
+import { RootStackParamList } from "../../utils/navigation";
 import { neutral77, primaryColor } from "../../utils/style/colors";
 import {
   fontMedium14,
@@ -13,7 +16,7 @@ import {
   fontSemibold14,
   fontSemibold28,
 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
+import { layout, screenContentMaxWidth } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { ImageWithTextInsert } from "../ImageWithTextInsert";
 import { ActivityTable } from "../activity/ActivityTable";
@@ -24,9 +27,8 @@ import { NFTSellCard } from "../cards/NFTSellCard";
 import { CollapsableSection } from "../collapsable/CollapsableSection";
 import { CollectionInfoInline } from "../collections/CollectionInfoInline";
 import { TransactionModals } from "../modals/transaction/TransactionModals";
+import { SpacerColumn } from "../spacer";
 import { Tabs } from "../tabs/Tabs";
-import { NFTAttributes } from "./NFTAttributes";
-import { CollapsablePiceHistory } from "./components/CollapsablePriceHistory";
 
 const mainInfoTabItems = {
   about: {
@@ -44,11 +46,16 @@ const mainInfoTabItems = {
 export const NFTMainInfo: React.FC<{
   nftId: string;
   nftInfo?: NFTInfo;
-  buy: () => Promise<ExecuteResult | undefined>;
-  sell: (price: string) => Promise<ExecuteResult | undefined>;
-  cancelListing: () => Promise<ExecuteResult | undefined>;
-}> = ({ nftId, nftInfo, buy, sell, cancelListing }) => {
+  buy: () => Promise<string | undefined>;
+  showMarketplace: boolean;
+  sell: (
+    price: string,
+    denom: string | undefined
+  ) => Promise<string | undefined>;
+  cancelListing: () => Promise<string | undefined>;
+}> = ({ nftId, nftInfo, buy, sell, cancelListing, showMarketplace }) => {
   const { openTransactionModals } = useTransactionModals();
+  const { params } = useRoute<RouteProp<RootStackParamList, "NFTDetail">>();
 
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof mainInfoTabItems>("about");
@@ -115,6 +122,22 @@ export const NFTMainInfo: React.FC<{
                 {nftInfo?.ownerAddress}
               </BrandText>
             </View>
+            {nftInfo?.breedingsAvailable !== undefined && (
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  marginTop: 6,
+                }}
+              >
+                <BrandText style={[fontSemibold12, { color: neutral77 }]}>
+                  Breedings available
+                </BrandText>
+                <BrandText style={fontMedium14} numberOfLines={1}>
+                  {nftInfo.breedingsAvailable}
+                </BrandText>
+              </View>
+            )}
           </View>
         );
       default:
@@ -122,91 +145,103 @@ export const NFTMainInfo: React.FC<{
     }
   };
 
+  useEffect(() => {
+    if (params.openBuy) openTransactionModals();
+  }, [openTransactionModals, params.openBuy]);
+
   return (
-    <View
-      style={{
-        flexDirection: "row",
-        width: "100%",
-        flexWrap: "wrap",
-        justifyContent: "center",
-      }}
-    >
-      {/*---- Image NFT */}
-      <TertiaryBox
-        width={464}
-        height={464}
-        style={{ marginRight: 28, marginBottom: 40 }}
+    <>
+      <View
+        style={{
+          flexDirection: "row",
+          width: "100%",
+          flexWrap: "wrap",
+          justifyContent: "center",
+        }}
       >
-        <ImageWithTextInsert
-          imageURL={nftInfo?.imageURL}
-          textInsert={nftInfo?.textInsert}
-          size={462}
-          style={{ borderRadius: 8 }}
-        />
-      </TertiaryBox>
-      {/*---- Info NFT */}
-      <View style={{ maxWidth: 600 }}>
-        <BrandText style={[fontSemibold28, { marginBottom: 12 }]}>
-          {nftInfo?.name}
-        </BrandText>
+        {/*---- Image NFT */}
+        <TertiaryBox
+          width={464}
+          height={464}
+          style={{ marginRight: 28, marginBottom: 40 }}
+        >
+          <ImageWithTextInsert
+            imageURL={nftInfo?.imageURL}
+            textInsert={nftInfo?.textInsert}
+            size={462}
+            style={{ borderRadius: 8 }}
+          />
+        </TertiaryBox>
+        {/*---- Info NFT */}
+        <View style={{ maxWidth: 600 }}>
+          <BrandText style={[fontSemibold28, { marginBottom: 12 }]}>
+            {nftInfo?.name}
+          </BrandText>
 
-        <CollectionInfoInline
-          imageSource={{ uri: nftInfo?.collectionImageURL || "" }}
-          name={nftInfo?.collectionName}
-        />
-
-        {nftInfo?.canSell && (
-          <NFTSellCard
-            style={{ marginTop: 24, marginBottom: 40 }}
-            onPressSell={sell}
+          <CollectionInfoInline
+            imageSource={{ uri: nftInfo?.collectionImageURL || "" }}
+            name={nftInfo?.collectionName}
+            id={nftInfo?.collectionId}
           />
-        )}
-        {nftInfo?.isListed && !nftInfo?.isOwner && (
-          <NFTPriceBuyCard
-            style={{ marginTop: 24, marginBottom: 40 }}
-            onPressBuy={openTransactionModals}
-            price={nftInfo.price}
-            priceDenom={nftInfo.priceDenom}
+          {showMarketplace ? (
+            <>
+              {nftInfo?.canSell && (
+                <NFTSellCard
+                  style={{ marginTop: 24, marginBottom: 40 }}
+                  onPressSell={sell}
+                  nftInfo={nftInfo}
+                />
+              )}
+              {nftInfo?.isListed && !nftInfo.isOwner && (
+                <NFTPriceBuyCard
+                  nftInfo={nftInfo}
+                  style={{ marginTop: 24, marginBottom: 40 }}
+                  onPressBuy={openTransactionModals}
+                />
+              )}
+              {nftInfo?.isListed && nftInfo.isOwner && (
+                <NFTCancelListingCard
+                  nftInfo={nftInfo}
+                  style={{ marginTop: 24, marginBottom: 40 }}
+                  onPressCancel={cancelListing}
+                />
+              )}
+              {!nftInfo?.isListed && !nftInfo?.isOwner && (
+                <View style={{ marginTop: 24, marginBottom: 40 }}>
+                  <BrandText style={{ color: neutral77 }}>Not listed</BrandText>
+                </View>
+              )}
+            </>
+          ) : (
+            <SpacerColumn size={2} />
+          )}
+          <Tabs
+            onSelect={setSelectedTab}
+            items={mainInfoTabItems}
+            selected={selectedTab}
+            borderColorTabSelected={primaryColor}
           />
-        )}
-        {nftInfo?.isListed && nftInfo?.isOwner && (
-          <NFTCancelListingCard
-            style={{ marginTop: 24, marginBottom: 40 }}
-            price={nftInfo.price}
-            priceDenom={nftInfo.priceDenom}
-            onPressCancel={cancelListing}
-          />
-        )}
-        {!nftInfo?.isListed && !nftInfo?.isOwner && (
-          <View style={{ marginTop: 24, marginBottom: 40 }}>
-            <BrandText style={{ color: neutral77 }}>Not listed</BrandText>
-          </View>
-        )}
-        <Tabs
-          onSelect={setSelectedTab}
-          items={mainInfoTabItems}
-          selected={selectedTab}
-          borderColorTabSelected={primaryColor}
-        />
-        {/*TODO: 3 View to display depending on the nftMainInfoTabItems isSelected item*/}
-        {/*TODO: About  = Big text*/}
-        <SelectedTabItemRendering />
+          {/*TODO: 3 View to display depending on the nftMainInfoTabItems isSelected item*/}
+          {/*TODO: About  = Big text*/}
+          <SelectedTabItemRendering />
+        </View>
       </View>
-      <Target style={styles.collapsableContainer} name="price-history">
-        <CollapsablePiceHistory />
-      </Target>
-      <View style={styles.collapsableContainer}>
-        <Target name="activity">
-          <CollapsableSection icon={starSVG} title="Activity">
-            <ActivityTable nftId={nftId} />
-          </CollapsableSection>
+
+      {showMarketplace && (
+        <Target style={styles.collapsableContainer} name="price-history">
+          <CollapsablePiceHistory nftId={nftId} />
         </Target>
-      </View>
+      )}
+      <Target name="activity" style={styles.collapsableContainer}>
+        <CollapsableSection icon={starSVG} title="Activity" isExpandedByDefault>
+          <ActivityTable nftId={nftId} />
+        </CollapsableSection>
+      </Target>
 
       {/* ====== "Buy this NFT" three modals*/}
       <TransactionModals
         startTransaction={buy}
-        nftInfo={nftInfo}
+        nftId={nftId}
         textComponentPayment={
           <BrandText style={fontSemibold14}>
             <BrandText style={[fontSemibold14, { color: neutral77 }]}>
@@ -234,7 +269,7 @@ export const NFTMainInfo: React.FC<{
           </BrandText>
         }
       />
-    </View>
+    </>
   );
 };
 
@@ -245,6 +280,7 @@ const styles = StyleSheet.create({
   },
   collapsableContainer: {
     width: "100%",
+    maxWidth: screenContentMaxWidth,
     marginBottom: layout.padding_x2,
   },
 });

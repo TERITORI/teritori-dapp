@@ -1,5 +1,5 @@
 import React from "react";
-import { Image, useWindowDimensions, View } from "react-native";
+import { Image, Linking, View } from "react-native";
 
 import defaultUserProfileBannerPNG from "../../../assets/default-images/default-user-profile-banner.png";
 import discordSVG from "../../../assets/icons/discord.svg";
@@ -7,35 +7,47 @@ import teritoriSVG from "../../../assets/icons/networks/teritori.svg";
 import shareSVG from "../../../assets/icons/share.svg";
 import twitterSVG from "../../../assets/icons/twitter.svg";
 import websiteSVG from "../../../assets/icons/website.svg";
-import userImageFrameSVG from "../../../assets/user-image-frame.svg";
-import { Metadata } from "../../contracts-clients/teritori-name-service/TeritoriNameService.types";
+import { useNSUserInfo } from "../../hooks/useNSUserInfo";
+import { parseUserId } from "../../networks";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
-import { useAppNavigation } from "../../utils/navigation";
-import { neutral00, neutral77, withAlpha } from "../../utils/style/colors";
-import { fontSemibold14, fontSemibold20 } from "../../utils/style/fonts";
+import { DEFAULT_NAME } from "../../utils/social-feed";
+import { neutral00, neutral55, neutral77 } from "../../utils/style/colors";
+import {
+  fontBold16,
+  fontMedium14,
+  fontSemibold14,
+} from "../../utils/style/fonts";
+import { layout } from "../../utils/style/layout";
+import { tinyAddress } from "../../utils/text";
 import { BrandText } from "../BrandText";
+import { useCopyToClipboard } from "../CopyToClipboard";
 import { CopyToClipboardSecondary } from "../CopyToClipboardSecondary";
-import { SVG } from "../SVG";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { SecondaryButtonOutline } from "../buttons/SecondaryButtonOutline";
 import { SocialButton } from "../buttons/SocialButton";
 import { SocialButtonSecondary } from "../buttons/SocialButtonSecondary";
+import { ProfileButton } from "../hub/ProfileButton";
+import { AvatarWithFrame } from "../images/AvatarWithFrame";
 
 export const UPPIntro: React.FC<{
   userId: string;
-  metadata?: Metadata & { tokenId: string };
-}> = ({ userId, metadata }) => {
-  const { width } = useWindowDimensions();
+  isUserOwner?: boolean;
+}> = ({ userId, isUserOwner }) => {
+  const { metadata, loading } = useNSUserInfo(userId);
+  const { copyToClipboard } = useCopyToClipboard();
   const socialButtonStyle = { marginHorizontal: 6, marginVertical: 6 };
-  const navigation = useAppNavigation();
-  const name = (metadata?.tokenId || "").replace(process.env.TLD || "", "");
+  const [, userAddress] = parseUserId(userId);
 
   return (
     <>
       <TertiaryBox fullWidth height={320}>
         {/* Banner */}
         <Image
-          source={defaultUserProfileBannerPNG}
+          source={{
+            uri: ipfsURLToHTTPURL(
+              metadata?.public_profile_header || defaultUserProfileBannerPNG
+            ),
+          }}
           style={{ height: "100%", width: "100%", borderRadius: 7 }}
         />
 
@@ -50,107 +62,104 @@ export const UPPIntro: React.FC<{
             right: 14,
           }}
         >
-          {metadata?.external_url && (
+          {!!metadata?.external_url && (
             <SocialButton
               iconSvg={websiteSVG}
               text="Website"
               style={socialButtonStyle}
+              onPress={() => Linking.openURL(metadata.external_url || "")}
             />
           )}
-          {metadata?.discord_id && (
+          {!!metadata?.discord_id && (
             <SocialButton
               iconSvg={discordSVG}
               text="Discord"
               style={socialButtonStyle}
+              onPress={() => Linking.openURL(metadata.discord_id || "")}
             />
           )}
-          {metadata?.twitter_id && (
+          {!!metadata?.twitter_id && (
             <SocialButton
               iconSvg={twitterSVG}
               text="Twitter"
               style={socialButtonStyle}
+              onPress={() => Linking.openURL(metadata.twitter_id || "")}
             />
           )}
-          {width > 670 &&
-          (metadata?.twitter_id ||
-            metadata?.discord_id ||
-            metadata?.external_url) ? (
-            <View
-              style={[
-                {
-                  width: 1,
-                  height: 24,
-                  backgroundColor: withAlpha("#FFFFFF", 0.15),
-                },
-                socialButtonStyle,
-              ]}
-            />
-          ) : null}
+          {/* This Share button link works only on web */}
           <SocialButtonSecondary
             style={socialButtonStyle}
             iconSvg={shareSVG}
             text="Share"
+            onPress={() => copyToClipboard(window.location.href, "URL copied")}
           />
         </View>
-        {/* Absolute edit button */}
-        <SecondaryButtonOutline
-          size="M"
-          text="Edit profile"
-          backgroundColor={neutral00}
-          onPress={() => navigation.navigate("TNSUpdateName", { name })}
-          touchableStyle={{ position: "absolute", right: 20, bottom: -76 }}
-        />
-
-        <View
+        {isUserOwner ? (
+          <ProfileButton
+            style={{ position: "absolute", right: 0, bottom: -80 }}
+            isEdit
+          />
+        ) : (
+          <SecondaryButtonOutline
+            touchableStyle={{ position: "absolute", right: 0, bottom: -80 }}
+            text="Follow this Teritori"
+            size="XL"
+            backgroundColor={neutral00}
+            disabled
+          />
+        )}
+        <AvatarWithFrame
+          isLoading={loading}
+          image={metadata?.image}
           style={{
             position: "absolute",
             top: 217,
             left: 16,
           }}
-        >
-          {/* User image */}
-          <Image
-            source={{ uri: ipfsURLToHTTPURL(metadata?.image || "") }}
-            style={{
-              borderRadius: 24,
-              height: 132,
-              width: 132,
-              position: "absolute",
-              top: 32,
-              left: 32,
-              zIndex: 2,
-            }}
-          />
-          <SVG source={userImageFrameSVG} width={196} height={196} />
-          {/* Pseudo and bio */}
-          <BrandText style={[fontSemibold20, { marginTop: 10 }]}>
-            {metadata?.tokenId || ""}
-          </BrandText>
-          <BrandText
-            numberOfLines={6}
-            style={[
-              fontSemibold14,
-              {
-                color: neutral77,
-                marginTop: 12,
-                marginBottom: 20,
-                maxWidth: 1000,
-              },
-            ]}
-          >
-            {metadata?.public_bio || ""}
-          </BrandText>
-        </View>
+          size="XL"
+        />
       </TertiaryBox>
-
       <View
         style={{
           flexDirection: "row",
-          justifyContent: "flex-end",
+          justifyContent: "space-between",
           alignItems: "center",
           marginTop: 100,
         }}
       >
+        <View>
+          {/* Pseudo and bio */}
+          {metadata?.tokenId ? (
+            <>
+              <BrandText style={[fontBold16]}>
+                {metadata?.public_name}
+              </BrandText>
+              <BrandText
+                style={[fontMedium14, { color: neutral55, marginTop: 2 }]}
+              >
+                @{metadata.tokenId}
+              </BrandText>
+            </>
+          ) : (
+            <>
+              <BrandText style={[fontBold16]}>{DEFAULT_NAME}</BrandText>
+              <BrandText
+                style={[fontMedium14, { color: neutral55, marginTop: 2 }]}
+              >
+                @{userAddress}
+              </BrandText>
+            </>
+          )}
+          <BrandText
+            style={[
+              fontMedium14,
+              { maxWidth: 735, marginTop: layout.padding_x1 },
+            ]}
+            numberOfLines={6}
+          >
+            {metadata?.public_bio}
+          </BrandText>
+        </View>
         {/* Stats and public address */}
         <TertiaryBox mainContainerStyle={{ padding: 16 }}>
           <View
@@ -162,7 +171,7 @@ export const UPPIntro: React.FC<{
             }}
           >
             <BrandText style={[fontSemibold14, { color: neutral77 }]}>
-              Followers
+              Coming Soon
             </BrandText>
             <BrandText style={[fontSemibold14]}>21.5k</BrandText>
           </View>
@@ -175,13 +184,14 @@ export const UPPIntro: React.FC<{
             }}
           >
             <BrandText style={[fontSemibold14, { color: neutral77 }]}>
-              Following
+              Coming Soon
             </BrandText>
             <BrandText style={[fontSemibold14]}>36</BrandText>
           </View>
 
           <CopyToClipboardSecondary
-            text={userId.replace("tori-", "")}
+            displayedText={tinyAddress(userAddress, 19)}
+            text={userAddress}
             iconSVG={teritoriSVG}
           />
         </TertiaryBox>

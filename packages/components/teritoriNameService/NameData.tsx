@@ -1,32 +1,32 @@
 import React from "react";
-import { View } from "react-native";
+import { View, ViewStyle } from "react-native";
 
-import { neutral77 } from "../../utils/style/colors";
-import {
-  imageDisplayLabel,
-  prettyTokenData,
-  publicNameDisplayLabel,
-} from "../../utils/teritori";
+import { neutral17, neutral77 } from "../../utils/style/colors";
+import { imageDisplayLabel, prettyTokenData } from "../../utils/teritori";
 import { BrandText } from "../BrandText";
 import { ExternalLink } from "../ExternalLink";
 import { TertiaryBox } from "../boxes/TertiaryBox";
-import { NameAndTldText } from "./NameAndTldText";
 
 export const NameData: React.FC<{
   token: any;
   name: string;
-}> = ({ token, name }) => {
+  style?: ViewStyle;
+}> = ({ token, name, style }) => {
   const width = 396;
 
   return (
     <TertiaryBox
       width={width}
-      mainContainerStyle={{
-        alignItems: "flex-start",
-        justifyContent: "flex-start",
-        paddingHorizontal: 24,
-        paddingVertical: 24,
-      }}
+      mainContainerStyle={[
+        {
+          alignItems: "flex-start",
+          justifyContent: "flex-start",
+          paddingHorizontal: 24,
+          paddingVertical: 24,
+        },
+      ]}
+      style={style}
+      squaresBackgroundColor={neutral17}
     >
       {token ? (
         <>
@@ -61,11 +61,9 @@ export const NameData: React.FC<{
                     {data.displayLabel}
                   </BrandText>
                   {/*---- We want some style depending on the data type*/}
-                  {data.displayLabel === publicNameDisplayLabel ? (
-                    <NameAndTldText nameAndTldStr={data.value} />
-                  ) : data.displayLabel === imageDisplayLabel ? (
-                    // TODO: Gradient text blue-green
+                  {data.displayLabel === imageDisplayLabel ? (
                     <ExternalLink
+                      gradientType="blue"
                       externalUrl={data.value}
                       style={{ letterSpacing: -(20 * 0.04) }}
                       numberOfLines={1}

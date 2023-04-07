@@ -48,26 +48,31 @@ The apps are in `dist/`
 **[Teritori dApp](https://www.teritori.com/)** is a all-in-one application providing various coordination & communication features for humans. 
 In the future (v3) it will also be a privacy first messaging application built on top of [the Berty Protocol](https://berty.tech/docs/protocol/).
 
-- *Genesis Era - Beta (Web)* :
+- *Genesis Era - Alpha (Web only)* :
     - Multichain NFT Marketplace v0.1 (Teritori Network first)
-    - The R!OT Play2Earn Experience: "Genesis Collection"
     - Staking $TORI Tokens 
     - Teritori Chain Governance (& Bounty Program)
     - Teritori Name Service
-    - Rioters footer
+    - Rioters footer v0.1
+    - Social Feed v0.1
+    - The R!OT Play2Earn Experience: "Genesis Collection" v0.1
+    - Org Deployer v0.1
+    - Multisig Wallet v0.1
+    
+On this Genesis Era, core team will gather various tools, dapps, and open source code from most serious Cosmos contributors, in a Teritori User Experience, to onboard new users into the state of the art. Team is at the same time paralelizing its development and re-building this 'state of the art' code using Gnolang. This allow teritori-core team #1 to both start shipping tools quickly to community and prepare the future proof approach with a deep state of the art expertise.
 
-- *Enter the dApp - Desktop v1*
-    - Community governed Launchpad for NFT Launches
+- *Enter the dApp - Desktop v1* 
+    - Multichain Launchpad for NFT Launches
     - Multichain NFT Marketplace (Teritori Network, Cosmos chains, Solana, Ethereum)
-    - Upgrading the R!OT Play2Earn Experience: "Defend the Teritori"
-    - dApp Store integrating dApps from Cosmos Ecosystem
+    - Upgrading the R!OT Play2Earn Experience: "Defend the Teritori" v1
+    - dApp Store integrating dApps from Cosmos Ecosystem (Juno, Osmosis, ...)
 
-- *Enter the future - Desktop & Mobile v3*
-    - Public Profiles (users & companies) & Social Feed
+- *Enter the future - Desktop & Mobile v1.1*
     - P2P Communication & Token Gated spaces using Berty Protocol
     - No internet connection is required to discuss with friends in a local area, thanks to [BLE technology](https://en.wikipedia.org/wiki/Bluetooth_Low_Energy) and [mDNS](https://en.wikipedia.org/wiki/Multicast_DNS).
-    - Freelance Service Marketplace
-    - dApp Store integrating dApps from Cosmos Ecosystem (with a frontier mode, allowing permission less listing)
+    - Pathwar : Cybersecurity Learning Platform (Proof-of-Learn, Learn-to-earn, Sec Bounties)
+    - Freelance Service Marketplace 
+    - dApp Store integrating dApps from Cosmos & Ethereum Ecosystem (with a frontier mode, allowing permission less listing)
 
 
 

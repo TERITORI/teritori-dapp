@@ -1,10 +1,9 @@
 import { ScrollView, Target } from "@nandorojo/anchor";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { View } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
-import { BackTo } from "../../components/navigation/BackTo";
 import { NFTMainInfo } from "../../components/nftDetails/NFTMainInfo";
 import { SpacerColumn } from "../../components/spacer";
 import { Tabs } from "../../components/tabs/Tabs";
@@ -12,40 +11,27 @@ import {
   initialToastError,
   useFeedbacks,
 } from "../../context/FeedbacksProvider";
-import {
-  TeritoriNftVaultClient,
-  TeritoriNftVaultQueryClient,
-} from "../../contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
+import { Wallet } from "../../context/WalletsProvider";
+import { TeritoriNftVaultClient } from "../../contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
+import { NFTVault__factory } from "../../evm-contracts-clients/teritori-nft-vault/NFTVault__factory";
 import { useCancelNFTListing } from "../../hooks/useCancelNFTListing";
+import { useMaxResolution } from "../../hooks/useMaxResolution";
+import { useMintEnded } from "../../hooks/useMintEnded";
 import { useNFTInfo } from "../../hooks/useNFTInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useSellNFT } from "../../hooks/useSellNFT";
 import {
-  getNonSigningCosmWasmClient,
-  getSigningCosmWasmClient,
-} from "../../utils/keplr";
-import { ScreenFC, useAppNavigation } from "../../utils/navigation";
-import { layout, screenContentMaxWidth } from "../../utils/style/layout";
-import { vaultContractAddress } from "../../utils/teritori";
+  NetworkKind,
+  getCollectionId,
+  getKeplrSigningCosmWasmClient,
+  mustGetCosmosNetwork,
+  mustGetEthereumNetwork,
+  parseNftId,
+} from "../../networks";
+import { getMetaMaskEthereumSigner } from "../../utils/ethereum";
+import { ScreenFC } from "../../utils/navigation";
+import { setDocumentTitle } from "../../utils/setDocumentTitle";
 import { NFTAttribute } from "../../utils/types/nft";
-
-const screenTabItems = {
-  main: {
-    name: "Main info",
-    scrollTo: "main-info",
-  },
-  price: {
-    name: "Price history",
-    scrollTo: "price-history",
-  },
-  activity: {
-    name: "Activity",
-    scrollTo: "activity",
-  },
-  more: {
-    name: "More from collection",
-  },
-};
 
 export interface NFTInfo {
   name: string;
@@ -65,113 +51,128 @@ export interface NFTInfo {
   collectionName: string;
   textInsert?: string;
   collectionImageURL: string;
+  mintDenom: string;
+  royalty: number;
+  breedingsAvailable?: number;
+  networkId: string;
+  collectionId: string;
 }
 
 const Content: React.FC<{
   id: string;
-  setCollectionInfo: (info: CollectionInfoSmall) => void;
-}> = ({ id, setCollectionInfo }) => {
+}> = ({ id }) => {
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof screenTabItems>("main");
   const { setToastError } = useFeedbacks();
-  const { setLoadingFullScreen } = useFeedbacks();
   const wallet = useSelectedWallet();
-  const { info, refresh, notFound, loading } = useNFTInfo(id, wallet?.address);
+  const { info, refresh, notFound } = useNFTInfo(id, wallet?.userId);
+  setDocumentTitle(`NFT: ${info?.name}`);
+  const { width } = useMaxResolution({ noMargin: true });
+
+  const [network, collectionAddress] = parseNftId(id);
+
+  const collectionId = getCollectionId(network?.id, collectionAddress);
+  const mintEnded = useMintEnded(collectionId);
+  const showMarketplace =
+    (network?.secondaryDuringMintList || []).includes(collectionAddress) ||
+    (mintEnded !== undefined && mintEnded);
+
+  const screenTabItems = {
+    main: {
+      name: "Main info",
+      scrollTo: "main-info",
+    },
+    price: {
+      name: "Price history",
+      scrollTo: "price-history",
+      disabled: !showMarketplace,
+    },
+    activity: {
+      name: "Activity",
+      scrollTo: "activity",
+    },
+    more: {
+      name: "More from collection",
+      disabled: true,
+    },
+  };
 
   // Query the Vault client to buy the NFT and returns the transaction reply
-  const buy = useCallback(async () => {
+  const handleBuy = useCallback(async () => {
     if (!wallet?.connected || !wallet.address || !info?.nftAddress) {
       return;
     }
+
+    let buyFunc: CallableFunction | null = null;
+    switch (network?.kind) {
+      case NetworkKind.Cosmos:
+        buyFunc = teritoriBuy;
+        break;
+      case NetworkKind.Ethereum:
+        buyFunc = ethereumBuy;
+        break;
+    }
+
+    if (!buyFunc) {
+      setToastError({
+        title: "Error",
+        message: `Unsupported network kind ${network?.kind}`,
+      });
+      return;
+    }
+
     setToastError(initialToastError);
     try {
-      const cosmwasmClient = await getNonSigningCosmWasmClient();
-      const vaultClient = new TeritoriNftVaultQueryClient(
-        cosmwasmClient,
-        vaultContractAddress
-      );
-      const ownerAddress = await vaultClient.nftOwnerInfo({
-        nftContractAddr: info.nftAddress,
-        nftTokenId: info.tokenId,
-      });
-      const vaultInfo = await vaultClient.nftInfo({
-        nftContractAddr: info.nftAddress,
-        nftTokenId: info.tokenId,
-        wallet: ownerAddress,
-      });
-      const signingCosmwasmClient = await getSigningCosmWasmClient();
-      const signingVaultClient = new TeritoriNftVaultClient(
-        signingCosmwasmClient,
-        wallet.address,
-        vaultContractAddress
-      );
-      const reply = await signingVaultClient.buy(
-        { nftContractAddr: info.nftAddress, nftTokenId: info.tokenId },
-        "auto",
-        undefined,
-        [
-          {
-            amount: vaultInfo.amount,
-            denom: vaultInfo.denom,
-          },
-        ]
-      );
-      console.log("buy", reply);
+      const txHash = await buyFunc(wallet, info);
+
+      console.log("buy", txHash);
       refresh();
-      return reply;
-    } catch (err) {
-      console.error(err);
-      if (err instanceof Error) {
+
+      return txHash;
+    } catch (e) {
+      console.error(e);
+      if (e instanceof Error) {
         setToastError({
           title: "Failed to buy NFT",
-          message: err.message,
+          message: e.message,
         });
-        return undefined;
       }
     }
-  }, [wallet, info]);
+  }, [info, network?.kind, refresh, setToastError, wallet]);
 
-  const sell = useSellNFT();
+  const sell = useSellNFT(network?.kind);
 
   const handleSell = useCallback(
-    async (price: string) => {
+    async (price: string, denom: string | undefined) => {
       if (!info) {
         return;
       }
-      const reply = await sell(info.nftAddress, info.tokenId, price);
-      console.log(reply);
+      const txHash = await sell(info.nftAddress, info.tokenId, price, denom);
+      console.log("txHash:", txHash);
       refresh();
-      return reply;
+      return txHash;
     },
     [info, sell, refresh]
   );
 
   const cancelListing = useCancelNFTListing(
+    network?.id,
     info?.nftAddress || "",
     info?.tokenId || ""
   );
 
   const handleCancelListing = useCallback(async () => {
-    const reply = await cancelListing();
-    console.log(reply);
+    const txHash = await cancelListing();
+    console.log("txHash:", txHash);
     refresh();
-    return reply;
+    return txHash;
   }, [cancelListing, refresh]);
 
-  // Used to send Collection name and mintAddress to the parent ScreenContainer (BackTo)
-  useEffect(() => {
-    setCollectionInfo({
-      name: info?.collectionName || "",
-      mintAddress: info?.mintAddress || "",
-    });
-  }, [info?.mintAddress]);
-
-  // Sync loadingFullScreen
-  useEffect(() => {
-    setLoadingFullScreen(loading);
-  }, [loading]);
-
-  if (!id.startsWith("tori-")) {
+  if (
+    ![NetworkKind.Cosmos, NetworkKind.Ethereum].includes(
+      network?.kind || NetworkKind.Unknown
+    )
+  ) {
     return (
       <View style={{ alignItems: "center", width: "100%", marginTop: 40 }}>
         <BrandText>Network not supported</BrandText>
@@ -190,26 +191,24 @@ const Content: React.FC<{
     return (
       <View style={{ flex: 1 }}>
         <ScrollView
+          style={{ width: "100%" }}
           stickyHeaderIndices={[0]}
           contentContainerStyle={{
             width: "100%",
             alignItems: "center",
           }}
         >
-          <View
-            style={{ backgroundColor: "black", width: screenContentMaxWidth }}
-          >
+          <View style={{ backgroundColor: "black", width }}>
             <Tabs
               items={screenTabItems}
               selected={selectedTab}
               style={{
-                height: 40,
+                height: 60,
                 justifyContent: "flex-end",
-                marginTop: layout.padding_x2_5,
                 width: "100%",
               }}
+              tabContainerStyle={{ height: 60 }}
               onSelect={setSelectedTab}
-              hideSelector
             />
           </View>
 
@@ -219,10 +218,11 @@ const Content: React.FC<{
 
           <NFTMainInfo
             nftId={id}
-            nftInfo={info}
-            buy={buy}
+            nftInfo={info || undefined}
+            buy={handleBuy}
             sell={handleSell}
             cancelListing={handleCancelListing}
+            showMarketplace={showMarketplace}
           />
           <SpacerColumn size={6} />
         </ScrollView>
@@ -231,39 +231,74 @@ const Content: React.FC<{
   }
 };
 
-// Just name and mintAddress
-type CollectionInfoSmall = {
-  name: string;
-  mintAddress: string;
-};
-
 export const NFTDetailScreen: ScreenFC<"NFTDetail"> = ({
   route: {
     params: { id },
   },
 }) => {
-  const navigation = useAppNavigation();
+  // needed for emoji
+  id = decodeURIComponent(id);
 
-  const [collectionInfo, setCollectionInfo] = useState<CollectionInfoSmall>();
+  const [network] = parseNftId(id);
 
   return (
     <ScreenContainer
+      forceNetworkId={network?.id}
+      fullWidth
+      footerChildren={<></>}
       noScroll
       noMargin
-      headerChildren={
-        collectionInfo?.mintAddress ? (
-          <BackTo
-            label={collectionInfo.name}
-            onPress={() =>
-              navigation.navigate("Collection", {
-                id: id.split("-").slice(0, -1).join("-"),
-              })
-            }
-          />
-        ) : undefined
-      }
     >
-      <Content key={id} id={id} setCollectionInfo={setCollectionInfo} />
+      <Content key={id} id={id} />
     </ScreenContainer>
   );
+};
+
+const teritoriBuy = async (wallet: Wallet, info: NFTInfo) => {
+  const network = mustGetCosmosNetwork(info.networkId);
+  if (!network.vaultContractAddress) {
+    throw new Error("network not supported");
+  }
+  const signingCosmwasmClient = await getKeplrSigningCosmWasmClient(network.id);
+  const signingVaultClient = new TeritoriNftVaultClient(
+    signingCosmwasmClient,
+    wallet.address,
+    network.vaultContractAddress
+  );
+  const tx = await signingVaultClient.buy(
+    { nftContractAddr: info.nftAddress, nftTokenId: info.tokenId },
+    "auto",
+    undefined,
+    [
+      {
+        amount: info.price,
+        denom: info.priceDenom,
+      },
+    ]
+  );
+  return tx.transactionHash;
+};
+
+const ethereumBuy = async (wallet: Wallet, nftInfo: NFTInfo) => {
+  const network = mustGetEthereumNetwork(nftInfo.networkId);
+  const signer = await getMetaMaskEthereumSigner(network, wallet.address);
+  if (!signer) {
+    throw Error("Unable to get signer");
+  }
+
+  const vaultClient = NFTVault__factory.connect(
+    network.vaultContractAddress,
+    signer
+  );
+
+  const { maxFeePerGas, maxPriorityFeePerGas } = await signer.getFeeData();
+  const tx = await vaultClient.buyNFT(nftInfo.nftAddress, nftInfo.tokenId, {
+    maxFeePerGas: maxFeePerGas?.toNumber(),
+    maxPriorityFeePerGas: maxPriorityFeePerGas?.toNumber(),
+    value: nftInfo.price,
+  });
+
+  await tx.wait();
+
+  return tx.hash;
 };

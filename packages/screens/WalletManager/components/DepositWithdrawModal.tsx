@@ -10,7 +10,6 @@ import arrowDivideSVG from "../../../../assets/icons/arrow-divide.svg";
 import { BrandText } from "../../../components/BrandText";
 import { NetworkIcon } from "../../../components/NetworkIcon";
 import { SVG } from "../../../components/SVG";
-import { tinyAddress } from "../../../components/WalletSelector";
 import { MaxButton } from "../../../components/buttons/MaxButton";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
@@ -20,16 +19,17 @@ import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useBalances } from "../../../hooks/useBalances";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import {
+  getCosmosNetwork,
   getIBCCurrency,
   getKeplrSigningStargateClient,
   getNativeCurrency,
   getNetwork,
   keplrCurrencyFromNativeCurrencyInfo,
 } from "../../../networks";
-import { neutral77 } from "../../../utils/style/colors";
-import { fontSemibold14 } from "../../../utils/style/fonts";
+import { neutral77, primaryColor } from "../../../utils/style/colors";
+import { fontSemibold13, fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { capitalize } from "../../../utils/text";
+import { capitalize, tinyAddress } from "../../../utils/text";
 import { TransactionForm } from "../types";
 
 type DepositModalProps = {
@@ -105,14 +105,19 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
   ).toString();
 
   return (
-    <ModalBase visible={isVisible} onClose={onClose} Header={ModalHeader}>
+    <ModalBase
+      visible={isVisible}
+      onClose={onClose}
+      Header={ModalHeader}
+      width={460}
+    >
       <View style={styles.container}>
         <BrandText style={[fontSemibold14, styles.selfCenter]}>
           {capitalize(variation)} {nativeTargetCurrency?.displayName}
         </BrandText>
         <SpacerColumn size={1.5} />
         <View style={[styles.rowCenter, styles.w100, { zIndex: 2 }]}>
-          <View style={[styles.jcCenter, { zIndex: 2 }]}>
+          <View style={[styles.jcCenter, { zIndex: 2, flex: 1 }]}>
             <View style={[styles.rowAllCenter, { zIndex: 2 }]}>
               <NetworkIcon size={64} networkId={sourceNetworkId || "unknown"} />
             </View>
@@ -126,7 +131,7 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
               variant="labelOutside"
               name="fromAddress"
               label=""
-              defaultValue={tinyAddress(fromAccount, 15)}
+              defaultValue={tinyAddress(fromAccount, 19)}
               rules={{ required: true }}
               disabled
             />
@@ -138,7 +143,7 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
           </View>
           <SpacerRow size={1} />
 
-          <View style={styles.jcCenter}>
+          <View style={[styles.jcCenter, { flex: 1 }]}>
             <View style={[styles.rowAllCenter, { zIndex: 2 }]}>
               <NetworkIcon
                 size={64}
@@ -154,7 +159,7 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
               control={control}
               variant="labelOutside"
               name="toAddress"
-              defaultValue={tinyAddress(toAccount, 15)}
+              defaultValue={tinyAddress(toAccount, 19)}
               label=""
               rules={{ required: true }}
               disabled
@@ -171,7 +176,14 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
             currency={keplrCurrencyFromNativeCurrencyInfo(nativeTargetCurrency)}
             rules={{ required: true, max }}
             placeHolder="0"
-            subtitle={`Available balance: ${max}`}
+            subtitle={
+              <BrandText style={[fontSemibold13, { color: neutral77 }]}>
+                Available:{" "}
+                <BrandText style={[fontSemibold13, { color: primaryColor }]}>
+                  {max}
+                </BrandText>
+              </BrandText>
+            }
           >
             <MaxButton onPress={() => setValue("amount", max)} />
           </TextInputCustom>
@@ -185,6 +197,7 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
           size="M"
           text={capitalize(variation)}
           fullWidth
+          disabled={max === "0"}
           loader
           onPress={handleSubmit(async (formValues) => {
             try {
@@ -329,10 +342,10 @@ const convertCosmosAddress = (
   sourceAddress: string | undefined,
   targetNetworkId: string | undefined
 ) => {
-  if (!sourceAddress || !targetNetworkId) {
+  if (!sourceAddress) {
     return undefined;
   }
-  const targetNetwork = getNetwork(targetNetworkId);
+  const targetNetwork = getCosmosNetwork(targetNetworkId);
   if (!targetNetwork) {
     return undefined;
   }

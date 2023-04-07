@@ -1,7 +1,7 @@
 import { Decimal } from "cosmwasm";
 
+import { trimFixed } from "./numbers";
 import { getNativeCurrency } from "../networks";
-import { toriCurrency } from "./teritori";
 
 export interface Balance {
   amount: string;
@@ -9,29 +9,51 @@ export interface Balance {
   denom: string;
 }
 
-const currencies = [toriCurrency];
-
-export const decimalFromAtomics = (value: string, denom: string) => {
-  const currency = currencies.find(
-    (currency) => currency.coinMinimalDenom === denom
-  );
-  if (currency) {
-    return Decimal.fromAtomics(value, currency.coinDecimals);
-  }
-  throw new Error("unknown denom");
-};
-
-// Returns the price with denom (Text + denom)
-export const prettyPrice = (
-  networkId: string,
+export const decimalFromAtomics = (
+  networkId: string | undefined,
   value: string,
   denom: string
 ) => {
   const currency = getNativeCurrency(networkId, denom);
   if (currency) {
-    return `${Decimal.fromAtomics(value, currency.decimals)} ${
+    return Decimal.fromAtomics(value, currency.decimals);
+  }
+  return Decimal.fromAtomics("0", 0);
+};
+
+const units = ["", "K", "M", "G", "T", "P", "E", "Z", "Y"];
+
+// FIXME: rename to prettyAmount
+
+// Returns the price with denom (Text + denom)
+export const prettyPrice = (
+  networkId: string | undefined,
+  value: string,
+  denom: string,
+  noDenom?: boolean
+) => {
+  const currency = getNativeCurrency(networkId, denom);
+  if (currency) {
+    const decval = Decimal.fromAtomics(value, currency.decimals);
+    if (
+      !decval.isGreaterThanOrEqual(
+        Decimal.fromUserInput("10", currency.decimals)
+      )
+    ) {
+      if (noDenom) return `${decval.toString()}`;
+      return `${decval.toString()} ${currency.displayName}`;
+    }
+    let val = decval.toFloatApproximation();
+    let unitIndex = 0;
+    while (val >= 1000 && unitIndex !== units.length - 1) {
+      val /= 1000;
+      unitIndex++;
+    }
+    if (noDenom) return `${trimFixed(val.toFixed(2))}${units[unitIndex]}`;
+    return `${trimFixed(val.toFixed(2))}${units[unitIndex]} ${
       currency.displayName
     }`;
   }
+  if (noDenom) return `${value}`;
   return `${value} ${denom}`;
 };

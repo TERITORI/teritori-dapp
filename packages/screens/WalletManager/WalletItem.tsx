@@ -1,16 +1,24 @@
 import Clipboard from "@react-native-clipboard/clipboard";
 import React from "react";
-import { View, TouchableOpacity, useWindowDimensions } from "react-native";
+import {
+  View,
+  TouchableOpacity,
+  useWindowDimensions,
+  Linking,
+} from "react-native";
 
 import copySVG from "../../../assets/icons/copy.svg";
 import dotsCircleSVG from "../../../assets/icons/dots-circle.svg";
 import { BrandText } from "../../components/BrandText";
 import { Menu } from "../../components/Menu";
+import { NetworkIcon } from "../../components/NetworkIcon";
 import { SVG } from "../../components/SVG";
 import { SecondaryButton } from "../../components/buttons/SecondaryButton";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { neutral33, neutral77, neutralA3 } from "../../utils/style/colors";
-import { getWalletIconFromTitle } from "../../utils/walletManagerHelpers";
+import { rewardsPrice, TotalRewards, useRewards } from "../../hooks/useRewards";
+import { accountExplorerLink, getUserId } from "../../networks";
+import { neutral33, neutral77 } from "../../utils/style/colors";
+
 export interface WalletItemProps {
   index: number;
   itemsCount: number;
@@ -18,8 +26,9 @@ export interface WalletItemProps {
     id: number;
     title: string;
     address: string;
-    pendingReward: number;
+    pendingRewards: TotalRewards[];
     staked: number;
+    networkId: string;
   };
 }
 
@@ -30,6 +39,12 @@ export const WalletItem: React.FC<WalletItemProps> = ({
 }) => {
   const { width } = useWindowDimensions();
   const { setToastSuccess } = useFeedbacks();
+  const { claimAllRewards } = useRewards(
+    getUserId(item.networkId, item.address)
+  );
+
+  // Total rewards price with all denoms
+  const claimablePrice = rewardsPrice(item.pendingRewards);
 
   return (
     <View
@@ -49,15 +64,8 @@ export const WalletItem: React.FC<WalletItemProps> = ({
           alignItems: "center",
         }}
       >
-        <SVG
-          source={getWalletIconFromTitle(item.title)}
-          height={64}
-          width={64}
-          style={{
-            marginRight: 16,
-          }}
-        />
-        <View>
+        <NetworkIcon networkId={item.networkId} size={64} />
+        <View style={{ marginLeft: 16 }}>
           <View>
             <BrandText>{item.title}</BrandText>
             <View
@@ -72,8 +80,7 @@ export const WalletItem: React.FC<WalletItemProps> = ({
                   fontSize: 12,
                 }}
               >
-                {item.address.substr(0, 5)}...
-                {item.address.substr(-4)}
+                {item.address}
               </BrandText>
               <TouchableOpacity
                 onPress={() => {
@@ -124,15 +131,16 @@ export const WalletItem: React.FC<WalletItemProps> = ({
               fontSize: 14,
             }}
           >
-            {String(item.staked).split(".")[0]}
-            <BrandText
+            {/*String(item.staked).split(".")[0]*/}
+            Coming Soon
+            {/*<BrandText
               style={{
                 color: neutralA3,
                 fontSize: 14,
               }}
             >
               .{String(item.staked).split(".")[1]}
-            </BrandText>
+            </BrandText>*/}
           </BrandText>
         </View>
         <View
@@ -154,31 +162,19 @@ export const WalletItem: React.FC<WalletItemProps> = ({
               fontSize: 14,
             }}
           >
-            {String(item.pendingReward).split(".")[0]}
-            <BrandText
-              style={{
-                color: neutralA3,
-                fontSize: 14,
-              }}
-            >
-              .{String(item.pendingReward).split(".")[1]}
-            </BrandText>
+            {`$${claimablePrice.toFixed(2)}`}
           </BrandText>
         </View>
 
         {width > 1150 && (
-          <>
-            {" "}
-            <SecondaryButton
-              size="XS"
-              text="Claim reward"
-              onPress={() => {}}
-              style={{
-                backgroundColor: neutral33,
-                marginRight: 16,
-              }}
-            />
-          </>
+          <SecondaryButton
+            size="XS"
+            text="Claim rewards"
+            disabled={!claimablePrice}
+            onPress={claimAllRewards}
+            loader
+            style={{ marginRight: 16 }}
+          />
         )}
 
         <Menu
@@ -187,8 +183,9 @@ export const WalletItem: React.FC<WalletItemProps> = ({
             ...(width <= 1150
               ? [
                   {
-                    label: "Claim reward",
-                    onPress: () => {},
+                    label: "Claim rewards",
+                    onPress: claimAllRewards,
+                    disabled: !claimablePrice,
                   },
                   {
                     label: "Stake",
@@ -198,7 +195,12 @@ export const WalletItem: React.FC<WalletItemProps> = ({
               : []),
             {
               label: "View on Explorer",
-              onPress: () => {},
+              onPress: () => {
+                console.log("item", item);
+                Linking.openURL(
+                  accountExplorerLink(item.networkId, item.address)
+                );
+              },
             },
             {
               label: "Rename address",

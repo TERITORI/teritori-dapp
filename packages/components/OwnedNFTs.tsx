@@ -1,34 +1,46 @@
 import React from "react";
 import { View, ActivityIndicator, ViewStyle, StyleProp } from "react-native";
 
+import { NetworkIcon } from "./NetworkIcon";
+import { Section } from "./Section";
+import { NFTView } from "./nfts/NFTView";
 import {
   Collection,
-  CollectionsRequest_Kind,
+  MintState,
+  Sort,
+  SortDirection,
 } from "../api/marketplace/v1/marketplace";
 import { useCollections } from "../hooks/useCollections";
 import { useNFTs } from "../hooks/useNFTs";
-import { protobufNetworkToNetwork } from "../utils/network";
-import { neutral77 } from "../utils/style/colors";
-import { fontMedium13 } from "../utils/style/fonts";
-import { BrandText } from "./BrandText";
-import { Section } from "./Section";
-import { NetworkIcon } from "./images/NetworkIcon";
-import { NFTView } from "./nfts/NFTView";
+import { parseNetworkObjectId } from "../networks";
+import { layout } from "../utils/style/layout";
 
 const gridHalfGutter = 12;
 
 export const OwnedNFTs: React.FC<{
   ownerId: string;
   style?: StyleProp<ViewStyle>;
-}> = ({ ownerId, style }) => {
+  EmptyListComponent?: React.ComponentType;
+}> = ({ ownerId, style, EmptyListComponent }) => {
+  const [network] = parseNetworkObjectId(ownerId);
+  const networkId = network?.id || "";
+
   const [collections] = useCollections({
+    networkId,
+    sortDirection: SortDirection.SORT_DIRECTION_DESCENDING,
+    upcoming: false,
+    sort: Sort.SORTING_VOLUME,
     limit: 100,
     offset: 0,
-    kind: CollectionsRequest_Kind.KIND_TERITORI_FEATURES,
+    mintState: MintState.MINT_STATE_UNSPECIFIED,
   }); // FIXME: add owner filter and pagination
 
+  if (!collections.length && EmptyListComponent) {
+    return <EmptyListComponent />;
+  }
+
   return (
-    <View style={style}>
+    <View style={[style, { paddingBottom: layout.contentPadding }]}>
       {!Object.keys(collections).length && (
         <ActivityIndicator size="large" style={{ marginBottom: 72 }} />
       )}
@@ -52,21 +64,20 @@ const OwnedNFTsSection: React.FC<{
     limit: 100, // FIXME: pagination
     ownerId,
     collectionId: collection.id,
+    sort: Sort.SORTING_PRICE,
+    sortDirection: SortDirection.SORT_DIRECTION_ASCENDING,
   });
+
   if (nfts.length === 0) {
     return null;
   }
+
   return (
     <Section
       title={`${collection.collectionName} Collection`}
       topRightChild={
         <View style={{ alignItems: "flex-end", flexDirection: "row" }}>
-          <BrandText
-            style={[fontMedium13, { color: neutral77, marginRight: 10 }]}
-          >
-            TODO
-          </BrandText>
-          <NetworkIcon network={protobufNetworkToNetwork(collection.network)} />
+          <NetworkIcon size={16} networkId={collection.networkId} />
         </View>
       }
     >

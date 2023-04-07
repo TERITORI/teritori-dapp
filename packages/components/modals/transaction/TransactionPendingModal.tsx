@@ -24,6 +24,7 @@ export const TransactionPendingModal: React.FC<{
       onClose={onClose}
       width={372}
       label="Follow steps"
+      noBrokenCorners
     >
       <View style={{ flexDirection: "row", marginBottom: 24 }}>
         <ActivityIndicator style={{ marginRight: 16 }} size="large" />

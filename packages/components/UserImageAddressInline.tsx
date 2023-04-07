@@ -1,10 +1,10 @@
 import React from "react";
 import { Image, StyleProp, View, ViewStyle } from "react-native";
 
+import { BrandText } from "./BrandText";
 import { fontSemibold12 } from "../utils/style/fonts";
 import { layout } from "../utils/style/layout";
-import { BrandText } from "./BrandText";
-import { tinyAddress } from "./WalletSelector";
+import { tinyAddress } from "../utils/text";
 
 export const UserImageAddressInline: React.FC<{
   imageSource: string;
@@ -20,7 +20,7 @@ export const UserImageAddressInline: React.FC<{
       <BrandText
         style={[fontSemibold12, { marginLeft: layout.padding_x1_5 / 2 }]}
       >
-        {tinyAddress(address, 11)}
+        {tinyAddress(address, 16)}
       </BrandText>
     </View>
   );

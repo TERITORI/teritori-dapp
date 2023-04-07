@@ -1,25 +1,26 @@
 import { PublicKey } from "@solana/web3.js";
 import { useEffect, useMemo, useState } from "react";
 
+import { Wallet } from "./wallet";
+import { NetworkKind } from "../../networks";
+import { WalletProvider } from "../../utils/walletProvider";
+
 // import { addWallet } from "../../store/slices/wallets";
 // import { useAppDispatch } from "../../store/store";
-// import { Network } from "../../utils/network";
-import { WalletProvider } from "../../utils/walletProvider";
-import { Wallet } from "./wallet";
+// import { Network } from "../../networks";
 
 export type UsePhantomResult =
   | [true, boolean, Wallet]
   | [false, true, undefined];
 
 export const usePhantom: () => UsePhantomResult = () => {
-  const phantom = (window as any)?.solana;
-  const hasPhantom = !!phantom?.isPhantom;
-
   const [publicKey, setPublicKey] = useState("");
   const [ready, setReady] = useState(false);
-  // const dispatch = useAppDispatch();
 
   useEffect(() => {
+    const phantom = getPhantom();
+    const hasPhantom = checkHasPhantom();
+
     if (!hasPhantom) {
       return;
     }
@@ -56,6 +57,8 @@ export const usePhantom: () => UsePhantomResult = () => {
 
   useEffect(() => {
     const effect = async () => {
+      const phantom = getPhantom();
+      const hasPhantom = checkHasPhantom();
       if (!hasPhantom) {
         return;
       }
@@ -73,7 +76,9 @@ export const usePhantom: () => UsePhantomResult = () => {
     const wallet: Wallet = {
       address: publicKey,
       provider: WalletProvider.Phantom,
-      // network: Network.Solana,
+      networkKind: NetworkKind.Solana,
+      networkId: "",
+      userId: "",
       connected: !!publicKey,
       id: "phantom",
     };
@@ -95,5 +100,13 @@ export const usePhantom: () => UsePhantomResult = () => {
   }, [wallet]);
   */
 
-  return hasPhantom ? [true, ready, wallet] : [false, true, undefined];
+  return checkHasPhantom() ? [true, ready, wallet] : [false, true, undefined];
+};
+
+const getPhantom = () => {
+  return (window as any)?.solana;
+};
+
+const checkHasPhantom = () => {
+  return !!getPhantom()?.isPhantom;
 };

@@ -1,21 +1,25 @@
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 
-import { BrandText } from "../../components/BrandText";
-import { ScreenContainer } from "../../components/ScreenContainer";
-import { Tabs } from "../../components/tabs/Tabs";
-import { useValidators } from "../../hooks/useValidators";
-import { fontSemibold28 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
 import { DelegateModal } from "./components/DelegateModal";
 import { RedelegateModal } from "./components/RedelegateModal";
 import { StakeDetailModal } from "./components/StakeDetailModal";
 import { UndelegateModal } from "./components/UndelegateModal";
 import { ValidatorsTable } from "./components/ValidatorsList";
 import { ValidatorInfo } from "./types";
+import { BrandText } from "../../components/BrandText";
+import { ScreenContainer } from "../../components/ScreenContainer";
+import { Tabs } from "../../components/tabs/Tabs";
+import { useAreThereWallets } from "../../hooks/useAreThereWallets";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import { useValidators } from "../../hooks/useValidators";
+import { NetworkKind } from "../../networks";
+import { fontSemibold28 } from "../../utils/style/fonts";
+import { layout } from "../../utils/style/layout";
 
 export const StakeScreen: React.FC = () => {
   //   variables
+  const selectedNetworkId = useSelectedNetworkId();
   const [stakeDetailModalVisible, setStakeDetailModalVisible] = useState(false);
   const [isStakeFormVisible, setIsStakeFormVisible] = useState(false);
   const [isUndelegateModalVisible, setIsUndelegateModalVisible] =
@@ -25,7 +29,10 @@ export const StakeScreen: React.FC = () => {
   const [selectedStake, setSelectedStake] = useState<
     ValidatorInfo | undefined
   >();
-  const { activeValidators, inactiveValidators } = useValidators();
+
+  const {
+    data: { activeValidators, inactiveValidators },
+  } = useValidators(selectedNetworkId);
 
   const tabs = {
     active: {
@@ -38,6 +45,7 @@ export const StakeScreen: React.FC = () => {
     },
   };
   const [selectedTab, setSelectedTab] = useState<keyof typeof tabs>("active");
+  const areThereWallets = useAreThereWallets();
 
   // functions
   const toggleDetailModal = (stakeData?: ValidatorInfo) => {
@@ -60,24 +68,24 @@ export const StakeScreen: React.FC = () => {
     setStakeDetailModalVisible(false);
   };
 
+  // returns
   return (
-    <ScreenContainer>
+    <ScreenContainer forceNetworkKind={NetworkKind.Cosmos}>
       <View style={styles.rowHeader}>
         <BrandText style={fontSemibold28}>Stake</BrandText>
         <View style={styles.rowWithCenter}>
-          <Tabs
-            items={tabs}
-            onSelect={setSelectedTab}
-            style={{ height: 44 }}
-            selected={selectedTab}
-          />
+          <Tabs items={tabs} onSelect={setSelectedTab} selected={selectedTab} />
         </View>
       </View>
       <ValidatorsTable
         validators={
           selectedTab === "active" ? activeValidators : inactiveValidators
         }
-        actions={() => [{ label: "Manage", onPress: toggleDetailModal }]}
+        actions={
+          areThereWallets
+            ? () => [{ label: "Manage", onPress: toggleDetailModal }]
+            : undefined
+        }
       />
       <StakeDetailModal
         visible={stakeDetailModalVisible}
@@ -90,17 +98,17 @@ export const StakeScreen: React.FC = () => {
       <UndelegateModal
         visible={isUndelegateModalVisible}
         onClose={toggleUndelegateModal}
-        data={selectedStake}
+        validator={selectedStake}
       />
       <RedelegateModal
         visible={isRedelegateModalVisible}
         onClose={toggleRedelegateModal}
-        data={selectedStake}
+        validator={selectedStake}
       />
       <DelegateModal
         visible={isStakeFormVisible}
         onClose={toggleStakeForm}
-        data={selectedStake}
+        validator={selectedStake}
       />
     </ScreenContainer>
   );

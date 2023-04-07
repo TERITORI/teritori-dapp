@@ -1,10 +1,12 @@
 import { MsgVoteEncodeObject, isDeliverTxFailure } from "@cosmjs/stargate";
 import Long from "long";
+import moment from "moment";
 import React, { useState, useCallback } from "react";
 import { ScrollView, ViewStyle, StyleProp, View } from "react-native";
 import { RadioButton } from "react-native-paper";
 import { VictoryPie } from "victory";
 
+import { ProposalStatus } from "./types";
 import { BrandText } from "../../components/BrandText/BrandText";
 import { ConfirmationVote } from "../../components/GovernanceBox/ConfirmationVote";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
@@ -13,9 +15,8 @@ import { SecondaryButton } from "../../components/buttons/SecondaryButton";
 import ModalBase from "../../components/modals/ModalBase";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getKeplrOfflineSigner } from "../../utils/keplr";
+import { getKeplrSigningStargateClient } from "../../networks";
 import { neutral44 } from "../../utils/style/colors";
-import { getTeritoriSigningStargateClient } from "../../utils/teritori";
 
 const Separator: React.FC<{ style?: StyleProp<ViewStyle> }> = ({ style }) => (
   <View
@@ -38,12 +39,10 @@ export const GovernanceDetails: React.FC<{
   votingStartTime: string;
   votingSubmitTime: string;
   votingDepositEndTime: string;
-  isVotingPeriod: boolean;
-  isRejectedPeriod: boolean;
-  isPassedPeriod: boolean;
   percentageYes: string;
   percentageNo: string;
   percentageNoWithVeto: string;
+  status: ProposalStatus;
 }> = ({
   visible,
   onClose,
@@ -56,12 +55,10 @@ export const GovernanceDetails: React.FC<{
   votingEndTime,
   votingSubmitTime,
   votingDepositEndTime,
-  isVotingPeriod,
-  isRejectedPeriod,
-  isPassedPeriod,
   percentageYes,
   percentageNo,
   percentageNoWithVeto,
+  status,
 }) => {
   const [displayVote, setdisplayVote] = useState(false);
   const [displayConfirmationVote, setdisplayConfirmationVote] = useState(false);
@@ -107,8 +104,9 @@ export const GovernanceDetails: React.FC<{
     }
 
     try {
-      const keplrSigner = getKeplrOfflineSigner();
-      const client = await getTeritoriSigningStargateClient(keplrSigner);
+      const client = await getKeplrSigningStargateClient(
+        selectedWallet.networkId
+      );
 
       const vote: MsgVoteEncodeObject = {
         typeUrl: "/cosmos.gov.v1beta1.MsgVote",
@@ -140,7 +138,14 @@ export const GovernanceDetails: React.FC<{
         });
       }
     }
-  }, [selectedWallet]);
+  }, [
+    numberProposal,
+    selectedWallet?.address,
+    selectedWallet?.connected,
+    selectedWallet?.networkId,
+    setToastError,
+    voteOption,
+  ]);
 
   function deleteConfirmationVote() {
     setdisplayConfirmationVote(false);
@@ -165,6 +170,8 @@ export const GovernanceDetails: React.FC<{
   function activeVote() {
     setdisplayVote(!displayVote);
   }
+
+  const canVoteDeposit = () => moment(votingDepositEndTime).isAfter(moment());
 
   return (
     <ModalBase
@@ -203,7 +210,7 @@ export const GovernanceDetails: React.FC<{
             {titleProposal}
           </BrandText>
         </View>
-        {isVotingPeriod && (
+        {status === "PROPOSAL_STATUS_VOTING" && (
           <View
             style={{
               alignItems: "center",
@@ -224,7 +231,7 @@ export const GovernanceDetails: React.FC<{
             </BrandText>
           </View>
         )}
-        {isRejectedPeriod && (
+        {status === "PROPOSAL_STATUS_REJECTED" && (
           <View
             style={{
               alignItems: "center",
@@ -246,7 +253,7 @@ export const GovernanceDetails: React.FC<{
           </View>
         )}
 
-        {isPassedPeriod && (
+        {status === "PROPOSAL_STATUS_PASSED" && (
           <View
             style={{
               alignItems: "center",
@@ -450,6 +457,7 @@ export const GovernanceDetails: React.FC<{
               { x: "Pourcentage No", y: valueChartNo },
               { x: "Pourcentage Abstain", y: valueChartAbstain },
             ]}
+            labels={() => null}
           />
         </View>
 
@@ -594,13 +602,15 @@ export const GovernanceDetails: React.FC<{
           </BrandText>
         </View>
 
-        <PrimaryButton
-          width={150}
-          size="XL"
-          style={{ position: "absolute", left: 510, bottom: -40 }}
-          text="Vote"
-          onPress={() => activeVote()}
-        />
+        {canVoteDeposit() && (
+          <PrimaryButton
+            width={150}
+            size="XL"
+            style={{ position: "absolute", left: 510, bottom: -40 }}
+            text="Vote"
+            onPress={() => activeVote()}
+          />
+        )}
       </TertiaryBox>
 
       {activeConfirmationVotePopup()}
@@ -629,7 +639,6 @@ export const GovernanceDetails: React.FC<{
                 <SecondaryButton
                   size="M"
                   text="Cancel"
-                  style={{}}
                   onPress={activeVotePopup}
                 />
               </View>
@@ -637,7 +646,6 @@ export const GovernanceDetails: React.FC<{
                 <PrimaryButton
                   size="M"
                   text="Confirm"
-                  style={{}}
                   onPress={() => {
                     if (checked !== "nothingChecked") {
                       handlePress();

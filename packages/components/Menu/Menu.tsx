@@ -12,6 +12,7 @@ export interface MenuProps {
   items: {
     label: string;
     onPress: () => void;
+    disabled?: boolean;
   }[];
 
   width?: number;
@@ -38,6 +39,7 @@ export const Menu: React.FC<MenuProps> = ({
         >
           {items.map((item, index) => (
             <TouchableOpacity
+              disabled={item.disabled}
               key={item.label}
               onPress={() => {
                 setMenuVisibility(false);
@@ -53,9 +55,12 @@ export const Menu: React.FC<MenuProps> = ({
               ]}
             >
               <BrandText
-                style={{
-                  fontSize: 13,
-                }}
+                style={[
+                  {
+                    fontSize: 13,
+                  },
+                  item.disabled && { opacity: 0.5 },
+                ]}
               >
                 {item.label}
               </BrandText>

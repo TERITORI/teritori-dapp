@@ -1,9 +1,10 @@
 import React from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 
-import { neutral77 } from "../../utils/style/colors";
-import { tldFromToken, tokenWithoutTld } from "../../utils/tns";
+import { fontSemibold20 } from "../../utils/style/fonts";
+import { tldFromNSToken, nsTokenWithoutTLD } from "../../utils/tns";
 import { BrandText } from "../BrandText";
+import { GradientText } from "../gradientText";
 
 // A text with the substring ".xxx" grayed
 export const NameAndTldText: React.FC<{
@@ -14,7 +15,12 @@ export const NameAndTldText: React.FC<{
     return null;
   }
   return (
-    <View style={[{ flex: 1, flexDirection: "row", width: "100%" }, style]}>
+    <View
+      style={[
+        { flex: 1, flexDirection: "row", width: "100%", alignItems: "center" },
+        style,
+      ]}
+    >
       {/*---- White part*/}
       <BrandText
         style={{
@@ -22,11 +28,11 @@ export const NameAndTldText: React.FC<{
           maxWidth: "100%",
         }}
       >
-        {tokenWithoutTld(nameAndTldStr)}
+        {nsTokenWithoutTLD(nameAndTldStr)}
         {/*---- Gray part*/}
-        <BrandText style={{ color: neutral77, letterSpacing: -(20 * 0.04) }}>
-          {tldFromToken(nameAndTldStr)}
-        </BrandText>
+        <GradientText gradientType="gray" style={fontSemibold20}>
+          {tldFromNSToken(nameAndTldStr)}
+        </GradientText>
       </BrandText>
     </View>
   );

@@ -1,17 +1,12 @@
 import React, { createContext, useContext, useMemo } from "react";
-// import { useSelector } from "react-redux";
 
-import { WalletProvider } from "../../utils/walletProvider";
 import { useKeplr } from "./keplr";
+import { useMetamask } from "./metamask";
 import { Wallet } from "./wallet";
+import { WalletProvider } from "../../utils/walletProvider";
 // import { usePhantom } from "./phantom";
 // import { selectStoreWallets, storeWalletId } from "../../store/slices/wallets";
 // import { WalletProvider } from "../../utils/walletProvider";
-
-/**
- * FIXME: We should change the architecture of this and split "wallets addresses"
- * from "wallets providers" instead of having the Wallet type to represent both
- */
 
 type WalletsContextValue = {
   wallets: Wallet[];
@@ -25,15 +20,12 @@ const WalletsContext = createContext<WalletsContextValue>({
   ready: false,
 });
 
-/*
- * We temprorarily only support keplr when it's conencted and return only the first keplr address
- */
-
 export const useWallets = () => useContext(WalletsContext);
 
 export const WalletsProvider: React.FC = React.memo(({ children }) => {
   // const [hasPhantom, phantomIsReady, phantomWallet] = usePhantom();
   const [hasKeplr, keplrIsReady, keplrWallets] = useKeplr();
+  const [hasMetamask, metamaskIsReady, metamaskWallets] = useMetamask();
 
   // const storeWallets = useSelector(selectStoreWallets);
 
@@ -51,7 +43,6 @@ export const WalletsProvider: React.FC = React.memo(({ children }) => {
       };
       return wallet;
     });
-    */
 
     /*
     if (hasPhantom && phantomWallet) {
@@ -93,27 +84,24 @@ export const WalletsProvider: React.FC = React.memo(({ children }) => {
 
     if (hasKeplr) {
       walletProviders.push(WalletProvider.Keplr);
+
+      if (keplrWallets?.[0]?.connected) {
+        wallets.push(keplrWallets[0]);
+      }
     }
 
-    if (
-      hasKeplr &&
-      keplrWallets &&
-      keplrWallets.length &&
-      keplrWallets[0].connected
-    ) {
-      const wallet = keplrWallets[0];
-      wallets.push({
-        id: wallet.id,
-        address: wallet.address,
-        provider: WalletProvider.Keplr,
-        connected: true,
-      });
+    if (hasMetamask) {
+      walletProviders.push(WalletProvider.Metamask);
+
+      if (metamaskWallets?.[0]?.connected) {
+        wallets.push(metamaskWallets[0]);
+      }
     }
 
     return {
       wallets,
       walletProviders,
-      ready: /* phantomIsReady && */ keplrIsReady,
+      ready: keplrIsReady && metamaskIsReady,
     };
   }, [
     // hasPhantom,
@@ -122,6 +110,9 @@ export const WalletsProvider: React.FC = React.memo(({ children }) => {
     hasKeplr,
     keplrIsReady,
     keplrWallets,
+    hasMetamask,
+    metamaskIsReady,
+    metamaskWallets,
     // storeWallets,
   ]);
 

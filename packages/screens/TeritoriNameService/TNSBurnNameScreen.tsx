@@ -1,90 +1,79 @@
-import { useFocusEffect } from "@react-navigation/native";
-import React, { useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import React from "react";
 import { View } from "react-native";
 
+import { TNSModalCommonProps } from "./TNSHomeScreen";
 import burnSVG from "../../../assets/icons/burn.svg";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
-import { ScreenContainer } from "../../components/ScreenContainer";
 import { SecondaryButton } from "../../components/buttons/SecondaryButton";
-import { BackTo } from "../../components/navigation/BackTo";
+import ModalBase from "../../components/modals/ModalBase";
 import { NameNFT } from "../../components/teritoriNameService/NameNFT";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useTNS } from "../../context/TNSProvider";
-import { useTokenList } from "../../hooks/tokens";
-import { useAreThereWallets } from "../../hooks/useAreThereWallets";
-import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
-import { defaultExecuteFee } from "../../utils/fee";
+import { TeritoriNameServiceClient } from "../../contracts-clients/teritori-name-service/TeritoriNameService.client";
+import { nsNameInfoQueryKey } from "../../hooks/useNSNameInfo";
+import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
-  getFirstKeplrAccount,
-  getSigningCosmWasmClient,
-} from "../../utils/keplr";
-import { defaultMemo } from "../../utils/memo";
-import { ScreenFC, useAppNavigation } from "../../utils/navigation";
-import { neutral33 } from "../../utils/style/colors";
-import { isTokenOwnedByUser } from "../../utils/tns";
+  getKeplrSigningCosmWasmClient,
+  mustGetCosmosNetwork,
+} from "../../networks";
+import { neutral17 } from "../../utils/style/colors";
 
-export const TNSBurnNameScreen: ScreenFC<"TNSBurnName"> = ({ route }) => {
-  const { name, setName } = useTNS();
-  const { setToastError, setToastSuccess, setLoadingFullScreen } =
-    useFeedbacks();
-  const { tokens, loadingTokens } = useTokenList();
-  const isKeplrConnected = useIsKeplrConnected();
-  const userHasCoWallet = useAreThereWallets();
-  const navigation = useAppNavigation();
-  const contractAddress = process.env
-    .TERITORI_NAME_SERVICE_CONTRACT_ADDRESS as string;
-  const normalizedTokenId = (name + process.env.TLD).toLowerCase();
+interface TNSBurnNameScreenProps extends TNSModalCommonProps {}
 
-  // Sync loadingFullScreen
-  useEffect(() => {
-    setLoadingFullScreen(loadingTokens);
-  }, [loadingTokens]);
+export const TNSBurnNameScreen: React.FC<TNSBurnNameScreenProps> = ({
+  onClose,
+}) => {
+  const { name } = useTNS();
+  const { setToastError, setToastSuccess } = useFeedbacks();
+  const selectedWallet = useSelectedWallet();
+  const network = mustGetCosmosNetwork(selectedWallet?.networkId);
+  const { tokens } = useNSTokensByOwner(selectedWallet?.userId);
+  const walletAddress = selectedWallet?.address;
+  const normalizedTokenId = (name + network.nameServiceTLD || "").toLowerCase();
 
-  // ==== Init
-  useFocusEffect(() => {
-    // ---- Setting the name from TNSContext. Redirects to TNSHome if this screen is called when the user doesn't own the token
-    setName(route.params.name);
-    // ===== Controls many things, be careful TODO: Still redirects to TNSHome, weird..
-    if (
-      (name &&
-        tokens.length &&
-        (!userHasCoWallet || !isTokenOwnedByUser(tokens, name))) ||
-      !isKeplrConnected
-    ) {
-      navigation.navigate("TNSHome");
-    }
-  });
+  const queryClient = useQueryClient();
 
   const onSubmit = async () => {
-    setLoadingFullScreen(true);
+    if (!walletAddress) {
+      setToastError({
+        title: "No wallet address",
+        message: "",
+      });
+      return;
+    }
+    if (tokens.length && !tokens.includes(normalizedTokenId)) {
+      setToastError({
+        title: "Something went wrong!",
+        message: "",
+      });
+      return;
+    }
 
-    const msg = {
-      burn: {
-        token_id: normalizedTokenId,
-      },
-    };
     try {
-      const signingClient = await getSigningCosmWasmClient();
-
-      const walletAddress = (await getFirstKeplrAccount()).address;
-
-      const updatedToken = await signingClient.execute(
-        walletAddress!,
-        contractAddress,
-        msg,
-        defaultExecuteFee,
-        defaultMemo
-      );
-      if (updatedToken) {
-        console.log(normalizedTokenId + " successfully burnt");
-        setToastSuccess({
-          title: normalizedTokenId + " successfully burnt",
-          message: "",
-        });
-        navigation.navigate("TNSManage");
-        setLoadingFullScreen(false);
+      if (!network.nameServiceContractAddress) {
+        throw new Error("network not supported");
       }
+
+      const signingClient = await getKeplrSigningCosmWasmClient(network.id);
+
+      const nsClient = new TeritoriNameServiceClient(
+        signingClient,
+        walletAddress,
+        network.nameServiceContractAddress
+      );
+
+      await nsClient.burn({ tokenId: normalizedTokenId });
+
+      console.log(normalizedTokenId + " successfully burnt");
+      setToastSuccess({
+        title: normalizedTokenId + " successfully burnt",
+        message: "",
+      });
+
+      onClose("TNSManage");
     } catch (e) {
       if (e instanceof Error) {
         setToastError({
@@ -93,47 +82,36 @@ export const TNSBurnNameScreen: ScreenFC<"TNSBurnName"> = ({ route }) => {
         });
       }
       console.warn(e);
-      setLoadingFullScreen(false);
     }
+
+    await queryClient.invalidateQueries(
+      nsNameInfoQueryKey(selectedWallet?.networkId, normalizedTokenId)
+    );
   };
 
   return (
-    <ScreenContainer
-      hideSidebar
-      headerStyle={{ borderBottomColor: "transparent" }}
-      footerChildren={
-        <BackTo
-          label={"Back to " + name}
-          onPress={() => navigation.navigate("TNSConsultName", { name })}
-        />
-      }
+    <ModalBase
+      hideMainSeparator
+      onClose={() => onClose()}
+      width={457}
+      contentStyle={{
+        backgroundColor: neutral17,
+        borderRadius: 8,
+      }}
     >
       <View
         style={{
           flex: 1,
-          marginTop: 32,
-          flexDirection: "row",
-          justifyContent: "center",
         }}
       >
         <NameNFT name={name} />
 
         <View
           style={{
-            flex: 1,
+            marginTop: 20,
             alignItems: "center",
             justifyContent: "space-between",
-            height: 404,
-            maxHeight: 404,
-            minHeight: 404,
             width: "100%",
-            maxWidth: 396,
-            borderColor: neutral33,
-            borderWidth: 1,
-            borderRadius: 8,
-            backgroundColor: "#000000",
-            padding: 24,
-            marginLeft: 20,
           }}
         >
           <View>
@@ -156,22 +134,25 @@ export const TNSBurnNameScreen: ScreenFC<"TNSBurnName"> = ({ route }) => {
                 lineHeight: 20,
                 color: "#A3A3A3",
                 marginTop: 16,
+                marginBottom: 20,
               }}
             >
               This will permanently destroy the token. The token will no longer
               be visible from the name service and another token with the same
               name will be mintable.
             </BrandText>
+            <SecondaryButton
+              fullWidth
+              size="XS"
+              text="I understand, burn it"
+              onPress={onSubmit}
+              style={{ marginBottom: 80 }}
+              squaresBackgroundColor={neutral17}
+              loader
+            />
           </View>
-
-          <SecondaryButton
-            fullWidth
-            size="XS"
-            text="I understand, burn it"
-            onPress={onSubmit}
-          />
         </View>
       </View>
-    </ScreenContainer>
+    </ModalBase>
   );
 };

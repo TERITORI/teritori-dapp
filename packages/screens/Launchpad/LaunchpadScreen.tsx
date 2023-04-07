@@ -1,77 +1,93 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 
-import { BrandText } from "../../components/BrandText";
-import { ScreenContainer } from "../../components/ScreenContainer";
-import { SpacerColumn, SpacerRow } from "../../components/spacer";
-import { ScreenFC } from "../../utils/navigation";
-import { neutral77 } from "../../utils/style/colors";
-import { fontSemibold14, fontSemibold28 } from "../../utils/style/fonts";
-import { LaunchpadBanner } from "./components/LaunchpadBanner";
 import {
-  LaunchpadButton,
-  LaunchpadButtonProps,
-} from "./components/LaunchpadButton";
-
-const BUTTONS: LaunchpadButtonProps[] = [
-  {
-    title: "Candidate",
-    description: "Pitch your project to launchpad managers & community.",
-    buttonTitle: "Open",
-  },
-  {
-    title: "Create",
-    description:
-      "Upload your assets, enter collection metadata and deploy your collection.",
-    buttonTitle: "Coming soon",
-  },
-  {
-    title: "My Collections",
-    description: "Manage your collections with available actions and queries.",
-    buttonTitle: "Coming soon",
-  },
-];
+  Collection,
+  MintState,
+  Sort,
+  SortDirection,
+} from "../../api/marketplace/v1/marketplace";
+import { ScreenContainer } from "../../components/ScreenContainer";
+import { CollectionsCarouselHeader } from "../../components/carousels/CollectionsCarouselHeader";
+import { CollectionGallery } from "../../components/collections/CollectionGallery";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import { getNetwork } from "../../networks";
+import { ScreenFC } from "../../utils/navigation";
+import { layout } from "../../utils/style/layout";
 
 export const LaunchpadScreen: ScreenFC<"Launchpad"> = () => {
+  const selectedNetworkId = useSelectedNetworkId();
+
   return (
     <ScreenContainer>
-      <LaunchpadBanner />
-      <SpacerColumn size={2} />
-      <BrandText style={fontSemibold28}>Welcome</BrandText>
-      <SpacerColumn size={2} />
-      <BrandText style={styles.descriptionText}>
-        Looking for a fast and efficient way to build an NFT collection?
-      </BrandText>
-      <SpacerColumn size={2} />
-      <BrandText style={styles.descriptionText}>
-        Teritori is the solution. Teritori is built to provide useful smart
-        contract interfaces that helps you build and deploy your own NFT
-        collections in no time.
-      </BrandText>
-      <SpacerColumn size={4} />
-      <View style={styles.buttonsContainer}>
-        <LaunchpadButton
-          {...BUTTONS[0]}
-          url="https://airtable.com/shr1kU7kXW0267gNV"
+      <View
+        style={{
+          paddingBottom: layout.contentPadding,
+        }}
+      >
+        <CollectionsCarouselHeader
+          linkToMint
+          req={{
+            networkId: selectedNetworkId,
+            sortDirection: SortDirection.SORT_DIRECTION_DESCENDING,
+            upcoming: false,
+            sort: Sort.SORTING_VOLUME,
+            limit: 16,
+            offset: 0,
+            mintState: MintState.MINT_STATE_RUNNING,
+          }}
+          filter={filter}
         />
-        <SpacerRow size={1.2} />
-        <LaunchpadButton {...BUTTONS[1]} />
-        <SpacerRow size={1.2} />
-        <LaunchpadButton {...BUTTONS[2]} />
+
+        <CollectionGallery
+          title="Live Mintable"
+          linkToMint
+          filter={filter}
+          req={{
+            networkId: selectedNetworkId,
+            upcoming: false,
+            sort: Sort.SORTING_CREATED_AT,
+            sortDirection: SortDirection.SORT_DIRECTION_DESCENDING,
+            limit: 16,
+            offset: 0,
+            mintState: MintState.MINT_STATE_RUNNING,
+          }}
+        />
+
+        <CollectionGallery
+          title="Upcoming"
+          linkToMint
+          filter={filter}
+          req={{
+            networkId: selectedNetworkId,
+            upcoming: true,
+            sort: Sort.SORTING_CREATED_AT,
+            sortDirection: SortDirection.SORT_DIRECTION_DESCENDING,
+            limit: 24,
+            offset: 0,
+            mintState: MintState.MINT_STATE_UNSPECIFIED,
+          }}
+        />
+
+        <CollectionGallery
+          title="Ended"
+          req={{
+            upcoming: false,
+            networkId: selectedNetworkId,
+            sort: Sort.SORTING_CREATED_AT,
+            sortDirection: SortDirection.SORT_DIRECTION_DESCENDING,
+            limit: 16,
+            offset: 0,
+            mintState: MintState.MINT_STATE_ENDED,
+          }}
+        />
       </View>
     </ScreenContainer>
   );
 };
 
-const styles = StyleSheet.create({
-  descriptionText: StyleSheet.flatten([
-    fontSemibold14,
-    {
-      color: neutral77,
-    },
-  ]),
-  buttonsContainer: {
-    flexDirection: "row",
-    flex: 1,
-  },
-});
+const filter = (c: Collection) => {
+  return !(getNetwork(c.networkId)?.excludeFromLaunchpadList || []).includes(
+    c.mintAddress
+  );
+};

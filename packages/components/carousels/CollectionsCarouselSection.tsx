@@ -1,44 +1,62 @@
-import React from "react";
+import React, { useCallback } from "react";
 
+import { CarouselSection } from "./CarouselSection";
 import {
   Collection,
-  CollectionsRequest_Kind,
+  CollectionsRequest,
+  MintState,
+  Sort,
+  SortDirection,
 } from "../../api/marketplace/v1/marketplace";
 import { useCollections } from "../../hooks/useCollections";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import {
-  collectionItemHeight,
-  collectionItemWidth,
+  COLLECTION_VIEW_XL_HEIGHT,
+  COLLECTION_VIEW_XL_WIDTH,
   CollectionView,
 } from "../CollectionView";
-import { CarouselSection } from "./CarouselSection";
 
-const gap = 24;
+const gap = 20;
 
-const renderItem = (props: { item: Collection }) => (
-  <CollectionView item={props.item} />
-);
+const defaultRequest: CollectionsRequest = {
+  networkId: "fake",
+  sortDirection: SortDirection.SORT_DIRECTION_UNSPECIFIED,
+  sort: Sort.SORTING_UNSPECIFIED,
+  limit: 16,
+  offset: 0,
+  upcoming: false,
+  mintState: MintState.MINT_STATE_UNSPECIFIED,
+};
 
 export const CollectionsCarouselSection: React.FC<{
   title: string;
-  kind?: CollectionsRequest_Kind;
-}> = ({ title, kind = CollectionsRequest_Kind.KIND_FAKE }) => {
-  const [collections, fetchMore] = useCollections({
-    kind,
-    limit: 16,
-    offset: 0,
-  });
+  linkToMint?: boolean;
+  req?: CollectionsRequest;
+  filter?: (c: Collection) => boolean;
+}> = ({ title, req = defaultRequest, linkToMint, filter }) => {
+  const [collections, fetchMore] = useCollections(req, filter);
 
   const { width } = useMaxResolution();
+
+  const renderItem = useCallback(
+    (props: { item: Collection }) => (
+      <CollectionView
+        item={props.item}
+        linkToMint={linkToMint}
+        mintState={req.mintState}
+      />
+    ),
+    [linkToMint, req.mintState]
+  );
 
   return (
     <CarouselSection
       title={title}
       data={collections}
-      width={collectionItemWidth + gap}
-      height={collectionItemHeight}
+      width={COLLECTION_VIEW_XL_WIDTH + gap}
+      height={COLLECTION_VIEW_XL_HEIGHT}
       onScrollEnd={fetchMore}
-      pagingEnabled
+      pagingEnabled={collections.length > 4}
       loop={false}
       style={{
         width,

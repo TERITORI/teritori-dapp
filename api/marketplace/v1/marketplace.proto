@@ -10,18 +10,38 @@ service MarketplaceService {
   rpc Quests(QuestsRequest) returns (stream QuestsResponse);
   rpc Activity(ActivityRequest) returns (stream ActivityResponse);
   rpc NFTPriceHistory(NFTPriceHistoryRequest) returns (NFTPriceHistoryResponse);
+  rpc Banners(BannersRequest) returns (BannersResponse);
+  rpc News(NewsRequest) returns (NewsResponse);
 }
 
-enum Network {
-  NETWORK_UNSPECIFIED = 0;
-  NETWORK_FAKE = 1;
-  NETWORK_TERITORI = 2;
-  NETWORK_SOLANA = 3;
+enum Sort {
+  SORTING_UNSPECIFIED = 0;
+  SORTING_PRICE = 1;
+  SORTING_VOLUME = 2;
+  SORTING_MARKET_CAP = 3;
+  SORTING_CREATED_AT = 4;
+}
+
+enum SortDirection {
+  SORT_DIRECTION_UNSPECIFIED = 0;
+  SORT_DIRECTION_ASCENDING = 1;
+  SORT_DIRECTION_DESCENDING = 2;
+}
+
+enum MintState {
+  MINT_STATE_UNSPECIFIED = 0;
+  MINT_STATE_RUNNING = 1;
+  MINT_STATE_ENDED = 2;
+}
+
+message Attribute {
+  string trait_type = 1;
+  string value = 2;
 }
 
 message NFT {
   string id = 1;
-  Network network = 2;
+  string network_id = 14;
   string image_uri = 3;
   string name = 4;
   string mint_address = 5;
@@ -31,6 +51,13 @@ message NFT {
   string text_insert = 9;
   string collection_name = 10;
   string owner_id = 13;
+  string nft_contract_address = 15;
+  string locked_on = 16;
+  repeated Attribute attributes = 17;
+}
+message Amount {
+  string denom = 1;
+  string quantity = 3;
 }
 
 message Collection {
@@ -40,14 +67,19 @@ message Collection {
   string creator_name = 4;
   bool verified = 5;
   string mint_address = 6;
-  Network network = 7;
+  string network_id = 11;
   string volume = 8;
   string volume_denom = 9;
   string creator_id = 10;
+  bool secondary_during_mint = 12;
+  string website_url = 13;
+  string twitter_url = 14;
+  uint64 floor_price = 15;
+  int64 max_supply = 16;
 }
 
 message CollectionStats {
-  string floor_price = 1;
+  repeated Amount floor_price = 1;
   string total_volume = 2;
   int32 owners = 3;
   int32 listed = 4;
@@ -77,23 +109,20 @@ message Quest {
 }
 
 message PriceDatum {
-  string price = 1;
+  string price = 3;
   string time = 2;
 }
 
 message CollectionsRequest {
-  enum Kind {
-    KIND_UNSPECIFIED = 0;
-    KIND_BY_VOLUME = 1;
-    KIND_BY_MARKETCAP = 2;
-    KIND_FAKE = 3;
-    KIND_UPCOMING = 4;
-    KIND_TERITORI_FEATURES = 5;
-  }
-
-  Kind kind = 1;
   int32 limit = 2;
   int32 offset = 3;
+
+  Sort sort = 4;
+  SortDirection sort_direction = 5;
+
+  bool upcoming = 6;
+  string network_id = 7;
+  MintState mint_state = 8;
 }
 
 message CollectionStatsRequest {
@@ -115,6 +144,9 @@ message NFTsRequest {
 
   string collection_id = 3;
   string owner_id = 4;
+
+  Sort sort = 5;
+  SortDirection sort_direction = 6;
 }
 
 message NFTsResponse {
@@ -151,4 +183,38 @@ message NFTPriceHistoryRequest {
 
 message NFTPriceHistoryResponse {
   repeated PriceDatum data = 1;
+}
+
+message Action {
+  string label = 1;
+  string url = 2;
+}
+
+message News {
+  string title = 1;
+  string subtitle = 2;
+  string text = 3;
+  string image = 4;
+  repeated Action actions = 5;
+}
+
+message Banner {
+  string image = 1;
+  string url = 2;
+}
+
+message BannersRequest {
+  bool testnet = 1;
+}
+
+message BannersResponse {
+  repeated Banner banners = 1;
+}
+
+message NewsRequest {
+  bool testnet = 1;
+}
+
+message NewsResponse {
+  repeated News news = 1;
 }

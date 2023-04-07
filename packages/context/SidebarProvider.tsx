@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { useWindowDimensions } from "react-native";
 
 interface DefaultValue {
   isSidebarExpanded: boolean;
@@ -6,17 +7,27 @@ interface DefaultValue {
 }
 
 const defaultValue: DefaultValue = {
-  isSidebarExpanded: false,
+  isSidebarExpanded: true,
   toggleSidebar: () => {},
 };
 
 const SidebarContext = createContext(defaultValue);
+
+const MOBILE_WIDTH = 768;
 
 export const SidebarContextProvider: React.FC = ({ children }) => {
   // The entered isSidebarExpanded
   const [isSidebarExpanded, setIsSidebarExpanded] = useState<boolean>(
     defaultValue.isSidebarExpanded
   );
+
+  const { width: windowWidth } = useWindowDimensions();
+
+  useEffect(() => {
+    setIsSidebarExpanded(
+      windowWidth >= MOBILE_WIDTH ? defaultValue.isSidebarExpanded : false
+    );
+  }, [windowWidth]);
 
   const toggleSidebar = () => setIsSidebarExpanded(!isSidebarExpanded);
 

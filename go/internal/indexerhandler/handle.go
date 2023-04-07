@@ -7,46 +7,46 @@ import (
 
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
-	"github.com/TERITORI/teritori-dapp/go/pkg/coingeckoprices"
+	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
+	"github.com/TERITORI/teritori-dapp/go/pkg/pricespb"
+	"github.com/TERITORI/teritori-dapp/go/pkg/tmws"
 	"github.com/allegro/bigcache/v3"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	cosmostx "github.com/cosmos/cosmos-sdk/types/tx"
 	cosmosproto "github.com/cosmos/gogoproto/proto"
 	"github.com/davecgh/go-spew/spew"
 	"github.com/pkg/errors"
-	tclient "github.com/tendermint/tendermint/rpc/client/http"
 	tenderminttypes "github.com/tendermint/tendermint/rpc/core/types"
 	"go.uber.org/zap"
+	"golang.org/x/exp/slices"
 	"gorm.io/gorm"
 )
 
 type Message struct {
-	Msg       *codectypes.Any
-	MsgIndex  int
-	MsgID     string
-	TxHash    string
-	Events    EventsMap
-	Log       TendermintTxLog
-	BlockTime time.Time
+	Msg          *codectypes.Any
+	MsgIndex     int
+	MsgID        string
+	TxHash       string
+	Events       EventsMap
+	Log          TendermintTxLog
+	GetBlockTime func() (time.Time, error)
 }
 
 type Config struct {
-	TNSContractAddress   string
-	RESTEndpoint         string
-	MinterCodeID         uint64
-	VaultContractAddress string
-	TNSDefaultImageURL   string
-	TendermintClient     *tclient.HTTP
-	NetworkID            string
-	CoinGeckoPrices      *coingeckoprices.CoinGeckoPrices
+	MinterCodeIDs             []uint64
+	TendermintClient          *tmws.Client
+	BlockTimeCache            *bigcache.BigCache
+	PricesClient              pricespb.PricesServiceClient
+	Network                   *networks.CosmosNetwork
+	NetworkStore              networks.NetworkStore
+	SocialFeedContractAddress string
 }
 
 type Handler struct {
 	db *gorm.DB
 
-	logger         *zap.Logger
-	config         Config
-	blockTimeCache *bigcache.BigCache
+	logger *zap.Logger
+	config Config
 }
 
 func NewHandler(db *gorm.DB, config Config, logger *zap.Logger) (*Handler, error) {
@@ -57,18 +57,10 @@ func NewHandler(db *gorm.DB, config Config, logger *zap.Logger) (*Handler, error
 		logger = zap.NewNop()
 	}
 
-	blockTimeCacheConfig := bigcache.DefaultConfig(time.Duration(0))
-	blockTimeCacheConfig.HardMaxCacheSize = 10
-	blockTimeCache, err := bigcache.NewBigCache(blockTimeCacheConfig)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to init block time cache")
-	}
-
 	return &Handler{
-		db:             db,
-		logger:         logger,
-		config:         config,
-		blockTimeCache: blockTimeCache,
+		db:     db,
+		logger: logger,
+		config: config,
 	}, nil
 }
 
@@ -95,21 +87,27 @@ func (h *Handler) HandleTx(height int64, hash string, tx cosmostx.Tx, logs []Ten
 		return errors.New("messages and results count mismatch")
 	}
 
-	blockTime, err := h.blockTime(height)
-	if err != nil {
-		return errors.Wrap(err, "failed to get block time")
-	}
+	var blockTime *time.Time
 
 	codecMessages := tx.Body.Messages
 	for i, codecMsg := range codecMessages {
 		handlerMsg := Message{
-			Msg:       codecMsg,
-			MsgIndex:  i,
-			MsgID:     fmt.Sprintf("%s-%d", hash, i),
-			Log:       logs[i],
-			TxHash:    hash,
-			Events:    EventsMapFromStringEvents(logs[i].Events),
-			BlockTime: blockTime,
+			Msg:      codecMsg,
+			MsgIndex: i,
+			MsgID:    fmt.Sprintf("%s-%d", hash, i),
+			Log:      logs[i],
+			TxHash:   hash,
+			Events:   EventsMapFromStringEvents(logs[i].Events),
+			GetBlockTime: func() (time.Time, error) {
+				if blockTime == nil {
+					bt, err := h.blockTime(height)
+					if err != nil {
+						return time.Time{}, err
+					}
+					blockTime = &bt
+				}
+				return *blockTime, nil
+			},
 		}
 
 		switch codecMsg.TypeUrl {
@@ -138,22 +136,26 @@ func (h *Handler) handleInstantiate(e *Message) error {
 	}
 
 	switch contractAddress {
-	case h.config.TNSContractAddress:
+	case h.config.Network.NameServiceContractAddress:
 		if err := h.handleInstantiateTNS(e, contractAddress, &instantiateMsg); err != nil {
 			return errors.Wrap(err, "failed to handle tns minter instantiation")
 		}
 		return nil
+	case h.config.Network.RiotContractAddressGen1:
+		if err := h.handleInstantiateBreeding(e, contractAddress, &instantiateMsg); err != nil {
+			return errors.Wrap(err, "failed to handle breeding instantiation")
+		}
+		return nil
 	}
 
-	switch instantiateMsg.CodeID {
-	case h.config.MinterCodeID:
+	if slices.Contains(h.config.MinterCodeIDs, instantiateMsg.CodeID) {
 		if err := h.handleInstantiateBunker(e, contractAddress, &instantiateMsg); err != nil {
 			return errors.Wrap(err, "failed to handle minter instantiation")
 		}
-	default:
-		h.logger.Debug("ignored instantiate with unknown code id", zap.Uint64("value", instantiateMsg.CodeID))
+		return nil
 	}
 
+	h.logger.Debug("ignored instantiate with unknown code id", zap.Uint64("value", instantiateMsg.CodeID))
 	return nil
 }
 
@@ -195,8 +197,15 @@ func (h *Handler) handleExecute(e *Message) error {
 			return errors.Wrap(err, "failed to handle send_nft")
 		}
 	case "withdraw":
-		if err := h.handleExecuteWithdraw(e, &executeMsg); err != nil {
-			return errors.Wrap(err, "failed to handle withdraw")
+		// Squad unstaking
+		if executeMsg.Contract == h.config.Network.RiotSquadStakingContractAddressV1 || executeMsg.Contract == h.config.Network.RiotSquadStakingContractAddressV2 {
+			if err := h.handleExecuteSquadUnstake(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle squad unstake")
+			}
+		} else {
+			if err := h.handleExecuteWithdraw(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle withdraw")
+			}
 		}
 	case "burn":
 		if err := h.handleExecuteBurn(e, &executeMsg); err != nil {
@@ -208,19 +217,64 @@ func (h *Handler) handleExecute(e *Message) error {
 		}
 	case "transfer_nft":
 		if err := h.handleExecuteTransferNFT(e, &executeMsg); err != nil {
-			return errors.Wrap(err, "failed to handle transfer")
+			return errors.Wrap(err, "failed to handle transfer_nft")
 		}
 	case "update_metadata":
 		if err := h.handleExecuteUpdateTNSMetadata(e, &executeMsg); err != nil {
-			return errors.Wrap(err, "failed to handle transfer")
+			return errors.Wrap(err, "failed to handle update_metadata")
 		}
 	case "set_admin_address":
 		if err := h.handleExecuteTNSSetAdminAddress(e, &executeMsg); err != nil {
-			return errors.Wrap(err, "failed to handle transfer")
+			return errors.Wrap(err, "failed to handle set_admin_address")
 		}
 	case "update_config":
 		if err := h.handleExecuteBunkerUpdateConfig(e, &executeMsg); err != nil {
-			return errors.Wrap(err, "failed to handle transfer")
+			return errors.Wrap(err, "failed to handle update_config")
+		}
+	case "pause":
+		if err := h.handleExecuteBunkerPause(e, &executeMsg); err != nil {
+			return errors.Wrap(err, "failed to handle pause")
+		}
+	case "unpause":
+		if err := h.handleExecuteBunkerUnpause(e, &executeMsg); err != nil {
+			return errors.Wrap(err, "failed to handle unpause")
+		}
+	case "stake":
+		if executeMsg.Contract == h.config.Network.RiotSquadStakingContractAddressV1 || executeMsg.Contract == h.config.Network.RiotSquadStakingContractAddressV2 {
+			if err := h.handleExecuteSquadStake(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle squad stake")
+			}
+		}
+	// Feeds actions
+	case "create_post":
+		if executeMsg.Contract == h.config.SocialFeedContractAddress {
+			if err := h.handleExecuteCreatePost(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle create post")
+			}
+		}
+	case "create_post_by_bot":
+		if executeMsg.Contract == h.config.SocialFeedContractAddress {
+			if err := h.handleExecuteCreatePostByBot(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle create post by bot")
+			}
+		}
+	case "tip_post":
+		if executeMsg.Contract == h.config.SocialFeedContractAddress {
+			if err := h.handleExecuteTipPost(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle tip post")
+			}
+		}
+	case "react_post":
+		if executeMsg.Contract == h.config.SocialFeedContractAddress {
+			if err := h.handleExecuteReactPost(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle react post")
+			}
+		}
+	case "delete_post":
+		if executeMsg.Contract == h.config.SocialFeedContractAddress {
+			if err := h.handleExecuteDeletePost(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle delete post")
+			}
 		}
 	}
 
@@ -231,7 +285,7 @@ func (h *Handler) handleExecuteMint(e *Message, execMsg *wasmtypes.MsgExecuteCon
 	contractAddress := execMsg.Contract
 
 	var collections []*indexerdb.Collection
-	if err := h.db.Preload("TeritoriCollection").Limit(1).Find(&collections, &indexerdb.Collection{ID: indexerdb.TeritoriCollectionID(contractAddress)}).Error; err != nil {
+	if err := h.db.Preload("TeritoriCollection").Limit(1).Find(&collections, &indexerdb.Collection{ID: h.config.Network.CollectionID(contractAddress)}).Error; err != nil {
 		return errors.Wrap(err, "find collection error")
 	}
 	if len(collections) == 0 {
@@ -252,7 +306,7 @@ func (h *Handler) handleExecuteMint(e *Message, execMsg *wasmtypes.MsgExecuteCon
 	}
 	tokenId := tokenIds[0]
 
-	if collection.TeritoriCollection != nil && collection.TeritoriCollection.MintContractAddress == h.config.TNSContractAddress {
+	if collection.TeritoriCollection != nil && collection.TeritoriCollection.MintContractAddress == h.config.Network.NameServiceContractAddress {
 		if err := h.handleExecuteMintTNS(e, collection, tokenId, execMsg); err != nil {
 			return errors.Wrap(err, "failed to handle tns mint")
 		}

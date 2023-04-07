@@ -1,36 +1,37 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { View } from "react-native";
 
-import logoSVG from "../../../assets/logos/logo.svg";
-import { BrandText } from "../../components/BrandText/BrandText";
-import { GovernanceBox } from "../../components/GovernanceBox/GovernanceBox";
-import { SVG } from "../../components/SVG/svg";
-import { ScreenContainer } from "../../components/ScreenContainer";
-import { teritoriRestProvider } from "../../utils/teritori";
 import { NavBarGovernance } from "./NavBarGovernance";
 import { Proposal, ProposalStatus } from "./types";
+import { BrandText } from "../../components/BrandText/BrandText";
+import { GovernanceBox } from "../../components/GovernanceBox/GovernanceBox";
+import { ScreenContainer } from "../../components/ScreenContainer";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import { NetworkKind, mustGetCosmosNetwork } from "../../networks";
 
 // FIXME: properly handle pagination
 
 export const GovernanceScreen: React.FC = () => {
   const [proposals, setProposals] = useState<Proposal[]>([]);
   const [filter, setFilter] = useState<ProposalStatus>();
+  const selectedNetworkId = useSelectedNetworkId();
 
   useEffect(() => {
     const effect = async () => {
       try {
+        const network = mustGetCosmosNetwork(selectedNetworkId);
         const res = await fetch(
-          `${teritoriRestProvider}/cosmos/gov/v1beta1/proposals`
+          `${network.restEndpoint}/cosmos/gov/v1beta1/proposals`
         );
         const data = await res.json();
 
-        setProposals(data.proposals);
+        setProposals(data.proposals.reverse());
       } catch (err) {
         console.error(err);
       }
     };
     effect();
-  }, []);
+  }, [selectedNetworkId]);
 
   const filteredProposals = useMemo(
     () => (filter ? proposals.filter((p) => p.status === filter) : proposals),
@@ -38,7 +39,7 @@ export const GovernanceScreen: React.FC = () => {
   );
 
   return (
-    <ScreenContainer>
+    <ScreenContainer forceNetworkKind={NetworkKind.Cosmos}>
       <View
         style={{
           flexDirection: "row",
@@ -85,15 +86,10 @@ export const GovernanceScreen: React.FC = () => {
             percentageAbstainValue={parseFloat(
               proposals.final_tally_result.abstain
             )}
+            status={proposals.status}
           />
         ))}
       </View>
-      <SVG
-        width={200}
-        height={200}
-        style={{ marginTop: 190, marginLeft: "40%" }}
-        source={logoSVG}
-      />
     </ScreenContainer>
   );
 };

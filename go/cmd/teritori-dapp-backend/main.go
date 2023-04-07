@@ -6,10 +6,17 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strings"
+	"unicode"
 
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
+	"github.com/TERITORI/teritori-dapp/go/pkg/feed"
+	"github.com/TERITORI/teritori-dapp/go/pkg/feedpb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/marketplace"
 	"github.com/TERITORI/teritori-dapp/go/pkg/marketplacepb"
+	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
+	"github.com/TERITORI/teritori-dapp/go/pkg/p2e"
+	"github.com/TERITORI/teritori-dapp/go/pkg/p2epb"
 	"github.com/improbable-eng/grpc-web/go/grpcweb"
 	"github.com/peterbourgon/ff/v3"
 	"github.com/pkg/errors"
@@ -17,23 +24,21 @@ import (
 	"google.golang.org/grpc"
 )
 
-var (
-	graphqlEndpoint = "https://graph.65.108.73.219.nip.io/v1"
-)
-
 func main() {
 	fs := flag.NewFlagSet("teritori-dapp-backend", flag.ContinueOnError)
 	var (
-		enableTls          = flag.Bool("enable_tls", false, "Use TLS - required for HTTP2.")
-		tlsCertFilePath    = flag.String("tls_cert_file", "../../misc/localhost.crt", "Path to the CRT/PEM file.")
-		tlsKeyFilePath     = flag.String("tls_key_file", "../../misc/localhost.key", "Path to the private key file.")
-		tnsContractAddress = fs.String("teritori-name-service-contract-address", "", "address of the teritori name service contract")
-		tnsDefaultImageURL = fs.String("teritori-name-service-default-image-url", "", "url of a fallback image for TNS")
-		dbHost             = fs.String("db-dapp-host", "", "host postgreSQL database")
-		dbPort             = fs.String("db-dapp-port", "", "port for postgreSQL database")
-		dbPass             = fs.String("postgres-password", "", "password for postgreSQL database")
-		dbName             = fs.String("database-name", "", "database name for postgreSQL")
-		dbUser             = fs.String("postgres-user", "", "username for postgreSQL")
+		enableTls       = flag.Bool("enable_tls", false, "Use TLS - required for HTTP2.")
+		tlsCertFilePath = flag.String("tls_cert_file", "../../misc/localhost.crt", "Path to the CRT/PEM file.")
+		tlsKeyFilePath  = flag.String("tls_key_file", "../../misc/localhost.key", "Path to the private key file.")
+		dbHost          = fs.String("db-dapp-host", "", "host postgreSQL database")
+		dbPort          = fs.String("db-dapp-port", "", "port for postgreSQL database")
+		dbPass          = fs.String("postgres-password", "", "password for postgreSQL database")
+		dbName          = fs.String("database-name", "", "database name for postgreSQL")
+		dbUser          = fs.String("postgres-user", "", "username for postgreSQL")
+		whitelistString = fs.String("teritori-collection-whitelist", "", "whitelist of collections to return")
+		airtableAPIKey  = fs.String("airtable-api-key", "", "api key of airtable for home and launchpad")
+		networksFile    = fs.String("networks-file", "networks.json", "path to networks config file")
+		pinataJWT       = fs.String("pinata-jwt", "", "Pinata admin JWT token")
 	)
 	if err := ff.Parse(fs, os.Args[1:],
 		ff.WithEnvVars(),
@@ -43,6 +48,21 @@ func main() {
 		ff.WithAllowMissingConfigFile(true),
 	); err != nil {
 		panic(errors.Wrap(err, "failed to parse flags"))
+	}
+
+	// Load Pinata JWT token
+	if *pinataJWT == "" {
+		panic(errors.New("env var PINATA_JWT must be provided"))
+	}
+
+	// load networks
+	networksBytes, err := os.ReadFile(*networksFile)
+	if err != nil {
+		panic(errors.Wrap(err, "failed to read networks config file"))
+	}
+	netstore, err := networks.UnmarshalNetworkStore(networksBytes)
+	if err != nil {
+		panic(errors.Wrap(err, "failed to unmarshal networks config"))
 	}
 
 	if dbHost == nil || dbUser == nil || dbPass == nil || dbName == nil || dbPort == nil {
@@ -64,16 +84,39 @@ func main() {
 		panic(errors.Wrap(err, "failed to create logger"))
 	}
 
-	svc := marketplace.NewMarketplaceService(context.Background(), &marketplace.Config{
-		Logger:             logger,
-		IndexerDB:          indexerDB,
-		GraphqlEndpoint:    graphqlEndpoint,
-		TNSContractAddress: *tnsContractAddress,
-		TNSDefaultImageURL: *tnsDefaultImageURL,
+	whitelist := strings.Split(*whitelistString, ",")
+	for i, elem := range whitelist {
+		whitelist[i] = strings.TrimFunc(elem, unicode.IsSpace)
+	}
+
+	marketplaceSvc, err := marketplace.NewMarketplaceService(context.Background(), &marketplace.Config{
+		Logger:         logger,
+		IndexerDB:      indexerDB,
+		Whitelist:      whitelist,
+		AirtableAPIKey: *airtableAPIKey,
+		NetworkStore:   netstore,
+	})
+	if err != nil {
+		panic(errors.Wrap(err, "failed to create marketplace service"))
+	}
+
+	// P2E services
+	p2eSvc := p2e.NewP2eService(context.Background(), &p2e.Config{
+		Logger:    logger,
+		IndexerDB: indexerDB,
+	})
+
+	// Feed services
+	feedSvc := feed.NewFeedService(context.Background(), &feed.Config{
+		Logger:    logger,
+		IndexerDB: indexerDB,
+		PinataJWT: *pinataJWT,
 	})
 
 	server := grpc.NewServer()
-	marketplacepb.RegisterMarketplaceServiceServer(server, svc)
+	marketplacepb.RegisterMarketplaceServiceServer(server, marketplaceSvc)
+	p2epb.RegisterP2EServiceServer(server, p2eSvc)
+	feedpb.RegisterFeedServiceServer(server, feedSvc)
 
 	wrappedServer := grpcweb.WrapServer(server,
 		grpcweb.WithWebsockets(true),

@@ -2,9 +2,12 @@ import React from "react";
 import { ViewStyle, View, StyleProp, TouchableOpacity } from "react-native";
 import { SvgProps } from "react-native-svg";
 
+import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
+import { neutral22, neutral77 } from "../../utils/style/colors";
+import { fontSemibold14, fontSemibold20 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
-import { PrimaryBox } from "../boxes/PrimaryBox";
+import { TertiaryBox } from "../boxes/TertiaryBox";
 
 export const FlowCard: React.FC<{
   label: string;
@@ -15,38 +18,53 @@ export const FlowCard: React.FC<{
   disabled?: boolean;
 }> = ({ label, description, iconSVG, style, disabled, onPress }) => {
   return (
-    <TouchableOpacity onPress={onPress} disabled={disabled}>
-      <PrimaryBox
-        width={392}
-        height={100}
+    <TouchableOpacity
+      onPress={onPress}
+      disabled={disabled}
+      style={[{ flex: 1 }, style]}
+    >
+      <TertiaryBox
+        height={224}
+        fullWidth
         mainContainerStyle={{
           paddingVertical: 20,
           paddingHorizontal: 20,
-          flexDirection: "row",
-          justifyContent: "flex-start",
           alignItems: "flex-start",
+          justifyContent: "space-between",
         }}
         disabled={disabled}
-        style={style}
       >
-        <SVG
-          width={24}
-          height={24}
-          source={iconSVG}
-          style={{ marginRight: 8 }}
-        />
-        <View style={{ justifyContent: "space-between", height: "100%" }}>
-          <BrandText>{label}</BrandText>
+        <SVG width={40} height={40} source={iconSVG} />
+        <View>
           <BrandText
-            style={{
-              color: "#A3A3A3",
-              fontSize: 14,
-            }}
+            style={[
+              fontSemibold14,
+              {
+                color: neutral77,
+                marginBottom: 14,
+              },
+            ]}
           >
             {description}
           </BrandText>
+          <BrandText style={[fontSemibold20]}>{label}</BrandText>
         </View>
-      </PrimaryBox>
+        <View
+          style={{
+            height: 32,
+            width: 32,
+            backgroundColor: neutral22,
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: 20,
+            position: "absolute",
+            right: 18,
+            bottom: 18,
+          }}
+        >
+          <SVG source={chevronRightSVG} width={16} />
+        </View>
+      </TertiaryBox>
     </TouchableOpacity>
   );
 };

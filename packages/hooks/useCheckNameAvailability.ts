@@ -1,12 +1,14 @@
 // Query the name service
 import { useEffect, useState } from "react";
 
+import { useSelectedNetworkId } from "./useSelectedNetwork";
 import { useFeedbacks } from "../context/FeedbacksProvider";
-import { getNonSigningCosmWasmClient } from "../utils/keplr";
+import { mustGetNonSigningCosmWasmClient } from "../networks";
 import { isTokenOwnedByUser } from "../utils/tns";
 
 // TNS : From a given name, returns if it exists through a queryContractSmart() with an unsigned cosmWasmClient
 export const useCheckNameAvailability = (name: string, tokens: string[]) => {
+  const networkId = useSelectedNetworkId();
   const [nameAvailable, setNameAvailable] = useState(true);
   const [nameError, setNameError] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -21,7 +23,7 @@ export const useCheckNameAvailability = (name: string, tokens: string[]) => {
       const contract = process.env
         .TERITORI_NAME_SERVICE_CONTRACT_ADDRESS as string;
       // We just want to read, so we use a non-signing client
-      const cosmWasmClient = await getNonSigningCosmWasmClient();
+      const cosmWasmClient = await mustGetNonSigningCosmWasmClient(networkId);
       try {
         // If this query fails it means that the token does not exist.
         const token = await cosmWasmClient.queryContractSmart(contract, {
@@ -29,6 +31,7 @@ export const useCheckNameAvailability = (name: string, tokens: string[]) => {
             token_id: name + process.env.TLD,
           },
         });
+
         return token.extension;
       } catch {
         // ---- If here, "cannot contract", probably because not found, so the token is considered as available
@@ -67,7 +70,7 @@ export const useCheckNameAvailability = (name: string, tokens: string[]) => {
           message: e.message,
         });
       });
-  }, [name]);
+  }, [name, setToastError, tokens, networkId]);
 
   return { nameAvailable, nameError, loading };
 };

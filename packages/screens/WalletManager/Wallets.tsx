@@ -1,12 +1,34 @@
 import React from "react";
 import { View } from "react-native";
 
-import { BrandText } from "../../components/BrandText";
-import { WALLETS } from "../../utils/fakeData/walletManager";
-import { neutral33 } from "../../utils/style/colors";
 import { WalletItem } from "./WalletItem";
+import { BrandText } from "../../components/BrandText";
+import { useRewards } from "../../hooks/useRewards";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { getNetwork } from "../../networks";
+import { neutral33 } from "../../utils/style/colors";
 
 export const Wallets: React.FC = () => {
+  const selectedWallet = useSelectedWallet();
+
+  // TODO: Handle multiple wallets addresses
+  const { totalsRewards } = useRewards(selectedWallet?.userId);
+
+  const wallets = [];
+
+  if (selectedWallet) {
+    const network = getNetwork(selectedWallet.networkId);
+    const wallet = {
+      id: 0,
+      title: network?.displayName || selectedWallet.networkId,
+      address: selectedWallet.address,
+      pendingRewards: totalsRewards,
+      networkId: selectedWallet.networkId,
+      staked: 42,
+    };
+    wallets.push(wallet);
+  }
+
   return (
     <View
       style={{
@@ -18,10 +40,10 @@ export const Wallets: React.FC = () => {
     >
       <BrandText style={{ marginRight: 20, fontSize: 20 }}>Wallets</BrandText>
 
-      {WALLETS.map((item, index) => (
+      {wallets.map((item, index) => (
         <WalletItem
           key={item.title}
-          itemsCount={WALLETS.length}
+          itemsCount={wallets.length}
           item={item}
           index={index}
         />

@@ -1,8 +1,23 @@
+import { bech32 } from "bech32";
 import React from "react";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { Image, StyleSheet, View } from "react-native";
 
+import { NFTTransferForm } from "./types";
 import { NFT } from "../../api/marketplace/v1/marketplace";
+import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { TeritoriNftClient } from "../../contracts-clients/teritori-nft/TeritoriNft.client";
+import { TeritoriNft__factory } from "../../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
+import {
+  NetworkKind,
+  CosmosNetworkInfo,
+  EthereumNetworkInfo,
+  getKeplrSigningCosmWasmClient,
+  getNetwork,
+  parseNftId,
+} from "../../networks";
+import { getMetaMaskEthereumSigner } from "../../utils/ethereum";
 import { neutral77, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold12, fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
@@ -11,7 +26,6 @@ import { PrimaryButton } from "../buttons/PrimaryButton";
 import { TextInputCustom } from "../inputs/TextInputCustom";
 import ModalBase from "../modals/ModalBase";
 import { SpacerColumn } from "../spacer";
-import { NFTTransferForm } from "./types";
 
 interface NFTTransferModalProps {
   nft?: NFT;
@@ -26,8 +40,136 @@ export const NFTTransferModal: React.FC<NFTTransferModalProps> = ({
   nft,
   onSubmit,
 }) => {
-  // variables
-  const { handleSubmit, control } = useForm<NFTTransferForm>();
+  const networkId = nft?.networkId;
+  const network = getNetwork(networkId);
+  const networkKind = network?.kind;
+  const { setToastError, setToastSuccess } = useFeedbacks();
+  const selectedWallet = useSelectedWallet();
+  const { handleSubmit: formHandleSubmit, control } =
+    useForm<NFTTransferForm>();
+
+  const cosmosSendNFT = async (
+    nftContractAddress: string,
+    tokenId: string,
+    sender: string,
+    receiver: string,
+    networkInfo: CosmosNetworkInfo
+  ) => {
+    // validate address
+    const address = bech32.decode(receiver);
+
+    if (address.prefix !== networkInfo.addressPrefix) {
+      throw Error("Bad address prefix");
+    }
+
+    // create client
+    const signingComswasmClient = await getKeplrSigningCosmWasmClient(
+      networkInfo.id
+    );
+    const nftClient = new TeritoriNftClient(
+      signingComswasmClient,
+      sender,
+      nftContractAddress
+    );
+
+    // transfer
+    await nftClient.transferNft({
+      recipient: receiver,
+      tokenId,
+    });
+  };
+
+  const ethereumSendNFT = async (
+    network: EthereumNetworkInfo,
+    nftContractAddress: string,
+    tokenId: string,
+    sender: string,
+    receiver: string
+  ) => {
+    const signer = await getMetaMaskEthereumSigner(network, sender);
+    if (!signer) {
+      throw Error("Unable to get signer");
+    }
+
+    const nftClient = await TeritoriNft__factory.connect(
+      nftContractAddress,
+      signer
+    );
+
+    const { maxFeePerGas, maxPriorityFeePerGas } = await signer.getFeeData();
+    const tx = await nftClient.transferFrom(sender, receiver, tokenId, {
+      maxFeePerGas: maxFeePerGas?.toNumber(),
+      maxPriorityFeePerGas: maxPriorityFeePerGas?.toNumber(),
+    });
+
+    await tx.wait();
+  };
+
+  const handleSubmit: SubmitHandler<NFTTransferForm> = async (formValues) => {
+    try {
+      if (!nft) {
+        throw Error(`No NFT selected`);
+      }
+
+      const [network, , tokenId] = parseNftId(nft.id);
+
+      if (
+        ![NetworkKind.Ethereum, NetworkKind.Cosmos].includes(
+          network?.kind || NetworkKind.Unknown
+        )
+      ) {
+        throw Error(`Network not supported`);
+      }
+
+      // check for sender
+      const sender = selectedWallet?.address;
+      if (!sender) {
+        throw Error(`No sender`);
+      }
+
+      // check for network
+      if (!network) {
+        throw Error(`No network`);
+      }
+
+      switch (network.kind) {
+        case NetworkKind.Cosmos:
+          await cosmosSendNFT(
+            nft.nftContractAddress,
+            tokenId,
+            sender,
+            formValues.receiverAddress,
+            network
+          );
+          break;
+        case NetworkKind.Ethereum:
+          await ethereumSendNFT(
+            network,
+            nft.nftContractAddress,
+            tokenId,
+            sender,
+            formValues.receiverAddress
+          );
+          break;
+        default:
+          throw Error(`unsupported network kind ${networkKind}`);
+      }
+
+      setToastSuccess({
+        title: "NFT transfered",
+        message: "",
+      });
+    } catch (err) {
+      console.error(err);
+      if (err instanceof Error) {
+        setToastError({
+          title: "Transfer failed",
+          message: err.message,
+        });
+      }
+    }
+    onClose();
+  };
 
   // returns
   return (
@@ -59,14 +201,15 @@ export const NFTTransferModal: React.FC<NFTTransferModalProps> = ({
       />
       <SpacerColumn size={2} />
       <BrandText style={styles.estimatedText}>
-        Estimated Time: 20 Seconds
+        Estimated Time: 6 Seconds
       </BrandText>
       <SpacerColumn size={1} />
       <PrimaryButton
         size="M"
         text="Transfer"
         fullWidth
-        onPress={handleSubmit(onSubmit)}
+        loader
+        onPress={formHandleSubmit(handleSubmit)}
       />
       <SpacerColumn size={2.5} />
     </ModalBase>

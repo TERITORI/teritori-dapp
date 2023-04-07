@@ -1,47 +1,44 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { View } from "react-native";
 
-import { ScreenContainer } from "../../components/ScreenContainer";
+import { TNSModalCommonProps } from "./TNSHomeScreen";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
-import { SendFundModal } from "../../components/modals/teritoriNameService/TNSSendFundsModal";
-import { BackTo } from "../../components/navigation/BackTo";
+import ModalBase from "../../components/modals/GradientModalBase";
+import { TNSSendFundsModal } from "../../components/modals/teritoriNameService/TNSSendFundsModal";
 import { FindAName } from "../../components/teritoriNameService/FindAName";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useTNS } from "../../context/TNSProvider";
-import { useTokenList } from "../../hooks/tokens";
-import { useCheckNameAvailability } from "../../hooks/useCheckNameAvailability";
-import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
-import { ScreenFC, useAppNavigation } from "../../utils/navigation";
-import { isTokenOwnedByUser } from "../../utils/tns";
+import { useNSNameAvailability } from "../../hooks/useNSNameAvailability";
+import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { getCosmosNetwork } from "../../networks";
+import { neutral17 } from "../../utils/style/colors";
 
-export const TNSExploreScreen: ScreenFC<"TNSExplore"> = () => {
+interface TNSExploreScreenProps extends TNSModalCommonProps {}
+
+export const TNSExploreScreen: React.FC<TNSExploreScreenProps> = ({
+  onClose,
+}) => {
   const [sendFundsModalVisible, setSendFundsModalVisible] = useState(false);
   const { name, setName } = useTNS();
-  const navigation = useAppNavigation();
-  const isKeplrConnected = useIsKeplrConnected();
-  const { setLoadingFullScreen } = useFeedbacks();
-  const { tokens, loadingTokens } = useTokenList();
-  const { nameAvailable, nameError, loading } = useCheckNameAvailability(
-    name,
-    tokens
+  const selectedWallet = useSelectedWallet();
+  const networkId = useSelectedNetworkId();
+  const network = getCosmosNetwork(networkId);
+  const { tokens } = useNSTokensByOwner(selectedWallet?.userId);
+  const tokenId = (name + network?.nameServiceTLD || "").toLowerCase();
+  const { nameAvailable, nameError, loading } = useNSNameAvailability(
+    networkId,
+    tokenId
   );
 
-  // Sync loadingFullScreen
-  useEffect(() => {
-    setLoadingFullScreen(loadingTokens);
-  }, [loadingTokens]);
-
   return (
-    <ScreenContainer
-      hideSidebar
-      headerStyle={{ borderBottomColor: "transparent" }}
-      footerChildren={
-        <BackTo
-          label="Back to home"
-          onPress={() => navigation.navigate("TNSHome")}
-        />
-      }
+    <ModalBase
+      label="Find a name"
+      hideMainSeparator
+      onClose={() => onClose()}
+      modalStatus={name && nameAvailable ? "success" : "danger"}
+      width={457}
     >
       {/*----- The first thing you'll see on this screen is <FindAName> */}
       <FindAName
@@ -52,10 +49,7 @@ export const TNSExploreScreen: ScreenFC<"TNSExplore"> = () => {
         loading={loading}
       >
         {/*-----  If name entered, no error and if the name is minted, we display some buttons for Explore flow */}
-        {name &&
-        !nameError &&
-        !nameAvailable &&
-        !isTokenOwnedByUser(tokens, name) ? (
+        {name && !nameError && !nameAvailable ? (
           <View
             style={{
               flex: 1,
@@ -73,23 +67,27 @@ export const TNSExploreScreen: ScreenFC<"TNSExplore"> = () => {
               size="XL"
               width={154}
               text="View"
-              onPress={() => navigation.navigate("TNSConsultName", { name })}
+              onPress={() => {
+                onClose("TNSConsultName");
+              }}
+              squaresBackgroundColor={neutral17}
             />
             <PrimaryButtonOutline
               size="XL"
               width={154}
-              disabled={!isKeplrConnected}
+              disabled={tokens.includes(tokenId) || !selectedWallet?.connected}
               text="Send funds"
               onPress={() => setSendFundsModalVisible(true)}
+              squaresBackgroundColor={neutral17}
             />
           </View>
         ) : null}
       </FindAName>
 
-      <SendFundModal
+      <TNSSendFundsModal
         onClose={() => setSendFundsModalVisible(false)}
-        visible={sendFundsModalVisible}
+        isVisible={sendFundsModalVisible}
       />
-    </ScreenContainer>
+    </ModalBase>
   );
 };

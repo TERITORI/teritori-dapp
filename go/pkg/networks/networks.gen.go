@@ -2,42 +2,106 @@
 
 package networks
 
-var AllNetworks = []*Network{
-	{
-		ID: "teritori",
-		Currencies: []Currency{
-			&NativeCurrency{
-				Denom:       "utori",
-				CoinGeckoID: "teritori",
-			},
-		},
-	},
-	{
-		ID: "teritori-testnet",
-		Currencies: []Currency{
-			&NativeCurrency{
-				Denom:       "utori",
-				CoinGeckoID: "teritori",
-			},
-			&IBCCurrency{
-				Denom:         "ibc/C9300DDD93DF3A3A668CAB02398A0AA081EF89EC005B2DB68832E363BAAABF85",
-				SourceNetwork: "cosmos-hub-theta",
-				SourceDenom:   "uatom",
-			},
-			&IBCCurrency{
-				Denom:         "ibc/8D9734B53D56DC57A92E4CC788547699853F411190F6DAA70FA12B9BD062F7AE",
-				SourceNetwork: "cosmos-hub-theta",
-				SourceDenom:   "uatom",
-			},
-		},
-	},
-	{
-		ID: "cosmos-hub-theta",
-		Currencies: []Currency{
-			&NativeCurrency{
-				Denom:       "uatom",
-				CoinGeckoID: "cosmos",
-			},
-		},
-	},
+import (
+	"encoding/json"
+	"github.com/pkg/errors"
+)
+
+const (
+	NetworkKindUnknown  = NetworkKind("Unknown")
+	NetworkKindEthereum = NetworkKind("Ethereum")
+	NetworkKindCosmos   = NetworkKind("Cosmos")
+	NetworkKindSolana   = NetworkKind("Solana")
+)
+
+func UnmarshalNetwork(b []byte) (Network, error) {
+	var base NetworkBase
+	if err := json.Unmarshal(b, &base); err != nil {
+		return nil, errors.Wrap(err, "failed to unmarshal network base")
+	}
+	switch base.Kind {
+	case NetworkKindEthereum:
+		var n EthereumNetwork
+		if err := json.Unmarshal(b, &n); err != nil {
+			return nil, errors.Wrap(err, "failed to unmarshal Ethereum network")
+		}
+		return &n, nil
+
+	case NetworkKindCosmos:
+		var n CosmosNetwork
+		if err := json.Unmarshal(b, &n); err != nil {
+			return nil, errors.Wrap(err, "failed to unmarshal Cosmos network")
+		}
+		return &n, nil
+
+	case NetworkKindSolana:
+		var n SolanaNetwork
+		if err := json.Unmarshal(b, &n); err != nil {
+			return nil, errors.Wrap(err, "failed to unmarshal Solana network")
+		}
+		return &n, nil
+
+	default:
+		return &base, nil
+	}
+}
+
+func (netstore NetworkStore) GetEthereumNetwork(id string) (*EthereumNetwork, error) {
+	network, err := netstore.GetNetwork(id)
+	if err != nil {
+		return nil, err
+	}
+	cn, ok := network.(*EthereumNetwork)
+	if !ok {
+		return nil, ErrWrongType
+	}
+	return cn, nil
+}
+
+func (netstore NetworkStore) MustGetEthereumNetwork(id string) *EthereumNetwork {
+	network, err := netstore.GetEthereumNetwork(id)
+	if err != nil {
+		panic(err)
+	}
+	return network
+}
+
+func (netstore NetworkStore) GetCosmosNetwork(id string) (*CosmosNetwork, error) {
+	network, err := netstore.GetNetwork(id)
+	if err != nil {
+		return nil, err
+	}
+	cn, ok := network.(*CosmosNetwork)
+	if !ok {
+		return nil, ErrWrongType
+	}
+	return cn, nil
+}
+
+func (netstore NetworkStore) MustGetCosmosNetwork(id string) *CosmosNetwork {
+	network, err := netstore.GetCosmosNetwork(id)
+	if err != nil {
+		panic(err)
+	}
+	return network
+}
+
+func (netstore NetworkStore) GetSolanaNetwork(id string) (*SolanaNetwork, error) {
+	network, err := netstore.GetNetwork(id)
+	if err != nil {
+		return nil, err
+	}
+	cn, ok := network.(*SolanaNetwork)
+	if !ok {
+		return nil, ErrWrongType
+	}
+	return cn, nil
+}
+
+func (netstore NetworkStore) MustGetSolanaNetwork(id string) *SolanaNetwork {
+	network, err := netstore.GetSolanaNetwork(id)
+	if err != nil {
+		panic(err)
+	}
+	return network
 }

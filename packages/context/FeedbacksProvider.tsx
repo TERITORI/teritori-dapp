@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 
-import { LoaderFullScreen } from "../components/loaders/LoaderFullScreen";
 import { ToastError } from "../components/toasts/ToastError";
 import { ToastSuccess } from "../components/toasts/ToastSuccess";
 
@@ -43,7 +42,11 @@ export const FeedbacksContextProvider: React.FC = ({ children }) => {
   const [loadingFullScreen, setLoadingFullScreen] = useState(false);
   const [toastError, setToastError] = useState(initialToastError);
   const [toastSuccess, setToastSuccess] = useState(initialToastSuccess);
-
+  const LoaderFullScreen = React.lazy(() =>
+    import("../components/loaders/LoaderFullScreen").then((module) => ({
+      default: module.LoaderFullScreen,
+    }))
+  );
   useEffect(() => {
     const timeoutID = setTimeout(() => {
       setToastError(initialToastError);
@@ -65,7 +68,7 @@ export const FeedbacksContextProvider: React.FC = ({ children }) => {
       }}
     >
       {/*==== Loader full screen*/}
-      {loadingFullScreen ? <LoaderFullScreen /> : null}
+      <LoaderFullScreen visible={loadingFullScreen} />
       {/*==== Toasts*/}
       {toastError && toastError.title ? (
         <ToastError

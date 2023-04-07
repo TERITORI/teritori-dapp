@@ -5,11 +5,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"math"
+	"math/big"
 	"net/http"
 	"time"
 
 	"github.com/TERITORI/teritori-dapp/go/internal/ipfsutil"
-	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
+	"github.com/TERITORI/teritori-dapp/go/pkg/pricespb"
 	"github.com/allegro/bigcache/v3"
 	"github.com/pkg/errors"
 	abcitypes "github.com/tendermint/tendermint/abci/types"
@@ -141,11 +143,11 @@ func fetchIPFSJSON(uri string, dst interface{}) error {
 func (h *Handler) blockTime(height int64) (time.Time, error) {
 	cacheKey := fmt.Sprintf("%d", height)
 
-	cached, err := h.blockTimeCache.Get(cacheKey)
+	cached, err := h.config.BlockTimeCache.Get(cacheKey)
 
 	// cache miss
 	if err == bigcache.ErrEntryNotFound {
-		res, err := h.config.TendermintClient.Block(context.Background(), &height)
+		res, err := h.config.TendermintClient.Block(&height)
 		if err != nil {
 			return time.Time{}, errors.Wrap(err, "failed to fetch block")
 		}
@@ -156,7 +158,7 @@ func (h *Handler) blockTime(height int64) (time.Time, error) {
 		if err != nil {
 			return time.Time{}, errors.Wrap(err, "failed to marshal time as binary")
 		}
-		if err := h.blockTimeCache.Set(cacheKey, binaryBlockTime); err != nil {
+		if err := h.config.BlockTimeCache.Set(cacheKey, binaryBlockTime); err != nil {
 			return time.Time{}, errors.Wrap(err, "failed to set in cache")
 		}
 
@@ -177,13 +179,57 @@ func (h *Handler) blockTime(height int64) (time.Time, error) {
 }
 
 func (h *Handler) HistoricalPrice(denom string, t time.Time) (float64, error) {
-	nativeCurrency, err := networks.GetNativeCurrency(h.config.NetworkID, denom)
+	nativeCurrency, err := h.config.NetworkStore.GetNativeCurrency(h.config.Network.ID, denom)
 	if err != nil {
 		return 0, errors.Wrap(err, "failed to get native currency")
 	}
-	price, err := h.config.CoinGeckoPrices.Historical(nativeCurrency.CoinGeckoID, t)
+
+	vsId := "usd"
+
+	res, err := h.config.PricesClient.Prices(context.Background(), &pricespb.PricesRequest{
+		Id:    nativeCurrency.CoinGeckoID,
+		VsIds: []string{vsId},
+		Time:  t.Format(time.RFC3339),
+	})
 	if err != nil {
-		return 0, errors.Wrap(err, fmt.Sprintf(`failed to get historical price for %s`, nativeCurrency.CoinGeckoID))
+		return 0, errors.Wrap(err, "failed to query price")
 	}
+
+	price := float64(0)
+	for _, p := range res.GetPrices() {
+		if p.GetId() == vsId {
+			price = p.GetValue()
+			break
+		}
+	}
+
 	return price, nil
+}
+
+func (h *Handler) usdAmount(denom string, amount string, t time.Time) (float64, error) {
+	// we don't return an error because we shouldn't error-out in case a currency is not registered
+
+	currency, err := h.config.NetworkStore.GetNativeCurrency(h.config.Network.ID, denom)
+	if err != nil {
+		return 0, errors.Wrap(err, "failed to get native currency")
+	}
+
+	// FIXME: this could be more precise
+	bigAmount, _, err := big.ParseFloat(amount, 10, 18, big.AwayFromZero)
+	if err != nil {
+		return 0, errors.Wrap(err, "failed to parse amount into big float")
+	}
+	divider := big.NewFloat(math.Pow(10, float64(currency.Decimals)))
+	bigAmount.Quo(bigAmount, divider)
+
+	coinUSDPrice, err := h.HistoricalPrice(denom, t)
+	if err != nil {
+		return 0, errors.Wrap(err, "failed to get historical price")
+	}
+	bigCoinUSDPrice := big.NewFloat(coinUSDPrice)
+
+	bigAmount.Mul(bigAmount, bigCoinUSDPrice)
+
+	usdPrice, _ := bigAmount.Float64()
+	return usdPrice, nil
 }

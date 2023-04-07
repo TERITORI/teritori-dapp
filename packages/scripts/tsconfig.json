@@ -1,0 +1,8 @@
+{
+  "extends": "expo/tsconfig.base",
+  "target": "ES5",
+  "compilerOptions": {
+    "useDefineForClassFields": false, // this is needed by cosmwasm-ts-codegen clients
+    "strict": true
+  }
+}

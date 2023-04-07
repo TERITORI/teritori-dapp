@@ -1,14 +1,14 @@
-import React, { ReactElement, useEffect } from "react";
-import { FlatList, View, ViewStyle } from "react-native";
+import React, { ReactElement, useCallback } from "react";
+import { FlatList, View } from "react-native";
 
-import { NFT, NFTsRequest } from "../../api/marketplace/v1/marketplace";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { useNFTs } from "../../hooks/useNFTs";
-import { layout } from "../../utils/style/layout";
-import { SpacerColumn } from "../spacer";
 import { NFTView } from "./NFTView";
+import { NFT, NFTsRequest } from "../../api/marketplace/v1/marketplace";
+import { useMaxResolution } from "../../hooks/useMaxResolution";
+import { useNFTs } from "../../hooks/useNFTs";
+import { layout, screenContentMaxWidthLarge } from "../../utils/style/layout";
+import { SpacerColumn } from "../spacer";
 
-const keyExtractor = (item: NFT) => item.mintAddress;
+const keyExtractor = (item: NFT) => item.id;
 
 const RenderItem: React.FC<{
   nft: NFT;
@@ -29,30 +29,34 @@ export const NFTs: React.FC<{
   ListHeaderComponent?: ReactElement;
   ListFooterComponent?: ReactElement;
 }> = ({ req, numColumns, ListHeaderComponent, ListFooterComponent }) => {
-  const { nfts, fetchMore, firstLoading: firstLoadingNTFs } = useNFTs(req);
+  const { nfts, fetchMore } = useNFTs(req);
 
-  const { setLoadingFullScreen } = useFeedbacks();
+  const { height } = useMaxResolution();
 
-  const viewStyle: ViewStyle = {
-    height: "100%",
-    alignItems: "center",
-    flex: 1,
-  };
-
-  // Sync loadingFullScreen
-  useEffect(() => {
-    setLoadingFullScreen(firstLoadingNTFs);
-  }, [firstLoadingNTFs]);
+  const handleEndReached = useCallback(() => {
+    fetchMore();
+  }, [fetchMore]);
 
   return (
-    <View style={viewStyle}>
+    <View
+      style={{
+        alignItems: "center",
+        width: "100%",
+        height,
+      }}
+    >
       <FlatList
+        style={{ width: "100%" }}
+        contentContainerStyle={{
+          maxWidth: screenContentMaxWidthLarge,
+          alignSelf: "center",
+        }}
         key={numColumns}
         data={nfts}
         numColumns={numColumns}
-        onEndReached={fetchMore}
+        onEndReached={handleEndReached}
         keyExtractor={keyExtractor}
-        onEndReachedThreshold={4}
+        // onEndReachedThreshold={4}
         renderItem={(info) => (
           <RenderItem
             nft={info.item}
@@ -60,8 +64,9 @@ export const NFTs: React.FC<{
           />
         )}
         ItemSeparatorComponent={() => <SpacerColumn size={2} />}
-        ListHeaderComponent={ListHeaderComponent}
-        ListFooterComponent={ListFooterComponent}
+        //ListHeaderComponent={ListHeaderComponent}
+        //ListFooterComponent={ListFooterComponent}
+        removeClippedSubviews
       />
     </View>
   );

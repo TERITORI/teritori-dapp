@@ -3,7 +3,12 @@ import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
 import { DraxList, DraxView } from "react-native-drax";
 
 import shapeSvg from "../../../assets/icons/shape.svg";
-import { Collection, NFT } from "../../api/marketplace/v1/marketplace";
+import {
+  Collection,
+  NFT,
+  Sort,
+  SortDirection,
+} from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
 import { useNFTs } from "../../hooks/useNFTs";
@@ -31,6 +36,8 @@ const SelectNewNft: React.FC<{
       ownerId: "",
       limit: alignDown(20, 2) || 2,
       offset: 0,
+      sort: Sort.SORTING_PRICE,
+      sortDirection: SortDirection.SORT_DIRECTION_ASCENDING,
     });
 
     const RenderItem: React.FC<{ item: NFT }> = useCallback(
@@ -82,6 +89,7 @@ const SelectNewNft: React.FC<{
           <CollectionInfoInline
             imageSource={{ uri: currentCollection.imageUri }}
             name={currentCollection.collectionName}
+            id={currentCollection.id}
           />
           <View style={styles.separator} />
         </View>
@@ -133,7 +141,7 @@ const SelectNewNft: React.FC<{
           getItemLayout={getItemLayout}
           contentContainerStyle={{ width: 220, paddingTop: 20 }}
           style={{ flex: 1 }}
-          onEndReached={fetchMore}
+          onEndReached={() => fetchMore()}
           scrollEventThrottle={16}
         />
       </View>

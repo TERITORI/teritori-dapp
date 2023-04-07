@@ -1,34 +1,33 @@
 import React from "react";
-import { View } from "react-native";
+import { StyleSheet, View } from "react-native";
 
-import { MainConnectWalletButton } from "../../components/connectWallet/MainConnectWalletButton";
-import { useAreThereWallets } from "../../hooks/useAreThereWallets";
-import { useBalances } from "../../hooks/useBalances";
-import { useMaxResolution } from "../../hooks/useMaxResolution";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { ScreenFC } from "../../utils/navigation";
 import { Assets } from "./Assets";
 import { MyNFTs } from "./MyNFTs";
 import { WalletDashboardHeader } from "./WalletDashboardHeader";
-import { WalletManagerScreenContainer } from "./WalletManagerScreenContainer";
+import { WalletHeader } from "./WalletHeader";
 import { Wallets } from "./Wallets";
+import { ScreenContainer } from "../../components/ScreenContainer";
+import { MainConnectWalletButton } from "../../components/connectWallet/MainConnectWalletButton";
+import { useAreThereWallets } from "../../hooks/useAreThereWallets";
+import { useMaxResolution } from "../../hooks/useMaxResolution";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { ScreenFC } from "../../utils/navigation";
+import { layout } from "../../utils/style/layout";
 
 export const WalletManagerScreen: ScreenFC<"WalletManager"> = () => {
   const selectedWallet = useSelectedWallet();
-  const selectedNetwork = useSelectedNetworkId();
   const areThereWallets = useAreThereWallets();
   const { height } = useMaxResolution();
-  const balances = useBalances(selectedNetwork, selectedWallet?.address);
+
   return (
-    <WalletManagerScreenContainer>
+    <ScreenContainer headerChildren={<WalletHeader />}>
       {areThereWallets ? (
-        <>
+        <View style={styles.container}>
           <WalletDashboardHeader />
-          <Assets networkId={selectedNetwork} balances={balances} />
+          <Assets userId={selectedWallet?.userId} />
           <Wallets />
           <MyNFTs />
-        </>
+        </View>
       ) : (
         <View
           style={{
@@ -40,6 +39,13 @@ export const WalletManagerScreen: ScreenFC<"WalletManager"> = () => {
           <MainConnectWalletButton />
         </View>
       )}
-    </WalletManagerScreenContainer>
+    </ScreenContainer>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingBottom: layout.contentPadding,
+  },
+});
