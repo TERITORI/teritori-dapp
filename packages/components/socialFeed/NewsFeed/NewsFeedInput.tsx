@@ -35,7 +35,7 @@ import { useCreatePost } from "../../../hooks/feed/useCreatePost";
 import { useUpdateAvailableFreePost } from "../../../hooks/feed/useUpdateAvailableFreePost";
 import { useUpdatePostFee } from "../../../hooks/feed/useUpdatePostFee";
 import { useBalances } from "../../../hooks/useBalances";
-import { useIsMobileView } from "../../../hooks/useIsMobileView";
+import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { getUserId } from "../../../networks";
@@ -135,7 +135,7 @@ export const NewsFeedInput = React.forwardRef<
     const userId = getUserId(selectedNetworkId, selectedWallet?.address);
     const inputRef = useRef<TextInput>(null);
     const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
-    const isMobile = useIsMobileView();
+    const isMobile = useIsMobile();
     const { setToastError } = useFeedbacks();
     const [isLoading, setLoading] = useState(false);
     const [selection, setSelection] = useState<{ start: number; end: number }>({

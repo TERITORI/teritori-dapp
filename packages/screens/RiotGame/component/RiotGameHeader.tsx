@@ -13,7 +13,7 @@ import inventorySVG from "../../../../assets/icons/inventory.svg";
 import trophiesSVG from "../../../../assets/icons/trophies.svg";
 import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
-import { NetworkSelector } from "../../../components/NetworkSelector";
+import { NetworkSelector } from "../../../components/NetworkSelector/NetworkSelector";
 import { SVG } from "../../../components/SVG";
 import { Separator } from "../../../components/Separator";
 import { ConnectWalletButton } from "../../../components/TopMenu/ConnectWalletButton";
@@ -31,7 +31,11 @@ import {
   yellowDefault,
 } from "../../../utils/style/colors";
 import { fontMedium16 } from "../../../utils/style/fonts";
-import { headerHeight, layout } from "../../../utils/style/layout";
+import {
+  headerHeight,
+  headerMarginHorizontal,
+  layout,
+} from "../../../utils/style/layout";
 import { PickByValue } from "../../../utils/types/helper";
 
 type MenuItem = {
@@ -159,7 +163,9 @@ export const RiotGameHeader: React.FC<RiotGameHeaderProps> = ({
           <SpacerRow size={1.5} />
           <NetworkSelector forceNetworkKind={NetworkKind.Cosmos} />
           <SpacerRow size={1.5} />
-          <ConnectWalletButton />
+          <ConnectWalletButton
+            style={{ marginRight: headerMarginHorizontal }}
+          />
         </View>
       </View>
     </View>
