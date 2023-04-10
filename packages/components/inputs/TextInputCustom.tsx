@@ -23,6 +23,7 @@ import {
   TextInput,
   TextInputProps,
   TextStyle,
+  TouchableOpacity,
   View,
   ViewStyle,
 } from "react-native";
@@ -58,6 +59,7 @@ export interface TextInputCustomProps<T extends FieldValues>
   style?: StyleProp<ViewStyle>;
   textInputStyle?: StyleProp<TextStyle>;
   onPressEnter?: () => void;
+  onPress?: () => void;
   currency?: Currency;
   disabled?: boolean;
   regexp?: RegExp;
@@ -121,6 +123,7 @@ export const TextInputCustom = <T extends FieldValues>({
   label,
   placeHolder,
   onPressEnter,
+  iconStyle,
   style,
   textInputStyle,
   regexp,
@@ -133,6 +136,7 @@ export const TextInputCustom = <T extends FieldValues>({
   variant = "regular",
   noBrokenCorners,
   name,
+  iconSVG,
   control,
   defaultValue,
   rules,
@@ -329,6 +333,7 @@ const styles = StyleSheet.create({
     color: secondaryColor,
     fontFamily: "Exo_600SemiBold",
     outlineStyle: "none",
+    marginLeft: 10,
   },
   innerContainer: {
     flexDirection: "row",

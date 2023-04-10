@@ -7,6 +7,7 @@ import MessageCard from "../../components/cards/MessageCard";
 import { SpacerRow } from "../../components/spacer";
 import CreateGroup from "./CreateGroup";
 import { MessageHeader } from "./MessageHeader";
+import MessengerGroupChat from "./MessengerGroupChat";
 import SideBarChats from "./SideBarChats";
 import TopHeaderButtonChat from "./TopHeaderButtonChat";
 import data from "./data";
@@ -70,7 +71,8 @@ export const MessageScreen: ScreenFC<"Message"> = ({ navigation }) => {
         <SpacerRow size={2} />
 
         <View style={{ flex: 1 }}>
-          <TopHeaderButtonChat />
+          {/* <TopHeaderButtonChat /> */}
+          <MessengerGroupChat />
         </View>
       </View>
     </ScreenContainer>
