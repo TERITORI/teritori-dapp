@@ -19,7 +19,9 @@ import { TNSNameFinderModal } from "../../components/modals/teritoriNameService/
 import { FlowCard } from "../../components/teritoriNameService/FlowCard";
 import { useTNS } from "../../context/TNSProvider";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
+import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkKind } from "../../networks";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 export type TNSItems = "TNSManage" | "TNSRegister" | "TNSExplore";
@@ -66,6 +68,8 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
   const { name, setName } = useTNS();
   const navigation = useAppNavigation();
   const selectedNetwork = useSelectedNetworkInfo();
+  const selectedWallet = useSelectedWallet();
+  const { tokens } = useNSTokensByOwner(selectedWallet?.userId);
 
   const isKeplrConnected = useIsKeplrConnected();
 
@@ -158,7 +162,7 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
             }
           />
           <FlowCard
-            disabled={!isKeplrConnected}
+            disabled={!isKeplrConnected || !tokens}
             label="Manage"
             description="Transfer, edit, or burn a name that you own"
             iconSVG={penSVG}
