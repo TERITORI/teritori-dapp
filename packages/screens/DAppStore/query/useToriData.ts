@@ -106,7 +106,7 @@ export const sendKeplarTx = async ({
   selectedWallet?: Wallet;
   amount: string;
 }) => {
-  const network = getNetworkByIdPrefix("teritori");
+  const network = getNetworkByIdPrefix("tori");
   if (network) {
     const signingComswasmClient = await getKeplrSigningCosmWasmClient(
       network?.id
