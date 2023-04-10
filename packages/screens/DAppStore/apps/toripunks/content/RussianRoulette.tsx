@@ -68,7 +68,7 @@ export const Russian = () => {
   useEffect(() => {
     handleGetToriList && handleGetToriList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [selectedWallet]);
 
   const getUserToripunks = () => {
     if (Array.isArray(userToriPunksList))

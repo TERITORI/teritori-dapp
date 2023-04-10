@@ -18,6 +18,7 @@ export const useList = ({ selectedWallet }: { selectedWallet?: Wallet }) => {
         );
         return response.json();
       }
+      return [];
     },
     {
       initialData: [],
