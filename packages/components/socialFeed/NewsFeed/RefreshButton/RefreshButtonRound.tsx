@@ -2,7 +2,6 @@ import React from "react";
 import { StyleSheet, TouchableOpacity } from "react-native";
 import Animated, {
   Easing,
-  SharedValue,
   useAnimatedStyle,
   useDerivedValue,
   withRepeat,
@@ -15,7 +14,7 @@ import { layout } from "../../../../utils/style/layout";
 import { SVG } from "../../../SVG";
 
 interface RefreshButtonProps {
-  isRefreshing: SharedValue<boolean>;
+  isRefreshing?: boolean;
   onPress?(): void;
   widthToAnimate?: number;
 }
@@ -28,8 +27,8 @@ export const RefreshButtonRound: React.FC<RefreshButtonProps> = ({
 }) => {
   // variables
   const isRefreshingAnim = useDerivedValue(() => {
-    return isRefreshing.value;
-  }, [isRefreshing.value]);
+    return isRefreshing;
+  }, [isRefreshing]);
 
   const rotateValue = useDerivedValue(() => {
     return isRefreshingAnim.value

@@ -1,9 +1,6 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { LayoutChangeEvent, StyleSheet, View } from "react-native";
-import Animated, {
-  useAnimatedScrollHandler,
-  useSharedValue,
-} from "react-native-reanimated";
+import Animated, { useAnimatedScrollHandler } from "react-native-reanimated";
 
 import { CreateShortPostButtonRound } from "./CreateShortPost/CreateShortPostButtonRound";
 import { CreateShortPostModal } from "./CreateShortPost/CreateShortPostModal";
@@ -38,8 +35,10 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
 }) => {
   const { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading } =
     useFetchFeed(req);
-  const isLoadingValue = useSharedValue(false);
-  const isGoingUp = useSharedValue(false);
+  const isLoadingValue = useMemo(
+    () => isFetching || isLoading,
+    [isFetching, isLoading]
+  );
   const posts = useMemo(
     () => (data ? combineFetchFeedPages(data.pages) : []),
     [data]
@@ -51,26 +50,11 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
   const scrollHandler = useAnimatedScrollHandler({
     onScroll: (event) => {
       setFlatListContentOffsetY(event.contentOffset.y);
-      if (flatListContentOffsetY > event.contentOffset.y) {
-        isGoingUp.value = true;
-      } else if (flatListContentOffsetY < event.contentOffset.y) {
-        isGoingUp.value = false;
-      }
-      setFlatListContentOffsetY(event.contentOffset.y);
     },
   });
 
-  useEffect(() => {
-    if (isFetching || isLoading) {
-      isGoingUp.value = false;
-      isLoadingValue.value = true;
-    } else {
-      isLoadingValue.value = false;
-    }
-  }, [isFetching, isLoading, isGoingUp, isLoadingValue]);
-
   const onEndReached = () => {
-    if (!isLoading && hasNextPage && !isFetching) {
+    if (hasNextPage && !isLoadingValue) {
       fetchNextPage();
     }
   };
