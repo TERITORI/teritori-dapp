@@ -159,6 +159,7 @@ func sinkRunE(cmd *cobra.Command, args []string) error {
 	}
 
 	config := &sinker.Config{
+		Network:            network,
 		IndexerDB:          indexerDB,
 		DBLoader:           dbLoader,
 		BlockRange:         blockRange,

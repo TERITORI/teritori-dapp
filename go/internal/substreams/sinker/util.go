@@ -78,3 +78,7 @@ func mustLoadABI(abiPath string) abi.ABI {
 	}
 	return ABI
 }
+
+func isSameAddress(addr1 string, addr2 string) bool {
+	return strings.EqualFold(addr1, addr2)
+}

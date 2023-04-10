@@ -12,6 +12,7 @@ import (
 
 	"github.com/TERITORI/teritori-dapp/go/internal/substreams/db"
 	pb "github.com/TERITORI/teritori-dapp/go/internal/substreams/pb"
+	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/streamingfast/bstream"
 	"github.com/streamingfast/logging"
@@ -42,6 +43,7 @@ func GetLocalABI(path string) string {
 }
 
 type Config struct {
+	Network          *networks.EthereumNetwork
 	IndexerDB        *gorm.DB
 	DBLoader         *db.Loader
 	BlockRange       string
@@ -86,6 +88,7 @@ type PostgresSinker struct {
 	logger *zap.Logger
 	tracer logging.Tracer
 
+	network         *networks.EthereumNetwork
 	squadStakingABI *abi.ABI
 }
 
@@ -113,6 +116,7 @@ func New(config *Config, logger *zap.Logger, tracer logging.Tracer) (*PostgresSi
 		UndoBufferSize:  config.UndoBufferSize,
 		LivenessTracker: sink.NewLivenessChecker(config.LiveBlockTimeDelta),
 
+		network:         config.Network,
 		squadStakingABI: &squadStakingABI,
 	}
 
@@ -267,7 +271,7 @@ func (s *PostgresSinker) applyDatabaseChanges(dbChanges *pbddatabase.DatabaseCha
 	return nil
 }
 
-func DecodeTransactionInputData(contractABI *abi.ABI, data []byte) {
+func DecodeTransactionInputData(contractABI *abi.ABI, data []byte) (*abi.Method, map[string]interface{}) {
 	// The first 4 bytes of the t represent the ID of the method in the ABI
 	// https://docs.soliditylang.org/en/v0.5.3/abi-spec.html#function-selector
 	methodSigData := data[:4]
@@ -282,8 +286,7 @@ func DecodeTransactionInputData(contractABI *abi.ABI, data []byte) {
 		panic(err)
 	}
 
-	fmt.Printf("Method Name: %s\n", method.Name)
-	fmt.Printf("Method inputs: %v\n", inputsMap)
+	return method, inputsMap
 }
 
 func (s *PostgresSinker) handleBlockScopeData(ctx context.Context, cursor *sink.Cursor, data *pbsubstreams.BlockScopedData) error {
@@ -300,7 +303,20 @@ func (s *PostgresSinker) handleBlockScopeData(ctx context.Context, cursor *sink.
 		}
 
 		for _, txnData := range txns.Data {
-			DecodeTransactionInputData(s.squadStakingABI, txnData.Calldata)
+			// Dispatch handlers
+			if strings.EqualFold(txnData.Contract, s.network.RiotSquadStakingContractAddress) {
+				method, inputsMaps := DecodeTransactionInputData(s.squadStakingABI, txnData.Calldata)
+
+				switch method.Name {
+				case "stake":
+					fmt.Printf("handle stake", method.Name, inputsMaps)
+				}
+
+			}
+
+			// fmt.Printf("Method Name: %s\n", method.Name)
+			// fmt.Printf("Method inputs: %v\n", inputsMap)
+			panic("not found==============")
 		}
 	}
 
