@@ -51,7 +51,11 @@ export const Russian = () => {
   const [losing, setLosing] = useState<number>(0);
   const [remaningTicket, setRemaningTicket] = useState<number>(0);
 
-  const { data: userToriPunksList, refetch: handleGetToriList } = useList({
+  const {
+    data: userToriPunksList,
+    refetch: handleGetToriList,
+    error,
+  } = useList({
     selectedWallet,
   });
   const { data: buyTSC, mutate: handleBuyTicket } = useBuyTicket({
@@ -73,8 +77,17 @@ export const Russian = () => {
   const getUserToripunks = () => {
     if (Array.isArray(userToriPunksList))
       setTotalToriUser(userToriPunksList.length);
-    else if (!errorType) {
-      switch (userToriPunksList) {
+    return 0;
+  };
+
+  useEffect(() => {
+    getUserToripunks();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userToriPunksList]);
+
+  useEffect(() => {
+    if (error) {
+      switch (error) {
         case 10:
           setErroType("TICKET");
           break;
@@ -86,13 +99,7 @@ export const Russian = () => {
           break;
       }
     }
-    return 0;
-  };
-
-  useEffect(() => {
-    getUserToripunks();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userToriPunksList]);
+  }, [error]);
 
   const styleTypeSize = isMinimunWindowWidth ? "80" : "30";
   const buttonSize = isMinimunWindowWidth ? "S" : "Mobile";
