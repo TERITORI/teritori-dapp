@@ -57,6 +57,7 @@ export const DAppStoreData: React.FC = memo(() => {
     };
 
     record.options.forEach(function (option: string) {
+      if (!dAppsCol[option]) return;
       dAppsCol[option][Object.keys(dAppsCol[option])[0]].groupKey = record.id;
 
       options[Object.keys(dAppsCol[option])[0]] =
