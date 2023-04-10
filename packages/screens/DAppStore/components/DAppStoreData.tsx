@@ -57,11 +57,12 @@ export const DAppStoreData: React.FC = memo(() => {
     };
 
     record.options.forEach(function (option: string) {
-      if (!dAppsCol[option]) return;
-      dAppsCol[option][Object.keys(dAppsCol[option])[0]].groupKey = record.id;
+      const dAppsColOption = dAppsCol[option];
+      if (!dAppsColOption) return;
+      dAppsColOption[Object.keys(dAppsColOption)[0]].groupKey = record.id;
 
-      options[Object.keys(dAppsCol[option])[0]] =
-        dAppsCol[option][Object.keys(dAppsCol[option])[0]];
+      options[Object.keys(dAppsColOption)[0]] =
+        dAppsColOption[Object.keys(dAppsColOption)[0]];
     });
     formatted[record.id] = {
       id: record.id,

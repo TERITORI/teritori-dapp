@@ -7,11 +7,22 @@ export const useUpdatePostFee = (
   networkId: string,
   postCategory: PostCategory
 ) => {
-  const { data } = useQuery([networkId, postCategory], async () => {
-    return await getPostFee({
-      networkId,
-      postCategory,
-    });
-  });
+  const { data } = useQuery(
+    ["getPostFee", networkId, postCategory],
+    async () => {
+      try {
+        return (
+          (await getPostFee({
+            networkId,
+            postCategory,
+          })) || 0
+        );
+      } catch (e) {
+        console.error("getPostFee failed: ", e);
+        return 0;
+      }
+    },
+    { staleTime: Infinity }
+  );
   return { postFee: data || 0 };
 };

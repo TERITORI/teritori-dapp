@@ -12,11 +12,19 @@ export const useUpdateAvailableFreePost = (
   const { data } = useQuery(
     ["getAvailableFreePost", networkId, postCategory, wallet?.address],
     async () => {
-      return await getAvailableFreePost({
-        networkId,
-        wallet,
-      });
-    }
+      try {
+        return (
+          (await getAvailableFreePost({
+            networkId,
+            wallet,
+          })) || 0
+        );
+      } catch (e) {
+        console.error("getAvailableFreePost failed :", e);
+        return 0;
+      }
+    },
+    { staleTime: Infinity }
   );
   return { freePostCount: data || 0 };
 };
