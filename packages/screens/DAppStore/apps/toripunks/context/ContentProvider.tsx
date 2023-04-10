@@ -47,8 +47,8 @@ export const ContentContextProvider: React.FC<{
   screen: string;
 }> = ({ children, screen }) => {
   const [selectedSection, setSelectedSection] = useState<string>(screen);
-  //RENAME salectedWallet after removing Dummy at Line 78
-  const selectedWallet2 = useSelectedWallet();
+
+  const selectedWallet = useSelectedWallet();
   const navigation = useAppNavigation();
   const [loadingGame, setLoadingGame] = useState<boolean>(false);
 
@@ -73,17 +73,6 @@ export const ContentContextProvider: React.FC<{
   const isMinimunWindowWidth = windowWidth >= 1024;
 
   const styles = textStyle;
-
-  //Replace dummy user.
-  const selectedWallet = {
-    address: "tori1xdtdctdedst45u8c8fmxutg8vvltyg5ezpdycz",
-    connected: selectedWallet2?.connected,
-    id: selectedWallet2?.id,
-    networkId: selectedWallet2?.networkId,
-    networkKind: selectedWallet2?.networkKind,
-    provider: selectedWallet2?.provider,
-    userId: selectedWallet2?.userId,
-  } as Wallet;
 
   return (
     <ContentContext.Provider
