@@ -20,6 +20,7 @@ import { useForceNetworkSelection } from "../hooks/useForceNetworkSelection";
 import { useForceUnselectNetworks } from "../hooks/useForceUnselectNetworks";
 import { useMaxResolution } from "../hooks/useMaxResolution";
 import { NetworkInfo, NetworkKind } from "../networks";
+import { DAppStoreData } from "../screens/DAppStore/components/DAppStoreData";
 import {
   getResponsiveScreenContainerMarginHorizontal,
   headerHeight,
@@ -89,10 +90,7 @@ export const ScreenContainer: React.FC<{
       if (forceNetworkId && n?.id !== forceNetworkId) {
         return false;
       }
-      if (forceNetworkKind && n?.kind !== forceNetworkKind) {
-        return false;
-      }
-      return true;
+      return !(forceNetworkKind && n?.kind !== forceNetworkKind);
     },
     [forceNetworkId, forceNetworkKind]
   );
@@ -102,11 +100,12 @@ export const ScreenContainer: React.FC<{
   // returns
   return (
     <SafeAreaView style={{ width: "100%", flex: 1 }}>
+      <DAppStoreData />
       {/*TODO: Refactor this*/}
 
       <View style={styles.container}>
         {["android", "ios"].includes(Platform.OS) ||
-          (!hideSidebar ? <Sidebar /> : null)}
+          (!hideSidebar && <Sidebar />)}
         {!["android", "ios"].includes(Platform.OS) && customSidebar}
 
         <View style={{ width: "100%", flex: 1 }}>

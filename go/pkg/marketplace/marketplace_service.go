@@ -25,25 +25,31 @@ import (
 type MarkteplaceService struct {
 	marketplacepb.UnimplementedMarketplaceServiceServer
 
-	homeProvider     *airtable_fetcher.Cache
-	ethereumProvider *ethereum.Provider
+	homeProvider      *airtable_fetcher.Cache
+	dAppStoreProvider *airtable_fetcher.Cache
+	ethereumProvider  *ethereum.Provider
 	// collectionsByVolumeProvider         collections.CollectionsProvider
 	// collectionsByMarketCapProvider      collections.CollectionsProvider
 	conf *Config
 }
 
 type Config struct {
-	Logger         *zap.Logger
-	IndexerDB      *gorm.DB
-	Whitelist      []string
-	AirtableAPIKey string
-	NetworkStore   networks.NetworkStore
+	Logger                   *zap.Logger
+	IndexerDB                *gorm.DB
+	Whitelist                []string
+	AirtableAPIKey           string
+	AirtableAPIKeydappsStore string
+	NetworkStore             networks.NetworkStore
 }
 
 func NewMarketplaceService(ctx context.Context, conf *Config) (marketplacepb.MarketplaceServiceServer, error) {
 	var homeProvider *airtable_fetcher.Cache
+	var dAppStoreProvider *airtable_fetcher.Cache
 	if conf.AirtableAPIKey != "" {
 		homeProvider = airtable_fetcher.NewCache(ctx, airtable_fetcher.NewClient(conf.AirtableAPIKey), conf.Logger.Named("airtable_fetcher"))
+	}
+	if conf.AirtableAPIKeydappsStore != "" {
+		dAppStoreProvider = airtable_fetcher.NewCache(ctx, airtable_fetcher.NewClient(conf.AirtableAPIKeydappsStore), conf.Logger.Named("airtable_fetcher"))
 	}
 
 	ethProvider, err := ethereum.NewEthereumProvider(conf.NetworkStore)
@@ -53,9 +59,10 @@ func NewMarketplaceService(ctx context.Context, conf *Config) (marketplacepb.Mar
 
 	// FIXME: validate config
 	return &MarkteplaceService{
-		conf:             conf,
-		homeProvider:     homeProvider,
-		ethereumProvider: ethProvider,
+		conf:              conf,
+		homeProvider:      homeProvider,
+		dAppStoreProvider: dAppStoreProvider,
+		ethereumProvider:  ethProvider,
 		// collectionsByVolumeProvider:         collections.NewCollectionsByVolumeProvider(ctx, conf.GraphqlEndpoint, conf.Logger),
 		// collectionsByMarketCapProvider:      collections.NewCollectionsByMarketCapProvider(ctx, conf.GraphqlEndpoint, conf.Logger),
 	}, nil
@@ -792,4 +799,20 @@ func (s *MarkteplaceService) News(ctx context.Context, req *marketplacepb.NewsRe
 		return &marketplacepb.NewsResponse{News: s.homeProvider.GetTestnetNews()}, nil
 	}
 	return &marketplacepb.NewsResponse{News: s.homeProvider.GetNews()}, nil
+}
+
+func (s *MarkteplaceService) DAppsGroups(ctx context.Context, req *marketplacepb.DAppsStoreRequest) (*marketplacepb.DAppGroupsResponse, error) {
+	if s.dAppStoreProvider == nil {
+		return &marketplacepb.DAppGroupsResponse{}, nil
+	}
+
+	return &marketplacepb.DAppGroupsResponse{Group: s.dAppStoreProvider.GetDappsGroups()}, nil
+}
+
+func (s *MarkteplaceService) DApps(ctx context.Context, req *marketplacepb.DAppsStoreRequest) (*marketplacepb.DAppResponse, error) {
+	if s.dAppStoreProvider == nil {
+		return &marketplacepb.DAppResponse{}, nil
+	}
+
+	return &marketplacepb.DAppResponse{Group: s.dAppStoreProvider.GetDapps()}, nil
 }
