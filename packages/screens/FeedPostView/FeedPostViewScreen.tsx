@@ -76,14 +76,8 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
   });
   const isNextPageAvailable = useSharedValue(hasNextPage);
 
-  const isLoadingPostValue = useMemo(
-    () => isLoadingPost || isFetchingPost,
-    [isLoadingPost, isFetchingPost]
-  );
-  const isLoadingCommentsValue = useMemo(
-    () => isFetchingComments || isLoadingComments,
-    [isFetchingComments, isLoadingComments]
-  );
+  const isRefreshingPost = isLoadingPost || isFetchingPost;
+  const isRefreshingComments = isFetchingComments || isLoadingComments;
 
   const comments = useMemo(
     () => (data ? combineFetchCommentPages(data.pages) : []),
@@ -136,7 +130,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
   };
 
   const headerLabel = useMemo(() => {
-    if (isLoadingPostValue) return "Loading Post...";
+    if (isRefreshingPost) return "Loading Post...";
     else if (!postResult) return "Post not found";
     const author =
       authorNSInfo?.metadata?.tokenId || userAddress || DEFAULT_USERNAME;
@@ -148,7 +142,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
     postResult,
     authorNSInfo?.metadata?.tokenId,
     userAddress,
-    isLoadingPostValue,
+    isRefreshingPost,
   ]);
 
   return (
@@ -171,7 +165,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
       fullWidth
       noScroll
     >
-      {isLoadingPostValue ? (
+      {isRefreshingPost ? (
         <ActivityIndicator
           color={primaryColor}
           size="large"
@@ -219,7 +213,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
               ]}
             >
               <RefreshButton
-                isRefreshing={isLoadingCommentsValue}
+                isRefreshing={isRefreshingComments}
                 onPress={() => {
                   refetch();
                 }}
@@ -241,7 +235,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
           {flatListContentOffsetY >= threadCardOffsetY + 66 && (
             <View style={styles.floatingActions}>
               <RefreshButtonRound
-                isRefreshing={isLoadingCommentsValue}
+                isRefreshing={isRefreshingComments}
                 onPress={refetch}
               />
             </View>

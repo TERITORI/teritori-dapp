@@ -35,10 +35,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
 }) => {
   const { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading } =
     useFetchFeed(req);
-  const isLoadingValue = useMemo(
-    () => isFetching || isLoading,
-    [isFetching, isLoading]
-  );
+  const isRefreshing = isFetching || isLoading;
   const posts = useMemo(
     () => (data ? combineFetchFeedPages(data.pages) : []),
     [data]
@@ -54,7 +51,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
   });
 
   const onEndReached = () => {
-    if (hasNextPage && !isLoadingValue) {
+    if (hasNextPage && !isRefreshing) {
       fetchNextPage();
     }
   };
@@ -86,12 +83,12 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
             additionalHashtag={additionalHashtag}
           />
           <SpacerColumn size={1.5} />
-          <RefreshButton isRefreshing={isLoadingValue} onPress={refetch} />
+          <RefreshButton isRefreshing={isRefreshing} onPress={refetch} />
         </Animated.View>
         <SpacerColumn size={1.5} />
       </>
     ),
-    [isLoadingValue, Header, additionalMention, additionalHashtag, refetch]
+    [isRefreshing, Header, additionalMention, additionalHashtag, refetch]
   );
 
   return (
@@ -121,7 +118,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
             style={{ marginBottom: layout.padding_x2 }}
           />
 
-          <RefreshButtonRound isRefreshing={isLoadingValue} onPress={refetch} />
+          <RefreshButtonRound isRefreshing={isRefreshing} onPress={refetch} />
         </View>
       )}
 
