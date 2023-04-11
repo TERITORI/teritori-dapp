@@ -1,11 +1,12 @@
 import { useRoute } from "@react-navigation/native";
-import React from "react";
+import React, { useMemo } from "react";
 import { View, StyleSheet, Pressable, FlatList } from "react-native";
 import Animated, {
   useAnimatedStyle,
   withSpring,
   WithSpringConfig,
 } from "react-native-reanimated";
+import { useSelector } from "react-redux";
 
 import { SideNotch } from "./components/SideNotch";
 import { SidebarButton } from "./components/SidebarButton";
@@ -19,6 +20,13 @@ import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useSelectedNetworkKind } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkKind } from "../../networks";
+import { getValuesFromId, SEPARATOR } from "../../screens/DAppStore/query/util";
+import {
+  selectAvailableApps,
+  selectCheckedApps,
+  setSelectedApps,
+} from "../../store/slices/dapps-store";
+import { useAppDispatch } from "../../store/store";
 import { useAppNavigation } from "../../utils/navigation";
 import { SIDEBAR_LIST } from "../../utils/sidebar";
 import { neutral17, neutral33 } from "../../utils/style/colors";
@@ -75,8 +83,60 @@ export const Sidebar: React.FC = () => {
   );
 
   const onRouteChange = (name: SidebarType["route"]) => {
+    // @ts-expect-error
     navigation.navigate(name);
   };
+
+  const selectedApps = useSelector(selectCheckedApps);
+  const availableApps = useSelector(selectAvailableApps);
+
+  const dispatch = useAppDispatch();
+
+  const dynamicSidebar = useMemo(() => {
+    if (selectedApps.length === 0 && Object.values(availableApps).length > 0) {
+      dispatch(
+        setSelectedApps(
+          Object.values(availableApps).flatMap((item) => {
+            return Object.values(item.options)
+              .filter((dapp) => dapp.selectedByDefault)
+              .map(({ groupKey, id }) => {
+                return `${groupKey}${SEPARATOR}${id}`;
+              });
+          })
+        )
+      );
+    }
+    const dynamicAppsSelection = [] as {
+      [key: string]: any;
+    };
+    selectedApps.map((element) => {
+      const { appId, groupKey } = getValuesFromId(element);
+      if (!availableApps[groupKey]) {
+        return;
+      }
+      const option = availableApps[groupKey].options[appId];
+      if (option === undefined) {
+        /*
+         we found something inconsistent between the selected apps and what is available.
+         I will reset user selection to go back to a sane state
+         */
+        dispatch(setSelectedApps([]));
+        return;
+      }
+
+      dynamicAppsSelection[element] = SIDEBAR_LIST[option.id]
+        ? SIDEBAR_LIST[option.id]
+        : {
+            id: option.id,
+            title: option.title,
+            route: option.route,
+            icon: option.icon,
+          };
+    });
+    dynamicAppsSelection["dappstore"] = SIDEBAR_LIST["DAppsStore"];
+
+    return dynamicAppsSelection;
+  }, [selectedApps, availableApps, dispatch]);
 
   // returns
   return (
@@ -97,8 +157,8 @@ export const Sidebar: React.FC = () => {
       </View>
       <FlatList
         showsVerticalScrollIndicator={false}
-        data={Object.values(SIDEBAR_LIST)}
-        keyExtractor={(item) => item.title}
+        data={Object.values(dynamicSidebar)}
+        keyExtractor={(item) => item.id}
         renderItem={({ item }) => {
           let { route } = item;
           if (
@@ -111,7 +171,7 @@ export const Sidebar: React.FC = () => {
 
           return (
             <SidebarButton
-              key={item.title}
+              key={item.id}
               onPress={onRouteChange}
               {...item}
               route={route}
@@ -125,6 +185,8 @@ export const Sidebar: React.FC = () => {
               icon={addSVG}
               iconSize={36}
               route="ComingSoon"
+              key="ComingSoon2"
+              id="ComingSoon2"
               title=""
               onPress={() => navigation.navigate("ComingSoon")}
             />

@@ -1,21 +1,35 @@
 import React from "react";
-import { Text, TextProps } from "react-native";
+import { Text, TextProps, StyleSheet } from "react-native";
+import TextTicker from "react-native-text-ticker";
 
-export const BrandTextBase: React.FC<TextProps> = (props) => {
-  const { style, ...otherProps } = props;
-  return (
-    <Text
-      style={[
-        {
-          color: "white",
-          fontSize: 20,
-          fontWeight: "600",
-        },
-        style,
-      ]}
-      {...otherProps}
-    >
-      {props.children}
-    </Text>
-  );
+export const BrandTextBase: React.FC<TextProps & { isTicker?: boolean }> = (
+  props
+) => {
+  const { style, isTicker, ...otherProps } = props;
+
+  if (isTicker)
+    return (
+      <TextTicker
+        style={[styles.base, style]}
+        duration={4000}
+        loop
+        repeatSpacer={16}
+        marqueeDelay={1000}
+        {...otherProps}
+      />
+    );
+  else
+    return (
+      <Text style={[styles.base, style]} {...otherProps}>
+        {props.children}
+      </Text>
+    );
 };
+
+const styles = StyleSheet.create({
+  base: {
+    color: "white",
+    fontSize: 20,
+    fontWeight: "600",
+  },
+});

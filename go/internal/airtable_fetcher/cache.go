@@ -20,6 +20,8 @@ type Cache struct {
 	testnetBanners   []*marketplacepb.Banner
 	news             []*marketplacepb.News
 	testnetNews      []*marketplacepb.News
+	dappGroups       []*marketplacepb.DAppGroup
+	dapps            []*marketplacepb.DApp
 }
 
 func NewCache(ctx context.Context, client *Client, logger *zap.Logger) *Cache {
@@ -71,6 +73,24 @@ func NewCache(ctx context.Context, client *Client, logger *zap.Logger) *Cache {
 				c.mutex.Unlock()
 			}
 
+			dappGroups, err := client.FetchAppsGroups()
+			if (err) != nil {
+				logger.Error("failed to fetch dApps Store Group", zap.Error(err))
+			} else {
+				c.mutex.Lock()
+				c.dappGroups = dappGroups
+				c.mutex.Unlock()
+			}
+
+			dapps, err := client.FetchApps()
+			if (err) != nil {
+				logger.Error("failed to fetch dApps Store", zap.Error(err))
+			} else {
+				c.mutex.Lock()
+				c.dapps = dapps
+				c.mutex.Unlock()
+			}
+
 			select {
 			case <-ctx.Done():
 				logger.Info("stopping home cache refresh")
@@ -114,6 +134,20 @@ func (c *Cache) GetNews() []*marketplacepb.News {
 func (c *Cache) GetTestnetNews() []*marketplacepb.News {
 	c.mutex.RLock()
 	n := c.testnetNews
+	c.mutex.RUnlock()
+	return n
+}
+
+func (c *Cache) GetDappsGroups() []*marketplacepb.DAppGroup {
+	c.mutex.RLock()
+	n := c.dappGroups
+	c.mutex.RUnlock()
+	return n
+}
+
+func (c *Cache) GetDapps() []*marketplacepb.DApp {
+	c.mutex.RLock()
+	n := c.dapps
 	c.mutex.RUnlock()
 	return n
 }
