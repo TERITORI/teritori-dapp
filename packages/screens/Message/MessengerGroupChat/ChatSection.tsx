@@ -1,10 +1,14 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
+import calender from "../../../../assets/icons/calendar.svg";
 import plus from "../../../../assets/icons/chatplus.svg";
+import close from "../../../../assets/icons/close.svg";
 import search from "../../../../assets/icons/search.svg";
+import { SVG } from "../../../components/SVG";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { SpacerColumn } from "../../../components/spacer";
+import Calendars from "./Calendar";
 interface IMessage {
   message: string;
   isSender: boolean;
@@ -56,9 +60,14 @@ const ChatSection = () => {
     },
     { message: "How are you?", isSender: true },
     { message: "I'm good, thanks!", isSender: false },
+    { message: "okay nice, thanks!", isSender: true },
   ]);
   const [newMessage, setNewMessage] = useState("");
   const [searchInput, setSearchInput] = useState("");
+  const [showTextInput, setShowTextInput] = useState(false);
+  const [showCalendar, setShowCalendar] = useState(false);
+  const [showAttachmentModal, setShowAttachmentModal] = useState(false);
+
   const handleSend = () => {
     const newMsg: IMessage = {
       message: newMessage,
@@ -70,17 +79,75 @@ const ChatSection = () => {
   const filteredMessages = messages.filter((msg) =>
     msg.message.toLowerCase().includes(searchInput.toLowerCase())
   );
+  const handleSearchIconPress = () => {
+    setShowTextInput(true);
+    setShowCalendar(false);
+  };
+  const handleCancelPress = () => {
+    setShowTextInput(false);
+    setSearchInput("");
+    setShowCalendar(false);
+  };
+  const handleAttachment = (type) => {
+    // Handle attaching a file, image, or video of the given type
+    setShowAttachmentModal(false);
+  };
+
   return (
     <View style={styles.container}>
-      <TextInputCustom
-        name="search"
-        placeHolder="Search by message"
-        value={searchInput}
-        onChangeText={setSearchInput}
-        iconSVG={search}
-        iconStyle={{ width: 20, height: 40 }}
-      />
+      <View
+        style={{
+          position: "absolute",
+          top: -40,
+          alignSelf: "flex-end",
+          flexDirection: "row",
+          // alignItems: "center",
+        }}
+      >
+        {showTextInput ? (
+          <>
+            <TextInputCustom
+              name="search"
+              placeHolder="Search..."
+              value={searchInput}
+              onChangeText={setSearchInput}
+              iconSVG={search}
+              iconStyle={{ width: 20, height: 40 }}
+              height={30}
+              noBrokenCorners
+            />
+            <TouchableOpacity onPress={() => setShowCalendar(!showCalendar)}>
+              <SVG source={calender} />
+            </TouchableOpacity>
+          </>
+        ) : (
+          <>
+            <TouchableOpacity onPress={handleSearchIconPress}>
+              <SVG
+                source={search}
+                style={{
+                  height: 20,
+                  width: 20,
+                  marginTop: 4,
+                  marginRight: 15,
+                }}
+              />
+            </TouchableOpacity>
+            <Text style={{ color: "#fff" }}>...</Text>
+          </>
+        )}
+        {showTextInput && (
+          <TouchableOpacity onPress={handleCancelPress}>
+            <SVG source={close} height={20} style={{ marginTop: 6 }} />
+          </TouchableOpacity>
+        )}
 
+        {showCalendar && (
+          <View style={{ position: "absolute", marginTop: -90 }}>
+            <Calendars />
+          </View>
+        )}
+      </View>
       <SpacerColumn size={3} />
 
       {filteredMessages.map((msg, index) => (
@@ -93,18 +160,37 @@ const ChatSection = () => {
         />
       ))}
       <SpacerColumn size={3} />
-      <TextInputCustom
-        name="message"
-        placeHolder="Type your Message"
-        value={newMessage}
-        onChangeText={setNewMessage}
-        iconSVG={plus}
-        onPress={() => alert("Comming soon...")}
-      >
-        <TouchableOpacity onPress={handleSend}>
-          <Text style={styles.sendButtonText}>Send</Text>
-        </TouchableOpacity>
-      </TextInputCustom>
+
+      <View style={styles.textInputContainer}>
+        {showAttachmentModal ? (
+          <View style={styles.attachmentModal}>
+            <TouchableOpacity
+              style={styles.attachmentItem}
+              onPress={() => handleAttachment("file")}
+            >
+              <Text style={styles.attach}>Attach file</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.attachmentItem}
+              onPress={() => handleAttachment("image")}
+            >
+              <Text style={styles.attach}>Attach image/video</Text>
+            </TouchableOpacity>
+          </View>
+        ) : null}
+        <TextInputCustom
+          name="message"
+          placeHolder="Type your Message"
+          value={newMessage}
+          onChangeText={setNewMessage}
+          iconSVG={plus}
+          onPress={() => setShowAttachmentModal(true)}
+        >
+          <TouchableOpacity onPress={handleSend}>
+            <Text style={styles.sendButtonText}>Send</Text>
+          </TouchableOpacity>
+        </TextInputCustom>
+      </View>
     </View>
   );
 };
@@ -147,6 +233,32 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 10,
     color: "#808080",
+  },
+  attachmentModal: {
+    position: "absolute",
+    top: -64,
+    left: 10,
+    backgroundColor: "rgba(41, 41, 41, 0.8)",
+    padding: 6,
+    borderRadius: 6,
+    borderWidth: 1,
+
+    zIndex: 111,
+  },
+  attachmentItem: {
+    height: 25,
+  },
+  textInputContainer: {
+    position: "relative",
+  },
+  textInputContainer: {
+    position: "relative",
+  },
+  attach: {
+    fontSize: 13,
+    fontWeight: "600",
+    lineHeight: 10,
+    color: "#A3A3A3",
   },
 });
 
