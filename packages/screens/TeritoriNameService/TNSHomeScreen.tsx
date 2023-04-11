@@ -162,7 +162,7 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
             }
           />
           <FlowCard
-            disabled={!isKeplrConnected || !tokens}
+            disabled={!isKeplrConnected || !tokens?.length}
             label="Manage"
             description="Transfer, edit, or burn a name that you own"
             iconSVG={penSVG}
