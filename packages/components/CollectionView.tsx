@@ -31,7 +31,7 @@ export const CollectionView: React.FC<{
   const navigateToTwitter = () => {
     Linking.openURL(item.twitterUrl);
   };
-  const { info } = useCollectionInfo(item.id, Infinity);
+  const { info } = useCollectionInfo(item.id);
   const percentageMinted = info
     ? Math.round(
         (parseInt(info.mintedAmount as string, 10) * 100) /
