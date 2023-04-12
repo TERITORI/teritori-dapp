@@ -42,14 +42,11 @@ export interface CollectionInfo {
   twitter?: string;
   website?: string;
   maxPerAddress?: string;
-  hasPresale?: boolean;
   isInPresalePeriod?: boolean;
   isMintable?: boolean;
   publicSaleEnded?: boolean;
-  bannerImage?: string;
   mintStarted?: boolean;
   publicSaleStartTime?: number; // seconds since epoch
-  state?: MintState;
   mintPhases: MintPhase[];
 }
 
@@ -87,7 +84,6 @@ const getTeritoriBreedingCollectionInfo = async (
     discord: metadata.discord,
     twitter: metadata.twitter,
     website: metadata.website,
-    bannerImage: ipfsURLToHTTPURL(metadata.banner),
     mintPhases: [],
   };
   return info;
@@ -169,14 +165,11 @@ const getCosmosBunkerCollectionInfo = async (
     twitter: metadata.twitter,
     website: metadata.website,
     maxPerAddress: conf.mint_max || undefined,
-    hasPresale: hasWhitelistPeriod,
     publicSaleEnded,
     isMintable: !publicSaleEnded && conf.is_mintable,
     isInPresalePeriod: state === "whitelist",
     publicSaleStartTime: whitelistEnd,
-    bannerImage: ipfsURLToHTTPURL(metadata.banner),
     mintPhases,
-    state,
   };
 
   return info;
@@ -295,13 +288,10 @@ const getEthereumTeritoriBunkerCollectionInfo = async (
     twitter: metadata.twitter,
     website: metadata.website,
     maxPerAddress,
-    hasPresale: hasWhitelistPeriod,
     publicSaleEnded,
     isMintable: !publicSaleEnded && !isPaused,
     isInPresalePeriod: state === "whitelist",
     publicSaleStartTime: whitelistEndedAt.toNumber(),
-    bannerImage: ipfsURLToHTTPURL(metadata.banner),
-    state,
     mintPhases: whitelistPhases,
   };
   return info;
