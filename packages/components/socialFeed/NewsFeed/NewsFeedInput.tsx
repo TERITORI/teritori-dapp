@@ -1,5 +1,6 @@
 import { coin } from "@cosmjs/amino";
-import React, { useEffect, useImperativeHandle, useRef, useState } from "react";
+import React, { useImperativeHandle, useRef, useState } from "react";
+
 import { useForm } from "react-hook-form";
 import {
   TextInput,
@@ -137,9 +138,6 @@ export const NewsFeedInput = React.forwardRef<
     const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
     const isMobile = useIsMobileView();
     const { setToastError } = useFeedbacks();
-    const { postFee, updatePostFee } = useUpdatePostFee();
-    const { freePostCount, updateAvailableFreePost } =
-      useUpdateAvailableFreePost();
     const [isLoading, setLoading] = useState(false);
     const [selection, setSelection] = useState<{ start: number; end: number }>({
       start: 10,
@@ -156,19 +154,9 @@ export const NewsFeedInput = React.forwardRef<
     });
 
     const onPostCreationSuccess = () => {
-      resetForm();
+      reset();
       onSubmitSuccess && onSubmitSuccess();
       onCloseCreateModal && onCloseCreateModal();
-    };
-
-    const resetForm = () => {
-      reset();
-      updateAvailableFreePost(
-        selectedNetworkId,
-        getPostCategory(formValues),
-        wallet
-      );
-      updatePostFee(selectedNetworkId, getPostCategory(formValues));
     };
 
     const balances = useBalances(
@@ -189,20 +177,15 @@ export const NewsFeedInput = React.forwardRef<
     );
     const formValues = watch();
 
-    useEffect(() => {
-      updateAvailableFreePost(
-        selectedNetworkId,
-        getPostCategory(formValues),
-        wallet
-      );
-      updatePostFee(selectedNetworkId, getPostCategory(formValues));
-    }, [
-      formValues,
-      wallet,
+    const { postFee } = useUpdatePostFee(
       selectedNetworkId,
-      updatePostFee,
-      updateAvailableFreePost,
-    ]);
+      getPostCategory(formValues)
+    );
+    const { freePostCount } = useUpdateAvailableFreePost(
+      selectedNetworkId,
+      getPostCategory(formValues),
+      wallet
+    );
 
     const processSubmit = async () => {
       const toriBalance = balances.find((bal) => bal.denom === "utori");
@@ -310,7 +293,7 @@ export const NewsFeedInput = React.forwardRef<
     };
 
     useImperativeHandle(forwardRef, () => ({
-      resetForm,
+      resetForm: reset,
       setValue: handleTextChange,
       focusInput,
     }));

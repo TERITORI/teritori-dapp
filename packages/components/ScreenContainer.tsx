@@ -14,6 +14,7 @@ import { Header } from "./Header";
 import { NetworkSelector } from "./NetworkSelector";
 import { SelectedNetworkGate } from "./SelectedNetworkGate";
 import { ConnectWalletButton } from "./TopMenu/ConnectWalletButton";
+import { Footer } from "./footers/Footer";
 import { Sidebar } from "./navigation/Sidebar";
 import { useForceNetworkKind } from "../hooks/useForceNetworkKind";
 import { useForceNetworkSelection } from "../hooks/useForceNetworkSelection";
@@ -93,9 +94,6 @@ export const ScreenContainer: React.FC<{
       return !(forceNetworkKind && n?.kind !== forceNetworkKind);
     },
     [forceNetworkId, forceNetworkKind]
-  );
-  const Footer = React.lazy(() =>
-    import("./footers/Footer").then((module) => ({ default: module.Footer }))
   );
   // returns
   return (
