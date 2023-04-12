@@ -15471,6 +15471,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"expo-checkbox@npm:^2.3.1":
+  version: 2.3.1
+  resolution: "expo-checkbox@npm:2.3.1"
+  checksum: f096de7a84a9c940ba9fa80b30dd2247c2b4271e476428e4c8a3d95add3013bd35d4eb5a7190f4b6209ba2e877b6203c0b8da8271b738b15b3826bcb7e842a19
+  languageName: node
+  linkType: hard
+
 "expo-cli@npm:^6.0.2":
   version: 6.0.5
   resolution: "expo-cli@npm:6.0.5"
@@ -27441,6 +27448,7 @@ __metadata:
     ethers: ^5.7.2
     expo: ~45.0.0
     expo-av: ~11.2.3
+    expo-checkbox: ^2.3.1
     expo-cli: ^6.0.2
     expo-font: ~10.1.0
     expo-linear-gradient: ~11.3.0
