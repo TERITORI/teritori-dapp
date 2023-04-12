@@ -14,7 +14,7 @@ import { useSelectedNetworkKind } from "../../hooks/useSelectedNetwork";
 import { NetworkKind } from "../../networks";
 import { RouteName, useAppNavigation } from "../../utils/navigation";
 import { neutral00, neutral17, neutral33 } from "../../utils/style/colors";
-import { layout, MOBILE_HEADER_HEIGHT } from "../../utils/style/layout";
+import { layout, MOBILE_HEADER_HEIGHT, MOBILE_SIDEBAR_MAX_WIDTH } from "../../utils/style/layout";
 import { SpacerColumn } from "../spacer";
 
 const SpringConfig: WithSpringConfig = {
@@ -24,19 +24,15 @@ const SpringConfig: WithSpringConfig = {
 };
 
 export const SidebarMobile: FC = () => {
-  const { height: windowHeight, width: windowWidth } = useWindowDimensions();
+  const { height: windowHeight } = useWindowDimensions();
   const selectedNetworkKind = useSelectedNetworkKind();
   const navigation = useAppNavigation();
   const { isSidebarExpanded, toggleSidebar, dynamicSidebar } = useSidebar();
 
-  console.log(
-    "dynamicSidebardynamicSidebardynamicSidebardynamicSidebar",
-    dynamicSidebar
-  );
   const layoutStyle = useAnimatedStyle(
     () => ({
       width: isSidebarExpanded
-        ? withSpring(windowWidth, SpringConfig)
+        ? withSpring(MOBILE_SIDEBAR_MAX_WIDTH, SpringConfig)
         : withSpring(0, SpringConfig),
     }),
     [isSidebarExpanded]
