@@ -2,6 +2,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 
 import { ComingSoonScreen } from "../../screens/ComingSoon/ComingSoon";
+import { DAppStore } from "../../screens/DAppStore/HomeScreen";
 import { FeedScreen } from "../../screens/Feed/FeedScreen";
 import { FeedNewArticleScreen } from "../../screens/FeedNewArticle/FeedNewArticleScreen";
 import { FeedPostViewScreen } from "../../screens/FeedPostView/FeedPostViewScreen";
@@ -272,6 +273,11 @@ export const Navigator: React.FC = () => {
         name="HashtagFeed"
         component={HashtagFeedScreen}
         options={{ header: () => null, title: screenTitle("") }}
+      />
+      <Stack.Screen
+        name="DAppStore"
+        component={DAppStore}
+        options={{ header: () => null, title: screenTitle("dApp Store") }}
       />
     </Stack.Navigator>
   );

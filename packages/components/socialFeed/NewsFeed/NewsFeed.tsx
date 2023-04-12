@@ -70,7 +70,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
   }, [isFetching, isLoading, isGoingUp, isLoadingValue]);
 
   const onEndReached = () => {
-    if (!isLoading && hasNextPage) {
+    if (!isLoading && hasNextPage && !isFetching) {
       fetchNextPage();
     }
   };

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { View } from "react-native";
 
@@ -39,16 +39,19 @@ import { layout, NEWS_FEED_MAX_WIDTH } from "../../utils/style/layout";
 import { pluralOrNot } from "../../utils/text";
 
 export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
-  const { postFee, updatePostFee } = useUpdatePostFee();
-  const { freePostCount, updateAvailableFreePost } =
-    useUpdateAvailableFreePost();
+  const selectedNetworkId = useSelectedNetworkId();
+  const wallet = useSelectedWallet();
+  const { postFee } = useUpdatePostFee(selectedNetworkId, PostCategory.Article);
+  const { freePostCount } = useUpdateAvailableFreePost(
+    selectedNetworkId,
+    PostCategory.Article,
+    wallet
+  );
   const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const { setToastSuccess, setToastError } = useFeedbacks();
   const navigation = useAppNavigation();
-  const wallet = useSelectedWallet();
-  const selectedNetworkId = useSelectedNetworkId();
   const userId = getUserId(selectedNetworkId, wallet?.address);
   const balances = useBalances(
     process.env.TERITORI_NETWORK_ID,
@@ -75,11 +78,6 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
   // const { mutate: openGraphMutate, data: openGraphData } = useOpenGraph();
 
   const formValues = watch();
-
-  useEffect(() => {
-    updateAvailableFreePost(selectedNetworkId, PostCategory.Article, wallet);
-    updatePostFee(selectedNetworkId, PostCategory.Article);
-  }, [wallet, selectedNetworkId, updatePostFee, updateAvailableFreePost]);
 
   const initSubmit = async ({
     html,

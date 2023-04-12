@@ -12,6 +12,8 @@ service MarketplaceService {
   rpc NFTPriceHistory(NFTPriceHistoryRequest) returns (NFTPriceHistoryResponse);
   rpc Banners(BannersRequest) returns (BannersResponse);
   rpc News(NewsRequest) returns (NewsResponse);
+  rpc DApps(DAppsStoreRequest) returns (DAppResponse);
+  rpc DAppsGroups(DAppsStoreRequest) returns (DAppGroupsResponse);
 }
 
 enum Sort {
@@ -198,6 +200,25 @@ message News {
   repeated Action actions = 5;
 }
 
+message DAppGroup {
+  string id = 1;
+  string groupName = 2;
+  string icon = 3;
+  repeated string options = 4;
+}
+
+message DApp {
+  string id = 1;
+  string title = 2;
+  string description = 3;
+  string icon = 4;
+  string route = 5;
+  string groupKey = 6;
+  string linkingId = 7;
+  bool selectedByDefault = 8;
+  bool alwaysOn = 9;
+}
+
 message Banner {
   string image = 1;
   string url = 2;
@@ -217,4 +238,15 @@ message NewsRequest {
 
 message NewsResponse {
   repeated News news = 1;
+}
+
+message DAppsStoreRequest {
+}
+
+message DAppGroupsResponse {
+  repeated DAppGroup group = 1;
+}
+
+message DAppResponse {
+  repeated DApp group = 1;
 }
