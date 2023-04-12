@@ -312,9 +312,7 @@ export const useCollectionInfo = (id: string, forceInterval?: number) => {
   const [network, mintAddress] = parseNetworkObjectId(id);
 
   // Request to ETH blockchain is not free so for ETH we do not re-fetch much
-  const refetchInterval =
-    forceInterval || (network?.kind === NetworkKind.Ethereum ? 60_000 : 5000);
-
+  const refetchInterval = forceInterval || Infinity;
   const { data, error, refetch } = useQuery(
     ["collectionInfo", id],
     async (): Promise<CollectionInfo> => {
@@ -352,7 +350,7 @@ export const useCollectionInfo = (id: string, forceInterval?: number) => {
 
       return info;
     },
-    { refetchInterval, staleTime: refetchInterval }
+    { refetchInterval, staleTime: Infinity }
   );
 
   return { info: data, notFound: !!error, refetchCollectionInfo: refetch };
