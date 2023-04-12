@@ -2,11 +2,11 @@ import { useQuery } from "@tanstack/react-query";
 import { BigNumber } from "ethers";
 import Long from "long";
 
-import { TeritoriMinter__factory } from "./../evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
-import { TeritoriNft__factory } from "./../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
 import { TeritoriBreedingQueryClient } from "../contracts-clients/teritori-breeding/TeritoriBreeding.client";
 import { TeritoriBunkerMinterQueryClient } from "../contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.client";
 import { TeritoriNftQueryClient } from "../contracts-clients/teritori-nft/TeritoriNft.client";
+import { TeritoriMinter__factory } from "../evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
+import { TeritoriNft__factory } from "../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
 import {
   CosmosNetworkInfo,
   EthereumNetworkInfo,
@@ -18,42 +18,13 @@ import {
 import { prettyPrice } from "../utils/coins";
 import { getEthereumProvider } from "../utils/ethereum";
 import { ipfsURLToHTTPURL } from "../utils/ipfs";
+import { CollectionInfoMint, MintPhase } from "../utils/types/collections";
 
 export type MintState = "not-started" | "whitelist" | "public-sale" | "ended";
 
-export interface MintPhase {
-  mintMax: Long;
-  start: Long;
-  end: Long;
-  mintPrice: Long;
-  size: Long;
-}
-
-export interface CollectionInfo {
-  image?: string;
-  description?: string;
-  prettyUnitPrice?: string;
-  unitPrice?: string;
-  priceDenom?: string;
-  maxSupply?: string;
-  mintedAmount?: string;
-  name?: string;
-  discord?: string;
-  twitter?: string;
-  website?: string;
-  maxPerAddress?: string;
-  hasPresale?: boolean;
-  isInPresalePeriod?: boolean;
-  isMintable?: boolean;
-  publicSaleEnded?: boolean;
-  bannerImage?: string;
-  mintStarted?: boolean;
-  publicSaleStartTime?: number; // seconds since epoch
-  state?: MintState;
-  mintPhases: MintPhase[];
-}
-
-const getTnsCollectionInfo = (network: CosmosNetworkInfo): CollectionInfo => {
+const getTnsCollectionInfo = (
+  network: CosmosNetworkInfo
+): CollectionInfoMint => {
   return {
     name: `${network.displayName} Name Service`, // FIXME: should fetch from contract or be in env
     image: ipfsURLToHTTPURL(network?.nameServiceDefaultImage || ""),
@@ -80,14 +51,13 @@ const getTeritoriBreedingCollectionInfo = async (
   const metadataReply = await fetch(metadataURL);
   const metadata = await metadataReply.json();
 
-  const info: CollectionInfo = {
+  const info: CollectionInfoMint = {
     name: nftInfo.name,
     image: ipfsURLToHTTPURL(metadata.image || ""),
     description: metadata.description,
     discord: metadata.discord,
     twitter: metadata.twitter,
     website: metadata.website,
-    bannerImage: ipfsURLToHTTPURL(metadata.banner),
     mintPhases: [],
   };
   return info;
@@ -103,23 +73,16 @@ const getCosmosBunkerCollectionInfo = async (
     mintAddress
   );
   const conf = await minterClient.config();
-
   const nftClient = new TeritoriNftQueryClient(cosmwasm, conf.nft_addr);
   const nftInfo = await nftClient.contractInfo();
-
   const metadataURL = ipfsURLToHTTPURL(conf.nft_base_uri);
   const metadataReply = await fetch(metadataURL);
-
   const metadata = await metadataReply.json();
-
   const secondsSinceEpoch = Date.now() / 1000;
-
   const mintedAmount = await minterClient.currentSupply();
-
   const whitelistEnd = conf.mint_start_time + conf.whitelist_mint_period;
   const hasWhitelistPeriod = !!conf.whitelist_mint_period;
   const publicSaleEnded = mintedAmount === conf.nft_max_supply;
-
   const whitelistSize = await minterClient.whitelistSize();
 
   const mintStarted =
@@ -155,7 +118,7 @@ const getCosmosBunkerCollectionInfo = async (
     });
   }
 
-  const info: CollectionInfo = {
+  const info: CollectionInfoMint = {
     name: nftInfo.name,
     image: ipfsURLToHTTPURL(metadata.image || ""),
     description: metadata.description,
@@ -169,14 +132,11 @@ const getCosmosBunkerCollectionInfo = async (
     twitter: metadata.twitter,
     website: metadata.website,
     maxPerAddress: conf.mint_max || undefined,
-    hasPresale: hasWhitelistPeriod,
     publicSaleEnded,
     isMintable: !publicSaleEnded && conf.is_mintable,
     isInPresalePeriod: state === "whitelist",
     publicSaleStartTime: whitelistEnd,
-    bannerImage: ipfsURLToHTTPURL(metadata.banner),
     mintPhases,
-    state,
   };
 
   return info;
@@ -281,7 +241,7 @@ const getEthereumTeritoriBunkerCollectionInfo = async (
     unitPrice = phaseData.mintPrice.toString();
   }
 
-  const info: CollectionInfo = {
+  const info: CollectionInfoMint = {
     name,
     image: ipfsURLToHTTPURL(metadata.image || ""),
     description: metadata.description,
@@ -295,28 +255,25 @@ const getEthereumTeritoriBunkerCollectionInfo = async (
     twitter: metadata.twitter,
     website: metadata.website,
     maxPerAddress,
-    hasPresale: hasWhitelistPeriod,
     publicSaleEnded,
     isMintable: !publicSaleEnded && !isPaused,
     isInPresalePeriod: state === "whitelist",
     publicSaleStartTime: whitelistEndedAt.toNumber(),
-    bannerImage: ipfsURLToHTTPURL(metadata.banner),
-    state,
     mintPhases: whitelistPhases,
   };
   return info;
 };
 
 // NOTE: consider using the indexer for this
-export const useCollectionInfo = (id: string, forceInterval?: number) => {
+export const useCollectionInfoMint = (id: string, forceInterval?: number) => {
   const [network, mintAddress] = parseNetworkObjectId(id);
 
   // Request to ETH blockchain is not free so for ETH we do not re-fetch much
   const refetchInterval = forceInterval || Infinity;
   const { data, error, refetch } = useQuery(
-    ["collectionInfo", id],
-    async (): Promise<CollectionInfo> => {
-      let info: CollectionInfo = { mintPhases: [] };
+    ["collectionInfoMint", id],
+    async (): Promise<CollectionInfoMint> => {
+      let info: CollectionInfoMint = { mintPhases: [] };
 
       if (!network) {
         return info;

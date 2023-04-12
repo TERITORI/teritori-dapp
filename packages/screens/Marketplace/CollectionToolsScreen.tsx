@@ -4,7 +4,7 @@ import { StyleProp, View, ViewStyle } from "react-native";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
-import { useCollectionInfo } from "../../hooks/useCollectionInfo";
+import { useCollectionInfoHeader } from "../../hooks/useCollectionInfoHeader";
 import { parseNetworkObjectId } from "../../networks";
 import { getMarketplaceClient } from "../../utils/backend";
 import { ScreenFC } from "../../utils/navigation";
@@ -53,26 +53,26 @@ export const CollectionToolsScreen: ScreenFC<"CollectionTools"> = ({
     params: { id },
   },
 }) => {
-  const { info: collectionInfo } = useCollectionInfo(id);
+  const { info: collectionInfoHeader } = useCollectionInfoHeader(id);
   const [network] = parseNetworkObjectId(id);
   const backendClient = getMarketplaceClient(network?.id);
   return (
     <ScreenContainer fullWidth footerChildren={<></>} noMargin noScroll>
       <View style={{ margin: 40 }}>
         <SnapshotEntry
-          name={`Count by owners ${collectionInfo?.name || id}`}
+          name={`Count by owners ${collectionInfoHeader?.name || id}`}
           snapshotFunc={() => snapshotCollectionOwners(id, backendClient)}
           style={{ marginBottom: 40 }}
         />
         <SnapshotEntry
-          name={`Ids by owners ${collectionInfo?.name || id}`}
+          name={`Ids by owners ${collectionInfoHeader?.name || id}`}
           snapshotFunc={() =>
             snapshotCollectionOwnersWithIds(id, backendClient)
           }
           style={{ marginBottom: 40 }}
         />
         <SnapshotEntry
-          name={`OGs ${collectionInfo?.name || id}`}
+          name={`OGs ${collectionInfoHeader?.name || id}`}
           snapshotFunc={() => snapshotCollectionOGs(id, backendClient)}
         />
         <BrandText>"OGs" counts nfts minted and never listed</BrandText>

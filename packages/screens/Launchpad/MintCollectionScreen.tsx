@@ -41,7 +41,7 @@ import {
 import { Wallet } from "../../context/WalletsProvider";
 import { TeritoriMinter__factory } from "../../evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
 import { useBalances } from "../../hooks/useBalances";
-import { MintPhase, useCollectionInfo } from "../../hooks/useCollectionInfo";
+import { useCollectionInfoMint } from "../../hooks/useCollectionInfoMint";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
   NetworkKind,
@@ -78,6 +78,7 @@ import {
   fontSemibold20,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
+import { MintPhase } from "../../utils/types/collections";
 import { DepositWithdrawModal } from "../WalletManager/components/DepositWithdrawModal";
 
 const maxImageSize = 532;
@@ -105,7 +106,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
   const wallet = useSelectedWallet();
   const [minted, setMinted] = useState(false);
   const [isDepositVisible, setDepositVisible] = useState(false);
-  const { info, notFound, refetchCollectionInfo } = useCollectionInfo(id);
+  const { info, notFound, refetchCollectionInfo } = useCollectionInfoMint(id);
   const { setToastError } = useFeedbacks();
   const [viewWidth, setViewWidth] = useState(0);
   const [network, mintAddress] = parseNetworkObjectId(id);
@@ -638,7 +639,11 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                       margin: -cardsHalfGap,
                     }}
                   >
-                    <CollectionSocialButtons collectionInfo={info} />
+                    <CollectionSocialButtons
+                      discordLink={info.discord}
+                      twitterLink={info.twitter}
+                      websiteLink={info.website}
+                    />
                   </View>
                 </View>
               )}
@@ -676,7 +681,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
               {info.mintStarted ? (
                 <>
                   {info.mintPhases.map((phase, index) => {
-                    return <PresaleActivy key={index} info={phase} />;
+                    return <PresaleActivy key={index} mintPhase={phase} />;
                   })}
                   <PublicSaleActivity
                     started={!info.isInPresalePeriod}
@@ -733,12 +738,13 @@ const AttributesCard: React.FC<{
 };
 
 const PresaleActivy: React.FC<{
-  info: MintPhase;
-}> = ({ info }) => {
+  mintPhase: MintPhase;
+}> = ({ mintPhase }) => {
   const now = Long.fromNumber(Date.now() / 1000);
-  const running = info.start.lessThanOrEqual(now) && info.end.greaterThan(now);
-  const incoming = info.start.greaterThan(now);
-  const maxPerAddress = info.mintMax.toString();
+  const running =
+    mintPhase.start.lessThanOrEqual(now) && mintPhase.end.greaterThan(now);
+  const incoming = mintPhase.start.greaterThan(now);
+  const maxPerAddress = mintPhase.mintMax.toString();
   return (
     <View>
       <View
@@ -754,7 +760,7 @@ const PresaleActivy: React.FC<{
             IN PROGRESS
           </BrandText>
         ) : incoming ? (
-          <PhaseCountdown startsAt={info.start.toNumber()} />
+          <PhaseCountdown startsAt={mintPhase.start.toNumber()} />
         ) : (
           <BrandText style={[fontSemibold16, { color: yellowDefault }]}>
             ENDED
@@ -785,7 +791,9 @@ const PresaleActivy: React.FC<{
           >
             Whitelist
           </BrandText>
-          <BrandText style={fontSemibold16}>{info.size.toString()}</BrandText>
+          <BrandText style={fontSemibold16}>
+            {mintPhase.size.toString()}
+          </BrandText>
 
           <View
             style={{

@@ -6,7 +6,7 @@ import { ScreenContainer } from "../../components/ScreenContainer";
 import { CollectionContent } from "../../components/collections/CollectionContent";
 import { CollectionHeader } from "../../components/collections/CollectionHeader";
 import { TabsListType } from "../../components/collections/types";
-import { useCollectionInfo } from "../../hooks/useCollectionInfo";
+import { useCollectionInfoHeader } from "../../hooks/useCollectionInfoHeader";
 import { parseCollectionId } from "../../networks";
 import { ScreenFC } from "../../utils/navigation";
 
@@ -14,7 +14,7 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
   // variables
   const { id } = route.params;
   const [selectedTab, setSelectedTab] = useState<TabsListType>("allNFTs");
-  const { info } = useCollectionInfo(id);
+  const { info: collectionInfoHeader } = useCollectionInfoHeader(id);
   const [sortDirection, setSortDirection] = useState(
     SortDirection.SORT_DIRECTION_ASCENDING
   );
@@ -35,7 +35,7 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
       >
         <CollectionHeader
           collectionId={id}
-          collectionInfo={info}
+          collectionInfoHeader={collectionInfoHeader}
           selectedTab={selectedTab}
           onSelectTab={setSelectedTab}
           onChangeSortDirection={setSortDirection}

@@ -4,18 +4,13 @@ import { Linking } from "react-native";
 import discordSVG from "../../../assets/icons/discord.svg";
 import twitterSVG from "../../../assets/icons/twitter.svg";
 import websiteSVG from "../../../assets/icons/website.svg";
-import { CollectionInfo } from "../../hooks/useCollectionInfo";
 import { SocialButton } from "../buttons/SocialButton";
 
 export const CollectionSocialButtons: React.FC<{
-  collectionInfo: CollectionInfo;
-}> = ({ collectionInfo }) => {
-  const {
-    discord: discordLink,
-    twitter: twitterLink,
-    website: websiteLink,
-  } = collectionInfo;
-
+  discordLink?: string;
+  websiteLink?: string;
+  twitterLink?: string;
+}> = ({ discordLink, websiteLink, twitterLink }) => {
   return (
     <>
       {discordLink && (

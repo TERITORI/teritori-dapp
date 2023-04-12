@@ -19,7 +19,6 @@ import { SpacerRow } from "../../components/spacer";
 import { Tabs } from "../../components/tabs/Tabs";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useCoingeckoPrices } from "../../hooks/useCoingeckoPrices";
-import { CollectionInfo } from "../../hooks/useCollectionInfo";
 import { useCollectionStats } from "../../hooks/useCollectionStats";
 import { useImageResizer } from "../../hooks/useImageResizer";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
@@ -32,17 +31,18 @@ import {
 import { neutral33 } from "../../utils/style/colors";
 import { fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
+import { CollectionInfoHeader } from "../../utils/types/collections";
 
 // All the screen content before the Flatlist used to display NFTs
 export const CollectionHeader: React.FC<{
   collectionId: string;
-  collectionInfo?: CollectionInfo;
+  collectionInfoHeader?: CollectionInfoHeader;
   selectedTab: TabsListType;
   onSelectTab: (tab: TabsListType) => void;
   sortDirection: SortDirection;
   onChangeSortDirection: (val: SortDirection) => void;
 }> = ({
-  collectionInfo = { mintPhases: [] },
+  collectionInfoHeader = { mintPhases: [] },
   selectedTab,
   onSelectTab,
   collectionId,
@@ -54,7 +54,7 @@ export const CollectionHeader: React.FC<{
   const stats = useCollectionStats(collectionId, wallet?.userId);
   const { width: maxWidth } = useMaxResolution();
   const { width, height } = useImageResizer({
-    image: collectionInfo.bannerImage || bannerCollection,
+    image: collectionInfoHeader.bannerImage || bannerCollection,
     maxSize: { width: maxWidth },
   });
   const [network, collectionMintAddress] = parseCollectionId(collectionId);
@@ -142,8 +142,8 @@ export const CollectionHeader: React.FC<{
     <View style={{ maxWidth: width, alignSelf: "center" }}>
       <Image
         source={
-          collectionInfo.bannerImage
-            ? { uri: collectionInfo.bannerImage }
+          collectionInfoHeader.bannerImage
+            ? { uri: collectionInfoHeader.bannerImage }
             : bannerCollection
         }
         style={{
@@ -161,11 +161,13 @@ export const CollectionHeader: React.FC<{
         }}
       >
         <RoundedGradientImage
-          imageSource={{ uri: collectionInfo.image }}
+          imageSource={{ uri: collectionInfoHeader.image }}
           style={{ marginRight: 24 }}
         />
         <View style={{ flex: 1 }}>
-          <BrandText style={fontSemibold28}>{collectionInfo.name}</BrandText>
+          <BrandText style={fontSemibold28}>
+            {collectionInfoHeader.name}
+          </BrandText>
           <View style={styles.statRow}>
             <CollectionStat
               label="Floor"
@@ -201,10 +203,14 @@ export const CollectionHeader: React.FC<{
             />
           </View>
           <View style={styles.statRow}>
-            <CollectionSocialButtons collectionInfo={collectionInfo} />
-            {collectionInfo.discord ||
-            collectionInfo.twitter ||
-            collectionInfo.website ? (
+            <CollectionSocialButtons
+              discordLink={collectionInfoHeader.discord}
+              twitterLink={collectionInfoHeader.twitter}
+              websiteLink={collectionInfoHeader.website}
+            />
+            {collectionInfoHeader.discord ||
+            collectionInfoHeader.twitter ||
+            collectionInfoHeader.website ? (
               <View
                 style={{
                   height: 24,

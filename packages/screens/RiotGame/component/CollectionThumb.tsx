@@ -3,7 +3,7 @@ import { Image, TouchableOpacity } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
-import { useCollectionInfo } from "../../../hooks/useCollectionInfo";
+import { useCollectionInfoHeader } from "../../../hooks/useCollectionInfoHeader";
 import { useAppNavigation } from "../../../utils/navigation";
 import { layout } from "../../../utils/style/layout";
 
@@ -14,7 +14,7 @@ type CollectionThumbProps = {
 export const CollectionThumb: React.FC<CollectionThumbProps> = ({
   collectionId,
 }) => {
-  const { info } = useCollectionInfo(collectionId);
+  const { thumb } = useCollectionInfoHeader(collectionId);
   const navigation = useAppNavigation();
 
   return (
@@ -33,7 +33,7 @@ export const CollectionThumb: React.FC<CollectionThumbProps> = ({
         height={266}
       >
         <Image
-          source={{ uri: info?.image }}
+          source={{ uri: thumb?.image }}
           style={{
             width: 172,
             height: 172,
@@ -46,7 +46,7 @@ export const CollectionThumb: React.FC<CollectionThumbProps> = ({
           ellipsizeMode="tail"
           numberOfLines={1}
         >
-          {info?.name}
+          {thumb?.name}
         </BrandText>
       </TertiaryBox>
     </TouchableOpacity>

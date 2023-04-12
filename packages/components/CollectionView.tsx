@@ -5,7 +5,7 @@ import { BrandText } from "./BrandText";
 import { TertiaryBox } from "./boxes/TertiaryBox";
 import { GradientText } from "./gradientText";
 import { Collection, MintState } from "../api/marketplace/v1/marketplace";
-import { useCollectionInfo } from "../hooks/useCollectionInfo";
+import { useCollectionInfoPreview } from "../hooks/useCollectionInfoPreview";
 import { useNavigateToCollection } from "../hooks/useNavigateToCollection";
 import { fontBold11, fontMedium10, fontSemibold14 } from "../utils/style/fonts";
 import { layout } from "../utils/style/layout";
@@ -31,7 +31,9 @@ export const CollectionView: React.FC<{
   const navigateToTwitter = () => {
     Linking.openURL(item.twitterUrl);
   };
-  const { info } = useCollectionInfo(item.id);
+
+  const { info } = useCollectionInfoPreview(item.id);
+
   const percentageMinted = info
     ? Math.round(
         (parseInt(info.mintedAmount as string, 10) * 100) /

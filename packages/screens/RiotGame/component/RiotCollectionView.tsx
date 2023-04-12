@@ -5,16 +5,16 @@ import { SortDirection } from "../../../api/marketplace/v1/marketplace";
 import { CollectionContent } from "../../../components/collections/CollectionContent";
 import { CollectionHeader } from "../../../components/collections/CollectionHeader";
 import { TabsListType } from "../../../components/collections/types";
-import { useCollectionInfo } from "../../../hooks/useCollectionInfo";
+import { useCollectionInfoHeader } from "../../../hooks/useCollectionInfoHeader";
 
 type CollectionViewProps = {
   collectionId: string;
 };
 
-export const CollectionView: React.FC<CollectionViewProps> = ({
+export const RiotCollectionView: React.FC<CollectionViewProps> = ({
   collectionId,
 }) => {
-  const { info } = useCollectionInfo(collectionId);
+  const { info: collectionInfoHeader } = useCollectionInfoHeader(collectionId);
   const [selectedTab, setSelectedTab] = useState<TabsListType>("allNFTs");
   const [sortDirection, setSortDirection] = useState(
     SortDirection.SORT_DIRECTION_ASCENDING
@@ -27,7 +27,7 @@ export const CollectionView: React.FC<CollectionViewProps> = ({
     >
       <CollectionHeader
         collectionId={collectionId}
-        collectionInfo={info}
+        collectionInfoHeader={collectionInfoHeader}
         selectedTab={selectedTab}
         onSelectTab={setSelectedTab}
         onChangeSortDirection={setSortDirection}
