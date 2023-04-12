@@ -18,6 +18,7 @@ import { ExternalLink } from "../../components/ExternalLink";
 import FlexRow from "../../components/FlexRow";
 import { SVG } from "../../components/SVG";
 import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
+import { LoaderFullScreen } from "../../components/loaders/LoaderFullScreen";
 import { SpacerRow } from "../../components/spacer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { ConfigResponse } from "../../contracts-clients/teritori-breeding/TeritoriBreeding.types";
@@ -211,11 +212,7 @@ export const RiotGameBreedingScreen = () => {
       intervalRef.current && clearInterval(intervalRef.current);
     };
   }, []);
-  const LoaderFullScreen = React.lazy(() =>
-    import("../../components/loaders/LoaderFullScreen").then((module) => ({
-      default: module.LoaderFullScreen,
-    }))
-  );
+
   return (
     <GameContentView>
       <LoaderFullScreen visible={isBreeding} />
