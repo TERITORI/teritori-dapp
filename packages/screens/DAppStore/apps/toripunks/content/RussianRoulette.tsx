@@ -125,7 +125,9 @@ export const Russian = () => {
   };
 
   const updateToriList = () => {
-    handleGetToriList && handleGetToriList();
+    if (totalToriUser - bet <= 0) {
+      setTotalToriUser(0);
+    } else handleGetToriList && handleGetToriList();
     // getUserToripunks();
   };
 
@@ -180,7 +182,7 @@ export const Russian = () => {
   const addBet = () => {
     const validateBet = bet + 1 > +maxTicket ? 10 : bet + 1;
     if (totalToriUser === 0) return setErroType("TICKET");
-    setBet(validateBet);
+    if (validateBet <= totalToriUser) setBet(validateBet);
   };
   const reduceBet = () => {
     const validateBet = bet - 1 < 0 ? 0 : bet - 1;
