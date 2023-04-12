@@ -1,6 +1,5 @@
 import { coin } from "@cosmjs/amino";
 import React, { useImperativeHandle, useRef, useState } from "react";
-
 import { useForm } from "react-hook-form";
 import {
   TextInput,
