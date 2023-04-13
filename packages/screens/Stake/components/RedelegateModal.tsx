@@ -1,6 +1,6 @@
 import { Decimal } from "@cosmjs/math";
 import { isDeliverTxFailure } from "@cosmjs/stargate";
-import { MsgBeginRedelegate } from "cosmjs-types/cosmos/staking/v1beta1/tx";
+import { MsgBeginRedelegate } from "osmojs/types/codegen/cosmos/staking/v1beta1/tx";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Pressable, StyleSheet, View } from "react-native";

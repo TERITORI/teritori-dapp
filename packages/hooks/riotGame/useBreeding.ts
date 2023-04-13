@@ -1,6 +1,6 @@
+import { Coin } from "@cosmjs/amino";
 import { EncodeObject } from "@cosmjs/proto-signing";
 import { isDeliverTxFailure } from "@cosmjs/stargate";
-import { Coin } from "cosmwasm";
 import { useCallback, useEffect, useState } from "react";
 
 import { ConfigResponse } from "./../../contracts-clients/teritori-breeding/TeritoriBreeding.types";

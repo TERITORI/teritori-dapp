@@ -1,7 +1,14 @@
+import {
+  CosmWasmClient,
+  SigningCosmWasmClient,
+} from "@cosmjs/cosmwasm-stargate";
 import { Decimal } from "@cosmjs/math";
-import { SigningStargateClient, StargateClient } from "@cosmjs/stargate";
+import {
+  SigningStargateClient,
+  StargateClient,
+  GasPrice,
+} from "@cosmjs/stargate";
 import { ChainInfo, Currency as KeplrCurrency } from "@keplr-wallet/types";
-import { CosmWasmClient, GasPrice, SigningCosmWasmClient } from "cosmwasm";
 
 import { cosmosNetwork } from "./cosmos-hub";
 import { cosmosThetaNetwork } from "./cosmos-hub-theta";

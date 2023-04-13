@@ -1,5 +1,6 @@
+import { Coin } from "@cosmjs/amino";
+import { toUtf8 } from "@cosmjs/encoding";
 import { isDeliverTxFailure } from "@cosmjs/stargate";
-import { Coin, toUtf8 } from "cosmwasm";
 
 import { UserScore } from "./../api/p2e/v1/p2e";
 import { getKeplrSquadStakingClient } from "./contracts";

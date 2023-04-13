@@ -5,7 +5,7 @@ import { View, Image, Platform, StyleSheet, Linking } from "react-native";
 
 import { CollectionStat } from "./CollectionStat";
 import { TabsListType } from "./types";
-import bannerCollection from "../../../assets/default-images/banner-collection.png";
+import bannerCollection from "../../../assets/default-images/banner-collection.jpg";
 import etherscanSVG from "../../../assets/icons/etherscan.svg";
 import shareSVG from "../../../assets/icons/share.svg";
 import { SortDirection } from "../../api/marketplace/v1/marketplace";

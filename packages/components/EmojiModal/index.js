@@ -4,7 +4,7 @@
 
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const _ = require("lodash");
+const { groupBy, mapValues } = require("lodash");
 const react_1 = require("react");
 const react_native_1 = require("react-native");
 
@@ -339,11 +339,11 @@ class EmojiModal extends react_1.PureComponent {
         return true;
       }
     });
-    const groupedEmojis = _.groupBy(
+    const groupedEmojis = groupBy(
       this.filteredEmojis,
       (emoji) => emoji.category
     );
-    this.emojisByCategory = _.mapValues(groupedEmojis, (group) =>
+    this.emojisByCategory = mapValues(groupedEmojis, (group) =>
       group.map(charFromEmojiObj)
     );
   }
