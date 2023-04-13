@@ -17,6 +17,8 @@ import { SecondaryButton } from "../../components/buttons/SecondaryButton";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { rewardsPrice, TotalRewards, useRewards } from "../../hooks/useRewards";
 import { accountExplorerLink, getUserId } from "../../networks";
+import { setIsKeplrConnected } from "../../store/slices/settings";
+import { useAppDispatch } from "../../store/store";
 import { neutral33, neutral77 } from "../../utils/style/colors";
 
 export interface WalletItemProps {
@@ -37,6 +39,7 @@ export const WalletItem: React.FC<WalletItemProps> = ({
   item,
   itemsCount,
 }) => {
+  const dispatch = useAppDispatch();
   const { width } = useWindowDimensions();
   const { setToastSuccess } = useFeedbacks();
   const { claimAllRewards } = useRewards(
@@ -203,12 +206,10 @@ export const WalletItem: React.FC<WalletItemProps> = ({
               },
             },
             {
-              label: "Rename address",
-              onPress: () => {},
-            },
-            {
-              label: "Delete wallet",
-              onPress: () => {},
+              label: "Disconnect wallet",
+              onPress: () => {
+                dispatch(setIsKeplrConnected(false));
+              },
             },
           ]}
         />
