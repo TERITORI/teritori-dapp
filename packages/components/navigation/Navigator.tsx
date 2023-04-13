@@ -2,13 +2,13 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 
 import { ComingSoonScreen } from "../../screens/ComingSoon/ComingSoon";
-import { OrderDetails } from "../../screens/FreelanceServices/Details/OrderDetails";
 import { FreelanceServicesGigCreation } from "../../screens/FreelanceServices/FreelanceServicesGigCreation";
 import { FreelanceServicesHome } from "../../screens/FreelanceServices/FreelanceServicesHome";
 import { FreelanceServicesHomeSeller } from "../../screens/FreelanceServices/FreelanceServicesHomeSeller";
+import { FreelanceServicesOrderDetails } from "../../screens/FreelanceServices/FreelanceServicesOrderDetails";
 import { FreelanceServicesProfileSeller } from "../../screens/FreelanceServices/FreelanceServicesProfileSeller";
+import { GigDetailScreen } from "../../screens/FreelanceServices/Gig/GigDetailScreen";
 import { GraphicsAndDesignScreen } from "../../screens/FreelanceServices/GraphicsAndDesignScreen/GraphicsAndDesignScreen";
-import { LogoDesignDetailsScreen } from "../../screens/FreelanceServices/LogoDesign/LogoDesignDetailsScreen";
 import { LogoDesignScreen } from "../../screens/FreelanceServices/LogoDesign/LogoDesignScreen";
 import { SellerDetailsScreen } from "../../screens/FreelanceServices/SellersDetails/SellerDetailsScreen";
 import { GovernanceScreen } from "../../screens/Governance/GovernanceScreen";
@@ -257,7 +257,6 @@ export const Navigator: React.FC = () => {
           title: screenTitle("Gig Creation"),
         }}
       />
-
       <Stack.Screen
         name="GraphicsAndDesign"
         component={GraphicsAndDesignScreen}
@@ -274,19 +273,19 @@ export const Navigator: React.FC = () => {
       />
 
       <Stack.Screen
-        name="LogoDesignDetails"
-        component={LogoDesignDetailsScreen}
+        name="FreelanceServicesGigDetail"
+        component={GigDetailScreen}
         options={{ header: () => null, title: screenTitle("Logo & Design") }}
       />
 
       <Stack.Screen
-        name="SellerDetails"
+        name="FreelanceServicesSellerDetails"
         component={SellerDetailsScreen}
         options={{ header: () => null, title: screenTitle("Seller Details") }}
       />
       <Stack.Screen
-        name="OrderDetails"
-        component={OrderDetails}
+        name="FreelanceServicesOrder"
+        component={FreelanceServicesOrderDetails}
         options={{ header: () => null, title: screenTitle("Order Details") }}
       />
     </Stack.Navigator>

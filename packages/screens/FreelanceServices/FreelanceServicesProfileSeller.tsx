@@ -7,7 +7,7 @@ import { ProfileFooter } from "../../components/freelanceServices/Profile/Profil
 import { ProfileHeader } from "../../components/freelanceServices/Profile/ProfileHeader";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useWallets } from "../../context/WalletsProvider";
-import { sellerprofileBackendClient } from "../../utils/backend";
+import { freelanceClient } from "../../utils/backend";
 import { ipfsPinataUrl, uploadJSONToIPFS } from "../../utils/ipfs";
 import { getFirstKeplrAccount } from "../../utils/keplr";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
@@ -71,17 +71,15 @@ export const FreelanceServicesProfileSeller: ScreenFC<
             ipfsHash
           );
           if (updatedProfileRes) {
-            const obserable = sellerprofileBackendClient.updateProfile({
-              sellerId: walletAddress,
+            const res = await freelanceClient.updateProfile({
+              userId: walletAddress,
               profileHash: ipfsHash,
             });
-            obserable.subscribe((ret) => {
-              if (ret.result === 0) {
-                console.log("successful");
-              } else {
-                console.log("failed: ", ret.result);
-              }
-            });
+            if (res.result === 1) {
+              console.log("successful");
+            } else {
+              console.log("failed");
+            }
           }
           navigation.navigate("FreelanceServicesHomeSeller");
         } catch (e) {

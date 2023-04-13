@@ -1,6 +1,7 @@
 import { ImageSourcePropType } from "react-native";
 
 import { CountryType } from "../../../utils/allCountries";
+import { Network } from "../../../utils/network";
 
 export interface FreelanceServicePriceType {
   value: number;
@@ -64,7 +65,14 @@ export enum PriceContentType {
   standard,
   premium,
 }
+export interface AddressType {
+  address: string;
+  network: Network;
+}
+
 export interface GigInfo {
+  id?: number;
+  address: AddressType;
   //
   profileHash: string;
   //overview
@@ -178,6 +186,10 @@ export const emptyPackageInfo: PackageInfo = {
 };
 
 export const emptyGigInfo: GigInfo = {
+  address: {
+    address: "",
+    network: Network.Teritori,
+  },
   profileHash: "",
   title: "",
   category: "",
@@ -462,7 +474,7 @@ export const emptySeller: SellerInfo = {
   personalSite: "",
 } as SellerInfo;
 
-export interface User {
+export interface SellerUser {
   id: string;
   backgroundPic: ImageSourcePropType;
   profilePic: string;
@@ -489,14 +501,15 @@ export interface User {
       url: string;
     }
   ];
-  skills: string[];
+  skills: SkillInfo[];
   education: EducationInfo[];
   certifications: CertificationInfo[];
 }
 
-export interface ServiceFields {
-  id: string;
-  user: User;
+export interface GigData {
+  id: number;
+  sellerAddress: string;
+  sellerUser: SellerUser;
   title: string;
   description: string;
   pricePreText: string;
@@ -504,31 +517,31 @@ export interface ServiceFields {
   price: FreelanceServicePriceType;
   reviews?: ReviewFields;
   tags?: string[];
-  serviceLevels: ServiceLevels[];
+  serviceLevels: ServiceLevel[];
 }
 
 export interface ReviewType {
   id: string;
-  user: User;
+  sellerUser: SellerUser;
   rating: number;
   date: string; // TODO: decide if string or date (for momentJS type of dates
   text: string;
 }
 
-export interface ServiceLevelsExtra {
+export interface ServiceLevelExtra {
   text: string;
   description: string;
   price: FreelanceServicePriceType;
 }
 
-export interface ServiceLevels {
+export interface ServiceLevel {
   text: string;
   description: string;
   price: FreelanceServicePriceType;
   daysToDelivery: string;
   maximumRevisions: string;
   included: string[];
-  extras: ServiceLevelsExtra[];
+  extras: ServiceLevelExtra[];
 }
 
 export interface ReviewFields {

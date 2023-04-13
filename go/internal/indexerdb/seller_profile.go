@@ -1,6 +1,6 @@
 package indexerdb
 
 type SellerProfile struct {
-	SellerId    uint64 `gorm:"primaryKey"`
+	SellerId    string `gorm:"primaryKey"`
 	ProfileHash string
 }

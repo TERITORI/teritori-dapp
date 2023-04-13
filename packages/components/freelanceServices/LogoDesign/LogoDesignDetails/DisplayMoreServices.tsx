@@ -3,7 +3,6 @@ import { View, TouchableOpacity } from "react-native";
 
 import chevronLeft from "../../../../../assets/icons/chevron-left.svg";
 import chevronRight from "../../../../../assets/icons/chevron-right.svg";
-// import { ServiceFields } from "../../../../screens/FreelanceServices/types/fields";
 import { fontSemibold20 } from "../../../../utils/style/fonts";
 import { BrandText } from "../../../BrandText";
 import { SVG } from "../../../SVG";

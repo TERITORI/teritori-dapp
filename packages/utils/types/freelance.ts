@@ -16,3 +16,11 @@ export enum GigStep {
   Gallery,
   Publish,
 }
+
+export enum OrderStep {
+  OrderDetails,
+  ConfirmPay,
+  SubmitRequirements,
+}
+
+export enum GigsTab {}

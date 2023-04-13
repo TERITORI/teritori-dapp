@@ -1,5 +1,4 @@
-import axios from "axios";
-import React, { useState, createRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { TouchableOpacity, useWindowDimensions, View } from "react-native";
 
 import heart from "../../../../assets/icons/heart.svg";
@@ -21,25 +20,14 @@ import { AddNewCertificationCard } from "../../../components/freelanceServices/C
 import { AddNewEducationCard } from "../../../components/freelanceServices/Cards/AddNewEducationCard";
 import { AddNewLangCard } from "../../../components/freelanceServices/Cards/AddNewLangCard";
 import { AddNewSkillCard } from "../../../components/freelanceServices/Cards/AddNewSkillCard";
-import { DisplayMoreServices } from "../../../components/freelanceServices/LogoDesign/LogoDesignDetails/DisplayMoreServices";
-import { DisplayReviews } from "../../../components/freelanceServices/LogoDesign/LogoDesignDetails/DisplayReviews";
-import { ReviewsStats } from "../../../components/freelanceServices/LogoDesign/LogoDesignDetails/ReviewsStats";
 import { StarRating } from "../../../components/freelanceServices/common/StarRating";
 import { AvatarImage } from "../../../components/inputs/AvatarImage";
-import { PortfolioImage } from "../../../components/inputs/PortfolioImage";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useIsKeplrConnected } from "../../../hooks/useIsKeplrConnected";
-import { sellerprofileBackendClient } from "../../../utils/backend";
-import {
-  uploadJSONToIPFS,
-  uploadFileToIPFS,
-  ipfsPinataUrl,
-} from "../../../utils/ipfs";
-import {
-  getSigningCosmWasmClient,
-  getFirstKeplrAccount,
-} from "../../../utils/keplr";
+import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { freelanceClient } from "../../../utils/backend";
+import { uploadJSONToIPFS } from "../../../utils/ipfs";
 import { ScreenFC } from "../../../utils/navigation";
 import {
   errorColor,
@@ -64,41 +52,67 @@ import {
 } from "../../../utils/style/fonts";
 import { leftMarginMainContent } from "../../../utils/style/layout";
 import { FreelanceServicesScreenWrapper } from "../FreelanceServicesScreenWrapper";
-import { getServiceFieldFromIPFS } from "../query/data";
+import { getSellerIpfsHash, updateSellerProfileToContract } from "../contract";
+import { getSellerUser } from "../query/data";
 import {
   LangInfo,
   EducationInfo,
   CertificationInfo,
-  ServiceFields,
+  SkillInfo,
+  SellerUser,
 } from "../types/fields";
+import { GigList } from "./components/GigList";
 
-export const SellerDetailsScreen: ScreenFC<"SellerDetails"> = ({
+export const SellerDetailsScreen: ScreenFC<
+  "FreelanceServicesSellerDetails"
+> = ({
   route: {
-    params: { id },
+    params: { address: sellerAddress },
   },
 }) => {
-  const [data, setData] = useState<ServiceFields | null>(null);
+  const [sellerUser, setSellerUser] = useState<SellerUser | null>(null);
+  const wallet = useSelectedWallet();
   useEffect(() => {
-    if (id !== "") return;
-    const setId = async () => {
-      const gig_json_res = await axios.get(ipfsPinataUrl(id));
-      setData(await getServiceFieldFromIPFS(id, gig_json_res.data));
+    const getSellerUserInfo = async () => {
+      try {
+        if (!sellerAddress) return;
+        const profileHash = await getSellerIpfsHash(sellerAddress);
+        const _sellerUser = await getSellerUser(profileHash);
+        setAvatarUrl(_sellerUser.profilePic);
+        setDescription(_sellerUser.intro);
+        setLangInfoList(_sellerUser.languages);
+        setSkillInfoList(_sellerUser.skills.map((skillInfo) => skillInfo.name));
+        setEducationInfoList(_sellerUser.education);
+        setCertificationInfoList(_sellerUser.certifications);
+        setIsEditable(!!(wallet && sellerAddress === wallet.address));
+        setSellerUser(_sellerUser);
+      } catch (err) {
+        console.log(err);
+      }
     };
-    setId();
-  }, [id]);
+    if (sellerAddress) {
+      getSellerUserInfo();
+    }
+  }, [sellerAddress, wallet]);
 
   const { width } = useWindowDimensions();
-
-  const [avatarUrl, setAvatarUrl] = useState(data?.user?.profilePic);
-  const [portfolios, setPortfolios] = useState(data?.user?.portfolios);
+  const [isEditable, setIsEditable] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState(
+    sellerUser ? sellerUser.profilePic : ""
+  );
+  // const [portfolios, setPortfolios] = useState(data ? data.user.portfolios:[]);
 
   const [isEditName, setIsEditName] = useState(false);
-  const [userName, setUserName] = useState(data?.user.username);
+  const [userName, setUserName] = useState(
+    sellerUser ? sellerUser.username : ""
+  );
 
-  const [description, setDescription] = useState(data?.user.intro);
+  const [description, setDescription] = useState(
+    sellerUser ? sellerUser.intro : ""
+  );
 
   const [langInfoList, setLangInfoList] = useState<LangInfo[]>(
-    data?.user.languages!
+    sellerUser ? sellerUser.languages : []
   );
   const [editLangValue, setEditLangValue] = useState<LangInfo | undefined>(
     undefined
@@ -107,7 +121,9 @@ export const SellerDetailsScreen: ScreenFC<"SellerDetails"> = ({
   const [isEditLang, setIsEditLang] = useState(false);
 
   const [skillInfoList, setSkillInfoList] = useState<string[]>(
-    data?.user.skills!
+    sellerUser
+      ? sellerUser.skills.map((skillInfo: SkillInfo) => skillInfo.name)
+      : []
   );
   const [indexSkillValue, setIndexSkillValue] = useState(-1);
   const [editSkillValue, setEditSkillValue] = useState<string | undefined>(
@@ -117,7 +133,7 @@ export const SellerDetailsScreen: ScreenFC<"SellerDetails"> = ({
 
   const [isEditEducation, setIsEditEducation] = useState(false);
   const [educationInfoList, setEducationInfoList] = useState<EducationInfo[]>(
-    data?.user.education!
+    sellerUser ? sellerUser.education : []
   );
   const [editEducationValue, setEditEducationValue] = useState<
     EducationInfo | undefined
@@ -127,7 +143,7 @@ export const SellerDetailsScreen: ScreenFC<"SellerDetails"> = ({
   const [isEditCertification, setIsEditCertification] = useState(false);
   const [certificationInfoList, setCertificationInfoList] = useState<
     CertificationInfo[]
-  >(data?.user.certifications!);
+  >(sellerUser ? sellerUser.certifications : []);
   const [editCertificationValue, setEditCertificationValue] = useState<
     CertificationInfo | undefined
   >(undefined);
@@ -137,28 +153,26 @@ export const SellerDetailsScreen: ScreenFC<"SellerDetails"> = ({
 
   const isKeplrConnected = useIsKeplrConnected();
 
-  const { setToastError, setToastSuccess } = useFeedbacks();
+  const { setToastError } = useFeedbacks();
 
-  const fileRef = createRef<HTMLInputElement>();
+  // const fileRef = createRef<HTMLInputElement>();
 
   const onPressUpdateName = () => {
-    if (data?.user.username.trim() === "") return;
+    if (sellerUser && sellerUser.username.trim() === "") return;
     setIsEditName(false);
   };
   const onPressUpdateDescription = () => {
     setIsEditDescription(false);
   };
 
-  const contractAddress = process.env.TERITORI_SELLER_CONTRACT_ADRESS as string;
-
   const updateProfile = async () => {
     //get ipfsHash for Profile
-
+    if (!wallet) return;
     const ipfs_msg = {
       name: userName?.trim(),
       description,
       avatar: avatarUrl,
-      portfolio: portfolios,
+      // portfolio: portfolios,
       lang: langInfoList,
       skill: skillInfoList,
       education: educationInfoList,
@@ -181,175 +195,458 @@ export const SellerDetailsScreen: ScreenFC<"SellerDetails"> = ({
       });
       return;
     }
-    const msg = {
-      update_seller_profile: {
-        seller_id: parseInt(id, 10),
-        ipfs_hash: profileHash,
-      },
-    } as any;
 
     try {
-      const signingClient = await getSigningCosmWasmClient();
-      const walletAddress = (await getFirstKeplrAccount()).address;
-      const updatedProfileRes = await signingClient.execute(
-        walletAddress!,
-        contractAddress,
-        msg,
-        "auto"
+      const profileRes = await updateSellerProfileToContract(
+        wallet.address,
+        profileHash
       );
-
-      //store to database using backend_api
-
-      const obserable = sellerprofileBackendClient.updateProfile({
-        sellerId: "",
-        profileHash,
-      });
-      obserable.subscribe((ret) => {
-        if (ret.result === 0) {
-          console.log("successful");
-        } else {
-          console.log("failed: ", ret.result);
-        }
-      });
-
-      if (updatedProfileRes) {
-        setToastSuccess({
-          title: "Profile successfully updated",
-          message: "",
+      if (profileRes) {
+        //store to database using backend_api
+        const res = await freelanceClient.updateProfile({
+          userId: wallet.address,
+          profileHash,
         });
+        if (res.result === 1) {
+          console.log("updated profile success");
+        } else {
+          console.log("error");
+        }
       }
     } catch (e) {
-      if (e instanceof Error) {
-        setToastError({
-          title: "Transaction Failed",
-          message: e.message,
-        });
-      }
-      console.warn(e);
+      console.log(e);
     }
   };
 
   return (
-    <FreelanceServicesScreenWrapper>
-      <View
-        style={{
-          flexDirection: width > 1280 ? "row" : "column",
-          maxWidth: 1440,
-          width: "100%",
-          alignSelf: "center",
-          paddingHorizontal: leftMarginMainContent,
-        }}
-      >
+    sellerUser && (
+      <FreelanceServicesScreenWrapper>
         <View
           style={{
-            flexDirection: "row",
-            width: width > 1280 ? "40%" : "100%",
-            minWidth: 330,
-            justifyContent: "space-between",
+            flexDirection: width > 1280 ? "row" : "column",
+            maxWidth: 1440,
+            width: "100%",
+            alignSelf: "center",
+            paddingHorizontal: leftMarginMainContent,
           }}
         >
-          <View style={{ width: "100%", marginTop: 24 }}>
-            <TertiaryBox fullWidth>
-              <View
-                style={{
-                  width: "90%",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
+          <View
+            style={{
+              flexDirection: "row",
+              width: width > 1280 ? "40%" : "100%",
+              minWidth: 330,
+              justifyContent: "space-between",
+            }}
+          >
+            <View style={{ width: "100%", marginTop: 24 }}>
+              <TertiaryBox fullWidth>
                 <View
                   style={{
-                    flexDirection: "row",
-                    alignSelf: "center",
+                    width: "90%",
                     alignItems: "center",
-                    flex: 1,
-                    justifyContent: "space-between",
-                    width: "100%",
-                    marginTop: 16,
-                    marginBottom: 8,
+                    justifyContent: "center",
                   }}
                 >
-                  <SVG
-                    source={heart}
-                    width={24}
-                    height={24}
-                    style={{ marginRight: 80 }}
-                  />
-                  <AvatarImage
-                    source={data?.user.profilePic}
-                    style={{ width: 104, height: 104 }}
-                    onUpdate={(ipfsHash) => {
-                      setAvatarUrl(ipfsHash);
-                    }}
-                  />
                   <View
                     style={{
-                      width: "fit-content",
-                      height: "fit-content",
-                      backgroundColor: neutral00,
-                      borderColor: neutral44,
-                      borderWidth: 0.5,
-                      borderRadius: 24,
+                      flexDirection: "row",
+                      alignSelf: "center",
                       alignItems: "center",
-                      justifyContent: "center",
-                      marginLeft: 12,
+                      flex: 1,
+                      justifyContent: "space-between",
+                      width: "100%",
+                      marginTop: 16,
+                      marginBottom: 8,
                     }}
                   >
+                    <SVG
+                      source={heart}
+                      width={24}
+                      height={24}
+                      style={{ marginRight: 80 }}
+                    />
+                    <AvatarImage
+                      source={sellerUser.profilePic}
+                      style={{ width: 104, height: 104 }}
+                      onUpdate={(ipfsHash) => {
+                        setAvatarUrl(ipfsHash);
+                      }}
+                    />
                     <View
                       style={{
-                        flexDirection: "row",
+                        width: "fit-content",
+                        height: "fit-content",
+                        backgroundColor: neutral00,
+                        borderColor: neutral44,
+                        borderWidth: 0.5,
+                        borderRadius: 24,
                         alignItems: "center",
-                        paddingRight: 16,
-                        paddingBottom: 8,
-                        paddingLeft: 16,
-                        paddingTop: 8,
+                        justifyContent: "center",
+                        marginLeft: 12,
                       }}
                     >
                       <View
                         style={{
-                          backgroundColor:
-                            data?.user.onlineStatus! === "online"
-                              ? successColor
-                              : errorColor,
-                          width: 6,
-                          height: 6,
-                          borderRadius: 24,
+                          flexDirection: "row",
+                          alignItems: "center",
+                          paddingRight: 16,
+                          paddingBottom: 8,
+                          paddingLeft: 16,
+                          paddingTop: 8,
                         }}
-                      />
-                      <BrandText
-                        style={[
-                          fontSemibold16,
-                          {
-                            color:
-                              data?.user.onlineStatus! === "online"
+                      >
+                        <View
+                          style={{
+                            backgroundColor:
+                              sellerUser.onlineStatus! === "online"
                                 ? successColor
                                 : errorColor,
-                            marginLeft: 4,
-                          },
+                            width: 6,
+                            height: 6,
+                            borderRadius: 24,
+                          }}
+                        />
+                        <BrandText
+                          style={[
+                            fontSemibold16,
+                            {
+                              color:
+                                sellerUser.onlineStatus! === "online"
+                                  ? successColor
+                                  : errorColor,
+                              marginLeft: 4,
+                            },
+                          ]}
+                        >
+                          {" "}
+                          {sellerUser.onlineStatus}
+                        </BrandText>
+                      </View>
+                    </View>
+                  </View>
+                  <BrandText style={fontSemibold20}>{userName}</BrandText>
+                  {!isEditName && (
+                    <View
+                      style={{ flexDirection: "row", alignContent: "center" }}
+                    >
+                      {isEditable && (
+                        <TouchableOpacity
+                          style={{
+                            backgroundColor: neutral22,
+                            height: 40,
+                            width: 40,
+                            borderRadius: 24,
+                            alignItems: "center",
+                            justifyContent: "center",
+                            marginRight: 16,
+                          }}
+                          onPress={() => setIsEditName(true)}
+                        >
+                          <SVG
+                            source={penSVG}
+                            width={24}
+                            height={24}
+                            style={{ marginTop: 2 }}
+                          />
+                        </TouchableOpacity>
+                      )}
+                    </View>
+                  )}
+                  {isEditName && (
+                    <TextInputCustom
+                      label=""
+                      name="Edit Name"
+                      placeHolder="Type name here"
+                      value={userName}
+                      onChangeText={setUserName}
+                      style={{ marginBottom: 15, marginTop: 10 }}
+                    />
+                  )}
+                  {isEditName && (
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        width: "100%",
+                        justifyContent: "center",
+                        marginBottom: 10,
+                      }}
+                    >
+                      <SecondaryButton
+                        size="SM"
+                        text="Cancel"
+                        color={secondaryColor}
+                        backgroundColor={neutral33}
+                        style={{
+                          marginRight: 10,
+                        }}
+                        onPress={() => setIsEditName(false)}
+                      />
+                      <SecondaryButton
+                        size="SM"
+                        text="Update"
+                        color={neutral00}
+                        backgroundColor={secondaryColor}
+                        style={{ marginLeft: 10 }}
+                        onPress={() => onPressUpdateName()}
+                      />
+                    </View>
+                  )}
+                  <BrandText
+                    style={[
+                      { color: neutralA3, marginTop: 8, marginBottom: 8 },
+                      fontSemibold14,
+                    ]}
+                  >
+                    {sellerUser.tagline}
+                  </BrandText>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      marginRight: 12,
+                    }}
+                  >
+                    <StarRating rating={sellerUser.rating} />
+                    <BrandText
+                      style={[
+                        { color: yellowDefault, marginRight: 12 },
+                        fontMedium14,
+                      ]}
+                    >
+                      {sellerUser.rating}
+                    </BrandText>
+                    <BrandText style={[{ color: neutral77 }, fontMedium14]}>
+                      ({sellerUser.totalReviews})
+                    </BrandText>
+                  </View>
+                  <Separator
+                    style={{ width: "100%", marginTop: 12, marginBottom: 12 }}
+                  />
+                  <SecondaryButton
+                    fullWidth
+                    size="SM"
+                    text="Contact Me"
+                    backgroundColor={secondaryColor}
+                    color={neutral00}
+                  />
+                  <Separator style={{ width: "100%", marginTop: 12 }} />
+
+                  <View style={{ flexDirection: "row", marginTop: 24 }}>
+                    <View style={{ flexDirection: "column", width: 195 }}>
+                      <BrandText
+                        style={[
+                          fontSemibold14,
+                          { color: neutral77, marginBottom: 8 },
                         ]}
                       >
-                        {" "}
-                        {data?.user?.onlineStatus}
+                        From
+                      </BrandText>
+                      <BrandText style={fontSemibold14}>
+                        {sellerUser.country.name}
+                      </BrandText>
+                    </View>
+                    <View style={{ flexDirection: "column", width: 160 }}>
+                      <BrandText
+                        style={[
+                          fontSemibold14,
+                          { color: neutral77, marginBottom: 8 },
+                        ]}
+                      >
+                        Member Since
+                      </BrandText>
+                      <BrandText style={fontSemibold14}>
+                        {sellerUser.createDate.toLocaleDateString()}
+                      </BrandText>
+                    </View>
+                  </View>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      marginTop: 8,
+                      marginBottom: 16,
+                    }}
+                  >
+                    <View style={{ flexDirection: "column", width: 195 }}>
+                      <BrandText
+                        style={[
+                          fontSemibold14,
+                          { color: neutral77, marginBottom: 8 },
+                        ]}
+                      >
+                        Avg. response time
+                      </BrandText>
+                      <BrandText style={fontSemibold14}>
+                        {sellerUser.times.avgResponseTime}
+                      </BrandText>
+                    </View>
+                    <View style={{ flexDirection: "column", width: 160 }}>
+                      <BrandText
+                        style={[
+                          fontSemibold14,
+                          { color: neutral77, marginBottom: 8 },
+                        ]}
+                      >
+                        Last delivery
+                      </BrandText>
+                      <BrandText style={fontSemibold14}>
+                        {sellerUser.times.lastDelivery}
                       </BrandText>
                     </View>
                   </View>
                 </View>
-                <BrandText style={fontSemibold20}>{userName}</BrandText>
-                {!isEditName && (
-                  <View
-                    style={{ flexDirection: "row", alignContent: "center" }}
+              </TertiaryBox>
+
+              <Separator
+                style={{ width: "100%", marginTop: 20, marginBottom: 20 }}
+              />
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "flex-end",
+                  width: "100%",
+                }}
+              >
+                <BrandText style={[fontSemibold20]}>Description</BrandText>
+                {isEditable && !isEditDescription && (
+                  <TouchableOpacity onPress={() => setIsEditDescription(true)}>
+                    <BrandText
+                      style={[fontSemibold14, { color: primaryColor }]}
+                    >
+                      Edit Description
+                    </BrandText>
+                  </TouchableOpacity>
+                )}
+              </View>
+              {isEditable && isEditDescription && (
+                <TextInputCustom
+                  label=""
+                  name="Edit Description"
+                  placeHolder="Type description here"
+                  value={description}
+                  multiline
+                  numberOfLines={8}
+                  onChangeText={setDescription}
+                  style={{ marginBottom: 15, marginTop: 10 }}
+                />
+              )}
+              {isEditDescription && (
+                <View
+                  style={{
+                    flexDirection: "row",
+                    width: "100%",
+                    justifyContent: "center",
+                    marginBottom: 10,
+                  }}
+                >
+                  <SecondaryButton
+                    size="SM"
+                    text="Cancel"
+                    color={secondaryColor}
+                    backgroundColor={neutral33}
+                    style={{
+                      marginRight: 10,
+                    }}
+                    onPress={() => setIsEditDescription(false)}
+                  />
+                  <SecondaryButton
+                    size="SM"
+                    text="Update"
+                    color={neutral00}
+                    backgroundColor={secondaryColor}
+                    style={{ marginLeft: 10 }}
+                    onPress={() => onPressUpdateDescription()}
+                  />
+                </View>
+              )}
+
+              {!isEditDescription && (
+                <BrandText
+                  style={[fontSemibold16, { color: neutral77, marginTop: 12 }]}
+                >
+                  {description}
+                </BrandText>
+              )}
+
+              <Separator
+                style={{ width: "100%", marginTop: 20, marginBottom: 20 }}
+              />
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "flex-end",
+                  width: "100%",
+                }}
+              >
+                <BrandText style={fontSemibold20}>Languages</BrandText>
+                {isEditable && !isEditLang && (
+                  <TouchableOpacity
+                    onPress={() => {
+                      setEditLangValue(undefined);
+                      setIsEditLang(true);
+                    }}
                   >
+                    <BrandText
+                      style={[fontSemibold14, { color: primaryColor }]}
+                    >
+                      Add New
+                    </BrandText>
+                  </TouchableOpacity>
+                )}
+              </View>
+              {isEditLang && (
+                <AddNewLangCard
+                  value={editLangValue}
+                  onClose={() => {
+                    setIsEditLang(false);
+                  }}
+                  onAdd={(langName, langLevel) => {
+                    if (indexLangValue === -1) {
+                      setLangInfoList([
+                        ...langInfoList,
+                        {
+                          name: langName,
+                          level: langLevel,
+                        },
+                      ]);
+                    } else {
+                      langInfoList[indexLangValue] = {
+                        name: langName,
+                        level: langLevel,
+                      };
+                      setLangInfoList([...langInfoList]);
+                    }
+                  }}
+                />
+              )}
+              {langInfoList.map((value, index) => (
+                <View
+                  key={`langinfo-${index}`}
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "flex-end",
+                    marginTop: 16,
+                  }}
+                >
+                  <BrandText style={[fontSemibold16, { color: neutral77 }]}>
+                    {value.name} - {value.level}
+                  </BrandText>
+                  {isEditable && (
                     <TouchableOpacity
                       style={{
-                        backgroundColor: neutral22,
-                        height: 40,
-                        width: 40,
-                        borderRadius: 24,
-                        alignItems: "center",
+                        alignItems: "flex-start",
                         justifyContent: "center",
-                        marginRight: 16,
+                        marginLeft: 10,
                       }}
-                      onPress={() => setIsEditName(true)}
+                      onPress={() => {
+                        setIndexLangValue(index);
+                        setEditLangValue({
+                          name: value.name,
+                          level: value.level,
+                        } as LangInfo);
+                        setIsEditLang(true);
+                      }}
                     >
                       <SVG
                         source={penSVG}
@@ -358,885 +655,538 @@ export const SellerDetailsScreen: ScreenFC<"SellerDetails"> = ({
                         style={{ marginTop: 2 }}
                       />
                     </TouchableOpacity>
-                  </View>
-                )}
-                {isEditName && (
-                  <TextInputCustom
-                    label=""
-                    name="Edit Name"
-                    placeHolder="Type name here"
-                    value={userName}
-                    onChangeText={setUserName}
-                    style={{ marginBottom: 15, marginTop: 10 }}
-                  />
-                )}
-                {isEditName && (
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      width: "100%",
-                      justifyContent: "center",
-                      marginBottom: 10,
-                    }}
-                  >
-                    <SecondaryButton
-                      size="SM"
-                      text="Cancel"
-                      color={secondaryColor}
-                      backgroundColor={neutral33}
-                      style={{
-                        marginRight: 10,
-                      }}
-                      onPress={() => setIsEditName(false)}
-                    />
-                    <SecondaryButton
-                      size="SM"
-                      text="Update"
-                      color={neutral00}
-                      backgroundColor={secondaryColor}
-                      style={{ marginLeft: 10 }}
-                      onPress={() => onPressUpdateName()}
-                    />
-                  </View>
-                )}
-                <BrandText
-                  style={[
-                    { color: neutralA3, marginTop: 8, marginBottom: 8 },
-                    fontSemibold14,
-                  ]}
-                >
-                  {data?.user.tagline}
-                </BrandText>
+                  )}
+                </View>
+              ))}
+
+              <Separator
+                style={{ width: "100%", marginTop: 20, marginBottom: 20 }}
+              />
+
+              <BrandText style={fontSemibold20}>Linked Accounts</BrandText>
+              <TouchableOpacity>
                 <View
                   style={{
                     flexDirection: "row",
-                    alignItems: "center",
-                    marginRight: 12,
+                    alignContent: "center",
+                    marginTop: 16,
                   }}
                 >
-                  <StarRating rating={data?.user.rating!} />
+                  <SVG
+                    source={twitterIcon}
+                    width={16}
+                    height={16}
+                    style={{ marginTop: 2 }}
+                  />
                   <BrandText
                     style={[
-                      { color: yellowDefault, marginRight: 12 },
-                      fontMedium14,
+                      fontSemibold16,
+                      { marginLeft: 12, color: neutralA3, marginBottom: 12 },
                     ]}
                   >
-                    {data?.user.rating!}
-                  </BrandText>
-                  <BrandText style={[{ color: neutral77 }, fontMedium14]}>
-                    ({data?.user.totalReviews})
+                    Twitter
                   </BrandText>
                 </View>
-                <Separator
-                  style={{ width: "100%", marginTop: 12, marginBottom: 12 }}
-                />
-                <SecondaryButton
-                  fullWidth
-                  size="SM"
-                  text="Contact Me"
-                  backgroundColor={secondaryColor}
-                  color={neutral00}
-                />
-                <Separator style={{ width: "100%", marginTop: 12 }} />
-
-                <View style={{ flexDirection: "row", marginTop: 24 }}>
-                  <View style={{ flexDirection: "column", width: 195 }}>
-                    <BrandText
-                      style={[
-                        fontSemibold14,
-                        { color: neutral77, marginBottom: 8 },
-                      ]}
-                    >
-                      From
-                    </BrandText>
-                    <BrandText style={fontSemibold14}>
-                      {data?.user.country.name}
-                    </BrandText>
-                  </View>
-                  <View style={{ flexDirection: "column", width: 160 }}>
-                    <BrandText
-                      style={[
-                        fontSemibold14,
-                        { color: neutral77, marginBottom: 8 },
-                      ]}
-                    >
-                      Member Since
-                    </BrandText>
-                    <BrandText style={fontSemibold14}>
-                      {data?.user.createDate.toLocaleDateString()}
-                    </BrandText>
-                  </View>
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <View style={{ flexDirection: "row", alignContent: "center" }}>
+                  <SVG
+                    source={behanceIcon}
+                    width={16}
+                    height={16}
+                    style={{ marginTop: 2 }}
+                  />
+                  <BrandText
+                    style={[
+                      fontSemibold16,
+                      { marginLeft: 12, color: neutralA3, marginBottom: 12 },
+                    ]}
+                  >
+                    Behance
+                  </BrandText>
                 </View>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    marginTop: 8,
-                    marginBottom: 16,
-                  }}
-                >
-                  <View style={{ flexDirection: "column", width: 195 }}>
-                    <BrandText
-                      style={[
-                        fontSemibold14,
-                        { color: neutral77, marginBottom: 8 },
-                      ]}
-                    >
-                      Avg. response time
-                    </BrandText>
-                    <BrandText style={fontSemibold14}>
-                      {data?.user.times.avgResponseTime}
-                    </BrandText>
-                  </View>
-                  <View style={{ flexDirection: "column", width: 160 }}>
-                    <BrandText
-                      style={[
-                        fontSemibold14,
-                        { color: neutral77, marginBottom: 8 },
-                      ]}
-                    >
-                      Last delivery
-                    </BrandText>
-                    <BrandText style={fontSemibold14}>
-                      {data?.user.times.lastDelivery}
-                    </BrandText>
-                  </View>
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <View style={{ flexDirection: "row", alignContent: "center" }}>
+                  <SVG
+                    source={dribbleIcon}
+                    width={16}
+                    height={16}
+                    style={{ marginTop: 2 }}
+                  />
+                  <BrandText
+                    style={[
+                      fontSemibold16,
+                      { marginLeft: 12, color: neutralA3, marginBottom: 12 },
+                    ]}
+                  >
+                    Dribble
+                  </BrandText>
                 </View>
-              </View>
-            </TertiaryBox>
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <View style={{ flexDirection: "row", alignContent: "center" }}>
+                  <SVG
+                    source={facebookIcon}
+                    width={16}
+                    height={16}
+                    style={{ marginTop: 2 }}
+                  />
+                  <BrandText
+                    style={[
+                      fontSemibold16,
+                      { marginLeft: 12, color: neutralA3, marginBottom: 12 },
+                    ]}
+                  >
+                    Facebook
+                  </BrandText>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <View style={{ flexDirection: "row", alignContent: "center" }}>
+                  <SVG
+                    source={githubIcon}
+                    width={16}
+                    height={16}
+                    style={{ marginTop: 2 }}
+                  />
+                  <BrandText
+                    style={[
+                      fontSemibold16,
+                      { marginLeft: 12, color: neutralA3, marginBottom: 12 },
+                    ]}
+                  >
+                    Github
+                  </BrandText>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <View style={{ flexDirection: "row", alignContent: "center" }}>
+                  <SVG
+                    source={googleIcon}
+                    width={16}
+                    height={16}
+                    style={{ marginTop: 2 }}
+                  />
+                  <BrandText
+                    style={[
+                      fontSemibold16,
+                      { marginLeft: 12, color: neutralA3, marginBottom: 12 },
+                    ]}
+                  >
+                    Google
+                  </BrandText>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <View style={{ flexDirection: "row", alignContent: "center" }}>
+                  <SVG
+                    source={youtubeIcon}
+                    width={16}
+                    height={16}
+                    style={{ marginTop: 2 }}
+                  />
+                  <BrandText
+                    style={[
+                      fontSemibold16,
+                      { marginLeft: 12, color: neutralA3, marginBottom: 12 },
+                    ]}
+                  >
+                    Youtube
+                  </BrandText>
+                </View>
+              </TouchableOpacity>
 
-            <View
-              style={{
-                marginTop: 20,
-                flexDirection: "row",
-                width: "100%",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <BrandText style={fontSemibold20}>My Portfolio</BrandText>
-              <TouchableOpacity
-                onPress={() => {
-                  fileRef.current?.click();
+              <Separator
+                style={{ width: "100%", marginTop: 20, marginBottom: 20 }}
+              />
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "flex-end",
+                  width: "100%",
                 }}
               >
-                <input
-                  type="file"
-                  style={{ display: "none" }}
-                  accept="image/png,image/jpg,image/gif"
-                  onChange={async (e) => {
-                    // const file = e.target?.files?.[0];
-                    // try {
-                    //   // const ipfsHash = await uploadFileToIPFS(file!);
-                    //   // setPortfolios([...portfolios, ipfsHash]);
-                    // } catch (exception) {
-                    //   console.log(exception);
-                    // }
+                <BrandText style={fontSemibold20}>Skills</BrandText>
+                {isEditable && !isEditSkill && (
+                  <TouchableOpacity
+                    onPress={() => {
+                      setEditSkillValue(undefined);
+                      setIsEditSkill(true);
+                    }}
+                  >
+                    <BrandText
+                      style={[fontSemibold14, { color: primaryColor }]}
+                    >
+                      Add New
+                    </BrandText>
+                  </TouchableOpacity>
+                )}
+              </View>
+              {isEditSkill && (
+                <AddNewSkillCard
+                  value={editSkillValue}
+                  onClose={() => {
+                    setIsEditSkill(false);
                   }}
-                  ref={fileRef}
+                  onAdd={(skillName) => {
+                    if (indexSkillValue === -1) {
+                      setSkillInfoList([...skillInfoList, skillName]);
+                    } else {
+                      skillInfoList[indexSkillValue] = skillName;
+                      setSkillInfoList([...skillInfoList]);
+                    }
+                  }}
                 />
-
-                <BrandText style={[fontSemibold14, { color: primaryColor }]}>
-                  Add Portfolio
-                </BrandText>
-              </TouchableOpacity>
-            </View>
-            <View
-              style={{
-                width: "100%",
-                flexDirection: "row",
-                marginTop: 20,
-                flexWrap: "wrap",
-              }}
-            >
-              {
-                //   portfolios.map((item, index) => (
-                //   <PortfolioImage
-                //     key={`portfolio-${index}`}
-                //     width={191}
-                //     height={191}
-                //     source={item}
-                //     onUpdate={(ipfsHash) => {
-                //       portfolios[index] = ipfsHash;
-                //       setPortfolios([...portfolios]);
-                //     }}
-                //     onRemove={() => {
-                //       portfolios.splice(index, 1);
-                //       setPortfolios([...portfolios]);
-                //     }}
-                //     style={{ marginLeft: 15, marginTop: 10 }}
-                //   />
-                // ))
-              }
-            </View>
-
-            <Separator
-              style={{ width: "100%", marginTop: 20, marginBottom: 20 }}
-            />
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "flex-end",
-                width: "100%",
-              }}
-            >
-              <BrandText style={[fontSemibold20]}>Description</BrandText>
-              {!isEditDescription && (
-                <TouchableOpacity onPress={() => setIsEditDescription(true)}>
-                  <BrandText style={[fontSemibold14, { color: primaryColor }]}>
-                    Edit Description
-                  </BrandText>
-                </TouchableOpacity>
               )}
-            </View>
-            {isEditDescription && (
-              <TextInputCustom
-                label=""
-                name="Edit Description"
-                placeHolder="Type description here"
-                value={description}
-                multiline
-                numberOfLines={8}
-                onChangeText={setDescription}
-                style={{ marginBottom: 15, marginTop: 10 }}
-              />
-            )}
-            {isEditDescription && (
               <View
                 style={{
                   flexDirection: "row",
                   width: "100%",
-                  justifyContent: "center",
-                  marginBottom: 10,
-                }}
-              >
-                <SecondaryButton
-                  size="SM"
-                  text="Cancel"
-                  color={secondaryColor}
-                  backgroundColor={neutral33}
-                  style={{
-                    marginRight: 10,
-                  }}
-                  onPress={() => setIsEditDescription(false)}
-                />
-                <SecondaryButton
-                  size="SM"
-                  text="Update"
-                  color={neutral00}
-                  backgroundColor={secondaryColor}
-                  style={{ marginLeft: 10 }}
-                  onPress={() => onPressUpdateDescription()}
-                />
-              </View>
-            )}
-
-            {!isEditDescription && (
-              <BrandText
-                style={[fontSemibold16, { color: neutral77, marginTop: 12 }]}
-              >
-                {description}
-              </BrandText>
-            )}
-
-            <Separator
-              style={{ width: "100%", marginTop: 20, marginBottom: 20 }}
-            />
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "flex-end",
-                width: "100%",
-              }}
-            >
-              <BrandText style={fontSemibold20}>Languages</BrandText>
-              {!isEditLang && (
-                <TouchableOpacity
-                  onPress={() => {
-                    setEditLangValue(undefined);
-                    setIsEditLang(true);
-                  }}
-                >
-                  <BrandText style={[fontSemibold14, { color: primaryColor }]}>
-                    Add New
-                  </BrandText>
-                </TouchableOpacity>
-              )}
-            </View>
-            {isEditLang && (
-              <AddNewLangCard
-                value={editLangValue}
-                onClose={() => {
-                  setIsEditLang(false);
-                }}
-                onAdd={(langName, langLevel) => {
-                  if (indexLangValue === -1) {
-                    setLangInfoList([
-                      ...langInfoList,
-                      {
-                        name: langName,
-                        level: langLevel,
-                      },
-                    ]);
-                  } else {
-                    langInfoList[indexLangValue] = {
-                      name: langName,
-                      level: langLevel,
-                    };
-                    setLangInfoList([...langInfoList]);
-                  }
-                }}
-              />
-            )}
-            {langInfoList.map((value, index) => (
-              <View
-                key={`langinfo-${index}`}
-                style={{
-                  flexDirection: "row",
-                  alignItems: "flex-end",
+                  flexWrap: "wrap",
                   marginTop: 16,
                 }}
               >
-                <BrandText style={[fontSemibold16, { color: neutral77 }]}>
-                  {value.name} - {value.level}
-                </BrandText>
-                <TouchableOpacity
-                  style={{
-                    alignItems: "flex-start",
-                    justifyContent: "center",
-                    marginLeft: 10,
-                  }}
-                  onPress={() => {
-                    setIndexLangValue(index);
-                    setEditLangValue({
-                      name: value.name,
-                      level: value.level,
-                    } as LangInfo);
-                    setIsEditLang(true);
-                  }}
-                >
-                  <SVG
-                    source={penSVG}
-                    width={24}
-                    height={24}
-                    style={{ marginTop: 2 }}
-                  />
-                </TouchableOpacity>
-              </View>
-            ))}
-
-            <Separator
-              style={{ width: "100%", marginTop: 20, marginBottom: 20 }}
-            />
-
-            <BrandText style={fontSemibold20}>Linked Accounts</BrandText>
-            <TouchableOpacity>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignContent: "center",
-                  marginTop: 16,
-                }}
-              >
-                <SVG
-                  source={twitterIcon}
-                  width={16}
-                  height={16}
-                  style={{ marginTop: 2 }}
-                />
-                <BrandText
-                  style={[
-                    fontSemibold16,
-                    { marginLeft: 12, color: neutralA3, marginBottom: 12 },
-                  ]}
-                >
-                  Twitter
-                </BrandText>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <View style={{ flexDirection: "row", alignContent: "center" }}>
-                <SVG
-                  source={behanceIcon}
-                  width={16}
-                  height={16}
-                  style={{ marginTop: 2 }}
-                />
-                <BrandText
-                  style={[
-                    fontSemibold16,
-                    { marginLeft: 12, color: neutralA3, marginBottom: 12 },
-                  ]}
-                >
-                  Behance
-                </BrandText>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <View style={{ flexDirection: "row", alignContent: "center" }}>
-                <SVG
-                  source={dribbleIcon}
-                  width={16}
-                  height={16}
-                  style={{ marginTop: 2 }}
-                />
-                <BrandText
-                  style={[
-                    fontSemibold16,
-                    { marginLeft: 12, color: neutralA3, marginBottom: 12 },
-                  ]}
-                >
-                  Dribble
-                </BrandText>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <View style={{ flexDirection: "row", alignContent: "center" }}>
-                <SVG
-                  source={facebookIcon}
-                  width={16}
-                  height={16}
-                  style={{ marginTop: 2 }}
-                />
-                <BrandText
-                  style={[
-                    fontSemibold16,
-                    { marginLeft: 12, color: neutralA3, marginBottom: 12 },
-                  ]}
-                >
-                  Facebook
-                </BrandText>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <View style={{ flexDirection: "row", alignContent: "center" }}>
-                <SVG
-                  source={githubIcon}
-                  width={16}
-                  height={16}
-                  style={{ marginTop: 2 }}
-                />
-                <BrandText
-                  style={[
-                    fontSemibold16,
-                    { marginLeft: 12, color: neutralA3, marginBottom: 12 },
-                  ]}
-                >
-                  Github
-                </BrandText>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <View style={{ flexDirection: "row", alignContent: "center" }}>
-                <SVG
-                  source={googleIcon}
-                  width={16}
-                  height={16}
-                  style={{ marginTop: 2 }}
-                />
-                <BrandText
-                  style={[
-                    fontSemibold16,
-                    { marginLeft: 12, color: neutralA3, marginBottom: 12 },
-                  ]}
-                >
-                  Google
-                </BrandText>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <View style={{ flexDirection: "row", alignContent: "center" }}>
-                <SVG
-                  source={youtubeIcon}
-                  width={16}
-                  height={16}
-                  style={{ marginTop: 2 }}
-                />
-                <BrandText
-                  style={[
-                    fontSemibold16,
-                    { marginLeft: 12, color: neutralA3, marginBottom: 12 },
-                  ]}
-                >
-                  Youtube
-                </BrandText>
-              </View>
-            </TouchableOpacity>
-
-            <Separator
-              style={{ width: "100%", marginTop: 20, marginBottom: 20 }}
-            />
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "flex-end",
-                width: "100%",
-              }}
-            >
-              <BrandText style={fontSemibold20}>Skills</BrandText>
-              {!isEditSkill && (
-                <TouchableOpacity
-                  onPress={() => {
-                    setEditSkillValue(undefined);
-                    setIsEditSkill(true);
-                  }}
-                >
-                  <BrandText style={[fontSemibold14, { color: primaryColor }]}>
-                    Add New
-                  </BrandText>
-                </TouchableOpacity>
-              )}
-            </View>
-            {isEditSkill && (
-              <AddNewSkillCard
-                value={editSkillValue}
-                onClose={() => {
-                  setIsEditSkill(false);
-                }}
-                onAdd={(skillName) => {
-                  if (indexSkillValue === -1) {
-                    setSkillInfoList([...skillInfoList, skillName]);
-                  } else {
-                    skillInfoList[indexSkillValue] = skillName;
-                    setSkillInfoList([...skillInfoList]);
-                  }
-                }}
-              />
-            )}
-            <View
-              style={{
-                flexDirection: "row",
-                width: "100%",
-                flexWrap: "wrap",
-                marginTop: 16,
-              }}
-            >
-              {skillInfoList.map((item, index) => (
-                <View
-                  key={index}
-                  style={{
-                    marginRight: 12,
-                    marginBottom: 12,
-                    backgroundColor: neutral17,
-                    borderRadius: 8,
-                    borderColor: neutral44,
-                    borderWidth: 0.5,
-                    flexDirection: "row",
-                    alignItems: "center",
-                  }}
-                >
-                  <BrandText style={[fontMedium14, { margin: 12 }]}>
-                    {item}
-                  </BrandText>
-                  <TouchableOpacity
-                    style={{
-                      alignItems: "flex-start",
-                      justifyContent: "center",
-                      marginLeft: 10,
-                    }}
-                    onPress={() => {
-                      setIndexSkillValue(index);
-                      setEditSkillValue(item);
-                      setIsEditSkill(true);
-                    }}
-                  >
-                    <SVG
-                      source={penSVG}
-                      width={24}
-                      height={24}
-                      style={{ marginTop: 2 }}
-                    />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={{
-                      alignItems: "flex-start",
-                      justifyContent: "center",
-                      marginLeft: 10,
-                    }}
-                    onPress={() => {
-                      skillInfoList.splice(index, 1);
-                      setSkillInfoList([...skillInfoList]);
-                    }}
-                  >
-                    <SVG
-                      source={trashSVG}
-                      width={22}
-                      height={22}
-                      style={{ marginTop: 2 }}
-                    />
-                  </TouchableOpacity>
-                </View>
-              ))}
-            </View>
-
-            <Separator
-              style={{ width: "100%", marginTop: 20, marginBottom: 20 }}
-            />
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "flex-end",
-                width: "100%",
-              }}
-            >
-              <BrandText style={[fontSemibold20]}>Education</BrandText>
-              {!isEditEducation && (
-                <TouchableOpacity
-                  onPress={() => {
-                    setEditEducationValue(undefined);
-                    setIsEditEducation(true);
-                  }}
-                >
-                  <BrandText style={[fontSemibold14, { color: primaryColor }]}>
-                    Add New
-                  </BrandText>
-                </TouchableOpacity>
-              )}
-            </View>
-            {isEditEducation && (
-              <AddNewEducationCard
-                value={editEducationValue}
-                onClose={() => {
-                  setIsEditEducation(false);
-                }}
-                onAdd={(educationInfo) => {
-                  if (indexEducationValue === -1) {
-                    setEducationInfoList([...educationInfoList, educationInfo]);
-                  } else {
-                    educationInfoList[indexEducationValue] = educationInfo;
-                    setEducationInfoList([...educationInfoList]);
-                  }
-                }}
-              />
-            )}
-
-            <View
-              style={{
-                flexDirection: "row",
-                width: "100%",
-                flexWrap: "wrap",
-                marginTop: 16,
-              }}
-            >
-              {educationInfoList.map((item, index) => (
-                <View
-                  style={{ flexDirection: "column", marginBottom: 8 }}
-                  key={`education-${index}`}
-                >
+                {skillInfoList.map((item, index) => (
                   <View
+                    key={index}
                     style={{
+                      marginRight: 12,
+                      marginBottom: 12,
+                      backgroundColor: neutral17,
+                      borderRadius: 8,
+                      borderColor: neutral44,
+                      borderWidth: 0.5,
                       flexDirection: "row",
-                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    <BrandText style={[fontMedium14, { margin: 12 }]}>
+                      {item}
+                    </BrandText>
+                    {isEditable && (
+                      <>
+                        <TouchableOpacity
+                          style={{
+                            alignItems: "flex-start",
+                            justifyContent: "center",
+                            marginLeft: 10,
+                          }}
+                          onPress={() => {
+                            setIndexSkillValue(index);
+                            setEditSkillValue(item);
+                            setIsEditSkill(true);
+                          }}
+                        >
+                          <SVG
+                            source={penSVG}
+                            width={24}
+                            height={24}
+                            style={{ marginTop: 2 }}
+                          />
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          style={{
+                            alignItems: "flex-start",
+                            justifyContent: "center",
+                            marginLeft: 10,
+                          }}
+                          onPress={() => {
+                            skillInfoList.splice(index, 1);
+                            setSkillInfoList([...skillInfoList]);
+                          }}
+                        >
+                          <SVG
+                            source={trashSVG}
+                            width={22}
+                            height={22}
+                            style={{ marginTop: 2 }}
+                          />
+                        </TouchableOpacity>
+                      </>
+                    )}
+                  </View>
+                ))}
+              </View>
+
+              <Separator
+                style={{ width: "100%", marginTop: 20, marginBottom: 20 }}
+              />
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "flex-end",
+                  width: "100%",
+                }}
+              >
+                <BrandText style={[fontSemibold20]}>Education</BrandText>
+                {isEditable && !isEditEducation && (
+                  <TouchableOpacity
+                    onPress={() => {
+                      setEditEducationValue(undefined);
+                      setIsEditEducation(true);
                     }}
                   >
                     <BrandText
+                      style={[fontSemibold14, { color: primaryColor }]}
+                    >
+                      Add New
+                    </BrandText>
+                  </TouchableOpacity>
+                )}
+              </View>
+              {isEditEducation && (
+                <AddNewEducationCard
+                  value={editEducationValue}
+                  onClose={() => {
+                    setIsEditEducation(false);
+                  }}
+                  onAdd={(educationInfo) => {
+                    if (indexEducationValue === -1) {
+                      setEducationInfoList([
+                        ...educationInfoList,
+                        educationInfo,
+                      ]);
+                    } else {
+                      educationInfoList[indexEducationValue] = educationInfo;
+                      setEducationInfoList([...educationInfoList]);
+                    }
+                  }}
+                />
+              )}
+
+              <View
+                style={{
+                  flexDirection: "row",
+                  width: "100%",
+                  flexWrap: "wrap",
+                  marginTop: 16,
+                }}
+              >
+                {educationInfoList.map((item, index) => (
+                  <View
+                    style={{ flexDirection: "column", marginBottom: 8 }}
+                    key={`education-${index}`}
+                  >
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <BrandText
+                        style={[
+                          fontSemibold16,
+                          { color: neutral77, flexGrow: 1 },
+                        ]}
+                      >
+                        {item.title}
+                      </BrandText>
+                      {isEditable && (
+                        <View style={{ flexDirection: "row" }}>
+                          <TouchableOpacity
+                            style={{
+                              alignItems: "flex-start",
+                              justifyContent: "center",
+                              marginLeft: 10,
+                            }}
+                            onPress={() => {
+                              setIndexEducationValue(index);
+                              setEditEducationValue(item);
+                              setIsEditEducation(true);
+                            }}
+                          >
+                            <SVG
+                              source={penSVG}
+                              width={24}
+                              height={24}
+                              style={{ marginTop: 2 }}
+                            />
+                          </TouchableOpacity>
+                          <TouchableOpacity
+                            style={{
+                              alignItems: "flex-start",
+                              justifyContent: "center",
+                              marginLeft: 10,
+                            }}
+                            onPress={() => {
+                              educationInfoList.splice(index, 1);
+                              setEducationInfoList([...educationInfoList]);
+                            }}
+                          >
+                            <SVG
+                              source={trashSVG}
+                              width={22}
+                              height={22}
+                              style={{ marginTop: 2 }}
+                            />
+                          </TouchableOpacity>
+                        </View>
+                      )}
+                    </View>
+                    <BrandText
                       style={[
-                        fontSemibold16,
-                        { color: neutral77, flexGrow: 1 },
+                        fontSemibold14,
+                        { color: neutral67, marginTop: 8 },
                       ]}
                     >
                       {item.title}
                     </BrandText>
-                    <View style={{ flexDirection: "row" }}>
-                      <TouchableOpacity
-                        style={{
-                          alignItems: "flex-start",
-                          justifyContent: "center",
-                          marginLeft: 10,
-                        }}
-                        onPress={() => {
-                          setIndexEducationValue(index);
-                          setEditEducationValue(item);
-                          setIsEditEducation(true);
-                        }}
-                      >
-                        <SVG
-                          source={penSVG}
-                          width={24}
-                          height={24}
-                          style={{ marginTop: 2 }}
-                        />
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        style={{
-                          alignItems: "flex-start",
-                          justifyContent: "center",
-                          marginLeft: 10,
-                        }}
-                        onPress={() => {
-                          educationInfoList.splice(index, 1);
-                          setEducationInfoList([...educationInfoList]);
-                        }}
-                      >
-                        <SVG
-                          source={trashSVG}
-                          width={22}
-                          height={22}
-                          style={{ marginTop: 2 }}
-                        />
-                      </TouchableOpacity>
-                    </View>
                   </View>
-                  <BrandText
-                    style={[fontSemibold14, { color: neutral67, marginTop: 8 }]}
-                  >
-                    {item.title}
-                  </BrandText>
-                </View>
-              ))}
-            </View>
-            <Separator
-              style={{ width: "100%", marginTop: 20, marginBottom: 20 }}
-            />
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "flex-end",
-                width: "100%",
-              }}
-            >
-              <BrandText style={[fontSemibold20]}>Certifications</BrandText>
-              {!isEditCertification && (
-                <TouchableOpacity
-                  onPress={() => {
-                    setEditCertificationValue(undefined);
-                    setIsEditCertification(true);
-                  }}
-                >
-                  <BrandText style={[fontSemibold14, { color: primaryColor }]}>
-                    Add New
-                  </BrandText>
-                </TouchableOpacity>
-              )}
-            </View>
-            {isEditCertification && (
-              <AddNewCertificationCard
-                value={editCertificationValue}
-                onClose={() => {
-                  setIsEditCertification(false);
-                }}
-                onAdd={(certificationInfo) => {
-                  if (indexCertificationValue === -1) {
-                    setCertificationInfoList([
-                      ...certificationInfoList,
-                      certificationInfo,
-                    ]);
-                  } else {
-                    certificationInfoList[indexCertificationValue] =
-                      certificationInfo;
-                    setCertificationInfoList([...certificationInfoList]);
-                  }
-                }}
+                ))}
+              </View>
+              <Separator
+                style={{ width: "100%", marginTop: 20, marginBottom: 20 }}
               />
-            )}
-            <View
-              style={{
-                flexDirection: "column",
-                width: "100%",
-                flexWrap: "wrap",
-                marginTop: 16,
-              }}
-            >
-              {certificationInfoList.map((item, index) => (
-                <View
-                  style={{ flexDirection: "column", marginBottom: 12 }}
-                  key={`certificate-${index}`}
-                >
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      justifyContent: "space-between",
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "flex-end",
+                  width: "100%",
+                }}
+              >
+                <BrandText style={[fontSemibold20]}>Certifications</BrandText>
+                {isEditable && !isEditCertification && (
+                  <TouchableOpacity
+                    onPress={() => {
+                      setEditCertificationValue(undefined);
+                      setIsEditCertification(true);
                     }}
                   >
-                    <BrandText style={[fontSemibold16, { color: neutral77 }]}>
+                    <BrandText
+                      style={[fontSemibold14, { color: primaryColor }]}
+                    >
+                      Add New
+                    </BrandText>
+                  </TouchableOpacity>
+                )}
+              </View>
+              {isEditCertification && (
+                <AddNewCertificationCard
+                  value={editCertificationValue}
+                  onClose={() => {
+                    setIsEditCertification(false);
+                  }}
+                  onAdd={(certificationInfo) => {
+                    if (indexCertificationValue === -1) {
+                      setCertificationInfoList([
+                        ...certificationInfoList,
+                        certificationInfo,
+                      ]);
+                    } else {
+                      certificationInfoList[indexCertificationValue] =
+                        certificationInfo;
+                      setCertificationInfoList([...certificationInfoList]);
+                    }
+                  }}
+                />
+              )}
+              <View
+                style={{
+                  flexDirection: "column",
+                  width: "100%",
+                  flexWrap: "wrap",
+                  marginTop: 16,
+                }}
+              >
+                {certificationInfoList.map((item, index) => (
+                  <View
+                    style={{ flexDirection: "column", marginBottom: 12 }}
+                    key={`certificate-${index}`}
+                  >
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <BrandText style={[fontSemibold16, { color: neutral77 }]}>
+                        {item.name}
+                      </BrandText>
+                      {isEditable && (
+                        <View style={{ flexDirection: "row" }}>
+                          <TouchableOpacity
+                            style={{
+                              alignItems: "flex-start",
+                              justifyContent: "center",
+                              marginLeft: 10,
+                            }}
+                            onPress={() => {
+                              setIndexCertificationValue(index);
+                              setEditCertificationValue(item);
+                              setIsEditCertification(true);
+                            }}
+                          >
+                            <SVG
+                              source={penSVG}
+                              width={24}
+                              height={24}
+                              style={{ marginTop: 2 }}
+                            />
+                          </TouchableOpacity>
+                          <TouchableOpacity
+                            style={{
+                              alignItems: "flex-start",
+                              justifyContent: "center",
+                              marginLeft: 10,
+                            }}
+                            onPress={() => {
+                              certificationInfoList.splice(index, 1);
+                              setCertificationInfoList([
+                                ...certificationInfoList,
+                              ]);
+                            }}
+                          >
+                            <SVG
+                              source={trashSVG}
+                              width={22}
+                              height={22}
+                              style={{ marginTop: 2 }}
+                            />
+                          </TouchableOpacity>
+                        </View>
+                      )}
+                    </View>
+                    <BrandText
+                      style={[fontMedium14, { color: neutral67, marginTop: 8 }]}
+                    >
                       {item.name}
                     </BrandText>
-                    <View style={{ flexDirection: "row" }}>
-                      <TouchableOpacity
-                        style={{
-                          alignItems: "flex-start",
-                          justifyContent: "center",
-                          marginLeft: 10,
-                        }}
-                        onPress={() => {
-                          setIndexCertificationValue(index);
-                          setEditCertificationValue(item);
-                          setIsEditCertification(true);
-                        }}
-                      >
-                        <SVG
-                          source={penSVG}
-                          width={24}
-                          height={24}
-                          style={{ marginTop: 2 }}
-                        />
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        style={{
-                          alignItems: "flex-start",
-                          justifyContent: "center",
-                          marginLeft: 10,
-                        }}
-                        onPress={() => {
-                          certificationInfoList.splice(index, 1);
-                          setCertificationInfoList([...certificationInfoList]);
-                        }}
-                      >
-                        <SVG
-                          source={trashSVG}
-                          width={22}
-                          height={22}
-                          style={{ marginTop: 2 }}
-                        />
-                      </TouchableOpacity>
-                    </View>
                   </View>
-                  <BrandText
-                    style={[fontMedium14, { color: neutral67, marginTop: 8 }]}
-                  >
-                    {item.name}
-                  </BrandText>
-                </View>
-              ))}
-            </View>
-            <View
-              style={{
-                width: "100%",
-                justifyContent: "center",
-                flexDirection: "row",
-                marginTop: 10,
-              }}
-            >
-              <SecondaryButton
-                size="SM"
-                text="Update Profile"
-                color={neutral00}
-                backgroundColor={secondaryColor}
-                onPress={() => updateProfile()}
-              />
+                ))}
+              </View>
+              <View
+                style={{
+                  width: "100%",
+                  justifyContent: "center",
+                  flexDirection: "row",
+                  marginTop: 10,
+                }}
+              >
+                <SecondaryButton
+                  size="SM"
+                  text="Update Profile"
+                  color={neutral00}
+                  backgroundColor={secondaryColor}
+                  onPress={() => updateProfile()}
+                />
+              </View>
             </View>
           </View>
+          <View
+            style={{
+              width: width > 1280 ? "60%" : "100%",
+              paddingLeft: width > 1280 ? 60 : 0,
+              // paddingHorizontal: width > 1280 ? 30 : 0,
+            }}
+          >
+            <GigList gigAddress={sellerAddress} />
+          </View>
         </View>
-        <View
-          style={{
-            width: width > 1280 ? "60%" : "100%",
-            paddingLeft: width > 1280 ? 60 : 0,
-            // paddingHorizontal: width > 1280 ? 30 : 0,
-          }}
-        >
-          <DisplayMoreServices />
-          {data?.reviews ? <ReviewsStats reviews={data.reviews} /> : <></>}
-          {data?.reviews?.items ? (
-            <DisplayReviews reviews={data.reviews.items} />
-          ) : (
-            <></>
-          )}
-        </View>
-      </View>
-    </FreelanceServicesScreenWrapper>
+      </FreelanceServicesScreenWrapper>
+    )
   );
 };

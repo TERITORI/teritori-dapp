@@ -4,25 +4,37 @@ import { View } from "react-native";
 import { GigCreationBody } from "../../components/freelanceServices/GigCreation/GigCreationBody";
 import { GigCreationFooter } from "../../components/freelanceServices/GigCreation/GigCreationFooter";
 import { GigCreationHeader } from "../../components/freelanceServices/GigCreation/GigCreationHeader";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { useSelectedNetwork } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { uploadJSONToIPFS } from "../../utils/ipfs";
-import { getFirstKeplrAccount } from "../../utils/keplr";
+import { freelanceClient } from "../../utils/backend";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { GigStep } from "../../utils/types/freelance";
 import { FreelanceServicesScreenWrapper } from "./FreelanceServicesScreenWrapper";
-import { addGigToContract, getSellerIpfsHash } from "./contract";
+import { getSellerIpfsHash } from "./contract";
 import { emptyGigInfo, GigInfo } from "./types/fields";
 
 export const FreelanceServicesGigCreation: ScreenFC<
   "FreelanceServicesGigCreation"
-> = () => {
+> = ({ route }) => {
   const [currentStep, setCurrentStep] = useState<GigStep>(GigStep.OverView);
   const [step, setStep] = useState<GigStep>(GigStep.OverView);
   const [gigInfo, setGigInfo] = useState<GigInfo>(emptyGigInfo);
   const navigation = useAppNavigation();
-  const { setToastError } = useFeedbacks();
   const selectedWallet = useSelectedWallet();
+  const selectedNetwork = useSelectedNetwork();
+  useEffect(() => {
+    const getGigData = async () => {
+      if (route.params && route.params.gigId! >= 0) {
+        const res = await freelanceClient.gigData({ id: route.params.gigId });
+        if (res.gig) {
+          const _gigInfo = JSON.parse(res.gig.data) as GigInfo;
+          _gigInfo.id = route.params.gigId;
+          setGigInfo(_gigInfo);
+        }
+      }
+    };
+    getGigData();
+  }, [route.params]);
   useEffect(() => {
     const setProfileIpfs = async () => {
       if (!gigInfo) return;
@@ -30,21 +42,34 @@ export const FreelanceServicesGigCreation: ScreenFC<
       setGigInfo({ ...gigInfo, profileHash });
     };
     setProfileIpfs();
-  }, [gigInfo, selectedWallet]);
-  const nextStep = () => {
+  }, [selectedWallet]);
+  const nextStep = async () => {
     if (currentStep === GigStep.Publish) {
-      uploadJSONToIPFS(gigInfo).then(async (ipfsHash) => {
-        const walletAddress = (await getFirstKeplrAccount()).address;
-        const addGigRes = await addGigToContract(walletAddress, ipfsHash);
-        if (!addGigRes) {
-          setToastError({
-            title: "Fail",
-            message: "Fail transaction",
-          });
-          return;
-        }
-        navigation.navigate("FreelanceServicesHomeSeller");
+      if (!selectedWallet || !selectedNetwork) return;
+      const _gigInfo = { ...gigInfo };
+      const walletAddress = selectedWallet.address;
+      _gigInfo.address = {
+        address: walletAddress,
+        network: selectedNetwork,
+      };
+
+      await freelanceClient.addGig({
+        address: walletAddress,
+        data: JSON.stringify(gigInfo),
       });
+      navigation.navigate("FreelanceServicesHomeSeller");
+      // uploadJSONToIPFS(gigInfo).then(async (ipfsHash) => {
+      //   const walletAddress = (await getFirstKeplrAccount()).address;
+      //   const addGigRes = await addGigToContract(walletAddress, ipfsHash);
+      //   if (!addGigRes) {
+      //     setToastError({
+      //       title: "Fail",
+      //       message: "Fail transaction",
+      //     });
+      //     return;
+      //   }
+      //   navigation.navigate("FreelanceServicesHomeSeller");
+      // });
       return;
     }
     if (currentStep === GigStep.OverView) {

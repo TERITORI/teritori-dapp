@@ -59,9 +59,9 @@ var allModels = []interface{}{
 
 	//report
 	&Report{},
-
 	//seller
-	&Seller{}
+	&Seller{},
+	&Gig{},
 }
 
 func NewSQLiteDB(path string) (*gorm.DB, error) {

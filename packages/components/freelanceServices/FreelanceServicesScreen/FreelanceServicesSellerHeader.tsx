@@ -12,7 +12,7 @@ export const FreelanceServicesSellerHeader: React.FC = () => {
   const navigation = useAppNavigation();
   const { wallets } = useWallets();
   const [isSeller, setIsSeller] = useState<boolean>(true);
-  const [canCreateGig, setCanCreateGig] = useState<boolean>(false);
+  // const [canCreateGig, setCanCreateGig] = useState<boolean>(false);
 
   useEffect(() => {
     const checkIsSeller = async (address: string) => {
@@ -21,7 +21,7 @@ export const FreelanceServicesSellerHeader: React.FC = () => {
     };
     if (wallets.length > 0) {
       checkIsSeller(wallets[0].address);
-      setCanCreateGig(true);
+      // setCanCreateGig(true);
     }
   }, [wallets]);
 
@@ -38,16 +38,6 @@ export const FreelanceServicesSellerHeader: React.FC = () => {
             text="Become a Seller"
             onPress={() => {
               navigation.navigate("FreelanceServicesProfileSeller");
-            }}
-          />
-        )}
-        {canCreateGig && (
-          <SecondaryButton
-            style={{ marginTop: 20, marginLeft: 20 }}
-            size="SM"
-            text="Create a Gig"
-            onPress={() => {
-              navigation.navigate("FreelanceServicesGigCreation");
             }}
           />
         )}

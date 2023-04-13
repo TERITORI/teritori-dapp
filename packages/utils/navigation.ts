@@ -20,12 +20,17 @@ export type RootStackParamList = {
   FreelanceServicesHome: undefined;
   FreelanceServicesHomeSeller: undefined;
   FreelanceServicesProfileSeller: undefined;
-  FreelanceServicesGigCreation: undefined;
+  FreelanceServicesGigCreation: { gigId?: number } | undefined;
+  FreelanceServicesSellerDetails: { address: string };
+  FreelanceServicesOrder: {
+    gigId: number;
+    serviceLevelIndex: number;
+    modal?: string;
+    name?: string;
+  };
+  FreelanceServicesGigDetail: { gigId: number };
   GraphicsAndDesign: undefined;
   LogoDesign: undefined;
-  LogoDesignDetails: { id: string };
-  SellerDetails: { id: string };
-  OrderDetails: { modal: string; name?: string } | undefined;
   Launchpad: undefined;
   LaunchpadApply: undefined;
   MintCollection: { id: string };
@@ -126,11 +131,13 @@ const navConfig: {
     FreelanceServicesHome: "freelance-services/buyer",
     FreelanceServicesHomeSeller: "freelance-services/seller",
     FreelanceServicesProfileSeller: "freelance-services/profile_seller",
-    FreelanceServicesGigCreation: "freelance-services/gig_creation",
-    SellerDetails: "seller-details/:id",
-    OrderDetails: "order-details/:modal?",
+    FreelanceServicesGigCreation: "freelance-services/gig_creation/:gigId?",
+    FreelanceServicesSellerDetails:
+      "freelance-services/seller-details/:address",
+    FreelanceServicesOrder:
+      "freelance-services/order/:gigId/:serviceLevelIndex/:modal?",
+    FreelanceServicesGigDetail: "freelance-services/gig/:gigId",
     LogoDesign: "logo-design",
-    LogoDesignDetails: "logo-design-details/:id",
     Activity: "activity",
     Guardians: "guardians",
     WalletManager: "wallet-manager",

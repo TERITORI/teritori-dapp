@@ -14,10 +14,8 @@ import (
 	"github.com/TERITORI/teritori-dapp/go/pkg/marketplacepb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/p2e"
 	"github.com/TERITORI/teritori-dapp/go/pkg/p2epb"
-	"github.com/TERITORI/teritori-dapp/go/pkg/report"
-	"github.com/TERITORI/teritori-dapp/go/pkg/reportpb"
-	"github.com/TERITORI/teritori-dapp/go/pkg/sellerprofile"
-	"github.com/TERITORI/teritori-dapp/go/pkg/sellerprofilepb"
+	"github.com/TERITORI/teritori-dapp/go/pkg/freelance"
+	"github.com/TERITORI/teritori-dapp/go/pkg/freelancepb"
 	"github.com/improbable-eng/grpc-web/go/grpcweb"
 	"github.com/peterbourgon/ff/v3"
 	"github.com/pkg/errors"
@@ -65,6 +63,12 @@ func main() {
 	if err != nil {
 		panic(errors.Wrap(err, "failed to access db"))
 	}
+
+	err = indexerdb.MigrateDB(indexerDB)
+  if err != nil {
+  		panic(errors.Wrap(err, "failed migrate database models"))
+  }
+
 	port := 9090
 	if *enableTls {
 		port = 9091
@@ -94,23 +98,15 @@ func main() {
 		Logger:    logger,
 		IndexerDB: indexerDB,
 	})
+  freelanceSvc := freelance.NewFreelanceService(context.Background(), &freelance.Config{
+    Logger:    logger,
+    IndexerDB: indexerDB,
+  })
 
 	server := grpc.NewServer()
 	marketplacepb.RegisterMarketplaceServiceServer(server, marketplaceSvc)
 	p2epb.RegisterP2EServiceServer(server, p2eSvc)
-	
-	report_svc := report.NewReportService(context.Background(), &report.Config{
-		Logger:    logger,
-		IndexerDB: indexerDB,
-	})
-	reportpb.RegisterReportServiceServer(server, report_svc)
-
-	sellerprofile_svc := sellerprofile.NewSellerProfileService(context.Background(), &sellerprofile.Config{
-		Logger:    logger,
-		IndexerDB: indexerDB,
-	})
-
-	sellerprofilepb.RegisterSellerprofileServiceServer(server, sellerprofile_svc)
+	freelancepb.RegisterFreelanceServiceServer(server, freelanceSvc)
 
 	wrappedServer := grpcweb.WrapServer(server,
 		grpcweb.WithWebsockets(true),
@@ -119,7 +115,6 @@ func main() {
 	handler := func(resp http.ResponseWriter, req *http.Request) {
 		resp.Header().Set("Access-Control-Allow-Origin", "*")
 		resp.Header().Set("Access-Control-Allow-Headers", "*")
-		logger.Debug(fmt.Sprintf("Request: %v", req))
 		wrappedServer.ServeHTTP(resp, req)
 	}
 

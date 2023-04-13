@@ -10,9 +10,9 @@ import {
   FreelanceServicePriceType,
   GigInfo,
   SellerInfo,
-  ServiceFields,
-  ServiceLevels,
-  User,
+  GigData,
+  ServiceLevel,
+  SellerUser,
 } from "../types/fields";
 
 // export function getServiceListing(): ServiceFields[] {
@@ -78,7 +78,7 @@ import {
 //   };
 // }
 
-export const getUser = async (ipfsHash: string): Promise<User> => {
+export const getSellerUser = async (ipfsHash: string): Promise<SellerUser> => {
   const profile_json_res = await axios.get(ipfsPinataUrl(ipfsHash));
   const sellerProfile = profile_json_res.data as SellerInfo;
   return {
@@ -88,8 +88,7 @@ export const getUser = async (ipfsHash: string): Promise<User> => {
     username: `${sellerProfile.firstName} ${sellerProfile.lastName}`,
     levelText: "Level 2 Seller",
     isFavorite: false,
-    intro:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+    intro: sellerProfile.description,
     tagline: "Tag line here",
     rating: 4.9,
     times: {
@@ -113,14 +112,7 @@ export const getUser = async (ipfsHash: string): Promise<User> => {
         url: "https://twitter.com",
       },
     ],
-    skills: [
-      "minimalist",
-      "logo",
-      "business",
-      "vector",
-      "text logo",
-      "logo-with-effect",
-    ],
+    skills: sellerProfile.skills,
     education: sellerProfile.educations,
     certifications: sellerProfile.certifications,
   };
@@ -414,13 +406,15 @@ export const getFilterOptions = (type: string): FilterOptionType[] => {
   }
 };
 
-export const getServiceFieldFromIPFS = async (
-  ipfsHash: string,
-  gigInfo: GigInfo
-): Promise<ServiceFields> => {
+export const getGigData = async (
+  gigId: number,
+  gigInfo: GigInfo,
+  sellerAddress: string
+): Promise<GigData> => {
   return {
-    id: ipfsHash,
-    user: await getUser(gigInfo.profileHash),
+    id: gigId,
+    sellerAddress,
+    sellerUser: await getSellerUser(gigInfo.profileHash),
     title: gigInfo.title,
     description: gigInfo.description,
     pricePreText: "Starting at",
@@ -442,7 +436,7 @@ export const getServiceFieldFromIPFS = async (
         maximumRevisions: maxiumRevisions(gigInfo.basicPackage.contents),
         included: gigInfo.basicPackage.contents.map((item) => item.title),
         extras: [],
-      } as ServiceLevels,
+      } as ServiceLevel,
       {
         text: "Standard",
         description: gigInfo.standardPackage.desc,
@@ -454,7 +448,7 @@ export const getServiceFieldFromIPFS = async (
         maximumRevisions: maxiumRevisions(gigInfo.standardPackage.contents),
         included: gigInfo.standardPackage.contents.map((item) => item.title),
         extras: [],
-      } as ServiceLevels,
+      } as ServiceLevel,
       {
         text: "Premium",
         description: gigInfo.premiumPackage.desc,
@@ -466,9 +460,9 @@ export const getServiceFieldFromIPFS = async (
         maximumRevisions: maxiumRevisions(gigInfo.premiumPackage.contents),
         included: gigInfo.premiumPackage.contents.map((item) => item.title),
         extras: [],
-      } as ServiceLevels,
+      } as ServiceLevel,
     ],
-  } as ServiceFields;
+  } as GigData;
 };
 
 const maxiumRevisions = (contentInfos: ContentInfo[]): string => {

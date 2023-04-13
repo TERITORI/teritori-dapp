@@ -137,6 +137,7 @@ func main() {
 	// init db
 	dataConnexion := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s",
 		*dbHost, *dbUser, *dbPass, *dbName, *dbPort)
+
 	db, err := indexerdb.NewPostgresDB(dataConnexion)
 
 	if err != nil {

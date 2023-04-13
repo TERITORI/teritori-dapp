@@ -45,7 +45,7 @@ export const SIDEBAR_LIST: SidebarRecordType = {
     //   },
     //   order: {
     //     title: "Order",
-    //     route: "OrderDetails",
+    //     route: "FreelanceServicesOrderDetails",
     //     icon: marketplaceSVG,
     //   }
     // }

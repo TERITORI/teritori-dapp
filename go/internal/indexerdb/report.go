@@ -1,7 +1,7 @@
 package indexerdb
 
 type Report struct {
-	ID     string `gorm:"primaryKey"`
+	ID     int32 `gorm:"primaryKey;autoIncrement"`
 	Desc   string
 	RefUrl string
 }

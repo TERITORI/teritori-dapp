@@ -1,4 +1,3 @@
-import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { TouchableOpacity, View } from "react-native";
 
@@ -9,13 +8,9 @@ import chevronRight from "../../../../assets/icons/chevron-right.svg";
 import chevronUp from "../../../../assets/icons/chevron-up.svg";
 import chevronDown from "../../../../assets/icons/freelance-service/chevron-down.svg";
 import { useWallets } from "../../../context/WalletsProvider";
-import { getGigsFromContract } from "../../../screens/FreelanceServices/contract";
-import { getServiceFieldFromIPFS } from "../../../screens/FreelanceServices/query/data";
-import {
-  GigInfo,
-  ServiceFields,
-} from "../../../screens/FreelanceServices/types/fields";
-import { ipfsPinataUrl } from "../../../utils/ipfs";
+import { getGigData } from "../../../screens/FreelanceServices/query/data";
+import { GigData } from "../../../screens/FreelanceServices/types/fields";
+import { freelanceClient } from "../../../utils/backend";
 import { useAppNavigation } from "../../../utils/navigation";
 import {
   neutral17,
@@ -68,21 +63,24 @@ export const ListServices: React.FC = () => {
   const navigation = useAppNavigation();
   const { wallets } = useWallets();
 
-  const [gigList, setGigList] = useState<ServiceFields[]>([]);
+  const [gigDataList, setGigDataList] = useState<GigData[]>([]);
   useEffect(() => {
-    const getGigList = async () => {
-      const gigHashes = await getGigsFromContract(null, 10);
+    const getGigDataList = async () => {
+      const res = await freelanceClient.gigList({ limit: 2, offset: 0 });
 
-      const newGigList: ServiceFields[] = [];
-      gigHashes.map(async (ipfsHash, index) => {
-        const gig_json_res = await axios.get(ipfsPinataUrl(ipfsHash));
-        newGigList.push(
-          await getServiceFieldFromIPFS(ipfsHash, gig_json_res.data as GigInfo)
+      const newGigDataList: GigData[] = [];
+      res.gigs.map(async (gigInfo, index) => {
+        newGigDataList.push(
+          await getGigData(
+            gigInfo.id,
+            JSON.parse(gigInfo.data),
+            gigInfo.address
+          )
         );
       });
-      setGigList(newGigList);
+      setGigDataList(newGigDataList);
     };
-    getGigList();
+    getGigDataList();
   }, [wallets]);
   function reducePageLimits() {
     setPageLimitMin(pageLimitMin - numbersOfItemsPerPage);
@@ -99,7 +97,7 @@ export const ListServices: React.FC = () => {
   }
 
   function checkIfMaxLimitIsReached() {
-    return pageLimitMax >= gigList.length;
+    return pageLimitMax >= gigDataList.length;
   }
 
   return (
@@ -114,12 +112,12 @@ export const ListServices: React.FC = () => {
           zIndex: -1,
         }}
       >
-        {gigList.map((item, index) => (
+        {gigDataList.map((item, index) => (
           <TouchableOpacity
             key={index}
             onPress={() => {
-              navigation.navigate("LogoDesignDetails", {
-                id: item.id,
+              navigation.navigate("FreelanceServicesGigDetail", {
+                gigId: item.id,
               });
             }}
           >
@@ -127,7 +125,7 @@ export const ListServices: React.FC = () => {
               key={index}
               width={306}
               height={336}
-              data={item}
+              gigData={item}
               boxStyle={{
                 marginBottom: layout.padding_x2_5,
                 marginRight: layout.padding_x1,
@@ -205,7 +203,7 @@ export const ListServices: React.FC = () => {
           <TouchableOpacity
             disabled={checkIfMaxLimitIsReached()}
             onPress={() => {
-              if (pageLimitMax < gigList.length) {
+              if (pageLimitMax < gigDataList.length) {
                 addPageLimits();
               }
             }}

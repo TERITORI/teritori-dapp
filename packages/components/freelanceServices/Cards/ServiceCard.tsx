@@ -9,7 +9,8 @@ import {
 
 import dotsCircle from "../../../../assets/icons/dots-circle.svg";
 import star from "../../../../assets/icons/yellow-star.svg";
-import { ServiceFields } from "../../../screens/FreelanceServices/types/fields";
+import { GigData } from "../../../screens/FreelanceServices/types/fields";
+import { ipfsPinataUrl } from "../../../utils/ipfs";
 import { neutral77, yellowDefault } from "../../../utils/style/colors";
 import {
   fontMedium10,
@@ -26,14 +27,14 @@ export const ServiceCard: React.FC<{
   height: number;
   mainContainerStyle?: StyleProp<ViewStyle>;
   boxStyle?: StyleProp<ViewStyle>;
-  data: ServiceFields;
+  gigData: GigData;
 }> = ({
   // If no width, the buttons will fit the content including paddingHorizontal 20
   width,
   height,
   mainContainerStyle,
   boxStyle,
-  data,
+  gigData,
 }) => {
   return (
     <TertiaryBox
@@ -43,7 +44,7 @@ export const ServiceCard: React.FC<{
       style={[boxStyle]}
     >
       <Image
-        source={data.user.backgroundPic}
+        source={gigData.sellerUser.backgroundPic}
         style={{ width: 274, height: 172 }}
       />
       <View
@@ -56,13 +57,15 @@ export const ServiceCard: React.FC<{
       >
         <View style={{ flexDirection: "row" }}>
           <Image
-            source={data.user.profilePic}
+            source={{ uri: ipfsPinataUrl(gigData.sellerUser.profilePic) }}
             style={{ width: 32, height: 32, marginRight: 4 }}
           />
           <View style={{ flexDirection: "column" }}>
-            <BrandText style={fontSemibold12}>@{data.user.username}</BrandText>
+            <BrandText style={fontSemibold12}>
+              @{gigData.sellerUser.username}
+            </BrandText>
             <BrandText style={[fontMedium10, { color: neutral77 }]}>
-              {data.user.levelText}
+              {gigData.sellerUser.levelText}
             </BrandText>
           </View>
         </View>
@@ -76,7 +79,7 @@ export const ServiceCard: React.FC<{
           fontSemibold12,
         ]}
       >
-        {data.title}
+        {gigData.title}
       </BrandText>
       <Separator style={{ width: 274, marginTop: 12 }} />
 
@@ -91,16 +94,16 @@ export const ServiceCard: React.FC<{
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <SVG source={star} width={24} height={24} color={yellowDefault} />
           <BrandText style={[{ color: yellowDefault }, fontSemibold12]}>
-            {data.user.rating}
+            {gigData.sellerUser.rating}
           </BrandText>
         </View>
 
         <View style={{ flexDirection: "column" }}>
           <BrandText style={[{ color: neutral77 }, fontSemibold12]}>
-            {data.pricePreText}
+            {gigData.pricePreText}
           </BrandText>
           <BrandText style={[fontSemibold14]}>
-            {data.price.value} {data.price.currency}
+            {gigData.price.value} {gigData.price.currency}
           </BrandText>
         </View>
       </View>

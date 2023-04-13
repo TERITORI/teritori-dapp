@@ -1,5 +1,6 @@
 import { grpc } from "@improbable-eng/grpc-web";
 
+import { FreelanceServiceClientImpl } from "../api/freelance/v1/freelance";
 import {
   MarketplaceServiceClientImpl,
   GrpcWebImpl,
@@ -8,19 +9,16 @@ import {
   P2eServiceClientImpl,
   GrpcWebImpl as P2eGrpcWebImpl,
 } from "../api/p2e/v1/p2e";
-import {
-  ReportServiceClientImpl,
-  GrpcWebImpl as ReportGrpcWebImpl,
-} from "../api/report/v1/report";
-import {
-  SellerprofileServiceClientImpl,
-  GrpcWebImpl as SellerprofileGrpcWebImpl,
-} from "../api/sellerprofile/v1/sellerprofile";
 
 const backendEndpoint = process.env.TERITORI_BACKEND_ENDPOINT;
+const freelanceBackendEndpoint =
+  process.env.TERITORI_FREELANCE_BACKEND_ENDPOINT;
 
 if (!backendEndpoint) {
   throw new Error("missing TERITORI_BACKEND_ENDPOINT in env");
+}
+if (!freelanceBackendEndpoint) {
+  throw new Error("missing TERITORI_FREELANCE_BACKEND_ENDPOINT in env");
 }
 
 const marketPlaceRpc = new GrpcWebImpl(backendEndpoint, {
@@ -38,18 +36,10 @@ const p2eRpc = new P2eGrpcWebImpl(backendEndpoint, {
 
 export const p2eBackendClient = new P2eServiceClientImpl(p2eRpc);
 
-const reportRpc = new ReportGrpcWebImpl(backendEndpoint, {
+const freelanceRpc = new GrpcWebImpl(freelanceBackendEndpoint, {
   transport: grpc.WebsocketTransport(),
   debug: false,
+  // metadata: new grpc.Metadata({ SomeHeader: "bar" }),
 });
 
-export const reportBackendClient = new ReportServiceClientImpl(reportRpc);
-
-const sellerprofileRpc = new SellerprofileGrpcWebImpl(backendEndpoint, {
-  transport: grpc.WebsocketTransport(),
-  debug: false,
-});
-
-export const sellerprofileBackendClient = new SellerprofileServiceClientImpl(
-  sellerprofileRpc
-);
+export const freelanceClient = new FreelanceServiceClientImpl(freelanceRpc);
