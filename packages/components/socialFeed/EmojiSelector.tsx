@@ -95,6 +95,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: neutral33,
     paddingTop: layout.padding_x0_75,
+    marginRight: layout.padding_x2,
     width: 308,
     height: 300,
   },
