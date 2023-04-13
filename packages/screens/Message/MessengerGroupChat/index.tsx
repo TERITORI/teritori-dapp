@@ -6,7 +6,6 @@ import ChatSection from "./ChatSection";
 const MessengerGroupChat = () => {
   return (
     <View>
-      <ChatHeader />
       <ChatSection />
     </View>
   );
