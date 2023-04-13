@@ -1,12 +1,29 @@
-import React from "react";
-import { View, Text, StyleSheet, Image } from "react-native";
+import React, { useState } from "react";
+import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 
+import calender from "../../../../assets/icons/calendar.svg";
+import close from "../../../../assets/icons/close.svg";
+import search from "../../../../assets/icons/search.svg";
 import FlexRow from "../../../components/FlexRow";
+import { SVG } from "../../../components/SVG";
+import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { SpacerRow } from "../../../components/spacer";
-export default function ChatHeader() {
+import Calendars from "./Calendar";
+const ChatHeader = ({ searchInput, setSearchInput }) => {
+  const [showTextInput, setShowTextInput] = useState(false);
+  const [showCalendar, setShowCalendar] = useState(false);
+  const handleSearchIconPress = () => {
+    setShowTextInput(true);
+    setShowCalendar(false);
+  };
+  const handleCancelPress = () => {
+    setShowTextInput(false);
+    setSearchInput("");
+    setShowCalendar(false);
+  };
   return (
     <View style={styles.container}>
-      <FlexRow>
+      <View style={{ flexDirection: "row" }}>
         <View>
           <Image
             source={require("../../../../assets/icons/groupicon.png")}
@@ -34,16 +51,70 @@ export default function ChatHeader() {
             </View>
           </FlexRow>
         </View>
-      </FlexRow>
+      </View>
+      <View
+        style={{
+          flexDirection: "row",
+        }}
+      >
+        {showTextInput ? (
+          <>
+            <TextInputCustom
+              name="search"
+              placeHolder="Search..."
+              value={searchInput}
+              onChangeText={setSearchInput}
+              iconSVG={search}
+              iconStyle={{ width: 20, height: 40 }}
+              height={30}
+              noBrokenCorners
+            />
+            <SpacerRow size={2} />
+            <TouchableOpacity onPress={() => setShowCalendar(!showCalendar)}>
+              <SVG source={calender} />
+            </TouchableOpacity>
+            <SpacerRow size={2} />
+          </>
+        ) : (
+          <>
+            <TouchableOpacity onPress={handleSearchIconPress}>
+              <SVG
+                source={search}
+                style={{
+                  height: 20,
+                  width: 20,
+                  marginTop: 2,
+                  marginRight: 10,
+                }}
+              />
+            </TouchableOpacity>
+            <Text style={{ color: "#fff", marginRight: 5 }}>...</Text>
+          </>
+        )}
+        {showTextInput && (
+          <TouchableOpacity onPress={handleCancelPress}>
+            <SVG source={close} height={20} style={{ marginTop: 6 }} />
+          </TouchableOpacity>
+        )}
+        <SpacerRow size={1} />
+      </View>
+
+      {showCalendar && (
+        <View style={{ position: "absolute", marginTop: 100 }}>
+          <Calendars />
+        </View>
+      )}
     </View>
   );
-}
+};
+export default ChatHeader;
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#333333",
-
-    width: "100%",
+    backgroundColor: "#171717",
+    flexDirection: "row",
     padding: 6,
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   badge: {
     backgroundColor: "#C8FFAE",
