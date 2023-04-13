@@ -1,72 +1,30 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 
-import calender from "../../../../assets/icons/calendar.svg";
 import plus from "../../../../assets/icons/chatplus.svg";
-import close from "../../../../assets/icons/close.svg";
-import search from "../../../../assets/icons/search.svg";
-import { SVG } from "../../../components/SVG";
+import { FileUploader } from "../../../components/fileUploader";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { SpacerColumn } from "../../../components/spacer";
-import Calendars from "./Calendar";
+import { IMAGE_MIME_TYPES } from "../../../utils/mime";
+import { LocalFileData } from "../../../utils/types/feed";
+import ChatData from "./ChatData";
+import ChatHeader from "./ChatHeader";
+import ChatMessage from "./Conversation";
+
 interface IMessage {
   message: string;
   isSender: boolean;
+  file: LocalFileData;
+  onDelete: (file: LocalFileData) => void;
+  onUploadThumbnail: (updatedFile: LocalFileData) => void;
 }
-
-interface IChatMessageProps {
-  message: string;
-  isSender: boolean;
-  time: string;
-  receiverName?: string;
-}
-
-const ChatMessage = ({
-  message,
-  isSender,
-  time,
-  receiverName,
-}: IChatMessageProps) => {
-  const senderName = "me";
-
-  return (
-    <View style={isSender ? styles.senderContainer : styles.receiverContainer}>
-      <Text style={styles.message}>{message}</Text>
-      <View
-        style={{
-          flexDirection: "row",
-          position: "absolute",
-          top: -20,
-          left: 10,
-        }}
-      >
-        {!isSender && receiverName && (
-          <Text style={styles.name}>{receiverName}</Text>
-        )}
-        {isSender && <Text style={styles.name}>{senderName}</Text>}
-        <Text style={styles.time}>{time}</Text>
-      </View>
-    </View>
-  );
-};
 
 const ChatSection = () => {
-  const [messages, setMessages] = useState<IMessage[]>([
-    { message: "Hello! Intosoft", isSender: true },
-    {
-      message:
-        "Hi guys,Let’s start organization of the open Beta here! Some mates are waiting",
-      isSender: false,
-    },
-    { message: "How are you?", isSender: true },
-    { message: "I'm good, thanks!", isSender: false },
-    { message: "okay nice, thanks!", isSender: true },
-  ]);
+  const [messages, setMessages] = useState<IMessage[]>(ChatData);
   const [newMessage, setNewMessage] = useState("");
   const [searchInput, setSearchInput] = useState("");
-  const [showTextInput, setShowTextInput] = useState(false);
-  const [showCalendar, setShowCalendar] = useState(false);
   const [showAttachmentModal, setShowAttachmentModal] = useState(false);
+  const [thumbnailFile, setThumbnailFile] = useState<LocalFileData>();
 
   const handleSend = () => {
     const newMsg: IMessage = {
@@ -79,117 +37,84 @@ const ChatSection = () => {
   const filteredMessages = messages.filter((msg) =>
     msg.message.toLowerCase().includes(searchInput.toLowerCase())
   );
-  const handleSearchIconPress = () => {
-    setShowTextInput(true);
-    setShowCalendar(false);
-  };
-  const handleCancelPress = () => {
-    setShowTextInput(false);
-    setSearchInput("");
-    setShowCalendar(false);
-  };
-  const handleAttachment = (type) => {
-    // Handle attaching a file, image, or video of the given type
-    setShowAttachmentModal(false);
-  };
 
   return (
-    <View style={styles.container}>
-      <View
-        style={{
-          position: "absolute",
-          top: -40,
-          alignSelf: "flex-end",
-          flexDirection: "row",
-          // alignItems: "center",
-        }}
-      >
-        {showTextInput ? (
-          <>
-            <TextInputCustom
-              name="search"
-              placeHolder="Search..."
-              value={searchInput}
-              onChangeText={setSearchInput}
-              iconSVG={search}
-              iconStyle={{ width: 20, height: 40 }}
-              height={30}
-              noBrokenCorners
-            />
-            <TouchableOpacity onPress={() => setShowCalendar(!showCalendar)}>
-              <SVG source={calender} />
-            </TouchableOpacity>
-          </>
-        ) : (
-          <>
-            <TouchableOpacity onPress={handleSearchIconPress}>
-              <SVG
-                source={search}
+    <View>
+      <ChatHeader searchInput={searchInput} setSearchInput={setSearchInput} />
+      <View style={styles.container}>
+        <SpacerColumn size={3} />
+
+        {filteredMessages.map((msg, index) => (
+          <ChatMessage
+            key={index}
+            message={msg.message}
+            isSender={msg.isSender}
+            time="10:30 AM"
+            receiverName={msg.isSender ? undefined : "John Doe"}
+          />
+        ))}
+        <SpacerColumn size={3} />
+
+        <View style={styles.textInputContainer}>
+          {showAttachmentModal ? (
+            <FileUploader
+              onUpload={(files) => {
+                setThumbnailFile(files[0]);
+                onUploadThumbnail({ ...file, thumbnailFileData: files[0] });
+              }}
+              mimeTypes={IMAGE_MIME_TYPES}
+            >
+              {({ onPress }) => (
+                <View style={styles.attachmentModal}>
+                  <TouchableOpacity
+                    style={styles.attachmentItem}
+                    // onPress={() => handleAttachment("file")}
+                    onPress={onPress}
+                  >
+                    <Text style={styles.attach}>Attach file</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.attachmentItem}
+                    // onPress={() => handleAttachment("image")}
+                    onPress={onPress}
+                  >
+                    <Text style={styles.attach}>Attach image/video</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+            </FileUploader>
+          ) : null}
+          <View>
+            {thumbnailFile?.fileName ? (
+              <Text>{thumbnailFile?.fileName}</Text>
+            ) : null}
+            {thumbnailFile?.url ? (
+              <Image
+                source={{ uri: thumbnailFile.url }}
                 style={{
-                  height: 20,
-                  width: 20,
-                  marginTop: 4,
-                  marginRight: 15,
+                  height: 80,
+                  width: 80,
+                  borderTopLeftRadius: 4,
+                  borderBottomLeftRadius: 4,
                 }}
+                resizeMode="cover"
               />
-            </TouchableOpacity>
-            <Text style={{ color: "#fff" }}>...</Text>
-          </>
-        )}
-        {showTextInput && (
-          <TouchableOpacity onPress={handleCancelPress}>
-            <SVG source={close} height={20} style={{ marginTop: 6 }} />
-          </TouchableOpacity>
-        )}
-
-        {showCalendar && (
-          <View style={{ position: "absolute", marginTop: -90 }}>
-            <Calendars />
+            ) : null}
           </View>
-        )}
-      </View>
-      <SpacerColumn size={3} />
 
-      {filteredMessages.map((msg, index) => (
-        <ChatMessage
-          key={index}
-          message={msg.message}
-          isSender={msg.isSender}
-          time="10:30 AM"
-          receiverName={msg.isSender ? undefined : "John Doe"}
-        />
-      ))}
-      <SpacerColumn size={3} />
-
-      <View style={styles.textInputContainer}>
-        {showAttachmentModal ? (
-          <View style={styles.attachmentModal}>
-            <TouchableOpacity
-              style={styles.attachmentItem}
-              onPress={() => handleAttachment("file")}
-            >
-              <Text style={styles.attach}>Attach file</Text>
+          <TextInputCustom
+            name="message"
+            placeHolder="Type your Message"
+            value={newMessage}
+            onChangeText={setNewMessage}
+            iconSVG={plus}
+            onPress={() => setShowAttachmentModal(true)}
+          >
+            <TouchableOpacity onPress={handleSend}>
+              <Text style={styles.sendButtonText}>Send</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.attachmentItem}
-              onPress={() => handleAttachment("image")}
-            >
-              <Text style={styles.attach}>Attach image/video</Text>
-            </TouchableOpacity>
-          </View>
-        ) : null}
-        <TextInputCustom
-          name="message"
-          placeHolder="Type your Message"
-          value={newMessage}
-          onChangeText={setNewMessage}
-          iconSVG={plus}
-          onPress={() => setShowAttachmentModal(true)}
-        >
-          <TouchableOpacity onPress={handleSend}>
-            <Text style={styles.sendButtonText}>Send</Text>
-          </TouchableOpacity>
-        </TextInputCustom>
+          </TextInputCustom>
+        </View>
       </View>
     </View>
   );

@@ -68,7 +68,7 @@ export const MessageScreen: ScreenFC<"Message"> = ({ navigation }) => {
         <SideBarChats />
         <SpacerRow size={2} />
         <Separator horizontal />
-        <SpacerRow size={2} />
+        {/* <SpacerRow size={2} /> */}
 
         <View style={{ flex: 1 }}>
           {/* <TopHeaderButtonChat /> */}
