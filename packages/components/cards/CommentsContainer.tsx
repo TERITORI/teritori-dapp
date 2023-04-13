@@ -31,7 +31,7 @@ export const CommentsContainer: React.FC<CommentsContainerProps> = ({
 
       <View style={{ flex: 1 }}>
         {comments.map((comment, index) => (
-          <React.Fragment key={index}>
+          <React.Fragment key={comment.identifier}>
             <SpacerColumn size={2.5} />
             <SocialCommentCard
               comment={postResultToPost(selectedNetworkId, comment)}
