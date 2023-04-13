@@ -138,7 +138,7 @@ export const CollectionHeader: React.FC<{
   };
 
   // returns
-  return (
+  return width > 0 ? (
     <View style={{ maxWidth: width, alignSelf: "center" }}>
       <Image
         source={
@@ -262,7 +262,7 @@ export const CollectionHeader: React.FC<{
         />
       </PrimaryBox>
     </View>
-  );
+  ) : null;
 };
 
 const styles = StyleSheet.create({
