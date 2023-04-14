@@ -5,7 +5,7 @@ import { BrandText } from "./BrandText";
 import { TertiaryBox } from "./boxes/TertiaryBox";
 import { GradientText } from "./gradientText";
 import { Collection, MintState } from "../api/marketplace/v1/marketplace";
-import { useCollectionInfo } from "../hooks/useCollectionInfo";
+import { useCollectionThumbnailInfo } from "../hooks/collection/useCollectionThumbnailInfo";
 import { useNavigateToCollection } from "../hooks/useNavigateToCollection";
 import { fontBold11, fontMedium10, fontSemibold14 } from "../utils/style/fonts";
 import { layout } from "../utils/style/layout";
@@ -31,14 +31,8 @@ export const CollectionView: React.FC<{
   const navigateToTwitter = () => {
     Linking.openURL(item.twitterUrl);
   };
-  const { info } = useCollectionInfo(item.id);
-  const percentageMinted = info
-    ? Math.round(
-        (parseInt(info.mintedAmount as string, 10) * 100) /
-          parseInt(info.maxSupply as string, 10)
-      )
-    : NaN;
-  const maxSupply = !info ? item.maxSupply : info.maxSupply;
+
+  const info = useCollectionThumbnailInfo(item.id);
 
   return (
     <Pressable
@@ -90,7 +84,9 @@ export const CollectionView: React.FC<{
                   ...sizedStyles.percentage,
                 }}
               >
-                {!isNaN(percentageMinted) ? `${percentageMinted}%` : ""}
+                {!isNaN(info.percentageMinted)
+                  ? `${info.percentageMinted}%`
+                  : ""}
               </BrandText>
             ) : null}
           </View>
@@ -102,8 +98,9 @@ export const CollectionView: React.FC<{
               marginTop: layout.padding_x1,
             }}
           >
-            {mintState !== MintState.MINT_STATE_UNSPECIFIED &&
-            maxSupply !== 0 ? (
+            {info &&
+            mintState !== MintState.MINT_STATE_UNSPECIFIED &&
+            info.maxSupply !== 0 ? (
               <>
                 <GradientText
                   style={sizedStyles.creatorName}
@@ -111,7 +108,7 @@ export const CollectionView: React.FC<{
                   numberOfLines={1}
                   gradientType="purple"
                 >
-                  {maxSupply ? `Supply ${maxSupply}` : ""}
+                  {info.maxSupply ? `Supply ${info.maxSupply}` : ""}
                 </GradientText>
                 <GradientText
                   style={sizedStyles.creatorName}
@@ -119,7 +116,7 @@ export const CollectionView: React.FC<{
                   numberOfLines={1}
                   gradientType="purple"
                 >
-                  {info?.prettyUnitPrice}
+                  {info.prettyUnitPrice}
                 </GradientText>
               </>
             ) : (

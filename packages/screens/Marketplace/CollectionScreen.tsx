@@ -14,7 +14,7 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
   // variables
   const { id } = route.params;
   const [selectedTab, setSelectedTab] = useState<TabsListType>("allNFTs");
-  const { info } = useCollectionInfo(id);
+  const { collectionInfo: info } = useCollectionInfo(id);
   const [sortDirection, setSortDirection] = useState(
     SortDirection.SORT_DIRECTION_ASCENDING
   );

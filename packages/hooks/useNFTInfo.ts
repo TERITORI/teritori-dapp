@@ -28,7 +28,7 @@ import { ipfsURLToHTTPURL } from "../utils/ipfs";
 export const useNFTInfo = (nftId: string, userId?: string | undefined) => {
   const [network, minterContractAddress, tokenId] = parseNftId(nftId);
 
-  const breedingConfig = useBreedingConfig(network?.id);
+  const { breedingConfig } = useBreedingConfig(network?.id);
 
   const {
     data: info,
