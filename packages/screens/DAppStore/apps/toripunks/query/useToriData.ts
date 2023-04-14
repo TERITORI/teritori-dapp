@@ -18,7 +18,7 @@ export const useList = ({ selectedWallet }: { selectedWallet?: Wallet }) => {
           const response = await fetch(
             `https://api.roulette.aaa-metahuahua.com/toripunks?addr=${addr}`
           );
-          return response.json();
+          return (await response.json()) as unknown;
         }
         return [];
       } catch (e) {
@@ -31,9 +31,19 @@ export const useList = ({ selectedWallet }: { selectedWallet?: Wallet }) => {
       enabled: false,
     }
   );
-  const dataCopy = data.hasOwnProperty("err") ? [] : [...data];
-  const error = data.hasOwnProperty("err") ? getCodeError(data.err) : null;
-  return { data: dataCopy, refetch, error };
+  let result = [];
+  let error = null;
+  if (Array.isArray(data)) {
+    result = data;
+  } else if (
+    typeof data === "object" &&
+    !!data &&
+    "err" in data &&
+    typeof data.err === "string"
+  ) {
+    error = getCodeError(data.err);
+  }
+  return { data: result, refetch, error };
 };
 
 export const useBuyTicket = ({
