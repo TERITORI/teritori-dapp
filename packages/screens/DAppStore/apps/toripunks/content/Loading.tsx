@@ -1,6 +1,6 @@
 import { ImageBackground, View } from "react-native";
 
-import loading from "../assets/background/Loading.png";
+import loading from "../assets/background/loading.png";
 import { Footer } from "../components/footer/Footer";
 import { Label } from "../components/label/Label";
 import { useContentContext } from "../context/ContentProvider";
