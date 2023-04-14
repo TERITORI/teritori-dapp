@@ -12,6 +12,7 @@ export const Raffle = () => {
         justifyContent: "center",
         alignItems: "center",
         paddingHorizontal: isMinimunWindowWidth ? 0 : 18,
+        marginTop: isMinimunWindowWidth ? "6vh" : "none",
       }}
     >
       <Label

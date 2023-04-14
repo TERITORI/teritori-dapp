@@ -1,36 +1,37 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { FlatList, TouchableOpacity, View } from "react-native";
 
+import { useGiganticHistoryData } from "../../../query/useGiganticHistory";
 import { ButtonLabel } from "../components/buttonLabel/ButtonLabel";
 import { Label } from "../components/label/Label";
+import { Date } from "../components/table/Date";
 import { Datum } from "../components/table/Datum";
 import { HeaderItem } from "../components/table/HeaderItem";
-import { Round } from "../components/table/Round";
 import { useContentContext } from "../context/ContentProvider";
 
 interface HistoryItem {
-  round: number;
-  text: string;
+  date: string;
+  toriWon: string;
 }
 
-const data: HistoryItem[] = [
-  {
-    round: 1,
-    text: "150 000 $TORI WON",
-  },
-  {
-    round: 2,
-    text: "150 000 $TORI WON",
-  },
-  {
-    round: 3,
-    text: "150 000 $TORI WON",
-  },
-  {
-    round: 4,
-    text: "150 000 $TORI WON",
-  },
-];
+// const data: HistoryItem[] = [
+//   {
+//     round: 1,
+//     text: "150 000 $TORI WON",
+//   },
+//   {
+//     round: 2,
+//     text: "150 000 $TORI WON",
+//   },
+//   {
+//     round: 3,
+//     text: "150 000 $TORI WON",
+//   },
+//   {
+//     round: 4,
+//     text: "150 000 $TORI WON",
+//   },
+// ];
 //
 // const HeaderItem = ({ text }: { text: string }) => (
 //   <View
@@ -132,10 +133,10 @@ const ListItem: React.FC<{
           width: "100%",
         }}
       >
-        <Round round={item.round} />
+        <Date date={item.date} />
 
         <Datum
-          value={item.text}
+          value={item.toriWon}
           datumWidth={datumWidth}
           styleTypeSize={styleTypeSize}
           style={datumStyle}
@@ -147,9 +148,18 @@ const ListItem: React.FC<{
 
 export const LotteryHistory = () => {
   const { setSelectedSectionHandler } = useContentContext();
-  const { isMinimunWindowWidth } = useContentContext();
+  const { isMinimunWindowWidth, selectedWallet } = useContentContext();
 
   const styleTypeSize = isMinimunWindowWidth ? "80" : "40";
+
+  const { data, refetch: handleFetchHistoryData } = useGiganticHistoryData({
+    selectedWallet,
+  });
+
+  useEffect(() => {
+    handleFetchHistoryData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedWallet]);
 
   return (
     <View

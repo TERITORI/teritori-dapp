@@ -1,15 +1,26 @@
+import { useEffect } from "react";
 import { Linking, TouchableOpacity, View } from "react-native";
 
+import { useComicHistoryData } from "../../../query/useComicBookHistory";
 import { ButtonLabel } from "../components/buttonLabel/ButtonLabel";
 import { BuyToripunksButton } from "../components/buttonLabel/BuyToripunksButton";
 import { Label } from "../components/label/Label";
 import { useContentContext } from "../context/ContentProvider";
 
 export const ComicBooks = () => {
-  const { setSelectedSectionHandler, isMinimunWindowWidth } =
+  const { setSelectedSectionHandler, isMinimunWindowWidth, selectedWallet } =
     useContentContext();
 
   const styleTypeSize = isMinimunWindowWidth ? "80" : "40";
+
+  const { data, refetch: handleFetchHistoryData } = useComicHistoryData({
+    selectedWallet,
+  });
+
+  useEffect(() => {
+    handleFetchHistoryData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedWallet]);
 
   return (
     <>
@@ -20,6 +31,7 @@ export const ComicBooks = () => {
           alignItems: "center",
           paddingHorizontal: isMinimunWindowWidth ? 0 : 18,
           marginBottom: isMinimunWindowWidth ? 0 : "-2em",
+          marginTop: isMinimunWindowWidth ? "6vh" : "none",
         }}
       >
         <Label
@@ -56,7 +68,7 @@ export const ComicBooks = () => {
               : parseInt(styleTypeSize, 10),
           }}
         >
-          2500000 $TORI
+          {data[0].poolPrice} $TORI
         </Label>
         <Label
           styleType={`H1_Bebas_${styleTypeSize}`}
