@@ -51,7 +51,7 @@ export const useCollections = (
 
       return { nextCursor: pageParam + req.limit, collections };
     },
-    { getNextPageParam: (lastPage) => lastPage.nextCursor }
+    { staleTime: Infinity, getNextPageParam: (lastPage) => lastPage.nextCursor }
   );
 
   const collections = useMemo(() => {

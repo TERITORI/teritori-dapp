@@ -32,23 +32,18 @@ export const useFetchComments = ({
   const data = useInfiniteQuery<FetchCommentResponse>(
     ["FetchComment", parentId],
     async ({ pageParam }) => {
-      try {
-        const client = await nonSigningSocialFeedClient({
-          networkId: selectedNetworkId,
-        });
+      const client = await nonSigningSocialFeedClient({
+        networkId: selectedNetworkId,
+      });
 
-        const subComment = await client.querySubPosts({
-          count: 5,
-          from: pageParam || 0,
-          sort: "desc",
-          identifier: parentId || "",
-        });
+      const subComment = await client.querySubPosts({
+        count: 5,
+        from: pageParam || 0,
+        sort: "desc",
+        identifier: parentId || "",
+      });
 
-        return { list: subComment };
-      } catch (err) {
-        console.log("initData err", err);
-        return null;
-      }
+      return { list: subComment };
     },
     {
       getNextPageParam: (_, pages) => {

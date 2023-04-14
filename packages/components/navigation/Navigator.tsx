@@ -245,14 +245,14 @@ export const Navigator: React.FC = () => {
         options={{ header: () => null, title: screenTitle("") }}
       />
       <Stack.Screen
-        name="DAppStore"
-        component={DAppStore}
-        options={{ header: () => null, title: screenTitle("dApp Store") }}
-      />
-      <Stack.Screen
         name="ToriPunks"
         component={ToriPunks}
         options={{ header: () => null, title: screenTitle("ToriPunks") }}
+      />
+      <Stack.Screen
+        name="DAppStore"
+        component={DAppStore}
+        options={{ header: () => null, title: screenTitle("dApp Store") }}
       />
     </Stack.Navigator>
   );

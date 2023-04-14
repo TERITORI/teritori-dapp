@@ -1,4 +1,4 @@
-import { Decimal } from "cosmwasm";
+import { Decimal } from "@cosmjs/math";
 import { ethers } from "ethers";
 import { useCallback } from "react";
 
