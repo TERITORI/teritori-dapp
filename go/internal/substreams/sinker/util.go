@@ -82,3 +82,21 @@ func mustLoadABI(abiPath string) abi.ABI {
 func isSameAddress(addr1 string, addr2 string) bool {
 	return strings.EqualFold(addr1, addr2)
 }
+
+func DecodeCallData(contractABI *abi.ABI, data []byte) (*abi.Method, map[string]interface{}) {
+	// The first 4 bytes of the t represent the ID of the method in the ABI
+	// https://docs.soliditylang.org/en/v0.5.3/abi-spec.html#function-selector
+	methodSigData := data[:4]
+	method, err := contractABI.MethodById(methodSigData)
+	if err != nil {
+		panic(err)
+	}
+
+	inputsSigData := data[4:]
+	inputsMap := make(map[string]interface{})
+	if err := method.Inputs.UnpackIntoMap(inputsMap, inputsSigData); err != nil {
+		panic(err)
+	}
+
+	return method, inputsMap
+}

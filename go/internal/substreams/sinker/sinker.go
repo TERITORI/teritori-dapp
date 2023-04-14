@@ -3,14 +3,16 @@ package sinker
 import (
 	"context"
 	"encoding/hex"
-	"errors"
 	"fmt"
 	"io"
 	"os"
 	"strings"
 	"time"
 
+	"github.com/pkg/errors"
+
 	"github.com/TERITORI/teritori-dapp/go/internal/substreams/db"
+	ethereumHandlers "github.com/TERITORI/teritori-dapp/go/internal/substreams/ethereum/handlers"
 	pb "github.com/TERITORI/teritori-dapp/go/internal/substreams/pb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
 	"github.com/ethereum/go-ethereum/accounts/abi"
@@ -271,24 +273,6 @@ func (s *PostgresSinker) applyDatabaseChanges(dbChanges *pbddatabase.DatabaseCha
 	return nil
 }
 
-func DecodeTransactionInputData(contractABI *abi.ABI, data []byte) (*abi.Method, map[string]interface{}) {
-	// The first 4 bytes of the t represent the ID of the method in the ABI
-	// https://docs.soliditylang.org/en/v0.5.3/abi-spec.html#function-selector
-	methodSigData := data[:4]
-	method, err := contractABI.MethodById(methodSigData)
-	if err != nil {
-		panic(err)
-	}
-
-	inputsSigData := data[4:]
-	inputsMap := make(map[string]interface{})
-	if err := method.Inputs.UnpackIntoMap(inputsMap, inputsSigData); err != nil {
-		panic(err)
-	}
-
-	return method, inputsMap
-}
-
 func (s *PostgresSinker) handleBlockScopeData(ctx context.Context, cursor *sink.Cursor, data *pbsubstreams.BlockScopedData) error {
 	for _, output := range data.Outputs {
 		if output.Name != s.OutputModuleName {
@@ -305,10 +289,13 @@ func (s *PostgresSinker) handleBlockScopeData(ctx context.Context, cursor *sink.
 		for _, txnData := range txns.Data {
 			// Dispatch handlers
 			if strings.EqualFold(txnData.Contract, s.network.RiotSquadStakingContractAddress) {
-				method, inputsMaps := DecodeTransactionInputData(s.squadStakingABI, txnData.Calldata)
+				method, inputsMaps := DecodeCallData(s.squadStakingABI, txnData.Calldata)
 
 				switch method.Name {
 				case "stake":
+					if err := ethereumHandlers.HandleSquadStake(inputsMaps); err != nil {
+						return errors.Wrap(err, "failed to handle squad stake")
+					}
 					fmt.Printf("handle stake", method.Name, inputsMaps)
 				}
 
