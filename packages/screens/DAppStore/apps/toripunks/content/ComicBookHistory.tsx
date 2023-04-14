@@ -1,13 +1,13 @@
 import React, { useEffect } from "react";
 import { FlatList, TouchableOpacity, View } from "react-native";
 
-import { useMyHistoryComicData } from "../../../query/useHistoryData";
 import { ButtonLabel } from "../components/buttonLabel/ButtonLabel";
 import { Label } from "../components/label/Label";
 import { Datum } from "../components/table/Datum";
 import { HeaderItem } from "../components/table/HeaderItem";
 import { Round } from "../components/table/Round";
 import { useContentContext } from "../context/ContentProvider";
+import { useMyHistoryComicData } from "../query/useHistoryData";
 
 interface HistoryItem {
   date: string;

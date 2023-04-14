@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
 import { FlatList, View } from "react-native";
 
-import { useMyHistoryData } from "../../../query/useHistoryData";
 import { Label } from "../components/label/Label";
 import { Date } from "../components/table/Date";
 import { Datum } from "../components/table/Datum";
 import { HeaderItem } from "../components/table/HeaderItem";
 import { useContentContext } from "../context/ContentProvider";
+import { useMyHistoryData } from "../query/useHistoryData";
 interface HistoryItem {
   date: string;
   tickets: {

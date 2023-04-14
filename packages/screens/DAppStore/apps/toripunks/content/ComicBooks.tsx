@@ -85,7 +85,7 @@ export const ComicBooks = () => {
             actionable
             onPress={() => {
               Linking.openURL(
-                "https://app.teritori.com/collection/tori-tori1syx6q5rxhntng93pmk9xep25638dqy3dcnppvvytnccxrp7urt7s2570jc"
+                "/collection/tori-tori1syx6q5rxhntng93pmk9xep25638dqy3dcnppvvytnccxrp7urt7s2570jc"
               );
             }}
           />

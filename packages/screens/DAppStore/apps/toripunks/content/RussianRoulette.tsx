@@ -1,18 +1,18 @@
 import { useEffect, useRef, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 
-import {
-  sendKeplarTx,
-  useBuyTicket,
-  useList,
-  useProof,
-} from "../../../query/useToriData";
 import { ActionButton } from "../components/action-button/ActionButton";
 import { Button } from "../components/button/Button";
 import { ButtonLabel } from "../components/buttonLabel/ButtonLabel";
 import { BuyToripunksButton } from "../components/buttonLabel/BuyToripunksButton";
 import { Label } from "../components/label/Label";
 import { useContentContext } from "../context/ContentProvider";
+import {
+  sendKeplarTx,
+  useBuyTicket,
+  useList,
+  useProof,
+} from "../query/useToriData";
 
 const errorTypeMsg = {
   TICKET: {

@@ -194,6 +194,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   childrenContainer: {
+    height: "100%",
     alignSelf: "center",
   },
 });
