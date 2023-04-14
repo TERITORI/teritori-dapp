@@ -1,5 +1,5 @@
 interface HistoryItem {
-  round: number;
+  round: string;
   tickets: {
     bought: number;
     won: number;
@@ -9,67 +9,11 @@ interface HistoryItem {
 
 export const historyData: HistoryItem[] = [
   {
-    round: 1,
+    round: "loading",
     tickets: {
-      bought: 107,
-      won: 40,
+      bought: 0,
+      won: 0,
     },
-    toriWon: 3000,
-  },
-  {
-    round: 2,
-    tickets: {
-      bought: 107,
-      won: 40,
-    },
-    toriWon: 3000,
-  },
-  {
-    round: 3,
-    tickets: {
-      bought: 107,
-      won: 40,
-    },
-    toriWon: 3000,
-  },
-  {
-    round: 4,
-    tickets: {
-      bought: 107,
-      won: 40,
-    },
-    toriWon: 3000,
-  },
-  {
-    round: 5,
-    tickets: {
-      bought: 107,
-      won: 40,
-    },
-    toriWon: 3000,
-  },
-  {
-    round: 6,
-    tickets: {
-      bought: 107,
-      won: 40,
-    },
-    toriWon: 3000,
-  },
-  {
-    round: 7,
-    tickets: {
-      bought: 107,
-      won: 40,
-    },
-    toriWon: 3000,
-  },
-  {
-    round: 8,
-    tickets: {
-      bought: 107,
-      won: 40,
-    },
-    toriWon: 3000,
+    toriWon: 0,
   },
 ];

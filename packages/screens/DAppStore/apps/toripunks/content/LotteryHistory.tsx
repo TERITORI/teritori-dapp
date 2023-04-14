@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { FlatList, TouchableOpacity, View } from "react-native";
 
+import { useMyHistoryLotteryData } from "../../../query/useHistoryData";
 import { ButtonLabel } from "../components/buttonLabel/ButtonLabel";
 import { Label } from "../components/label/Label";
 import { Datum } from "../components/table/Datum";
@@ -8,87 +9,8 @@ import { HeaderItem } from "../components/table/HeaderItem";
 import { Round } from "../components/table/Round";
 import { useContentContext } from "../context/ContentProvider";
 
-interface HistoryItem {
-  round: number;
-  text: string;
-}
-
-const data: HistoryItem[] = [
-  {
-    round: 1,
-    text: "150 000 $TORI WON",
-  },
-  {
-    round: 2,
-    text: "150 000 $TORI WON",
-  },
-  {
-    round: 3,
-    text: "150 000 $TORI WON",
-  },
-  {
-    round: 4,
-    text: "150 000 $TORI WON",
-  },
-];
-//
-// const HeaderItem = ({ text }: { text: string }) => (
-//   <View
-//     style={{
-//       justifyContent: "center",
-//       width: text === "" ? roundWidth : datumWidth,
-//     }}
-//   >
-//     <Label
-//       styleType="T2_Bebas_20"
-//       style={{
-//         justifyContent: "center",
-//         textAlign: "center",
-//         color: "#E8E1EF",
-//       }}
-//     >
-//       {text}
-//     </Label>
-//   </View>
-// );
-
-// const RoundNumber: React.FC<{ round: number }> = ({ round }) => (
-//   <View
-//     style={{
-//       justifyContent: "center",
-//     }}
-//   >
-//     <Label
-//       styleType="T2_Bebas_20"
-//       style={{
-//         color: "#E8E1EF",
-//         transform: [{ rotate: "-90deg" }],
-//       }}
-//     >
-//       Round {round}
-//     </Label>
-//   </View>
-// );
-
-// const Datum: React.FC<{ value: string }> = ({ value }) => (
-//   <View
-//     style={{
-//       backgroundColor: "#28f191",
-//       padding: 30,
-//       width: datumWidth,
-//     }}
-//   >
-//     <Label
-//       styleType="H1_Bebas_80"
-//       style={{ textAlign: "center", color: "#E8E1EF" }}
-//     >
-//       {value}
-//     </Label>
-//   </View>
-// );
-
 const ListItem: React.FC<{
-  item: HistoryItem;
+  item: { date: string; toriWon: number };
   styleTypeSize: string;
 }> = ({ item, styleTypeSize }) => {
   const { isMinimunWindowWidth } = useContentContext();
@@ -132,10 +54,10 @@ const ListItem: React.FC<{
           width: "100%",
         }}
       >
-        <Round round={item.round} />
+        <Round round={item.date} />
 
         <Datum
-          value={item.text}
+          value={`${item.toriWon} $TORI WON`}
           datumWidth={datumWidth}
           styleTypeSize={styleTypeSize}
           style={datumStyle}
@@ -146,11 +68,19 @@ const ListItem: React.FC<{
 };
 
 export const LotteryHistory = () => {
-  const { setSelectedSectionHandler } = useContentContext();
+  const { setSelectedSectionHandler, selectedWallet } = useContentContext();
   const { isMinimunWindowWidth } = useContentContext();
 
   const styleTypeSize = isMinimunWindowWidth ? "80" : "40";
 
+  const { data, refetch: handleFetchHistoryData } = useMyHistoryLotteryData({
+    selectedWallet,
+  });
+
+  useEffect(() => {
+    handleFetchHistoryData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedWallet]);
   return (
     <View
       style={{

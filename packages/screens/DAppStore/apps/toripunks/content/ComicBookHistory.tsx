@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { FlatList, TouchableOpacity, View } from "react-native";
 
+import { useMyHistoryComicData } from "../../../query/useHistoryData";
 import { ButtonLabel } from "../components/buttonLabel/ButtonLabel";
 import { Label } from "../components/label/Label";
 import { Datum } from "../components/table/Datum";
@@ -9,32 +10,10 @@ import { Round } from "../components/table/Round";
 import { useContentContext } from "../context/ContentProvider";
 
 interface HistoryItem {
-  round: number;
+  date: string;
   poolPrice: number;
   wallets: number;
 }
-const data: HistoryItem[] = [
-  {
-    round: 1,
-    poolPrice: 107000,
-    wallets: 3000,
-  },
-  {
-    round: 2,
-    poolPrice: 107000,
-    wallets: 1000,
-  },
-  {
-    round: 3,
-    poolPrice: 107000,
-    wallets: 1234,
-  },
-  {
-    round: 4,
-    poolPrice: 453,
-    wallets: 123,
-  },
-];
 
 const ListItem: React.FC<{
   item: HistoryItem;
@@ -79,7 +58,7 @@ const ListItem: React.FC<{
           width: "100%",
         }}
       >
-        <Round round={item.round} />
+        <Round round={item.date} />
 
         <Datum
           value={item.poolPrice}
@@ -99,9 +78,18 @@ const ListItem: React.FC<{
 };
 
 export const ComicBookHistory = () => {
-  const { setSelectedSectionHandler, isMinimunWindowWidth } =
+  const { setSelectedSectionHandler, isMinimunWindowWidth, selectedWallet } =
     useContentContext();
   const styleTypeSize = isMinimunWindowWidth ? "80" : "40";
+
+  const { data, refetch: handleFetchHistoryData } = useMyHistoryComicData({
+    selectedWallet,
+  });
+
+  useEffect(() => {
+    handleFetchHistoryData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedWallet]);
   return (
     <View
       style={{
