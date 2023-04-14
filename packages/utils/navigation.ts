@@ -120,7 +120,9 @@ const navConfig: {
     Settings: "settings",
     // ==== DAppStore
     DAppStore: "dapp-store",
-    ToriPunks: "dapp-store/tori-punks/:route",
+
+    // ==== DApps
+    ToriPunks: "dapp/tori-punks/:route?",
   },
 };
 
