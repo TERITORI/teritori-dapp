@@ -1,22 +1,28 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 
-import { getCodeError } from "./codeError";
+// import { getCodeError } from "./codeError";
 import { Wallet } from "../../../context/WalletsProvider/wallet";
 import {
   getKeplrSigningCosmWasmClient,
   getNetworkByIdPrefix,
 } from "../../../networks";
+import { getCodeError } from "./codeError";
 
 export const useList = ({ selectedWallet }: { selectedWallet?: Wallet }) => {
   const addr = selectedWallet?.address || "";
   const { data, refetch } = useQuery(
     ["toripunks", addr],
     async () => {
-      if (addr) {
-        const response = await fetch(
-          `https://api.roulette.aaa-metahuahua.com/toripunks?addr=${addr}`
-        );
-        return response.json();
+      try {
+        if (addr) {
+          const response = await fetch(
+            `https://api.roulette.aaa-metahuahua.com/toripunks?addr=${addr}`
+          );
+          return response.json();
+        }
+        return [];
+      } catch (e) {
+        return e;
       }
     },
     {
@@ -25,9 +31,9 @@ export const useList = ({ selectedWallet }: { selectedWallet?: Wallet }) => {
       enabled: false,
     }
   );
-  if ("err" in data) return { data: getCodeError(data.err) };
-  const dataCopy = [...data];
-  return { data: dataCopy, refetch };
+  const dataCopy = data.hasOwnProperty("err") ? [] : [...data];
+  const error = data.hasOwnProperty("err") ? getCodeError(data.err) : null;
+  return { data: dataCopy, refetch, error };
 };
 
 export const useBuyTicket = ({
@@ -106,7 +112,7 @@ export const sendKeplarTx = async ({
   selectedWallet?: Wallet;
   amount: string;
 }) => {
-  const network = getNetworkByIdPrefix("teritori");
+  const network = getNetworkByIdPrefix("tori");
   if (network) {
     const signingComswasmClient = await getKeplrSigningCosmWasmClient(
       network?.id

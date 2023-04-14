@@ -9,7 +9,7 @@ export const useMyHistoryData = ({
   selectedWallet?: Wallet;
 }) => {
   const addr = selectedWallet?.address || "";
-  const date = "";
+  const date = new Date().toISOString().slice(0, 10);
   const { data, refetch } = useQuery(
     ["tickets", addr],
     async () => {
@@ -19,6 +19,7 @@ export const useMyHistoryData = ({
         );
         return response.json();
       }
+      return [];
     },
     {
       initialData: historyData,
