@@ -57,6 +57,7 @@ export type RootStackParamList = {
   Settings: undefined;
 
   DAppStore: undefined;
+  ToriPunks: { route: string };
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -119,6 +120,9 @@ const navConfig: {
     Settings: "settings",
     // ==== DAppStore
     DAppStore: "dapp-store",
+
+    // === DApps
+    ToriPunks: "dapp/tori-punks/:route?",
   },
 };
 

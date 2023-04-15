@@ -3,6 +3,7 @@ import React from "react";
 
 import { ComingSoonScreen } from "../../screens/ComingSoon/ComingSoon";
 import { DAppStore } from "../../screens/DAppStore/HomeScreen";
+import { ToriPunks } from "../../screens/DAppStore/apps/toripunks/HomeScreen";
 import { FeedScreen } from "../../screens/Feed/FeedScreen";
 import { FeedNewArticleScreen } from "../../screens/FeedNewArticle/FeedNewArticleScreen";
 import { FeedPostViewScreen } from "../../screens/FeedPostView/FeedPostViewScreen";
@@ -242,6 +243,11 @@ export const Navigator: React.FC = () => {
         name="HashtagFeed"
         component={HashtagFeedScreen}
         options={{ header: () => null, title: screenTitle("") }}
+      />
+      <Stack.Screen
+        name="ToriPunks"
+        component={ToriPunks}
+        options={{ header: () => null, title: screenTitle("ToriPunks") }}
       />
       <Stack.Screen
         name="DAppStore"
