@@ -14,28 +14,6 @@ interface HistoryItem {
   poolPrice: number;
   wallets: number;
 }
-// const data: HistoryItem[] = [
-//   {
-//     round: 1,
-//     poolPrice: 107000,
-//     wallets: 3000,
-//   },
-//   {
-//     round: 2,
-//     poolPrice: 107000,
-//     wallets: 1000,
-//   },
-//   {
-//     round: 3,
-//     poolPrice: 107000,
-//     wallets: 1234,
-//   },
-//   {
-//     round: 4,
-//     poolPrice: 453,
-//     wallets: 123,
-//   },
-// ];
 
 const ListItem: React.FC<{
   item: HistoryItem;

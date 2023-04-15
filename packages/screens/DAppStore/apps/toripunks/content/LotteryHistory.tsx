@@ -9,87 +9,8 @@ import { Datum } from "../components/table/Datum";
 import { HeaderItem } from "../components/table/HeaderItem";
 import { useContentContext } from "../context/ContentProvider";
 
-interface HistoryItem {
-  date: string;
-  toriWon: string;
-}
-
-// const data: HistoryItem[] = [
-//   {
-//     round: 1,
-//     text: "150 000 $TORI WON",
-//   },
-//   {
-//     round: 2,
-//     text: "150 000 $TORI WON",
-//   },
-//   {
-//     round: 3,
-//     text: "150 000 $TORI WON",
-//   },
-//   {
-//     round: 4,
-//     text: "150 000 $TORI WON",
-//   },
-// ];
-//
-// const HeaderItem = ({ text }: { text: string }) => (
-//   <View
-//     style={{
-//       justifyContent: "center",
-//       width: text === "" ? roundWidth : datumWidth,
-//     }}
-//   >
-//     <Label
-//       styleType="T2_Bebas_20"
-//       style={{
-//         justifyContent: "center",
-//         textAlign: "center",
-//         color: "#E8E1EF",
-//       }}
-//     >
-//       {text}
-//     </Label>
-//   </View>
-// );
-
-// const RoundNumber: React.FC<{ round: number }> = ({ round }) => (
-//   <View
-//     style={{
-//       justifyContent: "center",
-//     }}
-//   >
-//     <Label
-//       styleType="T2_Bebas_20"
-//       style={{
-//         color: "#E8E1EF",
-//         transform: [{ rotate: "-90deg" }],
-//       }}
-//     >
-//       Round {round}
-//     </Label>
-//   </View>
-// );
-
-// const Datum: React.FC<{ value: string }> = ({ value }) => (
-//   <View
-//     style={{
-//       backgroundColor: "#28f191",
-//       padding: 30,
-//       width: datumWidth,
-//     }}
-//   >
-//     <Label
-//       styleType="H1_Bebas_80"
-//       style={{ textAlign: "center", color: "#E8E1EF" }}
-//     >
-//       {value}
-//     </Label>
-//   </View>
-// );
-
 const ListItem: React.FC<{
-  item: HistoryItem;
+  item: { date: string; toriWon: number };
   styleTypeSize: string;
 }> = ({ item, styleTypeSize }) => {
   const { isMinimunWindowWidth } = useContentContext();
@@ -136,7 +57,7 @@ const ListItem: React.FC<{
         <Date date={item.date} />
 
         <Datum
-          value={item.toriWon}
+          value={`${item.toriWon} $TORI WON`}
           datumWidth={datumWidth}
           styleTypeSize={styleTypeSize}
           style={datumStyle}

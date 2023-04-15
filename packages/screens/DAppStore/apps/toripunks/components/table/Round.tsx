@@ -3,7 +3,7 @@ import { View } from "react-native";
 
 import { Label } from "../label/Label";
 
-export const Round: React.FC<{ round: number }> = ({ round }) => (
+export const Round: React.FC<{ round: string }> = ({ round }) => (
   <View
     style={{
       justifyContent: "center",
@@ -16,7 +16,7 @@ export const Round: React.FC<{ round: number }> = ({ round }) => (
         transform: [{ rotate: "-90deg" }],
       }}
     >
-      Round {round}
+      {round}
     </Label>
   </View>
 );

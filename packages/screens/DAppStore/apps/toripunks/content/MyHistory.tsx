@@ -92,6 +92,7 @@ export const MyHistory = () => {
   const { data, refetch: handleFetchHistoryData } = useMyHistoryData({
     selectedWallet,
   });
+  debugger;
 
   useEffect(() => {
     handleFetchHistoryData();

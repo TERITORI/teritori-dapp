@@ -16,7 +16,6 @@ export const ComicBooks = () => {
   const { data, refetch: handleFetchHistoryData } = useComicHistoryData({
     selectedWallet,
   });
-
   useEffect(() => {
     handleFetchHistoryData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -68,7 +67,7 @@ export const ComicBooks = () => {
               : parseInt(styleTypeSize, 10),
           }}
         >
-          {data[0].poolPrice} $TORI
+          {data[0]?.poolPrice} $TORI
         </Label>
         <Label
           styleType={`H1_Bebas_${styleTypeSize}`}
@@ -97,7 +96,7 @@ export const ComicBooks = () => {
             actionable
             onPress={() => {
               Linking.openURL(
-                "https://app.teritori.com/collection/tori-tori1syx6q5rxhntng93pmk9xep25638dqy3dcnppvvytnccxrp7urt7s2570jc"
+                "/collection/tori-tori1syx6q5rxhntng93pmk9xep25638dqy3dcnppvvytnccxrp7urt7s2570jc"
               );
             }}
           />
