@@ -11,7 +11,7 @@ export const useMyHistoryData = ({
   const addr = selectedWallet?.address || "";
   const date = new Date().toISOString().slice(0, 10);
   const { data, refetch } = useQuery(
-    ["tickets", addr],
+    ["history", addr],
     async () => {
       if (addr) {
         const response = await fetch(
@@ -22,7 +22,16 @@ export const useMyHistoryData = ({
       return [];
     },
     {
-      initialData: historyData,
+      initialData: [
+        {
+          date: "00/0000",
+          tickets: {
+            bought: 0,
+            won: 0,
+          },
+          toriWon: 0,
+        },
+      ],
       refetchOnMount: false,
       enabled: false,
     }

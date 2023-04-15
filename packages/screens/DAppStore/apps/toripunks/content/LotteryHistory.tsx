@@ -1,13 +1,13 @@
 import React, { useEffect } from "react";
 import { FlatList, TouchableOpacity, View } from "react-native";
 
-import { useGiganticHistoryData } from "../../../query/useGiganticHistory";
 import { ButtonLabel } from "../components/buttonLabel/ButtonLabel";
 import { Label } from "../components/label/Label";
 import { Date } from "../components/table/Date";
 import { Datum } from "../components/table/Datum";
 import { HeaderItem } from "../components/table/HeaderItem";
 import { useContentContext } from "../context/ContentProvider";
+import { useGiganticHistoryData } from "../query/useGiganticHistory";
 
 const ListItem: React.FC<{
   item: { date: string; toriWon: number };

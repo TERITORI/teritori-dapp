@@ -1,11 +1,11 @@
 import { useEffect } from "react";
 import { Linking, TouchableOpacity, View } from "react-native";
 
-import { useComicHistoryData } from "../../../query/useComicBookHistory";
 import { ButtonLabel } from "../components/buttonLabel/ButtonLabel";
 import { BuyToripunksButton } from "../components/buttonLabel/BuyToripunksButton";
 import { Label } from "../components/label/Label";
 import { useContentContext } from "../context/ContentProvider";
+import { useComicHistoryData } from "../query/useComicBookHistory";
 
 export const ComicBooks = () => {
   const { setSelectedSectionHandler, isMinimunWindowWidth, selectedWallet } =
