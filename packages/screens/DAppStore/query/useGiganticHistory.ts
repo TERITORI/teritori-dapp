@@ -33,7 +33,7 @@ export const useGiganticHistoryData = ({
 }) => {
   const addr = selectedWallet?.address || "";
   const { data, refetch } = useQuery(
-    ["tickets", addr],
+    ["GiganticHistoryData", addr],
     async () => {
       if (addr) {
         const response = await fetch(

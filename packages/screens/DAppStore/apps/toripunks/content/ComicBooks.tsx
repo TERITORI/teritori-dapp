@@ -73,7 +73,7 @@ export const ComicBooks = () => {
           styleType={`H1_Bebas_${styleTypeSize}`}
           style={{ textAlign: "center", color: "#E8E1EF" }}
         >
-          DIVIDED BY XXXX WALLETS
+          DIVIDED BY {data[0]?.wallets} WALLETS
         </Label>
         <Label
           styleType="T1_Bebas_20"
