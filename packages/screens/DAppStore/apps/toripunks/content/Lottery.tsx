@@ -1,5 +1,7 @@
+import { useEffect } from "react";
 import { Linking, TouchableOpacity, View } from "react-native";
 
+import { useGiganticLastReward } from "../../../query/useGiganticHistory";
 import { ButtonLabel } from "../components/buttonLabel/ButtonLabel";
 import { BuyToripunksButton } from "../components/buttonLabel/BuyToripunksButton";
 import { Label } from "../components/label/Label";
@@ -11,6 +13,14 @@ export const Lottery = () => {
 
   const styleTypeSize = isMinimunWindowWidth ? "80" : "40";
 
+  const { data: lastRewards, refetch: handleGetLasRewards } =
+    useGiganticLastReward();
+
+  useEffect(() => {
+    handleGetLasRewards();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <>
       <View
@@ -18,6 +28,7 @@ export const Lottery = () => {
           height: isMinimunWindowWidth ? "57vh" : "73vh",
           paddingHorizontal: isMinimunWindowWidth ? 0 : 18,
           justifyContent: "flex-end",
+          marginTop: isMinimunWindowWidth ? "6vh" : "none",
         }}
       >
         <Label
@@ -45,7 +56,7 @@ export const Lottery = () => {
             fontSize: parseInt(styleTypeSize, 10) + 20,
           }}
         >
-          2500000 $TORI
+          {lastRewards} $TORI
         </Label>
         <Label
           styleType="T1_Bebas_20"

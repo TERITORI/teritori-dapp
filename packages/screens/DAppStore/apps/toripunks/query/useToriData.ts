@@ -147,3 +147,27 @@ export const sendKeplarTx = async ({
     }
   }
 };
+
+export const useLastReward = () => {
+  const { data, refetch } = useQuery(
+    ["lastRewards"],
+    async () => {
+      try {
+        const response = await fetch(
+          `https://api.roulette.aaa-metahuahua.com/tickets/last/rewards`
+        );
+        return response.json();
+      } catch (e) {
+        return e;
+      }
+    },
+    {
+      initialData: {
+        last_rewards: 0,
+      },
+      refetchOnMount: false,
+      enabled: false,
+    }
+  );
+  return { data: data.last_rewards, refetch };
+};

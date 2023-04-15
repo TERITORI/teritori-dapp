@@ -1,13 +1,13 @@
 import React, { useEffect } from "react";
 import { FlatList, TouchableOpacity, View } from "react-native";
 
+import { useGiganticHistoryData } from "../../../query/useGiganticHistory";
 import { ButtonLabel } from "../components/buttonLabel/ButtonLabel";
 import { Label } from "../components/label/Label";
+import { Date } from "../components/table/Date";
 import { Datum } from "../components/table/Datum";
 import { HeaderItem } from "../components/table/HeaderItem";
-import { Round } from "../components/table/Round";
 import { useContentContext } from "../context/ContentProvider";
-import { useMyHistoryLotteryData } from "../query/useHistoryData";
 
 const ListItem: React.FC<{
   item: { date: string; toriWon: number };
@@ -54,7 +54,7 @@ const ListItem: React.FC<{
           width: "100%",
         }}
       >
-        <Round round={item.date} />
+        <Date date={item.date} />
 
         <Datum
           value={`${item.toriWon} $TORI WON`}
@@ -68,12 +68,12 @@ const ListItem: React.FC<{
 };
 
 export const LotteryHistory = () => {
-  const { setSelectedSectionHandler, selectedWallet } = useContentContext();
-  const { isMinimunWindowWidth } = useContentContext();
+  const { setSelectedSectionHandler } = useContentContext();
+  const { isMinimunWindowWidth, selectedWallet } = useContentContext();
 
   const styleTypeSize = isMinimunWindowWidth ? "80" : "40";
 
-  const { data, refetch: handleFetchHistoryData } = useMyHistoryLotteryData({
+  const { data, refetch: handleFetchHistoryData } = useGiganticHistoryData({
     selectedWallet,
   });
 
@@ -81,6 +81,7 @@ export const LotteryHistory = () => {
     handleFetchHistoryData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedWallet]);
+
   return (
     <View
       style={{

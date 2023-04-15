@@ -10,6 +10,7 @@ import { useContentContext } from "../context/ContentProvider";
 import {
   sendKeplarTx,
   useBuyTicket,
+  useLastReward,
   useList,
   useProof,
 } from "../query/useToriData";
@@ -58,6 +59,9 @@ export const Russian = () => {
   } = useList({
     selectedWallet,
   });
+
+  const { data: lastRewards, refetch: handleGetLasRewards } = useLastReward();
+
   const { data: buyTSC, mutate: handleBuyTicket } = useBuyTicket({
     userTokens: [...(userToriPunksList as number[])],
     buyCount: bet,
@@ -86,6 +90,11 @@ export const Russian = () => {
   }, [userToriPunksList]);
 
   useEffect(() => {
+    handleGetLasRewards();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
     if (error) {
       switch (error) {
         case 10:
@@ -108,7 +117,7 @@ export const Russian = () => {
   const userToripunks = totalToriUser;
   const maxTicket = "10";
   const priceTicket = "1";
-  const monthPriceTicket = "120";
+  const monthPriceTicket = lastRewards;
   const remainingUserTicket = remaningTicket;
   const remainingUserCurrency = totalToriUser;
 
