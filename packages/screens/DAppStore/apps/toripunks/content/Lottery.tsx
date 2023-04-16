@@ -63,7 +63,7 @@ export const Lottery = () => {
           style={{ textAlign: "center", color: "#E8E1EF", marginTop: 24 }}
           onPress={() => Linking.openURL("https://discord.gg/n6QdEXXGzP")}
         >
-          Live draw in our discord on the 25th of each month
+          Live draw in our discord on the 15th of each month
         </Label>
         <View
           style={{
