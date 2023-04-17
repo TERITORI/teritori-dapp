@@ -3,10 +3,11 @@ import { useCallback } from "react";
 
 import { useSelectedNetworkId } from "./useSelectedNetwork";
 import { teritoriNetwork } from "../networks/teritori";
-import { teritoriTestnetNetwork } from "../networks/teritori-testnet";
 import { setSelectedNetworkId } from "../store/slices/settings";
 import { useAppDispatch } from "../store/store";
 import { RouteName } from "../utils/navigation";
+import { osmosisNetwork } from "../networks/osmosis";
+import { osmosisTestnetNetwork } from "../networks/osmosis-testnet";
 
 export const useForceUnselectNetworks = () => {
   const dispatch = useAppDispatch();
@@ -15,8 +16,8 @@ export const useForceUnselectNetworks = () => {
   const effect = useCallback(() => {
     if (
       (currentRouteName as RouteName) !== "Swap" &&
-      selectedNetworkId !== teritoriTestnetNetwork.id &&
-      selectedNetworkId !== teritoriNetwork.id
+      selectedNetworkId === osmosisNetwork.id ||
+      selectedNetworkId === osmosisTestnetNetwork.id
     ) {
       dispatch(setSelectedNetworkId(teritoriNetwork.id));
     }
