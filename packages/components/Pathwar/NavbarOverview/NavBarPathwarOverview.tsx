@@ -60,13 +60,11 @@ export const NavBarPathwarOverview: React.FC<object> = () => {
               <SVG source={StatsIcon} />
             </View>
             <TertiaryBox
-              differentSquaresColor
               mainContainerStyle={{
                 backgroundColor: neutral00,
                 padding: layout.padding_x1,
               }}
-              leftSquaresBackgroundColor={neutral17}
-              rightSquaresBackgroundColor={neutral17}
+              squaresBackgroundColor={neutral17}
             >
               <View
                 style={{

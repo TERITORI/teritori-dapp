@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, TouchableOpacity, Image } from "react-native";
 
+import { ChallengeDetails } from "./ChallengeDetailsFiles/ChallengeDetails";
 import challengePic1 from "../../../assets/PathwarIllustration/challenge1.png";
 import challengePic10 from "../../../assets/PathwarIllustration/challenge10.png";
 import challengePic11 from "../../../assets/PathwarIllustration/challenge11.png";
@@ -13,7 +14,11 @@ import challengePic6 from "../../../assets/PathwarIllustration/challenge6.png";
 import challengePic7 from "../../../assets/PathwarIllustration/challenge7.png";
 import challengePic8 from "../../../assets/PathwarIllustration/challenge8.png";
 import challengePic9 from "../../../assets/PathwarIllustration/challenge9.png";
-import pwn from "../../../assets/icons/Pathwar/PathwarCoin/pwn.svg";
+import checkSvg from "../../../assets/icons/Pathwar/checkIcon.svg";
+import clockSvg from "../../../assets/icons/Pathwar/clockIcon.svg";
+import diamondSvg from "../../../assets/icons/Pathwar/diamondIcon.svg";
+import starSvg from "../../../assets/icons/Pathwar/starIcon.svg";
+import teritoriSvg from "../../../assets/icons/Pathwar/teritori.svg";
 import { SVG } from "../../components/SVG";
 import {
   neutral44,
@@ -21,6 +26,7 @@ import {
   neutral17,
   secondaryColor,
   neutral00,
+  primaryColor,
 } from "../../utils/style/colors";
 import {
   fontSemibold13,
@@ -30,9 +36,9 @@ import {
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
+import FlexRow from "../FlexRow";
 import { Separator } from "../Separator";
 import { TertiaryBox } from "../boxes/TertiaryBox";
-import { ChallengeDetails } from "./ChallengeDetailsFiles/ChallengeDetails";
 
 const listPictures = [
   challengePic1,
@@ -104,9 +110,7 @@ export const ChallengeBox: React.FC<{
           <TertiaryBox
             width={200}
             height={200}
-            differentSquaresColor
-            leftSquaresBackgroundColor={neutral17}
-            rightSquaresBackgroundColor={neutral17}
+            squaresBackgroundColor={neutral17}
           >
             <Image
               source={listPictures[indexPicture]}
@@ -121,9 +125,7 @@ export const ChallengeBox: React.FC<{
           <TertiaryBox
             width={200}
             height={47}
-            differentSquaresColor
-            leftSquaresBackgroundColor={neutral17}
-            rightSquaresBackgroundColor={neutral17}
+            squaresBackgroundColor={neutral17}
             style={{ marginTop: layout.padding_x1 }}
           >
             <View
@@ -145,16 +147,8 @@ export const ChallengeBox: React.FC<{
                 }}
               >
                 <BrandText style={[{ color: secondaryColor }, fontSemibold13]}>
-                  {price ? "$" + price : "Free"}
+                  {price ? price + " TORI" : "Free"}
                 </BrandText>
-                {price ? (
-                  <SVG
-                    source={pwn}
-                    width={42}
-                    height={42}
-                    style={{ marginBottom: layout.padding_x0_25 }}
-                  />
-                ) : null}
               </View>
             </View>
           </TertiaryBox>
@@ -169,13 +163,11 @@ export const ChallengeBox: React.FC<{
               <TertiaryBox
                 width={110}
                 height={40}
-                differentSquaresColor
-                leftSquaresBackgroundColor={neutral17}
-                rightSquaresBackgroundColor={neutral17}
+                squaresBackgroundColor={neutral17}
                 mainContainerStyle={{ backgroundColor: secondaryColor }}
               >
                 <BrandText style={[{ color: neutral00 }, fontSemibold14]}>
-                  Enter
+                  Buy
                 </BrandText>
               </TertiaryBox>
             </TouchableOpacity>
@@ -183,9 +175,7 @@ export const ChallengeBox: React.FC<{
               <TertiaryBox
                 width={80}
                 height={40}
-                differentSquaresColor
-                leftSquaresBackgroundColor={neutral17}
-                rightSquaresBackgroundColor={neutral17}
+                squaresBackgroundColor={neutral17}
                 mainContainerStyle={{ borderColor: secondaryColor }}
               >
                 <BrandText style={[{ color: secondaryColor }, fontSemibold14]}>
@@ -314,78 +304,122 @@ export const ChallengeBox: React.FC<{
               fontSemibold13,
             ]}
           >
-            Reason to do this challenge :
+            Statistics about this challenge:
           </BrandText>
 
-          <View style={{ width: 350 }}>
-            <BrandText
-              style={[
-                { color: "white", marginBottom: layout.padding_x0_5 },
-                fontSemibold13,
-              ]}
-            >
-              This challenge is part of Season #0 of Pathwar, the decentralized
-              training center for hackers willing to join the forces involved in
-              the security of the Cosmos ecosystem.
-              {"\n"}Beginners welcome, it's time to learn.
-            </BrandText>
-          </View>
-
-          <View style={{ width: "100%" }}>
-            <TertiaryBox
-              height={42}
-              differentSquaresColor
-              leftSquaresBackgroundColor={neutral17}
-              rightSquaresBackgroundColor={neutral17}
-              style={{ marginTop: layout.padding_x1_5, alignSelf: "center" }}
-            >
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  width: "fit-content",
-                  paddingLeft: layout.padding_x3_5,
-                  paddingRight: layout.padding_x3_5,
-                }}
-              >
-                <View>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      alignContent: "center",
-                      alignItems: "center",
-                    }}
+          <FlexRow>
+            <View style={{ width: 200 }}>
+              <FlexRow alignItems="center" style={{ marginBottom: 8 }}>
+                <SVG source={checkSvg} />
+                <BrandText
+                  style={[
+                    { color: secondaryColor },
+                    fontSemibold12,
+                    { marginLeft: 10 },
+                  ]}
+                >
+                  2458 pirates solved it
+                </BrandText>
+              </FlexRow>
+              <FlexRow alignItems="center" style={{ marginBottom: 8 }}>
+                <SVG source={starSvg} />
+                <BrandText
+                  style={[
+                    { color: secondaryColor },
+                    fontSemibold12,
+                    { marginLeft: 10 },
+                  ]}
+                >
+                  Current Star pirate is x0x0_
+                </BrandText>
+              </FlexRow>
+            </View>
+            <View>
+              <FlexRow alignItems="center" style={{ marginBottom: 8 }}>
+                <SVG source={clockSvg} />
+                <BrandText
+                  style={[
+                    { color: secondaryColor },
+                    fontSemibold12,
+                    { marginLeft: 10 },
+                  ]}
+                >
+                  Average duration: 4’42
+                </BrandText>
+              </FlexRow>
+              <FlexRow alignItems="center" style={{ marginBottom: 8 }}>
+                <SVG source={diamondSvg} />
+                <BrandText
+                  style={[
+                    { color: secondaryColor },
+                    fontSemibold12,
+                    { marginLeft: 10 },
+                  ]}
+                >
+                  Related booty
+                </BrandText>
+              </FlexRow>
+            </View>
+          </FlexRow>
+          <TertiaryBox fullWidth height={67} squaresBackgroundColor={neutral17}>
+            <FlexRow style={{ paddingHorizontal: layout.padding_x1_5 }}>
+              <View style={{ width: 190 }}>
+                <FlexRow alignItems="center" style={{ marginBottom: 10 }}>
+                  <BrandText
+                    style={[{ color: secondaryColor }, fontSemibold12]}
                   >
-                    <BrandText
-                      style={[
-                        { color: neutral77, marginRight: layout.padding_x2 },
-                        fontSemibold13,
-                      ]}
-                    >
-                      Reward
-                    </BrandText>
-                    <BrandText
-                      style={[
-                        {
-                          color: secondaryColor,
-                          marginLeft: layout.padding_x0_5,
-                        },
-                        fontSemibold12,
-                      ]}
-                    >
-                      ${reward}
-                    </BrandText>
-                    <SVG
-                      source={pwn}
-                      width={30}
-                      height={30}
-                      style={{ marginBottom: layout.padding_x0_25 }}
-                    />
-                  </View>
-                </View>
+                    Top#1:{" "}
+                  </BrandText>
+                  <BrandText style={[{ color: primaryColor }, fontSemibold12]}>
+                    m1ch3l
+                  </BrandText>
+                </FlexRow>
+                <FlexRow alignItems="center">
+                  <BrandText
+                    style={[{ color: secondaryColor }, fontSemibold12]}
+                  >
+                    Top#3:{" "}
+                  </BrandText>
+                  <BrandText style={[{ color: primaryColor }, fontSemibold12]}>
+                    gi4RRLLy
+                  </BrandText>
+                </FlexRow>
               </View>
-            </TertiaryBox>
-          </View>
+              <View>
+                <FlexRow alignItems="center" style={{ marginBottom: 10 }}>
+                  <BrandText
+                    style={[{ color: secondaryColor }, fontSemibold12]}
+                  >
+                    Top#2:{" "}
+                  </BrandText>
+                  <BrandText style={[{ color: primaryColor }, fontSemibold12]}>
+                    m1ch3l
+                  </BrandText>
+                </FlexRow>
+                <FlexRow alignItems="center">
+                  <BrandText
+                    style={[
+                      { color: secondaryColor },
+                      fontSemibold12,
+                      { marginRight: 5 },
+                    ]}
+                  >
+                    50
+                  </BrandText>
+                  <SVG source={teritoriSvg} />
+                  <BrandText
+                    style={[
+                      { color: primaryColor },
+                      fontSemibold12,
+                      { marginLeft: 5 },
+                    ]}
+                  >
+                    Rewards
+                  </BrandText>
+                </FlexRow>
+              </View>
+            </FlexRow>
+          </TertiaryBox>
         </View>
       </View>
     </TertiaryBox>

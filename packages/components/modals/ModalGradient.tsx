@@ -23,8 +23,7 @@ export const ModalGradient: React.FC<{
   displayLinearGradient?: boolean;
   ColorLinearGradient?: string[];
   labelColor?: string;
-  leftSquaresBackgroundColor?: string;
-  rightSquaresBackgroundColor?: string;
+  squaresBackgroundColor?: string;
   mainContainerStyle?: StyleProp<ViewStyle>;
 }> = ({
   label,
@@ -40,8 +39,7 @@ export const ModalGradient: React.FC<{
   ColorLinearGradient = ["#000000"],
   displayLinearGradient = false,
   labelColor = "white",
-  leftSquaresBackgroundColor = "#000000",
-  rightSquaresBackgroundColor = "#000000",
+  squaresBackgroundColor = "#000000",
   mainContainerStyle = { margin: "auto" },
 }) => {
   return (
@@ -64,9 +62,7 @@ export const ModalGradient: React.FC<{
         <TertiaryBox
           width={width}
           style={[mainContainerStyle]}
-          differentSquaresColor
-          leftSquaresBackgroundColor={leftSquaresBackgroundColor}
-          rightSquaresBackgroundColor={rightSquaresBackgroundColor}
+          squaresBackgroundColor={squaresBackgroundColor}
           mainContainerStyle={{
             alignItems: "flex-start",
             backgroundColor: "white",

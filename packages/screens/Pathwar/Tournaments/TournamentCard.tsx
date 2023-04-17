@@ -50,18 +50,14 @@ export const TournamentBox: React.FC<object> = () => {
           <TertiaryBox
             width={200}
             height={200}
-            differentSquaresColor
-            leftSquaresBackgroundColor={neutral17}
-            rightSquaresBackgroundColor={neutral17}
+            squaresBackgroundColor={neutral17}
           >
             {/* img */}
           </TertiaryBox>
           <TertiaryBox
             width={200}
             height={47}
-            differentSquaresColor
-            leftSquaresBackgroundColor={neutral17}
-            rightSquaresBackgroundColor={neutral17}
+            squaresBackgroundColor={neutral17}
             style={{ marginTop: layout.padding_x1_5 }}
           >
             <View
@@ -107,9 +103,7 @@ export const TournamentBox: React.FC<object> = () => {
               <TertiaryBox
                 width={110}
                 height={40}
-                differentSquaresColor
-                leftSquaresBackgroundColor={neutral17}
-                rightSquaresBackgroundColor={neutral17}
+                squaresBackgroundColor={neutral17}
                 mainContainerStyle={{ backgroundColor: secondaryColor }}
               >
                 <BrandText style={[{ color: neutral00 }, fontSemibold14]}>
@@ -121,9 +115,7 @@ export const TournamentBox: React.FC<object> = () => {
               <TertiaryBox
                 width={80}
                 height={40}
-                differentSquaresColor
-                leftSquaresBackgroundColor={neutral17}
-                rightSquaresBackgroundColor={neutral17}
+                squaresBackgroundColor={neutral17}
                 mainContainerStyle={{ borderColor: secondaryColor }}
               >
                 <BrandText style={[{ color: secondaryColor }, fontSemibold14]}>
@@ -303,9 +295,7 @@ export const TournamentBox: React.FC<object> = () => {
           <View style={{ width: "100%" }}>
             <TertiaryBox
               height={42}
-              differentSquaresColor
-              leftSquaresBackgroundColor={neutral17}
-              rightSquaresBackgroundColor={neutral17}
+              squaresBackgroundColor={neutral17}
               style={{ marginTop: layout.padding_x1_5, alignSelf: "center" }}
             >
               <View

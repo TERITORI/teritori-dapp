@@ -89,7 +89,7 @@ export const PathwarScreen: ScreenFC<"Pathwar"> = () => {
             name="Search"
             width={400}
             placeHolder="Search..."
-            mainBoxBackgroundColor={neutral00}
+            squaresBackgroundColor={neutral00}
             onChangeText={setSearch}
           >
             <View style={{ marginRight: layout.padding_x0_5 }}>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, TouchableOpacity, useWindowDimensions } from "react-native";
+import { View, TouchableOpacity } from "react-native";
 import { ProgressBar } from "react-native-paper";
 
 import closeIcon from "../../../../assets/icons/Pathwar/closeIcon.svg";
@@ -39,7 +39,6 @@ export const ModalError: React.FC<{
   const [displayStateValidationError, setDisplayStateValidationError] =
     useState(visible);
   const progress = useProgress();
-  const { width } = useWindowDimensions();
 
   function handleConfirmClick() {
     onClose();
@@ -52,10 +51,6 @@ export const ModalError: React.FC<{
       width={350}
       hideMainSeparator
       displayHeader={false}
-      mainContainerStyle={{
-        marginLeft: width - 355,
-        marginTop: layout.padding_x0_5,
-      }}
     >
       <View
         style={{
