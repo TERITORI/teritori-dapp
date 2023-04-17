@@ -21,6 +21,7 @@ export interface ButtonType {
   withImg: boolean;
   style?: StyleProp<ViewStyle>;
   revert?: boolean;
+  disabled?: boolean;
   textStyle?: StyleProp<TextStyle>;
 }
 
@@ -38,11 +39,12 @@ export const Button: React.FC<ButtonType> = ({
   style,
   revert = false,
   textStyle,
+  disabled = false,
 }) => {
   const buttonStyles = useStyles(size);
   const customStyle = revert ? { transform: [{ rotate: "180deg" }] } : {};
   return (
-    <TouchableOpacity onPress={onPress}>
+    <TouchableOpacity onPress={onPress} disabled={disabled}>
       <View style={style}>
         {withImg ? (
           <ImageBackground
