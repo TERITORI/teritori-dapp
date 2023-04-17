@@ -9,7 +9,7 @@ export const useMyHistoryData = ({
   selectedWallet?: Wallet;
 }) => {
   const addr = selectedWallet?.address || "";
-  const date = new Date().toISOString().slice(0, 10);
+  const date = "2023-04-14"; //new Date().toISOString().slice(0, 10);
   const { data, refetch } = useQuery(
     ["history", addr],
     async () => {

@@ -101,16 +101,7 @@ export const MenuLink = () => {
             alignSelf: "flex-end",
           }}
         >
-          {name !== "" && (
-            <Button
-              onPress={() => {
-                setSelectedSectionHandler("disconnect");
-              }}
-              text={name}
-              size="S"
-              withImg
-            />
-          )}
+          {name !== "" && <Button text={name} size="S" withImg disabled />}
           {selectedWallet ? (
             <Button
               onPress={() => {
