@@ -46,7 +46,7 @@ export const AvatarWithFrame: React.FC<{
       ) : (
         <AnimationFadeIn style={styles.absolute}>
           <Image
-            resizeMode="contain"
+            resizeMode="cover"
             source={{
               uri: ipfsURLToHTTPURL(
                 image ? image : network?.nameServiceDefaultImage || ""
