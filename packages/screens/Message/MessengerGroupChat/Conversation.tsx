@@ -67,6 +67,7 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
     width: "auto",
     maxWidth: "60%",
+    zIndex: 1,
   },
   receiverContainer: {
     backgroundColor: "#5C26F5",
@@ -76,6 +77,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     width: "auto",
     maxWidth: "60%",
+    zIndex: 1,
     marginRight: "auto",
   },
   message: {

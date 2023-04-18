@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 
 import plus from "../../../../assets/icons/chatplus.svg";
+import { Separator } from "../../../components/Separator";
 import { FileUploader } from "../../../components/fileUploader";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { SpacerColumn } from "../../../components/spacer";
 import { IMAGE_MIME_TYPES } from "../../../utils/mime";
+import { neutral33 } from "../../../utils/style/colors";
 import { LocalFileData } from "../../../utils/types/feed";
 import ChatData from "./ChatData";
 import ChatHeader from "./ChatHeader";
@@ -15,8 +17,11 @@ interface IMessage {
   message: string;
   isSender: boolean;
   file: LocalFileData;
+
   onDelete: (file: LocalFileData) => void;
   onUploadThumbnail: (updatedFile: LocalFileData) => void;
+  time: string;
+  name: string;
 }
 
 const ChatSection = () => {
@@ -34,23 +39,27 @@ const ChatSection = () => {
     setMessages([...messages, newMsg]);
     setNewMessage("");
   };
-  const filteredMessages = messages.filter((msg) =>
-    msg.message.toLowerCase().includes(searchInput.toLowerCase())
-  );
 
   return (
-    <View>
-      <ChatHeader searchInput={searchInput} setSearchInput={setSearchInput} />
+    <View style={{ position: "relative" }}>
+      <View style={{ zIndex: 11111 }}>
+        <ChatHeader
+          messages={messages}
+          searchInput={searchInput}
+          setSearchInput={setSearchInput}
+        />
+      </View>
+      <Separator color={neutral33} />
       <View style={styles.container}>
         <SpacerColumn size={3} />
 
-        {filteredMessages.map((msg, index) => (
+        {messages.map((msg, index) => (
           <ChatMessage
             key={index}
             message={msg.message}
             isSender={msg.isSender}
-            time="10:30 AM"
-            receiverName={msg.isSender ? undefined : "John Doe"}
+            time={msg.time}
+            receiverName={msg.isSender ? undefined : msg.name}
           />
         ))}
         <SpacerColumn size={3} />
@@ -111,7 +120,10 @@ const ChatSection = () => {
             onPress={() => setShowAttachmentModal(true)}
           >
             <TouchableOpacity onPress={handleSend}>
-              <Text style={styles.sendButtonText}>Send</Text>
+              <Image
+                style={styles.sendButton}
+                source={require("../../../../assets/icons/sent.png")}
+              />
             </TouchableOpacity>
           </TextInputCustom>
         </View>
@@ -126,8 +138,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 24,
   },
-
-  sendButtonText: { color: "#fff" },
+  modalContainer: {
+    borderWidth: 1,
+    borderColor: "green",
+    position: "absolute",
+    alignSelf: "flex-end",
+    backgroundColor: "red",
+    width: 300,
+  },
+  sendButton: { height: 20, width: 20, marginRight: 10 },
   senderContainer: {
     backgroundColor: "#171717",
     alignSelf: "flex-end",
