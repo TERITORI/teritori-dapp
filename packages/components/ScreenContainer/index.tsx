@@ -9,6 +9,7 @@ import {
 
 import { Header } from "./Header";
 import { ScreenContainerMobile } from "./ScreenContainerMobile";
+import { SearchBar } from "./SearchBar";
 import { useForceNetworkKind } from "../../hooks/useForceNetworkKind";
 import { useForceNetworkSelection } from "../../hooks/useForceNetworkSelection";
 import { useForceUnselectNetworks } from "../../hooks/useForceUnselectNetworks";
@@ -16,6 +17,7 @@ import { useIsMobile } from "../../hooks/useIsMobile";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { NetworkInfo, NetworkKind } from "../../networks";
 import { DAppStoreData } from "../../screens/DAppStore/components/DAppStoreData";
+import { neutral33 } from "../../utils/style/colors";
 import {
   getResponsiveScreenContainerMarginHorizontal,
   headerHeight,
@@ -173,6 +175,15 @@ export const ScreenContainer: React.FC<{
               alignItems: "center",
             }}
           >
+            <SearchBar />
+            <View
+              style={{
+                height: "100%",
+                backgroundColor: neutral33,
+                marginHorizontal: 16,
+                width: 1,
+              }}
+            />
             <NetworkSelector
               forceNetworkId={forceNetworkId}
               forceNetworkKind={forceNetworkKind}
