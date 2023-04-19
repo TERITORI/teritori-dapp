@@ -1,20 +1,36 @@
+import {
+  View,
+  TouchableOpacity,
+  StyleSheet,
+  useWindowDimensions,
+  ScrollView,
+} from "react-native";
 import { FC, useRef } from "react";
-import { View, TouchableOpacity, StyleSheet } from "react-native";
 
 import { TopMenuBox } from "./TopMenuBox";
 import { WalletView } from "./WalletView";
 import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../assets/icons/chevron-up.svg";
 import { useDropdowns } from "../../context/DropdownsProvider";
+import {
+  neutral00,
+  neutral33,
+  purpleLight,
+  secondaryColor,
+} from "../../utils/style/colors";
+import { fontSemibold14 } from "../../utils/style/fonts";
+import { topMenuWidth } from "../../utils/style/layout";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { neutral00, neutral33, secondaryColor } from "../../utils/style/colors";
 import { SVG } from "../SVG";
 import { TertiaryBox } from "../boxes/TertiaryBox";
+
+const BUTTON_HEIGHT = 40;
 
 export const TopMenu: FC = () => {
   const selectedWallet = useSelectedWallet();
   const { onPressDropdownButton, isDropdownOpen } = useDropdowns();
   const dropdownRef = useRef<View>(null);
+  const { height: windowHeight } = useWindowDimensions();
 
   return (
     <View ref={dropdownRef}>
@@ -29,7 +45,7 @@ export const TopMenu: FC = () => {
                 : neutral00,
             },
           ]}
-          height={40}
+          height={BUTTON_HEIGHT}
         >
           <WalletView wallet={selectedWallet} style={styles.walletView} />
           <SVG
@@ -65,5 +81,13 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 46,
     right: 0,
+  },
+  scrollView: {
+    height: "100%",
+    width: topMenuWidth - 2,
+  },
+  settingsText: {
+    ...(fontSemibold14 as object),
+    color: purpleLight,
   },
 });
