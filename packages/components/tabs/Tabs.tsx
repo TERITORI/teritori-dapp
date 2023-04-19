@@ -8,9 +8,9 @@ import {
   StyleSheet,
   ViewStyle,
   TextStyle,
+  ScrollView,
 } from "react-native";
 
-import { useIsMobileView } from "../../hooks/useIsMobileView";
 import {
   gradientColorBlue,
   gradientColorDarkerBlue,
@@ -58,17 +58,15 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
   const { scrollTo } = useScrollTo();
   const itemsArray = Object.entries(items);
   return (
-    <View
-      style={[
-        {
-          flexDirection: useIsMobileView() ? "column" : "row",
-          borderBottomColor: neutral33,
-          alignItems: "center",
-          borderBottomWidth: 1,
-        },
-        useIsMobileView() ? null : style,
-        // style,
-      ]}
+    <ScrollView
+      style={style}
+      showsHorizontalScrollIndicator={false}
+      horizontal
+      contentContainerStyle={{
+        alignItems: "center",
+        borderBottomColor: neutral33,
+        borderBottomWidth: 1,
+      }}
     >
       {itemsArray.map(([key, item], index) => {
         const isSelected = selected === key;
@@ -162,7 +160,7 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
           </TouchableOpacity>
         );
       })}
-    </View>
+    </ScrollView>
   );
 };
 
