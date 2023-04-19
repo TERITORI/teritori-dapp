@@ -41,7 +41,7 @@ import {
 import { Wallet } from "../../context/WalletsProvider";
 import { TeritoriMinter__factory } from "../../evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
 import { useBalances } from "../../hooks/useBalances";
-import { MintPhase, useCollectionInfo } from "../../hooks/useCollectionInfo";
+import { useCollectionInfo } from "../../hooks/useCollectionInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
   NetworkKind,
@@ -55,6 +55,7 @@ import {
   getEthereumNetwork,
 } from "../../networks";
 import { prettyPrice } from "../../utils/coins";
+import { MintPhase } from "../../utils/collection";
 import { getMetaMaskEthereumSigner } from "../../utils/ethereum";
 import { ScreenFC } from "../../utils/navigation";
 import {
@@ -105,7 +106,11 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
   const wallet = useSelectedWallet();
   const [minted, setMinted] = useState(false);
   const [isDepositVisible, setDepositVisible] = useState(false);
-  const { info, notFound, refetchCollectionInfo } = useCollectionInfo(id);
+  const {
+    collectionInfo: info,
+    notFound,
+    refetch: refetchCollectionInfo,
+  } = useCollectionInfo(id);
   const { setToastError } = useFeedbacks();
   const [viewWidth, setViewWidth] = useState(0);
   const [network, mintAddress] = parseNetworkObjectId(id);
@@ -126,9 +131,9 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
     const MAX_BULK = 99;
 
     let totalBulkMint = +newTotalBulkMint;
-    if (newTotalBulkMint < 1) {
+    if (+newTotalBulkMint < 1) {
       totalBulkMint = 1;
-    } else if (info?.maxPerAddress && newTotalBulkMint > +info.maxPerAddress) {
+    } else if (info?.maxPerAddress && +newTotalBulkMint > +info.maxPerAddress) {
       totalBulkMint = +info.maxPerAddress;
     } else if (totalBulkMint > MAX_BULK) {
       totalBulkMint = MAX_BULK;

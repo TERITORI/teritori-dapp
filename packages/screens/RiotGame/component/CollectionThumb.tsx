@@ -14,7 +14,7 @@ type CollectionThumbProps = {
 export const CollectionThumb: React.FC<CollectionThumbProps> = ({
   collectionId,
 }) => {
-  const { info } = useCollectionInfo(collectionId);
+  const { collectionInfo: info } = useCollectionInfo(collectionId);
   const navigation = useAppNavigation();
 
   return (

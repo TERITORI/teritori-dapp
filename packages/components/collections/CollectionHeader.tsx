@@ -19,7 +19,6 @@ import { SpacerRow } from "../../components/spacer";
 import { Tabs } from "../../components/tabs/Tabs";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useCoingeckoPrices } from "../../hooks/useCoingeckoPrices";
-import { CollectionInfo } from "../../hooks/useCollectionInfo";
 import { useCollectionStats } from "../../hooks/useCollectionStats";
 import { useImageResizer } from "../../hooks/useImageResizer";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
@@ -29,6 +28,7 @@ import {
   getNativeCurrency,
   parseCollectionId,
 } from "../../networks";
+import { CollectionInfo } from "../../utils/collection";
 import { neutral33 } from "../../utils/style/colors";
 import { fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
