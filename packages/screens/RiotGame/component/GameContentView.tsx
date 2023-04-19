@@ -9,6 +9,7 @@ import { ScrollView } from "react-native-gesture-handler";
 
 import { FightStatsSection } from "./FightStatsSection";
 import { RiotGameHeader } from "./RiotGameHeader";
+import { LoaderFullScreen } from "../../../components/loaders/LoaderFullScreen";
 import { neutral00 } from "../../../utils/style/colors";
 
 type GameContentViewProps = {
@@ -37,11 +38,6 @@ export const GameContentView: React.FC<GameContentViewProps> = ({
         props.children
       )}
     </ScrollView>
-  );
-  const LoaderFullScreen = React.lazy(() =>
-    import("../../../components/loaders/LoaderFullScreen").then((module) => ({
-      default: module.LoaderFullScreen,
-    }))
   );
   return (
     <View style={[{ flex: 1, backgroundColor: neutral00 }, containerStyle]}>

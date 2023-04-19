@@ -1,4 +1,4 @@
-import { Decimal } from "cosmwasm";
+import { Decimal } from "@cosmjs/math";
 
 import { trimFixed } from "./numbers";
 import { getNativeCurrency } from "../networks";

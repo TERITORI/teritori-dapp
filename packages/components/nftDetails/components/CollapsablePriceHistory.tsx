@@ -35,7 +35,7 @@ const dependentAxisStyle = {
   grid: { ...axisStyle, stroke: neutral33 },
 };
 
-export const CollapsablePiceHistory: React.FC<{ nftId: string }> = ({
+export const CollapsablePriceHistory: React.FC<{ nftId: string }> = ({
   nftId,
 }) => {
   const data = useNFTPriceHistory(nftId);

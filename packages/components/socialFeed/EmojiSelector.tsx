@@ -11,6 +11,7 @@ import {
   secondaryColor,
 } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
+import EmojiModal from "../EmojiModal";
 import { SVG } from "../SVG";
 
 type EmojiSelectorProps = {
@@ -32,7 +33,7 @@ export const EmojiSelector: React.FC<EmojiSelectorProps> = ({
 
   const toggleEmojiModal = () =>
     !isLoading && setIsEmojiModalVisible(!isEmojiModalVisible);
-  const EmojiModal = React.lazy(() => import("../EmojiModal"));
+
   return (
     <Menu opened={isEmojiModalVisible} onBackdropPress={toggleEmojiModal}>
       <MenuTrigger

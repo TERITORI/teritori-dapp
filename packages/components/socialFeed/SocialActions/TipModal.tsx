@@ -1,4 +1,5 @@
-import { coin, Decimal } from "cosmwasm";
+import { coin } from "@cosmjs/amino";
+import { Decimal } from "@cosmjs/math";
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { View } from "react-native";

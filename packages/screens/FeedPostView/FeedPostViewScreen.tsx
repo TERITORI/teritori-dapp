@@ -245,7 +245,10 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
               parentId={id}
               replyTo={replyTo}
               onSubmitInProgress={handleSubmitInProgress}
-              onSubmitSuccess={() => setReplyTo(undefined)}
+              onSubmitSuccess={() => {
+                setReplyTo(undefined);
+                refetch();
+              }}
             />
           </View>
         </>

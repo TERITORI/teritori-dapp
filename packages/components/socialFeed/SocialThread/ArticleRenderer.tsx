@@ -1,10 +1,10 @@
 import React from "react";
 import { Image } from "react-native";
 
-import { ipfsURLToHTTPURL } from "../../../utils/ipfs";
 import { layout } from "../../../utils/style/layout";
 import { RemoteFileData } from "../../../utils/types/feed";
 import { BrandText } from "../../BrandText";
+import { ipfsURLToHTTPURL } from "../../FilePreview/ipfs";
 import { SocialFeedMetadata } from "../NewsFeed/NewsFeed.type";
 import { RichText } from "../RichText";
 

@@ -1,6 +1,6 @@
+import { toUtf8 } from "@cosmjs/encoding";
 import { EncodeObject } from "@cosmjs/proto-signing";
 import { isDeliverTxFailure } from "@cosmjs/stargate";
-import { toUtf8 } from "cosmwasm";
 import Long from "long";
 import React, { useCallback, useMemo, useState } from "react";
 import {

@@ -1,5 +1,5 @@
+import { Decimal } from "@cosmjs/math";
 import { useQuery } from "@tanstack/react-query";
-import { Decimal } from "cosmwasm";
 import { useMemo } from "react";
 
 import { useCoingeckoPrices } from "./useCoingeckoPrices";

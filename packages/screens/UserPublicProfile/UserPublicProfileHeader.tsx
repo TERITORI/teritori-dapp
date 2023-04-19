@@ -7,6 +7,9 @@ import { primaryColor } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
 
 export const screenTabItems = {
+  userPosts: {
+    name: "Posts",
+  },
   nfts: {
     name: "NFTs",
   },
@@ -16,9 +19,6 @@ export const screenTabItems = {
   // },
   quests: {
     name: "Quests",
-  },
-  userPosts: {
-    name: "User's Posts",
   },
   mentionsPosts: {
     name: "Mentions Posts",

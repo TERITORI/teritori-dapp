@@ -125,7 +125,7 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
   },
 }) => {
   const [selectedTab, setSelectedTab] =
-    useState<keyof typeof screenTabItems>("nfts");
+    useState<keyof typeof screenTabItems>("userPosts");
 
   const navigation = useAppNavigation();
   const [network, userAddress] = parseUserId(id);

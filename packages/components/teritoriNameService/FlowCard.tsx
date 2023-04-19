@@ -31,7 +31,7 @@ export const FlowCard: React.FC<{
           paddingHorizontal: 20,
           alignItems: "flex-start",
           justifyContent: "space-between",
-          backgroundColor: disabled ? neutral22 : neutral00
+          backgroundColor: disabled ? neutral22 : neutral00,
         }}
         disabled={disabled}
       >

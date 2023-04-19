@@ -4,7 +4,6 @@ import { ColorValue, ScrollView, TouchableOpacity, View } from "react-native";
 
 import { BrandText } from "../../components/BrandText/BrandText";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
-import { GovernanceDetails } from "../../screens/Governance/GovernanceDetails";
 import { ProposalStatus } from "../../screens/Governance/types";
 
 // FIXME: code dedup
@@ -80,6 +79,11 @@ export const GovernanceBox: React.FC<{
 
   function activeGovernanceDetailsPopup() {
     if (displayGovernanceDetails === true) {
+      const GovernanceDetails = React.lazy(() =>
+        import("../../screens/Governance/GovernanceDetails").then((module) => ({
+          default: module.GovernanceDetails,
+        }))
+      );
       return (
         <GovernanceDetails
           visible={displayGovernanceDetails}

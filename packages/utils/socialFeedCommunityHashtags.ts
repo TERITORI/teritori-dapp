@@ -1,4 +1,4 @@
-import _ from "lodash";
+import { intersection } from "lodash";
 
 import { purpleDefault } from "./style/colors";
 
@@ -7,7 +7,7 @@ export const socialFeedCommunityHashtags = [
 ];
 
 export const getCommunityHashtag = (hashtags: string[]) => {
-  const communityHashtags = _.intersection(
+  const communityHashtags = intersection(
     socialFeedCommunityHashtags.map((item) => item.hashtag.toLowerCase()),
     hashtags.map((item) => item.replace("#", ""))
   );
