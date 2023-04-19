@@ -30,6 +30,7 @@ import { Sidebar } from "../navigation/Sidebar";
 export const ScreenContainer: React.FC<{
   headerChildren?: JSX.Element;
   footerChildren?: React.ReactNode;
+  mobileTitle?: string;
   hideSidebar?: boolean;
   noMargin?: boolean;
   noScroll?: boolean;
@@ -44,6 +45,7 @@ export const ScreenContainer: React.FC<{
   children,
   headerChildren,
   footerChildren,
+  mobileTitle,
   hideSidebar,
   noMargin,
   noScroll,
@@ -101,6 +103,7 @@ export const ScreenContainer: React.FC<{
         hasScroll={hasScroll}
         forceNetworkId={forceNetworkId}
         forceNetworkKind={forceNetworkKind}
+        mobileTitle={mobileTitle}
       />
     );
   /////////////// default returns

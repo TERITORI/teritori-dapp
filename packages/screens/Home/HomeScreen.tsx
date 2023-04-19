@@ -7,7 +7,7 @@ import { ScreenFC } from "../../utils/navigation";
 
 export const HomeScreen: ScreenFC<"Home"> = () => {
   return (
-    <ScreenContainer>
+    <ScreenContainer mobileTitle="HOME">
       <HubIntro />
       <HubLanding />
     </ScreenContainer>

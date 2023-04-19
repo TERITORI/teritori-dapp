@@ -14,7 +14,11 @@ import { useSelectedNetworkKind } from "../../hooks/useSelectedNetwork";
 import { NetworkKind } from "../../networks";
 import { RouteName, useAppNavigation } from "../../utils/navigation";
 import { neutral00, neutral17, neutral33 } from "../../utils/style/colors";
-import { layout, MOBILE_HEADER_HEIGHT, MOBILE_SIDEBAR_MAX_WIDTH } from "../../utils/style/layout";
+import {
+  layout,
+  MOBILE_HEADER_HEIGHT,
+  MOBILE_SIDEBAR_MAX_WIDTH,
+} from "../../utils/style/layout";
 import { SpacerColumn } from "../spacer";
 
 const SpringConfig: WithSpringConfig = {
