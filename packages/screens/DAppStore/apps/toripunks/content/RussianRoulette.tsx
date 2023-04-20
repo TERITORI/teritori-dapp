@@ -342,7 +342,7 @@ export const Russian = () => {
             transform: [{ rotate: "-1.69deg" }],
           }}
         >
-          {result ? LabelSubTitle : "Here are your results"}
+          {!result ? LabelSubTitle : "Here are your results"}
         </Label>
       </View>
       {/* Interaction View */}
