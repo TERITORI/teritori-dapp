@@ -176,7 +176,7 @@ const CustomCalendar = () => {
 
         <TertiaryBox
           fullWidth
-          disabledBorderColor
+          disabledBorderColor=""
           mainContainerStyle={{
             backgroundColor: neutral22,
             minWidth: 160,

@@ -22,7 +22,6 @@ import {
   TextInput,
   TextInputProps,
   TextStyle,
-  TouchableOpacity,
   View,
   ViewStyle,
 } from "react-native";
@@ -48,7 +47,6 @@ import {
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { ErrorText } from "../ErrorText";
-import { SVG } from "../SVG";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { SpacerColumn, SpacerRow } from "../spacer";
 
@@ -82,6 +80,7 @@ export interface TextInputCustomProps<T extends FieldValues>
   error?: string;
   fullWidth?: boolean;
   setRef?: Dispatch<SetStateAction<RefObject<any> | null>>;
+  iconActions?: React.ReactElement;
 }
 
 export const Label: React.FC<{
@@ -143,6 +142,7 @@ export const TextInputCustom = <T extends FieldValues>({
   error,
   fullWidth,
   setRef,
+  iconActions,
   ...restProps
 }: TextInputCustomProps<T>) => {
   // variables
@@ -315,7 +315,6 @@ const styles = StyleSheet.create({
     color: secondaryColor,
     fontFamily: "Exo_600SemiBold",
     outlineStyle: "none",
-    marginLeft: 10,
   },
   innerContainer: {
     flexDirection: "row",
