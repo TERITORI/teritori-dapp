@@ -28,7 +28,7 @@ export const MessageScreen: ScreenFC<"Message"> = ({ navigation }) => {
       >
         {data.map((item) => (
           <TouchableOpacity
-            key={item.title}
+            key={item.id}
             onPress={() => {
               if (item.id === 2) {
                 setShowTertiaryBox(true);

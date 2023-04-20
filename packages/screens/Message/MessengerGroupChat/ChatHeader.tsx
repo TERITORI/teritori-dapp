@@ -57,7 +57,7 @@ const ChatHeader = ({ messages }: any) => {
           </View>
           <SpacerRow size={1} />
           <View>
-            <Text style={styles.groupName}>IntoSoft office </Text>
+            <Text style={styles.groupName}>Office group</Text>
             <FlexRow>
               <View>
                 <FlexRow>

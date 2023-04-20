@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, TouchableOpacity, Image } from "react-native";
 
-import avator from "../../../assets/icons/avatar.svg";
+import avatar from "../../../assets/icons/avatar.svg";
 import close from "../../../assets/icons/close.svg";
 import FlexRow from "../../components/FlexRow";
 import { SVG } from "../../components/SVG";
@@ -39,18 +39,19 @@ const CreateGroup = ({ setShowTertiaryBox }) => {
 
           <SpacerColumn size={2} />
           <FlexRow style={{ justifyContent: "space-between" }}>
-            <SVG source={avator} height={50} width={50} />
+            <SVG source={avatar} height={50} width={50} />
 
-            <TextInputCustom<{ label: string }>
+            <TextInputCustom
               name="name"
               label="Group name"
               placeHolder="Group name"
+              tvParallaxShiftDistanceX={5}
               style={{ backgroundColor: "#000" }}
               // onChangeText={setName}
               // value={name || ""}
               boxMainContainerStyle={{
                 paddingVertical: 5,
-                paddingHorizontal: 10,
+
                 width: 260,
               }}
               placeholderTextColor="#fff"
@@ -70,7 +71,7 @@ const CreateGroup = ({ setShowTertiaryBox }) => {
           <SpacerColumn size={2} />
           <CheckboxGroup items={items} onChange={handleChange} />
           <SpacerColumn size={2} />
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => setShowTertiaryBox(false)}>
             <TertiaryBox
               height={40}
               mainContainerStyle={{
