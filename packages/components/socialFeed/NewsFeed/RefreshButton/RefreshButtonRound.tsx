@@ -15,7 +15,10 @@ import Animated, {
 
 import refreshSVG from "../../../../../assets/icons/refresh.svg";
 import { neutral17, neutral33 } from "../../../../utils/style/colors";
-import { layout } from "../../../../utils/style/layout";
+import {
+  layout,
+  RESPONSIVE_BREAKPOINT_S,
+} from "../../../../utils/style/layout";
 import { SVG } from "../../../SVG";
 
 interface RefreshButtonProps {
@@ -76,8 +79,8 @@ export const RefreshButtonRound: React.FC<RefreshButtonProps> = ({
       padding: layout.padding_x1_5,
 
       justifyContent: "center",
-      width: width < 512 ? 40 : 68,
-      height: width < 512 ? 40 : 68,
+      width: width < RESPONSIVE_BREAKPOINT_S ? 40 : 68,
+      height: width < RESPONSIVE_BREAKPOINT_S ? 40 : 68,
     },
     textContainer: {
       marginLeft: layout.padding_x1_5,

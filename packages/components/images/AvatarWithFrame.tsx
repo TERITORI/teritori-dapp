@@ -14,7 +14,7 @@ import { OptimizedImage } from "../OptimizedImage";
 import { SVG } from "../SVG";
 import { AnimationFadeIn } from "../animations/AnimationFadeIn";
 
-type AvatarWithFrameSize = "XL" | "L" | "M" | "XM";
+type AvatarWithFrameSize = "XL" | "L" | "M" | "S";
 
 export const AvatarWithFrame: React.FC<{
   image: string | null | undefined;
@@ -112,7 +112,7 @@ const flatStyles = {
     },
   },
 
-  XM: {
+  S: {
     image: {
       height: 24,
       left: 0.5,

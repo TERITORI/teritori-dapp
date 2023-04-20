@@ -5,7 +5,11 @@ import { DateTime } from "./DateTime";
 import { DEFAULT_NAME } from "../../../utils/social-feed";
 import { neutral77 } from "../../../utils/style/colors";
 import { fontSemibold14, fontSemibold16 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+import {
+  layout,
+  SOCIAL_FEED_BREAKPOINT_L,
+  RESPONSIVE_BREAKPOINT_S,
+} from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import FlexRow from "../../FlexRow";
 import { OmniLink } from "../../OmniLink";
@@ -37,7 +41,7 @@ export const SocialCardHeader: FC<{
               marginRight: layout.padding_x2,
             }}
             image={authorMetadata?.image}
-            size={width < 512 ? "XM" : "M"}
+            size={width < RESPONSIVE_BREAKPOINT_S ? "S" : "M"}
             isLoading={loading}
           />
           {/*---- User name */}
@@ -64,7 +68,9 @@ export const SocialCardHeader: FC<{
         </OmniLink>
 
         {/*---- Date */}
-        {width > 512 && <DateTime date={postMetadata.createdAt} />}
+        {width > SOCIAL_FEED_BREAKPOINT_L && (
+          <DateTime date={postMetadata.createdAt} />
+        )}
       </View>
 
       {/*---- Badges TODO: Handle this later */}

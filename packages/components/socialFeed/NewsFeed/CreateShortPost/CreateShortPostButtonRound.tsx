@@ -12,6 +12,7 @@ import {
   neutral33,
   secondaryColor,
 } from "../../../../utils/style/colors";
+import { RESPONSIVE_BREAKPOINT_S } from "../../../../utils/style/layout";
 import { SVG } from "../../../SVG";
 
 export const CreateShortPostButtonRound: React.FC<{
@@ -25,8 +26,8 @@ export const CreateShortPostButtonRound: React.FC<{
       onPress={onPress}
       style={[
         {
-          width: width < 512 ? 40 : 68,
-          height: width < 512 ? 40 : 68,
+          width: width < RESPONSIVE_BREAKPOINT_S ? 40 : 68,
+          height: width < RESPONSIVE_BREAKPOINT_S ? 40 : 68,
           backgroundColor: neutral17,
           borderColor: neutral33,
           borderWidth: 1,

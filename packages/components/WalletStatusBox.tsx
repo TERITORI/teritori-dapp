@@ -13,7 +13,7 @@ import {
   fontSemibold13,
   fontSemibold14,
 } from "../utils/style/fonts";
-import { layout } from "../utils/style/layout";
+import { layout, RESPONSIVE_BREAKPOINT_S } from "../utils/style/layout";
 
 export const WalletStatusBox: React.FC = () => {
   const { width } = useWindowDimensions();
@@ -51,7 +51,7 @@ export const WalletStatusBox: React.FC = () => {
                 {selectedNetworkInfo?.displayName}
               </BrandText>
               <BrandText style={[fontSemibold13]}>
-                {width < 512
+                {width < RESPONSIVE_BREAKPOINT_S
                   ? getShortAddress(selectedWallet.address)
                   : selectedWallet.address}
               </BrandText>

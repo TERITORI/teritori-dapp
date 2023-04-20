@@ -1,6 +1,7 @@
 import { View, useWindowDimensions } from "react-native";
 
 import { TOOLBAR_HEIGHT } from "./ToolbarContainer";
+import { RESPONSIVE_BREAKPOINT_S } from "../../../../utils/style/layout";
 
 export const ActionsContainer: React.FC = ({ children }) => {
   const { width } = useWindowDimensions();
@@ -8,11 +9,16 @@ export const ActionsContainer: React.FC = ({ children }) => {
   return (
     <View
       style={{
-        flexDirection: width < 512 ? "column" : "row",
+        flexDirection: width < RESPONSIVE_BREAKPOINT_S ? "column" : "row",
         alignItems: "center",
         justifyContent: "space-between",
         flex: 1,
-        minHeight: width < 512 ? (width < 380 ? 168 : 144) : TOOLBAR_HEIGHT,
+        minHeight:
+          width < RESPONSIVE_BREAKPOINT_S
+            ? width < 380
+              ? 168
+              : 144
+            : TOOLBAR_HEIGHT,
       }}
     >
       {children}

@@ -36,7 +36,6 @@ import { useCreatePost } from "../../../hooks/feed/useCreatePost";
 import { useUpdateAvailableFreePost } from "../../../hooks/feed/useUpdateAvailableFreePost";
 import { useUpdatePostFee } from "../../../hooks/feed/useUpdatePostFee";
 import { useBalances } from "../../../hooks/useBalances";
-import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { getUserId } from "../../../networks";
@@ -70,7 +69,7 @@ import {
   fontSemibold13,
   fontSemibold16,
 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+import { layout, RESPONSIVE_BREAKPOINT_S } from "../../../utils/style/layout";
 import { replaceBetweenString } from "../../../utils/text";
 import { LocalFileData, RemoteFileData } from "../../../utils/types/feed";
 import { BrandText } from "../../BrandText";
@@ -82,6 +81,7 @@ import { TertiaryBox } from "../../boxes/TertiaryBox";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { SecondaryButtonOutline } from "../../buttons/SecondaryButtonOutline";
 import { FileUploader } from "../../fileUploader";
+import { SpacerColumn } from "../../spacer";
 import { EmojiSelector } from "../EmojiSelector";
 import { GIFSelector } from "../GIFSelector";
 
@@ -107,6 +107,8 @@ export interface NewsFeedInputHandle {
 
 const CHARS_LIMIT_WARNING_MULTIPLIER = 0.92;
 const MAX_IMAGES = 4;
+const BREAKPOINT_M = 800;
+const BREAKPOINT_S = 559;
 
 export const NewsFeedInput = React.forwardRef<
   NewsFeedInputHandle,
@@ -127,7 +129,7 @@ export const NewsFeedInput = React.forwardRef<
     forwardRef
   ) => {
     const { width } = useWindowDimensions();
-    const smallMobileWidth = 512;
+    const [viewWidth, setViewWidth] = useState(0);
     const inputMaxHeight = 400;
     const inputMinHeight = 20;
     const inputHeight = useSharedValue(20);
@@ -137,7 +139,6 @@ export const NewsFeedInput = React.forwardRef<
     const userId = getUserId(selectedNetworkId, selectedWallet?.address);
     const inputRef = useRef<TextInput>(null);
     const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
-    const isMobile = useIsMobile();
     const { setToastError } = useFeedbacks();
     const [isLoading, setLoading] = useState(false);
     const [selection, setSelection] = useState<{ start: number; end: number }>({
@@ -322,7 +323,10 @@ export const NewsFeedInput = React.forwardRef<
     const focusInput = () => inputRef.current?.focus();
 
     return (
-      <View style={style}>
+      <View
+        style={style}
+        onLayout={(e) => setViewWidth(e.nativeEvent.layout.width)}
+      >
         {isNotEnoughFundModal && (
           <NotEnoughFundModal
             visible
@@ -359,7 +363,7 @@ export const NewsFeedInput = React.forwardRef<
                 }
                 placeholder={`Hey yo! ${
                   type === "post" ? "Post something" : "Write your comment"
-                } ${width < smallMobileWidth ? "" : "here! _____"}`}
+                } ${width < RESPONSIVE_BREAKPOINT_S ? "" : "here! _____"}`}
                 placeholderTextColor={neutral77}
                 onChangeText={handleTextChange}
                 multiline
@@ -375,7 +379,6 @@ export const NewsFeedInput = React.forwardRef<
                     height: formValues.message
                       ? inputHeight.value || inputMinHeight
                       : inputMinHeight,
-                    marginBottom: isMobile ? layout.padding_x1 : 0,
                     width: "100%",
                     color: secondaryColor,
                     //@ts-ignore
@@ -446,22 +449,22 @@ export const NewsFeedInput = React.forwardRef<
         <View
           style={{
             backgroundColor: neutral17,
-            paddingTop: layout.padding_x4,
-            paddingBottom: layout.padding_x1_5,
-            marginTop: -layout.padding_x2_5,
+            paddingVertical: layout.padding_x3,
             paddingHorizontal: layout.padding_x2_5,
-            flexDirection: width < 1100 ? "column" : "row",
-            alignItems: "center",
+            flexDirection: viewWidth < BREAKPOINT_M ? "column" : "row",
+            alignItems: viewWidth < BREAKPOINT_M ? "flex-end" : "center",
             justifyContent: "space-between",
             borderRadius: 8,
           }}
         >
           <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              marginBottom: isMobile ? layout.padding_x1 : 0,
-            }}
+            style={[
+              {
+                flexDirection: "row",
+                alignItems: "center",
+              },
+              viewWidth < BREAKPOINT_M && { alignSelf: "flex-start" },
+            ]}
           >
             <SVG source={priceSVG} height={24} width={24} color={neutral77} />
             <BrandText
@@ -482,148 +485,162 @@ export const NewsFeedInput = React.forwardRef<
           <View
             style={[
               {
-                flexDirection: "row",
+                flexDirection: viewWidth < BREAKPOINT_S ? "column" : "row",
                 alignItems: "center",
                 flex: 1,
                 justifyContent: "flex-end",
               },
-              isMobile
-                ? {
-                    maxWidth: "11em",
-                    minHeight: "13em",
-                    justifyContent: "center",
-                    flexWrap: "wrap",
-                  }
-                : [],
+              viewWidth < BREAKPOINT_S && { width: "100%" },
             ]}
           >
-            <EmojiSelector
-              onEmojiSelected={onEmojiSelected}
-              optionsContainer={{ marginLeft: 0, marginTop: -6 }}
-            />
+            {viewWidth < BREAKPOINT_S && <SpacerColumn size={2} />}
 
-            <GIFSelector
-              optionsContainer={{ marginLeft: 0, marginTop: -6 }}
-              onGIFSelected={(url) => {
-                // Don't add if already added
-                if (formValues.gifs?.find((gif) => gif === url)) return;
-                url && setValue("gifs", [...(formValues.gifs || []), url]);
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
               }}
-              disabled={
-                (formValues.files?.[0] &&
-                  formValues.files[0].fileType !== "image") ||
-                (formValues.files || []).length +
-                  (formValues.gifs || [])?.length >=
-                  MAX_IMAGES
-              }
-            />
+            >
+              <EmojiSelector
+                onEmojiSelected={onEmojiSelected}
+                optionsContainer={{ marginLeft: 0, marginTop: -6 }}
+              />
 
-            <FileUploader
-              onUpload={(files) => setValue("files", [files?.[0]])}
-              mimeTypes={AUDIO_MIME_TYPES}
-            >
-              {({ onPress }) => (
-                <IconBox
-                  icon={audioSVG}
-                  onPress={onPress}
-                  style={{ marginRight: layout.padding_x2_5 }}
-                  disabled={
-                    !!formValues.files?.length || !!formValues.gifs?.length
-                  }
-                />
-              )}
-            </FileUploader>
-            <FileUploader
-              onUpload={(files) => setValue("files", [files?.[0]])}
-              mimeTypes={VIDEO_MIME_TYPES}
-            >
-              {({ onPress }) => (
-                <IconBox
-                  icon={videoSVG}
-                  onPress={onPress}
-                  style={{ marginRight: layout.padding_x2_5 }}
-                  disabled={
-                    !!formValues.files?.length || !!formValues.gifs?.length
-                  }
-                />
-              )}
-            </FileUploader>
-            <FileUploader
-              // multiple
-              onUpload={(files) => {
-                // Don't add if already added
-                if (
-                  formValues.files?.find(
-                    (file) => file.fileName === files[0].fileName
+              <GIFSelector
+                optionsContainer={{ marginLeft: 0, marginTop: -6 }}
+                onGIFSelected={(url) => {
+                  // Don't add if already added
+                  if (formValues.gifs?.find((gif) => gif === url)) return;
+                  url && setValue("gifs", [...(formValues.gifs || []), url]);
+                }}
+                disabled={
+                  (formValues.files?.[0] &&
+                    formValues.files[0].fileType !== "image") ||
+                  (formValues.files || []).length +
+                    (formValues.gifs || [])?.length >=
+                    MAX_IMAGES
+                }
+              />
+
+              <FileUploader
+                onUpload={(files) => setValue("files", [files?.[0]])}
+                mimeTypes={AUDIO_MIME_TYPES}
+              >
+                {({ onPress }) => (
+                  <IconBox
+                    icon={audioSVG}
+                    onPress={onPress}
+                    style={{ marginRight: layout.padding_x2_5 }}
+                    disabled={
+                      !!formValues.files?.length || !!formValues.gifs?.length
+                    }
+                  />
+                )}
+              </FileUploader>
+              <FileUploader
+                onUpload={(files) => setValue("files", [files?.[0]])}
+                mimeTypes={VIDEO_MIME_TYPES}
+              >
+                {({ onPress }) => (
+                  <IconBox
+                    icon={videoSVG}
+                    onPress={onPress}
+                    style={{ marginRight: layout.padding_x2_5 }}
+                    disabled={
+                      !!formValues.files?.length || !!formValues.gifs?.length
+                    }
+                  />
+                )}
+              </FileUploader>
+              <FileUploader
+                // multiple
+                onUpload={(files) => {
+                  // Don't add if already added
+                  if (
+                    formValues.files?.find(
+                      (file) => file.fileName === files[0].fileName
+                    )
                   )
-                )
-                  return;
-                setValue("files", [...(formValues.files || []), ...files]);
+                    return;
+                  setValue("files", [...(formValues.files || []), ...files]);
+                }}
+                mimeTypes={IMAGE_MIME_TYPES}
+              >
+                {({ onPress }) => (
+                  <IconBox
+                    disabled={
+                      (formValues.files?.[0] &&
+                        formValues.files[0].fileType !== "image") ||
+                      (formValues.files || []).length +
+                        (formValues.gifs || [])?.length >=
+                        MAX_IMAGES
+                    }
+                    icon={cameraSVG}
+                    onPress={onPress}
+                    style={{
+                      marginRight:
+                        viewWidth < BREAKPOINT_S ? 0 : layout.padding_x2_5,
+                    }}
+                    iconProps={{
+                      height: 18,
+                      width: 18,
+                    }}
+                  />
+                )}
+              </FileUploader>
+            </View>
+
+            {viewWidth < BREAKPOINT_S && <SpacerColumn size={2} />}
+
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
               }}
-              mimeTypes={IMAGE_MIME_TYPES}
             >
-              {({ onPress }) => (
-                <IconBox
-                  disabled={
-                    (formValues.files?.[0] &&
-                      formValues.files[0].fileType !== "image") ||
-                    (formValues.files || []).length +
-                      (formValues.gifs || [])?.length >=
-                      MAX_IMAGES
-                  }
-                  icon={cameraSVG}
-                  onPress={onPress}
-                  style={{ marginRight: layout.padding_x2_5 }}
-                  iconProps={{
-                    height: 18,
-                    width: 18,
-                  }}
-                />
+              {type === "post" && (
+                <OmniLink to={{ screen: "FeedNewArticle" }}>
+                  <SecondaryButtonOutline
+                    size="M"
+                    color={
+                      formValues?.message.length >
+                      SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
+                        ? primaryTextColor
+                        : primaryColor
+                    }
+                    borderColor={primaryColor}
+                    touchableStyle={{
+                      marginRight: layout.padding_x2_5,
+                    }}
+                    backgroundColor={
+                      formValues?.message.length >
+                      SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
+                        ? primaryColor
+                        : neutral17
+                    }
+                    text="Create an Article"
+                    squaresBackgroundColor={neutral17}
+                  />
+                </OmniLink>
               )}
-            </FileUploader>
 
-            {type === "post" && (
-              <OmniLink to={{ screen: "FeedNewArticle" }}>
-                <SecondaryButtonOutline
-                  size="M"
-                  color={
-                    formValues?.message.length >
-                    SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
-                      ? primaryTextColor
-                      : primaryColor
-                  }
-                  borderColor={primaryColor}
-                  touchableStyle={{
-                    marginRight: layout.padding_x2_5,
-                  }}
-                  backgroundColor={
-                    formValues?.message.length >
-                    SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
-                      ? primaryColor
-                      : neutral17
-                  }
-                  text="Create an Article"
-                  squaresBackgroundColor={neutral17}
-                />
-              </OmniLink>
-            )}
-
-            <PrimaryButton
-              disabled={
-                (!formValues?.message &&
-                  !formValues?.files?.length &&
-                  !formValues?.gifs?.length) ||
-                formValues?.message.length >
-                  SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT ||
-                !wallet
-              }
-              isLoading={isLoading || isMutateLoading}
-              loader
-              size="M"
-              text={type === "comment" ? "Comment" : "Publish"}
-              squaresBackgroundColor={neutral17}
-              onPress={handleSubmit(processSubmit)}
-            />
+              <PrimaryButton
+                disabled={
+                  (!formValues?.message &&
+                    !formValues?.files?.length &&
+                    !formValues?.gifs?.length) ||
+                  formValues?.message.length >
+                    SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT ||
+                  !wallet
+                }
+                isLoading={isLoading || isMutateLoading}
+                loader
+                size="M"
+                text={type === "comment" ? "Comment" : "Publish"}
+                squaresBackgroundColor={neutral17}
+                onPress={handleSubmit(processSubmit)}
+              />
+            </View>
           </View>
         </View>
       </View>

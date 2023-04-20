@@ -27,14 +27,13 @@ import {
   fontSemibold14,
   fontSemibold28,
 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+import { layout, RESPONSIVE_BREAKPOINT_S } from "../../../utils/style/layout";
 
 type toggleUserProfileProps = {
   onClose: () => void;
   visible: boolean;
 };
 
-const SMALL_MOBILE_WIDTH = 512;
 const MOBILE_WIDTH = 768;
 
 export type ProfileDataType = {
@@ -77,7 +76,7 @@ export const UserProfileModal: React.FC<toggleUserProfileProps> = ({
   const parentWidth = width;
   const marginChildrenVertical = layout.padding_x1;
   const marginChildrenTop =
-    width < SMALL_MOBILE_WIDTH ? layout.padding_x1 : layout.padding_x2;
+    width < RESPONSIVE_BREAKPOINT_S ? layout.padding_x1 : layout.padding_x2;
 
   const [profileData, setProfileData] =
     useState<ProfileDataType[]>(INIT_PROFILE_DATA);
@@ -96,7 +95,7 @@ export const UserProfileModal: React.FC<toggleUserProfileProps> = ({
       {
         marginTop:
           width < MOBILE_WIDTH
-            ? width < SMALL_MOBILE_WIDTH
+            ? width < RESPONSIVE_BREAKPOINT_S
               ? 5 * layout.padding_x1
               : 15 * layout.padding_x1
             : 25 * layout.padding_x1,
@@ -109,7 +108,9 @@ export const UserProfileModal: React.FC<toggleUserProfileProps> = ({
         color: neutralA3,
         marginTop: layout.padding_x1,
         width:
-          width < SMALL_MOBILE_WIDTH ? 0.9 * width : 15 * layout.padding_x4,
+          width < RESPONSIVE_BREAKPOINT_S
+            ? 0.9 * width
+            : 15 * layout.padding_x4,
       },
     ]),
     cardContainer: {
@@ -122,7 +123,7 @@ export const UserProfileModal: React.FC<toggleUserProfileProps> = ({
       gap: layout.padding_x1_5,
       marginTop:
         width < MOBILE_WIDTH
-          ? width < SMALL_MOBILE_WIDTH
+          ? width < RESPONSIVE_BREAKPOINT_S
             ? 5 * layout.padding_x0_5
             : 30 * layout.padding_x0_5
           : 45 * layout.padding_x0_5,
@@ -182,7 +183,7 @@ export const UserProfileModal: React.FC<toggleUserProfileProps> = ({
       gap: layout.padding_x3,
       marginTop:
         width < MOBILE_WIDTH
-          ? width < SMALL_MOBILE_WIDTH
+          ? width < RESPONSIVE_BREAKPOINT_S
             ? 5 * layout.padding_x0_5
             : 30 * layout.padding_x0_5
           : 45 * layout.padding_x0_5,

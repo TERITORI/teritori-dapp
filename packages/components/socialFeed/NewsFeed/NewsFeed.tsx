@@ -20,7 +20,13 @@ import {
   combineFetchFeedPages,
   useFetchFeed,
 } from "../../../hooks/feed/useFetchFeed";
-import { layout, NEWS_FEED_MAX_WIDTH } from "../../../utils/style/layout";
+import { useIsMobile } from "../../../hooks/useIsMobile";
+import { useMaxResolution } from "../../../hooks/useMaxResolution";
+import {
+  layout,
+  NEWS_FEED_MAX_WIDTH,
+  RESPONSIVE_BREAKPOINT_S,
+} from "../../../utils/style/layout";
 import { SpacerColumn } from "../../spacer";
 import { SocialThreadCard } from "../SocialThread/SocialThreadCard";
 
@@ -41,7 +47,9 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
   additionalHashtag,
   additionalMention,
 }) => {
-  const { width } = useWindowDimensions();
+  const { width: windowWidth } = useWindowDimensions();
+  const isMobile = useIsMobile();
+  const { width } = useMaxResolution();
   const { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading } =
     useFetchFeed(req);
   const isLoadingValue = useSharedValue(false);
@@ -103,7 +111,10 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
           <NewsFeedInput
             type="post"
             onSubmitSuccess={refetch}
-            style={{ width: "100%", maxWidth: NEWS_FEED_MAX_WIDTH }}
+            style={{
+              width: isMobile ? width : "100%",
+              maxWidth: NEWS_FEED_MAX_WIDTH,
+            }}
             additionalMention={additionalMention}
             additionalHashtag={additionalHashtag}
           />
@@ -113,21 +124,29 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
         <SpacerColumn size={1.5} />
       </>
     ),
-    [isLoadingValue, Header, additionalMention, additionalHashtag, refetch]
+    [
+      isLoadingValue,
+      Header,
+      additionalMention,
+      additionalHashtag,
+      refetch,
+      isMobile,
+      width,
+    ]
   );
 
   const styles = StyleSheet.create({
     content: {
+      alignItems: "center",
       alignSelf: "center",
-      maxWidth: NEWS_FEED_MAX_WIDTH,
       width: "100%",
     },
     floatingActions: {
       position: "absolute",
       justifyContent: "center",
       alignItems: "center",
-      right: width < 512 ? 0.05 * width : 68,
-      bottom: width < 512 ? 0.05 * width : 68,
+      right: windowWidth < RESPONSIVE_BREAKPOINT_S ? 0.05 * windowWidth : 68,
+      bottom: windowWidth < RESPONSIVE_BREAKPOINT_S ? 0.05 * windowWidth : 68,
     },
   });
 
@@ -137,10 +156,10 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
         scrollEventThrottle={0.1}
         data={posts}
         renderItem={({ item: post }) => (
-          <>
+          <View style={{ width, maxWidth: NEWS_FEED_MAX_WIDTH }}>
             <SocialThreadCard post={post} isPreview />
-            <SpacerColumn size={2.5} />
-          </>
+            <SpacerColumn size={2} />
+          </View>
         )}
         ListHeaderComponentStyle={{ zIndex: 1 }}
         ListHeaderComponent={ListHeaderComponent}
