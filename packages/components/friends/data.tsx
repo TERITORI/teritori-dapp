@@ -5,28 +5,23 @@ const data = [
     avatar: require("../../../assets/icons/ava.png"),
   },
   {
-    name: "Dinesh yadav",
+    name: "David",
     isOnline: false,
     avatar: require("../../../assets/icons/ava.png"),
   },
   {
-    name: "Chanda Shrestha",
+    name: "William",
     isOnline: true,
     avatar: require("../../../assets/icons/ava.png"),
   },
   {
-    name: "Biju Shrestha",
+    name: "Charles",
     isOnline: false,
     avatar: require("../../../assets/icons/ava.png"),
   },
   {
-    name: "Ananta Shrestha",
+    name: "Charles",
     isOnline: false,
-    avatar: require("../../../assets/icons/ava.png"),
-  },
-  {
-    name: "Bikram Ghimire",
-    isOnline: true,
     avatar: require("../../../assets/icons/ava.png"),
   },
 ];
