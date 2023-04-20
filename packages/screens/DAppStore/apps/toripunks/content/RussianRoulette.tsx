@@ -123,7 +123,7 @@ export const Russian = () => {
 
   // Button text
   const longButtonLabelText = result
-    ? `${remainingUserTicket} winning remaining tickets in the russian roulette`
+    ? `${remainingUserTicket} remaining tickets in the russian roulette`
     : `Last month's winnings per ticket = ${monthPriceTicket}$ TORI`;
   const userInteractionInfo = result
     ? `You can still buy ${remainingUserCurrency} tickets`
