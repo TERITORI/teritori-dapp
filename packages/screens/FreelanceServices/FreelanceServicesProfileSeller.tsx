@@ -7,7 +7,6 @@ import { ProfileFooter } from "../../components/freelanceServices/Profile/Profil
 import { ProfileHeader } from "../../components/freelanceServices/Profile/ProfileHeader";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useWallets } from "../../context/WalletsProvider";
-import { freelanceClient } from "../../utils/backend";
 import { ipfsPinataUrl, uploadJSONToIPFS } from "../../utils/ipfs";
 import { getFirstKeplrAccount } from "../../utils/keplr";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
@@ -71,17 +70,18 @@ export const FreelanceServicesProfileSeller: ScreenFC<
             ipfsHash
           );
           if (updatedProfileRes) {
-            const res = await freelanceClient.updateProfile({
-              userId: walletAddress,
-              profileHash: ipfsHash,
-            });
-            if (res.result === 1) {
-              console.log("successful");
-            } else {
-              console.log("failed");
-            }
+            //   const res = await freelanceClient.updateProfile({
+            //     userId: walletAddress,
+            //     profileHash: ipfsHash,
+            //   });
+            //   if (res.result === 1) {
+            //     console.log("successful");
+            //   } else {
+            //     console.log("failed");
+            //   }
+            // }
+            navigation.navigate("FreelanceServicesHomeSeller");
           }
-          navigation.navigate("FreelanceServicesHomeSeller");
         } catch (e) {
           if (e instanceof Error) {
             setToastError({

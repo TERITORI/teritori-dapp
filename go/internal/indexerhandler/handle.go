@@ -34,6 +34,7 @@ type Message struct {
 type Config struct {
 	TNSContractAddress             string
 	SellerContractAddress          string
+	EscrowContractAddress          string
 	MinterCodeIDs                  []uint64
 	VaultContractAddress           string
 	SquadStakingContractAddressV1  string
@@ -168,6 +169,7 @@ type ExecutePayload map[string]json.RawMessage
 
 func (h *Handler) handleExecute(e *Message) error {
 	var executeMsg wasmtypes.MsgExecuteContract
+
 	if err := cosmosproto.Unmarshal(e.Msg.Value, &executeMsg); err != nil {
 		return errors.Wrap(err, "failed to unmarshal execute msg")
 	}
@@ -250,22 +252,63 @@ func (h *Handler) handleExecute(e *Message) error {
 				return errors.Wrap(err, "failed to handle squad stake")
 			}
 		}
-	// NOTE: add another stake handler here if needed
-	case "register_seller": //seller_contract
-		if err := h.handleExecuteRegisterSeller(e, &executeMsg); err != nil {
-			return errors.Wrap(err, "failed to handle register_seller")
-		}
-	case "update_seller": //seller_contract
-		if err := h.handleExecuteUpdateSeller(e, &executeMsg); err != nil {
-			return errors.Wrap(err, "failed to handle update_seller")
-		}
-	case "update_seller_active": //seller_contract
-		if err := h.handleExecuteSellerActive(e, &executeMsg); err != nil {
-			return errors.Wrap(err, "failed to handle update_seller_active")
-		}
+	// seller_contract
+  case "update_seller_profile":
+    if executeMsg.Contract == h.config.SellerContractAddress {
+      if err := h.handleExecuteUpdateSellerProfile(e, &executeMsg); err != nil {
+        return errors.Wrap(err, "failed to handle update_seller_profile")
+      }
+    }
+  case "add_gig":
+    if executeMsg.Contract == h.config.SellerContractAddress {
+      if err := h.handleExecuteAddGig(e, &executeMsg); err != nil {
+        return errors.Wrap(err, "failed to handle add_seller_gig")
+      }
+    }
+  case "remove_gig":
+    if executeMsg.Contract == h.config.SellerContractAddress {
+      if err := h.handleExecuteRemoveGig(e, &executeMsg); err != nil {
+        return errors.Wrap(err, "failed to handle remove_seller_gig")
+      }
+    }
+  //escrow_contract
+  case "create_contract":
+    if executeMsg.Contract == h.config.EscrowContractAddress {
+      if err := h.handleExecuteEscrowCreateContract(e, &executeMsg); err != nil {
+        return errors.Wrap(err, "failed to handle escrow_create_contract")
+      }
+    }
+  case "accept_contract":
+    if executeMsg.Contract == h.config.EscrowContractAddress {
+      if err := h.handleExecuteEscrowAcceptContract(e, &executeMsg); err != nil {
+        return errors.Wrap(err, "failed to handle escrow_accept_contract")
+      }
+    }
+  case "cancel_contract":
+    if executeMsg.Contract == h.config.EscrowContractAddress {
+      if err := h.handleExecuteEscrowCancelContract(e, &executeMsg); err != nil {
+        return errors.Wrap(err, "failed to handle escrow_cancel_contract")
+      }
+    }
+  case "complete_contract":
+    if executeMsg.Contract == h.config.EscrowContractAddress {
+      if err := h.handleExecuteEscrowCompleteContract(e, &executeMsg); err != nil {
+        return errors.Wrap(err, "failed to handle escrow_complete_contract")
+      }
+    }
+  case "complete_contract_by_dao":
+    if executeMsg.Contract == h.config.EscrowContractAddress {
+      if err := h.handleExecuteEscrowCompleteContractByDao(e, &executeMsg); err != nil {
+        return errors.Wrap(err, "failed to handle escrow_complete_contract_by_dao")
+      }
+    }
+  //case "mint_feedback":
+  //  if executeMsg.Contract == h.config.EscrowContractAddress {
+  //    if err := h.handleExecuteEscrowMintFeedback(e, &executeMsg); err != nil {
+  //      return errors.Wrap(err, "failed to handle escrow_mint_feedback")
+  //    }
+  //}
 	}
-
-
 	return nil
 }
 

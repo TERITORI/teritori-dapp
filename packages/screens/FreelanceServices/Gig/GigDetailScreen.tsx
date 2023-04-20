@@ -81,7 +81,7 @@ export const GigDetailScreen: ScreenFC<"FreelanceServicesGigDetail"> = ({
   }, [gigId]);
 
   return (
-    !!gigData && (
+    gigData && (
       <FreelanceServicesScreenWrapper>
         <View
           style={{

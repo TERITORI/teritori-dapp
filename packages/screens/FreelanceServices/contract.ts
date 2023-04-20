@@ -78,16 +78,16 @@ export const updateSellerProfileToContract = async (
 };
 export const addGigToContract = async (
   walletAddress: string,
-  ipfsHash: string
+  gigInfo: string
 ): Promise<boolean> => {
   try {
     const contractAddress = process.env
       .TERITORI_SELLER_CONTRACT_ADRESS as string;
 
     const msg = {
-      add_seller_gig: {
+      add_gig: {
         seller: walletAddress,
-        ipfs_hash: ipfsHash,
+        gig_info: gigInfo,
       },
     } as any;
     const signingClient = await getSigningCosmWasmClient();

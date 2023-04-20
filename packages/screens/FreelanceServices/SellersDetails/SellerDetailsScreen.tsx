@@ -26,7 +26,6 @@ import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useIsKeplrConnected } from "../../../hooks/useIsKeplrConnected";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { freelanceClient } from "../../../utils/backend";
 import { uploadJSONToIPFS } from "../../../utils/ipfs";
 import { ScreenFC } from "../../../utils/navigation";
 import {
@@ -195,27 +194,27 @@ export const SellerDetailsScreen: ScreenFC<
       });
       return;
     }
-
-    try {
-      const profileRes = await updateSellerProfileToContract(
-        wallet.address,
-        profileHash
-      );
-      if (profileRes) {
-        //store to database using backend_api
-        const res = await freelanceClient.updateProfile({
-          userId: wallet.address,
-          profileHash,
-        });
-        if (res.result === 1) {
-          console.log("updated profile success");
-        } else {
-          console.log("error");
-        }
-      }
-    } catch (e) {
-      console.log(e);
+    const profileRes = await updateSellerProfileToContract(
+      wallet.address,
+      profileHash
+    );
+    if (profileRes) {
+      console.log("updated profile successfully");
+    } else {
+      console.log("failed to update profile");
     }
+    // if (profileRes) {
+    //   //store to database using backend_api
+    //   const res = await freelanceClient.updateProfile({
+    //     userId: wallet.address,
+    //     profileHash,
+    //   });
+    //   if (res.result === 1) {
+    //     console.log("updated profile success");
+    //   } else {
+    //     console.log("error");
+    //   }
+    // }
   };
 
   return (

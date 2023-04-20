@@ -55,7 +55,8 @@ func main() {
 		tailSize                       = fs.Int64("tail-size", 8640, "x blocks tail size means that the tendermint indexer can lag x blocks behind before the indexer misses an event")
 		pricesServiceURI               = fs.String("prices-service-uri", "localhost:9091", "price service URI")
 		insecurePrices                 = fs.Bool("prices-insecure-grpc", false, "do not use TLS to connect to prices service")
-		sellerConractAddress        = fs.String("teritori-seller-contract-address", "", "address of the teritori seller contract")
+		sellerConractAddress           = fs.String("teritori-freelance-seller-address", "", "address of the teritori freelance seller contract")
+		escrowContractAddress          = fs.String("teritori-freelance-escrow-address","", "address of the teritori freelance escrow contract")
 	)
 	if err := ff.Parse(fs, os.Args[1:],
 		ff.WithEnvVars(),
@@ -73,7 +74,9 @@ func main() {
 	if *sellerConractAddress == "" {
 		panic(errors.New("missing teritori-seller-contract-address flag"))
 	}
-
+        if *escrowContractAddress == "" {
+    		panic(errors.New("missing teritori-freelance-escrow-address flag"))
+	}
 	if *tendermintWebsocketEndpoint == "" {
 		panic(errors.New("missing tendermint-websocket-endpoint flag"))
 	}
@@ -240,6 +243,7 @@ func main() {
 					TheRiotBreedingContractAddress: *theRiotBreedingContractAddress,
 					TNSContractAddress:             *tnsContractAddress,
 					SellerContractAddress:          *sellerConractAddress,
+					EscrowContractAddress:          *escrowContractAddress,
 					TNSDefaultImageURL:             *tnsDefaultImageURL,
 					TendermintClient:               client,
 					NetworkID:                      *teritoriNetworkID,

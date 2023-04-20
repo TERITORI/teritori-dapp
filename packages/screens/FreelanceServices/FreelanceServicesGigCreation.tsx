@@ -10,7 +10,7 @@ import { freelanceClient } from "../../utils/backend";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { GigStep } from "../../utils/types/freelance";
 import { FreelanceServicesScreenWrapper } from "./FreelanceServicesScreenWrapper";
-import { getSellerIpfsHash } from "./contract";
+import { addGigToContract, getSellerIpfsHash } from "./contract";
 import { emptyGigInfo, GigInfo } from "./types/fields";
 
 export const FreelanceServicesGigCreation: ScreenFC<
@@ -46,18 +46,17 @@ export const FreelanceServicesGigCreation: ScreenFC<
   const nextStep = async () => {
     if (currentStep === GigStep.Publish) {
       if (!selectedWallet || !selectedNetwork) return;
-      const _gigInfo = { ...gigInfo };
       const walletAddress = selectedWallet.address;
-      _gigInfo.address = {
-        address: walletAddress,
-        network: selectedNetwork,
-      };
+      const addGigRes = await addGigToContract(
+        walletAddress,
+        JSON.stringify(gigInfo)
+      );
+      if (addGigRes) {
+        navigation.navigate("FreelanceServicesHomeSeller");
+      } else {
+        console.log("failed to add gig into contract");
+      }
 
-      await freelanceClient.addGig({
-        address: walletAddress,
-        data: JSON.stringify(gigInfo),
-      });
-      navigation.navigate("FreelanceServicesHomeSeller");
       // uploadJSONToIPFS(gigInfo).then(async (ipfsHash) => {
       //   const walletAddress = (await getFirstKeplrAccount()).address;
       //   const addGigRes = await addGigToContract(walletAddress, ipfsHash);
