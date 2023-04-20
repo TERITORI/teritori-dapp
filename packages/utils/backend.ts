@@ -1,6 +1,10 @@
 import { grpc } from "@improbable-eng/grpc-web";
 
 import {
+  DaoServiceClientImpl,
+  GrpcWebImpl as DaoGrpcWebImpl,  
+} from "../api/dao/v1/dao";
+import {
   MarketplaceServiceClientImpl,
   GrpcWebImpl as MarketplaceGrpcWebImpl,
   MarketplaceService,
@@ -65,3 +69,17 @@ export const mustGetP2eClient = (networkId: string | undefined) => {
   }
   return client;
 };
+
+const daoBackendEndpoint = process.env.TERITORI_DAO_BACKEND_ENDPOINT;
+
+if (!daoBackendEndpoint) {
+  throw new Error("missing TERITORI_DAO_BACKEND_ENDPOINT in env");
+}
+
+const daoRpc = new DaoGrpcWebImpl(daoBackendEndpoint, {
+  transport: grpc.WebsocketTransport(),
+  debug: false,
+  // metadata: new grpc.Metadata({ SomeHeader: "bar" }),
+});
+
+export const daoClient = new DaoServiceClientImpl(daoRpc);

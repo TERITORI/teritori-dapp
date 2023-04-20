@@ -89,7 +89,7 @@ export const SIDEBAR_LIST: SidebarRecordType = {
   },
   deployer: {
     title: "Deployer",
-    route: "OrganizationDeployer",
+    route: "OrganizationDaoList",
     icon: deployerSVG,
   },
   governance: {

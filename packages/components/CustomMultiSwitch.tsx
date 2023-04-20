@@ -42,21 +42,9 @@ export const CustomMultipleSwitch: FC<Props> = ({ items, value, onChange }) => {
         useNativeDriver: true,
       }).start();
     }
-  }, [elements]);
+  }, [items, value, elements, animatedValue]);
 
   useEffect(() => {
-    startAnimation(value);
-  }, [value]);
-
-  const getSliderStyle = () => {
-    return [
-      styles.slider,
-      { width: sliderWidth },
-      { transform: [{ translateX: animatedValue }] },
-      { opacity: 1 },
-    ];
-  };
-
   const startAnimation = (newVal: string) => {
     const position = elements.find((el) => el.id === newVal);
     if (!position) {
@@ -68,6 +56,17 @@ export const CustomMultipleSwitch: FC<Props> = ({ items, value, onChange }) => {
       easing: Easing.ease,
       useNativeDriver: true,
     }).start();
+  };
+    startAnimation(value);
+  }, [value, animatedValue, elements]);
+
+  const getSliderStyle = () => {
+    return [
+      styles.slider,
+      { width: sliderWidth },
+      { transform: [{ translateX: animatedValue }] },
+      { opacity: 1 },
+    ];
   };
 
   return (

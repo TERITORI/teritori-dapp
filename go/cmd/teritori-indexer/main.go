@@ -38,6 +38,7 @@ func main() {
 	var (
 		chunkSize                   = fs.Int64("chunk-size", 10000, "maximum number of blocks to query from tendermint at once")
 		txsBatchSize                = fs.Int("txs-batch-size", 10000, "maximum number of txs per query page")
+    	        daoFactoryContractAddress   = fs.String("teritori-dao-factory-contract-address", "", "address of the teritori dao factory contract")
 		pollDelay                   = fs.Duration("poll-delay", 2*time.Second, "delay between tail queries")
 		minterCodeIDs               = fs.String("teritori-minter-code-ids", "", "code ids of teritori minter contracts")
 		dbHost                      = fs.String("db-indexer-host", "", "host postgreSQL database")
@@ -60,6 +61,10 @@ func main() {
 		ff.WithAllowMissingConfigFile(true),
 	); err != nil {
 		panic(errors.Wrap(err, "failed to parse flags"))
+	}
+
+	if *daoFactoryContractAddress == "" {
+		panic(errors.New("missing teritori-dao-factory-contract-address flag"))
 	}
 
 	if *tendermintWebsocketEndpoint == "" {
@@ -240,6 +245,7 @@ func main() {
 			if err := db.Transaction(func(dbtx *gorm.DB) error {
 				handler, err := indexerhandler.NewHandler(dbtx, indexerhandler.Config{
 					MinterCodeIDs:    mcis,
+					DaoFactoryContractAddress: *daoFactoryContractAddress,
 					TendermintClient: client,
 					BlockTimeCache:   blockTimeCache,
 					PricesClient:     ps,

@@ -15,6 +15,8 @@ import { NFTDetailScreen } from "../../screens/Marketplace/NFTDetailScreen";
 import { MyCollectionScreen } from "../../screens/MyCollection/MyCollectionScreen";
 import { MultisigWalletManageScreen } from "../../screens/OrganizerDeployer/MultisigWalletManageScreen";
 import { MultisigWalletTransactionScreen } from "../../screens/OrganizerDeployer/MultisigWalletTransactionScreen";
+import { OrganizationDaoListScreen } from "../../screens/OrganizerDeployer/OrganizationDaoListScreen";
+import { OrganizationDaoShowScreen } from "../../screens/OrganizerDeployer/OrganizationDaoShowScreen";
 import { OrganizationGetStartedScreen } from "../../screens/OrganizerDeployer/OrganizationGetStartedScreen";
 import { OrganizerDeployerScreen } from "../../screens/OrganizerDeployer/OrganizerDeployerScreen";
 import { TransactionProposalScreen } from "../../screens/OrganizerDeployer/TransactionProposalScreen";
@@ -196,6 +198,22 @@ export const Navigator: React.FC = () => {
         options={{
           header: () => null,
           title: screenTitle("Organization Name"),
+        }}
+      />
+      <Stack.Screen
+        name="OrganizationDaoList"
+        component={OrganizationDaoListScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Dao List"),
+        }}
+      />
+      <Stack.Screen
+        name="OrganizationDaoShow"
+        component={OrganizationDaoShowScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Organization DAO"),
         }}
       />
       <Stack.Screen

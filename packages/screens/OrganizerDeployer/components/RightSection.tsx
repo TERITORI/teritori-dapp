@@ -57,9 +57,9 @@ export const RightSection: React.FC<RightSectionProps> = ({
 
   // hooks
   useEffect(() => {
-    if (!unlockedSteps.includes(currentStep)) {
-      setUnlockedSteps([...unlockedSteps, currentStep]);
-    }
+    setUnlockedSteps((u) =>
+      !u.includes(currentStep) ? [...u, currentStep] : u
+    );
   }, [currentStep]);
 
   useEffect(() => {
@@ -68,7 +68,7 @@ export const RightSection: React.FC<RightSectionProps> = ({
       duration: 500,
       useNativeDriver: true,
     }).start();
-  }, [percentage]);
+  }, [percentage, loadingPercentAnim]);
 
   // returns
   const SignatureProcess = useCallback(
@@ -133,6 +133,7 @@ export const RightSection: React.FC<RightSectionProps> = ({
           ? LAUNCHING_PROCESS_STEPS.slice(0, launchingCompleteStep + 1).map(
               (launchStep, index) => (
                 <SignatureProcess
+                  key={`step-${index}`}
                   {...launchStep}
                   isComplete={index < launchingCompleteStep}
                 />

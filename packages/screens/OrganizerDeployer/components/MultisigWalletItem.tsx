@@ -46,7 +46,7 @@ export const MultisigWalletItem: React.FC<MultisigWalletItemProps> = ({
         </BrandText>
       </View>
     ),
-    []
+    [data]
   );
 
   return (

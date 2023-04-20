@@ -10,6 +10,8 @@ import (
 	"unicode"
 
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
+	"github.com/TERITORI/teritori-dapp/go/pkg/dao"
+	"github.com/TERITORI/teritori-dapp/go/pkg/daopb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/marketplace"
 	"github.com/TERITORI/teritori-dapp/go/pkg/marketplacepb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
@@ -66,6 +68,12 @@ func main() {
 	if err != nil {
 		panic(errors.Wrap(err, "failed to access db"))
 	}
+
+	err = indexerdb.MigrateDB(indexerDB)
+	if err != nil {
+		panic(errors.Wrap(err, "failed migrate database models"))
+	}
+
 	port := 9090
 	if *enableTls {
 		port = 9091
@@ -97,9 +105,15 @@ func main() {
 		IndexerDB: indexerDB,
 	})
 
+	daoSvc := dao.NewDaoService(context.Background(), &dao.Config{
+		Logger:    logger,
+		IndexerDB: indexerDB,
+	})
+
 	server := grpc.NewServer()
 	marketplacepb.RegisterMarketplaceServiceServer(server, marketplaceSvc)
 	p2epb.RegisterP2EServiceServer(server, p2eSvc)
+	daopb.RegisterDaoServiceServer(server, daoSvc)
 
 	wrappedServer := grpcweb.WrapServer(server,
 		grpcweb.WithWebsockets(true),

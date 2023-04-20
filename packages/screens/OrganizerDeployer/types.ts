@@ -73,3 +73,27 @@ export type ProposalsTransactionType = {
   approvedBy: number;
   approvers: number;
 };
+
+export type CreateDaoProposalFormType = {
+  proposalName: string;
+  proposalDescription: string;  
+};
+
+export interface ProposalInfo {
+  id: number;
+  status: string;
+  title: string;
+  date: string;
+  creator: string;
+  description: string;
+};
+
+export interface DaoInfo {
+  name: string;
+  imgUrl: string;
+  date: string;
+  description: string;
+  address: string;
+  members: string;
+  treasury: string;  
+}

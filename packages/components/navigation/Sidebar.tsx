@@ -76,7 +76,8 @@ export const Sidebar: React.FC = () => {
   );
 
   const onRouteChange = (name: SidebarType["route"]) => {
-    navigation.navigate("TNSHome");
+    // @ts-ignore
+    navigation.navigate(name);
   };
 
   // returns

@@ -1,5 +1,11 @@
+import { Decimal } from "@cosmjs/math";
+import { GasPrice } from "@cosmjs/stargate";
 import { Currency } from "@keplr-wallet/types";
+
 import { Metadata } from "../contracts-clients/teritori-name-service/TeritoriNameService.types";
+
+export const toriDisplayDenom = process.env.PUBLIC_STAKING_DENOM_DISPLAY_NAME;
+const toriDenom = process.env.PUBLIC_STAKING_DENOM;
 
 export interface CosmosDelegationsResponse {
   delegation_responses: {
@@ -35,9 +41,9 @@ export interface CosmosBalancesResponse {
 
 export const toriCurrency: Currency = {
   // Coin denomination to be displayed to the user.
-  coinDenom: "",
+  coinDenom: toriDisplayDenom || "",
   // Actual denom (i.e. uatom, uscrt) used by the blockchain.
-  coinMinimalDenom: "",
+  coinMinimalDenom: toriDenom || "",
   // # of decimal points to convert minimal denomination to user-facing denomination.
   coinDecimals: 6,
   // (Optional) Keplr can show the fiat value of the coin if a coingecko id is provided.
@@ -108,3 +114,8 @@ export const prettyTokenData = (tokenData: Metadata): PrettyTokenData[] => {
   });
   return finalDatas;
 };
+
+export const teritoriGasPrice = new GasPrice(
+  Decimal.fromUserInput("0.025", toriCurrency.coinDecimals),
+  toriCurrency.coinMinimalDenom
+);

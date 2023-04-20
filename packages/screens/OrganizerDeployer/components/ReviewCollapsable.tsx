@@ -62,7 +62,7 @@ export const ReviewCollapsable: React.FC<ReviewCollapsableProps> = ({
         setIsExpanded(true);
       }
     }, 1000);
-  }, []);
+  }, [isExpandedByDefault]);
 
   // functions
   const toggleExpansion = () => {

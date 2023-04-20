@@ -29,7 +29,7 @@ export const LaunchingOrganizationSection: React.FC<{
       lottieRef.current?.stop();
       lottieRef.current?.play();
     }
-  }, [isLaunched]);
+  }, [isLaunched, successAnimateValue]);
 
   // animation
   const fadeOutAnim = successAnimateValue.interpolate({

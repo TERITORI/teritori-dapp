@@ -53,7 +53,7 @@ export const ProposalTransactionItem: React.FC<
       case "stake":
         return stakedSVG;
     }
-  }, []);
+  }, [type]);
 
   // returns
   return (

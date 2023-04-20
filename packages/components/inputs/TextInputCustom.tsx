@@ -60,9 +60,11 @@ export interface TextInputCustomProps<T extends FieldValues>
   name: Path<T>;
   rules?: Omit<RegisterOptions, "valueAsNumber" | "valueAsDate" | "setValueAs">;
   defaultValue?: PathValue<T, Path<T>>;
-  subtitle?: React.ReactElement;
+  hideLabel?: boolean;
+  valueModifier?: (value: string) => string;
   labelStyle?: TextStyle;
   noBrokenCorners?: boolean;
+  inputStyle?: TextStyle;
 }
 
 // A custom TextInput. You can add children (Ex: An icon or a small container)
@@ -85,7 +87,12 @@ export const TextInputCustom = <T extends FieldValues>({
   rules,
   subtitle,
   labelStyle,
+  iconSVG,
   noBrokenCorners,
+  isAsterickSign,
+  hideLabel,
+  valueModifier,
+  inputStyle,
   ...restProps
 }: TextInputCustomProps<T>) => {
   // variables
@@ -185,7 +192,6 @@ export const TextInputCustom = <T extends FieldValues>({
         mainContainerStyle={[
           styles.mainContainer,
           variant === "noCropBorder" && styles.noCropBorderBg,
-          mainContainerStyle,
         ]}
         width={width}
         fullWidth={!width}

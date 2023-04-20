@@ -3,10 +3,8 @@ import { View } from "react-native";
 
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
-import ModalBase from "../../components/modals/GradientModalBase";
-import { TNSSendFundsModal } from "../../components/modals/teritoriNameService/TNSSendFundsModal";
 import GradientModalBase from "../../components/modals/GradientModalBase";
-import { SendFundModal } from "../../components/modals/teritoriNameService/TNSSendFundsModal";
+import { TNSSendFundsModal } from "../../components/modals/teritoriNameService/TNSSendFundsModal";
 import { FindAName } from "../../components/teritoriNameService/FindAName";
 import { useTNS } from "../../context/TNSProvider";
 import { useNSNameAvailability } from "../../hooks/useNSNameAvailability";
