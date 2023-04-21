@@ -77,7 +77,7 @@ import { FilesPreviewsContainer } from "../../FilePreview/FilesPreviewsContainer
 import { IconBox } from "../../IconBox";
 import { OmniLink } from "../../OmniLink";
 import { SVG } from "../../SVG";
-import { TertiaryBox } from "../../boxes/TertiaryBox";
+import { PrimaryBox } from "../../boxes/PrimaryBox";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { SecondaryButtonOutline } from "../../buttons/SecondaryButtonOutline";
 import { FileUploader } from "../../fileUploader";
@@ -333,7 +333,7 @@ export const NewsFeedInput = React.forwardRef<
             onClose={() => setNotEnoughFundModal(false)}
           />
         )}
-        <TertiaryBox
+        <PrimaryBox
           fullWidth
           style={{
             zIndex: 9,
@@ -445,11 +445,11 @@ export const NewsFeedInput = React.forwardRef<
               }
             }}
           />
-        </TertiaryBox>
+        </PrimaryBox>
         <View
           style={{
             backgroundColor: neutral17,
-            paddingVertical: layout.padding_x3,
+            paddingVertical: layout.padding_x1_5,
             paddingHorizontal: layout.padding_x2_5,
             flexDirection: viewWidth < BREAKPOINT_M ? "column" : "row",
             alignItems: viewWidth < BREAKPOINT_M ? "flex-end" : "center",
@@ -504,6 +504,7 @@ export const NewsFeedInput = React.forwardRef<
               <EmojiSelector
                 onEmojiSelected={onEmojiSelected}
                 optionsContainer={{ marginLeft: 0, marginTop: -6 }}
+                buttonStyle={{ marginRight: layout.padding_x2_5 }}
               />
 
               <GIFSelector

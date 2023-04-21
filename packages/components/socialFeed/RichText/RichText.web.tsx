@@ -73,7 +73,7 @@ import {
   replaceFileInArray,
   urlMatch,
 } from "../../../utils/social-feed";
-import { primaryColor } from "../../../utils/style/colors";
+import { neutral77 } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { LocalFileData } from "../../../utils/types/feed";
@@ -426,7 +426,7 @@ export const RichText: React.FC<RichTextProps> = ({
           decorators={compositeDecorator.decorators}
         />
         {isTruncateNeeded && (
-          <BrandText style={[fontSemibold14, { color: primaryColor }]}>
+          <BrandText style={[fontSemibold14, { color: neutral77 }]}>
             {"\n...see more"}
           </BrandText>
         )}

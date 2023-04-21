@@ -1,4 +1,4 @@
-import React, { FC, useCallback } from "react";
+import { FC } from "react";
 import {
   SafeAreaView,
   ScrollView,
@@ -13,10 +13,7 @@ import { NetworkInfo, NetworkKind } from "../../networks";
 import { DAppStoreData } from "../../screens/DAppStore/components/DAppStoreData";
 import { neutral33, neutral77 } from "../../utils/style/colors";
 import { fontBold12 } from "../../utils/style/fonts";
-import {
-  getMobileScreenContainerMarginHorizontal,
-  MOBILE_HEADER_HEIGHT,
-} from "../../utils/style/layout";
+import { layout, MOBILE_HEADER_HEIGHT } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { SelectedNetworkGate } from "../SelectedNetworkGate";
 import { SidebarMobile } from "../navigation/SidebarMobile";
@@ -33,8 +30,7 @@ export const MobileTitle: FC<{ title: string }> = ({ title }) => {
         alignItems: "center",
         borderBottomColor: neutral33,
         width: windowWidth,
-        paddingHorizontal:
-          getMobileScreenContainerMarginHorizontal(windowWidth),
+        paddingHorizontal: layout.padding_x2,
       }}
     >
       <BrandText style={[fontBold12, { color: neutral77 }]}>{title}</BrandText>
@@ -60,23 +56,6 @@ export const ScreenContainerMobile: FC<{
   const { height: windowHeight } = useWindowDimensions();
   const { width } = useMaxResolution();
 
-  const Children: FC = useCallback(() => {
-    return (
-      <>
-        {mobileTitle && hasScroll ? <MobileTitle title={mobileTitle} /> : null}
-        <View
-          style={[
-            styles.childrenContainer,
-            { flex: 1 },
-            hasScroll && { width },
-          ]}
-        >
-          {children}
-        </View>
-      </>
-    );
-  }, [mobileTitle, hasScroll, children, width]);
-
   return (
     <SafeAreaView style={styles.container}>
       <DAppStoreData />
@@ -97,11 +76,18 @@ export const ScreenContainerMobile: FC<{
                 },
               ]}
             >
-              <Children>{children}</Children>
+              {mobileTitle ? <MobileTitle title={mobileTitle} /> : null}
+              <View style={[styles.childrenContainer, { flex: 1, width }]}>
+                {children}
+              </View>
               {/*TODO: Put here Riotters Footer ?*/}
             </ScrollView>
           ) : (
-            <Children>{children}</Children>
+            <>
+              <View style={[styles.childrenContainer, { flex: 1 }]}>
+                {children}
+              </View>
+            </>
             // TODO: Put here Riotters Footer ?
           )}
         </SelectedNetworkGate>

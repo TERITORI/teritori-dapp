@@ -156,8 +156,24 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
         scrollEventThrottle={0.1}
         data={posts}
         renderItem={({ item: post }) => (
-          <View style={{ width, maxWidth: NEWS_FEED_MAX_WIDTH }}>
-            <SocialThreadCard post={post} isPreview />
+          <View
+            style={{
+              width:
+                windowWidth < RESPONSIVE_BREAKPOINT_S ? windowWidth : width,
+              maxWidth: NEWS_FEED_MAX_WIDTH,
+            }}
+          >
+            <SocialThreadCard
+              post={post}
+              isPreview
+              style={
+                windowWidth < RESPONSIVE_BREAKPOINT_S && {
+                  borderRadius: 0,
+                  borderLeftWidth: 0,
+                  borderRightWidth: 0,
+                }
+              }
+            />
             <SpacerColumn size={2} />
           </View>
         )}

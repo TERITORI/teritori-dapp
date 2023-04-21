@@ -2,6 +2,7 @@ import React, { useMemo, useState } from "react";
 
 import { FeedHeader } from "./components/FeedHeader";
 import { PostsRequest } from "../../api/feed/v1/feed";
+import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { MobileTitle } from "../../components/ScreenContainer/ScreenContainerMobile";
 import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
@@ -34,6 +35,7 @@ export const FeedScreen: ScreenFC<"Feed"> = () => {
       noScroll
       footerChildren={<></>}
       forceNetworkKind={NetworkKind.Cosmos}
+      headerChildren={<BrandText>Social Feed</BrandText>}
     >
       <NewsFeed
         req={feedRequest}
