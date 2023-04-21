@@ -180,7 +180,7 @@ export const RiotersFooterScreen: React.FC = () => {
     effect();
   }, [client, selectedNetworkId]);
 
-  const [collections, fetchMoreCollections] = useCollections({
+  const { collections, fetchMore: fetchMoreCollections } = useCollections({
     networkId: selectedNetworkId,
     sortDirection: SortDirection.SORT_DIRECTION_DESCENDING,
     upcoming: false,

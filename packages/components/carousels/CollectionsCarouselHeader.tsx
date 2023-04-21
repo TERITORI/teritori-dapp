@@ -109,7 +109,7 @@ export const CollectionsCarouselHeader: React.FC<{
   linkToMint?: boolean;
   filter?: (c: Collection) => boolean;
 }> = ({ req = defaultRequest, linkToMint, filter }) => {
-  const [collections] = useCollections(req, filter);
+  const { collections } = useCollections(req, filter);
   const carouselRef = useRef<ICarouselInstance | null>(null);
   const { width } = useMaxResolution();
 

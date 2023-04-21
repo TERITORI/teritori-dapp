@@ -21,7 +21,7 @@ import { SmallCarousel } from "../carousels/SmallCarousel";
 
 export const TopMenuLiveMint: React.FC = () => {
   const selectedNetworkId = useSelectedNetworkId();
-  const [collections] = useCollections(
+  const { collections } = useCollections(
     {
       networkId: selectedNetworkId,
       sortDirection: SortDirection.SORT_DIRECTION_DESCENDING,
