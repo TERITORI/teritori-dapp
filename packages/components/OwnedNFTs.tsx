@@ -25,7 +25,7 @@ export const OwnedNFTs: React.FC<{
   const [network] = parseNetworkObjectId(ownerId);
   const networkId = network?.id || "";
 
-  const [collections] = useCollections({
+  const { collections } = useCollections({
     networkId,
     sortDirection: SortDirection.SORT_DIRECTION_DESCENDING,
     upcoming: false,
