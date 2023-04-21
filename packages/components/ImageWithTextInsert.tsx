@@ -1,8 +1,7 @@
 import React from "react";
-import { View, ViewStyle, StyleProp } from "react-native";
+import { View, Image, ViewStyle, StyleProp } from "react-native";
 
 import { BrandText } from "./BrandText";
-import { OptimizedImage } from "./OptimizedImage";
 
 export const ImageWithTextInsert: React.FC<{
   imageURL?: string;
@@ -13,12 +12,7 @@ export const ImageWithTextInsert: React.FC<{
   const padding = size * 0.045;
   return (
     <View style={[{ overflow: "hidden" }, style]}>
-      <OptimizedImage
-        source={{ uri: imageURL }}
-        style={{ width: size, height: size }}
-        height={size}
-        width={size}
-      />
+      <Image source={{ uri: imageURL }} style={{ width: size, height: size }} />
       {!!textInsert && (
         <BrandText
           style={{
