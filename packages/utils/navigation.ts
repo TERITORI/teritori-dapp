@@ -58,6 +58,10 @@ export type RootStackParamList = {
 
   DAppStore: undefined;
   ToriPunks: { route: string };
+
+  MusicPlayer: undefined;
+  AlbumName: undefined;
+  MyAlbum: undefined;
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -120,9 +124,12 @@ const navConfig: {
     Settings: "settings",
     // ==== DAppStore
     DAppStore: "dapp-store",
-
     // === DApps
     ToriPunks: "dapp/tori-punks/:route?",
+    // ==== MusicPlayer
+    MusicPlayer: "music-player/home",
+    AlbumName: "music-player/album-name",
+    MyAlbum: "music-player/my-album"
   },
 };
 

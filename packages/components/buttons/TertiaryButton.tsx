@@ -7,7 +7,7 @@ import {
   ButtonsSize,
   heightButton,
 } from "../../utils/style/buttons";
-import { neutral33, neutral44 } from "../../utils/style/colors";
+import { neutral33, neutral44, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
@@ -18,6 +18,7 @@ export const TertiaryButton: React.FC<{
   text: string;
   width?: number;
   onPress?: () => void;
+  textColor: string;
   squaresBackgroundColor?: string;
   style?: StyleProp<ViewStyle>;
   iconSVG?: React.FC<SvgProps>;
@@ -29,6 +30,7 @@ export const TertiaryButton: React.FC<{
   size,
   text,
   onPress,
+  textColor = secondaryColor,
   squaresBackgroundColor,
   style,
   iconSVG,
@@ -71,7 +73,7 @@ export const TertiaryButton: React.FC<{
         ) : null}
 
         <BrandText
-          style={[fontSemibold14, { color: "#FFFFFF", textAlign: "center" }]}
+          style={[fontSemibold14, { color: textColor, textAlign: "center" }]}
         >
           {text}
         </BrandText>
