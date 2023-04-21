@@ -192,6 +192,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#000000",
     flexDirection: "row",
+    zIndex: 999
   },
   childrenContainer: {
     height: "100%",

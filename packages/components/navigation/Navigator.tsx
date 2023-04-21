@@ -17,6 +17,8 @@ import { CollectionScreen } from "../../screens/Marketplace/CollectionScreen";
 import { CollectionToolsScreen } from "../../screens/Marketplace/CollectionToolsScreen";
 import { MarketplaceScreen } from "../../screens/Marketplace/MarketplaceScreen";
 import { NFTDetailScreen } from "../../screens/Marketplace/NFTDetailScreen";
+import { AlbumNameScreen } from "../../screens/MusicPlayer/AlbumNameScreen";
+import { MusicPlayerScreen } from "../../screens/MusicPlayer/MusicPlayerScreen";
 import { MyCollectionScreen } from "../../screens/MyCollection/MyCollectionScreen";
 import { RiotGameBreedingScreen } from "../../screens/RiotGame/RiotGameBreedingScreen";
 import { RiotGameEnrollScreen } from "../../screens/RiotGame/RiotGameEnrollScreen";
@@ -35,6 +37,7 @@ import { UserPublicProfileScreen } from "../../screens/UserPublicProfile/UserPub
 import { WalletManagerScreen } from "../../screens/WalletManager/WalletManagerScreen";
 import { WalletManagerWalletsScreen } from "../../screens/WalletManager/WalletsScreen";
 import { RootStackParamList } from "../../utils/navigation";
+import { MyAlbumScreen } from "../../screens/MusicPlayer/MyAlbumScreen";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 export const screenTitle = (title: string) => "Teritori - " + title;
@@ -247,6 +250,22 @@ export const Navigator: React.FC = () => {
         name="DAppStore"
         component={DAppStore}
         options={{ header: () => null, title: screenTitle("dApp Store") }}
+      />
+      {/* ==== Music Player */}
+      <Stack.Screen
+        name="MusicPlayer"
+        component={MusicPlayerScreen}
+        options={{ header: () => null, title: screenTitle("Music Player") }}
+      />
+      <Stack.Screen
+        name="AlbumName"
+        component={AlbumNameScreen}
+        options={{ header: () => null, title: screenTitle("Album Name") }}
+      />
+      <Stack.Screen
+        name="MyAlbum"
+        component={MyAlbumScreen}
+        options={{ header: () => null, title: screenTitle("My Album") }}
       />
     </Stack.Navigator>
   );
