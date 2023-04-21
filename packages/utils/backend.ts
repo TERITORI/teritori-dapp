@@ -26,7 +26,7 @@ export const getMarketplaceClient = (networkId: string | undefined) => {
   }
   if (!marketplaceClients[network.id]) {
     const rpc = new MarketplaceGrpcWebImpl(network.backendEndpoint, {
-      transport: grpc.WebsocketTransport(),
+      // transport: grpc.WebsocketTransport(),
       debug: false,
       // metadata: new grpc.Metadata({ SomeHeader: "bar" }),
     });
