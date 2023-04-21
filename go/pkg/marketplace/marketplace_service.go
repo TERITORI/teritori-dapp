@@ -816,3 +816,87 @@ func (s *MarkteplaceService) DApps(ctx context.Context, req *marketplacepb.DApps
 
 	return &marketplacepb.DAppResponse{Group: s.dAppStoreProvider.GetDapps()}, nil
 }
+
+// TODO: consider merging this into NFTs call
+func (s *MarkteplaceService) SearchNames(ctx context.Context, req *marketplacepb.SearchNamesRequest) (*marketplacepb.SearchNamesResponse, error) {
+	const maxLimit = 21
+	limit := req.Limit
+	if limit > maxLimit {
+		limit = maxLimit
+	}
+
+	var nfts []indexerdb.NFT
+
+	network, err := s.conf.NetworkStore.GetCosmosNetwork(req.NetworkId)
+	if err != nil {
+		return nil, errors.Wrap(err, "bad network id")
+	}
+
+	collectionID := network.CollectionID(network.NameServiceContractAddress)
+
+	if err := s.conf.IndexerDB.
+		Preload("TeritoriNFT").
+		Joins("JOIN teritori_nfts ON teritori_nfts.nft_id = nfts.id").
+		Where("teritori_nfts.token_id ~* ? AND nfts.collection_id = ? AND nfts.burnt = false", req.Input, collectionID).
+		Limit(int(limit)).
+		Find(&nfts).Error; err != nil {
+		return nil, errors.Wrap(err, "failed to read db")
+	}
+
+	var names []string
+	for _, nft := range nfts {
+		if nft.TeritoriNFT == nil {
+			s.conf.Logger.Debug("failed to get nft token id")
+			continue
+		}
+		names = append(names, nft.TeritoriNFT.TokenID)
+	}
+
+	return &marketplacepb.SearchNamesResponse{Names: names}, nil
+}
+
+// TODO: consider merging this into Collections call
+func (s *MarkteplaceService) SearchCollections(ctx context.Context, req *marketplacepb.SearchCollectionsRequest) (*marketplacepb.SearchCollectionsResponse, error) {
+	const maxLimit = 21
+	limit := req.Limit
+	if limit > maxLimit {
+		limit = maxLimit
+	}
+
+	if req.Input == "" {
+		return nil, errors.New("no input")
+	}
+
+	var collections []indexerdb.Collection
+	if err := s.conf.IndexerDB.
+		Preload("TeritoriCollection").
+		Joins("JOIN teritori_collections ON teritori_collections.collection_id = collections.id").
+		Where("name ~* ?", req.Input).
+		Where("teritori_collections.mint_contract_address IN ?", s.conf.Whitelist).
+		Limit(int(limit)).
+		Find(&collections).Error; err != nil {
+		return nil, errors.Wrap(err, "failed to read db")
+	}
+	var pbCollections []*marketplacepb.Collection
+	for _, c := range collections {
+		network, err := s.conf.NetworkStore.GetNetwork(c.NetworkId)
+		if err != nil {
+			s.conf.Logger.Debug("failed to get collection network", zap.Error(err))
+			continue
+		}
+		nc := &marketplacepb.Collection{
+			Id:                  string(c.ID),
+			CollectionName:      c.Name,
+			Verified:            true,
+			ImageUri:            c.ImageURI,
+			NetworkId:           c.NetworkId,
+			SecondaryDuringMint: c.SecondaryDuringMint,
+		}
+		if c.TeritoriCollection != nil {
+			nc.CreatorId = string(network.GetBase().UserID(c.TeritoriCollection.CreatorAddress))
+			nc.MintAddress = c.TeritoriCollection.MintContractAddress
+		}
+		pbCollections = append(pbCollections, nc)
+	}
+	return &marketplacepb.SearchCollectionsResponse{Collections: pbCollections}, nil
+}
