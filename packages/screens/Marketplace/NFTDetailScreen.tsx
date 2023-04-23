@@ -204,8 +204,8 @@ const Content: React.FC<{
               selected={selectedTab}
               style={{
                 height: 60,
-                justifyContent: "flex-end",
                 width: "100%",
+                // justifyContent: "flex-end" // FIXME: causes crash
               }}
               tabContainerStyle={{ height: 60 }}
               onSelect={setSelectedTab}
