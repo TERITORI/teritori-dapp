@@ -42,7 +42,7 @@ export const SidebarContextProvider: React.FC = ({ children }) => {
   const selectedApps = useSelector(selectCheckedApps);
   const availableApps = useSelector(selectAvailableApps);
   const dispatch = useAppDispatch();
-  const dynamicSidebar = useMemo(() => {
+  useEffect(() => {
     if (selectedApps.length === 0 && Object.values(availableApps).length > 0) {
       dispatch(
         setSelectedApps(
@@ -56,6 +56,8 @@ export const SidebarContextProvider: React.FC = ({ children }) => {
         )
       );
     }
+  }, [availableApps, dispatch, selectedApps.length]);
+  const dynamicSidebar = useMemo(() => {
     const dynamicAppsSelection = [] as {
       [key: string]: any;
     };
@@ -66,11 +68,6 @@ export const SidebarContextProvider: React.FC = ({ children }) => {
       }
       const option = availableApps[groupKey].options[appId];
       if (option === undefined) {
-        /*
-         we found something inconsistent between the selected apps and what is available.
-         I will reset user selection to go back to a sane state
-         */
-        dispatch(setSelectedApps([]));
         return;
       }
 
@@ -86,7 +83,7 @@ export const SidebarContextProvider: React.FC = ({ children }) => {
     dynamicAppsSelection["dappstore"] = SIDEBAR_LIST["DAppsStore"];
 
     return dynamicAppsSelection;
-  }, [selectedApps, availableApps, dispatch]);
+  }, [availableApps, selectedApps]);
   const { width: windowWidth } = useWindowDimensions();
 
   useEffect(() => {
