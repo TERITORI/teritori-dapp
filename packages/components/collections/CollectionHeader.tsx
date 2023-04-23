@@ -53,7 +53,7 @@ export const CollectionHeader: React.FC<{
   // variables
   const stats = useCollectionStats(collectionId, wallet?.userId);
   const { width } = useMaxResolution();
-  const height = width * (311 / 1092);
+  const height = width * (311 / 1092); // aspect ratio of the r!ot collection banner
   const [network, collectionMintAddress] = parseCollectionId(collectionId);
   const { setToastSuccess } = useFeedbacks();
 
