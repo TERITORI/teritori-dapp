@@ -119,9 +119,10 @@ export const NFTView: React.FC<{
                 >
                   <OptimizedImage
                     source={{
-                      uri: userInfo.metadata?.image
-                        ? userInfo.metadata.image
-                        : cosmosNetwork?.nameServiceDefaultImage || "",
+                      uri:
+                        userInfo.metadata.image ||
+                        cosmosNetwork?.nameServiceDefaultImage ||
+                        "",
                     }}
                     width={32}
                     height={32}
