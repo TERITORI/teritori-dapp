@@ -1,12 +1,8 @@
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
-import {
-  View,
-  ViewStyle,
-  StyleProp,
-  Image,
-  ImageSourcePropType,
-} from "react-native";
+import { View, ViewStyle, StyleProp, ImageSourcePropType } from "react-native";
+
+import { OptimizedImage } from "../OptimizedImage";
 
 type RoundedGradientImageSize = "M" | "XS" | "XXS";
 
@@ -60,8 +56,10 @@ export const RoundedGradientImage: React.FC<{
         }}
       >
         {imageSource && (
-          <Image
-            source={imageSource}
+          <OptimizedImage
+            width={imageDimension(size)}
+            height={imageDimension(size)}
+            source={imageSource as any} // FIXME
             style={{ borderRadius: 999, height: "100%", width: "100%" }}
           />
         )}

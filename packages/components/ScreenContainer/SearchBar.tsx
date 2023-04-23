@@ -4,7 +4,6 @@ import {
   StyleProp,
   View,
   ViewStyle,
-  Image,
   TouchableOpacity,
   TextInput,
 } from "react-native";
@@ -20,12 +19,12 @@ import { getCosmosNetwork, getUserId } from "../../networks";
 import { selectSearchText, setSearchText } from "../../store/slices/search";
 import { useAppDispatch } from "../../store/store";
 import { getMarketplaceClient } from "../../utils/backend";
-import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { useAppNavigation } from "../../utils/navigation";
 import { neutral17, neutral22, neutralA3 } from "../../utils/style/colors";
 import { fontSemibold12, fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { COLLECTION_VIEW_SM_WIDTH, CollectionView } from "../CollectionView";
+import { OptimizedImage } from "../OptimizedImage";
 import { SVG } from "../SVG";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 
@@ -216,17 +215,18 @@ const NameResult: React.FC<{
   const { nsInfo } = useNSNameInfo(networkId, name);
   const network = getCosmosNetwork(networkId);
   const navigation = useAppNavigation();
+  const imageSize = 32;
   const content = (
     <View style={{ flexDirection: "row", alignItems: "center" }}>
-      <Image
+      <OptimizedImage
         source={{
-          uri: ipfsURLToHTTPURL(
-            nsInfo?.extension.image || network?.nameServiceDefaultImage
-          ),
+          uri: nsInfo?.extension.image || network?.nameServiceDefaultImage,
         }}
+        width={imageSize}
+        height={imageSize}
         style={{
-          width: 32,
-          height: 32,
+          width: imageSize,
+          height: imageSize,
           borderRadius: 4,
           marginRight: 10,
           borderWidth: 1,

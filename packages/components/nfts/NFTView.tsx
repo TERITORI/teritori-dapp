@@ -1,7 +1,6 @@
 import React, { useRef, useState } from "react";
 import {
   ViewStyle,
-  Image,
   View,
   StyleProp,
   StyleSheet,
@@ -21,7 +20,6 @@ import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getCosmosNetwork, parseUserId } from "../../networks";
 import { prettyPrice } from "../../utils/coins";
-import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { neutral00, neutral33, neutral77 } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
@@ -30,6 +28,7 @@ import { DropdownOption } from "../DropdownOption";
 import { ImageWithTextInsert } from "../ImageWithTextInsert";
 import { NetworkIcon } from "../NetworkIcon";
 import { OmniLink } from "../OmniLink";
+import { OptimizedImage } from "../OptimizedImage";
 import { SVG } from "../SVG";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { SecondaryButton } from "../buttons/SecondaryButton";
@@ -46,7 +45,7 @@ export const NFTView: React.FC<{
   const flatStyle = StyleSheet.flatten(style);
   const selectedWallet = useSelectedWallet();
   const userInfo = useNSUserInfo(nft.ownerId);
-  const cosmosNetwork = getCosmosNetwork(nft.id);
+  const cosmosNetwork = getCosmosNetwork(nft.networkId);
   const { onPressDropdownButton, isDropdownOpen, closeOpenedDropdown } =
     useDropdowns();
   const [isTransferNFTVisible, setIsTransferNFTVisible] =
@@ -118,14 +117,15 @@ export const NFTView: React.FC<{
                     zIndex: 1000,
                   }}
                 >
-                  <Image
+                  <OptimizedImage
                     source={{
-                      uri: ipfsURLToHTTPURL(
-                        userInfo.metadata?.image
-                          ? userInfo.metadata.image
-                          : cosmosNetwork?.nameServiceDefaultImage || ""
-                      ),
-                    }} // TODO: proper fallback
+                      uri:
+                        userInfo.metadata.image ||
+                        cosmosNetwork?.nameServiceDefaultImage ||
+                        "",
+                    }}
+                    width={32}
+                    height={32}
                     style={{
                       height: 32,
                       width: 32,
