@@ -6,7 +6,6 @@ import React, { useCallback, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   TouchableOpacity,
-  Image,
   StyleProp,
   TextStyle,
   View,
@@ -24,6 +23,7 @@ import sigmaSVG from "../../../assets/icons/sigma.svg";
 import { BrandText } from "../../components/BrandText";
 import { ExternalLink } from "../../components/ExternalLink";
 import FlexRow from "../../components/FlexRow";
+import { OptimizedImage } from "../../components/OptimizedImage";
 import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { TertiaryBadge } from "../../components/badges/TertiaryBadge";
@@ -662,8 +662,10 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
             >
               <TertiaryBox style={{ marginBottom: 40 }}>
                 {info.image ? (
-                  <Image
+                  <OptimizedImage
                     source={{ uri: info.image }}
+                    width={imageSize}
+                    height={imageSize}
                     style={{
                       width: imageSize,
                       height: imageSize,
@@ -671,7 +673,16 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                     }}
                   />
                 ) : (
-                  <ActivityIndicator size="large" style={{ margin: 40 }} />
+                  <View
+                    style={{
+                      width: imageSize,
+                      height: imageSize,
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <ActivityIndicator size="large" style={{ margin: 40 }} />
+                  </View>
                 )}
               </TertiaryBox>
 
