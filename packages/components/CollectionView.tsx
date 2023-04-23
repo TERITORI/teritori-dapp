@@ -8,7 +8,6 @@ import { GradientText } from "./gradientText";
 import { Collection, MintState } from "../api/marketplace/v1/marketplace";
 import { useCollectionThumbnailInfo } from "../hooks/collection/useCollectionThumbnailInfo";
 import { useNavigateToCollection } from "../hooks/useNavigateToCollection";
-import { ipfsURLToHTTPURL } from "../utils/ipfs";
 import { fontBold11, fontMedium10, fontSemibold14 } from "../utils/style/fonts";
 import { layout } from "../utils/style/layout";
 
@@ -53,7 +52,7 @@ export const CollectionView: React.FC<{
         height={sizedStyles.box.height}
       >
         <OptimizedImage
-          source={{ uri: ipfsURLToHTTPURL(item.imageUri) }}
+          source={{ uri: item.imageUri }}
           width={sizedStyles.image.width}
           height={sizedStyles.image.height}
           style={{

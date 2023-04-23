@@ -10,7 +10,6 @@ import (
 	"github.com/TERITORI/teritori-dapp/go/internal/airtable_fetcher"
 	"github.com/TERITORI/teritori-dapp/go/internal/ethereum"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
-	"github.com/TERITORI/teritori-dapp/go/internal/ipfsutil"
 	"github.com/TERITORI/teritori-dapp/go/pkg/holagql"
 	"github.com/TERITORI/teritori-dapp/go/pkg/marketplacepb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
@@ -196,7 +195,7 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 				Id:                  c.ID,
 				CollectionName:      c.Name,
 				Verified:            true,
-				ImageUri:            ipfsutil.IPFSURIToURL(c.ImageURI),
+				ImageUri:            c.ImageURI,
 				MintAddress:         c.MintContractAddress,
 				NetworkId:           req.GetNetworkId(),
 				Volume:              c.Volume,
@@ -403,7 +402,7 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 				Name:               nft.Name,
 				CollectionName:     nft.Collection.Name,
 				NetworkId:          nft.Collection.NetworkId,
-				ImageUri:           ipfsutil.IPFSURIToURL(imageURI),
+				ImageUri:           imageURI,
 				IsListed:           nft.IsListed,
 				Price:              nft.PriceAmount.String,
 				Denom:              nft.PriceDenom,
