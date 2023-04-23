@@ -198,13 +198,21 @@ const Content: React.FC<{
             alignItems: "center",
           }}
         >
-          <View style={{ backgroundColor: "black", width }}>
+          <View
+            style={{
+              backgroundColor: "black",
+              width,
+              flexDirection: "row",
+              justifyContent: "flex-end",
+            }}
+          >
+            {/* this flex: 1000 view is a hack to align the tabs to the right */}
+            <View style={{ flex: 1000 }} />
             <Tabs
               items={screenTabItems}
               selected={selectedTab}
               style={{
                 height: 60,
-                width: "100%",
                 // justifyContent: "flex-end" // FIXME: causes crash
               }}
               tabContainerStyle={{ height: 60 }}
