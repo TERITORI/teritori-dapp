@@ -17,7 +17,6 @@ import (
 	ethereumHandlers "github.com/TERITORI/teritori-dapp/go/internal/substreams/ethereum/handlers"
 	pb "github.com/TERITORI/teritori-dapp/go/internal/substreams/pb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
-	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/streamingfast/bstream"
 	"github.com/streamingfast/logging"
 	"github.com/streamingfast/shutter"
@@ -92,14 +91,10 @@ type PostgresSinker struct {
 	logger *zap.Logger
 	tracer logging.Tracer
 
-	network         *networks.EthereumNetwork
-	squadStakingABI *abi.ABI
+	network *networks.EthereumNetwork
 }
 
 func New(config *Config, logger *zap.Logger, tracer logging.Tracer) (*PostgresSinker, error) {
-	SQUAD_STAKING_ABI_PATH := "go/internal/substreams/ethereum/abi_json/squad_staking.json"
-	squadStakingABI := mustLoadABI(SQUAD_STAKING_ABI_PATH)
-
 	s := &PostgresSinker{
 		Shutter: shutter.New(),
 		stats:   NewStats(logger),
@@ -120,8 +115,7 @@ func New(config *Config, logger *zap.Logger, tracer logging.Tracer) (*PostgresSi
 		UndoBufferSize:  config.UndoBufferSize,
 		LivenessTracker: sink.NewLivenessChecker(config.LiveBlockTimeDelta),
 
-		network:         config.Network,
-		squadStakingABI: &squadStakingABI,
+		network: config.Network,
 	}
 
 	s.OnTerminating(func(err error) {
