@@ -45,7 +45,6 @@ import {
 } from "../../../networks";
 import { selectNFTStorageAPI } from "../../../store/slices/settings";
 import { prettyPrice } from "../../../utils/coins";
-import { env } from "../../../utils/env";
 import { defaultSocialFeedFee } from "../../../utils/fee";
 import { adenaDoContract } from "../../../utils/gno";
 import { generateIpfsKey, uploadFilesToPinata } from "../../../utils/ipfs";

@@ -2,7 +2,6 @@ import { useMutation } from "@tanstack/react-query";
 import axios, { AxiosResponse } from "axios";
 
 import { OpenGraphType } from "./types";
-import { env } from "../../utils/env";
 import { EXTRACT_DOMAIN_REGEX } from "../../utils/regex";
 
 export const request = axios.create({
@@ -17,7 +16,7 @@ export const useOpenGraph = () => {
       try {
         const response: AxiosResponse = await request({
           url: `/${encodeURIComponent(url)}?app_id=${
-            env.PUBLIC_OPENGRAPH_APP_ID
+            process.env.PUBLIC_OPENGRAPH_APP_ID
           }`,
         });
 

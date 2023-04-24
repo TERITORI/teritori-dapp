@@ -4,6 +4,7 @@ module.exports = function (api) {
     presets: ["babel-preset-expo"],
     plugins: [
       "@babel/plugin-proposal-numeric-separator",
+      "inline-dotenv",
       "react-native-reanimated/plugin",
     ],
   };
