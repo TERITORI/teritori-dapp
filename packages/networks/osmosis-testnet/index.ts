@@ -6,8 +6,8 @@ export const osmosisTestnetNetwork: NetworkInfo = {
   kind: NetworkKind.Cosmos,
   chainId: "osmo-test-4",
   displayName: "Osmosis Testnet",
-  icon: "icons/networks/osmosis.svg",
   features: [NetworkFeature.Swap],
+  icon: "osmosis.svg",
   currencies: osmosisTestnetCurrencies,
   txExplorer: "https://testnet.mintscan.io/osmosis-testnet/txs/$hash",
   accountExplorer:

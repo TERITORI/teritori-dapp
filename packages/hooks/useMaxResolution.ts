@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useWindowDimensions } from "react-native";
+import { useWindowDimensions, Platform } from "react-native";
 
 import { useIsMobile } from "./useIsMobile";
 import { useSidebar } from "../context/SidebarProvider";
@@ -30,8 +30,12 @@ export const useMaxResolution = ({
       return windowWidth - mobileMargin * 2;
     }
 
+    const sidebarWidthFix = isSidebarExpanded
+      ? fullSidebarWidth
+      : smallSidebarWidth;
+
     const containerWidth =
-      windowWidth - (isSidebarExpanded ? fullSidebarWidth : smallSidebarWidth);
+      Platform.OS === "web" ? windowWidth - sidebarWidthFix : windowWidth;
     const responsiveMargin =
       getResponsiveScreenContainerMarginHorizontal(containerWidth);
     const defaultMargin = responsive

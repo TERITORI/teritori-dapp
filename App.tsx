@@ -6,11 +6,12 @@ import {
 } from "@expo-google-fonts/exo";
 import { NavigationContainer } from "@react-navigation/native";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { MetaMaskProvider } from "metamask-react";
-import React from "react";
+import React, {useCallback} from "react";
 import { useForm, FormProvider } from "react-hook-form";
-import { Platform } from "react-native";
+import { Platform, View } from "react-native";
 import { MenuProvider } from "react-native-popup-menu";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider as ReduxProvider } from "react-redux";
@@ -25,6 +26,7 @@ import { TransactionModalsProvider } from "./packages/context/TransactionModalsP
 import { WalletsProvider } from "./packages/context/WalletsProvider";
 import { store } from "./packages/store/store";
 import { linking } from "./packages/utils/navigation";
+SplashScreen.preventAutoHideAsync();
 
 const queryClient = new QueryClient();
 
@@ -41,12 +43,17 @@ export default function App() {
     Exo_700Bold,
   });
 
+  const onLayoutRootView = useCallback(async () => {
+    await SplashScreen.hideAsync();
+  }, []);
+
   // FIXME: Fonts don't load on electron
   if (Platform.OS !== "web" && !fontsLoaded) {
     return null;
   }
 
   return (
+    <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
     <QueryClientProvider client={queryClient}>
       <FormProvider<DefaultForm> {...methods}>
         <MetaMaskProvider>
@@ -77,5 +84,6 @@ export default function App() {
         </MetaMaskProvider>
       </FormProvider>
     </QueryClientProvider>
+    </View>
   );
 }

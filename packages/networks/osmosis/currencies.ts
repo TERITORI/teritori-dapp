@@ -7,7 +7,7 @@ export const osmosisCurrencies: CurrencyInfo[] = [
     displayName: "OSMO",
     decimals: 6,
     coingeckoId: "osmosis",
-    icon: "icons/networks/osmosis-circle.svg",
+    icon: "osmosis-circle.svg",
     kind: "native",
     color: currencyOSMOcolor,
   },
