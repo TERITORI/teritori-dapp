@@ -1,7 +1,8 @@
 import React from "react";
-import { Image, TouchableOpacity } from "react-native";
+import { TouchableOpacity } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
+import { OptimizedImage } from "../../../components/OptimizedImage";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { useCollectionInfo } from "../../../hooks/useCollectionInfo";
 import { useAppNavigation } from "../../../utils/navigation";
@@ -32,7 +33,7 @@ export const CollectionThumb: React.FC<CollectionThumbProps> = ({
         width={196}
         height={266}
       >
-        <Image
+        <OptimizedImage
           source={{ uri: info?.image }}
           style={{
             width: 172,
@@ -40,6 +41,8 @@ export const CollectionThumb: React.FC<CollectionThumbProps> = ({
             alignSelf: "center",
             borderRadius: 12,
           }}
+          width={172}
+          height={172}
         />
         <BrandText
           style={{ fontSize: 14 }}
