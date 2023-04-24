@@ -11,6 +11,7 @@ import {
 
 import plus from "../../../../assets/icons/chatplus.svg";
 import close from "../../../../assets/icons/close.svg";
+import farwardto from "../../../../assets/icons/farwardto.svg";
 import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
 import { Separator } from "../../../components/Separator";
@@ -41,6 +42,7 @@ interface IMessage {
 const ChatSection = () => {
   const [messages, setMessages] = useState<IMessage[]>(ChatData);
   const [newMessage, setNewMessage] = useState("");
+  console.log("first", messages);
   const [searchInput, setSearchInput] = useState("");
   const [showAttachmentModal, setShowAttachmentModal] = useState(false);
   const [thumbnailFile, setThumbnailFile] = useState<LocalFileData>();
@@ -52,7 +54,7 @@ const ChatSection = () => {
       message: newMessage,
       isSender: true,
     };
-    setMessages([...messages, newMsg]);
+    setMessages([...messages, newMsg, ...thumbnailFile?.url]);
     setNewMessage("");
   };
 
