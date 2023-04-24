@@ -1,3 +1,4 @@
+import { env } from "./env";
 // Get the tld at the end of a token (TNS) (.xxxx)
 export const tldFromNSToken = (str: string): string =>
   str.substring(str.lastIndexOf("."));
@@ -10,4 +11,4 @@ export const isNSPath = (str: string) => str.includes("::");
 export const isNSToken = (str: string) => !isNSPath(str);
 
 export const isTokenOwnedByUser = (tokensArray: string[], name: string) =>
-  tokensArray.includes(name + process.env.TLD);
+  tokensArray.includes(name + env.TLD);

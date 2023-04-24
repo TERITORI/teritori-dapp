@@ -6,8 +6,8 @@ import {
   ViewComponent,
   ViewStyle,
   useWindowDimensions,
+  TouchableOpacity,
 } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
 
 import chevronLeft from "../../../assets/icons/chevron-left.svg";
 import closeSVG from "../../../assets/icons/close.svg";
