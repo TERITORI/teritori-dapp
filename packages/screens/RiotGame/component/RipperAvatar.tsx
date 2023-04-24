@@ -1,12 +1,7 @@
-import {
-  Image,
-  ImageSourcePropType,
-  View,
-  ViewStyle,
-  StyleSheet,
-} from "react-native";
+import { ImageSourcePropType, View, ViewStyle, StyleSheet } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
+import { OptimizedImage } from "../../../components/OptimizedImage";
 import {
   orangeDefault,
   pinkDefault,
@@ -66,9 +61,11 @@ export const RipperAvatar: React.FC<RipperAvatarProps> = ({
         containerStyle,
       ]}
     >
-      <Image
+      <OptimizedImage
         style={{ width: "100%", height: "100%", opacity: isStaked ? 0.4 : 1 }}
         source={imageSource}
+        width={size}
+        height={size}
       />
 
       {isStaked && (
