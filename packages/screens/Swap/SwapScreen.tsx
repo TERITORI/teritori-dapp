@@ -1,5 +1,5 @@
 import { useIsFocused } from "@react-navigation/native";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { Suspense, useEffect, useMemo, useState } from "react";
 import { StyleSheet, View } from "react-native";
 
 import { ConnectModal } from "./components/ConnectModal";
@@ -56,7 +56,9 @@ export const SwapScreen: ScreenFC<"Swap"> = () => {
           <MainConnectWalletButton style={{ alignSelf: "center" }} />
         ) : osmosisConnected && isScreenFocused ? (
           <>
-            <SwapView />
+            <Suspense fallback={<BrandText>Loading...</BrandText>}>
+              <SwapView />
+            </Suspense>
             <Assets userId={selectedWallet.userId} style={styles.assets} />
           </>
         ) : (

@@ -27,6 +27,7 @@ import {
 import { NetworkSelector } from "../NetworkSelector/NetworkSelector";
 import { SelectedNetworkGate } from "../SelectedNetworkGate";
 import { ConnectWalletButton } from "../TopMenu/ConnectWalletButton";
+import { Footer } from "../footers/Footer";
 import { Sidebar } from "../navigation/Sidebar";
 
 export const ScreenContainer: React.FC<{
@@ -91,9 +92,6 @@ export const ScreenContainer: React.FC<{
       return !(forceNetworkKind && n?.kind !== forceNetworkKind);
     },
     [forceNetworkId, forceNetworkKind]
-  );
-  const Footer = React.lazy(() =>
-    import("../footers/Footer").then((module) => ({ default: module.Footer }))
   );
 
   /////////////// mobile returns
