@@ -1,11 +1,12 @@
-import { useRoute } from "@react-navigation/native";
+import { DrawerContentComponentProps } from "@react-navigation/drawer";
 import React from "react";
-import { View, StyleSheet, Pressable, FlatList } from "react-native";
+import { View, StyleSheet, Pressable, FlatList, Platform } from "react-native";
 import Animated, {
   useAnimatedStyle,
   withSpring,
   WithSpringConfig,
 } from "react-native-reanimated";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { BuyTokens } from "./BuyTokens";
 import { SideNotch } from "./components/SideNotch";
@@ -16,12 +17,13 @@ import { SidebarType } from "./types";
 import addSVG from "../../../assets/icons/add-circle.svg";
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
 import { useSidebar } from "../../context/SidebarProvider";
+import { useCurrentRouteName } from "../../hooks/useCurrentRouteName";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useSelectedNetworkKind } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkKind } from "../../networks";
 import { useAppNavigation } from "../../utils/navigation";
-import { neutral17, neutral33 } from "../../utils/style/colors";
+import { neutral00, neutral17, neutral33 } from "../../utils/style/colors";
 import {
   smallSidebarWidth,
   fullSidebarWidth,
@@ -51,22 +53,35 @@ const SidebarSeparator: React.FC = () => {
   );
 };
 
-export const Sidebar: React.FC = () => {
+ 
+interface SidebarProps extends DrawerContentComponentProps {
+  expanded: boolean;
+}
+
+export const Sidebar = (props: SidebarProps) => {
   const selectedWallet = useSelectedWallet();
   const userInfo = useNSUserInfo(selectedWallet?.userId);
   const selectedNetworkKind = useSelectedNetworkKind();
   const connected = selectedWallet?.connected;
+<<<<<<< HEAD
+=======
+  const { top, bottom } = useSafeAreaInsets();
+
+  // variables
+>>>>>>> f2c83ba0 (mobile & desktop build)
   const navigation = useAppNavigation();
-  const { name: currentRouteName } = useRoute();
+
   const { isSidebarExpanded, toggleSidebar, dynamicSidebar } = useSidebar();
+  const currentRouteName = useCurrentRouteName();
 
   const layoutStyle = useAnimatedStyle(
     () => ({
-      width: isSidebarExpanded
-        ? withSpring(fullSidebarWidth, SpringConfig)
-        : withSpring(smallSidebarWidth, SpringConfig),
+      width:
+        isSidebarExpanded || props.expanded
+          ? withSpring(fullSidebarWidth, SpringConfig)
+          : withSpring(smallSidebarWidth, SpringConfig),
     }),
-    [isSidebarExpanded]
+    [isSidebarExpanded, props.expanded]
   );
 
   const toggleButtonStyle = useAnimatedStyle(
@@ -91,17 +106,26 @@ export const Sidebar: React.FC = () => {
 
   return (
     <Animated.View style={[styles.container, layoutStyle]}>
-      <View style={styles.headerContainer}>
+      <View
+        style={[
+          styles.headerContainer,
+          {
+            marginTop: top,
+          },
+        ]}
+      >
         {currentRouteName === "Home" && <SideNotch />}
 
         <TopLogo />
-        <Animated.View
-          style={[styles.toggleButtonContainer, toggleButtonStyle]}
-        >
-          <Pressable style={styles.toggleButton} onPress={toggleSidebar}>
-            <SVG source={chevronRightSVG} />
-          </Pressable>
-        </Animated.View>
+        {Platform.OS === "web" && (
+          <Animated.View
+            style={[styles.toggleButtonContainer, toggleButtonStyle]}
+          >
+            <Pressable style={styles.toggleButton} onPress={toggleSidebar}>
+              <SVG source={chevronRightSVG} />
+            </Pressable>
+          </Animated.View>
+        )}
 
         <Separator color={neutral33} />
       </View>
@@ -109,6 +133,9 @@ export const Sidebar: React.FC = () => {
         showsVerticalScrollIndicator={false}
         data={Object.values(dynamicSidebar)}
         keyExtractor={(item) => item.id}
+        contentContainerStyle={{
+          paddingBottom: bottom + top + headerHeight,
+        }}
         renderItem={({ item }) => {
           let { route } = item;
           if (
@@ -125,6 +152,7 @@ export const Sidebar: React.FC = () => {
               onPress={onRouteChange}
               {...item}
               route={route}
+              expanded={props.expanded}
             />
           );
         }}
@@ -139,6 +167,7 @@ export const Sidebar: React.FC = () => {
               id="ComingSoon2"
               title=""
               onPress={() => navigation.navigate("ComingSoon")}
+              expanded={props.expanded}
             />
             <SpacerColumn size={1} />
           </>
@@ -149,15 +178,12 @@ export const Sidebar: React.FC = () => {
         <BuyTokens />
         <SidebarSeparator />
 
-        {selectedNetworkKind === NetworkKind.Cosmos &&
-          connected &&
-          userInfo.metadata && (
             <SidebarProfileButton
               userId={selectedWallet?.userId || ""}
               isExpanded={isSidebarExpanded}
             />
-          )}
-      </View>
+          </View>
+        
     </Animated.View>
   );
 };
@@ -166,10 +192,12 @@ const styles = StyleSheet.create({
   container: {
     borderRightWidth: 1,
     borderColor: neutral33,
+    backgroundColor: neutral00,
     zIndex: 100,
   },
   headerContainer: {
     height: headerHeight,
+    position: "relative",
   },
   toggleButtonContainer: {
     position: "absolute",

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Image } from "react-native";
 
 interface Props {
@@ -9,11 +9,8 @@ interface Props {
 export const useImageResizer = ({ image, maxSize }: Props) => {
   const [size, setSize] = useState({ width: 0, height: 0 });
 
-  useEffect(() => {
-    if (!image) {
-      return;
-    }
-    Image.getSize(image, (width, height) => {
+  const updateSize = useCallback(
+    (width: number, height: number) => {
       const aspectRatio = width / height;
       if (maxSize.height) {
         setSize({
@@ -21,10 +18,28 @@ export const useImageResizer = ({ image, maxSize }: Props) => {
           height: maxSize.height,
         });
       } else if (maxSize.width) {
-        setSize({ height: maxSize.width / aspectRatio, width: maxSize.width });
+        setSize({
+          height: maxSize.width / aspectRatio,
+          width: maxSize.width,
+        });
       }
-    });
-  }, [maxSize.width, maxSize.height, image]);
+    },
+    [maxSize.height, maxSize.width]
+  );
+  useEffect(() => {
+    if (!image) {
+      return;
+    }
+
+    if (typeof image === "number") {
+      const { height, width } = Image.resolveAssetSource(image);
+      updateSize(width, height);
+    } else {
+      Image.getSize(image, (width, height) => {
+        updateSize(width, height);
+      });
+    }
+  }, [maxSize.width, maxSize.height, image, updateSize]);
 
   return size;
 };

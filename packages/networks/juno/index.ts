@@ -6,7 +6,7 @@ export const junoNetwork: NetworkInfo = {
   kind: NetworkKind.Cosmos,
   chainId: "juno-1",
   displayName: "Juno",
-  icon: "icons/networks/juno.svg",
+  icon: "juno.svg",
   currencies: junoCurrencies,
   txExplorer: "https://www.mintscan.io/juno/txs/$hash",
   accountExplorer: "https://www.mintscan.io/juno/account/$address",

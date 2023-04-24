@@ -7,7 +7,7 @@ export const junoCurrencies: CurrencyInfo[] = [
     displayName: "JUNO",
     decimals: 6,
     coingeckoId: "juno-network",
-    icon: "icons/networks/juno-circle.svg",
+    icon: "juno-circle.svg",
     kind: "native",
     color: currencyJUNOcolor,
   },

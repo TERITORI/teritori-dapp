@@ -6,7 +6,7 @@ export const cosmosThetaNetwork: NetworkInfo = {
   kind: NetworkKind.Cosmos,
   chainId: "theta-testnet-001",
   displayName: "Cosmos Hub Theta",
-  icon: "icons/networks/cosmos-hub.svg",
+  icon: "cosmos-hub.svg",
   currencies: cosmosHubThetaCurrencies,
   txExplorer: "https://explorer.theta-testnet.polypore.xyz/transactions/$hash",
   accountExplorer:

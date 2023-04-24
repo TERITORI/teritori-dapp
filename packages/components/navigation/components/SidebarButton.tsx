@@ -1,4 +1,4 @@
-import { useIsFocused, useRoute } from "@react-navigation/native";
+import { useIsFocused } from "@react-navigation/native";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import Animated, {
@@ -14,6 +14,7 @@ import { SidebarNestedButton } from "./SidebarNestedButton";
 import chevronDownSVG from "../../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../../assets/icons/chevron-up.svg";
 import { useSidebar } from "../../../context/SidebarProvider";
+import { useCurrentRouteName } from "../../../hooks/useCurrentRouteName";
 import {
   neutral17,
   neutral33,
@@ -33,6 +34,7 @@ import { SidebarType } from "../types";
 export interface SidebarButtonProps extends SidebarType {
   onPress?: (routeName: SidebarType["route"]) => void;
   iconSize?: number;
+  expanded?: boolean;
 }
 
 export const SidebarButton: React.FC<SidebarButtonProps> = ({
@@ -42,10 +44,12 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
   route,
   iconSize = 28,
   nested,
+  expanded,
 }) => {
   // variables
   const { isSidebarExpanded } = useSidebar();
-  const { name: currentRouteName } = useRoute();
+  const currentRouteName = useCurrentRouteName();
+
   const allNestedRoutes = useMemo(
     () => nested && Object.values(nested).map((d) => d.route),
     [nested]
@@ -90,15 +94,16 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
   // animations
   const opacityStyle = useAnimatedStyle(
     () => ({
-      opacity: isSidebarExpanded
-        ? withTiming(1, {
-            duration: 500,
-          })
-        : withTiming(0, {
-            duration: 100,
-          }),
+      opacity:
+        isSidebarExpanded || expanded
+          ? withTiming(1, {
+              duration: 500,
+            })
+          : withTiming(0, {
+              duration: 100,
+            }),
     }),
-    [isSidebarExpanded]
+    [isSidebarExpanded, expanded]
   );
 
   // const nestedBarStyle = useAnimatedStyle(
