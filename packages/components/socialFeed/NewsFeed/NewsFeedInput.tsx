@@ -42,6 +42,7 @@ import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { getUserId, mustGetCosmosNetwork } from "../../../networks";
 import { prettyPrice } from "../../../utils/coins";
+import { env } from "../../../utils/env";
 import { defaultSocialFeedFee } from "../../../utils/fee";
 import {
   AUDIO_MIME_TYPES,
@@ -172,10 +173,7 @@ export const NewsFeedInput = React.forwardRef<
       onCloseCreateModal && onCloseCreateModal();
     };
 
-    const balances = useBalances(
-      process.env.TERITORI_NETWORK_ID,
-      wallet?.address
-    );
+    const balances = useBalances(env.TERITORI_NETWORK_ID, wallet?.address);
 
     const { setValue, handleSubmit, reset, watch } = useForm<NewPostFormValues>(
       {

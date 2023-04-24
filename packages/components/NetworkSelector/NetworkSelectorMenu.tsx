@@ -19,6 +19,7 @@ import {
   setSelectedWalletId,
 } from "../../store/slices/settings";
 import { useAppDispatch } from "../../store/store";
+import { env } from "../../utils/env";
 import { neutral17 } from "../../utils/style/colors";
 import { fontSemibold12 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
@@ -89,7 +90,7 @@ export const NetworkSelectorMenu: FC<{
         borderBottomRightRadius: 0,
       }}
     >
-      {(process.env.DISPLAYED_NETWORKS_IDS || "")
+      {(env.DISPLAYED_NETWORKS_IDS || "")
         .split(",")
         .map((s) => s.trim())
         .map(getNetwork)

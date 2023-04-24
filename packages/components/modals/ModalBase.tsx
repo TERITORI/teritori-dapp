@@ -7,8 +7,8 @@ import {
   ViewStyle,
   useWindowDimensions,
   StyleProp,
+ 
 } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
 
 import chevronLeft from "../../../assets/icons/chevron-left.svg";
 import closeSVG from "../../../assets/icons/hamburger-button-cross.svg";
@@ -21,6 +21,7 @@ import { SVG } from "../SVG";
 import { SeparatorGradient } from "../SeparatorGradient";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { SpacerColumn } from "../spacer";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 // TODO: Simplify this component (Useless childrenBottom ?. Better to let the parent totally decides which children to use ? Used in WalletManager.tsx, be careful !)
 
