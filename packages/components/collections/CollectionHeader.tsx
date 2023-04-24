@@ -1,5 +1,5 @@
 import { Decimal } from "@cosmjs/math";
-import Clipboard from "@react-native-clipboard/clipboard";
+import * as Clipboard from "expo-clipboard";
 import React, { useMemo } from "react";
 import { View, Platform, StyleSheet, Linking } from "react-native";
 
@@ -248,7 +248,7 @@ export const CollectionHeader: React.FC<{
           onSelect={onSelectTab}
           selected={selectedTab}
           style={{
-            width: "fit-content",
+            width: Platform.OS === "web" ? "fit-content" : "100%",
             height: "100%",
             borderBottomWidth: 0,
           }}

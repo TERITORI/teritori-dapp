@@ -1,4 +1,5 @@
 import { grpc } from "@improbable-eng/grpc-web";
+import { ReactNativeTransport } from "@improbable-eng/grpc-web-react-native-transport";
 
 import {
   FeedService,
@@ -16,6 +17,7 @@ import {
   P2eService,
 } from "../api/p2e/v1/p2e";
 import { getNetwork } from "../networks";
+grpc.setDefaultTransport(ReactNativeTransport({}));
 
 const marketplaceClients: { [key: string]: MarketplaceService } = {};
 

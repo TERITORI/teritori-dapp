@@ -1,5 +1,6 @@
 import React, { FC, useCallback } from "react";
 import {
+  Platform,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -39,7 +40,7 @@ export const ScreenContainerMobile: FC<{
   const Children: FC = useCallback(() => {
     return (
       <>
-        {mobileTitle ? (
+        {mobileTitle && Platform.OS === "web" ? (
           <View
             style={{
               height: 48,
@@ -64,55 +65,68 @@ export const ScreenContainerMobile: FC<{
   return (
     <SafeAreaView style={styles.container}>
       <DAppStoreData />
-      <HeaderMobile
-        forceNetworkId={forceNetworkId}
-        forceNetworkKind={forceNetworkKind}
-      />
-      <SidebarMobile />
+      <View
+        style={{
+          flex: 1,
+        }}
+      >
+        <HeaderMobile
+          forceNetworkId={forceNetworkId}
+          forceNetworkKind={forceNetworkKind}
+        />
+        {Platform.OS === "web" && <SidebarMobile />}
 
-      {/*==== Scrollable screen content*/}
-      <View style={{ flex: 1, width: "100%", height: windowHeight }}>
-        <SelectedNetworkGate filter={networkFilter}>
-          {hasScroll ? (
-            <ScrollView
-              style={{ width: "100%", flex: 1 }}
-              contentContainerStyle={[
-                {
-                  minHeight: windowHeight - MOBILE_HEADER_HEIGHT,
-                },
-              ]}
-            >
+        {/*==== Scrollable screen content*/}
+        <View
+          style={{
+            flex: 1,
+            width: "100%",
+            height: windowHeight,
+            marginTop: MOBILE_HEADER_HEIGHT,
+          }}
+        >
+          <SelectedNetworkGate filter={networkFilter}>
+            {hasScroll ? (
+              <ScrollView
+                style={{ width: "100%", flex: 1 }}
+                contentContainerStyle={[
+                  {
+                    minHeight: windowHeight - MOBILE_HEADER_HEIGHT,
+                  },
+                ]}
+              >
+                <View
+                  style={[
+                    styles.childrenContainer,
+                    {
+                      width: "100%",
+                      flex: 1,
+                      marginHorizontal:
+                        getMobileScreenContainerMarginHorizontal(windowWidth),
+                    },
+                  ]}
+                >
+                  <Children>{children}</Children>
+                </View>
+                {/*TODO: Put here Riotters Footer ?*/}
+              </ScrollView>
+            ) : (
               <View
                 style={[
                   styles.childrenContainer,
                   {
                     width: "100%",
-                    flex: 1,
                     marginHorizontal:
                       getMobileScreenContainerMarginHorizontal(windowWidth),
                   },
                 ]}
               >
                 <Children>{children}</Children>
+                {/*TODO: Put here Riotters Footer ?*/}
               </View>
-              {/*TODO: Put here Riotters Footer ?*/}
-            </ScrollView>
-          ) : (
-            <View
-              style={[
-                styles.childrenContainer,
-                {
-                  width: "100%",
-                  marginHorizontal:
-                    getMobileScreenContainerMarginHorizontal(windowWidth),
-                },
-              ]}
-            >
-              <Children>{children}</Children>
-              {/*TODO: Put here Riotters Footer ?*/}
-            </View>
-          )}
-        </SelectedNetworkGate>
+            )}
+          </SelectedNetworkGate>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -123,7 +137,6 @@ const styles = StyleSheet.create({
     flex: 1,
     width: "100%",
     backgroundColor: "#000000",
-    paddingTop: MOBILE_HEADER_HEIGHT,
   },
   childrenContainer: {
     height: "100%",

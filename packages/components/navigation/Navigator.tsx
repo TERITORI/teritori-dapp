@@ -1,6 +1,9 @@
+import { createDrawerNavigator } from "@react-navigation/drawer";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
+import { Platform } from "react-native";
 
+import { Sidebar } from "./Sidebar";
 import { ComingSoonScreen } from "../../screens/ComingSoon/ComingSoon";
 import { DAppStore } from "../../screens/DAppStore/HomeScreen";
 import { ToriPunks } from "../../screens/DAppStore/apps/toripunks/HomeScreen";
@@ -36,13 +39,28 @@ import { UserPublicProfileScreen } from "../../screens/UserPublicProfile/UserPub
 import { WalletManagerScreen } from "../../screens/WalletManager/WalletManagerScreen";
 import { WalletManagerWalletsScreen } from "../../screens/WalletManager/WalletsScreen";
 import { RootStackParamList } from "../../utils/navigation";
+import { neutral00 } from "../../utils/style/colors";
+import { fullSidebarWidth } from "../../utils/style/layout";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
-export const screenTitle = (title: string) => "Teritori - " + title;
+const Drawer = createDrawerNavigator();
+
+const screenTitle = (title: string) => "Teritori - " + title;
 
 export const Navigator: React.FC = () => {
   return (
-    <Stack.Navigator>
+    <Drawer.Navigator
+      initialRouteName="Home"
+      drawerContent={(props) =>
+        Platform.OS === "web" ? null : <Sidebar {...props} expanded />
+      }
+      screenOptions={{
+        drawerStyle: {
+          backgroundColor: neutral00,
+          width: fullSidebarWidth,
+        },
+      }}
+    >
       <Stack.Screen
         name="Home"
         component={HomeScreen}
@@ -88,7 +106,10 @@ export const Navigator: React.FC = () => {
       <Stack.Screen
         name="RiotGameEnroll"
         component={RiotGameEnrollScreen}
-        options={{ header: () => null, title: screenTitle("Riot Game Enroll") }}
+        options={{
+          header: () => null,
+          title: screenTitle("Riot Game Enroll"),
+        }}
       />
       <Stack.Screen
         name="RiotGameFight"
@@ -178,7 +199,10 @@ export const Navigator: React.FC = () => {
       <Stack.Screen
         name="MintCollection"
         component={MintCollectionScreen}
-        options={{ header: () => null, title: screenTitle("Mint Collection") }}
+        options={{
+          header: () => null,
+          title: screenTitle("Mint Collection"),
+        }}
       />
 
       {/* ==== Teritori Name Service*/}
@@ -254,6 +278,6 @@ export const Navigator: React.FC = () => {
         component={DAppStore}
         options={{ header: () => null, title: screenTitle("dApp Store") }}
       />
-    </Stack.Navigator>
+    </Drawer.Navigator>
   );
 };

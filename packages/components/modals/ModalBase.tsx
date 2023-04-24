@@ -5,6 +5,7 @@ import {
   ScrollView,
   ViewComponent,
   ViewStyle,
+  useWindowDimensions,
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
@@ -58,6 +59,8 @@ export const ModalBase: React.FC<ModalBaseProps> = ({
   noBrokenCorners,
   closeButtonStyle,
 }) => {
+  const { width: screenWidth } = useWindowDimensions();
+
   return (
     <Modal
       style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
@@ -94,7 +97,7 @@ export const ModalBase: React.FC<ModalBaseProps> = ({
       >
         {/*------ Modal main container */}
         <TertiaryBox
-          width={width}
+          width={(width || 0) > screenWidth ? screenWidth : width}
           style={{ margin: "auto" }}
           mainContainerStyle={[
             {

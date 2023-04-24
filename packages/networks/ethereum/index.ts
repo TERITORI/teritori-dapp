@@ -5,7 +5,7 @@ export const ethereumNetwork: NetworkInfo = {
   id: "ethereum",
   kind: NetworkKind.Ethereum,
   displayName: "Ethereum",
-  icon: "icons/networks/ethereum.svg",
+  icon: "ethereum.svg",
   currencies: ethereumCurrencies,
   idPrefix: "eth",
   endpoint: "https://ethereum.publicnode.com",

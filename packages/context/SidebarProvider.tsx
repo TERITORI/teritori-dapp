@@ -5,7 +5,7 @@ import React, {
   useEffect,
   useMemo,
 } from "react";
-import { useWindowDimensions } from "react-native";
+import { useWindowDimensions, Platform } from "react-native";
 import { useSelector } from "react-redux";
 
 import { getValuesFromId, SEPARATOR } from "../screens/DAppStore/query/util";
@@ -24,7 +24,7 @@ interface DefaultValue {
 }
 
 const defaultValue: DefaultValue = {
-  isSidebarExpanded: true,
+  isSidebarExpanded: Platform.OS === "web",
   toggleSidebar: () => {},
   dynamicSidebar: {},
 };
@@ -63,10 +63,12 @@ export const SidebarContextProvider: React.FC = ({ children }) => {
     };
     selectedApps.map((element) => {
       const { appId, groupKey } = getValuesFromId(element);
+
       if (!availableApps[groupKey]) {
         return;
       }
       const option = availableApps[groupKey].options[appId];
+
       if (option === undefined) {
         return;
       }

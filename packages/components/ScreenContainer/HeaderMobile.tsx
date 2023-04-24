@@ -1,10 +1,11 @@
 import { FC } from "react";
-import { View, StyleSheet, TouchableOpacity } from "react-native";
+import { View, StyleSheet, TouchableOpacity, Platform } from "react-native";
 
 import hamburgerCrossSVG from "../../../assets/icons/hamburger-button-cross.svg";
 import hamburgerSVG from "../../../assets/icons/hamburger-button.svg";
 import { useSidebar } from "../../context/SidebarProvider";
 import { NetworkKind } from "../../networks";
+import { useAppNavigation } from "../../utils/navigation";
 import { neutral00, neutral33 } from "../../utils/style/colors";
 import { layout, MOBILE_HEADER_HEIGHT } from "../../utils/style/layout";
 import { NetworkSelectorMobile } from "../NetworkSelector/NetworkSelectorMobile";
@@ -18,6 +19,7 @@ export const HeaderMobile: FC<{
   forceNetworkKind?: NetworkKind;
 }> = ({ forceNetworkId, forceNetworkKind }) => {
   const { isSidebarExpanded, toggleSidebar } = useSidebar();
+  const navigation = useAppNavigation();
 
   return (
     <View style={styles.container}>
@@ -30,7 +32,16 @@ export const HeaderMobile: FC<{
         <SpacerRow size={2} />
         <ConnectWalletButtonMobile />
         <SpacerRow size={2} />
-        <TouchableOpacity onPress={toggleSidebar}>
+
+        <TouchableOpacity
+          onPress={() => {
+            if (["android", "ios"].includes(Platform.OS)) {
+              navigation.openDrawer();
+            } else {
+              toggleSidebar();
+            }
+          }}
+        >
           <SVG
             source={isSidebarExpanded ? hamburgerCrossSVG : hamburgerSVG}
             width={32}

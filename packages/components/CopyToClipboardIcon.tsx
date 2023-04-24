@@ -1,4 +1,4 @@
-import Clipboard from "@react-native-clipboard/clipboard";
+import * as Clipboard from "expo-clipboard";
 import React from "react";
 import { TouchableOpacity } from "react-native";
 

@@ -4,7 +4,7 @@ export const solanaNetwork: NetworkInfo = {
   id: "solana",
   kind: NetworkKind.Solana,
   displayName: "Solana",
-  icon: "icons/networks/solana.svg",
+  icon: "solana.svg",
   currencies: [],
   txExplorer: "TODO",
   accountExplorer: "TODO",

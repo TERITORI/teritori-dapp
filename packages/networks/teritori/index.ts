@@ -11,7 +11,7 @@ export const teritoriNetwork: NetworkInfo = {
   kind: NetworkKind.Cosmos,
   chainId: "teritori-1",
   displayName: "Teritori",
-  icon: "icons/networks/teritori.svg",
+  icon: "teritori",
   walletUrlForStaking: "https://explorer.teritori.com/teritori/staking",
   currencies: teritoriCurrencies,
   txExplorer: "https://www.mintscan.io/teritori/txs/$hash",

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity, Platform } from "react-native";
 
 import { ProposalStatus } from "./types";
 import { BrandText } from "../../components/BrandText/BrandText";
@@ -37,7 +37,7 @@ export const NavBarGovernance: React.FC<{
         flexWrap: "wrap",
         alignContent: "center",
         justifyContent: "space-between",
-        width: "fit-content",
+        width: Platform.OS === "web" ? "fit-content" : "auto",
         borderWidth: 1,
         borderColor: neutral33,
         flexDirection: "row",
