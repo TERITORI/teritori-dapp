@@ -51,10 +51,12 @@ export const useSidebar = () => {
 
     selectedApps.map((element) => {
       const { appId, groupKey } = getValuesFromId(element);
+
       if (!availableApps[groupKey]) {
         return;
       }
       const option = availableApps[groupKey].options[appId];
+
       if (option === undefined) {
         return;
       }

@@ -1,5 +1,6 @@
 import React, { FC } from "react";
 import {
+  Platform,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -14,11 +15,13 @@ import { NetworkFeature, NetworkInfo, NetworkKind } from "../../networks";
 import { DAppStoreData } from "../../screens/DAppStore/components/DAppStoreData";
 import { neutral33, neutral77 } from "../../utils/style/colors";
 import { fontBold12 } from "../../utils/style/fonts";
-import { layout, MOBILE_HEADER_HEIGHT } from "../../utils/style/layout";
+import { getMobileScreenContainerMarginHorizontal, layout, MOBILE_HEADER_HEIGHT } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { SearchModalMobile } from "../Search/SearchModalMobile";
 import { SelectedNetworkGate } from "../SelectedNetworkGate";
 import { SidebarMobile } from "../navigation/SidebarMobile";
+
+ 
 
 export const MobileTitle: FC<{ title: string }> = ({ title }) => {
   const { width: windowWidth } = useWindowDimensions();
@@ -59,9 +62,35 @@ export const ScreenContainerMobile: FC<{
   mobileTitle,
   onBackPress,
 }) => {
-  const { height: windowHeight } = useWindowDimensions();
+  
   const { width } = useMaxResolution();
   const { isSearchModalMobileOpen, setSearchModalMobileOpen } = useSearchBar();
+  const { height: windowHeight, width: windowWidth } = useWindowDimensions();
+
+  const Children: FC = useCallback(() => {
+    return (
+      <>
+        {mobileTitle && Platform.OS === "web" ? (
+          <View
+            style={{
+              height: 48,
+              borderBottomWidth: 1,
+              flexDirection: "row",
+              alignItems: "center",
+              borderBottomColor: neutral33,
+              paddingHorizontal:
+                getMobileScreenContainerMarginHorizontal(windowWidth),
+            }}
+          >
+            <BrandText style={[fontBold12, { color: neutral77 }]}>
+              {mobileTitle}
+            </BrandText>
+          </View>
+        ) : null}
+        {children}
+      </>
+    );
+  }, [mobileTitle, children, windowWidth]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -76,7 +105,7 @@ export const ScreenContainerMobile: FC<{
         forceNetworkKind={forceNetworkKind}
         forceNetworkFeatures={forceNetworkFeatures}
       />
-      <SidebarMobile />
+      {!["ios", "android"].includes(Platform.OS) && <SidebarMobile />}
 
       {/*==== Scrollable screen content*/}
       <View style={{ flex: 1, width: "100%", height: windowHeight }}>
@@ -90,14 +119,18 @@ export const ScreenContainerMobile: FC<{
               ]}
             >
               {mobileTitle ? <MobileTitle title={mobileTitle} /> : null}
-              <View style={[styles.childrenContainer, { flex: 1, width }]}>
+              <View style={[styles.childrenContainer, { flex: 1, width,
+               marginHorizontal:
+               getMobileScreenContainerMarginHorizontal(windowWidth), }]}>
                 {children}
               </View>
               {/*TODO: Put here Riotters Footer ?*/}
             </ScrollView>
           ) : (
             <>
-              <View style={[styles.childrenContainer, { flex: 1 }]}>
+              <View style={[styles.childrenContainer, { flex: 1,
+               marginHorizontal:
+               getMobileScreenContainerMarginHorizontal(windowWidth), }]}>
                 {children}
               </View>
             </>
@@ -116,7 +149,6 @@ const styles = StyleSheet.create({
     flex: 1,
     width: "100%",
     backgroundColor: "#000000",
-    paddingTop: MOBILE_HEADER_HEIGHT,
   },
   childrenContainer: {
     height: "100%",

@@ -17,10 +17,9 @@ export const SideNotch: React.FC<{ style?: ViewStyle }> = ({ style }) => {
 const styles = StyleSheet.create({
   container: {
     position: "absolute",
-    flex: 1,
-    flexDirection: "row",
     left: 0,
     top: 0,
     bottom: 0,
+    width: 18,
   },
 });

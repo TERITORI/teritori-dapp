@@ -26,7 +26,6 @@ require (
 	github.com/volatiletech/null/v8 v8.1.2
 	github.com/volatiletech/sqlboiler/v4 v4.13.0
 	github.com/volatiletech/strmangle v0.0.4
-<<<<<<< HEAD
 	go.uber.org/zap v1.24.0
 	golang.org/x/exp v0.0.0-20230307190834-24139beb5833
 	google.golang.org/grpc v1.52.0
@@ -35,8 +34,6 @@ require (
 	gorm.io/driver/postgres v1.5.0
 	gorm.io/driver/sqlite v1.4.3
 	gorm.io/gorm v1.25.2
-=======
-<<<<<<< HEAD
 	go.uber.org/zap v1.19.1
 	golang.org/x/exp v0.0.0-20221108223516-5d533826c662
 	google.golang.org/grpc v1.49.0
@@ -45,7 +42,6 @@ require (
 	gorm.io/driver/postgres v1.5.0
 	gorm.io/driver/sqlite v1.4.3
 	gorm.io/gorm v1.24.7-0.20230306060331-85eaf9eeda11
-=======
 	go.uber.org/zap v1.24.0
 	golang.org/x/exp v0.0.0-20230307190834-24139beb5833
 	google.golang.org/grpc v1.50.1
@@ -54,8 +50,6 @@ require (
 	gorm.io/driver/sqlite v1.3.6
 	gorm.io/gorm v1.23.8
 	moul.io/srand v1.6.1
->>>>>>> db3ecf14 (fix(wesh): contact request)
->>>>>>> e1f1a768 (fix(wesh): contact request)
 )
 
 require (
@@ -375,7 +369,6 @@ require (
 	github.com/xeipuuv/gojsonreference v0.0.0-20180127040603-bd5ef7bd5415 // indirect
 	github.com/xeipuuv/gojsonschema v1.2.0 // indirect
 	github.com/zondax/hid v0.9.0 // indirect
-<<<<<<< HEAD
 	go.opencensus.io v0.24.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.32.0 // indirect
 	go.opentelemetry.io/otel v1.11.1 // indirect
@@ -395,9 +388,6 @@ require (
 	go4.org v0.0.0-20200411211856-f5505b9728dd // indirect
 	golang.org/x/mod v0.9.0 // indirect
 	golang.org/x/oauth2 v0.1.0 // indirect
-=======
-<<<<<<< HEAD
->>>>>>> e1f1a768 (fix(wesh): contact request)
 	golang.org/x/sync v0.1.0 // indirect
 	golang.org/x/term v0.6.0 // indirect
 	golang.org/x/tools v0.7.0 // indirect
@@ -405,15 +395,12 @@ require (
 	google.golang.org/appengine v1.6.7 // indirect
 	gopkg.in/square/go-jose.v2 v2.6.0 // indirect
 	gorm.io/driver/mysql v1.4.7 // indirect
-<<<<<<< HEAD
 	lukechampine.com/blake3 v1.1.7 // indirect
 	moul.io/openfiles v1.2.0 // indirect
 	moul.io/srand v1.6.1 // indirect
 	moul.io/u v1.27.0 // indirect
 	moul.io/zapfilter v1.7.0 // indirect
 	moul.io/zapring v1.3.3 // indirect
-=======
-=======
 	go.opencensus.io v0.24.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.32.0 // indirect
 	go.opentelemetry.io/otel v1.11.1 // indirect

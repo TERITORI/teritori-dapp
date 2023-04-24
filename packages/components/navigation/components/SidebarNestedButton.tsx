@@ -8,6 +8,7 @@ import Animated, {
 import { SideNotch } from "./SideNotch";
 import { SidebarButtonProps } from "./SidebarButton";
 import { useSidebar } from "../../../context/SidebarProvider";
+import { useCurrentRouteName } from "../../../hooks/useCurrentRouteName";
 import { neutralA3, primaryColor } from "../../../utils/style/colors";
 import { fontSemibold12 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
@@ -26,7 +27,7 @@ export const SidebarNestedButton: React.FC<SidebarNestedButtonProps> = ({
   iconSize = 20,
 }) => {
   const { isSidebarExpanded } = useSidebar();
-  const { name: currentRouteName } = useRoute();
+  const currentRouteName = useCurrentRouteName();
   const isComingSoon = route === "ComingSoon";
   const isSelected = route === currentRouteName;
 

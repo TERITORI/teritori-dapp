@@ -6,9 +6,12 @@ export const osmosisNetwork: NetworkInfo = {
   kind: NetworkKind.Cosmos,
   chainId: "osmosis-1",
   displayName: "Osmosis",
-  icon: "icons/networks/osmosis.svg",
   features: [NetworkFeature.Swap],
+<<<<<<< HEAD
   overrides: "cosmos-registry:osmosis",
+=======
+  icon: "osmosis.svg",
+>>>>>>> 9a0880e1 (mobile & desktop build)
   currencies: osmosisCurrencies,
   txExplorer: "https://www.mintscan.io/osmosis/txs/$hash",
   accountExplorer: "https://www.mintscan.io/osmosis/account/$address",

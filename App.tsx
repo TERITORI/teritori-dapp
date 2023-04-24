@@ -6,9 +6,11 @@ import {
 } from "@expo-google-fonts/exo";
 import { NavigationContainer } from "@react-navigation/native";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { MetaMaskProvider } from "metamask-react";
-import React, { memo, useEffect } from "react";
+import React, { memo, useEffect, useCallback } from "react";
+
 import { useForm, FormProvider } from "react-hook-form";
 import { Platform, View } from "react-native";
 import { MenuProvider } from "react-native-popup-menu";
@@ -34,6 +36,7 @@ import useSelectedWallet from "./packages/hooks/useSelectedWallet";
 import { setSelectedWalletId } from "./packages/store/slices/settings";
 import { persistor, store, useAppDispatch } from "./packages/store/store";
 import { linking } from "./packages/utils/navigation";
+SplashScreen.preventAutoHideAsync();
 
 const queryClient = new QueryClient();
 
@@ -50,6 +53,10 @@ export default function App() {
     Exo_700Bold,
   });
 
+  const onLayoutRootView = useCallback(async () => {
+    await SplashScreen.hideAsync();
+  }, []);
+
   // FIXME: Fonts don't load on electron
   if (Platform.OS !== "web" && !fontsLoaded) {
     return null;
@@ -57,6 +64,7 @@ export default function App() {
 
   return (
     <ErrorBoundary>
+<<<<<<< HEAD
       <ReduxProvider store={store}>
         <PersistGate
           loading={
@@ -75,11 +83,23 @@ export default function App() {
               <MetaMaskProvider>
                 <NavigationContainer linking={linking}>
                   <SafeAreaProvider>
+=======
+      <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
+        <QueryClientProvider client={queryClient}>
+          <FormProvider<DefaultForm> {...methods}>
+            <MetaMaskProvider>
+              <NavigationContainer linking={linking}>
+                <SafeAreaProvider>
+                  <ReduxProvider store={store}>
+>>>>>>> 9a0880e1 (mobile & desktop build)
                     <FeedbacksContextProvider>
                       <DropdownsContextProvider>
                         <WalletsProvider>
                           <WalletSyncer />
+<<<<<<< HEAD
                           <MultisigDeauth />
+=======
+>>>>>>> 9a0880e1 (mobile & desktop build)
                           <SearchBarContextProvider>
                             <TransactionModalsProvider>
                               <TNSContextProvider>
@@ -95,6 +115,7 @@ export default function App() {
                         </WalletsProvider>
                       </DropdownsContextProvider>
                     </FeedbacksContextProvider>
+<<<<<<< HEAD
                   </SafeAreaProvider>
                 </NavigationContainer>
               </MetaMaskProvider>
@@ -102,6 +123,15 @@ export default function App() {
           </QueryClientProvider>
         </PersistGate>
       </ReduxProvider>
+=======
+                  </ReduxProvider>
+                </SafeAreaProvider>
+              </NavigationContainer>
+            </MetaMaskProvider>
+          </FormProvider>
+        </QueryClientProvider>
+      </View>
+>>>>>>> 9a0880e1 (mobile & desktop build)
     </ErrorBoundary>
   );
 }

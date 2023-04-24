@@ -18,7 +18,7 @@ import { ExternalLink } from "../../components/ExternalLink";
 import FlexRow from "../../components/FlexRow";
 import { SVG } from "../../components/SVG";
 import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
-import { LoaderFullScreen } from "../../components/loaders/LoaderFullScreen";
+import { LoaderFullScreen } from "../../components/loaders/LoaderFullScreen.native";
 import { SpacerRow } from "../../components/spacer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { ConfigResponse } from "../../contracts-clients/teritori-breeding/TeritoriBreeding.types";
