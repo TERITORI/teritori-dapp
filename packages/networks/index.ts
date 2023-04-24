@@ -34,7 +34,6 @@ import {
 } from "./types";
 import { MsgBurnTokens } from "../api/teritori/mint";
 import { getKeplr } from "../utils/keplr";
-
 export * from "./types";
 
 export const WEI_TOKEN_ADDRESS = "0x0000000000000000000000000000000000000000";
@@ -452,7 +451,7 @@ export const contractExplorerLink = (
   return network.contractExplorer.replace("$address", address);
 };
 
-export const selectableNetworks = (process.env.SELECTABLE_NETWORKS_IDS || "")
+export const selectableNetworks = (env.SELECTABLE_NETWORKS_IDS || "")
   .split(",")
   .map((s) => getNetwork(s.trim()))
   .filter((n): n is NetworkInfo => !!n);
