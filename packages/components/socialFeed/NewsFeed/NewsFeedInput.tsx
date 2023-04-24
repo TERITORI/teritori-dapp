@@ -173,7 +173,10 @@ export const NewsFeedInput = React.forwardRef<
       onCloseCreateModal && onCloseCreateModal();
     };
 
-    const balances = useBalances(env.TERITORI_NETWORK_ID, wallet?.address);
+    const balances = useBalances(
+      process.env.TERITORI_NETWORK_ID,
+      wallet?.address
+    );
 
     const { setValue, handleSubmit, reset, watch } = useForm<NewPostFormValues>(
       {

@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { env } from "../../utils/env";
 import { RootState } from "../store";
 interface Settings {
   selectedNetworkId: string;
@@ -15,7 +14,7 @@ interface Settings {
 const initialState: Settings = {
   selectedWalletId: "",
   selectedNetworkId: "",
-  NFTStorageAPI: env.NFT_STORAGE_API || "",
+  NFTStorageAPI: process.env.NFT_STORAGE_API || "",
   isKeplrConnected: false,
   isAdenaConnected: false,
   alreadyVisited: false,
