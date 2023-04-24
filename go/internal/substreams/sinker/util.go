@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/ethereum/go-ethereum/accounts/abi"
+	"github.com/pkg/errors"
 	"github.com/streamingfast/bstream"
 	pbsubstreams "github.com/streamingfast/substreams/pb/sf/substreams/v1"
 )
@@ -83,7 +84,16 @@ func isSameAddress(addr1 string, addr2 string) bool {
 	return strings.EqualFold(addr1, addr2)
 }
 
-func DecodeCallData(contractABI *abi.ABI, data []byte) (*abi.Method, map[string]interface{}) {
+func ParseMethod(contractABI *abi.ABI, callData []byte) (*abi.Method, error) {
+	methodSigData := callData[:4]
+	method, err := contractABI.MethodById(methodSigData)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to parse method name")
+	}
+	return method, nil
+}
+
+func DecodeCallData(contractABI *abi.ABI, data []byte) (*abi.Method, []byte, map[string]interface{}) {
 	// The first 4 bytes of the t represent the ID of the method in the ABI
 	// https://docs.soliditylang.org/en/v0.5.3/abi-spec.html#function-selector
 	methodSigData := data[:4]
@@ -98,5 +108,12 @@ func DecodeCallData(contractABI *abi.ABI, data []byte) (*abi.Method, map[string]
 		panic(err)
 	}
 
-	return method, inputsMap
+	te, err := method.Inputs.Unpack(inputsSigData)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(te, "===========================")
+
+	return method, data, inputsMap
 }

@@ -11,6 +11,8 @@ import (
 
 	"github.com/pkg/errors"
 
+	abiGo "github.com/TERITORI/teritori-dapp/go/internal/substreams/ethereum/abi_go"
+
 	"github.com/TERITORI/teritori-dapp/go/internal/substreams/db"
 	ethereumHandlers "github.com/TERITORI/teritori-dapp/go/internal/substreams/ethereum/handlers"
 	pb "github.com/TERITORI/teritori-dapp/go/internal/substreams/pb"
@@ -95,7 +97,7 @@ type PostgresSinker struct {
 }
 
 func New(config *Config, logger *zap.Logger, tracer logging.Tracer) (*PostgresSinker, error) {
-	SQUAD_STAKING_ABI_PATH := "go/internal/substreams/ethereum/abi/squad_staking.json"
+	SQUAD_STAKING_ABI_PATH := "go/internal/substreams/ethereum/abi_json/squad_staking.json"
 	squadStakingABI := mustLoadABI(SQUAD_STAKING_ABI_PATH)
 
 	s := &PostgresSinker{
@@ -287,16 +289,24 @@ func (s *PostgresSinker) handleBlockScopeData(ctx context.Context, cursor *sink.
 		}
 
 		for _, txnData := range txns.Data {
-			// Dispatch handlers
+			// Dispatch handlers for RiotSquadStakingV3 ===============================================
 			if strings.EqualFold(txnData.Contract, s.network.RiotSquadStakingContractAddress) {
-				method, inputsMaps := DecodeCallData(s.squadStakingABI, txnData.Calldata)
+				contractABI, err := abiGo.SquadStakingV3MetaData.GetAbi()
+				if err != nil {
+					panic(fmt.Errorf("failed to parse abi: %w", err))
+				}
+
+				method, err := ParseMethod(contractABI, txnData.Calldata)
+				if err != nil {
+					panic("failed to parse method")
+				}
 
 				switch method.Name {
 				case "stake":
-					if err := ethereumHandlers.HandleSquadStake(inputsMaps); err != nil {
+					if err := ethereumHandlers.HandleSquadStake(method, txnData.Calldata); err != nil {
 						return errors.Wrap(err, "failed to handle squad stake")
 					}
-					fmt.Printf("handle stake", method.Name, inputsMaps)
+					fmt.Printf("handle stake", method.Name)
 				}
 
 			}
