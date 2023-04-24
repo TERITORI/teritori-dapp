@@ -20,7 +20,6 @@ import {
   setNFTStorageAPI,
 } from "../../store/slices/settings";
 import { useAppDispatch } from "../../store/store";
-import { env } from "../../utils/env";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { neutralA3, primaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
@@ -44,7 +43,9 @@ const NFTAPIKeyInput: React.FC = () => {
           NFT.Storage/Pinata.cloud API key (for Social Feed)
         </BrandText>
         <Pressable
-          onPress={() => dispatch(setNFTStorageAPI(env.NFT_STORAGE_API || ""))}
+          onPress={() =>
+            dispatch(setNFTStorageAPI(process.env.NFT_STORAGE_API || ""))
+          }
         >
           <Text style={[fontSemibold14, { color: primaryColor }]}>
             Reset to Teritoris' API key
