@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useWindowDimensions, View } from "react-native";
 
+import { TNSBurnNameScreen } from "./TNSBurnNameScreen";
+import { TNSConsultNameScreen } from "./TNSConsultNameScreen";
+import { TNSExploreScreen } from "./TNSExploreScreen";
+import { TNSManageScreen } from "./TNSManageScreen";
+import { TNSMintNameScreen } from "./TNSMintNameScreen";
+import { TNSRegisterScreen } from "./TNSRegisterScreen";
+import { TNSUpdateNameScreen } from "./TNSUpdateNameScreen";
 import TNSBannerPNG from "../../../assets/banners/tns.png";
 import exploreSVG from "../../../assets/icons/explore-neutral77.svg";
 import penSVG from "../../../assets/icons/pen-neutral77.svg";
@@ -12,16 +19,11 @@ import { TNSNameFinderModal } from "../../components/modals/teritoriNameService/
 import { FlowCard } from "../../components/teritoriNameService/FlowCard";
 import { useTNS } from "../../context/TNSProvider";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
+import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkKind } from "../../networks";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
-import { TNSBurnNameScreen } from "./TNSBurnNameScreen";
-import { TNSConsultNameScreen } from "./TNSConsultNameScreen";
-import { TNSExploreScreen } from "./TNSExploreScreen";
-import { TNSManageScreen } from "./TNSManageScreen";
-import { TNSMintNameScreen } from "./TNSMintNameScreen";
-import { TNSRegisterScreen } from "./TNSRegisterScreen";
-import { TNSUpdateNameScreen } from "./TNSUpdateNameScreen";
 export type TNSItems = "TNSManage" | "TNSRegister" | "TNSExplore";
 export type TNSModals =
   | "TNSManage"
@@ -66,6 +68,8 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
   const { name, setName } = useTNS();
   const navigation = useAppNavigation();
   const selectedNetwork = useSelectedNetworkInfo();
+  const selectedWallet = useSelectedWallet();
+  const { tokens } = useNSTokensByOwner(selectedWallet?.userId);
 
   const isKeplrConnected = useIsKeplrConnected();
 
@@ -158,7 +162,7 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
             }
           />
           <FlowCard
-            disabled={!isKeplrConnected}
+            disabled={!isKeplrConnected || !tokens?.length}
             label="Manage"
             description="Transfer, edit, or burn a name that you own"
             iconSVG={penSVG}

@@ -958,8 +958,8 @@ github.com/mattn/go-sqlite3 v1.14.16 h1:yOQRA0RpS5PFz/oikGwBEqvAWhWg5ufRz4ETLjwp
 github.com/mattn/go-sqlite3 v1.14.16/go.mod h1:2eHXhiwb8IkHr+BDWZGa96P6+rkvnG63S2DGjv9HUNg=
 github.com/matttproud/golang_protobuf_extensions v1.0.1 h1:4hp9jkHxhMHkqkrB3Ix0jegS5sx/RkqARlsWZ6pIwiU=
 github.com/matttproud/golang_protobuf_extensions v1.0.1/go.mod h1:D8He9yQNgCq6Z5Ld7szi9bcBfOoFv/3dc6xSMkL2PC0=
-github.com/mehanizm/airtable v0.2.6 h1:jQjmqSXC5rIESwH16rS5aUnGHnjZy17y09+xOGlVREo=
-github.com/mehanizm/airtable v0.2.6/go.mod h1:VcLiruKmStKYMtX9o77Dq+GHpVuJzMa9wjJcHKdgQNs=
+github.com/mehanizm/airtable v0.2.8 h1:tqNm0UIsnoBvZ7od4UT7X/yXpjxiTDHf+BMbX8DY+EE=
+github.com/mehanizm/airtable v0.2.8/go.mod h1:IdW+trlxx5hlfHkyl6jFdHlk4H4zwV7bpY+JqqQEFrU=
 github.com/microsoft/go-mssqldb v0.15.0/go.mod h1:Wr+jfynAR4lYmHA093AL8njUw2T6ovxe2jjBQKxBIco=
 github.com/miekg/dns v1.0.14/go.mod h1:W1PPwlIAgtquWBMBEV9nkV9Cazfe8ScdGz/Lj7v3Nrg=
 github.com/miekg/dns v1.1.26/go.mod h1:bPDLeHnStXmXAq1m/Ch/hvfNHr14JKNPMBo3VZKjuso=

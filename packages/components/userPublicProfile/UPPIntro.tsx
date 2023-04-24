@@ -1,5 +1,5 @@
 import React from "react";
-import { Image, Linking, View } from "react-native";
+import { Linking, View } from "react-native";
 
 import defaultUserProfileBannerPNG from "../../../assets/default-images/default-user-profile-banner.png";
 import discordSVG from "../../../assets/icons/discord.svg";
@@ -7,9 +7,9 @@ import teritoriSVG from "../../../assets/icons/networks/teritori.svg";
 import shareSVG from "../../../assets/icons/share.svg";
 import twitterSVG from "../../../assets/icons/twitter.svg";
 import websiteSVG from "../../../assets/icons/website.svg";
+import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { parseUserId } from "../../networks";
-import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { DEFAULT_NAME } from "../../utils/social-feed";
 import { neutral00, neutral55, neutral77 } from "../../utils/style/colors";
 import {
@@ -22,6 +22,7 @@ import { tinyAddress } from "../../utils/text";
 import { BrandText } from "../BrandText";
 import { useCopyToClipboard } from "../CopyToClipboard";
 import { CopyToClipboardSecondary } from "../CopyToClipboardSecondary";
+import { OptimizedImage } from "../OptimizedImage";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { SecondaryButtonOutline } from "../buttons/SecondaryButtonOutline";
 import { SocialButton } from "../buttons/SocialButton";
@@ -37,16 +38,17 @@ export const UPPIntro: React.FC<{
   const { copyToClipboard } = useCopyToClipboard();
   const socialButtonStyle = { marginHorizontal: 6, marginVertical: 6 };
   const [, userAddress] = parseUserId(userId);
+  const { width } = useMaxResolution();
 
   return (
     <>
       <TertiaryBox fullWidth height={320}>
         {/* Banner */}
-        <Image
+        <OptimizedImage
+          width={width}
+          height={320}
           source={{
-            uri: ipfsURLToHTTPURL(
-              metadata?.public_profile_header || defaultUserProfileBannerPNG
-            ),
+            uri: metadata?.public_profile_header || defaultUserProfileBannerPNG,
           }}
           style={{ height: "100%", width: "100%", borderRadius: 7 }}
         />

@@ -1,11 +1,16 @@
+import { Decimal } from "@cosmjs/math";
 import { useQuery } from "@tanstack/react-query";
-import { Decimal } from "cosmwasm";
 import { useMemo } from "react";
 
-import { getCosmosNetwork, getNativeCurrency } from "../networks";
+import { useCoingeckoPrices } from "./useCoingeckoPrices";
+import {
+  getCosmosNetwork,
+  getNativeCurrency,
+  getNetwork,
+  NetworkKind,
+} from "../networks";
 import { Balance } from "../utils/coins";
 import { CosmosDelegationsResponse } from "../utils/teritori";
-import { useCoingeckoPrices } from "./useCoingeckoPrices";
 
 const initialData = { delegation_responses: [] };
 
@@ -19,13 +24,21 @@ export const useDelegations = (
       if (!address || !networkId) {
         return initialData;
       }
+      // Ensuring with uses the wallet address that corresponds to the network
+      const network = getNetwork(networkId);
+      if (
+        network?.kind === NetworkKind.Cosmos &&
+        !address.includes(network.addressPrefix)
+      ) {
+        return initialData;
+      }
       return getNetworkDelegations(networkId, address);
     },
     { initialData, refetchInterval: 5000 }
   );
 
   const { prices } = useCoingeckoPrices(
-    networkDelegations.delegation_responses.map((deleg) => ({
+    networkDelegations.delegation_responses?.map((deleg) => ({
       networkId,
       denom: deleg.balance.denom,
     }))
@@ -33,7 +46,7 @@ export const useDelegations = (
 
   // Same pattern as useBalances
   const finalDelegationsBalances = useMemo(() => {
-    const balances = networkDelegations.delegation_responses.map((deleg) => {
+    const balances = networkDelegations.delegation_responses?.map((deleg) => {
       const currency = getNativeCurrency(networkId, deleg.balance.denom);
       const price =
         currency &&

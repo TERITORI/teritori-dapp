@@ -1,5 +1,6 @@
 import React, { useCallback } from "react";
 
+import { CarouselSection } from "./CarouselSection";
 import {
   Collection,
   CollectionsRequest,
@@ -14,7 +15,6 @@ import {
   COLLECTION_VIEW_XL_WIDTH,
   CollectionView,
 } from "../CollectionView";
-import { CarouselSection } from "./CarouselSection";
 
 const gap = 20;
 
@@ -34,7 +34,7 @@ export const CollectionsCarouselSection: React.FC<{
   req?: CollectionsRequest;
   filter?: (c: Collection) => boolean;
 }> = ({ title, req = defaultRequest, linkToMint, filter }) => {
-  const [collections, fetchMore] = useCollections(req, filter);
+  const { collections, fetchMore } = useCollections(req, filter);
 
   const { width } = useMaxResolution();
 

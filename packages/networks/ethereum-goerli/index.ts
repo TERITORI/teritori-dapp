@@ -1,5 +1,5 @@
-import { NetworkInfo, NetworkKind } from "../types";
 import { ethereumGoerliCurrencies } from "./currencies";
+import { NetworkInfo, NetworkKind } from "../types";
 
 const riotContractAddressGen1 = "0xdfff431d4c2275201dEd83dAd613A3DbDA1D11A7";
 

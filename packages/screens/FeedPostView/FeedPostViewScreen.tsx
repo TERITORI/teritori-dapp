@@ -6,7 +6,6 @@ import Animated, {
   useSharedValue,
 } from "react-native-reanimated";
 
-import { nonSigningSocialFeedClient } from "../../client-creators/socialFeedClient";
 import { BrandText } from "../../components/BrandText";
 import { NotFound } from "../../components/NotFound";
 import { ScreenContainer } from "../../components/ScreenContainer";
@@ -22,12 +21,11 @@ import {
 import { RefreshButton } from "../../components/socialFeed/NewsFeed/RefreshButton/RefreshButton";
 import { RefreshButtonRound } from "../../components/socialFeed/NewsFeed/RefreshButton/RefreshButtonRound";
 import { SocialThreadCard } from "../../components/socialFeed/SocialThread/SocialThreadCard";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { PostResult } from "../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
 import {
   combineFetchCommentPages,
   useFetchComments,
 } from "../../hooks/feed/useFetchComments";
+import { usePost } from "../../hooks/feed/usePost";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { getUserId, NetworkKind, parseUserId } from "../../networks";
@@ -50,7 +48,10 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
   const navigation = useAppNavigation();
   const selectedNetworkId = useSelectedNetworkId();
   const [parentOffsetValue, setParentOffsetValue] = useState(0);
-  const [postResult, setPostResult] = useState<PostResult>();
+  const { post: postResult, isLoading: isLoadingPostResult } = usePost(
+    id,
+    selectedNetworkId
+  );
   const authorNSInfo = useNSUserInfo(
     getUserId(selectedNetworkId, postResult?.post_by)
   );
@@ -60,16 +61,24 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
   const aref = useAnimatedRef<Animated.ScrollView>();
   const [flatListContentOffsetY, setFlatListContentOffsetY] = useState(0);
   const [threadCardOffsetY, setThreadCardOffsetY] = useState(0);
-  const isLoadingValue = useSharedValue(false);
   const isGoingUp = useSharedValue(false);
-  const isFirstLoad = useSharedValue(true);
-  const { setToastError } = useFeedbacks();
-  const { data, refetch, hasNextPage, fetchNextPage, isFetching, isLoading } =
-    useFetchComments({
-      parentId: postResult?.identifier,
-      totalCount: postResult?.sub_post_length,
-    });
+  const {
+    data,
+    refetch,
+    hasNextPage,
+    fetchNextPage,
+    isLoading: isLoadingComments,
+  } = useFetchComments({
+    parentId: postResult?.identifier,
+    totalCount: postResult?.sub_post_length,
+    enabled: true,
+  });
   const isNextPageAvailable = useSharedValue(hasNextPage);
+  const isLoadingSharedValue = useSharedValue(true);
+
+  useEffect(() => {
+    isLoadingSharedValue.value = isLoadingPostResult || isLoadingComments;
+  }, [isLoadingPostResult, isLoadingComments, isLoadingSharedValue]);
 
   const comments = useMemo(
     () => (data ? combineFetchCommentPages(data.pages) : []),
@@ -84,49 +93,9 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
   };
 
   useEffect(() => {
-    const fetchPost = async () => {
-      try {
-        isLoadingValue.value = true;
-        const client = await nonSigningSocialFeedClient({
-          networkId: selectedNetworkId,
-        });
-        const _post = await client.queryPost({ identifier: id });
-        setPostResult(_post);
-      } catch (error) {
-        setToastError({
-          title: "",
-          message: error.message,
-        });
-      } finally {
-        isLoadingValue.value = false;
-      }
-    };
-
-    fetchPost();
-  }, [id, selectedNetworkId, isLoadingValue, setToastError]);
-
-  useEffect(() => {
-    refetch();
-    if (postResult) {
-      setTimeout(() => {
-        isFirstLoad.value = false;
-      }, 1300);
-    }
-  }, [postResult, isFirstLoad, refetch]);
-
-  useEffect(() => {
     // HECK: updated state was not showing up in scrollhander
     isNextPageAvailable.value = hasNextPage;
   }, [hasNextPage, isNextPageAvailable]);
-
-  useEffect(() => {
-    if (isFetching || isLoading) {
-      isGoingUp.value = false;
-      isLoadingValue.value = true;
-    } else {
-      isLoadingValue.value = false;
-    }
-  }, [isFetching, isLoading, isGoingUp, isLoadingValue]);
 
   const scrollHandler = useAnimatedScrollHandler(
     {
@@ -158,7 +127,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
   };
 
   const headerLabel = useMemo(() => {
-    if (isLoadingValue.value) return "Loading Post...";
+    if (isLoadingPostResult) return "Loading Post...";
     else if (!postResult) return "Post not found";
     const author =
       authorNSInfo?.metadata?.tokenId || userAddress || DEFAULT_USERNAME;
@@ -170,7 +139,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
     postResult,
     authorNSInfo?.metadata?.tokenId,
     userAddress,
-    isLoadingValue,
+    isLoadingPostResult,
   ]);
 
   return (
@@ -193,7 +162,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
       fullWidth
       noScroll
     >
-      {isLoadingValue.value ? (
+      {isLoadingPostResult ? (
         <ActivityIndicator
           color={primaryColor}
           size="large"
@@ -241,7 +210,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
               ]}
             >
               <RefreshButton
-                isRefreshing={isLoadingValue}
+                isRefreshing={isLoadingSharedValue}
                 onPress={() => {
                   refetch();
                 }}
@@ -263,7 +232,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
           {flatListContentOffsetY >= threadCardOffsetY + 66 && (
             <View style={styles.floatingActions}>
               <RefreshButtonRound
-                isRefreshing={isLoadingValue}
+                isRefreshing={isLoadingSharedValue}
                 onPress={refetch}
               />
             </View>
@@ -276,7 +245,10 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
               parentId={id}
               replyTo={replyTo}
               onSubmitInProgress={handleSubmitInProgress}
-              onSubmitSuccess={() => setReplyTo(undefined)}
+              onSubmitSuccess={() => {
+                setReplyTo(undefined);
+                refetch();
+              }}
             />
           </View>
         </>

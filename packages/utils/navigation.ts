@@ -2,7 +2,12 @@ import { RouteProp, useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React from "react";
 
+import { PickByValue } from "./types/helper";
 import { NewPostFormValues } from "../components/socialFeed/NewsFeed/NewsFeed.type";
+
+export type RouteName =
+  | keyof PickByValue<RootStackParamList, undefined>
+  | "TNSHome";
 
 export type RootStackParamList = {
   Home: undefined;
@@ -44,11 +49,15 @@ export type RootStackParamList = {
   RiotGameLeaderboard: undefined;
   RiotGameInventory: undefined;
 
+  Swap: undefined;
   Staking: undefined;
 
   ComingSoon: undefined;
 
   Settings: undefined;
+
+  DAppStore: undefined;
+  ToriPunks: { route: string };
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -104,9 +113,16 @@ const navConfig: {
 
     // ==== Staking
     Staking: "staking",
+    // ==== Swap
+    Swap: "swap",
     // ==== ComingSoon
     ComingSoon: "coming-soon",
     Settings: "settings",
+    // ==== DAppStore
+    DAppStore: "dapp-store",
+
+    // === DApps
+    ToriPunks: "dapp/tori-punks/:route?",
   },
 };
 

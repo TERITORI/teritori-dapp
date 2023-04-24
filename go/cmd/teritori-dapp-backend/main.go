@@ -27,18 +27,19 @@ import (
 func main() {
 	fs := flag.NewFlagSet("teritori-dapp-backend", flag.ContinueOnError)
 	var (
-		enableTls       = flag.Bool("enable_tls", false, "Use TLS - required for HTTP2.")
-		tlsCertFilePath = flag.String("tls_cert_file", "../../misc/localhost.crt", "Path to the CRT/PEM file.")
-		tlsKeyFilePath  = flag.String("tls_key_file", "../../misc/localhost.key", "Path to the private key file.")
-		dbHost          = fs.String("db-dapp-host", "", "host postgreSQL database")
-		dbPort          = fs.String("db-dapp-port", "", "port for postgreSQL database")
-		dbPass          = fs.String("postgres-password", "", "password for postgreSQL database")
-		dbName          = fs.String("database-name", "", "database name for postgreSQL")
-		dbUser          = fs.String("postgres-user", "", "username for postgreSQL")
-		whitelistString = fs.String("teritori-collection-whitelist", "", "whitelist of collections to return")
-		airtableAPIKey  = fs.String("airtable-api-key", "", "api key of airtable for home and launchpad")
-		networksFile    = fs.String("networks-file", "networks.json", "path to networks config file")
-		pinataJWT       = fs.String("pinata-jwt", "", "Pinata admin JWT token")
+		enableTls                = flag.Bool("enable_tls", false, "Use TLS - required for HTTP2.")
+		tlsCertFilePath          = flag.String("tls_cert_file", "../../misc/localhost.crt", "Path to the CRT/PEM file.")
+		tlsKeyFilePath           = flag.String("tls_key_file", "../../misc/localhost.key", "Path to the private key file.")
+		dbHost                   = fs.String("db-dapp-host", "", "host postgreSQL database")
+		dbPort                   = fs.String("db-dapp-port", "", "port for postgreSQL database")
+		dbPass                   = fs.String("postgres-password", "", "password for postgreSQL database")
+		dbName                   = fs.String("database-name", "", "database name for postgreSQL")
+		dbUser                   = fs.String("postgres-user", "", "username for postgreSQL")
+		whitelistString          = fs.String("teritori-collection-whitelist", "", "whitelist of collections to return")
+		airtableAPIKey           = fs.String("airtable-api-key", "", "api key of airtable for home and launchpad")
+		airtableAPIKeydappsStore = fs.String("airtable-api-key-dapps-store", "", "api key of airtable for the dapps store")
+		networksFile             = fs.String("networks-file", "networks.json", "path to networks config file")
+		pinataJWT                = fs.String("pinata-jwt", "", "Pinata admin JWT token")
 	)
 	if err := ff.Parse(fs, os.Args[1:],
 		ff.WithEnvVars(),
@@ -50,9 +51,20 @@ func main() {
 		panic(errors.Wrap(err, "failed to parse flags"))
 	}
 
-	// Load Pinata JWT token
+	logger, err := zap.NewDevelopment()
+	if err != nil {
+		panic(errors.Wrap(err, "failed to create logger"))
+	}
+
+	// warn about missing features
+	if *airtableAPIKey == "" {
+		logger.Warn("missing AIRTABLE_API_KEY, news and banners will be disabled")
+	}
+	if *airtableAPIKeydappsStore == "" {
+		logger.Warn("missing AIRTABLE_API_KEY_DAPPS_STORE, dapp store will be disabled")
+	}
 	if *pinataJWT == "" {
-		panic(errors.New("env var PINATA_JWT must be provided"))
+		logger.Warn("missing PINATA_JWT, feed pinning will be disabled")
 	}
 
 	// load networks
@@ -79,22 +91,18 @@ func main() {
 		port = 9091
 	}
 
-	logger, err := zap.NewDevelopment()
-	if err != nil {
-		panic(errors.Wrap(err, "failed to create logger"))
-	}
-
 	whitelist := strings.Split(*whitelistString, ",")
 	for i, elem := range whitelist {
 		whitelist[i] = strings.TrimFunc(elem, unicode.IsSpace)
 	}
 
 	marketplaceSvc, err := marketplace.NewMarketplaceService(context.Background(), &marketplace.Config{
-		Logger:         logger,
-		IndexerDB:      indexerDB,
-		Whitelist:      whitelist,
-		AirtableAPIKey: *airtableAPIKey,
-		NetworkStore:   netstore,
+		Logger:                   logger,
+		IndexerDB:                indexerDB,
+		Whitelist:                whitelist,
+		AirtableAPIKey:           *airtableAPIKey,
+		AirtableAPIKeydappsStore: *airtableAPIKeydappsStore,
+		NetworkStore:             netstore,
 	})
 	if err != nil {
 		panic(errors.Wrap(err, "failed to create marketplace service"))

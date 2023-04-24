@@ -3,11 +3,11 @@ import {
   StyleSheet,
   ImageBackground,
   FlatList,
-  Image,
   View,
   TouchableOpacity,
 } from "react-native";
 
+import { GameContentView } from "./component/GameContentView";
 import iconFightSVG from "../../../assets/game/icon-fight.svg";
 import iconXPSVG from "../../../assets/game/icon-xp.svg";
 import jumbotronPNG from "../../../assets/game/leaderboard-jumbotron.png";
@@ -22,6 +22,7 @@ import {
 } from "../../api/p2e/v1/p2e";
 import { BrandText } from "../../components/BrandText";
 import FlexRow from "../../components/FlexRow";
+import { OptimizedImage } from "../../components/OptimizedImage";
 import { SVG } from "../../components/SVG";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
@@ -30,7 +31,6 @@ import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import { getCosmosNetwork, parseUserId } from "../../networks";
 import { mustGetP2eClient } from "../../utils/backend";
 import { parseUserScoreInfo } from "../../utils/game";
-import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { useAppNavigation } from "../../utils/navigation";
 import {
   additionalGreen,
@@ -45,7 +45,6 @@ import {
   fontSemibold28,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { GameContentView } from "./component/GameContentView";
 
 type RankProps = {
   changes: number;
@@ -72,14 +71,15 @@ const PlayerName: React.FC<PlayerNameProps> = ({ userId }) => {
           });
         }}
       >
-        <Image
+        <OptimizedImage
           source={{
-            uri: ipfsURLToHTTPURL(
+            uri:
               userInfo.metadata?.image ||
-                cosmosNetwork?.nameServiceDefaultImage ||
-                ""
-            ),
+              cosmosNetwork?.nameServiceDefaultImage ||
+              "",
           }}
+          width={32}
+          height={32}
           style={{
             borderRadius: 999,
             width: 32,

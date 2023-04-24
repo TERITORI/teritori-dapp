@@ -1,7 +1,7 @@
 import WaveformData from "waveform-data";
 
-import { AudioFileMetadata } from "../types/feed";
 import { BAR_LENGTH } from "./constants";
+import { AudioFileMetadata } from "../types/feed";
 
 //@ts-ignore
 window.AudioContext = window.AudioContext || window?.webkitAudioContext;

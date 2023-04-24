@@ -1,11 +1,23 @@
 const createExpoWebpackConfigAsync = require("@expo/webpack-config");
 const Dotenv = require("dotenv-webpack");
-
+const MomentLocalesPlugin = require("moment-locales-webpack-plugin");
+// const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
+const { WebpackDeduplicationPlugin } = require("webpack-deduplication-plugin");
 module.exports = async function (env, argv) {
   const config = await createExpoWebpackConfigAsync(env, argv);
 
   // needed to use environment variables
-  config.plugins.push(new Dotenv());
+  config.plugins.push(
+    new Dotenv(),
+    new MomentLocalesPlugin(), // removes all locales except en-us
+    // new BundleAnalyzerPlugin({
+    //   path: "web-report",
+    //   generateStatsFile: true,
+    // }),
+    new WebpackDeduplicationPlugin({
+      cacheDir: "./cache",
+    })
+  );
 
   // victory native specific code
   config.module.rules.push({

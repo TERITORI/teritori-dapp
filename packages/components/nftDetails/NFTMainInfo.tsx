@@ -3,6 +3,7 @@ import { RouteProp, useRoute } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 
+import { NFTAttributes } from "./NFTAttributes";
 import starSVG from "../../../assets/icons/star.svg";
 import { useTransactionModals } from "../../context/TransactionModalsProvider";
 import { NFTInfo } from "../../screens/Marketplace/NFTDetailScreen";
@@ -27,8 +28,6 @@ import { CollectionInfoInline } from "../collections/CollectionInfoInline";
 import { TransactionModals } from "../modals/transaction/TransactionModals";
 import { SpacerColumn } from "../spacer";
 import { Tabs } from "../tabs/Tabs";
-import { NFTAttributes } from "./NFTAttributes";
-import { CollapsablePiceHistory } from "./components/CollapsablePriceHistory";
 
 const mainInfoTabItems = {
   about: {
@@ -149,6 +148,12 @@ export const NFTMainInfo: React.FC<{
     if (params.openBuy) openTransactionModals();
   }, [openTransactionModals, params.openBuy]);
 
+  const CollapsablePriceHistory = React.lazy(() =>
+    import("./components/CollapsablePriceHistory").then((module) => ({
+      default: module.CollapsablePriceHistory,
+    }))
+  );
+
   return (
     <>
       <View
@@ -229,7 +234,7 @@ export const NFTMainInfo: React.FC<{
 
       {showMarketplace && (
         <Target style={styles.collapsableContainer} name="price-history">
-          <CollapsablePiceHistory nftId={nftId} />
+          <CollapsablePriceHistory nftId={nftId} />
         </Target>
       )}
       <Target name="activity" style={styles.collapsableContainer}>

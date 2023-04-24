@@ -1,6 +1,6 @@
-export const helpAreaWidth = 188;
 export const screenContainerContentMarginHorizontal = 140; // Corresponding to the space H between the Sidebar and the page content
 export const headerHeight = 80;
+export const MOBILE_HEADER_HEIGHT = 64;
 export const legalFooterHeight = 58;
 export const screenContentMaxWidth = 1092;
 export const screenContentMaxWidthLarge = 1290;
@@ -9,8 +9,9 @@ export const avatarWidth = 40;
 export const topMenuWidth = 332;
 export const smallSidebarWidth = 76;
 export const fullSidebarWidth = 210;
-export const mobileWidth = 768;
+export const MOBILE_SIDEBAR_MAX_WIDTH = 500;
 export const NEWS_FEED_MAX_WIDTH = 900;
+export const MOBILE_MAX_WIDTH = 1024;
 
 const BASE_SIZE = 8;
 
@@ -23,6 +24,16 @@ export const getResponsiveScreenContainerMarginHorizontal = (width: number) => {
     return 60;
   } else {
     return 15;
+  }
+};
+
+export const getMobileScreenContainerMarginHorizontal = (width: number) => {
+  if (width >= 992) {
+    return 60;
+  } else if (width >= 768) {
+    return 30;
+  } else {
+    return 16;
   }
 };
 

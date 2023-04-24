@@ -17,9 +17,7 @@ require (
 	github.com/gorilla/websocket v1.5.0
 	github.com/improbable-eng/grpc-web v0.14.1
 	github.com/jackc/pgx/v5 v5.1.1
-	github.com/jimsmart/schema v0.2.1
-	github.com/joho/godotenv v1.5.1
-	github.com/mehanizm/airtable v0.2.6
+	github.com/mehanizm/airtable v0.2.8
 	github.com/peterbourgon/ff/v3 v3.3.0
 	github.com/pkg/errors v0.9.1
 	github.com/rubenv/sql-migrate v1.2.0

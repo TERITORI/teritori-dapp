@@ -1,6 +1,9 @@
 import { useFocusEffect } from "@react-navigation/native";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
+import { FightSection } from "./component/FightSection";
+import { FightSectionHeader } from "./component/FightSectionHeader";
+import { GameContentView } from "./component/GameContentView";
 import addCircleSFilledSVG from "../../../assets/icons/add-circle-filled.svg";
 import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
 import { SpacerColumn } from "../../components/spacer";

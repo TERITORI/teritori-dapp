@@ -1,4 +1,4 @@
-import { purpleDark } from "../../utils/style/colors";
+import { currencyATOMcolor } from "../../utils/style/colors";
 import { CurrencyInfo } from "../types";
 
 export const cosmosHubCurrencies: CurrencyInfo[] = [
@@ -9,6 +9,6 @@ export const cosmosHubCurrencies: CurrencyInfo[] = [
     coingeckoId: "cosmos",
     icon: "icons/networks/cosmos-hub-circle.svg",
     kind: "native",
-    color: purpleDark,
+    color: currencyATOMcolor,
   },
 ];

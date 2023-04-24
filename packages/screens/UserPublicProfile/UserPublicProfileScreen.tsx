@@ -2,6 +2,10 @@ import { bech32 } from "bech32";
 import React, { useMemo, useState } from "react";
 import { View } from "react-native";
 
+import {
+  UserPublicProfileScreenHeader,
+  screenTabItems,
+} from "./UserPublicProfileHeader";
 import { PostsRequest } from "../../api/feed/v1/feed";
 import { BrandText } from "../../components/BrandText";
 import { NotFound } from "../../components/NotFound";
@@ -16,10 +20,6 @@ import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { setDocumentTitle } from "../../utils/setDocumentTitle";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import { screenContentMaxWidth } from "../../utils/style/layout";
-import {
-  UserPublicProfileScreenHeader,
-  screenTabItems,
-} from "./UserPublicProfileHeader";
 
 const TabContainer: React.FC = ({ children }) => (
   <View style={{ flex: 1, alignItems: "center" }}>
@@ -125,7 +125,7 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
   },
 }) => {
   const [selectedTab, setSelectedTab] =
-    useState<keyof typeof screenTabItems>("nfts");
+    useState<keyof typeof screenTabItems>("userPosts");
 
   const navigation = useAppNavigation();
   const [network, userAddress] = parseUserId(id);

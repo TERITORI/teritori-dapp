@@ -1,6 +1,9 @@
+import { Coin } from "@cosmjs/amino";
+import { toUtf8 } from "@cosmjs/encoding";
 import { isDeliverTxFailure } from "@cosmjs/stargate";
-import { Coin, toUtf8 } from "cosmwasm";
 
+import { UserScore } from "./../api/p2e/v1/p2e";
+import { getKeplrSquadStakingClient } from "./contracts";
 import backpackSVG from "../../assets/game/backpack.svg";
 import coinStakeSVG from "../../assets/game/coin-stake.svg";
 import controllerSVG from "../../assets/game/controller.svg";

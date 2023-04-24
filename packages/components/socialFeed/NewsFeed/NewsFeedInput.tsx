@@ -1,5 +1,5 @@
-import { coin } from "cosmwasm";
-import React, { useEffect, useImperativeHandle, useRef, useState } from "react";
+import { coin } from "@cosmjs/amino";
+import React, { useImperativeHandle, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   TextInput,
@@ -11,6 +11,18 @@ import {
 import Animated, { useSharedValue } from "react-native-reanimated";
 import { v4 as uuidv4 } from "uuid";
 
+import {
+  NewPostFormValues,
+  PostCategory,
+  ReplyToType,
+  SocialFeedMetadata,
+} from "./NewsFeed.type";
+import {
+  generatePostMetadata,
+  getPostCategory,
+  uploadPostFilesToPinata,
+} from "./NewsFeedQueries";
+import { NotEnoughFundModal } from "./NotEnoughFundModal";
 import audioSVG from "../../../../assets/icons/audio.svg";
 import cameraSVG from "../../../../assets/icons/camera.svg";
 import penSVG from "../../../../assets/icons/pen.svg";
@@ -23,7 +35,7 @@ import { useCreatePost } from "../../../hooks/feed/useCreatePost";
 import { useUpdateAvailableFreePost } from "../../../hooks/feed/useUpdateAvailableFreePost";
 import { useUpdatePostFee } from "../../../hooks/feed/useUpdatePostFee";
 import { useBalances } from "../../../hooks/useBalances";
-import { useIsMobileView } from "../../../hooks/useIsMobileView";
+import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { getUserId } from "../../../networks";
@@ -72,18 +84,6 @@ import { FileUploader } from "../../fileUploader";
 import { SpacerRow } from "../../spacer";
 import { EmojiSelector } from "../EmojiSelector";
 import { GIFSelector } from "../GIFSelector";
-import {
-  NewPostFormValues,
-  PostCategory,
-  ReplyToType,
-  SocialFeedMetadata,
-} from "./NewsFeed.type";
-import {
-  generatePostMetadata,
-  getPostCategory,
-  uploadPostFilesToPinata,
-} from "./NewsFeedQueries";
-import { NotEnoughFundModal } from "./NotEnoughFundModal";
 
 interface NewsFeedInputProps {
   type: "comment" | "post";
@@ -135,11 +135,8 @@ export const NewsFeedInput = React.forwardRef<
     const userId = getUserId(selectedNetworkId, selectedWallet?.address);
     const inputRef = useRef<TextInput>(null);
     const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
-    const isMobile = useIsMobileView();
+    const isMobile = useIsMobile();
     const { setToastError } = useFeedbacks();
-    const { postFee, updatePostFee } = useUpdatePostFee();
-    const { freePostCount, updateAvailableFreePost } =
-      useUpdateAvailableFreePost();
     const [isLoading, setLoading] = useState(false);
     const [selection, setSelection] = useState<{ start: number; end: number }>({
       start: 10,
@@ -156,19 +153,9 @@ export const NewsFeedInput = React.forwardRef<
     });
 
     const onPostCreationSuccess = () => {
-      resetForm();
+      reset();
       onSubmitSuccess && onSubmitSuccess();
       onCloseCreateModal && onCloseCreateModal();
-    };
-
-    const resetForm = () => {
-      reset();
-      updateAvailableFreePost(
-        selectedNetworkId,
-        getPostCategory(formValues),
-        wallet
-      );
-      updatePostFee(selectedNetworkId, getPostCategory(formValues));
     };
 
     const balances = useBalances(
@@ -189,20 +176,15 @@ export const NewsFeedInput = React.forwardRef<
     );
     const formValues = watch();
 
-    useEffect(() => {
-      updateAvailableFreePost(
-        selectedNetworkId,
-        getPostCategory(formValues),
-        wallet
-      );
-      updatePostFee(selectedNetworkId, getPostCategory(formValues));
-    }, [
-      formValues,
-      wallet,
+    const { postFee } = useUpdatePostFee(
       selectedNetworkId,
-      updatePostFee,
-      updateAvailableFreePost,
-    ]);
+      getPostCategory(formValues)
+    );
+    const { freePostCount } = useUpdateAvailableFreePost(
+      selectedNetworkId,
+      getPostCategory(formValues),
+      wallet
+    );
 
     const processSubmit = async () => {
       const toriBalance = balances.find((bal) => bal.denom === "utori");
@@ -310,7 +292,7 @@ export const NewsFeedInput = React.forwardRef<
     };
 
     useImperativeHandle(forwardRef, () => ({
-      resetForm,
+      resetForm: reset,
       setValue: handleTextChange,
       focusInput,
     }));

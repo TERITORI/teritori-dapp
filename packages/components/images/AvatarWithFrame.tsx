@@ -1,6 +1,5 @@
 import React, { useMemo } from "react";
 import {
-  Image,
   StyleProp,
   View,
   ViewStyle,
@@ -11,7 +10,7 @@ import {
 import emptyCircleFrameSVG from "../../../assets/empty-circle-frame.svg";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { getCosmosNetwork } from "../../networks";
-import { ipfsURLToHTTPURL } from "../../utils/ipfs";
+import { OptimizedImage } from "../OptimizedImage";
 import { SVG } from "../SVG";
 import { AnimationFadeIn } from "../animations/AnimationFadeIn";
 
@@ -45,12 +44,11 @@ export const AvatarWithFrame: React.FC<{
         />
       ) : (
         <AnimationFadeIn style={styles.absolute}>
-          <Image
-            resizeMode="contain"
+          <OptimizedImage
+            width={sizedStyles.image.width}
+            height={sizedStyles.image.height}
             source={{
-              uri: ipfsURLToHTTPURL(
-                image ? image : network?.nameServiceDefaultImage || ""
-              ),
+              uri: image ? image : network?.nameServiceDefaultImage || "",
             }}
             style={sizedStyles.image}
           />

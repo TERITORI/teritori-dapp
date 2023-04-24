@@ -54,7 +54,7 @@ export const useMintEnded = (collectionId: string, enabled: boolean = true) => {
       console.error(`unknown collectionId ${collectionId}`);
       return false;
     },
-    { enabled }
+    { enabled, staleTime: Infinity }
   );
   return data;
 };

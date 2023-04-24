@@ -1,18 +1,23 @@
 import React from "react";
 import { useWindowDimensions, View } from "react-native";
 
+import { AssetRatioByChain } from "./AssetRatioByChain";
 import {
   ASSET_RATIO_MARGIN_RIGHT,
   ASSET_RATIO_WIDTH,
   OVERVIEW_FLEX_BREAK_WIDTH,
   TOKEN_ALLOCATION_WIDTH,
 } from "../constants";
-import { AssetRatioByChain } from "./AssetRatioByChain";
-import { TokenAllocation } from "./TokenAllocation";
 
 export const Overview: React.FC = () => {
   const { width } = useWindowDimensions();
   const isBreakPoint = width < OVERVIEW_FLEX_BREAK_WIDTH;
+
+  const TokenAllocation = React.lazy(() =>
+    import("./TokenAllocation").then((module) => ({
+      default: module.TokenAllocation,
+    }))
+  );
 
   return (
     <View

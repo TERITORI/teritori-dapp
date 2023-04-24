@@ -1,8 +1,8 @@
 import React from "react";
 
+import { DAppCard } from "./DAppCard";
 import walletSVG from "../../../assets/icons/wallet.svg";
 import { useWallets } from "../../context/WalletsProvider";
-import { DAppCard } from "./DAppCard";
 
 export const MyWalletsCard: React.FC<{ onPress?: () => void }> = ({
   onPress,

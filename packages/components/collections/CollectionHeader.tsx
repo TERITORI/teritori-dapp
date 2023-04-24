@@ -1,9 +1,11 @@
 import { Decimal } from "@cosmjs/math";
 import Clipboard from "@react-native-clipboard/clipboard";
 import React, { useMemo } from "react";
-import { View, Image, Platform, StyleSheet, Linking } from "react-native";
+import { View, Platform, StyleSheet, Linking } from "react-native";
 
-import bannerCollection from "../../../assets/default-images/banner-collection.png";
+import { CollectionStat } from "./CollectionStat";
+import { TabsListType } from "./types";
+import bannerCollection from "../../../assets/default-images/banner-collection.jpg";
 import etherscanSVG from "../../../assets/icons/etherscan.svg";
 import shareSVG from "../../../assets/icons/share.svg";
 import { SortDirection } from "../../api/marketplace/v1/marketplace";
@@ -17,9 +19,7 @@ import { SpacerRow } from "../../components/spacer";
 import { Tabs } from "../../components/tabs/Tabs";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useCoingeckoPrices } from "../../hooks/useCoingeckoPrices";
-import { CollectionInfo } from "../../hooks/useCollectionInfo";
 import { useCollectionStats } from "../../hooks/useCollectionStats";
-import { useImageResizer } from "../../hooks/useImageResizer";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
@@ -27,11 +27,11 @@ import {
   getNativeCurrency,
   parseCollectionId,
 } from "../../networks";
+import { CollectionInfo } from "../../utils/collection";
 import { neutral33 } from "../../utils/style/colors";
 import { fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { CollectionStat } from "./CollectionStat";
-import { TabsListType } from "./types";
+import { OptimizedImage } from "../OptimizedImage";
 
 // All the screen content before the Flatlist used to display NFTs
 export const CollectionHeader: React.FC<{
@@ -52,11 +52,8 @@ export const CollectionHeader: React.FC<{
   const wallet = useSelectedWallet();
   // variables
   const stats = useCollectionStats(collectionId, wallet?.userId);
-  const { width: maxWidth } = useMaxResolution();
-  const { width, height } = useImageResizer({
-    image: collectionInfo.bannerImage || bannerCollection,
-    maxSize: { width: maxWidth },
-  });
+  const { width } = useMaxResolution();
+  const height = width * (311 / 1092); // aspect ratio of the r!ot collection banner
   const [network, collectionMintAddress] = parseCollectionId(collectionId);
   const { setToastSuccess } = useFeedbacks();
 
@@ -138,14 +135,14 @@ export const CollectionHeader: React.FC<{
   };
 
   // returns
-  return (
+  return width > 0 ? (
     <View style={{ maxWidth: width, alignSelf: "center" }}>
-      <Image
-        source={
-          collectionInfo.bannerImage
-            ? { uri: collectionInfo.bannerImage }
-            : bannerCollection
-        }
+      <OptimizedImage
+        width={width}
+        height={height}
+        source={{
+          uri: collectionInfo.bannerImage || bannerCollection,
+        }}
         style={{
           height,
           width,
@@ -262,7 +259,7 @@ export const CollectionHeader: React.FC<{
         />
       </PrimaryBox>
     </View>
-  );
+  ) : null;
 };
 
 const styles = StyleSheet.create({

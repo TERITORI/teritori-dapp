@@ -1,13 +1,13 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { View } from "react-native";
 
+import { NavBarGovernance } from "./NavBarGovernance";
+import { Proposal, ProposalStatus } from "./types";
 import { BrandText } from "../../components/BrandText/BrandText";
 import { GovernanceBox } from "../../components/GovernanceBox/GovernanceBox";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { NetworkKind, mustGetCosmosNetwork } from "../../networks";
-import { NavBarGovernance } from "./NavBarGovernance";
-import { Proposal, ProposalStatus } from "./types";
 
 // FIXME: properly handle pagination
 
