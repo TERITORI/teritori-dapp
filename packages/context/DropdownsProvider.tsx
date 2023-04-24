@@ -57,7 +57,7 @@ export const DropdownsContextProvider: React.FC = ({ children }) => {
       if (
         openedDropdownRef &&
         openedDropdownRef.current &&
-        !openedDropdownRef.current.contains(e.target)
+        !openedDropdownRef.current?.contains?.(e.target)
       ) {
         closeOpenedDropdown();
       }

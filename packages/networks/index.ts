@@ -52,7 +52,6 @@ import {
   teritoriProtoRegistry,
 } from "../api/teritori-chain";
 import { getKeplr } from "../utils/keplr";
-
 export * from "./types";
 
 export const WEI_TOKEN_ADDRESS = "0x0000000000000000000000000000000000000000";

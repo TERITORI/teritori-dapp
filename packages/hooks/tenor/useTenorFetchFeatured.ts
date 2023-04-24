@@ -2,12 +2,13 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import axios, { AxiosResponse } from "axios";
 
 import { TenorFetchResponse, TenorItemType, TenorResponse } from "./types";
+import { env } from "../../utils/env";
 
 export const tenorRequest = axios.create({
   baseURL: "https://tenor.googleapis.com/v2",
   method: "GET",
   params: {
-    key: process.env.PUBLIC_TENOR_KEY,
+    key: env.PUBLIC_TENOR_KEY,
   },
 });
 

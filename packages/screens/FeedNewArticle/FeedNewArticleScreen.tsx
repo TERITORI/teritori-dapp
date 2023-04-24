@@ -33,6 +33,7 @@ import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getUserId, NetworkFeature } from "../../networks";
 import { selectNFTStorageAPI } from "../../store/slices/settings";
 import { prettyPrice } from "../../utils/coins";
+import { env } from "../../utils/env";
 import { generateIpfsKey } from "../../utils/ipfs";
 import { IMAGE_MIME_TYPES } from "../../utils/mime";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
