@@ -1,9 +1,9 @@
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React, { useState } from "react";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
 import avatar from "../../../../assets/icons/avatar.svg";
 import { SVG } from "../../../components/SVG";
-
+import MessagePopup from "./MessagePopup";
 interface IChatMessageProps {
   message: string;
   isSender: boolean;
@@ -18,6 +18,7 @@ const ChatMessage = ({
   receiverName,
 }: IChatMessageProps) => {
   const senderName = "me";
+  const [showPopup, setShowPopup] = useState(false);
 
   return (
     <View style={isSender ? styles.senderWrapper : styles.receiverWrapper}>
@@ -25,8 +26,14 @@ const ChatMessage = ({
       <View
         style={[isSender ? styles.senderContainer : styles.receiverContainer]}
       >
-        <Text style={styles.message}>{message}</Text>
-
+        <TouchableOpacity onPress={() => setShowPopup(!showPopup)}>
+          <Text style={styles.message}>{message}</Text>
+        </TouchableOpacity>
+        {!isSender && showPopup && (
+          <View style={styles.popupContainer}>
+            <MessagePopup />
+          </View>
+        )}
         <View
           style={{
             flexDirection: "row",
@@ -66,7 +73,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     marginLeft: "auto",
     width: "auto",
-    maxWidth: "60%",
+    maxWidth: "40%",
     zIndex: 1,
   },
   receiverContainer: {
@@ -76,9 +83,23 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     marginHorizontal: 10,
     width: "auto",
-    maxWidth: "60%",
+    maxWidth: "40%",
     zIndex: 1,
     marginRight: "auto",
+  },
+  popupContainer: {
+    backgroundColor: "rgba(41, 41, 41, 0.8)",
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 16,
+
+    width: "auto",
+
+    zIndex: 2,
+
+    position: "absolute",
+    right: -140,
+    top: -145,
   },
   message: {
     color: "#FFFFFF",
