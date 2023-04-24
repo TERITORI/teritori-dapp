@@ -1,17 +1,17 @@
+import { FC } from "react";
+
 import {
   gradientColorBlue,
   gradientColorDarkerBlue,
   gradientColorTurquoise,
 } from "../../../../utils/style/colors";
+import { layout } from "../../../../utils/style/layout";
 import { PrimaryBox } from "../../../boxes/PrimaryBox";
 
-export const TOOLBAR_HEIGHT = 48;
-
-export const ToolbarContainer: React.FC = ({ children }) => {
+export const ToolbarContainer: FC = ({ children }) => {
   return (
     <PrimaryBox
       fullWidth
-      height={TOOLBAR_HEIGHT}
       colors={[
         gradientColorDarkerBlue,
         gradientColorBlue,
@@ -22,6 +22,7 @@ export const ToolbarContainer: React.FC = ({ children }) => {
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "center",
+        padding: layout.padding_x0_5,
       }}
     >
       {children}

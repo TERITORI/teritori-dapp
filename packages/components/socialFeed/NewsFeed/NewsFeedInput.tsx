@@ -6,7 +6,6 @@ import {
   View,
   ViewStyle,
   Pressable,
-  StyleSheet,
   useWindowDimensions,
 } from "react-native";
 import Animated, { useSharedValue } from "react-native-reanimated";
@@ -36,6 +35,7 @@ import { useCreatePost } from "../../../hooks/feed/useCreatePost";
 import { useUpdateAvailableFreePost } from "../../../hooks/feed/useUpdateAvailableFreePost";
 import { useUpdatePostFee } from "../../../hooks/feed/useUpdatePostFee";
 import { useBalances } from "../../../hooks/useBalances";
+import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { getUserId } from "../../../networks";
@@ -69,11 +69,16 @@ import {
   fontSemibold13,
   fontSemibold16,
 } from "../../../utils/style/fonts";
-import { layout, RESPONSIVE_BREAKPOINT_S } from "../../../utils/style/layout";
+import {
+  layout,
+  RESPONSIVE_BREAKPOINT_S,
+  SOCIAL_FEED_BREAKPOINT_M,
+} from "../../../utils/style/layout";
 import { replaceBetweenString } from "../../../utils/text";
 import { LocalFileData, RemoteFileData } from "../../../utils/types/feed";
 import { BrandText } from "../../BrandText";
 import { FilesPreviewsContainer } from "../../FilePreview/FilesPreviewsContainer";
+import FlexRow from "../../FlexRow";
 import { IconBox } from "../../IconBox";
 import { OmniLink } from "../../OmniLink";
 import { SVG } from "../../SVG";
@@ -107,7 +112,6 @@ export interface NewsFeedInputHandle {
 
 const CHARS_LIMIT_WARNING_MULTIPLIER = 0.92;
 const MAX_IMAGES = 4;
-const BREAKPOINT_M = 800;
 const BREAKPOINT_S = 559;
 
 export const NewsFeedInput = React.forwardRef<
@@ -129,6 +133,7 @@ export const NewsFeedInput = React.forwardRef<
     forwardRef
   ) => {
     const { width } = useWindowDimensions();
+    const isMobile = useIsMobile();
     const [viewWidth, setViewWidth] = useState(0);
     const inputMaxHeight = 400;
     const inputMinHeight = 20;
@@ -343,51 +348,64 @@ export const NewsFeedInput = React.forwardRef<
           }}
           noRightBrokenBorder
         >
-          <Pressable onPress={focusInput} style={styles.insideContainer}>
-            <SVG
-              height={24}
-              width={24}
-              source={penSVG}
-              color={secondaryColor}
-              style={{
-                alignSelf: "flex-end",
-                marginRight: layout.padding_x1_5,
-              }}
-            />
-            <Animated.View style={{ flex: 1, height: "auto" }}>
-              <TextInput
-                ref={inputRef}
-                value={formValues.message}
-                onSelectionChange={(event) =>
-                  setSelection(event.nativeEvent.selection)
-                }
-                placeholder={`Hey yo! ${
-                  type === "post" ? "Post something" : "Write your comment"
-                } ${width < RESPONSIVE_BREAKPOINT_S ? "" : "here! _____"}`}
-                placeholderTextColor={neutral77}
-                onChangeText={handleTextChange}
-                multiline
-                onContentSizeChange={(e) => {
-                  // TODO: onContentSizeChange is not fired when deleting lines. We can only grow the input, but not shrink
-                  if (e.nativeEvent.contentSize.height < inputMaxHeight) {
-                    inputHeight.value = e.nativeEvent.contentSize.height;
-                  }
+          <Pressable
+            onPress={focusInput}
+            style={{
+              width: "100%",
+              paddingRight: isMobile
+                ? layout.padding_x1_5
+                : layout.padding_x2_5,
+              paddingLeft: isMobile ? layout.padding_x1_5 : layout.padding_x3,
+              paddingTop: isMobile ? layout.padding_x1_5 : layout.padding_x3,
+              paddingBottom: layout.padding_x1_5,
+            }}
+          >
+            <FlexRow style={{ marginTop: layout.padding_x1 }}>
+              <SVG
+                height={24}
+                width={24}
+                source={penSVG}
+                color={secondaryColor}
+                style={{
+                  alignSelf: "flex-end",
+                  marginRight: layout.padding_x1_5,
                 }}
-                style={[
-                  fontSemibold16,
-                  {
-                    height: formValues.message
-                      ? inputHeight.value || inputMinHeight
-                      : inputMinHeight,
-                    width: "100%",
-                    color: secondaryColor,
-                    //@ts-ignore
-                    outlineStyle: "none",
-                    outlineWidth: 0,
-                  },
-                ]}
               />
-            </Animated.View>
+              <Animated.View style={{ flex: 1, height: "auto" }}>
+                <TextInput
+                  ref={inputRef}
+                  value={formValues.message}
+                  onSelectionChange={(event) =>
+                    setSelection(event.nativeEvent.selection)
+                  }
+                  placeholder={`Hey yo! ${
+                    type === "post" ? "Post something" : "Write your comment"
+                  } ${width < RESPONSIVE_BREAKPOINT_S ? "" : "here! _____"}`}
+                  placeholderTextColor={neutral77}
+                  onChangeText={handleTextChange}
+                  multiline
+                  onContentSizeChange={(e) => {
+                    // TODO: onContentSizeChange is not fired when deleting lines. We can only grow the input, but not shrink
+                    if (e.nativeEvent.contentSize.height < inputMaxHeight) {
+                      inputHeight.value = e.nativeEvent.contentSize.height;
+                    }
+                  }}
+                  style={[
+                    fontSemibold16,
+                    {
+                      height: formValues.message
+                        ? inputHeight.value || inputMinHeight
+                        : inputMinHeight,
+                      width: "100%",
+                      color: secondaryColor,
+                      //@ts-ignore
+                      outlineStyle: "none",
+                      outlineWidth: 0,
+                    },
+                  ]}
+                />
+              </Animated.View>
+            </FlexRow>
             {/* Changing this text's color depending on the message length */}
             <BrandText
               style={[
@@ -405,9 +423,8 @@ export const NewsFeedInput = React.forwardRef<
                       SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
                     ? errorColor
                     : primaryColor,
-                  position: "absolute",
-                  bottom: 12,
-                  right: 20,
+                  marginTop: layout.padding_x0_5,
+                  alignSelf: "flex-end",
                 },
               ]}
             >
@@ -449,10 +466,16 @@ export const NewsFeedInput = React.forwardRef<
         <View
           style={{
             backgroundColor: neutral17,
-            paddingVertical: layout.padding_x1_5,
-            paddingHorizontal: layout.padding_x2_5,
-            flexDirection: viewWidth < BREAKPOINT_M ? "column" : "row",
-            alignItems: viewWidth < BREAKPOINT_M ? "flex-end" : "center",
+            paddingVertical: isMobile
+              ? layout.padding_x1_5
+              : layout.padding_x1_5,
+            paddingHorizontal: isMobile
+              ? layout.padding_x1_5
+              : layout.padding_x2_5,
+            flexDirection:
+              viewWidth < SOCIAL_FEED_BREAKPOINT_M ? "column" : "row",
+            alignItems:
+              viewWidth < SOCIAL_FEED_BREAKPOINT_M ? "flex-end" : "center",
             justifyContent: "space-between",
             borderRadius: 8,
           }}
@@ -463,10 +486,17 @@ export const NewsFeedInput = React.forwardRef<
                 flexDirection: "row",
                 alignItems: "center",
               },
-              viewWidth < BREAKPOINT_M && { alignSelf: "flex-start" },
+              viewWidth < SOCIAL_FEED_BREAKPOINT_M && {
+                alignSelf: "flex-start",
+              },
             ]}
           >
-            <SVG source={priceSVG} height={24} width={24} color={neutral77} />
+            <SVG
+              source={priceSVG}
+              height={24}
+              width={24}
+              color={secondaryColor}
+            />
             <BrandText
               style={[
                 fontSemibold13,
@@ -493,7 +523,7 @@ export const NewsFeedInput = React.forwardRef<
               viewWidth < BREAKPOINT_S && { width: "100%" },
             ]}
           >
-            {viewWidth < BREAKPOINT_S && <SpacerColumn size={2} />}
+            {viewWidth < BREAKPOINT_S && <SpacerColumn size={1.5} />}
 
             <View
               style={{
@@ -509,6 +539,7 @@ export const NewsFeedInput = React.forwardRef<
 
               <GIFSelector
                 optionsContainer={{ marginLeft: 0, marginTop: -6 }}
+                buttonStyle={{ marginRight: layout.padding_x2_5 }}
                 onGIFSelected={(url) => {
                   // Don't add if already added
                   if (formValues.gifs?.find((gif) => gif === url)) return;
@@ -591,7 +622,7 @@ export const NewsFeedInput = React.forwardRef<
               </FileUploader>
             </View>
 
-            {viewWidth < BREAKPOINT_S && <SpacerColumn size={2} />}
+            {viewWidth < BREAKPOINT_S && <SpacerColumn size={1.5} />}
 
             <View
               style={{
@@ -648,13 +679,3 @@ export const NewsFeedInput = React.forwardRef<
     );
   }
 );
-
-const styles = StyleSheet.create({
-  insideContainer: {
-    width: "100%",
-    paddingVertical: layout.padding_x3,
-    paddingHorizontal: layout.padding_x2_5,
-    flexDirection: "row",
-    alignItems: "center",
-  },
-});

@@ -192,7 +192,6 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
             contentContainerStyle={styles.contentContainer}
             onScroll={scrollHandler}
             scrollEventThrottle={1}
-            // style={{alignItems: "center"}}
           >
             {isMobile && <MobileTitle title={headerLabel} />}
             <View
@@ -201,7 +200,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
                   windowWidth < RESPONSIVE_BREAKPOINT_S ? windowWidth : width,
                 maxWidth: NEWS_FEED_MAX_WIDTH,
                 alignItems: "center",
-                paddingVertical: layout.padding_x4,
+                paddingVertical: layout.padding_x2,
               }}
             >
               {!!postResult && (
@@ -235,7 +234,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
                 style={[
                   {
                     position: "absolute",
-                    top: threadCardOffsetY + 22,
+                    top: threadCardOffsetY + 6,
                     flexDirection: "row",
                     width: "100%",
                     alignItems: "center",

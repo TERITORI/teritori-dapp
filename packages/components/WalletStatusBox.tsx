@@ -14,15 +14,12 @@ import {
   fontSemibold14,
 } from "../utils/style/fonts";
 import { layout, RESPONSIVE_BREAKPOINT_S } from "../utils/style/layout";
+import { tinyAddress } from "../utils/text";
 
 export const WalletStatusBox: React.FC = () => {
   const { width } = useWindowDimensions();
   const selectedWallet = useSelectedWallet();
   const selectedNetworkInfo = useSelectedNetworkInfo();
-
-  const getShortAddress = (address: string) => {
-    return `${address.slice(0, 5)}...${address.slice(-2)}`;
-  };
 
   return (
     <TertiaryBox
@@ -51,9 +48,10 @@ export const WalletStatusBox: React.FC = () => {
                 {selectedNetworkInfo?.displayName}
               </BrandText>
               <BrandText style={[fontSemibold13]}>
-                {width < RESPONSIVE_BREAKPOINT_S
-                  ? getShortAddress(selectedWallet.address)
-                  : selectedWallet.address}
+                {tinyAddress(
+                  selectedWallet.address,
+                  width < RESPONSIVE_BREAKPOINT_S ? 20 : 40
+                )}
               </BrandText>
             </View>
           </View>

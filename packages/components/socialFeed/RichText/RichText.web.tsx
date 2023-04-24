@@ -38,7 +38,12 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  useWindowDimensions,
+  View,
+} from "react-native";
 
 import { RichHashtagRenderer } from "./RichRenderer/RichHashtagRenderer";
 import { RichHashtagRendererConsultation } from "./RichRenderer/RichHashtagRendererConsultation";
@@ -53,7 +58,7 @@ import {
   SelectedEntity,
 } from "./RichText.type";
 import { ActionsContainer } from "./Toolbar/ActionsContainer";
-import { ToolbarContainer } from "./ToolbarContainer";
+import { ToolbarContainer } from "./Toolbar/ToolbarContainer";
 import createInlineToolbarPlugin from "./inline-toolbar";
 import audioSVG from "../../../../assets/icons/audio.svg";
 import cameraSVG from "../../../../assets/icons/camera.svg";
@@ -75,7 +80,7 @@ import {
 } from "../../../utils/social-feed";
 import { neutral77 } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+import { layout, SOCIAL_FEED_BREAKPOINT_M } from "../../../utils/style/layout";
 import { LocalFileData } from "../../../utils/types/feed";
 import { BrandText } from "../../BrandText";
 import { AudioView } from "../../FilePreview/AudioView";
@@ -161,6 +166,7 @@ export const RichText: React.FC<RichTextProps> = ({
     videoPlugin,
   ];
 
+  const { width: windowWidth } = useWindowDimensions();
   const editorRef = useRef<Editor>(null);
   const [editorState, setEditorState] = useState(
     createStateFromHTML(initialValue)
@@ -321,13 +327,13 @@ export const RichText: React.FC<RichTextProps> = ({
       <EmojiSelector
         onEmojiSelected={(emoji) => addEmoji(emoji)}
         optionsContainer={{ marginLeft: 0, marginTop: -6 }}
-        buttonStyle={[styles.toolbarCustomButton, { marginRight: -18 }]}
+        buttonStyle={styles.toolbarCustomButton}
       />
 
       <GIFSelector
         onGIFSelected={(url) => (url ? addGIF(url) : undefined)}
         optionsContainer={{ marginLeft: 0, marginTop: -6 }}
-        buttonStyle={[styles.toolbarCustomButton, { marginRight: -18 }]}
+        buttonStyle={styles.toolbarCustomButton}
         disabled={isGIFSelectorDisabled}
       />
 
@@ -460,23 +466,31 @@ export const RichText: React.FC<RichTextProps> = ({
         ))}
 
       {!isPostConsultation && (
-        <ActionsContainer>
-          <ToolbarContainer>
-            <Toolbar>
-              {(externalProps) => <Buttons externalProps={externalProps} />}
-            </Toolbar>
-          </ToolbarContainer>
+        <>
+          <SpacerColumn size={3} />
+          <ActionsContainer>
+            <ToolbarContainer>
+              <Toolbar>
+                {(externalProps) => <Buttons externalProps={externalProps} />}
+              </Toolbar>
+            </ToolbarContainer>
 
-          <SpacerRow size={3} />
-          <PrimaryButton
-            disabled={publishDisabled}
-            loader
-            isLoading={loading}
-            text="Publish"
-            size="M"
-            onPress={handlePublish}
-          />
-        </ActionsContainer>
+            {windowWidth < SOCIAL_FEED_BREAKPOINT_M ? (
+              <SpacerColumn size={1.5} />
+            ) : (
+              <SpacerRow size={3} />
+            )}
+            <PrimaryButton
+              disabled={publishDisabled}
+              loader
+              isLoading={loading}
+              text="Publish"
+              size="M"
+              onPress={handlePublish}
+            />
+          </ActionsContainer>
+          <SpacerColumn size={2} />
+        </>
       )}
     </View>
   );
