@@ -11,4 +11,4 @@ export const isNSPath = (str: string) => str.includes("::");
 export const isNSToken = (str: string) => !isNSPath(str);
 
 export const isTokenOwnedByUser = (tokensArray: string[], name: string) =>
-  tokensArray.includes(name + env.TLD);
+  tokensArray.includes(name + process.env.TLD);
