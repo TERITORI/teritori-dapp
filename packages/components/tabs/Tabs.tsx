@@ -44,6 +44,7 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
   gradientText,
   tabTextStyle,
   tabContainerStyle,
+  noUnderline,
 }: {
   items: T;
   selected: keyof T;
@@ -54,19 +55,23 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
   gradientText?: boolean;
   tabTextStyle?: StyleProp<TextStyle>;
   tabContainerStyle?: StyleProp<ViewStyle>;
+  noUnderline?: boolean;
 }) => {
   const { scrollTo } = useScrollTo();
   const itemsArray = Object.entries(items);
   return (
     // styles are applied weirdly to scrollview so it's better to apply them to a constraining view
-    <View style={style}>
+    <View
+      style={[
+        !noUnderline && { borderBottomColor: neutral33, borderBottomWidth: 1 },
+        style,
+      ]}
+    >
       <ScrollView
         showsHorizontalScrollIndicator={false}
         horizontal
         contentContainerStyle={{
           alignItems: "center",
-          borderBottomColor: neutral33,
-          borderBottomWidth: 1,
         }}
       >
         {itemsArray.map(([key, item], index) => {
