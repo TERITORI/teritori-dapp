@@ -20,7 +20,6 @@ import {
   combineFetchFeedPages,
   useFetchFeed,
 } from "../../../hooks/feed/useFetchFeed";
-import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useMaxResolution } from "../../../hooks/useMaxResolution";
 import {
   layout,
@@ -48,7 +47,6 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
   additionalMention,
 }) => {
   const { width: windowWidth } = useWindowDimensions();
-  const isMobile = useIsMobile();
   const { width } = useMaxResolution();
   const { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading } =
     useFetchFeed(req);
@@ -96,7 +94,10 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
   const ListHeaderComponent = useCallback(
     () => (
       <>
-        <View onLayout={onHeaderLayout}>
+        <View
+          onLayout={onHeaderLayout}
+          style={{ width, alignSelf: "center", alignItems: "center" }}
+        >
           <Header />
         </View>
         <SpacerColumn size={2.5} />
@@ -111,10 +112,6 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
           <NewsFeedInput
             type="post"
             onSubmitSuccess={refetch}
-            style={{
-              width: isMobile ? width : "100%",
-              maxWidth: screenContentMaxWidth,
-            }}
             additionalMention={additionalMention}
             additionalHashtag={additionalHashtag}
           />
@@ -130,7 +127,6 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
       additionalMention,
       additionalHashtag,
       refetch,
-      isMobile,
       width,
     ]
   );
@@ -179,7 +175,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
         )}
         ListHeaderComponentStyle={{
           zIndex: 1,
-          width: windowWidth < RESPONSIVE_BREAKPOINT_S ? windowWidth : width,
+          width: windowWidth,
           maxWidth: screenContentMaxWidth,
         }}
         ListHeaderComponent={ListHeaderComponent}

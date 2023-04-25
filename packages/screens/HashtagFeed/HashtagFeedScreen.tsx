@@ -8,8 +8,9 @@ import { MobileTitle } from "../../components/ScreenContainer/ScreenContainerMob
 import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
-import { ScreenFC } from "../../utils/navigation";
+import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { neutral22, primaryColor } from "../../utils/style/colors";
+import { fontSemibold20 } from "../../utils/style/fonts";
 import { layout, screenContentMaxWidth } from "../../utils/style/layout";
 
 const Header = ({ hashtag }: { hashtag: string }) => {
@@ -58,6 +59,7 @@ export const HashtagFeedScreen: ScreenFC<"HashtagFeed"> = ({
   },
 }) => {
   const isMobile = useIsMobile();
+  const navigation = useAppNavigation();
   const feedRequest: PostsRequest = useMemo(() => {
     return {
       filter: {
@@ -72,7 +74,20 @@ export const HashtagFeedScreen: ScreenFC<"HashtagFeed"> = ({
   }, [hashtag]);
 
   return (
-    <ScreenContainer responsive footerChildren={<></>} fullWidth noScroll>
+    <ScreenContainer
+      responsive
+      footerChildren={<></>}
+      fullWidth
+      noScroll
+      headerChildren={
+        <BrandText style={fontSemibold20}>{`Tag ${hashtag}`}</BrandText>
+      }
+      onBackPress={() =>
+        navigation.canGoBack()
+          ? navigation.goBack()
+          : navigation.navigate("Feed")
+      }
+    >
       <NewsFeed
         additionalHashtag={hashtag}
         req={feedRequest}

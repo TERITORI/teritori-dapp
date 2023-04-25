@@ -7,7 +7,6 @@ import { useMaxResolution } from "../../../hooks/useMaxResolution";
 import { feedsTabItems } from "../../../utils/social-feed";
 import { primaryColor } from "../../../utils/style/colors";
 import { fontSemibold16 } from "../../../utils/style/fonts";
-import { screenContentMaxWidth } from "../../../utils/style/layout";
 
 export type FeedHeaderProps = {
   selectedTab: keyof typeof feedsTabItems;
@@ -25,7 +24,7 @@ export const FeedHeader: React.FC<FeedHeaderProps> = ({
         items={feedsTabItems}
         selected={selectedTab}
         onSelect={onTabChange}
-        style={[styles.header, { width, maxWidth: screenContentMaxWidth }]}
+        style={[styles.header, { width }]}
         borderColorTabSelected={primaryColor}
         gradientText
         tabTextStyle={fontSemibold16}

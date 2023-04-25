@@ -281,31 +281,18 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
             </View>
           )}
 
-          <View
-            style={[
-              styles.footer,
-              {
-                width: isMobile ? width : "100%",
-                maxWidth: screenContentMaxWidth,
-              },
-            ]}
-          >
-            <NewsFeedInput
-              ref={feedInputRef}
-              type="comment"
-              parentId={id}
-              replyTo={replyTo}
-              onSubmitInProgress={handleSubmitInProgress}
-              onSubmitSuccess={() => {
-                setReplyTo(undefined);
-                refetch();
-              }}
-              style={{
-                width: isMobile ? width : "100%",
-                maxWidth: screenContentMaxWidth,
-              }}
-            />
-          </View>
+          <NewsFeedInput
+            style={{ alignSelf: "center" }}
+            ref={feedInputRef}
+            type="comment"
+            parentId={id}
+            replyTo={replyTo}
+            onSubmitInProgress={handleSubmitInProgress}
+            onSubmitSuccess={() => {
+              setReplyTo(undefined);
+              refetch();
+            }}
+          />
         </>
       )}
     </ScreenContainer>
@@ -316,10 +303,6 @@ const styles = StyleSheet.create({
   contentContainer: {
     alignItems: "center",
     alignSelf: "center",
-  },
-  footer: {
-    alignSelf: "center",
-    marginBottom: layout.padding_x2,
   },
   indicator: {
     marginBottom: 56,
