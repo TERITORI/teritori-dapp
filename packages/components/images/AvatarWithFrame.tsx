@@ -114,15 +114,15 @@ const flatStyles = {
 
   S: {
     image: {
-      height: 24,
-      left: 0.5,
+      height: 34,
+      left: 0.25,
       top: -0.5,
-      width: 24,
+      width: 34,
       borderRadius: 999,
     },
     frame: {
-      width: 24,
-      height: 24,
+      width: 48,
+      height: 48,
     },
   },
 };
