@@ -23,6 +23,7 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
   // returns
   return (
     <ScreenContainer
+      key={`Collection ${id}`} // this key is to reset the screen state when the id changes
       fullWidth
       footerChildren={<></>}
       noMargin
