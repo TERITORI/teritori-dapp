@@ -164,7 +164,8 @@ export const Russian = () => {
   useEffect(() => {
     if (ResultData) {
       setWinning(ResultData.length);
-      setLosing(bet - ResultData.length);
+      const losingCal = bet - ResultData.length;
+      setLosing(isNaN(losingCal) ? 0 : losingCal);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ResultData]);
