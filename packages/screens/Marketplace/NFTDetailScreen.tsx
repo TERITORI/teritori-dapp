@@ -198,27 +198,16 @@ const Content: React.FC<{
             alignItems: "center",
           }}
         >
-          <View
+          <Tabs
+            items={screenTabItems}
+            selected={selectedTab}
             style={{
-              backgroundColor: "black",
+              height: 60,
               width,
-              flexDirection: "row",
-              justifyContent: "flex-end",
+              alignItems: "flex-end",
             }}
-          >
-            {/* this flex: 1000 view is a hack to align the tabs to the right */}
-            <View style={{ flex: 1000 }} />
-            <Tabs
-              items={screenTabItems}
-              selected={selectedTab}
-              style={{
-                height: 60,
-                // justifyContent: "flex-end" // FIXME: causes crash
-              }}
-              tabContainerStyle={{ height: 60 }}
-              onSelect={setSelectedTab}
-            />
-          </View>
+            onSelect={setSelectedTab}
+          />
 
           <Target name="main-info">
             <SpacerColumn size={6} />

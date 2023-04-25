@@ -225,6 +225,7 @@ export const NFTMainInfo: React.FC<{
             items={mainInfoTabItems}
             selected={selectedTab}
             borderColorTabSelected={primaryColor}
+            style={{ height: 40 }}
           />
           {/*TODO: 3 View to display depending on the nftMainInfoTabItems isSelected item*/}
           {/*TODO: About  = Big text*/}
