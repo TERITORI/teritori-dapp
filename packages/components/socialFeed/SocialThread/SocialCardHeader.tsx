@@ -1,11 +1,15 @@
 import React, { FC } from "react";
-import { View } from "react-native";
+import { useWindowDimensions, View } from "react-native";
 
 import { DateTime } from "./DateTime";
 import { DEFAULT_NAME } from "../../../utils/social-feed";
 import { neutral77 } from "../../../utils/style/colors";
 import { fontSemibold14, fontSemibold16 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+import {
+  layout,
+  SOCIAL_FEED_BREAKPOINT_L,
+  RESPONSIVE_BREAKPOINT_S,
+} from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import FlexRow from "../../FlexRow";
 import { OmniLink } from "../../OmniLink";
@@ -20,6 +24,7 @@ export const SocialCardHeader: FC<{
   authorMetadata?: any;
   loading?: boolean;
 }> = ({ authorId, authorAddress, authorMetadata, postMetadata, loading }) => {
+  const { width } = useWindowDimensions();
   return (
     <FlexRow justifyContent="space-between">
       <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -36,7 +41,7 @@ export const SocialCardHeader: FC<{
               marginRight: layout.padding_x2,
             }}
             image={authorMetadata?.image}
-            size="M"
+            size={width < RESPONSIVE_BREAKPOINT_S ? "S" : "M"}
             isLoading={loading}
           />
           {/*---- User name */}
@@ -63,7 +68,9 @@ export const SocialCardHeader: FC<{
         </OmniLink>
 
         {/*---- Date */}
-        <DateTime date={postMetadata.createdAt} />
+        {width > SOCIAL_FEED_BREAKPOINT_L && (
+          <DateTime date={postMetadata.createdAt} />
+        )}
       </View>
 
       {/*---- Badges TODO: Handle this later */}

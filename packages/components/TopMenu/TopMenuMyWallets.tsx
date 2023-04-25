@@ -110,7 +110,7 @@ const TokenBalance: React.FC = () => {
               end={{ x: 1, y: 0.5 }}
             />
 
-            {gaugeStakedWidth && (
+            {!!gaugeStakedWidth && (
               <View
                 style={{
                   backgroundColor: purpleDark,
