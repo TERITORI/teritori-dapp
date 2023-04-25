@@ -73,9 +73,12 @@ export const StakeScreen: React.FC = () => {
     <ScreenContainer forceNetworkKind={NetworkKind.Cosmos}>
       <View style={styles.rowHeader}>
         <BrandText style={fontSemibold28}>Stake</BrandText>
-        <View style={styles.rowWithCenter}>
-          <Tabs items={tabs} onSelect={setSelectedTab} selected={selectedTab} />
-        </View>
+        <Tabs
+          items={tabs}
+          onSelect={setSelectedTab}
+          selected={selectedTab}
+          style={{ height: 60 }}
+        />
       </View>
       <ValidatorsTable
         validators={
@@ -115,22 +118,11 @@ export const StakeScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  nameContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
   rowHeader: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     paddingTop: layout.contentPadding,
     marginBottom: layout.padding_x2_5,
-  },
-  rowWithCenter: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  upperCase: {
-    textTransform: "uppercase",
   },
 });
