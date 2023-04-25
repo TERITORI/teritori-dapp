@@ -25131,9 +25131,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native@npm:0.69.6":
-  version: 0.69.6
-  resolution: "react-native@npm:0.69.6"
+"react-native@npm:0.69.9":
+  version: 0.69.9
+  resolution: "react-native@npm:0.69.9"
   dependencies:
     "@jest/create-cache-key-function": ^27.0.1
     "@react-native-community/cli": ^8.0.4
@@ -25172,7 +25172,7 @@ __metadata:
     react: 18.0.0
   bin:
     react-native: cli.js
-  checksum: d050b9f0389362368cd1286c02dd46cd84def9fcbf4774dcedd5cbc3aa9ad594de48f22c5458ec257c07646d79722256bc837b25205c3a52752d5c5b6a7873f4
+  checksum: 5499e29acc39ce34309bc3e2713a5be37e14f86d5cade7e3449b422ad25d66e9d38a9267ddfeae79453ca1bfd5571c2ac0c23f5142b6a2fa7a3897a7786f5c1b
   languageName: node
   linkType: hard
 
@@ -27992,7 +27992,7 @@ __metadata:
     react-dom: 18.0.0
     react-hook-form: ^7.36.1
     react-hotkeys-hook: ^4.0.4
-    react-native: 0.69.6
+    react-native: 0.69.9
     react-native-confetti-cannon: ^1.5.2
     react-native-countdown-component: ^2.7.1
     react-native-drag-sort: ^2.4.4
