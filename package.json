@@ -168,7 +168,10 @@
   "resolutions": {
     "@types/react": "17.0.2",
     "@types/react-dom": "17.0.2",
-    "@gnolang/tm2-js-client@^1.0.0": "patch:@gnolang/tm2-js-client@npm%3A1.0.1#./.yarn/patches/@gnolang-tm2-js-client-npm-1.0.1-9e54bafbb3.patch"
+    "@gnolang/tm2-js-client@^1.0.0": "patch:@gnolang/tm2-js-client@npm%3A1.0.1#./.yarn/patches/@gnolang-tm2-js-client-npm-1.0.1-9e54bafbb3.patch",
+    "@expo/config-plugins": "~5.0.0",
+    "@expo/prebuild-config": "~5.0.0",
+    "expo-modules-autolinking": "0.10.1"
   },
   "private": true,
   "build": {
