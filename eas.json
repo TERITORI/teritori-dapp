@@ -20,9 +20,6 @@
     "production": {
       "ios": {
         "resourceClass": "m-medium"
-      },
-      "env": {
-        "YARN_ENABLE_IMMUTABLE_INSTALLS": true
       }
     }
   },
