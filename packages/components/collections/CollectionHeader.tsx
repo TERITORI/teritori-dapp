@@ -250,8 +250,8 @@ export const CollectionHeader: React.FC<{
           style={{
             width: "fit-content",
             height: "100%",
-            borderBottomWidth: 0,
           }}
+          noUnderline
         />
         <SortButton
           sortDirection={sortDirection}
