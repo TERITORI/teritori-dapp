@@ -43,6 +43,7 @@ export const FeedScreen: ScreenFC<"Feed"> = () => {
         req={feedRequest}
         Header={() => (
           <>
+            {/* ScreenContainer has noScroll, so we need to add MobileTitle here */}
             {isMobile && <MobileTitle title="NEWS FEED" />}
             <FeedHeader
               selectedTab={selectedTab}

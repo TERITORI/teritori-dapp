@@ -195,6 +195,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
             onScroll={scrollHandler}
             scrollEventThrottle={1}
           >
+            {/* ScreenContainer has noScroll, so we need to add MobileTitle here */}
             {isMobile && <MobileTitle title={headerLabel.toUpperCase()} />}
             <View
               style={{
