@@ -22,7 +22,7 @@
         "resourceClass": "m-medium"
       },
       "env": {
-        "YARN_ENABLE_IMMUTABLE_INSTALLS": "false"
+        "YARN_ENABLE_IMMUTABLE_INSTALLS": true
       }
     }
   },
