@@ -170,7 +170,10 @@
   },
   "resolutions": {
     "@types/react": "17.0.2",
-    "@types/react-dom": "17.0.2"
+    "@types/react-dom": "17.0.2",
+    "@expo/config-plugins": "~5.0.0",
+    "@expo/prebuild-config": "~5.0.0",
+    "expo-modules-autolinking": "0.10.1"
   },
   "private": true,
   "build": {
