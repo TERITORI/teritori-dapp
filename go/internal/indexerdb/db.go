@@ -55,6 +55,10 @@ var allModels = []interface{}{
 
 	// feed
 	&Post{},
+
+	//music player
+	&MusicAlbum{},
+	&MusicFile{},
 }
 
 func NewSQLiteDB(path string) (*gorm.DB, error) {

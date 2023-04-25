@@ -1,30 +1,38 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Pressable } from "react-native";
 
-import Album from "../../../assets/music-player/album.png";
+import { AlbumShortInfo } from "./types";
+import Logo from "../../../assets/logos/logo.svg";
 import { BrandText } from "../../components/BrandText";
 import { MusicPlayerCard } from "../../components/MusicPlayer/MusicPlayerCard";
+import { UploadAlbumModal } from "../../components/MusicPlayer/UploadAlbumModal";
+import { SVG } from "../../components/SVG";
+import { musicplayerClient } from "../../utils/backend";
 import { primaryColor } from "../../utils/style/colors";
 import { fontSemibold14, fontSemibold20 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import Logo from "../../../assets/logos/logo.svg";
-import { SVG } from "../../components/SVG";
-import { UploadAlbumModal } from "../../components/MusicPlayer/UploadAlbumModal";
-import { AlbumInfoModal } from "../../components/MusicPlayer/AlbumInfoModal";
-
 
 export const MusicPlayerHomeContent: React.FC = () => {
-
-  const unitAlbumData = {
-    title: "Name",
-    description: "Description here lorem ipsum dolor sit amet",
-    img: Album,
-    name: "artistname"
-  };
-  const allAlbumsData = Array(18).fill(unitAlbumData);
+  const [albumList, setAlbumList] = useState<AlbumShortInfo[]>([]);
 
   const [openUploadModal, setOpenUploadModal] = useState<boolean>(false);
-  const [openAlbumInfoModal, setOpenAlbumInfoModal] = useState<boolean>(false);
+  // const [openAlbumInfoModal, setOpenAlbumInfoModal] = useState<boolean>(false);
+  useEffect(() => {
+    const getAlbumList = async () => {
+      const res = await musicplayerClient.getAlbumList({});
+      const newAlbumList: AlbumShortInfo[] = [];
+      res.albums.map((albumInfo, index) => {
+        newAlbumList.push({
+          id: albumInfo.id,
+          name: albumInfo.name,
+          description: albumInfo.description,
+          image: albumInfo.image,
+        });
+      });
+      setAlbumList(newAlbumList);
+    };
+    getAlbumList();
+  }, []);
 
   const styles = StyleSheet.create({
     container: {
@@ -47,7 +55,7 @@ export const MusicPlayerHomeContent: React.FC = () => {
     buttonGroup: {
       flexDirection: "row",
       alignItems: "center",
-      gap: layout.padding_x2
+      gap: layout.padding_x2,
     },
     buttonContainer: {
       flexDirection: "row",
@@ -57,48 +65,52 @@ export const MusicPlayerHomeContent: React.FC = () => {
       paddingVertical: layout.padding_x1,
       backgroundColor: "#2B2B33",
       borderRadius: layout.padding_x4,
-      gap: layout.padding_x1_5
+      gap: layout.padding_x1_5,
     },
     buttonText: StyleSheet.flatten([
       fontSemibold14,
       {
-        color: primaryColor
-      }
-    ])
+        color: primaryColor,
+      },
+    ]),
   });
 
   return (
     <View style={styles.container}>
-
       <View style={styles.oneLine}>
         <BrandText style={fontSemibold20}>All Albums</BrandText>
         <View style={styles.buttonGroup}>
-          <Pressable style={styles.buttonContainer} onPress={() => setOpenUploadModal(true)}>
-            <SVG source={Logo} width={layout.padding_x2} height={layout.padding_x2}></SVG>
+          <Pressable
+            style={styles.buttonContainer}
+            onPress={() => setOpenUploadModal(true)}
+          >
+            <SVG
+              source={Logo}
+              width={layout.padding_x2}
+              height={layout.padding_x2}
+            />
             <BrandText style={styles.buttonText}>Upload album</BrandText>
           </Pressable>
           <Pressable style={styles.buttonContainer}>
-            <SVG source={Logo} width={layout.padding_x2} height={layout.padding_x2}></SVG>
+            <SVG
+              source={Logo}
+              width={layout.padding_x2}
+              height={layout.padding_x2}
+            />
             <BrandText style={styles.buttonText}>Create funding</BrandText>
           </Pressable>
         </View>
       </View>
 
       <View style={styles.contentGroup}>
-        {allAlbumsData.map((item: any, index) => {
-          return (
-            <MusicPlayerCard
-              item={item}
-              index={index}
-              key={index}
-            />
-          );
+        {albumList.map((item: AlbumShortInfo, index) => {
+          return <MusicPlayerCard item={item} index={index} key={index} />;
         })}
       </View>
-
-      <UploadAlbumModal isVisible={openUploadModal} onClose={() => setOpenUploadModal(false)} submit={() => { setOpenUploadModal(false); setOpenAlbumInfoModal(true); }} />
-      <AlbumInfoModal isVisible={openAlbumInfoModal} onClose={() => setOpenAlbumInfoModal(false)}></AlbumInfoModal>
-
+      <UploadAlbumModal
+        isVisible={openUploadModal}
+        onClose={() => setOpenUploadModal(false)}
+      />
     </View>
   );
 };

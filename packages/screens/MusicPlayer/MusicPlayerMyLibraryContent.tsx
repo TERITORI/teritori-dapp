@@ -1,22 +1,19 @@
 import React, { useState } from "react";
 import { View, StyleSheet, Pressable } from "react-native";
 
+import Logo from "../../../assets/logos/logo.svg";
 import Album from "../../../assets/music-player/album.png";
 import { BrandText } from "../../components/BrandText";
 import { MusicPlayerCard } from "../../components/MusicPlayer/MusicPlayerCard";
-import { useAppNavigation } from "../../utils/navigation";
+// import { UploadAlbumModal } from "../../components/MusicPlayer/UploadAlbumModal";
+import { SVG } from "../../components/SVG";
 import { neutral77, primaryColor } from "../../utils/style/colors";
 import {
   fontMedium14,
   fontSemibold20,
-  fontSemibold14
+  fontSemibold14,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import Logo from "../../../assets/logos/logo.svg";
-import { SVG } from "../../components/SVG";
-import { UploadAlbumModal } from "../../components/MusicPlayer/UploadAlbumModal";
-import { AlbumInfoModal } from "../../components/MusicPlayer/AlbumInfoModal";
-
 
 export const MusicPlayerMyLibraryContent: React.FC = () => {
   const unitWidth = 240;
@@ -25,14 +22,14 @@ export const MusicPlayerMyLibraryContent: React.FC = () => {
     title: "Name",
     description: "Description here lorem ipsum dolor sit amet",
     img: Album,
-    name: "artistname"
+    name: "artistname",
   };
 
   const myAlbumsData = Array(3).fill(unitAlbumData);
   const otherAlbumsData = Array(8).fill(unitAlbumData);
 
   const [openUploadModal, setOpenUploadModal] = useState<boolean>(false);
-  const [openAlbumInfoModal, setOpenAlbumInfoModal] = useState<boolean>(false);
+  // const [openAlbumInfoModal, setOpenAlbumInfoModal] = useState<boolean>(false);
 
   const styles = StyleSheet.create({
     container: {
@@ -73,7 +70,7 @@ export const MusicPlayerMyLibraryContent: React.FC = () => {
     buttonGroup: {
       flexDirection: "row",
       alignItems: "center",
-      gap: layout.padding_x2
+      gap: layout.padding_x2,
     },
     buttonContainer: {
       flexDirection: "row",
@@ -83,42 +80,45 @@ export const MusicPlayerMyLibraryContent: React.FC = () => {
       paddingVertical: layout.padding_x1,
       backgroundColor: "#2B2B33",
       borderRadius: layout.padding_x4,
-      gap: layout.padding_x1_5
+      gap: layout.padding_x1_5,
     },
     buttonText: StyleSheet.flatten([
       fontSemibold14,
       {
-        color: primaryColor
-      }
-    ])
+        color: primaryColor,
+      },
+    ]),
   });
 
   return (
     <View style={styles.container}>
-
       <View style={styles.oneLine}>
         <BrandText style={fontSemibold20}>My Albums</BrandText>
         <View style={styles.buttonGroup}>
-          <Pressable style={styles.buttonContainer} onPress={() => setOpenUploadModal(true)}>
-            <SVG source={Logo} width={layout.padding_x2} height={layout.padding_x2}></SVG>
+          <Pressable
+            style={styles.buttonContainer}
+            onPress={() => setOpenUploadModal(true)}
+          >
+            <SVG
+              source={Logo}
+              width={layout.padding_x2}
+              height={layout.padding_x2}
+            />
             <BrandText style={styles.buttonText}>Upload album</BrandText>
           </Pressable>
           <Pressable style={styles.buttonContainer}>
-            <SVG source={Logo} width={layout.padding_x2} height={layout.padding_x2}></SVG>
+            <SVG
+              source={Logo}
+              width={layout.padding_x2}
+              height={layout.padding_x2}
+            />
             <BrandText style={styles.buttonText}>Create funding</BrandText>
           </Pressable>
         </View>
       </View>
       <View style={styles.contentGroup}>
         {myAlbumsData.map((item: any, index) => {
-          return (
-            <MusicPlayerCard
-              item={item}
-              index={index}
-              mine={true}
-              key={index}
-            />
-          );
+          return <MusicPlayerCard item={item} index={index} mine key={index} />;
         })}
       </View>
 
@@ -127,19 +127,22 @@ export const MusicPlayerMyLibraryContent: React.FC = () => {
       </View>
       <View style={styles.contentGroup}>
         {otherAlbumsData.map((item: any, index) => {
-          return (
-            <MusicPlayerCard
-              item={item}
-              index={index}
-              key={index}
-            />
-          );
+          return <MusicPlayerCard item={item} index={index} key={index} />;
         })}
       </View>
-
-      <UploadAlbumModal isVisible={openUploadModal} onClose={() => setOpenUploadModal(false)} submit={() => { setOpenUploadModal(false); setOpenAlbumInfoModal(true); }} />
-      <AlbumInfoModal isVisible={openAlbumInfoModal} onClose={() => setOpenAlbumInfoModal(false)}></AlbumInfoModal>
-
+      {/*
+      <UploadAlbumModal
+        isVisible={openUploadModal}
+        onClose={() => setOpenUploadModal(false)}
+        submit={() => {
+          setOpenUploadModal(false);
+          setOpenAlbumInfoModal(true);
+        }}
+      />
+      <AlbumInfoModal
+        isVisible={openAlbumInfoModal}
+        onClose={() => setOpenAlbumInfoModal(false)}
+      />*/}
     </View>
   );
 };

@@ -1,17 +1,18 @@
 import React, { useState } from "react";
 import { Pressable, ViewStyle } from "react-native";
 
-
 interface HoverViewProps {
-  normalStyle: ViewStyle,
-  hoverStyle: ViewStyle,
+  normalStyle: ViewStyle;
+  hoverStyle: ViewStyle;
   onPress?: () => void;
 }
 
 export const HoverView: React.FC<HoverViewProps> = ({
-  normalStyle, hoverStyle, children, onPress = () => { }
+  normalStyle,
+  hoverStyle,
+  children,
+  onPress = () => {},
 }) => {
-
   const [hoverState, setHoverState] = useState<boolean>(false);
 
   return (
@@ -23,5 +24,5 @@ export const HoverView: React.FC<HoverViewProps> = ({
     >
       {children}
     </Pressable>
-  )
-}
+  );
+};
