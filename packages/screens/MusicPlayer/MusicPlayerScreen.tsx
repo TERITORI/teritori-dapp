@@ -4,14 +4,13 @@ import { View, StyleSheet } from "react-native";
 import { MusicPlayerHomeContent } from "./MusicPlayerHomeContent";
 import { MusicPlayerMyLibraryContent } from "./MusicPlayerMyLibraryContent";
 import { BrandText } from "../../components/BrandText";
+import { MediaPlayer } from "../../components/MusicPlayer/MediaPlayer";
 import { MusicPlayerTab } from "../../components/MusicPlayer/MusicPlayerTab";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { ScreenFC } from "../../utils/navigation";
 import { neutralA3, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { MediaPlayer } from "../../components/MusicPlayer/MediaPlayer";
-
 
 export const MusicPlayerScreen: ScreenFC<"MusicPlayer"> = () => {
   const tabData: string[] = ["Home", "My Library"];
@@ -22,7 +21,6 @@ export const MusicPlayerScreen: ScreenFC<"MusicPlayer"> = () => {
       headerChildren={<BrandText>Music Player</BrandText>}
       fullWidth
     >
-
       <View style={styles.pageConatiner}>
         <MusicPlayerTab tab={tab} setTab={setTab} />
 
@@ -30,8 +28,7 @@ export const MusicPlayerScreen: ScreenFC<"MusicPlayer"> = () => {
         {tab === tabData[1] && <MusicPlayerMyLibraryContent />}
       </View>
 
-      <MediaPlayer></MediaPlayer>
-
+      <MediaPlayer />
     </ScreenContainer>
   );
 };
@@ -39,7 +36,7 @@ export const MusicPlayerScreen: ScreenFC<"MusicPlayer"> = () => {
 const styles = StyleSheet.create({
   pageConatiner: {
     width: "100%",
-    paddingHorizontal: 80
+    paddingHorizontal: 80,
   },
   tabContainer: {
     width: "100%",
@@ -80,5 +77,5 @@ const styles = StyleSheet.create({
     height: 1,
     backgroundColor: neutralA3,
     width: "100%",
-  }
+  },
 });

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { View, StyleSheet, Pressable, Image } from "react-native";
 
-import Add from "../../../assets/music-player/add.svg";
 import Album from "../../../assets/music-player/album.png";
 import MorePrimary from "../../../assets/music-player/more-primary.svg";
 import MoreSecondary from "../../../assets/music-player/more-secondary.svg";
@@ -10,7 +9,9 @@ import PlaySecondary from "../../../assets/music-player/play-secondary.svg";
 import Time from "../../../assets/music-player/time.svg";
 import Track from "../../../assets/music-player/track.png";
 import { BrandText } from "../../components/BrandText";
+import { DetailAlbumMenu } from "../../components/MusicPlayer/DetailAlbumMenu";
 import { MusicPlayerTab } from "../../components/MusicPlayer/MusicPlayerTab";
+import { TrackHoverMenu } from "../../components/MusicPlayer/TrackHoverMenu";
 import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { ScreenFC } from "../../utils/navigation";
@@ -19,12 +20,9 @@ import {
   fontSemibold14,
   fontMedium14,
   fontSemibold13,
-  fontSemibold20
+  fontSemibold20,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { TrackHoverMenu } from "../../components/MusicPlayer/TrackHoverMenu";
-import { DetailAlbumMenu } from "../../components/MusicPlayer/DetailAlbumMenu";
-
 
 export const MyAlbumScreen: ScreenFC<"MyAlbum"> = () => {
   const unitTrackData = {
@@ -40,7 +38,8 @@ export const MyAlbumScreen: ScreenFC<"MyAlbum"> = () => {
   };
   const [indexHoverState, setIndexHoverState] =
     useState<any>(initIndexHoverState);
-  const [openDetailAlbumMenu, setOpenDetailAlbumMenu] = useState<boolean>(false);
+  const [openDetailAlbumMenu, setOpenDetailAlbumMenu] =
+    useState<boolean>(false);
   const [openTrackMenu, setOpenTrackMenu] = useState<boolean>(false);
   const [clickedIndex, setClickedIndex] = useState<number>(0);
 
@@ -63,7 +62,7 @@ export const MyAlbumScreen: ScreenFC<"MyAlbum"> = () => {
       flexDirection: "column",
       justifyContent: "space-between",
       gap: layout.padding_x1,
-      zIndex: 999
+      zIndex: 999,
     },
     unitBoxEven: {
       width: "100%",
@@ -74,7 +73,7 @@ export const MyAlbumScreen: ScreenFC<"MyAlbum"> = () => {
       paddingVertical: layout.padding_x0_5,
       backgroundColor: neutral17,
       borderRadius: layout.padding_x1,
-      height: 48
+      height: 48,
     },
     uniBoxOdd: {
       width: "100%",
@@ -84,7 +83,7 @@ export const MyAlbumScreen: ScreenFC<"MyAlbum"> = () => {
       paddingHorizontal: layout.padding_x3,
       paddingVertical: layout.padding_x0_5,
       borderRadius: layout.padding_x1,
-      height: 48
+      height: 48,
     },
     menuText: StyleSheet.flatten([
       fontSemibold13,
@@ -123,7 +122,7 @@ export const MyAlbumScreen: ScreenFC<"MyAlbum"> = () => {
       flexDirection: "row",
       alignItems: "flex-end",
       justifyContent: "space-between",
-      zIndex: 999
+      zIndex: 999,
     },
     infoBox: {
       flexDirection: "row",
@@ -145,25 +144,25 @@ export const MyAlbumScreen: ScreenFC<"MyAlbum"> = () => {
       fontSemibold13,
       {
         marginTop: layout.padding_x1,
-        marginBottom: layout.padding_x0_5
+        marginBottom: layout.padding_x0_5,
       },
     ]),
     tagText: StyleSheet.flatten([
       fontSemibold13,
       {
-        color: primaryColor
+        color: primaryColor,
       },
     ]),
     verticalBox: {
       flexDirection: "column",
       alignItems: "flex-start",
-      width: 420
+      width: 420,
     },
     oneLine: {
       flexDirection: "row",
       alignItems: "center",
       marginTop: layout.padding_x2_5,
-      gap: layout.padding_x2
+      gap: layout.padding_x2,
     },
     playButton: {
       padding: layout.padding_x1,
@@ -222,14 +221,11 @@ export const MyAlbumScreen: ScreenFC<"MyAlbum"> = () => {
       justifyContent: "center",
       alignItems: "center",
       backgroundColor: "#2B2B33",
-    }
+    },
   });
 
   return (
-    <ScreenContainer
-      headerChildren={<BrandText>My Album</BrandText>}
-      fullWidth
-    >
+    <ScreenContainer headerChildren={<BrandText>My Album</BrandText>} fullWidth>
       <View style={styles.pageContainer}>
         <MusicPlayerTab />
 
@@ -239,9 +235,18 @@ export const MyAlbumScreen: ScreenFC<"MyAlbum"> = () => {
             <View style={styles.verticalBox}>
               <BrandText>My Album</BrandText>
               <BrandText style={styles.artistText}>Artist</BrandText>
-              <BrandText style={styles.infoText}>Description here <BrandText style={styles.tagText}>#tag</BrandText> lorem ipsum dolor sit <BrandText style={styles.tagText}>#tag</BrandText> amet lorem ipsum. Lorem ipsum dolor sit amet!</BrandText>
-              <Pressable><BrandText style={styles.tagText}>#tag</BrandText></Pressable>
-              <Pressable><BrandText style={styles.tagText}>#tag</BrandText></Pressable>
+              <BrandText style={styles.infoText}>
+                Description here{" "}
+                <BrandText style={styles.tagText}>#tag</BrandText> lorem ipsum
+                dolor sit <BrandText style={styles.tagText}>#tag</BrandText>{" "}
+                amet lorem ipsum. Lorem ipsum dolor sit amet!
+              </BrandText>
+              <Pressable>
+                <BrandText style={styles.tagText}>#tag</BrandText>
+              </Pressable>
+              <Pressable>
+                <BrandText style={styles.tagText}>#tag</BrandText>
+              </Pressable>
               <View style={styles.oneLine}>
                 <Pressable style={styles.playButton}>
                   <SVG
@@ -255,16 +260,20 @@ export const MyAlbumScreen: ScreenFC<"MyAlbum"> = () => {
             </View>
           </View>
           <View style={styles.actionBox}>
-            <Pressable style={styles.moreButton} onPress={() => { setOpenTrackMenu(false); setOpenDetailAlbumMenu((value) => !value); }}>
+            <Pressable
+              style={styles.moreButton}
+              onPress={() => {
+                setOpenTrackMenu(false);
+                setOpenDetailAlbumMenu((value) => !value);
+              }}
+            >
               <SVG
                 height={layout.padding_x2_5}
                 width={layout.padding_x2_5}
                 source={MorePrimary}
               />
             </Pressable>
-            {
-              openDetailAlbumMenu && <DetailAlbumMenu mine={true} />
-            }
+            {openDetailAlbumMenu && <DetailAlbumMenu mine />}
           </View>
         </View>
 
@@ -302,7 +311,7 @@ export const MyAlbumScreen: ScreenFC<"MyAlbum"> = () => {
                     }
                   >
                     {indexHoverState.state &&
-                      indexHoverState.index === index + 1 ? (
+                    indexHoverState.index === index + 1 ? (
                       <SVG
                         source={PlaySecondary}
                         width={layout.padding_x2_5}
@@ -318,7 +327,13 @@ export const MyAlbumScreen: ScreenFC<"MyAlbum"> = () => {
                 </View>
                 <View style={styles.rightBox}>
                   <BrandText style={[fontSemibold14]}>{item.time}</BrandText>
-                  <Pressable onPress={() => { setClickedIndex(index + 1); setOpenDetailAlbumMenu(false); setOpenTrackMenu((value) => !value) }}>
+                  <Pressable
+                    onPress={() => {
+                      setClickedIndex(index + 1);
+                      setOpenDetailAlbumMenu(false);
+                      setOpenTrackMenu((value) => !value);
+                    }}
+                  >
                     <SVG
                       source={MoreSecondary}
                       height={layout.padding_x2_5}
@@ -326,14 +341,13 @@ export const MyAlbumScreen: ScreenFC<"MyAlbum"> = () => {
                     />
                   </Pressable>
                 </View>
-                {
-                  openTrackMenu && clickedIndex === index + 1 && <TrackHoverMenu />
-                }
+                {openTrackMenu && clickedIndex === index + 1 && (
+                  <TrackHoverMenu />
+                )}
               </View>
             );
           })}
         </View>
-
       </View>
     </ScreenContainer>
   );

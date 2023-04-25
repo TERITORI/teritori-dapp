@@ -17,6 +17,8 @@ import (
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
 	"github.com/TERITORI/teritori-dapp/go/pkg/p2e"
 	"github.com/TERITORI/teritori-dapp/go/pkg/p2epb"
+	"github.com/TERITORI/teritori-dapp/go/pkg/musicplayer"
+	"github.com/TERITORI/teritori-dapp/go/pkg/musicplayerpb"
 	"github.com/improbable-eng/grpc-web/go/grpcweb"
 	"github.com/peterbourgon/ff/v3"
 	"github.com/pkg/errors"
@@ -86,6 +88,12 @@ func main() {
 	if err != nil {
 		panic(errors.Wrap(err, "failed to access db"))
 	}
+	
+	err = indexerdb.MigrateDB(indexerDB)
+  	if err != nil {
+  		panic(errors.Wrap(err, "failed migrate database models"))
+  	}
+
 	port := 9090
 	if *enableTls {
 		port = 9091
@@ -121,10 +129,17 @@ func main() {
 		PinataJWT: *pinataJWT,
 	})
 
+	// musicplayer services
+	musicplayerSvc := musicplayer.NewMusicplayerService(context.Background(), &musicplayer.Config{
+		Logger: logger,
+		IndexerDB: indexerDB,
+	})
+
 	server := grpc.NewServer()
 	marketplacepb.RegisterMarketplaceServiceServer(server, marketplaceSvc)
 	p2epb.RegisterP2EServiceServer(server, p2eSvc)
 	feedpb.RegisterFeedServiceServer(server, feedSvc)
+	musicplayerpb.RegisterMusicplayerServiceServer(server, musicplayerSvc)
 
 	wrappedServer := grpcweb.WrapServer(server,
 		grpcweb.WithWebsockets(true),

@@ -1,23 +1,21 @@
 import React, { useState } from "react";
 import { View, StyleSheet } from "react-native";
 
+import { HoverView } from "./HoverView";
 import AddLibrary from "../../../assets/music-player/add-library.svg";
+import Code from "../../../assets/music-player/code.svg";
 import Enter from "../../../assets/music-player/enter.svg";
+import Flag from "../../../assets/music-player/flag.svg";
+import Link from "../../../assets/music-player/link.svg";
 import Share from "../../../assets/music-player/share.svg";
-import { SVG } from "../SVG";
+import Tip from "../../../assets/music-player/tip-other.svg";
 import { neutralA3, neutral33, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold13 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
-import Tip from "../../../assets/music-player/tip-other.svg";
-import Code from "../../../assets/music-player/code.svg";
-import Link from "../../../assets/music-player/link.svg";
-import { HoverView } from "./HoverView";
-import Flag from "../../../assets/music-player/flag.svg";
-
+import { SVG } from "../SVG";
 
 export const TrackHoverMenu: React.FC = () => {
-
   const shareMenuWidth = 188;
   const lineHeight = 18;
 
@@ -35,7 +33,7 @@ export const TrackHoverMenu: React.FC = () => {
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "flex-end",
-      zIndex: 999
+      zIndex: 999,
     },
     menuContainer: {
       borderRadius: layout.padding_x1_5,
@@ -52,7 +50,7 @@ export const TrackHoverMenu: React.FC = () => {
       alignItems: "center",
       justifyContent: "space-between",
       padding: layout.padding_x0_75,
-      borderRadius: layout.padding_x0_75
+      borderRadius: layout.padding_x0_75,
     },
     unitBoxHovered: {
       flexDirection: "row",
@@ -60,7 +58,7 @@ export const TrackHoverMenu: React.FC = () => {
       justifyContent: "space-between",
       padding: layout.padding_x0_75,
       backgroundColor: neutral33,
-      borderRadius: layout.padding_x0_75
+      borderRadius: layout.padding_x0_75,
     },
     oneLine: {
       flexDirection: "row",
@@ -82,18 +80,26 @@ export const TrackHoverMenu: React.FC = () => {
       borderRadius: layout.padding_x1_5,
       position: "absolute",
       left: -(layout.padding_x1_5 + shareMenuWidth),
-      bottom: -(layout.padding_x1_5 + lineHeight + layout.padding_x1_5 + 2 * layout.padding_x0_75),
+      bottom: -(
+        layout.padding_x1_5 +
+        lineHeight +
+        layout.padding_x1_5 +
+        2 * layout.padding_x0_75
+      ),
       backgroundColor: "rgba(41, 41, 41, 1)",
       padding: layout.padding_x1_5,
       flexDirection: "column",
       gap: layout.padding_x0_75,
-      width: shareMenuWidth
-    }
+      width: shareMenuWidth,
+    },
   });
 
   return (
     <View style={styles.menuContainer}>
-      <HoverView normalStyle={styles.unitBoxNormal} hoverStyle={styles.unitBoxHovered}>
+      <HoverView
+        normalStyle={styles.unitBoxNormal}
+        hoverStyle={styles.unitBoxHovered}
+      >
         <View style={styles.oneLine}>
           <SVG
             source={AddLibrary}
@@ -106,7 +112,10 @@ export const TrackHoverMenu: React.FC = () => {
 
       <View style={styles.divideLine} />
 
-      <HoverView normalStyle={styles.unitBoxNormal} hoverStyle={styles.unitBoxHovered}>
+      <HoverView
+        normalStyle={styles.unitBoxNormal}
+        hoverStyle={styles.unitBoxHovered}
+      >
         <View style={styles.oneLine}>
           <SVG
             source={Flag}
@@ -119,7 +128,10 @@ export const TrackHoverMenu: React.FC = () => {
 
       <View style={styles.divideLine} />
 
-      <HoverView normalStyle={styles.unitBoxNormal} hoverStyle={styles.unitBoxHovered}>
+      <HoverView
+        normalStyle={styles.unitBoxNormal}
+        hoverStyle={styles.unitBoxHovered}
+      >
         <View style={styles.oneLine}>
           <SVG
             source={Tip}
@@ -129,7 +141,11 @@ export const TrackHoverMenu: React.FC = () => {
           <BrandText style={styles.text}>Tip this track</BrandText>
         </View>
       </HoverView>
-      <HoverView normalStyle={styles.unitBoxNormal} onPress={() => setOpenShareMenu((value) => !value)} hoverStyle={styles.unitBoxHovered}>
+      <HoverView
+        normalStyle={styles.unitBoxNormal}
+        onPress={() => setOpenShareMenu((value) => !value)}
+        hoverStyle={styles.unitBoxHovered}
+      >
         <View style={styles.oneLine}>
           <SVG
             source={Share}
@@ -144,20 +160,27 @@ export const TrackHoverMenu: React.FC = () => {
           height={layout.padding_x2}
         />
 
-        {
-          openShareMenu &&
+        {openShareMenu && (
           <View style={styles.shareMenuContainer}>
-            <HoverView normalStyle={styles.unitBoxNormal} hoverStyle={styles.unitBoxHovered}>
+            <HoverView
+              normalStyle={styles.unitBoxNormal}
+              hoverStyle={styles.unitBoxHovered}
+            >
               <View style={styles.oneLine}>
                 <SVG
                   source={Link}
                   width={layout.padding_x2}
                   height={layout.padding_x2}
                 />
-                <BrandText style={styles.text}>Copy link to the track</BrandText>
+                <BrandText style={styles.text}>
+                  Copy link to the track
+                </BrandText>
               </View>
             </HoverView>
-            <HoverView normalStyle={styles.unitBoxNormal} hoverStyle={styles.unitBoxHovered}>
+            <HoverView
+              normalStyle={styles.unitBoxNormal}
+              hoverStyle={styles.unitBoxHovered}
+            >
               <View style={styles.oneLine}>
                 <SVG
                   source={Code}
@@ -168,8 +191,7 @@ export const TrackHoverMenu: React.FC = () => {
               </View>
             </HoverView>
           </View>
-        }
-
+        )}
       </HoverView>
     </View>
   );

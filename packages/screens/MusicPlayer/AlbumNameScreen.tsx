@@ -1,39 +1,54 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { View, StyleSheet, Pressable, Image } from "react-native";
 
 import Add from "../../../assets/music-player/add.svg";
-import Album from "../../../assets/music-player/album.png";
 import MorePrimary from "../../../assets/music-player/more-primary.svg";
 import MoreSecondary from "../../../assets/music-player/more-secondary.svg";
 import PlayOther from "../../../assets/music-player/play-other.svg";
 import PlaySecondary from "../../../assets/music-player/play-secondary.svg";
 import Time from "../../../assets/music-player/time.svg";
-import Track from "../../../assets/music-player/track.png";
+import Tip from "../../../assets/music-player/tip-primary.svg";
+import { AlbumInfo } from "../../api/musicplayer/v1/musicplayer";
 import { BrandText } from "../../components/BrandText";
+import { DetailAlbumMenu } from "../../components/MusicPlayer/DetailAlbumMenu";
 import { MusicPlayerTab } from "../../components/MusicPlayer/MusicPlayerTab";
+import { TrackHoverMenu } from "../../components/MusicPlayer/TrackHoverMenu";
 import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
+import { musicplayerClient } from "../../utils/backend";
+import { ipfsPinataUrl } from "../../utils/ipfs";
 import { ScreenFC } from "../../utils/navigation";
 import { neutral77, neutral17, primaryColor } from "../../utils/style/colors";
 import {
   fontSemibold14,
   fontMedium14,
   fontSemibold13,
-  fontSemibold20
+  fontSemibold20,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import Tip from "../../../assets/music-player/tip-primary.svg";
-import { TrackHoverMenu } from "../../components/MusicPlayer/TrackHoverMenu";
-import { DetailAlbumMenu } from "../../components/MusicPlayer/DetailAlbumMenu";
 
+export const AlbumNameScreen: ScreenFC<"AlbumName"> = ({
+  route: {
+    params: { id },
+  },
+}) => {
+  const [albumInfo, setAlbumInfo] = useState<AlbumInfo>({
+    id: 0,
+    name: "",
+    description: "",
+    image: "",
+    musics: [],
+  });
 
-export const AlbumNameScreen: ScreenFC<"AlbumName"> = () => {
-  const unitTrackData = {
-    name: "Song Name",
-    img: Track,
-    time: "4:01",
-  };
-  const trackData = Array(6).fill(unitTrackData);
+  useEffect(() => {
+    const getAlbumInfo = async () => {
+      const res = await musicplayerClient.getAlbum({ id });
+      if (res.album) {
+        setAlbumInfo(res.album);
+      }
+    };
+    getAlbumInfo();
+  });
 
   const initIndexHoverState = {
     index: 0,
@@ -41,7 +56,8 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = () => {
   };
   const [indexHoverState, setIndexHoverState] =
     useState<any>(initIndexHoverState);
-  const [openDetailAlbumMenu, setOpenDetailAlbumMenu] = useState<boolean>(false);
+  const [openDetailAlbumMenu, setOpenDetailAlbumMenu] =
+    useState<boolean>(false);
   const [openTrackMenu, setOpenTrackMenu] = useState<boolean>(false);
   const [clickedIndex, setClickedIndex] = useState<number>(0);
 
@@ -63,7 +79,7 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = () => {
       flexDirection: "column",
       justifyContent: "space-between",
       gap: layout.padding_x1,
-      zIndex: 999
+      zIndex: 999,
     },
     unitBoxEven: {
       width: "100%",
@@ -74,7 +90,7 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = () => {
       paddingVertical: layout.padding_x0_5,
       backgroundColor: neutral17,
       borderRadius: layout.padding_x1,
-      height: 48
+      height: 48,
     },
     uniBoxOdd: {
       width: "100%",
@@ -84,7 +100,7 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = () => {
       paddingHorizontal: layout.padding_x3,
       paddingVertical: layout.padding_x0_5,
       borderRadius: layout.padding_x1,
-      height: 48
+      height: 48,
     },
     menuText: StyleSheet.flatten([
       fontSemibold13,
@@ -123,7 +139,7 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = () => {
       flexDirection: "row",
       alignItems: "flex-end",
       justifyContent: "space-between",
-      zIndex: 999
+      zIndex: 999,
     },
     infoBox: {
       flexDirection: "row",
@@ -145,25 +161,25 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = () => {
       fontSemibold13,
       {
         marginTop: layout.padding_x1,
-        marginBottom: layout.padding_x0_5
+        marginBottom: layout.padding_x0_5,
       },
     ]),
     tagText: StyleSheet.flatten([
       fontSemibold13,
       {
-        color: primaryColor
+        color: primaryColor,
       },
     ]),
     verticalBox: {
       flexDirection: "column",
       alignItems: "flex-start",
-      width: 420
+      width: 420,
     },
     oneLine: {
       flexDirection: "row",
       alignItems: "center",
       marginTop: layout.padding_x2_5,
-      gap: layout.padding_x2
+      gap: layout.padding_x2,
     },
     playButton: {
       padding: layout.padding_x1,
@@ -222,8 +238,25 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = () => {
       justifyContent: "center",
       alignItems: "center",
       backgroundColor: "#2B2B33",
-    }
+    },
   });
+
+  const [audioSrc, setAudioSrc] = useState("");
+  const [audioIsPlay, setAudioIsPlay] = useState<boolean>(false);
+  const audioRef = useRef<HTMLAudioElement>(null);
+
+  const playAudio = () => {
+    if (albumInfo.musics.length > 0) {
+      setAudioSrc(ipfsPinataUrl(albumInfo.musics[0].ipfs));
+      setAudioIsPlay(true);
+    }
+  };
+
+  useEffect(() => {
+    if (audioIsPlay && audioSrc && audioRef.current) {
+      audioRef.current.play();
+    }
+  }, [audioIsPlay, audioRef, audioSrc]);
 
   return (
     <ScreenContainer
@@ -235,15 +268,24 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = () => {
 
         <View style={styles.albumBox}>
           <View style={styles.infoBox}>
-            <Image source={Album} style={styles.albumImg} />
+            <Image
+              source={ipfsPinataUrl(albumInfo.image)}
+              style={styles.albumImg}
+            />
             <View style={styles.verticalBox}>
-              <BrandText>Album name</BrandText>
+              <BrandText>{albumInfo.name}</BrandText>
               <BrandText style={styles.artistText}>Artist</BrandText>
-              <BrandText style={styles.infoText}>Description here <BrandText style={styles.tagText}>#tag</BrandText> lorem ipsum dolor sit <BrandText style={styles.tagText}>#tag</BrandText> amet lorem ipsum. Lorem ipsum dolor sit amet!</BrandText>
-              <Pressable><BrandText style={styles.tagText}>#tag</BrandText></Pressable>
-              <Pressable><BrandText style={styles.tagText}>#tag</BrandText></Pressable>
+              <BrandText style={styles.infoText}>
+                {albumInfo.description}
+              </BrandText>
+              <Pressable>
+                <BrandText style={styles.tagText}>#tag</BrandText>
+              </Pressable>
+              <Pressable>
+                <BrandText style={styles.tagText}>#tag</BrandText>
+              </Pressable>
               <View style={styles.oneLine}>
-                <Pressable style={styles.playButton}>
+                <Pressable style={styles.playButton} onPress={playAudio}>
                   <SVG
                     source={PlayOther}
                     width={layout.padding_x2_5}
@@ -257,8 +299,11 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = () => {
                     width={layout.padding_x2_5}
                     height={layout.padding_x2_5}
                   />
-                  <BrandText style={styles.tipButtonText}>Tip this album</BrandText>
+                  <BrandText style={styles.tipButtonText}>
+                    Tip this album
+                  </BrandText>
                 </Pressable>
+                <audio id="audio" src={audioSrc} ref={audioRef} controls />
               </View>
             </View>
           </View>
@@ -271,16 +316,20 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = () => {
               />
               <BrandText style={styles.addButtonText}>Add to library</BrandText>
             </Pressable>
-            <Pressable style={styles.moreButton} onPress={() => { setOpenTrackMenu(false); setOpenDetailAlbumMenu((value) => !value) }}>
+            <Pressable
+              style={styles.moreButton}
+              onPress={() => {
+                setOpenTrackMenu(false);
+                setOpenDetailAlbumMenu((value) => !value);
+              }}
+            >
               <SVG
                 height={layout.padding_x2_5}
                 width={layout.padding_x2_5}
                 source={MorePrimary}
               />
             </Pressable>
-            {
-              openDetailAlbumMenu && <DetailAlbumMenu />
-            }
+            {openDetailAlbumMenu && <DetailAlbumMenu />}
           </View>
         </View>
 
@@ -298,7 +347,7 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = () => {
         </View>
 
         <View style={styles.contentGroup}>
-          {trackData.map((item: any, index: number) => {
+          {albumInfo.musics.map((item: any, index: number) => {
             return (
               <View
                 style={index % 2 === 0 ? styles.unitBoxEven : styles.uniBoxOdd}
@@ -318,7 +367,7 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = () => {
                     }
                   >
                     {indexHoverState.state &&
-                      indexHoverState.index === index + 1 ? (
+                    indexHoverState.index === index + 1 ? (
                       <SVG
                         source={PlaySecondary}
                         width={layout.padding_x2_5}
@@ -333,8 +382,16 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = () => {
                   <BrandText style={fontSemibold14}>{item.name}</BrandText>
                 </View>
                 <View style={styles.rightBox}>
-                  <BrandText style={[fontSemibold14]}>{item.time}</BrandText>
-                  <Pressable onPress={() => { setClickedIndex(index + 1); setOpenDetailAlbumMenu(false); setOpenTrackMenu((value) => !value); }}>
+                  <BrandText style={[fontSemibold14]}>
+                    {item.duration}
+                  </BrandText>
+                  <Pressable
+                    onPress={() => {
+                      setClickedIndex(index + 1);
+                      setOpenDetailAlbumMenu(false);
+                      setOpenTrackMenu((value) => !value);
+                    }}
+                  >
                     <SVG
                       source={MoreSecondary}
                       height={layout.padding_x2_5}
@@ -342,14 +399,13 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = () => {
                     />
                   </Pressable>
                 </View>
-                {
-                  openTrackMenu && clickedIndex === index + 1 && <TrackHoverMenu />
-                }
+                {openTrackMenu && clickedIndex === index + 1 && (
+                  <TrackHoverMenu />
+                )}
               </View>
             );
           })}
         </View>
-
       </View>
     </ScreenContainer>
   );

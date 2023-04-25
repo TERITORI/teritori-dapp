@@ -20,6 +20,7 @@ import { MarketplaceScreen } from "../../screens/Marketplace/MarketplaceScreen";
 import { NFTDetailScreen } from "../../screens/Marketplace/NFTDetailScreen";
 import { AlbumNameScreen } from "../../screens/MusicPlayer/AlbumNameScreen";
 import { MusicPlayerScreen } from "../../screens/MusicPlayer/MusicPlayerScreen";
+import { MyAlbumScreen } from "../../screens/MusicPlayer/MyAlbumScreen";
 import { MyCollectionScreen } from "../../screens/MyCollection/MyCollectionScreen";
 import { RiotGameBreedingScreen } from "../../screens/RiotGame/RiotGameBreedingScreen";
 import { RiotGameEnrollScreen } from "../../screens/RiotGame/RiotGameEnrollScreen";
@@ -38,7 +39,6 @@ import { UserPublicProfileScreen } from "../../screens/UserPublicProfile/UserPub
 import { WalletManagerScreen } from "../../screens/WalletManager/WalletManagerScreen";
 import { WalletManagerWalletsScreen } from "../../screens/WalletManager/WalletsScreen";
 import { RootStackParamList } from "../../utils/navigation";
-import { MyAlbumScreen } from "../../screens/MusicPlayer/MyAlbumScreen";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 export const screenTitle = (title: string) => "Teritori - " + title;

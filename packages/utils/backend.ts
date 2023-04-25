@@ -9,6 +9,10 @@ import {
   MarketplaceService,
 } from "../api/marketplace/v1/marketplace";
 import {
+  MusicplayerServiceClientImpl,
+  GrpcWebImpl as MusicplayerGrpcWebImpl,
+} from "../api/musicplayer/v1/musicplayer";
+import {
   P2eServiceClientImpl,
   GrpcWebImpl as P2eGrpcWebImpl,
   P2eService,
@@ -88,3 +92,20 @@ export const mustGetFeedClient = (networkId: string | undefined) => {
   }
   return client;
 };
+
+const musicplayerBackendEndpoint =
+  process.env.TERITORI_MUSICPLAYER_BACKEND_ENDPOINT;
+
+if (!musicplayerBackendEndpoint) {
+  throw new Error("missing TERITORI_MUSICPLAYER_BACKEND_ENDPOINT in env");
+}
+
+const musicplayerRpc = new MusicplayerGrpcWebImpl(musicplayerBackendEndpoint, {
+  transport: grpc.WebsocketTransport(),
+  debug: false,
+  // metadata: new grpc.Metadata({ SomeHeader: "bar" }),
+});
+
+export const musicplayerClient = new MusicplayerServiceClientImpl(
+  musicplayerRpc
+);

@@ -1,19 +1,20 @@
 import React, { useState } from "react";
 import { StyleSheet, Pressable } from "react-native";
 
+import { MyAlbumMenu } from "./MyAlbumMenu";
+import { TrackHoverMenu } from "./TrackHoverMenu";
 import HoveredMenu from "../../../assets/music-player/hovered-menu.svg";
 import HoveredPlay from "../../../assets/music-player/hovered-play.svg";
 import NormalMenu from "../../../assets/music-player/normal-menu.svg";
 import NormalPlay from "../../../assets/music-player/normal-play.svg";
-import { SVG } from "../SVG";
 import { useAppNavigation } from "../../utils/navigation";
 import { layout } from "../../utils/style/layout";
-import { TrackHoverMenu } from "./TrackHoverMenu";
-import { MyAlbumMenu } from "./MyAlbumMenu";
+import { SVG } from "../SVG";
 
-
-export const TrackImageHover: React.FC<{ mine: boolean }> = ({ mine = false }) => {
-
+export const TrackImageHover: React.FC<{ mine: boolean; albumId: number }> = ({
+  mine = false,
+  albumId,
+}) => {
   const navigation = useAppNavigation();
   const [hoverMenuIcon, setHoverMenuIcon] = useState<boolean>(false);
   const [hoverPlayIcon, setHoverPlayIcon] = useState<boolean>(false);
@@ -31,7 +32,7 @@ export const TrackImageHover: React.FC<{ mine: boolean }> = ({ mine = false }) =
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "flex-end",
-    }
+    },
   });
 
   return (
@@ -39,7 +40,7 @@ export const TrackImageHover: React.FC<{ mine: boolean }> = ({ mine = false }) =
       style={styles.hoverBox}
       onPress={() => {
         if (mine) navigation.navigate("MyAlbum");
-        else navigation.navigate("AlbumName");
+        else navigation.navigate("AlbumName", { id: albumId });
       }}
     >
       {hoverPlayIcon && (
@@ -66,7 +67,9 @@ export const TrackImageHover: React.FC<{ mine: boolean }> = ({ mine = false }) =
             source={HoveredMenu}
             width={28}
             height={28}
-            onMouseLeave={() => { setHoverMenuIcon(false); }}
+            onMouseLeave={() => {
+              setHoverMenuIcon(false);
+            }}
           />
         </Pressable>
       )}
@@ -78,12 +81,8 @@ export const TrackImageHover: React.FC<{ mine: boolean }> = ({ mine = false }) =
           onMouseEnter={() => setHoverMenuIcon(true)}
         />
       )}
-      {openMenu && !mine && (
-        <TrackHoverMenu />
-      )}
-      {openMenu && mine && (
-        <MyAlbumMenu />
-      )}
+      {openMenu && !mine && <TrackHoverMenu />}
+      {openMenu && mine && <MyAlbumMenu />}
     </Pressable>
   );
 };
