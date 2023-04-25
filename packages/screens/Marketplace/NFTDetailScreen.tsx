@@ -205,6 +205,7 @@ const Content: React.FC<{
               height: 60,
               width,
               alignItems: "flex-end",
+              backgroundColor: "black",
             }}
             onSelect={setSelectedTab}
           />
