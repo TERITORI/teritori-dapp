@@ -4,29 +4,27 @@ import { ActivityIndicator } from "react-native-paper";
 import { Menu, MenuOptions, MenuTrigger } from "react-native-popup-menu";
 
 import emojiSVG from "../../../assets/icons/emoji.svg";
-import {
-  neutral33,
-  neutral67,
-  neutral77,
-  secondaryColor,
-} from "../../utils/style/colors";
+import { neutral33, neutral67, secondaryColor } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
 import EmojiModal from "../EmojiModal";
-import { SVG } from "../SVG";
+import { IconBox } from "../IconBox";
 
 type EmojiSelectorProps = {
   onEmojiSelected: (emoji: string) => void;
-  optionsContainer?: ViewStyle;
   isLoading?: boolean;
   buttonStyle?: StyleProp<ViewStyle>;
+  iconStyle?: StyleProp<ViewStyle>;
   disabled?: boolean;
 };
 
+const WIDTH = 308;
+const HEIGHT = 300;
+
 export const EmojiSelector: React.FC<EmojiSelectorProps> = ({
   onEmojiSelected,
-  optionsContainer,
   isLoading,
   buttonStyle,
+  iconStyle,
   disabled,
 }) => {
   const [isEmojiModalVisible, setIsEmojiModalVisible] = useState(false);
@@ -35,28 +33,27 @@ export const EmojiSelector: React.FC<EmojiSelectorProps> = ({
     !isLoading && setIsEmojiModalVisible(!isEmojiModalVisible);
 
   return (
-    <Menu opened={isEmojiModalVisible} onBackdropPress={toggleEmojiModal}>
-      <MenuTrigger
-        onPress={() => !disabled && toggleEmojiModal()}
-        disabled={disabled}
-        style={[styles.icon, buttonStyle]}
-      >
+    <Menu
+      opened={isEmojiModalVisible}
+      onBackdropPress={toggleEmojiModal}
+      style={buttonStyle}
+    >
+      <MenuTrigger onPress={() => !disabled && toggleEmojiModal()}>
         {isLoading ? (
-          <ActivityIndicator animating color={secondaryColor} />
+          <ActivityIndicator animating color={secondaryColor} size={32} />
         ) : (
-          <SVG
-            source={emojiSVG}
-            color={disabled ? neutral77 : secondaryColor}
+          <IconBox
+            icon={emojiSVG}
+            onPress={toggleEmojiModal}
+            disabled={disabled}
+            style={iconStyle}
           />
         )}
       </MenuTrigger>
 
       <MenuOptions
         customStyles={{
-          optionsContainer: StyleSheet.flatten([
-            styles.optionsContainer,
-            optionsContainer,
-          ]),
+          optionsContainer: StyleSheet.flatten([styles.optionsContainer]),
         }}
       >
         <EmojiModal
@@ -83,24 +80,19 @@ export const EmojiSelector: React.FC<EmojiSelectorProps> = ({
 };
 
 const styles = StyleSheet.create({
-  icon: {
-    width: 32,
-    height: 32,
-    backgroundColor: neutral33,
-    borderRadius: 20,
-    alignItems: "center",
-    justifyContent: "center",
-  },
   modalContainer: {
+    paddingHorizontal: layout.padding_x1,
+    paddingVertical: layout.padding_x1_5,
     backgroundColor: neutral67,
     borderWidth: 1,
     borderColor: neutral33,
-    paddingTop: layout.padding_x0_75,
-    width: 308,
-    height: 300,
+    width: WIDTH,
+    height: HEIGHT,
   },
   optionsContainer: {
-    marginTop: 44,
+    width: WIDTH,
+    height: HEIGHT,
+    left: 0,
     backgroundColor: "transparent",
   },
 });

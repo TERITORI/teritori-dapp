@@ -326,14 +326,14 @@ export const RichText: React.FC<RichTextProps> = ({
     <View style={styles.toolbarButtonsWrapper}>
       <EmojiSelector
         onEmojiSelected={(emoji) => addEmoji(emoji)}
-        optionsContainer={{ marginLeft: 0, marginTop: -6 }}
         buttonStyle={styles.toolbarCustomButton}
+        iconStyle={styles.toolbarCustomButtonIcon}
       />
 
       <GIFSelector
         onGIFSelected={(url) => (url ? addGIF(url) : undefined)}
-        optionsContainer={{ marginLeft: 0, marginTop: -6 }}
         buttonStyle={styles.toolbarCustomButton}
+        iconStyle={styles.toolbarCustomButtonIcon}
         disabled={isGIFSelectorDisabled}
       />
 
@@ -345,7 +345,7 @@ export const RichText: React.FC<RichTextProps> = ({
           <IconBox
             icon={audioSVG}
             onPress={onPress}
-            style={styles.toolbarCustomButton}
+            style={[styles.toolbarCustomButtonIcon, styles.toolbarCustomButton]}
             disabled={isAudioUploadDisabled}
           />
         )}
@@ -359,7 +359,7 @@ export const RichText: React.FC<RichTextProps> = ({
           <IconBox
             icon={videoSVG}
             onPress={onPress}
-            style={styles.toolbarCustomButton}
+            style={[styles.toolbarCustomButtonIcon, styles.toolbarCustomButton]}
             disabled={isVideoUploadDisabled}
           />
         )}
@@ -373,7 +373,7 @@ export const RichText: React.FC<RichTextProps> = ({
           <IconBox
             icon={cameraSVG}
             onPress={onPress}
-            style={styles.toolbarCustomButton}
+            style={[styles.toolbarCustomButtonIcon, styles.toolbarCustomButton]}
             iconProps={{
               width: 18,
               height: 18,
@@ -499,7 +499,9 @@ export const RichText: React.FC<RichTextProps> = ({
 /////////////// STYLES ////////////////
 const styles = StyleSheet.create({
   toolbarCustomButton: {
-    marginHorizontal: layout.padding_x0_75 / 2,
+    margin: layout.padding_x0_5,
+  },
+  toolbarCustomButtonIcon: {
     borderRadius: 4,
     height: 30,
     width: 30,

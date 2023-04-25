@@ -195,7 +195,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
             onScroll={scrollHandler}
             scrollEventThrottle={1}
           >
-            {isMobile && <MobileTitle title={headerLabel} />}
+            {isMobile && <MobileTitle title={headerLabel.toUpperCase()} />}
             <View
               style={{
                 width:

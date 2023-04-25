@@ -533,12 +533,10 @@ export const NewsFeedInput = React.forwardRef<
             >
               <EmojiSelector
                 onEmojiSelected={onEmojiSelected}
-                optionsContainer={{ marginLeft: 0, marginTop: -6 }}
                 buttonStyle={{ marginRight: layout.padding_x2_5 }}
               />
 
               <GIFSelector
-                optionsContainer={{ marginLeft: 0, marginTop: -6 }}
                 buttonStyle={{ marginRight: layout.padding_x2_5 }}
                 onGIFSelected={(url) => {
                   // Don't add if already added

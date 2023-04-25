@@ -184,7 +184,9 @@ export const SocialThreadCard: React.FC<{
               <SpacerRow size={2.5} />
             )}
 
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <View
+              style={{ flexDirection: "row", alignItems: "center", zIndex: -1 }}
+            >
               <EmojiSelector
                 onEmojiSelected={handleReaction}
                 isLoading={isPostMutationLoading}
