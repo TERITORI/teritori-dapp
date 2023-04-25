@@ -8,12 +8,18 @@ import { Reaction } from "../../../api/feed/v1/feed";
 import { layout } from "../../../utils/style/layout";
 import { SocialStat } from "../SocialStat";
 
+const DEFAULT_NB_EMOJI_SHOWN = 12;
+
 export const Reactions: React.FC<{
   reactions: Reaction[];
   onPressReaction: (icon: string) => void;
   isLoading?: boolean;
   nbShown?: number;
-}> = ({ reactions = [], onPressReaction, nbShown = 10 }) => {
+}> = ({
+  reactions = [],
+  onPressReaction,
+  nbShown = DEFAULT_NB_EMOJI_SHOWN,
+}) => {
   // const reactionWidthRef = useRef<number>();
   // const reactionAnimation = useAnimatedStyle(
   //   () => ({
@@ -119,7 +125,7 @@ export const Reactions: React.FC<{
 
 // Number of SocialStat displayed depending on a width (A Social Card width)
 export const nbReactionsShown = (viewWidth: number) => {
-  if (viewWidth >= 700) return 10;
+  if (viewWidth >= 700) return DEFAULT_NB_EMOJI_SHOWN;
   else if (viewWidth >= 650) return 7;
   else if (viewWidth >= 600) return 5;
   else if (viewWidth >= 580) return 4;

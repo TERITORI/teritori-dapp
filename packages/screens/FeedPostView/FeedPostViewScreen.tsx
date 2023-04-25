@@ -46,8 +46,8 @@ import { primaryColor } from "../../utils/style/colors";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import {
   layout,
-  NEWS_FEED_MAX_WIDTH,
   RESPONSIVE_BREAKPOINT_S,
+  screenContentMaxWidth,
 } from "../../utils/style/layout";
 
 export type OnPressReplyType = (replyTo: ReplyToType) => void;
@@ -161,7 +161,9 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
   return (
     <ScreenContainer
       forceNetworkKind={NetworkKind.Cosmos}
+      fullWidth
       responsive
+      noMargin
       headerChildren={
         <BrandText style={fontSemibold20}>{headerLabel}</BrandText>
       }
@@ -198,7 +200,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
               style={{
                 width:
                   windowWidth < RESPONSIVE_BREAKPOINT_S ? windowWidth : width,
-                maxWidth: NEWS_FEED_MAX_WIDTH,
+                maxWidth: screenContentMaxWidth,
                 alignItems: "center",
                 paddingVertical: layout.padding_x2,
               }}
@@ -283,7 +285,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
               styles.footer,
               {
                 width: isMobile ? width : "100%",
-                maxWidth: NEWS_FEED_MAX_WIDTH,
+                maxWidth: screenContentMaxWidth,
               },
             ]}
           >
@@ -299,7 +301,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
               }}
               style={{
                 width: isMobile ? width : "100%",
-                maxWidth: NEWS_FEED_MAX_WIDTH,
+                maxWidth: screenContentMaxWidth,
               }}
             />
           </View>

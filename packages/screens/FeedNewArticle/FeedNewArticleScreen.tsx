@@ -41,7 +41,7 @@ import {
   secondaryColor,
 } from "../../utils/style/colors";
 import { fontSemibold13, fontSemibold20 } from "../../utils/style/fonts";
-import { layout, NEWS_FEED_MAX_WIDTH } from "../../utils/style/layout";
+import { layout, screenContentMaxWidth } from "../../utils/style/layout";
 import { pluralOrNot } from "../../utils/text";
 
 //TODO: In mobile : Make ActionsContainer accessible (floating button ?)
@@ -162,7 +162,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
       forceNetworkKind={NetworkKind.Cosmos}
       responsive
       mobileTitle="NEW ARTICLE"
-      maxWidth={NEWS_FEED_MAX_WIDTH}
+      maxWidth={screenContentMaxWidth}
       headerChildren={<BrandText style={fontSemibold20}>New Article</BrandText>}
       onBackPress={navigateBack}
       footerChildren

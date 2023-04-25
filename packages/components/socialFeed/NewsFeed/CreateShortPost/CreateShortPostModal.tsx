@@ -2,7 +2,7 @@ import React from "react";
 import { useWindowDimensions } from "react-native";
 import { MenuProvider } from "react-native-popup-menu";
 
-import { layout, NEWS_FEED_MAX_WIDTH } from "../../../../utils/style/layout";
+import { layout, screenContentMaxWidth } from "../../../../utils/style/layout";
 import ModalBase from "../../../modals/ModalBase";
 import { NewsFeedInput } from "../NewsFeedInput";
 
@@ -24,7 +24,7 @@ export const CreateShortPostModal: React.FC<{
     <ModalBase
       visible={isVisible}
       onClose={onClose}
-      width={width < 900 ? 0.9 * width : NEWS_FEED_MAX_WIDTH}
+      width={width < 900 ? 0.9 * width : screenContentMaxWidth}
       label="Create a Post"
     >
       <MenuProvider>

@@ -24,8 +24,8 @@ import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useMaxResolution } from "../../../hooks/useMaxResolution";
 import {
   layout,
-  NEWS_FEED_MAX_WIDTH,
   RESPONSIVE_BREAKPOINT_S,
+  screenContentMaxWidth,
 } from "../../../utils/style/layout";
 import { SpacerColumn } from "../../spacer";
 import { SocialThreadCard } from "../SocialThread/SocialThreadCard";
@@ -113,7 +113,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
             onSubmitSuccess={refetch}
             style={{
               width: isMobile ? width : "100%",
-              maxWidth: NEWS_FEED_MAX_WIDTH,
+              maxWidth: screenContentMaxWidth,
             }}
             additionalMention={additionalMention}
             additionalHashtag={additionalHashtag}
@@ -160,7 +160,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
             style={{
               width:
                 windowWidth < RESPONSIVE_BREAKPOINT_S ? windowWidth : width,
-              maxWidth: NEWS_FEED_MAX_WIDTH,
+              maxWidth: screenContentMaxWidth,
             }}
           >
             <SocialThreadCard
@@ -177,7 +177,11 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
             <SpacerColumn size={2} />
           </View>
         )}
-        ListHeaderComponentStyle={{ zIndex: 1 }}
+        ListHeaderComponentStyle={{
+          zIndex: 1,
+          width: windowWidth < RESPONSIVE_BREAKPOINT_S ? windowWidth : width,
+          maxWidth: screenContentMaxWidth,
+        }}
         ListHeaderComponent={ListHeaderComponent}
         keyExtractor={(post: Post) => post.identifier}
         onScroll={scrollHandler}

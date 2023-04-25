@@ -10,7 +10,6 @@ export const topMenuWidth = 332;
 export const smallSidebarWidth = 76;
 export const fullSidebarWidth = 210;
 export const MOBILE_SIDEBAR_MAX_WIDTH = 500;
-export const NEWS_FEED_MAX_WIDTH = 900;
 export const MOBILE_MAX_WIDTH = 1024;
 export const RESPONSIVE_BREAKPOINT_S = 512;
 export const SOCIAL_FEED_BREAKPOINT_L = 1100;
