@@ -3,7 +3,6 @@
     "name": "teritori",
     "slug": "teritori",
     "version": "1.0.0",
-    "sdkVersion": "45.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -15,7 +14,9 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.teritori"
@@ -31,7 +32,13 @@
     },
     "packagerOpts": {
       "config": "metro.config.js",
-      "sourceExts": ["js", "jsx", "ts", ".native.ts", "tsx"]
+      "sourceExts": [
+        "js",
+        "jsx",
+        "ts",
+        ".native.ts",
+        "tsx"
+      ]
     },
     "extra": {
       "eas": {
