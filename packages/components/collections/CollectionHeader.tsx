@@ -5,7 +5,6 @@ import { View, Platform, StyleSheet, Linking } from "react-native";
 
 import { CollectionStat } from "./CollectionStat";
 import { TabsListType } from "./types";
-import bannerCollection from "../../../assets/default-images/banner-collection.jpg";
 import etherscanSVG from "../../../assets/icons/etherscan.svg";
 import shareSVG from "../../../assets/icons/share.svg";
 import { SortDirection } from "../../api/marketplace/v1/marketplace";
@@ -31,7 +30,6 @@ import { CollectionInfo } from "../../utils/collection";
 import { neutral33 } from "../../utils/style/colors";
 import { fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { OptimizedImage } from "../OptimizedImage";
 
 // All the screen content before the Flatlist used to display NFTs
 export const CollectionHeader: React.FC<{
@@ -53,7 +51,6 @@ export const CollectionHeader: React.FC<{
   // variables
   const stats = useCollectionStats(collectionId, wallet?.userId);
   const { width } = useMaxResolution();
-  const height = width * (311 / 1092); // aspect ratio of the r!ot collection banner
   const [network, collectionMintAddress] = parseCollectionId(collectionId);
   const { setToastSuccess } = useFeedbacks();
 
@@ -136,19 +133,13 @@ export const CollectionHeader: React.FC<{
 
   // returns
   return width > 0 ? (
-    <View style={{ maxWidth: width, alignSelf: "center" }}>
-      <OptimizedImage
-        width={width}
-        height={height}
-        sourceURI={collectionInfo.bannerImage}
-        fallbackURI={bannerCollection}
-        style={{
-          height,
-          width,
-          marginBottom: layout.contentPadding,
-        }}
-      />
-
+    <View
+      style={{
+        maxWidth: width,
+        alignSelf: "center",
+        marginTop: layout.padding_x4,
+      }}
+    >
       <View
         style={{
           flexDirection: "row",

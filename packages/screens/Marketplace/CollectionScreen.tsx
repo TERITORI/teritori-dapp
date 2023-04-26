@@ -2,13 +2,15 @@ import React, { useState } from "react";
 import { ScrollView } from "react-native-gesture-handler";
 
 import { SortDirection } from "../../api/marketplace/v1/marketplace";
+import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { CollectionContent } from "../../components/collections/CollectionContent";
 import { CollectionHeader } from "../../components/collections/CollectionHeader";
 import { TabsListType } from "../../components/collections/types";
 import { useCollectionInfo } from "../../hooks/useCollectionInfo";
 import { parseCollectionId } from "../../networks";
-import { ScreenFC } from "../../utils/navigation";
+import { ScreenFC, useAppNavigation } from "../../utils/navigation";
+import { fontSemibold20 } from "../../utils/style/fonts";
 
 export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
   // variables
@@ -19,6 +21,7 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
     SortDirection.SORT_DIRECTION_ASCENDING
   );
   const [network] = parseCollectionId(id);
+  const navigation = useAppNavigation();
 
   // returns
   return (
@@ -26,8 +29,15 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
       key={`Collection ${id}`} // this key is to reset the screen state when the id changes
       fullWidth
       footerChildren={<></>}
+      headerChildren={
+        <BrandText style={fontSemibold20}>
+          {info.name && `${info.name} Collection Profile`}
+        </BrandText>
+      }
       noMargin
+      responsive
       noScroll
+      onBackPress={() => navigation.navigate("Marketplace")}
       forceNetworkId={network?.id}
     >
       <ScrollView
