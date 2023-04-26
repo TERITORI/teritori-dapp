@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Image } from "react-native";
+import { StyleSheet } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 import addSVG from "../../../../assets/icons/add.svg";
@@ -7,6 +7,7 @@ import gameBoxSVG from "../../../../assets/icons/game-box.svg";
 import { NFT } from "../../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
+import { OptimizedImage } from "../../../components/OptimizedImage";
 import { SVG } from "../../../components/SVG";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { isNFTStaked } from "../../../utils/game";
@@ -34,6 +35,7 @@ export const BreedingSlot: React.FC<BreedingSlotProps> = ({
   active,
 }) => {
   const isStaked = isNFTStaked(ripper);
+  const imageSize = 200 - layout.padding_x2 * 2;
 
   return (
     <TouchableOpacity activeOpacity={0.6} onPress={onPress}>
@@ -66,9 +68,11 @@ export const BreedingSlot: React.FC<BreedingSlotProps> = ({
               </BrandText>
             </FlexRow>
 
-            <Image
+            <OptimizedImage
               style={[styles.ripperImage, isStaked && { opacity: 0.4 }]}
               source={{ uri: ripper.imageUri }}
+              width={imageSize}
+              height={imageSize}
             />
 
             {isStaked && (

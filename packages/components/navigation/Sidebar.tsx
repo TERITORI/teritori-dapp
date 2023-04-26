@@ -1,12 +1,11 @@
 import { useRoute } from "@react-navigation/native";
-import React, { useMemo } from "react";
+import React from "react";
 import { View, StyleSheet, Pressable, FlatList } from "react-native";
 import Animated, {
   useAnimatedStyle,
   withSpring,
   WithSpringConfig,
 } from "react-native-reanimated";
-import { useSelector } from "react-redux";
 
 import { SideNotch } from "./components/SideNotch";
 import { SidebarButton } from "./components/SidebarButton";
@@ -20,15 +19,7 @@ import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useSelectedNetworkKind } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkKind } from "../../networks";
-import { getValuesFromId, SEPARATOR } from "../../screens/DAppStore/query/util";
-import {
-  selectAvailableApps,
-  selectCheckedApps,
-  setSelectedApps,
-} from "../../store/slices/dapps-store";
-import { useAppDispatch } from "../../store/store";
 import { useAppNavigation } from "../../utils/navigation";
-import { SIDEBAR_LIST } from "../../utils/sidebar";
 import { neutral17, neutral33 } from "../../utils/style/colors";
 import {
   smallSidebarWidth,
@@ -55,7 +46,7 @@ export const Sidebar: React.FC = () => {
   // variables
   const navigation = useAppNavigation();
   const { name: currentRouteName } = useRoute();
-  const { isSidebarExpanded, toggleSidebar } = useSidebar();
+  const { isSidebarExpanded, toggleSidebar, dynamicSidebar } = useSidebar();
 
   // animations
   const layoutStyle = useAnimatedStyle(

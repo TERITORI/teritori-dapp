@@ -14,7 +14,7 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
   // variables
   const { id } = route.params;
   const [selectedTab, setSelectedTab] = useState<TabsListType>("allNFTs");
-  const { info } = useCollectionInfo(id);
+  const { collectionInfo: info } = useCollectionInfo(id);
   const [sortDirection, setSortDirection] = useState(
     SortDirection.SORT_DIRECTION_ASCENDING
   );
@@ -23,6 +23,7 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
   // returns
   return (
     <ScreenContainer
+      key={`Collection ${id}`} // this key is to reset the screen state when the id changes
       fullWidth
       footerChildren={<></>}
       noMargin

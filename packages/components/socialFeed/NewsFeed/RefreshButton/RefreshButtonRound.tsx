@@ -1,5 +1,9 @@
 import React from "react";
-import { StyleSheet, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  TouchableOpacity,
+  useWindowDimensions,
+} from "react-native";
 import Animated, {
   Easing,
   SharedValue,
@@ -11,7 +15,10 @@ import Animated, {
 
 import refreshSVG from "../../../../../assets/icons/refresh.svg";
 import { neutral17, neutral33 } from "../../../../utils/style/colors";
-import { layout } from "../../../../utils/style/layout";
+import {
+  layout,
+  RESPONSIVE_BREAKPOINT_S,
+} from "../../../../utils/style/layout";
 import { SVG } from "../../../SVG";
 
 interface RefreshButtonProps {
@@ -30,6 +37,8 @@ export const RefreshButtonRound: React.FC<RefreshButtonProps> = ({
   const isRefreshingAnim = useDerivedValue(() => {
     return isRefreshing.value;
   }, [isRefreshing.value]);
+
+  const { width } = useWindowDimensions();
 
   const rotateValue = useDerivedValue(() => {
     return isRefreshingAnim.value
@@ -56,6 +65,28 @@ export const RefreshButtonRound: React.FC<RefreshButtonProps> = ({
     };
   }, [rotateValue.value]);
 
+  const styles = StyleSheet.create({
+    selfCenter: {
+      alignSelf: "center",
+    },
+    container: {
+      flexDirection: "row",
+      alignItems: "center",
+      backgroundColor: neutral17,
+      borderWidth: 1,
+      borderColor: neutral33,
+      borderRadius: 999,
+      padding: layout.padding_x1_5,
+
+      justifyContent: "center",
+      width: width < RESPONSIVE_BREAKPOINT_S ? 40 : 68,
+      height: width < RESPONSIVE_BREAKPOINT_S ? 40 : 68,
+    },
+    textContainer: {
+      marginLeft: layout.padding_x1_5,
+    },
+  });
+
   // returns
   return (
     <Animated.View style={[styles.selfCenter]}>
@@ -67,25 +98,3 @@ export const RefreshButtonRound: React.FC<RefreshButtonProps> = ({
     </Animated.View>
   );
 };
-
-const styles = StyleSheet.create({
-  selfCenter: {
-    alignSelf: "center",
-  },
-  container: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: neutral17,
-    borderWidth: 1,
-    borderColor: neutral33,
-    borderRadius: 999,
-    padding: layout.padding_x1_5,
-
-    justifyContent: "center",
-    width: 68,
-    height: 68,
-  },
-  textContainer: {
-    marginLeft: layout.padding_x1_5,
-  },
-});

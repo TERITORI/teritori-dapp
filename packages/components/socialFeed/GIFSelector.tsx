@@ -28,16 +28,19 @@ import { SpacerColumn } from "../spacer";
 
 type GIFSelectorProps = {
   disabled?: boolean;
-  optionsContainer?: ViewStyle;
   onGIFSelected?: (GIFurl: string | null) => void;
   buttonStyle?: StyleProp<ViewStyle>;
+  iconStyle?: StyleProp<ViewStyle>;
 };
+
+const WIDTH = 308;
+const HEIGHT = 300;
 
 export const GIFSelector: React.FC<GIFSelectorProps> = ({
   onGIFSelected,
-  optionsContainer,
   disabled,
   buttonStyle,
+  iconStyle,
 }) => {
   // functions
   const [isGIFModalVisible, setIsGIFModalVisible] = useState(false);
@@ -97,23 +100,20 @@ export const GIFSelector: React.FC<GIFSelectorProps> = ({
     <Menu
       opened={isGIFModalVisible}
       onBackdropPress={toggleGIFModal}
-      rendererProps={{ placement: "bottom" }}
+      style={buttonStyle}
     >
       <MenuTrigger onPress={() => !disabled && toggleGIFModal}>
         <IconBox
           icon={gifSVG}
           onPress={toggleGIFModal}
           disabled={disabled}
-          style={buttonStyle}
+          style={iconStyle}
         />
       </MenuTrigger>
 
       <MenuOptions
         customStyles={{
-          optionsContainer: StyleSheet.flatten([
-            styles.optionsContainer,
-            optionsContainer,
-          ]),
+          optionsContainer: StyleSheet.flatten([styles.optionsContainer]),
         }}
       >
         <View style={styles.modalContainer}>
@@ -167,11 +167,16 @@ const styles = StyleSheet.create({
     borderColor: neutral33,
     paddingHorizontal: layout.padding_x1,
     paddingVertical: layout.padding_x1_5,
-    width: 308,
-    height: 300,
+    width: WIDTH,
+    height: HEIGHT,
     borderRadius: 10,
   },
-
+  optionsContainer: {
+    width: WIDTH,
+    height: HEIGHT,
+    left: 0,
+    backgroundColor: "transparent",
+  },
   input: {
     backgroundColor: neutral33,
     width: "100%",
@@ -184,10 +189,5 @@ const styles = StyleSheet.create({
     width: 65,
     height: 65,
     margin: layout.padding_x0_5,
-  },
-  optionsContainer: {
-    marginTop: 44,
-    backgroundColor: "transparent",
-    marginLeft: -134,
   },
 });

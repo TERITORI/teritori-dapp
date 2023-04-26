@@ -1,5 +1,5 @@
 import React, { useMemo, useRef } from "react";
-import { ActivityIndicator, Image, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, TouchableOpacity, View } from "react-native";
 import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
 
 import chevronLeftSVG from "../../../assets/icons/chevron-left.svg";
@@ -18,6 +18,7 @@ import { getNetwork } from "../../networks";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
+import { OptimizedImage } from "../OptimizedImage";
 import { SVG } from "../SVG";
 import { Section } from "../Section";
 import { TertiaryBox } from "../boxes/TertiaryBox";
@@ -88,8 +89,10 @@ const CarouselCollectionItem: React.FC<{
       {/* Right container */}
       <TertiaryBox style={{ marginBottom: 40 }}>
         {collection.imageUri ? (
-          <Image
+          <OptimizedImage
             source={{ uri: collection.imageUri }}
+            width={HERO_SIZE}
+            height={HERO_SIZE}
             style={{
               height: HERO_SIZE,
               width: HERO_SIZE,
@@ -109,7 +112,7 @@ export const CollectionsCarouselHeader: React.FC<{
   linkToMint?: boolean;
   filter?: (c: Collection) => boolean;
 }> = ({ req = defaultRequest, linkToMint, filter }) => {
-  const [collections] = useCollections(req, filter);
+  const { collections } = useCollections(req, filter);
   const carouselRef = useRef<ICarouselInstance | null>(null);
   const { width } = useMaxResolution();
 

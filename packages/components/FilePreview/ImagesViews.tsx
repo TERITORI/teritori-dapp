@@ -3,7 +3,7 @@ import { Image, TouchableOpacity, View } from "react-native";
 
 import { DeleteButton } from "./DeleteButton";
 import { ImagesFullViewModal } from "./ImagesFullViewModal";
-import { ipfsURLToHTTPURL } from "../../utils/ipfs";
+import { ipfsURLToHTTPURL } from "./ipfs";
 import { errorColor } from "../../utils/style/colors";
 import { fontSemibold13 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";

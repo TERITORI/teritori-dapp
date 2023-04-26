@@ -6,7 +6,6 @@ import React, { useCallback, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   TouchableOpacity,
-  Image,
   StyleProp,
   TextStyle,
   View,
@@ -24,6 +23,7 @@ import sigmaSVG from "../../../assets/icons/sigma.svg";
 import { BrandText } from "../../components/BrandText";
 import { ExternalLink } from "../../components/ExternalLink";
 import FlexRow from "../../components/FlexRow";
+import { OptimizedImage } from "../../components/OptimizedImage";
 import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { TertiaryBadge } from "../../components/badges/TertiaryBadge";
@@ -41,7 +41,7 @@ import {
 import { Wallet } from "../../context/WalletsProvider";
 import { TeritoriMinter__factory } from "../../evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
 import { useBalances } from "../../hooks/useBalances";
-import { MintPhase, useCollectionInfo } from "../../hooks/useCollectionInfo";
+import { useCollectionInfo } from "../../hooks/useCollectionInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
   NetworkKind,
@@ -55,6 +55,7 @@ import {
   getEthereumNetwork,
 } from "../../networks";
 import { prettyPrice } from "../../utils/coins";
+import { MintPhase } from "../../utils/collection";
 import { getMetaMaskEthereumSigner } from "../../utils/ethereum";
 import { ScreenFC } from "../../utils/navigation";
 import {
@@ -105,7 +106,11 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
   const wallet = useSelectedWallet();
   const [minted, setMinted] = useState(false);
   const [isDepositVisible, setDepositVisible] = useState(false);
-  const { info, notFound, refetchCollectionInfo } = useCollectionInfo(id);
+  const {
+    collectionInfo: info,
+    notFound,
+    refetch: refetchCollectionInfo,
+  } = useCollectionInfo(id);
   const { setToastError } = useFeedbacks();
   const [viewWidth, setViewWidth] = useState(0);
   const [network, mintAddress] = parseNetworkObjectId(id);
@@ -126,9 +131,9 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
     const MAX_BULK = 99;
 
     let totalBulkMint = +newTotalBulkMint;
-    if (newTotalBulkMint < 1) {
+    if (+newTotalBulkMint < 1) {
       totalBulkMint = 1;
-    } else if (info?.maxPerAddress && newTotalBulkMint > +info.maxPerAddress) {
+    } else if (info?.maxPerAddress && +newTotalBulkMint > +info.maxPerAddress) {
       totalBulkMint = +info.maxPerAddress;
     } else if (totalBulkMint > MAX_BULK) {
       totalBulkMint = MAX_BULK;
@@ -657,8 +662,10 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
             >
               <TertiaryBox style={{ marginBottom: 40 }}>
                 {info.image ? (
-                  <Image
+                  <OptimizedImage
                     source={{ uri: info.image }}
+                    width={imageSize}
+                    height={imageSize}
                     style={{
                       width: imageSize,
                       height: imageSize,
@@ -666,7 +673,16 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                     }}
                   />
                 ) : (
-                  <ActivityIndicator size="large" style={{ margin: 40 }} />
+                  <View
+                    style={{
+                      width: imageSize,
+                      height: imageSize,
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <ActivityIndicator size="large" style={{ margin: 40 }} />
+                  </View>
                 )}
               </TertiaryBox>
 

@@ -1,15 +1,14 @@
 import React from "react";
 import { View, ViewStyle, StyleProp } from "react-native";
 
-import { BackButton } from "./navigation/components/BackButton";
-import { neutral33 } from "../utils/style/colors";
+import { neutral33 } from "../../utils/style/colors";
 import {
   headerHeight,
   screenContainerContentMarginHorizontal,
-} from "../utils/style/layout";
+} from "../../utils/style/layout";
+import { BackButton } from "../navigation/components/BackButton";
 
 export const Header: React.FC<{
-  smallMargin?: boolean;
   style?: StyleProp<ViewStyle>;
   onBackPress?: () => void;
 }> = ({ children, style, onBackPress }) => {

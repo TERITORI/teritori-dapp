@@ -57,10 +57,14 @@ export type RootStackParamList = {
   Settings: undefined;
 
   DAppStore: undefined;
+<<<<<<< HEAD
 
   MusicPlayer: undefined;
   AlbumName: { id: number };
   MyAlbum: undefined;
+=======
+  ToriPunks: { route: string };
+>>>>>>> ba92a2422aef8d41224c4a0d8f3c20df6a4e255b
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -112,7 +116,7 @@ const navConfig: {
     Feed: "feed",
     FeedNewArticle: "feed/new",
     FeedPostView: "feed/post/:id",
-    HashtagFeed: "feed/hashtag/:hashtag",
+    HashtagFeed: "feed/tag/:hashtag",
 
     // ==== Staking
     Staking: "staking",
@@ -123,10 +127,14 @@ const navConfig: {
     Settings: "settings",
     // ==== DAppStore
     DAppStore: "dapp-store",
+    // === DApps
+    ToriPunks: "dapp/tori-punks/:route?",
+
     // ==== MusicPlayer
     MusicPlayer: "music-player/home",
     AlbumName: "music-player/album-name/:id",
     MyAlbum: "music-player/my-album",
+
   },
 };
 

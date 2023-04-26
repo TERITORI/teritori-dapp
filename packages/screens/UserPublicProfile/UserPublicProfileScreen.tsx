@@ -13,21 +13,22 @@ import { ScreenContainer } from "../../components/ScreenContainer";
 import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
 import { UPPNFTs } from "../../components/userPublicProfile/UPPNFTs";
 import { UPPQuests } from "../../components/userPublicProfile/UPPSucceedQuests";
+import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { parseNetworkObjectId, parseUserId } from "../../networks";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { setDocumentTitle } from "../../utils/setDocumentTitle";
 import { fontSemibold20 } from "../../utils/style/fonts";
-import { screenContentMaxWidth } from "../../utils/style/layout";
 
-const TabContainer: React.FC = ({ children }) => (
-  <View style={{ flex: 1, alignItems: "center" }}>
-    <View style={{ width: "100%", maxWidth: screenContentMaxWidth }}>
-      {children}
+const TabContainer: React.FC = ({ children }) => {
+  const { width } = useMaxResolution();
+  return (
+    <View style={{ flex: 1, alignItems: "center" }}>
+      <View style={{ width }}>{children}</View>
     </View>
-  </View>
-);
+  );
+};
 
 const SelectedTabContent: React.FC<{
   userId: string;
@@ -134,11 +135,11 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
 
   return (
     <ScreenContainer
+      key={`UserPublicProfile ${id}`} // this key is to reset the screen state when the id changes
       forceNetworkId={network?.id}
       responsive
       fullWidth
       noScroll={selectedTab === "userPosts" || selectedTab === "mentionsPosts"}
-      smallMargin
       footerChildren={<></>}
       headerChildren={
         <BrandText style={fontSemibold20}>

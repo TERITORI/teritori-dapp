@@ -1,8 +1,8 @@
 import React from "react";
 import { StyleProp, TouchableOpacity, ViewStyle } from "react-native";
 
-import chevronUpSVG from "../../../assets/icons/chevron-down.svg";
-import chevronDownSVG from "../../../assets/icons/chevron-up.svg";
+import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
+import chevronUpSVG from "../../../assets/icons/chevron-up.svg";
 import {
   ButtonsSize,
   cornerWidthDropdownButton,

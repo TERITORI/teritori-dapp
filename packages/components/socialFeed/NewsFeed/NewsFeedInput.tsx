@@ -6,7 +6,7 @@ import {
   View,
   ViewStyle,
   Pressable,
-  StyleSheet,
+  useWindowDimensions,
 } from "react-native";
 import Animated, { useSharedValue } from "react-native-reanimated";
 import { v4 as uuidv4 } from "uuid";
@@ -35,7 +35,8 @@ import { useCreatePost } from "../../../hooks/feed/useCreatePost";
 import { useUpdateAvailableFreePost } from "../../../hooks/feed/useUpdateAvailableFreePost";
 import { useUpdatePostFee } from "../../../hooks/feed/useUpdatePostFee";
 import { useBalances } from "../../../hooks/useBalances";
-import { useIsMobileView } from "../../../hooks/useIsMobileView";
+import { useIsMobile } from "../../../hooks/useIsMobile";
+import { useMaxResolution } from "../../../hooks/useMaxResolution";
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { getUserId } from "../../../networks";
@@ -69,19 +70,24 @@ import {
   fontSemibold13,
   fontSemibold16,
 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+import {
+  layout,
+  RESPONSIVE_BREAKPOINT_S,
+  SOCIAL_FEED_BREAKPOINT_M,
+} from "../../../utils/style/layout";
 import { replaceBetweenString } from "../../../utils/text";
 import { LocalFileData, RemoteFileData } from "../../../utils/types/feed";
 import { BrandText } from "../../BrandText";
 import { FilesPreviewsContainer } from "../../FilePreview/FilesPreviewsContainer";
+import FlexRow from "../../FlexRow";
 import { IconBox } from "../../IconBox";
 import { OmniLink } from "../../OmniLink";
 import { SVG } from "../../SVG";
-import { TertiaryBox } from "../../boxes/TertiaryBox";
+import { PrimaryBox } from "../../boxes/PrimaryBox";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { SecondaryButtonOutline } from "../../buttons/SecondaryButtonOutline";
 import { FileUploader } from "../../fileUploader";
-import { SpacerRow } from "../../spacer";
+import { SpacerColumn } from "../../spacer";
 import { EmojiSelector } from "../EmojiSelector";
 import { GIFSelector } from "../GIFSelector";
 
@@ -107,6 +113,7 @@ export interface NewsFeedInputHandle {
 
 const CHARS_LIMIT_WARNING_MULTIPLIER = 0.92;
 const MAX_IMAGES = 4;
+const BREAKPOINT_S = 559;
 
 export const NewsFeedInput = React.forwardRef<
   NewsFeedInputHandle,
@@ -126,6 +133,10 @@ export const NewsFeedInput = React.forwardRef<
     },
     forwardRef
   ) => {
+    const { width: windowWidth } = useWindowDimensions();
+    const { width } = useMaxResolution();
+    const isMobile = useIsMobile();
+    const [viewWidth, setViewWidth] = useState(0);
     const inputMaxHeight = 400;
     const inputMinHeight = 20;
     const inputHeight = useSharedValue(20);
@@ -135,7 +146,6 @@ export const NewsFeedInput = React.forwardRef<
     const userId = getUserId(selectedNetworkId, selectedWallet?.address);
     const inputRef = useRef<TextInput>(null);
     const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
-    const isMobile = useIsMobileView();
     const { setToastError } = useFeedbacks();
     const [isLoading, setLoading] = useState(false);
     const [selection, setSelection] = useState<{ start: number; end: number }>({
@@ -320,14 +330,17 @@ export const NewsFeedInput = React.forwardRef<
     const focusInput = () => inputRef.current?.focus();
 
     return (
-      <View style={style}>
+      <View
+        style={[{ width }, style]}
+        onLayout={(e) => setViewWidth(e.nativeEvent.layout.width)}
+      >
         {isNotEnoughFundModal && (
           <NotEnoughFundModal
             visible
             onClose={() => setNotEnoughFundModal(false)}
           />
         )}
-        <TertiaryBox
+        <PrimaryBox
           fullWidth
           style={{
             zIndex: 9,
@@ -337,51 +350,66 @@ export const NewsFeedInput = React.forwardRef<
           }}
           noRightBrokenBorder
         >
-          <Pressable onPress={focusInput} style={styles.insideContainer}>
-            <SVG
-              height={24}
-              width={24}
-              source={penSVG}
-              color={secondaryColor}
-              style={{
-                alignSelf: "flex-end",
-                marginRight: layout.padding_x1_5,
-              }}
-            />
-            <Animated.View style={{ flex: 1, height: "auto" }}>
-              <TextInput
-                ref={inputRef}
-                value={formValues.message}
-                onSelectionChange={(event) =>
-                  setSelection(event.nativeEvent.selection)
-                }
-                placeholder={`Hey yo! ${
-                  type === "post" ? "Post something" : "Write your comment"
-                } here! _____`}
-                placeholderTextColor={neutral77}
-                onChangeText={handleTextChange}
-                multiline
-                onContentSizeChange={(e) => {
-                  // TODO: onContentSizeChange is not fired when deleting lines. We can only grow the input, but not shrink
-                  if (e.nativeEvent.contentSize.height < inputMaxHeight) {
-                    inputHeight.value = e.nativeEvent.contentSize.height;
-                  }
+          <Pressable
+            onPress={focusInput}
+            style={{
+              width: "100%",
+              paddingRight: isMobile
+                ? layout.padding_x1_5
+                : layout.padding_x2_5,
+              paddingLeft: isMobile ? layout.padding_x1_5 : layout.padding_x3,
+              paddingTop: isMobile ? layout.padding_x1_5 : layout.padding_x3,
+              paddingBottom: layout.padding_x1_5,
+            }}
+          >
+            <FlexRow style={{ marginTop: layout.padding_x1 }}>
+              <SVG
+                height={24}
+                width={24}
+                source={penSVG}
+                color={secondaryColor}
+                style={{
+                  alignSelf: "flex-end",
+                  marginRight: layout.padding_x1_5,
                 }}
-                style={[
-                  fontSemibold16,
-                  {
-                    height: formValues.message
-                      ? inputHeight.value || inputMinHeight
-                      : inputMinHeight,
-                    width: "100%",
-                    color: secondaryColor,
-                    //@ts-ignore
-                    outlineStyle: "none",
-                    outlineWidth: 0,
-                  },
-                ]}
               />
-            </Animated.View>
+              <Animated.View style={{ flex: 1, height: "auto" }}>
+                <TextInput
+                  ref={inputRef}
+                  value={formValues.message}
+                  onSelectionChange={(event) =>
+                    setSelection(event.nativeEvent.selection)
+                  }
+                  placeholder={`Hey yo! ${
+                    type === "post" ? "Post something" : "Write your comment"
+                  } ${
+                    windowWidth < RESPONSIVE_BREAKPOINT_S ? "" : "here! _____"
+                  }`}
+                  placeholderTextColor={neutral77}
+                  onChangeText={handleTextChange}
+                  multiline
+                  onContentSizeChange={(e) => {
+                    // TODO: onContentSizeChange is not fired when deleting lines. We can only grow the input, but not shrink
+                    if (e.nativeEvent.contentSize.height < inputMaxHeight) {
+                      inputHeight.value = e.nativeEvent.contentSize.height;
+                    }
+                  }}
+                  style={[
+                    fontSemibold16,
+                    {
+                      height: formValues.message
+                        ? inputHeight.value || inputMinHeight
+                        : inputMinHeight,
+                      width: "100%",
+                      color: secondaryColor,
+                      //@ts-ignore
+                      outlineStyle: "none",
+                      outlineWidth: 0,
+                    },
+                  ]}
+                />
+              </Animated.View>
+            </FlexRow>
             {/* Changing this text's color depending on the message length */}
             <BrandText
               style={[
@@ -399,9 +427,8 @@ export const NewsFeedInput = React.forwardRef<
                       SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
                     ? errorColor
                     : primaryColor,
-                  position: "absolute",
-                  bottom: 12,
-                  right: 20,
+                  marginTop: layout.padding_x0_5,
+                  alignSelf: "flex-end",
                 },
               ]}
             >
@@ -439,27 +466,41 @@ export const NewsFeedInput = React.forwardRef<
               }
             }}
           />
-        </TertiaryBox>
+        </PrimaryBox>
         <View
           style={{
             backgroundColor: neutral17,
-            paddingTop: layout.padding_x4,
-            paddingBottom: layout.padding_x1_5,
-            marginTop: -layout.padding_x2_5,
-            paddingHorizontal: layout.padding_x2_5,
-            flexDirection: isMobile ? "column" : "row",
-            alignItems: "center",
+            paddingVertical: isMobile
+              ? layout.padding_x1_5
+              : layout.padding_x1_5,
+            paddingHorizontal: isMobile
+              ? layout.padding_x1_5
+              : layout.padding_x2_5,
+            flexDirection:
+              viewWidth < SOCIAL_FEED_BREAKPOINT_M ? "column" : "row",
+            alignItems:
+              viewWidth < SOCIAL_FEED_BREAKPOINT_M ? "flex-end" : "center",
             justifyContent: "space-between",
             borderRadius: 8,
           }}
         >
           <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-            }}
+            style={[
+              {
+                flexDirection: "row",
+                alignItems: "center",
+              },
+              viewWidth < SOCIAL_FEED_BREAKPOINT_M && {
+                alignSelf: "flex-start",
+              },
+            ]}
           >
-            <SVG source={priceSVG} height={24} width={24} color={neutral77} />
+            <SVG
+              source={priceSVG}
+              height={24}
+              width={24}
+              color={secondaryColor}
+            />
             <BrandText
               style={[
                 fontSemibold13,
@@ -476,155 +517,167 @@ export const NewsFeedInput = React.forwardRef<
             </BrandText>
           </View>
           <View
-            style={{
-              flexDirection: isMobile ? "column" : "row",
-              alignItems: "center",
-              flex: 1,
-              justifyContent: "flex-end",
-            }}
+            style={[
+              {
+                flexDirection: viewWidth < BREAKPOINT_S ? "column" : "row",
+                alignItems: "center",
+                flex: 1,
+                justifyContent: "flex-end",
+              },
+              viewWidth < BREAKPOINT_S && { width: "100%" },
+            ]}
           >
-            <EmojiSelector
-              onEmojiSelected={onEmojiSelected}
-              optionsContainer={{ marginLeft: -80, marginTop: -6 }}
-            />
-            <SpacerRow size={2.5} />
+            {viewWidth < BREAKPOINT_S && <SpacerColumn size={1.5} />}
 
-            <GIFSelector
-              optionsContainer={{ marginLeft: -186, marginTop: -6 }}
-              onGIFSelected={(url) => {
-                // Don't add if already added
-                if (formValues.gifs?.find((gif) => gif === url)) return;
-                url && setValue("gifs", [...(formValues.gifs || []), url]);
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
               }}
-              disabled={
-                (formValues.files?.[0] &&
-                  formValues.files[0].fileType !== "image") ||
-                (formValues.files || []).length +
-                  (formValues.gifs || [])?.length >=
-                  MAX_IMAGES
-              }
-            />
-            <SpacerRow size={2.5} />
+            >
+              <EmojiSelector
+                onEmojiSelected={onEmojiSelected}
+                buttonStyle={{ marginRight: layout.padding_x2_5 }}
+              />
 
-            <FileUploader
-              onUpload={(files) => setValue("files", [files?.[0]])}
-              mimeTypes={AUDIO_MIME_TYPES}
-            >
-              {({ onPress }) => (
-                <IconBox
-                  icon={audioSVG}
-                  onPress={onPress}
-                  style={{ marginRight: layout.padding_x2_5 }}
-                  disabled={
-                    !!formValues.files?.length || !!formValues.gifs?.length
-                  }
-                />
-              )}
-            </FileUploader>
-            <FileUploader
-              onUpload={(files) => setValue("files", [files?.[0]])}
-              mimeTypes={VIDEO_MIME_TYPES}
-            >
-              {({ onPress }) => (
-                <IconBox
-                  icon={videoSVG}
-                  onPress={onPress}
-                  style={{ marginRight: layout.padding_x2_5 }}
-                  disabled={
-                    !!formValues.files?.length || !!formValues.gifs?.length
-                  }
-                />
-              )}
-            </FileUploader>
-            <FileUploader
-              // multiple
-              onUpload={(files) => {
-                // Don't add if already added
-                if (
-                  formValues.files?.find(
-                    (file) => file.fileName === files[0].fileName
+              <GIFSelector
+                buttonStyle={{ marginRight: layout.padding_x2_5 }}
+                onGIFSelected={(url) => {
+                  // Don't add if already added
+                  if (formValues.gifs?.find((gif) => gif === url)) return;
+                  url && setValue("gifs", [...(formValues.gifs || []), url]);
+                }}
+                disabled={
+                  (formValues.files?.[0] &&
+                    formValues.files[0].fileType !== "image") ||
+                  (formValues.files || []).length +
+                    (formValues.gifs || [])?.length >=
+                    MAX_IMAGES
+                }
+              />
+
+              <FileUploader
+                onUpload={(files) => setValue("files", [files?.[0]])}
+                mimeTypes={AUDIO_MIME_TYPES}
+              >
+                {({ onPress }) => (
+                  <IconBox
+                    icon={audioSVG}
+                    onPress={onPress}
+                    style={{ marginRight: layout.padding_x2_5 }}
+                    disabled={
+                      !!formValues.files?.length || !!formValues.gifs?.length
+                    }
+                  />
+                )}
+              </FileUploader>
+              <FileUploader
+                onUpload={(files) => setValue("files", [files?.[0]])}
+                mimeTypes={VIDEO_MIME_TYPES}
+              >
+                {({ onPress }) => (
+                  <IconBox
+                    icon={videoSVG}
+                    onPress={onPress}
+                    style={{ marginRight: layout.padding_x2_5 }}
+                    disabled={
+                      !!formValues.files?.length || !!formValues.gifs?.length
+                    }
+                  />
+                )}
+              </FileUploader>
+              <FileUploader
+                // multiple
+                onUpload={(files) => {
+                  // Don't add if already added
+                  if (
+                    formValues.files?.find(
+                      (file) => file.fileName === files[0].fileName
+                    )
                   )
-                )
-                  return;
-                setValue("files", [...(formValues.files || []), ...files]);
+                    return;
+                  setValue("files", [...(formValues.files || []), ...files]);
+                }}
+                mimeTypes={IMAGE_MIME_TYPES}
+              >
+                {({ onPress }) => (
+                  <IconBox
+                    disabled={
+                      (formValues.files?.[0] &&
+                        formValues.files[0].fileType !== "image") ||
+                      (formValues.files || []).length +
+                        (formValues.gifs || [])?.length >=
+                        MAX_IMAGES
+                    }
+                    icon={cameraSVG}
+                    onPress={onPress}
+                    style={{
+                      marginRight:
+                        viewWidth < BREAKPOINT_S ? 0 : layout.padding_x2_5,
+                    }}
+                    iconProps={{
+                      height: 18,
+                      width: 18,
+                    }}
+                  />
+                )}
+              </FileUploader>
+            </View>
+
+            {viewWidth < BREAKPOINT_S && <SpacerColumn size={1.5} />}
+
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
               }}
-              mimeTypes={IMAGE_MIME_TYPES}
             >
-              {({ onPress }) => (
-                <IconBox
-                  disabled={
-                    (formValues.files?.[0] &&
-                      formValues.files[0].fileType !== "image") ||
-                    (formValues.files || []).length +
-                      (formValues.gifs || [])?.length >=
-                      MAX_IMAGES
-                  }
-                  icon={cameraSVG}
-                  onPress={onPress}
-                  style={{ marginRight: layout.padding_x2_5 }}
-                  iconProps={{
-                    height: 18,
-                    width: 18,
-                  }}
-                />
+              {type === "post" && (
+                <OmniLink to={{ screen: "FeedNewArticle" }}>
+                  <SecondaryButtonOutline
+                    size="M"
+                    color={
+                      formValues?.message.length >
+                      SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
+                        ? primaryTextColor
+                        : primaryColor
+                    }
+                    borderColor={primaryColor}
+                    touchableStyle={{
+                      marginRight: layout.padding_x2_5,
+                    }}
+                    backgroundColor={
+                      formValues?.message.length >
+                      SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
+                        ? primaryColor
+                        : neutral17
+                    }
+                    text="Create an Article"
+                    squaresBackgroundColor={neutral17}
+                  />
+                </OmniLink>
               )}
-            </FileUploader>
 
-            {type === "post" && (
-              <OmniLink to={{ screen: "FeedNewArticle" }}>
-                <SecondaryButtonOutline
-                  size="M"
-                  color={
-                    formValues?.message.length >
-                    SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
-                      ? primaryTextColor
-                      : primaryColor
-                  }
-                  borderColor={primaryColor}
-                  touchableStyle={{
-                    marginRight: layout.padding_x2_5,
-                  }}
-                  backgroundColor={
-                    formValues?.message.length >
-                    SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
-                      ? primaryColor
-                      : neutral17
-                  }
-                  text="Create an Article"
-                  squaresBackgroundColor={neutral17}
-                />
-              </OmniLink>
-            )}
-
-            <PrimaryButton
-              disabled={
-                (!formValues?.message &&
-                  !formValues?.files?.length &&
-                  !formValues?.gifs?.length) ||
-                formValues?.message.length >
-                  SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT ||
-                !wallet
-              }
-              isLoading={isLoading || isMutateLoading}
-              loader
-              size="M"
-              text={type === "comment" ? "Comment" : "Publish"}
-              squaresBackgroundColor={neutral17}
-              onPress={handleSubmit(processSubmit)}
-            />
+              <PrimaryButton
+                disabled={
+                  (!formValues?.message &&
+                    !formValues?.files?.length &&
+                    !formValues?.gifs?.length) ||
+                  formValues?.message.length >
+                    SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT ||
+                  !wallet
+                }
+                isLoading={isLoading || isMutateLoading}
+                loader
+                size="M"
+                text={type === "comment" ? "Comment" : "Publish"}
+                squaresBackgroundColor={neutral17}
+                onPress={handleSubmit(processSubmit)}
+              />
+            </View>
           </View>
         </View>
       </View>
     );
   }
 );
-
-const styles = StyleSheet.create({
-  insideContainer: {
-    width: "100%",
-    paddingVertical: layout.padding_x3,
-    paddingHorizontal: layout.padding_x2_5,
-    flexDirection: "row",
-    alignItems: "center",
-  },
-});

@@ -17,7 +17,7 @@ export const CollectionGallery: React.FC<{
   req: CollectionsRequest;
   filter?: (c: Collection) => boolean;
 }> = ({ title, req, linkToMint, filter }) => {
-  const [collections] = useCollections(req, filter);
+  const { collections, fetchNextPage } = useCollections(req, filter);
 
   const { width } = useMaxResolution();
 
@@ -37,18 +37,23 @@ export const CollectionGallery: React.FC<{
     ),
     [linkToMint, req.mintState]
   );
+  const handleEndReached = useCallback(() => {
+    fetchNextPage();
+  }, [fetchNextPage]);
 
   return collections.length > 0 ? (
     <Section title={title}>
       <FlatList
         data={collections}
-        numColumns={4}
+        columnWrapperStyle={{ flexWrap: "wrap", flex: 1, marginTop: 5 }}
+        numColumns={99} // needed to deal with wrap via css
         ItemSeparatorComponent={() => (
           <View style={{ height: layout.padding_x1 }} />
         )}
         style={{
           width,
         }}
+        onEndReached={handleEndReached}
         renderItem={renderItem}
       />
     </Section>

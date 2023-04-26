@@ -52,16 +52,21 @@ func main() {
 	); err != nil {
 		panic(errors.Wrap(err, "failed to parse flags"))
 	}
-	if *airtableAPIKey == "" {
-		panic(errors.New("missing AIRTABLE_API_KEY"))
-	}
-	if *airtableAPIKeydappsStore == "" {
-		panic(errors.New("missing AIRTABLE_API_KEY_DAPPS_STORE"))
+
+	logger, err := zap.NewDevelopment()
+	if err != nil {
+		panic(errors.Wrap(err, "failed to create logger"))
 	}
 
-	// Load Pinata JWT token
+	// warn about missing features
+	if *airtableAPIKey == "" {
+		logger.Warn("missing AIRTABLE_API_KEY, news and banners will be disabled")
+	}
+	if *airtableAPIKeydappsStore == "" {
+		logger.Warn("missing AIRTABLE_API_KEY_DAPPS_STORE, dapp store will be disabled")
+	}
 	if *pinataJWT == "" {
-		panic(errors.New("env var PINATA_JWT must be provided"))
+		logger.Warn("missing PINATA_JWT, feed pinning will be disabled")
 	}
 
 	// load networks
@@ -92,11 +97,6 @@ func main() {
 	port := 9090
 	if *enableTls {
 		port = 9091
-	}
-
-	logger, err := zap.NewDevelopment()
-	if err != nil {
-		panic(errors.Wrap(err, "failed to create logger"))
 	}
 
 	whitelist := strings.Split(*whitelistString, ",")

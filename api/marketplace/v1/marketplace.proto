@@ -14,6 +14,8 @@ service MarketplaceService {
   rpc News(NewsRequest) returns (NewsResponse);
   rpc DApps(DAppsStoreRequest) returns (DAppResponse);
   rpc DAppsGroups(DAppsStoreRequest) returns (DAppGroupsResponse);
+  rpc SearchNames(SearchNamesRequest) returns (SearchNamesResponse);
+  rpc SearchCollections(SearchCollectionsRequest) returns (SearchCollectionsResponse);
 }
 
 enum Sort {
@@ -249,4 +251,23 @@ message DAppGroupsResponse {
 
 message DAppResponse {
   repeated DApp group = 1;
+}
+
+message SearchNamesRequest {
+  string network_id = 1;
+  string input = 2;
+  int32 limit = 3;
+}
+
+message SearchNamesResponse {
+  repeated string names = 1;
+}
+
+message SearchCollectionsRequest {
+  string input = 1;
+  int32 limit = 2;
+}
+
+message SearchCollectionsResponse {
+  repeated Collection collections = 1;
 }

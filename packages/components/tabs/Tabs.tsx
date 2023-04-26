@@ -8,9 +8,9 @@ import {
   StyleSheet,
   ViewStyle,
   TextStyle,
+  ScrollView,
 } from "react-native";
 
-import { useIsMobileView } from "../../hooks/useIsMobileView";
 import {
   gradientColorBlue,
   gradientColorDarkerBlue,
@@ -44,6 +44,7 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
   gradientText,
   tabTextStyle,
   tabContainerStyle,
+  noUnderline,
 }: {
   items: T;
   selected: keyof T;
@@ -54,114 +55,118 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
   gradientText?: boolean;
   tabTextStyle?: StyleProp<TextStyle>;
   tabContainerStyle?: StyleProp<ViewStyle>;
+  noUnderline?: boolean;
 }) => {
   const { scrollTo } = useScrollTo();
   const itemsArray = Object.entries(items);
   return (
+    // styles are applied weirdly to scrollview so it's better to apply them to a constraining view
     <View
       style={[
-        {
-          flexDirection: useIsMobileView() ? "column" : "row",
-          borderBottomColor: neutral33,
-          alignItems: "center",
-          borderBottomWidth: 1,
-        },
-        useIsMobileView() ? null : style,
-        // style,
+        !noUnderline && { borderBottomColor: neutral33, borderBottomWidth: 1 },
+        style,
       ]}
     >
-      {itemsArray.map(([key, item], index) => {
-        const isSelected = selected === key;
-        return (
-          <TouchableOpacity
-            key={key}
-            onPress={() =>
-              item.scrollTo
-                ? scrollTo(item.scrollTo, { offset: -60 })
-                : onSelect(key, item)
-            }
-            disabled={item.disabled}
-            style={[
-              {
-                height: 44,
-                justifyContent: "center",
-                marginRight:
-                  index !== itemsArray.length - 1 ? layout.padding_x3 : 0,
-              },
-              tabContainerStyle,
-            ]}
-          >
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-
-                height: 24,
-              }}
+      <ScrollView
+        showsHorizontalScrollIndicator={false}
+        horizontal
+        contentContainerStyle={{
+          alignItems: "center",
+        }}
+      >
+        {itemsArray.map(([key, item], index) => {
+          const isSelected = selected === key;
+          return (
+            <TouchableOpacity
+              key={key}
+              onPress={() =>
+                item.scrollTo
+                  ? scrollTo(item.scrollTo, { offset: -60 })
+                  : onSelect(key, item)
+              }
+              disabled={item.disabled}
+              style={[
+                {
+                  height: "100%",
+                  justifyContent: "center",
+                  marginRight:
+                    index !== itemsArray.length - 1 ? layout.padding_x3 : 0,
+                },
+                tabContainerStyle,
+              ]}
             >
-              {isSelected && gradientText ? (
-                <GradientText
-                  gradientType="blueExtended"
-                  style={[fontSemibold14, tabTextStyle]}
-                >
-                  {item.name}
-                </GradientText>
-              ) : (
-                <BrandText
-                  style={[
-                    fontSemibold14,
-                    { lineHeight: 14 },
-                    item.disabled && { color: neutral77 },
-                    tabTextStyle,
-                  ]}
-                >
-                  {item.name}
-                </BrandText>
-              )}
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "space-between",
 
-              {item.badgeCount && <SpacerRow size={1} />}
-              {item.badgeCount ? (
-                isSelected ? (
-                  <PrimaryBadge
-                    size="SM"
-                    backgroundColor="secondary"
-                    label={item.badgeCount}
-                  />
+                  height: 24,
+                }}
+              >
+                {isSelected && gradientText ? (
+                  <GradientText
+                    gradientType="blueExtended"
+                    style={[fontSemibold14, tabTextStyle]}
+                  >
+                    {item.name}
+                  </GradientText>
                 ) : (
-                  <TertiaryBadge size="SM" label={item.badgeCount} />
-                )
-              ) : null}
-            </View>
-            {!hideSelector && isSelected && (
-              <>
-                {gradientText ? (
-                  <LinearGradient
-                    start={{ x: 0, y: 0.5 }}
-                    end={{ x: 1, y: 0.5 }}
+                  <BrandText
                     style={[
-                      styles.selectedBorder,
-                      { height: 2, width: "100%" },
+                      fontSemibold14,
+                      { lineHeight: 14 },
+                      item.disabled && { color: neutral77 },
+                      tabTextStyle,
                     ]}
-                    colors={[
-                      gradientColorDarkerBlue,
-                      gradientColorBlue,
-                      gradientColorTurquoise,
-                    ]}
-                  />
-                ) : (
-                  <View
-                    style={[
-                      styles.selectedBorder,
-                      { backgroundColor: borderColorTabSelected },
-                    ]}
-                  />
+                  >
+                    {item.name}
+                  </BrandText>
                 )}
-              </>
-            )}
-          </TouchableOpacity>
-        );
-      })}
+
+                {item.badgeCount && <SpacerRow size={1} />}
+                {item.badgeCount ? (
+                  isSelected ? (
+                    <PrimaryBadge
+                      size="SM"
+                      backgroundColor="secondary"
+                      label={item.badgeCount}
+                    />
+                  ) : (
+                    <TertiaryBadge size="SM" label={item.badgeCount} />
+                  )
+                ) : null}
+              </View>
+              {!hideSelector && isSelected && (
+                <>
+                  {gradientText ? (
+                    <LinearGradient
+                      start={{ x: 0, y: 0.5 }}
+                      end={{ x: 1, y: 0.5 }}
+                      style={[
+                        styles.selectedBorder,
+                        { height: 2, width: "100%" },
+                      ]}
+                      colors={[
+                        gradientColorDarkerBlue,
+                        gradientColorBlue,
+                        gradientColorTurquoise,
+                      ]}
+                    />
+                  ) : (
+                    <View
+                      style={[
+                        styles.selectedBorder,
+                        { backgroundColor: borderColorTabSelected },
+                      ]}
+                    />
+                  )}
+                </>
+              )}
+            </TouchableOpacity>
+          );
+        })}
+      </ScrollView>
     </View>
   );
 };

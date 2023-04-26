@@ -1,5 +1,3 @@
-import { grpc } from "@improbable-eng/grpc-web";
-
 import {
   FeedService,
   FeedServiceClientImpl,
@@ -30,9 +28,7 @@ export const getMarketplaceClient = (networkId: string | undefined) => {
   }
   if (!marketplaceClients[network.id]) {
     const rpc = new MarketplaceGrpcWebImpl(network.backendEndpoint, {
-      transport: grpc.WebsocketTransport(),
       debug: false,
-      // metadata: new grpc.Metadata({ SomeHeader: "bar" }),
     });
     marketplaceClients[network.id] = new MarketplaceServiceClientImpl(rpc);
   }
@@ -58,9 +54,7 @@ export const getP2eClient = (networkId: string | undefined) => {
   }
   if (!p2eClients[network.id]) {
     const rpc = new P2eGrpcWebImpl(network.backendEndpoint, {
-      transport: grpc.WebsocketTransport(),
       debug: false,
-      // metadata: new grpc.Metadata({ SomeHeader: "bar" }),
     });
     p2eClients[network.id] = new P2eServiceClientImpl(rpc);
   }
@@ -84,9 +78,7 @@ export const getFeedClient = (networkId: string | undefined) => {
   }
   if (!feedClients[network.id]) {
     const rpc = new FeedGrpcWebImpl(network.backendEndpoint, {
-      transport: grpc.WebsocketTransport(),
       debug: false,
-      // metadata: new grpc.Metadata({ SomeHeader: "bar" }),
     });
     feedClients[network.id] = new FeedServiceClientImpl(rpc);
   }
