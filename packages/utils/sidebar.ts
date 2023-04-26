@@ -124,7 +124,7 @@ export const SIDEBAR_LIST: SidebarRecordType = {
   },
   musicplayer: {
     title: "Music",
-    id:"Music",
+    id: "Music",
     route: "MusicPlayer",
     icon: dappStoreSVG,
   },

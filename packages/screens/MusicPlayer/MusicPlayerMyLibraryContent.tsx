@@ -5,7 +5,6 @@ import Logo from "../../../assets/logos/logo.svg";
 import Album from "../../../assets/music-player/album.png";
 import { BrandText } from "../../components/BrandText";
 import { MusicPlayerCard } from "../../components/MusicPlayer/MusicPlayerCard";
-// import { UploadAlbumModal } from "../../components/MusicPlayer/UploadAlbumModal";
 import { SVG } from "../../components/SVG";
 import { neutral77, primaryColor } from "../../utils/style/colors";
 import {
@@ -28,7 +27,7 @@ export const MusicPlayerMyLibraryContent: React.FC = () => {
   const myAlbumsData = Array(3).fill(unitAlbumData);
   const otherAlbumsData = Array(8).fill(unitAlbumData);
 
-  const [openUploadModal, setOpenUploadModal] = useState<boolean>(false);
+  const [, setOpenUploadModal] = useState<boolean>(false);
   // const [openAlbumInfoModal, setOpenAlbumInfoModal] = useState<boolean>(false);
 
   const styles = StyleSheet.create({
