@@ -11,7 +11,9 @@ import { TertiaryBox } from "../boxes/TertiaryBox";
 
 export const FilterButton: React.FC<{
   style?: StyleProp<ViewStyle>;
-}> = ({ style }) => {
+  mainContainerStyle?: StyleProp<ViewStyle>;
+  showChevron?: boolean;
+}> = ({ style, mainContainerStyle, showChevron = false }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const handlePress = () => {
     setIsExpanded(!isExpanded);
@@ -22,24 +24,29 @@ export const FilterButton: React.FC<{
       <TertiaryBox
         noBrokenCorners
         height={48}
-        mainContainerStyle={{
-          flexDirection: "row",
-          borderRadius: 6,
-          padding: layout.padding_x1_5,
-        }}
+        mainContainerStyle={[
+          {
+            flexDirection: "row",
+            borderRadius: 6,
+            padding: layout.padding_x1_5,
+          },
+          mainContainerStyle,
+        ]}
       >
         <SVG
           source={filterSVG}
-          width={24}
-          height={24}
+          width={20}
+          height={20}
           style={{ marginRight: layout.padding_x0_5 }}
         />
-        <SVG
-          source={isExpanded ? chevronUpSVG : chevronDownSVG}
-          width={16}
-          height={16}
-          color={secondaryColor}
-        />
+        {showChevron && (
+          <SVG
+            source={isExpanded ? chevronUpSVG : chevronDownSVG}
+            width={16}
+            height={16}
+            color={secondaryColor}
+          />
+        )}
       </TertiaryBox>
     </TouchableOpacity>
   );

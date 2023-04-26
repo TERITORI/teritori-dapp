@@ -15,7 +15,7 @@ import { fontSemibold20 } from "../../utils/style/fonts";
 export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
   // variables
   const { id } = route.params;
-  const [selectedTab, setSelectedTab] = useState<TabsListType>("allNFTs");
+  const [selectedTab, setSelectedTab] = useState<TabsListType>("collections");
   const { collectionInfo: info } = useCollectionInfo(id);
   const [sortDirection, setSortDirection] = useState(
     SortDirection.SORT_DIRECTION_ASCENDING

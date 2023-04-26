@@ -35,7 +35,7 @@ export const CollectionContent: React.FC<{
   };
 
   switch (selectedTab) {
-    case "allNFTs":
+    case "collections":
     case "owned":
       return (
         <NFTs

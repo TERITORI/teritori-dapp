@@ -9,7 +9,6 @@ import etherscanSVG from "../../../assets/icons/etherscan.svg";
 import shareSVG from "../../../assets/icons/share.svg";
 import { SortDirection } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
-import { PrimaryBox } from "../../components/boxes/PrimaryBox";
 import { SocialButtonSecondary } from "../../components/buttons/SocialButtonSecondary";
 import { CollectionSocialButtons } from "../../components/collections/CollectionSocialButtons";
 import { RoundedGradientImage } from "../../components/images/RoundedGradientImage";
@@ -27,9 +26,10 @@ import {
   parseCollectionId,
 } from "../../networks";
 import { CollectionInfo } from "../../utils/collection";
-import { neutral33 } from "../../utils/style/colors";
+import { codGrayColor, neutral33, neutral67 } from "../../utils/style/colors";
 import { fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
+import { FilterButton } from "../sorts/FilterButton";
 
 // All the screen content before the Flatlist used to display NFTs
 export const CollectionHeader: React.FC<{
@@ -67,8 +67,8 @@ export const CollectionHeader: React.FC<{
   const { prices } = useCoingeckoPrices(coins);
 
   const collectionScreenTabItems = {
-    allNFTs: {
-      name: "All NFTs",
+    collections: {
+      name: "Collections",
       badgeCount: stats?.totalSupply || 0,
     },
     ...(stats?.owned
@@ -81,6 +81,9 @@ export const CollectionHeader: React.FC<{
       : {}),
     activity: {
       name: "Activity",
+    },
+    offers: {
+      name: "Offers",
     },
   };
 
@@ -144,7 +147,12 @@ export const CollectionHeader: React.FC<{
         style={{
           flexDirection: "row",
           width: "100%",
-          marginBottom: 24,
+          marginBottom: layout.padding_x2_5,
+          borderRadius: layout.padding_x2,
+          borderColor: neutral67,
+          borderWidth: 1,
+          padding: layout.padding_x2,
+          borderStyle: "solid",
         }}
       >
         <RoundedGradientImage
@@ -181,6 +189,8 @@ export const CollectionHeader: React.FC<{
               label="Listed"
               value={(stats?.listed || 0).toString()}
             />
+            <SpacerRow size={1.5} />
+            <CollectionStat label="Avg Sale (24hr)" value="-" />
             <SpacerRow size={1.5} />
             <CollectionStat
               label="Total Supply"
@@ -222,32 +232,36 @@ export const CollectionHeader: React.FC<{
         </View>
       </View>
 
-      <PrimaryBox
-        mainContainerStyle={{
+      <View
+        style={{
           flexDirection: "row",
           justifyContent: "space-between",
-          paddingRight: 8,
-          paddingLeft: 20,
+          marginBottom: layout.padding_x4,
+          width,
         }}
-        fullWidth
-        height={64}
-        style={{ marginBottom: 24 }}
       >
+        <FilterButton
+          mainContainerStyle={{ backgroundColor: neutral33, width: 54 }}
+        />
         <Tabs
           items={collectionScreenTabItems}
           onSelect={onSelectTab}
           selected={selectedTab}
           style={{
-            width: "fit-content",
             height: "100%",
+            paddingLeft: layout.padding_x2,
+            marginHorizontal: layout.padding_x2,
+            backgroundColor: codGrayColor,
+            width: "76%",
           }}
           noUnderline
         />
         <SortButton
+          mainContainerStyle={{ backgroundColor: neutral33 }}
           sortDirection={sortDirection}
           onChangeSortDirection={onChangeSortDirection}
         />
-      </PrimaryBox>
+      </View>
     </View>
   ) : null;
 };

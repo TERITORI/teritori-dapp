@@ -1,1 +1,1 @@
-export type TabsListType = "allNFTs" | "owned" | "activity";
+export type TabsListType = "collections" | "owned" | "activity" | "offers";

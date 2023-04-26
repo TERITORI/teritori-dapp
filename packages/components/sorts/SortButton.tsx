@@ -14,8 +14,9 @@ import { TertiaryBox } from "../boxes/TertiaryBox";
 export const SortButton: React.FC<{
   sortDirection: SortDirection;
   onChangeSortDirection: (val: SortDirection) => void;
+  mainContainerStyle?: StyleProp<ViewStyle>;
   style?: StyleProp<ViewStyle>;
-}> = ({ style, sortDirection, onChangeSortDirection }) => {
+}> = ({ style, mainContainerStyle, sortDirection, onChangeSortDirection }) => {
   const handlePress = () => {
     if (sortDirection === SortDirection.SORT_DIRECTION_DESCENDING) {
       onChangeSortDirection(SortDirection.SORT_DIRECTION_ASCENDING);
@@ -28,13 +29,16 @@ export const SortButton: React.FC<{
     <TouchableOpacity onPress={handlePress} style={style}>
       <TertiaryBox
         fullWidth
-        mainContainerStyle={{
-          borderColor: "#FFFFFF",
-          paddingHorizontal: 13,
-          flexDirection: "row",
-          justifyContent: "space-between",
-          backgroundColor: neutral11,
-        }}
+        mainContainerStyle={[
+          {
+            borderColor: "#FFFFFF",
+            paddingHorizontal: 13,
+            flexDirection: "row",
+            justifyContent: "space-between",
+            backgroundColor: neutral11,
+          },
+          mainContainerStyle,
+        ]}
         height={48}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>

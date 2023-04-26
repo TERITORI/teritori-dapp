@@ -15,7 +15,7 @@ type CollectionStatProps = {
   addLogo?: boolean;
 };
 
-const iconSize = 16;
+const ICON_SIZE = 32;
 
 export const CollectionStat = ({
   label,
@@ -32,8 +32,8 @@ export const CollectionStat = ({
         {addLogo && (
           <>
             <SpacerRow size={0.75} />
-            <View style={{ width: iconSize, height: iconSize }}>
-              <SVG source={toriSVG} width={iconSize} height={iconSize} />
+            <View style={{ width: ICON_SIZE, height: ICON_SIZE }}>
+              <SVG source={toriSVG} width={ICON_SIZE} height={ICON_SIZE} />
             </View>
           </>
         )}
