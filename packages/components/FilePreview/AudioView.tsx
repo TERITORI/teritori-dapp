@@ -81,7 +81,7 @@ export const AudioView: React.FC<{
     [playbackStatus]
   );
 
-  if (!file?.thumbnailFileData?.url)
+  if (!file?.url)
     return (
       <BrandText style={[fontSemibold13, { color: errorColor }]}>
         Audio not found
