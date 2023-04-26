@@ -101,9 +101,7 @@ if (!musicplayerBackendEndpoint) {
 }
 
 const musicplayerRpc = new MusicplayerGrpcWebImpl(musicplayerBackendEndpoint, {
-  transport: grpc.WebsocketTransport(),
   debug: false,
-  // metadata: new grpc.Metadata({ SomeHeader: "bar" }),
 });
 
 export const musicplayerClient = new MusicplayerServiceClientImpl(
