@@ -1,20 +1,15 @@
 import React from "react";
-import { View } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
+import { secondaryColor } from "../../utils/style/colors";
+import { fontSemibold20 } from "../../utils/style/fonts";
 
 interface MessageHeaderProps {}
 
 export const MessageHeader: React.FC<MessageHeaderProps> = () => {
   return (
-    <View>
-      <BrandText
-        style={{
-          fontSize: 20,
-        }}
-      >
-        Messenger home
-      </BrandText>
-    </View>
+    <BrandText style={[fontSemibold20, { color: secondaryColor }]}>
+      Messenger home
+    </BrandText>
   );
 };

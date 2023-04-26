@@ -95,11 +95,11 @@ const styles = StyleSheet.create({
 
     width: "auto",
 
-    zIndex: 2,
+    zIndex: 11111,
 
     position: "absolute",
-    right: -140,
-    top: -145,
+    right: -180,
+    top: -150,
   },
   message: {
     color: "#FFFFFF",
