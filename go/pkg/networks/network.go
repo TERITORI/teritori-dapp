@@ -53,7 +53,8 @@ type EthereumNetwork struct {
 	IndexBlockProgress              uint64 `json:"indexBlockProgress"`
 	IndexLiveBlockProgress          uint64 `json:"indexLiveBlockProgress"`
 	VaultContractAddress            string `json:"vaultContractAddress"`
-	RiotContractAddress             string `json:"riotContractAddress"`
+	RiotContractAddressGen0         string `json:"riotContractAddressGen0"`
+	RiotContractAddressGen1         string `json:"riotContractAddressGen1"`
 	RiotSquadStakingContractAddress string `json:"riotSquadStakingContractAddress"`
 }
 

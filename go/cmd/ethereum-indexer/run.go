@@ -86,7 +86,7 @@ func sinkRunE(cmd *cobra.Command, args []string) error {
 
 	blockRange := fmt.Sprintf("%s:%s", network.IndexStartBlock, network.IndexStopBlock)
 
-	outputModuleName := "txns_out"
+	outputModuleName := "txs_out"
 
 	zlog.Info("sync config",
 		zap.String("database", fmt.Sprintf("%s:***@%s:%s", dbUser, dbHost, dbPort)),
@@ -160,6 +160,7 @@ func sinkRunE(cmd *cobra.Command, args []string) error {
 
 	config := &sinker.Config{
 		Network:            network,
+		NetworkStore:       &netstore,
 		IndexerDB:          indexerDB,
 		DBLoader:           dbLoader,
 		BlockRange:         blockRange,

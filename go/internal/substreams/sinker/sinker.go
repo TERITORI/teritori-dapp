@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/pkg/errors"
 
 	abiGo "github.com/TERITORI/teritori-dapp/go/internal/substreams/ethereum/abi_go"
@@ -47,6 +48,7 @@ func GetLocalABI(path string) string {
 
 type Config struct {
 	Network          *networks.EthereumNetwork
+	NetworkStore     *networks.NetworkStore
 	IndexerDB        *gorm.DB
 	DBLoader         *db.Loader
 	BlockRange       string
@@ -91,7 +93,9 @@ type PostgresSinker struct {
 	logger *zap.Logger
 	tracer logging.Tracer
 
-	network *networks.EthereumNetwork
+	network      *networks.EthereumNetwork
+	networkStore *networks.NetworkStore
+	indexerDB    *gorm.DB
 }
 
 func New(config *Config, logger *zap.Logger, tracer logging.Tracer) (*PostgresSinker, error) {
@@ -115,7 +119,9 @@ func New(config *Config, logger *zap.Logger, tracer logging.Tracer) (*PostgresSi
 		UndoBufferSize:  config.UndoBufferSize,
 		LivenessTracker: sink.NewLivenessChecker(config.LiveBlockTimeDelta),
 
-		network: config.Network,
+		network:      config.Network,
+		networkStore: config.NetworkStore,
+		indexerDB:    config.IndexerDB,
 	}
 
 	s.OnTerminating(func(err error) {
@@ -275,38 +281,121 @@ func (s *PostgresSinker) handleBlockScopeData(ctx context.Context, cursor *sink.
 			continue
 		}
 
-		var txns pb.Txns
+		var blockTxs pb.BlockTxs
 
-		err := proto.Unmarshal(output.GetMapOutput().GetValue(), &txns)
+		err := proto.Unmarshal(output.GetMapOutput().GetValue(), &blockTxs)
 		if err != nil {
-			return fmt.Errorf("unmarshal database changes: %w", err)
+			return errors.Wrap(err, "failed to unmarshal transactions info")
 		}
 
-		for _, txnData := range txns.Data {
-			// Dispatch handlers for RiotSquadStakingV3 ===============================================
-			if strings.EqualFold(txnData.Contract, s.network.RiotSquadStakingContractAddress) {
-				contractABI, err := abiGo.SquadStakingV3MetaData.GetAbi()
-				if err != nil {
-					panic(fmt.Errorf("failed to parse abi: %w", err))
-				}
+		handler, err := ethereumHandlers.NewHandler(s.logger, s.network, s.networkStore, s.indexerDB)
+		if err != nil {
+			return errors.Wrap(err, "failed to init new handler")
+		}
 
-				method, err := ParseMethod(contractABI, txnData.Calldata)
-				if err != nil {
-					panic("failed to parse method")
-				}
+		for _, tx := range blockTxs.Txs {
+			var metaData *bind.MetaData
 
-				switch method.Name {
-				case "stake":
-					if err := ethereumHandlers.HandleSquadStake(method, txnData.Calldata); err != nil {
-						return errors.Wrap(err, "failed to handle squad stake")
-					}
-					fmt.Printf("handle stake", method.Name)
-				}
-
+			switch {
+			case strings.EqualFold(tx.Call.Address, s.network.RiotSquadStakingContractAddress):
+				metaData = abiGo.SquadStakingV3MetaData
+			// RiotNFT contract
+			case strings.EqualFold(tx.Call.Address, "0x7a9e5dbe7d3946ce4ea2f2396549c349635ebf2f"):
+				metaData = abiGo.TeritoriNFTMetaData
 			}
 
-			// fmt.Printf("Method Name: %s\n", method.Name)
-			// fmt.Printf("Method inputs: %v\n", inputsMap)
+			contractABI, err := metaData.GetAbi()
+			if err != nil {
+				panic(fmt.Errorf("failed to parse abi: %w", err))
+			}
+
+			if tx.Call.Input == nil {
+				continue
+			}
+
+			method, err := ParseMethod(contractABI, tx.Call.Input)
+			if err != nil {
+				panic("failed to parse method")
+			}
+
+			switch method.Name {
+			case "stake":
+				if err := ethereumHandlers.HandleSquadStake(method, tx); err != nil {
+					return errors.Wrap(err, "failed to handle squad stake")
+				}
+			case "initialize":
+				if err := handler.HandleInitialize(method, tx); err != nil {
+					return errors.Wrap(err, "failed to handle squad stake")
+				}
+			}
+
+			// // Dispatch handlers for RiotSquadStakingV3 ===============================================
+			// if strings.EqualFold(tx.Call.Address, s.network.RiotSquadStakingContractAddress) {
+			// 	contractABI, err := abiGo.SquadStakingV3MetaData.GetAbi()
+			// 	if err != nil {
+			// 		panic(fmt.Errorf("failed to parse abi: %w", err))
+			// 	}
+
+			// 	method, err := ParseMethod(contractABI, tx.Call.Input)
+			// 	if err != nil {
+			// 		panic("failed to parse method")
+			// 	}
+
+			// 	switch method.Name {
+			// 	case "stake":
+			// 		if err := ethereumHandlers.HandleSquadStake(method, txnData); err != nil {
+			// 			return errors.Wrap(err, "failed to handle squad stake")
+			// 		}
+			// 		fmt.Println("handle stake", method.Name)
+			// 	}
+
+			// 	// Dispatch handlers for RiotNFT contract ===================================================
+			// } else if strings.EqualFold(txnData.Contract, "0x7a9e5dbe7d3946ce4ea2f2396549c349635ebf2f") {
+			// 	if txnData.Calldata == nil {
+			// 		continue
+			// 	}
+
+			// 	contractABI, err := abiGo.TeritoriNFTMetaData.GetAbi()
+			// 	if err != nil {
+			// 		panic(fmt.Errorf("failed to parse abi: %w", err))
+			// 	}
+
+			// 	method, err := ParseMethod(contractABI, txnData.Calldata)
+			// 	if err != nil {
+			// 		panic("failed to parse method")
+			// 	}
+
+			// 	switch method.Name {
+			// 	case "initialize":
+			// 		if err := ethereumHandlers.HandleInitialize(method, txnData); err != nil {
+			// 			return errors.Wrap(err, "failed to handle nft initialize")
+			// 		}
+			// 		fmt.Println("handle stake", method.Name)
+			// 	}
+
+			// 	// Dispatch handlers for Riot NFTs ===============================================
+			// } else if strings.EqualFold(txnData.Contract, s.network.RiotContractAddressGen0) || strings.EqualFold(txnData.Contract, s.network.RiotContractAddressGen1) {
+			// 	contractABI, err := abiGo.TeritoriNFTMetaData.GetAbi()
+			// 	if err != nil {
+			// 		panic(fmt.Errorf("failed to parse abi: %w", err))
+			// 	}
+
+			// 	method, err := ParseMethod(contractABI, txnData.Calldata)
+			// 	if err != nil {
+			// 		panic("failed to parse method")
+			// 	}
+			// 	fmt.Println("handle stake ==================================", method.Name)
+			// 	switch method.Name {
+			// 	case "stake":
+			// 		if err := ethereumHandlers.HandleSquadStake(method, txnData); err != nil {
+			// 			return errors.Wrap(err, "failed to handle squad stake")
+			// 		}
+			// 		fmt.Println("handle stake", method.Name)
+			// 	}
+			// }
+
+			// // fmt.Printf("Method Name: %s\n", method.Name)
+			// // fmt.Printf("Method inputs: %v\n", inputsMap)
 			panic("not found==============")
 		}
 	}

@@ -3,7 +3,11 @@ import { toUtf8 } from "@cosmjs/encoding";
 import { isDeliverTxFailure } from "@cosmjs/stargate";
 
 import { UserScore } from "./../api/p2e/v1/p2e";
+import { TeritoriNft__factory } from "./../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
+import { SquadStakingV3__factory } from "./../evm-contracts-clients/teritori-squad-staking/SquadStakingV3__factory";
+import { NetworkInfo } from "./../networks/types";
 import { getKeplrSquadStakingClient } from "./contracts";
+import { getMetaMaskEthereumSigner } from "./ethereum";
 import backpackSVG from "../../assets/game/backpack.svg";
 import coinStakeSVG from "../../assets/game/coin-stake.svg";
 import controllerSVG from "../../assets/game/controller.svg";
@@ -36,12 +40,6 @@ import {
   RipperTraitType,
   SquadConfig,
 } from "../screens/RiotGame/types";
-import { UserScore } from "./../api/p2e/v1/p2e";
-import { TeritoriNft__factory } from "./../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
-import { SquadStakingV3__factory } from "./../evm-contracts-clients/teritori-squad-staking/SquadStakingV3__factory";
-import { NetworkInfo } from "./../networks/types";
-import { getKeplrSquadStakingClient } from "./contracts";
-import { getMetaMaskEthereumSigner } from "./ethereum";
 
 const round = (input: number) => {
   return Math.floor(100 * input) / 100;

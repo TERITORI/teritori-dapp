@@ -15,7 +15,7 @@ binaries:
     file: ./ethereum_goerli.wasm
 
 modules:
-  - name: txns_out
+  - name: txs_out
     kind: map
     initialBlock: 8218450 # goerli: 8218450 # mainnet: 16341067
     inputs:

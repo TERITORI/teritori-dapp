@@ -84,8 +84,8 @@ func isSameAddress(addr1 string, addr2 string) bool {
 	return strings.EqualFold(addr1, addr2)
 }
 
-func ParseMethod(contractABI *abi.ABI, callData []byte) (*abi.Method, error) {
-	methodSigData := callData[:4]
+func ParseMethod(contractABI *abi.ABI, callInput []byte) (*abi.Method, error) {
+	methodSigData := callInput[:4]
 	method, err := contractABI.MethodById(methodSigData)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to parse method name")

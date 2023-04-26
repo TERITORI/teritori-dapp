@@ -2,7 +2,11 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"net/http"
 
+	"github.com/TERITORI/teritori-dapp/go/internal/ipfsutil"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/pkg/errors"
 )
@@ -22,4 +26,27 @@ func InputsToJson(method *abi.Method, rawData []byte) ([]byte, error) {
 	}
 
 	return jsonStr, nil
+}
+
+type CollectionMetadata struct {
+	ImageURI string `json:"image"`
+}
+
+func FetchIPFSJSON(uri string, dst interface{}) error {
+	jsonURL := ipfsutil.IPFSURIToURL(uri)
+	jsonReply, err := http.Get(jsonURL)
+	if err != nil {
+		return errors.Wrap(err, "failed to GET ipfs json")
+	}
+	if jsonReply.StatusCode != http.StatusOK {
+		return fmt.Errorf("bad GET status: %s", jsonReply.Status)
+	}
+	jsonBody, err := ioutil.ReadAll(jsonReply.Body)
+	if err != nil {
+		return errors.Wrap(err, "failed to read ipfs json body")
+	}
+	if err := json.Unmarshal(jsonBody, dst); err != nil {
+		return errors.Wrap(err, "failed to unmarshal ipfs json")
+	}
+	return nil
 }
