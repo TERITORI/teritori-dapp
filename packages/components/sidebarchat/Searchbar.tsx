@@ -1,56 +1,52 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
 
 import farward from "../../../assets/icons/farward.svg";
 import friends from "../../../assets/icons/friends.svg";
 import { SVG } from "../../../packages/components/SVG";
+import { neutral22, secondaryColor } from "../../utils/style/colors";
+import { fontSemibold13 } from "../../utils/style/fonts";
+import { BrandText } from "../BrandText";
+import FlexRow from "../FlexRow";
+import { SpacerRow } from "../spacer";
 const Searchbar = () => {
   return (
     <View style={styles.friendBox}>
-      <View style={styles.iconandText}>
-        <SVG source={friends} />
-        <Text style={styles.friendText}>Friends</Text>
-      </View>
-      <View style={styles.iconandText}>
-        <Text style={styles.number}>0</Text>
-        <TouchableOpacity>
-          <SVG source={farward} />
-        </TouchableOpacity>
-      </View>
+      <FlexRow justifyContent="space-between">
+        <View>
+          <FlexRow>
+            <SpacerRow size={1.3} />
+            <SVG source={friends} />
+            <SpacerRow size={1} />
+            <BrandText style={[fontSemibold13, { color: secondaryColor }]}>
+              Friends
+            </BrandText>
+          </FlexRow>
+        </View>
+        <View>
+          <FlexRow>
+            <BrandText style={[fontSemibold13, { color: secondaryColor }]}>
+              100
+            </BrandText>
+            <SpacerRow size={2} />
+            <TouchableOpacity>
+              <SVG source={farward} />
+            </TouchableOpacity>
+            <SpacerRow size={2} />
+          </FlexRow>
+        </View>
+      </FlexRow>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  friendText: {
-    color: "#FFFFFF",
-    marginLeft: 6,
-    fontWeight: "600",
-    fontSize: 13,
-    lineHeight: 18,
-  },
-  number: {
-    color: "#FFFFFF",
-    marginRight: 15,
-    fontWeight: "600",
-    fontSize: 13,
-    lineHeight: 18,
-  },
   friendBox: {
-    flexDirection: "row",
-    backgroundColor: "#222222",
-
-    padding: 8,
+    backgroundColor: neutral22,
     height: 40,
     borderRadius: 6,
-    justifyContent: "space-between",
-    marginTop: 20,
-  },
-  iconandText: {
+
     flexDirection: "row",
-    alignItems: "center",
-    marginRight: 10,
-    marginLeft: 10,
   },
 });
 export default Searchbar;

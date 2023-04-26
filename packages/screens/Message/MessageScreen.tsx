@@ -1,56 +1,53 @@
+import Seperator from "@draft-js-plugins/static-toolbar/lib/components/Separator";
 import React, { useState } from "react";
-import { View, StyleSheet, TouchableOpacity, Modal } from "react-native";
+import { View, TouchableOpacity, Modal } from "react-native";
 
+import FlexRow from "../../components/FlexRow";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { Separator } from "../../components/Separator";
 import MessageCard from "../../components/cards/MessageCard";
-import { SpacerRow } from "../../components/spacer";
+import { SpacerColumn, SpacerRow } from "../../components/spacer";
 import CreateGroup from "./CreateGroup";
 import { MessageHeader } from "./MessageHeader";
 import MessengerGroupChat from "./MessengerGroupChat";
 import SideBarChats from "./SideBarChats";
 import TopHeaderButtonChat from "./TopHeaderButtonChat";
 import data from "./data";
-export const MessageScreen: ScreenFC<"Message"> = ({ navigation }) => {
+export const MessageScreen: ScreenFC<"Message"> = () => {
   const [showTertiaryBox, setShowTertiaryBox] = useState(false);
   return (
     <ScreenContainer
       footerChildren
       headerChildren={<MessageHeader />}
       responsive
-      smallMargin={false}
+      fullWidth
     >
-      <View
-        style={{
-          flexDirection: "row",
-          marginTop: 30,
-        }}
-      >
+      <SpacerColumn size={3} />
+
+      <FlexRow>
         {data.map((item) => (
-          <TouchableOpacity
-            key={item.id}
-            onPress={() => {
-              if (item.id === 2) {
-                setShowTertiaryBox(true);
-              } else {
-                setShowTertiaryBox(false);
-              }
-            }}
-          >
-            <MessageCard
-              text={item.title}
-              icon={item.icon}
-              subtext={item.subtitle}
-              containerStyle={{
-                height: 56,
+          <>
+            <TouchableOpacity
+              key={item.id}
+              onPress={() => {
+                if (item.id === 2) {
+                  setShowTertiaryBox(true);
+                } else {
+                  setShowTertiaryBox(false);
+                }
               }}
-            />
-          </TouchableOpacity>
+            >
+              <MessageCard
+                text={item.title}
+                icon={item.icon}
+                subtext={item.subtitle}
+              />
+            </TouchableOpacity>
+            <SpacerRow size={2} />
+          </>
         ))}
-      </View>
-      {/* {showTertiaryBox && (
-        <CreateGroup setShowTertiaryBox={setShowTertiaryBox} />
-      )} */}
+      </FlexRow>
+      <SpacerColumn size={3} />
       <Modal visible={showTertiaryBox} animationType="none" transparent>
         <View
           style={{
@@ -63,7 +60,8 @@ export const MessageScreen: ScreenFC<"Message"> = ({ navigation }) => {
           <CreateGroup setShowTertiaryBox={setShowTertiaryBox} />
         </View>
       </Modal>
-      <Separator style={{ marginTop: 20, left: 0 }} horizontal={false} />
+
+      <Separator horizontal={false} />
       <View style={{ flexDirection: "row" }}>
         <SideBarChats />
         <SpacerRow size={2} />
@@ -78,36 +76,3 @@ export const MessageScreen: ScreenFC<"Message"> = ({ navigation }) => {
     </ScreenContainer>
   );
 };
-
-const styles = StyleSheet.create({
-  friendText: {
-    color: "#FFFFFF",
-    marginLeft: 6,
-    fontWeight: "600",
-    fontSize: 13,
-    lineHeight: 18,
-  },
-  number: {
-    color: "#FFFFFF",
-    marginRight: 15,
-    fontWeight: "600",
-    fontSize: 13,
-    lineHeight: 18,
-  },
-  friendBox: {
-    flexDirection: "row",
-    backgroundColor: "#222222",
-    width: 230,
-    padding: 8,
-    height: 30,
-    borderRadius: 10,
-    justifyContent: "space-between",
-    marginTop: 20,
-  },
-  iconandText: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginRight: 10,
-    marginLeft: 10,
-  },
-});
