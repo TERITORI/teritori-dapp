@@ -50,3 +50,15 @@ func FetchIPFSJSON(uri string, dst interface{}) error {
 	}
 	return nil
 }
+
+func ArgsToStruct(args map[string]interface{}, result any) error {
+	// Convert map to json string
+	jsonStr, err := json.Marshal(args)
+	if err != nil {
+		return errors.Wrap(err, "failed to convert map to json string")
+	}
+	if err := json.Unmarshal(jsonStr, result); err != nil {
+		return errors.Wrap(err, "failed to decode data")
+	}
+	return nil
+}

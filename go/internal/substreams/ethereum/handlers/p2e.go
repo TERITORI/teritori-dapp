@@ -14,8 +14,8 @@ type SquadStakeInput struct {
 	Nfts []abiGo.SquadStakingV3NftInfo `json:"nfts"`
 }
 
-func HandleSquadStake(method *abi.Method, tx *pb.Tx) error {
-	jsonStr, err := InputsToJson(method, tx.Call.Input)
+func HandleSquadStake(method *abi.Method, tx *pb.Tx, args map[string]interface{}) error {
+	jsonStr, err := InputsToJson(method, []byte(tx.Call.Input))
 	if err != nil {
 		return errors.Wrap(err, "failed to decode input")
 	}

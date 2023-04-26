@@ -119,20 +119,95 @@
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "tokenId", "type": "uint256" },
       {
-        "internalType": "address",
-        "name": "royaltyReceiver",
-        "type": "address"
-      },
-      {
-        "internalType": "uint96",
-        "name": "royaltyPercentage",
-        "type": "uint96"
-      },
-      { "internalType": "string", "name": "tokenUri", "type": "string" }
+        "components": [
+          { "internalType": "uint256", "name": "tokenId", "type": "uint256" },
+          {
+            "internalType": "address",
+            "name": "royaltyReceiver",
+            "type": "address"
+          },
+          {
+            "internalType": "uint96",
+            "name": "royaltyPercentage",
+            "type": "uint96"
+          },
+          { "internalType": "string", "name": "tokenUri", "type": "string" }
+        ],
+        "internalType": "struct TeritoriMinter.MintData[]",
+        "name": "mintData",
+        "type": "tuple[]"
+      }
     ],
     "name": "mint",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          { "internalType": "uint256", "name": "tokenId", "type": "uint256" },
+          {
+            "internalType": "address",
+            "name": "royaltyReceiver",
+            "type": "address"
+          },
+          {
+            "internalType": "uint96",
+            "name": "royaltyPercentage",
+            "type": "uint96"
+          },
+          { "internalType": "string", "name": "tokenUri", "type": "string" },
+          {
+            "components": [
+              { "internalType": "string", "name": "name", "type": "string" },
+              {
+                "internalType": "string",
+                "name": "description",
+                "type": "string"
+              },
+              { "internalType": "string", "name": "image", "type": "string" },
+              {
+                "internalType": "string",
+                "name": "external_url",
+                "type": "string"
+              },
+              {
+                "internalType": "string",
+                "name": "animation_url",
+                "type": "string"
+              },
+              {
+                "components": [
+                  {
+                    "internalType": "string",
+                    "name": "trait_type",
+                    "type": "string"
+                  },
+                  {
+                    "internalType": "string",
+                    "name": "value",
+                    "type": "string"
+                  }
+                ],
+                "internalType": "struct TeritoriNft.Attribute[]",
+                "name": "attributes",
+                "type": "tuple[]"
+              }
+            ],
+            "internalType": "struct TeritoriNft.Metadata",
+            "name": "extension",
+            "type": "tuple"
+          }
+        ],
+        "internalType": "struct TeritoriMinter.MintDataWithMetadata[]",
+        "name": "mintData",
+        "type": "tuple[]"
+      }
+    ],
+    "name": "mintWithMetadata",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -188,8 +263,7 @@
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "user", "type": "address" },
-      { "internalType": "uint256", "name": "count", "type": "uint256" }
+      { "internalType": "address", "name": "user", "type": "address" }
     ],
     "name": "requestMint",
     "outputs": [],
@@ -198,27 +272,34 @@
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "maxSupply", "type": "uint256" },
-      { "internalType": "address", "name": "mintToken", "type": "address" },
       {
-        "internalType": "uint256",
-        "name": "mintStartTime",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "whitelistCount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "publicMintPrice",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "publicMintMax",
-        "type": "uint256"
+        "components": [
+          { "internalType": "uint256", "name": "maxSupply", "type": "uint256" },
+          { "internalType": "address", "name": "mintToken", "type": "address" },
+          {
+            "internalType": "uint256",
+            "name": "mintStartTime",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "whitelistCount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "publicMintPrice",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "publicMintMax",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct TeritoriMinter.Config",
+        "name": "newConfig",
+        "type": "tuple"
       }
     ],
     "name": "setConfig",
@@ -266,14 +347,20 @@
         "name": "whitelistPhases",
         "type": "uint256[]"
       },
-
-      { "internalType": "uint256", "name": "mintMax", "type": "uint256" },
       {
-        "internalType": "uint256",
-        "name": "mintPeriod",
-        "type": "uint256"
-      },
-      { "internalType": "uint256", "name": "mintPrice", "type": "uint256" }
+        "components": [
+          { "internalType": "uint256", "name": "mintMax", "type": "uint256" },
+          {
+            "internalType": "uint256",
+            "name": "mintPeriod",
+            "type": "uint256"
+          },
+          { "internalType": "uint256", "name": "mintPrice", "type": "uint256" }
+        ],
+        "internalType": "struct TeritoriMinter.WhitelistConfig[]",
+        "name": "newWhitelistMintConfigs",
+        "type": "tuple[]"
+      }
     ],
     "name": "setWhitelistConfig",
     "outputs": [],

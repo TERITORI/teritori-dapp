@@ -302,6 +302,9 @@ func (s *PostgresSinker) handleBlockScopeData(ctx context.Context, cursor *sink.
 			// RiotNFT contract
 			case strings.EqualFold(tx.Call.Address, "0x7a9e5dbe7d3946ce4ea2f2396549c349635ebf2f"):
 				metaData = abiGo.TeritoriNFTMetaData
+			// Minter contract
+			case strings.EqualFold(tx.Call.Address, "0x43cc70bf324d716782628bed38af97e4afe92f69"):
+				metaData = abiGo.TeritoriMinterMetaData
 			}
 
 			contractABI, err := metaData.GetAbi()
@@ -318,14 +321,23 @@ func (s *PostgresSinker) handleBlockScopeData(ctx context.Context, cursor *sink.
 				panic("failed to parse method")
 			}
 
+			args := make(map[string]interface{})
+			if err := method.Inputs.UnpackIntoMap(args, []byte(tx.Call.Input[4:])); err != nil {
+				return errors.Wrap(err, "failed to unpack args for "+method.Name)
+			}
+
 			switch method.Name {
 			case "stake":
-				if err := ethereumHandlers.HandleSquadStake(method, tx); err != nil {
+				if err := ethereumHandlers.HandleSquadStake(method, tx, args); err != nil {
 					return errors.Wrap(err, "failed to handle squad stake")
 				}
 			case "initialize":
-				if err := handler.HandleInitialize(method, tx); err != nil {
-					return errors.Wrap(err, "failed to handle squad stake")
+				if err := handler.HandleInitialize(method, tx, args); err != nil {
+					return errors.Wrap(err, "failed to handle initialize")
+				}
+			case "mintWithMetadata":
+				if err := handler.HandleMintWithMetadata(method, tx, args); err != nil {
+					return errors.Wrap(err, "failed to handle mint with meta data")
 				}
 			}
 
