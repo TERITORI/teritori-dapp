@@ -4,6 +4,7 @@ import { memo, useEffect } from "react";
 import { setAvailableApps } from "../../../store/slices/dapps-store";
 import { useAppDispatch } from "../../../store/store";
 import { getMarketplaceClient } from "../../../utils/backend";
+import { getAvailableApps } from "../query/getFromFile";
 import { dAppGroup, dAppType } from "../types";
 
 // FIXME: this shoudln't be a component
@@ -78,8 +79,11 @@ export const DAppStoreData: React.FC = memo(() => {
       };
     });
 
-    if (formatted) {
-      dispatch(setAvailableApps(formatted));
+    const dAppStoreValues = getAvailableApps();
+    const merged = { ...dAppStoreValues, ...formatted };
+
+    if (merged) {
+      dispatch(setAvailableApps(merged));
     }
   }, [dApps, dAppsGroups, dispatch]);
 
