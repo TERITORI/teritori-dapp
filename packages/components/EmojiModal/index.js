@@ -4,7 +4,7 @@
 
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const _ = require("lodash");
+const { groupBy, mapValues } = require("lodash");
 const react_1 = require("react");
 const react_native_1 = require("react-native");
 
@@ -32,11 +32,11 @@ const CATEGORIES = [
 ];
 
 const DEFAULT_EMOJI_SIZE = 32;
-const PADDING = 5;
+const PADDING = 4;
 const DEFAULT_COLUMNS = 7;
 const ROWS_VISIBLE = DEFAULT_COLUMNS;
 const EMOJI_GROUP_PADDING_BOTTOM = PADDING * 3;
-const TOTAL_HEIGHT = DEFAULT_EMOJI_SIZE * ROWS_VISIBLE + PADDING * 2;
+const TOTAL_HEIGHT = DEFAULT_EMOJI_SIZE * ROWS_VISIBLE + 20;
 const styles = react_native_1.StyleSheet.create({
   modal: {
     flex: 1,
@@ -71,24 +71,16 @@ const styles = react_native_1.StyleSheet.create({
     flexDirection: "column",
     minHeight: TOTAL_HEIGHT,
     maxHeight: TOTAL_HEIGHT,
-    paddingHorizontal: PADDING,
   },
   searchContainer: {
     position: "relative",
     flexDirection: "row",
-    paddingTop: PADDING,
-    paddingHorizontal: PADDING,
-    paddingBottom: 2,
   },
   search: {
     flex: 1,
     backgroundColor: "#f2f2f2",
-    marginTop: 3,
-    marginHorizontal: 3,
     height: 4 + 20 + 4,
-    paddingVertical: 4,
-    paddingLeft: 12,
-    paddingRight: 12,
+    paddingHorizontal: 12,
     borderRadius: 3,
     color: "#2f2f2f",
     zIndex: 10,
@@ -100,7 +92,7 @@ const styles = react_native_1.StyleSheet.create({
     zIndex: 20,
   },
   headerText: {
-    padding: PADDING,
+    marginVertical: 6,
     color: "black",
     fontWeight: "bold",
     justifyContent: "center",
@@ -339,11 +331,11 @@ class EmojiModal extends react_1.PureComponent {
         return true;
       }
     });
-    const groupedEmojis = _.groupBy(
+    const groupedEmojis = groupBy(
       this.filteredEmojis,
       (emoji) => emoji.category
     );
-    this.emojisByCategory = _.mapValues(groupedEmojis, (group) =>
+    this.emojisByCategory = mapValues(groupedEmojis, (group) =>
       group.map(charFromEmojiObj)
     );
   }

@@ -8,6 +8,8 @@ import {
   ViewStyle,
 } from "react-native";
 
+import { SocialCardHeader } from "./SocialCardHeader";
+import { SocialMessageContent } from "./SocialMessageContent";
 import { signingSocialFeedClient } from "../../../client-creators/socialFeedClient";
 import { useTeritoriSocialFeedReactPostMutation } from "../../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.react-query";
 import { Reaction as ReactionFromContract } from "../../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
@@ -15,6 +17,7 @@ import {
   combineFetchCommentPages,
   useFetchComments,
 } from "../../../hooks/feed/useFetchComments";
+import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
 import { usePrevious } from "../../../hooks/usePrevious";
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
@@ -41,25 +44,30 @@ import { AnimationFadeIn } from "../../animations/AnimationFadeIn";
 import { AnimationFadeInOut } from "../../animations/AnimationFadeInOut";
 import { CustomPressable } from "../../buttons/CustomPressable";
 import { PrimaryButtonOutline } from "../../buttons/PrimaryButtonOutline";
-import { CommentsContainer } from "../../cards/CommentsContainer";
+import {
+  CommentsContainer,
+  LINES_HORIZONTAL_SPACE,
+} from "../../cards/CommentsContainer";
 import { SpacerColumn, SpacerRow } from "../../spacer";
 import { EmojiSelector } from "../EmojiSelector";
 import { PostExtra } from "../NewsFeed/NewsFeed.type";
 import { CommentsCount } from "../SocialActions/CommentsCount";
-import { Reactions } from "../SocialActions/Reactions";
+import { nbReactionsShown, Reactions } from "../SocialActions/Reactions";
 import { ReplyButton } from "../SocialActions/ReplyButton";
 import { ShareButton } from "../SocialActions/ShareButton";
 import { TipButton } from "../SocialActions/TipButton";
-import { SocialCardHeader } from "./SocialCardHeader";
-import { SocialMessageContent } from "./SocialMessageContent";
+
+const BREAKPOINT_S = 480;
 
 export interface SocialCommentCardProps {
+  // We use the cardWidth provided from CommentsContainer.
+  // The width of the CommentCard depends on its parent's width. The comments are a tree
+  cardWidth: number;
   comment: PostExtra;
   style?: StyleProp<ViewStyle>;
   isLast?: boolean;
   onPressReply: OnPressReplyType;
   overrideParentId?: string;
-  refresh?: number;
   onScrollTo?: (y: number) => void;
   parentOffsetValue?: number;
 }
@@ -70,11 +78,13 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
   isLast,
   onPressReply,
   overrideParentId,
-  refresh,
   onScrollTo,
   parentOffsetValue = 0,
+  cardWidth,
 }) => {
   const [localComment, setLocalComment] = useState<PostExtra>({ ...comment });
+  const [viewWidth, setViewWidth] = useState(0);
+  const isMobile = useIsMobile();
   const navigation = useAppNavigation();
   const [replyShown, setReplyShown] = useState(false);
   const [replyListYOffset, setReplyListYOffset] = useState<number[]>([]);
@@ -182,10 +192,12 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
 
   return (
     <CustomPressable
+      onLayout={(e) => setViewWidth(e.nativeEvent.layout.width)}
       disabled={!!localComment.isInLocal}
       onPress={() =>
         navigation.navigate("FeedPostView", { id: localComment.identifier })
       }
+      style={{ width: cardWidth }}
     >
       <AnimationFadeIn
         onLayout={(e) =>
@@ -195,9 +207,13 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
           })
         }
       >
-        <View style={[styles.container]}>
-          <View style={styles.curvedLine} />
-          {isLast && <View style={styles.extraLineHider} />}
+        <View style={styles.container}>
+          {!isMobile ? (
+            <View
+              style={[styles.curvedLine, { width: LINES_HORIZONTAL_SPACE }]}
+            />
+          ) : null}
+          {isLast && !isMobile ? <View style={styles.extraLineHider} /> : null}
 
           {/*========== Card */}
           <View style={[styles.commentContainer, style]}>
@@ -225,35 +241,55 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
                 postCategory={localComment.category}
               />
 
+              <SpacerColumn size={2} />
+
               {/*====== Card Actions */}
-              <FlexRow justifyContent="flex-end">
+              <FlexRow
+                justifyContent="flex-end"
+                style={
+                  viewWidth < BREAKPOINT_S && {
+                    flexDirection: "column",
+                    alignItems: "flex-end",
+                  }
+                }
+              >
                 <Reactions
+                  nbShown={nbReactionsShown(viewWidth)}
                   reactions={localComment.reactions}
                   onPressReaction={handleReaction}
                   isLoading={isPostMutationLoading}
                 />
-                <SpacerRow size={2.5} />
-                <EmojiSelector
-                  onEmojiSelected={handleReaction}
-                  isLoading={isPostMutationLoading}
-                />
-                <SpacerRow size={2.5} />
-                <ReplyButton onPress={handleReply} />
-                <SpacerRow size={2.5} />
-                <CommentsCount count={localComment.subPostLength} />
 
-                {authorNSInfo.metadata?.tokenId !==
-                  userInfo?.metadata?.tokenId && (
-                  <>
-                    <SpacerRow size={2.5} />
-                    <TipButton
-                      postTokenId={authorNSInfo?.metadata?.tokenId || ""}
-                    />
-                  </>
+                {viewWidth < BREAKPOINT_S && localComment.reactions.length ? (
+                  <SpacerColumn size={2} />
+                ) : (
+                  <SpacerRow size={2.5} />
                 )}
 
-                <SpacerRow size={2.5} />
-                <ShareButton postId={localComment.identifier} />
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <EmojiSelector
+                    onEmojiSelected={handleReaction}
+                    isLoading={isPostMutationLoading}
+                  />
+                  <SpacerRow size={2.5} />
+                  <ReplyButton onPress={handleReply} />
+                  <SpacerRow size={2.5} />
+                  <CommentsCount count={localComment.subPostLength} />
+
+                  <SpacerRow size={2.5} />
+                  <TipButton
+                    disabled={
+                      authorNSInfo?.metadata?.tokenId ===
+                      userInfo?.metadata?.tokenId
+                    }
+                    amount={localComment.tipAmount}
+                    author={username}
+                    postId={localComment.identifier}
+                  />
+
+                  <SpacerRow size={2.5} />
+                  <ShareButton postId={localComment.identifier} />
+                </View>
               </FlexRow>
             </View>
           </View>
@@ -261,7 +297,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
 
         {comments && (
           <View
-            style={styles.subCommentContainer}
+            style={{ marginLeft: isMobile ? 0 : LINES_HORIZONTAL_SPACE }}
             onLayout={(e) =>
               setReplyListYOffset((prev) => {
                 prev[2] = e.nativeEvent.layout.height;
@@ -270,8 +306,15 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
               })
             }
           >
-            {isLast && <View style={[styles.extraLineHider, { left: -61 }]} />}
+            {isLast && !isMobile ? (
+              <View style={[styles.extraLineHider, { left: -61 }]} />
+            ) : null}
             <CommentsContainer
+              cardWidth={
+                isMobile
+                  ? cardWidth
+                  : cardWidth - LINES_HORIZONTAL_SPACE * 2 - 1 // If not -1, the borderRight is hidden on small screens
+              }
               comments={comments}
               onPressReply={onPressReply}
               overrideParentId={localComment.identifier}
@@ -315,7 +358,6 @@ const styles = StyleSheet.create({
     marginLeft: -1,
   },
   curvedLine: {
-    width: 60,
     height: 10,
     marginTop: 70,
     borderLeftWidth: 1,
@@ -343,13 +385,12 @@ const styles = StyleSheet.create({
   repliesButtonContainer: {
     zIndex: 10,
     position: "absolute",
-    bottom: -16,
+    bottom: -21,
     right: 0,
     left: 0,
     alignItems: "center",
     justifyContent: "center",
   },
-  detailsContainer: {},
   actionContainer: {
     borderTopWidth: 1,
     marginTop: layout.padding_x1_5,
@@ -366,9 +407,6 @@ const styles = StyleSheet.create({
     zIndex: 1000,
     position: "absolute",
     left: 0,
-  },
-  subCommentContainer: {
-    marginLeft: 60,
   },
   loadingOverlay: {
     backgroundColor: withAlpha(secondaryColor, 0.2),

@@ -5,9 +5,11 @@ import {
   TouchableOpacity,
   View,
   ViewStyle,
+  Image,
 } from "react-native";
 
-import getupSVG from "../../../assets/getup.svg";
+import { LegalFooter } from "./LegalFooter";
+import getUpImage from "../../../assets/getup.png";
 import discordSVG from "../../../assets/icons/discord.svg";
 import mediumSVG from "../../../assets/icons/medium.svg";
 import twitterSVG from "../../../assets/icons/twitter.svg";
@@ -16,7 +18,6 @@ import { secondaryColor } from "../../utils/style/colors";
 import { layout, screenContentMaxWidthLarge } from "../../utils/style/layout";
 import { SVG } from "../SVG";
 import { TertiaryBox } from "../boxes/TertiaryBox";
-import { LegalFooter } from "./LegalFooter";
 
 const FooterSocialNetworks: React.FC = () => {
   return (
@@ -82,9 +83,27 @@ const FooterGetUp: React.FC = () => {
         marginBottom: layout.contentPadding,
       }}
     >
-      <SVG source={getupSVG} />
-      <SVG source={getupSVG} />
-      <SVG source={getupSVG} />
+      <Image
+        source={{ uri: getUpImage }}
+        style={{
+          width: 323,
+          height: 179,
+        }}
+      />
+      <Image
+        source={{ uri: getUpImage }}
+        style={{
+          width: 323,
+          height: 179,
+        }}
+      />
+      <Image
+        source={{ uri: getUpImage }}
+        style={{
+          width: 323,
+          height: 179,
+        }}
+      />
     </View>
   );
 };

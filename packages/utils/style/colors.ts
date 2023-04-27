@@ -58,6 +58,21 @@ export const gradientColorGray = "#676767";
 export const gradientColorLightGray = "#B7B7B7";
 export const gradientColorLighterGray = "#F5F7FA";
 
+export const currencyTORIcolor = primaryColor;
+export const currencyETHcolor = "#232731";
+export const currencyATOMcolor = "#5C26F5";
+export const currencyOSMOcolor = "#A401D4";
+export const currencyJUNOcolor = "#F0827D";
+
+export const gradientBlue = "90deg, #00C6FB 0%, #005BEA 100%";
+export const gradientBlueReversed = "90deg, #005BEA 0%, #00C6FB 100%";
+export const gradientBlueExtended =
+  "90deg, #5433FF 0%, #20BDFF 50%, #A5FECB 100%";
+export const gradientPurple = "267deg, #AEB1FF 0%, #DBAEFF 100%";
+export const gradientPink = "90deg, #FFAEAE 0%, #F46FBF 100%";
+export const gradientGray = "90deg, #676767 0%, #B7B7B7 100%";
+export const gradientGrayLight = "90deg, #F5F7FA 0%, #C3CFE2 100%";
+
 // Returns hexa color modified with alpha
 export const withAlpha = (color: string, opacity: number) => {
   const _opacity = Math.round(Math.min(Math.max(opacity || 1, 0), 1) * 255);

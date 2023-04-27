@@ -3,6 +3,7 @@ import moment from "moment";
 import React, { useEffect, useMemo, useState } from "react";
 import { ActivityIndicator, Pressable, StyleSheet, View } from "react-native";
 
+import { TransactionItemButtons } from "./TransactionItemButtons";
 import stakedSVG from "../../../../assets/icons/staked.svg";
 import transferSVG from "../../../../assets/icons/transfer.svg";
 import { BrandText } from "../../../components/BrandText";
@@ -28,7 +29,6 @@ import { fontSemibold13, fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { tinyAddress } from "../../../utils/text";
 import { MultisigTransactionType } from "../../Multisig/types";
-import { TransactionItemButtons } from "./TransactionItemButtons";
 
 export interface ProposalTransactionItemProps
   extends MultisigTransactionListType {

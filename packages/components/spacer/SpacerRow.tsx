@@ -1,8 +1,8 @@
 import React from "react";
 import { View } from "react-native";
 
-import { layout } from "../../utils/style/layout";
 import { SpacerProps } from "./SpacerColumn";
+import { layout } from "../../utils/style/layout";
 
 export const SpacerRow: React.FC<SpacerProps> = ({ size }) => (
   <View

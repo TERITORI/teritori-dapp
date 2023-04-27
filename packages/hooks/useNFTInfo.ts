@@ -1,11 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 
+import { TeritoriNft__factory } from "./../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
+import { NFTAttribute } from "./../utils/types/nft";
+import { useBreedingConfig } from "./useBreedingConfig";
 import { TeritoriBreedingQueryClient } from "../contracts-clients/teritori-breeding/TeritoriBreeding.client";
 import { ConfigResponse as BreedingConfigResponse } from "../contracts-clients/teritori-breeding/TeritoriBreeding.types";
 import { TeritoriBunkerMinterQueryClient } from "../contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.client";
 import { TeritoriNameServiceQueryClient } from "../contracts-clients/teritori-name-service/TeritoriNameService.client";
-import { TeritoriNftVaultQueryClient } from "../contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
 import { TeritoriNftQueryClient } from "../contracts-clients/teritori-nft/TeritoriNft.client";
+import { TeritoriNftVaultQueryClient } from "../contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
 import { TeritoriMinter__factory } from "../evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
 import { NFTVault__factory } from "../evm-contracts-clients/teritori-nft-vault/NFTVault__factory";
 import {
@@ -21,14 +24,11 @@ import {
 import { NFTInfo } from "../screens/Marketplace/NFTDetailScreen";
 import { getEthereumProvider } from "../utils/ethereum";
 import { ipfsURLToHTTPURL } from "../utils/ipfs";
-import { TeritoriNft__factory } from "./../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
-import { NFTAttribute } from "./../utils/types/nft";
-import { useBreedingConfig } from "./useBreedingConfig";
 
 export const useNFTInfo = (nftId: string, userId?: string | undefined) => {
   const [network, minterContractAddress, tokenId] = parseNftId(nftId);
 
-  const breedingConfig = useBreedingConfig(network?.id);
+  const { breedingConfig } = useBreedingConfig(network?.id);
 
   const {
     data: info,
@@ -146,11 +146,9 @@ const getTNSNFTInfo = async (
     attributes: [],
     nftAddress: contractAddress,
     mintAddress: contractAddress,
-    imageURL: ipfsURLToHTTPURL(
-      nftInfo.extension.image
-        ? nftInfo.extension.image
-        : network?.nameServiceDefaultImage || ""
-    ),
+    imageURL: nftInfo.extension.image
+      ? nftInfo.extension.image
+      : network?.nameServiceDefaultImage || "",
     tokenId,
     ownerAddress: vaultOwnerAddress || owner,
     isSeller: isListed && isOwner,
@@ -161,9 +159,7 @@ const getTNSNFTInfo = async (
     priceDenom: vaultInfo?.denom || "",
     collectionName: contractInfo.name,
     textInsert: tokenId,
-    collectionImageURL: ipfsURLToHTTPURL(
-      network?.nameServiceDefaultImage || ""
-    ),
+    collectionImageURL: network?.nameServiceDefaultImage || "",
     mintDenom: contractInfo.native_denom,
     networkId: network.id,
     royalty: 0,
@@ -364,7 +360,7 @@ const getTeritoriBunkerNFTInfo = async (
     attributes,
     nftAddress: minterConfig.nft_addr,
     mintAddress: minterContractAddress,
-    imageURL: ipfsURLToHTTPURL(image),
+    imageURL: image,
     tokenId,
     ownerAddress: vaultOwnerAddress || owner,
     isSeller: isListed && isOwner,
@@ -374,7 +370,7 @@ const getTeritoriBunkerNFTInfo = async (
     price: vaultInfo?.amount || "",
     priceDenom: vaultInfo?.denom || "",
     collectionName: contractInfo.name,
-    collectionImageURL: ipfsURLToHTTPURL(collectionMetadata.image),
+    collectionImageURL: collectionMetadata.image,
     mintDenom: minterConfig.price_denom,
     royalty: royalties,
     breedingsAvailable,
@@ -474,7 +470,7 @@ const getTeritoriRiotBreedingNFTInfo = async (
     attributes,
     nftAddress: breedingConfig.child_contract_addr,
     mintAddress: minterContractAddress,
-    imageURL: ipfsURLToHTTPURL(image),
+    imageURL: image,
     tokenId,
     ownerAddress: vaultOwnerAddress || owner,
     isSeller: isListed && isOwner,
@@ -484,7 +480,7 @@ const getTeritoriRiotBreedingNFTInfo = async (
     price: vaultInfo?.amount || "",
     priceDenom: vaultInfo?.denom || "",
     collectionName: contractInfo.name,
-    collectionImageURL: ipfsURLToHTTPURL(collectionMetadata.image),
+    collectionImageURL: collectionMetadata.image,
     mintDenom: "utori",
     royalty: royalties,
     networkId: network.id,

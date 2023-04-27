@@ -1,5 +1,12 @@
 import { Currency } from "@keplr-wallet/types";
-import React, { useEffect, useMemo, useRef } from "react";
+import React, {
+  Dispatch,
+  RefObject,
+  SetStateAction,
+  useEffect,
+  useMemo,
+  useRef,
+} from "react";
 import {
   RegisterOptions,
   useController,
@@ -21,6 +28,7 @@ import {
 } from "react-native";
 import { SvgProps } from "react-native-svg";
 
+import { TextInputLabelProps } from "./TextInputOutsideLabel";
 import { DEFAULT_FORM_ERRORS } from "../../utils/errors";
 import { handleKeyPress } from "../../utils/keyboard";
 import {
@@ -28,6 +36,7 @@ import {
   neutral22,
   neutral33,
   neutral77,
+  neutralA3,
   secondaryColor,
   additionalRed,
 } from "../../utils/style/colors";
@@ -42,16 +51,16 @@ import { ErrorText } from "../ErrorText";
 import { SVG } from "../SVG";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { SpacerColumn, SpacerRow } from "../spacer";
-import { TextInputLabelProps } from "./TextInputOutsideLabel";
 
 export interface TextInputCustomProps<T extends FieldValues>
   extends Omit<TextInputProps, "accessibilityRole" | "defaultValue">,
     TextInputLabelProps {
-  variant?: "regular" | "labelOutside" | "noCropBorder";
+  variant?: "regular" | "labelOutside" | "noCropBorder" | "noStyle";
   iconSVG?: React.FC<SvgProps>;
   placeHolder?: string;
   squaresBackgroundColor?: string;
   style?: StyleProp<ViewStyle>;
+  textInputStyle?: StyleProp<TextStyle>;
   onPressEnter?: () => void;
   currency?: Currency;
   disabled?: boolean;
@@ -62,7 +71,6 @@ export interface TextInputCustomProps<T extends FieldValues>
   name: Path<T>;
   rules?: Omit<RegisterOptions, "valueAsNumber" | "valueAsDate" | "setValueAs">;
   defaultValue?: PathValue<T, Path<T>>;
-  inputStyle?: TextStyle;
   hideLabel?: boolean;
   errorStyle?: ViewStyle;
   valueModifier?: (value: string) => string;
@@ -74,6 +82,7 @@ export interface TextInputCustomProps<T extends FieldValues>
   noBrokenCorners?: boolean;
   error?: string;
   fullWidth?: boolean;
+  setRef?: Dispatch<SetStateAction<RefObject<any> | null>>;
 }
 
 export const Label: React.FC<{
@@ -89,7 +98,7 @@ export const Label: React.FC<{
     <BrandText style={[styles.labelText, fontSemibold14, style]}>
       {children}
     </BrandText>
-    {!!isRequired && (
+    {!!isRequired && children && (
       <BrandText
         style={[
           fontSemibold20,
@@ -108,6 +117,7 @@ export const TextInputCustom = <T extends FieldValues>({
   placeHolder,
   onPressEnter,
   style,
+  textInputStyle,
   regexp,
   children,
   currency,
@@ -134,6 +144,7 @@ export const TextInputCustom = <T extends FieldValues>({
   error,
   noBrokenCorners,
   fullWidth,
+  setRef,
   ...restProps
 }: TextInputCustomProps<T>) => {
   // variables
@@ -143,8 +154,13 @@ export const TextInputCustom = <T extends FieldValues>({
     rules,
   });
   const inputRef = useRef<TextInput>(null);
+  // Passing ref to parent since I didn't find a pattern to handle generic argument <T extends FieldValues> AND forwardRef
+  useEffect(() => {
+    if (inputRef.current && setRef) {
+      setRef(inputRef);
+    }
+  }, [setRef]);
 
-  // hooks
   useEffect(() => {
     if (defaultValue) {
       handleChangeText(defaultValue || "");
@@ -190,6 +206,21 @@ export const TextInputCustom = <T extends FieldValues>({
       }
     }
   };
+
+  if (variant === "noStyle")
+    return (
+      <TextInput
+        ref={inputRef}
+        editable={!disabled}
+        placeholder={placeHolder}
+        onChangeText={handleChangeText}
+        onKeyPress={(event) => handleKeyPress({ event, onPressEnter })}
+        placeholderTextColor={neutralA3}
+        value={field.value}
+        style={[styles.textInput, textInputStyle]}
+        {...restProps}
+      />
+    );
 
   return (
     <View style={containerStyle}>
@@ -237,12 +268,12 @@ export const TextInputCustom = <T extends FieldValues>({
               ref={inputRef}
               editable={!disabled}
               placeholder={placeHolder}
-              onKeyPress={(event) => handleKeyPress({ event, onPressEnter })}
-              placeholderTextColor="#999999"
-              value={field.value}
-              style={[styles.textInput, inputStyle]}
-              {...restProps}
               onChangeText={handleChangeText}
+              onKeyPress={(event) => handleKeyPress({ event, onPressEnter })}
+              placeholderTextColor={neutralA3}
+              value={field.value}
+              style={[styles.textInput, textInputStyle]}
+              {...restProps}
             />
           </View>
 

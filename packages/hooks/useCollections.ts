@@ -1,18 +1,35 @@
-import { useInfiniteQuery } from "@tanstack/react-query";
+import {
+  FetchNextPageOptions,
+  InfiniteQueryObserverResult,
+  useInfiniteQuery,
+} from "@tanstack/react-query";
 import { useRef, useMemo, useCallback } from "react";
 
+import { addCollectionMetadata } from "./../utils/ethereum";
 import {
   Collection,
   CollectionsRequest,
 } from "../api/marketplace/v1/marketplace";
 import { getNetwork, NetworkKind } from "../networks";
 import { mustGetMarketplaceClient } from "../utils/backend";
-import { addCollectionMetadata } from "./../utils/ethereum";
 
 export const useCollections = (
   req: CollectionsRequest,
   filter?: (c: Collection) => boolean
-): [Collection[], (index: number) => Promise<void>] => {
+): {
+  fetchNextPage: (options?: FetchNextPageOptions) => Promise<
+    InfiniteQueryObserverResult<
+      | {
+          nextCursor: number;
+          collections: Collection[];
+        }
+      | { nextCursor: number; collections: Collection[] },
+      unknown
+    >
+  >;
+  fetchMore: (index: number) => Promise<void>;
+  collections: Collection[];
+} => {
   const baseOffset = useRef(req.offset);
 
   const { data, fetchNextPage } = useInfiniteQuery(
@@ -51,7 +68,7 @@ export const useCollections = (
 
       return { nextCursor: pageParam + req.limit, collections };
     },
-    { getNextPageParam: (lastPage) => lastPage.nextCursor }
+    { staleTime: Infinity, getNextPageParam: (lastPage) => lastPage.nextCursor }
   );
 
   const collections = useMemo(() => {
@@ -76,5 +93,9 @@ export const useCollections = (
     [fetchNextPage]
   );
 
-  return [filteredCollections, fetchMore];
+  return {
+    collections: filteredCollections,
+    fetchNextPage,
+    fetchMore,
+  };
 };

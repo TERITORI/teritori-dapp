@@ -1,17 +1,17 @@
 import React, { useMemo } from "react";
 
+import { HashtagRenderer } from "./HashtagRenderer";
+import { MentionRenderer } from "./MentionRenderer";
+import { URLRenderer } from "./URLRenderer";
 import {
   hashtagMatch,
   mentionMatch,
   NB_ROWS_SHOWN_IN_PREVIEW,
   urlMatch,
 } from "../../../../utils/social-feed";
-import { neutralA3, primaryColor } from "../../../../utils/style/colors";
+import { neutral77, neutralA3 } from "../../../../utils/style/colors";
 import { fontSemibold14 } from "../../../../utils/style/fonts";
 import { BrandText } from "../../../BrandText";
-import { HashtagRenderer } from "./HashtagRenderer";
-import { MentionRenderer } from "./MentionRenderer";
-import { URLRenderer } from "./URLRenderer";
 
 const REFERENCE_REGEX = /(?=--\S.+--)/gm;
 
@@ -108,8 +108,8 @@ export const TextRenderer = ({
     <BrandText style={[fontSemibold14, { color: neutralA3 }]}>
       {formattedText}
       {isTruncateNeeded && (
-        <BrandText style={[fontSemibold14, { color: primaryColor }]}>
-          {"\n\n...see more"}
+        <BrandText style={[fontSemibold14, { color: neutral77 }]}>
+          {"\n...see more"}
         </BrandText>
       )}
     </BrandText>

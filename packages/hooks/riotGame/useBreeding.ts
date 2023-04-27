@@ -1,8 +1,9 @@
+import { Coin } from "@cosmjs/amino";
 import { EncodeObject } from "@cosmjs/proto-signing";
 import { isDeliverTxFailure } from "@cosmjs/stargate";
-import { Coin } from "cosmwasm";
 import { useCallback, useEffect, useState } from "react";
 
+import { ConfigResponse } from "./../../contracts-clients/teritori-breeding/TeritoriBreeding.types";
 import { TeritoriBreedingQueryClient } from "../../contracts-clients/teritori-breeding/TeritoriBreeding.client";
 import {
   getCosmosNetwork,
@@ -13,13 +14,12 @@ import { buildApproveNFTMsg, buildBreedingMsg } from "../../utils/game";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { useBreedingConfig } from "../useBreedingConfig";
 import useSelectedWallet from "../useSelectedWallet";
-import { ConfigResponse } from "./../../contracts-clients/teritori-breeding/TeritoriBreeding.types";
 
 export const useBreeding = (networkId: string | undefined) => {
   const [remainingTokens, setRemainingTokens] = useState<number>(0);
 
   const { selectedWallet } = useSelectedWallet();
-  const breedingConfig = useBreedingConfig(networkId);
+  const { breedingConfig } = useBreedingConfig(networkId);
   const breedingContractAddress =
     getCosmosNetwork(networkId)?.riotContractAddressGen1;
 

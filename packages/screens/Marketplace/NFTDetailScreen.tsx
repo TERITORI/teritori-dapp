@@ -198,19 +198,17 @@ const Content: React.FC<{
             alignItems: "center",
           }}
         >
-          <View style={{ backgroundColor: "black", width }}>
-            <Tabs
-              items={screenTabItems}
-              selected={selectedTab}
-              style={{
-                height: 60,
-                justifyContent: "flex-end",
-                width: "100%",
-              }}
-              tabContainerStyle={{ height: 60 }}
-              onSelect={setSelectedTab}
-            />
-          </View>
+          <Tabs
+            items={screenTabItems}
+            selected={selectedTab}
+            style={{
+              height: 60,
+              width,
+              alignItems: "flex-end",
+              backgroundColor: "black",
+            }}
+            onSelect={setSelectedTab}
+          />
 
           <Target name="main-info">
             <SpacerColumn size={6} />

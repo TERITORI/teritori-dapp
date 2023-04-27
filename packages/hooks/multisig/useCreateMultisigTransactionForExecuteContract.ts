@@ -4,6 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import { calculateFee } from "cosmwasm";
 import moment from "moment";
 
+import useSelectedWallet from "./../useSelectedWallet";
 import { mustGetCosmosNetwork } from "../../networks";
 import {
   MultisigExecuteFormType,
@@ -12,7 +13,6 @@ import {
 import { createTransaction } from "../../utils/founaDB/multisig/multisigGraphql";
 import { DbCreateTransaction } from "../../utils/founaDB/multisig/types";
 import { useSelectedNetworkId } from "../useSelectedNetwork";
-import useSelectedWallet from "./../useSelectedWallet";
 
 export const useCreateMultisigTransactionForExecuteContract = () => {
   // variables

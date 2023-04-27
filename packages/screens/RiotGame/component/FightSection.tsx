@@ -2,6 +2,10 @@ import { useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { StyleSheet } from "react-native";
 
+import { FightBossSection } from "./FightBossSection";
+import { FightCountdownSection } from "./FightCountdownSection";
+import { FightSquadSection } from "./FightSquadSection";
+import { UnstakeModal } from "./UnstakeModal";
 import FlexRow from "../../../components/FlexRow";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { TeritoriNftQueryClient } from "../../../contracts-clients/teritori-nft/TeritoriNft.client";
@@ -13,10 +17,6 @@ import { ipfsURLToHTTPURL } from "../../../utils/ipfs";
 import { fontMedium48 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { RipperLightInfo } from "../types";
-import { FightBossSection } from "./FightBossSection";
-import { FightCountdownSection } from "./FightCountdownSection";
-import { FightSquadSection } from "./FightSquadSection";
-import { UnstakeModal } from "./UnstakeModal";
 
 type FightSectionProps = {
   squad: Squad;

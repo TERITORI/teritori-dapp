@@ -38,8 +38,28 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  useWindowDimensions,
+  View,
+} from "react-native";
 
+import { RichHashtagRenderer } from "./RichRenderer/RichHashtagRenderer";
+import { RichHashtagRendererConsultation } from "./RichRenderer/RichHashtagRendererConsultation";
+import { RichMentionRenderer } from "./RichRenderer/RichMentionRenderer";
+import { RichMentionRendererConsultation } from "./RichRenderer/RichMentionRendererConsultation";
+import { RichURLRenderer } from "./RichRenderer/RichURLRenderer";
+import { RichURLRendererConsultation } from "./RichRenderer/RichURLRendererConsultation";
+import {
+  FoundEntity,
+  PublishValues,
+  RichTextProps,
+  SelectedEntity,
+} from "./RichText.type";
+import { ActionsContainer } from "./Toolbar/ActionsContainer";
+import { ToolbarContainer } from "./Toolbar/ToolbarContainer";
+import createInlineToolbarPlugin from "./inline-toolbar";
 import audioSVG from "../../../../assets/icons/audio.svg";
 import cameraSVG from "../../../../assets/icons/camera.svg";
 import videoSVG from "../../../../assets/icons/video.svg";
@@ -58,9 +78,9 @@ import {
   replaceFileInArray,
   urlMatch,
 } from "../../../utils/social-feed";
-import { primaryColor } from "../../../utils/style/colors";
+import { neutral77 } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+import { layout, SOCIAL_FEED_BREAKPOINT_M } from "../../../utils/style/layout";
 import { LocalFileData } from "../../../utils/types/feed";
 import { BrandText } from "../../BrandText";
 import { AudioView } from "../../FilePreview/AudioView";
@@ -71,21 +91,6 @@ import { FileUploader } from "../../fileUploader";
 import { SpacerColumn, SpacerRow } from "../../spacer";
 import { EmojiSelector } from "../EmojiSelector";
 import { GIFSelector } from "../GIFSelector";
-import { RichHashtagRenderer } from "./RichRenderer/RichHashtagRenderer";
-import { RichHashtagRendererConsultation } from "./RichRenderer/RichHashtagRendererConsultation";
-import { RichMentionRenderer } from "./RichRenderer/RichMentionRenderer";
-import { RichMentionRendererConsultation } from "./RichRenderer/RichMentionRendererConsultation";
-import { RichURLRenderer } from "./RichRenderer/RichURLRenderer";
-import { RichURLRendererConsultation } from "./RichRenderer/RichURLRendererConsultation";
-import {
-  FoundEntity,
-  PublishValues,
-  RichTextProps,
-  SelectedEntity,
-} from "./RichText.type";
-import { ActionsContainer } from "./Toolbar/ActionsContainer";
-import { ToolbarContainer } from "./ToolbarContainer";
-import createInlineToolbarPlugin from "./inline-toolbar";
 
 const VIDEOTYPE = "draft-js-video-plugin-video"; // See @draft-js-plugins/video/lib/video/constants
 const MAX_IMAGES = 8;
@@ -161,6 +166,7 @@ export const RichText: React.FC<RichTextProps> = ({
     videoPlugin,
   ];
 
+  const { width: windowWidth } = useWindowDimensions();
   const editorRef = useRef<Editor>(null);
   const [editorState, setEditorState] = useState(
     createStateFromHTML(initialValue)
@@ -320,14 +326,14 @@ export const RichText: React.FC<RichTextProps> = ({
     <View style={styles.toolbarButtonsWrapper}>
       <EmojiSelector
         onEmojiSelected={(emoji) => addEmoji(emoji)}
-        optionsContainer={{ marginLeft: -80, marginTop: -6 }}
         buttonStyle={styles.toolbarCustomButton}
+        iconStyle={styles.toolbarCustomButtonIcon}
       />
 
       <GIFSelector
         onGIFSelected={(url) => (url ? addGIF(url) : undefined)}
-        optionsContainer={{ marginLeft: -186, marginTop: -6 }}
         buttonStyle={styles.toolbarCustomButton}
+        iconStyle={styles.toolbarCustomButtonIcon}
         disabled={isGIFSelectorDisabled}
       />
 
@@ -339,7 +345,7 @@ export const RichText: React.FC<RichTextProps> = ({
           <IconBox
             icon={audioSVG}
             onPress={onPress}
-            style={styles.toolbarCustomButton}
+            style={[styles.toolbarCustomButtonIcon, styles.toolbarCustomButton]}
             disabled={isAudioUploadDisabled}
           />
         )}
@@ -353,7 +359,7 @@ export const RichText: React.FC<RichTextProps> = ({
           <IconBox
             icon={videoSVG}
             onPress={onPress}
-            style={styles.toolbarCustomButton}
+            style={[styles.toolbarCustomButtonIcon, styles.toolbarCustomButton]}
             disabled={isVideoUploadDisabled}
           />
         )}
@@ -367,7 +373,7 @@ export const RichText: React.FC<RichTextProps> = ({
           <IconBox
             icon={cameraSVG}
             onPress={onPress}
-            style={styles.toolbarCustomButton}
+            style={[styles.toolbarCustomButtonIcon, styles.toolbarCustomButton]}
             iconProps={{
               width: 18,
               height: 18,
@@ -426,7 +432,7 @@ export const RichText: React.FC<RichTextProps> = ({
           decorators={compositeDecorator.decorators}
         />
         {isTruncateNeeded && (
-          <BrandText style={[fontSemibold14, { color: primaryColor }]}>
+          <BrandText style={[fontSemibold14, { color: neutral77 }]}>
             {"\n...see more"}
           </BrandText>
         )}
@@ -460,22 +466,31 @@ export const RichText: React.FC<RichTextProps> = ({
         ))}
 
       {!isPostConsultation && (
-        <ActionsContainer>
-          <ToolbarContainer>
-            <Toolbar>
-              {(externalProps) => <Buttons externalProps={externalProps} />}
-            </Toolbar>
-          </ToolbarContainer>
+        <>
+          <SpacerColumn size={3} />
+          <ActionsContainer>
+            <ToolbarContainer>
+              <Toolbar>
+                {(externalProps) => <Buttons externalProps={externalProps} />}
+              </Toolbar>
+            </ToolbarContainer>
 
-          <SpacerRow size={3} />
-          <PrimaryButton
-            disabled={publishDisabled}
-            loader={loading}
-            text="Publish"
-            size="M"
-            onPress={handlePublish}
-          />
-        </ActionsContainer>
+            {windowWidth < SOCIAL_FEED_BREAKPOINT_M ? (
+              <SpacerColumn size={1.5} />
+            ) : (
+              <SpacerRow size={3} />
+            )}
+            <PrimaryButton
+              disabled={publishDisabled}
+              loader
+              isLoading={loading}
+              text="Publish"
+              size="M"
+              onPress={handlePublish}
+            />
+          </ActionsContainer>
+          <SpacerColumn size={2} />
+        </>
       )}
     </View>
   );
@@ -484,7 +499,9 @@ export const RichText: React.FC<RichTextProps> = ({
 /////////////// STYLES ////////////////
 const styles = StyleSheet.create({
   toolbarCustomButton: {
-    marginHorizontal: layout.padding_x0_75 / 2,
+    margin: layout.padding_x0_5,
+  },
+  toolbarCustomButtonIcon: {
     borderRadius: 4,
     height: 30,
     width: 30,
@@ -493,7 +510,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    flex: 1,
+    width: "100%",
     flexWrap: "wrap",
   },
 });
@@ -513,6 +530,9 @@ const createHTMLFromState = (state: ContentState) =>
     entityToHTML: (entity, originalText) => {
       if (entity.type === "IMAGE") {
         return <img src={entity.data.src} />;
+      }
+      if (entity.type === "LINK") {
+        return <a href={entity.data.url}>{originalText}</a>;
       }
       // TODO: Here, check entity.type === "LINK" and add URLRenderer with href ?
       return originalText;

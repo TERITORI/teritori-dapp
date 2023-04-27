@@ -4,13 +4,13 @@ import { Window as KeplrWindow } from "@keplr-wallet/types";
 import { useMutation } from "@tanstack/react-query";
 import { toBase64 } from "cosmwasm";
 
+import { MultisigTransactionListType } from "./useFetchMultisigTransactionsById";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { mustGetCosmosNetwork } from "../../networks";
 import { createSignature } from "../../utils/founaDB/multisig/multisigGraphql";
 import { DbSignature } from "../../utils/founaDB/multisig/types";
 import { useSelectedNetworkId } from "../useSelectedNetwork";
 import useSelectedWallet from "../useSelectedWallet";
-import { MultisigTransactionListType } from "./useFetchMultisigTransactionsById";
 
 export const useApproveTransaction = () => {
   // variables

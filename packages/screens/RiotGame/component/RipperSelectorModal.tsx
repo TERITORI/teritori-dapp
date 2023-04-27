@@ -9,6 +9,10 @@ import {
   Pressable,
 } from "react-native";
 
+import { AvailableRippersGrid } from "./AvailableRippersGrid";
+import { RipperAvatar } from "./RipperAvatar";
+import { RipperStatsSection } from "./RipperStatsSection";
+import { SimpleButton } from "./SimpleButton";
 import controllerSVG from "../../../../assets/game/controller.svg";
 import dashedBorderPNG from "../../../../assets/game/dashed-border.png";
 import closeSVG from "../../../../assets/icons/close.svg";
@@ -31,10 +35,6 @@ import {
   fontMedium48,
 } from "../../../utils/style/fonts";
 import { headerHeight, layout } from "../../../utils/style/layout";
-import { AvailableRippersGrid } from "./AvailableRippersGrid";
-import { RipperAvatar } from "./RipperAvatar";
-import { RipperStatsSection } from "./RipperStatsSection";
-import { SimpleButton } from "./SimpleButton";
 
 type RipperSelectorModalProps = ModalProps & {
   slotId: number | undefined;

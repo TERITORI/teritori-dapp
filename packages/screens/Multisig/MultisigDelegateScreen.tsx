@@ -1,10 +1,5 @@
 import React, { useState } from "react";
 
-import { ScreenContainer } from "../../components/ScreenContainer";
-import { BackTo } from "../../components/navigation/BackTo";
-import { useCreateMultisigDelegate } from "../../hooks/multisig/useCreateMultisigDelegate";
-import { useGetMultisigAccount } from "../../hooks/multisig/useGetMultisigAccount";
-import { ScreenFC } from "../../utils/navigation";
 import { CheckLoadingModal } from "./components/CheckLoadingModal";
 import { MultisigTransactionDelegateForm } from "./components/MultisigTransactionDelegateForm";
 import { SignTransactionModal } from "./components/SignTransactionModal";
@@ -12,6 +7,11 @@ import {
   MultisigTransactionDelegateFormType,
   MultisigTransactionType,
 } from "./types";
+import { ScreenContainer } from "../../components/ScreenContainer";
+import { BackTo } from "../../components/navigation/BackTo";
+import { useCreateMultisigDelegate } from "../../hooks/multisig/useCreateMultisigDelegate";
+import { useGetMultisigAccount } from "../../hooks/multisig/useGetMultisigAccount";
+import { ScreenFC } from "../../utils/navigation";
 
 export const MultisigDelegateScreen: ScreenFC<"MultisigDelegate"> = ({
   route,

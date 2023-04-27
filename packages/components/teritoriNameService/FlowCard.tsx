@@ -3,7 +3,7 @@ import { ViewStyle, View, StyleProp, TouchableOpacity } from "react-native";
 import { SvgProps } from "react-native-svg";
 
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
-import { neutral22, neutral77 } from "../../utils/style/colors";
+import { neutral00, neutral22, neutral77 } from "../../utils/style/colors";
 import { fontSemibold14, fontSemibold20 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
@@ -31,6 +31,7 @@ export const FlowCard: React.FC<{
           paddingHorizontal: 20,
           alignItems: "flex-start",
           justifyContent: "space-between",
+          backgroundColor: disabled ? neutral22 : neutral00,
         }}
         disabled={disabled}
       >

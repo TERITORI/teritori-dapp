@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { View } from "react-native";
 
+import { TNSModalCommonProps } from "./TNSHomeScreen";
 import longCardSVG from "../../../assets/cards/long-card.svg";
 import coinSVG from "../../../assets/icons/coin.svg";
 import { BrandText } from "../../components/BrandText";
@@ -30,7 +31,6 @@ import { fontSemibold14 } from "../../utils/style/fonts";
 import { defaultMetaData } from "../../utils/types/tns";
 import { CheckLoadingModal } from "../Multisig/components/CheckLoadingModal";
 import { MultisigTransactionType } from "../Multisig/types";
-import { TNSModalCommonProps } from "./TNSHomeScreen";
 
 const CostContainer: React.FC<{ price: { amount: string; denom: string } }> = ({
   price,

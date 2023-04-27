@@ -1,10 +1,11 @@
 import { Decimal } from "@cosmjs/math";
 import { isDeliverTxFailure } from "@cosmjs/stargate";
-import { MsgBeginRedelegate } from "cosmjs-types/cosmos/staking/v1beta1/tx";
+import { MsgBeginRedelegate } from "osmojs/types/codegen/cosmos/staking/v1beta1/tx";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Pressable, StyleSheet, View } from "react-native";
 
+import { ValidatorsTable } from "./ValidatorsList";
 import checkSVG from "../../../../assets/icons/check.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
@@ -39,7 +40,6 @@ import {
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { StakeFormValuesType, ValidatorInfo } from "../types";
-import { ValidatorsTable } from "./ValidatorsList";
 
 interface RedelegateModalProps {
   onClose?: () => void;

@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 
+import { CheckLoadingModal } from "./components/CheckLoadingModal";
+import { MultisigSection } from "./components/MultisigSection";
+import { CreateMultisigWalletFormType } from "./types";
 import trashSVG from "../../../assets/icons/trash.svg";
 import walletInputSVG from "../../../assets/icons/wallet-input.svg";
 import { BrandText } from "../../components/BrandText";
@@ -36,9 +39,6 @@ import {
   fontSemibold28,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { CheckLoadingModal } from "./components/CheckLoadingModal";
-import { MultisigSection } from "./components/MultisigSection";
-import { CreateMultisigWalletFormType } from "./types";
 
 const emptyPubKeyGroup = () => ({ address: "", compressedPubkey: "" });
 

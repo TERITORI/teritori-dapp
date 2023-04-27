@@ -1,11 +1,11 @@
 import React from "react";
 import { FlatList, useWindowDimensions } from "react-native";
 
+import { ProposalTransactionItem } from "./ProposalTransactionItem";
 import GradientModalBase from "../../../components/modals/GradientModalBase";
 import { MultisigTransactionListType } from "../../../hooks/multisig";
 import { neutral17 } from "../../../utils/style/colors";
 import { layout } from "../../../utils/style/layout";
-import { ProposalTransactionItem } from "./ProposalTransactionItem";
 
 type ProposalApprovalModalProps = {
   visible: boolean;

@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 
+import { ConnectWalletModal } from "./ConnectWalletModal";
 import { ButtonsSize } from "../../utils/style/buttons";
 import { PrimaryButton } from "../buttons/PrimaryButton";
-import { ConnectWalletModal } from "./ConnectWalletModal";
 
 export const MainConnectWalletButton: React.FC<{
   style?: StyleProp<ViewStyle>;

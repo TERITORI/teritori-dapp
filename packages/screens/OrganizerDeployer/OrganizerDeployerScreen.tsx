@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 
-import { BrandText } from "../../components/BrandText";
-import { ScreenContainer } from "../../components/ScreenContainer";
 import { ConfigureVotingSection } from "./components/ConfigureVotingSection";
 import { CreateDAOSection } from "./components/CreateDAOSection";
 import { LaunchingOrganizationSection } from "./components/LaunchingOrganizationSection";
@@ -15,6 +13,8 @@ import {
   LaunchingProcessStepType,
   TokenSettingFormType,
 } from "./types";
+import { BrandText } from "../../components/BrandText";
+import { ScreenContainer } from "../../components/ScreenContainer";
 
 export const ORGANIZER_DEPLOYER_STEPS = [
   "Create a DAO",

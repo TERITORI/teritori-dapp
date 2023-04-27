@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { View } from "react-native";
 
@@ -26,6 +26,7 @@ import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useUpdateAvailableFreePost } from "../../hooks/feed/useUpdateAvailableFreePost";
 import { useUpdatePostFee } from "../../hooks/feed/useUpdatePostFee";
 import { useBalances } from "../../hooks/useBalances";
+import { useIsMobile } from "../../hooks/useIsMobile";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getUserId, NetworkKind } from "../../networks";
@@ -33,22 +34,33 @@ import { prettyPrice } from "../../utils/coins";
 import { IMAGE_MIME_TYPES } from "../../utils/mime";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { generateIpfsKey } from "../../utils/social-feed";
-import { neutral00, neutral11, neutral77 } from "../../utils/style/colors";
+import {
+  neutral00,
+  neutral11,
+  neutral77,
+  secondaryColor,
+} from "../../utils/style/colors";
 import { fontSemibold13, fontSemibold20 } from "../../utils/style/fonts";
-import { layout, NEWS_FEED_MAX_WIDTH } from "../../utils/style/layout";
+import { layout, screenContentMaxWidth } from "../../utils/style/layout";
 import { pluralOrNot } from "../../utils/text";
 
+//TODO: In mobile : Make ActionsContainer accessible (floating button ?)
+
 export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
-  const { postFee, updatePostFee } = useUpdatePostFee();
-  const { freePostCount, updateAvailableFreePost } =
-    useUpdateAvailableFreePost();
+  const isMobile = useIsMobile();
+  const selectedNetworkId = useSelectedNetworkId();
+  const { selectedWallet: wallet } = useSelectedWallet();
+  const { postFee } = useUpdatePostFee(selectedNetworkId, PostCategory.Article);
+  const { freePostCount } = useUpdateAvailableFreePost(
+    selectedNetworkId,
+    PostCategory.Article,
+    wallet
+  );
   const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const { setToastSuccess, setToastError } = useFeedbacks();
   const navigation = useAppNavigation();
-  const { selectedWallet: wallet } = useSelectedWallet();
-  const selectedNetworkId = useSelectedNetworkId();
   const userId = getUserId(selectedNetworkId, wallet?.address);
   const balances = useBalances(
     process.env.TERITORI_NETWORK_ID,
@@ -75,11 +87,6 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
   // const { mutate: openGraphMutate, data: openGraphData } = useOpenGraph();
 
   const formValues = watch();
-
-  useEffect(() => {
-    updateAvailableFreePost(selectedNetworkId, PostCategory.Article, wallet);
-    updatePostFee(selectedNetworkId, PostCategory.Article);
-  }, [wallet, selectedNetworkId, updatePostFee, updateAvailableFreePost]);
 
   const initSubmit = async ({
     html,
@@ -154,7 +161,8 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
     <ScreenContainer
       forceNetworkKind={NetworkKind.Cosmos}
       responsive
-      maxWidth={NEWS_FEED_MAX_WIDTH}
+      mobileTitle="NEW ARTICLE"
+      maxWidth={screenContentMaxWidth}
       headerChildren={<BrandText style={fontSemibold20}>New Article</BrandText>}
       onBackPress={navigateBack}
       footerChildren
@@ -166,7 +174,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
 
       <View
         style={{
-          marginTop: layout.contentPadding,
+          marginTop: isMobile ? layout.padding_x2 : layout.contentPadding,
         }}
       >
         <WalletStatusBox />
@@ -184,7 +192,12 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
             backgroundColor: neutral11,
           }}
         >
-          <SVG source={priceSVG} height={24} width={24} color={neutral77} />
+          <SVG
+            source={priceSVG}
+            height={24}
+            width={24}
+            color={secondaryColor}
+          />
           <BrandText
             style={[
               fontSemibold13,
@@ -208,6 +221,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
           label="Cover image"
           style={{
             marginTop: layout.padding_x3,
+            width: "100%",
           }}
           onUpload={(files) =>
             setValue("files", [
@@ -219,6 +233,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
         />
 
         <TextInputCustom<NewPostFormValues>
+          noBrokenCorners
           rules={{ required: true }}
           height={48}
           label="Give a title to make an Article"
@@ -229,9 +244,11 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
           containerStyle={{ marginVertical: layout.padding_x3 }}
           boxMainContainerStyle={{
             backgroundColor: neutral00,
+            borderRadius: 12,
           }}
         />
         <Label isRequired>Article content</Label>
+        <SpacerColumn size={1} />
         {/**@ts-ignore  error:TS2589: Type instantiation is excessively deep and possibly infinite. */}
         <Controller
           name="message"

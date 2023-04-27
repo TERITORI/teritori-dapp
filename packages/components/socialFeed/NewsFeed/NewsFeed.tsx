@@ -1,23 +1,33 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { LayoutChangeEvent, StyleSheet, View } from "react-native";
+import {
+  LayoutChangeEvent,
+  StyleSheet,
+  View,
+  useWindowDimensions,
+} from "react-native";
 import Animated, {
   useAnimatedScrollHandler,
   useSharedValue,
 } from "react-native-reanimated";
 
-import { Post, PostsRequest } from "../../../api/feed/v1/feed";
-import {
-  combineFetchFeedPages,
-  useFetchFeed,
-} from "../../../hooks/feed/useFetchFeed";
-import { layout, NEWS_FEED_MAX_WIDTH } from "../../../utils/style/layout";
-import { SpacerColumn } from "../../spacer";
-import { SocialThreadCard } from "../SocialThread/SocialThreadCard";
 import { CreateShortPostButtonRound } from "./CreateShortPost/CreateShortPostButtonRound";
 import { CreateShortPostModal } from "./CreateShortPost/CreateShortPostModal";
 import { NewsFeedInput } from "./NewsFeedInput";
 import { RefreshButton } from "./RefreshButton/RefreshButton";
 import { RefreshButtonRound } from "./RefreshButton/RefreshButtonRound";
+import { Post, PostsRequest } from "../../../api/feed/v1/feed";
+import {
+  combineFetchFeedPages,
+  useFetchFeed,
+} from "../../../hooks/feed/useFetchFeed";
+import { useMaxResolution } from "../../../hooks/useMaxResolution";
+import {
+  layout,
+  RESPONSIVE_BREAKPOINT_S,
+  screenContentMaxWidth,
+} from "../../../utils/style/layout";
+import { SpacerColumn } from "../../spacer";
+import { SocialThreadCard } from "../SocialThread/SocialThreadCard";
 
 const OFFSET_Y_LIMIT_FLOATING = 224;
 
@@ -36,6 +46,8 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
   additionalHashtag,
   additionalMention,
 }) => {
+  const { width: windowWidth } = useWindowDimensions();
+  const { width } = useMaxResolution();
   const { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading } =
     useFetchFeed(req);
   const isLoadingValue = useSharedValue(false);
@@ -70,7 +82,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
   }, [isFetching, isLoading, isGoingUp, isLoadingValue]);
 
   const onEndReached = () => {
-    if (!isLoading && hasNextPage) {
+    if (!isLoading && hasNextPage && !isFetching) {
       fetchNextPage();
     }
   };
@@ -82,7 +94,10 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
   const ListHeaderComponent = useCallback(
     () => (
       <>
-        <View onLayout={onHeaderLayout}>
+        <View
+          onLayout={onHeaderLayout}
+          style={{ width, alignSelf: "center", alignItems: "center" }}
+        >
           <Header />
         </View>
         <SpacerColumn size={2.5} />
@@ -97,7 +112,6 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
           <NewsFeedInput
             type="post"
             onSubmitSuccess={refetch}
-            style={{ width: "100%", maxWidth: NEWS_FEED_MAX_WIDTH }}
             additionalMention={additionalMention}
             additionalHashtag={additionalHashtag}
           />
@@ -107,8 +121,30 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
         <SpacerColumn size={1.5} />
       </>
     ),
-    [isLoadingValue, Header, additionalMention, additionalHashtag, refetch]
+    [
+      isLoadingValue,
+      Header,
+      additionalMention,
+      additionalHashtag,
+      refetch,
+      width,
+    ]
   );
+
+  const styles = StyleSheet.create({
+    content: {
+      alignItems: "center",
+      alignSelf: "center",
+      width: "100%",
+    },
+    floatingActions: {
+      position: "absolute",
+      justifyContent: "center",
+      alignItems: "center",
+      right: windowWidth < RESPONSIVE_BREAKPOINT_S ? 0.05 * windowWidth : 68,
+      bottom: windowWidth < RESPONSIVE_BREAKPOINT_S ? 0.05 * windowWidth : 68,
+    },
+  });
 
   return (
     <>
@@ -116,12 +152,32 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
         scrollEventThrottle={0.1}
         data={posts}
         renderItem={({ item: post }) => (
-          <>
-            <SocialThreadCard post={post} isPreview />
-            <SpacerColumn size={2.5} />
-          </>
+          <View
+            style={{
+              width:
+                windowWidth < RESPONSIVE_BREAKPOINT_S ? windowWidth : width,
+              maxWidth: screenContentMaxWidth,
+            }}
+          >
+            <SocialThreadCard
+              post={post}
+              isPreview
+              style={
+                windowWidth < RESPONSIVE_BREAKPOINT_S && {
+                  borderRadius: 0,
+                  borderLeftWidth: 0,
+                  borderRightWidth: 0,
+                }
+              }
+            />
+            <SpacerColumn size={2} />
+          </View>
         )}
-        ListHeaderComponentStyle={{ zIndex: 1 }}
+        ListHeaderComponentStyle={{
+          zIndex: 1,
+          width: windowWidth,
+          maxWidth: screenContentMaxWidth,
+        }}
         ListHeaderComponent={ListHeaderComponent}
         keyExtractor={(post: Post) => post.identifier}
         onScroll={scrollHandler}
@@ -151,18 +207,3 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  content: {
-    alignSelf: "center",
-    maxWidth: NEWS_FEED_MAX_WIDTH,
-    width: "100%",
-  },
-  floatingActions: {
-    position: "absolute",
-    justifyContent: "center",
-    alignItems: "center",
-    right: 68,
-    bottom: 68,
-  },
-});

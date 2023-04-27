@@ -2,6 +2,8 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { ScrollView, StyleSheet, View } from "react-native";
 
+import { ImagePreviewer } from "./ImagePreviewer";
+import { RadioDescriptionSelector } from "./RadioDescriptionSelector";
 import { BrandText } from "../../../components/BrandText";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
@@ -11,8 +13,6 @@ import { fontSemibold20, fontSemibold28 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { ORGANIZER_DEPLOYER_STEPS } from "../OrganizerDeployerScreen";
 import { CreateDaoFormType } from "../types";
-import { ImagePreviewer } from "./ImagePreviewer";
-import { RadioDescriptionSelector } from "./RadioDescriptionSelector";
 
 const RADIO_DESCRIPTION_TYPES = ["Membership", "Governance", "Decentralized"];
 

@@ -9,6 +9,8 @@ import {
 } from "react-native";
 import Toast from "react-native-toast-message";
 
+import { CheckLoadingModal } from "./components/CheckLoadingModal";
+import { MultisigTransactionType } from "./types";
 import chatSVG from "../../../assets/icons/organization/chat.svg";
 import freelanceSVG from "../../../assets/icons/organization/freelance.svg";
 import launchSVG from "../../../assets/icons/organization/launch.svg";
@@ -45,8 +47,6 @@ import { layout } from "../../utils/style/layout";
 import { tinyAddress } from "../../utils/text";
 import { GetStartedOption } from "../OrganizerDeployer/components/GetStartedOption";
 import { ProposalTransactionItem } from "../OrganizerDeployer/components/ProposalTransactionItem";
-import { CheckLoadingModal } from "./components/CheckLoadingModal";
-import { MultisigTransactionType } from "./types";
 
 const RESULT_SIZE = 20;
 

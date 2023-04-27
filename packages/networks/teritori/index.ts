@@ -1,5 +1,5 @@
-import { NetworkKind, NetworkInfo } from "../types";
 import { teritoriCurrencies } from "./currencies";
+import { NetworkKind, NetworkInfo } from "../types";
 
 const nameServiceContractAddress =
   "tori1wkwy0xh89ksdgj9hr347dyd2dw7zesmtrue6kfzyml4vdtz6e5wscs7038";
@@ -11,7 +11,7 @@ export const teritoriNetwork: NetworkInfo = {
   kind: NetworkKind.Cosmos,
   chainId: "teritori-1",
   displayName: "Teritori",
-  icon: "icons/networks/teritori-circle.svg",
+  icon: "icons/networks/teritori.svg",
   walletUrlForStaking: "https://explorer.teritori.com/teritori/staking",
   currencies: teritoriCurrencies,
   txExplorer: "https://www.mintscan.io/teritori/txs/$hash",
@@ -63,4 +63,6 @@ export const teritoriNetwork: NetworkInfo = {
     "tori16504tvqjzrln0gsewpcn20863h5ftr638fxlx37a6ntd7w5tudwqs8f3ts", // Mr Crypto
   ],
   excludeFromLaunchpadList: [riotContractAddressGen1],
+  socialFeedContractAddress:
+    "tori1lxf8agg0wd2m7n2ultl0yx337jw23puh0mlkkw5vhtnkkfettwfqya7kpp",
 };

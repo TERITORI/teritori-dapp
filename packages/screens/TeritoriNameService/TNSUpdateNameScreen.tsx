@@ -3,6 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { View } from "react-native";
 
+import { TNSModalCommonProps } from "./TNSHomeScreen";
 import ModalBase from "../../components/modals/ModalBase";
 import { NameDataForm } from "../../components/teritoriNameService/NameDataForm";
 import { NameNFT } from "../../components/teritoriNameService/NameNFT";
@@ -21,7 +22,6 @@ import {
 } from "../../networks";
 import { neutral17 } from "../../utils/style/colors";
 import { defaultMetaData } from "../../utils/types/tns";
-import { TNSModalCommonProps } from "./TNSHomeScreen";
 
 interface TNSUpdateNameScreenProps extends TNSModalCommonProps {}
 

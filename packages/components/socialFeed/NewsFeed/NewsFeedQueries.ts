@@ -1,7 +1,12 @@
-import { coin } from "cosmwasm";
+import { coin } from "@cosmjs/amino";
 import { omit } from "lodash";
 import { v4 as uuidv4 } from "uuid";
 
+import {
+  PostCategory,
+  NewPostFormValues,
+  SocialFeedMetadata,
+} from "./NewsFeed.type";
 import { pinataPinFileToIPFS } from "../../../candymachine/pinata-upload";
 import {
   nonSigningSocialFeedClient,
@@ -11,11 +16,6 @@ import { Wallet } from "../../../context/WalletsProvider";
 import { defaultSocialFeedFee } from "../../../utils/fee";
 import { ipfsURLToHTTPURL } from "../../../utils/ipfs";
 import { LocalFileData, RemoteFileData } from "../../../utils/types/feed";
-import {
-  PostCategory,
-  NewPostFormValues,
-  SocialFeedMetadata,
-} from "./NewsFeed.type";
 interface GetAvailableFreePostParams {
   networkId: string;
   wallet?: Wallet;

@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from "react";
 import { FlatList, ListRenderItemInfo, StyleSheet, View } from "react-native";
 
+import { MultiSigWalletTransactionType } from "./types";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { Separator } from "../../components/Separator";
@@ -15,7 +16,6 @@ import { BasicTransactionItem } from "../OrganizerDeployer/components/BasicTrans
 import { MakeProposalModal } from "../OrganizerDeployer/components/MakeProposalModal";
 import { ProposalItem } from "../OrganizerDeployer/components/ProposalItem";
 import multisigTransactions from "../OrganizerDeployer/multisig-transactions.json";
-import { MultiSigWalletTransactionType } from "./types";
 
 export const MultisigWalletTransactionScreen = () => {
   // variabels

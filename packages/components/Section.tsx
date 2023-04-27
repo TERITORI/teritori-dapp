@@ -1,11 +1,11 @@
 import React from "react";
 import { View } from "react-native";
 
+import { BrandText } from "./BrandText";
 import { useMaxResolution } from "../hooks/useMaxResolution";
 import { neutral77 } from "../utils/style/colors";
 import { fontSemibold20 } from "../utils/style/fonts";
 import { layout } from "../utils/style/layout";
-import { BrandText } from "./BrandText";
 
 export const Section: React.FC<{
   title: string;

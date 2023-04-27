@@ -1,8 +1,8 @@
 import React from "react";
 
+import { SVG } from "./SVG";
 import radioButtonSVG from "../../assets/icons/radio-button.svg";
 import { neutral33, primaryColor } from "../utils/style/colors";
-import { SVG } from "./SVG";
 
 interface RadioButtonProps {
   selected: boolean;

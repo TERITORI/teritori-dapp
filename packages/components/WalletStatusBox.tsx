@@ -1,6 +1,10 @@
 import React from "react";
-import { View } from "react-native";
+import { View, useWindowDimensions } from "react-native";
 
+import { BrandText } from "./BrandText";
+import { NetworkIcon } from "./NetworkIcon";
+import { SuccessBadge } from "./badges/SuccessBadge";
+import { TertiaryBox } from "./boxes/TertiaryBox";
 import { useSelectedNetworkInfo } from "../hooks/useSelectedNetwork";
 import useSelectedWallet from "../hooks/useSelectedWallet";
 import { neutral11, neutral77 } from "../utils/style/colors";
@@ -9,14 +13,12 @@ import {
   fontSemibold13,
   fontSemibold14,
 } from "../utils/style/fonts";
-import { layout } from "../utils/style/layout";
-import { BrandText } from "./BrandText";
-import { NetworkIcon } from "./NetworkIcon";
-import { SuccessBadge } from "./badges/SuccessBadge";
-import { TertiaryBox } from "./boxes/TertiaryBox";
+import { layout, RESPONSIVE_BREAKPOINT_S } from "../utils/style/layout";
+import { tinyAddress } from "../utils/text";
 
 export const WalletStatusBox: React.FC = () => {
-  const { selectedWallet } = useSelectedWallet();
+  const { width } = useWindowDimensions();
+  const selectedWallet = useSelectedWallet();
   const selectedNetworkInfo = useSelectedNetworkInfo();
 
   return (
@@ -46,7 +48,10 @@ export const WalletStatusBox: React.FC = () => {
                 {selectedNetworkInfo?.displayName}
               </BrandText>
               <BrandText style={[fontSemibold13]}>
-                {selectedWallet.address}
+                {tinyAddress(
+                  selectedWallet.address,
+                  width < RESPONSIVE_BREAKPOINT_S ? 20 : 40
+                )}
               </BrandText>
             </View>
           </View>

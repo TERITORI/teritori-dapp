@@ -4,7 +4,7 @@
     "kind": "Cosmos",
     "chainId": "teritori-1",
     "displayName": "Teritori",
-    "icon": "icons/networks/teritori-circle.svg",
+    "icon": "icons/networks/teritori.svg",
     "walletUrlForStaking": "https://explorer.teritori.com/teritori/staking",
     "currencies": [
       {
@@ -70,7 +70,8 @@
     ],
     "excludeFromLaunchpadList": [
       "tori1gflccmghzfscmxl95z43v36y0rle8v9x8kvt9na03yzywtw86amsj9nf37"
-    ]
+    ],
+    "socialFeedContractAddress": "tori1lxf8agg0wd2m7n2ultl0yx337jw23puh0mlkkw5vhtnkkfettwfqya7kpp"
   },
   {
     "id": "cosmos-hub",
@@ -117,7 +118,7 @@
     "kind": "Cosmos",
     "chainId": "teritori-testnet-v3",
     "displayName": "Teritori Testnet",
-    "icon": "icons/networks/teritori-circle.svg",
+    "icon": "icons/networks/teritori.svg",
     "currencies": [
       {
         "denom": "utori",
@@ -188,7 +189,8 @@
     ],
     "excludeFromLaunchpadList": [
       "tori1afwrcs58afaka6ltynevwcvq8zhejr3ssn703c0hky5emh890vzsry5wp5"
-    ]
+    ],
+    "socialFeedContractAddress": "tori19y3xr6lghw04tj2ets8y70mrynlnflejanl2ys3n3c5vaasj358shjsk20"
   },
   {
     "id": "cosmos-hub-theta",
@@ -243,7 +245,7 @@
         "coingeckoId": "ethereum",
         "icon": "icons/networks/ethereum-circle.svg",
         "kind": "native",
-        "color": "#16BBFF"
+        "color": "#232731"
       }
     ],
     "idPrefix": "testeth",
@@ -272,7 +274,7 @@
         "coingeckoId": "ethereum",
         "icon": "icons/networks/ethereum-circle.svg",
         "kind": "native",
-        "color": "#16BBFF"
+        "color": "#232731"
       }
     ],
     "idPrefix": "eth",
@@ -294,7 +296,47 @@
     "chainId": "juno-1",
     "displayName": "Juno",
     "icon": "icons/networks/juno.svg",
-    "currencies": [],
+    "currencies": [
+      {
+        "denom": "ujuno",
+        "displayName": "JUNO",
+        "decimals": 6,
+        "coingeckoId": "juno-network",
+        "icon": "icons/networks/juno-circle.svg",
+        "kind": "native",
+        "color": "#F0827D"
+      },
+      {
+        "kind": "ibc",
+        "denom": "ibc/C4CFF46FD6DE35CA4CF4CE031E643C8FDC9BA4B99AE598E9B0ED98FE3A2319F9",
+        "sourceNetwork": "cosmos-hub",
+        "sourceDenom": "uatom",
+        "sourceChannelPort": "transfer",
+        "sourceChannelId": "channel-1",
+        "destinationChannelPort": "transfer",
+        "destinationChannelId": "channel-207"
+      },
+      {
+        "kind": "ibc",
+        "denom": "ibc/ED07A3391A112B175915CD8FAF43A2DA8E4790EDE12566649D0C2F97716B8518",
+        "sourceNetwork": "osmosis",
+        "sourceDenom": "uosmo",
+        "sourceChannelPort": "transfer",
+        "sourceChannelId": "channel-0",
+        "destinationChannelPort": "transfer",
+        "destinationChannelId": "channel-42"
+      },
+      {
+        "kind": "ibc",
+        "denom": "ibc/436B576861090C1C921D56BA1FAE481A04D2E938EBDFF55C4712670F9754AC40",
+        "sourceNetwork": "teritori",
+        "sourceDenom": "utori",
+        "sourceChannelPort": "transfer",
+        "sourceChannelId": "channel-164",
+        "destinationChannelPort": "transfer",
+        "destinationChannelId": "channel-11"
+      }
+    ],
     "txExplorer": "https://www.mintscan.io/juno/txs/$hash",
     "accountExplorer": "https://www.mintscan.io/juno/account/$address",
     "contractExplorer": "https://www.mintscan.io/juno/account/$address",
@@ -302,23 +344,69 @@
     "testnet": false,
     "backendEndpoint": "https://dapp-backend.mainnet.teritori.com",
     "addressPrefix": "juno",
-    "restEndpoint": "TODO",
-    "rpcEndpoint": "TODO",
+    "restEndpoint": "https://lcd-juno.keplr.app",
+    "rpcEndpoint": "https://rpc-juno.keplr.app",
     "stakeCurrency": "ujuno",
     "gasPriceStep": {
       "low": 0.01,
       "average": 0.025,
       "high": 0.04
     },
-    "features": []
+    "features": [
+      "stargate",
+      "ibc-transfer",
+      "cosmwasm",
+      "no-legacy-stdTx",
+      "ibc-go"
+    ]
   },
   {
     "id": "osmosis",
     "kind": "Cosmos",
-    "chainId": "TODO",
+    "chainId": "osmosis-1",
     "displayName": "Osmosis",
     "icon": "icons/networks/osmosis.svg",
-    "currencies": [],
+    "currencies": [
+      {
+        "denom": "uosmo",
+        "displayName": "OSMO",
+        "decimals": 6,
+        "coingeckoId": "osmosis",
+        "icon": "icons/networks/osmosis-circle.svg",
+        "kind": "native",
+        "color": "#A401D4"
+      },
+      {
+        "kind": "ibc",
+        "denom": "ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2",
+        "sourceNetwork": "cosmos-hub",
+        "sourceDenom": "uatom",
+        "sourceChannelPort": "transfer",
+        "sourceChannelId": "channel-0",
+        "destinationChannelPort": "transfer",
+        "destinationChannelId": "channel-141"
+      },
+      {
+        "kind": "ibc",
+        "denom": "ibc/EB7FB9C8B425F289B63703413327C2051030E848CE4EAAEA2E51199D6D39D3EC",
+        "sourceNetwork": "teritori",
+        "sourceDenom": "utori",
+        "sourceChannelPort": "transfer",
+        "sourceChannelId": "channel-362",
+        "destinationChannelPort": "transfer",
+        "destinationChannelId": "channel-0"
+      },
+      {
+        "kind": "ibc",
+        "denom": "ibc/46B44899322F3CD854D2D46DEEF881958467CDD4B3B10086DA49296BBED94BED",
+        "sourceNetwork": "juno",
+        "sourceDenom": "ujuno",
+        "sourceChannelPort": "transfer",
+        "sourceChannelId": "channel-169",
+        "destinationChannelPort": "transfer",
+        "destinationChannelId": "channel-47"
+      }
+    ],
     "txExplorer": "https://www.mintscan.io/osmosis/txs/$hash",
     "accountExplorer": "https://www.mintscan.io/osmosis/account/$address",
     "contractExplorer": "https://www.mintscan.io/osmosis/account/$address",
@@ -326,28 +414,80 @@
     "testnet": false,
     "backendEndpoint": "https://dapp-backend.mainnet.teritori.com",
     "addressPrefix": "osmo",
-    "restEndpoint": "TODO",
-    "rpcEndpoint": "TODO",
+    "restEndpoint": "https://lcd.osmosis.zone",
+    "rpcEndpoint": "https://rpc.osmosis.zone:443",
     "stakeCurrency": "uosmo",
     "gasPriceStep": {
       "low": 0,
       "average": 0.025,
       "high": 0.04
     },
-    "features": []
+    "features": [
+      "stargate",
+      "ibc-transfer",
+      "cosmwasm",
+      "no-legacy-stdTx",
+      "ibc-go"
+    ]
   },
   {
-    "id": "solana",
-    "kind": "Solana",
-    "displayName": "Solana",
-    "icon": "icons/networks/solana.svg",
-    "currencies": [],
-    "txExplorer": "TODO",
-    "accountExplorer": "TODO",
-    "contractExplorer": "TODO",
-    "idPrefix": "sol",
-    "testnet": false,
-    "backendEndpoint": "https://dapp-backend.mainnet.teritori.com",
-    "holaplexGraphqlEndpoint": ""
+    "id": "osmosis-testnet",
+    "kind": "Cosmos",
+    "chainId": "osmo-test-4",
+    "displayName": "Osmosis Testnet",
+    "icon": "icons/networks/osmosis.svg",
+    "currencies": [
+      {
+        "denom": "uosmo",
+        "displayName": "OSMO",
+        "decimals": 6,
+        "coingeckoId": "osmosis",
+        "icon": "icons/networks/osmosis-circle.svg",
+        "kind": "native",
+        "color": "#A401D4"
+      },
+      {
+        "kind": "ibc",
+        "denom": "ibc/27394FB092D2ECCD56123C74F36E4C1F926001CEADA9CA97EA622B25F41E5EB2",
+        "sourceNetwork": "cosmos-hub-theta",
+        "sourceDenom": "uatom",
+        "sourceChannelPort": "transfer",
+        "sourceChannelId": "channel-0",
+        "destinationChannelPort": "transfer",
+        "destinationChannelId": "channel-141"
+      },
+      {
+        "kind": "ibc",
+        "denom": "ibc/EB7FB9C8B425F289B63703413327C2051030E848CE4EAAEA2E51199D6D39D3EC",
+        "sourceNetwork": "teritori-testnet",
+        "sourceDenom": "utori",
+        "sourceChannelPort": "transfer",
+        "sourceChannelId": "channel-362",
+        "destinationChannelPort": "transfer",
+        "destinationChannelId": "channel-0"
+      }
+    ],
+    "txExplorer": "https://testnet.mintscan.io/osmosis-testnet/txs/$hash",
+    "accountExplorer": "https://testnet.mintscan.io/osmosis-testnet/account/$address",
+    "contractExplorer": "https://testnet.mintscan.io/osmosis-testnet/account/$address",
+    "idPrefix": "testosmo",
+    "testnet": true,
+    "backendEndpoint": "https://dapp-backend.testnet.teritori.com",
+    "addressPrefix": "osmo",
+    "restEndpoint": "https://lcd-test.osmosis.zone",
+    "rpcEndpoint": "https://rpc-test.osmosis.zone:443",
+    "stakeCurrency": "uosmo",
+    "gasPriceStep": {
+      "low": 0,
+      "average": 0.025,
+      "high": 0.04
+    },
+    "features": [
+      "stargate",
+      "ibc-transfer",
+      "cosmwasm",
+      "no-legacy-stdTx",
+      "ibc-go"
+    ]
   }
 ]

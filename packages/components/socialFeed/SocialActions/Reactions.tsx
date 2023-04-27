@@ -2,20 +2,24 @@ import React, { useMemo, useState } from "react";
 import { View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 
+import { MoreReactionsButton } from "./MoreReactionsButton";
+import { MoreReactionsMenu } from "./MoreReactionsMenu";
 import { Reaction } from "../../../api/feed/v1/feed";
 import { layout } from "../../../utils/style/layout";
 import { SocialStat } from "../SocialStat";
-import { MoreReactionsButton } from "./MoreReactionsButton";
-import { MoreReactionsMenu } from "./MoreReactionsMenu";
 
-// TODO: (Responsive) Adapt this, depending on breakpoints
-export const NB_REACTIONS_SHOWN = 10;
+const DEFAULT_NB_EMOJI_SHOWN = 12;
 
 export const Reactions: React.FC<{
   reactions: Reaction[];
   onPressReaction: (icon: string) => void;
   isLoading?: boolean;
-}> = ({ reactions = [], onPressReaction }) => {
+  nbShown?: number;
+}> = ({
+  reactions = [],
+  onPressReaction,
+  nbShown = DEFAULT_NB_EMOJI_SHOWN,
+}) => {
   // const reactionWidthRef = useRef<number>();
   // const reactionAnimation = useAnimatedStyle(
   //   () => ({
@@ -33,12 +37,12 @@ export const Reactions: React.FC<{
     [reactions]
   );
   const shownReactions = useMemo(
-    () => sortedReactions.slice(0, NB_REACTIONS_SHOWN),
-    [sortedReactions]
+    () => sortedReactions.slice(0, nbShown),
+    [sortedReactions, nbShown]
   );
   const hiddenReactions = useMemo(
-    () => sortedReactions.slice(NB_REACTIONS_SHOWN, -1),
-    [sortedReactions]
+    () => sortedReactions.slice(nbShown, -1),
+    [sortedReactions, nbShown]
   );
   const moreReactionsButtonLabel = useMemo(
     () => (isMoreReactionShown ? "Hide" : `+ ${hiddenReactions.length}`),
@@ -105,6 +109,7 @@ export const Reactions: React.FC<{
           {/*TODO: This menu is under others SocialReactActions due to his DOM level. We need a proper "absolute menus handling (and close the opened one by clicking outside)"*/}
           {!!hiddenReactions.length && isMoreReactionShown && (
             <MoreReactionsMenu
+              nbShown={nbShown}
               moreReactionsButtonLabel={moreReactionsButtonLabel}
               sortedReactions={sortedReactions}
               onPressReaction={(reactionIcon) => onPressReaction(reactionIcon)}
@@ -116,4 +121,13 @@ export const Reactions: React.FC<{
       )}
     </View>
   );
+};
+
+// Number of SocialStat displayed depending on a width (A Social Card width)
+export const nbReactionsShown = (viewWidth: number) => {
+  if (viewWidth >= 700) return DEFAULT_NB_EMOJI_SHOWN;
+  else if (viewWidth >= 650) return 7;
+  else if (viewWidth >= 600) return 5;
+  else if (viewWidth >= 580) return 4;
+  else return 3;
 };

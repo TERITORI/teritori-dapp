@@ -1,10 +1,9 @@
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useState } from "react";
+import React, { Suspense, useState } from "react";
 import { ColorValue, ScrollView, TouchableOpacity, View } from "react-native";
 
 import { BrandText } from "../../components/BrandText/BrandText";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
-import { GovernanceDetails } from "../../screens/Governance/GovernanceDetails";
 import { ProposalStatus } from "../../screens/Governance/types";
 import { tulipTree } from "../../utils/style/colors";
 
@@ -81,24 +80,32 @@ export const GovernanceBox: React.FC<{
 
   function activeGovernanceDetailsPopup() {
     if (displayGovernanceDetails === true) {
+      const GovernanceDetails = React.lazy(() =>
+        import("../../screens/Governance/GovernanceDetails").then((module) => ({
+          default: module.GovernanceDetails,
+        }))
+      );
+
       return (
-        <GovernanceDetails
-          visible={displayGovernanceDetails}
-          onClose={() => activePopup()}
-          numberProposal={numberProposalHashtag}
-          titleProposal={titleProposal}
-          descriptionProposal={descriptionProposal}
-          totalParticipant={totalParticipant}
-          percentageTotalParticipant={percentageTotalParticipant}
-          votingEndTime={votingEndTime}
-          votingStartTime={votingStartTime}
-          votingSubmitTime={votingSubmitTime}
-          votingDepositEndTime={votingDepositEndTime}
-          percentageYes={percentageYes}
-          percentageNo={percentageNo}
-          percentageNoWithVeto={percentageNoWithVeto}
-          status={status}
-        />
+        <Suspense fallback={<></>}>
+          <GovernanceDetails
+            visible={displayGovernanceDetails}
+            onClose={() => activePopup()}
+            numberProposal={numberProposalHashtag}
+            titleProposal={titleProposal}
+            descriptionProposal={descriptionProposal}
+            totalParticipant={totalParticipant}
+            percentageTotalParticipant={percentageTotalParticipant}
+            votingEndTime={votingEndTime}
+            votingStartTime={votingStartTime}
+            votingSubmitTime={votingSubmitTime}
+            votingDepositEndTime={votingDepositEndTime}
+            percentageYes={percentageYes}
+            percentageNo={percentageNo}
+            percentageNoWithVeto={percentageNoWithVeto}
+            status={status}
+          />
+        </Suspense>
       );
     } else {
       return <></>;

@@ -1,10 +1,11 @@
 import React from "react";
-import { StyleSheet, Image } from "react-native";
+import { StyleSheet } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 import addSVG from "../../../../assets/icons/add.svg";
 import { NFT } from "../../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../../components/BrandText";
+import { OptimizedImage } from "../../../components/OptimizedImage";
 import { SVG } from "../../../components/SVG";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { isNFTStaked } from "../../../utils/game";
@@ -31,6 +32,7 @@ export const EnrollSlot: React.FC<EnrollSlotProps> = ({
   isLeader,
 }) => {
   const isStaked = isNFTStaked(ripper);
+  const imageSize = 172 - layout.padding_x2 * 2;
 
   return (
     <TouchableOpacity activeOpacity={0.6} onPress={onPress}>
@@ -46,9 +48,11 @@ export const EnrollSlot: React.FC<EnrollSlotProps> = ({
       >
         {ripper ? (
           <>
-            <Image
+            <OptimizedImage
               style={[styles.ripperImage, isStaked && { opacity: 0.4 }]}
               source={{ uri: ripper.imageUri }}
+              width={imageSize}
+              height={imageSize}
             />
 
             {isStaked && (

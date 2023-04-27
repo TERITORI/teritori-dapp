@@ -1,6 +1,8 @@
 import React, { useCallback } from "react";
 import { Image, ScrollView, StyleSheet, View } from "react-native";
 
+import { ReviewCollapsable } from "./ReviewCollapsable";
+import { ReviewCollapsableItem } from "./ReviewCollapsableItem";
 import { BrandText } from "../../../components/BrandText";
 import { Separator } from "../../../components/Separator";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
@@ -14,8 +16,6 @@ import {
   CreateDaoFormType,
   TokenSettingFormType,
 } from "../types";
-import { ReviewCollapsable } from "./ReviewCollapsable";
-import { ReviewCollapsableItem } from "./ReviewCollapsableItem";
 
 interface ReviewInformationSectionProps {
   organizationData?: CreateDaoFormType;

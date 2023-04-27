@@ -4,6 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import { calculateFee, Decimal } from "cosmwasm";
 import moment from "moment";
 
+import useSelectedWallet from "./../useSelectedWallet";
 import { useMultisigContext } from "../../context/MultisigReducer";
 import {
   MultisigTransactionDelegateFormType,
@@ -11,7 +12,6 @@ import {
 } from "../../screens/Multisig/types";
 import { createTransaction } from "../../utils/founaDB/multisig/multisigGraphql";
 import { DbCreateTransaction } from "../../utils/founaDB/multisig/types";
-import useSelectedWallet from "./../useSelectedWallet";
 
 export const useCreateMultisigTransaction = () => {
   // variables

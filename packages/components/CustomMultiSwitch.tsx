@@ -7,6 +7,7 @@ import {
   StyleSheet,
 } from "react-native";
 
+import { BrandText } from "./BrandText";
 import {
   neutral00,
   neutral33,
@@ -16,7 +17,6 @@ import {
 import { fontSemibold14 } from "../utils/style/fonts";
 import { layout } from "../utils/style/layout";
 import { capitalize } from "../utils/text";
-import { BrandText } from "./BrandText";
 
 interface Props {
   items: string[];

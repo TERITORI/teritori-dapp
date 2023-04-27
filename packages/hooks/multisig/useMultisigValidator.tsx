@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
-import useSelectedWallet from "../useSelectedWallet";
 import { useFetchMultisigList } from "./useFetchMultisigList";
+import useSelectedWallet from "../useSelectedWallet";
 
 export const useMultisigValidator = (
   multisigAddress: string,

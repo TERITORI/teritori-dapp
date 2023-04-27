@@ -568,6 +568,29 @@ export function useTeritoriSocialFeedDeletePostMutation(
     options
   );
 }
+export interface TeritoriSocialFeedTipPostMutation {
+  client: TeritoriSocialFeedClient;
+  msg: {
+    identifier: string;
+  };
+  args?: {
+    fee?: number | StdFee | "auto";
+    memo?: string;
+    funds?: Coin[];
+  };
+}
+export function useTeritoriSocialFeedTipPostMutation(
+  options?: Omit<
+    UseMutationOptions<ExecuteResult, Error, TeritoriSocialFeedTipPostMutation>,
+    "mutationFn"
+  >
+) {
+  return useMutation<ExecuteResult, Error, TeritoriSocialFeedTipPostMutation>(
+    ({ client, msg, args: { fee, memo, funds } = {} }) =>
+      client.tipPost(msg, fee, memo, funds),
+    options
+  );
+}
 export interface TeritoriSocialFeedReactPostMutation {
   client: TeritoriSocialFeedClient;
   msg: {

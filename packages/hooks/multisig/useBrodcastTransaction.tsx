@@ -4,11 +4,11 @@ import { useMutation } from "@tanstack/react-query";
 import { TxRaw } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import { fromBase64 } from "cosmwasm";
 
+import { MultisigTransactionListType } from "./useFetchMultisigTransactionsById";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useMultisigContext } from "../../context/MultisigReducer";
 import { completeTransaction } from "../../utils/founaDB/multisig/multisigGraphql";
 import { DbSignature } from "../../utils/founaDB/multisig/types";
-import { MultisigTransactionListType } from "./useFetchMultisigTransactionsById";
 
 export const useBrodcastTransaction = () => {
   // variables

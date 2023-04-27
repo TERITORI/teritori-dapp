@@ -1,5 +1,5 @@
+import { CosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { Window as KeplrWindow } from "@keplr-wallet/types";
-import { CosmWasmClient } from "cosmwasm";
 
 const PUBLIC_RPC_ENDPOINT = process.env.PUBLIC_CHAIN_RPC_ENDPOINT || "";
 

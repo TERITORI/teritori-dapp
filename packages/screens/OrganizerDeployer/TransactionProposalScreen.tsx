@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ActivityIndicator, FlatList, StyleSheet, View } from "react-native";
 
+import { ProposalTransactionItem } from "./components/ProposalTransactionItem";
 import { BrandText } from "../../components/BrandText";
 import { EmptyList } from "../../components/EmptyList";
 import { Pagination } from "../../components/Pagination";
@@ -21,7 +22,6 @@ import { secondaryColor } from "../../utils/style/colors";
 import { fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { MultisigTransactionType } from "../Multisig/types";
-import { ProposalTransactionItem } from "./components/ProposalTransactionItem";
 
 const RESULT_SIZE = 2;
 export const TransactionProposalScreen: ScreenFC<

@@ -2,6 +2,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { View } from "react-native";
 
+import { TNSModalCommonProps } from "./TNSHomeScreen";
 import { BrandText } from "../../components/BrandText";
 import { CopyToClipboard } from "../../components/CopyToClipboard";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
@@ -30,7 +31,6 @@ import {
 } from "../../networks";
 import { useAppNavigation } from "../../utils/navigation";
 import { neutral17, neutral33 } from "../../utils/style/colors";
-import { TNSModalCommonProps } from "./TNSHomeScreen";
 
 const NotOwnerActions: React.FC<{
   tokenId: string;

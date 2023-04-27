@@ -30,6 +30,10 @@ type MarketplaceServiceClient interface {
 	NFTPriceHistory(ctx context.Context, in *NFTPriceHistoryRequest, opts ...grpc.CallOption) (*NFTPriceHistoryResponse, error)
 	Banners(ctx context.Context, in *BannersRequest, opts ...grpc.CallOption) (*BannersResponse, error)
 	News(ctx context.Context, in *NewsRequest, opts ...grpc.CallOption) (*NewsResponse, error)
+	DApps(ctx context.Context, in *DAppsStoreRequest, opts ...grpc.CallOption) (*DAppResponse, error)
+	DAppsGroups(ctx context.Context, in *DAppsStoreRequest, opts ...grpc.CallOption) (*DAppGroupsResponse, error)
+	SearchNames(ctx context.Context, in *SearchNamesRequest, opts ...grpc.CallOption) (*SearchNamesResponse, error)
+	SearchCollections(ctx context.Context, in *SearchCollectionsRequest, opts ...grpc.CallOption) (*SearchCollectionsResponse, error)
 }
 
 type marketplaceServiceClient struct {
@@ -204,6 +208,42 @@ func (c *marketplaceServiceClient) News(ctx context.Context, in *NewsRequest, op
 	return out, nil
 }
 
+func (c *marketplaceServiceClient) DApps(ctx context.Context, in *DAppsStoreRequest, opts ...grpc.CallOption) (*DAppResponse, error) {
+	out := new(DAppResponse)
+	err := c.cc.Invoke(ctx, "/marketplace.v1.MarketplaceService/DApps", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *marketplaceServiceClient) DAppsGroups(ctx context.Context, in *DAppsStoreRequest, opts ...grpc.CallOption) (*DAppGroupsResponse, error) {
+	out := new(DAppGroupsResponse)
+	err := c.cc.Invoke(ctx, "/marketplace.v1.MarketplaceService/DAppsGroups", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *marketplaceServiceClient) SearchNames(ctx context.Context, in *SearchNamesRequest, opts ...grpc.CallOption) (*SearchNamesResponse, error) {
+	out := new(SearchNamesResponse)
+	err := c.cc.Invoke(ctx, "/marketplace.v1.MarketplaceService/SearchNames", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *marketplaceServiceClient) SearchCollections(ctx context.Context, in *SearchCollectionsRequest, opts ...grpc.CallOption) (*SearchCollectionsResponse, error) {
+	out := new(SearchCollectionsResponse)
+	err := c.cc.Invoke(ctx, "/marketplace.v1.MarketplaceService/SearchCollections", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MarketplaceServiceServer is the server API for MarketplaceService service.
 // All implementations must embed UnimplementedMarketplaceServiceServer
 // for forward compatibility
@@ -216,6 +256,10 @@ type MarketplaceServiceServer interface {
 	NFTPriceHistory(context.Context, *NFTPriceHistoryRequest) (*NFTPriceHistoryResponse, error)
 	Banners(context.Context, *BannersRequest) (*BannersResponse, error)
 	News(context.Context, *NewsRequest) (*NewsResponse, error)
+	DApps(context.Context, *DAppsStoreRequest) (*DAppResponse, error)
+	DAppsGroups(context.Context, *DAppsStoreRequest) (*DAppGroupsResponse, error)
+	SearchNames(context.Context, *SearchNamesRequest) (*SearchNamesResponse, error)
+	SearchCollections(context.Context, *SearchCollectionsRequest) (*SearchCollectionsResponse, error)
 	mustEmbedUnimplementedMarketplaceServiceServer()
 }
 
@@ -246,6 +290,18 @@ func (UnimplementedMarketplaceServiceServer) Banners(context.Context, *BannersRe
 }
 func (UnimplementedMarketplaceServiceServer) News(context.Context, *NewsRequest) (*NewsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method News not implemented")
+}
+func (UnimplementedMarketplaceServiceServer) DApps(context.Context, *DAppsStoreRequest) (*DAppResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DApps not implemented")
+}
+func (UnimplementedMarketplaceServiceServer) DAppsGroups(context.Context, *DAppsStoreRequest) (*DAppGroupsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DAppsGroups not implemented")
+}
+func (UnimplementedMarketplaceServiceServer) SearchNames(context.Context, *SearchNamesRequest) (*SearchNamesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SearchNames not implemented")
+}
+func (UnimplementedMarketplaceServiceServer) SearchCollections(context.Context, *SearchCollectionsRequest) (*SearchCollectionsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SearchCollections not implemented")
 }
 func (UnimplementedMarketplaceServiceServer) mustEmbedUnimplementedMarketplaceServiceServer() {}
 
@@ -416,6 +472,78 @@ func _MarketplaceService_News_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _MarketplaceService_DApps_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DAppsStoreRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MarketplaceServiceServer).DApps(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/marketplace.v1.MarketplaceService/DApps",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MarketplaceServiceServer).DApps(ctx, req.(*DAppsStoreRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MarketplaceService_DAppsGroups_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DAppsStoreRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MarketplaceServiceServer).DAppsGroups(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/marketplace.v1.MarketplaceService/DAppsGroups",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MarketplaceServiceServer).DAppsGroups(ctx, req.(*DAppsStoreRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MarketplaceService_SearchNames_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SearchNamesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MarketplaceServiceServer).SearchNames(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/marketplace.v1.MarketplaceService/SearchNames",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MarketplaceServiceServer).SearchNames(ctx, req.(*SearchNamesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MarketplaceService_SearchCollections_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SearchCollectionsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MarketplaceServiceServer).SearchCollections(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/marketplace.v1.MarketplaceService/SearchCollections",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MarketplaceServiceServer).SearchCollections(ctx, req.(*SearchCollectionsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // MarketplaceService_ServiceDesc is the grpc.ServiceDesc for MarketplaceService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -438,6 +566,22 @@ var MarketplaceService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "News",
 			Handler:    _MarketplaceService_News_Handler,
+		},
+		{
+			MethodName: "DApps",
+			Handler:    _MarketplaceService_DApps_Handler,
+		},
+		{
+			MethodName: "DAppsGroups",
+			Handler:    _MarketplaceService_DAppsGroups_Handler,
+		},
+		{
+			MethodName: "SearchNames",
+			Handler:    _MarketplaceService_SearchNames_Handler,
+		},
+		{
+			MethodName: "SearchCollections",
+			Handler:    _MarketplaceService_SearchCollections_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

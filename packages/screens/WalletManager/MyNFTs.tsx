@@ -9,7 +9,6 @@ import { SVG } from "../../components/SVG";
 import { NFTView } from "../../components/nfts/NFTView";
 import { useNFTs } from "../../hooks/useNFTs";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { neutral33 } from "../../utils/style/colors";
 
 export const MyNFTs: React.FC = () => {
   const { selectedWallet } = useSelectedWallet();
@@ -26,8 +25,6 @@ export const MyNFTs: React.FC = () => {
     <View
       style={{
         paddingTop: 32,
-        borderTopWidth: 1,
-        borderColor: neutral33,
       }}
     >
       <View

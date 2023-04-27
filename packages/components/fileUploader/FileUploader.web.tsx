@@ -1,21 +1,29 @@
-import React, { SyntheticEvent, useRef, useState } from "react";
+import React, { FC, SyntheticEvent, useRef, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 
-import gradientDottedCardSVG from "../../../assets/cards/gradient-dotted-card.svg";
+import { FileUploaderProps } from "./FileUploader.type";
+import { formatFile } from "./formatFile";
 import uploadSVG from "../../../assets/icons/upload.svg";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { neutral17, neutral77 } from "../../utils/style/colors";
+import {
+  gradientColorBlue,
+  gradientColorDarkerBlue,
+  gradientColorTurquoise,
+  neutral17,
+  neutral77,
+  withAlpha,
+} from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
+import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { DeleteButton } from "../FilePreview/DeleteButton";
 import { SVG } from "../SVG";
+import { PrimaryBox } from "../boxes/PrimaryBox";
 import { GradientText } from "../gradientText";
 import { Label } from "../inputs/TextInputCustom";
-import { FileUploaderProps } from "./FileUploader.type";
-import { formatFile } from "./formatFile";
 const FILE_HEIGHT = 256;
 
-export const FileUploader: React.FC<FileUploaderProps> = ({
+export const FileUploader: FC<FileUploaderProps> = ({
   label,
   style,
   onUpload,
@@ -114,102 +122,97 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
     <>
       <View style={[style]}>
         {!!label && <Label style={{ marginBottom: 12 }}>{label}</Label>}
-        <View
-          style={{
-            flex: 1,
-            flexDirection: "row",
-            alignItems: "center",
-            height: file ? FILE_HEIGHT : 80,
-            borderRadius: 10,
-          }}
-        >
-          {!file && (
-            <SVG
-              source={gradientDottedCardSVG}
-              height={80}
-              width="100%"
-              style={{ position: "absolute" }}
-            />
-          )}
-
-          {file ? (
-            <div
-              style={{
-                height: "100%",
-                width: "100%",
-                justifyContent: "center",
-                display: "flex",
-              }}
-            >
-              <DeleteButton
-                onPress={() => {
-                  setFile("");
-                  onUpload([]);
-                }}
-                style={{ top: 12, right: 12 }}
-              />
-              <img
-                src={file}
-                style={{
-                  overflow: "hidden",
-                  height: FILE_HEIGHT,
-                  backgroundSize: "cover",
-                }}
-              />
-            </div>
-          ) : (
-            <TouchableOpacity
-              onPress={handleClick}
-              style={{
-                paddingVertical: 20,
-                paddingHorizontal: 20,
-                width: "100%",
-                height: "100%",
-              }}
-            >
-              <div
-                onDrop={dropHandler}
-                onDragOver={dragOverHandler}
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
+        <TouchableOpacity onPress={handleClick}>
+          <div
+            onDrop={dropHandler}
+            onDragOver={dragOverHandler}
+            style={{
+              flex: 1,
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+              height: file ? FILE_HEIGHT : 80,
+              borderRadius: 12,
+            }}
+          >
+            {file ? (
+              <>
+                <DeleteButton
+                  onPress={() => {
+                    setFile("");
+                    onUpload([]);
+                  }}
+                  style={{ top: 12, right: 12 }}
+                />
+                <img
+                  src={file}
+                  style={{
+                    overflow: "hidden",
+                    height: FILE_HEIGHT,
+                    backgroundSize: "cover",
+                  }}
+                />
+              </>
+            ) : (
+              <PrimaryBox
+                noBrokenCorners
+                fullWidth
+                colors={[
+                  withAlpha(gradientColorDarkerBlue, 0.5),
+                  withAlpha(gradientColorBlue, 0.5),
+                  withAlpha(gradientColorTurquoise, 0.5),
+                ]}
+                style={{ flex: 1 }}
+                mainContainerStyle={{
+                  height: file ? FILE_HEIGHT : 80,
                   alignItems: "center",
-                  justifyContent: "flex-start",
+                  padding: layout.padding_x2_5,
+                  borderRadius: 12,
                 }}
               >
                 <View
                   style={{
-                    height: 40,
-                    width: 40,
-                    borderRadius: 24,
-                    backgroundColor: neutral17,
+                    height: "100%",
+                    width: "100%",
+                    flexDirection: "row",
                     alignItems: "center",
-                    justifyContent: "center",
-                    marginRight: 20,
                   }}
                 >
-                  <SVG source={uploadSVG} height={20} />
+                  <View
+                    style={{
+                      height: 40,
+                      width: 40,
+                      borderRadius: 24,
+                      backgroundColor: neutral17,
+                      alignItems: "center",
+                      justifyContent: "center",
+                      marginRight: 20,
+                    }}
+                  >
+                    <SVG source={uploadSVG} height={20} />
+                  </View>
+                  <View>
+                    <GradientText gradientType="blueExtended">
+                      Browse file
+                    </GradientText>
+                    <BrandText style={[fontSemibold14, { color: neutral77 }]}>
+                      Or drag & drop here
+                    </BrandText>
+                  </View>
+                  <input
+                    type="file"
+                    ref={hiddenFileInput}
+                    style={{ display: "none", position: "absolute" }}
+                    onChange={handleChange}
+                    multiple={multiple}
+                    accept={mimeTypes?.join(",")}
+                  />
                 </View>
-                <View>
-                  <GradientText gradientType="blueExtended">
-                    Browse file
-                  </GradientText>
-                  <BrandText style={[fontSemibold14, { color: neutral77 }]}>
-                    Or drag & drop here
-                  </BrandText>
-                </View>
-                <input
-                  type="file"
-                  ref={hiddenFileInput}
-                  style={{ display: "none", position: "absolute" }}
-                  onChange={handleChange}
-                  multiple={multiple}
-                  accept={mimeTypes?.join(",")}
-                />
-              </div>
-            </TouchableOpacity>
-          )}
-        </View>
+              </PrimaryBox>
+            )}
+          </div>
+        </TouchableOpacity>
       </View>
       {InputComponent}
     </>

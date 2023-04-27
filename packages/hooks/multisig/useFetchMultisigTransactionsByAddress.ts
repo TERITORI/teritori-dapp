@@ -1,10 +1,10 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 
-import { transactionsByUserAddress } from "../../utils/founaDB/multisig/multisigGraphql";
 import {
   MultisigTransactionListType,
   MultisigTransactionResponseType,
 } from "./useFetchMultisigTransactionsById";
+import { transactionsByUserAddress } from "../../utils/founaDB/multisig/multisigGraphql";
 
 export const useFetchMultisigTransactionsByAddress = (
   userAddress: string,

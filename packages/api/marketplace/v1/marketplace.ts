@@ -13,6 +13,7 @@ export enum Sort {
   SORTING_PRICE = 1,
   SORTING_VOLUME = 2,
   SORTING_MARKET_CAP = 3,
+  SORTING_CREATED_AT = 4,
   UNRECOGNIZED = -1,
 }
 
@@ -30,6 +31,9 @@ export function sortFromJSON(object: any): Sort {
     case 3:
     case "SORTING_MARKET_CAP":
       return Sort.SORTING_MARKET_CAP;
+    case 4:
+    case "SORTING_CREATED_AT":
+      return Sort.SORTING_CREATED_AT;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -47,6 +51,8 @@ export function sortToJSON(object: Sort): string {
       return "SORTING_VOLUME";
     case Sort.SORTING_MARKET_CAP:
       return "SORTING_MARKET_CAP";
+    case Sort.SORTING_CREATED_AT:
+      return "SORTING_CREATED_AT";
     case Sort.UNRECOGNIZED:
     default:
       return "UNRECOGNIZED";
@@ -170,6 +176,10 @@ export interface Collection {
   volumeDenom: string;
   creatorId: string;
   secondaryDuringMint: boolean;
+  websiteUrl: string;
+  twitterUrl: string;
+  floorPrice: number;
+  maxSupply: number;
 }
 
 export interface CollectionStats {
@@ -286,6 +296,25 @@ export interface News {
   actions: Action[];
 }
 
+export interface DAppGroup {
+  id: string;
+  groupName: string;
+  icon: string;
+  options: string[];
+}
+
+export interface DApp {
+  id: string;
+  title: string;
+  description: string;
+  icon: string;
+  route: string;
+  groupKey: string;
+  linkingId: string;
+  selectedByDefault: boolean;
+  alwaysOn: boolean;
+}
+
 export interface Banner {
   image: string;
   url: string;
@@ -305,6 +334,36 @@ export interface NewsRequest {
 
 export interface NewsResponse {
   news: News[];
+}
+
+export interface DAppsStoreRequest {
+}
+
+export interface DAppGroupsResponse {
+  group: DAppGroup[];
+}
+
+export interface DAppResponse {
+  group: DApp[];
+}
+
+export interface SearchNamesRequest {
+  networkId: string;
+  input: string;
+  limit: number;
+}
+
+export interface SearchNamesResponse {
+  names: string[];
+}
+
+export interface SearchCollectionsRequest {
+  input: string;
+  limit: number;
+}
+
+export interface SearchCollectionsResponse {
+  collections: Collection[];
 }
 
 function createBaseAttribute(): Attribute {
@@ -621,6 +680,10 @@ function createBaseCollection(): Collection {
     volumeDenom: "",
     creatorId: "",
     secondaryDuringMint: false,
+    websiteUrl: "",
+    twitterUrl: "",
+    floorPrice: 0,
+    maxSupply: 0,
   };
 }
 
@@ -658,6 +721,18 @@ export const Collection = {
     }
     if (message.secondaryDuringMint === true) {
       writer.uint32(96).bool(message.secondaryDuringMint);
+    }
+    if (message.websiteUrl !== "") {
+      writer.uint32(106).string(message.websiteUrl);
+    }
+    if (message.twitterUrl !== "") {
+      writer.uint32(114).string(message.twitterUrl);
+    }
+    if (message.floorPrice !== 0) {
+      writer.uint32(120).uint64(message.floorPrice);
+    }
+    if (message.maxSupply !== 0) {
+      writer.uint32(128).int64(message.maxSupply);
     }
     return writer;
   },
@@ -702,6 +777,18 @@ export const Collection = {
         case 12:
           message.secondaryDuringMint = reader.bool();
           break;
+        case 13:
+          message.websiteUrl = reader.string();
+          break;
+        case 14:
+          message.twitterUrl = reader.string();
+          break;
+        case 15:
+          message.floorPrice = longToNumber(reader.uint64() as Long);
+          break;
+        case 16:
+          message.maxSupply = longToNumber(reader.int64() as Long);
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -723,6 +810,10 @@ export const Collection = {
       volumeDenom: isSet(object.volumeDenom) ? String(object.volumeDenom) : "",
       creatorId: isSet(object.creatorId) ? String(object.creatorId) : "",
       secondaryDuringMint: isSet(object.secondaryDuringMint) ? Boolean(object.secondaryDuringMint) : false,
+      websiteUrl: isSet(object.websiteUrl) ? String(object.websiteUrl) : "",
+      twitterUrl: isSet(object.twitterUrl) ? String(object.twitterUrl) : "",
+      floorPrice: isSet(object.floorPrice) ? Number(object.floorPrice) : 0,
+      maxSupply: isSet(object.maxSupply) ? Number(object.maxSupply) : 0,
     };
   },
 
@@ -739,6 +830,10 @@ export const Collection = {
     message.volumeDenom !== undefined && (obj.volumeDenom = message.volumeDenom);
     message.creatorId !== undefined && (obj.creatorId = message.creatorId);
     message.secondaryDuringMint !== undefined && (obj.secondaryDuringMint = message.secondaryDuringMint);
+    message.websiteUrl !== undefined && (obj.websiteUrl = message.websiteUrl);
+    message.twitterUrl !== undefined && (obj.twitterUrl = message.twitterUrl);
+    message.floorPrice !== undefined && (obj.floorPrice = Math.round(message.floorPrice));
+    message.maxSupply !== undefined && (obj.maxSupply = Math.round(message.maxSupply));
     return obj;
   },
 
@@ -755,6 +850,10 @@ export const Collection = {
     message.volumeDenom = object.volumeDenom ?? "";
     message.creatorId = object.creatorId ?? "";
     message.secondaryDuringMint = object.secondaryDuringMint ?? false;
+    message.websiteUrl = object.websiteUrl ?? "";
+    message.twitterUrl = object.twitterUrl ?? "";
+    message.floorPrice = object.floorPrice ?? 0;
+    message.maxSupply = object.maxSupply ?? 0;
     return message;
   },
 };
@@ -2036,6 +2135,217 @@ export const News = {
   },
 };
 
+function createBaseDAppGroup(): DAppGroup {
+  return { id: "", groupName: "", icon: "", options: [] };
+}
+
+export const DAppGroup = {
+  encode(message: DAppGroup, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.groupName !== "") {
+      writer.uint32(18).string(message.groupName);
+    }
+    if (message.icon !== "") {
+      writer.uint32(26).string(message.icon);
+    }
+    for (const v of message.options) {
+      writer.uint32(34).string(v!);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): DAppGroup {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDAppGroup();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        case 2:
+          message.groupName = reader.string();
+          break;
+        case 3:
+          message.icon = reader.string();
+          break;
+        case 4:
+          message.options.push(reader.string());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): DAppGroup {
+    return {
+      id: isSet(object.id) ? String(object.id) : "",
+      groupName: isSet(object.groupName) ? String(object.groupName) : "",
+      icon: isSet(object.icon) ? String(object.icon) : "",
+      options: Array.isArray(object?.options) ? object.options.map((e: any) => String(e)) : [],
+    };
+  },
+
+  toJSON(message: DAppGroup): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    message.groupName !== undefined && (obj.groupName = message.groupName);
+    message.icon !== undefined && (obj.icon = message.icon);
+    if (message.options) {
+      obj.options = message.options.map((e) => e);
+    } else {
+      obj.options = [];
+    }
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<DAppGroup>, I>>(object: I): DAppGroup {
+    const message = createBaseDAppGroup();
+    message.id = object.id ?? "";
+    message.groupName = object.groupName ?? "";
+    message.icon = object.icon ?? "";
+    message.options = object.options?.map((e) => e) || [];
+    return message;
+  },
+};
+
+function createBaseDApp(): DApp {
+  return {
+    id: "",
+    title: "",
+    description: "",
+    icon: "",
+    route: "",
+    groupKey: "",
+    linkingId: "",
+    selectedByDefault: false,
+    alwaysOn: false,
+  };
+}
+
+export const DApp = {
+  encode(message: DApp, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.title !== "") {
+      writer.uint32(18).string(message.title);
+    }
+    if (message.description !== "") {
+      writer.uint32(26).string(message.description);
+    }
+    if (message.icon !== "") {
+      writer.uint32(34).string(message.icon);
+    }
+    if (message.route !== "") {
+      writer.uint32(42).string(message.route);
+    }
+    if (message.groupKey !== "") {
+      writer.uint32(50).string(message.groupKey);
+    }
+    if (message.linkingId !== "") {
+      writer.uint32(58).string(message.linkingId);
+    }
+    if (message.selectedByDefault === true) {
+      writer.uint32(64).bool(message.selectedByDefault);
+    }
+    if (message.alwaysOn === true) {
+      writer.uint32(72).bool(message.alwaysOn);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): DApp {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDApp();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        case 2:
+          message.title = reader.string();
+          break;
+        case 3:
+          message.description = reader.string();
+          break;
+        case 4:
+          message.icon = reader.string();
+          break;
+        case 5:
+          message.route = reader.string();
+          break;
+        case 6:
+          message.groupKey = reader.string();
+          break;
+        case 7:
+          message.linkingId = reader.string();
+          break;
+        case 8:
+          message.selectedByDefault = reader.bool();
+          break;
+        case 9:
+          message.alwaysOn = reader.bool();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): DApp {
+    return {
+      id: isSet(object.id) ? String(object.id) : "",
+      title: isSet(object.title) ? String(object.title) : "",
+      description: isSet(object.description) ? String(object.description) : "",
+      icon: isSet(object.icon) ? String(object.icon) : "",
+      route: isSet(object.route) ? String(object.route) : "",
+      groupKey: isSet(object.groupKey) ? String(object.groupKey) : "",
+      linkingId: isSet(object.linkingId) ? String(object.linkingId) : "",
+      selectedByDefault: isSet(object.selectedByDefault) ? Boolean(object.selectedByDefault) : false,
+      alwaysOn: isSet(object.alwaysOn) ? Boolean(object.alwaysOn) : false,
+    };
+  },
+
+  toJSON(message: DApp): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    message.title !== undefined && (obj.title = message.title);
+    message.description !== undefined && (obj.description = message.description);
+    message.icon !== undefined && (obj.icon = message.icon);
+    message.route !== undefined && (obj.route = message.route);
+    message.groupKey !== undefined && (obj.groupKey = message.groupKey);
+    message.linkingId !== undefined && (obj.linkingId = message.linkingId);
+    message.selectedByDefault !== undefined && (obj.selectedByDefault = message.selectedByDefault);
+    message.alwaysOn !== undefined && (obj.alwaysOn = message.alwaysOn);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<DApp>, I>>(object: I): DApp {
+    const message = createBaseDApp();
+    message.id = object.id ?? "";
+    message.title = object.title ?? "";
+    message.description = object.description ?? "";
+    message.icon = object.icon ?? "";
+    message.route = object.route ?? "";
+    message.groupKey = object.groupKey ?? "";
+    message.linkingId = object.linkingId ?? "";
+    message.selectedByDefault = object.selectedByDefault ?? false;
+    message.alwaysOn = object.alwaysOn ?? false;
+    return message;
+  },
+};
+
 function createBaseBanner(): Banner {
   return { image: "", url: "" };
 }
@@ -2287,6 +2597,376 @@ export const NewsResponse = {
   },
 };
 
+function createBaseDAppsStoreRequest(): DAppsStoreRequest {
+  return {};
+}
+
+export const DAppsStoreRequest = {
+  encode(_: DAppsStoreRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): DAppsStoreRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDAppsStoreRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): DAppsStoreRequest {
+    return {};
+  },
+
+  toJSON(_: DAppsStoreRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<DAppsStoreRequest>, I>>(_: I): DAppsStoreRequest {
+    const message = createBaseDAppsStoreRequest();
+    return message;
+  },
+};
+
+function createBaseDAppGroupsResponse(): DAppGroupsResponse {
+  return { group: [] };
+}
+
+export const DAppGroupsResponse = {
+  encode(message: DAppGroupsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.group) {
+      DAppGroup.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): DAppGroupsResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDAppGroupsResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.group.push(DAppGroup.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): DAppGroupsResponse {
+    return { group: Array.isArray(object?.group) ? object.group.map((e: any) => DAppGroup.fromJSON(e)) : [] };
+  },
+
+  toJSON(message: DAppGroupsResponse): unknown {
+    const obj: any = {};
+    if (message.group) {
+      obj.group = message.group.map((e) => e ? DAppGroup.toJSON(e) : undefined);
+    } else {
+      obj.group = [];
+    }
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<DAppGroupsResponse>, I>>(object: I): DAppGroupsResponse {
+    const message = createBaseDAppGroupsResponse();
+    message.group = object.group?.map((e) => DAppGroup.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseDAppResponse(): DAppResponse {
+  return { group: [] };
+}
+
+export const DAppResponse = {
+  encode(message: DAppResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.group) {
+      DApp.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): DAppResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDAppResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.group.push(DApp.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): DAppResponse {
+    return { group: Array.isArray(object?.group) ? object.group.map((e: any) => DApp.fromJSON(e)) : [] };
+  },
+
+  toJSON(message: DAppResponse): unknown {
+    const obj: any = {};
+    if (message.group) {
+      obj.group = message.group.map((e) => e ? DApp.toJSON(e) : undefined);
+    } else {
+      obj.group = [];
+    }
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<DAppResponse>, I>>(object: I): DAppResponse {
+    const message = createBaseDAppResponse();
+    message.group = object.group?.map((e) => DApp.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseSearchNamesRequest(): SearchNamesRequest {
+  return { networkId: "", input: "", limit: 0 };
+}
+
+export const SearchNamesRequest = {
+  encode(message: SearchNamesRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.networkId !== "") {
+      writer.uint32(10).string(message.networkId);
+    }
+    if (message.input !== "") {
+      writer.uint32(18).string(message.input);
+    }
+    if (message.limit !== 0) {
+      writer.uint32(24).int32(message.limit);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): SearchNamesRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSearchNamesRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.networkId = reader.string();
+          break;
+        case 2:
+          message.input = reader.string();
+          break;
+        case 3:
+          message.limit = reader.int32();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SearchNamesRequest {
+    return {
+      networkId: isSet(object.networkId) ? String(object.networkId) : "",
+      input: isSet(object.input) ? String(object.input) : "",
+      limit: isSet(object.limit) ? Number(object.limit) : 0,
+    };
+  },
+
+  toJSON(message: SearchNamesRequest): unknown {
+    const obj: any = {};
+    message.networkId !== undefined && (obj.networkId = message.networkId);
+    message.input !== undefined && (obj.input = message.input);
+    message.limit !== undefined && (obj.limit = Math.round(message.limit));
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<SearchNamesRequest>, I>>(object: I): SearchNamesRequest {
+    const message = createBaseSearchNamesRequest();
+    message.networkId = object.networkId ?? "";
+    message.input = object.input ?? "";
+    message.limit = object.limit ?? 0;
+    return message;
+  },
+};
+
+function createBaseSearchNamesResponse(): SearchNamesResponse {
+  return { names: [] };
+}
+
+export const SearchNamesResponse = {
+  encode(message: SearchNamesResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.names) {
+      writer.uint32(10).string(v!);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): SearchNamesResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSearchNamesResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.names.push(reader.string());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SearchNamesResponse {
+    return { names: Array.isArray(object?.names) ? object.names.map((e: any) => String(e)) : [] };
+  },
+
+  toJSON(message: SearchNamesResponse): unknown {
+    const obj: any = {};
+    if (message.names) {
+      obj.names = message.names.map((e) => e);
+    } else {
+      obj.names = [];
+    }
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<SearchNamesResponse>, I>>(object: I): SearchNamesResponse {
+    const message = createBaseSearchNamesResponse();
+    message.names = object.names?.map((e) => e) || [];
+    return message;
+  },
+};
+
+function createBaseSearchCollectionsRequest(): SearchCollectionsRequest {
+  return { input: "", limit: 0 };
+}
+
+export const SearchCollectionsRequest = {
+  encode(message: SearchCollectionsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.input !== "") {
+      writer.uint32(10).string(message.input);
+    }
+    if (message.limit !== 0) {
+      writer.uint32(16).int32(message.limit);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): SearchCollectionsRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSearchCollectionsRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.input = reader.string();
+          break;
+        case 2:
+          message.limit = reader.int32();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SearchCollectionsRequest {
+    return {
+      input: isSet(object.input) ? String(object.input) : "",
+      limit: isSet(object.limit) ? Number(object.limit) : 0,
+    };
+  },
+
+  toJSON(message: SearchCollectionsRequest): unknown {
+    const obj: any = {};
+    message.input !== undefined && (obj.input = message.input);
+    message.limit !== undefined && (obj.limit = Math.round(message.limit));
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<SearchCollectionsRequest>, I>>(object: I): SearchCollectionsRequest {
+    const message = createBaseSearchCollectionsRequest();
+    message.input = object.input ?? "";
+    message.limit = object.limit ?? 0;
+    return message;
+  },
+};
+
+function createBaseSearchCollectionsResponse(): SearchCollectionsResponse {
+  return { collections: [] };
+}
+
+export const SearchCollectionsResponse = {
+  encode(message: SearchCollectionsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.collections) {
+      Collection.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): SearchCollectionsResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSearchCollectionsResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.collections.push(Collection.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SearchCollectionsResponse {
+    return {
+      collections: Array.isArray(object?.collections) ? object.collections.map((e: any) => Collection.fromJSON(e)) : [],
+    };
+  },
+
+  toJSON(message: SearchCollectionsResponse): unknown {
+    const obj: any = {};
+    if (message.collections) {
+      obj.collections = message.collections.map((e) => e ? Collection.toJSON(e) : undefined);
+    } else {
+      obj.collections = [];
+    }
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<SearchCollectionsResponse>, I>>(object: I): SearchCollectionsResponse {
+    const message = createBaseSearchCollectionsResponse();
+    message.collections = object.collections?.map((e) => Collection.fromPartial(e)) || [];
+    return message;
+  },
+};
+
 export interface MarketplaceService {
   Collections(request: DeepPartial<CollectionsRequest>, metadata?: grpc.Metadata): Observable<CollectionsResponse>;
   CollectionStats(
@@ -2302,6 +2982,13 @@ export interface MarketplaceService {
   ): Promise<NFTPriceHistoryResponse>;
   Banners(request: DeepPartial<BannersRequest>, metadata?: grpc.Metadata): Promise<BannersResponse>;
   News(request: DeepPartial<NewsRequest>, metadata?: grpc.Metadata): Promise<NewsResponse>;
+  DApps(request: DeepPartial<DAppsStoreRequest>, metadata?: grpc.Metadata): Promise<DAppResponse>;
+  DAppsGroups(request: DeepPartial<DAppsStoreRequest>, metadata?: grpc.Metadata): Promise<DAppGroupsResponse>;
+  SearchNames(request: DeepPartial<SearchNamesRequest>, metadata?: grpc.Metadata): Promise<SearchNamesResponse>;
+  SearchCollections(
+    request: DeepPartial<SearchCollectionsRequest>,
+    metadata?: grpc.Metadata,
+  ): Promise<SearchCollectionsResponse>;
 }
 
 export class MarketplaceServiceClientImpl implements MarketplaceService {
@@ -2317,6 +3004,10 @@ export class MarketplaceServiceClientImpl implements MarketplaceService {
     this.NFTPriceHistory = this.NFTPriceHistory.bind(this);
     this.Banners = this.Banners.bind(this);
     this.News = this.News.bind(this);
+    this.DApps = this.DApps.bind(this);
+    this.DAppsGroups = this.DAppsGroups.bind(this);
+    this.SearchNames = this.SearchNames.bind(this);
+    this.SearchCollections = this.SearchCollections.bind(this);
   }
 
   Collections(request: DeepPartial<CollectionsRequest>, metadata?: grpc.Metadata): Observable<CollectionsResponse> {
@@ -2355,6 +3046,29 @@ export class MarketplaceServiceClientImpl implements MarketplaceService {
 
   News(request: DeepPartial<NewsRequest>, metadata?: grpc.Metadata): Promise<NewsResponse> {
     return this.rpc.unary(MarketplaceServiceNewsDesc, NewsRequest.fromPartial(request), metadata);
+  }
+
+  DApps(request: DeepPartial<DAppsStoreRequest>, metadata?: grpc.Metadata): Promise<DAppResponse> {
+    return this.rpc.unary(MarketplaceServiceDAppsDesc, DAppsStoreRequest.fromPartial(request), metadata);
+  }
+
+  DAppsGroups(request: DeepPartial<DAppsStoreRequest>, metadata?: grpc.Metadata): Promise<DAppGroupsResponse> {
+    return this.rpc.unary(MarketplaceServiceDAppsGroupsDesc, DAppsStoreRequest.fromPartial(request), metadata);
+  }
+
+  SearchNames(request: DeepPartial<SearchNamesRequest>, metadata?: grpc.Metadata): Promise<SearchNamesResponse> {
+    return this.rpc.unary(MarketplaceServiceSearchNamesDesc, SearchNamesRequest.fromPartial(request), metadata);
+  }
+
+  SearchCollections(
+    request: DeepPartial<SearchCollectionsRequest>,
+    metadata?: grpc.Metadata,
+  ): Promise<SearchCollectionsResponse> {
+    return this.rpc.unary(
+      MarketplaceServiceSearchCollectionsDesc,
+      SearchCollectionsRequest.fromPartial(request),
+      metadata,
+    );
   }
 }
 
@@ -2528,6 +3242,94 @@ export const MarketplaceServiceNewsDesc: UnaryMethodDefinitionish = {
     deserializeBinary(data: Uint8Array) {
       return {
         ...NewsResponse.decode(data),
+        toObject() {
+          return this;
+        },
+      };
+    },
+  } as any,
+};
+
+export const MarketplaceServiceDAppsDesc: UnaryMethodDefinitionish = {
+  methodName: "DApps",
+  service: MarketplaceServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return DAppsStoreRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      return {
+        ...DAppResponse.decode(data),
+        toObject() {
+          return this;
+        },
+      };
+    },
+  } as any,
+};
+
+export const MarketplaceServiceDAppsGroupsDesc: UnaryMethodDefinitionish = {
+  methodName: "DAppsGroups",
+  service: MarketplaceServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return DAppsStoreRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      return {
+        ...DAppGroupsResponse.decode(data),
+        toObject() {
+          return this;
+        },
+      };
+    },
+  } as any,
+};
+
+export const MarketplaceServiceSearchNamesDesc: UnaryMethodDefinitionish = {
+  methodName: "SearchNames",
+  service: MarketplaceServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return SearchNamesRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      return {
+        ...SearchNamesResponse.decode(data),
+        toObject() {
+          return this;
+        },
+      };
+    },
+  } as any,
+};
+
+export const MarketplaceServiceSearchCollectionsDesc: UnaryMethodDefinitionish = {
+  methodName: "SearchCollections",
+  service: MarketplaceServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return SearchCollectionsRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      return {
+        ...SearchCollectionsResponse.decode(data),
         toObject() {
           return this;
         },

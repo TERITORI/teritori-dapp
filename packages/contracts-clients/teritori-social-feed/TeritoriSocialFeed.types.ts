@@ -58,6 +58,12 @@ export type ExecuteMsg =
       };
     }
   | {
+      tip_post: {
+        identifier: string;
+        [k: string]: unknown;
+      };
+    }
+  | {
       delete_post: {
         identifier: string;
         [k: string]: unknown;
@@ -119,6 +125,7 @@ export interface PostResult {
   post_by: Addr;
   reactions: Reaction[];
   sub_post_length: number;
+  tip_amount: Uint128;
   user_reactions: string[];
   [k: string]: unknown;
 }
@@ -137,6 +144,7 @@ export interface Post {
   parent_post_identifier?: string | null;
   post_by: Addr;
   reactions: Reaction[];
+  tip_amount: Uint128;
   [k: string]: unknown;
 }
 export type QueryMsg =

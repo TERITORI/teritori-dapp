@@ -3,11 +3,12 @@ import React, { useEffect, useMemo, useState } from "react";
 import { View, Image, TouchableOpacity } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 
+import { AudioWaveform } from "./AudioWaveform";
+import { ipfsURLToHTTPURL } from "./ipfs";
 import pauseSVG from "../../../assets/icons/pause.svg";
 import playSVG from "../../../assets/icons/play.svg";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { getAudioDuration } from "../../utils/audio";
-import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import {
   errorColor,
   neutral00,
@@ -15,12 +16,11 @@ import {
   secondaryColor,
 } from "../../utils/style/colors";
 import { fontSemibold13, fontSemibold14 } from "../../utils/style/fonts";
-import { layout, NEWS_FEED_MAX_WIDTH } from "../../utils/style/layout";
+import { layout, screenContentMaxWidth } from "../../utils/style/layout";
 import { RemoteFileData } from "../../utils/types/feed";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { THUMBNAIL_WIDTH } from "../socialFeed/SocialThread/SocialMessageContent";
-import { AudioWaveform } from "./AudioWaveform";
 
 export const AudioView: React.FC<{
   file: RemoteFileData;
@@ -67,8 +67,8 @@ export const AudioView: React.FC<{
   );
 
   const audioWaveWidth = useMemo(() => {
-    if (width > NEWS_FEED_MAX_WIDTH) {
-      return NEWS_FEED_MAX_WIDTH - 212 - (hasThumbnail ? THUMBNAIL_WIDTH : 0);
+    if (width > screenContentMaxWidth) {
+      return screenContentMaxWidth - 212 - (hasThumbnail ? THUMBNAIL_WIDTH : 0);
     } else {
       return width - 212 - (hasThumbnail ? THUMBNAIL_WIDTH : 0);
     }

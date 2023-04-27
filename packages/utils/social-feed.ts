@@ -1,3 +1,7 @@
+import { mustGetFeedClient } from "./backend";
+import { GIF_MIME_TYPE } from "./mime";
+import { HASHTAG_REGEX, MENTION_REGEX, URL_REGEX } from "./regex";
+import { LocalFileData } from "./types/feed";
 import { Post, Reaction } from "../api/feed/v1/feed";
 import {
   PostCategory,
@@ -6,10 +10,6 @@ import {
 } from "../components/socialFeed/NewsFeed/NewsFeed.type";
 import { PostResult } from "../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
 import { getUserId } from "../networks";
-import { mustGetFeedClient } from "./backend";
-import { GIF_MIME_TYPE } from "./mime";
-import { HASHTAG_REGEX, MENTION_REGEX, URL_REGEX } from "./regex";
-import { LocalFileData } from "./types/feed";
 
 export const DEFAULT_NAME = "Anon";
 export const DEFAULT_USERNAME = "anonymous";
@@ -84,9 +84,9 @@ export const postResultToPost = (
     parentPostIdentifier: postResult.parent_post_identifier || "",
     subPostLength: postResult.sub_post_length,
     reactions: postResult.reactions,
-    // TODO: We need to parse, because we're using Post[] from social-feed API and PostResult[] from social-feed contract
     createdBy: getUserId(networkId, postResult.post_by),
     createdAt: JSON.parse(postResult.metadata).createdAt,
+    tipAmount: parseFloat(postResult.tip_amount),
   };
   if ("isInLocal" in postResult) {
     return { ...post, isInLocal: postResult.isInLocal } as PostExtra;

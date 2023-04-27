@@ -2,6 +2,10 @@ import React, { useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { ScrollView, StyleSheet, View } from "react-native";
 
+import { MultisigFormInput } from "./components/MultisigFormInput";
+import { MultisigSection } from "./components/MultisigSection";
+import { RightSection } from "./components/RightSection";
+import { MultisigLegacyFormType } from "./types";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { AnimationExpand } from "../../components/animations";
@@ -15,10 +19,6 @@ import { patternOnlyNumbers, validateAddress } from "../../utils/formRules";
 import { ScreenFC } from "../../utils/navigation";
 import { fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { MultisigFormInput } from "./components/MultisigFormInput";
-import { MultisigSection } from "./components/MultisigSection";
-import { RightSection } from "./components/RightSection";
-import { MultisigLegacyFormType } from "./types";
 
 export const MultisigLegacyScreen: ScreenFC<"MultisigLegacy"> = ({ route }) => {
   // variables

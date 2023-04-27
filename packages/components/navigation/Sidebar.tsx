@@ -7,6 +7,11 @@ import Animated, {
   WithSpringConfig,
 } from "react-native-reanimated";
 
+import { SideNotch } from "./components/SideNotch";
+import { SidebarButton } from "./components/SidebarButton";
+import { SidebarProfileButton } from "./components/SidebarProfileButton";
+import { TopLogo } from "./components/TopLogo";
+import { SidebarType } from "./types";
 import addSVG from "../../../assets/icons/add-circle.svg";
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
 import { useSidebar } from "../../context/SidebarProvider";
@@ -15,7 +20,6 @@ import { useSelectedNetworkKind } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkKind } from "../../networks";
 import { useAppNavigation } from "../../utils/navigation";
-import { SIDEBAR_LIST } from "../../utils/sidebar";
 import { neutral17, neutral33 } from "../../utils/style/colors";
 import {
   smallSidebarWidth,
@@ -26,11 +30,6 @@ import {
 import { SVG } from "../SVG";
 import { Separator } from "../Separator";
 import { SpacerColumn } from "../spacer";
-import { SideNotch } from "./components/SideNotch";
-import { SidebarButton } from "./components/SidebarButton";
-import { SidebarProfileButton } from "./components/SidebarProfileButton";
-import { TopLogo } from "./components/TopLogo";
-import { SidebarType } from "./types";
 
 const SpringConfig: WithSpringConfig = {
   stiffness: 100,
@@ -48,7 +47,7 @@ export const Sidebar: React.FC = () => {
   // variables
   const navigation = useAppNavigation();
   const { name: currentRouteName } = useRoute();
-  const { isSidebarExpanded, toggleSidebar } = useSidebar();
+  const { isSidebarExpanded, toggleSidebar, dynamicSidebar } = useSidebar();
 
   // animations
   const layoutStyle = useAnimatedStyle(
@@ -76,6 +75,7 @@ export const Sidebar: React.FC = () => {
   );
 
   const onRouteChange = (name: SidebarType["route"]) => {
+    // @ts-expect-error
     navigation.navigate(name);
   };
 
@@ -98,8 +98,8 @@ export const Sidebar: React.FC = () => {
       </View>
       <FlatList
         showsVerticalScrollIndicator={false}
-        data={Object.values(SIDEBAR_LIST)}
-        keyExtractor={(item) => item.title}
+        data={Object.values(dynamicSidebar)}
+        keyExtractor={(item) => item.id}
         renderItem={({ item }) => {
           let { route } = item;
           if (
@@ -112,7 +112,7 @@ export const Sidebar: React.FC = () => {
 
           return (
             <SidebarButton
-              key={item.title}
+              key={item.id}
               onPress={onRouteChange}
               {...item}
               route={route}
@@ -126,6 +126,8 @@ export const Sidebar: React.FC = () => {
               icon={addSVG}
               iconSize={36}
               route="ComingSoon"
+              key="ComingSoon2"
+              id="ComingSoon2"
               title=""
               onPress={() => navigation.navigate("ComingSoon")}
             />

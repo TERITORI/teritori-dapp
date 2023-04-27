@@ -1,6 +1,12 @@
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 
+import { DelegateModal } from "./components/DelegateModal";
+import { RedelegateModal } from "./components/RedelegateModal";
+import { StakeDetailModal } from "./components/StakeDetailModal";
+import { UndelegateModal } from "./components/UndelegateModal";
+import { ValidatorsTable } from "./components/ValidatorsList";
+import { ValidatorInfo } from "./types";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { Tabs } from "../../components/tabs/Tabs";
@@ -10,12 +16,6 @@ import { useValidators } from "../../hooks/useValidators";
 import { NetworkKind } from "../../networks";
 import { fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { DelegateModal } from "./components/DelegateModal";
-import { RedelegateModal } from "./components/RedelegateModal";
-import { StakeDetailModal } from "./components/StakeDetailModal";
-import { UndelegateModal } from "./components/UndelegateModal";
-import { ValidatorsTable } from "./components/ValidatorsList";
-import { ValidatorInfo } from "./types";
 
 export const StakeScreen: React.FC = () => {
   //   variables
@@ -73,9 +73,12 @@ export const StakeScreen: React.FC = () => {
     <ScreenContainer forceNetworkKind={NetworkKind.Cosmos}>
       <View style={styles.rowHeader}>
         <BrandText style={fontSemibold28}>Stake</BrandText>
-        <View style={styles.rowWithCenter}>
-          <Tabs items={tabs} onSelect={setSelectedTab} selected={selectedTab} />
-        </View>
+        <Tabs
+          items={tabs}
+          onSelect={setSelectedTab}
+          selected={selectedTab}
+          style={{ height: 60 }}
+        />
       </View>
       <ValidatorsTable
         validators={
@@ -115,22 +118,11 @@ export const StakeScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  nameContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
   rowHeader: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     paddingTop: layout.contentPadding,
     marginBottom: layout.padding_x2_5,
-  },
-  rowWithCenter: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  upperCase: {
-    textTransform: "uppercase",
   },
 });

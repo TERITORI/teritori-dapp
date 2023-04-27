@@ -3,6 +3,8 @@ import React, { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { ActivityIndicator, ScrollView, StyleSheet, View } from "react-native";
 
+import { MultisigFormInput } from "./MultisigFormInput";
+import { MultisigSection } from "./MultisigSection";
 import arrowSVG from "../../../../assets/icons/arrow-with-tail.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
@@ -25,8 +27,6 @@ import { fontSemibold16, fontSemibold28 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { toriCurrency } from "../../../utils/teritori";
 import { MultisigTransactionDelegateFormType } from "../types";
-import { MultisigFormInput } from "./MultisigFormInput";
-import { MultisigSection } from "./MultisigSection";
 
 interface MultisigTransactionDelegateFormProps {
   type: "transfer" | "delegate";

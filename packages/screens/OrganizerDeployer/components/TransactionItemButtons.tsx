@@ -2,6 +2,7 @@ import React, { useEffect, useMemo } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 
+import { ProposalTransactionItemProps } from "./ProposalTransactionItem";
 import copySVG from "../../../../assets/icons/copy.svg";
 import { BrandText } from "../../../components/BrandText";
 import { useCopyToClipboard } from "../../../components/CopyToClipboard";
@@ -29,7 +30,6 @@ import {
 } from "../../../utils/style/colors";
 import { fontMedium14, fontSemibold9 } from "../../../utils/style/fonts";
 import { tinyAddress } from "../../../utils/text";
-import { ProposalTransactionItemProps } from "./ProposalTransactionItem";
 
 interface TransactionItemButtonsProps extends ProposalTransactionItemProps {
   currentSignatures: DbSignature[];

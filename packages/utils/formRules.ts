@@ -1,5 +1,5 @@
+import { fromBech32 } from "@cosmjs/encoding";
 import { bech32 } from "bech32";
-import { fromBech32 } from "cosmwasm";
 import { ValidationRule } from "react-hook-form";
 
 import { TeritoriNameServiceQueryClient } from "../contracts-clients/teritori-name-service/TeritoriNameService.client";

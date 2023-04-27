@@ -1,5 +1,5 @@
 import { useIsFocused, useRoute } from "@react-navigation/native";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import Animated, {
   // Extrapolate,
@@ -9,6 +9,8 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
+import { SideNotch } from "./SideNotch";
+import { SidebarNestedButton } from "./SidebarNestedButton";
 import chevronDownSVG from "../../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../../assets/icons/chevron-up.svg";
 import { useSidebar } from "../../../context/SidebarProvider";
@@ -23,11 +25,10 @@ import { fontSemibold12 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
+import { SVGorImageIcon } from "../../SVG/SVGorImageIcon";
 import { CustomPressable } from "../../buttons/CustomPressable";
 import { SpacerRow } from "../../spacer";
 import { SidebarType } from "../types";
-import { SideNotch } from "./SideNotch";
-import { SidebarNestedButton } from "./SidebarNestedButton";
 
 export interface SidebarButtonProps extends SidebarType {
   onPress?: (routeName: SidebarType["route"]) => void;
@@ -143,7 +144,7 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
                 isComingSoon && { opacity: 0.5 },
               ]}
             >
-              <SVG width={iconSize} height={iconSize} source={icon} />
+              <SVGorImageIcon icon={icon} iconSize={iconSize} />
             </View>
             <SpacerRow size={2} />
             <Animated.View style={[styles.rowCenter, opacityStyle]}>
@@ -215,6 +216,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     flex: 1,
+    maxWidth: 120,
   },
   svgContainer: {
     borderWidth: 2,
