@@ -2,10 +2,7 @@ import { useMetaMask } from "metamask-react";
 import { useMemo } from "react";
 
 import { Wallet } from "./wallet";
-import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
-import { NetworkKind, getUserId } from "../../networks";
-import { setSelectedWalletId } from "../../store/slices/settings";
-import { useAppDispatch } from "../../store/store";
+import { NetworkKind, allNetworks, getUserId } from "../../networks";
 import { WalletProvider } from "../../utils/walletProvider";
 
 export type UseMetamaskResult =
@@ -13,29 +10,35 @@ export type UseMetamaskResult =
   | [false, boolean, undefined];
 
 export const useMetamask: () => UseMetamaskResult = () => {
-  const { status, account: address } = useMetaMask();
-  const selectedNetworkInfo = useSelectedNetworkInfo();
-  const dispatch = useAppDispatch();
+  const { status, account: address, chainId } = useMetaMask();
 
   const isConnected = status === "connected";
 
   const wallet: Wallet | undefined = useMemo(() => {
-    if (!address || !isConnected) return;
-    const walletId = `metamask-${address}`;
-    if (selectedNetworkInfo?.kind === NetworkKind.Ethereum) {
-      dispatch(setSelectedWalletId(walletId));
+    console.log("finding eth wallet", chainId);
+    if (!chainId) {
+      return undefined;
     }
+    const network = allNetworks.find(
+      (n) =>
+        n.kind === NetworkKind.Ethereum && n.chainId === parseInt(chainId, 16)
+    );
+    if (!network || !address || !isConnected) {
+      console.warn("fail", network, address, isConnected);
+      return;
+    }
+    const walletId = `metamask-${network.id}-${address}`;
     const wallet: Wallet = {
       id: walletId,
       address,
       provider: WalletProvider.Metamask,
       networkKind: NetworkKind.Ethereum,
-      networkId: selectedNetworkInfo?.id || "",
-      userId: getUserId(selectedNetworkInfo?.id, address || ""),
+      networkId: network.id,
+      userId: getUserId(network.id, address),
       connected: isConnected,
     };
     return wallet;
-  }, [address, dispatch, isConnected, selectedNetworkInfo]);
+  }, [address, chainId, isConnected]);
 
   const hasMetamask = useMemo(() => {
     return typeof (window as any).ethereum !== "undefined";

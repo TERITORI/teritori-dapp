@@ -1,7 +1,7 @@
 import { cosmosHubCurrencies } from "./currencies";
-import { NetworkKind, NetworkInfo } from "../types";
+import { NetworkKind, CosmosNetworkInfo } from "../types";
 
-export const cosmosNetwork: NetworkInfo = {
+export const cosmosNetwork: CosmosNetworkInfo = {
   id: "cosmos-hub",
   kind: NetworkKind.Cosmos,
   chainId: "cosmoshub-4",

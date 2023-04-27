@@ -1,8 +1,13 @@
-import React, { createContext, useContext, useMemo } from "react";
+import React, { createContext, useContext, useEffect, useMemo } from "react";
 
 import { useKeplr } from "./keplr";
 import { useMetamask } from "./metamask";
 import { Wallet } from "./wallet";
+import { useWalletConnectWallets } from "./wallet-connect";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { setSelectedWallet } from "../../store/slices/settings";
+import { useAppDispatch } from "../../store/store";
 import { WalletProvider } from "../../utils/walletProvider";
 // import { usePhantom } from "./phantom";
 // import { selectStoreWallets, storeWalletId } from "../../store/slices/wallets";
@@ -26,6 +31,11 @@ export const WalletsProvider: React.FC = React.memo(({ children }) => {
   // const [hasPhantom, phantomIsReady, phantomWallet] = usePhantom();
   const [hasKeplr, keplrIsReady, keplrWallets] = useKeplr();
   const [hasMetamask, metamaskIsReady, metamaskWallets] = useMetamask();
+  const [hasWalletConnect, walletConnectReady, walletConnectWallets] =
+    useWalletConnectWallets();
+  const selectedWallet = useSelectedWallet();
+  const selectedNetworkId = useSelectedNetworkId();
+  const dispatch = useAppDispatch();
 
   // const storeWallets = useSelector(selectStoreWallets);
 
@@ -85,23 +95,37 @@ export const WalletsProvider: React.FC = React.memo(({ children }) => {
     if (hasKeplr) {
       walletProviders.push(WalletProvider.Keplr);
 
-      if (keplrWallets?.[0]?.connected) {
-        wallets.push(keplrWallets[0]);
+      for (const wallet of keplrWallets) {
+        if (wallet.connected) {
+          wallets.push(wallet);
+        }
       }
     }
 
     if (hasMetamask) {
       walletProviders.push(WalletProvider.Metamask);
 
-      if (metamaskWallets?.[0]?.connected) {
-        wallets.push(metamaskWallets[0]);
+      for (const wallet of metamaskWallets) {
+        if (wallet.connected) {
+          wallets.push(wallet);
+        }
+      }
+    }
+
+    if (hasWalletConnect) {
+      walletProviders.push(WalletProvider.WalletConnect);
+
+      for (const wallet of walletConnectWallets) {
+        if (wallet.connected) {
+          wallets.push(wallet);
+        }
       }
     }
 
     return {
       wallets,
       walletProviders,
-      ready: keplrIsReady && metamaskIsReady,
+      ready: keplrIsReady && metamaskIsReady && walletConnectReady,
     };
   }, [
     // hasPhantom,
@@ -113,8 +137,21 @@ export const WalletsProvider: React.FC = React.memo(({ children }) => {
     hasMetamask,
     metamaskIsReady,
     metamaskWallets,
+    hasWalletConnect,
+    walletConnectReady,
+    walletConnectWallets,
     // storeWallets,
   ]);
+
+  // make sure wallet and network are in sync
+  useEffect(() => {
+    if (selectedWallet?.networkId !== selectedNetworkId) {
+      const wallet = value.wallets.find(
+        (w) => w.networkId === selectedNetworkId
+      );
+      dispatch(setSelectedWallet(wallet));
+    }
+  }, [dispatch, selectedNetworkId, selectedWallet?.networkId, value.wallets]);
 
   return (
     <WalletsContext.Provider value={value}>{children}</WalletsContext.Provider>

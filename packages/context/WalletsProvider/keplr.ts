@@ -1,14 +1,15 @@
+import { AccountData } from "@cosmjs/proto-signing";
 import { Window as KeplrWindow } from "@keplr-wallet/types";
+import { bech32 } from "bech32";
 import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 
-import { useSelectedNetworkInfo } from "./../../hooks/useSelectedNetwork";
 import { Wallet } from "./wallet";
-import { NetworkKind, getUserId } from "../../networks";
+import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
+import { NetworkKind, allNetworks, getUserId } from "../../networks";
 import {
   selectIsKeplrConnected,
   setIsKeplrConnected,
-  setSelectedWalletId,
 } from "../../store/slices/settings";
 import { useAppDispatch } from "../../store/store";
 import { WalletProvider } from "../../utils/walletProvider";
@@ -20,10 +21,10 @@ export type UseKeplrResult =
 export const useKeplr: () => UseKeplrResult = () => {
   const isKeplrConnected = useSelector(selectIsKeplrConnected);
   const [hasKeplr, setHasKeplr] = useState(false);
-  const selectedNetworkInfo = useSelectedNetworkInfo();
   const dispatch = useAppDispatch();
+  const selectedNetworkInfo = useSelectedNetworkInfo();
 
-  const [addresses, setAddresses] = useState<string[]>([]);
+  const [accounts, setAccounts] = useState<readonly AccountData[]>([]);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
@@ -59,7 +60,7 @@ export const useKeplr: () => UseKeplrResult = () => {
         selectedNetworkInfo.chainId
       );
       const accounts = await offlineSigner.getAccounts();
-      setAddresses(accounts.map((account) => account.address));
+      setAccounts(accounts);
     };
     window.addEventListener("keplr_keystorechange", handleKeyChange);
     return () =>
@@ -89,7 +90,7 @@ export const useKeplr: () => UseKeplrResult = () => {
         await keplr.enable(chainId);
         const offlineSigner = await keplr.getOfflineSignerAuto(chainId);
         const accounts = await offlineSigner.getAccounts();
-        setAddresses(accounts.map((account) => account.address));
+        setAccounts(accounts);
       } catch (err) {
         console.warn("failed to connect to keplr", err);
         dispatch(setIsKeplrConnected(false));
@@ -101,49 +102,44 @@ export const useKeplr: () => UseKeplrResult = () => {
   }, [hasKeplr, isKeplrConnected, dispatch, selectedNetworkInfo]);
 
   const wallets = useMemo(() => {
-    let networkId = "";
-    if (selectedNetworkInfo?.kind === NetworkKind.Cosmos) {
-      networkId = selectedNetworkInfo.id;
+    if (accounts.length === 0) {
+      return [];
     }
+    const wallets = accounts.reduce((wallets, account, index) => {
+      const newWallets: Wallet[] = [];
 
-    if (addresses.length === 0) {
-      const wallet: Wallet = {
-        address: "",
-        provider: WalletProvider.Keplr,
-        networkKind: NetworkKind.Cosmos,
-        networkId,
-        userId: "",
-        connected: false,
-        id: `keplr`,
-      };
-      return [wallet];
-    }
-    const wallets = addresses.map((address, index) => {
-      let userId = "";
-      if (selectedNetworkInfo?.kind === NetworkKind.Cosmos) {
-        userId = getUserId(networkId, address);
+      for (const network of allNetworks) {
+        if (network.kind !== NetworkKind.Cosmos) {
+          continue;
+        }
+
+        const address = bech32.encode(
+          network.addressPrefix,
+          bech32.decode(account.address).words
+        );
+
+        const userId = getUserId(network.id, address);
+
+        const wallet: Wallet = {
+          address,
+          provider: WalletProvider.Keplr,
+          networkKind: NetworkKind.Cosmos,
+          networkId: network.id,
+          userId,
+          connected: true,
+          id: `keplr-${network.id}-${address}`,
+        };
+        console.log("keplr", index, wallet);
+        newWallets.push(wallet);
       }
 
-      const wallet: Wallet = {
-        address,
-        provider: WalletProvider.Keplr,
-        networkKind: NetworkKind.Cosmos,
-        networkId,
-        userId,
-        connected: true,
-        id: `keplr-${address}`,
-      };
-      console.log("keplr", index, wallet);
-      return wallet;
-    });
+      return [...wallets, ...newWallets];
+    }, [] as Wallet[]);
 
-    const selectedWallet = wallets.find((w) => w.connected);
-    if (selectedWallet && selectedNetworkInfo?.kind === NetworkKind.Cosmos) {
-      dispatch(setSelectedWalletId(selectedWallet.id));
-    }
+    console.log("wallets", wallets, "accounts", accounts);
 
     return wallets;
-  }, [addresses, dispatch, selectedNetworkInfo]);
+  }, [accounts]);
 
   return hasKeplr ? [true, ready, wallets] : [false, ready, undefined];
 };

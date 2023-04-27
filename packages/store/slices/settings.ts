@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+import { Wallet } from "../../context/WalletsProvider";
 import { RootState } from "../store";
 
 interface Settings {
@@ -41,9 +42,14 @@ const settingsSlice = createSlice({
   reducers: {
     setSelectedNetworkId: (state, action: PayloadAction<string>) => {
       state.selectedNetworkId = action.payload;
+      state.selectedWalletId = "";
     },
-    setSelectedWalletId: (state, action: PayloadAction<string>) => {
-      state.selectedWalletId = action.payload;
+    setSelectedWallet: (state, action: PayloadAction<Wallet | undefined>) => {
+      if (!action.payload) {
+        return;
+      }
+      state.selectedWalletId = action.payload.id;
+      state.selectedNetworkId = action.payload.networkId;
     },
     setIsKeplrConnected: (state, action: PayloadAction<boolean>) => {
       state.isKeplrConnected = action.payload;
@@ -59,7 +65,7 @@ const settingsSlice = createSlice({
 
 export const {
   setSelectedNetworkId,
-  setSelectedWalletId,
+  setSelectedWallet,
   setIsKeplrConnected,
   setAreTestnetsEnabled,
   setNFTStorageAPI,

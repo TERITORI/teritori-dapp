@@ -4,9 +4,9 @@ import { StyleSheet, View } from "react-native";
 
 import { ConnectKeplrButton } from "./ConnectKeplrButton";
 import { ConnectMetamaskButton } from "./ConnectMetamaskButton";
+import { ConnectWalletConnectButton } from "./ConnectWalletConnectButton";
 import { ConnectWalletButton } from "./components/ConnectWalletButton";
 import adenaSVG from "../../../assets/icons/adena.svg";
-import walletConnectSVG from "../../../assets/icons/wallet-connect.svg";
 import { neutral77, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
@@ -54,11 +54,7 @@ export const ConnectWalletModal: React.FC<ConnectWalletProps> = ({
         iconSize={20}
       />
       <SpacerColumn size={1.5} />
-      <ConnectWalletButton
-        text="Wallet Connect"
-        isComingSoon
-        icon={walletConnectSVG}
-      />
+      <ConnectWalletConnectButton onDone={onClose} />
       <View style={styles.footer}>
         <SeparatorGradient />
         <SpacerColumn size={4} />

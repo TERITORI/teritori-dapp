@@ -1,7 +1,7 @@
 import { osmosisCurrencies } from "./currencies";
-import { NetworkKind, NetworkInfo } from "../types";
+import { NetworkKind, CosmosNetworkInfo } from "../types";
 
-export const osmosisNetwork: NetworkInfo = {
+export const osmosisNetwork: CosmosNetworkInfo = {
   id: "osmosis",
   kind: NetworkKind.Cosmos,
   chainId: "osmosis-1",

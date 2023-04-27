@@ -15,36 +15,33 @@ import { NetworkIcon } from "../../components/NetworkIcon";
 import { SVG } from "../../components/SVG";
 import { SecondaryButton } from "../../components/buttons/SecondaryButton";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { rewardsPrice, TotalRewards, useRewards } from "../../hooks/useRewards";
-import { accountExplorerLink, getUserId } from "../../networks";
+import { Wallet } from "../../context/WalletsProvider";
+import { useRewards } from "../../hooks/useRewards";
+import { accountExplorerLink, getNetwork } from "../../networks";
+import { setSelectedWallet } from "../../store/slices/settings";
+import { useAppDispatch } from "../../store/store";
 import { neutral33, neutral77 } from "../../utils/style/colors";
 
 export interface WalletItemProps {
   index: number;
   itemsCount: number;
-  item: {
-    id: number;
-    title: string;
-    address: string;
-    pendingRewards: TotalRewards[];
-    staked: number;
-    networkId: string;
-  };
+  wallet: Wallet;
 }
 
 export const WalletItem: React.FC<WalletItemProps> = ({
   index,
-  item,
+  wallet,
   itemsCount,
 }) => {
   const { width } = useWindowDimensions();
   const { setToastSuccess } = useFeedbacks();
-  const { claimAllRewards } = useRewards(
-    getUserId(item.networkId, item.address)
-  );
+  const { claimAllRewards } = useRewards(wallet.userId);
+  const dispatch = useAppDispatch();
 
   // Total rewards price with all denoms
-  const claimablePrice = rewardsPrice(item.pendingRewards);
+  // const claimablePrice = rewardsPrice(item.pendingRewards);
+
+  const claimablePrice = 0;
 
   return (
     <View
@@ -64,10 +61,18 @@ export const WalletItem: React.FC<WalletItemProps> = ({
           alignItems: "center",
         }}
       >
-        <NetworkIcon networkId={item.networkId} size={64} />
+        <NetworkIcon networkId={wallet.networkId} size={64} />
         <View style={{ marginLeft: 16 }}>
           <View>
-            <BrandText>{item.title}</BrandText>
+            <TouchableOpacity
+              onPress={() => {
+                dispatch(setSelectedWallet(wallet));
+              }}
+            >
+              <BrandText>
+                {getNetwork(wallet.networkId)?.displayName || "Unknown"}
+              </BrandText>
+            </TouchableOpacity>
             <View
               style={{
                 flexDirection: "row",
@@ -80,11 +85,11 @@ export const WalletItem: React.FC<WalletItemProps> = ({
                   fontSize: 12,
                 }}
               >
-                {item.address}
+                {wallet.address}
               </BrandText>
               <TouchableOpacity
                 onPress={() => {
-                  Clipboard.setString(item.address);
+                  Clipboard.setString(wallet.address);
                   setToastSuccess({
                     title: "Copied",
                     message: "",
@@ -196,9 +201,9 @@ export const WalletItem: React.FC<WalletItemProps> = ({
             {
               label: "View on Explorer",
               onPress: () => {
-                console.log("item", item);
+                console.log("item", wallet);
                 Linking.openURL(
-                  accountExplorerLink(item.networkId, item.address)
+                  accountExplorerLink(wallet.networkId, wallet.address)
                 );
               },
             },

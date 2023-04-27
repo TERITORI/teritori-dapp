@@ -19,7 +19,7 @@ export const Wallets: React.FC = () => {
   if (selectedWallet) {
     const network = getNetwork(selectedWallet.networkId);
     const wallet = {
-      id: 0,
+      id: "0",
       title: network?.displayName || selectedWallet.networkId,
       address: selectedWallet.address,
       pendingRewards: totalsRewards,
@@ -44,7 +44,7 @@ export const Wallets: React.FC = () => {
         <WalletItem
           key={item.title}
           itemsCount={wallets.length}
-          item={item}
+          wallet={item}
           index={index}
         />
       ))}
