@@ -19853,10 +19853,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lottie-ios@npm:3.2.3":
-  version: 3.2.3
-  resolution: "lottie-ios@npm:3.2.3"
-  checksum: 70d1c2e99c3ff4267168402e7c026a1b912de20fa9424eef13175fe17fcaf0da508c9440197e2bc93ab6bc1640e4dad9124bb2cdd0956b9cec89159905c3f8e7
+"lottie-ios@npm:3.4.0":
+  version: 3.4.0
+  resolution: "lottie-ios@npm:3.4.0"
+  checksum: 1a5becc6b34d258afde38f17104877c74749afd7d21d29813a0a56e7b8dae022deacd2139ea2262cd964bdf18791b63de50f28f6263aba3fcff09b08acabb3ce
   languageName: node
   linkType: hard
 
@@ -27176,7 +27176,7 @@ __metadata:
 >>>>>>> 74972f24 (mobile & desktop build)
     lodash: ^4.17.21
     long: ^5.2.1
-    lottie-ios: 3.2.3
+    lottie-ios: 3.4.0
     lottie-react: ^2.3.1
     lottie-react-native: 5.1.4
     metamask-react: ^2.4.1
