@@ -8,6 +8,7 @@ import {
 } from "react-native";
 
 import { NFTTransferModal } from "./NFTTransferModal";
+import checkMark from "../../../assets/icons/checkmark-marketplace.svg";
 import dotsCircleSVG from "../../../assets/icons/dots-circle.svg";
 import footerSVG from "../../../assets/icons/footer-regular.svg";
 import gridSVG from "../../../assets/icons/grid.svg";
@@ -20,7 +21,12 @@ import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getCosmosNetwork, parseUserId } from "../../networks";
 import { prettyPrice } from "../../utils/coins";
-import { neutral00, neutral33, neutral77 } from "../../utils/style/colors";
+import {
+  neutral00,
+  neutral22,
+  neutral33,
+  neutral77,
+} from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { CurrencyIcon } from "../CurrencyIcon";
@@ -36,8 +42,10 @@ import { SpacerColumn, SpacerRow } from "../spacer";
 
 export const NFTView: React.FC<{
   data: NFT;
+  selected: boolean;
+  handleClick: (id: string) => void;
   style?: StyleProp<ViewStyle>;
-}> = React.memo(({ data: nft, style }) => {
+}> = ({ data: nft, style, selected, handleClick }) => {
   // variables
   const cardWidth = 258;
   const insideMargin = layout.padding_x2;
@@ -50,6 +58,7 @@ export const NFTView: React.FC<{
     useDropdowns();
   const [isTransferNFTVisible, setIsTransferNFTVisible] =
     useState<boolean>(false);
+  const [localSelected, setLocalSelected] = useState(selected);
   const dropdownRef = useRef<View>(null);
 
   const isOwner = nft.ownerId === selectedWallet?.userId;
@@ -94,12 +103,17 @@ export const NFTView: React.FC<{
           style={styleWithoutMargins}
         >
           <View style={{ width: "100%" }}>
-            <View
+            <Pressable
               style={{
                 paddingTop: insideMargin,
                 paddingBottom: 12,
                 paddingHorizontal: insideMargin,
                 zIndex: 1000,
+                backgroundColor: localSelected ? neutral22 : neutral00,
+              }}
+              onPress={() => {
+                handleClick(nft.id);
+                setLocalSelected(!localSelected);
               }}
             >
               <View
@@ -154,6 +168,11 @@ export const NFTView: React.FC<{
                     </BrandText>
                   </OmniLink>
                 </View>
+                {localSelected && (
+                  <View style={{ position: "relative", zIndex: 1000 }}>
+                    <SVG source={checkMark} height={32} width={32} />
+                  </View>
+                )}
                 {isOwnerAndNotListed && (
                   <View style={{ position: "relative", zIndex: 1000 }}>
                     <Pressable
@@ -251,11 +270,12 @@ export const NFTView: React.FC<{
                   </View>
                 </View>
               </OmniLink>
-            </View>
+            </Pressable>
             <View
               style={{
                 borderTopWidth: 1,
                 borderTopColor: neutral33,
+                backgroundColor: localSelected ? neutral22 : neutral00,
                 height: 69,
                 paddingHorizontal: 16,
                 flexDirection: "row",
@@ -310,6 +330,9 @@ export const NFTView: React.FC<{
                   >
                     <SecondaryButton
                       size="XS"
+                      squaresBackgroundColor={
+                        localSelected ? neutral22 : neutral00
+                      }
                       text={prettyPrice(nft.networkId, nft.price, nft.denom)}
                       fullWidth
                       numberOfLines={1}
@@ -330,7 +353,7 @@ export const NFTView: React.FC<{
       />
     </>
   );
-});
+};
 
 const styles = StyleSheet.create({
   optionContainer: {

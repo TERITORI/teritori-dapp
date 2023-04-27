@@ -1,4 +1,4 @@
-import React, { ReactElement, useCallback } from "react";
+import React, { ReactElement, useCallback, useState } from "react";
 import { FlatList, View } from "react-native";
 
 import { NFTView } from "./NFTView";
@@ -13,11 +13,15 @@ const keyExtractor = (item: NFT) => item.id;
 const RenderItem: React.FC<{
   nft: NFT;
   marginable: boolean;
-}> = ({ nft, marginable }) => {
+  selected: boolean;
+  handleClick: (id: string) => void;
+}> = ({ nft, marginable, selected, handleClick }) => {
   return (
     <NFTView
       key={nft.mintAddress}
       data={nft}
+      selected={selected}
+      handleClick={handleClick}
       style={{ marginRight: marginable ? layout.padding_x2 : 0 }}
     />
   );
@@ -30,12 +34,22 @@ export const NFTs: React.FC<{
   ListFooterComponent?: ReactElement;
 }> = ({ req, numColumns, ListHeaderComponent, ListFooterComponent }) => {
   const { nfts, fetchMore } = useNFTs(req);
+  const [selected, setSelected] = useState<Set<string>>(new Set<string>());
 
   const { height } = useMaxResolution();
 
   const handleEndReached = useCallback(() => {
     fetchMore();
   }, [fetchMore]);
+
+  const handleClick = (id: string) => {
+    if (selected.has(id)) {
+      selected.delete(id);
+    } else {
+      selected.add(id);
+    }
+    setSelected(selected);
+  };
 
   return (
     <View
@@ -57,12 +71,16 @@ export const NFTs: React.FC<{
         onEndReached={handleEndReached}
         keyExtractor={keyExtractor}
         // onEndReachedThreshold={4}
-        renderItem={(info) => (
-          <RenderItem
-            nft={info.item}
-            marginable={!!((info.index + 1) % numColumns)}
-          />
-        )}
+        renderItem={(info) => {
+          return (
+            <RenderItem
+              nft={info.item}
+              marginable={!!((info.index + 1) % numColumns)}
+              selected={selected.has(info.item.id)}
+              handleClick={handleClick}
+            />
+          );
+        }}
         ItemSeparatorComponent={() => <SpacerColumn size={2} />}
         //ListHeaderComponent={ListHeaderComponent}
         //ListFooterComponent={ListFooterComponent}
