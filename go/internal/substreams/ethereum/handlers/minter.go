@@ -10,10 +10,15 @@ import (
 	"github.com/davecgh/go-spew/spew"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/pkg/errors"
+	"go.uber.org/zap"
 )
 
 type MinterMintWithMetadataInput struct {
 	MintData []abi_go.TeritoriMinterMintDataWithMetadata `json:"mintData"`
+}
+
+type MetaData struct {
+	Attributes indexerdb.ArrayJSONB `json:"attributes"`
 }
 
 func (h *Handler) HandleMintWithMetadata(method *abi.Method, tx *pb.Tx, args map[string]interface{}) error {
@@ -33,9 +38,10 @@ func (h *Handler) HandleMintWithMetadata(method *abi.Method, tx *pb.Tx, args map
 		nftID := h.Network.NFTID(tx.Call.Address, tokenID)
 		collectionID := h.Network.CollectionID(tx.Call.Address)
 
-		attributes := indexerdb.ArrayJSONB{}
-		for _, attr := range nftData.Extension.Attributes {
-			attributes = append(attributes, attr)
+		// Get attributes from URI
+		var metaData MetaData
+		if err := FetchIPFSJSON(nftData.TokenUri, &metaData); err != nil {
+			h.Logger.Error("failed to fetch nft metadata", zap.String("metadata-uri", nftData.TokenUri), zap.Error(err))
 		}
 
 		nft := indexerdb.NFT{
@@ -44,7 +50,7 @@ func (h *Handler) HandleMintWithMetadata(method *abi.Method, tx *pb.Tx, args map
 			Name:         nftData.Extension.Name,
 			ImageURI:     nftData.Extension.Image,
 			CollectionID: collectionID,
-			Attributes:   attributes,
+			Attributes:   metaData.Attributes,
 			TeritoriNFT: &indexerdb.TeritoriNFT{
 				TokenID: tokenID,
 			},
