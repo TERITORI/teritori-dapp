@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 import { SortDirection } from "../../api/marketplace/v1/marketplace";
@@ -58,6 +59,8 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
           selectedTab={selectedTab}
           sortDirection={sortDirection}
         />
+
+        <View style={{}} />
       </ScrollView>
     </ScreenContainer>
   );

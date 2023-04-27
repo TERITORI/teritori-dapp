@@ -48,4 +48,5 @@ export const CollectionContent: React.FC<{
     case "activity":
       return <ActivityTable collectionId={id} />;
   }
+  return null;
 });
