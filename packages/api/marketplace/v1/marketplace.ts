@@ -347,6 +347,25 @@ export interface DAppResponse {
   group: DApp[];
 }
 
+export interface SearchNamesRequest {
+  networkId: string;
+  input: string;
+  limit: number;
+}
+
+export interface SearchNamesResponse {
+  names: string[];
+}
+
+export interface SearchCollectionsRequest {
+  input: string;
+  limit: number;
+}
+
+export interface SearchCollectionsResponse {
+  collections: Collection[];
+}
+
 function createBaseAttribute(): Attribute {
   return { traitType: "", value: "" };
 }
@@ -2719,6 +2738,235 @@ export const DAppResponse = {
   },
 };
 
+function createBaseSearchNamesRequest(): SearchNamesRequest {
+  return { networkId: "", input: "", limit: 0 };
+}
+
+export const SearchNamesRequest = {
+  encode(message: SearchNamesRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.networkId !== "") {
+      writer.uint32(10).string(message.networkId);
+    }
+    if (message.input !== "") {
+      writer.uint32(18).string(message.input);
+    }
+    if (message.limit !== 0) {
+      writer.uint32(24).int32(message.limit);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): SearchNamesRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSearchNamesRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.networkId = reader.string();
+          break;
+        case 2:
+          message.input = reader.string();
+          break;
+        case 3:
+          message.limit = reader.int32();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SearchNamesRequest {
+    return {
+      networkId: isSet(object.networkId) ? String(object.networkId) : "",
+      input: isSet(object.input) ? String(object.input) : "",
+      limit: isSet(object.limit) ? Number(object.limit) : 0,
+    };
+  },
+
+  toJSON(message: SearchNamesRequest): unknown {
+    const obj: any = {};
+    message.networkId !== undefined && (obj.networkId = message.networkId);
+    message.input !== undefined && (obj.input = message.input);
+    message.limit !== undefined && (obj.limit = Math.round(message.limit));
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<SearchNamesRequest>, I>>(object: I): SearchNamesRequest {
+    const message = createBaseSearchNamesRequest();
+    message.networkId = object.networkId ?? "";
+    message.input = object.input ?? "";
+    message.limit = object.limit ?? 0;
+    return message;
+  },
+};
+
+function createBaseSearchNamesResponse(): SearchNamesResponse {
+  return { names: [] };
+}
+
+export const SearchNamesResponse = {
+  encode(message: SearchNamesResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.names) {
+      writer.uint32(10).string(v!);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): SearchNamesResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSearchNamesResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.names.push(reader.string());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SearchNamesResponse {
+    return { names: Array.isArray(object?.names) ? object.names.map((e: any) => String(e)) : [] };
+  },
+
+  toJSON(message: SearchNamesResponse): unknown {
+    const obj: any = {};
+    if (message.names) {
+      obj.names = message.names.map((e) => e);
+    } else {
+      obj.names = [];
+    }
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<SearchNamesResponse>, I>>(object: I): SearchNamesResponse {
+    const message = createBaseSearchNamesResponse();
+    message.names = object.names?.map((e) => e) || [];
+    return message;
+  },
+};
+
+function createBaseSearchCollectionsRequest(): SearchCollectionsRequest {
+  return { input: "", limit: 0 };
+}
+
+export const SearchCollectionsRequest = {
+  encode(message: SearchCollectionsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.input !== "") {
+      writer.uint32(10).string(message.input);
+    }
+    if (message.limit !== 0) {
+      writer.uint32(16).int32(message.limit);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): SearchCollectionsRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSearchCollectionsRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.input = reader.string();
+          break;
+        case 2:
+          message.limit = reader.int32();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SearchCollectionsRequest {
+    return {
+      input: isSet(object.input) ? String(object.input) : "",
+      limit: isSet(object.limit) ? Number(object.limit) : 0,
+    };
+  },
+
+  toJSON(message: SearchCollectionsRequest): unknown {
+    const obj: any = {};
+    message.input !== undefined && (obj.input = message.input);
+    message.limit !== undefined && (obj.limit = Math.round(message.limit));
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<SearchCollectionsRequest>, I>>(object: I): SearchCollectionsRequest {
+    const message = createBaseSearchCollectionsRequest();
+    message.input = object.input ?? "";
+    message.limit = object.limit ?? 0;
+    return message;
+  },
+};
+
+function createBaseSearchCollectionsResponse(): SearchCollectionsResponse {
+  return { collections: [] };
+}
+
+export const SearchCollectionsResponse = {
+  encode(message: SearchCollectionsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.collections) {
+      Collection.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): SearchCollectionsResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSearchCollectionsResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.collections.push(Collection.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SearchCollectionsResponse {
+    return {
+      collections: Array.isArray(object?.collections) ? object.collections.map((e: any) => Collection.fromJSON(e)) : [],
+    };
+  },
+
+  toJSON(message: SearchCollectionsResponse): unknown {
+    const obj: any = {};
+    if (message.collections) {
+      obj.collections = message.collections.map((e) => e ? Collection.toJSON(e) : undefined);
+    } else {
+      obj.collections = [];
+    }
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<SearchCollectionsResponse>, I>>(object: I): SearchCollectionsResponse {
+    const message = createBaseSearchCollectionsResponse();
+    message.collections = object.collections?.map((e) => Collection.fromPartial(e)) || [];
+    return message;
+  },
+};
+
 export interface MarketplaceService {
   Collections(request: DeepPartial<CollectionsRequest>, metadata?: grpc.Metadata): Observable<CollectionsResponse>;
   CollectionStats(
@@ -2736,6 +2984,11 @@ export interface MarketplaceService {
   News(request: DeepPartial<NewsRequest>, metadata?: grpc.Metadata): Promise<NewsResponse>;
   DApps(request: DeepPartial<DAppsStoreRequest>, metadata?: grpc.Metadata): Promise<DAppResponse>;
   DAppsGroups(request: DeepPartial<DAppsStoreRequest>, metadata?: grpc.Metadata): Promise<DAppGroupsResponse>;
+  SearchNames(request: DeepPartial<SearchNamesRequest>, metadata?: grpc.Metadata): Promise<SearchNamesResponse>;
+  SearchCollections(
+    request: DeepPartial<SearchCollectionsRequest>,
+    metadata?: grpc.Metadata,
+  ): Promise<SearchCollectionsResponse>;
 }
 
 export class MarketplaceServiceClientImpl implements MarketplaceService {
@@ -2753,6 +3006,8 @@ export class MarketplaceServiceClientImpl implements MarketplaceService {
     this.News = this.News.bind(this);
     this.DApps = this.DApps.bind(this);
     this.DAppsGroups = this.DAppsGroups.bind(this);
+    this.SearchNames = this.SearchNames.bind(this);
+    this.SearchCollections = this.SearchCollections.bind(this);
   }
 
   Collections(request: DeepPartial<CollectionsRequest>, metadata?: grpc.Metadata): Observable<CollectionsResponse> {
@@ -2799,6 +3054,21 @@ export class MarketplaceServiceClientImpl implements MarketplaceService {
 
   DAppsGroups(request: DeepPartial<DAppsStoreRequest>, metadata?: grpc.Metadata): Promise<DAppGroupsResponse> {
     return this.rpc.unary(MarketplaceServiceDAppsGroupsDesc, DAppsStoreRequest.fromPartial(request), metadata);
+  }
+
+  SearchNames(request: DeepPartial<SearchNamesRequest>, metadata?: grpc.Metadata): Promise<SearchNamesResponse> {
+    return this.rpc.unary(MarketplaceServiceSearchNamesDesc, SearchNamesRequest.fromPartial(request), metadata);
+  }
+
+  SearchCollections(
+    request: DeepPartial<SearchCollectionsRequest>,
+    metadata?: grpc.Metadata,
+  ): Promise<SearchCollectionsResponse> {
+    return this.rpc.unary(
+      MarketplaceServiceSearchCollectionsDesc,
+      SearchCollectionsRequest.fromPartial(request),
+      metadata,
+    );
   }
 }
 
@@ -3016,6 +3286,50 @@ export const MarketplaceServiceDAppsGroupsDesc: UnaryMethodDefinitionish = {
     deserializeBinary(data: Uint8Array) {
       return {
         ...DAppGroupsResponse.decode(data),
+        toObject() {
+          return this;
+        },
+      };
+    },
+  } as any,
+};
+
+export const MarketplaceServiceSearchNamesDesc: UnaryMethodDefinitionish = {
+  methodName: "SearchNames",
+  service: MarketplaceServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return SearchNamesRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      return {
+        ...SearchNamesResponse.decode(data),
+        toObject() {
+          return this;
+        },
+      };
+    },
+  } as any,
+};
+
+export const MarketplaceServiceSearchCollectionsDesc: UnaryMethodDefinitionish = {
+  methodName: "SearchCollections",
+  service: MarketplaceServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return SearchCollectionsRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      return {
+        ...SearchCollectionsResponse.decode(data),
         toObject() {
           return this;
         },

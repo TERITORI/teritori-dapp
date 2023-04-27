@@ -123,7 +123,7 @@ export const Russian = () => {
 
   // Button text
   const longButtonLabelText = result
-    ? `${remainingUserTicket} winning remaining tickets in the russian roulette`
+    ? `${remainingUserTicket} remaining tickets in the russian roulette`
     : `Last month's winnings per ticket = ${monthPriceTicket}$ TORI`;
   const userInteractionInfo = result
     ? `You can still buy ${remainingUserCurrency} tickets`
@@ -164,7 +164,8 @@ export const Russian = () => {
   useEffect(() => {
     if (ResultData) {
       setWinning(ResultData.length);
-      setLosing(bet - ResultData.length);
+      const losingCal = bet - ResultData.length;
+      setLosing(isNaN(losingCal) ? 0 : losingCal);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ResultData]);
@@ -342,7 +343,7 @@ export const Russian = () => {
             transform: [{ rotate: "-1.69deg" }],
           }}
         >
-          {result ? LabelSubTitle : "Here are your results"}
+          {!result ? LabelSubTitle : "Here are your results"}
         </Label>
       </View>
       {/* Interaction View */}

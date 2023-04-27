@@ -5,43 +5,41 @@ import {
   View,
   StyleSheet,
   useWindowDimensions,
-  Platform,
-  ViewStyle,
-  StyleProp,
 } from "react-native";
 
 import { Header } from "./Header";
-import { NetworkSelector } from "./NetworkSelector";
-import { SelectedNetworkGate } from "./SelectedNetworkGate";
-import { ConnectWalletButton } from "./TopMenu/ConnectWalletButton";
-import { Footer } from "./footers/Footer";
-import { Sidebar } from "./navigation/Sidebar";
-import { useForceNetworkKind } from "../hooks/useForceNetworkKind";
-import { useForceNetworkSelection } from "../hooks/useForceNetworkSelection";
-import { useForceUnselectNetworks } from "../hooks/useForceUnselectNetworks";
-import { useMaxResolution } from "../hooks/useMaxResolution";
-import { NetworkInfo, NetworkKind } from "../networks";
-import { DAppStoreData } from "../screens/DAppStore/components/DAppStoreData";
+import { ScreenContainerMobile } from "./ScreenContainerMobile";
+import { SearchBar } from "./SearchBar";
+import { useForceNetworkKind } from "../../hooks/useForceNetworkKind";
+import { useForceNetworkSelection } from "../../hooks/useForceNetworkSelection";
+import { useForceUnselectNetworks } from "../../hooks/useForceUnselectNetworks";
+import { useIsMobile } from "../../hooks/useIsMobile";
+import { useMaxResolution } from "../../hooks/useMaxResolution";
+import { NetworkInfo, NetworkKind } from "../../networks";
+import { DAppStoreData } from "../../screens/DAppStore/components/DAppStoreData";
+import { neutral33 } from "../../utils/style/colors";
 import {
   getResponsiveScreenContainerMarginHorizontal,
   headerHeight,
   headerMarginHorizontal,
   screenContainerContentMarginHorizontal,
-} from "../utils/style/layout";
+} from "../../utils/style/layout";
+import { NetworkSelector } from "../NetworkSelector/NetworkSelector";
+import { SelectedNetworkGate } from "../SelectedNetworkGate";
+import { ConnectWalletButton } from "../TopMenu/ConnectWalletButton";
+import { Footer } from "../footers/Footer";
+import { Sidebar } from "../navigation/Sidebar";
 
 export const ScreenContainer: React.FC<{
   headerChildren?: JSX.Element;
   footerChildren?: React.ReactNode;
-  headerStyle?: StyleProp<ViewStyle>;
+  mobileTitle?: string;
   hideSidebar?: boolean;
-  customSidebar?: React.ReactNode;
   noMargin?: boolean;
   noScroll?: boolean;
   fullWidth?: boolean;
-  smallMargin?: boolean;
   forceNetworkId?: string;
   forceNetworkKind?: NetworkKind;
-  fixedFooterChildren?: React.ReactNode;
   responsive?: boolean;
   onBackPress?: () => void;
   maxWidth?: number;
@@ -49,14 +47,11 @@ export const ScreenContainer: React.FC<{
   children,
   headerChildren,
   footerChildren,
-  headerStyle,
+  mobileTitle,
   hideSidebar,
   noMargin,
   noScroll,
   fullWidth,
-  smallMargin,
-  customSidebar,
-  fixedFooterChildren,
   responsive,
   onBackPress,
   maxWidth,
@@ -68,6 +63,7 @@ export const ScreenContainer: React.FC<{
   const hasMargin = !noMargin;
   const hasScroll = !noScroll;
   const { width: screenWidth } = useMaxResolution({ responsive, noMargin });
+  const isMobile = useIsMobile();
 
   const calculatedWidth = useMemo(
     () => (maxWidth ? Math.min(maxWidth, screenWidth) : screenWidth),
@@ -95,26 +91,31 @@ export const ScreenContainer: React.FC<{
     },
     [forceNetworkId, forceNetworkKind]
   );
-  // returns
+
+  /////////////// mobile returns
+  if (isMobile)
+    return (
+      <ScreenContainerMobile
+        children={children}
+        networkFilter={networkFilter}
+        hasScroll={hasScroll}
+        forceNetworkId={forceNetworkId}
+        forceNetworkKind={forceNetworkKind}
+        mobileTitle={mobileTitle}
+      />
+    );
+  /////////////// default returns
   return (
     <SafeAreaView style={{ width: "100%", flex: 1 }}>
       <DAppStoreData />
-      {/*TODO: Refactor this*/}
+      {/*FIXME: Too many containers levels*/}
 
       <View style={styles.container}>
-        {["android", "ios"].includes(Platform.OS) ||
-          (!hideSidebar && <Sidebar />)}
-        {!["android", "ios"].includes(Platform.OS) && customSidebar}
+        {!hideSidebar ? <Sidebar /> : null}
 
         <View style={{ width: "100%", flex: 1 }}>
           {/*==== Header*/}
-          <Header
-            style={headerStyle}
-            smallMargin={smallMargin}
-            onBackPress={onBackPress}
-          >
-            {headerChildren}
-          </Header>
+          <Header onBackPress={onBackPress}>{headerChildren}</Header>
 
           <View
             style={{ width: "100%", flexDirection: "row", flex: 1, height }}
@@ -150,19 +151,13 @@ export const ScreenContainer: React.FC<{
                     {footerChildren ? footerChildren : <Footer />}
                   </View>
                 )}
-                {fixedFooterChildren && (
-                  <View style={{ width: "100%" }}>
-                    <View style={[{ width, alignSelf: "center" }, marginStyle]}>
-                      {fixedFooterChildren}
-                    </View>
-                  </View>
-                )}
               </SelectedNetworkGate>
             </View>
           </View>
           {/*
             We render the wallet selector here with absolute position to make sure
             the popup is on top of everything else, otherwise it's unusable
+            TODO: Fix that and put this in Header.tsx
           */}
           <View
             style={{
@@ -174,12 +169,23 @@ export const ScreenContainer: React.FC<{
               alignItems: "center",
             }}
           >
+            <SearchBar />
+            <View
+              style={{
+                height: "100%",
+                backgroundColor: neutral33,
+                marginHorizontal: 16,
+                width: 1,
+              }}
+            />
             <NetworkSelector
               forceNetworkId={forceNetworkId}
               forceNetworkKind={forceNetworkKind}
               style={{ marginRight: 12 }}
             />
-            <ConnectWalletButton />
+            <ConnectWalletButton
+              style={{ marginRight: headerMarginHorizontal }}
+            />
           </View>
         </View>
       </View>

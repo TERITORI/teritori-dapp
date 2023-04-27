@@ -4,7 +4,7 @@
     "kind": "Cosmos",
     "chainId": "teritori-1",
     "displayName": "Teritori",
-    "icon": "icons/networks/teritori-circle.svg",
+    "icon": "icons/networks/teritori.svg",
     "walletUrlForStaking": "https://explorer.teritori.com/teritori/staking",
     "currencies": [
       {
@@ -118,7 +118,7 @@
     "kind": "Cosmos",
     "chainId": "teritori-testnet-v3",
     "displayName": "Teritori Testnet",
-    "icon": "icons/networks/teritori-circle.svg",
+    "icon": "icons/networks/teritori.svg",
     "currencies": [
       {
         "denom": "utori",

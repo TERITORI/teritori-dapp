@@ -5,6 +5,7 @@ import firePNG from "../../../../assets/game/fire.png";
 import twitterSVG from "../../../../assets/icons/twitter.svg";
 import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
+import { OptimizedImage } from "../../../components/OptimizedImage";
 import { SocialButton } from "../../../components/buttons/SocialButton";
 import ModalBase from "../../../components/modals/ModalBase";
 import { SpacerColumn } from "../../../components/spacer";
@@ -71,9 +72,11 @@ export const BreedingResultModal: React.FC<BreedingResultModalProps> = ({
       }
     >
       <View style={{ alignItems: "center" }}>
-        <Image
+        <OptimizedImage
           style={{ width: 330, height: 330 }}
           source={{ uri: tokenInfo?.imageUri }}
+          width={330}
+          height={330}
         />
 
         <SpacerColumn size={2} />

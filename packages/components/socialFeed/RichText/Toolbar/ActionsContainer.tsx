@@ -1,16 +1,17 @@
-import { View } from "react-native";
+import { View, useWindowDimensions } from "react-native";
 
-import { TOOLBAR_HEIGHT } from "./ToolbarContainer";
+import { SOCIAL_FEED_BREAKPOINT_M } from "../../../../utils/style/layout";
 
 export const ActionsContainer: React.FC = ({ children }) => {
+  const { width: windowWidth } = useWindowDimensions();
+
   return (
     <View
       style={{
-        flexDirection: "row",
+        flexDirection:
+          windowWidth < SOCIAL_FEED_BREAKPOINT_M ? "column" : "row",
         alignItems: "center",
         justifyContent: "space-between",
-        flex: 1,
-        minHeight: TOOLBAR_HEIGHT,
       }}
     >
       {children}

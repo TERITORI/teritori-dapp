@@ -1,6 +1,5 @@
 import React, { useMemo } from "react";
 import {
-  Image,
   StyleProp,
   View,
   ViewStyle,
@@ -11,11 +10,11 @@ import {
 import emptyCircleFrameSVG from "../../../assets/empty-circle-frame.svg";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { getCosmosNetwork } from "../../networks";
-import { ipfsURLToHTTPURL } from "../../utils/ipfs";
+import { OptimizedImage } from "../OptimizedImage";
 import { SVG } from "../SVG";
 import { AnimationFadeIn } from "../animations/AnimationFadeIn";
 
-type AvatarWithFrameSize = "XL" | "L" | "M";
+type AvatarWithFrameSize = "XL" | "L" | "M" | "S";
 
 export const AvatarWithFrame: React.FC<{
   image: string | null | undefined;
@@ -45,12 +44,11 @@ export const AvatarWithFrame: React.FC<{
         />
       ) : (
         <AnimationFadeIn style={styles.absolute}>
-          <Image
-            resizeMode="cover"
+          <OptimizedImage
+            width={sizedStyles.image.width}
+            height={sizedStyles.image.height}
             source={{
-              uri: ipfsURLToHTTPURL(
-                image ? image : network?.nameServiceDefaultImage || ""
-              ),
+              uri: image ? image : network?.nameServiceDefaultImage || "",
             }}
             style={sizedStyles.image}
           />
@@ -111,6 +109,20 @@ const flatStyles = {
     frame: {
       width: 68,
       height: 68,
+    },
+  },
+
+  S: {
+    image: {
+      height: 34,
+      left: 0.25,
+      top: -0.5,
+      width: 34,
+      borderRadius: 999,
+    },
+    frame: {
+      width: 48,
+      height: 48,
     },
   },
 };

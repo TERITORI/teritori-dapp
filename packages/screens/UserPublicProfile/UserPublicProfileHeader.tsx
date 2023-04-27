@@ -2,6 +2,7 @@ import React from "react";
 
 import { Tabs } from "../../components/tabs/Tabs";
 import { UPPIntro } from "../../components/userPublicProfile/UPPIntro";
+import { useMaxResolution } from "../../hooks/useMaxResolution";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { primaryColor } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
@@ -57,6 +58,7 @@ export const UserPublicProfileScreenHeader = ({
   setSelectedTab,
 }: UserPublicProfileScreenHeaderProps) => {
   const selectedWallet = useSelectedWallet();
+  const { width } = useMaxResolution();
 
   return (
     <>
@@ -69,8 +71,10 @@ export const UserPublicProfileScreenHeader = ({
         selected={selectedTab}
         onSelect={setSelectedTab}
         style={{
+          width,
           marginTop: 32,
           marginBottom: layout.padding_x2_5 / 2,
+          height: 45,
         }}
         borderColorTabSelected={primaryColor}
       />

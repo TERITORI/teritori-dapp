@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { useWindowDimensions, View } from "react-native";
 
 import { AssetRatioByChain } from "./AssetRatioByChain";
@@ -34,12 +34,14 @@ export const Overview: React.FC = () => {
           marginRight: isBreakPoint ? ASSET_RATIO_MARGIN_RIGHT : 0,
         }}
       />
-      <TokenAllocation
-        style={{
-          paddingTop: 32,
-          width: isBreakPoint ? "100%" : TOKEN_ALLOCATION_WIDTH,
-        }}
-      />
+      <Suspense fallback={<></>}>
+        <TokenAllocation
+          style={{
+            paddingTop: 32,
+            width: isBreakPoint ? "100%" : TOKEN_ALLOCATION_WIDTH,
+          }}
+        />
+      </Suspense>
     </View>
   );
 };

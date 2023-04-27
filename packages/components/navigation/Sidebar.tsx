@@ -1,12 +1,11 @@
 import { useRoute } from "@react-navigation/native";
-import React, { useMemo } from "react";
+import React from "react";
 import { View, StyleSheet, Pressable, FlatList } from "react-native";
 import Animated, {
   useAnimatedStyle,
   withSpring,
   WithSpringConfig,
 } from "react-native-reanimated";
-import { useSelector } from "react-redux";
 
 import { SideNotch } from "./components/SideNotch";
 import { SidebarButton } from "./components/SidebarButton";
@@ -20,15 +19,7 @@ import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useSelectedNetworkKind } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkKind } from "../../networks";
-import { getValuesFromId, SEPARATOR } from "../../screens/DAppStore/query/util";
-import {
-  selectAvailableApps,
-  selectCheckedApps,
-  setSelectedApps,
-} from "../../store/slices/dapps-store";
-import { useAppDispatch } from "../../store/store";
 import { useAppNavigation } from "../../utils/navigation";
-import { SIDEBAR_LIST } from "../../utils/sidebar";
 import { neutral17, neutral33 } from "../../utils/style/colors";
 import {
   smallSidebarWidth,
@@ -55,7 +46,7 @@ export const Sidebar: React.FC = () => {
   // variables
   const navigation = useAppNavigation();
   const { name: currentRouteName } = useRoute();
-  const { isSidebarExpanded, toggleSidebar } = useSidebar();
+  const { isSidebarExpanded, toggleSidebar, dynamicSidebar } = useSidebar();
 
   // animations
   const layoutStyle = useAnimatedStyle(
@@ -86,57 +77,6 @@ export const Sidebar: React.FC = () => {
     // @ts-expect-error
     navigation.navigate(name);
   };
-
-  const selectedApps = useSelector(selectCheckedApps);
-  const availableApps = useSelector(selectAvailableApps);
-
-  const dispatch = useAppDispatch();
-
-  const dynamicSidebar = useMemo(() => {
-    if (selectedApps.length === 0 && Object.values(availableApps).length > 0) {
-      dispatch(
-        setSelectedApps(
-          Object.values(availableApps).flatMap((item) => {
-            return Object.values(item.options)
-              .filter((dapp) => dapp.selectedByDefault)
-              .map(({ groupKey, id }) => {
-                return `${groupKey}${SEPARATOR}${id}`;
-              });
-          })
-        )
-      );
-    }
-    const dynamicAppsSelection = [] as {
-      [key: string]: any;
-    };
-    selectedApps.map((element) => {
-      const { appId, groupKey } = getValuesFromId(element);
-      if (!availableApps[groupKey]) {
-        return;
-      }
-      const option = availableApps[groupKey].options[appId];
-      if (option === undefined) {
-        /*
-         we found something inconsistent between the selected apps and what is available.
-         I will reset user selection to go back to a sane state
-         */
-        dispatch(setSelectedApps([]));
-        return;
-      }
-
-      dynamicAppsSelection[element] = SIDEBAR_LIST[option.id]
-        ? SIDEBAR_LIST[option.id]
-        : {
-            id: option.id,
-            title: option.title,
-            route: option.route,
-            icon: option.icon,
-          };
-    });
-    dynamicAppsSelection["dappstore"] = SIDEBAR_LIST["DAppsStore"];
-
-    return dynamicAppsSelection;
-  }, [selectedApps, availableApps, dispatch]);
 
   // returns
   return (

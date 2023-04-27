@@ -216,6 +216,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     flex: 1,
+    maxWidth: 120,
   },
   svgContainer: {
     borderWidth: 2,

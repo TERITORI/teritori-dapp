@@ -5,6 +5,7 @@ import {
   ScrollView,
   ViewComponent,
   ViewStyle,
+  useWindowDimensions,
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
@@ -12,6 +13,7 @@ import chevronLeft from "../../../assets/icons/chevron-left.svg";
 import closeSVG from "../../../assets/icons/close.svg";
 import { neutral77, neutral22 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
+import { RESPONSIVE_BREAKPOINT_S } from "../../utils/style/layout";
 import { modalMarginPadding } from "../../utils/style/modals";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
@@ -60,6 +62,8 @@ export const ModalBase: React.FC<ModalBaseProps> = ({
   noBrokenCorners,
   closeButtonStyle,
 }) => {
+  const { width: windowWidth } = useWindowDimensions();
+
   return (
     <Modal
       style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
@@ -96,7 +100,8 @@ export const ModalBase: React.FC<ModalBaseProps> = ({
       >
         {/*------ Modal main container */}
         <TertiaryBox
-          width={width}
+          fullWidth={windowWidth < RESPONSIVE_BREAKPOINT_S}
+          width={windowWidth < RESPONSIVE_BREAKPOINT_S ? undefined : width}
           style={{ margin: "auto" }}
           mainContainerStyle={[
             {

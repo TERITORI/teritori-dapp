@@ -118,7 +118,7 @@ const navConfig: {
     Feed: "feed",
     FeedNewArticle: "feed/new",
     FeedPostView: "feed/post/:id",
-    HashtagFeed: "feed/hashtag/:hashtag",
+    HashtagFeed: "feed/tag/:hashtag",
 
     // ==== Staking
     Staking: "staking",

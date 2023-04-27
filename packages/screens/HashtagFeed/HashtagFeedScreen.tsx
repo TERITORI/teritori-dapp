@@ -4,49 +4,62 @@ import { View } from "react-native";
 import { PostsRequest } from "../../api/feed/v1/feed";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
+import { MobileTitle } from "../../components/ScreenContainer/ScreenContainerMobile";
 import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
-import { ScreenFC } from "../../utils/navigation";
+import { useIsMobile } from "../../hooks/useIsMobile";
+import { useMaxResolution } from "../../hooks/useMaxResolution";
+import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { neutral22, primaryColor } from "../../utils/style/colors";
-import { layout } from "../../utils/style/layout";
+import { fontSemibold20 } from "../../utils/style/fonts";
+import { layout, screenContentMaxWidth } from "../../utils/style/layout";
 
-const Header = ({ hashtag }: { hashtag: string }) => (
-  <View
-    style={{
-      height: 80,
-      alignItems: "center",
-      flexDirection: "row",
-    }}
-  >
+const Header = ({ hashtag }: { hashtag: string }) => {
+  const isMobile = useIsMobile();
+  const { width } = useMaxResolution();
+  return (
     <View
       style={{
-        height: 60,
-        width: 60,
-        borderRadius: 30,
-        marginRight: layout.padding_x2,
-        backgroundColor: neutral22,
+        marginTop: layout.padding_x2,
+        alignSelf: "center",
         alignItems: "center",
-        justifyContent: "center",
+        flexDirection: "row",
+        width: isMobile ? width : "100%",
+        maxWidth: screenContentMaxWidth,
       }}
     >
-      <BrandText
+      <View
         style={{
-          fontSize: 40,
-          color: primaryColor,
+          height: 60,
+          width: 60,
+          borderRadius: 30,
+          marginRight: layout.padding_x2,
+          backgroundColor: neutral22,
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
-        #
-      </BrandText>
-    </View>
+        <BrandText
+          style={{
+            fontSize: 40,
+            color: primaryColor,
+          }}
+        >
+          #
+        </BrandText>
+      </View>
 
-    <BrandText>{hashtag}</BrandText>
-  </View>
-);
+      <BrandText>{hashtag}</BrandText>
+    </View>
+  );
+};
 
 export const HashtagFeedScreen: ScreenFC<"HashtagFeed"> = ({
   route: {
     params: { hashtag },
   },
 }) => {
+  const isMobile = useIsMobile();
+  const navigation = useAppNavigation();
   const feedRequest: PostsRequest = useMemo(() => {
     return {
       filter: {
@@ -61,11 +74,30 @@ export const HashtagFeedScreen: ScreenFC<"HashtagFeed"> = ({
   }, [hashtag]);
 
   return (
-    <ScreenContainer responsive footerChildren={<></>} fullWidth noScroll>
+    <ScreenContainer
+      responsive
+      footerChildren={<></>}
+      fullWidth
+      noScroll
+      headerChildren={
+        <BrandText style={fontSemibold20}>{`Tag ${hashtag}`}</BrandText>
+      }
+      onBackPress={() =>
+        navigation.canGoBack()
+          ? navigation.goBack()
+          : navigation.navigate("Feed")
+      }
+    >
       <NewsFeed
         additionalHashtag={hashtag}
         req={feedRequest}
-        Header={() => <Header hashtag={`#${hashtag}`} />}
+        Header={() => (
+          <>
+            {/* ScreenContainer has noScroll, so we need to add MobileTitle here */}
+            {isMobile && <MobileTitle title={`TAG ${hashtag.toUpperCase()}`} />}
+            <Header hashtag={`#${hashtag}`} />
+          </>
+        )}
       />
     </ScreenContainer>
   );

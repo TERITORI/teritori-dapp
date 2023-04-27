@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { StyleSheet, View, Image } from "react-native";
 import { useSelector } from "react-redux";
 
@@ -38,7 +38,11 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
     <ModalBase
       visible={visible}
       onClose={onClose}
-      Header={() => <ModalHeader />}
+      Header={() => (
+        <Suspense fallback={<></>}>
+          <ModalHeader />
+        </Suspense>
+      )}
       width={456}
     >
       <View style={styles.modalChildren}>
