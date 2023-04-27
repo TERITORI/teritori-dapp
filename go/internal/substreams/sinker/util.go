@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"github.com/ethereum/go-ethereum/accounts/abi"
-	"github.com/pkg/errors"
 	"github.com/streamingfast/bstream"
 	pbsubstreams "github.com/streamingfast/substreams/pb/sf/substreams/v1"
 )
@@ -82,15 +81,6 @@ func mustLoadABI(abiPath string) abi.ABI {
 
 func isSameAddress(addr1 string, addr2 string) bool {
 	return strings.EqualFold(addr1, addr2)
-}
-
-func ParseMethod(contractABI *abi.ABI, callInput []byte) (*abi.Method, error) {
-	methodSigData := callInput[:4]
-	method, err := contractABI.MethodById(methodSigData)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to parse method name")
-	}
-	return method, nil
 }
 
 func DecodeCallData(contractABI *abi.ABI, data []byte) (*abi.Method, []byte, map[string]interface{}) {

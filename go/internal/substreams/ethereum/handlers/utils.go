@@ -62,3 +62,12 @@ func ArgsToStruct(args map[string]interface{}, result any) error {
 	}
 	return nil
 }
+
+func ParseMethod(contractABI *abi.ABI, callInput []byte) (*abi.Method, error) {
+	methodSigData := callInput[:4]
+	method, err := contractABI.MethodById(methodSigData)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to parse method name")
+	}
+	return method, nil
+}

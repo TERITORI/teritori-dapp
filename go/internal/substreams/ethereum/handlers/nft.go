@@ -1,31 +1,73 @@
 package handlers
 
 import (
+	"math/big"
 	"time"
 
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/internal/substreams/pb"
 	"github.com/ethereum/go-ethereum/accounts/abi"
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 )
 
-func (h *Handler) HandleInitialize(method *abi.Method, tx *pb.Tx, args map[string]interface{}) error {
+func (h *Handler) handleTransferFrom(method *abi.Method, tx *pb.Tx, args map[string]interface{}) error {
+	from := args["from"].(common.Address).String()
+	to := args["to"].(common.Address).String()
+	tokenId := args["tokenId"].(*big.Int).String()
+	nftContract := tx.Info.To
+
+	var collection indexerdb.TeritoriCollection
+	if err := h.indexerDB.First(&collection).Where("nft_contract_address", nftContract).Error; err != nil {
+		return errors.Wrap(err, "failed to get collection")
+	}
+
+	nftId := h.network.NFTID(collection.MintContractAddress, tokenId)
+	var nft indexerdb.NFT
+	if err := h.indexerDB.Where("id", nftId).First(&nft).Error; err != nil {
+		return errors.Wrap(err, "failed to get nft")
+	}
+
+	nft.OwnerID = h.network.UserID(to)
+
+	if err := h.indexerDB.Save(&nft).Error; err != nil {
+		return errors.Wrap(err, "failed to update nft owner")
+	}
+
+	// create send activity
+	if err := h.indexerDB.Create(&indexerdb.Activity{
+		ID:   h.network.ActivityID(tx.Info.Hash, int(tx.Receipt.Logs[0].Index)),
+		Kind: indexerdb.ActivityKindSendNFT,
+		Time: time.Unix(int64(tx.Clock.Timestamp), 0),
+		SendNFT: &indexerdb.SendNFT{
+			Sender:   h.network.UserID(from),
+			Receiver: h.network.UserID(to),
+		},
+		NFTID: nftId,
+	}).Error; err != nil {
+		return errors.Wrap(err, "failed to create send activity")
+	}
+
+	return nil
+}
+
+func (h *Handler) handleInitialize(method *abi.Method, tx *pb.Tx, args map[string]interface{}) error {
 	contractURI := args["_contractURI"].(string)
 	collectionName := args["_name"].(string)
-	nftAddress := tx.Call.Address
+	nftAddress := tx.Info.To
 
 	// try to fetch collection metadata
 	metadataURI := contractURI
 	var metadata CollectionMetadata
 
 	if err := FetchIPFSJSON(metadataURI, &metadata); err != nil {
-		h.Logger.Error("failed to fetch collection metadata", zap.String("metadata-uri", metadataURI), zap.Error(err))
+		h.logger.Error("failed to fetch collection metadata", zap.String("metadata-uri", metadataURI), zap.Error(err))
 	}
 
 	minterAddress := tx.Info.To
-	collectionId := h.Network.CollectionID(minterAddress)
-	network, _, err := h.NetworkStore.ParseCollectionID(string(collectionId))
+	collectionId := h.network.CollectionID(minterAddress)
+	network, _, err := h.networkStore.ParseCollectionID(string(collectionId))
 	if err != nil {
 		return errors.Wrap(err, "failed to get network from collectionID")
 	}
@@ -45,10 +87,10 @@ func (h *Handler) HandleInitialize(method *abi.Method, tx *pb.Tx, args map[strin
 		},
 	}
 
-	if err := h.IndexerDB.Create(newCollection).Error; err != nil {
+	if err := h.indexerDB.Create(newCollection).Error; err != nil {
 		return errors.Wrap(err, "failed to create collection")
 	}
-	h.Logger.Info("created collection", zap.String("id", string(collectionId)))
+	h.logger.Info("created collection", zap.String("id", string(collectionId)))
 
 	return nil
 }
