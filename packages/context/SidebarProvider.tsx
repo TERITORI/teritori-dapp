@@ -61,6 +61,8 @@ export const SidebarContextProvider: React.FC = ({ children }) => {
     const dynamicAppsSelection = [] as {
       [key: string]: any;
     };
+    dynamicAppsSelection["feed"] = SIDEBAR_LIST["feed"];
+
     selectedApps.map((element) => {
       const { appId, groupKey } = getValuesFromId(element);
       if (!availableApps[groupKey]) {
@@ -80,6 +82,7 @@ export const SidebarContextProvider: React.FC = ({ children }) => {
             icon: option.icon,
           };
     });
+    delete dynamicAppsSelection["top-apps*SEPARATOR*social-feed"];
     dynamicAppsSelection["dappstore"] = SIDEBAR_LIST["DAppsStore"];
 
     return dynamicAppsSelection;
