@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Pressable,
 } from "react-native";
+import { useSelector } from "react-redux";
 
 import { NFTTransferModal } from "./NFTTransferModal";
 import checkMark from "../../../assets/icons/checkmark-marketplace.svg";
@@ -20,6 +21,7 @@ import { useDropdowns } from "../../context/DropdownsProvider";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getCosmosNetwork, parseUserId } from "../../networks";
+import { selectSelectedNFT } from "../../store/slices/marketplaceReducer";
 import { prettyPrice } from "../../utils/coins";
 import {
   neutral00,
@@ -42,10 +44,9 @@ import { SpacerColumn, SpacerRow } from "../spacer";
 
 export const NFTView: React.FC<{
   data: NFT;
-  selected: boolean;
   handleClick: (id: string) => void;
   style?: StyleProp<ViewStyle>;
-}> = ({ data: nft, style, selected, handleClick }) => {
+}> = ({ data: nft, style, handleClick }) => {
   // variables
   const cardWidth = 258;
   const insideMargin = layout.padding_x2;
@@ -58,7 +59,8 @@ export const NFTView: React.FC<{
     useDropdowns();
   const [isTransferNFTVisible, setIsTransferNFTVisible] =
     useState<boolean>(false);
-  const [localSelected, setLocalSelected] = useState(selected);
+  const localSelected = new Set(useSelector(selectSelectedNFT)).has(nft.id);
+
   const dropdownRef = useRef<View>(null);
 
   const isOwner = nft.ownerId === selectedWallet?.userId;
@@ -113,7 +115,6 @@ export const NFTView: React.FC<{
               }}
               onPress={() => {
                 handleClick(nft.id);
-                setLocalSelected(!localSelected);
               }}
             >
               <View

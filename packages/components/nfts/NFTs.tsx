@@ -1,15 +1,11 @@
 import React, { ReactElement, useCallback } from "react";
 import { FlatList, View } from "react-native";
-import { useSelector } from "react-redux";
 
 import { NFTView } from "./NFTView";
 import { NFT, NFTsRequest } from "../../api/marketplace/v1/marketplace";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useNFTs } from "../../hooks/useNFTs";
-import {
-  selectSelectedNFT,
-  setSelectedNFT,
-} from "../../store/slices/marketplaceReducer";
+import { setSelectedNFT } from "../../store/slices/marketplaceReducer";
 import { useAppDispatch } from "../../store/store";
 import { layout, screenContentMaxWidthLarge } from "../../utils/style/layout";
 import { SpacerColumn } from "../spacer";
@@ -19,14 +15,12 @@ const keyExtractor = (item: NFT) => item.id;
 const RenderItem: React.FC<{
   nft: NFT;
   marginable: boolean;
-  selected: boolean;
   handleClick: (id: string) => void;
-}> = ({ nft, marginable, selected, handleClick }) => {
+}> = ({ nft, marginable, handleClick }) => {
   return (
     <NFTView
       key={nft.mintAddress}
       data={nft}
-      selected={selected}
       handleClick={handleClick}
       style={{ marginRight: marginable ? layout.padding_x2 : 0 }}
     />
@@ -41,7 +35,6 @@ export const NFTs: React.FC<{
 }> = ({ req, numColumns, ListHeaderComponent, ListFooterComponent }) => {
   const { nfts, fetchMore } = useNFTs(req);
   const dispatch = useAppDispatch();
-  const selected = new Set(useSelector(selectSelectedNFT));
   const { height } = useMaxResolution();
 
   const handleEndReached = useCallback(() => {
@@ -77,7 +70,6 @@ export const NFTs: React.FC<{
             <RenderItem
               nft={info.item}
               marginable={!!((info.index + 1) % numColumns)}
-              selected={selected.has(info.item.id)}
               handleClick={handleClick}
             />
           );

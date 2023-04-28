@@ -35,9 +35,23 @@ const marketplace = createSlice({
       }
       state.selectedNFT = Array.from(newState);
     },
+    removeSelected: (state, action: PayloadAction<string>) => {
+      let newState: Set<string>;
+      if (state.selectedNFT === undefined) {
+        newState = new Set();
+      } else {
+        newState = new Set(state.selectedNFT);
+      }
+      newState.delete(action.payload);
+      state.selectedNFT = Array.from(newState);
+    },
+    clearSelected: (state) => {
+      state.selectedNFT = [];
+    },
   },
 });
 
-export const { setSelectedNFT } = marketplace.actions;
+export const { setSelectedNFT, removeSelected, clearSelected } =
+  marketplace.actions;
 
 export const marketplaceReducer = marketplace.reducer;

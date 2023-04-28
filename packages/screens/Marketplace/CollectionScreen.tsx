@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
+import { SideCart } from "./SideCart";
 import { SortDirection } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
@@ -41,27 +42,39 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
       onBackPress={() => navigation.navigate("Marketplace")}
       forceNetworkId={network?.id}
     >
-      <ScrollView
-        style={{ width: "100%" }}
-        contentContainerStyle={{ alignItems: "center" }}
+      <View
+        style={{
+          flexDirection: "row",
+          flexWrap: "nowrap",
+        }}
       >
-        <CollectionHeader
-          collectionId={id}
-          collectionInfo={info}
-          selectedTab={selectedTab}
-          onSelectTab={setSelectedTab}
-          onChangeSortDirection={setSortDirection}
-          sortDirection={sortDirection}
+        <ScrollView
+          style={{ width: "100%" }}
+          contentContainerStyle={{ alignItems: "center" }}
+        >
+          <CollectionHeader
+            collectionId={id}
+            collectionInfo={info}
+            selectedTab={selectedTab}
+            onSelectTab={setSelectedTab}
+            onChangeSortDirection={setSortDirection}
+            sortDirection={sortDirection}
+          />
+          <CollectionContent
+            key={id}
+            id={id}
+            selectedTab={selectedTab}
+            sortDirection={sortDirection}
+          />
+        </ScrollView>
+        <SideCart
+          style={{
+            position: "absolute",
+            right: 135,
+            marginTop: 36,
+          }}
         />
-        <CollectionContent
-          key={id}
-          id={id}
-          selectedTab={selectedTab}
-          sortDirection={sortDirection}
-        />
-
-        <View style={{}} />
-      </ScrollView>
+      </View>
     </ScreenContainer>
   );
 };

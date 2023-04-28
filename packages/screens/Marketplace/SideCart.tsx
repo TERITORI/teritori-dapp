@@ -1,20 +1,28 @@
 import React from "react";
-import { FlatList, View } from "react-native";
+import { FlatList, StyleProp, View, ViewStyle } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { TrashIcon } from "react-native-heroicons/solid";
+import { useSelector } from "react-redux";
 
-import teritoriLogoSVG from "../../../../assets/logos/logo.svg";
 import closeSVG from "../../../assets/icons/close.svg";
+import teritoriLogoSVG from "../../../assets/logos/logo.svg";
 import { BrandText } from "../../components/BrandText";
 import { OptimizedImage } from "../../components/OptimizedImage";
 import { SVG } from "../../components/SVG";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { SpacerRow } from "../../components/spacer";
+import { useNFTInfo } from "../../hooks/useNFTInfo";
+import {
+  clearSelected,
+  selectSelectedNFT,
+} from "../../store/slices/marketplaceReducer";
+import { useAppDispatch } from "../../store/store";
 import { modalMarginPadding } from "../../utils/style/modals";
 
-const Header: React.FC<{ items: any[] }> = ({ items }) => {
-  const onPress = () => {};
-
+const Header: React.FC<{ items: any[]; onPress: () => void }> = ({
+  items,
+  onPress,
+}) => {
   return (
     <View
       style={{
@@ -33,16 +41,28 @@ const Header: React.FC<{ items: any[] }> = ({ items }) => {
   );
 };
 
-const CartItems: React.FC = () => {
-  return (
+const CartItems: React.FC<{ id: string }> = ({ id }) => {
+  const { info } = useNFTInfo(id);
+
+  return info ? (
     <View>
       <View
         style={{
           justifyContent: "space-between",
         }}
       >
-        <OptimizedImage source={} width={} height={} />
-        <BrandText>Guardian Genesis</BrandText>
+        <OptimizedImage
+          source={{ uri: info?.imageURL }}
+          width={40}
+          height={40}
+          style={{
+            height: 40,
+            width: 40,
+            borderRadius: 2,
+            marginRight: 6,
+          }}
+        />
+        <BrandText>{info?.name}</BrandText>
         <TrashIcon size={32} />
       </View>
       <SpacerRow size={0.75} />
@@ -51,11 +71,11 @@ const CartItems: React.FC = () => {
           justifyContent: "space-between",
         }}
       >
-        <BrandText>current owner</BrandText>
-        <BrandText>price</BrandText>
+        <BrandText>{info?.ownerAddress}</BrandText>
+        <BrandText>{info?.price}</BrandText>
       </View>
     </View>
-  );
+  ) : null;
 };
 
 const ItemTotal: React.FC<{
@@ -102,19 +122,24 @@ const Footer: React.FC<{ items: any[] }> = ({ items }) => {
   );
 };
 
-export const SideCart: React.FC = () => {
-  const items = [];
-  const emptyCart = () => {};
-  return (
-    <View style={{}}>
-      <Header items={items} onPress={() => emptyCart()} />
+export const SideCart: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
+  style,
+}) => {
+  const dispatch = useAppDispatch();
+  const selected = useSelector(selectSelectedNFT);
+  const emptyCart = () => {
+    dispatch(clearSelected());
+  };
+  return selected.length > 0 ? (
+    <View style={style}>
+      <Header items={selected} onPress={() => emptyCart()} />
       <FlatList
-        data={items}
-        renderItem={(item) => {
-          return <CartItems />;
+        data={selected}
+        renderItem={({ item }) => {
+          return <CartItems id={item} />;
         }}
       />
-      <Footer />
+      <Footer items={selected} />
     </View>
-  );
+  ) : null;
 };
