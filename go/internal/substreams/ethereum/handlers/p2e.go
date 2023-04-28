@@ -2,17 +2,22 @@ package handlers
 
 import (
 	"fmt"
-	"time"
+	"strings"
 
+	"github.com/TERITORI/teritori-dapp/go/internal/indexerutils"
 	abiGo "github.com/TERITORI/teritori-dapp/go/internal/substreams/ethereum/abi_go"
-	"github.com/TERITORI/teritori-dapp/go/internal/substreams/pb"
-	"github.com/TERITORI/teritori-dapp/go/pkg/p2e"
+	"github.com/TERITORI/teritori-dapp/go/internal/substreams/ethereum/pb"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/pkg/errors"
 )
 
 type SquadStakeInput struct {
 	Nfts []abiGo.SquadStakingV3NftInfo `json:"nfts"`
+}
+
+func (h *Handler) handleSquadUnstake(contractABI *abi.ABI, tx *pb.Tx, args map[string]interface{}) error {
+	fmt.Println("unstaking ================")
+	return nil
 }
 
 func (h *Handler) handleSquadStake(contractABI *abi.ABI, tx *pb.Tx, args map[string]interface{}) error {
@@ -28,14 +33,30 @@ func (h *Handler) handleSquadStake(contractABI *abi.ABI, tx *pb.Tx, args map[str
 		return err
 	}
 
-	startTimeDt := time.Unix(data.StartTime.Int64(), 0)
-	// endTimeDt := time.Unix(data.EndTime.Int64(), 0)
-	season, _, err := p2e.GetSeasonByTime(startTimeDt)
-	if err != nil {
-		return errors.Wrap(err, "failed to get season")
+	var tokenIDs []string
+	var nftContracts []string
+
+	for _, nft := range stakeInput.Nfts {
+		tokenIDs = append(tokenIDs, strings.ToLower(nft.TokenId.String()))
+		nftContracts = append(nftContracts, strings.ToLower(nft.Collection.String()))
 	}
 
-	fmt.Println(season)
+	indexerUtils, err := indexerutils.NewIndexerUtils(h.network.NetworkBase, h.indexerDB, h.logger)
+	if err != nil {
+		return errors.Wrap(err, "failed to get indexerutils")
+	}
+
+	if err := indexerUtils.IndexSquadStake(
+		"V3",
+		tx.Info.To,
+		tx.Info.From,
+		data.StartTime.Uint64(),
+		data.EndTime.Uint64(),
+		tokenIDs,
+		nftContracts,
+	); err != nil {
+		return errors.Wrap(err, "failed to index squadStake")
+	}
 
 	return nil
 }

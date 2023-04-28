@@ -13,7 +13,7 @@ import (
 
 	"github.com/TERITORI/teritori-dapp/go/internal/substreams/db"
 	ethereumHandlers "github.com/TERITORI/teritori-dapp/go/internal/substreams/ethereum/handlers"
-	pb "github.com/TERITORI/teritori-dapp/go/internal/substreams/pb"
+	pb "github.com/TERITORI/teritori-dapp/go/internal/substreams/ethereum/pb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
 	"github.com/streamingfast/bstream"
 	"github.com/streamingfast/logging"
@@ -278,19 +278,25 @@ func (s *PostgresSinker) handleBlockScopeData(ctx context.Context, cursor *sink.
 			continue
 		}
 
-		var blockTxs pb.BlockTxs
+		var ethereumBlock pb.EthereumBlock
 
-		err := proto.Unmarshal(output.GetMapOutput().GetValue(), &blockTxs)
+		err := proto.Unmarshal(output.GetMapOutput().GetValue(), &ethereumBlock)
 		if err != nil {
 			return errors.Wrap(err, "failed to unmarshal transactions info")
 		}
 
-		handler, err := ethereumHandlers.NewHandler(s.logger, s.network, s.networkStore, s.indexerDB)
+		handler, err := ethereumHandlers.NewHandler(&ethereumHandlers.HandlerConfig{
+			Logger:       s.logger,
+			Network:      s.network,
+			NetworkStore: s.networkStore,
+			IndexerDB:    s.indexerDB,
+		})
+
 		if err != nil {
 			return errors.Wrap(err, "failed to init new handler")
 		}
 
-		for _, tx := range blockTxs.Txs {
+		for _, tx := range ethereumBlock.Txs {
 			if err := handler.HandleETHTx(tx); err != nil {
 				panic(err)
 			}

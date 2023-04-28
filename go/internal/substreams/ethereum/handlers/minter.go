@@ -3,7 +3,7 @@ package handlers
 import (
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/internal/substreams/ethereum/abi_go"
-	"github.com/TERITORI/teritori-dapp/go/internal/substreams/pb"
+	"github.com/TERITORI/teritori-dapp/go/internal/substreams/ethereum/pb"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/pkg/errors"
 )

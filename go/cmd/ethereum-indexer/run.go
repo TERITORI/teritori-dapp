@@ -86,7 +86,7 @@ func sinkRunE(cmd *cobra.Command, args []string) error {
 
 	blockRange := fmt.Sprintf("%s:%s", network.IndexStartBlock, network.IndexStopBlock)
 
-	outputModuleName := "txs_out"
+	outputModuleName := "block_out"
 
 	zlog.Info("sync config",
 		zap.String("database", fmt.Sprintf("%s:***@%s:%s", dbUser, dbHost, dbPort)),
@@ -138,9 +138,6 @@ func sinkRunE(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("output module %q is *not* of type 'Mapper'", outputModuleName)
 	}
 
-	if module.Output.Type != "proto:teritori.substreams.txns.v1.Txns" {
-		return fmt.Errorf("postgresql sync only supports maps with output type 'proto:teritori.substreams.txns.v1.Txns'")
-	}
 	hashes := manifest.NewModuleHashes()
 	outputModuleHash := hashes.HashModule(pkg.Modules, module, graph)
 

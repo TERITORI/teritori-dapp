@@ -4,7 +4,7 @@ import (
 	"strings"
 
 	abiGo "github.com/TERITORI/teritori-dapp/go/internal/substreams/ethereum/abi_go"
-	"github.com/TERITORI/teritori-dapp/go/internal/substreams/pb"
+	"github.com/TERITORI/teritori-dapp/go/internal/substreams/ethereum/pb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/pkg/errors"
@@ -19,12 +19,19 @@ type Handler struct {
 	indexerDB    *gorm.DB
 }
 
-func NewHandler(logger *zap.Logger, network *networks.EthereumNetwork, networkStore *networks.NetworkStore, indexerDB *gorm.DB) (*Handler, error) {
+type HandlerConfig struct {
+	Logger       *zap.Logger
+	Network      *networks.EthereumNetwork
+	NetworkStore *networks.NetworkStore
+	IndexerDB    *gorm.DB
+}
+
+func NewHandler(handlerConfig *HandlerConfig) (*Handler, error) {
 	return &Handler{
-		logger:       logger,
-		network:      network,
-		networkStore: networkStore,
-		indexerDB:    indexerDB,
+		logger:       handlerConfig.Logger,
+		network:      handlerConfig.Network,
+		networkStore: handlerConfig.NetworkStore,
+		indexerDB:    handlerConfig.IndexerDB,
 	}, nil
 }
 
@@ -61,10 +68,16 @@ func (h *Handler) HandleETHTx(tx *pb.Tx) error {
 		return errors.Wrap(err, "failed to unpack args for "+method.Name)
 	}
 
+	h.logger.Info("method", zap.String("method", method.Name))
+
 	switch method.Name {
 	case "stake":
 		if err := h.handleSquadStake(contractABI, tx, args); err != nil {
 			return errors.Wrap(err, "failed to handle squad stake")
+		}
+	case "unstake":
+		if err := h.handleSquadUnstake(contractABI, tx, args); err != nil {
+			return errors.Wrap(err, "failed to handle squad unstake")
 		}
 	case "initialize":
 		if err := h.handleInitialize(method, tx, args); err != nil {
@@ -78,6 +91,8 @@ func (h *Handler) HandleETHTx(tx *pb.Tx) error {
 		if err := h.handleTransferFrom(method, tx, args); err != nil {
 			return errors.Wrap(err, "failed to handle transfer")
 		}
+	default:
+		h.logger.Info("no handler for " + method.Name)
 	}
 
 	return nil

@@ -266,7 +266,7 @@
     ],
     "riotSquadStakingContractAddress": "0xdfA5cbcD0Db5d966E68dd143c6441eC47e2777bE",
     "firehoseEndpoint": "goerli.eth.streamingfast.io:443",
-    "indexStartBlock": "8255711",
+    "indexStartBlock": "8694316",
     "indexStopBlock": "+1",
     "indexBlockProgress": 1000,
     "indexLiveBlockProgress": 1,
