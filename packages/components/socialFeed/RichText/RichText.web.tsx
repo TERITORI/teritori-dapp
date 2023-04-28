@@ -517,17 +517,22 @@ const styles = StyleSheet.create({
 
 /////////////// SOME FUNCTIONS ////////////////
 const createStateFromHTML = (html: string) => {
+  // FIXME: About videos : The blocks created here don't contain any video entity. BUT the html contains a video tag
   const blocksFromHTML = convertFromHTML(html);
-  const content = ContentState.createFromBlockArray(
+
+  const contentState = ContentState.createFromBlockArray(
     blocksFromHTML.contentBlocks,
     blocksFromHTML.entityMap
   );
-  return EditorState.createWithContent(content);
+  return EditorState.createWithContent(contentState);
 };
 
 const createHTMLFromState = (state: ContentState) =>
   convertToHTML({
     entityToHTML: (entity, originalText) => {
+      if (entity.type === VIDEOTYPE || entity.type === "VIDEO") {
+        return <video src={entity.data.src} controls />;
+      }
       if (entity.type === "IMAGE") {
         return <img src={entity.data.src} />;
       }
@@ -597,20 +602,20 @@ const getEntities = (
   editorState: EditorState,
   entityType?: DraftEntityType
 ) => {
-  const content = editorState.getCurrentContent();
+  const contentState = editorState.getCurrentContent();
   const entities: FoundEntity[] = [];
 
-  content.getBlocksAsArray().forEach((block) => {
+  contentState.getBlocksAsArray().forEach((block) => {
     let selectedEntity: SelectedEntity;
     block.findEntityRanges(
       (character) => {
         if (character.getEntity() !== null) {
-          const entity = content.getEntity(character.getEntity());
+          const entity = contentState.getEntity(character.getEntity());
           if (!entityType || (entityType && entity.getType() === entityType)) {
             selectedEntity = {
               entityKey: character.getEntity(),
               blockKey: block.getKey(),
-              entity: content.getEntity(character.getEntity()),
+              entity: contentState.getEntity(character.getEntity()),
             };
             return true;
           }
@@ -630,7 +635,7 @@ const getEntities = (
 const getFilesToPublish = (
   editorState: EditorState,
   files: LocalFileData[],
-  entityType: DraftEntityType
+  entityType?: DraftEntityType
 ) => {
   const entities = getEntities(editorState, entityType);
   const filesToPublish: LocalFileData[] = [];

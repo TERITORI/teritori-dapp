@@ -98,15 +98,22 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
     videos,
   }: PublishValues) => {
     const toriBalance = balances.find((bal) => bal.denom === "utori");
+    const files = [
+      ...(formValues.files || []),
+      ...images,
+      ...audios,
+      ...videos,
+    ];
+
     if (postFee > Number(toriBalance?.amount) && !freePostCount) {
       return setNotEnoughFundModal(true);
     }
     let pinataJWTKey = undefined;
-    if (formValues.files?.length) {
+    if (files?.length) {
       pinataJWTKey = await generateIpfsKey(selectedNetworkId, userId);
     }
 
-    await createPost({
+    const result = await createPost({
       networkId: selectedNetworkId,
       wallet,
       freePostCount,
@@ -115,7 +122,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
       formValues: {
         ...formValues,
         gifs,
-        files: [...(formValues.files || []), ...images, ...audios, ...videos],
+        files,
         mentions,
         hashtags,
         message: html,
@@ -124,6 +131,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
       // openGraph: undefined,
       pinataJWTKey,
     });
+    return result;
   };
 
   //TODO: Keep short post formValues when returning to short post
@@ -132,10 +140,18 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
   const onPublish = async (values: PublishValues) => {
     setLoading(true);
     try {
-      await initSubmit(values);
-      setToastSuccess({ title: "Post submitted successfully.", message: "" });
-      navigateBack();
-      reset();
+      const result = await initSubmit(values);
+      if (!result) {
+        console.error("upload file err : Fail to pin to IPFS");
+        setToastError({
+          title: "File upload failed",
+          message: "Fail to pin to IPFS, please try to Publish again",
+        });
+      } else {
+        setToastSuccess({ title: "Post submitted successfully.", message: "" });
+        navigateBack();
+        reset();
+      }
     } catch (err) {
       setToastError({
         title: "Something went wrong.",

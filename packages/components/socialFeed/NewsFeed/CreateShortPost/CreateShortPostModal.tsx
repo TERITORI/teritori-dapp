@@ -32,7 +32,11 @@ export const CreateShortPostModal: React.FC<{
           onCloseCreateModal={onClose}
           type="post"
           onSubmitSuccess={onSubmitSuccess}
-          style={{ marginBottom: layout.padding_x2_5, paddingVertical: 70 }}
+          style={{
+            marginBottom: layout.padding_x2_5,
+            paddingVertical: 70,
+            width: "100%",
+          }}
           additionalMention={additionalMention}
           additionalHashtag={additionalHashtag}
         />
