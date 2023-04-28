@@ -1,10 +1,16 @@
-import React, { ReactElement, useCallback, useState } from "react";
+import React, { ReactElement, useCallback } from "react";
 import { FlatList, View } from "react-native";
+import { useSelector } from "react-redux";
 
 import { NFTView } from "./NFTView";
 import { NFT, NFTsRequest } from "../../api/marketplace/v1/marketplace";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useNFTs } from "../../hooks/useNFTs";
+import {
+  selectSelectedNFT,
+  setSelectedNFT,
+} from "../../store/slices/marketplaceReducer";
+import { useAppDispatch } from "../../store/store";
 import { layout, screenContentMaxWidthLarge } from "../../utils/style/layout";
 import { SpacerColumn } from "../spacer";
 
@@ -34,8 +40,8 @@ export const NFTs: React.FC<{
   ListFooterComponent?: ReactElement;
 }> = ({ req, numColumns, ListHeaderComponent, ListFooterComponent }) => {
   const { nfts, fetchMore } = useNFTs(req);
-  const [selected, setSelected] = useState<Set<string>>(new Set<string>());
-
+  const dispatch = useAppDispatch();
+  const selected = new Set(useSelector(selectSelectedNFT));
   const { height } = useMaxResolution();
 
   const handleEndReached = useCallback(() => {
@@ -43,12 +49,7 @@ export const NFTs: React.FC<{
   }, [fetchMore]);
 
   const handleClick = (id: string) => {
-    if (selected.has(id)) {
-      selected.delete(id);
-    } else {
-      selected.add(id);
-    }
-    setSelected(selected);
+    dispatch(setSelectedNFT(id));
   };
 
   return (
