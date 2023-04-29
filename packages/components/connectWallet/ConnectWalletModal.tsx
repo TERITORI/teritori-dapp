@@ -42,6 +42,7 @@ export const ConnectWalletModal: React.FC<ConnectWalletProps> = ({
       hideMainSeparator
       width={457}
       noBrokenCorners
+      scrollable
     >
       <ConnectMetamaskButton onDone={onClose} />
       <SpacerColumn size={1.5} />
