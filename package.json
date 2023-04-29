@@ -30,7 +30,6 @@
     "@inline-svg-unique-id/react": "^1.2.3",
     "@keplr-wallet/types": "^0.10.13",
     "@keplr-wallet/wc-client": "^0.11.59",
-    "@keplr-wallet/wc-qrcode-modal": "^0.11.59",
     "@metamask/detect-provider": "^2.0.0",
     "@metaplex-foundation/js-next": "0.7.1",
     "@nandorojo/anchor": "^0.3.1",

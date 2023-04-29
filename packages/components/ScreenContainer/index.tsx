@@ -79,7 +79,6 @@ export const ScreenContainer: React.FC<{
 
   useForceNetworkSelection(forceNetworkIds);
   useForceNetworkKind(forceNetworkKind);
-  // useForceUnselectNetworks();
 
   const networkFilter = useCallback(
     (n: NetworkInfo | undefined) => {

@@ -6348,19 +6348,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@keplr-wallet/wc-qrcode-modal@npm:^0.11.59":
-  version: 0.11.59
-  resolution: "@keplr-wallet/wc-qrcode-modal@npm:0.11.59"
-  dependencies:
-    "@walletconnect/browser-utils": ^1.6.5
-    "@walletconnect/types": ^1.6.5
-    qrcode.react: ^1.0.1
-    react: ^16.14.0
-    react-dom: ^16.14.0
-  checksum: 07268c0cd0700f0ba035b97da6bd55c19ff6e6e49fdfe73ceafa36ca13e3a269d9bc2a9eab2996667cb176caf4d55497f339daf59a459d90774a53d567ca14b1
-  languageName: node
-  linkType: hard
-
 "@ledgerhq/connect-kit-loader@npm:^1.0.1":
   version: 1.0.2
   resolution: "@ledgerhq/connect-kit-loader@npm:1.0.2"
@@ -8614,7 +8601,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@walletconnect/browser-utils@npm:^1.6.5, @walletconnect/browser-utils@npm:^1.7.0, @walletconnect/browser-utils@npm:^1.8.0":
+"@walletconnect/browser-utils@npm:^1.7.0, @walletconnect/browser-utils@npm:^1.8.0":
   version: 1.8.0
   resolution: "@walletconnect/browser-utils@npm:1.8.0"
   dependencies:
@@ -8829,7 +8816,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@walletconnect/types@npm:^1.6.4, @walletconnect/types@npm:^1.6.5, @walletconnect/types@npm:^1.8.0":
+"@walletconnect/types@npm:^1.6.4, @walletconnect/types@npm:^1.8.0":
   version: 1.8.0
   resolution: "@walletconnect/types@npm:1.8.0"
   checksum: 194d615888068030183489222641332987846aa5c6bcf0a62fa60ca7a282b9f94932c49fcd2b293a859e98624fe3e7a2d3c5fb66545fe30d3391e7ac91a99e34
@@ -23813,7 +23800,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:*, prop-types@npm:^15.5.8, prop-types@npm:^15.6.0, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2, prop-types@npm:^15.8.0, prop-types@npm:^15.8.1":
+"prop-types@npm:*, prop-types@npm:^15.5.8, prop-types@npm:^15.6.0, prop-types@npm:^15.7.2, prop-types@npm:^15.8.0, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -23980,32 +23967,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"qr.js@npm:0.0.0":
-  version: 0.0.0
-  resolution: "qr.js@npm:0.0.0"
-  checksum: 5ac6c393967bdeaa660e7fd3a501a25eb538c1f6008a4d30ab2b97bbe520e5c236530090773f1578aa0a523cdaa6923c866615e21143f9e7cd22abd41c789b69
-  languageName: node
-  linkType: hard
-
 "qrcode-terminal@npm:0.11.0":
   version: 0.11.0
   resolution: "qrcode-terminal@npm:0.11.0"
   bin:
     qrcode-terminal: ./bin/qrcode-terminal.js
   checksum: ad146ea1e339e1745402a3ea131631f64f40f0d1ff9cc6bd9c21677feaa1ca6dcd32eadf188fd3febdab8bf6191b3d24d533454903a72543645a72820e4d324c
-  languageName: node
-  linkType: hard
-
-"qrcode.react@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "qrcode.react@npm:1.0.1"
-  dependencies:
-    loose-envify: ^1.4.0
-    prop-types: ^15.6.0
-    qr.js: 0.0.0
-  peerDependencies:
-    react: ^15.5.3 || ^16.0.0 || ^17.0.0
-  checksum: 154a9557d103fa776cd99bc0d2600b862be74872ff965052533bc38ea0606c4d0965b4dd6df93e53f1db86699517a25db2718bbbc08c5d535a90c0d335552e9a
   languageName: node
   linkType: hard
 
@@ -24300,20 +24267,6 @@ __metadata:
   peerDependencies:
     react: 17.0.2
   checksum: 1c1eaa3bca7c7228d24b70932e3d7c99e70d1d04e13bb0843bbf321582bc25d7961d6b8a6978a58a598af2af496d1cedcfb1bf65f6b0960a0a8161cb8dab743c
-  languageName: node
-  linkType: hard
-
-"react-dom@npm:^16.14.0":
-  version: 16.14.0
-  resolution: "react-dom@npm:16.14.0"
-  dependencies:
-    loose-envify: ^1.1.0
-    object-assign: ^4.1.1
-    prop-types: ^15.6.2
-    scheduler: ^0.19.1
-  peerDependencies:
-    react: ^16.14.0
-  checksum: 5a5c49da0f106b2655a69f96c622c347febcd10532db391c262b26aec225b235357d9da1834103457683482ab1b229af7a50f6927a6b70e53150275e31785544
   languageName: node
   linkType: hard
 
@@ -24798,17 +24751,6 @@ __metadata:
     loose-envify: ^1.1.0
     object-assign: ^4.1.1
   checksum: b254cc17ce3011788330f7bbf383ab653c6848902d7936a87b09d835d091e3f295f7e9dd1597c6daac5dc80f90e778c8230218ba8ad599f74adcc11e33b9d61b
-  languageName: node
-  linkType: hard
-
-"react@npm:^16.14.0":
-  version: 16.14.0
-  resolution: "react@npm:16.14.0"
-  dependencies:
-    loose-envify: ^1.1.0
-    object-assign: ^4.1.1
-    prop-types: ^15.6.2
-  checksum: 8484f3ecb13414526f2a7412190575fc134da785c02695eb92bb6028c930bfe1c238d7be2a125088fec663cc7cda0a3623373c46807cf2c281f49c34b79881ac
   languageName: node
   linkType: hard
 
@@ -25761,16 +25703,6 @@ __metadata:
   version: 1.2.4
   resolution: "sax@npm:1.2.4"
   checksum: d3df7d32b897a2c2f28e941f732c71ba90e27c24f62ee918bd4d9a8cfb3553f2f81e5493c7f0be94a11c1911b643a9108f231dd6f60df3fa9586b5d2e3e9e1fe
-  languageName: node
-  linkType: hard
-
-"scheduler@npm:^0.19.1":
-  version: 0.19.1
-  resolution: "scheduler@npm:0.19.1"
-  dependencies:
-    loose-envify: ^1.1.0
-    object-assign: ^4.1.1
-  checksum: 73e185a59e2ff5aa3609f5b9cb97ddd376f89e1610579d29939d952411ca6eb7a24907a4ea4556569dacb931467a1a4a56d94fe809ef713aa76748642cd96a6c
   languageName: node
   linkType: hard
 
@@ -27458,7 +27390,6 @@ __metadata:
     "@inline-svg-unique-id/react": ^1.2.3
     "@keplr-wallet/types": ^0.10.13
     "@keplr-wallet/wc-client": ^0.11.59
-    "@keplr-wallet/wc-qrcode-modal": ^0.11.59
     "@metamask/detect-provider": ^2.0.0
     "@metaplex-foundation/js-next": 0.7.1
     "@nandorojo/anchor": ^0.3.1
