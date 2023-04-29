@@ -43,10 +43,8 @@
       "high": 0.04
     },
     "features": [
-      "stargate",
       "ibc-transfer",
       "cosmwasm",
-      "no-legacy-stdTx",
       "ibc-go"
     ],
     "nameServiceContractAddress": "tori1wkwy0xh89ksdgj9hr347dyd2dw7zesmtrue6kfzyml4vdtz6e5wscs7038",
@@ -106,10 +104,7 @@
       "high": 0.04
     },
     "features": [
-      "stargate",
       "ibc-transfer",
-      "cosmwasm",
-      "no-legacy-stdTx",
       "ibc-go"
     ]
   },
@@ -167,10 +162,8 @@
       "high": 0.04
     },
     "features": [
-      "stargate",
       "ibc-transfer",
       "cosmwasm",
-      "no-legacy-stdTx",
       "ibc-go"
     ],
     "nameServiceContractAddress": "tori18etjzrma5604af50jjklk3wlkqcsxdrvmy6jzw5naw2t7kyv4rys3kpwky",
@@ -225,10 +218,7 @@
       "high": 0.04
     },
     "features": [
-      "stargate",
       "ibc-transfer",
-      "cosmwasm",
-      "no-legacy-stdTx",
       "ibc-go"
     ]
   },
@@ -353,10 +343,8 @@
       "high": 0.04
     },
     "features": [
-      "stargate",
       "ibc-transfer",
       "cosmwasm",
-      "no-legacy-stdTx",
       "ibc-go"
     ]
   },
@@ -423,10 +411,7 @@
       "high": 0.04
     },
     "features": [
-      "stargate",
       "ibc-transfer",
-      "cosmwasm",
-      "no-legacy-stdTx",
       "ibc-go"
     ]
   },
@@ -483,10 +468,7 @@
       "high": 0.04
     },
     "features": [
-      "stargate",
       "ibc-transfer",
-      "cosmwasm",
-      "no-legacy-stdTx",
       "ibc-go"
     ]
   }
