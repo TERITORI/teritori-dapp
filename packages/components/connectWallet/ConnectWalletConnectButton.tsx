@@ -4,6 +4,7 @@ import QRCode from "react-native-qrcode-svg";
 import { ConnectWalletButton } from "./components/ConnectWalletButton";
 import walletConnectSVG from "../../../assets/icons/wallet-connect.svg";
 import { useWalletConnect } from "../../context/WalletConnectProvider";
+import { isMobileBrowser } from "../../utils/browser";
 
 export const ConnectWalletConnectButton: React.FC<{
   onDone?: (err?: unknown) => void;
@@ -20,11 +21,14 @@ export const ConnectWalletConnectButton: React.FC<{
             await connect();
           } catch (err) {
             onDone && onDone(err);
+            return;
           }
           onDone && onDone();
         }}
       />
-      {pairingURI && <QRCode value={pairingURI} size={600} />}
+      {!isMobileBrowser() && pairingURI && (
+        <QRCode value={pairingURI} size={600} />
+      )}
     </>
   );
 };

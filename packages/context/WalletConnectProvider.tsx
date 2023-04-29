@@ -8,6 +8,7 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
 } from "react";
@@ -38,8 +39,9 @@ const walletConnectNetworks = [cosmosNetwork, osmosisNetwork];
 export const WalletConnectProvider: React.FC = ({ children }) => {
   const [pairingURI, setPairingURL] = useState(defaultValue.pairingURI);
   const [accounts, setAccounts] = useState(defaultValue.accounts);
-  const { setToastError, setToastSuccess } = useFeedbacks();
+  const { setToastError } = useFeedbacks();
   const [keplr, setKeplr] = useState<KeplrWalletConnectV1>();
+  const [connector, setConnector] = useState<WalletConnectV1>();
 
   const createWalletConnectV1 = (): WalletConnectV1 => {
     const wc = new WalletConnectV1({
@@ -86,63 +88,31 @@ export const WalletConnectProvider: React.FC = ({ children }) => {
   };
 
   const connect = useCallback(async () => {
-    console.log("connecting to wallet connect");
     try {
-      const connector = await new Promise<WalletConnectV1>(
+      const newConnector = await new Promise<WalletConnectV1>(
         async (resolve, reject) => {
-          const connector = createWalletConnectV1();
+          const newConnector = createWalletConnectV1();
 
-          // Check if connection is already established
-          if (connector.connected) {
-            await connector.killSession();
-            /*
-            console.log("connected to existing wc session");
-            resolve(connector);
-            return;
-            */
+          // killsession if established
+          if (newConnector.connected) {
+            await newConnector.killSession();
           }
 
           // create new session
           console.log("creating new wc session");
-          await connector.createSession();
-          connector.on("connect", async (error) => {
+          await newConnector.createSession();
+          newConnector.on("connect", async (error) => {
             console.log("received connect event");
             if (error) {
               reject(error);
             }
-            resolve(connector);
+            resolve(newConnector);
           });
-          setPairingURL(connector.uri);
+          setPairingURL(newConnector.uri);
         }
       );
 
-      const keplr = new KeplrWalletConnectV1(connector, {
-        sendTx: sendTxWC,
-      });
-      console.log("new session", keplr);
-
-      await keplr.enable(walletConnectNetworks.map((n) => n.chainId));
-
-      console.log("enabled chains");
-
-      let accounts: { account: AccountData; networkId: string }[] = [];
-
-      for (const n of walletConnectNetworks) {
-        accounts = [
-          ...accounts,
-          ...(await keplr.getOfflineSigner(n.chainId).getAccounts()).map(
-            (a) => ({ account: a, networkId: n.id })
-          ),
-        ];
-      }
-
-      console.log("got accounts", accounts);
-
-      setAccounts(accounts);
-
-      setKeplr(keplr);
-
-      setToastSuccess({ title: "Accounts set", message: "" });
+      setConnector(newConnector);
     } catch (err) {
       console.error(err);
       if (err instanceof Error) {
@@ -152,7 +122,48 @@ export const WalletConnectProvider: React.FC = ({ children }) => {
         });
       }
     }
-  }, [setToastError, setToastSuccess]);
+  }, [setToastError]);
+
+  useEffect(() => {
+    const effect = async () => {
+      if (!connector) {
+        return;
+      }
+      const keplr = new KeplrWalletConnectV1(connector, {
+        sendTx: sendTxWC,
+      });
+
+      await keplr.enable(walletConnectNetworks.map((n) => n.chainId));
+
+      let accounts: { account: AccountData; networkId: string }[] = [];
+
+      for (const n of walletConnectNetworks) {
+        accounts = [
+          ...accounts,
+          ...(await keplr.getOfflineSigner(n.chainId).getAccounts()).map(
+            (a) => ({
+              account: a,
+              networkId: n.id,
+            })
+          ),
+        ];
+      }
+
+      setAccounts(accounts);
+
+      setKeplr(keplr);
+    };
+
+    effect();
+  }, [connector]);
+
+  useEffect(() => {
+    const connector = createWalletConnectV1();
+    // Check if connection is already established
+    if (connector.connected) {
+      setConnector(connector);
+    }
+  }, []);
 
   const state = useMemo(() => {
     return {
