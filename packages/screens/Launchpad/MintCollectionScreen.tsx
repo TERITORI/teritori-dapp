@@ -1,6 +1,3 @@
-import { toUtf8 } from "@cosmjs/encoding";
-import { EncodeObject } from "@cosmjs/proto-signing";
-import { isDeliverTxFailure } from "@cosmjs/stargate";
 import Long from "long";
 import React, { useCallback, useMemo, useState } from "react";
 import {
@@ -34,29 +31,19 @@ import { ProgressionCard } from "../../components/cards/ProgressionCard";
 import { CollectionSocialButtons } from "../../components/collections/CollectionSocialButtons";
 import { GradientText } from "../../components/gradientText";
 import { SpacerRow } from "../../components/spacer";
-import {
-  initialToastError,
-  useFeedbacks,
-} from "../../context/FeedbacksProvider";
-import { Wallet } from "../../context/WalletsProvider";
-import { TeritoriMinter__factory } from "../../evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
+import { useMintNFT } from "../../hooks/collection/useMintNFT";
 import { useBalances } from "../../hooks/useBalances";
 import { useCollectionInfo } from "../../hooks/useCollectionInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
-  NetworkKind,
-  CosmosNetworkInfo,
-  EthereumNetworkInfo,
   getCosmosNetwork,
   getCurrency,
-  getKeplrSigningCosmWasmClient,
   getNativeCurrency,
   parseNetworkObjectId,
   getEthereumNetwork,
 } from "../../networks";
 import { prettyPrice } from "../../utils/coins";
 import { MintPhase } from "../../utils/collection";
-import { getMetaMaskEthereumSigner } from "../../utils/ethereum";
 import { ScreenFC } from "../../utils/navigation";
 import {
   neutral17,
@@ -79,6 +66,7 @@ import {
   fontSemibold20,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
+import { sleep } from "../../utils/time";
 import { DepositWithdrawModal } from "../WalletManager/components/DepositWithdrawModal";
 
 const maxImageSize = 532;
@@ -92,9 +80,6 @@ const countDownTxtStyleStarts: StyleProp<TextStyle> = {
   fontWeight: "600",
   color: pinkDefault,
 };
-
-const sleep = (duration: number) =>
-  new Promise((resolve) => setTimeout(resolve, duration));
 
 export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
   route: {
@@ -111,13 +96,23 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
     notFound,
     refetch: refetchCollectionInfo,
   } = useCollectionInfo(id);
-  const { setToastError } = useFeedbacks();
   const [viewWidth, setViewWidth] = useState(0);
   const [network, mintAddress] = parseNetworkObjectId(id);
   const balances = useBalances(network?.id, wallet?.address);
   const balance = balances.find((bal) => bal.denom === info?.priceDenom);
 
   const [totalBulkMint, setTotalBulkMint] = useState(1);
+
+  const mint = useMintNFT(wallet?.id, id);
+  const handleMint = useCallback(
+    () =>
+      mint(totalBulkMint, async () => {
+        setMinted(true);
+        await sleep(5000);
+        setMinted(false);
+      }),
+    [mint, totalBulkMint]
+  );
 
   const imageSize = viewWidth < maxImageSize ? viewWidth : maxImageSize;
   const mintButtonDisabled = minted || !wallet?.connected;
@@ -141,150 +136,6 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
 
     setTotalBulkMint(totalBulkMint);
   };
-
-  const prettyError = (err: any) => {
-    const msg = err?.message;
-    if (typeof msg !== "string") {
-      return `${err}`;
-    }
-    if (
-      msg.includes("Already minted maximum for whitelist period") ||
-      msg.includes("EXCEED_WHITELIST_MINT_MAX")
-    ) {
-      return "You already minted the maximum allowed per address during presale";
-    }
-    if (
-      msg.includes("Already minted maximum") ||
-      msg.includes("EXCEED_MINT_MAX")
-    ) {
-      return "You already minted the maximum allowed per address";
-    }
-    if (msg.includes("Not whitelisted!") || msg.includes("NOT_WHITELISTED")) {
-      return "You are not in the presale whitelist";
-    }
-    return msg;
-  };
-
-  const ethereumMint = useCallback(
-    async (network: EthereumNetworkInfo, wallet: Wallet) => {
-      const signer = await getMetaMaskEthereumSigner(network, wallet.address);
-      if (!signer) {
-        throw Error("no account connected");
-      }
-
-      const minterClient = TeritoriMinter__factory.connect(mintAddress, signer);
-      const userState = await minterClient.callStatic.userState(wallet.address);
-
-      // TODO: check this properly later
-      // if (!userState.userCanMint) {
-      //   throw Error("You cannot mint now");
-      // }
-
-      const address = await signer.getAddress();
-
-      const { maxFeePerGas, maxPriorityFeePerGas } = await signer.getFeeData();
-
-      const estimatedGasLimit = await minterClient.estimateGas.requestMint(
-        address,
-        totalBulkMint,
-        {
-          value: userState.mintPrice.mul(totalBulkMint),
-        }
-      );
-
-      const tx = await minterClient.requestMint(address, totalBulkMint, {
-        value: userState.mintPrice.mul(totalBulkMint),
-        maxFeePerGas: maxFeePerGas?.toNumber(),
-        maxPriorityFeePerGas: maxPriorityFeePerGas?.toNumber(),
-        gasLimit: estimatedGasLimit.mul(150).div(100),
-      });
-      await tx.wait();
-    },
-    [mintAddress, totalBulkMint]
-  );
-
-  const cosmosMint = useCallback(
-    async (network: CosmosNetworkInfo, wallet: Wallet) => {
-      const sender = wallet.address;
-      if (!sender || !info?.unitPrice || !info.priceDenom) {
-        throw Error("invalid mint args");
-      }
-      const cosmwasmClient = await getKeplrSigningCosmWasmClient(network.id);
-
-      const msgs: EncodeObject[] = [];
-
-      for (let i = 0; i < totalBulkMint; i++) {
-        let funds;
-        if (info.unitPrice !== "0") {
-          funds = [{ amount: info.unitPrice, denom: info.priceDenom }];
-        }
-
-        const msg = {
-          typeUrl: "/cosmwasm.wasm.v1.MsgExecuteContract",
-          value: {
-            sender,
-            msg: toUtf8(
-              JSON.stringify({
-                request_mint: {
-                  addr: sender,
-                },
-              })
-            ),
-            contract: mintAddress,
-            funds,
-          },
-        };
-
-        msgs.push(msg);
-      }
-
-      const tx = await cosmwasmClient.signAndBroadcast(sender, msgs, "auto");
-
-      if (isDeliverTxFailure(tx)) {
-        throw Error(tx.transactionHash);
-      }
-    },
-    [info?.priceDenom, info?.unitPrice, mintAddress, totalBulkMint]
-  );
-
-  const mint = useCallback(async () => {
-    try {
-      setToastError(initialToastError);
-      if (!wallet) {
-        setToastError({
-          title: "Error",
-          message: `no wallet`,
-        });
-        return;
-      }
-      switch (network?.kind) {
-        case NetworkKind.Cosmos:
-          await cosmosMint(network, wallet);
-          break;
-        case NetworkKind.Ethereum:
-          await ethereumMint(network, wallet);
-          break;
-        default:
-          setToastError({
-            title: "Error",
-            message: `unsupported network ${network?.id}`,
-          });
-          return;
-      }
-
-      setMinted(true);
-      await sleep(5000);
-      setMinted(false);
-    } catch (e) {
-      if (e instanceof Error) {
-        return setToastError({
-          title: "Mint failed",
-          message: prettyError(e),
-        });
-      }
-      console.error(e);
-    }
-  }, [cosmosMint, ethereumMint, network, setToastError, wallet]);
 
   const mintTermsConditionsURL = useMemo(() => {
     switch (mintAddress) {
@@ -587,7 +438,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                             parseInt(info.unitPrice || "0", 10)
                         }
                         loader
-                        onPress={mint}
+                        onPress={handleMint}
                       />
                     )}
                   </View>

@@ -27,6 +27,7 @@ import {
 import { useSquadStakingSquadsV2 } from "../../hooks/riotGame/useSquadStakingSquadsV2";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { useWalletKeplr } from "../../hooks/wallets/useWalletKeplr";
 import {
   persistSquadPreset,
   selectSquadPresets,
@@ -66,6 +67,7 @@ export const RiotGameEnrollScreen = () => {
   const selectedWallet = useSelectedWallet();
   const networkId = useSelectedNetworkId();
   const queryClient = useQueryClient();
+  const walletKeplr = useWalletKeplr(selectedWallet?.id);
 
   const videoRef = React.useRef<Video>(null);
   const isScreenFocused = useIsFocused();
@@ -144,7 +146,7 @@ export const RiotGameEnrollScreen = () => {
     try {
       setIsUnstaking(true);
 
-      await squadWithdrawSeason1(selectedWallet.userId);
+      await squadWithdrawSeason1(walletKeplr, selectedWallet.userId);
       setToastSuccess({
         title: "Success",
         message: "Unstake successfully",
@@ -189,7 +191,7 @@ export const RiotGameEnrollScreen = () => {
     setIsJoiningFight(true);
 
     try {
-      await squadStake(selectedWallet?.userId, selectedRippers);
+      await squadStake(walletKeplr, selectedWallet?.userId, selectedRippers);
 
       // Wait a little before redirection to be sure that we have passed the fight start time
       setTimeout(() => {

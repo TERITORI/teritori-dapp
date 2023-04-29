@@ -23,8 +23,8 @@ import { nsNameInfoQueryKey } from "../../hooks/useNSNameInfo";
 import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { useWalletTNSClient } from "../../hooks/wallets/useWalletClients";
 import {
-  getKeplrSigningCosmWasmClient,
   mustGetNonSigningCosmWasmClient,
   mustGetCosmosNetwork,
   getCosmosNetwork,
@@ -106,6 +106,7 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
   const price = useTNSMintPrice(networkId, normalizedTokenId);
   const balances = useBalances(networkId, selectedWallet?.address);
   const balance = balances.find((bal) => bal.denom === price?.denom);
+  const client = useWalletTNSClient(selectedWallet?.id);
 
   const initData = async () => {
     try {
@@ -157,33 +158,23 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
     }
 
     try {
-      const network = mustGetCosmosNetwork(selectedWallet?.networkId);
-      if (!network.nameServiceContractAddress) {
-        throw new Error("network not supported");
-      }
-
       const walletAddress = selectedWallet?.address;
 
-      const msg = {
-        mint: {
+      if (!client || !walletAddress) {
+        throw new Error("bad wallet");
+      }
+
+      const mintedToken = await client.mint(
+        {
           owner: walletAddress,
-          token_id: normalizedTokenId,
+          tokenId: normalizedTokenId,
           extension: data,
         },
-      };
-
-      const signingClient = await getKeplrSigningCosmWasmClient(
-        selectedWallet?.networkId || ""
-      );
-
-      const mintedToken = await signingClient.execute(
-        walletAddress!,
-        network.nameServiceContractAddress,
-        msg,
         "auto",
         undefined,
         [price]
       );
+
       if (mintedToken) {
         console.log(normalizedTokenId + " successfully minted");
         setToastSuccess({
@@ -271,7 +262,10 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
   );
 };
 
-const useTNSMintPrice = (networkId: string | undefined, tokenId: string) => {
+export const useTNSMintPrice = (
+  networkId: string | undefined,
+  tokenId: string
+) => {
   const { data } = useQuery(
     ["tnsMintPrice", networkId, tokenId],
     async () => {

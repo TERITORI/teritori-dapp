@@ -95,9 +95,11 @@ export const WalletsProvider: React.FC = React.memo(({ children }) => {
     if (hasKeplr) {
       walletProviders.push(WalletProvider.Keplr);
 
-      for (const wallet of keplrWallets) {
-        if (wallet.connected) {
-          wallets.push(wallet);
+      if (keplrWallets) {
+        for (const wallet of keplrWallets) {
+          if (wallet.connected) {
+            wallets.push(wallet);
+          }
         }
       }
     }
@@ -105,9 +107,11 @@ export const WalletsProvider: React.FC = React.memo(({ children }) => {
     if (hasMetamask) {
       walletProviders.push(WalletProvider.Metamask);
 
-      for (const wallet of metamaskWallets) {
-        if (wallet.connected) {
-          wallets.push(wallet);
+      if (metamaskWallets) {
+        for (const wallet of metamaskWallets) {
+          if (wallet.connected) {
+            wallets.push(wallet);
+          }
         }
       }
     }
@@ -115,9 +119,11 @@ export const WalletsProvider: React.FC = React.memo(({ children }) => {
     if (hasWalletConnect) {
       walletProviders.push(WalletProvider.WalletConnect);
 
-      for (const wallet of walletConnectWallets) {
-        if (wallet.connected) {
-          wallets.push(wallet);
+      if (walletConnectWallets) {
+        for (const wallet of walletConnectWallets) {
+          if (wallet.connected) {
+            wallets.push(wallet);
+          }
         }
       }
     }

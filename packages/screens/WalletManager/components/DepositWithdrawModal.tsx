@@ -18,10 +18,10 @@ import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useBalances } from "../../../hooks/useBalances";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { useWalletStargateClient } from "../../../hooks/wallets/useWalletClients";
 import {
   getCosmosNetwork,
   getIBCCurrency,
-  getKeplrSigningStargateClient,
   getNativeCurrency,
   getNetwork,
   keplrCurrencyFromNativeCurrencyInfo,
@@ -78,6 +78,8 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
 
   // variables
   const { control, setValue, handleSubmit } = useForm<TransactionForm>();
+
+  const client = useWalletStargateClient(selectedWallet?.id);
 
   // returns
   const ModalHeader = useCallback(
@@ -206,6 +208,10 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
                 throw new Error("no sender");
               }
 
+              if (!client) {
+                throw new Error("no client");
+              }
+
               const receiver = toAccount;
               if (!receiver) {
                 throw new Error("no receiver");
@@ -256,10 +262,6 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
                 variation === "withdraw"
                   ? ibcTargetCurrency.destinationChannelId
                   : ibcTargetCurrency.sourceChannelId;
-
-              const client = await getKeplrSigningStargateClient(
-                sourceNetworkId
-              );
 
               const tx = await client.sendIbcTokens(
                 sender,

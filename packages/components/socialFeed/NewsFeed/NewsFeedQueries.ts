@@ -8,11 +8,9 @@ import {
   SocialFeedMetadata,
 } from "./NewsFeed.type";
 import { pinataPinFileToIPFS } from "../../../candymachine/pinata-upload";
-import {
-  nonSigningSocialFeedClient,
-  signingSocialFeedClient,
-} from "../../../client-creators/socialFeedClient";
+import { nonSigningSocialFeedClient } from "../../../client-creators/socialFeedClient";
 import { Wallet } from "../../../context/WalletsProvider";
+import { TeritoriSocialFeedClient } from "../../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.client";
 import { defaultSocialFeedFee } from "../../../utils/fee";
 import { ipfsURLToHTTPURL } from "../../../utils/ipfs";
 import { LocalFileData, RemoteFileData } from "../../../utils/types/feed";
@@ -30,9 +28,8 @@ export const getAvailableFreePost = async ({
       return;
     }
 
-    const client = await signingSocialFeedClient({
+    const client = await nonSigningSocialFeedClient({
       networkId,
-      walletAddress: wallet.address,
     });
 
     const freePostCount = await client.queryAvailableFreePosts({
@@ -96,7 +93,7 @@ export const getPostCategory = ({
 };
 
 interface CreatePostParams {
-  networkId: string;
+  client: TeritoriSocialFeedClient | undefined;
   wallet: Wallet | undefined;
   formValues: NewPostFormValues;
   freePostCount: number;
@@ -110,8 +107,7 @@ interface CreatePostParams {
 
 // =============== Used only for Article for now. (Sorry for the mess)
 export const createPost = async ({
-  networkId,
-  wallet,
+  client,
   formValues,
   freePostCount,
   fee,
@@ -120,14 +116,9 @@ export const createPost = async ({
   category,
   identifier,
 }: CreatePostParams) => {
-  if (!wallet?.connected || !wallet.address) {
+  if (!client) {
     return;
   }
-
-  const client = await signingSocialFeedClient({
-    networkId,
-    walletAddress: wallet.address,
-  });
 
   let files: RemoteFileData[] = [];
 

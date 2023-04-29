@@ -4,12 +4,12 @@ import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { View } from "react-native";
 
-import { signingSocialFeedClient } from "../../../client-creators/socialFeedClient";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useTeritoriSocialFeedTipPostMutation } from "../../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.react-query";
 import { useBalances } from "../../../hooks/useBalances";
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { useWalletSocialFeedClient } from "../../../hooks/wallets/useWalletClients";
 import {
   getStakingCurrency,
   keplrCurrencyFromNativeCurrencyInfo,
@@ -60,20 +60,13 @@ export const TipModal: React.FC<{
   const currencyBalance = balances.find(
     (bal) => bal.denom === nativeCurrency?.denom
   );
+  const client = useWalletSocialFeedClient(selectedWallet?.id);
   const formValues = watch();
 
   const handleSubmit: SubmitHandler<TipFormType> = async (fieldValues) => {
-    if (
-      !selectedWallet?.connected ||
-      !selectedWallet.address ||
-      !nativeCurrency
-    ) {
+    if (!nativeCurrency || !client) {
       return;
     }
-    const client = await signingSocialFeedClient({
-      networkId: selectedNetworkId,
-      walletAddress: selectedWallet.address,
-    });
     const amount = Decimal.fromUserInput(
       fieldValues.amount,
       nativeCurrency.decimals

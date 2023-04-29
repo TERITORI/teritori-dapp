@@ -17,8 +17,8 @@ import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useBalances } from "../../../hooks/useBalances";
 import { useErrorHandler } from "../../../hooks/useErrorHandler";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { useWalletStargateClient } from "../../../hooks/wallets/useWalletClients";
 import {
-  getKeplrSigningStargateClient,
   getStakingCurrency,
   keplrCurrencyFromNativeCurrencyInfo,
 } from "../../../networks";
@@ -56,6 +56,7 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
     toriBalance?.amount || "0",
     stakingCurrency?.decimals || 0
   );
+  const client = useWalletStargateClient(wallet?.id);
   const { control, setValue, handleSubmit, reset } =
     useForm<StakeFormValuesType>();
 
@@ -80,7 +81,7 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
           });
           return;
         }
-        if (!wallet?.connected || !wallet.address) {
+        if (!wallet?.connected || !wallet.address || !client) {
           console.warn("invalid wallet", wallet);
           setToastError({
             title: "Invalid wallet",
@@ -95,7 +96,6 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
           });
           return;
         }
-        const client = await getKeplrSigningStargateClient(wallet.networkId);
         const txResponse = await client.delegateTokens(
           wallet.address,
           validator.address,
@@ -126,12 +126,13 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
       }
     },
     [
-      validator,
+      client,
       onClose,
       setToastError,
       setToastSuccess,
       stakingCurrency,
       triggerError,
+      validator,
       wallet,
     ]
   );

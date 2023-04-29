@@ -9,11 +9,11 @@ import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { TeritoriNftClient } from "../../contracts-clients/teritori-nft/TeritoriNft.client";
 import { TeritoriNft__factory } from "../../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { useWalletCosmWasmClient } from "../../hooks/wallets/useWalletClients";
 import {
   NetworkKind,
   CosmosNetworkInfo,
   EthereumNetworkInfo,
-  getKeplrSigningCosmWasmClient,
   getNetwork,
   parseNftId,
 } from "../../networks";
@@ -47,6 +47,7 @@ export const NFTTransferModal: React.FC<NFTTransferModalProps> = ({
   const selectedWallet = useSelectedWallet();
   const { handleSubmit: formHandleSubmit, control } =
     useForm<NFTTransferForm>();
+  const signingComswasmClient = useWalletCosmWasmClient(selectedWallet?.id);
 
   const cosmosSendNFT = async (
     nftContractAddress: string,
@@ -55,6 +56,11 @@ export const NFTTransferModal: React.FC<NFTTransferModalProps> = ({
     receiver: string,
     networkInfo: CosmosNetworkInfo
   ) => {
+    // validate client
+    if (!signingComswasmClient) {
+      throw new Error("no cosmwasm client");
+    }
+
     // validate address
     const address = bech32.decode(receiver);
 
@@ -63,9 +69,6 @@ export const NFTTransferModal: React.FC<NFTTransferModalProps> = ({
     }
 
     // create client
-    const signingComswasmClient = await getKeplrSigningCosmWasmClient(
-      networkInfo.id
-    );
     const nftClient = new TeritoriNftClient(
       signingComswasmClient,
       sender,

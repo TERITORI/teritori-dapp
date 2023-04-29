@@ -7,7 +7,7 @@ import { BrandText } from "../../components/BrandText";
 import { OmniLink } from "../../components/OmniLink";
 import { SVG } from "../../components/SVG";
 import { NFTView } from "../../components/nfts/NFTView";
-import { useNFTs } from "../../hooks/useNFTs";
+import { useNFTs } from "../../hooks/nfts/useNFTs";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 
 export const MyNFTs: React.FC = () => {

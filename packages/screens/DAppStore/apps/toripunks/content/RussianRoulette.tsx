@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 
+import { useWalletStargateClient } from "../../../../../hooks/wallets/useWalletClients";
 import { ActionButton } from "../components/action-button/ActionButton";
 import { Button } from "../components/button/Button";
 import { ButtonLabel } from "../components/buttonLabel/ButtonLabel";
@@ -170,6 +171,8 @@ export const Russian = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ResultData]);
 
+  const signingStargateClient = useWalletStargateClient(selectedWallet?.id);
+
   // use Hooks to buy, play, add bet , remove bet
   const click = async () => {
     if (result) {
@@ -178,7 +181,11 @@ export const Russian = () => {
     }
     if (!bet) return;
     setLoadingGame(true);
-    sendKeplarTx({ selectedWallet, amount: `${bet * 1000000}` }).then((res) => {
+    sendKeplarTx({
+      signingStargateClient,
+      selectedWallet,
+      amount: `${bet * 1000000}`,
+    }).then((res) => {
       if (!res) {
         setLoadingGame(false);
         return;

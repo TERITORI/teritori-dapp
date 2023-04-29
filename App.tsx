@@ -12,7 +12,6 @@ import {
 } from "@expo-google-fonts/exo";
 import { NavigationContainer } from "@react-navigation/native";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import axios from "axios";
 import { StatusBar } from "expo-status-bar";
 import { MetaMaskProvider } from "metamask-react";
 import { useForm, FormProvider } from "react-hook-form";

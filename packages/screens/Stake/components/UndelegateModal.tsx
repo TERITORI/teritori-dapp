@@ -16,8 +16,8 @@ import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useCosmosValidatorBondedAmount } from "../../../hooks/useCosmosValidatorBondedAmount";
 import { useErrorHandler } from "../../../hooks/useErrorHandler";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { useWalletStargateClient } from "../../../hooks/wallets/useWalletClients";
 import {
-  getKeplrSigningStargateClient,
   getStakingCurrency,
   keplrCurrencyFromNativeCurrencyInfo,
 } from "../../../networks";
@@ -55,6 +55,7 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
   );
   const { setToastError, setToastSuccess } = useFeedbacks();
   const { triggerError } = useErrorHandler();
+  const client = useWalletStargateClient(wallet?.id);
 
   // variables
   const { control, setValue, handleSubmit, reset } =
@@ -82,7 +83,7 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
           });
           return;
         }
-        if (!wallet?.connected || !wallet.address) {
+        if (!wallet?.connected || !wallet.address || !client) {
           console.warn("invalid wallet", wallet);
           setToastError({
             title: "Invalid wallet",
@@ -97,7 +98,6 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
           });
           return;
         }
-        const client = await getKeplrSigningStargateClient(wallet.networkId);
         const txResponse = await client.undelegateTokens(
           wallet.address,
           validator.address,
@@ -130,13 +130,14 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
       }
     },
     [
-      validator,
+      client,
       onClose,
       refreshBondedTokens,
       setToastError,
       setToastSuccess,
       stakingCurrency,
       triggerError,
+      validator,
       wallet,
     ]
   );

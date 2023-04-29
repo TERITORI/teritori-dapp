@@ -13,7 +13,6 @@ import { NameData } from "../../components/teritoriNameService/NameData";
 import { NameNFT } from "../../components/teritoriNameService/NameNFT";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useTNS } from "../../context/TNSProvider";
-import { TeritoriNameServiceClient } from "../../contracts-clients/teritori-name-service/TeritoriNameService.client";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
 import { useNSNameInfo } from "../../hooks/useNSNameInfo";
 import { useNSNameOwner } from "../../hooks/useNSNameOwner";
@@ -23,12 +22,8 @@ import {
 } from "../../hooks/useNSPrimaryAlias";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import {
-  getCosmosNetwork,
-  getKeplrSigningCosmWasmClient,
-  getUserId,
-  mustGetCosmosNetwork,
-} from "../../networks";
+import { useWalletTNSClient } from "../../hooks/wallets/useWalletClients";
+import { getCosmosNetwork, getUserId } from "../../networks";
 import { useAppNavigation } from "../../utils/navigation";
 import { neutral17, neutral33 } from "../../utils/style/colors";
 
@@ -88,6 +83,7 @@ const OwnerActions: React.FC<{
   const { setToastError, setToastSuccess } = useFeedbacks();
   const queryClient = useQueryClient();
   const navigation = useAppNavigation();
+  const client = useWalletTNSClient(wallet?.id);
   return (
     <View
       style={{
@@ -135,18 +131,9 @@ const OwnerActions: React.FC<{
           squaresBackgroundColor={neutral17}
           onPress={async () => {
             try {
-              const network = mustGetCosmosNetwork(wallet?.networkId);
-              if (
-                !network.nameServiceContractAddress ||
-                !network.nameServiceTLD
-              ) {
-                throw new Error("network not supported");
+              if (!client) {
+                throw new Error("bad wallet");
               }
-              const client = new TeritoriNameServiceClient(
-                await getKeplrSigningCosmWasmClient(network.id),
-                wallet?.address || "",
-                network.nameServiceContractAddress
-              );
               await client.updatePrimaryAlias({
                 tokenId,
               });

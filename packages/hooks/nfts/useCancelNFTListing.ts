@@ -1,29 +1,33 @@
+import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { useCallback } from "react";
 
-import useSelectedWallet from "./useSelectedWallet";
-import { useFeedbacks } from "../context/FeedbacksProvider";
-import { TeritoriNftVaultClient } from "../contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
-import { NFTVault__factory } from "../evm-contracts-clients/teritori-nft-vault/NFTVault__factory";
+import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { TeritoriNftVaultClient } from "../../contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
+import { NFTVault__factory } from "../../evm-contracts-clients/teritori-nft-vault/NFTVault__factory";
 import {
-  getKeplrSigningCosmWasmClient,
   getNetwork,
   mustGetCosmosNetwork,
   mustGetEthereumNetwork,
   NetworkKind,
-} from "../networks";
-import { getMetaMaskEthereumSigner } from "../utils/ethereum";
+} from "../../networks";
+import { getMetaMaskEthereumSigner } from "../../utils/ethereum";
+import useSelectedWallet from "../useSelectedWallet";
+import { useWalletCosmWasmClient } from "../wallets/useWalletClients";
 
 const teritoriCancelNFTListing = async (
   networkId: string,
+  cosmwasmClient: SigningCosmWasmClient | undefined,
   sender: string,
   nftContractAddress: string,
   tokenId: string
 ) => {
+  if (!cosmwasmClient) {
+    throw new Error("no cosmwasm client");
+  }
   const network = mustGetCosmosNetwork(networkId);
   if (!network.vaultContractAddress) {
     throw new Error("network not supported");
   }
-  const cosmwasmClient = await getKeplrSigningCosmWasmClient(networkId);
   const vaultClient = new TeritoriNftVaultClient(
     cosmwasmClient,
     sender,
@@ -76,6 +80,7 @@ export const useCancelNFTListing = (
 ) => {
   const wallet = useSelectedWallet();
   const { setToastError } = useFeedbacks();
+  const cosmWasmClient = useWalletCosmWasmClient(wallet?.id);
 
   return useCallback(async () => {
     try {
@@ -92,6 +97,7 @@ export const useCancelNFTListing = (
         case NetworkKind.Cosmos:
           return await teritoriCancelNFTListing(
             network.id,
+            cosmWasmClient,
             wallet.address,
             nftContractAddress,
             tokenId
@@ -116,6 +122,7 @@ export const useCancelNFTListing = (
       }
     }
   }, [
+    cosmWasmClient,
     networkId,
     nftContractAddress,
     setToastError,

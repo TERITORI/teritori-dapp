@@ -9,8 +9,8 @@ import { useTNS } from "../../../context/TNSProvider";
 import { TeritoriNameServiceQueryClient } from "../../../contracts-clients/teritori-name-service/TeritoriNameService.client";
 import { useBalances } from "../../../hooks/useBalances";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { useWalletStargateClient } from "../../../hooks/wallets/useWalletClients";
 import {
-  getKeplrSigningStargateClient,
   mustGetNonSigningCosmWasmClient,
   mustGetCosmosNetwork,
   getStakingCurrency,
@@ -38,11 +38,21 @@ export const TNSSendFundsModal: React.FC<{
   const currencyBalance = balances.find(
     (bal) => bal.denom === nativeCurrency?.denom
   );
+  const stargateClient = useWalletStargateClient(selectedWallet?.id);
 
   const handleSubmit: SubmitHandler<TNSSendFundsFormType> = async (
     fieldValues
   ) => {
     try {
+      if (!stargateClient) {
+        setToastError({
+          title: "Internal error",
+          message: "No stargate client",
+        });
+        onClose();
+        return;
+      }
+
       if (!nativeCurrency) {
         setToastError({
           title: "Internal error",
@@ -98,11 +108,8 @@ export const TNSSendFundsModal: React.FC<{
       // get recipient address
       const { owner: recipientAddress } = await tnsClient.ownerOf({ tokenId });
 
-      // get stargate client
-      const client = await getKeplrSigningStargateClient(networkId);
-
       // send tokens
-      const response = await client.sendTokens(
+      const response = await stargateClient.sendTokens(
         sender,
         recipientAddress,
         [

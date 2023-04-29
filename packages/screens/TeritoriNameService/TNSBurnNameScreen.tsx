@@ -11,14 +11,11 @@ import ModalBase from "../../components/modals/ModalBase";
 import { NameNFT } from "../../components/teritoriNameService/NameNFT";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useTNS } from "../../context/TNSProvider";
-import { TeritoriNameServiceClient } from "../../contracts-clients/teritori-name-service/TeritoriNameService.client";
 import { nsNameInfoQueryKey } from "../../hooks/useNSNameInfo";
 import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import {
-  getKeplrSigningCosmWasmClient,
-  mustGetCosmosNetwork,
-} from "../../networks";
+import { useWalletTNSClient } from "../../hooks/wallets/useWalletClients";
+import { mustGetCosmosNetwork } from "../../networks";
 import { neutral17 } from "../../utils/style/colors";
 
 interface TNSBurnNameScreenProps extends TNSModalCommonProps {}
@@ -31,19 +28,12 @@ export const TNSBurnNameScreen: React.FC<TNSBurnNameScreenProps> = ({
   const selectedWallet = useSelectedWallet();
   const network = mustGetCosmosNetwork(selectedWallet?.networkId);
   const { tokens } = useNSTokensByOwner(selectedWallet?.userId);
-  const walletAddress = selectedWallet?.address;
   const normalizedTokenId = (name + network.nameServiceTLD || "").toLowerCase();
+  const nsClient = useWalletTNSClient(selectedWallet?.id);
 
   const queryClient = useQueryClient();
 
   const onSubmit = async () => {
-    if (!walletAddress) {
-      setToastError({
-        title: "No wallet address",
-        message: "",
-      });
-      return;
-    }
     if (tokens.length && !tokens.includes(normalizedTokenId)) {
       setToastError({
         title: "Something went wrong!",
@@ -51,20 +41,14 @@ export const TNSBurnNameScreen: React.FC<TNSBurnNameScreenProps> = ({
       });
       return;
     }
-
+    if (!nsClient) {
+      setToastError({
+        title: "Bad wallet",
+        message: "",
+      });
+      return;
+    }
     try {
-      if (!network.nameServiceContractAddress) {
-        throw new Error("network not supported");
-      }
-
-      const signingClient = await getKeplrSigningCosmWasmClient(network.id);
-
-      const nsClient = new TeritoriNameServiceClient(
-        signingClient,
-        walletAddress,
-        network.nameServiceContractAddress
-      );
-
       await nsClient.burn({ tokenId: normalizedTokenId });
 
       console.log(normalizedTokenId + " successfully burnt");

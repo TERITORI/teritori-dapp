@@ -28,7 +28,6 @@ import cameraSVG from "../../../../assets/icons/camera.svg";
 import penSVG from "../../../../assets/icons/pen.svg";
 import priceSVG from "../../../../assets/icons/price.svg";
 import videoSVG from "../../../../assets/icons/video.svg";
-import { signingSocialFeedClient } from "../../../client-creators/socialFeedClient";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useBotPost } from "../../../hooks/feed/useBotPost";
 import { useCreatePost } from "../../../hooks/feed/useCreatePost";
@@ -39,6 +38,7 @@ import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useMaxResolution } from "../../../hooks/useMaxResolution";
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { useWalletSocialFeedClient } from "../../../hooks/wallets/useWalletClients";
 import { getUserId } from "../../../networks";
 import { prettyPrice } from "../../../utils/coins";
 import { defaultSocialFeedFee } from "../../../utils/fee";
@@ -148,6 +148,7 @@ export const NewsFeedInput = React.forwardRef<
     const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
     const { setToastError } = useFeedbacks();
     const [isLoading, setLoading] = useState(false);
+    const socialFeedClient = useWalletSocialFeedClient(wallet?.id);
     const [selection, setSelection] = useState<{ start: number; end: number }>({
       start: 10,
       end: 10,
@@ -197,6 +198,10 @@ export const NewsFeedInput = React.forwardRef<
     );
 
     const processSubmit = async () => {
+      if (!socialFeedClient) {
+        return;
+      }
+
       const toriBalance = balances.find((bal) => bal.denom === "utori");
       if (postFee > Number(toriBalance?.amount) && !freePostCount) {
         return setNotEnoughFundModal(true);
@@ -246,11 +251,6 @@ export const NewsFeedInput = React.forwardRef<
 
         const postCategory = getPostCategory(formValues);
 
-        const client = await signingSocialFeedClient({
-          networkId: selectedNetworkId,
-          walletAddress: wallet?.address || "",
-        });
-
         const metadata: SocialFeedMetadata = generatePostMetadata({
           title: formValues.title || "",
           message: finalMessage,
@@ -263,7 +263,7 @@ export const NewsFeedInput = React.forwardRef<
         const identifier = uuidv4();
 
         await mutateAsync({
-          client,
+          client: socialFeedClient,
           msg: {
             category: postCategory,
             identifier,
@@ -293,10 +293,12 @@ export const NewsFeedInput = React.forwardRef<
         }
       } catch (err) {
         console.error("post submit err", err);
-        setToastError({
-          title: "Post creation failed",
-          message: err.message,
-        });
+        if (err instanceof Error) {
+          setToastError({
+            title: "Post creation failed",
+            message: err.message,
+          });
+        }
       }
       setLoading(false);
     };

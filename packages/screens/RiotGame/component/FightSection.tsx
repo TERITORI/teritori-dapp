@@ -11,6 +11,7 @@ import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { TeritoriNftQueryClient } from "../../../contracts-clients/teritori-nft/TeritoriNft.client";
 import { Squad } from "../../../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.types";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { useWalletKeplr } from "../../../hooks/wallets/useWalletKeplr";
 import { mustGetNonSigningCosmWasmClient } from "../../../networks";
 import { squadWithdraw } from "../../../utils/game";
 import { ipfsURLToHTTPURL } from "../../../utils/ipfs";
@@ -36,6 +37,7 @@ export const FightSection: React.FC<FightSectionProps> = ({
   const [isShowClaimModal, setIsShowClaimModal] = useState(false);
   const selectedWallet = useSelectedWallet();
   const networkId = selectedWallet?.networkId;
+  const walletKeplr = useWalletKeplr(selectedWallet?.id);
 
   const { data: stakedRippers } = useQuery(
     ["stakedRippers", networkId, squad.nfts],
@@ -80,7 +82,7 @@ export const FightSection: React.FC<FightSectionProps> = ({
     try {
       setIsUnstaking(true);
 
-      await squadWithdraw(currentUser);
+      await squadWithdraw(walletKeplr, currentUser);
       setIsShowClaimModal(true);
     } catch (e: any) {
       setToastError({

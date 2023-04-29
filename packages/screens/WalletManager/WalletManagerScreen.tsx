@@ -3,9 +3,9 @@ import { StyleSheet, View } from "react-native";
 
 import { Assets } from "./Assets";
 import { MyNFTs } from "./MyNFTs";
+import { SelectedWallet } from "./SelectedWallet";
 import { WalletDashboardHeader } from "./WalletDashboardHeader";
 import { WalletHeader } from "./WalletHeader";
-import { Wallets } from "./Wallets";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { MainConnectWalletButton } from "../../components/connectWallet/MainConnectWalletButton";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
@@ -25,7 +25,7 @@ export const WalletManagerScreen: ScreenFC<"WalletManager"> = () => {
         <View style={styles.container}>
           <WalletDashboardHeader />
           <Assets userId={selectedWallet?.userId} />
-          <Wallets />
+          <SelectedWallet />
           <MyNFTs />
         </View>
       ) : (

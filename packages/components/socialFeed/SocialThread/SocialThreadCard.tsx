@@ -4,11 +4,10 @@ import { StyleProp, View, ViewStyle } from "react-native";
 import { SocialCardHeader } from "./SocialCardHeader";
 import { SocialMessageContent } from "./SocialMessageContent";
 import { Post } from "../../../api/feed/v1/feed";
-import { signingSocialFeedClient } from "../../../client-creators/socialFeedClient";
 import { useTeritoriSocialFeedReactPostMutation } from "../../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.react-query";
 import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
-import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { useWalletSocialFeedClient } from "../../../hooks/wallets/useWalletClients";
 import { parseUserId } from "../../../networks";
 import { OnPressReplyType } from "../../../screens/FeedPostView/FeedPostViewScreen";
 import { useAppNavigation } from "../../../utils/navigation";
@@ -67,11 +66,11 @@ export const SocialThreadCard: React.FC<{
     });
 
   const wallet = useSelectedWallet();
-  const selectedNetworkId = useSelectedNetworkId();
   const authorNSInfo = useNSUserInfo(localPost.createdBy);
   const [, userAddress] = parseUserId(localPost.createdBy);
   const userInfo = useNSUserInfo(wallet?.userId);
   const navigation = useAppNavigation();
+  const client = useWalletSocialFeedClient(wallet?.id);
   const metadata: SocialFeedMetadata = JSON.parse(localPost.metadata);
   const username = authorNSInfo?.metadata?.tokenId
     ? authorNSInfo?.metadata?.tokenId
@@ -83,13 +82,9 @@ export const SocialThreadCard: React.FC<{
   // }, [metadata]);
 
   const handleReaction = async (emoji: string) => {
-    if (!wallet?.connected || !wallet.address) {
+    if (!client) {
       return;
     }
-    const client = await signingSocialFeedClient({
-      networkId: selectedNetworkId,
-      walletAddress: wallet.address,
-    });
 
     postMutate({
       client,

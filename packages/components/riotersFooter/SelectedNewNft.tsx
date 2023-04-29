@@ -11,7 +11,7 @@ import {
 } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
-import { useNFTs } from "../../hooks/useNFTs";
+import { useNFTs } from "../../hooks/nfts/useNFTs";
 import { alignDown } from "../../utils/align";
 import { neutral33, neutral77 } from "../../utils/style/colors";
 import { CollectionInfoInline } from "../collections/CollectionInfoInline";

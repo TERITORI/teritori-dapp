@@ -29,6 +29,7 @@ import { useBalances } from "../../hooks/useBalances";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { useWalletSocialFeedClient } from "../../hooks/wallets/useWalletClients";
 import { getUserId, NetworkKind } from "../../networks";
 import { prettyPrice } from "../../utils/coins";
 import { IMAGE_MIME_TYPES } from "../../utils/mime";
@@ -58,6 +59,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
   );
   const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
   const [loading, setLoading] = useState(false);
+  const socialFeedClient = useWalletSocialFeedClient(wallet?.id);
 
   const { setToastSuccess, setToastError } = useFeedbacks();
   const navigation = useAppNavigation();
@@ -107,7 +109,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
     }
 
     await createPost({
-      networkId: selectedNetworkId,
+      client: socialFeedClient,
       wallet,
       freePostCount,
       category: PostCategory.Article,
@@ -137,10 +139,12 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
       navigateBack();
       reset();
     } catch (err) {
-      setToastError({
-        title: "Something went wrong.",
-        message: err.message,
-      });
+      if (err instanceof Error) {
+        setToastError({
+          title: "Something went wrong.",
+          message: err.message,
+        });
+      }
       console.error("post submit error", err);
     }
 

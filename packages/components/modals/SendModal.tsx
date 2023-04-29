@@ -9,9 +9,8 @@ import contactsSVG from "../../../assets/icons/contacts.svg";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useBalances } from "../../hooks/useBalances";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { useWalletKeplr } from "../../hooks/wallets/useWalletKeplr";
+import { useWalletStargateClient } from "../../hooks/wallets/useWalletClients";
 import {
-  getKeplrSigningStargateClient,
   getNetwork,
   keplrCurrencyFromNativeCurrencyInfo,
   NativeCurrencyInfo,
@@ -26,7 +25,6 @@ import {
 } from "../../utils/style/colors";
 import { fontSemibold13 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { WalletProvider } from "../../utils/walletProvider";
 import { BrandText } from "../BrandText";
 import FlexCol from "../FlexCol";
 import FlexRow from "../FlexRow";
@@ -63,7 +61,7 @@ export const SendModal: React.FC<SendModalProps> = ({
   const { setToastError, setToastSuccess } = useFeedbacks();
   const selectedWallet = useSelectedWallet();
   const { control, setValue, handleSubmit } = useForm<TransactionForm>();
-  const walletKeplr = useWalletKeplr(selectedWallet?.id);
+  const stargateClient = useWalletStargateClient(selectedWallet?.id);
 
   const balances = useBalances(networkId, selectedWallet?.address);
 
@@ -87,6 +85,9 @@ export const SendModal: React.FC<SendModalProps> = ({
 
   const onPressSend = async (formData: TransactionForm) => {
     try {
+      if (!stargateClient) {
+        throw new Error("no stargate client");
+      }
       if (!selectedWallet) {
         throw new Error("no selected wallet");
       }
@@ -107,30 +108,17 @@ export const SendModal: React.FC<SendModalProps> = ({
         nativeCurrency.decimals
       ).atomics;
 
-      switch (selectedWallet.provider) {
-        case WalletProvider.Keplr:
-        case WalletProvider.WalletConnect: {
-          const client = await getKeplrSigningStargateClient(
-            walletKeplr,
-            networkId
-          );
-          const tx = await client.sendTokens(
-            sender,
-            receiver,
-            [{ amount, denom: nativeCurrency.denom }],
-            "auto"
-          );
-          if (isDeliverTxFailure(tx)) {
-            console.error("Send Tokens tx failed", tx);
-            setToastError({ title: "Transaction failed", message: "" });
-            throw new Error("failure");
-          }
-          break;
-        }
-        default:
-          throw new Error(
-            `Wallet provider ${selectedWallet.provider} not supported`
-          );
+      const tx = await stargateClient.sendTokens(
+        sender,
+        receiver,
+        [{ amount, denom: nativeCurrency.denom }],
+        "auto"
+      );
+
+      if (isDeliverTxFailure(tx)) {
+        console.error("Send Tokens tx failed", tx);
+        setToastError({ title: "Transaction failed", message: "" });
+        throw new Error("failure");
       }
 
       setToastSuccess({

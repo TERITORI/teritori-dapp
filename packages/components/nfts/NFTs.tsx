@@ -3,8 +3,8 @@ import { FlatList, View } from "react-native";
 
 import { NFTView } from "./NFTView";
 import { NFT, NFTsRequest } from "../../api/marketplace/v1/marketplace";
+import { useNFTs } from "../../hooks/nfts/useNFTs";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
-import { useNFTs } from "../../hooks/useNFTs";
 import { layout, screenContentMaxWidthLarge } from "../../utils/style/layout";
 import { SpacerColumn } from "../spacer";
 

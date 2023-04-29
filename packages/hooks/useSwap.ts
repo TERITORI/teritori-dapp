@@ -17,6 +17,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import { useSelectedNetworkId } from "./useSelectedNetwork";
 import useSelectedWallet from "./useSelectedWallet";
+import { useWalletKeplr } from "./wallets/useWalletKeplr";
 import {
   CurrencyInfo,
   getCosmosNetwork,
@@ -50,6 +51,7 @@ export const useSwap = (
   // Only 2 pools handled for now
   const [multihopPools, setMultihopPools] = useState<LcdPool[]>([]);
   const [loading, setLoading] = useState(false);
+  const walletKeplr = useWalletKeplr(selectedWallet?.id);
 
   // ===== Creating Osmosis client for API use
   const api = new OsmosisApiClient({
@@ -371,7 +373,7 @@ export const useSwap = (
 
     try {
       // ===== Getting Osmosis client for RPC use
-      const signer = await getKeplrSigner(selectedNetwork.id);
+      const signer = await getKeplrSigner(walletKeplr, selectedNetwork.id);
       const client = await getSigningOsmosisClient({
         rpcEndpoint: selectedNetwork.rpcEndpoint || "",
         signer,
@@ -439,7 +441,7 @@ export const useSwap = (
       return {
         isError: true,
         title: "Transaction failed",
-        message: e.message,
+        message: e instanceof Error ? e.message : `${e}`,
       } as SwapResult;
     }
   };

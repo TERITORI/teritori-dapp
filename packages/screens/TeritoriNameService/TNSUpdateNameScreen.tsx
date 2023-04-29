@@ -14,8 +14,8 @@ import { Metadata } from "../../contracts-clients/teritori-name-service/Teritori
 import { nsNameInfoQueryKey } from "../../hooks/useNSNameInfo";
 import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { useWalletTNSClient } from "../../hooks/wallets/useWalletClients";
 import {
-  getKeplrSigningCosmWasmClient,
   mustGetNonSigningCosmWasmClient,
   mustGetCosmosNetwork,
   getCosmosNetwork,
@@ -40,6 +40,7 @@ export const TNSUpdateNameScreen: React.FC<TNSUpdateNameScreenProps> = ({
   const normalizedTokenId = (
     name + network?.nameServiceTLD || ""
   ).toLowerCase();
+  const nsClient = useWalletTNSClient(selectedWallet?.id);
 
   const initData = async () => {
     try {
@@ -93,27 +94,16 @@ export const TNSUpdateNameScreen: React.FC<TNSUpdateNameScreenProps> = ({
       return;
     }
 
-    const msg = {
-      update_metadata: {
-        token_id: normalizedTokenId,
-        metadata: data,
-      },
-    };
-
     try {
-      const network = mustGetCosmosNetwork(selectedWallet?.networkId);
-      if (!network.nameServiceContractAddress) {
-        throw new Error("network not supported");
+      if (!nsClient) {
+        throw new Error("bad wallet");
       }
 
-      const signingClient = await getKeplrSigningCosmWasmClient(network.id);
+      const updatedToken = await nsClient.updateMetadata({
+        tokenId: normalizedTokenId,
+        metadata: data,
+      });
 
-      const updatedToken = await signingClient.execute(
-        walletAddress,
-        network.nameServiceContractAddress,
-        msg,
-        "auto"
-      );
       if (updatedToken) {
         console.log(normalizedTokenId + " successfully updated"); //TODO: redirect to the token
         setToastSuccess({
