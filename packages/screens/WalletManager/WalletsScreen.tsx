@@ -146,8 +146,7 @@ export const WalletManagerWalletsScreen: ScreenFC<
                 color: neutralA3,
               }}
             >
-              Add one or more wallets to showcase all related things in one
-              place.
+              Manage wallets
             </BrandText>
           </View>
           <PrimaryButton
