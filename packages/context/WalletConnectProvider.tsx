@@ -127,11 +127,12 @@ export const WalletConnectProvider: React.FC = ({ children }) => {
   useEffect(() => {
     const effect = async () => {
       if (!connector) {
-        setAccounts([]);
         return;
       }
 
       connector.on("disconnect", () => {
+        setAccounts([]);
+        setKeplr(undefined);
         setConnector(undefined);
         connector.killSession();
       });
