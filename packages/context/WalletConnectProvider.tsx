@@ -127,8 +127,15 @@ export const WalletConnectProvider: React.FC = ({ children }) => {
   useEffect(() => {
     const effect = async () => {
       if (!connector) {
+        setAccounts([]);
         return;
       }
+
+      connector.on("disconnect", () => {
+        setConnector(undefined);
+        connector.killSession();
+      });
+
       const keplr = new KeplrWalletConnectV1(connector, {
         sendTx: sendTxWC,
       });
