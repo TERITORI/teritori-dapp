@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from "react";
 import {
   Animated,
   LayoutChangeEvent,
+  Platform,
   StyleProp,
   ViewStyle,
 } from "react-native";
@@ -29,7 +30,7 @@ export const AnimationFadeIn: React.FC<FadeInProps> = ({
       toValue: 1,
       duration,
       delay,
-      useNativeDriver: true,
+      useNativeDriver: Platform.OS !== "web",
     }).start();
   }, [duration, delay, fadeInAnimation]);
 

@@ -29,13 +29,7 @@ export const teritoriNetwork: NetworkInfo = {
     average: 0.025,
     high: 0.04,
   },
-  features: [
-    "stargate",
-    "ibc-transfer",
-    "cosmwasm",
-    "no-legacy-stdTx",
-    "ibc-go",
-  ],
+  features: ["ibc-transfer", "cosmwasm", "ibc-go"],
   nameServiceContractAddress,
   nameServiceDefaultImage:
     "ipfs://bafkreieqcwmjcb64r42ygs6a4dswz63djzgayjn3rhzjber3e42cknawlm",

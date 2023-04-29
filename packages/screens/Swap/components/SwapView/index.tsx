@@ -15,6 +15,7 @@ import {
   View,
   Animated,
   LayoutChangeEvent,
+  Platform,
 } from "react-native";
 
 import { CurrencyAmount } from "./CurrencyAmount";
@@ -101,12 +102,12 @@ export const SwapView: React.FC = () => {
       Animated.timing(opacity, {
         toValue: 0,
         duration: INVERT_ANIMATION_DURATION,
-        useNativeDriver: true,
+        useNativeDriver: Platform.OS !== "web",
       }),
       Animated.timing(opacity, {
         toValue: 1,
         duration: INVERT_ANIMATION_DURATION,
-        useNativeDriver: true,
+        useNativeDriver: Platform.OS !== "web",
       }),
     ]).start();
   };
@@ -126,12 +127,12 @@ export const SwapView: React.FC = () => {
       Animated.timing(translateToBottom, {
         toValue: 1,
         duration: INVERT_ANIMATION_DURATION,
-        useNativeDriver: true,
+        useNativeDriver: Platform.OS !== "web",
       }),
       Animated.timing(translateToBottom, {
         toValue: 0,
         duration: INVERT_ANIMATION_DURATION,
-        useNativeDriver: true,
+        useNativeDriver: Platform.OS !== "web",
       }),
     ]).start();
   };
@@ -141,12 +142,12 @@ export const SwapView: React.FC = () => {
       Animated.timing(translateToTop, {
         toValue: 1,
         duration: INVERT_ANIMATION_DURATION,
-        useNativeDriver: true,
+        useNativeDriver: Platform.OS !== "web",
       }),
       Animated.timing(translateToTop, {
         toValue: 0,
         duration: INVERT_ANIMATION_DURATION,
-        useNativeDriver: true,
+        useNativeDriver: Platform.OS !== "web",
       }),
     ]).start();
   };

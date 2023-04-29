@@ -15,7 +15,6 @@ export const useMetamask: () => UseMetamaskResult = () => {
   const isConnected = status === "connected";
 
   const wallet: Wallet | undefined = useMemo(() => {
-    console.log("finding eth wallet", chainId);
     if (!chainId) {
       return undefined;
     }
@@ -24,7 +23,6 @@ export const useMetamask: () => UseMetamaskResult = () => {
         n.kind === NetworkKind.Ethereum && n.chainId === parseInt(chainId, 16)
     );
     if (!network || !address || !isConnected) {
-      console.warn("fail", network, address, isConnected);
       return;
     }
     const walletId = `metamask-${network.id}-${address}`;

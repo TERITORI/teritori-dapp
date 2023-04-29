@@ -1,5 +1,5 @@
 import React, { PropsWithChildren, useEffect, useRef } from "react";
-import { Animated, ViewStyle } from "react-native";
+import { Animated, Platform, ViewStyle } from "react-native";
 
 type FadeInViewProps = PropsWithChildren<{ style: ViewStyle }>;
 export const FadeInView: React.FC<FadeInViewProps> = (props) => {
@@ -9,7 +9,7 @@ export const FadeInView: React.FC<FadeInViewProps> = (props) => {
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 400,
-      useNativeDriver: true,
+      useNativeDriver: Platform.OS !== "web",
     }).start();
   }, [fadeAnim]);
 

@@ -23,11 +23,5 @@ export const cosmosNetwork: CosmosNetworkInfo = {
     average: 0.025,
     high: 0.04,
   },
-  features: [
-    "stargate",
-    "ibc-transfer",
-    "cosmwasm",
-    "no-legacy-stdTx",
-    "ibc-go",
-  ],
+  features: ["ibc-transfer", "ibc-go"],
 };

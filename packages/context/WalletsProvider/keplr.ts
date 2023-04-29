@@ -31,9 +31,6 @@ export const useKeplr: () => UseKeplrResult = () => {
     const handleLoad = () => {
       const keplr = (window as KeplrWindow)?.keplr;
       const hasKeplr = !!keplr;
-      if (hasKeplr) {
-        console.log("keplr installed");
-      }
       setHasKeplr(hasKeplr);
       if (!hasKeplr) {
         setReady(true);
@@ -129,14 +126,11 @@ export const useKeplr: () => UseKeplrResult = () => {
           connected: true,
           id: `keplr-${network.id}-${address}`,
         };
-        console.log("keplr", index, wallet);
         newWallets.push(wallet);
       }
 
       return [...wallets, ...newWallets];
     }, [] as Wallet[]);
-
-    console.log("wallets", wallets, "accounts", accounts);
 
     return wallets;
   }, [accounts]);

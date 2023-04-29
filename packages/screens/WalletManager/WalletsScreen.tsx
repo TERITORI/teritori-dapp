@@ -33,7 +33,6 @@ const WalletProviderView: React.FC<WalletProviderViewProps> = ({
   index,
   itemsCount,
 }) => {
-  console.log("wp", provider, wallets);
   const [isExpanded, setExpanded] = useState(false);
   return (
     <TertiaryBox

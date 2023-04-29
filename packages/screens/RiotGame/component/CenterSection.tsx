@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { Animated, StyleSheet, View } from "react-native";
+import { Animated, Platform, StyleSheet, View } from "react-native";
 
 import startButtonSVG from "../../../../assets/game/start-button.svg";
 import { BrandText } from "../../../components/BrandText";
@@ -30,12 +30,12 @@ export const CenterSection: React.FC<CenterSectionProps> = ({
           toValue: 0.4,
           duration: 2000,
           delay: 500,
-          useNativeDriver: true,
+          useNativeDriver: Platform.OS !== "web",
         }),
         Animated.timing(pulseOpacityRef.current, {
           toValue: 1,
           duration: 2000,
-          useNativeDriver: true,
+          useNativeDriver: Platform.OS !== "web",
         }),
       ]),
       {

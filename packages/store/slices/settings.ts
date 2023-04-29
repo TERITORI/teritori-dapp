@@ -42,12 +42,18 @@ const settingsSlice = createSlice({
   reducers: {
     setSelectedNetworkId: (state, action: PayloadAction<string>) => {
       state.selectedNetworkId = action.payload;
+      console.log("reseting selected wallet due to network id change");
       state.selectedWalletId = "";
     },
     setSelectedWallet: (state, action: PayloadAction<Wallet | undefined>) => {
       if (!action.payload) {
+        console.log(
+          "reseting selected wallet due to empty set selected wallet call"
+        );
+        state.selectedWalletId = "";
         return;
       }
+      console.log("changing selected wallet", action.payload.id);
       state.selectedWalletId = action.payload.id;
       state.selectedNetworkId = action.payload.networkId;
     },

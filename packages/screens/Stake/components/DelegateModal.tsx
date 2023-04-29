@@ -51,9 +51,11 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
   const networkId = wallet?.networkId || "";
   const balances = useBalances(networkId, wallet?.address);
   const stakingCurrency = getStakingCurrency(networkId);
-  const toriBalance = balances.find((bal) => bal.denom === "utori");
-  const toriBalanceDecimal = Decimal.fromAtomics(
-    toriBalance?.amount || "0",
+  const stakingBalance = balances.find(
+    (bal) => bal.denom === stakingCurrency?.denom
+  );
+  const stakingBalanceDecimal = Decimal.fromAtomics(
+    stakingBalance?.amount || "0",
     stakingCurrency?.decimals || 0
   );
   const client = useWalletStargateClient(wallet?.id);
@@ -210,11 +212,11 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
           placeHolder="0"
           currency={keplrCurrencyFromNativeCurrencyInfo(stakingCurrency)}
           defaultValue=""
-          rules={{ required: true, max: toriBalanceDecimal.toString() }}
+          rules={{ required: true, max: stakingBalanceDecimal.toString() }}
         >
           <MaxButton
             onPress={() =>
-              setValue("amount", toriBalanceDecimal.toString(), {
+              setValue("amount", stakingBalanceDecimal.toString(), {
                 shouldValidate: true,
               })
             }
@@ -226,7 +228,7 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
           Available balance:{" "}
           {prettyPrice(
             networkId,
-            toriBalanceDecimal.atomics,
+            stakingBalanceDecimal.atomics,
             stakingCurrency?.denom || ""
           )}
         </BrandText>

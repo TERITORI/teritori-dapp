@@ -128,6 +128,8 @@ export const WalletsProvider: React.FC = React.memo(({ children }) => {
       }
     }
 
+    console.log("wallets change", wallets);
+
     return {
       wallets,
       walletProviders,

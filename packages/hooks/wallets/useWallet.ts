@@ -5,5 +5,5 @@ export const useWallet = (walletId: string | undefined) => {
   if (!walletId) {
     return undefined;
   }
-  return wallets.find((w) => (w.id = walletId));
+  return wallets.find((w) => w.id === walletId);
 };
