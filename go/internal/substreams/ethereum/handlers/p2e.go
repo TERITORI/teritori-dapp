@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerutils"
@@ -16,7 +16,36 @@ type SquadStakeInput struct {
 }
 
 func (h *Handler) handleSquadUnstake(contractABI *abi.ABI, tx *pb.Tx, args map[string]interface{}) error {
-	fmt.Println("unstaking ================")
+	totalLogs := len(tx.Receipt.Logs)
+
+	var tokenIDs []string
+	var nftContracts []string
+
+	// TODO: find a way to decode topics with go ABI
+	for _, log := range tx.Receipt.Logs[:totalLogs-1] {
+		tokenID, err := DecodeTopicToInt(log.Topics[3])
+		if err != nil {
+			return errors.Wrap(err, "failed to parsed event log")
+		}
+
+		tokenIDs = append(tokenIDs, strconv.FormatInt(int64(tokenID), 10))
+		nftContracts = append(nftContracts, log.Address)
+	}
+
+	indexerUtils, err := indexerutils.NewIndexerUtils(h.network.NetworkBase, h.indexerDB, h.logger)
+	if err != nil {
+		return errors.Wrap(err, "failed to get indexerutils")
+	}
+
+	if err := indexerUtils.IndexSquadUnstake(
+		tx.Info.To,
+		tx.Info.From,
+		tokenIDs,
+		nftContracts,
+	); err != nil {
+		return errors.Wrap(err, "failed to index squadStake")
+	}
+
 	return nil
 }
 
@@ -28,8 +57,8 @@ func (h *Handler) handleSquadStake(contractABI *abi.ABI, tx *pb.Tx, args map[str
 
 	lastLogEntry := tx.Receipt.Logs[len(tx.Receipt.Logs)-1]
 
-	data := new(abiGo.SquadStakingV3Stake)
-	if err := contractABI.UnpackIntoInterface(data, "Stake", []byte(lastLogEntry.Data)); err != nil {
+	squadStakeEvent := new(abiGo.SquadStakingV3Stake)
+	if err := contractABI.UnpackIntoInterface(squadStakeEvent, "Stake", []byte(lastLogEntry.Data)); err != nil {
 		return err
 	}
 
@@ -50,8 +79,8 @@ func (h *Handler) handleSquadStake(contractABI *abi.ABI, tx *pb.Tx, args map[str
 		"V3",
 		tx.Info.To,
 		tx.Info.From,
-		data.StartTime.Uint64(),
-		data.EndTime.Uint64(),
+		squadStakeEvent.StartTime.Uint64(),
+		squadStakeEvent.EndTime.Uint64(),
 		tokenIDs,
 		nftContracts,
 	); err != nil {

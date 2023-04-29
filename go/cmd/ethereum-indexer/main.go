@@ -17,7 +17,6 @@ func main() {
 	Run("sink", "Teritori Sink Blockchain to Postgres",
 		SinkRunCmd,
 		SinkCleanCmd,
-		SinkFetchCmd,
 
 		ConfigureViper("SINK"),
 	)

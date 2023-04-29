@@ -1,10 +1,12 @@
 package handlers
 
 import (
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 
 	"github.com/TERITORI/teritori-dapp/go/internal/ipfsutil"
 	"github.com/ethereum/go-ethereum/accounts/abi"
@@ -70,4 +72,13 @@ func ParseMethod(contractABI *abi.ABI, callInput []byte) (*abi.Method, error) {
 		return nil, errors.Wrap(err, "failed to parse method name")
 	}
 	return method, nil
+}
+
+func DecodeTopicToInt(topicData []byte) (int64, error) {
+	hexStr := hex.EncodeToString(topicData)
+	numInt, err := strconv.ParseInt(hexStr, 16, 64)
+	if err != nil {
+		return 0, errors.Wrap(err, "failed to decode topic to int")
+	}
+	return numInt, nil
 }
