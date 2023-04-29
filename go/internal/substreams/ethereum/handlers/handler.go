@@ -13,25 +13,28 @@ import (
 )
 
 type Handler struct {
-	logger       *zap.Logger
-	network      *networks.EthereumNetwork
-	networkStore *networks.NetworkStore
-	indexerDB    *gorm.DB
+	logger        *zap.Logger
+	network       *networks.EthereumNetwork
+	networkStore  *networks.NetworkStore
+	indexerDB     *gorm.DB
+	dbTransaction *gorm.DB
 }
 
 type HandlerConfig struct {
-	Logger       *zap.Logger
-	Network      *networks.EthereumNetwork
-	NetworkStore *networks.NetworkStore
-	IndexerDB    *gorm.DB
+	Logger        *zap.Logger
+	Network       *networks.EthereumNetwork
+	NetworkStore  *networks.NetworkStore
+	IndexerDB     *gorm.DB
+	DbTransaction *gorm.DB
 }
 
 func NewHandler(handlerConfig *HandlerConfig) (*Handler, error) {
 	return &Handler{
-		logger:       handlerConfig.Logger,
-		network:      handlerConfig.Network,
-		networkStore: handlerConfig.NetworkStore,
-		indexerDB:    handlerConfig.IndexerDB,
+		logger:        handlerConfig.Logger,
+		network:       handlerConfig.Network,
+		networkStore:  handlerConfig.NetworkStore,
+		indexerDB:     handlerConfig.IndexerDB,
+		dbTransaction: handlerConfig.DbTransaction,
 	}, nil
 }
 
@@ -91,8 +94,6 @@ func (h *Handler) HandleETHTx(tx *pb.Tx) error {
 		if err := h.handleTransferFrom(method, tx, args); err != nil {
 			return errors.Wrap(err, "failed to handle transfer")
 		}
-	default:
-		h.logger.Info("no handler for " + method.Name)
 	}
 
 	return nil

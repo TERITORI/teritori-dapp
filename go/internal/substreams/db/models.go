@@ -19,18 +19,6 @@ func (j *JSONB) Scan(value interface{}) error {
 	return nil
 }
 
-type OffchainData struct {
-	ID        int64 `gorm:"primaryKey;autoIncrement;notNull"`
-	URI       string
-	TableName string
-	Pk        string
-	Network   string
-	Data      JSONB `gorm:"type:jsonb;default:'{}'"`
-	FieldsMap string
-	Error     string
-	IsFetched bool `gorm:"default:false"`
-}
-
 type Cursors struct {
 	ID       string `gorm:"primaryKey;notNull"`
 	Cursor   string
@@ -40,6 +28,5 @@ type Cursors struct {
 }
 
 var AllModels = []interface{}{
-	&OffchainData{},
 	&Cursors{},
 }

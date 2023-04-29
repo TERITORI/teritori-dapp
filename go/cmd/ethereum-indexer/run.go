@@ -113,11 +113,6 @@ func sinkRunE(cmd *cobra.Command, args []string) error {
 		cancelApp()
 	})
 
-	dbLoader, err := db.NewLoader(dns, zlog, tracer)
-	if err != nil {
-		return fmt.Errorf("failed to load DB: %w", err)
-	}
-
 	zlog.Info("reading substreams manifest", zap.String("manifest_path", network.SubstreamsManifest))
 	pkg, err := manifest.NewReader(network.SubstreamsManifest).Read()
 	if err != nil {
@@ -159,7 +154,6 @@ func sinkRunE(cmd *cobra.Command, args []string) error {
 		Network:            network,
 		NetworkStore:       &netstore,
 		IndexerDB:          indexerDB,
-		DBLoader:           dbLoader,
 		BlockRange:         blockRange,
 		Pkg:                pkg,
 		OutputModule:       module,

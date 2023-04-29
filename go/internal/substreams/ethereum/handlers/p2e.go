@@ -17,7 +17,6 @@ type SquadStakeInput struct {
 
 func (h *Handler) handleSquadUnstake(contractABI *abi.ABI, tx *pb.Tx, args map[string]interface{}) error {
 	totalLogs := len(tx.Receipt.Logs)
-
 	var tokenIDs []string
 	var nftContracts []string
 
@@ -32,7 +31,7 @@ func (h *Handler) handleSquadUnstake(contractABI *abi.ABI, tx *pb.Tx, args map[s
 		nftContracts = append(nftContracts, log.Address)
 	}
 
-	indexerUtils, err := indexerutils.NewIndexerUtils(h.network.NetworkBase, h.indexerDB, h.logger)
+	indexerUtils, err := indexerutils.NewIndexerUtils(h.network.NetworkBase, h.dbTransaction, h.logger)
 	if err != nil {
 		return errors.Wrap(err, "failed to get indexerutils")
 	}
@@ -70,7 +69,7 @@ func (h *Handler) handleSquadStake(contractABI *abi.ABI, tx *pb.Tx, args map[str
 		nftContracts = append(nftContracts, strings.ToLower(nft.Collection.String()))
 	}
 
-	indexerUtils, err := indexerutils.NewIndexerUtils(h.network.NetworkBase, h.indexerDB, h.logger)
+	indexerUtils, err := indexerutils.NewIndexerUtils(h.network.NetworkBase, h.dbTransaction, h.logger)
 	if err != nil {
 		return errors.Wrap(err, "failed to get indexerutils")
 	}
