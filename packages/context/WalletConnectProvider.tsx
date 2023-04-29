@@ -12,6 +12,7 @@ import {
   useMemo,
   useState,
 } from "react";
+import { Platform } from "react-native";
 
 import { useFeedbacks } from "./FeedbacksProvider";
 import { CosmosNetworkInfo, NetworkKind, allNetworks } from "../networks";
@@ -76,7 +77,10 @@ export const WalletConnectProvider: React.FC = ({ children }) => {
     // clientMeta is ignored in constructor
     // @ts-expect-error
     wc._clientMeta = {
-      name: "Teritori App",
+      name:
+        Platform.OS === "web"
+          ? `Teritori App ${window.navigator.userAgent}`
+          : `Teritori App ${Platform.OS}`,
       description: "Teritori App",
       url: "https://app.teritori.com",
       icons: [
