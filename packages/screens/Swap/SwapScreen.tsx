@@ -50,7 +50,10 @@ export const SwapScreen: ScreenFC<"Swap"> = () => {
   }, [osmosisConnected, isScreenFocused]);
 
   return (
-    <ScreenContainer headerChildren={<BrandText>Swap</BrandText>}>
+    <ScreenContainer
+      forceNetworkIds={["osmosis", "osmosis-testnet"]}
+      headerChildren={<BrandText>Swap</BrandText>}
+    >
       <View style={styles.mainContainer}>
         {!selectedWallet?.address ? (
           <MainConnectWalletButton style={{ alignSelf: "center" }} />

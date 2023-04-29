@@ -7,7 +7,6 @@ import { ScreenContainer } from "../../components/ScreenContainer";
 import { MobileTitle } from "../../components/ScreenContainer/ScreenContainerMobile";
 import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
 import { useIsMobile } from "../../hooks/useIsMobile";
-import { NetworkKind } from "../../networks";
 import { ScreenFC } from "../../utils/navigation";
 import { feedTabToCategories, feedsTabItems } from "../../utils/social-feed";
 
@@ -36,7 +35,7 @@ export const FeedScreen: ScreenFC<"Feed"> = () => {
       noMargin
       noScroll
       footerChildren={<></>}
-      forceNetworkKind={NetworkKind.Cosmos}
+      forceNetworkIds={["teritori", "teritori-testnet"]}
       headerChildren={<BrandText>Social Feed</BrandText>}
     >
       <NewsFeed

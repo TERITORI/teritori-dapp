@@ -15,12 +15,19 @@ import { getNetwork } from "../../networks";
 import { ScreenFC } from "../../utils/navigation";
 import { layout, MOBILE_MAX_WIDTH } from "../../utils/style/layout";
 
+const supportedNetworks = [
+  "teritori",
+  "teritori-testnet",
+  "ethereum",
+  "ethereum-goerli",
+];
+
 export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
   const selectedNetworkId = useSelectedNetworkId();
   const { width } = useMaxResolution();
 
   return (
-    <ScreenContainer responsive>
+    <ScreenContainer forceNetworkIds={supportedNetworks} responsive>
       <View
         style={{
           paddingBottom: layout.contentPadding,

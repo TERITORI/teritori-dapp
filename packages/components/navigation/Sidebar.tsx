@@ -100,22 +100,8 @@ export const Sidebar: React.FC = () => {
         data={Object.values(dynamicSidebar)}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => {
-          let { route } = item;
-          if (
-            item.disabledOn?.includes(
-              selectedNetworkKind || NetworkKind.Unknown
-            )
-          ) {
-            route = "ComingSoon";
-          }
-
           return (
-            <SidebarButton
-              key={item.id}
-              onPress={onRouteChange}
-              {...item}
-              route={route}
-            />
+            <SidebarButton key={item.id} onPress={onRouteChange} {...item} />
           );
         }}
         ListHeaderComponent={<SpacerColumn size={1} />}

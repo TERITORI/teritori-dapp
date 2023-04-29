@@ -191,7 +191,7 @@ export const NFTDetailScreen: ScreenFC<"NFTDetail"> = ({
 
   return (
     <ScreenContainer
-      forceNetworkId={network?.id}
+      forceNetworkIds={[network?.id || ""]}
       fullWidth
       footerChildren={<></>}
       noScroll

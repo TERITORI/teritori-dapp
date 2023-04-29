@@ -17,9 +17,9 @@ import { SpacerRow } from "../spacer";
 
 export const NetworkSelector: React.FC<{
   style?: StyleProp<ViewStyle>;
-  forceNetworkId?: string;
+  forceNetworkIds?: string[];
   forceNetworkKind?: NetworkKind;
-}> = ({ style, forceNetworkId, forceNetworkKind }) => {
+}> = ({ style, forceNetworkIds, forceNetworkKind }) => {
   const { onPressDropdownButton, isDropdownOpen } = useDropdowns();
   const dropdownRef = useRef<View>(null);
   const selectedNetworkInfo = useSelectedNetworkInfo();
@@ -60,7 +60,7 @@ export const NetworkSelector: React.FC<{
       {isDropdownOpen(dropdownRef) && (
         <NetworkSelectorMenu
           style={{ position: "absolute", top: 44 }}
-          forceNetworkId={forceNetworkId}
+          forceNetworkIds={forceNetworkIds}
           forceNetworkKind={forceNetworkKind}
         />
       )}

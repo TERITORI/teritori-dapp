@@ -15,7 +15,6 @@ import tnsServiceSVG from "../../assets/icons/tns-service.svg";
 import walletRegSVG from "../../assets/icons/wallet-regular.svg";
 import walletSVG from "../../assets/icons/wallet-sidebar.svg";
 import { SidebarRecordType } from "../components/navigation/types";
-import { NetworkKind } from "../networks";
 
 export const SIDEBAR_LIST: SidebarRecordType = {
   feed: {
@@ -55,7 +54,6 @@ export const SIDEBAR_LIST: SidebarRecordType = {
     id: "Name Service",
     route: "TNSHome",
     icon: tnsServiceSVG,
-    disabledOn: [NetworkKind.Ethereum],
   },
   wallet: {
     title: "My Wallet",
@@ -82,14 +80,12 @@ export const SIDEBAR_LIST: SidebarRecordType = {
     id: "Staking",
     route: "Staking",
     icon: stakingSVG,
-    disabledOn: [NetworkKind.Ethereum],
   },
   governance: {
     title: "Governance",
     id: "Governance",
     route: "Governance",
     icon: governanceSVG,
-    disabledOn: [NetworkKind.Ethereum],
   },
   swap: {
     title: "Swap Osmosis",
@@ -108,7 +104,6 @@ export const SIDEBAR_LIST: SidebarRecordType = {
     id: "Join The R!ot",
     route: "RiotGame",
     icon: riotersGameSVG,
-    disabledOn: [NetworkKind.Ethereum],
   },
   riotersFooter: {
     title: "Rioters Footer",

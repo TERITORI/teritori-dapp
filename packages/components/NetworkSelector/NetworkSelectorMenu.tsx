@@ -23,10 +23,10 @@ import { NetworkIcon } from "../NetworkIcon";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 
 export const NetworkSelectorMenu: FC<{
-  forceNetworkId?: string;
+  forceNetworkIds?: string[];
   forceNetworkKind?: NetworkKind;
   style?: StyleProp<ViewStyle>;
-}> = ({ forceNetworkId, forceNetworkKind, style }) => {
+}> = ({ forceNetworkIds, forceNetworkKind, style }) => {
   const dispatch = useAppDispatch();
   const { setToastError } = useFeedbacks();
   const testnetsEnabled = useSelector(selectAreTestnetsEnabled);
@@ -74,7 +74,7 @@ export const NetworkSelectorMenu: FC<{
           const selectable =
             !!selectableNetworks.find((sn) => sn.id === network.id) && // check that it's in the selectable list
             selectedNetworkInfo?.id !== network.id && // check that it's not already selected
-            (!forceNetworkId || network.id === forceNetworkId) && // check that it's the forced network id if forced to
+            (!forceNetworkIds || forceNetworkIds.includes(network.id)) && // check that it's a forced network id if forced to
             (!forceNetworkKind || network.kind === forceNetworkKind); // check that it's the correct network kind if forced to
 
           return (

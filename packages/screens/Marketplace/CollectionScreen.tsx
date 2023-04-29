@@ -28,7 +28,7 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
       footerChildren={<></>}
       noMargin
       noScroll
-      forceNetworkId={network?.id}
+      forceNetworkIds={[network?.id || ""]}
     >
       <ScrollView
         style={{ width: "100%" }}

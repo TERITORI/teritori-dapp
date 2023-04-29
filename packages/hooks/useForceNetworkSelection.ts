@@ -5,13 +5,13 @@ import { useSelectedNetworkId } from "./useSelectedNetwork";
 import { setSelectedNetworkId } from "../store/slices/settings";
 import { useAppDispatch } from "../store/store";
 
-export const useForceNetworkSelection = (networkId: string | undefined) => {
+export const useForceNetworkSelection = (networkIds: string[] | undefined) => {
   const selectedNetworkId = useSelectedNetworkId();
   const dispatch = useAppDispatch();
   const effect = useCallback(() => {
-    if (networkId && networkId !== selectedNetworkId) {
-      dispatch(setSelectedNetworkId(networkId));
+    if (networkIds && !networkIds.includes(selectedNetworkId)) {
+      dispatch(setSelectedNetworkId(networkIds[0]));
     }
-  }, [dispatch, networkId, selectedNetworkId]);
+  }, [dispatch, networkIds, selectedNetworkId]);
   useFocusEffect(effect);
 };

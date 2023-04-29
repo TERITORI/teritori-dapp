@@ -172,7 +172,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
     );
   } else
     return (
-      <ScreenContainer noMargin fullWidth forceNetworkId={network?.id}>
+      <ScreenContainer noMargin fullWidth forceNetworkIds={[network?.id || ""]}>
         <View style={{ alignItems: "center" }}>
           <View
             style={{

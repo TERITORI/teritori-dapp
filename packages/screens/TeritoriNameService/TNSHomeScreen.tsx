@@ -23,7 +23,7 @@ import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
 import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { NetworkKind, getCollectionId, getCosmosNetwork } from "../../networks";
+import { getCollectionId, getCosmosNetwork } from "../../networks";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 
 export type TNSItems = "TNSManage" | "TNSRegister" | "TNSExplore";
@@ -140,7 +140,7 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
     <ScreenContainer
       noMargin={width <= 1600}
       headerChildren={<BrandText>Name Service</BrandText>}
-      forceNetworkKind={NetworkKind.Cosmos}
+      forceNetworkIds={["teritori", "teritori-testnet"]}
     >
       <View
         style={{

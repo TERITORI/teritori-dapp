@@ -37,8 +37,8 @@ export const ScreenContainer: React.FC<{
   noMargin?: boolean;
   noScroll?: boolean;
   fullWidth?: boolean;
-  forceNetworkId?: string;
   forceNetworkKind?: NetworkKind;
+  forceNetworkIds?: string[];
   responsive?: boolean;
   onBackPress?: () => void;
   maxWidth?: number;
@@ -54,7 +54,7 @@ export const ScreenContainer: React.FC<{
   responsive,
   onBackPress,
   maxWidth,
-  forceNetworkId,
+  forceNetworkIds,
   forceNetworkKind,
 }) => {
   // variables
@@ -77,18 +77,18 @@ export const ScreenContainer: React.FC<{
 
   const width = fullWidth ? "100%" : calculatedWidth;
 
-  useForceNetworkSelection(forceNetworkId);
+  useForceNetworkSelection(forceNetworkIds);
   useForceNetworkKind(forceNetworkKind);
   // useForceUnselectNetworks();
 
   const networkFilter = useCallback(
     (n: NetworkInfo | undefined) => {
-      if (forceNetworkId && n?.id !== forceNetworkId) {
+      if (forceNetworkIds && !forceNetworkIds.includes(n?.id || "")) {
         return false;
       }
       return !(forceNetworkKind && n?.kind !== forceNetworkKind);
     },
-    [forceNetworkId, forceNetworkKind]
+    [forceNetworkIds, forceNetworkKind]
   );
 
   /////////////// mobile returns
@@ -98,7 +98,7 @@ export const ScreenContainer: React.FC<{
         children={children}
         networkFilter={networkFilter}
         hasScroll={hasScroll}
-        forceNetworkId={forceNetworkId}
+        forceNetworkIds={forceNetworkIds}
         forceNetworkKind={forceNetworkKind}
         mobileTitle={mobileTitle}
       />
@@ -178,7 +178,7 @@ export const ScreenContainer: React.FC<{
               }}
             />
             <NetworkSelector
-              forceNetworkId={forceNetworkId}
+              forceNetworkIds={forceNetworkIds}
               forceNetworkKind={forceNetworkKind}
               style={{ marginRight: 12 }}
             />

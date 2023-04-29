@@ -10,8 +10,6 @@ import { SidebarButton } from "./components/SidebarButton";
 import { SidebarType } from "./types";
 import addSVG from "../../../assets/icons/add-circle.svg";
 import { useSidebar } from "../../context/SidebarProvider";
-import { useSelectedNetworkKind } from "../../hooks/useSelectedNetwork";
-import { NetworkKind } from "../../networks";
 import { RouteName, useAppNavigation } from "../../utils/navigation";
 import { neutral00, neutral17, neutral33 } from "../../utils/style/colors";
 import {
@@ -29,7 +27,6 @@ const SpringConfig: WithSpringConfig = {
 
 export const SidebarMobile: FC = () => {
   const { height: windowHeight, width: windowWidth } = useWindowDimensions();
-  const selectedNetworkKind = useSelectedNetworkKind();
   const navigation = useAppNavigation();
   const { isSidebarExpanded, toggleSidebar, dynamicSidebar } = useSidebar();
 
@@ -66,15 +63,6 @@ export const SidebarMobile: FC = () => {
         data={Object.values(dynamicSidebar)}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => {
-          let { route } = item;
-          if (
-            item.disabledOn?.includes(
-              selectedNetworkKind || NetworkKind.Unknown
-            )
-          ) {
-            route = "ComingSoon";
-          }
-
           return (
             <SidebarButton
               key={item.id}
@@ -83,7 +71,6 @@ export const SidebarMobile: FC = () => {
                 onRouteChange(routeName);
               }}
               {...item}
-              route={route}
             />
           );
         }}

@@ -14,9 +14,9 @@ import { TopLogoMobile } from "../navigation/components/TopLogoMobile";
 import { SpacerRow } from "../spacer";
 
 export const HeaderMobile: FC<{
-  forceNetworkId?: string;
+  forceNetworkIds?: string[];
   forceNetworkKind?: NetworkKind;
-}> = ({ forceNetworkId, forceNetworkKind }) => {
+}> = ({ forceNetworkIds, forceNetworkKind }) => {
   const { isSidebarExpanded, toggleSidebar } = useSidebar();
 
   return (
@@ -24,7 +24,7 @@ export const HeaderMobile: FC<{
       <TopLogoMobile />
       <View style={styles.rightContainer}>
         <NetworkSelectorMobile
-          forceNetworkId={forceNetworkId}
+          forceNetworkIds={forceNetworkIds}
           forceNetworkKind={forceNetworkKind}
         />
         <SpacerRow size={2} />
