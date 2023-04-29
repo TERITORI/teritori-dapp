@@ -33,6 +33,8 @@ import { WalletsProvider } from "./packages/context/WalletsProvider";
 import { store } from "./packages/store/store";
 import { linking } from "./packages/utils/navigation";
 
+/*
+
 const sleep = (durationms: number) =>
   new Promise((resolve) => setTimeout(resolve, durationms));
 
@@ -49,9 +51,9 @@ let queue: string[] = [];
     try {
       await axios.post(
         "http://192.168.1.164:4242/push",
-        msg /* + `ql:${queue.length},i:${index}\n`*/
+        msg
       );
-    } catch /*(err)*/ {
+    } catch {
       // axios.post("http://192.168.1.164:4242/push", `${JSON.stringify(err)}\n`);
       // FIXME: find a way to show error to user
     }
@@ -79,6 +81,8 @@ console.warn = (...args) => {
   remoteLog(...args);
   nativeWarn(...args);
 };
+
+*/
 
 const queryClient = new QueryClient();
 

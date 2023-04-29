@@ -66,6 +66,12 @@ export const WalletConnectProvider: React.FC = ({ children }) => {
       ],
       qrcodeModal: {
         open: (uri: string, cb: any) => {
+          if (!isMobileBrowser) {
+            setPairingURL(uri);
+            return;
+          }
+
+          // use deep link on mobile
           const base = "keplrwallet://wcV1";
           saveMobileLinkInfo({
             name: "Keplr",
@@ -76,7 +82,9 @@ export const WalletConnectProvider: React.FC = ({ children }) => {
           window.location.href = finalURI;
           //cb();
         },
-        close: () => {},
+        close: () => {
+          setPairingURL(undefined);
+        },
       },
       /*clientMeta: {
         name: "Teritori App",
@@ -103,128 +111,123 @@ export const WalletConnectProvider: React.FC = ({ children }) => {
   const connect = useCallback(async () => {
     console.log("connecting to wallet connect");
 
-    const useV1 = Platform.OS === "web" && isMobileBrowser();
+    //const useV1 = Platform.OS === "web" && isMobileBrowser();
+    const useV1 = true;
 
     if (useV1) {
-      const connector = createWalletConnectV1();
-      // Check if connection is already established
-      if (!connector.connected) {
-        console.log("creating new wc session");
-        // create new session
-        await connector.createSession();
-        console.log("created session");
+      const connector = await new Promise<WalletConnectV1>(
+        async (resolve, reject) => {
+          const connector = createWalletConnectV1();
 
-        console.log("listening for events");
-        connector.on("connect", async (error) => {
-          try {
+          // Check if connection is already established
+          if (connector.connected) {
+            // await connector.killSession();
+            console.log("connected to existing wc session");
+            resolve(connector);
+            return;
+          }
+
+          // create new session
+          console.log("creating new wc session");
+          await connector.createSession();
+          connector.on("connect", async (error) => {
             console.log("received connect event");
             if (error) {
-              throw error;
+              reject(error);
             }
-            setToastSuccess({ title: "Connected", message: "" });
-            const keplr = new KeplrWalletConnectV1(connector, {
-              // sendTx: sendTxWC,
-            });
-            console.log("new session", keplr);
-
-            await keplr.enable(["osmosis-1", "cosmos-hub-4"]);
-
-            const oaccounts = await keplr
-              .getOfflineSigner("osmosis-1")
-              .getAccounts();
-            const caccounts = await keplr
-              .getOfflineSigner("cosmos-hub-4")
-              .getAccounts();
-
-            setAccounts([
-              ...oaccounts.map((account) => ({
-                account,
-                networkId: "osmosis",
-              })),
-              ...caccounts.map((account) => ({
-                account,
-                networkId: "cosmos-hub",
-              })),
-            ]);
-            setToastSuccess({ title: "Accounts set", message: "" });
-          } catch (err) {
-            if (err instanceof Error) {
-              setToastError({
-                title: "Failed to connect to wallet",
-                message: err.message,
-              });
-            }
-          }
-        });
-        for (const eventName of [
-          "disconnect",
-          "session_request",
-          "session_update",
-          "call_request",
-          "wc_sessionRequest",
-          "wc_sessionUpdate",
-        ]) {
-          connector.on(eventName, (...args) => {
-            console.log(`received ${eventName} event`, args);
+            resolve(connector);
           });
+          setPairingURL(connector.uri);
         }
-      } else {
+      );
+
+      try {
         const keplr = new KeplrWalletConnectV1(connector, {
           // sendTx: sendTxWC,
         });
-        console.log("connected to wc session", keplr);
-      }
-    } else {
-      let client = stateClient;
-      if (!client) {
-        console.log("initializing wallet connect client");
-        const newClient = await WalletConnectV2.init({
-          // logger: "debug",
-          projectId,
-          metadata: {
-            name: "Teritori App",
-            description: "",
-            url: "",
-            icons: [],
-          },
-        });
-        console.log("wallet connect client initialized");
+        console.log("new session", keplr);
 
-        const namespaces = getRequiredNamespaces(
-          networks.map((n) => "cosmos:" + n.chainId)
-        );
-        const sessions = newClient.find({ requiredNamespaces: namespaces });
-        if (sessions.length) {
-          setSessionTopic(sessions[0].topic);
-          console.log("connected to existing session", sessions[0].topic);
+        await keplr.enable(networks.map((n) => n.chainId));
+
+        console.log("enabled chains");
+
+        let accounts: { account: AccountData; networkId: string }[] = [];
+
+        for (const n of networks) {
+          accounts = [
+            ...accounts,
+            ...(await keplr.getOfflineSigner(n.chainId).getAccounts()).map(
+              (a) => ({ account: a, networkId: n.id })
+            ),
+          ];
         }
 
-        console.log("sessions", sessions);
+        console.log("got accounts", accounts);
 
-        setClient(newClient);
-        client = newClient;
+        setAccounts(accounts);
+        setToastSuccess({ title: "Accounts set", message: "" });
+      } catch (err) {
+        console.error(err);
+        if (err instanceof Error) {
+          setToastError({
+            title: "Failed to connect to wallet",
+            message: err.message,
+          });
+        }
       }
+      return;
+    }
+
+    // V2
+    let client = stateClient;
+    if (!client) {
+      console.log("initializing wallet connect client");
+      const newClient = await WalletConnectV2.init({
+        // logger: "debug",
+        projectId,
+        metadata: {
+          name: "Teritori App",
+          description: "",
+          url: "",
+          icons: [],
+        },
+      });
+      console.log("wallet connect client initialized");
 
       const namespaces = getRequiredNamespaces(
         networks.map((n) => "cosmos:" + n.chainId)
       );
+      const sessions = newClient.find({ requiredNamespaces: namespaces });
+      if (sessions.length) {
+        setSessionTopic(sessions[0].topic);
+        console.log("connected to existing session", sessions[0].topic);
+      }
 
-      const { uri, approval } = await client.connect({
-        // pairingTopic: pairing?.topic,
-        requiredNamespaces: namespaces,
-      });
+      console.log("sessions", sessions);
 
-      console.log("got peering uri", uri);
-
-      setPairingURL(uri);
-
-      console.log("Waiting for session");
-      const session = await approval();
-      console.log("Established session:", session);
-
-      setSessionTopic(session.topic);
+      setClient(newClient);
+      client = newClient;
     }
-  }, [stateClient]);
+
+    const namespaces = getRequiredNamespaces(
+      networks.map((n) => "cosmos:" + n.chainId)
+    );
+
+    const { uri, approval } = await client.connect({
+      // pairingTopic: pairing?.topic,
+      requiredNamespaces: namespaces,
+    });
+
+    console.log("got peering uri", uri);
+
+    setPairingURL(uri);
+
+    console.log("Waiting for session");
+    const session = await approval();
+    console.log("Established session:", session);
+
+    setSessionTopic(session.topic);
+  }, [setToastError, setToastSuccess, stateClient]);
 
   useEffect(() => {
     const effect = async () => {
