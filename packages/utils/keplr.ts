@@ -1,10 +1,10 @@
 import { Window as KeplrWindow } from "@keplr-wallet/types";
 
-export function isKeplrInstalled() {
+export function isKeplrExtensionInstalled() {
   return !!(window as KeplrWindow)?.keplr;
 }
 
-export const getKeplr = () => {
+export const getKeplrExtension = () => {
   const keplrWindow = window as KeplrWindow;
   if (!keplrWindow.keplr) {
     throw new Error("keplr not installed");

@@ -8,7 +8,12 @@ import {
   StargateClient,
   GasPrice,
 } from "@cosmjs/stargate";
-import { ChainInfo, Currency as KeplrCurrency } from "@keplr-wallet/types";
+import {
+  ChainInfo,
+  Keplr,
+  Currency as KeplrCurrency,
+} from "@keplr-wallet/types";
+import { KeplrWalletConnectV1 } from "@keplr-wallet/wc-client";
 
 import { cosmosNetwork } from "./cosmos-hub";
 import { cosmosThetaNetwork } from "./cosmos-hub-theta";
@@ -27,7 +32,6 @@ import {
   NetworkInfo,
   NetworkKind,
 } from "./types";
-import { getKeplr } from "../utils/keplr";
 
 export * from "./types";
 
@@ -316,19 +320,35 @@ export const cosmosNetworkGasPrice = (
   return new GasPrice(decimalGasPrice, feeCurrency.denom);
 };
 
-export const getKeplrSigner = async (networkId: string) => {
+export const getKeplrSigner = async (
+  keplr: KeplrWalletConnectV1 | Keplr | undefined,
+  networkId: string
+) => {
+  if (!keplr) {
+    throw new Error("no keplr");
+  }
+
   const network = mustGetCosmosNetwork(networkId);
 
-  const keplr = getKeplr();
-
-  await keplr.experimentalSuggestChain(keplrChainInfoFromNetworkInfo(network));
+  try {
+    await keplr.experimentalSuggestChain(
+      keplrChainInfoFromNetworkInfo(network)
+    );
+  } catch (err) {
+    console.warn("failed to suggest chain", err);
+  }
 
   await keplr.enable(network.chainId);
+
+  if (keplr instanceof KeplrWalletConnectV1) {
+    return keplr.getOfflineSignerOnlyAmino(network.chainId);
+  }
 
   return keplr.getOfflineSignerAuto(network.chainId);
 };
 
 export const getKeplrSigningStargateClient = async (
+  keplr: KeplrWalletConnectV1 | Keplr | undefined,
   networkId: string,
   gasPriceKind: "low" | "average" | "high" = "average"
 ) => {
@@ -339,7 +359,7 @@ export const getKeplrSigningStargateClient = async (
     throw new Error("gas price not found");
   }
 
-  const signer = await getKeplrSigner(networkId);
+  const signer = await getKeplrSigner(keplr, networkId);
 
   return await SigningStargateClient.connectWithSigner(
     network.rpcEndpoint,
@@ -357,12 +377,13 @@ export const getNonSigningStargateClient = async (networkId: string) => {
 };
 
 export const getKeplrSigningCosmWasmClient = async (
+  keplr: KeplrWalletConnectV1 | Keplr | undefined,
   networkId: string,
   gasPriceKind: "low" | "average" | "high" = "average"
 ) => {
   const network = mustGetCosmosNetwork(networkId);
 
-  const signer = await getKeplrSigner(networkId);
+  const signer = await getKeplrSigner(keplr, networkId);
 
   const gasPrice = cosmosNetworkGasPrice(network, gasPriceKind);
   if (!gasPrice) {

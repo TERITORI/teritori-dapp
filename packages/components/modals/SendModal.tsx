@@ -1,7 +1,5 @@
 import { Decimal } from "@cosmjs/math";
-import { OfflineDirectSigner } from "@cosmjs/proto-signing";
-import { isDeliverTxFailure, SigningStargateClient } from "@cosmjs/stargate";
-import { Buffer } from "buffer";
+import { isDeliverTxFailure } from "@cosmjs/stargate";
 import React, { useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { StyleSheet, TouchableOpacity } from "react-native";
@@ -9,15 +7,13 @@ import { StyleSheet, TouchableOpacity } from "react-native";
 import ModalBase from "./ModalBase";
 import contactsSVG from "../../../assets/icons/contacts.svg";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { useWalletConnect } from "../../context/WalletConnectProvider";
 import { useBalances } from "../../hooks/useBalances";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { useWalletKeplr } from "../../hooks/wallets/useWalletKeplr";
 import {
-  cosmosNetworkGasPrice,
   getKeplrSigningStargateClient,
   getNetwork,
   keplrCurrencyFromNativeCurrencyInfo,
-  mustGetCosmosNetwork,
   NativeCurrencyInfo,
 } from "../../networks";
 import { TransactionForm } from "../../screens/WalletManager/types";
@@ -67,11 +63,7 @@ export const SendModal: React.FC<SendModalProps> = ({
   const { setToastError, setToastSuccess } = useFeedbacks();
   const selectedWallet = useSelectedWallet();
   const { control, setValue, handleSubmit } = useForm<TransactionForm>();
-  const {
-    client: walletConnectClient,
-    accounts: walletConnectAccounts,
-    topic,
-  } = useWalletConnect();
+  const walletKeplr = useWalletKeplr(selectedWallet?.id);
 
   const balances = useBalances(networkId, selectedWallet?.address);
 
@@ -116,8 +108,12 @@ export const SendModal: React.FC<SendModalProps> = ({
       ).atomics;
 
       switch (selectedWallet.provider) {
-        case WalletProvider.Keplr: {
-          const client = await getKeplrSigningStargateClient(networkId);
+        case WalletProvider.Keplr:
+        case WalletProvider.WalletConnect: {
+          const client = await getKeplrSigningStargateClient(
+            walletKeplr,
+            networkId
+          );
           const tx = await client.sendTokens(
             sender,
             receiver,
@@ -131,82 +127,10 @@ export const SendModal: React.FC<SendModalProps> = ({
           }
           break;
         }
-        case WalletProvider.WalletConnect: {
-          console.log("dafuq");
-          if (!topic) {
-            throw new Error("no wallet connect topic");
-          }
-          const network = mustGetCosmosNetwork(selectedWallet.networkId);
-          const gasPrice = cosmosNetworkGasPrice(network, "low");
-          if (!gasPrice) {
-            throw new Error("gas price not found");
-          }
-          const signer: OfflineDirectSigner = {
-            getAccounts: async () => {
-              const accounts = walletConnectAccounts.map((info) => {
-                const b = Buffer.from(
-                  info.account.pubkey as unknown as string,
-                  "base64"
-                );
-                return {
-                  ...info.account,
-                  pubkey: new Uint8Array(b.buffer, b.byteOffset, b.byteLength),
-                };
-              });
-              console.log("fetched accounts", accounts);
-              return accounts;
-            },
-            signDirect: async (addr, signDoc) => {
-              if (!walletConnectClient) {
-                throw new Error("no client");
-              }
-              console.log("signing", addr, signDoc);
-              const chainId = network.chainId;
-              const params = {
-                signerAddress: addr,
-                signDoc: {
-                  chainId: signDoc.chainId,
-                  accountNumber: signDoc.accountNumber.toString(),
-                  authInfoBytes: Buffer.from(signDoc.authInfoBytes).toString(
-                    "base64"
-                  ),
-                  bodyBytes: Buffer.from(signDoc.bodyBytes).toString("base64"),
-                },
-              };
-              console.log("params", params);
-              const reply = await walletConnectClient.request({
-                chainId: "cosmos:" + chainId,
-                topic,
-                request: {
-                  method: "cosmos_signDirect",
-                  params,
-                },
-              });
-              console.log("sign reply", reply);
-              return reply as any;
-            },
-          };
-          console.log("connecting");
-          const stargateClient = await SigningStargateClient.connectWithSigner(
-            network.rpcEndpoint,
-            signer,
-            { gasPrice }
+        default:
+          throw new Error(
+            `Wallet provider ${selectedWallet.provider} not supported`
           );
-          console.log("connected");
-          const tx = await stargateClient.sendTokens(
-            sender,
-            receiver,
-            [{ amount, denom: nativeCurrency.denom }],
-            "auto"
-          );
-          console.log("sent");
-          if (isDeliverTxFailure(tx)) {
-            console.error("Send Tokens tx failed", tx);
-            setToastError({ title: "Transaction failed", message: "" });
-            throw new Error("failure");
-          }
-          break;
-        }
       }
 
       setToastSuccess({
