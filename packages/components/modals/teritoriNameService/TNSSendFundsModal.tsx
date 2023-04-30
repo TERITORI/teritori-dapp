@@ -1,20 +1,17 @@
 import { Decimal } from "@cosmjs/math";
-import { isDeliverTxFailure } from "@cosmjs/stargate";
-import React from "react";
+import React, { useCallback } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { View } from "react-native";
 
-import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useTNS } from "../../../context/TNSProvider";
-import { TeritoriNameServiceQueryClient } from "../../../contracts-clients/teritori-name-service/TeritoriNameService.client";
+import { useSendTokens } from "../../../hooks/funds/useSendTokens";
 import { useBalances } from "../../../hooks/useBalances";
+import { useNSNameOwner } from "../../../hooks/useNSNameOwner";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { useWalletStargateClient } from "../../../hooks/wallets/useWalletClients";
 import {
-  mustGetNonSigningCosmWasmClient,
-  mustGetCosmosNetwork,
   getStakingCurrency,
   keplrCurrencyFromNativeCurrencyInfo,
+  getCosmosNetwork,
 } from "../../../networks";
 import { prettyPrice } from "../../../utils/coins";
 import { layout } from "../../../utils/style/layout";
@@ -32,114 +29,28 @@ export const TNSSendFundsModal: React.FC<{
     useForm<TNSSendFundsFormType>();
   const selectedWallet = useSelectedWallet();
   const networkId = selectedWallet?.networkId;
-  const nativeCurrency = getStakingCurrency(networkId);
-  const { setToastError, setToastSuccess } = useFeedbacks();
+  const stakingCurrency = getStakingCurrency(networkId);
   const balances = useBalances(networkId, selectedWallet?.address);
   const currencyBalance = balances.find(
-    (bal) => bal.denom === nativeCurrency?.denom
+    (bal) => bal.denom === stakingCurrency?.denom
   );
-  const stargateClient = useWalletStargateClient(selectedWallet?.id);
+  const sendTokens = useSendTokens(selectedWallet?.id);
+  const network = getCosmosNetwork(networkId);
+  const tokenId = name + network?.nameServiceTLD || "";
+  const { nameOwner } = useNSNameOwner(network?.id, tokenId);
 
-  const handleSubmit: SubmitHandler<TNSSendFundsFormType> = async (
-    fieldValues
-  ) => {
-    try {
-      if (!stargateClient) {
-        setToastError({
-          title: "Internal error",
-          message: "No stargate client",
-        });
-        onClose();
-        return;
-      }
-
-      if (!nativeCurrency) {
-        setToastError({
-          title: "Internal error",
-          message: "Currency not found",
-        });
-        onClose();
-        return;
-      }
-
-      if (!networkId) {
-        setToastError({
-          title: "Internal error",
-          message: "Invalid teritori network id",
-        });
-        onClose();
-        return;
-      }
-
-      // get contract address
-      const network = mustGetCosmosNetwork(networkId);
-      const contractAddress = network.nameServiceContractAddress;
-
-      if (!contractAddress) {
-        setToastError({
-          title: "Internal error",
-          message: "No TNS contract address",
-        });
-        onClose();
-        return;
-      }
-
-      // get sender address
-      const sender = selectedWallet?.address;
-      if (!sender) {
-        setToastError({
-          title: "Internal error",
-          message: "No sender address",
-        });
-        onClose();
-        return;
-      }
-
-      // get token id
-      const tokenId = name + network.nameServiceTLD || "";
-
-      // get tns client
-      const cosmwasmClient = await mustGetNonSigningCosmWasmClient(networkId);
-      const tnsClient = new TeritoriNameServiceQueryClient(
-        cosmwasmClient,
-        contractAddress
-      );
-
-      // get recipient address
-      const { owner: recipientAddress } = await tnsClient.ownerOf({ tokenId });
-
-      // send tokens
-      const response = await stargateClient.sendTokens(
-        sender,
-        recipientAddress,
-        [
-          {
-            denom: nativeCurrency.denom,
-            amount: Decimal.fromUserInput(
-              fieldValues.amount,
-              nativeCurrency.decimals
-            ).atomics,
-          },
-        ],
-        "auto",
+  const handleSubmit: SubmitHandler<TNSSendFundsFormType> = useCallback(
+    async (fieldValues) => {
+      await sendTokens(
+        nameOwner,
+        stakingCurrency?.denom,
+        fieldValues.amount,
         fieldValues.comment
       );
-      if (isDeliverTxFailure(response)) {
-        setToastError({ title: "Send failed", message: response.rawLog || "" });
-        onClose();
-        return;
-      }
-
-      // signal success
-      setToastSuccess({ title: "Send success", message: "" });
-    } catch (err) {
-      console.error(err);
-      if (err instanceof Error) {
-        setToastError({ title: "Send failed", message: err.message });
-      }
-    }
-    onClose();
-  };
+      onClose();
+    },
+    [nameOwner, stakingCurrency?.denom, onClose, sendTokens]
+  );
 
   return (
     <ModalBase
@@ -168,19 +79,20 @@ export const TNSSendFundsModal: React.FC<{
 
         <TextInputCustom<TNSSendFundsFormType>
           name="amount"
-          label={`${nativeCurrency?.displayName} AMOUNT ?`}
+          label={`${stakingCurrency?.displayName} AMOUNT ?`}
           control={control}
           placeHolder="Type your amount here"
           rules={{
             max: Decimal.fromAtomics(
               currencyBalance?.amount || "0",
-              nativeCurrency?.decimals || 0
+              stakingCurrency?.decimals || 0
             ).toString(),
             required: true,
           }}
-          currency={keplrCurrencyFromNativeCurrencyInfo(nativeCurrency)}
+          currency={keplrCurrencyFromNativeCurrencyInfo(stakingCurrency)}
           containerStyle={{ width: "100%" }}
         />
+
         <PrimaryButton
           size="M"
           text="Send"

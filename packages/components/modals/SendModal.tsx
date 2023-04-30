@@ -1,22 +1,19 @@
 import { Decimal } from "@cosmjs/math";
-import { isDeliverTxFailure } from "@cosmjs/stargate";
 import React, { useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { StyleSheet, TouchableOpacity } from "react-native";
 
 import ModalBase from "./ModalBase";
 import contactsSVG from "../../../assets/icons/contacts.svg";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { useSendTokens } from "../../hooks/funds/useSendTokens";
 import { useBalances } from "../../hooks/useBalances";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { useWalletStargateClient } from "../../hooks/wallets/useWalletClients";
 import {
   getNetwork,
   keplrCurrencyFromNativeCurrencyInfo,
   NativeCurrencyInfo,
 } from "../../networks";
 import { TransactionForm } from "../../screens/WalletManager/types";
-import { prettyPrice } from "../../utils/coins";
 import {
   neutral22,
   neutral33,
@@ -58,10 +55,9 @@ export const SendModal: React.FC<SendModalProps> = ({
   nativeCurrency,
   networkId,
 }) => {
-  const { setToastError, setToastSuccess } = useFeedbacks();
   const selectedWallet = useSelectedWallet();
   const { control, setValue, handleSubmit } = useForm<TransactionForm>();
-  const stargateClient = useWalletStargateClient(selectedWallet?.id);
+  const sendTokens = useSendTokens(selectedWallet?.id);
 
   const balances = useBalances(networkId, selectedWallet?.address);
 
@@ -83,58 +79,17 @@ export const SendModal: React.FC<SendModalProps> = ({
     nativeCurrency?.decimals || 0
   ).toString();
 
-  const onPressSend = async (formData: TransactionForm) => {
-    try {
-      if (!stargateClient) {
-        throw new Error("no stargate client");
-      }
-      if (!nativeCurrency) {
-        throw new Error("no native target currency");
-      }
-      const receiver = formData.toAddress;
-      if (!receiver) {
-        throw new Error("no receiver");
-      }
-      const sender = selectedWallet?.address;
-      if (!sender) {
-        throw new Error("no sender");
-      }
-
-      const amount = Decimal.fromUserInput(
-        formData.amount,
-        nativeCurrency.decimals
-      ).atomics;
-
-      const tx = await stargateClient.sendTokens(
-        sender,
-        receiver,
-        [{ amount, denom: nativeCurrency.denom }],
-        "auto"
+  const onPressSend = useCallback(
+    async (formData: TransactionForm) => {
+      await sendTokens(
+        formData.toAddress,
+        nativeCurrency?.denom,
+        formData.amount
       );
-
-      if (isDeliverTxFailure(tx)) {
-        throw new Error("Transaction delivery failed");
-      }
-
-      setToastSuccess({
-        title: `${prettyPrice(
-          networkId,
-          amount,
-          nativeCurrency.denom
-        )} succesfully sent to ${formData.toAddress}`,
-        message: "",
-      });
-    } catch (err) {
-      console.error("Send Tokens failed", err);
-      if (err instanceof Error) {
-        setToastError({
-          title: "Failed to Send Tokens",
-          message: err.message,
-        });
-      }
-    }
-    onClose();
-  };
+      onClose();
+    },
+    [nativeCurrency?.denom, onClose, sendTokens]
+  );
 
   return (
     <ModalBase
