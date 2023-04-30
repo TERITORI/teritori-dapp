@@ -10,7 +10,7 @@ export const useWalletConnectWallets: () => UseWalletProviderResult = () => {
   const { accounts } = useWalletConnect();
 
   return useMemo(() => {
-    const wallets = accounts.map((info, index) => {
+    const wallets = accounts.map((info) => {
       const address = info.account.address;
 
       const userId = getUserId(info.networkId, address);
@@ -24,7 +24,7 @@ export const useWalletConnectWallets: () => UseWalletProviderResult = () => {
         connected: true,
         id: `walletconnect-${info.networkId}-${address}`,
       };
-      console.log("walletconnect", index, wallet);
+
       return wallet;
     });
 
