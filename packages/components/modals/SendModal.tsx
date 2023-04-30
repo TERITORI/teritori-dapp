@@ -88,9 +88,6 @@ export const SendModal: React.FC<SendModalProps> = ({
       if (!stargateClient) {
         throw new Error("no stargate client");
       }
-      if (!selectedWallet) {
-        throw new Error("no selected wallet");
-      }
       if (!nativeCurrency) {
         throw new Error("no native target currency");
       }
@@ -116,9 +113,7 @@ export const SendModal: React.FC<SendModalProps> = ({
       );
 
       if (isDeliverTxFailure(tx)) {
-        console.error("Send Tokens tx failed", tx);
-        setToastError({ title: "Transaction failed", message: "" });
-        throw new Error("failure");
+        throw new Error("Transaction delivery failed");
       }
 
       setToastSuccess({
@@ -129,7 +124,6 @@ export const SendModal: React.FC<SendModalProps> = ({
         )} succesfully sent to ${formData.toAddress}`,
         message: "",
       });
-      // FIXME: find out if it's possible to check for ibc ack
     } catch (err) {
       console.error("Send Tokens failed", err);
       if (err instanceof Error) {
