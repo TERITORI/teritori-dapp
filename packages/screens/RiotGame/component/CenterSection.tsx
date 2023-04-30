@@ -1,10 +1,11 @@
 import React, { useEffect, useRef } from "react";
-import { Animated, Platform, StyleSheet, View } from "react-native";
+import { Animated, StyleSheet, View } from "react-native";
 
 import startButtonSVG from "../../../../assets/game/start-button.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { SpacerColumn } from "../../../components/spacer";
+import { shouldUseNativeDriver } from "../../../utils/animations";
 import { neutral00 } from "../../../utils/style/colors";
 import { fontBold16, fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
@@ -30,12 +31,12 @@ export const CenterSection: React.FC<CenterSectionProps> = ({
           toValue: 0.4,
           duration: 2000,
           delay: 500,
-          useNativeDriver: Platform.OS !== "web",
+          useNativeDriver: shouldUseNativeDriver,
         }),
         Animated.timing(pulseOpacityRef.current, {
           toValue: 1,
           duration: 2000,
-          useNativeDriver: Platform.OS !== "web",
+          useNativeDriver: shouldUseNativeDriver,
         }),
       ]),
       {
