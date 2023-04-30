@@ -12,7 +12,7 @@ import {
   getKeplrSigningCosmWasmClient,
   getKeplrSigningStargateClient,
 } from "../../networks";
-import { convertCosmosAddress } from "../../screens/WalletManager/components/DepositWithdrawModal";
+import { convertCosmosAddress } from "../../utils/cosmos";
 
 // we use lazy getters to not spam the user with chain suggest/enable requests
 // we also cache clients to reduce init rpcs

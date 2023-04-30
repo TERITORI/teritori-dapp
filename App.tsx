@@ -19,7 +19,6 @@ import { Navigator } from "./packages/components/navigation/Navigator";
 import { DropdownsContextProvider } from "./packages/context/DropdownsProvider";
 import { FeedbacksContextProvider } from "./packages/context/FeedbacksProvider";
 import { SidebarContextProvider } from "./packages/context/SidebarProvider";
-import { TNSMetaDataListContextProvider } from "./packages/context/TNSMetaDataListProvider";
 import { TNSContextProvider } from "./packages/context/TNSProvider";
 import { TransactionModalsProvider } from "./packages/context/TransactionModalsProvider";
 import { WalletConnectProvider } from "./packages/context/WalletConnectProvider";
@@ -60,14 +59,12 @@ export default function App() {
                       <WalletsProvider>
                         <TransactionModalsProvider>
                           <TNSContextProvider>
-                            <TNSMetaDataListContextProvider>
-                              <MenuProvider>
-                                <SidebarContextProvider>
-                                  <StatusBar style="inverted" />
-                                  <Navigator />
-                                </SidebarContextProvider>
-                              </MenuProvider>
-                            </TNSMetaDataListContextProvider>
+                            <MenuProvider>
+                              <SidebarContextProvider>
+                                <StatusBar style="inverted" />
+                                <Navigator />
+                              </SidebarContextProvider>
+                            </MenuProvider>
                           </TNSContextProvider>
                         </TransactionModalsProvider>
                       </WalletsProvider>
