@@ -1,4 +1,5 @@
 import { Window as KeplrWindow } from "@keplr-wallet/types";
+import { detect as detectBrowser } from "detect-browser";
 import React from "react";
 import { Linking } from "react-native";
 
@@ -27,9 +28,11 @@ export const ConnectKeplrButton: React.FC<{
     try {
       const keplr = (window as KeplrWindow)?.keplr;
       if (!keplr) {
-        Linking.openURL(
-          "https://chrome.google.com/webstore/detail/keplr/dmkamcknogkgcdfhhbddcghachkejeap"
-        );
+        const installURL =
+          detectBrowser()?.name === "firefox"
+            ? "https://addons.mozilla.org/en-US/firefox/addon/keplr/"
+            : "https://chrome.google.com/webstore/detail/keplr/dmkamcknogkgcdfhhbddcghachkejeap";
+        Linking.openURL(installURL);
         return;
       }
 

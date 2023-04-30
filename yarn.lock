@@ -13526,6 +13526,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"detect-browser@npm:^5.3.0":
+  version: 5.3.0
+  resolution: "detect-browser@npm:5.3.0"
+  checksum: dd6e08d55da1d9e0f22510ac79872078ae03d9dfa13c5e66c96baedc1c86567345a88f96949161f6be8f3e0fafa93bf179bdb1cd311b14f5f163112fcc70ab49
+  languageName: node
+  linkType: hard
+
 "detect-file@npm:^1.0.0":
   version: 1.0.0
   resolution: "detect-file@npm:1.0.0"
@@ -27421,6 +27428,7 @@ __metadata:
     babel-plugin-react-inline-svg-unique-id: ^1.3.1
     bech32: ^2.0.0
     browser-headers: ^0.4.1
+    detect-browser: ^5.3.0
     dotenv-webpack: ^8.0.0
     draft-convert: ^2.1.13
     draft-js: ^0.11.7
