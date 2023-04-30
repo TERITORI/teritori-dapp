@@ -1,7 +1,6 @@
 import "@draft-js-plugins/static-toolbar/lib/plugin.css";
 import "./inline-toolbar/lib/plugin.css";
 import "@draft-js-plugins/image/lib/plugin.css";
-
 import "./draftjs.css";
 import createLinkPlugin from "@draft-js-plugins/anchor";
 import {
@@ -24,13 +23,14 @@ import { convertToHTML } from "draft-convert";
 import {
   ContentBlock,
   ContentState,
-  convertFromHTML,
   DraftEntityType,
   EditorCommand,
   EditorState,
   getDefaultKeyBinding,
   Modifier,
+  RawDraftEntity,
 } from "draft-js";
+import htmlToDraft from "html-to-draftjs";
 import React, {
   KeyboardEvent,
   useEffect,
@@ -517,12 +517,35 @@ const styles = StyleSheet.create({
 
 /////////////// SOME FUNCTIONS ////////////////
 const createStateFromHTML = (html: string) => {
-  // FIXME: About videos : The blocks created here don't contain any video entity. BUT the html contains a video tag
-  const blocksFromHTML = convertFromHTML(html);
-
+  // We use htmlToDraft with a customChunkRenderer function because the default convertFromHTML from draft-js doesn't handle videos
+  //TODO: Maybe we can use this pattern to handling audio in RichText (Instead of adding audios under the RichText)
+  const blocksFromHTML = htmlToDraft(
+    html,
+    (nodeName: string, node: HTMLElement | any) => {
+      if (nodeName === "video") {
+        const entityConfig: any = {};
+        entityConfig.src = node.getAttribute
+          ? node.getAttribute("src") || node
+          : node.src;
+        entityConfig.alt = node.alt;
+        entityConfig.height = node.style.height;
+        entityConfig.width = node.style.width;
+        if (node.style.float) {
+          entityConfig.alignment = node.style.float;
+        }
+        const value: RawDraftEntity = {
+          type: VIDEOTYPE, // should similar to videoPlugin.type if use @draft-js-plugins/video
+          mutability: "IMMUTABLE",
+          data: entityConfig,
+        };
+        return value;
+      }
+    }
+  );
+  const { contentBlocks, entityMap } = blocksFromHTML;
   const contentState = ContentState.createFromBlockArray(
-    blocksFromHTML.contentBlocks,
-    blocksFromHTML.entityMap
+    contentBlocks,
+    entityMap
   );
   return EditorState.createWithContent(contentState);
 };
