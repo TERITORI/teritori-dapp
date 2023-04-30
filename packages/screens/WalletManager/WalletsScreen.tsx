@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { View, TouchableOpacity } from "react-native";
+import { useSelector } from "react-redux";
 
 import { WalletHeader } from "./WalletHeader";
 import { WalletItem } from "./WalletItem";
@@ -16,6 +17,8 @@ import {
   Wallet as WalletType,
   useWallets,
 } from "../../context/WalletsProvider";
+import { getNetwork } from "../../networks";
+import { selectAreTestnetsEnabled } from "../../store/slices/settings";
 import { ScreenFC } from "../../utils/navigation";
 import { neutral33, neutralA3, secondaryColor } from "../../utils/style/colors";
 import { WalletProvider } from "../../utils/walletProvider";
@@ -112,8 +115,12 @@ export const WalletManagerWalletsScreen: ScreenFC<
 > = () => {
   const [showConnectModal, setShowConnectModal] = useState(false);
   const { wallets } = useWallets();
+  const areTestnetsEnabled = useSelector(selectAreTestnetsEnabled);
 
   const byProvider = wallets.reduce((all, w) => {
+    if (!areTestnetsEnabled && getNetwork(w.networkId)?.testnet) {
+      return all;
+    }
     if (!all[w.provider]) {
       all[w.provider] = [];
     }
