@@ -4,6 +4,7 @@ import { bech32 } from "bech32";
 import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 
+import { UseWalletProviderResult } from "./types";
 import { Wallet } from "./wallet";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import { NetworkKind, allNetworks, getUserId } from "../../networks";
@@ -14,11 +15,7 @@ import {
 import { useAppDispatch } from "../../store/store";
 import { WalletProvider } from "../../utils/walletProvider";
 
-export type UseKeplrResult =
-  | [true, boolean, Wallet[]]
-  | [false, boolean, undefined];
-
-export const useKeplr: () => UseKeplrResult = () => {
+export const useKeplrExtensionWallets: () => UseWalletProviderResult = () => {
   const isKeplrConnected = useSelector(selectIsKeplrConnected);
   const [hasKeplr, setHasKeplr] = useState(false);
   const dispatch = useAppDispatch();
@@ -135,5 +132,12 @@ export const useKeplr: () => UseKeplrResult = () => {
     return wallets;
   }, [accounts]);
 
-  return hasKeplr ? [true, ready, wallets] : [false, ready, undefined];
+  return useMemo(() => {
+    return {
+      hasProvider: hasKeplr,
+      ready,
+      wallets,
+      providerKind: WalletProvider.Keplr,
+    };
+  }, [hasKeplr, ready, wallets]);
 };

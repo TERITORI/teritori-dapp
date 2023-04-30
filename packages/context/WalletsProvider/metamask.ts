@@ -1,30 +1,36 @@
 import { useMetaMask } from "metamask-react";
 import { useMemo } from "react";
 
+import { UseWalletProviderResult } from "./types";
 import { Wallet } from "./wallet";
 import { NetworkKind, allNetworks, getUserId } from "../../networks";
 import { WalletProvider } from "../../utils/walletProvider";
 
-export type UseMetamaskResult =
-  | [true, boolean, Wallet[]]
-  | [false, boolean, undefined];
+const initialState = {
+  hasProvider: typeof (window as any).ethereum !== "undefined",
+  ready: true,
+  wallets: [],
+  providerKind: WalletProvider.Metamask,
+};
 
-export const useMetamask: () => UseMetamaskResult = () => {
+export const useMetamaskWallets: () => UseWalletProviderResult = () => {
   const { status, account: address, chainId } = useMetaMask();
 
   const isConnected = status === "connected";
 
-  const wallet: Wallet | undefined = useMemo(() => {
+  return useMemo(() => {
     if (!chainId) {
-      return undefined;
+      return initialState;
     }
+
     const network = allNetworks.find(
       (n) =>
         n.kind === NetworkKind.Ethereum && n.chainId === parseInt(chainId, 16)
     );
     if (!network || !address || !isConnected) {
-      return;
+      return initialState;
     }
+
     const walletId = `metamask-${network.id}-${address}`;
     const wallet: Wallet = {
       id: walletId,
@@ -35,14 +41,10 @@ export const useMetamask: () => UseMetamaskResult = () => {
       userId: getUserId(network.id, address),
       connected: isConnected,
     };
-    return wallet;
+
+    return {
+      ...initialState,
+      wallets: wallet ? [wallet] : [],
+    };
   }, [address, chainId, isConnected]);
-
-  const hasMetamask = useMemo(() => {
-    return typeof (window as any).ethereum !== "undefined";
-  }, []);
-
-  return hasMetamask
-    ? [true, true, wallet ? [wallet] : []]
-    : [false, true, undefined];
 };

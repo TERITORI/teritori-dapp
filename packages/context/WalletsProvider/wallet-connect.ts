@@ -1,18 +1,15 @@
 import { useMemo } from "react";
 
+import { UseWalletProviderResult } from "./types";
 import { Wallet } from "./wallet";
 import { NetworkKind, getUserId } from "../../networks";
 import { WalletProvider } from "../../utils/walletProvider";
 import { useWalletConnect } from "../WalletConnectProvider";
 
-export type UseWalletConnectResult =
-  | [true, boolean, Wallet[]]
-  | [false, boolean, undefined];
-
-export const useWalletConnectWallets: () => UseWalletConnectResult = () => {
+export const useWalletConnectWallets: () => UseWalletProviderResult = () => {
   const { accounts } = useWalletConnect();
 
-  const wallets = useMemo(() => {
+  return useMemo(() => {
     const wallets = accounts.map((info, index) => {
       const address = info.account.address;
 
@@ -31,8 +28,11 @@ export const useWalletConnectWallets: () => UseWalletConnectResult = () => {
       return wallet;
     });
 
-    return wallets;
+    return {
+      hasProvider: true,
+      ready: true,
+      wallets,
+      providerKind: WalletProvider.WalletConnect,
+    };
   }, [accounts]);
-
-  return [true, true, wallets];
 };
