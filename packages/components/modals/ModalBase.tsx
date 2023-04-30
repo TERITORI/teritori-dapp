@@ -60,7 +60,7 @@ export const ModalBase: React.FC<ModalBaseProps> = ({
   noBrokenCorners,
   closeButtonStyle,
 }) => {
-  const { width: windowWidth } = useWindowDimensions();
+  const { width: windowWidth, height: windowHeight } = useWindowDimensions();
 
   return (
     <Modal
@@ -88,6 +88,7 @@ export const ModalBase: React.FC<ModalBaseProps> = ({
           },
           scrollable
             ? {
+                minHeight: windowHeight - 40,
                 marginVertical: 20,
               }
             : {
