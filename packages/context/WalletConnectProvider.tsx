@@ -65,7 +65,6 @@ export const WalletConnectProvider: React.FC = ({ children }) => {
             href: base,
           });
           const finalURI = `${base}?${uri}`;
-          console.log("uri", finalURI);
           window.location.href = finalURI;
         },
         close: () => {
@@ -103,10 +102,8 @@ export const WalletConnectProvider: React.FC = ({ children }) => {
           }
 
           // create new session
-          console.log("creating new wc session");
           await newConnector.createSession();
           newConnector.on("connect", async (error) => {
-            console.log("received connect event");
             if (error) {
               reject(error);
             }
@@ -118,7 +115,7 @@ export const WalletConnectProvider: React.FC = ({ children }) => {
 
       setConnector(newConnector);
     } catch (err) {
-      console.error(err);
+      console.error("Failed to connect to wallet", err);
       if (err instanceof Error) {
         setToastError({
           title: "Failed to connect to wallet",
