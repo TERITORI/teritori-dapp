@@ -42,7 +42,6 @@ export const WalletConnectProvider: React.FC = ({ children }) => {
   const [accounts, setAccounts] = useState(defaultValue.accounts);
   const { setToastError } = useFeedbacks();
   const [keplr, setKeplr] = useState<KeplrWalletConnectV1>();
-  const [connector, setConnector] = useState<WalletConnectV1>();
 
   const createWalletConnectV1 = (): WalletConnectV1 => {
     const wc = new WalletConnectV1({
@@ -90,6 +89,40 @@ export const WalletConnectProvider: React.FC = ({ children }) => {
     return wc;
   };
 
+  const setupKeplr = async (connector: WalletConnectV1) => {
+    if (!connector) {
+      return;
+    }
+
+    connector.on("disconnect", () => {
+      setAccounts([]);
+      setKeplr(undefined);
+      connector.killSession();
+    });
+
+    const keplr = new KeplrWalletConnectV1(connector, {
+      sendTx: sendTxWC,
+    });
+
+    await keplr.enable(walletConnectNetworks.map((n) => n.chainId));
+
+    let accounts: { account: AccountData; networkId: string }[] = [];
+
+    for (const n of walletConnectNetworks) {
+      accounts = [
+        ...accounts,
+        ...(await keplr.getOfflineSigner(n.chainId).getAccounts()).map((a) => ({
+          account: a,
+          networkId: n.id,
+        })),
+      ];
+    }
+
+    setAccounts(accounts);
+
+    setKeplr(keplr);
+  };
+
   const connect = useCallback(async () => {
     try {
       const newConnector = await new Promise<WalletConnectV1>(
@@ -113,7 +146,7 @@ export const WalletConnectProvider: React.FC = ({ children }) => {
         }
       );
 
-      setConnector(newConnector);
+      await setupKeplr(newConnector);
     } catch (err) {
       console.error("Failed to connect to wallet", err);
       if (err instanceof Error) {
@@ -126,51 +159,10 @@ export const WalletConnectProvider: React.FC = ({ children }) => {
   }, [setToastError]);
 
   useEffect(() => {
-    const effect = async () => {
-      if (!connector) {
-        return;
-      }
-
-      connector.on("disconnect", () => {
-        setAccounts([]);
-        setKeplr(undefined);
-        setConnector(undefined);
-        connector.killSession();
-      });
-
-      const keplr = new KeplrWalletConnectV1(connector, {
-        sendTx: sendTxWC,
-      });
-
-      await keplr.enable(walletConnectNetworks.map((n) => n.chainId));
-
-      let accounts: { account: AccountData; networkId: string }[] = [];
-
-      for (const n of walletConnectNetworks) {
-        accounts = [
-          ...accounts,
-          ...(await keplr.getOfflineSigner(n.chainId).getAccounts()).map(
-            (a) => ({
-              account: a,
-              networkId: n.id,
-            })
-          ),
-        ];
-      }
-
-      setAccounts(accounts);
-
-      setKeplr(keplr);
-    };
-
-    effect();
-  }, [connector]);
-
-  useEffect(() => {
+    // auto-connect on load
     const connector = createWalletConnectV1();
-    // Check if connection is already established
     if (connector.connected) {
-      setConnector(connector);
+      setupKeplr(connector);
     }
   }, []);
 

@@ -8,7 +8,7 @@ const useSelectedWallet = () => {
 
   const selectedWalletId = useSelector(selectSelectedWalletId);
 
-  return wallets.find((w) => w.connected && w.id === selectedWalletId);
+  return wallets.find((w) => w.id === selectedWalletId);
 };
 
 export default useSelectedWallet;

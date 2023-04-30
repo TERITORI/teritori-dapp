@@ -7,17 +7,16 @@ import { ConnectWalletButton } from "./components/ConnectWalletButton";
 import metamaskSVG from "../../../assets/icons/metamask.svg";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import { useSwitchNetwork } from "../../hooks/useSwitchNetwork";
 import { getEthereumNetwork, selectableEthereumNetworks } from "../../networks";
-import { setSelectedNetworkId } from "../../store/slices/settings";
-import { useAppDispatch } from "../../store/store";
 
 export const ConnectMetamaskButton: React.FC<{
   onDone?: (err?: unknown) => void;
 }> = ({ onDone }) => {
   const { setToastError } = useFeedbacks();
-  const dispatch = useAppDispatch();
   const { status, connect } = useMetaMask();
   const selectedNetworkId = useSelectedNetworkId();
+  const switchNetwork = useSwitchNetwork();
 
   const isConnected = status === "connected";
 
@@ -48,7 +47,7 @@ export const ConnectMetamaskButton: React.FC<{
         console.log("Connected address:", address);
       }
 
-      dispatch(setSelectedNetworkId(network.id));
+      switchNetwork(network.id);
 
       onDone && onDone();
     } catch (err) {

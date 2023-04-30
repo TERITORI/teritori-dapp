@@ -4,17 +4,14 @@ import { useSelector } from "react-redux";
 
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
+import { useSwitchNetwork } from "../../hooks/useSwitchNetwork";
 import {
   getNetwork,
   NetworkInfo,
   NetworkKind,
   selectableNetworks,
 } from "../../networks";
-import {
-  selectAreTestnetsEnabled,
-  setSelectedNetworkId,
-} from "../../store/slices/settings";
-import { useAppDispatch } from "../../store/store";
+import { selectAreTestnetsEnabled } from "../../store/slices/settings";
 import { neutral17 } from "../../utils/style/colors";
 import { fontSemibold12 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
@@ -27,10 +24,10 @@ export const NetworkSelectorMenu: FC<{
   forceNetworkKind?: NetworkKind;
   style?: StyleProp<ViewStyle>;
 }> = ({ forceNetworkIds, forceNetworkKind, style }) => {
-  const dispatch = useAppDispatch();
   const { setToastError } = useFeedbacks();
   const testnetsEnabled = useSelector(selectAreTestnetsEnabled);
   const selectedNetworkInfo = useSelectedNetworkInfo();
+  const switchNetwork = useSwitchNetwork();
 
   const onPressNetwork = (networkId: string) => {
     const network = getNetwork(networkId);
@@ -41,9 +38,7 @@ export const NetworkSelectorMenu: FC<{
       });
       return;
     }
-
-    // Auto select the first connected wallet when switching network
-    dispatch(setSelectedNetworkId(networkId));
+    switchNetwork(network.id);
   };
 
   return (

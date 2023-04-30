@@ -7,7 +7,6 @@ import { useWalletConnectWallets } from "./wallet-connect";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { setSelectedWallet } from "../../store/slices/settings";
-import { useAppDispatch } from "../../store/store";
 import { WalletProvider } from "../../utils/walletProvider";
 // import { usePhantomWallets } from "./phantom";
 
@@ -31,9 +30,9 @@ export const WalletsProvider: React.FC = React.memo(({ children }) => {
   const walletConnect = useWalletConnectWallets();
   // const phantom = usePhantomWallets();
 
-  const selectedWallet = useSelectedWallet();
   const selectedNetworkId = useSelectedNetworkId();
-  const dispatch = useAppDispatch();
+  const selectedWallet = useSelectedWallet();
+  const { wallets } = useWallets();
 
   const value = useMemo(() => {
     const wallets: Wallet[] = [];
@@ -66,15 +65,19 @@ export const WalletsProvider: React.FC = React.memo(({ children }) => {
     };
   }, [keplrExtension, metamask, walletConnect]);
 
-  // make sure wallet and network are in sync
+  // auto-select wallet if none is selected while some are available
   useEffect(() => {
-    if (selectedWallet?.networkId !== selectedNetworkId) {
-      const wallet = value.wallets.find(
-        (w) => w.networkId === selectedNetworkId
-      );
-      dispatch(setSelectedWallet(wallet));
+    if (selectedWallet) {
+      return;
     }
-  }, [dispatch, selectedNetworkId, selectedWallet?.networkId, value.wallets]);
+
+    const candidate = wallets.find((w) => w.networkId === selectedNetworkId);
+    if (!candidate) {
+      return;
+    }
+
+    setSelectedWallet(candidate);
+  }, [selectedNetworkId, selectedWallet, wallets]);
 
   return (
     <WalletsContext.Provider value={value}>{children}</WalletsContext.Provider>

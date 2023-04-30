@@ -9,17 +9,16 @@ import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { MainConnectWalletButton } from "../../components/connectWallet/MainConnectWalletButton";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { useSwitchNetwork } from "../../hooks/useSwitchNetwork";
 import { osmosisNetwork } from "../../networks/osmosis";
 import { osmosisTestnetNetwork } from "../../networks/osmosis-testnet";
-import { setSelectedNetworkId } from "../../store/slices/settings";
-import { useAppDispatch } from "../../store/store";
 import { ScreenFC } from "../../utils/navigation";
 import { Assets } from "../WalletManager/Assets";
 
 export const SwapScreen: ScreenFC<"Swap"> = () => {
   const selectedWallet = useSelectedWallet();
   const selectedNetwork = useSelectedNetworkInfo();
-  const dispatch = useAppDispatch();
+  const switchNetwork = useSwitchNetwork();
   const [connectModalVisible, setConnectModalVisible] = useState(false);
   const isScreenFocused = useIsFocused();
   const SwapView = React.lazy(() =>
@@ -36,11 +35,11 @@ export const SwapScreen: ScreenFC<"Swap"> = () => {
   );
 
   const onPressConnect = () => {
-    dispatch(setSelectedNetworkId(osmosisNetwork.id));
+    switchNetwork(osmosisNetwork.id);
     setConnectModalVisible(false);
   };
   const onPressConnectTestnet = () => {
-    dispatch(setSelectedNetworkId(osmosisTestnetNetwork.id));
+    switchNetwork(osmosisTestnetNetwork.id);
     setConnectModalVisible(false);
   };
 

@@ -14,7 +14,7 @@ interface Settings {
 
 const initialState: Settings = {
   selectedWalletId: "",
-  selectedNetworkId: "",
+  selectedNetworkId: "teritori",
   NFTStorageAPI: process.env.NFT_STORAGE_API || "",
   alreadyVisited: false,
   areTestnetsEnabled: false,
@@ -40,6 +40,7 @@ const settingsSlice = createSlice({
   initialState,
   reducers: {
     setSelectedNetworkId: (state, action: PayloadAction<string>) => {
+      console.log(action);
       state.selectedNetworkId = action.payload;
       state.selectedWalletId = "";
     },
