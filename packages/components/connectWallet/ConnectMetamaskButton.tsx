@@ -1,3 +1,4 @@
+import { detect as detectBrowser } from "detect-browser";
 import { useMetaMask } from "metamask-react";
 import React from "react";
 import { Linking } from "react-native";
@@ -25,9 +26,11 @@ export const ConnectMetamaskButton: React.FC<{
       const ethereum = (window as any).ethereum;
 
       if (!ethereum) {
-        Linking.openURL(
-          "https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn"
-        );
+        const installURL =
+          detectBrowser()?.name === "firefox"
+            ? "https://addons.mozilla.org/fr/firefox/addon/ether-metamask/"
+            : "https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn";
+        Linking.openURL(installURL);
         return;
       }
       let network = getEthereumNetwork(selectedNetworkId);
