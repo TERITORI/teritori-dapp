@@ -1,5 +1,5 @@
 import { useFocusEffect } from "@react-navigation/native";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { View } from "react-native";
 
@@ -16,11 +16,12 @@ import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useTNS } from "../../context/TNSProvider";
 import { TeritoriNameServiceQueryClient } from "../../contracts-clients/teritori-name-service/TeritoriNameService.client";
 import { Metadata } from "../../contracts-clients/teritori-name-service/TeritoriNameService.types";
+import { nsNameInfoQueryKey } from "../../hooks/name-service/useNSNameInfo";
+import { useNSTokensByOwner } from "../../hooks/name-service/useNSTokensByOwner";
+import { useTNSMintPrice } from "../../hooks/name-service/useTNSMintPrice";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
 import { useBalances } from "../../hooks/useBalances";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
-import { nsNameInfoQueryKey } from "../../hooks/useNSNameInfo";
-import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useWalletTNSClient } from "../../hooks/wallets/useWalletClients";
@@ -261,38 +262,4 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
       <TNSRegisterSuccess visible={isSuccessModal} onClose={handleModalClose} />
     </ModalBase>
   );
-};
-
-export const useTNSMintPrice = (
-  networkId: string | undefined,
-  tokenId: string
-) => {
-  const { data } = useQuery(
-    ["tnsMintPrice", networkId, tokenId],
-    async () => {
-      if (!networkId) {
-        return null;
-      }
-      const network = mustGetCosmosNetwork(networkId);
-      if (!network.nameServiceContractAddress) {
-        return null;
-      }
-
-      const client = await mustGetNonSigningCosmWasmClient(networkId);
-
-      const tnsClient = new TeritoriNameServiceQueryClient(
-        client,
-        network.nameServiceContractAddress
-      );
-      console.log("fetching price for", tokenId);
-
-      const info = await tnsClient.contractInfo();
-
-      const amount = await tnsClient.mintPrice({ tokenId });
-
-      return { denom: info.native_denom, amount: amount?.toString() || "0" };
-    },
-    { staleTime: Infinity }
-  );
-  return data;
 };

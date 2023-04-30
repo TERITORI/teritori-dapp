@@ -16,8 +16,8 @@ import {
   combineFetchCommentPages,
   useFetchComments,
 } from "../../../hooks/feed/useFetchComments";
+import { useNSUserInfo } from "../../../hooks/name-service/useNSUserInfo";
 import { useIsMobile } from "../../../hooks/useIsMobile";
-import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
 import { usePrevious } from "../../../hooks/usePrevious";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { useWalletSocialFeedClient } from "../../../hooks/wallets/useWalletClients";

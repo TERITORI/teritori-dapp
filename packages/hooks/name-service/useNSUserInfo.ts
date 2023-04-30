@@ -1,6 +1,6 @@
 import { useNSNameInfo } from "./useNSNameInfo";
 import { useNSPrimaryAlias } from "./useNSPrimaryAlias";
-import { parseUserId } from "../networks";
+import { parseUserId } from "../../networks";
 
 export const useNSUserInfo = (userId: string | undefined) => {
   const [network] = parseUserId(userId);

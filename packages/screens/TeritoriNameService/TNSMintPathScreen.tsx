@@ -3,14 +3,14 @@ import React, { useState } from "react";
 import { View } from "react-native";
 
 import { TNSModalCommonProps } from "./TNSHomeScreen";
-import { useTNSMintPrice } from "./TNSMintNameScreen";
 import ModalBase from "../../components/modals/ModalBase";
 import { NameDataForm } from "../../components/teritoriNameService/NameDataForm";
 import { NameNFT } from "../../components/teritoriNameService/NameNFT";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useTNS } from "../../context/TNSProvider";
 import { TeritoriNameServiceQueryClient } from "../../contracts-clients/teritori-name-service/TeritoriNameService.client";
-import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
+import { useNSTokensByOwner } from "../../hooks/name-service/useNSTokensByOwner";
+import { useTNSMintPrice } from "../../hooks/name-service/useTNSMintPrice";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useWalletTNSClient } from "../../hooks/wallets/useWalletClients";
 import {

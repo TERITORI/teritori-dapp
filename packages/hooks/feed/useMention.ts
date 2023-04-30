@@ -2,7 +2,7 @@ import { bech32 } from "bech32";
 import { useEffect, useMemo, useState } from "react";
 
 import { getUserId } from "../../networks";
-import { useNSNameOwner } from "../useNSNameOwner";
+import { useNSNameOwner } from "../name-service/useNSNameOwner";
 import { useSelectedNetworkId } from "../useSelectedNetwork";
 
 // Find if the mentioned text is a valid wallet address or a valid NS token id, and returns the corresponding userId

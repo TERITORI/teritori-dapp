@@ -15,7 +15,7 @@ import { SidebarType } from "./types";
 import addSVG from "../../../assets/icons/add-circle.svg";
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
 import { useSidebar } from "../../context/SidebarProvider";
-import { useNSUserInfo } from "../../hooks/useNSUserInfo";
+import { useNSUserInfo } from "../../hooks/name-service/useNSUserInfo";
 import { useSelectedNetworkKind } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkKind } from "../../networks";

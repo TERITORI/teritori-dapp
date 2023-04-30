@@ -5,8 +5,8 @@ import { View } from "react-native";
 
 import { useTNS } from "../../../context/TNSProvider";
 import { useSendTokens } from "../../../hooks/funds/useSendTokens";
+import { useNSNameOwner } from "../../../hooks/name-service/useNSNameOwner";
 import { useBalances } from "../../../hooks/useBalances";
-import { useNSNameOwner } from "../../../hooks/useNSNameOwner";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import {
   getStakingCurrency,

@@ -26,7 +26,7 @@ import { OptimizedImage } from "../../components/OptimizedImage";
 import { SVG } from "../../components/SVG";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
-import { useNSUserInfo } from "../../hooks/useNSUserInfo";
+import { useNSUserInfo } from "../../hooks/name-service/useNSUserInfo";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import { getCosmosNetwork, parseUserId } from "../../networks";
 import { mustGetP2eClient } from "../../utils/backend";

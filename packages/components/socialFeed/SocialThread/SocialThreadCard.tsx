@@ -5,7 +5,7 @@ import { SocialCardHeader } from "./SocialCardHeader";
 import { SocialMessageContent } from "./SocialMessageContent";
 import { Post } from "../../../api/feed/v1/feed";
 import { useTeritoriSocialFeedReactPostMutation } from "../../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.react-query";
-import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
+import { useNSUserInfo } from "../../../hooks/name-service/useNSUserInfo";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { useWalletSocialFeedClient } from "../../../hooks/wallets/useWalletClients";
 import { parseUserId } from "../../../networks";

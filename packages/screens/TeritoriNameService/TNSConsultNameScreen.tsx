@@ -13,13 +13,13 @@ import { NameData } from "../../components/teritoriNameService/NameData";
 import { NameNFT } from "../../components/teritoriNameService/NameNFT";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useTNS } from "../../context/TNSProvider";
-import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
-import { useNSNameInfo } from "../../hooks/useNSNameInfo";
-import { useNSNameOwner } from "../../hooks/useNSNameOwner";
+import { useNSNameInfo } from "../../hooks/name-service/useNSNameInfo";
+import { useNSNameOwner } from "../../hooks/name-service/useNSNameOwner";
 import {
   nsPrimaryAliasQueryKey,
   useNSPrimaryAlias,
-} from "../../hooks/useNSPrimaryAlias";
+} from "../../hooks/name-service/useNSPrimaryAlias";
+import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useWalletTNSClient } from "../../hooks/wallets/useWalletClients";

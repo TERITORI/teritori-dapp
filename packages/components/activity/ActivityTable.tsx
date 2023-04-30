@@ -4,8 +4,8 @@ import React, { useState } from "react";
 import { FlatList, TextStyle, View } from "react-native";
 
 import { Activity } from "../../api/marketplace/v1/marketplace";
+import { useNSUserInfo } from "../../hooks/name-service/useNSUserInfo";
 import { useActivity } from "../../hooks/useActivity";
-import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { parseActivityId, parseUserId, txExplorerLink } from "../../networks";
 import { prettyPrice } from "../../utils/coins";
 import {

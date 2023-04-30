@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { parseUserId } from "../networks";
-import { getCosmosNameServiceQueryClient } from "../utils/contracts";
+import { parseUserId } from "../../networks";
+import { getCosmosNameServiceQueryClient } from "../../utils/contracts";
 
 export const nsPrimaryAliasQueryKey = (userId: string | undefined) => [
   "nsPrimaryAlias",

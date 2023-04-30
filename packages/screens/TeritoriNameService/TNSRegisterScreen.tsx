@@ -5,7 +5,7 @@ import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import ModalBase from "../../components/modals/GradientModalBase";
 import { FindAName } from "../../components/teritoriNameService/FindAName";
 import { useTNS } from "../../context/TNSProvider";
-import { useNSNameAvailability } from "../../hooks/useNSNameAvailability";
+import { useNSNameAvailability } from "../../hooks/name-service/useNSNameAvailability";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { getCosmosNetwork } from "../../networks";
 import { neutral00, neutral17, neutral33 } from "../../utils/style/colors";

@@ -6,7 +6,7 @@ import {
   ViewStyle,
 } from "react-native";
 
-import { useNSUserInfo } from "../../../../../hooks/useNSUserInfo";
+import { useNSUserInfo } from "../../../../../hooks/name-service/useNSUserInfo";
 import { tinyAddress } from "../../../../../utils/text";
 import { Button } from "../components/button/Button";
 import { useContentContext } from "../context/ContentProvider";

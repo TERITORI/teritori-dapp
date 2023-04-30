@@ -11,8 +11,8 @@ import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useTNS } from "../../context/TNSProvider";
 import { TeritoriNameServiceQueryClient } from "../../contracts-clients/teritori-name-service/TeritoriNameService.client";
 import { Metadata } from "../../contracts-clients/teritori-name-service/TeritoriNameService.types";
-import { nsNameInfoQueryKey } from "../../hooks/useNSNameInfo";
-import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
+import { nsNameInfoQueryKey } from "../../hooks/name-service/useNSNameInfo";
+import { useNSTokensByOwner } from "../../hooks/name-service/useNSTokensByOwner";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useWalletTNSClient } from "../../hooks/wallets/useWalletClients";
 import {

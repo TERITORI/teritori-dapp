@@ -3,8 +3,8 @@ import { View } from "react-native";
 
 import { ProfileButton } from "./ProfileButton";
 import logoSVG from "../../../assets/logos/logo.svg";
+import { useNSUserInfo } from "../../hooks/name-service/useNSUserInfo";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
-import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { MyNFTs } from "../../screens/WalletManager/MyNFTs";
 import { WalletDashboardHeader } from "../../screens/WalletManager/WalletDashboardHeader";
