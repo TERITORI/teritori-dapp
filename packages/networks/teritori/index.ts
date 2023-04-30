@@ -1,12 +1,12 @@
 import { teritoriCurrencies } from "./currencies";
-import { NetworkKind, NetworkInfo } from "../types";
+import { NetworkKind, CosmosNetworkInfo } from "../types";
 
 const nameServiceContractAddress =
   "tori1wkwy0xh89ksdgj9hr347dyd2dw7zesmtrue6kfzyml4vdtz6e5wscs7038";
 const riotContractAddressGen1 =
   "tori1gflccmghzfscmxl95z43v36y0rle8v9x8kvt9na03yzywtw86amsj9nf37";
 
-export const teritoriNetwork: NetworkInfo = {
+export const teritoriNetwork: CosmosNetworkInfo = {
   id: "teritori",
   kind: NetworkKind.Cosmos,
   chainId: "teritori-1",

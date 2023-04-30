@@ -330,13 +330,7 @@ export const getKeplrSigner = async (
 
   const network = mustGetCosmosNetwork(networkId);
 
-  try {
-    await keplr.experimentalSuggestChain(
-      keplrChainInfoFromNetworkInfo(network)
-    );
-  } catch (err) {
-    console.warn("failed to suggest chain", err);
-  }
+  await keplr.experimentalSuggestChain(keplrChainInfoFromNetworkInfo(network));
 
   await keplr.enable(network.chainId);
 

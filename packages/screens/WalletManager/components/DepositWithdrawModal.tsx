@@ -79,7 +79,10 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
   // variables
   const { control, setValue, handleSubmit } = useForm<TransactionForm>();
 
-  const getClient = useWalletStargateClient(selectedWallet?.id);
+  const getClient = useWalletStargateClient(
+    selectedWallet?.id,
+    sourceNetworkId
+  );
 
   // returns
   const ModalHeader = useCallback(
@@ -337,7 +340,7 @@ const styles = StyleSheet.create({
   ]),
 });
 
-const convertCosmosAddress = (
+export const convertCosmosAddress = (
   sourceAddress: string | undefined,
   targetNetworkId: string | undefined
 ) => {

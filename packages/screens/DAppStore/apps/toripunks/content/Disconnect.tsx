@@ -1,6 +1,6 @@
 import { View } from "react-native";
 
-import { setIsKeplrConnected } from "../../../../../store/slices/settings";
+import { setKeplrConnectedNetworkId } from "../../../../../store/slices/settings";
 import { useAppDispatch } from "../../../../../store/store";
 import { ButtonLabel } from "../components/buttonLabel/ButtonLabel";
 import { Label } from "../components/label/Label";
@@ -51,7 +51,7 @@ export const Disconnect = () => {
           }}
           actionable
           onPress={() => {
-            dispatch(setIsKeplrConnected(false));
+            dispatch(setKeplrConnectedNetworkId(undefined));
           }}
         />
         <ButtonLabel

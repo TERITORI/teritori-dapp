@@ -2,29 +2,36 @@ import { AccountData } from "@cosmjs/proto-signing";
 import { Window as KeplrWindow } from "@keplr-wallet/types";
 import { bech32 } from "bech32";
 import { useEffect, useMemo, useState } from "react";
+import { Platform } from "react-native";
 import { useSelector } from "react-redux";
 
 import { UseWalletProviderResult } from "./types";
 import { Wallet } from "./wallet";
-import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
-import { NetworkKind, allNetworks, getUserId } from "../../networks";
 import {
-  selectIsKeplrConnected,
-  setIsKeplrConnected,
+  NetworkKind,
+  allNetworks,
+  getKeplrSigner,
+  getUserId,
+} from "../../networks";
+import {
+  selectKeplrConnectedNetworkId,
+  setKeplrConnectedNetworkId,
 } from "../../store/slices/settings";
 import { useAppDispatch } from "../../store/store";
 import { WalletProvider } from "../../utils/walletProvider";
 
 export const useKeplrExtensionWallets: () => UseWalletProviderResult = () => {
-  const isKeplrConnected = useSelector(selectIsKeplrConnected);
+  const keplrConnectedNetworkId = useSelector(selectKeplrConnectedNetworkId);
   const [hasKeplr, setHasKeplr] = useState(false);
   const dispatch = useAppDispatch();
-  const selectedNetworkInfo = useSelectedNetworkInfo();
 
   const [accounts, setAccounts] = useState<readonly AccountData[]>([]);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
+    if (Platform.OS !== "web") {
+      return;
+    }
     const handleLoad = () => {
       const keplr = (window as KeplrWindow)?.keplr;
       const hasKeplr = !!keplr;
@@ -38,32 +45,27 @@ export const useKeplrExtensionWallets: () => UseWalletProviderResult = () => {
   }, []);
 
   useEffect(() => {
-    if (!hasKeplr) {
+    if (!hasKeplr || !keplrConnectedNetworkId) {
       return;
     }
     const handleKeyChange = async () => {
-      if (selectedNetworkInfo?.kind !== NetworkKind.Cosmos) {
-        return;
-      }
       const keplr = (window as KeplrWindow)?.keplr;
       if (!keplr) {
         console.error("no keplr");
         return;
       }
-      const offlineSigner = await keplr.getOfflineSignerAuto(
-        selectedNetworkInfo.chainId
-      );
-      const accounts = await offlineSigner.getAccounts();
+      const signer = await getKeplrSigner(keplr, keplrConnectedNetworkId);
+      const accounts = await signer.getAccounts();
       setAccounts(accounts);
     };
     window.addEventListener("keplr_keystorechange", handleKeyChange);
     return () =>
       window.removeEventListener("keplr_keystorechange", handleKeyChange);
-  }, [hasKeplr, selectedNetworkInfo]);
+  }, [hasKeplr, keplrConnectedNetworkId]);
 
   useEffect(() => {
     const effect = async () => {
-      if (!hasKeplr || !isKeplrConnected) {
+      if (!hasKeplr || !keplrConnectedNetworkId) {
         return;
       }
 
@@ -73,27 +75,18 @@ export const useKeplrExtensionWallets: () => UseWalletProviderResult = () => {
           console.error("no keplr");
           return;
         }
-        if (selectedNetworkInfo?.kind !== NetworkKind.Cosmos) {
-          return;
-        }
-        const chainId = selectedNetworkInfo.chainId;
-        if (!chainId) {
-          console.error("missing chain id");
-          return;
-        }
-        await keplr.enable(chainId);
-        const offlineSigner = await keplr.getOfflineSignerAuto(chainId);
-        const accounts = await offlineSigner.getAccounts();
+        const signer = await getKeplrSigner(keplr, keplrConnectedNetworkId);
+        const accounts = await signer.getAccounts();
         setAccounts(accounts);
       } catch (err) {
         console.warn("failed to connect to keplr", err);
-        dispatch(setIsKeplrConnected(false));
+        dispatch(setKeplrConnectedNetworkId(undefined));
       }
 
       setReady(true);
     };
     effect();
-  }, [hasKeplr, isKeplrConnected, dispatch, selectedNetworkInfo]);
+  }, [dispatch, hasKeplr, keplrConnectedNetworkId]);
 
   const wallets = useMemo(() => {
     if (accounts.length === 0) {

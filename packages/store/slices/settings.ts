@@ -7,7 +7,7 @@ interface Settings {
   selectedNetworkId: string;
   selectedWalletId: string;
   NFTStorageAPI: string;
-  isKeplrConnected: boolean;
+  keplrConnectedNetworkId?: string;
   alreadyVisited: boolean;
   areTestnetsEnabled: boolean;
 }
@@ -16,7 +16,6 @@ const initialState: Settings = {
   selectedWalletId: "",
   selectedNetworkId: "",
   NFTStorageAPI: process.env.NFT_STORAGE_API || "",
-  isKeplrConnected: false,
   alreadyVisited: false,
   areTestnetsEnabled: false,
 };
@@ -27,8 +26,8 @@ export const selectSelectedNetworkId = (state: RootState) =>
 export const selectSelectedWalletId = (state: RootState) =>
   state.settings.selectedWalletId;
 
-export const selectIsKeplrConnected = (state: RootState) =>
-  state.settings.isKeplrConnected;
+export const selectKeplrConnectedNetworkId = (state: RootState) =>
+  state.settings.keplrConnectedNetworkId;
 
 export const selectAreTestnetsEnabled = (state: RootState) =>
   state.settings.areTestnetsEnabled;
@@ -52,8 +51,11 @@ const settingsSlice = createSlice({
       state.selectedWalletId = action.payload.id;
       state.selectedNetworkId = action.payload.networkId;
     },
-    setIsKeplrConnected: (state, action: PayloadAction<boolean>) => {
-      state.isKeplrConnected = action.payload;
+    setKeplrConnectedNetworkId: (
+      state,
+      action: PayloadAction<string | undefined>
+    ) => {
+      state.keplrConnectedNetworkId = action.payload;
     },
     setAreTestnetsEnabled: (state, action: PayloadAction<boolean>) => {
       state.areTestnetsEnabled = action.payload;
@@ -67,7 +69,7 @@ const settingsSlice = createSlice({
 export const {
   setSelectedNetworkId,
   setSelectedWallet,
-  setIsKeplrConnected,
+  setKeplrConnectedNetworkId,
   setAreTestnetsEnabled,
   setNFTStorageAPI,
 } = settingsSlice.actions;

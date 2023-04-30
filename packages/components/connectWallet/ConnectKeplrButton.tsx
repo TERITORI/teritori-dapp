@@ -13,7 +13,7 @@ import {
   selectableCosmosNetworks,
 } from "../../networks";
 import {
-  setIsKeplrConnected,
+  setKeplrConnectedNetworkId,
   setSelectedNetworkId,
 } from "../../store/slices/settings";
 import { useAppDispatch } from "../../store/store";
@@ -53,7 +53,7 @@ export const ConnectKeplrButton: React.FC<{
       await keplr.enable(network.chainId);
 
       dispatch(setSelectedNetworkId(network.id));
-      dispatch(setIsKeplrConnected(true));
+      dispatch(setKeplrConnectedNetworkId(network.id));
 
       onDone && onDone();
     } catch (err) {

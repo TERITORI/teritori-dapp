@@ -4,6 +4,7 @@ import { useCallback } from "react";
 
 import { useWallet } from "./useWallet";
 import { useWalletKeplr } from "./useWalletKeplr";
+import { useWallets } from "../../context/WalletsProvider";
 import { TeritoriNameServiceClient } from "../../contracts-clients/teritori-name-service/TeritoriNameService.client";
 import { TeritoriSocialFeedClient } from "../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.client";
 import {
@@ -11,30 +12,42 @@ import {
   getKeplrSigningCosmWasmClient,
   getKeplrSigningStargateClient,
 } from "../../networks";
+import { convertCosmosAddress } from "../../screens/WalletManager/components/DepositWithdrawModal";
 
 // we use lazy getters to not spam the user with chain suggest/enable requests
 // we also cache clients to reduce init rpcs
 
 const stargateClients: { [key: string]: Promise<SigningStargateClient> } = {};
 
-export const useWalletStargateClient = (walletId: string | undefined) => {
-  const wallet = useWallet(walletId);
+export const useWalletStargateClient = (
+  walletId: string | undefined,
+  networkId?: string
+) => {
+  let wallet = useWallet(walletId);
+  const { wallets } = useWallets();
+
+  if (networkId) {
+    wallet = wallets.find(
+      (w) =>
+        w.networkId === networkId &&
+        w.address === convertCosmosAddress(wallet?.address, networkId)
+    );
+  }
+
   const walletKeplr = useWalletKeplr(walletId);
+
   return useCallback(() => {
-    if (!walletId) {
-      throw new Error("no wallet id");
+    if (!wallet || !walletKeplr) {
+      throw new Error("invalid wallet");
     }
-    if (!stargateClients[walletId]) {
-      if (!wallet || !walletKeplr) {
-        throw new Error("invalid wallet");
-      }
-      stargateClients[walletId] = getKeplrSigningStargateClient(
+    if (!stargateClients[wallet.id]) {
+      stargateClients[wallet.id] = getKeplrSigningStargateClient(
         walletKeplr,
         wallet.networkId
       );
     }
-    return stargateClients[walletId];
-  }, [wallet, walletId, walletKeplr]);
+    return stargateClients[wallet.id];
+  }, [wallet, walletKeplr]);
 };
 
 const cosmWasmClients: { [key: string]: Promise<SigningCosmWasmClient> } = {};
