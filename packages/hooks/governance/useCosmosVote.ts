@@ -9,7 +9,7 @@ import { useWalletStargateClient } from "../wallets/useWalletClients";
 
 export const useCosmosVote = (walletId: string | undefined) => {
   const wallet = useWallet(walletId);
-  const client = useWalletStargateClient(walletId);
+  const getClient = useWalletStargateClient(walletId);
   const { setToastError } = useFeedbacks();
 
   return useCallback(
@@ -17,7 +17,7 @@ export const useCosmosVote = (walletId: string | undefined) => {
       proposalId: Long | undefined,
       voteOption: VoteOption | undefined
     ) => {
-      if (!wallet || !client) {
+      if (!wallet) {
         setToastError({
           title: "Wallet Error",
           message: "You need to register your teritori wallet",
@@ -34,6 +34,7 @@ export const useCosmosVote = (walletId: string | undefined) => {
             option: voteOption,
           },
         };
+        const client = await getClient();
         const result = await client.signAndBroadcast(
           wallet.address,
           [vote],
@@ -55,6 +56,6 @@ export const useCosmosVote = (walletId: string | undefined) => {
         }
       }
     },
-    [client, setToastError, wallet]
+    [getClient, setToastError, wallet]
   );
 };

@@ -171,7 +171,7 @@ export const Russian = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ResultData]);
 
-  const signingStargateClient = useWalletStargateClient(selectedWallet?.id);
+  const getSigningStargateClient = useWalletStargateClient(selectedWallet?.id);
 
   // use Hooks to buy, play, add bet , remove bet
   const click = async () => {
@@ -182,7 +182,7 @@ export const Russian = () => {
     if (!bet) return;
     setLoadingGame(true);
     sendKeplarTx({
-      signingStargateClient,
+      signingStargateClient: await getSigningStargateClient(),
       selectedWallet,
       amount: `${bet * 1000000}`,
     }).then((res) => {

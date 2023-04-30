@@ -40,7 +40,7 @@ export const TNSUpdateNameScreen: React.FC<TNSUpdateNameScreenProps> = ({
   const normalizedTokenId = (
     name + network?.nameServiceTLD || ""
   ).toLowerCase();
-  const nsClient = useWalletTNSClient(selectedWallet?.id);
+  const getNSClient = useWalletTNSClient(selectedWallet?.id);
 
   const initData = async () => {
     try {
@@ -95,10 +95,7 @@ export const TNSUpdateNameScreen: React.FC<TNSUpdateNameScreenProps> = ({
     }
 
     try {
-      if (!nsClient) {
-        throw new Error("bad wallet");
-      }
-
+      const nsClient = await getNSClient();
       const updatedToken = await nsClient.updateMetadata({
         tokenId: normalizedTokenId,
         metadata: data,

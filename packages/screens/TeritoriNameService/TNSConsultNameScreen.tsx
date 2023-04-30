@@ -83,7 +83,7 @@ const OwnerActions: React.FC<{
   const { setToastError, setToastSuccess } = useFeedbacks();
   const queryClient = useQueryClient();
   const navigation = useAppNavigation();
-  const client = useWalletTNSClient(wallet?.id);
+  const getClient = useWalletTNSClient(wallet?.id);
   return (
     <View
       style={{
@@ -131,9 +131,7 @@ const OwnerActions: React.FC<{
           squaresBackgroundColor={neutral17}
           onPress={async () => {
             try {
-              if (!client) {
-                throw new Error("bad wallet");
-              }
+              const client = await getClient();
               await client.updatePrimaryAlias({
                 tokenId,
               });

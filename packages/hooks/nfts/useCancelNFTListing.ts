@@ -14,6 +14,65 @@ import { getMetaMaskEthereumSigner } from "../../utils/ethereum";
 import useSelectedWallet from "../useSelectedWallet";
 import { useWalletCosmWasmClient } from "../wallets/useWalletClients";
 
+export const useCancelNFTListing = (
+  networkId: string | undefined,
+  nftContractAddress: string,
+  tokenId: string
+) => {
+  const wallet = useSelectedWallet();
+  const { setToastError } = useFeedbacks();
+  const getCosmWasmClient = useWalletCosmWasmClient(wallet?.id);
+
+  return useCallback(async () => {
+    try {
+      const network = getNetwork(networkId);
+      if (!network) {
+        throw new Error("unknown network");
+      }
+
+      if (!wallet?.address || !wallet.connected) {
+        throw new Error("bad wallet");
+      }
+
+      switch (network.kind) {
+        case NetworkKind.Cosmos:
+          return await teritoriCancelNFTListing(
+            network.id,
+            await getCosmWasmClient(),
+            wallet.address,
+            nftContractAddress,
+            tokenId
+          );
+        case NetworkKind.Ethereum:
+          return await ethereumCancelNFTListing(
+            network.id,
+            wallet.address,
+            nftContractAddress,
+            tokenId
+          );
+        default:
+          throw Error(`Unsupported network ${network}`);
+      }
+    } catch (err) {
+      console.error(err);
+      if (err instanceof Error) {
+        setToastError({
+          title: "Failed to cancel NFT listing",
+          message: err.message,
+        });
+      }
+    }
+  }, [
+    getCosmWasmClient,
+    networkId,
+    nftContractAddress,
+    setToastError,
+    tokenId,
+    wallet?.address,
+    wallet?.connected,
+  ]);
+};
+
 const teritoriCancelNFTListing = async (
   networkId: string,
   cosmwasmClient: SigningCosmWasmClient | undefined,
@@ -71,63 +130,4 @@ const ethereumCancelNFTListing = async (
   await cancelListingTx.wait();
 
   return cancelListingTx.hash;
-};
-
-export const useCancelNFTListing = (
-  networkId: string | undefined,
-  nftContractAddress: string,
-  tokenId: string
-) => {
-  const wallet = useSelectedWallet();
-  const { setToastError } = useFeedbacks();
-  const cosmWasmClient = useWalletCosmWasmClient(wallet?.id);
-
-  return useCallback(async () => {
-    try {
-      const network = getNetwork(networkId);
-      if (!network) {
-        throw new Error("unknown network");
-      }
-
-      if (!wallet?.address || !wallet.connected) {
-        throw new Error("bad wallet");
-      }
-
-      switch (network.kind) {
-        case NetworkKind.Cosmos:
-          return await teritoriCancelNFTListing(
-            network.id,
-            cosmWasmClient,
-            wallet.address,
-            nftContractAddress,
-            tokenId
-          );
-        case NetworkKind.Ethereum:
-          return await ethereumCancelNFTListing(
-            network.id,
-            wallet.address,
-            nftContractAddress,
-            tokenId
-          );
-        default:
-          throw Error(`Unsupported network ${network}`);
-      }
-    } catch (err) {
-      console.error(err);
-      if (err instanceof Error) {
-        setToastError({
-          title: "Failed to cancel NFT listing",
-          message: err.message,
-        });
-      }
-    }
-  }, [
-    cosmWasmClient,
-    networkId,
-    nftContractAddress,
-    setToastError,
-    tokenId,
-    wallet?.address,
-    wallet?.connected,
-  ]);
 };

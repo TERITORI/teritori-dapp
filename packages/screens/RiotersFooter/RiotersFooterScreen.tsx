@@ -90,7 +90,7 @@ export const RiotersFooterScreen: React.FC = () => {
 
   const wallet = useSelectedWallet();
 
-  const cosmwasmClient = useWalletCosmWasmClient(wallet?.id);
+  const getCosmwasmClient = useWalletCosmWasmClient(wallet?.id);
 
   const getFeeConfig = useCallback(async () => {
     if (client) {
@@ -135,10 +135,11 @@ export const RiotersFooterScreen: React.FC = () => {
 
   useEffect(() => {
     const effect = async () => {
-      if (!client || !cosmwasmClient) {
+      if (!client) {
         return;
       }
       try {
+        const cosmwasmClient = await getCosmwasmClient();
         const nftCount = await client.queryNftCount();
         const allNfts: FooterNftData[] = [];
         for (let i = 0; i < nftCount; i += 11) {
@@ -177,7 +178,7 @@ export const RiotersFooterScreen: React.FC = () => {
       }
     };
     effect();
-  }, [client, cosmwasmClient]);
+  }, [client, getCosmwasmClient]);
 
   const { collections, fetchMore: fetchMoreCollections } = useCollections({
     networkId: selectedNetworkId,
@@ -212,14 +213,9 @@ export const RiotersFooterScreen: React.FC = () => {
   const handleBuy = useCallback(async () => {
     setTransactionPaymentModalVisible(false);
     const finalPrice = await getPrice();
-    if (
-      !nftDropedAdjustment ||
-      finalPrice === undefined ||
-      !wallet ||
-      !cosmwasmClient
-    )
-      return;
+    if (!nftDropedAdjustment || finalPrice === undefined || !wallet) return;
     const network = getCosmosNetwork(selectedNetworkId);
+    const cosmwasmClient = await getCosmwasmClient();
     const rioterFooterClient = new RioterFooterNftClient(
       cosmwasmClient,
       wallet.address,
@@ -274,7 +270,7 @@ export const RiotersFooterScreen: React.FC = () => {
       console.log("error", e);
     }
   }, [
-    cosmwasmClient,
+    getCosmwasmClient,
     getPrice,
     nftDroped?.id,
     nftDropedAdjustment,

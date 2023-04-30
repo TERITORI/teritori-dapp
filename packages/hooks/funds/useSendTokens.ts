@@ -9,7 +9,7 @@ import { useWallet } from "../wallets/useWallet";
 import { useWalletStargateClient } from "../wallets/useWalletClients";
 
 export const useSendTokens = (senderWalletId: string | undefined) => {
-  const stargateClient = useWalletStargateClient(senderWalletId);
+  const getStargateClient = useWalletStargateClient(senderWalletId);
   const wallet = useWallet(senderWalletId);
   const { setToastSuccess, setToastError } = useFeedbacks();
   return useCallback(
@@ -25,9 +25,6 @@ export const useSendTokens = (senderWalletId: string | undefined) => {
         }
         if (!denom) {
           throw new Error("invalid denom");
-        }
-        if (!stargateClient) {
-          throw new Error("no stargate client");
         }
         const sender = wallet?.address;
         if (!sender) {
@@ -47,6 +44,7 @@ export const useSendTokens = (senderWalletId: string | undefined) => {
           nativeCurrency.decimals
         ).atomics;
 
+        const stargateClient = await getStargateClient();
         const tx = await stargateClient.sendTokens(
           sender,
           receiver,
@@ -78,9 +76,9 @@ export const useSendTokens = (senderWalletId: string | undefined) => {
       }
     },
     [
+      getStargateClient,
       setToastError,
       setToastSuccess,
-      stargateClient,
       wallet?.address,
       wallet?.networkId,
     ]

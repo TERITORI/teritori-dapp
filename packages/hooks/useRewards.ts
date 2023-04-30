@@ -38,11 +38,11 @@ export const useRewards = (userId: string | undefined) => {
   const networkId = network?.id || "";
   const { setToastSuccess, setToastError } = useFeedbacks();
   const { triggerError } = useErrorHandler();
-  const client = useWalletStargateClient(wallet?.id);
+  const getClient = useWalletStargateClient(wallet?.id);
 
   const claimAllRewards = async (callback?: () => void) => {
     try {
-      if (!userAddress || !networkId || !client) return;
+      if (!userAddress || !networkId) return;
       // Ensuring with uses the wallet address that corresponds to the network
       const network = getNetwork(networkId);
       if (
@@ -64,6 +64,7 @@ export const useRewards = (userId: string | undefined) => {
         });
       });
       if (!msgs.length) return;
+      const client = await getClient();
       const txResponse = await client.signAndBroadcast(
         userAddress,
         msgs,
@@ -89,7 +90,7 @@ export const useRewards = (userId: string | undefined) => {
     callback?: () => void
   ) => {
     try {
-      if (!userAddress || !networkId || !client) return;
+      if (!userAddress || !networkId) return;
 
       const msg: MsgWithdrawDelegatorRewardEncodeObject = {
         typeUrl: "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward",
@@ -98,6 +99,7 @@ export const useRewards = (userId: string | undefined) => {
           validatorAddress,
         },
       };
+      const client = await getClient();
       const txResponse = await client.signAndBroadcast(
         userAddress,
         [msg],

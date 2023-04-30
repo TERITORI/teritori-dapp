@@ -47,7 +47,7 @@ export const NFTTransferModal: React.FC<NFTTransferModalProps> = ({
   const selectedWallet = useSelectedWallet();
   const { handleSubmit: formHandleSubmit, control } =
     useForm<NFTTransferForm>();
-  const signingComswasmClient = useWalletCosmWasmClient(selectedWallet?.id);
+  const getSigningComswasmClient = useWalletCosmWasmClient(selectedWallet?.id);
 
   const cosmosSendNFT = async (
     nftContractAddress: string,
@@ -56,11 +56,6 @@ export const NFTTransferModal: React.FC<NFTTransferModalProps> = ({
     receiver: string,
     networkInfo: CosmosNetworkInfo
   ) => {
-    // validate client
-    if (!signingComswasmClient) {
-      throw new Error("no cosmwasm client");
-    }
-
     // validate address
     const address = bech32.decode(receiver);
 
@@ -69,6 +64,7 @@ export const NFTTransferModal: React.FC<NFTTransferModalProps> = ({
     }
 
     // create client
+    const signingComswasmClient = await getSigningComswasmClient();
     const nftClient = new TeritoriNftClient(
       signingComswasmClient,
       sender,

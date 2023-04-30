@@ -60,11 +60,11 @@ export const TipModal: React.FC<{
   const currencyBalance = balances.find(
     (bal) => bal.denom === nativeCurrency?.denom
   );
-  const client = useWalletSocialFeedClient(selectedWallet?.id);
+  const getClient = useWalletSocialFeedClient(selectedWallet?.id);
   const formValues = watch();
 
   const handleSubmit: SubmitHandler<TipFormType> = async (fieldValues) => {
-    if (!nativeCurrency || !client) {
+    if (!nativeCurrency) {
       return;
     }
     const amount = Decimal.fromUserInput(
@@ -72,7 +72,7 @@ export const TipModal: React.FC<{
       nativeCurrency.decimals
     ).atomics;
     postMutate({
-      client,
+      client: await getClient(),
       msg: {
         identifier: postId,
       },

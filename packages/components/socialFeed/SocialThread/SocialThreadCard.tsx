@@ -70,7 +70,7 @@ export const SocialThreadCard: React.FC<{
   const [, userAddress] = parseUserId(localPost.createdBy);
   const userInfo = useNSUserInfo(wallet?.userId);
   const navigation = useAppNavigation();
-  const client = useWalletSocialFeedClient(wallet?.id);
+  const getClient = useWalletSocialFeedClient(wallet?.id);
   const metadata: SocialFeedMetadata = JSON.parse(localPost.metadata);
   const username = authorNSInfo?.metadata?.tokenId
     ? authorNSInfo?.metadata?.tokenId
@@ -82,12 +82,8 @@ export const SocialThreadCard: React.FC<{
   // }, [metadata]);
 
   const handleReaction = async (emoji: string) => {
-    if (!client) {
-      return;
-    }
-
     postMutate({
-      client,
+      client: await getClient(),
       msg: {
         icon: emoji,
         identifier: localPost.identifier,

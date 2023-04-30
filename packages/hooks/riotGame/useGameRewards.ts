@@ -19,7 +19,7 @@ export const useGameRewards = () => {
   const userId = selectedWallet?.userId;
   const { setToastSuccess, setToastError } = useFeedbacks();
   const [isClaiming, setIsClaiming] = useState(false);
-  const signingCosmWasmClient = useWalletCosmWasmClient(selectedWallet?.id);
+  const getSigningCosmWasmClient = useWalletCosmWasmClient(selectedWallet?.id);
 
   const { data } = useQuery(
     ["claimableAmount", userId],
@@ -51,10 +51,6 @@ export const useGameRewards = () => {
   const claimRewards = useCallback(async () => {
     setIsClaiming(true);
     try {
-      if (!signingCosmWasmClient) {
-        throw new Error("no client");
-      }
-
       const [network, userAddress] = parseUserId(userId);
 
       if (
@@ -66,7 +62,7 @@ export const useGameRewards = () => {
       }
 
       const distributorClient = new TeritoriDistributorClient(
-        signingCosmWasmClient,
+        await getSigningCosmWasmClient(),
         userAddress,
         network.distributorContractAddress
       );
@@ -81,7 +77,7 @@ export const useGameRewards = () => {
     } finally {
       setIsClaiming(false);
     }
-  }, [setToastError, setToastSuccess, signingCosmWasmClient, userId]);
+  }, [getSigningCosmWasmClient, setToastError, setToastSuccess, userId]);
 
   return { isClaiming, claimableAmount, claimRewards };
 };

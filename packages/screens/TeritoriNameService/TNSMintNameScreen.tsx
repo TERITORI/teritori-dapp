@@ -106,7 +106,7 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
   const price = useTNSMintPrice(networkId, normalizedTokenId);
   const balances = useBalances(networkId, selectedWallet?.address);
   const balance = balances.find((bal) => bal.denom === price?.denom);
-  const client = useWalletTNSClient(selectedWallet?.id);
+  const getClient = useWalletTNSClient(selectedWallet?.id);
 
   const initData = async () => {
     try {
@@ -160,10 +160,11 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
     try {
       const walletAddress = selectedWallet?.address;
 
-      if (!client || !walletAddress) {
+      if (!walletAddress) {
         throw new Error("bad wallet");
       }
 
+      const client = await getClient();
       const mintedToken = await client.mint(
         {
           owner: walletAddress,

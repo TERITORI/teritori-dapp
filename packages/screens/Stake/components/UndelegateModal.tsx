@@ -55,7 +55,7 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
   );
   const { setToastError, setToastSuccess } = useFeedbacks();
   const { triggerError } = useErrorHandler();
-  const client = useWalletStargateClient(wallet?.id);
+  const getClient = useWalletStargateClient(wallet?.id);
 
   // variables
   const { control, setValue, handleSubmit, reset } =
@@ -83,7 +83,7 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
           });
           return;
         }
-        if (!wallet?.connected || !wallet.address || !client) {
+        if (!wallet?.connected || !wallet.address) {
           console.warn("invalid wallet", wallet);
           setToastError({
             title: "Invalid wallet",
@@ -98,6 +98,7 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
           });
           return;
         }
+        const client = await getClient();
         const txResponse = await client.undelegateTokens(
           wallet.address,
           validator.address,
@@ -130,7 +131,7 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
       }
     },
     [
-      client,
+      getClient,
       onClose,
       refreshBondedTokens,
       setToastError,

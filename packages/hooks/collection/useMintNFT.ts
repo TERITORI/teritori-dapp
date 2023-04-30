@@ -23,10 +23,10 @@ export const useMintNFT = (
   walletId: string | undefined,
   collectionId: string
 ) => {
-  const { collectionInfo: info } = useCollectionInfo(collectionId);
+  const { collectionInfo } = useCollectionInfo(collectionId);
   const { setToastError } = useFeedbacks();
   const wallet = useWallet(walletId);
-  const cosmwasmClient = useWalletCosmWasmClient(wallet?.id);
+  const getCosmWasmClient = useWalletCosmWasmClient(wallet?.id);
   const mint = useCallback(
     async (amount: number, onSuccess?: () => void) => {
       setToastError(initialToastError);
@@ -42,11 +42,11 @@ export const useMintNFT = (
         switch (network?.kind) {
           case NetworkKind.Cosmos:
             await cosmosMint(
-              info.unitPrice,
-              info.priceDenom,
+              collectionInfo.unitPrice,
+              collectionInfo.priceDenom,
               mintAddress,
               wallet.address,
-              cosmwasmClient,
+              await getCosmWasmClient(),
               amount
             );
             break;
@@ -74,9 +74,9 @@ export const useMintNFT = (
     },
     [
       collectionId,
-      cosmwasmClient,
-      info.priceDenom,
-      info.unitPrice,
+      getCosmWasmClient,
+      collectionInfo.priceDenom,
+      collectionInfo.unitPrice,
       setToastError,
       wallet,
     ]

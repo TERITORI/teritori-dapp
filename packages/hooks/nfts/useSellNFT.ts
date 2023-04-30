@@ -23,6 +23,69 @@ import { getMetaMaskEthereumSigner } from "../../utils/ethereum";
 import { useWallet } from "../wallets/useWallet";
 import { useWalletCosmWasmClient } from "../wallets/useWalletClients";
 
+export const useSellNFT = (walletId: string | undefined) => {
+  const { setToastError } = useFeedbacks();
+  const wallet = useWallet(walletId);
+  const getCosmWasmClient = useWalletCosmWasmClient(walletId);
+  const network = getNetwork(wallet?.networkId);
+
+  return useCallback(
+    async (
+      nftContractAddress: string,
+      tokenId: string,
+      price: string,
+      denom: string | undefined
+    ) => {
+      try {
+        if (!network || !wallet?.address || !wallet.connected) {
+          throw Error("Bad wallet");
+        }
+
+        if (!denom) {
+          throw Error("No denom");
+        }
+
+        let txHash;
+        switch (network.kind) {
+          case NetworkKind.Cosmos:
+            txHash = await teritoriSellNFT(
+              await getCosmWasmClient(),
+              wallet,
+              nftContractAddress,
+              tokenId,
+              price,
+              denom
+            );
+            break;
+          case NetworkKind.Ethereum:
+            txHash = await ethereumSellNFT(
+              wallet,
+              nftContractAddress,
+              tokenId,
+              price
+            );
+            break;
+          default:
+            throw Error(`Unsupported network ${network.kind}`);
+        }
+
+        setToastError(initialToastError);
+
+        return txHash;
+      } catch (err) {
+        console.error(err);
+        if (err instanceof Error) {
+          setToastError({
+            title: "Failed to list NFT",
+            message: err.message,
+          });
+        }
+      }
+    },
+    [getCosmWasmClient, network, setToastError, wallet]
+  );
+};
+
 const teritoriSellNFT = async (
   cosmwasmClient: SigningCosmWasmClient | undefined,
   wallet: Wallet,
@@ -111,67 +174,4 @@ const ethereumSellNFT = async (
   await sellTx.wait();
 
   return sellTx.hash;
-};
-
-export const useSellNFT = (walletId: string | undefined) => {
-  const { setToastError } = useFeedbacks();
-  const wallet = useWallet(walletId);
-  const cosmWasmClient = useWalletCosmWasmClient(walletId);
-  const network = getNetwork(wallet?.networkId);
-
-  return useCallback(
-    async (
-      nftContractAddress: string,
-      tokenId: string,
-      price: string,
-      denom: string | undefined
-    ) => {
-      try {
-        if (!network || !wallet?.address || !wallet.connected) {
-          throw Error("Bad wallet");
-        }
-
-        if (!denom) {
-          throw Error("No denom");
-        }
-
-        let txHash;
-        switch (network.kind) {
-          case NetworkKind.Cosmos:
-            txHash = await teritoriSellNFT(
-              cosmWasmClient,
-              wallet,
-              nftContractAddress,
-              tokenId,
-              price,
-              denom
-            );
-            break;
-          case NetworkKind.Ethereum:
-            txHash = await ethereumSellNFT(
-              wallet,
-              nftContractAddress,
-              tokenId,
-              price
-            );
-            break;
-          default:
-            throw Error(`Unsupported network ${network.kind}`);
-        }
-
-        setToastError(initialToastError);
-
-        return txHash;
-      } catch (err) {
-        console.error(err);
-        if (err instanceof Error) {
-          setToastError({
-            title: "Failed to list NFT",
-            message: err.message,
-          });
-        }
-      }
-    },
-    [cosmWasmClient, network, setToastError, wallet]
-  );
 };

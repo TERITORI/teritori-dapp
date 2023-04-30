@@ -59,7 +59,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
   );
   const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
   const [loading, setLoading] = useState(false);
-  const socialFeedClient = useWalletSocialFeedClient(wallet?.id);
+  const getSocialFeedClient = useWalletSocialFeedClient(wallet?.id);
 
   const { setToastSuccess, setToastError } = useFeedbacks();
   const navigation = useAppNavigation();
@@ -109,7 +109,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
     }
 
     await createPost({
-      client: socialFeedClient,
+      client: await getSocialFeedClient(),
       wallet,
       freePostCount,
       category: PostCategory.Article,

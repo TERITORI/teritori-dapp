@@ -22,7 +22,7 @@ export const useBreeding = (networkId: string | undefined) => {
   const { breedingConfig } = useBreedingConfig(networkId);
   const breedingContractAddress =
     getCosmosNetwork(networkId)?.riotContractAddressGen1;
-  const signingCosmWasmClient = useWalletCosmWasmClient(selectedWallet?.id);
+  const getSigningCosmWasmClient = useWalletCosmWasmClient(selectedWallet?.id);
 
   const getBreedingQueryClient = useCallback(async () => {
     if (!networkId) {
@@ -58,10 +58,6 @@ export const useBreeding = (networkId: string | undefined) => {
         throw new Error("Not select enough rippers to breed");
       }
 
-      if (!signingCosmWasmClient) {
-        throw new Error("no client");
-      }
-
       const sender = selectedWallet?.address || "";
 
       let msgs: EncodeObject[] = [];
@@ -88,6 +84,7 @@ export const useBreeding = (networkId: string | undefined) => {
 
       msgs = [...msgs, breedMsg];
 
+      const signingCosmWasmClient = await getSigningCosmWasmClient();
       const tx = await signingCosmWasmClient.signAndBroadcast(
         sender,
         msgs,
@@ -102,9 +99,9 @@ export const useBreeding = (networkId: string | undefined) => {
     },
     [
       breedingContractAddress,
+      getSigningCosmWasmClient,
       networkId,
       selectedWallet?.address,
-      signingCosmWasmClient,
     ]
   );
 

@@ -97,7 +97,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
       enabled: replyShown,
     });
   const oldIsFetching = usePrevious(isFetching);
-  const client = useWalletSocialFeedClient(wallet?.id);
+  const getClient = useWalletSocialFeedClient(wallet?.id);
 
   const { mutate: postMutate, isLoading: isPostMutationLoading } =
     useTeritoriSocialFeedReactPostMutation({
@@ -171,12 +171,8 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
     });
 
   const handleReaction = async (e: string) => {
-    if (!client) {
-      return;
-    }
-
     postMutate({
-      client,
+      client: await getClient(),
       msg: {
         icon: e,
         identifier: localComment.identifier,

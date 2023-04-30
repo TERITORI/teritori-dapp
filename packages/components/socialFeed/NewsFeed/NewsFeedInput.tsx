@@ -148,7 +148,7 @@ export const NewsFeedInput = React.forwardRef<
     const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
     const { setToastError } = useFeedbacks();
     const [isLoading, setLoading] = useState(false);
-    const socialFeedClient = useWalletSocialFeedClient(wallet?.id);
+    const getSocialFeedClient = useWalletSocialFeedClient(wallet?.id);
     const [selection, setSelection] = useState<{ start: number; end: number }>({
       start: 10,
       end: 10,
@@ -198,10 +198,6 @@ export const NewsFeedInput = React.forwardRef<
     );
 
     const processSubmit = async () => {
-      if (!socialFeedClient) {
-        return;
-      }
-
       const toriBalance = balances.find((bal) => bal.denom === "utori");
       if (postFee > Number(toriBalance?.amount) && !freePostCount) {
         return setNotEnoughFundModal(true);
@@ -263,7 +259,7 @@ export const NewsFeedInput = React.forwardRef<
         const identifier = uuidv4();
 
         await mutateAsync({
-          client: socialFeedClient,
+          client: await getSocialFeedClient(),
           msg: {
             category: postCategory,
             identifier,

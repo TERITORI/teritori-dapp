@@ -68,7 +68,7 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
   const { control, setValue, handleSubmit, reset } =
     useForm<StakeFormValuesType>();
   const stakingCurrency = getStakingCurrency(networkId);
-  const client = useWalletStargateClient(wallet?.id);
+  const getClient = useWalletStargateClient(wallet?.id);
 
   // hooks
   useEffect(() => {
@@ -104,7 +104,7 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
           });
           return;
         }
-        if (!wallet?.connected || !wallet.address || !client) {
+        if (!wallet?.connected || !wallet.address) {
           console.warn("invalid wallet", wallet);
           setToastError({
             title: "Invalid wallet",
@@ -139,6 +139,7 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
           },
         };
 
+        const client = await getClient();
         const txResponse = await client.signAndBroadcast(
           wallet.address,
           [
@@ -171,7 +172,7 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
       }
     },
     [
-      client,
+      getClient,
       onClose,
       refreshBondedTokens,
       selectedValidator,

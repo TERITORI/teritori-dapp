@@ -29,7 +29,7 @@ export const TNSBurnNameScreen: React.FC<TNSBurnNameScreenProps> = ({
   const network = mustGetCosmosNetwork(selectedWallet?.networkId);
   const { tokens } = useNSTokensByOwner(selectedWallet?.userId);
   const normalizedTokenId = (name + network.nameServiceTLD || "").toLowerCase();
-  const nsClient = useWalletTNSClient(selectedWallet?.id);
+  const getNSClient = useWalletTNSClient(selectedWallet?.id);
 
   const queryClient = useQueryClient();
 
@@ -41,14 +41,8 @@ export const TNSBurnNameScreen: React.FC<TNSBurnNameScreenProps> = ({
       });
       return;
     }
-    if (!nsClient) {
-      setToastError({
-        title: "Bad wallet",
-        message: "",
-      });
-      return;
-    }
     try {
+      const nsClient = await getNSClient();
       await nsClient.burn({ tokenId: normalizedTokenId });
 
       console.log(normalizedTokenId + " successfully burnt");

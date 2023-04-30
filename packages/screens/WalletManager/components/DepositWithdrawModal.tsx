@@ -79,7 +79,7 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
   // variables
   const { control, setValue, handleSubmit } = useForm<TransactionForm>();
 
-  const client = useWalletStargateClient(selectedWallet?.id);
+  const getClient = useWalletStargateClient(selectedWallet?.id);
 
   // returns
   const ModalHeader = useCallback(
@@ -208,10 +208,6 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
                 throw new Error("no sender");
               }
 
-              if (!client) {
-                throw new Error("no client");
-              }
-
               const receiver = toAccount;
               if (!receiver) {
                 throw new Error("no receiver");
@@ -263,6 +259,7 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
                   ? ibcTargetCurrency.destinationChannelId
                   : ibcTargetCurrency.sourceChannelId;
 
+              const client = await getClient();
               const tx = await client.sendIbcTokens(
                 sender,
                 receiver,

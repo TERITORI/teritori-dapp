@@ -44,7 +44,7 @@ export const TNSMintPathScreen: React.FC<TNSMintPathScreenProps> = ({
   const { tokens } = useNSTokensByOwner(selectedWallet?.userId);
   const network = getCosmosNetwork(selectedWallet?.networkId);
   const walletAddress = selectedWallet?.address;
-  const nsClient = useWalletTNSClient(selectedWallet?.id);
+  const getNSClient = useWalletTNSClient(selectedWallet?.id);
 
   const normalizedTokenId = (
     name + network?.nameServiceTLD || ""
@@ -113,7 +113,7 @@ export const TNSMintPathScreen: React.FC<TNSMintPathScreenProps> = ({
     const normalizedPathId = normalize(pathId.toLowerCase());
 
     try {
-      if (!nsClient || !walletAddress) {
+      if (!walletAddress) {
         throw new Error("bad wallet");
       }
 
@@ -121,6 +121,7 @@ export const TNSMintPathScreen: React.FC<TNSMintPathScreenProps> = ({
         throw new Error("no price");
       }
 
+      const nsClient = await getNSClient();
       const mintedToken = await nsClient.mintPath(
         {
           owner: walletAddress,

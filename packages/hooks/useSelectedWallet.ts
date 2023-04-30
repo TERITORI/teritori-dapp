@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useSelector } from "react-redux";
 
 import { useWallets } from "../context/WalletsProvider";
@@ -9,13 +8,7 @@ const useSelectedWallet = () => {
 
   const selectedWalletId = useSelector(selectSelectedWalletId);
 
-  const wallet = wallets.find((w) => w.connected && w.id === selectedWalletId);
-
-  useEffect(() => {
-    console.log("selected wallet id change", wallet?.id);
-  }, [wallet?.id]);
-
-  return wallet;
+  return wallets.find((w) => w.connected && w.id === selectedWalletId);
 };
 
 export default useSelectedWallet;

@@ -19,7 +19,7 @@ import { useWalletCosmWasmClient } from "../wallets/useWalletClients";
 export const useBuyNFT = (walletId: string | undefined) => {
   const { setToastError } = useFeedbacks();
   const wallet = useWallet(walletId);
-  const cosmWasmClient = useWalletCosmWasmClient(walletId);
+  const getCosmWasmClient = useWalletCosmWasmClient(walletId);
   const network = getNetwork(wallet?.networkId);
 
   // Query the Vault client to buy the NFT and returns the transaction reply
@@ -33,7 +33,7 @@ export const useBuyNFT = (walletId: string | undefined) => {
         let txHash;
         switch (network?.kind) {
           case NetworkKind.Cosmos:
-            txHash = await teritoriBuy(cosmWasmClient, wallet, info);
+            txHash = await teritoriBuy(await getCosmWasmClient(), wallet, info);
             break;
           case NetworkKind.Ethereum:
             txHash = await ethereumBuy(wallet, info);
@@ -60,7 +60,7 @@ export const useBuyNFT = (walletId: string | undefined) => {
         }
       }
     },
-    [cosmWasmClient, network?.kind, setToastError, wallet]
+    [getCosmWasmClient, network?.kind, setToastError, wallet]
   );
 };
 

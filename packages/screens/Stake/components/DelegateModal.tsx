@@ -58,7 +58,7 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
     stakingBalance?.amount || "0",
     stakingCurrency?.decimals || 0
   );
-  const client = useWalletStargateClient(wallet?.id);
+  const getClient = useWalletStargateClient(wallet?.id);
   const { control, setValue, handleSubmit, reset } =
     useForm<StakeFormValuesType>();
 
@@ -83,7 +83,7 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
           });
           return;
         }
-        if (!wallet?.connected || !wallet.address || !client) {
+        if (!wallet?.connected || !wallet.address) {
           console.warn("invalid wallet", wallet);
           setToastError({
             title: "Invalid wallet",
@@ -98,6 +98,7 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
           });
           return;
         }
+        const client = await getClient();
         const txResponse = await client.delegateTokens(
           wallet.address,
           validator.address,
@@ -128,7 +129,7 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
       }
     },
     [
-      client,
+      getClient,
       onClose,
       setToastError,
       setToastSuccess,
