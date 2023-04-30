@@ -28,7 +28,7 @@ export const ConnectMetamaskButton: React.FC<{
       if (!ethereum) {
         const installURL =
           detectBrowser()?.name === "firefox"
-            ? "https://addons.mozilla.org/fr/firefox/addon/ether-metamask/"
+            ? "https://addons.mozilla.org/en-US/firefox/addon/ether-metamask/"
             : "https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn";
         Linking.openURL(installURL);
         return;
