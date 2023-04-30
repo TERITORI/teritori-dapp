@@ -328,13 +328,19 @@ export const getKeplrSigner = async (
     throw new Error("no keplr");
   }
 
+  const isWalletConnect = keplr instanceof KeplrWalletConnectV1;
+
   const network = mustGetCosmosNetwork(networkId);
 
-  await keplr.experimentalSuggestChain(keplrChainInfoFromNetworkInfo(network));
+  if (!isWalletConnect) {
+    await keplr.experimentalSuggestChain(
+      keplrChainInfoFromNetworkInfo(network)
+    );
+  }
 
   await keplr.enable(network.chainId);
 
-  if (keplr instanceof KeplrWalletConnectV1) {
+  if (isWalletConnect) {
     return keplr.getOfflineSignerOnlyAmino(network.chainId);
   }
 
