@@ -16,7 +16,7 @@ import { SVG } from "../../components/SVG";
 import { SecondaryButton } from "../../components/buttons/SecondaryButton";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { Wallet } from "../../context/WalletsProvider";
-import { useRewards } from "../../hooks/useRewards";
+import { rewardsPrice, useRewards } from "../../hooks/useRewards";
 import { accountExplorerLink, getNetwork } from "../../networks";
 import { setSelectedWallet } from "../../store/slices/settings";
 import { useAppDispatch } from "../../store/store";
@@ -35,13 +35,10 @@ export const WalletItem: React.FC<WalletItemProps> = ({
 }) => {
   const { width } = useWindowDimensions();
   const { setToastSuccess } = useFeedbacks();
-  const { claimAllRewards } = useRewards(wallet.userId);
+  const { claimAllRewards, totalsRewards } = useRewards(wallet.userId);
   const dispatch = useAppDispatch();
 
-  // Total rewards price with all denoms
-  // const claimablePrice = rewardsPrice(item.pendingRewards);
-
-  const claimablePrice = 0;
+  const claimablePrice = rewardsPrice(totalsRewards);
 
   return (
     <View
