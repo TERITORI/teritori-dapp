@@ -12,7 +12,9 @@ import { TabsListType } from "../../components/collections/types";
 import { useCollectionInfo } from "../../hooks/useCollectionInfo";
 import { parseCollectionId } from "../../networks";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
+import { neutral67 } from "../../utils/style/colors";
 import { fontSemibold20 } from "../../utils/style/fonts";
+import { layout } from "../../utils/style/layout";
 
 export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
   // variables
@@ -72,6 +74,14 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
             position: "absolute",
             right: 135,
             marginTop: 36,
+            flexDirection: "column",
+            width: 200,
+            marginBottom: layout.padding_x2_5,
+            borderRadius: layout.padding_x2,
+            borderColor: neutral67,
+            borderWidth: 1,
+            padding: layout.padding_x2,
+            borderStyle: "solid",
           }}
         />
       </View>
