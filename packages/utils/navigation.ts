@@ -62,6 +62,7 @@ export type RootStackParamList = {
 
   Chat: undefined;
   Message: undefined;
+  ChatSection: undefined;
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
