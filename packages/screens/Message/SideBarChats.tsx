@@ -1,5 +1,6 @@
+import { useNavigation } from "@react-navigation/native";
 import React from "react";
-import { View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 
 import add from "../../../assets/icons/add-circle-filled.svg";
 import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
@@ -18,9 +19,11 @@ import {
   neutral22,
 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
+import { layout } from "../../utils/style/layout";
 const SideBarChats: React.FC = () => {
+  const navigation = useNavigation();
   return (
-    <View>
+    <View style={{ paddingHorizontal: layout.padding_x2 }}>
       <SpacerColumn size={2} />
       <Searchbar />
       <SpacerColumn size={2.5} />
@@ -58,13 +61,15 @@ const SideBarChats: React.FC = () => {
       <Separator horizontal={false} color={neutral22} />
 
       {ConversationData.map((item) => (
-        <SideBarChatConversation
-          avatar={item.avatar}
-          name={item.name}
-          isOnline={item.isOnline}
-          chat={item.chat}
-          time={item.time}
-        />
+        <TouchableOpacity onPress={() => navigation.navigate("ChatSection")}>
+          <SideBarChatConversation
+            avatar={item.avatar}
+            name={item.name}
+            isOnline={item.isOnline}
+            chat={item.chat}
+            time={item.time}
+          />
+        </TouchableOpacity>
       ))}
     </View>
   );

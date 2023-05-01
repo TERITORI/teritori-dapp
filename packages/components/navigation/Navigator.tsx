@@ -24,6 +24,7 @@ import { CollectionToolsScreen } from "../../screens/Marketplace/CollectionTools
 import { MarketplaceScreen } from "../../screens/Marketplace/MarketplaceScreen";
 import { NFTDetailScreen } from "../../screens/Marketplace/NFTDetailScreen";
 import { MessageScreen } from "../../screens/Message/MessageScreen";
+import ChatSection from "../../screens/Message/MessengerGroupChat/ChatSection";
 import { MyCollectionScreen } from "../../screens/MyCollection/MyCollectionScreen";
 import { OrganizationDeployerScreen } from "../../screens/Organizations/OrganizationDeployerScreen";
 import { OrganizationsScreen } from "../../screens/Organizations/OrganizationsScreen";
@@ -144,6 +145,14 @@ export const Navigator: React.FC = () => {
       <Stack.Screen
         name="RiotGameMarketplace"
         component={RiotGameMarketplaceScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Riot Game Marketplace"),
+        }}
+      />
+      <Stack.Screen
+        name="ChatSection"
+        component={ChatSection}
         options={{
           header: () => null,
           title: screenTitle("Riot Game Marketplace"),

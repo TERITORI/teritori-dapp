@@ -9,11 +9,15 @@ import {
   Pressable,
 } from "react-native";
 
+import ChatData from "./ChatData";
+import ChatHeader from "./ChatHeader";
+import ChatMessage from "./Conversation";
 import plus from "../../../../assets/icons/chatplus.svg";
 import close from "../../../../assets/icons/close.svg";
 import farwardto from "../../../../assets/icons/farwardto.svg";
 import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
+import { ScreenContainer } from "../../../components/ScreenContainer";
 import { Separator } from "../../../components/Separator";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { FileUploader } from "../../../components/fileUploader";
@@ -27,9 +31,6 @@ import {
 } from "../../../utils/style/colors";
 import { LocalFileData } from "../../../utils/types/feed";
 import UploadImage from "../MessengerHomeCreateChatDropdown/UploadImage";
-import ChatData from "./ChatData";
-import ChatHeader from "./ChatHeader";
-import ChatMessage from "./Conversation";
 interface IMessage {
   message: string;
   isSender: boolean;
