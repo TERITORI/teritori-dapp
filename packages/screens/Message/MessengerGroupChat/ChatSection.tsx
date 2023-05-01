@@ -30,7 +30,7 @@ import {
   neutral33,
 } from "../../../utils/style/colors";
 import { LocalFileData } from "../../../utils/types/feed";
-import UploadImage from "../MessengerHomeCreateChatDropdown/UploadImage";
+
 interface IMessage {
   message: string;
   isSender: boolean;
