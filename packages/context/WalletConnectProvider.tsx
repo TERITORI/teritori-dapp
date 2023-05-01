@@ -4,6 +4,7 @@ import { KeplrWalletConnectV1 } from "@keplr-wallet/wc-client";
 import { saveMobileLinkInfo } from "@walletconnect/browser-utils";
 import WalletConnectV1 from "@walletconnect/client";
 import axios from "axios";
+import { detect } from "detect-browser";
 import {
   createContext,
   useCallback,
@@ -58,6 +59,17 @@ export const WalletConnectProvider: React.FC = ({ children }) => {
           }
 
           // use deep link in mobile browsers
+          const browserOS = detect()?.os;
+
+          if (browserOS === "android" || browserOS === "Android OS") {
+            saveMobileLinkInfo({
+              name: "Keplr",
+              href: "intent://wcV1#Intent;package=com.chainapsis.keplr;scheme=keplrwallet;end;",
+            });
+            window.location.href = `intent://wcV1?${uri}#Intent;package=com.chainapsis.keplr;scheme=keplrwallet;end;`;
+            return;
+          }
+
           const base = "keplrwallet://wcV1";
           saveMobileLinkInfo({
             name: "Keplr",
