@@ -10,8 +10,8 @@ import { ValidatorInfo } from "./types";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { Tabs } from "../../components/tabs/Tabs";
-import { useAreThereWallets } from "../../hooks/useAreThereWallets";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useValidators } from "../../hooks/useValidators";
 import { NetworkKind } from "../../networks";
 import { fontSemibold28 } from "../../utils/style/fonts";
@@ -45,7 +45,8 @@ export const StakeScreen: React.FC = () => {
     },
   };
   const [selectedTab, setSelectedTab] = useState<keyof typeof tabs>("active");
-  const areThereWallets = useAreThereWallets();
+  const selectedWallet = useSelectedWallet();
+  const isWalletConnected = !!selectedWallet;
 
   // functions
   const toggleDetailModal = (stakeData?: ValidatorInfo) => {
@@ -85,7 +86,7 @@ export const StakeScreen: React.FC = () => {
           selectedTab === "active" ? activeValidators : inactiveValidators
         }
         actions={
-          areThereWallets
+          isWalletConnected
             ? () => [{ label: "Manage", onPress: toggleDetailModal }]
             : undefined
         }

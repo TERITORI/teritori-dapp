@@ -72,7 +72,6 @@ export const usePhantomWallets: () => UseWalletProviderResult = () => {
       networkKind: NetworkKind.Solana,
       networkId: "",
       userId: "",
-      connected: !!publicKey,
       id: "phantom",
     };
     console.log("phantom", wallet);

@@ -75,7 +75,7 @@ export const TNSExploreScreen: React.FC<TNSExploreScreenProps> = ({
             <PrimaryButtonOutline
               size="XL"
               width={154}
-              disabled={tokens.includes(tokenId) || !selectedWallet?.connected}
+              disabled={tokens.includes(tokenId) || !selectedWallet}
               text="Send funds"
               onPress={() => setSendFundsModalVisible(true)}
               squaresBackgroundColor={neutral17}

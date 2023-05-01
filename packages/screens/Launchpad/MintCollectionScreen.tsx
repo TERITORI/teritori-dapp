@@ -115,7 +115,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
   );
 
   const imageSize = viewWidth < maxImageSize ? viewWidth : maxImageSize;
-  const mintButtonDisabled = minted || !wallet?.connected;
+  const mintButtonDisabled = minted || !wallet;
 
   const updateTotalBulkMint = (newTotalBulkMint: number | string) => {
     const numOnlyRegexp = new RegExp(/^\d+$/);

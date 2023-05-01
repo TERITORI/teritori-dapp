@@ -19,9 +19,7 @@ import { Metadata } from "../../contracts-clients/teritori-name-service/Teritori
 import { nsNameInfoQueryKey } from "../../hooks/name-service/useNSNameInfo";
 import { useNSTokensByOwner } from "../../hooks/name-service/useNSTokensByOwner";
 import { useTNSMintPrice } from "../../hooks/name-service/useTNSMintPrice";
-import { useAreThereWallets } from "../../hooks/useAreThereWallets";
 import { useBalances } from "../../hooks/useBalances";
-import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useWalletTNSClient } from "../../hooks/wallets/useWalletClients";
@@ -96,8 +94,7 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
   const { name } = useTNS();
   const { setToastError, setToastSuccess } = useFeedbacks();
   const { tokens } = useNSTokensByOwner(selectedWallet?.userId);
-  const isKeplrConnected = useIsKeplrConnected();
-  const userHasCoWallet = useAreThereWallets();
+  const isWalletConnected = !!selectedWallet;
   const navigation = useAppNavigation();
   const networkId = useSelectedNetworkId();
   const network = getCosmosNetwork(networkId);
@@ -142,8 +139,8 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
   // ==== Init
   useFocusEffect(() => {
     // ===== Controls many things, be careful
-    if (!userHasCoWallet || !isKeplrConnected) navigation.navigate("TNSHome");
-    if (name && userHasCoWallet && tokens.includes(normalizedTokenId))
+    if (!isWalletConnected) navigation.navigate("TNSHome");
+    if (name && isWalletConnected && tokens.includes(normalizedTokenId))
       onClose();
 
     if (!initialized) {
@@ -154,7 +151,7 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
   const queryClient = useQueryClient();
 
   const submitData = async (data: Metadata) => {
-    if (!isKeplrConnected || !price) {
+    if (!isWalletConnected || !price) {
       return;
     }
 

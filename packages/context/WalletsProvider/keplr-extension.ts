@@ -113,7 +113,6 @@ export const useKeplrExtensionWallets: () => UseWalletProviderResult = () => {
           networkKind: NetworkKind.Cosmos,
           networkId: network.id,
           userId,
-          connected: true,
           id: `keplr-${network.id}-${address}`,
         };
         newWallets.push(wallet);

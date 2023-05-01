@@ -104,7 +104,7 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
           });
           return;
         }
-        if (!wallet?.connected || !wallet.address) {
+        if (!wallet?.address) {
           console.warn("invalid wallet", wallet);
           setToastError({
             title: "Invalid wallet",

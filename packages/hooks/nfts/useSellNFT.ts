@@ -37,7 +37,7 @@ export const useSellNFT = (walletId: string | undefined) => {
       denom: string | undefined
     ) => {
       try {
-        if (!network || !wallet?.address || !wallet.connected) {
+        if (!network || !wallet?.address) {
           throw Error("Bad wallet");
         }
 

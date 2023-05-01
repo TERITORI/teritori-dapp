@@ -19,7 +19,6 @@ import {
   nsPrimaryAliasQueryKey,
   useNSPrimaryAlias,
 } from "../../hooks/name-service/useNSPrimaryAlias";
-import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useWalletTNSClient } from "../../hooks/wallets/useWalletClients";
@@ -34,7 +33,8 @@ const NotOwnerActions: React.FC<{
   onClose: TNSModalCommonProps["onClose"];
 }> = ({ isPrimary, ownerId, onClose }) => {
   const [sendFundsModalVisible, setSendFundsModalVisible] = useState(false);
-  const isKeplrConnected = useIsKeplrConnected();
+  const selectedWallet = useSelectedWallet();
+  const isWalletConnected = !!selectedWallet;
   const navigation = useAppNavigation();
   return (
     <View
@@ -59,7 +59,7 @@ const NotOwnerActions: React.FC<{
       )}
       <PrimaryButton
         size="XL"
-        disabled={!isKeplrConnected}
+        disabled={!isWalletConnected}
         text="Send funds"
         // TODO: if no signed, connectKeplr, then, open modal
         onPress={() => setSendFundsModalVisible(true)}

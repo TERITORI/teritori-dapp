@@ -24,7 +24,7 @@ export const getAvailableFreePost = async ({
   wallet,
 }: GetAvailableFreePostParams) => {
   try {
-    if (!wallet?.connected || !wallet.address) {
+    if (!wallet?.address) {
       return;
     }
 

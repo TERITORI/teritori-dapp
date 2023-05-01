@@ -51,9 +51,7 @@ export const WalletsProvider: React.FC = React.memo(({ children }) => {
       if (providerInfo.hasProvider) {
         providers.add(providerInfo.providerKind);
         for (const wallet of providerInfo.wallets) {
-          if (wallet.connected) {
-            wallets.push(wallet);
-          }
+          wallets.push(wallet);
         }
       }
     }

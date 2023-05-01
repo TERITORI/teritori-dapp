@@ -39,7 +39,6 @@ export const useMetamaskWallets: () => UseWalletProviderResult = () => {
       networkKind: NetworkKind.Ethereum,
       networkId: network.id,
       userId: getUserId(network.id, address),
-      connected: isConnected,
     };
 
     return {

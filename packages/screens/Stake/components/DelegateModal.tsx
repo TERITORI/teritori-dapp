@@ -83,7 +83,7 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
           });
           return;
         }
-        if (!wallet?.connected || !wallet.address) {
+        if (!wallet?.address) {
           console.warn("invalid wallet", wallet);
           setToastError({
             title: "Invalid wallet",

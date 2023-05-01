@@ -20,7 +20,6 @@ import { TNSNameFinderModal } from "../../components/modals/teritoriNameService/
 import { FlowCard } from "../../components/teritoriNameService/FlowCard";
 import { useTNS } from "../../context/TNSProvider";
 import { useNSTokensByOwner } from "../../hooks/name-service/useNSTokensByOwner";
-import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getCollectionId, getCosmosNetwork } from "../../networks";
@@ -78,7 +77,7 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
     selectedNetwork?.nameServiceContractAddress
   );
 
-  const isKeplrConnected = useIsKeplrConnected();
+  const isWalletConnected = !!selectedWallet;
 
   const handleModalClose: TNSCloseHandler = (
     modalName,
@@ -159,7 +158,7 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
           }}
         >
           <FlowCard
-            disabled={!isKeplrConnected}
+            disabled={!isWalletConnected}
             label="Register"
             description="Register and configure a new name"
             iconSVG={registerSVG}
@@ -168,7 +167,7 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
             }
           />
           <FlowCard
-            disabled={!isKeplrConnected || !tokens?.length}
+            disabled={!isWalletConnected || !tokens?.length}
             label="Manage"
             description="Transfer, edit, or burn a name that you own"
             iconSVG={penSVG}

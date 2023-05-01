@@ -21,7 +21,6 @@ export const useWalletConnectWallets: () => UseWalletProviderResult = () => {
         networkKind: NetworkKind.Cosmos,
         networkId: info.networkId,
         userId,
-        connected: true,
         id: `walletconnect-${info.networkId}-${address}`,
       };
 

@@ -25,7 +25,7 @@ export const useBuyNFT = (walletId: string | undefined) => {
   // Query the Vault client to buy the NFT and returns the transaction reply
   return useCallback(
     async (info: NFTInfo | undefined, onSuccces?: () => void) => {
-      if (!wallet?.connected || !wallet.address || !info?.nftAddress) {
+      if (!wallet?.address || !info?.nftAddress) {
         return;
       }
 

@@ -30,7 +30,7 @@ export const useCancelNFTListing = (
         throw new Error("unknown network");
       }
 
-      if (!wallet?.address || !wallet.connected) {
+      if (!wallet?.address) {
         throw new Error("bad wallet");
       }
 
@@ -69,7 +69,6 @@ export const useCancelNFTListing = (
     setToastError,
     tokenId,
     wallet?.address,
-    wallet?.connected,
   ]);
 };
 

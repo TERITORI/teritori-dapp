@@ -41,7 +41,7 @@ export const Sidebar: React.FC = () => {
   const selectedWallet = useSelectedWallet();
   const userInfo = useNSUserInfo(selectedWallet?.userId);
   const selectedNetworkKind = useSelectedNetworkKind();
-  const connected = selectedWallet?.connected;
+  const connected = !!selectedWallet;
 
   // variables
   const navigation = useAppNavigation();
