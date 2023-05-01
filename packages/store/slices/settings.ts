@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { Wallet } from "../../context/WalletsProvider";
 import { RootState } from "../store";
 
 interface Settings {
@@ -44,12 +43,21 @@ const settingsSlice = createSlice({
       state.selectedNetworkId = action.payload;
       state.selectedWalletId = "";
     },
-    setSelectedWallet: (state, action: PayloadAction<Wallet | undefined>) => {
+    setSelectedWallet: (
+      state,
+      action: PayloadAction<
+        | {
+            walletId: string;
+            networkId: string;
+          }
+        | undefined
+      >
+    ) => {
       if (!action.payload) {
         state.selectedWalletId = "";
         return;
       }
-      state.selectedWalletId = action.payload.id;
+      state.selectedWalletId = action.payload.walletId;
       state.selectedNetworkId = action.payload.networkId;
     },
     setKeplrConnectedNetworkId: (

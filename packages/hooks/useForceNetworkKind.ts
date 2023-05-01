@@ -3,7 +3,7 @@ import { useCallback } from "react";
 
 import { useSelectedNetworkInfo } from "./useSelectedNetwork";
 import { useSwitchNetwork } from "./useSwitchNetwork";
-import { NetworkKind, getNetwork, selectableNetworks } from "../networks";
+import { NetworkKind, selectableNetworks } from "../networks";
 
 export const useForceNetworkKind = (networkKind: NetworkKind | undefined) => {
   const selectedNetworkInfo = useSelectedNetworkInfo();
@@ -14,15 +14,15 @@ export const useForceNetworkKind = (networkKind: NetworkKind | undefined) => {
       return;
     }
 
-    // FIXME: this is bad
+    const validNetworks = selectableNetworks.filter(
+      (n) => n.kind === networkKind
+    );
+
     // use testnet if previous is testnet
-    const targetNetwork = selectedNetworkInfo
-      ? selectableNetworks.find(
-          (n) =>
-            n.testnet === getNetwork(selectedNetworkInfo.id)?.testnet &&
-            n.kind === networkKind
-        )
-      : selectableNetworks.find((n) => n.kind === networkKind);
+    const shouldFindTestnet = !!selectedNetworkInfo?.testnet;
+    const targetNetwork =
+      (shouldFindTestnet && validNetworks.find((n) => n.testnet === true)) ||
+      validNetworks[0];
 
     if (!targetNetwork) {
       return;

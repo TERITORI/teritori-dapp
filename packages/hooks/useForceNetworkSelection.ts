@@ -14,13 +14,11 @@ export const useForceNetworkSelection = (networkIds: string[] | undefined) => {
       return;
     }
 
-    // FIXME: dubious condition
-    // use testnet if previous is testnet
+    const shouldFindTestnet = !!getNetwork(selectedNetworkId)?.testnet;
     const targetNetworkId =
-      networkIds.find(
-        (id) =>
-          getNetwork(id)?.testnet === getNetwork(selectedNetworkId)?.testnet
-      ) || networkIds[0];
+      (shouldFindTestnet &&
+        networkIds.find((id) => getNetwork(id)?.testnet === true)) ||
+      networkIds[0];
 
     switchNetwork(targetNetworkId);
   }, [networkIds, selectedNetworkId, switchNetwork]);

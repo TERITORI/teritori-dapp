@@ -74,7 +74,9 @@ export const WalletsProvider: React.FC = React.memo(({ children }) => {
       return;
     }
 
-    setSelectedWallet(candidate);
+    setSelectedWallet(
+      candidate && { walletId: candidate.id, networkId: candidate.networkId }
+    );
   }, [selectedNetworkId, selectedWallet, wallets]);
 
   return (

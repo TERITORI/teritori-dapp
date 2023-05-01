@@ -63,7 +63,14 @@ export const WalletItem: React.FC<WalletItemProps> = ({
           <View>
             <TouchableOpacity
               onPress={() => {
-                dispatch(setSelectedWallet(wallet));
+                dispatch(
+                  setSelectedWallet(
+                    wallet && {
+                      walletId: wallet.id,
+                      networkId: wallet.networkId,
+                    }
+                  )
+                );
               }}
             >
               <BrandText>

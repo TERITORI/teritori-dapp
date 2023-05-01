@@ -33,7 +33,14 @@ export const useSwitchNetwork = () => {
       }
 
       if (targetWallet) {
-        dispatch(setSelectedWallet(targetWallet));
+        dispatch(
+          setSelectedWallet(
+            targetWallet && {
+              walletId: targetWallet.id,
+              networkId: targetWallet.networkId,
+            }
+          )
+        );
       } else {
         dispatch(setSelectedNetworkId(targetNetworkId));
       }

@@ -7,6 +7,8 @@ import { useSelector } from "react-redux";
 
 import { UseWalletProviderResult } from "./types";
 import { Wallet } from "./wallet";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
   NetworkKind,
   allNetworks,
@@ -16,14 +18,18 @@ import {
 import {
   selectKeplrConnectedNetworkId,
   setKeplrConnectedNetworkId,
+  setSelectedWallet,
 } from "../../store/slices/settings";
 import { useAppDispatch } from "../../store/store";
+import { convertCosmosAddress } from "../../utils/cosmos";
 import { WalletProvider } from "../../utils/walletProvider";
 
 export const useKeplrExtensionWallets: () => UseWalletProviderResult = () => {
   const keplrConnectedNetworkId = useSelector(selectKeplrConnectedNetworkId);
   const [hasKeplr, setHasKeplr] = useState(false);
   const dispatch = useAppDispatch();
+  const selectedNetworkId = useSelectedNetworkId();
+  const selectedWallet = useSelectedWallet();
 
   const [accounts, setAccounts] = useState<readonly AccountData[]>([]);
   const [ready, setReady] = useState(false);
@@ -54,14 +60,38 @@ export const useKeplrExtensionWallets: () => UseWalletProviderResult = () => {
         console.error("no keplr");
         return;
       }
+
+      // update connected addresses
       const signer = await getKeplrSigner(keplr, keplrConnectedNetworkId);
       const accounts = await signer.getAccounts();
       setAccounts(accounts);
+
+      // select correct wallet
+      // FIXME: find a more elegant way to do this
+      if (accounts.length) {
+        const addr = convertCosmosAddress(
+          accounts[0].address,
+          selectedNetworkId
+        );
+        const walletId = `keplr-${selectedNetworkId}-${addr}`;
+        dispatch(
+          setSelectedWallet({
+            walletId,
+            networkId: selectedNetworkId,
+          })
+        );
+      }
     };
     window.addEventListener("keplr_keystorechange", handleKeyChange);
     return () =>
       window.removeEventListener("keplr_keystorechange", handleKeyChange);
-  }, [hasKeplr, keplrConnectedNetworkId]);
+  }, [
+    dispatch,
+    hasKeplr,
+    keplrConnectedNetworkId,
+    selectedNetworkId,
+    selectedWallet,
+  ]);
 
   useEffect(() => {
     const effect = async () => {
