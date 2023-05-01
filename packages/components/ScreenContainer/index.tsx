@@ -8,7 +8,6 @@ import {
 } from "react-native";
 
 import { Header } from "./Header";
-import HeaderMessage from "./HeaderMessage";
 import { ScreenContainerMobile } from "./ScreenContainerMobile";
 import { useForceNetworkFeatures } from "../../hooks/useForceNetworkFeatures";
 import { useForceNetworkKind } from "../../hooks/useForceNetworkKind";
@@ -17,21 +16,27 @@ import { useIsMobile } from "../../hooks/useIsMobile";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { NetworkFeature, NetworkInfo, NetworkKind } from "../../networks";
 import { DAppStoreData } from "../../screens/DAppStore/components/DAppStoreData";
+import SideBarChats from "../../screens/Message/SideBarChats";
 import {
   getResponsiveScreenContainerMarginHorizontal,
   headerHeight,
   headerMarginHorizontal,
   screenContainerContentMarginHorizontal,
 } from "../../utils/style/layout";
+import { BrandText } from "../BrandText";
+import HeaderMessage from "../HeaderMessage";
 import { NetworkSelector } from "../NetworkSelector/NetworkSelector";
 import { SearchBar } from "../Search/SearchBar";
 import { SelectedNetworkGate } from "../SelectedNetworkGate";
 import { ConnectWalletButton } from "../TopMenu/ConnectWalletButton";
 import { Footer } from "../footers/Footer";
 import { Sidebar } from "../navigation/Sidebar";
+<<<<<<< HEAD
 import { CartIconButtonBadge } from "../navigation/components/CartIconButtonBadge";
 import { neutral33 } from "../../utils/style/colors";
 
+=======
+>>>>>>> b7ac9fe5 (add chat section)
 export const ScreenContainer: React.FC<{
   headerChildren?: JSX.Element;
   footerChildren?: React.ReactNode;
@@ -112,7 +117,9 @@ export const ScreenContainer: React.FC<{
         forceNetworkId={forceNetworkId}
         forceNetworkKind={forceNetworkKind}
         mobileTitle={mobileTitle}
-      />
+      >
+        <SideBarChats />
+      </ScreenContainerMobile>
     );
   /////////////// default returns
   return (
@@ -151,6 +158,7 @@ export const ScreenContainer: React.FC<{
                     >
                       {children}
                     </View>
+
                     {footerChildren ? footerChildren : <Footer />}
                   </ScrollView>
                 ) : (
@@ -158,6 +166,7 @@ export const ScreenContainer: React.FC<{
                     style={[styles.childrenContainer, marginStyle, { width }]}
                   >
                     {children}
+
                     {footerChildren ? footerChildren : <Footer />}
                   </View>
                 )}

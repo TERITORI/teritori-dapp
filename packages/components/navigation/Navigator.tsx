@@ -4,7 +4,6 @@ import React from "react";
 import { Platform } from "react-native";
 
 import { Sidebar } from "./Sidebar";
-import { ChatScreen } from "../../screens/Chat/ChatScreen";
 import { ComingSoonScreen } from "../../screens/ComingSoon/ComingSoon";
 import { CoreDAOScreen } from "../../screens/CoreDAO/CoreDAOScreen";
 import { DAppStoreScreen } from "../../screens/DAppStore/DAppStoreScreen";
@@ -24,6 +23,7 @@ import { CollectionToolsScreen } from "../../screens/Marketplace/CollectionTools
 import { MarketplaceScreen } from "../../screens/Marketplace/MarketplaceScreen";
 import { NFTDetailScreen } from "../../screens/Marketplace/NFTDetailScreen";
 import { MessageScreen } from "../../screens/Message/MessageScreen";
+import ChatSection from "../../screens/Message/MessengerGroupChat/ChatSection";
 import { MultisigCreateScreen } from "../../screens/Multisig/MultisigCreateScreen";
 import { MultisigScreen } from "../../screens/Multisig/MultisigScreen";
 import { MultisigWalletDashboardScreen } from "../../screens/Multisig/MultisigWalletDashboardScreen";
@@ -147,6 +147,14 @@ export const Navigator: React.FC = () => {
       <Stack.Screen
         name="RiotGameMarketplace"
         component={RiotGameMarketplaceScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Riot Game Marketplace"),
+        }}
+      />
+      <Stack.Screen
+        name="ChatSection"
+        component={ChatSection}
         options={{
           header: () => null,
           title: screenTitle("Riot Game Marketplace"),

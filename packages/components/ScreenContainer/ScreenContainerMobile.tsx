@@ -15,13 +15,15 @@ import { NetworkFeature, NetworkInfo, NetworkKind } from "../../networks";
 import { DAppStoreData } from "../../screens/DAppStore/components/DAppStoreData";
 import { neutral33, neutral77 } from "../../utils/style/colors";
 import { fontBold12 } from "../../utils/style/fonts";
-import { getMobileScreenContainerMarginHorizontal, layout, MOBILE_HEADER_HEIGHT } from "../../utils/style/layout";
+import {
+  getMobileScreenContainerMarginHorizontal,
+  layout,
+  MOBILE_HEADER_HEIGHT,
+} from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { SearchModalMobile } from "../Search/SearchModalMobile";
 import { SelectedNetworkGate } from "../SelectedNetworkGate";
 import { SidebarMobile } from "../navigation/SidebarMobile";
-
- 
 
 export const MobileTitle: FC<{ title: string }> = ({ title }) => {
   const { width: windowWidth } = useWindowDimensions();
@@ -62,7 +64,6 @@ export const ScreenContainerMobile: FC<{
   mobileTitle,
   onBackPress,
 }) => {
-  
   const { width } = useMaxResolution();
   const { isSearchModalMobileOpen, setSearchModalMobileOpen } = useSearchBar();
   const { height: windowHeight, width: windowWidth } = useWindowDimensions();
@@ -119,18 +120,33 @@ export const ScreenContainerMobile: FC<{
               ]}
             >
               {mobileTitle ? <MobileTitle title={mobileTitle} /> : null}
-              <View style={[styles.childrenContainer, { flex: 1, width,
-               marginHorizontal:
-               getMobileScreenContainerMarginHorizontal(windowWidth), }]}>
+              <View
+                style={[
+                  styles.childrenContainer,
+                  {
+                    flex: 1,
+                    width,
+                    marginHorizontal:
+                      getMobileScreenContainerMarginHorizontal(windowWidth),
+                  },
+                ]}
+              >
                 {children}
               </View>
               {/*TODO: Put here Riotters Footer ?*/}
             </ScrollView>
           ) : (
             <>
-              <View style={[styles.childrenContainer, { flex: 1,
-               marginHorizontal:
-               getMobileScreenContainerMarginHorizontal(windowWidth), }]}>
+              <View
+                style={[
+                  styles.childrenContainer,
+                  {
+                    flex: 1,
+                    marginHorizontal:
+                      getMobileScreenContainerMarginHorizontal(windowWidth),
+                  },
+                ]}
+              >
                 {children}
               </View>
             </>
