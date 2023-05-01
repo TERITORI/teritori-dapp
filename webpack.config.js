@@ -27,14 +27,6 @@ module.exports = async function (env, argv) {
     },
   });
 
-  // wallet connect issue https://github.com/WalletConnect/walletconnect-monorepo/issues/1349
-  config.module.rules.push({
-    test: /node_modules\/@walletconnect\/.+\.es.js/,
-    use: {
-      loader: "babel-loader",
-    },
-  });
-
   config.module.rules.forEach((rule) => {
     if (rule.oneOf) {
       rule.oneOf.unshift({
