@@ -1,7 +1,6 @@
 import "@draft-js-plugins/static-toolbar/lib/plugin.css";
 import "./inline-toolbar/lib/plugin.css";
 import "@draft-js-plugins/image/lib/plugin.css";
-
 import "./draftjs.css";
 import createLinkPlugin from "@draft-js-plugins/anchor";
 import {
@@ -24,13 +23,14 @@ import { convertToHTML } from "draft-convert";
 import {
   ContentBlock,
   ContentState,
-  convertFromHTML,
   DraftEntityType,
   EditorCommand,
   EditorState,
   getDefaultKeyBinding,
   Modifier,
+  RawDraftEntity,
 } from "draft-js";
+import htmlToDraft from "html-to-draftjs";
 import React, {
   KeyboardEvent,
   useEffect,
@@ -517,17 +517,45 @@ const styles = StyleSheet.create({
 
 /////////////// SOME FUNCTIONS ////////////////
 const createStateFromHTML = (html: string) => {
-  const blocksFromHTML = convertFromHTML(html);
-  const content = ContentState.createFromBlockArray(
-    blocksFromHTML.contentBlocks,
-    blocksFromHTML.entityMap
+  // We use htmlToDraft with a customChunkRenderer function because the default convertFromHTML from draft-js doesn't handle videos
+  //TODO: Maybe we can use this pattern to handling audio in RichText (Instead of adding audios under the RichText)
+  const blocksFromHTML = htmlToDraft(
+    html,
+    (nodeName: string, node: HTMLElement | any) => {
+      if (nodeName === "video") {
+        const entityConfig: any = {};
+        entityConfig.src = node.getAttribute
+          ? node.getAttribute("src") || node
+          : node.src;
+        entityConfig.alt = node.alt;
+        entityConfig.height = node.style.height;
+        entityConfig.width = node.style.width;
+        if (node.style.float) {
+          entityConfig.alignment = node.style.float;
+        }
+        const value: RawDraftEntity = {
+          type: VIDEOTYPE, // should similar to videoPlugin.type if use @draft-js-plugins/video
+          mutability: "IMMUTABLE",
+          data: entityConfig,
+        };
+        return value;
+      }
+    }
   );
-  return EditorState.createWithContent(content);
+  const { contentBlocks, entityMap } = blocksFromHTML;
+  const contentState = ContentState.createFromBlockArray(
+    contentBlocks,
+    entityMap
+  );
+  return EditorState.createWithContent(contentState);
 };
 
 const createHTMLFromState = (state: ContentState) =>
   convertToHTML({
     entityToHTML: (entity, originalText) => {
+      if (entity.type === VIDEOTYPE || entity.type === "VIDEO") {
+        return <video src={entity.data.src} controls />;
+      }
       if (entity.type === "IMAGE") {
         return <img src={entity.data.src} />;
       }
@@ -597,20 +625,20 @@ const getEntities = (
   editorState: EditorState,
   entityType?: DraftEntityType
 ) => {
-  const content = editorState.getCurrentContent();
+  const contentState = editorState.getCurrentContent();
   const entities: FoundEntity[] = [];
 
-  content.getBlocksAsArray().forEach((block) => {
+  contentState.getBlocksAsArray().forEach((block) => {
     let selectedEntity: SelectedEntity;
     block.findEntityRanges(
       (character) => {
         if (character.getEntity() !== null) {
-          const entity = content.getEntity(character.getEntity());
+          const entity = contentState.getEntity(character.getEntity());
           if (!entityType || (entityType && entity.getType() === entityType)) {
             selectedEntity = {
               entityKey: character.getEntity(),
               blockKey: block.getKey(),
-              entity: content.getEntity(character.getEntity()),
+              entity: contentState.getEntity(character.getEntity()),
             };
             return true;
           }
@@ -630,7 +658,7 @@ const getEntities = (
 const getFilesToPublish = (
   editorState: EditorState,
   files: LocalFileData[],
-  entityType: DraftEntityType
+  entityType?: DraftEntityType
 ) => {
   const entities = getEntities(editorState, entityType);
   const filesToPublish: LocalFileData[] = [];
