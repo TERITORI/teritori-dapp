@@ -4,15 +4,19 @@ import { RootState } from "../store";
 
 interface MarketplaceStorageType {
   selectedNFT: string[];
+  cartTotal: number;
 }
 
 const initialState: MarketplaceStorageType = {
   selectedNFT: [],
+  cartTotal: 0,
 };
 
 export const selectSelectedNFT = (state: RootState) => [
   ...new Set(state.marketplace.selectedNFT),
 ];
+export const selectCartTotal = (state: RootState) =>
+  state.marketplace.cartTotal;
 
 // state.marketplace.selectedNFT;
 
@@ -48,10 +52,21 @@ const marketplace = createSlice({
     clearSelected: (state) => {
       state.selectedNFT = [];
     },
+    addTotal: (state, action: PayloadAction<number>) => {
+      state.cartTotal = state.cartTotal + action.payload;
+    },
+    deductFromTotal: (state, action: PayloadAction<number>) => {
+      state.cartTotal = state.cartTotal - action.payload;
+    },
   },
 });
 
-export const { setSelectedNFT, removeSelected, clearSelected } =
-  marketplace.actions;
+export const {
+  setSelectedNFT,
+  removeSelected,
+  clearSelected,
+  addTotal,
+  deductFromTotal,
+} = marketplace.actions;
 
 export const marketplaceReducer = marketplace.reducer;

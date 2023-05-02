@@ -2,6 +2,7 @@ import { Decimal } from "@cosmjs/math";
 import Clipboard from "@react-native-clipboard/clipboard";
 import React, { useMemo } from "react";
 import { View, Platform, StyleSheet, Linking } from "react-native";
+import { useSelector } from "react-redux";
 
 import { CollectionStat } from "./CollectionStat";
 import { TabsListType } from "./types";
@@ -25,6 +26,7 @@ import {
   getNativeCurrency,
   parseCollectionId,
 } from "../../networks";
+import { selectSelectedNFT } from "../../store/slices/marketplaceReducer";
 import { CollectionInfo } from "../../utils/collection";
 import { codGrayColor, neutral33, neutral67 } from "../../utils/style/colors";
 import { fontSemibold28 } from "../../utils/style/fonts";
@@ -53,6 +55,7 @@ export const CollectionHeader: React.FC<{
   const { width } = useMaxResolution();
   const [network, collectionMintAddress] = parseCollectionId(collectionId);
   const { setToastSuccess } = useFeedbacks();
+  const selected = useSelector(selectSelectedNFT);
 
   const coins = useMemo(() => {
     if (!network?.id || !stats?.floorPrice) {
@@ -252,9 +255,9 @@ export const CollectionHeader: React.FC<{
           style={{
             height: "100%",
             paddingLeft: layout.padding_x2,
-            marginHorizontal: layout.padding_x2,
+            marginHorizontal: 1,
             backgroundColor: codGrayColor,
-            width: "76%",
+            width: selected.length > 0 ? "63%" : "78%",
           }}
           noUnderline
         />
@@ -271,6 +274,7 @@ export const CollectionHeader: React.FC<{
 const styles = StyleSheet.create({
   statRow: {
     flexDirection: "row",
+    flexWrap: "wrap",
     marginTop: layout.padding_x2_5,
     alignItems: "center",
     flex: 1,

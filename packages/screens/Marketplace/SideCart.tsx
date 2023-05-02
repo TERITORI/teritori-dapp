@@ -1,5 +1,5 @@
 import React from "react";
-import { FlatList, StyleProp, View, ViewStyle } from "react-native";
+import { FlatList, Pressable, StyleProp, View, ViewStyle } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { TrashIcon } from "react-native-heroicons/outline";
 import { useSelector } from "react-redux";
@@ -12,10 +12,11 @@ import { OptimizedImage } from "../../components/OptimizedImage";
 import { SVG } from "../../components/SVG";
 import { Separator } from "../../components/Separator";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
-import { SpacerRow } from "../../components/spacer";
 import { useNFTInfo } from "../../hooks/useNFTInfo";
 import {
   clearSelected,
+  removeSelected,
+  selectCartTotal,
   selectSelectedNFT,
 } from "../../store/slices/marketplaceReducer";
 import { useAppDispatch } from "../../store/store";
@@ -66,7 +67,7 @@ const Header: React.FC<{ items: any[]; onPress: () => void }> = ({
 
 const CartItems: React.FC<{ id: string }> = ({ id }) => {
   const { info } = useNFTInfo(id);
-
+  const dispatch = useAppDispatch();
   return info ? (
     <View>
       <View
@@ -97,7 +98,13 @@ const CartItems: React.FC<{ id: string }> = ({ id }) => {
             }}
           />
           <BrandText style={fontSemibold12}>{info?.name}</BrandText>
-          <TrashIcon size={10} color={neutralA3} />
+          <Pressable
+            onPress={() => {
+              dispatch(removeSelected(id));
+            }}
+          >
+            <TrashIcon size={10} color={neutralA3} />
+          </Pressable>
         </View>
         <Separator />
         <View
@@ -179,7 +186,7 @@ const Footer: React.FC<{ items: any[] }> = ({ items }) => {
       }}
     >
       <ItemTotal
-        textLeft={`Price (${items.length}`}
+        textLeft={`Price (${items.length})`}
         showLogo
         textRight={subTotal}
       />

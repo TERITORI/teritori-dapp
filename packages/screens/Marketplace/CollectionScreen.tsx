@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { useWindowDimensions, View } from "react-native";
+import { View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { clamp } from "react-native-redash";
+import { useSelector } from "react-redux";
 
 import { SideCart } from "./SideCart";
 import { SortDirection } from "../../api/marketplace/v1/marketplace";
@@ -13,6 +13,7 @@ import { TabsListType } from "../../components/collections/types";
 import { useCollectionInfo } from "../../hooks/useCollectionInfo";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { parseCollectionId } from "../../networks";
+import { selectSelectedNFT } from "../../store/slices/marketplaceReducer";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { neutral67 } from "../../utils/style/colors";
 import { fontSemibold20 } from "../../utils/style/fonts";
@@ -29,19 +30,19 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
   const [network] = parseCollectionId(id);
   const navigation = useAppNavigation();
   const { width } = useMaxResolution();
-  const SideCartWidth = 245;
+  const selected = useSelector(selectSelectedNFT);
+
+  const SideCartWidth = 245 + 10;
   // returns
   return (
     <ScreenContainer
       key={`Collection ${id}`} // this key is to reset the screen state when the id changes
-      fullWidth
       footerChildren={<></>}
       headerChildren={
         <BrandText style={fontSemibold20}>
           {info.name && `${info.name} Collection Profile`}
         </BrandText>
       }
-      noMargin
       responsive
       noScroll
       onBackPress={() => navigation.navigate("Marketplace")}
@@ -54,15 +55,9 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
         }}
       >
         <ScrollView
-          style={
-            {
-              // width: 600,
-              //clamp(width - SideCartWidth, SideCartWidth, width)
-            }
-          }
           contentContainerStyle={{
             alignItems: "center",
-            width: clamp(width + SideCartWidth, SideCartWidth, width),
+            width: selected.length > 0 ? width - SideCartWidth : width,
           }}
         >
           <CollectionHeader
@@ -83,7 +78,7 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
         <SideCart
           style={{
             position: "absolute",
-            right: 135,
+            right: -10,
             marginTop: 36,
             flexDirection: "column",
             width: 245,
