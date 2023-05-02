@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
-import { TouchableOpacity, View } from "react-native";
+import { Platform, TouchableOpacity, View } from "react-native";
 
 import add from "../../../assets/icons/add-circle-filled.svg";
 import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
@@ -13,6 +13,7 @@ import ConversationData from "../../components/sidebarchat/ConversationData";
 import Searchbar from "../../components/sidebarchat/Searchbar";
 import SideBarChatConversation from "../../components/sidebarchat/SideBarChatConversation";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
+import { useAppNavigation } from "../../utils/navigation";
 import {
   primaryColor,
   secondaryColor,
@@ -21,7 +22,7 @@ import {
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 const SideBarChats: React.FC = () => {
-  const navigation = useNavigation();
+  const navigation = useAppNavigation();
   return (
     <View style={{ paddingHorizontal: layout.padding_x2 }}>
       <SpacerColumn size={2} />
@@ -61,7 +62,13 @@ const SideBarChats: React.FC = () => {
       <Separator horizontal={false} color={neutral22} />
 
       {ConversationData.map((item) => (
-        <TouchableOpacity onPress={() => navigation.navigate("ChatSection")}>
+        <TouchableOpacity
+          onPress={() =>
+            ["android", "ios"].includes(Platform.OS)
+              ? navigation.navigate("ChatSection")
+              : null
+          }
+        >
           <SideBarChatConversation
             avatar={item.avatar}
             name={item.name}

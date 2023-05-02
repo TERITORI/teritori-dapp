@@ -56,7 +56,7 @@ const screenTitle = (title: string) => "Teritori - " + title;
 export const Navigator: React.FC = () => {
   return (
     <Drawer.Navigator
-      initialRouteName="Home"
+      initialRouteName="Message"
       drawerContent={(props) =>
         Platform.OS === "web" ? null : <Sidebar {...props} expanded />
       }

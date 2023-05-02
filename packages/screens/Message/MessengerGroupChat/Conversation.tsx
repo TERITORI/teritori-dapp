@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
+import MessagePopup from "./MessagePopup";
 import avatar from "../../../../assets/icons/avatar.svg";
 import { SVG } from "../../../components/SVG";
-import MessagePopup from "./MessagePopup";
 interface IChatMessageProps {
   message: string;
   isSender: boolean;
@@ -58,7 +58,7 @@ export default ChatMessage;
 const styles = StyleSheet.create({
   senderWrapper: {
     flexDirection: "row",
-
+    flex: 1,
     marginBottom: 40,
   },
   receiverWrapper: {
