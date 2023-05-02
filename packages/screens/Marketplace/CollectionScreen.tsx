@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { View } from "react-native";
+import { useWindowDimensions, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import { clamp } from "react-native-redash";
 
 import { SideCart } from "./SideCart";
 import { SortDirection } from "../../api/marketplace/v1/marketplace";
@@ -10,6 +11,7 @@ import { CollectionContent } from "../../components/collections/CollectionConten
 import { CollectionHeader } from "../../components/collections/CollectionHeader";
 import { TabsListType } from "../../components/collections/types";
 import { useCollectionInfo } from "../../hooks/useCollectionInfo";
+import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { parseCollectionId } from "../../networks";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { neutral67 } from "../../utils/style/colors";
@@ -26,7 +28,8 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
   );
   const [network] = parseCollectionId(id);
   const navigation = useAppNavigation();
-
+  const { width } = useMaxResolution();
+  const SideCartWidth = 245;
   // returns
   return (
     <ScreenContainer
@@ -51,8 +54,16 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
         }}
       >
         <ScrollView
-          style={{ width: "100%" }}
-          contentContainerStyle={{ alignItems: "center" }}
+          style={
+            {
+              // width: 600,
+              //clamp(width - SideCartWidth, SideCartWidth, width)
+            }
+          }
+          contentContainerStyle={{
+            alignItems: "center",
+            width: clamp(width + SideCartWidth, SideCartWidth, width),
+          }}
         >
           <CollectionHeader
             collectionId={id}
@@ -75,7 +86,7 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
             right: 135,
             marginTop: 36,
             flexDirection: "column",
-            width: 200,
+            width: 245,
             marginBottom: layout.padding_x2_5,
             borderRadius: layout.padding_x2,
             borderColor: neutral67,

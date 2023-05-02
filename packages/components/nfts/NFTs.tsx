@@ -59,9 +59,13 @@ export const NFTs: React.FC<{
           maxWidth: screenContentMaxWidthLarge,
           alignSelf: "center",
         }}
+        columnWrapperStyle={{ flexWrap: "wrap", flex: 1, marginTop: 5 }}
+        numColumns={99} // needed to deal with wrap via css
+        ItemSeparatorComponent={() => (
+          <View style={{ height: layout.padding_x1 }} />
+        )}
         key={numColumns}
         data={nfts}
-        numColumns={numColumns}
         onEndReached={handleEndReached}
         keyExtractor={keyExtractor}
         // onEndReachedThreshold={4}
@@ -74,7 +78,6 @@ export const NFTs: React.FC<{
             />
           );
         }}
-        ItemSeparatorComponent={() => <SpacerColumn size={2} />}
         //ListHeaderComponent={ListHeaderComponent}
         //ListFooterComponent={ListFooterComponent}
         removeClippedSubviews

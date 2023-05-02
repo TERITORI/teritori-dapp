@@ -138,7 +138,9 @@ export const CollectionHeader: React.FC<{
   return width > 0 ? (
     <View
       style={{
-        maxWidth: width,
+        // maxWidth: width,
+        width: "100%",
+
         alignSelf: "center",
         marginTop: layout.padding_x4,
       }}
@@ -237,7 +239,7 @@ export const CollectionHeader: React.FC<{
           flexDirection: "row",
           justifyContent: "space-between",
           marginBottom: layout.padding_x4,
-          width,
+          width: "100%",
         }}
       >
         <FilterButton
