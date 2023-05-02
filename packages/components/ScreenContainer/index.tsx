@@ -32,11 +32,17 @@ import { ConnectWalletButton } from "../TopMenu/ConnectWalletButton";
 import { Footer } from "../footers/Footer";
 import { Sidebar } from "../navigation/Sidebar";
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { CartIconButtonBadge } from "../navigation/components/CartIconButtonBadge";
 import { neutral33 } from "../../utils/style/colors";
 
 =======
 >>>>>>> b7ac9fe5 (add chat section)
+=======
+import { Header } from "./Header";
+import { ScreenContainerMobile } from "./ScreenContainerMobile";
+import { SearchBar } from "./SearchBar";
+>>>>>>> 72aa04f9 (Add chat message)
 export const ScreenContainer: React.FC<{
   headerChildren?: JSX.Element;
   footerChildren?: React.ReactNode;
@@ -117,9 +123,7 @@ export const ScreenContainer: React.FC<{
         forceNetworkId={forceNetworkId}
         forceNetworkKind={forceNetworkKind}
         mobileTitle={mobileTitle}
-      >
-        <SideBarChats />
-      </ScreenContainerMobile>
+      />
     );
   /////////////// default returns
   return (

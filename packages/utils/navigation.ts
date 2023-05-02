@@ -3,6 +3,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React from "react";
 
 import { NewPostFormValues } from "../components/socialFeed/NewsFeed/NewsFeed.type";
+import { PickByValue } from "./types/helper";
 
 export type RouteName = keyof RootStackParamList;
 
