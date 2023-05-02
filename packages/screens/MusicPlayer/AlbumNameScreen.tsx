@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { View, StyleSheet, Pressable, Image } from "react-native";
-
+import { MediaPlayer } from "../../components/MusicPlayer/MediaPlayer";
 import Add from "../../../assets/music-player/add.svg";
 import MorePrimary from "../../../assets/music-player/more-primary.svg";
 import MoreSecondary from "../../../assets/music-player/more-secondary.svg";
@@ -15,7 +15,7 @@ import { MusicPlayerTab } from "../../components/MusicPlayer/MusicPlayerTab";
 import { TrackHoverMenu } from "../../components/MusicPlayer/TrackHoverMenu";
 import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
-import { musicplayerClient } from "../../utils/backend";
+import { mustGetMusicplayerClient } from "../../utils/backend";
 import { ipfsPinataUrl } from "../../utils/ipfs";
 import { ScreenFC } from "../../utils/navigation";
 import { neutral77, neutral17, primaryColor } from "../../utils/style/colors";
@@ -26,12 +26,17 @@ import {
   fontSemibold20,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import { useMusicplayer } from "../../context/MusicplayerProvider";
+
 
 export const AlbumNameScreen: ScreenFC<"AlbumName"> = ({
   route: {
     params: { id },
   },
 }) => {
+
+  const selectedNetworkId = useSelectedNetworkId();
   const [albumInfo, setAlbumInfo] = useState<AlbumInfo>({
     id: 0,
     name: "",
@@ -42,13 +47,13 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = ({
 
   useEffect(() => {
     const getAlbumInfo = async () => {
-      const res = await musicplayerClient.getAlbum({ id });
+      const res = await mustGetMusicplayerClient(selectedNetworkId).getAlbum({ id });
       if (res.album) {
         setAlbumInfo(res.album);
       }
     };
     getAlbumInfo();
-  });
+  },[id]);
 
   const initIndexHoverState = {
     index: 0,
@@ -241,22 +246,24 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = ({
     },
   });
 
-  const [audioSrc, setAudioSrc] = useState("");
-  const [audioIsPlay, setAudioIsPlay] = useState<boolean>(false);
-  const audioRef = useRef<HTMLAudioElement>(null);
-
+  // const [audioSrc, setAudioSrc] = useState("");
+  // const [audioIsPlay, setAudioIsPlay] = useState<boolean>(false);
+  // const audioRef = useRef<HTMLAudioElement>(null);
+  const { setAudioSrc, setIsPlay} = useMusicplayer();
   const playAudio = () => {
     if (albumInfo.musics.length > 0) {
       setAudioSrc(ipfsPinataUrl(albumInfo.musics[0].ipfs));
-      setAudioIsPlay(true);
+      setIsPlay(true);
+      // setAudioSrc(ipfsPinataUrl(albumInfo.musics[0].ipfs));
+      // setAudioIsPlay(true);
     }
   };
 
-  useEffect(() => {
-    if (audioIsPlay && audioSrc && audioRef.current) {
-      audioRef.current.play();
-    }
-  }, [audioIsPlay, audioRef, audioSrc]);
+  // useEffect(() => {
+  //   if (audioIsPlay && audioSrc && audioRef.current) {
+  //     audioRef.current.play();
+  //   }
+  // }, [audioIsPlay, audioRef, audioSrc]);
 
   return (
     <ScreenContainer
@@ -264,7 +271,7 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = ({
       fullWidth
     >
       <View style={styles.pageConatiner}>
-        <MusicPlayerTab />
+        <MusicPlayerTab setTab={()=>{}}/>
 
         <View style={styles.albumBox}>
           <View style={styles.infoBox}>
@@ -303,7 +310,7 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = ({
                     Tip this album
                   </BrandText>
                 </Pressable>
-                <audio id="audio" src={audioSrc} ref={audioRef} controls />
+                {/* <audio id="audio" src={audioSrc} ref={audioRef} controls /> */}
               </View>
             </View>
           </View>
@@ -407,6 +414,7 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = ({
           })}
         </View>
       </View>
+      <MediaPlayer />
     </ScreenContainer>
   );
 };

@@ -25,6 +25,7 @@ import { TransactionModalsProvider } from "./packages/context/TransactionModalsP
 import { WalletsProvider } from "./packages/context/WalletsProvider";
 import { store } from "./packages/store/store";
 import { linking } from "./packages/utils/navigation";
+import { MusicplayerContextProvider } from "./packages/context/MusicplayerProvider";
 
 const queryClient = new QueryClient();
 
@@ -61,8 +62,10 @@ export default function App() {
                           <TNSMetaDataListContextProvider>
                             <MenuProvider>
                               <SidebarContextProvider>
-                                <StatusBar style="inverted" />
-                                <Navigator />
+                                  <MusicplayerContextProvider>
+                                    <StatusBar style="inverted" />
+                                    <Navigator />
+                                  </MusicplayerContextProvider>
                               </SidebarContextProvider>
                             </MenuProvider>
                           </TNSMetaDataListContextProvider>

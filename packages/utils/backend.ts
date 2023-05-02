@@ -8,6 +8,7 @@ import {
   GrpcWebImpl as MarketplaceGrpcWebImpl,
   MarketplaceService,
 } from "../api/marketplace/v1/marketplace";
+import { MusicplayerService } from "../api/musicplayer/v1/musicplayer";
 import {
   MusicplayerServiceClientImpl,
   GrpcWebImpl as MusicplayerGrpcWebImpl,
@@ -93,19 +94,43 @@ export const mustGetFeedClient = (networkId: string | undefined) => {
   return client;
 };
 
-const musicplayerBackendEndpoint =
-  process.env.TERITORI_MUSICPLAYER_BACKEND_ENDPOINT;
-
-if (!musicplayerBackendEndpoint) {
-  throw new Error("missing TERITORI_MUSICPLAYER_BACKEND_ENDPOINT in env");
+const musicplayerClients: { [key: string]: MusicplayerService } = {};
+export const getMusicplayerClient = (networkId: string | undefined) => {
+  const network = getNetwork(networkId);
+  if (!network) {
+    return undefined;
+  }
+  if (!musicplayerClients[network.id]) {
+    // const backendEndpoint = network.backendEndpoint;
+    const backendEndpoint = process.env.TERITORI_MUSICPLAYER_BACKEND_ENDPOINT!;
+    const rpc = new MusicplayerGrpcWebImpl(backendEndpoint, {
+      debug: false
+    });
+    musicplayerClients[network.id] = new MusicplayerServiceClientImpl(rpc);
+  }
+  return musicplayerClients[network.id];
 }
 
-const musicplayerRpc = new MusicplayerGrpcWebImpl(musicplayerBackendEndpoint, {
-  transport: grpc.WebsocketTransport(),
-  debug: false,
-  // metadata: new grpc.Metadata({ SomeHeader: "bar" }),
-});
+export const mustGetMusicplayerClient = (networkId: string | undefined) => {
+  const client = getMusicplayerClient(networkId);
+  if (!client) {
+    throw new Error(`failed to get musicplayer client for network '${networkId}'`);
+  }
+  return client;
+}
+// const musicplayerBackendEndpoint =
+//   process.env.TERITORI_MUSICPLAYER_BACKEND_ENDPOINT;
 
-export const musicplayerClient = new MusicplayerServiceClientImpl(
-  musicplayerRpc
-);
+// if (!musicplayerBackendEndpoint) {
+//   throw new Error("missing TERITORI_MUSICPLAYER_BACKEND_ENDPOINT in env");
+// }
+
+// const musicplayerRpc = new MusicplayerGrpcWebImpl(musicplayerBackendEndpoint, {
+//   transport: grpc.WebsocketTransport(),
+//   debug: false,
+//   // metadata: new grpc.Metadata({ SomeHeader: "bar" }),
+// });
+
+// export const musicplayerClient = new MusicplayerServiceClientImpl(
+//   musicplayerRpc
+// );

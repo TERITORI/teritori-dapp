@@ -14,7 +14,7 @@ import List from "../../../assets/music-player/list.svg";
 import Remove from "../../../assets/music-player/remove.svg";
 import Upload from "../../../assets/music-player/upload.svg";
 import { UploadFileInfo } from "../../screens/MusicPlayer/types";
-import { musicplayerClient } from "../../utils/backend";
+import { mustGetMusicplayerClient } from "../../utils/backend";
 import { uploadFileToIPFS, ipfsPinataUrl } from "../../utils/ipfs";
 import {
   neutral17,
@@ -30,6 +30,7 @@ import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { PrimaryButton } from "../buttons/PrimaryButton";
 import ModalBase from "../modals/ModalBase";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 
 interface AlbumInfo {
   name: string;
@@ -54,9 +55,11 @@ export const UploadAlbumModal: React.FC<UploadAlbumModalProps> = ({
     description: "",
     image: "",
   });
+  const selectedNetworkId = useSelectedNetworkId();
   const uploadAlbum = async () => {
     if (!albumInfo) return;
-    const res = await musicplayerClient.uploadAlbum({
+    const client = mustGetMusicplayerClient(selectedNetworkId);
+    const res = await client.uploadAlbum({
       name: albumInfo.name,
       description: albumInfo.description,
       image: albumInfo.image,
@@ -65,7 +68,7 @@ export const UploadAlbumModal: React.FC<UploadAlbumModalProps> = ({
     //uploaded images to backend
     for (let i = 0; i < uploadFiles.length; i++) {
       const item = uploadFiles[i];
-      await musicplayerClient.uploadMusic({
+      await client.uploadMusic({
         albumId,
         name: item.name,
         duration: 100,
