@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 import { View, Pressable, StyleSheet } from "react-native";
 
 import Add from "../../../assets/media-player/add.svg";
@@ -23,11 +23,7 @@ import { useMusicplayer } from "../../context/MusicplayerProvider";
 
 export const MediaPlayer: React.FC = () => {
   const audioRef = useRef<HTMLAudioElement>(null);
-  const {audioSrc, setAudioSrc, isPlay, setIsPlay} = useMusicplayer();
-
-  // useEffect(()=>{
-  //   setAudioSrc(src);
-  // },[]);
+  const {audioSrc, isPlay, setIsPlay} = useMusicplayer();
 
   useEffect(()=>{
     if (isPlay && audioRef.current && audioSrc) {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Pressable, Image } from "react-native";
 import { MediaPlayer } from "../../components/MusicPlayer/MediaPlayer";
 import Add from "../../../assets/music-player/add.svg";

@@ -29,7 +29,6 @@ export const MusicPlayerMyLibraryContent: React.FC = () => {
   const otherAlbumsData = Array(8).fill(unitAlbumData);
 
   const [openUploadModal, setOpenUploadModal] = useState<boolean>(false);
-  // const [openAlbumInfoModal, setOpenAlbumInfoModal] = useState<boolean>(false);
 
   const styles = StyleSheet.create({
     container: {
