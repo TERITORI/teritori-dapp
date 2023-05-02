@@ -27,7 +27,7 @@ export const RightRail = ({ searchInput }: { searchInput: string }) => {
       {availableApps
         ? Object.values(availableApps).map((element, index) => {
             return element.active ? (
-              <View key={index}>
+              <View key={element.id}>
                 <View
                   style={{
                     flexDirection: "row",
@@ -38,7 +38,6 @@ export const RightRail = ({ searchInput }: { searchInput: string }) => {
                 >
                   <SVGorImageIcon
                     icon={element.icon}
-                    key={element.id}
                     iconSize={24}
                     style={{
                       marginRight: layout.padding_x1_5,
