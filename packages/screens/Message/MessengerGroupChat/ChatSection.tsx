@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   Image,
   Modal,
-  Pressable,
+  ScrollView,
 } from "react-native";
 
 import ChatData from "./ChatData";
@@ -14,7 +14,6 @@ import ChatHeader from "./ChatHeader";
 import ChatMessage from "./Conversation";
 import plus from "../../../../assets/icons/chatplus.svg";
 import close from "../../../../assets/icons/close.svg";
-import farwardto from "../../../../assets/icons/farwardto.svg";
 import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
 import { ScreenContainer } from "../../../components/ScreenContainer";
@@ -24,11 +23,7 @@ import { FileUploader } from "../../../components/fileUploader";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { IMAGE_MIME_TYPES } from "../../../utils/mime";
-import {
-  additionalRed,
-  gradientColorBlue,
-  neutral33,
-} from "../../../utils/style/colors";
+import { additionalRed, neutral33 } from "../../../utils/style/colors";
 import { LocalFileData } from "../../../utils/types/feed";
 
 interface IMessage {
@@ -60,192 +55,198 @@ const ChatSection = () => {
   };
 
   return (
-    <View style={{ position: "relative" }}>
-      <View style={{ zIndex: 11111 }}>
-        <ChatHeader
-          messages={messages}
-          searchInput={searchInput}
-          setSearchInput={setSearchInput}
-        />
-      </View>
-      <Separator color={neutral33} />
-      <View style={styles.container}>
-        <SpacerColumn size={3} />
-
-        {messages.map((msg, index) => (
-          <ChatMessage
-            key={index}
-            message={msg.message}
-            isSender={msg.isSender}
-            time={msg.time}
-            receiverName={msg.isSender ? undefined : msg.name}
+    <ScreenContainer>
+      <View style={{ position: "relative" }}>
+        <View style={{ zIndex: 11111 }}>
+          <ChatHeader
+            messages={messages}
+            searchInput={searchInput}
+            setSearchInput={setSearchInput}
           />
-        ))}
-        <SpacerColumn size={3} />
-
-        <View style={styles.textInputContainer}>
-          {showAttachmentModal && !thumbnailFile ? (
-            <FileUploader
-              onUpload={(files) => {
-                setThumbnailFile(files[0]);
-              }}
-              mimeTypes={IMAGE_MIME_TYPES}
-            >
-              {({ onPress }) => (
-                <View style={styles.attachmentModal}>
-                  <TouchableOpacity
-                    style={styles.attachmentItem}
-                    // onPress={() => handleAttachment("file")}
-                    onPress={onPress}
-                  >
-                    <Text style={styles.attach}>Attach file</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.attachmentItem}
-                    // onPress={() => handleAttachment("image")}
-                    onPress={onPress}
-                  >
-                    <Text style={styles.attach}>Attach image/video</Text>
-                  </TouchableOpacity>
-                </View>
-              )}
-            </FileUploader>
-          ) : null}
-
-          {thumbnailFile ? (
-            <Modal visible={visible} animationType="none" transparent>
-              <View
-                style={{
-                  flex: 1,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  backgroundColor: "rgba(0, 0, 0, 0.8)",
+        </View>
+        <Separator color={neutral33} />
+        <View style={styles.container}>
+          <SpacerColumn size={3} />
+          <ScrollView>
+            {messages.map((msg, index) => (
+              <ChatMessage
+                key={index}
+                message={msg.message}
+                isSender={msg.isSender}
+                time={msg.time}
+                receiverName={msg.isSender ? undefined : msg.name}
+              />
+            ))}
+          </ScrollView>
+          <SpacerColumn size={3} />
+          <View style={styles.textInputContainer}>
+            {showAttachmentModal && !thumbnailFile ? (
+              <FileUploader
+                onUpload={(files) => {
+                  setThumbnailFile(files[0]);
                 }}
+                mimeTypes={IMAGE_MIME_TYPES}
               >
-                <TertiaryBox
-                  mainContainerStyle={{
-                    minWidth: showImage ? 300 : 200,
-                    minHeight: showImage ? 400 : 200,
-                    maxWidth: showImage ? 300 : 350,
-                    flex: 1,
-                  }}
-                >
-                  <View
-                    style={{
-                      flex: 1,
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                      width: "100%",
-                      padding: 10,
-                    }}
-                  >
-                    <View>
-                      <FlexRow>
-                        <TouchableOpacity onPress={() => setShowImage(true)}>
-                          <Image
-                            source={require("../../../../assets/icons/image.png")}
-                            style={{ height: 30, width: 30 }}
-                          />
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => setShowImage(false)}>
-                          <Image
-                            source={require("../../../../assets/icons/closeimage.png")}
-                            style={{ height: 30, width: 30 }}
-                          />
-                        </TouchableOpacity>
-                      </FlexRow>
-                    </View>
-                    <TouchableOpacity onPress={() => setVisible(!visible)}>
-                      <SVG source={close} height={20} width={20} />
+                {({ onPress }) => (
+                  <View style={styles.attachmentModal}>
+                    <TouchableOpacity
+                      style={styles.attachmentItem}
+                      // onPress={() => handleAttachment("file")}
+                      onPress={onPress}
+                    >
+                      <Text style={styles.attach}>Attach file</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.attachmentItem}
+                      // onPress={() => handleAttachment("image")}
+                      onPress={onPress}
+                    >
+                      <Text style={styles.attach}>Attach image/video</Text>
                     </TouchableOpacity>
                   </View>
-                  {showImage ? (
-                    <View
-                      style={{
-                        backgroundColor: additionalRed,
-                        width: "90%",
-                        borderRadius: 6,
-                      }}
-                    >
-                      <Image
-                        source={{ uri: thumbnailFile.url }}
-                        style={styles.image}
-                        resizeMode="cover"
-                      />
-                    </View>
-                  ) : (
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        width: "100%",
-                        padding: 20,
-                      }}
-                    >
-                      <Image
-                        source={{ uri: thumbnailFile.url }}
-                        style={styles.imagesmall}
-                        resizeMode="stretch"
-                      />
-                      <Text
-                        style={{ color: "red", marginLeft: 10, width: "60%" }}
-                      >
-                        {thumbnailFile.fileName}:
-                      </Text>
-                    </View>
-                  )}
+                )}
+              </FileUploader>
+            ) : null}
 
-                  <SpacerColumn size={2} />
-                  <View style={{ flex: 1, width: "100%" }}>
-                    <TextInputCustom
-                      noBrokenCorners
-                      fullWidth
-                      squaresBackgroundColor="red"
-                      name="message"
-                      placeHolder="Type your Message"
-                      value={newMessage}
-                      onChangeText={setNewMessage}
+            {thumbnailFile ? (
+              <Modal visible={visible} animationType="none" transparent>
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    backgroundColor: "rgba(0, 0, 0, 0.8)",
+                  }}
+                >
+                  <TertiaryBox
+                    mainContainerStyle={{
+                      minWidth: showImage ? 300 : 200,
+                      minHeight: showImage ? 400 : 200,
+                      maxWidth: showImage ? 300 : 350,
+                      flex: 1,
+                    }}
+                  >
+                    <View
+                      style={{
+                        flex: 1,
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        width: "100%",
+                        padding: 10,
+                      }}
                     >
-                      <TouchableOpacity onPress={handleSend}>
-                        <Image
-                          style={styles.sendButton}
-                          source={require("../../../../assets/icons/sent.png")}
-                        />
+                      <View>
+                        <FlexRow>
+                          <TouchableOpacity onPress={() => setShowImage(true)}>
+                            <Image
+                              source={require("../../../../assets/icons/image.png")}
+                              style={{ height: 30, width: 30 }}
+                            />
+                          </TouchableOpacity>
+                          <TouchableOpacity onPress={() => setShowImage(false)}>
+                            <Image
+                              source={require("../../../../assets/icons/closeimage.png")}
+                              style={{ height: 30, width: 30 }}
+                            />
+                          </TouchableOpacity>
+                        </FlexRow>
+                      </View>
+                      <TouchableOpacity onPress={() => setVisible(!visible)}>
+                        <SVG source={close} height={20} width={20} />
                       </TouchableOpacity>
-                    </TextInputCustom>
-                  </View>
-                </TertiaryBox>
-              </View>
-            </Modal>
-          ) : null}
-          {/* <UploadImage
+                    </View>
+                    {showImage ? (
+                      <View
+                        style={{
+                          backgroundColor: additionalRed,
+                          width: "90%",
+                          borderRadius: 6,
+                        }}
+                      >
+                        <Image
+                          source={{ uri: thumbnailFile.url }}
+                          style={styles.image}
+                          resizeMode="cover"
+                        />
+                      </View>
+                    ) : (
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          width: "100%",
+                          padding: 20,
+                        }}
+                      >
+                        <Image
+                          source={{ uri: thumbnailFile.url }}
+                          style={styles.imagesmall}
+                          resizeMode="stretch"
+                        />
+                        <Text
+                          style={{
+                            color: "red",
+                            marginLeft: 10,
+                            width: "60%",
+                          }}
+                        >
+                          {thumbnailFile.fileName}:
+                        </Text>
+                      </View>
+                    )}
+
+                    <SpacerColumn size={2} />
+                    <View style={{ flex: 1, width: "100%" }}>
+                      <TextInputCustom
+                        noBrokenCorners
+                        fullWidth
+                        squaresBackgroundColor="red"
+                        name="message"
+                        placeHolder="Type your Message"
+                        value={newMessage}
+                        onChangeText={setNewMessage}
+                      >
+                        <TouchableOpacity onPress={handleSend}>
+                          <Image
+                            style={styles.sendButton}
+                            source={require("../../../../assets/icons/sent.png")}
+                          />
+                        </TouchableOpacity>
+                      </TextInputCustom>
+                    </View>
+                  </TertiaryBox>
+                </View>
+              </Modal>
+            ) : null}
+            {/* <UploadImage
             showAttachmentModal={showAttachmentModal}
             setShowAttachmentModal={setShowAttachmentModal}
           /> */}
 
-          <TextInputCustom
-            name="message"
-            placeHolder="Add a Message"
-            value={newMessage}
-            onChangeText={setNewMessage}
-            iconActions={
-              <TouchableOpacity onPress={() => setShowAttachmentModal(true)}>
-                <View style={{ marginRight: 10 }}>
-                  <SVG source={plus} color="red" />
-                </View>
+            <TextInputCustom
+              name="message"
+              placeHolder="Add a Message"
+              value={newMessage}
+              onChangeText={setNewMessage}
+              iconActions={
+                <TouchableOpacity onPress={() => setShowAttachmentModal(true)}>
+                  <View style={{ marginRight: 10 }}>
+                    <SVG source={plus} />
+                  </View>
+                </TouchableOpacity>
+              }
+            >
+              <TouchableOpacity onPress={handleSend}>
+                <Image
+                  style={styles.sendButton}
+                  source={require("../../../../assets/icons/sent.png")}
+                />
               </TouchableOpacity>
-            }
-          >
-            <TouchableOpacity onPress={handleSend}>
-              <Image
-                style={styles.sendButton}
-                source={require("../../../../assets/icons/sent.png")}
-              />
-            </TouchableOpacity>
-          </TextInputCustom>
+            </TextInputCustom>
+          </View>
         </View>
       </View>
-    </View>
+    </ScreenContainer>
   );
 };
 

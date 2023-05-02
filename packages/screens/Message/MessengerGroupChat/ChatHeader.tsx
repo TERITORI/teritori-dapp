@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
+import { View, StyleSheet, Image, TouchableOpacity } from "react-native";
 
+import Calendars from "./Calendar";
 import avatar from "../../../../assets/icons/avatar.svg";
 import calender from "../../../../assets/icons/calendar.svg";
 import close from "../../../../assets/icons/close.svg";
@@ -11,13 +12,19 @@ import { SVG } from "../../../components/SVG";
 import { Separator } from "../../../components/Separator";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
-import { neutral17, neutral33 } from "../../../utils/style/colors";
+import {
+  neutral17,
+  neutral33,
+  neutralA3,
+  secondaryColor,
+  neutral55,
+  successColor,
+} from "../../../utils/style/colors";
 import {
   fontSemibold13,
   fontSemibold11,
   fontMedium10,
 } from "../../../utils/style/fonts";
-import Calendars from "./Calendar";
 const ChatHeader = ({ messages }: any) => {
   console.log(messages);
   const [showTextInput, setShowTextInput] = useState(false);
@@ -49,34 +56,42 @@ const ChatHeader = ({ messages }: any) => {
     <>
       <View style={styles.container}>
         <View style={{ flexDirection: "row" }}>
-          <View>
-            <Image
-              source={require("../../../../assets/icons/groupicon.png")}
-              style={{ width: 40, height: 40 }}
-            />
-          </View>
+          <Image
+            source={require("../../../../assets/icons/groupicon.png")}
+            style={{ width: 32, height: 32 }}
+          />
+
           <SpacerRow size={1} />
           <View>
-            <Text style={styles.groupName}>Office group</Text>
+            <BrandText style={[fontSemibold13, { color: secondaryColor }]}>
+              Office group
+            </BrandText>
             <FlexRow>
               <View>
                 <FlexRow>
                   <View style={styles.badge} />
                   <SpacerRow size={1} />
-                  <Text style={styles.status}>2 Online</Text>
+                  <BrandText style={[fontSemibold11, { color: neutralA3 }]}>
+                    2 Online
+                  </BrandText>
                 </FlexRow>
               </View>
+
               <SpacerRow size={1} />
+
               <View>
                 <FlexRow>
                   <View style={styles.offlinebadge} />
                   <SpacerRow size={1} />
-                  <Text style={styles.status}>3 Offline</Text>
+                  <BrandText style={[fontSemibold11, { color: neutralA3 }]}>
+                    3 Offline
+                  </BrandText>
                 </FlexRow>
               </View>
             </FlexRow>
           </View>
         </View>
+
         <View
           style={{
             flexDirection: "row",
@@ -90,10 +105,9 @@ const ChatHeader = ({ messages }: any) => {
                   placeHolder="Search..."
                   value={searchInput}
                   onChangeText={handleMessageSearch}
-                  iconSVG={search}
-                  iconStyle={{ width: 20, height: 40 }}
                   height={30}
                   noBrokenCorners
+                  width={["android", "ios"].includes(Platform.OS) ? 100 : null}
                 />
               )}
               <SpacerRow size={2} />
@@ -103,24 +117,26 @@ const ChatHeader = ({ messages }: any) => {
               <SpacerRow size={2} />
             </>
           ) : (
-            <>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
               <TouchableOpacity onPress={handleSearchIconPress}>
                 <SVG
                   source={search}
                   style={{
                     height: 20,
                     width: 20,
-                    marginTop: 2,
+                    marginTop: 10,
                     marginRight: 10,
                   }}
                 />
               </TouchableOpacity>
-              <Text style={{ color: "#fff", marginRight: 5 }}>...</Text>
-            </>
+              <BrandText style={{ color: "#fff", marginRight: 5 }}>
+                ...
+              </BrandText>
+            </View>
           )}
           {showTextInput && (
             <TouchableOpacity onPress={handleCancelPress}>
-              <SVG source={close} height={20} style={{ marginTop: 6 }} />
+              <SVG source={close} style={{ marginTop: 6 }} />
             </TouchableOpacity>
           )}
           <SpacerRow size={1} />
@@ -202,38 +218,27 @@ const ChatHeader = ({ messages }: any) => {
 export default ChatHeader;
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#171717",
+    backgroundColor: neutral17,
     flexDirection: "row",
     padding: 6,
     justifyContent: "space-between",
     alignItems: "center",
   },
   badge: {
-    backgroundColor: "#C8FFAE",
+    backgroundColor: successColor,
     paddingHorizontal: 4,
     paddingVertical: 4,
     borderRadius: 12,
     width: 2,
   },
   offlinebadge: {
-    backgroundColor: "#555555",
+    backgroundColor: neutral55,
     paddingHorizontal: 4,
     paddingVertical: 4,
     borderRadius: 12,
     width: 2,
   },
-  groupName: {
-    color: "#FFFFFF",
-    fontSize: 13,
-    fontWeight: "600",
-    lineHeight: 18,
-  },
-  status: {
-    color: "#A3A3A3",
-    fontWeight: "500",
-    fontSize: 11,
-    lineHeight: 18,
-  },
+
   filterMessageWrapper: {
     backgroundColor: neutral17,
     position: "absolute",
