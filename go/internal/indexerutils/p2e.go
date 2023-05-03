@@ -13,16 +13,16 @@ import (
 )
 
 type IndexerUtils struct {
-	network *networks.NetworkBase
-	db      *gorm.DB
-	logger  *zap.Logger
+	network       *networks.NetworkBase
+	dbTransaction *gorm.DB
+	logger        *zap.Logger
 }
 
-func NewIndexerUtils(network *networks.NetworkBase, db *gorm.DB, logger *zap.Logger) (*IndexerUtils, error) {
+func NewIndexerUtils(network *networks.NetworkBase, dbTransaction *gorm.DB, logger *zap.Logger) (*IndexerUtils, error) {
 	return &IndexerUtils{
-		network: network,
-		db:      db,
-		logger:  logger,
+		network:       network,
+		dbTransaction: dbTransaction,
+		logger:        logger,
 	}, nil
 }
 
@@ -38,7 +38,7 @@ func (u *IndexerUtils) IndexSquadUnstake(
 		OwnerID: userId,
 	}
 
-	if err := u.db.Where(q1).Find(&squadStakings).Error; err != nil {
+	if err := u.dbTransaction.Where(q1).Find(&squadStakings).Error; err != nil {
 		return errors.Wrap(err, "failed to get current squad staking")
 	}
 
@@ -60,7 +60,7 @@ func (u *IndexerUtils) IndexSquadUnstake(
 
 		// Get staking duration and delete staking object
 		stakingDuration := squadStaking.EndTime - squadStaking.StartTime
-		if err := u.db.Delete(&squadStaking).Error; err != nil {
+		if err := u.dbTransaction.Delete(&squadStaking).Error; err != nil {
 			return errors.Wrap(err, "failed to remove current squad staking")
 		}
 
@@ -78,7 +78,7 @@ func (u *IndexerUtils) IndexSquadUnstake(
 			SeasonID: seasonId,
 		}
 		// Normally, an user score record has to exist here (created when first stake)
-		if err := u.db.Where(q2).First(&userScore).Error; err != nil {
+		if err := u.dbTransaction.Where(q2).First(&userScore).Error; err != nil {
 			return errors.Wrap(err, "failed to get current user score")
 		}
 
@@ -96,7 +96,7 @@ func (u *IndexerUtils) IndexSquadUnstake(
 		}
 
 		// Update score
-		if err := u.db.Model(&userScore).
+		if err := u.dbTransaction.Model(&userScore).
 			UpdateColumn("score", gorm.Expr("score  + ?", adjustedStakingDuration)).
 			UpdateColumn("in_progress_score", gorm.Expr("score")).
 			Error; err != nil {
@@ -108,7 +108,7 @@ func (u *IndexerUtils) IndexSquadUnstake(
 	for idx, tokenId := range tokenIDs {
 		nftContractAddress := nftContracts[idx]
 
-		result := u.db.Exec(`
+		result := u.dbTransaction.Exec(`
 			UPDATE nfts AS n
 			SET locked_on = NULL
 			FROM
@@ -147,7 +147,7 @@ func (u *IndexerUtils) IndexSquadStake(
 	// }
 
 	var count int64
-	if err := u.db.Model(&indexerdb.P2eSquadStaking{}).
+	if err := u.dbTransaction.Model(&indexerdb.P2eSquadStaking{}).
 		Where("owner_id  = ? AND start_time = ?", ownerId, startTime).
 		Count(&count).Error; err != nil {
 		return errors.Wrap(err, "failed to query current staking")
@@ -165,7 +165,7 @@ func (u *IndexerUtils) IndexSquadStake(
 		SeasonID:  season.ID,
 	}
 
-	if err := u.db.Create(&squadStaking).Error; err != nil {
+	if err := u.dbTransaction.Create(&squadStaking).Error; err != nil {
 		return errors.Wrap(err, "failed to create squad staking")
 	}
 
@@ -175,7 +175,7 @@ func (u *IndexerUtils) IndexSquadStake(
 		UserID:   ownerId,
 		SeasonID: season.ID,
 	}
-	if err := u.db.Where(q2).FirstOrCreate(&userScore).Error; err != nil {
+	if err := u.dbTransaction.Where(q2).FirstOrCreate(&userScore).Error; err != nil {
 		return errors.Wrap(err, "failed to get/create user record for leaderboard")
 	}
 
@@ -189,7 +189,7 @@ func (u *IndexerUtils) IndexSquadStake(
 	lockedOn := u.network.UserID(contractAddress)
 
 	for idx, tokenID := range tokenIDs {
-		result := u.db.Exec(`
+		result := u.dbTransaction.Exec(`
 			UPDATE nfts AS n
 			SET 
 				locked_on = ?

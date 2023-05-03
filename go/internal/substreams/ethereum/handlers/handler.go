@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"encoding/hex"
 	"strings"
 
 	abiGo "github.com/TERITORI/teritori-dapp/go/internal/substreams/ethereum/abi_go"
@@ -41,6 +42,7 @@ func NewHandler(handlerConfig *HandlerConfig) (*Handler, error) {
 func (h *Handler) HandleETHTx(tx *pb.Tx) error {
 	var metaData *bind.MetaData
 
+	// NOTE: Order of case if important because  we can have multi call in same tx
 	switch {
 	case strings.EqualFold(tx.Info.To, h.network.RiotSquadStakingContractAddress):
 		metaData = abiGo.SquadStakingV3MetaData
@@ -48,8 +50,11 @@ func (h *Handler) HandleETHTx(tx *pb.Tx) error {
 	case strings.EqualFold(tx.Info.To, "0x7a9e5dbe7d3946ce4ea2f2396549c349635ebf2f"):
 		metaData = abiGo.TeritoriNFTMetaData
 	// Minter contract
-	case strings.EqualFold(tx.Info.To, "0x43cc70bf324d716782628bed38af97e4afe92f69"):
+	case strings.EqualFold(tx.Info.To, h.network.RiotContractAddressGen0):
 		metaData = abiGo.TeritoriMinterMetaData
+	// If not matching with known handlers continue
+	default:
+		return nil
 	}
 
 	contractABI, err := metaData.GetAbi()
@@ -58,6 +63,17 @@ func (h *Handler) HandleETHTx(tx *pb.Tx) error {
 	}
 
 	if tx.Info.Input == nil {
+		return nil
+	}
+
+	// 60806040 is special method where tx sent to minter and it will initialize nft contract
+	// we have to process it differently: we process the internal call of that tx sent to nft contract
+	methodHex := hex.EncodeToString(tx.Info.Input[:4])
+	if methodHex == "60806040" {
+		if strings.EqualFold(tx.Info.To, "0x7a9e5dbe7d3946ce4ea2f2396549c349635ebf2f") {
+			return h.handleInitialize(tx)
+		}
+
 		return nil
 	}
 
@@ -82,12 +98,8 @@ func (h *Handler) HandleETHTx(tx *pb.Tx) error {
 		if err := h.handleSquadUnstake(contractABI, tx, args); err != nil {
 			return errors.Wrap(err, "failed to handle squad unstake")
 		}
-	case "initialize":
-		if err := h.handleInitialize(method, tx, args); err != nil {
-			return errors.Wrap(err, "failed to handle initialize")
-		}
 	case "mintWithMetadata":
-		if err := h.handleMintWithMetadata(method, tx, args); err != nil {
+		if err := h.handleMintWithMetadata(contractABI, tx, args); err != nil {
 			return errors.Wrap(err, "failed to handle mint with meta data")
 		}
 	case "transferFrom":

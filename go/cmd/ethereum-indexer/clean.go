@@ -6,6 +6,8 @@ import (
 	"strings"
 
 	"github.com/TERITORI/teritori-dapp/go/internal/substreams/db"
+	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	. "github.com/streamingfast/cli"
@@ -17,20 +19,29 @@ var SinkCleanCmd = Command(sinkCleanE,
 	"Clean all the data related to given network",
 	RangeArgs(1, 1),
 	Flags(func(flags *pflag.FlagSet) {
-		flags.String("indexer-database", "", "Indexer database DNS")
+		flags.String("db-indexer-host", "", "host postgreSQL database")
+		flags.String("db-indexer-port", "", "port for postgreSQL database")
+		flags.String("postgres-password", "", "password for postgreSQL database")
+		flags.String("database-name", "", "database name for postgreSQL")
+		flags.String("postgres-user", "", "username for postgreSQL")
 	}),
 )
 
 func sinkCleanE(cmd *cobra.Command, args []string) error {
 	zlog.Info("cleaning offchain data...")
 
-	network := args[0]
 	MustLoadEnv()
 
-	database := MustGetFlagString("indexer-database")
-	indexerDB := db.MustConnectIndexerDB(database)
+	dbHost := MustGetFlagString("db-indexer-host")
+	dbPort := MustGetFlagString("db-indexer-port")
+	dbPass := MustGetFlagString("postgres-password")
+	dbName := MustGetFlagString("database-name")
+	dbUser := MustGetFlagString("postgres-user")
 
-	sqlFilePath := "sql/clean.sql"
+	dns := fmt.Sprintf("psql://%s:%s@%s:%s/%s?sslmode=disable", dbUser, dbPass, dbHost, dbPort, dbName)
+	indexerDB := db.MustConnectIndexerDB(dns)
+
+	sqlFilePath := "./go/cmd/ethereum-indexer/sql/clean.sql"
 	stmtBytes, err := os.ReadFile(sqlFilePath)
 	if err != nil {
 		return fmt.Errorf("failed to load sql file: %w", err)
@@ -40,23 +51,34 @@ func sinkCleanE(cmd *cobra.Command, args []string) error {
 		zap.String("sql_file", sqlFilePath),
 	)
 
-	networkPrefix := ""
-	switch network {
-	case "ethereum":
-		networkPrefix = "eth"
-	default:
-		return fmt.Errorf("network not supported: %s", network)
+	// load networks
+	networkID := args[0]
+	if networkID != "ethereum" && networkID != "ethereum-goerli" {
+		panic("given network is not supported")
 	}
 
+	networksFile := MustGetFlagString("networks-file")
+	networksBytes, err := os.ReadFile(networksFile)
+	if err != nil {
+		panic(errors.Wrap(err, "failed to read networks config file"))
+	}
+	netstore, err := networks.UnmarshalNetworkStore(networksBytes)
+	if err != nil {
+		panic(errors.Wrap(err, "failed to unmarshal networks config"))
+	}
+
+	// get and validate selected network
+	network := netstore.MustGetEthereumNetwork(networkID)
+
 	cleanStmt := string(stmtBytes)
-	cleanStmt = strings.Replace(cleanStmt, "<network>", network, -1)
-	cleanStmt = strings.Replace(cleanStmt, "<networkPrefix>", networkPrefix, -1)
+	cleanStmt = strings.Replace(cleanStmt, "<network>", network.ID, -1)
+	cleanStmt = strings.Replace(cleanStmt, "<networkPrefix>", network.IDPrefix, -1)
 
 	if err := indexerDB.Exec(cleanStmt).Error; err != nil {
 		return fmt.Errorf("failed to exec sql: %w", err)
 	}
 
-	zlog.Info(network + " data has been cleaned")
+	zlog.Info("data has been cleaned", zap.String("networkID", networkID), zap.String("IdPrefix", network.IDPrefix))
 
 	return nil
 }

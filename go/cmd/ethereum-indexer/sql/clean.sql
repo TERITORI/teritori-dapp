@@ -1,0 +1,13 @@
+DELETE FROM teritori_collections WHERE collection_id LIKE '<networkPrefix>-%';
+DELETE FROM mints WHERE activity_id LIKE '<networkPrefix>-%';
+DELETE FROM trades WHERE activity_id LIKE '<networkPrefix>-%';
+DELETE FROM burns WHERE activity_id LIKE '<networkPrefix>-%';
+DELETE FROM cancel_listings WHERE activity_id LIKE '<networkPrefix>-%';
+DELETE FROM transfer_nfts WHERE activity_id LIKE '<networkPrefix>-%';
+DELETE FROM send_nfts WHERE activity_id LIKE '<networkPrefix>-%';
+DELETE FROM update_nft_prices WHERE activity_id LIKE '<networkPrefix>-%';
+DELETE FROM activities WHERE id LIKE '<networkPrefix>-%';
+DELETE FROM teritori_nfts WHERE nft_id LIKE '<networkPrefix>-%';
+DELETE FROM nfts WHERE id LIKE '<networkPrefix>-%';
+DELETE FROM collections WHERE id LIKE '<networkPrefix>-%';
+DELETE FROM cursors WHERE network = '<network>'

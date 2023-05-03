@@ -29,8 +29,8 @@ export const ethereumGoerliNetwork: NetworkInfo = {
   // Substreams
   firehoseEndpoint: "goerli.eth.streamingfast.io:443",
   indexStartBlock: "8218450", //  Stake: "8694034",
-  indexStopBlock: "+1000",
-  indexBlockProgress: 100,
+  indexStopBlock: "-1",
+  indexBlockProgress: 5000,
   indexLiveBlockProgress: 1,
   substreamsManifest: "go/internal/substreams/ethereum/ethereum_goerli.yaml",
 };

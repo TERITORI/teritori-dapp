@@ -79,8 +79,6 @@ type PostgresSinker struct {
 	sink       *sink.Sinker
 	lastCursor *sink.Cursor
 
-	stats *Stats
-
 	blockRange *bstream.Range
 
 	logger *zap.Logger
@@ -95,7 +93,6 @@ type PostgresSinker struct {
 func New(config *Config, logger *zap.Logger, tracer logging.Tracer) (*PostgresSinker, error) {
 	s := &PostgresSinker{
 		Shutter: shutter.New(),
-		stats:   NewStats(logger),
 		logger:  logger,
 		tracer:  tracer,
 
@@ -132,43 +129,17 @@ func New(config *Config, logger *zap.Logger, tracer logging.Tracer) (*PostgresSi
 	return s, nil
 }
 
-func (s *PostgresSinker) Start(ctx context.Context) error {
-	_, err := s.GetCursor()
-
-	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
-		return errors.Wrap(err, "failed to retrieve cursor")
-	}
-
-	if errors.Is(err, gorm.ErrRecordNotFound) {
-		cursorStartBlock := s.OutputModule.InitialBlock
-		if s.blockRange.StartBlock() > 0 {
-			cursorStartBlock = s.blockRange.StartBlock() - 1
-		}
-
-		sinkCursor := sink.NewCursor("", bstream.NewBlockRef("", cursorStartBlock))
-
-		if err = s.WriteCursor(sinkCursor); err != nil {
-			return errors.Wrap(err, "failed to init cursor")
-		}
-	}
-
-	s.OnTerminating(func(_ error) { s.stats.Close() })
-	s.stats.OnTerminated(func(err error) { s.Shutdown(err) })
-	s.stats.Start(2 * time.Second)
-
-	return s.Run(ctx)
-}
-
 func (s *PostgresSinker) Stop(ctx context.Context, err error) {
 	if s.lastCursor == nil || err != nil {
 		return
 	}
 
-	_ = s.WriteCursor(s.lastCursor)
+	// TODO: Replace WriteCursor => UpdateCursor. => Check the behavior
+	_ = s.UpdateCursor(s.lastCursor)
 }
 
-func (s *PostgresSinker) Run(ctx context.Context) error {
-	cursor, err := s.GetCursor()
+func (s *PostgresSinker) Start(ctx context.Context) error {
+	cursor, err := s.GetOrCreateCursor()
 
 	if err != nil {
 		return fmt.Errorf("unable to retrieve cursor: %w", err)
@@ -250,15 +221,9 @@ func (s *PostgresSinker) handleBlockScopeData(ctx context.Context, cursor *sink.
 	s.lastCursor = cursor
 
 	if cursor.Block.Num()%s.batchBlockModulo(data) == 0 {
-		flushStart := time.Now()
-
 		if err := s.ApplyChanges(hex.EncodeToString(s.OutputModuleHash), cursor); err != nil {
 			return fmt.Errorf("failed to flush: %w", err)
 		}
-
-		flushDuration := time.Since(flushStart)
-		FlushCount.Inc()
-		FlushDuration.AddInt(int(flushDuration.Nanoseconds()))
 	}
 
 	return nil
@@ -271,13 +236,28 @@ func (s *PostgresSinker) batchBlockModulo(blockData *pbsubstreams.BlockScopedDat
 	return s.BlockProgress
 }
 
-func (s *PostgresSinker) GetCursor() (*sink.Cursor, error) {
+func (s *PostgresSinker) GetOrCreateCursor() (*sink.Cursor, error) {
 	c := db.Cursors{
 		ID: hex.EncodeToString(s.OutputModuleHash),
 	}
 
 	if err := s.indexerDB.First(&c).Error; err != nil {
-		return nil, err
+		if !errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, errors.Wrap(err, "failed to retrieve cursor")
+		}
+
+		// If cursor does not exist then create a new cursor
+		cursorStartBlock := s.OutputModule.InitialBlock
+		if s.blockRange.StartBlock() > 0 {
+			cursorStartBlock = s.blockRange.StartBlock() - 1
+		}
+
+		sinkCursor := sink.NewCursor("", bstream.NewBlockRef("", cursorStartBlock))
+
+		if err := s.WriteCursor(sinkCursor); err != nil {
+			return nil, errors.Wrap(err, "failed to init cursor")
+		}
+		return sinkCursor, nil
 	}
 
 	return sink.NewCursor(c.Cursor, bstream.NewBlockRef(c.BlockId, c.BlockNum)), nil
