@@ -1,3 +1,4 @@
+import { EntityId } from "@reduxjs/toolkit";
 import React from "react";
 import { FlatList, Pressable, StyleProp, View, ViewStyle } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -12,14 +13,13 @@ import { OptimizedImage } from "../../components/OptimizedImage";
 import { SVG } from "../../components/SVG";
 import { Separator } from "../../components/Separator";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
-import { useNFTInfo } from "../../hooks/useNFTInfo";
 import {
   clearSelected,
   removeSelected,
-  selectCartTotal,
-  selectSelectedNFT,
+  selectSelectedNFTDataById,
+  selectSelectedNFTIds,
 } from "../../store/slices/marketplaceReducer";
-import { useAppDispatch } from "../../store/store";
+import { RootState, useAppDispatch } from "../../store/store";
 import {
   codGrayColor,
   neutral44,
@@ -65,8 +65,11 @@ const Header: React.FC<{ items: any[]; onPress: () => void }> = ({
   );
 };
 
-const CartItems: React.FC<{ id: string }> = ({ id }) => {
-  const { info } = useNFTInfo(id);
+const CartItems: React.FC<{ id: EntityId }> = ({ id }) => {
+  const info = useSelector((state: RootState) =>
+    selectSelectedNFTDataById(state, id)
+  );
+
   const dispatch = useAppDispatch();
   return info ? (
     <View>
@@ -87,7 +90,7 @@ const CartItems: React.FC<{ id: string }> = ({ id }) => {
           }}
         >
           <OptimizedImage
-            source={{ uri: info?.imageURL }}
+            source={{ uri: info?.imageUri }}
             width={40}
             height={40}
             style={{
@@ -130,7 +133,7 @@ const CartItems: React.FC<{ id: string }> = ({ id }) => {
             </BrandText>
             <CurrencyIcon
               networkId={info.networkId}
-              denom={info.priceDenom}
+              denom={info.denom}
               size={16}
             />
           </View>
@@ -216,7 +219,7 @@ export const SideCart: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
   style,
 }) => {
   const dispatch = useAppDispatch();
-  const selected = useSelector(selectSelectedNFT);
+  const selected = useSelector(selectSelectedNFTIds);
   const emptyCart = () => {
     dispatch(clearSelected());
   };

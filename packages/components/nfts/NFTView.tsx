@@ -21,7 +21,7 @@ import { useDropdowns } from "../../context/DropdownsProvider";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getCosmosNetwork, parseUserId } from "../../networks";
-import { selectSelectedNFT } from "../../store/slices/marketplaceReducer";
+import { selectSelectedNFTIds } from "../../store/slices/marketplaceReducer";
 import { prettyPrice } from "../../utils/coins";
 import {
   neutral00,
@@ -44,7 +44,7 @@ import { SpacerColumn, SpacerRow } from "../spacer";
 
 export const NFTView: React.FC<{
   data: NFT;
-  handleClick: (id: string) => void;
+  handleClick: (nft: NFT) => void;
   style?: StyleProp<ViewStyle>;
 }> = ({ data: nft, style, handleClick }) => {
   // variables
@@ -59,7 +59,7 @@ export const NFTView: React.FC<{
     useDropdowns();
   const [isTransferNFTVisible, setIsTransferNFTVisible] =
     useState<boolean>(false);
-  const localSelected = new Set(useSelector(selectSelectedNFT)).has(nft.id);
+  const localSelected = new Set(useSelector(selectSelectedNFTIds)).has(nft.id);
 
   const dropdownRef = useRef<View>(null);
 
@@ -114,7 +114,7 @@ export const NFTView: React.FC<{
                 backgroundColor: localSelected ? neutral22 : neutral00,
               }}
               onPress={() => {
-                handleClick(nft.id);
+                handleClick(nft);
               }}
             >
               <View

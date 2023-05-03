@@ -13,7 +13,7 @@ import { TabsListType } from "../../components/collections/types";
 import { useCollectionInfo } from "../../hooks/useCollectionInfo";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { parseCollectionId } from "../../networks";
-import { selectSelectedNFT } from "../../store/slices/marketplaceReducer";
+import { selectSelectedNFTIds } from "../../store/slices/marketplaceReducer";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { neutral67 } from "../../utils/style/colors";
 import { fontSemibold20 } from "../../utils/style/fonts";
@@ -30,7 +30,7 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
   const [network] = parseCollectionId(id);
   const navigation = useAppNavigation();
   const { width } = useMaxResolution();
-  const selected = useSelector(selectSelectedNFT);
+  const selected = useSelector(selectSelectedNFTIds);
 
   const SideCartWidth = 245 + 10;
   // returns

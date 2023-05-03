@@ -26,7 +26,7 @@ import {
   getNativeCurrency,
   parseCollectionId,
 } from "../../networks";
-import { selectSelectedNFT } from "../../store/slices/marketplaceReducer";
+import { selectSelectedNFTIds } from "../../store/slices/marketplaceReducer";
 import { CollectionInfo } from "../../utils/collection";
 import { codGrayColor, neutral33, neutral67 } from "../../utils/style/colors";
 import { fontSemibold28 } from "../../utils/style/fonts";
@@ -55,7 +55,7 @@ export const CollectionHeader: React.FC<{
   const { width } = useMaxResolution();
   const [network, collectionMintAddress] = parseCollectionId(collectionId);
   const { setToastSuccess } = useFeedbacks();
-  const selected = useSelector(selectSelectedNFT);
+  const selected = useSelector(selectSelectedNFTIds);
 
   const coins = useMemo(() => {
     if (!network?.id || !stats?.floorPrice) {

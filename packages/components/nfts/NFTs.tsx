@@ -8,14 +8,13 @@ import { useNFTs } from "../../hooks/useNFTs";
 import { setSelectedNFT } from "../../store/slices/marketplaceReducer";
 import { useAppDispatch } from "../../store/store";
 import { layout, screenContentMaxWidthLarge } from "../../utils/style/layout";
-import { SpacerColumn } from "../spacer";
 
 const keyExtractor = (item: NFT) => item.id;
 
 const RenderItem: React.FC<{
   nft: NFT;
   marginable: boolean;
-  handleClick: (id: string) => void;
+  handleClick: (nft: NFT) => void;
 }> = ({ nft, marginable, handleClick }) => {
   return (
     <NFTView
@@ -41,8 +40,8 @@ export const NFTs: React.FC<{
     fetchMore();
   }, [fetchMore]);
 
-  const handleClick = (id: string) => {
-    dispatch(setSelectedNFT(id));
+  const handleClick = (nft: NFT) => {
+    dispatch(setSelectedNFT(nft));
   };
 
   return (
