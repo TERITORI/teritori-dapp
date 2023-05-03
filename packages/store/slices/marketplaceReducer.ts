@@ -9,7 +9,7 @@ const marketplace = createSlice({
   name: "marketPlace",
   initialState: nftAdapter.getInitialState([]),
   reducers: {
-    setSelectedNFT: nftAdapter.addOne,
+    addSelected: nftAdapter.setOne,
     removeSelected: nftAdapter.removeOne,
     clearSelected: nftAdapter.removeAll,
   },
@@ -25,7 +25,7 @@ export const selectAllSelectedNFTData = (state: RootState) =>
 export const selectSelectedNFTDataById = (state: RootState, id: EntityId) =>
   selectors.selectById(state.marketplace, id);
 
-export const { setSelectedNFT, removeSelected, clearSelected } =
+export const { addSelected, removeSelected, clearSelected } =
   marketplace.actions;
 
 export const marketplaceReducer = marketplace.reducer;

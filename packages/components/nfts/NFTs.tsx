@@ -5,23 +5,22 @@ import { NFTView } from "./NFTView";
 import { NFT, NFTsRequest } from "../../api/marketplace/v1/marketplace";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useNFTs } from "../../hooks/useNFTs";
-import { setSelectedNFT } from "../../store/slices/marketplaceReducer";
-import { useAppDispatch } from "../../store/store";
 import { layout, screenContentMaxWidthLarge } from "../../utils/style/layout";
+import { SpacerColumn } from "../spacer";
 
 const keyExtractor = (item: NFT) => item.id;
 
 const RenderItem: React.FC<{
   nft: NFT;
-  marginable: boolean;
-  handleClick: (nft: NFT) => void;
-}> = ({ nft, marginable, handleClick }) => {
+}> = ({ nft }) => {
   return (
     <NFTView
       key={nft.mintAddress}
       data={nft}
-      handleClick={handleClick}
-      style={{ marginRight: marginable ? layout.padding_x2 : 0 }}
+      style={{
+        marginRight: layout.padding_x2,
+        marginBottom: layout.padding_x2,
+      }}
     />
   );
 };
@@ -33,16 +32,11 @@ export const NFTs: React.FC<{
   ListFooterComponent?: ReactElement;
 }> = ({ req, numColumns, ListHeaderComponent, ListFooterComponent }) => {
   const { nfts, fetchMore } = useNFTs(req);
-  const dispatch = useAppDispatch();
   const { height } = useMaxResolution();
 
   const handleEndReached = useCallback(() => {
     fetchMore();
   }, [fetchMore]);
-
-  const handleClick = (nft: NFT) => {
-    dispatch(setSelectedNFT(nft));
-  };
 
   return (
     <View
@@ -60,22 +54,14 @@ export const NFTs: React.FC<{
         }}
         columnWrapperStyle={{ flexWrap: "wrap", flex: 1, marginTop: 5 }}
         numColumns={99} // needed to deal with wrap via css
-        ItemSeparatorComponent={() => (
-          <View style={{ height: layout.padding_x1 }} />
-        )}
+        ItemSeparatorComponent={() => <SpacerColumn size={2} />}
         key={numColumns}
         data={nfts}
         onEndReached={handleEndReached}
         keyExtractor={keyExtractor}
         // onEndReachedThreshold={4}
         renderItem={(info) => {
-          return (
-            <RenderItem
-              nft={info.item}
-              marginable={!!((info.index + 1) % numColumns)}
-              handleClick={handleClick}
-            />
-          );
+          return <RenderItem nft={info.item} />;
         }}
         //ListHeaderComponent={ListHeaderComponent}
         //ListFooterComponent={ListFooterComponent}

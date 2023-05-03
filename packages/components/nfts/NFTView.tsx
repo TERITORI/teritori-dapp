@@ -21,7 +21,12 @@ import { useDropdowns } from "../../context/DropdownsProvider";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getCosmosNetwork, parseUserId } from "../../networks";
-import { selectSelectedNFTIds } from "../../store/slices/marketplaceReducer";
+import {
+  addSelected,
+  removeSelected,
+  selectSelectedNFTIds,
+} from "../../store/slices/marketplaceReducer";
+import { useAppDispatch } from "../../store/store";
 import { prettyPrice } from "../../utils/coins";
 import {
   neutral00,
@@ -44,9 +49,8 @@ import { SpacerColumn, SpacerRow } from "../spacer";
 
 export const NFTView: React.FC<{
   data: NFT;
-  handleClick: (nft: NFT) => void;
   style?: StyleProp<ViewStyle>;
-}> = ({ data: nft, style, handleClick }) => {
+}> = ({ data: nft, style }) => {
   // variables
   const cardWidth = 258;
   const insideMargin = layout.padding_x2;
@@ -60,7 +64,14 @@ export const NFTView: React.FC<{
   const [isTransferNFTVisible, setIsTransferNFTVisible] =
     useState<boolean>(false);
   const localSelected = new Set(useSelector(selectSelectedNFTIds)).has(nft.id);
-
+  const dispatch = useAppDispatch();
+  const handleClick = (nft: NFT, selected: boolean) => {
+    if (!selected) {
+      dispatch(addSelected(nft));
+    } else {
+      dispatch(removeSelected(nft.id));
+    }
+  };
   const dropdownRef = useRef<View>(null);
 
   const isOwner = nft.ownerId === selectedWallet?.userId;
@@ -114,7 +125,7 @@ export const NFTView: React.FC<{
                 backgroundColor: localSelected ? neutral22 : neutral00,
               }}
               onPress={() => {
-                handleClick(nft);
+                handleClick(nft, localSelected);
               }}
             >
               <View

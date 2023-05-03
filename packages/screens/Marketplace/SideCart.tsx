@@ -16,10 +16,12 @@ import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import {
   clearSelected,
   removeSelected,
+  selectAllSelectedNFTData,
   selectSelectedNFTDataById,
   selectSelectedNFTIds,
 } from "../../store/slices/marketplaceReducer";
 import { RootState, useAppDispatch } from "../../store/store";
+import { prettyPrice } from "../../utils/coins";
 import {
   codGrayColor,
   neutral44,
@@ -66,12 +68,12 @@ const Header: React.FC<{ items: any[]; onPress: () => void }> = ({
 };
 
 const CartItems: React.FC<{ id: EntityId }> = ({ id }) => {
-  const info = useSelector((state: RootState) =>
+  const nft = useSelector((state: RootState) =>
     selectSelectedNFTDataById(state, id)
   );
 
   const dispatch = useAppDispatch();
-  return info ? (
+  return nft ? (
     <View>
       <View
         style={{
@@ -90,7 +92,7 @@ const CartItems: React.FC<{ id: EntityId }> = ({ id }) => {
           }}
         >
           <OptimizedImage
-            source={{ uri: info?.imageUri }}
+            source={{ uri: nft?.imageUri }}
             width={40}
             height={40}
             style={{
@@ -100,7 +102,7 @@ const CartItems: React.FC<{ id: EntityId }> = ({ id }) => {
               marginRight: 6,
             }}
           />
-          <BrandText style={fontSemibold12}>{info?.name}</BrandText>
+          <BrandText style={fontSemibold12}>{nft?.name}</BrandText>
           <Pressable
             onPress={() => {
               dispatch(removeSelected(id));
@@ -129,11 +131,11 @@ const CartItems: React.FC<{ id: EntityId }> = ({ id }) => {
             }}
           >
             <BrandText style={fontSemibold12}>
-              {parseInt(info?.price) / 1000000}
+              {prettyPrice(nft.networkId, nft.price, nft.denom)}
             </BrandText>
             <CurrencyIcon
-              networkId={info.networkId}
-              denom={info.denom}
+              networkId={nft.networkId}
+              denom={nft.denom}
               size={16}
             />
           </View>
@@ -146,7 +148,7 @@ const CartItems: React.FC<{ id: EntityId }> = ({ id }) => {
 const ItemTotal: React.FC<{
   textLeft: string;
   showLogo?: boolean;
-  textRight: string;
+  textRight: string | number;
 }> = ({ textLeft, showLogo = false, textRight }) => {
   return (
     <View
@@ -179,9 +181,17 @@ const Footer: React.FC<{ items: any[] }> = ({ items }) => {
   const onBuyButtonPress = () => {
     console.log("Implement buy");
   };
-  const subTotal = "1";
-  const takerFee = `1.5%`;
-  const total = "50";
+  const selected = useSelector(selectAllSelectedNFTData);
+
+  const subTotal = selected.reduce(
+    (partialSum, nft) =>
+      partialSum +
+      Number.parseFloat(prettyPrice(nft.networkId, nft.price, nft.denom)),
+    0
+  );
+  const takerFee = subTotal * 0.015;
+  const royalty = subTotal * 0.033;
+  const total = royalty + subTotal + takerFee;
   return (
     <View
       style={{
@@ -193,10 +203,10 @@ const Footer: React.FC<{ items: any[] }> = ({ items }) => {
         showLogo
         textRight={subTotal}
       />
-      <ItemTotal textLeft="Royalty" showLogo textRight={subTotal} />
+      <ItemTotal textLeft="Royalty" showLogo textRight={royalty} />
       <ItemTotal textLeft="Taker Fee" showLogo={false} textRight={takerFee} />
       <Separator />
-      <ItemTotal textLeft="You pay" showLogo textRight={total} />
+      <ItemTotal textLeft="You pay" showLogo textRight={Math.round(total)} />
       <Separator />
 
       <View
