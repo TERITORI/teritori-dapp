@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/hex"
 	"fmt"
+	"time"
 
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/internal/substreams/ethereum/abi_go"
@@ -59,6 +60,20 @@ func (h *Handler) handleMintWithMetadata(contractABI *abi.ABI, tx *pb.Tx, args m
 		if err := h.dbTransaction.Create(&nft).Error; err != nil {
 			spew.Dump(nft)
 			return errors.Wrap(err, "failed to create nft in db")
+		}
+
+		// Create mint activity
+		if err := h.dbTransaction.Create(&indexerdb.Activity{
+			ID:   h.network.ActivityID(tx.Info.Hash, int(txLog.Index)),
+			Kind: indexerdb.ActivityKindMint,
+			Time: time.Unix(int64(tx.Clock.Timestamp), 0),
+			Mint: &indexerdb.Mint{
+				// TODO: get price
+				BuyerID: ownerID,
+			},
+			NFTID: nftID,
+		}).Error; err != nil {
+			return errors.Wrap(err, "failed to create mint activity")
 		}
 	}
 

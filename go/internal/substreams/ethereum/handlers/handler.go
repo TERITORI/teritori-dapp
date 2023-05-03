@@ -52,6 +52,8 @@ func (h *Handler) HandleETHTx(tx *pb.Tx) error {
 	// Minter contract
 	case strings.EqualFold(tx.Info.To, h.network.RiotContractAddressGen0):
 		metaData = abiGo.TeritoriMinterMetaData
+	case strings.EqualFold(tx.Info.To, h.network.VaultContractAddress):
+		metaData = abiGo.TeritoriVaultMetaData
 	// If not matching with known handlers continue
 	default:
 		return nil
@@ -70,7 +72,7 @@ func (h *Handler) HandleETHTx(tx *pb.Tx) error {
 	// we have to process it differently: we process the internal call of that tx sent to nft contract
 	methodHex := hex.EncodeToString(tx.Info.Input[:4])
 	if methodHex == "60806040" {
-		if strings.EqualFold(tx.Info.To, "0x7a9e5dbe7d3946ce4ea2f2396549c349635ebf2f") {
+		if strings.EqualFold(tx.Info.To, h.network.RiotContractAddressGen0) {
 			return h.handleInitialize(tx)
 		}
 
@@ -79,7 +81,7 @@ func (h *Handler) HandleETHTx(tx *pb.Tx) error {
 
 	method, err := ParseMethod(contractABI, tx.Info.Input)
 	if err != nil {
-		return errors.Wrap(err, "failed to parse method")
+		return errors.Wrap(err, "failed to parse method. Tx: "+tx.Info.Hash)
 	}
 
 	args := make(map[string]interface{})
@@ -90,6 +92,7 @@ func (h *Handler) HandleETHTx(tx *pb.Tx) error {
 	h.logger.Info("method", zap.String("method", method.Name))
 
 	switch method.Name {
+	// SquadStake
 	case "stake":
 		if err := h.handleSquadStake(contractABI, tx, args); err != nil {
 			return errors.Wrap(err, "failed to handle squad stake")
@@ -103,8 +106,21 @@ func (h *Handler) HandleETHTx(tx *pb.Tx) error {
 			return errors.Wrap(err, "failed to handle mint with meta data")
 		}
 	case "transferFrom":
-		if err := h.handleTransferFrom(method, tx, args); err != nil {
+		if err := h.handleTransferFrom(contractABI, tx, args); err != nil {
 			return errors.Wrap(err, "failed to handle transfer")
+		}
+	// Vault
+	case "listNFT":
+		if err := h.handleListNFT(contractABI, tx, args); err != nil {
+			return errors.Wrap(err, "failed to handle listNFT")
+		}
+	case "withdrawNFT":
+		if err := h.handleWithdrawNFT(contractABI, tx, args); err != nil {
+			return errors.Wrap(err, "failed to handle withdrawNFT")
+		}
+	case "buyNFT":
+		if err := h.handleBuyNFT(contractABI, tx, args); err != nil {
+			return errors.Wrap(err, "failed to handle buyNFT")
 		}
 	}
 

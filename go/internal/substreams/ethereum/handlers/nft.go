@@ -13,37 +13,45 @@ import (
 	"go.uber.org/zap"
 )
 
-func (h *Handler) handleTransferFrom(method *abi.Method, tx *pb.Tx, args map[string]interface{}) error {
-	from := args["from"].(common.Address).String()
-	to := args["to"].(common.Address).String()
-	tokenId := args["tokenId"].(*big.Int).String()
+type TransferInput struct {
+	From    common.Address `json:"from"`
+	To      common.Address `json:"to"`
+	TokenID *big.Int       `json:"tokenId"`
+}
+
+func (h *Handler) handleTransferFrom(contractABI *abi.ABI, tx *pb.Tx, args map[string]interface{}) error {
 	nftContract := tx.Info.To
+
+	var input TransferInput
+	if err := ArgsToStruct(args, &input); err != nil {
+		return errors.Wrap(err, "failed to parse transfer input")
+	}
 
 	var collection indexerdb.TeritoriCollection
 	if err := h.indexerDB.First(&collection).Where("nft_contract_address", nftContract).Error; err != nil {
 		return errors.Wrap(err, "failed to get collection")
 	}
 
-	nftId := h.network.NFTID(collection.MintContractAddress, tokenId)
+	nftId := h.network.NFTID(collection.MintContractAddress, input.TokenID.String())
 	var nft indexerdb.NFT
 	if err := h.indexerDB.Where("id", nftId).First(&nft).Error; err != nil {
 		return errors.Wrap(err, "failed to get nft")
 	}
 
-	nft.OwnerID = h.network.UserID(to)
+	nft.OwnerID = h.network.UserID(input.To.String())
 
 	if err := h.indexerDB.Save(&nft).Error; err != nil {
 		return errors.Wrap(err, "failed to update nft owner")
 	}
 
-	// create send activity
+	// Create send activity
 	if err := h.indexerDB.Create(&indexerdb.Activity{
 		ID:   h.network.ActivityID(tx.Info.Hash, int(tx.Receipt.Logs[0].Index)),
 		Kind: indexerdb.ActivityKindSendNFT,
 		Time: time.Unix(int64(tx.Clock.Timestamp), 0),
 		SendNFT: &indexerdb.SendNFT{
-			Sender:   h.network.UserID(from),
-			Receiver: h.network.UserID(to),
+			Sender:   h.network.UserID(input.From.String()),
+			Receiver: h.network.UserID(input.To.String()),
 		},
 		NFTID: nftId,
 	}).Error; err != nil {

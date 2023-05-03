@@ -2,6 +2,7 @@ DELETE FROM teritori_collections WHERE collection_id LIKE '<networkPrefix>-%';
 DELETE FROM mints WHERE activity_id LIKE '<networkPrefix>-%';
 DELETE FROM trades WHERE activity_id LIKE '<networkPrefix>-%';
 DELETE FROM burns WHERE activity_id LIKE '<networkPrefix>-%';
+DELETE FROM listings WHERE activity_id LIKE '<networkPrefix>-%';
 DELETE FROM cancel_listings WHERE activity_id LIKE '<networkPrefix>-%';
 DELETE FROM transfer_nfts WHERE activity_id LIKE '<networkPrefix>-%';
 DELETE FROM send_nfts WHERE activity_id LIKE '<networkPrefix>-%';

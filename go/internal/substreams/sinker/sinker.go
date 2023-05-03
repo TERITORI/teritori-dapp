@@ -135,7 +135,7 @@ func (s *PostgresSinker) Stop(ctx context.Context, err error) {
 	}
 
 	// TODO: Replace WriteCursor => UpdateCursor. => Check the behavior
-	_ = s.UpdateCursor(s.lastCursor)
+	_ = s.WriteCursor(s.lastCursor)
 }
 
 func (s *PostgresSinker) Start(ctx context.Context) error {

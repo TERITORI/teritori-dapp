@@ -21,7 +21,7 @@ export const ethereumGoerliNetwork: NetworkInfo = {
   alchemyApiKey: "TCahW5rzmCaegxHVyhXh3vmCG2sS9Yu3",
   theGraphEndpoint:
     "https://api.studio.thegraph.com/query/40379/teritori-goerli-indexer/v-test-01",
-  vaultContractAddress: "0xaB30d7379EbfD146B77B0B4d6f3eB09BD725e4EF",
+  vaultContractAddress: "0xab30d7379ebfd146b77b0b4d6f3eb09bd725e4ef",
   riotContractAddressGen0: "0x43cc70bf324d716782628bed38af97e4afe92f69",
   riotContractAddressGen1,
   excludeFromLaunchpadList: [riotContractAddressGen1],
@@ -30,7 +30,7 @@ export const ethereumGoerliNetwork: NetworkInfo = {
   firehoseEndpoint: "goerli.eth.streamingfast.io:443",
   indexStartBlock: "8218450", //  Stake: "8694034",
   indexStopBlock: "-1",
-  indexBlockProgress: 5000,
+  indexBlockProgress: 10000,
   indexLiveBlockProgress: 1,
   substreamsManifest: "go/internal/substreams/ethereum/ethereum_goerli.yaml",
 };

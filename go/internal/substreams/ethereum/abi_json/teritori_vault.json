@@ -32,8 +32,16 @@
         "name": "tokenId",
         "type": "uint256"
       },
-      { "internalType": "address", "name": "token", "type": "address" },
-      { "internalType": "uint256", "name": "amount", "type": "uint256" }
+      {
+        "components": [
+          { "internalType": "address", "name": "token", "type": "address" },
+          { "internalType": "uint256", "name": "amount", "type": "uint256" }
+        ],
+        "indexed": false,
+        "internalType": "struct NFTVault.SaleOption",
+        "name": "saleOption",
+        "type": "tuple"
+      }
     ],
     "name": "BuyNFT",
     "type": "event"
@@ -59,8 +67,16 @@
         "name": "tokenId",
         "type": "uint256"
       },
-      { "internalType": "address", "name": "token", "type": "address" },
-      { "internalType": "uint256", "name": "amount", "type": "uint256" }
+      {
+        "components": [
+          { "internalType": "address", "name": "token", "type": "address" },
+          { "internalType": "uint256", "name": "amount", "type": "uint256" }
+        ],
+        "indexed": false,
+        "internalType": "struct NFTVault.SaleOption",
+        "name": "saleOption",
+        "type": "tuple"
+      }
     ],
     "name": "ListNFT",
     "type": "event"
@@ -143,8 +159,16 @@
         "name": "tokenId",
         "type": "uint256"
       },
-      { "internalType": "address", "name": "token", "type": "address" },
-      { "internalType": "uint256", "name": "amount", "type": "uint256" }
+      {
+        "components": [
+          { "internalType": "address", "name": "token", "type": "address" },
+          { "internalType": "uint256", "name": "amount", "type": "uint256" }
+        ],
+        "indexed": false,
+        "internalType": "struct NFTVault.SaleOption",
+        "name": "saleOption",
+        "type": "tuple"
+      }
     ],
     "name": "UpdateSaleOption",
     "type": "event"
@@ -218,8 +242,15 @@
     "inputs": [
       { "internalType": "address", "name": "nft", "type": "address" },
       { "internalType": "uint256", "name": "tokenId", "type": "uint256" },
-      { "internalType": "address", "name": "token", "type": "address" },
-      { "internalType": "uint256", "name": "amount", "type": "uint256" }
+      {
+        "components": [
+          { "internalType": "address", "name": "token", "type": "address" },
+          { "internalType": "uint256", "name": "amount", "type": "uint256" }
+        ],
+        "internalType": "struct NFTVault.SaleOption",
+        "name": "saleOption",
+        "type": "tuple"
+      }
     ],
     "name": "listNFT",
     "outputs": [],
@@ -234,8 +265,15 @@
     "name": "nftSales",
     "outputs": [
       { "internalType": "address", "name": "owner", "type": "address" },
-      { "internalType": "address", "name": "token", "type": "address" },
-      { "internalType": "uint256", "name": "amount", "type": "uint256" }
+      {
+        "components": [
+          { "internalType": "address", "name": "token", "type": "address" },
+          { "internalType": "uint256", "name": "amount", "type": "uint256" }
+        ],
+        "internalType": "struct NFTVault.SaleOption",
+        "name": "saleOption",
+        "type": "tuple"
+      }
     ],
     "stateMutability": "view",
     "type": "function"
@@ -327,8 +365,15 @@
     "inputs": [
       { "internalType": "address", "name": "nft", "type": "address" },
       { "internalType": "uint256", "name": "tokenId", "type": "uint256" },
-      { "internalType": "address", "name": "token", "type": "address" },
-      { "internalType": "uint256", "name": "amount", "type": "uint256" }
+      {
+        "components": [
+          { "internalType": "address", "name": "token", "type": "address" },
+          { "internalType": "uint256", "name": "amount", "type": "uint256" }
+        ],
+        "internalType": "struct NFTVault.SaleOption",
+        "name": "saleOption",
+        "type": "tuple"
+      }
     ],
     "name": "updateSaleOption",
     "outputs": [],
