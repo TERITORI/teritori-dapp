@@ -11,10 +11,9 @@ import { BrandText } from "../../components/BrandText";
 import { NotFound } from "../../components/NotFound";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
+import { UPPAlbums } from "../../components/userPublicProfile/UPPAlbums";
 import { UPPNFTs } from "../../components/userPublicProfile/UPPNFTs";
 import { UPPQuests } from "../../components/userPublicProfile/UPPSucceedQuests";
-import { UPPAlbums } from "../../components/userPublicProfile/UPPAlbums";
-
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";

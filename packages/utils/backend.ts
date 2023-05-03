@@ -8,8 +8,8 @@ import {
   GrpcWebImpl as MarketplaceGrpcWebImpl,
   MarketplaceService,
 } from "../api/marketplace/v1/marketplace";
-import { MusicplayerService } from "../api/musicplayer/v1/musicplayer";
 import {
+  MusicplayerService,
   MusicplayerServiceClientImpl,
   GrpcWebImpl as MusicplayerGrpcWebImpl,
 } from "../api/musicplayer/v1/musicplayer";
@@ -104,20 +104,22 @@ export const getMusicplayerClient = (networkId: string | undefined) => {
     // const backendEndpoint = network.backendEndpoint;
     const backendEndpoint = process.env.TERITORI_MUSICPLAYER_BACKEND_ENDPOINT!;
     const rpc = new MusicplayerGrpcWebImpl(backendEndpoint, {
-      debug: false
+      debug: false,
     });
     musicplayerClients[network.id] = new MusicplayerServiceClientImpl(rpc);
   }
   return musicplayerClients[network.id];
-}
+};
 
 export const mustGetMusicplayerClient = (networkId: string | undefined) => {
   const client = getMusicplayerClient(networkId);
   if (!client) {
-    throw new Error(`failed to get musicplayer client for network '${networkId}'`);
+    throw new Error(
+      `failed to get musicplayer client for network '${networkId}'`
+    );
   }
   return client;
-}
+};
 // const musicplayerBackendEndpoint =
 //   process.env.TERITORI_MUSICPLAYER_BACKEND_ENDPOINT;
 

@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Pressable } from "react-native";
 
-import { AlbumShortInfo } from "../../utils/types/music";
 import Logo from "../../../assets/logos/logo.svg";
 import { BrandText } from "../../components/BrandText";
 import { MusicPlayerCard } from "../../components/MusicPlayer/MusicPlayerCard";
 import { UploadAlbumModal } from "../../components/MusicPlayer/UploadAlbumModal";
 import { SVG } from "../../components/SVG";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { mustGetMusicplayerClient } from "../../utils/backend";
 import { primaryColor } from "../../utils/style/colors";
 import { fontSemibold14, fontSemibold20 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import { AlbumShortInfo } from "../../utils/types/music";
 
 export const MusicPlayerHomeContent: React.FC = () => {
   const [albumList, setAlbumList] = useState<AlbumShortInfo[]>([]);
@@ -21,7 +21,9 @@ export const MusicPlayerHomeContent: React.FC = () => {
   const selectedNetworkId = useSelectedNetworkId();
   useEffect(() => {
     const getAlbumList = async () => {
-      const res = await mustGetMusicplayerClient(selectedNetworkId).getAlbumList({});
+      const res = await mustGetMusicplayerClient(
+        selectedNetworkId
+      ).getAlbumList({});
       const newAlbumList: AlbumShortInfo[] = [];
       res.albums.map((albumInfo, index) => {
         newAlbumList.push({
@@ -34,7 +36,7 @@ export const MusicPlayerHomeContent: React.FC = () => {
       setAlbumList(newAlbumList);
     };
     getAlbumList();
-  }, []);
+  }, [selectedNetworkId]);
 
   const styles = StyleSheet.create({
     container: {

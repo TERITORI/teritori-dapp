@@ -18,11 +18,18 @@ export const MusicplayerContextProvider: React.FC = ({ children }) => {
     const [isPlay, setIsPlay] = useState(defaultValue.isPlay);
     const [audioSrc, setAudioSrc] = useState(defaultValue.audioSrc);
 
-    return <MusicplayerContext.Provider value={{
-        isPlay, audioSrc, setIsPlay, setAudioSrc
-    }}>
+  return (
+    <MusicplayerContext.Provider
+      value={{
+        isPlay,
+        audioSrc,
+        setIsPlay,
+        setAudioSrc,
+      }}
+    >
         {children}
     </MusicplayerContext.Provider>
-}
+  );
+};
 
 export const useMusicplayer = () => useContext(MusicplayerContext);

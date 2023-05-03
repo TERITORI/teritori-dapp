@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Pressable, Image } from "react-native";
-import { MediaPlayer } from "../../components/MusicPlayer/MediaPlayer";
+
 import Add from "../../../assets/music-player/add.svg";
 import MorePrimary from "../../../assets/music-player/more-primary.svg";
 import MoreSecondary from "../../../assets/music-player/more-secondary.svg";
@@ -11,10 +11,13 @@ import Tip from "../../../assets/music-player/tip-primary.svg";
 import { AlbumInfo } from "../../api/musicplayer/v1/musicplayer";
 import { BrandText } from "../../components/BrandText";
 import { DetailAlbumMenu } from "../../components/MusicPlayer/DetailAlbumMenu";
+import { MediaPlayer } from "../../components/MusicPlayer/MediaPlayer";
 import { MusicPlayerTab } from "../../components/MusicPlayer/MusicPlayerTab";
 import { TrackHoverMenu } from "../../components/MusicPlayer/TrackHoverMenu";
 import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
+import { useMusicplayer } from "../../context/MusicplayerProvider";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { mustGetMusicplayerClient } from "../../utils/backend";
 import { ipfsPinataUrl } from "../../utils/ipfs";
 import { ScreenFC } from "../../utils/navigation";
@@ -26,16 +29,12 @@ import {
   fontSemibold20,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import { useMusicplayer } from "../../context/MusicplayerProvider";
-
 
 export const AlbumNameScreen: ScreenFC<"AlbumName"> = ({
   route: {
     params: { id },
   },
 }) => {
-
   const selectedNetworkId = useSelectedNetworkId();
   const [albumInfo, setAlbumInfo] = useState<AlbumInfo>({
     id: 0,
@@ -47,13 +46,15 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = ({
 
   useEffect(() => {
     const getAlbumInfo = async () => {
-      const res = await mustGetMusicplayerClient(selectedNetworkId).getAlbum({ id });
+      const res = await mustGetMusicplayerClient(selectedNetworkId).getAlbum({
+        id,
+      });
       if (res.album) {
         setAlbumInfo(res.album);
       }
     };
     getAlbumInfo();
-  },[id]);
+  }, [id, selectedNetworkId]);
 
   const initIndexHoverState = {
     index: 0,
@@ -249,7 +250,7 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = ({
   // const [audioSrc, setAudioSrc] = useState("");
   // const [audioIsPlay, setAudioIsPlay] = useState<boolean>(false);
   // const audioRef = useRef<HTMLAudioElement>(null);
-  const { setAudioSrc, setIsPlay} = useMusicplayer();
+  const { setAudioSrc, setIsPlay } = useMusicplayer();
   const playAudio = () => {
     if (albumInfo.musics.length > 0) {
       setAudioSrc(ipfsPinataUrl(albumInfo.musics[0].ipfs));
@@ -271,7 +272,7 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = ({
       fullWidth
     >
       <View style={styles.pageConatiner}>
-        <MusicPlayerTab setTab={()=>{}}/>
+        <MusicPlayerTab setTab={() => {}} />
 
         <View style={styles.albumBox}>
           <View style={styles.infoBox}>

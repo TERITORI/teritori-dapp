@@ -13,6 +13,7 @@ import Img from "../../../assets/music-player/img.svg";
 import List from "../../../assets/music-player/list.svg";
 import Remove from "../../../assets/music-player/remove.svg";
 import Upload from "../../../assets/music-player/upload.svg";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { UploadFileInfo } from "../../screens/MusicPlayer/types";
 import { mustGetMusicplayerClient } from "../../utils/backend";
 import { uploadFileToIPFS, ipfsPinataUrl } from "../../utils/ipfs";
@@ -30,7 +31,6 @@ import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { PrimaryButton } from "../buttons/PrimaryButton";
 import ModalBase from "../modals/ModalBase";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 
 interface AlbumInfo {
   name: string;

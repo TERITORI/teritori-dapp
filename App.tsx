@@ -18,6 +18,7 @@ import { Provider as ReduxProvider } from "react-redux";
 import { Navigator } from "./packages/components/navigation/Navigator";
 import { DropdownsContextProvider } from "./packages/context/DropdownsProvider";
 import { FeedbacksContextProvider } from "./packages/context/FeedbacksProvider";
+import { MusicplayerContextProvider } from "./packages/context/MusicplayerProvider";
 import { SidebarContextProvider } from "./packages/context/SidebarProvider";
 import { TNSMetaDataListContextProvider } from "./packages/context/TNSMetaDataListProvider";
 import { TNSContextProvider } from "./packages/context/TNSProvider";
@@ -25,7 +26,6 @@ import { TransactionModalsProvider } from "./packages/context/TransactionModalsP
 import { WalletsProvider } from "./packages/context/WalletsProvider";
 import { store } from "./packages/store/store";
 import { linking } from "./packages/utils/navigation";
-import { MusicplayerContextProvider } from "./packages/context/MusicplayerProvider";
 
 const queryClient = new QueryClient();
 

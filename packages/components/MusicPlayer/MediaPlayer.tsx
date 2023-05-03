@@ -5,10 +5,11 @@ import Add from "../../../assets/media-player/add.svg";
 import Avatar from "../../../assets/media-player/avatar.svg";
 import Loop from "../../../assets/media-player/loop.svg";
 import Next from "../../../assets/media-player/next.svg";
-import Play from "../../../assets/media-player/play.svg";
 import Pause from "../../../assets/media-player/pause.svg";
+import Play from "../../../assets/media-player/play.svg";
 import Previous from "../../../assets/media-player/previous.svg";
 import Random from "../../../assets/media-player/random.svg";
+import { useMusicplayer } from "../../context/MusicplayerProvider";
 import {
   neutral17,
   neutral22,
@@ -19,20 +20,19 @@ import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
-import { useMusicplayer } from "../../context/MusicplayerProvider";
 
 export const MediaPlayer: React.FC = () => {
   const audioRef = useRef<HTMLAudioElement>(null);
-  const {audioSrc, isPlay, setIsPlay} = useMusicplayer();
+  const { audioSrc, isPlay, setIsPlay } = useMusicplayer();
 
-  useEffect(()=>{
+  useEffect(() => {
     if (isPlay && audioRef.current && audioSrc) {
       audioRef.current.play();
     }
-    if (!isPlay && audioRef.current){
+    if (!isPlay && audioRef.current) {
       audioRef.current.pause();
     }
-  },[isPlay, audioSrc])
+  }, [isPlay, audioSrc]);
 
   const componentHight = 48;
   // const headerHeight = 79;
@@ -72,11 +72,11 @@ export const MediaPlayer: React.FC = () => {
     },
     audioBox: {},
   });
-  const clickPlayPause =()=>{
-    if (audioSrc !== ""){
+  const clickPlayPause = () => {
+    if (audioSrc !== "") {
       setIsPlay(!isPlay);
     }
-  }
+  };
   return (
     <View style={styles.container}>
       <View style={styles.playHandleBox}>
