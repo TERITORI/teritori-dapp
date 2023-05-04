@@ -109,7 +109,7 @@ func (h *Handler) handleExecuteSquadStake(e *Message, execMsg *wasmtypes.MsgExec
 	}
 
 	startTimeDt := time.Unix(int64(startTime), 0)
-	season, _, err := p2e.GetSeasonByTime(startTimeDt, h.config.Network.ID)
+	season, _, err := p2e.GetSeasonByTime(startTimeDt, h.config.Network)
 	if err != nil {
 		return errors.Wrap(err, "failed to get season")
 	}
@@ -232,7 +232,7 @@ func (h *Handler) handleExecuteSquadUnstake(e *Message, execMsg *wasmtypes.MsgEx
 
 		// Get current leaderboard record
 		startTimeDt := time.Unix(int64(squadStaking.StartTime), 0)
-		season, _, err := p2e.GetSeasonByTime(startTimeDt, h.config.Network.ID)
+		season, _, err := p2e.GetSeasonByTime(startTimeDt, h.config.Network)
 		if err != nil {
 			return errors.Wrap(err, "failed to get season")
 		}

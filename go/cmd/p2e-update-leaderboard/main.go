@@ -28,7 +28,7 @@ func sendRewardsList(
 	rpcEndpoint string,
 	distributorMnemonic string,
 ) (*sdk.TxResponse, error) {
-	dailyRewards, err := p2e.GetDailyRewardsConfigBySeason(seasonId, network.Kind)
+	dailyRewards, err := p2e.GetDailyRewardsConfigBySeason(seasonId, network)
 
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get rewards")
@@ -270,7 +270,7 @@ func main() {
 
 	schedule := gocron.NewScheduler(time.UTC)
 	schedule.Every(5).Minutes().Do(func() {
-		season, _, err := p2e.GetSeasonByTime(time.Now().UTC(), network.Kind)
+		season, _, err := p2e.GetSeasonByTime(time.Now().UTC(), network)
 		if err != nil {
 			logger.Error("failed to get current season", zap.Error(err))
 			return
@@ -295,7 +295,7 @@ func main() {
 
 	// Run a bit earlier than midnight to be sure that we snapshot on current season (if case of the season transition moment)
 	schedule.Every(1).Day().At("23:59").Do(func() {
-		season, _, err := p2e.GetCurrentSeason(network.Kind)
+		season, _, err := p2e.GetCurrentSeason(network)
 		if err != nil {
 			logger.Error("failed to get current season", zap.Error(err))
 			return

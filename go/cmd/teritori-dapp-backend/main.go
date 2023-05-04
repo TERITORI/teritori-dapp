@@ -110,8 +110,9 @@ func main() {
 
 	// P2E services
 	p2eSvc := p2e.NewP2eService(context.Background(), &p2e.Config{
-		Logger:    logger,
-		IndexerDB: indexerDB,
+		Logger:       logger,
+		IndexerDB:    indexerDB,
+		NetworkStore: netstore,
 	})
 
 	// Feed services

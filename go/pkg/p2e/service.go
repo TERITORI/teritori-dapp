@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
+	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
 	"github.com/TERITORI/teritori-dapp/go/pkg/p2epb"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
@@ -16,8 +17,9 @@ type P2eService struct {
 }
 
 type Config struct {
-	Logger    *zap.Logger
-	IndexerDB *gorm.DB
+	Logger       *zap.Logger
+	IndexerDB    *gorm.DB
+	NetworkStore networks.NetworkStore
 }
 
 func NewP2eService(ctx context.Context, conf *Config) p2epb.P2EServiceServer {
@@ -125,7 +127,13 @@ func (s *P2eService) Leaderboard(req *p2epb.LeaderboardRequest, srv p2epb.P2ESer
 }
 
 func (s *P2eService) CurrentSeason(ctx context.Context, req *p2epb.CurrentSeasonRequest) (*p2epb.CurrentSeasonResponse, error) {
-	currentSeason, remainingHp, err := GetCurrentSeason(req.GetNetworkId())
+	network, err := s.conf.NetworkStore.GetNetwork(req.GetNetworkId())
+
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to get provided network")
+	}
+
+	currentSeason, remainingHp, err := GetCurrentSeason(network)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get current season")
 	}
@@ -148,7 +156,13 @@ func (s *P2eService) CurrentSeason(ctx context.Context, req *p2epb.CurrentSeason
 }
 
 func (s *P2eService) AllSeasons(ctx context.Context, req *p2epb.AllSeasonsRequest) (*p2epb.AllSeasonsResponse, error) {
-	allSeasons := GetAllSeasons(req.GetNetworkId())
+	network, err := s.conf.NetworkStore.GetNetwork(req.GetNetworkId())
+
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to get provided network")
+	}
+
+	allSeasons := GetAllSeasons(network)
 
 	var data []*p2epb.SeasonWithoutPrize
 

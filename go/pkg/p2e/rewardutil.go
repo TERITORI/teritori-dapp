@@ -14,8 +14,8 @@ var (
 	COEF = sdk.NewDec(1).Add(sdk.NewDecWithPrec(15, 4)) // 1.0015
 )
 
-func GetAllSeasons(networkID string) []Season {
-	switch networkKind {
+func GetAllSeasons(network networks.Network) []Season {
+	switch network.GetBase().Kind {
 	case networks.NetworkKindEthereum:
 		return THE_RIOT_ETHEREUM_SEASONS
 	case networks.NetworkKindCosmos:
@@ -41,10 +41,10 @@ func GetBossHp(season Season) (int32, error) {
 }
 
 // returns: season, time passed in days, error
-func GetSeasonByTime(givenTime time.Time, networkID string) (Season, float64, error) {
+func GetSeasonByTime(givenTime time.Time, network networks.Network) (Season, float64, error) {
 	layout := "2006-01-02T15:04:05"
 
-	for _, season := range GetAllSeasons(networkID) {
+	for _, season := range GetAllSeasons(network) {
 		seasonStartsAt, err := time.Parse(layout, season.StartsAt)
 		if err != nil {
 			return Season{}, 0, errors.Wrap(err, "failed to parsed season start time")
@@ -64,12 +64,12 @@ func GetSeasonByTime(givenTime time.Time, networkID string) (Season, float64, er
 }
 
 // returns: season, time passed in days, error
-func GetCurrentSeason(networkID string) (Season, float64, error) {
-	return GetSeasonByTime(time.Now().UTC(), networkID)
+func GetCurrentSeason(network networks.Network) (Season, float64, error) {
+	return GetSeasonByTime(time.Now().UTC(), network)
 }
 
-func GetSeasonById(seasonId string, networkID string) (Season, error) {
-	for _, season := range GetAllSeasons(networkID) {
+func GetSeasonById(seasonId string, network networks.Network) (Season, error) {
+	for _, season := range GetAllSeasons(network) {
 		if seasonId == season.ID {
 			return season, nil
 		}
@@ -79,14 +79,14 @@ func GetSeasonById(seasonId string, networkID string) (Season, error) {
 	return Season{}, errors.New(fmt.Sprintf("failed to find season by id :%s", seasonId))
 }
 
-func GetDailyRewardsConfigBySeason(seasonId string, networkID string) (sdk.DecCoins, error) {
-	season, err := GetSeasonById(seasonId, networkID)
+func GetDailyRewardsConfigBySeason(seasonId string, network networks.Network) (sdk.DecCoins, error) {
+	season, err := GetSeasonById(seasonId, network)
 
 	if err != nil {
 		return nil, err
 	}
 
-	seasonRewards, err := GetRewardsConfigBySeason(season.ID, networkID)
+	seasonRewards, err := GetRewardsConfigBySeason(season.ID, network)
 	if err != nil {
 		return nil, err
 	}
@@ -109,13 +109,13 @@ func GetDailyRewardsConfigBySeason(seasonId string, networkID string) (sdk.DecCo
 	return dailyRewards, nil
 }
 
-func GetRewardsConfigBySeason(seasonId string, networkID string) ([]sdk.Dec, error) {
-	targetSeason, err := GetSeasonById(seasonId, networkID)
+func GetRewardsConfigBySeason(seasonId string, network networks.Network) ([]sdk.Dec, error) {
+	targetSeason, err := GetSeasonById(seasonId, network)
 	if err != nil {
 		return nil, err
 	}
 
-	allSeasons := GetAllSeasons(networkID)
+	allSeasons := GetAllSeasons(network)
 	if len(allSeasons) == 0 {
 		return nil, errors.New("failed to get seasons data")
 	}
