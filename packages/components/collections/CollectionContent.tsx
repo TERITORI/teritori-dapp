@@ -41,7 +41,6 @@ export const CollectionContent: React.FC<{
         <NFTs
           key={selectedTab}
           req={nftsRequest}
-          numColumns={numColumns}
           ListFooterComponent={<Footer />}
         />
       );

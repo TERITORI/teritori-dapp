@@ -27,10 +27,9 @@ const RenderItem: React.FC<{
 
 export const NFTs: React.FC<{
   req: NFTsRequest;
-  numColumns: number;
   ListHeaderComponent?: ReactElement;
   ListFooterComponent?: ReactElement;
-}> = ({ req, numColumns, ListHeaderComponent, ListFooterComponent }) => {
+}> = ({ req, ListHeaderComponent, ListFooterComponent }) => {
   const { nfts, fetchMore } = useNFTs(req);
   const { height } = useMaxResolution();
 
@@ -55,7 +54,7 @@ export const NFTs: React.FC<{
         columnWrapperStyle={{ flexWrap: "wrap", flex: 1, marginTop: 5 }}
         numColumns={99} // needed to deal with wrap via css
         ItemSeparatorComponent={() => <SpacerColumn size={2} />}
-        key={numColumns}
+        key="nft-flat-list"
         data={nfts}
         onEndReached={handleEndReached}
         keyExtractor={keyExtractor}
