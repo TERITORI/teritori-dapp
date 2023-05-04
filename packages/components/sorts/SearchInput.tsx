@@ -45,6 +45,7 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     width: "100%",
     outlineStyle: "none",
+    height: 20,
   },
 });
 const textInputStyle = StyleSheet.flatten([styles.textInput, fontMedium14]);
