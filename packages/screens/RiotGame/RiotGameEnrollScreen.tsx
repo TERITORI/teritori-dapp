@@ -25,7 +25,10 @@ import {
   getSquadStakingSquadsV1QueryKey,
   useSquadStakingSquadsV1,
 } from "../../hooks/riotGame/useSquadStakingSquadsV1";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import {
+  useSelectedNetworkId,
+  useSelectedNetworkKind,
+} from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
   persistSquadPreset,
@@ -66,6 +69,7 @@ export const RiotGameEnrollScreen = () => {
   const selectedWallet = useSelectedWallet();
   const networkId = useSelectedNetworkId();
   const queryClient = useQueryClient();
+  const networkKind = useSelectedNetworkKind();
 
   const videoRef = React.useRef<Video>(null);
   const isScreenFocused = useIsFocused();
@@ -179,7 +183,7 @@ export const RiotGameEnrollScreen = () => {
       });
     }
 
-    const currentSeason = await p2eClient.CurrentSeason({});
+    const currentSeason = await p2eClient.CurrentSeason({ networkKind });
     if (currentSeason.isPre) {
       return setToastError({
         title: "Warning",

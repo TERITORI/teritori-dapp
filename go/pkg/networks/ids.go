@@ -48,7 +48,7 @@ func (netstore NetworkStore) ParseNFTID(nftId string) (Network, string, string, 
 }
 
 func (n *NetworkBase) UserID(address string) UserID {
-	return UserID(fmt.Sprintf("%s-%s", n.IDPrefix, address))
+	return UserID(fmt.Sprintf("%s-%s", n.IDPrefix, strings.ToLower(address)))
 }
 
 // returns <network_id>-<user_address>

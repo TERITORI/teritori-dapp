@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
+	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
 	"github.com/TERITORI/teritori-dapp/go/pkg/p2epb"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
@@ -125,7 +126,7 @@ func (s *P2eService) Leaderboard(req *p2epb.LeaderboardRequest, srv p2epb.P2ESer
 }
 
 func (s *P2eService) CurrentSeason(ctx context.Context, req *p2epb.CurrentSeasonRequest) (*p2epb.CurrentSeasonResponse, error) {
-	currentSeason, remainingHp, err := GetCurrentSeason()
+	currentSeason, remainingHp, err := GetCurrentSeason(networks.NetworkKind(req.GetNetworkKind()))
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get current season")
 	}
@@ -148,7 +149,7 @@ func (s *P2eService) CurrentSeason(ctx context.Context, req *p2epb.CurrentSeason
 }
 
 func (s *P2eService) AllSeasons(ctx context.Context, req *p2epb.AllSeasonsRequest) (*p2epb.AllSeasonsResponse, error) {
-	allSeasons := GetAllSeasons()
+	allSeasons := GetAllSeasons(networks.NetworkKind(req.GetNetworkKind()))
 
 	var data []*p2epb.SeasonWithoutPrize
 

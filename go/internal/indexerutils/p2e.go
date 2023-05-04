@@ -51,7 +51,7 @@ func (u *IndexerUtils) IndexSquadUnstake(
 
 		// Get current leaderboard record
 		startTimeDt := time.Unix(int64(squadStaking.StartTime), 0)
-		season, _, err := p2e.GetSeasonByTime(startTimeDt)
+		season, _, err := p2e.GetSeasonByTime(startTimeDt, u.network.Kind)
 		if err != nil {
 			return errors.Wrap(err, "failed to get season")
 		}
@@ -121,7 +121,7 @@ func (u *IndexerUtils) IndexSquadStake(
 	ownerId := u.network.UserID(userAddress)
 
 	startTimeDt := time.Unix(int64(startTime), 0)
-	season, _, err := p2e.GetSeasonByTime(startTimeDt)
+	season, _, err := p2e.GetSeasonByTime(startTimeDt, u.network.Kind)
 	if err != nil {
 		return errors.Wrap(err, "failed to get season")
 	}
@@ -143,11 +143,12 @@ func (u *IndexerUtils) IndexSquadStake(
 	}
 
 	squadStaking := indexerdb.P2eSquadStaking{
-		OwnerID:   ownerId,
-		StartTime: startTime,
-		EndTime:   endTime,
-		TokenIDs:  strings.Join(tokenIDs, ","),
-		SeasonID:  season.ID,
+		OwnerID:     ownerId,
+		StartTime:   startTime,
+		EndTime:     endTime,
+		TokenIDs:    strings.Join(tokenIDs, ","),
+		SeasonID:    season.ID,
+		NetworkKind: u.network.Kind,
 	}
 
 	if err := u.dbTransaction.Create(&squadStaking).Error; err != nil {
@@ -157,8 +158,9 @@ func (u *IndexerUtils) IndexSquadStake(
 	// Create leaderboard (by season) record if does not exist
 	var userScore indexerdb.P2eLeaderboard
 	q2 := &indexerdb.P2eLeaderboard{
-		UserID:   ownerId,
-		SeasonID: season.ID,
+		UserID:      ownerId,
+		SeasonID:    season.ID,
+		NetworkKind: u.network.Kind,
 	}
 	if err := u.dbTransaction.Where(q2).FirstOrCreate(&userScore).Error; err != nil {
 		return errors.Wrap(err, "failed to get/create user record for leaderboard")

@@ -6,7 +6,10 @@ import brokenBoxPNG from "../../../../assets/game/broken-box.png";
 import { CurrentSeasonResponse } from "../../../api/p2e/v1/p2e";
 import { BrandText } from "../../../components/BrandText";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
-import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
+import {
+  useSelectedNetworkId,
+  useSelectedNetworkKind,
+} from "../../../hooks/useSelectedNetwork";
 import { mustGetP2eClient } from "../../../utils/backend";
 import { gameHighlight } from "../../../utils/style/colors";
 import { fontMedium24, fontBold9 } from "../../../utils/style/fonts";
@@ -16,11 +19,12 @@ export const FightBossSection: React.FC = () => {
   const [currentSeason, setCurrentSeason] = useState<CurrentSeasonResponse>();
   const { setToastError } = useFeedbacks();
   const networkId = useSelectedNetworkId();
+  const networkKind = useSelectedNetworkKind();
 
   const fetchCurrentSeason = useCallback(async () => {
     try {
       const p2eClient = mustGetP2eClient(networkId);
-      const currentSeason = await p2eClient.CurrentSeason({});
+      const currentSeason = await p2eClient.CurrentSeason({ networkKind });
       setCurrentSeason(currentSeason);
     } catch (e) {
       if (e instanceof Error) {
@@ -28,7 +32,7 @@ export const FightBossSection: React.FC = () => {
       }
       throw e;
     }
-  }, [networkId, setToastError]);
+  }, [networkId, setToastError, networkKind]);
 
   const remainingPercentage = useMemo(() => {
     if (!currentSeason?.bossHp) return 100;

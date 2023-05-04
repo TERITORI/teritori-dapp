@@ -44,7 +44,6 @@ export const useRippers = () => {
   };
 
   // FIXME: allow to pass multiple collection ids in backend api
-
   const { nfts: myRippers } = useNFTs(myRippersRequest);
   const { nfts: myRipperChilds } = useNFTs(myRipperChildsRequest);
 

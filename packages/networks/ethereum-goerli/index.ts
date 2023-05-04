@@ -15,8 +15,8 @@ export const ethereumGoerliNetwork: NetworkInfo = {
   accountExplorer: "https://goerli.etherscan.io/address/$address",
   contractExplorer: "https://goerli.etherscan.io/address/$address",
   testnet: true,
-  backendEndpoint: "https://dapp-backend.testnet.teritori.com",
-  // backendEndpoint: "http://localhost:9090",
+  // backendEndpoint: "https://dapp-backend.testnet.teritori.com",
+  backendEndpoint: "http://localhost:9090",
   chainId: 5,
   alchemyApiKey: "TCahW5rzmCaegxHVyhXh3vmCG2sS9Yu3",
   theGraphEndpoint:
@@ -30,7 +30,7 @@ export const ethereumGoerliNetwork: NetworkInfo = {
   firehoseEndpoint: "goerli.eth.streamingfast.io:443",
   indexStartBlock: "8218450", //  Stake: "8694034",
   indexStopBlock: "-1",
-  indexBlockProgress: 10000,
+  indexBlockProgress: 1000,
   indexLiveBlockProgress: 1,
   substreamsManifest: "go/internal/substreams/ethereum/ethereum_goerli.yaml",
 };

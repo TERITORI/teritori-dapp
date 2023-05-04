@@ -284,18 +284,6 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 
 	switch network := network.(type) {
 
-	case *networks.EthereumNetwork:
-		nfts, err := s.ethereumProvider.GetNFTs(srv.Context(), collectionID, ownerID, int(limit), int(offset), sortDirection)
-		if err != nil {
-			return errors.Wrap(err, "failed to fetch collection nfts")
-		}
-		for _, nft := range nfts {
-			if err := srv.Send(&marketplacepb.NFTsResponse{Nft: nft}); err != nil {
-				return errors.Wrap(err, "failed to send nft")
-			}
-		}
-		return nil
-
 	case *networks.SolanaNetwork:
 		if ownerID != "" {
 			return errors.New("owner id filter not supported on solana")
@@ -334,7 +322,7 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 		}
 		return nil
 
-	case *networks.CosmosNetwork:
+	case *networks.CosmosNetwork, *networks.EthereumNetwork:
 		query := s.conf.IndexerDB.
 			Preload("TeritoriNFT").
 			Preload("Collection").
@@ -367,7 +355,11 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 			return errors.Wrap(err, "failed to fetch collection nfts")
 		}
 
-		tnsCollectionID := network.CollectionID(network.NameServiceContractAddress)
+		tnsCollectionID := networks.CollectionID("")
+		switch networkType := network.(type) {
+		case *networks.CosmosNetwork:
+			tnsCollectionID = networkType.CollectionID(networkType.NameServiceContractAddress)
+		}
 
 		for _, nft := range nfts {
 			if nft.Collection == nil {
@@ -377,11 +369,14 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 			imageURI := nft.ImageURI
 			textInsert := ""
 
-			// tns-specific
-			if nft.CollectionID == tnsCollectionID {
-				textInsert = nft.Name
-				if imageURI == "" {
-					imageURI = network.NameServiceDefaultImage
+			switch networkType := network.(type) {
+			case *networks.CosmosNetwork:
+				// tns-specific
+				if nft.CollectionID == tnsCollectionID {
+					textInsert = nft.Name
+					if imageURI == "" {
+						imageURI = networkType.NameServiceDefaultImage
+					}
 				}
 			}
 

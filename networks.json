@@ -254,7 +254,7 @@
     "accountExplorer": "https://goerli.etherscan.io/address/$address",
     "contractExplorer": "https://goerli.etherscan.io/address/$address",
     "testnet": true,
-    "backendEndpoint": "https://dapp-backend.testnet.teritori.com",
+    "backendEndpoint": "http://localhost:9090",
     "chainId": 5,
     "alchemyApiKey": "TCahW5rzmCaegxHVyhXh3vmCG2sS9Yu3",
     "theGraphEndpoint": "https://api.studio.thegraph.com/query/40379/teritori-goerli-indexer/v-test-01",
@@ -268,7 +268,7 @@
     "firehoseEndpoint": "goerli.eth.streamingfast.io:443",
     "indexStartBlock": "8218450",
     "indexStopBlock": "-1",
-    "indexBlockProgress": 10000,
+    "indexBlockProgress": 1000,
     "indexLiveBlockProgress": 1,
     "substreamsManifest": "go/internal/substreams/ethereum/ethereum_goerli.yaml"
   },

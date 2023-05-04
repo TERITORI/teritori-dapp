@@ -143,20 +143,23 @@ export const RiotGameLeaderboardScreen = () => {
 
     const _userScores: UserScore[] = [];
 
-    const currentSeason = await p2eClient.CurrentSeason({});
+    const currentSeason = await p2eClient.CurrentSeason({
+      networkKind: selectedNetwork?.kind,
+    });
     setCurrentSeason(currentSeason);
 
-    const streamData = await p2eClient.Leaderboard({
+    const streamData = p2eClient.Leaderboard({
       seasonId: currentSeason.id,
       limit: 500,
       offset: 0,
+      networkKind: selectedNetwork?.kind,
     });
 
     await streamData.forEach((item: LeaderboardResponse) => {
       item.userScore && _userScores.push(item.userScore);
     });
     setUserScores(_userScores.filter((val) => val.rank !== 0));
-  }, [selectedNetwork?.id]);
+  }, [selectedNetwork?.id, selectedNetwork?.kind]);
 
   useEffect(() => {
     fetchLeaderboard();
