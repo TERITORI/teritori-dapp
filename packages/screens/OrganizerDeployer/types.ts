@@ -1,8 +1,13 @@
+export enum DaoType {
+  MEMBER_BASED = 0,
+  TOKEN_BASED = 1,
+}
+
 export type CreateDaoFormType = {
   organizationName: string;
   associatedTeritoriNameService: string;
   organizationDescription: string;
-  structure: string;
+  structure: DaoType;
   imageUrl: string;
 };
 
@@ -18,6 +23,9 @@ export type TokenSettingFormType = {
   tokenName: string;
   tokenSymbol: string;
   tokenHolders: { address: string; balance: string }[];
+};
+export type MemberSettingFormType = {
+  members: { addr: string; weight: string }[];
 };
 
 export type LaunchingProcessStepType = {
@@ -76,7 +84,7 @@ export type ProposalsTransactionType = {
 
 export type CreateDaoProposalFormType = {
   proposalName: string;
-  proposalDescription: string;  
+  proposalDescription: string;
 };
 
 export interface ProposalInfo {
@@ -86,7 +94,7 @@ export interface ProposalInfo {
   date: string;
   creator: string;
   description: string;
-};
+}
 
 export interface DaoInfo {
   name: string;
@@ -95,5 +103,7 @@ export interface DaoInfo {
   description: string;
   address: string;
   members: string;
-  treasury: string;  
+  treasury: string;
+  proposalModuleAddress: string;
+  proposalBaseModuleAddress: string;
 }

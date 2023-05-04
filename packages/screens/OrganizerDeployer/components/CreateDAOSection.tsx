@@ -10,11 +10,11 @@ import { neutral33, neutral77 } from "../../../utils/style/colors";
 import { fontSemibold20, fontSemibold28 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { ORGANIZER_DEPLOYER_STEPS } from "../OrganizerDeployerScreen";
-import { CreateDaoFormType } from "../types";
+import { CreateDaoFormType, DaoType } from "../types";
 import { ImagePreviewer } from "./ImagePreviewer";
 import { RadioDescriptionSelector } from "./RadioDescriptionSelector";
 
-const RADIO_DESCRIPTION_TYPES = ["Membership", "Governance", "Decentralized"];
+//const RADIO_DESCRIPTION_TYPES = ["Membership", "Governance", "Decentralized"];
 
 interface CreateDAOSectionProps {
   onSubmit: (form: CreateDaoFormType) => void;
@@ -32,11 +32,11 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
     setError,
     formState: { isValid },
   } = useForm<CreateDaoFormType>({
-    defaultValues: { structure: RADIO_DESCRIPTION_TYPES[0] },
+    defaultValues: { structure: DaoType.MEMBER_BASED },
     mode: "all",
   });
 
-  const selectedRadioDescription = watch("structure");
+  const selectedRadioStructure = watch("structure");
   const uri = watch("imageUrl");
 
   // functions
@@ -116,8 +116,8 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
         <View style={styles.row}>
           <View style={styles.fill}>
             <RadioDescriptionSelector
-              selected={selectedRadioDescription === RADIO_DESCRIPTION_TYPES[0]}
-              onPress={() => setValue("structure", RADIO_DESCRIPTION_TYPES[0])}
+              selected={selectedRadioStructure === DaoType.MEMBER_BASED}
+              onPress={() => setValue("structure", DaoType.MEMBER_BASED)}
               title="Membership-based TORG - Teritori Organization"
               description="Small organization with a few members who are likely to stick around. Members can be added and removed by a vote of existing members."
             />
@@ -125,26 +125,14 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
           <SpacerRow size={2} />
           <View style={styles.fill}>
             <RadioDescriptionSelector
-              selected={selectedRadioDescription === RADIO_DESCRIPTION_TYPES[1]}
-              onPress={() => setValue("structure", RADIO_DESCRIPTION_TYPES[1])}
+              selected={selectedRadioStructure === DaoType.TOKEN_BASED}
+              onPress={() => setValue("structure", DaoType.TOKEN_BASED)}
               title="Governance Token-based TORG - Teritori Organization"
               description="Fluid organization with many members who leave and join frequently. Members can join and leave by exchanging governance shares."
             />
           </View>
         </View>
         <SpacerColumn size={2} />
-        <View style={styles.row}>
-          <View style={styles.fill}>
-            <RadioDescriptionSelector
-              selected={selectedRadioDescription === RADIO_DESCRIPTION_TYPES[2]}
-              onPress={() => setValue("structure", RADIO_DESCRIPTION_TYPES[2])}
-              title="Decentralized Coop Org"
-              description="A cooperative company is based on a simple rule: 1 people = 1 voice, whatever the number of holded tokens."
-            />
-          </View>
-          <SpacerRow size={2} />
-          <View style={styles.fill} />
-        </View>
       </ScrollView>
 
       <View style={styles.footer}>

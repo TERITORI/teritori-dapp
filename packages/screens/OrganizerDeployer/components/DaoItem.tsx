@@ -1,7 +1,6 @@
 import React from "react";
 import { Pressable, StyleSheet, Image, View } from "react-native";
 
-import { DaoInfo } from "../../../api/dao/v1/dao";
 import { BrandText } from "../../../components/BrandText";
 import { SpacerColumn } from "../../../components/spacer";
 import {
@@ -12,6 +11,8 @@ import {
 import { fontSemibold12, fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { tinyAddress } from "../../../utils/text";
+import { DaoInfo } from "../types";
+
 interface DaoItemProps {
   info: DaoInfo;
   onPress?: () => void;
@@ -21,7 +22,7 @@ export const DaoItem: React.FC<DaoItemProps> = ({ info, onPress }) => {
   return (
     <Pressable onPress={onPress} style={styles.container}>
       <View style={{ alignItems: "center" }}>
-        <Image source={{ uri: info.imageUrl }} style={styles.imageStyle} />
+        <Image source={{ uri: info.imgUrl }} style={styles.imageStyle} />
         <SpacerColumn size={2.5} />
         <BrandText style={[fontSemibold14, { color: secondaryColor }]}>
           {info.name}

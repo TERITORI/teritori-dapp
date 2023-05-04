@@ -13,6 +13,8 @@ import {
   CreateDaoFormType,
   ConfigureVotingFormType,
   TokenSettingFormType,
+  MemberSettingFormType,
+  DaoType,
 } from "../types";
 import { ReviewCollapsable } from "./ReviewCollapsable";
 import { ReviewCollapsableItem } from "./ReviewCollapsableItem";
@@ -21,21 +23,41 @@ interface ReviewInformationSectionProps {
   organizationData?: CreateDaoFormType;
   votingSettingData?: ConfigureVotingFormType;
   tokenSettingData?: TokenSettingFormType;
+  memberSettingData?: MemberSettingFormType;
   onSubmit: () => void;
 }
 
 export const ReviewInformationSection: React.FC<
   ReviewInformationSectionProps
-> = ({ organizationData, votingSettingData, tokenSettingData, onSubmit }) => {
+> = ({
+  organizationData,
+  votingSettingData,
+  tokenSettingData,
+  memberSettingData,
+  onSubmit,
+}) => {
   // returns
   const AddressBalanceValue = useCallback(
     ({ address, balance }: { address: string; balance: string }) => (
       <View style={styles.row}>
         <BrandText style={styles.addressText}>
-          {tinyAddress(address, 10)}
+          {tinyAddress(address, 16)}
         </BrandText>
         <SpacerRow size={1.5} />
         <BrandText style={fontSemibold14}>{balance}</BrandText>
+      </View>
+    ),
+    []
+  );
+
+  const AddressWeightValue = useCallback(
+    ({ address, weight }: { address: string; weight: string }) => (
+      <View style={styles.row}>
+        <BrandText style={styles.addressText}>
+          {tinyAddress(address, 16)}
+        </BrandText>
+        <SpacerRow size={1.5} />
+        <BrandText style={fontSemibold14}>{weight}</BrandText>
       </View>
     ),
     []
@@ -81,7 +103,11 @@ export const ReviewInformationSection: React.FC<
         <SpacerColumn size={1} />
         <ReviewCollapsableItem
           title="Structure"
-          value={organizationData?.structure}
+          value={
+            organizationData?.structure === DaoType.TOKEN_BASED
+              ? "Governance"
+              : "Membership"
+          }
         />
       </ReviewCollapsable>
 
@@ -110,29 +136,51 @@ export const ReviewInformationSection: React.FC<
 
       <SpacerColumn size={2.5} />
 
-      <ReviewCollapsable title="Token settings">
-        <ReviewCollapsableItem
-          title="TOKEN NAME & SYMBOL"
-          value={`${tokenSettingData?.tokenName} (${tokenSettingData?.tokenSymbol})`}
-        />
-        <SpacerColumn size={1} />
-        {tokenSettingData?.tokenHolders.map((holder, index) => (
-          <View key={holder.address} style={styles.fill}>
-            <ReviewCollapsableItem
-              title={`TOKENHOLDER #${index + 1}`}
-              value={() => (
-                <AddressBalanceValue
-                  address={holder.address}
-                  balance={`${holder.balance} ${tokenSettingData?.tokenSymbol}`}
-                />
+      {organizationData && organizationData.structure === DaoType.TOKEN_BASED && (
+        <ReviewCollapsable title="Token settings">
+          <ReviewCollapsableItem
+            title="TOKEN NAME & SYMBOL"
+            value={`${tokenSettingData?.tokenName} (${tokenSettingData?.tokenSymbol})`}
+          />
+          <SpacerColumn size={1} />
+          {tokenSettingData?.tokenHolders.map((holder, index) => (
+            <View key={holder.address} style={styles.fill}>
+              <ReviewCollapsableItem
+                title={`TOKENHOLDER #${index + 1}`}
+                value={() => (
+                  <AddressBalanceValue
+                    address={holder.address}
+                    balance={`${holder.balance} ${tokenSettingData?.tokenSymbol}`}
+                  />
+                )}
+              />
+              {tokenSettingData?.tokenHolders.length !== index + 1 && (
+                <SpacerColumn size={1} />
               )}
-            />
-            {tokenSettingData?.tokenHolders.length !== index + 1 && (
-              <SpacerColumn size={1} />
-            )}
-          </View>
-        ))}
-      </ReviewCollapsable>
+            </View>
+          ))}
+        </ReviewCollapsable>
+      )}
+      {organizationData && organizationData.structure === DaoType.MEMBER_BASED && (
+        <ReviewCollapsable title="Member settings">
+          {memberSettingData?.members.map((member, index) => (
+            <View key={member.addr} style={styles.fill}>
+              <ReviewCollapsableItem
+                title={`MEMBER #${index + 1}`}
+                value={() => (
+                  <AddressWeightValue
+                    address={member.addr}
+                    weight={`${member.weight}`}
+                  />
+                )}
+              />
+              {tokenSettingData?.tokenHolders.length !== index + 1 && (
+                <SpacerColumn size={1} />
+              )}
+            </View>
+          ))}
+        </ReviewCollapsable>
+      )}
 
       <SpacerColumn size={4} />
 

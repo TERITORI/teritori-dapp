@@ -1,25 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 
-import { DaoInfo } from "../../api/dao/v1/dao";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { SpacerColumn } from "../../components/spacer";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
-import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { daoClient } from "../../utils/backend";
 import { useAppNavigation } from "../../utils/navigation";
 import { fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { DaoItem } from "./components/DaoItem";
-
+import { DaoInfo } from "./types";
 export const OrganizationDaoListScreen = () => {
   // variables
-  const selectedWallet = useSelectedWallet();
   const navigation = useAppNavigation();
-  const { setToastError } = useFeedbacks();
-  const [daos, setDaos] = useState<DaoInfo[]>([]);
+  const [daoList, setDaoList] = useState<DaoInfo[]>([]);
   //
   const onDaoItemPress = (address: string) => {
     navigation.navigate("OrganizationDaoShow", { address });
@@ -29,12 +24,27 @@ export const OrganizationDaoListScreen = () => {
   };
   useEffect(() => {
     const getDaoList = async () => {
-      if (!selectedWallet) return;
       const res = await daoClient.daoList({});
-      setDaos([...res.daos]);
+      const daos: DaoInfo[] = [];
+      for (const dao of res.daos) {
+        const temp_dao: DaoInfo = {
+          name: dao.name,
+          address: dao.address,
+          imgUrl: dao.imageUrl,
+          date: "",
+          description: dao.description,
+          members: "",
+          treasury: "",
+          proposalModuleAddress: "",
+          proposalBaseModuleAddress: "",
+        };
+
+        daos.push(temp_dao);
+      }
+      setDaoList([...daos]);
     };
     getDaoList();
-  }, [selectedWallet, setToastError]);
+  }, []);
 
   // returns
   return (
@@ -61,7 +71,7 @@ export const OrganizationDaoListScreen = () => {
           </View>
           <SpacerColumn size={3} />
           <View style={styles.row}>
-            {daos.map((item, index) => (
+            {daoList.map((item, index) => (
               <DaoItem
                 key={`dao-item-${index}`}
                 info={item}

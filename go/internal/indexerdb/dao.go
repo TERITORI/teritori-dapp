@@ -15,3 +15,12 @@ type Dao struct {
 	TokenSymbol            string
 	UnstakingDuration      uint
 }
+
+type DaoProposal struct {
+	DaoAddress      string
+	ProposalId 		uint
+	Title      		string
+	Description 	string
+	Proposer        string
+	Msgs			string 	//json
+}
