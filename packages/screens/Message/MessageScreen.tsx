@@ -1,4 +1,3 @@
-import Seperator from "@draft-js-plugins/static-toolbar/lib/components/Separator";
 import React, { useState } from "react";
 import {
   View,
@@ -19,8 +18,10 @@ import { ScreenContainer } from "../../components/ScreenContainer";
 import { Separator } from "../../components/Separator";
 import MessageCard from "../../components/cards/MessageCard";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
+import { useAppNavigation } from "../../utils/navigation";
 export const MessageScreen: ScreenFC<"Message"> = () => {
   const [showTertiaryBox, setShowTertiaryBox] = useState(false);
+  const navigation = useAppNavigation();
   return (
     <ScreenContainer
       footerChildren
@@ -34,11 +35,23 @@ export const MessageScreen: ScreenFC<"Message"> = () => {
         <ScrollView horizontal>
           {data.map((item) => (
             <>
+              {/* <TouchableOpacity
+                key={item.id}
+                onPress={() => {
+                  if (item.id === 2) {
+                    setShowTertiaryBox(true);
+                  } else {
+                    setShowTertiaryBox(false);
+                  }
+                }}
+              > */}
               <TouchableOpacity
                 key={item.id}
                 onPress={() => {
                   if (item.id === 2) {
                     setShowTertiaryBox(true);
+                  } else if (item.id === 3) {
+                    navigation.navigate("AddFriend");
                   } else {
                     setShowTertiaryBox(false);
                   }
