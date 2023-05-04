@@ -52,7 +52,7 @@ export const NFTView: React.FC<{
   style?: StyleProp<ViewStyle>;
 }> = ({ data: nft, style }) => {
   // variables
-  const cardWidth = 258;
+  const cardWidth = 250;
   const insideMargin = layout.padding_x2;
   const contentWidth = cardWidth - insideMargin * 2;
   const flatStyle = StyleSheet.flatten(style);
