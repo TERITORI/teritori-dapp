@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity, Platform } from "react-native";
 
 import chevronLeftSVG from "../../../../assets/icons/chevron-left.svg";
 import chevronRightSVG from "../../../../assets/icons/chevron-right.svg";
+import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { SpacerRow } from "../../../components/spacer";
@@ -12,6 +13,8 @@ import {
   neutralA3,
   neutral22,
   neutral17,
+  neutral55,
+  purpleDark,
 } from "../../../utils/style/colors";
 import { fontMedium10, fontSemibold13 } from "../../../utils/style/fonts";
 const CustomCalendar = () => {
@@ -79,27 +82,30 @@ const CustomCalendar = () => {
                   `${day.getDate()}-${
                     currentMonth.getMonth() + 1
                   }-${currentMonth.getFullYear()}`
-                    ? "#5C26F5"
+                    ? purpleDark
                     : isCurrentMonth
-                    ? "#171717"
-                    : "#171717",
+                    ? neutral17
+                    : neutral17,
               }}
             >
-              <Text
-                style={{
-                  color:
-                    selected ===
-                    `${day.getDate()}-${
-                      currentMonth.getMonth() + 1
-                    }-${currentMonth.getFullYear()}`
-                      ? "#ffffff"
-                      : isCurrentMonth
-                      ? "#FFFFFF"
-                      : "#555555",
-                }}
+              <BrandText
+                style={[
+                  fontSemibold13,
+                  {
+                    color:
+                      selected ===
+                      `${day.getDate()}-${
+                        currentMonth.getMonth() + 1
+                      }-${currentMonth.getFullYear()}`
+                        ? "#ffffff"
+                        : isCurrentMonth
+                        ? secondaryColor
+                        : neutral55,
+                  },
+                ]}
               >
                 {day.getDate()}
-              </Text>
+              </BrandText>
             </TouchableOpacity>
           );
         })}
@@ -114,7 +120,7 @@ const CustomCalendar = () => {
         backgroundColor: neutral17,
         borderWidth: 1,
         borderTopWidth: 0,
-        width: 400,
+        width: ["android", "ios"].includes(Platform.OS) ? 350 : 400,
         borderBottomRightRadius: 10,
         borderBottomStartRadius: 10,
         borderColor: neutral33,
@@ -128,8 +134,8 @@ const CustomCalendar = () => {
           position: "absolute",
           alignItems: "center",
           zIndex: 11,
-          top: -45,
-          right: 160,
+          top: -40,
+          right: ["android", "ios"].includes(Platform.OS) ? 75 : 160,
         }}
       >
         <View style={{ flexDirection: "row" }}>
@@ -151,7 +157,7 @@ const CustomCalendar = () => {
               color={secondaryColor}
             />
           </TouchableOpacity>
-          <SpacerRow size={2} />
+          <SpacerRow size={1} />
           <TouchableOpacity
             onPress={() =>
               setCurrentMonth(
@@ -172,27 +178,27 @@ const CustomCalendar = () => {
           </TouchableOpacity>
         </View>
 
-        <SpacerRow size={2} />
+        <SpacerRow size={1} />
 
         <TertiaryBox
-          fullWidth
+          // fullWidth
           disabledBorderColor=""
           mainContainerStyle={{
             backgroundColor: neutral22,
-            minWidth: 160,
+            minWidth: ["android", "ios"].includes(Platform.OS) ? 80 : 160,
           }}
           noBrokenCorners
         >
-          <Text style={[fontSemibold13, { color: secondaryColor }]}>
+          <BrandText style={[fontSemibold13, { color: secondaryColor }]}>
             {currentMonth.toLocaleString("default", {
               month: "long",
             })}
-          </Text>
-          <Text style={[fontMedium10, { color: neutralA3 }]}>
+          </BrandText>
+          <BrandText style={[fontMedium10, { color: neutralA3 }]}>
             {currentMonth.toLocaleString("default", {
               year: "numeric",
             })}
-          </Text>
+          </BrandText>
         </TertiaryBox>
       </View>
 
