@@ -1,17 +1,19 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 
 import avatar from "../../../../assets/icons/avatar.svg";
 import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
-import CustomIcon from "./CheckBoxIcon";
+import { SpacerColumn, SpacerRow } from "../../../components/spacer";
+import { secondaryColor } from "../../../utils/style/colors";
+import { fontSemibold14 } from "../../../utils/style/fonts";
+import { CheckboxDappStore } from "../../DAppStore/components/CheckboxDappStore";
 
 interface CheckboxItem {
   name: string;
   icon: string;
   checked: boolean;
 }
-
 interface CheckboxGroupProps {
   items: CheckboxItem[];
   onChange: (items: CheckboxItem[]) => void;
@@ -19,7 +21,7 @@ interface CheckboxGroupProps {
 
 const CheckboxGroup: React.FC<CheckboxGroupProps> = ({ items, onChange }) => {
   const [checkboxItems, setCheckboxItems] = useState<CheckboxItem[]>(items);
-
+  const [isChecked, setChecked] = useState(true);
   const handleCheckboxPress = (index: number) => {
     const newItems = [...checkboxItems];
     newItems[index].checked = !newItems[index].checked;
@@ -30,45 +32,30 @@ const CheckboxGroup: React.FC<CheckboxGroupProps> = ({ items, onChange }) => {
   return (
     <View>
       {checkboxItems.map((item, index) => (
-        <View style={{ marginTop: 10 }}>
+        <>
           <FlexRow>
             <TouchableOpacity
               key={index}
-              style={styles.checkboxContainer}
               onPress={() => handleCheckboxPress(index)}
             >
-              <View style={styles.checkbox}>
-                {item.checked ? (
-                  <CustomIcon size={20} color="#16BBFF" />
-                ) : (
-                  <CustomIcon size={20} color="grey" />
-                )}
-              </View>
+              {item.checked ? (
+                <CheckboxDappStore isChecked={isChecked} />
+              ) : (
+                <CheckboxDappStore isChecked={!isChecked} />
+              )}
             </TouchableOpacity>
+            <SpacerRow size={2} />
             <SVG source={avatar} />
-            <Text style={styles.checkboxLabel}>{item.name}</Text>
+            <SpacerRow size={2} />
+            <Text style={[fontSemibold14, { color: secondaryColor }]}>
+              {item.name}
+            </Text>
           </FlexRow>
-        </View>
+          <SpacerColumn size={1} />
+        </>
       ))}
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  checkboxContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginVertical: 8,
-  },
-  checkbox: {
-    marginRight: 16,
-  },
-  checkboxLabel: {
-    flex: 1,
-    fontSize: 16,
-    color: "#fff",
-    marginLeft: 20,
-  },
-});
 
 export default CheckboxGroup;

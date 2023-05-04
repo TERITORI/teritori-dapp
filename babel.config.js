@@ -5,7 +5,12 @@ module.exports = function (api) {
     plugins: [
       "@babel/plugin-proposal-numeric-separator",
       "inline-dotenv",
-      "react-native-reanimated/plugin",
+      [
+        "react-native-reanimated/plugin",
+        {
+          relativeSourceLocation: true,
+        },
+      ],
     ],
   };
 };

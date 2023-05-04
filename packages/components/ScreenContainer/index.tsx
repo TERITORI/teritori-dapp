@@ -16,14 +16,12 @@ import { useIsMobile } from "../../hooks/useIsMobile";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { NetworkFeature, NetworkInfo, NetworkKind } from "../../networks";
 import { DAppStoreData } from "../../screens/DAppStore/components/DAppStoreData";
-import SideBarChats from "../../screens/Message/SideBarChats";
 import {
   getResponsiveScreenContainerMarginHorizontal,
   headerHeight,
   headerMarginHorizontal,
   screenContainerContentMarginHorizontal,
 } from "../../utils/style/layout";
-import { BrandText } from "../BrandText";
 import HeaderMessage from "../HeaderMessage";
 import { NetworkSelector } from "../NetworkSelector/NetworkSelector";
 import { SearchBar } from "../Search/SearchBar";
@@ -31,6 +29,7 @@ import { SelectedNetworkGate } from "../SelectedNetworkGate";
 import { ConnectWalletButton } from "../TopMenu/ConnectWalletButton";
 import { Footer } from "../footers/Footer";
 import { Sidebar } from "../navigation/Sidebar";
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 import { CartIconButtonBadge } from "../navigation/components/CartIconButtonBadge";
@@ -43,6 +42,8 @@ import { Header } from "./Header";
 import { ScreenContainerMobile } from "./ScreenContainerMobile";
 import { SearchBar } from "./SearchBar";
 >>>>>>> 72aa04f9 (Add chat message)
+=======
+>>>>>>> b818cdaa (create a group completed)
 export const ScreenContainer: React.FC<{
   headerChildren?: JSX.Element;
   footerChildren?: React.ReactNode;

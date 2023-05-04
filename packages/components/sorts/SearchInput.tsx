@@ -26,6 +26,7 @@ export const SearchInput: React.FC<{
     >
       <SVG
         style={{
+          marginHorizontal: 20,
           marginRight: layout.padding_x1,
           maxWidth: 22,
           width: 40,
@@ -48,6 +49,7 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     width: "100%",
     outlineStyle: "none",
+    height: 20,
   },
 });
 const textInputStyle = StyleSheet.flatten([styles.textInput, fontMedium14]);
