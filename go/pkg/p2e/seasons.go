@@ -147,7 +147,7 @@ var THE_RIOT_ETHEREUM_SEASONS = []Season{
 		BossName:   "Philipp Rustov",
 		BossImage:  "",
 		TopN:       500,
-		StartsAt:   "2023-05-01T00:00:00",
+		StartsAt:   "2023-01-01T00:00:00",
 		EndsAt:     "2023-05-30T00:00:00",
 	},
 }

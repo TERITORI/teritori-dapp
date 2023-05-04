@@ -24,7 +24,7 @@ func (h *Handler) handleInstantiateTNS(e *Message, contractAddress string, insta
 	collectionId := h.config.Network.CollectionID(contractAddress)
 	if err := h.db.Create(&indexerdb.Collection{
 		ID:                  collectionId,
-		NetworkId:           "teritori",
+		NetworkID:           "teritori",
 		Name:                tnsInstantiateMsg.Name,
 		ImageURI:            h.config.Network.NameServiceDefaultImage,
 		MaxSupply:           -1,

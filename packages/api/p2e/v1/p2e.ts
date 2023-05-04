@@ -9,7 +9,7 @@ import { share } from "rxjs/operators";
 export const protobufPackage = "p2e.v1";
 
 export interface AllSeasonsRequest {
-  networkKind: string;
+  networkId: string;
 }
 
 export interface SeasonWithoutPrize {
@@ -23,7 +23,7 @@ export interface AllSeasonsResponse {
 }
 
 export interface CurrentSeasonRequest {
-  networkKind: string;
+  networkId: string;
 }
 
 export interface CurrentSeasonResponse {
@@ -40,7 +40,7 @@ export interface CurrentSeasonResponse {
 export interface UserRankRequest {
   seasonId: string;
   userId: string;
-  networkKind: string;
+  networkId: string;
 }
 
 export interface UserRankResponse {
@@ -52,7 +52,7 @@ export interface LeaderboardRequest {
   seasonId: string;
   limit: number;
   offset: number;
-  networkKind: string;
+  networkId: string;
 }
 
 export interface UserScore {
@@ -69,13 +69,13 @@ export interface LeaderboardResponse {
 }
 
 function createBaseAllSeasonsRequest(): AllSeasonsRequest {
-  return { networkKind: "" };
+  return { networkId: "" };
 }
 
 export const AllSeasonsRequest = {
   encode(message: AllSeasonsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.networkKind !== "") {
-      writer.uint32(10).string(message.networkKind);
+    if (message.networkId !== "") {
+      writer.uint32(10).string(message.networkId);
     }
     return writer;
   },
@@ -92,7 +92,7 @@ export const AllSeasonsRequest = {
             break;
           }
 
-          message.networkKind = reader.string();
+          message.networkId = reader.string();
           continue;
       }
       if ((tag & 7) == 4 || tag == 0) {
@@ -104,12 +104,12 @@ export const AllSeasonsRequest = {
   },
 
   fromJSON(object: any): AllSeasonsRequest {
-    return { networkKind: isSet(object.networkKind) ? String(object.networkKind) : "" };
+    return { networkId: isSet(object.networkId) ? String(object.networkId) : "" };
   },
 
   toJSON(message: AllSeasonsRequest): unknown {
     const obj: any = {};
-    message.networkKind !== undefined && (obj.networkKind = message.networkKind);
+    message.networkId !== undefined && (obj.networkId = message.networkId);
     return obj;
   },
 
@@ -119,7 +119,7 @@ export const AllSeasonsRequest = {
 
   fromPartial<I extends Exact<DeepPartial<AllSeasonsRequest>, I>>(object: I): AllSeasonsRequest {
     const message = createBaseAllSeasonsRequest();
-    message.networkKind = object.networkKind ?? "";
+    message.networkId = object.networkId ?? "";
     return message;
   },
 };
@@ -271,13 +271,13 @@ export const AllSeasonsResponse = {
 };
 
 function createBaseCurrentSeasonRequest(): CurrentSeasonRequest {
-  return { networkKind: "" };
+  return { networkId: "" };
 }
 
 export const CurrentSeasonRequest = {
   encode(message: CurrentSeasonRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.networkKind !== "") {
-      writer.uint32(10).string(message.networkKind);
+    if (message.networkId !== "") {
+      writer.uint32(10).string(message.networkId);
     }
     return writer;
   },
@@ -294,7 +294,7 @@ export const CurrentSeasonRequest = {
             break;
           }
 
-          message.networkKind = reader.string();
+          message.networkId = reader.string();
           continue;
       }
       if ((tag & 7) == 4 || tag == 0) {
@@ -306,12 +306,12 @@ export const CurrentSeasonRequest = {
   },
 
   fromJSON(object: any): CurrentSeasonRequest {
-    return { networkKind: isSet(object.networkKind) ? String(object.networkKind) : "" };
+    return { networkId: isSet(object.networkId) ? String(object.networkId) : "" };
   },
 
   toJSON(message: CurrentSeasonRequest): unknown {
     const obj: any = {};
-    message.networkKind !== undefined && (obj.networkKind = message.networkKind);
+    message.networkId !== undefined && (obj.networkId = message.networkId);
     return obj;
   },
 
@@ -321,7 +321,7 @@ export const CurrentSeasonRequest = {
 
   fromPartial<I extends Exact<DeepPartial<CurrentSeasonRequest>, I>>(object: I): CurrentSeasonRequest {
     const message = createBaseCurrentSeasonRequest();
-    message.networkKind = object.networkKind ?? "";
+    message.networkId = object.networkId ?? "";
     return message;
   },
 };
@@ -476,7 +476,7 @@ export const CurrentSeasonResponse = {
 };
 
 function createBaseUserRankRequest(): UserRankRequest {
-  return { seasonId: "", userId: "", networkKind: "" };
+  return { seasonId: "", userId: "", networkId: "" };
 }
 
 export const UserRankRequest = {
@@ -487,8 +487,8 @@ export const UserRankRequest = {
     if (message.userId !== "") {
       writer.uint32(18).string(message.userId);
     }
-    if (message.networkKind !== "") {
-      writer.uint32(26).string(message.networkKind);
+    if (message.networkId !== "") {
+      writer.uint32(26).string(message.networkId);
     }
     return writer;
   },
@@ -519,7 +519,7 @@ export const UserRankRequest = {
             break;
           }
 
-          message.networkKind = reader.string();
+          message.networkId = reader.string();
           continue;
       }
       if ((tag & 7) == 4 || tag == 0) {
@@ -534,7 +534,7 @@ export const UserRankRequest = {
     return {
       seasonId: isSet(object.seasonId) ? String(object.seasonId) : "",
       userId: isSet(object.userId) ? String(object.userId) : "",
-      networkKind: isSet(object.networkKind) ? String(object.networkKind) : "",
+      networkId: isSet(object.networkId) ? String(object.networkId) : "",
     };
   },
 
@@ -542,7 +542,7 @@ export const UserRankRequest = {
     const obj: any = {};
     message.seasonId !== undefined && (obj.seasonId = message.seasonId);
     message.userId !== undefined && (obj.userId = message.userId);
-    message.networkKind !== undefined && (obj.networkKind = message.networkKind);
+    message.networkId !== undefined && (obj.networkId = message.networkId);
     return obj;
   },
 
@@ -554,7 +554,7 @@ export const UserRankRequest = {
     const message = createBaseUserRankRequest();
     message.seasonId = object.seasonId ?? "";
     message.userId = object.userId ?? "";
-    message.networkKind = object.networkKind ?? "";
+    message.networkId = object.networkId ?? "";
     return message;
   },
 };
@@ -634,7 +634,7 @@ export const UserRankResponse = {
 };
 
 function createBaseLeaderboardRequest(): LeaderboardRequest {
-  return { seasonId: "", limit: 0, offset: 0, networkKind: "" };
+  return { seasonId: "", limit: 0, offset: 0, networkId: "" };
 }
 
 export const LeaderboardRequest = {
@@ -648,8 +648,8 @@ export const LeaderboardRequest = {
     if (message.offset !== 0) {
       writer.uint32(24).int32(message.offset);
     }
-    if (message.networkKind !== "") {
-      writer.uint32(34).string(message.networkKind);
+    if (message.networkId !== "") {
+      writer.uint32(34).string(message.networkId);
     }
     return writer;
   },
@@ -687,7 +687,7 @@ export const LeaderboardRequest = {
             break;
           }
 
-          message.networkKind = reader.string();
+          message.networkId = reader.string();
           continue;
       }
       if ((tag & 7) == 4 || tag == 0) {
@@ -703,7 +703,7 @@ export const LeaderboardRequest = {
       seasonId: isSet(object.seasonId) ? String(object.seasonId) : "",
       limit: isSet(object.limit) ? Number(object.limit) : 0,
       offset: isSet(object.offset) ? Number(object.offset) : 0,
-      networkKind: isSet(object.networkKind) ? String(object.networkKind) : "",
+      networkId: isSet(object.networkId) ? String(object.networkId) : "",
     };
   },
 
@@ -712,7 +712,7 @@ export const LeaderboardRequest = {
     message.seasonId !== undefined && (obj.seasonId = message.seasonId);
     message.limit !== undefined && (obj.limit = Math.round(message.limit));
     message.offset !== undefined && (obj.offset = Math.round(message.offset));
-    message.networkKind !== undefined && (obj.networkKind = message.networkKind);
+    message.networkId !== undefined && (obj.networkId = message.networkId);
     return obj;
   },
 
@@ -725,7 +725,7 @@ export const LeaderboardRequest = {
     message.seasonId = object.seasonId ?? "";
     message.limit = object.limit ?? 0;
     message.offset = object.offset ?? 0;
-    message.networkKind = object.networkKind ?? "";
+    message.networkId = object.networkId ?? "";
     return message;
   },
 };

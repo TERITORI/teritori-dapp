@@ -50,8 +50,6 @@ type EthereumNetwork struct {
 	SubstreamsManifest              string `json:"substreamsManifest"`
 	IndexStartBlock                 string `json:"indexStartBlock"`
 	IndexStopBlock                  string `json:"indexStopBlock"`
-	IndexBlockProgress              uint64 `json:"indexBlockProgress"`
-	IndexLiveBlockProgress          uint64 `json:"indexLiveBlockProgress"`
 	VaultContractAddress            string `json:"vaultContractAddress"`
 	RiotContractAddressGen0         string `json:"riotContractAddressGen0"`
 	RiotContractAddressGen1         string `json:"riotContractAddressGen1"`

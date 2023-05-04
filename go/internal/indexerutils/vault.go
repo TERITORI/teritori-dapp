@@ -1,7 +1,6 @@
 package indexerutils
 
 import (
-	"fmt"
 	"strings"
 	"time"
 
@@ -191,8 +190,6 @@ func (u *IndexerUtils) IndexBuyNFT(
 	if err := u.dbTransaction.First(&listedNFT).Error; err != nil {
 		return errors.Wrap(err, "failed to get current list nft")
 	}
-
-	fmt.Println(listedNFT, "==================")
 
 	priceAmount := listedNFT.PriceAmount.String
 	priceDenom := listedNFT.PriceDenom

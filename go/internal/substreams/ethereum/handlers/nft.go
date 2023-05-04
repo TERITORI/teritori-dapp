@@ -99,7 +99,7 @@ func (h *Handler) handleInitialize(tx *pb.Tx) error {
 
 	newCollection := &indexerdb.Collection{
 		ID:                  collectionId,
-		NetworkId:           network.GetBase().ID,
+		NetworkID:           network.GetBase().ID,
 		Name:                collectionName,
 		ImageURI:            metadata.ImageURI,
 		MaxSupply:           0,

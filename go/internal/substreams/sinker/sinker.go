@@ -4,8 +4,6 @@ import (
 	"context"
 	"encoding/hex"
 	"fmt"
-	"io"
-	"os"
 	"time"
 
 	"github.com/pkg/errors"
@@ -27,19 +25,7 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-func GetLocalABI(path string) string {
-	abiFile, err := os.Open(path)
-	if err != nil {
-		panic(err)
-	}
-	defer abiFile.Close()
-
-	result, err := io.ReadAll(abiFile)
-	if err != nil {
-		panic(err)
-	}
-	return string(result)
-}
+const BLOCK_PROGRESS = 5000
 
 type Config struct {
 	Network          *networks.EthereumNetwork
@@ -102,8 +88,8 @@ func New(config *Config, logger *zap.Logger, tracer logging.Tracer) (*PostgresSi
 		OutputModuleHash: config.OutputModuleHash,
 		ClientConfig:     config.ClientConfig,
 
-		BlockProgress:     config.BlockProgress,
-		LiveBlockProgress: config.LiveBlockProgress,
+		BlockProgress:     BLOCK_PROGRESS,
+		LiveBlockProgress: 1,
 		SubstreamsMode:    config.SubstreamsMode,
 
 		UndoBufferSize:  config.UndoBufferSize,

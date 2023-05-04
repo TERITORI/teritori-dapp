@@ -66,7 +66,7 @@ func (h *Handler) handleInstantiateBunker(e *Message, contractAddress string, in
 
 	if err := h.db.Create(&indexerdb.Collection{
 		ID:                  collectionId,
-		NetworkId:           network.GetBase().ID,
+		NetworkID:           network.GetBase().ID,
 		Name:                minterInstantiateMsg.NftName,
 		ImageURI:            metadata.ImageURI,
 		MaxSupply:           maxSupply,

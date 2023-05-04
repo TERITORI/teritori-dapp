@@ -11,7 +11,7 @@ type Collection struct {
 	// Teritori: <id_prefix>-<bech32_mint_contract_address>
 	ID networks.CollectionID `gorm:"primaryKey"`
 
-	NetworkId           string
+	NetworkID           string
 	Name                string
 	ImageURI            string
 	MaxSupply           int `gorm:"index"`

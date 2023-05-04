@@ -95,8 +95,6 @@ func sinkRunE(cmd *cobra.Command, args []string) error {
 		zap.String("manifest_path", network.SubstreamsManifest),
 		zap.String("output_module_name", outputModuleName),
 		zap.String("block_range", blockRange),
-		zap.Uint64("block_progress", network.IndexBlockProgress),
-		zap.Uint64("live_block_progress", network.IndexLiveBlockProgress),
 	)
 
 	// Auto migrate DB
@@ -161,8 +159,6 @@ func sinkRunE(cmd *cobra.Command, args []string) error {
 		OutputModuleHash:   outputModuleHash,
 		UndoBufferSize:     viper.GetInt("run-undo-buffer-size"),
 		LiveBlockTimeDelta: liveBlockTimeDelta,
-		BlockProgress:      network.IndexBlockProgress,
-		LiveBlockProgress:  network.IndexLiveBlockProgress,
 		SubstreamsMode:     substreamsMode,
 		ClientConfig: client.NewSubstreamsClientConfig(
 			network.FirehoseEndpoint,

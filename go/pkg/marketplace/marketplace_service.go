@@ -396,7 +396,7 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 				Id:                 string(nft.ID),
 				Name:               nft.Name,
 				CollectionName:     nft.Collection.Name,
-				NetworkId:          nft.Collection.NetworkId,
+				NetworkId:          nft.Collection.NetworkID,
 				ImageUri:           imageURI,
 				IsListed:           nft.IsListed,
 				Price:              nft.PriceAmount.String,
@@ -873,7 +873,7 @@ func (s *MarkteplaceService) SearchCollections(ctx context.Context, req *marketp
 	}
 	var pbCollections []*marketplacepb.Collection
 	for _, c := range collections {
-		network, err := s.conf.NetworkStore.GetNetwork(c.NetworkId)
+		network, err := s.conf.NetworkStore.GetNetwork(c.NetworkID)
 		if err != nil {
 			s.conf.Logger.Debug("failed to get collection network", zap.Error(err))
 			continue
@@ -883,7 +883,7 @@ func (s *MarkteplaceService) SearchCollections(ctx context.Context, req *marketp
 			CollectionName:      c.Name,
 			Verified:            true,
 			ImageUri:            c.ImageURI,
-			NetworkId:           c.NetworkId,
+			NetworkId:           c.NetworkID,
 			SecondaryDuringMint: c.SecondaryDuringMint,
 		}
 		if c.TeritoriCollection != nil {

@@ -2,6 +2,8 @@ package sinker
 
 import (
 	"fmt"
+	"io"
+	"os"
 	"strconv"
 	"strings"
 
@@ -9,6 +11,20 @@ import (
 	"github.com/streamingfast/bstream"
 	pbsubstreams "github.com/streamingfast/substreams/pb/sf/substreams/v1"
 )
+
+func getLocalABI(path string) string {
+	abiFile, err := os.Open(path)
+	if err != nil {
+		panic(err)
+	}
+	defer abiFile.Close()
+
+	result, err := io.ReadAll(abiFile)
+	if err != nil {
+		panic(err)
+	}
+	return string(result)
+}
 
 // parseNumber parses a number and indicates whether the number is relative, meaning it starts with a +
 func parseNumber(number string) (int64, bool, error) {
@@ -71,7 +87,7 @@ func resolveBlockNumber(value int64, defaultIfNegative uint64, relative bool, ag
 
 func mustLoadABI(abiPath string) abi.ABI {
 	ABI, err := abi.JSON(
-		strings.NewReader(GetLocalABI(abiPath)),
+		strings.NewReader(getLocalABI(abiPath)),
 	)
 	if err != nil {
 		panic("failed to load squad staking ABI")
