@@ -1,16 +1,26 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Image, TouchableOpacity } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  Platform,
+  TextInput,
+} from "react-native";
 
 import Calendars from "./Calendar";
 import avatar from "../../../../assets/icons/avatar.svg";
 import calender from "../../../../assets/icons/calendar.svg";
 import close from "../../../../assets/icons/close.svg";
 import search from "../../../../assets/icons/search.svg";
+import searchSVG from "../../../../assets/icons/search.svg";
 import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
+import { SearchBar } from "../../../components/ScreenContainer/SearchBar/";
 import { Separator } from "../../../components/Separator";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
+import { TextInputCustomBorder } from "../../../components/inputs/TextInputCustomBorder";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import {
   neutral17,
@@ -24,6 +34,7 @@ import {
   fontSemibold13,
   fontSemibold11,
   fontMedium10,
+  fontMedium14,
 } from "../../../utils/style/fonts";
 const ChatHeader = ({ messages }: any) => {
   console.log(messages);
@@ -100,24 +111,41 @@ const ChatHeader = ({ messages }: any) => {
           {showTextInput ? (
             <>
               {!showCalendar && (
-                <TextInputCustom
-                  name="search"
-                  placeHolder="Search..."
-                  value={searchInput}
-                  onChangeText={handleMessageSearch}
-                  height={30}
-                  noBrokenCorners
-                  width={["android", "ios"].includes(Platform.OS) ? 100 : null}
-                />
+                <View
+                  style={{
+                    flexDirection: "row",
+                    backgroundColor: neutral33,
+                    borderRadius: 6,
+                    padding: 6,
+                  }}
+                >
+                  <SVG source={searchSVG} width={20} height={20} />
+                  <SpacerRow size={1} />
+                  <TextInput
+                    placeholder="Search..."
+                    // value={value}
+                    onChangeText={handleMessageSearch}
+                    placeholderTextColor={secondaryColor}
+                    style={[
+                      fontMedium14,
+                      {
+                        color: "white",
+
+                        minWidth: 90,
+                        maxWidth: 90,
+                      },
+                    ]}
+                  />
+                </View>
               )}
-              <SpacerRow size={2} />
+              <SpacerRow size={1} />
               <TouchableOpacity onPress={() => setShowCalendar(!showCalendar)}>
                 <SVG source={calender} />
               </TouchableOpacity>
-              <SpacerRow size={2} />
+              <SpacerRow size={1} />
             </>
           ) : (
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <View style={{ flexDirection: "row" }}>
               <TouchableOpacity onPress={handleSearchIconPress}>
                 <SVG
                   source={search}
@@ -125,13 +153,14 @@ const ChatHeader = ({ messages }: any) => {
                     height: 20,
                     width: 20,
                     marginTop: 10,
-                    marginRight: 10,
                   }}
                 />
               </TouchableOpacity>
-              <BrandText style={{ color: "#fff", marginRight: 5 }}>
-                ...
-              </BrandText>
+              <SpacerRow size={1} />
+
+              <BrandText style={{ color: secondaryColor }}>...</BrandText>
+
+              <SpacerRow size={1} />
             </View>
           )}
           {showTextInput && (
@@ -139,7 +168,6 @@ const ChatHeader = ({ messages }: any) => {
               <SVG source={close} style={{ marginTop: 6 }} />
             </TouchableOpacity>
           )}
-          <SpacerRow size={1} />
         </View>
 
         {showCalendar && (
@@ -147,7 +175,7 @@ const ChatHeader = ({ messages }: any) => {
             style={{
               position: "absolute",
               right: 0,
-              top: 53.5,
+              top: ["android", "ios"].includes(Platform.OS) ? 46.8 : 53.5,
             }}
           >
             <Calendars />
@@ -157,7 +185,12 @@ const ChatHeader = ({ messages }: any) => {
       <View style={styles.filterMessageWrapper}>
         {filterMessageData?.map((message: any, index) => {
           return (
-            <View key={index} style={{ minWidth: 400 }}>
+            <View
+              key={index}
+              style={{
+                width: ["android", "ios"].includes(Platform.OS) ? 350 : 400,
+              }}
+            >
               <TouchableOpacity onPress={HandleSearchData}>
                 <FlexRow
                   justifyContent="space-between"
@@ -244,7 +277,7 @@ const styles = StyleSheet.create({
     position: "absolute",
 
     right: 0,
-    top: 53.5,
+    top: ["android", "ios"].includes(Platform.OS) ? 46.8 : 53.5,
     zIndex: 11,
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10,
