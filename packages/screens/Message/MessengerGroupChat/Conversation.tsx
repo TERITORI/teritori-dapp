@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 
 import MessagePopup from "./MessagePopup";
 import avatar from "../../../../assets/icons/avatar.svg";
@@ -9,6 +9,10 @@ interface IChatMessageProps {
   isSender: boolean;
   time: string;
   receiverName?: string;
+  source?: any;
+  height: number;
+  width: number;
+  imageStyle?: any;
 }
 
 const ChatMessage = ({
@@ -16,40 +20,47 @@ const ChatMessage = ({
   isSender,
   time,
   receiverName,
+  source,
+  height,
+  width,
+  imageStyle,
 }: IChatMessageProps) => {
   const senderName = "me";
   const [showPopup, setShowPopup] = useState(false);
 
   return (
-    <View style={isSender ? styles.senderWrapper : styles.receiverWrapper}>
-      {!isSender && <SVG source={avatar} style={{ width: 30, height: 30 }} />}
-      <View
-        style={[isSender ? styles.senderContainer : styles.receiverContainer]}
-      >
-        <TouchableOpacity onPress={() => setShowPopup(!showPopup)}>
-          <Text style={styles.message}>{message}</Text>
-        </TouchableOpacity>
-        {!isSender && showPopup && (
-          <View style={styles.popupContainer}>
-            <MessagePopup />
-          </View>
-        )}
+    <>
+      <View style={isSender ? styles.senderWrapper : styles.receiverWrapper}>
+        {!isSender && <SVG source={avatar} style={{ width: 30, height: 30 }} />}
         <View
-          style={{
-            flexDirection: "row",
-            position: "absolute",
-            top: -20,
-            left: 10,
-          }}
+          style={[isSender ? styles.senderContainer : styles.receiverContainer]}
         >
-          {!isSender && receiverName && (
-            <Text style={styles.name}>{receiverName}</Text>
+          <TouchableOpacity onPress={() => setShowPopup(!showPopup)}>
+            <Text style={styles.message}>{message}</Text>
+          </TouchableOpacity>
+          <Image source={source} style={{ height, width, ...imageStyle }} />
+          {!isSender && showPopup && (
+            <View style={styles.popupContainer}>
+              <MessagePopup />
+            </View>
           )}
-          {isSender && <Text style={styles.name}>{senderName}</Text>}
-          <Text style={styles.time}>{time}</Text>
+          <View
+            style={{
+              flexDirection: "row",
+              position: "absolute",
+              top: -20,
+              left: 10,
+            }}
+          >
+            {!isSender && receiverName && (
+              <Text style={styles.name}>{receiverName}</Text>
+            )}
+            {isSender && <Text style={styles.name}>{senderName}</Text>}
+            <Text style={styles.time}>{time}</Text>
+          </View>
         </View>
       </View>
-    </View>
+    </>
   );
 };
 
