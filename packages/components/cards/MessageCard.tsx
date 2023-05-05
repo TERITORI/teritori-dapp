@@ -1,9 +1,9 @@
 import React, { FC } from "react";
-import { Text, StyleSheet, StyleProp, ViewStyle } from "react-native";
+import { Text, StyleSheet } from "react-native";
 
 import {
   neutral00,
-  neutral17,
+  neutral33,
   neutral55,
   secondaryColor,
 } from "../../utils/style/colors";
@@ -26,8 +26,8 @@ const MessageCard: FC<CardProps> = ({
 
   return (
     <FlexRow style={styles.container}>
-      <SVG source={icon} height={30} width={30} />
-      <SpacerRow size={1} />
+      <SVG source={icon} />
+
       <Text style={[fontSemibold14, { color: neutral55 }]}>{text}</Text>
       <SpacerRow size={1} />
       <Text style={[fontSemibold12, { color: secondaryColor }]}>{subtext}</Text>
@@ -37,13 +37,15 @@ const MessageCard: FC<CardProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
+    // padding: 16,
+    paddingLeft: 6,
+    paddingRight: 10,
     borderRadius: 12,
     backgroundColor: neutral00,
-    borderColor: neutral17,
+    borderColor: neutral33,
     borderWidth: 1,
 
-    height: 54,
+    height: 56,
   },
 });
 

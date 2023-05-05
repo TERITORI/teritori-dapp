@@ -23,7 +23,7 @@ import { layout } from "../../utils/style/layout";
 const SideBarChats: React.FC = () => {
   const navigation = useAppNavigation();
   return (
-    <View style={{ paddingHorizontal: layout.padding_x2 }}>
+    <View>
       <SpacerColumn size={2} />
       <Searchbar />
       <SpacerColumn size={2.5} />

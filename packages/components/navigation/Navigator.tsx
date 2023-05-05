@@ -24,6 +24,7 @@ import { CollectionToolsScreen } from "../../screens/Marketplace/CollectionTools
 import { MarketplaceScreen } from "../../screens/Marketplace/MarketplaceScreen";
 import { NFTDetailScreen } from "../../screens/Marketplace/NFTDetailScreen";
 import AddFriend from "../../screens/Message/AddFriend";
+import FriendshipManager from "../../screens/Message/FriendshipManager";
 import { MessageScreen } from "../../screens/Message/MessageScreen";
 import ChatSection from "../../screens/Message/MessengerGroupChat/ChatSection";
 import { MyCollectionScreen } from "../../screens/MyCollection/MyCollectionScreen";
@@ -165,6 +166,14 @@ export const Navigator: React.FC = () => {
         options={{
           header: () => null,
           title: screenTitle("Add Friend"),
+        }}
+      />
+      <Stack.Screen
+        name="FriendshipManager"
+        component={FriendshipManager}
+        options={{
+          header: () => null,
+          title: screenTitle("Friends Add"),
         }}
       />
       <Stack.Screen

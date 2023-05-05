@@ -1,33 +1,53 @@
-import React from "react";
-import { View } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+import React, { useState } from "react";
+import { View, ScrollView } from "react-native";
 
+import nullIcon from "../../../assets/icons/illustration.svg";
+import { SVG } from "../../components/SVG";
 import { Separator } from "../../components/Separator";
 import FriendList from "../../components/friends/FriendsList";
-import data from "../../components/friends/data";
 import { TextInputCustomBorder } from "../../components/inputs/TextInputCustomBorder";
 import { SpacerColumn } from "../../components/spacer";
-const Friends = () => {
+import { neutral33 } from "../../utils/style/colors";
+const Friends = ({ items }) => {
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredItems = items.filter((item) =>
+    item.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <View style={{ flex: 1, backgroundColor: "#000" }}>
-      <Separator horizontal={false} />
-      <SpacerColumn size={2} />
+      {/* FIXME: remaining in web */}
+      {/* <Separator horizontal={false} /> */}
+      {/* <SpacerColumn size={1} /> */}
       <TextInputCustomBorder
         placeHolder="Search..."
         style={{ backgroundColor: "#000" }}
+        value={searchQuery}
+        onChangeText={setSearchQuery}
       />
+      <SpacerColumn size={2} />
+      <Separator horizontal={false} color={neutral33} />
       <SpacerColumn size={1} />
-      {data.map((item) => (
-        <View>
-          <ScrollView>
-            <FriendList
-              avatar={item.avatar}
-              name={item.name}
-              isOnline={item.isOnline}
-            />
-          </ScrollView>
-        </View>
-      ))}
+      {filteredItems?.length > 0 ? (
+        filteredItems?.map((item) => (
+          <View key={item.id}>
+            <ScrollView>
+              <FriendList
+                avatar={item.avatar}
+                name={item.name}
+                isOnline={item.isOnline}
+              />
+            </ScrollView>
+          </View>
+        ))
+      ) : (
+        <>
+          <SpacerColumn size={15} />
+
+          <SVG source={nullIcon} style={{ alignSelf: "center" }} />
+        </>
+      )}
     </View>
   );
 };
