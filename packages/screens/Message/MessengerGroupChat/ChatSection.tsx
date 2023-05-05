@@ -1,3 +1,4 @@
+import { id } from "ethers/lib/utils";
 import React, { useState } from "react";
 import {
   View,
@@ -27,6 +28,8 @@ import { additionalRed, neutral33 } from "../../../utils/style/colors";
 import { LocalFileData } from "../../../utils/types/feed";
 
 interface IMessage {
+  id: Key | null | undefined;
+  source: any;
   message: string;
   isSender: boolean;
   file: LocalFileData;
@@ -68,13 +71,15 @@ const ChatSection = () => {
         <View style={styles.container}>
           <SpacerColumn size={2} />
           <ScrollView>
-            {messages.map((msg, index) => (
+            {messages.map((msg) => (
               <ChatMessage
-                key={index}
+                key={msg.id}
                 message={msg.message}
                 isSender={msg.isSender}
                 time={msg.time}
                 receiverName={msg.isSender ? undefined : msg.name}
+                source={msg.source}
+                imageStyle={{ height: 200, width: 200 }}
               />
             ))}
           </ScrollView>
