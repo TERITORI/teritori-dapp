@@ -1,5 +1,5 @@
 import React from "react";
-import { TextInput, View, ViewStyle } from "react-native";
+import { TextInput, View, ViewStyle, Platform } from "react-native";
 
 import searchSVG from "../../../assets/icons/search.svg";
 import { handleKeyPress } from "../../utils/keyboard";
@@ -62,7 +62,7 @@ export const TextInputCustomBorder: React.FC<{
           height: 48,
           minHeight: 48,
           maxHeight: 48,
-          minWidth: 332,
+          minWidth: ["android", "ios"].includes(Platform.OS) ? 250 : 332,
           paddingHorizontal: 12,
           justifyContent: "center",
         },
