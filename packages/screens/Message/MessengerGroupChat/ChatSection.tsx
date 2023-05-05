@@ -66,7 +66,7 @@ const ChatSection = () => {
         </View>
         <Separator color={neutral33} />
         <View style={styles.container}>
-          <SpacerColumn size={3} />
+          <SpacerColumn size={2} />
           <ScrollView>
             {messages.map((msg, index) => (
               <ChatMessage
@@ -253,8 +253,6 @@ const ChatSection = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 16,
-    paddingVertical: 24,
   },
   modalContainer: {
     borderWidth: 1,

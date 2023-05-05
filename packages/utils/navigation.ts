@@ -70,6 +70,7 @@ export type RootStackParamList = {
   Chat: undefined;
   Message: undefined;
   ChatSection: undefined;
+  FriendshipManager: undefined;
   AddFriend: undefined;
 };
 

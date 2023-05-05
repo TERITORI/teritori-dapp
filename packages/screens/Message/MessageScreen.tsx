@@ -8,10 +8,10 @@ import {
 } from "react-native";
 
 import CreateGroup from "./CreateGroup";
+import FriendshipManager from "./FriendshipManager";
 import { MessageHeader } from "./MessageHeader";
 import MessengerGroupChat from "./MessengerGroupChat";
 import SideBarChats from "./SideBarChats";
-import TopHeaderButtonChat from "./TopHeaderButtonChat";
 import data from "./data";
 import FlexRow from "../../components/FlexRow";
 import { ScreenContainer } from "../../components/ScreenContainer";
@@ -35,23 +35,14 @@ export const MessageScreen: ScreenFC<"Message"> = () => {
         <ScrollView horizontal>
           {data.map((item) => (
             <>
-              {/* <TouchableOpacity
-                key={item.id}
-                onPress={() => {
-                  if (item.id === 2) {
-                    setShowTertiaryBox(true);
-                  } else {
-                    setShowTertiaryBox(false);
-                  }
-                }}
-              > */}
               <TouchableOpacity
                 key={item.id}
                 onPress={() => {
                   if (item.id === 2) {
                     setShowTertiaryBox(true);
                   } else if (item.id === 3) {
-                    navigation.navigate("AddFriend");
+                    // navigation.navigate("AddFriend");
+                    navigation.navigate("FriendshipManager");
                   } else {
                     setShowTertiaryBox(false);
                   }
@@ -94,7 +85,7 @@ export const MessageScreen: ScreenFC<"Message"> = () => {
           {/* <SpacerRow size={2} /> */}
 
           <View style={{ flex: 1 }}>
-            {/* <TopHeaderButtonChat /> */}
+            {/* <FriendshipManager /> */}
             <MessengerGroupChat />
           </View>
         </View>
