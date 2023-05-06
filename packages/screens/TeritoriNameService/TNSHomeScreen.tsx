@@ -15,15 +15,17 @@ import registerSVG from "../../../assets/icons/register-neutral77.svg";
 import { BrandText } from "../../components/BrandText";
 import { IntroLogoText } from "../../components/IntroLogoText";
 import { ScreenContainer } from "../../components/ScreenContainer";
+import { ActivityTable } from "../../components/activity/ActivityTable";
 import { TNSNameFinderModal } from "../../components/modals/teritoriNameService/TNSNameFinderModal";
 import { FlowCard } from "../../components/teritoriNameService/FlowCard";
 import { useTNS } from "../../context/TNSProvider";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
 import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
-import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { NetworkKind } from "../../networks";
+import { NetworkKind, getCollectionId, getCosmosNetwork } from "../../networks";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
+
 export type TNSItems = "TNSManage" | "TNSRegister" | "TNSExplore";
 export type TNSModals =
   | "TNSManage"
@@ -67,9 +69,14 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
   const [navigateBackTo, setNavigateBackTo] = useState<TNSModals>();
   const { name, setName } = useTNS();
   const navigation = useAppNavigation();
-  const selectedNetwork = useSelectedNetworkInfo();
+  const selectedNetworkId = useSelectedNetworkId();
+  const selectedNetwork = getCosmosNetwork(selectedNetworkId);
   const selectedWallet = useSelectedWallet();
   const { tokens } = useNSTokensByOwner(selectedWallet?.userId);
+  const collectionId = getCollectionId(
+    selectedNetwork?.id,
+    selectedNetwork?.nameServiceContractAddress
+  );
 
   const isKeplrConnected = useIsKeplrConnected();
 
@@ -146,8 +153,7 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
         />
         <View
           style={{
-            marginTop: width >= LG_BREAKPOINT ? 120 : 80,
-            marginBottom: 20,
+            marginVertical: width >= LG_BREAKPOINT ? 120 : 80,
             flexDirection: width >= MD_BREAKPOINT ? "row" : "column",
             justifyContent: "center",
           }}
@@ -179,6 +185,8 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
             onPress={() => navigation.navigate("TNSHome", { modal: "explore" })}
           />
         </View>
+
+        <ActivityTable collectionId={collectionId} />
 
         <TNSNameFinderModal
           visible={modalNameFinderVisible}

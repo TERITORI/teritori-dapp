@@ -15,6 +15,15 @@ type App struct {
 	TxHash        string
 }
 
+// Cursor used by Substreams indexer
+type Cursors struct {
+	ID       string `gorm:"primaryKey;notNull"`
+	Cursor   string
+	BlockNum uint64
+	BlockId  string
+	Network  string
+}
+
 type User struct {
 	ID networks.UserID
 }
@@ -22,6 +31,9 @@ type User struct {
 var allModels = []interface{}{
 	// app
 	&App{},
+
+	// cursor
+	&Cursors{},
 
 	// users
 	&User{},

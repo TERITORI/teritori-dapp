@@ -6,8 +6,8 @@ import { useSelector } from "react-redux";
 import { SelectedDraggable } from "./SelectedDraggable";
 import { BrandText } from "../../../components/BrandText";
 import {
-  selectCheckedApps,
   selectAvailableApps,
+  selectCheckedApps,
   setSelectedApps,
 } from "../../../store/slices/dapps-store";
 import { useAppDispatch } from "../../../store/store";
@@ -53,12 +53,14 @@ export const LeftRail = () => {
               renderItemContent={({ item, index }) => {
                 const { appId, groupKey } = getValuesFromId(item);
                 return availableApps ? (
-                  <SelectedDraggable
-                    dragHandler={setIsDraggable}
-                    option={availableApps[groupKey].options[appId]}
-                    index={index}
-                    key={index}
-                  />
+                  availableApps[groupKey] ? (
+                    <SelectedDraggable
+                      dragHandler={setIsDraggable}
+                      option={availableApps[groupKey]?.options[appId]}
+                      index={index}
+                      key={index}
+                    />
+                  ) : null
                 ) : (
                   <BrandText>No apps</BrandText>
                 );

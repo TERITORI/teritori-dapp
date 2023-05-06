@@ -9,7 +9,6 @@ import {
 import { BackButton } from "../navigation/components/BackButton";
 
 export const Header: React.FC<{
-  smallMargin?: boolean;
   style?: StyleProp<ViewStyle>;
   onBackPress?: () => void;
 }> = ({ children, style, onBackPress }) => {

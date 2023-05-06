@@ -9,7 +9,7 @@ export const Datum: React.FC<{
   styleTypeSize: string;
   style: StyleProp<ViewStyle>;
 }> = ({ value, datumWidth, styleTypeSize, style }) => (
-  <View style={style}>
+  <View style={[style, { borderRadius: 10, marginRight: -15 }]}>
     <Label
       styleType={`H1_Bebas_${styleTypeSize}`}
       style={{ textAlign: "center", color: "#E8E1EF" }}

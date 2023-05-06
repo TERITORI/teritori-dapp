@@ -137,6 +137,12 @@ export const createPost = async ({
       pinataJWTKey,
     });
   }
+
+  // If the user uploaded files but they are not pinned to IPFS, it returns files with empty url, so this is an error.
+  if (formValues.files?.length && !files.find((file) => file.url)) {
+    return;
+  }
+
   let message = formValues.message || "";
 
   if (files.length && category === PostCategory.Article) {
@@ -168,6 +174,7 @@ export const createPost = async ({
     "",
     freePostCount ? undefined : [coin(fee, "utori")]
   );
+  return true;
 };
 
 interface UploadPostFilesToPinataParams {

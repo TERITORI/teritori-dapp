@@ -7,6 +7,8 @@
   margin: 10px auto;
 }
 
+/*TODO: Style .DraftEditor-editorContainer figure video ?*/
+
 .DraftEditor-editorContainer figure img {
   width: auto;
   max-width: 100%;
@@ -79,8 +81,7 @@
   background-color: #333333;
   border-radius: 4px;
   color: #ffffff;
-  margin-left: 3px;
-  margin-right: 3px;
+  margin: 4px;
   height: 30px;
   width: 30px;
   border: 1px solid #333333;

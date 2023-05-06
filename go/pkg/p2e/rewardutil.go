@@ -63,11 +63,6 @@ func GetSeasonByTime(givenTime time.Time, network networks.Network) (Season, flo
 	return Season{}, 0, errors.New("not in any season")
 }
 
-// returns: season, time passed in days, error
-func GetCurrentSeason(network networks.Network) (Season, float64, error) {
-	return GetSeasonByTime(time.Now().UTC(), network)
-}
-
 func GetSeasonById(seasonId string, network networks.Network) (Season, error) {
 	for _, season := range GetAllSeasons(network) {
 		if seasonId == season.ID {

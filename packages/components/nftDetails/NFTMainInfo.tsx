@@ -1,6 +1,6 @@
 import { Target } from "@nandorojo/anchor";
 import { RouteProp, useRoute } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 
 import { NFTAttributes } from "./NFTAttributes";
@@ -225,6 +225,7 @@ export const NFTMainInfo: React.FC<{
             items={mainInfoTabItems}
             selected={selectedTab}
             borderColorTabSelected={primaryColor}
+            style={{ height: 40 }}
           />
           {/*TODO: 3 View to display depending on the nftMainInfoTabItems isSelected item*/}
           {/*TODO: About  = Big text*/}
@@ -234,7 +235,9 @@ export const NFTMainInfo: React.FC<{
 
       {showMarketplace && (
         <Target style={styles.collapsableContainer} name="price-history">
-          <CollapsablePriceHistory nftId={nftId} />
+          <Suspense fallback={<></>}>
+            <CollapsablePriceHistory nftId={nftId} />
+          </Suspense>
         </Target>
       )}
       <Target name="activity" style={styles.collapsableContainer}>

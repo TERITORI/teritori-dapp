@@ -1,4 +1,4 @@
-import React, { FC, useCallback } from "react";
+import { FC } from "react";
 import {
   SafeAreaView,
   ScrollView,
@@ -8,20 +8,39 @@ import {
 } from "react-native";
 
 import { HeaderMobile } from "./HeaderMobile";
+import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { NetworkInfo, NetworkKind } from "../../networks";
 import { DAppStoreData } from "../../screens/DAppStore/components/DAppStoreData";
 import { neutral33, neutral77 } from "../../utils/style/colors";
 import { fontBold12 } from "../../utils/style/fonts";
-import {
-  getMobileScreenContainerMarginHorizontal,
-  MOBILE_HEADER_HEIGHT,
-} from "../../utils/style/layout";
+import { layout, MOBILE_HEADER_HEIGHT } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { SelectedNetworkGate } from "../SelectedNetworkGate";
 import { SidebarMobile } from "../navigation/SidebarMobile";
 
+export const MobileTitle: FC<{ title: string }> = ({ title }) => {
+  const { width: windowWidth } = useWindowDimensions();
+
+  return (
+    <View
+      style={{
+        height: 48,
+        borderBottomWidth: 1,
+        flexDirection: "row",
+        alignItems: "center",
+        borderBottomColor: neutral33,
+        width: windowWidth,
+        paddingHorizontal: layout.padding_x2,
+      }}
+    >
+      <BrandText style={[fontBold12, { color: neutral77 }]}>{title}</BrandText>
+    </View>
+  );
+};
+
 export const ScreenContainerMobile: FC<{
   networkFilter: (n: NetworkInfo) => boolean;
+  // hasScroll: Pages like Home, !hasScroll: Pages like Feed
   hasScroll: boolean;
   forceNetworkId?: string;
   forceNetworkKind?: NetworkKind;
@@ -34,32 +53,8 @@ export const ScreenContainerMobile: FC<{
   forceNetworkKind,
   mobileTitle,
 }) => {
-  const { height: windowHeight, width: windowWidth } = useWindowDimensions();
-
-  const Children: FC = useCallback(() => {
-    return (
-      <>
-        {mobileTitle ? (
-          <View
-            style={{
-              height: 48,
-              borderBottomWidth: 1,
-              flexDirection: "row",
-              alignItems: "center",
-              borderBottomColor: neutral33,
-              paddingHorizontal:
-                getMobileScreenContainerMarginHorizontal(windowWidth),
-            }}
-          >
-            <BrandText style={[fontBold12, { color: neutral77 }]}>
-              {mobileTitle}
-            </BrandText>
-          </View>
-        ) : null}
-        {children}
-      </>
-    );
-  }, [mobileTitle, children, windowWidth]);
+  const { height: windowHeight } = useWindowDimensions();
+  const { width } = useMaxResolution();
 
   return (
     <SafeAreaView style={styles.container}>
@@ -75,42 +70,25 @@ export const ScreenContainerMobile: FC<{
         <SelectedNetworkGate filter={networkFilter}>
           {hasScroll ? (
             <ScrollView
-              style={{ width: "100%", flex: 1 }}
               contentContainerStyle={[
                 {
                   minHeight: windowHeight - MOBILE_HEADER_HEIGHT,
                 },
               ]}
             >
-              <View
-                style={[
-                  styles.childrenContainer,
-                  {
-                    width: "100%",
-                    flex: 1,
-                    marginHorizontal:
-                      getMobileScreenContainerMarginHorizontal(windowWidth),
-                  },
-                ]}
-              >
-                <Children>{children}</Children>
+              {mobileTitle ? <MobileTitle title={mobileTitle} /> : null}
+              <View style={[styles.childrenContainer, { flex: 1, width }]}>
+                {children}
               </View>
               {/*TODO: Put here Riotters Footer ?*/}
             </ScrollView>
           ) : (
-            <View
-              style={[
-                styles.childrenContainer,
-                {
-                  width: "100%",
-                  marginHorizontal:
-                    getMobileScreenContainerMarginHorizontal(windowWidth),
-                },
-              ]}
-            >
-              <Children>{children}</Children>
-              {/*TODO: Put here Riotters Footer ?*/}
-            </View>
+            <>
+              <View style={[styles.childrenContainer, { flex: 1 }]}>
+                {children}
+              </View>
+            </>
+            // TODO: Put here Riotters Footer ?
           )}
         </SelectedNetworkGate>
       </View>

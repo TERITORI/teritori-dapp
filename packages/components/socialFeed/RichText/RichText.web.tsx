@@ -1,7 +1,6 @@
 import "@draft-js-plugins/static-toolbar/lib/plugin.css";
 import "./inline-toolbar/lib/plugin.css";
 import "@draft-js-plugins/image/lib/plugin.css";
-
 import "./draftjs.css";
 import createLinkPlugin from "@draft-js-plugins/anchor";
 import {
@@ -24,13 +23,14 @@ import { convertToHTML } from "draft-convert";
 import {
   ContentBlock,
   ContentState,
-  convertFromHTML,
   DraftEntityType,
   EditorCommand,
   EditorState,
   getDefaultKeyBinding,
   Modifier,
+  RawDraftEntity,
 } from "draft-js";
+import htmlToDraft from "html-to-draftjs";
 import React, {
   KeyboardEvent,
   useEffect,
@@ -38,7 +38,12 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  useWindowDimensions,
+  View,
+} from "react-native";
 
 import { RichHashtagRenderer } from "./RichRenderer/RichHashtagRenderer";
 import { RichHashtagRendererConsultation } from "./RichRenderer/RichHashtagRendererConsultation";
@@ -53,7 +58,7 @@ import {
   SelectedEntity,
 } from "./RichText.type";
 import { ActionsContainer } from "./Toolbar/ActionsContainer";
-import { ToolbarContainer } from "./ToolbarContainer";
+import { ToolbarContainer } from "./Toolbar/ToolbarContainer";
 import createInlineToolbarPlugin from "./inline-toolbar";
 import audioSVG from "../../../../assets/icons/audio.svg";
 import cameraSVG from "../../../../assets/icons/camera.svg";
@@ -73,9 +78,9 @@ import {
   replaceFileInArray,
   urlMatch,
 } from "../../../utils/social-feed";
-import { primaryColor } from "../../../utils/style/colors";
+import { neutral77 } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+import { layout, SOCIAL_FEED_BREAKPOINT_M } from "../../../utils/style/layout";
 import { LocalFileData } from "../../../utils/types/feed";
 import { BrandText } from "../../BrandText";
 import { AudioView } from "../../FilePreview/AudioView";
@@ -161,6 +166,7 @@ export const RichText: React.FC<RichTextProps> = ({
     videoPlugin,
   ];
 
+  const { width: windowWidth } = useWindowDimensions();
   const editorRef = useRef<Editor>(null);
   const [editorState, setEditorState] = useState(
     createStateFromHTML(initialValue)
@@ -320,14 +326,14 @@ export const RichText: React.FC<RichTextProps> = ({
     <View style={styles.toolbarButtonsWrapper}>
       <EmojiSelector
         onEmojiSelected={(emoji) => addEmoji(emoji)}
-        optionsContainer={{ marginLeft: -80, marginTop: -6 }}
         buttonStyle={styles.toolbarCustomButton}
+        iconStyle={styles.toolbarCustomButtonIcon}
       />
 
       <GIFSelector
         onGIFSelected={(url) => (url ? addGIF(url) : undefined)}
-        optionsContainer={{ marginLeft: -186, marginTop: -6 }}
         buttonStyle={styles.toolbarCustomButton}
+        iconStyle={styles.toolbarCustomButtonIcon}
         disabled={isGIFSelectorDisabled}
       />
 
@@ -339,7 +345,7 @@ export const RichText: React.FC<RichTextProps> = ({
           <IconBox
             icon={audioSVG}
             onPress={onPress}
-            style={styles.toolbarCustomButton}
+            style={[styles.toolbarCustomButtonIcon, styles.toolbarCustomButton]}
             disabled={isAudioUploadDisabled}
           />
         )}
@@ -353,7 +359,7 @@ export const RichText: React.FC<RichTextProps> = ({
           <IconBox
             icon={videoSVG}
             onPress={onPress}
-            style={styles.toolbarCustomButton}
+            style={[styles.toolbarCustomButtonIcon, styles.toolbarCustomButton]}
             disabled={isVideoUploadDisabled}
           />
         )}
@@ -367,7 +373,7 @@ export const RichText: React.FC<RichTextProps> = ({
           <IconBox
             icon={cameraSVG}
             onPress={onPress}
-            style={styles.toolbarCustomButton}
+            style={[styles.toolbarCustomButtonIcon, styles.toolbarCustomButton]}
             iconProps={{
               width: 18,
               height: 18,
@@ -426,7 +432,7 @@ export const RichText: React.FC<RichTextProps> = ({
           decorators={compositeDecorator.decorators}
         />
         {isTruncateNeeded && (
-          <BrandText style={[fontSemibold14, { color: primaryColor }]}>
+          <BrandText style={[fontSemibold14, { color: neutral77 }]}>
             {"\n...see more"}
           </BrandText>
         )}
@@ -460,23 +466,31 @@ export const RichText: React.FC<RichTextProps> = ({
         ))}
 
       {!isPostConsultation && (
-        <ActionsContainer>
-          <ToolbarContainer>
-            <Toolbar>
-              {(externalProps) => <Buttons externalProps={externalProps} />}
-            </Toolbar>
-          </ToolbarContainer>
+        <>
+          <SpacerColumn size={3} />
+          <ActionsContainer>
+            <ToolbarContainer>
+              <Toolbar>
+                {(externalProps) => <Buttons externalProps={externalProps} />}
+              </Toolbar>
+            </ToolbarContainer>
 
-          <SpacerRow size={3} />
-          <PrimaryButton
-            disabled={publishDisabled}
-            loader
-            isLoading={loading}
-            text="Publish"
-            size="M"
-            onPress={handlePublish}
-          />
-        </ActionsContainer>
+            {windowWidth < SOCIAL_FEED_BREAKPOINT_M ? (
+              <SpacerColumn size={1.5} />
+            ) : (
+              <SpacerRow size={3} />
+            )}
+            <PrimaryButton
+              disabled={publishDisabled}
+              loader
+              isLoading={loading}
+              text="Publish"
+              size="M"
+              onPress={handlePublish}
+            />
+          </ActionsContainer>
+          <SpacerColumn size={2} />
+        </>
       )}
     </View>
   );
@@ -485,7 +499,9 @@ export const RichText: React.FC<RichTextProps> = ({
 /////////////// STYLES ////////////////
 const styles = StyleSheet.create({
   toolbarCustomButton: {
-    marginHorizontal: layout.padding_x0_75 / 2,
+    margin: layout.padding_x0_5,
+  },
+  toolbarCustomButtonIcon: {
     borderRadius: 4,
     height: 30,
     width: 30,
@@ -494,24 +510,52 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    flex: 1,
+    width: "100%",
     flexWrap: "wrap",
   },
 });
 
 /////////////// SOME FUNCTIONS ////////////////
 const createStateFromHTML = (html: string) => {
-  const blocksFromHTML = convertFromHTML(html);
-  const content = ContentState.createFromBlockArray(
-    blocksFromHTML.contentBlocks,
-    blocksFromHTML.entityMap
+  // We use htmlToDraft with a customChunkRenderer function because the default convertFromHTML from draft-js doesn't handle videos
+  //TODO: Maybe we can use this pattern to handling audio in RichText (Instead of adding audios under the RichText)
+  const blocksFromHTML = htmlToDraft(
+    html,
+    (nodeName: string, node: HTMLElement | any) => {
+      if (nodeName === "video") {
+        const entityConfig: any = {};
+        entityConfig.src = node.getAttribute
+          ? node.getAttribute("src") || node
+          : node.src;
+        entityConfig.alt = node.alt;
+        entityConfig.height = node.style.height;
+        entityConfig.width = node.style.width;
+        if (node.style.float) {
+          entityConfig.alignment = node.style.float;
+        }
+        const value: RawDraftEntity = {
+          type: VIDEOTYPE, // should similar to videoPlugin.type if use @draft-js-plugins/video
+          mutability: "IMMUTABLE",
+          data: entityConfig,
+        };
+        return value;
+      }
+    }
   );
-  return EditorState.createWithContent(content);
+  const { contentBlocks, entityMap } = blocksFromHTML;
+  const contentState = ContentState.createFromBlockArray(
+    contentBlocks,
+    entityMap
+  );
+  return EditorState.createWithContent(contentState);
 };
 
 const createHTMLFromState = (state: ContentState) =>
   convertToHTML({
     entityToHTML: (entity, originalText) => {
+      if (entity.type === VIDEOTYPE || entity.type === "VIDEO") {
+        return <video src={entity.data.src} controls />;
+      }
       if (entity.type === "IMAGE") {
         return <img src={entity.data.src} />;
       }
@@ -581,20 +625,20 @@ const getEntities = (
   editorState: EditorState,
   entityType?: DraftEntityType
 ) => {
-  const content = editorState.getCurrentContent();
+  const contentState = editorState.getCurrentContent();
   const entities: FoundEntity[] = [];
 
-  content.getBlocksAsArray().forEach((block) => {
+  contentState.getBlocksAsArray().forEach((block) => {
     let selectedEntity: SelectedEntity;
     block.findEntityRanges(
       (character) => {
         if (character.getEntity() !== null) {
-          const entity = content.getEntity(character.getEntity());
+          const entity = contentState.getEntity(character.getEntity());
           if (!entityType || (entityType && entity.getType() === entityType)) {
             selectedEntity = {
               entityKey: character.getEntity(),
               blockKey: block.getKey(),
-              entity: content.getEntity(character.getEntity()),
+              entity: contentState.getEntity(character.getEntity()),
             };
             return true;
           }
@@ -614,7 +658,7 @@ const getEntities = (
 const getFilesToPublish = (
   editorState: EditorState,
   files: LocalFileData[],
-  entityType: DraftEntityType
+  entityType?: DraftEntityType
 ) => {
   const entities = getEntities(editorState, entityType);
   const filesToPublish: LocalFileData[] = [];

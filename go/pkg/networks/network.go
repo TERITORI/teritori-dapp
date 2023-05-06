@@ -24,6 +24,7 @@ type CosmosNetwork struct {
 	*NetworkBase
 
 	ChainID                           string `json:"chainId"`
+	RpcEndpoint                       string `json:"rpcEndpoint"`
 	WalletURLForStaking               string `json:"walletUrlForStaking"`
 	NameServiceContractAddress        string `json:"nameServiceContractAddress"`
 	NameServiceDefaultImage           string `json:"nameServiceDefaultImage"`
@@ -44,6 +45,7 @@ type EthereumNetwork struct {
 
 	Endpoint                        string `json:"endpoint"`
 	ChainID                         int32  `json:"chainId"`
+	RpcEndpoint                     string `json:"rpcEndpoint"`
 	AlchemyAPIKey                   string `json:"alchemyApiKey"`
 	TheGraphEndpoint                string `json:"theGraphEndpoint"`
 	FirehoseEndpoint                string `json:"firehoseEndpoint"`

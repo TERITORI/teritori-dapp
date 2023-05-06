@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/TERITORI/teritori-dapp/go/internal/substreams/db"
+	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
@@ -38,8 +38,12 @@ func sinkCleanE(cmd *cobra.Command, args []string) error {
 	dbName := MustGetFlagString("database-name")
 	dbUser := MustGetFlagString("postgres-user")
 
-	dns := fmt.Sprintf("psql://%s:%s@%s:%s/%s?sslmode=disable", dbUser, dbPass, dbHost, dbPort, dbName)
-	indexerDB := db.MustConnectIndexerDB(dns)
+	dataConnexion := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s",
+		dbHost, dbUser, dbPass, dbName, dbPort)
+	indexerDB, err := indexerdb.NewPostgresDB(dataConnexion)
+	if err != nil {
+		panic(errors.Wrap(err, "failed to access db"))
+	}
 
 	sqlFilePath := "./go/cmd/ethereum-indexer/sql/clean.sql"
 	stmtBytes, err := os.ReadFile(sqlFilePath)

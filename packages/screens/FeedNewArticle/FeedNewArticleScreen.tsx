@@ -26,6 +26,7 @@ import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useUpdateAvailableFreePost } from "../../hooks/feed/useUpdateAvailableFreePost";
 import { useUpdatePostFee } from "../../hooks/feed/useUpdatePostFee";
 import { useBalances } from "../../hooks/useBalances";
+import { useIsMobile } from "../../hooks/useIsMobile";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getUserId, NetworkKind } from "../../networks";
@@ -33,12 +34,20 @@ import { prettyPrice } from "../../utils/coins";
 import { IMAGE_MIME_TYPES } from "../../utils/mime";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { generateIpfsKey } from "../../utils/social-feed";
-import { neutral00, neutral11, neutral77 } from "../../utils/style/colors";
+import {
+  neutral00,
+  neutral11,
+  neutral77,
+  secondaryColor,
+} from "../../utils/style/colors";
 import { fontSemibold13, fontSemibold20 } from "../../utils/style/fonts";
-import { layout, NEWS_FEED_MAX_WIDTH } from "../../utils/style/layout";
+import { layout, screenContentMaxWidth } from "../../utils/style/layout";
 import { pluralOrNot } from "../../utils/text";
 
+//TODO: In mobile : Make ActionsContainer accessible (floating button ?)
+
 export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
+  const isMobile = useIsMobile();
   const selectedNetworkId = useSelectedNetworkId();
   const wallet = useSelectedWallet();
   const { postFee } = useUpdatePostFee(selectedNetworkId, PostCategory.Article);
@@ -89,15 +98,22 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
     videos,
   }: PublishValues) => {
     const toriBalance = balances.find((bal) => bal.denom === "utori");
+    const files = [
+      ...(formValues.files || []),
+      ...images,
+      ...audios,
+      ...videos,
+    ];
+
     if (postFee > Number(toriBalance?.amount) && !freePostCount) {
       return setNotEnoughFundModal(true);
     }
     let pinataJWTKey = undefined;
-    if (formValues.files?.length) {
+    if (files?.length) {
       pinataJWTKey = await generateIpfsKey(selectedNetworkId, userId);
     }
 
-    await createPost({
+    const result = await createPost({
       networkId: selectedNetworkId,
       wallet,
       freePostCount,
@@ -106,7 +122,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
       formValues: {
         ...formValues,
         gifs,
-        files: [...(formValues.files || []), ...images, ...audios, ...videos],
+        files,
         mentions,
         hashtags,
         message: html,
@@ -115,6 +131,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
       // openGraph: undefined,
       pinataJWTKey,
     });
+    return result;
   };
 
   //TODO: Keep short post formValues when returning to short post
@@ -123,10 +140,18 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
   const onPublish = async (values: PublishValues) => {
     setLoading(true);
     try {
-      await initSubmit(values);
-      setToastSuccess({ title: "Post submitted successfully.", message: "" });
-      navigateBack();
-      reset();
+      const result = await initSubmit(values);
+      if (!result) {
+        console.error("upload file err : Fail to pin to IPFS");
+        setToastError({
+          title: "File upload failed",
+          message: "Fail to pin to IPFS, please try to Publish again",
+        });
+      } else {
+        setToastSuccess({ title: "Post submitted successfully.", message: "" });
+        navigateBack();
+        reset();
+      }
     } catch (err) {
       setToastError({
         title: "Something went wrong.",
@@ -152,7 +177,8 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
     <ScreenContainer
       forceNetworkKind={NetworkKind.Cosmos}
       responsive
-      maxWidth={NEWS_FEED_MAX_WIDTH}
+      mobileTitle="NEW ARTICLE"
+      maxWidth={screenContentMaxWidth}
       headerChildren={<BrandText style={fontSemibold20}>New Article</BrandText>}
       onBackPress={navigateBack}
       footerChildren
@@ -164,7 +190,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
 
       <View
         style={{
-          marginTop: layout.contentPadding,
+          marginTop: isMobile ? layout.padding_x2 : layout.contentPadding,
         }}
       >
         <WalletStatusBox />
@@ -182,7 +208,12 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
             backgroundColor: neutral11,
           }}
         >
-          <SVG source={priceSVG} height={24} width={24} color={neutral77} />
+          <SVG
+            source={priceSVG}
+            height={24}
+            width={24}
+            color={secondaryColor}
+          />
           <BrandText
             style={[
               fontSemibold13,
@@ -206,6 +237,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
           label="Cover image"
           style={{
             marginTop: layout.padding_x3,
+            width: "100%",
           }}
           onUpload={(files) =>
             setValue("files", [
@@ -217,6 +249,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
         />
 
         <TextInputCustom<NewPostFormValues>
+          noBrokenCorners
           rules={{ required: true }}
           height={48}
           label="Give a title to make an Article"
@@ -227,9 +260,11 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
           containerStyle={{ marginVertical: layout.padding_x3 }}
           boxMainContainerStyle={{
             backgroundColor: neutral00,
+            borderRadius: 12,
           }}
         />
         <Label isRequired>Article content</Label>
+        <SpacerColumn size={1} />
         {/**@ts-ignore  error:TS2589: Type instantiation is excessively deep and possibly infinite. */}
         <Controller
           name="message"

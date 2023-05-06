@@ -2,6 +2,7 @@ package p2e
 
 import (
 	"context"
+	"time"
 
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
@@ -133,7 +134,8 @@ func (s *P2eService) CurrentSeason(ctx context.Context, req *p2epb.CurrentSeason
 		return nil, errors.Wrap(err, "failed to get provided network")
 	}
 
-	currentSeason, remainingHp, err := GetCurrentSeason(network)
+	currentTime := time.Now().UTC()
+	currentSeason, remainingHp, err := GetSeasonByTime(currentTime, network)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get current season")
 	}

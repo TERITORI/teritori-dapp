@@ -7439,10 +7439,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+<<<<<<< HEAD
 "@types/html-minifier-terser@npm:^6.0.0":
   version: 6.1.0
   resolution: "@types/html-minifier-terser@npm:6.1.0"
   checksum: eb843f6a8d662d44fb18ec61041117734c6aae77aa38df1be3b4712e8e50ffaa35f1e1c92fdd0fde14a5675fecf457abcd0d15a01fae7506c91926176967f452
+=======
+"@types/html-to-draftjs@npm:^1.4.0":
+  version: 1.4.0
+  resolution: "@types/html-to-draftjs@npm:1.4.0"
+  dependencies:
+    "@types/draft-js": "*"
+  checksum: 727243c8b72ab453e0d81cd6e68c764277dd2c363fdb0700a47f07979cc4f488557f213ee836a6b5bb422689056c65d661e2b149fb27740a940ad1d86abbdb03
+>>>>>>> main
   languageName: node
   linkType: hard
 
@@ -16523,6 +16532,7 @@ __metadata:
   languageName: node
   linkType: hard
 
+<<<<<<< HEAD
 "html-minifier-terser@npm:^6.0.2":
   version: 6.1.0
   resolution: "html-minifier-terser@npm:6.1.0"
@@ -16537,6 +16547,15 @@ __metadata:
   bin:
     html-minifier-terser: cli.js
   checksum: ac52c14006476f773204c198b64838477859dc2879490040efab8979c0207424da55d59df7348153f412efa45a0840a1ca3c757bf14767d23a15e3e389d37a93
+=======
+"html-to-draftjs@npm:^1.5.0":
+  version: 1.5.0
+  resolution: "html-to-draftjs@npm:1.5.0"
+  peerDependencies:
+    draft-js: ^0.10.x || ^0.11.x
+    immutable: 3.x.x || 4.x.x
+  checksum: b1bab72ed07baece42b5b962cc57384305aa176b2bf5e7fbaf5675190867bbbde607788a71db61b2ad19eb238b09d795a0bbfacbf028d11949d97fb14d80ab1a
+>>>>>>> main
   languageName: node
   linkType: hard
 
@@ -26717,6 +26736,7 @@ __metadata:
     "@tanstack/react-query": ^4.12.0
     "@types/draft-convert": ^2.1.4
     "@types/draft-js": ^0.11.9
+    "@types/html-to-draftjs": ^1.4.0
     "@types/react": ~17.0.21
     "@types/react-native": ~0.67.6
     "@types/react-native-countdown-component": ^2.7.0
@@ -26748,6 +26768,7 @@ __metadata:
     expo-linear-gradient: ~11.3.0
     expo-optimize: ^0.2.19
     expo-status-bar: ~1.3.0
+    html-to-draftjs: ^1.5.0
     lodash: ^4.17.21
     long: ^5.2.1
     lottie-ios: 3.4.0

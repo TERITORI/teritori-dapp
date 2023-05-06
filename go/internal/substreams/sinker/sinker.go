@@ -8,7 +8,7 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/TERITORI/teritori-dapp/go/internal/substreams/db"
+	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	ethereumHandlers "github.com/TERITORI/teritori-dapp/go/internal/substreams/ethereum/handlers"
 	pb "github.com/TERITORI/teritori-dapp/go/internal/substreams/ethereum/pb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
@@ -121,7 +121,7 @@ func (s *PostgresSinker) Stop(ctx context.Context, err error) {
 	}
 
 	// TODO: Replace WriteCursor => UpdateCursor. => Check the behavior
-	_ = s.WriteCursor(s.lastCursor)
+	// _ = s.WriteCursor(s.lastCursor)
 }
 
 func (s *PostgresSinker) Start(ctx context.Context) error {
@@ -223,7 +223,7 @@ func (s *PostgresSinker) batchBlockModulo(blockData *pbsubstreams.BlockScopedDat
 }
 
 func (s *PostgresSinker) GetOrCreateCursor() (*sink.Cursor, error) {
-	c := db.Cursors{
+	c := indexerdb.Cursors{
 		ID: hex.EncodeToString(s.OutputModuleHash),
 	}
 
@@ -250,7 +250,7 @@ func (s *PostgresSinker) GetOrCreateCursor() (*sink.Cursor, error) {
 }
 
 func (s *PostgresSinker) WriteCursor(sinkCursor *sink.Cursor) error {
-	cursor := db.Cursors{
+	cursor := indexerdb.Cursors{
 		ID:       hex.EncodeToString(s.OutputModuleHash),
 		Cursor:   sinkCursor.Cursor,
 		BlockNum: sinkCursor.Block.Num(),
@@ -266,12 +266,12 @@ func (s *PostgresSinker) WriteCursor(sinkCursor *sink.Cursor) error {
 }
 
 func (s *PostgresSinker) UpdateCursor(sinkCursor *sink.Cursor) error {
-	cursor := db.Cursors{
+	cursor := indexerdb.Cursors{
 		ID:      hex.EncodeToString(s.OutputModuleHash),
 		Network: s.network.ID,
 	}
 
-	err := s.dbTransaction.Model(&cursor).Updates(db.Cursors{
+	err := s.dbTransaction.Model(&cursor).Updates(indexerdb.Cursors{
 		Cursor:   sinkCursor.Cursor,
 		BlockNum: sinkCursor.Block.Num(),
 		BlockId:  sinkCursor.Block.ID(),
@@ -284,10 +284,8 @@ func (s *PostgresSinker) UpdateCursor(sinkCursor *sink.Cursor) error {
 	return nil
 }
 
-func (s *PostgresSinker) ApplyChanges(moduleHash string, sinkerCursor *sink.Cursor) (err error) {
-	// s.logger.Info("flush operations", zap.Int64("total", int64(u.OperationsCount)))
-
-	if err := s.UpdateCursor(sinkerCursor); err != nil {
+func (s *PostgresSinker) ApplyChanges(moduleHash string, sinkCursor *sink.Cursor) (err error) {
+	if err := s.UpdateCursor(sinkCursor); err != nil {
 		return errors.Wrap(err, "failed to update cursor when apply changes")
 	}
 

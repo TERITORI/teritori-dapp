@@ -1,5 +1,5 @@
 import React from "react";
-import { View } from "react-native";
+import { View, useWindowDimensions } from "react-native";
 
 import { BrandText } from "./BrandText";
 import { NetworkIcon } from "./NetworkIcon";
@@ -13,9 +13,11 @@ import {
   fontSemibold13,
   fontSemibold14,
 } from "../utils/style/fonts";
-import { layout } from "../utils/style/layout";
+import { layout, RESPONSIVE_BREAKPOINT_S } from "../utils/style/layout";
+import { tinyAddress } from "../utils/text";
 
 export const WalletStatusBox: React.FC = () => {
+  const { width } = useWindowDimensions();
   const selectedWallet = useSelectedWallet();
   const selectedNetworkInfo = useSelectedNetworkInfo();
 
@@ -46,7 +48,10 @@ export const WalletStatusBox: React.FC = () => {
                 {selectedNetworkInfo?.displayName}
               </BrandText>
               <BrandText style={[fontSemibold13]}>
-                {selectedWallet.address}
+                {tinyAddress(
+                  selectedWallet.address,
+                  width < RESPONSIVE_BREAKPOINT_S ? 20 : 40
+                )}
               </BrandText>
             </View>
           </View>

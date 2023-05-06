@@ -27,6 +27,7 @@ import {
 import { NetworkSelector } from "../NetworkSelector/NetworkSelector";
 import { SelectedNetworkGate } from "../SelectedNetworkGate";
 import { ConnectWalletButton } from "../TopMenu/ConnectWalletButton";
+import { Footer } from "../footers/Footer";
 import { Sidebar } from "../navigation/Sidebar";
 
 export const ScreenContainer: React.FC<{
@@ -37,7 +38,6 @@ export const ScreenContainer: React.FC<{
   noMargin?: boolean;
   noScroll?: boolean;
   fullWidth?: boolean;
-  smallMargin?: boolean;
   forceNetworkId?: string;
   forceNetworkKind?: NetworkKind;
   responsive?: boolean;
@@ -52,7 +52,6 @@ export const ScreenContainer: React.FC<{
   noMargin,
   noScroll,
   fullWidth,
-  smallMargin,
   responsive,
   onBackPress,
   maxWidth,
@@ -92,9 +91,6 @@ export const ScreenContainer: React.FC<{
     },
     [forceNetworkId, forceNetworkKind]
   );
-  const Footer = React.lazy(() =>
-    import("../footers/Footer").then((module) => ({ default: module.Footer }))
-  );
 
   /////////////// mobile returns
   if (isMobile)
@@ -119,9 +115,7 @@ export const ScreenContainer: React.FC<{
 
         <View style={{ width: "100%", flex: 1 }}>
           {/*==== Header*/}
-          <Header smallMargin={smallMargin} onBackPress={onBackPress}>
-            {headerChildren}
-          </Header>
+          <Header onBackPress={onBackPress}>{headerChildren}</Header>
 
           <View
             style={{ width: "100%", flexDirection: "row", flex: 1, height }}

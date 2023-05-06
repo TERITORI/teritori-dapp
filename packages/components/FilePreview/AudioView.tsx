@@ -16,7 +16,7 @@ import {
   secondaryColor,
 } from "../../utils/style/colors";
 import { fontSemibold13, fontSemibold14 } from "../../utils/style/fonts";
-import { layout, NEWS_FEED_MAX_WIDTH } from "../../utils/style/layout";
+import { layout, screenContentMaxWidth } from "../../utils/style/layout";
 import { RemoteFileData } from "../../utils/types/feed";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
@@ -67,8 +67,8 @@ export const AudioView: React.FC<{
   );
 
   const audioWaveWidth = useMemo(() => {
-    if (width > NEWS_FEED_MAX_WIDTH) {
-      return NEWS_FEED_MAX_WIDTH - 212 - (hasThumbnail ? THUMBNAIL_WIDTH : 0);
+    if (width > screenContentMaxWidth) {
+      return screenContentMaxWidth - 212 - (hasThumbnail ? THUMBNAIL_WIDTH : 0);
     } else {
       return width - 212 - (hasThumbnail ? THUMBNAIL_WIDTH : 0);
     }
@@ -81,7 +81,7 @@ export const AudioView: React.FC<{
     [playbackStatus]
   );
 
-  if (!file?.thumbnailFileData?.url)
+  if (!file?.url)
     return (
       <BrandText style={[fontSemibold13, { color: errorColor }]}>
         Audio not found

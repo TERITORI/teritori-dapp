@@ -51,7 +51,7 @@ func (u *IndexerUtils) IndexSquadUnstake(
 
 		// Get current leaderboard record
 		startTimeDt := time.Unix(int64(squadStaking.StartTime), 0)
-		season, _, err := p2e.GetSeasonByTime(startTimeDt, u.network.ID)
+		season, _, err := p2e.GetSeasonByTime(startTimeDt, u.network)
 		if err != nil {
 			return errors.Wrap(err, "failed to get season")
 		}
@@ -121,7 +121,7 @@ func (u *IndexerUtils) IndexSquadStake(
 	ownerId := u.network.UserID(userAddress)
 
 	startTimeDt := time.Unix(int64(startTime), 0)
-	season, _, err := p2e.GetSeasonByTime(startTimeDt, u.network.ID)
+	season, _, err := p2e.GetSeasonByTime(startTimeDt, u.network)
 	if err != nil {
 		return errors.Wrap(err, "failed to get season")
 	}

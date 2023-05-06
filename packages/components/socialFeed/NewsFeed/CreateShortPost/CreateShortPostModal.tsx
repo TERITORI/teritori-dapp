@@ -1,7 +1,8 @@
 import React from "react";
+import { useWindowDimensions } from "react-native";
 import { MenuProvider } from "react-native-popup-menu";
 
-import { layout, NEWS_FEED_MAX_WIDTH } from "../../../../utils/style/layout";
+import { layout, screenContentMaxWidth } from "../../../../utils/style/layout";
 import ModalBase from "../../../modals/ModalBase";
 import { NewsFeedInput } from "../NewsFeedInput";
 
@@ -18,11 +19,12 @@ export const CreateShortPostModal: React.FC<{
   additionalHashtag,
   onSubmitSuccess,
 }) => {
+  const { width } = useWindowDimensions();
   return (
     <ModalBase
       visible={isVisible}
       onClose={onClose}
-      width={NEWS_FEED_MAX_WIDTH}
+      width={width < 900 ? 0.9 * width : screenContentMaxWidth}
       label="Create a Post"
     >
       <MenuProvider>
@@ -30,7 +32,11 @@ export const CreateShortPostModal: React.FC<{
           onCloseCreateModal={onClose}
           type="post"
           onSubmitSuccess={onSubmitSuccess}
-          style={{ marginBottom: layout.padding_x2_5, paddingVertical: 70 }}
+          style={{
+            marginBottom: layout.padding_x2_5,
+            paddingVertical: 70,
+            width: "100%",
+          }}
           additionalMention={additionalMention}
           additionalHashtag={additionalHashtag}
         />

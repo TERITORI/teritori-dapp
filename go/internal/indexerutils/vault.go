@@ -163,10 +163,6 @@ func (u *IndexerUtils) IndexBuyNFT(
 ) error {
 	buyerID := u.network.UserID(userAddress)
 
-	// TODO: get seller
-	sellerAddress := "0x00"
-	sellerID := u.network.UserID(sellerAddress)
-
 	// find nft id
 	var collection indexerdb.Collection
 	findResult := u.dbTransaction.
@@ -190,6 +186,9 @@ func (u *IndexerUtils) IndexBuyNFT(
 	if err := u.dbTransaction.First(&listedNFT).Error; err != nil {
 		return errors.Wrap(err, "failed to get current list nft")
 	}
+
+	// seller = current owner
+	sellerID := listedNFT.OwnerID
 
 	priceAmount := listedNFT.PriceAmount.String
 	priceDenom := listedNFT.PriceDenom

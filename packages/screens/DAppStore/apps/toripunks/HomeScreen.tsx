@@ -16,7 +16,6 @@ export const ToriPunks: ScreenFC<"ToriPunks"> = ({ route }) => {
     <ScreenContainer
       fullWidth
       hideSidebar
-      smallMargin
       headerChildren={<TopLogo />}
       footerChildren={<div />}
     >

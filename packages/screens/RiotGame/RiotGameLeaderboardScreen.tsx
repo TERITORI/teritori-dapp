@@ -144,7 +144,7 @@ export const RiotGameLeaderboardScreen = () => {
     const _userScores: UserScore[] = [];
 
     const currentSeason = await p2eClient.CurrentSeason({
-      networkKind: selectedNetwork?.kind,
+      networkId: selectedNetwork?.id,
     });
     setCurrentSeason(currentSeason);
 
@@ -152,14 +152,14 @@ export const RiotGameLeaderboardScreen = () => {
       seasonId: currentSeason.id,
       limit: 500,
       offset: 0,
-      networkKind: selectedNetwork?.kind,
+      networkId: selectedNetwork?.id,
     });
 
     await streamData.forEach((item: LeaderboardResponse) => {
       item.userScore && _userScores.push(item.userScore);
     });
     setUserScores(_userScores.filter((val) => val.rank !== 0));
-  }, [selectedNetwork?.id, selectedNetwork?.kind]);
+  }, [selectedNetwork?.id]);
 
   useEffect(() => {
     fetchLeaderboard();

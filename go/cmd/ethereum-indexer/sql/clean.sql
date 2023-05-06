@@ -11,4 +11,7 @@ DELETE FROM activities WHERE id LIKE '<networkPrefix>-%';
 DELETE FROM teritori_nfts WHERE nft_id LIKE '<networkPrefix>-%';
 DELETE FROM nfts WHERE id LIKE '<networkPrefix>-%';
 DELETE FROM collections WHERE id LIKE '<networkPrefix>-%';
+DELETE FROM quest_completions WHERE user_id LIKE '<networkPrefix>-%';
+DELETE FROM p2e_leaderboards WHERE user_id LIKE '<networkPrefix>-%';
+DELETE FROM p2e_squad_stakings WHERE owner_id LIKE '<networkPrefix>-%';
 DELETE FROM cursors WHERE network = '<network>'

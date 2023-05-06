@@ -139,7 +139,7 @@ var THE_RIOT_COSMOS_SEASONS = []Season{
 var THE_RIOT_ETHEREUM_SEASONS = []Season{
 	// Season 1
 	{
-		ID:         "Season 1",
+		ID:         "Season 1 - ETH",
 		GameID:     THE_RIOT_GAME_ID,
 		Denom:      "eth",
 		Decimals:   18,

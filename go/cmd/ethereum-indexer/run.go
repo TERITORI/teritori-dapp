@@ -6,9 +6,10 @@ import (
 	"os"
 	"time"
 
-	"github.com/TERITORI/teritori-dapp/go/internal/substreams/db"
+	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/internal/substreams/sinker"
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
+	"github.com/TERITORI/teritori-dapp/go/pkg/quests"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
@@ -98,10 +99,31 @@ func sinkRunE(cmd *cobra.Command, args []string) error {
 	)
 
 	// Auto migrate DB
-	// psql://postgres:postgres@localhost:5432/postgres?sslmode=disable
-	dns := fmt.Sprintf("psql://%s:%s@%s:%s/%s?sslmode=disable", dbUser, dbPass, dbHost, dbPort, dbName)
-	indexerDB := db.MustConnectIndexerDB(dns)
-	db.MustMigrateDB(indexerDB)
+	// Init db
+	dataConnexion := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s",
+		dbHost, dbUser, dbPass, dbName, dbPort)
+	indexerDB, err := indexerdb.NewPostgresDB(dataConnexion)
+
+	if err != nil {
+		panic(errors.Wrap(err, "failed to access db"))
+	}
+
+	err = indexerdb.MigrateDB(indexerDB)
+	if err != nil {
+		panic(errors.Wrap(err, "failed migrate database models"))
+	}
+
+	// inject quests
+	qs, err := quests.Quests()
+	if err != nil {
+		panic(errors.Wrap(err, "failed to get embedded quests"))
+	}
+	for _, q := range qs {
+		indexerDB.Save(&indexerdb.Quest{
+			ID:    q.ID,
+			Title: q.Title,
+		})
+	}
 
 	// Begin app logics
 	app := shutter.New()

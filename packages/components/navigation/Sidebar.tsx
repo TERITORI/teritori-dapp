@@ -7,6 +7,7 @@ import Animated, {
   WithSpringConfig,
 } from "react-native-reanimated";
 
+import { BuyTokens } from "./BuyTokens";
 import { SideNotch } from "./components/SideNotch";
 import { SidebarButton } from "./components/SidebarButton";
 import { SidebarProfileButton } from "./components/SidebarProfileButton";
@@ -35,6 +36,19 @@ const SpringConfig: WithSpringConfig = {
   stiffness: 100,
   mass: 0.5,
   restDisplacementThreshold: 0.2,
+};
+
+const SidebarSeparator: React.FC = () => {
+  return (
+    <View
+      style={{
+        height: 1,
+        marginHorizontal: layout.padding_x2,
+        backgroundColor: neutral33,
+        marginBottom: layout.padding_x1,
+      }}
+    />
+  );
 };
 
 export const Sidebar: React.FC = () => {
@@ -135,14 +149,9 @@ export const Sidebar: React.FC = () => {
         }
       />
       <View>
-        <View
-          style={{
-            height: 1,
-            marginHorizontal: 18,
-            backgroundColor: neutral33,
-            marginBottom: layout.padding_x1,
-          }}
-        />
+        <SidebarSeparator />
+        <BuyTokens />
+        <SidebarSeparator />
 
         {selectedNetworkKind === NetworkKind.Cosmos &&
           connected &&

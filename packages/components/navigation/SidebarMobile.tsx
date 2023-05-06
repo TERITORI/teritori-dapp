@@ -28,7 +28,7 @@ const SpringConfig: WithSpringConfig = {
 };
 
 export const SidebarMobile: FC = () => {
-  const { height: windowHeight } = useWindowDimensions();
+  const { height: windowHeight, width: windowWidth } = useWindowDimensions();
   const selectedNetworkKind = useSelectedNetworkKind();
   const navigation = useAppNavigation();
   const { isSidebarExpanded, toggleSidebar, dynamicSidebar } = useSidebar();
@@ -36,10 +36,15 @@ export const SidebarMobile: FC = () => {
   const layoutStyle = useAnimatedStyle(
     () => ({
       width: isSidebarExpanded
-        ? withSpring(MOBILE_SIDEBAR_MAX_WIDTH, SpringConfig)
+        ? withSpring(
+            windowWidth < MOBILE_SIDEBAR_MAX_WIDTH
+              ? windowWidth
+              : MOBILE_SIDEBAR_MAX_WIDTH,
+            SpringConfig
+          )
         : withSpring(0, SpringConfig),
     }),
-    [isSidebarExpanded]
+    [isSidebarExpanded, windowWidth]
   );
 
   const onRouteChange = (name: SidebarType["route"]) => {
