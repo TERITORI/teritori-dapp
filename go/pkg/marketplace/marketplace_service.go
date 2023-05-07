@@ -422,6 +422,48 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 	return fmt.Errorf("unsupported network kind '%s'", network.GetBase().Kind)
 }
 
+func (s *MarkteplaceService) NFTCollectionFilters(req *marketplacepb.CollectionFiltersRequest, srv marketplacepb.MarketplaceService_NFTCollectionAttributesServer) error {
+
+	collectionID := req.GetCollectionId()
+
+	var err error
+	var network networks.Network
+	if collectionID != "" {
+		if network, _, err = s.conf.NetworkStore.ParseCollectionID(collectionID); err != nil {
+			return errors.Wrap(err, "failed to parse collection id")
+		}
+	} else {
+		return errors.New("missing filter")
+	}
+
+	var attributes []*marketplacepb.Attribute
+
+	err = s.conf.IndexerDB.Raw(`
+      select trait_type, string_agg(value, ', ') AS existing from (
+          select trait_type, value from (
+              SELECT distinct attr.trait_type as trait_type, attr.value 
+              FROM public.nfts t, jsonb_to_recordset(t.attributes) as attr(value varchar, trait_type varchar)
+              where collection_id = ?
+              order by value
+          ) as sorted
+          group by trait_type, value
+        ) as col
+      group by 1
+		`,
+		collectionID,
+	).Scan(&attributes).Error
+
+	for _, attribute := range attributes {
+		if err := srv.Send(&marketplacepb.CollectionAttributesResponse{Attributes: attribute}); err != nil {
+			return errors.Wrap(err, "failed to send nft")
+		}
+	}
+
+	//return nil
+
+	return fmt.Errorf("unsupported network kind '%s'", network.GetBase().Kind)
+}
+
 func (s *MarkteplaceService) Activity(req *marketplacepb.ActivityRequest, srv marketplacepb.MarketplaceService_ActivityServer) error {
 	// TODO: we should use a time cursor based pagination instead of limit and offset
 

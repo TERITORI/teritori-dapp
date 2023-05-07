@@ -7,6 +7,7 @@ service MarketplaceService {
   rpc Collections(CollectionsRequest) returns (stream CollectionsResponse);
   rpc CollectionStats(CollectionStatsRequest) returns ( CollectionStatsResponse);
   rpc NFTs(NFTsRequest) returns (stream NFTsResponse);
+  rpc NFTCollectionAttributes(CollectionFiltersRequest) returns (stream CollectionAttributesResponse);
   rpc Quests(QuestsRequest) returns (stream QuestsResponse);
   rpc Activity(ActivityRequest) returns (stream ActivityResponse);
   rpc NFTPriceHistory(NFTPriceHistoryRequest) returns (NFTPriceHistoryResponse);
@@ -91,6 +92,10 @@ message CollectionStats {
   int32 owned = 6;
 }
 
+message CollectionAttributesResponse {
+  Attribute attributes = 1;
+}
+
 message Activity {
   string id = 1;
   string transaction_kind = 2;
@@ -132,6 +137,10 @@ message CollectionsRequest {
 message CollectionStatsRequest {
   string collection_id = 1;
   string owner_id = 2;
+}
+
+message CollectionFiltersRequest {
+  string collection_id = 1;
 }
 
 message CollectionStatsResponse {

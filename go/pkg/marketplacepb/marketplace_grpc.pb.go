@@ -25,6 +25,7 @@ type MarketplaceServiceClient interface {
 	Collections(ctx context.Context, in *CollectionsRequest, opts ...grpc.CallOption) (MarketplaceService_CollectionsClient, error)
 	CollectionStats(ctx context.Context, in *CollectionStatsRequest, opts ...grpc.CallOption) (*CollectionStatsResponse, error)
 	NFTs(ctx context.Context, in *NFTsRequest, opts ...grpc.CallOption) (MarketplaceService_NFTsClient, error)
+	NFTCollectionAttributes(ctx context.Context, in *CollectionFiltersRequest, opts ...grpc.CallOption) (MarketplaceService_NFTCollectionAttributesClient, error)
 	Quests(ctx context.Context, in *QuestsRequest, opts ...grpc.CallOption) (MarketplaceService_QuestsClient, error)
 	Activity(ctx context.Context, in *ActivityRequest, opts ...grpc.CallOption) (MarketplaceService_ActivityClient, error)
 	NFTPriceHistory(ctx context.Context, in *NFTPriceHistoryRequest, opts ...grpc.CallOption) (*NFTPriceHistoryResponse, error)
@@ -117,8 +118,40 @@ func (x *marketplaceServiceNFTsClient) Recv() (*NFTsResponse, error) {
 	return m, nil
 }
 
+func (c *marketplaceServiceClient) NFTCollectionAttributes(ctx context.Context, in *CollectionFiltersRequest, opts ...grpc.CallOption) (MarketplaceService_NFTCollectionAttributesClient, error) {
+	stream, err := c.cc.NewStream(ctx, &MarketplaceService_ServiceDesc.Streams[2], "/marketplace.v1.MarketplaceService/NFTCollectionAttributes", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &marketplaceServiceNFTCollectionAttributesClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type MarketplaceService_NFTCollectionAttributesClient interface {
+	Recv() (*CollectionAttributesResponse, error)
+	grpc.ClientStream
+}
+
+type marketplaceServiceNFTCollectionAttributesClient struct {
+	grpc.ClientStream
+}
+
+func (x *marketplaceServiceNFTCollectionAttributesClient) Recv() (*CollectionAttributesResponse, error) {
+	m := new(CollectionAttributesResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 func (c *marketplaceServiceClient) Quests(ctx context.Context, in *QuestsRequest, opts ...grpc.CallOption) (MarketplaceService_QuestsClient, error) {
-	stream, err := c.cc.NewStream(ctx, &MarketplaceService_ServiceDesc.Streams[2], "/marketplace.v1.MarketplaceService/Quests", opts...)
+	stream, err := c.cc.NewStream(ctx, &MarketplaceService_ServiceDesc.Streams[3], "/marketplace.v1.MarketplaceService/Quests", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -150,7 +183,7 @@ func (x *marketplaceServiceQuestsClient) Recv() (*QuestsResponse, error) {
 }
 
 func (c *marketplaceServiceClient) Activity(ctx context.Context, in *ActivityRequest, opts ...grpc.CallOption) (MarketplaceService_ActivityClient, error) {
-	stream, err := c.cc.NewStream(ctx, &MarketplaceService_ServiceDesc.Streams[3], "/marketplace.v1.MarketplaceService/Activity", opts...)
+	stream, err := c.cc.NewStream(ctx, &MarketplaceService_ServiceDesc.Streams[4], "/marketplace.v1.MarketplaceService/Activity", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -251,6 +284,7 @@ type MarketplaceServiceServer interface {
 	Collections(*CollectionsRequest, MarketplaceService_CollectionsServer) error
 	CollectionStats(context.Context, *CollectionStatsRequest) (*CollectionStatsResponse, error)
 	NFTs(*NFTsRequest, MarketplaceService_NFTsServer) error
+	NFTCollectionAttributes(*CollectionFiltersRequest, MarketplaceService_NFTCollectionAttributesServer) error
 	Quests(*QuestsRequest, MarketplaceService_QuestsServer) error
 	Activity(*ActivityRequest, MarketplaceService_ActivityServer) error
 	NFTPriceHistory(context.Context, *NFTPriceHistoryRequest) (*NFTPriceHistoryResponse, error)
@@ -275,6 +309,9 @@ func (UnimplementedMarketplaceServiceServer) CollectionStats(context.Context, *C
 }
 func (UnimplementedMarketplaceServiceServer) NFTs(*NFTsRequest, MarketplaceService_NFTsServer) error {
 	return status.Errorf(codes.Unimplemented, "method NFTs not implemented")
+}
+func (UnimplementedMarketplaceServiceServer) NFTCollectionAttributes(*CollectionFiltersRequest, MarketplaceService_NFTCollectionAttributesServer) error {
+	return status.Errorf(codes.Unimplemented, "method NFTCollectionAttributes not implemented")
 }
 func (UnimplementedMarketplaceServiceServer) Quests(*QuestsRequest, MarketplaceService_QuestsServer) error {
 	return status.Errorf(codes.Unimplemented, "method Quests not implemented")
@@ -373,6 +410,27 @@ type marketplaceServiceNFTsServer struct {
 }
 
 func (x *marketplaceServiceNFTsServer) Send(m *NFTsResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func _MarketplaceService_NFTCollectionAttributes_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(CollectionFiltersRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(MarketplaceServiceServer).NFTCollectionAttributes(m, &marketplaceServiceNFTCollectionAttributesServer{stream})
+}
+
+type MarketplaceService_NFTCollectionAttributesServer interface {
+	Send(*CollectionAttributesResponse) error
+	grpc.ServerStream
+}
+
+type marketplaceServiceNFTCollectionAttributesServer struct {
+	grpc.ServerStream
+}
+
+func (x *marketplaceServiceNFTCollectionAttributesServer) Send(m *CollectionAttributesResponse) error {
 	return x.ServerStream.SendMsg(m)
 }
 
@@ -593,6 +651,11 @@ var MarketplaceService_ServiceDesc = grpc.ServiceDesc{
 		{
 			StreamName:    "NFTs",
 			Handler:       _MarketplaceService_NFTs_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "NFTCollectionAttributes",
+			Handler:       _MarketplaceService_NFTCollectionAttributes_Handler,
 			ServerStreams: true,
 		},
 		{

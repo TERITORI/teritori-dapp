@@ -191,6 +191,10 @@ export interface CollectionStats {
   owned: number;
 }
 
+export interface CollectionAttributesResponse {
+  attributes: Attribute | undefined;
+}
+
 export interface Activity {
   id: string;
   transactionKind: string;
@@ -230,6 +234,10 @@ export interface CollectionsRequest {
 export interface CollectionStatsRequest {
   collectionId: string;
   ownerId: string;
+}
+
+export interface CollectionFiltersRequest {
+  collectionId: string;
 }
 
 export interface CollectionStatsResponse {
@@ -959,6 +967,56 @@ export const CollectionStats = {
   },
 };
 
+function createBaseCollectionAttributesResponse(): CollectionAttributesResponse {
+  return { attributes: undefined };
+}
+
+export const CollectionAttributesResponse = {
+  encode(message: CollectionAttributesResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.attributes !== undefined) {
+      Attribute.encode(message.attributes, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): CollectionAttributesResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCollectionAttributesResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.attributes = Attribute.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CollectionAttributesResponse {
+    return { attributes: isSet(object.attributes) ? Attribute.fromJSON(object.attributes) : undefined };
+  },
+
+  toJSON(message: CollectionAttributesResponse): unknown {
+    const obj: any = {};
+    message.attributes !== undefined &&
+      (obj.attributes = message.attributes ? Attribute.toJSON(message.attributes) : undefined);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<CollectionAttributesResponse>, I>>(object: I): CollectionAttributesResponse {
+    const message = createBaseCollectionAttributesResponse();
+    message.attributes = (object.attributes !== undefined && object.attributes !== null)
+      ? Attribute.fromPartial(object.attributes)
+      : undefined;
+    return message;
+  },
+};
+
 function createBaseActivity(): Activity {
   return {
     id: "",
@@ -1402,6 +1460,53 @@ export const CollectionStatsRequest = {
     const message = createBaseCollectionStatsRequest();
     message.collectionId = object.collectionId ?? "";
     message.ownerId = object.ownerId ?? "";
+    return message;
+  },
+};
+
+function createBaseCollectionFiltersRequest(): CollectionFiltersRequest {
+  return { collectionId: "" };
+}
+
+export const CollectionFiltersRequest = {
+  encode(message: CollectionFiltersRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.collectionId !== "") {
+      writer.uint32(10).string(message.collectionId);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): CollectionFiltersRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCollectionFiltersRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.collectionId = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CollectionFiltersRequest {
+    return { collectionId: isSet(object.collectionId) ? String(object.collectionId) : "" };
+  },
+
+  toJSON(message: CollectionFiltersRequest): unknown {
+    const obj: any = {};
+    message.collectionId !== undefined && (obj.collectionId = message.collectionId);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<CollectionFiltersRequest>, I>>(object: I): CollectionFiltersRequest {
+    const message = createBaseCollectionFiltersRequest();
+    message.collectionId = object.collectionId ?? "";
     return message;
   },
 };
@@ -3016,6 +3121,10 @@ export interface MarketplaceService {
     metadata?: grpc.Metadata,
   ): Promise<CollectionStatsResponse>;
   NFTs(request: DeepPartial<NFTsRequest>, metadata?: grpc.Metadata): Observable<NFTsResponse>;
+  NFTCollectionAttributes(
+    request: DeepPartial<CollectionFiltersRequest>,
+    metadata?: grpc.Metadata,
+  ): Observable<CollectionAttributesResponse>;
   Quests(request: DeepPartial<QuestsRequest>, metadata?: grpc.Metadata): Observable<QuestsResponse>;
   Activity(request: DeepPartial<ActivityRequest>, metadata?: grpc.Metadata): Observable<ActivityResponse>;
   NFTPriceHistory(
@@ -3041,6 +3150,7 @@ export class MarketplaceServiceClientImpl implements MarketplaceService {
     this.Collections = this.Collections.bind(this);
     this.CollectionStats = this.CollectionStats.bind(this);
     this.NFTs = this.NFTs.bind(this);
+    this.NFTCollectionAttributes = this.NFTCollectionAttributes.bind(this);
     this.Quests = this.Quests.bind(this);
     this.Activity = this.Activity.bind(this);
     this.NFTPriceHistory = this.NFTPriceHistory.bind(this);
@@ -3065,6 +3175,17 @@ export class MarketplaceServiceClientImpl implements MarketplaceService {
 
   NFTs(request: DeepPartial<NFTsRequest>, metadata?: grpc.Metadata): Observable<NFTsResponse> {
     return this.rpc.invoke(MarketplaceServiceNFTsDesc, NFTsRequest.fromPartial(request), metadata);
+  }
+
+  NFTCollectionAttributes(
+    request: DeepPartial<CollectionFiltersRequest>,
+    metadata?: grpc.Metadata,
+  ): Observable<CollectionAttributesResponse> {
+    return this.rpc.invoke(
+      MarketplaceServiceNFTCollectionAttributesDesc,
+      CollectionFiltersRequest.fromPartial(request),
+      metadata,
+    );
   }
 
   Quests(request: DeepPartial<QuestsRequest>, metadata?: grpc.Metadata): Observable<QuestsResponse> {
@@ -3174,6 +3295,28 @@ export const MarketplaceServiceNFTsDesc: UnaryMethodDefinitionish = {
     deserializeBinary(data: Uint8Array) {
       return {
         ...NFTsResponse.decode(data),
+        toObject() {
+          return this;
+        },
+      };
+    },
+  } as any,
+};
+
+export const MarketplaceServiceNFTCollectionAttributesDesc: UnaryMethodDefinitionish = {
+  methodName: "NFTCollectionAttributes",
+  service: MarketplaceServiceDesc,
+  requestStream: false,
+  responseStream: true,
+  requestType: {
+    serializeBinary() {
+      return CollectionFiltersRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      return {
+        ...CollectionAttributesResponse.decode(data),
         toObject() {
           return this;
         },
