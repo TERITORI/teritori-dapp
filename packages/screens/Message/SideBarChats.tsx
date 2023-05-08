@@ -60,13 +60,14 @@ const SideBarChats: React.FC = () => {
 
       <Separator horizontal={false} color={neutral22} />
 
-      {ConversationData.map((item) => (
+      {ConversationData.map((item, index) => (
         <TouchableOpacity
           onPress={() =>
             ["android", "ios"].includes(Platform.OS)
               ? navigation.navigate("ChatSection")
               : null
           }
+          key={index}
         >
           <SideBarChatConversation
             avatar={item.avatar}

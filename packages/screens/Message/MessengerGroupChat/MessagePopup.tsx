@@ -13,6 +13,7 @@ import copy from "../../../../assets/icons/copy.svg";
 import deleteicon from "../../../../assets/icons/delete.svg";
 import farward from "../../../../assets/icons/farward.svg";
 import farwardto from "../../../../assets/icons/farwardto.svg";
+import nullIcon from "../../../../assets/icons/illustration.svg";
 import reply from "../../../../assets/icons/reply.svg";
 import searchSVG from "../../../../assets/icons/search.svg";
 import select from "../../../../assets/icons/select.svg";
@@ -30,27 +31,42 @@ const data = [
   },
   {
     icon: avatar,
-    name: "John  Robert",
+    name: "Afan Asja",
   },
   {
     icon: avatar,
-    name: "John  Robert",
+    name: "Liam",
   },
   {
     icon: avatar,
-    name: "John  Robert",
+    name: "Olivia",
   },
   {
     icon: avatar,
-    name: "John  Robert",
+    name: "Noah",
+  },
+  {
+    icon: avatar,
+    name: "Elijah",
+  },
+  {
+    icon: avatar,
+    name: "Amelia",
   },
 ];
-const MessagePopup = () => {
-  const [isForwarding, setIsForwarding] = useState(false);
+
+const MessagePopup = ({ isForwarding, setIsForwarding }) => {
   const handleForwardClick = () => {
     setIsForwarding(true);
   };
+  const handleSearch = () => {
+    setIsForwarding(false);
+  };
   const ITEM_HEIGHT = 50;
+  const [searchQuery, setSearchQuery] = useState("");
+  const filteredData = data.filter((item) =>
+    item.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
   return (
     <View>
       <TouchableOpacity>
@@ -79,7 +95,7 @@ const MessagePopup = () => {
         </FlexRow>
       </TouchableOpacity>
       {isForwarding && (
-        <View style={[styles.forwardContainer, { maxHeight: 4 * ITEM_HEIGHT }]}>
+        <View style={[styles.forwardContainer, { maxHeight: 5 * ITEM_HEIGHT }]}>
           <View
             style={{
               flexDirection: "row",
@@ -88,12 +104,8 @@ const MessagePopup = () => {
             <SVG source={searchSVG} width={16} height={16} />
             <TextInput
               placeholder="Search"
-              // value={value}
-              // onChangeText={handleChangeText}
-              // onKeyPress={(event) =>
-              //   handleKeyPress({ event, onPressEnter })
-              // }
-
+              value={searchQuery}
+              onChangeText={setSearchQuery}
               placeholderTextColor="#999999"
               style={{
                 fontSize: 14,
@@ -108,16 +120,29 @@ const MessagePopup = () => {
           <SpacerColumn size={2} />
 
           <ScrollView showsVerticalScrollIndicator={false}>
-            {data.map((item, index) => (
-              <View style={{ maxHeight: ITEM_HEIGHT }}>
-                <FlexRow key={index}>
-                  <SVG source={item.icon} height={24} width={24} />
-                  <SpacerRow size={2} />
-                  <BrandText style={fontSemibold13}>{item.name}</BrandText>
-                </FlexRow>
-                <SpacerColumn size={2} />
-              </View>
-            ))}
+            {filteredData.length > 0 ? (
+              filteredData?.map((item, index) => (
+                <TouchableOpacity onPress={handleSearch}>
+                  <View style={{ maxHeight: ITEM_HEIGHT }}>
+                    <FlexRow key={index}>
+                      <SVG source={item.icon} height={24} width={24} />
+                      <SpacerRow size={2} />
+                      <BrandText style={fontSemibold13}>{item.name}</BrandText>
+                    </FlexRow>
+                    <SpacerColumn size={2} />
+                  </View>
+                </TouchableOpacity>
+              ))
+            ) : (
+              <>
+                <SVG
+                  source={nullIcon}
+                  height={100}
+                  width={100}
+                  style={{ alignSelf: "center", borderRadius: 10 }}
+                />
+              </>
+            )}
           </ScrollView>
         </View>
       )}
@@ -156,13 +181,14 @@ export default MessagePopup;
 const styles = StyleSheet.create({
   forwardContainer: {
     backgroundColor: "rgba(41, 41, 41, 0.8)",
+
     padding: 20,
 
     borderRadius: 16,
-    // width: "auto",
+    width: 170,
     zIndex: 11111,
     position: "absolute",
-    right: -225,
+    right: -170,
   },
   forwardText: {
     fontSize: 16,

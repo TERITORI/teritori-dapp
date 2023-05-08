@@ -33,10 +33,9 @@ export const MessageScreen: ScreenFC<"Message"> = () => {
 
       <FlexRow>
         <ScrollView horizontal>
-          {data.map((item) => (
-            <>
+          {data.map((item, index) => (
+            <View key={item.id}>
               <TouchableOpacity
-                key={item.id}
                 onPress={() => {
                   if (item.id === 2) {
                     setShowTertiaryBox(true);
@@ -56,7 +55,7 @@ export const MessageScreen: ScreenFC<"Message"> = () => {
               </TouchableOpacity>
 
               <SpacerRow size={2} />
-            </>
+            </View>
           ))}
         </ScrollView>
       </FlexRow>
