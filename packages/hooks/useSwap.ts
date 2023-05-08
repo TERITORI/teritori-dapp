@@ -15,14 +15,14 @@ import { MsgSwapExactAmountIn } from "osmojs/types/codegen/osmosis/gamm/v1beta1/
 import { SwapAmountInRoute } from "osmojs/types/codegen/osmosis/poolmanager/v1beta1/swap_route";
 import { useEffect, useMemo, useState } from "react";
 
-import { useSelectedNetworkId } from "./useSelectedNetwork";
-import useSelectedWallet from "./useSelectedWallet";
 import {
   CurrencyInfo,
   getCosmosNetwork,
   getKeplrSigner,
   getNativeCurrency,
 } from "../networks";
+import { useSelectedNetworkId } from "./useSelectedNetwork";
+import useSelectedWallet from "./useSelectedWallet";
 
 interface PriceHash<T> {
   [key: string]: T;

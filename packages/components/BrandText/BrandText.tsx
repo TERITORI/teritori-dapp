@@ -1,8 +1,8 @@
 import React from "react";
 import { TextProps, StyleSheet } from "react-native";
 
-import { BrandTextBase } from "./BrandTextBase";
 import { exoFontFamilyFromFontWeight } from "../../utils/style/fonts";
+import { BrandTextBase } from "./BrandTextBase";
 
 export const BrandText: React.FC<TextProps & { isTicker?: boolean }> = (
   props

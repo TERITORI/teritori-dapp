@@ -1,6 +1,6 @@
 // import chainSVG from "../../assets/icons/chain.svg";
-import deployerSVG from "../../assets/icons/deployer.svg";
 import dappStoreSVG from "../../assets/icons/dapp-store.svg";
+import deployerSVG from "../../assets/icons/deployer.svg";
 import feedSVG from "../../assets/icons/feed.svg";
 import rioterFooterSVG from "../../assets/icons/footer-rioters.svg";
 import governanceSVG from "../../assets/icons/governance.svg";

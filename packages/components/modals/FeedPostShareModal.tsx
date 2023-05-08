@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { View, Linking } from "react-native";
 
-import ModalBase from "./ModalBase";
 import shareSVG from "../../../assets/icons/share.svg";
 import twitterSVG from "../../../assets/icons/twitter.svg";
 import { layout } from "../../utils/style/layout";
 import { IconBox } from "../IconBox";
 import { SocialButton } from "../buttons/SocialButton";
+import ModalBase from "./ModalBase";
 interface FeedPostShareModalProps {
   postId: string;
 }

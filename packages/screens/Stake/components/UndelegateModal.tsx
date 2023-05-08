@@ -4,7 +4,6 @@ import React, { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Pressable, StyleSheet, View } from "react-native";
 
-import { WarningBox } from "./WarningBox";
 import { BrandText } from "../../../components/BrandText";
 import { Separator } from "../../../components/Separator";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
@@ -35,6 +34,7 @@ import {
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { StakeFormValuesType, ValidatorInfo } from "../types";
+import { WarningBox } from "./WarningBox";
 
 interface UndelegateModalProps {
   onClose?: () => void;

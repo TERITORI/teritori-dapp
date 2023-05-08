@@ -1,7 +1,6 @@
 import { FC, useRef } from "react";
 import { View, TouchableOpacity, StyleSheet, Image } from "react-native";
 
-import { TopMenuBox } from "./TopMenuBox";
 import { useDropdowns } from "../../context/DropdownsProvider";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
@@ -9,6 +8,7 @@ import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getCosmosNetwork } from "../../networks";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { neutral00 } from "../../utils/style/colors";
+import { TopMenuBox } from "./TopMenuBox";
 
 export const TopMenuMobile: FC = () => {
   const { onPressDropdownButton, isDropdownOpen } = useDropdowns();

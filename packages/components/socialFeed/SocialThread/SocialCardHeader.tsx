@@ -1,7 +1,6 @@
 import React, { FC } from "react";
 import { useWindowDimensions, View } from "react-native";
 
-import { DateTime } from "./DateTime";
 import { DEFAULT_NAME } from "../../../utils/social-feed";
 import { neutral77 } from "../../../utils/style/colors";
 import { fontSemibold14, fontSemibold16 } from "../../../utils/style/fonts";
@@ -14,6 +13,7 @@ import { AnimationFadeIn } from "../../animations/AnimationFadeIn";
 import { AvatarWithFrame } from "../../images/AvatarWithFrame";
 import { SpacerRow } from "../../spacer";
 import { SocialFeedMetadata } from "../NewsFeed/NewsFeed.type";
+import { DateTime } from "./DateTime";
 
 export const SocialCardHeader: FC<{
   authorId: string;

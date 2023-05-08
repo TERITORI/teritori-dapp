@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Image, ImageBackground, StyleSheet } from "react-native";
 
-import { FightProgressBar } from "./FightProgressBar";
 import brokenBoxPNG from "../../../../assets/game/broken-box.png";
 import { CurrentSeasonResponse } from "../../../api/p2e/v1/p2e";
 import { BrandText } from "../../../components/BrandText";
@@ -11,6 +10,7 @@ import { mustGetP2eClient } from "../../../utils/backend";
 import { gameHighlight } from "../../../utils/style/colors";
 import { fontMedium24, fontBold9 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { FightProgressBar } from "./FightProgressBar";
 
 export const FightBossSection: React.FC = () => {
   const [currentSeason, setCurrentSeason] = useState<CurrentSeasonResponse>();

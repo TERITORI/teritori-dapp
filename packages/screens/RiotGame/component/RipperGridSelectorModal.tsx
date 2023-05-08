@@ -12,9 +12,6 @@ import {
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
-import { RipperAvatar } from "./RipperAvatar";
-import { RipperStatsSection } from "./RipperStatsSection";
-import { SimpleButton } from "./SimpleButton";
 import controllerSVG from "../../../../assets/game/controller.svg";
 import dashedBorderPNG from "../../../../assets/game/dashed-border.png";
 import closeSVG from "../../../../assets/icons/close.svg";
@@ -37,6 +34,9 @@ import {
   fontSemibold11,
 } from "../../../utils/style/fonts";
 import { headerHeight, layout } from "../../../utils/style/layout";
+import { RipperAvatar } from "./RipperAvatar";
+import { RipperStatsSection } from "./RipperStatsSection";
+import { SimpleButton } from "./SimpleButton";
 
 type RipperSelectorModalProps = ModalProps & {
   slotId: number | undefined;

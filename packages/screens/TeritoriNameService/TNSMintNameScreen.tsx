@@ -3,8 +3,6 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { View } from "react-native";
 
-import { TNSModalCommonProps } from "./TNSHomeScreen";
-import { TNSRegisterSuccess } from "./TNSRegisterSuccess";
 import longCardSVG from "../../../assets/cards/long-card.svg";
 import coinSVG from "../../../assets/icons/coin.svg";
 import { BrandText } from "../../components/BrandText";
@@ -34,6 +32,8 @@ import { useAppNavigation } from "../../utils/navigation";
 import { neutral00, neutral17, neutral33 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { defaultMetaData } from "../../utils/types/tns";
+import { TNSModalCommonProps } from "./TNSHomeScreen";
+import { TNSRegisterSuccess } from "./TNSRegisterSuccess";
 
 const CostContainer: React.FC<{ price: { amount: string; denom: string } }> = ({
   price,

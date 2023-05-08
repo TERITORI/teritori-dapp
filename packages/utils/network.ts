@@ -1,5 +1,5 @@
-import { WalletProvider } from "./walletProvider";
 import { NetworkKind } from "../networks";
+import { WalletProvider } from "./walletProvider";
 
 export const walletProviderToNetworkKind = (
   walletProvider: WalletProvider | undefined

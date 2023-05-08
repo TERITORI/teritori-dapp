@@ -17,11 +17,6 @@ import {
   LayoutChangeEvent,
 } from "react-native";
 
-import { CurrencyAmount } from "./CurrencyAmount";
-import { SelectedCurrency } from "./SelectedCurrency";
-import { SwapDetail } from "./SwapDetail";
-import { SwapSettings } from "./SwapSettings";
-import { SwapTokensList } from "./SwapTokensList";
 import chevronCircleDown from "../../../../../assets/icons/chevron-circle-down.svg";
 import chevronCircleUp from "../../../../../assets/icons/chevron-circle-up.svg";
 import osmosisLogo from "../../../../../assets/icons/networks/osmosis.svg";
@@ -62,6 +57,11 @@ import {
 import { fontSemibold14, fontSemibold20 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
 import { isFloatText } from "../../../../utils/text";
+import { CurrencyAmount } from "./CurrencyAmount";
+import { SelectedCurrency } from "./SelectedCurrency";
+import { SwapDetail } from "./SwapDetail";
+import { SwapSettings } from "./SwapSettings";
+import { SwapTokensList } from "./SwapTokensList";
 
 const INVERT_ANIMATION_DURATION = 200;
 const MAX_WIDTH = 600;

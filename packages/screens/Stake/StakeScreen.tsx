@@ -1,12 +1,6 @@
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 
-import { DelegateModal } from "./components/DelegateModal";
-import { RedelegateModal } from "./components/RedelegateModal";
-import { StakeDetailModal } from "./components/StakeDetailModal";
-import { UndelegateModal } from "./components/UndelegateModal";
-import { ValidatorsTable } from "./components/ValidatorsList";
-import { ValidatorInfo } from "./types";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { Tabs } from "../../components/tabs/Tabs";
@@ -16,6 +10,12 @@ import { useValidators } from "../../hooks/useValidators";
 import { NetworkKind } from "../../networks";
 import { fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
+import { DelegateModal } from "./components/DelegateModal";
+import { RedelegateModal } from "./components/RedelegateModal";
+import { StakeDetailModal } from "./components/StakeDetailModal";
+import { UndelegateModal } from "./components/UndelegateModal";
+import { ValidatorsTable } from "./components/ValidatorsList";
+import { ValidatorInfo } from "./types";
 
 export const StakeScreen: React.FC = () => {
   //   variables

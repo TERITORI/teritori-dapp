@@ -10,6 +10,7 @@ import {
 } from "@cosmjs/stargate";
 import { ChainInfo, Currency as KeplrCurrency } from "@keplr-wallet/types";
 
+import { getKeplr } from "../utils/keplr";
 import { cosmosNetwork } from "./cosmos-hub";
 import { cosmosThetaNetwork } from "./cosmos-hub-theta";
 import { ethereumNetwork } from "./ethereum";
@@ -27,7 +28,6 @@ import {
   NetworkInfo,
   NetworkKind,
 } from "./types";
-import { getKeplr } from "../utils/keplr";
 
 export * from "./types";
 

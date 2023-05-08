@@ -18,7 +18,6 @@ export const codGrayColor = "#1C1C1C";
 export const mineShaftColor = "#3D3D3D";
 export const reefColor = "#D2FFAE";
 export const tulipTree = "#EAA54B";
-export const transparentColor = "transparent";
 
 export const gameHighlight = "#FCEE4F";
 
@@ -36,6 +35,7 @@ export const neutral55 = "#555555";
 export const neutral67 = "#676767";
 export const neutral77 = "#777777";
 export const neutralA3 = "#A3A3A3";
+export const transparentColor = "transparent";
 
 export const additionalRed = "#FFAEAE";
 export const additionalGreen = successColor;

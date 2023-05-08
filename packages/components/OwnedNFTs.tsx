@@ -1,9 +1,6 @@
 import React from "react";
 import { View, ActivityIndicator, ViewStyle, StyleProp } from "react-native";
 
-import { NetworkIcon } from "./NetworkIcon";
-import { Section } from "./Section";
-import { NFTView } from "./nfts/NFTView";
 import {
   Collection,
   MintState,
@@ -14,6 +11,9 @@ import { useCollections } from "../hooks/useCollections";
 import { useNFTs } from "../hooks/useNFTs";
 import { parseNetworkObjectId } from "../networks";
 import { layout } from "../utils/style/layout";
+import { NetworkIcon } from "./NetworkIcon";
+import { Section } from "./Section";
+import { NFTView } from "./nfts/NFTView";
 
 const gridHalfGutter = 12;
 

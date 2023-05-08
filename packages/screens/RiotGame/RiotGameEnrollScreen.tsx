@@ -6,10 +6,6 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { FlatList, Pressable, StyleSheet, View } from "react-native";
 import { useSelector } from "react-redux";
 
-import { EnrollSlot } from "./component/EnrollSlot";
-import { GameContentView } from "./component/GameContentView";
-import { RipperSelectorModal } from "./component/RipperGridSelectorModal";
-import { SimpleButton } from "./component/SimpleButton";
 import controllerSVG from "../../../assets/game/controller-yellow.svg";
 import closeSVG from "../../../assets/icons/close.svg";
 import { NFT } from "../../api/marketplace/v1/marketplace";
@@ -52,6 +48,10 @@ import {
   fontSemibold28,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
+import { EnrollSlot } from "./component/EnrollSlot";
+import { GameContentView } from "./component/GameContentView";
+import { RipperSelectorModal } from "./component/RipperGridSelectorModal";
+import { SimpleButton } from "./component/SimpleButton";
 
 const RIPPER_SLOTS = [0, 1, 2, 3, 4, 5];
 const EMBEDDED_VIDEO_URI =

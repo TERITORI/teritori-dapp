@@ -7,9 +7,9 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
-import { BrandText } from "./BrandText";
 import { errorColor } from "../utils/style/colors";
 import { fontSemibold14 } from "../utils/style/fonts";
+import { BrandText } from "./BrandText";
 
 interface ErrorTextProps extends TextProps {
   center?: boolean;

@@ -1,6 +1,5 @@
 import React, { useCallback } from "react";
 
-import { CarouselSection } from "./CarouselSection";
 import {
   Collection,
   CollectionsRequest,
@@ -15,6 +14,7 @@ import {
   COLLECTION_VIEW_XL_WIDTH,
   CollectionView,
 } from "../CollectionView";
+import { CarouselSection } from "./CarouselSection";
 
 const gap = 20;
 

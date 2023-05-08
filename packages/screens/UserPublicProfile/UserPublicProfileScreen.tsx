@@ -2,10 +2,6 @@ import { bech32 } from "bech32";
 import React, { useMemo, useState } from "react";
 import { View } from "react-native";
 
-import {
-  UserPublicProfileScreenHeader,
-  screenTabItems,
-} from "./UserPublicProfileHeader";
 import { PostsRequest } from "../../api/feed/v1/feed";
 import { BrandText } from "../../components/BrandText";
 import { NotFound } from "../../components/NotFound";
@@ -20,6 +16,10 @@ import { parseNetworkObjectId, parseUserId } from "../../networks";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { setDocumentTitle } from "../../utils/setDocumentTitle";
 import { fontSemibold20 } from "../../utils/style/fonts";
+import {
+  UserPublicProfileScreenHeader,
+  screenTabItems,
+} from "./UserPublicProfileHeader";
 
 const TabContainer: React.FC = ({ children }) => {
   const { width } = useMaxResolution();

@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { StyleSheet } from "react-native";
 
-import { SettingItem } from "./SettingItem";
 import { BrandText } from "../../../components/BrandText";
 import { SpacerColumn } from "../../../components/spacer";
 import { neutral17, neutralA3 } from "../../../utils/style/colors";
 import { fontSemibold14, fontSemibold20 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { SettingItemGroupType, SettingItemType } from "../types";
+import { SettingItem } from "./SettingItem";
 
 const styles = StyleSheet.create({
   bigTitle: StyleSheet.flatten([

@@ -1,9 +1,9 @@
 import { useFocusEffect } from "@react-navigation/native";
 import { useCallback } from "react";
 
-import { useSelectedNetworkId } from "./useSelectedNetwork";
 import { setSelectedNetworkId } from "../store/slices/settings";
 import { useAppDispatch } from "../store/store";
+import { useSelectedNetworkId } from "./useSelectedNetwork";
 
 export const useForceNetworkSelection = (networkId: string | undefined) => {
   const selectedNetworkId = useSelectedNetworkId();

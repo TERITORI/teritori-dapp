@@ -1,12 +1,12 @@
 import React from "react";
 import { View } from "react-native";
 
-import { WalletItem } from "./WalletItem";
 import { BrandText } from "../../components/BrandText";
 import { useRewards } from "../../hooks/useRewards";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getNetwork } from "../../networks";
 import { neutral33 } from "../../utils/style/colors";
+import { WalletItem } from "./WalletItem";
 
 export const Wallets: React.FC = () => {
   const selectedWallet = useSelectedWallet();

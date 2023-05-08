@@ -1,11 +1,11 @@
 import React from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 
-import { BrandText } from "./BrandText";
-import { OptimizedImage } from "./OptimizedImage";
 import { fontSemibold12 } from "../utils/style/fonts";
 import { layout } from "../utils/style/layout";
 import { tinyAddress } from "../utils/text";
+import { BrandText } from "./BrandText";
+import { OptimizedImage } from "./OptimizedImage";
 
 export const UserImageAddressInline: React.FC<{
   imageSource: string;

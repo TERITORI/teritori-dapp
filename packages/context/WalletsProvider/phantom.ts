@@ -1,9 +1,9 @@
 import { PublicKey } from "@solana/web3.js";
 import { useEffect, useMemo, useState } from "react";
 
-import { Wallet } from "./wallet";
 import { NetworkKind } from "../../networks";
 import { WalletProvider } from "../../utils/walletProvider";
+import { Wallet } from "./wallet";
 
 // import { addWallet } from "../../store/slices/wallets";
 // import { useAppDispatch } from "../../store/store";

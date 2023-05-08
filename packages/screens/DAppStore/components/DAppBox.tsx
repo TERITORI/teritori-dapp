@@ -8,7 +8,6 @@ import {
 } from "react-native";
 import { useSelector } from "react-redux";
 
-import { CheckboxDappStore } from "./CheckboxDappStore";
 import { BrandText } from "../../../components/BrandText";
 import { SVGorImageIcon } from "../../../components/SVG/SVGorImageIcon";
 import { SecondaryBox } from "../../../components/boxes/SecondaryBox";
@@ -23,6 +22,7 @@ import { fontSemibold13, fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { SEPARATOR } from "../query/util";
 import { dAppType } from "../types";
+import { CheckboxDappStore } from "./CheckboxDappStore";
 
 export const DAppBox: React.FC<{
   option: dAppType;

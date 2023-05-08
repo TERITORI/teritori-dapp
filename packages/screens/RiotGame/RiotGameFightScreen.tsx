@@ -1,9 +1,6 @@
 import { useFocusEffect } from "@react-navigation/native";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
-import { FightSection } from "./component/FightSection";
-import { FightSectionHeader } from "./component/FightSectionHeader";
-import { GameContentView } from "./component/GameContentView";
 import addCircleSFilledSVG from "../../../assets/icons/add-circle-filled.svg";
 import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
 import { SpacerColumn } from "../../components/spacer";
@@ -15,6 +12,9 @@ import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useAppNavigation } from "../../utils/navigation";
 import { yellowDefault } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
+import { FightSection } from "./component/FightSection";
+import { FightSectionHeader } from "./component/FightSectionHeader";
+import { GameContentView } from "./component/GameContentView";
 
 const FIGHT_BG_URI =
   "https://bafybeigv6eunkzlb4a7je6c5ezrcxgr2bv2guuwogin6mbsmdl2i6mgvwq.ipfs.nftstorage.link/";

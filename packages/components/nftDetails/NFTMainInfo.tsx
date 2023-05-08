@@ -3,7 +3,6 @@ import { RouteProp, useRoute } from "@react-navigation/native";
 import React, { Suspense, useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 
-import { NFTAttributes } from "./NFTAttributes";
 import starSVG from "../../../assets/icons/star.svg";
 import { useTransactionModals } from "../../context/TransactionModalsProvider";
 import { NFTInfo } from "../../screens/Marketplace/NFTDetailScreen";
@@ -28,6 +27,7 @@ import { CollectionInfoInline } from "../collections/CollectionInfoInline";
 import { TransactionModals } from "../modals/transaction/TransactionModals";
 import { SpacerColumn } from "../spacer";
 import { Tabs } from "../tabs/Tabs";
+import { NFTAttributes } from "./NFTAttributes";
 
 const mainInfoTabItems = {
   about: {

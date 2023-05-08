@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { View, TouchableOpacity } from "react-native";
 
-import { WalletHeader } from "./WalletHeader";
-import { WalletItem, WalletItemProps } from "./WalletItem";
 import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../assets/icons/chevron-up.svg";
 import { BrandText } from "../../components/BrandText";
@@ -17,6 +15,8 @@ import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { ScreenFC } from "../../utils/navigation";
 import { walletProviderToNetworkKind } from "../../utils/network";
 import { neutral33, neutralA3, secondaryColor } from "../../utils/style/colors";
+import { WalletHeader } from "./WalletHeader";
+import { WalletItem, WalletItemProps } from "./WalletItem";
 
 interface WalletProps {
   index: number;

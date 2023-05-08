@@ -1,8 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
 import axios, { AxiosResponse } from "axios";
 
-import { OpenGraphType } from "./types";
 import { EXTRACT_DOMAIN_REGEX } from "../../utils/regex";
+import { OpenGraphType } from "./types";
 
 export const request = axios.create({
   baseURL: "https://opengraph.io/api/1.1/site",

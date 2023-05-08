@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 
+import { useTransactionModals } from "../../../context/TransactionModalsProvider";
+import { useNFTInfo } from "../../../hooks/useNFTInfo";
 import { TransactionPaymentModal } from "./TransactionPaymentModal";
 import { TransactionPendingModal } from "./TransactionPendingModal";
 import { TransactionSuccessModal } from "./TransactionSuccessModal";
-import { useTransactionModals } from "../../../context/TransactionModalsProvider";
-import { useNFTInfo } from "../../../hooks/useNFTInfo";
 
 // It concerns only NFTs for now TODO: More global for all types of transaction ? This design could be used for all transactions ? Better to use ContextAPI instead of useTransactionModals hook ?
 export const TransactionModals: React.FC<{

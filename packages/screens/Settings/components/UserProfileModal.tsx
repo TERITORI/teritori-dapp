@@ -9,7 +9,6 @@ import {
 import { DragSortableView } from "react-native-drag-sort";
 import Hoverable from "react-native-hoverable";
 
-import { INIT_PROFILE_DATA } from "./initProfile";
 import confirmSVG from "../../../../assets/icons/confirm.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
@@ -28,6 +27,7 @@ import {
   fontSemibold28,
 } from "../../../utils/style/fonts";
 import { layout, RESPONSIVE_BREAKPOINT_S } from "../../../utils/style/layout";
+import { INIT_PROFILE_DATA } from "./initProfile";
 
 type toggleUserProfileProps = {
   onClose: () => void;

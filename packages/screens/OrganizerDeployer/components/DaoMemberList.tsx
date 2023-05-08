@@ -13,7 +13,7 @@ interface MemberInfo {
   votingWeight: string;
 }
 
-export const DaoMemberList: React.FC<object> = ({}) => {
+export const DaoMemberList: React.FC = () => {
   const members: MemberInfo[] = [
     {
       address: "tori1z05qcfkt73zlg2m6jsfx72uf5r0pmy50cd5ktx",

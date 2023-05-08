@@ -1,8 +1,8 @@
 import React from "react";
 import { Image } from "react-native";
 
-import { SVG } from "./SVG";
 import { getNetwork } from "../networks";
+import { SVG } from "./SVG";
 
 export const NetworkIcon: React.FC<{
   networkId: string;

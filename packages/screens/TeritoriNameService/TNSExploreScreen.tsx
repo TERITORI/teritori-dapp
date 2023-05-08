@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { View } from "react-native";
 
-import { TNSModalCommonProps } from "./TNSHomeScreen";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
 import GradientModalBase from "../../components/modals/GradientModalBase";
@@ -14,6 +13,7 @@ import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getCosmosNetwork } from "../../networks";
 import { neutral17 } from "../../utils/style/colors";
+import { TNSModalCommonProps } from "./TNSHomeScreen";
 
 interface TNSExploreScreenProps extends TNSModalCommonProps {}
 

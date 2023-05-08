@@ -1,7 +1,6 @@
 import { useMemo } from "react";
 import { useWindowDimensions } from "react-native";
 
-import { useIsMobile } from "./useIsMobile";
 import { useSidebar } from "../context/SidebarProvider";
 import {
   fullSidebarWidth,
@@ -12,6 +11,7 @@ import {
   screenContentMaxWidth,
   smallSidebarWidth,
 } from "../utils/style/layout";
+import { useIsMobile } from "./useIsMobile";
 
 export const useMaxResolution = ({
   noMargin = false,

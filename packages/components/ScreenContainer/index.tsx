@@ -7,9 +7,6 @@ import {
   useWindowDimensions,
 } from "react-native";
 
-import { Header } from "./Header";
-import { ScreenContainerMobile } from "./ScreenContainerMobile";
-import { SearchBar } from "./SearchBar";
 import { useForceNetworkKind } from "../../hooks/useForceNetworkKind";
 import { useForceNetworkSelection } from "../../hooks/useForceNetworkSelection";
 import { useForceUnselectNetworks } from "../../hooks/useForceUnselectNetworks";
@@ -29,6 +26,9 @@ import { SelectedNetworkGate } from "../SelectedNetworkGate";
 import { ConnectWalletButton } from "../TopMenu/ConnectWalletButton";
 import { Footer } from "../footers/Footer";
 import { Sidebar } from "../navigation/Sidebar";
+import { Header } from "./Header";
+import { ScreenContainerMobile } from "./ScreenContainerMobile";
+import { SearchBar } from "./SearchBar";
 
 export const ScreenContainer: React.FC<{
   headerChildren?: JSX.Element;
@@ -118,7 +118,10 @@ export const ScreenContainer: React.FC<{
 
         <View style={{ width: "100%", flex: 1 }}>
           {/*==== Header*/}
-          <Header isHeaderSmallMargin={isHeaderSmallMargin} onBackPress={onBackPress}>
+          <Header
+            isHeaderSmallMargin={isHeaderSmallMargin}
+            onBackPress={onBackPress}
+          >
             {headerChildren}
           </Header>
           <View

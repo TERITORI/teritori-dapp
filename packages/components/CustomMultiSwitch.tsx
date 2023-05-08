@@ -45,18 +45,18 @@ export const CustomMultipleSwitch: FC<Props> = ({ items, value, onChange }) => {
   }, [items, value, elements, animatedValue]);
 
   useEffect(() => {
-  const startAnimation = (newVal: string) => {
-    const position = elements.find((el) => el.id === newVal);
-    if (!position) {
-      return;
-    }
-    Animated.timing(animatedValue, {
-      toValue: position.value,
-      duration: 200,
-      easing: Easing.ease,
-      useNativeDriver: true,
-    }).start();
-  };
+    const startAnimation = (newVal: string) => {
+      const position = elements.find((el) => el.id === newVal);
+      if (!position) {
+        return;
+      }
+      Animated.timing(animatedValue, {
+        toValue: position.value,
+        duration: 200,
+        easing: Easing.ease,
+        useNativeDriver: true,
+      }).start();
+    };
     startAnimation(value);
   }, [value, animatedValue, elements]);
 

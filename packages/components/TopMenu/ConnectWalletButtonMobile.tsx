@@ -1,12 +1,12 @@
 import React, { FC, useState } from "react";
 import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
 
-import { TopMenuMobile } from "./TopMenuMobile";
 import contactsSVG from "../../../assets/icons/contacts.svg";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { neutral17, neutral33 } from "../../utils/style/colors";
 import { SVG } from "../SVG";
 import { ConnectWalletModal } from "../connectWallet/ConnectWalletModal";
+import { TopMenuMobile } from "./TopMenuMobile";
 
 export const ConnectWalletButtonMobile: FC<{
   style?: StyleProp<ViewStyle>;

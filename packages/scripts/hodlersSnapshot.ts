@@ -1,8 +1,8 @@
 import fs from "fs";
 
-import { mustGetNodeMarketplaceClient } from "./lib";
 import { parseCollectionId } from "../networks";
 import { snapshotCollectionOGs } from "../utils/snapshots";
+import { mustGetNodeMarketplaceClient } from "./lib";
 
 // TODO: merge all snapshot scripts in a single cli that uses typesafe arguments parsing (for example https://github.com/oclif/core#usage)
 

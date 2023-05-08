@@ -1,15 +1,15 @@
 import React, { useMemo } from "react";
 import { StyleSheet, Linking, View, Pressable } from "react-native";
 
-import { BrandText } from "./BrandText";
-import { OptimizedImage } from "./OptimizedImage";
-import { TertiaryBox } from "./boxes/TertiaryBox";
-import { GradientText } from "./gradientText";
 import { Collection, MintState } from "../api/marketplace/v1/marketplace";
 import { useCollectionThumbnailInfo } from "../hooks/collection/useCollectionThumbnailInfo";
 import { useNavigateToCollection } from "../hooks/useNavigateToCollection";
 import { fontBold11, fontMedium10, fontSemibold14 } from "../utils/style/fonts";
 import { layout } from "../utils/style/layout";
+import { BrandText } from "./BrandText";
+import { OptimizedImage } from "./OptimizedImage";
+import { TertiaryBox } from "./boxes/TertiaryBox";
+import { GradientText } from "./gradientText";
 
 type CollectionViewSize = "XL" | "XS";
 export const COLLECTION_VIEW_SM_WIDTH = 124;

@@ -2,7 +2,6 @@ import { useFocusEffect } from "@react-navigation/native";
 import React, { useState } from "react";
 import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
 
-import { TNSModalCommonProps } from "./TNSHomeScreen";
 import logoSVG from "../../../assets/logos/logo.svg";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
@@ -15,6 +14,7 @@ import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { neutral17, neutral33, neutral77 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { nsTokenWithoutTLD } from "../../utils/tns";
+import { TNSModalCommonProps } from "./TNSHomeScreen";
 
 const NameCard: React.FC<{
   fullName: string;

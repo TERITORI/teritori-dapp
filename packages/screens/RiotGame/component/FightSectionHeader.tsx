@@ -1,7 +1,6 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 
-import { SimpleButton } from "./SimpleButton";
 import addCircleSVG from "../../../../assets/icons/add-circle.svg";
 import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
@@ -9,6 +8,7 @@ import { useAppNavigation } from "../../../utils/navigation";
 import { yellowDefault, neutral17 } from "../../../utils/style/colors";
 import { fontMedium48, fontSemibold28 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { SimpleButton } from "./SimpleButton";
 
 type FightSectionHeaderProps = {
   title: string;

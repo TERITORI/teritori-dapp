@@ -1,6 +1,5 @@
 import { useCallback } from "react";
 
-import useSelectedWallet from "./useSelectedWallet";
 import { useFeedbacks } from "../context/FeedbacksProvider";
 import { TeritoriNftVaultClient } from "../contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
 import { NFTVault__factory } from "../evm-contracts-clients/teritori-nft-vault/NFTVault__factory";
@@ -12,6 +11,7 @@ import {
   NetworkKind,
 } from "../networks";
 import { getMetaMaskEthereumSigner } from "../utils/ethereum";
+import useSelectedWallet from "./useSelectedWallet";
 
 const teritoriCancelNFTListing = async (
   networkId: string,

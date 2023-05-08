@@ -1,8 +1,6 @@
 import React, { FC, SyntheticEvent, useRef, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 
-import { FileUploaderProps } from "./FileUploader.type";
-import { formatFile } from "./formatFile";
 import uploadSVG from "../../../assets/icons/upload.svg";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import {
@@ -21,6 +19,8 @@ import { SVG } from "../SVG";
 import { PrimaryBox } from "../boxes/PrimaryBox";
 import { GradientText } from "../gradientText";
 import { Label } from "../inputs/TextInputCustom";
+import { FileUploaderProps } from "./FileUploader.type";
+import { formatFile } from "./formatFile";
 const FILE_HEIGHT = 256;
 
 export const FileUploader: FC<FileUploaderProps> = ({

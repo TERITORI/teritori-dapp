@@ -1,10 +1,10 @@
 import React from "react";
 import { View } from "react-native";
 
-import { SVG } from "./SVG";
 import keplrSVG from "../../assets/icons/keplr.svg";
 import metamaskSVG from "../../assets/icons/metamask.svg";
 import { WalletProvider } from "../utils/walletProvider";
+import { SVG } from "./SVG";
 
 export const WalletProviderIcon: React.FC<{
   walletProvider: WalletProvider | null | undefined;

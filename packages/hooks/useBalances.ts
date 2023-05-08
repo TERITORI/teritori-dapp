@@ -2,7 +2,6 @@ import { Decimal } from "@cosmjs/math";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 
-import { useCoingeckoPrices } from "./useCoingeckoPrices";
 import {
   getNativeCurrency,
   getNetwork,
@@ -12,6 +11,7 @@ import {
 import { Balance } from "../utils/coins";
 import { getEthereumProvider } from "../utils/ethereum";
 import { CosmosBalancesResponse } from "../utils/teritori";
+import { useCoingeckoPrices } from "./useCoingeckoPrices";
 
 export const useBalances = (
   networkId: string | undefined,

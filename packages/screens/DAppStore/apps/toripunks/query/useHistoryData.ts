@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { historyData } from "./userHistoryMock";
 import { Wallet } from "../../../../../context/WalletsProvider";
+import { historyData } from "./userHistoryMock";
 
 export const useMyHistoryData = ({
   selectedWallet,

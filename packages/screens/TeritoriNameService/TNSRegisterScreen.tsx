@@ -1,6 +1,5 @@
 import React from "react";
 
-import { TNSCloseHandler } from "./TNSHomeScreen";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import GradientModalBase from "../../components/modals/GradientModalBase";
 import { FindAName } from "../../components/teritoriNameService/FindAName";
@@ -9,6 +8,7 @@ import { useNSNameAvailability } from "../../hooks/useNSNameAvailability";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { getCosmosNetwork } from "../../networks";
 import { neutral00, neutral17, neutral33 } from "../../utils/style/colors";
+import { TNSCloseHandler } from "./TNSHomeScreen";
 
 interface TNSRegisterScreenProps {
   onClose: TNSCloseHandler;

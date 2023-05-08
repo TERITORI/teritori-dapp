@@ -1,8 +1,6 @@
 import React from "react";
 import { Image, FlatList, View } from "react-native";
 
-import { GameContentView } from "./component/GameContentView";
-import { RipperAvatar } from "./component/RipperAvatar";
 import breedSVG from "../../../assets/game/breed.svg";
 import defaultInventoryItemPNG from "../../../assets/game/default-inventory-item.png";
 import addCircleFilledSVG from "../../../assets/icons/add-circle-filled.svg";
@@ -17,6 +15,8 @@ import { useAppNavigation } from "../../utils/navigation";
 import { yellowDefault } from "../../utils/style/colors";
 import { fontMedium32 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
+import { GameContentView } from "./component/GameContentView";
+import { RipperAvatar } from "./component/RipperAvatar";
 
 export const RiotGameInventoryScreen = () => {
   const navigation = useAppNavigation();

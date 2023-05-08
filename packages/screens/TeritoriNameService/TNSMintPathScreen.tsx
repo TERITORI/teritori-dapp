@@ -2,7 +2,6 @@ import { useFocusEffect } from "@react-navigation/native";
 import React, { useState } from "react";
 import { View } from "react-native";
 
-import { TNSModalCommonProps } from "./TNSHomeScreen";
 import ModalBase from "../../components/modals/ModalBase";
 import { NameDataForm } from "../../components/teritoriNameService/NameDataForm";
 import { NameNFT } from "../../components/teritoriNameService/NameNFT";
@@ -21,6 +20,7 @@ import { useAppNavigation } from "../../utils/navigation";
 import { neutral17 } from "../../utils/style/colors";
 import { nsTokenWithoutTLD } from "../../utils/tns";
 import { defaultMetaData } from "../../utils/types/tns";
+import { TNSModalCommonProps } from "./TNSHomeScreen";
 
 const normalize = (inputString: string) => {
   const invalidChrsRemoved = inputString.replace(/[^a-z0-9\-_]/g, "");

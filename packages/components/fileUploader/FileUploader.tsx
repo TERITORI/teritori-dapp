@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { View, Image, TouchableOpacity } from "react-native";
 
-import { FileUploaderProps } from "./FileUploader.type";
 import uploadSVG from "../../../assets/icons/upload.svg";
 import {
   gradientColorBlue,
@@ -19,6 +18,7 @@ import { SVG } from "../SVG";
 import { PrimaryBox } from "../boxes/PrimaryBox";
 import { GradientText } from "../gradientText";
 import { Label } from "../inputs/TextInputCustom";
+import { FileUploaderProps } from "./FileUploader.type";
 
 const FILE_HEIGHT = 256;
 

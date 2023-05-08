@@ -1,8 +1,5 @@
 import React, { useMemo } from "react";
 
-import { HashtagRenderer } from "./HashtagRenderer";
-import { MentionRenderer } from "./MentionRenderer";
-import { URLRenderer } from "./URLRenderer";
 import {
   hashtagMatch,
   mentionMatch,
@@ -12,6 +9,9 @@ import {
 import { neutral77, neutralA3 } from "../../../../utils/style/colors";
 import { fontSemibold14 } from "../../../../utils/style/fonts";
 import { BrandText } from "../../../BrandText";
+import { HashtagRenderer } from "./HashtagRenderer";
+import { MentionRenderer } from "./MentionRenderer";
+import { URLRenderer } from "./URLRenderer";
 
 const REFERENCE_REGEX = /(?=--\S.+--)/gm;
 

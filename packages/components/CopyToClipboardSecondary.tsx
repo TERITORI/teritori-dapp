@@ -2,13 +2,13 @@ import React from "react";
 import { TouchableOpacity } from "react-native";
 import { SvgProps } from "react-native-svg";
 
+import copySVG from "../../assets/icons/copy.svg";
+import { fontMedium14 } from "../utils/style/fonts";
+import { layout } from "../utils/style/layout";
 import { BrandText } from "./BrandText";
 import { useCopyToClipboard } from "./CopyToClipboard";
 import { SVG } from "./SVG";
 import { TertiaryBox } from "./boxes/TertiaryBox";
-import copySVG from "../../assets/icons/copy.svg";
-import { fontMedium14 } from "../utils/style/fonts";
-import { layout } from "../utils/style/layout";
 
 export const CopyToClipboardSecondary: React.FC<{
   text: string;

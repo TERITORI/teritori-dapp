@@ -1,9 +1,9 @@
 import React, { createContext, useContext, useMemo } from "react";
 
+import { WalletProvider } from "../../utils/walletProvider";
 import { useKeplr } from "./keplr";
 import { useMetamask } from "./metamask";
 import { Wallet } from "./wallet";
-import { WalletProvider } from "../../utils/walletProvider";
 // import { usePhantom } from "./phantom";
 // import { selectStoreWallets, storeWalletId } from "../../store/slices/wallets";
 // import { WalletProvider } from "../../utils/walletProvider";

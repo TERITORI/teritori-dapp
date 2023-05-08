@@ -1,6 +1,5 @@
 import { StyleSheet } from "react-native";
 
-import { GradientTextProps, GradientType } from "./GradientText";
 import {
   gradientColorBlue,
   gradientColorDarkBlue,
@@ -17,6 +16,7 @@ import {
   gradientColorTurquoise,
 } from "../../utils/style/colors";
 import { exoFontFamilyFromFontWeight } from "../../utils/style/fonts";
+import { GradientTextProps, GradientType } from "./GradientText";
 
 const gradient = (type: GradientType) => {
   switch (type) {

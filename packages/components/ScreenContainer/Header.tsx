@@ -12,7 +12,7 @@ import { BackButton } from "../navigation/components/BackButton";
 export const Header: React.FC<{
   isHeaderSmallMargin?: boolean;
   style?: StyleProp<ViewStyle>;
-   onBackPress?: () => void;
+  onBackPress?: () => void;
 }> = ({ children, style, isHeaderSmallMargin, onBackPress }) => {
   return (
     <View

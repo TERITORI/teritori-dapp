@@ -7,7 +7,6 @@ import {
   Pressable,
 } from "react-native";
 
-import { NFTTransferModal } from "./NFTTransferModal";
 import dotsCircleSVG from "../../../assets/icons/dots-circle.svg";
 import footerSVG from "../../../assets/icons/footer-regular.svg";
 import gridSVG from "../../../assets/icons/grid.svg";
@@ -33,6 +32,7 @@ import { SVG } from "../SVG";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { SecondaryButton } from "../buttons/SecondaryButton";
 import { SpacerColumn, SpacerRow } from "../spacer";
+import { NFTTransferModal } from "./NFTTransferModal";
 
 export const NFTView: React.FC<{
   data: NFT;

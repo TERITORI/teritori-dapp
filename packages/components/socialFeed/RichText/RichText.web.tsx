@@ -45,21 +45,6 @@ import {
   View,
 } from "react-native";
 
-import { RichHashtagRenderer } from "./RichRenderer/RichHashtagRenderer";
-import { RichHashtagRendererConsultation } from "./RichRenderer/RichHashtagRendererConsultation";
-import { RichMentionRenderer } from "./RichRenderer/RichMentionRenderer";
-import { RichMentionRendererConsultation } from "./RichRenderer/RichMentionRendererConsultation";
-import { RichURLRenderer } from "./RichRenderer/RichURLRenderer";
-import { RichURLRendererConsultation } from "./RichRenderer/RichURLRendererConsultation";
-import {
-  FoundEntity,
-  PublishValues,
-  RichTextProps,
-  SelectedEntity,
-} from "./RichText.type";
-import { ActionsContainer } from "./Toolbar/ActionsContainer";
-import { ToolbarContainer } from "./Toolbar/ToolbarContainer";
-import createInlineToolbarPlugin from "./inline-toolbar";
 import audioSVG from "../../../../assets/icons/audio.svg";
 import cameraSVG from "../../../../assets/icons/camera.svg";
 import videoSVG from "../../../../assets/icons/video.svg";
@@ -91,6 +76,21 @@ import { FileUploader } from "../../fileUploader";
 import { SpacerColumn, SpacerRow } from "../../spacer";
 import { EmojiSelector } from "../EmojiSelector";
 import { GIFSelector } from "../GIFSelector";
+import { RichHashtagRenderer } from "./RichRenderer/RichHashtagRenderer";
+import { RichHashtagRendererConsultation } from "./RichRenderer/RichHashtagRendererConsultation";
+import { RichMentionRenderer } from "./RichRenderer/RichMentionRenderer";
+import { RichMentionRendererConsultation } from "./RichRenderer/RichMentionRendererConsultation";
+import { RichURLRenderer } from "./RichRenderer/RichURLRenderer";
+import { RichURLRendererConsultation } from "./RichRenderer/RichURLRendererConsultation";
+import {
+  FoundEntity,
+  PublishValues,
+  RichTextProps,
+  SelectedEntity,
+} from "./RichText.type";
+import { ActionsContainer } from "./Toolbar/ActionsContainer";
+import { ToolbarContainer } from "./Toolbar/ToolbarContainer";
+import createInlineToolbarPlugin from "./inline-toolbar";
 
 const VIDEOTYPE = "draft-js-video-plugin-video"; // See @draft-js-plugins/video/lib/video/constants
 const MAX_IMAGES = 8;

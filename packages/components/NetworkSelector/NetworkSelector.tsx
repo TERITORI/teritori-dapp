@@ -1,7 +1,6 @@
 import React, { useRef } from "react";
 import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
 
-import { NetworkSelectorMenu } from "./NetworkSelectorMenu";
 import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../assets/icons/chevron-up.svg";
 import { useDropdowns } from "../../context/DropdownsProvider";
@@ -14,6 +13,7 @@ import { NetworkIcon } from "../NetworkIcon";
 import { SVG } from "../SVG";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { SpacerRow } from "../spacer";
+import { NetworkSelectorMenu } from "./NetworkSelectorMenu";
 
 export const NetworkSelector: React.FC<{
   style?: StyleProp<ViewStyle>;

@@ -1,8 +1,6 @@
 import { BigNumber } from "ethers";
 import Long from "long";
 
-import { prettyPrice } from "./coins";
-import { ipfsURLToHTTPURL } from "./ipfs";
 import { ConfigResponse } from "../contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.types";
 import {
   CosmosNetworkInfo,
@@ -10,6 +8,8 @@ import {
   WEI_TOKEN_ADDRESS,
   parseNetworkObjectId,
 } from "../networks";
+import { prettyPrice } from "./coins";
+import { ipfsURLToHTTPURL } from "./ipfs";
 
 export type MintState = "not-started" | "whitelist" | "public-sale" | "ended";
 

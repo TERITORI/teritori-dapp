@@ -4,7 +4,6 @@ import React, { useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { StyleSheet, TouchableOpacity } from "react-native";
 
-import ModalBase from "./ModalBase";
 import contactsSVG from "../../../assets/icons/contacts.svg";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useBalances } from "../../hooks/useBalances";
@@ -32,6 +31,7 @@ import { MaxButton } from "../buttons/MaxButton";
 import { PrimaryButton } from "../buttons/PrimaryButton";
 import { TextInputCustom } from "../inputs/TextInputCustom";
 import { SpacerColumn, SpacerRow } from "../spacer";
+import ModalBase from "./ModalBase";
 
 type SendModalProps = {
   isVisible: boolean;

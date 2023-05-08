@@ -1,17 +1,17 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 
-import { LaunchpadBanner } from "./components/LaunchpadBanner";
-import {
-  LaunchpadButton,
-  LaunchpadButtonProps,
-} from "./components/LaunchpadButton";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
 import { ScreenFC } from "../../utils/navigation";
 import { neutral77 } from "../../utils/style/colors";
 import { fontSemibold14, fontSemibold28 } from "../../utils/style/fonts";
+import { LaunchpadBanner } from "./components/LaunchpadBanner";
+import {
+  LaunchpadButton,
+  LaunchpadButtonProps,
+} from "./components/LaunchpadButton";
 
 const BUTTONS: LaunchpadButtonProps[] = [
   {

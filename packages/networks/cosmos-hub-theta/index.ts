@@ -1,5 +1,5 @@
-import { cosmosHubThetaCurrencies } from "./currencies";
 import { NetworkInfo, NetworkKind } from "../types";
+import { cosmosHubThetaCurrencies } from "./currencies";
 
 export const cosmosThetaNetwork: NetworkInfo = {
   id: "cosmos-hub-theta",

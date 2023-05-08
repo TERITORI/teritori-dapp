@@ -1,10 +1,6 @@
 import React from "react";
 import { StyleProp, TextStyle } from "react-native";
 
-import { BrandText } from "./BrandText";
-import FlexRow from "./FlexRow";
-import { OmniLink } from "./OmniLink";
-import { RoundedGradientImage } from "./images/RoundedGradientImage";
 import { useNSUserInfo } from "../hooks/useNSUserInfo";
 import { useSelectedNetworkId } from "../hooks/useSelectedNetwork";
 import useSelectedWallet from "../hooks/useSelectedWallet";
@@ -13,6 +9,10 @@ import { ipfsURLToHTTPURL } from "../utils/ipfs";
 import { fontSemibold14 } from "../utils/style/fonts";
 import { layout } from "../utils/style/layout";
 import { tinyAddress } from "../utils/text";
+import { BrandText } from "./BrandText";
+import FlexRow from "./FlexRow";
+import { OmniLink } from "./OmniLink";
+import { RoundedGradientImage } from "./images/RoundedGradientImage";
 
 type PlayerNameProps = {
   userId: string;

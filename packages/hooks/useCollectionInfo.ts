@@ -1,6 +1,17 @@
 import Long from "long";
 import { useCallback, useMemo } from "react";
 
+import { parseNetworkObjectId, NetworkKind } from "../networks";
+import {
+  CollectionContractKind,
+  CollectionInfo,
+  MintPhase,
+  collectionContractKindFromID,
+  expandCosmosBunkerConfig,
+  expandEthereumBunkerConfig,
+  getCollectionMetadata,
+  getTnsCollectionInfo,
+} from "../utils/collection";
 import { useBunkerMinterConfig } from "./collection/useBunkerMinterConfig";
 import { useBunkerMinterCurrentSupply } from "./collection/useBunkerMinterCurrentSupply";
 import { useBunkerMinterWhitelistSize } from "./collection/useBunkerMinterWhitelistSize";
@@ -14,17 +25,6 @@ import { useEthNFTContractURI } from "./collection/useEthNFTContractURI";
 import { useBreedingConfig } from "./useBreedingConfig";
 import { useCW721ContractInfo } from "./useNFTContractInfo";
 import { useRemoteJSON } from "./useRemoteJSON";
-import { parseNetworkObjectId, NetworkKind } from "../networks";
-import {
-  CollectionContractKind,
-  CollectionInfo,
-  MintPhase,
-  collectionContractKindFromID,
-  expandCosmosBunkerConfig,
-  expandEthereumBunkerConfig,
-  getCollectionMetadata,
-  getTnsCollectionInfo,
-} from "../utils/collection";
 
 // NOTE: consider using the indexer for this
 export const useCollectionInfo = (

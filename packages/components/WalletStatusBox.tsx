@@ -1,10 +1,6 @@
 import React from "react";
 import { View, useWindowDimensions } from "react-native";
 
-import { BrandText } from "./BrandText";
-import { NetworkIcon } from "./NetworkIcon";
-import { SuccessBadge } from "./badges/SuccessBadge";
-import { TertiaryBox } from "./boxes/TertiaryBox";
 import { useSelectedNetworkInfo } from "../hooks/useSelectedNetwork";
 import useSelectedWallet from "../hooks/useSelectedWallet";
 import { neutral11, neutral77 } from "../utils/style/colors";
@@ -15,6 +11,10 @@ import {
 } from "../utils/style/fonts";
 import { layout, RESPONSIVE_BREAKPOINT_S } from "../utils/style/layout";
 import { tinyAddress } from "../utils/text";
+import { BrandText } from "./BrandText";
+import { NetworkIcon } from "./NetworkIcon";
+import { SuccessBadge } from "./badges/SuccessBadge";
+import { TertiaryBox } from "./boxes/TertiaryBox";
 
 export const WalletStatusBox: React.FC = () => {
   const { width } = useWindowDimensions();

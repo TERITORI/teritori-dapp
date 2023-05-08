@@ -28,6 +28,7 @@ import {
 import { SvgProps } from "react-native-svg";
 
 import { DEFAULT_FORM_ERRORS } from "../../utils/errors";
+import { handleKeyPress } from "../../utils/keyboard";
 import {
   additionalRed,
   neutral00,
@@ -37,18 +38,18 @@ import {
   neutralA3,
   secondaryColor,
 } from "../../utils/style/colors";
-import { fontMedium10, fontSemibold14, fontSemibold20 } from "../../utils/style/fonts";
-import { handleKeyPress } from "../../utils/keyboard";
+import {
+  fontMedium10,
+  fontSemibold14,
+  fontSemibold20,
+} from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { ErrorText } from "../ErrorText";
 import { SVG } from "../SVG";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { SpacerColumn, SpacerRow } from "../spacer";
-import {
-  TextInputOutsideLabel,
-  TextInputLabelProps,
-} from "./TextInputOutsideLabel";
+import { TextInputLabelProps } from "./TextInputOutsideLabel";
 
 export interface TextInputCustomProps<T extends FieldValues>
   extends Omit<TextInputProps, "accessibilityRole" | "defaultValue">,
@@ -131,10 +132,10 @@ export const TextInputCustom = <T extends FieldValues>({
   noBrokenCorners,
   isAsterickSign,
   hideLabel,
-  valueModifier,  
+  valueModifier,
   containerStyle,
   boxMainContainerStyle,
-  error,  
+  error,
   fullWidth,
   setRef,
   ...restProps

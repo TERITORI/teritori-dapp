@@ -1,4 +1,3 @@
-import { mustGetNodeMarketplaceClient } from "./lib";
 import { TeritoriBunkerMinterQueryClient } from "../contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.client";
 import { TeritoriNftQueryClient } from "../contracts-clients/teritori-nft/TeritoriNft.client";
 import {
@@ -7,6 +6,7 @@ import {
   parseNftId,
   NetworkKind,
 } from "../networks";
+import { mustGetNodeMarketplaceClient } from "./lib";
 
 const nftId =
   "testori-tori10z8um7u47e24rv68ghd43tspeztmqy3cc283gvc3pj48zxs5ljdqn84deq-4";

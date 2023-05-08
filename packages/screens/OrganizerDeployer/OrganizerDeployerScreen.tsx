@@ -142,7 +142,7 @@ export const OrganizerDeployerScreen = () => {
       } else {
         return false;
       }
-
+      console.log(createDaoRes.transactionHash);
       if (createDaoRes) {
         return true;
       } else {

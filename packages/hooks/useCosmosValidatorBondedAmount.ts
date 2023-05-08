@@ -1,8 +1,8 @@
 import { Decimal } from "@cosmjs/math";
 import { useMemo } from "react";
 
-import { useCosmosDelegations } from "./useCosmosDelegations";
 import { getStakingCurrency, parseUserId } from "../networks";
+import { useCosmosDelegations } from "./useCosmosDelegations";
 
 const initialData = Decimal.fromAtomics("0", 0);
 

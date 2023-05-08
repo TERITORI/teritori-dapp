@@ -2,7 +2,6 @@ import { useQueryClient } from "@tanstack/react-query";
 import React from "react";
 import { View } from "react-native";
 
-import { TNSModalCommonProps } from "./TNSHomeScreen";
 import burnSVG from "../../../assets/icons/burn.svg";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
@@ -20,6 +19,7 @@ import {
   mustGetCosmosNetwork,
 } from "../../networks";
 import { neutral17 } from "../../utils/style/colors";
+import { TNSModalCommonProps } from "./TNSHomeScreen";
 
 interface TNSBurnNameScreenProps extends TNSModalCommonProps {}
 

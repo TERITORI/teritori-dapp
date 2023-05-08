@@ -1,7 +1,7 @@
 import { Decimal } from "@cosmjs/math";
 
-import { trimFixed } from "./numbers";
 import { getNativeCurrency } from "../networks";
+import { trimFixed } from "./numbers";
 
 export interface Balance {
   amount: string;

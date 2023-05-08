@@ -3,7 +3,6 @@ import { View } from "react-native";
 import { DraxList, DraxProvider } from "react-native-drax";
 import { useSelector } from "react-redux";
 
-import { SelectedDraggable } from "./SelectedDraggable";
 import { BrandText } from "../../../components/BrandText";
 import {
   selectAvailableApps,
@@ -14,6 +13,7 @@ import { useAppDispatch } from "../../../store/store";
 import { neutral67 } from "../../../utils/style/colors";
 import { layout } from "../../../utils/style/layout";
 import { getValuesFromId } from "../query/util";
+import { SelectedDraggable } from "./SelectedDraggable";
 
 export const LeftRail = () => {
   const dispatch = useAppDispatch();

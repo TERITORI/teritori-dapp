@@ -1,13 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useWindowDimensions, View } from "react-native";
 
-import { TNSBurnNameScreen } from "./TNSBurnNameScreen";
-import { TNSConsultNameScreen } from "./TNSConsultNameScreen";
-import { TNSExploreScreen } from "./TNSExploreScreen";
-import { TNSManageScreen } from "./TNSManageScreen";
-import { TNSMintNameScreen } from "./TNSMintNameScreen";
-import { TNSRegisterScreen } from "./TNSRegisterScreen";
-import { TNSUpdateNameScreen } from "./TNSUpdateNameScreen";
 import TNSBannerPNG from "../../../assets/banners/tns.png";
 import exploreSVG from "../../../assets/icons/explore-neutral77.svg";
 import penSVG from "../../../assets/icons/pen-neutral77.svg";
@@ -25,6 +18,13 @@ import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkKind, getCollectionId, getCosmosNetwork } from "../../networks";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
+import { TNSBurnNameScreen } from "./TNSBurnNameScreen";
+import { TNSConsultNameScreen } from "./TNSConsultNameScreen";
+import { TNSExploreScreen } from "./TNSExploreScreen";
+import { TNSManageScreen } from "./TNSManageScreen";
+import { TNSMintNameScreen } from "./TNSMintNameScreen";
+import { TNSRegisterScreen } from "./TNSRegisterScreen";
+import { TNSUpdateNameScreen } from "./TNSUpdateNameScreen";
 
 export type TNSItems = "TNSManage" | "TNSRegister" | "TNSExplore";
 export type TNSModals =

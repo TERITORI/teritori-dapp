@@ -2,13 +2,13 @@ import { useQuery } from "@tanstack/react-query";
 import { BigNumber, ethers } from "ethers";
 import { useMemo } from "react";
 
-import { useCoingeckoPrices } from "./useCoingeckoPrices";
 import {
   parseNetworkObjectId,
   WEI_TOKEN_ADDRESS,
   NetworkKind,
 } from "../networks";
 import { mustGetMarketplaceClient } from "../utils/backend";
+import { useCoingeckoPrices } from "./useCoingeckoPrices";
 
 export const useCollectionStats = (collectionId: string, ownerId?: string) => {
   const [network] = parseNetworkObjectId(collectionId);

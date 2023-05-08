@@ -2,7 +2,6 @@ import React, { useMemo } from "react";
 import { View } from "react-native";
 import { v4 as uuidv4 } from "uuid";
 
-import { ArticleRenderer } from "./ArticleRenderer";
 import { HTML_TAG_REGEXP } from "../../../utils/regex";
 import {
   convertGIFToLocalFileType,
@@ -13,6 +12,7 @@ import { ImagesViews } from "../../FilePreview/ImagesViews";
 import { VideoView } from "../../FilePreview/VideoView";
 import { SocialFeedMetadata, PostCategory } from "../NewsFeed/NewsFeed.type";
 import { TextRenderer } from "../NewsFeed/TextRenderer/TextRenderer";
+import { ArticleRenderer } from "./ArticleRenderer";
 interface Props {
   metadata: SocialFeedMetadata;
   postCategory: PostCategory;

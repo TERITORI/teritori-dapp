@@ -1,10 +1,5 @@
 import { useMemo } from "react";
 
-import { useBunkerMinterConfig } from "./useBunkerMinterConfig";
-import { useBunkerMinterCurrentSupply } from "./useBunkerMinterCurrentSupply";
-import { useEthMinterConfig } from "./useEthMinterConfig";
-import { useEthMinterCurrentSupply } from "./useEthMinterCurrentSupply";
-import { useEthMinterWhitelists } from "./useEthMinterWhitelists";
 import { parseNetworkObjectId } from "../../networks";
 import {
   collectionContractKindFromID,
@@ -13,6 +8,11 @@ import {
   expandCosmosBunkerConfig,
   expandEthereumBunkerConfig,
 } from "../../utils/collection";
+import { useBunkerMinterConfig } from "./useBunkerMinterConfig";
+import { useBunkerMinterCurrentSupply } from "./useBunkerMinterCurrentSupply";
+import { useEthMinterConfig } from "./useEthMinterConfig";
+import { useEthMinterCurrentSupply } from "./useEthMinterCurrentSupply";
+import { useEthMinterWhitelists } from "./useEthMinterWhitelists";
 
 export const useCollectionThumbnailInfo = (id: string) => {
   const contractKind = collectionContractKindFromID(id);

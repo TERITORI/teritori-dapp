@@ -3,10 +3,6 @@ import { Pressable, Text, TouchableOpacity, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import { useSelector } from "react-redux";
 
-import { Notifications } from "./components/Notifications";
-import { SettingItem } from "./components/SettingItem";
-import { useCommonStyles } from "./components/commonStyles";
-import { SettingItemType } from "./types";
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
@@ -23,6 +19,10 @@ import { useAppDispatch } from "../../store/store";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { neutralA3, primaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
+import { Notifications } from "./components/Notifications";
+import { SettingItem } from "./components/SettingItem";
+import { useCommonStyles } from "./components/commonStyles";
+import { SettingItemType } from "./types";
 
 const NFTAPIKeyInput: React.FC = () => {
   const NFTApiKey = useSelector(selectNFTStorageAPI);

@@ -1,12 +1,12 @@
 import {
+  DaoServiceClientImpl,
+  GrpcWebImpl as DaoGrpcWebImpl,
+} from "../api/dao/v1/dao";
+import {
   FeedService,
   FeedServiceClientImpl,
   GrpcWebImpl as FeedGrpcWebImpl,
 } from "../api/feed/v1/feed";
-import {
-  DaoServiceClientImpl,
-  GrpcWebImpl as DaoGrpcWebImpl,  
-} from "../api/dao/v1/dao";
 import {
   MarketplaceServiceClientImpl,
   GrpcWebImpl as MarketplaceGrpcWebImpl,
@@ -69,7 +69,6 @@ export const mustGetP2eClient = (networkId: string | undefined) => {
   return client;
 };
 
-
 const daoBackendEndpoint = process.env.TERITORI_DAO_BACKEND_ENDPOINT;
 
 if (!daoBackendEndpoint) {
@@ -107,4 +106,3 @@ export const mustGetFeedClient = (networkId: string | undefined) => {
   }
   return client;
 };
-

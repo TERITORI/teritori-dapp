@@ -1,7 +1,6 @@
 import React from "react";
 import { View } from "react-native";
 
-import { TopMenuSection } from "./TopMenuSection";
 import {
   Collection,
   MintState,
@@ -18,6 +17,7 @@ import {
   COLLECTION_VIEW_SM_WIDTH,
 } from "../CollectionView";
 import { SmallCarousel } from "../carousels/SmallCarousel";
+import { TopMenuSection } from "./TopMenuSection";
 
 export const TopMenuLiveMint: React.FC = () => {
   const selectedNetworkId = useSelectedNetworkId();

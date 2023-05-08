@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 
-import { SocialCardHeader } from "./SocialCardHeader";
-import { SocialMessageContent } from "./SocialMessageContent";
 import { Post } from "../../../api/feed/v1/feed";
 import { signingSocialFeedClient } from "../../../client-creators/socialFeedClient";
 import { useTeritoriSocialFeedReactPostMutation } from "../../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.react-query";
@@ -32,6 +30,8 @@ import { ReplyButton } from "../SocialActions/ReplyButton";
 import { ShareButton } from "../SocialActions/ShareButton";
 import { SocialThreadGovernance } from "../SocialActions/SocialThreadGovernance";
 import { TipButton } from "../SocialActions/TipButton";
+import { SocialCardHeader } from "./SocialCardHeader";
+import { SocialMessageContent } from "./SocialMessageContent";
 
 const BREAKPOINT_S = 480;
 

@@ -2,13 +2,13 @@ import React, { useMemo } from "react";
 import { View } from "react-native";
 import { v4 as uuidv4 } from "uuid";
 
-import { EditableAudioPreview } from "./EditableAudioPreview";
-import { ImagesViews } from "./ImagesViews";
-import { VideoView } from "./VideoView";
 import { GIF_MIME_TYPE } from "../../utils/mime";
 import { convertGIFToLocalFileType } from "../../utils/social-feed";
 import { layout } from "../../utils/style/layout";
 import { LocalFileData, RemoteFileData } from "../../utils/types/feed";
+import { EditableAudioPreview } from "./EditableAudioPreview";
+import { ImagesViews } from "./ImagesViews";
+import { VideoView } from "./VideoView";
 
 interface FilePreviewContainerProps {
   files?: LocalFileData[];

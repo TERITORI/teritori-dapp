@@ -9,8 +9,6 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
-import { SideNotch } from "./SideNotch";
-import { SidebarNestedButton } from "./SidebarNestedButton";
 import chevronDownSVG from "../../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../../assets/icons/chevron-up.svg";
 import { useSidebar } from "../../../context/SidebarProvider";
@@ -29,6 +27,8 @@ import { SVGorImageIcon } from "../../SVG/SVGorImageIcon";
 import { CustomPressable } from "../../buttons/CustomPressable";
 import { SpacerRow } from "../../spacer";
 import { SidebarType } from "../types";
+import { SideNotch } from "./SideNotch";
+import { SidebarNestedButton } from "./SidebarNestedButton";
 
 export interface SidebarButtonProps extends SidebarType {
   onPress?: (routeName: SidebarType["route"]) => void;
