@@ -27,7 +27,7 @@ const ChatMessage = ({
 }: IChatMessageProps) => {
   const senderName = "me";
   const [showPopup, setShowPopup] = useState(false);
-
+  const [isForwarding, setIsForwarding] = useState(false);
   return (
     <>
       <View style={isSender ? styles.senderWrapper : styles.receiverWrapper}>
@@ -38,10 +38,16 @@ const ChatMessage = ({
           <TouchableOpacity onPress={() => setShowPopup(!showPopup)}>
             <Text style={styles.message}>{message}</Text>
           </TouchableOpacity>
-          <Image source={source} style={{ height, width, ...imageStyle }} />
+
+          {source && (
+            <Image source={source} style={{ height, width, ...imageStyle }} />
+          )}
           {!isSender && showPopup && (
             <View style={styles.popupContainer}>
-              <MessagePopup />
+              <MessagePopup
+                isForwarding={isForwarding}
+                setIsForwarding={setIsForwarding}
+              />
             </View>
           )}
           <View
@@ -109,8 +115,8 @@ const styles = StyleSheet.create({
     zIndex: 11111,
 
     position: "absolute",
-    right: -180,
-    top: -150,
+    right: -50,
+    top: -170,
   },
   message: {
     color: "#FFFFFF",
