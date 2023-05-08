@@ -4,6 +4,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import { useSelector } from "react-redux";
 
 import { SideCart } from "./SideCart";
+import { SideFilters } from "./SideFilters";
 import { SortDirection } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
@@ -15,7 +16,7 @@ import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { parseCollectionId } from "../../networks";
 import { selectSelectedNFTIds } from "../../store/slices/marketplaceReducer";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
-import { neutral67 } from "../../utils/style/colors";
+import { neutral00, neutral67 } from "../../utils/style/colors";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 
@@ -74,6 +75,23 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
             selectedTab={selectedTab}
             sortDirection={sortDirection}
           />
+          <SideFilters
+            collectionId={id}
+            style={{
+              position: "absolute",
+              left: 0,
+              marginTop: 352,
+              flexDirection: "column",
+              width: 245,
+              marginBottom: layout.padding_x2_5,
+              backgroundColor: neutral00,
+              borderRadius: layout.padding_x2,
+              borderColor: neutral67,
+              borderWidth: 1,
+              padding: layout.padding_x2,
+              borderStyle: "solid",
+            }}
+          />
         </ScrollView>
         <SideCart
           style={{
@@ -83,6 +101,7 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
             flexDirection: "column",
             width: 245,
             marginBottom: layout.padding_x2_5,
+            backgroundColor: neutral00,
             borderRadius: layout.padding_x2,
             borderColor: neutral67,
             borderWidth: 1,

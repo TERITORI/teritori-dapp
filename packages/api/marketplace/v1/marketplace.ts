@@ -191,7 +191,7 @@ export interface CollectionStats {
   owned: number;
 }
 
-export interface CollectionAttributesResponse {
+export interface NFTCollectionAttributesResponse {
   attributes: Attribute | undefined;
 }
 
@@ -236,7 +236,7 @@ export interface CollectionStatsRequest {
   ownerId: string;
 }
 
-export interface CollectionFiltersRequest {
+export interface NFTCollectionAttributesRequest {
   collectionId: string;
 }
 
@@ -967,22 +967,22 @@ export const CollectionStats = {
   },
 };
 
-function createBaseCollectionAttributesResponse(): CollectionAttributesResponse {
+function createBaseNFTCollectionAttributesResponse(): NFTCollectionAttributesResponse {
   return { attributes: undefined };
 }
 
-export const CollectionAttributesResponse = {
-  encode(message: CollectionAttributesResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const NFTCollectionAttributesResponse = {
+  encode(message: NFTCollectionAttributesResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.attributes !== undefined) {
       Attribute.encode(message.attributes, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): CollectionAttributesResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): NFTCollectionAttributesResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseCollectionAttributesResponse();
+    const message = createBaseNFTCollectionAttributesResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -997,19 +997,21 @@ export const CollectionAttributesResponse = {
     return message;
   },
 
-  fromJSON(object: any): CollectionAttributesResponse {
+  fromJSON(object: any): NFTCollectionAttributesResponse {
     return { attributes: isSet(object.attributes) ? Attribute.fromJSON(object.attributes) : undefined };
   },
 
-  toJSON(message: CollectionAttributesResponse): unknown {
+  toJSON(message: NFTCollectionAttributesResponse): unknown {
     const obj: any = {};
     message.attributes !== undefined &&
       (obj.attributes = message.attributes ? Attribute.toJSON(message.attributes) : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<CollectionAttributesResponse>, I>>(object: I): CollectionAttributesResponse {
-    const message = createBaseCollectionAttributesResponse();
+  fromPartial<I extends Exact<DeepPartial<NFTCollectionAttributesResponse>, I>>(
+    object: I,
+  ): NFTCollectionAttributesResponse {
+    const message = createBaseNFTCollectionAttributesResponse();
     message.attributes = (object.attributes !== undefined && object.attributes !== null)
       ? Attribute.fromPartial(object.attributes)
       : undefined;
@@ -1464,22 +1466,22 @@ export const CollectionStatsRequest = {
   },
 };
 
-function createBaseCollectionFiltersRequest(): CollectionFiltersRequest {
+function createBaseNFTCollectionAttributesRequest(): NFTCollectionAttributesRequest {
   return { collectionId: "" };
 }
 
-export const CollectionFiltersRequest = {
-  encode(message: CollectionFiltersRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const NFTCollectionAttributesRequest = {
+  encode(message: NFTCollectionAttributesRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.collectionId !== "") {
       writer.uint32(10).string(message.collectionId);
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): CollectionFiltersRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): NFTCollectionAttributesRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseCollectionFiltersRequest();
+    const message = createBaseNFTCollectionAttributesRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1494,18 +1496,20 @@ export const CollectionFiltersRequest = {
     return message;
   },
 
-  fromJSON(object: any): CollectionFiltersRequest {
+  fromJSON(object: any): NFTCollectionAttributesRequest {
     return { collectionId: isSet(object.collectionId) ? String(object.collectionId) : "" };
   },
 
-  toJSON(message: CollectionFiltersRequest): unknown {
+  toJSON(message: NFTCollectionAttributesRequest): unknown {
     const obj: any = {};
     message.collectionId !== undefined && (obj.collectionId = message.collectionId);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<CollectionFiltersRequest>, I>>(object: I): CollectionFiltersRequest {
-    const message = createBaseCollectionFiltersRequest();
+  fromPartial<I extends Exact<DeepPartial<NFTCollectionAttributesRequest>, I>>(
+    object: I,
+  ): NFTCollectionAttributesRequest {
+    const message = createBaseNFTCollectionAttributesRequest();
     message.collectionId = object.collectionId ?? "";
     return message;
   },
@@ -3122,9 +3126,9 @@ export interface MarketplaceService {
   ): Promise<CollectionStatsResponse>;
   NFTs(request: DeepPartial<NFTsRequest>, metadata?: grpc.Metadata): Observable<NFTsResponse>;
   NFTCollectionAttributes(
-    request: DeepPartial<CollectionFiltersRequest>,
+    request: DeepPartial<NFTCollectionAttributesRequest>,
     metadata?: grpc.Metadata,
-  ): Observable<CollectionAttributesResponse>;
+  ): Observable<NFTCollectionAttributesResponse>;
   Quests(request: DeepPartial<QuestsRequest>, metadata?: grpc.Metadata): Observable<QuestsResponse>;
   Activity(request: DeepPartial<ActivityRequest>, metadata?: grpc.Metadata): Observable<ActivityResponse>;
   NFTPriceHistory(
@@ -3178,12 +3182,12 @@ export class MarketplaceServiceClientImpl implements MarketplaceService {
   }
 
   NFTCollectionAttributes(
-    request: DeepPartial<CollectionFiltersRequest>,
+    request: DeepPartial<NFTCollectionAttributesRequest>,
     metadata?: grpc.Metadata,
-  ): Observable<CollectionAttributesResponse> {
+  ): Observable<NFTCollectionAttributesResponse> {
     return this.rpc.invoke(
       MarketplaceServiceNFTCollectionAttributesDesc,
-      CollectionFiltersRequest.fromPartial(request),
+      NFTCollectionAttributesRequest.fromPartial(request),
       metadata,
     );
   }
@@ -3310,13 +3314,13 @@ export const MarketplaceServiceNFTCollectionAttributesDesc: UnaryMethodDefinitio
   responseStream: true,
   requestType: {
     serializeBinary() {
-      return CollectionFiltersRequest.encode(this).finish();
+      return NFTCollectionAttributesRequest.encode(this).finish();
     },
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
       return {
-        ...CollectionAttributesResponse.decode(data),
+        ...NFTCollectionAttributesResponse.decode(data),
         toObject() {
           return this;
         },

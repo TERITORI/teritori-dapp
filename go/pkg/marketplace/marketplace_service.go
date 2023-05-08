@@ -422,14 +422,16 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 	return fmt.Errorf("unsupported network kind '%s'", network.GetBase().Kind)
 }
 
-func (s *MarkteplaceService) NFTCollectionFilters(req *marketplacepb.CollectionFiltersRequest, srv marketplacepb.MarketplaceService_NFTCollectionAttributesServer) error {
+func (s *MarkteplaceService) NFTCollectionAttributes(req *marketplacepb.NFTCollectionAttributesRequest, srv marketplacepb.MarketplaceService_NFTCollectionAttributesServer) error {
 
 	collectionID := req.GetCollectionId()
 
 	var err error
-	var network networks.Network
+	var (
+		_ networks.Network
+	)
 	if collectionID != "" {
-		if network, _, err = s.conf.NetworkStore.ParseCollectionID(collectionID); err != nil {
+		if _, _, err = s.conf.NetworkStore.ParseCollectionID(collectionID); err != nil {
 			return errors.Wrap(err, "failed to parse collection id")
 		}
 	} else {
@@ -439,7 +441,7 @@ func (s *MarkteplaceService) NFTCollectionFilters(req *marketplacepb.CollectionF
 	var attributes []*marketplacepb.Attribute
 
 	err = s.conf.IndexerDB.Raw(`
-      select trait_type, string_agg(value, ', ') AS existing from (
+      select trait_type, string_agg(value, ', ') AS Value from (
           select trait_type, value from (
               SELECT distinct attr.trait_type as trait_type, attr.value 
               FROM public.nfts t, jsonb_to_recordset(t.attributes) as attr(value varchar, trait_type varchar)
@@ -454,14 +456,19 @@ func (s *MarkteplaceService) NFTCollectionFilters(req *marketplacepb.CollectionF
 	).Scan(&attributes).Error
 
 	for _, attribute := range attributes {
-		if err := srv.Send(&marketplacepb.CollectionAttributesResponse{Attributes: attribute}); err != nil {
+		if err := srv.Send(&marketplacepb.NFTCollectionAttributesResponse{Attributes: attribute}); err != nil {
 			return errors.Wrap(err, "failed to send nft")
 		}
 	}
 
-	//return nil
+	//for i := range attributes {
+	//	if err := srv.Send(&marketplacepb.NFTCollectionAttributesResponse{Attributes: &attributes[i]}); err != nil {
+	//		return errors.Wrap(err, "failed to send collection")
+	//	}
+	//}
+	return nil
 
-	return fmt.Errorf("unsupported network kind '%s'", network.GetBase().Kind)
+	//return nil, fmt.Errorf("unsupported network kind '%s'", network.GetBase().Kind)
 }
 
 func (s *MarkteplaceService) Activity(req *marketplacepb.ActivityRequest, srv marketplacepb.MarketplaceService_ActivityServer) error {
