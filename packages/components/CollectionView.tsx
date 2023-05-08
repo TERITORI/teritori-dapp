@@ -1,46 +1,60 @@
 import React, { useMemo } from "react";
-import { Image, StyleSheet, View } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { StyleSheet, Linking, View, Pressable } from "react-native";
 
-import { Collection } from "../api/marketplace/v1/marketplace";
-import { useNSUserInfo } from "../hooks/useNSUserInfo";
-import { useNavigateToCollection } from "../hooks/useNavigateToCollection";
-import { parseUserId } from "../networks";
-import { fontBold11, fontMedium10, fontSemibold14 } from "../utils/style/fonts";
-import { layout } from "../utils/style/layout";
 import { BrandText } from "./BrandText";
+import { OptimizedImage } from "./OptimizedImage";
 import { TertiaryBox } from "./boxes/TertiaryBox";
 import { GradientText } from "./gradientText";
+import { Collection, MintState } from "../api/marketplace/v1/marketplace";
+import { useCollectionThumbnailInfo } from "../hooks/collection/useCollectionThumbnailInfo";
+import { useNavigateToCollection } from "../hooks/useNavigateToCollection";
+import { fontBold11, fontMedium10, fontSemibold14 } from "../utils/style/fonts";
+import { layout } from "../utils/style/layout";
 
 type CollectionViewSize = "XL" | "XS";
 export const COLLECTION_VIEW_SM_WIDTH = 124;
 export const COLLECTION_VIEW_SM_HEIGHT = 164;
-export const COLLECTION_VIEW_XL_WIDTH = 196;
-export const COLLECTION_VIEW_XL_HEIGHT = 266;
+export const COLLECTION_VIEW_XL_WIDTH = 256;
+export const COLLECTION_VIEW_XL_HEIGHT = 315;
 
 export const CollectionView: React.FC<{
   item: Collection;
   size?: CollectionViewSize;
   linkToMint?: boolean;
-}> = ({ item, size = "XL", linkToMint }) => {
-  const [, creatorAddress] = parseUserId(item.creatorId);
-  const userInfo = useNSUserInfo(item.creatorId);
+  mintState: number;
+  onPress?: () => void;
+}> = ({ item, size = "XL", linkToMint, mintState, onPress }) => {
   const navigateToCollection = useNavigateToCollection(item.id, {
     forceSecondaryDuringMint: item.secondaryDuringMint,
     forceLinkToMint: linkToMint,
   });
   const sizedStyles = useMemo(() => StyleSheet.flatten(styles[size]), [size]);
 
+  const navigateToTwitter = () => {
+    Linking.openURL(item.twitterUrl);
+  };
+
+  const info = useCollectionThumbnailInfo(item.id);
+
   return (
-    <TouchableOpacity onPress={navigateToCollection} disabled={!item.id}>
+    <Pressable
+      onPress={() => {
+        onPress && onPress();
+        if (item.id !== "") navigateToCollection();
+        else navigateToTwitter();
+      }}
+      disabled={item.id === "" && item.twitterUrl === ""}
+    >
       <TertiaryBox
         noBrokenCorners={size === "XS"}
         mainContainerStyle={sizedStyles.boxMainContainer}
         width={sizedStyles.box.width}
         height={sizedStyles.box.height}
       >
-        <Image
+        <OptimizedImage
           source={{ uri: item.imageUri }}
+          width={sizedStyles.image.width}
+          height={sizedStyles.image.height}
           style={{
             width: sizedStyles.image.width,
             height: sizedStyles.image.height,
@@ -55,32 +69,78 @@ export const CollectionView: React.FC<{
             width: sizedStyles.image.width,
           }}
         >
-          <BrandText
-            style={sizedStyles.collectionName}
-            ellipsizeMode="tail"
-            numberOfLines={1}
-          >
-            {item.collectionName}
-          </BrandText>
           <View
             style={{
               flexDirection: "row",
-              alignItems: "center",
-              marginTop: 8,
+              justifyContent: "space-between",
+              flexWrap: "nowrap",
             }}
           >
-            <GradientText
-              style={sizedStyles.creatorName}
+            <BrandText
+              style={{
+                ...sizedStyles.collectionName,
+                width: "100%",
+              }}
               ellipsizeMode="tail"
               numberOfLines={1}
-              gradientType="purple"
             >
-              {userInfo.metadata?.tokenId || item.creatorName || creatorAddress}
-            </GradientText>
+              {item.collectionName}
+            </BrandText>
+            {info && mintState !== MintState.MINT_STATE_UNSPECIFIED ? (
+              <BrandText
+                style={{
+                  ...sizedStyles.percentage,
+                }}
+              >
+                {!isNaN(info.percentageMinted)
+                  ? `${info.percentageMinted}%`
+                  : ""}
+              </BrandText>
+            ) : null}
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              flexWrap: "nowrap",
+              marginTop: layout.padding_x1,
+            }}
+          >
+            {info &&
+            mintState !== MintState.MINT_STATE_UNSPECIFIED &&
+            info.maxSupply !== 0 ? (
+              <>
+                <GradientText
+                  style={sizedStyles.creatorName}
+                  ellipsizeMode="tail"
+                  numberOfLines={1}
+                  gradientType="purple"
+                >
+                  {info.maxSupply ? `Supply ${info.maxSupply}` : ""}
+                </GradientText>
+                <GradientText
+                  style={sizedStyles.creatorName}
+                  ellipsizeMode="tail"
+                  numberOfLines={1}
+                  gradientType="purple"
+                >
+                  {info.prettyUnitPrice}
+                </GradientText>
+              </>
+            ) : (
+              <GradientText
+                style={sizedStyles.creatorName}
+                ellipsizeMode="tail"
+                numberOfLines={1}
+                gradientType="purple"
+              >
+                {item.creatorName}
+              </GradientText>
+            )}
           </View>
         </View>
       </TertiaryBox>
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 
@@ -95,8 +155,8 @@ const styles = {
       paddingBottom: layout.padding_x2_5,
     },
     image: {
-      width: 172,
-      height: 172,
+      width: COLLECTION_VIEW_XL_WIDTH - 24,
+      height: COLLECTION_VIEW_XL_WIDTH - 24,
       borderRadius: 12,
     },
     textsContainer: {
@@ -104,6 +164,9 @@ const styles = {
       marginTop: layout.padding_x2,
     },
     collectionName: {
+      ...(fontSemibold14 as object),
+    },
+    percentage: {
       ...(fontSemibold14 as object),
     },
     creatorName: {
@@ -130,6 +193,9 @@ const styles = {
       marginTop: layout.padding_x1,
     },
     collectionName: {
+      ...(fontBold11 as object),
+    },
+    percentage: {
       ...(fontBold11 as object),
     },
     creatorName: {

@@ -1,7 +1,15 @@
-import { coin } from "cosmwasm";
+import { coin } from "@cosmjs/amino";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { View } from "react-native";
 
+import {
+  BreedingResultModal,
+  TokenInfo,
+} from "./component/BreedingResultModal";
+import { BreedingSlot } from "./component/BreedingSlot";
+import { GameContentView } from "./component/GameContentView";
+import { InfoBox } from "./component/InfoBox";
+import { RipperSelectorModal } from "./component/RipperSelectorModal";
 import breedSVG from "../../../assets/game/breed.svg";
 import chevronDownLineSVG from "../../../assets/game/chevron-down-line.svg";
 import { NFT } from "../../api/marketplace/v1/marketplace";
@@ -24,14 +32,6 @@ import { getRipperTokenId } from "../../utils/game";
 import { neutral33, neutralA3, yellowDefault } from "../../utils/style/colors";
 import { fontMedium14, fontMedium48 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import {
-  BreedingResultModal,
-  TokenInfo,
-} from "./component/BreedingResultModal";
-import { BreedingSlot } from "./component/BreedingSlot";
-import { GameContentView } from "./component/GameContentView";
-import { InfoBox } from "./component/InfoBox";
-import { RipperSelectorModal } from "./component/RipperSelectorModal";
 
 export const RiotGameBreedingScreen = () => {
   const { myAvailableRippers } = useRippers();
@@ -274,7 +274,7 @@ export const RiotGameBreedingScreen = () => {
           size="M"
           text={isBreeding ? "Breeding..." : "Breed my Rippers"}
           iconSVG={breedSVG}
-          style={{ marginTop: layout.padding_x2 }}
+          touchableStyle={{ marginTop: layout.padding_x2 }}
         />
 
         <FlexRow

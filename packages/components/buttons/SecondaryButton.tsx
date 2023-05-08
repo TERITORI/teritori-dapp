@@ -2,6 +2,7 @@ import React, { useCallback, useState } from "react";
 import {
   ActivityIndicator,
   StyleProp,
+  TextStyle,
   TouchableOpacity,
   ViewStyle,
 } from "react-native";
@@ -29,12 +30,14 @@ export const SecondaryButton: React.FC<{
   paddingHorizontal?: number;
   color?: string;
   style?: StyleProp<ViewStyle>;
+  touchableStyle?: StyleProp<ViewStyle>;
   iconSVG?: React.FC<SvgProps>;
   disabled?: boolean;
   fullWidth?: boolean;
   numberOfLines?: number;
   activeOpacity?: number | undefined;
   loader?: boolean;
+  textStyle?: TextStyle;
 }> = ({
   // If no width, the buttons will fit the content including paddingHorizontal 20
   width,
@@ -46,12 +49,14 @@ export const SecondaryButton: React.FC<{
   paddingHorizontal = 20,
   color = primaryColor,
   style,
+  touchableStyle,
   iconSVG,
   disabled = false,
   fullWidth = false,
   numberOfLines,
   activeOpacity,
   loader,
+  textStyle,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -80,7 +85,7 @@ export const SecondaryButton: React.FC<{
     <TouchableOpacity
       onPress={handlePress}
       disabled={disabled}
-      style={{ width: fullWidth ? "100%" : width }}
+      style={[{ width: fullWidth ? "100%" : width }, touchableStyle]}
       activeOpacity={activeOpacity}
     >
       <SecondaryBox
@@ -112,6 +117,7 @@ export const SecondaryButton: React.FC<{
               style={[
                 fontSemibold14,
                 { color, textAlign: "center", width: "100%" },
+                textStyle,
               ]}
               numberOfLines={numberOfLines}
             >

@@ -1,359 +1,325 @@
-import { useQuery } from "@tanstack/react-query";
-import { BigNumber } from "ethers";
 import Long from "long";
+import { useCallback, useMemo } from "react";
 
-import { TeritoriBreedingQueryClient } from "../contracts-clients/teritori-breeding/TeritoriBreeding.client";
-import { TeritoriBunkerMinterQueryClient } from "../contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.client";
-import { TeritoriNftQueryClient } from "../contracts-clients/teritori-nft/TeritoriNft.client";
+import { useBunkerMinterConfig } from "./collection/useBunkerMinterConfig";
+import { useBunkerMinterCurrentSupply } from "./collection/useBunkerMinterCurrentSupply";
+import { useBunkerMinterWhitelistSize } from "./collection/useBunkerMinterWhitelistSize";
+import { useEthMinterConfig } from "./collection/useEthMinterConfig";
+import { useEthMinterCurrentSupply } from "./collection/useEthMinterCurrentSupply";
+import { useEthMinterIsPaused } from "./collection/useEthMinterIsPaused";
+import { useEthMinterNFTAddress } from "./collection/useEthMinterNFTAddress";
+import { useEthMinterWhitelists } from "./collection/useEthMinterWhitelists";
+import { useEthNFTContractName } from "./collection/useEthNFTContractName";
+import { useEthNFTContractURI } from "./collection/useEthNFTContractURI";
+import { useBreedingConfig } from "./useBreedingConfig";
+import { useCW721ContractInfo } from "./useNFTContractInfo";
+import { useRemoteJSON } from "./useRemoteJSON";
+import { parseNetworkObjectId, NetworkKind } from "../networks";
 import {
-  CosmosNetworkInfo,
-  EthereumNetworkInfo,
-  mustGetNonSigningCosmWasmClient,
-  parseNetworkObjectId,
-  WEI_TOKEN_ADDRESS,
-  NetworkKind,
-} from "../networks";
-import { prettyPrice } from "../utils/coins";
-import { getEthereumProvider } from "../utils/ethereum";
-import { ipfsURLToHTTPURL } from "../utils/ipfs";
-import { TeritoriMinter__factory } from "./../evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
-import { TeritoriNft__factory } from "./../evm-contracts-clients/teritori-nft/TeritoriNft__factory";
-
-export type MintState = "not-started" | "whitelist" | "public-sale" | "ended";
-
-export interface MintPhase {
-  mintMax: Long;
-  start: Long;
-  end: Long;
-  mintPrice: Long;
-  size: Long;
-}
-
-export interface CollectionInfo {
-  image?: string;
-  description?: string;
-  prettyUnitPrice?: string;
-  unitPrice?: string;
-  priceDenom?: string;
-  maxSupply?: string;
-  mintedAmount?: string;
-  name?: string;
-  discord?: string;
-  twitter?: string;
-  website?: string;
-  maxPerAddress?: string;
-  hasPresale?: boolean;
-  isInPresalePeriod?: boolean;
-  isMintable?: boolean;
-  publicSaleEnded?: boolean;
-  bannerImage?: string;
-  mintStarted?: boolean;
-  publicSaleStartTime?: number; // seconds since epoch
-  state?: MintState;
-  mintPhases: MintPhase[];
-}
-
-const getTnsCollectionInfo = (network: CosmosNetworkInfo): CollectionInfo => {
-  return {
-    name: `${network.displayName} Name Service`, // FIXME: should fetch from contract or be in env
-    image: ipfsURLToHTTPURL(network?.nameServiceDefaultImage || ""),
-    mintPhases: [],
-  };
-};
-
-const getTeritoriBreedingCollectionInfo = async (
-  network: CosmosNetworkInfo,
-  mintAddress: string
-) => {
-  const cosmwasm = await mustGetNonSigningCosmWasmClient(network.id);
-
-  const breedingClient = new TeritoriBreedingQueryClient(cosmwasm, mintAddress);
-  const conf = await breedingClient.config();
-
-  const nftClient = new TeritoriNftQueryClient(
-    cosmwasm,
-    conf.child_contract_addr
-  );
-  const nftInfo = await nftClient.contractInfo();
-
-  const metadataURL = ipfsURLToHTTPURL(conf.child_base_uri);
-  const metadataReply = await fetch(metadataURL);
-  const metadata = await metadataReply.json();
-
-  const info: CollectionInfo = {
-    name: nftInfo.name,
-    image: ipfsURLToHTTPURL(metadata.image || ""),
-    description: metadata.description,
-    discord: metadata.discord,
-    twitter: metadata.twitter,
-    website: metadata.website,
-    bannerImage: ipfsURLToHTTPURL(metadata.banner),
-    mintPhases: [],
-  };
-  return info;
-};
-
-const getCosmosBunkerCollectionInfo = async (
-  network: CosmosNetworkInfo,
-  mintAddress: string
-) => {
-  const cosmwasm = await mustGetNonSigningCosmWasmClient(network.id);
-  const minterClient = new TeritoriBunkerMinterQueryClient(
-    cosmwasm,
-    mintAddress
-  );
-  const conf = await minterClient.config();
-
-  const nftClient = new TeritoriNftQueryClient(cosmwasm, conf.nft_addr);
-  const nftInfo = await nftClient.contractInfo();
-
-  const metadataURL = ipfsURLToHTTPURL(conf.nft_base_uri);
-  const metadataReply = await fetch(metadataURL);
-
-  const metadata = await metadataReply.json();
-
-  const secondsSinceEpoch = Date.now() / 1000;
-
-  const mintedAmount = await minterClient.currentSupply();
-
-  const whitelistEnd = conf.mint_start_time + conf.whitelist_mint_period;
-  const hasWhitelistPeriod = !!conf.whitelist_mint_period;
-  const publicSaleEnded = mintedAmount === conf.nft_max_supply;
-
-  const whitelistSize = await minterClient.whitelistSize();
-
-  const mintStarted =
-    conf.mint_start_time !== 0 && secondsSinceEpoch >= conf.mint_start_time;
-
-  let state: MintState;
-  if (!mintStarted) {
-    state = "not-started";
-  } else if (hasWhitelistPeriod && secondsSinceEpoch < whitelistEnd) {
-    state = "whitelist";
-  } else if (!publicSaleEnded) {
-    state = "public-sale";
-  } else {
-    state = "ended";
-  }
-
-  let unitPrice: string;
-  if (state === "not-started" || state === "whitelist") {
-    unitPrice = conf.whitelist_mint_price_amount || conf.nft_price_amount;
-  } else {
-    unitPrice = conf.nft_price_amount;
-  }
-
-  const mintPhases: MintPhase[] = [];
-  if (hasWhitelistPeriod) {
-    const start = Long.fromNumber(conf.mint_start_time);
-    mintPhases.push({
-      mintPrice: Long.fromString(conf.whitelist_mint_price_amount || "0"),
-      mintMax: Long.fromString(conf.whitelist_mint_max || "0"),
-      start,
-      end: start.add(conf.whitelist_mint_period),
-      size: Long.fromNumber(whitelistSize),
-    });
-  }
-
-  const info: CollectionInfo = {
-    name: nftInfo.name,
-    image: ipfsURLToHTTPURL(metadata.image || ""),
-    description: metadata.description,
-    prettyUnitPrice: prettyPrice(network.id, unitPrice, conf.price_denom),
-    unitPrice,
-    priceDenom: conf.price_denom,
-    maxSupply: conf.nft_max_supply,
-    mintStarted,
-    mintedAmount,
-    discord: metadata.discord,
-    twitter: metadata.twitter,
-    website: metadata.website,
-    maxPerAddress: conf.mint_max || undefined,
-    hasPresale: hasWhitelistPeriod,
-    publicSaleEnded,
-    isMintable: !publicSaleEnded && conf.is_mintable,
-    isInPresalePeriod: state === "whitelist",
-    publicSaleStartTime: whitelistEnd,
-    bannerImage: ipfsURLToHTTPURL(metadata.banner),
-    mintPhases,
-    state,
-  };
-
-  return info;
-};
-
-const getEthereumTeritoriBunkerCollectionInfo = async (
-  network: EthereumNetworkInfo,
-  mintAddress: string
-) => {
-  const provider = await getEthereumProvider(network);
-  if (!provider) {
-    console.error("no eth provider found");
-    return { mintPhases: [] };
-  }
-
-  const minterClient = TeritoriMinter__factory.connect(mintAddress, provider);
-  const minterConfig = await minterClient.callStatic.config();
-  const nftAddress = await minterClient.callStatic.nft();
-
-  const isPaused = await minterClient.callStatic.paused();
-  const nftClient = TeritoriNft__factory.connect(nftAddress, provider);
-
-  const contractURI = await nftClient.callStatic.contractURI();
-  const metadataURL = ipfsURLToHTTPURL(contractURI);
-  const metadataReply = await fetch(metadataURL);
-  const metadata = await metadataReply.json();
-
-  const secondsSinceEpoch = Long.fromNumber(Date.now() / 1000);
-
-  const name = await nftClient.callStatic.name();
-
-  const priceDenom = WEI_TOKEN_ADDRESS;
-  const maxSupply = minterConfig.maxSupply.toString();
-  const mintStartedAt = Long.fromString(minterConfig.mintStartTime.toString());
-  const mintStarted = secondsSinceEpoch.greaterThanOrEqual(mintStartedAt);
-
-  // Fetch all whitelist phrases
-  const whitelistPhases: MintPhase[] = [];
-  let isLastPhase = false;
-  let phase = BigNumber.from(0);
-  let phaseStart = mintStartedAt;
-
-  while (!isLastPhase) {
-    const phaseConfig = await minterClient.callStatic.whitelists(phase);
-
-    const size = await minterClient.callStatic.whitelistSize(phase);
-
-    const mintPeriod = Long.fromString(phaseConfig.mintPeriod.toString());
-
-    const phaseEnd = phaseStart.add(mintPeriod);
-
-    // If phase is invalid
-    if (!phaseConfig.mintPeriod.toNumber()) {
-      isLastPhase = true;
-    } else {
-      whitelistPhases.push({
-        mintMax: Long.fromString(phaseConfig.mintMax.toString()),
-        start: phaseStart,
-        end: phaseEnd,
-        mintPrice: Long.fromString(phaseConfig.mintPrice.toString()),
-        size: Long.fromString(size.toString()),
-      });
-      phase = phase.add(1);
-      phaseStart = phaseEnd;
-      isLastPhase = false;
-    }
-  }
-
-  // Detect current while list phase
-  let currentPhase;
-  let whitelistEndedAt = mintStartedAt;
-  for (const [idx, whitelistPhase] of whitelistPhases.entries()) {
-    whitelistEndedAt = whitelistPhase.end;
-    if (secondsSinceEpoch.lessThan(whitelistEndedAt)) {
-      currentPhase = idx;
-      break;
-    }
-  }
-
-  const mintedAmount = (await minterClient.currentSupply()).toString();
-  const publicSaleEnded = mintedAmount === maxSupply;
-  const hasWhitelistPeriod = whitelistPhases.length > 0;
-
-  let state: MintState;
-  if (!mintStarted) {
-    state = "not-started";
-  } else if (
-    hasWhitelistPeriod &&
-    secondsSinceEpoch.lessThan(whitelistEndedAt)
-  ) {
-    state = "whitelist";
-  } else if (!publicSaleEnded) {
-    state = "public-sale";
-  } else {
-    state = "ended";
-  }
-
-  const maxPerAddress = minterConfig.publicMintMax.toString() || undefined;
-  let unitPrice = minterConfig.publicMintPrice.toString();
-  if (state === "whitelist" && currentPhase !== undefined) {
-    const phaseData = whitelistPhases[currentPhase];
-    unitPrice = phaseData.mintPrice.toString();
-  }
-
-  const info: CollectionInfo = {
-    name,
-    image: ipfsURLToHTTPURL(metadata.image || ""),
-    description: metadata.description,
-    prettyUnitPrice: prettyPrice(network.id, unitPrice, priceDenom),
-    unitPrice,
-    priceDenom,
-    maxSupply,
-    mintStarted,
-    mintedAmount,
-    discord: metadata.discord,
-    twitter: metadata.twitter,
-    website: metadata.website,
-    maxPerAddress,
-    hasPresale: hasWhitelistPeriod,
-    publicSaleEnded,
-    isMintable: !publicSaleEnded && !isPaused,
-    isInPresalePeriod: state === "whitelist",
-    publicSaleStartTime: whitelistEndedAt.toNumber(),
-    bannerImage: ipfsURLToHTTPURL(metadata.banner),
-    state,
-    mintPhases: whitelistPhases,
-  };
-  return info;
-};
+  CollectionContractKind,
+  CollectionInfo,
+  MintPhase,
+  collectionContractKindFromID,
+  expandCosmosBunkerConfig,
+  expandEthereumBunkerConfig,
+  getCollectionMetadata,
+  getTnsCollectionInfo,
+} from "../utils/collection";
 
 // NOTE: consider using the indexer for this
-export const useCollectionInfo = (id: string) => {
+export const useCollectionInfo = (
+  id: string,
+  forceInterval?: number
+): {
+  collectionInfo: CollectionInfo;
+  notFound: boolean;
+  refetch: () => void;
+} => {
+  const contractKind = collectionContractKindFromID(id);
   const [network, mintAddress] = parseNetworkObjectId(id);
 
-  // Request to ETH blockchain is not free so for ETH we do not re-fetch much
-  const refetchInterval =
-    network?.kind === NetworkKind.Ethereum ? 60_000 : 5000;
-
-  const { data, error, refetch } = useQuery(
-    ["collectionInfo", id],
-    async (): Promise<CollectionInfo> => {
-      let info: CollectionInfo = { mintPhases: [] };
-
-      if (!network) {
-        return info;
-      }
-
-      switch (network.kind) {
-        case NetworkKind.Cosmos: {
-          switch (mintAddress) {
-            case network.nameServiceContractAddress:
-              info = getTnsCollectionInfo(network);
-              break;
-            case network.riotContractAddressGen1:
-              info = await getTeritoriBreedingCollectionInfo(
-                network,
-                mintAddress
-              );
-              break;
-            default:
-              info = await getCosmosBunkerCollectionInfo(network, mintAddress);
-          }
-          break;
-        }
-        case NetworkKind.Ethereum: {
-          info = await getEthereumTeritoriBunkerCollectionInfo(
-            network,
-            mintAddress
-          );
-          break;
-        }
-      }
-
-      return info;
-    },
-    { refetchInterval, staleTime: refetchInterval }
+  const {
+    info: breedingCollectionInfo,
+    notFound: breedingNotFound,
+    refetch: breedingRefetch,
+  } = useTeritoriBreedingCollectionInfo(
+    network?.id,
+    contractKind === CollectionContractKind.CosmwasmBreedingV0
+  );
+  const {
+    info: bunkerCollectionInfo,
+    notFound: bunkerNotFound,
+    refetch: bunkerRefetch,
+  } = useCosmosBunkerCollectionInfo(
+    network?.id,
+    mintAddress,
+    contractKind === CollectionContractKind.CosmwasmBunkerV0
+  );
+  const {
+    info: ethereumCollectionInfo,
+    notFound: ethNotFound,
+    refetch: ethRefetch,
+  } = useEthereumTeritoriBunkerCollectionInfo(
+    network?.id,
+    mintAddress,
+    contractKind === CollectionContractKind.EthereumBunkerV0
   );
 
-  return { info: data, notFound: !!error, refetchCollectionInfo: refetch };
+  return useMemo(() => {
+    switch (contractKind) {
+      case CollectionContractKind.CosmwasmNameServiceV0:
+        if (network?.kind === NetworkKind.Cosmos) {
+          return {
+            collectionInfo: getTnsCollectionInfo(network),
+            notFound: false,
+            refetch: () => {},
+          };
+        } else {
+          return {
+            collectionInfo: { mintPhases: [] },
+            notFound: true,
+            refetch: () => {},
+          };
+        }
+      case CollectionContractKind.CosmwasmBreedingV0:
+        return {
+          collectionInfo: breedingCollectionInfo,
+          notFound: breedingNotFound,
+          refetch: breedingRefetch,
+        };
+      case CollectionContractKind.CosmwasmBunkerV0:
+        return {
+          collectionInfo: bunkerCollectionInfo,
+          notFound: bunkerNotFound,
+          refetch: bunkerRefetch,
+        };
+      case CollectionContractKind.EthereumBunkerV0:
+        return {
+          collectionInfo: ethereumCollectionInfo,
+          notFound: ethNotFound,
+          refetch: ethRefetch,
+        };
+      default:
+        return {
+          collectionInfo: { mintPhases: [] },
+          notFound: true,
+          refetch: () => {},
+        };
+    }
+  }, [
+    breedingCollectionInfo,
+    breedingNotFound,
+    breedingRefetch,
+    bunkerCollectionInfo,
+    bunkerNotFound,
+    bunkerRefetch,
+    contractKind,
+    ethNotFound,
+    ethRefetch,
+    ethereumCollectionInfo,
+    network,
+  ]);
+};
+
+export const useTeritoriBreedingCollectionInfo = (
+  networkId: string | undefined,
+  enabled?: boolean
+) => {
+  const {
+    breedingConfig: conf,
+    isError,
+    refetch: refetchConf,
+  } = useBreedingConfig(networkId, enabled);
+  const { cw721ContractInfo: nftInfo, refetch: refetchContractInfo } =
+    useCW721ContractInfo(networkId, conf?.child_contract_addr);
+  const { data: metadata, refetch: reftechMetadata } = useRemoteJSON(
+    conf?.child_base_uri
+  );
+
+  const info = useMemo(() => {
+    const info = getCollectionMetadata(metadata);
+    info.name = nftInfo?.name;
+    return info;
+  }, [metadata, nftInfo?.name]);
+
+  const refetch = useCallback(() => {
+    refetchConf();
+    refetchContractInfo();
+    reftechMetadata();
+  }, [refetchConf, refetchContractInfo, reftechMetadata]);
+
+  return { info, notFound: isError, refetch };
+};
+
+const useCosmosBunkerCollectionInfo = (
+  networkId: string | undefined,
+  mintAddress: string,
+  enabled?: boolean
+) => {
+  const {
+    bunkerMinterConfig: conf,
+    isError,
+    refetch: refetchConf,
+  } = useBunkerMinterConfig(networkId, mintAddress, enabled);
+  const {
+    bunkerMinterCurrentSupply: mintedAmount,
+    refetch: refetchCurrentSupply,
+  } = useBunkerMinterCurrentSupply(networkId, mintAddress, enabled);
+  const {
+    bunkerMinterWhitelistSize: whitelistSize,
+    refetch: refetchWhitelistSize,
+  } = useBunkerMinterWhitelistSize(networkId, mintAddress, enabled);
+
+  const { cw721ContractInfo: nftInfo, refetch: refetchNFTInfo } =
+    useCW721ContractInfo(networkId, conf?.nft_addr);
+  const { data: metadata } = useRemoteJSON(conf?.nft_base_uri);
+
+  const info = useMemo(() => {
+    const info = getCollectionMetadata(metadata);
+
+    info.name = nftInfo?.name;
+
+    if (!conf) {
+      return info;
+    }
+
+    const {
+      hasWhitelistPeriod,
+      unitPrice,
+      prettyUnitPrice,
+      mintStarted,
+      publicSaleEnded,
+      state,
+      whitelistEnd,
+    } = expandCosmosBunkerConfig(networkId, conf, mintedAmount);
+
+    const mintPhases: MintPhase[] = [];
+    if (hasWhitelistPeriod && typeof whitelistSize === "number") {
+      const start = Long.fromNumber(conf.mint_start_time);
+      mintPhases.push({
+        mintPrice: Long.fromString(conf.whitelist_mint_price_amount || "0"),
+        mintMax: Long.fromString(conf.whitelist_mint_max || "0"),
+        mintPeriod: Long.fromNumber(conf.whitelist_mint_period),
+        start,
+        end: start.add(conf.whitelist_mint_period),
+        size: Long.fromNumber(whitelistSize),
+      });
+    }
+
+    info.prettyUnitPrice = prettyUnitPrice;
+    info.unitPrice = unitPrice;
+    info.priceDenom = conf.price_denom;
+    info.maxSupply = conf.nft_max_supply;
+    info.mintStarted = mintStarted;
+    info.mintedAmount = mintedAmount;
+    info.maxPerAddress = conf.mint_max || undefined;
+    info.hasPresale = hasWhitelistPeriod;
+    info.publicSaleEnded = publicSaleEnded;
+    info.isMintable = !publicSaleEnded && conf.is_mintable;
+    info.isInPresalePeriod = state === "whitelist";
+    info.publicSaleStartTime = whitelistEnd;
+    info.mintPhases = mintPhases;
+    info.state = state;
+
+    return info;
+  }, [conf, metadata, mintedAmount, networkId, nftInfo, whitelistSize]);
+
+  const refetch = useCallback(() => {
+    refetchConf();
+    refetchCurrentSupply();
+    refetchWhitelistSize();
+    refetchNFTInfo();
+  }, [refetchConf, refetchCurrentSupply, refetchNFTInfo, refetchWhitelistSize]);
+
+  return { info, notFound: isError, refetch };
+};
+
+const useEthereumTeritoriBunkerCollectionInfo = (
+  networkId: string | undefined,
+  mintAddress: string,
+  enabled?: boolean
+) => {
+  const {
+    data: minterConfig,
+    isError,
+    refetch: refetchConf,
+  } = useEthMinterConfig(networkId, mintAddress, enabled);
+  const { data: nftAddress } = useEthMinterNFTAddress(
+    networkId,
+    mintAddress,
+    enabled
+  );
+  const { data: isPaused, refetch: refetchIsPaused } = useEthMinterIsPaused(
+    networkId,
+    mintAddress,
+    enabled
+  );
+  const { data: whitelists, refetch: refetchWhitelists } =
+    useEthMinterWhitelists(networkId, mintAddress, enabled);
+  const { data: currentSupply, refetch: refetchCurrentSupply } =
+    useEthMinterCurrentSupply(networkId, mintAddress, enabled);
+
+  const { data: contractURI } = useEthNFTContractURI(networkId, nftAddress);
+  const { data: name } = useEthNFTContractName(networkId, nftAddress);
+
+  const { data: metadata } = useRemoteJSON(contractURI);
+
+  const info = useMemo(() => {
+    if (!minterConfig || !whitelists || !currentSupply) {
+      return getCollectionMetadata(metadata);
+    }
+
+    const {
+      prettyUnitPrice,
+      unitPrice,
+      priceDenom,
+      mintStarted,
+      state,
+      hasWhitelistPeriod,
+      publicSaleEnded,
+      whitelistEndedAt,
+      whitelistPhases,
+    } = expandEthereumBunkerConfig(
+      networkId,
+      minterConfig,
+      whitelists,
+      currentSupply
+    );
+
+    const info = getCollectionMetadata(metadata);
+    info.name = name;
+    info.prettyUnitPrice = prettyUnitPrice;
+    info.unitPrice = unitPrice;
+    info.priceDenom = priceDenom;
+    info.maxSupply = minterConfig.maxSupply.toString();
+    info.mintStarted = mintStarted;
+    info.mintedAmount = currentSupply.toString();
+    info.maxPerAddress = minterConfig.publicMintMax.toString();
+    info.hasPresale = hasWhitelistPeriod;
+    info.publicSaleEnded = publicSaleEnded;
+    info.isMintable = !publicSaleEnded && !isPaused;
+    info.isInPresalePeriod = state === "whitelist";
+    info.publicSaleStartTime = whitelistEndedAt.toNumber();
+    info.state = state;
+    info.mintPhases = whitelistPhases;
+
+    return info;
+  }, [
+    currentSupply,
+    isPaused,
+    metadata,
+    minterConfig,
+    name,
+    networkId,
+    whitelists,
+  ]);
+
+  const refetch = useCallback(() => {
+    refetchConf();
+    refetchIsPaused();
+    refetchWhitelists();
+    refetchCurrentSupply();
+  }, [refetchConf, refetchCurrentSupply, refetchIsPaused, refetchWhitelists]);
+
+  return { info, notFound: isError, refetch };
 };

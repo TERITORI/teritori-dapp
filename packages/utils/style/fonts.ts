@@ -78,7 +78,7 @@ export const fontSemibold15: StyleProp<TextStyle> = {
 export const fontSemibold14: StyleProp<TextStyle> = {
   fontSize: 14,
   letterSpacing: 0,
-  lineHeight: 16,
+  lineHeight: 20,
   fontFamily: "Exo_600SemiBold",
   fontWeight: "600",
 };

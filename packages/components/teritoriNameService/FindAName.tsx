@@ -1,10 +1,10 @@
 import React, { ReactNode } from "react";
 import { View, ViewStyle } from "react-native";
 
-import { neutral17 } from "../../utils/style/colors";
-import { TextInputCustom } from "../inputs/TextInputCustom";
 import { NameNFT } from "./NameNFT";
 import { NameStatus } from "./NameStatus";
+import { neutral17 } from "../../utils/style/colors";
+import { TextInputCustom } from "../inputs/TextInputCustom";
 
 // TODO: Maybe it can be a screen that is called in Register and Explore flow... TNSRegisterScreen.tsx and TNSExploreScreen.tsx have duplicated code
 

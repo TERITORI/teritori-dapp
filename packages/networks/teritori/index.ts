@@ -1,5 +1,5 @@
-import { NetworkKind, NetworkInfo } from "../types";
 import { teritoriCurrencies } from "./currencies";
+import { NetworkKind, NetworkInfo } from "../types";
 
 const nameServiceContractAddress =
   "tori1wkwy0xh89ksdgj9hr347dyd2dw7zesmtrue6kfzyml4vdtz6e5wscs7038";
@@ -11,7 +11,7 @@ export const teritoriNetwork: NetworkInfo = {
   kind: NetworkKind.Cosmos,
   chainId: "teritori-1",
   displayName: "Teritori",
-  icon: "icons/networks/teritori-circle.svg",
+  icon: "icons/networks/teritori.svg",
   walletUrlForStaking: "https://explorer.teritori.com/teritori/staking",
   currencies: teritoriCurrencies,
   txExplorer: "https://www.mintscan.io/teritori/txs/$hash",
@@ -58,8 +58,11 @@ export const teritoriNetwork: NetworkInfo = {
     riotContractAddressGen1,
     "tori1r8raaqul4j05qtn0t05603mgquxfl8e9p7kcf7smwzcv2hc5rrlq0vket0", // Teritori's pets
     "tori167xst2jy9n6u92t3n8hf762adtpe3cs6acsgn0w5n2xlz9hv3xgs4ksc6t", // Diseases of the Brain AI
-    "tori1qdgvugdnscwnj8lc96q666000gyjv434kn9zl9ey3dph6p0cunusy6r42x", // torisouls
+    "tori1qdgvugdnscwnj8lc96q666000gyjv434kn9zl9ey3dph6p0cunusy6r42x", // Torisouls
     "tori1r5f97ltu4d5jdn8jv5zjhc0vz2npjhnc9zcuz29z8ua739s376dql5agt4", // The skull arts
+    "tori16504tvqjzrln0gsewpcn20863h5ftr638fxlx37a6ntd7w5tudwqs8f3ts", // Mr Crypto
   ],
   excludeFromLaunchpadList: [riotContractAddressGen1],
+  socialFeedContractAddress:
+    "tori1lxf8agg0wd2m7n2ultl0yx337jw23puh0mlkkw5vhtnkkfettwfqya7kpp",
 };

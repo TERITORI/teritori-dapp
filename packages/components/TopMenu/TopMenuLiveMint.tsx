@@ -1,6 +1,7 @@
 import React from "react";
 import { View } from "react-native";
 
+import { TopMenuSection } from "./TopMenuSection";
 import {
   Collection,
   MintState,
@@ -17,11 +18,10 @@ import {
   COLLECTION_VIEW_SM_WIDTH,
 } from "../CollectionView";
 import { SmallCarousel } from "../carousels/SmallCarousel";
-import { TopMenuSection } from "./TopMenuSection";
 
 export const TopMenuLiveMint: React.FC = () => {
   const selectedNetworkId = useSelectedNetworkId();
-  const [collections] = useCollections(
+  const { collections } = useCollections(
     {
       networkId: selectedNetworkId,
       sortDirection: SortDirection.SORT_DIRECTION_DESCENDING,
@@ -43,7 +43,12 @@ export const TopMenuLiveMint: React.FC = () => {
         loop={false}
         renderItem={({ item }) => (
           <View style={{ alignItems: "flex-end" }}>
-            <CollectionView item={item} linkToMint size="XS" />
+            <CollectionView
+              item={item}
+              linkToMint
+              size="XS"
+              mintState={item.mintState}
+            />
           </View>
         )}
       />

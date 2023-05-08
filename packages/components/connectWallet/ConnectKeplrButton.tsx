@@ -2,6 +2,7 @@ import { Window as KeplrWindow } from "@keplr-wallet/types";
 import React from "react";
 import { Linking } from "react-native";
 
+import { ConnectWalletButton } from "./components/ConnectWalletButton";
 import keplrSVG from "../../../assets/icons/keplr.svg";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
@@ -15,7 +16,6 @@ import {
   setSelectedNetworkId,
 } from "../../store/slices/settings";
 import { useAppDispatch } from "../../store/store";
-import { ConnectWalletButton } from "./components/ConnectWalletButton";
 
 export const ConnectKeplrButton: React.FC<{
   onDone?: (err?: unknown) => void;

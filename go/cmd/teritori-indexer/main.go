@@ -125,6 +125,10 @@ func main() {
 		panic(errors.New("missing Database configuration"))
 	}
 
+	if network.SocialFeedContractAddress == "" {
+		panic(errors.New("missing social feed contract address"))
+	}
+
 	// create block time cache
 	blockTimeCacheConfig := bigcache.DefaultConfig(time.Duration(0))
 	blockTimeCacheConfig.HardMaxCacheSize = 10

@@ -1,8 +1,9 @@
 import { Target } from "@nandorojo/anchor";
 import { RouteProp, useRoute } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 
+import { NFTAttributes } from "./NFTAttributes";
 import starSVG from "../../../assets/icons/star.svg";
 import { useTransactionModals } from "../../context/TransactionModalsProvider";
 import { NFTInfo } from "../../screens/Marketplace/NFTDetailScreen";
@@ -27,8 +28,6 @@ import { CollectionInfoInline } from "../collections/CollectionInfoInline";
 import { TransactionModals } from "../modals/transaction/TransactionModals";
 import { SpacerColumn } from "../spacer";
 import { Tabs } from "../tabs/Tabs";
-import { NFTAttributes } from "./NFTAttributes";
-import { CollapsablePiceHistory } from "./components/CollapsablePriceHistory";
 
 const mainInfoTabItems = {
   about: {
@@ -149,6 +148,12 @@ export const NFTMainInfo: React.FC<{
     if (params.openBuy) openTransactionModals();
   }, [openTransactionModals, params.openBuy]);
 
+  const CollapsablePriceHistory = React.lazy(() =>
+    import("./components/CollapsablePriceHistory").then((module) => ({
+      default: module.CollapsablePriceHistory,
+    }))
+  );
+
   return (
     <>
       <View
@@ -220,6 +225,7 @@ export const NFTMainInfo: React.FC<{
             items={mainInfoTabItems}
             selected={selectedTab}
             borderColorTabSelected={primaryColor}
+            style={{ height: 40 }}
           />
           {/*TODO: 3 View to display depending on the nftMainInfoTabItems isSelected item*/}
           {/*TODO: About  = Big text*/}
@@ -229,7 +235,9 @@ export const NFTMainInfo: React.FC<{
 
       {showMarketplace && (
         <Target style={styles.collapsableContainer} name="price-history">
-          <CollapsablePiceHistory nftId={nftId} />
+          <Suspense fallback={<></>}>
+            <CollapsablePriceHistory nftId={nftId} />
+          </Suspense>
         </Target>
       )}
       <Target name="activity" style={styles.collapsableContainer}>

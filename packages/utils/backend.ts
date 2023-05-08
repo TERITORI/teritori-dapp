@@ -1,5 +1,8 @@
-import { grpc } from "@improbable-eng/grpc-web";
-
+import {
+  FeedService,
+  FeedServiceClientImpl,
+  GrpcWebImpl as FeedGrpcWebImpl,
+} from "../api/feed/v1/feed";
 import {
   DaoServiceClientImpl,
   GrpcWebImpl as DaoGrpcWebImpl,  
@@ -25,9 +28,7 @@ export const getMarketplaceClient = (networkId: string | undefined) => {
   }
   if (!marketplaceClients[network.id]) {
     const rpc = new MarketplaceGrpcWebImpl(network.backendEndpoint, {
-      transport: grpc.WebsocketTransport(),
       debug: false,
-      // metadata: new grpc.Metadata({ SomeHeader: "bar" }),
     });
     marketplaceClients[network.id] = new MarketplaceServiceClientImpl(rpc);
   }
@@ -53,9 +54,7 @@ export const getP2eClient = (networkId: string | undefined) => {
   }
   if (!p2eClients[network.id]) {
     const rpc = new P2eGrpcWebImpl(network.backendEndpoint, {
-      transport: grpc.WebsocketTransport(),
       debug: false,
-      // metadata: new grpc.Metadata({ SomeHeader: "bar" }),
     });
     p2eClients[network.id] = new P2eServiceClientImpl(rpc);
   }
@@ -70,6 +69,7 @@ export const mustGetP2eClient = (networkId: string | undefined) => {
   return client;
 };
 
+
 const daoBackendEndpoint = process.env.TERITORI_DAO_BACKEND_ENDPOINT;
 
 if (!daoBackendEndpoint) {
@@ -77,9 +77,34 @@ if (!daoBackendEndpoint) {
 }
 
 const daoRpc = new DaoGrpcWebImpl(daoBackendEndpoint, {
-  transport: grpc.WebsocketTransport(),
+  // transport: grpc.WebsocketTransport(),
   debug: false,
   // metadata: new grpc.Metadata({ SomeHeader: "bar" }),
 });
 
 export const daoClient = new DaoServiceClientImpl(daoRpc);
+
+const feedClients: { [key: string]: FeedService } = {};
+
+export const getFeedClient = (networkId: string | undefined) => {
+  const network = getNetwork(networkId);
+  if (!network) {
+    return undefined;
+  }
+  if (!feedClients[network.id]) {
+    const rpc = new FeedGrpcWebImpl(network.backendEndpoint, {
+      debug: false,
+    });
+    feedClients[network.id] = new FeedServiceClientImpl(rpc);
+  }
+  return feedClients[network.id];
+};
+
+export const mustGetFeedClient = (networkId: string | undefined) => {
+  const client = getFeedClient(networkId);
+  if (!client) {
+    throw new Error(`failed to get feed client for network '${networkId}'`);
+  }
+  return client;
+};
+

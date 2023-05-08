@@ -1,24 +1,46 @@
+import { useMemo } from "react";
 import { useWindowDimensions } from "react-native";
 
+import { useIsMobile } from "./useIsMobile";
 import { useSidebar } from "../context/SidebarProvider";
 import {
   fullSidebarWidth,
+  getMobileScreenContainerMarginHorizontal,
+  getResponsiveScreenContainerMarginHorizontal,
   headerHeight,
   screenContainerContentMarginHorizontal,
   screenContentMaxWidth,
   smallSidebarWidth,
 } from "../utils/style/layout";
 
-export const useMaxResolution = ({ noMargin = false } = {}) => {
-  const { width: windowWidth, height } = useWindowDimensions();
+export const useMaxResolution = ({
+  noMargin = false,
+  responsive = true,
+} = {}) => {
+  const { width: windowWidth, height: windowHeight } = useWindowDimensions();
   const { isSidebarExpanded } = useSidebar();
-  const width =
-    windowWidth -
-    (isSidebarExpanded ? fullSidebarWidth : smallSidebarWidth) -
-    (noMargin ? 0 : screenContainerContentMarginHorizontal * 2);
+  const isMobile = useIsMobile();
+
+  const width = useMemo(() => {
+    if (isMobile) {
+      const mobileMargin =
+        getMobileScreenContainerMarginHorizontal(windowWidth);
+      return windowWidth - mobileMargin * 2;
+    }
+
+    const containerWidth =
+      windowWidth - (isSidebarExpanded ? fullSidebarWidth : smallSidebarWidth);
+    const responsiveMargin =
+      getResponsiveScreenContainerMarginHorizontal(containerWidth);
+    const defaultMargin = responsive
+      ? responsiveMargin
+      : screenContainerContentMarginHorizontal * 2;
+
+    return containerWidth - (noMargin ? 0 : defaultMargin);
+  }, [windowWidth, isSidebarExpanded, noMargin, responsive, isMobile]);
 
   return {
     width: width > screenContentMaxWidth ? screenContentMaxWidth : width,
-    height: height - headerHeight,
+    height: windowHeight - headerHeight,
   };
 };

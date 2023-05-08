@@ -245,11 +245,43 @@ func (h *Handler) handleExecute(e *Message) error {
 				return errors.Wrap(err, "failed to handle squad stake")
 			}
 		}
+
 		// NOTE: add another stake handler here if needed
 	case "instantiate_contract_with_self_admin":
 		if executeMsg.Contract == h.config.DaoFactoryContractAddress {
 			if err := h.handleExecuteInstantiateContractWithSelfAdmin(e, &executeMsg); err != nil {
 				return errors.Wrap(err, "failed to handle instantiate_contract_with_self_admin")
+			}
+		}
+	// Feeds actions
+	case "create_post":
+		if executeMsg.Contract == h.config.Network.SocialFeedContractAddress {
+			if err := h.handleExecuteCreatePost(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle create post")
+			}
+		}
+	case "create_post_by_bot":
+		if executeMsg.Contract == h.config.Network.SocialFeedContractAddress {
+			if err := h.handleExecuteCreatePostByBot(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle create post by bot")
+			}
+		}
+	case "tip_post":
+		if executeMsg.Contract == h.config.Network.SocialFeedContractAddress {
+			if err := h.handleExecuteTipPost(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle tip post")
+			}
+		}
+	case "react_post":
+		if executeMsg.Contract == h.config.Network.SocialFeedContractAddress {
+			if err := h.handleExecuteReactPost(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle react post")
+			}
+		}
+	case "delete_post":
+		if executeMsg.Contract == h.config.Network.SocialFeedContractAddress {
+			if err := h.handleExecuteDeletePost(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle delete post")
 			}
 		}
 	}

@@ -1,7 +1,8 @@
+import { Decimal } from "@cosmjs/math";
 import { useQuery } from "@tanstack/react-query";
-import { Decimal } from "cosmwasm";
 import { useMemo } from "react";
 
+import { useCoingeckoPrices } from "./useCoingeckoPrices";
 import {
   getNativeCurrency,
   getNetwork,
@@ -11,7 +12,6 @@ import {
 import { Balance } from "../utils/coins";
 import { getEthereumProvider } from "../utils/ethereum";
 import { CosmosBalancesResponse } from "../utils/teritori";
-import { useCoingeckoPrices } from "./useCoingeckoPrices";
 
 export const useBalances = (
   networkId: string | undefined,
@@ -21,6 +21,14 @@ export const useBalances = (
     ["balances", networkId, address],
     async () => {
       if (!address || !networkId) {
+        return [];
+      }
+      // Ensuring with uses the wallet address that corresponds to the network
+      const network = getNetwork(networkId);
+      if (
+        network?.kind === NetworkKind.Cosmos &&
+        !address.includes(network.addressPrefix)
+      ) {
         return [];
       }
 

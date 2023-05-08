@@ -53,7 +53,7 @@ export const CollectionToolsScreen: ScreenFC<"CollectionTools"> = ({
     params: { id },
   },
 }) => {
-  const { info: collectionInfo } = useCollectionInfo(id);
+  const { collectionInfo } = useCollectionInfo(id);
   const [network] = parseNetworkObjectId(id);
   const backendClient = getMarketplaceClient(network?.id);
   return (

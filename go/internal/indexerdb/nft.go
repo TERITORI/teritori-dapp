@@ -2,9 +2,6 @@ package indexerdb
 
 import (
 	"database/sql"
-	"database/sql/driver"
-	"encoding/json"
-	"errors"
 
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
 )
@@ -12,33 +9,6 @@ import (
 type Attribute struct {
 	TraitType string
 	Value     string
-}
-
-type ArrayJSONB []interface{}
-
-func (p ArrayJSONB) Value() (driver.Value, error) {
-	j, err := json.Marshal(p)
-	return j, err
-}
-
-func (p *ArrayJSONB) Scan(src interface{}) error {
-	source, ok := src.([]byte)
-	if !ok {
-		return errors.New("type assertion .([]byte) failed")
-	}
-
-	var i interface{}
-	err := json.Unmarshal(source, &i)
-	if err != nil {
-		return err
-	}
-
-	*p, ok = i.([]interface{})
-	if !ok {
-		return errors.New("type assertion .([]Attribute) failed")
-	}
-
-	return nil
 }
 
 type NFT struct {

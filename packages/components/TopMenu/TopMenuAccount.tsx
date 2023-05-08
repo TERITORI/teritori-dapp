@@ -1,20 +1,19 @@
-import { StyleSheet, TouchableOpacity } from "react-native";
+import { StyleSheet } from "react-native";
 
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { useAppNavigation } from "../../utils/navigation";
 import { purpleLight } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import FlexCol from "../FlexCol";
 import FlexRow from "../FlexRow";
+import { OmniLink } from "../OmniLink";
 import { SVG } from "../SVG";
 import { UserNameInline } from "../UserNameInline";
 import { CustomPressable } from "../buttons/CustomPressable";
 
 export const TopMenuAccount: React.FC = () => {
-  const navigation = useAppNavigation();
   const selectedWallet = useSelectedWallet();
 
   return (
@@ -37,15 +36,14 @@ export const TopMenuAccount: React.FC = () => {
           )}
         </CustomPressable>
 
-        <TouchableOpacity
-          onPress={() => {
-            navigation.navigate("UserPublicProfile", {
-              id: selectedWallet?.userId || "",
-            });
+        <OmniLink
+          to={{
+            screen: "UserPublicProfile",
+            params: { id: selectedWallet?.userId || "" },
           }}
         >
           <BrandText style={styles.manageProfile}>Manage Profile</BrandText>
-        </TouchableOpacity>
+        </OmniLink>
       </FlexRow>
     </FlexCol>
   );

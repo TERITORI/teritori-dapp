@@ -1,16 +1,24 @@
-import React, { createContext, RefObject, useContext, useState } from "react";
+import React, {
+  createContext,
+  RefObject,
+  useCallback,
+  useContext,
+  useState,
+} from "react";
 import { GestureResponderEvent, Pressable, StyleSheet } from "react-native";
 
 interface DefaultValue {
   onPressDropdownButton: (dropdownRef: RefObject<any>) => void;
   closeOpenedDropdown: () => void;
   isDropdownOpen: (dropdownRef: RefObject<any>) => boolean;
+  openDropdown: (dropdownRef: RefObject<any>) => void;
 }
 
 const defaultValue: DefaultValue = {
   onPressDropdownButton: () => {},
   closeOpenedDropdown: () => {},
   isDropdownOpen: () => false,
+  openDropdown: () => {},
 };
 
 export const DropdownsContext = createContext(defaultValue);
@@ -18,31 +26,44 @@ export const DropdownsContext = createContext(defaultValue);
 export const DropdownsContextProvider: React.FC = ({ children }) => {
   const [openedDropdownRef, setOpenedDropdownRef] = useState<RefObject<any>>();
 
-  const closeOpenedDropdown = () => {
+  const closeOpenedDropdown = useCallback(() => {
     setOpenedDropdownRef(undefined);
-  };
+  }, []);
 
-  const onPressDropdownButton = (dropdownRef: RefObject<any>) => {
-    if (dropdownRef === openedDropdownRef) {
-      closeOpenedDropdown();
-    } else {
-      setOpenedDropdownRef(dropdownRef);
-    }
-  };
+  const openDropdown = useCallback((dropdownRef: RefObject<any>) => {
+    setOpenedDropdownRef(dropdownRef);
+  }, []);
 
-  const isDropdownOpen = (dropdownRef: RefObject<any>) => {
-    return dropdownRef === openedDropdownRef;
-  };
+  const onPressDropdownButton = useCallback(
+    (dropdownRef: RefObject<any>) => {
+      if (dropdownRef === openedDropdownRef) {
+        closeOpenedDropdown();
+      } else {
+        setOpenedDropdownRef(dropdownRef);
+      }
+    },
+    [closeOpenedDropdown, openedDropdownRef]
+  );
 
-  const handlePressOut = (e: GestureResponderEvent) => {
-    if (
-      openedDropdownRef &&
-      openedDropdownRef.current &&
-      !openedDropdownRef.current.contains(e.target)
-    ) {
-      closeOpenedDropdown();
-    }
-  };
+  const isDropdownOpen = useCallback(
+    (dropdownRef: RefObject<any>) => {
+      return dropdownRef === openedDropdownRef;
+    },
+    [openedDropdownRef]
+  );
+
+  const handlePressOut = useCallback(
+    (e: GestureResponderEvent) => {
+      if (
+        openedDropdownRef &&
+        openedDropdownRef.current &&
+        !openedDropdownRef.current.contains(e.target)
+      ) {
+        closeOpenedDropdown();
+      }
+    },
+    [closeOpenedDropdown, openedDropdownRef]
+  );
 
   return (
     <DropdownsContext.Provider
@@ -50,6 +71,7 @@ export const DropdownsContextProvider: React.FC = ({ children }) => {
         onPressDropdownButton,
         isDropdownOpen,
         closeOpenedDropdown,
+        openDropdown,
       }}
     >
       <Pressable onPressOut={handlePressOut} style={styles.pressable}>

@@ -1,5 +1,5 @@
+import { Decimal } from "@cosmjs/math";
 import { isDeliverTxFailure } from "@cosmjs/stargate";
-import { Decimal } from "cosmwasm";
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { View } from "react-native";
@@ -17,6 +17,7 @@ import {
   keplrCurrencyFromNativeCurrencyInfo,
 } from "../../../networks";
 import { prettyPrice } from "../../../utils/coins";
+import { layout } from "../../../utils/style/layout";
 import { TNSSendFundsFormType } from "../../../utils/types/tns";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { TextInputCustom } from "../../inputs/TextInputCustom";
@@ -155,7 +156,7 @@ export const TNSSendFundsModal: React.FC<{
           control={control}
           defaultValue="Sent from Teritori"
           placeHolder="Type your comment here"
-          style={{ marginBottom: 12 }}
+          containerStyle={{ marginBottom: layout.padding_x1_5, width: "100%" }}
         />
 
         <TextInputCustom<TNSSendFundsFormType>
@@ -171,6 +172,7 @@ export const TNSSendFundsModal: React.FC<{
             required: true,
           }}
           currency={keplrCurrencyFromNativeCurrencyInfo(nativeCurrency)}
+          containerStyle={{ width: "100%" }}
         />
         <PrimaryButton
           size="M"
@@ -178,6 +180,7 @@ export const TNSSendFundsModal: React.FC<{
           style={{
             marginVertical: 20,
           }}
+          fullWidth
           loader
           onPress={formHandleSubmit(handleSubmit)}
         />

@@ -1,14 +1,13 @@
 import React, { useRef, useState } from "react";
 import {
   ViewStyle,
-  Image,
   View,
   StyleProp,
-  TouchableOpacity,
   StyleSheet,
   Pressable,
 } from "react-native";
 
+import { NFTTransferModal } from "./NFTTransferModal";
 import dotsCircleSVG from "../../../assets/icons/dots-circle.svg";
 import footerSVG from "../../../assets/icons/footer-regular.svg";
 import gridSVG from "../../../assets/icons/grid.svg";
@@ -21,8 +20,6 @@ import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getCosmosNetwork, parseUserId } from "../../networks";
 import { prettyPrice } from "../../utils/coins";
-import { ipfsURLToHTTPURL } from "../../utils/ipfs";
-import { useAppNavigation } from "../../utils/navigation";
 import { neutral00, neutral33, neutral77 } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
@@ -30,11 +27,12 @@ import { CurrencyIcon } from "../CurrencyIcon";
 import { DropdownOption } from "../DropdownOption";
 import { ImageWithTextInsert } from "../ImageWithTextInsert";
 import { NetworkIcon } from "../NetworkIcon";
+import { OmniLink } from "../OmniLink";
+import { OptimizedImage } from "../OptimizedImage";
 import { SVG } from "../SVG";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { SecondaryButton } from "../buttons/SecondaryButton";
 import { SpacerColumn, SpacerRow } from "../spacer";
-import { NFTTransferModal } from "./NFTTransferModal";
 
 export const NFTView: React.FC<{
   data: NFT;
@@ -44,16 +42,15 @@ export const NFTView: React.FC<{
   const cardWidth = 258;
   const insideMargin = layout.padding_x2;
   const contentWidth = cardWidth - insideMargin * 2;
-  const navigation = useAppNavigation();
   const flatStyle = StyleSheet.flatten(style);
   const selectedWallet = useSelectedWallet();
   const userInfo = useNSUserInfo(nft.ownerId);
-  const cosmosNetwork = getCosmosNetwork(nft.id);
+  const cosmosNetwork = getCosmosNetwork(nft.networkId);
   const { onPressDropdownButton, isDropdownOpen, closeOpenedDropdown } =
     useDropdowns();
   const [isTransferNFTVisible, setIsTransferNFTVisible] =
     useState<boolean>(false);
-  const dropdownRef = useRef<TouchableOpacity>(null);
+  const dropdownRef = useRef<View>(null);
 
   const isOwner = nft.ownerId === selectedWallet?.userId;
 
@@ -75,22 +72,11 @@ export const NFTView: React.FC<{
   const toggleTransferNFT = () =>
     setIsTransferNFTVisible(!isTransferNFTVisible);
 
-  const onPressPriceButton = () => {
-    if (isOwner) navigation.navigate("NFTDetail", { id: nft.id });
-    else {
-      navigation.navigate("NFTDetail", {
-        id: nft.id,
-        openBuy: true,
-      });
-    }
-  };
-
   // returns
   return (
     <>
-      <TouchableOpacity
+      <View
         ref={dropdownRef}
-        onPress={() => navigation.navigate("NFTDetail", { id: nft.id })}
         style={{
           margin,
           marginBottom,
@@ -131,14 +117,15 @@ export const NFTView: React.FC<{
                     zIndex: 1000,
                   }}
                 >
-                  <Image
+                  <OptimizedImage
                     source={{
-                      uri: ipfsURLToHTTPURL(
-                        userInfo.metadata?.image
-                          ? userInfo.metadata.image
-                          : cosmosNetwork?.nameServiceDefaultImage || ""
-                      ),
-                    }} // TODO: proper fallback
+                      uri:
+                        userInfo.metadata.image ||
+                        cosmosNetwork?.nameServiceDefaultImage ||
+                        "",
+                    }}
+                    width={32}
+                    height={32}
                     style={{
                       height: 32,
                       width: 32,
@@ -146,7 +133,12 @@ export const NFTView: React.FC<{
                       marginRight: 6,
                     }}
                   />
-                  <View>
+                  <OmniLink
+                    to={{
+                      screen: "UserPublicProfile",
+                      params: { id: nft.ownerId },
+                    }}
+                  >
                     <BrandText
                       style={{
                         fontSize: 10,
@@ -164,7 +156,7 @@ export const NFTView: React.FC<{
                       {userInfo.metadata?.tokenId ||
                         shortUserAddressFromID(nft.ownerId, 10)}
                     </BrandText>
-                  </View>
+                  </OmniLink>
                 </View>
                 {isOwnerAndNotListed && (
                   <View style={{ position: "relative", zIndex: 1000 }}>
@@ -216,46 +208,53 @@ export const NFTView: React.FC<{
                   </View>
                 )}
               </View>
-              <ImageWithTextInsert
-                size={contentWidth}
-                imageURL={nft.imageUri}
-                textInsert={nft.textInsert}
-                style={{ marginTop: 15, marginBottom: 20, borderRadius: 12 }}
-              />
-              <BrandText
-                style={{
-                  fontSize: 14,
-                  marginBottom: 12,
+              <OmniLink
+                to={{
+                  screen: "NFTDetail",
+                  params: { id: nft.id },
                 }}
               >
-                {nft.name}
-              </BrandText>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
-              >
+                <ImageWithTextInsert
+                  size={contentWidth}
+                  imageURL={nft.imageUri}
+                  textInsert={nft.textInsert}
+                  style={{ marginTop: 15, marginBottom: 20, borderRadius: 12 }}
+                />
+                <BrandText
+                  style={{
+                    fontSize: 14,
+                    marginBottom: 12,
+                  }}
+                >
+                  {nft.name}
+                </BrandText>
                 <View
                   style={{
                     flexDirection: "row",
                     alignItems: "center",
-                    flex: 1,
+                    justifyContent: "space-between",
                   }}
                 >
-                  <NetworkIcon size={12} networkId={nft.networkId} />
-                  <BrandText
-                    numberOfLines={1}
+                  <View
                     style={{
-                      fontSize: 12,
-                      marginLeft: 10,
+                      flexDirection: "row",
+                      alignItems: "center",
+                      flex: 1,
                     }}
                   >
-                    {nft.collectionName}
-                  </BrandText>
+                    <NetworkIcon size={12} networkId={nft.networkId} />
+                    <BrandText
+                      numberOfLines={1}
+                      style={{
+                        fontSize: 12,
+                        marginLeft: layout.padding_x1,
+                      }}
+                    >
+                      {nft.collectionName}
+                    </BrandText>
+                  </View>
                 </View>
-              </View>
+              </OmniLink>
             </View>
             <View
               style={{
@@ -307,20 +306,26 @@ export const NFTView: React.FC<{
               <SpacerRow size={2} />
               {nft.isListed && (
                 <View style={{ flex: 1 }}>
-                  <SecondaryButton
-                    size="XS"
-                    text={prettyPrice(nft.networkId, nft.price, nft.denom)}
-                    onPress={onPressPriceButton}
-                    fullWidth
-                    numberOfLines={1}
-                    activeOpacity={1}
-                  />
+                  <OmniLink
+                    to={{
+                      screen: "NFTDetail",
+                      params: { id: nft.id, openBuy: !isOwner },
+                    }}
+                  >
+                    <SecondaryButton
+                      size="XS"
+                      text={prettyPrice(nft.networkId, nft.price, nft.denom)}
+                      fullWidth
+                      numberOfLines={1}
+                      activeOpacity={1}
+                    />
+                  </OmniLink>
                 </View>
               )}
             </View>
           </View>
         </TertiaryBox>
-      </TouchableOpacity>
+      </View>
       <NFTTransferModal
         nft={nft}
         isVisible={isTransferNFTVisible}

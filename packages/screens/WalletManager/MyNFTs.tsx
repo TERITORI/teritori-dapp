@@ -1,19 +1,17 @@
 import React from "react";
-import { View, TouchableOpacity, FlatList } from "react-native";
+import { View, FlatList } from "react-native";
 
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
 import { Sort, SortDirection } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
+import { OmniLink } from "../../components/OmniLink";
 import { SVG } from "../../components/SVG";
 import { NFTView } from "../../components/nfts/NFTView";
 import { useNFTs } from "../../hooks/useNFTs";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { useAppNavigation } from "../../utils/navigation";
-import { neutral33 } from "../../utils/style/colors";
 
 export const MyNFTs: React.FC = () => {
   const selectedWallet = useSelectedWallet();
-  const navigation = useAppNavigation();
 
   const { nfts, fetchMore } = useNFTs({
     offset: 0,
@@ -27,8 +25,6 @@ export const MyNFTs: React.FC = () => {
     <View
       style={{
         paddingTop: 32,
-        borderTopWidth: 1,
-        borderColor: neutral33,
       }}
     >
       <View
@@ -40,9 +36,10 @@ export const MyNFTs: React.FC = () => {
         }}
       >
         <BrandText style={{ marginRight: 20, fontSize: 20 }}>My NFTs</BrandText>
-        <TouchableOpacity
-          activeOpacity={0.7}
-          onPress={() => navigation.navigate("MyCollection")}
+        <OmniLink
+          to={{
+            screen: "MyCollection",
+          }}
           style={{
             display: "flex",
             flexDirection: "row",
@@ -58,7 +55,7 @@ export const MyNFTs: React.FC = () => {
             See All
           </BrandText>
           <SVG source={chevronRightSVG} height={16} />
-        </TouchableOpacity>
+        </OmniLink>
       </View>
       <View
         style={{
