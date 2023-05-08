@@ -55,11 +55,6 @@ func GetSeasonByTime(givenTime time.Time) (Season, float64, error) {
 	return Season{}, 0, errors.New("not in any season")
 }
 
-// returns: season, time passed in days, error
-func GetCurrentSeason() (Season, float64, error) {
-	return GetSeasonByTime(time.Now().UTC())
-}
-
 func GetSeasonById(seasonId string) (Season, error) {
 	for _, season := range GetAllSeasons() {
 		if seasonId == season.ID {

@@ -14,5 +14,38 @@
    {
     "id":"sell_nft",
     "title": "Sell your 1st NFT on Marketplace"
+  },
+
+  {
+    "id":"social_feed_first_post",
+    "title": "Publish your 1st Post on the Social Feed"
+  },
+  {
+    "id":"social_feed_tip_content_creator",
+    "title": "Tip a Content Creator on the Social Feed"
+  },
+  {
+    "id":"social_feed_first_article",
+    "title": "Publish your 1st Article on the Social Feed"
+  },
+  {
+    "id":"social_feed_first_comment",
+    "title": "Publish your 1st Comment on the Social Feed"
+  },
+  {
+    "id":"social_feed_first_picture",
+    "title": "Publish your 1st Picture on the Social Feed"
+  },
+  {
+    "id":"social_feed_first_audio",
+    "title": "Publish your 1st Audio on the Social Feed"
+  },
+  {
+    "id":"social_feed_first_video",
+    "title": "Publish your 1st Video on the Social Feed"
+  },
+  {
+    "id":"social_feed_first_ai_generation",
+    "title": "Publish your 1st AI Generated post on the Social Feed"
   }
 ]
