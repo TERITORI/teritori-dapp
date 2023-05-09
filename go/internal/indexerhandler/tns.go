@@ -20,15 +20,21 @@ func (h *Handler) handleInstantiateTNS(e *Message, contractAddress string, insta
 		return errors.Wrap(err, "failed to unmarshal minter instantiate msg")
 	}
 
+	blockTime, err := e.GetBlockTime()
+	if err != nil {
+		return errors.Wrap(err, "failed to get block time")
+	}
+
 	// create collection
 	collectionId := h.config.Network.CollectionID(contractAddress)
 	if err := h.db.Create(&indexerdb.Collection{
 		ID:                  collectionId,
-		NetworkID:           "teritori",
+		NetworkID:           h.config.Network.ID,
 		Name:                tnsInstantiateMsg.Name,
 		ImageURI:            h.config.Network.NameServiceDefaultImage,
 		MaxSupply:           -1,
 		SecondaryDuringMint: true,
+		Time:                blockTime,
 		TeritoriCollection: &indexerdb.TeritoriCollection{
 			MintContractAddress: contractAddress,
 			NFTContractAddress:  contractAddress,

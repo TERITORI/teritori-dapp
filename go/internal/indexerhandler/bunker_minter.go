@@ -82,7 +82,7 @@ func (h *Handler) handleInstantiateBunker(e *Message, contractAddress string, in
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to create collection")
 	}
-	h.logger.Info("created collection", zap.String("id", string(collectionId)))
+	h.logger.Info("created collection", zap.String("id", string(collectionId)), zap.Time("time", blockTime))
 
 	return nil
 }

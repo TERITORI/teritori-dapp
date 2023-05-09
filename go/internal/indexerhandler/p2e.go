@@ -52,15 +52,22 @@ func (h *Handler) handleInstantiateBreeding(e *Message, contractAddress string, 
 
 	maxSupply := minterInstantiateMsg.ChildNftMaxSupply
 
+	// get block time
+	blockTime, err := e.GetBlockTime()
+	if err != nil {
+		return errors.Wrap(err, "failed to get block time")
+	}
+
 	// create collection
 	collectionId := h.config.Network.CollectionID(contractAddress)
 	if err := h.db.Create(&indexerdb.Collection{
 		ID:                  collectionId,
-		NetworkID:           "teritori", // FIXME: get from networks config
+		NetworkID:           h.config.Network.ID,
 		Name:                minterInstantiateMsg.ChildNftName,
 		ImageURI:            metadata.ImageURI,
 		MaxSupply:           maxSupply,
 		SecondaryDuringMint: true,
+		Time:                blockTime,
 		TeritoriCollection: &indexerdb.TeritoriCollection{
 			MintContractAddress: contractAddress,
 			NFTContractAddress:  nftAddr,
