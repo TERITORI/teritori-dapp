@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { persistStore, persistReducer } from "redux-persist";
 
 import { dAppsReducer, dAppsReducerPersisted } from "./slices/dapps-store";
-import { marketplaceReducer } from "./slices/marketplaceReducer";
+import { marketplaceCartItems } from "./slices/marketplaceCartItems";
 import { searchReducer } from "./slices/search";
 import { settingsReducer } from "./slices/settings";
 import { squadPresetsReducer } from "./slices/squadPresets";
@@ -29,7 +29,7 @@ const rootReducer = combineReducers({
   squadPresets: squadPresetsReducer,
   dAppsStorePersisted: dAppsReducerPersisted,
   dAppsStore: dAppsReducer,
-  marketplace: marketplaceReducer,
+  marketplace: marketplaceCartItems,
   search: searchReducer,
 });
 

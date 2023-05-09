@@ -19,7 +19,7 @@ import {
   selectAllSelectedNFTData,
   selectSelectedNFTDataById,
   selectSelectedNFTIds,
-} from "../../store/slices/marketplaceReducer";
+} from "../../store/slices/marketplaceCartItems";
 import { RootState, useAppDispatch } from "../../store/store";
 import { prettyPrice } from "../../utils/coins";
 import {

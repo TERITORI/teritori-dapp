@@ -6,7 +6,7 @@ import { NFTView } from "./NFTView";
 import { NFT, NFTsRequest } from "../../api/marketplace/v1/marketplace";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useNFTs } from "../../hooks/useNFTs";
-import { selectSelectedNFTIds } from "../../store/slices/marketplaceReducer";
+import { selectSelectedNFTIds } from "../../store/slices/marketplaceCartItems";
 import { layout, screenContentMaxWidthLarge } from "../../utils/style/layout";
 import { SpacerColumn } from "../spacer";
 

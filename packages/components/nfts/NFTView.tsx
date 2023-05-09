@@ -25,7 +25,7 @@ import {
   addSelected,
   removeSelected,
   selectSelectedNFTIds,
-} from "../../store/slices/marketplaceReducer";
+} from "../../store/slices/marketplaceCartItems";
 import { useAppDispatch } from "../../store/store";
 import { prettyPrice } from "../../utils/coins";
 import {

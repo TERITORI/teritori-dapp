@@ -14,7 +14,7 @@ import { TabsListType } from "../../components/collections/types";
 import { useCollectionInfo } from "../../hooks/useCollectionInfo";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { parseCollectionId } from "../../networks";
-import { selectSelectedNFTIds } from "../../store/slices/marketplaceReducer";
+import { selectSelectedNFTIds } from "../../store/slices/marketplaceCartItems";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { neutral00, neutral67 } from "../../utils/style/colors";
 import { fontSemibold20 } from "../../utils/style/fonts";

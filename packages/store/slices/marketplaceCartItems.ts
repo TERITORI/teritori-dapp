@@ -28,4 +28,4 @@ export const selectSelectedNFTDataById = (state: RootState, id: EntityId) =>
 export const { addSelected, removeSelected, clearSelected } =
   marketplace.actions;
 
-export const marketplaceReducer = marketplace.reducer;
+export const marketplaceCartItems = marketplace.reducer;

@@ -26,7 +26,7 @@ import {
   getNativeCurrency,
   parseCollectionId,
 } from "../../networks";
-import { selectSelectedNFTIds } from "../../store/slices/marketplaceReducer";
+import { selectSelectedNFTIds } from "../../store/slices/marketplaceCartItems";
 import { CollectionInfo } from "../../utils/collection";
 import { codGrayColor, neutral33, neutral67 } from "../../utils/style/colors";
 import { fontSemibold28 } from "../../utils/style/fonts";
