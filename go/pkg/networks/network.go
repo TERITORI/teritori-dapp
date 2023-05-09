@@ -36,6 +36,7 @@ type CosmosNetwork struct {
 	RiotSquadStakingContractAddressV2 string `json:"riotSquadStakingContractAddressV2"`
 	RiotersFooterContractAddress      string `json:"riotersFooterContractAddress"`
 	SocialFeedContractAddress         string `json:"socialFeedContractAddress"`
+	P2eNetworkId                      string `json:"p2eNetworkId"`
 }
 
 var _ Network = &CosmosNetwork{}
@@ -56,6 +57,7 @@ type EthereumNetwork struct {
 	RiotContractAddressGen0         string `json:"riotContractAddressGen0"`
 	RiotContractAddressGen1         string `json:"riotContractAddressGen1"`
 	RiotSquadStakingContractAddress string `json:"riotSquadStakingContractAddress"`
+	P2eNetworkId                    string `json:"p2eNetworkId"`
 }
 
 var _ Network = &EthereumNetwork{}
