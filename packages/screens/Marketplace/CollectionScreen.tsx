@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { useSelector } from "react-redux";
 
-import { SideCart } from "./SideCart";
+import { SideCart, useShowCart } from "./SideCart";
 import { SideFilters } from "./SideFilters";
 import { SortDirection } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
@@ -14,7 +13,6 @@ import { TabsListType } from "../../components/collections/types";
 import { useCollectionInfo } from "../../hooks/useCollectionInfo";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { parseCollectionId } from "../../networks";
-import { selectSelectedNFTIds } from "../../store/slices/marketplaceCartItems";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { neutral00, neutral67 } from "../../utils/style/colors";
 import { fontSemibold20 } from "../../utils/style/fonts";
@@ -31,7 +29,7 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
   const [network] = parseCollectionId(id);
   const navigation = useAppNavigation();
   const { width } = useMaxResolution();
-  const selected = useSelector(selectSelectedNFTIds);
+  const cartIsShown = useShowCart();
 
   const SideCartWidth = 245 + 10;
   // returns
@@ -58,7 +56,7 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
         <ScrollView
           contentContainerStyle={{
             alignItems: "center",
-            width: selected.length > 0 ? width - SideCartWidth : width,
+            width: cartIsShown ? width - SideCartWidth : width,
           }}
         >
           <CollectionHeader

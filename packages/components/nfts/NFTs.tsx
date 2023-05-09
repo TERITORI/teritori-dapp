@@ -1,12 +1,11 @@
 import React, { ReactElement, useCallback } from "react";
 import { FlatList, View } from "react-native";
-import { useSelector } from "react-redux";
 
 import { NFTView } from "./NFTView";
 import { NFT, NFTsRequest } from "../../api/marketplace/v1/marketplace";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useNFTs } from "../../hooks/useNFTs";
-import { selectSelectedNFTIds } from "../../store/slices/marketplaceCartItems";
+import { useShowFilters } from "../../screens/Marketplace/SideFilters";
 import { layout, screenContentMaxWidthLarge } from "../../utils/style/layout";
 import { SpacerColumn } from "../spacer";
 
@@ -34,7 +33,7 @@ export const NFTs: React.FC<{
 }> = ({ req, ListHeaderComponent, ListFooterComponent }) => {
   const { nfts, fetchMore } = useNFTs(req);
   const { height } = useMaxResolution();
-  const selected = useSelector(selectSelectedNFTIds);
+  const filterIsShown = useShowFilters();
 
   const handleEndReached = useCallback(() => {
     fetchMore();
@@ -49,7 +48,10 @@ export const NFTs: React.FC<{
       }}
     >
       <FlatList
-        style={{ width: "75%", marginLeft: selected.length ? 310 : 250 }}
+        style={{
+          width: filterIsShown ? "75%" : "100%",
+          marginLeft: filterIsShown ? 310 : 0,
+        }}
         contentContainerStyle={{
           maxWidth: screenContentMaxWidthLarge,
           alignSelf: "center",

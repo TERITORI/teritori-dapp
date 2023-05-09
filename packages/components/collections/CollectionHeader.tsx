@@ -2,7 +2,6 @@ import { Decimal } from "@cosmjs/math";
 import Clipboard from "@react-native-clipboard/clipboard";
 import React, { useMemo } from "react";
 import { View, Platform, StyleSheet, Linking } from "react-native";
-import { useSelector } from "react-redux";
 
 import { CollectionStat } from "./CollectionStat";
 import { TabsListType } from "./types";
@@ -26,7 +25,8 @@ import {
   getNativeCurrency,
   parseCollectionId,
 } from "../../networks";
-import { selectSelectedNFTIds } from "../../store/slices/marketplaceCartItems";
+import { useShowCart } from "../../screens/Marketplace/SideCart";
+import { useShowFilters } from "../../screens/Marketplace/SideFilters";
 import { CollectionInfo } from "../../utils/collection";
 import { codGrayColor, neutral33, neutral67 } from "../../utils/style/colors";
 import { fontSemibold28 } from "../../utils/style/fonts";
@@ -55,7 +55,8 @@ export const CollectionHeader: React.FC<{
   const { width } = useMaxResolution();
   const [network, collectionMintAddress] = parseCollectionId(collectionId);
   const { setToastSuccess } = useFeedbacks();
-  const selected = useSelector(selectSelectedNFTIds);
+  const cartIsShown = useShowCart();
+  const filterIsShown = useShowFilters();
 
   const coins = useMemo(() => {
     if (!network?.id || !stats?.floorPrice) {
@@ -257,7 +258,7 @@ export const CollectionHeader: React.FC<{
             paddingLeft: layout.padding_x2,
             marginHorizontal: 1,
             backgroundColor: codGrayColor,
-            width: selected.length > 0 ? "63%" : "78%",
+            width: cartIsShown ? "72%" : "78%",
           }}
           noUnderline
         />

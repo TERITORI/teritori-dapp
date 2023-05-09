@@ -9,31 +9,36 @@ import Animated, {
   withTiming,
   Easing,
 } from "react-native-reanimated";
+import { useSelector } from "react-redux";
 
 import closeSVG from "../../../assets/icons/close.svg";
-import teritoriLogoSVG from "../../../assets/logos/logo.svg";
 import { Attribute } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
 import { Separator } from "../../components/Separator";
 import { parseNetworkObjectId } from "../../networks";
-import { clearSelected } from "../../store/slices/marketplaceReducer";
+import {
+  selectShowFilters,
+  setShowFilters,
+} from "../../store/slices/marketplaceFilters";
 import { useAppDispatch } from "../../store/store";
 import { mustGetMarketplaceClient } from "../../utils/backend";
 import {
   codGrayColor,
-  neutral00,
   neutral44,
+  neutralA3,
   primaryColor,
+  secondaryColor,
 } from "../../utils/style/colors";
 import { fontSemibold12, fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { modalMarginPadding } from "../../utils/style/modals";
 
-const Header: React.FC<{ items: any[]; onPress: () => void }> = ({
-  items,
-  onPress,
-}) => {
+const Header: React.FC<{ items: any[] }> = ({ items }) => {
+  const dispatch = useAppDispatch();
+  const onPressClear = () => {
+    dispatch(setShowFilters(false));
+  };
   return (
     <View
       style={{
@@ -51,7 +56,7 @@ const Header: React.FC<{ items: any[]; onPress: () => void }> = ({
       <TouchableOpacity
         containerStyle={[{ marginLeft: modalMarginPadding }]}
         style={{ justifyContent: "flex-end" }}
-        onPress={onPress}
+        onPress={onPressClear}
       >
         <SVG width={20} height={20} source={closeSVG} />
       </TouchableOpacity>
@@ -100,7 +105,7 @@ const AccordionItem: React.FC<{ attribute: Attribute }> = ({ attribute }) => {
       >
         <BrandText style={fontSemibold14}>{attribute.traitType}</BrandText>
         <Animated.View style={iconStyle}>
-          <ChevronDownIcon color={neutral00} />
+          <ChevronDownIcon color={secondaryColor} />
         </Animated.View>
       </TouchableOpacity>
 
@@ -133,7 +138,6 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   subContainer: {
-    backgroundColor: codGrayColor,
     paddingHorizontal: 8,
     marginBottom: 6,
     flex: 1,
@@ -153,6 +157,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 0,
     left: 0,
+    width: "100%",
     paddingBottom: 20,
   },
 });
@@ -161,7 +166,11 @@ const FilterItems: React.FC<{ attribute: Attribute; text: string }> = ({
   attribute,
   text,
 }) => {
-  console.log(attribute, text);
+  // const selected = useSelector(selectSelectedNFTIds);
+  //
+  // const nft = useSelector((state: RootState) =>
+  //   selectSelectedNFTDataById(state, selected[0])
+  // );
 
   // const dispatch = useAppDispatch();
   return attribute ? (
@@ -180,12 +189,24 @@ const FilterItems: React.FC<{ attribute: Attribute; text: string }> = ({
             flexDirection: "row",
             flexWrap: "nowrap",
             alignItems: "center",
+            marginBottom: layout.padding_x0_5,
           }}
         >
           <BrandText style={[fontSemibold12, { color: primaryColor }]}>
             {text}
           </BrandText>
-          {/*<BrandText style={fontSemibold12}>{nft?.name}</BrandText>*/}
+          <View
+            style={{
+              flexDirection: "row",
+              flexWrap: "nowrap",
+            }}
+          >
+            <BrandText style={fontSemibold12}>144</BrandText>
+            <BrandText style={[fontSemibold12, { color: neutralA3 }]}>
+              /7777
+            </BrandText>
+          </View>
+
           {/*<Pressable*/}
           {/*  onPress={() => {*/}
           {/*    dispatch(removeSelected(id));*/}
@@ -204,8 +225,7 @@ const FilterItems: React.FC<{ attribute: Attribute; text: string }> = ({
             marginTop: layout.padding_x0_5,
           }}
         >
-          <BrandText style={[fontSemibold12, { color: primaryColor }]}>
-            {/*{info?.ownerAddress}*/}
+          <BrandText style={[fontSemibold12, { color: neutralA3 }]}>
             you
           </BrandText>
           <View
@@ -213,9 +233,9 @@ const FilterItems: React.FC<{ attribute: Attribute; text: string }> = ({
               flexDirection: "row",
             }}
           >
-            {/*<BrandText style={fontSemibold12}>*/}
-            {/*  {prettyPrice(nft.networkId, nft.price, nft.denom)}*/}
-            {/*</BrandText>*/}
+            <BrandText style={fontSemibold12}>
+              {/*{prettyPrice(nft.networkId, nft.price, nft.denom)}*/}
+            </BrandText>
             {/*<CurrencyIcon*/}
             {/*  networkId={nft.networkId}*/}
             {/*  denom={nft.denom}*/}
@@ -232,7 +252,6 @@ export const SideFilters: React.FC<{
   style?: StyleProp<ViewStyle>;
   collectionId: string;
 }> = ({ style, collectionId }) => {
-  const dispatch = useAppDispatch();
   const [attributes, setAttributes] = useState<Attribute[]>([]);
   const [network] = parseNetworkObjectId(collectionId);
 
@@ -254,12 +273,9 @@ export const SideFilters: React.FC<{
     }
   }, [network?.id, collectionId]);
 
-  const emptyCart = () => {
-    dispatch(clearSelected());
-  };
-  return (
+  return useShowFilters() ? (
     <View style={style}>
-      <Header items={attributes} onPress={() => emptyCart()} />
+      <Header items={attributes} />
       <FlatList
         data={attributes}
         renderItem={({ item }) => {
@@ -268,5 +284,9 @@ export const SideFilters: React.FC<{
       />
       <Separator />
     </View>
-  );
+  ) : null;
+};
+
+export const useShowFilters = () => {
+  return useSelector(selectShowFilters);
 };

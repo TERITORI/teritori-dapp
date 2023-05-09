@@ -1,9 +1,15 @@
-import React, { useState } from "react";
+import React from "react";
 import { StyleProp, TouchableOpacity, ViewStyle } from "react-native";
+import { useSelector } from "react-redux";
 
 import chevronUpSVG from "../../../assets/icons/chevron-down.svg";
 import chevronDownSVG from "../../../assets/icons/chevron-up.svg";
 import filterSVG from "../../../assets/icons/filter.svg";
+import {
+  selectShowFilters,
+  setShowFilters,
+} from "../../store/slices/marketplaceFilters";
+import { useAppDispatch } from "../../store/store";
 import { secondaryColor } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
 import { SVG } from "../SVG";
@@ -14,9 +20,11 @@ export const FilterButton: React.FC<{
   mainContainerStyle?: StyleProp<ViewStyle>;
   showChevron?: boolean;
 }> = ({ style, mainContainerStyle, showChevron = false }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const dispatch = useAppDispatch();
+  const isExpanded = useSelector(selectShowFilters);
   const handlePress = () => {
-    setIsExpanded(!isExpanded);
+    console.log(isExpanded);
+    dispatch(setShowFilters(!isExpanded));
   };
 
   return (

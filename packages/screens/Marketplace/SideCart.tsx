@@ -1,5 +1,5 @@
 import { EntityId } from "@reduxjs/toolkit";
-import React from "react";
+import React, { useState } from "react";
 import { FlatList, Pressable, StyleProp, View, ViewStyle } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { TrashIcon } from "react-native-heroicons/outline";
@@ -24,18 +24,24 @@ import { RootState, useAppDispatch } from "../../store/store";
 import { prettyPrice } from "../../utils/coins";
 import {
   codGrayColor,
+  errorColor,
   neutral44,
   neutralA3,
   primaryColor,
 } from "../../utils/style/colors";
-import { fontSemibold12, fontSemibold14 } from "../../utils/style/fonts";
+import {
+  fontMedium10,
+  fontSemibold12,
+  fontSemibold14,
+} from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { modalMarginPadding } from "../../utils/style/modals";
 
-const Header: React.FC<{ items: any[]; onPress: () => void }> = ({
-  items,
-  onPress,
-}) => {
+const Header: React.FC<{
+  items: any[];
+  onPressClear: () => void;
+  onPressHide: () => void;
+}> = ({ items, onPressClear, onPressHide }) => {
   return (
     <View
       style={{
@@ -50,16 +56,30 @@ const Header: React.FC<{ items: any[]; onPress: () => void }> = ({
     >
       <BrandText style={fontSemibold14}>Cart {items.length}</BrandText>
       <BrandText
-        style={{
-          backgroundColor: "hotpink",
-        }}
+        style={[
+          {
+            backgroundColor: "rgba(244, 111, 118, 0.22)",
+            borderStyle: "solid",
+            borderWidth: 1,
+            borderRadius: 32,
+            width: 37,
+            height: 16,
+            color: errorColor,
+            paddingTop: 2,
+            paddingRight: 6,
+            paddingBottom: 2,
+            paddingLeft: 6,
+          },
+          fontMedium10,
+        ]}
+        onPress={onPressClear}
       >
         Clear
       </BrandText>
       <TouchableOpacity
         containerStyle={[{ marginLeft: modalMarginPadding }]}
         style={{ justifyContent: "flex-end" }}
-        onPress={onPress}
+        onPress={onPressHide}
       >
         <SVG width={20} height={20} source={closeSVG} />
       </TouchableOpacity>
@@ -233,9 +253,13 @@ export const SideCart: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
   const emptyCart = () => {
     dispatch(clearSelected());
   };
-  return selected.length > 0 ? (
+  return useShowCart() ? (
     <View style={style}>
-      <Header items={selected} onPress={() => emptyCart()} />
+      <Header
+        items={selected}
+        onPressClear={() => emptyCart()}
+        onPressHide={() => emptyCart()}
+      />
       <FlatList
         data={selected}
         renderItem={({ item }) => {
@@ -246,4 +270,10 @@ export const SideCart: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
       <Footer items={selected} />
     </View>
   ) : null;
+};
+
+export const useShowCart = () => {
+  const selected = useSelector(selectSelectedNFTIds);
+
+  return selected.length > 0;
 };

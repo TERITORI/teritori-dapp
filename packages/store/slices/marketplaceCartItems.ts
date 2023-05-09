@@ -6,7 +6,7 @@ import { RootState } from "../store";
 const nftAdapter = createEntityAdapter<NFT>({});
 
 const marketplace = createSlice({
-  name: "marketPlace",
+  name: "marketplaceCartItems",
   initialState: nftAdapter.getInitialState([]),
   reducers: {
     addSelected: nftAdapter.setOne,
@@ -18,12 +18,12 @@ const marketplace = createSlice({
 const selectors = nftAdapter.getSelectors();
 
 export const selectSelectedNFTIds = (state: RootState) =>
-  selectors.selectIds(state.marketplace);
+  selectors.selectIds(state.marketplaceCartItems);
 
 export const selectAllSelectedNFTData = (state: RootState) =>
-  selectors.selectAll(state.marketplace);
+  selectors.selectAll(state.marketplaceCartItems);
 export const selectSelectedNFTDataById = (state: RootState, id: EntityId) =>
-  selectors.selectById(state.marketplace, id);
+  selectors.selectById(state.marketplaceCartItems, id);
 
 export const { addSelected, removeSelected, clearSelected } =
   marketplace.actions;

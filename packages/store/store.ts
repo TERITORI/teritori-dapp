@@ -5,6 +5,10 @@ import { persistStore, persistReducer } from "redux-persist";
 
 import { dAppsReducer, dAppsReducerPersisted } from "./slices/dapps-store";
 import { marketplaceCartItems } from "./slices/marketplaceCartItems";
+import {
+  marketplaceFilters,
+  marketplaceFilterUI,
+} from "./slices/marketplaceFilters";
 import { searchReducer } from "./slices/search";
 import { settingsReducer } from "./slices/settings";
 import { squadPresetsReducer } from "./slices/squadPresets";
@@ -18,9 +22,9 @@ const persistConfig = {
     "settings",
     "dAppsStorePersisted",
     "squadPresets",
-    "marketplace",
+    "marketplaceCartItems",
   ],
-  blacklist: ["dAppsStore"],
+  blacklist: ["dAppsStore, marketplaceFilterUI"],
 };
 
 const rootReducer = combineReducers({
@@ -29,7 +33,9 @@ const rootReducer = combineReducers({
   squadPresets: squadPresetsReducer,
   dAppsStorePersisted: dAppsReducerPersisted,
   dAppsStore: dAppsReducer,
-  marketplace: marketplaceCartItems,
+  marketplaceCartItems,
+  marketplaceFilters,
+  marketplaceFilterUI,
   search: searchReducer,
 });
 
