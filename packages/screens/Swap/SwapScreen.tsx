@@ -2,6 +2,7 @@ import { useIsFocused } from "@react-navigation/native";
 import React, { Suspense, useEffect, useMemo, useState } from "react";
 import { StyleSheet, View } from "react-native";
 
+import { ConnectModal } from "./components/ConnectModal";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
@@ -14,7 +15,6 @@ import { setSelectedNetworkId } from "../../store/slices/settings";
 import { useAppDispatch } from "../../store/store";
 import { ScreenFC } from "../../utils/navigation";
 import { Assets } from "../WalletManager/Assets";
-import { ConnectModal } from "./components/ConnectModal";
 
 export const SwapScreen: ScreenFC<"Swap"> = () => {
   const selectedWallet = useSelectedWallet();

@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { ScrollView, StyleSheet, View, Image } from "react-native";
 
+import { DaoMemberList } from "./components/DaoMemberList";
+import { DaoProposalList } from "./components/DaoProposalList";
+import { DaoInfo } from "./types";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { SpacerColumn } from "../../components/spacer";
@@ -14,9 +17,6 @@ import { neutral33, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { tinyAddress } from "../../utils/text";
-import { DaoMemberList } from "./components/DaoMemberList";
-import { DaoProposalList } from "./components/DaoProposalList";
-import { DaoInfo } from "./types";
 
 const CONTAINER_MARGIN_HORIZONTAL = 32;
 

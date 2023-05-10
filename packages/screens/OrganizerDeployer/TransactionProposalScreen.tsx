@@ -1,6 +1,9 @@
 import React, { useRef, useState } from "react";
 import { Animated, FlatList, StyleSheet, View } from "react-native";
 
+import { ProposalTransactionItem } from "./components/ProposalTransactionItem";
+import multisigTransactions from "./multisig-proposal-transaction.json";
+import { ProposalsTransactionType } from "./types";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { BackTo } from "../../components/navigation/BackTo";
@@ -8,9 +11,6 @@ import { SpacerColumn } from "../../components/spacer";
 import { Tabs } from "../../components/tabs/Tabs";
 import { fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { ProposalTransactionItem } from "./components/ProposalTransactionItem";
-import multisigTransactions from "./multisig-proposal-transaction.json";
-import { ProposalsTransactionType } from "./types";
 
 const tabs = {
   all: {

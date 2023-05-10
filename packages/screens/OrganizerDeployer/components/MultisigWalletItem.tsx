@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 
+import { MultisigWalletItemMenu } from "./MultisigWalletItemMenu";
 import chevronRightSVG from "../../../../assets/icons/chevron-right.svg";
 import toriLogoSVG from "../../../../assets/icons/networks/teritori-circle.svg";
 import { BrandText } from "../../../components/BrandText";
@@ -15,7 +16,6 @@ import { fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { MULTISIG_WALLET_HEADING } from "../MultisigWalletManageScreen";
 import { MultiSigWalletType } from "../types";
-import { MultisigWalletItemMenu } from "./MultisigWalletItemMenu";
 
 interface MultisigWalletItemProps {
   data: MultiSigWalletType;

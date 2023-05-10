@@ -11,12 +11,12 @@ import {
   RichToolbar,
 } from "react-native-pell-rich-editor";
 
-import { SOCIAL_FEED_BREAKPOINT_M } from "../../../utils/style/layout";
-import { PrimaryButton } from "../../buttons/PrimaryButton";
-import { SpacerColumn, SpacerRow } from "../../spacer";
 import { RichTextProps } from "./RichText.type";
 import { ActionsContainer } from "./Toolbar/ActionsContainer";
 import { ToolbarContainer } from "./Toolbar/ToolbarContainer";
+import { SOCIAL_FEED_BREAKPOINT_M } from "../../../utils/style/layout";
+import { PrimaryButton } from "../../buttons/PrimaryButton";
+import { SpacerColumn, SpacerRow } from "../../spacer";
 
 // /!\ It will not fully work on mobile
 

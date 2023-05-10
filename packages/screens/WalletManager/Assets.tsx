@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, TouchableOpacity, StyleProp, ViewStyle } from "react-native";
 
+import { DepositWithdrawModal } from "./components/DepositWithdrawModal";
 import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../assets/icons/chevron-up.svg";
 import { BrandText } from "../../components/BrandText";
@@ -11,7 +12,6 @@ import { useBalances } from "../../hooks/useBalances";
 import { parseUserId } from "../../networks";
 import { prettyPrice } from "../../utils/coins";
 import { neutral22, neutral33 } from "../../utils/style/colors";
-import { DepositWithdrawModal } from "./components/DepositWithdrawModal";
 
 const collapsedCount = 5;
 

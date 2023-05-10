@@ -1,6 +1,8 @@
 import { FC, useRef } from "react";
 import { View, TouchableOpacity, StyleSheet } from "react-native";
 
+import { TopMenuBox } from "./TopMenuBox";
+import { WalletView } from "./WalletView";
 import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../assets/icons/chevron-up.svg";
 import { useDropdowns } from "../../context/DropdownsProvider";
@@ -14,8 +16,6 @@ import {
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { SVG } from "../SVG";
 import { TertiaryBox } from "../boxes/TertiaryBox";
-import { TopMenuBox } from "./TopMenuBox";
-import { WalletView } from "./WalletView";
 
 export const TOP_MENU_BUTTON_HEIGHT = 40;
 

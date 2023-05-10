@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 
+import { DaoItem } from "./components/DaoItem";
+import { DaoInfo } from "./types";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
@@ -9,8 +11,6 @@ import { daoClient } from "../../utils/backend";
 import { useAppNavigation } from "../../utils/navigation";
 import { fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { DaoItem } from "./components/DaoItem";
-import { DaoInfo } from "./types";
 export const OrganizationDaoListScreen = () => {
   // variables
   const navigation = useAppNavigation();

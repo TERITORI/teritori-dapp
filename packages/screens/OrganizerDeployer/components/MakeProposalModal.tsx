@@ -2,6 +2,7 @@ import React, { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Pressable, StyleSheet, View } from "react-native";
 
+import { ProposalApprovalModal } from "./ProposalApprovalModal";
 import chevronRightSVG from "../../../../assets/icons/chevron-right.svg";
 import { BrandText } from "../../../components/BrandText";
 import { CustomMultipleSwitch } from "../../../components/CustomMultiSwitch";
@@ -24,7 +25,6 @@ import { layout } from "../../../utils/style/layout";
 import { modalMarginPadding } from "../../../utils/style/modals";
 import { toriCurrency } from "../../../utils/teritori";
 import { MakeProposalFormType } from "../types";
-import { ProposalApprovalModal } from "./ProposalApprovalModal";
 
 type MakeProposalModalProps = {
   visible: boolean;

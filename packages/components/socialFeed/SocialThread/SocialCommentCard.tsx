@@ -8,6 +8,8 @@ import {
   ViewStyle,
 } from "react-native";
 
+import { SocialCardHeader } from "./SocialCardHeader";
+import { SocialMessageContent } from "./SocialMessageContent";
 import { signingSocialFeedClient } from "../../../client-creators/socialFeedClient";
 import { useTeritoriSocialFeedReactPostMutation } from "../../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.react-query";
 import { Reaction as ReactionFromContract } from "../../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
@@ -54,8 +56,6 @@ import { nbReactionsShown, Reactions } from "../SocialActions/Reactions";
 import { ReplyButton } from "../SocialActions/ReplyButton";
 import { ShareButton } from "../SocialActions/ShareButton";
 import { TipButton } from "../SocialActions/TipButton";
-import { SocialCardHeader } from "./SocialCardHeader";
-import { SocialMessageContent } from "./SocialMessageContent";
 
 const BREAKPOINT_S = 480;
 

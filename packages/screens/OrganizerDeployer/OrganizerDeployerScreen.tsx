@@ -1,13 +1,6 @@
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 
-import { BrandText } from "../../components/BrandText";
-import { ScreenContainer } from "../../components/ScreenContainer";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { TeritoriDaoCoreClient } from "../../contracts-clients/teritori-dao/TeritoriDaoCore.client";
-import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getKeplrSigningCosmWasmClient } from "../../networks";
-import { useAppNavigation } from "../../utils/navigation";
 import { ConfigureVotingSection } from "./components/ConfigureVotingSection";
 import { CreateDAOSection } from "./components/CreateDAOSection";
 import { LaunchingOrganizationSection } from "./components/LaunchingOrganizationSection";
@@ -23,6 +16,13 @@ import {
   MemberSettingFormType,
   DaoType,
 } from "./types";
+import { BrandText } from "../../components/BrandText";
+import { ScreenContainer } from "../../components/ScreenContainer";
+import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { TeritoriDaoCoreClient } from "../../contracts-clients/teritori-dao/TeritoriDaoCore.client";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { getKeplrSigningCosmWasmClient } from "../../networks";
+import { useAppNavigation } from "../../utils/navigation";
 
 export const ORGANIZER_DEPLOYER_STEPS = [
   "Create a DAO",

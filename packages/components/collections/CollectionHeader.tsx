@@ -3,6 +3,8 @@ import Clipboard from "@react-native-clipboard/clipboard";
 import React, { useMemo } from "react";
 import { View, Platform, StyleSheet, Linking } from "react-native";
 
+import { CollectionStat } from "./CollectionStat";
+import { TabsListType } from "./types";
 import bannerCollection from "../../../assets/default-images/banner-collection.jpg";
 import etherscanSVG from "../../../assets/icons/etherscan.svg";
 import shareSVG from "../../../assets/icons/share.svg";
@@ -30,8 +32,6 @@ import { neutral33 } from "../../utils/style/colors";
 import { fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { OptimizedImage } from "../OptimizedImage";
-import { CollectionStat } from "./CollectionStat";
-import { TabsListType } from "./types";
 
 // All the screen content before the Flatlist used to display NFTs
 export const CollectionHeader: React.FC<{

@@ -7,6 +7,7 @@ import {
   View,
 } from "react-native";
 
+import { HeaderMobile } from "./HeaderMobile";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { NetworkInfo, NetworkKind } from "../../networks";
 import { DAppStoreData } from "../../screens/DAppStore/components/DAppStoreData";
@@ -16,7 +17,6 @@ import { layout, MOBILE_HEADER_HEIGHT } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { SelectedNetworkGate } from "../SelectedNetworkGate";
 import { SidebarMobile } from "../navigation/SidebarMobile";
-import { HeaderMobile } from "./HeaderMobile";
 
 export const MobileTitle: FC<{ title: string }> = ({ title }) => {
   const { width: windowWidth } = useWindowDimensions();

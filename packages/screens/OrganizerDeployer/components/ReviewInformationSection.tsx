@@ -1,6 +1,8 @@
 import React, { useCallback } from "react";
 import { Image, ScrollView, StyleSheet, View } from "react-native";
 
+import { ReviewCollapsable } from "./ReviewCollapsable";
+import { ReviewCollapsableItem } from "./ReviewCollapsableItem";
 import { BrandText } from "../../../components/BrandText";
 import { Separator } from "../../../components/Separator";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
@@ -16,8 +18,6 @@ import {
   MemberSettingFormType,
   DaoType,
 } from "../types";
-import { ReviewCollapsable } from "./ReviewCollapsable";
-import { ReviewCollapsableItem } from "./ReviewCollapsableItem";
 
 interface ReviewInformationSectionProps {
   organizationData?: CreateDaoFormType;
@@ -136,51 +136,53 @@ export const ReviewInformationSection: React.FC<
 
       <SpacerColumn size={2.5} />
 
-      {organizationData && organizationData.structure === DaoType.TOKEN_BASED && (
-        <ReviewCollapsable title="Token settings">
-          <ReviewCollapsableItem
-            title="TOKEN NAME & SYMBOL"
-            value={`${tokenSettingData?.tokenName} (${tokenSettingData?.tokenSymbol})`}
-          />
-          <SpacerColumn size={1} />
-          {tokenSettingData?.tokenHolders.map((holder, index) => (
-            <View key={holder.address} style={styles.fill}>
-              <ReviewCollapsableItem
-                title={`TOKENHOLDER #${index + 1}`}
-                value={() => (
-                  <AddressBalanceValue
-                    address={holder.address}
-                    balance={`${holder.balance} ${tokenSettingData?.tokenSymbol}`}
-                  />
+      {organizationData &&
+        organizationData.structure === DaoType.TOKEN_BASED && (
+          <ReviewCollapsable title="Token settings">
+            <ReviewCollapsableItem
+              title="TOKEN NAME & SYMBOL"
+              value={`${tokenSettingData?.tokenName} (${tokenSettingData?.tokenSymbol})`}
+            />
+            <SpacerColumn size={1} />
+            {tokenSettingData?.tokenHolders.map((holder, index) => (
+              <View key={holder.address} style={styles.fill}>
+                <ReviewCollapsableItem
+                  title={`TOKENHOLDER #${index + 1}`}
+                  value={() => (
+                    <AddressBalanceValue
+                      address={holder.address}
+                      balance={`${holder.balance} ${tokenSettingData?.tokenSymbol}`}
+                    />
+                  )}
+                />
+                {tokenSettingData?.tokenHolders.length !== index + 1 && (
+                  <SpacerColumn size={1} />
                 )}
-              />
-              {tokenSettingData?.tokenHolders.length !== index + 1 && (
-                <SpacerColumn size={1} />
-              )}
-            </View>
-          ))}
-        </ReviewCollapsable>
-      )}
-      {organizationData && organizationData.structure === DaoType.MEMBER_BASED && (
-        <ReviewCollapsable title="Member settings">
-          {memberSettingData?.members.map((member, index) => (
-            <View key={member.addr} style={styles.fill}>
-              <ReviewCollapsableItem
-                title={`MEMBER #${index + 1}`}
-                value={() => (
-                  <AddressWeightValue
-                    address={member.addr}
-                    weight={`${member.weight}`}
-                  />
+              </View>
+            ))}
+          </ReviewCollapsable>
+        )}
+      {organizationData &&
+        organizationData.structure === DaoType.MEMBER_BASED && (
+          <ReviewCollapsable title="Member settings">
+            {memberSettingData?.members.map((member, index) => (
+              <View key={member.addr} style={styles.fill}>
+                <ReviewCollapsableItem
+                  title={`MEMBER #${index + 1}`}
+                  value={() => (
+                    <AddressWeightValue
+                      address={member.addr}
+                      weight={`${member.weight}`}
+                    />
+                  )}
+                />
+                {tokenSettingData?.tokenHolders.length !== index + 1 && (
+                  <SpacerColumn size={1} />
                 )}
-              />
-              {tokenSettingData?.tokenHolders.length !== index + 1 && (
-                <SpacerColumn size={1} />
-              )}
-            </View>
-          ))}
-        </ReviewCollapsable>
-      )}
+              </View>
+            ))}
+          </ReviewCollapsable>
+        )}
 
       <SpacerColumn size={4} />
 

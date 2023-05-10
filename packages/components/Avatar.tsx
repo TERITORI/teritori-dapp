@@ -2,9 +2,9 @@
 import React from "react";
 import { SvgProps } from "react-native-svg";
 
-import { avatarWidth } from "../utils/style/layout";
 import { OptimizedImage } from "./OptimizedImage";
 import { SVG } from "./SVG";
+import { avatarWidth } from "../utils/style/layout";
 
 // types
 export interface AvatarProps {

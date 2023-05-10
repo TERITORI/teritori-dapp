@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
 
+import { FeedHeader } from "./components/FeedHeader";
 import { PostsRequest } from "../../api/feed/v1/feed";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
@@ -9,7 +10,6 @@ import { useIsMobile } from "../../hooks/useIsMobile";
 import { NetworkKind } from "../../networks";
 import { ScreenFC } from "../../utils/navigation";
 import { feedTabToCategories, feedsTabItems } from "../../utils/social-feed";
-import { FeedHeader } from "./components/FeedHeader";
 
 export const FeedScreen: ScreenFC<"Feed"> = () => {
   const isMobile = useIsMobile();

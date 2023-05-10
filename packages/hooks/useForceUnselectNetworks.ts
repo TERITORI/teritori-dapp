@@ -1,13 +1,13 @@
 import { useFocusEffect, useRoute } from "@react-navigation/native";
 import { useCallback } from "react";
 
+import { useSelectedNetworkId } from "./useSelectedNetwork";
 import { osmosisNetwork } from "../networks/osmosis";
 import { osmosisTestnetNetwork } from "../networks/osmosis-testnet";
 import { teritoriNetwork } from "../networks/teritori";
 import { setSelectedNetworkId } from "../store/slices/settings";
 import { useAppDispatch } from "../store/store";
 import { RouteName } from "../utils/navigation";
-import { useSelectedNetworkId } from "./useSelectedNetwork";
 
 export const useForceUnselectNetworks = () => {
   const dispatch = useAppDispatch();

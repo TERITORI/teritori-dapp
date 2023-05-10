@@ -8,6 +8,7 @@ import {
   Image,
 } from "react-native";
 
+import { LegalFooter } from "./LegalFooter";
 import getUpImage from "../../../assets/getup.png";
 import discordSVG from "../../../assets/icons/discord.svg";
 import mediumSVG from "../../../assets/icons/medium.svg";
@@ -17,7 +18,6 @@ import { secondaryColor } from "../../utils/style/colors";
 import { layout, screenContentMaxWidthLarge } from "../../utils/style/layout";
 import { SVG } from "../SVG";
 import { TertiaryBox } from "../boxes/TertiaryBox";
-import { LegalFooter } from "./LegalFooter";
 
 const FooterSocialNetworks: React.FC = () => {
   return (

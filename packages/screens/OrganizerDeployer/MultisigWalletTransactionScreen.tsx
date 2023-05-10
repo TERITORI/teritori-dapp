@@ -1,6 +1,11 @@
 import React, { useCallback, useState } from "react";
 import { FlatList, ListRenderItemInfo, StyleSheet, View } from "react-native";
 
+import { BasicTransactionItem } from "./components/BasicTransactionItem";
+import { MakeProposalModal } from "./components/MakeProposalModal";
+import { ProposalItem } from "./components/ProposalItem";
+import multisigTransactions from "./multisig-transactions.json";
+import { MultiSigWalletTransactionType } from "./types";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { Separator } from "../../components/Separator";
@@ -11,11 +16,6 @@ import { useAppNavigation } from "../../utils/navigation";
 import { primaryColor } from "../../utils/style/colors";
 import { fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { BasicTransactionItem } from "./components/BasicTransactionItem";
-import { MakeProposalModal } from "./components/MakeProposalModal";
-import { ProposalItem } from "./components/ProposalItem";
-import multisigTransactions from "./multisig-transactions.json";
-import { MultiSigWalletTransactionType } from "./types";
 
 export const MultisigWalletTransactionScreen = () => {
   // variabels

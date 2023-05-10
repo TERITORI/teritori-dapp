@@ -1,6 +1,8 @@
 import React from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 
+import { MultisigWalletItem } from "./components/MultisigWalletItem";
+import data from "./multisig-wallet.json";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
@@ -12,8 +14,6 @@ import { useAppNavigation } from "../../utils/navigation";
 import { neutral00, neutral33, neutral77 } from "../../utils/style/colors";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { MultisigWalletItem } from "./components/MultisigWalletItem";
-import data from "./multisig-wallet.json";
 
 export const MULTISIG_WALLET_HEADING: { [key in string]: TableRowHeading } = {
   id: {

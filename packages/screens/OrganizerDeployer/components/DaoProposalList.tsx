@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, View, Pressable } from "react-native";
 
+import { DaoCreateProposalModal } from "./DaoCreateProposalModal";
+import { DaoProposalModal } from "./DaoProposalModal";
 import { BrandText } from "../../../components/BrandText";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { TeritoriDaoProposalQueryClient } from "../../../contracts-clients/teritori-dao/TeritoriDaoProposal.client";
@@ -10,8 +12,6 @@ import { mustGetNonSigningCosmWasmClient } from "../../../networks";
 import { neutral33, secondaryColor } from "../../../utils/style/colors";
 import { fontSemibold13, fontSemibold14 } from "../../../utils/style/fonts";
 import { DaoInfo } from "../types";
-import { DaoCreateProposalModal } from "./DaoCreateProposalModal";
-import { DaoProposalModal } from "./DaoProposalModal";
 
 export const DaoProposalList: React.FC<{
   daoInfo: DaoInfo;

@@ -1,6 +1,7 @@
 import React from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 
+import { GetStartedOption } from "./components/GetStartedOption";
 import chatSVG from "../../../assets/icons/organization/chat.svg";
 import freelanceSVG from "../../../assets/icons/organization/freelance.svg";
 import launchSVG from "../../../assets/icons/organization/launch.svg";
@@ -15,7 +16,6 @@ import { SpacerColumn } from "../../components/spacer";
 import { useAppNavigation } from "../../utils/navigation";
 import { fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { GetStartedOption } from "./components/GetStartedOption";
 
 export const OrganizationGetStartedScreen = () => {
   // variables

@@ -1,10 +1,10 @@
-import { FileType, LocalFileData } from "../../utils/types/feed";
-import { getAudioData } from "../../utils/waveform";
 import {
   AUDIO_MIME_TYPES,
   IMAGE_MIME_TYPES,
   VIDEO_MIME_TYPES,
 } from "./../../utils/mime";
+import { FileType, LocalFileData } from "../../utils/types/feed";
+import { getAudioData } from "../../utils/waveform";
 
 export const formatFile = async (file: File): Promise<LocalFileData> => {
   let fileType: FileType = "file";

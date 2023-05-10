@@ -2,11 +2,11 @@ import React, { useMemo, useState } from "react";
 import { View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 
+import { MoreReactionsButton } from "./MoreReactionsButton";
+import { MoreReactionsMenu } from "./MoreReactionsMenu";
 import { Reaction } from "../../../api/feed/v1/feed";
 import { layout } from "../../../utils/style/layout";
 import { SocialStat } from "../SocialStat";
-import { MoreReactionsButton } from "./MoreReactionsButton";
-import { MoreReactionsMenu } from "./MoreReactionsMenu";
 
 const DEFAULT_NB_EMOJI_SHOWN = 12;
 

@@ -1,11 +1,11 @@
 import React from "react";
 import { useWindowDimensions, View } from "react-native";
 
+import { DropdownDappsStoreFilter } from "./Dropdown";
 import { BrandText } from "../../../components/BrandText";
 import { SearchInput } from "../../../components/sorts/SearchInput";
 import { fontSemibold28 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { DropdownDappsStoreFilter } from "./Dropdown";
 
 export function Header({
   setSearchInput,

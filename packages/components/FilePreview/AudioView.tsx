@@ -3,6 +3,8 @@ import React, { useEffect, useMemo, useState } from "react";
 import { View, Image, TouchableOpacity } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 
+import { AudioWaveform } from "./AudioWaveform";
+import { ipfsURLToHTTPURL } from "./ipfs";
 import pauseSVG from "../../../assets/icons/pause.svg";
 import playSVG from "../../../assets/icons/play.svg";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
@@ -19,8 +21,6 @@ import { RemoteFileData } from "../../utils/types/feed";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { THUMBNAIL_WIDTH } from "../socialFeed/SocialThread/SocialMessageContent";
-import { AudioWaveform } from "./AudioWaveform";
-import { ipfsURLToHTTPURL } from "./ipfs";
 
 export const AudioView: React.FC<{
   file: RemoteFileData;

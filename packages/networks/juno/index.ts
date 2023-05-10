@@ -1,5 +1,5 @@
-import { NetworkKind, NetworkInfo } from "../types";
 import { junoCurrencies } from "./currencies";
+import { NetworkKind, NetworkInfo } from "../types";
 
 export const junoNetwork: NetworkInfo = {
   id: "juno",

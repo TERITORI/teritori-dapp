@@ -2,6 +2,7 @@ import { Decimal } from "@cosmjs/math";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 
+import { useCoingeckoPrices } from "./useCoingeckoPrices";
 import {
   getCosmosNetwork,
   getNativeCurrency,
@@ -10,7 +11,6 @@ import {
 } from "../networks";
 import { Balance } from "../utils/coins";
 import { CosmosDelegationsResponse } from "../utils/teritori";
-import { useCoingeckoPrices } from "./useCoingeckoPrices";
 
 const initialData = { delegation_responses: [] };
 

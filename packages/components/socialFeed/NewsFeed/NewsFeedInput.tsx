@@ -11,6 +11,18 @@ import {
 import Animated, { useSharedValue } from "react-native-reanimated";
 import { v4 as uuidv4 } from "uuid";
 
+import {
+  NewPostFormValues,
+  PostCategory,
+  ReplyToType,
+  SocialFeedMetadata,
+} from "./NewsFeed.type";
+import {
+  generatePostMetadata,
+  getPostCategory,
+  uploadPostFilesToPinata,
+} from "./NewsFeedQueries";
+import { NotEnoughFundModal } from "./NotEnoughFundModal";
 import audioSVG from "../../../../assets/icons/audio.svg";
 import cameraSVG from "../../../../assets/icons/camera.svg";
 import penSVG from "../../../../assets/icons/pen.svg";
@@ -78,18 +90,6 @@ import { FileUploader } from "../../fileUploader";
 import { SpacerColumn } from "../../spacer";
 import { EmojiSelector } from "../EmojiSelector";
 import { GIFSelector } from "../GIFSelector";
-import {
-  NewPostFormValues,
-  PostCategory,
-  ReplyToType,
-  SocialFeedMetadata,
-} from "./NewsFeed.type";
-import {
-  generatePostMetadata,
-  getPostCategory,
-  uploadPostFilesToPinata,
-} from "./NewsFeedQueries";
-import { NotEnoughFundModal } from "./NotEnoughFundModal";
 
 interface NewsFeedInputProps {
   type: "comment" | "post";

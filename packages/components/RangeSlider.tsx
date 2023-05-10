@@ -2,6 +2,7 @@ import React from "react";
 import { StyleSheet, TextInput, View } from "react-native";
 import Slider from "react-native-smooth-slider";
 
+import { BrandText } from "./BrandText";
 import {
   neutral33,
   neutral44,
@@ -11,7 +12,6 @@ import {
 } from "../utils/style/colors";
 import { fontSemibold14 } from "../utils/style/fonts";
 import { layout } from "../utils/style/layout";
-import { BrandText } from "./BrandText";
 
 interface RangeSliderProps {
   label: string;

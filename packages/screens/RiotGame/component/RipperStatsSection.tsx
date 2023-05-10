@@ -1,10 +1,10 @@
 import { useMemo } from "react";
 import { ModalProps } from "react-native";
 
+import { RipperStat } from "./RipperStat";
 import { NFT } from "../../../api/marketplace/v1/marketplace";
 import { getRipperTraitValue } from "../../../utils/game";
 import { layout } from "../../../utils/style/layout";
-import { RipperStat } from "./RipperStat";
 
 type RipperStatsSectionProps = ModalProps & {
   breedingsLeft?: number | undefined;

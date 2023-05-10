@@ -7,6 +7,12 @@ import {
   ViewStyle,
 } from "react-native";
 
+import { TOP_MENU_BUTTON_HEIGHT } from "./TopMenu";
+import { TopMenuAccount } from "./TopMenuAccount";
+import { TopMenuHighlightedNews } from "./TopMenuHighlightedNews";
+import { TopMenuLiveMint } from "./TopMenuLiveMint";
+import { TopMenuMyTeritories } from "./TopMenuMyTeritories";
+import { TopMenuMyWallets } from "./TopMenuMyWallets";
 import { purpleLight } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { headerHeight, layout, topMenuWidth } from "../../utils/style/layout";
@@ -15,12 +21,6 @@ import FlexCol from "../FlexCol";
 import { OmniLink } from "../OmniLink";
 import { Separator } from "../Separator";
 import { TertiaryBox } from "../boxes/TertiaryBox";
-import { TOP_MENU_BUTTON_HEIGHT } from "./TopMenu";
-import { TopMenuAccount } from "./TopMenuAccount";
-import { TopMenuHighlightedNews } from "./TopMenuHighlightedNews";
-import { TopMenuLiveMint } from "./TopMenuLiveMint";
-import { TopMenuMyTeritories } from "./TopMenuMyTeritories";
-import { TopMenuMyWallets } from "./TopMenuMyWallets";
 
 export const TopMenuBox: FC<{
   style?: StyleProp<ViewStyle>;

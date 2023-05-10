@@ -1,9 +1,9 @@
 import React from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 
+import { LabelCard } from "./LabelCard";
 import { primaryColor } from "../../utils/style/colors";
 import { BrandText } from "../BrandText";
-import { LabelCard } from "./LabelCard";
 
 export const BalanceCard: React.FC<{
   label?: string;
