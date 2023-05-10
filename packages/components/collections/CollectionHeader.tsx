@@ -26,7 +26,6 @@ import {
   parseCollectionId,
 } from "../../networks";
 import { useShowCart } from "../../screens/Marketplace/SideCart";
-import { useShowFilters } from "../../screens/Marketplace/SideFilters";
 import { CollectionInfo } from "../../utils/collection";
 import { codGrayColor, neutral33, neutral67 } from "../../utils/style/colors";
 import { fontSemibold28 } from "../../utils/style/fonts";
@@ -56,7 +55,6 @@ export const CollectionHeader: React.FC<{
   const [network, collectionMintAddress] = parseCollectionId(collectionId);
   const { setToastSuccess } = useFeedbacks();
   const cartIsShown = useShowCart();
-  const filterIsShown = useShowFilters();
 
   const coins = useMemo(() => {
     if (!network?.id || !stats?.floorPrice) {

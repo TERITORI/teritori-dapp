@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { ChevronDownIcon } from "react-native-heroicons/outline";
+import { XMarkIcon } from "react-native-heroicons/solid";
 import Animated, {
   interpolate,
   useAnimatedStyle,
@@ -30,6 +31,8 @@ import {
   addSelected,
   removeSelected,
   selectSelectedAttributeIds,
+  clearSelected,
+  selectAllSelectedAttributeData,
 } from "../../store/slices/marketplaceFilters";
 import { useAppDispatch } from "../../store/store";
 import { mustGetMarketplaceClient } from "../../utils/backend";
@@ -185,7 +188,6 @@ const FilterItems: React.FC<{
   const dispatch = useAppDispatch();
 
   const handlePress = (attribute: Attribute, selected: boolean) => {
-    console.log("clicked");
     if (!selected) {
       dispatch(addSelected(attribute));
     } else {
@@ -258,6 +260,58 @@ const FilterItems: React.FC<{
           </View>
         </View>
       </Pressable>
+    </View>
+  ) : null;
+};
+
+export const AppliedFilters: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const filterIsShown = useShowFilters();
+
+  const selected = useSelector(selectAllSelectedAttributeData);
+  const clearAll = () => {
+    dispatch(clearSelected());
+  };
+  const removeFilter = (attribute: Attribute) => {
+    dispatch(removeSelected(`${attribute.traitType}-${attribute.value}`));
+  };
+
+  const commonStyles: StyleProp<ViewStyle> = {
+    flexDirection: "row",
+    flexWrap: "nowrap",
+    minWidth: layout.padding_x2_5,
+    borderRadius: 8,
+    backgroundColor: codGrayColor,
+    marginLeft: layout.padding_x1,
+    alignItems: "center",
+    padding: layout.padding_x1,
+  };
+
+  return selected.length > 0 ? (
+    <View
+      style={{
+        flexDirection: "row",
+        marginBottom: layout.padding_x1,
+        alignSelf: "flex-start",
+        marginLeft: filterIsShown ? 281 : 0,
+      }}
+    >
+      <Pressable style={commonStyles} onPress={() => clearAll()}>
+        <BrandText style={fontSemibold12}>Clear All</BrandText>
+      </Pressable>
+      {selected.map((attribute, index) => (
+        <Pressable style={commonStyles} onPress={() => removeFilter(attribute)}>
+          <BrandText
+            style={[
+              fontSemibold12,
+              { textTransform: "capitalize", marginRight: layout.padding_x1 },
+            ]}
+          >
+            {attribute.traitType}: {attribute.value}
+          </BrandText>
+          <XMarkIcon color={secondaryColor} size={12} />
+        </Pressable>
+      ))}
     </View>
   ) : null;
 };

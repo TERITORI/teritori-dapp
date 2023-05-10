@@ -1,5 +1,5 @@
 import { EntityId } from "@reduxjs/toolkit";
-import React, { useState } from "react";
+import React from "react";
 import { FlatList, Pressable, StyleProp, View, ViewStyle } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { TrashIcon } from "react-native-heroicons/outline";

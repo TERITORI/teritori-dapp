@@ -5,7 +5,10 @@ import { NFTView } from "./NFTView";
 import { NFT, NFTsRequest } from "../../api/marketplace/v1/marketplace";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useNFTs } from "../../hooks/useNFTs";
-import { useShowFilters } from "../../screens/Marketplace/SideFilters";
+import {
+  AppliedFilters,
+  useShowFilters,
+} from "../../screens/Marketplace/SideFilters";
 import { layout, screenContentMaxWidthLarge } from "../../utils/style/layout";
 import { SpacerColumn } from "../spacer";
 
@@ -47,6 +50,7 @@ export const NFTs: React.FC<{
         height,
       }}
     >
+      <AppliedFilters />
       <FlatList
         style={{
           width: filterIsShown ? "75%" : "100%",
@@ -67,8 +71,6 @@ export const NFTs: React.FC<{
         renderItem={(info) => {
           return <RenderItem nft={info.item} />;
         }}
-        //ListHeaderComponent={ListHeaderComponent}
-        //ListFooterComponent={ListFooterComponent}
         removeClippedSubviews
       />
     </View>

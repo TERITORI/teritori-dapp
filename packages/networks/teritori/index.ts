@@ -19,7 +19,7 @@ export const teritoriNetwork: CosmosNetworkInfo = {
   contractExplorer: "https://www.mintscan.io/teritori/account/$address",
   idPrefix: "tori",
   testnet: false,
-  backendEndpoint: "http://localhost:9090",
+  backendEndpoint: "https://dapp-backend.mainnet.teritori.com",
   addressPrefix: "tori",
   restEndpoint: "https://rest.mainnet.teritori.com",
   rpcEndpoint: "https://rpc.mainnet.teritori.com",

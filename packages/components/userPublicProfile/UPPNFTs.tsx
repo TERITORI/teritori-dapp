@@ -40,7 +40,6 @@ const SelectedTabContent: React.FC<{
       return (
         <NFTs
           req={nftsRequest}
-          numColumns={numColumns}
           ListHeaderComponent={<View style={{ height: 20 }} />}
         />
       );
