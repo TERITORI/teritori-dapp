@@ -37,7 +37,6 @@ import {
   fontMedium14,
 } from "../../../utils/style/fonts";
 const ChatHeader = ({ messages }: any) => {
-  console.log(messages);
   const [showTextInput, setShowTextInput] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
   const [searchInput, setSearchInput] = useState("");
