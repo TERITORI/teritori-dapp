@@ -15,10 +15,12 @@ import { SVG } from "../../../components/SVG";
 import { ScreenContainer } from "../../../components/ScreenContainer";
 import { Separator } from "../../../components/Separator";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
+import { RichText } from "../../../components/socialFeed/RichText/RichText.web";
 import { SpacerColumn } from "../../../components/spacer";
 import { neutral33 } from "../../../utils/style/colors";
 import { LocalFileData } from "../../../utils/types/feed";
 import UploadImage from "../MessengerHomeCreateChatDropdown/UploadImage";
+
 interface IMessage {
   id: Key | null | undefined;
   source: any;
@@ -33,19 +35,20 @@ interface IMessage {
 const ChatSection = () => {
   const [messages, setMessages] = useState<IMessage[]>(ChatData);
   const [newMessage, setNewMessage] = useState("");
-  console.log("first", messages);
   const [searchInput, setSearchInput] = useState("");
   const [showAttachmentModal, setShowAttachmentModal] = useState(false);
   const [thumbnailFile, setThumbnailFile] = useState<LocalFileData>();
-  const [visible, setVisible] = useState(true);
 
-  const [showImage, setShowImage] = useState(true);
   const handleSend = () => {
     const newMsg: IMessage = {
       message: newMessage,
       isSender: true,
     };
-    setMessages([...messages, newMsg, ...thumbnailFile?.url]);
+    setMessages([
+      ...messages,
+      newMsg,
+      ...(thumbnailFile?.url ? [thumbnailFile.url] : []),
+    ]);
     setNewMessage("");
   };
 
@@ -82,14 +85,10 @@ const ChatSection = () => {
               setShowAttachmentModal={setShowAttachmentModal}
               thumbnailFile={thumbnailFile}
               setThumbnailFile={setThumbnailFile}
-              visible={visible}
-              setVisible={setVisible}
               messages={messages}
               setMessages={setMessages}
               newMessage={newMessage}
               setNewMessage={setNewMessage}
-              showImage={showImage}
-              setShowImage={setShowImage}
             />
 
             <TextInputCustom
@@ -104,6 +103,7 @@ const ChatSection = () => {
                   </View>
                 </TouchableOpacity>
               }
+              maxLength={1000}
             >
               <TouchableOpacity onPress={handleSend}>
                 <Image
