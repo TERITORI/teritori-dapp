@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { FlatList, StyleProp, View, ViewStyle, StyleSheet } from "react-native";
+import {
+  FlatList,
+  StyleProp,
+  View,
+  ViewStyle,
+  StyleSheet,
+  Pressable,
+} from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { ChevronDownIcon } from "react-native-heroicons/outline";
 import Animated, {
@@ -20,6 +27,9 @@ import { parseNetworkObjectId } from "../../networks";
 import {
   selectShowFilters,
   setShowFilters,
+  addSelected,
+  removeSelected,
+  selectSelectedAttributeIds,
 } from "../../store/slices/marketplaceFilters";
 import { useAppDispatch } from "../../store/store";
 import { mustGetMarketplaceClient } from "../../utils/backend";
@@ -117,7 +127,12 @@ const AccordionItem: React.FC<{ attribute: Attribute }> = ({ attribute }) => {
           }}
         >
           {attribute.value.split(",").map((value) => (
-            <FilterItems attribute={attribute} text={value} />
+            <FilterItems
+              attribute={{
+                traitType: attribute.traitType,
+                value,
+              }}
+            />
           ))}
         </View>
       </Animated.View>
@@ -162,26 +177,33 @@ const styles = StyleSheet.create({
   },
 });
 
-const FilterItems: React.FC<{ attribute: Attribute; text: string }> = ({
-  attribute,
-  text,
-}) => {
-  // const selected = useSelector(selectSelectedNFTIds);
-  //
-  // const nft = useSelector((state: RootState) =>
-  //   selectSelectedNFTDataById(state, selected[0])
-  // );
+const FilterItems: React.FC<{
+  attribute: Attribute;
+}> = ({ attribute }) => {
+  const isSelected = useAttributeIsSelected(attribute);
 
-  // const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
+
+  const handlePress = (attribute: Attribute, selected: boolean) => {
+    console.log("clicked");
+    if (!selected) {
+      dispatch(addSelected(attribute));
+    } else {
+      dispatch(removeSelected(`${attribute.traitType}-${attribute.value}`));
+    }
+  };
   return attribute ? (
     <View>
-      <View
+      <Pressable
         style={{
           backgroundColor: codGrayColor,
           borderRadius: 8,
           padding: layout.padding_x1,
           marginBottom: layout.padding_x1,
+          borderColor: isSelected ? primaryColor : codGrayColor,
+          borderWidth: 1,
         }}
+        onPress={() => handlePress(attribute, isSelected)}
       >
         <View
           style={{
@@ -193,7 +215,7 @@ const FilterItems: React.FC<{ attribute: Attribute; text: string }> = ({
           }}
         >
           <BrandText style={[fontSemibold12, { color: primaryColor }]}>
-            {text}
+            {attribute.value}
           </BrandText>
           <View
             style={{
@@ -206,14 +228,6 @@ const FilterItems: React.FC<{ attribute: Attribute; text: string }> = ({
               /7777
             </BrandText>
           </View>
-
-          {/*<Pressable*/}
-          {/*  onPress={() => {*/}
-          {/*    dispatch(removeSelected(id));*/}
-          {/*  }}*/}
-          {/*>*/}
-          {/*  <TrashIcon size={10} color={neutralA3} />*/}
-          {/*</Pressable>*/}
         </View>
         <Separator />
         <View
@@ -243,7 +257,7 @@ const FilterItems: React.FC<{ attribute: Attribute; text: string }> = ({
             {/*/>*/}
           </View>
         </View>
-      </View>
+      </Pressable>
     </View>
   ) : null;
 };
@@ -289,4 +303,8 @@ export const SideFilters: React.FC<{
 
 export const useShowFilters = () => {
   return useSelector(selectShowFilters);
+};
+export const useAttributeIsSelected = (attribute: Attribute) => {
+  const selected = new Set(useSelector(selectSelectedAttributeIds));
+  return selected.has(`${attribute.traitType}-${attribute.value}`);
 };

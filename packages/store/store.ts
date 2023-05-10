@@ -23,6 +23,8 @@ const persistConfig = {
     "dAppsStorePersisted",
     "squadPresets",
     "marketplaceCartItems",
+    "marketplaceFilters",
+    "marketplaceFilterUI",
   ],
   blacklist: ["dAppsStore, marketplaceFilterUI"],
 };

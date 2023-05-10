@@ -8,7 +8,9 @@ import {
 import { Attribute } from "../../api/marketplace/v1/marketplace";
 import { RootState } from "../store";
 
-const filter = createEntityAdapter<Attribute>({});
+const filter = createEntityAdapter<Attribute>({
+  selectId: (attribute) => `${attribute.traitType}-${attribute.value}`,
+});
 
 interface UIStates {
   showFilters: boolean;
@@ -21,7 +23,7 @@ const initialState: UIStates = {
 export const selectShowFilters = (state: RootState) =>
   state.marketplaceFilterUI.showFilters;
 
-const marketplace = createSlice({
+const filtersSlice = createSlice({
   name: "marketPlaceFilters",
   initialState: filter.getInitialState([]),
   reducers: {
@@ -43,18 +45,20 @@ const filterUI = createSlice({
 
 const selectors = filter.getSelectors();
 
-export const selectSelectedNFTIds = (state: RootState) =>
+export const selectSelectedAttributeIds = (state: RootState) =>
   selectors.selectIds(state.marketplaceFilters);
 
-export const selectAllSelectedNFTData = (state: RootState) =>
+export const selectAllSelectedAttributeData = (state: RootState) =>
   selectors.selectAll(state.marketplaceFilters);
-export const selectSelectedNFTDataById = (state: RootState, id: EntityId) =>
-  selectors.selectById(state.marketplaceFilters, id);
+export const selectSelectedAttributeDataById = (
+  state: RootState,
+  id: EntityId
+) => selectors.selectById(state.marketplaceFilters, id);
 
 export const { addSelected, removeSelected, clearSelected } =
-  marketplace.actions;
+  filtersSlice.actions;
 
 export const { setShowFilters } = filterUI.actions;
 
-export const marketplaceFilters = marketplace.reducer;
+export const marketplaceFilters = filtersSlice.reducer;
 export const marketplaceFilterUI = filterUI.reducer;
