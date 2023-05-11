@@ -1,26 +1,20 @@
-import React, { useState } from "react";
-import {
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
-  ScrollView,
-} from "react-native";
+import React, { Key, useState } from "react";
+import { View, TouchableOpacity, ScrollView } from "react-native";
 
 import ChatData from "./ChatData";
 import ChatHeader from "./ChatHeader";
 import ChatMessage from "./Conversation";
 import plus from "../../../../assets/icons/chatplus.svg";
+import sent from "../../../../assets/icons/sent.svg";
 import { SVG } from "../../../components/SVG";
 import { ScreenContainer } from "../../../components/ScreenContainer";
 import { Separator } from "../../../components/Separator";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
-import { RichText } from "../../../components/socialFeed/RichText/RichText.web";
 import { SpacerColumn } from "../../../components/spacer";
 import { neutral33 } from "../../../utils/style/colors";
+import { layout } from "../../../utils/style/layout";
 import { LocalFileData } from "../../../utils/types/feed";
 import UploadImage from "../MessengerHomeCreateChatDropdown/UploadImage";
-
 interface IMessage {
   id: Key | null | undefined;
   source: any;
@@ -53,108 +47,67 @@ const ChatSection = () => {
   };
 
   return (
-    <ScreenContainer>
-      <View style={{ position: "relative" }}>
-        <View style={{ zIndex: 11111 }}>
-          <ChatHeader
-            messages={messages}
-            searchInput={searchInput}
-            setSearchInput={setSearchInput}
-          />
-        </View>
-        <Separator color={neutral33} />
-        <View style={styles.container}>
-          <SpacerColumn size={2} />
-          <ScrollView>
-            {messages.map((msg, index) => (
-              <ChatMessage
-                key={msg.id}
-                message={msg.message}
-                isSender={msg.isSender}
-                time={msg.time}
-                receiverName={msg.isSender ? undefined : msg.name}
-                source={msg.source}
-                imageStyle={{ height: 200, width: 120, borderRadius: 10 }}
-              />
-            ))}
-          </ScrollView>
-          <SpacerColumn size={3} />
-          <View style={styles.textInputContainer}>
-            <UploadImage
-              showAttachmentModal={showAttachmentModal}
-              setShowAttachmentModal={setShowAttachmentModal}
-              thumbnailFile={thumbnailFile}
-              setThumbnailFile={setThumbnailFile}
-              messages={messages}
-              setMessages={setMessages}
-              newMessage={newMessage}
-              setNewMessage={setNewMessage}
-            />
-
-            <TextInputCustom
-              name="message"
-              placeHolder="Add a Message"
-              value={newMessage}
-              onChangeText={setNewMessage}
-              iconActions={
-                <TouchableOpacity onPress={() => setShowAttachmentModal(true)}>
-                  <View style={{ marginRight: 10 }}>
-                    <SVG source={plus} />
-                  </View>
-                </TouchableOpacity>
-              }
-              maxLength={1000}
-            >
-              <TouchableOpacity onPress={handleSend}>
-                <Image
-                  style={styles.sendButton}
-                  source={require("../../../../assets/icons/sent.png")}
-                />
-              </TouchableOpacity>
-            </TextInputCustom>
-          </View>
-        </View>
+    <ScreenContainer noScroll>
+      <View style={{ zIndex: 11111 }}>
+        <ChatHeader
+          messages={messages}
+          searchInput={searchInput}
+          setSearchInput={setSearchInput}
+        />
       </View>
+      <Separator color={neutral33} />
+
+      <ScrollView>
+        {messages.map((msg, index) => (
+          <ChatMessage
+            key={index}
+            message={msg.message}
+            isSender={msg.isSender}
+            time={msg.time}
+            receiverName={msg.isSender ? undefined : msg.name}
+            source={msg.source}
+            imageStyle={{ height: 200, width: 120, borderRadius: 10 }}
+            height={0}
+            width={0}
+          />
+        ))}
+      </ScrollView>
+
+      <SpacerColumn size={3} />
+
+      <UploadImage
+        showAttachmentModal={showAttachmentModal}
+        setShowAttachmentModal={setShowAttachmentModal}
+        thumbnailFile={thumbnailFile}
+        setThumbnailFile={setThumbnailFile}
+        messages={messages}
+        setMessages={setMessages}
+        newMessage={newMessage}
+        setNewMessage={setNewMessage}
+      />
+
+      <TextInputCustom
+        labelStyle={{ marginTop: -10 }}
+        containerStyle={{
+          marginHorizontal: layout.padding_x0_5,
+        }}
+        name="message"
+        placeHolder="Add a Message"
+        value={newMessage}
+        onChangeText={setNewMessage}
+        iconActions={
+          <TouchableOpacity onPress={() => setShowAttachmentModal(true)}>
+            <SVG source={plus} style={{ marginRight: 10 }} />
+          </TouchableOpacity>
+        }
+        label=""
+      >
+        <TouchableOpacity onPress={handleSend}>
+          <SVG source={sent} />
+        </TouchableOpacity>
+      </TextInputCustom>
     </ScreenContainer>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-
-  sendButton: { height: 20, width: 20, marginRight: 10 },
-
-  attachmentModal: {
-    position: "absolute",
-    top: -55,
-    left: 10,
-    backgroundColor: "rgba(41, 41, 41, 0.8)",
-    padding: 6,
-    borderRadius: 6,
-    borderWidth: 1,
-
-    zIndex: 111,
-  },
-  attachmentItem: {
-    height: 25,
-  },
-  textInputContainer: {
-    position: "relative",
-  },
-
-  image: {
-    height: 300,
-    width: 200,
-    alignSelf: "center",
-  },
-  imagesmall: {
-    height: 100,
-    width: "40%",
-    alignSelf: "center",
-    borderRadius: 10,
-  },
-});
 
 export default ChatSection;

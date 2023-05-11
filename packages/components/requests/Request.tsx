@@ -32,80 +32,82 @@ const RequestList: React.FC<Props> = ({ avatar, name, isOnline }) => {
   return (
     <View>
       <FlexRow justifyContent="space-between">
-        <View style={{ width: "60%" }}>
+        <View>
           <FlexRow>
-            <Avatar.Image size={35} source={avatar} />
+            <Avatar.Image size={40} source={avatar} />
             <Badge
               style={{
                 position: "absolute",
-                top: 20,
-                left: 25,
+                top: 30,
+                left: 30,
 
                 backgroundColor: onlineStatusBadgeColor,
               }}
               size={12}
             />
-            <SpacerRow size={2} />
+            <SpacerRow size={1.5} />
             <View>
               <BrandText style={[fontSemibold13, { color: secondaryColor }]}>
                 {name}
               </BrandText>
+              <SpacerColumn size={0.4} />
               <BrandText style={[fontSemibold11, { color: neutralA3 }]}>
                 {isOnline ? "Online" : "Offline"}
               </BrandText>
             </View>
           </FlexRow>
         </View>
-
-        <FlexRow style={{ width: "40%" }}>
-          <View>
-            <TouchableOpacity>
-              <TertiaryBox
-                height={40}
-                mainContainerStyle={{
-                  backgroundColor: primaryColor,
-                  padding: 10,
-                  alignItems: "center",
-                }}
-              >
-                <Text
-                  style={[
-                    fontSemibold14,
-                    { color: primaryTextColor, paddingHorizontal: 10 },
-                  ]}
+        <View>
+          <FlexRow>
+            <View>
+              <TouchableOpacity>
+                <TertiaryBox
+                  height={40}
+                  mainContainerStyle={{
+                    backgroundColor: primaryColor,
+                    padding: 10,
+                    alignItems: "center",
+                  }}
                 >
-                  Add
-                </Text>
-              </TertiaryBox>
-            </TouchableOpacity>
-          </View>
-          <SpacerRow size={1.5} />
-          <View>
-            <TouchableOpacity>
-              <TertiaryBox
-                height={40}
-                mainContainerStyle={{
-                  backgroundColor: neutral30,
-                  padding: 10,
-                  alignItems: "center",
-                }}
-              >
-                <Text
-                  style={[
-                    fontSemibold14,
-                    { color: primaryColor, paddingHorizontal: 4 },
-                  ]}
+                  <BrandText
+                    style={[
+                      fontSemibold14,
+                      { color: primaryTextColor, paddingHorizontal: 10 },
+                    ]}
+                  >
+                    Add
+                  </BrandText>
+                </TertiaryBox>
+              </TouchableOpacity>
+            </View>
+            <SpacerRow size={1.5} />
+            <View>
+              <TouchableOpacity>
+                <TertiaryBox
+                  height={40}
+                  mainContainerStyle={{
+                    backgroundColor: neutral30,
+                    padding: 10,
+                    alignItems: "center",
+                  }}
                 >
-                  Cancel
-                </Text>
-              </TertiaryBox>
-            </TouchableOpacity>
-          </View>
-        </FlexRow>
+                  <BrandText
+                    style={[
+                      fontSemibold14,
+                      { color: primaryColor, paddingHorizontal: 4 },
+                    ]}
+                  >
+                    Cancel
+                  </BrandText>
+                </TertiaryBox>
+              </TouchableOpacity>
+            </View>
+          </FlexRow>
+        </View>
       </FlexRow>
-      <SpacerColumn size={1} />
+      <SpacerColumn size={1.3} />
       <Separator color={neutral22} />
-      <SpacerColumn size={1} />
+      <SpacerColumn size={1.3} />
     </View>
   );
 };

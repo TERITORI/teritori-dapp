@@ -7,7 +7,7 @@ import { Separator } from "../../components/Separator";
 import FriendList from "../../components/friends/FriendsList";
 import { TextInputCustomBorder } from "../../components/inputs/TextInputCustomBorder";
 import { SpacerColumn } from "../../components/spacer";
-import { neutral33 } from "../../utils/style/colors";
+import { neutral00, neutral33 } from "../../utils/style/colors";
 const Friends = ({ items }) => {
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -16,13 +16,13 @@ const Friends = ({ items }) => {
   );
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#000" }}>
+    <View>
       {/* FIXME: remaining in web */}
       {/* <Separator horizontal={false} /> */}
       {/* <SpacerColumn size={1} /> */}
       <TextInputCustomBorder
         placeHolder="Search..."
-        style={{ backgroundColor: "#000" }}
+        style={{ backgroundColor: neutral00 }}
         value={searchQuery}
         onChangeText={setSearchQuery}
       />

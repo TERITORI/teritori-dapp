@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { View, Text } from "react-native";
+import { View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 import nullIcon from "../../../assets/icons/illustration.svg";
+import { BrandText } from "../../components/BrandText";
 import FlexRow from "../../components/FlexRow";
 import { SVG } from "../../components/SVG";
 import { Separator } from "../../components/Separator";
-import { SeparatorGradient } from "../../components/SeparatorGradient";
 import AddFriendList from "../../components/addfriend/AddFriendList";
 import data from "../../components/addfriend/data";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
@@ -34,12 +34,12 @@ const AddFriend = () => {
       {/* FIXME: remaining in web */}
       {/* <Separator horizontal={false} />
       <SpacerColumn size={2} /> */}
-      <Text style={[fontSemibold16, { color: secondaryColor }]}>
+      <BrandText style={[fontSemibold16, { color: secondaryColor }]}>
         Add a friend
-      </Text>
-      <Text style={[fontSemibold13, { color: neutralA3 }]}>
+      </BrandText>
+      <BrandText style={[fontSemibold13, { color: neutralA3 }]}>
         You can find a friend using .tori directory service.
-      </Text>
+      </BrandText>
       <SpacerColumn size={2} />
       <FlexRow>
         <TextInputCustomBorder
@@ -59,9 +59,9 @@ const AddFriend = () => {
               paddingHorizontal: 15,
             }}
           >
-            <Text style={[fontSemibold14, { color: primaryTextColor }]}>
+            <BrandText style={[fontSemibold14, { color: primaryTextColor }]}>
               Find a friend
-            </Text>
+            </BrandText>
           </TertiaryBox>
         </TouchableOpacity>
       </FlexRow>

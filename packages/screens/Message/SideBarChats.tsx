@@ -19,7 +19,7 @@ import {
   neutral22,
 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
+
 const SideBarChats: React.FC = () => {
   const navigation = useAppNavigation();
   return (
