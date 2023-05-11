@@ -92,7 +92,7 @@ export const DaoCreateProposalModal: React.FC<{
             name="proposalName"
             label="Proposal name"
             rules={{ required: true }}
-            isAsterickSign
+            // isAsterickSign
           />
           <SpacerColumn size={2.5} />
           <TextInputCustom<CreateDaoProposalFormType>
@@ -104,7 +104,7 @@ export const DaoCreateProposalModal: React.FC<{
             multiline
             numberOfLines={3}
             rules={{ required: true }}
-            isAsterickSign
+            // isAsterickSign
           />
         </View>
         <View style={styles.footer}>

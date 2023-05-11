@@ -27,7 +27,7 @@ import {
 } from "react-native";
 import { SvgProps } from "react-native-svg";
 
-import { TextInputLabelProps } from "./TextInputOutsideLabel";
+// import { TextInputLabelProps } from "./TextInputOutsideLabel";
 import { DEFAULT_FORM_ERRORS } from "../../utils/errors";
 import { handleKeyPress } from "../../utils/keyboard";
 import {
@@ -52,8 +52,8 @@ import { TertiaryBox } from "../boxes/TertiaryBox";
 import { SpacerColumn, SpacerRow } from "../spacer";
 
 export interface TextInputCustomProps<T extends FieldValues>
-  extends Omit<TextInputProps, "accessibilityRole" | "defaultValue">,
-    TextInputLabelProps {
+  extends Omit<TextInputProps, "accessibilityRole" | "defaultValue"> {
+  label: string;
   variant?: "regular" | "labelOutside" | "noCropBorder" | "noStyle";
   iconSVG?: React.FC<SvgProps>;
   placeHolder?: string;
@@ -70,6 +70,7 @@ export interface TextInputCustomProps<T extends FieldValues>
   name: Path<T>;
   rules?: Omit<RegisterOptions, "valueAsNumber" | "valueAsDate" | "setValueAs">;
   defaultValue?: PathValue<T, Path<T>>;
+  subtitle?: React.ReactElement;
   hideLabel?: boolean;
   valueModifier?: (value: string) => string;
   labelStyle?: TextStyle;
@@ -130,7 +131,7 @@ export const TextInputCustom = <T extends FieldValues>({
   labelStyle,
   iconSVG,
   noBrokenCorners,
-  isAsterickSign,
+  // isAsterickSign,
   hideLabel,
   valueModifier,
   containerStyle,

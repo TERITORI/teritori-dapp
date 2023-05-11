@@ -1,5 +1,5 @@
+import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { Window as KeplrWindow } from "@keplr-wallet/types";
-import { SigningCosmWasmClient } from "cosmwasm";
 
 import { teritoriGasPrice } from "./teritori";
 

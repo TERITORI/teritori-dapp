@@ -41,7 +41,6 @@ export const TransactionProposalScreen = () => {
       noMargin
       fullWidth
       noScroll
-      headerStyle={{ zIndex: 1000 }}
     >
       <View style={styles.header}>
         <BrandText style={fontSemibold28}>Transaction proposals</BrandText>

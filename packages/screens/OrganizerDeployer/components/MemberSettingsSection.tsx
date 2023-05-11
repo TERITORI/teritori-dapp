@@ -56,7 +56,7 @@ export const MemberSettingsSection: React.FC<MemberSettingsSectionProps> = ({
                 label="Member Address"
                 hideLabel={index > 0}
                 control={control}
-                isAsterickSign
+                // isAsterickSign
                 rules={{ required: true, validate: validateAddress }}
                 placeHolder="Account address"
                 iconSVG={walletInputSVG}
@@ -77,7 +77,7 @@ export const MemberSettingsSection: React.FC<MemberSettingsSectionProps> = ({
                 label="Weight"
                 hideLabel={index > 0}
                 control={control}
-                isAsterickSign
+                // isAsterickSign
                 rules={{ required: true, pattern: patternOnlyNumbers }}
                 placeHolder="1"
               />

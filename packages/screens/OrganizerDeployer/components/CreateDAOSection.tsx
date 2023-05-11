@@ -69,7 +69,7 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
                   placeHolder="Type organization's name here"
                   name="organizationName"
                   rules={{ required: true }}
-                  isAsterickSign
+                  // isAsterickSign
                 />
               </View>
               <SpacerRow size={2.5} />
@@ -81,7 +81,7 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
                   placeHolder="your-organization.tori"
                   name="associatedTeritoriNameService"
                   rules={{ required: true }}
-                  isAsterickSign
+                  // isAsterickSign
                 />
               </View>
             </View>
@@ -94,7 +94,7 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
               placeHolder="https://example.com/preview.png"
               name="imageUrl"
               rules={{ required: true }}
-              isAsterickSign
+              // isAsterickSign
             />
             <SpacerColumn size={2.5} />
             <TextInputCustom<CreateDaoFormType>
@@ -104,7 +104,7 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
               placeHolder="Type organization's description here"
               name="organizationDescription"
               rules={{ required: true }}
-              isAsterickSign
+              // isAsterickSign
               multiline
               numberOfLines={3}
             />

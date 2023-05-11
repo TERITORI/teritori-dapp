@@ -434,7 +434,7 @@ export const useSwap = (
         title: "Swap succeed",
         message: "",
       } as SwapResult;
-    } catch (e) {
+    } catch (e: any) {
       console.error("tx failed", e);
       return {
         isError: true,
