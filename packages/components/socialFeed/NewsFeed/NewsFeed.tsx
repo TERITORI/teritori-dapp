@@ -10,6 +10,7 @@ import Animated, {
   useSharedValue,
 } from "react-native-reanimated";
 
+import { CreateShortPostButton } from "./CreateShortPost/CreateShortPostButton";
 import { CreateShortPostButtonRound } from "./CreateShortPost/CreateShortPostButtonRound";
 import { CreateShortPostModal } from "./CreateShortPost/CreateShortPostModal";
 import { NewsFeedInput } from "./NewsFeedInput";
@@ -20,16 +21,19 @@ import {
   combineFetchFeedPages,
   useFetchFeed,
 } from "../../../hooks/feed/useFetchFeed";
+import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useMaxResolution } from "../../../hooks/useMaxResolution";
 import {
   layout,
   RESPONSIVE_BREAKPOINT_S,
   screenContentMaxWidth,
 } from "../../../utils/style/layout";
-import { SpacerColumn } from "../../spacer";
+import { SpacerColumn, SpacerRow } from "../../spacer";
 import { SocialThreadCard } from "../SocialThread/SocialThreadCard";
 
 const OFFSET_Y_LIMIT_FLOATING = 224;
+export const ROUND_BUTTON_WIDTH_L = 60;
+export const ROUND_BUTTON_WIDTH_S = 42;
 
 interface NewsFeedProps {
   Header: React.ComponentType;
@@ -46,6 +50,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
   additionalHashtag,
   additionalMention,
 }) => {
+  const isMobile = useIsMobile();
   const { width: windowWidth } = useWindowDimensions();
   const { width } = useMaxResolution();
   const { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading } =
@@ -100,28 +105,42 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
         >
           <Header />
         </View>
-        <SpacerColumn size={2.5} />
+        {/*<SpacerColumn size={2.5} />*/}
         <Animated.View
           style={[
             {
               justifyContent: "center",
               alignItems: "center",
+              flexDirection: isMobile ? "row" : "column",
             },
           ]}
         >
-          <NewsFeedInput
-            type="post"
-            onSubmitSuccess={refetch}
-            additionalMention={additionalMention}
-            additionalHashtag={additionalHashtag}
-          />
-          <SpacerColumn size={1.5} />
+          {isMobile ? (
+            <>
+              <CreateShortPostButton
+                label="Create Post"
+                onPress={() => setCreateModalVisible(true)}
+              />
+              <SpacerRow size={1.5} />
+            </>
+          ) : (
+            <>
+              <NewsFeedInput
+                type="post"
+                onSubmitSuccess={refetch}
+                additionalMention={additionalMention}
+                additionalHashtag={additionalHashtag}
+              />
+              <SpacerColumn size={1.5} />
+            </>
+          )}
           <RefreshButton isRefreshing={isLoadingValue} onPress={refetch} />
         </Animated.View>
         <SpacerColumn size={1.5} />
       </>
     ),
     [
+      isMobile,
       isLoadingValue,
       Header,
       additionalMention,
@@ -141,8 +160,8 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
       position: "absolute",
       justifyContent: "center",
       alignItems: "center",
-      right: windowWidth < RESPONSIVE_BREAKPOINT_S ? 0.05 * windowWidth : 68,
-      bottom: windowWidth < RESPONSIVE_BREAKPOINT_S ? 0.05 * windowWidth : 68,
+      right: 24,
+      bottom: 32,
     },
   });
 
@@ -190,7 +209,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
         <View style={styles.floatingActions}>
           <CreateShortPostButtonRound
             onPress={() => setCreateModalVisible(true)}
-            style={{ marginBottom: layout.padding_x2 }}
+            style={{ marginBottom: layout.padding_x1_5 }}
           />
 
           <RefreshButtonRound isRefreshing={isLoadingValue} onPress={refetch} />
