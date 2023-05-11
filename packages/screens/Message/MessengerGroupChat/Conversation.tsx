@@ -1,9 +1,22 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
+import { View, StyleSheet, TouchableOpacity, Image } from "react-native";
 
 import MessagePopup from "./MessagePopup";
 import avatar from "../../../../assets/icons/avatar.svg";
+import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
+import { SpacerRow } from "../../../components/spacer";
+import {
+  neutral77,
+  secondaryColor,
+  purpleDark,
+  neutral17,
+} from "../../../utils/style/colors";
+import {
+  fontBold10,
+  fontMedium10,
+  fontSemibold11,
+} from "../../../utils/style/fonts";
 interface IChatMessageProps {
   message: string;
   isSender: boolean;
@@ -36,7 +49,9 @@ const ChatMessage = ({
           style={[isSender ? styles.senderContainer : styles.receiverContainer]}
         >
           <TouchableOpacity onPress={() => setShowPopup(!showPopup)}>
-            <Text style={styles.message}>{message}</Text>
+            <BrandText style={[fontSemibold11, { color: secondaryColor }]}>
+              {message}
+            </BrandText>
           </TouchableOpacity>
 
           {source && (
@@ -54,15 +69,24 @@ const ChatMessage = ({
             style={{
               flexDirection: "row",
               position: "absolute",
-              top: -20,
+              top: -15,
               left: 10,
             }}
           >
             {!isSender && receiverName && (
-              <Text style={styles.name}>{receiverName}</Text>
+              <BrandText style={[fontBold10, { color: secondaryColor }]}>
+                {receiverName}
+              </BrandText>
             )}
-            {isSender && <Text style={styles.name}>{senderName}</Text>}
-            <Text style={styles.time}>{time}</Text>
+            {isSender && (
+              <BrandText style={[fontBold10, { color: secondaryColor }]}>
+                {senderName}
+              </BrandText>
+            )}
+            <SpacerRow size={0.5} />
+            <BrandText style={[fontMedium10, { color: neutral77 }]}>
+              {time}
+            </BrandText>
           </View>
         </View>
       </View>
@@ -76,14 +100,15 @@ const styles = StyleSheet.create({
   senderWrapper: {
     flexDirection: "row",
     flex: 1,
-    marginBottom: 40,
+    marginBottom: 20,
+    marginTop: 25,
   },
   receiverWrapper: {
     flexDirection: "row",
     marginBottom: 8,
   },
   senderContainer: {
-    backgroundColor: "#171717",
+    backgroundColor: neutral17,
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 16,
@@ -94,7 +119,7 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   receiverContainer: {
-    backgroundColor: "#5C26F5",
+    backgroundColor: purpleDark,
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 16,
@@ -117,20 +142,5 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: -50,
     top: -170,
-  },
-  message: {
-    color: "#FFFFFF",
-    fontSize: 11,
-    lineHeight: 18,
-    fontWeight: "500",
-  },
-  time: {
-    fontSize: 10,
-    color: "#808080",
-    marginLeft: 5,
-  },
-  name: {
-    fontSize: 10,
-    color: "#808080",
   },
 });

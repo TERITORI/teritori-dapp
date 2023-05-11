@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 
 import CheckboxGroup from "./MessengerHomeCreateChatDropdown/FriendNameDropdown";
 import avatar from "../../../assets/icons/avatar.svg";
+import { BrandText } from "../../components/BrandText";
 import FlexRow from "../../components/FlexRow";
 import { SVG } from "../../components/SVG";
 import { Separator } from "../../components/Separator";
@@ -19,7 +20,6 @@ import {
   secondaryColor,
 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
-
 const items = [
   { name: "Kristin Watson", checked: false },
   { name: "Kristin Watson", checked: false },
@@ -90,9 +90,9 @@ const CreateGroup = ({ setShowTertiaryBox }) => {
           }}
           fullWidth
         >
-          <Text style={[fontSemibold14, { color: primaryTextColor }]}>
+          <BrandText style={[fontSemibold14, { color: primaryTextColor }]}>
             Create group
-          </Text>
+          </BrandText>
         </TertiaryBox>
       </TouchableOpacity>
       <SpacerColumn size={2} />

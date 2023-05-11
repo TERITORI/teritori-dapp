@@ -73,7 +73,9 @@ const MessagePopup = ({ isForwarding, setIsForwarding }) => {
         <FlexRow>
           <SVG source={reply} height={16} width={16} color={neutralA3} />
           <SpacerRow size={1} />
-          <Text style={[fontSemibold13, { color: neutralA3 }]}>Reply</Text>
+          <BrandText style={[fontSemibold13, { color: neutralA3 }]}>
+            Reply
+          </BrandText>
         </FlexRow>
       </TouchableOpacity>
 
@@ -83,7 +85,9 @@ const MessagePopup = ({ isForwarding, setIsForwarding }) => {
         <FlexRow>
           <SVG source={farwardto} height={16} width={16} color={neutralA3} />
           <SpacerRow size={1} />
-          <Text style={[fontSemibold13, { color: neutralA3 }]}>Forward to</Text>
+          <BrandText style={[fontSemibold13, { color: neutralA3 }]}>
+            Forward to
+          </BrandText>
           <SpacerRow size={2} />
           <SVG
             source={farward}
@@ -153,7 +157,9 @@ const MessagePopup = ({ isForwarding, setIsForwarding }) => {
         <FlexRow>
           <SVG source={copy} height={20} width={20} color={neutralA3} />
           <SpacerRow size={1} />
-          <Text style={[fontSemibold13, { color: neutralA3 }]}>Copy text</Text>
+          <BrandText style={[fontSemibold13, { color: neutralA3 }]}>
+            Copy text
+          </BrandText>
         </FlexRow>
       </TouchableOpacity>
       <SpacerColumn size={1} />
@@ -161,7 +167,9 @@ const MessagePopup = ({ isForwarding, setIsForwarding }) => {
         <FlexRow>
           <SVG source={select} height={16} width={16} color={neutralA3} />
           <SpacerRow size={1} />
-          <Text style={[fontSemibold13, { color: neutralA3 }]}>Select</Text>
+          <BrandText style={[fontSemibold13, { color: neutralA3 }]}>
+            Select
+          </BrandText>
         </FlexRow>
       </TouchableOpacity>
       <SpacerColumn size={1} />
@@ -171,7 +179,9 @@ const MessagePopup = ({ isForwarding, setIsForwarding }) => {
         <FlexRow>
           <SVG source={deleteicon} height={16} width={16} color={neutralA3} />
           <SpacerRow size={1} />
-          <Text style={[fontSemibold13, { color: neutralA3 }]}>Delete</Text>
+          <BrandText style={[fontSemibold13, { color: neutralA3 }]}>
+            Delete
+          </BrandText>
         </FlexRow>
       </TouchableOpacity>
     </View>
