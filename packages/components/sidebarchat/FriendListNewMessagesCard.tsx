@@ -3,13 +3,18 @@ import { View, StyleSheet, TouchableOpacity } from "react-native";
 
 import farward from "../../../assets/icons/farward.svg";
 import friends from "../../../assets/icons/friends.svg";
-import { SVG } from "../../../packages/components/SVG";
-import { neutral22, secondaryColor } from "../../utils/style/colors";
+import {
+  neutral22,
+  secondaryColor,
+  primaryColor,
+} from "../../utils/style/colors";
 import { fontSemibold13 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import FlexRow from "../FlexRow";
+import { SVG } from "../SVG";
+import { TertiaryBadge } from "../badges/TertiaryBadge";
 import { SpacerRow } from "../spacer";
-const Searchbar = () => {
+const FriendListWithNewMessages = () => {
   return (
     <View style={styles.friendBox}>
       <FlexRow justifyContent="space-between">
@@ -23,8 +28,11 @@ const Searchbar = () => {
             </BrandText>
           </FlexRow>
         </View>
+
         <View>
           <FlexRow>
+            <TertiaryBadge label="9 new" textColor={primaryColor} />
+            <SpacerRow size={3} />
             <BrandText style={[fontSemibold13, { color: secondaryColor }]}>
               100
             </BrandText>
@@ -49,4 +57,4 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
 });
-export default Searchbar;
+export default FriendListWithNewMessages;

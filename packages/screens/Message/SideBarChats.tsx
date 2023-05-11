@@ -9,7 +9,7 @@ import FlexRow from "../../components/FlexRow";
 import { SVG } from "../../components/SVG";
 import { Separator } from "../../components/Separator";
 import ConversationData from "../../components/sidebarchat/ConversationData";
-import Searchbar from "../../components/sidebarchat/Searchbar";
+import FriendListWithNewMessages from "../../components/sidebarchat/FriendListNewMessagesCard";
 import SideBarChatConversation from "../../components/sidebarchat/SideBarChatConversation";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
 import { useAppNavigation } from "../../utils/navigation";
@@ -25,7 +25,7 @@ const SideBarChats: React.FC = () => {
   return (
     <View>
       <SpacerColumn size={2} />
-      <Searchbar />
+      <FriendListWithNewMessages />
       <SpacerColumn size={2.5} />
       <FlexRow justifyContent="space-between">
         <View>
@@ -36,20 +36,20 @@ const SideBarChats: React.FC = () => {
             <SpacerRow size={0.8} />
             <SVG
               source={chevronDownSVG}
-              height={16}
-              width={16}
+              height={20}
+              width={20}
               color={secondaryColor}
             />
           </FlexRow>
         </View>
         <View>
           <FlexRow>
-            <SVG source={add} height={16} width={16} color={primaryColor} />
+            <SVG source={add} color={primaryColor} />
             <SpacerRow size={2} />
             <SVG
               source={Search}
-              height={16}
-              width={16}
+              height={20}
+              width={20}
               color={secondaryColor}
             />
           </FlexRow>
@@ -59,7 +59,7 @@ const SideBarChats: React.FC = () => {
       <SpacerColumn size={2.5} />
 
       <Separator horizontal={false} color={neutral22} />
-
+      <SpacerColumn size={1.5} />
       {ConversationData.map((item, index) => (
         <TouchableOpacity
           onPress={() =>
@@ -75,6 +75,7 @@ const SideBarChats: React.FC = () => {
             isOnline={item.isOnline}
             chat={item.chat}
             time={item.time}
+            iconCheck={item?.icon}
           />
         </TouchableOpacity>
       ))}
