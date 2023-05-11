@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Avatar, Badge } from "react-native-paper";
 
@@ -32,50 +32,50 @@ const AddFriendList: React.FC<Props> = ({ avatar, name, isOnline }) => {
   return (
     <View>
       <FlexRow justifyContent="space-between">
-        <View style={{ width: "70%" }}>
+        <View>
           <FlexRow>
-            <Avatar.Image size={35} source={avatar} />
+            <Avatar.Image size={40} source={avatar} />
             <Badge
               style={{
                 position: "absolute",
-                top: 20,
-                left: 25,
+                top: 30,
+                left: 30,
 
                 backgroundColor: onlineStatusBadgeColor,
               }}
               size={12}
             />
-            <SpacerRow size={2} />
+            <SpacerRow size={1.5} />
             <View>
               <BrandText style={[fontSemibold13, { color: secondaryColor }]}>
                 {name}
               </BrandText>
+              <SpacerColumn size={0.4} />
               <BrandText style={[fontSemibold11, { color: neutralA3 }]}>
                 {isOnline ? "Online" : "Offline"}
               </BrandText>
             </View>
           </FlexRow>
         </View>
-        <View style={{ width: "30%" }}>
-          <TouchableOpacity>
-            <TertiaryBox
-              height={40}
-              mainContainerStyle={{
-                backgroundColor: neutral30,
-                padding: 10,
-                alignItems: "center",
-              }}
-            >
-              <Text style={[fontSemibold14, { color: primaryColor }]}>
-                Send Request
-              </Text>
-            </TertiaryBox>
-          </TouchableOpacity>
-        </View>
+
+        <TouchableOpacity>
+          <TertiaryBox
+            height={40}
+            mainContainerStyle={{
+              backgroundColor: neutral30,
+              padding: 10,
+              alignItems: "center",
+            }}
+          >
+            <BrandText style={[fontSemibold14, { color: primaryColor }]}>
+              Send Request
+            </BrandText>
+          </TertiaryBox>
+        </TouchableOpacity>
       </FlexRow>
-      <SpacerColumn size={1} />
+      <SpacerColumn size={1.3} />
       <Separator color={neutral22} />
-      <SpacerColumn size={1} />
+      <SpacerColumn size={1.3} />
     </View>
   );
 };

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 
 import avatar from "../../../../assets/icons/avatar.svg";
+import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
@@ -47,9 +48,9 @@ const CheckboxGroup: React.FC<CheckboxGroupProps> = ({ items, onChange }) => {
             <SpacerRow size={2} />
             <SVG source={avatar} />
             <SpacerRow size={2} />
-            <Text style={[fontSemibold14, { color: secondaryColor }]}>
+            <BrandText style={[fontSemibold14, { color: secondaryColor }]}>
               {item.name}
-            </Text>
+            </BrandText>
           </FlexRow>
           <SpacerColumn size={1} />
         </>

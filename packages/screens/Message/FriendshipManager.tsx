@@ -10,6 +10,7 @@ import friendData from "../../components/friends/data";
 import data from "../../components/requests/data";
 import { SpacerColumn } from "../../components/spacer";
 import { Tabs } from "../../components/tabs/Tabs";
+import { neutral22 } from "../../utils/style/colors";
 const FriendshipManager = () => {
   const tabs = {
     friends: {
@@ -33,6 +34,7 @@ const FriendshipManager = () => {
       <View>
         <SpacerColumn size={2} />
         <Tabs items={tabs} onSelect={setSelectedTab} selected={selectedTab} />
+
         <SpacerColumn size={2} />
         {selectedTab === "friends" && <Friends items={friendData} />}
         {selectedTab === "request" && <Requests items={data} />}

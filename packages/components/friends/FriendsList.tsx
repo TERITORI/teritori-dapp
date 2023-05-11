@@ -1,9 +1,17 @@
 import React from "react";
-import { View, Image, Text, StyleSheet } from "react-native";
+import { View, Image, StyleSheet } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Avatar, Badge } from "react-native-paper";
 
+import chaticon from "../../../assets/icons/chaticon.svg";
+import dots from "../../../assets/icons/dots.svg";
 import { Separator } from "../../components/Separator";
+import { neutral22, neutralA3, secondaryColor } from "../../utils/style/colors";
+import { fontSemibold13, fontSemibold11 } from "../../utils/style/fonts";
+import { BrandText } from "../BrandText";
+import FlexRow from "../FlexRow";
+import { SVG } from "../SVG";
+import { SpacerColumn, SpacerRow } from "../spacer";
 
 type Props = {
   name: string;
@@ -14,52 +22,53 @@ type Props = {
 const FriendList: React.FC<Props> = ({ avatar, name, isOnline }) => {
   const onlineStatusBadgeColor = isOnline ? "green" : "yellow";
   return (
-    <View style={styles.container}>
-      <View style={styles.row}>
-        <View style={{ flexDirection: "row" }}>
-          <Avatar.Image size={35} source={avatar} />
-          <Badge
-            style={{
-              position: "absolute",
-              top: 20,
-              left: 25,
+    <View>
+      <FlexRow justifyContent="space-between">
+        <View>
+          <FlexRow>
+            <Avatar.Image size={40} source={avatar} />
+            <Badge
+              style={{
+                position: "absolute",
+                top: 30,
+                left: 30,
 
-              backgroundColor: onlineStatusBadgeColor,
-            }}
-            size={12}
-          />
-          <View style={{ marginLeft: 12 }}>
-            <Text style={styles.name}>{name}</Text>
-            <Text style={styles.online}>{isOnline ? "Online" : "Offline"}</Text>
-          </View>
-        </View>
-
-        <View style={styles.chatboxicon}>
-          <TouchableOpacity>
-            <Image
-              source={require("../../../assets/icons/chat.png")}
-              style={styles.chatIcon}
+                backgroundColor: onlineStatusBadgeColor,
+              }}
+              size={12}
             />
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Image
-              source={require("../../../assets/icons/dots.png")}
-              style={styles.dotsIcon}
-            />
-          </TouchableOpacity>
+            <SpacerRow size={1.5} />
+            <View>
+              <BrandText style={[fontSemibold13, { color: secondaryColor }]}>
+                {name}
+              </BrandText>
+              <SpacerColumn size={0.4} />
+              <BrandText style={[fontSemibold11, { color: neutralA3 }]}>
+                {isOnline ? "Online" : "Offline"}
+              </BrandText>
+            </View>
+          </FlexRow>
         </View>
-      </View>
-      <View style={{ marginTop: 10 }}>
-        <Separator color="#222222" />
-      </View>
+        <View>
+          <FlexRow>
+            <TouchableOpacity>
+              <SVG source={chaticon} />
+            </TouchableOpacity>
+            <SpacerRow size={1.5} />
+            <TouchableOpacity>
+              <SVG source={dots} />
+            </TouchableOpacity>
+          </FlexRow>
+        </View>
+      </FlexRow>
+      <SpacerColumn size={1.3} />
+      <Separator color={neutral22} />
+      <SpacerColumn size={1.3} />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "#000",
-  },
   row: {
     flexDirection: "row",
     marginTop: 10,

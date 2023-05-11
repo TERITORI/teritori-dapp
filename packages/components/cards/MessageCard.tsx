@@ -8,6 +8,8 @@ import {
   secondaryColor,
 } from "../../utils/style/colors";
 import { fontSemibold12, fontSemibold14 } from "../../utils/style/fonts";
+import { layout } from "../../utils/style/layout";
+import { BrandText } from "../BrandText";
 import FlexRow from "../FlexRow";
 import { SpacerRow } from "../spacer";
 interface CardProps {
@@ -28,18 +30,21 @@ const MessageCard: FC<CardProps> = ({
     <FlexRow style={styles.container}>
       <SVG source={icon} />
 
-      <Text style={[fontSemibold14, { color: neutral55 }]}>{text}</Text>
+      <BrandText style={[fontSemibold14, { color: neutral55 }]}>
+        {text}
+      </BrandText>
       <SpacerRow size={1} />
-      <Text style={[fontSemibold12, { color: secondaryColor }]}>{subtext}</Text>
+      <BrandText style={[fontSemibold12, { color: secondaryColor }]}>
+        {subtext}
+      </BrandText>
     </FlexRow>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    // padding: 16,
-    paddingLeft: 6,
-    paddingRight: 10,
+    paddingHorizontal: layout.padding_x1,
+
     borderRadius: 12,
     backgroundColor: neutral00,
     borderColor: neutral33,

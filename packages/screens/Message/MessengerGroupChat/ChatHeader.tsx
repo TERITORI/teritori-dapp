@@ -17,10 +17,7 @@ import searchSVG from "../../../../assets/icons/search.svg";
 import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
-import { SearchBar } from "../../../components/ScreenContainer/SearchBar/";
 import { Separator } from "../../../components/Separator";
-import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
-import { TextInputCustomBorder } from "../../../components/inputs/TextInputCustomBorder";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import {
   neutral17,
