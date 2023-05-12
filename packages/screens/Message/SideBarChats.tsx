@@ -22,6 +22,7 @@ import { fontSemibold14 } from "../../utils/style/fonts";
 
 const SideBarChats: React.FC = () => {
   const navigation = useAppNavigation();
+  const MAX_WIDTH = 110;
   return (
     <View>
       <SpacerColumn size={2} />
@@ -73,7 +74,11 @@ const SideBarChats: React.FC = () => {
             avatar={item.avatar}
             name={item.name}
             isOnline={item.isOnline}
-            chat={item.chat}
+            chat={
+              item.chat.length > 0.5 * MAX_WIDTH
+                ? `${item.chat.slice(0, MAX_WIDTH / 2)}...`
+                : item.chat
+            }
             time={item.time}
             iconCheck={item?.icon}
           />
