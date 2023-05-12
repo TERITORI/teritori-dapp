@@ -19,6 +19,7 @@ import { CollectionScreen } from "../../screens/Marketplace/CollectionScreen";
 import { CollectionToolsScreen } from "../../screens/Marketplace/CollectionToolsScreen";
 import { MarketplaceScreen } from "../../screens/Marketplace/MarketplaceScreen";
 import { NFTDetailScreen } from "../../screens/Marketplace/NFTDetailScreen";
+import { PopularCollectionsScreen } from "../../screens/Marketplace/PopularCollectionsScreen";
 import { MyCollectionScreen } from "../../screens/MyCollection/MyCollectionScreen";
 import { OrganizationDeployerScreen } from "../../screens/Organizations/OrganizationDeployerScreen";
 import { OrganizationsScreen } from "../../screens/Organizations/OrganizationsScreen";
@@ -66,10 +67,19 @@ export const Navigator: React.FC = () => {
         component={RiotGameScreen}
         options={{ header: () => null }}
       />
+
       <Stack.Screen
         name="Marketplace"
         component={MarketplaceScreen}
         options={{ header: () => null, title: screenTitle("Marketplace") }}
+      />
+      <Stack.Screen
+        name="PopularCollections"
+        component={PopularCollectionsScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("NFT Marketplace - Popular Collections"),
+        }}
       />
       <Stack.Screen
         name="Governance"

@@ -15,8 +15,15 @@ export const SortButton: React.FC<{
   sortDirection: SortDirection;
   onChangeSortDirection: (val: SortDirection) => void;
   mainContainerStyle?: StyleProp<ViewStyle>;
+  height?: number;
   style?: StyleProp<ViewStyle>;
-}> = ({ style, mainContainerStyle, sortDirection, onChangeSortDirection }) => {
+}> = ({
+  style,
+  mainContainerStyle,
+  sortDirection,
+  onChangeSortDirection,
+  height = 48,
+}) => {
   const handlePress = () => {
     if (sortDirection === SortDirection.SORT_DIRECTION_DESCENDING) {
       onChangeSortDirection(SortDirection.SORT_DIRECTION_ASCENDING);
@@ -39,7 +46,7 @@ export const SortButton: React.FC<{
           },
           mainContainerStyle,
         ]}
-        height={48}
+        height={height}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <SVG

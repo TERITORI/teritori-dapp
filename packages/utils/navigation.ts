@@ -27,6 +27,7 @@ export type RootStackParamList = {
   TNSHome: { modal: string; name?: string } | undefined;
 
   Marketplace: undefined;
+  PopularCollections: undefined;
   Collection: { id: string };
   CollectionTools: { id: string };
   NFTDetail: { id: string; openBuy?: boolean };
@@ -107,6 +108,7 @@ const navConfig: {
 
     // ==== Marketplace
     Marketplace: "marketplace",
+    PopularCollections: "popular-collections",
     Collection: "collection/:id",
     CollectionTools: "collection/:id/tools",
     NFTDetail: "nft/:id",
