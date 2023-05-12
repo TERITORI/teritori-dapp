@@ -1,7 +1,6 @@
 package indexerdb
 
 type Dao struct {
-	Id                     uint32 `gorm:"primaryKey;autoIncrement"`
 	Admin                  string
 	Address                string
 	Name                   string

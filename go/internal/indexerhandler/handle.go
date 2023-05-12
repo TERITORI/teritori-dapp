@@ -245,8 +245,6 @@ func (h *Handler) handleExecute(e *Message) error {
 				return errors.Wrap(err, "failed to handle squad stake")
 			}
 		}
-
-		// NOTE: add another stake handler here if needed
 	case "instantiate_contract_with_self_admin":
 		if executeMsg.Contract == h.config.DaoFactoryContractAddress {
 			if err := h.handleExecuteInstantiateContractWithSelfAdmin(e, &executeMsg); err != nil {

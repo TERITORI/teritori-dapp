@@ -5,6 +5,7 @@ import (
 
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/daopb"
+	"github.com/pkg/errors"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
@@ -27,7 +28,10 @@ func NewDaoService(ctx context.Context, conf *Config) daopb.DaoServiceServer {
 
 func (s *DaoService) DaoList(ctx context.Context, req *daopb.DaoListRequest) (*daopb.DaoListResponse, error) {
 	var daos []*daopb.DaoInfo
-	s.conf.IndexerDB.Model(&indexerdb.Dao{}).Order("id Desc").Scan(&daos)
+	err := s.conf.IndexerDB.Model(&indexerdb.Dao{}).Order("id Desc").Scan(&daos).Error
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to query database")
+	}
 	return &daopb.DaoListResponse{
 		Daos: daos,
 	}, nil

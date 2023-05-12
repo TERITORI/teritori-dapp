@@ -21,7 +21,7 @@ import { ScreenContainer } from "../../components/ScreenContainer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { TeritoriDaoCoreClient } from "../../contracts-clients/teritori-dao/TeritoriDaoCore.client";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getKeplrSigningCosmWasmClient } from "../../networks";
+import { getKeplrSigningCosmWasmClient, mustGetCosmosNetwork } from "../../networks";
 import { useAppNavigation } from "../../utils/navigation";
 
 export const ORGANIZER_DEPLOYER_STEPS = [
@@ -79,10 +79,10 @@ export const OrganizerDeployerScreen = () => {
         !step2ConfigureVotingFormData
       )
         return false;
-      const daoFactoryContractAddress = process.env
-        .TERITORI_DAO_FACTORY_CONTRACT_ADDRESS as string;
-      const walletAddress = selectedWallet.address;
       const networkId = selectedWallet.networkId;
+      const network = mustGetCosmosNetwork(networkId);
+      const daoFactoryContractAddress = network.daoFactoryContractAddress!;
+      const walletAddress = selectedWallet.address;
       const signingClient = await getKeplrSigningCosmWasmClient(networkId);
       const daoCoreClient = new TeritoriDaoCoreClient(
         signingClient,
@@ -94,6 +94,12 @@ export const OrganizerDeployerScreen = () => {
         if (!step3TokenSettingFormData) return false;
         createDaoRes = await daoCoreClient.createDaoTokenBased(
           {
+            daoPreProposeSingleCodeId: network.daoPreProposeSingleCodeId!,
+            daoProposalSingleCodeId: network.daoProposalSingleCodeId!,
+            daoCw20CodeId: network.daoCw20CodeId!,
+            daoCw20StakeCodeId: network.daoCw20StakeCodeId!,
+            daoVotingCw20StakedCodeId: network.daoVotingCw20StakedCodeId!,
+            daoCoreCodeId: network.daoCoreCodeId!,
             name: step1DaoInfoFormData.organizationName,
             description: step1DaoInfoFormData.organizationDescription,
             tns: step1DaoInfoFormData.associatedTeritoriNameService,
@@ -119,6 +125,11 @@ export const OrganizerDeployerScreen = () => {
         if (!step3MemberSettingFormData) return false;
         createDaoRes = await daoCoreClient.createDaoMemberBased(
           {
+            daoCoreCodeId: network.daoCoreCodeId!,
+            daoPreProposeSingleCodeId: network.daoPreProposeSingleCodeId!,
+            daoProposalSingleCodeId: network.daoProposalSingleCodeId!,
+            daoCw4GroupCodeId: network.daoCw4GroupCodeId!,
+            daoVotingCw4CodeId: network.daoVotingCw4CodeId!,
             name: step1DaoInfoFormData.organizationName,
             description: step1DaoInfoFormData.organizationDescription,
             tns: step1DaoInfoFormData.associatedTeritoriNameService,

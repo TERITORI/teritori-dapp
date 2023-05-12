@@ -10,7 +10,7 @@ import { DaoCoreConfig, ProposalModule, TokenHolder, DaoMember } from "./Teritor
 export interface TeritoriDaoCoreReadOnlyInterface {
   contractAddress: string;
   config: ()=> Promise<DaoCoreConfig>;
-  proposalModules: () => Promise<ProposalModule[]>;  
+  proposalModules: () => Promise<ProposalModule[]>;
 }
 export class TeritoriDaoCoreQueryClient implements TeritoriDaoCoreReadOnlyInterface {
   client: CosmWasmClient;
@@ -20,7 +20,7 @@ export class TeritoriDaoCoreQueryClient implements TeritoriDaoCoreReadOnlyInterf
     this.client = client;
     this.contractAddress = contractAddress;
     this.config = this.config.bind(this);
-    this.proposalModules = this.proposalModules.bind(this);    
+    this.proposalModules = this.proposalModules.bind(this);
   }
 
   config = async ():Promise<DaoCoreConfig> =>{
@@ -40,6 +40,12 @@ export interface TeritoriDaoCoreInterface extends TeritoriDaoCoreReadOnlyInterfa
   contractAddress: string;
   sender: string;  
   createDaoTokenBased:({
+    daoPreProposeSingleCodeId,
+    daoProposalSingleCodeId,
+    daoCw20CodeId,
+    daoCw20StakeCodeId,
+    daoVotingCw20StakedCodeId,
+    daoCoreCodeId,
     name,
     description,
     tns,
@@ -51,6 +57,12 @@ export interface TeritoriDaoCoreInterface extends TeritoriDaoCoreReadOnlyInterfa
     threshold,
     maxVotingPeriod,
   }:{
+    daoPreProposeSingleCodeId: number,
+    daoProposalSingleCodeId: number,
+    daoCw20CodeId: number,
+    daoCw20StakeCodeId: number,
+    daoVotingCw20StakedCodeId: number,
+    daoCoreCodeId: number,
     name: string;
     description: string;
     tns: string;
@@ -64,15 +76,25 @@ export interface TeritoriDaoCoreInterface extends TeritoriDaoCoreReadOnlyInterfa
   }, fee?: number | StdFee | "auto", memo?: string, funds?: Coin[])=>Promise<ExecuteResult>;
 
   createDaoMemberBased:({
+    daoCoreCodeId,
+    daoPreProposeSingleCodeId,
+    daoProposalSingleCodeId,
+    daoCw4GroupCodeId,
+    daoVotingCw4CodeId,
     name,
     description,
     tns,
-    imageUrl,    
+    imageUrl,
     members,
     quorum,
     threshold,
     maxVotingPeriod,
   }:{
+    daoCoreCodeId: number,
+    daoPreProposeSingleCodeId: number,
+    daoProposalSingleCodeId: number,
+    daoCw4GroupCodeId: number,
+    daoVotingCw4CodeId: number,
     name: string;
     description: string;
     tns: string;
@@ -100,6 +122,12 @@ export class TeritoriDaoCoreClient extends TeritoriDaoCoreQueryClient implements
 
   createDaoTokenBased = async (
   {
+    daoPreProposeSingleCodeId,
+    daoProposalSingleCodeId,
+    daoCw20CodeId,
+    daoCw20StakeCodeId,
+    daoVotingCw20StakedCodeId,
+    daoCoreCodeId,
     name,
     description,
     tns,
@@ -111,6 +139,12 @@ export class TeritoriDaoCoreClient extends TeritoriDaoCoreQueryClient implements
     threshold,
     maxVotingPeriod,
   }:{
+    daoPreProposeSingleCodeId: number;
+    daoProposalSingleCodeId: number;
+    daoCw20CodeId: number;
+    daoCw20StakeCodeId: number;
+    daoVotingCw20StakedCodeId: number;
+    daoCoreCodeId: number;
     name: string;
     description: string;
     tns: string;
@@ -120,7 +154,7 @@ export class TeritoriDaoCoreClient extends TeritoriDaoCoreQueryClient implements
     maxVotingPeriod: number;
     threshold: string;
     tokenName: string;
-    tokenSymbol: string;    
+    tokenSymbol: string;
   }, fee: number | StdFee | "auto" = "auto", memo?: string, funds?: Coin[]):Promise<ExecuteResult> =>{
 
     const dao_pre_propose_single_msg = {
@@ -147,7 +181,7 @@ export class TeritoriDaoCoreClient extends TeritoriDaoCoreQueryClient implements
       pre_propose_info: {
         module_may_propose: {
           info: {
-            code_id: parseInt(process.env.DAO_PRE_PROPOSE_SINGLE!, 10),
+            code_id: daoPreProposeSingleCodeId,
             msg: Buffer.from(
               JSON.stringify(dao_pre_propose_single_msg)
             ).toString("base64"),
@@ -160,7 +194,7 @@ export class TeritoriDaoCoreClient extends TeritoriDaoCoreQueryClient implements
     const proposal_modules_instantiate_info = [
       {
         admin: { core_module: {} },
-        code_id: parseInt(process.env.DAO_PROPOSAL_SINGLE!, 10),
+        code_id: daoProposalSingleCodeId,
         label: `DAO_${name}_DAOProposalSingle`,
         msg: Buffer.from(JSON.stringify(dao_proposal_single_msg)).toString(
           "base64"
@@ -171,14 +205,14 @@ export class TeritoriDaoCoreClient extends TeritoriDaoCoreQueryClient implements
     const dao_voting_cw20_staked_msg = {
       token_info: {
         new: {
-          code_id: parseInt(process.env.DAO_CW20_CODE_ID!, 10),
+          code_id: daoCw20CodeId,
           decimals: 6,
           initial_balances: tokenHolders,
           initial_dao_balance: null,
           label: tokenName,
           name: tokenName,
           symbol: tokenSymbol,
-          staking_code_id: parseInt(process.env.DAO_CW20_STAKE!, 10),
+          staking_code_id: daoCw20StakeCodeId,
           unstaking_duration: null,
         },
       },
@@ -186,7 +220,7 @@ export class TeritoriDaoCoreClient extends TeritoriDaoCoreQueryClient implements
 
     const voting_module_instantiate_info = {
       admin: { core_module: {} },
-      code_id: parseInt(process.env.DAO_VOTING_CW20_STAKED!, 10),
+      code_id: daoVotingCw20StakedCodeId,
       label: `DAO_${name}_DaoVotingCw20Staked`,
       msg: Buffer.from(JSON.stringify(dao_voting_cw20_staked_msg)).toString(
         "base64"
@@ -207,27 +241,37 @@ export class TeritoriDaoCoreClient extends TeritoriDaoCoreQueryClient implements
     const instantiate_msg = Buffer.from(
       JSON.stringify(dao_core_instantiate_msg)
     ).toString("base64");
-    
+
     return await this.client.execute( this.sender, this.contractAddress, {
       instantiate_contract_with_self_admin:{
-          code_id: parseInt(process.env.DAO_CORE!, 10),
+          code_id: daoCoreCodeId,
           instantiate_msg,
-          label: name          
+          label: name
       }
     }, fee, memo, funds);
   }
 
   createDaoMemberBased = async (
   {
+    daoCoreCodeId,
+    daoPreProposeSingleCodeId,
+    daoProposalSingleCodeId,
+    daoCw4GroupCodeId,
+    daoVotingCw4CodeId,
     name,
     description,
     tns,
     imageUrl,
-    members,    
+    members,
     quorum,
     threshold,
     maxVotingPeriod,
   }:{
+    daoCoreCodeId: number;
+    daoPreProposeSingleCodeId: number;
+    daoProposalSingleCodeId: number;
+    daoCw4GroupCodeId: number;
+    daoVotingCw4CodeId: number;
     name: string;
     description: string;
     tns: string;
@@ -235,7 +279,7 @@ export class TeritoriDaoCoreClient extends TeritoriDaoCoreQueryClient implements
     members: DaoMember[];
     quorum: string;
     maxVotingPeriod: number;
-    threshold: string;    
+    threshold: string;
   }, fee: number | StdFee | "auto" = "auto", memo?: string, funds?: Coin[]):Promise<ExecuteResult> =>{
 
     const dao_pre_propose_single_msg = {
@@ -262,7 +306,7 @@ export class TeritoriDaoCoreClient extends TeritoriDaoCoreQueryClient implements
       pre_propose_info: {
         module_may_propose: {
           info: {
-            code_id: parseInt(process.env.DAO_PRE_PROPOSE_SINGLE!, 10),
+            code_id: daoPreProposeSingleCodeId,
             msg: Buffer.from(
               JSON.stringify(dao_pre_propose_single_msg)
             ).toString("base64"),
@@ -275,7 +319,7 @@ export class TeritoriDaoCoreClient extends TeritoriDaoCoreQueryClient implements
     const proposal_modules_instantiate_info = [
       {
         admin: { core_module: {} },
-        code_id: parseInt(process.env.DAO_PROPOSAL_SINGLE!, 10),
+        code_id: daoProposalSingleCodeId,
         label: `DAO_${name}_DAOProposalSingle`,
         msg: Buffer.from(JSON.stringify(dao_proposal_single_msg)).toString(
           "base64"
@@ -284,13 +328,13 @@ export class TeritoriDaoCoreClient extends TeritoriDaoCoreQueryClient implements
     ];
 
     const dao_voting_cw4_msg = {
-        cw4_group_code_id: parseInt(process.env.CW4_GROUP_CODE_ID!, 10),
+        cw4_group_code_id: daoCw4GroupCodeId,
         initial_members: members
     };
 
     const voting_module_instantiate_info = {
       admin: { core_module: {} },
-      code_id: parseInt(process.env.DAO_VOTING_CW4!, 10),
+      code_id: daoVotingCw4CodeId,
       label: `DAO_${name}_DaoVotingCw4`,
       msg: Buffer.from(JSON.stringify(dao_voting_cw4_msg)).toString(
         "base64"
@@ -310,13 +354,13 @@ export class TeritoriDaoCoreClient extends TeritoriDaoCoreQueryClient implements
     };
     const instantiate_msg = Buffer.from(
       JSON.stringify(dao_core_instantiate_msg)
-    ).toString("base64");    
-    
+    ).toString("base64");
+
     return await this.client.execute( this.sender, this.contractAddress, {
       instantiate_contract_with_self_admin:{
-          code_id: parseInt(process.env.DAO_CORE!, 10),
+          code_id: daoCoreCodeId,
           instantiate_msg,
-          label: name          
+          label: name
       }
     }, fee, memo, funds);
   }

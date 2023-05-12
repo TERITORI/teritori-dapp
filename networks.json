@@ -71,7 +71,17 @@
     "excludeFromLaunchpadList": [
       "tori1gflccmghzfscmxl95z43v36y0rle8v9x8kvt9na03yzywtw86amsj9nf37"
     ],
-    "socialFeedContractAddress": "tori1lxf8agg0wd2m7n2ultl0yx337jw23puh0mlkkw5vhtnkkfettwfqya7kpp"
+    "socialFeedContractAddress": "tori1lxf8agg0wd2m7n2ultl0yx337jw23puh0mlkkw5vhtnkkfettwfqya7kpp",
+    "daoCw20CodeId": 99,
+    "daoFactoryCodeId": 100,
+    "daoCoreCodeId": 101,
+    "daoPreProposeSingleCodeId": 102,
+    "daoProposalSingleCodeId": 103,
+    "daoVotingCw20StakedCodeId": 104,
+    "daoCw20StakeCodeId": 105,
+    "daoCw4GroupCodeId": 106,
+    "daoVotingCw4CodeId": 109,
+    "daoFactoryContractAddress": "tori1r29chp8ufwgx9u3wr4sfk050aardhkzwve7nht6y06gvlaqutr3qt83z6r"
   },
   {
     "id": "teritori-testnet",
