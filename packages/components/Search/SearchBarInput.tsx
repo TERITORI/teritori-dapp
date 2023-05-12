@@ -45,11 +45,11 @@ export const SearchBarInput: React.FC<{
         ]}
         onChangeText={(text) => {
           dispatch(setSearchText(text));
-          onInteraction && onInteraction();
+          onInteraction?.();
           setTimeout(() => ref.current?.focus(), 10); // restore focus in case it got lost in previous side-effects, this happens in firefox
         }}
         onFocus={() => {
-          onInteraction && onInteraction();
+          onInteraction?.();
         }}
       />
     </TertiaryBox>
