@@ -105,7 +105,6 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
         >
           <Header />
         </View>
-        {/*<SpacerColumn size={2.5} />*/}
         <Animated.View
           style={[
             {
