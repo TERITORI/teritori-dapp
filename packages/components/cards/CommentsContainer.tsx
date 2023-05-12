@@ -44,7 +44,7 @@ export const CommentsContainer: React.FC<CommentsContainerProps> = ({
         {comments.map((comment, index) => (
           <React.Fragment key={comment.identifier}>
             {!isMobile || restProps.parentOffsetValue ? (
-              <SpacerColumn size={2.5} />
+              <SpacerColumn size={2} />
             ) : null}
             <SocialCommentCard
               style={
