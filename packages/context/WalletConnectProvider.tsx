@@ -19,6 +19,7 @@ import { useFeedbacks } from "./FeedbacksProvider";
 import { CosmosNetworkInfo, NetworkKind, allNetworks } from "../networks";
 import { cosmosNetwork } from "../networks/cosmos-hub";
 import { osmosisNetwork } from "../networks/osmosis";
+import { teritoriNetwork } from "../networks/teritori";
 import { isMobileBrowser } from "../utils/browser";
 
 // NOTE:
@@ -36,7 +37,7 @@ const defaultValue: WalletConnectState = { accounts: [], connect: () => {} };
 
 const WalletConnectContext = createContext(defaultValue);
 
-const walletConnectNetworks = [cosmosNetwork, osmosisNetwork];
+const walletConnectNetworks = [cosmosNetwork, osmosisNetwork, teritoriNetwork];
 
 export const WalletConnectProvider: React.FC = ({ children }) => {
   const [pairingURI, setPairingURL] = useState(defaultValue.pairingURI);
