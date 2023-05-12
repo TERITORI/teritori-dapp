@@ -7,7 +7,7 @@ import { useSelectedNetworkId } from "../hooks/useSelectedNetwork";
 import { selectSearchText } from "../store/slices/search";
 import { getMarketplaceClient } from "../utils/backend";
 
-interface SearchBarContextValue  {
+interface SearchBarContextValue {
   isSearchModalMobileOpen: boolean;
   setSearchModalMobileOpen: (value: boolean) => void;
   names: string[];
