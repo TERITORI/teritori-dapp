@@ -6,8 +6,10 @@ import {
   TouchableOpacity,
   Image,
   Platform,
+  TextInput,
 } from "react-native";
 
+import deleteIcon from "../../../../assets/icons/delete.svg";
 import file from "../../../../assets/icons/fileattach.svg";
 import largeActive from "../../../../assets/icons/large-active.svg";
 import large from "../../../../assets/icons/large.svg";
@@ -18,15 +20,26 @@ import video from "../../../../assets/icons/videoattach.svg";
 import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
+import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { FileUploader } from "../../../components/fileUploader";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import ModalBase from "../../../components/modals/ModalBase";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { IMAGE_MIME_TYPES } from "../../../utils/mime";
-import { additionalRed, neutralA3 } from "../../../utils/style/colors";
-import { fontSemibold13 } from "../../../utils/style/fonts";
+import {
+  additionalRed,
+  neutral17,
+  neutral77,
+  neutralA3,
+  secondaryColor,
+} from "../../../utils/style/colors";
+import {
+  fontSemibold13,
+  fontMedium14,
+  fontSemibold14,
+} from "../../../utils/style/fonts";
+import { layout } from "../../../utils/style/layout";
 import { LocalFileData } from "../../../utils/types/feed";
-
 interface IMessage {
   id: Key | null | undefined;
   source: any;
@@ -160,6 +173,7 @@ const UploadImage = ({
           visible={visible}
           hideMainSeparator
           width={350}
+
           // containerStyle={{ height: 900 }}
         >
           {isImageLarge ? (
@@ -168,56 +182,84 @@ const UploadImage = ({
                 backgroundColor: additionalRed,
                 width: Platform.OS === "web" ? "90%" : null,
                 borderRadius: 6,
+                alignItems: "center", // Center align the content horizontally
+                justifyContent: "center", // Center align the content vertically
               }}
             >
-              <Image
-                source={{
-                  uri: Platform.OS === "web" ? thumbnailFile?.url : image?.uri,
-                }}
-                style={styles.image}
-                resizeMode="cover"
-              />
+              <View style={{ alignSelf: "center" }}>
+                <FlexRow>
+                  <Image
+                    source={{
+                      uri:
+                        Platform.OS === "web" ? thumbnailFile?.url : image?.uri,
+                    }}
+                    style={styles.image}
+                    resizeMode="cover"
+                  />
+                </FlexRow>
+                <TouchableOpacity onPress={() => setImage(null)}>
+                  <View style={styles.svgContainer}>
+                    <SVG source={deleteIcon} />
+                  </View>
+                </TouchableOpacity>
+              </View>
             </View>
           ) : (
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
-              <Image
-                source={{
-                  uri: Platform.OS === "web" ? thumbnailFile?.url : image?.uri,
-                }}
-                style={styles.imagesmall}
-                resizeMode="stretch"
-              />
-              <BrandText
-                style={{
-                  color: "red",
-                  marginLeft: 10,
-                  width: "60%",
-                }}
-              >
-                {Platform.OS === "web"
-                  ? thumbnailFile?.fileName
-                  : image?.fileSize}
-              </BrandText>
-            </View>
+            <FlexRow>
+              <View>
+                <FlexRow>
+                  <Image
+                    source={{
+                      uri:
+                        Platform.OS === "web" ? thumbnailFile?.url : image?.uri,
+                    }}
+                    style={styles.imagesmall}
+                    resizeMode="stretch"
+                  />
+                  <SpacerRow size={2} />
+                  <View>
+                    <BrandText
+                      style={[fontSemibold14, { color: secondaryColor }]}
+                    >
+                      filename.png
+                    </BrandText>
+                    <SpacerColumn size={0.6} />
+                    <BrandText style={[fontSemibold13, { color: neutral77 }]}>
+                      {Platform.OS === "web"
+                        ? thumbnailFile?.fileName
+                        : image?.fileSize}
+                    </BrandText>
+                  </View>
+                </FlexRow>
+              </View>
+              <TouchableOpacity onPress={() => setImage(null)}>
+                <View style={styles.svgContainerShort}>
+                  <SVG source={deleteIcon} />
+                </View>
+              </TouchableOpacity>
+            </FlexRow>
           )}
 
-          <SpacerColumn size={2} />
-          <TextInputCustom
-            noBrokenCorners
-            name="message"
-            placeHolder="Add a message"
-            value={newMessage}
-            onChangeText={setNewMessage}
-          >
-            <TouchableOpacity onPress={handleSend}>
-              <SVG source={sent} />
-            </TouchableOpacity>
-          </TextInputCustom>
+          <SpacerColumn size={10} />
+
+          <View style={styles.footer}>
+            <TextInputCustom
+              noBrokenCorners
+              name="message"
+              placeHolder="Add a message..."
+              placeholderTextColor={neutral77}
+              labelStyle={[fontMedium14, { color: neutral77 }]}
+              value={newMessage}
+              onChangeText={setNewMessage}
+              boxMainContainerStyle={{ backgroundColor: neutral17 }}
+              textInputStyle={{ marginLeft: 10, top: -8 }}
+            >
+              <TouchableOpacity onPress={handleSend}>
+                <SVG source={sent} />
+              </TouchableOpacity>
+              <SpacerRow size={1} />
+            </TextInputCustom>
+          </View>
         </ModalBase>
       </View>
     </View>
@@ -228,7 +270,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-
+  footer: { flex: 1, position: "absolute", bottom: 0, width: 350 },
   attachmentModal: {
     position: "absolute",
     top: -55,
@@ -239,6 +281,22 @@ const styles = StyleSheet.create({
     borderWidth: 1,
 
     zIndex: 111,
+  },
+  svgContainer: {
+    position: "absolute",
+    bottom: 10,
+    right: 0,
+    transform: [{ translateX: 45 }],
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    padding: 10,
+    borderRadius: 10, // Adjust the translateY value based on the icon size
+  },
+  svgContainerShort: {
+    position: "absolute",
+    transform: [{ translateX: 45 }],
+    backgroundColor: "rgba(244, 111, 118, 0.1)",
+    padding: 10,
+    borderRadius: 10, // Adjust the translateY value based on the icon size
   },
   attachmentItem: {
     height: 25,
@@ -253,7 +311,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   imagesmall: {
-    height: 120,
+    height: 90,
     width: "40%",
     borderRadius: 10,
   },
