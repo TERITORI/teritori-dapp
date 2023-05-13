@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { FlatList, View } from "react-native";
 
 import {
@@ -34,7 +34,7 @@ const TABLE_ROWS: { [key: string]: TableRowHeading } = {
     label: "Rank",
     flex: 1,
   },
-  collectionName: {
+  collectionNameData: {
     label: "Collection",
     flex: 5,
   },
@@ -80,8 +80,11 @@ export const PopularCollectionsScreen: ScreenFC<"PopularCollections"> = () => {
       name: "Ethereum",
     },
   };
+  const [selectedTab, setSelectedTab] =
+    // @ts-expect-error
+    useState<keyof typeof tabs>(selectedNetworkId);
   const req = {
-    networkId: selectedNetworkId,
+    networkId: selectedTab,
     sortDirection: SortDirection.SORT_DIRECTION_DESCENDING,
     upcoming: false,
     sort: Sort.SORTING_VOLUME,
@@ -93,16 +96,11 @@ export const PopularCollectionsScreen: ScreenFC<"PopularCollections"> = () => {
   const [sortDirection, setSortDirection] = useState(
     SortDirection.SORT_DIRECTION_ASCENDING
   );
-  const [selectedTab, setSelectedTab] = useState<keyof typeof tabs>("teritori");
   const { collections } = useCollections(req);
-  const [filteredCollections, setFilteredCollections] = useState(collections);
+  const [filterText, setFilterText] = useState("");
 
   const handleChangeText = (e: string) => {
-    setFilteredCollections(
-      collections.filter((value) =>
-        value.collectionName.toLowerCase().includes(e.toLowerCase())
-      )
-    );
+    setFilterText(e);
   };
   return (
     <ScreenContainer
@@ -161,7 +159,7 @@ export const PopularCollectionsScreen: ScreenFC<"PopularCollections"> = () => {
             onChangeSortDirection={setSortDirection}
           />
         </View>
-        <CollectionTable rows={filteredCollections} />
+        <CollectionTable rows={collections} filterText={filterText} />
       </View>
     </ScreenContainer>
   );
@@ -169,9 +167,14 @@ export const PopularCollectionsScreen: ScreenFC<"PopularCollections"> = () => {
 
 const CollectionTable: React.FC<{
   rows: Collection[];
-}> = ({ rows }) => {
+  filterText: string;
+}> = ({ rows, filterText }) => {
   const [itemsPerPage, setItemsPerPage] = useState(50);
   const [pageIndex, setPageIndex] = useState(0);
+
+  const filteredCollections = rows.filter(({ collectionName }) =>
+    collectionName?.toLowerCase().includes(filterText.toLowerCase())
+  );
 
   const maxPage = Math.max(Math.ceil(rows.length / itemsPerPage), 1);
   return (
@@ -184,7 +187,7 @@ const CollectionTable: React.FC<{
     >
       <TableRow headings={Object.values(TABLE_ROWS)} />
       <FlatList
-        data={rows}
+        data={filteredCollections}
         renderItem={({ item, index }) => (
           <CollectionRow collection={item} rank={index} />
         )}
@@ -195,16 +198,20 @@ const CollectionTable: React.FC<{
           borderTopWidth: 1,
         }}
       />
-      <SpacerColumn size={2} />
-      <Pagination
-        currentPage={pageIndex}
-        maxPage={maxPage}
-        itemsPerPage={itemsPerPage}
-        dropdownOptions={[50, 100, 200]}
-        setItemsPerPage={setItemsPerPage}
-        onChangePage={setPageIndex}
-      />
-      <SpacerColumn size={2} />
+      {filteredCollections.length > 50 && (
+        <>
+          <SpacerColumn size={2} />
+          <Pagination
+            currentPage={pageIndex}
+            maxPage={maxPage}
+            itemsPerPage={itemsPerPage}
+            dropdownOptions={[50, 100, 200]}
+            setItemsPerPage={setItemsPerPage}
+            onChangePage={setPageIndex}
+          />
+          <SpacerColumn size={2} />
+        </>
+      )}
     </View>
   );
 };
@@ -213,14 +220,7 @@ const CollectionRow: React.FC<{ collection: Collection; rank: number }> = ({
   collection,
   rank,
 }) => {
-  // const [network, txHash] = parseActivityId(colection.id);
-  // const [, buyerAddress] = parseUserId(colection.buyerId);
-  // const [, sellerAddress] = parseUserId(colection.sellerId);
-  // const buyerInfo = useNSUserInfo(colection.buyerId);
-  // const sellerInfo = useNSUserInfo(colection.sellerId);
-  const { collectionInfo } = useCollectionInfo(collection.id);
-  const stats = useCollectionStats(collection.id);
-
+  const rowData = useRowData(collection.id, rank);
   return (
     <View
       style={{
@@ -234,7 +234,7 @@ const CollectionRow: React.FC<{ collection: Collection; rank: number }> = ({
         paddingHorizontal: layout.padding_x2_5,
       }}
     >
-      <InnerCell flex={1}>{rank + 1}</InnerCell>
+      <InnerCell flex={1}>{rowData.rank}</InnerCell>
       <View
         style={{
           flex: 5,
@@ -246,30 +246,25 @@ const CollectionRow: React.FC<{ collection: Collection; rank: number }> = ({
       >
         <RoundedGradientImage
           size="XS"
-          imageSource={{ uri: collectionInfo.image }}
+          imageSource={{ uri: rowData.collectionNameData.image }}
           style={{ marginRight: 24 }}
         />
-        <BrandText style={fontSemibold13}>{collectionInfo.name}</BrandText>
+        <BrandText style={fontSemibold13}>
+          {rowData.collectionNameData.collectionName}
+        </BrandText>
       </View>
-      <InnerCell>{nFormatter(stats?.totalVolume, 2)}</InnerCell>
-      <InnerCell>{nFormatter(stats?.totalVolume, 2)}</InnerCell>
-
-      <InnerCell>{nFormatter(stats?.totalVolume, 2)}</InnerCell>
-
-      <InnerCell>{nFormatter(stats?.totalVolume, 2)}</InnerCell>
-
-      <InnerCell>{collectionInfo.prettyUnitPrice}</InnerCell>
-      <InnerCell>
-        {nFormatter(stats?.owners, stats?.owners.toString().length)}
-      </InnerCell>
-      <InnerCell>
-        {nFormatter(stats?.totalSupply, stats?.totalSupply.toString().length)}
-      </InnerCell>
+      <InnerCell>{rowData.totalVolume}</InnerCell>
+      <InnerCell>{rowData["24hVolume"]}</InnerCell>
+      <InnerCell>{rowData["24hPercentualVolume"]}</InnerCell>
+      <InnerCell>{rowData.sales}</InnerCell>
+      <InnerCell>{rowData.floorPrice}</InnerCell>
+      <InnerCell>{rowData.owners}</InnerCell>
+      <InnerCell>{rowData.supply}</InnerCell>
     </View>
   );
 };
 
-const InnerCell: React.FC<{ flex: number }> = ({ flex = 3, children }) => {
+const InnerCell: React.FC<{ flex?: number }> = ({ flex = 3, children }) => {
   return (
     <View
       style={{
@@ -284,7 +279,10 @@ const InnerCell: React.FC<{ flex: number }> = ({ flex = 3, children }) => {
   );
 };
 
-function nFormatter(num: number, digits: number) {
+function nFormatter(
+  num: number | undefined | string,
+  digits: number | undefined
+) {
   const lookup = [
     { value: 1, symbol: "" },
     { value: 1e3, symbol: "K" },
@@ -299,9 +297,53 @@ function nFormatter(num: number, digits: number) {
     .slice()
     .reverse()
     .find(function (item) {
+      // @ts-expect-error
       return num >= item.value;
     });
+
   return item
-    ? (num / item.value).toFixed(digits).replace(rx, "$1") + item.symbol
+    ? // @ts-expect-error
+      (num / item.value).toFixed(digits).replace(rx, "$1") + item.symbol
     : "0";
 }
+interface RowData {
+  id: string;
+  rank: number;
+  collectionName?: string;
+  collectionNameData: {
+    collectionName?: string;
+    image?: string;
+  };
+  totalVolume: string;
+  "24hVolume": string;
+  "24hPercentualVolume": string;
+  sales: string;
+  floorPrice?: string;
+  owners: string;
+  supply: string;
+}
+
+const useRowData = (id: string, rank: number): RowData => {
+  const { collectionInfo } = useCollectionInfo(id);
+  const stats = useCollectionStats(id);
+
+  return {
+    id,
+    rank: rank + 1,
+    collectionName: collectionInfo.name,
+    collectionNameData: {
+      collectionName: collectionInfo.name,
+      image: collectionInfo.image,
+    },
+    totalVolume: nFormatter(stats?.totalVolume, 0),
+    "24hVolume": nFormatter(stats?.totalVolume, 0),
+    "24hPercentualVolume": nFormatter(stats?.totalVolume, 2),
+    sales: nFormatter(stats?.totalVolume, 0),
+    floorPrice: collectionInfo.prettyUnitPrice,
+    owners: nFormatter(stats?.owners, stats?.owners.toString().length),
+    supply: nFormatter(
+      stats?.totalSupply,
+      stats?.totalSupply.toString().length
+    ),
+  };
+};
