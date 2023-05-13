@@ -7,17 +7,14 @@ import {
   SortDirection,
 } from "../../api/marketplace/v1/marketplace";
 import { ScreenContainer } from "../../components/ScreenContainer";
-import { CollectionsCarouselHeader } from "../../components/carousels/CollectionsCarouselHeader";
 import { CollectionGallery } from "../../components/collections/CollectionGallery";
-import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { getNetwork } from "../../networks";
 import { ScreenFC } from "../../utils/navigation";
-import { layout, MOBILE_MAX_WIDTH } from "../../utils/style/layout";
+import { layout } from "../../utils/style/layout";
 
 export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
   const selectedNetworkId = useSelectedNetworkId();
-  const { width } = useMaxResolution();
 
   return (
     <ScreenContainer responsive>
@@ -26,20 +23,6 @@ export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
           paddingBottom: layout.contentPadding,
         }}
       >
-        {MOBILE_MAX_WIDTH < width && (
-          <CollectionsCarouselHeader
-            req={{
-              networkId: selectedNetworkId,
-              sortDirection: SortDirection.SORT_DIRECTION_DESCENDING,
-              upcoming: false,
-              sort: Sort.SORT_VOLUME,
-              limit: 16,
-              offset: 0,
-              mintState: MintState.MINT_STATE_ENDED,
-            }}
-          />
-        )}
-
         <CollectionGallery
           title={`${getNetwork(selectedNetworkId)?.displayName} Collections`}
           req={{
