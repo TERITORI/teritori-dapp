@@ -8,6 +8,7 @@ import {
   SortDirection,
 } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
+import { OmniLink } from "../../components/OmniLink";
 import { Pagination } from "../../components/Pagination";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { RoundedGradientImage } from "../../components/images/RoundedGradientImage";
@@ -222,7 +223,7 @@ const CollectionRow: React.FC<{ collection: Collection; rank: number }> = ({
 }) => {
   const rowData = useRowData(collection.id, rank);
   return (
-    <View
+    <OmniLink
       style={{
         flexDirection: "row",
         alignItems: "center",
@@ -233,6 +234,7 @@ const CollectionRow: React.FC<{ collection: Collection; rank: number }> = ({
         paddingVertical: layout.padding_x2,
         paddingHorizontal: layout.padding_x2_5,
       }}
+      to={{ screen: "Collection", params: { id: collection.id } }}
     >
       <InnerCell flex={1}>{rowData.rank}</InnerCell>
       <View
@@ -260,7 +262,7 @@ const CollectionRow: React.FC<{ collection: Collection; rank: number }> = ({
       <InnerCell>{rowData.floorPrice}</InnerCell>
       <InnerCell>{rowData.owners}</InnerCell>
       <InnerCell>{rowData.supply}</InnerCell>
-    </View>
+    </OmniLink>
   );
 };
 
