@@ -4,6 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"gorm.io/datatypes"
+	"gorm.io/gen"
 	"time"
 
 	"github.com/Khan/genqlient/graphql"
@@ -358,6 +360,10 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 
 		if ownerID != "" {
 			query = query.Where("owner_id = ?", ownerID)
+		}
+		for _, attribute := range req.Attributes {
+			print(attribute.Value)
+			query.Where(gen.Cond(datatypes.JSONQuery("attributes").Equals("Background", "trait_type")))
 		}
 
 		var nfts []*indexerdb.NFT

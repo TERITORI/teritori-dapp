@@ -255,6 +255,7 @@ export interface NFTsRequest {
   ownerId: string;
   sort: Sort;
   sortDirection: SortDirection;
+  attributes: Attribute[];
 }
 
 export interface NFTsResponse {
@@ -1615,7 +1616,7 @@ export const CollectionsResponse = {
 };
 
 function createBaseNFTsRequest(): NFTsRequest {
-  return { limit: 0, offset: 0, collectionId: "", ownerId: "", sort: 0, sortDirection: 0 };
+  return { limit: 0, offset: 0, collectionId: "", ownerId: "", sort: 0, sortDirection: 0, attributes: [] };
 }
 
 export const NFTsRequest = {
@@ -1637,6 +1638,9 @@ export const NFTsRequest = {
     }
     if (message.sortDirection !== 0) {
       writer.uint32(48).int32(message.sortDirection);
+    }
+    for (const v of message.attributes) {
+      Attribute.encode(v!, writer.uint32(58).fork()).ldelim();
     }
     return writer;
   },
@@ -1666,6 +1670,9 @@ export const NFTsRequest = {
         case 6:
           message.sortDirection = reader.int32() as any;
           break;
+        case 7:
+          message.attributes.push(Attribute.decode(reader, reader.uint32()));
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1682,6 +1689,7 @@ export const NFTsRequest = {
       ownerId: isSet(object.ownerId) ? String(object.ownerId) : "",
       sort: isSet(object.sort) ? sortFromJSON(object.sort) : 0,
       sortDirection: isSet(object.sortDirection) ? sortDirectionFromJSON(object.sortDirection) : 0,
+      attributes: Array.isArray(object?.attributes) ? object.attributes.map((e: any) => Attribute.fromJSON(e)) : [],
     };
   },
 
@@ -1693,6 +1701,11 @@ export const NFTsRequest = {
     message.ownerId !== undefined && (obj.ownerId = message.ownerId);
     message.sort !== undefined && (obj.sort = sortToJSON(message.sort));
     message.sortDirection !== undefined && (obj.sortDirection = sortDirectionToJSON(message.sortDirection));
+    if (message.attributes) {
+      obj.attributes = message.attributes.map((e) => e ? Attribute.toJSON(e) : undefined);
+    } else {
+      obj.attributes = [];
+    }
     return obj;
   },
 
@@ -1704,6 +1717,7 @@ export const NFTsRequest = {
     message.ownerId = object.ownerId ?? "";
     message.sort = object.sort ?? 0;
     message.sortDirection = object.sortDirection ?? 0;
+    message.attributes = object.attributes?.map((e) => Attribute.fromPartial(e)) || [];
     return message;
   },
 };

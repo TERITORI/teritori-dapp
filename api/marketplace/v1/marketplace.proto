@@ -160,6 +160,7 @@ message NFTsRequest {
 
   Sort sort = 5;
   SortDirection sort_direction = 6;
+  repeated Attribute attributes = 7;
 }
 
 message NFTsResponse {

@@ -32,6 +32,12 @@ export const CollectionContent: React.FC<{
     offset: 0,
     sort: Sort.SORT_PRICE,
     sortDirection,
+    attributes: [
+      {
+        traitType: "Background",
+        value: "Background",
+      },
+    ],
   };
 
   switch (selectedTab) {
