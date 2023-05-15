@@ -19,6 +19,8 @@ import {
   CommentsContainer,
   LINES_HORIZONTAL_SPACE,
 } from "../../components/cards/CommentsContainer";
+import { CreateShortPostButton } from "../../components/socialFeed/NewsFeed/CreateShortPost/CreateShortPostButton";
+import { CreateShortPostModal } from "../../components/socialFeed/NewsFeed/CreateShortPost/CreateShortPostModal";
 import {
   PostCategory,
   ReplyToType,
@@ -30,6 +32,7 @@ import {
 import { RefreshButton } from "../../components/socialFeed/NewsFeed/RefreshButton/RefreshButton";
 import { RefreshButtonRound } from "../../components/socialFeed/NewsFeed/RefreshButton/RefreshButtonRound";
 import { SocialThreadCard } from "../../components/socialFeed/SocialThread/SocialThreadCard";
+import { SpacerColumn, SpacerRow } from "../../components/spacer";
 import {
   combineFetchCommentPages,
   useFetchComments,
@@ -78,6 +81,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
   const [threadCardOffsetY, setThreadCardOffsetY] = useState(0);
   const [threadCardWidth, setThreadCardWidth] = useState(0);
   const isGoingUp = useSharedValue(false);
+  const [isCreateModalVisible, setCreateModalVisible] = useState(false);
   const {
     data,
     refetch,
@@ -232,27 +236,29 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
                   />
                 </View>
               )}
-              {/*========== Refresh button */}
-              <Animated.View
-                style={[
-                  {
-                    position: "absolute",
-                    top: threadCardOffsetY + 6,
-                    flexDirection: "row",
-                    width: "100%",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    zIndex: 10000,
-                  },
-                ]}
-              >
-                <RefreshButton
-                  isRefreshing={isLoadingSharedValue}
-                  onPress={() => {
-                    refetch();
-                  }}
-                />
-              </Animated.View>
+              {/*========== Refresh button no mobile */}
+              {!isMobile && (
+                <Animated.View
+                  style={[
+                    {
+                      position: "absolute",
+                      top: threadCardOffsetY + 6,
+                      flexDirection: "row",
+                      width: "100%",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      zIndex: 10000,
+                    },
+                  ]}
+                >
+                  <RefreshButton
+                    isRefreshing={isLoadingSharedValue}
+                    onPress={() => {
+                      refetch();
+                    }}
+                  />
+                </Animated.View>
+              )}
 
               <View
                 onLayout={(e) => setParentOffsetValue(e.nativeEvent.layout.y)}
@@ -272,7 +278,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
             </View>
           </Animated.ScrollView>
 
-          {flatListContentOffsetY >= threadCardOffsetY + 66 && (
+          {flatListContentOffsetY >= threadCardOffsetY + 66 && !isMobile && (
             <View style={styles.floatingActions}>
               <RefreshButtonRound
                 isRefreshing={isLoadingSharedValue}
@@ -281,20 +287,56 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
             </View>
           )}
 
-          <NewsFeedInput
-            style={{ alignSelf: "center" }}
-            ref={feedInputRef}
-            type="comment"
-            parentId={id}
-            replyTo={replyTo}
-            onSubmitInProgress={handleSubmitInProgress}
-            onSubmitSuccess={() => {
-              setReplyTo(undefined);
-              refetch();
-            }}
-          />
+          {/*========== Refresh button and Comment button mobile */}
+          {isMobile ? (
+            <>
+              <SpacerColumn size={2} />
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <CreateShortPostButton
+                  label="Create Comment"
+                  onPress={() => setCreateModalVisible(true)}
+                />
+                <SpacerRow size={1.5} />
+                <RefreshButton
+                  isRefreshing={isLoadingSharedValue}
+                  onPress={() => {
+                    refetch();
+                  }}
+                />
+              </View>
+              <SpacerColumn size={2} />
+            </>
+          ) : (
+            <NewsFeedInput
+              style={{ alignSelf: "center" }}
+              ref={feedInputRef}
+              type="comment"
+              parentId={id}
+              replyTo={replyTo}
+              onSubmitInProgress={handleSubmitInProgress}
+              onSubmitSuccess={() => {
+                setReplyTo(undefined);
+                refetch();
+              }}
+            />
+          )}
         </>
       )}
+
+      <CreateShortPostModal
+        isVisible={isCreateModalVisible}
+        onClose={() => setCreateModalVisible(false)}
+        onSubmitSuccess={() => {
+          setReplyTo(undefined);
+          refetch();
+        }}
+      />
     </ScreenContainer>
   );
 };

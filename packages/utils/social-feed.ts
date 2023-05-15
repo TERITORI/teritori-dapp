@@ -14,7 +14,7 @@ import { getUserId } from "../networks";
 export const DEFAULT_NAME = "Anon";
 export const DEFAULT_USERNAME = "anonymous";
 export const SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT = 2500;
-export const NB_ROWS_SHOWN_IN_PREVIEW = 4;
+export const NB_ROWS_SHOWN_IN_PREVIEW = 5;
 
 export const getUpdatedReactions = (reactions: Reaction[], icon: string) => {
   const hasIcon = reactions.find((r) => r.icon === icon);
@@ -37,10 +37,13 @@ export const feedsTabItems = {
     name: "Jungle News Feed",
   },
   sounds: {
-    name: "Sound Feed",
+    name: "Sounds Feed",
   },
-  videosPics: {
-    name: "Video & Pic Feed",
+  pics: {
+    name: "Pics Feed",
+  },
+  videos: {
+    name: "Videos Feed",
   },
   articles: {
     name: "Articles Feed",
@@ -56,8 +59,10 @@ export const feedTabToCategories = (tab: keyof typeof feedsTabItems) => {
   switch (tab) {
     case "sounds":
       return [PostCategory.Audio];
-    case "videosPics":
-      return [PostCategory.Picture, PostCategory.Video];
+    case "pics":
+      return [PostCategory.Picture];
+    case "videos":
+      return [PostCategory.Video];
     case "articles":
       return [PostCategory.Article];
     default:
