@@ -37,10 +37,13 @@ export const feedsTabItems = {
     name: "Jungle News Feed",
   },
   sounds: {
-    name: "Sound Feed",
+    name: "Sounds Feed",
   },
-  videosPics: {
-    name: "Video & Pic Feed",
+  pics: {
+    name: "Pics Feed",
+  },
+  videos: {
+    name: "Videos Feed",
   },
   articles: {
     name: "Articles Feed",
@@ -56,8 +59,10 @@ export const feedTabToCategories = (tab: keyof typeof feedsTabItems) => {
   switch (tab) {
     case "sounds":
       return [PostCategory.Audio];
-    case "videosPics":
-      return [PostCategory.Picture, PostCategory.Video];
+    case "pics":
+      return [PostCategory.Picture];
+    case "videos":
+      return [PostCategory.Video];
     case "articles":
       return [PostCategory.Article];
     default:
