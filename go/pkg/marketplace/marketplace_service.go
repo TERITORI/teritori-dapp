@@ -363,6 +363,23 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 		}
 		for _, attribute := range req.Attributes {
 			print(attribute.Value)
+			//select *
+			//  from (select trait_type, value AS existing, id, collection_id
+			//  from (select trait_type, value, id, collection_id
+			//    from (SELECT attr.trait_type as trait_type, attr.value, id, collection_id
+			//    FROM public.nfts t,
+			//      jsonb_to_recordset(t.attributes) as attr(value varchar, trait_type varchar)
+			//    where collection_id =
+			//      'tori-tori1mf6ptkssddfmxvhdx0ech0k03ktp6kf9yk59renau2gvht3nq2gqg87tkw'
+			//
+			//    and burnt = false
+			//    order by is_listed desc) as sorted) as col) as json
+			//    join teritori_nfts on nft_id = json.id
+			//    join collections c on json.collection_id = c.id
+			//    join teritori_collections tc on c.id = tc.collection_id
+			//    where trait_type = 'Background' and existing in ('Blue')
+			//    offset 0
+			//    limit 100
 			query.Where(gen.Cond(datatypes.JSONQuery("attributes").Equals("Background", "trait_type")))
 		}
 
