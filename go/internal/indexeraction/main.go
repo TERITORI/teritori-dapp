@@ -1,4 +1,4 @@
-package indexerutils
+package indexeraction
 
 import (
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
@@ -6,14 +6,14 @@ import (
 	"gorm.io/gorm"
 )
 
-type IndexerUtils struct {
+type IndexerAction struct {
 	network       *networks.NetworkBase
 	dbTransaction *gorm.DB
 	logger        *zap.Logger
 }
 
-func NewIndexerUtils(network *networks.NetworkBase, dbTransaction *gorm.DB, logger *zap.Logger) (*IndexerUtils, error) {
-	return &IndexerUtils{
+func NewIndexerAction(network *networks.NetworkBase, dbTransaction *gorm.DB, logger *zap.Logger) (*IndexerAction, error) {
+	return &IndexerAction{
 		network:       network,
 		dbTransaction: dbTransaction,
 		logger:        logger,

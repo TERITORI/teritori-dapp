@@ -1,4 +1,4 @@
-package indexerutils
+package indexeraction
 
 import (
 	"strings"
@@ -9,7 +9,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func (u *IndexerUtils) IndexWithdrawNFT(
+func (u *IndexerAction) WithdrawNFT(
 	userAddress string,
 	nftContract, tokenID string,
 	txHash string, msgIndex int,
@@ -66,7 +66,7 @@ func (u *IndexerUtils) IndexWithdrawNFT(
 	return nil
 }
 
-func (u *IndexerUtils) IndexListNFT(
+func (u *IndexerAction) ListNFT(
 	userAddress string,
 	nftContract, tokenID string,
 	priceDenom, priceAmount string,
@@ -155,7 +155,7 @@ func (u *IndexerUtils) IndexListNFT(
 	return nil
 }
 
-func (u *IndexerUtils) IndexBuyNFT(
+func (u *IndexerAction) BuyNFT(
 	userAddress string,
 	nftContract, tokenID string,
 	txHash string, msgIndex int,

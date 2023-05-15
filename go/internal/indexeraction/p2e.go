@@ -1,4 +1,4 @@
-package indexerutils
+package indexeraction
 
 import (
 	"strings"
@@ -11,7 +11,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func (u *IndexerUtils) IndexSquadUnstake(
+func (u *IndexerAction) SquadUnstake(
 	contractAddress, userAddress string,
 	tokenIDs, nftContracts []string,
 ) error {
@@ -113,7 +113,7 @@ func (u *IndexerUtils) IndexSquadUnstake(
 	return nil
 }
 
-func (u *IndexerUtils) IndexSquadStake(
+func (u *IndexerAction) SquadStake(
 	contractVersion, contractAddress, userAddress string,
 	startTime, endTime uint64,
 	tokenIDs, nftContracts []string,

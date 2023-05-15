@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/TERITORI/teritori-dapp/go/internal/indexerutils"
+	"github.com/TERITORI/teritori-dapp/go/internal/indexeraction"
 	abiGo "github.com/TERITORI/teritori-dapp/go/internal/substreams/ethereum/abi_go"
 	"github.com/TERITORI/teritori-dapp/go/internal/substreams/ethereum/pb"
 	"github.com/ethereum/go-ethereum/accounts/abi"
@@ -31,12 +31,12 @@ func (h *Handler) handleSquadUnstake(contractABI *abi.ABI, tx *pb.Tx, args map[s
 		nftContracts = append(nftContracts, log.Address)
 	}
 
-	indexerUtils, err := indexerutils.NewIndexerUtils(h.network.NetworkBase, h.dbTransaction, h.logger)
+	indexerAction, err := indexeraction.NewIndexerAction(h.network.NetworkBase, h.dbTransaction, h.logger)
 	if err != nil {
-		return errors.Wrap(err, "failed to get indexerutils")
+		return errors.Wrap(err, "failed to get indexeraction")
 	}
 
-	if err := indexerUtils.IndexSquadUnstake(
+	if err := indexerAction.SquadUnstake(
 		tx.Info.To,
 		tx.Info.From,
 		tokenIDs,
@@ -69,12 +69,12 @@ func (h *Handler) handleSquadStake(contractABI *abi.ABI, tx *pb.Tx, args map[str
 		nftContracts = append(nftContracts, strings.ToLower(nft.Collection.String()))
 	}
 
-	indexerUtils, err := indexerutils.NewIndexerUtils(h.network.NetworkBase, h.dbTransaction, h.logger)
+	indexerAction, err := indexeraction.NewIndexerAction(h.network.NetworkBase, h.dbTransaction, h.logger)
 	if err != nil {
-		return errors.Wrap(err, "failed to get indexerutils")
+		return errors.Wrap(err, "failed to get indexeraction")
 	}
 
-	if err := indexerUtils.IndexSquadStake(
+	if err := indexerAction.SquadStake(
 		"V3",
 		tx.Info.To,
 		tx.Info.From,

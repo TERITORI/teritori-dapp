@@ -4,7 +4,7 @@ import (
 	"math/big"
 	"time"
 
-	"github.com/TERITORI/teritori-dapp/go/internal/indexerutils"
+	"github.com/TERITORI/teritori-dapp/go/internal/indexeraction"
 	abiGo "github.com/TERITORI/teritori-dapp/go/internal/substreams/ethereum/abi_go"
 	"github.com/TERITORI/teritori-dapp/go/internal/substreams/ethereum/pb"
 	"github.com/cosmos/cosmos-sdk/types/errors"
@@ -35,12 +35,12 @@ func (h *Handler) handleBuyNFT(contractABI *abi.ABI, tx *pb.Tx, args map[string]
 		return errors.Wrap(err, "failed to parse buyNFT input")
 	}
 
-	indexerUtils, err := indexerutils.NewIndexerUtils(h.network.NetworkBase, h.dbTransaction, h.logger)
+	indexerAction, err := indexeraction.NewIndexerAction(h.network.NetworkBase, h.dbTransaction, h.logger)
 	if err != nil {
-		return errors.Wrap(err, "failed to get indexerutils")
+		return errors.Wrap(err, "failed to get indexeraction")
 	}
 
-	if err := indexerUtils.IndexBuyNFT(
+	if err := indexerAction.BuyNFT(
 		tx.Info.From,
 		input.Nft.String(),
 		input.TokenId.String(),
@@ -61,12 +61,12 @@ func (h *Handler) handleWithdrawNFT(contractABI *abi.ABI, tx *pb.Tx, args map[st
 		return errors.Wrap(err, "failed to parse withdrawNFT input")
 	}
 
-	indexerUtils, err := indexerutils.NewIndexerUtils(h.network.NetworkBase, h.dbTransaction, h.logger)
+	indexerAction, err := indexeraction.NewIndexerAction(h.network.NetworkBase, h.dbTransaction, h.logger)
 	if err != nil {
-		return errors.Wrap(err, "failed to get indexerutils")
+		return errors.Wrap(err, "failed to get indexeraction")
 	}
 
-	if err := indexerUtils.IndexWithdrawNFT(
+	if err := indexerAction.WithdrawNFT(
 		tx.Info.From,
 		input.Nft.String(),
 		input.TokenId.String(),
@@ -87,12 +87,12 @@ func (h *Handler) handleListNFT(contractABI *abi.ABI, tx *pb.Tx, args map[string
 		return errors.Wrap(err, "failed to parse listNFT input")
 	}
 
-	indexerUtils, err := indexerutils.NewIndexerUtils(h.network.NetworkBase, h.dbTransaction, h.logger)
+	indexerAction, err := indexeraction.NewIndexerAction(h.network.NetworkBase, h.dbTransaction, h.logger)
 	if err != nil {
-		return errors.Wrap(err, "failed to get indexerutils")
+		return errors.Wrap(err, "failed to get indexeraction")
 	}
 
-	if err := indexerUtils.IndexListNFT(
+	if err := indexerAction.ListNFT(
 		tx.Info.From,
 		input.Nft.String(),
 		input.TokenId.String(),
