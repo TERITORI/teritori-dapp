@@ -27,7 +27,7 @@ export const FreelanceServicesGigCreation: ScreenFC<
       if (route.params && route.params.gigId! >= 0) {
         const res = await freelanceClient.gigData({ id: route.params.gigId });
         if (res.gig) {
-          const _gigInfo = JSON.parse(res.gig.data) as GigInfo;
+          const _gigInfo = JSON.parse(res.gig.gigData) as GigInfo;
           _gigInfo.id = route.params.gigId;
           setGigInfo(_gigInfo);
         }

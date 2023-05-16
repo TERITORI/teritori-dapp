@@ -67,13 +67,12 @@ export const ListServices: React.FC = () => {
   useEffect(() => {
     const getGigDataList = async () => {
       const res = await freelanceClient.gigList({ limit: 2, offset: 0 });
-
       const newGigDataList: GigData[] = [];
       res.gigs.map(async (gigInfo, index) => {
         newGigDataList.push(
           await getGigData(
             gigInfo.id,
-            JSON.parse(gigInfo.data),
+            JSON.parse(gigInfo.gigData),
             gigInfo.address
           )
         );

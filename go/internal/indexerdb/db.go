@@ -60,7 +60,8 @@ var allModels = []interface{}{
 	//report
 	&Report{},
 	//seller
-	&Seller{},
+	&SellerProfile{},
+	&Escrow{},
 	&Gig{},
 }
 

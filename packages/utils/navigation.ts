@@ -29,6 +29,7 @@ export type RootStackParamList = {
     name?: string;
   };
   FreelanceServicesGigDetail: { gigId: number };
+  FreelanceServicesEscrow: { isSeller?: boolean } | undefined;
   GraphicsAndDesign: undefined;
   LogoDesign: undefined;
   Launchpad: undefined;
@@ -137,6 +138,7 @@ const navConfig: {
     FreelanceServicesOrder:
       "freelance-services/order/:gigId/:serviceLevelIndex/:modal?",
     FreelanceServicesGigDetail: "freelance-services/gig/:gigId",
+    FreelanceServicesEscrow: "freelance-services/escrow/:isSeller?",
     LogoDesign: "logo-design",
     Activity: "activity",
     Guardians: "guardians",

@@ -26,6 +26,7 @@ import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useIsKeplrConnected } from "../../../hooks/useIsKeplrConnected";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { freelanceClient } from "../../../utils/backend";
 import { uploadJSONToIPFS } from "../../../utils/ipfs";
 import { ScreenFC } from "../../../utils/navigation";
 import {
@@ -51,7 +52,7 @@ import {
 } from "../../../utils/style/fonts";
 import { leftMarginMainContent } from "../../../utils/style/layout";
 import { FreelanceServicesScreenWrapper } from "../FreelanceServicesScreenWrapper";
-import { getSellerIpfsHash, updateSellerProfileToContract } from "../contract";
+import { updateSellerProfileToContract } from "../contract";
 import { getSellerUser } from "../query/data";
 import {
   LangInfo,
@@ -75,7 +76,8 @@ export const SellerDetailsScreen: ScreenFC<
     const getSellerUserInfo = async () => {
       try {
         if (!sellerAddress) return;
-        const profileHash = await getSellerIpfsHash(sellerAddress);
+        const res = await freelanceClient.sellerProfile({ sellerAddress });
+        const profileHash = res.ipfs;
         const _sellerUser = await getSellerUser(profileHash);
         setAvatarUrl(_sellerUser.profilePic);
         setDescription(_sellerUser.intro);
@@ -219,7 +221,7 @@ export const SellerDetailsScreen: ScreenFC<
 
   return (
     sellerUser && (
-      <FreelanceServicesScreenWrapper>
+      <FreelanceServicesScreenWrapper showEscrow>
         <View
           style={{
             flexDirection: width > 1280 ? "row" : "column",

@@ -25,45 +25,22 @@ func NewFreelanceService(ctx context.Context, conf *Config) freelancepb.Freelanc
 		conf: conf,
 	}
 }
+func (s *FreelanceService) SellerProfile(ctx context.Context, req *freelancepb.SellerProfileRequest) (*freelancepb.SellerProfileResponse, error) {
 
-func (s *FreelanceService) Report(ctx context.Context, req *freelancepb.ReportRequest) (*freelancepb.ReportResponse, error) {
-	desc := req.Desc
-	ref_url := req.RefUrl
-	s.conf.IndexerDB.Create(&indexerdb.Report{
-		Desc:   desc,
-		RefUrl: ref_url,
-	})
-	return &freelancepb.ReportResponse{	Result: 1 }, nil
-}
+  var sellerProfile indexerdb.SellerProfile
+  if err:= s.conf.IndexerDB.
+      Model(&indexerdb.SellerProfile{}).
+      Where("seller_address = ?", req.SellerAddress).
+      First(&sellerProfile).Error;
+    err != nil {
+    return nil, errors.Wrap(err, "Failed to get seller_profile_ipfs_hash")
+  }
 
-func (s *FreelanceService) UpdateProfile(ctx context.Context, req *freelancepb.SellerProfileRequest) (*freelancepb.SellerProfileResponse, error) {
-    sellerId := req.UserId
-  	profileHash := req.ProfileHash
-
-  	var sellerProfile indexerdb.SellerProfile
-  	result := s.conf.IndexerDB.First(&sellerProfile, sellerId)
-  	if result.Error == nil {
-  		s.conf.IndexerDB.Create(&indexerdb.SellerProfile{
-  			SellerId:    sellerId,
-  			ProfileHash: profileHash,
-  		})
-  	} else {
-  		sellerProfile.ProfileHash = profileHash
-  		s.conf.IndexerDB.Save(&sellerProfile)
-  	}
-    return &freelancepb.SellerProfileResponse{	Result: 1 }, nil
-}
-
-func (s *FreelanceService) AddGig(ctx context.Context, req *freelancepb.GigAddRequest) (*freelancepb.GigAddResponse, error) {
-    userAddress := req.GetAddress()
-  	jsonData := req.GetData()
-
-  	s.conf.IndexerDB.Create(&indexerdb.Gig{
-  			Address:    userAddress,
-  			Data: jsonData,
-  	})
-
-    return &freelancepb.GigAddResponse{	Result: 1 }, nil
+  return &freelancepb.SellerProfileResponse{
+    SellerAddress: sellerProfile.SellerAddress,
+    Ipfs: sellerProfile.Ipfs,
+    IsActive: sellerProfile.IsActive,
+  }, nil
 }
 
 func (s *FreelanceService) GigList(ctx context.Context, req *freelancepb.GigListRequest) (*freelancepb.GigListResponse, error) {
@@ -101,8 +78,61 @@ func (s *FreelanceService) GigData(ctx context.Context, req *freelancepb.GigData
   return &freelancepb.GigResponse{Gig: &freelancepb.GigInfo{
     Id: int32(gig.Id),
     Address:  gig.Address,
-    Data: gig.Data,
+    GigData: gig.GigData,
   }}, nil
 }
 
+func (s *FreelanceService) EscrowAllList(ctx context.Context, req *freelancepb.EscrowListRequest) (*freelancepb.EscrowListResponse, error) {
+  address := req.GetAddress()
+  if address == "" {
+    return nil, errors.New("address's length must be greater than 0")
+  }
+  var escrows []*freelancepb.EscrowInfo
+
+  if result := s.conf.IndexerDB.
+      Model(&indexerdb.Escrow{}).
+      Where("sender = ? or receiver = ?", address, address).
+      Scan(&escrows); result.Error != nil {
+        return nil, errors.New("fatiled to fetch escrows")
+  }
+  return &freelancepb.EscrowListResponse{
+    Escrows: escrows,
+  }, nil
+}
+
+func (s *FreelanceService) EscrowSenderList(ctx context.Context, req *freelancepb.EscrowListRequest) (*freelancepb.EscrowListResponse, error) {
+  address := req.GetAddress()
+  if address == "" {
+    return nil, errors.New("address's length must be greater than 0")
+  }
+  var escrows []*freelancepb.EscrowInfo
+
+  if result := s.conf.IndexerDB.
+    Model(&indexerdb.Escrow{}).
+    Where("sender = ?", address).
+    Scan(&escrows); result.Error != nil {
+    return nil, errors.New("fatiled to fetch escrows")
+  }
+  return &freelancepb.EscrowListResponse{
+    Escrows: escrows,
+  }, nil
+}
+
+func (s *FreelanceService) EscrowReceiverList(ctx context.Context, req *freelancepb.EscrowListRequest) (*freelancepb.EscrowListResponse, error) {
+  address := req.GetAddress()
+  if address == "" {
+    return nil, errors.New("address's length must be greater than 0")
+  }
+  var escrows []*freelancepb.EscrowInfo
+
+  if result := s.conf.IndexerDB.
+    Model(&indexerdb.Escrow{}).
+    Where("receiver = ?", address).
+    Scan(&escrows); result.Error != nil {
+    return nil, errors.New("fatiled to fetch escrows")
+  }
+  return &freelancepb.EscrowListResponse{
+    Escrows: escrows,
+  }, nil
+}
 

@@ -136,7 +136,7 @@ export const FreelanceServicesOrderDetails: ScreenFC<
           setGigData(
             await getGigData(
               gigId,
-              JSON.parse(res.gig.data) as GigInfo,
+              JSON.parse(res.gig.gigData) as GigInfo,
               res.gig.address
             )
           );

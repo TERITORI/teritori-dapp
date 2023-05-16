@@ -1,9 +1,11 @@
 package indexerhandler
 
-
 import (
   "encoding/json"
   "strconv"
+
+  wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
+  "github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
   "github.com/pkg/errors"
 )
 
@@ -55,15 +57,15 @@ func (h *Handler) handleExecuteEscrowCreateContract(e *Message, execMsg *wasmtyp
   }
 
   if err := h.db.Create(&indexerdb.Escrow{
-    Id: id,
-    Spender: spender,
+    Id:          uint32(id),
+    Sender:      spender,
     Receiver: msg.CreateContract.Receiver,
-    ExpireAt: msg.CreateContract.ExpireAt,
+    ExpireAt:    strconv.FormatUint(msg.CreateContract.ExpireAt, 10),
     Amount: amount,
     AmountDenom: denom,
     Time: blockTime,
     Status: 0, //created
-  }); err != nil {
+  }).Error; err != nil {
     return errors.Wrap(err, "failed to create create_contract")
   }
   h.logger.Info("created create_contract")
@@ -183,9 +185,3 @@ func (h *Handler) handleExecuteEscrowCompleteContractByDao(e *Message, execMsg *
   h.logger.Info("updated escrow status")
   return nil
 }
-
-
-
-
-
-

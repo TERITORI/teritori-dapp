@@ -3,38 +3,24 @@ package freelance.v1;
 option go_package = "./freelancepb";
 
 service FreelanceService {
-  rpc Report(ReportRequest) returns (ReportResponse);
-  rpc UpdateProfile(SellerProfileRequest) returns (SellerProfileResponse);
-  rpc AddGig(GigAddRequest) returns (GigAddResponse);
+  rpc SellerProfile(SellerProfileRequest) returns (SellerProfileResponse);
   rpc GigList(GigListRequest) returns (GigListResponse);
   rpc GigListUser(GigListUserRequest) returns (GigListResponse);
   rpc GigData(GigDataRequest) returns (GigResponse);
-}
 
-message ReportRequest {
-  string desc = 1;
-  string ref_url = 2;
-}
-
-message ReportResponse {
-  int32 result = 1;
+  rpc EscrowAllList(EscrowListRequest) returns (EscrowListResponse);
+  rpc EscrowSenderList(EscrowListRequest) returns (EscrowListResponse);
+  rpc EscrowReceiverList(EscrowListRequest) returns (EscrowListResponse);
 }
 
 message SellerProfileRequest {
-  string user_id = 1;
-  string profile_hash = 2;
+  string seller_address = 1;
 }
 
 message SellerProfileResponse {
-  int32 result = 1;
-}
-
-message GigAddRequest {
-  string address = 1;
-  string data = 2;
-}
-message GigAddResponse {
-  int32 result = 1;
+  string seller_address = 1;
+  string ipfs = 2;
+  bool is_active = 3;
 }
 
 message GigListRequest {
@@ -46,10 +32,27 @@ message  GigListUserRequest {
   string address = 1;
 }
 
+message EscrowListRequest{
+  string address = 1;
+}
+message EscrowInfo {
+  uint32 id = 1;
+  string sender = 2;
+  string receiver = 3;
+  string amount = 4;
+  string amount_denom = 5;
+  string expire_at = 6;
+  uint32 status = 7;
+}
+
+message EscrowListResponse{
+  repeated EscrowInfo escrows = 1;
+}
+
 message GigInfo {
   int32 id = 1;
   string address = 2;
-  string data = 3;
+  string gig_data = 3;
 }
 message GigListResponse {
   repeated GigInfo gigs = 1;

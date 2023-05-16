@@ -20,7 +20,7 @@ export const GigsTable: React.FC<{
       const res = await freelanceClient.gigListUser({ address: gigAddress });
       setGigs(
         res.gigs.map((item) => {
-          const gigInfo = JSON.parse(item.data) as GigInfo;
+          const gigInfo = JSON.parse(item.gigData) as GigInfo;
           gigInfo.id = item.id;
           return gigInfo;
         })

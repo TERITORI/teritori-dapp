@@ -2,6 +2,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 
 import { ComingSoonScreen } from "../../screens/ComingSoon/ComingSoon";
+import { FreelanceServicesEscrow } from "../../screens/FreelanceServices/FreelanceServicesEscrow";
 import { FreelanceServicesGigCreation } from "../../screens/FreelanceServices/FreelanceServicesGigCreation";
 import { FreelanceServicesHome } from "../../screens/FreelanceServices/FreelanceServicesHome";
 import { FreelanceServicesHomeSeller } from "../../screens/FreelanceServices/FreelanceServicesHomeSeller";
@@ -287,6 +288,11 @@ export const Navigator: React.FC = () => {
         name="FreelanceServicesOrder"
         component={FreelanceServicesOrderDetails}
         options={{ header: () => null, title: screenTitle("Order Details") }}
+      />
+      <Stack.Screen
+        name="FreelanceServicesEscrow"
+        component={FreelanceServicesEscrow}
+        options={{ header: () => null, title: screenTitle("Escrow List") }}
       />
     </Stack.Navigator>
   );

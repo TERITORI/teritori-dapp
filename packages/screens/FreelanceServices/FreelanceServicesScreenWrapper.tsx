@@ -15,7 +15,13 @@ import { headerHeight } from "../../utils/style/layout";
 export const FreelanceServicesScreenWrapper: React.FC<{
   showBuyerSeller?: boolean;
   isBuyer?: boolean;
-}> = ({ showBuyerSeller = false, isBuyer = true, children }) => {
+  showEscrow?: boolean;
+}> = ({
+  showBuyerSeller = false,
+  isBuyer = true,
+  showEscrow = false,
+  children,
+}) => {
   const navigation = useAppNavigation();
   return (
     <ScreenContainer
@@ -100,6 +106,47 @@ export const FreelanceServicesScreenWrapper: React.FC<{
               </View>
             </View>
           )}
+
+          {showEscrow && (
+            <View
+              style={{
+                position: "absolute",
+                top: -26,
+                right: 400,
+                height: headerHeight,
+                borderColor: neutral33,
+                borderLeftWidth: 1,
+                borderRightWidth: 1,
+                justifyContent: "center",
+                paddingHorizontal: 20,
+              }}
+            >
+              <View style={{ flexDirection: "row" }}>
+                <View
+                  style={[
+                    {
+                      borderRadius: 8,
+                      borderColor: neutral33,
+                      borderWidth: 1,
+                      paddingVertical: 5,
+                      paddingHorizontal: 10,
+                    },
+                  ]}
+                >
+                  <TouchableOpacity
+                    onPress={() => {
+                      navigation.navigate("FreelanceServicesEscrow", {});
+                    }}
+                  >
+                    <BrandText style={[{ paddingHorizontal: 5, fontSize: 14 }]}>
+                      Manage Escrow
+                    </BrandText>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          )}
+
           <BrandText>Freelance Service</BrandText>
         </>
       }

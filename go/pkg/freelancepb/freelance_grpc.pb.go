@@ -18,12 +18,13 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type FreelanceServiceClient interface {
-	Report(ctx context.Context, in *ReportRequest, opts ...grpc.CallOption) (*ReportResponse, error)
-	UpdateProfile(ctx context.Context, in *SellerProfileRequest, opts ...grpc.CallOption) (*SellerProfileResponse, error)
-	AddGig(ctx context.Context, in *GigAddRequest, opts ...grpc.CallOption) (*GigAddResponse, error)
+	SellerProfile(ctx context.Context, in *SellerProfileRequest, opts ...grpc.CallOption) (*SellerProfileResponse, error)
 	GigList(ctx context.Context, in *GigListRequest, opts ...grpc.CallOption) (*GigListResponse, error)
 	GigListUser(ctx context.Context, in *GigListUserRequest, opts ...grpc.CallOption) (*GigListResponse, error)
 	GigData(ctx context.Context, in *GigDataRequest, opts ...grpc.CallOption) (*GigResponse, error)
+	EscrowAllList(ctx context.Context, in *EscrowListRequest, opts ...grpc.CallOption) (*EscrowListResponse, error)
+	EscrowSenderList(ctx context.Context, in *EscrowListRequest, opts ...grpc.CallOption) (*EscrowListResponse, error)
+	EscrowReceiverList(ctx context.Context, in *EscrowListRequest, opts ...grpc.CallOption) (*EscrowListResponse, error)
 }
 
 type freelanceServiceClient struct {
@@ -34,27 +35,9 @@ func NewFreelanceServiceClient(cc grpc.ClientConnInterface) FreelanceServiceClie
 	return &freelanceServiceClient{cc}
 }
 
-func (c *freelanceServiceClient) Report(ctx context.Context, in *ReportRequest, opts ...grpc.CallOption) (*ReportResponse, error) {
-	out := new(ReportResponse)
-	err := c.cc.Invoke(ctx, "/freelance.v1.FreelanceService/Report", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *freelanceServiceClient) UpdateProfile(ctx context.Context, in *SellerProfileRequest, opts ...grpc.CallOption) (*SellerProfileResponse, error) {
+func (c *freelanceServiceClient) SellerProfile(ctx context.Context, in *SellerProfileRequest, opts ...grpc.CallOption) (*SellerProfileResponse, error) {
 	out := new(SellerProfileResponse)
-	err := c.cc.Invoke(ctx, "/freelance.v1.FreelanceService/UpdateProfile", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *freelanceServiceClient) AddGig(ctx context.Context, in *GigAddRequest, opts ...grpc.CallOption) (*GigAddResponse, error) {
-	out := new(GigAddResponse)
-	err := c.cc.Invoke(ctx, "/freelance.v1.FreelanceService/AddGig", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/freelance.v1.FreelanceService/SellerProfile", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -88,16 +71,44 @@ func (c *freelanceServiceClient) GigData(ctx context.Context, in *GigDataRequest
 	return out, nil
 }
 
+func (c *freelanceServiceClient) EscrowAllList(ctx context.Context, in *EscrowListRequest, opts ...grpc.CallOption) (*EscrowListResponse, error) {
+	out := new(EscrowListResponse)
+	err := c.cc.Invoke(ctx, "/freelance.v1.FreelanceService/EscrowAllList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *freelanceServiceClient) EscrowSenderList(ctx context.Context, in *EscrowListRequest, opts ...grpc.CallOption) (*EscrowListResponse, error) {
+	out := new(EscrowListResponse)
+	err := c.cc.Invoke(ctx, "/freelance.v1.FreelanceService/EscrowSenderList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *freelanceServiceClient) EscrowReceiverList(ctx context.Context, in *EscrowListRequest, opts ...grpc.CallOption) (*EscrowListResponse, error) {
+	out := new(EscrowListResponse)
+	err := c.cc.Invoke(ctx, "/freelance.v1.FreelanceService/EscrowReceiverList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // FreelanceServiceServer is the server API for FreelanceService service.
 // All implementations must embed UnimplementedFreelanceServiceServer
 // for forward compatibility
 type FreelanceServiceServer interface {
-	Report(context.Context, *ReportRequest) (*ReportResponse, error)
-	UpdateProfile(context.Context, *SellerProfileRequest) (*SellerProfileResponse, error)
-	AddGig(context.Context, *GigAddRequest) (*GigAddResponse, error)
+	SellerProfile(context.Context, *SellerProfileRequest) (*SellerProfileResponse, error)
 	GigList(context.Context, *GigListRequest) (*GigListResponse, error)
 	GigListUser(context.Context, *GigListUserRequest) (*GigListResponse, error)
 	GigData(context.Context, *GigDataRequest) (*GigResponse, error)
+	EscrowAllList(context.Context, *EscrowListRequest) (*EscrowListResponse, error)
+	EscrowSenderList(context.Context, *EscrowListRequest) (*EscrowListResponse, error)
+	EscrowReceiverList(context.Context, *EscrowListRequest) (*EscrowListResponse, error)
 	mustEmbedUnimplementedFreelanceServiceServer()
 }
 
@@ -105,14 +116,8 @@ type FreelanceServiceServer interface {
 type UnimplementedFreelanceServiceServer struct {
 }
 
-func (UnimplementedFreelanceServiceServer) Report(context.Context, *ReportRequest) (*ReportResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Report not implemented")
-}
-func (UnimplementedFreelanceServiceServer) UpdateProfile(context.Context, *SellerProfileRequest) (*SellerProfileResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateProfile not implemented")
-}
-func (UnimplementedFreelanceServiceServer) AddGig(context.Context, *GigAddRequest) (*GigAddResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AddGig not implemented")
+func (UnimplementedFreelanceServiceServer) SellerProfile(context.Context, *SellerProfileRequest) (*SellerProfileResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SellerProfile not implemented")
 }
 func (UnimplementedFreelanceServiceServer) GigList(context.Context, *GigListRequest) (*GigListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GigList not implemented")
@@ -122,6 +127,15 @@ func (UnimplementedFreelanceServiceServer) GigListUser(context.Context, *GigList
 }
 func (UnimplementedFreelanceServiceServer) GigData(context.Context, *GigDataRequest) (*GigResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GigData not implemented")
+}
+func (UnimplementedFreelanceServiceServer) EscrowAllList(context.Context, *EscrowListRequest) (*EscrowListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EscrowAllList not implemented")
+}
+func (UnimplementedFreelanceServiceServer) EscrowSenderList(context.Context, *EscrowListRequest) (*EscrowListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EscrowSenderList not implemented")
+}
+func (UnimplementedFreelanceServiceServer) EscrowReceiverList(context.Context, *EscrowListRequest) (*EscrowListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EscrowReceiverList not implemented")
 }
 func (UnimplementedFreelanceServiceServer) mustEmbedUnimplementedFreelanceServiceServer() {}
 
@@ -136,56 +150,20 @@ func RegisterFreelanceServiceServer(s grpc.ServiceRegistrar, srv FreelanceServic
 	s.RegisterService(&FreelanceService_ServiceDesc, srv)
 }
 
-func _FreelanceService_Report_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ReportRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(FreelanceServiceServer).Report(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/freelance.v1.FreelanceService/Report",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(FreelanceServiceServer).Report(ctx, req.(*ReportRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _FreelanceService_UpdateProfile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _FreelanceService_SellerProfile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(SellerProfileRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(FreelanceServiceServer).UpdateProfile(ctx, in)
+		return srv.(FreelanceServiceServer).SellerProfile(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/freelance.v1.FreelanceService/UpdateProfile",
+		FullMethod: "/freelance.v1.FreelanceService/SellerProfile",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(FreelanceServiceServer).UpdateProfile(ctx, req.(*SellerProfileRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _FreelanceService_AddGig_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GigAddRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(FreelanceServiceServer).AddGig(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/freelance.v1.FreelanceService/AddGig",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(FreelanceServiceServer).AddGig(ctx, req.(*GigAddRequest))
+		return srv.(FreelanceServiceServer).SellerProfile(ctx, req.(*SellerProfileRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -244,6 +222,60 @@ func _FreelanceService_GigData_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _FreelanceService_EscrowAllList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EscrowListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FreelanceServiceServer).EscrowAllList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/freelance.v1.FreelanceService/EscrowAllList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FreelanceServiceServer).EscrowAllList(ctx, req.(*EscrowListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FreelanceService_EscrowSenderList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EscrowListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FreelanceServiceServer).EscrowSenderList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/freelance.v1.FreelanceService/EscrowSenderList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FreelanceServiceServer).EscrowSenderList(ctx, req.(*EscrowListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FreelanceService_EscrowReceiverList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EscrowListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FreelanceServiceServer).EscrowReceiverList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/freelance.v1.FreelanceService/EscrowReceiverList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FreelanceServiceServer).EscrowReceiverList(ctx, req.(*EscrowListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // FreelanceService_ServiceDesc is the grpc.ServiceDesc for FreelanceService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -252,16 +284,8 @@ var FreelanceService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*FreelanceServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Report",
-			Handler:    _FreelanceService_Report_Handler,
-		},
-		{
-			MethodName: "UpdateProfile",
-			Handler:    _FreelanceService_UpdateProfile_Handler,
-		},
-		{
-			MethodName: "AddGig",
-			Handler:    _FreelanceService_AddGig_Handler,
+			MethodName: "SellerProfile",
+			Handler:    _FreelanceService_SellerProfile_Handler,
 		},
 		{
 			MethodName: "GigList",
@@ -274,6 +298,18 @@ var FreelanceService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GigData",
 			Handler:    _FreelanceService_GigData_Handler,
+		},
+		{
+			MethodName: "EscrowAllList",
+			Handler:    _FreelanceService_EscrowAllList_Handler,
+		},
+		{
+			MethodName: "EscrowSenderList",
+			Handler:    _FreelanceService_EscrowSenderList_Handler,
+		},
+		{
+			MethodName: "EscrowReceiverList",
+			Handler:    _FreelanceService_EscrowReceiverList_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

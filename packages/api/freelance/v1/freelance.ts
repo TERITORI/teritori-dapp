@@ -5,31 +5,14 @@ import _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "freelance.v1";
 
-export interface ReportRequest {
-  desc: string;
-  refUrl: string;
-}
-
-export interface ReportResponse {
-  result: number;
-}
-
 export interface SellerProfileRequest {
-  userId: string;
-  profileHash: string;
+  sellerAddress: string;
 }
 
 export interface SellerProfileResponse {
-  result: number;
-}
-
-export interface GigAddRequest {
-  address: string;
-  data: string;
-}
-
-export interface GigAddResponse {
-  result: number;
+  sellerAddress: string;
+  ipfs: string;
+  isActive: boolean;
 }
 
 export interface GigListRequest {
@@ -41,10 +24,28 @@ export interface GigListUserRequest {
   address: string;
 }
 
+export interface EscrowListRequest {
+  address: string;
+}
+
+export interface EscrowInfo {
+  id: number;
+  sender: string;
+  receiver: string;
+  amount: string;
+  amountDenom: string;
+  expireAt: string;
+  status: number;
+}
+
+export interface EscrowListResponse {
+  escrows: EscrowInfo[];
+}
+
 export interface GigInfo {
   id: number;
   address: string;
-  data: string;
+  gigData: string;
 }
 
 export interface GigListResponse {
@@ -59,130 +60,14 @@ export interface GigResponse {
   gig: GigInfo | undefined;
 }
 
-function createBaseReportRequest(): ReportRequest {
-  return { desc: "", refUrl: "" };
-}
-
-export const ReportRequest = {
-  encode(message: ReportRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.desc !== "") {
-      writer.uint32(10).string(message.desc);
-    }
-    if (message.refUrl !== "") {
-      writer.uint32(18).string(message.refUrl);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): ReportRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseReportRequest();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.desc = reader.string();
-          break;
-        case 2:
-          message.refUrl = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): ReportRequest {
-    return {
-      desc: isSet(object.desc) ? String(object.desc) : "",
-      refUrl: isSet(object.refUrl) ? String(object.refUrl) : "",
-    };
-  },
-
-  toJSON(message: ReportRequest): unknown {
-    const obj: any = {};
-    message.desc !== undefined && (obj.desc = message.desc);
-    message.refUrl !== undefined && (obj.refUrl = message.refUrl);
-    return obj;
-  },
-
-  create<I extends Exact<DeepPartial<ReportRequest>, I>>(base?: I): ReportRequest {
-    return ReportRequest.fromPartial(base ?? {});
-  },
-
-  fromPartial<I extends Exact<DeepPartial<ReportRequest>, I>>(object: I): ReportRequest {
-    const message = createBaseReportRequest();
-    message.desc = object.desc ?? "";
-    message.refUrl = object.refUrl ?? "";
-    return message;
-  },
-};
-
-function createBaseReportResponse(): ReportResponse {
-  return { result: 0 };
-}
-
-export const ReportResponse = {
-  encode(message: ReportResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.result !== 0) {
-      writer.uint32(8).int32(message.result);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): ReportResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseReportResponse();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.result = reader.int32();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): ReportResponse {
-    return { result: isSet(object.result) ? Number(object.result) : 0 };
-  },
-
-  toJSON(message: ReportResponse): unknown {
-    const obj: any = {};
-    message.result !== undefined && (obj.result = Math.round(message.result));
-    return obj;
-  },
-
-  create<I extends Exact<DeepPartial<ReportResponse>, I>>(base?: I): ReportResponse {
-    return ReportResponse.fromPartial(base ?? {});
-  },
-
-  fromPartial<I extends Exact<DeepPartial<ReportResponse>, I>>(object: I): ReportResponse {
-    const message = createBaseReportResponse();
-    message.result = object.result ?? 0;
-    return message;
-  },
-};
-
 function createBaseSellerProfileRequest(): SellerProfileRequest {
-  return { userId: "", profileHash: "" };
+  return { sellerAddress: "" };
 }
 
 export const SellerProfileRequest = {
   encode(message: SellerProfileRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.userId !== "") {
-      writer.uint32(10).string(message.userId);
-    }
-    if (message.profileHash !== "") {
-      writer.uint32(18).string(message.profileHash);
+    if (message.sellerAddress !== "") {
+      writer.uint32(10).string(message.sellerAddress);
     }
     return writer;
   },
@@ -195,10 +80,7 @@ export const SellerProfileRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.userId = reader.string();
-          break;
-        case 2:
-          message.profileHash = reader.string();
+          message.sellerAddress = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -209,16 +91,12 @@ export const SellerProfileRequest = {
   },
 
   fromJSON(object: any): SellerProfileRequest {
-    return {
-      userId: isSet(object.userId) ? String(object.userId) : "",
-      profileHash: isSet(object.profileHash) ? String(object.profileHash) : "",
-    };
+    return { sellerAddress: isSet(object.sellerAddress) ? String(object.sellerAddress) : "" };
   },
 
   toJSON(message: SellerProfileRequest): unknown {
     const obj: any = {};
-    message.userId !== undefined && (obj.userId = message.userId);
-    message.profileHash !== undefined && (obj.profileHash = message.profileHash);
+    message.sellerAddress !== undefined && (obj.sellerAddress = message.sellerAddress);
     return obj;
   },
 
@@ -228,20 +106,25 @@ export const SellerProfileRequest = {
 
   fromPartial<I extends Exact<DeepPartial<SellerProfileRequest>, I>>(object: I): SellerProfileRequest {
     const message = createBaseSellerProfileRequest();
-    message.userId = object.userId ?? "";
-    message.profileHash = object.profileHash ?? "";
+    message.sellerAddress = object.sellerAddress ?? "";
     return message;
   },
 };
 
 function createBaseSellerProfileResponse(): SellerProfileResponse {
-  return { result: 0 };
+  return { sellerAddress: "", ipfs: "", isActive: false };
 }
 
 export const SellerProfileResponse = {
   encode(message: SellerProfileResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.result !== 0) {
-      writer.uint32(8).int32(message.result);
+    if (message.sellerAddress !== "") {
+      writer.uint32(10).string(message.sellerAddress);
+    }
+    if (message.ipfs !== "") {
+      writer.uint32(18).string(message.ipfs);
+    }
+    if (message.isActive === true) {
+      writer.uint32(24).bool(message.isActive);
     }
     return writer;
   },
@@ -254,7 +137,13 @@ export const SellerProfileResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.result = reader.int32();
+          message.sellerAddress = reader.string();
+          break;
+        case 2:
+          message.ipfs = reader.string();
+          break;
+        case 3:
+          message.isActive = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -265,12 +154,18 @@ export const SellerProfileResponse = {
   },
 
   fromJSON(object: any): SellerProfileResponse {
-    return { result: isSet(object.result) ? Number(object.result) : 0 };
+    return {
+      sellerAddress: isSet(object.sellerAddress) ? String(object.sellerAddress) : "",
+      ipfs: isSet(object.ipfs) ? String(object.ipfs) : "",
+      isActive: isSet(object.isActive) ? Boolean(object.isActive) : false,
+    };
   },
 
   toJSON(message: SellerProfileResponse): unknown {
     const obj: any = {};
-    message.result !== undefined && (obj.result = Math.round(message.result));
+    message.sellerAddress !== undefined && (obj.sellerAddress = message.sellerAddress);
+    message.ipfs !== undefined && (obj.ipfs = message.ipfs);
+    message.isActive !== undefined && (obj.isActive = message.isActive);
     return obj;
   },
 
@@ -280,120 +175,9 @@ export const SellerProfileResponse = {
 
   fromPartial<I extends Exact<DeepPartial<SellerProfileResponse>, I>>(object: I): SellerProfileResponse {
     const message = createBaseSellerProfileResponse();
-    message.result = object.result ?? 0;
-    return message;
-  },
-};
-
-function createBaseGigAddRequest(): GigAddRequest {
-  return { address: "", data: "" };
-}
-
-export const GigAddRequest = {
-  encode(message: GigAddRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.address !== "") {
-      writer.uint32(10).string(message.address);
-    }
-    if (message.data !== "") {
-      writer.uint32(18).string(message.data);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): GigAddRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseGigAddRequest();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.address = reader.string();
-          break;
-        case 2:
-          message.data = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): GigAddRequest {
-    return {
-      address: isSet(object.address) ? String(object.address) : "",
-      data: isSet(object.data) ? String(object.data) : "",
-    };
-  },
-
-  toJSON(message: GigAddRequest): unknown {
-    const obj: any = {};
-    message.address !== undefined && (obj.address = message.address);
-    message.data !== undefined && (obj.data = message.data);
-    return obj;
-  },
-
-  create<I extends Exact<DeepPartial<GigAddRequest>, I>>(base?: I): GigAddRequest {
-    return GigAddRequest.fromPartial(base ?? {});
-  },
-
-  fromPartial<I extends Exact<DeepPartial<GigAddRequest>, I>>(object: I): GigAddRequest {
-    const message = createBaseGigAddRequest();
-    message.address = object.address ?? "";
-    message.data = object.data ?? "";
-    return message;
-  },
-};
-
-function createBaseGigAddResponse(): GigAddResponse {
-  return { result: 0 };
-}
-
-export const GigAddResponse = {
-  encode(message: GigAddResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.result !== 0) {
-      writer.uint32(8).int32(message.result);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): GigAddResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseGigAddResponse();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.result = reader.int32();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): GigAddResponse {
-    return { result: isSet(object.result) ? Number(object.result) : 0 };
-  },
-
-  toJSON(message: GigAddResponse): unknown {
-    const obj: any = {};
-    message.result !== undefined && (obj.result = Math.round(message.result));
-    return obj;
-  },
-
-  create<I extends Exact<DeepPartial<GigAddResponse>, I>>(base?: I): GigAddResponse {
-    return GigAddResponse.fromPartial(base ?? {});
-  },
-
-  fromPartial<I extends Exact<DeepPartial<GigAddResponse>, I>>(object: I): GigAddResponse {
-    const message = createBaseGigAddResponse();
-    message.result = object.result ?? 0;
+    message.sellerAddress = object.sellerAddress ?? "";
+    message.ipfs = object.ipfs ?? "";
+    message.isActive = object.isActive ?? false;
     return message;
   },
 };
@@ -511,8 +295,221 @@ export const GigListUserRequest = {
   },
 };
 
+function createBaseEscrowListRequest(): EscrowListRequest {
+  return { address: "" };
+}
+
+export const EscrowListRequest = {
+  encode(message: EscrowListRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.address !== "") {
+      writer.uint32(10).string(message.address);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): EscrowListRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseEscrowListRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.address = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): EscrowListRequest {
+    return { address: isSet(object.address) ? String(object.address) : "" };
+  },
+
+  toJSON(message: EscrowListRequest): unknown {
+    const obj: any = {};
+    message.address !== undefined && (obj.address = message.address);
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<EscrowListRequest>, I>>(base?: I): EscrowListRequest {
+    return EscrowListRequest.fromPartial(base ?? {});
+  },
+
+  fromPartial<I extends Exact<DeepPartial<EscrowListRequest>, I>>(object: I): EscrowListRequest {
+    const message = createBaseEscrowListRequest();
+    message.address = object.address ?? "";
+    return message;
+  },
+};
+
+function createBaseEscrowInfo(): EscrowInfo {
+  return { id: 0, sender: "", receiver: "", amount: "", amountDenom: "", expireAt: "", status: 0 };
+}
+
+export const EscrowInfo = {
+  encode(message: EscrowInfo, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.id !== 0) {
+      writer.uint32(8).uint32(message.id);
+    }
+    if (message.sender !== "") {
+      writer.uint32(18).string(message.sender);
+    }
+    if (message.receiver !== "") {
+      writer.uint32(26).string(message.receiver);
+    }
+    if (message.amount !== "") {
+      writer.uint32(34).string(message.amount);
+    }
+    if (message.amountDenom !== "") {
+      writer.uint32(42).string(message.amountDenom);
+    }
+    if (message.expireAt !== "") {
+      writer.uint32(50).string(message.expireAt);
+    }
+    if (message.status !== 0) {
+      writer.uint32(56).uint32(message.status);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): EscrowInfo {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseEscrowInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.uint32();
+          break;
+        case 2:
+          message.sender = reader.string();
+          break;
+        case 3:
+          message.receiver = reader.string();
+          break;
+        case 4:
+          message.amount = reader.string();
+          break;
+        case 5:
+          message.amountDenom = reader.string();
+          break;
+        case 6:
+          message.expireAt = reader.string();
+          break;
+        case 7:
+          message.status = reader.uint32();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): EscrowInfo {
+    return {
+      id: isSet(object.id) ? Number(object.id) : 0,
+      sender: isSet(object.sender) ? String(object.sender) : "",
+      receiver: isSet(object.receiver) ? String(object.receiver) : "",
+      amount: isSet(object.amount) ? String(object.amount) : "",
+      amountDenom: isSet(object.amountDenom) ? String(object.amountDenom) : "",
+      expireAt: isSet(object.expireAt) ? String(object.expireAt) : "",
+      status: isSet(object.status) ? Number(object.status) : 0,
+    };
+  },
+
+  toJSON(message: EscrowInfo): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = Math.round(message.id));
+    message.sender !== undefined && (obj.sender = message.sender);
+    message.receiver !== undefined && (obj.receiver = message.receiver);
+    message.amount !== undefined && (obj.amount = message.amount);
+    message.amountDenom !== undefined && (obj.amountDenom = message.amountDenom);
+    message.expireAt !== undefined && (obj.expireAt = message.expireAt);
+    message.status !== undefined && (obj.status = Math.round(message.status));
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<EscrowInfo>, I>>(base?: I): EscrowInfo {
+    return EscrowInfo.fromPartial(base ?? {});
+  },
+
+  fromPartial<I extends Exact<DeepPartial<EscrowInfo>, I>>(object: I): EscrowInfo {
+    const message = createBaseEscrowInfo();
+    message.id = object.id ?? 0;
+    message.sender = object.sender ?? "";
+    message.receiver = object.receiver ?? "";
+    message.amount = object.amount ?? "";
+    message.amountDenom = object.amountDenom ?? "";
+    message.expireAt = object.expireAt ?? "";
+    message.status = object.status ?? 0;
+    return message;
+  },
+};
+
+function createBaseEscrowListResponse(): EscrowListResponse {
+  return { escrows: [] };
+}
+
+export const EscrowListResponse = {
+  encode(message: EscrowListResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.escrows) {
+      EscrowInfo.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): EscrowListResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseEscrowListResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.escrows.push(EscrowInfo.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): EscrowListResponse {
+    return { escrows: Array.isArray(object?.escrows) ? object.escrows.map((e: any) => EscrowInfo.fromJSON(e)) : [] };
+  },
+
+  toJSON(message: EscrowListResponse): unknown {
+    const obj: any = {};
+    if (message.escrows) {
+      obj.escrows = message.escrows.map((e) => e ? EscrowInfo.toJSON(e) : undefined);
+    } else {
+      obj.escrows = [];
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<EscrowListResponse>, I>>(base?: I): EscrowListResponse {
+    return EscrowListResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial<I extends Exact<DeepPartial<EscrowListResponse>, I>>(object: I): EscrowListResponse {
+    const message = createBaseEscrowListResponse();
+    message.escrows = object.escrows?.map((e) => EscrowInfo.fromPartial(e)) || [];
+    return message;
+  },
+};
+
 function createBaseGigInfo(): GigInfo {
-  return { id: 0, address: "", data: "" };
+  return { id: 0, address: "", gigData: "" };
 }
 
 export const GigInfo = {
@@ -523,8 +520,8 @@ export const GigInfo = {
     if (message.address !== "") {
       writer.uint32(18).string(message.address);
     }
-    if (message.data !== "") {
-      writer.uint32(26).string(message.data);
+    if (message.gigData !== "") {
+      writer.uint32(26).string(message.gigData);
     }
     return writer;
   },
@@ -543,7 +540,7 @@ export const GigInfo = {
           message.address = reader.string();
           break;
         case 3:
-          message.data = reader.string();
+          message.gigData = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -557,7 +554,7 @@ export const GigInfo = {
     return {
       id: isSet(object.id) ? Number(object.id) : 0,
       address: isSet(object.address) ? String(object.address) : "",
-      data: isSet(object.data) ? String(object.data) : "",
+      gigData: isSet(object.gigData) ? String(object.gigData) : "",
     };
   },
 
@@ -565,7 +562,7 @@ export const GigInfo = {
     const obj: any = {};
     message.id !== undefined && (obj.id = Math.round(message.id));
     message.address !== undefined && (obj.address = message.address);
-    message.data !== undefined && (obj.data = message.data);
+    message.gigData !== undefined && (obj.gigData = message.gigData);
     return obj;
   },
 
@@ -577,7 +574,7 @@ export const GigInfo = {
     const message = createBaseGigInfo();
     message.id = object.id ?? 0;
     message.address = object.address ?? "";
-    message.data = object.data ?? "";
+    message.gigData = object.gigData ?? "";
     return message;
   },
 };
@@ -740,12 +737,13 @@ export const GigResponse = {
 };
 
 export interface FreelanceService {
-  report(request: DeepPartial<ReportRequest>, metadata?: grpc.Metadata): Promise<ReportResponse>;
-  updateProfile(request: DeepPartial<SellerProfileRequest>, metadata?: grpc.Metadata): Promise<SellerProfileResponse>;
-  addGig(request: DeepPartial<GigAddRequest>, metadata?: grpc.Metadata): Promise<GigAddResponse>;
+  sellerProfile(request: DeepPartial<SellerProfileRequest>, metadata?: grpc.Metadata): Promise<SellerProfileResponse>;
   gigList(request: DeepPartial<GigListRequest>, metadata?: grpc.Metadata): Promise<GigListResponse>;
   gigListUser(request: DeepPartial<GigListUserRequest>, metadata?: grpc.Metadata): Promise<GigListResponse>;
   gigData(request: DeepPartial<GigDataRequest>, metadata?: grpc.Metadata): Promise<GigResponse>;
+  escrowAllList(request: DeepPartial<EscrowListRequest>, metadata?: grpc.Metadata): Promise<EscrowListResponse>;
+  escrowSenderList(request: DeepPartial<EscrowListRequest>, metadata?: grpc.Metadata): Promise<EscrowListResponse>;
+  escrowReceiverList(request: DeepPartial<EscrowListRequest>, metadata?: grpc.Metadata): Promise<EscrowListResponse>;
 }
 
 export class FreelanceServiceClientImpl implements FreelanceService {
@@ -753,24 +751,17 @@ export class FreelanceServiceClientImpl implements FreelanceService {
 
   constructor(rpc: Rpc) {
     this.rpc = rpc;
-    this.report = this.report.bind(this);
-    this.updateProfile = this.updateProfile.bind(this);
-    this.addGig = this.addGig.bind(this);
+    this.sellerProfile = this.sellerProfile.bind(this);
     this.gigList = this.gigList.bind(this);
     this.gigListUser = this.gigListUser.bind(this);
     this.gigData = this.gigData.bind(this);
+    this.escrowAllList = this.escrowAllList.bind(this);
+    this.escrowSenderList = this.escrowSenderList.bind(this);
+    this.escrowReceiverList = this.escrowReceiverList.bind(this);
   }
 
-  report(request: DeepPartial<ReportRequest>, metadata?: grpc.Metadata): Promise<ReportResponse> {
-    return this.rpc.unary(FreelanceServiceReportDesc, ReportRequest.fromPartial(request), metadata);
-  }
-
-  updateProfile(request: DeepPartial<SellerProfileRequest>, metadata?: grpc.Metadata): Promise<SellerProfileResponse> {
-    return this.rpc.unary(FreelanceServiceUpdateProfileDesc, SellerProfileRequest.fromPartial(request), metadata);
-  }
-
-  addGig(request: DeepPartial<GigAddRequest>, metadata?: grpc.Metadata): Promise<GigAddResponse> {
-    return this.rpc.unary(FreelanceServiceAddGigDesc, GigAddRequest.fromPartial(request), metadata);
+  sellerProfile(request: DeepPartial<SellerProfileRequest>, metadata?: grpc.Metadata): Promise<SellerProfileResponse> {
+    return this.rpc.unary(FreelanceServiceSellerProfileDesc, SellerProfileRequest.fromPartial(request), metadata);
   }
 
   gigList(request: DeepPartial<GigListRequest>, metadata?: grpc.Metadata): Promise<GigListResponse> {
@@ -785,35 +776,23 @@ export class FreelanceServiceClientImpl implements FreelanceService {
     return this.rpc.unary(FreelanceServiceGigDataDesc, GigDataRequest.fromPartial(request), metadata);
   }
 
+  escrowAllList(request: DeepPartial<EscrowListRequest>, metadata?: grpc.Metadata): Promise<EscrowListResponse> {
+    return this.rpc.unary(FreelanceServiceEscrowAllListDesc, EscrowListRequest.fromPartial(request), metadata);
+  }
+
+  escrowSenderList(request: DeepPartial<EscrowListRequest>, metadata?: grpc.Metadata): Promise<EscrowListResponse> {
+    return this.rpc.unary(FreelanceServiceEscrowSenderListDesc, EscrowListRequest.fromPartial(request), metadata);
+  }
+
+  escrowReceiverList(request: DeepPartial<EscrowListRequest>, metadata?: grpc.Metadata): Promise<EscrowListResponse> {
+    return this.rpc.unary(FreelanceServiceEscrowReceiverListDesc, EscrowListRequest.fromPartial(request), metadata);
+  }
 }
 
 export const FreelanceServiceDesc = { serviceName: "freelance.v1.FreelanceService" };
 
-export const FreelanceServiceReportDesc: UnaryMethodDefinitionish = {
-  methodName: "Report",
-  service: FreelanceServiceDesc,
-  requestStream: false,
-  responseStream: false,
-  requestType: {
-    serializeBinary() {
-      return ReportRequest.encode(this).finish();
-    },
-  } as any,
-  responseType: {
-    deserializeBinary(data: Uint8Array) {
-      const value = ReportResponse.decode(data);
-      return {
-        ...value,
-        toObject() {
-          return value;
-        },
-      };
-    },
-  } as any,
-};
-
-export const FreelanceServiceUpdateProfileDesc: UnaryMethodDefinitionish = {
-  methodName: "UpdateProfile",
+export const FreelanceServiceSellerProfileDesc: UnaryMethodDefinitionish = {
+  methodName: "SellerProfile",
   service: FreelanceServiceDesc,
   requestStream: false,
   responseStream: false,
@@ -825,29 +804,6 @@ export const FreelanceServiceUpdateProfileDesc: UnaryMethodDefinitionish = {
   responseType: {
     deserializeBinary(data: Uint8Array) {
       const value = SellerProfileResponse.decode(data);
-      return {
-        ...value,
-        toObject() {
-          return value;
-        },
-      };
-    },
-  } as any,
-};
-
-export const FreelanceServiceAddGigDesc: UnaryMethodDefinitionish = {
-  methodName: "AddGig",
-  service: FreelanceServiceDesc,
-  requestStream: false,
-  responseStream: false,
-  requestType: {
-    serializeBinary() {
-      return GigAddRequest.encode(this).finish();
-    },
-  } as any,
-  responseType: {
-    deserializeBinary(data: Uint8Array) {
-      const value = GigAddResponse.decode(data);
       return {
         ...value,
         toObject() {
@@ -917,6 +873,75 @@ export const FreelanceServiceGigDataDesc: UnaryMethodDefinitionish = {
   responseType: {
     deserializeBinary(data: Uint8Array) {
       const value = GigResponse.decode(data);
+      return {
+        ...value,
+        toObject() {
+          return value;
+        },
+      };
+    },
+  } as any,
+};
+
+export const FreelanceServiceEscrowAllListDesc: UnaryMethodDefinitionish = {
+  methodName: "EscrowAllList",
+  service: FreelanceServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return EscrowListRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      const value = EscrowListResponse.decode(data);
+      return {
+        ...value,
+        toObject() {
+          return value;
+        },
+      };
+    },
+  } as any,
+};
+
+export const FreelanceServiceEscrowSenderListDesc: UnaryMethodDefinitionish = {
+  methodName: "EscrowSenderList",
+  service: FreelanceServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return EscrowListRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      const value = EscrowListResponse.decode(data);
+      return {
+        ...value,
+        toObject() {
+          return value;
+        },
+      };
+    },
+  } as any,
+};
+
+export const FreelanceServiceEscrowReceiverListDesc: UnaryMethodDefinitionish = {
+  methodName: "EscrowReceiverList",
+  service: FreelanceServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return EscrowListRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      const value = EscrowListResponse.decode(data);
       return {
         ...value,
         toObject() {
