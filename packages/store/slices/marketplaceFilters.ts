@@ -50,6 +50,7 @@ export const selectSelectedAttributeIds = (state: RootState) =>
 
 export const selectAllSelectedAttributeData = (state: RootState) =>
   selectors.selectAll(state.marketplaceFilters);
+
 export const selectSelectedAttributeDataById = (
   state: RootState,
   id: EntityId

@@ -1,4 +1,5 @@
 import React from "react";
+import { useSelector } from "react-redux";
 
 import { TabsListType } from "./types";
 import {
@@ -8,6 +9,7 @@ import {
 } from "../../api/marketplace/v1/marketplace";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { selectAllSelectedAttributeData } from "../../store/slices/marketplaceFilters";
 import { alignDown } from "../../utils/align";
 import { ActivityTable } from "../activity/ActivityTable";
 import { Footer } from "../footers/Footer";
@@ -24,6 +26,7 @@ export const CollectionContent: React.FC<{
 
   const { width } = useMaxResolution();
   const numColumns = Math.floor(width / nftWidth);
+  const selectedFilters = useSelector(selectAllSelectedAttributeData);
 
   const nftsRequest: NFTsRequest = {
     collectionId: id,
@@ -32,12 +35,7 @@ export const CollectionContent: React.FC<{
     offset: 0,
     sort: Sort.SORT_PRICE,
     sortDirection,
-    attributes: [
-      {
-        traitType: "Background",
-        value: "Background",
-      },
-    ],
+    attributes: selectedFilters,
   };
 
   switch (selectedTab) {
