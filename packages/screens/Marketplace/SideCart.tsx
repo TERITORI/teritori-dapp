@@ -209,9 +209,9 @@ const Footer: React.FC<{ items: any[] }> = ({ items }) => {
       Number.parseFloat(prettyPrice(nft.networkId, nft.price, nft.denom)),
     0
   );
-  const takerFee = subTotal * 0.015;
+
   const royalty = subTotal * 0.033;
-  const total = royalty + subTotal + takerFee;
+  const total = royalty + subTotal;
   return (
     <View
       style={{
@@ -224,7 +224,6 @@ const Footer: React.FC<{ items: any[] }> = ({ items }) => {
         textRight={subTotal}
       />
       <ItemTotal textLeft="Royalty" showLogo textRight={royalty} />
-      <ItemTotal textLeft="Taker Fee" showLogo={false} textRight={takerFee} />
       <Separator />
       <ItemTotal textLeft="You pay" showLogo textRight={Math.round(total)} />
       <Separator />
