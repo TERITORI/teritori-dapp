@@ -43,7 +43,6 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
         </BrandText>
       }
       responsive
-      noScroll
       onBackPress={() => navigation.navigate("Marketplace")}
       forceNetworkId={network?.id}
     >
