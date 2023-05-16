@@ -14,14 +14,19 @@ const filter = createEntityAdapter<Attribute>({
 
 interface UIStates {
   showFilters: boolean;
+  buyNowState: boolean;
 }
 
 const initialState: UIStates = {
   showFilters: false,
+  buyNowState: true,
 };
 
 export const selectShowFilters = (state: RootState) =>
   state.marketplaceFilterUI.showFilters;
+
+export const selectBuyNow = (state: RootState) =>
+  state.marketplaceFilterUI.buyNowState;
 
 const filtersSlice = createSlice({
   name: "marketPlaceFilters",
@@ -39,6 +44,9 @@ const filterUI = createSlice({
   reducers: {
     setShowFilters: (state, action: PayloadAction<boolean>) => {
       state.showFilters = action.payload;
+    },
+    setBuyNow: (state, action: PayloadAction<boolean>) => {
+      state.buyNowState = action.payload;
     },
   },
 });
@@ -59,7 +67,7 @@ export const selectSelectedAttributeDataById = (
 export const { addSelected, removeSelected, clearSelected } =
   filtersSlice.actions;
 
-export const { setShowFilters } = filterUI.actions;
+export const { setShowFilters, setBuyNow } = filterUI.actions;
 
 export const marketplaceFilters = filtersSlice.reducer;
 export const marketplaceFilterUI = filterUI.reducer;

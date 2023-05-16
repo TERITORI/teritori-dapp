@@ -10,6 +10,7 @@ import {
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { ChevronDownIcon } from "react-native-heroicons/outline";
 import { XMarkIcon } from "react-native-heroicons/solid";
+import { Switch } from "react-native-paper";
 import Animated, {
   interpolate,
   useAnimatedStyle,
@@ -33,6 +34,8 @@ import {
   selectSelectedAttributeIds,
   clearSelected,
   selectAllSelectedAttributeData,
+  selectBuyNow,
+  setBuyNow,
 } from "../../store/slices/marketplaceFilters";
 import { useAppDispatch } from "../../store/store";
 import { mustGetMarketplaceClient } from "../../utils/backend";
@@ -322,6 +325,8 @@ export const SideFilters: React.FC<{
 }> = ({ style, collectionId }) => {
   const [attributes, setAttributes] = useState<Attribute[]>([]);
   const [network] = parseNetworkObjectId(collectionId);
+  const buyNow = useSelector(selectBuyNow);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     try {
@@ -344,6 +349,28 @@ export const SideFilters: React.FC<{
   return useShowFilters() ? (
     <View style={style}>
       <Header items={attributes} />
+      <View
+        style={{
+          flexDirection: "row",
+          flexWrap: "nowrap",
+          justifyContent: "space-between",
+          alignItems: "center",
+          borderStyle: "solid",
+          borderBottomColor: neutral44,
+          borderWidth: 1,
+          paddingBottom: layout.padding_x1,
+          marginBottom: layout.padding_x1,
+        }}
+      >
+        <BrandText style={fontSemibold14}>Buy Now</BrandText>
+        <Switch
+          value={buyNow}
+          onValueChange={() => {
+            dispatch(setBuyNow(!buyNow));
+          }}
+          color={primaryColor}
+        />
+      </View>
       <FlatList
         data={attributes}
         renderItem={({ item }) => {
