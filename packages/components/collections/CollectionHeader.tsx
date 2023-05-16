@@ -70,7 +70,7 @@ export const CollectionHeader: React.FC<{
 
   const collectionScreenTabItems = {
     collections: {
-      name: "Collections",
+      name: "Collection",
       badgeCount: stats?.totalSupply || 0,
     },
     ...(stats?.owned
