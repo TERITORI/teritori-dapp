@@ -35,7 +35,7 @@ export const NFTs: React.FC<{
   ListFooterComponent?: ReactElement;
 }> = ({ req, ListHeaderComponent, ListFooterComponent }) => {
   const { nfts, fetchMore } = useNFTs(req);
-  console.log(req);
+
   const { height } = useMaxResolution();
   const filterIsShown = useShowFilters();
 

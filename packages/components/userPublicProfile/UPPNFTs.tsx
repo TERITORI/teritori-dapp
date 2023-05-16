@@ -33,6 +33,7 @@ const SelectedTabContent: React.FC<{
     offset: 0,
     sort: Sort.SORT_PRICE,
     sortDirection: SortDirection.SORT_DIRECTION_ASCENDING,
+    attributes: [],
   };
 
   switch (selectedTab) {
