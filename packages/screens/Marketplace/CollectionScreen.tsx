@@ -13,6 +13,8 @@ import { TabsListType } from "../../components/collections/types";
 import { useCollectionInfo } from "../../hooks/useCollectionInfo";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { parseCollectionId } from "../../networks";
+import { setShowFilters } from "../../store/slices/marketplaceFilters";
+import { useAppDispatch } from "../../store/store";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { neutral00, neutral67 } from "../../utils/style/colors";
 import { fontSemibold20 } from "../../utils/style/fonts";
@@ -30,6 +32,12 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
   const navigation = useAppNavigation();
   const { width } = useMaxResolution();
   const cartIsShown = useShowCart();
+  const dispatch = useAppDispatch();
+
+  const handleOnSelectTab = (item: TabsListType) => {
+    if (item !== "collections") dispatch(setShowFilters(false));
+    setSelectedTab(item);
+  };
 
   const SideCartWidth = 245 + 10;
   // returns
@@ -62,7 +70,7 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
             collectionId={id}
             collectionInfo={info}
             selectedTab={selectedTab}
-            onSelectTab={setSelectedTab}
+            onSelectTab={handleOnSelectTab}
             onChangeSortDirection={setSortDirection}
             sortDirection={sortDirection}
           />
