@@ -6,11 +6,13 @@ import {
   ViewStyle,
   StyleSheet,
   Pressable,
+  TextInput,
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { ChevronDownIcon } from "react-native-heroicons/outline";
 import { XMarkIcon } from "react-native-heroicons/solid";
 import { Switch } from "react-native-paper";
+import { handlePress } from "react-native-paper/lib/typescript/components/RadioButton/utils";
 import Animated, {
   interpolate,
   useAnimatedStyle,
@@ -25,6 +27,7 @@ import { Attribute } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
 import { Separator } from "../../components/Separator";
+import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { parseNetworkObjectId } from "../../networks";
 import {
   selectShowFilters,
@@ -36,17 +39,25 @@ import {
   selectAllSelectedAttributeData,
   selectBuyNow,
   setBuyNow,
+  setPriceRange,
+  selectPriceRange,
 } from "../../store/slices/marketplaceFilters";
 import { useAppDispatch } from "../../store/store";
 import { mustGetMarketplaceClient } from "../../utils/backend";
 import {
   codGrayColor,
+  neutral00,
+  neutral33,
   neutral44,
   neutralA3,
   primaryColor,
   secondaryColor,
 } from "../../utils/style/colors";
-import { fontSemibold12, fontSemibold14 } from "../../utils/style/fonts";
+import {
+  fontMedium14,
+  fontSemibold12,
+  fontSemibold14,
+} from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { modalMarginPadding } from "../../utils/style/modals";
 
@@ -319,6 +330,98 @@ export const AppliedFilters: React.FC = () => {
   ) : null;
 };
 
+const FilterContainer: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
+  children,
+  style,
+}) => (
+  <View
+    style={[
+      {
+        flexDirection: "row",
+        flexWrap: "nowrap",
+        justifyContent: "space-between",
+        alignItems: "center",
+        borderStyle: "solid",
+        borderBottomColor: neutral44,
+        borderWidth: 1,
+        paddingBottom: layout.padding_x1,
+        marginBottom: layout.padding_x1,
+      },
+      style,
+    ]}
+  >
+    {children}
+  </View>
+);
+
+const PriceFilter: React.FC = () => {
+  const styles = StyleSheet.create({
+    textInput: {
+      color: "#FFFFFF",
+      backgroundColor: neutral00,
+      borderRadius: layout.padding_x1,
+      borderColor: neutral33,
+      borderStyle: "solid",
+      width: 85,
+      height: 40,
+      borderWidth: 1,
+      padding: layout.padding_x1,
+    },
+  });
+  const textInputStyle = StyleSheet.flatten([styles.textInput, fontMedium14]);
+  const priceRange = useSelector(selectPriceRange);
+  const [min, setMin] = useState<number>(priceRange?.min || 0);
+  const [max, setMax] = useState<number>(priceRange?.max || 0);
+  debugger;
+  const dispatch = useAppDispatch();
+  const handlePress = () => {
+    dispatch(
+      setPriceRange({
+        min,
+        max,
+      })
+    );
+  };
+  return (
+    <>
+      <BrandText style={fontSemibold14}>Price</BrandText>
+      <View
+        style={{
+          flexDirection: "row",
+          flexWrap: "nowrap",
+          alignItems: "center",
+          width: "100%",
+          paddingVertical: layout.padding_x1,
+          justifyContent: "space-between",
+        }}
+      >
+        <TextInput
+          placeholder="Min"
+          onChangeText={(value) =>
+            value !== "" ? setMin(parseFloat(value)) : setMin(0)
+          }
+          placeholderTextColor="#FFFFFF"
+          style={textInputStyle}
+          value={min !== 0 ? min.toString(10) : ""}
+          keyboardType="decimal-pad"
+        />
+        <BrandText style={fontSemibold14}>to</BrandText>
+        <TextInput
+          placeholder="Max"
+          onChangeText={(value) =>
+            value !== "" ? setMax(parseFloat(value)) : setMax(0)
+          }
+          value={max !== 0 ? max.toString(10) : ""}
+          placeholderTextColor="#FFFFFF"
+          style={textInputStyle}
+          keyboardType="decimal-pad"
+        />
+      </View>
+      <PrimaryButton size="SM" text="Apply" fullWidth onPress={handlePress} />
+    </>
+  );
+};
+
 export const SideFilters: React.FC<{
   style?: StyleProp<ViewStyle>;
   collectionId: string;
@@ -349,19 +452,7 @@ export const SideFilters: React.FC<{
   return useShowFilters() ? (
     <View style={style}>
       <Header items={attributes} />
-      <View
-        style={{
-          flexDirection: "row",
-          flexWrap: "nowrap",
-          justifyContent: "space-between",
-          alignItems: "center",
-          borderStyle: "solid",
-          borderBottomColor: neutral44,
-          borderWidth: 1,
-          paddingBottom: layout.padding_x1,
-          marginBottom: layout.padding_x1,
-        }}
-      >
+      <FilterContainer>
         <BrandText style={fontSemibold14}>Buy Now</BrandText>
         <Switch
           value={buyNow}
@@ -370,7 +461,15 @@ export const SideFilters: React.FC<{
           }}
           color={primaryColor}
         />
-      </View>
+      </FilterContainer>
+      <FilterContainer
+        style={{
+          flexDirection: "column",
+          alignItems: "flex-start",
+        }}
+      >
+        <PriceFilter />
+      </FilterContainer>
       <FlatList
         data={attributes}
         renderItem={({ item }) => {

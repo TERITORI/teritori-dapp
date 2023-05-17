@@ -5,7 +5,7 @@ import {
   PayloadAction,
 } from "@reduxjs/toolkit";
 
-import { Attribute } from "../../api/marketplace/v1/marketplace";
+import { Attribute, PriceRange } from "../../api/marketplace/v1/marketplace";
 import { RootState } from "../store";
 
 const filter = createEntityAdapter<Attribute>({
@@ -15,11 +15,16 @@ const filter = createEntityAdapter<Attribute>({
 interface UIStates {
   showFilters: boolean;
   buyNowState: boolean;
+  priceRange: PriceRange;
 }
 
 const initialState: UIStates = {
   showFilters: false,
   buyNowState: true,
+  priceRange: {
+    min: 0,
+    max: 0,
+  },
 };
 
 export const selectShowFilters = (state: RootState) =>
@@ -27,6 +32,9 @@ export const selectShowFilters = (state: RootState) =>
 
 export const selectBuyNow = (state: RootState) =>
   state.marketplaceFilterUI.buyNowState;
+
+export const selectPriceRange = (state: RootState) =>
+  state.marketplaceFilterUI.priceRange;
 
 const filtersSlice = createSlice({
   name: "marketPlaceFilters",
@@ -48,6 +56,9 @@ const filterUI = createSlice({
     setBuyNow: (state, action: PayloadAction<boolean>) => {
       state.buyNowState = action.payload;
     },
+    setPriceRange: (state, action: PayloadAction<PriceRange>) => {
+      state.priceRange = action.payload;
+    },
   },
 });
 
@@ -67,7 +78,7 @@ export const selectSelectedAttributeDataById = (
 export const { addSelected, removeSelected, clearSelected } =
   filtersSlice.actions;
 
-export const { setShowFilters, setBuyNow } = filterUI.actions;
+export const { setShowFilters, setBuyNow, setPriceRange } = filterUI.actions;
 
 export const marketplaceFilters = filtersSlice.reducer;
 export const marketplaceFilterUI = filterUI.reducer;

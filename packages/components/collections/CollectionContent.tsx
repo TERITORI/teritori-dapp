@@ -9,7 +9,11 @@ import {
 } from "../../api/marketplace/v1/marketplace";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { selectAllSelectedAttributeData } from "../../store/slices/marketplaceFilters";
+import {
+  selectAllSelectedAttributeData,
+  selectBuyNow,
+  selectPriceRange,
+} from "../../store/slices/marketplaceFilters";
 import { alignDown } from "../../utils/align";
 import { ActivityTable } from "../activity/ActivityTable";
 import { Footer } from "../footers/Footer";
@@ -27,6 +31,8 @@ export const CollectionContent: React.FC<{
   const { width } = useMaxResolution();
   const numColumns = Math.floor(width / nftWidth);
   const selectedFilters = useSelector(selectAllSelectedAttributeData);
+  const isBuyNow = useSelector(selectBuyNow);
+  const priceRange = useSelector(selectPriceRange);
 
   const nftsRequest: NFTsRequest = {
     collectionId: id,
@@ -36,7 +42,10 @@ export const CollectionContent: React.FC<{
     sort: Sort.SORT_PRICE,
     sortDirection,
     attributes: selectedFilters,
+    isListed: isBuyNow,
+    priceRange,
   };
+  console.log(nftsRequest);
 
   switch (selectedTab) {
     case "collections":

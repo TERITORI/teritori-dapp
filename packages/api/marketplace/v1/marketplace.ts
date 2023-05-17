@@ -142,6 +142,11 @@ export interface Attribute {
   value: string;
 }
 
+export interface PriceRange {
+  min: number;
+  max: number;
+}
+
 export interface NFT {
   id: string;
   networkId: string;
@@ -256,6 +261,8 @@ export interface NFTsRequest {
   sort: Sort;
   sortDirection: SortDirection;
   attributes: Attribute[];
+  isListed: boolean;
+  priceRange: PriceRange | undefined;
 }
 
 export interface NFTsResponse {
@@ -432,6 +439,61 @@ export const Attribute = {
     const message = createBaseAttribute();
     message.traitType = object.traitType ?? "";
     message.value = object.value ?? "";
+    return message;
+  },
+};
+
+function createBasePriceRange(): PriceRange {
+  return { min: 0, max: 0 };
+}
+
+export const PriceRange = {
+  encode(message: PriceRange, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.min !== 0) {
+      writer.uint32(13).float(message.min);
+    }
+    if (message.max !== 0) {
+      writer.uint32(21).float(message.max);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): PriceRange {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBasePriceRange();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.min = reader.float();
+          break;
+        case 2:
+          message.max = reader.float();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): PriceRange {
+    return { min: isSet(object.min) ? Number(object.min) : 0, max: isSet(object.max) ? Number(object.max) : 0 };
+  },
+
+  toJSON(message: PriceRange): unknown {
+    const obj: any = {};
+    message.min !== undefined && (obj.min = message.min);
+    message.max !== undefined && (obj.max = message.max);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<PriceRange>, I>>(object: I): PriceRange {
+    const message = createBasePriceRange();
+    message.min = object.min ?? 0;
+    message.max = object.max ?? 0;
     return message;
   },
 };
@@ -1616,7 +1678,17 @@ export const CollectionsResponse = {
 };
 
 function createBaseNFTsRequest(): NFTsRequest {
-  return { limit: 0, offset: 0, collectionId: "", ownerId: "", sort: 0, sortDirection: 0, attributes: [] };
+  return {
+    limit: 0,
+    offset: 0,
+    collectionId: "",
+    ownerId: "",
+    sort: 0,
+    sortDirection: 0,
+    attributes: [],
+    isListed: false,
+    priceRange: undefined,
+  };
 }
 
 export const NFTsRequest = {
@@ -1641,6 +1713,12 @@ export const NFTsRequest = {
     }
     for (const v of message.attributes) {
       Attribute.encode(v!, writer.uint32(58).fork()).ldelim();
+    }
+    if (message.isListed === true) {
+      writer.uint32(64).bool(message.isListed);
+    }
+    if (message.priceRange !== undefined) {
+      PriceRange.encode(message.priceRange, writer.uint32(74).fork()).ldelim();
     }
     return writer;
   },
@@ -1673,6 +1751,12 @@ export const NFTsRequest = {
         case 7:
           message.attributes.push(Attribute.decode(reader, reader.uint32()));
           break;
+        case 8:
+          message.isListed = reader.bool();
+          break;
+        case 9:
+          message.priceRange = PriceRange.decode(reader, reader.uint32());
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1690,6 +1774,8 @@ export const NFTsRequest = {
       sort: isSet(object.sort) ? sortFromJSON(object.sort) : 0,
       sortDirection: isSet(object.sortDirection) ? sortDirectionFromJSON(object.sortDirection) : 0,
       attributes: Array.isArray(object?.attributes) ? object.attributes.map((e: any) => Attribute.fromJSON(e)) : [],
+      isListed: isSet(object.isListed) ? Boolean(object.isListed) : false,
+      priceRange: isSet(object.priceRange) ? PriceRange.fromJSON(object.priceRange) : undefined,
     };
   },
 
@@ -1706,6 +1792,9 @@ export const NFTsRequest = {
     } else {
       obj.attributes = [];
     }
+    message.isListed !== undefined && (obj.isListed = message.isListed);
+    message.priceRange !== undefined &&
+      (obj.priceRange = message.priceRange ? PriceRange.toJSON(message.priceRange) : undefined);
     return obj;
   },
 
@@ -1718,6 +1807,10 @@ export const NFTsRequest = {
     message.sort = object.sort ?? 0;
     message.sortDirection = object.sortDirection ?? 0;
     message.attributes = object.attributes?.map((e) => Attribute.fromPartial(e)) || [];
+    message.isListed = object.isListed ?? false;
+    message.priceRange = (object.priceRange !== undefined && object.priceRange !== null)
+      ? PriceRange.fromPartial(object.priceRange)
+      : undefined;
     return message;
   },
 };

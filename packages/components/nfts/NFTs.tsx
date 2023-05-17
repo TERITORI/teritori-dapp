@@ -9,7 +9,9 @@ import {
   AppliedFilters,
   useShowFilters,
 } from "../../screens/Marketplace/SideFilters";
+import { fontSemibold20 } from "../../utils/style/fonts";
 import { layout, screenContentMaxWidthLarge } from "../../utils/style/layout";
+import { BrandText } from "../BrandText";
 import { SpacerColumn } from "../spacer";
 
 const keyExtractor = (item: NFT) => item.id;
@@ -68,6 +70,9 @@ export const NFTs: React.FC<{
         data={nfts}
         onEndReached={handleEndReached}
         keyExtractor={keyExtractor}
+        ListEmptyComponent={
+          <BrandText style={fontSemibold20}>No results found.</BrandText>
+        }
         // onEndReachedThreshold={4}
         renderItem={(info) => {
           return <RenderItem nft={info.item} />;

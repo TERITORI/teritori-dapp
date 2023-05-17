@@ -374,6 +374,18 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 			strings.Join(attributeQuery, " AND "),
 		)
 
+		if req.IsListed != false {
+			query.Where("is_listed = ?", true) // Options are ALL or buy now
+		}
+		if req.PriceRange != nil {
+			if req.PriceRange.Min != 0 {
+				query.Where("price_amount > ?", req.PriceRange.Min)
+			}
+			if req.PriceRange.Max != 0 {
+				query.Where("price_amount < ?", req.PriceRange.Max)
+			}
+		}
+
 		var nfts []*indexerdb.NFT
 		if err := query. // FIXME: this doesn't support mixed denoms
 					Find(&nfts, &indexerdb.NFT{CollectionID: networks.CollectionID(collectionID)}).
