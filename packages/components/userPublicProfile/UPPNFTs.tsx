@@ -34,6 +34,8 @@ const SelectedTabContent: React.FC<{
     sort: Sort.SORT_PRICE,
     sortDirection: SortDirection.SORT_DIRECTION_ASCENDING,
     attributes: [],
+    isListed: false,
+    priceRange: undefined,
   };
 
   switch (selectedTab) {

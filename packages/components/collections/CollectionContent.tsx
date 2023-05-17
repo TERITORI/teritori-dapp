@@ -45,7 +45,6 @@ export const CollectionContent: React.FC<{
     isListed: isBuyNow,
     priceRange,
   };
-  console.log(nftsRequest);
 
   switch (selectedTab) {
     case "collections":

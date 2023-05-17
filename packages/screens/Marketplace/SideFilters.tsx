@@ -12,7 +12,6 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { ChevronDownIcon } from "react-native-heroicons/outline";
 import { XMarkIcon } from "react-native-heroicons/solid";
 import { Switch } from "react-native-paper";
-import { handlePress } from "react-native-paper/lib/typescript/components/RadioButton/utils";
 import Animated, {
   interpolate,
   useAnimatedStyle,
@@ -372,7 +371,7 @@ const PriceFilter: React.FC = () => {
   const priceRange = useSelector(selectPriceRange);
   const [min, setMin] = useState<number>(priceRange?.min || 0);
   const [max, setMax] = useState<number>(priceRange?.max || 0);
-  debugger;
+
   const dispatch = useAppDispatch();
   const handlePress = () => {
     dispatch(
