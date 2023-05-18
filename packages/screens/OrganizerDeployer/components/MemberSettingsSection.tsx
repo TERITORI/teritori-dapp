@@ -25,6 +25,7 @@ export const MemberSettingsSection: React.FC<MemberSettingsSectionProps> = ({
   onSubmit,
 }) => {
   // variables
+  // const { handleSubmit, control, unregister } = useForm<MemberSettingFormType>();
   const { handleSubmit, control } = useForm<MemberSettingFormType>();
   const [addressIndexes, setAddressIndexes] = useState<number[]>([0]);
 
@@ -33,6 +34,7 @@ export const MemberSettingsSection: React.FC<MemberSettingsSectionProps> = ({
     if (addressIndexes.length > 1) {
       const copyIndex = [...addressIndexes].filter((i) => i !== id);
       setAddressIndexes(copyIndex);
+      // unregister(`members.${id}`);
     }
   };
 

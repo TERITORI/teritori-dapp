@@ -9,6 +9,7 @@ npm-debug.*
 web-build/
 .idea/
 .vscode
+cache/
 
 # macOS
 .DS_Store

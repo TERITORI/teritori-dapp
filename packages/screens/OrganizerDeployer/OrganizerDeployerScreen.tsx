@@ -21,7 +21,10 @@ import { ScreenContainer } from "../../components/ScreenContainer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { TeritoriDaoCoreClient } from "../../contracts-clients/teritori-dao/TeritoriDaoCore.client";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getKeplrSigningCosmWasmClient, mustGetCosmosNetwork } from "../../networks";
+import {
+  getKeplrSigningCosmWasmClient,
+  mustGetCosmosNetwork,
+} from "../../networks";
 import { useAppNavigation } from "../../utils/navigation";
 
 export const ORGANIZER_DEPLOYER_STEPS = [
@@ -77,13 +80,16 @@ export const OrganizerDeployerScreen = () => {
         !selectedWallet ||
         !step1DaoInfoFormData ||
         !step2ConfigureVotingFormData
-      )
+      ) {
         return false;
+      }
+
       const networkId = selectedWallet.networkId;
       const network = mustGetCosmosNetwork(networkId);
       const daoFactoryContractAddress = network.daoFactoryContractAddress!;
       const walletAddress = selectedWallet.address;
       const signingClient = await getKeplrSigningCosmWasmClient(networkId);
+
       const daoCoreClient = new TeritoriDaoCoreClient(
         signingClient,
         walletAddress,
@@ -189,7 +195,9 @@ export const OrganizerDeployerScreen = () => {
   };
 
   const onSubmitMemberSettings = (data: MemberSettingFormType) => {
-    setStep3MemberSettingFormData(data);
+    const temp = data.members.filter((member) => member.addr !== undefined);
+    const processedData: MemberSettingFormType = { members: temp };
+    setStep3MemberSettingFormData(processedData);
     setCurrentStep(3);
   };
 

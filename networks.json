@@ -84,78 +84,6 @@
     "daoFactoryContractAddress": "tori1r29chp8ufwgx9u3wr4sfk050aardhkzwve7nht6y06gvlaqutr3qt83z6r"
   },
   {
-    "id": "teritori-testnet",
-    "kind": "Cosmos",
-    "chainId": "teritori-testnet-v3",
-    "displayName": "Teritori Testnet",
-    "icon": "icons/networks/teritori-circle.svg",
-    "walletUrlForStaking": "https://explorer.teritori.com/teritori/staking",
-    "currencies": [
-      {
-        "denom": "utori",
-        "displayName": "TORI",
-        "decimals": 6,
-        "coingeckoId": "teritori",
-        "icon": "icons/networks/teritori-circle.svg",
-        "kind": "native",
-        "color": "#16BBFF"
-      },
-      {
-        "kind": "ibc",
-        "denom": "ibc/A670D9568B3E399316EEDE40C1181B7AA4BD0695F0B37513CE9B95B977DFC12E",
-        "sourceNetwork": "cosmos-hub",
-        "sourceDenom": "uatom",
-        "sourceChannelPort": "transfer",
-        "sourceChannelId": "channel-431",
-        "destinationChannelPort": "transfer",
-        "destinationChannelId": "channel-10"
-      }
-    ],
-    "txExplorer": "https://www.mintscan.io/teritori/txs/$hash",
-    "accountExplorer": "https://www.mintscan.io/teritori/account/$address",
-    "contractExplorer": "https://www.mintscan.io/teritori/account/$address",
-    "idPrefix": "tori",
-    "testnet": false,
-    "backendEndpoint": "https://dapp-backend.mainnet.teritori.com",
-    "addressPrefix": "tori",
-    "restEndpoint": "https://rest.testnet.teritori.com",
-    "rpcEndpoint": "https://rpc.testnet.teritori.com",
-    "stakeCurrency": "utori",
-    "gasPriceStep": {
-      "low": 0,
-      "average": 0.025,
-      "high": 0.04
-    },
-    "features": [
-      "stargate",
-      "ibc-transfer",
-      "cosmwasm",
-      "no-legacy-stdTx",
-      "ibc-go"
-    ],
-    "nameServiceContractAddress": "tori1wkwy0xh89ksdgj9hr347dyd2dw7zesmtrue6kfzyml4vdtz6e5wscs7038",
-    "nameServiceDefaultImage": "ipfs://bafkreieqcwmjcb64r42ygs6a4dswz63djzgayjn3rhzjber3e42cknawlm",
-    "nameServiceTLD": ".tori",
-    "vaultContractAddress": "tori14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9s3hewys",
-    "riotContractAddressGen0": "tori1mf6ptkssddfmxvhdx0ech0k03ktp6kf9yk59renau2gvht3nq2gqg87tkw",
-    "riotContractAddressGen1": "tori1gflccmghzfscmxl95z43v36y0rle8v9x8kvt9na03yzywtw86amsj9nf37",
-    "riotSquadStakingContractAddressV1": "tori1zwkmdfsc6h96jm4yqdykaw5y7ndwsvqvgh5ryxp9nxs3hccml0xqfyrm37",
-    "riotSquadStakingContractAddressV2": "tori1kvjk9m7dk0es35y6ah0k28llllvle3n7xgvh0gh568ta0paf8awsml2xev",
-    "distributorContractAddress": "tori1mnem0rhjaxcsghe0xw692xysra63xwwdee2wth9s0rkfwh4dxpaq76qqre",
-    "riotersFooterContractAddress": "tori1m6g3l3j5t988zwmp965hrhsxvm8jrkf2ulw4gmwj8hx8pd84tvcqeearsd",
-    "secondaryDuringMintList": [
-      "tori1wkwy0xh89ksdgj9hr347dyd2dw7zesmtrue6kfzyml4vdtz6e5wscs7038",
-      "tori1gflccmghzfscmxl95z43v36y0rle8v9x8kvt9na03yzywtw86amsj9nf37",
-      "tori1r8raaqul4j05qtn0t05603mgquxfl8e9p7kcf7smwzcv2hc5rrlq0vket0",
-      "tori167xst2jy9n6u92t3n8hf762adtpe3cs6acsgn0w5n2xlz9hv3xgs4ksc6t",
-      "tori1qdgvugdnscwnj8lc96q666000gyjv434kn9zl9ey3dph6p0cunusy6r42x",
-      "tori1r5f97ltu4d5jdn8jv5zjhc0vz2npjhnc9zcuz29z8ua739s376dql5agt4"
-    ],
-    "excludeFromLaunchpadList": [
-      "tori1gflccmghzfscmxl95z43v36y0rle8v9x8kvt9na03yzywtw86amsj9nf37"
-    ]
-  },
-  {
     "id": "cosmos-hub",
     "kind": "Cosmos",
     "chainId": "cosmoshub-4",
@@ -272,7 +200,17 @@
     "excludeFromLaunchpadList": [
       "tori1afwrcs58afaka6ltynevwcvq8zhejr3ssn703c0hky5emh890vzsry5wp5"
     ],
-    "socialFeedContractAddress": "tori19y3xr6lghw04tj2ets8y70mrynlnflejanl2ys3n3c5vaasj358shjsk20"
+    "socialFeedContractAddress": "tori19y3xr6lghw04tj2ets8y70mrynlnflejanl2ys3n3c5vaasj358shjsk20",
+    "daoCw20CodeId": 99,
+    "daoFactoryCodeId": 100,
+    "daoCoreCodeId": 101,
+    "daoPreProposeSingleCodeId": 102,
+    "daoProposalSingleCodeId": 103,
+    "daoVotingCw20StakedCodeId": 104,
+    "daoCw20StakeCodeId": 105,
+    "daoCw4GroupCodeId": 106,
+    "daoVotingCw4CodeId": 109,
+    "daoFactoryContractAddress": "tori1r29chp8ufwgx9u3wr4sfk050aardhkzwve7nht6y06gvlaqutr3qt83z6r"
   },
   {
     "id": "cosmos-hub-theta",
