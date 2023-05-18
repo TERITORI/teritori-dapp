@@ -1,3 +1,4 @@
+import { groupBy } from "lodash";
 import React, { useEffect, useState } from "react";
 import {
   FlatList,
@@ -22,11 +23,13 @@ import Animated, {
 import { useSelector } from "react-redux";
 
 import closeSVG from "../../../assets/icons/close.svg";
-import { Attribute } from "../../api/marketplace/v1/marketplace";
+import { AttributeRarityFloor } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
+import { CurrencyIcon } from "../../components/CurrencyIcon";
 import { SVG } from "../../components/SVG";
 import { Separator } from "../../components/Separator";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
+import { useCollectionStats } from "../../hooks/useCollectionStats";
 import { parseNetworkObjectId } from "../../networks";
 import {
   selectShowFilters,
@@ -43,6 +46,7 @@ import {
 } from "../../store/slices/marketplaceFilters";
 import { useAppDispatch } from "../../store/store";
 import { mustGetMarketplaceClient } from "../../utils/backend";
+import { prettyPrice } from "../../utils/coins";
 import {
   codGrayColor,
   neutral00,
@@ -51,8 +55,10 @@ import {
   neutralA3,
   primaryColor,
   secondaryColor,
+  yellowDefault,
 } from "../../utils/style/colors";
 import {
+  fontBold11,
   fontMedium14,
   fontSemibold12,
   fontSemibold14,
@@ -60,7 +66,7 @@ import {
 import { layout } from "../../utils/style/layout";
 import { modalMarginPadding } from "../../utils/style/modals";
 
-const Header: React.FC<{ items: any[] }> = ({ items }) => {
+const Header: React.FC = () => {
   const dispatch = useAppDispatch();
   const onPressClear = () => {
     dispatch(setShowFilters(false));
@@ -90,7 +96,12 @@ const Header: React.FC<{ items: any[] }> = ({ items }) => {
   );
 };
 
-const AccordionItem: React.FC<{ attribute: Attribute }> = ({ attribute }) => {
+const AccordionItem: React.FC<{
+  attributes: AttributeRarityFloor[];
+  total: number;
+  networkId: string;
+  denom: string;
+}> = ({ attributes, total, networkId, denom }) => {
   const shareValue = useSharedValue(0);
   const [bodySectionHeight, setBodySectionHeight] = useState(0);
 
@@ -129,7 +140,7 @@ const AccordionItem: React.FC<{ attribute: Attribute }> = ({ attribute }) => {
         style={styles.btnStyle}
         onPress={toggleButton}
       >
-        <BrandText style={fontSemibold14}>{attribute.traitType}</BrandText>
+        <BrandText style={fontSemibold14}>{attributes[0].traitType}</BrandText>
         <Animated.View style={iconStyle}>
           <ChevronDownIcon color={secondaryColor} />
         </Animated.View>
@@ -142,12 +153,12 @@ const AccordionItem: React.FC<{ attribute: Attribute }> = ({ attribute }) => {
             setBodySectionHeight(event.nativeEvent.layout.height);
           }}
         >
-          {attribute.value.split(",").map((value) => (
+          {attributes.map((value) => (
             <FilterItems
-              attribute={{
-                traitType: attribute.traitType,
-                value,
-              }}
+              attribute={value}
+              total={total}
+              networkId={networkId}
+              denom={denom}
             />
           ))}
         </View>
@@ -194,19 +205,23 @@ const styles = StyleSheet.create({
 });
 
 const FilterItems: React.FC<{
-  attribute: Attribute;
-}> = ({ attribute }) => {
+  attribute: AttributeRarityFloor;
+  total: number;
+  networkId: string;
+  denom: string;
+}> = ({ attribute, total, networkId, denom }) => {
   const isSelected = useAttributeIsSelected(attribute);
 
   const dispatch = useAppDispatch();
 
-  const handlePress = (attribute: Attribute, selected: boolean) => {
+  const handlePress = (attribute: AttributeRarityFloor, selected: boolean) => {
     if (!selected) {
       dispatch(addSelected(attribute));
     } else {
       dispatch(removeSelected(`${attribute.traitType}-${attribute.value}`));
     }
   };
+  const rareRatio = (attribute.counta * 100) / total;
   return attribute ? (
     <View>
       <Pressable
@@ -238,9 +253,9 @@ const FilterItems: React.FC<{
               flexWrap: "nowrap",
             }}
           >
-            <BrandText style={fontSemibold12}>144</BrandText>
+            <BrandText style={fontSemibold12}>{attribute.counta}</BrandText>
             <BrandText style={[fontSemibold12, { color: neutralA3 }]}>
-              /7777
+              /{total}
             </BrandText>
           </View>
         </View>
@@ -254,23 +269,39 @@ const FilterItems: React.FC<{
             marginTop: layout.padding_x0_5,
           }}
         >
-          <BrandText style={[fontSemibold12, { color: neutralA3 }]}>
-            you
-          </BrandText>
           <View
             style={{
               flexDirection: "row",
             }}
           >
             <BrandText style={fontSemibold12}>
-              {/*{prettyPrice(nft.networkId, nft.price, nft.denom)}*/}
+              {prettyPrice(networkId, attribute.floor + "", denom)}
             </BrandText>
-            {/*<CurrencyIcon*/}
-            {/*  networkId={nft.networkId}*/}
-            {/*  denom={nft.denom}*/}
-            {/*  size={16}*/}
-            {/*/>*/}
+            <CurrencyIcon networkId={networkId} denom={denom} size={16} />
+            <BrandText style={[fontSemibold12, { color: neutralA3 }]}>
+              Floor
+            </BrandText>
           </View>
+          <BrandText
+            style={[
+              {
+                backgroundColor:
+                  rareRatio > 5 ? "rgba(22, 187, 255, 0.16)" : yellowDefault,
+                borderStyle: "solid",
+                borderWidth: 1,
+                borderRadius: 32,
+                height: 16,
+                color: rareRatio > 5 ? "white" : neutral00,
+                paddingTop: 2,
+                paddingRight: 6,
+                paddingBottom: 2,
+                paddingLeft: 6,
+              },
+              fontBold11,
+            ]}
+          >
+            {rareRatio.toFixed(2)}%
+          </BrandText>
         </View>
       </Pressable>
     </View>
@@ -285,7 +316,7 @@ export const AppliedFilters: React.FC = () => {
   const clearAll = () => {
     dispatch(clearSelected());
   };
-  const removeFilter = (attribute: Attribute) => {
+  const removeFilter = (attribute: AttributeRarityFloor) => {
     dispatch(removeSelected(`${attribute.traitType}-${attribute.value}`));
   };
 
@@ -425,7 +456,8 @@ export const SideFilters: React.FC<{
   style?: StyleProp<ViewStyle>;
   collectionId: string;
 }> = ({ style, collectionId }) => {
-  const [attributes, setAttributes] = useState<Attribute[]>([]);
+  const [attributes, setAttributes] = useState<AttributeRarityFloor[]>([]);
+  const stats = useCollectionStats(collectionId);
   const [network] = parseNetworkObjectId(collectionId);
   const buyNow = useSelector(selectBuyNow);
   const dispatch = useAppDispatch();
@@ -434,23 +466,38 @@ export const SideFilters: React.FC<{
     try {
       setAttributes([]);
       const backendClient = mustGetMarketplaceClient(network?.id);
+      const allAtributes: AttributeRarityFloor[] = [];
       const stream = backendClient.NFTCollectionAttributes({
         collectionId,
       });
-      stream.forEach(({ attributes }) => {
-        if (!attributes) {
-          return;
+      stream.subscribe(
+        ({ attributes }) => {
+          if (attributes) {
+            allAtributes.push(attributes);
+          }
+        },
+        (e) => {
+          console.error(e);
+        },
+        () => {
+          console.log("completed", allAtributes);
+          if (allAtributes) {
+            setAttributes(allAtributes);
+          }
         }
-        setAttributes((attr) => [...attr, attributes]);
-      });
+      );
     } catch (err) {
       console.error(err);
     }
   }, [network?.id, collectionId]);
 
+  const grouped = groupBy(attributes, (e) => {
+    return e.traitType;
+  });
+
   return useShowFilters() ? (
     <View style={style}>
-      <Header items={attributes} />
+      <Header />
       <FilterContainer>
         <BrandText style={fontSemibold14}>Buy Now</BrandText>
         <Switch
@@ -469,12 +516,21 @@ export const SideFilters: React.FC<{
       >
         <PriceFilter />
       </FilterContainer>
-      <FlatList
-        data={attributes}
-        renderItem={({ item }) => {
-          return <AccordionItem attribute={item} />;
-        }}
-      />
+      {stats && network && (
+        <FlatList
+          data={Object.values(grouped)}
+          renderItem={({ item }) => {
+            return (
+              <AccordionItem
+                attributes={item}
+                total={stats.totalSupply || -1}
+                networkId={network.id}
+                denom={stats?.floorPrice[0].denom}
+              />
+            );
+          }}
+        />
+      )}
       <Separator />
     </View>
   ) : null;
@@ -483,7 +539,7 @@ export const SideFilters: React.FC<{
 export const useShowFilters = () => {
   return useSelector(selectShowFilters);
 };
-export const useAttributeIsSelected = (attribute: Attribute) => {
+export const useAttributeIsSelected = (attribute: AttributeRarityFloor) => {
   const selected = new Set(useSelector(selectSelectedAttributeIds));
   return selected.has(`${attribute.traitType}-${attribute.value}`);
 };

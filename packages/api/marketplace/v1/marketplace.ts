@@ -196,8 +196,15 @@ export interface CollectionStats {
   owned: number;
 }
 
+export interface AttributeRarityFloor {
+  traitType: string;
+  value: string;
+  counta: number;
+  floor: number;
+}
+
 export interface NFTCollectionAttributesResponse {
-  attributes: Attribute | undefined;
+  attributes: AttributeRarityFloor | undefined;
 }
 
 export interface Activity {
@@ -1030,6 +1037,82 @@ export const CollectionStats = {
   },
 };
 
+function createBaseAttributeRarityFloor(): AttributeRarityFloor {
+  return { traitType: "", value: "", counta: 0, floor: 0 };
+}
+
+export const AttributeRarityFloor = {
+  encode(message: AttributeRarityFloor, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.traitType !== "") {
+      writer.uint32(10).string(message.traitType);
+    }
+    if (message.value !== "") {
+      writer.uint32(18).string(message.value);
+    }
+    if (message.counta !== 0) {
+      writer.uint32(24).int32(message.counta);
+    }
+    if (message.floor !== 0) {
+      writer.uint32(37).float(message.floor);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): AttributeRarityFloor {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAttributeRarityFloor();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.traitType = reader.string();
+          break;
+        case 2:
+          message.value = reader.string();
+          break;
+        case 3:
+          message.counta = reader.int32();
+          break;
+        case 4:
+          message.floor = reader.float();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): AttributeRarityFloor {
+    return {
+      traitType: isSet(object.traitType) ? String(object.traitType) : "",
+      value: isSet(object.value) ? String(object.value) : "",
+      counta: isSet(object.counta) ? Number(object.counta) : 0,
+      floor: isSet(object.floor) ? Number(object.floor) : 0,
+    };
+  },
+
+  toJSON(message: AttributeRarityFloor): unknown {
+    const obj: any = {};
+    message.traitType !== undefined && (obj.traitType = message.traitType);
+    message.value !== undefined && (obj.value = message.value);
+    message.counta !== undefined && (obj.counta = Math.round(message.counta));
+    message.floor !== undefined && (obj.floor = message.floor);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<AttributeRarityFloor>, I>>(object: I): AttributeRarityFloor {
+    const message = createBaseAttributeRarityFloor();
+    message.traitType = object.traitType ?? "";
+    message.value = object.value ?? "";
+    message.counta = object.counta ?? 0;
+    message.floor = object.floor ?? 0;
+    return message;
+  },
+};
+
 function createBaseNFTCollectionAttributesResponse(): NFTCollectionAttributesResponse {
   return { attributes: undefined };
 }
@@ -1037,7 +1120,7 @@ function createBaseNFTCollectionAttributesResponse(): NFTCollectionAttributesRes
 export const NFTCollectionAttributesResponse = {
   encode(message: NFTCollectionAttributesResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.attributes !== undefined) {
-      Attribute.encode(message.attributes, writer.uint32(10).fork()).ldelim();
+      AttributeRarityFloor.encode(message.attributes, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
@@ -1050,7 +1133,7 @@ export const NFTCollectionAttributesResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.attributes = Attribute.decode(reader, reader.uint32());
+          message.attributes = AttributeRarityFloor.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -1061,13 +1144,13 @@ export const NFTCollectionAttributesResponse = {
   },
 
   fromJSON(object: any): NFTCollectionAttributesResponse {
-    return { attributes: isSet(object.attributes) ? Attribute.fromJSON(object.attributes) : undefined };
+    return { attributes: isSet(object.attributes) ? AttributeRarityFloor.fromJSON(object.attributes) : undefined };
   },
 
   toJSON(message: NFTCollectionAttributesResponse): unknown {
     const obj: any = {};
     message.attributes !== undefined &&
-      (obj.attributes = message.attributes ? Attribute.toJSON(message.attributes) : undefined);
+      (obj.attributes = message.attributes ? AttributeRarityFloor.toJSON(message.attributes) : undefined);
     return obj;
   },
 
@@ -1076,7 +1159,7 @@ export const NFTCollectionAttributesResponse = {
   ): NFTCollectionAttributesResponse {
     const message = createBaseNFTCollectionAttributesResponse();
     message.attributes = (object.attributes !== undefined && object.attributes !== null)
-      ? Attribute.fromPartial(object.attributes)
+      ? AttributeRarityFloor.fromPartial(object.attributes)
       : undefined;
     return message;
   },

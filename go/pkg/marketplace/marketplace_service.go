@@ -371,7 +371,7 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 
 		}
 		query.Where(
-			strings.Join(attributeQuery, " AND "),
+			strings.Join(attributeQuery, " OR "),
 		)
 
 		if req.IsListed != false {
@@ -464,19 +464,16 @@ func (s *MarkteplaceService) NFTCollectionAttributes(req *marketplacepb.NFTColle
 		return errors.New("missing filter")
 	}
 
-	var attributes []*marketplacepb.Attribute
-
-	err = s.conf.IndexerDB.Raw(`
-      select trait_type, string_agg(value, ', ') AS Value from (
-          select trait_type, value from (
-              SELECT distinct attr.trait_type as trait_type, attr.value 
-              FROM public.nfts t, jsonb_to_recordset(t.attributes) as attr(value varchar, trait_type varchar)
-              where collection_id = ?
-              order by value
-          ) as sorted
-          group by trait_type, value
-        ) as col
-      group by 1
+	var attributes []*marketplacepb.AttributeRarityFloor
+	err = s.conf.IndexerDB.Raw(
+		`select trait_type, value, counta, floor  from (
+      select trait_type, value, count(*) as counta, min(price_amount) as floor from (SELECT attr.trait_type as trait_type, attr.value, price_amount FROM public.nfts t,
+           jsonb_to_recordset(t.attributes) as attr(value varchar, trait_type varchar)
+           where collection_id = ?
+      ) as sorted
+      group by trait_type, value
+      order by trait_type asc, LENGTH(value) desc, value desc
+      ) as col;
 		`,
 		collectionID,
 	).Scan(&attributes).Error
@@ -487,14 +484,7 @@ func (s *MarkteplaceService) NFTCollectionAttributes(req *marketplacepb.NFTColle
 		}
 	}
 
-	//for i := range attributes {
-	//	if err := srv.Send(&marketplacepb.NFTCollectionAttributesResponse{Attributes: &attributes[i]}); err != nil {
-	//		return errors.Wrap(err, "failed to send collection")
-	//	}
-	//}
 	return nil
-
-	//return nil, fmt.Errorf("unsupported network kind '%s'", network.GetBase().Kind)
 }
 
 func (s *MarkteplaceService) Activity(req *marketplacepb.ActivityRequest, srv marketplacepb.MarketplaceService_ActivityServer) error {

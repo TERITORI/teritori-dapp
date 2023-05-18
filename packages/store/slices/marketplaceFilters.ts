@@ -5,10 +5,13 @@ import {
   PayloadAction,
 } from "@reduxjs/toolkit";
 
-import { Attribute, PriceRange } from "../../api/marketplace/v1/marketplace";
+import {
+  AttributeRarityFloor,
+  PriceRange,
+} from "../../api/marketplace/v1/marketplace";
 import { RootState } from "../store";
 
-const filter = createEntityAdapter<Attribute>({
+const filter = createEntityAdapter<AttributeRarityFloor>({
   selectId: (attribute) => `${attribute.traitType}-${attribute.value}`,
 });
 

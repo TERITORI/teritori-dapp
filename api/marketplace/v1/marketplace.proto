@@ -97,8 +97,15 @@ message CollectionStats {
   int32 owned = 6;
 }
 
+message AttributeRarityFloor {
+  string trait_type = 1;
+  string value = 2;
+  int32 counta = 3;
+  float floor = 4;
+}
+
 message NFTCollectionAttributesResponse {
-  Attribute attributes = 1;
+  AttributeRarityFloor attributes = 1;
 }
 
 message Activity {
