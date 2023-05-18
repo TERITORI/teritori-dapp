@@ -58,7 +58,7 @@ const screenTitle = (title: string) => "Teritori - " + title;
 export const Navigator: React.FC = () => {
   return (
     <Drawer.Navigator
-      initialRouteName="Message"
+      initialRouteName="Home"
       drawerContent={(props) =>
         Platform.OS === "web" ? null : <Sidebar {...props} expanded />
       }
@@ -71,7 +71,7 @@ export const Navigator: React.FC = () => {
     >
       <Stack.Screen
         name="Home"
-        component={HomeScreen}
+        component={MessageScreen}
         options={{ header: () => null, title: screenTitle("Home") }}
       />
       <Stack.Screen

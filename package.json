@@ -17,6 +17,7 @@
     "postinstall": "patch-package"
   },
   "dependencies": {
+    "@babel/plugin-proposal-export-namespace-from": "^7.18.9",
     "@cosmjs/amino": "0.29.3",
     "@cosmjs/cosmwasm-stargate": "0.29.3",
     "@cosmjs/encoding": "^0.30.1",
