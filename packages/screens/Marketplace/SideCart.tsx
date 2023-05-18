@@ -199,7 +199,7 @@ const ItemTotal: React.FC<{
           <CurrencyIcon networkId={networkId} denom={denom} size={16} />
         )}
         <BrandText style={[fontSemibold12, { marginLeft: layout.padding_x1 }]}>
-          {textRight}
+          {typeof textRight === "number" ? textRight.toFixed(2) : textRight}
         </BrandText>
       </View>
     </View>
