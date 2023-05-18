@@ -1,5 +1,5 @@
 import React, { Key, useState } from "react";
-import { View, TouchableOpacity, ScrollView } from "react-native";
+import { View, TouchableOpacity, ScrollView, Platform } from "react-native";
 
 import ChatData from "./ChatData";
 import ChatHeader from "./ChatHeader";
@@ -32,7 +32,7 @@ const ChatSection = () => {
   const [searchInput, setSearchInput] = useState("");
   const [showAttachmentModal, setShowAttachmentModal] = useState(false);
   const [thumbnailFile, setThumbnailFile] = useState<LocalFileData>();
-
+  console.log("showAttachmentModal", showAttachmentModal);
   const handleSend = () => {
     const newMsg: IMessage = {
       message: newMessage,
@@ -47,66 +47,131 @@ const ChatSection = () => {
   };
 
   return (
-    <ScreenContainer noScroll>
-      <View style={{ zIndex: 11111 }}>
-        <ChatHeader
-          messages={messages}
-          searchInput={searchInput}
-          setSearchInput={setSearchInput}
-        />
-      </View>
-      <Separator color={neutral33} />
+    <>
+      {["android", "ios"].includes(Platform.OS) ? (
+        <ScreenContainer noScroll>
+          <View style={{ zIndex: 11111 }}>
+            <ChatHeader
+              messages={messages}
+              searchInput={searchInput}
+              setSearchInput={setSearchInput}
+            />
+          </View>
+          <Separator color={neutral33} />
 
-      <ScrollView>
-        {messages.map((msg, index) => (
-          <ChatMessage
-            key={index}
-            message={msg.message}
-            isSender={msg.isSender}
-            time={msg.time}
-            receiverName={msg.isSender ? undefined : msg.name}
-            source={msg.source}
-            imageStyle={{ height: 200, width: 120, borderRadius: 10 }}
-            height={0}
-            width={0}
+          <ScrollView>
+            {messages.map((msg, index) => (
+              <ChatMessage
+                key={index}
+                message={msg.message}
+                isSender={msg.isSender}
+                time={msg.time}
+                receiverName={msg.isSender ? undefined : msg.name}
+                source={msg.source}
+                imageStyle={{ height: 200, width: 120, borderRadius: 10 }}
+                height={0}
+                width={0}
+              />
+            ))}
+          </ScrollView>
+
+          <SpacerColumn size={3} />
+
+          <UploadImage
+            showAttachmentModal={showAttachmentModal}
+            setShowAttachmentModal={setShowAttachmentModal}
+            thumbnailFile={thumbnailFile}
+            setThumbnailFile={setThumbnailFile}
+            messages={messages}
+            setMessages={setMessages}
+            newMessage={newMessage}
+            setNewMessage={setNewMessage}
           />
-        ))}
-      </ScrollView>
 
-      <SpacerColumn size={3} />
+          <TextInputCustom
+            labelStyle={{ marginTop: -10 }}
+            containerStyle={{
+              marginHorizontal: layout.padding_x0_5,
+            }}
+            name="message"
+            placeHolder="Add a Message"
+            value={newMessage}
+            onChangeText={setNewMessage}
+            iconActions={
+              <TouchableOpacity onPress={() => setShowAttachmentModal(true)}>
+                <SVG source={plus} style={{ marginRight: 10 }} />
+              </TouchableOpacity>
+            }
+            label=""
+          >
+            <TouchableOpacity onPress={handleSend}>
+              <SVG source={sent} />
+            </TouchableOpacity>
+          </TextInputCustom>
+        </ScreenContainer>
+      ) : (
+        <>
+          <View style={{ zIndex: 11111 }}>
+            <ChatHeader
+              messages={messages}
+              searchInput={searchInput}
+              setSearchInput={setSearchInput}
+            />
+          </View>
+          <Separator color={neutral33} />
 
-      <UploadImage
-        showAttachmentModal={showAttachmentModal}
-        setShowAttachmentModal={setShowAttachmentModal}
-        thumbnailFile={thumbnailFile}
-        setThumbnailFile={setThumbnailFile}
-        messages={messages}
-        setMessages={setMessages}
-        newMessage={newMessage}
-        setNewMessage={setNewMessage}
-      />
+          <ScrollView>
+            {messages.map((msg, index) => (
+              <ChatMessage
+                key={index}
+                message={msg.message}
+                isSender={msg.isSender}
+                time={msg.time}
+                receiverName={msg.isSender ? undefined : msg.name}
+                source={msg.source}
+                imageStyle={{ height: 200, width: 120, borderRadius: 10 }}
+                height={0}
+                width={0}
+              />
+            ))}
+          </ScrollView>
 
-      <TextInputCustom
-        labelStyle={{ marginTop: -10 }}
-        containerStyle={{
-          marginHorizontal: layout.padding_x0_5,
-        }}
-        name="message"
-        placeHolder="Add a Message"
-        value={newMessage}
-        onChangeText={setNewMessage}
-        iconActions={
-          <TouchableOpacity onPress={() => setShowAttachmentModal(true)}>
-            <SVG source={plus} style={{ marginRight: 10 }} />
-          </TouchableOpacity>
-        }
-        label=""
-      >
-        <TouchableOpacity onPress={handleSend}>
-          <SVG source={sent} />
-        </TouchableOpacity>
-      </TextInputCustom>
-    </ScreenContainer>
+          <SpacerColumn size={3} />
+
+          <UploadImage
+            showAttachmentModal={showAttachmentModal}
+            setShowAttachmentModal={setShowAttachmentModal}
+            thumbnailFile={thumbnailFile}
+            setThumbnailFile={setThumbnailFile}
+            messages={messages}
+            setMessages={setMessages}
+            newMessage={newMessage}
+            setNewMessage={setNewMessage}
+          />
+
+          <TextInputCustom
+            labelStyle={{ marginTop: -10 }}
+            containerStyle={{
+              marginHorizontal: layout.padding_x0_5,
+            }}
+            name="message"
+            placeHolder="Add a Message"
+            value={newMessage}
+            onChangeText={setNewMessage}
+            iconActions={
+              <TouchableOpacity onPress={() => setShowAttachmentModal(true)}>
+                <SVG source={plus} style={{ marginRight: 10 }} />
+              </TouchableOpacity>
+            }
+            label=""
+          >
+            <TouchableOpacity onPress={handleSend}>
+              <SVG source={sent} />
+            </TouchableOpacity>
+          </TextInputCustom>
+        </>
+      )}
+    </>
   );
 };
 

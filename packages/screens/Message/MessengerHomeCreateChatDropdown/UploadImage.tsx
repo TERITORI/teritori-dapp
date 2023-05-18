@@ -20,7 +20,6 @@ import video from "../../../../assets/icons/videoattach.svg";
 import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
-import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { FileUploader } from "../../../components/fileUploader";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import ModalBase from "../../../components/modals/ModalBase";
@@ -39,13 +38,12 @@ import {
   fontSemibold14,
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { LocalFileData } from "../../../utils/types/feed";
+
 interface IMessage {
   id: Key | null | undefined;
   source: any;
   message: string;
   isSender: boolean;
-  file: LocalFileData;
 
   time: string;
   name: string;
@@ -61,6 +59,7 @@ const UploadImage = ({
   thumbnailFile,
   setThumbnailFile,
 }) => {
+  console.log("thumnail", thumbnailFile);
   const [image, setImage] = useState(null);
   const [isImageLarge, setIsImageLarge] = useState(true);
   const [visible, setVisible] = useState(false);

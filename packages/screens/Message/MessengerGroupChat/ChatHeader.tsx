@@ -9,11 +9,13 @@ import {
 } from "react-native";
 
 import Calendars from "./Calendar";
+import audiocell from "../../../../assets/icons/audiocell.svg";
 import avatar from "../../../../assets/icons/avatar.svg";
 import calender from "../../../../assets/icons/calendar.svg";
 import close from "../../../../assets/icons/close.svg";
 import search from "../../../../assets/icons/search.svg";
 import searchSVG from "../../../../assets/icons/search.svg";
+import videocall from "../../../../assets/icons/videocall.svg";
 import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
@@ -141,22 +143,28 @@ const ChatHeader = ({ messages }: any) => {
               <SpacerRow size={1} />
             </>
           ) : (
-            <View style={{ flexDirection: "row" }}>
-              <TouchableOpacity onPress={handleSearchIconPress}>
-                <SVG
-                  source={search}
-                  style={{
-                    height: 20,
-                    width: 20,
-                    marginTop: 10,
-                  }}
-                />
-              </TouchableOpacity>
-              <SpacerRow size={1} />
+            <View>
+              <FlexRow>
+                <SVG source={videocall} />
+                <SpacerRow size={2} />
+                <SVG source={audiocell} />
+                <SpacerRow size={4} />
+                <TouchableOpacity onPress={handleSearchIconPress}>
+                  <SVG
+                    source={search}
+                    style={{
+                      height: 20,
+                      width: 20,
+                      marginTop: 10,
+                    }}
+                  />
+                </TouchableOpacity>
+                <SpacerRow size={1} />
 
-              <BrandText style={{ color: secondaryColor }}>...</BrandText>
+                <BrandText style={{ color: secondaryColor }}>...</BrandText>
 
-              <SpacerRow size={1} />
+                <SpacerRow size={1} />
+              </FlexRow>
             </View>
           )}
           {showTextInput && (
