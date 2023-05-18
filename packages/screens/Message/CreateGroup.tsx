@@ -42,7 +42,7 @@ const CreateGroup = ({ setShowTertiaryBox }) => {
       hideMainSeparator
       width={457}
       containerStyle={{ height: 900 }}
-      closeButtonStyle={{ backgroundColor: "red", height: 300 }}
+      closeButtonStyle={{ height: 300 }}
     >
       <SeparatorGradient />
 
@@ -80,7 +80,7 @@ const CreateGroup = ({ setShowTertiaryBox }) => {
         </ScrollView>
       </View>
 
-      <Separator color={neutral33} style={{ right: 20, width: 500 }} />
+      <Separator color={neutral33} />
       <SpacerColumn size={2} />
       <TouchableOpacity onPress={() => setShowTertiaryBox(false)}>
         <TertiaryBox
