@@ -384,7 +384,7 @@ const styles = StyleSheet.create({
 });
 
 // using this because ellipizeMode seems broken
-const shortUserAddressFromID = (id: string, size: number) => {
+export const shortUserAddressFromID = (id: string, size: number) => {
   const [network] = parseUserId(id);
   if (network) {
     const prefixLen = network.idPrefix.length + 1;

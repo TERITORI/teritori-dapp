@@ -13,6 +13,8 @@ import { OptimizedImage } from "../../components/OptimizedImage";
 import { SVG } from "../../components/SVG";
 import { Separator } from "../../components/Separator";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
+import { shortUserAddressFromID } from "../../components/nfts/NFTView";
+import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import {
   clearSelected,
   removeSelected,
@@ -91,6 +93,7 @@ const CartItems: React.FC<{ id: EntityId }> = ({ id }) => {
   const nft = useSelector((state: RootState) =>
     selectSelectedNFTDataById(state, id)
   );
+  const userInfo = useNSUserInfo(nft?.ownerId);
 
   const dispatch = useAppDispatch();
   return nft ? (
@@ -138,12 +141,12 @@ const CartItems: React.FC<{ id: EntityId }> = ({ id }) => {
             flexDirection: "row",
             flexWrap: "nowrap",
             alignItems: "center",
-            marginTop: layout.padding_x0_5,
+            marginTop: layout.padding_x1,
           }}
         >
           <BrandText style={[fontSemibold12, { color: primaryColor }]}>
-            {/*{info?.ownerAddress}*/}
-            you
+            {userInfo.metadata?.tokenId ||
+              shortUserAddressFromID(nft.ownerId, 10)}
           </BrandText>
           <View
             style={{
@@ -167,9 +170,11 @@ const CartItems: React.FC<{ id: EntityId }> = ({ id }) => {
 
 const ItemTotal: React.FC<{
   textLeft: string;
+  networkId: string;
+  denom: string;
   showLogo?: boolean;
   textRight: string | number;
-}> = ({ textLeft, showLogo = false, textRight }) => {
+}> = ({ textLeft, showLogo = false, textRight, networkId, denom }) => {
   return (
     <View
       style={{
@@ -190,8 +195,12 @@ const ItemTotal: React.FC<{
           justifyContent: "space-around",
         }}
       >
-        {showLogo && <SVG source={teritoriLogoSVG} height={16} width={16} />}
-        <BrandText style={fontSemibold12}>{textRight}</BrandText>
+        {showLogo && (
+          <CurrencyIcon networkId={networkId} denom={denom} size={16} />
+        )}
+        <BrandText style={[fontSemibold12, { marginLeft: layout.padding_x1 }]}>
+          {textRight}
+        </BrandText>
       </View>
     </View>
   );
@@ -222,10 +231,24 @@ const Footer: React.FC<{ items: any[] }> = ({ items }) => {
         textLeft={`Price (${items.length})`}
         showLogo
         textRight={subTotal}
+        networkId={selected[0].networkId}
+        denom={selected[0].denom}
       />
-      <ItemTotal textLeft="Royalty" showLogo textRight={royalty} />
+      <ItemTotal
+        textLeft="Royalty"
+        showLogo
+        textRight={royalty}
+        networkId={selected[0].networkId}
+        denom={selected[0].denom}
+      />
       <Separator />
-      <ItemTotal textLeft="You pay" showLogo textRight={Math.round(total)} />
+      <ItemTotal
+        textLeft="You pay"
+        showLogo
+        textRight={Math.round(total)}
+        networkId={selected[0].networkId}
+        denom={selected[0].denom}
+      />
       <Separator />
 
       <View
