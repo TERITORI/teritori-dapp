@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"math/big"
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -177,7 +176,7 @@ func (s *LeaderboardService) ethereumSendRewardsList(
 	leaderboard []indexerdb.P2eLeaderboard,
 	rpcEndpoint string,
 ) (string, error) {
-	leaves := make([]merkletree.Content, 3)
+	leaves := make([]merkletree.Content, len(leaderboard))
 
 	const TOKEN_ADDRESS = "0x0000000000000000000000000000000000000000"
 
@@ -201,16 +200,11 @@ func (s *LeaderboardService) ethereumSendRewardsList(
 
 		// Get daily reward by rank
 		dailyReward := dailyRewards[rank-1]
-		fmt.Println(dailyReward, addr)
 
 		leaves[idx] = p2e.RewardData{
-			// To:     common.HexToAddress(addr),
-			// Token:  common.HexToAddress(TOKEN_ADDRESS),
-			// Amount: dailyReward.Amount.BigInt(),
-
-			To:     common.HexToAddress(TOKEN_ADDRESS),
+			To:     common.HexToAddress(addr),
 			Token:  common.HexToAddress(TOKEN_ADDRESS),
-			Amount: big.NewInt(0),
+			Amount: dailyReward.Amount.BigInt(),
 		}
 	}
 
@@ -219,9 +213,15 @@ func (s *LeaderboardService) ethereumSendRewardsList(
 		return "", errors.Wrap(err, "failed to created merkle tree")
 	}
 
-	fmt.Println("Root ==============", tree.MerkleRootHex())
 	// Save to DB to reuse the tree data to be sure that they are the same when verify proof
 	// TODO: send root to contract ===================================================
+
+	proof, err := tree.GetHexProof(leaves[0])
+	if err != nil {
+		return "", errors.Wrap(err, "failed to merkle proof")
+	}
+
+	fmt.Println("Proof:", proof)
 
 	return "tx: 1234", nil
 }

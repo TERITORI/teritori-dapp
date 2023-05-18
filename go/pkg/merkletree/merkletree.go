@@ -11,6 +11,11 @@ import (
 	"golang.org/x/crypto/sha3"
 )
 
+// Teritori Version of Merkle tree. Support:
+// - keccak256
+// - sort
+// - keep impair nodes (do not duplicate impair node)
+
 // Content represents the data that is stored and verified by the tree. A type that
 // implements this interface can be used as an item in the tree.
 type Content interface {
@@ -36,10 +41,8 @@ type Node struct {
 	Left   *Node
 	Right  *Node
 	leaf   bool
-	dup    bool
 	Hash   []byte
 	C      Content
-	sort   bool
 }
 
 // sortAppend sort and append the nodes to be compatible with OpenZepplin libraries
@@ -57,42 +60,8 @@ func sortAppend(sort bool, a, b []byte) []byte {
 	return append(b, a...)
 }
 
-// verifyNode walks down the tree until hitting a leaf, calculating the hash at each level
-// and returning the resulting hash of Node n.
-func (n *Node) verifyNode(sort bool) ([]byte, error) {
-	if n.leaf {
-		return n.C.CalculateHash()
-	}
-	rightBytes, err := n.Right.verifyNode(sort)
-	if err != nil {
-		return nil, err
-	}
-
-	leftBytes, err := n.Left.verifyNode(sort)
-	if err != nil {
-		return nil, err
-	}
-
-	h := n.Tree.hashStrategy()
-	if _, err := h.Write(sortAppend(sort, leftBytes, rightBytes)); err != nil {
-		return nil, err
-	}
-
-	return h.Sum(nil), nil
-}
-
-// calculateNodeHash is a helper function that calculates the hash of the node.
-func (n *Node) calculateNodeHash(sort bool) ([]byte, error) {
-	if n.leaf {
-		return n.C.CalculateHash()
-	}
-
-	h := n.Tree.hashStrategy()
-	if _, err := h.Write(sortAppend(sort, n.Left.Hash, n.Right.Hash)); err != nil {
-		return nil, err
-	}
-
-	return h.Sum(nil), nil
+func toHex(bytesValue []byte) string {
+	return fmt.Sprintf("0x%s", hex.EncodeToString(bytesValue))
 }
 
 // Shortcut to create new with with sorted = true and use keccak256 hash
@@ -111,33 +80,34 @@ func New(cs []Content) (*MerkleTree, error) {
 	return t, nil
 }
 
-// GetMerklePath: Get Merkle path and indexes(left leaf or right leaf)
-func (m *MerkleTree) GetMerklePath(content Content) ([][]byte, []int64, error) {
+// GetMerklePath: Get Merkle proof in hex format
+func (m *MerkleTree) GetHexProof(content Content) ([]string, error) {
 	for _, current := range m.Leafs {
 		ok, err := current.C.Equals(content)
 		if err != nil {
-			return nil, nil, err
+			return nil, err
 		}
 
 		if ok {
 			currentParent := current.Parent
-			var merklePath [][]byte
-			var index []int64
+			var proof []string
+
 			for currentParent != nil {
 				if bytes.Equal(currentParent.Left.Hash, current.Hash) {
-					merklePath = append(merklePath, currentParent.Right.Hash)
-					index = append(index, 1) // right leaf
+					rightHash := currentParent.Right.Hash
+					if rightHash != nil {
+						proof = append(proof, toHex(rightHash))
+					}
 				} else {
-					merklePath = append(merklePath, currentParent.Left.Hash)
-					index = append(index, 0) // left leaf
+					proof = append(proof, toHex(currentParent.Left.Hash))
 				}
 				current = currentParent
 				currentParent = currentParent.Parent
 			}
-			return merklePath, index, nil
+			return proof, nil
 		}
 	}
-	return nil, nil, nil
+	return nil, nil
 }
 
 // buildWithContent is a helper function that for a given set of Contents, generates a
@@ -163,17 +133,6 @@ func buildWithContent(cs []Content, t *MerkleTree) (*Node, []*Node, error) {
 		})
 	}
 
-	if len(leafs)%2 == 1 {
-		duplicate := &Node{
-			Hash: leafs[len(leafs)-1].Hash,
-			C:    leafs[len(leafs)-1].C,
-			leaf: true,
-			dup:  true,
-			Tree: t,
-		}
-		leafs = append(leafs, duplicate)
-	}
-
 	root, err := buildIntermediate(leafs, t)
 	if err != nil {
 		return nil, nil, err
@@ -189,143 +148,42 @@ func buildIntermediate(nl []*Node, t *MerkleTree) (*Node, error) {
 
 	for i := 0; i < len(nl); i += 2 {
 		h := t.hashStrategy()
-		var left, right int = i, i + 1
-		if i+1 == len(nl) {
-			right = i
-		}
-		chash := sortAppend(t.sort, nl[left].Hash, nl[right].Hash)
-		if _, err := h.Write(chash); err != nil {
-			return nil, err
-		}
 
-		sumHash := h.Sum(nil)
-		if nl[left].dup {
-			sumHash = nl[right].Hash
-		}
-		if nl[right].dup {
-			sumHash = nl[left].Hash
+		leftNode := nl[i]
+		rightNode := &Node{}
+		mergedHash := leftNode.Hash
+
+		if i+1 < len(nl) {
+			rightNode = nl[i+1]
+			chash := sortAppend(t.sort, leftNode.Hash, rightNode.Hash)
+			if _, err := h.Write(chash); err != nil {
+				return nil, err
+			}
+			mergedHash = h.Sum(nil)
 		}
 
 		n := &Node{
-			Left:  nl[left],
-			Right: nl[right],
-			Hash:  sumHash,
+			Left:  leftNode,
+			Right: rightNode,
+			Hash:  mergedHash,
 			Tree:  t,
 		}
 		nodes = append(nodes, n)
-		nl[left].Parent = n
-		nl[right].Parent = n
-		if len(nl) == 2 {
+		leftNode.Parent = n
+		rightNode.Parent = n
+
+		if len(nl) == 2 || len(nl) == 1 {
 			return n, nil
 		}
 	}
 	return buildIntermediate(nodes, t)
 }
 
-// MerkleRoot returns the unverified Merkle Root (hash of the root node) of the tree.
-func (m *MerkleTree) MerkleRoot() []byte {
+// GetRoot returns the unverified Merkle Root (hash of the root node) of the tree.
+func (m *MerkleTree) GetRoot() []byte {
 	return m.merkleRoot
 }
 
-func (m *MerkleTree) MerkleRootHex() string {
-	return fmt.Sprintf("0x%s", hex.EncodeToString(m.MerkleRoot()))
-}
-
-// RebuildTree is a helper function that will rebuild the tree reusing only the content that
-// it holds in the leaves.
-func (m *MerkleTree) RebuildTree() error {
-	var cs []Content
-	for _, c := range m.Leafs {
-		cs = append(cs, c.C)
-	}
-	root, leafs, err := buildWithContent(cs, m)
-	if err != nil {
-		return err
-	}
-	m.Root = root
-	m.Leafs = leafs
-	m.merkleRoot = root.Hash
-	return nil
-}
-
-// RebuildTreeWith replaces the content of the tree and does a complete rebuild; while the root of
-// the tree will be replaced the MerkleTree completely survives this operation. Returns an error if the
-// list of content cs contains no entries.
-func (m *MerkleTree) RebuildTreeWith(cs []Content) error {
-	root, leafs, err := buildWithContent(cs, m)
-	if err != nil {
-		return err
-	}
-	m.Root = root
-	m.Leafs = leafs
-	m.merkleRoot = root.Hash
-	return nil
-}
-
-// VerifyTree verify tree validates the hashes at each level of the tree and returns true if the
-// resulting hash at the root of the tree matches the resulting root hash; returns false otherwise.
-func (m *MerkleTree) VerifyTree() (bool, error) {
-	calculatedMerkleRoot, err := m.Root.verifyNode(m.sort)
-	if err != nil {
-		return false, err
-	}
-
-	if bytes.Compare(m.merkleRoot, calculatedMerkleRoot) == 0 {
-		return true, nil
-	}
-	return false, nil
-}
-
-// VerifyContent indicates whether a given content is in the tree and the hashes are valid for that content.
-// Returns true if the expected Merkle Root is equivalent to the Merkle root calculated on the critical path
-// for a given content. Returns true if valid and false otherwise.
-func (m *MerkleTree) VerifyContent(content Content) (bool, error) {
-	for _, l := range m.Leafs {
-		ok, err := l.C.Equals(content)
-		if err != nil {
-			return false, err
-		}
-
-		if ok {
-			currentParent := l.Parent
-			for currentParent != nil {
-				h := m.hashStrategy()
-				rightBytes, err := currentParent.Right.calculateNodeHash(m.sort)
-				if err != nil {
-					return false, err
-				}
-
-				leftBytes, err := currentParent.Left.calculateNodeHash(m.sort)
-				if err != nil {
-					return false, err
-				}
-
-				if _, err := h.Write(sortAppend(m.sort, leftBytes, rightBytes)); err != nil {
-					return false, err
-				}
-				if bytes.Compare(h.Sum(nil), currentParent.Hash) != 0 {
-					return false, nil
-				}
-				currentParent = currentParent.Parent
-			}
-			return true, nil
-		}
-	}
-	return false, nil
-}
-
-// String returns a string representation of the node.
-func (n *Node) String() string {
-	return fmt.Sprintf("%t %t %v %s", n.leaf, n.dup, n.Hash, n.C)
-}
-
-// String returns a string representation of the tree. Only leaf nodes are included
-// in the output.
-func (m *MerkleTree) String() string {
-	s := ""
-	for _, l := range m.Leafs {
-		s += fmt.Sprint(l)
-		s += "\n"
-	}
-	return s
+func (m *MerkleTree) GetHexRoot() string {
+	return toHex(m.GetRoot())
 }
