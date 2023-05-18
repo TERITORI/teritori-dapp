@@ -3,7 +3,8 @@ package p2e
 import (
 	"math/big"
 
-	"github.com/cbergoon/merkletree"
+	"github.com/TERITORI/teritori-dapp/go/pkg/merkletree"
+
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"

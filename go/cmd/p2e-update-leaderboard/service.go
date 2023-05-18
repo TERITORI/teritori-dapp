@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"math/big"
@@ -10,10 +9,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/ethereum/go-ethereum/common"
 
-	"github.com/cbergoon/merkletree"
-
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/contractutil"
+	"github.com/TERITORI/teritori-dapp/go/pkg/merkletree"
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
 	"github.com/TERITORI/teritori-dapp/go/pkg/p2e"
 	"github.com/go-co-op/gocron"
@@ -179,7 +177,7 @@ func (s *LeaderboardService) ethereumSendRewardsList(
 	leaderboard []indexerdb.P2eLeaderboard,
 	rpcEndpoint string,
 ) (string, error) {
-	leaves := make([]merkletree.Content, len(leaderboard))
+	leaves := make([]merkletree.Content, 3)
 
 	const TOKEN_ADDRESS = "0x0000000000000000000000000000000000000000"
 
@@ -216,19 +214,16 @@ func (s *LeaderboardService) ethereumSendRewardsList(
 		}
 	}
 
-	hash, _ := leaves[0].CalculateHash()
-	fmt.Println(hex.EncodeToString(hash))
-
-	tree, err := merkletree.NewTree(leaves)
+	tree, err := merkletree.New(leaves)
 	if err != nil {
 		return "", errors.Wrap(err, "failed to created merkle tree")
 	}
 
-	fmt.Println("Root", hex.EncodeToString(tree.MerkleRoot()))
+	fmt.Println("Root ==============", tree.MerkleRootHex())
 	// Save to DB to reuse the tree data to be sure that they are the same when verify proof
 	// TODO: send root to contract ===================================================
 
-	return "", nil
+	return "tx: 1234", nil
 }
 
 func (s *LeaderboardService) teritoriSendRewardsList(
