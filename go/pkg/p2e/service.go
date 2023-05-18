@@ -183,3 +183,9 @@ func (s *P2eService) AllSeasons(ctx context.Context, req *p2epb.AllSeasonsReques
 
 	return &p2epb.AllSeasonsResponse{Seasons: data}, nil
 }
+
+func (s *P2eService) MerkleProof(ctx context.Context, req *p2epb.MerkleProofRequest) (*p2epb.MerkleProofResponse, error) {
+	// Get merkle tree
+
+	return &p2epb.MerkleProofResponse{Proof: nil}, nil
+}

@@ -8,6 +8,14 @@ import { share } from "rxjs/operators";
 
 export const protobufPackage = "p2e.v1";
 
+export interface MerkleProofRequest {
+  userId: string;
+}
+
+export interface MerkleProofResponse {
+  proof: Uint8Array;
+}
+
 export interface AllSeasonsRequest {
   networkId: string;
 }
@@ -68,6 +76,119 @@ export interface LeaderboardResponse {
   userScore: UserScore | undefined;
 }
 
+function createBaseMerkleProofRequest(): MerkleProofRequest {
+  return { userId: "" };
+}
+
+export const MerkleProofRequest = {
+  encode(message: MerkleProofRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.userId !== "") {
+      writer.uint32(10).string(message.userId);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MerkleProofRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMerkleProofRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.userId = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MerkleProofRequest {
+    return { userId: isSet(object.userId) ? String(object.userId) : "" };
+  },
+
+  toJSON(message: MerkleProofRequest): unknown {
+    const obj: any = {};
+    message.userId !== undefined && (obj.userId = message.userId);
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<MerkleProofRequest>, I>>(base?: I): MerkleProofRequest {
+    return MerkleProofRequest.fromPartial(base ?? {});
+  },
+
+  fromPartial<I extends Exact<DeepPartial<MerkleProofRequest>, I>>(object: I): MerkleProofRequest {
+    const message = createBaseMerkleProofRequest();
+    message.userId = object.userId ?? "";
+    return message;
+  },
+};
+
+function createBaseMerkleProofResponse(): MerkleProofResponse {
+  return { proof: new Uint8Array() };
+}
+
+export const MerkleProofResponse = {
+  encode(message: MerkleProofResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.proof.length !== 0) {
+      writer.uint32(10).bytes(message.proof);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MerkleProofResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMerkleProofResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.proof = reader.bytes();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MerkleProofResponse {
+    return { proof: isSet(object.proof) ? bytesFromBase64(object.proof) : new Uint8Array() };
+  },
+
+  toJSON(message: MerkleProofResponse): unknown {
+    const obj: any = {};
+    message.proof !== undefined &&
+      (obj.proof = base64FromBytes(message.proof !== undefined ? message.proof : new Uint8Array()));
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<MerkleProofResponse>, I>>(base?: I): MerkleProofResponse {
+    return MerkleProofResponse.fromPartial(base ?? {});
+  },
+
+  fromPartial<I extends Exact<DeepPartial<MerkleProofResponse>, I>>(object: I): MerkleProofResponse {
+    const message = createBaseMerkleProofResponse();
+    message.proof = object.proof ?? new Uint8Array();
+    return message;
+  },
+};
+
 function createBaseAllSeasonsRequest(): AllSeasonsRequest {
   return { networkId: "" };
 }
@@ -88,14 +209,14 @@ export const AllSeasonsRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.networkId = reader.string();
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -150,28 +271,28 @@ export const SeasonWithoutPrize = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.id = reader.string();
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.bossName = reader.string();
           continue;
         case 3:
-          if (tag != 24) {
+          if (tag !== 24) {
             break;
           }
 
           message.bossHp = reader.int32();
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -228,14 +349,14 @@ export const AllSeasonsResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.seasons.push(SeasonWithoutPrize.decode(reader, reader.uint32()));
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -290,14 +411,14 @@ export const CurrentSeasonRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.networkId = reader.string();
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -367,63 +488,63 @@ export const CurrentSeasonResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.id = reader.string();
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.denom = reader.string();
           continue;
         case 3:
-          if (tag != 24) {
+          if (tag !== 24) {
             break;
           }
 
           message.totalPrize = reader.int32();
           continue;
         case 4:
-          if (tag != 34) {
+          if (tag !== 34) {
             break;
           }
 
           message.bossName = reader.string();
           continue;
         case 5:
-          if (tag != 40) {
+          if (tag !== 40) {
             break;
           }
 
           message.bossHp = reader.int32();
           continue;
         case 6:
-          if (tag != 53) {
+          if (tag !== 53) {
             break;
           }
 
           message.remainingHp = reader.float();
           continue;
         case 7:
-          if (tag != 58) {
+          if (tag !== 58) {
             break;
           }
 
           message.bossImage = reader.string();
           continue;
         case 8:
-          if (tag != 64) {
+          if (tag !== 64) {
             break;
           }
 
           message.isPre = reader.bool();
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -501,28 +622,28 @@ export const UserRankRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.seasonId = reader.string();
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.userId = reader.string();
           continue;
         case 3:
-          if (tag != 26) {
+          if (tag !== 26) {
             break;
           }
 
           message.networkId = reader.string();
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -582,21 +703,21 @@ export const UserRankResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.userScore = UserScore.decode(reader, reader.uint32());
           continue;
         case 2:
-          if (tag != 16) {
+          if (tag !== 16) {
             break;
           }
 
           message.totalUsers = reader.int32();
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -662,35 +783,35 @@ export const LeaderboardRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.seasonId = reader.string();
           continue;
         case 2:
-          if (tag != 16) {
+          if (tag !== 16) {
             break;
           }
 
           message.limit = reader.int32();
           continue;
         case 3:
-          if (tag != 24) {
+          if (tag !== 24) {
             break;
           }
 
           message.offset = reader.int32();
           continue;
         case 4:
-          if (tag != 34) {
+          if (tag !== 34) {
             break;
           }
 
           message.networkId = reader.string();
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -765,49 +886,49 @@ export const UserScore = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 8) {
+          if (tag !== 8) {
             break;
           }
 
           message.rank = reader.int32();
           continue;
         case 2:
-          if (tag != 16) {
+          if (tag !== 16) {
             break;
           }
 
           message.snapshotRank = reader.int32();
           continue;
         case 3:
-          if (tag != 26) {
+          if (tag !== 26) {
             break;
           }
 
           message.userId = reader.string();
           continue;
         case 4:
-          if (tag != 32) {
+          if (tag !== 32) {
             break;
           }
 
           message.inProgressScore = longToNumber(reader.int64() as Long);
           continue;
         case 5:
-          if (tag != 40) {
+          if (tag !== 40) {
             break;
           }
 
           message.snapshotScore = longToNumber(reader.int64() as Long);
           continue;
         case 6:
-          if (tag != 50) {
+          if (tag !== 50) {
             break;
           }
 
           message.seasonId = reader.string();
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -873,14 +994,14 @@ export const LeaderboardResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.userScore = UserScore.decode(reader, reader.uint32());
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -917,6 +1038,7 @@ export interface P2eService {
   CurrentSeason(request: DeepPartial<CurrentSeasonRequest>, metadata?: grpc.Metadata): Promise<CurrentSeasonResponse>;
   UserRank(request: DeepPartial<UserRankRequest>, metadata?: grpc.Metadata): Promise<UserRankResponse>;
   AllSeasons(request: DeepPartial<AllSeasonsRequest>, metadata?: grpc.Metadata): Promise<AllSeasonsResponse>;
+  MerkleProof(request: DeepPartial<MerkleProofRequest>, metadata?: grpc.Metadata): Promise<MerkleProofResponse>;
 }
 
 export class P2eServiceClientImpl implements P2eService {
@@ -928,6 +1050,7 @@ export class P2eServiceClientImpl implements P2eService {
     this.CurrentSeason = this.CurrentSeason.bind(this);
     this.UserRank = this.UserRank.bind(this);
     this.AllSeasons = this.AllSeasons.bind(this);
+    this.MerkleProof = this.MerkleProof.bind(this);
   }
 
   Leaderboard(request: DeepPartial<LeaderboardRequest>, metadata?: grpc.Metadata): Observable<LeaderboardResponse> {
@@ -944,6 +1067,10 @@ export class P2eServiceClientImpl implements P2eService {
 
   AllSeasons(request: DeepPartial<AllSeasonsRequest>, metadata?: grpc.Metadata): Promise<AllSeasonsResponse> {
     return this.rpc.unary(P2eServiceAllSeasonsDesc, AllSeasonsRequest.fromPartial(request), metadata);
+  }
+
+  MerkleProof(request: DeepPartial<MerkleProofRequest>, metadata?: grpc.Metadata): Promise<MerkleProofResponse> {
+    return this.rpc.unary(P2eServiceMerkleProofDesc, MerkleProofRequest.fromPartial(request), metadata);
   }
 }
 
@@ -1031,6 +1158,29 @@ export const P2eServiceAllSeasonsDesc: UnaryMethodDefinitionish = {
   responseType: {
     deserializeBinary(data: Uint8Array) {
       const value = AllSeasonsResponse.decode(data);
+      return {
+        ...value,
+        toObject() {
+          return value;
+        },
+      };
+    },
+  } as any,
+};
+
+export const P2eServiceMerkleProofDesc: UnaryMethodDefinitionish = {
+  methodName: "MerkleProof",
+  service: P2eServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return MerkleProofRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      const value = MerkleProofResponse.decode(data);
       return {
         ...value,
         toObject() {
@@ -1175,6 +1325,31 @@ var tsProtoGlobalThis: any = (() => {
   }
   throw "Unable to locate global object";
 })();
+
+function bytesFromBase64(b64: string): Uint8Array {
+  if (tsProtoGlobalThis.Buffer) {
+    return Uint8Array.from(tsProtoGlobalThis.Buffer.from(b64, "base64"));
+  } else {
+    const bin = tsProtoGlobalThis.atob(b64);
+    const arr = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; ++i) {
+      arr[i] = bin.charCodeAt(i);
+    }
+    return arr;
+  }
+}
+
+function base64FromBytes(arr: Uint8Array): string {
+  if (tsProtoGlobalThis.Buffer) {
+    return tsProtoGlobalThis.Buffer.from(arr).toString("base64");
+  } else {
+    const bin: string[] = [];
+    arr.forEach((byte) => {
+      bin.push(String.fromCharCode(byte));
+    });
+    return tsProtoGlobalThis.btoa(bin.join(""));
+  }
+}
 
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 

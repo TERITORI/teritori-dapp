@@ -46,28 +46,28 @@ export const PricesRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.id = reader.string();
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.time = reader.string();
           continue;
         case 3:
-          if (tag != 26) {
+          if (tag !== 26) {
             break;
           }
 
           message.vsIds.push(reader.string());
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -131,21 +131,21 @@ export const Price = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.id = reader.string();
           continue;
         case 2:
-          if (tag != 17) {
+          if (tag !== 17) {
             break;
           }
 
           message.value = reader.double();
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -196,14 +196,14 @@ export const PricesResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.prices.push(Price.decode(reader, reader.uint32()));
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);

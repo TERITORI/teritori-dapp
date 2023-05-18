@@ -15,9 +15,7 @@ import (
 func main() {
 	fs := flag.NewFlagSet("p2e-update-leaderboard", flag.ContinueOnError)
 	var (
-		teritoriDistributorOwnerMnemonic = fs.String("teritori-distributor-owner-mnemonic", "", "mnemonic of the owner of distributor contract")
-		ethereumDistributorOwnerMnemonic = fs.String("ethereum-distributor-owner-mnemonic", "", "mnemonic of the owner of distributor contract")
-		networksFile                     = fs.String("networks-file", "networks.json", "path to networks config file")
+		networksFile = fs.String("networks-file", "networks.json", "path to networks config file")
 
 		dbHost = fs.String("db-indexer-host", "", "host postgreSQL database")
 		dbPort = fs.String("db-indexer-port", "", "port for postgreSQL database")
@@ -26,7 +24,7 @@ func main() {
 		dbUser = fs.String("postgres-user", "", "username for postgreSQL")
 	)
 
-	if err := ff.Parse(fs, os.Args[1:],
+	if err := ff.Parse(fs, os.Args[2:],
 		ff.WithEnvVars(),
 		ff.WithIgnoreUndefined(true),
 		ff.WithConfigFile(".env"),
@@ -40,6 +38,12 @@ func main() {
 	if networkId == "" {
 		panic(errors.New("network id must be provided. Ex: teritori-testnet,ethereum-goerli"))
 	}
+
+	mnemonic := os.Args[2]
+	if mnemonic == "" {
+		panic(errors.New("mnemonic for given network id must be provided"))
+	}
+	// TODO: check if mnemonic is correct, matched with distributor account =============================
 
 	// get logger
 	logger, err := zap.NewDevelopment()
@@ -68,22 +72,6 @@ func main() {
 		panic(errors.Wrap(err, "failed to access db"))
 	}
 
-	var mnemonic string
-	switch networkId {
-	case "teritori-testnet", "teritori":
-		if *teritoriDistributorOwnerMnemonic == "" {
-			panic(errors.New("teritori-distributor-owner-mnemonic is mandatory. You have to add TERITORI_DISTRIBUTOR_OWNER_MNEMONIC in .env for local testing (Don't commit this value on repo)"))
-		}
-		mnemonic = *teritoriDistributorOwnerMnemonic
-	case "ethereum-goerli", "ethereum":
-		if *ethereumDistributorOwnerMnemonic == "" {
-			panic(errors.New("ethereum-distributor-owner-mnemonic is mandatory. You have to add ETHEREUM_DISTRIBUTOR_OWNER_MNEMONIC in .env for local testing (Don't commit this value on repo)"))
-		}
-		mnemonic = *ethereumDistributorOwnerMnemonic
-	default:
-		panic("unknown network id:" + networkId)
-	}
-
 	service, err := NewLeaderboardService(
 		networkId,
 		&netstore,
@@ -95,5 +83,5 @@ func main() {
 		panic(errors.Wrap(err, "failed to run service update leaderboard"))
 	}
 
-	service.start()
+	service.startScheduler()
 }

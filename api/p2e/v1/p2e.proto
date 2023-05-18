@@ -8,8 +8,16 @@ service P2eService {
   rpc CurrentSeason(CurrentSeasonRequest) returns (CurrentSeasonResponse);
   rpc UserRank(UserRankRequest) returns (UserRankResponse);
   rpc AllSeasons(AllSeasonsRequest) returns (AllSeasonsResponse);
+  rpc MerkleProof(MerkleProofRequest) returns (MerkleProofResponse);
 }
 
+message MerkleProofRequest {
+  string user_id = 1;
+}
+
+message MerkleProofResponse {
+  bytes proof = 1;
+}
 
 message AllSeasonsRequest {
   string network_id = 1;

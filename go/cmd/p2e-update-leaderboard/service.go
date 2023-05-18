@@ -1,11 +1,16 @@
 package main
 
 import (
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"math/big"
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/ethereum/go-ethereum/common"
+
+	"github.com/cbergoon/merkletree"
 
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/contractutil"
@@ -18,11 +23,11 @@ import (
 )
 
 type LeaderboardService struct {
-	networkId    string
-	networkStore *networks.NetworkStore
-	db           *gorm.DB
-	mnemonic     string
-	logger       *zap.Logger
+	networkId string
+	netstore  *networks.NetworkStore
+	db        *gorm.DB
+	mnemonic  string
+	logger    *zap.Logger
 }
 
 func NewLeaderboardService(
@@ -33,16 +38,16 @@ func NewLeaderboardService(
 	logger *zap.Logger,
 ) (*LeaderboardService, error) {
 	return &LeaderboardService{
-		networkId:    networkId,
-		networkStore: netstore,
-		db:           db,
-		mnemonic:     mnemonic,
-		logger:       logger,
+		networkId: networkId,
+		netstore:  netstore,
+		db:        db,
+		mnemonic:  mnemonic,
+		logger:    logger,
 	}, nil
 }
 
-func (s *LeaderboardService) start() {
-	network := s.networkStore.MustGetNetwork(s.networkId)
+func (s *LeaderboardService) startScheduler() {
+	network := s.netstore.MustGetNetwork(s.networkId)
 
 	// TODO: Test if teritori works with rpcEndpoint from network config
 	var rpcEndpoint string
@@ -55,7 +60,101 @@ func (s *LeaderboardService) start() {
 		panic("unknown network")
 	}
 
-	s.scheduleUpdate(network, rpcEndpoint)
+	schedule := gocron.NewScheduler(time.UTC)
+
+	schedule.Every(5).Minutes().Do(func() {
+		s.execUpdateLeaderboard(network, rpcEndpoint)
+	})
+
+	// schedule.Every(1).Day().At("00:00").Do(func() {
+	schedule.Every(5).Seconds().Do(func() {
+		s.execReportRewards(network, rpcEndpoint)
+	})
+
+	schedule.StartBlocking()
+}
+
+func (s *LeaderboardService) execReportRewards(network networks.Network, rpcEndpoint string) {
+	// Run a bit earlier than midnight to be sure that we snapshot on current season (if case of the season transition moment)
+	// Subtract 2s to be sure we are in the expected day
+	currentTime := time.Now().UTC().Add(-time.Second * 2) // 23h59m58s
+	season, _, err := p2e.GetSeasonByTime(currentTime, network)
+	if err != nil {
+		s.logger.Error("failed to get current season", zap.Error(err))
+		return
+	}
+
+	if season.IsPre {
+		s.logger.Info("do not need to send rewards", zap.String("season", season.ID))
+		return
+	}
+
+	var leaderboard []indexerdb.P2eLeaderboard
+
+	if err := s.db.Transaction(func(tx *gorm.DB) error {
+		// Update just before snapshot to have the latest info
+		if err := s.updateLeaderboard(season.ID, currentTime, tx); err != nil {
+			return errors.Wrap(err, "failed to update leaderboard")
+		}
+
+		if err := s.snapshotLeaderboard(season.ID, tx); err != nil {
+			return errors.Wrap(err, "failed to snapshot leaderboard")
+		}
+
+		if err := tx.
+			Where("season_id = ?", season.ID).
+			Order("snapshot_rank asc").
+			Limit(int(season.TopN)).
+			Find(&leaderboard).
+			Error; err != nil {
+			return errors.Wrap(err, "failed to get current leaderboard")
+		}
+
+		return nil
+	}); err != nil {
+		s.logger.Error("failed to snapshot leaderboard", zap.Error(err))
+		return
+	}
+	s.logger.Info(fmt.Sprintf("snapshot leaderboard successfully for season: %s", season.ID))
+
+	txHash, err := s.sendRewardsList(network, season.ID, leaderboard, rpcEndpoint)
+	if err != nil {
+		s.logger.Error("failed to send rewards list", zap.Error(err))
+		return
+	}
+
+	s.logger.Info(fmt.Sprintf("send daily rewards successfully for season: %s", season.ID), zap.String("TxHash", txHash))
+
+	// Season 3: Reset leaderboard after rewards distribution
+	if err := s.resetLeaderboard(season.ID); err != nil {
+		s.logger.Error("failed to reset leaderboard", zap.Error(err))
+		return
+	}
+}
+
+func (s *LeaderboardService) execUpdateLeaderboard(network networks.Network, rpcEndpoint string) {
+	currentTime := time.Now().UTC()
+	season, _, err := p2e.GetSeasonByTime(currentTime, network)
+	if err != nil {
+		s.logger.Error("failed to get current season", zap.Error(err))
+		return
+	}
+
+	if season.IsPre {
+		s.logger.Info("do not need to update leaderboard", zap.String("season", season.ID))
+		return
+	}
+
+	if err := s.db.Transaction(func(tx *gorm.DB) error {
+		if err := s.updateLeaderboard(season.ID, currentTime, tx); err != nil {
+			return err
+		}
+		return nil
+	}); err != nil {
+		s.logger.Error(fmt.Sprintf("failed to update leaderboard for season: %s", season.ID), zap.Error(err))
+	}
+
+	s.logger.Info(fmt.Sprintf("update leaderboard successfully for season: %s", season.ID))
 }
 
 func (s *LeaderboardService) sendRewardsList(
@@ -74,101 +173,61 @@ func (s *LeaderboardService) sendRewardsList(
 	}
 }
 
-func (s *LeaderboardService) scheduleUpdate(network networks.Network, rpcEndpoint string) {
-	schedule := gocron.NewScheduler(time.UTC)
-
-	schedule.Every(5).Minutes().Do(func() {
-		currentTime := time.Now().UTC()
-		season, _, err := p2e.GetSeasonByTime(currentTime, network)
-		if err != nil {
-			s.logger.Error("failed to get current season", zap.Error(err))
-			return
-		}
-
-		if season.IsPre {
-			s.logger.Info("do not need to update leaderboard", zap.String("season", season.ID))
-			return
-		}
-
-		if err := s.db.Transaction(func(tx *gorm.DB) error {
-			if err := s.updateLeaderboard(season.ID, currentTime, tx); err != nil {
-				return err
-			}
-			return nil
-		}); err != nil {
-			s.logger.Error(fmt.Sprintf("failed to update leaderboard for season: %s", season.ID), zap.Error(err))
-		}
-
-		s.logger.Info(fmt.Sprintf("update leaderboard successfully for season: %s", season.ID))
-	})
-
-	// Run a bit earlier than midnight to be sure that we snapshot on current season (if case of the season transition moment)
-	schedule.Every(1).Day().At("00:00").Do(func() {
-		// Subtract 2s to be sure we are in the expected day
-		currentTime := time.Now().UTC().Add(-time.Second * 2) // 23h59m58s
-		season, _, err := p2e.GetSeasonByTime(currentTime, network)
-		if err != nil {
-			s.logger.Error("failed to get current season", zap.Error(err))
-			return
-		}
-
-		if season.IsPre {
-			s.logger.Info("do not need to send rewards", zap.String("season", season.ID))
-			return
-		}
-
-		var leaderboard []indexerdb.P2eLeaderboard
-
-		if err := s.db.Transaction(func(tx *gorm.DB) error {
-			// Update just before snapshot to have the latest info
-			if err := s.updateLeaderboard(season.ID, currentTime, tx); err != nil {
-				return errors.Wrap(err, "failed to update leaderboard")
-			}
-
-			if err := s.snapshotLeaderboard(season.ID, tx); err != nil {
-				return errors.Wrap(err, "failed to snapshot leaderboard")
-			}
-
-			if err := tx.
-				Where("season_id = ?", season.ID).
-				Order("snapshot_rank asc").
-				Limit(int(season.TopN)).
-				Find(&leaderboard).
-				Error; err != nil {
-				return errors.Wrap(err, "failed to get current leaderboard")
-			}
-
-			return nil
-		}); err != nil {
-			s.logger.Error("failed to snapshot leaderboard", zap.Error(err))
-			return
-		}
-		s.logger.Info(fmt.Sprintf("snapshot leaderboard successfully for season: %s", season.ID))
-
-		txHash, err := s.sendRewardsList(network, season.ID, leaderboard, rpcEndpoint)
-		if err != nil {
-			s.logger.Error("failed to send rewards list", zap.Error(err))
-			return
-		}
-
-		s.logger.Info(fmt.Sprintf("send daily rewards successfully for season: %s", season.ID), zap.String("TxHash", txHash))
-
-		// Season 3: Reset leaderboard after rewards distribution
-		if err := s.resetLeaderboard(season.ID); err != nil {
-			s.logger.Error("failed to reset leaderboard", zap.Error(err))
-			return
-		}
-	})
-
-	schedule.StartBlocking()
-}
-
 func (s *LeaderboardService) ethereumSendRewardsList(
 	network *networks.EthereumNetwork,
 	seasonId string,
 	leaderboard []indexerdb.P2eLeaderboard,
 	rpcEndpoint string,
 ) (string, error) {
+	leaves := make([]merkletree.Content, len(leaderboard))
+
+	const TOKEN_ADDRESS = "0x0000000000000000000000000000000000000000"
+
+	dailyRewards, err := p2e.GetDailyRewardsConfigBySeason(seasonId, network)
+
+	if err != nil {
+		return "", errors.Wrap(err, "failed to get rewards")
+	}
+
+	for idx, userScore := range leaderboard {
+		_, addr, err := s.netstore.ParseUserID(string(userScore.UserID))
+		if err != nil {
+			return "", errors.Wrap(err, "failed to parse user id")
+		}
+
+		rank := userScore.Rank
+
+		if rank < 1 {
+			return "", errors.Wrap(err, "rank should not be < 1")
+		}
+
+		// Get daily reward by rank
+		dailyReward := dailyRewards[rank-1]
+		fmt.Println(dailyReward, addr)
+
+		leaves[idx] = p2e.RewardData{
+			// To:     common.HexToAddress(addr),
+			// Token:  common.HexToAddress(TOKEN_ADDRESS),
+			// Amount: dailyReward.Amount.BigInt(),
+
+			To:     common.HexToAddress(TOKEN_ADDRESS),
+			Token:  common.HexToAddress(TOKEN_ADDRESS),
+			Amount: big.NewInt(0),
+		}
+	}
+
+	hash, _ := leaves[0].CalculateHash()
+	fmt.Println(hex.EncodeToString(hash))
+
+	tree, err := merkletree.NewTree(leaves)
+	if err != nil {
+		return "", errors.Wrap(err, "failed to created merkle tree")
+	}
+
+	fmt.Println("Root", hex.EncodeToString(tree.MerkleRoot()))
+	// Save to DB to reuse the tree data to be sure that they are the same when verify proof
+	// TODO: send root to contract ===================================================
+
 	return "", nil
 }
 
@@ -178,7 +237,7 @@ func (s *LeaderboardService) teritoriSendRewardsList(
 	leaderboard []indexerdb.P2eLeaderboard,
 	rpcEndpoint string,
 ) (string, error) {
-	netstore := s.networkStore
+	netstore := s.netstore
 	distributorMnemonic := s.mnemonic
 
 	dailyRewards, err := p2e.GetDailyRewardsConfigBySeason(seasonId, network)

@@ -69,14 +69,14 @@ export const IPFSKeyRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.userId = reader.string();
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -125,14 +125,14 @@ export const IPFSKeyResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.jwt = reader.string();
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -184,21 +184,21 @@ export const Reaction = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.icon = reader.string();
           continue;
         case 2:
-          if (tag != 16) {
+          if (tag !== 16) {
             break;
           }
 
           message.count = reader.uint32();
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -290,77 +290,77 @@ export const Post = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 8) {
+          if (tag !== 8) {
             break;
           }
 
           message.category = reader.uint32();
           continue;
         case 2:
-          if (tag != 16) {
+          if (tag !== 16) {
             break;
           }
 
           message.isDeleted = reader.bool();
           continue;
         case 3:
-          if (tag != 26) {
+          if (tag !== 26) {
             break;
           }
 
           message.identifier = reader.string();
           continue;
         case 4:
-          if (tag != 34) {
+          if (tag !== 34) {
             break;
           }
 
           message.metadata = reader.string();
           continue;
         case 5:
-          if (tag != 42) {
+          if (tag !== 42) {
             break;
           }
 
           message.parentPostIdentifier = reader.string();
           continue;
         case 6:
-          if (tag != 48) {
+          if (tag !== 48) {
             break;
           }
 
           message.subPostLength = reader.uint32();
           continue;
         case 7:
-          if (tag != 58) {
+          if (tag !== 58) {
             break;
           }
 
           message.createdBy = reader.string();
           continue;
         case 8:
-          if (tag != 64) {
+          if (tag !== 64) {
             break;
           }
 
           message.createdAt = longToNumber(reader.int64() as Long);
           continue;
         case 10:
-          if (tag != 80) {
+          if (tag !== 80) {
             break;
           }
 
           message.tipAmount = longToNumber(reader.int64() as Long);
           continue;
         case 9:
-          if (tag != 74) {
+          if (tag !== 74) {
             break;
           }
 
           message.reactions.push(Reaction.decode(reader, reader.uint32()));
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -453,26 +453,27 @@ export const PostFilter = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.user = reader.string();
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.mentions.push(reader.string());
           continue;
         case 3:
-          if (tag == 24) {
+          if (tag === 24) {
             message.categories.push(reader.uint32());
+
             continue;
           }
 
-          if (tag == 26) {
+          if (tag === 26) {
             const end2 = reader.uint32() + reader.pos;
             while (reader.pos < end2) {
               message.categories.push(reader.uint32());
@@ -483,14 +484,14 @@ export const PostFilter = {
 
           break;
         case 4:
-          if (tag != 34) {
+          if (tag !== 34) {
             break;
           }
 
           message.hashtags.push(reader.string());
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -568,28 +569,28 @@ export const PostsRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.filter = PostFilter.decode(reader, reader.uint32());
           continue;
         case 2:
-          if (tag != 16) {
+          if (tag !== 16) {
             break;
           }
 
           message.limit = reader.uint32();
           continue;
         case 3:
-          if (tag != 24) {
+          if (tag !== 24) {
             break;
           }
 
           message.offset = reader.uint32();
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -648,14 +649,14 @@ export const PostsResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.posts.push(Post.decode(reader, reader.uint32()));
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);

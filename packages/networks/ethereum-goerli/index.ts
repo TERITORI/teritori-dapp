@@ -33,4 +33,5 @@ export const ethereumGoerliNetwork: NetworkInfo = {
   indexBlockProgress: 1000,
   indexLiveBlockProgress: 1,
   substreamsManifest: "go/internal/substreams/ethereum/ethereum_goerli.yaml",
+  distributorContractAddress: "0x750070a76A3444F27E3fccabe4D423105cfa3e72",
 };

@@ -255,6 +255,8 @@ github.com/bxcodec/faker/v3 v3.8.0 h1:F59Qqnsh0BOtZRC+c4cXoB/VNYDMS3R5mlSpxIap1o
 github.com/bxcodec/faker/v3 v3.8.0/go.mod h1:gF31YgnMSMKgkvl+fyEo1xuSMbEuieyqfeslGYFjneM=
 github.com/casbin/casbin/v2 v2.1.2/go.mod h1:YcPU1XXisHhLzuxH9coDNf2FbKpjGlbCg3n9yuLkIJQ=
 github.com/casbin/casbin/v2 v2.37.0/go.mod h1:vByNa/Fchek0KZUgG5wEsl7iFsiviAYKRtgrQfcJqHg=
+github.com/cbergoon/merkletree v0.2.0 h1:Bttqr3OuoiZEo4ed1L7fTasHka9II+BF9fhBfbNEEoQ=
+github.com/cbergoon/merkletree v0.2.0/go.mod h1:5c15eckUgiucMGDOCanvalj/yJnD+KAZj1qyJtRW5aM=
 github.com/cenkalti/backoff v2.2.1+incompatible h1:tNowT99t7UNflLxfYYSlKYsBpXdEet03Pg2g16Swow4=
 github.com/cenkalti/backoff v2.2.1+incompatible/go.mod h1:90ReRw6GdpyfrHakVjL/QHaoyV4aDUVVkXQJJJ3NXXM=
 github.com/cenkalti/backoff/v4 v4.1.1/go.mod h1:scbssz8iZGpm3xbr14ovlUdkxfGXNInqkPWOWmG2CLw=
@@ -1432,6 +1434,8 @@ github.com/volatiletech/sqlboiler/v4 v4.13.0/go.mod h1:QmJpWSj/s9xGSHFr2SN/MF371
 github.com/volatiletech/strmangle v0.0.1/go.mod h1:F6RA6IkB5vq0yTG4GQ0UsbbRcl3ni9P76i+JrTBKFFg=
 github.com/volatiletech/strmangle v0.0.4 h1:CxrEPhobZL/PCZOTDSH1aq7s4Kv76hQpRoTVVlUOim4=
 github.com/volatiletech/strmangle v0.0.4/go.mod h1:ycDvbDkjDvhC0NUU8w3fWwl5JEMTV56vTKXzR3GeR+0=
+github.com/wealdtech/go-merkletree v1.0.0 h1:DsF1xMzj5rK3pSQM6mPv8jlyJyHXhFxpnA2bwEjMMBY=
+github.com/wealdtech/go-merkletree v1.0.0/go.mod h1:cdil512d/8ZC7Kx3bfrDvGMQXB25NTKbsm0rFrmDax4=
 github.com/wsddn/go-ecdh v0.0.0-20161211032359-48726bab9208/go.mod h1:IotVbo4F+mw0EzQ08zFqg7pK3FebNXpaMsRy2RT+Ees=
 github.com/xiang90/probing v0.0.0-20190116061207-43a291ad63a2/go.mod h1:UETIi67q53MR2AWcXfiuqkDkRtnGDLqkBTpCHuJHxtU=
 github.com/xordataexchange/crypt v0.0.3-0.20170626215501-b2862e3d0a77/go.mod h1:aYKd//L2LvnjZzWKhF00oedf4jCCReLcmhLdhm1A27Q=

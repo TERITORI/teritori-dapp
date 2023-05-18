@@ -389,21 +389,21 @@ export const Attribute = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.traitType = reader.string();
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.value = reader.string();
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -511,105 +511,105 @@ export const NFT = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.id = reader.string();
           continue;
         case 14:
-          if (tag != 114) {
+          if (tag !== 114) {
             break;
           }
 
           message.networkId = reader.string();
           continue;
         case 3:
-          if (tag != 26) {
+          if (tag !== 26) {
             break;
           }
 
           message.imageUri = reader.string();
           continue;
         case 4:
-          if (tag != 34) {
+          if (tag !== 34) {
             break;
           }
 
           message.name = reader.string();
           continue;
         case 5:
-          if (tag != 42) {
+          if (tag !== 42) {
             break;
           }
 
           message.mintAddress = reader.string();
           continue;
         case 6:
-          if (tag != 50) {
+          if (tag !== 50) {
             break;
           }
 
           message.price = reader.string();
           continue;
         case 7:
-          if (tag != 58) {
+          if (tag !== 58) {
             break;
           }
 
           message.denom = reader.string();
           continue;
         case 8:
-          if (tag != 64) {
+          if (tag !== 64) {
             break;
           }
 
           message.isListed = reader.bool();
           continue;
         case 9:
-          if (tag != 74) {
+          if (tag !== 74) {
             break;
           }
 
           message.textInsert = reader.string();
           continue;
         case 10:
-          if (tag != 82) {
+          if (tag !== 82) {
             break;
           }
 
           message.collectionName = reader.string();
           continue;
         case 13:
-          if (tag != 106) {
+          if (tag !== 106) {
             break;
           }
 
           message.ownerId = reader.string();
           continue;
         case 15:
-          if (tag != 122) {
+          if (tag !== 122) {
             break;
           }
 
           message.nftContractAddress = reader.string();
           continue;
         case 16:
-          if (tag != 130) {
+          if (tag !== 130) {
             break;
           }
 
           message.lockedOn = reader.string();
           continue;
         case 17:
-          if (tag != 138) {
+          if (tag !== 138) {
             break;
           }
 
           message.attributes.push(Attribute.decode(reader, reader.uint32()));
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -706,21 +706,21 @@ export const Amount = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.denom = reader.string();
           continue;
         case 3:
-          if (tag != 26) {
+          if (tag !== 26) {
             break;
           }
 
           message.quantity = reader.string();
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -832,112 +832,112 @@ export const Collection = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.id = reader.string();
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.imageUri = reader.string();
           continue;
         case 3:
-          if (tag != 26) {
+          if (tag !== 26) {
             break;
           }
 
           message.collectionName = reader.string();
           continue;
         case 4:
-          if (tag != 34) {
+          if (tag !== 34) {
             break;
           }
 
           message.creatorName = reader.string();
           continue;
         case 5:
-          if (tag != 40) {
+          if (tag !== 40) {
             break;
           }
 
           message.verified = reader.bool();
           continue;
         case 6:
-          if (tag != 50) {
+          if (tag !== 50) {
             break;
           }
 
           message.mintAddress = reader.string();
           continue;
         case 11:
-          if (tag != 90) {
+          if (tag !== 90) {
             break;
           }
 
           message.networkId = reader.string();
           continue;
         case 8:
-          if (tag != 66) {
+          if (tag !== 66) {
             break;
           }
 
           message.volume = reader.string();
           continue;
         case 9:
-          if (tag != 74) {
+          if (tag !== 74) {
             break;
           }
 
           message.volumeDenom = reader.string();
           continue;
         case 10:
-          if (tag != 82) {
+          if (tag !== 82) {
             break;
           }
 
           message.creatorId = reader.string();
           continue;
         case 12:
-          if (tag != 96) {
+          if (tag !== 96) {
             break;
           }
 
           message.secondaryDuringMint = reader.bool();
           continue;
         case 13:
-          if (tag != 106) {
+          if (tag !== 106) {
             break;
           }
 
           message.websiteUrl = reader.string();
           continue;
         case 14:
-          if (tag != 114) {
+          if (tag !== 114) {
             break;
           }
 
           message.twitterUrl = reader.string();
           continue;
         case 15:
-          if (tag != 120) {
+          if (tag !== 120) {
             break;
           }
 
           message.floorPrice = longToNumber(reader.uint64() as Long);
           continue;
         case 16:
-          if (tag != 128) {
+          if (tag !== 128) {
             break;
           }
 
           message.maxSupply = longToNumber(reader.int64() as Long);
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -1045,49 +1045,49 @@ export const CollectionStats = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.floorPrice.push(Amount.decode(reader, reader.uint32()));
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.totalVolume = reader.string();
           continue;
         case 3:
-          if (tag != 24) {
+          if (tag !== 24) {
             break;
           }
 
           message.owners = reader.int32();
           continue;
         case 4:
-          if (tag != 32) {
+          if (tag !== 32) {
             break;
           }
 
           message.listed = reader.int32();
           continue;
         case 5:
-          if (tag != 40) {
+          if (tag !== 40) {
             break;
           }
 
           message.totalSupply = longToNumber(reader.int64() as Long);
           continue;
         case 6:
-          if (tag != 48) {
+          if (tag !== 48) {
             break;
           }
 
           message.owned = reader.int32();
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -1203,91 +1203,91 @@ export const Activity = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.id = reader.string();
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.transactionKind = reader.string();
           continue;
         case 3:
-          if (tag != 26) {
+          if (tag !== 26) {
             break;
           }
 
           message.targetName = reader.string();
           continue;
         case 4:
-          if (tag != 34) {
+          if (tag !== 34) {
             break;
           }
 
           message.targetImageUri = reader.string();
           continue;
         case 5:
-          if (tag != 42) {
+          if (tag !== 42) {
             break;
           }
 
           message.contractName = reader.string();
           continue;
         case 6:
-          if (tag != 50) {
+          if (tag !== 50) {
             break;
           }
 
           message.time = reader.string();
           continue;
         case 7:
-          if (tag != 58) {
+          if (tag !== 58) {
             break;
           }
 
           message.amount = reader.string();
           continue;
         case 8:
-          if (tag != 66) {
+          if (tag !== 66) {
             break;
           }
 
           message.denom = reader.string();
           continue;
         case 9:
-          if (tag != 74) {
+          if (tag !== 74) {
             break;
           }
 
           message.transactionId = reader.string();
           continue;
         case 10:
-          if (tag != 82) {
+          if (tag !== 82) {
             break;
           }
 
           message.buyerId = reader.string();
           continue;
         case 11:
-          if (tag != 90) {
+          if (tag !== 90) {
             break;
           }
 
           message.sellerId = reader.string();
           continue;
         case 12:
-          if (tag != 97) {
+          if (tag !== 97) {
             break;
           }
 
           message.usdPrice = reader.double();
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -1377,28 +1377,28 @@ export const Quest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.id = reader.string();
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.title = reader.string();
           continue;
         case 3:
-          if (tag != 24) {
+          if (tag !== 24) {
             break;
           }
 
           message.completed = reader.bool();
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -1458,21 +1458,21 @@ export const PriceDatum = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 3:
-          if (tag != 26) {
+          if (tag !== 26) {
             break;
           }
 
           message.price = reader.string();
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.time = reader.string();
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -1544,56 +1544,56 @@ export const CollectionsRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 2:
-          if (tag != 16) {
+          if (tag !== 16) {
             break;
           }
 
           message.limit = reader.int32();
           continue;
         case 3:
-          if (tag != 24) {
+          if (tag !== 24) {
             break;
           }
 
           message.offset = reader.int32();
           continue;
         case 4:
-          if (tag != 32) {
+          if (tag !== 32) {
             break;
           }
 
           message.sort = reader.int32() as any;
           continue;
         case 5:
-          if (tag != 40) {
+          if (tag !== 40) {
             break;
           }
 
           message.sortDirection = reader.int32() as any;
           continue;
         case 6:
-          if (tag != 48) {
+          if (tag !== 48) {
             break;
           }
 
           message.upcoming = reader.bool();
           continue;
         case 7:
-          if (tag != 58) {
+          if (tag !== 58) {
             break;
           }
 
           message.networkId = reader.string();
           continue;
         case 8:
-          if (tag != 64) {
+          if (tag !== 64) {
             break;
           }
 
           message.mintState = reader.int32() as any;
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -1665,21 +1665,21 @@ export const CollectionStatsRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.collectionId = reader.string();
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.ownerId = reader.string();
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -1733,14 +1733,14 @@ export const CollectionStatsResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.stats = CollectionStats.decode(reader, reader.uint32());
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -1791,14 +1791,14 @@ export const CollectionsResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.collection = Collection.decode(reader, reader.uint32());
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -1865,49 +1865,49 @@ export const NFTsRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 8) {
+          if (tag !== 8) {
             break;
           }
 
           message.limit = reader.int32();
           continue;
         case 2:
-          if (tag != 16) {
+          if (tag !== 16) {
             break;
           }
 
           message.offset = reader.int32();
           continue;
         case 3:
-          if (tag != 26) {
+          if (tag !== 26) {
             break;
           }
 
           message.collectionId = reader.string();
           continue;
         case 4:
-          if (tag != 34) {
+          if (tag !== 34) {
             break;
           }
 
           message.ownerId = reader.string();
           continue;
         case 5:
-          if (tag != 40) {
+          if (tag !== 40) {
             break;
           }
 
           message.sort = reader.int32() as any;
           continue;
         case 6:
-          if (tag != 48) {
+          if (tag !== 48) {
             break;
           }
 
           message.sortDirection = reader.int32() as any;
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -1973,14 +1973,14 @@ export const NFTsResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.nft = NFT.decode(reader, reader.uint32());
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -2035,28 +2035,28 @@ export const QuestsRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 8) {
+          if (tag !== 8) {
             break;
           }
 
           message.limit = reader.int32();
           continue;
         case 2:
-          if (tag != 16) {
+          if (tag !== 16) {
             break;
           }
 
           message.offset = reader.int32();
           continue;
         case 3:
-          if (tag != 26) {
+          if (tag !== 26) {
             break;
           }
 
           message.userId = reader.string();
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -2113,14 +2113,14 @@ export const QuestsResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.quest = Quest.decode(reader, reader.uint32());
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -2178,35 +2178,35 @@ export const ActivityRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.collectionId = reader.string();
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.nftId = reader.string();
           continue;
         case 3:
-          if (tag != 24) {
+          if (tag !== 24) {
             break;
           }
 
           message.limit = reader.int32();
           continue;
         case 4:
-          if (tag != 32) {
+          if (tag !== 32) {
             break;
           }
 
           message.offset = reader.int32();
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -2269,21 +2269,21 @@ export const ActivityResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.activity = Activity.decode(reader, reader.uint32());
           continue;
         case 2:
-          if (tag != 16) {
+          if (tag !== 16) {
             break;
           }
 
           message.total = longToNumber(reader.int64() as Long);
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -2339,14 +2339,14 @@ export const NFTPriceHistoryRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.id = reader.string();
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -2395,14 +2395,14 @@ export const NFTPriceHistoryResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.data.push(PriceDatum.decode(reader, reader.uint32()));
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -2458,21 +2458,21 @@ export const Action = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.label = reader.string();
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.url = reader.string();
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -2535,42 +2535,42 @@ export const News = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.title = reader.string();
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.subtitle = reader.string();
           continue;
         case 3:
-          if (tag != 26) {
+          if (tag !== 26) {
             break;
           }
 
           message.text = reader.string();
           continue;
         case 4:
-          if (tag != 34) {
+          if (tag !== 34) {
             break;
           }
 
           message.image = reader.string();
           continue;
         case 5:
-          if (tag != 42) {
+          if (tag !== 42) {
             break;
           }
 
           message.actions.push(Action.decode(reader, reader.uint32()));
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -2646,35 +2646,35 @@ export const DAppGroup = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.id = reader.string();
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.groupName = reader.string();
           continue;
         case 3:
-          if (tag != 26) {
+          if (tag !== 26) {
             break;
           }
 
           message.icon = reader.string();
           continue;
         case 4:
-          if (tag != 34) {
+          if (tag !== 34) {
             break;
           }
 
           message.options.push(reader.string());
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -2772,70 +2772,70 @@ export const DApp = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.id = reader.string();
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.title = reader.string();
           continue;
         case 3:
-          if (tag != 26) {
+          if (tag !== 26) {
             break;
           }
 
           message.description = reader.string();
           continue;
         case 4:
-          if (tag != 34) {
+          if (tag !== 34) {
             break;
           }
 
           message.icon = reader.string();
           continue;
         case 5:
-          if (tag != 42) {
+          if (tag !== 42) {
             break;
           }
 
           message.route = reader.string();
           continue;
         case 6:
-          if (tag != 50) {
+          if (tag !== 50) {
             break;
           }
 
           message.groupKey = reader.string();
           continue;
         case 7:
-          if (tag != 58) {
+          if (tag !== 58) {
             break;
           }
 
           message.linkingId = reader.string();
           continue;
         case 8:
-          if (tag != 64) {
+          if (tag !== 64) {
             break;
           }
 
           message.selectedByDefault = reader.bool();
           continue;
         case 9:
-          if (tag != 72) {
+          if (tag !== 72) {
             break;
           }
 
           message.alwaysOn = reader.bool();
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -2913,21 +2913,21 @@ export const Banner = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.image = reader.string();
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.url = reader.string();
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -2978,14 +2978,14 @@ export const BannersRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 8) {
+          if (tag !== 8) {
             break;
           }
 
           message.testnet = reader.bool();
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -3034,14 +3034,14 @@ export const BannersResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.banners.push(Banner.decode(reader, reader.uint32()));
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -3094,14 +3094,14 @@ export const NewsRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 8) {
+          if (tag !== 8) {
             break;
           }
 
           message.testnet = reader.bool();
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -3150,14 +3150,14 @@ export const NewsResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.news.push(News.decode(reader, reader.uint32()));
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -3207,7 +3207,7 @@ export const DAppsStoreRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -3254,14 +3254,14 @@ export const DAppGroupsResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.group.push(DAppGroup.decode(reader, reader.uint32()));
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -3314,14 +3314,14 @@ export const DAppResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.group.push(DApp.decode(reader, reader.uint32()));
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -3380,28 +3380,28 @@ export const SearchNamesRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.networkId = reader.string();
           continue;
         case 2:
-          if (tag != 18) {
+          if (tag !== 18) {
             break;
           }
 
           message.input = reader.string();
           continue;
         case 3:
-          if (tag != 24) {
+          if (tag !== 24) {
             break;
           }
 
           message.limit = reader.int32();
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -3458,14 +3458,14 @@ export const SearchNamesResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.names.push(reader.string());
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -3521,21 +3521,21 @@ export const SearchCollectionsRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.input = reader.string();
           continue;
         case 2:
-          if (tag != 16) {
+          if (tag !== 16) {
             break;
           }
 
           message.limit = reader.int32();
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);
@@ -3589,14 +3589,14 @@ export const SearchCollectionsResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag != 10) {
+          if (tag !== 10) {
             break;
           }
 
           message.collections.push(Collection.decode(reader, reader.uint32()));
           continue;
       }
-      if ((tag & 7) == 4 || tag == 0) {
+      if ((tag & 7) === 4 || tag === 0) {
         break;
       }
       reader.skipType(tag & 7);

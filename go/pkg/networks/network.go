@@ -56,6 +56,7 @@ type EthereumNetwork struct {
 	RiotContractAddressGen0         string `json:"riotContractAddressGen0"`
 	RiotContractAddressGen1         string `json:"riotContractAddressGen1"`
 	RiotSquadStakingContractAddress string `json:"riotSquadStakingContractAddress"`
+	DistributorContractAddress      string `json:"distributorContractAddress"`
 }
 
 var _ Network = &EthereumNetwork{}
