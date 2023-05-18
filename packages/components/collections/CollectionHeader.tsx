@@ -84,9 +84,10 @@ export const CollectionHeader: React.FC<{
     activity: {
       name: "Activity",
     },
-    offers: {
-      name: "Offers",
-    },
+    // this will be later for a "bid" system
+    // offers: {
+    //   name: "Offers",
+    // },
   };
 
   const usdFloorPrice = useMemo(() => {

@@ -1,1 +1,1 @@
-export type TabsListType = "collections" | "owned" | "activity" | "offers";
+export type TabsListType = "collections" | "owned" | "activity"; // | "offers";
