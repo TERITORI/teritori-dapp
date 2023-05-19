@@ -19,6 +19,7 @@ import { Navigator } from "./packages/components/navigation/Navigator";
 import { DropdownsContextProvider } from "./packages/context/DropdownsProvider";
 import { FeedbacksContextProvider } from "./packages/context/FeedbacksProvider";
 import { MusicplayerContextProvider } from "./packages/context/MusicplayerProvider";
+import { SearchBarContextProvider } from "./packages/context/SearchBarProvider";
 import { SidebarContextProvider } from "./packages/context/SidebarProvider";
 import { TNSMetaDataListContextProvider } from "./packages/context/TNSMetaDataListProvider";
 import { TNSContextProvider } from "./packages/context/TNSProvider";
@@ -57,6 +58,7 @@ export default function App() {
                 <FeedbacksContextProvider>
                   <DropdownsContextProvider>
                     <WalletsProvider>
+                     <SearchBarContextProvider>
                       <TransactionModalsProvider>
                         <TNSContextProvider>
                           <TNSMetaDataListContextProvider>
@@ -71,6 +73,7 @@ export default function App() {
                           </TNSMetaDataListContextProvider>
                         </TNSContextProvider>
                       </TransactionModalsProvider>
+                     </SearchBarContextProvider>
                     </WalletsProvider>
                   </DropdownsContextProvider>
                 </FeedbacksContextProvider>

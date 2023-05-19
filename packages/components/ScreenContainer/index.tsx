@@ -9,7 +9,6 @@ import {
 
 import { Header } from "./Header";
 import { ScreenContainerMobile } from "./ScreenContainerMobile";
-import { SearchBar } from "./SearchBar";
 import { useForceNetworkKind } from "../../hooks/useForceNetworkKind";
 import { useForceNetworkSelection } from "../../hooks/useForceNetworkSelection";
 import { useForceUnselectNetworks } from "../../hooks/useForceUnselectNetworks";
@@ -25,6 +24,7 @@ import {
   screenContainerContentMarginHorizontal,
 } from "../../utils/style/layout";
 import { NetworkSelector } from "../NetworkSelector/NetworkSelector";
+import { SearchBar } from "../Search/SearchBar";
 import { SelectedNetworkGate } from "../SelectedNetworkGate";
 import { ConnectWalletButton } from "../TopMenu/ConnectWalletButton";
 import { Footer } from "../footers/Footer";
