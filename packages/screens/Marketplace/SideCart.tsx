@@ -1,12 +1,14 @@
+import { toUtf8 } from "@cosmjs/encoding";
+import { EncodeObject } from "@cosmjs/proto-signing";
+import { isDeliverTxFailure } from "@cosmjs/stargate";
 import { EntityId } from "@reduxjs/toolkit";
-import React from "react";
+import React, { useCallback } from "react";
 import { FlatList, Pressable, StyleProp, View, ViewStyle } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { TrashIcon } from "react-native-heroicons/outline";
 import { useSelector } from "react-redux";
 
 import closeSVG from "../../../assets/icons/close.svg";
-import teritoriLogoSVG from "../../../assets/logos/logo.svg";
 import { BrandText } from "../../components/BrandText";
 import { CurrencyIcon } from "../../components/CurrencyIcon";
 import { OptimizedImage } from "../../components/OptimizedImage";
@@ -14,7 +16,14 @@ import { SVG } from "../../components/SVG";
 import { Separator } from "../../components/Separator";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { shortUserAddressFromID } from "../../components/nfts/NFTView";
+import { Wallet } from "../../context/WalletsProvider";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
+import {
+  getKeplrSigningCosmWasmClient,
+  getNetwork,
+  mustGetCosmosNetwork,
+} from "../../networks";
 import {
   clearSelected,
   removeSelected,
@@ -207,8 +216,69 @@ const ItemTotal: React.FC<{
 };
 
 const Footer: React.FC<{ items: any[] }> = ({ items }) => {
-  const onBuyButtonPress = () => {
-    console.log("Implement buy");
+  const wallet = useSelectedWallet();
+  const dispatch = useAppDispatch();
+
+  const selectedNFTData = useSelector(selectAllSelectedNFTData);
+
+  const cosmosMultiBuy = useCallback(
+    async (wallet: Wallet) => {
+      const sender = wallet.address;
+      if (!sender) {
+        throw Error("invalid buy args");
+      }
+
+      const msgs: EncodeObject[] = [];
+
+      selectedNFTData.map((nft) => {
+        if (nft.networkId !== "teritori") {
+          alert(`${nft.networkId} multi-buy is not supported`);
+          return;
+        }
+        const network = mustGetCosmosNetwork(nft.networkId);
+
+        let funds;
+        if (nft.price !== "0") {
+          funds = [{ amount: nft.price, denom: nft.denom }];
+        }
+
+        const msg = {
+          typeUrl: "/cosmwasm.wasm.v1.MsgExecuteContract",
+          value: {
+            sender,
+            msg: toUtf8(
+              JSON.stringify({
+                buy: {
+                  nft_contract_addr: nft.nftContractAddress,
+                  nft_token_id: nft.id,
+                },
+              })
+            ),
+            contract: network.vaultContractAddress,
+            funds,
+          },
+        };
+
+        msgs.push(msg);
+      });
+      if (msgs.length > 0) {
+        const cosmwasmClient = await getKeplrSigningCosmWasmClient("teritori");
+        console.log(msgs);
+        const tx = await cosmwasmClient.signAndBroadcast(sender, msgs, "auto");
+        if (isDeliverTxFailure(tx)) {
+          throw Error(tx.transactionHash);
+        }
+        msgs.map((nft) => {
+          dispatch(removeSelected(nft.value.msg.buy.id)); //remove items from cart
+        });
+      }
+    },
+    [dispatch, selectedNFTData]
+  );
+
+  const onBuyButtonPress = async () => {
+    if (!wallet) return alert("no wallet");
+    await cosmosMultiBuy(wallet);
   };
   const selected = useSelector(selectAllSelectedNFTData);
 
