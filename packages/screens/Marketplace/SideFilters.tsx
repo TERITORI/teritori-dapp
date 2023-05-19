@@ -29,6 +29,7 @@ import { CurrencyIcon } from "../../components/CurrencyIcon";
 import { SVG } from "../../components/SVG";
 import { Separator } from "../../components/Separator";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
+import { SearchInput } from "../../components/sorts/SearchInput";
 import { useCollectionStats } from "../../hooks/useCollectionStats";
 import { parseNetworkObjectId } from "../../networks";
 import {
@@ -104,7 +105,7 @@ const AccordionItem: React.FC<{
 }> = ({ attributes, total, networkId, denom }) => {
   const shareValue = useSharedValue(0);
   const [bodySectionHeight, setBodySectionHeight] = useState(0);
-
+  const [searchValue, setSearchValue] = useState("");
   const bodyHeight = useAnimatedStyle(() => ({
     height: interpolate(shareValue.value, [0, 1], [0, bodySectionHeight]),
   }));
@@ -153,14 +154,24 @@ const AccordionItem: React.FC<{
             setBodySectionHeight(event.nativeEvent.layout.height);
           }}
         >
-          {attributes.map((value) => (
-            <FilterItems
-              attribute={value}
-              total={total}
-              networkId={networkId}
-              denom={denom}
-            />
-          ))}
+          <SearchInput
+            style={{
+              paddingVertical: layout.padding_x1,
+            }}
+            handleChangeText={(text) => setSearchValue(text)}
+          />
+          {attributes
+            .filter((value) =>
+              value.value.toLowerCase().includes(searchValue.toLowerCase())
+            )
+            .map((value) => (
+              <FilterItems
+                attribute={value}
+                total={total}
+                networkId={networkId}
+                denom={denom}
+              />
+            ))}
         </View>
       </Animated.View>
     </View>
