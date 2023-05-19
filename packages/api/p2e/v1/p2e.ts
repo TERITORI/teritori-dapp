@@ -10,10 +10,19 @@ export const protobufPackage = "p2e.v1";
 
 export interface MerkleProofRequest {
   userId: string;
+  token: string;
+  networkId: string;
+}
+
+export interface UserReward {
+  to: string;
+  token: string;
+  amount: string;
 }
 
 export interface MerkleProofResponse {
-  proof: Uint8Array;
+  proof: string[];
+  userReward: UserReward | undefined;
 }
 
 export interface AllSeasonsRequest {
@@ -77,13 +86,19 @@ export interface LeaderboardResponse {
 }
 
 function createBaseMerkleProofRequest(): MerkleProofRequest {
-  return { userId: "" };
+  return { userId: "", token: "", networkId: "" };
 }
 
 export const MerkleProofRequest = {
   encode(message: MerkleProofRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.userId !== "") {
       writer.uint32(10).string(message.userId);
+    }
+    if (message.token !== "") {
+      writer.uint32(18).string(message.token);
+    }
+    if (message.networkId !== "") {
+      writer.uint32(26).string(message.networkId);
     }
     return writer;
   },
@@ -102,6 +117,20 @@ export const MerkleProofRequest = {
 
           message.userId = reader.string();
           continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.token = reader.string();
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.networkId = reader.string();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -112,12 +141,18 @@ export const MerkleProofRequest = {
   },
 
   fromJSON(object: any): MerkleProofRequest {
-    return { userId: isSet(object.userId) ? String(object.userId) : "" };
+    return {
+      userId: isSet(object.userId) ? String(object.userId) : "",
+      token: isSet(object.token) ? String(object.token) : "",
+      networkId: isSet(object.networkId) ? String(object.networkId) : "",
+    };
   },
 
   toJSON(message: MerkleProofRequest): unknown {
     const obj: any = {};
     message.userId !== undefined && (obj.userId = message.userId);
+    message.token !== undefined && (obj.token = message.token);
+    message.networkId !== undefined && (obj.networkId = message.networkId);
     return obj;
   },
 
@@ -128,18 +163,107 @@ export const MerkleProofRequest = {
   fromPartial<I extends Exact<DeepPartial<MerkleProofRequest>, I>>(object: I): MerkleProofRequest {
     const message = createBaseMerkleProofRequest();
     message.userId = object.userId ?? "";
+    message.token = object.token ?? "";
+    message.networkId = object.networkId ?? "";
+    return message;
+  },
+};
+
+function createBaseUserReward(): UserReward {
+  return { to: "", token: "", amount: "" };
+}
+
+export const UserReward = {
+  encode(message: UserReward, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.to !== "") {
+      writer.uint32(10).string(message.to);
+    }
+    if (message.token !== "") {
+      writer.uint32(18).string(message.token);
+    }
+    if (message.amount !== "") {
+      writer.uint32(26).string(message.amount);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): UserReward {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUserReward();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.to = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.token = reader.string();
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.amount = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UserReward {
+    return {
+      to: isSet(object.to) ? String(object.to) : "",
+      token: isSet(object.token) ? String(object.token) : "",
+      amount: isSet(object.amount) ? String(object.amount) : "",
+    };
+  },
+
+  toJSON(message: UserReward): unknown {
+    const obj: any = {};
+    message.to !== undefined && (obj.to = message.to);
+    message.token !== undefined && (obj.token = message.token);
+    message.amount !== undefined && (obj.amount = message.amount);
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<UserReward>, I>>(base?: I): UserReward {
+    return UserReward.fromPartial(base ?? {});
+  },
+
+  fromPartial<I extends Exact<DeepPartial<UserReward>, I>>(object: I): UserReward {
+    const message = createBaseUserReward();
+    message.to = object.to ?? "";
+    message.token = object.token ?? "";
+    message.amount = object.amount ?? "";
     return message;
   },
 };
 
 function createBaseMerkleProofResponse(): MerkleProofResponse {
-  return { proof: new Uint8Array() };
+  return { proof: [], userReward: undefined };
 }
 
 export const MerkleProofResponse = {
   encode(message: MerkleProofResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.proof.length !== 0) {
-      writer.uint32(10).bytes(message.proof);
+    for (const v of message.proof) {
+      writer.uint32(10).string(v!);
+    }
+    if (message.userReward !== undefined) {
+      UserReward.encode(message.userReward, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
@@ -156,7 +280,14 @@ export const MerkleProofResponse = {
             break;
           }
 
-          message.proof = reader.bytes();
+          message.proof.push(reader.string());
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.userReward = UserReward.decode(reader, reader.uint32());
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -168,13 +299,21 @@ export const MerkleProofResponse = {
   },
 
   fromJSON(object: any): MerkleProofResponse {
-    return { proof: isSet(object.proof) ? bytesFromBase64(object.proof) : new Uint8Array() };
+    return {
+      proof: Array.isArray(object?.proof) ? object.proof.map((e: any) => String(e)) : [],
+      userReward: isSet(object.userReward) ? UserReward.fromJSON(object.userReward) : undefined,
+    };
   },
 
   toJSON(message: MerkleProofResponse): unknown {
     const obj: any = {};
-    message.proof !== undefined &&
-      (obj.proof = base64FromBytes(message.proof !== undefined ? message.proof : new Uint8Array()));
+    if (message.proof) {
+      obj.proof = message.proof.map((e) => e);
+    } else {
+      obj.proof = [];
+    }
+    message.userReward !== undefined &&
+      (obj.userReward = message.userReward ? UserReward.toJSON(message.userReward) : undefined);
     return obj;
   },
 
@@ -184,7 +323,10 @@ export const MerkleProofResponse = {
 
   fromPartial<I extends Exact<DeepPartial<MerkleProofResponse>, I>>(object: I): MerkleProofResponse {
     const message = createBaseMerkleProofResponse();
-    message.proof = object.proof ?? new Uint8Array();
+    message.proof = object.proof?.map((e) => e) || [];
+    message.userReward = (object.userReward !== undefined && object.userReward !== null)
+      ? UserReward.fromPartial(object.userReward)
+      : undefined;
     return message;
   },
 };
@@ -1325,31 +1467,6 @@ var tsProtoGlobalThis: any = (() => {
   }
   throw "Unable to locate global object";
 })();
-
-function bytesFromBase64(b64: string): Uint8Array {
-  if (tsProtoGlobalThis.Buffer) {
-    return Uint8Array.from(tsProtoGlobalThis.Buffer.from(b64, "base64"));
-  } else {
-    const bin = tsProtoGlobalThis.atob(b64);
-    const arr = new Uint8Array(bin.length);
-    for (let i = 0; i < bin.length; ++i) {
-      arr[i] = bin.charCodeAt(i);
-    }
-    return arr;
-  }
-}
-
-function base64FromBytes(arr: Uint8Array): string {
-  if (tsProtoGlobalThis.Buffer) {
-    return tsProtoGlobalThis.Buffer.from(arr).toString("base64");
-  } else {
-    const bin: string[] = [];
-    arr.forEach((byte) => {
-      bin.push(String.fromCharCode(byte));
-    });
-    return tsProtoGlobalThis.btoa(bin.join(""));
-  }
-}
 
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 

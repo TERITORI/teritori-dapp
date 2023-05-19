@@ -2,11 +2,16 @@ package p2e
 
 import (
 	"context"
+	"math/big"
+	"strings"
 	"time"
 
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
+	"github.com/TERITORI/teritori-dapp/go/pkg/merkletree"
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
 	"github.com/TERITORI/teritori-dapp/go/pkg/p2epb"
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/mitchellh/mapstructure"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
@@ -185,7 +190,80 @@ func (s *P2eService) AllSeasons(ctx context.Context, req *p2epb.AllSeasonsReques
 }
 
 func (s *P2eService) MerkleProof(ctx context.Context, req *p2epb.MerkleProofRequest) (*p2epb.MerkleProofResponse, error) {
-	// Get merkle tree
+	userID := req.GetUserId()
+	token := req.GetToken()
+	networkID := req.GetNetworkId()
 
-	return &p2epb.MerkleProofResponse{Proof: nil}, nil
+	if userID == "" {
+		return nil, errors.New("missing userId")
+	}
+
+	if token == "" {
+		return nil, errors.New("missing token")
+	}
+
+	if networkID == "" {
+		return nil, errors.New("missing networkId")
+	}
+
+	todayID := time.Now().UTC().Format("2006-01-02")
+	currentReward := indexerdb.P2eDailyReward{
+		DayID:     todayID,
+		NetworkID: networkID,
+	}
+
+	if err := s.conf.IndexerDB.First(&currentReward).Error; err != nil {
+		return nil, errors.Wrap(err, "failed to get current daily reward")
+	}
+
+	var totalRewards UserRewardMap
+	if err := mapstructure.Decode(currentReward.TotalRewards, &totalRewards); err != nil {
+		return nil, errors.Wrap(err, "failed to decode user reward map from DB")
+	}
+
+	var userLeaf RewardData
+	var leaves []merkletree.Content
+	for addr, userReward := range totalRewards {
+		amount := new(big.Int)
+		// userReward.Amount is already BigInt string so base here is 0
+		amount, ok := amount.SetString(userReward.Amount, 0)
+		if !ok {
+			return nil, errors.New("failed to create BigInt from user reward amount")
+		}
+
+		leaf := RewardData{
+			To:     common.HexToAddress(addr),
+			Token:  common.HexToAddress(userReward.Token),
+			Amount: amount,
+		}
+
+		if addr == userID && token == strings.ToLower(leaf.Token.String()) {
+			userLeaf = leaf
+		}
+
+		leaves = append(leaves, leaf)
+	}
+
+	if userLeaf.Amount == nil {
+		return nil, errors.New("user does not have reward")
+	}
+
+	tree, err := merkletree.New(leaves)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to build merkletree from DB")
+	}
+
+	proof, err := tree.GetHexProof(userLeaf)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to get proof")
+	}
+
+	return &p2epb.MerkleProofResponse{
+		Proof: proof,
+		UserReward: &p2epb.UserReward{
+			To:     userLeaf.To.String(),
+			Token:  userLeaf.Token.String(),
+			Amount: userLeaf.Amount.String(),
+		},
+	}, nil
 }

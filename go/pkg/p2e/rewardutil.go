@@ -100,7 +100,6 @@ func GetDailyRewardsConfigBySeason(seasonId string, network networks.Network) (s
 		dailyCoin := sdk.NewDecCoin(season.Denom, dailyAmountInt)
 		dailyRewards = append(dailyRewards, dailyCoin)
 	}
-
 	return dailyRewards, nil
 }
 

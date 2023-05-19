@@ -25,3 +25,11 @@ type P2eLeaderboard struct {
 	SnapshotRank    uint32          // Historical rank used for calculating changes
 	NetworkID       string          `gorm:"index"`
 }
+
+type P2eDailyReward struct {
+	DayID        string      `gorm:"primaryKey"` // Format yyyy-mm-dd
+	NetworkID    string      `gorm:"primaryKey"`
+	DailyRewards ObjectJSONB `gorm:"type:jsonb;default:'{}'"`
+	TotalRewards ObjectJSONB `gorm:"type:jsonb;default:'{}'"`
+	MerkleRoot   string      `gorm:"merkleRoot"`
+}

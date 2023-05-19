@@ -3,10 +3,13 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"math/big"
+	"strings"
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/mitchellh/mapstructure"
 
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/contractutil"
@@ -176,18 +179,21 @@ func (s *LeaderboardService) ethereumSendRewardsList(
 	leaderboard []indexerdb.P2eLeaderboard,
 	rpcEndpoint string,
 ) (string, error) {
-	leaves := make([]merkletree.Content, len(leaderboard))
-
 	const TOKEN_ADDRESS = "0x0000000000000000000000000000000000000000"
 
 	dailyRewards, err := p2e.GetDailyRewardsConfigBySeason(seasonId, network)
-
 	if err != nil {
 		return "", errors.Wrap(err, "failed to get rewards")
 	}
 
-	for idx, userScore := range leaderboard {
+	// This data is compatible with DB
+	todayDailyRewards := indexerdb.ObjectJSONB{} // addr => {token, amount}
+
+	// Save rewards list
+	todayRewards := p2e.UserRewardMap{}
+	for _, userScore := range leaderboard {
 		_, addr, err := s.netstore.ParseUserID(string(userScore.UserID))
+
 		if err != nil {
 			return "", errors.Wrap(err, "failed to parse user id")
 		}
@@ -200,12 +206,91 @@ func (s *LeaderboardService) ethereumSendRewardsList(
 
 		// Get daily reward by rank
 		dailyReward := dailyRewards[rank-1]
-
-		leaves[idx] = p2e.RewardData{
-			To:     common.HexToAddress(addr),
-			Token:  common.HexToAddress(TOKEN_ADDRESS),
-			Amount: dailyReward.Amount.BigInt(),
+		amount := strings.Split(dailyReward.String(), ".")[0]
+		todayRewards[addr] = p2e.UserReward{
+			Token:  TOKEN_ADDRESS,
+			Amount: amount,
 		}
+
+		todayDailyRewards[addr] = map[string]interface{}{
+			"token":  TOKEN_ADDRESS,
+			"amount": amount,
+		}
+	}
+
+	now := time.Now().UTC()
+	todayID := now.Format("2006-01-02")
+
+	yesterdayID := now.AddDate(0, 0, -1).Format("2006-01-02")
+	yesterdayData := indexerdb.P2eDailyReward{DayID: yesterdayID, NetworkID: s.networkId}
+	if err := s.db.First(&yesterdayData).Error; err != nil {
+		if !errors.Is(err, gorm.ErrRecordNotFound) {
+			return "", errors.Wrap(err, "failed to save daily rewards")
+		}
+	}
+
+	yesterdayTotalRewards := p2e.UserRewardMap{}
+
+	// If yesterday data is not empty then try to decode it to map
+	if yesterdayData.MerkleRoot != "" {
+		if err := mapstructure.Decode(yesterdayData.TotalRewards, &yesterdayTotalRewards); err != nil {
+			return "", errors.Wrap(err, "failed to decode yesterday reward to struct")
+		}
+	}
+
+	// Calculate aggregated rewards = last aggregated rewards + today rewards
+	for addr, reward := range todayRewards {
+		yesterdayAmountStr := "0"
+		if yesterdayTotalRewards[addr].Amount != "" {
+			yesterdayAmountStr = yesterdayTotalRewards[addr].Amount
+		}
+
+		yesterdayAmount, err := sdk.NewDecFromStr(yesterdayAmountStr)
+		if err != nil {
+			return "", errors.Wrap(err, "failed to create dec from current reward amount")
+		}
+
+		todayAmount, err := sdk.NewDecFromStr(reward.Amount)
+		if err != nil {
+			return "", errors.Wrap(err, "failed to create dec from daily reward amount")
+		}
+
+		newAmount := yesterdayAmount.Add(todayAmount)
+		reward.Amount = strings.Split(newAmount.String(), ".")[0]
+
+		yesterdayTotalRewards[addr] = p2e.UserReward{
+			Token:  reward.Token,
+			Amount: reward.Amount,
+		}
+	}
+
+	todayTotalRewards := indexerdb.ObjectJSONB{} // addr => {token, amount}
+	if err := mapstructure.Decode(yesterdayTotalRewards, &todayTotalRewards); err != nil {
+		return "", errors.Wrap(err, "failed to decode yesterday reward")
+	}
+
+	// Create merkle root
+	leaves := make([]merkletree.Content, len(todayTotalRewards))
+	i := 0
+	for addr, data := range todayTotalRewards {
+		var userReward p2e.UserReward
+		if err := mapstructure.Decode(data, &userReward); err != nil {
+			return "", errors.Wrap(err, "failed to decode user reward")
+		}
+
+		amount := new(big.Int)
+		// userReward.Amount is already BigInt string so base here is 0
+		amount, ok := amount.SetString(userReward.Amount, 0)
+		if !ok {
+			return "", errors.New("failed to create BigInt from user reward amount")
+		}
+
+		leaves[i] = p2e.RewardData{
+			To:     common.HexToAddress(addr),
+			Token:  common.HexToAddress(userReward.Token),
+			Amount: amount,
+		}
+		i++
 	}
 
 	tree, err := merkletree.New(leaves)
@@ -213,15 +298,18 @@ func (s *LeaderboardService) ethereumSendRewardsList(
 		return "", errors.Wrap(err, "failed to created merkle tree")
 	}
 
-	// Save to DB to reuse the tree data to be sure that they are the same when verify proof
-	// TODO: send root to contract ===================================================
-
-	proof, err := tree.GetHexProof(leaves[0])
-	if err != nil {
-		return "", errors.Wrap(err, "failed to merkle proof")
+	// Save to DB to reuse the tree data to ensure that they are the same when verifying proof
+	rewards := indexerdb.P2eDailyReward{
+		DayID:        todayID,
+		NetworkID:    s.networkId,
+		DailyRewards: todayDailyRewards,
+		TotalRewards: todayTotalRewards,
+		MerkleRoot:   tree.GetHexRoot(),
 	}
-
-	fmt.Println("Proof:", proof)
+	if err := s.db.Create(&rewards).Error; err != nil {
+		return "", errors.Wrap(err, "failed to save daily rewards")
+	}
+	s.logger.Info("saved daily rewards", zap.String("dayID", todayID), zap.String("networkID", s.networkId))
 
 	return "tx: 1234", nil
 }

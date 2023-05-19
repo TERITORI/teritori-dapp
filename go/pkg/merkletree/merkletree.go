@@ -13,18 +13,15 @@ import (
 
 // Teritori Version of Merkle tree. Support:
 // - keccak256
-// - sort
-// - keep impair nodes (do not duplicate impair node)
+// - sort pairs
+// - do not duplicate impair node
 
-// Content represents the data that is stored and verified by the tree. A type that
-// implements this interface can be used as an item in the tree.
 type Content interface {
 	CalculateHash() ([]byte, error)
 	Equals(other Content) (bool, error)
+	ToJSONB() interface{}
 }
 
-// MerkleTree is the container for the tree. It holds a pointer to the root of the tree,
-// a list of pointers to the leaf nodes, and the merkle root.
 type MerkleTree struct {
 	Root         *Node
 	merkleRoot   []byte
@@ -33,8 +30,6 @@ type MerkleTree struct {
 	sort         bool
 }
 
-// Node represents a node, root, or leaf in the tree. It stores pointers to its immediate
-// relationships, a hash, the content stored if it is a leaf, and other metadata.
 type Node struct {
 	Tree   *MerkleTree
 	Parent *Node
@@ -64,7 +59,6 @@ func toHex(bytesValue []byte) string {
 	return fmt.Sprintf("0x%s", hex.EncodeToString(bytesValue))
 }
 
-// Shortcut to create new with with sorted = true and use keccak256 hash
 func New(cs []Content) (*MerkleTree, error) {
 	t := &MerkleTree{
 		hashStrategy: sha3.NewLegacyKeccak256,
@@ -80,7 +74,16 @@ func New(cs []Content) (*MerkleTree, error) {
 	return t, nil
 }
 
-// GetMerklePath: Get Merkle proof in hex format
+func (m *MerkleTree) ToArrayJSONB() []interface{} {
+	result := make([]interface{}, len(m.Leafs))
+
+	for idx, leaf := range m.Leafs {
+		result[idx] = leaf.C.ToJSONB()
+	}
+
+	return result
+}
+
 func (m *MerkleTree) GetHexProof(content Content) ([]string, error) {
 	for _, current := range m.Leafs {
 		ok, err := current.C.Equals(content)
@@ -110,9 +113,6 @@ func (m *MerkleTree) GetHexProof(content Content) ([]string, error) {
 	return nil, nil
 }
 
-// buildWithContent is a helper function that for a given set of Contents, generates a
-// corresponding tree and returns the root node, a list of leaf nodes, and a possible error.
-// Returns an error if cs contains no Contents.
 func buildWithContent(cs []Content, t *MerkleTree) (*Node, []*Node, error) {
 	if len(cs) == 0 {
 		return nil, nil, errors.New("error: cannot construct tree with no content")
@@ -141,8 +141,6 @@ func buildWithContent(cs []Content, t *MerkleTree) (*Node, []*Node, error) {
 	return root, leafs, nil
 }
 
-// buildIntermediate is a helper function that for a given list of leaf nodes, constructs
-// the intermediate and root levels of the tree. Returns the resulting root node of the tree.
 func buildIntermediate(nl []*Node, t *MerkleTree) (*Node, error) {
 	var nodes []*Node
 

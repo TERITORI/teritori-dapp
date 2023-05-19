@@ -2,6 +2,7 @@ package p2e
 
 import (
 	"math/big"
+	"strings"
 
 	"github.com/TERITORI/teritori-dapp/go/pkg/merkletree"
 
@@ -14,6 +15,13 @@ var (
 	AddressType, _ = abi.NewType("address", "address", nil)
 	Uint256Type, _ = abi.NewType("uint256", "uint256", nil)
 )
+
+type UserReward struct {
+	Token  string `json:"token"`
+	Amount string `json:"amount"`
+}
+
+type UserRewardMap map[string]UserReward
 
 type RewardData struct {
 	To     common.Address
@@ -56,4 +64,12 @@ func (d RewardData) Equals(other merkletree.Content) (bool, error) {
 	amount := other.(RewardData).Amount
 
 	return to == d.To && token == d.Token && amount.String() == d.Amount.String(), nil
+}
+
+func (d RewardData) ToJSONB() interface{} {
+	return map[string]interface{}{
+		"to":     strings.ToLower(d.To.Hex()),
+		"token":  strings.ToLower(d.Token.Hex()),
+		"amount": d.Amount.String(),
+	}
 }
