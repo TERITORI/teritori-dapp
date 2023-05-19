@@ -8,9 +8,6 @@ import { SpacerColumn } from "../../../components/spacer";
 import { neutral00 } from "../../../utils/style/colors";
 import { fontBold16, fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
-import { mustGetP2eClient } from "../../../utils/backend";
 
 interface CenterSectionProps {
   cardWidth: number;
@@ -25,19 +22,6 @@ export const CenterSection: React.FC<CenterSectionProps> = ({
 }) => {
   // variables
   const pulseOpacityRef = useRef(new Animated.Value(1));
-
-  const wallet = useSelectedWallet();
-  const networkId = useSelectedNetworkId();
-
-  const getProof = async () => {
-    const p2eClient = mustGetP2eClient(networkId);
-    const result =  await p2eClient.MerkleProof({
-      userId: wallet?.address,
-      token: "0x0000000000000000000000000000000000000000",
-      networkId: networkId || "",
-    });
-    console.log(result);
-  };
 
   useEffect(() => {
     Animated.loop(
@@ -104,10 +88,6 @@ export const CenterSection: React.FC<CenterSectionProps> = ({
               Start the Game
             </BrandText>
           </Animated.View>
-
-          <BrandText onPress={getProof}>
-              Get proof
-            </BrandText>
         </View>
         <SpacerColumn size={2.5} />
         <BrandText style={[fontSemibold14, { textAlign: "center" }]}>
