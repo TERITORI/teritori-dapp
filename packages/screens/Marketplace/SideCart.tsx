@@ -21,7 +21,6 @@ import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
   getKeplrSigningCosmWasmClient,
-  getNetwork,
   mustGetCosmosNetwork,
 } from "../../networks";
 import {
