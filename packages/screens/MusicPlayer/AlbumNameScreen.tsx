@@ -8,7 +8,6 @@ import PlayOther from "../../../assets/music-player/play-other.svg";
 import PlaySecondary from "../../../assets/music-player/play-secondary.svg";
 import Time from "../../../assets/music-player/time.svg";
 import Tip from "../../../assets/music-player/tip-primary.svg";
-import { AlbumInfo } from "../../api/musicplayer/v1/musicplayer";
 import { BrandText } from "../../components/BrandText";
 import { DetailAlbumMenu } from "../../components/MusicPlayer/DetailAlbumMenu";
 import { MediaPlayer } from "../../components/MusicPlayer/MediaPlayer";
@@ -29,6 +28,7 @@ import {
   fontSemibold20,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
+import { AlbumInfo, AlbumMetadataInfo } from "../../utils/types/music";
 
 export const AlbumNameScreen: ScreenFC<"AlbumName"> = ({
   route: {
@@ -37,20 +37,32 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = ({
 }) => {
   const selectedNetworkId = useSelectedNetworkId();
   const [albumInfo, setAlbumInfo] = useState<AlbumInfo>({
-    id: 0,
+    id: "0",
     name: "",
     description: "",
     image: "",
-    musics: [],
+    audios: [],
   });
 
   useEffect(() => {
     const getAlbumInfo = async () => {
       const res = await mustGetMusicplayerClient(selectedNetworkId).getAlbum({
-        id,
+        identifier: id,
       });
-      if (res.album) {
-        setAlbumInfo(res.album);
+      if (res.musicAlbum) {
+        const selectedMusicAlbum = res.musicAlbum;
+        const metadata = JSON.parse(
+          selectedMusicAlbum.metadata
+        ) as AlbumMetadataInfo;
+        const audios = metadata.audios;
+        const album: AlbumInfo = {
+          id: selectedMusicAlbum.identifier,
+          description: metadata.description,
+          image: metadata.image,
+          name: metadata.title,
+          audios,
+        };
+        setAlbumInfo(album);
       }
     };
     getAlbumInfo();
@@ -252,8 +264,8 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = ({
   // const audioRef = useRef<HTMLAudioElement>(null);
   const { setAudioSrc, setIsPlay } = useMusicplayer();
   const playAudio = () => {
-    if (albumInfo.musics.length > 0) {
-      setAudioSrc(ipfsPinataUrl(albumInfo.musics[0].ipfs));
+    if (albumInfo.audios.length > 0) {
+      setAudioSrc(ipfsPinataUrl(albumInfo.audios[0].ipfs));
       setIsPlay(true);
       // setAudioSrc(ipfsPinataUrl(albumInfo.musics[0].ipfs));
       // setAudioIsPlay(true);
@@ -277,6 +289,7 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = ({
         <View style={styles.albumBox}>
           <View style={styles.infoBox}>
             <Image
+              // @ts-ignore
               source={ipfsPinataUrl(albumInfo.image)}
               style={styles.albumImg}
             />
@@ -355,7 +368,7 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = ({
         </View>
 
         <View style={styles.contentGroup}>
-          {albumInfo.musics.map((item: any, index: number) => {
+          {albumInfo.audios.map((item: any, index: number) => {
             return (
               <View
                 style={index % 2 === 0 ? styles.unitBoxEven : styles.uniBoxOdd}
@@ -363,6 +376,7 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = ({
               >
                 <View style={styles.leftBox}>
                   <Pressable
+                    // @ts-ignore
                     onMouseEnter={() =>
                       setIndexHoverState(() => {
                         return { index: index + 1, state: true };

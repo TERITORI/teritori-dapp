@@ -5,317 +5,26 @@ import _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "musicplayer.v1";
 
-export interface UploadAlbumRequest {
-  name: string;
-  description: string;
-  image: string;
-}
-
-export interface UploadAlbumResponse {
-  result: number;
-}
-
-export interface UploadMusicRequest {
-  albumId: number;
-  name: string;
-  duration: number;
-  ipfs: string;
-}
-
-export interface UploadMusicResponse {
-  result: number;
-}
-
 export interface GetAlbumListRequest {
 }
 
-export interface AlbumShortInfo {
-  id: number;
-  name: string;
-  description: string;
-  image: string;
+export interface MusicAlbumInfo {
+  identifier: string;
+  metadata: string;
+  createdUserId: string;
 }
 
 export interface GetAlbumListResponse {
-  albums: AlbumShortInfo[];
+  musicAlbums: MusicAlbumInfo[];
 }
 
 export interface GetAlbumRequest {
-  id: number;
-}
-
-export interface MusicFileInfo {
-  albumId: number;
-  fileId: number;
-  name: string;
-  duration: number;
-  ipfs: string;
-}
-
-export interface AlbumInfo {
-  id: number;
-  name: string;
-  description: string;
-  image: string;
-  musics: MusicFileInfo[];
+  identifier: string;
 }
 
 export interface GetAlbumResponse {
-  album: AlbumInfo | undefined;
+  musicAlbum: MusicAlbumInfo | undefined;
 }
-
-function createBaseUploadAlbumRequest(): UploadAlbumRequest {
-  return { name: "", description: "", image: "" };
-}
-
-export const UploadAlbumRequest = {
-  encode(message: UploadAlbumRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.name !== "") {
-      writer.uint32(10).string(message.name);
-    }
-    if (message.description !== "") {
-      writer.uint32(18).string(message.description);
-    }
-    if (message.image !== "") {
-      writer.uint32(26).string(message.image);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): UploadAlbumRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseUploadAlbumRequest();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.name = reader.string();
-          break;
-        case 2:
-          message.description = reader.string();
-          break;
-        case 3:
-          message.image = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): UploadAlbumRequest {
-    return {
-      name: isSet(object.name) ? String(object.name) : "",
-      description: isSet(object.description) ? String(object.description) : "",
-      image: isSet(object.image) ? String(object.image) : "",
-    };
-  },
-
-  toJSON(message: UploadAlbumRequest): unknown {
-    const obj: any = {};
-    message.name !== undefined && (obj.name = message.name);
-    message.description !== undefined && (obj.description = message.description);
-    message.image !== undefined && (obj.image = message.image);
-    return obj;
-  },
-
-  create<I extends Exact<DeepPartial<UploadAlbumRequest>, I>>(base?: I): UploadAlbumRequest {
-    return UploadAlbumRequest.fromPartial(base ?? {});
-  },
-
-  fromPartial<I extends Exact<DeepPartial<UploadAlbumRequest>, I>>(object: I): UploadAlbumRequest {
-    const message = createBaseUploadAlbumRequest();
-    message.name = object.name ?? "";
-    message.description = object.description ?? "";
-    message.image = object.image ?? "";
-    return message;
-  },
-};
-
-function createBaseUploadAlbumResponse(): UploadAlbumResponse {
-  return { result: 0 };
-}
-
-export const UploadAlbumResponse = {
-  encode(message: UploadAlbumResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.result !== 0) {
-      writer.uint32(8).int32(message.result);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): UploadAlbumResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseUploadAlbumResponse();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.result = reader.int32();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): UploadAlbumResponse {
-    return { result: isSet(object.result) ? Number(object.result) : 0 };
-  },
-
-  toJSON(message: UploadAlbumResponse): unknown {
-    const obj: any = {};
-    message.result !== undefined && (obj.result = Math.round(message.result));
-    return obj;
-  },
-
-  create<I extends Exact<DeepPartial<UploadAlbumResponse>, I>>(base?: I): UploadAlbumResponse {
-    return UploadAlbumResponse.fromPartial(base ?? {});
-  },
-
-  fromPartial<I extends Exact<DeepPartial<UploadAlbumResponse>, I>>(object: I): UploadAlbumResponse {
-    const message = createBaseUploadAlbumResponse();
-    message.result = object.result ?? 0;
-    return message;
-  },
-};
-
-function createBaseUploadMusicRequest(): UploadMusicRequest {
-  return { albumId: 0, name: "", duration: 0, ipfs: "" };
-}
-
-export const UploadMusicRequest = {
-  encode(message: UploadMusicRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.albumId !== 0) {
-      writer.uint32(8).uint32(message.albumId);
-    }
-    if (message.name !== "") {
-      writer.uint32(18).string(message.name);
-    }
-    if (message.duration !== 0) {
-      writer.uint32(24).uint32(message.duration);
-    }
-    if (message.ipfs !== "") {
-      writer.uint32(34).string(message.ipfs);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): UploadMusicRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseUploadMusicRequest();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.albumId = reader.uint32();
-          break;
-        case 2:
-          message.name = reader.string();
-          break;
-        case 3:
-          message.duration = reader.uint32();
-          break;
-        case 4:
-          message.ipfs = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): UploadMusicRequest {
-    return {
-      albumId: isSet(object.albumId) ? Number(object.albumId) : 0,
-      name: isSet(object.name) ? String(object.name) : "",
-      duration: isSet(object.duration) ? Number(object.duration) : 0,
-      ipfs: isSet(object.ipfs) ? String(object.ipfs) : "",
-    };
-  },
-
-  toJSON(message: UploadMusicRequest): unknown {
-    const obj: any = {};
-    message.albumId !== undefined && (obj.albumId = Math.round(message.albumId));
-    message.name !== undefined && (obj.name = message.name);
-    message.duration !== undefined && (obj.duration = Math.round(message.duration));
-    message.ipfs !== undefined && (obj.ipfs = message.ipfs);
-    return obj;
-  },
-
-  create<I extends Exact<DeepPartial<UploadMusicRequest>, I>>(base?: I): UploadMusicRequest {
-    return UploadMusicRequest.fromPartial(base ?? {});
-  },
-
-  fromPartial<I extends Exact<DeepPartial<UploadMusicRequest>, I>>(object: I): UploadMusicRequest {
-    const message = createBaseUploadMusicRequest();
-    message.albumId = object.albumId ?? 0;
-    message.name = object.name ?? "";
-    message.duration = object.duration ?? 0;
-    message.ipfs = object.ipfs ?? "";
-    return message;
-  },
-};
-
-function createBaseUploadMusicResponse(): UploadMusicResponse {
-  return { result: 0 };
-}
-
-export const UploadMusicResponse = {
-  encode(message: UploadMusicResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.result !== 0) {
-      writer.uint32(8).int32(message.result);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): UploadMusicResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseUploadMusicResponse();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.result = reader.int32();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): UploadMusicResponse {
-    return { result: isSet(object.result) ? Number(object.result) : 0 };
-  },
-
-  toJSON(message: UploadMusicResponse): unknown {
-    const obj: any = {};
-    message.result !== undefined && (obj.result = Math.round(message.result));
-    return obj;
-  },
-
-  create<I extends Exact<DeepPartial<UploadMusicResponse>, I>>(base?: I): UploadMusicResponse {
-    return UploadMusicResponse.fromPartial(base ?? {});
-  },
-
-  fromPartial<I extends Exact<DeepPartial<UploadMusicResponse>, I>>(object: I): UploadMusicResponse {
-    const message = createBaseUploadMusicResponse();
-    message.result = object.result ?? 0;
-    return message;
-  },
-};
 
 function createBaseGetAlbumListRequest(): GetAlbumListRequest {
   return {};
@@ -360,45 +69,39 @@ export const GetAlbumListRequest = {
   },
 };
 
-function createBaseAlbumShortInfo(): AlbumShortInfo {
-  return { id: 0, name: "", description: "", image: "" };
+function createBaseMusicAlbumInfo(): MusicAlbumInfo {
+  return { identifier: "", metadata: "", createdUserId: "" };
 }
 
-export const AlbumShortInfo = {
-  encode(message: AlbumShortInfo, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.id !== 0) {
-      writer.uint32(8).uint32(message.id);
+export const MusicAlbumInfo = {
+  encode(message: MusicAlbumInfo, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.identifier !== "") {
+      writer.uint32(10).string(message.identifier);
     }
-    if (message.name !== "") {
-      writer.uint32(18).string(message.name);
+    if (message.metadata !== "") {
+      writer.uint32(18).string(message.metadata);
     }
-    if (message.description !== "") {
-      writer.uint32(26).string(message.description);
-    }
-    if (message.image !== "") {
-      writer.uint32(34).string(message.image);
+    if (message.createdUserId !== "") {
+      writer.uint32(26).string(message.createdUserId);
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): AlbumShortInfo {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MusicAlbumInfo {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseAlbumShortInfo();
+    const message = createBaseMusicAlbumInfo();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.id = reader.uint32();
+          message.identifier = reader.string();
           break;
         case 2:
-          message.name = reader.string();
+          message.metadata = reader.string();
           break;
         case 3:
-          message.description = reader.string();
-          break;
-        case 4:
-          message.image = reader.string();
+          message.createdUserId = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -408,46 +111,43 @@ export const AlbumShortInfo = {
     return message;
   },
 
-  fromJSON(object: any): AlbumShortInfo {
+  fromJSON(object: any): MusicAlbumInfo {
     return {
-      id: isSet(object.id) ? Number(object.id) : 0,
-      name: isSet(object.name) ? String(object.name) : "",
-      description: isSet(object.description) ? String(object.description) : "",
-      image: isSet(object.image) ? String(object.image) : "",
+      identifier: isSet(object.identifier) ? String(object.identifier) : "",
+      metadata: isSet(object.metadata) ? String(object.metadata) : "",
+      createdUserId: isSet(object.createdUserId) ? String(object.createdUserId) : "",
     };
   },
 
-  toJSON(message: AlbumShortInfo): unknown {
+  toJSON(message: MusicAlbumInfo): unknown {
     const obj: any = {};
-    message.id !== undefined && (obj.id = Math.round(message.id));
-    message.name !== undefined && (obj.name = message.name);
-    message.description !== undefined && (obj.description = message.description);
-    message.image !== undefined && (obj.image = message.image);
+    message.identifier !== undefined && (obj.identifier = message.identifier);
+    message.metadata !== undefined && (obj.metadata = message.metadata);
+    message.createdUserId !== undefined && (obj.createdUserId = message.createdUserId);
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<AlbumShortInfo>, I>>(base?: I): AlbumShortInfo {
-    return AlbumShortInfo.fromPartial(base ?? {});
+  create<I extends Exact<DeepPartial<MusicAlbumInfo>, I>>(base?: I): MusicAlbumInfo {
+    return MusicAlbumInfo.fromPartial(base ?? {});
   },
 
-  fromPartial<I extends Exact<DeepPartial<AlbumShortInfo>, I>>(object: I): AlbumShortInfo {
-    const message = createBaseAlbumShortInfo();
-    message.id = object.id ?? 0;
-    message.name = object.name ?? "";
-    message.description = object.description ?? "";
-    message.image = object.image ?? "";
+  fromPartial<I extends Exact<DeepPartial<MusicAlbumInfo>, I>>(object: I): MusicAlbumInfo {
+    const message = createBaseMusicAlbumInfo();
+    message.identifier = object.identifier ?? "";
+    message.metadata = object.metadata ?? "";
+    message.createdUserId = object.createdUserId ?? "";
     return message;
   },
 };
 
 function createBaseGetAlbumListResponse(): GetAlbumListResponse {
-  return { albums: [] };
+  return { musicAlbums: [] };
 }
 
 export const GetAlbumListResponse = {
   encode(message: GetAlbumListResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    for (const v of message.albums) {
-      AlbumShortInfo.encode(v!, writer.uint32(10).fork()).ldelim();
+    for (const v of message.musicAlbums) {
+      MusicAlbumInfo.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
@@ -460,7 +160,7 @@ export const GetAlbumListResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.albums.push(AlbumShortInfo.decode(reader, reader.uint32()));
+          message.musicAlbums.push(MusicAlbumInfo.decode(reader, reader.uint32()));
           break;
         default:
           reader.skipType(tag & 7);
@@ -471,15 +171,19 @@ export const GetAlbumListResponse = {
   },
 
   fromJSON(object: any): GetAlbumListResponse {
-    return { albums: Array.isArray(object?.albums) ? object.albums.map((e: any) => AlbumShortInfo.fromJSON(e)) : [] };
+    return {
+      musicAlbums: Array.isArray(object?.musicAlbums)
+        ? object.musicAlbums.map((e: any) => MusicAlbumInfo.fromJSON(e))
+        : [],
+    };
   },
 
   toJSON(message: GetAlbumListResponse): unknown {
     const obj: any = {};
-    if (message.albums) {
-      obj.albums = message.albums.map((e) => e ? AlbumShortInfo.toJSON(e) : undefined);
+    if (message.musicAlbums) {
+      obj.musicAlbums = message.musicAlbums.map((e) => e ? MusicAlbumInfo.toJSON(e) : undefined);
     } else {
-      obj.albums = [];
+      obj.musicAlbums = [];
     }
     return obj;
   },
@@ -490,19 +194,19 @@ export const GetAlbumListResponse = {
 
   fromPartial<I extends Exact<DeepPartial<GetAlbumListResponse>, I>>(object: I): GetAlbumListResponse {
     const message = createBaseGetAlbumListResponse();
-    message.albums = object.albums?.map((e) => AlbumShortInfo.fromPartial(e)) || [];
+    message.musicAlbums = object.musicAlbums?.map((e) => MusicAlbumInfo.fromPartial(e)) || [];
     return message;
   },
 };
 
 function createBaseGetAlbumRequest(): GetAlbumRequest {
-  return { id: 0 };
+  return { identifier: "" };
 }
 
 export const GetAlbumRequest = {
   encode(message: GetAlbumRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.id !== 0) {
-      writer.uint32(8).uint32(message.id);
+    if (message.identifier !== "") {
+      writer.uint32(10).string(message.identifier);
     }
     return writer;
   },
@@ -515,7 +219,7 @@ export const GetAlbumRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.id = reader.uint32();
+          message.identifier = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -526,12 +230,12 @@ export const GetAlbumRequest = {
   },
 
   fromJSON(object: any): GetAlbumRequest {
-    return { id: isSet(object.id) ? Number(object.id) : 0 };
+    return { identifier: isSet(object.identifier) ? String(object.identifier) : "" };
   },
 
   toJSON(message: GetAlbumRequest): unknown {
     const obj: any = {};
-    message.id !== undefined && (obj.id = Math.round(message.id));
+    message.identifier !== undefined && (obj.identifier = message.identifier);
     return obj;
   },
 
@@ -541,201 +245,19 @@ export const GetAlbumRequest = {
 
   fromPartial<I extends Exact<DeepPartial<GetAlbumRequest>, I>>(object: I): GetAlbumRequest {
     const message = createBaseGetAlbumRequest();
-    message.id = object.id ?? 0;
-    return message;
-  },
-};
-
-function createBaseMusicFileInfo(): MusicFileInfo {
-  return { albumId: 0, fileId: 0, name: "", duration: 0, ipfs: "" };
-}
-
-export const MusicFileInfo = {
-  encode(message: MusicFileInfo, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.albumId !== 0) {
-      writer.uint32(8).uint32(message.albumId);
-    }
-    if (message.fileId !== 0) {
-      writer.uint32(16).uint32(message.fileId);
-    }
-    if (message.name !== "") {
-      writer.uint32(26).string(message.name);
-    }
-    if (message.duration !== 0) {
-      writer.uint32(32).uint32(message.duration);
-    }
-    if (message.ipfs !== "") {
-      writer.uint32(42).string(message.ipfs);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): MusicFileInfo {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseMusicFileInfo();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.albumId = reader.uint32();
-          break;
-        case 2:
-          message.fileId = reader.uint32();
-          break;
-        case 3:
-          message.name = reader.string();
-          break;
-        case 4:
-          message.duration = reader.uint32();
-          break;
-        case 5:
-          message.ipfs = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): MusicFileInfo {
-    return {
-      albumId: isSet(object.albumId) ? Number(object.albumId) : 0,
-      fileId: isSet(object.fileId) ? Number(object.fileId) : 0,
-      name: isSet(object.name) ? String(object.name) : "",
-      duration: isSet(object.duration) ? Number(object.duration) : 0,
-      ipfs: isSet(object.ipfs) ? String(object.ipfs) : "",
-    };
-  },
-
-  toJSON(message: MusicFileInfo): unknown {
-    const obj: any = {};
-    message.albumId !== undefined && (obj.albumId = Math.round(message.albumId));
-    message.fileId !== undefined && (obj.fileId = Math.round(message.fileId));
-    message.name !== undefined && (obj.name = message.name);
-    message.duration !== undefined && (obj.duration = Math.round(message.duration));
-    message.ipfs !== undefined && (obj.ipfs = message.ipfs);
-    return obj;
-  },
-
-  create<I extends Exact<DeepPartial<MusicFileInfo>, I>>(base?: I): MusicFileInfo {
-    return MusicFileInfo.fromPartial(base ?? {});
-  },
-
-  fromPartial<I extends Exact<DeepPartial<MusicFileInfo>, I>>(object: I): MusicFileInfo {
-    const message = createBaseMusicFileInfo();
-    message.albumId = object.albumId ?? 0;
-    message.fileId = object.fileId ?? 0;
-    message.name = object.name ?? "";
-    message.duration = object.duration ?? 0;
-    message.ipfs = object.ipfs ?? "";
-    return message;
-  },
-};
-
-function createBaseAlbumInfo(): AlbumInfo {
-  return { id: 0, name: "", description: "", image: "", musics: [] };
-}
-
-export const AlbumInfo = {
-  encode(message: AlbumInfo, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.id !== 0) {
-      writer.uint32(8).uint32(message.id);
-    }
-    if (message.name !== "") {
-      writer.uint32(18).string(message.name);
-    }
-    if (message.description !== "") {
-      writer.uint32(26).string(message.description);
-    }
-    if (message.image !== "") {
-      writer.uint32(34).string(message.image);
-    }
-    for (const v of message.musics) {
-      MusicFileInfo.encode(v!, writer.uint32(42).fork()).ldelim();
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): AlbumInfo {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseAlbumInfo();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.id = reader.uint32();
-          break;
-        case 2:
-          message.name = reader.string();
-          break;
-        case 3:
-          message.description = reader.string();
-          break;
-        case 4:
-          message.image = reader.string();
-          break;
-        case 5:
-          message.musics.push(MusicFileInfo.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): AlbumInfo {
-    return {
-      id: isSet(object.id) ? Number(object.id) : 0,
-      name: isSet(object.name) ? String(object.name) : "",
-      description: isSet(object.description) ? String(object.description) : "",
-      image: isSet(object.image) ? String(object.image) : "",
-      musics: Array.isArray(object?.musics) ? object.musics.map((e: any) => MusicFileInfo.fromJSON(e)) : [],
-    };
-  },
-
-  toJSON(message: AlbumInfo): unknown {
-    const obj: any = {};
-    message.id !== undefined && (obj.id = Math.round(message.id));
-    message.name !== undefined && (obj.name = message.name);
-    message.description !== undefined && (obj.description = message.description);
-    message.image !== undefined && (obj.image = message.image);
-    if (message.musics) {
-      obj.musics = message.musics.map((e) => e ? MusicFileInfo.toJSON(e) : undefined);
-    } else {
-      obj.musics = [];
-    }
-    return obj;
-  },
-
-  create<I extends Exact<DeepPartial<AlbumInfo>, I>>(base?: I): AlbumInfo {
-    return AlbumInfo.fromPartial(base ?? {});
-  },
-
-  fromPartial<I extends Exact<DeepPartial<AlbumInfo>, I>>(object: I): AlbumInfo {
-    const message = createBaseAlbumInfo();
-    message.id = object.id ?? 0;
-    message.name = object.name ?? "";
-    message.description = object.description ?? "";
-    message.image = object.image ?? "";
-    message.musics = object.musics?.map((e) => MusicFileInfo.fromPartial(e)) || [];
+    message.identifier = object.identifier ?? "";
     return message;
   },
 };
 
 function createBaseGetAlbumResponse(): GetAlbumResponse {
-  return { album: undefined };
+  return { musicAlbum: undefined };
 }
 
 export const GetAlbumResponse = {
   encode(message: GetAlbumResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.album !== undefined) {
-      AlbumInfo.encode(message.album, writer.uint32(10).fork()).ldelim();
+    if (message.musicAlbum !== undefined) {
+      MusicAlbumInfo.encode(message.musicAlbum, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
@@ -748,7 +270,7 @@ export const GetAlbumResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.album = AlbumInfo.decode(reader, reader.uint32());
+          message.musicAlbum = MusicAlbumInfo.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -759,12 +281,13 @@ export const GetAlbumResponse = {
   },
 
   fromJSON(object: any): GetAlbumResponse {
-    return { album: isSet(object.album) ? AlbumInfo.fromJSON(object.album) : undefined };
+    return { musicAlbum: isSet(object.musicAlbum) ? MusicAlbumInfo.fromJSON(object.musicAlbum) : undefined };
   },
 
   toJSON(message: GetAlbumResponse): unknown {
     const obj: any = {};
-    message.album !== undefined && (obj.album = message.album ? AlbumInfo.toJSON(message.album) : undefined);
+    message.musicAlbum !== undefined &&
+      (obj.musicAlbum = message.musicAlbum ? MusicAlbumInfo.toJSON(message.musicAlbum) : undefined);
     return obj;
   },
 
@@ -774,16 +297,14 @@ export const GetAlbumResponse = {
 
   fromPartial<I extends Exact<DeepPartial<GetAlbumResponse>, I>>(object: I): GetAlbumResponse {
     const message = createBaseGetAlbumResponse();
-    message.album = (object.album !== undefined && object.album !== null)
-      ? AlbumInfo.fromPartial(object.album)
+    message.musicAlbum = (object.musicAlbum !== undefined && object.musicAlbum !== null)
+      ? MusicAlbumInfo.fromPartial(object.musicAlbum)
       : undefined;
     return message;
   },
 };
 
 export interface MusicplayerService {
-  uploadAlbum(request: DeepPartial<UploadAlbumRequest>, metadata?: grpc.Metadata): Promise<UploadAlbumResponse>;
-  uploadMusic(request: DeepPartial<UploadMusicRequest>, metadata?: grpc.Metadata): Promise<UploadMusicResponse>;
   getAlbumList(request: DeepPartial<GetAlbumListRequest>, metadata?: grpc.Metadata): Promise<GetAlbumListResponse>;
   getAlbum(request: DeepPartial<GetAlbumRequest>, metadata?: grpc.Metadata): Promise<GetAlbumResponse>;
 }
@@ -793,18 +314,8 @@ export class MusicplayerServiceClientImpl implements MusicplayerService {
 
   constructor(rpc: Rpc) {
     this.rpc = rpc;
-    this.uploadAlbum = this.uploadAlbum.bind(this);
-    this.uploadMusic = this.uploadMusic.bind(this);
     this.getAlbumList = this.getAlbumList.bind(this);
     this.getAlbum = this.getAlbum.bind(this);
-  }
-
-  uploadAlbum(request: DeepPartial<UploadAlbumRequest>, metadata?: grpc.Metadata): Promise<UploadAlbumResponse> {
-    return this.rpc.unary(MusicplayerServiceUploadAlbumDesc, UploadAlbumRequest.fromPartial(request), metadata);
-  }
-
-  uploadMusic(request: DeepPartial<UploadMusicRequest>, metadata?: grpc.Metadata): Promise<UploadMusicResponse> {
-    return this.rpc.unary(MusicplayerServiceUploadMusicDesc, UploadMusicRequest.fromPartial(request), metadata);
   }
 
   getAlbumList(request: DeepPartial<GetAlbumListRequest>, metadata?: grpc.Metadata): Promise<GetAlbumListResponse> {
@@ -817,52 +328,6 @@ export class MusicplayerServiceClientImpl implements MusicplayerService {
 }
 
 export const MusicplayerServiceDesc = { serviceName: "musicplayer.v1.MusicplayerService" };
-
-export const MusicplayerServiceUploadAlbumDesc: UnaryMethodDefinitionish = {
-  methodName: "UploadAlbum",
-  service: MusicplayerServiceDesc,
-  requestStream: false,
-  responseStream: false,
-  requestType: {
-    serializeBinary() {
-      return UploadAlbumRequest.encode(this).finish();
-    },
-  } as any,
-  responseType: {
-    deserializeBinary(data: Uint8Array) {
-      const value = UploadAlbumResponse.decode(data);
-      return {
-        ...value,
-        toObject() {
-          return value;
-        },
-      };
-    },
-  } as any,
-};
-
-export const MusicplayerServiceUploadMusicDesc: UnaryMethodDefinitionish = {
-  methodName: "UploadMusic",
-  service: MusicplayerServiceDesc,
-  requestStream: false,
-  responseStream: false,
-  requestType: {
-    serializeBinary() {
-      return UploadMusicRequest.encode(this).finish();
-    },
-  } as any,
-  responseType: {
-    deserializeBinary(data: Uint8Array) {
-      const value = UploadMusicResponse.decode(data);
-      return {
-        ...value,
-        toObject() {
-          return value;
-        },
-      };
-    },
-  } as any,
-};
 
 export const MusicplayerServiceGetAlbumListDesc: UnaryMethodDefinitionish = {
   methodName: "GetAlbumList",

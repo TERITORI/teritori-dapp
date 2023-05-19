@@ -11,7 +11,7 @@ import { useAppNavigation } from "../../utils/navigation";
 import { layout } from "../../utils/style/layout";
 import { SVG } from "../SVG";
 
-export const TrackImageHover: React.FC<{ mine: boolean; albumId: number }> = ({
+export const TrackImageHover: React.FC<{ mine: boolean; albumId: string }> = ({
   mine = false,
   albumId,
 }) => {
@@ -49,6 +49,7 @@ export const TrackImageHover: React.FC<{ mine: boolean; albumId: number }> = ({
             source={HoveredPlay}
             width={28}
             height={28}
+            // @ts-ignore
             onMouseLeave={() => setHoverPlayIcon(false)}
           />
         </Pressable>
@@ -58,6 +59,7 @@ export const TrackImageHover: React.FC<{ mine: boolean; albumId: number }> = ({
           source={NormalPlay}
           width={28}
           height={28}
+          // @ts-ignore
           onMouseEnter={() => setHoverPlayIcon(true)}
         />
       )}
@@ -67,6 +69,7 @@ export const TrackImageHover: React.FC<{ mine: boolean; albumId: number }> = ({
             source={HoveredMenu}
             width={28}
             height={28}
+            // @ts-ignore
             onMouseLeave={() => {
               setHoverMenuIcon(false);
             }}
@@ -78,6 +81,7 @@ export const TrackImageHover: React.FC<{ mine: boolean; albumId: number }> = ({
           source={NormalMenu}
           width={28}
           height={28}
+          // @ts-ignore
           onMouseEnter={() => setHoverMenuIcon(true)}
         />
       )}

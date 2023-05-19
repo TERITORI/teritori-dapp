@@ -1,3 +1,4 @@
+import { coin } from "@cosmjs/amino";
 import React, {
   createRef,
   useState,
@@ -6,6 +7,7 @@ import React, {
   useEffect,
 } from "react";
 import { View, Pressable, StyleSheet, Image, TextInput } from "react-native";
+import { v4 as uuidv4 } from "uuid";
 
 import Add from "../../../assets/music-player/add-primary.svg";
 import DefaultAlbumImage from "../../../assets/music-player/album.png";
@@ -13,9 +15,12 @@ import Img from "../../../assets/music-player/img.svg";
 import List from "../../../assets/music-player/list.svg";
 import Remove from "../../../assets/music-player/remove.svg";
 import Upload from "../../../assets/music-player/upload.svg";
+import { signingMusicPlayerClient } from "../../client-creators/musicplayerClient";
+import { useUpdateAvailableFreePost } from "../../hooks/musicplayer/useUpdateAvailableFreePost";
+import { useUpdatePostFee } from "../../hooks/musicplayer/useUpdatePostFee";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import { UploadFileInfo } from "../../screens/MusicPlayer/types";
-import { mustGetMusicplayerClient } from "../../utils/backend";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { defaultSocialFeedFee } from "../../utils/fee";
 import { uploadFileToIPFS, ipfsPinataUrl } from "../../utils/ipfs";
 import {
   neutral17,
@@ -27,6 +32,11 @@ import {
 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
+import {
+  MusicAlbumCategory,
+  UploadFileInfo,
+  AlbumMetadataInfo,
+} from "../../utils/types/music";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { PrimaryButton } from "../buttons/PrimaryButton";
@@ -48,6 +58,18 @@ export const UploadAlbumModal: React.FC<UploadAlbumModalProps> = ({
   onClose,
   isVisible,
 }) => {
+  const selectedNetworkId = useSelectedNetworkId();
+  const wallet = useSelectedWallet();
+  const { postFee } = useUpdatePostFee(
+    selectedNetworkId,
+    MusicAlbumCategory.Normal
+  );
+  const { freePostCount } = useUpdateAvailableFreePost(
+    selectedNetworkId,
+    MusicAlbumCategory.Normal,
+    wallet
+  );
+
   const [step, setStep] = useState<number>(0);
   const [uploadFiles, setUploadFiles] = useState<UploadFileInfo[]>([]);
   const [albumInfo, setAlbumInfo] = useState<AlbumInfo>({
@@ -55,26 +77,41 @@ export const UploadAlbumModal: React.FC<UploadAlbumModalProps> = ({
     description: "",
     image: "",
   });
-  const selectedNetworkId = useSelectedNetworkId();
   const uploadAlbum = async () => {
     if (!albumInfo) return;
-    const client = mustGetMusicplayerClient(selectedNetworkId);
-    const res = await client.uploadAlbum({
-      name: albumInfo.name,
+    if (!wallet?.connected || !wallet.address) {
+      return;
+    }
+    const client = await signingMusicPlayerClient({
+      networkId: selectedNetworkId,
+      walletAddress: wallet.address,
+    });
+    const audios: UploadFileInfo[] = uploadFiles.map((uploadFile) => ({
+      name: uploadFile.name,
+      ipfs: uploadFile.ipfs,
+      duration: uploadFile.duration,
+    }));
+
+    const metadata: AlbumMetadataInfo = {
+      title: albumInfo.name,
       description: albumInfo.description,
       image: albumInfo.image,
-    });
-    const albumId = res.result;
-    //uploaded images to backend
-    for (let i = 0; i < uploadFiles.length; i++) {
-      const item = uploadFiles[i];
-      await client.uploadMusic({
-        albumId,
-        name: item.name,
-        duration: 100,
-        ipfs: item.ipfs,
-      });
-    }
+      audios,
+    };
+
+    // console.log(metadata);
+
+    await client.createMusicAlbum(
+      {
+        category: MusicAlbumCategory.Normal,
+        metadata: JSON.stringify(metadata),
+        identifier: uuidv4(),
+      },
+      defaultSocialFeedFee,
+      "",
+      freePostCount || !postFee ? undefined : [coin(postFee, "utori")]
+    );
+    setStep(0);
     onClose();
   };
 
@@ -82,7 +119,10 @@ export const UploadAlbumModal: React.FC<UploadAlbumModalProps> = ({
     <ModalBase
       label="Upload album"
       visible={isVisible}
-      onClose={onClose}
+      onClose={() => {
+        setStep(0);
+        onClose();
+      }}
       width={modalWidth}
     >
       {step === 0 && (
@@ -176,14 +216,18 @@ const Step1Component: React.FC<{
   const onInputFileChange: React.ChangeEventHandler<HTMLInputElement> = async (
     e
   ) => {
-    const upload_files = [];
-    const files = e.target?.files!;
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
+    const file = e.target?.files![0];
+    const url = URL.createObjectURL(file);
+    const audio = new Audio(url);
+
+    audio.addEventListener("loadedmetadata", async () => {
       const ipfsHash = await uploadFileToIPFS(file);
-      upload_files.push({ name: file.name, ipfs: ipfsHash });
-    }
-    setUploadFiles1([...upload_files]);
+      setUploadFiles1([
+        ...uploadFiles1,
+        { name: file.name, ipfs: ipfsHash, duration: audio.duration },
+      ]);
+      URL.revokeObjectURL(url);
+    });
   };
 
   return (
@@ -225,7 +269,6 @@ const Step1Component: React.FC<{
         type="file"
         style={{ display: "none" }}
         accept="audio/mp3"
-        multiple
         onChange={onInputFileChange}
         ref={inputFileRef}
       />

@@ -20,234 +20,6 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type UploadAlbumRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Name        string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	Description string `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
-	Image       string `protobuf:"bytes,3,opt,name=image,proto3" json:"image,omitempty"`
-}
-
-func (x *UploadAlbumRequest) Reset() {
-	*x = UploadAlbumRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_api_musicplayer_v1_musicplayer_proto_msgTypes[0]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *UploadAlbumRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*UploadAlbumRequest) ProtoMessage() {}
-
-func (x *UploadAlbumRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_musicplayer_v1_musicplayer_proto_msgTypes[0]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use UploadAlbumRequest.ProtoReflect.Descriptor instead.
-func (*UploadAlbumRequest) Descriptor() ([]byte, []int) {
-	return file_api_musicplayer_v1_musicplayer_proto_rawDescGZIP(), []int{0}
-}
-
-func (x *UploadAlbumRequest) GetName() string {
-	if x != nil {
-		return x.Name
-	}
-	return ""
-}
-
-func (x *UploadAlbumRequest) GetDescription() string {
-	if x != nil {
-		return x.Description
-	}
-	return ""
-}
-
-func (x *UploadAlbumRequest) GetImage() string {
-	if x != nil {
-		return x.Image
-	}
-	return ""
-}
-
-type UploadAlbumResponse struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Result int32 `protobuf:"varint,1,opt,name=result,proto3" json:"result,omitempty"`
-}
-
-func (x *UploadAlbumResponse) Reset() {
-	*x = UploadAlbumResponse{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_api_musicplayer_v1_musicplayer_proto_msgTypes[1]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *UploadAlbumResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*UploadAlbumResponse) ProtoMessage() {}
-
-func (x *UploadAlbumResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_musicplayer_v1_musicplayer_proto_msgTypes[1]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use UploadAlbumResponse.ProtoReflect.Descriptor instead.
-func (*UploadAlbumResponse) Descriptor() ([]byte, []int) {
-	return file_api_musicplayer_v1_musicplayer_proto_rawDescGZIP(), []int{1}
-}
-
-func (x *UploadAlbumResponse) GetResult() int32 {
-	if x != nil {
-		return x.Result
-	}
-	return 0
-}
-
-type UploadMusicRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	AlbumId  uint32 `protobuf:"varint,1,opt,name=album_id,json=albumId,proto3" json:"album_id,omitempty"`
-	Name     string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	Duration uint32 `protobuf:"varint,3,opt,name=duration,proto3" json:"duration,omitempty"`
-	Ipfs     string `protobuf:"bytes,4,opt,name=ipfs,proto3" json:"ipfs,omitempty"`
-}
-
-func (x *UploadMusicRequest) Reset() {
-	*x = UploadMusicRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_api_musicplayer_v1_musicplayer_proto_msgTypes[2]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *UploadMusicRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*UploadMusicRequest) ProtoMessage() {}
-
-func (x *UploadMusicRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_musicplayer_v1_musicplayer_proto_msgTypes[2]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use UploadMusicRequest.ProtoReflect.Descriptor instead.
-func (*UploadMusicRequest) Descriptor() ([]byte, []int) {
-	return file_api_musicplayer_v1_musicplayer_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *UploadMusicRequest) GetAlbumId() uint32 {
-	if x != nil {
-		return x.AlbumId
-	}
-	return 0
-}
-
-func (x *UploadMusicRequest) GetName() string {
-	if x != nil {
-		return x.Name
-	}
-	return ""
-}
-
-func (x *UploadMusicRequest) GetDuration() uint32 {
-	if x != nil {
-		return x.Duration
-	}
-	return 0
-}
-
-func (x *UploadMusicRequest) GetIpfs() string {
-	if x != nil {
-		return x.Ipfs
-	}
-	return ""
-}
-
-type UploadMusicResponse struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Result int32 `protobuf:"varint,1,opt,name=result,proto3" json:"result,omitempty"`
-}
-
-func (x *UploadMusicResponse) Reset() {
-	*x = UploadMusicResponse{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_api_musicplayer_v1_musicplayer_proto_msgTypes[3]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *UploadMusicResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*UploadMusicResponse) ProtoMessage() {}
-
-func (x *UploadMusicResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_musicplayer_v1_musicplayer_proto_msgTypes[3]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use UploadMusicResponse.ProtoReflect.Descriptor instead.
-func (*UploadMusicResponse) Descriptor() ([]byte, []int) {
-	return file_api_musicplayer_v1_musicplayer_proto_rawDescGZIP(), []int{3}
-}
-
-func (x *UploadMusicResponse) GetResult() int32 {
-	if x != nil {
-		return x.Result
-	}
-	return 0
-}
-
 type GetAlbumListRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -257,7 +29,7 @@ type GetAlbumListRequest struct {
 func (x *GetAlbumListRequest) Reset() {
 	*x = GetAlbumListRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_musicplayer_v1_musicplayer_proto_msgTypes[4]
+		mi := &file_api_musicplayer_v1_musicplayer_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -270,7 +42,7 @@ func (x *GetAlbumListRequest) String() string {
 func (*GetAlbumListRequest) ProtoMessage() {}
 
 func (x *GetAlbumListRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_musicplayer_v1_musicplayer_proto_msgTypes[4]
+	mi := &file_api_musicplayer_v1_musicplayer_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -283,37 +55,36 @@ func (x *GetAlbumListRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetAlbumListRequest.ProtoReflect.Descriptor instead.
 func (*GetAlbumListRequest) Descriptor() ([]byte, []int) {
-	return file_api_musicplayer_v1_musicplayer_proto_rawDescGZIP(), []int{4}
+	return file_api_musicplayer_v1_musicplayer_proto_rawDescGZIP(), []int{0}
 }
 
-type AlbumShortInfo struct {
+type MusicAlbumInfo struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id          uint32 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	Name        string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	Description string `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
-	Image       string `protobuf:"bytes,4,opt,name=image,proto3" json:"image,omitempty"`
+	Identifier    string `protobuf:"bytes,1,opt,name=identifier,proto3" json:"identifier,omitempty"`
+	Metadata      string `protobuf:"bytes,2,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	CreatedBy string `protobuf:"bytes,3,opt,name=createdBy,proto3" json:"createdBy,omitempty"`
 }
 
-func (x *AlbumShortInfo) Reset() {
-	*x = AlbumShortInfo{}
+func (x *MusicAlbumInfo) Reset() {
+	*x = MusicAlbumInfo{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_musicplayer_v1_musicplayer_proto_msgTypes[5]
+		mi := &file_api_musicplayer_v1_musicplayer_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
 }
 
-func (x *AlbumShortInfo) String() string {
+func (x *MusicAlbumInfo) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlbumShortInfo) ProtoMessage() {}
+func (*MusicAlbumInfo) ProtoMessage() {}
 
-func (x *AlbumShortInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_api_musicplayer_v1_musicplayer_proto_msgTypes[5]
+func (x *MusicAlbumInfo) ProtoReflect() protoreflect.Message {
+	mi := &file_api_musicplayer_v1_musicplayer_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -324,35 +95,28 @@ func (x *AlbumShortInfo) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlbumShortInfo.ProtoReflect.Descriptor instead.
-func (*AlbumShortInfo) Descriptor() ([]byte, []int) {
-	return file_api_musicplayer_v1_musicplayer_proto_rawDescGZIP(), []int{5}
+// Deprecated: Use MusicAlbumInfo.ProtoReflect.Descriptor instead.
+func (*MusicAlbumInfo) Descriptor() ([]byte, []int) {
+	return file_api_musicplayer_v1_musicplayer_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AlbumShortInfo) GetId() uint32 {
+func (x *MusicAlbumInfo) GetIdentifier() string {
 	if x != nil {
-		return x.Id
-	}
-	return 0
-}
-
-func (x *AlbumShortInfo) GetName() string {
-	if x != nil {
-		return x.Name
+		return x.Identifier
 	}
 	return ""
 }
 
-func (x *AlbumShortInfo) GetDescription() string {
+func (x *MusicAlbumInfo) GetMetadata() string {
 	if x != nil {
-		return x.Description
+		return x.Metadata
 	}
 	return ""
 }
 
-func (x *AlbumShortInfo) GetImage() string {
+func (x *MusicAlbumInfo) GetCreatedUserId() string {
 	if x != nil {
-		return x.Image
+		return x.CreatedBy
 	}
 	return ""
 }
@@ -362,13 +126,13 @@ type GetAlbumListResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Albums []*AlbumShortInfo `protobuf:"bytes,1,rep,name=albums,proto3" json:"albums,omitempty"`
+	MusicAlbums []*MusicAlbumInfo `protobuf:"bytes,1,rep,name=musicAlbums,proto3" json:"musicAlbums,omitempty"`
 }
 
 func (x *GetAlbumListResponse) Reset() {
 	*x = GetAlbumListResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_musicplayer_v1_musicplayer_proto_msgTypes[6]
+		mi := &file_api_musicplayer_v1_musicplayer_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -381,7 +145,7 @@ func (x *GetAlbumListResponse) String() string {
 func (*GetAlbumListResponse) ProtoMessage() {}
 
 func (x *GetAlbumListResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_musicplayer_v1_musicplayer_proto_msgTypes[6]
+	mi := &file_api_musicplayer_v1_musicplayer_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -394,12 +158,12 @@ func (x *GetAlbumListResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetAlbumListResponse.ProtoReflect.Descriptor instead.
 func (*GetAlbumListResponse) Descriptor() ([]byte, []int) {
-	return file_api_musicplayer_v1_musicplayer_proto_rawDescGZIP(), []int{6}
+	return file_api_musicplayer_v1_musicplayer_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *GetAlbumListResponse) GetAlbums() []*AlbumShortInfo {
+func (x *GetAlbumListResponse) GetMusicAlbums() []*MusicAlbumInfo {
 	if x != nil {
-		return x.Albums
+		return x.MusicAlbums
 	}
 	return nil
 }
@@ -409,13 +173,13 @@ type GetAlbumRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id uint32 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Identifier string `protobuf:"bytes,1,opt,name=identifier,proto3" json:"identifier,omitempty"`
 }
 
 func (x *GetAlbumRequest) Reset() {
 	*x = GetAlbumRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_musicplayer_v1_musicplayer_proto_msgTypes[7]
+		mi := &file_api_musicplayer_v1_musicplayer_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -428,7 +192,7 @@ func (x *GetAlbumRequest) String() string {
 func (*GetAlbumRequest) ProtoMessage() {}
 
 func (x *GetAlbumRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_musicplayer_v1_musicplayer_proto_msgTypes[7]
+	mi := &file_api_musicplayer_v1_musicplayer_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -441,172 +205,14 @@ func (x *GetAlbumRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetAlbumRequest.ProtoReflect.Descriptor instead.
 func (*GetAlbumRequest) Descriptor() ([]byte, []int) {
-	return file_api_musicplayer_v1_musicplayer_proto_rawDescGZIP(), []int{7}
+	return file_api_musicplayer_v1_musicplayer_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *GetAlbumRequest) GetId() uint32 {
+func (x *GetAlbumRequest) GetIdentifier() string {
 	if x != nil {
-		return x.Id
-	}
-	return 0
-}
-
-type MusicFileInfo struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	AlbumId  uint32 `protobuf:"varint,1,opt,name=album_id,json=albumId,proto3" json:"album_id,omitempty"`
-	FileId   uint32 `protobuf:"varint,2,opt,name=file_id,json=fileId,proto3" json:"file_id,omitempty"`
-	Name     string `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
-	Duration uint32 `protobuf:"varint,4,opt,name=duration,proto3" json:"duration,omitempty"`
-	Ipfs     string `protobuf:"bytes,5,opt,name=ipfs,proto3" json:"ipfs,omitempty"`
-}
-
-func (x *MusicFileInfo) Reset() {
-	*x = MusicFileInfo{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_api_musicplayer_v1_musicplayer_proto_msgTypes[8]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *MusicFileInfo) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*MusicFileInfo) ProtoMessage() {}
-
-func (x *MusicFileInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_api_musicplayer_v1_musicplayer_proto_msgTypes[8]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use MusicFileInfo.ProtoReflect.Descriptor instead.
-func (*MusicFileInfo) Descriptor() ([]byte, []int) {
-	return file_api_musicplayer_v1_musicplayer_proto_rawDescGZIP(), []int{8}
-}
-
-func (x *MusicFileInfo) GetAlbumId() uint32 {
-	if x != nil {
-		return x.AlbumId
-	}
-	return 0
-}
-
-func (x *MusicFileInfo) GetFileId() uint32 {
-	if x != nil {
-		return x.FileId
-	}
-	return 0
-}
-
-func (x *MusicFileInfo) GetName() string {
-	if x != nil {
-		return x.Name
+		return x.Identifier
 	}
 	return ""
-}
-
-func (x *MusicFileInfo) GetDuration() uint32 {
-	if x != nil {
-		return x.Duration
-	}
-	return 0
-}
-
-func (x *MusicFileInfo) GetIpfs() string {
-	if x != nil {
-		return x.Ipfs
-	}
-	return ""
-}
-
-type AlbumInfo struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Id          uint32           `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	Name        string           `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	Description string           `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
-	Image       string           `protobuf:"bytes,4,opt,name=image,proto3" json:"image,omitempty"`
-	Musics      []*MusicFileInfo `protobuf:"bytes,5,rep,name=musics,proto3" json:"musics,omitempty"`
-}
-
-func (x *AlbumInfo) Reset() {
-	*x = AlbumInfo{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_api_musicplayer_v1_musicplayer_proto_msgTypes[9]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *AlbumInfo) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*AlbumInfo) ProtoMessage() {}
-
-func (x *AlbumInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_api_musicplayer_v1_musicplayer_proto_msgTypes[9]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use AlbumInfo.ProtoReflect.Descriptor instead.
-func (*AlbumInfo) Descriptor() ([]byte, []int) {
-	return file_api_musicplayer_v1_musicplayer_proto_rawDescGZIP(), []int{9}
-}
-
-func (x *AlbumInfo) GetId() uint32 {
-	if x != nil {
-		return x.Id
-	}
-	return 0
-}
-
-func (x *AlbumInfo) GetName() string {
-	if x != nil {
-		return x.Name
-	}
-	return ""
-}
-
-func (x *AlbumInfo) GetDescription() string {
-	if x != nil {
-		return x.Description
-	}
-	return ""
-}
-
-func (x *AlbumInfo) GetImage() string {
-	if x != nil {
-		return x.Image
-	}
-	return ""
-}
-
-func (x *AlbumInfo) GetMusics() []*MusicFileInfo {
-	if x != nil {
-		return x.Musics
-	}
-	return nil
 }
 
 type GetAlbumResponse struct {
@@ -614,13 +220,13 @@ type GetAlbumResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Album *AlbumInfo `protobuf:"bytes,1,opt,name=album,proto3" json:"album,omitempty"`
+	MusicAlbum *MusicAlbumInfo `protobuf:"bytes,1,opt,name=musicAlbum,proto3" json:"musicAlbum,omitempty"`
 }
 
 func (x *GetAlbumResponse) Reset() {
 	*x = GetAlbumResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_musicplayer_v1_musicplayer_proto_msgTypes[10]
+		mi := &file_api_musicplayer_v1_musicplayer_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -633,7 +239,7 @@ func (x *GetAlbumResponse) String() string {
 func (*GetAlbumResponse) ProtoMessage() {}
 
 func (x *GetAlbumResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_musicplayer_v1_musicplayer_proto_msgTypes[10]
+	mi := &file_api_musicplayer_v1_musicplayer_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -646,12 +252,12 @@ func (x *GetAlbumResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetAlbumResponse.ProtoReflect.Descriptor instead.
 func (*GetAlbumResponse) Descriptor() ([]byte, []int) {
-	return file_api_musicplayer_v1_musicplayer_proto_rawDescGZIP(), []int{10}
+	return file_api_musicplayer_v1_musicplayer_proto_rawDescGZIP(), []int{4}
 }
 
-func (x *GetAlbumResponse) GetAlbum() *AlbumInfo {
+func (x *GetAlbumResponse) GetMusicAlbum() *MusicAlbumInfo {
 	if x != nil {
-		return x.Album
+		return x.MusicAlbum
 	}
 	return nil
 }
@@ -662,89 +268,43 @@ var file_api_musicplayer_v1_musicplayer_proto_rawDesc = []byte{
 	0x0a, 0x24, 0x61, 0x70, 0x69, 0x2f, 0x6d, 0x75, 0x73, 0x69, 0x63, 0x70, 0x6c, 0x61, 0x79, 0x65,
 	0x72, 0x2f, 0x76, 0x31, 0x2f, 0x6d, 0x75, 0x73, 0x69, 0x63, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72,
 	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x0e, 0x6d, 0x75, 0x73, 0x69, 0x63, 0x70, 0x6c, 0x61,
-	0x79, 0x65, 0x72, 0x2e, 0x76, 0x31, 0x22, 0x60, 0x0a, 0x12, 0x55, 0x70, 0x6c, 0x6f, 0x61, 0x64,
-	0x41, 0x6c, 0x62, 0x75, 0x6d, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04,
-	0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65,
-	0x12, 0x20, 0x0a, 0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x18,
-	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69,
-	0x6f, 0x6e, 0x12, 0x14, 0x0a, 0x05, 0x69, 0x6d, 0x61, 0x67, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x05, 0x69, 0x6d, 0x61, 0x67, 0x65, 0x22, 0x2d, 0x0a, 0x13, 0x55, 0x70, 0x6c, 0x6f,
-	0x61, 0x64, 0x41, 0x6c, 0x62, 0x75, 0x6d, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
-	0x16, 0x0a, 0x06, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52,
-	0x06, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x22, 0x73, 0x0a, 0x12, 0x55, 0x70, 0x6c, 0x6f, 0x61,
-	0x64, 0x4d, 0x75, 0x73, 0x69, 0x63, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x19, 0x0a,
-	0x08, 0x61, 0x6c, 0x62, 0x75, 0x6d, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0d, 0x52,
-	0x07, 0x61, 0x6c, 0x62, 0x75, 0x6d, 0x49, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65,
-	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x1a, 0x0a, 0x08,
-	0x64, 0x75, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x08,
-	0x64, 0x75, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x12, 0x0a, 0x04, 0x69, 0x70, 0x66, 0x73,
-	0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x69, 0x70, 0x66, 0x73, 0x22, 0x2d, 0x0a, 0x13,
-	0x55, 0x70, 0x6c, 0x6f, 0x61, 0x64, 0x4d, 0x75, 0x73, 0x69, 0x63, 0x52, 0x65, 0x73, 0x70, 0x6f,
-	0x6e, 0x73, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x05, 0x52, 0x06, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x22, 0x15, 0x0a, 0x13, 0x47,
-	0x65, 0x74, 0x41, 0x6c, 0x62, 0x75, 0x6d, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65,
-	0x73, 0x74, 0x22, 0x6c, 0x0a, 0x0e, 0x41, 0x6c, 0x62, 0x75, 0x6d, 0x53, 0x68, 0x6f, 0x72, 0x74,
-	0x49, 0x6e, 0x66, 0x6f, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0d,
-	0x52, 0x02, 0x69, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x20, 0x0a, 0x0b, 0x64, 0x65, 0x73, 0x63,
-	0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x64,
-	0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x14, 0x0a, 0x05, 0x69, 0x6d,
-	0x61, 0x67, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x69, 0x6d, 0x61, 0x67, 0x65,
-	0x22, 0x4e, 0x0a, 0x14, 0x47, 0x65, 0x74, 0x41, 0x6c, 0x62, 0x75, 0x6d, 0x4c, 0x69, 0x73, 0x74,
-	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x36, 0x0a, 0x06, 0x61, 0x6c, 0x62, 0x75,
-	0x6d, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1e, 0x2e, 0x6d, 0x75, 0x73, 0x69, 0x63,
-	0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x2e, 0x76, 0x31, 0x2e, 0x41, 0x6c, 0x62, 0x75, 0x6d, 0x53,
-	0x68, 0x6f, 0x72, 0x74, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x06, 0x61, 0x6c, 0x62, 0x75, 0x6d, 0x73,
-	0x22, 0x21, 0x0a, 0x0f, 0x47, 0x65, 0x74, 0x41, 0x6c, 0x62, 0x75, 0x6d, 0x52, 0x65, 0x71, 0x75,
-	0x65, 0x73, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0d, 0x52,
-	0x02, 0x69, 0x64, 0x22, 0x87, 0x01, 0x0a, 0x0d, 0x4d, 0x75, 0x73, 0x69, 0x63, 0x46, 0x69, 0x6c,
-	0x65, 0x49, 0x6e, 0x66, 0x6f, 0x12, 0x19, 0x0a, 0x08, 0x61, 0x6c, 0x62, 0x75, 0x6d, 0x5f, 0x69,
-	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x07, 0x61, 0x6c, 0x62, 0x75, 0x6d, 0x49, 0x64,
-	0x12, 0x17, 0x0a, 0x07, 0x66, 0x69, 0x6c, 0x65, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28,
-	0x0d, 0x52, 0x06, 0x66, 0x69, 0x6c, 0x65, 0x49, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d,
-	0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x1a, 0x0a,
-	0x08, 0x64, 0x75, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0d, 0x52,
-	0x08, 0x64, 0x75, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x12, 0x0a, 0x04, 0x69, 0x70, 0x66,
-	0x73, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x69, 0x70, 0x66, 0x73, 0x22, 0x9e, 0x01,
-	0x0a, 0x09, 0x41, 0x6c, 0x62, 0x75, 0x6d, 0x49, 0x6e, 0x66, 0x6f, 0x12, 0x0e, 0x0a, 0x02, 0x69,
-	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x02, 0x69, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x6e,
-	0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12,
-	0x20, 0x0a, 0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x03,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f,
-	0x6e, 0x12, 0x14, 0x0a, 0x05, 0x69, 0x6d, 0x61, 0x67, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x05, 0x69, 0x6d, 0x61, 0x67, 0x65, 0x12, 0x35, 0x0a, 0x06, 0x6d, 0x75, 0x73, 0x69, 0x63,
-	0x73, 0x18, 0x05, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1d, 0x2e, 0x6d, 0x75, 0x73, 0x69, 0x63, 0x70,
-	0x6c, 0x61, 0x79, 0x65, 0x72, 0x2e, 0x76, 0x31, 0x2e, 0x4d, 0x75, 0x73, 0x69, 0x63, 0x46, 0x69,
-	0x6c, 0x65, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x06, 0x6d, 0x75, 0x73, 0x69, 0x63, 0x73, 0x22, 0x43,
+	0x79, 0x65, 0x72, 0x2e, 0x76, 0x31, 0x22, 0x15, 0x0a, 0x13, 0x47, 0x65, 0x74, 0x41, 0x6c, 0x62,
+	0x75, 0x6d, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x72, 0x0a,
+	0x0e, 0x4d, 0x75, 0x73, 0x69, 0x63, 0x41, 0x6c, 0x62, 0x75, 0x6d, 0x49, 0x6e, 0x66, 0x6f, 0x12,
+	0x1e, 0x0a, 0x0a, 0x69, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x66, 0x69, 0x65, 0x72, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x0a, 0x69, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x66, 0x69, 0x65, 0x72, 0x12,
+	0x1a, 0x0a, 0x08, 0x6d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x08, 0x6d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x12, 0x24, 0x0a, 0x0d, 0x63,
+	0x72, 0x65, 0x61, 0x74, 0x65, 0x64, 0x55, 0x73, 0x65, 0x72, 0x49, 0x64, 0x18, 0x03, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x0d, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x64, 0x55, 0x73, 0x65, 0x72, 0x49,
+	0x64, 0x22, 0x58, 0x0a, 0x14, 0x47, 0x65, 0x74, 0x41, 0x6c, 0x62, 0x75, 0x6d, 0x4c, 0x69, 0x73,
+	0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x40, 0x0a, 0x0b, 0x6d, 0x75, 0x73,
+	0x69, 0x63, 0x41, 0x6c, 0x62, 0x75, 0x6d, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1e,
+	0x2e, 0x6d, 0x75, 0x73, 0x69, 0x63, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x2e, 0x76, 0x31, 0x2e,
+	0x4d, 0x75, 0x73, 0x69, 0x63, 0x41, 0x6c, 0x62, 0x75, 0x6d, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x0b,
+	0x6d, 0x75, 0x73, 0x69, 0x63, 0x41, 0x6c, 0x62, 0x75, 0x6d, 0x73, 0x22, 0x31, 0x0a, 0x0f, 0x47,
+	0x65, 0x74, 0x41, 0x6c, 0x62, 0x75, 0x6d, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1e,
+	0x0a, 0x0a, 0x69, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x66, 0x69, 0x65, 0x72, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x0a, 0x69, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x66, 0x69, 0x65, 0x72, 0x22, 0x52,
 	0x0a, 0x10, 0x47, 0x65, 0x74, 0x41, 0x6c, 0x62, 0x75, 0x6d, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
-	0x73, 0x65, 0x12, 0x2f, 0x0a, 0x05, 0x61, 0x6c, 0x62, 0x75, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28,
-	0x0b, 0x32, 0x19, 0x2e, 0x6d, 0x75, 0x73, 0x69, 0x63, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x2e,
-	0x76, 0x31, 0x2e, 0x41, 0x6c, 0x62, 0x75, 0x6d, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x05, 0x61, 0x6c,
-	0x62, 0x75, 0x6d, 0x32, 0xee, 0x02, 0x0a, 0x12, 0x4d, 0x75, 0x73, 0x69, 0x63, 0x70, 0x6c, 0x61,
-	0x79, 0x65, 0x72, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x56, 0x0a, 0x0b, 0x55, 0x70,
-	0x6c, 0x6f, 0x61, 0x64, 0x41, 0x6c, 0x62, 0x75, 0x6d, 0x12, 0x22, 0x2e, 0x6d, 0x75, 0x73, 0x69,
-	0x63, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x2e, 0x76, 0x31, 0x2e, 0x55, 0x70, 0x6c, 0x6f, 0x61,
-	0x64, 0x41, 0x6c, 0x62, 0x75, 0x6d, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x23, 0x2e,
-	0x6d, 0x75, 0x73, 0x69, 0x63, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x2e, 0x76, 0x31, 0x2e, 0x55,
-	0x70, 0x6c, 0x6f, 0x61, 0x64, 0x41, 0x6c, 0x62, 0x75, 0x6d, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
-	0x73, 0x65, 0x12, 0x56, 0x0a, 0x0b, 0x55, 0x70, 0x6c, 0x6f, 0x61, 0x64, 0x4d, 0x75, 0x73, 0x69,
-	0x63, 0x12, 0x22, 0x2e, 0x6d, 0x75, 0x73, 0x69, 0x63, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x2e,
-	0x76, 0x31, 0x2e, 0x55, 0x70, 0x6c, 0x6f, 0x61, 0x64, 0x4d, 0x75, 0x73, 0x69, 0x63, 0x52, 0x65,
-	0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x23, 0x2e, 0x6d, 0x75, 0x73, 0x69, 0x63, 0x70, 0x6c, 0x61,
-	0x79, 0x65, 0x72, 0x2e, 0x76, 0x31, 0x2e, 0x55, 0x70, 0x6c, 0x6f, 0x61, 0x64, 0x4d, 0x75, 0x73,
-	0x69, 0x63, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x59, 0x0a, 0x0c, 0x47, 0x65,
-	0x74, 0x41, 0x6c, 0x62, 0x75, 0x6d, 0x4c, 0x69, 0x73, 0x74, 0x12, 0x23, 0x2e, 0x6d, 0x75, 0x73,
-	0x69, 0x63, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x2e, 0x76, 0x31, 0x2e, 0x47, 0x65, 0x74, 0x41,
-	0x6c, 0x62, 0x75, 0x6d, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a,
-	0x24, 0x2e, 0x6d, 0x75, 0x73, 0x69, 0x63, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x2e, 0x76, 0x31,
-	0x2e, 0x47, 0x65, 0x74, 0x41, 0x6c, 0x62, 0x75, 0x6d, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x73,
-	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x4d, 0x0a, 0x08, 0x47, 0x65, 0x74, 0x41, 0x6c, 0x62, 0x75,
-	0x6d, 0x12, 0x1f, 0x2e, 0x6d, 0x75, 0x73, 0x69, 0x63, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x2e,
-	0x76, 0x31, 0x2e, 0x47, 0x65, 0x74, 0x41, 0x6c, 0x62, 0x75, 0x6d, 0x52, 0x65, 0x71, 0x75, 0x65,
-	0x73, 0x74, 0x1a, 0x20, 0x2e, 0x6d, 0x75, 0x73, 0x69, 0x63, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72,
-	0x2e, 0x76, 0x31, 0x2e, 0x47, 0x65, 0x74, 0x41, 0x6c, 0x62, 0x75, 0x6d, 0x52, 0x65, 0x73, 0x70,
-	0x6f, 0x6e, 0x73, 0x65, 0x42, 0x11, 0x5a, 0x0f, 0x2e, 0x2f, 0x6d, 0x75, 0x73, 0x69, 0x63, 0x70,
-	0x6c, 0x61, 0x79, 0x65, 0x72, 0x70, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x73, 0x65, 0x12, 0x3e, 0x0a, 0x0a, 0x6d, 0x75, 0x73, 0x69, 0x63, 0x41, 0x6c, 0x62, 0x75, 0x6d,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1e, 0x2e, 0x6d, 0x75, 0x73, 0x69, 0x63, 0x70, 0x6c,
+	0x61, 0x79, 0x65, 0x72, 0x2e, 0x76, 0x31, 0x2e, 0x4d, 0x75, 0x73, 0x69, 0x63, 0x41, 0x6c, 0x62,
+	0x75, 0x6d, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x0a, 0x6d, 0x75, 0x73, 0x69, 0x63, 0x41, 0x6c, 0x62,
+	0x75, 0x6d, 0x32, 0xbe, 0x01, 0x0a, 0x12, 0x4d, 0x75, 0x73, 0x69, 0x63, 0x70, 0x6c, 0x61, 0x79,
+	0x65, 0x72, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x59, 0x0a, 0x0c, 0x47, 0x65, 0x74,
+	0x41, 0x6c, 0x62, 0x75, 0x6d, 0x4c, 0x69, 0x73, 0x74, 0x12, 0x23, 0x2e, 0x6d, 0x75, 0x73, 0x69,
+	0x63, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x2e, 0x76, 0x31, 0x2e, 0x47, 0x65, 0x74, 0x41, 0x6c,
+	0x62, 0x75, 0x6d, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x24,
+	0x2e, 0x6d, 0x75, 0x73, 0x69, 0x63, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x2e, 0x76, 0x31, 0x2e,
+	0x47, 0x65, 0x74, 0x41, 0x6c, 0x62, 0x75, 0x6d, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70,
+	0x6f, 0x6e, 0x73, 0x65, 0x12, 0x4d, 0x0a, 0x08, 0x47, 0x65, 0x74, 0x41, 0x6c, 0x62, 0x75, 0x6d,
+	0x12, 0x1f, 0x2e, 0x6d, 0x75, 0x73, 0x69, 0x63, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x2e, 0x76,
+	0x31, 0x2e, 0x47, 0x65, 0x74, 0x41, 0x6c, 0x62, 0x75, 0x6d, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x1a, 0x20, 0x2e, 0x6d, 0x75, 0x73, 0x69, 0x63, 0x70, 0x6c, 0x61, 0x79, 0x65, 0x72, 0x2e,
+	0x76, 0x31, 0x2e, 0x47, 0x65, 0x74, 0x41, 0x6c, 0x62, 0x75, 0x6d, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x42, 0x11, 0x5a, 0x0f, 0x2e, 0x2f, 0x6d, 0x75, 0x73, 0x69, 0x63, 0x70, 0x6c,
+	0x61, 0x79, 0x65, 0x72, 0x70, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -759,37 +319,26 @@ func file_api_musicplayer_v1_musicplayer_proto_rawDescGZIP() []byte {
 	return file_api_musicplayer_v1_musicplayer_proto_rawDescData
 }
 
-var file_api_musicplayer_v1_musicplayer_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
+var file_api_musicplayer_v1_musicplayer_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_api_musicplayer_v1_musicplayer_proto_goTypes = []interface{}{
-	(*UploadAlbumRequest)(nil),   // 0: musicplayer.v1.UploadAlbumRequest
-	(*UploadAlbumResponse)(nil),  // 1: musicplayer.v1.UploadAlbumResponse
-	(*UploadMusicRequest)(nil),   // 2: musicplayer.v1.UploadMusicRequest
-	(*UploadMusicResponse)(nil),  // 3: musicplayer.v1.UploadMusicResponse
-	(*GetAlbumListRequest)(nil),  // 4: musicplayer.v1.GetAlbumListRequest
-	(*AlbumShortInfo)(nil),       // 5: musicplayer.v1.AlbumShortInfo
-	(*GetAlbumListResponse)(nil), // 6: musicplayer.v1.GetAlbumListResponse
-	(*GetAlbumRequest)(nil),      // 7: musicplayer.v1.GetAlbumRequest
-	(*MusicFileInfo)(nil),        // 8: musicplayer.v1.MusicFileInfo
-	(*AlbumInfo)(nil),            // 9: musicplayer.v1.AlbumInfo
-	(*GetAlbumResponse)(nil),     // 10: musicplayer.v1.GetAlbumResponse
+	(*GetAlbumListRequest)(nil),  // 0: musicplayer.v1.GetAlbumListRequest
+	(*MusicAlbumInfo)(nil),       // 1: musicplayer.v1.MusicAlbumInfo
+	(*GetAlbumListResponse)(nil), // 2: musicplayer.v1.GetAlbumListResponse
+	(*GetAlbumRequest)(nil),      // 3: musicplayer.v1.GetAlbumRequest
+	(*GetAlbumResponse)(nil),     // 4: musicplayer.v1.GetAlbumResponse
 }
 var file_api_musicplayer_v1_musicplayer_proto_depIdxs = []int32{
-	5,  // 0: musicplayer.v1.GetAlbumListResponse.albums:type_name -> musicplayer.v1.AlbumShortInfo
-	8,  // 1: musicplayer.v1.AlbumInfo.musics:type_name -> musicplayer.v1.MusicFileInfo
-	9,  // 2: musicplayer.v1.GetAlbumResponse.album:type_name -> musicplayer.v1.AlbumInfo
-	0,  // 3: musicplayer.v1.MusicplayerService.UploadAlbum:input_type -> musicplayer.v1.UploadAlbumRequest
-	2,  // 4: musicplayer.v1.MusicplayerService.UploadMusic:input_type -> musicplayer.v1.UploadMusicRequest
-	4,  // 5: musicplayer.v1.MusicplayerService.GetAlbumList:input_type -> musicplayer.v1.GetAlbumListRequest
-	7,  // 6: musicplayer.v1.MusicplayerService.GetAlbum:input_type -> musicplayer.v1.GetAlbumRequest
-	1,  // 7: musicplayer.v1.MusicplayerService.UploadAlbum:output_type -> musicplayer.v1.UploadAlbumResponse
-	3,  // 8: musicplayer.v1.MusicplayerService.UploadMusic:output_type -> musicplayer.v1.UploadMusicResponse
-	6,  // 9: musicplayer.v1.MusicplayerService.GetAlbumList:output_type -> musicplayer.v1.GetAlbumListResponse
-	10, // 10: musicplayer.v1.MusicplayerService.GetAlbum:output_type -> musicplayer.v1.GetAlbumResponse
-	7,  // [7:11] is the sub-list for method output_type
-	3,  // [3:7] is the sub-list for method input_type
-	3,  // [3:3] is the sub-list for extension type_name
-	3,  // [3:3] is the sub-list for extension extendee
-	0,  // [0:3] is the sub-list for field type_name
+	1, // 0: musicplayer.v1.GetAlbumListResponse.musicAlbums:type_name -> musicplayer.v1.MusicAlbumInfo
+	1, // 1: musicplayer.v1.GetAlbumResponse.musicAlbum:type_name -> musicplayer.v1.MusicAlbumInfo
+	0, // 2: musicplayer.v1.MusicplayerService.GetAlbumList:input_type -> musicplayer.v1.GetAlbumListRequest
+	3, // 3: musicplayer.v1.MusicplayerService.GetAlbum:input_type -> musicplayer.v1.GetAlbumRequest
+	2, // 4: musicplayer.v1.MusicplayerService.GetAlbumList:output_type -> musicplayer.v1.GetAlbumListResponse
+	4, // 5: musicplayer.v1.MusicplayerService.GetAlbum:output_type -> musicplayer.v1.GetAlbumResponse
+	4, // [4:6] is the sub-list for method output_type
+	2, // [2:4] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_api_musicplayer_v1_musicplayer_proto_init() }
@@ -799,54 +348,6 @@ func file_api_musicplayer_v1_musicplayer_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_api_musicplayer_v1_musicplayer_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UploadAlbumRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_api_musicplayer_v1_musicplayer_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UploadAlbumResponse); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_api_musicplayer_v1_musicplayer_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UploadMusicRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_api_musicplayer_v1_musicplayer_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UploadMusicResponse); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_api_musicplayer_v1_musicplayer_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*GetAlbumListRequest); i {
 			case 0:
 				return &v.state
@@ -858,8 +359,8 @@ func file_api_musicplayer_v1_musicplayer_proto_init() {
 				return nil
 			}
 		}
-		file_api_musicplayer_v1_musicplayer_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AlbumShortInfo); i {
+		file_api_musicplayer_v1_musicplayer_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*MusicAlbumInfo); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -870,7 +371,7 @@ func file_api_musicplayer_v1_musicplayer_proto_init() {
 				return nil
 			}
 		}
-		file_api_musicplayer_v1_musicplayer_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+		file_api_musicplayer_v1_musicplayer_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*GetAlbumListResponse); i {
 			case 0:
 				return &v.state
@@ -882,7 +383,7 @@ func file_api_musicplayer_v1_musicplayer_proto_init() {
 				return nil
 			}
 		}
-		file_api_musicplayer_v1_musicplayer_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
+		file_api_musicplayer_v1_musicplayer_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*GetAlbumRequest); i {
 			case 0:
 				return &v.state
@@ -894,31 +395,7 @@ func file_api_musicplayer_v1_musicplayer_proto_init() {
 				return nil
 			}
 		}
-		file_api_musicplayer_v1_musicplayer_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*MusicFileInfo); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_api_musicplayer_v1_musicplayer_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AlbumInfo); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_api_musicplayer_v1_musicplayer_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
+		file_api_musicplayer_v1_musicplayer_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*GetAlbumResponse); i {
 			case 0:
 				return &v.state
@@ -937,7 +414,7 @@ func file_api_musicplayer_v1_musicplayer_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_api_musicplayer_v1_musicplayer_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   11,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

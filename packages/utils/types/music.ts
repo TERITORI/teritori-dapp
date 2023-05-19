@@ -1,24 +1,23 @@
-export interface AlbumShortInfo {
-    id: number;
-    name: string;
-    description: string;
-    image: string;
+export enum MusicAlbumCategory {
+  Normal,
 }
+
+export interface AlbumMetadataInfo {
+  title: string;
+  description: string;
+  image: string;
+  audios: UploadFileInfo[];
+}
+
 export interface UploadFileInfo {
-    name: string;
-    ipfs: string;
-}
-export interface MusicInfo {
-    album_id: number;
-    file_id: number;
-    name: string;
-    duration: number;
-    ipfs: string;
+  name: string;
+  ipfs: string;
+  duration: number;
 }
 export interface AlbumInfo {
-    id: number;
-    name: string;
-    description: string;
-    image: string;
-    musics: MusicInfo[];
+  id: string;
+  name: string;
+  description: string;
+  image: string;
+  audios: UploadFileInfo[];
 }

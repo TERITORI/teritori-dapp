@@ -3,33 +3,39 @@ import { View } from "react-native";
 
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { mustGetMusicplayerClient } from "../../utils/backend";
-import { AlbumShortInfo } from "../../utils/types/music";
+import { AlbumInfo, AlbumMetadataInfo } from "../../utils/types/music";
 import { MusicPlayerCard } from "../MusicPlayer/MusicPlayerCard";
 
 export const UPPAlbums: React.FC<{ userId: string }> = ({ userId }) => {
   const selectedNetworkId = useSelectedNetworkId();
-  const [albumList, setAlbumList] = useState<AlbumShortInfo[]>([]);
+  const [albumList, setAlbumList] = useState<AlbumInfo[]>([]);
   useEffect(() => {
     const getAlbumList = async () => {
-      const res = await mustGetMusicplayerClient(
-        selectedNetworkId
-      ).getAlbumList({});
-      const newAlbumList: AlbumShortInfo[] = [];
-      res.albums.map((albumInfo, index) => {
-        newAlbumList.push({
-          id: albumInfo.id,
-          name: albumInfo.name,
-          description: albumInfo.description,
-          image: albumInfo.image,
+      try {
+        const res = await mustGetMusicplayerClient(
+          selectedNetworkId
+        ).getAlbumList({});
+        const newAlbumList: AlbumInfo[] = [];
+        res.musicAlbums.map((albumInfo, index) => {
+          const metadata = JSON.parse(albumInfo.metadata) as AlbumMetadataInfo;
+          newAlbumList.push({
+            id: albumInfo.identifier,
+            name: metadata.title,
+            description: metadata.description,
+            image: metadata.image,
+            audios: [],
+          });
         });
-      });
-      setAlbumList(newAlbumList);
+        setAlbumList(newAlbumList);
+      } catch (err) {
+        console.log(err);
+      }
     };
     getAlbumList();
   }, [selectedNetworkId]);
   return (
     <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
-      {albumList.map((item: AlbumShortInfo, index) => {
+      {albumList.map((item: AlbumInfo, index) => {
         return <MusicPlayerCard item={item} index={index} key={index} />;
       })}
     </View>

@@ -1,20 +1,14 @@
 package indexerdb
 
-import "time"
+import (
+	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
+)
 
 type MusicAlbum struct {
-	ID uint32 `gorm:"primaryKey;autoIncrement"`
-	Name string
-	Description string
-	Image string //ipfs url
-	CreatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP"`
-}
-
-type MusicFile struct {
-	AlbumId uint32 `gorm:"primaryKey"`
-	FileId uint32 `gorm:"primaryKey"`	
-	Name string
-	Duration uint32 //seconds
-	Ipfs string //ipfs hash
-	CreatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP"`
+	Identifier string          `gorm:"primaryKey"`
+	Category   uint32          `gorm:"index"`
+	Metadata   ObjectJSONB     `gorm:"type:jsonb;default:'{}'"`
+	CreatedBy  networks.UserID `gorm:"index"`
+	CreatedAt  uint64
+	IsDeleted  bool
 }

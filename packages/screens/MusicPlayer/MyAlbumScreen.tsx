@@ -299,6 +299,7 @@ export const MyAlbumScreen: ScreenFC<"MyAlbum"> = () => {
               >
                 <View style={styles.leftBox}>
                   <Pressable
+                    // @ts-ignore
                     onMouseEnter={() =>
                       setIndexHoverState(() => {
                         return { index: index + 1, state: true };

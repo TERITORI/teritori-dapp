@@ -59,7 +59,7 @@ export type RootStackParamList = {
   DAppStore: undefined;
 
   MusicPlayer: undefined;
-  AlbumName: { id: number };
+  AlbumName: { id: string };
   MyAlbum: undefined;
 
   ToriPunks: { route: string };

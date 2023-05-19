@@ -275,6 +275,13 @@ func (h *Handler) handleExecute(e *Message) error {
 				return errors.Wrap(err, "failed to handle delete post")
 			}
 		}
+	//Musicplayer actions
+	case "create_music_album":
+		if executeMsg.Contract == h.config.Network.MusicplayerContractAddress {
+			if err := h.handleExecuteCreateAlbum(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle create album")
+			}
+		}
 	}
 
 	return nil

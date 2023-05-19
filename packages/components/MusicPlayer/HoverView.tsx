@@ -17,9 +17,12 @@ export const HoverView: React.FC<HoverViewProps> = ({
 
   return (
     <Pressable
-      style={hoverState ? hoverStyle : normalStyle}
+      // is required to ignore the following to fix a problem with the linter
+      // and allow to use onClick in this special case
+      // @ts-ignore
       onMouseEnter={() => setHoverState(true)}
       onMouseLeave={() => setHoverState(false)}
+      style={hoverState ? hoverStyle : normalStyle}
       onPress={onPress}
     >
       {children}

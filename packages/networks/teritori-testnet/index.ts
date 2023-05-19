@@ -62,4 +62,6 @@ export const teritoriTestnetNetwork: NetworkInfo = {
   excludeFromLaunchpadList: [riotContractAddressGen1],
   socialFeedContractAddress:
     "tori19y3xr6lghw04tj2ets8y70mrynlnflejanl2ys3n3c5vaasj358shjsk20",
+  musicplayerContractAddress:
+    "tori14ul4zced8uecd7aqtac4397ys0y2uyhgfj0zr0sjq78damxl7sxsc7dszj",
 };

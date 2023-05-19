@@ -11,29 +11,35 @@ import { mustGetMusicplayerClient } from "../../utils/backend";
 import { primaryColor } from "../../utils/style/colors";
 import { fontSemibold14, fontSemibold20 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { AlbumShortInfo } from "../../utils/types/music";
+import { AlbumInfo, AlbumMetadataInfo } from "../../utils/types/music";
 
 export const MusicPlayerHomeContent: React.FC = () => {
-  const [albumList, setAlbumList] = useState<AlbumShortInfo[]>([]);
+  const [albumList, setAlbumList] = useState<AlbumInfo[]>([]);
 
   const [openUploadModal, setOpenUploadModal] = useState<boolean>(false);
   // const [openAlbumInfoModal, setOpenAlbumInfoModal] = useState<boolean>(false);
   const selectedNetworkId = useSelectedNetworkId();
   useEffect(() => {
     const getAlbumList = async () => {
-      const res = await mustGetMusicplayerClient(
-        selectedNetworkId
-      ).getAlbumList({});
-      const newAlbumList: AlbumShortInfo[] = [];
-      res.albums.map((albumInfo, index) => {
-        newAlbumList.push({
-          id: albumInfo.id,
-          name: albumInfo.name,
-          description: albumInfo.description,
-          image: albumInfo.image,
+      try {
+        const res = await mustGetMusicplayerClient(
+          selectedNetworkId
+        ).getAlbumList({});
+        const newAlbumList: AlbumInfo[] = [];
+        res.musicAlbums.map((albumInfo, index) => {
+          const metadata = JSON.parse(albumInfo.metadata) as AlbumMetadataInfo;
+          newAlbumList.push({
+            id: albumInfo.identifier,
+            name: metadata.title,
+            description: metadata.description,
+            image: metadata.image,
+            audios: [],
+          });
         });
-      });
-      setAlbumList(newAlbumList);
+        setAlbumList(newAlbumList);
+      } catch (err) {
+        console.log(err);
+      }
     };
     getAlbumList();
   }, [selectedNetworkId]);
@@ -107,7 +113,7 @@ export const MusicPlayerHomeContent: React.FC = () => {
       </View>
 
       <View style={styles.contentGroup}>
-        {albumList.map((item: AlbumShortInfo, index) => {
+        {albumList.map((item: AlbumInfo, index) => {
           return <MusicPlayerCard item={item} index={index} key={index} />;
         })}
       </View>

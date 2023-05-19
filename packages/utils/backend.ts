@@ -101,8 +101,10 @@ export const getMusicplayerClient = (networkId: string | undefined) => {
     return undefined;
   }
   if (!musicplayerClients[network.id]) {
+    //test
     // const backendEndpoint = network.backendEndpoint;
-    const backendEndpoint = process.env.TERITORI_MUSICPLAYER_BACKEND_ENDPOINT!;
+    const backendEndpoint = "http://localhost:9090";
+
     const rpc = new MusicplayerGrpcWebImpl(backendEndpoint, {
       debug: false,
     });
@@ -120,19 +122,3 @@ export const mustGetMusicplayerClient = (networkId: string | undefined) => {
   }
   return client;
 };
-// const musicplayerBackendEndpoint =
-//   process.env.TERITORI_MUSICPLAYER_BACKEND_ENDPOINT;
-
-// if (!musicplayerBackendEndpoint) {
-//   throw new Error("missing TERITORI_MUSICPLAYER_BACKEND_ENDPOINT in env");
-// }
-
-// const musicplayerRpc = new MusicplayerGrpcWebImpl(musicplayerBackendEndpoint, {
-//   transport: grpc.WebsocketTransport(),
-//   debug: false,
-//   // metadata: new grpc.Metadata({ SomeHeader: "bar" }),
-// });
-
-// export const musicplayerClient = new MusicplayerServiceClientImpl(
-//   musicplayerRpc
-// );

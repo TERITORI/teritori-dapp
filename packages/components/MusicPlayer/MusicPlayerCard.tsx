@@ -3,15 +3,15 @@ import { View, StyleSheet, Image } from "react-native";
 import { Pressable } from "react-native-hoverable";
 
 import { TrackImageHover } from "./TrackImageHover";
-import { AlbumShortInfo } from "../../screens/MusicPlayer/types";
 import { ipfsPinataUrl } from "../../utils/ipfs";
 import { neutral17, neutral77, primaryColor } from "../../utils/style/colors";
 import { fontSemibold14, fontMedium14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
+import { AlbumInfo } from "../../utils/types/music";
 import { BrandText } from "../BrandText";
 
 export const MusicPlayerCard: React.FC<{
-  item: AlbumShortInfo;
+  item: AlbumInfo;
   index: number;
   mine?: boolean;
 }> = ({ item, index, mine = false }) => {
@@ -59,10 +59,15 @@ export const MusicPlayerCard: React.FC<{
     <View style={styles.unitCard}>
       <View
         style={styles.imgBox}
+        // @ts-ignore
         onMouseEnter={() => setSelectedIndex(index + 1)}
         onMouseLeave={() => setSelectedIndex(0)}
       >
-        <Image source={ipfsPinataUrl(item.image)} style={styles.contentImg} />
+        <Image
+          // @ts-ignore
+          source={ipfsPinataUrl(item.image)}
+          style={styles.contentImg}
+        />
         {selectedIndex === index + 1 && (
           <TrackImageHover mine={mine} albumId={item.id} />
         )}

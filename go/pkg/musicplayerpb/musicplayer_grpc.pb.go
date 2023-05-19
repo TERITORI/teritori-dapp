@@ -18,8 +18,6 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MusicplayerServiceClient interface {
-	UploadAlbum(ctx context.Context, in *UploadAlbumRequest, opts ...grpc.CallOption) (*UploadAlbumResponse, error)
-	UploadMusic(ctx context.Context, in *UploadMusicRequest, opts ...grpc.CallOption) (*UploadMusicResponse, error)
 	GetAlbumList(ctx context.Context, in *GetAlbumListRequest, opts ...grpc.CallOption) (*GetAlbumListResponse, error)
 	GetAlbum(ctx context.Context, in *GetAlbumRequest, opts ...grpc.CallOption) (*GetAlbumResponse, error)
 }
@@ -30,24 +28,6 @@ type musicplayerServiceClient struct {
 
 func NewMusicplayerServiceClient(cc grpc.ClientConnInterface) MusicplayerServiceClient {
 	return &musicplayerServiceClient{cc}
-}
-
-func (c *musicplayerServiceClient) UploadAlbum(ctx context.Context, in *UploadAlbumRequest, opts ...grpc.CallOption) (*UploadAlbumResponse, error) {
-	out := new(UploadAlbumResponse)
-	err := c.cc.Invoke(ctx, "/musicplayer.v1.MusicplayerService/UploadAlbum", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *musicplayerServiceClient) UploadMusic(ctx context.Context, in *UploadMusicRequest, opts ...grpc.CallOption) (*UploadMusicResponse, error) {
-	out := new(UploadMusicResponse)
-	err := c.cc.Invoke(ctx, "/musicplayer.v1.MusicplayerService/UploadMusic", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
 }
 
 func (c *musicplayerServiceClient) GetAlbumList(ctx context.Context, in *GetAlbumListRequest, opts ...grpc.CallOption) (*GetAlbumListResponse, error) {
@@ -72,8 +52,6 @@ func (c *musicplayerServiceClient) GetAlbum(ctx context.Context, in *GetAlbumReq
 // All implementations must embed UnimplementedMusicplayerServiceServer
 // for forward compatibility
 type MusicplayerServiceServer interface {
-	UploadAlbum(context.Context, *UploadAlbumRequest) (*UploadAlbumResponse, error)
-	UploadMusic(context.Context, *UploadMusicRequest) (*UploadMusicResponse, error)
 	GetAlbumList(context.Context, *GetAlbumListRequest) (*GetAlbumListResponse, error)
 	GetAlbum(context.Context, *GetAlbumRequest) (*GetAlbumResponse, error)
 	mustEmbedUnimplementedMusicplayerServiceServer()
@@ -83,12 +61,6 @@ type MusicplayerServiceServer interface {
 type UnimplementedMusicplayerServiceServer struct {
 }
 
-func (UnimplementedMusicplayerServiceServer) UploadAlbum(context.Context, *UploadAlbumRequest) (*UploadAlbumResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UploadAlbum not implemented")
-}
-func (UnimplementedMusicplayerServiceServer) UploadMusic(context.Context, *UploadMusicRequest) (*UploadMusicResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UploadMusic not implemented")
-}
 func (UnimplementedMusicplayerServiceServer) GetAlbumList(context.Context, *GetAlbumListRequest) (*GetAlbumListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAlbumList not implemented")
 }
@@ -106,42 +78,6 @@ type UnsafeMusicplayerServiceServer interface {
 
 func RegisterMusicplayerServiceServer(s grpc.ServiceRegistrar, srv MusicplayerServiceServer) {
 	s.RegisterService(&MusicplayerService_ServiceDesc, srv)
-}
-
-func _MusicplayerService_UploadAlbum_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UploadAlbumRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MusicplayerServiceServer).UploadAlbum(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/musicplayer.v1.MusicplayerService/UploadAlbum",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MusicplayerServiceServer).UploadAlbum(ctx, req.(*UploadAlbumRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _MusicplayerService_UploadMusic_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UploadMusicRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MusicplayerServiceServer).UploadMusic(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/musicplayer.v1.MusicplayerService/UploadMusic",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MusicplayerServiceServer).UploadMusic(ctx, req.(*UploadMusicRequest))
-	}
-	return interceptor(ctx, in, info, handler)
 }
 
 func _MusicplayerService_GetAlbumList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -187,14 +123,6 @@ var MusicplayerService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "musicplayer.v1.MusicplayerService",
 	HandlerType: (*MusicplayerServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "UploadAlbum",
-			Handler:    _MusicplayerService_UploadAlbum_Handler,
-		},
-		{
-			MethodName: "UploadMusic",
-			Handler:    _MusicplayerService_UploadMusic_Handler,
-		},
 		{
 			MethodName: "GetAlbumList",
 			Handler:    _MusicplayerService_GetAlbumList_Handler,
