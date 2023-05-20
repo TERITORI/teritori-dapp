@@ -153,10 +153,12 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
         reset();
       }
     } catch (err) {
-      setToastError({
-        title: "Something went wrong.",
-        message: err.message,
-      });
+      if (err instanceof Error) {
+        setToastError({
+          title: "Something went wrong.",
+          message: err.message,
+        });
+      }
       console.error("post submit error", err);
     }
 

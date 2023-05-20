@@ -8,7 +8,7 @@ module.exports = async function (env, argv) {
 
   // needed to use environment variables
   config.plugins.push(
-    new Dotenv(),
+    new Dotenv({ ignoreStub: true }),
     new MomentLocalesPlugin(), // removes all locales except en-us
     // new BundleAnalyzerPlugin({
     //   path: "web-report",
@@ -55,6 +55,9 @@ module.exports = async function (env, argv) {
     test: /\.mjs$/,
     use: [],
   });
+
+  // needed by cosmos libs
+  config.resolve.fallback = { ...config.resolve.fallback, crypto: false };
 
   return config;
 };

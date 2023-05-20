@@ -27,6 +27,12 @@ import { WalletsProvider } from "./packages/context/WalletsProvider";
 import { store } from "./packages/store/store";
 import { linking } from "./packages/utils/navigation";
 
+// FIXME: need reanimated update, see https://github.com/software-mansion/react-native-reanimated/issues/3355
+if (Platform.OS === "web") {
+  // @ts-ignore
+  window._frameTimestamp = null;
+}
+
 const queryClient = new QueryClient();
 
 // it's here just to fix a TS2589 error

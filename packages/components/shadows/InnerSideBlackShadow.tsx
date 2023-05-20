@@ -2,6 +2,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { StyleProp, ViewStyle } from "react-native";
 
 export const InnerSideBlackShadow: React.FC<{
+  children: React.ReactNode;
   side: "left" | "right";
   height: number;
   style?: StyleProp<ViewStyle>;

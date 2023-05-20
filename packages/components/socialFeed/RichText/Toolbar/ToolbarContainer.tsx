@@ -8,7 +8,9 @@ import {
 import { layout } from "../../../../utils/style/layout";
 import { PrimaryBox } from "../../../boxes/PrimaryBox";
 
-export const ToolbarContainer: FC = ({ children }) => {
+export const ToolbarContainer: FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   return (
     <PrimaryBox
       fullWidth

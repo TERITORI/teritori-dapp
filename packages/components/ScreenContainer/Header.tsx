@@ -9,6 +9,7 @@ import {
 import { BackButton } from "../navigation/components/BackButton";
 
 export const Header: React.FC<{
+  children: React.ReactNode;
   style?: StyleProp<ViewStyle>;
   onBackPress?: () => void;
 }> = ({ children, style, onBackPress }) => {

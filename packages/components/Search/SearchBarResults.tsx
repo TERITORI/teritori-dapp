@@ -87,6 +87,7 @@ export const SearchBarResults: FC = () => {
 };
 
 const SearchResultsSection: React.FC<{
+  children: React.ReactNode;
   title: string;
   style: StyleProp<ViewStyle>;
   isFirstSection?: boolean;

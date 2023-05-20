@@ -39,7 +39,9 @@ const defaultValue: DefaultValue = {
 
 export const FeedbacksContext = createContext(defaultValue);
 
-export const FeedbacksContextProvider: React.FC = ({ children }) => {
+export const FeedbacksContextProvider: React.FC<{
+  children: React.ReactNode;
+}> = ({ children }) => {
   const [loadingFullScreen, setLoadingFullScreen] = useState(false);
   const [toastError, setToastError] = useState(initialToastError);
   const [toastSuccess, setToastSuccess] = useState(initialToastSuccess);

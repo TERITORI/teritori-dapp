@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { StyleProp, View, ViewStyle } from "react-native";
+import { Pressable, StyleProp, View, ViewStyle } from "react-native";
 
 import { SocialCardHeader } from "./SocialCardHeader";
 import { SocialMessageContent } from "./SocialMessageContent";
@@ -22,7 +22,6 @@ import {
 import { layout } from "../../../utils/style/layout";
 import FlexRow from "../../FlexRow";
 import { AnimationFadeIn } from "../../animations/AnimationFadeIn";
-import { CustomPressable } from "../../buttons/CustomPressable";
 import { SpacerColumn, SpacerRow } from "../../spacer";
 import { EmojiSelector } from "../EmojiSelector";
 import { SocialFeedMetadata } from "../NewsFeed/NewsFeed.type";
@@ -111,7 +110,7 @@ export const SocialThreadCard: React.FC<{
   }, [post]);
 
   return (
-    <CustomPressable
+    <Pressable
       onLayout={(e) => setViewWidth(e.nativeEvent.layout.width)}
       disabled={isPostConsultation}
       onPress={() =>
@@ -221,6 +220,6 @@ export const SocialThreadCard: React.FC<{
           </FlexRow>
         )}
       </AnimationFadeIn>
-    </CustomPressable>
+    </Pressable>
   );
 };

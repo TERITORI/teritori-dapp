@@ -21,7 +21,9 @@ import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { setDocumentTitle } from "../../utils/setDocumentTitle";
 import { fontSemibold20 } from "../../utils/style/fonts";
 
-const TabContainer: React.FC = ({ children }) => {
+const TabContainer: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const { width } = useMaxResolution();
   return (
     <View style={{ flex: 1, alignItems: "center" }}>

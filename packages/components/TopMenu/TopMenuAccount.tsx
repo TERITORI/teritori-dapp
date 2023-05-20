@@ -1,4 +1,5 @@
-import { StyleSheet } from "react-native";
+import { useState } from "react";
+import { Pressable, StyleSheet } from "react-native";
 
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
@@ -11,10 +12,10 @@ import FlexRow from "../FlexRow";
 import { OmniLink } from "../OmniLink";
 import { SVG } from "../SVG";
 import { UserNameInline } from "../UserNameInline";
-import { CustomPressable } from "../buttons/CustomPressable";
 
 export const TopMenuAccount: React.FC = () => {
   const selectedWallet = useSelectedWallet();
+  const [hovered, setHovered] = useState(false);
 
   return (
     <FlexCol style={styles.container}>
@@ -24,17 +25,18 @@ export const TopMenuAccount: React.FC = () => {
       />
 
       <FlexRow alignItems="center" justifyContent="space-between">
-        {/*TODO: Replace CustomPressable by TouchableOpacity when the Multisig feature is available*/}
-        <CustomPressable>
-          {({ hovered }) => (
-            <FlexRow alignItems="center">
-              <BrandText style={styles.switchAccount}>
-                {hovered ? "Coming Soon" : "Switch Account"}
-              </BrandText>
-              <SVG source={chevronRightSVG} width={16} height={16} />
-            </FlexRow>
-          )}
-        </CustomPressable>
+        {/*TODO: Replace Pressable by TouchableOpacity when the Multisig feature is available*/}
+        <Pressable
+          onHoverIn={() => setHovered(true)}
+          onHoverOut={() => setHovered(false)}
+        >
+          <FlexRow alignItems="center">
+            <BrandText style={styles.switchAccount}>
+              {hovered ? "Coming Soon" : "Switch Account"}
+            </BrandText>
+            <SVG source={chevronRightSVG} width={16} height={16} />
+          </FlexRow>
+        </Pressable>
 
         <OmniLink
           to={{

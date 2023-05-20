@@ -22,7 +22,9 @@ const WalletsContext = createContext<WalletsContextValue>({
 
 export const useWallets = () => useContext(WalletsContext);
 
-export const WalletsProvider: React.FC = React.memo(({ children }) => {
+export const WalletsProvider: React.FC<{
+  children: React.ReactNode;
+}> = React.memo(({ children }) => {
   // const [hasPhantom, phantomIsReady, phantomWallet] = usePhantom();
   const [hasKeplr, keplrIsReady, keplrWallets] = useKeplr();
   const [hasMetamask, metamaskIsReady, metamaskWallets] = useMetamask();

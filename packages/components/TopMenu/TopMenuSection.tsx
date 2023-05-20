@@ -10,6 +10,7 @@ import FlexRow from "../FlexRow";
 import { Separator } from "../Separator";
 
 export const TopMenuSection: React.FC<{
+  children: React.ReactNode;
   title: string;
   style?: StyleProp<ViewStyle>;
   isCarousel?: boolean;

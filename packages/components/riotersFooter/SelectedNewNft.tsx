@@ -68,7 +68,7 @@ const SelectNewNft: React.FC<{
       []
     );
 
-    const keyExtractor = useCallback(({ name }) => name, []);
+    const keyExtractor = useCallback(({ name }: { name: string }) => name, []);
 
     const getItemLayout = useCallback(
       (_: any, index: number) => ({

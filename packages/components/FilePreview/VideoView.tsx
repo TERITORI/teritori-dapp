@@ -43,6 +43,10 @@ export const VideoView: React.FC<VideoPreviewProps> = ({
           marginTop: layout.padding_x2,
           marginBottom: layout.padding_x2,
         }}
+        videoStyle={{
+          height: "100%",
+          width: "100%",
+        }}
         source={{
           uri: ipfsURLToHTTPURL(file.url),
         }}

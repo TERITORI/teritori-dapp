@@ -31,6 +31,7 @@ import { Footer } from "../footers/Footer";
 import { Sidebar } from "../navigation/Sidebar";
 
 export const ScreenContainer: React.FC<{
+  children?: React.ReactNode;
   headerChildren?: JSX.Element;
   footerChildren?: React.ReactNode;
   mobileTitle?: string;

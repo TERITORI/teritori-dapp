@@ -5,6 +5,7 @@ import { View, ViewStyle, StyleProp, StyleSheet } from "react-native";
 import { neutral11, neutral67 } from "../../utils/style/colors";
 
 export const PrimaryBox: React.FC<{
+  children: React.ReactNode;
   width?: number;
   height?: number;
   fullWidth?: boolean;

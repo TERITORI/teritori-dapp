@@ -1,5 +1,6 @@
 import { useRoute } from "@react-navigation/native";
-import { StyleSheet, View } from "react-native";
+import { useState } from "react";
+import { Pressable, StyleSheet, View } from "react-native";
 import Animated, {
   useAnimatedStyle,
   withSpring,
@@ -13,7 +14,6 @@ import { fontSemibold12 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
-import { CustomPressable } from "../../buttons/CustomPressable";
 import { SpacerRow } from "../../spacer";
 
 export type SidebarNestedButtonProps = Omit<SidebarButtonProps, "nested">;
@@ -26,6 +26,7 @@ export const SidebarNestedButton: React.FC<SidebarNestedButtonProps> = ({
   iconSize = 20,
 }) => {
   // variables
+  const [hovered, setHovered] = useState(false);
   const { isSidebarExpanded } = useSidebar();
   const { name: currentRouteName } = useRoute();
   const isComingSoon = route === "ComingSoon";
@@ -41,36 +42,34 @@ export const SidebarNestedButton: React.FC<SidebarNestedButtonProps> = ({
 
   // returns
   return (
-    <CustomPressable
+    <Pressable
       onPress={isComingSoon ? () => {} : onPress && (() => onPress(route))}
       disabled={isSelected}
       style={styles.container}
+      onHoverIn={() => setHovered(true)}
+      onHoverOut={() => setHovered(false)}
     >
-      {({ hovered }): React.ReactElement => (
-        <>
-          {isSelected && <SideNotch />}
-          <View style={isComingSoon && { opacity: 0.5 }}>
-            <SVG
-              width={iconSize}
-              height={iconSize}
-              source={icon}
-              color={isSelected ? primaryColor : neutralA3}
-            />
-          </View>
-          <SpacerRow size={2} />
-          <Animated.View style={opacityStyle}>
-            <BrandText
-              style={[
-                fontSemibold12,
-                (!isSelected || isComingSoon) && { color: neutralA3 },
-              ]}
-            >
-              {isComingSoon && hovered ? "Coming Soon" : title}
-            </BrandText>
-          </Animated.View>
-        </>
-      )}
-    </CustomPressable>
+      {isSelected && <SideNotch />}
+      <View style={isComingSoon && { opacity: 0.5 }}>
+        <SVG
+          width={iconSize}
+          height={iconSize}
+          source={icon}
+          color={isSelected ? primaryColor : neutralA3}
+        />
+      </View>
+      <SpacerRow size={2} />
+      <Animated.View style={opacityStyle}>
+        <BrandText
+          style={[
+            fontSemibold12,
+            (!isSelected || isComingSoon) && { color: neutralA3 },
+          ]}
+        >
+          {isComingSoon && hovered ? "Coming Soon" : title}
+        </BrandText>
+      </Animated.View>
+    </Pressable>
   );
 };
 

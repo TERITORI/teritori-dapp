@@ -7,6 +7,7 @@ import {
 } from "react-native";
 
 interface FadeInProps {
+  children: React.ReactNode;
   style?: StyleProp<ViewStyle>;
   duration?: number;
   delay?: number;

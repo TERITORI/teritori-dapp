@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View } from "react-native";
+import { Pressable, View } from "react-native";
 
 import governanceCircleSVG from "../../../../assets/icons/governance-circle.svg";
 import {
@@ -10,7 +10,6 @@ import {
   redDefault,
 } from "../../../utils/style/colors";
 import { SVG } from "../../SVG";
-import { CustomPressable } from "../../buttons/CustomPressable";
 import { SecondaryButton } from "../../buttons/SecondaryButton";
 import { SpacerRow } from "../../spacer";
 
@@ -56,9 +55,9 @@ export const SocialThreadGovernance: React.FC<{
           />
         </View>
       )}
-      <CustomPressable onPress={() => setGovernanceAction((prev) => !prev)}>
+      <Pressable onPress={() => setGovernanceAction((prev) => !prev)}>
         <SVG source={governanceCircleSVG} height={36} width={36} />
-      </CustomPressable>
+      </Pressable>
     </View>
   );
 };

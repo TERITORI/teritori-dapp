@@ -11,7 +11,9 @@ const defaultValue: DefaultValue = {
 
 const TNSContext = createContext(defaultValue);
 
-export const TNSContextProvider: React.FC = ({ children }) => {
+export const TNSContextProvider: React.FC<{
+  children: React.ReactNode;
+}> = ({ children }) => {
   // The entered name
   const [name, setName] = useState("");
 

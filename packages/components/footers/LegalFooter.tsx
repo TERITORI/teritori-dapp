@@ -9,7 +9,9 @@ import { BrandText } from "../BrandText";
 import { ExternalLink } from "../ExternalLink";
 import { SVG } from "../SVG";
 
-export const LegalFooter: React.FC = ({ children }) => {
+export const LegalFooter: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   return (
     <View
       style={{

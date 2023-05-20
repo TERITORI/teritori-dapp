@@ -16,7 +16,7 @@ export const CarouselSection: React.FC<
   } & TCarouselProps
 > = (props) => {
   const carouselRef = useRef<ICarouselInstance | null>(null);
-  const { children, title, width, style, data, ...carouselProps } = props;
+  const { title, width, style, data, ...carouselProps } = props;
   const viewWidth = StyleSheet.flatten(style).width;
   const step = Math.floor(
     (typeof viewWidth === "number" ? viewWidth : 0) / (width || 0)

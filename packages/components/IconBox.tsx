@@ -1,9 +1,8 @@
 import React from "react";
-import { StyleProp, ViewStyle } from "react-native";
+import { Pressable, StyleProp, ViewStyle } from "react-native";
 import { SvgProps } from "react-native-svg";
 
 import { SVG } from "./SVG";
-import { CustomPressable } from "./buttons/CustomPressable";
 import { neutral33, neutral77, secondaryColor } from "../utils/style/colors";
 
 interface IconBoxProps {
@@ -29,7 +28,7 @@ export const IconBox = ({
   },
 }: IconBoxProps) => {
   return (
-    <CustomPressable
+    <Pressable
       style={[
         {
           height: 32,
@@ -49,6 +48,6 @@ export const IconBox = ({
         height={iconProps.height}
         color={iconProps.color || disabled ? neutral77 : secondaryColor}
       />
-    </CustomPressable>
+    </Pressable>
   );
 };

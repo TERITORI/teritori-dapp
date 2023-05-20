@@ -15,6 +15,7 @@ import {
   View,
   Animated,
   LayoutChangeEvent,
+  Pressable,
 } from "react-native";
 
 import { CurrencyAmount } from "./CurrencyAmount";
@@ -30,7 +31,6 @@ import { BrandText } from "../../../../components/BrandText";
 import { SVG } from "../../../../components/SVG";
 import { SeparatorGradient } from "../../../../components/SeparatorGradient";
 import { TertiaryBox } from "../../../../components/boxes/TertiaryBox";
-import { CustomPressable } from "../../../../components/buttons/CustomPressable";
 import { PrimaryButton } from "../../../../components/buttons/PrimaryButton";
 import { SecondaryButton } from "../../../../components/buttons/SecondaryButton";
 import { SpacerColumn } from "../../../../components/spacer";
@@ -96,6 +96,7 @@ export const SwapView: React.FC = () => {
   const translateToTop = useRef(new Animated.Value(0)).current;
   const translateToBottom = useRef(new Animated.Value(0)).current;
   const [viewWidth, setViewWidth] = useState(0);
+
   const opacityFunction = () => {
     Animated.sequence([
       Animated.timing(opacity, {
@@ -438,45 +439,31 @@ export const SwapView: React.FC = () => {
                 fullWidth
                 mainContainerStyle={styles.currencyBoxMainContainer}
               >
-                <>
-                  {/*----- Invert button */}
-                  <CustomPressable
-                    onPress={onPressInvert}
-                    style={styles.invertButton}
-                  >
-                    {({ hovered }) => (
-                      <SVG
-                        source={hovered ? chevronCircleDown : chevronCircleUp}
-                        height={32}
-                        width={32}
-                      />
-                    )}
-                  </CustomPressable>
+                <InvertButton onPress={onPressInvert} />
 
-                  {/*----- Selected currencyOut */}
-                  <Animated.View
-                    style={{
-                      opacity,
-                      width: "100%",
-                      transform: [{ translateY: translateRangeToTop }],
-                    }}
-                  >
-                    <View style={styles.currency}>
-                      <SelectedCurrency
-                        currency={currencyOutNative}
-                        selectedNetworkId={selectedNetworkId}
-                        setRef={setDropdownOutRef}
-                      />
+                {/*----- Selected currencyOut */}
+                <Animated.View
+                  style={{
+                    opacity,
+                    width: "100%",
+                    transform: [{ translateY: translateRangeToTop }],
+                  }}
+                >
+                  <View style={styles.currency}>
+                    <SelectedCurrency
+                      currency={currencyOutNative}
+                      selectedNetworkId={selectedNetworkId}
+                      setRef={setDropdownOutRef}
+                    />
 
-                      {/*----- Amount earned after swap */}
-                      <CurrencyAmount
-                        amount={amountOutWithFee}
-                        amountUsd={amountOutUsdWithFee}
-                        isApproximate
-                      />
-                    </View>
-                  </Animated.View>
-                </>
+                    {/*----- Amount earned after swap */}
+                    <CurrencyAmount
+                      amount={amountOutWithFee}
+                      amountUsd={amountOutUsdWithFee}
+                      isApproximate
+                    />
+                  </View>
+                </Animated.View>
               </TertiaryBox>
             </View>
 
@@ -539,6 +526,24 @@ export const SwapView: React.FC = () => {
         />
       </View>
     </TertiaryBox>
+  );
+};
+
+const InvertButton: React.FC<{ onPress?: () => void }> = ({ onPress }) => {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <Pressable
+      onPress={onPress}
+      style={styles.invertButton}
+      onHoverIn={() => setHovered(true)}
+      onHoverOut={() => setHovered(false)}
+    >
+      <SVG
+        source={hovered ? chevronCircleDown : chevronCircleUp}
+        height={32}
+        width={32}
+      />
+    </Pressable>
   );
 };
 

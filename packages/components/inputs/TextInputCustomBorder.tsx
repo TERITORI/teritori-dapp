@@ -12,6 +12,7 @@ import { SVG } from "../SVG";
 
 // A custom TextInput. You can add children (Ex: An icon or a small container)
 export const TextInputCustomBorder: React.FC<{
+  children?: React.ReactNode;
   value: string;
   placeHolder: string;
   style?: ViewStyle | ViewStyle[];

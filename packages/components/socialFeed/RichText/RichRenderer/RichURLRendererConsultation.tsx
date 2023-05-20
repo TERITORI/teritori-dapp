@@ -3,13 +3,14 @@ import { Linking } from "react-native";
 import { primaryColor } from "../../../../utils/style/colors";
 
 export const RichURLRendererConsultation = (props: {
-  children: { props: { text: string } }[];
+  children: React.ReactNode;
 }) => {
   return (
     <span
       style={{ color: primaryColor, cursor: "pointer" }}
       onClick={() => {
-        let linkText = props.children[0].props.text;
+        // @ts-expect-error
+        let linkText = props.children[0].props.text as string;
         if (linkText[0] === "@") {
           linkText = linkText.substring(1);
         }

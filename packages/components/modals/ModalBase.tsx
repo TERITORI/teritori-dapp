@@ -3,7 +3,6 @@ import {
   Modal,
   View,
   ScrollView,
-  ViewComponent,
   ViewStyle,
   useWindowDimensions,
   StyleProp,
@@ -25,8 +24,9 @@ import { SpacerColumn } from "../spacer";
 // TODO: Simplify this component (Useless childrenBottom ?. Better to let the parent totally decides which children to use ? Used in WalletManager.tsx, be careful !)
 
 type ModalBaseProps = {
+  children: React.ReactNode;
   label?: string;
-  labelComponent?: React.FC | ViewComponent | JSX.Element;
+  labelComponent?: React.ReactNode;
   onClose?: () => void;
   onBackPress?: () => void;
   width?: number;

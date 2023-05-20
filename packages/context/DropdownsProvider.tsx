@@ -23,7 +23,9 @@ const defaultValue: DefaultValue = {
 
 export const DropdownsContext = createContext(defaultValue);
 
-export const DropdownsContextProvider: React.FC = ({ children }) => {
+export const DropdownsContextProvider: React.FC<{
+  children: React.ReactNode;
+}> = ({ children }) => {
   const [openedDropdownRef, setOpenedDropdownRef] = useState<RefObject<any>>();
 
   const closeOpenedDropdown = useCallback(() => {

@@ -1,10 +1,9 @@
-import React from "react";
-import { StyleSheet } from "react-native";
+import React, { useState } from "react";
+import { Pressable, StyleSheet } from "react-native";
 import { SvgProps } from "react-native-svg";
 
 import { BrandText } from "./BrandText";
 import { SVG } from "./SVG";
-import { CustomPressable } from "./buttons/CustomPressable";
 import { SpacerRow } from "./spacer";
 import { secondaryColor } from "../utils/style/colors";
 import { fontSemibold14 } from "../utils/style/fonts";
@@ -23,21 +22,20 @@ export const DropdownOption: React.FC<DropdownOptionProps> = ({
   onPress,
   isComingSoon,
 }) => {
+  const [hovered, setHovered] = useState(false);
   return (
-    <CustomPressable
+    <Pressable
       style={[styles.option, isComingSoon && styles.comingSoon]}
+      onHoverIn={() => setHovered(true)}
+      onHoverOut={() => setHovered(false)}
       onPress={onPress}
     >
-      {({ hovered }) => (
-        <>
-          <SVG source={icon} width={20} height={20} color={secondaryColor} />
-          <SpacerRow size={1.5} />
-          <BrandText style={fontSemibold14}>
-            {hovered && isComingSoon ? "Coming Soon" : label}
-          </BrandText>
-        </>
-      )}
-    </CustomPressable>
+      <SVG source={icon} width={20} height={20} color={secondaryColor} />
+      <SpacerRow size={1.5} />
+      <BrandText style={fontSemibold14}>
+        {hovered && isComingSoon ? "Coming Soon" : label}
+      </BrandText>
+    </Pressable>
   );
 };
 

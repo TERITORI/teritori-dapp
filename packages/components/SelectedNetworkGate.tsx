@@ -6,6 +6,7 @@ import { NetworkInfo } from "../networks";
 
 export const SelectedNetworkGate: React.FC<{
   filter: (n: NetworkInfo) => boolean;
+  children: React.ReactNode;
 }> = ({ filter, children }) => {
   const selectedNetwork = useSelectedNetworkInfo();
   if (!selectedNetwork) {

@@ -9,8 +9,8 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import Long from "long";
 import { osmosis, getSigningOsmosisClient } from "osmojs";
-import { QuerySpotPriceRequest } from "osmojs/src/codegen/osmosis/gamm/v1beta1/query";
 import { Coin } from "osmojs/types/codegen/cosmos/base/v1beta1/coin";
+import { QuerySpotPriceRequest } from "osmojs/types/codegen/osmosis/gamm/v1beta1/query";
 import { MsgSwapExactAmountIn } from "osmojs/types/codegen/osmosis/gamm/v1beta1/tx";
 import { SwapAmountInRoute } from "osmojs/types/codegen/osmosis/poolmanager/v1beta1/swap_route";
 import { useEffect, useMemo, useState } from "react";
@@ -352,7 +352,7 @@ export const useSwap = (
     amountIn: number,
     amountOut: number,
     slippage: number
-  ) => {
+  ): Promise<SwapResult | undefined> => {
     if (!currencyIn || !currencyOut || !selectedWallet || !selectedNetwork)
       return;
     const amountInMicro = amountToCurrencyMicro(
@@ -421,26 +421,28 @@ export const useSwap = (
         [msg],
         stdFee
       );
-      if (isDeliverTxFailure(txResponse)) {
+      if (isDeliverTxFailure({ ...txResponse, txIndex: 0 })) {
         console.error("tx failed", txResponse);
         const message = txResponse.rawLog || "";
         return {
           isError: true,
           title: "Transaction failed",
           message,
-        } as SwapResult;
+        };
       }
       return {
         title: "Swap succeed",
         message: "",
-      } as SwapResult;
+      };
     } catch (e) {
       console.error("tx failed", e);
-      return {
-        isError: true,
-        title: "Transaction failed",
-        message: e.message,
-      } as SwapResult;
+      if (e instanceof Error) {
+        return {
+          isError: true,
+          title: "Transaction failed",
+          message: e.message,
+        };
+      }
     }
   };
   return { swap, spotPrice, fee, loading };

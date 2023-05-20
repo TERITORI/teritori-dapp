@@ -5,10 +5,12 @@ import { useAppNavigation } from "../../../../utils/navigation";
 import { neutralA3, primaryColor } from "../../../../utils/style/colors";
 
 export const RichMentionRendererConsultation = (props: {
-  children: { props: { text: string } }[];
+  children: React.ReactNode;
 }) => {
   const navigation = useAppNavigation();
-  const { userId } = useMention(props.children[0].props.text);
+  // @ts-expect-error
+  const text = props.children[0].props.text as string;
+  const { userId } = useMention(text);
   // Every text with a "@" is a mention. But we consider valid mentions as a valid wallet address or a valid NS token id.
   if (!userId) {
     return <span style={{ color: neutralA3 }}>{props.children}</span>;

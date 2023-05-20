@@ -117,6 +117,7 @@ const FooterLogo: React.FC = () => {
 };
 
 export const Footer: React.FC<{
+  children?: React.ReactNode;
   style?: StyleProp<ViewStyle>;
 }> = ({ style, children }) => {
   return (

@@ -33,7 +33,9 @@ const SidebarContext = createContext(defaultValue);
 
 const MOBILE_WIDTH = 768;
 
-export const SidebarContextProvider: React.FC = ({ children }) => {
+export const SidebarContextProvider: React.FC<{
+  children: React.ReactNode;
+}> = ({ children }) => {
   // The entered isSidebarExpanded
   const [isSidebarExpanded, setIsSidebarExpanded] = useState<boolean>(
     defaultValue.isSidebarExpanded

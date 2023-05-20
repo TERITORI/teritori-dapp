@@ -11,7 +11,6 @@ import infoSVG from "../../../../../assets/icons/info.svg";
 import { BrandText } from "../../../../components/BrandText";
 import { SVG } from "../../../../components/SVG";
 import { TertiaryBox } from "../../../../components/boxes/TertiaryBox";
-import { CustomPressable } from "../../../../components/buttons/CustomPressable";
 import { TextInputCustom } from "../../../../components/inputs/TextInputCustom";
 import {
   neutral77,
@@ -31,6 +30,7 @@ type SlippageItem = {
 };
 
 const SelectableItem: React.FC<{
+  children: React.ReactNode;
   item?: SlippageItem;
   onPress: () => void;
   isSelected?: boolean;
@@ -154,12 +154,12 @@ export const SwapSettings: React.FC<{
             >
               Slippage tolerance
             </BrandText>
-            <CustomPressable
+            <Pressable
               onHoverIn={() => setInfoVisible(true)}
               onHoverOut={() => setInfoVisible(false)}
             >
               <SVG source={infoSVG} width={16} height={16} />
-            </CustomPressable>
+            </Pressable>
           </View>
 
           <TertiaryBox

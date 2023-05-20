@@ -1,5 +1,6 @@
 import MaskedView from "@react-native-masked-view/masked-view";
 import { LinearGradient } from "expo-linear-gradient";
+import { ComponentProps } from "react";
 import { StyleProp, StyleSheet, TextStyle } from "react-native";
 
 import {
@@ -29,6 +30,7 @@ export type GradientType =
   | "grayLight";
 
 export interface GradientTextProps {
+  children: ComponentProps<typeof BrandText>["children"];
   style?: StyleProp<
     Pick<
       TextStyle,

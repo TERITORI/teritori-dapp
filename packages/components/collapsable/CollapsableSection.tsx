@@ -26,6 +26,7 @@ import { TertiaryBox } from "../boxes/TertiaryBox";
 import { SpacerRow } from "../spacer";
 
 type CollapsableSectionProps = {
+  children: React.ReactNode;
   title: string;
   icon: React.FC<SvgProps>;
   isExpandedByDefault?: boolean;

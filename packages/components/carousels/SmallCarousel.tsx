@@ -69,14 +69,7 @@ const NextButton: React.FC<ButtonProps> = ({
 export const SmallCarousel: React.FC<TCarouselProps & { height: number }> = (
   props
 ) => {
-  const {
-    children,
-    width = 0,
-    height = 0,
-    style,
-    data,
-    ...carouselProps
-  } = props;
+  const { width = 0, height = 0, style, data, ...carouselProps } = props;
   // loop is true by default in Carousel, so we need to override SmallCarousel props.loop like this
   const isLoop = props.loop === undefined || props.loop;
 

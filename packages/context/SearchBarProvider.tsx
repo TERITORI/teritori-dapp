@@ -27,7 +27,9 @@ const defaultValue: SearchBarContextValue = {
 
 const SearchBarContext = createContext(defaultValue);
 
-export const SearchBarContextProvider: React.FC = ({ children }) => {
+export const SearchBarContextProvider: React.FC<{
+  children: React.ReactNode;
+}> = ({ children }) => {
   // The entered isSidebarExpanded
   const [isSearchModalMobileOpen, setSearchModalMobileOpen] = useState<boolean>(
     defaultValue.isSearchModalMobileOpen

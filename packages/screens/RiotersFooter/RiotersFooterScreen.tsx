@@ -298,7 +298,7 @@ export const RiotersFooterScreen: React.FC = () => {
   );
 
   const onReceiveDragDrop = useCallback(
-    (event) => {
+    (event: any) => {
       const nft: NFT = JSON.parse(event.dragged.payload);
       if (
         !nftDroped ||

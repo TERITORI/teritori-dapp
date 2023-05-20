@@ -1,5 +1,5 @@
-import React from "react";
-import { Image, FlatList, View } from "react-native";
+import React, { useState } from "react";
+import { Image, FlatList, View, Pressable } from "react-native";
 
 import { GameContentView } from "./component/GameContentView";
 import { RipperAvatar } from "./component/RipperAvatar";
@@ -9,7 +9,6 @@ import addCircleFilledSVG from "../../../assets/icons/add-circle-filled.svg";
 import { BrandText } from "../../components/BrandText";
 import FlexRow from "../../components/FlexRow";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
-import { CustomPressable } from "../../components/buttons/CustomPressable";
 import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
 import { useRippers } from "../../hooks/riotGame/useRippers";
 import { isNFTStaked } from "../../utils/game";
@@ -33,18 +32,7 @@ export const RiotGameInventoryScreen = () => {
         <View style={{ opacity: 0.6, marginTop: layout.padding_x4 }}>
           <FlexRow justifyContent="space-between" alignItems="center">
             <BrandText style={fontMedium32}>Available Items</BrandText>
-
-            <CustomPressable>
-              {({ hovered }): React.ReactElement => (
-                <PrimaryButtonOutline
-                  disabled
-                  color={yellowDefault}
-                  size="SM"
-                  text={hovered ? "Coming soon" : "Fusion"}
-                  iconSVG={addCircleFilledSVG}
-                />
-              )}
-            </CustomPressable>
+            <FusionButton />
           </FlexRow>
 
           <FlatList
@@ -68,7 +56,6 @@ export const RiotGameInventoryScreen = () => {
             }}
           />
         </View>
-
         <View style={{ minWidth: "500px", marginTop: layout.padding_x4 }}>
           <FlexRow
             style={{ justifyContent: "space-between", alignItems: "center" }}
@@ -106,7 +93,26 @@ export const RiotGameInventoryScreen = () => {
             }}
           />
         </View>
+        Ò
       </FlexRow>
     </GameContentView>
+  );
+};
+
+const FusionButton: React.FC = () => {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <Pressable
+      onHoverIn={() => setHovered(true)}
+      onHoverOut={() => setHovered(false)}
+    >
+      <PrimaryButtonOutline
+        disabled
+        color={yellowDefault}
+        size="SM"
+        text={hovered ? "Coming soon" : "Fusion"}
+        iconSVG={addCircleFilledSVG}
+      />
+    </Pressable>
   );
 };

@@ -18,7 +18,9 @@ const defaultValue: DefaultValue = {
 
 const TNSMetaDataListContext = createContext(defaultValue);
 
-export const TNSMetaDataListContextProvider: React.FC = ({ children }) => {
+export const TNSMetaDataListContextProvider: React.FC<{
+  children: React.ReactNode;
+}> = ({ children }) => {
   // The entered name
   const [metaDataList, setMetaDataList] = useState<
     DefaultValue["metaDataList"]

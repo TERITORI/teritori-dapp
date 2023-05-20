@@ -1,5 +1,11 @@
-import React from "react";
-import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
+import React, { useState } from "react";
+import {
+  Image,
+  Pressable,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 import { TopMenuSection } from "./TopMenuSection";
 import orgGnoPunksPNG from "../../../assets/default-images/orgGnopunks.png";
@@ -15,7 +21,6 @@ import { BrandText } from "../BrandText";
 import FlexCol from "../FlexCol";
 import FlexRow from "../FlexRow";
 import { TertiaryBox } from "../boxes/TertiaryBox";
-import { CustomPressable } from "../buttons/CustomPressable";
 import { SmallCarousel } from "../carousels/SmallCarousel";
 
 //TODO: Make SmallCarousel with items auto sized instead of fix widths
@@ -83,32 +88,32 @@ const OrgsComingSoon: React.FC = () => (
   </>
 );
 
-//TODO: Remove CustomPressable and OrgsComingSoon when the Multisig feature is available
+//TODO: Remove Pressable and OrgsComingSoon when the Multisig feature is available
 
 export const TopMenuMyTeritories: React.FC = () => {
+  const [hovered, setHovered] = useState(false);
   return (
     <TopMenuSection title="My Teritories" isCarousel>
-      <CustomPressable>
-        {({ hovered }) => (
-          <>
-            <SmallCarousel
-              style={{
-                width: topMenuWidth - 2,
-              }}
-              width={ORG_CARD_WIDTH + layout.padding_x1_5}
-              data={fakeOrgs}
-              height={48}
-              loop={false}
-              renderItem={({ item }) => (
-                <View style={{ alignItems: "flex-end" }}>
-                  <OrgCard organization={item} />
-                </View>
-              )}
-            />
-            {hovered && <OrgsComingSoon />}
-          </>
-        )}
-      </CustomPressable>
+      <Pressable
+        onHoverIn={() => setHovered(true)}
+        onHoverOut={() => setHovered(false)}
+      >
+        <SmallCarousel
+          style={{
+            width: topMenuWidth - 2,
+          }}
+          width={ORG_CARD_WIDTH + layout.padding_x1_5}
+          data={fakeOrgs}
+          height={48}
+          loop={false}
+          renderItem={({ item }) => (
+            <View style={{ alignItems: "flex-end" }}>
+              <OrgCard organization={item} />
+            </View>
+          )}
+        />
+        {hovered && <OrgsComingSoon />}
+      </Pressable>
     </TopMenuSection>
   );
 };

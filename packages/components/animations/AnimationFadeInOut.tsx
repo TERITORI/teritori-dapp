@@ -8,6 +8,7 @@ import Animated, {
 } from "react-native-reanimated";
 
 interface AnimationFadeInOutProps {
+  children: React.ReactNode;
   visible: boolean;
   style?: StyleProp<ViewStyle>;
   duration?: number;

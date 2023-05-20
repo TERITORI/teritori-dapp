@@ -41,6 +41,7 @@ export const MobileTitle: FC<{ title: string }> = ({ title }) => {
 };
 
 export const ScreenContainerMobile: FC<{
+  children: React.ReactNode;
   networkFilter: (n: NetworkInfo) => boolean;
   // hasScroll: Pages like Home, !hasScroll: Pages like Feed
   hasScroll: boolean;

@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   LayoutRectangle,
+  Pressable,
   StyleProp,
   StyleSheet,
   View,
@@ -42,7 +43,6 @@ import { tinyAddress } from "../../../utils/text";
 import FlexRow from "../../FlexRow";
 import { AnimationFadeIn } from "../../animations/AnimationFadeIn";
 import { AnimationFadeInOut } from "../../animations/AnimationFadeInOut";
-import { CustomPressable } from "../../buttons/CustomPressable";
 import { PrimaryButtonOutline } from "../../buttons/PrimaryButtonOutline";
 import {
   CommentsContainer,
@@ -191,7 +191,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
   };
 
   return (
-    <CustomPressable
+    <Pressable
       onLayout={(e) => setViewWidth(e.nativeEvent.layout.width)}
       disabled={!!localComment.isInLocal}
       onPress={() =>
@@ -344,7 +344,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
           )}
         </AnimationFadeIn>
       )}
-    </CustomPressable>
+    </Pressable>
   );
 };
 

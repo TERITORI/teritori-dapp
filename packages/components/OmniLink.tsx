@@ -4,7 +4,6 @@ import {
   Platform,
   StyleProp,
   TouchableOpacity,
-  TouchableOpacityProps,
   View,
   ViewStyle,
 } from "react-native";
@@ -16,9 +15,9 @@ export interface OmniLinkToType {
 
 export const OmniLink: React.FC<{
   to: OmniLinkToType;
-  action?: any | undefined;
+  action?: any | undefined; // FIXME: remove any
   children: ReactNode | undefined;
-  style?: StyleProp<ViewStyle | TouchableOpacityProps>;
+  style?: StyleProp<ViewStyle>;
   disabled?: boolean;
 }> = ({ to, action, children, style, disabled }) => {
   // @ts-ignore
@@ -37,8 +36,8 @@ export const OmniLink: React.FC<{
         // and allow to use onClick in this special case
         // @ts-ignore
         onClick={!disabled ? onPress : null}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
+        onHoverIn={() => setIsHovered(true)}
+        onHoverOut={() => setIsHovered(false)}
         style={[
           {
             transitionDuration: "150ms",

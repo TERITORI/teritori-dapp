@@ -11,7 +11,9 @@ const transactionModalContext =
     setVisible: () => {},
   });
 
-export const TransactionModalsProvider: React.FC = ({ children }) => {
+export const TransactionModalsProvider: React.FC<{
+  children: React.ReactNode;
+}> = ({ children }) => {
   const [visible, setVisible] = useState(false);
   const value = useMemo(() => {
     return {

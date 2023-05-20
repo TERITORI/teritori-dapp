@@ -25,6 +25,8 @@ import { THUMBNAIL_WIDTH } from "../socialFeed/SocialThread/SocialMessageContent
 export const AudioView: React.FC<{
   file: RemoteFileData;
 }> = ({ file }) => {
+  console.trace();
+
   const { width } = useMaxResolution();
   const [sound, setSound] = useState<Audio.Sound>();
   const [playbackStatus, setPlaybackStatus] = useState<AVPlaybackStatus>();

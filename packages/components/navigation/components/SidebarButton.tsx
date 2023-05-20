@@ -26,7 +26,6 @@ import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
 import { SVGorImageIcon } from "../../SVG/SVGorImageIcon";
-import { CustomPressable } from "../../buttons/CustomPressable";
 import { SpacerRow } from "../../spacer";
 import { SidebarType } from "../types";
 
@@ -46,6 +45,7 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
   // variables
   const { isSidebarExpanded } = useSidebar();
   const { name: currentRouteName } = useRoute();
+  const [hovered, setHovered] = useState(false);
   const allNestedRoutes = useMemo(
     () => nested && Object.values(nested).map((d) => d.route),
     [nested]
@@ -128,76 +128,71 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
 
   // returns
   return (
-    <CustomPressable
+    <Pressable
       onPress={isComingSoon ? () => {} : onPress && (() => onPress(route))}
       disabled={isSelected}
       style={styles.container}
+      onHoverIn={() => setHovered(true)}
+      onHoverOut={() => setHovered(false)}
     >
-      {({ hovered }) => (
-        <View>
-          <View style={styles.titleContainer}>
-            {isSelected && <SideNotch style={{ left: -layout.padding_x2 }} />}
-            <View
+      <View>
+        <View style={styles.titleContainer}>
+          {isSelected && <SideNotch style={{ left: -layout.padding_x2 }} />}
+          <View
+            style={[
+              styles.svgContainer,
+              isSelected && { borderColor: primaryColor },
+              isComingSoon && { opacity: 0.5 },
+            ]}
+          >
+            <SVGorImageIcon icon={icon} iconSize={iconSize} />
+          </View>
+          <SpacerRow size={2} />
+          <Animated.View style={[styles.rowCenter, opacityStyle]}>
+            <BrandText
               style={[
-                styles.svgContainer,
-                isSelected && { borderColor: primaryColor },
-                isComingSoon && { opacity: 0.5 },
+                fontSemibold12,
+                (isSelected || isComingSoon) && { color: neutral77 },
               ]}
             >
-              <SVGorImageIcon icon={icon} iconSize={iconSize} />
-            </View>
-            <SpacerRow size={2} />
-            <Animated.View style={[styles.rowCenter, opacityStyle]}>
-              <BrandText
-                style={[
-                  fontSemibold12,
-                  (isSelected || isComingSoon) && { color: neutral77 },
-                ]}
-              >
-                {isComingSoon && hovered ? "Coming Soon" : title}
-              </BrandText>
-              {nested && (
-                // <Animated.View style={rotateStyle}>
-                <Animated.View>
-                  <Pressable
-                    style={styles.chevron}
-                    onPress={toggleNestedSidebar}
-                  >
-                    <SVG
-                      source={
-                        isNestedBarExpanded ? chevronUpSVG : chevronDownSVG
-                      }
-                      height={16}
-                      width={16}
-                      color={secondaryColor}
-                    />
-                  </Pressable>
-                </Animated.View>
-              )}
-            </Animated.View>
-          </View>
-
-          {nested && isNestedBarExpanded && (
-            // <Animated.View style={nestedBarStyle}>
-            <Animated.View>
-              <View style={styles.nestedContainer}>
-                {Object.values(nested).map((n) => (
-                  <SidebarNestedButton
-                    key={n.title}
-                    {...n}
-                    onPress={
-                      n.route === "ComingSoon"
-                        ? () => {}
-                        : onPress && (() => onPress(n.route))
-                    }
+              {isComingSoon && hovered ? "Coming Soon" : title}
+            </BrandText>
+            {nested && (
+              // <Animated.View style={rotateStyle}>
+              <Animated.View>
+                <Pressable style={styles.chevron} onPress={toggleNestedSidebar}>
+                  <SVG
+                    source={isNestedBarExpanded ? chevronUpSVG : chevronDownSVG}
+                    height={16}
+                    width={16}
+                    color={secondaryColor}
                   />
-                ))}
-              </View>
-            </Animated.View>
-          )}
+                </Pressable>
+              </Animated.View>
+            )}
+          </Animated.View>
         </View>
-      )}
-    </CustomPressable>
+
+        {nested && isNestedBarExpanded && (
+          // <Animated.View style={nestedBarStyle}>
+          <Animated.View>
+            <View style={styles.nestedContainer}>
+              {Object.values(nested).map((n) => (
+                <SidebarNestedButton
+                  key={n.title}
+                  {...n}
+                  onPress={
+                    n.route === "ComingSoon"
+                      ? () => {}
+                      : onPress && (() => onPress(n.route))
+                  }
+                />
+              ))}
+            </View>
+          </Animated.View>
+        )}
+      </View>
+    </Pressable>
   );
 };
 

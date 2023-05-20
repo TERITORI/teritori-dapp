@@ -13,6 +13,7 @@ import { LoaderFullScreen } from "../../../components/loaders/LoaderFullScreen";
 import { neutral00 } from "../../../utils/style/colors";
 
 type GameContentViewProps = {
+  children: React.ReactNode;
   containerStyle?: ViewStyle;
   contentStyle?: ViewStyle;
   bgImage?: ImageSourcePropType;

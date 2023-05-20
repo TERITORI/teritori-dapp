@@ -3,6 +3,7 @@ import {
   ActivityIndicator,
   FlatList,
   Image,
+  Pressable,
   StyleProp,
   StyleSheet,
   TextInput,
@@ -23,7 +24,6 @@ import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { IconBox } from "../IconBox";
-import { CustomPressable } from "../buttons/CustomPressable";
 import { SpacerColumn } from "../spacer";
 
 type GIFSelectorProps = {
@@ -139,12 +139,12 @@ export const GIFSelector: React.FC<GIFSelectorProps> = ({
             keyExtractor={(item) => item.id}
             numColumns={4}
             renderItem={({ item }) => (
-              <CustomPressable onPress={() => onPressItem(item)}>
+              <Pressable onPress={() => onPressItem(item)}>
                 <Image
                   source={{ uri: item.media_formats["gif"].url }}
                   style={styles.gif}
                 />
-              </CustomPressable>
+              </Pressable>
             )}
             ListFooterComponent={
               isLoading

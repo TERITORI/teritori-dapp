@@ -301,10 +301,12 @@ export const NewsFeedInput = React.forwardRef<
         }
       } catch (err) {
         console.error("post submit err", err);
-        setToastError({
-          title: "Post creation failed",
-          message: err.message,
-        });
+        if (err instanceof Error) {
+          setToastError({
+            title: "Post creation failed",
+            message: err.message,
+          });
+        }
       }
       setLoading(false);
     };
