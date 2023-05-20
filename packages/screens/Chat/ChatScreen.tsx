@@ -8,8 +8,7 @@ import { createWeshClient } from "../../weshnet";
 
 /*
   To test this:
-  - clone this branch https://github.com/TERITORI/weshnet/tree/first-contact
-  - run `go run ./cmd/weshd` at weshnet root
+  - run `go run ./go/cmd/weshd` at root
   - navigate to `/chat` in teritori ui
   - click `Test` button
 */

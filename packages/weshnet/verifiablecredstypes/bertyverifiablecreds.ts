@@ -148,52 +148,31 @@ export const StateChallenge = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): StateChallenge {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseStateChallenge();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.timestamp = reader.bytes();
-          continue;
+          break;
         case 2:
-          if (tag !== 18) {
-            break;
-          }
-
           message.nonce = reader.bytes();
-          continue;
+          break;
         case 3:
-          if (tag !== 26) {
-            break;
-          }
-
           message.bertyLink = reader.string();
-          continue;
+          break;
         case 4:
-          if (tag !== 34) {
-            break;
-          }
-
           message.redirectUri = reader.string();
-          continue;
+          break;
         case 5:
-          if (tag !== 42) {
-            break;
-          }
-
           message.state = reader.string();
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -218,10 +197,6 @@ export const StateChallenge = {
     message.redirectUri !== undefined && (obj.redirectUri = message.redirectUri);
     message.state !== undefined && (obj.state = message.state);
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<StateChallenge>, I>>(base?: I): StateChallenge {
-    return StateChallenge.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<StateChallenge>, I>>(object: I): StateChallenge {
@@ -274,66 +249,37 @@ export const StateCode = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): StateCode {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseStateCode();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.timestamp = reader.bytes();
-          continue;
+          break;
         case 2:
-          if (tag !== 18) {
-            break;
-          }
-
           message.bertyLink = reader.string();
-          continue;
+          break;
         case 3:
-          if (tag !== 24) {
-            break;
-          }
-
           message.codeStrategy = reader.int32() as any;
-          continue;
+          break;
         case 4:
-          if (tag !== 34) {
-            break;
-          }
-
           message.identifier = reader.string();
-          continue;
+          break;
         case 5:
-          if (tag !== 42) {
-            break;
-          }
-
           message.code = reader.string();
-          continue;
+          break;
         case 6:
-          if (tag !== 50) {
-            break;
-          }
-
           message.redirectUri = reader.string();
-          continue;
+          break;
         case 7:
-          if (tag !== 58) {
-            break;
-          }
-
           message.state = reader.string();
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -363,10 +309,6 @@ export const StateCode = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<StateCode>, I>>(base?: I): StateCode {
-    return StateCode.fromPartial(base ?? {});
-  },
-
   fromPartial<I extends Exact<DeepPartial<StateCode>, I>>(object: I): StateCode {
     const message = createBaseStateCode();
     message.timestamp = object.timestamp ?? new Uint8Array();
@@ -393,24 +335,19 @@ export const AccountCryptoChallenge = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): AccountCryptoChallenge {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseAccountCryptoChallenge();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.challenge = reader.string();
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -425,10 +362,6 @@ export const AccountCryptoChallenge = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<AccountCryptoChallenge>, I>>(base?: I): AccountCryptoChallenge {
-    return AccountCryptoChallenge.fromPartial(base ?? {});
-  },
-
   fromPartial<I extends Exact<DeepPartial<AccountCryptoChallenge>, I>>(object: I): AccountCryptoChallenge {
     const message = createBaseAccountCryptoChallenge();
     message.challenge = object.challenge ?? "";
@@ -439,7 +372,7 @@ export const AccountCryptoChallenge = {
 declare var self: any | undefined;
 declare var window: any | undefined;
 declare var global: any | undefined;
-var tsProtoGlobalThis: any = (() => {
+var globalThis: any = (() => {
   if (typeof globalThis !== "undefined") {
     return globalThis;
   }
@@ -456,10 +389,10 @@ var tsProtoGlobalThis: any = (() => {
 })();
 
 function bytesFromBase64(b64: string): Uint8Array {
-  if (tsProtoGlobalThis.Buffer) {
-    return Uint8Array.from(tsProtoGlobalThis.Buffer.from(b64, "base64"));
+  if (globalThis.Buffer) {
+    return Uint8Array.from(globalThis.Buffer.from(b64, "base64"));
   } else {
-    const bin = tsProtoGlobalThis.atob(b64);
+    const bin = globalThis.atob(b64);
     const arr = new Uint8Array(bin.length);
     for (let i = 0; i < bin.length; ++i) {
       arr[i] = bin.charCodeAt(i);
@@ -469,14 +402,14 @@ function bytesFromBase64(b64: string): Uint8Array {
 }
 
 function base64FromBytes(arr: Uint8Array): string {
-  if (tsProtoGlobalThis.Buffer) {
-    return tsProtoGlobalThis.Buffer.from(arr).toString("base64");
+  if (globalThis.Buffer) {
+    return globalThis.Buffer.from(arr).toString("base64");
   } else {
     const bin: string[] = [];
     arr.forEach((byte) => {
       bin.push(String.fromCharCode(byte));
     });
-    return tsProtoGlobalThis.btoa(bin.join(""));
+    return globalThis.btoa(bin.join(""));
   }
 }
 
