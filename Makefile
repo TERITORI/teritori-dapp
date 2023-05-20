@@ -31,13 +31,21 @@ node_modules: package.json yarn.lock
 	touch $@
 
 .PHONY: generate
-generate: generate.protobuf generate.graphql generate.contracts-clients generate.go-networks networks.json
+generate: generate.protobuf generate.weshnet generate.graphql generate.contracts-clients generate.go-networks networks.json
 
 .PHONY: generate.protobuf
 generate.protobuf: node_modules
 	go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28
 	go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2
 	buf generate api
+
+.PHONY: generate.weshnet
+generate.weshnet: node_modules
+	go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28
+	go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2
+	buf generate buf.build/berty/weshnet -o .weshgen
+	cp -r .weshgen/packages/api/ packages/weshnet/
+	rm -fr .weshgen
 
 .PHONY: generate.graphql
 generate.graphql:
