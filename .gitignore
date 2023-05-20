@@ -78,3 +78,7 @@ buck-out/
 .expo/
 
 # @end expo-cli
+
+
+# codegen
+/.weshgen/
