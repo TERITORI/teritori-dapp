@@ -26,7 +26,7 @@ export const TopMenuLiveMint: React.FC = () => {
       networkId: selectedNetworkId,
       sortDirection: SortDirection.SORT_DIRECTION_DESCENDING,
       upcoming: false,
-      sort: Sort.SORTING_VOLUME,
+      sort: Sort.SORT_VOLUME,
       limit: 16,
       offset: 0,
       mintState: MintState.MINT_STATE_RUNNING,

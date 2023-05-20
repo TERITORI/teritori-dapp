@@ -30,8 +30,8 @@ type MarketplaceServiceClient interface {
 	NFTPriceHistory(ctx context.Context, in *NFTPriceHistoryRequest, opts ...grpc.CallOption) (*NFTPriceHistoryResponse, error)
 	Banners(ctx context.Context, in *BannersRequest, opts ...grpc.CallOption) (*BannersResponse, error)
 	News(ctx context.Context, in *NewsRequest, opts ...grpc.CallOption) (*NewsResponse, error)
-	DApps(ctx context.Context, in *DAppsStoreRequest, opts ...grpc.CallOption) (*DAppResponse, error)
-	DAppsGroups(ctx context.Context, in *DAppsStoreRequest, opts ...grpc.CallOption) (*DAppGroupsResponse, error)
+	DApps(ctx context.Context, in *DAppsRequest, opts ...grpc.CallOption) (*DAppsResponse, error)
+	DAppsGroups(ctx context.Context, in *DAppsGroupsRequest, opts ...grpc.CallOption) (*DAppsGroupsResponse, error)
 	SearchNames(ctx context.Context, in *SearchNamesRequest, opts ...grpc.CallOption) (*SearchNamesResponse, error)
 	SearchCollections(ctx context.Context, in *SearchCollectionsRequest, opts ...grpc.CallOption) (*SearchCollectionsResponse, error)
 }
@@ -208,8 +208,8 @@ func (c *marketplaceServiceClient) News(ctx context.Context, in *NewsRequest, op
 	return out, nil
 }
 
-func (c *marketplaceServiceClient) DApps(ctx context.Context, in *DAppsStoreRequest, opts ...grpc.CallOption) (*DAppResponse, error) {
-	out := new(DAppResponse)
+func (c *marketplaceServiceClient) DApps(ctx context.Context, in *DAppsRequest, opts ...grpc.CallOption) (*DAppsResponse, error) {
+	out := new(DAppsResponse)
 	err := c.cc.Invoke(ctx, "/marketplace.v1.MarketplaceService/DApps", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -217,8 +217,8 @@ func (c *marketplaceServiceClient) DApps(ctx context.Context, in *DAppsStoreRequ
 	return out, nil
 }
 
-func (c *marketplaceServiceClient) DAppsGroups(ctx context.Context, in *DAppsStoreRequest, opts ...grpc.CallOption) (*DAppGroupsResponse, error) {
-	out := new(DAppGroupsResponse)
+func (c *marketplaceServiceClient) DAppsGroups(ctx context.Context, in *DAppsGroupsRequest, opts ...grpc.CallOption) (*DAppsGroupsResponse, error) {
+	out := new(DAppsGroupsResponse)
 	err := c.cc.Invoke(ctx, "/marketplace.v1.MarketplaceService/DAppsGroups", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -256,8 +256,8 @@ type MarketplaceServiceServer interface {
 	NFTPriceHistory(context.Context, *NFTPriceHistoryRequest) (*NFTPriceHistoryResponse, error)
 	Banners(context.Context, *BannersRequest) (*BannersResponse, error)
 	News(context.Context, *NewsRequest) (*NewsResponse, error)
-	DApps(context.Context, *DAppsStoreRequest) (*DAppResponse, error)
-	DAppsGroups(context.Context, *DAppsStoreRequest) (*DAppGroupsResponse, error)
+	DApps(context.Context, *DAppsRequest) (*DAppsResponse, error)
+	DAppsGroups(context.Context, *DAppsGroupsRequest) (*DAppsGroupsResponse, error)
 	SearchNames(context.Context, *SearchNamesRequest) (*SearchNamesResponse, error)
 	SearchCollections(context.Context, *SearchCollectionsRequest) (*SearchCollectionsResponse, error)
 	mustEmbedUnimplementedMarketplaceServiceServer()
@@ -291,10 +291,10 @@ func (UnimplementedMarketplaceServiceServer) Banners(context.Context, *BannersRe
 func (UnimplementedMarketplaceServiceServer) News(context.Context, *NewsRequest) (*NewsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method News not implemented")
 }
-func (UnimplementedMarketplaceServiceServer) DApps(context.Context, *DAppsStoreRequest) (*DAppResponse, error) {
+func (UnimplementedMarketplaceServiceServer) DApps(context.Context, *DAppsRequest) (*DAppsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DApps not implemented")
 }
-func (UnimplementedMarketplaceServiceServer) DAppsGroups(context.Context, *DAppsStoreRequest) (*DAppGroupsResponse, error) {
+func (UnimplementedMarketplaceServiceServer) DAppsGroups(context.Context, *DAppsGroupsRequest) (*DAppsGroupsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DAppsGroups not implemented")
 }
 func (UnimplementedMarketplaceServiceServer) SearchNames(context.Context, *SearchNamesRequest) (*SearchNamesResponse, error) {
@@ -473,7 +473,7 @@ func _MarketplaceService_News_Handler(srv interface{}, ctx context.Context, dec 
 }
 
 func _MarketplaceService_DApps_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DAppsStoreRequest)
+	in := new(DAppsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -485,13 +485,13 @@ func _MarketplaceService_DApps_Handler(srv interface{}, ctx context.Context, dec
 		FullMethod: "/marketplace.v1.MarketplaceService/DApps",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MarketplaceServiceServer).DApps(ctx, req.(*DAppsStoreRequest))
+		return srv.(MarketplaceServiceServer).DApps(ctx, req.(*DAppsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _MarketplaceService_DAppsGroups_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DAppsStoreRequest)
+	in := new(DAppsGroupsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -503,7 +503,7 @@ func _MarketplaceService_DAppsGroups_Handler(srv interface{}, ctx context.Contex
 		FullMethod: "/marketplace.v1.MarketplaceService/DAppsGroups",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MarketplaceServiceServer).DAppsGroups(ctx, req.(*DAppsStoreRequest))
+		return srv.(MarketplaceServiceServer).DAppsGroups(ctx, req.(*DAppsGroupsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }

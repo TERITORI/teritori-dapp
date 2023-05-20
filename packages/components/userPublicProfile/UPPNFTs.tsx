@@ -32,7 +32,7 @@ const SelectedTabContent: React.FC<{
     ownerId: userId,
     limit: alignDown(20, numColumns) || numColumns,
     offset: 0,
-    sort: Sort.SORTING_PRICE,
+    sort: Sort.SORT_PRICE,
     sortDirection: SortDirection.SORT_DIRECTION_ASCENDING,
   };
 
