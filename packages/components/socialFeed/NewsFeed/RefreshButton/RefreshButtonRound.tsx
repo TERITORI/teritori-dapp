@@ -20,6 +20,7 @@ import {
   RESPONSIVE_BREAKPOINT_S,
 } from "../../../../utils/style/layout";
 import { SVG } from "../../../SVG";
+import { ROUND_BUTTON_WIDTH_L, ROUND_BUTTON_WIDTH_S } from "../NewsFeed";
 
 interface RefreshButtonProps {
   isRefreshing: SharedValue<boolean>;
@@ -79,8 +80,14 @@ export const RefreshButtonRound: React.FC<RefreshButtonProps> = ({
       padding: layout.padding_x1_5,
 
       justifyContent: "center",
-      width: width < RESPONSIVE_BREAKPOINT_S ? 40 : 68,
-      height: width < RESPONSIVE_BREAKPOINT_S ? 40 : 68,
+      width:
+        width < RESPONSIVE_BREAKPOINT_S
+          ? ROUND_BUTTON_WIDTH_S
+          : ROUND_BUTTON_WIDTH_L,
+      height:
+        width < RESPONSIVE_BREAKPOINT_S
+          ? ROUND_BUTTON_WIDTH_S
+          : ROUND_BUTTON_WIDTH_L,
     },
     textContainer: {
       marginLeft: layout.padding_x1_5,

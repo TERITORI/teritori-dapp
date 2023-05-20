@@ -27,7 +27,7 @@ export const useRippers = () => {
     ownerId: selectedWallet?.userId || "",
     limit: 1000,
     offset: 0,
-    sort: Sort.SORTING_UNSPECIFIED,
+    sort: Sort.SORT_UNSPECIFIED,
     sortDirection: SortDirection.SORT_DIRECTION_UNSPECIFIED,
   };
 
