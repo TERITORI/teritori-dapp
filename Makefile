@@ -54,6 +54,7 @@ lint: lint.buf lint.js
 .PHONY: lint.buf
 lint.buf:
 	buf lint api
+	buf breaking --against 'https://github.com/TERITORI/teritori-dapp.git#branch=main' --path api
 
 .PHONY: lint.js
 lint.js: node_modules
