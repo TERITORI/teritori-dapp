@@ -23,6 +23,9 @@ jobs:
       
       - uses: bufbuild/buf-setup-action@v1.8.0
 
+      - name: Buf lint
+        run: make lint.buf
+
       - name: Install node modules
         run: yarn
 
