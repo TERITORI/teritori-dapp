@@ -9,31 +9,31 @@ import { share } from "rxjs/operators";
 export const protobufPackage = "marketplace.v1";
 
 export enum Sort {
-  SORTING_UNSPECIFIED = 0,
-  SORTING_PRICE = 1,
-  SORTING_VOLUME = 2,
-  SORTING_MARKET_CAP = 3,
-  SORTING_CREATED_AT = 4,
+  SORT_UNSPECIFIED = 0,
+  SORT_PRICE = 1,
+  SORT_VOLUME = 2,
+  SORT_MARKET_CAP = 3,
+  SORT_CREATED_AT = 4,
   UNRECOGNIZED = -1,
 }
 
 export function sortFromJSON(object: any): Sort {
   switch (object) {
     case 0:
-    case "SORTING_UNSPECIFIED":
-      return Sort.SORTING_UNSPECIFIED;
+    case "SORT_UNSPECIFIED":
+      return Sort.SORT_UNSPECIFIED;
     case 1:
-    case "SORTING_PRICE":
-      return Sort.SORTING_PRICE;
+    case "SORT_PRICE":
+      return Sort.SORT_PRICE;
     case 2:
-    case "SORTING_VOLUME":
-      return Sort.SORTING_VOLUME;
+    case "SORT_VOLUME":
+      return Sort.SORT_VOLUME;
     case 3:
-    case "SORTING_MARKET_CAP":
-      return Sort.SORTING_MARKET_CAP;
+    case "SORT_MARKET_CAP":
+      return Sort.SORT_MARKET_CAP;
     case 4:
-    case "SORTING_CREATED_AT":
-      return Sort.SORTING_CREATED_AT;
+    case "SORT_CREATED_AT":
+      return Sort.SORT_CREATED_AT;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -43,16 +43,16 @@ export function sortFromJSON(object: any): Sort {
 
 export function sortToJSON(object: Sort): string {
   switch (object) {
-    case Sort.SORTING_UNSPECIFIED:
-      return "SORTING_UNSPECIFIED";
-    case Sort.SORTING_PRICE:
-      return "SORTING_PRICE";
-    case Sort.SORTING_VOLUME:
-      return "SORTING_VOLUME";
-    case Sort.SORTING_MARKET_CAP:
-      return "SORTING_MARKET_CAP";
-    case Sort.SORTING_CREATED_AT:
-      return "SORTING_CREATED_AT";
+    case Sort.SORT_UNSPECIFIED:
+      return "SORT_UNSPECIFIED";
+    case Sort.SORT_PRICE:
+      return "SORT_PRICE";
+    case Sort.SORT_VOLUME:
+      return "SORT_VOLUME";
+    case Sort.SORT_MARKET_CAP:
+      return "SORT_MARKET_CAP";
+    case Sort.SORT_CREATED_AT:
+      return "SORT_CREATED_AT";
     case Sort.UNRECOGNIZED:
     default:
       return "UNRECOGNIZED";
@@ -336,15 +336,18 @@ export interface NewsResponse {
   news: News[];
 }
 
-export interface DAppsStoreRequest {
+export interface DAppsRequest {
 }
 
-export interface DAppGroupsResponse {
-  group: DAppGroup[];
-}
-
-export interface DAppResponse {
+export interface DAppsResponse {
   group: DApp[];
+}
+
+export interface DAppsGroupsRequest {
+}
+
+export interface DAppsGroupsResponse {
+  group: DAppGroup[];
 }
 
 export interface SearchNamesRequest {
@@ -2597,19 +2600,19 @@ export const NewsResponse = {
   },
 };
 
-function createBaseDAppsStoreRequest(): DAppsStoreRequest {
+function createBaseDAppsRequest(): DAppsRequest {
   return {};
 }
 
-export const DAppsStoreRequest = {
-  encode(_: DAppsStoreRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const DAppsRequest = {
+  encode(_: DAppsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): DAppsStoreRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): DAppsRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseDAppsStoreRequest();
+    const message = createBaseDAppsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -2621,88 +2624,37 @@ export const DAppsStoreRequest = {
     return message;
   },
 
-  fromJSON(_: any): DAppsStoreRequest {
+  fromJSON(_: any): DAppsRequest {
     return {};
   },
 
-  toJSON(_: DAppsStoreRequest): unknown {
+  toJSON(_: DAppsRequest): unknown {
     const obj: any = {};
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<DAppsStoreRequest>, I>>(_: I): DAppsStoreRequest {
-    const message = createBaseDAppsStoreRequest();
+  fromPartial<I extends Exact<DeepPartial<DAppsRequest>, I>>(_: I): DAppsRequest {
+    const message = createBaseDAppsRequest();
     return message;
   },
 };
 
-function createBaseDAppGroupsResponse(): DAppGroupsResponse {
+function createBaseDAppsResponse(): DAppsResponse {
   return { group: [] };
 }
 
-export const DAppGroupsResponse = {
-  encode(message: DAppGroupsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    for (const v of message.group) {
-      DAppGroup.encode(v!, writer.uint32(10).fork()).ldelim();
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): DAppGroupsResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseDAppGroupsResponse();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.group.push(DAppGroup.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): DAppGroupsResponse {
-    return { group: Array.isArray(object?.group) ? object.group.map((e: any) => DAppGroup.fromJSON(e)) : [] };
-  },
-
-  toJSON(message: DAppGroupsResponse): unknown {
-    const obj: any = {};
-    if (message.group) {
-      obj.group = message.group.map((e) => e ? DAppGroup.toJSON(e) : undefined);
-    } else {
-      obj.group = [];
-    }
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<DAppGroupsResponse>, I>>(object: I): DAppGroupsResponse {
-    const message = createBaseDAppGroupsResponse();
-    message.group = object.group?.map((e) => DAppGroup.fromPartial(e)) || [];
-    return message;
-  },
-};
-
-function createBaseDAppResponse(): DAppResponse {
-  return { group: [] };
-}
-
-export const DAppResponse = {
-  encode(message: DAppResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const DAppsResponse = {
+  encode(message: DAppsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.group) {
       DApp.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): DAppResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): DAppsResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseDAppResponse();
+    const message = createBaseDAppsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -2717,11 +2669,11 @@ export const DAppResponse = {
     return message;
   },
 
-  fromJSON(object: any): DAppResponse {
+  fromJSON(object: any): DAppsResponse {
     return { group: Array.isArray(object?.group) ? object.group.map((e: any) => DApp.fromJSON(e)) : [] };
   },
 
-  toJSON(message: DAppResponse): unknown {
+  toJSON(message: DAppsResponse): unknown {
     const obj: any = {};
     if (message.group) {
       obj.group = message.group.map((e) => e ? DApp.toJSON(e) : undefined);
@@ -2731,9 +2683,99 @@ export const DAppResponse = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<DAppResponse>, I>>(object: I): DAppResponse {
-    const message = createBaseDAppResponse();
+  fromPartial<I extends Exact<DeepPartial<DAppsResponse>, I>>(object: I): DAppsResponse {
+    const message = createBaseDAppsResponse();
     message.group = object.group?.map((e) => DApp.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseDAppsGroupsRequest(): DAppsGroupsRequest {
+  return {};
+}
+
+export const DAppsGroupsRequest = {
+  encode(_: DAppsGroupsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): DAppsGroupsRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDAppsGroupsRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): DAppsGroupsRequest {
+    return {};
+  },
+
+  toJSON(_: DAppsGroupsRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<DAppsGroupsRequest>, I>>(_: I): DAppsGroupsRequest {
+    const message = createBaseDAppsGroupsRequest();
+    return message;
+  },
+};
+
+function createBaseDAppsGroupsResponse(): DAppsGroupsResponse {
+  return { group: [] };
+}
+
+export const DAppsGroupsResponse = {
+  encode(message: DAppsGroupsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.group) {
+      DAppGroup.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): DAppsGroupsResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDAppsGroupsResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.group.push(DAppGroup.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): DAppsGroupsResponse {
+    return { group: Array.isArray(object?.group) ? object.group.map((e: any) => DAppGroup.fromJSON(e)) : [] };
+  },
+
+  toJSON(message: DAppsGroupsResponse): unknown {
+    const obj: any = {};
+    if (message.group) {
+      obj.group = message.group.map((e) => e ? DAppGroup.toJSON(e) : undefined);
+    } else {
+      obj.group = [];
+    }
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<DAppsGroupsResponse>, I>>(object: I): DAppsGroupsResponse {
+    const message = createBaseDAppsGroupsResponse();
+    message.group = object.group?.map((e) => DAppGroup.fromPartial(e)) || [];
     return message;
   },
 };
@@ -2982,8 +3024,8 @@ export interface MarketplaceService {
   ): Promise<NFTPriceHistoryResponse>;
   Banners(request: DeepPartial<BannersRequest>, metadata?: grpc.Metadata): Promise<BannersResponse>;
   News(request: DeepPartial<NewsRequest>, metadata?: grpc.Metadata): Promise<NewsResponse>;
-  DApps(request: DeepPartial<DAppsStoreRequest>, metadata?: grpc.Metadata): Promise<DAppResponse>;
-  DAppsGroups(request: DeepPartial<DAppsStoreRequest>, metadata?: grpc.Metadata): Promise<DAppGroupsResponse>;
+  DApps(request: DeepPartial<DAppsRequest>, metadata?: grpc.Metadata): Promise<DAppsResponse>;
+  DAppsGroups(request: DeepPartial<DAppsGroupsRequest>, metadata?: grpc.Metadata): Promise<DAppsGroupsResponse>;
   SearchNames(request: DeepPartial<SearchNamesRequest>, metadata?: grpc.Metadata): Promise<SearchNamesResponse>;
   SearchCollections(
     request: DeepPartial<SearchCollectionsRequest>,
@@ -3048,12 +3090,12 @@ export class MarketplaceServiceClientImpl implements MarketplaceService {
     return this.rpc.unary(MarketplaceServiceNewsDesc, NewsRequest.fromPartial(request), metadata);
   }
 
-  DApps(request: DeepPartial<DAppsStoreRequest>, metadata?: grpc.Metadata): Promise<DAppResponse> {
-    return this.rpc.unary(MarketplaceServiceDAppsDesc, DAppsStoreRequest.fromPartial(request), metadata);
+  DApps(request: DeepPartial<DAppsRequest>, metadata?: grpc.Metadata): Promise<DAppsResponse> {
+    return this.rpc.unary(MarketplaceServiceDAppsDesc, DAppsRequest.fromPartial(request), metadata);
   }
 
-  DAppsGroups(request: DeepPartial<DAppsStoreRequest>, metadata?: grpc.Metadata): Promise<DAppGroupsResponse> {
-    return this.rpc.unary(MarketplaceServiceDAppsGroupsDesc, DAppsStoreRequest.fromPartial(request), metadata);
+  DAppsGroups(request: DeepPartial<DAppsGroupsRequest>, metadata?: grpc.Metadata): Promise<DAppsGroupsResponse> {
+    return this.rpc.unary(MarketplaceServiceDAppsGroupsDesc, DAppsGroupsRequest.fromPartial(request), metadata);
   }
 
   SearchNames(request: DeepPartial<SearchNamesRequest>, metadata?: grpc.Metadata): Promise<SearchNamesResponse> {
@@ -3257,13 +3299,13 @@ export const MarketplaceServiceDAppsDesc: UnaryMethodDefinitionish = {
   responseStream: false,
   requestType: {
     serializeBinary() {
-      return DAppsStoreRequest.encode(this).finish();
+      return DAppsRequest.encode(this).finish();
     },
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
       return {
-        ...DAppResponse.decode(data),
+        ...DAppsResponse.decode(data),
         toObject() {
           return this;
         },
@@ -3279,13 +3321,13 @@ export const MarketplaceServiceDAppsGroupsDesc: UnaryMethodDefinitionish = {
   responseStream: false,
   requestType: {
     serializeBinary() {
-      return DAppsStoreRequest.encode(this).finish();
+      return DAppsGroupsRequest.encode(this).finish();
     },
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
       return {
-        ...DAppGroupsResponse.decode(data),
+        ...DAppsGroupsResponse.decode(data),
         toObject() {
           return this;
         },
