@@ -7,6 +7,7 @@ import _m0 from "protobufjs/minimal";
 export const protobufPackage = "dao.v1";
 
 export interface DaoListRequest {
+  MemberAddress: string;
 }
 
 export interface DaoListResponse {
@@ -15,7 +16,7 @@ export interface DaoListResponse {
 
 export interface DaoInfo {
   admin: string;
-  address: string;
+  contractAddress: string;
   name: string;
   description: string;
   imageUrl: string;
@@ -27,11 +28,14 @@ export interface DaoInfo {
 }
 
 function createBaseDaoListRequest(): DaoListRequest {
-  return {};
+  return { MemberAddress: "" };
 }
 
 export const DaoListRequest = {
-  encode(_: DaoListRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(message: DaoListRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.MemberAddress !== "") {
+      writer.uint32(10).string(message.MemberAddress);
+    }
     return writer;
   },
 
@@ -42,6 +46,9 @@ export const DaoListRequest = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.MemberAddress = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -50,17 +57,19 @@ export const DaoListRequest = {
     return message;
   },
 
-  fromJSON(_: any): DaoListRequest {
-    return {};
+  fromJSON(object: any): DaoListRequest {
+    return { MemberAddress: isSet(object.MemberAddress) ? String(object.MemberAddress) : "" };
   },
 
-  toJSON(_: DaoListRequest): unknown {
+  toJSON(message: DaoListRequest): unknown {
     const obj: any = {};
+    message.MemberAddress !== undefined && (obj.MemberAddress = message.MemberAddress);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<DaoListRequest>, I>>(_: I): DaoListRequest {
+  fromPartial<I extends Exact<DeepPartial<DaoListRequest>, I>>(object: I): DaoListRequest {
     const message = createBaseDaoListRequest();
+    message.MemberAddress = object.MemberAddress ?? "";
     return message;
   },
 };
@@ -119,7 +128,7 @@ export const DaoListResponse = {
 function createBaseDaoInfo(): DaoInfo {
   return {
     admin: "",
-    address: "",
+    contractAddress: "",
     name: "",
     description: "",
     imageUrl: "",
@@ -136,8 +145,8 @@ export const DaoInfo = {
     if (message.admin !== "") {
       writer.uint32(10).string(message.admin);
     }
-    if (message.address !== "") {
-      writer.uint32(18).string(message.address);
+    if (message.contractAddress !== "") {
+      writer.uint32(18).string(message.contractAddress);
     }
     if (message.name !== "") {
       writer.uint32(26).string(message.name);
@@ -177,7 +186,7 @@ export const DaoInfo = {
           message.admin = reader.string();
           break;
         case 2:
-          message.address = reader.string();
+          message.contractAddress = reader.string();
           break;
         case 3:
           message.name = reader.string();
@@ -214,7 +223,7 @@ export const DaoInfo = {
   fromJSON(object: any): DaoInfo {
     return {
       admin: isSet(object.admin) ? String(object.admin) : "",
-      address: isSet(object.address) ? String(object.address) : "",
+      contractAddress: isSet(object.contractAddress) ? String(object.contractAddress) : "",
       name: isSet(object.name) ? String(object.name) : "",
       description: isSet(object.description) ? String(object.description) : "",
       imageUrl: isSet(object.imageUrl) ? String(object.imageUrl) : "",
@@ -229,7 +238,7 @@ export const DaoInfo = {
   toJSON(message: DaoInfo): unknown {
     const obj: any = {};
     message.admin !== undefined && (obj.admin = message.admin);
-    message.address !== undefined && (obj.address = message.address);
+    message.contractAddress !== undefined && (obj.contractAddress = message.contractAddress);
     message.name !== undefined && (obj.name = message.name);
     message.description !== undefined && (obj.description = message.description);
     message.imageUrl !== undefined && (obj.imageUrl = message.imageUrl);
@@ -244,7 +253,7 @@ export const DaoInfo = {
   fromPartial<I extends Exact<DeepPartial<DaoInfo>, I>>(object: I): DaoInfo {
     const message = createBaseDaoInfo();
     message.admin = object.admin ?? "";
-    message.address = object.address ?? "";
+    message.contractAddress = object.contractAddress ?? "";
     message.name = object.name ?? "";
     message.description = object.description ?? "";
     message.imageUrl = object.imageUrl ?? "";

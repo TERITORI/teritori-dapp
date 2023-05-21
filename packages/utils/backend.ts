@@ -1,6 +1,7 @@
 import {
   DaoServiceClientImpl,
   GrpcWebImpl as DaoGrpcWebImpl,
+  DaoService,
 } from "../api/dao/v1/dao";
 import {
   FeedService,
@@ -69,19 +70,29 @@ export const mustGetP2eClient = (networkId: string | undefined) => {
   return client;
 };
 
-const daoBackendEndpoint = process.env.TERITORI_DAO_BACKEND_ENDPOINT;
+const daoClients: { [key: string]: DaoService } = {};
 
-if (!daoBackendEndpoint) {
-  throw new Error("missing TERITORI_DAO_BACKEND_ENDPOINT in env");
-}
+export const getDaoClient = (networkId: string | undefined) => {
+  const network = getNetwork(networkId);
+  if (!network) {
+    return undefined;
+  }
+  if (!daoClients[network.id]) {
+    const rpc = new DaoGrpcWebImpl(network.backendEndpoint, {
+      debug: false,
+    });
+    daoClients[network.id] = new DaoServiceClientImpl(rpc);
+  }
+  return daoClients[network.id];
+};
 
-const daoRpc = new DaoGrpcWebImpl(daoBackendEndpoint, {
-  // transport: grpc.WebsocketTransport(),
-  debug: false,
-  // metadata: new grpc.Metadata({ SomeHeader: "bar" }),
-});
-
-export const daoClient = new DaoServiceClientImpl(daoRpc);
+export const mustGetDaoClient = (networkId: string | undefined) => {
+  const client = getDaoClient(networkId);
+  if (!client) {
+    throw new Error(`failed to get dao client for network '${networkId}'`);
+  }
+  return client;
+};
 
 const feedClients: { [key: string]: FeedService } = {};
 

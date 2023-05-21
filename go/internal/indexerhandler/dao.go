@@ -3,15 +3,18 @@ package indexerhandler
 import (
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
 
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
+	"github.com/davecgh/go-spew/spew"
 	"github.com/pkg/errors"
+	"go.uber.org/zap"
 )
 
 type InstantiateContractWithSelfAdminMsg struct {
 	InstantiateContractWithSelfAdmin struct {
-		InstantiateMsg string `json:"instantiate_msg"`
+		InstantiateMsg []byte `json:"instantiate_msg"`
 		CodeId         uint   `json:"code_id"`
 		Label          string `json:"label"`
 	} `json:"instantiate_contract_with_self_admin"`
@@ -22,6 +25,11 @@ type ProposalModulesInstantiateInfoMsg struct {
 }
 type VotingModuleInstantiateInfoMsg struct {
 	Msg string `json:"msg"`
+}
+
+type DaoMember struct {
+	Address string `json:"addr"`
+	Weight  string `json:"weight"`
 }
 
 type InstantiateMsg struct {
@@ -49,7 +57,7 @@ type ProposalModulesInstantiateInfo struct {
 }
 
 type VotingModuleInstantiateInfo struct {
-	TokenInfo struct {
+	TokenInfo *struct {
 		New struct {
 			Name              string `json:"name"`
 			Symbol            string `json:"symbol"`
@@ -58,11 +66,12 @@ type VotingModuleInstantiateInfo struct {
 			} `json:"unstaking_duration"`
 		} `json:"new"`
 	} `json:"token_info"`
+	InitialMembers []DaoMember `json:"initial_members"`
 }
 
 func (h *Handler) handleExecuteInstantiateContractWithSelfAdmin(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
 	contractAddress := execMsg.Contract
-	if contractAddress != h.config.DaoFactoryContractAddress {
+	if contractAddress != h.config.Network.DaoFactoryContractAddress {
 		return nil
 	}
 	var msg InstantiateContractWithSelfAdminMsg
@@ -74,17 +83,30 @@ func (h *Handler) handleExecuteInstantiateContractWithSelfAdmin(e *Message, exec
 	votingModuleInstantiateMsg := VotingModuleInstantiateInfo{}
 
 	encInstantiateMsg := msg.InstantiateContractWithSelfAdmin.InstantiateMsg
-	decInstantiateMsg, _ := base64.StdEncoding.DecodeString(encInstantiateMsg)
-	json.Unmarshal(decInstantiateMsg, &instantiateMsg)
+	var bliblu interface{}
+	json.Unmarshal(encInstantiateMsg, &bliblu)
+	fmt.Println("raw msg")
+	spew.Dump(bliblu)
+	json.Unmarshal(encInstantiateMsg, &instantiateMsg)
+	fmt.Println("instantiate msg")
+	spew.Dump(instantiateMsg)
 	if len(instantiateMsg.ProposalModulesInstantiateInfos) != 0 {
 		encProposalModulesInstantiateInfoMsg := instantiateMsg.ProposalModulesInstantiateInfos[0].Msg
 		decProposalModulesInstantiateInfoMsg, _ := base64.StdEncoding.DecodeString(encProposalModulesInstantiateInfoMsg)
 		json.Unmarshal(decProposalModulesInstantiateInfoMsg, &proposalModulesInsantiateInfoMsg)
+
+		fmt.Println("proposal module msg")
+		spew.Dump(proposalModulesInsantiateInfoMsg)
 	}
 
 	encVotingModuleInstantiateMsg := instantiateMsg.VotingModuleInstantiateInfos.Msg
 	decVotingModuleInstantiateMsg, _ := base64.StdEncoding.DecodeString(encVotingModuleInstantiateMsg)
+	fmt.Println("raw voting module msg")
+	fmt.Println(string(decVotingModuleInstantiateMsg))
 	json.Unmarshal(decVotingModuleInstantiateMsg, &votingModuleInstantiateMsg)
+
+	fmt.Println("voting module msg")
+	spew.Dump(votingModuleInstantiateMsg)
 
 	contractAddresses := e.Events["wasm._contract_address"]
 	daoContractAddress := contractAddresses[1]
@@ -96,8 +118,8 @@ func (h *Handler) handleExecuteInstantiateContractWithSelfAdmin(e *Message, exec
 		threshold = "MAJORITY"
 	}
 
-	if err := h.db.Create(&indexerdb.Dao{
-		Address:                daoContractAddress,
+	dao := &indexerdb.Dao{
+		ContractAddress:        daoContractAddress,
 		Admin:                  instantiateMsg.Admin,
 		Name:                   instantiateMsg.Name,
 		Description:            instantiateMsg.Description,
@@ -106,12 +128,29 @@ func (h *Handler) handleExecuteInstantiateContractWithSelfAdmin(e *Message, exec
 		AutomaticallyAddCw721s: instantiateMsg.AutomaticallyAddCw721s,
 		Quorum:                 proposalModulesInsantiateInfoMsg.Threshold.ThresholdQuorum.Quorum.Percent,
 		Threshold:              threshold,
-		TokenName:              votingModuleInstantiateMsg.TokenInfo.New.Name,
-		TokenSymbol:            votingModuleInstantiateMsg.TokenInfo.New.Symbol,
-		UnstakingDuration:      votingModuleInstantiateMsg.TokenInfo.New.UnstakingDuration.Time,
-	}).Error; err != nil {
+		NetworkID:              h.config.Network.ID,
+	}
+
+	if votingModuleInstantiateMsg.TokenInfo != nil {
+		dao.TokenName = votingModuleInstantiateMsg.TokenInfo.New.Name
+		dao.TokenSymbol = votingModuleInstantiateMsg.TokenInfo.New.Symbol
+		dao.UnstakingDuration = votingModuleInstantiateMsg.TokenInfo.New.UnstakingDuration.Time
+	} else {
+		members := make([]*indexerdb.DaoMember, len(votingModuleInstantiateMsg.InitialMembers))
+		for i, m := range votingModuleInstantiateMsg.InitialMembers {
+			members[i] = &indexerdb.DaoMember{
+				DaoNetworkID:       h.config.Network.ID,
+				DaoContractAddress: daoContractAddress,
+				MemberAddress:      m.Address,
+			}
+		}
+		dao.Members = members
+	}
+
+	if err := h.db.Create(dao).Error; err != nil {
 		return errors.Wrap(err, "faild to save dao")
 	}
-	h.logger.Info("create dao")
+	h.logger.Info("created dao", zap.Any("dao", dao))
+
 	return nil
 }

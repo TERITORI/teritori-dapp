@@ -53,7 +53,7 @@ export class TeritoriDaoProposalBaseClient extends TeritoriDaoProposalBaseQueryC
             propose: {
               title,
               description,
-              msgs: []  
+              msgs: msgs,
             }  					
   				}
   			}}, fee, memo, funds);

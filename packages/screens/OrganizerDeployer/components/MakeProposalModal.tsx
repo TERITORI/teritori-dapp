@@ -13,6 +13,11 @@ import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { TextInputOutsideLabel } from "../../../components/inputs/TextInputOutsideLabel";
 import GradientModalBase from "../../../components/modals/GradientModalBase";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
+import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
+import {
+  getStakingCurrency,
+  keplrCurrencyFromNativeCurrencyInfo,
+} from "../../../networks";
 import { validateAddress } from "../../../utils/formRules";
 import {
   neutral17,
@@ -23,7 +28,6 @@ import {
 import { fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { modalMarginPadding } from "../../../utils/style/modals";
-import { toriCurrency } from "../../../utils/teritori";
 import { MakeProposalFormType } from "../types";
 
 type MakeProposalModalProps = {
@@ -36,6 +40,7 @@ export const MakeProposalModal: React.FC<MakeProposalModalProps> = ({
   onRequestClose,
 }) => {
   // variables
+  const networkId = useSelectedNetworkId();
   const [isProposalApprovalVisible, setIsProposalApprovalVisible] =
     useState<boolean>(false);
   const { control, setValue, watch } = useForm<MakeProposalFormType>({
@@ -45,6 +50,8 @@ export const MakeProposalModal: React.FC<MakeProposalModalProps> = ({
       senderAccount: "0x9aB4v5954B4C8890b6eBf8495A6b5F462790347f",
     },
   });
+
+  const stakingCurrency = getStakingCurrency(networkId);
 
   const typeValue = watch("type");
 
@@ -90,19 +97,21 @@ export const MakeProposalModal: React.FC<MakeProposalModalProps> = ({
       <SpacerColumn size={2.5} />
       <View style={styles.row}>
         <View>
-          <TextInputCustom<MakeProposalFormType>
-            control={control}
-            name="amount"
-            variant="noCropBorder"
-            label="Amount"
-            // isAsterickSign
-            width={210}
-            rules={{ required: true }}
-            // mainContainerStyle={styles.border}
-            currency={toriCurrency}
-          >
-            {toriText()}
-          </TextInputCustom>
+          {!!stakingCurrency && (
+            <TextInputCustom<MakeProposalFormType>
+              control={control}
+              name="amount"
+              variant="noCropBorder"
+              label="Amount"
+              // isAsterickSign
+              width={210}
+              rules={{ required: true }}
+              // mainContainerStyle={styles.border}
+              currency={keplrCurrencyFromNativeCurrencyInfo(stakingCurrency)}
+            >
+              {toriText()}
+            </TextInputCustom>
+          )}
         </View>
         <SpacerRow size={2.5} />
         <View>

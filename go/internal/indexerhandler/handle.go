@@ -34,7 +34,6 @@ type Message struct {
 
 type Config struct {
 	MinterCodeIDs    []uint64
-	DaoFactoryContractAddress string
 	TendermintClient *tmws.Client
 	BlockTimeCache   *bigcache.BigCache
 	PricesClient     pricespb.PricesServiceClient
@@ -246,7 +245,7 @@ func (h *Handler) handleExecute(e *Message) error {
 			}
 		}
 	case "instantiate_contract_with_self_admin":
-		if executeMsg.Contract == h.config.DaoFactoryContractAddress {
+		if executeMsg.Contract == h.config.Network.DaoFactoryContractAddress {
 			if err := h.handleExecuteInstantiateContractWithSelfAdmin(e, &executeMsg); err != nil {
 				return errors.Wrap(err, "failed to handle instantiate_contract_with_self_admin")
 			}

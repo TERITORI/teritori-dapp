@@ -73,6 +73,43 @@ export const DaoProposalModal: React.FC<{
       });
     }
   };
+  const execute = async () => {
+    if (
+      !selectedWallet ||
+      proposalInfo.proposal.status !== "passed" ||
+      daoInfo.proposalModuleAddress === ""
+    )
+      return;
+    try {
+      const walletAddress = selectedWallet.address;
+      const networkId = selectedWallet.networkId;
+      const signingClient = await getKeplrSigningCosmWasmClient(networkId);
+      const daoProposalClient = new TeritoriDaoProposalClient(
+        signingClient,
+        walletAddress,
+        daoInfo.proposalModuleAddress
+      );
+      const createVoteRes = await daoProposalClient.execute({
+        proposalId: proposalInfo.id,
+      });
+      if (createVoteRes) {
+        onClose();
+        setToastSuccess({ title: "Success Vote", message: "Success Vote" });
+      } else {
+        onClose();
+        setToastError({
+          title: "Failed to vote",
+          message: "Failed to vote",
+        });
+      }
+    } catch (err: any) {
+      onClose();
+      setToastError({
+        title: "Failed to vote",
+        message: err.message,
+      });
+    }
+  };
   return (
     <ModalBase
       onClose={() => {
@@ -135,6 +172,27 @@ export const DaoProposalModal: React.FC<{
                 text="Yes"
                 onPress={() => {
                   vote(VoteType.YES);
+                }}
+                style={{ marginLeft: 10 }}
+              />
+              <PrimaryButton
+                size="M"
+                text="Execute"
+                onPress={() => {
+                  execute();
+                }}
+              />
+            </View>
+          </View>
+        )}
+        {proposalInfo.proposal.status === "passed" && (
+          <View style={styles.footer}>
+            <View style={{ flexDirection: "row-reverse" }}>
+              <PrimaryButton
+                size="M"
+                text="Execute"
+                onPress={() => {
+                  execute();
                 }}
               />
             </View>

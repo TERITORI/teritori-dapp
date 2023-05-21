@@ -13,6 +13,7 @@ import searchSVG from "../../../assets/icons/organization/search.svg";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { SpacerColumn } from "../../components/spacer";
+import { NetworkKind } from "../../networks";
 import { useAppNavigation } from "../../utils/navigation";
 import { fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
@@ -35,6 +36,7 @@ export const OrganizationGetStartedScreen = () => {
       fullWidth
       noScroll
       isHeaderSmallMargin
+      forceNetworkKind={NetworkKind.Cosmos}
     >
       <ScrollView>
         <View style={styles.container}>

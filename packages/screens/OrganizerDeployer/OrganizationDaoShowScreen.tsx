@@ -10,8 +10,14 @@ import { SpacerColumn } from "../../components/spacer";
 import { Tabs } from "../../components/tabs/Tabs";
 import { TeritoriDaoCoreQueryClient } from "../../contracts-clients/teritori-dao/TeritoriDaoCore.client";
 import { TeritoriDaoProposalQueryClient } from "../../contracts-clients/teritori-dao/TeritoriDaoProposal.client";
-import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { mustGetNonSigningCosmWasmClient } from "../../networks";
+import { useBalances } from "../../hooks/useBalances";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import {
+  NetworkKind,
+  getStakingCurrency,
+  mustGetNonSigningCosmWasmClient,
+} from "../../networks";
+import { prettyPrice } from "../../utils/coins";
 import { ScreenFC } from "../../utils/navigation";
 import { neutral33, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
@@ -25,21 +31,17 @@ export const OrganizationDaoShowScreen: ScreenFC<"OrganizationDaoShow"> = ({
     params: { address },
   },
 }) => {
-  // const daoInfo: DaoInfo = {
-  //   name: "Juno Growth Fund",
-  //   imgUrl: "https://res.cloudinary.com/demo/image/upload/v1312461204/sample.jpg",
-  //   date: "Est. November 2022",
-  //   description: "The Juno Growth Fund is an official SubDAO of Juno Network, responsible for the long-term growth and sustainability of the network, and seeks to enable the builders which will help accrue substantial value to Juno Network and JUNO stakers.",
-  //   address,
-  //   treasury: "$249.10K est. USD value",
-  //   members: "11"
-  // };
-  const selectedWallet = useSelectedWallet();
+  const networkId = useSelectedNetworkId();
   const [daoInfo, setDaoInfo] = useState<DaoInfo | null>(null);
+
+  const balances = useBalances(networkId, address);
+  const stakingBalance = balances?.find(
+    (b) => b.denom === getStakingCurrency(networkId)?.denom
+  );
+
   useEffect(() => {
     const getDaoInfo = async () => {
-      if (!selectedWallet || !address) return;
-      const networkId = selectedWallet.networkId;
+      if (!networkId || !address) return;
       const cosmwasmClient = await mustGetNonSigningCosmWasmClient(networkId);
       const daoCoreClient = new TeritoriDaoCoreQueryClient(
         cosmwasmClient,
@@ -78,7 +80,7 @@ export const OrganizationDaoShowScreen: ScreenFC<"OrganizationDaoShow"> = ({
       setDaoInfo({ ...dao });
     };
     getDaoInfo();
-  }, [selectedWallet, address]);
+  }, [networkId, address]);
 
   const tabs = {
     proposals: {
@@ -97,6 +99,7 @@ export const OrganizationDaoShowScreen: ScreenFC<"OrganizationDaoShow"> = ({
       footerChildren={<></>}
       noScroll
       isHeaderSmallMargin
+      forceNetworkKind={NetworkKind.Cosmos}
     >
       <ScrollView style={styles.container}>
         <View
@@ -140,7 +143,13 @@ export const OrganizationDaoShowScreen: ScreenFC<"OrganizationDaoShow"> = ({
             <View style={styles.item}>
               <BrandText style={styles.textGray}>DAO Treasury</BrandText>
               <SpacerColumn size={2} />
-              <BrandText style={styles.text}>{daoInfo?.treasury}</BrandText>
+              <BrandText style={styles.text}>
+                {prettyPrice(
+                  networkId,
+                  stakingBalance?.amount || "0",
+                  stakingBalance?.denom || ""
+                )}
+              </BrandText>
             </View>
             <View style={styles.item}>
               <BrandText style={styles.textGray}>Members</BrandText>

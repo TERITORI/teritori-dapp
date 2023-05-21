@@ -71,7 +71,8 @@
     "excludeFromLaunchpadList": [
       "tori1gflccmghzfscmxl95z43v36y0rle8v9x8kvt9na03yzywtw86amsj9nf37"
     ],
-    "socialFeedContractAddress": "tori1lxf8agg0wd2m7n2ultl0yx337jw23puh0mlkkw5vhtnkkfettwfqya7kpp"
+    "socialFeedContractAddress": "tori1lxf8agg0wd2m7n2ultl0yx337jw23puh0mlkkw5vhtnkkfettwfqya7kpp",
+    "daoFactoryContractAddress": "TODO"
   },
   {
     "id": "cosmos-hub",

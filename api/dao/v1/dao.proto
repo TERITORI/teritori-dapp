@@ -7,6 +7,7 @@ service DaoService {
 }
 
 message DaoListRequest {
+  string MemberAddress = 1;
 }
 
 message DaoListResponse {
@@ -15,7 +16,7 @@ message DaoListResponse {
 
 message DaoInfo {
     string admin = 1;
-    string address = 2;
+    string contract_address = 2;
     string name = 3;
     string description = 4;
     string image_url = 5;

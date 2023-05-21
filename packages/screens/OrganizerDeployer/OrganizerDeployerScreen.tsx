@@ -22,6 +22,7 @@ import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { TeritoriDaoCoreClient } from "../../contracts-clients/teritori-dao/TeritoriDaoCore.client";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
+  NetworkKind,
   getKeplrSigningCosmWasmClient,
   mustGetCosmosNetwork,
 } from "../../networks";
@@ -232,6 +233,7 @@ export const OrganizerDeployerScreen = () => {
       fullWidth
       noScroll
       isHeaderSmallMargin
+      forceNetworkKind={NetworkKind.Cosmos}
     >
       <View style={styles.row}>
         <View style={styles.fill}>

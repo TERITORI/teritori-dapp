@@ -6936,6 +6936,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@react-native-picker/picker@npm:2.4.0":
+  version: 2.4.0
+  resolution: "@react-native-picker/picker@npm:2.4.0"
+  peerDependencies:
+    react: 16 || 17
+    react-native: ">=0.57"
+  checksum: ccec86aaa54b8011479b7aa3e062534ccbe146c696ecefa456f1540da5de3d3b84c422beeaf499f3d1166898996d88186155432b7c51fbbdb5d576dc4f2c379f
+  languageName: node
+  linkType: hard
+
 "@react-native/assets@npm:1.0.0":
   version: 1.0.0
   resolution: "@react-native/assets@npm:1.0.0"
@@ -27287,6 +27297,7 @@ __metadata:
     "@react-native-async-storage/async-storage": ~1.17.3
     "@react-native-clipboard/clipboard": ^1.10.0
     "@react-native-masked-view/masked-view": 0.2.6
+    "@react-native-picker/picker": 2.4.0
     "@react-navigation/native": ^6.0.11
     "@react-navigation/native-stack": ^6.7.0
     "@reduxjs/toolkit": ^1.8.3

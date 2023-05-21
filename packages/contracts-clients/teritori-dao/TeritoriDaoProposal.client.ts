@@ -45,6 +45,9 @@ export interface TeritoriDaoProposalInterface extends TeritoriDaoProposalReadOnl
     proposalId: number;
     vote: string;
   },  fee?: number | StdFee | "auto", memo?: string, funds?: Coin[])=>Promise<ExecuteResult>;
+  execute: ({
+    proposalId,
+  }: {proposalId: number}, fee?: number | StdFee | "auto", memo?: string, funds?: Coin[])=>Promise<ExecuteResult>;
 }
 
 export class TeritoriDaoProposalClient extends TeritoriDaoProposalQueryClient implements TeritoriDaoProposalInterface {
@@ -71,6 +74,16 @@ export class TeritoriDaoProposalClient extends TeritoriDaoProposalQueryClient im
       vote:{
           proposal_id: proposalId,
           vote
+      }
+    }, fee, memo, funds);
+  }
+
+  execute = async ({
+    proposalId,
+  }: {proposalId: number}, fee: number | StdFee | "auto" = "auto", memo?: string, funds?: Coin[]) =>{
+    return await this.client.execute( this.sender, this.contractAddress, {
+      execute:{
+          proposal_id: proposalId,
       }
     }, fee, memo, funds);
   }
