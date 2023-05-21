@@ -24,7 +24,7 @@ export const OrganizationDaoListScreen = () => {
   };
   useEffect(() => {
     const getDaoList = async () => {
-      const res = await daoClient.daoList({});
+      const res = await daoClient.DaoList({});
       const daos: DaoInfo[] = [];
       for (const dao of res.daos) {
         const temp_dao: DaoInfo = {
