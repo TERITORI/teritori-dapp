@@ -258,7 +258,7 @@ export const DaoInfo = {
 };
 
 export interface DaoService {
-  daoList(request: DeepPartial<DaoListRequest>, metadata?: grpc.Metadata): Promise<DaoListResponse>;
+  DaoList(request: DeepPartial<DaoListRequest>, metadata?: grpc.Metadata): Promise<DaoListResponse>;
 }
 
 export class DaoServiceClientImpl implements DaoService {
@@ -266,10 +266,10 @@ export class DaoServiceClientImpl implements DaoService {
 
   constructor(rpc: Rpc) {
     this.rpc = rpc;
-    this.daoList = this.daoList.bind(this);
+    this.DaoList = this.DaoList.bind(this);
   }
 
-  daoList(request: DeepPartial<DaoListRequest>, metadata?: grpc.Metadata): Promise<DaoListResponse> {
+  DaoList(request: DeepPartial<DaoListRequest>, metadata?: grpc.Metadata): Promise<DaoListResponse> {
     return this.rpc.unary(DaoServiceDaoListDesc, DaoListRequest.fromPartial(request), metadata);
   }
 }
