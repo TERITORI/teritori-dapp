@@ -9,6 +9,6 @@ type MusicAlbum struct {
 	Category   uint32          `gorm:"index"`
 	Metadata   ObjectJSONB     `gorm:"type:jsonb;default:'{}'"`
 	CreatedBy  networks.UserID `gorm:"index"`
-	CreatedAt  uint64
+	CreatedAt  int64
 	IsDeleted  bool
 }

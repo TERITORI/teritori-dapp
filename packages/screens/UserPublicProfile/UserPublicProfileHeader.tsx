@@ -24,7 +24,7 @@ export const screenTabItems = {
   mentionsPosts: {
     name: "Mentions Posts",
   },
-  musicAlbums:{
+  musicAlbums: {
     name: "Albums",
   },
   // pathwar: {
