@@ -21,7 +21,7 @@ const gap = 20;
 const defaultRequest: CollectionsRequest = {
   networkId: "fake",
   sortDirection: SortDirection.SORT_DIRECTION_UNSPECIFIED,
-  sort: Sort.SORTING_UNSPECIFIED,
+  sort: Sort.SORT_UNSPECIFIED,
   limit: 16,
   offset: 0,
   upcoming: false,

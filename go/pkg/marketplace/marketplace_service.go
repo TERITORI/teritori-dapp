@@ -137,14 +137,14 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 		}
 		orderSQL := ""
 		switch req.GetSort() {
-		case marketplacepb.Sort_SORTING_PRICE:
+		case marketplacepb.Sort_SORT_PRICE:
 			where = where + "AND tc.denom = utori" // not mixed denoms allowed !
 			orderSQL = "tc.price" + orderDirection
-		case marketplacepb.Sort_SORTING_VOLUME:
+		case marketplacepb.Sort_SORT_VOLUME:
 			orderSQL = "volume " + orderDirection + ", id ASC"
-		case marketplacepb.Sort_SORTING_CREATED_AT:
+		case marketplacepb.Sort_SORT_CREATED_AT:
 			orderSQL = "c.time " + orderDirection
-		case marketplacepb.Sort_SORTING_UNSPECIFIED:
+		case marketplacepb.Sort_SORT_UNSPECIFIED:
 			orderSQL = "volume DESC, id ASC"
 		}
 
@@ -245,8 +245,8 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 	}
 
 	sort := req.GetSort()
-	if sort == marketplacepb.Sort_SORTING_UNSPECIFIED {
-		sort = marketplacepb.Sort_SORTING_PRICE
+	if sort == marketplacepb.Sort_SORT_UNSPECIFIED {
+		sort = marketplacepb.Sort_SORT_PRICE
 	}
 
 	sortDirection := req.GetSortDirection()
@@ -800,20 +800,20 @@ func (s *MarkteplaceService) News(ctx context.Context, req *marketplacepb.NewsRe
 	return &marketplacepb.NewsResponse{News: s.homeProvider.GetNews()}, nil
 }
 
-func (s *MarkteplaceService) DAppsGroups(ctx context.Context, req *marketplacepb.DAppsStoreRequest) (*marketplacepb.DAppGroupsResponse, error) {
+func (s *MarkteplaceService) DAppsGroups(ctx context.Context, req *marketplacepb.DAppsGroupsRequest) (*marketplacepb.DAppsGroupsResponse, error) {
 	if s.dAppStoreProvider == nil {
-		return &marketplacepb.DAppGroupsResponse{}, nil
+		return &marketplacepb.DAppsGroupsResponse{}, nil
 	}
 
-	return &marketplacepb.DAppGroupsResponse{Group: s.dAppStoreProvider.GetDappsGroups()}, nil
+	return &marketplacepb.DAppsGroupsResponse{Group: s.dAppStoreProvider.GetDappsGroups()}, nil
 }
 
-func (s *MarkteplaceService) DApps(ctx context.Context, req *marketplacepb.DAppsStoreRequest) (*marketplacepb.DAppResponse, error) {
+func (s *MarkteplaceService) DApps(ctx context.Context, req *marketplacepb.DAppsRequest) (*marketplacepb.DAppsResponse, error) {
 	if s.dAppStoreProvider == nil {
-		return &marketplacepb.DAppResponse{}, nil
+		return &marketplacepb.DAppsResponse{}, nil
 	}
 
-	return &marketplacepb.DAppResponse{Group: s.dAppStoreProvider.GetDapps()}, nil
+	return &marketplacepb.DAppsResponse{Group: s.dAppStoreProvider.GetDapps()}, nil
 }
 
 // TODO: consider merging this into NFTs call
