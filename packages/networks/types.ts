@@ -73,6 +73,7 @@ export type EthereumNetworkInfo = NetworkInfoBase & {
 export type SolanaNetworkInfo = NetworkInfoBase & {
   kind: NetworkKind.Solana;
   holaplexGraphqlEndpoint: string;
+  vaultContractAddress: string;
 };
 export type GnoNetworkInfo = NetworkInfoBase & {
   kind: NetworkKind.Gno;

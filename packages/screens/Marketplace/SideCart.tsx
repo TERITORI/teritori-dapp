@@ -2,6 +2,7 @@ import { toUtf8 } from "@cosmjs/encoding";
 import { EncodeObject } from "@cosmjs/proto-signing";
 import { isDeliverTxFailure } from "@cosmjs/stargate";
 import { EntityId } from "@reduxjs/toolkit";
+import { groupBy } from "lodash";
 import React, { useCallback } from "react";
 import { FlatList, Pressable, StyleProp, View, ViewStyle } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -9,6 +10,7 @@ import { TrashIcon } from "react-native-heroicons/outline";
 import { useSelector } from "react-redux";
 
 import closeSVG from "../../../assets/icons/close.svg";
+import { NFT } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
 import { CurrencyIcon } from "../../components/CurrencyIcon";
 import { OptimizedImage } from "../../components/OptimizedImage";
@@ -16,13 +18,12 @@ import { SVG } from "../../components/SVG";
 import { Separator } from "../../components/Separator";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { shortUserAddressFromID } from "../../components/nfts/NFTView";
+import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { Wallet } from "../../context/WalletsProvider";
+import { useBalances } from "../../hooks/useBalances";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import {
-  getKeplrSigningCosmWasmClient,
-  mustGetCosmosNetwork,
-} from "../../networks";
+import { getKeplrSigningCosmWasmClient, parseNftId } from "../../networks";
 import {
   clearSelected,
   removeSelected,
@@ -219,6 +220,14 @@ const Footer: React.FC<{ items: any[] }> = ({ items }) => {
   const dispatch = useAppDispatch();
 
   const selectedNFTData = useSelector(selectAllSelectedNFTData);
+  const { setToastError } = useFeedbacks();
+
+  const balances = useBalances(wallet?.networkId, wallet?.address);
+  const hasEnoughMoney = selectedNFTData.every((nft) => {
+    const balance =
+      balances.find((bal) => bal.denom === nft.denom)?.amount || "0";
+    return balance > nft.price;
+  });
 
   const cosmosMultiBuy = useCallback(
     async (wallet: Wallet) => {
@@ -230,11 +239,12 @@ const Footer: React.FC<{ items: any[] }> = ({ items }) => {
       const msgs: EncodeObject[] = [];
 
       selectedNFTData.map((nft) => {
-        if (nft.networkId !== "teritori") {
+        const [network, , tokenId] = parseNftId(nft.id);
+
+        if (nft.networkId !== "teritori" || !network) {
           alert(`${nft.networkId} multi-buy is not supported`);
           return;
         }
-        const network = mustGetCosmosNetwork(nft.networkId);
 
         let funds;
         if (nft.price !== "0") {
@@ -249,7 +259,7 @@ const Footer: React.FC<{ items: any[] }> = ({ items }) => {
               JSON.stringify({
                 buy: {
                   nft_contract_addr: nft.nftContractAddress,
-                  nft_token_id: nft.id,
+                  nft_token_id: tokenId,
                 },
               })
             ),
@@ -262,62 +272,64 @@ const Footer: React.FC<{ items: any[] }> = ({ items }) => {
       });
       if (msgs.length > 0) {
         const cosmwasmClient = await getKeplrSigningCosmWasmClient("teritori");
-        console.log(msgs);
-        const tx = await cosmwasmClient.signAndBroadcast(sender, msgs, "auto");
-        if (isDeliverTxFailure(tx)) {
-          throw Error(tx.transactionHash);
+        try {
+          const tx = await cosmwasmClient.signAndBroadcast(
+            sender,
+            msgs,
+            "auto"
+          );
+          if (isDeliverTxFailure(tx)) {
+            throw Error(tx.transactionHash);
+          }
+          msgs.map((nft) => {
+            dispatch(removeSelected(nft.value.msg.buy.id)); //remove items from cart
+          });
+        } catch (e) {
+          setToastError({
+            title: "Error",
+            message: e.toString() || "",
+            duration: 30000,
+          });
         }
-        msgs.map((nft) => {
-          dispatch(removeSelected(nft.value.msg.buy.id)); //remove items from cart
-        });
       }
     },
-    [dispatch, selectedNFTData]
+    [dispatch, selectedNFTData, setToastError]
   );
 
   const onBuyButtonPress = async () => {
     if (!wallet) return alert("no wallet");
     await cosmosMultiBuy(wallet);
   };
-  const selected = useSelector(selectAllSelectedNFTData);
 
-  const subTotal = selected.reduce(
-    (partialSum, nft) =>
-      partialSum +
-      Number.parseFloat(prettyPrice(nft.networkId, nft.price, nft.denom)),
-    0
-  );
+  const getTotal = (selectedNFTData: NFT[]) => {
+    return selectedNFTData.reduce(
+      (partialSum, nft) =>
+        partialSum +
+        Number.parseFloat(prettyPrice(nft.networkId, nft.price, nft.denom)),
+      0
+    );
+  };
+  const grouped = groupBy(selectedNFTData, (e) => {
+    return e.denom;
+  });
 
-  const royalty = subTotal * 0.033;
-  const total = royalty + subTotal;
   return (
     <View
       style={{
         padding: layout.padding_x1,
       }}
     >
-      <ItemTotal
-        textLeft={`Price (${items.length})`}
-        showLogo
-        textRight={subTotal}
-        networkId={selected[0].networkId}
-        denom={selected[0].denom}
-      />
-      <ItemTotal
-        textLeft="Royalty"
-        showLogo
-        textRight={royalty}
-        networkId={selected[0].networkId}
-        denom={selected[0].denom}
-      />
-      <Separator />
-      <ItemTotal
-        textLeft="You pay"
-        showLogo
-        textRight={Math.round(total)}
-        networkId={selected[0].networkId}
-        denom={selected[0].denom}
-      />
+      {Object.values(grouped).map((totals, index) => {
+        return (
+          <ItemTotal
+            textLeft="You pay"
+            showLogo
+            textRight={getTotal(totals)}
+            networkId={totals[0].networkId}
+            denom={totals[0].denom}
+          />
+        );
+      })}
       <Separator />
 
       <View
@@ -328,7 +340,8 @@ const Footer: React.FC<{ items: any[] }> = ({ items }) => {
         <PrimaryButton
           fullWidth
           size="SM"
-          text="Buy Now"
+          disabled={!hasEnoughMoney}
+          text={hasEnoughMoney ? "Buy Now" : "Not Enough Funds"}
           onPress={() => onBuyButtonPress()}
         />
       </View>
