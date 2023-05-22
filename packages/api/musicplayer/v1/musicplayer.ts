@@ -11,7 +11,7 @@ export interface GetAlbumListRequest {
 export interface MusicAlbumInfo {
   identifier: string;
   metadata: string;
-  createdUserId: string;
+  createdBy: string;
 }
 
 export interface GetAlbumListResponse {
@@ -36,16 +36,17 @@ export const GetAlbumListRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GetAlbumListRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGetAlbumListRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -70,7 +71,7 @@ export const GetAlbumListRequest = {
 };
 
 function createBaseMusicAlbumInfo(): MusicAlbumInfo {
-  return { identifier: "", metadata: "", createdUserId: "" };
+  return { identifier: "", metadata: "", createdBy: "" };
 }
 
 export const MusicAlbumInfo = {
@@ -81,32 +82,45 @@ export const MusicAlbumInfo = {
     if (message.metadata !== "") {
       writer.uint32(18).string(message.metadata);
     }
-    if (message.createdUserId !== "") {
-      writer.uint32(26).string(message.createdUserId);
+    if (message.createdBy !== "") {
+      writer.uint32(26).string(message.createdBy);
     }
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MusicAlbumInfo {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMusicAlbumInfo();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.identifier = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.metadata = reader.string();
-          break;
+          continue;
         case 3:
-          message.createdUserId = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          if (tag !== 26) {
+            break;
+          }
+
+          message.createdBy = reader.string();
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -115,7 +129,7 @@ export const MusicAlbumInfo = {
     return {
       identifier: isSet(object.identifier) ? String(object.identifier) : "",
       metadata: isSet(object.metadata) ? String(object.metadata) : "",
-      createdUserId: isSet(object.createdUserId) ? String(object.createdUserId) : "",
+      createdBy: isSet(object.createdBy) ? String(object.createdBy) : "",
     };
   },
 
@@ -123,7 +137,7 @@ export const MusicAlbumInfo = {
     const obj: any = {};
     message.identifier !== undefined && (obj.identifier = message.identifier);
     message.metadata !== undefined && (obj.metadata = message.metadata);
-    message.createdUserId !== undefined && (obj.createdUserId = message.createdUserId);
+    message.createdBy !== undefined && (obj.createdBy = message.createdBy);
     return obj;
   },
 
@@ -135,7 +149,7 @@ export const MusicAlbumInfo = {
     const message = createBaseMusicAlbumInfo();
     message.identifier = object.identifier ?? "";
     message.metadata = object.metadata ?? "";
-    message.createdUserId = object.createdUserId ?? "";
+    message.createdBy = object.createdBy ?? "";
     return message;
   },
 };
@@ -153,19 +167,24 @@ export const GetAlbumListResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GetAlbumListResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGetAlbumListResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.musicAlbums.push(MusicAlbumInfo.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -212,19 +231,24 @@ export const GetAlbumRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GetAlbumRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGetAlbumRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.identifier = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -263,19 +287,24 @@ export const GetAlbumResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GetAlbumResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGetAlbumResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.musicAlbum = MusicAlbumInfo.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },

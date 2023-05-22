@@ -13,15 +13,15 @@ message GetAlbumListRequest {
 message MusicAlbumInfo {
 	string identifier = 1;
 	string metadata = 2;
-	string createdUserId = 3;
+	string created_by = 3;
 }
 message GetAlbumListResponse {
-	repeated MusicAlbumInfo musicAlbums = 1;
+	repeated MusicAlbumInfo music_albums = 1;
 }
 
 message GetAlbumRequest {
 	string identifier = 1;
 }
 message GetAlbumResponse {
-	MusicAlbumInfo musicAlbum = 1;
+	MusicAlbumInfo music_album = 1;
 }

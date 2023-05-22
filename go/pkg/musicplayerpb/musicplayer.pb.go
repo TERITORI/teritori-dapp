@@ -65,7 +65,7 @@ type MusicAlbumInfo struct {
 
 	Identifier    string `protobuf:"bytes,1,opt,name=identifier,proto3" json:"identifier,omitempty"`
 	Metadata      string `protobuf:"bytes,2,opt,name=metadata,proto3" json:"metadata,omitempty"`
-	CreatedBy string `protobuf:"bytes,3,opt,name=createdBy,proto3" json:"createdBy,omitempty"`
+	CreatedBy  string `protobuf:"bytes,3,opt,name=created_by,json=createdBy,proto3" json:"created_by,omitempty"`
 }
 
 func (x *MusicAlbumInfo) Reset() {
