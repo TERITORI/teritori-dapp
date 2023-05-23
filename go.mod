@@ -3,6 +3,7 @@ module github.com/TERITORI/teritori-dapp
 go 1.18
 
 require (
+	berty.tech/gomobile-ipfs v1.10.1
 	berty.tech/weshnet v1.8.0
 	github.com/CosmWasm/wasmd v0.27.0
 	github.com/Khan/genqlient v0.5.0
@@ -370,6 +371,7 @@ require (
 	go.uber.org/dig v1.15.0 // indirect
 	go.uber.org/fx v1.18.2 // indirect
 	go4.org v0.0.0-20200411211856-f5505b9728dd // indirect
+	golang.org/x/mobile v0.0.0-20200801112145-973feb4309de // indirect
 	golang.org/x/mod v0.9.0 // indirect
 	golang.org/x/oauth2 v0.1.0 // indirect
 	golang.org/x/sync v0.1.0 // indirect
@@ -381,7 +383,6 @@ require (
 	gorm.io/driver/mysql v1.4.7 // indirect
 	lukechampine.com/blake3 v1.1.7 // indirect
 	moul.io/openfiles v1.2.0 // indirect
-	moul.io/srand v1.6.1 // indirect
 	moul.io/u v1.27.0 // indirect
 	moul.io/zapfilter v1.7.0 // indirect
 	moul.io/zapring v1.3.3 // indirect
