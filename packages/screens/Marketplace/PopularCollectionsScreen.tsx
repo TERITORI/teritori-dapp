@@ -271,7 +271,7 @@ const CollectionRow: React.FC<{ collection: Collection; rank: number }> = ({
         <BrandText style={fontSemibold13}>
           {prettyPrice(
             rowData.floorPrice.networkId,
-            rowData.floorPrice.value,
+            rowData.floorPrice.value.toString(10),
             rowData.floorPrice.denom
           )}
         </BrandText>
@@ -344,7 +344,7 @@ interface RowData {
   sales: string;
   floorPrice: {
     networkId: string;
-    value: string;
+    value: number;
     denom: string;
   };
   owners: string;

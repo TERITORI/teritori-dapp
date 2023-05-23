@@ -75,7 +75,7 @@ type DBCollectionWithExtra struct {
 	ImageURI            string
 	Volume              string
 	TotalVolume         string
-	FloorPrice          string
+	FloorPrice          uint64
 	MintPrice           string
 	NumTrades           int64
 	NumOwners           int32

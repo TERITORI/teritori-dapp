@@ -178,17 +178,18 @@ export interface Collection {
   mintAddress: string;
   networkId: string;
   volume: string;
-  denom: string;
+  volumeDenom: string;
   creatorId: string;
   secondaryDuringMint: boolean;
   websiteUrl: string;
   twitterUrl: string;
-  floorPrice: string;
+  floorPrice: number;
   maxSupply: number;
   mintPrice: string;
   totalVolume: string;
   numTrades: number;
   numOwners: number;
+  denom: string;
 }
 
 export interface CollectionStats {
@@ -762,17 +763,18 @@ function createBaseCollection(): Collection {
     mintAddress: "",
     networkId: "",
     volume: "",
-    denom: "",
+    volumeDenom: "",
     creatorId: "",
     secondaryDuringMint: false,
     websiteUrl: "",
     twitterUrl: "",
-    floorPrice: "",
+    floorPrice: 0,
     maxSupply: 0,
     mintPrice: "",
     totalVolume: "",
     numTrades: 0,
     numOwners: 0,
+    denom: "",
   };
 }
 
@@ -802,8 +804,8 @@ export const Collection = {
     if (message.volume !== "") {
       writer.uint32(66).string(message.volume);
     }
-    if (message.denom !== "") {
-      writer.uint32(74).string(message.denom);
+    if (message.volumeDenom !== "") {
+      writer.uint32(74).string(message.volumeDenom);
     }
     if (message.creatorId !== "") {
       writer.uint32(82).string(message.creatorId);
@@ -817,8 +819,8 @@ export const Collection = {
     if (message.twitterUrl !== "") {
       writer.uint32(114).string(message.twitterUrl);
     }
-    if (message.floorPrice !== "") {
-      writer.uint32(122).string(message.floorPrice);
+    if (message.floorPrice !== 0) {
+      writer.uint32(120).uint64(message.floorPrice);
     }
     if (message.maxSupply !== 0) {
       writer.uint32(128).int64(message.maxSupply);
@@ -834,6 +836,9 @@ export const Collection = {
     }
     if (message.numOwners !== 0) {
       writer.uint32(160).int32(message.numOwners);
+    }
+    if (message.denom !== "") {
+      writer.uint32(170).string(message.denom);
     }
     return writer;
   },
@@ -870,7 +875,7 @@ export const Collection = {
           message.volume = reader.string();
           break;
         case 9:
-          message.denom = reader.string();
+          message.volumeDenom = reader.string();
           break;
         case 10:
           message.creatorId = reader.string();
@@ -885,7 +890,7 @@ export const Collection = {
           message.twitterUrl = reader.string();
           break;
         case 15:
-          message.floorPrice = reader.string();
+          message.floorPrice = longToNumber(reader.uint64() as Long);
           break;
         case 16:
           message.maxSupply = longToNumber(reader.int64() as Long);
@@ -901,6 +906,9 @@ export const Collection = {
           break;
         case 20:
           message.numOwners = reader.int32();
+          break;
+        case 21:
+          message.denom = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -920,17 +928,18 @@ export const Collection = {
       mintAddress: isSet(object.mintAddress) ? String(object.mintAddress) : "",
       networkId: isSet(object.networkId) ? String(object.networkId) : "",
       volume: isSet(object.volume) ? String(object.volume) : "",
-      denom: isSet(object.denom) ? String(object.denom) : "",
+      volumeDenom: isSet(object.volumeDenom) ? String(object.volumeDenom) : "",
       creatorId: isSet(object.creatorId) ? String(object.creatorId) : "",
       secondaryDuringMint: isSet(object.secondaryDuringMint) ? Boolean(object.secondaryDuringMint) : false,
       websiteUrl: isSet(object.websiteUrl) ? String(object.websiteUrl) : "",
       twitterUrl: isSet(object.twitterUrl) ? String(object.twitterUrl) : "",
-      floorPrice: isSet(object.floorPrice) ? String(object.floorPrice) : "",
+      floorPrice: isSet(object.floorPrice) ? Number(object.floorPrice) : 0,
       maxSupply: isSet(object.maxSupply) ? Number(object.maxSupply) : 0,
       mintPrice: isSet(object.mintPrice) ? String(object.mintPrice) : "",
       totalVolume: isSet(object.totalVolume) ? String(object.totalVolume) : "",
       numTrades: isSet(object.numTrades) ? Number(object.numTrades) : 0,
       numOwners: isSet(object.numOwners) ? Number(object.numOwners) : 0,
+      denom: isSet(object.denom) ? String(object.denom) : "",
     };
   },
 
@@ -944,17 +953,18 @@ export const Collection = {
     message.mintAddress !== undefined && (obj.mintAddress = message.mintAddress);
     message.networkId !== undefined && (obj.networkId = message.networkId);
     message.volume !== undefined && (obj.volume = message.volume);
-    message.denom !== undefined && (obj.denom = message.denom);
+    message.volumeDenom !== undefined && (obj.volumeDenom = message.volumeDenom);
     message.creatorId !== undefined && (obj.creatorId = message.creatorId);
     message.secondaryDuringMint !== undefined && (obj.secondaryDuringMint = message.secondaryDuringMint);
     message.websiteUrl !== undefined && (obj.websiteUrl = message.websiteUrl);
     message.twitterUrl !== undefined && (obj.twitterUrl = message.twitterUrl);
-    message.floorPrice !== undefined && (obj.floorPrice = message.floorPrice);
+    message.floorPrice !== undefined && (obj.floorPrice = Math.round(message.floorPrice));
     message.maxSupply !== undefined && (obj.maxSupply = Math.round(message.maxSupply));
     message.mintPrice !== undefined && (obj.mintPrice = message.mintPrice);
     message.totalVolume !== undefined && (obj.totalVolume = message.totalVolume);
     message.numTrades !== undefined && (obj.numTrades = Math.round(message.numTrades));
     message.numOwners !== undefined && (obj.numOwners = Math.round(message.numOwners));
+    message.denom !== undefined && (obj.denom = message.denom);
     return obj;
   },
 
@@ -968,17 +978,18 @@ export const Collection = {
     message.mintAddress = object.mintAddress ?? "";
     message.networkId = object.networkId ?? "";
     message.volume = object.volume ?? "";
-    message.denom = object.denom ?? "";
+    message.volumeDenom = object.volumeDenom ?? "";
     message.creatorId = object.creatorId ?? "";
     message.secondaryDuringMint = object.secondaryDuringMint ?? false;
     message.websiteUrl = object.websiteUrl ?? "";
     message.twitterUrl = object.twitterUrl ?? "";
-    message.floorPrice = object.floorPrice ?? "";
+    message.floorPrice = object.floorPrice ?? 0;
     message.maxSupply = object.maxSupply ?? 0;
     message.mintPrice = object.mintPrice ?? "";
     message.totalVolume = object.totalVolume ?? "";
     message.numTrades = object.numTrades ?? 0;
     message.numOwners = object.numOwners ?? 0;
+    message.denom = object.denom ?? "";
     return message;
   },
 };
