@@ -8,6 +8,7 @@ import {
   SortDirection,
 } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
+import { CurrencyIcon } from "../../components/CurrencyIcon";
 import { OmniLink } from "../../components/OmniLink";
 import { Pagination } from "../../components/Pagination";
 import { ScreenContainer } from "../../components/ScreenContainer";
@@ -17,10 +18,9 @@ import { SortButton } from "../../components/sorts/SortButton";
 import { SpacerColumn } from "../../components/spacer";
 import { TableRow, TableRowHeading } from "../../components/table";
 import { Tabs } from "../../components/tabs/Tabs";
-import { useCollectionInfo } from "../../hooks/useCollectionInfo";
-import { useCollectionStats } from "../../hooks/useCollectionStats";
 import { useCollections } from "../../hooks/useCollections";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import { prettyPrice } from "../../utils/coins";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { mineShaftColor, neutral33 } from "../../utils/style/colors";
 import {
@@ -221,7 +221,7 @@ const CollectionRow: React.FC<{ collection: Collection; rank: number }> = ({
   collection,
   rank,
 }) => {
-  const rowData = useRowData(collection.id, rank);
+  const rowData = useRowData(collection, rank);
   return (
     <OmniLink
       style={{
@@ -259,7 +259,29 @@ const CollectionRow: React.FC<{ collection: Collection; rank: number }> = ({
       <InnerCell>{rowData["24hVolume"]}</InnerCell>
       <InnerCell>{rowData["24hPercentualVolume"]}</InnerCell>
       <InnerCell>{rowData.sales}</InnerCell>
-      <InnerCell>{rowData.floorPrice}</InnerCell>
+      <View
+        style={{
+          flex: 3,
+          paddingRight: layout.padding_x1,
+          flexDirection: "row",
+          flexWrap: "nowrap",
+          justifyContent: "center",
+        }}
+      >
+        <BrandText style={fontSemibold13}>
+          {prettyPrice(
+            rowData.floorPrice.networkId,
+            rowData.floorPrice.value,
+            rowData.floorPrice.denom
+          )}
+        </BrandText>
+        <CurrencyIcon
+          networkId={rowData.floorPrice.networkId}
+          denom={rowData.floorPrice.denom}
+          size={16}
+        />
+      </View>
+
       <InnerCell>{rowData.owners}</InnerCell>
       <InnerCell>{rowData.supply}</InnerCell>
     </OmniLink>
@@ -320,32 +342,40 @@ interface RowData {
   "24hVolume": string;
   "24hPercentualVolume": string;
   sales: string;
-  floorPrice?: string;
+  floorPrice: {
+    networkId: string;
+    value: string;
+    denom: string;
+  };
   owners: string;
   supply: string;
 }
 
-const useRowData = (id: string, rank: number): RowData => {
-  const { collectionInfo } = useCollectionInfo(id);
-  const stats = useCollectionStats(id);
-
+const useRowData = (collection: Collection, rank: number): RowData => {
   return {
-    id,
+    id: collection.id,
     rank: rank + 1,
-    collectionName: collectionInfo.name,
+    collectionName: collection.collectionName,
     collectionNameData: {
-      collectionName: collectionInfo.name,
-      image: collectionInfo.image,
+      collectionName: collection.collectionName,
+      image: collection.imageUri,
     },
-    totalVolume: nFormatter(stats?.totalVolume, 0),
-    "24hVolume": nFormatter(stats?.totalVolume, 0),
-    "24hPercentualVolume": nFormatter(stats?.totalVolume, 2),
-    sales: nFormatter(stats?.totalVolume, 0),
-    floorPrice: collectionInfo.prettyUnitPrice,
-    owners: nFormatter(stats?.owners, stats?.owners.toString().length),
+    totalVolume: nFormatter(collection.totalVolume, 0),
+    "24hVolume": nFormatter(collection.volume, 0),
+    "24hPercentualVolume": nFormatter(collection.volume, 2),
+    sales: nFormatter(collection.numTrades, 0),
+    floorPrice: {
+      networkId: collection.networkId,
+      value: collection.floorPrice,
+      denom: collection.denom,
+    },
+    owners: nFormatter(
+      collection.numOwners,
+      collection.numOwners.toString().length
+    ),
     supply: nFormatter(
-      stats?.totalSupply,
-      stats?.totalSupply.toString().length
+      collection.maxSupply,
+      collection.maxSupply.toString().length
     ),
   };
 };

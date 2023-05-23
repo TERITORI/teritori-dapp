@@ -74,9 +74,15 @@ type DBCollectionWithExtra struct {
 	Name                string
 	ImageURI            string
 	Volume              string
+	TotalVolume         string
+	FloorPrice          string
+	MintPrice           string
+	NumTrades           int64
+	NumOwners           int32
+	Denom               string
 	MintContractAddress string
 	CreatorAddress      string
-	Price               uint64
+	Price               string
 	MaxSupply           int64
 	SecondaryDuringMint bool
 }
@@ -170,19 +176,49 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 				SELECT * FROM trades t2 INNER JOIN activities_on_period aop
 				ON aop.id = t2.activity_id
 			),
+     activities_on_period_comparision AS (
+         SELECT * FROM activities a2 WHERE a2."time" < ? and a2."time" > ?
+     ),
+     trades_on_period_comparision AS (
+         SELECT * FROM trades t2 INNER JOIN activities_on_period_comparision aop
+                                            ON aop.id = t2.activity_id
+     ),
+     trades_by_collection_historic AS (
+         select COALESCE(sum(t.usd_price),0) as total_volume, c.id, min(t.price) as floor_price, count(*) num_trades
+         FROM trades t join activities a on a.id = t.activity_id
+                       join teritori_collections tc on split_part(a.nft_id,'-',2)=tc.mint_contract_address
+                       join collections c on c.id = tc.collection_id
+         group by c.id),
+     current_num_owners AS (
+         select count (DISTINCT owner_id) num_owners, collection_id
+         from nfts
+         group by collection_id),
 			trades_by_collection AS (
 				SELECT SUM(t.usd_price) volume, nbc.id FROM trades_on_period AS t
 				INNER JOIN nft_by_collection nbc ON nbc.nft_id = t.nft_id
 				GROUP BY nbc.id
-			)
-			SELECT tc.*, COALESCE((SELECT tbc.volume FROM trades_by_collection tbc WHERE tbc.id = tc.id), 0) volume
-				FROM tori_collections tc
+      ),
+     trades_by_collection_comparision AS (
+         SELECT round(100*SUM(t.usd_price)/trades_by_collection.volume, 1) comparision, nbc.id 
+         FROM trades_on_period_comparision AS t
+         INNER JOIN nft_by_collection nbc ON nbc.nft_id = t.nft_id
+         JOIN trades_by_collection on trades_by_collection.id = t.id
+         GROUP BY nbc.id,trades_by_collection.volume
+     )
+      SELECT tc.*, COALESCE((SELECT tbc.volume FROM trades_by_collection tbc WHERE tbc.id = tc.id), 0) volume,
+         total_volume, floor_price, num_trades, num_owners, 
+         COALESCE((SELECT tcc.comparision FROM trades_by_collection_comparision tcc WHERE tcc.id = tc.id), 0) comparison
+      FROM tori_collections tc
+      join trades_by_collection_historic tch on tc.id = tch.id
+      join current_num_owners on tc.collection_id = current_num_owners.collection_id
 			ORDER BY ?
 			LIMIT ?
 			OFFSET ?
 		`, where),
 			s.conf.Whitelist,
-			time.Now().AddDate(0, 0, -30),
+			time.Now().AddDate(0, 0, -1),
+			time.Now().AddDate(0, 0, -1),
+			time.Now().AddDate(0, 0, -2),
 			orderSQL,
 			limit,
 			offset,
@@ -202,7 +238,12 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 				Volume:              c.Volume,
 				CreatorId:           string(network.UserID(c.CreatorAddress)),
 				SecondaryDuringMint: c.SecondaryDuringMint,
-				FloorPrice:          c.Price,
+				MintPrice:           c.Price,
+				Denom:               c.Denom,
+				FloorPrice:          c.FloorPrice,
+				TotalVolume:         c.TotalVolume,
+				NumTrades:           c.NumTrades,
+				NumOwners:           c.NumOwners,
 				MaxSupply:           c.MaxSupply,
 			}}); err != nil {
 				return errors.Wrap(err, "failed to send collection")
