@@ -25,8 +25,20 @@ export const ChatScreen: ScreenFC<"Chat"> = () => {
           try {
             const weshClient = createWeshClient("http://localhost:4242");
             const weshConfig = await weshClient.ServiceGetConfiguration({});
-            console.log("wesh test success", weshConfig);
-            setText(JSON.stringify(weshConfig));
+            await weshClient.ContactRequestEnable({});
+            const ref = await weshClient.ContactRequestReference({});
+            if (ref.publicRendezvousSeed.length === 0) {
+              // we need to reset the reference the first time
+              const resetRef = await weshClient.ContactRequestResetReference(
+                {}
+              );
+              ref.publicRendezvousSeed = resetRef.publicRendezvousSeed;
+            }
+            if (!ref.publicRendezvousSeed) {
+              throw new Error("no publicRendezvousSeed");
+            }
+            console.log("wesh test success", weshConfig, ref);
+            setText(JSON.stringify(ref) + "\n" + JSON.stringify(weshConfig));
           } catch (err) {
             console.error("wesh test error", err);
             setText(`${err}`);
