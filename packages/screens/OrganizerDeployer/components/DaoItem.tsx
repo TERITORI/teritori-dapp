@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
 import { OmniLink } from "../../../components/OmniLink";
@@ -18,9 +18,10 @@ import { tinyAddress } from "../../../utils/text";
 
 interface DaoItemProps {
   userId: string;
+  style?: StyleProp<ViewStyle>;
 }
 
-export const DaoItem: React.FC<DaoItemProps> = ({ userId }) => {
+export const DaoItem: React.FC<DaoItemProps> = ({ userId, style }) => {
   const [network, daoAddress] = parseUserId(userId);
   const {
     metadata: { image, public_name: name, public_bio: description, tokenId },
@@ -33,7 +34,7 @@ export const DaoItem: React.FC<DaoItemProps> = ({ userId }) => {
   return (
     <OmniLink
       to={{ screen: "UserPublicProfile", params: { id: userId } }}
-      style={styles.container}
+      style={[styles.container, style]}
     >
       <View style={{ alignItems: "center" }}>
         <OptimizedImage
@@ -75,8 +76,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: neutral33,
     borderRadius: 12,
-    marginHorizontal: layout.padding_x2,
-    marginVertical: layout.padding_x2,
   },
   comingSoonText: StyleSheet.flatten([
     fontSemibold12,

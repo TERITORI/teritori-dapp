@@ -16,10 +16,12 @@ import { UPPQuests } from "../../components/userPublicProfile/UPPSucceedQuests";
 import { useIsDAO } from "../../hooks/cosmwasm/useCosmWasmContractInfo";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
+import { usePrevious } from "../../hooks/usePrevious";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { parseUserId } from "../../networks";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { fontSemibold20 } from "../../utils/style/fonts";
+import { DAOList } from "../OrganizerDeployer/OrganizationDaoListScreen";
 import { DaoMemberList } from "../OrganizerDeployer/components/DaoMemberList";
 import { DaoProposalList } from "../OrganizerDeployer/components/DaoProposalList";
 import { Assets } from "../WalletManager/Assets";
@@ -128,6 +130,10 @@ const SelectedTabContent: React.FC<{
       return <DaoProposalList daoAddress={userAddress} />;
     case "funds":
       return <Assets userId={userId} />;
+    case "daos":
+      return (
+        <DAOList networkId={network?.id} req={{ memberAddress: userAddress }} />
+      );
     default:
       return null;
   }
@@ -140,6 +146,12 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
 }) => {
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof screenTabItems>("userPosts");
+  const prevId = usePrevious(id);
+  useEffect(() => {
+    if (id !== prevId) {
+      setSelectedTab("userPosts");
+    }
+  }, [id, prevId]);
   const navigation = useAppNavigation();
   const [network, userAddress] = parseUserId(id);
   const { metadata, notFound } = useNSUserInfo(id);

@@ -54,13 +54,35 @@ export const OrganizationDaoListScreen = () => {
   );
 };
 
+const halfGap = layout.padding_x1;
+
+export const DAOList: React.FC<{
+  networkId: string | undefined;
+  req?: DaoListRequest;
+}> = ({ networkId, req = {} }) => {
+  const { daos } = useDAOs(networkId, req);
+  return (
+    <View style={styles.row}>
+      {(daos || []).map((item) => (
+        <DaoItem
+          key={item.address}
+          userId={getUserId(networkId, item.address)}
+          style={{
+            marginHorizontal: halfGap,
+            marginVertical: halfGap,
+          }}
+        />
+      ))}
+    </View>
+  );
+};
+
 const DAOsSection: React.FC<{
-  networkId: string;
+  networkId: string | undefined;
   title: string;
   req?: DaoListRequest;
   topRight?: React.ReactNode;
-}> = ({ networkId, title, req = {}, topRight }) => {
-  const { daos } = useDAOs(networkId, req);
+}> = ({ networkId, title, req, topRight }) => {
   return (
     <View style={styles.container}>
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
@@ -68,14 +90,7 @@ const DAOsSection: React.FC<{
         {topRight}
       </View>
       <SpacerColumn size={3} />
-      <View style={styles.row}>
-        {(daos || []).map((item) => (
-          <DaoItem
-            key={item.address}
-            userId={getUserId(networkId, item.address)}
-          />
-        ))}
-      </View>
+      <DAOList networkId={networkId} req={req} />
     </View>
   );
 };
@@ -89,7 +104,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     flexWrap: "wrap",
-    marginHorizontal: -layout.padding_x2,
-    marginVertical: -layout.padding_x2,
+    marginHorizontal: -halfGap,
+    marginVertical: -halfGap,
   },
 });
