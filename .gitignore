@@ -74,3 +74,5 @@ buck-out/
 .expo/
 
 # @end expo-cli
+
+/cache/

@@ -60,3 +60,9 @@ type SolanaNetwork struct {
 }
 
 var _ Network = &SolanaNetwork{}
+
+type GnoNetwork struct {
+	*NetworkBase
+}
+
+var _ Network = &GnoNetwork{}

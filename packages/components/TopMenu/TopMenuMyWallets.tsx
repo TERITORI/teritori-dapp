@@ -11,7 +11,7 @@ import {
   useSelectedNetworkInfo,
 } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getToriNativeCurrency, NetworkKind } from "../../networks";
+import { getStakingCurrency, NetworkKind } from "../../networks";
 import { DepositWithdrawModal } from "../../screens/WalletManager/components/DepositWithdrawModal";
 import { useAppNavigation } from "../../utils/navigation";
 import {
@@ -219,7 +219,11 @@ export const TopMenuMyWallets: React.FC = () => {
             onPress={() => navigation.navigate("Staking")}
           />
           <SecondaryButton
-            disabled={selectedNetworkInfo?.kind !== NetworkKind.Cosmos}
+            disabled={
+              ![NetworkKind.Cosmos, NetworkKind.Gno].includes(
+                selectedNetworkInfo?.kind || NetworkKind.Unknown
+              )
+            }
             paddingHorizontal={layout.padding_x2}
             text="Send"
             size="XS"
@@ -246,7 +250,7 @@ export const TopMenuMyWallets: React.FC = () => {
         </FlexRow>
       </TopMenuSection>
 
-      {selectedNetworkInfo?.kind === NetworkKind.Cosmos && (
+      {!!selectedNetworkInfo && (
         <>
           <DepositWithdrawModal
             variation="deposit"
@@ -257,7 +261,7 @@ export const TopMenuMyWallets: React.FC = () => {
           />
           <SendModal
             networkId={selectedNetworkInfo.id}
-            nativeCurrency={getToriNativeCurrency(selectedNetworkInfo.id)}
+            nativeCurrency={getStakingCurrency(selectedNetworkInfo.id)}
             onClose={() => setSendVisible(false)}
             isVisible={isSendVisible}
           />

@@ -12,6 +12,7 @@ import { useBalances } from "../../hooks/useBalances";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
   getKeplrSigningStargateClient,
+  getNetwork,
   keplrCurrencyFromNativeCurrencyInfo,
   NativeCurrencyInfo,
 } from "../../networks";
@@ -94,11 +95,11 @@ export const SendModal: React.FC<SendModalProps> = ({
   const onPressSend = async (formData: TransactionForm) => {
     try {
       const sender = selectedWallet?.address;
+      const receiver = formData.toAddress;
       if (!sender) {
         throw new Error("no sender");
       }
       //TODO: handle contacts
-      const receiver = formData.toAddress;
       if (!receiver) {
         throw new Error("no receiver");
       }
@@ -142,8 +143,26 @@ export const SendModal: React.FC<SendModalProps> = ({
           title: "Proposal created",
           message: "",
         });
+      } else if (networkId === "gno-testnet") {
+        const adena = (window as any).adena;
+        const res = await adena.DoContract({
+          messages: [
+            {
+              type: "/bank.MsgSend",
+              value: {
+                from_address: sender,
+                to_address: receiver,
+                amount: `${amount}ugnot`,
+              },
+            },
+          ],
+          gasFee: 1,
+          gasWanted: 50000,
+        });
+        if (res.status !== "success") {
+          throw new Error(res.message);
+        }
       } else {
-        // simple send
         const client = await getKeplrSigningStargateClient(networkId);
 
         const tx = await client.sendTokens(
@@ -153,20 +172,22 @@ export const SendModal: React.FC<SendModalProps> = ({
           "auto"
         );
         if (isDeliverTxFailure(tx)) {
-          console.error("Send Tokens tx failed", tx);
-          setToastError({ title: "Transaction failed", message: "" });
+          throw new Error("Transaction failed");
         }
-        setToastSuccess({
-          title: `TORI succeeded sent to ${receiver}`,
-          message: "",
-        });
-        // FIXME: find out if it's possible to check for ibc ack
       }
+      setToastSuccess({
+        title: `Sent ${prettyPrice(
+          networkId,
+          amount,
+          nativeCurrency.denom
+        )} to ${receiver}`,
+        message: "",
+      });
     } catch (err) {
-      console.error("Send Tokens failed", err);
+      console.error("Failed to send tokens", err);
       if (err instanceof Error) {
         setToastError({
-          title: "Failed to Send Tokens",
+          title: "Failed to send tokens",
           message: err.message,
         });
       }
@@ -185,12 +206,15 @@ export const SendModal: React.FC<SendModalProps> = ({
         <FlexCol alignItems="flex-start" width={356}>
           <TextInputCustom<TransactionForm>
             height={48}
+            width={320}
             control={control}
             variant="labelOutside"
             label="Receiver"
             name="toAddress"
             rules={{ required: true }}
-            placeHolder="Enter a TERITORI address"
+            placeHolder={`Enter a ${
+              getNetwork(networkId)?.displayName || networkId
+            } address`}
             defaultValue=""
           />
         </FlexCol>
