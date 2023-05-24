@@ -14,6 +14,7 @@ import { NameNFT } from "../../components/teritoriNameService/NameNFT";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useTNS } from "../../context/TNSProvider";
 import { TeritoriNameServiceClient } from "../../contracts-clients/teritori-name-service/TeritoriNameService.client";
+import { useDAOs } from "../../hooks/dao/useDAOs";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
 import { useNSNameInfo } from "../../hooks/useNSNameInfo";
 import { useNSNameOwner } from "../../hooks/useNSNameOwner";
@@ -187,7 +188,11 @@ export const TNSConsultNameScreen: React.FC<TNSConsultNameProps> = ({
   );
   const { nameOwner } = useNSNameOwner(networkId, tokenId);
   const ownerId = getUserId(networkId, nameOwner);
-  const isOwnedByUser = ownerId === wallet?.userId;
+  const { daos } = useDAOs(networkId, { MemberAddress: wallet?.address });
+
+  const isOwnedByUser =
+    ownerId === wallet?.userId ||
+    !!daos?.find((dao) => dao.address === nameOwner);
   const { primaryAlias } = useNSPrimaryAlias(ownerId);
   const isPrimary = primaryAlias === tokenId;
 

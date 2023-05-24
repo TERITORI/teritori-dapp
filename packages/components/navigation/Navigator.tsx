@@ -2,6 +2,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 
 import { ComingSoonScreen } from "../../screens/ComingSoon/ComingSoon";
+import { CoreDAOScreen } from "../../screens/CoreDAO/CoreDAOScreen";
 import { DAppStore } from "../../screens/DAppStore/HomeScreen";
 import { ToriPunks } from "../../screens/DAppStore/apps/toripunks/HomeScreen";
 import { FeedScreen } from "../../screens/Feed/FeedScreen";
@@ -320,6 +321,11 @@ export const Navigator: React.FC = () => {
         name="DAppStore"
         component={DAppStore}
         options={{ header: () => null, title: screenTitle("dApp Store") }}
+      />
+      <Stack.Screen
+        name="CoreDAO"
+        component={CoreDAOScreen}
+        options={{ header: () => null, title: screenTitle("Core DAO") }}
       />
     </Stack.Navigator>
   );

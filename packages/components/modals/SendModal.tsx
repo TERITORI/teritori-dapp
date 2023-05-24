@@ -1,6 +1,5 @@
 import { Decimal } from "@cosmjs/math";
 import { isDeliverTxFailure } from "@cosmjs/stargate";
-import { Picker } from "@react-native-picker/picker";
 import React, { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import { StyleSheet, TouchableOpacity } from "react-native";
@@ -8,9 +7,9 @@ import { StyleSheet, TouchableOpacity } from "react-native";
 import ModalBase from "./ModalBase";
 import contactsSVG from "../../../assets/icons/contacts.svg";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { TeritoriDaoCoreQueryClient } from "../../contracts-clients/teritori-dao/TeritoriDaoCore.client";
-import { TeritoriDaoProposalQueryClient } from "../../contracts-clients/teritori-dao/TeritoriDaoProposal.client";
-import { TeritoriDaoProposalBaseClient } from "../../contracts-clients/teritori-dao/TeritoriDaoProposalBase.client";
+import { DaoCoreQueryClient } from "../../contracts-clients/dao-core/DaoCore.client";
+import { DaoPreProposeSingleClient } from "../../contracts-clients/dao-pre-propose-single/DaoPreProposeSingle.client";
+import { DaoProposalSingleQueryClient } from "../../contracts-clients/dao-proposal-single/DaoProposalSingle.client";
 import { useDAOs } from "../../hooks/dao/useDAOs";
 import { useBalances } from "../../hooks/useBalances";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
@@ -18,6 +17,7 @@ import {
   getKeplrSigningCosmWasmClient,
   getKeplrSigningStargateClient,
   keplrCurrencyFromNativeCurrencyInfo,
+  mustGetNonSigningCosmWasmClient,
   NativeCurrencyInfo,
 } from "../../networks";
 import { TransactionForm } from "../../screens/WalletManager/types";
@@ -37,6 +37,7 @@ import { NetworkIcon } from "../NetworkIcon";
 import { SVG } from "../SVG";
 import { MaxButton } from "../buttons/MaxButton";
 import { PrimaryButton } from "../buttons/PrimaryButton";
+import { DAOSelector } from "../dao/DAOSelector";
 import { TextInputCustom } from "../inputs/TextInputCustom";
 import { SpacerColumn, SpacerRow } from "../spacer";
 
@@ -122,52 +123,49 @@ export const SendModal: React.FC<SendModalProps> = ({
         if (!selectedDAO) {
           throw new Error("no selected DAO");
         }
-        const signingClient = await getKeplrSigningCosmWasmClient(networkId);
-        const daoCoreClient = new TeritoriDaoCoreQueryClient(
-          signingClient,
+        const cosmwasmClient = await mustGetNonSigningCosmWasmClient(networkId);
+        const daoCoreClient = new DaoCoreQueryClient(
+          cosmwasmClient,
           selectedDAOAddress
         );
-        const proposalModules = await daoCoreClient.proposalModules();
-        let proposalModuleAddress = "";
-        let proposalBaseModuleAddress = "";
-        if (proposalModules.length > 0) {
-          proposalModuleAddress = proposalModules[0].address;
-        }
-        if (proposalModuleAddress !== "") {
-          const daoProposalClient = new TeritoriDaoProposalQueryClient(
-            signingClient,
-            proposalModuleAddress
-          );
-          const proposalBaseAddr =
-            await daoProposalClient.proposalCreationPolicy();
-          if (proposalBaseAddr && proposalBaseAddr.module) {
-            proposalBaseModuleAddress = proposalBaseAddr.module.addr;
-          }
-        }
-        const daoProposalBaseClient = new TeritoriDaoProposalBaseClient(
+        const proposalModuleAddress = (
+          await daoCoreClient.proposalModules({})
+        )[0].address;
+        const proposalModuleClient = new DaoProposalSingleQueryClient(
+          cosmwasmClient,
+          proposalModuleAddress
+        );
+        const policy = await proposalModuleClient.proposalCreationPolicy();
+        if (!("module" in policy)) throw new Error("Invalid policy");
+        const signingClient = await getKeplrSigningCosmWasmClient(networkId);
+        const daoProposalBaseClient = new DaoPreProposeSingleClient(
           signingClient,
           sender,
-          proposalBaseModuleAddress
+          policy.module.addr
         );
-        await daoProposalBaseClient.createProposal(
+        await daoProposalBaseClient.propose(
           {
-            title: `Send ${prettyPrice(
-              networkId,
-              amount,
-              nativeCurrency.denom
-            )} to ${receiver}`,
-            description: "",
-            msgs: [
-              {
-                bank: {
-                  send: {
-                    from_address: selectedDAOAddress,
-                    to_address: receiver,
-                    amount: [{ amount, denom: nativeCurrency.denom }],
+            msg: {
+              propose: {
+                title: `Send ${prettyPrice(
+                  networkId,
+                  amount,
+                  nativeCurrency.denom
+                )} to ${receiver}`,
+                description: "",
+                msgs: [
+                  {
+                    bank: {
+                      send: {
+                        from_address: selectedDAOAddress,
+                        to_address: receiver,
+                        amount: [{ amount, denom: nativeCurrency.denom }],
+                      },
+                    },
                   },
-                },
+                ],
               },
-            ],
+            },
           },
           "auto"
         );
@@ -232,23 +230,11 @@ export const SendModal: React.FC<SendModalProps> = ({
 
       <SpacerColumn size={2.5} />
 
-      <Picker
-        selectedValue={selectedDAOAddress}
-        placeholder="Select a DAO"
-        onValueChange={(itemValue) => {
-          setSelectedDAOAddress(itemValue);
-        }}
-      >
-        <Picker.Item label="Propose to DAO" value="" />
-        {(daos || []).map((dao) => {
-          return (
-            <Picker.Item
-              label={`${dao.name} - ${dao.address}`}
-              value={dao.address}
-            />
-          );
-        })}
-      </Picker>
+      <DAOSelector
+        value={selectedDAOAddress}
+        onSelect={setSelectedDAOAddress}
+        userId={selectedWallet?.userId}
+      />
 
       <SpacerColumn size={2.5} />
 

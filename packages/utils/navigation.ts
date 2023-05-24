@@ -65,6 +65,7 @@ export type RootStackParamList = {
   TransactionProposal: undefined;
   DAppStore: undefined;
   ToriPunks: { route: string };
+  CoreDAO: undefined;
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -138,6 +139,8 @@ const navConfig: {
     DAppStore: "dapp-store",
     // === DApps
     ToriPunks: "dapp/tori-punks/:route?",
+
+    CoreDAO: "core-dao",
   },
 };
 

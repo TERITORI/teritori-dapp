@@ -19,13 +19,13 @@ import {
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { TeritoriDaoCoreClient } from "../../contracts-clients/teritori-dao/TeritoriDaoCore.client";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
   NetworkKind,
   getKeplrSigningCosmWasmClient,
   mustGetCosmosNetwork,
 } from "../../networks";
+import { createDaoTokenBased, createDaoMemberBased } from "../../utils/dao";
 import { useAppNavigation } from "../../utils/navigation";
 
 export const ORGANIZER_DEPLOYER_STEPS = [
@@ -91,16 +91,14 @@ export const OrganizerDeployerScreen = () => {
       const walletAddress = selectedWallet.address;
       const signingClient = await getKeplrSigningCosmWasmClient(networkId);
 
-      const daoCoreClient = new TeritoriDaoCoreClient(
-        signingClient,
-        walletAddress,
-        daoFactoryContractAddress
-      );
       let createDaoRes = null;
       if (step1DaoInfoFormData.structure === DaoType.TOKEN_BASED) {
         if (!step3TokenSettingFormData) return false;
-        createDaoRes = await daoCoreClient.createDaoTokenBased(
+        createDaoRes = await createDaoTokenBased(
           {
+            client: signingClient,
+            sender: walletAddress,
+            contractAddress: daoFactoryContractAddress,
             daoPreProposeSingleCodeId: network.daoPreProposeSingleCodeId!,
             daoProposalSingleCodeId: network.daoProposalSingleCodeId!,
             daoCw20CodeId: network.daoCw20CodeId!,
@@ -130,8 +128,11 @@ export const OrganizerDeployerScreen = () => {
         );
       } else if (step1DaoInfoFormData.structure === DaoType.MEMBER_BASED) {
         if (!step3MemberSettingFormData) return false;
-        createDaoRes = await daoCoreClient.createDaoMemberBased(
+        createDaoRes = await createDaoMemberBased(
           {
+            client: signingClient,
+            sender: walletAddress,
+            contractAddress: daoFactoryContractAddress,
             daoCoreCodeId: network.daoCoreCodeId!,
             daoPreProposeSingleCodeId: network.daoPreProposeSingleCodeId!,
             daoProposalSingleCodeId: network.daoProposalSingleCodeId!,

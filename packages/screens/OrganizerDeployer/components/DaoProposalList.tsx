@@ -5,42 +5,44 @@ import { DaoCreateProposalModal } from "./DaoCreateProposalModal";
 import { DaoProposalModal } from "./DaoProposalModal";
 import { BrandText } from "../../../components/BrandText";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
-import { TeritoriDaoProposalQueryClient } from "../../../contracts-clients/teritori-dao/TeritoriDaoProposal.client";
-import { ProposalInfo } from "../../../contracts-clients/teritori-dao/TeritoriDaoProposal.types";
+import { DaoCoreQueryClient } from "../../../contracts-clients/dao-core/DaoCore.client";
+import { DaoProposalSingleQueryClient } from "../../../contracts-clients/dao-proposal-single/DaoProposalSingle.client";
+import { ProposalResponse } from "../../../contracts-clients/dao-proposal-single/DaoProposalSingle.types";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { mustGetNonSigningCosmWasmClient } from "../../../networks";
 import { neutral33, secondaryColor } from "../../../utils/style/colors";
 import { fontSemibold13, fontSemibold14 } from "../../../utils/style/fonts";
-import { DaoInfo } from "../types";
 
 export const DaoProposalList: React.FC<{
-  daoInfo: DaoInfo;
-}> = ({ daoInfo }) => {
+  daoAddress: string;
+}> = ({ daoAddress }) => {
   const selectedWallet = useSelectedWallet();
   const [displayCreateProposalModal, setDisplayCreateProposalModal] =
     useState<boolean>(false);
   const [displayProposalModal, setDisplayProposalModal] =
     useState<boolean>(false);
-  const [selectedProposal, setSelectedProposal] = useState<ProposalInfo | null>(
-    null
-  );
-  const [proposalList, setProposalList] = useState<ProposalInfo[]>([]);
+  const [selectedProposal, setSelectedProposal] =
+    useState<ProposalResponse | null>(null);
+  const [proposalList, setProposalList] = useState<ProposalResponse[]>([]);
 
   useEffect(() => {
     const getProposalList = async () => {
-      if (!selectedWallet || !daoInfo || !daoInfo.proposalModuleAddress) return;
-      const proposalModuleAddress = daoInfo.proposalModuleAddress;
-      const networkId = selectedWallet?.networkId;
-      const cosmwasmClient = await mustGetNonSigningCosmWasmClient(networkId);
-      const daoProposalClient = new TeritoriDaoProposalQueryClient(
+      if (!selectedWallet || !daoAddress) return;
+      const cosmwasmClient = await mustGetNonSigningCosmWasmClient(
+        selectedWallet.networkId
+      );
+      const coreClient = new DaoCoreQueryClient(cosmwasmClient, daoAddress);
+      const proposalModuleAddress = (await coreClient.proposalModules({}))[0]
+        .address;
+      const daoProposalClient = new DaoProposalSingleQueryClient(
         cosmwasmClient,
         proposalModuleAddress
       );
-      const listProposals = await daoProposalClient.listProposals();
+      const listProposals = await daoProposalClient.listProposals({});
       setProposalList(listProposals.proposals);
     };
     getProposalList();
-  }, [daoInfo, selectedWallet]);
+  }, [daoAddress, selectedWallet]);
 
   const onCreateProposal = async () => {
     setDisplayCreateProposalModal(true);
@@ -55,7 +57,7 @@ export const DaoProposalList: React.FC<{
         <DaoCreateProposalModal
           visible={displayCreateProposalModal}
           onClose={() => setDisplayCreateProposalModal(false)}
-          daoInfo={daoInfo}
+          daoAddress={daoAddress}
         />
       )}
       {displayProposalModal && selectedProposal && (
@@ -63,7 +65,7 @@ export const DaoProposalList: React.FC<{
           visible={displayProposalModal}
           onClose={() => setDisplayProposalModal(false)}
           proposalInfo={selectedProposal}
-          daoInfo={daoInfo}
+          daoAddress={daoAddress}
         />
       )}
 
@@ -82,7 +84,7 @@ export const DaoProposalList: React.FC<{
           <BrandText style={styles.titleStyle}>Proposals</BrandText>
         </View>
         <View style={{ flexDirection: "column" }}>
-          {proposalList.map((proposal, index) => (
+          {[...proposalList].reverse().map((proposal, index) => (
             <Pressable
               key={`proposal-${index}`}
               onPress={() => {

@@ -3755,6 +3755,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@cosmjs/encoding@npm:^0.30.1":
+  version: 0.30.1
+  resolution: "@cosmjs/encoding@npm:0.30.1"
+  dependencies:
+    base64-js: ^1.3.0
+    bech32: ^1.1.4
+    readonly-date: ^1.0.0
+  checksum: bd1932fafecbf9876ad97dee8133cc955f52d2fd9b6040d8c991b40ba4195c02cb4dc3c4beec7c237217ba96db78cd914840b2b895348482190d459a21c2b6dd
+  languageName: node
+  linkType: hard
+
 "@cosmjs/json-rpc@npm:^0.29.5":
   version: 0.29.5
   resolution: "@cosmjs/json-rpc@npm:0.29.5"
@@ -27272,6 +27283,7 @@ __metadata:
     "@babel/plugin-proposal-numeric-separator": ^7.18.6
     "@cosmjs/amino": 0.29.3
     "@cosmjs/cosmwasm-stargate": 0.29.3
+    "@cosmjs/encoding": ^0.30.1
     "@cosmjs/proto-signing": 0.29.3
     "@cosmjs/stargate": 0.29.3
     "@cosmology/core": 1.20.0

@@ -1,5 +1,5 @@
 import { bech32 } from "bech32";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { View } from "react-native";
 
 import {
@@ -18,7 +18,6 @@ import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { parseNetworkObjectId, parseUserId } from "../../networks";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
-import { setDocumentTitle } from "../../utils/setDocumentTitle";
 import { fontSemibold20 } from "../../utils/style/fonts";
 
 const TabContainer: React.FC = ({ children }) => {
@@ -38,6 +37,7 @@ const SelectedTabContent: React.FC<{
   const selectedWallet = useSelectedWallet();
   const [, userAddress] = parseNetworkObjectId(userId);
   const userInfo = useNSUserInfo(userId);
+
   const feedRequestUser: PostsRequest = useMemo(() => {
     return {
       filter: {
@@ -127,11 +127,14 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
 }) => {
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof screenTabItems>("userPosts");
-
   const navigation = useAppNavigation();
   const [network, userAddress] = parseUserId(id);
   const { metadata, notFound } = useNSUserInfo(id);
-  setDocumentTitle(`User: ${metadata?.tokenId}`);
+  useEffect(() => {
+    navigation.setOptions({
+      title: `Teritori - User: ${metadata.tokenId || userAddress}`,
+    });
+  }, [navigation, userAddress, metadata.tokenId]);
 
   return (
     <ScreenContainer

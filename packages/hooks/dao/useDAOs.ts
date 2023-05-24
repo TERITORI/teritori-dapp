@@ -4,10 +4,16 @@ import { DaoListRequest } from "../../api/dao/v1/dao";
 import { DaoInfo } from "../../screens/OrganizerDeployer/types";
 import { mustGetDaoClient } from "../../utils/backend";
 
-export const useDAOs = (networkId: string, req?: Partial<DaoListRequest>) => {
+export const useDAOs = (
+  networkId: string | undefined,
+  req?: Partial<DaoListRequest>
+) => {
   const { data, ...other } = useQuery(
     ["daos", networkId, req],
     async () => {
+      if (!networkId) {
+        return [];
+      }
       const daoClient = mustGetDaoClient(networkId);
       const res = await daoClient.DaoList(req || {});
       const daos: DaoInfo[] = [];

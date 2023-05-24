@@ -1,85 +1,140 @@
+import { useQuery } from "@tanstack/react-query";
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
+import { CopyToClipboard } from "../../../components/CopyToClipboard";
+import { OptimizedImage } from "../../../components/OptimizedImage";
 import { SpacerColumn } from "../../../components/spacer";
+import { Cw4GroupQueryClient } from "../../../contracts-clients/cw4-group/Cw4Group.client";
+import { DaoCoreQueryClient } from "../../../contracts-clients/dao-core/DaoCore.client";
+import { DaoVotingCw4QueryClient } from "../../../contracts-clients/dao-voting-cw4/DaoVotingCw4.client";
+import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
+import {
+  getCosmosNetwork,
+  getUserId,
+  mustGetNonSigningCosmWasmClient,
+} from "../../../networks";
+import { useAppNavigation } from "../../../utils/navigation";
 import { neutral33, secondaryColor } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
-import { tinyAddress } from "../../../utils/text";
 
-interface MemberInfo {
-  address: string;
-  votingPower: string;
-  votingWeight: string;
-}
-
-export const DaoMemberList: React.FC = () => {
-  const members: MemberInfo[] = [
-    {
-      address: "tori1z05qcfkt73zlg2m6jsfx72uf5r0pmy50cd5ktx",
-      votingPower: "9.091%",
-      votingWeight: "1",
-    },
-    {
-      address: "tori1z05qcfkt73zlg2m6jsfx72uf5r0pmy50cd5ktx",
-      votingPower: "9.091%",
-      votingWeight: "1",
-    },
-    {
-      address: "tori1z05qcfkt73zlg2m6jsfx72uf5r0pmy50cd5ktx",
-      votingPower: "9.091%",
-      votingWeight: "1",
-    },
-  ];
+export const DaoMemberList: React.FC<{
+  networkId: string;
+  daoAddr: string;
+}> = ({ networkId, daoAddr }) => {
+  const { data: members } = useQuery(
+    ["daoMembers", networkId, daoAddr],
+    async () => {
+      const cosmwasmClient = await mustGetNonSigningCosmWasmClient(networkId);
+      const daoCoreClient = new DaoCoreQueryClient(cosmwasmClient, daoAddr);
+      const votingModuleAddress = await daoCoreClient.votingModule();
+      const votingModuleClient = new DaoVotingCw4QueryClient(
+        cosmwasmClient,
+        votingModuleAddress
+      );
+      const cw4Address = await votingModuleClient.groupContract();
+      const cw4Client = new Cw4GroupQueryClient(cosmwasmClient, cw4Address);
+      const { members } = await cw4Client.listMembers({});
+      return members;
+    }
+  );
+  if (!members) {
+    return null;
+  }
   return (
     <View style={styles.container}>
       <BrandText style={[fontSemibold14, { paddingLeft: 10 }]}>
         {members.length} members
       </BrandText>
       <View style={{ flexWrap: "wrap", flexDirection: "row" }}>
-        {members.map((member, index) => (
-          <View key={index} style={styles.memberItem}>
-            <View
-              style={{
-                flexDirection: "row",
-                height: 50,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <BrandText style={[fontSemibold14]}>
-                # {tinyAddress(member.address, 16)}
-              </BrandText>
-            </View>
-            <View style={{ flexDirection: "column", margin: 20 }}>
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}
-              >
-                <BrandText style={styles.textGrayStyle}>Voting power</BrandText>
-                <BrandText style={[fontSemibold14]}>
-                  {member.votingPower}
-                </BrandText>
-              </View>
-              <SpacerColumn size={2} />
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}
-              >
-                <BrandText style={styles.textGrayStyle}>
-                  Voting weight
-                </BrandText>
-                <BrandText style={[fontSemibold14]}>
-                  {member.votingWeight}
-                </BrandText>
-              </View>
-            </View>
-          </View>
+        {members.map((member) => (
+          <MemberView
+            key={member.addr}
+            networkId={networkId}
+            addr={member.addr}
+            weight={member.weight}
+          />
         ))}
+      </View>
+    </View>
+  );
+};
+
+const MemberView: React.FC<{
+  networkId: string;
+  addr: string;
+  weight: number;
+}> = ({ networkId, addr, weight }) => {
+  const userId = getUserId(networkId, addr);
+  const { metadata } = useNSUserInfo(userId);
+  const network = getCosmosNetwork(networkId);
+  const navigation = useAppNavigation();
+  const imageSize = 100;
+  return (
+    <View style={styles.memberItem}>
+      <View
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <OptimizedImage
+          source={{
+            uri: metadata.image || network?.nameServiceDefaultImage,
+          }}
+          width={imageSize}
+          height={imageSize}
+          style={{ width: imageSize, height: imageSize }}
+        />
+      </View>
+      <View
+        style={{
+          flexDirection: "row",
+          height: 50,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <BrandText>{metadata.public_name || "Anon"}</BrandText>
+      </View>
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate("UserPublicProfile", { id: userId });
+        }}
+      >
+        <View
+          style={{
+            flexDirection: "row",
+            height: 50,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <BrandText>{metadata.tokenId || "No registered name"}</BrandText>
+        </View>
+      </TouchableOpacity>
+      <View
+        style={{
+          flexDirection: "row",
+          height: 50,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <CopyToClipboard text={addr} />
+      </View>
+      <View style={{ flexDirection: "column", margin: 20 }}>
+        <SpacerColumn size={2} />
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+        >
+          <BrandText style={styles.textGrayStyle}>Weight</BrandText>
+          <BrandText style={[fontSemibold14]}>{weight}</BrandText>
+        </View>
       </View>
     </View>
   );

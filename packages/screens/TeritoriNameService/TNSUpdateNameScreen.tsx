@@ -9,9 +9,14 @@ import { NameDataForm } from "../../components/teritoriNameService/NameDataForm"
 import { NameNFT } from "../../components/teritoriNameService/NameNFT";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useTNS } from "../../context/TNSProvider";
+import { DaoCoreQueryClient } from "../../contracts-clients/dao-core/DaoCore.client";
+import { DaoPreProposeSingleClient } from "../../contracts-clients/dao-pre-propose-single/DaoPreProposeSingle.client";
+import { DaoProposalSingleQueryClient } from "../../contracts-clients/dao-proposal-single/DaoProposalSingle.client";
 import { TeritoriNameServiceQueryClient } from "../../contracts-clients/teritori-name-service/TeritoriNameService.client";
 import { Metadata } from "../../contracts-clients/teritori-name-service/TeritoriNameService.types";
+import { useDAOs } from "../../hooks/dao/useDAOs";
 import { nsNameInfoQueryKey } from "../../hooks/useNSNameInfo";
+import { useNSNameOwner } from "../../hooks/useNSNameOwner";
 import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
@@ -40,6 +45,14 @@ export const TNSUpdateNameScreen: React.FC<TNSUpdateNameScreenProps> = ({
   const normalizedTokenId = (
     name + network?.nameServiceTLD || ""
   ).toLowerCase();
+  const { daos } = useDAOs(selectedWallet?.networkId, {
+    MemberAddress: selectedWallet?.address,
+  });
+  const { nameOwner } = useNSNameOwner(
+    selectedWallet?.networkId,
+    network?.nameServiceTLD ? name + network.nameServiceTLD : ""
+  );
+  const ownerDAO = daos?.find((dao) => dao.address === nameOwner);
 
   const initData = async () => {
     try {
@@ -77,19 +90,13 @@ export const TNSUpdateNameScreen: React.FC<TNSUpdateNameScreenProps> = ({
   const queryClient = useQueryClient();
 
   const submitData = async (data: Metadata) => {
-    console.log("data", data);
+    console.log("datatata", data);
     if (!walletAddress) {
       setToastError({
         title: "No wallet address",
         message: "",
       });
-      return;
-    }
-    if (tokens.length && !tokens.includes(normalizedTokenId)) {
-      setToastError({
-        title: "Something went wrong!",
-        message: "",
-      });
+      console.error("no wallet address");
       return;
     }
 
@@ -101,27 +108,109 @@ export const TNSUpdateNameScreen: React.FC<TNSUpdateNameScreenProps> = ({
     };
 
     try {
-      const network = mustGetCosmosNetwork(selectedWallet?.networkId);
-      if (!network.nameServiceContractAddress) {
-        throw new Error("network not supported");
-      }
+      console.log("hello");
+      if (ownerDAO) {
+        console.log("ownerDAO");
 
-      const signingClient = await getKeplrSigningCosmWasmClient(network.id);
+        const networkId = selectedWallet?.networkId;
+        if (!networkId) {
+          throw new Error("no network id");
+        }
 
-      const updatedToken = await signingClient.execute(
-        walletAddress,
-        network.nameServiceContractAddress,
-        msg,
-        "auto"
-      );
-      if (updatedToken) {
-        console.log(normalizedTokenId + " successfully updated"); //TODO: redirect to the token
+        if (!network?.nameServiceContractAddress) {
+          throw new Error("network not supported");
+        }
+
+        if (!selectedWallet?.address) {
+          throw new Error("no wallet address");
+        }
+
+        const cosmwasmClient = await mustGetNonSigningCosmWasmClient(networkId);
+
+        const daoCoreClient = new DaoCoreQueryClient(
+          cosmwasmClient,
+          ownerDAO.address
+        );
+        const proposalModules = await daoCoreClient.proposalModules({});
+        if (proposalModules.length === 0) {
+          throw new Error("no proposal module");
+        }
+        const proposalModuleAddress = proposalModules[0].address;
+        const proposalClient = new DaoProposalSingleQueryClient(
+          cosmwasmClient,
+          proposalModuleAddress
+        );
+
+        const proposalCreationPolicy =
+          await proposalClient.proposalCreationPolicy();
+        if (!("module" in proposalCreationPolicy)) {
+          throw new Error("proposal creation policy is not module");
+        }
+        const signingClient = await getKeplrSigningCosmWasmClient(networkId);
+        const preProposeClient = new DaoPreProposeSingleClient(
+          signingClient,
+          selectedWallet.address,
+          proposalCreationPolicy.module.addr
+        );
+
+        const res = await preProposeClient.propose({
+          msg: {
+            propose: {
+              title: `Update ${msg.update_metadata.token_id}`,
+              description: "",
+              msgs: [
+                {
+                  wasm: {
+                    execute: {
+                      contract_addr: network?.nameServiceContractAddress,
+                      msg: Buffer.from(JSON.stringify(msg)).toString("base64"),
+                      funds: [],
+                    },
+                  },
+                },
+              ],
+            },
+          },
+        });
+        console.log("created proposal", res);
         setToastSuccess({
-          title: normalizedTokenId + " successfully updated",
+          title: "Created proposal",
           message: "",
         });
         setName(name);
         onClose("TNSConsultName");
+      } else {
+        if (tokens.length && !tokens.includes(normalizedTokenId)) {
+          setToastError({
+            title: "Something went wrong!",
+            message: "",
+          });
+          console.error("something went wrong");
+          return;
+        }
+
+        const network = mustGetCosmosNetwork(selectedWallet?.networkId);
+        if (!network.nameServiceContractAddress) {
+          throw new Error("network not supported");
+        }
+
+        const signingClient = await getKeplrSigningCosmWasmClient(network.id);
+
+        const updatedToken = await signingClient.execute(
+          walletAddress,
+          network.nameServiceContractAddress,
+          msg,
+          "auto"
+        );
+        if (updatedToken) {
+          console.log(normalizedTokenId + " successfully updated"); //TODO: redirect to the token
+          setToastSuccess({
+            title: normalizedTokenId + " successfully updated",
+            message: "",
+          });
+          setName(name);
+          onClose("TNSConsultName");
+        }
       }
     } catch (err) {
       console.warn(err);
@@ -158,7 +247,7 @@ export const TNSUpdateNameScreen: React.FC<TNSUpdateNameScreenProps> = ({
         }}
       >
         <NameDataForm
-          btnLabel="Update profile"
+          btnLabel={ownerDAO ? "Propose update" : "Update profile"}
           onPressBtn={submitData}
           initialData={initialData}
         />

@@ -1,28 +1,22 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { ScrollView, StyleSheet, View, Image } from "react-native";
 
 import { DaoMemberList } from "./components/DaoMemberList";
 import { DaoProposalList } from "./components/DaoProposalList";
-import { DaoInfo } from "./types";
 import { BrandText } from "../../components/BrandText";
+import { CopyToClipboard } from "../../components/CopyToClipboard";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { SpacerColumn } from "../../components/spacer";
 import { Tabs } from "../../components/tabs/Tabs";
-import { TeritoriDaoCoreQueryClient } from "../../contracts-clients/teritori-dao/TeritoriDaoCore.client";
-import { TeritoriDaoProposalQueryClient } from "../../contracts-clients/teritori-dao/TeritoriDaoProposal.client";
 import { useBalances } from "../../hooks/useBalances";
+import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import {
-  NetworkKind,
-  getStakingCurrency,
-  mustGetNonSigningCosmWasmClient,
-} from "../../networks";
+import { NetworkKind, getCosmosNetwork, getUserId } from "../../networks";
 import { prettyPrice } from "../../utils/coins";
 import { ScreenFC } from "../../utils/navigation";
 import { neutral33, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { tinyAddress } from "../../utils/text";
 
 const CONTAINER_MARGIN_HORIZONTAL = 32;
 
@@ -32,55 +26,9 @@ export const OrganizationDaoShowScreen: ScreenFC<"OrganizationDaoShow"> = ({
   },
 }) => {
   const networkId = useSelectedNetworkId();
-  const [daoInfo, setDaoInfo] = useState<DaoInfo | null>(null);
-
+  const network = getCosmosNetwork(networkId);
+  const userInfo = useNSUserInfo(getUserId(networkId, address));
   const balances = useBalances(networkId, address);
-  const stakingBalance = balances?.find(
-    (b) => b.denom === getStakingCurrency(networkId)?.denom
-  );
-
-  useEffect(() => {
-    const getDaoInfo = async () => {
-      if (!networkId || !address) return;
-      const cosmwasmClient = await mustGetNonSigningCosmWasmClient(networkId);
-      const daoCoreClient = new TeritoriDaoCoreQueryClient(
-        cosmwasmClient,
-        address
-      );
-      const daoCoreConfig = await daoCoreClient.config();
-      const proposalModules = await daoCoreClient.proposalModules();
-      let proposalModuleAddress = "";
-      let proposalBaseModuleAddress = "";
-      if (proposalModules.length > 0) {
-        proposalModuleAddress = proposalModules[0].address;
-      }
-      if (proposalModuleAddress !== "") {
-        const daoProposalClient = new TeritoriDaoProposalQueryClient(
-          cosmwasmClient,
-          proposalModuleAddress
-        );
-        const proposalBaseAddr =
-          await daoProposalClient.proposalCreationPolicy();
-        if (proposalBaseAddr && proposalBaseAddr.module) {
-          proposalBaseModuleAddress = proposalBaseAddr.module.addr;
-        }
-      }
-
-      const dao: DaoInfo = {
-        name: daoCoreConfig.name,
-        imgUrl: daoCoreConfig.image_url,
-        description: daoCoreConfig.description,
-        members: "",
-        treasury: "",
-        proposalModuleAddress,
-        proposalBaseModuleAddress,
-        address,
-        date: "",
-      };
-      setDaoInfo({ ...dao });
-    };
-    getDaoInfo();
-  }, [networkId, address]);
 
   const tabs = {
     proposals: {
@@ -92,10 +40,13 @@ export const OrganizationDaoShowScreen: ScreenFC<"OrganizationDaoShow"> = ({
   };
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof tabs>("proposals");
+  const name = userInfo?.metadata.tokenId
+    ? `${userInfo.metadata.public_name} - ${userInfo.metadata.tokenId}`
+    : "Anon DAO";
   // returns
-  return daoInfo !== null ? (
+  return (
     <ScreenContainer
-      headerChildren={<BrandText>{daoInfo?.name}</BrandText>}
+      headerChildren={<BrandText>{name}</BrandText>}
       footerChildren={<></>}
       noScroll
       isHeaderSmallMargin
@@ -112,23 +63,20 @@ export const OrganizationDaoShowScreen: ScreenFC<"OrganizationDaoShow"> = ({
           <View style={[styles.row, { marginTop: layout.padding_x2_5 }]}>
             <Image
               source={{
-                uri: daoInfo?.imgUrl,
+                uri:
+                  userInfo?.metadata.image || network?.nameServiceDefaultImage, // FIXME: fallback image
               }}
               style={styles.image}
             />
           </View>
           <SpacerColumn size={3} />
           <View style={styles.row}>
-            <BrandText style={styles.text}>{daoInfo?.name}</BrandText>
+            <BrandText style={styles.text}>{name}</BrandText>
           </View>
           <SpacerColumn size={3} />
           <View style={styles.row}>
-            <BrandText style={styles.textGray}>{daoInfo?.date}</BrandText>
-          </View>
-          <SpacerColumn size={3} />
-          <View style={styles.row}>
-            <BrandText style={[styles.textGray, { width: 500 }]}>
-              {daoInfo?.description}
+            <BrandText style={styles.textGray}>
+              {userInfo.metadata.public_bio}
             </BrandText>
           </View>
           <SpacerColumn size={3} />
@@ -136,25 +84,19 @@ export const OrganizationDaoShowScreen: ScreenFC<"OrganizationDaoShow"> = ({
             <View style={styles.item}>
               <BrandText style={styles.textGray}>Dao's address</BrandText>
               <SpacerColumn size={2} />
-              <BrandText style={styles.text}>
-                {tinyAddress(daoInfo?.address, 16)}
-              </BrandText>
+              <CopyToClipboard text={address} />
             </View>
             <View style={styles.item}>
               <BrandText style={styles.textGray}>DAO Treasury</BrandText>
               <SpacerColumn size={2} />
-              <BrandText style={styles.text}>
-                {prettyPrice(
-                  networkId,
-                  stakingBalance?.amount || "0",
-                  stakingBalance?.denom || ""
-                )}
-              </BrandText>
-            </View>
-            <View style={styles.item}>
-              <BrandText style={styles.textGray}>Members</BrandText>
-              <SpacerColumn size={2} />
-              <BrandText style={styles.text}>{daoInfo?.members}</BrandText>
+              {balances.map((b, index) => (
+                <>
+                  {index !== 0 && <SpacerColumn size={1} />}
+                  <BrandText style={styles.text}>
+                    {prettyPrice(networkId, b.amount || "0", b.denom || "")}
+                  </BrandText>
+                </>
+              ))}
             </View>
           </View>
         </View>
@@ -166,12 +108,14 @@ export const OrganizationDaoShowScreen: ScreenFC<"OrganizationDaoShow"> = ({
             selected={selectedTab}
           />
         </View>
-        {selectedTab === "proposals" && <DaoProposalList daoInfo={daoInfo!} />}
-        {selectedTab === "members" && <DaoMemberList />}
+        {selectedTab === "proposals" && (
+          <DaoProposalList daoAddress={address} />
+        )}
+        {selectedTab === "members" && (
+          <DaoMemberList networkId={networkId} daoAddr={address} />
+        )}
       </ScrollView>
     </ScreenContainer>
-  ) : (
-    <></>
   );
 };
 

@@ -1,3 +1,4 @@
+import { cloneDeep } from "lodash";
 import React from "react";
 import { StyleSheet, View } from "react-native";
 
@@ -6,53 +7,53 @@ import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import ModalBase from "../../../components/modals/ModalBase";
 import { SpacerColumn } from "../../../components/spacer";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
-import { TeritoriDaoProposalClient } from "../../../contracts-clients/teritori-dao/TeritoriDaoProposal.client";
-import { ProposalInfo as ContractProposalInfo } from "../../../contracts-clients/teritori-dao/TeritoriDaoProposal.types";
+import { DaoCoreQueryClient } from "../../../contracts-clients/dao-core/DaoCore.client";
+import { DaoProposalSingleClient } from "../../../contracts-clients/dao-proposal-single/DaoProposalSingle.client";
+import {
+  ProposalResponse,
+  Vote,
+} from "../../../contracts-clients/dao-proposal-single/DaoProposalSingle.types";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { getKeplrSigningCosmWasmClient } from "../../../networks";
+import {
+  getKeplrSigningCosmWasmClient,
+  mustGetNonSigningCosmWasmClient,
+} from "../../../networks";
 import { neutral33, secondaryColor } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
 import { tinyAddress } from "../../../utils/text";
-import { DaoInfo } from "../types";
-
-enum VoteType {
-  YES = 0,
-  NO = 1,
-  ABSTRAIN = 2,
-}
 
 export const DaoProposalModal: React.FC<{
   visible?: boolean;
   onClose: () => void;
-  daoInfo: DaoInfo;
-  proposalInfo: ContractProposalInfo;
-}> = ({ visible, onClose, daoInfo, proposalInfo }) => {
+  daoAddress: string;
+  proposalInfo: ProposalResponse;
+}> = ({ visible, onClose, daoAddress, proposalInfo }) => {
   const { setToastSuccess, setToastError } = useFeedbacks();
   const selectedWallet = useSelectedWallet();
-  const vote = async (v: VoteType) => {
+  const vote = async (v: Vote) => {
     if (
       !selectedWallet ||
       proposalInfo.proposal.status !== "open" ||
-      daoInfo.proposalModuleAddress === ""
+      !daoAddress
     )
       return;
-    let vs = "yes";
-    if (v === VoteType.NO) {
-      vs = "no";
-    } else if (v === VoteType.ABSTRAIN) {
-      vs = "abstrain";
-    }
     try {
       const walletAddress = selectedWallet.address;
       const networkId = selectedWallet.networkId;
       const signingClient = await getKeplrSigningCosmWasmClient(networkId);
-      const daoProposalClient = new TeritoriDaoProposalClient(
+      const cosmwasmClient = await mustGetNonSigningCosmWasmClient(
+        selectedWallet.networkId
+      );
+      const coreClient = new DaoCoreQueryClient(cosmwasmClient, daoAddress);
+      const proposalModuleAddress = (await coreClient.proposalModules({}))[0]
+        .address;
+      const daoProposalClient = new DaoProposalSingleClient(
         signingClient,
         walletAddress,
-        daoInfo.proposalModuleAddress
+        proposalModuleAddress
       );
       const createVoteRes = await daoProposalClient.vote(
-        { proposalId: proposalInfo.id, vote: vs },
+        { proposalId: proposalInfo.id, vote: v },
         "auto"
       );
       if (createVoteRes) {
@@ -77,17 +78,23 @@ export const DaoProposalModal: React.FC<{
     if (
       !selectedWallet ||
       proposalInfo.proposal.status !== "passed" ||
-      daoInfo.proposalModuleAddress === ""
+      !daoAddress
     )
       return;
     try {
       const walletAddress = selectedWallet.address;
       const networkId = selectedWallet.networkId;
       const signingClient = await getKeplrSigningCosmWasmClient(networkId);
-      const daoProposalClient = new TeritoriDaoProposalClient(
+      const cosmwasmClient = await mustGetNonSigningCosmWasmClient(
+        selectedWallet.networkId
+      );
+      const coreClient = new DaoCoreQueryClient(cosmwasmClient, daoAddress);
+      const proposalModuleAddress = (await coreClient.proposalModules({}))[0]
+        .address;
+      const daoProposalClient = new DaoProposalSingleClient(
         signingClient,
         walletAddress,
-        daoInfo.proposalModuleAddress
+        proposalModuleAddress
       );
       const createVoteRes = await daoProposalClient.execute({
         proposalId: proposalInfo.id,
@@ -115,7 +122,7 @@ export const DaoProposalModal: React.FC<{
       onClose={() => {
         onClose();
       }}
-      label={`${daoInfo.name} - ${proposalInfo.id}`}
+      label={`TODO - ${proposalInfo.id}`}
       visible={visible}
       width={800}
     >
@@ -147,6 +154,22 @@ export const DaoProposalModal: React.FC<{
               {proposalInfo.proposal.description}
             </BrandText>
           </View>
+          <SpacerColumn size={2.5} />
+          <BrandText style={[styles.textGray, {}]}>
+            {JSON.stringify(
+              proposalInfo.proposal.msgs.map((mm) => {
+                const m = cloneDeep(mm);
+                if ("wasm" in m && "execute" in m.wasm) {
+                  m.wasm.execute.msg = JSON.parse(
+                    Buffer.from(m.wasm.execute.msg, "base64").toString()
+                  );
+                }
+                return m;
+              }),
+              null,
+              4
+            )}
+          </BrandText>
         </View>
         {proposalInfo.proposal.status === "open" && (
           <View style={styles.footer}>
@@ -155,7 +178,7 @@ export const DaoProposalModal: React.FC<{
                 size="M"
                 text="Abstrain"
                 onPress={() => {
-                  vote(VoteType.ABSTRAIN);
+                  vote("abstain");
                 }}
                 style={{ marginLeft: 10 }}
               />
@@ -163,7 +186,7 @@ export const DaoProposalModal: React.FC<{
                 size="M"
                 text="No"
                 onPress={() => {
-                  vote(VoteType.NO);
+                  vote("no");
                 }}
                 style={{ marginLeft: 10 }}
               />
@@ -171,7 +194,7 @@ export const DaoProposalModal: React.FC<{
                 size="M"
                 text="Yes"
                 onPress={() => {
-                  vote(VoteType.YES);
+                  vote("yes");
                 }}
                 style={{ marginLeft: 10 }}
               />

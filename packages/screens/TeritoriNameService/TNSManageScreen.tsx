@@ -7,11 +7,13 @@ import logoSVG from "../../../assets/logos/logo.svg";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
 import { PrimaryBadge } from "../../components/badges/PrimaryBadge";
+import { DAOSelector } from "../../components/dao/DAOSelector";
 import ModalBase from "../../components/modals/ModalBase";
 import { useTNS } from "../../context/TNSProvider";
 import { useNSPrimaryAlias } from "../../hooks/useNSPrimaryAlias";
 import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { getUserId } from "../../networks";
 import { neutral17, neutral33, neutral77 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { nsTokenWithoutTLD } from "../../utils/tns";
@@ -84,8 +86,10 @@ export const TNSManageScreen: React.FC<TNSManageScreenProps> = ({
 }) => {
   const [pageStartTokens, setPageStartTokens] = useState<string[]>([]);
   const selectedWallet = useSelectedWallet();
-  const { tokens } = useNSTokensByOwner(selectedWallet?.userId);
-  const { primaryAlias } = useNSPrimaryAlias(selectedWallet?.userId);
+  const [selectedDAOAddress, setSelectedDAOAddress] = useState("");
+  const daoId = getUserId(selectedWallet?.networkId, selectedDAOAddress);
+  const { tokens } = useNSTokensByOwner(daoId || selectedWallet?.userId);
+  const { primaryAlias } = useNSPrimaryAlias(daoId || selectedWallet?.userId);
 
   const { setName } = useTNS();
 
@@ -124,6 +128,12 @@ export const TNSManageScreen: React.FC<TNSManageScreenProps> = ({
             >
               Manage your names
             </BrandText>
+
+            <DAOSelector
+              value={selectedDAOAddress}
+              onSelect={setSelectedDAOAddress}
+              userId={selectedWallet?.userId}
+            />
 
             {tokens.map((token) => (
               <NameCard
