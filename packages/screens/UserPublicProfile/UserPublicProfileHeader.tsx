@@ -2,6 +2,7 @@ import React from "react";
 
 import { Tabs } from "../../components/tabs/Tabs";
 import { UPPIntro } from "../../components/userPublicProfile/UPPIntro";
+import { useIsDAO } from "../../hooks/cosmwasm/useCosmWasmContractInfo";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { primaryColor } from "../../utils/style/colors";
@@ -23,6 +24,18 @@ export const screenTabItems = {
   },
   mentionsPosts: {
     name: "Mentions Posts",
+  },
+  daos: {
+    name: "Organizations",
+  },
+  funds: {
+    name: "Funds",
+  },
+  members: {
+    name: "Members",
+  },
+  proposals: {
+    name: "Proposals",
   },
   // pathwar: {
   //   name: "Pathwar Challenges",
@@ -59,6 +72,19 @@ export const UserPublicProfileScreenHeader = ({
 }: UserPublicProfileScreenHeaderProps) => {
   const selectedWallet = useSelectedWallet();
   const { width } = useMaxResolution();
+  const { isDAO } = useIsDAO(userId);
+
+  const items = Object.entries(screenTabItems).reduce((o, [key, item]) => {
+    if (isDAO && ["daos"].includes(key)) {
+      return o;
+    }
+    if (!isDAO && ["members", "proposals", "funds"].includes(key)) {
+      return o;
+    }
+    return { ...o, [key]: item };
+  }, {} as { [key in keyof typeof screenTabItems]: { name: string } });
+
+  console.log("items", items);
 
   return (
     <>
@@ -67,7 +93,7 @@ export const UserPublicProfileScreenHeader = ({
         isUserOwner={selectedWallet?.userId === userId}
       />
       <Tabs
-        items={screenTabItems}
+        items={items}
         selected={selectedTab}
         onSelect={setSelectedTab}
         style={{

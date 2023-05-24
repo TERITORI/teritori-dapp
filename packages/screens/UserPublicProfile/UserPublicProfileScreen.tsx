@@ -13,12 +13,16 @@ import { ScreenContainer } from "../../components/ScreenContainer";
 import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
 import { UPPNFTs } from "../../components/userPublicProfile/UPPNFTs";
 import { UPPQuests } from "../../components/userPublicProfile/UPPSucceedQuests";
+import { useIsDAO } from "../../hooks/cosmwasm/useCosmWasmContractInfo";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { parseNetworkObjectId, parseUserId } from "../../networks";
+import { parseUserId } from "../../networks";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { fontSemibold20 } from "../../utils/style/fonts";
+import { DaoMemberList } from "../OrganizerDeployer/components/DaoMemberList";
+import { DaoProposalList } from "../OrganizerDeployer/components/DaoProposalList";
+import { Assets } from "../WalletManager/Assets";
 
 const TabContainer: React.FC = ({ children }) => {
   const { width } = useMaxResolution();
@@ -35,8 +39,9 @@ const SelectedTabContent: React.FC<{
   setSelectedTab: (tab: keyof typeof screenTabItems) => void;
 }> = ({ userId, selectedTab, setSelectedTab }) => {
   const selectedWallet = useSelectedWallet();
-  const [, userAddress] = parseNetworkObjectId(userId);
   const userInfo = useNSUserInfo(userId);
+  const [network, userAddress] = parseUserId(userId);
+  const { isDAO } = useIsDAO(userId);
 
   const feedRequestUser: PostsRequest = useMemo(() => {
     return {
@@ -72,6 +77,7 @@ const SelectedTabContent: React.FC<{
     case "userPosts":
       return (
         <NewsFeed
+          daoAddress={isDAO ? userAddress : undefined}
           Header={() => (
             <UserPublicProfileScreenHeader
               userId={userId}
@@ -90,6 +96,7 @@ const SelectedTabContent: React.FC<{
     case "mentionsPosts":
       return (
         <NewsFeed
+          daoAddress={isDAO ? userAddress : undefined}
           Header={() => (
             <UserPublicProfileScreenHeader
               userId={userId}
@@ -115,6 +122,12 @@ const SelectedTabContent: React.FC<{
     //   return <UPPPathwarChallenges />;
     // case "gig":
     //   return <UPPGigServices />;
+    case "members":
+      return <DaoMemberList networkId={network?.id} daoAddr={userAddress} />;
+    case "proposals":
+      return <DaoProposalList daoAddress={userAddress} />;
+    case "funds":
+      return <Assets userId={userId} />;
     default:
       return null;
   }

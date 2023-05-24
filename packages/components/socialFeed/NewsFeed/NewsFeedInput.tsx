@@ -39,8 +39,9 @@ import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useMaxResolution } from "../../../hooks/useMaxResolution";
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { getUserId } from "../../../networks";
+import { getUserId, mustGetCosmosNetwork } from "../../../networks";
 import { prettyPrice } from "../../../utils/coins";
+import { makeProposal } from "../../../utils/dao";
 import { defaultSocialFeedFee } from "../../../utils/fee";
 import {
   AUDIO_MIME_TYPES,
@@ -103,6 +104,7 @@ interface NewsFeedInputProps {
   additionalHashtag?: string;
   // Receive this if the post is created from UserPublicProfileScreen (If the user doesn't own the UPP)
   additionalMention?: string;
+  daoAddress?: string;
 }
 
 export interface NewsFeedInputHandle {
@@ -130,6 +132,7 @@ export const NewsFeedInput = React.forwardRef<
       onCloseCreateModal,
       additionalHashtag,
       additionalMention,
+      daoAddress,
     },
     forwardRef
   ) => {
@@ -270,34 +273,60 @@ export const NewsFeedInput = React.forwardRef<
 
         const identifier = uuidv4();
 
-        await mutateAsync({
-          client,
-          msg: {
-            category: postCategory,
-            identifier,
-            metadata: JSON.stringify(metadata),
-            parentPostIdentifier: hasUsername ? replyTo?.parentId : parentId,
-          },
-          args: {
-            fee: defaultSocialFeedFee,
-            memo: "",
-            funds: [coin(postFee, "utori")],
-          },
-        });
+        const msg = {
+          category: postCategory,
+          identifier,
+          metadata: JSON.stringify(metadata),
+          parentPostIdentifier: hasUsername ? replyTo?.parentId : parentId,
+        };
 
-        if (
-          postCategory === PostCategory.Question ||
-          postCategory === PostCategory.BriefForStableDiffusion
-        ) {
-          await botPostMutate(
-            {
-              identifier,
-              category: postCategory,
+        if (daoAddress) {
+          const network = mustGetCosmosNetwork(selectedNetworkId);
+          if (!network.socialFeedContractAddress) {
+            throw new Error("Social feed contract address not found");
+          }
+          await makeProposal(selectedNetworkId, wallet?.address, daoAddress, {
+            title: "Post on feed",
+            description: "",
+            msgs: [
+              {
+                wasm: {
+                  execute: {
+                    contract_addr: network.socialFeedContractAddress,
+                    msg: Buffer.from(
+                      JSON.stringify({ create_post: msg })
+                    ).toString("base64"),
+                    funds: [{ amount: postFee.toString(), denom: "utori" }],
+                  },
+                },
+              },
+            ],
+          });
+        } else {
+          await mutateAsync({
+            client,
+            msg,
+            args: {
+              fee: defaultSocialFeedFee,
+              memo: "",
+              funds: [coin(postFee, "utori")],
             },
-            {
-              onSuccess: onPostCreationSuccess,
-            }
-          );
+          });
+
+          if (
+            postCategory === PostCategory.Question ||
+            postCategory === PostCategory.BriefForStableDiffusion
+          ) {
+            await botPostMutate(
+              {
+                identifier,
+                category: postCategory,
+              },
+              {
+                onSuccess: onPostCreationSuccess,
+              }
+            );
+          }
         }
       } catch (err: any) {
         console.error("post submit err", err);

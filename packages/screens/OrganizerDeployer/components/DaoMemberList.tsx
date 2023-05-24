@@ -20,12 +20,15 @@ import { neutral33, secondaryColor } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
 
 export const DaoMemberList: React.FC<{
-  networkId: string;
+  networkId: string | undefined;
   daoAddr: string;
 }> = ({ networkId, daoAddr }) => {
   const { data: members } = useQuery(
     ["daoMembers", networkId, daoAddr],
     async () => {
+      if (!networkId) {
+        return null;
+      }
       const cosmwasmClient = await mustGetNonSigningCosmWasmClient(networkId);
       const daoCoreClient = new DaoCoreQueryClient(cosmwasmClient, daoAddr);
       const votingModuleAddress = await daoCoreClient.votingModule();
@@ -39,7 +42,7 @@ export const DaoMemberList: React.FC<{
       return members;
     }
   );
-  if (!members) {
+  if (!members || !networkId) {
     return null;
   }
   return (

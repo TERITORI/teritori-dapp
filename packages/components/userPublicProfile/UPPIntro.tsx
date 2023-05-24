@@ -123,6 +123,7 @@ export const UPPIntro: React.FC<{
           />
         )}
         <AvatarWithFrame
+          userId={userId}
           isLoading={loading}
           image={metadata?.image}
           style={{

@@ -42,6 +42,7 @@ interface NewsFeedProps {
   additionalHashtag?: string;
   // Receive this if the post is created from UserPublicProfileScreen (If the user doesn't own the UPP)
   additionalMention?: string;
+  daoAddress?: string;
 }
 
 export const NewsFeed: React.FC<NewsFeedProps> = ({
@@ -49,6 +50,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
   req,
   additionalHashtag,
   additionalMention,
+  daoAddress,
 }) => {
   const isMobile = useIsMobile();
   const { width: windowWidth } = useWindowDimensions();
@@ -125,6 +127,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
           ) : (
             <>
               <NewsFeedInput
+                daoAddress={daoAddress}
                 type="post"
                 onSubmitSuccess={refetch}
                 additionalMention={additionalMention}
@@ -139,13 +142,14 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
       </>
     ),
     [
-      isMobile,
-      isLoadingValue,
+      width,
       Header,
+      isMobile,
+      daoAddress,
+      refetch,
       additionalMention,
       additionalHashtag,
-      refetch,
-      width,
+      isLoadingValue,
     ]
   );
 
@@ -216,6 +220,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
       )}
 
       <CreateShortPostModal
+        daoAddress={daoAddress}
         isVisible={isCreateModalVisible}
         onClose={() => setCreateModalVisible(false)}
         additionalMention={additionalMention}

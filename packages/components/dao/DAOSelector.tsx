@@ -1,7 +1,8 @@
 import { Picker } from "@react-native-picker/picker";
 
 import { useDAOs } from "../../hooks/dao/useDAOs";
-import { parseUserId } from "../../networks";
+import { useNSUserInfo } from "../../hooks/useNSUserInfo";
+import { getUserId, parseUserId } from "../../networks";
 
 export const DAOSelector: React.FC<{
   userId: string | undefined;
@@ -17,16 +18,23 @@ export const DAOSelector: React.FC<{
       selectedValue={value}
       placeholder="Select a DAO"
       onValueChange={onSelect}
+      style={{
+        backgroundColor: "black",
+        color: "white",
+      }}
     >
-      <Picker.Item label="Propose to DAO" value="" />
+      <Picker.Item label="Use my wallet" value="" />
       {(daos || []).map((dao) => {
-        return (
-          <Picker.Item
-            label={`${dao.name} - ${dao.address}`}
-            value={dao.address}
-          />
-        );
+        const daoId = getUserId(network?.id, dao.address);
+        return <DAOPickerItem key={daoId} daoId={daoId} />;
       })}
     </Picker>
   );
+};
+
+export const DAOPickerItem: React.FC<{ daoId: string }> = ({ daoId }) => {
+  const [, address] = parseUserId(daoId);
+  const { metadata } = useNSUserInfo(daoId);
+  const name = metadata?.tokenId || address;
+  return <Picker.Item label={`Use ${name}`} value={address} />;
 };

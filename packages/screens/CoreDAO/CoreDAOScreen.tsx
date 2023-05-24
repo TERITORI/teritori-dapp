@@ -70,7 +70,7 @@ const DAOManager: React.FC = () => {
           onChangeText={setNewMemberAddress}
         />
         <PrimaryButton
-          text="Add member"
+          text="Propose to add member"
           onPress={async () => {
             try {
               if (!network?.coreDAOAddress) {
@@ -146,7 +146,7 @@ const DAOManager: React.FC = () => {
           onChangeText={setRemoveMemberAddress}
         />
         <PrimaryButton
-          text="Remove member"
+          text="Propose to remove member"
           onPress={async () => {
             try {
               if (!network?.coreDAOAddress) {
@@ -244,7 +244,7 @@ const VaultManager: React.FC<{ networkId: string }> = ({ networkId }) => {
         );
       })}
       <PrimaryButton
-        text="Withdraw to DAO"
+        text="Propose to withdraw marketplace fees"
         onPress={wrapWithFeedback(async () => {
           if (!network?.vaultContractAddress) {
             throw new Error("no vault contract address");
@@ -315,6 +315,8 @@ const SocialFeedManager: React.FC<{ networkId: string }> = ({ networkId }) => {
     networkId,
     network?.socialFeedContractAddress
   );
+  const selectedWallet = useSelectedWallet();
+  const { wrapWithFeedback } = useFeedbacks();
   return (
     <View>
       {" "}
@@ -332,6 +334,35 @@ const SocialFeedManager: React.FC<{ networkId: string }> = ({ networkId }) => {
           </BrandText>
         );
       })}
+      <PrimaryButton
+        text="Propose to withdraw social feed fees"
+        onPress={wrapWithFeedback(async () => {
+          if (!network?.vaultContractAddress) {
+            throw new Error("no vault contract address");
+          }
+          const msg = { withdraw_fee: {} };
+          await makeProposal(
+            networkId,
+            selectedWallet?.address,
+            network?.coreDAOAddress,
+            {
+              title: "Withdraw from social feed",
+              description: "",
+              msgs: [
+                {
+                  wasm: {
+                    execute: {
+                      contract_addr: network?.vaultContractAddress,
+                      funds: [],
+                      msg: Buffer.from(JSON.stringify(msg)).toString("base64"),
+                    },
+                  },
+                },
+              ],
+            }
+          );
+        })}
+      />
     </View>
   );
 };
@@ -343,6 +374,8 @@ const BreedingManager: React.FC<{ networkId: string }> = ({ networkId }) => {
     networkId,
     network?.riotContractAddressGen1
   );
+  const selectedWallet = useSelectedWallet();
+  const { wrapWithFeedback } = useFeedbacks();
   return (
     <View>
       {" "}
@@ -360,6 +393,35 @@ const BreedingManager: React.FC<{ networkId: string }> = ({ networkId }) => {
           </BrandText>
         );
       })}
+      <PrimaryButton
+        text="Propose to withdraw breeding fees"
+        onPress={wrapWithFeedback(async () => {
+          if (!network?.vaultContractAddress) {
+            throw new Error("no vault contract address");
+          }
+          const msg = { withdraw_fee: {} };
+          await makeProposal(
+            networkId,
+            selectedWallet?.address,
+            network?.coreDAOAddress,
+            {
+              title: "Withdraw from marketplace",
+              description: "",
+              msgs: [
+                {
+                  wasm: {
+                    execute: {
+                      contract_addr: network?.vaultContractAddress,
+                      funds: [],
+                      msg: Buffer.from(JSON.stringify(msg)).toString("base64"),
+                    },
+                  },
+                },
+              ],
+            }
+          );
+        })}
+      />
     </View>
   );
 };

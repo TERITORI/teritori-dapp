@@ -8,8 +8,10 @@ import {
 } from "react-native";
 
 import emptyCircleFrameSVG from "../../../assets/empty-circle-frame.svg";
+import { useIsDAO } from "../../hooks/cosmwasm/useCosmWasmContractInfo";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { getCosmosNetwork } from "../../networks";
+import { primaryColor } from "../../utils/style/colors";
 import { OptimizedImage } from "../OptimizedImage";
 import { SVG } from "../SVG";
 import { AnimationFadeIn } from "../animations/AnimationFadeIn";
@@ -17,17 +19,19 @@ import { AnimationFadeIn } from "../animations/AnimationFadeIn";
 type AvatarWithFrameSize = "XL" | "L" | "M" | "S";
 
 export const AvatarWithFrame: React.FC<{
+  userId: string;
   image: string | null | undefined;
   size: AvatarWithFrameSize;
   isLoading?: boolean;
   style?: StyleProp<ViewStyle>;
-}> = ({ image, size, isLoading, style }) => {
+}> = ({ userId, image, size, isLoading, style }) => {
   const networkId = useSelectedNetworkId();
   const network = getCosmosNetwork(networkId);
   const sizedStyles = useMemo(
     () => StyleSheet.flatten(flatStyles[size]),
     [size]
   );
+  const { isDAO } = useIsDAO(userId);
 
   return (
     <View style={[styles.container, style]}>
@@ -50,7 +54,14 @@ export const AvatarWithFrame: React.FC<{
             source={{
               uri: image ? image : network?.nameServiceDefaultImage || "",
             }}
-            style={sizedStyles.image}
+            style={[
+              sizedStyles.image,
+              isDAO && {
+                borderRadius: sizedStyles.image.width * 0.05,
+                borderWidth: sizedStyles.image.width * 0.02,
+                borderColor: primaryColor,
+              },
+            ]}
           />
         </AnimationFadeIn>
       )}
