@@ -183,7 +183,7 @@ const DAOManager: React.FC = () => {
                 selectedWallet.address,
                 network.coreDAOAddress,
                 {
-                  title: `Remove ${removeMemberAddress} as member`,
+                  title: `Remove ${removeMemberAddress} from members`,
                   description: "",
                   msgs: [
                     {
