@@ -14,6 +14,7 @@ import { cosmosNetwork } from "./cosmos-hub";
 import { cosmosThetaNetwork } from "./cosmos-hub-theta";
 import { ethereumNetwork } from "./ethereum";
 import { ethereumGoerliNetwork } from "./ethereum-goerli";
+import { gnoTestnetNetwork } from "./gno-testnet";
 import { junoNetwork } from "./juno";
 import { osmosisNetwork } from "./osmosis";
 import { osmosisTestnetNetwork } from "./osmosis-testnet";
@@ -23,6 +24,7 @@ import { teritoriTestnetNetwork } from "./teritori-testnet";
 import {
   CosmosNetworkInfo,
   EthereumNetworkInfo,
+  GnoNetworkInfo,
   NativeCurrencyInfo,
   NetworkInfo,
   NetworkKind,
@@ -43,6 +45,7 @@ export const allNetworks = [
   junoNetwork,
   osmosisNetwork,
   osmosisTestnetNetwork,
+  gnoTestnetNetwork,
   // solanaNetwork,
 ];
 
@@ -220,6 +223,19 @@ export const mustGetCosmosNetwork = (
   }
   if (network.kind !== NetworkKind.Cosmos) {
     throw new Error(`'${networkId}' is not a cosmos network`);
+  }
+  return network;
+};
+
+export const getGnoNetwork = (
+  networkId: string | undefined
+): GnoNetworkInfo => {
+  const network = getNetwork(networkId);
+  if (network === undefined) {
+    throw new Error(`unknown network '${networkId}'`);
+  }
+  if (network.kind !== NetworkKind.Gno) {
+    throw new Error(`'${networkId}' is not a gno network`);
   }
   return network;
 };

@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 
+import { ConnectAdenaButton } from "./ConnectAdenaButton";
 import { ConnectKeplrButton } from "./ConnectKeplrButton";
 import { ConnectMetamaskButton } from "./ConnectMetamaskButton";
 import { ConnectWalletButton } from "./components/ConnectWalletButton";
@@ -46,6 +47,8 @@ export const ConnectWalletModal: React.FC<ConnectWalletProps> = ({
       <ConnectMetamaskButton onDone={onClose} />
       <SpacerColumn size={1.5} />
       <ConnectKeplrButton onDone={onClose} />
+      <SpacerColumn size={1.5} />
+      <ConnectAdenaButton onDone={onClose} />
       <SpacerColumn size={1.5} />
       <ConnectWalletButton
         text="Adena Wallet"

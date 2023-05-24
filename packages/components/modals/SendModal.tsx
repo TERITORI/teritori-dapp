@@ -82,13 +82,12 @@ export const SendModal: React.FC<SendModalProps> = ({
 
   const onPressSend = async (formData: TransactionForm) => {
     try {
-      const client = await getKeplrSigningStargateClient(networkId);
       const sender = selectedWallet?.address;
+      const receiver = formData.toAddress;
       if (!sender) {
         throw new Error("no sender");
       }
       //TODO: handle contacts
-      const receiver = formData.toAddress;
       if (!receiver) {
         throw new Error("no receiver");
       }
@@ -100,20 +99,49 @@ export const SendModal: React.FC<SendModalProps> = ({
         formData.amount,
         nativeCurrency.decimals
       ).atomics;
-      const tx = await client.sendTokens(
-        sender,
-        receiver,
-        [{ amount, denom: nativeCurrency.denom }],
-        "auto"
-      );
-      if (isDeliverTxFailure(tx)) {
-        console.error("Send Tokens tx failed", tx);
-        setToastError({ title: "Transaction failed", message: "" });
+
+      if (networkId === "gno-testnet") {
+        const adena = (window as any).adena;
+        const res = await adena.DoContract({
+          messages: [
+            {
+              type: "/bank.MsgSend",
+              value: {
+                from_address: sender,
+                to_address: receiver,
+                amount: `${amount}ugnot`,
+              },
+            },
+          ],
+          gasFee: 1,
+          gasWanted: 50000,
+        });
+        if (res.status === "success") {
+          setToastSuccess({
+            title: `GNOT succeeded sent to ${receiver}`,
+            message: "",
+          });
+        } else {
+          setToastError({ title: "Transaction failed", message: "" });
+        }
+      } else {
+        const client = await getKeplrSigningStargateClient(networkId);
+
+        const tx = await client.sendTokens(
+          sender,
+          receiver,
+          [{ amount, denom: nativeCurrency.denom }],
+          "auto"
+        );
+        if (isDeliverTxFailure(tx)) {
+          console.error("Send Tokens tx failed", tx);
+          setToastError({ title: "Transaction failed", message: "" });
+        }
+        setToastSuccess({
+          title: `TORI succeeded sent to ${receiver}`,
+          message: "",
+        });
       }
-      setToastSuccess({
-        title: `TORI succeeded sent to ${receiver}`,
-        message: "",
-      });
       // FIXME: find out if it's possible to check for ibc ack
     } catch (err) {
       console.error("Send Tokens failed", err);

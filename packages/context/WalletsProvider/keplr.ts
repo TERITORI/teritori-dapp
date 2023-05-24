@@ -71,7 +71,6 @@ export const useKeplr: () => UseKeplrResult = () => {
       if (!hasKeplr || !isKeplrConnected) {
         return;
       }
-
       try {
         const keplr = (window as KeplrWindow)?.keplr;
         if (!keplr) {

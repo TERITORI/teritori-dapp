@@ -3,6 +3,7 @@ export enum NetworkKind {
   Ethereum = "Ethereum",
   Cosmos = "Cosmos",
   Solana = "Solana",
+  Gno = "Gno",
 }
 
 export interface NetworkInfoBase {
@@ -62,11 +63,17 @@ export type SolanaNetworkInfo = NetworkInfoBase & {
   kind: NetworkKind.Solana;
   holaplexGraphqlEndpoint: string;
 };
+export type GnoNetworkInfo = NetworkInfoBase & {
+  kind: NetworkKind.Gno;
+  chainId: string;
+  endpoint: string;
+};
 
 export type NetworkInfo =
   | CosmosNetworkInfo
   | EthereumNetworkInfo
-  | SolanaNetworkInfo;
+  | SolanaNetworkInfo
+  | GnoNetworkInfo;
 
 export type CurrencyKind = "native" | "ibc";
 

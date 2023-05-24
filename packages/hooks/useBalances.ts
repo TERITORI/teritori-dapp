@@ -97,6 +97,16 @@ const getNetworkBalances = async (
       return responseJSON.balances;
     }
 
+    case NetworkKind.Gno: {
+      const res = await (window as any).adena.GetAccount();
+      return [
+        {
+          amount: res.data.coins.substring(0, res.data.coins.length - 5),
+          denom: "ugnot",
+        },
+      ];
+    }
+
     default:
       return [];
   }
