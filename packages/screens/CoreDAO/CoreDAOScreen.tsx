@@ -10,8 +10,6 @@ import { SpacerColumn } from "../../components/spacer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { Member } from "../../contracts-clients/cw4-group/Cw4Group.types";
 import { DaoCoreQueryClient } from "../../contracts-clients/dao-core/DaoCore.client";
-import { DaoPreProposeSingleClient } from "../../contracts-clients/dao-pre-propose-single/DaoPreProposeSingle.client";
-import { DaoProposalSingleQueryClient } from "../../contracts-clients/dao-proposal-single/DaoProposalSingle.client";
 import { DaoVotingCw4QueryClient } from "../../contracts-clients/dao-voting-cw4/DaoVotingCw4.client";
 import { TeritoriNameServiceQueryClient } from "../../contracts-clients/teritori-name-service/TeritoriNameService.client";
 import { useFeedConfig } from "../../hooks/feed/useFeedConfig";
@@ -22,10 +20,10 @@ import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useVaultConfig } from "../../hooks/vault/useVaultConfig";
 import {
   getCosmosNetwork,
-  getKeplrSigningCosmWasmClient,
   mustGetNonSigningCosmWasmClient,
 } from "../../networks";
 import { prettyPrice } from "../../utils/coins";
+import { makeProposal } from "../../utils/dao";
 import { ScreenFC } from "../../utils/navigation";
 
 export const CoreDAOScreen: ScreenFC<"CoreDAO"> = () => {
@@ -51,6 +49,7 @@ const DAOManager: React.FC = () => {
   const { setToastSuccess, setToastError } = useFeedbacks();
   const selectedWallet = useSelectedWallet();
   const [newMemberAddress, setNewMemberAddress] = React.useState("");
+  const [removeMemberAddress, setRemoveMemberAddress] = React.useState("");
   return (
     <View style={{ flexDirection: "row" }}>
       <TextInputCustom
@@ -86,57 +85,112 @@ const DAOManager: React.FC = () => {
 
             const cw4Address = await votingClient.groupContract();
 
+            const weight = 1;
             const updateMembersReq: {
               add: Member[];
               remove: string[];
-            } = { add: [{ addr: newMemberAddress, weight: 1 }], remove: [] };
+            } = { add: [{ addr: newMemberAddress, weight }], remove: [] };
 
-            const proposalModules = await daoCoreClient.proposalModules({});
-            if (proposalModules.length === 0) {
-              throw new Error("no proposal module");
-            }
-            const proposalModuleAddress = proposalModules[0].address;
-            const proposalClient = new DaoProposalSingleQueryClient(
-              cosmwasmClient,
-              proposalModuleAddress
-            );
-
-            const proposalCreationPolicy =
-              await proposalClient.proposalCreationPolicy();
-            if (!("module" in proposalCreationPolicy)) {
-              throw new Error("proposal creation policy is not module");
-            }
-            const signingClient = await getKeplrSigningCosmWasmClient(
-              networkId
-            );
-            const preProposeClient = new DaoPreProposeSingleClient(
-              signingClient,
+            const res = await makeProposal(
+              networkId,
               selectedWallet.address,
-              proposalCreationPolicy.module.addr
-            );
-            const res = await preProposeClient.propose({
-              msg: {
-                propose: {
-                  title: `Add ${newMemberAddress} as member`,
-                  description: "",
-                  msgs: [
-                    {
-                      wasm: {
-                        execute: {
-                          contract_addr: cw4Address,
-                          msg: Buffer.from(
-                            JSON.stringify({
-                              update_members: updateMembersReq,
-                            })
-                          ).toString("base64"),
-                          funds: [],
-                        },
+              network.coreDAOAddress,
+              {
+                title: `Add ${newMemberAddress} as member with weight ${weight}`,
+                description: "",
+                msgs: [
+                  {
+                    wasm: {
+                      execute: {
+                        contract_addr: cw4Address,
+                        msg: Buffer.from(
+                          JSON.stringify({
+                            update_members: updateMembersReq,
+                          })
+                        ).toString("base64"),
+                        funds: [],
                       },
                     },
-                  ],
-                },
-              },
-            });
+                  },
+                ],
+              }
+            );
+
+            console.log("created proposal", res);
+            setToastSuccess({ title: "Created proposal", message: "" });
+          } catch (err) {
+            console.error(err);
+            if (err instanceof Error)
+              setToastError({
+                title: "Failed to create proposal",
+                message: err.message,
+              });
+          }
+        }}
+      />
+      <TextInputCustom
+        label="Remove member address"
+        name="remove-member-address"
+        onChangeText={setRemoveMemberAddress}
+      />
+      <PrimaryButton
+        text="Remove member"
+        onPress={async () => {
+          try {
+            if (!network?.coreDAOAddress) {
+              throw new Error("no core DAO address");
+            }
+            if (!selectedWallet?.address) {
+              throw new Error("no selected wallet");
+            }
+
+            const cosmwasmClient = await mustGetNonSigningCosmWasmClient(
+              networkId
+            );
+
+            const daoCoreClient = new DaoCoreQueryClient(
+              cosmwasmClient,
+              network?.coreDAOAddress
+            );
+
+            const votingModuleAddress = await daoCoreClient.votingModule();
+            const votingClient = new DaoVotingCw4QueryClient(
+              cosmwasmClient,
+              votingModuleAddress
+            );
+
+            const cw4Address = await votingClient.groupContract();
+
+            const updateMembersReq: {
+              add: Member[];
+              remove: string[];
+            } = { add: [], remove: [removeMemberAddress] };
+
+            const res = await makeProposal(
+              networkId,
+              selectedWallet.address,
+              network.coreDAOAddress,
+              {
+                title: `Remove ${removeMemberAddress} as member`,
+                description: "",
+                msgs: [
+                  {
+                    wasm: {
+                      execute: {
+                        contract_addr: cw4Address,
+                        msg: Buffer.from(
+                          JSON.stringify({
+                            update_members: updateMembersReq,
+                          })
+                        ).toString("base64"),
+                        funds: [],
+                      },
+                    },
+                  },
+                ],
+              }
+            );
+
             console.log("created proposal", res);
             setToastSuccess({ title: "Created proposal", message: "" });
           } catch (err) {

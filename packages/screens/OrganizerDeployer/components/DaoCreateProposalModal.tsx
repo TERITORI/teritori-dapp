@@ -7,14 +7,8 @@ import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import ModalBase from "../../../components/modals/ModalBase";
 import { SpacerColumn } from "../../../components/spacer";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
-import { DaoCoreQueryClient } from "../../../contracts-clients/dao-core/DaoCore.client";
-import { DaoPreProposeSingleClient } from "../../../contracts-clients/dao-pre-propose-single/DaoPreProposeSingle.client";
-import { DaoProposalSingleQueryClient } from "../../../contracts-clients/dao-proposal-single/DaoProposalSingle.client";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import {
-  getKeplrSigningCosmWasmClient,
-  mustGetNonSigningCosmWasmClient,
-} from "../../../networks";
+import { makeProposal } from "../../../utils/dao";
 import { neutral33 } from "../../../utils/style/colors";
 import { CreateDaoProposalFormType } from "../types";
 
@@ -45,36 +39,15 @@ export const DaoCreateProposalModal: React.FC<{
     try {
       const walletAddress = selectedWallet.address;
       const networkId = selectedWallet.networkId;
-      const signingClient = await getKeplrSigningCosmWasmClient(networkId);
-      const cosmwasmClient = await mustGetNonSigningCosmWasmClient(
-        selectedWallet.networkId
-      );
-      const coreClient = new DaoCoreQueryClient(cosmwasmClient, daoAddress);
-      const proposalModuleAddress = (await coreClient.proposalModules({}))[0]
-        .address;
-      const daoProposalClient = new DaoProposalSingleQueryClient(
-        cosmwasmClient,
-        proposalModuleAddress
-      );
-      const policy = await daoProposalClient.proposalCreationPolicy();
-      if (!("module" in policy)) throw new Error("Invalid policy");
-      const daoProposalBaseClient = new DaoPreProposeSingleClient(
-        signingClient,
+      const createProposalRes = await makeProposal(
+        networkId,
         walletAddress,
-        policy.module.addr
-      );
-
-      const createProposalRes = await daoProposalBaseClient.propose(
+        daoAddress,
         {
-          msg: {
-            propose: {
-              title: proposalName,
-              description: proposalDescription,
-              msgs: [],
-            },
-          },
-        },
-        "auto"
+          title: proposalName,
+          description: proposalDescription,
+          msgs: [],
+        }
       );
       if (createProposalRes) {
         onClose();

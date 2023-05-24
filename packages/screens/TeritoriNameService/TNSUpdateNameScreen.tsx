@@ -9,9 +9,6 @@ import { NameDataForm } from "../../components/teritoriNameService/NameDataForm"
 import { NameNFT } from "../../components/teritoriNameService/NameNFT";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useTNS } from "../../context/TNSProvider";
-import { DaoCoreQueryClient } from "../../contracts-clients/dao-core/DaoCore.client";
-import { DaoPreProposeSingleClient } from "../../contracts-clients/dao-pre-propose-single/DaoPreProposeSingle.client";
-import { DaoProposalSingleQueryClient } from "../../contracts-clients/dao-proposal-single/DaoProposalSingle.client";
 import { TeritoriNameServiceQueryClient } from "../../contracts-clients/teritori-name-service/TeritoriNameService.client";
 import { Metadata } from "../../contracts-clients/teritori-name-service/TeritoriNameService.types";
 import { useDAOs } from "../../hooks/dao/useDAOs";
@@ -25,6 +22,7 @@ import {
   mustGetCosmosNetwork,
   getCosmosNetwork,
 } from "../../networks";
+import { makeProposal } from "../../utils/dao";
 import { neutral17 } from "../../utils/style/colors";
 import { defaultMetaData } from "../../utils/types/tns";
 
@@ -72,7 +70,7 @@ export const TNSUpdateNameScreen: React.FC<TNSUpdateNameScreenProps> = ({
       const { extension } = await client.nftInfo({
         tokenId: name + network.nameServiceTLD || "",
       });
-      console.log("in data", extension);
+
       setInitialized(true);
       setInitialData(extension);
     } catch {
@@ -108,10 +106,7 @@ export const TNSUpdateNameScreen: React.FC<TNSUpdateNameScreenProps> = ({
     };
 
     try {
-      console.log("hello");
       if (ownerDAO) {
-        console.log("ownerDAO");
-
         const networkId = selectedWallet?.networkId;
         if (!networkId) {
           throw new Error("no network id");
@@ -124,54 +119,26 @@ export const TNSUpdateNameScreen: React.FC<TNSUpdateNameScreenProps> = ({
         if (!selectedWallet?.address) {
           throw new Error("no wallet address");
         }
-
-        const cosmwasmClient = await mustGetNonSigningCosmWasmClient(networkId);
-
-        const daoCoreClient = new DaoCoreQueryClient(
-          cosmwasmClient,
-          ownerDAO.address
-        );
-        const proposalModules = await daoCoreClient.proposalModules({});
-        if (proposalModules.length === 0) {
-          throw new Error("no proposal module");
-        }
-        const proposalModuleAddress = proposalModules[0].address;
-        const proposalClient = new DaoProposalSingleQueryClient(
-          cosmwasmClient,
-          proposalModuleAddress
-        );
-
-        const proposalCreationPolicy =
-          await proposalClient.proposalCreationPolicy();
-        if (!("module" in proposalCreationPolicy)) {
-          throw new Error("proposal creation policy is not module");
-        }
-        const signingClient = await getKeplrSigningCosmWasmClient(networkId);
-        const preProposeClient = new DaoPreProposeSingleClient(
-          signingClient,
+        const res = await makeProposal(
+          networkId,
           selectedWallet.address,
-          proposalCreationPolicy.module.addr
-        );
-
-        const res = await preProposeClient.propose({
-          msg: {
-            propose: {
-              title: `Update ${msg.update_metadata.token_id}`,
-              description: "",
-              msgs: [
-                {
-                  wasm: {
-                    execute: {
-                      contract_addr: network?.nameServiceContractAddress,
-                      msg: Buffer.from(JSON.stringify(msg)).toString("base64"),
-                      funds: [],
-                    },
+          ownerDAO.address,
+          {
+            title: `Update ${msg.update_metadata.token_id}`,
+            description: "",
+            msgs: [
+              {
+                wasm: {
+                  execute: {
+                    contract_addr: network.nameServiceContractAddress,
+                    msg: Buffer.from(JSON.stringify(msg)).toString("base64"),
+                    funds: [],
                   },
                 },
-              ],
-            },
-          },
-        });
+              },
+            ],
+          }
+        );
         console.log("created proposal", res);
         setToastSuccess({
           title: "Created proposal",

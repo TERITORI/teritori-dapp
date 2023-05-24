@@ -7,21 +7,17 @@ import { StyleSheet, TouchableOpacity } from "react-native";
 import ModalBase from "./ModalBase";
 import contactsSVG from "../../../assets/icons/contacts.svg";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { DaoCoreQueryClient } from "../../contracts-clients/dao-core/DaoCore.client";
-import { DaoPreProposeSingleClient } from "../../contracts-clients/dao-pre-propose-single/DaoPreProposeSingle.client";
-import { DaoProposalSingleQueryClient } from "../../contracts-clients/dao-proposal-single/DaoProposalSingle.client";
 import { useDAOs } from "../../hooks/dao/useDAOs";
 import { useBalances } from "../../hooks/useBalances";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
-  getKeplrSigningCosmWasmClient,
   getKeplrSigningStargateClient,
   keplrCurrencyFromNativeCurrencyInfo,
-  mustGetNonSigningCosmWasmClient,
   NativeCurrencyInfo,
 } from "../../networks";
 import { TransactionForm } from "../../screens/WalletManager/types";
 import { prettyPrice } from "../../utils/coins";
+import { makeProposal } from "../../utils/dao";
 import {
   neutral22,
   neutral33,
@@ -123,52 +119,25 @@ export const SendModal: React.FC<SendModalProps> = ({
         if (!selectedDAO) {
           throw new Error("no selected DAO");
         }
-        const cosmwasmClient = await mustGetNonSigningCosmWasmClient(networkId);
-        const daoCoreClient = new DaoCoreQueryClient(
-          cosmwasmClient,
-          selectedDAOAddress
-        );
-        const proposalModuleAddress = (
-          await daoCoreClient.proposalModules({})
-        )[0].address;
-        const proposalModuleClient = new DaoProposalSingleQueryClient(
-          cosmwasmClient,
-          proposalModuleAddress
-        );
-        const policy = await proposalModuleClient.proposalCreationPolicy();
-        if (!("module" in policy)) throw new Error("Invalid policy");
-        const signingClient = await getKeplrSigningCosmWasmClient(networkId);
-        const daoProposalBaseClient = new DaoPreProposeSingleClient(
-          signingClient,
-          sender,
-          policy.module.addr
-        );
-        await daoProposalBaseClient.propose(
-          {
-            msg: {
-              propose: {
-                title: `Send ${prettyPrice(
-                  networkId,
-                  amount,
-                  nativeCurrency.denom
-                )} to ${receiver}`,
-                description: "",
-                msgs: [
-                  {
-                    bank: {
-                      send: {
-                        from_address: selectedDAOAddress,
-                        to_address: receiver,
-                        amount: [{ amount, denom: nativeCurrency.denom }],
-                      },
-                    },
-                  },
-                ],
+        await makeProposal(networkId, sender, selectedDAOAddress, {
+          title: `Send ${prettyPrice(
+            networkId,
+            amount,
+            nativeCurrency.denom
+          )} to ${receiver}`,
+          description: "",
+          msgs: [
+            {
+              bank: {
+                send: {
+                  from_address: selectedDAOAddress,
+                  to_address: receiver,
+                  amount: [{ amount, denom: nativeCurrency.denom }],
+                },
               },
             },
-          },
-          "auto"
-        );
+          ],
+        });
         setToastSuccess({
           title: "Proposal created",
           message: "",
