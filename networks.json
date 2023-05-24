@@ -489,5 +489,31 @@
       "no-legacy-stdTx",
       "ibc-go"
     ]
+  },
+  {
+    "id": "gno-testnet",
+    "kind": "Gno",
+    "displayName": "Gno Testnet",
+    "icon": "icons/networks/gno.svg",
+    "currencies": [
+      {
+        "denom": "ugnot",
+        "displayName": "GNOT",
+        "decimals": 6,
+        "coingeckoId": "gno",
+        "icon": "icons/networks/gno.svg",
+        "kind": "native",
+        "color": "#232800"
+      }
+    ],
+    "stakeCurrency": "ugnot",
+    "idPrefix": "gno",
+    "chainId": "test3",
+    "endpoint": "https://rpc.test3.gno.land",
+    "txExplorer": "https://etherscan.io/tx/$hash",
+    "accountExplorer": "https://etherscan.io/address/$address",
+    "contractExplorer": "https://etherscan.io/address/$address",
+    "testnet": true,
+    "backendEndpoint": "https://dapp-backend.mainnet.teritori.com"
   }
 ]
