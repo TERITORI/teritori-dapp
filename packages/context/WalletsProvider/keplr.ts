@@ -69,19 +69,23 @@ export const useKeplr: () => UseKeplrResult = () => {
   useEffect(() => {
     const effect = async () => {
       if (!hasKeplr || !isKeplrConnected) {
+        setReady(true);
         return;
       }
       try {
         const keplr = (window as KeplrWindow)?.keplr;
         if (!keplr) {
+          setReady(true);
           console.error("no keplr");
           return;
         }
         if (selectedNetworkInfo?.kind !== NetworkKind.Cosmos) {
+          setReady(true);
           return;
         }
         const chainId = selectedNetworkInfo.chainId;
         if (!chainId) {
+          setReady(true);
           console.error("missing chain id");
           return;
         }
