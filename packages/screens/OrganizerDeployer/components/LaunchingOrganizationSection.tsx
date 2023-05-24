@@ -12,7 +12,8 @@ import { layout } from "../../../utils/style/layout";
 
 export const LaunchingOrganizationSection: React.FC<{
   isLaunched: boolean;
-}> = ({ isLaunched }) => {
+  id: string | undefined;
+}> = ({ isLaunched, id }) => {
   // variables
   const { navigate } = useAppNavigation();
   const successAnimateValue = useRef(new Animated.Value(0)).current;
@@ -43,7 +44,7 @@ export const LaunchingOrganizationSection: React.FC<{
       <BrandText style={fontSemibold28}>
         {isLaunched ? "All done" : "Launch organization"}
       </BrandText>
-      {isLaunched && (
+      {isLaunched && id && (
         <View>
           <SpacerColumn size={1.5} />
           <BrandText style={[fontSemibold20, { color: neutralA3 }]}>
@@ -52,9 +53,8 @@ export const LaunchingOrganizationSection: React.FC<{
           <SpacerColumn size={3} />
           <View style={styles.row}>
             <PrimaryButton
-              size="M"
               text="Get Started"
-              onPress={() => navigate("OrganizationGetStarted")}
+              onPress={() => navigate("UserPublicProfile", { id })}
             />
           </View>
         </View>

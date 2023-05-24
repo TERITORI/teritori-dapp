@@ -9,7 +9,6 @@ import {
 } from "./SearchBarResults";
 import { useDropdowns } from "../../context/DropdownsProvider";
 import { useSearchBar } from "../../context/SearchBarProvider";
-import { useNSNameInfo } from "../../hooks/useNSNameInfo";
 import { useNSNameOwner } from "../../hooks/useNSNameOwner";
 import { getUserId } from "../../networks";
 import { useAppNavigation } from "../../utils/navigation";

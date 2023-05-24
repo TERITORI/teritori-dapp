@@ -23,10 +23,10 @@ import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
   NetworkKind,
   getKeplrSigningCosmWasmClient,
+  getUserId,
   mustGetCosmosNetwork,
 } from "../../networks";
 import { createDaoTokenBased, createDaoMemberBased } from "../../utils/dao";
-import { useAppNavigation } from "../../utils/navigation";
 
 export const ORGANIZER_DEPLOYER_STEPS = [
   "Create a DAO",
@@ -37,15 +37,13 @@ export const ORGANIZER_DEPLOYER_STEPS = [
 ];
 
 export const LAUNCHING_PROCESS_STEPS: LaunchingProcessStepType[] = [
-  { title: "Create token", completeText: "Signature successful" },
-  { title: "Create organization", completeText: "Signature successful" },
-  { title: "Organization TNS", completeText: "Registred successfully" },
+  { title: "Create organization", completeText: "Transaction finalized" },
 ];
 
 export const OrganizerDeployerScreen = () => {
   const selectedWallet = useSelectedWallet();
   const { setToastError } = useFeedbacks();
-  const navigation = useAppNavigation();
+  const [daoAddress, setDAOAddress] = useState("");
   // variables
   const [currentStep, setCurrentStep] = useState(0);
   const [step1DaoInfoFormData, setStep1DaoInfoFormData] =
@@ -158,9 +156,19 @@ export const OrganizerDeployerScreen = () => {
           },
           "auto"
         );
+
+        const daoAddress = createDaoRes.logs
+          .find((l) => l.events.find((e) => e.type === "instantiate"))
+          ?.events.find((e) => e.type === "instantiate")
+          ?.attributes.find((a) => a.key === "_contract_address")?.value;
+        if (!daoAddress) {
+          throw new Error("No address in transaction results");
+        }
+        setDAOAddress(daoAddress);
       } else {
         return false;
       }
+      console.log("res", createDaoRes);
       console.log(createDaoRes.transactionHash);
       if (createDaoRes) {
         return true;
@@ -204,25 +212,14 @@ export const OrganizerDeployerScreen = () => {
   };
 
   const onStartLaunchingProcess = async () => {
+    setCurrentStep(4);
+
+    setLaunchingStep(0);
     if (!(await createDaoContract())) {
+      setCurrentStep(3);
       return;
     }
-
-    // setCurrentStep(4);
-    setTimeout(() => {
-      setLaunchingStep(1);
-    }, 2000);
-
-    setTimeout(() => {
-      setLaunchingStep(2);
-    }, 3000);
-
-    setTimeout(() => {
-      setLaunchingStep(3);
-    }, 4000);
-    setTimeout(() => {
-      navigation.navigate("OrganizationDaoList");
-    }, 6000);
+    setLaunchingStep(1);
   };
 
   // returns
@@ -281,6 +278,7 @@ export const OrganizerDeployerScreen = () => {
 
           <View style={currentStep === 4 ? styles.show : styles.hidden}>
             <LaunchingOrganizationSection
+              id={getUserId(selectedWallet?.networkId, daoAddress)}
               isLaunched={launchingStep === LAUNCHING_PROCESS_STEPS.length}
             />
           </View>
