@@ -45,12 +45,14 @@ export const useAdena: () => UseAdenaResult = () => {
   useEffect(() => {
     const effect = async () => {
       if (!hasAdena || !isAdenaConnected) {
+        setReady(true);
         return;
       }
       try {
         const adena = (window as any)?.adena;
         if (!adena) {
           console.error("no adena");
+          setReady(true);
           return;
         }
         const account = await adena.GetAccount();
