@@ -11,14 +11,13 @@ import { useDropdowns } from "../../context/DropdownsProvider";
 import { useSearchBar } from "../../context/SearchBarProvider";
 import { useNSNameInfo } from "../../hooks/useNSNameInfo";
 import { useNSNameOwner } from "../../hooks/useNSNameOwner";
-import { getCosmosNetwork, getUserId } from "../../networks";
+import { getUserId } from "../../networks";
 import { useAppNavigation } from "../../utils/navigation";
-import { neutral22 } from "../../utils/style/colors";
 import { fontSemibold12 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { COLLECTION_VIEW_SM_WIDTH } from "../CollectionView";
-import { OptimizedImage } from "../OptimizedImage";
 import { TertiaryBox } from "../boxes/TertiaryBox";
+import { AvatarWithFrame } from "../images/AvatarWithFrame";
 
 export const SearchBar: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
   style,
@@ -65,25 +64,14 @@ export const NameResult: React.FC<{
   onPress: () => void;
 }> = ({ networkId, name, style, onPress }) => {
   const { nameOwner } = useNSNameOwner(networkId, name);
-  const { nsInfo } = useNSNameInfo(networkId, name);
-  const network = getCosmosNetwork(networkId);
   const navigation = useAppNavigation();
-  const imageSize = 32;
   const content = (
     <View style={{ flexDirection: "row", alignItems: "center" }}>
-      <OptimizedImage
-        source={{
-          uri: nsInfo?.extension.image || network?.nameServiceDefaultImage,
-        }}
-        width={imageSize}
-        height={imageSize}
+      <AvatarWithFrame
+        userId={getUserId(networkId, nameOwner)}
+        size="XS"
         style={{
-          width: imageSize,
-          height: imageSize,
-          borderRadius: 4,
           marginRight: 10,
-          borderWidth: 1,
-          borderColor: neutral22,
         }}
       />
       <BrandText style={[fontSemibold12]}>@{name}</BrandText>

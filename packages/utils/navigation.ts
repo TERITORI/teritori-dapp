@@ -56,9 +56,7 @@ export type RootStackParamList = {
 
   Settings: undefined;
   OrganizationDeployer: undefined;
-  OrganizationGetStarted: undefined;
   OrganizationDaoList: undefined;
-  OrganizationDaoShow: { address: string };
 
   MultisigWalletManage: undefined;
   MultisigWalletTransaction: undefined;
@@ -122,10 +120,8 @@ const navConfig: {
     // ==== Staking
     Staking: "staking",
     // === Organization
-    OrganizationDeployer: "organization-deployer",
-    OrganizationGetStarted: "organization-get-started",
-    OrganizationDaoList: "organization-dao-list",
-    OrganizationDaoShow: "organization-dao-show/:address",
+    OrganizationDeployer: "create-org",
+    OrganizationDaoList: "orgs",
     // === Multisig
     MultisigWalletManage: "multisig-wallet/manage",
     MultisigWalletTransaction: "multisig-wallet/transaction",

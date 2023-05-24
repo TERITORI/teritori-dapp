@@ -10,7 +10,7 @@ import { SpacerColumn } from "../../components/spacer";
 import { useDAOs } from "../../hooks/dao/useDAOs";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { NetworkKind } from "../../networks";
+import { NetworkKind, getUserId } from "../../networks";
 import { useAppNavigation } from "../../utils/navigation";
 import { fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
@@ -75,8 +75,8 @@ const DAOsSection: React.FC<{
             key={item.address}
             info={item}
             onPress={() =>
-              navigation.navigate("OrganizationDaoShow", {
-                address: item.address,
+              navigation.navigate("UserPublicProfile", {
+                id: getUserId(networkId, item.address),
               })
             }
           />

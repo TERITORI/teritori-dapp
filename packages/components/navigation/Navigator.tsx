@@ -3,7 +3,7 @@ import React from "react";
 
 import { ComingSoonScreen } from "../../screens/ComingSoon/ComingSoon";
 import { CoreDAOScreen } from "../../screens/CoreDAO/CoreDAOScreen";
-import { DAppStore } from "../../screens/DAppStore/HomeScreen";
+import { DAppStoreScreen } from "../../screens/DAppStore/DAppStoreScreen";
 import { ToriPunks } from "../../screens/DAppStore/apps/toripunks/HomeScreen";
 import { FeedScreen } from "../../screens/Feed/FeedScreen";
 import { FeedNewArticleScreen } from "../../screens/FeedNewArticle/FeedNewArticleScreen";
@@ -23,8 +23,6 @@ import { MyCollectionScreen } from "../../screens/MyCollection/MyCollectionScree
 import { MultisigWalletManageScreen } from "../../screens/OrganizerDeployer/MultisigWalletManageScreen";
 import { MultisigWalletTransactionScreen } from "../../screens/OrganizerDeployer/MultisigWalletTransactionScreen";
 import { OrganizationDaoListScreen } from "../../screens/OrganizerDeployer/OrganizationDaoListScreen";
-import { OrganizationDaoShowScreen } from "../../screens/OrganizerDeployer/OrganizationDaoShowScreen";
-import { OrganizationGetStartedScreen } from "../../screens/OrganizerDeployer/OrganizationGetStartedScreen";
 import { OrganizerDeployerScreen } from "../../screens/OrganizerDeployer/OrganizerDeployerScreen";
 import { TransactionProposalScreen } from "../../screens/OrganizerDeployer/TransactionProposalScreen";
 import { RiotGameBreedingScreen } from "../../screens/RiotGame/RiotGameBreedingScreen";
@@ -201,27 +199,11 @@ export const Navigator: React.FC = () => {
         }}
       />
       <Stack.Screen
-        name="OrganizationGetStarted"
-        component={OrganizationGetStartedScreen}
-        options={{
-          header: () => null,
-          title: screenTitle("Organization Name"),
-        }}
-      />
-      <Stack.Screen
         name="OrganizationDaoList"
         component={OrganizationDaoListScreen}
         options={{
           header: () => null,
           title: screenTitle("Dao List"),
-        }}
-      />
-      <Stack.Screen
-        name="OrganizationDaoShow"
-        component={OrganizationDaoShowScreen}
-        options={{
-          header: () => null,
-          title: screenTitle("Organization DAO"),
         }}
       />
       <Stack.Screen
@@ -319,7 +301,7 @@ export const Navigator: React.FC = () => {
       />
       <Stack.Screen
         name="DAppStore"
-        component={DAppStore}
+        component={DAppStoreScreen}
         options={{ header: () => null, title: screenTitle("dApp Store") }}
       />
       <Stack.Screen
