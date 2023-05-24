@@ -10,7 +10,7 @@ export const DAOSelector: React.FC<{
 }> = ({ userId, value, onSelect }) => {
   const [network, userAddress] = parseUserId(userId);
   const { daos } = useDAOs(network?.id, {
-    MemberAddress: userAddress,
+    memberAddress: userAddress,
   });
   return (
     <Picker

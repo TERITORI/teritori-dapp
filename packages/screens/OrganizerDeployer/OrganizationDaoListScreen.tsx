@@ -39,7 +39,7 @@ export const OrganizationDaoListScreen = () => {
           <DAOsSection
             networkId={networkId}
             title="Your DAOs"
-            req={{ MemberAddress: wallet.address }}
+            req={{ memberAddress: wallet.address }}
           />
         )}
         <DAOsSection

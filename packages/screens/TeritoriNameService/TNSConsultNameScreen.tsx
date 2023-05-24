@@ -188,7 +188,7 @@ export const TNSConsultNameScreen: React.FC<TNSConsultNameProps> = ({
   );
   const { nameOwner } = useNSNameOwner(networkId, tokenId);
   const ownerId = getUserId(networkId, nameOwner);
-  const { daos } = useDAOs(networkId, { MemberAddress: wallet?.address });
+  const { daos } = useDAOs(networkId, { memberAddress: wallet?.address });
 
   const isOwnedByUser =
     ownerId === wallet?.userId ||

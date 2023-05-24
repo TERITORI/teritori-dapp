@@ -46,7 +46,7 @@ export const TNSUpdateNameScreen: React.FC<TNSUpdateNameScreenProps> = ({
     name + network?.nameServiceTLD || ""
   ).toLowerCase();
   const { daos } = useDAOs(selectedWallet?.networkId, {
-    MemberAddress: selectedWallet?.address,
+    memberAddress: selectedWallet?.address,
   });
   const { nameOwner } = useNSNameOwner(
     selectedWallet?.networkId,

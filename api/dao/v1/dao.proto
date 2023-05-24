@@ -7,7 +7,7 @@ service DaoService {
 }
 
 message DaoListRequest {
-  string MemberAddress = 1;
+  string member_address = 1;
 }
 
 message DaoListResponse {

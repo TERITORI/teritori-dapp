@@ -69,7 +69,7 @@ export const SendModal: React.FC<SendModalProps> = ({
   const { control, setValue, handleSubmit } = useForm<TransactionForm>();
   const [selectedDAOAddress, setSelectedDAOAddress] = useState("");
   const { daos } = useDAOs(networkId, {
-    MemberAddress: selectedWallet?.address,
+    memberAddress: selectedWallet?.address,
   });
 
   const balances = useBalances(

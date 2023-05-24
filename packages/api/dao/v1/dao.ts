@@ -7,7 +7,7 @@ import _m0 from "protobufjs/minimal";
 export const protobufPackage = "dao.v1";
 
 export interface DaoListRequest {
-  MemberAddress: string;
+  memberAddress: string;
 }
 
 export interface DaoListResponse {
@@ -28,13 +28,13 @@ export interface DaoInfo {
 }
 
 function createBaseDaoListRequest(): DaoListRequest {
-  return { MemberAddress: "" };
+  return { memberAddress: "" };
 }
 
 export const DaoListRequest = {
   encode(message: DaoListRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.MemberAddress !== "") {
-      writer.uint32(10).string(message.MemberAddress);
+    if (message.memberAddress !== "") {
+      writer.uint32(10).string(message.memberAddress);
     }
     return writer;
   },
@@ -47,7 +47,7 @@ export const DaoListRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.MemberAddress = reader.string();
+          message.memberAddress = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -58,18 +58,18 @@ export const DaoListRequest = {
   },
 
   fromJSON(object: any): DaoListRequest {
-    return { MemberAddress: isSet(object.MemberAddress) ? String(object.MemberAddress) : "" };
+    return { memberAddress: isSet(object.memberAddress) ? String(object.memberAddress) : "" };
   },
 
   toJSON(message: DaoListRequest): unknown {
     const obj: any = {};
-    message.MemberAddress !== undefined && (obj.MemberAddress = message.MemberAddress);
+    message.memberAddress !== undefined && (obj.memberAddress = message.memberAddress);
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<DaoListRequest>, I>>(object: I): DaoListRequest {
     const message = createBaseDaoListRequest();
-    message.MemberAddress = object.MemberAddress ?? "";
+    message.memberAddress = object.memberAddress ?? "";
     return message;
   },
 };
