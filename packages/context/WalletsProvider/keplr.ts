@@ -136,13 +136,15 @@ export const useKeplr: () => UseKeplrResult = () => {
       return wallet;
     });
 
+    return wallets;
+  }, [addresses, selectedNetworkInfo]);
+
+  useEffect(() => {
     const selectedWallet = wallets.find((w) => w.connected);
     if (selectedWallet && selectedNetworkInfo?.kind === NetworkKind.Cosmos) {
       dispatch(setSelectedWalletId(selectedWallet.id));
     }
-
-    return wallets;
-  }, [addresses, dispatch, selectedNetworkInfo]);
+  }, [dispatch, selectedNetworkInfo?.kind, wallets]);
 
   return hasKeplr ? [true, ready, wallets] : [false, ready, undefined];
 };
