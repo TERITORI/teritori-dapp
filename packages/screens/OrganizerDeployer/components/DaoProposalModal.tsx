@@ -96,24 +96,30 @@ export const DaoProposalModal: React.FC<{
         walletAddress,
         proposalModuleAddress
       );
-      const createVoteRes = await daoProposalClient.execute({
+      const res = await daoProposalClient.execute({
         proposalId: proposalInfo.id,
       });
-      if (createVoteRes) {
-        onClose();
-        setToastSuccess({ title: "Success Vote", message: "Success Vote" });
-      } else {
-        onClose();
-        setToastError({
-          title: "Failed to vote",
-          message: "Failed to vote",
-        });
+      if (
+        res.events.find((ev) =>
+          ev.attributes.find(
+            (attr) =>
+              attr.key === "proposal_execution_failed" &&
+              attr.value === proposalInfo.id.toString()
+          )
+        )
+      ) {
+        console.error("failed to execute", res);
+        throw new Error("internal error");
       }
-    } catch (err: any) {
+      console.log("executed", res);
       onClose();
+      setToastSuccess({ title: "Executed", message: "" });
+    } catch (err) {
+      onClose();
+      console.error("failed to execute", err);
       setToastError({
-        title: "Failed to vote",
-        message: err.message,
+        title: "Failed to execute",
+        message: err instanceof Error ? err.message : `${err}`,
       });
     }
   };
@@ -154,6 +160,14 @@ export const DaoProposalModal: React.FC<{
               {proposalInfo.proposal.description}
             </BrandText>
           </View>
+          <SpacerColumn size={2.5} />
+          {proposalInfo.proposal.status === "execution_failed" && (
+            <View style={styles.row}>
+              <BrandText style={styles.textGray}>
+                {proposalInfo.proposal}
+              </BrandText>
+            </View>
+          )}
           <SpacerColumn size={2.5} />
           <BrandText style={[styles.textGray, {}]}>
             {JSON.stringify(
@@ -198,13 +212,6 @@ export const DaoProposalModal: React.FC<{
                 }}
                 style={{ marginLeft: 10 }}
               />
-              <PrimaryButton
-                size="M"
-                text="Execute"
-                onPress={() => {
-                  execute();
-                }}
-              />
             </View>
           </View>
         )}
@@ -212,7 +219,6 @@ export const DaoProposalModal: React.FC<{
           <View style={styles.footer}>
             <View style={{ flexDirection: "row-reverse" }}>
               <PrimaryButton
-                size="M"
                 text="Execute"
                 onPress={() => {
                   execute();

@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 import { LoaderFullScreen } from "../components/loaders/LoaderFullScreen";
 import { ToastError } from "../components/toasts/ToastError";
@@ -20,21 +26,27 @@ export const initialToastSuccess: ToastMessage = {
   duration: 8000,
 };
 
-interface DefaultValue {
+interface FeedbacksProviderValue {
   toastError: ToastMessage;
   setToastError: (error: ToastMessage) => void;
   toastSuccess: ToastMessage;
   setToastSuccess: (info: ToastMessage) => void;
   loadingFullScreen: boolean;
   setLoadingFullScreen: (loading: boolean) => void;
+  wrapWithFeedback: (
+    cb: () => Promise<void>,
+    success?: { title: string; message: string },
+    errorTransform?: (err: unknown) => { title: string; message: string }
+  ) => () => Promise<void>;
 }
-const defaultValue: DefaultValue = {
+const defaultValue: FeedbacksProviderValue = {
   toastError: initialToastError,
   setToastError: () => {},
   toastSuccess: initialToastSuccess,
   setToastSuccess: () => {},
   loadingFullScreen: false,
   setLoadingFullScreen: () => {},
+  wrapWithFeedback: () => async () => {},
 };
 
 export const FeedbacksContext = createContext(defaultValue);
@@ -53,6 +65,31 @@ export const FeedbacksContextProvider: React.FC = ({ children }) => {
     return () => clearTimeout(timeoutID);
   }, [toastError, toastSuccess]);
 
+  const wrapWithFeedback: FeedbacksProviderValue["wrapWithFeedback"] =
+    useCallback(
+      (
+        cb,
+        success = { title: "Success", message: "" },
+        errorTransform = (err) => {
+          console.error(err);
+          return {
+            title: "Error",
+            message: err instanceof Error ? err.message : `${err}`,
+          };
+        }
+      ) => {
+        return async () => {
+          try {
+            await cb();
+            setToastSuccess(success);
+          } catch (err) {
+            setToastError(errorTransform(err));
+          }
+        };
+      },
+      []
+    );
+
   return (
     <FeedbacksContext.Provider
       value={{
@@ -62,6 +99,7 @@ export const FeedbacksContextProvider: React.FC = ({ children }) => {
         setToastError,
         toastSuccess,
         setToastSuccess,
+        wrapWithFeedback,
       }}
     >
       {/*==== Loader full screen*/}
