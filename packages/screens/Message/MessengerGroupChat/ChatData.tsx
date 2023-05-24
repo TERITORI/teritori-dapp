@@ -3,7 +3,7 @@ import icons from "../../../../assets/banners/tns.png";
 const ChatData = [
   {
     id: 1,
-    message: "Hello! Intosoft Test",
+    message: "Hello! Intosoft ",
     isSender: true,
     time: "5:20",
     date: "22 April,2023",

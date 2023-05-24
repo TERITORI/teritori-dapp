@@ -1,5 +1,11 @@
 import React from "react";
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  Platform,
+} from "react-native";
 
 import CheckboxGroup from "./MessengerHomeCreateChatDropdown/FriendNameDropdown";
 import avatar from "../../../assets/icons/avatar.svg";
@@ -14,6 +20,7 @@ import ModalBase from "../../components/modals/ModalBase";
 import { SearchInput } from "../../components/sorts/SearchInput";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
 import {
+  neutral00,
   neutral17,
   neutral33,
   primaryTextColor,
@@ -40,33 +47,36 @@ const CreateGroup = ({ setShowTertiaryBox }) => {
       onClose={() => setShowTertiaryBox(false)}
       visible
       hideMainSeparator
-      width={457}
-      containerStyle={{ height: 900 }}
+      width={450}
+      // containerStyle={{ height: 900 }}
       closeButtonStyle={{ height: 300 }}
     >
       <SeparatorGradient />
 
       <SpacerColumn size={2} />
 
-      <FlexRow style={{ width: "100%" }}>
-        <SVG source={avatar} height={40} width={40} style={{ width: "20%" }} />
+      <FlexRow justifyContent="space-between">
+        <SVG source={avatar} />
+
         <SpacerRow size={1} />
+
         <TextInputCustom
           name="Groupname"
           label="Group name"
           placeHolder="Group name"
-          style={{ width: "93%" }}
+          // style={{ width: "95%" }}
           // // onChangeText={setName}
           // // value={name || ""}
           // textInputStyle={{ width: 20 }}
           boxMainContainerStyle={{
-            paddingVertical: 5,
-            width: "100%",
+            paddingVertical: 2,
           }}
-          variant="regular"
+          // variant="regular"
           rules={{ required: true }}
           placeholderTextColor={secondaryColor}
-          squaresBackgroundColor={neutral17}
+          squaresBackgroundColor={neutral00}
+          fullWidth
+          width={Platform.OS == "web" ? 370 : 305}
         />
       </FlexRow>
 

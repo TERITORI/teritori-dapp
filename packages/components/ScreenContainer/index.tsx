@@ -194,6 +194,7 @@ export const ScreenContainer: React.FC<{
               alignItems: "center",
             }}
           >
+<<<<<<< HEAD
             <SearchBar />
             <View
               style={{
@@ -213,6 +214,21 @@ export const ScreenContainer: React.FC<{
             <ConnectWalletButton
               style={{ marginRight: headerMarginHorizontal }}
             />
+=======
+            {/* <SearchBar /> */}
+            {footerChildren ? (
+              <HeaderMessage />
+            ) : (
+              <>
+                <NetworkSelector
+                  forceNetworkId={forceNetworkId}
+                  forceNetworkKind={forceNetworkKind}
+                  style={{ marginRight: 12 }}
+                />
+                <ConnectWalletButton />
+              </>
+            )}
+>>>>>>> ef3d77ab (implement emoji)
           </View>
         </View>
       </View>
