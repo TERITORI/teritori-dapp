@@ -26,7 +26,6 @@ export const ConnectAdenaButton: React.FC<{
         return;
       }
       await adena.AddEstablish("test3");
-      const res = await adena.GetAccount();
       const network = getGnoNetwork(selectedNetworkId);
       dispatch(setSelectedNetworkId(network.id));
       dispatch(setIsAdenaConnected(true));
