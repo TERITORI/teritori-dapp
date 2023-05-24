@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
   View,
   Text,
@@ -18,12 +18,14 @@ import reply from "../../../../assets/icons/reply.svg";
 import searchSVG from "../../../../assets/icons/search.svg";
 import select from "../../../../assets/icons/select.svg";
 import { BrandText } from "../../../components/BrandText";
+import { AudioView } from "../../../components/FilePreview/AudioView";
 import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
 import { Separator } from "../../../components/Separator";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { neutralA3 } from "../../../utils/style/colors";
 import { fontSemibold13 } from "../../../utils/style/fonts";
+
 const data = [
   {
     icon: avatar,
@@ -67,6 +69,7 @@ const MessagePopup = ({ isForwarding, setIsForwarding }) => {
   const filteredData = data.filter((item) =>
     item.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
   return (
     <View>
       <TouchableOpacity>
@@ -96,6 +99,41 @@ const MessagePopup = ({ isForwarding, setIsForwarding }) => {
             color={neutralA3}
             style={{ marginTop: 4 }}
           />
+        </FlexRow>
+      </TouchableOpacity>
+
+      <SpacerColumn size={1} />
+      <Separator />
+      <SpacerColumn size={1} />
+      <TouchableOpacity>
+        <FlexRow>
+          <SVG source={copy} height={20} width={20} color={neutralA3} />
+          <SpacerRow size={1} />
+          <BrandText style={[fontSemibold13, { color: neutralA3 }]}>
+            Copy text
+          </BrandText>
+        </FlexRow>
+      </TouchableOpacity>
+      <SpacerColumn size={1} />
+      <TouchableOpacity>
+        <FlexRow>
+          <SVG source={select} height={16} width={16} color={neutralA3} />
+          <SpacerRow size={1} />
+          <BrandText style={[fontSemibold13, { color: neutralA3 }]}>
+            Select
+          </BrandText>
+        </FlexRow>
+      </TouchableOpacity>
+      <SpacerColumn size={1} />
+      <Separator />
+      <SpacerColumn size={1} />
+      <TouchableOpacity>
+        <FlexRow>
+          <SVG source={deleteicon} height={16} width={16} color={neutralA3} />
+          <SpacerRow size={1} />
+          <BrandText style={[fontSemibold13, { color: neutralA3 }]}>
+            Delete
+          </BrandText>
         </FlexRow>
       </TouchableOpacity>
       {isForwarding && (
@@ -150,40 +188,6 @@ const MessagePopup = ({ isForwarding, setIsForwarding }) => {
           </ScrollView>
         </View>
       )}
-      <SpacerColumn size={1} />
-      <Separator />
-      <SpacerColumn size={1} />
-      <TouchableOpacity>
-        <FlexRow>
-          <SVG source={copy} height={20} width={20} color={neutralA3} />
-          <SpacerRow size={1} />
-          <BrandText style={[fontSemibold13, { color: neutralA3 }]}>
-            Copy text
-          </BrandText>
-        </FlexRow>
-      </TouchableOpacity>
-      <SpacerColumn size={1} />
-      <TouchableOpacity>
-        <FlexRow>
-          <SVG source={select} height={16} width={16} color={neutralA3} />
-          <SpacerRow size={1} />
-          <BrandText style={[fontSemibold13, { color: neutralA3 }]}>
-            Select
-          </BrandText>
-        </FlexRow>
-      </TouchableOpacity>
-      <SpacerColumn size={1} />
-      <Separator />
-      <SpacerColumn size={1} />
-      <TouchableOpacity>
-        <FlexRow>
-          <SVG source={deleteicon} height={16} width={16} color={neutralA3} />
-          <SpacerRow size={1} />
-          <BrandText style={[fontSemibold13, { color: neutralA3 }]}>
-            Delete
-          </BrandText>
-        </FlexRow>
-      </TouchableOpacity>
     </View>
   );
 };

@@ -43,7 +43,6 @@ export const MessageScreen: ScreenFC<"Message"> = () => {
                     if (item.id === 2) {
                       setShowTertiaryBox(true);
                     } else if (item.id === 3) {
-                      // navigation.navigate("AddFriend");
                       navigation.navigate("FriendshipManager");
                     } else {
                       setShowTertiaryBox(false);
@@ -66,7 +65,6 @@ export const MessageScreen: ScreenFC<"Message"> = () => {
         <Modal visible={showTertiaryBox} animationType="none" transparent>
           <View
             style={{
-              flex: 1,
               justifyContent: "center",
               alignItems: "center",
               backgroundColor: "rgba(0, 0, 0, 0.0)",

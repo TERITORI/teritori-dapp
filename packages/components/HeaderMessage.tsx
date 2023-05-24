@@ -1,9 +1,9 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
 
-import { neutral44 } from "../utils/style/colors";
 import { NetworkSelector } from "./NetworkSelector";
 import { SearchInput } from "./sorts/SearchInput";
+import { neutral44 } from "../utils/style/colors";
 const HeaderMessage: React.FC = () => {
   return (
     <View style={styles.container}>
