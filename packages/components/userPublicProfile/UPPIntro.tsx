@@ -34,7 +34,7 @@ export const UPPIntro: React.FC<{
   userId: string;
   isUserOwner?: boolean;
 }> = ({ userId, isUserOwner }) => {
-  const { metadata, loading } = useNSUserInfo(userId);
+  const { metadata } = useNSUserInfo(userId);
   const { copyToClipboard } = useCopyToClipboard();
   const socialButtonStyle = { margin: layout.padding_x0_75 };
   const [, userAddress] = parseUserId(userId);
@@ -124,8 +124,6 @@ export const UPPIntro: React.FC<{
         )}
         <AvatarWithFrame
           userId={userId}
-          isLoading={loading}
-          image={metadata?.image}
           style={{
             position: "absolute",
             top: 217,

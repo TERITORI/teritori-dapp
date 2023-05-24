@@ -9,6 +9,7 @@ import {
 
 import emptyCircleFrameSVG from "../../../assets/empty-circle-frame.svg";
 import { useIsDAO } from "../../hooks/cosmwasm/useCosmWasmContractInfo";
+import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { getCosmosNetwork } from "../../networks";
 import { primaryColor } from "../../utils/style/colors";
@@ -19,18 +20,20 @@ import { AnimationFadeIn } from "../animations/AnimationFadeIn";
 type AvatarWithFrameSize = "XL" | "L" | "M" | "S";
 
 export const AvatarWithFrame: React.FC<{
-  userId: string;
-  image: string | null | undefined;
-  size: AvatarWithFrameSize;
-  isLoading?: boolean;
+  userId: string | undefined;
+  size?: AvatarWithFrameSize;
   style?: StyleProp<ViewStyle>;
-}> = ({ userId, image, size, isLoading, style }) => {
+}> = ({ userId, size = "M", style }) => {
   const networkId = useSelectedNetworkId();
   const network = getCosmosNetwork(networkId);
   const sizedStyles = useMemo(
     () => StyleSheet.flatten(flatStyles[size]),
     [size]
   );
+  const {
+    metadata: { image },
+    loading: isLoading,
+  } = useNSUserInfo(userId);
   const { isDAO } = useIsDAO(userId);
 
   return (

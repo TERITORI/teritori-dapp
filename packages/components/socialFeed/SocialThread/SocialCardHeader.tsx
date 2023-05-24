@@ -38,9 +38,7 @@ export const SocialCardHeader: FC<{
                   : layout.padding_x2,
             }}
             userId={authorId}
-            image={authorMetadata?.image}
             size={width < RESPONSIVE_BREAKPOINT_S ? "S" : "M"}
-            isLoading={loading}
           />
         </OmniLink>
         <View

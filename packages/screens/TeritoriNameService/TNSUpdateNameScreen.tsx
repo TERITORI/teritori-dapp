@@ -116,7 +116,7 @@ export const TNSUpdateNameScreen: React.FC<TNSUpdateNameScreenProps> = ({
           throw new Error("network not supported");
         }
 
-        if (!selectedWallet.address) {
+        if (!selectedWallet?.address) {
           throw new Error("no wallet address");
         }
         const res = await makeProposal(
