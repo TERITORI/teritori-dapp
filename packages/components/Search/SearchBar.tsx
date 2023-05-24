@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { StyleProp, View, ViewStyle, TouchableOpacity } from "react-native";
+import { StyleProp, View, ViewStyle } from "react-native";
 
 import { SEARCH_BAR_INPUT_HEIGHT, SearchBarInput } from "./SearchBarInput";
 import {
@@ -9,14 +9,8 @@ import {
 } from "./SearchBarResults";
 import { useDropdowns } from "../../context/DropdownsProvider";
 import { useSearchBar } from "../../context/SearchBarProvider";
-import { useNSNameOwner } from "../../hooks/useNSNameOwner";
-import { getUserId } from "../../networks";
-import { useAppNavigation } from "../../utils/navigation";
-import { fontSemibold12 } from "../../utils/style/fonts";
-import { BrandText } from "../BrandText";
 import { COLLECTION_VIEW_SM_WIDTH } from "../CollectionView";
 import { TertiaryBox } from "../boxes/TertiaryBox";
-import { AvatarWithFrame } from "../images/AvatarWithFrame";
 
 export const SearchBar: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
   style,
@@ -51,46 +45,6 @@ export const SearchBar: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
         >
           <SearchBarResults />
         </TertiaryBox>
-      )}
-    </View>
-  );
-};
-
-export const NameResult: React.FC<{
-  networkId: string;
-  name: string;
-  style: StyleProp<ViewStyle>;
-  onPress: () => void;
-}> = ({ networkId, name, style, onPress }) => {
-  const { nameOwner } = useNSNameOwner(networkId, name);
-  const navigation = useAppNavigation();
-  const content = (
-    <View style={{ flexDirection: "row", alignItems: "center" }}>
-      <AvatarWithFrame
-        userId={getUserId(networkId, nameOwner)}
-        size="XS"
-        style={{
-          marginRight: 10,
-        }}
-      />
-      <BrandText style={[fontSemibold12]}>@{name}</BrandText>
-    </View>
-  );
-  return (
-    <View style={style}>
-      {nameOwner ? (
-        <TouchableOpacity
-          onPress={() => {
-            onPress();
-            navigation.navigate("UserPublicProfile", {
-              id: getUserId(networkId, nameOwner),
-            });
-          }}
-        >
-          {content}
-        </TouchableOpacity>
-      ) : (
-        content
       )}
     </View>
   );

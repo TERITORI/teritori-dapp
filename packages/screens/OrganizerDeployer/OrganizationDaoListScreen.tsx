@@ -60,7 +60,6 @@ const DAOsSection: React.FC<{
   req?: DaoListRequest;
   topRight?: React.ReactNode;
 }> = ({ networkId, title, req = {}, topRight }) => {
-  const navigation = useAppNavigation();
   const { daos } = useDAOs(networkId, req);
   return (
     <View style={styles.container}>
@@ -73,12 +72,7 @@ const DAOsSection: React.FC<{
         {(daos || []).map((item) => (
           <DaoItem
             key={item.address}
-            info={item}
-            onPress={() =>
-              navigation.navigate("UserPublicProfile", {
-                id: getUserId(networkId, item.address),
-              })
-            }
+            userId={getUserId(networkId, item.address)}
           />
         ))}
       </View>

@@ -1,16 +1,19 @@
 import React, { FC } from "react";
-import { StyleProp, View, ViewStyle } from "react-native";
+import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
 
-import { NameResult } from "./SearchBar";
 import { MintState } from "../../api/marketplace/v1/marketplace";
 import { useSearchBar } from "../../context/SearchBarProvider";
 import { useIsMobile } from "../../hooks/useIsMobile";
+import { useNSNameOwner } from "../../hooks/useNSNameOwner";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import { getUserId } from "../../networks";
+import { useAppNavigation } from "../../utils/navigation";
 import { neutral22, neutralA3 } from "../../utils/style/colors";
 import { fontSemibold12 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { CollectionView } from "../CollectionView";
+import { AvatarWithFrame } from "../images/AvatarWithFrame";
 
 const SEARCH_RESULTS_NAMES_MARGIN = layout.padding_x1;
 export const SEARCH_RESULTS_MARGIN = layout.padding_x2;
@@ -111,6 +114,46 @@ const SearchResultsSection: React.FC<{
         </BrandText>
       </View>
       <View style={{ padding: SEARCH_RESULTS_MARGIN }}>{children}</View>
+    </View>
+  );
+};
+
+const NameResult: React.FC<{
+  networkId: string;
+  name: string;
+  style: StyleProp<ViewStyle>;
+  onPress: () => void;
+}> = ({ networkId, name, style, onPress }) => {
+  const { nameOwner } = useNSNameOwner(networkId, name);
+  const navigation = useAppNavigation();
+  const content = (
+    <View style={{ flexDirection: "row", alignItems: "center" }}>
+      <AvatarWithFrame
+        userId={getUserId(networkId, nameOwner)}
+        size="XS"
+        style={{
+          marginRight: 8,
+        }}
+      />
+      <BrandText style={[fontSemibold12]}>@{name}</BrandText>
+    </View>
+  );
+  return (
+    <View style={style}>
+      {nameOwner ? (
+        <TouchableOpacity
+          onPress={() => {
+            onPress();
+            navigation.navigate("UserPublicProfile", {
+              id: getUserId(networkId, nameOwner),
+            });
+          }}
+        >
+          {content}
+        </TouchableOpacity>
+      ) : (
+        content
+      )}
     </View>
   );
 };

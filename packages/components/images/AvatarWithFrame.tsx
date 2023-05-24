@@ -52,8 +52,8 @@ export const AvatarWithFrame: React.FC<{
       ) : (
         <AnimationFadeIn style={styles.absolute}>
           <OptimizedImage
-            width={sizedStyles.image.width}
-            height={sizedStyles.image.height}
+            width={sizedStyles.image.width} // FIXME: use discrete sizing
+            height={sizedStyles.image.height} // FIXME: use discrete sizing
             source={{
               uri: image ? image : network?.nameServiceDefaultImage || "",
             }}
@@ -142,15 +142,15 @@ const flatStyles = {
 
   XS: {
     image: {
-      height: 17,
+      height: 25,
       left: 0.25,
       top: -0.5,
-      width: 34,
+      width: 25,
       borderRadius: 999,
     },
     frame: {
-      width: 25,
-      height: 25,
+      width: 38,
+      height: 38,
     },
   },
 };
