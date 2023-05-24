@@ -11,10 +11,12 @@ import { useBalances } from "../../hooks/useBalances";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
   getKeplrSigningStargateClient,
+  getNetwork,
   keplrCurrencyFromNativeCurrencyInfo,
   NativeCurrencyInfo,
 } from "../../networks";
 import { TransactionForm } from "../../screens/WalletManager/types";
+import { prettyPrice } from "../../utils/coins";
 import {
   neutral22,
   neutral33,
@@ -116,13 +118,8 @@ export const SendModal: React.FC<SendModalProps> = ({
           gasFee: 1,
           gasWanted: 50000,
         });
-        if (res.status === "success") {
-          setToastSuccess({
-            title: `GNOT succeeded sent to ${receiver}`,
-            message: "",
-          });
-        } else {
-          setToastError({ title: "Transaction failed", message: "" });
+        if (res.status !== "success") {
+          throw new Error(res.message);
         }
       } else {
         const client = await getKeplrSigningStargateClient(networkId);
@@ -134,20 +131,22 @@ export const SendModal: React.FC<SendModalProps> = ({
           "auto"
         );
         if (isDeliverTxFailure(tx)) {
-          console.error("Send Tokens tx failed", tx);
-          setToastError({ title: "Transaction failed", message: "" });
+          throw new Error("Transaction failed");
         }
-        setToastSuccess({
-          title: `TORI succeeded sent to ${receiver}`,
-          message: "",
-        });
       }
-      // FIXME: find out if it's possible to check for ibc ack
+      setToastSuccess({
+        title: `Sent ${prettyPrice(
+          networkId,
+          amount,
+          nativeCurrency.denom
+        )} to ${receiver}`,
+        message: "",
+      });
     } catch (err) {
-      console.error("Send Tokens failed", err);
+      console.error("Failed to send tokens", err);
       if (err instanceof Error) {
         setToastError({
-          title: "Failed to Send Tokens",
+          title: "Failed to send tokens",
           message: err.message,
         });
       }
@@ -166,12 +165,15 @@ export const SendModal: React.FC<SendModalProps> = ({
         <FlexCol alignItems="flex-start" width={356}>
           <TextInputCustom<TransactionForm>
             height={48}
+            width={320}
             control={control}
             variant="labelOutside"
             label="Receiver"
             name="toAddress"
             rules={{ required: true }}
-            placeHolder="Enter a TERITORI address"
+            placeHolder={`Enter a ${
+              getNetwork(networkId)?.displayName || networkId
+            } address`}
             defaultValue=""
           />
         </FlexCol>

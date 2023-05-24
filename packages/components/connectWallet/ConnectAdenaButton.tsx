@@ -2,13 +2,13 @@ import React from "react";
 import { Linking } from "react-native";
 
 import { ConnectWalletButton } from "./components/ConnectWalletButton";
-import keplrSVG from "../../../assets/icons/keplr.svg";
+import adenaSVG from "../../../assets/icons/adena.svg";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import { getGnoNetwork } from "../../networks";
+import { gnoTestnetNetwork } from "../../networks/gno-testnet";
 import {
   setIsAdenaConnected,
   setSelectedNetworkId,
+  setSelectedWalletId,
 } from "../../store/slices/settings";
 import { useAppDispatch } from "../../store/store";
 
@@ -17,7 +17,6 @@ export const ConnectAdenaButton: React.FC<{
 }> = ({ onDone }) => {
   const { setToastError } = useFeedbacks();
   const dispatch = useAppDispatch();
-  const selectedNetworkId = useSelectedNetworkId();
   const handlePress = async () => {
     try {
       const adena = (window as any)?.adena;
@@ -25,10 +24,13 @@ export const ConnectAdenaButton: React.FC<{
         Linking.openURL("https://adena.app/");
         return;
       }
-      await adena.AddEstablish("test3");
-      const network = getGnoNetwork(selectedNetworkId);
-      dispatch(setSelectedNetworkId(network.id));
+      const establishResult = await adena.AddEstablish("Teritori dApp");
+      console.log("established", establishResult);
       dispatch(setIsAdenaConnected(true));
+      setSelectedNetworkId(gnoTestnetNetwork.id);
+      dispatch(
+        setSelectedWalletId(`adena-${(await adena.GetAccount()).data.address}`)
+      );
       onDone && onDone();
     } catch (err) {
       console.error(err);
@@ -44,8 +46,8 @@ export const ConnectAdenaButton: React.FC<{
   return (
     <ConnectWalletButton
       text="Adena Wallet"
-      icon={keplrSVG}
-      iconSize={16}
+      icon={adenaSVG}
+      iconSize={20}
       onPress={handlePress}
     />
   );

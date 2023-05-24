@@ -101,7 +101,8 @@ const getNetworkBalances = async (
       const res = await (window as any).adena.GetAccount();
       return [
         {
-          amount: res.data.coins.substring(0, res.data.coins.length - 5),
+          amount:
+            res?.data?.coins?.substring(0, res?.data?.coins?.length - 5) || "0",
           denom: "ugnot",
         },
       ];

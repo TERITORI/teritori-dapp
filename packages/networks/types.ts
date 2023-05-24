@@ -67,6 +67,7 @@ export type GnoNetworkInfo = NetworkInfoBase & {
   kind: NetworkKind.Gno;
   chainId: string;
   endpoint: string;
+  stakeCurrency: string;
 };
 
 export type NetworkInfo =

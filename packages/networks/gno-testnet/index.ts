@@ -1,12 +1,13 @@
 import { gnoCurrencies } from "./currencies";
-import { NetworkInfo, NetworkKind } from "../types";
+import { GnoNetworkInfo, NetworkKind } from "../types";
 
-export const gnoTestnetNetwork: NetworkInfo = {
+export const gnoTestnetNetwork: GnoNetworkInfo = {
   id: "gno-testnet",
   kind: NetworkKind.Gno,
-  displayName: "Gno",
-  icon: "icons/networks/ethereum.svg",
+  displayName: "Gno Testnet",
+  icon: "icons/networks/gno.svg",
   currencies: gnoCurrencies,
+  stakeCurrency: "ugnot",
   idPrefix: "gno",
   chainId: "test3",
   endpoint: "https://rpc.test3.gno.land",

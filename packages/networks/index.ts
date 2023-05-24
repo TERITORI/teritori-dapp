@@ -105,7 +105,7 @@ export const getNativeCurrency = (
 
 export const getStakingCurrency = (networkId: string | undefined) => {
   const network = getNetwork(networkId);
-  if (network?.kind !== NetworkKind.Cosmos) {
+  if (!network || !("stakeCurrency" in network)) {
     return undefined;
   }
   return getNativeCurrency(networkId, network.stakeCurrency);
@@ -116,6 +116,14 @@ export const getNetwork = (networkId: string | undefined) => {
     return undefined;
   }
   return allNetworks.find((n) => n.id === networkId);
+};
+
+export const mustGetNetwork = (networkId: string | undefined) => {
+  const network = getNetwork(networkId);
+  if (!network) {
+    throw new Error(`unknown network '${networkId}'`);
+  }
+  return network;
 };
 
 export const getNetworkByIdPrefix = (idPrefix: string | undefined) => {
@@ -229,11 +237,18 @@ export const mustGetCosmosNetwork = (
 
 export const getGnoNetwork = (
   networkId: string | undefined
-): GnoNetworkInfo => {
+): GnoNetworkInfo | undefined => {
   const network = getNetwork(networkId);
-  if (network === undefined) {
-    throw new Error(`unknown network '${networkId}'`);
+  if (network?.kind !== NetworkKind.Gno) {
+    return undefined;
   }
+  return network;
+};
+
+export const mustGetGnoNetwork = (
+  networkId: string | undefined
+): GnoNetworkInfo => {
+  const network = mustGetNetwork(networkId);
   if (network.kind !== NetworkKind.Gno) {
     throw new Error(`'${networkId}' is not a gno network`);
   }

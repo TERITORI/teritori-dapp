@@ -3,11 +3,11 @@ import { CurrencyInfo } from "../types";
 
 export const gnoCurrencies: CurrencyInfo[] = [
   {
-    denom: "ugnot", // native currency: ugnot
-    displayName: "ugnot",
+    denom: "ugnot",
+    displayName: "GNOT",
     decimals: 6,
-    coingeckoId: "ugnot",
-    icon: "icons/networks/ethereum-circle.svg",
+    coingeckoId: "gno",
+    icon: "icons/networks/gno.svg",
     kind: "native",
     color: currencyGNOcolor,
   },

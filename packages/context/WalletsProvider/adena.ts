@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 
-import { useSelectedNetworkInfo } from "./../../hooks/useSelectedNetwork";
 import { Wallet } from "./wallet";
+import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import { NetworkKind, getUserId } from "../../networks";
+import { gnoTestnetNetwork } from "../../networks/gno-testnet";
 import {
   selectIsAdenaConnected,
   setIsAdenaConnected,
@@ -19,8 +20,8 @@ export type UseAdenaResult =
 export const useAdena: () => UseAdenaResult = () => {
   const isAdenaConnected = useSelector(selectIsAdenaConnected);
   const [hasAdena, setHasAdena] = useState(false);
-  const selectedNetworkInfo = useSelectedNetworkInfo();
   const dispatch = useAppDispatch();
+  const selectedNetworkInfo = useSelectedNetworkInfo();
 
   const [addresses, setAddresses] = useState<string[]>([]);
   const [ready, setReady] = useState(false);
@@ -52,10 +53,10 @@ export const useAdena: () => UseAdenaResult = () => {
           console.error("no adena");
           return;
         }
-        if (selectedNetworkInfo?.kind !== NetworkKind.Gno) {
-          return;
-        }
         const account = await adena.GetAccount();
+        if (!account.data.address) {
+          throw new Error("no address");
+        }
         setAddresses([account.data.address]);
       } catch (err) {
         console.warn("failed to connect to adena", err);
@@ -65,13 +66,10 @@ export const useAdena: () => UseAdenaResult = () => {
       setReady(true);
     };
     effect();
-  }, [hasAdena, isAdenaConnected, dispatch, selectedNetworkInfo]);
+  }, [dispatch, hasAdena, isAdenaConnected]);
 
   const wallets = useMemo(() => {
-    let networkId = "";
-    if (selectedNetworkInfo?.kind === NetworkKind.Gno) {
-      networkId = selectedNetworkInfo.id;
-    }
+    const networkId = gnoTestnetNetwork.id;
 
     if (addresses.length === 0) {
       const wallet: Wallet = {
@@ -81,36 +79,32 @@ export const useAdena: () => UseAdenaResult = () => {
         networkId,
         userId: "",
         connected: false,
-        id: `gno`,
+        id: `adena`,
       };
       return [wallet];
     }
     const wallets = addresses.map((address, index) => {
-      let userId = "";
-      if (selectedNetworkInfo?.kind === NetworkKind.Gno) {
-        userId = getUserId(networkId, address);
-      }
-
       const wallet: Wallet = {
         address,
         provider: WalletProvider.Adena,
         networkKind: NetworkKind.Gno,
         networkId,
-        userId,
+        userId: getUserId(networkId, address),
         connected: true,
-        id: `gno-${address}`,
+        id: `adena-${address}`,
       };
-      console.log("gno", index, wallet);
       return wallet;
     });
 
+    return wallets;
+  }, [addresses]);
+
+  useEffect(() => {
     const selectedWallet = wallets.find((w) => w.connected);
     if (selectedWallet && selectedNetworkInfo?.kind === NetworkKind.Gno) {
       dispatch(setSelectedWalletId(selectedWallet.id));
     }
-
-    return wallets;
-  }, [addresses, dispatch, selectedNetworkInfo]);
+  }, [dispatch, selectedNetworkInfo?.kind, wallets]);
 
   return hasAdena ? [true, ready, wallets] : [false, ready, undefined];
 };

@@ -6,7 +6,6 @@ import { ConnectAdenaButton } from "./ConnectAdenaButton";
 import { ConnectKeplrButton } from "./ConnectKeplrButton";
 import { ConnectMetamaskButton } from "./ConnectMetamaskButton";
 import { ConnectWalletButton } from "./components/ConnectWalletButton";
-import adenaSVG from "../../../assets/icons/adena.svg";
 import walletConnectSVG from "../../../assets/icons/wallet-connect.svg";
 import { neutral77, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
@@ -49,13 +48,6 @@ export const ConnectWalletModal: React.FC<ConnectWalletProps> = ({
       <ConnectKeplrButton onDone={onClose} />
       <SpacerColumn size={1.5} />
       <ConnectAdenaButton onDone={onClose} />
-      <SpacerColumn size={1.5} />
-      <ConnectWalletButton
-        text="Adena Wallet"
-        isComingSoon
-        icon={adenaSVG}
-        iconSize={20}
-      />
       <SpacerColumn size={1.5} />
       <ConnectWalletButton
         text="Wallet Connect"
