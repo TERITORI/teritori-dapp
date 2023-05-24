@@ -16,6 +16,7 @@ import List from "../../../assets/music-player/list.svg";
 import Remove from "../../../assets/music-player/remove.svg";
 import Upload from "../../../assets/music-player/upload.svg";
 import { signingMusicPlayerClient } from "../../client-creators/musicplayerClient";
+import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useUpdateAvailableFreePost } from "../../hooks/musicplayer/useUpdateAvailableFreePost";
 import { useUpdatePostFee } from "../../hooks/musicplayer/useUpdatePostFee";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
@@ -41,7 +42,6 @@ import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { PrimaryButton } from "../buttons/PrimaryButton";
 import ModalBase from "../modals/ModalBase";
-
 interface AlbumInfo {
   name: string;
   description: string;
@@ -58,6 +58,7 @@ export const UploadAlbumModal: React.FC<UploadAlbumModalProps> = ({
   onClose,
   isVisible,
 }) => {
+  const { setToastError, setToastSuccess } = useFeedbacks();
   const selectedNetworkId = useSelectedNetworkId();
   const wallet = useSelectedWallet();
   const { postFee } = useUpdatePostFee(
@@ -101,16 +102,30 @@ export const UploadAlbumModal: React.FC<UploadAlbumModalProps> = ({
 
     // console.log(metadata);
 
-    await client.createMusicAlbum(
-      {
-        category: MusicAlbumCategory.Normal,
-        metadata: JSON.stringify(metadata),
-        identifier: uuidv4(),
-      },
-      defaultSocialFeedFee,
-      "",
-      freePostCount || !postFee ? undefined : [coin(postFee, "utori")]
-    );
+    try {
+      const res = await client.createMusicAlbum(
+        {
+          category: MusicAlbumCategory.Normal,
+          metadata: JSON.stringify(metadata),
+          identifier: uuidv4(),
+        },
+        defaultSocialFeedFee,
+        "",
+        freePostCount || !postFee ? undefined : [coin(postFee, "utori")]
+      );
+
+      if (res.transactionHash) {
+        setToastSuccess({
+          title: "Uploaded album successfully",
+          message: `tx_hash: ${res.transactionHash}`,
+        });
+      }
+    } catch (err) {
+      setToastError({
+        title: "Failed to upload album",
+        message: `Error: ${err}`,
+      });
+    }
     setStep(0);
     onClose();
   };

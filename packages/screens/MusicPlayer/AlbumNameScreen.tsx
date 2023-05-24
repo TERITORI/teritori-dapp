@@ -19,7 +19,7 @@ import { useMusicplayer } from "../../context/MusicplayerProvider";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { mustGetMusicplayerClient } from "../../utils/backend";
 import { ipfsPinataUrl } from "../../utils/ipfs";
-import { ScreenFC } from "../../utils/navigation";
+import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { neutral77, neutral17, primaryColor } from "../../utils/style/colors";
 import {
   fontSemibold14,
@@ -35,6 +35,7 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = ({
     params: { id },
   },
 }) => {
+  const navigation = useAppNavigation();
   const selectedNetworkId = useSelectedNetworkId();
   const [albumInfo, setAlbumInfo] = useState<AlbumInfo>({
     id: "0",
@@ -284,7 +285,11 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = ({
       fullWidth
     >
       <View style={styles.pageConatiner}>
-        <MusicPlayerTab setTab={() => {}} />
+        <MusicPlayerTab
+          setTab={() => {
+            navigation.navigate("MusicPlayer");
+          }}
+        />
 
         <View style={styles.albumBox}>
           <View style={styles.infoBox}>

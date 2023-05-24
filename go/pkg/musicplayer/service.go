@@ -36,7 +36,7 @@ func (s *MusicplayerService) GetAlbumList(ctx context.Context, req *musicplayerp
 func (s *MusicplayerService) GetAlbum(ctx context.Context, req *musicplayerpb.GetAlbumRequest) (*musicplayerpb.GetAlbumResponse, error) {
 	id := req.GetIdentifier()
 	var album indexerdb.MusicAlbum
-	if result := s.conf.IndexerDB.First(&album, id); result.Error != nil {
+	if result := s.conf.IndexerDB.First(&album, "identifier = ?", id); result.Error != nil {
 		return nil, errors.New("failed to fetch album")
 	}
 	metadata, err := json.Marshal(album.Metadata)
