@@ -8,11 +8,14 @@ import {
   TextInput,
 } from "react-native";
 
+import AudioCallScreen from "./AudioCall";
 import Calendars from "./Calendar";
+import VideoCallScreen from "./VideoCall";
 import audiocell from "../../../../assets/icons/audiocell.svg";
 import avatar from "../../../../assets/icons/avatar.svg";
 import calender from "../../../../assets/icons/calendar.svg";
 import close from "../../../../assets/icons/close.svg";
+import dots from "../../../../assets/icons/dots.svg";
 import search from "../../../../assets/icons/search.svg";
 import searchSVG from "../../../../assets/icons/search.svg";
 import videocall from "../../../../assets/icons/videocall.svg";
@@ -38,6 +41,9 @@ import {
 const ChatHeader = ({ messages }: any) => {
   const [showTextInput, setShowTextInput] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
+  const [audioCall, setAudioCall] = useState(false);
+  const [videoCall, setVideoCall] = useState(false);
+
   const [searchInput, setSearchInput] = useState("");
   const [filterMessageData, setFilterMessageData] = useState<any[]>([]);
   const handleSearchIconPress = () => {
@@ -61,6 +67,14 @@ const ChatHeader = ({ messages }: any) => {
     setFilterMessageData(null);
   };
   const dataLength = filterMessageData?.length;
+  const handleAudio = () => {
+    setAudioCall(true);
+    setVideoCall(false);
+  };
+  const handleVideo = () => {
+    setVideoCall(true);
+    setAudioCall(false);
+  };
   return (
     <>
       <View style={styles.container}>
@@ -145,9 +159,13 @@ const ChatHeader = ({ messages }: any) => {
           ) : (
             <View>
               <FlexRow>
-                <SVG source={videocall} />
+                <TouchableOpacity onPress={handleVideo}>
+                  <SVG source={videocall} />
+                </TouchableOpacity>
                 <SpacerRow size={2} />
-                <SVG source={audiocell} />
+                <TouchableOpacity onPress={handleAudio}>
+                  <SVG source={audiocell} />
+                </TouchableOpacity>
                 <SpacerRow size={4} />
                 <TouchableOpacity onPress={handleSearchIconPress}>
                   <SVG
@@ -155,18 +173,17 @@ const ChatHeader = ({ messages }: any) => {
                     style={{
                       height: 20,
                       width: 20,
-                      marginTop: 10,
                     }}
                   />
                 </TouchableOpacity>
                 <SpacerRow size={1} />
-
-                <BrandText style={{ color: secondaryColor }}>...</BrandText>
+                <SVG source={dots} />
 
                 <SpacerRow size={1} />
               </FlexRow>
             </View>
           )}
+
           {showTextInput && (
             <TouchableOpacity onPress={handleCancelPress}>
               <SVG source={close} style={{ marginTop: 6 }} />
@@ -179,13 +196,40 @@ const ChatHeader = ({ messages }: any) => {
             style={{
               position: "absolute",
               right: 0,
-              top: ["android", "ios"].includes(Platform.OS) ? 46.8 : 53.5,
+              top: 46.8,
             }}
           >
             <Calendars />
           </View>
         )}
       </View>
+      {videoCall && (
+        <View
+          style={{
+            position: "absolute",
+            backgroundColor: neutral17,
+            padding: 12,
+            width: "100%",
+
+            top: 46.8,
+          }}
+        >
+          <VideoCallScreen videoCall={videoCall} setVideoCall={setVideoCall} />
+        </View>
+      )}
+      {audioCall && (
+        <View
+          style={{
+            position: "absolute",
+            backgroundColor: neutral17,
+            padding: 10,
+            width: "100%",
+          }}
+        >
+          <AudioCallScreen audioCall={audioCall} setAudioCall={setAudioCall} />
+        </View>
+      )}
+
       <View style={styles.filterMessageWrapper}>
         {filterMessageData?.map((message: any, index) => {
           return (
@@ -281,7 +325,7 @@ const styles = StyleSheet.create({
     position: "absolute",
 
     right: 0,
-    top: ["android", "ios"].includes(Platform.OS) ? 46.8 : 53.5,
+    top: 46.8,
     zIndex: 11,
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10,
