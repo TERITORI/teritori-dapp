@@ -15,6 +15,7 @@ export const DEFAULT_NAME = "Anon";
 export const DEFAULT_USERNAME = "anonymous";
 export const SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT = 2500;
 export const NB_ROWS_SHOWN_IN_PREVIEW = 5;
+export const ARTICLE_COVER_IMAGE_HEIGHT = 240;
 
 export const getUpdatedReactions = (reactions: Reaction[], icon: string) => {
   const hasIcon = reactions.find((r) => r.icon === icon);
