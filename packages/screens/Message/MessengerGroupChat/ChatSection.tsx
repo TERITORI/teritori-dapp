@@ -58,7 +58,7 @@ const ChatSection = () => {
       </View>
       <Separator color={neutral33} />
 
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         {messages.map((msg, index) => (
           <ChatMessage
             key={index}
@@ -86,29 +86,31 @@ const ChatSection = () => {
         newMessage={newMessage}
         setNewMessage={setNewMessage}
       />
-
-      <TextInputCustom
-        labelStyle={{ marginTop: -10 }}
-        containerStyle={{
-          marginHorizontal: layout.padding_x0_5,
-        }}
-        name="message"
-        placeHolder="Add a Message"
-        value={newMessage}
-        onChangeText={setNewMessage}
-        iconActions={
-          <TouchableOpacity onPress={() => setShowAttachmentModal(true)}>
-            <SVG source={plus} style={{ marginRight: 10 }} />
+      <View>
+        <TextInputCustom
+          labelStyle={{ marginTop: -10 }}
+          containerStyle={{
+            marginHorizontal: layout.padding_x0_5,
+          }}
+          name="message"
+          placeHolder="Add a Message"
+          value={newMessage}
+          onChangeText={setNewMessage}
+          iconActions={
+            <TouchableOpacity onPress={() => setShowAttachmentModal(true)}>
+              <SVG source={plus} style={{ marginRight: 10 }} />
+            </TouchableOpacity>
+          }
+          label=""
+        >
+          <TouchableOpacity onPress={handleSend}>
+            <SVG source={sent} />
           </TouchableOpacity>
-        }
-        label=""
-      >
-        <TouchableOpacity onPress={handleSend}>
-          <SVG source={sent} />
-        </TouchableOpacity>
-      </TextInputCustom>
+        </TextInputCustom>
+      </View>
     </>
   );
+
   if (Platform.OS === "web") {
     return renderContent();
   }

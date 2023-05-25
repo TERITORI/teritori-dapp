@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  Platform,
+} from "react-native";
 
 import avatar from "../../../../assets/icons/avatar.svg";
 import copy from "../../../../assets/icons/copy.svg";
@@ -18,6 +24,7 @@ import ModalBase from "../../../components/modals/ModalBase";
 import { SearchInput } from "../../../components/sorts/SearchInput";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import {
+  neutral00,
   neutral17,
   neutral33,
   neutral77,
@@ -40,13 +47,13 @@ const ShareScreen = ({ setShowTertiaryBox }) => {
       hideMainSeparator
       width={457}
       closeButtonStyle={{ height: 300 }}
-      containerStyle={{ height: 500 }}
+      // containerStyle={{ height: 300 }}
     >
       <SeparatorGradient />
 
       <SpacerColumn size={2} />
 
-      <FlexRow style={{ width: "100%" }}>
+      {/* <FlexRow style={{ width: "100%" }}>
         <SVG source={avatar} height={40} width={40} style={{ width: "20%" }} />
         <SpacerRow size={1} />
         <TextInputCustom
@@ -66,12 +73,36 @@ const ShareScreen = ({ setShowTertiaryBox }) => {
           placeholderTextColor={neutral77}
           squaresBackgroundColor={neutral17}
         />
+      </FlexRow> */}
+      <FlexRow justifyContent="space-between">
+        <SVG source={avatar} />
+
+        <SpacerRow size={1} />
+
+        <TextInputCustom
+          name="Groupname"
+          label="Group name"
+          placeHolder="Group name"
+          // style={{ width: "95%" }}
+          // // onChangeText={setName}
+          // // value={name || ""}
+          // textInputStyle={{ width: 20 }}
+          boxMainContainerStyle={{
+            paddingVertical: 2,
+          }}
+          // variant="regular"
+          rules={{ required: true }}
+          placeholderTextColor={neutral77}
+          squaresBackgroundColor={neutral00}
+          fullWidth
+          width={Platform.OS == "web" ? 370 : 305}
+        />
       </FlexRow>
 
       <SpacerColumn size={2} />
       <TouchableOpacity onPress={() => setShowTertiaryBox(false)}>
         <TertiaryBox
-          height={50}
+          height={40}
           mainContainerStyle={{
             backgroundColor: "#16BBFF",
           }}
@@ -85,28 +116,33 @@ const ShareScreen = ({ setShowTertiaryBox }) => {
       <SpacerColumn size={2} />
       <Separator />
       <SpacerColumn size={2} />
-      <TextInputCustomBorder
+      {/* <TextInputCustomBorder
         placeHolder="Search..."
         style={{ backgroundColor: "#000" }}
         value={searchQuery}
         onChangeText={setSearchQuery}
-      />
+      /> */}
+      <SearchInput borderRadius={12} handleChangeText={setSearchQuery} />
       <SpacerColumn size={2} />
+      <View style={{ maxHeight: 200 }}>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          {filteredData.length > 0 ? (
+            filteredData.map((item) => (
+              <ScreenShare
+                key={item.id}
+                avatar={item.avatar}
+                name={item.name}
+              />
+            ))
+          ) : (
+            <>
+              <SpacerColumn size={12} />
 
-      <ScrollView>
-        {filteredData.length > 0 ? (
-          filteredData.map((item) => (
-            <ScreenShare key={item.id} avatar={item.avatar} name={item.name} />
-          ))
-        ) : (
-          <>
-            <SpacerColumn size={12} />
-
-            <SVG source={nullIcon} style={{ alignSelf: "center" }} />
-          </>
-        )}
-      </ScrollView>
-
+              <SVG source={nullIcon} style={{ alignSelf: "center" }} />
+            </>
+          )}
+        </ScrollView>
+      </View>
       <Separator color={neutral33} />
       <SpacerColumn size={2} />
 
@@ -127,7 +163,7 @@ const ShareScreen = ({ setShowTertiaryBox }) => {
         variant="regular"
         rules={{ required: true }}
         placeholderTextColor={neutral77}
-        squaresBackgroundColor={neutral17}
+        squaresBackgroundColor={neutral00}
         iconActions={copy}
       />
       <SpacerColumn size={2} />

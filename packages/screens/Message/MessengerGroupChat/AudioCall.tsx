@@ -25,11 +25,7 @@ interface AudioCallScreenProps {
   setAudioCall: (value: boolean) => void;
   audioCall: boolean;
 }
-const AudioCallScreen: React.FC<AudioCallScreenProps> = ({
-  audioCall,
-  setAudioCall,
-}) => {
-  const [screenShare, setScreenShare] = useState(false);
+const AudioCallScreen: React.FC<AudioCallScreenProps> = ({ setAudioCall }) => {
   const [showTertiaryBox, setShowTertiaryBox] = useState(false);
   return (
     <View>
@@ -81,11 +77,13 @@ const AudioCallScreen: React.FC<AudioCallScreenProps> = ({
 
       <View style={styles.container}>
         <View>
-          <FlexRow style={styles.iconRow}>
-            <SVG source={audioperson} />
-            <SpacerRow size={2} />
-            <SVG source={audiopersonsecond} />
-          </FlexRow>
+          <View style={styles.iconRow}>
+            <FlexRow>
+              <SVG source={audioperson} />
+              <SpacerRow size={2} />
+              <SVG source={audiopersonsecond} />
+            </FlexRow>
+          </View>
           <SpacerColumn size={1} />
           <FlexRow style={styles.iconRow}>
             <TouchableOpacity>
@@ -110,7 +108,6 @@ const AudioCallScreen: React.FC<AudioCallScreenProps> = ({
       <Modal visible={showTertiaryBox} animationType="none" transparent>
         <View
           style={{
-            flex: 1,
             justifyContent: "center",
             alignItems: "center",
             backgroundColor: "rgba(0, 0, 0, 0.0)",
