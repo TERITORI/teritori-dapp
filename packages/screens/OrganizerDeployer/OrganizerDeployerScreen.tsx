@@ -37,7 +37,12 @@ export const ORGANIZER_DEPLOYER_STEPS = [
 ];
 
 export const LAUNCHING_PROCESS_STEPS: LaunchingProcessStepType[] = [
+  { title: "Book name", completeText: "Transaction finalized" },
   { title: "Create organization", completeText: "Transaction finalized" },
+  {
+    title: "Transfer name to organization",
+    completeText: "Transaction finalized",
+  },
 ];
 
 export const OrganizerDeployerScreen = () => {
@@ -126,9 +131,9 @@ export const OrganizerDeployerScreen = () => {
         );
       } else if (step1DaoInfoFormData.structure === DaoType.MEMBER_BASED) {
         if (!step3MemberSettingFormData) return false;
-        createDaoRes = await createDaoMemberBased(
+        const { daoAddress, executeResult } = await createDaoMemberBased(
           {
-            client: signingClient,
+            networkId,
             sender: walletAddress,
             contractAddress: daoFactoryContractAddress,
             daoCoreCodeId: network.daoCoreCodeId!,
@@ -153,17 +158,11 @@ export const OrganizerDeployerScreen = () => {
               step2ConfigureVotingFormData.hours,
               step2ConfigureVotingFormData.minutes
             ),
+            onStepChange: setLaunchingStep,
           },
           "auto"
         );
-
-        const daoAddress = createDaoRes.logs
-          .find((l) => l.events.find((e) => e.type === "instantiate"))
-          ?.events.find((e) => e.type === "instantiate")
-          ?.attributes.find((a) => a.key === "_contract_address")?.value;
-        if (!daoAddress) {
-          throw new Error("No address in transaction results");
-        }
+        createDaoRes = executeResult;
         setDAOAddress(daoAddress);
       } else {
         return false;
@@ -213,13 +212,9 @@ export const OrganizerDeployerScreen = () => {
 
   const onStartLaunchingProcess = async () => {
     setCurrentStep(4);
-
-    setLaunchingStep(0);
     if (!(await createDaoContract())) {
       setCurrentStep(3);
-      return;
     }
-    setLaunchingStep(1);
   };
 
   // returns

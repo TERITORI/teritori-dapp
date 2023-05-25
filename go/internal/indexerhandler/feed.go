@@ -6,7 +6,9 @@ import (
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
+	"github.com/davecgh/go-spew/spew"
 	"github.com/pkg/errors"
+	"go.uber.org/zap"
 )
 
 type Reaction struct {
@@ -145,6 +147,11 @@ func (h *Handler) handleExecuteCreatePostByBot(e *Message, execMsg *wasmtypes.Ms
 }
 
 func (h *Handler) handleExecuteCreatePost(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
+	if execMsg.Contract != h.config.Network.SocialFeedContractAddress {
+		h.logger.Debug("ignored create post for unknown contract", zap.String("tx", e.TxHash), zap.String("contract", execMsg.Contract))
+		return nil
+	}
+
 	var execCreatePostMsg ExecCreatePostMsg
 	if err := json.Unmarshal(execMsg.Msg, &execCreatePostMsg); err != nil {
 		return errors.Wrap(err, "failed to unmarshal execute create post msg")
@@ -179,6 +186,7 @@ func (h *Handler) createPost(
 		CreatedAt:            createdAt.Unix(),
 		IsBot:                isBot,
 	}
+	spew.Dump(post)
 
 	if err := h.db.Create(&post).Error; err != nil {
 		return errors.Wrap(err, "failed to create post")

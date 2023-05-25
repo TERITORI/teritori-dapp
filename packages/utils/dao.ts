@@ -8,10 +8,12 @@ import { DaoCoreQueryClient } from "../contracts-clients/dao-core/DaoCore.client
 import { DaoPreProposeSingleClient } from "../contracts-clients/dao-pre-propose-single/DaoPreProposeSingle.client";
 import { ProposeMessage } from "../contracts-clients/dao-pre-propose-single/DaoPreProposeSingle.types";
 import { DaoProposalSingleQueryClient } from "../contracts-clients/dao-proposal-single/DaoProposalSingle.client";
+import { TeritoriNameServiceClient } from "../contracts-clients/teritori-name-service/TeritoriNameService.client";
 import {
   mustGetCosmosNetwork,
   mustGetNonSigningCosmWasmClient,
   getKeplrSigningCosmWasmClient,
+  getStakingCurrency,
 } from "../networks";
 
 export interface TokenHolder {
@@ -172,8 +174,8 @@ export const createDaoTokenBased = async (
 
 export const createDaoMemberBased = async (
   {
-    client,
     sender,
+    networkId,
     contractAddress,
     daoCoreCodeId,
     daoPreProposeSingleCodeId,
@@ -188,8 +190,9 @@ export const createDaoMemberBased = async (
     quorum,
     threshold,
     maxVotingPeriod,
+    onStepChange,
   }: {
-    client: SigningCosmWasmClient;
+    networkId: string;
     sender: string;
     contractAddress: string;
     daoCoreCodeId: number;
@@ -205,11 +208,14 @@ export const createDaoMemberBased = async (
     quorum: string;
     maxVotingPeriod: number;
     threshold: string;
+    onStepChange?: (step: number) => Promise<void> | void;
   },
   fee: number | StdFee | "auto" = "auto",
   memo?: string,
   funds?: Coin[]
-): Promise<ExecuteResult> => {
+) => {
+  await onStepChange?.(0);
+
   const dao_pre_propose_single_msg = {
     deposit_info: null,
     extension: {},
@@ -282,7 +288,41 @@ export const createDaoMemberBased = async (
     JSON.stringify(dao_core_instantiate_msg)
   ).toString("base64");
 
-  return await client.execute(
+  const network = mustGetCosmosNetwork(networkId);
+
+  if (!network.nameServiceContractAddress) {
+    throw new Error("no name service contract address");
+  }
+
+  const client = await getKeplrSigningCosmWasmClient(networkId);
+
+  const nameServiceClient = new TeritoriNameServiceClient(
+    client,
+    sender,
+    network.nameServiceContractAddress
+  );
+  const amount = await nameServiceClient.mintPrice({
+    tokenId: dao_core_instantiate_msg.tns,
+  });
+  const denom = getStakingCurrency(networkId)?.denom;
+  await nameServiceClient.mint(
+    {
+      owner: sender,
+      tokenId: dao_core_instantiate_msg.tns,
+      extension: {
+        public_name: dao_core_instantiate_msg.name,
+        image: dao_core_instantiate_msg.image_url,
+        public_bio: dao_core_instantiate_msg.description,
+      },
+    },
+    "auto",
+    undefined,
+    amount && denom ? [{ denom, amount }] : []
+  );
+
+  await onStepChange?.(1);
+
+  const executeResult = await client.execute(
     sender,
     contractAddress,
     {
@@ -296,6 +336,24 @@ export const createDaoMemberBased = async (
     memo,
     funds
   );
+  const daoAddress = executeResult.logs
+    .find((l) => l.events.find((e) => e.type === "instantiate"))
+    ?.events.find((e) => e.type === "instantiate")
+    ?.attributes.find((a) => a.key === "_contract_address")?.value;
+  if (!daoAddress) {
+    throw new Error("No DAO address in transaction results");
+  }
+
+  await onStepChange?.(2);
+
+  await nameServiceClient.transferNft({
+    recipient: daoAddress,
+    tokenId: dao_core_instantiate_msg.tns,
+  });
+
+  await onStepChange?.(3);
+
+  return { daoAddress, executeResult };
 };
 
 export const makeProposal = async (
@@ -331,7 +389,9 @@ export const makeProposal = async (
   if (!("module" in proposalCreationPolicy)) {
     throw new Error("proposal creation policy is not module");
   }
+
   const signingClient = await getKeplrSigningCosmWasmClient(network.id);
+
   const preProposeClient = new DaoPreProposeSingleClient(
     signingClient,
     sender,
@@ -342,5 +402,6 @@ export const makeProposal = async (
       propose: proposal,
     },
   });
+
   return res;
 };

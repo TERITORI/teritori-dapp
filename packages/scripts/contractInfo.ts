@@ -1,15 +1,22 @@
+import { program } from "commander";
+
 import { mustGetNonSigningCosmWasmClient } from "../networks";
 
-const networkId = "teritori-testnet";
-const contractAddr =
-  "tori1f68mefk7hdmq0eux26sypegfdq3xamnps8ujnc4xd4juwfjscnus5aelck";
-
 const main = async () => {
-  const client = await mustGetNonSigningCosmWasmClient(networkId);
-  const contract = await client.getContract(contractAddr);
+  program
+    .option("-n, --network <string>", "teritori")
+    .option("-c, --contract <string>");
+  program.parse();
+  // FIXME: use typesafe commander
+
+  console.log(program.opts());
+
+  const options = program.opts();
+  const client = await mustGetNonSigningCosmWasmClient(options.network);
+  const contract = await client.getContract(options.contract);
   console.log(contract);
   try {
-    const { info } = await client.queryContractSmart(contractAddr, {
+    const { info } = await client.queryContractSmart(options.contract, {
       info: {},
     });
     console.log(info);
