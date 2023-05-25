@@ -9,10 +9,10 @@ import {
 import { PostsRequest } from "../../api/feed/v1/feed";
 import { BrandText } from "../../components/BrandText";
 import { NotFound } from "../../components/NotFound";
+import { Quests } from "../../components/Quests";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
 import { UPPNFTs } from "../../components/userPublicProfile/UPPNFTs";
-import { UPPQuests } from "../../components/userPublicProfile/UPPSucceedQuests";
 import { useIsDAO } from "../../hooks/cosmwasm/useCosmWasmContractInfo";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
@@ -88,7 +88,9 @@ const SelectedTabContent: React.FC<{
             />
           )}
           additionalMention={
-            selectedWallet?.address !== userAddress
+            isDAO
+              ? undefined
+              : selectedWallet?.address !== userAddress
               ? userInfo?.metadata.tokenId || userAddress
               : undefined
           }
@@ -98,7 +100,6 @@ const SelectedTabContent: React.FC<{
     case "mentionsPosts":
       return (
         <NewsFeed
-          daoAddress={isDAO ? userAddress : undefined}
           Header={() => (
             <UserPublicProfileScreenHeader
               userId={userId}
@@ -119,7 +120,7 @@ const SelectedTabContent: React.FC<{
     // case "activity":
     //   return <UPPActivity />;
     case "quests":
-      return <UPPQuests userId={userId} />;
+      return <Quests userId={userId} />;
     // case "pathwar":
     //   return <UPPPathwarChallenges />;
     // case "gig":
@@ -129,7 +130,7 @@ const SelectedTabContent: React.FC<{
     case "proposals":
       return <DaoProposalList daoAddress={userAddress} />;
     case "funds":
-      return <Assets userId={userId} />;
+      return <Assets userId={userId} readOnly />;
     case "daos":
       return (
         <DAOList networkId={network?.id} req={{ memberAddress: userAddress }} />

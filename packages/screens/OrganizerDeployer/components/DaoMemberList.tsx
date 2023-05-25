@@ -1,6 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import {
+  StyleProp,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+} from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
 import { CopyToClipboard } from "../../../components/CopyToClipboard";
@@ -22,7 +28,8 @@ import { fontSemibold14 } from "../../../utils/style/fonts";
 export const DaoMemberList: React.FC<{
   networkId: string | undefined;
   daoAddr: string;
-}> = ({ networkId, daoAddr }) => {
+  style?: StyleProp<ViewStyle>;
+}> = ({ networkId, daoAddr, style }) => {
   const { data: members } = useQuery(
     ["daoMembers", networkId, daoAddr],
     async () => {
@@ -46,7 +53,7 @@ export const DaoMemberList: React.FC<{
     return null;
   }
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, style]}>
       <BrandText style={[fontSemibold14, { paddingLeft: 10 }]}>
         {members.length} members
       </BrandText>
@@ -145,10 +152,7 @@ const MemberView: React.FC<{
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 10,
     flexDirection: "column",
-    borderTopWidth: 1,
-    borderColor: neutral33,
   },
   memberItem: {
     flexDirection: "column",

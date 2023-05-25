@@ -84,8 +84,6 @@ export const UserPublicProfileScreenHeader = ({
     return { ...o, [key]: item };
   }, {} as { [key in keyof typeof screenTabItems]: { name: string } });
 
-  console.log("items", items);
-
   return (
     <>
       <UPPIntro
@@ -99,7 +97,7 @@ export const UserPublicProfileScreenHeader = ({
         style={{
           width,
           marginTop: 32,
-          marginBottom: layout.padding_x2_5 / 2,
+          marginBottom: layout.padding_x4,
           height: 45,
         }}
         borderColorTabSelected={primaryColor}

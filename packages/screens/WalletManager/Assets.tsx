@@ -18,7 +18,8 @@ const collapsedCount = 5;
 export const Assets: React.FC<{
   userId: string | undefined;
   style?: StyleProp<ViewStyle>;
-}> = ({ userId, style }) => {
+  readOnly?: boolean;
+}> = ({ userId, style, readOnly }) => {
   const [isDepositVisible, setDepositVisible] = useState(false);
   const [isWithdrawVisible, setWithdrawVisible] = useState(false);
   const [targetCurrency, setTargetCurrency] = useState<string>();
@@ -63,17 +64,7 @@ export const Assets: React.FC<{
   }
 
   return (
-    <View
-      style={[
-        {
-          marginTop: 40,
-          paddingTop: 40,
-          borderTopWidth: 1,
-          borderColor: neutral33,
-        },
-        style,
-      ]}
-    >
+    <View style={style}>
       <View
         style={{
           flexDirection: "row",
@@ -188,7 +179,7 @@ export const Assets: React.FC<{
                 alignItems: "center",
               }}
             >
-              {currency.kind === "ibc" && (
+              {!readOnly && currency.kind === "ibc" && (
                 <>
                   {currency.deprecated || (
                     <SecondaryButton

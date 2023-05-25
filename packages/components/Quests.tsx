@@ -37,7 +37,14 @@ export const Quests: React.FC<{
   };
 
   return (
-    <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+    <View
+      style={{
+        flexDirection: "row",
+        flexWrap: "wrap",
+        marginTop: -20,
+        marginRight: -16,
+      }}
+    >
       {quests.map((quest) => (
         <QuestCard
           key={quest.id}

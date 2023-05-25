@@ -707,7 +707,13 @@ export const NewsFeedInput = React.forwardRef<
                 isLoading={isLoading || isMutateLoading}
                 loader
                 size="M"
-                text={type === "comment" ? "Comment" : "Publish"}
+                text={
+                  daoAddress
+                    ? "Propose"
+                    : type === "comment"
+                    ? "Comment"
+                    : "Publish"
+                }
                 squaresBackgroundColor={neutral17}
                 onPress={handleSubmit(processSubmit)}
               />
