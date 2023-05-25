@@ -22,6 +22,8 @@ import { useAppNavigation } from "../../utils/navigation";
 import { layout } from "../../utils/style/layout";
 export const MessageScreen: ScreenFC<"Message"> = () => {
   const [showTertiaryBox, setShowTertiaryBox] = useState(false);
+  const [showAddFriend, setShowAddFriend] = useState(false);
+  console.log("ShowAddFriend", showAddFriend);
   const navigation = useAppNavigation();
   return (
     <ScreenContainer
@@ -40,10 +42,16 @@ export const MessageScreen: ScreenFC<"Message"> = () => {
                 <TouchableOpacity
                   key={index}
                   onPress={() => {
-                    if (item.id === 2) {
+                    if (item.id === 1) {
+                      ["android", "ios"].includes(Platform.OS)
+                        ? navigation.navigate("ChatSection")
+                        : setShowAddFriend(false);
+                    } else if (item.id === 2) {
                       setShowTertiaryBox(true);
                     } else if (item.id === 3) {
-                      navigation.navigate("FriendshipManager");
+                      ["android", "ios"].includes(Platform.OS)
+                        ? navigation.navigate("FriendshipManager")
+                        : setShowAddFriend(true);
                     } else {
                       setShowTertiaryBox(false);
                     }
@@ -62,6 +70,7 @@ export const MessageScreen: ScreenFC<"Message"> = () => {
           </ScrollView>
         </FlexRow>
         <SpacerColumn size={3} />
+
         <Modal visible={showTertiaryBox} animationType="none" transparent>
           <View
             style={{
@@ -74,7 +83,11 @@ export const MessageScreen: ScreenFC<"Message"> = () => {
           </View>
         </Modal>
 
-        <Separator horizontal={false} />
+        <Separator
+          horizontal={false}
+          style={{ width: 9000, marginLeft: -500 }}
+        />
+
         {["android", "ios"].includes(Platform.OS) ? (
           <SideBarChats />
         ) : (
@@ -82,11 +95,9 @@ export const MessageScreen: ScreenFC<"Message"> = () => {
             <SideBarChats />
             <SpacerRow size={2} />
             <Separator horizontal />
-            {/* <SpacerRow size={2} /> */}
 
             <View style={{ flex: 1 }}>
-              {/* <FriendshipManager /> */}
-              <MessengerGroupChat />
+              {showAddFriend ? <FriendshipManager /> : <MessengerGroupChat />}
             </View>
           </View>
         )}

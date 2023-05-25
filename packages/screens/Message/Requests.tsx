@@ -15,7 +15,7 @@ const Requests = ({ items }) => {
     item.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
   return (
-    <View style={{ flex: 1, backgroundColor: "#000" }}>
+    <View>
       {/* FIXME: remaining in web */}
       {/* <Separator horizontal={false} />
       <SpacerColumn size={1} /> */}
@@ -26,7 +26,7 @@ const Requests = ({ items }) => {
         onChangeText={setSearchQuery}
       />
       <SpacerColumn size={2} />
-      <Separator horizontal={false} color={neutral33} />
+      {/* <Separator horizontal={false} color={neutral33} /> */}
       <SpacerColumn size={1} />
       {filteredItems?.length > 0 ? (
         filteredItems?.map((item) => (
