@@ -27,7 +27,7 @@ const Friends = ({ items }) => {
         onChangeText={setSearchQuery}
       />
       <SpacerColumn size={2} />
-      <Separator horizontal={false} color={neutral33} />
+      {/* <Separator horizontal={false} color={neutral33} /> */}
       <SpacerColumn size={1} />
       {filteredItems?.length > 0 ? (
         filteredItems?.map((item) => (

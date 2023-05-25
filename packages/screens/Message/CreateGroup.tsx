@@ -85,7 +85,7 @@ const CreateGroup = ({ setShowTertiaryBox }) => {
       <SearchInput borderRadius={12} />
       <SpacerColumn size={2} />
       <View style={{ maxHeight: 200 }}>
-        <ScrollView>
+        <ScrollView showsVerticalScrollIndicator={false}>
           <CheckboxGroup items={items} onChange={handleChange} />
         </ScrollView>
       </View>

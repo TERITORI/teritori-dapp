@@ -138,13 +138,14 @@ export default ChatMessage;
 const styles = StyleSheet.create({
   senderWrapper: {
     flexDirection: "row",
-    flex: 1,
+    // flex: 1,
     marginBottom: 20,
     marginTop: 25,
   },
   receiverWrapper: {
     flexDirection: "row",
     marginBottom: 8,
+    marginLeft: 10,
   },
   senderContainer: {
     backgroundColor: neutral17,

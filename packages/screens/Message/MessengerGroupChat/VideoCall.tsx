@@ -1,5 +1,5 @@
 import React from "react";
-import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
+import { View, TouchableOpacity, StyleSheet } from "react-native";
 
 import audio from "../../../../assets/chat/audiocall.svg";
 import callend from "../../../../assets/chat/callend.svg";
@@ -10,15 +10,11 @@ import videosecond from "../../../../assets/chat/videopersonsecond.svg";
 import video from "../../../../assets/icons/videocall.svg";
 import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
-import { IconBox } from "../../../components/IconBox";
 import { SVG } from "../../../components/SVG";
-import { PrimaryBox } from "../../../components/boxes/PrimaryBox";
 import { IconButton } from "../../../components/buttons/IconButton";
-import { PrimaryButtonOutline } from "../../../components/buttons/PrimaryButtonOutline";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import {
   neutral00,
-  neutral33,
   secondaryColor,
   successColor,
 } from "../../../utils/style/colors";
@@ -28,10 +24,7 @@ interface VideoCallScreenProps {
   setVideoCall: (value: boolean) => void;
   videoCall: boolean;
 }
-const VideoCallScreen: React.FC<VideoCallScreenProps> = ({
-  videoCall,
-  setVideoCall,
-}) => {
+const VideoCallScreen: React.FC<VideoCallScreenProps> = ({ setVideoCall }) => {
   return (
     <View style={styles.container}>
       <View>
@@ -112,20 +105,22 @@ const VideoCallScreen: React.FC<VideoCallScreenProps> = ({
           </View>
         </FlexRow>
         <SpacerColumn size={1} />
-        <FlexRow style={styles.iconRow}>
-          <TouchableOpacity>
-            <SVG source={videocall} />
-          </TouchableOpacity>
-          <SpacerRow size={1.5} />
+        <View style={styles.iconRow}>
+          <FlexRow>
+            <TouchableOpacity>
+              <SVG source={videocall} />
+            </TouchableOpacity>
+            <SpacerRow size={1.5} />
 
-          <TouchableOpacity>
-            <SVG source={audio} />
-          </TouchableOpacity>
-          <SpacerRow size={1.5} />
-          <TouchableOpacity onPress={() => setVideoCall(false)}>
-            <SVG source={callend} />
-          </TouchableOpacity>
-        </FlexRow>
+            <TouchableOpacity>
+              <SVG source={audio} />
+            </TouchableOpacity>
+            <SpacerRow size={1.5} />
+            <TouchableOpacity onPress={() => setVideoCall(false)}>
+              <SVG source={callend} />
+            </TouchableOpacity>
+          </FlexRow>
+        </View>
       </View>
     </View>
   );
