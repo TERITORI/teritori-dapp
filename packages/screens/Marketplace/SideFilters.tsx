@@ -55,6 +55,7 @@ import {
   neutral44,
   neutralA3,
   primaryColor,
+  purpleDark,
   secondaryColor,
   yellowDefault,
 } from "../../utils/style/colors";
@@ -233,6 +234,22 @@ const FilterItems: React.FC<{
     }
   };
   const rareRatio = (attribute.counta * 100) / total;
+  const resolveColor = (type: "backgroundColor" | "color") => {
+    switch (type) {
+      case "backgroundColor":
+        return rareRatio > 5
+          ? "rgba(22, 187, 255, 0.16)"
+          : rareRatio < 1
+          ? purpleDark
+          : yellowDefault;
+      case "color":
+        return rareRatio > 5
+          ? "white"
+          : rareRatio < 1
+          ? yellowDefault
+          : neutral00;
+    }
+  };
   return attribute ? (
     <View>
       <Pressable
@@ -296,13 +313,12 @@ const FilterItems: React.FC<{
           <BrandText
             style={[
               {
-                backgroundColor:
-                  rareRatio > 5 ? "rgba(22, 187, 255, 0.16)" : yellowDefault,
+                backgroundColor: resolveColor("backgroundColor"),
                 borderStyle: "solid",
                 borderWidth: 1,
                 borderRadius: 32,
                 height: 16,
-                color: rareRatio > 5 ? "white" : neutral00,
+                color: resolveColor("color"),
                 paddingTop: 2,
                 paddingRight: 6,
                 paddingBottom: 2,
@@ -491,7 +507,6 @@ export const SideFilters: React.FC<{
           console.error(e);
         },
         () => {
-          console.log("completed", allAtributes);
           if (allAtributes) {
             setAttributes(allAtributes);
           }
@@ -536,7 +551,7 @@ export const SideFilters: React.FC<{
                 attributes={item}
                 total={stats.totalSupply || -1}
                 networkId={network.id}
-                denom={stats?.floorPrice[0].denom}
+                denom={stats?.floorPrice[0]?.denom}
               />
             );
           }}

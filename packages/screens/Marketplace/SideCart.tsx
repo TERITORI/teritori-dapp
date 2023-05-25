@@ -37,6 +37,7 @@ import {
   codGrayColor,
   errorColor,
   neutral44,
+  neutral77,
   neutralA3,
   primaryColor,
 } from "../../utils/style/colors";
@@ -63,9 +64,27 @@ const Header: React.FC<{
         borderBottomColor: neutral44,
         borderWidth: 1,
         marginBottom: 10,
+        paddingBottom: 6,
       }}
     >
-      <BrandText style={fontSemibold14}>Cart {items.length}</BrandText>
+      <View
+        style={{
+          flexDirection: "row",
+        }}
+      >
+        <BrandText style={fontSemibold14}>Cart </BrandText>
+        <BrandText
+          style={[
+            fontSemibold14,
+            {
+              color: neutral77,
+            },
+          ]}
+        >
+          {items.length}
+        </BrandText>
+      </View>
+
       <BrandText
         style={[
           {
@@ -74,9 +93,9 @@ const Header: React.FC<{
             borderWidth: 1,
             borderRadius: 32,
             width: 37,
-            height: 16,
+            height: 18,
             color: errorColor,
-            paddingTop: 2,
+            paddingTop: 2.5,
             paddingRight: 6,
             paddingBottom: 2,
             paddingLeft: 6,
@@ -121,6 +140,7 @@ const CartItems: React.FC<{ id: EntityId }> = ({ id }) => {
             flexDirection: "row",
             flexWrap: "nowrap",
             alignItems: "center",
+            marginBottom: layout.padding_x0_5,
           }}
         >
           <OptimizedImage
@@ -226,7 +246,7 @@ const Footer: React.FC<{ items: any[] }> = ({ items }) => {
   const hasEnoughMoney = selectedNFTData.every((nft) => {
     const balance =
       balances.find((bal) => bal.denom === nft.denom)?.amount || "0";
-    return balance > nft.price;
+    return parseInt(balance, 10) > parseInt(nft.price, 10);
   });
 
   const cosmosMultiBuy = useCallback(
@@ -302,11 +322,14 @@ const Footer: React.FC<{ items: any[] }> = ({ items }) => {
   };
 
   const getTotal = (selectedNFTData: NFT[]) => {
-    return selectedNFTData.reduce(
-      (partialSum, nft) =>
-        partialSum +
-        Number.parseFloat(prettyPrice(nft.networkId, nft.price, nft.denom)),
+    const sum = selectedNFTData.reduce(
+      (partialSum, nft) => partialSum + Number.parseFloat(nft.price),
       0
+    );
+    return prettyPrice(
+      selectedNFTData[0].networkId,
+      sum.toString(10),
+      selectedNFTData[0].denom
     );
   };
   const grouped = groupBy(selectedNFTData, (e) => {
@@ -314,16 +337,13 @@ const Footer: React.FC<{ items: any[] }> = ({ items }) => {
   });
 
   return (
-    <View
-      style={{
-        padding: layout.padding_x1,
-      }}
-    >
+    <View>
       {Object.values(grouped).map((totals, index) => {
         return (
           <ItemTotal
             textLeft="You pay"
             showLogo
+            key={index}
             textRight={getTotal(totals)}
             networkId={totals[0].networkId}
             denom={totals[0].denom}

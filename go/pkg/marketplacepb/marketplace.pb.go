@@ -494,26 +494,26 @@ type Collection struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id                  string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	ImageUri            string `protobuf:"bytes,2,opt,name=image_uri,json=imageUri,proto3" json:"image_uri,omitempty"`
-	CollectionName      string `protobuf:"bytes,3,opt,name=collection_name,json=collectionName,proto3" json:"collection_name,omitempty"`
-	CreatorName         string `protobuf:"bytes,4,opt,name=creator_name,json=creatorName,proto3" json:"creator_name,omitempty"`
-	Verified            bool   `protobuf:"varint,5,opt,name=verified,proto3" json:"verified,omitempty"`
-	MintAddress         string `protobuf:"bytes,6,opt,name=mint_address,json=mintAddress,proto3" json:"mint_address,omitempty"`
-	NetworkId           string `protobuf:"bytes,11,opt,name=network_id,json=networkId,proto3" json:"network_id,omitempty"`
-	Volume              string `protobuf:"bytes,8,opt,name=volume,proto3" json:"volume,omitempty"`
-	VolumeDenom         string `protobuf:"bytes,9,opt,name=volume_denom,json=volumeDenom,proto3" json:"volume_denom,omitempty"`
-	CreatorId           string `protobuf:"bytes,10,opt,name=creator_id,json=creatorId,proto3" json:"creator_id,omitempty"`
-	SecondaryDuringMint bool   `protobuf:"varint,12,opt,name=secondary_during_mint,json=secondaryDuringMint,proto3" json:"secondary_during_mint,omitempty"`
-	WebsiteUrl          string `protobuf:"bytes,13,opt,name=website_url,json=websiteUrl,proto3" json:"website_url,omitempty"`
-	TwitterUrl          string `protobuf:"bytes,14,opt,name=twitter_url,json=twitterUrl,proto3" json:"twitter_url,omitempty"`
-	FloorPrice          uint64 `protobuf:"varint,15,opt,name=floor_price,json=floorPrice,proto3" json:"floor_price,omitempty"`
-	MaxSupply           int64  `protobuf:"varint,16,opt,name=max_supply,json=maxSupply,proto3" json:"max_supply,omitempty"`
-	MintPrice           string `protobuf:"bytes,17,opt,name=mint_price,json=mintPrice,proto3" json:"mint_price,omitempty"`
-	TotalVolume         string `protobuf:"bytes,18,opt,name=total_volume,json=totalVolume,proto3" json:"total_volume,omitempty"`
-	NumTrades           int64  `protobuf:"varint,19,opt,name=num_trades,json=numTrades,proto3" json:"num_trades,omitempty"`
-	NumOwners           int32  `protobuf:"varint,20,opt,name=num_owners,json=numOwners,proto3" json:"num_owners,omitempty"`
-	Denom               string `protobuf:"bytes,21,opt,name=denom,proto3" json:"denom,omitempty"`
+	Id                  string  `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	ImageUri            string  `protobuf:"bytes,2,opt,name=image_uri,json=imageUri,proto3" json:"image_uri,omitempty"`
+	CollectionName      string  `protobuf:"bytes,3,opt,name=collection_name,json=collectionName,proto3" json:"collection_name,omitempty"`
+	CreatorName         string  `protobuf:"bytes,4,opt,name=creator_name,json=creatorName,proto3" json:"creator_name,omitempty"`
+	Verified            bool    `protobuf:"varint,5,opt,name=verified,proto3" json:"verified,omitempty"`
+	MintAddress         string  `protobuf:"bytes,6,opt,name=mint_address,json=mintAddress,proto3" json:"mint_address,omitempty"`
+	NetworkId           string  `protobuf:"bytes,11,opt,name=network_id,json=networkId,proto3" json:"network_id,omitempty"`
+	Volume              string  `protobuf:"bytes,8,opt,name=volume,proto3" json:"volume,omitempty"`
+	VolumeDenom         string  `protobuf:"bytes,9,opt,name=volume_denom,json=volumeDenom,proto3" json:"volume_denom,omitempty"`
+	CreatorId           string  `protobuf:"bytes,10,opt,name=creator_id,json=creatorId,proto3" json:"creator_id,omitempty"`
+	SecondaryDuringMint bool    `protobuf:"varint,12,opt,name=secondary_during_mint,json=secondaryDuringMint,proto3" json:"secondary_during_mint,omitempty"`
+	WebsiteUrl          string  `protobuf:"bytes,13,opt,name=website_url,json=websiteUrl,proto3" json:"website_url,omitempty"`
+	TwitterUrl          string  `protobuf:"bytes,14,opt,name=twitter_url,json=twitterUrl,proto3" json:"twitter_url,omitempty"`
+	FloorPrice          uint64  `protobuf:"varint,15,opt,name=floor_price,json=floorPrice,proto3" json:"floor_price,omitempty"`
+	MaxSupply           int64   `protobuf:"varint,16,opt,name=max_supply,json=maxSupply,proto3" json:"max_supply,omitempty"`
+	MintPrice           string  `protobuf:"bytes,17,opt,name=mint_price,json=mintPrice,proto3" json:"mint_price,omitempty"`
+	TotalVolume         float32 `protobuf:"fixed32,18,opt,name=total_volume,json=totalVolume,proto3" json:"total_volume,omitempty"`
+	NumTrades           int64   `protobuf:"varint,19,opt,name=num_trades,json=numTrades,proto3" json:"num_trades,omitempty"`
+	NumOwners           int32   `protobuf:"varint,20,opt,name=num_owners,json=numOwners,proto3" json:"num_owners,omitempty"`
+	Denom               string  `protobuf:"bytes,21,opt,name=denom,proto3" json:"denom,omitempty"`
 }
 
 func (x *Collection) Reset() {
@@ -660,11 +660,11 @@ func (x *Collection) GetMintPrice() string {
 	return ""
 }
 
-func (x *Collection) GetTotalVolume() string {
+func (x *Collection) GetTotalVolume() float32 {
 	if x != nil {
 		return x.TotalVolume
 	}
-	return ""
+	return 0
 }
 
 func (x *Collection) GetNumTrades() int64 {
@@ -2945,7 +2945,7 @@ var file_marketplace_v1_marketplace_proto_rawDesc = []byte{
 	0x52, 0x09, 0x6d, 0x61, 0x78, 0x53, 0x75, 0x70, 0x70, 0x6c, 0x79, 0x12, 0x1d, 0x0a, 0x0a, 0x6d,
 	0x69, 0x6e, 0x74, 0x5f, 0x70, 0x72, 0x69, 0x63, 0x65, 0x18, 0x11, 0x20, 0x01, 0x28, 0x09, 0x52,
 	0x09, 0x6d, 0x69, 0x6e, 0x74, 0x50, 0x72, 0x69, 0x63, 0x65, 0x12, 0x21, 0x0a, 0x0c, 0x74, 0x6f,
-	0x74, 0x61, 0x6c, 0x5f, 0x76, 0x6f, 0x6c, 0x75, 0x6d, 0x65, 0x18, 0x12, 0x20, 0x01, 0x28, 0x09,
+	0x74, 0x61, 0x6c, 0x5f, 0x76, 0x6f, 0x6c, 0x75, 0x6d, 0x65, 0x18, 0x12, 0x20, 0x01, 0x28, 0x02,
 	0x52, 0x0b, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x56, 0x6f, 0x6c, 0x75, 0x6d, 0x65, 0x12, 0x1d, 0x0a,
 	0x0a, 0x6e, 0x75, 0x6d, 0x5f, 0x74, 0x72, 0x61, 0x64, 0x65, 0x73, 0x18, 0x13, 0x20, 0x01, 0x28,
 	0x03, 0x52, 0x09, 0x6e, 0x75, 0x6d, 0x54, 0x72, 0x61, 0x64, 0x65, 0x73, 0x12, 0x1d, 0x0a, 0x0a,

@@ -74,7 +74,7 @@ type DBCollectionWithExtra struct {
 	Name                string
 	ImageURI            string
 	Volume              string
-	TotalVolume         string
+	TotalVolume         float32
 	FloorPrice          uint64
 	MintPrice           string
 	NumTrades           int64
@@ -148,11 +148,11 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 			where = where + "AND tc.denom = utori" // not mixed denoms allowed !
 			orderSQL = "tc.price" + orderDirection
 		case marketplacepb.Sort_SORT_VOLUME:
-			orderSQL = "volume " + orderDirection + ", id ASC"
+			orderSQL = "case when total_volume is null then 1 else 0 end, total_volume " + orderDirection
 		case marketplacepb.Sort_SORT_CREATED_AT:
 			orderSQL = "c.time " + orderDirection
 		case marketplacepb.Sort_SORT_UNSPECIFIED:
-			orderSQL = "volume DESC, id ASC"
+			orderSQL = "volume DESC"
 		}
 
 		err := s.conf.IndexerDB.Raw(fmt.Sprintf(`
@@ -184,13 +184,13 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
                                             ON aop.id = t2.activity_id
      ),
      trades_by_collection_historic AS (
-         select COALESCE(sum(t.usd_price),0) as total_volume, c.id, min(t.price) as floor_price, count(*) num_trades
+         select COALESCE(sum(t.usd_price),0) as total_volume, c.id, count(*) num_trades
          FROM trades t join activities a on a.id = t.activity_id
                        join teritori_collections tc on split_part(a.nft_id,'-',2)=tc.mint_contract_address
                        join collections c on c.id = tc.collection_id
          group by c.id),
      current_num_owners AS (
-         select count (DISTINCT owner_id) num_owners, collection_id
+         select count (DISTINCT owner_id) num_owners, collection_id, min(price_amount) floor_price
          from nfts
          group by collection_id),
 			trades_by_collection AS (
@@ -209,17 +209,16 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
          total_volume, floor_price, num_trades, num_owners, 
          COALESCE((SELECT tcc.comparision FROM trades_by_collection_comparision tcc WHERE tcc.id = tc.id), 0) comparison
       FROM tori_collections tc
-      join trades_by_collection_historic tch on tc.id = tch.id
-      join current_num_owners on tc.collection_id = current_num_owners.collection_id
-			ORDER BY ?
+      left join trades_by_collection_historic tch on tc.id = tch.id
+      left join current_num_owners on tc.collection_id = current_num_owners.collection_id
+			ORDER BY %s
 			LIMIT ?
 			OFFSET ?
-		`, where),
+		`, where, orderSQL), // order By here or it won't work
 			s.conf.Whitelist,
-			time.Now().AddDate(0, 0, -1),
-			time.Now().AddDate(0, 0, -1),
-			time.Now().AddDate(0, 0, -2),
-			orderSQL,
+			time.Now().AddDate(0, 0, -4),
+			time.Now().AddDate(0, 0, -4),
+			time.Now().AddDate(0, 0, -70),
 			limit,
 			offset,
 		).Scan(&collections).Error
@@ -236,6 +235,7 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 				MintAddress:         c.MintContractAddress,
 				NetworkId:           req.GetNetworkId(),
 				Volume:              c.Volume,
+				VolumeDenom:         "USD",
 				CreatorId:           string(network.UserID(c.CreatorAddress)),
 				SecondaryDuringMint: c.SecondaryDuringMint,
 				MintPrice:           c.Price,
@@ -508,12 +508,12 @@ func (s *MarkteplaceService) NFTCollectionAttributes(req *marketplacepb.NFTColle
 	var attributes []*marketplacepb.AttributeRarityFloor
 	err = s.conf.IndexerDB.Raw(
 		`select trait_type, value, counta, floor  from (
-      select trait_type, value, count(*) as counta, min(price_amount) as floor from (SELECT attr.trait_type as trait_type, attr.value, price_amount FROM public.nfts t,
+      select trait_type, value, count(*) as counta, min(price_amount) as floor from (SELECT attr.trait_type as trait_type, attr.value, price_amount FROM nfts t,
            jsonb_to_recordset(t.attributes) as attr(value varchar, trait_type varchar)
            where collection_id = ?
       ) as sorted
       group by trait_type, value
-      order by trait_type asc, LENGTH(value) desc, value desc
+      order by counta, trait_type asc, LENGTH(value) desc, value desc
       ) as col;
 		`,
 		collectionID,
@@ -848,7 +848,7 @@ func (s *MarkteplaceService) CollectionStats(ctx context.Context, req *marketpla
         SELECT  *  FROM nfts n where n.collection_id = $1
       ),
       listed_nfts as (
-        SELECT  * from nfts_in_collection nic where is_listed = true
+        SELECT * from nfts_in_collection nic where is_listed = true
       ),
       min_price_by_denom as (
         select min(price_amount) price_amount, price_denom from listed_nfts ln2 group by ln2.price_denom 

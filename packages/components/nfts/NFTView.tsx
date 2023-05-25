@@ -111,7 +111,7 @@ export const NFTView: React.FC<{
       >
         <TertiaryBox
           key={nft.name}
-          height={438}
+          // height={438}
           width={cardWidth}
           style={styleWithoutMargins}
         >
@@ -123,6 +123,7 @@ export const NFTView: React.FC<{
                 paddingBottom: 12,
                 paddingHorizontal: insideMargin,
                 zIndex: 1000,
+                borderTopRightRadius: 7,
                 backgroundColor: localSelected ? neutral22 : neutral00,
               }}
               onPress={() => {
@@ -295,6 +296,7 @@ export const NFTView: React.FC<{
                 justifyContent: "space-between",
                 alignItems: "center",
                 width: "100%",
+                borderBottomLeftRadius: 7, // HAS to be 7
               }}
             >
               <View

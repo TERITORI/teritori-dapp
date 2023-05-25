@@ -33,9 +33,15 @@ const RenderItem: React.FC<{
 
 export const NFTs: React.FC<{
   req: NFTsRequest;
+  hideFilters?: boolean;
   ListHeaderComponent?: ReactElement;
   ListFooterComponent?: ReactElement;
-}> = ({ req, ListHeaderComponent, ListFooterComponent }) => {
+}> = ({
+  req,
+  ListHeaderComponent,
+  ListFooterComponent,
+  hideFilters = false,
+}) => {
   const { nfts, fetchMore } = useNFTs(req);
 
   const { height } = useMaxResolution();
@@ -53,7 +59,7 @@ export const NFTs: React.FC<{
         height,
       }}
     >
-      <AppliedFilters />
+      {!hideFilters && <AppliedFilters />}
       <FlatList
         style={{
           width: filterIsShown ? "75%" : "100%",

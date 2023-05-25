@@ -186,7 +186,7 @@ export interface Collection {
   floorPrice: number;
   maxSupply: number;
   mintPrice: string;
-  totalVolume: string;
+  totalVolume: number;
   numTrades: number;
   numOwners: number;
   denom: string;
@@ -771,7 +771,7 @@ function createBaseCollection(): Collection {
     floorPrice: 0,
     maxSupply: 0,
     mintPrice: "",
-    totalVolume: "",
+    totalVolume: 0,
     numTrades: 0,
     numOwners: 0,
     denom: "",
@@ -828,8 +828,8 @@ export const Collection = {
     if (message.mintPrice !== "") {
       writer.uint32(138).string(message.mintPrice);
     }
-    if (message.totalVolume !== "") {
-      writer.uint32(146).string(message.totalVolume);
+    if (message.totalVolume !== 0) {
+      writer.uint32(149).float(message.totalVolume);
     }
     if (message.numTrades !== 0) {
       writer.uint32(152).int64(message.numTrades);
@@ -899,7 +899,7 @@ export const Collection = {
           message.mintPrice = reader.string();
           break;
         case 18:
-          message.totalVolume = reader.string();
+          message.totalVolume = reader.float();
           break;
         case 19:
           message.numTrades = longToNumber(reader.int64() as Long);
@@ -936,7 +936,7 @@ export const Collection = {
       floorPrice: isSet(object.floorPrice) ? Number(object.floorPrice) : 0,
       maxSupply: isSet(object.maxSupply) ? Number(object.maxSupply) : 0,
       mintPrice: isSet(object.mintPrice) ? String(object.mintPrice) : "",
-      totalVolume: isSet(object.totalVolume) ? String(object.totalVolume) : "",
+      totalVolume: isSet(object.totalVolume) ? Number(object.totalVolume) : 0,
       numTrades: isSet(object.numTrades) ? Number(object.numTrades) : 0,
       numOwners: isSet(object.numOwners) ? Number(object.numOwners) : 0,
       denom: isSet(object.denom) ? String(object.denom) : "",
@@ -986,7 +986,7 @@ export const Collection = {
     message.floorPrice = object.floorPrice ?? 0;
     message.maxSupply = object.maxSupply ?? 0;
     message.mintPrice = object.mintPrice ?? "";
-    message.totalVolume = object.totalVolume ?? "";
+    message.totalVolume = object.totalVolume ?? 0;
     message.numTrades = object.numTrades ?? 0;
     message.numOwners = object.numOwners ?? 0;
     message.denom = object.denom ?? "";

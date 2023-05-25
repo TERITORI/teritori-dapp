@@ -87,7 +87,7 @@ message Collection {
   uint64 floor_price = 15;
   int64 max_supply = 16;
   string mint_price = 17;
-  string total_volume = 18;
+  float total_volume = 18;
   int64 num_trades = 19;
   int32 num_owners = 20;
   string denom = 21;

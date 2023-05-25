@@ -43,6 +43,7 @@ const SelectedTabContent: React.FC<{
       return (
         <NFTs
           req={nftsRequest}
+          hideFilters
           ListHeaderComponent={<View style={{ height: 20 }} />}
         />
       );

@@ -23,7 +23,6 @@ export const FilterButton: React.FC<{
   const dispatch = useAppDispatch();
   const isExpanded = useSelector(selectShowFilters);
   const handlePress = () => {
-    console.log(isExpanded);
     dispatch(setShowFilters(!isExpanded));
   };
 

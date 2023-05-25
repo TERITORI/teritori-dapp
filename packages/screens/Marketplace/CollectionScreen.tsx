@@ -110,7 +110,8 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
             borderRadius: layout.padding_x2,
             borderColor: neutral67,
             borderWidth: 1,
-            padding: layout.padding_x2,
+            paddingVertical: layout.padding_x1,
+            paddingHorizontal: layout.padding_x1_5,
             borderStyle: "solid",
           }}
         />

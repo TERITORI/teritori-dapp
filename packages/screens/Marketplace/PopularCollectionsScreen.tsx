@@ -84,9 +84,12 @@ export const PopularCollectionsScreen: ScreenFC<"PopularCollections"> = () => {
   const [selectedTab, setSelectedTab] =
     // @ts-expect-error
     useState<keyof typeof tabs>(selectedNetworkId);
+  const [sortDirection, setSortDirection] = useState(
+    SortDirection.SORT_DIRECTION_DESCENDING
+  );
   const req = {
     networkId: selectedTab,
-    sortDirection: SortDirection.SORT_DIRECTION_DESCENDING,
+    sortDirection,
     upcoming: false,
     sort: Sort.SORT_VOLUME,
     limit: 32,
@@ -94,9 +97,6 @@ export const PopularCollectionsScreen: ScreenFC<"PopularCollections"> = () => {
     mintState: MintState.MINT_STATE_UNSPECIFIED,
   };
 
-  const [sortDirection, setSortDirection] = useState(
-    SortDirection.SORT_DIRECTION_ASCENDING
-  );
   const { collections } = useCollections(req);
   const [filterText, setFilterText] = useState("");
 
@@ -268,7 +268,14 @@ const CollectionRow: React.FC<{ collection: Collection; rank: number }> = ({
           justifyContent: "center",
         }}
       >
-        <BrandText style={fontSemibold13}>
+        <BrandText
+          style={[
+            fontSemibold13,
+            {
+              marginRight: layout.padding_x0_5,
+            },
+          ]}
+        >
           {prettyPrice(
             rowData.floorPrice.networkId,
             rowData.floorPrice.value.toString(10),
