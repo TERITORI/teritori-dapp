@@ -227,9 +227,8 @@ export const SendModal: React.FC<SendModalProps> = ({
         value={selectedDAOAddress}
         onSelect={setSelectedDAOAddress}
         userId={selectedWallet?.userId}
+        style={{ marginBottom: layout.padding_x2_5 }}
       />
-
-      <SpacerColumn size={2.5} />
 
       <TextInputCustom<TransactionForm>
         height={48}
