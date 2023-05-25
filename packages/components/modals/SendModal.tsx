@@ -11,10 +11,12 @@ import { useBalances } from "../../hooks/useBalances";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
   getKeplrSigningStargateClient,
+  getNetwork,
   keplrCurrencyFromNativeCurrencyInfo,
   NativeCurrencyInfo,
 } from "../../networks";
 import { TransactionForm } from "../../screens/WalletManager/types";
+import { prettyPrice } from "../../utils/coins";
 import {
   neutral22,
   neutral33,
@@ -82,13 +84,12 @@ export const SendModal: React.FC<SendModalProps> = ({
 
   const onPressSend = async (formData: TransactionForm) => {
     try {
-      const client = await getKeplrSigningStargateClient(networkId);
       const sender = selectedWallet?.address;
+      const receiver = formData.toAddress;
       if (!sender) {
         throw new Error("no sender");
       }
       //TODO: handle contacts
-      const receiver = formData.toAddress;
       if (!receiver) {
         throw new Error("no receiver");
       }
@@ -100,26 +101,52 @@ export const SendModal: React.FC<SendModalProps> = ({
         formData.amount,
         nativeCurrency.decimals
       ).atomics;
-      const tx = await client.sendTokens(
-        sender,
-        receiver,
-        [{ amount, denom: nativeCurrency.denom }],
-        "auto"
-      );
-      if (isDeliverTxFailure(tx)) {
-        console.error("Send Tokens tx failed", tx);
-        setToastError({ title: "Transaction failed", message: "" });
+
+      if (networkId === "gno-testnet") {
+        const adena = (window as any).adena;
+        const res = await adena.DoContract({
+          messages: [
+            {
+              type: "/bank.MsgSend",
+              value: {
+                from_address: sender,
+                to_address: receiver,
+                amount: `${amount}ugnot`,
+              },
+            },
+          ],
+          gasFee: 1,
+          gasWanted: 50000,
+        });
+        if (res.status !== "success") {
+          throw new Error(res.message);
+        }
+      } else {
+        const client = await getKeplrSigningStargateClient(networkId);
+
+        const tx = await client.sendTokens(
+          sender,
+          receiver,
+          [{ amount, denom: nativeCurrency.denom }],
+          "auto"
+        );
+        if (isDeliverTxFailure(tx)) {
+          throw new Error("Transaction failed");
+        }
       }
       setToastSuccess({
-        title: `TORI succeeded sent to ${receiver}`,
+        title: `Sent ${prettyPrice(
+          networkId,
+          amount,
+          nativeCurrency.denom
+        )} to ${receiver}`,
         message: "",
       });
-      // FIXME: find out if it's possible to check for ibc ack
     } catch (err) {
-      console.error("Send Tokens failed", err);
+      console.error("Failed to send tokens", err);
       if (err instanceof Error) {
         setToastError({
-          title: "Failed to Send Tokens",
+          title: "Failed to send tokens",
           message: err.message,
         });
       }
@@ -138,12 +165,15 @@ export const SendModal: React.FC<SendModalProps> = ({
         <FlexCol alignItems="flex-start" width={356}>
           <TextInputCustom<TransactionForm>
             height={48}
+            width={320}
             control={control}
             variant="labelOutside"
             label="Receiver"
             name="toAddress"
             rules={{ required: true }}
-            placeHolder="Enter a TERITORI address"
+            placeHolder={`Enter a ${
+              getNetwork(networkId)?.displayName || networkId
+            } address`}
             defaultValue=""
           />
         </FlexCol>
