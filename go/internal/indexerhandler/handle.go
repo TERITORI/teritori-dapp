@@ -14,7 +14,6 @@ import (
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	cosmostx "github.com/cosmos/cosmos-sdk/types/tx"
 	cosmosproto "github.com/cosmos/gogoproto/proto"
-	"github.com/davecgh/go-spew/spew"
 	"github.com/pkg/errors"
 	tenderminttypes "github.com/tendermint/tendermint/rpc/core/types"
 	"go.uber.org/zap"
@@ -307,7 +306,6 @@ func (h *Handler) handleExecuteMint(e *Message, execMsg *wasmtypes.MsgExecuteCon
 	}
 	collection := collections[0]
 	if collection.TeritoriCollection == nil {
-		spew.Dump(collection)
 		return errors.New("no teritori info in collection")
 	}
 

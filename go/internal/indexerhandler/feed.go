@@ -6,7 +6,6 @@ import (
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
-	"github.com/davecgh/go-spew/spew"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 )
@@ -186,7 +185,6 @@ func (h *Handler) createPost(
 		CreatedAt:            createdAt.Unix(),
 		IsBot:                isBot,
 	}
-	spew.Dump(post)
 
 	if err := h.db.Create(&post).Error; err != nil {
 		return errors.Wrap(err, "failed to create post")
