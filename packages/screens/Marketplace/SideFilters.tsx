@@ -557,7 +557,6 @@ export const SideFilters: React.FC<{
           }}
         />
       )}
-      <Separator />
     </View>
   ) : null;
 };

@@ -7,29 +7,16 @@ import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useNFTs } from "../../hooks/useNFTs";
 import {
   AppliedFilters,
+  SideFilters,
   useShowFilters,
 } from "../../screens/Marketplace/SideFilters";
+import { neutral00, neutral33 } from "../../utils/style/colors";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import { layout, screenContentMaxWidthLarge } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { SpacerColumn } from "../spacer";
 
 const keyExtractor = (item: NFT) => item.id;
-
-const RenderItem: React.FC<{
-  nft: NFT;
-}> = ({ nft }) => {
-  return (
-    <NFTView
-      key={nft.mintAddress}
-      data={nft}
-      style={{
-        marginRight: layout.padding_x2,
-        marginBottom: layout.padding_x2,
-      }}
-    />
-  );
-};
 
 export const NFTs: React.FC<{
   req: NFTsRequest;
@@ -53,32 +40,56 @@ export const NFTs: React.FC<{
       }}
     >
       {!hideFilters && <AppliedFilters />}
-      <FlatList
-        style={{
-          width: filterIsShown ? "75%" : "100%",
-          marginLeft: filterIsShown ? "25%" : 0,
-        }}
-        contentContainerStyle={{
-          maxWidth: screenContentMaxWidthLarge,
-          alignSelf: "center",
-        }}
-        showsHorizontalScrollIndicator={false}
-        columnWrapperStyle={{ flexWrap: "wrap", flex: 1, marginTop: 5 }}
-        numColumns={99} // needed to deal with wrap via css
-        ItemSeparatorComponent={() => <SpacerColumn size={2} />}
-        key="nft-flat-list"
-        data={nfts}
-        onEndReached={handleEndReached}
-        keyExtractor={keyExtractor}
-        ListEmptyComponent={
-          <BrandText style={fontSemibold20}>No results found.</BrandText>
-        }
-        // onEndReachedThreshold={4}
-        renderItem={(info) => {
-          return <RenderItem nft={info.item} />;
-        }}
-        removeClippedSubviews
-      />
+      <View style={{ flexDirection: "row", width: "100%" }}>
+        {!hideFilters && (
+          <SideFilters
+            collectionId={req.collectionId}
+            style={{
+              left: 0,
+              flexDirection: "column",
+              width: 245,
+              marginBottom: layout.padding_x2_5,
+              backgroundColor: neutral00,
+              borderRadius: layout.padding_x2,
+              borderColor: neutral33,
+              borderWidth: 1,
+              padding: layout.padding_x2,
+              borderStyle: "solid",
+            }}
+          />
+        )}
+        <FlatList
+          style={{
+            width: "100%",
+            marginLeft: filterIsShown ? layout.padding_x1_5 : 0,
+          }}
+          contentContainerStyle={{
+            maxWidth: screenContentMaxWidthLarge,
+          }}
+          showsHorizontalScrollIndicator={false}
+          columnWrapperStyle={{ flexWrap: "wrap", flex: 1, marginTop: 5 }}
+          numColumns={99} // needed to deal with wrap via css
+          ItemSeparatorComponent={() => <SpacerColumn size={2} />}
+          key="nft-flat-list"
+          data={nfts}
+          onEndReached={handleEndReached}
+          keyExtractor={keyExtractor}
+          ListEmptyComponent={
+            <BrandText style={fontSemibold20}>No results found.</BrandText>
+          }
+          renderItem={(info) => (
+            <NFTView
+              key={info.item.mintAddress}
+              data={info.item}
+              style={{
+                marginRight: layout.padding_x2,
+                marginBottom: layout.padding_x2,
+              }}
+            />
+          )}
+          removeClippedSubviews
+        />
+      </View>
     </View>
   );
 };

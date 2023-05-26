@@ -81,23 +81,6 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
             selectedTab={selectedTab}
             sortDirection={sortDirection}
           />
-          <SideFilters
-            collectionId={id}
-            style={{
-              position: "absolute",
-              left: 0,
-              marginTop: 352,
-              flexDirection: "column",
-              width: 245,
-              marginBottom: layout.padding_x2_5,
-              backgroundColor: neutral00,
-              borderRadius: layout.padding_x2,
-              borderColor: neutral33,
-              borderWidth: 1,
-              padding: layout.padding_x2,
-              borderStyle: "solid",
-            }}
-          />
         </ScrollView>
         <SideCart
           style={{
