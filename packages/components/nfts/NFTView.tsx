@@ -117,7 +117,7 @@ export const NFTView: React.FC<{
         >
           <View style={{ width: "100%" }}>
             <Pressable
-              disabled={!nft.isListed}
+              disabled={!nft.isListed || isOwner}
               style={{
                 paddingTop: insideMargin,
                 paddingBottom: 12,
