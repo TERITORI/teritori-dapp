@@ -513,7 +513,7 @@ func (s *MarkteplaceService) NFTCollectionAttributes(req *marketplacepb.NFTColle
            where collection_id = ?
       ) as sorted
       group by trait_type, value
-      order by counta, trait_type asc, LENGTH(value) desc, value desc
+      order by floor, counta, trait_type asc, LENGTH(value) desc, value desc
       ) as col;
 		`,
 		collectionID,
