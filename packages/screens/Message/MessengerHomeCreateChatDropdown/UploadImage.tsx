@@ -63,6 +63,8 @@ const UploadImage = ({
   const [image, setImage] = useState(null);
   const [isImageLarge, setIsImageLarge] = useState(true);
   const [visible, setVisible] = useState(false);
+
+  console.log("value", visible);
   const handleSend = () => {
     const newMsg: IMessage = {
       message: newMessage,
@@ -121,7 +123,7 @@ const UploadImage = ({
           !thumbnailFile && (
             <FileUploader
               onUpload={(files) => {
-                setThumbnailFile(files[0]);
+                setVisible(files[0]);
               }}
               mimeTypes={IMAGE_MIME_TYPES}
             >
@@ -179,18 +181,17 @@ const UploadImage = ({
             <View
               style={{
                 backgroundColor: additionalRed,
-                width: Platform.OS === "web" ? "90%" : null,
+
                 borderRadius: 6,
-                alignItems: "center", // Center align the content horizontally
-                justifyContent: "center", // Center align the content vertically
+                alignItems: "center",
+                justifyContent: "center",
               }}
             >
               <View style={{ alignSelf: "center" }}>
                 <FlexRow>
                   <Image
                     source={{
-                      uri:
-                        Platform.OS === "web" ? thumbnailFile?.url : image?.uri,
+                      uri: Platform.OS === "web" ? visible?.url : image?.uri,
                     }}
                     style={styles.image}
                     resizeMode="cover"
@@ -205,37 +206,36 @@ const UploadImage = ({
             </View>
           ) : (
             <FlexRow>
-              <View>
+              <View style={{ width: "100%" }}>
                 <FlexRow>
                   <Image
                     source={{
-                      uri:
-                        Platform.OS === "web" ? thumbnailFile?.url : image?.uri,
+                      uri: Platform.OS === "web" ? visible?.url : image?.uri,
                     }}
                     style={styles.imagesmall}
                     resizeMode="stretch"
                   />
                   <SpacerRow size={2} />
-                  <View>
+                  <View style={{ width: "60%" }}>
                     <BrandText
                       style={[fontSemibold14, { color: secondaryColor }]}
                     >
-                      filename.png
+                      {Platform.OS === "web"
+                        ? visible?.fileName
+                        : "filename.png"}
                     </BrandText>
                     <SpacerColumn size={0.6} />
                     <BrandText style={[fontSemibold13, { color: neutral77 }]}>
-                      {Platform.OS === "web"
-                        ? thumbnailFile?.fileName
-                        : image?.fileSize}
+                      {Platform.OS === "web" ? visible?.size : image?.fileSize}
                     </BrandText>
+                    <TouchableOpacity onPress={() => setImage(null)}>
+                      <View style={styles.svgContainerShort}>
+                        <SVG source={deleteIcon} />
+                      </View>
+                    </TouchableOpacity>
                   </View>
                 </FlexRow>
               </View>
-              <TouchableOpacity onPress={() => setImage(null)}>
-                <View style={styles.svgContainerShort}>
-                  <SVG source={deleteIcon} />
-                </View>
-              </TouchableOpacity>
             </FlexRow>
           )}
 
@@ -269,7 +269,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  footer: { flex: 1, position: "absolute", bottom: 0, width: 350 },
+  footer: { position: "absolute", bottom: 0, width: 350, left: 0 },
   attachmentModal: {
     position: "absolute",
     top: -55,
@@ -292,10 +292,11 @@ const styles = StyleSheet.create({
   },
   svgContainerShort: {
     position: "absolute",
-    transform: [{ translateX: 45 }],
+    // transform: [{ translateX: 45 }],
     backgroundColor: "rgba(244, 111, 118, 0.1)",
     padding: 10,
     borderRadius: 10, // Adjust the translateY value based on the icon size
+    right: 0,
   },
   attachmentItem: {
     height: 25,
