@@ -1,4 +1,4 @@
-import React, { ReactElement, useCallback } from "react";
+import React, { useCallback } from "react";
 import { FlatList, View } from "react-native";
 
 import { NFTView } from "./NFTView";
@@ -34,14 +34,7 @@ const RenderItem: React.FC<{
 export const NFTs: React.FC<{
   req: NFTsRequest;
   hideFilters?: boolean;
-  ListHeaderComponent?: ReactElement;
-  ListFooterComponent?: ReactElement;
-}> = ({
-  req,
-  ListHeaderComponent,
-  ListFooterComponent,
-  hideFilters = false,
-}) => {
+}> = ({ req, hideFilters = false }) => {
   const { nfts, fetchMore } = useNFTs(req);
 
   const { height } = useMaxResolution();
@@ -63,7 +56,7 @@ export const NFTs: React.FC<{
       <FlatList
         style={{
           width: filterIsShown ? "75%" : "100%",
-          marginLeft: filterIsShown ? 310 : 0,
+          marginLeft: filterIsShown ? "25%" : 0,
         }}
         contentContainerStyle={{
           maxWidth: screenContentMaxWidthLarge,

@@ -16,7 +16,6 @@ import {
 } from "../../store/slices/marketplaceFilters";
 import { alignDown } from "../../utils/align";
 import { ActivityTable } from "../activity/ActivityTable";
-import { Footer } from "../footers/Footer";
 import { NFTs } from "../nfts/NFTs";
 
 const nftWidth = 268; // FIXME: ssot
@@ -49,13 +48,7 @@ export const CollectionContent: React.FC<{
   switch (selectedTab) {
     case "collections":
     case "owned":
-      return (
-        <NFTs
-          key={selectedTab}
-          req={nftsRequest}
-          ListFooterComponent={<Footer />}
-        />
-      );
+      return <NFTs key={selectedTab} req={nftsRequest} />;
     case "activity":
       return <ActivityTable collectionId={id} />;
   }

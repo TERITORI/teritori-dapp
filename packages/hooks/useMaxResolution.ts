@@ -9,7 +9,7 @@ import {
   getResponsiveScreenContainerMarginHorizontal,
   headerHeight,
   screenContainerContentMarginHorizontal,
-  screenContentMaxWidth,
+  screenContentMaxWidthLarge,
   smallSidebarWidth,
 } from "../utils/style/layout";
 
@@ -40,7 +40,8 @@ export const useMaxResolution = ({
   }, [windowWidth, isSidebarExpanded, noMargin, responsive, isMobile]);
 
   return {
-    width: width > screenContentMaxWidth ? screenContentMaxWidth : width,
+    width:
+      width > screenContentMaxWidthLarge ? screenContentMaxWidthLarge : width,
     height: windowHeight - headerHeight,
   };
 };

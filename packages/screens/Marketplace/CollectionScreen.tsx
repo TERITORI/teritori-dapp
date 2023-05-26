@@ -30,7 +30,7 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
   );
   const [network] = parseCollectionId(id);
   const navigation = useAppNavigation();
-  const { width } = useMaxResolution();
+  const { width } = useMaxResolution({ responsive: true, noMargin: false });
   const cartIsShown = useShowCart();
   const dispatch = useAppDispatch();
 

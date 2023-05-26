@@ -25,7 +25,6 @@ import {
   getNativeCurrency,
   parseCollectionId,
 } from "../../networks";
-import { useShowCart } from "../../screens/Marketplace/SideCart";
 import { CollectionInfo } from "../../utils/collection";
 import { codGrayColor, neutral33, neutral67 } from "../../utils/style/colors";
 import { fontSemibold28 } from "../../utils/style/fonts";
@@ -54,7 +53,6 @@ export const CollectionHeader: React.FC<{
   const { width } = useMaxResolution();
   const [network, collectionMintAddress] = parseCollectionId(collectionId);
   const { setToastSuccess } = useFeedbacks();
-  const cartIsShown = useShowCart();
 
   const coins = useMemo(() => {
     if (!network?.id || !stats?.floorPrice) {
@@ -143,7 +141,6 @@ export const CollectionHeader: React.FC<{
       style={{
         // maxWidth: width,
         width: "100%",
-
         alignSelf: "center",
         marginTop: layout.padding_x4,
       }}
@@ -236,13 +233,12 @@ export const CollectionHeader: React.FC<{
           </View>
         </View>
       </View>
-
       <View
         style={{
           flexDirection: "row",
           justifyContent: "space-between",
           marginBottom: layout.padding_x4,
-          width: "100%",
+          flex: 10,
         }}
       >
         <FilterButton
@@ -254,10 +250,10 @@ export const CollectionHeader: React.FC<{
           selected={selectedTab}
           style={{
             height: "100%",
+            flex: 8,
             paddingLeft: layout.padding_x2,
             marginHorizontal: 1,
             backgroundColor: codGrayColor,
-            width: cartIsShown ? "72%" : "78%",
           }}
           noUnderline
         />

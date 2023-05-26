@@ -14,7 +14,6 @@ import { Pagination } from "../../components/Pagination";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { RoundedGradientImage } from "../../components/images/RoundedGradientImage";
 import { SearchInput } from "../../components/sorts/SearchInput";
-import { SortButton } from "../../components/sorts/SortButton";
 import { SpacerColumn } from "../../components/spacer";
 import { TableRow, TableRowHeading } from "../../components/table";
 import { Tabs } from "../../components/tabs/Tabs";
@@ -22,7 +21,7 @@ import { useCollections } from "../../hooks/useCollections";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { prettyPrice } from "../../utils/coins";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
-import { mineShaftColor, neutral33 } from "../../utils/style/colors";
+import { mineShaftColor } from "../../utils/style/colors";
 import {
   fontSemibold13,
   fontSemibold20,
