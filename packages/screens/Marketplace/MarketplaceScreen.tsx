@@ -145,19 +145,10 @@ export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
         >
           <SearchInput
             style={{
-              flex: 6,
+              flex: 7,
               marginRight: layout.padding_x2,
             }}
             handleChangeText={handleChangeText}
-          />
-          <SortButton
-            style={{
-              flex: 1,
-            }}
-            height={38}
-            mainContainerStyle={{ backgroundColor: neutral33 }}
-            sortDirection={sortDirection}
-            onChangeSortDirection={setSortDirection}
           />
         </View>
         <CollectionTable rows={collections} filterText={filterText} />
