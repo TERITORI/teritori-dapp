@@ -57,6 +57,7 @@ export const AvatarWithFrame: React.FC<{
             source={{
               uri: image ? image : network?.nameServiceDefaultImage || "",
             }}
+            fallback={{ uri: network?.nameServiceDefaultImage }}
             style={[
               sizedStyles.image,
               isDAO && {

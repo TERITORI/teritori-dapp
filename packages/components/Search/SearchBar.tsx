@@ -12,10 +12,14 @@ import { useSearchBar } from "../../context/SearchBarProvider";
 import { COLLECTION_VIEW_SM_WIDTH } from "../CollectionView";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 
-export const SearchBar: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
-  style,
-}) => {
-  const { openDropdown, isDropdownOpen } = useDropdowns();
+export const SearchBar: React.FC<{
+  style?: StyleProp<ViewStyle>;
+  onPressName?: (name: string, userId: string) => void;
+  closeOnPress?: boolean;
+  navigateToName?: boolean;
+  noCollections?: boolean;
+}> = ({ style, onPressName, closeOnPress, navigateToName, noCollections }) => {
+  const { openDropdown, isDropdownOpen, closeOpenedDropdown } = useDropdowns();
   const dropdownRef = useRef<View>(null);
   const { hasCollections, hasNames } = useSearchBar();
   const hasSomething = hasNames || hasCollections;
@@ -43,7 +47,14 @@ export const SearchBar: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
               2, // need to add 2 arbitrary pixel to fit in tertiary box, not needed if using a view
           }}
         >
-          <SearchBarResults />
+          <SearchBarResults
+            navigateToName={navigateToName}
+            onPressName={(name, userId) => {
+              closeOnPress && closeOpenedDropdown();
+              onPressName?.(name, userId);
+            }}
+            noCollections={noCollections}
+          />
         </TertiaryBox>
       )}
     </View>

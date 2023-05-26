@@ -5,19 +5,28 @@ export const OptimizedImage: React.FC<
   ImageProps & {
     width: number;
     height: number;
+    fallback?: ImageProps["source"];
   }
-> = ({ source, width, height, ...other }) => {
+> = ({ source: baseSource, width, height, fallback, ...other }) => {
+  const [isError, setIsError] = React.useState(false);
+  const shouldUseFallback = isError && fallback !== undefined;
+  const source = shouldUseFallback ? fallback : baseSource;
   if (typeof source === "number") {
     return <Image source={source} {...other} />;
   }
   return (
     <Image
+      onError={() => {
+        setIsError(true);
+      }}
       source={
         Array.isArray(source)
           ? source.map((s) => ({
               uri: transformURI(s.uri, width, height),
             }))
-          : { uri: transformURI(source.uri, width, height) }
+          : {
+              uri: transformURI(source?.uri, width, height),
+            }
       }
       {...other}
     />

@@ -10,6 +10,7 @@ import { NetworkKind, parseUserId } from "../../../networks";
 import {
   neutral17,
   neutral33,
+  neutral77,
   secondaryColor,
 } from "../../../utils/style/colors";
 import { fontSemibold12, fontSemibold14 } from "../../../utils/style/fonts";
@@ -53,14 +54,18 @@ export const DaoItem: React.FC<DaoItemProps> = ({ userId, style }) => {
         <BrandText style={[fontSemibold14, { color: secondaryColor }]}>
           {name || "Anon DAO"}
         </BrandText>
+        <SpacerColumn size={1} />
+        <BrandText style={[fontSemibold14, { color: neutral77 }]}>
+          {tokenId ? `@${tokenId}` : tinyAddress(daoAddress, 24)}
+        </BrandText>
       </View>
       <SpacerColumn size={2.5} />
-      <BrandText style={[fontSemibold14, { color: secondaryColor, flex: 1 }]}>
+      <BrandText
+        style={[fontSemibold14, { color: neutral77 }]}
+        numberOfLines={3}
+        ellipsizeMode="tail"
+      >
         {description || "A Decentralized Autonomous Organization"}
-      </BrandText>
-      <SpacerColumn size={2.5} />
-      <BrandText style={[fontSemibold14, { color: secondaryColor }]}>
-        {tokenId || tinyAddress(daoAddress, 24)}
       </BrandText>
     </OmniLink>
   );

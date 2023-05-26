@@ -5,8 +5,9 @@ import { MintState } from "../../api/marketplace/v1/marketplace";
 import { useSearchBar } from "../../context/SearchBarProvider";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { useNSNameOwner } from "../../hooks/useNSNameOwner";
+import { useNSPrimaryAlias } from "../../hooks/useNSPrimaryAlias";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import { getUserId } from "../../networks";
+import { getUserId, parseUserId } from "../../networks";
 import { useAppNavigation } from "../../utils/navigation";
 import { neutral22, neutralA3 } from "../../utils/style/colors";
 import { fontSemibold12 } from "../../utils/style/fonts";
@@ -19,7 +20,11 @@ const SEARCH_RESULTS_NAMES_MARGIN = layout.padding_x1;
 export const SEARCH_RESULTS_MARGIN = layout.padding_x2;
 export const SEARCH_RESULTS_COLLECTIONS_MARGIN = layout.padding_x0_5;
 
-export const SearchBarResults: FC = () => {
+export const SearchBarResults: FC<{
+  onPressName?: (name: string, userId: string) => void;
+  navigateToName?: boolean;
+  noCollections?: boolean;
+}> = ({ onPressName, navigateToName, noCollections }) => {
   const selectedNetworkId = useSelectedNetworkId();
   const {
     hasCollections,
@@ -50,14 +55,18 @@ export const SearchBarResults: FC = () => {
                 networkId={selectedNetworkId}
                 name={n}
                 style={{ margin: SEARCH_RESULTS_NAMES_MARGIN }}
-                onPress={() => setSearchModalMobileOpen(false)}
+                navigate={navigateToName}
+                onPress={(userId) => {
+                  onPressName?.(n, userId);
+                  setSearchModalMobileOpen(false);
+                }}
               />
             ))}
           </View>
         </SearchResultsSection>
       )}
 
-      {hasCollections && (
+      {!noCollections && hasCollections && (
         <SearchResultsSection title="Collections" style={{ width: "100%" }}>
           <View
             style={{
@@ -118,35 +127,41 @@ const SearchResultsSection: React.FC<{
   );
 };
 
-const NameResult: React.FC<{
+export const NameResult: React.FC<{
   networkId: string;
-  name: string;
-  style: StyleProp<ViewStyle>;
-  onPress: () => void;
-}> = ({ networkId, name, style, onPress }) => {
+  name?: string;
+  style?: StyleProp<ViewStyle>;
+  onPress: (ownerId: string) => void;
+  userId?: string;
+  navigate?: boolean;
+}> = ({ networkId, name, userId, style, onPress, navigate }) => {
   const { nameOwner } = useNSNameOwner(networkId, name);
+  const [, userAddress] = parseUserId(userId);
+  const { primaryAlias } = useNSPrimaryAlias(userId);
+  const owner = userAddress || nameOwner;
   const navigation = useAppNavigation();
   const content = (
     <View style={{ flexDirection: "row", alignItems: "center" }}>
       <AvatarWithFrame
-        userId={getUserId(networkId, nameOwner)}
+        userId={userId || getUserId(networkId, nameOwner)}
         size="XS"
         style={{
           marginRight: 8,
         }}
       />
-      <BrandText style={[fontSemibold12]}>@{name}</BrandText>
+      <BrandText style={[fontSemibold12]}>@{primaryAlias || name}</BrandText>
     </View>
   );
   return (
     <View style={style}>
-      {nameOwner ? (
+      {owner ? (
         <TouchableOpacity
           onPress={() => {
-            onPress();
-            navigation.navigate("UserPublicProfile", {
-              id: getUserId(networkId, nameOwner),
-            });
+            onPress(getUserId(networkId, owner));
+            navigate &&
+              navigation.navigate("UserPublicProfile", {
+                id: getUserId(networkId, owner),
+              });
           }}
         >
           {content}

@@ -176,7 +176,7 @@ export const ScreenContainer: React.FC<{
               alignItems: "center",
             }}
           >
-            <SearchBar />
+            <SearchBar navigateToName />
             <View
               style={{
                 height: "100%",

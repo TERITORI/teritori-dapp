@@ -35,8 +35,8 @@ interface FeedbacksProviderValue {
   setLoadingFullScreen: (loading: boolean) => void;
   wrapWithFeedback: (
     cb: () => Promise<void>,
-    success?: { title: string; message: string },
-    errorTransform?: (err: unknown) => { title: string; message: string }
+    success?: { title: string; message?: string },
+    errorTransform?: (err: unknown) => { title: string; message?: string }
   ) => () => Promise<void>;
 }
 const defaultValue: FeedbacksProviderValue = {
@@ -81,9 +81,9 @@ export const FeedbacksContextProvider: React.FC = ({ children }) => {
         return async () => {
           try {
             await cb();
-            setToastSuccess(success);
+            setToastSuccess({ message: "", ...success });
           } catch (err) {
-            setToastError(errorTransform(err));
+            setToastError({ message: "", ...errorTransform(err) });
           }
         };
       },

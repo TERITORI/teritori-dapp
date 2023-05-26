@@ -1,42 +1,529 @@
 import { useQuery } from "@tanstack/react-query";
-import React from "react";
+import React, { ComponentProps, useRef, useMemo, useState } from "react";
 import {
+  Pressable,
   StyleProp,
-  StyleSheet,
-  TouchableOpacity,
   View,
   ViewStyle,
+  StyleSheet,
+  useWindowDimensions,
 } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 
+import dotsCircleSVG from "../../../../assets/icons/dots-circle.svg";
+import trashSVG from "../../../../assets/icons/trash.svg";
 import { BrandText } from "../../../components/BrandText";
-import { CopyToClipboard } from "../../../components/CopyToClipboard";
-import { OptimizedImage } from "../../../components/OptimizedImage";
-import { SpacerColumn } from "../../../components/spacer";
+import { DropdownOption } from "../../../components/DropdownOption";
+import { OmniLink } from "../../../components/OmniLink";
+import { SVG } from "../../../components/SVG";
+import { SearchBar } from "../../../components/Search/SearchBar";
+import { NameResult } from "../../../components/Search/SearchBarResults";
+import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
+import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
+import { AvatarWithFrame } from "../../../components/images/AvatarWithFrame";
+import ModalBase from "../../../components/modals/ModalBase";
+import { useDropdowns } from "../../../context/DropdownsProvider";
+import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { Cw4GroupQueryClient } from "../../../contracts-clients/cw4-group/Cw4Group.client";
+import { Member } from "../../../contracts-clients/cw4-group/Cw4Group.types";
 import { DaoCoreQueryClient } from "../../../contracts-clients/dao-core/DaoCore.client";
 import { DaoVotingCw4QueryClient } from "../../../contracts-clients/dao-voting-cw4/DaoVotingCw4.client";
 import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
+import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import {
-  getCosmosNetwork,
   getUserId,
+  mustGetCosmosNetwork,
   mustGetNonSigningCosmWasmClient,
+  parseUserId,
 } from "../../../networks";
-import { useAppNavigation } from "../../../utils/navigation";
-import { neutral33, secondaryColor } from "../../../utils/style/colors";
-import { fontSemibold14 } from "../../../utils/style/fonts";
+import { makeProposal } from "../../../utils/dao";
+import {
+  neutral00,
+  neutral33,
+  neutral77,
+  neutralA3,
+} from "../../../utils/style/colors";
+import {
+  fontSemibold10,
+  fontSemibold12,
+  fontSemibold8,
+} from "../../../utils/style/fonts";
+import { layout } from "../../../utils/style/layout";
+import { modalMarginPadding } from "../../../utils/style/modals";
+
+// FIXME: pagination
+
+const halfGap = 8;
 
 export const DaoMemberList: React.FC<{
-  networkId: string | undefined;
-  daoAddr: string;
+  daoId: string | undefined;
   style?: StyleProp<ViewStyle>;
-}> = ({ networkId, daoAddr, style }) => {
-  const { data: members } = useQuery(
-    ["daoMembers", networkId, daoAddr],
+}> = ({ daoId, style }) => {
+  const [network, daoAddress] = parseUserId(daoId);
+  const { members } = useDAOMembers(daoId);
+  const { width: windowWidth } = useWindowDimensions();
+  const [width, setWidth] = useState(0);
+  const [showAddMemberModal, setShowAddMemberModal] = useState(false);
+  const { wrapWithFeedback } = useFeedbacks();
+  const selectedWallet = useSelectedWallet();
+  const [names, setNames] = useState<string[]>([]);
+
+  if (!members || !network) {
+    return null;
+  }
+
+  let elems = 3;
+  if (windowWidth < 702) {
+    elems = 1;
+  } else if (windowWidth < 1365) {
+    elems = 2;
+  }
+
+  return (
+    <View
+      style={style}
+      onLayout={(ev) => setWidth(ev.nativeEvent.layout.width)}
+    >
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: 16,
+        }}
+      >
+        <BrandText style={{ fontSize: 20 }}>{members.length} members</BrandText>
+        <PrimaryButton
+          text="Add members"
+          size="XS"
+          onPress={() => setShowAddMemberModal(true)}
+        />
+      </View>
+      <View
+        style={{ flexWrap: "wrap", flexDirection: "row", margin: -halfGap }}
+      >
+        {members.map((member) => {
+          const userId = getUserId(network.id, member.addr);
+          return (
+            <UserCard
+              key={userId}
+              userId={userId}
+              style={{
+                width: (width - (elems - 1) * 2 * halfGap) / elems,
+                margin: halfGap,
+              }}
+              daoId={daoId}
+            />
+          );
+        })}
+      </View>
+      <ModalBase
+        visible={showAddMemberModal}
+        label="Add members to DAO"
+        onClose={() => setShowAddMemberModal(false)}
+        noBrokenCorners
+      >
+        <View
+          style={{
+            minHeight: 200,
+            width: 400,
+            margin: -4,
+            flexDirection: "row",
+            flexWrap: "wrap",
+            justifyContent: "flex-start",
+            alignItems: "flex-start",
+          }}
+        >
+          {names.map((n) => {
+            return (
+              <NameResult
+                style={{ margin: 4 }}
+                key={n}
+                networkId={network.id}
+                userId={n}
+                onPress={(ownerId) =>
+                  setNames((names) => names.filter((na) => na !== ownerId))
+                }
+              />
+            );
+          })}
+        </View>
+        <PrimaryButton
+          disabled={!names.length}
+          text="Propose to add members"
+          size="XS"
+          style={{ alignSelf: "center" }}
+          loader
+          onPress={wrapWithFeedback(async () => {
+            await proposeToAddMembers(
+              network.id,
+              selectedWallet?.address,
+              daoAddress,
+              names.map((n) => parseUserId(n)[1])
+            );
+          })}
+        />
+        <SearchBar
+          style={{
+            marginBottom: modalMarginPadding,
+            marginTop: 8,
+            width: "100%",
+          }}
+          onPressName={(_name, userId) => {
+            setNames((names) => [...new Set(names).add(userId)]);
+          }}
+          noCollections // FIXME: don't reuse the header search bar
+        />
+      </ModalBase>
+    </View>
+  );
+};
+
+const UserCard: React.FC<{
+  userId: string;
+  style: StyleProp<ViewStyle>;
+  daoId?: string;
+}> = ({ userId, style, daoId }) => {
+  const [network, address] = parseUserId(userId);
+  const { metadata } = useNSUserInfo(userId);
+  const selectedWallet = useSelectedWallet();
+  const { wrapWithFeedback } = useFeedbacks();
+  const daoMembers = useDAOMembers(daoId);
+  const [, daoAddress] = parseUserId(daoId);
+
+  const walletIsMember = useMemo(() => {
+    return daoMembers.members?.some(
+      (member) => member.addr === selectedWallet?.address
+    );
+  }, [daoMembers, selectedWallet?.address]);
+
+  const flatStyle = StyleSheet.flatten(style);
+
+  const padding = 16;
+  const width = typeof flatStyle.width === "number" ? flatStyle.width : 325;
+  return (
+    <TertiaryBox
+      style={style}
+      mainContainerStyle={[
+        {
+          width,
+          height: 287,
+          padding,
+          justifyContent: "space-between",
+          alignItems: "flex-start",
+        },
+      ]}
+    >
+      <OmniLink to={{ screen: "UserPublicProfile", params: { id: userId } }}>
+        <AvatarWithFrame
+          userId={userId}
+          size="L"
+          style={{
+            marginBottom: 4,
+            marginLeft: -4,
+            alignSelf: "flex-start", // this extra flex-start is needed on web when the bio is long
+          }}
+        />
+        <BrandText
+          style={[fontSemibold12, { lineHeight: 14, marginBottom: 8 }]}
+        >
+          {metadata.public_name || address}
+        </BrandText>
+        <View>
+          <BrandText
+            style={[fontSemibold10, { color: neutral77, marginBottom: 8 }]}
+          >
+            {metadata.tokenId ? `@${metadata.tokenId}` : "Anon"}
+          </BrandText>
+        </View>
+        <BrandText
+          style={[
+            fontSemibold10,
+            {
+              color: neutral77,
+              marginBottom: 8,
+            },
+          ]}
+          numberOfLines={3}
+          ellipsizeMode="tail"
+        >
+          {metadata.public_bio}
+        </BrandText>
+      </OmniLink>
+
+      <View>
+        <FollowingFollowers style={{ marginBottom: 10 }} />
+        <BrandText
+          style={[fontSemibold12, { lineHeight: 14, marginBottom: 8 }]}
+        >
+          Roles
+        </BrandText>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={{ width: width - 2 * padding }}
+        >
+          {fakeRoles.map((role, index) => {
+            return (
+              <View
+                style={[
+                  {
+                    marginLeft: index === 0 ? undefined : 4,
+                    justifyContent: "center",
+                    borderRadius: 4,
+                    backgroundColor: role.highlight ? "#9C4CEA" : "#1C1C1C",
+                    height: 18,
+                    paddingHorizontal: 4,
+                  },
+                  !role.highlight && {
+                    borderWidth: 0.5,
+                    borderColor: neutral33,
+                  },
+                ]}
+              >
+                <BrandText
+                  style={[
+                    fontSemibold8,
+                    {
+                      color: role.highlight ? "white" : neutralA3,
+                    },
+                  ]}
+                >
+                  {role.text}
+                </BrandText>
+              </View>
+            );
+          })}
+        </ScrollView>
+      </View>
+
+      <View style={{ position: "absolute", top: padding, right: padding }}>
+        <CardActions
+          actions={[
+            walletIsMember && {
+              label: "Eject this member",
+              icon: trashSVG,
+              onPress: wrapWithFeedback(
+                async () => {
+                  await proposeToRemoveMember(
+                    network?.id,
+                    selectedWallet?.address,
+                    daoAddress,
+                    address
+                  );
+                },
+                { title: "Created proposal" }
+              ),
+            },
+          ]}
+        />
+      </View>
+    </TertiaryBox>
+  );
+};
+
+const CardActions: React.FC<{
+  actions: (
+    | ComponentProps<typeof DropdownOption>
+    | null
+    | undefined
+    | boolean
+  )[];
+}> = ({ actions }) => {
+  const { onPressDropdownButton, isDropdownOpen, closeOpenedDropdown } =
+    useDropdowns();
+  const dropdownRef = useRef<View>(null);
+
+  const filteredActions = actions.filter(
+    (a): a is ComponentProps<typeof DropdownOption> =>
+      typeof a !== "boolean" && !!a
+  );
+  if (!filteredActions.length) {
+    return null;
+  }
+
+  return (
+    <View>
+      <Pressable onPress={() => onPressDropdownButton(dropdownRef)}>
+        <SVG source={dotsCircleSVG} height={32} width={32} />
+      </Pressable>
+      {isDropdownOpen(dropdownRef) && (
+        <View
+          style={{
+            position: "absolute",
+            zIndex: 2,
+            top: layout.iconButton + layout.padding_x0_5,
+            backgroundColor: neutral00,
+            padding: layout.padding_x0_5,
+            borderColor: neutral33,
+            borderWidth: 1,
+            borderRadius: 8,
+            right: -layout.padding_x1_5,
+            minWidth: 250,
+          }}
+        >
+          {filteredActions.map((action) => (
+            <DropdownOption
+              {...action}
+              onPress={() => {
+                closeOpenedDropdown();
+                action.onPress?.();
+              }}
+            />
+          ))}
+        </View>
+      )}
+    </View>
+  );
+};
+
+const FollowingFollowers: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
+  style,
+}) => {
+  return (
+    <View style={[{ flexDirection: "row" }, style]}>
+      <BrandText style={[fontSemibold10, { marginRight: 2 }]}>36</BrandText>
+      <BrandText style={[fontSemibold10, { marginRight: 8, color: neutral77 }]}>
+        Following
+      </BrandText>
+      <BrandText style={[fontSemibold10, { marginRight: 2 }]}>21.5k</BrandText>
+      <BrandText style={[fontSemibold10, { color: neutral77 }]}>
+        Followers
+      </BrandText>
+    </View>
+  );
+};
+
+const fakeRoles: { highlight?: boolean; text: string }[] = [
+  {
+    text: "Hiring",
+    highlight: true,
+  },
+  { text: "Teritorian" },
+  { text: "Torishark" },
+  { text: "OG" },
+  { text: "Ripper" },
+  { text: "Squad leader" },
+  { text: "NFT Enjoyoor" },
+  { text: "Tester" },
+];
+
+const proposeToRemoveMember = async (
+  networkId: string | undefined,
+  senderAddress: string | undefined,
+  daoAddress: string | undefined,
+  memberToRemoveAddress: string
+) => {
+  const network = mustGetCosmosNetwork(networkId);
+
+  if (!daoAddress) {
+    throw new Error("no DAO address");
+  }
+  if (!senderAddress) {
+    throw new Error("no selected wallet");
+  }
+
+  const cosmwasmClient = await mustGetNonSigningCosmWasmClient(network.id);
+
+  const daoCoreClient = new DaoCoreQueryClient(cosmwasmClient, daoAddress);
+
+  const votingModuleAddress = await daoCoreClient.votingModule();
+  const votingClient = new DaoVotingCw4QueryClient(
+    cosmwasmClient,
+    votingModuleAddress
+  );
+
+  const cw4Address = await votingClient.groupContract();
+
+  const updateMembersReq: {
+    add: Member[];
+    remove: string[];
+  } = { add: [], remove: [memberToRemoveAddress] };
+
+  return await makeProposal(networkId, senderAddress, network.coreDAOAddress, {
+    title: `Remove ${memberToRemoveAddress} from members`,
+    description: "",
+    msgs: [
+      {
+        wasm: {
+          execute: {
+            contract_addr: cw4Address,
+            msg: Buffer.from(
+              JSON.stringify({
+                update_members: updateMembersReq,
+              })
+            ).toString("base64"),
+            funds: [],
+          },
+        },
+      },
+    ],
+  });
+};
+
+const proposeToAddMembers = async (
+  networkId: string | undefined,
+  senderAddress: string | undefined,
+  daoAddress: string | undefined,
+  membersToAdd: string[]
+) => {
+  const network = mustGetCosmosNetwork(networkId);
+
+  if (!daoAddress) {
+    throw new Error("no DAO address");
+  }
+  if (!senderAddress) {
+    throw new Error("no selected wallet");
+  }
+
+  const cosmwasmClient = await mustGetNonSigningCosmWasmClient(network.id);
+
+  const daoCoreClient = new DaoCoreQueryClient(cosmwasmClient, daoAddress);
+
+  const votingModuleAddress = await daoCoreClient.votingModule();
+  const votingClient = new DaoVotingCw4QueryClient(
+    cosmwasmClient,
+    votingModuleAddress
+  );
+
+  const cw4Address = await votingClient.groupContract();
+
+  const weight = 1;
+  const updateMembersReq: {
+    add: Member[];
+    remove: string[];
+  } = { add: membersToAdd.map((m) => ({ addr: m, weight })), remove: [] };
+
+  return await makeProposal(networkId, senderAddress, network.coreDAOAddress, {
+    title: `Add ${membersToAdd.length} member(s) with weight ${weight}`,
+    description: "",
+    msgs: [
+      {
+        wasm: {
+          execute: {
+            contract_addr: cw4Address,
+            msg: Buffer.from(
+              JSON.stringify({
+                update_members: updateMembersReq,
+              })
+            ).toString("base64"),
+            funds: [],
+          },
+        },
+      },
+    ],
+  });
+};
+
+const useDAOMembers = (daoId: string | undefined) => {
+  const { data: members, ...other } = useQuery(
+    ["daoMembers", daoId],
     async () => {
-      if (!networkId) {
+      const [network, daoAddr] = parseUserId(daoId);
+      if (!network || !daoAddr) {
         return null;
       }
-      const cosmwasmClient = await mustGetNonSigningCosmWasmClient(networkId);
+      const cosmwasmClient = await mustGetNonSigningCosmWasmClient(network.id);
       const daoCoreClient = new DaoCoreQueryClient(cosmwasmClient, daoAddr);
       const votingModuleAddress = await daoCoreClient.votingModule();
       const votingModuleClient = new DaoVotingCw4QueryClient(
@@ -45,129 +532,9 @@ export const DaoMemberList: React.FC<{
       );
       const cw4Address = await votingModuleClient.groupContract();
       const cw4Client = new Cw4GroupQueryClient(cosmwasmClient, cw4Address);
-      const { members } = await cw4Client.listMembers({});
+      const { members } = await cw4Client.listMembers({ limit: 100 });
       return members;
     }
   );
-  if (!members || !networkId) {
-    return null;
-  }
-  return (
-    <View style={[styles.container, style]}>
-      <BrandText style={[fontSemibold14, { paddingLeft: 10 }]}>
-        {members.length} members
-      </BrandText>
-      <View style={{ flexWrap: "wrap", flexDirection: "row" }}>
-        {members.map((member) => (
-          <MemberView
-            key={member.addr}
-            networkId={networkId}
-            addr={member.addr}
-            weight={member.weight}
-          />
-        ))}
-      </View>
-    </View>
-  );
+  return { members, ...other };
 };
-
-const MemberView: React.FC<{
-  networkId: string;
-  addr: string;
-  weight: number;
-}> = ({ networkId, addr, weight }) => {
-  const userId = getUserId(networkId, addr);
-  const { metadata } = useNSUserInfo(userId);
-  const network = getCosmosNetwork(networkId);
-  const navigation = useAppNavigation();
-  const imageSize = 100;
-  return (
-    <View style={styles.memberItem}>
-      <View
-        style={{
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <OptimizedImage
-          source={{
-            uri: metadata.image || network?.nameServiceDefaultImage,
-          }}
-          width={imageSize}
-          height={imageSize}
-          style={{ width: imageSize, height: imageSize }}
-        />
-      </View>
-      <View
-        style={{
-          flexDirection: "row",
-          height: 50,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <BrandText>{metadata.public_name || "Anon"}</BrandText>
-      </View>
-      <TouchableOpacity
-        onPress={() => {
-          navigation.navigate("UserPublicProfile", { id: userId });
-        }}
-      >
-        <View
-          style={{
-            flexDirection: "row",
-            height: 50,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <BrandText>{metadata.tokenId || "No registered name"}</BrandText>
-        </View>
-      </TouchableOpacity>
-      <View
-        style={{
-          flexDirection: "row",
-          height: 50,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <CopyToClipboard text={addr} />
-      </View>
-      <View style={{ flexDirection: "column", margin: 20 }}>
-        <SpacerColumn size={2} />
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-          }}
-        >
-          <BrandText style={styles.textGrayStyle}>Weight</BrandText>
-          <BrandText style={[fontSemibold14]}>{weight}</BrandText>
-        </View>
-      </View>
-    </View>
-  );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: "column",
-  },
-  memberItem: {
-    flexDirection: "column",
-    borderWidth: 1,
-    borderRadius: 12,
-    borderColor: neutral33,
-    width: 250,
-    margin: 10,
-    padding: 10,
-  },
-  textGrayStyle: StyleSheet.flatten([
-    fontSemibold14,
-    {
-      color: secondaryColor,
-      opacity: 0.5,
-    },
-  ]),
-});

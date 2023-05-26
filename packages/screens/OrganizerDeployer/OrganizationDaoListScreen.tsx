@@ -9,7 +9,6 @@ import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { SpacerColumn } from "../../components/spacer";
 import { useDAOs } from "../../hooks/dao/useDAOs";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkKind, getUserId } from "../../networks";
 import { useAppNavigation } from "../../utils/navigation";
 import { fontSemibold28 } from "../../utils/style/fonts";
@@ -18,7 +17,6 @@ import { layout } from "../../utils/style/layout";
 export const OrganizationDaoListScreen = () => {
   const navigation = useAppNavigation();
   const networkId = useSelectedNetworkId();
-  const wallet = useSelectedWallet();
 
   const onCreateDao = () => {
     navigation.navigate("OrganizationDeployer");
@@ -35,13 +33,6 @@ export const OrganizationDaoListScreen = () => {
       forceNetworkKind={NetworkKind.Cosmos}
     >
       <ScrollView>
-        {wallet && (
-          <DAOsSection
-            networkId={networkId}
-            title="Your DAOs"
-            req={{ memberAddress: wallet.address }}
-          />
-        )}
         <DAOsSection
           networkId={networkId}
           title="All DAOs"
