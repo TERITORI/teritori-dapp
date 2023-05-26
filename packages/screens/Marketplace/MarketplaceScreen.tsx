@@ -83,12 +83,10 @@ export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
   const [selectedTab, setSelectedTab] =
     // @ts-expect-error
     useState<keyof typeof tabs>(selectedNetworkId);
-  const [sortDirection, setSortDirection] = useState(
-    SortDirection.SORT_DIRECTION_DESCENDING
-  );
+
   const req = {
     networkId: selectedTab,
-    sortDirection,
+    sortDirection: SortDirection.SORT_DIRECTION_DESCENDING,
     upcoming: false,
     sort: Sort.SORT_VOLUME,
     limit: 32,

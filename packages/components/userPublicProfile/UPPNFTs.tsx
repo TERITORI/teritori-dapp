@@ -40,13 +40,7 @@ const SelectedTabContent: React.FC<{
 
   switch (selectedTab) {
     case "collected":
-      return (
-        <NFTs
-          req={nftsRequest}
-          hideFilters
-          ListHeaderComponent={<View style={{ height: 20 }} />}
-        />
-      );
+      return <NFTs req={nftsRequest} hideFilters />;
     case "created":
       return <></>;
     case "favorited":
