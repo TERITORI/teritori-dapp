@@ -57,7 +57,7 @@ export const NFTMainInfo: React.FC<{
   const { params } = useRoute<RouteProp<RootStackParamList, "NFTDetail">>();
 
   const [selectedTab, setSelectedTab] =
-    useState<keyof typeof mainInfoTabItems>("about");
+    useState<keyof typeof mainInfoTabItems>("attributes");
 
   const SelectedTabItemRendering: React.FC = () => {
     switch (selectedTab) {

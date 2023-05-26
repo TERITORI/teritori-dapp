@@ -4,7 +4,14 @@ import { isDeliverTxFailure } from "@cosmjs/stargate";
 import { EntityId } from "@reduxjs/toolkit";
 import { groupBy } from "lodash";
 import React, { useCallback } from "react";
-import { FlatList, Pressable, StyleProp, View, ViewStyle } from "react-native";
+import {
+  FlatList,
+  Linking,
+  Pressable,
+  StyleProp,
+  View,
+  ViewStyle,
+} from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { TrashIcon } from "react-native-heroicons/outline";
 import { useSelector } from "react-redux";
@@ -23,7 +30,11 @@ import { Wallet } from "../../context/WalletsProvider";
 import { useBalances } from "../../hooks/useBalances";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getKeplrSigningCosmWasmClient, parseNftId } from "../../networks";
+import {
+  getKeplrSigningCosmWasmClient,
+  parseNftId,
+  txExplorerLink,
+} from "../../networks";
 import {
   clearSelected,
   removeSelected,
@@ -240,7 +251,8 @@ const Footer: React.FC<{ items: any[] }> = ({ items }) => {
   const dispatch = useAppDispatch();
 
   const selectedNFTData = useSelector(selectAllSelectedNFTData);
-  const { setToastError } = useFeedbacks();
+  const { setToastError, setLoadingFullScreen, setToastSuccess } =
+    useFeedbacks();
 
   const balances = useBalances(wallet?.networkId, wallet?.address);
   const hasEnoughMoney = selectedNFTData.every((nft) => {
@@ -291,6 +303,7 @@ const Footer: React.FC<{ items: any[] }> = ({ items }) => {
         msgs.push(msg);
       });
       if (msgs.length > 0) {
+        setLoadingFullScreen(true);
         const cosmwasmClient = await getKeplrSigningCosmWasmClient("teritori");
         try {
           const tx = await cosmwasmClient.signAndBroadcast(
@@ -301,8 +314,17 @@ const Footer: React.FC<{ items: any[] }> = ({ items }) => {
           if (isDeliverTxFailure(tx)) {
             throw Error(tx.transactionHash);
           }
-          msgs.map((nft) => {
-            dispatch(removeSelected(nft.value.msg.buy.id)); //remove items from cart
+          selectedNFTData.map((nft) => {
+            setToastSuccess({
+              title: "Purchased",
+              message: "View TX",
+              duration: 10000,
+              onPress: () => {
+                Linking.openURL(txExplorerLink("teritori", tx.transactionHash)); // test it further
+              },
+            });
+            dispatch(removeSelected(nft.id)); //remove items from cart
+            setLoadingFullScreen(false);
           });
         } catch (e) {
           setToastError({
@@ -313,7 +335,13 @@ const Footer: React.FC<{ items: any[] }> = ({ items }) => {
         }
       }
     },
-    [dispatch, selectedNFTData, setToastError]
+    [
+      dispatch,
+      selectedNFTData,
+      setLoadingFullScreen,
+      setToastError,
+      setToastSuccess,
+    ]
   );
 
   const onBuyButtonPress = async () => {
