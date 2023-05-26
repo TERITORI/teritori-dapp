@@ -85,6 +85,7 @@ type DBCollectionWithExtra struct {
 	Price               string
 	MaxSupply           int64
 	SecondaryDuringMint bool
+	Comparision         float32
 }
 
 func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, srv marketplacepb.MarketplaceService_CollectionsServer) error {
@@ -184,7 +185,7 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
                                             ON aop.id = t2.activity_id
      ),
      trades_by_collection_historic AS (
-         select COALESCE(sum(t.usd_price),0) as total_volume, c.id, count(*) num_trades
+         select COALESCE(sum(cast(t.price as float8)),0) as total_volume, c.id, count(*) num_trades
          FROM trades t join activities a on a.id = t.activity_id
                        join teritori_collections tc on split_part(a.nft_id,'-',2)=tc.mint_contract_address
                        join collections c on c.id = tc.collection_id
@@ -194,12 +195,12 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
          from nfts
          group by collection_id),
 			trades_by_collection AS (
-				SELECT SUM(t.usd_price) volume, nbc.id FROM trades_on_period AS t
+				SELECT SUM(cast(t.price as float8)) volume, nbc.id FROM trades_on_period AS t
 				INNER JOIN nft_by_collection nbc ON nbc.nft_id = t.nft_id
 				GROUP BY nbc.id
       ),
      trades_by_collection_comparision AS (
-         SELECT round(100*SUM(t.usd_price)/trades_by_collection.volume, 1) comparision, nbc.id 
+         SELECT round(cast(100*SUM(cast(t.price as float8))/trades_by_collection.volume as numeric), 2) comparision, nbc.id
          FROM trades_on_period_comparision AS t
          INNER JOIN nft_by_collection nbc ON nbc.nft_id = t.nft_id
          JOIN trades_by_collection on trades_by_collection.id = t.id
@@ -216,9 +217,9 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 			OFFSET ?
 		`, where, orderSQL), // order By here or it won't work
 			s.conf.Whitelist,
-			time.Now().AddDate(0, 0, -4),
-			time.Now().AddDate(0, 0, -4),
-			time.Now().AddDate(0, 0, -70),
+			time.Now().AddDate(0, 0, -30),
+			time.Now().AddDate(0, 0, -30),
+			time.Now().AddDate(0, 0, -60),
 			limit,
 			offset,
 		).Scan(&collections).Error
@@ -235,7 +236,8 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 				MintAddress:         c.MintContractAddress,
 				NetworkId:           req.GetNetworkId(),
 				Volume:              c.Volume,
-				VolumeDenom:         "USD",
+				VolumeDenom:         c.Denom,
+				Comparison:          c.Comparision,
 				CreatorId:           string(network.UserID(c.CreatorAddress)),
 				SecondaryDuringMint: c.SecondaryDuringMint,
 				MintPrice:           c.Price,

@@ -3,7 +3,6 @@ import { View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 import { SideCart, useShowCart } from "./SideCart";
-import { SideFilters } from "./SideFilters";
 import { SortDirection } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";

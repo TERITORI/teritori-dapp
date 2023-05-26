@@ -27,7 +27,7 @@ import {
   fontSemibold20,
   fontSemibold28,
 } from "../../utils/style/fonts";
-import { layout, screenContentMaxWidth } from "../../utils/style/layout";
+import { layout, screenContentMaxWidthLarge } from "../../utils/style/layout";
 
 const TABLE_ROWS: { [key: string]: TableRowHeading } = {
   rank: {
@@ -42,12 +42,12 @@ const TABLE_ROWS: { [key: string]: TableRowHeading } = {
     label: "Total Volume",
     flex: 3,
   },
-  "24hVolume": {
-    label: "24h Volume",
+  TimePeriodVolume: {
+    label: "30d Volume",
     flex: 3,
   },
-  "24hPercentualVolume": {
-    label: "24h % Volume",
+  TimePeriodPercentualVolume: {
+    label: "30d % Volume",
     flex: 3,
   },
   sales: {
@@ -143,7 +143,6 @@ export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
           <SearchInput
             style={{
               flex: 7,
-              marginRight: layout.padding_x2,
             }}
             handleChangeText={handleChangeText}
           />
@@ -171,7 +170,7 @@ const CollectionTable: React.FC<{
       style={{
         justifyContent: "space-between",
         width: "100%",
-        maxWidth: screenContentMaxWidth,
+        maxWidth: screenContentMaxWidthLarge,
       }}
     >
       <TableRow headings={Object.values(TABLE_ROWS)} />
@@ -201,6 +200,32 @@ const CollectionTable: React.FC<{
           <SpacerColumn size={2} />
         </>
       )}
+    </View>
+  );
+};
+
+const PrettyPriceWithCurrency: React.FC<{ data: prettyPrint }> = ({ data }) => {
+  return (
+    <View
+      style={{
+        flex: 3,
+        paddingRight: layout.padding_x1,
+        flexDirection: "row",
+        flexWrap: "nowrap",
+        justifyContent: "center",
+      }}
+    >
+      <BrandText
+        style={[
+          fontSemibold13,
+          {
+            marginRight: layout.padding_x0_5,
+          },
+        ]}
+      >
+        {prettyPrice(data.networkId, data.value.toString(10), data.denom)}
+      </BrandText>
+      <CurrencyIcon networkId={data.networkId} denom={data.denom} size={16} />
     </View>
   );
 };
@@ -243,40 +268,11 @@ const CollectionRow: React.FC<{ collection: Collection; rank: number }> = ({
           {rowData.collectionNameData.collectionName}
         </BrandText>
       </View>
-      <InnerCell>{rowData.totalVolume}</InnerCell>
-      <InnerCell>{rowData["24hVolume"]}</InnerCell>
-      <InnerCell>{rowData["24hPercentualVolume"]}</InnerCell>
+      <PrettyPriceWithCurrency data={rowData.totalVolume} />
+      <PrettyPriceWithCurrency data={rowData["TimePeriodVolume"]} />
+      <InnerCell>{rowData["TimePeriodPercentualVolume"]}</InnerCell>
       <InnerCell>{rowData.sales}</InnerCell>
-      <View
-        style={{
-          flex: 3,
-          paddingRight: layout.padding_x1,
-          flexDirection: "row",
-          flexWrap: "nowrap",
-          justifyContent: "center",
-        }}
-      >
-        <BrandText
-          style={[
-            fontSemibold13,
-            {
-              marginRight: layout.padding_x0_5,
-            },
-          ]}
-        >
-          {prettyPrice(
-            rowData.floorPrice.networkId,
-            rowData.floorPrice.value.toString(10),
-            rowData.floorPrice.denom
-          )}
-        </BrandText>
-        <CurrencyIcon
-          networkId={rowData.floorPrice.networkId}
-          denom={rowData.floorPrice.denom}
-          size={16}
-        />
-      </View>
-
+      <PrettyPriceWithCurrency data={rowData.floorPrice} />
       <InnerCell>{rowData.owners}</InnerCell>
       <InnerCell>{rowData.supply}</InnerCell>
     </OmniLink>
@@ -325,6 +321,13 @@ function nFormatter(
       (num / item.value).toFixed(digits).replace(rx, "$1") + item.symbol
     : "0";
 }
+
+interface prettyPrint {
+  networkId: string;
+  value: number;
+  denom: string;
+}
+
 interface RowData {
   id: string;
   rank: number;
@@ -333,15 +336,11 @@ interface RowData {
     collectionName?: string;
     image?: string;
   };
-  totalVolume: string;
-  "24hVolume": string;
-  "24hPercentualVolume": string;
+  totalVolume: prettyPrint;
+  TimePeriodVolume: prettyPrint;
+  TimePeriodPercentualVolume: number;
   sales: string;
-  floorPrice: {
-    networkId: string;
-    value: number;
-    denom: string;
-  };
+  floorPrice: prettyPrint;
   owners: string;
   supply: string;
 }
@@ -355,9 +354,17 @@ const useRowData = (collection: Collection, rank: number): RowData => {
       collectionName: collection.collectionName,
       image: collection.imageUri,
     },
-    totalVolume: nFormatter(collection.totalVolume, 0),
-    "24hVolume": nFormatter(collection.volume, 0),
-    "24hPercentualVolume": nFormatter(collection.volume, 2),
+    totalVolume: {
+      networkId: collection.networkId,
+      value: collection.totalVolume,
+      denom: collection.denom,
+    },
+    TimePeriodVolume: {
+      networkId: collection.networkId,
+      value: parseFloat(collection.volume),
+      denom: collection.denom,
+    },
+    TimePeriodPercentualVolume: collection.comparison,
     sales: nFormatter(collection.numTrades, 0),
     floorPrice: {
       networkId: collection.networkId,

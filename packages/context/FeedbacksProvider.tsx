@@ -16,12 +16,12 @@ interface ToastMessage {
   duration?: number;
   onPress?: () => void;
 }
-const initialToastError: ToastMessage = {
+export const initialToastError: ToastMessage = {
   title: "",
   message: "",
   duration: 8000,
 };
-const initialToastSuccess: ToastMessage = {
+export const initialToastSuccess: ToastMessage = {
   title: "",
   message: "",
   duration: 8000,
@@ -116,7 +116,7 @@ export const FeedbacksContextProvider: React.FC = ({ children }) => {
       {toastSuccess && toastSuccess.title ? (
         <ToastSuccess
           onPress={() => {
-            toastSuccess.onPress
+            return toastSuccess.onPress
               ? toastSuccess.onPress()
               : setToastSuccess(initialToastSuccess);
           }}

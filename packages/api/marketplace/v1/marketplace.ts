@@ -190,6 +190,7 @@ export interface Collection {
   numTrades: number;
   numOwners: number;
   denom: string;
+  comparison: number;
 }
 
 export interface CollectionStats {
@@ -775,6 +776,7 @@ function createBaseCollection(): Collection {
     numTrades: 0,
     numOwners: 0,
     denom: "",
+    comparison: 0,
   };
 }
 
@@ -839,6 +841,9 @@ export const Collection = {
     }
     if (message.denom !== "") {
       writer.uint32(170).string(message.denom);
+    }
+    if (message.comparison !== 0) {
+      writer.uint32(181).float(message.comparison);
     }
     return writer;
   },
@@ -910,6 +915,9 @@ export const Collection = {
         case 21:
           message.denom = reader.string();
           break;
+        case 22:
+          message.comparison = reader.float();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -940,6 +948,7 @@ export const Collection = {
       numTrades: isSet(object.numTrades) ? Number(object.numTrades) : 0,
       numOwners: isSet(object.numOwners) ? Number(object.numOwners) : 0,
       denom: isSet(object.denom) ? String(object.denom) : "",
+      comparison: isSet(object.comparison) ? Number(object.comparison) : 0,
     };
   },
 
@@ -965,6 +974,7 @@ export const Collection = {
     message.numTrades !== undefined && (obj.numTrades = Math.round(message.numTrades));
     message.numOwners !== undefined && (obj.numOwners = Math.round(message.numOwners));
     message.denom !== undefined && (obj.denom = message.denom);
+    message.comparison !== undefined && (obj.comparison = message.comparison);
     return obj;
   },
 
@@ -990,6 +1000,7 @@ export const Collection = {
     message.numTrades = object.numTrades ?? 0;
     message.numOwners = object.numOwners ?? 0;
     message.denom = object.denom ?? "";
+    message.comparison = object.comparison ?? 0;
     return message;
   },
 };
