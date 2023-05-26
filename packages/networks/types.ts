@@ -80,6 +80,7 @@ export type GnoNetworkInfo = NetworkInfoBase & {
   chainId: string;
   endpoint: string;
   stakeCurrency: string;
+  vaultContractAddress: string;
 };
 
 export type NetworkInfo =
