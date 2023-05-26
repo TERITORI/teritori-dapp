@@ -16,7 +16,7 @@ import { parseCollectionId } from "../../networks";
 import { setShowFilters } from "../../store/slices/marketplaceFilters";
 import { useAppDispatch } from "../../store/store";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
-import { neutral00, neutral67 } from "../../utils/style/colors";
+import { neutral00, neutral33 } from "../../utils/style/colors";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 
@@ -61,6 +61,7 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
         }}
       >
         <ScrollView
+          showsHorizontalScrollIndicator={false}
           contentContainerStyle={{
             alignItems: "center",
             width: cartIsShown ? width - SideCartWidth : width,
@@ -91,7 +92,7 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
               marginBottom: layout.padding_x2_5,
               backgroundColor: neutral00,
               borderRadius: layout.padding_x2,
-              borderColor: neutral67,
+              borderColor: neutral33,
               borderWidth: 1,
               padding: layout.padding_x2,
               borderStyle: "solid",
@@ -108,7 +109,7 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
             marginBottom: layout.padding_x2_5,
             backgroundColor: neutral00,
             borderRadius: layout.padding_x2,
-            borderColor: neutral67,
+            borderColor: neutral33,
             borderWidth: 1,
             paddingVertical: layout.padding_x1,
             paddingHorizontal: layout.padding_x1_5,

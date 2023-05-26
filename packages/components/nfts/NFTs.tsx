@@ -62,6 +62,7 @@ export const NFTs: React.FC<{
           maxWidth: screenContentMaxWidthLarge,
           alignSelf: "center",
         }}
+        showsHorizontalScrollIndicator={false}
         columnWrapperStyle={{ flexWrap: "wrap", flex: 1, marginTop: 5 }}
         numColumns={99} // needed to deal with wrap via css
         ItemSeparatorComponent={() => <SpacerColumn size={2} />}

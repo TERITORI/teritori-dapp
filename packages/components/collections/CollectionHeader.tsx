@@ -26,7 +26,7 @@ import {
   parseCollectionId,
 } from "../../networks";
 import { CollectionInfo } from "../../utils/collection";
-import { codGrayColor, neutral33, neutral67 } from "../../utils/style/colors";
+import { codGrayColor, neutral33 } from "../../utils/style/colors";
 import { fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { FilterButton } from "../sorts/FilterButton";
@@ -151,7 +151,7 @@ export const CollectionHeader: React.FC<{
           width: "100%",
           marginBottom: layout.padding_x2_5,
           borderRadius: layout.padding_x2,
-          borderColor: neutral67,
+          borderColor: neutral33,
           borderWidth: 1,
           padding: layout.padding_x2,
           borderStyle: "solid",
