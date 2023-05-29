@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import { OrderParams } from "../../../contracts-clients/teritori-freelance-order/TeritoriOrder.types";
+import { OrderParams } from "../../../contracts-clients/teritori-freelance/TeritoriOrder.types";
 import { OrderFormType } from "../../../utils/types/order";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { TextInputCustom } from "../../inputs/TextInputCustom";

@@ -5,5 +5,5 @@ export interface FreelancerServiceRouteTypes {
   name: string;
   icon: React.FC<SvgProps>;
   iconChangePage: React.FC<SvgProps>;
-  navigation: "LogoDesign" | "ComingSoon";
+  category: string;
 }

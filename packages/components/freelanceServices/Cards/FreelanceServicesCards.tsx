@@ -2,7 +2,6 @@ import React from "react";
 import { View, StyleProp, ViewStyle, TouchableOpacity } from "react-native";
 import { SvgProps } from "react-native-svg";
 
-import { FreelancerServiceRouteTypes } from "../../../screens/FreelanceServices/types/routes";
 import { useAppNavigation } from "../../../utils/navigation";
 import { neutral17 } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
@@ -18,7 +17,8 @@ export const FreelanceServicesCards: React.FC<{
   iconSVG: React.FC<SvgProps>;
   iconNearTextSVG: React.FC<SvgProps>;
   text: string;
-  navigation: FreelancerServiceRouteTypes["navigation"];
+  category: string;
+  subCategory?: string;
 }> = ({
   // If no width, the buttons will fit the content including paddingHorizontal 20
   width,
@@ -28,7 +28,8 @@ export const FreelanceServicesCards: React.FC<{
   iconSVG,
   text,
   iconNearTextSVG,
-  navigation,
+  category,
+  subCategory,
 }) => {
   const nav = useAppNavigation();
 
@@ -41,11 +42,18 @@ export const FreelanceServicesCards: React.FC<{
     >
       <TouchableOpacity
         onPress={() => {
-          nav.navigate(navigation);
+          if (!subCategory) {
+            nav.navigate("FreelanceServicesCategory", { category });
+          } else {
+            nav.navigate("FreelanceServicesSubCategory", {
+              category,
+              subcategory: subCategory,
+            });
+          }
         }}
-        disabled={navigation === "ComingSoon"}
+        disabled={category === "ComingSoon"}
         style={{
-          opacity: navigation === "ComingSoon" ? 0.5 : 1,
+          opacity: category === "ComingSoon" ? 0.5 : 1,
         }}
       >
         <View style={{ height: height - 30, justifyContent: "space-between" }}>

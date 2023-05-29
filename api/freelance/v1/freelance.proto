@@ -41,7 +41,7 @@ message EscrowInfo {
   string receiver = 3;
   string amount = 4;
   string amount_denom = 5;
-  string expire_at = 6;
+  uint64 expire_at = 6;
   uint32 status = 7;
 }
 

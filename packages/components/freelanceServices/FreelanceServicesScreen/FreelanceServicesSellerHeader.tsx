@@ -16,6 +16,7 @@ export const FreelanceServicesSellerHeader: React.FC = () => {
 
   useEffect(() => {
     const checkIsSeller = async (address: string) => {
+      
       const ipfs_hash = await getSellerIpfsHash(address);
       setIsSeller(!!ipfs_hash);
     };

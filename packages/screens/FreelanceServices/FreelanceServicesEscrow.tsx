@@ -29,7 +29,6 @@ export const FreelanceServicesEscrow: ScreenFC<"FreelanceServicesEscrow"> = ({
       const res = await freelanceClient.escrowAllList({
         address: selectedWallet.address,
       });
-      console.log(res);
       setEscrows(res.escrows);
     };
     getEscrowsData();

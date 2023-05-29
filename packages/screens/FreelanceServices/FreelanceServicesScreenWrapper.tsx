@@ -61,7 +61,7 @@ export const FreelanceServicesScreenWrapper: React.FC<{
                 >
                   <TouchableOpacity
                     onPress={() => {
-                      navigation.navigate("FreelanceServicesHome");
+                      navigation.navigate("FreelanceServicesHomeBuyer");
                     }}
                   >
                     <BrandText

@@ -37,9 +37,8 @@ export const FreelanceServicesGigCreation: ScreenFC<
   }, [route.params]);
   useEffect(() => {
     const setProfileIpfs = async () => {
-      if (!gigInfo) return;
       const profileHash = await getSellerIpfsHash(selectedWallet?.address!);
-      setGigInfo({ ...gigInfo, profileHash });
+      setGigInfo((g) => ({ ...g, profileHash }));
     };
     setProfileIpfs();
   }, [selectedWallet]);

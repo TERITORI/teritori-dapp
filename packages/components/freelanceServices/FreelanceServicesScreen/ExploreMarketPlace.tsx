@@ -21,55 +21,55 @@ const data = [
     name: "Graphics & Design",
     icon: Feather,
     iconChangePage: GoToPageIcon,
-    navigation: "GraphicsAndDesign",
+    category: "GraphicsAndDesign",
   },
   {
     name: "Digital Marketing",
     icon: Computer,
     iconChangePage: GoToPageIcon,
-    navigation: "ComingSoon",
+    category: "ComingSoon",
   },
   {
     name: "Wiriting & Translation",
     icon: Pen,
     iconChangePage: GoToPageIcon,
-    navigation: "ComingSoon",
+    category: "ComingSoon",
   },
   {
     name: "Video & Animation",
     icon: BallBounce,
     iconChangePage: GoToPageIcon,
-    navigation: "ComingSoon",
+    category: "ComingSoon",
   },
   {
     name: "Music & Audio",
     icon: Music,
     iconChangePage: GoToPageIcon,
-    navigation: "ComingSoon",
+    category: "ComingSoon",
   },
   {
     name: "Dev & Tech",
     icon: Code,
     iconChangePage: GoToPageIcon,
-    navigation: "ComingSoon",
+    category: "ComingSoon",
   },
   {
     name: "Business",
     icon: Suitcase,
     iconChangePage: GoToPageIcon,
-    navigation: "ComingSoon",
+    category: "ComingSoon",
   },
   {
     name: "Lifestyle",
     icon: LifeStyle,
     iconChangePage: GoToPageIcon,
-    navigation: "ComingSoon",
+    category: "ComingSoon",
   },
   {
     name: "Data",
     icon: Data,
     iconChangePage: GoToPageIcon,
-    navigation: "ComingSoon",
+    category: "ComingSoon",
   },
 ] as FreelancerServiceRouteTypes[];
 
@@ -111,7 +111,7 @@ export const ExplorerMarketPlace: React.FC = () => {
               marginTop: layout.padding_x2,
             }}
             key={index}
-            navigation={item.navigation}
+            category={item.category}
           />
         ))}
       </View>

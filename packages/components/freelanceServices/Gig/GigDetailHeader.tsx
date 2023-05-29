@@ -4,7 +4,7 @@ import { View, TouchableOpacity, useWindowDimensions } from "react-native";
 import heartIcon from "../../../../assets/icons/heart.svg";
 import reportIcon from "../../../../assets/icons/report.svg";
 import shareIcon from "../../../../assets/icons/share-white.svg";
-import { ServiceFields } from "../../../screens/FreelanceServices/types/fields";
+import { GigData } from "../../../screens/FreelanceServices/types/fields";
 import {
   neutral44,
   secondaryColor,
@@ -29,7 +29,7 @@ const tabs = [
 ];
 
 export const GigDetailHeader: React.FC<{
-  data: ServiceFields | null;
+  data: GigData | null;
 }> = ({ data }) => {
   const [selected, setSelected] = useState(tabs[0]);
   const [displayReportPopup, setDisplayReportPopup] = useState(false);
@@ -50,6 +50,7 @@ export const GigDetailHeader: React.FC<{
     >
       {displayReportPopup && (
         <ReportPopUp
+          seller={data?.sellerAddress!}
           visible={displayReportPopup}
           onClose={() => {
             setDisplayReportPopup(false);

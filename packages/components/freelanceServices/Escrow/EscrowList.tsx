@@ -1,12 +1,22 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { FlatList, StyleProp, View, ViewStyle } from "react-native";
 
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import {mineShaftColor} from "../../../utils/style/colors";
-import {fontSemibold13} from "../../../utils/style/fonts";
+import {
+  escrowAccept,
+  escrowPause,
+  escrowResume,
+  escrowCancel,
+  escrowComplete,
+} from "../../../screens/FreelanceServices/contract";
+import { useAppNavigation } from "../../../utils/navigation";
+import { mineShaftColor } from "../../../utils/style/colors";
+import { fontSemibold13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { EscrowInfo } from "../../../utils/types/freelance";
+import { EscrowInfo, EscrowStatus } from "../../../utils/types/freelance";
 import { BrandText } from "../../BrandText";
+import { tinyAddress } from "../../WalletSelector";
+import { SecondaryButtonOutline } from "../../buttons/SecondaryButtonOutline";
 import { SpacerRow } from "../../spacer";
 import { TableRow, TableRowHeading } from "../../table";
 
@@ -31,6 +41,10 @@ const TABLE_ROWS: { [key in string]: TableRowHeading } = {
     label: "Status",
     flex: 1,
   },
+  action: {
+    label: "Action",
+    flex: 1,
+  },
 };
 
 export const EscrowTable: React.FC<{
@@ -39,7 +53,6 @@ export const EscrowTable: React.FC<{
 }> = ({ escrows, style }) => {
   // variables
   const ROWS = TABLE_ROWS;
-  const selectedWallet = useSelectedWallet();
   // returns
   return (
     <>
@@ -59,6 +72,104 @@ const EscrowRow: React.FC<{
   escrow: EscrowInfo;
 }> = ({ escrow }) => {
   const selectedWallet = useSelectedWallet();
+  const [isShowAccept, setIsShowAccept] = useState<boolean>(false);
+  const [isShowCancel, setIsShowCancel] = useState<boolean>(false);
+  const [isShowPause, setIsShowPause] = useState<boolean>(false);
+  const [isShowResume, setIsShowResume] = useState<boolean>(false);
+  const [isShowComplete, setIsShowComplete] = useState<boolean>(false);
+  const navigation = useAppNavigation();
+
+  useEffect(() => {
+    if (!selectedWallet) return;
+    const walletAddress = selectedWallet.address;
+    if (escrow.sender !== walletAddress && escrow.receiver !== walletAddress)
+      return;
+    const isBuyer = escrow.sender === walletAddress;
+    switch (escrow.status) {
+      case EscrowStatus.CreateContract:
+        if (isBuyer) {
+          setIsShowCancel(true);
+        } else {
+          setIsShowAccept(true);
+        }
+        break;
+      case EscrowStatus.Accept:
+        if (isBuyer) {
+          setIsShowPause(true);
+          setIsShowComplete(true);
+        }
+        break;
+      case EscrowStatus.Pause:
+        if (isBuyer) {
+          setIsShowResume(true);
+        }
+        break;
+    }
+  }, [escrow, selectedWallet]);
+
+  const getExpireAt = (startTime: string, expireAt: number): string => {
+    let d = new Date(startTime);
+    d = new Date(d.getTime() + expireAt);
+    return `${d.getFullYear()}/${
+      d.getMonth() + 1
+    }/${d.getDate()} ${d.getHours()}:${d.getSeconds()}`;
+  };
+
+  const clickAccept = async () => {
+    if (!selectedWallet) return;
+    const walletAddress = selectedWallet.address;
+    const escrowRes = await escrowAccept(walletAddress, escrow.id);
+    if (escrowRes) {
+      navigation.replace("FreelanceServicesEscrow");
+    } else {
+      console.log("failed");
+    }
+  };
+  const clickPause = async () => {
+    if (!selectedWallet) return;
+    const walletAddress = selectedWallet.address;
+    const escrowRes = await escrowPause(walletAddress, escrow.id);
+    if (escrowRes) {
+      navigation.replace("FreelanceServicesEscrow");
+    } else {
+      console.log("failed");
+    }
+  };
+  const clickResume = async () => {
+    if (!selectedWallet) return;
+    const walletAddress = selectedWallet.address;
+    const increatedExpireAt = 0;
+    const escrowRes = await escrowResume(
+      walletAddress,
+      escrow.id,
+      increatedExpireAt
+    );
+    if (escrowRes) {
+      navigation.replace("FreelanceServicesEscrow");
+    } else {
+      console.log("failed");
+    }
+  };
+  const clickCancel = async () => {
+    if (!selectedWallet) return;
+    const walletAddress = selectedWallet.address;
+    const escrowRes = await escrowCancel(walletAddress, escrow.id);
+    if (escrowRes) {
+      navigation.replace("FreelanceServicesEscrow");
+    } else {
+      console.log("failed");
+    }
+  };
+  const clickComplete = async () => {
+    if (!selectedWallet) return;
+    const walletAddress = selectedWallet.address;
+    const escrowRes = await escrowComplete(walletAddress, escrow.id);
+    if (escrowRes) {
+      navigation.replace("FreelanceServicesEscrow");
+    } else {
+      console.log("failed");
+    }
+  };
 
   return (
     <View
@@ -80,7 +191,7 @@ const EscrowRow: React.FC<{
           { flex: TABLE_ROWS.sender.flex, paddingRight: layout.padding_x1 },
         ]}
       >
-        {escrow.sender}
+        {tinyAddress(escrow.sender, 20)}
       </BrandText>
       <View
         style={{
@@ -91,7 +202,9 @@ const EscrowRow: React.FC<{
         }}
       >
         <SpacerRow size={1} />
-        <BrandText style={fontSemibold13}>{escrow.receiver}</BrandText>
+        <BrandText style={fontSemibold13}>
+          {tinyAddress(escrow.receiver, 20)}
+        </BrandText>
       </View>
       <BrandText
         style={[
@@ -102,7 +215,7 @@ const EscrowRow: React.FC<{
           },
         ]}
       >
-        {escrow.amount}
+        {escrow.amount} tori
       </BrandText>
       <BrandText
         style={[
@@ -113,7 +226,7 @@ const EscrowRow: React.FC<{
           },
         ]}
       >
-        {escrow.expireAt}
+        {getExpireAt(escrow.time, escrow.expireAt)}
       </BrandText>
       <BrandText
         style={[
@@ -126,6 +239,55 @@ const EscrowRow: React.FC<{
       >
         {getStringStatus[escrow.status]}
       </BrandText>
+      <View
+        style={{
+          flex: TABLE_ROWS.action.flex,
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        {isShowAccept && (
+          <SecondaryButtonOutline
+            onPress={() => clickAccept()}
+            text="Accept"
+            size="XS"
+            style={{ marginVertical: 5 }}
+          />
+        )}
+        {isShowPause && (
+          <SecondaryButtonOutline
+            onPress={() => clickPause()}
+            text="Pause"
+            size="XS"
+            style={{ marginVertical: 5 }}
+          />
+        )}
+        {isShowResume && (
+          <SecondaryButtonOutline
+            onPress={() => clickResume()}
+            text="Resume"
+            size="XS"
+            style={{ marginVertical: 5 }}
+          />
+        )}
+        {isShowCancel && (
+          <SecondaryButtonOutline
+            onPress={() => clickCancel()}
+            text="Cancel"
+            size="XS"
+            style={{ marginVertical: 5 }}
+          />
+        )}
+        {isShowComplete && (
+          <SecondaryButtonOutline
+            onPress={() => clickComplete()}
+            text="Complete"
+            size="XS"
+            style={{ marginVertical: 5 }}
+          />
+        )}
+      </View>
     </View>
   );
 };

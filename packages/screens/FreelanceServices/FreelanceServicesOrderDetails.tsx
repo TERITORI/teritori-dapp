@@ -10,8 +10,8 @@ import { OrderDetailsHeader } from "../../components/freelanceServices/Order/Ord
 import { SecondRightCard } from "../../components/freelanceServices/Order/SecondRightCard";
 import { FreelanceOrderModal } from "../../components/modals/freelanceOrder/FreelanceOrderModal";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { TeritoriOrderClient } from "../../contracts-clients/teritori-freelance-order/TeritoriOrder.client";
-import { OrderParams } from "../../contracts-clients/teritori-freelance-order/TeritoriOrder.types";
+import { TeritoriOrderClient } from "../../contracts-clients/teritori-freelance/TeritoriOrder.client";
+import { OrderParams } from "../../contracts-clients/teritori-freelance/TeritoriOrder.types";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { freelanceClient } from "../../utils/backend";

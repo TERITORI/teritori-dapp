@@ -26,9 +26,19 @@ export enum OrderStep {
 export enum GigsTab {}
 
 export type EscrowInfo = {
+  id: number;
   sender: string;
   receiver: string;
   amount: string;
-  expireAt: string;
+  expireAt: number;
+  time: string;
   status: number;
 };
+
+export enum EscrowStatus {
+  CreateContract,
+  Accept,
+  Cancel,
+  Pause,
+  Complete,
+}

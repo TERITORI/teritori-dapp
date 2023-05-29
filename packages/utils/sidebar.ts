@@ -35,7 +35,7 @@ export const SIDEBAR_LIST: SidebarRecordType = {
   },
   freelance: {
     title: "Freelance",
-    route: "FreelanceServicesHome",
+    route: "FreelanceServicesHomeBuyer",
     icon: marketplaceSVG,
     // nested: {
     //   freelance: {

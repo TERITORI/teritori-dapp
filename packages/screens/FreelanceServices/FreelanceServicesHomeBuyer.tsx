@@ -11,7 +11,9 @@ const galleries: Gallery[] = [
   getGallery("popular-services"),
   getGallery("freelancer-featured"),
 ];
-export const FreelanceServicesHome: ScreenFC<"FreelanceServicesHome"> = () => {
+export const FreelanceServicesHomeBuyer: ScreenFC<
+  "FreelanceServicesHomeBuyer"
+> = () => {
   return (
     <FreelanceServicesScreenWrapper showBuyerSeller>
       <FreelanceServicesHeader />

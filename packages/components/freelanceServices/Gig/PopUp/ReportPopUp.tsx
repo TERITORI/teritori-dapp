@@ -12,8 +12,7 @@ import { BrandText } from "../../../BrandText/BrandText";
 import { Separator } from "../../../Separator";
 import { SecondaryButton } from "../../../buttons/SecondaryButton";
 import { ModalBase } from "../../../modals/ModalBase";
-import { DescritpionReportPopup } from "./DescritpionReportPopup";
-
+import { DescriptionReportPopup } from "./DescriptionReportPopup";
 const options = [
   "Non Original Content",
   "Inappropriate Gig",
@@ -22,9 +21,10 @@ const options = [
 ];
 
 export const ReportPopUp: React.FC<{
+  seller: string;
   visible?: boolean;
   onClose: () => void;
-}> = ({ visible, onClose }) => {
+}> = ({ seller, visible, onClose }) => {
   const [displayReportPopUp, setDisplayReportPopUp] = useState(visible);
   const [displayDescriptionReportPopUp, setDisplayDescriptionReportPopUp] =
     useState(false);
@@ -46,8 +46,9 @@ export const ReportPopUp: React.FC<{
       childrenBottom={
         <>
           {displayDescriptionReportPopUp && (
-            <DescritpionReportPopup
-              userInfo={{ user_addr: "tori1.." }}
+            <DescriptionReportPopup
+              seller={seller}
+              optionIndex={options.indexOf(isSelected)}
               visible
               onClose={() => {
                 setDisplayDescriptionReportPopUp(false);

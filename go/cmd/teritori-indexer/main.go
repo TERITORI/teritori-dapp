@@ -56,7 +56,8 @@ func main() {
 		pricesServiceURI               = fs.String("prices-service-uri", "localhost:9091", "price service URI")
 		insecurePrices                 = fs.Bool("prices-insecure-grpc", false, "do not use TLS to connect to prices service")
 		sellerConractAddress           = fs.String("teritori-freelance-seller-address", "", "address of the teritori freelance seller contract")
-		escrowContractAddress          = fs.String("teritori-freelance-escrow-address","", "address of the teritori freelance escrow contract")
+		escrowContractAddress          = fs.String("teritori-freelance-escrow-address", "", "address of the teritori freelance escrow contract")
+		reportContractAddress          = fs.String("teritori-freelance-report-address", "", "address of the teritori freelance repoprt contract")
 	)
 	if err := ff.Parse(fs, os.Args[1:],
 		ff.WithEnvVars(),
@@ -74,8 +75,11 @@ func main() {
 	if *sellerConractAddress == "" {
 		panic(errors.New("missing teritori-seller-contract-address flag"))
 	}
-        if *escrowContractAddress == "" {
-    		panic(errors.New("missing teritori-freelance-escrow-address flag"))
+	if *escrowContractAddress == "" {
+		panic(errors.New("missing teritori-freelance-escrow-address flag"))
+	}
+	if *reportContractAddress == "" {
+		panic(errors.New("missing teritori-freelance-report-address flag"))
 	}
 	if *tendermintWebsocketEndpoint == "" {
 		panic(errors.New("missing tendermint-websocket-endpoint flag"))
@@ -244,6 +248,7 @@ func main() {
 					TNSContractAddress:             *tnsContractAddress,
 					SellerContractAddress:          *sellerConractAddress,
 					EscrowContractAddress:          *escrowContractAddress,
+					ReportContractAddress:          *reportContractAddress,
 					TNSDefaultImageURL:             *tnsDefaultImageURL,
 					TendermintClient:               client,
 					NetworkID:                      *teritoriNetworkID,

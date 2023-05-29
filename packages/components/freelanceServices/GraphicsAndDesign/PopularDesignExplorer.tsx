@@ -19,35 +19,36 @@ const data = [
     name: "Logo Design",
     icon: dimaond,
     iconChangePage: GoToPageIcon,
-    navigation: "LogoDesign",
+    subCategory: "LogoDesign",
   },
   {
     name: "Architecture & \nInterior Design",
     icon: house,
     iconChangePage: GoToPageIcon,
-    navigation: "",
+    subCategory: "",
   },
   {
     name: "Image Editing",
     icon: imageEditing,
     iconChangePage: GoToPageIcon,
-    navigation: "",
+    subCategory: "",
   },
   {
     name: "NFT Art",
     icon: halfStar,
     iconChangePage: GoToPageIcon,
-    navigation: "",
+    subCategory: "",
   },
   {
     name: "Merch Design",
     icon: glasses,
     iconChangePage: GoToPageIcon,
-    navigation: "",
+    subCategory: "",
   },
 ];
 
 export const PopularDesignExplorer: React.FC = () => {
+  const categoryName = "GraphicsAndDesign";
   return (
     <View style={{ flexDirection: "column", width: 1290, alignSelf: "center" }}>
       <View
@@ -94,7 +95,8 @@ export const PopularDesignExplorer: React.FC = () => {
             height={156}
             // boxStyle={{ margin: layout.padding_x1 }}
             key={index}
-            navigation={item.navigation}
+            category={categoryName}
+            subCategory={item.subCategory}
           />
         ))}
       </View>

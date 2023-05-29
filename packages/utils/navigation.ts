@@ -17,8 +17,12 @@ export type RootStackParamList = {
   Governance: undefined;
   UserPublicProfile: { id: string };
   RiotersFooter: undefined;
-  FreelanceServicesHome: undefined;
+  FreelanceServicesHomeBuyer: undefined;
+  FreelanceServicesCategory: { category: string };
+  FreelanceServicesSubCategory: { category: string; subcategory: string };
   FreelanceServicesHomeSeller: undefined;
+  FreelanceServicesGigDetail: { gigId: number };
+
   FreelanceServicesProfileSeller: undefined;
   FreelanceServicesGigCreation: { gigId?: number } | undefined;
   FreelanceServicesSellerDetails: { address: string };
@@ -28,10 +32,8 @@ export type RootStackParamList = {
     modal?: string;
     name?: string;
   };
-  FreelanceServicesGigDetail: { gigId: number };
+
   FreelanceServicesEscrow: { isSeller?: boolean } | undefined;
-  GraphicsAndDesign: undefined;
-  LogoDesign: undefined;
   Launchpad: undefined;
   LaunchpadApply: undefined;
   MintCollection: { id: string };
@@ -128,18 +130,31 @@ const navConfig: {
   screens: {
     Home: "",
     MyCollection: "my-collection",
-    GraphicsAndDesign: "graphics-and-design",
-    FreelanceServicesHome: "freelance-services/buyer",
+    FreelanceServicesHomeBuyer: "freelance-services",
+    FreelanceServicesCategory: "freelance-services/categories/:category",
+    FreelanceServicesSubCategory:
+      "freelance-services/categories/:category/:subcategory",
+
     FreelanceServicesHomeSeller: "freelance-services/seller",
+    FreelanceServicesGigDetail: "freelance-services/gig/:gigId",
+
+    // FreelanceServicesMyAccountProfile: "freelance-services/profile_seller",
+    // FreelanceServicesManageGigList: "freelance-services/manage_gigs",
+    // FreelanceServicesManageGigCreation: "freelance-services/manage_gigs/new",
+    // FreelanceServicesManageGigEdit: "freelance-services/manage_gigs/edit/:gigId",
+    // FreelanceServicesManageOrders: "freelance-services/manage_orders"
+
+    // FreelanceServicesHome: "freelance-services/buyer",
+
     FreelanceServicesProfileSeller: "freelance-services/profile_seller",
     FreelanceServicesGigCreation: "freelance-services/gig_creation/:gigId?",
     FreelanceServicesSellerDetails:
       "freelance-services/seller-details/:address",
     FreelanceServicesOrder:
       "freelance-services/order/:gigId/:serviceLevelIndex/:modal?",
-    FreelanceServicesGigDetail: "freelance-services/gig/:gigId",
+
     FreelanceServicesEscrow: "freelance-services/escrow/:isSeller?",
-    LogoDesign: "logo-design",
+
     Activity: "activity",
     Guardians: "guardians",
     WalletManager: "wallet-manager",

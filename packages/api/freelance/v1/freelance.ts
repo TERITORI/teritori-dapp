@@ -1,6 +1,7 @@
 /* eslint-disable */
 import { grpc } from "@improbable-eng/grpc-web";
 import { BrowserHeaders } from "browser-headers";
+import Long from "long";
 import _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "freelance.v1";
@@ -34,7 +35,8 @@ export interface EscrowInfo {
   receiver: string;
   amount: string;
   amountDenom: string;
-  expireAt: string;
+  time: string;
+  expireAt: number;
   status: number;
 }
 
@@ -347,7 +349,7 @@ export const EscrowListRequest = {
 };
 
 function createBaseEscrowInfo(): EscrowInfo {
-  return { id: 0, sender: "", receiver: "", amount: "", amountDenom: "", expireAt: "", status: 0 };
+  return { id: 0, sender: "", receiver: "", amount: "", amountDenom: "", time: "", expireAt: 0, status: 0 };
 }
 
 export const EscrowInfo = {
@@ -367,11 +369,14 @@ export const EscrowInfo = {
     if (message.amountDenom !== "") {
       writer.uint32(42).string(message.amountDenom);
     }
-    if (message.expireAt !== "") {
-      writer.uint32(50).string(message.expireAt);
+    if (message.time !== "") {
+      writer.uint32(50).string(message.time);
+    }
+    if (message.expireAt !== 0) {
+      writer.uint32(56).uint64(message.expireAt);
     }
     if (message.status !== 0) {
-      writer.uint32(56).uint32(message.status);
+      writer.uint32(64).uint32(message.status);
     }
     return writer;
   },
@@ -399,9 +404,12 @@ export const EscrowInfo = {
           message.amountDenom = reader.string();
           break;
         case 6:
-          message.expireAt = reader.string();
+          message.time = reader.string();
           break;
         case 7:
+          message.expireAt = longToNumber(reader.uint64() as Long);
+          break;
+        case 8:
           message.status = reader.uint32();
           break;
         default:
@@ -419,7 +427,8 @@ export const EscrowInfo = {
       receiver: isSet(object.receiver) ? String(object.receiver) : "",
       amount: isSet(object.amount) ? String(object.amount) : "",
       amountDenom: isSet(object.amountDenom) ? String(object.amountDenom) : "",
-      expireAt: isSet(object.expireAt) ? String(object.expireAt) : "",
+      time: isSet(object.time) ? String(object.time) : "",
+      expireAt: isSet(object.expireAt) ? Number(object.expireAt) : 0,
       status: isSet(object.status) ? Number(object.status) : 0,
     };
   },
@@ -431,7 +440,8 @@ export const EscrowInfo = {
     message.receiver !== undefined && (obj.receiver = message.receiver);
     message.amount !== undefined && (obj.amount = message.amount);
     message.amountDenom !== undefined && (obj.amountDenom = message.amountDenom);
-    message.expireAt !== undefined && (obj.expireAt = message.expireAt);
+    message.time !== undefined && (obj.time = message.time);
+    message.expireAt !== undefined && (obj.expireAt = Math.round(message.expireAt));
     message.status !== undefined && (obj.status = Math.round(message.status));
     return obj;
   },
@@ -447,7 +457,8 @@ export const EscrowInfo = {
     message.receiver = object.receiver ?? "";
     message.amount = object.amount ?? "";
     message.amountDenom = object.amountDenom ?? "";
-    message.expireAt = object.expireAt ?? "";
+    message.time = object.time ?? "";
+    message.expireAt = object.expireAt ?? 0;
     message.status = object.status ?? 0;
     return message;
   },
@@ -1049,6 +1060,18 @@ export type DeepPartial<T> = T extends Builtin ? T
 type KeysOfUnion<T> = T extends T ? keyof T : never;
 export type Exact<P, I extends P> = P extends Builtin ? P
   : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
+
+function longToNumber(long: Long): number {
+  if (long.gt(Number.MAX_SAFE_INTEGER)) {
+    throw new tsProtoGlobalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
+  }
+  return long.toNumber();
+}
+
+if (_m0.util.Long !== Long) {
+  _m0.util.Long = Long as any;
+  _m0.configure();
+}
 
 function isSet(value: any): boolean {
   return value !== null && value !== undefined;

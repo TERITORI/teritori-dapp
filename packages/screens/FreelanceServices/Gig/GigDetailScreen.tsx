@@ -113,6 +113,7 @@ export const GigDetailScreen: ScreenFC<"FreelanceServicesGigDetail"> = ({
                 }}
               >
                 <Image
+                  // @ts-ignore
                   source={ipfsPinataUrl(gigData.sellerUser.profilePic)}
                   style={{ width: 32, height: 32, marginRight: 12 }}
                 />
@@ -296,6 +297,7 @@ export const GigDetailScreen: ScreenFC<"FreelanceServicesGigDetail"> = ({
                 >
                   <View style={{ flexDirection: "row" }}>
                     <Image
+                      // @ts-ignore
                       source={ipfsPinataUrl(gigData.sellerUser.profilePic)}
                       style={{ width: 104, height: 104 }}
                     />

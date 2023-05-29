@@ -2,11 +2,9 @@ import React, { useState } from "react";
 import { View } from "react-native";
 
 import { useFeedbacks } from "../../../../context/FeedbacksProvider";
-import { useIsKeplrConnected } from "../../../../hooks/useIsKeplrConnected";
-import {
-  getFirstKeplrAccount,
-  getSigningCosmWasmClient,
-} from "../../../../utils/keplr";
+import { TeritoriReportClient } from "../../../../contracts-clients/teritori-freelance/TeritoriReport.client";
+import useSelectedWallet from "../../../../hooks/useSelectedWallet";
+import { getSigningCosmWasmClient } from "../../../../utils/keplr";
 import {
   neutral00,
   neutral33,
@@ -14,31 +12,27 @@ import {
   neutral77,
 } from "../../../../utils/style/colors";
 import { fontSemibold14, fontSemibold12 } from "../../../../utils/style/fonts";
-import { UserInfo } from "../../../../utils/types/freelance";
 import { BrandText } from "../../../BrandText/BrandText";
 import { Separator } from "../../../Separator";
 import { SecondaryButton } from "../../../buttons/SecondaryButton";
 import { TextInputCustom } from "../../../inputs/TextInputCustom";
 import { ModalBase } from "../../../modals/ModalBase";
-// import { ReportRequest } from "../../../../../api/report/v1/report";
 
-export const DescritpionReportPopup: React.FC<{
-  userInfo: UserInfo;
+export const DescriptionReportPopup: React.FC<{
+  seller: string;
   visible?: boolean;
+  optionIndex: number;
   onClose: () => void;
-}> = ({ userInfo, visible, onClose }) => {
-  const isKeplrConnected = useIsKeplrConnected();
+}> = ({ seller, visible, optionIndex, onClose }) => {
+  const wallet = useSelectedWallet();
 
   const [displayDescriptionReportPopUp, setDisplayDescriptionReportPopUp] =
     useState(visible);
 
   const [description, setDescription] = useState("");
-  const [referenceUrl, setReferenceUrl] = useState("");
+  const [refUrl, setRefUrl] = useState("");
 
   const { setToastError, setToastSuccess } = useFeedbacks();
-
-  const contractAddress = process.env
-    .TERITORI_REPORT_CONTRACT_ADDRESS as string;
 
   function handleConfirmClick() {
     onClose();
@@ -46,36 +40,34 @@ export const DescritpionReportPopup: React.FC<{
   }
 
   const sendReportToContract = async () => {
-    if (!isKeplrConnected) {
+    if (!wallet || !wallet.connected) {
       setToastError({
         title: "Please connect Keplr",
         message: "",
       });
       return;
     }
-    const msg = {
-      seller_report: {
-        seller: userInfo.user_addr,
-        report_data: JSON.stringify({
-          desc: description,
-          ref_url: referenceUrl,
-        }),
-      },
-    };
-    const signingClient = await getSigningCosmWasmClient();
-    const walletAddress = (await getFirstKeplrAccount()).address;
-    const reportResult = await signingClient.execute(
-      walletAddress!,
-      contractAddress,
-      msg,
-      "auto"
-    );
-    if (reportResult) {
-      setToastSuccess({
-        title: `report for ${userInfo.user_addr} sent successfully`,
-        message: "",
+    try {
+      const client = new TeritoriReportClient(
+        await getSigningCosmWasmClient(),
+        wallet?.address || "",
+        process.env.TERITORI_FREELANCE_REPORT_ADDRESS || ""
+      );
+      const res = await client.sellerReportContract({
+        seller,
+        optionIndex,
+        description,
+        refUrl,
       });
-      handleConfirmClick();
+      if (res) {
+        setToastSuccess({
+          title: `report for ${seller} sent successfully`,
+          message: "",
+        });
+        handleConfirmClick();
+      }
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -166,8 +158,8 @@ export const DescritpionReportPopup: React.FC<{
         placeHolder="Type Reference URL here"
         height={40}
         mainContainerStyle={{}}
-        value={referenceUrl}
-        onChangeText={setReferenceUrl}
+        value={refUrl}
+        onChangeText={setRefUrl}
       />
       <BrandText
         style={[

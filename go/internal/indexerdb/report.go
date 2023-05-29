@@ -1,7 +1,12 @@
 package indexerdb
 
+import "time"
+
 type Report struct {
-	ID     int32 `gorm:"primaryKey;autoIncrement"`
-	Desc   string
-	RefUrl string
+	Id          int32 `gorm:"primaryKey;autoIncrement"`
+	Sender      string
+	IsSeller    bool
+	SellerBuyer string
+	ReportData  ObjectJSONB `gorm:"type:jsonb; default:'{}'"`
+	Time        time.Time
 }
