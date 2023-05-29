@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { FlatList, View } from "react-native";
 
+import { prettyPrint } from "./types";
 import {
   Collection,
   MintState,
@@ -88,7 +89,7 @@ export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
     networkId: selectedTab,
     sortDirection: SortDirection.SORT_DIRECTION_DESCENDING,
     upcoming: false,
-    sort: Sort.SORT_VOLUME,
+    sort: Sort.SORT_VOLUME_USD,
     limit: 32,
     offset: 0,
     mintState: MintState.MINT_STATE_UNSPECIFIED,
@@ -320,12 +321,6 @@ function nFormatter(
     ? // @ts-expect-error
       (num / item.value).toFixed(digits).replace(rx, "$1") + item.symbol
     : "0";
-}
-
-interface prettyPrint {
-  networkId: string;
-  value: number;
-  denom: string;
 }
 
 interface RowData {

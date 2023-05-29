@@ -1,6 +1,5 @@
-import { Decimal } from "@cosmjs/math";
 import Clipboard from "@react-native-clipboard/clipboard";
-import React, { useMemo } from "react";
+import React from "react";
 import { View, Platform, StyleSheet, Linking } from "react-native";
 
 import { CollectionStat } from "./CollectionStat";
@@ -16,15 +15,11 @@ import { SortButton } from "../../components/sorts/SortButton";
 import { SpacerRow } from "../../components/spacer";
 import { Tabs } from "../../components/tabs/Tabs";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { useCoingeckoPrices } from "../../hooks/useCoingeckoPrices";
 import { useCollectionStats } from "../../hooks/useCollectionStats";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import {
-  contractExplorerLink,
-  getNativeCurrency,
-  parseCollectionId,
-} from "../../networks";
+import { contractExplorerLink, parseCollectionId } from "../../networks";
+import { prettyPrice } from "../../utils/coins";
 import { CollectionInfo } from "../../utils/collection";
 import { codGrayColor, neutral33 } from "../../utils/style/colors";
 import { fontSemibold28 } from "../../utils/style/fonts";
@@ -54,18 +49,6 @@ export const CollectionHeader: React.FC<{
   const [network, collectionMintAddress] = parseCollectionId(collectionId);
   const { setToastSuccess } = useFeedbacks();
 
-  const coins = useMemo(() => {
-    if (!network?.id || !stats?.floorPrice) {
-      return [];
-    }
-    return stats.floorPrice.map((fp) => ({
-      networkId: network.id,
-      denom: fp.denom,
-    }));
-  }, [network?.id, stats?.floorPrice]);
-
-  const { prices } = useCoingeckoPrices(coins);
-
   const collectionScreenTabItems = {
     collections: {
       name: "Collection",
@@ -88,35 +71,6 @@ export const CollectionHeader: React.FC<{
     // },
   };
 
-  const usdFloorPrice = useMemo(() => {
-    if (!stats?.floorPrice || stats.floorPrice.length < 1) {
-      return Infinity;
-    }
-    return [...stats.floorPrice]
-      .map((fp) => {
-        const currency = getNativeCurrency(network?.id, fp.denom);
-        if (!currency) {
-          return Infinity;
-        }
-        const id = currency.coingeckoId;
-        const usdValue = id && prices[id]?.usd;
-        if (!usdValue) {
-          return Infinity;
-        }
-
-        return (
-          usdValue *
-          Decimal.fromAtomics(
-            fp.quantity,
-            currency.decimals
-          ).toFloatApproximation()
-        );
-      })
-      .sort((a, b) => {
-        return b - a;
-      })[0];
-  }, [prices, stats?.floorPrice, network?.id]);
-
   // functions
   const onShare = () => {
     let currentUrl;
@@ -134,9 +88,9 @@ export const CollectionHeader: React.FC<{
       console.error(error);
     }
   };
-
+  console.log(stats);
   // returns
-  return width > 0 ? (
+  return width > 0 && stats && network ? (
     <View
       style={{
         // maxWidth: width,
@@ -167,19 +121,33 @@ export const CollectionHeader: React.FC<{
             <CollectionStat
               label="Floor"
               value={
-                usdFloorPrice === Infinity
-                  ? "-"
-                  : `$${usdFloorPrice.toFixed(2)}`
+                stats
+                  ? prettyPrice(
+                      network.id,
+                      stats.floorPrice[0].quantity,
+                      stats.floorPrice[0].denom
+                    )
+                  : "-"
               }
+              currencyIcon={{
+                networkId: network.id,
+                value: 0,
+                denom: stats.floorPrice[0].denom,
+              }}
             />
             <SpacerRow size={1.5} />
             <CollectionStat
               label="Total Volume"
-              value={
-                stats?.totalVolume
-                  ? "$" + parseFloat(stats.totalVolume).toFixed(2)
-                  : "$0"
-              }
+              value={prettyPrice(
+                network.id,
+                parseFloat(stats.totalVolume).toFixed(0),
+                stats.floorPrice[0].denom
+              )}
+              currencyIcon={{
+                networkId: network.id,
+                value: parseFloat(stats.totalVolume),
+                denom: stats.floorPrice[0].denom,
+              }}
             />
             <SpacerRow size={1.5} />
             <CollectionStat
@@ -192,7 +160,19 @@ export const CollectionHeader: React.FC<{
               value={(stats?.listed || 0).toString()}
             />
             <SpacerRow size={1.5} />
-            <CollectionStat label="Avg Sale (24hr)" value="-" />
+            <CollectionStat
+              label="Avg Sale (24hr)"
+              value={prettyPrice(
+                network.id,
+                stats.avgPricePeriod.toFixed(0),
+                stats.floorPrice[0].denom
+              )}
+              currencyIcon={{
+                networkId: network.id,
+                value: stats.avgPricePeriod,
+                denom: stats.floorPrice[0].denom,
+              }}
+            />
             <SpacerRow size={1.5} />
             <CollectionStat
               label="Total Supply"

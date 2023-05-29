@@ -25,6 +25,7 @@ enum Sort {
   SORT_VOLUME = 2;
   SORT_MARKET_CAP = 3;
   SORT_CREATED_AT = 4;
+  SORT_VOLUME_USD = 5; // this is unreliable as is based on old USD values when the trade happened
 }
 
 enum SortDirection {
@@ -101,6 +102,7 @@ message CollectionStats {
   int32 listed = 4;
   int64 total_supply = 5;
   int32 owned = 6;
+  float avg_price_period = 7;
 }
 
 message AttributeRarityFloor {

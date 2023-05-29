@@ -14,6 +14,8 @@ export enum Sort {
   SORT_VOLUME = 2,
   SORT_MARKET_CAP = 3,
   SORT_CREATED_AT = 4,
+  /** SORT_VOLUME_USD - this is unreliable as is based on old USD values when the trade happened */
+  SORT_VOLUME_USD = 5,
   UNRECOGNIZED = -1,
 }
 
@@ -34,6 +36,9 @@ export function sortFromJSON(object: any): Sort {
     case 4:
     case "SORT_CREATED_AT":
       return Sort.SORT_CREATED_AT;
+    case 5:
+    case "SORT_VOLUME_USD":
+      return Sort.SORT_VOLUME_USD;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -53,6 +58,8 @@ export function sortToJSON(object: Sort): string {
       return "SORT_MARKET_CAP";
     case Sort.SORT_CREATED_AT:
       return "SORT_CREATED_AT";
+    case Sort.SORT_VOLUME_USD:
+      return "SORT_VOLUME_USD";
     case Sort.UNRECOGNIZED:
     default:
       return "UNRECOGNIZED";
@@ -200,6 +207,7 @@ export interface CollectionStats {
   listed: number;
   totalSupply: number;
   owned: number;
+  avgPricePeriod: number;
 }
 
 export interface AttributeRarityFloor {
@@ -1006,7 +1014,7 @@ export const Collection = {
 };
 
 function createBaseCollectionStats(): CollectionStats {
-  return { floorPrice: [], totalVolume: "", owners: 0, listed: 0, totalSupply: 0, owned: 0 };
+  return { floorPrice: [], totalVolume: "", owners: 0, listed: 0, totalSupply: 0, owned: 0, avgPricePeriod: 0 };
 }
 
 export const CollectionStats = {
@@ -1028,6 +1036,9 @@ export const CollectionStats = {
     }
     if (message.owned !== 0) {
       writer.uint32(48).int32(message.owned);
+    }
+    if (message.avgPricePeriod !== 0) {
+      writer.uint32(61).float(message.avgPricePeriod);
     }
     return writer;
   },
@@ -1057,6 +1068,9 @@ export const CollectionStats = {
         case 6:
           message.owned = reader.int32();
           break;
+        case 7:
+          message.avgPricePeriod = reader.float();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1073,6 +1087,7 @@ export const CollectionStats = {
       listed: isSet(object.listed) ? Number(object.listed) : 0,
       totalSupply: isSet(object.totalSupply) ? Number(object.totalSupply) : 0,
       owned: isSet(object.owned) ? Number(object.owned) : 0,
+      avgPricePeriod: isSet(object.avgPricePeriod) ? Number(object.avgPricePeriod) : 0,
     };
   },
 
@@ -1088,6 +1103,7 @@ export const CollectionStats = {
     message.listed !== undefined && (obj.listed = Math.round(message.listed));
     message.totalSupply !== undefined && (obj.totalSupply = Math.round(message.totalSupply));
     message.owned !== undefined && (obj.owned = Math.round(message.owned));
+    message.avgPricePeriod !== undefined && (obj.avgPricePeriod = message.avgPricePeriod);
     return obj;
   },
 
@@ -1099,6 +1115,7 @@ export const CollectionStats = {
     message.listed = object.listed ?? 0;
     message.totalSupply = object.totalSupply ?? 0;
     message.owned = object.owned ?? 0;
+    message.avgPricePeriod = object.avgPricePeriod ?? 0;
     return message;
   },
 };
