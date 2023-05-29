@@ -88,7 +88,7 @@ export const CollectionHeader: React.FC<{
       console.error(error);
     }
   };
-  console.log(stats);
+
   // returns
   return width > 0 && stats && network ? (
     <View
