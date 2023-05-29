@@ -14,7 +14,7 @@ export const UPPAlbums: React.FC<{ userId: string }> = ({ userId }) => {
       try {
         const res = await mustGetMusicplayerClient(
           selectedNetworkId
-        ).getAlbumList({});
+        ).GetAlbumList({});
         const newAlbumList: AlbumInfo[] = [];
         res.musicAlbums.map((albumInfo, index) => {
           const metadata = JSON.parse(albumInfo.metadata) as AlbumMetadataInfo;

@@ -24,7 +24,7 @@ export const MusicPlayerHomeContent: React.FC = () => {
       try {
         const res = await mustGetMusicplayerClient(
           selectedNetworkId
-        ).getAlbumList({});
+        ).GetAlbumList({});
         const newAlbumList: AlbumInfo[] = [];
         res.musicAlbums.map((albumInfo, index) => {
           const metadata = JSON.parse(albumInfo.metadata) as AlbumMetadataInfo;

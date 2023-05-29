@@ -47,7 +47,7 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = ({
 
   useEffect(() => {
     const getAlbumInfo = async () => {
-      const res = await mustGetMusicplayerClient(selectedNetworkId).getAlbum({
+      const res = await mustGetMusicplayerClient(selectedNetworkId).GetAlbum({
         identifier: id,
       });
       if (res.musicAlbum) {
