@@ -4,6 +4,7 @@ import { StyleSheet, View } from "react-native";
 import { prettyPrint } from "../../screens/Marketplace/types";
 import { neutral22, neutralA3 } from "../../utils/style/colors";
 import { fontSemibold12, fontSemibold14 } from "../../utils/style/fonts";
+import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { CurrencyIcon } from "../CurrencyIcon";
 import { SpacerColumn } from "../spacer";
@@ -14,7 +15,7 @@ type CollectionStatProps = {
   currencyIcon?: prettyPrint;
 };
 
-const ICON_SIZE = 32;
+const ICON_SIZE = 16;
 
 export const CollectionStat = ({
   label,
@@ -26,7 +27,16 @@ export const CollectionStat = ({
       <BrandText style={styles.labelText}>{label}</BrandText>
       <SpacerColumn size={0.75} />
       <View style={styles.rowCenter}>
-        <BrandText style={fontSemibold14}>{value}</BrandText>
+        <BrandText
+          style={[
+            fontSemibold14,
+            {
+              marginRight: layout.padding_x0_5,
+            },
+          ]}
+        >
+          {value}
+        </BrandText>
         {currencyIcon && (
           <CurrencyIcon
             networkId={currencyIcon.networkId}
