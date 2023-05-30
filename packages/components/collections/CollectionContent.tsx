@@ -30,7 +30,7 @@ export const CollectionContent: React.FC<{
     ownerId: (selectedTab === "owned" && wallet?.userId) || "",
     limit: alignDown(20, numColumns) || numColumns,
     offset: 0,
-    sort: Sort.SORTING_PRICE,
+    sort: Sort.SORT_PRICE,
     sortDirection,
   };
 

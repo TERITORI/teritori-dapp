@@ -141,7 +141,7 @@ Launch"
             upcoming: true,
             networkId,
             sortDirection: SortDirection.SORT_DIRECTION_UNSPECIFIED,
-            sort: Sort.SORTING_UNSPECIFIED,
+            sort: Sort.SORT_UNSPECIFIED,
             limit: 16,
             offset: 0,
             mintState: MintState.MINT_STATE_UNSPECIFIED,

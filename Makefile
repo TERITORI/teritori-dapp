@@ -49,8 +49,15 @@ generate.graphql-thegraph:
 	go run github.com/Khan/genqlient@85e2e8dffd211c83a2be626474993ef68e44a242 go/pkg/thegraph/genqlient.yaml
 
 .PHONY: lint
-lint: node_modules
+lint: lint.buf lint.js
+
+.PHONY: lint.buf
+lint.buf:
 	buf lint api
+	buf breaking --against 'https://github.com/TERITORI/teritori-dapp.git#branch=main' --path api
+
+.PHONY: lint.js
+lint.js: node_modules
 	yarn lint
 
 .PHONY: go/pkg/holagql/holaplex-schema.graphql

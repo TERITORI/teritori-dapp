@@ -1,19 +1,22 @@
 import { Decimal } from "@cosmjs/math";
+import { isDeliverTxFailure } from "@cosmjs/stargate";
 import React, { useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { StyleSheet, TouchableOpacity } from "react-native";
 
 import ModalBase from "./ModalBase";
 import contactsSVG from "../../../assets/icons/contacts.svg";
-import { useSendTokens } from "../../hooks/funds/useSendTokens";
+import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useBalances } from "../../hooks/useBalances";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
+  getKeplrSigningStargateClient,
   getNetwork,
   keplrCurrencyFromNativeCurrencyInfo,
   NativeCurrencyInfo,
 } from "../../networks";
 import { TransactionForm } from "../../screens/WalletManager/types";
+import { prettyPrice } from "../../utils/coins";
 import {
   neutral22,
   neutral33,
@@ -55,9 +58,9 @@ export const SendModal: React.FC<SendModalProps> = ({
   nativeCurrency,
   networkId,
 }) => {
+  const { setToastError, setToastSuccess } = useFeedbacks();
   const selectedWallet = useSelectedWallet();
   const { control, setValue, handleSubmit } = useForm<TransactionForm>();
-  const sendTokens = useSendTokens(selectedWallet?.id);
 
   const balances = useBalances(networkId, selectedWallet?.address);
 
@@ -79,17 +82,77 @@ export const SendModal: React.FC<SendModalProps> = ({
     nativeCurrency?.decimals || 0
   ).toString();
 
-  const onPressSend = useCallback(
-    async (formData: TransactionForm) => {
-      await sendTokens(
-        formData.toAddress,
-        nativeCurrency?.denom,
-        formData.amount
-      );
-      onClose();
-    },
-    [nativeCurrency?.denom, onClose, sendTokens]
-  );
+  const onPressSend = async (formData: TransactionForm) => {
+    try {
+      const sender = selectedWallet?.address;
+      const receiver = formData.toAddress;
+      if (!sender) {
+        throw new Error("no sender");
+      }
+      //TODO: handle contacts
+      if (!receiver) {
+        throw new Error("no receiver");
+      }
+      if (!nativeCurrency) {
+        throw new Error("no native target currency");
+      }
+
+      const amount = Decimal.fromUserInput(
+        formData.amount,
+        nativeCurrency.decimals
+      ).atomics;
+
+      if (networkId === "gno-testnet") {
+        const adena = (window as any).adena;
+        const res = await adena.DoContract({
+          messages: [
+            {
+              type: "/bank.MsgSend",
+              value: {
+                from_address: sender,
+                to_address: receiver,
+                amount: `${amount}ugnot`,
+              },
+            },
+          ],
+          gasFee: 1,
+          gasWanted: 50000,
+        });
+        if (res.status !== "success") {
+          throw new Error(res.message);
+        }
+      } else {
+        const client = await getKeplrSigningStargateClient(networkId);
+
+        const tx = await client.sendTokens(
+          sender,
+          receiver,
+          [{ amount, denom: nativeCurrency.denom }],
+          "auto"
+        );
+        if (isDeliverTxFailure(tx)) {
+          throw new Error("Transaction failed");
+        }
+      }
+      setToastSuccess({
+        title: `Sent ${prettyPrice(
+          networkId,
+          amount,
+          nativeCurrency.denom
+        )} to ${receiver}`,
+        message: "",
+      });
+    } catch (err) {
+      console.error("Failed to send tokens", err);
+      if (err instanceof Error) {
+        setToastError({
+          title: "Failed to send tokens",
+          message: err.message,
+        });
+      }
+    }
+    onClose();
+  };
 
   return (
     <ModalBase
@@ -102,13 +165,14 @@ export const SendModal: React.FC<SendModalProps> = ({
         <FlexCol alignItems="flex-start" width={356}>
           <TextInputCustom<TransactionForm>
             height={48}
+            width={320}
             control={control}
             variant="labelOutside"
             label="Receiver"
             name="toAddress"
             rules={{ required: true }}
             placeHolder={`Enter a ${
-              getNetwork(networkId)?.displayName
+              getNetwork(networkId)?.displayName || networkId
             } address`}
             defaultValue=""
           />

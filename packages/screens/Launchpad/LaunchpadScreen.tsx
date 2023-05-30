@@ -38,7 +38,7 @@ export const LaunchpadScreen: ScreenFC<"Launchpad"> = () => {
             networkId: selectedNetworkId,
             sortDirection: SortDirection.SORT_DIRECTION_DESCENDING,
             upcoming: false,
-            sort: Sort.SORTING_VOLUME,
+            sort: Sort.SORT_VOLUME,
             limit: 16,
             offset: 0,
             mintState: MintState.MINT_STATE_RUNNING,
@@ -53,7 +53,7 @@ export const LaunchpadScreen: ScreenFC<"Launchpad"> = () => {
           req={{
             networkId: selectedNetworkId,
             upcoming: false,
-            sort: Sort.SORTING_CREATED_AT,
+            sort: Sort.SORT_CREATED_AT,
             sortDirection: SortDirection.SORT_DIRECTION_DESCENDING,
             limit: 16,
             offset: 0,
@@ -68,7 +68,7 @@ export const LaunchpadScreen: ScreenFC<"Launchpad"> = () => {
           req={{
             networkId: selectedNetworkId,
             upcoming: true,
-            sort: Sort.SORTING_CREATED_AT,
+            sort: Sort.SORT_CREATED_AT,
             sortDirection: SortDirection.SORT_DIRECTION_DESCENDING,
             limit: 24,
             offset: 0,
@@ -81,7 +81,7 @@ export const LaunchpadScreen: ScreenFC<"Launchpad"> = () => {
           req={{
             upcoming: false,
             networkId: selectedNetworkId,
-            sort: Sort.SORTING_CREATED_AT,
+            sort: Sort.SORT_CREATED_AT,
             sortDirection: SortDirection.SORT_DIRECTION_DESCENDING,
             limit: 16,
             offset: 0,

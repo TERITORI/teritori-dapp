@@ -19,7 +19,7 @@ export const MyNFTs: React.FC = () => {
     ownerId: selectedWallet?.userId || "",
     collectionId: "",
     sortDirection: SortDirection.SORT_DIRECTION_ASCENDING,
-    sort: Sort.SORTING_PRICE,
+    sort: Sort.SORT_PRICE,
   });
   return (
     <View

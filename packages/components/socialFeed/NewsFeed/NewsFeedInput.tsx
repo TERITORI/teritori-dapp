@@ -244,6 +244,14 @@ export const NewsFeedInput = React.forwardRef<
             });
           }
         }
+        if (formValues.files?.length && !files.find((file) => file.url)) {
+          console.error("upload file err : Fail to pin to IPFS");
+          setToastError({
+            title: "File upload failed",
+            message: "Fail to pin to IPFS, please try to Publish again",
+          });
+          return;
+        }
 
         const postCategory = getPostCategory(formValues);
 

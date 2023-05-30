@@ -29,7 +29,7 @@ export const OwnedNFTs: React.FC<{
     networkId,
     sortDirection: SortDirection.SORT_DIRECTION_DESCENDING,
     upcoming: false,
-    sort: Sort.SORTING_VOLUME,
+    sort: Sort.SORT_VOLUME,
     limit: 100,
     offset: 0,
     mintState: MintState.MINT_STATE_UNSPECIFIED,
@@ -64,7 +64,7 @@ const OwnedNFTsSection: React.FC<{
     limit: 100, // FIXME: pagination
     ownerId,
     collectionId: collection.id,
-    sort: Sort.SORTING_PRICE,
+    sort: Sort.SORT_PRICE,
     sortDirection: SortDirection.SORT_DIRECTION_ASCENDING,
   });
 

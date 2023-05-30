@@ -29,7 +29,6 @@ import { useBalances } from "../../hooks/useBalances";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { useWalletSocialFeedClient } from "../../hooks/wallets/useWalletClients";
 import { getUserId, NetworkKind } from "../../networks";
 import { prettyPrice } from "../../utils/coins";
 import { IMAGE_MIME_TYPES } from "../../utils/mime";
@@ -59,7 +58,6 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
   );
   const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
   const [loading, setLoading] = useState(false);
-  const getSocialFeedClient = useWalletSocialFeedClient(wallet?.id);
 
   const { setToastSuccess, setToastError } = useFeedbacks();
   const navigation = useAppNavigation();
@@ -100,16 +98,23 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
     videos,
   }: PublishValues) => {
     const toriBalance = balances.find((bal) => bal.denom === "utori");
+    const files = [
+      ...(formValues.files || []),
+      ...images,
+      ...audios,
+      ...videos,
+    ];
+
     if (postFee > Number(toriBalance?.amount) && !freePostCount) {
       return setNotEnoughFundModal(true);
     }
     let pinataJWTKey = undefined;
-    if (formValues.files?.length) {
+    if (files?.length) {
       pinataJWTKey = await generateIpfsKey(selectedNetworkId, userId);
     }
 
-    await createPost({
-      client: await getSocialFeedClient(),
+    const result = await createPost({
+      networkId: selectedNetworkId,
       wallet,
       freePostCount,
       category: PostCategory.Article,
@@ -117,7 +122,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
       formValues: {
         ...formValues,
         gifs,
-        files: [...(formValues.files || []), ...images, ...audios, ...videos],
+        files,
         mentions,
         hashtags,
         message: html,
@@ -126,6 +131,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
       // openGraph: undefined,
       pinataJWTKey,
     });
+    return result;
   };
 
   //TODO: Keep short post formValues when returning to short post
@@ -134,10 +140,18 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
   const onPublish = async (values: PublishValues) => {
     setLoading(true);
     try {
-      await initSubmit(values);
-      setToastSuccess({ title: "Post submitted successfully.", message: "" });
-      navigateBack();
-      reset();
+      const result = await initSubmit(values);
+      if (!result) {
+        console.error("upload file err : Fail to pin to IPFS");
+        setToastError({
+          title: "File upload failed",
+          message: "Fail to pin to IPFS, please try to Publish again",
+        });
+      } else {
+        setToastSuccess({ title: "Post submitted successfully.", message: "" });
+        navigateBack();
+        reset();
+      }
     } catch (err) {
       if (err instanceof Error) {
         setToastError({

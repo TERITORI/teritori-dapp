@@ -6,14 +6,15 @@ import {
   ViewComponent,
   ViewStyle,
   useWindowDimensions,
+  StyleProp,
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 import chevronLeft from "../../../assets/icons/chevron-left.svg";
-import closeSVG from "../../../assets/icons/close.svg";
+import closeSVG from "../../../assets/icons/hamburger-button-cross.svg";
 import { neutral77, neutral22 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
-import { RESPONSIVE_BREAKPOINT_S } from "../../utils/style/layout";
+import { layout, RESPONSIVE_BREAKPOINT_S } from "../../utils/style/layout";
 import { modalMarginPadding } from "../../utils/style/modals";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
@@ -36,9 +37,11 @@ type ModalBaseProps = {
   description?: string;
   noBrokenCorners?: boolean;
   scrollable?: boolean;
-  contentStyle?: ViewStyle;
-  containerStyle?: ViewStyle;
-  closeButtonStyle?: ViewStyle;
+  contentStyle?: StyleProp<ViewStyle>;
+  containerStyle?: StyleProp<ViewStyle>;
+  childrenContainerStyle?: StyleProp<ViewStyle>;
+  closeButtonStyle?: StyleProp<ViewStyle>;
+  verticalPosition?: "center" | "top" | "bottom";
 };
 
 // The base components for modals. You can provide children (Modal's content) and childrenBottom (Optional Modal's bottom content)
@@ -56,11 +59,13 @@ export const ModalBase: React.FC<ModalBaseProps> = ({
   scrollable,
   contentStyle,
   containerStyle,
+  childrenContainerStyle,
   onBackPress,
   noBrokenCorners,
   closeButtonStyle,
+  verticalPosition = "center",
 }) => {
-  const { width: windowWidth, height: windowHeight } = useWindowDimensions();
+  const { width: windowWidth } = useWindowDimensions();
 
   return (
     <Modal
@@ -86,26 +91,35 @@ export const ModalBase: React.FC<ModalBaseProps> = ({
             alignItems: "center",
             justifyContent: "center",
           },
-          scrollable
-            ? {
-                minHeight: windowHeight - 40,
-                marginVertical: 20,
-              }
-            : {
-                height: "100%",
-                width: "100%",
-              },
+          !scrollable && {
+            height: "100%",
+            width: "100%",
+          },
         ]}
       >
         {/*------ Modal main container */}
         <TertiaryBox
           fullWidth={windowWidth < RESPONSIVE_BREAKPOINT_S}
           width={windowWidth < RESPONSIVE_BREAKPOINT_S ? undefined : width}
-          style={{ margin: "auto" }}
+          style={[
+            { margin: "auto" },
+            verticalPosition === "top" && { marginTop: 0 },
+            verticalPosition === "bottom" && { marginBottom: 0 },
+          ]}
           mainContainerStyle={[
             {
               alignItems: "flex-start",
               backgroundColor: "#000000",
+            },
+            verticalPosition === "top" && {
+              borderTopEndRadius: 0,
+              borderTopStartRadius: 0,
+              borderTopWidth: 0,
+            },
+            verticalPosition === "bottom" && {
+              borderBottomEndRadius: 0,
+              borderBottomStartRadius: 0,
+              borderBottomWidth: 0,
             },
             contentStyle,
           ]}
@@ -117,7 +131,8 @@ export const ModalBase: React.FC<ModalBaseProps> = ({
               flexDirection: "row",
               justifyContent: "space-between",
               width: "100%",
-              padding: modalMarginPadding,
+              paddingHorizontal: modalMarginPadding,
+              paddingVertical: layout.padding_x2,
             }}
           >
             {(label || labelComponent || description) && (
@@ -183,12 +198,15 @@ export const ModalBase: React.FC<ModalBaseProps> = ({
               style={{ justifyContent: "center" }}
               onPress={onClose}
             >
-              <SVG width={20} height={20} source={closeSVG} />
+              <SVG width={32} height={32} source={closeSVG} />
             </TouchableOpacity>
           </View>
           {children && (
             <View
-              style={{ width: "100%", paddingHorizontal: modalMarginPadding }}
+              style={[
+                { width: "100%", paddingHorizontal: modalMarginPadding },
+                childrenContainerStyle,
+              ]}
             >
               {/*------- Modal main content */}
               {hideMainSeparator !== true && (

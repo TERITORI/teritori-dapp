@@ -1,4 +1,4 @@
-import { FC } from "react";
+import React, { FC } from "react";
 import { View, StyleSheet, TouchableOpacity } from "react-native";
 
 import hamburgerCrossSVG from "../../../assets/icons/hamburger-button-cross.svg";
@@ -9,6 +9,7 @@ import { neutral00, neutral33 } from "../../utils/style/colors";
 import { layout, MOBILE_HEADER_HEIGHT } from "../../utils/style/layout";
 import { NetworkSelectorMobile } from "../NetworkSelector/NetworkSelectorMobile";
 import { SVG } from "../SVG";
+import { SearchButtonMobile } from "../Search/SearchButtonMobile";
 import { ConnectWalletButtonMobile } from "../TopMenu/ConnectWalletButtonMobile";
 import { TopLogoMobile } from "../navigation/components/TopLogoMobile";
 import { SpacerRow } from "../spacer";
@@ -23,6 +24,8 @@ export const HeaderMobile: FC<{
     <View style={styles.container}>
       <TopLogoMobile />
       <View style={styles.rightContainer}>
+        <SearchButtonMobile />
+        <SpacerRow size={2} />
         <NetworkSelectorMobile
           forceNetworkIds={forceNetworkIds}
           forceNetworkKind={forceNetworkKind}

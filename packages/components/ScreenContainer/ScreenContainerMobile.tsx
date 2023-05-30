@@ -1,4 +1,4 @@
-import { FC } from "react";
+import React, { FC } from "react";
 import {
   SafeAreaView,
   ScrollView,
@@ -8,6 +8,7 @@ import {
 } from "react-native";
 
 import { HeaderMobile } from "./HeaderMobile";
+import { useSearchBar } from "../../context/SearchBarProvider";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { NetworkInfo, NetworkKind } from "../../networks";
 import { DAppStoreData } from "../../screens/DAppStore/components/DAppStoreData";
@@ -15,6 +16,7 @@ import { neutral33, neutral77 } from "../../utils/style/colors";
 import { fontBold12 } from "../../utils/style/fonts";
 import { layout, MOBILE_HEADER_HEIGHT } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
+import { SearchModalMobile } from "../Search/SearchModalMobile";
 import { SelectedNetworkGate } from "../SelectedNetworkGate";
 import { SidebarMobile } from "../navigation/SidebarMobile";
 
@@ -55,10 +57,15 @@ export const ScreenContainerMobile: FC<{
 }) => {
   const { height: windowHeight } = useWindowDimensions();
   const { width } = useMaxResolution();
+  const { isSearchModalMobileOpen, setSearchModalMobileOpen } = useSearchBar();
 
   return (
     <SafeAreaView style={styles.container}>
       <DAppStoreData />
+      <SearchModalMobile
+        onClose={() => setSearchModalMobileOpen(false)}
+        visible={isSearchModalMobileOpen}
+      />
       <HeaderMobile
         forceNetworkIds={forceNetworkIds}
         forceNetworkKind={forceNetworkKind}

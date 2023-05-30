@@ -14,6 +14,7 @@ import {
 } from "../../../../utils/style/colors";
 import { RESPONSIVE_BREAKPOINT_S } from "../../../../utils/style/layout";
 import { SVG } from "../../../SVG";
+import { ROUND_BUTTON_WIDTH_L, ROUND_BUTTON_WIDTH_S } from "../NewsFeed";
 
 export const CreateShortPostButtonRound: React.FC<{
   onPress: () => void;
@@ -26,8 +27,14 @@ export const CreateShortPostButtonRound: React.FC<{
       onPress={onPress}
       style={[
         {
-          width: width < RESPONSIVE_BREAKPOINT_S ? 40 : 68,
-          height: width < RESPONSIVE_BREAKPOINT_S ? 40 : 68,
+          width:
+            width < RESPONSIVE_BREAKPOINT_S
+              ? ROUND_BUTTON_WIDTH_S
+              : ROUND_BUTTON_WIDTH_L,
+          height:
+            width < RESPONSIVE_BREAKPOINT_S
+              ? ROUND_BUTTON_WIDTH_S
+              : ROUND_BUTTON_WIDTH_L,
           backgroundColor: neutral17,
           borderColor: neutral33,
           borderWidth: 1,

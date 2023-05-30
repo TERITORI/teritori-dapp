@@ -8,9 +8,11 @@ import {
   SocialFeedMetadata,
 } from "./NewsFeed.type";
 import { pinataPinFileToIPFS } from "../../../candymachine/pinata-upload";
-import { nonSigningSocialFeedClient } from "../../../client-creators/socialFeedClient";
+import {
+  nonSigningSocialFeedClient,
+  signingSocialFeedClient,
+} from "../../../client-creators/socialFeedClient";
 import { Wallet } from "../../../context/WalletsProvider";
-import { TeritoriSocialFeedClient } from "../../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.client";
 import { defaultSocialFeedFee } from "../../../utils/fee";
 import { ipfsURLToHTTPURL } from "../../../utils/ipfs";
 import { LocalFileData, RemoteFileData } from "../../../utils/types/feed";
@@ -93,7 +95,7 @@ export const getPostCategory = ({
 };
 
 interface CreatePostParams {
-  client: TeritoriSocialFeedClient | undefined;
+  networkId: string;
   wallet: Wallet | undefined;
   formValues: NewPostFormValues;
   freePostCount: number;
@@ -107,7 +109,8 @@ interface CreatePostParams {
 
 // =============== Used only for Article for now. (Sorry for the mess)
 export const createPost = async ({
-  client,
+  networkId,
+  wallet,
   formValues,
   freePostCount,
   fee,
@@ -116,10 +119,13 @@ export const createPost = async ({
   category,
   identifier,
 }: CreatePostParams) => {
-  if (!client) {
+  if (!wallet?.connected || !wallet.address) {
     return;
   }
-
+  const client = await signingSocialFeedClient({
+    networkId,
+    walletAddress: wallet.address,
+  });
   let files: RemoteFileData[] = [];
 
   if (formValues.files?.length && pinataJWTKey) {
@@ -128,6 +134,12 @@ export const createPost = async ({
       pinataJWTKey,
     });
   }
+
+  // If the user uploaded files but they are not pinned to IPFS, it returns files with empty url, so this is an error.
+  if (formValues.files?.length && !files.find((file) => file.url)) {
+    return;
+  }
+
   let message = formValues.message || "";
 
   if (files.length && category === PostCategory.Article) {
@@ -159,6 +171,7 @@ export const createPost = async ({
     "",
     freePostCount ? undefined : [coin(fee, "utori")]
   );
+  return true;
 };
 
 interface UploadPostFilesToPinataParams {

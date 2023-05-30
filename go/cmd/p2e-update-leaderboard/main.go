@@ -20,7 +20,14 @@ import (
 	"gorm.io/gorm"
 )
 
-func sendRewardsList(netstore networks.NetworkStore, network *networks.CosmosNetwork, seasonId string, leaderboard []indexerdb.P2eLeaderboard, rpcEndpoint string, distributorMnemonic string) (*sdk.TxResponse, error) {
+func sendRewardsList(
+	netstore networks.NetworkStore,
+	network *networks.CosmosNetwork,
+	seasonId string,
+	leaderboard []indexerdb.P2eLeaderboard,
+	rpcEndpoint string,
+	distributorMnemonic string,
+) (*sdk.TxResponse, error) {
 	dailyRewards, err := p2e.GetDailyRewardsConfigBySeason(seasonId)
 
 	if err != nil {
@@ -118,9 +125,8 @@ func resetLeaderboard(seasonId string, db *gorm.DB) error {
 	return nil
 }
 
-func updateLeaderboard(seasonId string, db *gorm.DB) error {
-	now := time.Now()
-
+func updateLeaderboard(seasonId string, currentTime time.Time, db *gorm.DB) error {
+	now := currentTime
 	currentTimestamp := now.Unix()
 	dayBeginningTimestamp := time.Date(now.UTC().Year(), now.UTC().Month(), now.UTC().Day(), 0, 0, 0, 0, time.UTC).Unix()
 
@@ -263,7 +269,8 @@ func main() {
 
 	schedule := gocron.NewScheduler(time.UTC)
 	schedule.Every(5).Minutes().Do(func() {
-		season, _, err := p2e.GetSeasonByTime(time.Now().UTC())
+		currentTime := time.Now().UTC()
+		season, _, err := p2e.GetSeasonByTime(currentTime)
 		if err != nil {
 			logger.Error("failed to get current season", zap.Error(err))
 			return
@@ -275,7 +282,7 @@ func main() {
 		}
 
 		if err := db.Transaction(func(tx *gorm.DB) error {
-			if err := updateLeaderboard(season.ID, tx); err != nil {
+			if err := updateLeaderboard(season.ID, currentTime, tx); err != nil {
 				return err
 			}
 			return nil
@@ -287,8 +294,10 @@ func main() {
 	})
 
 	// Run a bit earlier than midnight to be sure that we snapshot on current season (if case of the season transition moment)
-	schedule.Every(1).Day().At("23:59").Do(func() {
-		season, _, err := p2e.GetCurrentSeason()
+	schedule.Every(1).Day().At("00:00").Do(func() {
+		// Subtract 2s to be sure we are in the expected day
+		currentTime := time.Now().UTC().Add(-time.Second * 2) // 23h59m58s
+		season, _, err := p2e.GetSeasonByTime(currentTime)
 		if err != nil {
 			logger.Error("failed to get current season", zap.Error(err))
 			return
@@ -303,7 +312,7 @@ func main() {
 
 		if err := db.Transaction(func(tx *gorm.DB) error {
 			// Update just before snapshot to have the latest info
-			if err := updateLeaderboard(season.ID, tx); err != nil {
+			if err := updateLeaderboard(season.ID, currentTime, tx); err != nil {
 				return errors.Wrap(err, "failed to update leaderboard")
 			}
 

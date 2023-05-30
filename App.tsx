@@ -10,21 +10,21 @@ import { StatusBar } from "expo-status-bar";
 import { MetaMaskProvider } from "metamask-react";
 import React from "react";
 import { useForm, FormProvider } from "react-hook-form";
-import { Platform, View } from "react-native";
+import { Platform } from "react-native";
 import { MenuProvider } from "react-native-popup-menu";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider as ReduxProvider } from "react-redux";
-import { PersistGate } from "redux-persist/integration/react";
 
 import { Navigator } from "./packages/components/navigation/Navigator";
 import { DropdownsContextProvider } from "./packages/context/DropdownsProvider";
 import { FeedbacksContextProvider } from "./packages/context/FeedbacksProvider";
+import { SearchBarContextProvider } from "./packages/context/SearchBarProvider";
 import { SidebarContextProvider } from "./packages/context/SidebarProvider";
+import { TNSMetaDataListContextProvider } from "./packages/context/TNSMetaDataListProvider";
 import { TNSContextProvider } from "./packages/context/TNSProvider";
 import { TransactionModalsProvider } from "./packages/context/TransactionModalsProvider";
-import { WalletConnectProvider } from "./packages/context/WalletConnectProvider";
 import { WalletsProvider } from "./packages/context/WalletsProvider";
-import { persistor, store } from "./packages/store/store";
+import { store } from "./packages/store/store";
 import { linking } from "./packages/utils/navigation";
 
 const queryClient = new QueryClient();
@@ -51,37 +51,32 @@ export default function App() {
     <QueryClientProvider client={queryClient}>
       <FormProvider<DefaultForm> {...methods}>
         <MetaMaskProvider>
-          <ReduxProvider store={store}>
-            <PersistGate
-              loading={
-                <View style={{ backgroundColor: "black", height: "100%" }} />
-              }
-              persistor={persistor}
-            >
-              <WalletConnectProvider>
-                <WalletsProvider>
-                  <NavigationContainer linking={linking}>
-                    <SafeAreaProvider>
-                      <FeedbacksContextProvider>
-                        <DropdownsContextProvider>
-                          <TransactionModalsProvider>
-                            <TNSContextProvider>
+          <NavigationContainer linking={linking}>
+            <SafeAreaProvider>
+              <ReduxProvider store={store}>
+                <FeedbacksContextProvider>
+                  <DropdownsContextProvider>
+                    <WalletsProvider>
+                      <SearchBarContextProvider>
+                        <TransactionModalsProvider>
+                          <TNSContextProvider>
+                            <TNSMetaDataListContextProvider>
                               <MenuProvider>
                                 <SidebarContextProvider>
                                   <StatusBar style="inverted" />
                                   <Navigator />
                                 </SidebarContextProvider>
                               </MenuProvider>
-                            </TNSContextProvider>
-                          </TransactionModalsProvider>
-                        </DropdownsContextProvider>
-                      </FeedbacksContextProvider>
-                    </SafeAreaProvider>
-                  </NavigationContainer>
-                </WalletsProvider>
-              </WalletConnectProvider>
-            </PersistGate>
-          </ReduxProvider>
+                            </TNSMetaDataListContextProvider>
+                          </TNSContextProvider>
+                        </TransactionModalsProvider>
+                      </SearchBarContextProvider>
+                    </WalletsProvider>
+                  </DropdownsContextProvider>
+                </FeedbacksContextProvider>
+              </ReduxProvider>
+            </SafeAreaProvider>
+          </NavigationContainer>
         </MetaMaskProvider>
       </FormProvider>
     </QueryClientProvider>

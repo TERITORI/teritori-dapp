@@ -30,7 +30,6 @@ export const WalletsProvider: React.FC = React.memo(({ children }) => {
   const [hasMetamask, metamaskIsReady, metamaskWallets] = useMetamask();
   const [hasAdena, adenaIsReady, adenaWallets] = useAdena();
   const [hasTrust, trustIsReady, trustWallets] = useTrust();
-
   // const storeWallets = useSelector(selectStoreWallets);
 
   const value = useMemo(() => {
@@ -114,7 +113,6 @@ export const WalletsProvider: React.FC = React.memo(({ children }) => {
         wallets.push(trustWallets[0]);
       }
     }
-
     return {
       wallets,
       walletProviders,

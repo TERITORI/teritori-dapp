@@ -24,6 +24,7 @@ import { teritoriTestnetNetwork } from "./teritori-testnet";
 import {
   CosmosNetworkInfo,
   EthereumNetworkInfo,
+  GnoNetworkInfo,
   NativeCurrencyInfo,
   NetworkInfo,
   NetworkKind,
@@ -104,7 +105,7 @@ export const getNativeCurrency = (
 
 export const getStakingCurrency = (networkId: string | undefined) => {
   const network = getNetwork(networkId);
-  if (network?.kind !== NetworkKind.Cosmos) {
+  if (!network || !("stakeCurrency" in network)) {
     return undefined;
   }
   return getNativeCurrency(networkId, network.stakeCurrency);
@@ -115,6 +116,14 @@ export const getNetwork = (networkId: string | undefined) => {
     return undefined;
   }
   return allNetworks.find((n) => n.id === networkId);
+};
+
+export const mustGetNetwork = (networkId: string | undefined) => {
+  const network = getNetwork(networkId);
+  if (!network) {
+    throw new Error(`unknown network '${networkId}'`);
+  }
+  return network;
 };
 
 export const getNetworkByIdPrefix = (idPrefix: string | undefined) => {
@@ -222,6 +231,26 @@ export const mustGetCosmosNetwork = (
   }
   if (network.kind !== NetworkKind.Cosmos) {
     throw new Error(`'${networkId}' is not a cosmos network`);
+  }
+  return network;
+};
+
+export const getGnoNetwork = (
+  networkId: string | undefined
+): GnoNetworkInfo | undefined => {
+  const network = getNetwork(networkId);
+  if (network?.kind !== NetworkKind.Gno) {
+    return undefined;
+  }
+  return network;
+};
+
+export const mustGetGnoNetwork = (
+  networkId: string | undefined
+): GnoNetworkInfo => {
+  const network = mustGetNetwork(networkId);
+  if (network.kind !== NetworkKind.Gno) {
+    throw new Error(`'${networkId}' is not a gno network`);
   }
   return network;
 };

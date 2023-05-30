@@ -27,8 +27,6 @@ const walletsManagerTabItems = {
   },
 };
 
-// FIXME: fetch quests count
-
 const ConnectedIntro: React.FC = () => {
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof walletsManagerTabItems>("overview");
@@ -52,7 +50,7 @@ const ConnectedIntro: React.FC = () => {
 
       <ProfileButton style={{ marginTop: 40 }} />
 
-      <Section title="Quests" subtitle="4">
+      <Section title="Quests">
         <FullWidthSeparator />
         <Quests userId={selectedWallet?.userId} />
       </Section>
