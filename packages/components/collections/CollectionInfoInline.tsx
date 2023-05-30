@@ -1,33 +1,30 @@
 import React from "react";
-import {
-  Image,
-  ImageSourcePropType,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { ImageURISource, View } from "react-native";
 
-import { useAppNavigation } from "../../utils/navigation";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
+import { OmniLink } from "../OmniLink";
+import { OptimizedImage } from "../OptimizedImage";
 
 export const CollectionInfoInline: React.FC<{
-  imageSource: ImageSourcePropType;
+  imageSource: ImageURISource;
   id?: string;
   name?: string;
 }> = ({ imageSource, id, name }) => {
-  const navigation = useAppNavigation();
-
-  const onPress = () => {
-    if (id) navigation.navigate("Collection", { id });
-  };
-
   return (
-    <TouchableOpacity onPress={onPress}>
+    <OmniLink
+      to={{
+        screen: "Collection",
+        params: { id },
+      }}
+    >
       <View style={{ flexDirection: "row", alignItems: "center" }}>
-        <Image
+        <OptimizedImage
           source={imageSource}
           style={{ height: 32, width: 32, borderRadius: 999 }}
+          height={32}
+          width={32}
         />
         <BrandText
           style={[fontSemibold14, { marginLeft: layout.padding_x1_5 }]}
@@ -35,6 +32,6 @@ export const CollectionInfoInline: React.FC<{
           {name}
         </BrandText>
       </View>
-    </TouchableOpacity>
+    </OmniLink>
   );
 };

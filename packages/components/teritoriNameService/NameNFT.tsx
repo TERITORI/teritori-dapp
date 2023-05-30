@@ -1,20 +1,26 @@
 import React from "react";
 import { Image, StyleProp, ViewStyle, View } from "react-native";
 
+import { NameAndTldText } from "./NameAndTldText";
 import defaultNameNFT from "../../../assets/default-images/default-name-nft.png";
-import { useToken } from "../../hooks/tokens";
+import { useNSNameInfo } from "../../hooks/useNSNameInfo";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import { getCosmosNetwork } from "../../networks";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { neutral77 } from "../../utils/style/colors";
 import { fontSemibold16 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
-import { NameAndTldText } from "./NameAndTldText";
 // A custom TextInput. You can add children (Ex: An icon or a small container)
 export const NameNFT: React.FC<{
   style?: StyleProp<ViewStyle>;
   name: string;
   width?: number;
 }> = ({ style, name, width = 332 }) => {
-  const { token } = useToken(name, process.env.TLD || "");
+  const networkId = useSelectedNetworkId();
+  const network = getCosmosNetwork(networkId);
+  const tokenId = name + network?.nameServiceTLD || "";
+
+  const { nsInfo: token } = useNSNameInfo(networkId, tokenId);
 
   const imageMargin = 12;
 
@@ -22,8 +28,8 @@ export const NameNFT: React.FC<{
     <View style={[{ alignItems: "center" }, style]}>
       <Image
         source={
-          token && token.image && token.image !== ""
-            ? ipfsURLToHTTPURL(token.image)
+          typeof token?.extension.image === "string"
+            ? ipfsURLToHTTPURL(token.extension.image)
             : defaultNameNFT
         }
         style={{
@@ -35,7 +41,7 @@ export const NameNFT: React.FC<{
       />
 
       <NameAndTldText
-        nameAndTldStr={name + process.env.TLD}
+        nameAndTldStr={tokenId}
         style={{
           justifyContent: "center",
           marginHorizontal: imageMargin,

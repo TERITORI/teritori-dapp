@@ -1,8 +1,10 @@
 import { useFocusEffect } from "@react-navigation/native";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { View } from "react-native";
 
+import { TNSModalCommonProps } from "./TNSHomeScreen";
+import { TNSRegisterSuccess } from "./TNSRegisterSuccess";
 import longCardSVG from "../../../assets/cards/long-card.svg";
 import coinSVG from "../../../assets/icons/coin.svg";
 import { BrandText } from "../../components/BrandText";
@@ -14,27 +16,30 @@ import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useTNS } from "../../context/TNSProvider";
 import { TeritoriNameServiceQueryClient } from "../../contracts-clients/teritori-name-service/TeritoriNameService.client";
 import { Metadata } from "../../contracts-clients/teritori-name-service/TeritoriNameService.types";
-import { useTokenList } from "../../hooks/tokens";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
 import { useBalances } from "../../hooks/useBalances";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
+import { nsNameInfoQueryKey } from "../../hooks/useNSNameInfo";
+import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { prettyPrice } from "../../utils/coins";
 import {
-  getNonSigningCosmWasmClient,
-  getSigningCosmWasmClient,
-} from "../../utils/keplr";
+  getKeplrSigningCosmWasmClient,
+  mustGetNonSigningCosmWasmClient,
+  mustGetCosmosNetwork,
+  getCosmosNetwork,
+} from "../../networks";
+import { prettyPrice } from "../../utils/coins";
 import { useAppNavigation } from "../../utils/navigation";
 import { neutral00, neutral17, neutral33 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
-import { isTokenOwnedByUser } from "../../utils/tns";
 import { defaultMetaData } from "../../utils/types/tns";
-import { TNSModalCommonProps } from "./TNSHomeScreen";
-import { TNSRegisterSuccess } from "./TNSRegisterSuccess";
 
 const CostContainer: React.FC<{ price: { amount: string; denom: string } }> = ({
   price,
 }) => {
+  const networkId = useSelectedNetworkId();
+
   const width = 417;
   const height = 80;
 
@@ -69,11 +74,7 @@ const CostContainer: React.FC<{ price: { amount: string; denom: string } }> = ({
 
         <BrandText style={[fontSemibold14]}>
           The mint cost for this token is{" "}
-          {prettyPrice(
-            process.env.TERITORI_NETWORK_ID || "",
-            price.amount,
-            price.denom
-          )}
+          {prettyPrice(networkId, price.amount, price.denom)}
         </BrandText>
       </View>
     </View>
@@ -93,26 +94,34 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
   const selectedWallet = useSelectedWallet();
   const { name } = useTNS();
   const { setToastError, setToastSuccess } = useFeedbacks();
-  const { tokens } = useTokenList();
+  const { tokens } = useNSTokensByOwner(selectedWallet?.userId);
   const isKeplrConnected = useIsKeplrConnected();
   const userHasCoWallet = useAreThereWallets();
-  const contractAddress = process.env
-    .TERITORI_NAME_SERVICE_CONTRACT_ADDRESS as string;
   const navigation = useAppNavigation();
-  const price = useTNSMintPrice(name + process.env.TLD);
-  const networkId = process.env.TERITORI_NETWORK_ID;
+  const networkId = useSelectedNetworkId();
+  const network = getCosmosNetwork(networkId);
+  const normalizedTokenId = (
+    name + network?.nameServiceTLD || ""
+  ).toLowerCase();
+  const price = useTNSMintPrice(networkId, normalizedTokenId);
   const balances = useBalances(networkId, selectedWallet?.address);
   const balance = balances.find((bal) => bal.denom === price?.denom);
 
-  const normalizedTokenId = (name + process.env.TLD).toLowerCase();
-
   const initData = async () => {
     try {
-      const cosmwasmClient = await getNonSigningCosmWasmClient();
+      const network = mustGetCosmosNetwork(selectedWallet?.networkId);
+
+      if (!network.nameServiceContractAddress) {
+        return;
+      }
+
+      const cosmwasmClient = await mustGetNonSigningCosmWasmClient(
+        selectedWallet?.networkId || ""
+      );
 
       const client = new TeritoriNameServiceQueryClient(
         cosmwasmClient,
-        contractAddress
+        network.nameServiceContractAddress
       );
 
       // If this query fails it means that the token does not exist.
@@ -132,12 +141,15 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
   useFocusEffect(() => {
     // ===== Controls many things, be careful
     if (!userHasCoWallet || !isKeplrConnected) navigation.navigate("TNSHome");
-    if (name && userHasCoWallet && isTokenOwnedByUser(tokens, name)) onClose();
+    if (name && userHasCoWallet && tokens.includes(normalizedTokenId))
+      onClose();
 
     if (!initialized) {
       initData();
     }
   });
+
+  const queryClient = useQueryClient();
 
   const submitData = async (data: Metadata) => {
     if (!isKeplrConnected || !price) {
@@ -145,6 +157,11 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
     }
 
     try {
+      const network = mustGetCosmosNetwork(selectedWallet?.networkId);
+      if (!network.nameServiceContractAddress) {
+        throw new Error("network not supported");
+      }
+
       const walletAddress = selectedWallet?.address;
 
       const msg = {
@@ -155,11 +172,13 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
         },
       };
 
-      const signingClient = await getSigningCosmWasmClient();
+      const signingClient = await getKeplrSigningCosmWasmClient(
+        selectedWallet?.networkId || ""
+      );
 
       const mintedToken = await signingClient.execute(
         walletAddress!,
-        contractAddress,
+        network.nameServiceContractAddress,
         msg,
         "auto",
         undefined,
@@ -187,6 +206,10 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
         message,
       });
     }
+
+    await queryClient.invalidateQueries(
+      nsNameInfoQueryKey(selectedWallet?.networkId, normalizedTokenId)
+    );
   };
 
   const handleModalClose = () => {
@@ -216,7 +239,7 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
         >
           Available Balance:{" "}
           {prettyPrice(
-            networkId || "",
+            network?.id || "",
             balance?.amount || "0",
             price?.denom || ""
           )}
@@ -248,14 +271,23 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
   );
 };
 
-const useTNSMintPrice = (tokenId: string) => {
+const useTNSMintPrice = (networkId: string | undefined, tokenId: string) => {
   const { data } = useQuery(
-    ["tnsMintPrice", tokenId],
+    ["tnsMintPrice", networkId, tokenId],
     async () => {
-      const client = await getNonSigningCosmWasmClient();
+      if (!networkId) {
+        return null;
+      }
+      const network = mustGetCosmosNetwork(networkId);
+      if (!network.nameServiceContractAddress) {
+        return null;
+      }
+
+      const client = await mustGetNonSigningCosmWasmClient(networkId);
+
       const tnsClient = new TeritoriNameServiceQueryClient(
         client,
-        process.env.TERITORI_NAME_SERVICE_CONTRACT_ADDRESS || ""
+        network.nameServiceContractAddress
       );
       console.log("fetching price for", tokenId);
 

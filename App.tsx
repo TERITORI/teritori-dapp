@@ -11,13 +11,16 @@ import { MetaMaskProvider } from "metamask-react";
 import React from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { Platform } from "react-native";
+import { MenuProvider } from "react-native-popup-menu";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider as ReduxProvider } from "react-redux";
 
 import { Navigator } from "./packages/components/navigation/Navigator";
 import { DropdownsContextProvider } from "./packages/context/DropdownsProvider";
 import { FeedbacksContextProvider } from "./packages/context/FeedbacksProvider";
+import { SearchBarContextProvider } from "./packages/context/SearchBarProvider";
 import { SidebarContextProvider } from "./packages/context/SidebarProvider";
+import { TNSMetaDataListContextProvider } from "./packages/context/TNSMetaDataListProvider";
 import { TNSContextProvider } from "./packages/context/TNSProvider";
 import { TransactionModalsProvider } from "./packages/context/TransactionModalsProvider";
 import { WalletsProvider } from "./packages/context/WalletsProvider";
@@ -54,14 +57,20 @@ export default function App() {
                 <FeedbacksContextProvider>
                   <DropdownsContextProvider>
                     <WalletsProvider>
-                      <TransactionModalsProvider>
-                        <TNSContextProvider>
-                          <SidebarContextProvider>
-                            <StatusBar style="inverted" />
-                            <Navigator />
-                          </SidebarContextProvider>
-                        </TNSContextProvider>
-                      </TransactionModalsProvider>
+                      <SearchBarContextProvider>
+                        <TransactionModalsProvider>
+                          <TNSContextProvider>
+                            <TNSMetaDataListContextProvider>
+                              <MenuProvider>
+                                <SidebarContextProvider>
+                                  <StatusBar style="inverted" />
+                                  <Navigator />
+                                </SidebarContextProvider>
+                              </MenuProvider>
+                            </TNSMetaDataListContextProvider>
+                          </TNSContextProvider>
+                        </TransactionModalsProvider>
+                      </SearchBarContextProvider>
                     </WalletsProvider>
                   </DropdownsContextProvider>
                 </FeedbacksContextProvider>

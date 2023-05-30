@@ -1,6 +1,8 @@
 import React from "react";
 import { Image, FlatList, View } from "react-native";
 
+import { GameContentView } from "./component/GameContentView";
+import { RipperAvatar } from "./component/RipperAvatar";
 import breedSVG from "../../../assets/game/breed.svg";
 import defaultInventoryItemPNG from "../../../assets/game/default-inventory-item.png";
 import addCircleFilledSVG from "../../../assets/icons/add-circle-filled.svg";
@@ -10,12 +12,11 @@ import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { CustomPressable } from "../../components/buttons/CustomPressable";
 import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
 import { useRippers } from "../../hooks/riotGame/useRippers";
+import { isNFTStaked } from "../../utils/game";
 import { useAppNavigation } from "../../utils/navigation";
 import { yellowDefault } from "../../utils/style/colors";
 import { fontMedium32 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { GameContentView } from "./component/GameContentView";
-import { RipperAvatar } from "./component/RipperAvatar";
 
 export const RiotGameInventoryScreen = () => {
   const navigation = useAppNavigation();
@@ -95,7 +96,11 @@ export const RiotGameInventoryScreen = () => {
                   width={150}
                   height={150}
                 >
-                  <RipperAvatar size={132} source={ripper.imageUri} />
+                  <RipperAvatar
+                    size={132}
+                    source={ripper.imageUri}
+                    isStaked={isNFTStaked(ripper)}
+                  />
                 </TertiaryBox>
               );
             }}

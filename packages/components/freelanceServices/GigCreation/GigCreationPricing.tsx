@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { View, StyleSheet, TextInput } from "react-native";
 
+import { listExtraDeliveryTime } from "./GigBasedata";
+import { GigCreationPricingTable } from "./GigCreationPricingTable";
 import {
   ExtraFast,
   GigInfo,
@@ -18,8 +20,6 @@ import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import { CheckBox } from "../../checkbox/CheckBox";
 import { GeneralSelect } from "../../select/GeneralSelect";
-import { listExtraDeliveryTime } from "./GigBasedata";
-import { GigCreationPricingTable } from "./GigCreationPricingTable";
 
 const pageContentWidth = 908;
 

@@ -1,6 +1,12 @@
 import React, { useState } from "react";
 import { View, StyleSheet, Pressable, TextInput } from "react-native";
 
+import {
+  categoryData,
+  detailDataWebsiteType,
+  detailDataPlatformTool,
+  subcategoryData,
+} from "./GigBasedata";
 import RemoveIcon from "../../../../assets/icons/remove.svg";
 import { GigInfo } from "../../../screens/FreelanceServices/types/fields";
 import {
@@ -19,12 +25,6 @@ import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
 import { CheckBox } from "../../checkbox/CheckBox";
 import { GeneralSelect } from "../../select/GeneralSelect";
-import {
-  categoryData,
-  detailDataWebsiteType,
-  detailDataPlatformTool,
-  subcategoryData,
-} from "./GigBasedata";
 
 const pageContentWidth = 908;
 const rightBoxWidth = 612;

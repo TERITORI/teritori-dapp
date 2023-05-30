@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { View } from "react-native";
 
+import { FreelanceServicesScreenWrapper } from "./FreelanceServicesScreenWrapper";
+import { addGigToContract, getSellerIpfsHash } from "./contract";
+import { emptyGigInfo, GigInfo } from "./types/fields";
 import { GigCreationBody } from "../../components/freelanceServices/GigCreation/GigCreationBody";
 import { GigCreationFooter } from "../../components/freelanceServices/GigCreation/GigCreationFooter";
 import { GigCreationHeader } from "../../components/freelanceServices/GigCreation/GigCreationHeader";
@@ -9,9 +12,6 @@ import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { freelanceClient } from "../../utils/backend";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { GigStep } from "../../utils/types/freelance";
-import { FreelanceServicesScreenWrapper } from "./FreelanceServicesScreenWrapper";
-import { addGigToContract, getSellerIpfsHash } from "./contract";
-import { emptyGigInfo, GigInfo } from "./types/fields";
 
 export const FreelanceServicesGigCreation: ScreenFC<
   "FreelanceServicesGigCreation"

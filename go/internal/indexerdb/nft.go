@@ -2,6 +2,11 @@ package indexerdb
 
 import (
 	"database/sql"
+<<<<<<< HEAD
+=======
+
+	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
+>>>>>>> e393992d3cbfb9d4139af9d0ec74b7d8aba334e5
 )
 
 type Attribute struct {
@@ -12,17 +17,17 @@ type Attribute struct {
 type NFT struct {
 	// ID is network-dependent
 	// Teritori: tori-<bech32_mint_contract_address>-<token_id>
-	ID          string
+	ID          networks.NFTID
 	Name        string
 	ImageURI    string
-	OwnerID     UserID
+	OwnerID     networks.UserID
 	IsListed    bool
 	PriceAmount sql.NullString `gorm:"type:numeric"`
 	PriceDenom  string
 	LockedOn    string
 
 	// "belongs to" relations
-	CollectionID string `gorm:"index"`
+	CollectionID networks.CollectionID `gorm:"index"`
 	Collection   *Collection
 
 	// "has one" relations

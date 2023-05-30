@@ -1,11 +1,11 @@
 import { Target } from "@nandorojo/anchor";
 import { RouteProp, useRoute } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 
+import { NFTAttributes } from "./NFTAttributes";
 import starSVG from "../../../assets/icons/star.svg";
 import { useTransactionModals } from "../../context/TransactionModalsProvider";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { NFTInfo } from "../../screens/Marketplace/NFTDetailScreen";
 import { RootStackParamList } from "../../utils/navigation";
 import { neutral77, primaryColor } from "../../utils/style/colors";
@@ -28,8 +28,6 @@ import { CollectionInfoInline } from "../collections/CollectionInfoInline";
 import { TransactionModals } from "../modals/transaction/TransactionModals";
 import { SpacerColumn } from "../spacer";
 import { Tabs } from "../tabs/Tabs";
-import { NFTAttributes } from "./NFTAttributes";
-import { CollapsablePiceHistory } from "./components/CollapsablePriceHistory";
 
 const mainInfoTabItems = {
   about: {
@@ -57,9 +55,6 @@ export const NFTMainInfo: React.FC<{
 }> = ({ nftId, nftInfo, buy, sell, cancelListing, showMarketplace }) => {
   const { openTransactionModals } = useTransactionModals();
   const { params } = useRoute<RouteProp<RootStackParamList, "NFTDetail">>();
-  // TODO: should get networkId from nft when having that info
-
-  const nftNetworkId = useSelectedNetworkId();
 
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof mainInfoTabItems>("about");
@@ -153,6 +148,12 @@ export const NFTMainInfo: React.FC<{
     if (params.openBuy) openTransactionModals();
   }, [openTransactionModals, params.openBuy]);
 
+  const CollapsablePriceHistory = React.lazy(() =>
+    import("./components/CollapsablePriceHistory").then((module) => ({
+      default: module.CollapsablePriceHistory,
+    }))
+  );
+
   return (
     <>
       <View
@@ -185,7 +186,7 @@ export const NFTMainInfo: React.FC<{
           <CollectionInfoInline
             imageSource={{ uri: nftInfo?.collectionImageURL || "" }}
             name={nftInfo?.collectionName}
-            id={`tori-${nftInfo?.mintAddress}`}
+            id={nftInfo?.collectionId}
           />
           {showMarketplace ? (
             <>
@@ -194,22 +195,19 @@ export const NFTMainInfo: React.FC<{
                   style={{ marginTop: 24, marginBottom: 40 }}
                   onPressSell={sell}
                   nftInfo={nftInfo}
-                  networkId={nftNetworkId}
                 />
               )}
               {nftInfo?.isListed && !nftInfo.isOwner && (
                 <NFTPriceBuyCard
+                  nftInfo={nftInfo}
                   style={{ marginTop: 24, marginBottom: 40 }}
                   onPressBuy={openTransactionModals}
-                  price={nftInfo.price}
-                  priceDenom={nftInfo.priceDenom}
                 />
               )}
               {nftInfo?.isListed && nftInfo.isOwner && (
                 <NFTCancelListingCard
+                  nftInfo={nftInfo}
                   style={{ marginTop: 24, marginBottom: 40 }}
-                  price={nftInfo.price}
-                  priceDenom={nftInfo.priceDenom}
                   onPressCancel={cancelListing}
                 />
               )}
@@ -227,6 +225,7 @@ export const NFTMainInfo: React.FC<{
             items={mainInfoTabItems}
             selected={selectedTab}
             borderColorTabSelected={primaryColor}
+            style={{ height: 40 }}
           />
           {/*TODO: 3 View to display depending on the nftMainInfoTabItems isSelected item*/}
           {/*TODO: About  = Big text*/}
@@ -236,7 +235,9 @@ export const NFTMainInfo: React.FC<{
 
       {showMarketplace && (
         <Target style={styles.collapsableContainer} name="price-history">
-          <CollapsablePiceHistory nftId={nftId} />
+          <Suspense fallback={<></>}>
+            <CollapsablePriceHistory nftId={nftId} />
+          </Suspense>
         </Target>
       )}
       <Target name="activity" style={styles.collapsableContainer}>
@@ -248,7 +249,7 @@ export const NFTMainInfo: React.FC<{
       {/* ====== "Buy this NFT" three modals*/}
       <TransactionModals
         startTransaction={buy}
-        nftInfo={nftInfo}
+        nftId={nftId}
         textComponentPayment={
           <BrandText style={fontSemibold14}>
             <BrandText style={[fontSemibold14, { color: neutral77 }]}>

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, StyleSheet, Pressable, TextInput } from "react-native";
 
+import { requirementFormData } from "./GigBasedata";
 import DeleteIcon from "../../../../assets/icons/delete.svg";
 import {
   GigInfo,
@@ -22,7 +23,6 @@ import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { TertiaryButton } from "../../buttons/TertiaryButton";
 import { CheckBox } from "../../checkbox/CheckBox";
 import { GeneralSelect } from "../../select/GeneralSelect";
-import { requirementFormData } from "./GigBasedata";
 
 const pageContentWidth = 908;
 

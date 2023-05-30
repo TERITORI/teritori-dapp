@@ -5,17 +5,21 @@ import { RootState } from "../store";
 interface Settings {
   selectedNetworkId: string;
   selectedWalletId: string;
+  NFTStorageAPI: string;
   isKeplrConnected: boolean;
-  isMetamaskConnected: boolean;
+  isAdenaConnected: boolean;
   alreadyVisited: boolean;
+  areTestnetsEnabled: boolean;
 }
 
 const initialState: Settings = {
   selectedWalletId: "",
   selectedNetworkId: "",
+  NFTStorageAPI: process.env.NFT_STORAGE_API || "",
   isKeplrConnected: false,
-  isMetamaskConnected: false,
+  isAdenaConnected: false,
   alreadyVisited: false,
+  areTestnetsEnabled: false,
 };
 
 export const selectSelectedNetworkId = (state: RootState) =>
@@ -27,8 +31,14 @@ export const selectSelectedWalletId = (state: RootState) =>
 export const selectIsKeplrConnected = (state: RootState) =>
   state.settings.isKeplrConnected;
 
-export const selectIsMetamaskConnected = (state: RootState) =>
-  state.settings.isMetamaskConnected;
+export const selectIsAdenaConnected = (state: RootState) =>
+  state.settings.isAdenaConnected;
+
+export const selectAreTestnetsEnabled = (state: RootState) =>
+  state.settings.areTestnetsEnabled;
+
+export const selectNFTStorageAPI = (state: RootState) =>
+  state.settings.NFTStorageAPI;
 
 const settingsSlice = createSlice({
   name: "settings",
@@ -43,8 +53,14 @@ const settingsSlice = createSlice({
     setIsKeplrConnected: (state, action: PayloadAction<boolean>) => {
       state.isKeplrConnected = action.payload;
     },
-    setIsMetamaskConnected: (state, action: PayloadAction<boolean>) => {
-      state.isMetamaskConnected = action.payload;
+    setIsAdenaConnected: (state, action: PayloadAction<boolean>) => {
+      state.isAdenaConnected = action.payload;
+    },
+    setAreTestnetsEnabled: (state, action: PayloadAction<boolean>) => {
+      state.areTestnetsEnabled = action.payload;
+    },
+    setNFTStorageAPI: (state, action: PayloadAction<string>) => {
+      state.NFTStorageAPI = action.payload;
     },
   },
 });
@@ -53,7 +69,9 @@ export const {
   setSelectedNetworkId,
   setSelectedWalletId,
   setIsKeplrConnected,
-  setIsMetamaskConnected,
+  setIsAdenaConnected,
+  setAreTestnetsEnabled,
+  setNFTStorageAPI,
 } = settingsSlice.actions;
 
 export const settingsReducer = settingsSlice.reducer;

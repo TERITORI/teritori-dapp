@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 
+import { FreelanceServicesScreenWrapper } from "./FreelanceServicesScreenWrapper";
 import { BrandText } from "../../components/BrandText";
 import { EscrowTable } from "../../components/freelanceServices/Escrow/EscrowList";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
@@ -12,7 +13,6 @@ import {
   screenContainerContentMarginHorizontal,
 } from "../../utils/style/layout";
 import { EscrowInfo } from "../../utils/types/freelance";
-import { FreelanceServicesScreenWrapper } from "./FreelanceServicesScreenWrapper";
 
 export const FreelanceServicesEscrow: ScreenFC<"FreelanceServicesEscrow"> = ({
   route,

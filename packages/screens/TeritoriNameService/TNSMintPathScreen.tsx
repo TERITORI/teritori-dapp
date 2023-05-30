@@ -2,25 +2,25 @@ import { useFocusEffect } from "@react-navigation/native";
 import React, { useState } from "react";
 import { View } from "react-native";
 
+import { TNSModalCommonProps } from "./TNSHomeScreen";
 import ModalBase from "../../components/modals/ModalBase";
 import { NameDataForm } from "../../components/teritoriNameService/NameDataForm";
 import { NameNFT } from "../../components/teritoriNameService/NameNFT";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useTNS } from "../../context/TNSProvider";
 import { TeritoriNameServiceQueryClient } from "../../contracts-clients/teritori-name-service/TeritoriNameService.client";
-import { useTokenList } from "../../hooks/tokens";
-import { useAreThereWallets } from "../../hooks/useAreThereWallets";
-import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
+import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
-  getFirstKeplrAccount,
-  getNonSigningCosmWasmClient,
-  getSigningCosmWasmClient,
-} from "../../utils/keplr";
+  getKeplrSigningCosmWasmClient,
+  mustGetNonSigningCosmWasmClient,
+  mustGetCosmosNetwork,
+  getCosmosNetwork,
+} from "../../networks";
 import { useAppNavigation } from "../../utils/navigation";
 import { neutral17 } from "../../utils/style/colors";
-import { isTokenOwnedByUser, tokenWithoutTld } from "../../utils/tns";
+import { nsTokenWithoutTLD } from "../../utils/tns";
 import { defaultMetaData } from "../../utils/types/tns";
-import { TNSModalCommonProps } from "./TNSHomeScreen";
 
 const normalize = (inputString: string) => {
   const invalidChrsRemoved = inputString.replace(/[^a-z0-9\-_]/g, "");
@@ -38,22 +38,28 @@ export const TNSMintPathScreen: React.FC<TNSMintPathScreenProps> = ({
   const [initialized, setInitialized] = useState(false);
   const { name, setName } = useTNS();
   const { setToastError, setToastSuccess } = useFeedbacks();
-  const { tokens } = useTokenList();
   const navigation = useAppNavigation();
-  const isKeplrConnected = useIsKeplrConnected();
-  const userHasCoWallet = useAreThereWallets();
-  const contractAddress = process.env
-    .TERITORI_NAME_SERVICE_CONTRACT_ADDRESS as string;
+  const selectedWallet = useSelectedWallet();
+  const { tokens } = useNSTokensByOwner(selectedWallet?.userId);
+  const network = getCosmosNetwork(selectedWallet?.networkId);
+  const walletAddress = selectedWallet?.address;
 
-  const normalizedTokenId = (name + process.env.TLD).toLowerCase();
+  const normalizedTokenId = (
+    name + network?.nameServiceTLD || ""
+  ).toLowerCase();
 
   const initData = async () => {
     try {
-      const cosmwasmClient = await getNonSigningCosmWasmClient();
+      const network = mustGetCosmosNetwork(selectedWallet?.networkId);
+      if (!network.nameServiceContractAddress) {
+        throw new Error("network not supported");
+      }
+
+      const cosmwasmClient = await mustGetNonSigningCosmWasmClient(network.id);
 
       const client = new TeritoriNameServiceQueryClient(
         cosmwasmClient,
-        contractAddress
+        network.nameServiceContractAddress
       );
 
       // If this query fails it means that the token does not exist.
@@ -72,12 +78,7 @@ export const TNSMintPathScreen: React.FC<TNSMintPathScreenProps> = ({
   // ==== Init
   useFocusEffect(() => {
     // ===== Controls many things, be careful
-    if (
-      (name &&
-        tokens.length &&
-        (!userHasCoWallet || !isTokenOwnedByUser(tokens, name))) ||
-      !isKeplrConnected
-    ) {
+    if (name && tokens.length && !tokens.includes(normalizedTokenId)) {
       navigation.navigate("TNSHome");
     }
     if (!initialized) {
@@ -87,7 +88,7 @@ export const TNSMintPathScreen: React.FC<TNSMintPathScreenProps> = ({
 
   // FIXME: typesafe data
   const submitData = async (data: any) => {
-    if (!isKeplrConnected) {
+    if (!walletAddress) {
       return;
     }
     const {
@@ -108,7 +109,10 @@ export const TNSMintPathScreen: React.FC<TNSMintPathScreenProps> = ({
     const normalizedPathId = normalize(pathId.toLowerCase());
 
     try {
-      const walletAddress = (await getFirstKeplrAccount()).address;
+      const network = mustGetCosmosNetwork(selectedWallet?.networkId);
+      if (!network.nameServiceContractAddress) {
+        throw new Error("network not supported");
+      }
 
       const msg = {
         update_metadata: {
@@ -132,11 +136,11 @@ export const TNSMintPathScreen: React.FC<TNSMintPathScreenProps> = ({
         },
       };
 
-      const signingClient = await getSigningCosmWasmClient();
+      const signingClient = await getKeplrSigningCosmWasmClient(network.id);
 
       const mintedToken = await signingClient.execute(
         walletAddress,
-        contractAddress,
+        network.nameServiceContractAddress,
         msg,
         "auto"
       );
@@ -146,7 +150,7 @@ export const TNSMintPathScreen: React.FC<TNSMintPathScreenProps> = ({
           title: normalizedPathId + " successfully minted",
           message: "",
         });
-        setName(tokenWithoutTld(pathId));
+        setName(nsTokenWithoutTLD(pathId));
         onClose("TNSConsultName");
       }
     } catch (err) {

@@ -1,9 +1,9 @@
 import React from "react";
 
+import { FreelanceServicesScreenWrapper } from "./FreelanceServicesScreenWrapper";
 import { FreelanceCommunity } from "../../components/freelanceServices/FreelanceServicesScreen/FreelanceCommunity";
 import { FreelanceServicesSellerHeader } from "../../components/freelanceServices/FreelanceServicesScreen/FreelanceServicesSellerHeader";
 import { ScreenFC } from "../../utils/navigation";
-import { FreelanceServicesScreenWrapper } from "./FreelanceServicesScreenWrapper";
 
 export const FreelanceServicesHomeSeller: ScreenFC<
   "FreelanceServicesHomeSeller"

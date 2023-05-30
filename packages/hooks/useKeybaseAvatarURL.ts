@@ -4,25 +4,20 @@ export const useKeybaseAvatarURL = (identity: string) => {
   const { data } = useQuery(
     ["keybaseAvatarURL", identity],
     async () => {
-      try {
-        if (!identity) {
-          return "";
-        }
-        const keybaseData = await (
-          await fetch(
-            `https://keybase.io/_/api/1.0/user/lookup.json?key_suffix=${encodeURIComponent(
-              identity
-            )}&fields=pictures`
-          )
-        ).json();
-        if (!Array.isArray(keybaseData.them) || !keybaseData.them.length) {
-          return "";
-        }
-        return (keybaseData.them[0].pictures.primary.url as string) || "";
-      } catch (err) {
-        console.warn(err);
+      if (!identity) {
+        return "";
       }
-      return "";
+      const keybaseData = await (
+        await fetch(
+          `https://keybase.io/_/api/1.0/user/lookup.json?key_suffix=${encodeURIComponent(
+            identity
+          )}&fields=pictures`
+        )
+      ).json();
+      if (!Array.isArray(keybaseData.them) || !keybaseData.them.length) {
+        return "";
+      }
+      return (keybaseData.them[0].pictures.primary.url as string) || "";
     },
     {
       staleTime: Infinity,

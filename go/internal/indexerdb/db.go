@@ -1,17 +1,12 @@
 package indexerdb
 
 import (
-	"fmt"
-
+	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
 	"github.com/pkg/errors"
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
-
-// UserID is network-dependent
-// Teritori: tori-<bech32_address>
-type UserID string
 
 type App struct {
 	ID            uint
@@ -21,7 +16,7 @@ type App struct {
 }
 
 type User struct {
-	ID UserID
+	ID networks.UserID
 }
 
 var allModels = []interface{}{
@@ -57,18 +52,23 @@ var allModels = []interface{}{
 	&P2eSquadStaking{},
 	&P2eLeaderboard{},
 
+<<<<<<< HEAD
 	//report
 	&Report{},
 	//seller
 	&SellerProfile{},
 	&Escrow{},
 	&Gig{},
+=======
+	// feed
+	&Post{},
+>>>>>>> e393992d3cbfb9d4139af9d0ec74b7d8aba334e5
 }
 
 func NewSQLiteDB(path string) (*gorm.DB, error) {
 	db, err := gorm.Open(sqlite.Open(path))
 	if err != nil {
-		return nil, errors.Wrap(err, "open db")
+		return nil, errors.Wrap(err, "open sqlite db")
 	}
 	return db, nil
 }
@@ -76,8 +76,7 @@ func NewSQLiteDB(path string) (*gorm.DB, error) {
 func NewPostgresDB(dsn string) (*gorm.DB, error) {
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		fmt.Printf("NewMySQLDB error: %s", err.Error())
-		return nil, errors.Wrap(err, "open db")
+		return nil, errors.Wrap(err, "open postgres db")
 	}
 	return db, nil
 }

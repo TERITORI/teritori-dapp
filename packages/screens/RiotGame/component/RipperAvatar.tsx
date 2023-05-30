@@ -1,18 +1,14 @@
-import {
-  Image,
-  ImageSourcePropType,
-  View,
-  ViewStyle,
-  StyleSheet,
-} from "react-native";
+import { ImageSourcePropType, View, ViewStyle, StyleSheet } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
+import { OptimizedImage } from "../../../components/OptimizedImage";
 import {
   orangeDefault,
   pinkDefault,
   purpleDefault,
   secondaryColor,
   withAlpha,
+  redDefault,
 } from "../../../utils/style/colors";
 import { fontSemibold9 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
@@ -24,6 +20,7 @@ type RipperAvatarProps = {
   containerStyle?: ViewStyle;
   rarity?: RipperRarity;
   rounded?: boolean;
+  isStaked?: boolean;
 };
 
 export const RipperAvatar: React.FC<RipperAvatarProps> = ({
@@ -32,6 +29,7 @@ export const RipperAvatar: React.FC<RipperAvatarProps> = ({
   rarity,
   rounded = false,
   containerStyle,
+  isStaked,
 }) => {
   let rarityColor;
   switch (rarity) {
@@ -63,11 +61,22 @@ export const RipperAvatar: React.FC<RipperAvatarProps> = ({
         containerStyle,
       ]}
     >
-      <Image style={{ width: "100%", height: "100%" }} source={imageSource} />
+      <OptimizedImage
+        style={{ width: "100%", height: "100%", opacity: isStaked ? 0.4 : 1 }}
+        source={imageSource}
+        width={size}
+        height={size}
+      />
+
+      {isStaked && (
+        <View style={[styles.labelContainer, { top: layout.padding_x1 }]}>
+          <BrandText style={[styles.label, styles.labelRed]}>Staked</BrandText>
+        </View>
+      )}
 
       {rarity && (
-        <View style={[styles.rarityContainer]}>
-          <BrandText style={[styles.rarityText, { color: rarityColor }]}>
+        <View style={[styles.labelContainer, { bottom: 0 }]}>
+          <BrandText style={[styles.label, { color: rarityColor }]}>
             {rarity}
           </BrandText>
         </View>
@@ -77,17 +86,22 @@ export const RipperAvatar: React.FC<RipperAvatarProps> = ({
 };
 
 const styles = StyleSheet.create({
-  rarityContainer: {
+  labelContainer: {
     position: "absolute",
-    bottom: 0,
     alignItems: "center",
     width: "100%",
   },
-  rarityText: {
+
+  label: {
     paddingVertical: layout.padding_x0_5,
     paddingHorizontal: layout.padding_x0_5,
     borderRadius: 10,
-    backgroundColor: withAlpha(orangeDefault, 0.2),
+    backgroundColor: withAlpha(orangeDefault, 0.3),
     ...(fontSemibold9 as object),
+  },
+
+  labelRed: {
+    color: redDefault,
+    backgroundColor: withAlpha(redDefault, 0.3),
   },
 });

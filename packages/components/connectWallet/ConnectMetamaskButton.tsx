@@ -2,15 +2,13 @@ import { useMetaMask } from "metamask-react";
 import React from "react";
 import { Linking } from "react-native";
 
+import { ConnectWalletButton } from "./components/ConnectWalletButton";
 import metamaskSVG from "../../../assets/icons/metamask.svg";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { getNetwork } from "../../networks";
-import {
-  setIsMetamaskConnected,
-  setSelectedNetworkId,
-} from "../../store/slices/settings";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import { getEthereumNetwork, selectableEthereumNetworks } from "../../networks";
+import { setSelectedNetworkId } from "../../store/slices/settings";
 import { useAppDispatch } from "../../store/store";
-import { ConnectWalletButton } from "./components/ConnectWalletButton";
 
 export const ConnectMetamaskButton: React.FC<{
   onDone?: (err?: unknown) => void;
@@ -18,6 +16,7 @@ export const ConnectMetamaskButton: React.FC<{
   const { setToastError } = useFeedbacks();
   const dispatch = useAppDispatch();
   const { status, connect } = useMetaMask();
+  const selectedNetworkId = useSelectedNetworkId();
 
   const isConnected = status === "connected";
 
@@ -31,15 +30,14 @@ export const ConnectMetamaskButton: React.FC<{
         );
         return;
       }
-      const ethereumNetworkId = process.env.ETHEREUM_NETWORK_ID;
-      if (!ethereumNetworkId) {
-        console.error("no ethereum network id");
-        return;
-      }
-      const network = getNetwork(ethereumNetworkId);
+      let network = getEthereumNetwork(selectedNetworkId);
       if (!network) {
-        console.error(`no ${ethereumNetworkId} network`);
-        return;
+        if (selectableEthereumNetworks.length) {
+          network = selectableEthereumNetworks[0];
+        }
+      }
+      if (!network) {
+        throw new Error("no suitable network");
       }
 
       if (!isConnected) {
@@ -47,11 +45,10 @@ export const ConnectMetamaskButton: React.FC<{
         console.log("Connected address:", address);
       }
 
-      dispatch(setSelectedNetworkId(ethereumNetworkId));
-      dispatch(setIsMetamaskConnected(true));
+      dispatch(setSelectedNetworkId(network.id));
+
       onDone && onDone();
     } catch (err) {
-      onDone && onDone(err);
       console.error(err);
       if (err instanceof Error) {
         setToastError({
@@ -59,6 +56,7 @@ export const ConnectMetamaskButton: React.FC<{
           message: err.message,
         });
       }
+      onDone && onDone(err);
     }
   };
   return (

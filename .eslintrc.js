@@ -11,11 +11,11 @@ module.exports = {
     {
       extends: "universe/node",
       files: [
+        ".eslintrc.js",
         "babel.config.js",
         "electron-webpack.js",
         "metro.config.js",
         "electron/main/**",
-        "packages/candymachine/**",
         "packages/scripts/**",
       ],
     },

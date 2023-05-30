@@ -1,3 +1,4 @@
+import { currencyTORIcolor } from "../../utils/style/colors";
 import { CurrencyInfo } from "../types";
 
 export const teritoriCurrencies: CurrencyInfo[] = [
@@ -8,7 +9,7 @@ export const teritoriCurrencies: CurrencyInfo[] = [
     coingeckoId: "teritori",
     icon: "icons/networks/teritori-circle.svg",
     kind: "native",
-    color: "#16BBFF",
+    color: currencyTORIcolor,
   },
   {
     kind: "ibc",

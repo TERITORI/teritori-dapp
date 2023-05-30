@@ -1,10 +1,10 @@
 import React, { useEffect, useRef } from "react";
 import { TouchableOpacity, View } from "react-native";
 
+import { IMenuItem } from "./types";
 import { primaryColor, secondaryColor } from "../../utils/style/colors";
 import { BrandText } from "../BrandText/BrandText";
 import { TertiaryBox } from "../boxes/TertiaryBox";
-import { IMenuItem } from "./types";
 
 export const TextComboBoxDownMenu: React.FC<{
   options: IMenuItem[];

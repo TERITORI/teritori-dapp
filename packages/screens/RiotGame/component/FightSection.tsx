@@ -1,27 +1,25 @@
-import React, { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import React, { useState } from "react";
 import { StyleSheet } from "react-native";
 
-import FlexRow from "../../../components/FlexRow";
-import { useFeedbacks } from "../../../context/FeedbacksProvider";
-import { NftInfoResponse } from "../../../contracts-clients/teritori-nft/TeritoriNft.types";
-import {
-  Nft,
-  Squad,
-} from "../../../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.types";
-import { ipfsURLToHTTPURL } from "../../../utils/ipfs";
-import { getNonSigningCosmWasmClient } from "../../../utils/keplr";
-import { fontMedium48 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { RipperLightInfo } from "../types";
 import { FightBossSection } from "./FightBossSection";
 import { FightCountdownSection } from "./FightCountdownSection";
 import { FightSquadSection } from "./FightSquadSection";
 import { UnstakeModal } from "./UnstakeModal";
+import FlexRow from "../../../components/FlexRow";
+import { useFeedbacks } from "../../../context/FeedbacksProvider";
+import { TeritoriNftQueryClient } from "../../../contracts-clients/teritori-nft/TeritoriNft.client";
+import { Squad } from "../../../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.types";
+import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { mustGetNonSigningCosmWasmClient } from "../../../networks";
+import { squadWithdraw } from "../../../utils/game";
+import { ipfsURLToHTTPURL } from "../../../utils/ipfs";
+import { fontMedium48 } from "../../../utils/style/fonts";
+import { layout } from "../../../utils/style/layout";
+import { RipperLightInfo } from "../types";
 
 type FightSectionProps = {
   squad: Squad;
-  currentUser: string | undefined;
-  squadWithdraw: (user: string) => void;
   onCloseClaimModal: () => void;
   now: number;
   cooldown: number;
@@ -29,37 +27,54 @@ type FightSectionProps = {
 
 export const FightSection: React.FC<FightSectionProps> = ({
   squad,
-  currentUser,
-  squadWithdraw,
   onCloseClaimModal,
   now,
   cooldown,
 }) => {
   const [isUnstaking, setIsUnstaking] = useState(false);
   const { setToastError } = useFeedbacks();
-  const [stakedRippers, setStakedRippers] = useState<RipperLightInfo[]>([]);
   const [isShowClaimModal, setIsShowClaimModal] = useState(false);
+  const selectedWallet = useSelectedWallet();
+  const networkId = selectedWallet?.networkId;
 
-  const fetchCurrentStakedRippers = async (currentStakedNfts: Nft[]) => {
-    const client = await getNonSigningCosmWasmClient();
+  const { data: stakedRippers } = useQuery(
+    ["stakedRippers", networkId, squad.nfts],
+    async () => {
+      if (!networkId) {
+        return [];
+      }
 
-    const nftInfos: NftInfoResponse[] = await Promise.all(
-      currentStakedNfts.map((nft) =>
-        client.queryContractSmart(nft.contract_addr, {
-          nft_info: { token_id: nft.token_id },
+      if (squad.nfts.length === 0) {
+        return [];
+      }
+
+      const cosmwasmClient = await mustGetNonSigningCosmWasmClient(networkId);
+
+      const nftInfos = await Promise.all(
+        squad.nfts.map(async (nft) => {
+          const nftClient = new TeritoriNftQueryClient(
+            cosmwasmClient,
+            nft.contract_addr
+          );
+          return await nftClient.nftInfo({ tokenId: nft.token_id });
         })
-      )
-    );
+      );
 
-    const stakedRippers: RipperLightInfo[] = nftInfos.map(({ extension }) => ({
-      imageUri: ipfsURLToHTTPURL(`${extension?.image}`),
-      name: `${extension?.name}`,
-    }));
+      const stakedRippers: RipperLightInfo[] = nftInfos.map(
+        ({ extension }) => ({
+          imageUri: ipfsURLToHTTPURL(`${extension?.image}`),
+          name: `${extension?.name}`,
+        })
+      );
 
-    setStakedRippers(stakedRippers);
-  };
+      return stakedRippers;
+    },
+    { staleTime: Infinity }
+  );
 
   const unstake = async () => {
+    const currentUser = selectedWallet?.userId;
+
     if (!currentUser) return;
 
     try {
@@ -77,10 +92,6 @@ export const FightSection: React.FC<FightSectionProps> = ({
     }
   };
 
-  useEffect(() => {
-    fetchCurrentStakedRippers(squad.nfts);
-  }, [squad.nfts]);
-
   return (
     <FlexRow
       justifyContent="space-between"
@@ -97,7 +108,7 @@ export const FightSection: React.FC<FightSectionProps> = ({
         cooldown={cooldown}
       />
 
-      <FightSquadSection stakedRippers={stakedRippers} />
+      <FightSquadSection stakedRippers={stakedRippers || []} />
 
       <UnstakeModal
         onClose={onCloseClaimModal}

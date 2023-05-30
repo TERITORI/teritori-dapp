@@ -1,9 +1,9 @@
 import React from "react";
 import { useWindowDimensions, View } from "react-native";
 
-import { leftMarginMainContent } from "../../../utils/style/layout";
 import { FilterCheckbox } from "./FilterCheckbox";
 import { FilteringDropdowns } from "./FilteringDropdowns";
+import { leftMarginMainContent } from "../../../utils/style/layout";
 
 export const FilteringOptions = () => {
   const { width } = useWindowDimensions();

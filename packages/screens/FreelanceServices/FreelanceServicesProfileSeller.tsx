@@ -2,6 +2,9 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { View } from "react-native";
 
+import { FreelanceServicesScreenWrapper } from "./FreelanceServicesScreenWrapper";
+import { getSellerIpfsHash, updateSellerProfileToContract } from "./contract";
+import { emptySeller, SellerInfo } from "./types/fields";
 import { ProfileBody } from "../../components/freelanceServices/Profile/ProfileBody";
 import { ProfileFooter } from "../../components/freelanceServices/Profile/ProfileFooter";
 import { ProfileHeader } from "../../components/freelanceServices/Profile/ProfileHeader";
@@ -11,9 +14,6 @@ import { ipfsPinataUrl, uploadJSONToIPFS } from "../../utils/ipfs";
 import { getFirstKeplrAccount } from "../../utils/keplr";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { ProfileStep } from "../../utils/types/freelance";
-import { FreelanceServicesScreenWrapper } from "./FreelanceServicesScreenWrapper";
-import { getSellerIpfsHash, updateSellerProfileToContract } from "./contract";
-import { emptySeller, SellerInfo } from "./types/fields";
 
 export const FreelanceServicesProfileSeller: ScreenFC<
   "FreelanceServicesProfileSeller"

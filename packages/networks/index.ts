@@ -1,16 +1,35 @@
+import {
+  CosmWasmClient,
+  SigningCosmWasmClient,
+} from "@cosmjs/cosmwasm-stargate";
 import { Decimal } from "@cosmjs/math";
-import { SigningStargateClient } from "@cosmjs/stargate";
+import {
+  SigningStargateClient,
+  StargateClient,
+  GasPrice,
+} from "@cosmjs/stargate";
 import { ChainInfo, Currency as KeplrCurrency } from "@keplr-wallet/types";
-import { GasPrice } from "cosmwasm";
 
-import { getKeplr } from "../utils/keplr";
 import { cosmosNetwork } from "./cosmos-hub";
 import { cosmosThetaNetwork } from "./cosmos-hub-theta";
 import { ethereumNetwork } from "./ethereum";
 import { ethereumGoerliNetwork } from "./ethereum-goerli";
+import { gnoTestnetNetwork } from "./gno-testnet";
+import { junoNetwork } from "./juno";
+import { osmosisNetwork } from "./osmosis";
+import { osmosisTestnetNetwork } from "./osmosis-testnet";
+// import { solanaNetwork } from "./solana";
 import { teritoriNetwork } from "./teritori";
 import { teritoriTestnetNetwork } from "./teritori-testnet";
-import { NativeCurrencyInfo, NetworkInfo } from "./types";
+import {
+  CosmosNetworkInfo,
+  EthereumNetworkInfo,
+  GnoNetworkInfo,
+  NativeCurrencyInfo,
+  NetworkInfo,
+  NetworkKind,
+} from "./types";
+import { getKeplr } from "../utils/keplr";
 
 export * from "./types";
 
@@ -23,6 +42,11 @@ export const allNetworks = [
   cosmosThetaNetwork,
   ethereumGoerliNetwork,
   ethereumNetwork,
+  junoNetwork,
+  osmosisNetwork,
+  osmosisTestnetNetwork,
+  gnoTestnetNetwork,
+  // solanaNetwork,
 ];
 
 export const getCurrency = (
@@ -33,6 +57,21 @@ export const getCurrency = (
     return undefined;
   }
   return getNetwork(networkId)?.currencies.find((c) => c.denom === denom);
+};
+
+export const getToriNativeCurrency = (networkId: string) => {
+  const network = getNetwork(networkId);
+  if (network?.kind === NetworkKind.Cosmos)
+    return network?.currencies.find(
+      (currencyInfo) => currencyInfo.kind === "native"
+    ) as NativeCurrencyInfo;
+  else {
+    const toriIbcCurrency = network?.currencies.find(
+      (currencyInfo) =>
+        currencyInfo.kind === "ibc" && currencyInfo.sourceDenom === "utori"
+    );
+    return getNativeCurrency(networkId, toriIbcCurrency?.denom);
+  }
 };
 
 export const getIBCCurrency = (
@@ -64,11 +103,182 @@ export const getNativeCurrency = (
   return currency;
 };
 
+export const getStakingCurrency = (networkId: string | undefined) => {
+  const network = getNetwork(networkId);
+  if (!network || !("stakeCurrency" in network)) {
+    return undefined;
+  }
+  return getNativeCurrency(networkId, network.stakeCurrency);
+};
+
 export const getNetwork = (networkId: string | undefined) => {
   if (!networkId) {
     return undefined;
   }
   return allNetworks.find((n) => n.id === networkId);
+};
+
+export const mustGetNetwork = (networkId: string | undefined) => {
+  const network = getNetwork(networkId);
+  if (!network) {
+    throw new Error(`unknown network '${networkId}'`);
+  }
+  return network;
+};
+
+export const getNetworkByIdPrefix = (idPrefix: string | undefined) => {
+  if (!idPrefix) {
+    return undefined;
+  }
+  return allNetworks.find((n) => n.idPrefix === idPrefix);
+};
+
+export const parseNetworkObjectId = (
+  id: string | undefined
+): [NetworkInfo | undefined, string] => {
+  if (!id) {
+    return [undefined, ""];
+  }
+  const parts = id.split("-");
+  if (parts.length < 2) {
+    return [undefined, ""];
+  }
+  const network = getNetworkByIdPrefix(parts[0]);
+  return [network, id.substring(parts[0].length + 1)];
+};
+
+export const parseNftId = (
+  id: string | undefined
+): [NetworkInfo | undefined, string, string] => {
+  const [network, subId] = parseNetworkObjectId(id);
+  if (!network) {
+    return [undefined, "", ""];
+  }
+  const parts = subId.split("-");
+  if (parts.length < 2) {
+    return [undefined, "", ""];
+  }
+  return [network, parts[0], subId.substring(parts[0].length + 1)];
+};
+
+export const parseUserId = (
+  id: string | undefined
+): [NetworkInfo | undefined, string] => {
+  return parseNetworkObjectId(id);
+};
+
+export const parseCollectionId = (
+  id: string | undefined
+): [NetworkInfo | undefined, string] => {
+  return parseNetworkObjectId(id);
+};
+
+export const parseActivityId = (
+  id: string | undefined
+): [NetworkInfo | undefined, string, string] => {
+  const [network, subId] = parseNetworkObjectId(id);
+  if (!network) {
+    return [undefined, "", ""];
+  }
+  const parts = subId.split("-");
+  if (parts.length < 2) {
+    return [undefined, "", ""];
+  }
+  return [network, parts[0], subId.substring(parts[0].length + 1)];
+};
+
+export const getUserId = (
+  networkId: string | null | undefined,
+  address: string | null | undefined
+) => {
+  if (!networkId || !address) {
+    return "";
+  }
+  const network = getNetwork(networkId);
+  return `${network?.idPrefix}-${address}`;
+};
+
+export const getCollectionId = (
+  networkId: string | undefined,
+  address: string | undefined
+) => {
+  if (!networkId || !address) {
+    return "";
+  }
+  const network = getNetwork(networkId);
+  return `${network?.idPrefix}-${address}`;
+};
+
+export const getCosmosNetwork = (
+  networkId: string | undefined
+): CosmosNetworkInfo | undefined => {
+  const network = getNetwork(networkId);
+  if (network === undefined) {
+    return undefined;
+  }
+  if (network.kind !== NetworkKind.Cosmos) {
+    return undefined;
+  }
+  return network;
+};
+
+export const mustGetCosmosNetwork = (
+  networkId: string | undefined
+): CosmosNetworkInfo => {
+  const network = getNetwork(networkId);
+  if (network === undefined) {
+    throw new Error(`unknown network '${networkId}'`);
+  }
+  if (network.kind !== NetworkKind.Cosmos) {
+    throw new Error(`'${networkId}' is not a cosmos network`);
+  }
+  return network;
+};
+
+export const getGnoNetwork = (
+  networkId: string | undefined
+): GnoNetworkInfo | undefined => {
+  const network = getNetwork(networkId);
+  if (network?.kind !== NetworkKind.Gno) {
+    return undefined;
+  }
+  return network;
+};
+
+export const mustGetGnoNetwork = (
+  networkId: string | undefined
+): GnoNetworkInfo => {
+  const network = mustGetNetwork(networkId);
+  if (network.kind !== NetworkKind.Gno) {
+    throw new Error(`'${networkId}' is not a gno network`);
+  }
+  return network;
+};
+
+export const getEthereumNetwork = (
+  networkId: string | undefined
+): EthereumNetworkInfo | undefined => {
+  const network = getNetwork(networkId);
+  if (network === undefined) {
+    return undefined;
+  }
+  if (network.kind !== NetworkKind.Ethereum) {
+    return undefined;
+  }
+  return network;
+};
+
+export const mustGetEthereumNetwork = (
+  networkId: string | undefined
+): EthereumNetworkInfo => {
+  const network = getNetwork(networkId);
+  if (network === undefined) {
+    throw new Error(`unknown network '${networkId}'`);
+  }
+  if (network.kind !== NetworkKind.Ethereum) {
+    throw new Error(`'${networkId}' is not an ethereum network`);
+  }
+  return network;
 };
 
 export const keplrCurrencyFromNativeCurrencyInfo = (
@@ -88,7 +298,7 @@ export const keplrCurrencyFromNativeCurrencyInfo = (
 // FIXME: consider directly using ChainInfo in NetworkInfo
 
 export const keplrChainInfoFromNetworkInfo = (
-  network: NetworkInfo
+  network: CosmosNetworkInfo
 ): ChainInfo => {
   const stakeCurrency = keplrCurrencyFromNativeCurrencyInfo(
     getNativeCurrency(network.id, network.stakeCurrency)
@@ -121,15 +331,11 @@ export const keplrChainInfoFromNetworkInfo = (
   };
 };
 
-export const networkGasPrice = (
-  networkId: string,
+const cosmosNetworkGasPrice = (
+  network: CosmosNetworkInfo,
   kind: "low" | "average" | "high"
 ) => {
-  const network = getNetwork(networkId);
-  if (!network) {
-    return undefined;
-  }
-  const feeCurrency = getNativeCurrency(networkId, network.stakeCurrency);
+  const feeCurrency = getStakingCurrency(network.id);
   if (!feeCurrency) {
     return undefined;
   }
@@ -141,19 +347,8 @@ export const networkGasPrice = (
   return new GasPrice(decimalGasPrice, feeCurrency.denom);
 };
 
-export const getKeplrSigningStargateClient = async (
-  networkId: string,
-  gasPriceKind: "low" | "average" | "high" = "average"
-) => {
-  const network = getNetwork(networkId);
-  if (!network) {
-    throw new Error("network not found");
-  }
-
-  const gasPrice = networkGasPrice(networkId, gasPriceKind);
-  if (!gasPrice) {
-    throw new Error("gas price not found");
-  }
+export const getKeplrSigner = async (networkId: string) => {
+  const network = mustGetCosmosNetwork(networkId);
 
   const keplr = getKeplr();
 
@@ -161,7 +356,21 @@ export const getKeplrSigningStargateClient = async (
 
   await keplr.enable(network.chainId);
 
-  const signer = await keplr.getOfflineSignerAuto(network.chainId);
+  return keplr.getOfflineSignerAuto(network.chainId);
+};
+
+export const getKeplrSigningStargateClient = async (
+  networkId: string,
+  gasPriceKind: "low" | "average" | "high" = "average"
+) => {
+  const network = mustGetCosmosNetwork(networkId);
+
+  const gasPrice = cosmosNetworkGasPrice(network, gasPriceKind);
+  if (!gasPrice) {
+    throw new Error("gas price not found");
+  }
+
+  const signer = await getKeplrSigner(networkId);
 
   return await SigningStargateClient.connectWithSigner(
     network.rpcEndpoint,
@@ -171,3 +380,78 @@ export const getKeplrSigningStargateClient = async (
     }
   );
 };
+
+export const getNonSigningStargateClient = async (networkId: string) => {
+  const network = mustGetCosmosNetwork(networkId);
+
+  return await StargateClient.connect(network.rpcEndpoint);
+};
+
+export const getKeplrSigningCosmWasmClient = async (
+  networkId: string,
+  gasPriceKind: "low" | "average" | "high" = "average"
+) => {
+  const network = mustGetCosmosNetwork(networkId);
+
+  const signer = await getKeplrSigner(networkId);
+
+  const gasPrice = cosmosNetworkGasPrice(network, gasPriceKind);
+  if (!gasPrice) {
+    throw new Error("gas price not found");
+  }
+
+  return SigningCosmWasmClient.connectWithSigner(network.rpcEndpoint, signer, {
+    gasPrice,
+  });
+};
+
+export const mustGetNonSigningCosmWasmClient = async (networkId: string) => {
+  const network = mustGetCosmosNetwork(networkId);
+  return await CosmWasmClient.connect(network.rpcEndpoint);
+};
+
+export const txExplorerLink = (
+  networkId: string | undefined,
+  txHash: string
+) => {
+  const network = getNetwork(networkId);
+  if (!network?.txExplorer) {
+    return "/";
+  }
+  return network.txExplorer.replace("$hash", txHash);
+};
+
+export const accountExplorerLink = (
+  networkId: string | undefined,
+  address: string
+) => {
+  const network = getNetwork(networkId);
+  if (!network?.accountExplorer) {
+    return "/";
+  }
+  return network.accountExplorer.replace("$address", address);
+};
+
+export const contractExplorerLink = (
+  networkId: string | undefined,
+  address: string
+) => {
+  const network = getNetwork(networkId);
+  if (!network?.contractExplorer) {
+    return "/";
+  }
+  return network.contractExplorer.replace("$address", address);
+};
+
+export const selectableNetworks = (process.env.SELECTABLE_NETWORKS_IDS || "")
+  .split(",")
+  .map((s) => getNetwork(s.trim()))
+  .filter((n): n is NetworkInfo => !!n);
+
+export const selectableCosmosNetworks = selectableNetworks.filter(
+  (n): n is CosmosNetworkInfo => n.kind === NetworkKind.Cosmos
+);
+
+export const selectableEthereumNetworks = selectableNetworks.filter(
+  (n): n is EthereumNetworkInfo => n.kind === NetworkKind.Ethereum
+);

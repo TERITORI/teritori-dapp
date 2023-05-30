@@ -1,18 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useWindowDimensions, View } from "react-native";
 
-import TNSBannerPNG from "../../../assets/banners/tns.png";
-import exploreSVG from "../../../assets/icons/explore-neutral77.svg";
-import penSVG from "../../../assets/icons/pen-neutral77.svg";
-import registerSVG from "../../../assets/icons/register-neutral77.svg";
-import { BrandText } from "../../components/BrandText";
-import { IntroLogoText } from "../../components/IntroLogoText";
-import { ScreenContainer } from "../../components/ScreenContainer";
-import { TNSNameFinderModal } from "../../components/modals/teritoriNameService/TNSNameFinderModal";
-import { FlowCard } from "../../components/teritoriNameService/FlowCard";
-import { useTNS } from "../../context/TNSProvider";
-import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
-import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { TNSBurnNameScreen } from "./TNSBurnNameScreen";
 import { TNSConsultNameScreen } from "./TNSConsultNameScreen";
 import { TNSExploreScreen } from "./TNSExploreScreen";
@@ -20,6 +8,24 @@ import { TNSManageScreen } from "./TNSManageScreen";
 import { TNSMintNameScreen } from "./TNSMintNameScreen";
 import { TNSRegisterScreen } from "./TNSRegisterScreen";
 import { TNSUpdateNameScreen } from "./TNSUpdateNameScreen";
+import TNSBannerPNG from "../../../assets/banners/tns.png";
+import exploreSVG from "../../../assets/icons/explore-neutral77.svg";
+import penSVG from "../../../assets/icons/pen-neutral77.svg";
+import registerSVG from "../../../assets/icons/register-neutral77.svg";
+import { BrandText } from "../../components/BrandText";
+import { IntroLogoText } from "../../components/IntroLogoText";
+import { ScreenContainer } from "../../components/ScreenContainer";
+import { ActivityTable } from "../../components/activity/ActivityTable";
+import { TNSNameFinderModal } from "../../components/modals/teritoriNameService/TNSNameFinderModal";
+import { FlowCard } from "../../components/teritoriNameService/FlowCard";
+import { useTNS } from "../../context/TNSProvider";
+import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
+import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { NetworkKind, getCollectionId, getCosmosNetwork } from "../../networks";
+import { ScreenFC, useAppNavigation } from "../../utils/navigation";
+
 export type TNSItems = "TNSManage" | "TNSRegister" | "TNSExplore";
 export type TNSModals =
   | "TNSManage"
@@ -63,6 +69,14 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
   const [navigateBackTo, setNavigateBackTo] = useState<TNSModals>();
   const { name, setName } = useTNS();
   const navigation = useAppNavigation();
+  const selectedNetworkId = useSelectedNetworkId();
+  const selectedNetwork = getCosmosNetwork(selectedNetworkId);
+  const selectedWallet = useSelectedWallet();
+  const { tokens } = useNSTokensByOwner(selectedWallet?.userId);
+  const collectionId = getCollectionId(
+    selectedNetwork?.id,
+    selectedNetwork?.nameServiceContractAddress
+  );
 
   const isKeplrConnected = useIsKeplrConnected();
 
@@ -126,6 +140,7 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
     <ScreenContainer
       noMargin={width <= 1600}
       headerChildren={<BrandText>Name Service</BrandText>}
+      forceNetworkKind={NetworkKind.Cosmos}
     >
       <View
         style={{
@@ -133,13 +148,12 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
         }}
       >
         <IntroLogoText
-          title="Teritori Name Service"
+          title={`${selectedNetwork?.displayName} Name Service`}
           backgroundImage={TNSBannerPNG}
         />
         <View
           style={{
-            marginTop: width >= LG_BREAKPOINT ? 120 : 80,
-            marginBottom: 20,
+            marginVertical: width >= LG_BREAKPOINT ? 120 : 80,
             flexDirection: width >= MD_BREAKPOINT ? "row" : "column",
             justifyContent: "center",
           }}
@@ -154,7 +168,7 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
             }
           />
           <FlowCard
-            disabled={!isKeplrConnected}
+            disabled={!isKeplrConnected || !tokens?.length}
             label="Manage"
             description="Transfer, edit, or burn a name that you own"
             iconSVG={penSVG}
@@ -169,9 +183,10 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
             description="Lookup addresses and explore registered names"
             iconSVG={exploreSVG}
             onPress={() => navigation.navigate("TNSHome", { modal: "explore" })}
-            style={{}}
           />
         </View>
+
+        <ActivityTable collectionId={collectionId} />
 
         <TNSNameFinderModal
           visible={modalNameFinderVisible}

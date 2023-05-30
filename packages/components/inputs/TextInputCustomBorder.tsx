@@ -1,13 +1,8 @@
 import React from "react";
-import {
-  NativeSyntheticEvent,
-  TextInput,
-  TextInputKeyPressEventData,
-  View,
-  ViewStyle,
-} from "react-native";
+import { TextInput, View, ViewStyle } from "react-native";
 
 import searchSVG from "../../../assets/icons/search.svg";
+import { handleKeyPress } from "../../utils/keyboard";
 import {
   numberWithThousandsSeparator,
   thousandSeparatedToNumber,
@@ -36,19 +31,6 @@ export const TextInputCustomBorder: React.FC<{
   onlyNumbers,
   disabled,
 }) => {
-  // Handling key pressing
-  const handleKeyPress = (
-    event: NativeSyntheticEvent<TextInputKeyPressEventData>
-  ) => {
-    const {
-      nativeEvent: { key: keyValue },
-    } = event;
-    switch (keyValue) {
-      case "Enter":
-        if (onPressEnter) onPressEnter();
-    }
-  };
-
   // Replace the comma if number and controls
   const handleChangeText = (value: string) => {
     // ---- If you want only number in the TextInputCustomBorder, we apply comma as a thousand separator
@@ -106,7 +88,7 @@ export const TextInputCustomBorder: React.FC<{
               placeholder={placeHolder}
               value={value}
               onChangeText={handleChangeText}
-              onKeyPress={handleKeyPress}
+              onKeyPress={(event) => handleKeyPress({ event, onPressEnter })}
               placeholderTextColor="#999999"
               style={[
                 {

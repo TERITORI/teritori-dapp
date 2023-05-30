@@ -1,6 +1,8 @@
 import React from "react";
 import { View, StyleSheet, TextInput, TextProps } from "react-native";
 
+import { deliveryTimeData } from "./GigBasedata";
+import { GigPriceContentData } from "./GigPriceContentData";
 import {
   GigInfo,
   PriceContentType,
@@ -21,8 +23,6 @@ import {
 import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import { TableSelect } from "../../select/TableSelect";
-import { deliveryTimeData } from "./GigBasedata";
-import { GigPriceContentData } from "./GigPriceContentData";
 
 const tableWidth = 909;
 const borderWidth = 1;

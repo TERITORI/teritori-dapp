@@ -1,11 +1,13 @@
 import { PublicKey } from "@solana/web3.js";
 import { useEffect, useMemo, useState } from "react";
 
+import { Wallet } from "./wallet";
+import { NetworkKind } from "../../networks";
+import { WalletProvider } from "../../utils/walletProvider";
+
 // import { addWallet } from "../../store/slices/wallets";
 // import { useAppDispatch } from "../../store/store";
-// import { Network } from "../../utils/network";
-import { WalletProvider } from "../../utils/walletProvider";
-import { Wallet } from "./wallet";
+// import { Network } from "../../networks";
 
 export type UsePhantomResult =
   | [true, boolean, Wallet]
@@ -74,7 +76,9 @@ export const usePhantom: () => UsePhantomResult = () => {
     const wallet: Wallet = {
       address: publicKey,
       provider: WalletProvider.Phantom,
-      // network: Network.Solana,
+      networkKind: NetworkKind.Solana,
+      networkId: "",
+      userId: "",
       connected: !!publicKey,
       id: "phantom",
     };

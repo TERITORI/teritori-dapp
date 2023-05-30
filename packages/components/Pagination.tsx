@@ -1,33 +1,43 @@
 // libraries
-import React from "react";
+import React, { useRef } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 
+import { BrandText } from "./BrandText";
+import { SVG } from "./SVG";
+import { SecondaryBox } from "./boxes/SecondaryBox";
+import { TertiaryBox } from "./boxes/TertiaryBox";
+import { SpacerRow } from "./spacer";
+import chevronDownSVG from "../../assets/icons/chevron-down.svg";
 import chevronLeftDoubleSVG from "../../assets/icons/chevron-left-double.svg";
 import chevronLeftSVG from "../../assets/icons/chevron-left.svg";
 import chevronRightDoubleSVG from "../../assets/icons/chevron-right-double.svg";
 import chevronRightSVG from "../../assets/icons/chevron-right.svg";
-import { neutral77 } from "../utils/style/colors";
-import { fontSemibold14 } from "../utils/style/fonts";
+import chevronUpSVG from "../../assets/icons/chevron-up.svg";
+import { useDropdowns } from "../context/DropdownsProvider";
+import {
+  neutral33,
+  neutral77,
+  neutralA3,
+  secondaryColor,
+} from "../utils/style/colors";
+import { fontSemibold13, fontSemibold14 } from "../utils/style/fonts";
 import { layout } from "../utils/style/layout";
-import { BrandText } from "./BrandText";
-import { SVG } from "./SVG";
-import { TertiaryBox } from "./boxes/TertiaryBox";
-import { TextInputCustom } from "./inputs/TextInputCustom";
-import { SpacerRow } from "./spacer";
 
-// misc
-
-type PaginationProps = {
+interface PaginationProps {
   currentPage: number;
   maxPage: number;
   itemsPerPage: number;
+  dropdownOptions: number[];
+  setItemsPerPage: (item: number) => void;
   onChangePage: (page: number) => void;
-};
+}
 
 export const Pagination = ({
   currentPage,
   maxPage,
+  dropdownOptions,
   itemsPerPage,
+  setItemsPerPage,
   onChangePage,
 }: PaginationProps) => {
   const handleChangePage = (pageIndex: number) => {
@@ -40,18 +50,14 @@ export const Pagination = ({
       onChangePage(pageIndex);
     }
   };
-
-  const edgeSectionsWidth = 250; // this is needed to make sure the pagination arrows are centered and don't move
+  const dropdownRef = useRef<View>(null);
+  const { onPressDropdownButton, isDropdownOpen, closeOpenedDropdown } =
+    useDropdowns();
 
   // returns
   return (
     <View style={styles.container}>
-      <View
-        style={[
-          styles.section,
-          { width: edgeSectionsWidth, justifyContent: "flex-start" },
-        ]}
-      >
+      <View style={[styles.section, { justifyContent: "flex-start" }]}>
         <BrandText style={styles.grayText}>
           Page {currentPage + 1} of {maxPage}
         </BrandText>
@@ -63,7 +69,7 @@ export const Pagination = ({
             <SVG source={chevronLeftDoubleSVG} height={16} width={16} />
           </TertiaryBox>
         </TouchableOpacity>
-        <SpacerRow size={0.5} />
+        <SpacerRow size={1} />
         <TouchableOpacity onPress={() => handleChangePage(currentPage - 1)}>
           <TertiaryBox height={42} width={56}>
             <SVG source={chevronLeftSVG} height={16} width={16} />
@@ -75,7 +81,7 @@ export const Pagination = ({
             <SVG source={chevronRightSVG} height={16} width={16} />
           </TertiaryBox>
         </TouchableOpacity>
-        <SpacerRow size={0.5} />
+        <SpacerRow size={1} />
         <TouchableOpacity onPress={() => handleChangePage(maxPage - 1)}>
           <TertiaryBox height={42} width={56}>
             <SVG source={chevronRightDoubleSVG} height={16} width={16} />
@@ -83,20 +89,68 @@ export const Pagination = ({
         </TouchableOpacity>
       </View>
 
-      <View
-        style={[
-          styles.section,
-          { width: edgeSectionsWidth, justifyContent: "flex-end" },
-        ]}
-      >
-        <BrandText style={styles.grayText}>Items per page:</BrandText>
-        <TextInputCustom<{ items: number }>
-          width={80}
-          name="items"
-          label=""
-          variant="labelOutside"
-          value={itemsPerPage.toString()}
-        />
+      <View style={[styles.section, { justifyContent: "flex-end" }]}>
+        <TertiaryBox height={42} width={80}>
+          <TouchableOpacity
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+            activeOpacity={1}
+            onPress={() => onPressDropdownButton(dropdownRef)}
+          >
+            <BrandText
+              style={[fontSemibold14, { marginRight: layout.padding_x1 }]}
+            >
+              {itemsPerPage}
+            </BrandText>
+            <SVG
+              source={
+                isDropdownOpen(dropdownRef) ? chevronUpSVG : chevronDownSVG
+              }
+              width={16}
+              height={16}
+              color={secondaryColor}
+            />
+          </TouchableOpacity>
+        </TertiaryBox>
+
+        {isDropdownOpen(dropdownRef) && (
+          <SecondaryBox
+            noBrokenCorners
+            width={80}
+            style={{ position: "absolute", top: 46, right: 0 }}
+            mainContainerStyle={{
+              paddingHorizontal: layout.padding_x1_5,
+              paddingTop: layout.padding_x1_5,
+              backgroundColor: neutral33,
+              alignItems: "flex-start",
+            }}
+          >
+            {dropdownOptions.map((item, index) => (
+              <TouchableOpacity
+                onPress={() => {
+                  setItemsPerPage(item);
+                  closeOpenedDropdown();
+                }}
+                key={index}
+                style={[
+                  {
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: layout.padding_x1_5,
+                  },
+                ]}
+              >
+                <BrandText
+                  style={[fontSemibold13, { marginLeft: 12, color: neutralA3 }]}
+                >
+                  {item}
+                </BrandText>
+              </TouchableOpacity>
+            ))}
+          </SecondaryBox>
+        )}
       </View>
     </View>
   );

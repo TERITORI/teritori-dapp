@@ -2,6 +2,7 @@ package p2e
 
 import (
 	"context"
+	"time"
 
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/p2epb"
@@ -57,7 +58,7 @@ func (s *P2eService) UserRank(ctx context.Context, req *p2epb.UserRankRequest) (
 		WHERE pl.user_id = ?
 	`,
 		seasonId,
-		indexerdb.TeritoriUserID(userId),
+		userId,
 	).Scan(&userRank).Error
 
 	if err != nil {
@@ -125,7 +126,8 @@ func (s *P2eService) Leaderboard(req *p2epb.LeaderboardRequest, srv p2epb.P2ESer
 }
 
 func (s *P2eService) CurrentSeason(ctx context.Context, req *p2epb.CurrentSeasonRequest) (*p2epb.CurrentSeasonResponse, error) {
-	currentSeason, remainingHp, err := GetCurrentSeason()
+	currentTime := time.Now().UTC()
+	currentSeason, remainingHp, err := GetSeasonByTime(currentTime)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get current season")
 	}

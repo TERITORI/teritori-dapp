@@ -1,10 +1,12 @@
 import React from "react";
 import { TextProps, StyleSheet } from "react-native";
 
-import { exoFontFamilyFromFontWeight } from "../../utils/style/fonts";
 import { BrandTextBase } from "./BrandTextBase";
+import { exoFontFamilyFromFontWeight } from "../../utils/style/fonts";
 
-export const BrandText: React.FC<TextProps> = (props) => {
+export const BrandText: React.FC<TextProps & { isTicker?: boolean }> = (
+  props
+) => {
   const { style, ...otherProps } = props;
   const flatStyle = style ? StyleSheet.flatten(style) : undefined;
 

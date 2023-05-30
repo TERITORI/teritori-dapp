@@ -1,14 +1,14 @@
 import React from "react";
 import { View } from "react-native";
 
-import { GigInfo } from "../../../screens/FreelanceServices/types/fields";
-import { GigStep } from "../../../utils/types/freelance";
 import { GigCreationDescription } from "./GigCreationDescription";
 import { GigCreationGallery } from "./GigCreationGallery";
 import { GigCreationOverview } from "./GigCreationOverview";
 import { GigCreationPricing } from "./GigCreationPricing";
 import { GigCreationPublish } from "./GigCreationPublish";
 import { GigCreationRequirement } from "./GigCreationRequirement";
+import { GigInfo } from "../../../screens/FreelanceServices/types/fields";
+import { GigStep } from "../../../utils/types/freelance";
 
 type GigCreationBodyProps = {
   step: GigStep;

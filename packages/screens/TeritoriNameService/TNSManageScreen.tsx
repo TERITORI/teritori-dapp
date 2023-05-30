@@ -2,18 +2,19 @@ import { useFocusEffect } from "@react-navigation/native";
 import React, { useState } from "react";
 import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
 
+import { TNSModalCommonProps } from "./TNSHomeScreen";
 import logoSVG from "../../../assets/logos/logo.svg";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
 import { PrimaryBadge } from "../../components/badges/PrimaryBadge";
 import ModalBase from "../../components/modals/ModalBase";
 import { useTNS } from "../../context/TNSProvider";
-import { useTokenList } from "../../hooks/tokens";
-import { usePrimaryAlias } from "../../hooks/usePrimaryAlias";
+import { useNSPrimaryAlias } from "../../hooks/useNSPrimaryAlias";
+import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { neutral17, neutral33, neutral77 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
-import { tokenWithoutTld } from "../../utils/tns";
-import { TNSModalCommonProps } from "./TNSHomeScreen";
+import { nsTokenWithoutTLD } from "../../utils/tns";
 
 const NameCard: React.FC<{
   fullName: string;
@@ -82,8 +83,9 @@ export const TNSManageScreen: React.FC<TNSManageScreenProps> = ({
   onClose,
 }) => {
   const [pageStartTokens, setPageStartTokens] = useState<string[]>([]);
-  const { tokens } = useTokenList();
-  const { alias } = usePrimaryAlias();
+  const selectedWallet = useSelectedWallet();
+  const { tokens } = useNSTokensByOwner(selectedWallet?.userId);
+  const { primaryAlias } = useNSPrimaryAlias(selectedWallet?.userId);
 
   const { setName } = useTNS();
 
@@ -101,7 +103,7 @@ export const TNSManageScreen: React.FC<TNSManageScreenProps> = ({
     <ModalBase
       onClose={() => onClose()}
       hideMainSeparator
-      label={` Welcome back, ${alias} !`}
+      label={` Welcome back, ${primaryAlias} !`}
       width={457}
     >
       <View style={{ flex: 1, alignItems: "center" }}>
@@ -125,16 +127,16 @@ export const TNSManageScreen: React.FC<TNSManageScreenProps> = ({
 
             {tokens.map((token) => (
               <NameCard
-                isPrimary={alias === token}
+                isPrimary={primaryAlias === token}
                 fullName={token}
                 key={token}
                 style={{ marginBottom: 20 }}
                 onPress={() => {
-                  setName(tokenWithoutTld(token));
+                  setName(nsTokenWithoutTLD(token));
                   onClose(
                     "TNSConsultName",
                     "TNSManage",
-                    tokenWithoutTld(token)
+                    nsTokenWithoutTLD(token)
                   );
                 }}
               />

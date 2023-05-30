@@ -5,7 +5,8 @@ import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { useCollectionInfo } from "../../hooks/useCollectionInfo";
-import { backendClient } from "../../utils/backend";
+import { parseNetworkObjectId } from "../../networks";
+import { getMarketplaceClient } from "../../utils/backend";
 import { ScreenFC } from "../../utils/navigation";
 import {
   snapshotCollectionOGs,
@@ -35,7 +36,6 @@ const SnapshotEntry: React.FC<{
       />
       {!!data && (
         <View style={{ justifyContent: "center" }}>
-          {" "}
           <a
             href={`data:application/json,${encodeURIComponent(data)}`}
             download={`${name} ${new Date().toISOString()}.json`}
@@ -53,7 +53,9 @@ export const CollectionToolsScreen: ScreenFC<"CollectionTools"> = ({
     params: { id },
   },
 }) => {
-  const { info: collectionInfo } = useCollectionInfo(id);
+  const { collectionInfo } = useCollectionInfo(id);
+  const [network] = parseNetworkObjectId(id);
+  const backendClient = getMarketplaceClient(network?.id);
   return (
     <ScreenContainer fullWidth footerChildren={<></>} noMargin noScroll>
       <View style={{ margin: 40 }}>

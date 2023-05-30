@@ -1,4 +1,3 @@
-import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import { View, Image, Linking } from "react-native";
 
@@ -13,9 +12,10 @@ import {
   Sort,
   SortDirection,
 } from "../../api/marketplace/v1/marketplace";
+import { useBanners } from "../../hooks/useBanners";
 import { useImageResizer } from "../../hooks/useImageResizer";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
-import { backendClient } from "../../utils/backend";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { useAppNavigation } from "../../utils/navigation";
 import { Link } from "../Link";
@@ -35,9 +35,8 @@ export const HubLanding: React.FC = () => {
     image: defaultNewsBanner,
     maxSize: { width: maxWidth },
   });
-  const banners = useBanners(
-    process.env.TERITORI_NETWORK_ID === "teritori-testnet"
-  );
+  const networkId = useSelectedNetworkId();
+  const banners = useBanners(networkId);
   const banner = banners?.length ? banners[0] : undefined;
 
   return (
@@ -140,9 +139,9 @@ Launch"
           title="Upcoming Launches on Teritori Launch Pad"
           req={{
             upcoming: true,
-            networkId: "",
+            networkId,
             sortDirection: SortDirection.SORT_DIRECTION_UNSPECIFIED,
-            sort: Sort.SORTING_UNSPECIFIED,
+            sort: Sort.SORT_UNSPECIFIED,
             limit: 16,
             offset: 0,
             mintState: MintState.MINT_STATE_UNSPECIFIED,
@@ -151,16 +150,4 @@ Launch"
       </View>
     </View>
   );
-};
-
-const useBanners = (testnet: boolean) => {
-  const { data } = useQuery(
-    ["banners", testnet],
-    async () => {
-      const { banners } = await backendClient.Banners({ testnet });
-      return banners;
-    },
-    { staleTime: Infinity }
-  );
-  return data;
 };

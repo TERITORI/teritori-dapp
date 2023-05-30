@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { View, TouchableOpacity, useWindowDimensions } from "react-native";
 
+import { ReportPopUp } from "./PopUp/ReportPopUp";
+import { SharePopup } from "./PopUp/SharePopup";
 import heartIcon from "../../../../assets/icons/heart.svg";
 import reportIcon from "../../../../assets/icons/report.svg";
 import shareIcon from "../../../../assets/icons/share-white.svg";
@@ -16,8 +18,6 @@ import { fontMedium14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
-import { ReportPopUp } from "./PopUp/ReportPopUp";
-import { SharePopup } from "./PopUp/SharePopup";
 
 const tabs = [
   "Overview",

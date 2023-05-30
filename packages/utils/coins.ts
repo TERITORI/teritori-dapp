@@ -1,7 +1,7 @@
-import { Decimal } from "cosmwasm";
+import { Decimal } from "@cosmjs/math";
 
-import { getNativeCurrency } from "../networks";
 import { trimFixed } from "./numbers";
+import { getNativeCurrency } from "../networks";
 
 export interface Balance {
   amount: string;
@@ -10,7 +10,7 @@ export interface Balance {
 }
 
 export const decimalFromAtomics = (
-  networkId: string,
+  networkId: string | undefined,
   value: string,
   denom: string
 ) => {
@@ -18,16 +18,19 @@ export const decimalFromAtomics = (
   if (currency) {
     return Decimal.fromAtomics(value, currency.decimals);
   }
-  throw new Error("unknown denom");
+  return Decimal.fromAtomics("0", 0);
 };
 
 const units = ["", "K", "M", "G", "T", "P", "E", "Z", "Y"];
 
+// FIXME: rename to prettyAmount
+
 // Returns the price with denom (Text + denom)
 export const prettyPrice = (
-  networkId: string,
+  networkId: string | undefined,
   value: string,
-  denom: string
+  denom: string,
+  noDenom?: boolean
 ) => {
   const currency = getNativeCurrency(networkId, denom);
   if (currency) {
@@ -37,6 +40,7 @@ export const prettyPrice = (
         Decimal.fromUserInput("10", currency.decimals)
       )
     ) {
+      if (noDenom) return `${decval.toString()}`;
       return `${decval.toString()} ${currency.displayName}`;
     }
     let val = decval.toFloatApproximation();
@@ -45,9 +49,11 @@ export const prettyPrice = (
       val /= 1000;
       unitIndex++;
     }
+    if (noDenom) return `${trimFixed(val.toFixed(2))}${units[unitIndex]}`;
     return `${trimFixed(val.toFixed(2))}${units[unitIndex]} ${
       currency.displayName
     }`;
   }
+  if (noDenom) return `${value}`;
   return `${value} ${denom}`;
 };

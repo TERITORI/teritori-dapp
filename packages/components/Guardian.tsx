@@ -1,8 +1,8 @@
 import React from "react";
 import { Image } from "react-native";
 
-import guardianPNG from "../../assets/default-images/guardian_1.png";
 import { PrimaryBox } from "./boxes/PrimaryBox";
+import guardianPNG from "../../assets/default-images/guardian_1.png";
 
 export const Guardian: React.FC = () => (
   <PrimaryBox

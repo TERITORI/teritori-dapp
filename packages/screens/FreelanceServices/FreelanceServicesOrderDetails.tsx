@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 import { RadioButton } from "react-native-paper";
 
+import { FreelanceServicesScreenWrapper } from "./FreelanceServicesScreenWrapper";
+import { getGigData } from "./query/data";
+import { GigInfo, GigData } from "./types/fields";
 import { BrandText } from "../../components/BrandText";
 import { SecondaryButton } from "../../components/buttons/SecondaryButton";
 import { FirstRightCard } from "../../components/freelanceServices/Order/FirstRightCard";
@@ -20,9 +23,6 @@ import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { neutral00, neutral33, primaryColor } from "../../utils/style/colors";
 import { fontSemibold16, fontSemibold20 } from "../../utils/style/fonts";
 import { OrderStep } from "../../utils/types/freelance";
-import { FreelanceServicesScreenWrapper } from "./FreelanceServicesScreenWrapper";
-import { getGigData } from "./query/data";
-import { GigInfo, GigData } from "./types/fields";
 
 export type OrderModals = "Order";
 const OrderPathMap = {

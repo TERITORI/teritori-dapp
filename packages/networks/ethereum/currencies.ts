@@ -1,3 +1,4 @@
+import { currencyETHcolor } from "../../utils/style/colors";
 import { CurrencyInfo } from "../types";
 
 export const ethereumCurrencies: CurrencyInfo[] = [
@@ -8,6 +9,6 @@ export const ethereumCurrencies: CurrencyInfo[] = [
     coingeckoId: "ethereum",
     icon: "icons/networks/ethereum-circle.svg",
     kind: "native",
-    color: "#16BBFF",
+    color: currencyETHcolor,
   },
 ];

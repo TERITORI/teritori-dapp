@@ -1,12 +1,12 @@
 import { SvgProps } from "react-native-svg";
 
-import { RootStackParamList } from "../../utils/navigation";
-import { PickByValue } from "../../utils/types/helper";
-import { Network } from "./../../utils/network";
+import { NetworkKind } from "../../networks";
+import { RouteName } from "../../utils/navigation";
 
 export type SidebarType = {
   title: string;
-  route: keyof PickByValue<RootStackParamList, undefined> | "TNSHome";
+  id: string;
+  route: RouteName;
   icon: React.FC<SvgProps>;
   nested?: Record<string, Omit<SidebarType, "nested">>;
 };
@@ -15,9 +15,10 @@ export type SidebarRecordType = Record<
   string,
   {
     title: string;
-    route: keyof PickByValue<RootStackParamList, undefined> | "TNSHome";
+    id: string;
+    route: RouteName;
     icon: React.FC<SvgProps>;
     nested?: Record<string, SidebarType>;
-    disabledOn?: Network[];
+    disabledOn?: NetworkKind[];
   }
 >;

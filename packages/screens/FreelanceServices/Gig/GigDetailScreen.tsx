@@ -7,6 +7,7 @@ import {
   View,
 } from "react-native";
 
+import { OrdersInQueue } from "./OrdersInQueue";
 import backgroundPic from "../../../../assets/banners/freelance-service/background-pic.png";
 import chevronUp from "../../../../assets/icons/chevron-up.svg";
 import chevronDown from "../../../../assets/icons/freelance-service/chevron-down.svg";
@@ -49,7 +50,6 @@ import { FreelanceServicesScreenWrapper } from "../FreelanceServicesScreenWrappe
 import { TopRatedSeller } from "../SellersDetails/components/TopRatedSeller";
 import { getGigData } from "../query/data";
 import { GigInfo, GigData } from "../types/fields";
-import { OrdersInQueue } from "./OrdersInQueue";
 
 export const GigDetailScreen: ScreenFC<"FreelanceServicesGigDetail"> = ({
   route: {

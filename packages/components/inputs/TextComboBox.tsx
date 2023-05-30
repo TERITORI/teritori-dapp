@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { View, TouchableOpacity, StyleProp, ViewStyle } from "react-native";
 
+import { TextComboBoxDownMenu } from "./TextComboBoxDownMenu";
+import { IMenuItem } from "./types";
 import chevronUp from "../../../assets/icons/chevron-up.svg";
 import chevronDown from "../../../assets/icons/freelance-service/chevron-down.svg";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText/BrandText";
 import { SVG } from "../SVG";
 import { TertiaryBox } from "../boxes/TertiaryBox";
-import { TextComboBoxDownMenu } from "./TextComboBoxDownMenu";
-import { IMenuItem } from "./types";
 
 export const TextComboBox: React.FC<{
   options: IMenuItem[];

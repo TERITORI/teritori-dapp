@@ -24,13 +24,14 @@ BACKEND_DOCKER_IMAGE=$(DOCKER_REGISTRY)/teritori-dapp-backend:$(shell git rev-pa
 PRICES_SERVICE_DOCKER_IMAGE=$(DOCKER_REGISTRY)/prices-service:$(shell git rev-parse --short HEAD)
 PRICES_OHLC_REFRESH_DOCKER_IMAGE=$(DOCKER_REGISTRY)/prices-ohlc-refresh:$(shell git rev-parse --short HEAD)
 P2E_DOCKER_IMAGE=$(DOCKER_REGISTRY)/p2e-update-leaderboard:$(shell git rev-parse --short HEAD)
+FEED_DOCKER_IMAGE=$(DOCKER_REGISTRY)/feed-clean-pinata-keys:$(shell git rev-parse --short HEAD)
 
 node_modules: package.json yarn.lock
 	yarn
 	touch $@
 
 .PHONY: generate
-generate: generate.protobuf generate.graphql generate.contracts-clients generate.go-networks
+generate: generate.protobuf generate.graphql generate.contracts-clients generate.go-networks networks.json
 
 .PHONY: generate.protobuf
 generate.protobuf: node_modules
@@ -42,13 +43,21 @@ generate.protobuf: node_modules
 generate.graphql:
 	go run github.com/Khan/genqlient@85e2e8dffd211c83a2be626474993ef68e44a242 go/pkg/holagql/genqlient.yaml
 
+.PHONY: generate.graphql-thegraph
 generate.graphql-thegraph:
 	rover graph introspect https://api.studio.thegraph.com/query/40379/teritori-mainnet/v1 > go/pkg/thegraph/thegraph-schema.graphql
 	go run github.com/Khan/genqlient@85e2e8dffd211c83a2be626474993ef68e44a242 go/pkg/thegraph/genqlient.yaml
 
 .PHONY: lint
-lint: node_modules
+lint: lint.buf lint.js
+
+.PHONY: lint.buf
+lint.buf:
 	buf lint api
+	buf breaking --against 'https://github.com/TERITORI/teritori-dapp.git#branch=main' --path api
+
+.PHONY: lint.js
+lint.js: node_modules
 	yarn lint
 
 .PHONY: go/pkg/holagql/holaplex-schema.graphql
@@ -63,8 +72,7 @@ docker.backend:
 generate.contracts-clients: $(CONTRACTS_CLIENTS_DIR)/$(BUNKER_MINTER_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(NAME_SERVICE_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(RIOTER_FOOTER_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(TOKEN_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(VAULT_PACKAGE)
 
 .PHONY: generate.go-networks
-generate.go-networks: node_modules
-	rm -fr go/pkg/networks/networks.gen.go
+generate.go-networks: node_modules validate-networks
 	npx ts-node packages/scripts/generateGoNetworks.ts | gofmt > go/pkg/networks/networks.gen.go
 
 .PHONY: $(CONTRACTS_CLIENTS_DIR)/$(BUNKER_MINTER_PACKAGE)
@@ -191,30 +199,46 @@ $(CONTRACTS_CLIENTS_DIR)/$(VAULT_PACKAGE): node_modules
 	go fmt ./go/pkg/contracts/vault_types
 	rm -fr $(VAULT_REPO)
 
-run.candymachine: node_modules
-	npx ts-node packages/candymachine/cli.ts
-
+.PHONY: publish.backend
 publish.backend:
 	docker build -f go/cmd/teritori-dapp-backend/Dockerfile .  --platform amd64 -t $(BACKEND_DOCKER_IMAGE)
 	docker push $(BACKEND_DOCKER_IMAGE)
 
+.PHONY: publish.indexer
 publish.indexer:
 	docker build -f go/cmd/teritori-indexer/Dockerfile . --platform amd64 -t $(INDEXER_DOCKER_IMAGE)
 	docker push $(INDEXER_DOCKER_IMAGE)
 
+.PHONY: publish.prices-service
 publish.prices-service:
 	docker build -f go/cmd/prices-service/Dockerfile .  --platform amd64 -t $(PRICES_SERVICE_DOCKER_IMAGE)
 	docker push $(PRICES_SERVICE_DOCKER_IMAGE)
 
+.PHONY: publish.prices-ohlc-refresh
 publish.prices-ohlc-refresh:
 	docker build -f go/cmd/prices-ohlc-refresh/Dockerfile . --platform amd64 -t $(PRICES_OHLC_REFRESH_DOCKER_IMAGE)
 	docker push $(PRICES_OHLC_REFRESH_DOCKER_IMAGE)
 
+.PHONY: generate.sqlboiler-prices
 generate.sqlboiler-prices:
 	go install github.com/volatiletech/sqlboiler/v4@latest
 	go install github.com/volatiletech/sqlboiler/v4/drivers/sqlboiler-psql@latest
 	sqlboiler psql
 
+.PHONY: publish.p2e-update-leaderboard
 publish.p2e-update-leaderboard:
 	docker build -f go/cmd/p2e-update-leaderboard/Dockerfile . --platform amd64 -t $(P2E_DOCKER_IMAGE)
 	docker push $(P2E_DOCKER_IMAGE)
+
+.PHONY: publish.feed-clean-pinata-keys
+publish.feed-clean-pinata-keys:
+	docker build -f go/cmd/feed-clean-pinata-keys/Dockerfile . --platform amd64 -t $(FEED_DOCKER_IMAGE)
+	docker push $(FEED_DOCKER_IMAGE)
+
+.PHONY: validate-networks
+validate-networks: node_modules
+	npx ts-node packages/scripts/validateNetworks.ts
+
+.PHONY: networks.json
+networks.json: node_modules validate-networks
+	npx ts-node packages/scripts/generateJSONNetworks.ts > $@

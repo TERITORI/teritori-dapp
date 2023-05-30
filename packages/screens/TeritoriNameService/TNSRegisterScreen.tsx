@@ -1,16 +1,14 @@
 import React from "react";
 
+import { TNSCloseHandler } from "./TNSHomeScreen";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import ModalBase from "../../components/modals/GradientModalBase";
 import { FindAName } from "../../components/teritoriNameService/FindAName";
 import { useTNS } from "../../context/TNSProvider";
-import { useTokenList } from "../../hooks/tokens";
-import { useCheckNameAvailability } from "../../hooks/useCheckNameAvailability";
-import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { useAppNavigation } from "../../utils/navigation";
+import { useNSNameAvailability } from "../../hooks/useNSNameAvailability";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import { getCosmosNetwork } from "../../networks";
 import { neutral00, neutral17, neutral33 } from "../../utils/style/colors";
-import { isTokenOwnedByUser } from "../../utils/tns";
-import { TNSCloseHandler } from "./TNSHomeScreen";
 
 interface TNSRegisterScreenProps {
   onClose: TNSCloseHandler;
@@ -19,13 +17,13 @@ interface TNSRegisterScreenProps {
 export const TNSRegisterScreen: React.FC<TNSRegisterScreenProps> = ({
   onClose,
 }) => {
-  const navigation = useAppNavigation();
-  const selectedWallet = useSelectedWallet();
+  const networkId = useSelectedNetworkId();
   const { name, setName } = useTNS();
-  const { tokens } = useTokenList();
-  const { nameAvailable, nameError, loading } = useCheckNameAvailability(
-    name,
-    tokens
+  const network = getCosmosNetwork(networkId);
+  const tokenId = name + network?.nameServiceTLD || "";
+  const { nameAvailable, nameError, loading } = useNSNameAvailability(
+    networkId,
+    tokenId
   );
 
   return (
@@ -53,10 +51,7 @@ export const TNSRegisterScreen: React.FC<TNSRegisterScreenProps> = ({
           width: "100%",
         }}
       >
-        {name &&
-        !nameError &&
-        nameAvailable &&
-        !isTokenOwnedByUser(tokens, name) ? (
+        {name && !nameError && nameAvailable ? (
           <PrimaryButton
             size="XL"
             width={280}
@@ -73,13 +68,9 @@ export const TNSRegisterScreen: React.FC<TNSRegisterScreenProps> = ({
           <PrimaryButton
             size="XL"
             width={280}
-            text="Go to User Profile"
+            text="View"
             onPress={() => {
-              onClose();
-              //TODO : get wallet address from name and redirect to correct address
-              navigation.navigate("UserPublicProfile", {
-                id: `tori-${selectedWallet?.address}`,
-              });
+              onClose("TNSConsultName");
             }}
             squaresBackgroundColor={neutral17}
           />

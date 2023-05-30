@@ -1,12 +1,12 @@
 import React from "react";
 import { View } from "react-native";
 
-import { SellerInfo } from "../../../screens/FreelanceServices/types/fields";
-import { ProfileStep } from "../../../utils/types/freelance";
 import { AccountSecurityPanel } from "./AccountSecurityPanel";
 import { LinkedAccountsPanel } from "./LinkedAccountsPanel";
 import { PersonalInfoPanel } from "./PersonalInfoPanel";
 import { ProfessionalInfoPanel } from "./ProfessionalInfoPanel";
+import { SellerInfo } from "../../../screens/FreelanceServices/types/fields";
+import { ProfileStep } from "../../../utils/types/freelance";
 
 export const ProfileBody: React.FC<{
   step: ProfileStep;

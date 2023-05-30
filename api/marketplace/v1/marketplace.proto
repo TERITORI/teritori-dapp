@@ -12,13 +12,18 @@ service MarketplaceService {
   rpc NFTPriceHistory(NFTPriceHistoryRequest) returns (NFTPriceHistoryResponse);
   rpc Banners(BannersRequest) returns (BannersResponse);
   rpc News(NewsRequest) returns (NewsResponse);
+  rpc DApps(DAppsRequest) returns (DAppsResponse);
+  rpc DAppsGroups(DAppsGroupsRequest) returns (DAppsGroupsResponse);
+  rpc SearchNames(SearchNamesRequest) returns (SearchNamesResponse);
+  rpc SearchCollections(SearchCollectionsRequest) returns (SearchCollectionsResponse);
 }
 
 enum Sort {
-  SORTING_UNSPECIFIED = 0;
-  SORTING_PRICE = 1;
-  SORTING_VOLUME = 2;
-  SORTING_MARKET_CAP = 3;
+  SORT_UNSPECIFIED = 0;
+  SORT_PRICE = 1;
+  SORT_VOLUME = 2;
+  SORT_MARKET_CAP = 3;
+  SORT_CREATED_AT = 4;
 }
 
 enum SortDirection {
@@ -71,6 +76,10 @@ message Collection {
   string volume_denom = 9;
   string creator_id = 10;
   bool secondary_during_mint = 12;
+  string website_url = 13;
+  string twitter_url = 14;
+  uint64 floor_price = 15;
+  int64 max_supply = 16;
 }
 
 message CollectionStats {
@@ -123,7 +132,6 @@ message CollectionsRequest {
 message CollectionStatsRequest {
   string collection_id = 1;
   string owner_id = 2;
-  string network_id = 3;
 }
 
 message CollectionStatsResponse {
@@ -143,8 +151,6 @@ message NFTsRequest {
 
   Sort sort = 5;
   SortDirection sort_direction = 6;
-
-  string network_id = 7;
 }
 
 message NFTsResponse {
@@ -167,7 +173,6 @@ message ActivityRequest {
   string nft_id = 2;
   int32 limit = 3;
   int32 offset = 4;
-  string network_id = 5;
 }
 
 
@@ -178,7 +183,6 @@ message ActivityResponse {
 
 message NFTPriceHistoryRequest {
   string id = 1;
-  string network_id = 2;
 }
 
 message NFTPriceHistoryResponse {
@@ -196,6 +200,25 @@ message News {
   string text = 3;
   string image = 4;
   repeated Action actions = 5;
+}
+
+message DAppGroup {
+  string id = 1;
+  string group_name = 2;
+  string icon = 3;
+  repeated string options = 4;
+}
+
+message DApp {
+  string id = 1;
+  string title = 2;
+  string description = 3;
+  string icon = 4;
+  string route = 5;
+  string group_key = 6;
+  string linking_id = 7;
+  bool selected_by_default = 8;
+  bool always_on = 9;
 }
 
 message Banner {
@@ -217,4 +240,37 @@ message NewsRequest {
 
 message NewsResponse {
   repeated News news = 1;
+}
+
+message DAppsRequest {
+}
+
+message DAppsResponse {
+  repeated DApp group = 1;
+}
+
+message DAppsGroupsRequest {
+}
+
+message DAppsGroupsResponse {
+  repeated DAppGroup group = 1;
+}
+
+message SearchNamesRequest {
+  string network_id = 1;
+  string input = 2;
+  int32 limit = 3;
+}
+
+message SearchNamesResponse {
+  repeated string names = 1;
+}
+
+message SearchCollectionsRequest {
+  string input = 1;
+  int32 limit = 2;
+}
+
+message SearchCollectionsResponse {
+  repeated Collection collections = 1;
 }

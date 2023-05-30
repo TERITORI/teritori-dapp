@@ -75,7 +75,10 @@ export const CarouselSection: React.FC<
     </View>
   );
   return (
-    <Section title={title} topRightChild={topRightChild}>
+    <Section
+      title={title}
+      topRightChild={props.pagingEnabled ? topRightChild : null}
+    >
       <Carousel
         data={data}
         ref={carouselRef}

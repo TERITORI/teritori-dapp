@@ -1,78 +1,205 @@
-import React from "react";
-import { Image, View } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import React, { useMemo } from "react";
+import { StyleSheet, Linking, View, Pressable } from "react-native";
 
-import { Collection } from "../api/marketplace/v1/marketplace";
-import { useNavigateToCollection } from "../hooks/useNavigateToCollection";
-import { useTNSMetadata } from "../hooks/useTNSMetadata";
-import { fontSemibold14 } from "../utils/style/fonts";
 import { BrandText } from "./BrandText";
+import { OptimizedImage } from "./OptimizedImage";
 import { TertiaryBox } from "./boxes/TertiaryBox";
 import { GradientText } from "./gradientText";
+import { Collection, MintState } from "../api/marketplace/v1/marketplace";
+import { useCollectionThumbnailInfo } from "../hooks/collection/useCollectionThumbnailInfo";
+import { useNavigateToCollection } from "../hooks/useNavigateToCollection";
+import { fontBold11, fontMedium10, fontSemibold14 } from "../utils/style/fonts";
+import { layout } from "../utils/style/layout";
 
-export const collectionItemHeight = 266;
-export const collectionItemWidth = 196;
-const contentWidth = 172;
+type CollectionViewSize = "XL" | "XS";
+export const COLLECTION_VIEW_SM_WIDTH = 124;
+export const COLLECTION_VIEW_SM_HEIGHT = 164;
+export const COLLECTION_VIEW_XL_WIDTH = 256;
+export const COLLECTION_VIEW_XL_HEIGHT = 315;
 
 export const CollectionView: React.FC<{
   item: Collection;
+  size?: CollectionViewSize;
   linkToMint?: boolean;
-}> = ({ item, linkToMint }) => {
-  const creatorAddress = item.creatorId.split("-")[1];
-  const tnsMetadata = useTNSMetadata(creatorAddress);
+  mintState: number;
+  onPress?: () => void;
+}> = ({ item, size = "XL", linkToMint, mintState, onPress }) => {
   const navigateToCollection = useNavigateToCollection(item.id, {
     forceSecondaryDuringMint: item.secondaryDuringMint,
     forceLinkToMint: linkToMint,
   });
+  const sizedStyles = useMemo(() => StyleSheet.flatten(styles[size]), [size]);
+
+  const navigateToTwitter = () => {
+    Linking.openURL(item.twitterUrl);
+  };
+
+  const info = useCollectionThumbnailInfo(item.id);
+
   return (
-    <TouchableOpacity onPress={navigateToCollection} disabled={!item.id}>
+    <Pressable
+      onPress={() => {
+        onPress && onPress();
+        if (item.id !== "") navigateToCollection();
+        else navigateToTwitter();
+      }}
+      disabled={item.id === "" && item.twitterUrl === ""}
+    >
       <TertiaryBox
-        mainContainerStyle={{
-          paddingTop: 12,
-          paddingBottom: 20,
-        }}
-        width={collectionItemWidth}
-        height={collectionItemHeight}
+        noBrokenCorners={size === "XS"}
+        mainContainerStyle={sizedStyles.boxMainContainer}
+        width={sizedStyles.box.width}
+        height={sizedStyles.box.height}
       >
-        <Image
+        <OptimizedImage
           source={{ uri: item.imageUri }}
+          width={sizedStyles.image.width}
+          height={sizedStyles.image.height}
           style={{
-            width: contentWidth,
-            height: 172,
+            width: sizedStyles.image.width,
+            height: sizedStyles.image.height,
             alignSelf: "center",
-            borderRadius: 12,
+            borderRadius: sizedStyles.image.borderRadius,
           }}
         />
         <View
-          style={{ marginHorizontal: 12, marginTop: 16, width: contentWidth }}
+          style={{
+            marginHorizontal: sizedStyles.textsContainer.marginHorizontal,
+            marginTop: sizedStyles.textsContainer.marginTop,
+            width: sizedStyles.image.width,
+          }}
         >
-          <BrandText
-            style={{ fontSize: 14 }}
-            ellipsizeMode="tail"
-            numberOfLines={1}
-          >
-            {item.collectionName}
-          </BrandText>
           <View
             style={{
               flexDirection: "row",
-              alignItems: "center",
-              marginTop: 8,
+              justifyContent: "space-between",
+              flexWrap: "nowrap",
             }}
           >
-            <GradientText
-              style={fontSemibold14}
+            <BrandText
+              style={{
+                ...sizedStyles.collectionName,
+                width: "100%",
+              }}
               ellipsizeMode="tail"
               numberOfLines={1}
-              gradientType="purple"
             >
-              {tnsMetadata.metadata?.tokenId ||
-                item.creatorName ||
-                creatorAddress}
-            </GradientText>
+              {item.collectionName}
+            </BrandText>
+            {info && mintState !== MintState.MINT_STATE_UNSPECIFIED ? (
+              <BrandText
+                style={{
+                  ...sizedStyles.percentage,
+                }}
+              >
+                {!isNaN(info.percentageMinted)
+                  ? `${info.percentageMinted}%`
+                  : ""}
+              </BrandText>
+            ) : null}
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              flexWrap: "nowrap",
+              marginTop: layout.padding_x1,
+            }}
+          >
+            {info &&
+            mintState !== MintState.MINT_STATE_UNSPECIFIED &&
+            info.maxSupply !== 0 ? (
+              <>
+                <GradientText
+                  style={sizedStyles.creatorName}
+                  ellipsizeMode="tail"
+                  numberOfLines={1}
+                  gradientType="purple"
+                >
+                  {info.maxSupply ? `Supply ${info.maxSupply}` : ""}
+                </GradientText>
+                <GradientText
+                  style={sizedStyles.creatorName}
+                  ellipsizeMode="tail"
+                  numberOfLines={1}
+                  gradientType="purple"
+                >
+                  {info.prettyUnitPrice}
+                </GradientText>
+              </>
+            ) : (
+              <GradientText
+                style={sizedStyles.creatorName}
+                ellipsizeMode="tail"
+                numberOfLines={1}
+                gradientType="purple"
+              >
+                {item.creatorName}
+              </GradientText>
+            )}
           </View>
         </View>
       </TertiaryBox>
-    </TouchableOpacity>
+    </Pressable>
   );
+};
+
+const styles = {
+  XL: {
+    box: {
+      width: COLLECTION_VIEW_XL_WIDTH,
+      height: COLLECTION_VIEW_XL_HEIGHT,
+    },
+    boxMainContainer: {
+      paddingTop: layout.padding_x1_5,
+      paddingBottom: layout.padding_x2_5,
+    },
+    image: {
+      width: COLLECTION_VIEW_XL_WIDTH - 24,
+      height: COLLECTION_VIEW_XL_WIDTH - 24,
+      borderRadius: 12,
+    },
+    textsContainer: {
+      marginHorizontal: layout.padding_x1_5,
+      marginTop: layout.padding_x2,
+    },
+    collectionName: {
+      ...(fontSemibold14 as object),
+    },
+    percentage: {
+      ...(fontSemibold14 as object),
+    },
+    creatorName: {
+      ...(fontSemibold14 as object),
+    },
+  },
+
+  XS: {
+    box: {
+      width: COLLECTION_VIEW_SM_WIDTH,
+      height: COLLECTION_VIEW_SM_HEIGHT,
+    },
+    boxMainContainer: {
+      paddingTop: layout.padding_x1,
+      paddingBottom: layout.padding_x1,
+    },
+    image: {
+      width: 108,
+      height: 108,
+      borderRadius: 4,
+    },
+    textsContainer: {
+      marginHorizontal: layout.padding_x1,
+      marginTop: layout.padding_x1,
+    },
+    collectionName: {
+      ...(fontBold11 as object),
+    },
+    percentage: {
+      ...(fontBold11 as object),
+    },
+    creatorName: {
+      ...(fontMedium10 as object),
+    },
+  },
 };

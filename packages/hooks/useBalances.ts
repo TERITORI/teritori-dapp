@@ -1,13 +1,17 @@
+import { Decimal } from "@cosmjs/math";
 import { useQuery } from "@tanstack/react-query";
-import { Decimal } from "cosmwasm";
 import { useMemo } from "react";
 
-import { getNativeCurrency, getNetwork, WEI_TOKEN_ADDRESS } from "../networks";
-import { Balance } from "../utils/coins";
-import { getMetaMaskEthereumSigner } from "../utils/ethereum";
-import { Network } from "../utils/network";
-import { CosmosBalancesResponse } from "../utils/teritori";
 import { useCoingeckoPrices } from "./useCoingeckoPrices";
+import {
+  getNativeCurrency,
+  getNetwork,
+  WEI_TOKEN_ADDRESS,
+  NetworkKind,
+} from "../networks";
+import { Balance } from "../utils/coins";
+import { getEthereumProvider } from "../utils/ethereum";
+import { CosmosBalancesResponse } from "../utils/teritori";
 
 export const useBalances = (
   networkId: string | undefined,
@@ -19,8 +23,16 @@ export const useBalances = (
       if (!address || !networkId) {
         return [];
       }
+      // Ensuring with uses the wallet address that corresponds to the network
+      const network = getNetwork(networkId);
+      if (
+        network?.kind === NetworkKind.Cosmos &&
+        !address.includes(network.addressPrefix)
+      ) {
+        return [];
+      }
 
-      return getNetworkBalances(networkId, address);
+      return await getNetworkBalances(networkId, address);
     },
     { initialData: [], refetchInterval: 5000 }
   );
@@ -63,34 +75,40 @@ const getNetworkBalances = async (
     return [];
   }
 
-  // Support for ethereum balances
-  if (network.network === Network.Ethereum) {
-    const signer = await getMetaMaskEthereumSigner();
-    if (!signer) return [];
+  switch (network.kind) {
+    case NetworkKind.Ethereum: {
+      const provider = await getEthereumProvider(network);
+      if (!provider) return [];
 
-    const balance = await signer.getBalance();
+      const balance = await provider.getBalance(address);
 
-    const balanceItem = {
-      amount: balance.toString(),
-      denom: WEI_TOKEN_ADDRESS,
-    };
-    return [balanceItem];
-  }
+      const balanceItem = {
+        amount: balance.toString(),
+        denom: WEI_TOKEN_ADDRESS,
+      };
+      return [balanceItem];
+    }
 
-  // Support for cosmos balances
-  else if (
-    network.network === Network.Teritori ||
-    network.network === Network.CosmosHub
-  ) {
-    const response = await fetch(
-      `${network.restEndpoint}/cosmos/bank/v1beta1/balances/${address}`
-    );
-    const responseJSON: CosmosBalancesResponse = await response.json();
-    return responseJSON.balances;
-  }
-  // Unsupported network
-  else {
-    console.error(`unsupported network ${network.network}`);
-    return [];
+    case NetworkKind.Cosmos: {
+      const response = await fetch(
+        `${network.restEndpoint}/cosmos/bank/v1beta1/balances/${address}`
+      );
+      const responseJSON: CosmosBalancesResponse = await response.json();
+      return responseJSON.balances;
+    }
+
+    case NetworkKind.Gno: {
+      const res = await (window as any).adena.GetAccount();
+      return [
+        {
+          amount:
+            res?.data?.coins?.substring(0, res?.data?.coins?.length - 5) || "0",
+          denom: "ugnot",
+        },
+      ];
+    }
+
+    default:
+      return [];
   }
 };

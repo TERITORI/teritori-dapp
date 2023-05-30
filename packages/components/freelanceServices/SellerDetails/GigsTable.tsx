@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { StyleProp, ViewStyle } from "react-native";
 
+import { GigItemCard } from "./GigItemCard";
+import { GigItemCardCreate } from "./GigItemCardCreate";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { GigInfo } from "../../../screens/FreelanceServices/types/fields";
 import { freelanceClient } from "../../../utils/backend";
 import { layout } from "../../../utils/style/layout";
-import { GigItemCard } from "./GigItemCard";
-import { GigItemCardCreate } from "./GigItemCardCreate";
 
 export const GigsTable: React.FC<{
   gigAddress: string;

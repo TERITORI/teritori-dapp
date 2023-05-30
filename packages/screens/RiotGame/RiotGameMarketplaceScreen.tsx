@@ -1,44 +1,46 @@
-import React, { useState } from "react";
-import { ScrollView } from "react-native-gesture-handler";
+import React from "react";
+import { View } from "react-native";
 
-import { SortDirection } from "../../api/marketplace/v1/marketplace";
-import { useCollectionInfo } from "../../hooks/useCollectionInfo";
-import { THE_RIOT_COLLECTION_ID } from "../../utils/game";
-import {
-  TabsListType,
-  Header as CollectionHeader,
-  Content as CollectionContent,
-} from "../Marketplace/CollectionScreen";
+import { CollectionThumb } from "./component/CollectionThumb";
+import { CollectionView } from "./component/CollectionView";
 import { GameContentView } from "./component/GameContentView";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import { getCollectionId, getCosmosNetwork } from "../../networks";
+import { ScreenFC } from "../../utils/navigation";
 
-export const RiotGameMarketplaceScreen = () => {
-  const [selectedTab, setSelectedTab] = useState<TabsListType>("allNFTs");
-  const { info } = useCollectionInfo(THE_RIOT_COLLECTION_ID);
-  const [sortDirection, setSortDirection] = useState(
-    SortDirection.SORT_DIRECTION_ASCENDING
-  );
+export const RiotGameMarketplaceScreen: ScreenFC<"RiotGameMarketplace"> = ({
+  route,
+}) => {
+  const collectionId = route.params?.collectionId || "";
+  const networkId = useSelectedNetworkId();
+  const network = getCosmosNetwork(networkId);
 
-  // returns
   return (
     <GameContentView>
-      <ScrollView
-        style={{ width: "100%" }}
-        contentContainerStyle={{ alignItems: "center" }}
-      >
-        <CollectionHeader
-          collectionId={THE_RIOT_COLLECTION_ID}
-          collectionInfo={info}
-          selectedTab={selectedTab}
-          onSelectTab={setSelectedTab}
-          onChangeSortDirection={setSortDirection}
-          sortDirection={sortDirection}
-        />
-        <CollectionContent
-          id={THE_RIOT_COLLECTION_ID}
-          selectedTab={selectedTab}
-          sortDirection={sortDirection}
-        />
-      </ScrollView>
+      {collectionId ? (
+        <CollectionView collectionId={collectionId} />
+      ) : (
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-evenly",
+            flexWrap: "wrap",
+          }}
+        >
+          <CollectionThumb
+            collectionId={getCollectionId(
+              network?.id,
+              network?.riotContractAddressGen0
+            )}
+          />
+          <CollectionThumb
+            collectionId={getCollectionId(
+              network?.id,
+              network?.riotContractAddressGen1
+            )}
+          />
+        </View>
+      )}
     </GameContentView>
   );
 };

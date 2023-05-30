@@ -1,10 +1,13 @@
-import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import { RouteProp, useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import React, { useEffect, useMemo } from "react";
+import React from "react";
 
-import { useFeedbacks } from "../context/FeedbacksProvider";
-import { useSelectedNetwork } from "../hooks/useSelectedNetwork";
-import { Network } from "./network";
+import { PickByValue } from "./types/helper";
+import { NewPostFormValues } from "../components/socialFeed/NewsFeed/NewsFeed.type";
+
+export type RouteName =
+  | keyof PickByValue<RootStackParamList, undefined>
+  | "TNSHome";
 
 export type RootStackParamList = {
   Home: undefined;
@@ -42,20 +45,34 @@ export type RootStackParamList = {
   Collection: { id: string };
   CollectionTools: { id: string };
   NFTDetail: { id: string; openBuy?: boolean };
+  Feed: undefined;
+  FeedNewArticle:
+    | (NewPostFormValues & {
+        additionalMention?: string;
+        additionalHashtag?: string;
+      })
+    | undefined;
+  FeedPostView: { id: string };
+  HashtagFeed: { hashtag: string };
 
   RiotGame: undefined;
   RiotGameEnroll: undefined;
   RiotGameFight: undefined;
   RiotGameBreeding: undefined;
   RiotGameMemories: undefined;
-  RiotGameMarketplace: undefined;
+  RiotGameMarketplace: { collectionId?: string } | undefined;
   RiotGameLeaderboard: undefined;
   RiotGameInventory: undefined;
-  RiotGameRarity: undefined;
 
+  Swap: undefined;
   Staking: undefined;
 
   ComingSoon: undefined;
+
+  Settings: undefined;
+
+  DAppStore: undefined;
+  ToriPunks: { route: string };
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -65,64 +82,7 @@ export type ScreenFC<T extends keyof RootStackParamList> = React.FC<{
   route: RouteProp<RootStackParamList, T>;
 }>;
 
-export const useAppNavigation = () => {
-  const route = useRoute<RouteProp<RootStackParamList>>();
-  const selectedNetwork = useSelectedNetwork();
-  const { setToastError } = useFeedbacks();
-
-  // Supported Screen on ETH
-  const ethSupportedScreens = useMemo<(keyof RootStackParamList)[]>(
-    () => [
-      "Home",
-      "MyCollection",
-      "Activity",
-      "Guardians",
-      "WalletManager",
-      "WalletManagerWallets",
-      "WalletManagerChains",
-      "UserPublicProfile",
-
-      // ==== Launchpad
-      "Launchpad",
-      "LaunchpadApply",
-
-      // Mint NFT collection
-      "MintCollection",
-
-      // ==== Marketplace
-      "Marketplace",
-      "Collection",
-      "CollectionTools",
-      "NFTDetail",
-
-      // ==== ComingSoon
-      "ComingSoon",
-    ],
-    []
-  );
-
-  useEffect(() => {
-    if (
-      selectedNetwork === Network.Ethereum &&
-      !ethSupportedScreens.includes(route.name)
-    ) {
-      return setToastError({
-        title: "Warning",
-        message: "This feature is not supported yet on Ethereum network",
-      });
-    }
-
-    // NOTE: when changing network, sometime network has been changed before route.name
-    // user has not been redirected to allowed route yet so we could be in a state where wrong toast is displayed
-    // so we need to clear toast once the we are in the right screen
-    setToastError({ title: "", message: "", duration: 0 });
-
-    // this effect will be removed with proper multi-network support and I don't want to look into all side effects of proper hooks deps
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [route.name, selectedNetwork]);
-
-  return useNavigation<AppNavigationProp>();
-};
+export const useAppNavigation = () => useNavigation<AppNavigationProp>();
 
 const navConfig: {
   screens: { [Name in keyof RootStackParamList]: string };
@@ -172,7 +132,6 @@ const navConfig: {
     RiotGameMarketplace: "riot-game/marketplace",
     RiotGameLeaderboard: "riot-game/leaderboard",
     RiotGameInventory: "riot-game/inventory",
-    RiotGameRarity: "riot-game/rarity",
 
     // ==== Launchpad
     Launchpad: "launchpad",
@@ -187,10 +146,23 @@ const navConfig: {
     Collection: "collection/:id",
     CollectionTools: "collection/:id/tools",
     NFTDetail: "nft/:id",
+    Feed: "feed",
+    FeedNewArticle: "feed/new",
+    FeedPostView: "feed/post/:id",
+    HashtagFeed: "feed/tag/:hashtag",
+
     // ==== Staking
     Staking: "staking",
+    // ==== Swap
+    Swap: "swap",
     // ==== ComingSoon
     ComingSoon: "coming-soon",
+    Settings: "settings",
+    // ==== DAppStore
+    DAppStore: "dapp-store",
+
+    // === DApps
+    ToriPunks: "dapp/tori-punks/:route?",
   },
 };
 

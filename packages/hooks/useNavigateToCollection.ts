@@ -1,8 +1,8 @@
 import { useCallback } from "react";
 
-import { secondaryDuringMintList } from "../utils/collections";
-import { useAppNavigation } from "../utils/navigation";
 import { useMintEnded } from "./useMintEnded";
+import { parseNetworkObjectId } from "../networks";
+import { useAppNavigation } from "../utils/navigation";
 
 export interface NavigateToCollectionOpts {
   forceSecondaryDuringMint?: boolean;
@@ -17,13 +17,15 @@ export const useNavigateToCollection = (
 ) => {
   const navigation = useAppNavigation();
 
-  const secondaryDuringMint =
-    opts?.forceSecondaryDuringMint || secondaryDuringMintList.includes(id);
+  const [network, contractAddress] = parseNetworkObjectId(id);
+
+  const secondaryDuringMint = (network?.secondaryDuringMintList || []).includes(
+    contractAddress
+  );
 
   const noFetch = secondaryDuringMint || !!opts?.forceLinkToMint;
 
-  // the ternary in next line is to prevent calling the api when it's not necessary
-  const mintEnded = useMintEnded(noFetch ? "" : id);
+  const mintEnded = useMintEnded(id, !noFetch);
 
   const navToMint = useCallback(
     () => navigation.navigate("MintCollection", { id }),

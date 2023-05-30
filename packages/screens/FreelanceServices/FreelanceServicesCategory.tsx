@@ -1,8 +1,8 @@
 import React from "react";
 
-import { ScreenFC } from "../../utils/navigation";
 import { GraphicsAndDesign } from "./Category/GraphicsAndDesign";
 import { FreelanceServicesScreenWrapper } from "./FreelanceServicesScreenWrapper";
+import { ScreenFC } from "../../utils/navigation";
 export const FreelanceServicesCategory: ScreenFC<
   "FreelanceServicesCategory"
 > = ({

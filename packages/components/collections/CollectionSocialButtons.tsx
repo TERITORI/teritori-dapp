@@ -4,7 +4,7 @@ import { Linking } from "react-native";
 import discordSVG from "../../../assets/icons/discord.svg";
 import twitterSVG from "../../../assets/icons/twitter.svg";
 import websiteSVG from "../../../assets/icons/website.svg";
-import { CollectionInfo } from "../../hooks/useCollectionInfo";
+import { CollectionInfo } from "../../utils/collection";
 import { SocialButton } from "../buttons/SocialButton";
 
 export const CollectionSocialButtons: React.FC<{

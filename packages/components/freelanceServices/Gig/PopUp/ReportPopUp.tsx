@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { View } from "react-native";
 import { RadioButton } from "react-native-paper";
 
+import { DescriptionReportPopup } from "./DescriptionReportPopup";
 import {
   neutral00,
   primaryColor,
@@ -12,7 +13,6 @@ import { BrandText } from "../../../BrandText/BrandText";
 import { Separator } from "../../../Separator";
 import { SecondaryButton } from "../../../buttons/SecondaryButton";
 import { ModalBase } from "../../../modals/ModalBase";
-import { DescriptionReportPopup } from "./DescriptionReportPopup";
 const options = [
   "Non Original Content",
   "Inappropriate Gig",

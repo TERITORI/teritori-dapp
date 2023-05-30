@@ -1,18 +1,13 @@
 import React, { createContext, useContext, useMemo } from "react";
-// import { useSelector } from "react-redux";
 
-import { WalletProvider } from "../../utils/walletProvider";
+import { useAdena } from "./adena";
 import { useKeplr } from "./keplr";
 import { useMetamask } from "./metamask";
 import { Wallet } from "./wallet";
+import { WalletProvider } from "../../utils/walletProvider";
 // import { usePhantom } from "./phantom";
 // import { selectStoreWallets, storeWalletId } from "../../store/slices/wallets";
 // import { WalletProvider } from "../../utils/walletProvider";
-
-/**
- * FIXME: We should change the architecture of this and split "wallets addresses"
- * from "wallets providers" instead of having the Wallet type to represent both
- */
 
 type WalletsContextValue = {
   wallets: Wallet[];
@@ -32,6 +27,7 @@ export const WalletsProvider: React.FC = React.memo(({ children }) => {
   // const [hasPhantom, phantomIsReady, phantomWallet] = usePhantom();
   const [hasKeplr, keplrIsReady, keplrWallets] = useKeplr();
   const [hasMetamask, metamaskIsReady, metamaskWallets] = useMetamask();
+  const [hasAdena, adenaIsReady, adenaWallets] = useAdena();
 
   // const storeWallets = useSelector(selectStoreWallets);
 
@@ -92,13 +88,7 @@ export const WalletsProvider: React.FC = React.memo(({ children }) => {
       walletProviders.push(WalletProvider.Keplr);
 
       if (keplrWallets?.[0]?.connected) {
-        const wallet = keplrWallets[0];
-        wallets.push({
-          id: wallet.id,
-          address: wallet.address,
-          provider: WalletProvider.Keplr,
-          connected: true,
-        });
+        wallets.push(keplrWallets[0]);
       }
     }
 
@@ -106,20 +96,21 @@ export const WalletsProvider: React.FC = React.memo(({ children }) => {
       walletProviders.push(WalletProvider.Metamask);
 
       if (metamaskWallets?.[0]?.connected) {
-        const wallet = metamaskWallets[0];
-        wallets.push({
-          id: wallet.id,
-          address: wallet.address,
-          provider: WalletProvider.Metamask,
-          connected: true,
-        });
+        wallets.push(metamaskWallets[0]);
+      }
+    }
+
+    if (hasAdena) {
+      walletProviders.push(WalletProvider.Adena);
+      if (adenaWallets?.[0]?.connected) {
+        wallets.push(adenaWallets[0]);
       }
     }
 
     return {
       wallets,
       walletProviders,
-      ready: keplrIsReady && metamaskIsReady,
+      ready: keplrIsReady && metamaskIsReady && adenaIsReady,
     };
   }, [
     // hasPhantom,
@@ -131,6 +122,9 @@ export const WalletsProvider: React.FC = React.memo(({ children }) => {
     hasMetamask,
     metamaskIsReady,
     metamaskWallets,
+    hasAdena,
+    adenaIsReady,
+    adenaWallets,
     // storeWallets,
   ]);
 

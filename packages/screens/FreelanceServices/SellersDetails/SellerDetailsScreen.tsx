@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { TouchableOpacity, useWindowDimensions, View } from "react-native";
 
+import { GigList } from "./components/GigList";
 import heart from "../../../../assets/icons/heart.svg";
 import penSVG from "../../../../assets/icons/manage.svg";
 import behanceIcon from "../../../../assets/icons/social-network/behance-grey.svg";
@@ -61,7 +62,6 @@ import {
   SkillInfo,
   SellerUser,
 } from "../types/fields";
-import { GigList } from "./components/GigList";
 
 export const SellerDetailsScreen: ScreenFC<
   "FreelanceServicesSellerDetails"

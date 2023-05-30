@@ -7,15 +7,20 @@ import Animated, {
   WithSpringConfig,
 } from "react-native-reanimated";
 
+import { BuyTokens } from "./BuyTokens";
+import { SideNotch } from "./components/SideNotch";
+import { SidebarButton } from "./components/SidebarButton";
+import { SidebarProfileButton } from "./components/SidebarProfileButton";
+import { TopLogo } from "./components/TopLogo";
+import { SidebarType } from "./types";
 import addSVG from "../../../assets/icons/add-circle.svg";
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
 import { useSidebar } from "../../context/SidebarProvider";
-import { useSelectedNetwork } from "../../hooks/useSelectedNetwork";
+import { useNSUserInfo } from "../../hooks/useNSUserInfo";
+import { useSelectedNetworkKind } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { useTNSMetadata } from "../../hooks/useTNSMetadata";
+import { NetworkKind } from "../../networks";
 import { useAppNavigation } from "../../utils/navigation";
-import { Network } from "../../utils/network";
-import { SIDEBAR_LIST } from "../../utils/sidebar";
 import { neutral17, neutral33 } from "../../utils/style/colors";
 import {
   smallSidebarWidth,
@@ -26,11 +31,6 @@ import {
 import { SVG } from "../SVG";
 import { Separator } from "../Separator";
 import { SpacerColumn } from "../spacer";
-import { SideNotch } from "./components/SideNotch";
-import { SidebarButton } from "./components/SidebarButton";
-import { SidebarProfileButton } from "./components/SidebarProfileButton";
-import { TopLogo } from "./components/TopLogo";
-import { SidebarType } from "./types";
 
 const SpringConfig: WithSpringConfig = {
   stiffness: 100,
@@ -38,15 +38,29 @@ const SpringConfig: WithSpringConfig = {
   restDisplacementThreshold: 0.2,
 };
 
+const SidebarSeparator: React.FC = () => {
+  return (
+    <View
+      style={{
+        height: 1,
+        marginHorizontal: layout.padding_x2,
+        backgroundColor: neutral33,
+        marginBottom: layout.padding_x1,
+      }}
+    />
+  );
+};
+
 export const Sidebar: React.FC = () => {
   const selectedWallet = useSelectedWallet();
-  const tnsMetadata = useTNSMetadata(selectedWallet?.address);
-  const selectedNetwork = useSelectedNetwork();
+  const userInfo = useNSUserInfo(selectedWallet?.userId);
+  const selectedNetworkKind = useSelectedNetworkKind();
+  const connected = selectedWallet?.connected;
 
   // variables
   const navigation = useAppNavigation();
   const { name: currentRouteName } = useRoute();
-  const { isSidebarExpanded, toggleSidebar } = useSidebar();
+  const { isSidebarExpanded, toggleSidebar, dynamicSidebar } = useSidebar();
 
   // animations
   const layoutStyle = useAnimatedStyle(
@@ -74,7 +88,7 @@ export const Sidebar: React.FC = () => {
   );
 
   const onRouteChange = (name: SidebarType["route"]) => {
-    // @ts-ignore
+    // @ts-expect-error
     navigation.navigate(name);
   };
 
@@ -97,17 +111,21 @@ export const Sidebar: React.FC = () => {
       </View>
       <FlatList
         showsVerticalScrollIndicator={false}
-        data={Object.values(SIDEBAR_LIST)}
-        keyExtractor={(item) => item.title}
+        data={Object.values(dynamicSidebar)}
+        keyExtractor={(item) => item.id}
         renderItem={({ item }) => {
           let { route } = item;
-          if (item.disabledOn?.includes(selectedNetwork || Network.Unknown)) {
+          if (
+            item.disabledOn?.includes(
+              selectedNetworkKind || NetworkKind.Unknown
+            )
+          ) {
             route = "ComingSoon";
           }
 
           return (
             <SidebarButton
-              key={item.title}
+              key={item.id}
               onPress={onRouteChange}
               {...item}
               route={route}
@@ -121,6 +139,8 @@ export const Sidebar: React.FC = () => {
               icon={addSVG}
               iconSize={36}
               route="ComingSoon"
+              key="ComingSoon2"
+              id="ComingSoon2"
               title=""
               onPress={() => navigation.navigate("ComingSoon")}
             />
@@ -129,23 +149,21 @@ export const Sidebar: React.FC = () => {
         }
       />
       <View>
-        <View
-          style={{
-            height: 1,
-            marginHorizontal: 18,
-            backgroundColor: neutral33,
-            marginBottom: layout.padding_x1,
-          }}
-        />
+        <SidebarSeparator />
+        <BuyTokens />
+        <SidebarSeparator />
 
-        {tnsMetadata.metadata && (
-          <SidebarProfileButton
-            walletAddress={selectedWallet?.address || ""}
-            tokenId={tnsMetadata.metadata.tokenId || ""}
-            image={tnsMetadata.metadata.image || ""}
-            isExpanded={isSidebarExpanded}
-          />
-        )}
+        {selectedNetworkKind === NetworkKind.Cosmos &&
+          connected &&
+          userInfo.metadata && (
+            <SidebarProfileButton
+              isLoading={userInfo.loading}
+              userId={selectedWallet?.userId || ""}
+              tokenId={userInfo.metadata.tokenId || ""}
+              image={userInfo.metadata.image || ""}
+              isExpanded={isSidebarExpanded}
+            />
+          )}
       </View>
     </Animated.View>
   );

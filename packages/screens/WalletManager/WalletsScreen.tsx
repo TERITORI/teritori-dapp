@@ -1,21 +1,22 @@
 import React, { useState } from "react";
 import { View, TouchableOpacity } from "react-native";
 
+import { WalletHeader } from "./WalletHeader";
+import { WalletItem, WalletItemProps } from "./WalletItem";
 import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../assets/icons/chevron-up.svg";
 import { BrandText } from "../../components/BrandText";
+import { NetworkIcon } from "../../components/NetworkIcon";
 import { SVG } from "../../components/SVG";
+import { ScreenContainer } from "../../components/ScreenContainer";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { ConnectWalletModal } from "../../components/connectWallet/ConnectWalletModal";
 import { useRewards } from "../../hooks/useRewards";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { ScreenFC } from "../../utils/navigation";
-import { walletProviderToNetwork } from "../../utils/network";
+import { walletProviderToNetworkKind } from "../../utils/network";
 import { neutral33, neutralA3, secondaryColor } from "../../utils/style/colors";
-import { getWalletIconFromTitle } from "../../utils/walletManagerHelpers";
-import { WalletItem, WalletItemProps } from "./WalletItem";
-import { WalletManagerScreenContainer } from "./WalletManagerScreenContainer";
 
 interface WalletProps {
   index: number;
@@ -60,11 +61,7 @@ const Wallet: React.FC<WalletProps> = ({ item, index, itemsCount }) => {
               alignItems: "center",
             }}
           >
-            <SVG
-              source={getWalletIconFromTitle(item.title)}
-              height={32}
-              width={32}
-            />
+            <NetworkIcon networkId={item.data[0].networkId} size={32} />
             <BrandText
               style={{
                 marginLeft: 12,
@@ -112,11 +109,11 @@ export const WalletManagerWalletsScreen: ScreenFC<
   const selectedWallet = useSelectedWallet();
 
   // TODO: Handle multiple wallets addresses
-  const { totalsRewards, claimReward } = useRewards(selectedWallet?.address);
+  const { totalsRewards, claimReward } = useRewards(selectedWallet?.userId);
 
-  const title = selectedWallet
-    ? walletProviderToNetwork(selectedWallet.provider) || ""
-    : "";
+  const title = walletProviderToNetworkKind(selectedWallet?.provider);
+
+  // FIXME: architectural problems with wallets management
 
   const wallets = selectedWallet
     ? [
@@ -127,6 +124,7 @@ export const WalletManagerWalletsScreen: ScreenFC<
               id: 0,
               title,
               address: selectedWallet.address,
+              networkId: selectedWallet.networkId,
               pendingRewards: totalsRewards,
               claimReward,
               staked: 42,
@@ -137,7 +135,7 @@ export const WalletManagerWalletsScreen: ScreenFC<
     : [];
 
   return (
-    <WalletManagerScreenContainer>
+    <ScreenContainer headerChildren={<WalletHeader />}>
       <View
         style={{
           paddingVertical: 48,
@@ -185,6 +183,6 @@ export const WalletManagerWalletsScreen: ScreenFC<
         visible={showConnectModal}
         onClose={() => setShowConnectModal(false)}
       />
-    </WalletManagerScreenContainer>
+    </ScreenContainer>
   );
 };
