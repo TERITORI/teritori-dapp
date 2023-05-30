@@ -333,6 +333,7 @@ export const ProposalActions: React.FC<{
       setToastSuccess({ title: "Executed", message: "" });
     } catch (err) {
       console.error("failed to execute", err);
+      await invalidateDAOProposals();
       setToastError({
         title: "Failed to execute",
         message: err instanceof Error ? err.message : `${err}`,
