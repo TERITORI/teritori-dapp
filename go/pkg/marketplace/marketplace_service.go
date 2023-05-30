@@ -863,11 +863,13 @@ func (s *MarkteplaceService) CollectionStats(ctx context.Context, req *marketpla
         INNER join nfts_in_collection nic on nic.id = a.nft_id
       ),
 			activities_on_period AS (
-				SELECT * FROM activities a2 WHERE a2."time" > $3
+				SELECT *, a2.id activity_id FROM activities a2 
+        right join nfts_in_collection on a2.nft_id = nfts_in_collection.id
+        WHERE a2."time" > $3
 			),
 			trades_on_period AS (
-        SELECT avg(cast(t2.price as float8)) avg_price_period FROM trades t2 INNER JOIN activities_on_period aop
-				ON aop.id = t2.activity_id
+        SELECT COALESCE(avg(cast(t2.price as float8)),0) avg_price_period FROM trades t2 INNER JOIN activities_on_period aop
+				ON aop.activity_id = t2.activity_id
 			)
       select 
         to_json(array( select json_build_object('amount',price_amount,'denom',ln2.price_denom) from min_price_by_denom ln2)) lower_price, 

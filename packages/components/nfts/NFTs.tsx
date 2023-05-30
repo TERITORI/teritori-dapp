@@ -53,6 +53,7 @@ export const NFTs: React.FC<{
               borderRadius: layout.padding_x2,
               borderColor: neutral33,
               borderWidth: 1,
+              height,
               padding: layout.padding_x2,
               borderStyle: "solid",
             }}
@@ -65,6 +66,7 @@ export const NFTs: React.FC<{
           }}
           contentContainerStyle={{
             maxWidth: screenContentMaxWidthLarge,
+            maxHeight: height,
           }}
           showsHorizontalScrollIndicator={false}
           columnWrapperStyle={{ flexWrap: "wrap", flex: 1, marginTop: 5 }}
