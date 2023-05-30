@@ -128,7 +128,7 @@ const SelectedTabContent: React.FC<{
     case "members":
       return <DaoMemberList daoId={userId} />;
     case "proposals":
-      return <DaoProposalList daoAddress={userAddress} />;
+      return <DaoProposalList daoId={userId} />;
     case "funds":
       return <Assets userId={userId} readOnly />;
     case "daos":
@@ -140,17 +140,19 @@ const SelectedTabContent: React.FC<{
   }
 };
 
+const initialTab: keyof typeof screenTabItems = "proposals";
+
 export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
   route: {
     params: { id },
   },
 }) => {
   const [selectedTab, setSelectedTab] =
-    useState<keyof typeof screenTabItems>("userPosts");
+    useState<keyof typeof screenTabItems>(initialTab);
   const prevId = usePrevious(id);
   useEffect(() => {
     if (prevId && id !== prevId) {
-      setSelectedTab("userPosts");
+      setSelectedTab(initialTab);
     }
   }, [id, prevId]);
   const navigation = useAppNavigation();

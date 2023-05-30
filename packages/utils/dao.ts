@@ -403,5 +403,7 @@ export const makeProposal = async (
     },
   });
 
+  // TODO: invalidate proposal list
+
   return res;
 };

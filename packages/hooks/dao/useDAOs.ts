@@ -34,7 +34,7 @@ export const useDAOs = (
       }
       return daos;
     },
-    { staleTime: Infinity }
+    { staleTime: Infinity, enabled: !!networkId }
   );
   return { daos: data, ...other };
 };

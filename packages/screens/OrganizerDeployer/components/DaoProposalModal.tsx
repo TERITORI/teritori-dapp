@@ -2,233 +2,141 @@ import { cloneDeep } from "lodash";
 import React from "react";
 import { StyleSheet, View } from "react-native";
 
+import { ProposalActions } from "./DaoProposalList";
 import { BrandText } from "../../../components/BrandText";
-import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import ModalBase from "../../../components/modals/ModalBase";
+import { SocialMessageContent } from "../../../components/socialFeed/SocialThread/SocialMessageContent";
 import { SpacerColumn } from "../../../components/spacer";
-import { useFeedbacks } from "../../../context/FeedbacksProvider";
-import { DaoCoreQueryClient } from "../../../contracts-clients/dao-core/DaoCore.client";
-import { DaoProposalSingleClient } from "../../../contracts-clients/dao-proposal-single/DaoProposalSingle.client";
 import {
   ProposalResponse,
-  Vote,
+  CosmosMsgForEmpty,
 } from "../../../contracts-clients/dao-proposal-single/DaoProposalSingle.types";
-import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { useNSPrimaryAlias } from "../../../hooks/useNSPrimaryAlias";
+import { getCosmosNetwork, getUserId, parseUserId } from "../../../networks";
 import {
-  getKeplrSigningCosmWasmClient,
-  mustGetNonSigningCosmWasmClient,
-} from "../../../networks";
-import { neutral33, secondaryColor } from "../../../utils/style/colors";
+  neutral33,
+  neutral77,
+  secondaryColor,
+} from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
+import { modalMarginPadding } from "../../../utils/style/modals";
 import { tinyAddress } from "../../../utils/text";
 
 export const DaoProposalModal: React.FC<{
   visible?: boolean;
   onClose: () => void;
-  daoAddress: string;
+  daoId: string | undefined;
   proposalInfo: ProposalResponse;
-}> = ({ visible, onClose, daoAddress, proposalInfo }) => {
-  const { setToastSuccess, setToastError } = useFeedbacks();
-  const selectedWallet = useSelectedWallet();
-  const vote = async (v: Vote) => {
-    if (
-      !selectedWallet ||
-      proposalInfo.proposal.status !== "open" ||
-      !daoAddress
-    )
-      return;
-    try {
-      const walletAddress = selectedWallet.address;
-      const networkId = selectedWallet.networkId;
-      const signingClient = await getKeplrSigningCosmWasmClient(networkId);
-      const cosmwasmClient = await mustGetNonSigningCosmWasmClient(
-        selectedWallet.networkId
-      );
-      const coreClient = new DaoCoreQueryClient(cosmwasmClient, daoAddress);
-      const proposalModuleAddress = (await coreClient.proposalModules({}))[0]
-        .address;
-      const daoProposalClient = new DaoProposalSingleClient(
-        signingClient,
-        walletAddress,
-        proposalModuleAddress
-      );
-      const createVoteRes = await daoProposalClient.vote(
-        { proposalId: proposalInfo.id, vote: v },
-        "auto"
-      );
-      if (createVoteRes) {
-        onClose();
-        setToastSuccess({ title: "Success Vote", message: "Success Vote" });
-      } else {
-        onClose();
-        setToastError({
-          title: "Failed to vote",
-          message: "Failed to vote",
-        });
-      }
-    } catch (err: any) {
-      onClose();
-      setToastError({
-        title: "Failed to vote",
-        message: err.message,
-      });
-    }
-  };
-  const execute = async () => {
-    if (
-      !selectedWallet ||
-      proposalInfo.proposal.status !== "passed" ||
-      !daoAddress
-    )
-      return;
-    try {
-      const walletAddress = selectedWallet.address;
-      const networkId = selectedWallet.networkId;
-      const signingClient = await getKeplrSigningCosmWasmClient(networkId);
-      const cosmwasmClient = await mustGetNonSigningCosmWasmClient(
-        selectedWallet.networkId
-      );
-      const coreClient = new DaoCoreQueryClient(cosmwasmClient, daoAddress);
-      const proposalModuleAddress = (await coreClient.proposalModules({}))[0]
-        .address;
-      const daoProposalClient = new DaoProposalSingleClient(
-        signingClient,
-        walletAddress,
-        proposalModuleAddress
-      );
-      const res = await daoProposalClient.execute({
-        proposalId: proposalInfo.id,
-      });
-      if (
-        res.events.find((ev) =>
-          ev.attributes.find(
-            (attr) =>
-              attr.key === "proposal_execution_failed" &&
-              attr.value === proposalInfo.id.toString()
-          )
-        )
-      ) {
-        console.error("failed to execute", res);
-        throw new Error("internal error");
-      }
-      console.log("executed", res);
-      onClose();
-      setToastSuccess({ title: "Executed", message: "" });
-    } catch (err) {
-      onClose();
-      console.error("failed to execute", err);
-      setToastError({
-        title: "Failed to execute",
-        message: err instanceof Error ? err.message : `${err}`,
-      });
-    }
-  };
+}> = ({ visible, onClose, daoId, proposalInfo }) => {
+  const [network] = parseUserId(daoId);
+  const networkId = network?.id;
+  const { primaryAlias } = useNSPrimaryAlias(
+    getUserId(networkId, proposalInfo.proposal.proposer)
+  );
   return (
     <ModalBase
       onClose={() => {
         onClose();
       }}
-      label={`TODO - ${proposalInfo.id}`}
+      label={`Proposal #${proposalInfo.id}`}
       visible={visible}
       width={800}
     >
       <View style={styles.container}>
         <View style={styles.body}>
-          <View style={styles.row}>
-            <BrandText style={fontSemibold14}>Name: </BrandText>
-            <BrandText style={styles.textGray}>
-              {proposalInfo.proposal.title}
-            </BrandText>
-          </View>
-          <SpacerColumn size={2.5} />
-          <View style={styles.row}>
-            <BrandText style={fontSemibold14}>Status: </BrandText>
-            <BrandText style={styles.textGray}>
-              {proposalInfo.proposal.status}
-            </BrandText>
-          </View>
+          <BrandText style={fontSemibold14}>
+            {proposalInfo.proposal.title}
+          </BrandText>
           <SpacerColumn size={2.5} />
           <View style={styles.row}>
             <BrandText style={fontSemibold14}>Creator: </BrandText>
             <BrandText style={styles.textGray}>
-              {tinyAddress(proposalInfo.proposal.proposer)}
+              {primaryAlias
+                ? `@${primaryAlias}`
+                : tinyAddress(proposalInfo.proposal.proposer)}
             </BrandText>
           </View>
           <SpacerColumn size={2.5} />
-          <View style={styles.row}>
-            <BrandText style={styles.textGray}>
-              {proposalInfo.proposal.description}
-            </BrandText>
-          </View>
-          <SpacerColumn size={2.5} />
-          {proposalInfo.proposal.status === "execution_failed" && (
-            <View style={styles.row}>
-              <BrandText style={styles.textGray}>
-                {proposalInfo.proposal}
+          {!!proposalInfo.proposal.description && (
+            <>
+              <SpacerColumn size={2.5} />
+              <BrandText style={[fontSemibold14, { color: neutral77 }]}>
+                {proposalInfo.proposal.description}
               </BrandText>
-            </View>
+            </>
           )}
+          <BrandText style={fontSemibold14}>Actions:</BrandText>
           <SpacerColumn size={2.5} />
-          <BrandText style={[styles.textGray, {}]}>
-            {JSON.stringify(
-              proposalInfo.proposal.msgs.map((mm) => {
-                const m = cloneDeep(mm);
-                if ("wasm" in m && "execute" in m.wasm) {
-                  m.wasm.execute.msg = JSON.parse(
-                    Buffer.from(m.wasm.execute.msg, "base64").toString()
-                  );
-                }
-                return m;
-              }),
-              null,
-              4
-            )}
-          </BrandText>
+          <ProposalMessagesList proposal={proposalInfo} />
         </View>
-        {proposalInfo.proposal.status === "open" && (
-          <View style={styles.footer}>
-            <View style={{ flexDirection: "row-reverse" }}>
-              <PrimaryButton
-                size="M"
-                text="Abstrain"
-                onPress={() => {
-                  vote("abstain");
-                }}
-                style={{ marginLeft: 10 }}
-              />
-              <PrimaryButton
-                size="M"
-                text="No"
-                onPress={() => {
-                  vote("no");
-                }}
-                style={{ marginLeft: 10 }}
-              />
-              <PrimaryButton
-                size="M"
-                text="Yes"
-                onPress={() => {
-                  vote("yes");
-                }}
-                style={{ marginLeft: 10 }}
-              />
-            </View>
-          </View>
-        )}
-        {proposalInfo.proposal.status === "passed" && (
-          <View style={styles.footer}>
-            <View style={{ flexDirection: "row-reverse" }}>
-              <PrimaryButton
-                text="Execute"
-                onPress={() => {
-                  execute();
-                }}
-              />
-            </View>
-          </View>
-        )}
+        <SpacerColumn size={2.5} />
+        <View style={{ marginBottom: modalMarginPadding }}>
+          <ProposalActions daoId={daoId} proposal={proposalInfo} />
+        </View>
       </View>
     </ModalBase>
+  );
+};
+
+const ProposalMessagesList: React.FC<{ proposal: ProposalResponse }> = ({
+  proposal,
+}) => {
+  return (
+    <>
+      {proposal.proposal.msgs.map((message, index) => {
+        return (
+          <>
+            {index !== 0 && <SpacerColumn size={2.5} />}
+            <View
+              style={{
+                borderWidth: 1,
+                borderColor: neutral77,
+                borderRadius: 8,
+                padding: 8,
+              }}
+            >
+              <MessagePreview message={message} key={index} />
+            </View>
+          </>
+        );
+      })}
+    </>
+  );
+};
+
+const MessagePreview: React.FC<{ message: CosmosMsgForEmpty }> = ({
+  message,
+}) => {
+  const socialFeedContractAddress =
+    getCosmosNetwork("teritori-testnet")?.socialFeedContractAddress; // FIXME
+  const m = cloneDeep(message);
+  if ("wasm" in m && "execute" in m.wasm) {
+    const msg = JSON.parse(
+      Buffer.from(m.wasm.execute.msg, "base64").toString()
+    );
+    const action = Object.keys(msg)[0];
+    const payload = msg[action];
+
+    if (m.wasm.execute.contract_addr === socialFeedContractAddress) {
+      if (action === "create_post") {
+        return (
+          <View>
+            <BrandText>Post on social feed</BrandText>
+            <SpacerColumn size={2.5} />
+            <SocialMessageContent
+              postCategory={payload.category}
+              metadata={JSON.parse(payload.metadata)}
+              isPreview
+            />
+          </View>
+        );
+      }
+    } else {
+      m.wasm.execute.msg = payload;
+    }
+  }
+  return (
+    <BrandText style={styles.textGray}>{JSON.stringify(m, null, 4)}</BrandText>
   );
 };
 
