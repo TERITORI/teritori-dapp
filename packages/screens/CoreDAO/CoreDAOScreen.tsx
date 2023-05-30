@@ -5,12 +5,8 @@ import { View } from "react-native";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
-import { TextInputCustom } from "../../components/inputs/TextInputCustom";
 import { SpacerColumn } from "../../components/spacer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { Member } from "../../contracts-clients/cw4-group/Cw4Group.types";
-import { DaoCoreQueryClient } from "../../contracts-clients/dao-core/DaoCore.client";
-import { DaoVotingCw4QueryClient } from "../../contracts-clients/dao-voting-cw4/DaoVotingCw4.client";
 import { TeritoriNameServiceQueryClient } from "../../contracts-clients/teritori-name-service/TeritoriNameService.client";
 import { useFeedConfig } from "../../hooks/feed/useFeedConfig";
 import { useBalances } from "../../hooks/useBalances";
@@ -46,10 +42,6 @@ export const CoreDAOScreen: ScreenFC<"CoreDAO"> = () => {
 const DAOManager: React.FC = () => {
   const networkId = useSelectedNetworkId();
   const network = getCosmosNetwork(networkId);
-  const { setToastSuccess, setToastError } = useFeedbacks();
-  const selectedWallet = useSelectedWallet();
-  const [newMemberAddress, setNewMemberAddress] = React.useState("");
-  const [removeMemberAddress, setRemoveMemberAddress] = React.useState("");
   const balances = useBalances(networkId, network?.coreDAOAddress);
   return (
     <View>
@@ -62,160 +54,6 @@ const DAOManager: React.FC = () => {
           </BrandText>
         );
       })}
-      <SpacerColumn size={2} />
-      <View style={{ flexDirection: "row" }}>
-        <TextInputCustom
-          label="New member address"
-          name="new-member-address"
-          onChangeText={setNewMemberAddress}
-        />
-        <PrimaryButton
-          text="Propose to add member"
-          onPress={async () => {
-            try {
-              if (!network?.coreDAOAddress) {
-                throw new Error("no core DAO address");
-              }
-              if (!selectedWallet?.address) {
-                throw new Error("no selected wallet");
-              }
-
-              const cosmwasmClient = await mustGetNonSigningCosmWasmClient(
-                networkId
-              );
-
-              const daoCoreClient = new DaoCoreQueryClient(
-                cosmwasmClient,
-                network?.coreDAOAddress
-              );
-
-              const votingModuleAddress = await daoCoreClient.votingModule();
-              const votingClient = new DaoVotingCw4QueryClient(
-                cosmwasmClient,
-                votingModuleAddress
-              );
-
-              const cw4Address = await votingClient.groupContract();
-
-              const weight = 1;
-              const updateMembersReq: {
-                add: Member[];
-                remove: string[];
-              } = { add: [{ addr: newMemberAddress, weight }], remove: [] };
-
-              const res = await makeProposal(
-                networkId,
-                selectedWallet.address,
-                network.coreDAOAddress,
-                {
-                  title: `Add ${newMemberAddress} as member with weight ${weight}`,
-                  description: "",
-                  msgs: [
-                    {
-                      wasm: {
-                        execute: {
-                          contract_addr: cw4Address,
-                          msg: Buffer.from(
-                            JSON.stringify({
-                              update_members: updateMembersReq,
-                            })
-                          ).toString("base64"),
-                          funds: [],
-                        },
-                      },
-                    },
-                  ],
-                }
-              );
-
-              console.log("created proposal", res);
-              setToastSuccess({ title: "Created proposal", message: "" });
-            } catch (err) {
-              console.error(err);
-              if (err instanceof Error)
-                setToastError({
-                  title: "Failed to create proposal",
-                  message: err.message,
-                });
-            }
-          }}
-        />
-        <TextInputCustom
-          label="Remove member address"
-          name="remove-member-address"
-          onChangeText={setRemoveMemberAddress}
-        />
-        <PrimaryButton
-          text="Propose to remove member"
-          onPress={async () => {
-            try {
-              if (!network?.coreDAOAddress) {
-                throw new Error("no core DAO address");
-              }
-              if (!selectedWallet?.address) {
-                throw new Error("no selected wallet");
-              }
-
-              const cosmwasmClient = await mustGetNonSigningCosmWasmClient(
-                networkId
-              );
-
-              const daoCoreClient = new DaoCoreQueryClient(
-                cosmwasmClient,
-                network?.coreDAOAddress
-              );
-
-              const votingModuleAddress = await daoCoreClient.votingModule();
-              const votingClient = new DaoVotingCw4QueryClient(
-                cosmwasmClient,
-                votingModuleAddress
-              );
-
-              const cw4Address = await votingClient.groupContract();
-
-              const updateMembersReq: {
-                add: Member[];
-                remove: string[];
-              } = { add: [], remove: [removeMemberAddress] };
-
-              const res = await makeProposal(
-                networkId,
-                selectedWallet.address,
-                network.coreDAOAddress,
-                {
-                  title: `Remove ${removeMemberAddress} from members`,
-                  description: "",
-                  msgs: [
-                    {
-                      wasm: {
-                        execute: {
-                          contract_addr: cw4Address,
-                          msg: Buffer.from(
-                            JSON.stringify({
-                              update_members: updateMembersReq,
-                            })
-                          ).toString("base64"),
-                          funds: [],
-                        },
-                      },
-                    },
-                  ],
-                }
-              );
-
-              console.log("created proposal", res);
-              setToastSuccess({ title: "Created proposal", message: "" });
-            } catch (err) {
-              console.error(err);
-              if (err instanceof Error)
-                setToastError({
-                  title: "Failed to create proposal",
-                  message: err.message,
-                });
-            }
-          }}
-        />
-      </View>
     </View>
   );
 };
@@ -255,7 +93,7 @@ const VaultManager: React.FC<{ networkId: string }> = ({ networkId }) => {
             selectedWallet?.address,
             network?.coreDAOAddress,
             {
-              title: "Withdraw from marketplace",
+              title: "Withdraw marketplace fees",
               description: "",
               msgs: [
                 {
@@ -279,7 +117,7 @@ const VaultManager: React.FC<{ networkId: string }> = ({ networkId }) => {
 const NameServiceManager: React.FC<{ networkId: string }> = ({ networkId }) => {
   const network = getCosmosNetwork(networkId);
   const { data: nsAdmin } = useQuery(
-    ["ns-admin", networkId, network?.nameServiceContractAddress],
+    ["nsAdmin", networkId, network?.nameServiceContractAddress],
     async () => {
       if (!network?.nameServiceContractAddress) {
         return undefined;
@@ -315,11 +153,9 @@ const SocialFeedManager: React.FC<{ networkId: string }> = ({ networkId }) => {
     networkId,
     network?.socialFeedContractAddress
   );
-  const selectedWallet = useSelectedWallet();
   const { wrapWithFeedback } = useFeedbacks();
   return (
     <View>
-      {" "}
       <BrandText>
         Social Feed
         {"\n"}
@@ -337,30 +173,7 @@ const SocialFeedManager: React.FC<{ networkId: string }> = ({ networkId }) => {
       <PrimaryButton
         text="Propose to withdraw social feed fees"
         onPress={wrapWithFeedback(async () => {
-          if (!network?.vaultContractAddress) {
-            throw new Error("no vault contract address");
-          }
-          const msg = { withdraw_fee: {} };
-          await makeProposal(
-            networkId,
-            selectedWallet?.address,
-            network?.coreDAOAddress,
-            {
-              title: "Withdraw from social feed",
-              description: "",
-              msgs: [
-                {
-                  wasm: {
-                    execute: {
-                      contract_addr: network?.vaultContractAddress,
-                      funds: [],
-                      msg: Buffer.from(JSON.stringify(msg)).toString("base64"),
-                    },
-                  },
-                },
-              ],
-            }
-          );
+          throw new Error("not implemented");
         })}
       />
     </View>
@@ -374,11 +187,9 @@ const BreedingManager: React.FC<{ networkId: string }> = ({ networkId }) => {
     networkId,
     network?.riotContractAddressGen1
   );
-  const selectedWallet = useSelectedWallet();
   const { wrapWithFeedback } = useFeedbacks();
   return (
     <View>
-      {" "}
       <BrandText>
         Breeding
         {"\n"}
@@ -396,30 +207,7 @@ const BreedingManager: React.FC<{ networkId: string }> = ({ networkId }) => {
       <PrimaryButton
         text="Propose to withdraw breeding fees"
         onPress={wrapWithFeedback(async () => {
-          if (!network?.vaultContractAddress) {
-            throw new Error("no vault contract address");
-          }
-          const msg = { withdraw_fee: {} };
-          await makeProposal(
-            networkId,
-            selectedWallet?.address,
-            network?.coreDAOAddress,
-            {
-              title: "Withdraw from marketplace",
-              description: "",
-              msgs: [
-                {
-                  wasm: {
-                    execute: {
-                      contract_addr: network?.vaultContractAddress,
-                      funds: [],
-                      msg: Buffer.from(JSON.stringify(msg)).toString("base64"),
-                    },
-                  },
-                },
-              ],
-            }
-          );
+          throw new Error("not implemented");
         })}
       />
     </View>
