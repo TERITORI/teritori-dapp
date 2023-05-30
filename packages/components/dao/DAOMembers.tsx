@@ -16,8 +16,8 @@ import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { Member } from "../../contracts-clients/cw4-group/Cw4Group.types";
 import { DaoCoreQueryClient } from "../../contracts-clients/dao-core/DaoCore.client";
 import { DaoVotingCw4QueryClient } from "../../contracts-clients/dao-voting-cw4/DaoVotingCw4.client";
+import { useIsDAOMember } from "../../hooks/dao/useDAOMember";
 import { useDAOMembers } from "../../hooks/dao/useDAOMembers";
-import { useIsDAOMember } from "../../hooks/dao/useIsDAOMember";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
@@ -188,7 +188,7 @@ const UserCard: React.FC<{
   const { metadata } = useNSUserInfo(userId);
   const selectedWallet = useSelectedWallet();
   const { wrapWithFeedback } = useFeedbacks();
-  const { data: selectedWalletIsMember } = useIsDAOMember(
+  const { isDAOMember: selectedWalletIsMember } = useIsDAOMember(
     daoId,
     selectedWallet?.userId
   );

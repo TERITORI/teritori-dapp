@@ -4,7 +4,10 @@ import { DaoCoreQueryClient } from "../../contracts-clients/dao-core/DaoCore.cli
 import { ArrayOfProposalModule } from "../../contracts-clients/dao-core/DaoCore.types";
 import { mustGetNonSigningCosmWasmClient, parseUserId } from "../../networks";
 
-export const useDAOProposalModules = (daoId: string | undefined) => {
+export const useDAOProposalModules = (
+  daoId: string | undefined,
+  enabled?: boolean
+) => {
   const { data, ...other } = useQuery(
     ["daoProposalModules", daoId],
     async () => {
@@ -20,13 +23,19 @@ export const useDAOProposalModules = (daoId: string | undefined) => {
       const proposalModules = await coreClient.proposalModules({}); // FIXME: pagination
       return proposalModules;
     },
-    { staleTime: Infinity, enabled: !!daoId }
+    { staleTime: Infinity, enabled: (enabled ?? true) && !!daoId }
   );
   return { daoProposalModules: data, ...other };
 };
 
-export const useDAOFirstProposalModule = (daoId: string | undefined) => {
-  const { daoProposalModules, ...other } = useDAOProposalModules(daoId);
+export const useDAOFirstProposalModule = (
+  daoId: string | undefined,
+  enabled?: boolean
+) => {
+  const { daoProposalModules, ...other } = useDAOProposalModules(
+    daoId,
+    enabled
+  );
   return {
     daoFirstProposalModule: firstProposalModule(daoProposalModules),
     ...other,

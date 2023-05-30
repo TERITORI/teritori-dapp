@@ -14,7 +14,8 @@ export const daoVoteInfoQueryKey = (
 export const useDAOVoteInfo = (
   daoId: string | undefined,
   userId: string | undefined,
-  proposalId: number | undefined
+  proposalId: number | undefined,
+  enabled?: boolean
 ) => {
   const { daoFirstProposalModule } = useDAOFirstProposalModule(daoId);
   const proposalModuleAddress = daoFirstProposalModule?.address;
@@ -33,8 +34,9 @@ export const useDAOVoteInfo = (
         !proposalId ||
         !proposalModuleAddress ||
         userNetwork?.id !== networkId
-      )
+      ) {
         return null;
+      }
 
       const cosmwasmClient = await mustGetNonSigningCosmWasmClient(networkId);
       const daoClient = new DaoProposalSingleQueryClient(
@@ -48,7 +50,9 @@ export const useDAOVoteInfo = (
     },
     {
       staleTime: Infinity,
-      enabled: !!(daoId && userId && proposalId && proposalModuleAddress),
+      enabled:
+        (enabled ?? true) &&
+        !!(daoId && userId && proposalId && proposalModuleAddress),
     }
   );
   return { daoVoteInfo: data, ...other };

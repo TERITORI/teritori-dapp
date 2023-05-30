@@ -6,13 +6,13 @@ import {
   ProposalResponse,
   Vote,
 } from "../../contracts-clients/dao-proposal-single/DaoProposalSingle.types";
+import { useIsDAOMember } from "../../hooks/dao/useDAOMember";
 import { useDAOFirstProposalModule } from "../../hooks/dao/useDAOProposalModules";
 import { useInvalidateDAOProposals } from "../../hooks/dao/useDAOProposals";
 import {
   useInvalidateDAOVoteInfo,
   useDAOVoteInfo,
 } from "../../hooks/dao/useDAOVoteInfo";
-import { useIsDAOMember } from "../../hooks/dao/useIsDAOMember";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getKeplrSigningCosmWasmClient } from "../../networks";
 import { neutral77, primaryColor, errorColor } from "../../utils/style/colors";
@@ -31,7 +31,10 @@ export const ProposalActions: React.FC<{
   const selectedWallet = wallet;
   const proposalInfo = proposal;
   const { setToastError, setToastSuccess } = useFeedbacks();
-  const { data: isInDAO } = useIsDAOMember(daoId, selectedWallet?.userId);
+  const { isDAOMember: selectedWalletIsDAOMember } = useIsDAOMember(
+    daoId,
+    selectedWallet?.userId
+  );
   const invalidateDAOProposals = useInvalidateDAOProposals(daoId);
   const invalidateDAOVoteInfo = useInvalidateDAOVoteInfo(
     daoId,
@@ -150,7 +153,7 @@ export const ProposalActions: React.FC<{
   }
 
   if (proposal.proposal.status === "passed") {
-    if (!isInDAO) {
+    if (!selectedWalletIsDAOMember) {
       return <VoteStatus text="Ready to execute" color={primaryColor} />;
     }
     return (
@@ -165,7 +168,7 @@ export const ProposalActions: React.FC<{
   }
 
   if (proposal.proposal.status === "open") {
-    if (!isInDAO) {
+    if (!selectedWalletIsDAOMember) {
       return <VoteStatus text="Voting" color={neutral77} />;
     }
     return (
