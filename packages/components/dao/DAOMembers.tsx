@@ -1,5 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
-import React, { ComponentProps, useRef, useMemo, useState } from "react";
+import React, { ComponentProps, useRef, useState } from "react";
 import {
   Pressable,
   StyleProp,
@@ -10,52 +9,53 @@ import {
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
-import dotsCircleSVG from "../../../../assets/icons/dots-circle.svg";
-import trashSVG from "../../../../assets/icons/trash.svg";
-import { BrandText } from "../../../components/BrandText";
-import { DropdownOption } from "../../../components/DropdownOption";
-import { OmniLink } from "../../../components/OmniLink";
-import { SVG } from "../../../components/SVG";
-import { SearchBar } from "../../../components/Search/SearchBar";
-import { NameResult } from "../../../components/Search/SearchBarResults";
-import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
-import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
-import { AvatarWithFrame } from "../../../components/images/AvatarWithFrame";
-import ModalBase from "../../../components/modals/ModalBase";
-import { useDropdowns } from "../../../context/DropdownsProvider";
-import { useFeedbacks } from "../../../context/FeedbacksProvider";
-import { Cw4GroupQueryClient } from "../../../contracts-clients/cw4-group/Cw4Group.client";
-import { Member } from "../../../contracts-clients/cw4-group/Cw4Group.types";
-import { DaoCoreQueryClient } from "../../../contracts-clients/dao-core/DaoCore.client";
-import { DaoVotingCw4QueryClient } from "../../../contracts-clients/dao-voting-cw4/DaoVotingCw4.client";
-import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
-import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import dotsCircleSVG from "../../../assets/icons/dots-circle.svg";
+import trashSVG from "../../../assets/icons/trash.svg";
+import { useDropdowns } from "../../context/DropdownsProvider";
+import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { Member } from "../../contracts-clients/cw4-group/Cw4Group.types";
+import { DaoCoreQueryClient } from "../../contracts-clients/dao-core/DaoCore.client";
+import { DaoVotingCw4QueryClient } from "../../contracts-clients/dao-voting-cw4/DaoVotingCw4.client";
+import { useDAOMembers } from "../../hooks/dao/useDAOMembers";
+import { useIsDAOMember } from "../../hooks/dao/useIsDAOMember";
+import { useNSUserInfo } from "../../hooks/useNSUserInfo";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
   getUserId,
   mustGetCosmosNetwork,
   mustGetNonSigningCosmWasmClient,
   parseUserId,
-} from "../../../networks";
-import { makeProposal } from "../../../utils/dao";
+} from "../../networks";
+import { makeProposal } from "../../utils/dao";
 import {
   neutral00,
   neutral33,
   neutral77,
   neutralA3,
-} from "../../../utils/style/colors";
+} from "../../utils/style/colors";
 import {
   fontSemibold10,
   fontSemibold12,
   fontSemibold8,
-} from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { modalMarginPadding } from "../../../utils/style/modals";
+} from "../../utils/style/fonts";
+import { layout } from "../../utils/style/layout";
+import { modalMarginPadding } from "../../utils/style/modals";
+import { BrandText } from "../BrandText";
+import { DropdownOption } from "../DropdownOption";
+import { OmniLink } from "../OmniLink";
+import { SVG } from "../SVG";
+import { SearchBar } from "../Search/SearchBar";
+import { NameResult } from "../Search/SearchBarResults";
+import { TertiaryBox } from "../boxes/TertiaryBox";
+import { PrimaryButton } from "../buttons/PrimaryButton";
+import { AvatarWithFrame } from "../images/AvatarWithFrame";
+import ModalBase from "../modals/ModalBase";
 
 // FIXME: pagination
 
 const halfGap = 8;
 
-export const DaoMemberList: React.FC<{
+export const DAOMembers: React.FC<{
   daoId: string | undefined;
   style?: StyleProp<ViewStyle>;
 }> = ({ daoId, style }) => {
@@ -188,14 +188,11 @@ const UserCard: React.FC<{
   const { metadata } = useNSUserInfo(userId);
   const selectedWallet = useSelectedWallet();
   const { wrapWithFeedback } = useFeedbacks();
-  const daoMembers = useDAOMembers(daoId);
+  const { data: selectedWalletIsMember } = useIsDAOMember(
+    daoId,
+    selectedWallet?.userId
+  );
   const [, daoAddress] = parseUserId(daoId);
-
-  const walletIsMember = useMemo(() => {
-    return daoMembers.members?.some(
-      (member) => member.addr === selectedWallet?.address
-    );
-  }, [daoMembers, selectedWallet?.address]);
 
   const flatStyle = StyleSheet.flatten(style);
 
@@ -300,7 +297,7 @@ const UserCard: React.FC<{
       <View style={{ position: "absolute", top: padding, right: padding }}>
         <CardActions
           actions={[
-            walletIsMember && {
+            selectedWalletIsMember && {
               label: "Eject this member",
               icon: trashSVG,
               onPress: wrapWithFeedback(
@@ -513,28 +510,4 @@ const proposeToAddMembers = async (
       },
     ],
   });
-};
-
-const useDAOMembers = (daoId: string | undefined) => {
-  const { data: members, ...other } = useQuery(
-    ["daoMembers", daoId],
-    async () => {
-      const [network, daoAddr] = parseUserId(daoId);
-      if (!network || !daoAddr) {
-        return null;
-      }
-      const cosmwasmClient = await mustGetNonSigningCosmWasmClient(network.id);
-      const daoCoreClient = new DaoCoreQueryClient(cosmwasmClient, daoAddr);
-      const votingModuleAddress = await daoCoreClient.votingModule();
-      const votingModuleClient = new DaoVotingCw4QueryClient(
-        cosmwasmClient,
-        votingModuleAddress
-      );
-      const cw4Address = await votingModuleClient.groupContract();
-      const cw4Client = new Cw4GroupQueryClient(cosmwasmClient, cw4Address);
-      const { members } = await cw4Client.listMembers({ limit: 100 });
-      return members;
-    }
-  );
-  return { members, ...other };
 };

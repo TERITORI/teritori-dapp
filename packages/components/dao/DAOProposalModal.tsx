@@ -2,27 +2,23 @@ import { cloneDeep } from "lodash";
 import React from "react";
 import { StyleSheet, View } from "react-native";
 
-import { ProposalActions } from "./DaoProposalList";
-import { BrandText } from "../../../components/BrandText";
-import ModalBase from "../../../components/modals/ModalBase";
-import { SocialMessageContent } from "../../../components/socialFeed/SocialThread/SocialMessageContent";
-import { SpacerColumn } from "../../../components/spacer";
+import { ProposalActions } from "./ProposalActions";
 import {
   ProposalResponse,
   CosmosMsgForEmpty,
-} from "../../../contracts-clients/dao-proposal-single/DaoProposalSingle.types";
-import { useNSPrimaryAlias } from "../../../hooks/useNSPrimaryAlias";
-import { getCosmosNetwork, getUserId, parseUserId } from "../../../networks";
-import {
-  neutral33,
-  neutral77,
-  secondaryColor,
-} from "../../../utils/style/colors";
-import { fontSemibold14 } from "../../../utils/style/fonts";
-import { modalMarginPadding } from "../../../utils/style/modals";
-import { tinyAddress } from "../../../utils/text";
+} from "../../contracts-clients/dao-proposal-single/DaoProposalSingle.types";
+import { useNSPrimaryAlias } from "../../hooks/useNSPrimaryAlias";
+import { getCosmosNetwork, getUserId, parseUserId } from "../../networks";
+import { neutral33, neutral77, secondaryColor } from "../../utils/style/colors";
+import { fontSemibold14 } from "../../utils/style/fonts";
+import { modalMarginPadding } from "../../utils/style/modals";
+import { tinyAddress } from "../../utils/text";
+import { BrandText } from "../BrandText";
+import ModalBase from "../modals/ModalBase";
+import { SocialMessageContent } from "../socialFeed/SocialThread/SocialMessageContent";
+import { SpacerColumn } from "../spacer";
 
-export const DaoProposalModal: React.FC<{
+export const DAOProposalModal: React.FC<{
   visible?: boolean;
   onClose: () => void;
   daoId: string | undefined;

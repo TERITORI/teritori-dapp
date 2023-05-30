@@ -7,7 +7,7 @@ import { mustGetNonSigningCosmWasmClient, parseUserId } from "../../networks";
 
 // FIXME: split
 
-export const useIsDaoMember = (
+export const useIsDAOMember = (
   daoId: string | undefined,
   userId: string | undefined
 ) => {

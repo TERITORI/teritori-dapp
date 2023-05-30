@@ -11,6 +11,8 @@ import { BrandText } from "../../components/BrandText";
 import { NotFound } from "../../components/NotFound";
 import { Quests } from "../../components/Quests";
 import { ScreenContainer } from "../../components/ScreenContainer";
+import { DAOProposals } from "../../components/dao/DAOProposals";
+import { DAOMembers } from "../../components/dao/DaoMembers";
 import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
 import { UPPNFTs } from "../../components/userPublicProfile/UPPNFTs";
 import { useIsDAO } from "../../hooks/cosmwasm/useCosmWasmContractInfo";
@@ -22,8 +24,6 @@ import { parseUserId } from "../../networks";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import { DAOList } from "../OrganizerDeployer/OrganizationDaoListScreen";
-import { DaoMemberList } from "../OrganizerDeployer/components/DaoMemberList";
-import { DaoProposalList } from "../OrganizerDeployer/components/DaoProposalList";
 import { Assets } from "../WalletManager/Assets";
 
 const TabContainer: React.FC = ({ children }) => {
@@ -126,9 +126,9 @@ const SelectedTabContent: React.FC<{
     // case "gig":
     //   return <UPPGigServices />;
     case "members":
-      return <DaoMemberList daoId={userId} />;
+      return <DAOMembers daoId={userId} />;
     case "proposals":
-      return <DaoProposalList daoId={userId} />;
+      return <DAOProposals daoId={userId} />;
     case "funds":
       return <Assets userId={userId} readOnly />;
     case "daos":
