@@ -8,17 +8,13 @@ import {
   StargateClient,
   GasPrice,
 } from "@cosmjs/stargate";
-import {
-  ChainInfo,
-  Keplr,
-  Currency as KeplrCurrency,
-} from "@keplr-wallet/types";
-import { KeplrWalletConnectV1 } from "@keplr-wallet/wc-client";
+import { ChainInfo, Currency as KeplrCurrency } from "@keplr-wallet/types";
 
 import { cosmosNetwork } from "./cosmos-hub";
 import { cosmosThetaNetwork } from "./cosmos-hub-theta";
 import { ethereumNetwork } from "./ethereum";
 import { ethereumGoerliNetwork } from "./ethereum-goerli";
+import { gnoTestnetNetwork } from "./gno-testnet";
 import { junoNetwork } from "./juno";
 import { osmosisNetwork } from "./osmosis";
 import { osmosisTestnetNetwork } from "./osmosis-testnet";
@@ -32,6 +28,7 @@ import {
   NetworkInfo,
   NetworkKind,
 } from "./types";
+import { getKeplr } from "../utils/keplr";
 
 export * from "./types";
 
@@ -47,6 +44,7 @@ export const allNetworks = [
   junoNetwork,
   osmosisNetwork,
   osmosisTestnetNetwork,
+  gnoTestnetNetwork,
   // solanaNetwork,
 ];
 
@@ -320,35 +318,19 @@ const cosmosNetworkGasPrice = (
   return new GasPrice(decimalGasPrice, feeCurrency.denom);
 };
 
-export const getKeplrSigner = async (
-  keplr: KeplrWalletConnectV1 | Keplr | undefined,
-  networkId: string
-) => {
-  if (!keplr) {
-    throw new Error("no keplr");
-  }
-
-  const isWalletConnect = keplr instanceof KeplrWalletConnectV1;
-
+export const getKeplrSigner = async (networkId: string) => {
   const network = mustGetCosmosNetwork(networkId);
 
-  if (!isWalletConnect) {
-    await keplr.experimentalSuggestChain(
-      keplrChainInfoFromNetworkInfo(network)
-    );
-  }
+  const keplr = getKeplr();
+
+  await keplr.experimentalSuggestChain(keplrChainInfoFromNetworkInfo(network));
 
   await keplr.enable(network.chainId);
-
-  if (isWalletConnect) {
-    return keplr.getOfflineSignerOnlyAmino(network.chainId);
-  }
 
   return keplr.getOfflineSignerAuto(network.chainId);
 };
 
 export const getKeplrSigningStargateClient = async (
-  keplr: KeplrWalletConnectV1 | Keplr | undefined,
   networkId: string,
   gasPriceKind: "low" | "average" | "high" = "average"
 ) => {
@@ -359,7 +341,7 @@ export const getKeplrSigningStargateClient = async (
     throw new Error("gas price not found");
   }
 
-  const signer = await getKeplrSigner(keplr, networkId);
+  const signer = await getKeplrSigner(networkId);
 
   return await SigningStargateClient.connectWithSigner(
     network.rpcEndpoint,
@@ -377,13 +359,12 @@ export const getNonSigningStargateClient = async (networkId: string) => {
 };
 
 export const getKeplrSigningCosmWasmClient = async (
-  keplr: KeplrWalletConnectV1 | Keplr | undefined,
   networkId: string,
   gasPriceKind: "low" | "average" | "high" = "average"
 ) => {
   const network = mustGetCosmosNetwork(networkId);
 
-  const signer = await getKeplrSigner(keplr, networkId);
+  const signer = await getKeplrSigner(networkId);
 
   const gasPrice = cosmosNetworkGasPrice(network, gasPriceKind);
   if (!gasPrice) {

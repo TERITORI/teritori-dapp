@@ -4,7 +4,7 @@ export function isKeplrExtensionInstalled() {
   return !!(window as KeplrWindow)?.keplr;
 }
 
-export const getKeplrExtension = () => {
+export const getKeplr = () => {
   const keplrWindow = window as KeplrWindow;
   if (!keplrWindow.keplr) {
     throw new Error("keplr not installed");

@@ -8,4 +8,5 @@ export interface Wallet {
   networkId: string;
   networkKind: NetworkKind;
   provider: WalletProvider;
+  connected: boolean;
 }

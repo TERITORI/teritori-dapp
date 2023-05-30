@@ -1,49 +1,53 @@
 import { useMetaMask } from "metamask-react";
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 
-import { UseWalletProviderResult } from "./types";
 import { Wallet } from "./wallet";
-import { NetworkKind, allNetworks, getUserId } from "../../networks";
+import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
+import { NetworkKind, getUserId } from "../../networks";
+import { setSelectedWalletId } from "../../store/slices/settings";
+import { useAppDispatch } from "../../store/store";
 import { WalletProvider } from "../../utils/walletProvider";
 
-const initialState = {
-  hasProvider: typeof (window as any).ethereum !== "undefined",
-  ready: true,
-  wallets: [],
-  providerKind: WalletProvider.Metamask,
-};
+export type UseMetamaskResult =
+  | [true, boolean, Wallet[]]
+  | [false, boolean, undefined];
 
-export const useMetamaskWallets: () => UseWalletProviderResult = () => {
-  const { status, account: address, chainId } = useMetaMask();
+export const useMetamask: () => UseMetamaskResult = () => {
+  const { status, account: address } = useMetaMask();
+  const selectedNetworkInfo = useSelectedNetworkInfo();
+  const dispatch = useAppDispatch();
 
   const isConnected = status === "connected";
 
-  return useMemo(() => {
-    if (!chainId) {
-      return initialState;
-    }
-
-    const network = allNetworks.find(
-      (n) =>
-        n.kind === NetworkKind.Ethereum && n.chainId === parseInt(chainId, 16)
-    );
-    if (!network || !address || !isConnected) {
-      return initialState;
-    }
-
-    const walletId = `metamask-${network.id}-${address}`;
+  const wallet: Wallet | undefined = useMemo(() => {
+    if (!address || !isConnected) return;
+    const walletId = `metamask-${address}`;
     const wallet: Wallet = {
       id: walletId,
       address,
       provider: WalletProvider.Metamask,
       networkKind: NetworkKind.Ethereum,
-      networkId: network.id,
-      userId: getUserId(network.id, address),
+      networkId: selectedNetworkInfo?.id || "",
+      userId: getUserId(selectedNetworkInfo?.id, address || ""),
+      connected: isConnected,
     };
+    return wallet;
+  }, [address, isConnected, selectedNetworkInfo?.id]);
 
-    return {
-      ...initialState,
-      wallets: wallet ? [wallet] : [],
-    };
-  }, [address, chainId, isConnected]);
+  useEffect(() => {
+    if (
+      wallet?.connected &&
+      selectedNetworkInfo?.kind === NetworkKind.Ethereum
+    ) {
+      dispatch(setSelectedWalletId(wallet.id));
+    }
+  }, [dispatch, selectedNetworkInfo, wallet]);
+
+  const hasMetamask = useMemo(() => {
+    return typeof (window as any).ethereum !== "undefined";
+  }, []);
+
+  return hasMetamask
+    ? [true, true, wallet ? [wallet] : []]
+    : [false, true, undefined];
 };

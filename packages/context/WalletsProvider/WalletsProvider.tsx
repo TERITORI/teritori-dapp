@@ -1,14 +1,14 @@
-import React, { createContext, useContext, useEffect, useMemo } from "react";
+import React, { createContext, useContext, useMemo } from "react";
 
-import { useKeplrExtensionWallets } from "./keplr-extension";
-import { useMetamaskWallets } from "./metamask";
+import { useAdena } from "./adena";
+import { useKeplr } from "./keplr";
+import { useMetamask } from "./metamask";
+import { useTrust } from "./trust";
 import { Wallet } from "./wallet";
-import { useWalletConnectWallets } from "./wallet-connect";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { setSelectedWallet } from "../../store/slices/settings";
 import { WalletProvider } from "../../utils/walletProvider";
-// import { usePhantomWallets } from "./phantom";
+// import { usePhantom } from "./phantom";
+// import { selectStoreWallets, storeWalletId } from "../../store/slices/wallets";
+// import { WalletProvider } from "../../utils/walletProvider";
 
 type WalletsContextValue = {
   wallets: Wallet[];
@@ -25,59 +25,119 @@ const WalletsContext = createContext<WalletsContextValue>({
 export const useWallets = () => useContext(WalletsContext);
 
 export const WalletsProvider: React.FC = React.memo(({ children }) => {
-  const keplrExtension = useKeplrExtensionWallets();
-  const metamask = useMetamaskWallets();
-  const walletConnect = useWalletConnectWallets();
-  // const phantom = usePhantomWallets();
+  // const [hasPhantom, phantomIsReady, phantomWallet] = usePhantom();
+  const [hasKeplr, keplrIsReady, keplrWallets] = useKeplr();
+  const [hasMetamask, metamaskIsReady, metamaskWallets] = useMetamask();
+  const [hasAdena, adenaIsReady, adenaWallets] = useAdena();
+  const [hasTrust, trustIsReady, trustWallets] = useTrust();
 
-  const selectedNetworkId = useSelectedNetworkId();
-  const selectedWallet = useSelectedWallet();
-  const { wallets } = useWallets();
+  // const storeWallets = useSelector(selectStoreWallets);
 
   const value = useMemo(() => {
     const wallets: Wallet[] = [];
-    const providers: Set<WalletProvider> = new Set();
 
-    let ready = true;
-    for (const providerInfo of [
-      keplrExtension,
-      metamask,
-      walletConnect /* , phantom */,
-    ]) {
-      if (!providerInfo.ready) {
-        ready = false;
+    /*
+    const wallets = storeWallets.map((storeWallet) => {
+      const wallet: Wallet = {
+        id: storeWalletId(storeWallet),
+        publicKey: storeWallet.publicKey,
+        network: storeWallet.network,
+        provider: WalletProvider.Store,
+        connected: false,
+      };
+      return wallet;
+    });
+
+    /*
+    if (hasPhantom && phantomWallet) {
+      const storePhantomWalletIndex = wallets.findIndex(
+        (wallet) =>
+          wallet.network === phantomWallet.network &&
+          wallet.publicKey === phantomWallet.publicKey
+      );
+      if (storePhantomWalletIndex !== -1) {
+        wallets[storePhantomWalletIndex].provider = WalletProvider.Phantom;
+        wallets[storePhantomWalletIndex].connected = phantomWallet.connected;
+      } else {
+        wallets.unshift(phantomWallet);
       }
+    }
+    */
 
-      if (providerInfo.hasProvider) {
-        providers.add(providerInfo.providerKind);
-        for (const wallet of providerInfo.wallets) {
-          wallets.push(wallet);
-        }
+    /*
+    if (hasKeplr && keplrWallets) {
+      if (keplrWallets.length === 1 && !keplrWallets[0].connected) {
+        wallets.unshift(keplrWallets[0]);
+      } else {
+        keplrWallets.forEach((wallet) => {
+          const storeWalletIndex = wallets.findIndex(
+            (storeWallet) =>
+              wallet.network === storeWallet.network &&
+              wallet.publicKey === storeWallet.publicKey
+          );
+          if (storeWalletIndex !== -1) {
+            wallets[storeWalletIndex].provider = WalletProvider.Keplr;
+            wallets[storeWalletIndex].connected = wallet.connected;
+          }
+        });
+      }
+    }
+    */
+
+    const walletProviders: WalletProvider[] = [];
+
+    if (hasKeplr) {
+      walletProviders.push(WalletProvider.Keplr);
+
+      if (keplrWallets?.[0]?.connected) {
+        wallets.push(keplrWallets[0]);
+      }
+    }
+
+    if (hasMetamask) {
+      walletProviders.push(WalletProvider.Metamask);
+
+      if (metamaskWallets?.[0]?.connected) {
+        wallets.push(metamaskWallets[0]);
+      }
+    }
+
+    if (hasAdena) {
+      walletProviders.push(WalletProvider.Adena);
+      if (adenaWallets?.[0]?.connected) {
+        wallets.push(adenaWallets[0]);
+      }
+    }
+    if (hasTrust) {
+      walletProviders.push(WalletProvider.Trust);
+      if (trustWallets?.[0]?.connected) {
+        wallets.push(trustWallets[0]);
       }
     }
 
     return {
       wallets,
-      walletProviders: [...providers],
-      ready,
+      walletProviders,
+      ready: keplrIsReady && metamaskIsReady && adenaIsReady && trustIsReady,
     };
-  }, [keplrExtension, metamask, walletConnect]);
-
-  // auto-select wallet if none is selected while some are available
-  useEffect(() => {
-    if (selectedWallet) {
-      return;
-    }
-
-    const candidate = wallets.find((w) => w.networkId === selectedNetworkId);
-    if (!candidate) {
-      return;
-    }
-
-    setSelectedWallet(
-      candidate && { walletId: candidate.id, networkId: candidate.networkId }
-    );
-  }, [selectedNetworkId, selectedWallet, wallets]);
+  }, [
+    // hasPhantom,
+    // phantomIsReady,
+    // phantomWallet,
+    hasKeplr,
+    keplrIsReady,
+    keplrWallets,
+    hasMetamask,
+    metamaskIsReady,
+    metamaskWallets,
+    hasAdena,
+    adenaIsReady,
+    adenaWallets,
+    hasTrust,
+    trustIsReady,
+    trustWallets,
+    // storeWallets,
+  ]);
 
   return (
     <WalletsContext.Provider value={value}>{children}</WalletsContext.Provider>
