@@ -3,7 +3,7 @@ import { View, TouchableOpacity, StyleSheet, Image } from "react-native";
 
 import { TopMenuBox } from "./TopMenuBox";
 import { useDropdowns } from "../../context/DropdownsProvider";
-import { useNSUserInfo } from "../../hooks/useNSUserInfo";
+import { useNSUserInfo } from "../../hooks/name-service/useNSUserInfo";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getCosmosNetwork } from "../../networks";

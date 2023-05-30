@@ -1,3 +1,6 @@
+import { Keplr } from "@keplr-wallet/types";
+import { KeplrWalletConnectV1 } from "@keplr-wallet/wc-client";
+
 import { TeritoriNameServiceQueryClient } from "../contracts-clients/teritori-name-service/TeritoriNameService.client";
 import {
   TeritoriSquadStakingClient,
@@ -51,6 +54,7 @@ export const getSquadStakingQueryClient = async (
 };
 
 export const getKeplrSquadStakingClient = async (
+  keplr: KeplrWalletConnectV1 | Keplr | undefined,
   userId: string | undefined
 ) => {
   const [network, userAddress] = parseUserId(userId);
@@ -59,7 +63,10 @@ export const getKeplrSquadStakingClient = async (
   if (!contractAddress) {
     throw new Error("missing squad staking contract address in network config");
   }
-  const cosmWasmClient = await getKeplrSigningCosmWasmClient(cosmosNetwork.id);
+  const cosmWasmClient = await getKeplrSigningCosmWasmClient(
+    keplr,
+    cosmosNetwork.id
+  );
   return new TeritoriSquadStakingClient(
     cosmWasmClient,
     userAddress,

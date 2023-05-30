@@ -1,33 +1,41 @@
 import React, { useState } from "react";
 import { View, TouchableOpacity } from "react-native";
+import { useSelector } from "react-redux";
 
 import { WalletHeader } from "./WalletHeader";
-import { WalletItem, WalletItemProps } from "./WalletItem";
+import { WalletItem } from "./WalletItem";
 import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../assets/icons/chevron-up.svg";
 import { BrandText } from "../../components/BrandText";
-import { NetworkIcon } from "../../components/NetworkIcon";
 import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
+import { WalletProviderIcon } from "../../components/WalletProviderIcon";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { ConnectWalletModal } from "../../components/connectWallet/ConnectWalletModal";
-import { useRewards } from "../../hooks/useRewards";
-import useSelectedWallet from "../../hooks/useSelectedWallet";
+import {
+  Wallet as WalletType,
+  useWallets,
+} from "../../context/WalletsProvider";
+import { getNetwork } from "../../networks";
+import { selectAreTestnetsEnabled } from "../../store/slices/settings";
 import { ScreenFC } from "../../utils/navigation";
-import { walletProviderToNetworkKind } from "../../utils/network";
 import { neutral33, neutralA3, secondaryColor } from "../../utils/style/colors";
+import { WalletProvider } from "../../utils/walletProvider";
 
-interface WalletProps {
+interface WalletProviderViewProps {
   index: number;
   itemsCount: number;
-  item: {
-    title: string;
-    data: WalletItemProps["item"][];
-  };
+  provider: WalletProvider;
+  wallets: WalletType[];
 }
 
-const Wallet: React.FC<WalletProps> = ({ item, index, itemsCount }) => {
+const WalletProviderView: React.FC<WalletProviderViewProps> = ({
+  wallets,
+  provider,
+  index,
+  itemsCount,
+}) => {
   const [isExpanded, setExpanded] = useState(false);
   return (
     <TertiaryBox
@@ -61,14 +69,14 @@ const Wallet: React.FC<WalletProps> = ({ item, index, itemsCount }) => {
               alignItems: "center",
             }}
           >
-            <NetworkIcon networkId={item.data[0].networkId} size={32} />
+            <WalletProviderIcon walletProvider={provider} size={32} />
             <BrandText
               style={{
                 marginLeft: 12,
                 fontSize: 20,
               }}
             >
-              {item.title}
+              {provider}
             </BrandText>
           </View>
 
@@ -89,11 +97,11 @@ const Wallet: React.FC<WalletProps> = ({ item, index, itemsCount }) => {
             zIndex: 99,
           }}
         >
-          {item.data.map((subItem, index) => (
+          {wallets.map((subItem, index) => (
             <WalletItem
               key={subItem.id}
-              itemsCount={item.data.length}
-              item={subItem}
+              itemsCount={wallets.length}
+              wallet={subItem}
               index={index}
             />
           ))}
@@ -106,33 +114,19 @@ export const WalletManagerWalletsScreen: ScreenFC<
   "WalletManagerWallets" | "WalletManagerChains"
 > = () => {
   const [showConnectModal, setShowConnectModal] = useState(false);
-  const selectedWallet = useSelectedWallet();
+  const { wallets } = useWallets();
+  const areTestnetsEnabled = useSelector(selectAreTestnetsEnabled);
 
-  // TODO: Handle multiple wallets addresses
-  const { totalsRewards, claimReward } = useRewards(selectedWallet?.userId);
-
-  const title = walletProviderToNetworkKind(selectedWallet?.provider);
-
-  // FIXME: architectural problems with wallets management
-
-  const wallets = selectedWallet
-    ? [
-        {
-          title,
-          data: [
-            {
-              id: 0,
-              title,
-              address: selectedWallet.address,
-              networkId: selectedWallet.networkId,
-              pendingRewards: totalsRewards,
-              claimReward,
-              staked: 42,
-            },
-          ],
-        },
-      ]
-    : [];
+  const byProvider = wallets.reduce((all, w) => {
+    if (!areTestnetsEnabled && getNetwork(w.networkId)?.testnet) {
+      return all;
+    }
+    if (!all[w.provider]) {
+      all[w.provider] = [];
+    }
+    all[w.provider].push(w);
+    return all;
+  }, {} as { [key in WalletProvider]: WalletType[] });
 
   return (
     <ScreenContainer headerChildren={<WalletHeader />}>
@@ -159,8 +153,7 @@ export const WalletManagerWalletsScreen: ScreenFC<
                 color: neutralA3,
               }}
             >
-              Add one or more wallets to showcase all related things in one
-              place.
+              Manage wallets
             </BrandText>
           </View>
           <PrimaryButton
@@ -170,12 +163,13 @@ export const WalletManagerWalletsScreen: ScreenFC<
           />
         </View>
 
-        {wallets.map((item, index) => (
-          <Wallet
-            key={item.title}
-            item={item}
+        {Object.entries(byProvider).map(([provider, wallets], index) => (
+          <WalletProviderView
+            key={provider}
+            wallets={wallets}
+            provider={provider as WalletProvider}
             index={index}
-            itemsCount={wallets.length}
+            itemsCount={Object.keys(byProvider).length}
           />
         ))}
       </View>

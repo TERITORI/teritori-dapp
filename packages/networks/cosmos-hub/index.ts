@@ -1,7 +1,7 @@
 import { cosmosHubCurrencies } from "./currencies";
-import { NetworkKind, NetworkInfo } from "../types";
+import { NetworkKind, CosmosNetworkInfo } from "../types";
 
-export const cosmosNetwork: NetworkInfo = {
+export const cosmosNetwork: CosmosNetworkInfo = {
   id: "cosmos-hub",
   kind: NetworkKind.Cosmos,
   chainId: "cosmoshub-4",
@@ -23,11 +23,5 @@ export const cosmosNetwork: NetworkInfo = {
     average: 0.025,
     high: 0.04,
   },
-  features: [
-    "stargate",
-    "ibc-transfer",
-    "cosmwasm",
-    "no-legacy-stdTx",
-    "ibc-go",
-  ],
+  features: ["ibc-transfer", "ibc-go"],
 };

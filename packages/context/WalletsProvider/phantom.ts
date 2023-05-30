@@ -1,19 +1,12 @@
 import { PublicKey } from "@solana/web3.js";
 import { useEffect, useMemo, useState } from "react";
 
+import { UseWalletProviderResult } from "./types";
 import { Wallet } from "./wallet";
 import { NetworkKind } from "../../networks";
 import { WalletProvider } from "../../utils/walletProvider";
 
-// import { addWallet } from "../../store/slices/wallets";
-// import { useAppDispatch } from "../../store/store";
-// import { Network } from "../../networks";
-
-export type UsePhantomResult =
-  | [true, boolean, Wallet]
-  | [false, true, undefined];
-
-export const usePhantom: () => UsePhantomResult = () => {
+export const usePhantomWallets: () => UseWalletProviderResult = () => {
   const [publicKey, setPublicKey] = useState("");
   const [ready, setReady] = useState(false);
 
@@ -79,7 +72,6 @@ export const usePhantom: () => UsePhantomResult = () => {
       networkKind: NetworkKind.Solana,
       networkId: "",
       userId: "",
-      connected: !!publicKey,
       id: "phantom",
     };
     console.log("phantom", wallet);
@@ -100,7 +92,14 @@ export const usePhantom: () => UsePhantomResult = () => {
   }, [wallet]);
   */
 
-  return checkHasPhantom() ? [true, ready, wallet] : [false, true, undefined];
+  const hasPhantom = checkHasPhantom();
+
+  return {
+    hasProvider: hasPhantom,
+    ready: hasPhantom || ready,
+    wallets: [wallet],
+    providerKind: WalletProvider.Phantom,
+  };
 };
 
 const getPhantom = () => {

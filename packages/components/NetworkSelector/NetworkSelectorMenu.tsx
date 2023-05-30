@@ -1,51 +1,35 @@
-import { useRoute } from "@react-navigation/native";
 import React, { FC } from "react";
 import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
 import { useSelector } from "react-redux";
 
-import { useDropdowns } from "../../context/DropdownsProvider";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { useWallets } from "../../context/WalletsProvider";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
+import { useSwitchNetwork } from "../../hooks/useSwitchNetwork";
 import {
   getNetwork,
   NetworkInfo,
   NetworkKind,
   selectableNetworks,
 } from "../../networks";
-import { osmosisNetwork } from "../../networks/osmosis";
-import { osmosisTestnetNetwork } from "../../networks/osmosis-testnet";
-import {
-  selectAreTestnetsEnabled,
-  setSelectedNetworkId,
-  setSelectedWalletId,
-} from "../../store/slices/settings";
-import { useAppDispatch } from "../../store/store";
-import { RouteName } from "../../utils/navigation";
+import { selectAreTestnetsEnabled } from "../../store/slices/settings";
 import { neutral17 } from "../../utils/style/colors";
 import { fontSemibold12 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { WalletProvider } from "../../utils/walletProvider";
 import { BrandText } from "../BrandText";
 import { NetworkIcon } from "../NetworkIcon";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 
 export const NetworkSelectorMenu: FC<{
-  forceNetworkId?: string;
+  forceNetworkIds?: string[];
   forceNetworkKind?: NetworkKind;
   style?: StyleProp<ViewStyle>;
-}> = ({ forceNetworkId, forceNetworkKind, style }) => {
-  const { closeOpenedDropdown } = useDropdowns();
-  const dispatch = useAppDispatch();
-  const { wallets } = useWallets();
+}> = ({ forceNetworkIds, forceNetworkKind, style }) => {
   const { setToastError } = useFeedbacks();
   const testnetsEnabled = useSelector(selectAreTestnetsEnabled);
-  const { name: currentRouteName } = useRoute();
   const selectedNetworkInfo = useSelectedNetworkInfo();
+  const switchNetwork = useSwitchNetwork();
 
   const onPressNetwork = (networkId: string) => {
-    let walletProvider: WalletProvider | null = null;
-
     const network = getNetwork(networkId);
     if (!network) {
       setToastError({
@@ -54,26 +38,7 @@ export const NetworkSelectorMenu: FC<{
       });
       return;
     }
-
-    switch (network.kind) {
-      case NetworkKind.Ethereum:
-        walletProvider = WalletProvider.Metamask;
-        break;
-      case NetworkKind.Cosmos:
-        walletProvider = WalletProvider.Keplr;
-        break;
-    }
-
-    // Auto select the first connected wallet when switching network
-    dispatch(setSelectedNetworkId(networkId));
-
-    const selectedWallet = wallets.find(
-      (w) => w.connected && w.provider === walletProvider
-    );
-
-    dispatch(setSelectedWalletId(selectedWallet?.id || ""));
-
-    closeOpenedDropdown();
+    switchNetwork(network.id);
   };
 
   return (
@@ -104,15 +69,8 @@ export const NetworkSelectorMenu: FC<{
           const selectable =
             !!selectableNetworks.find((sn) => sn.id === network.id) && // check that it's in the selectable list
             selectedNetworkInfo?.id !== network.id && // check that it's not already selected
-            (!forceNetworkId || network.id === forceNetworkId) && // check that it's the forced network id if forced to
-            (!forceNetworkKind || network.kind === forceNetworkKind) && // check that it's the correct network kind if forced to
-            // handle Swap screen
-            (((currentRouteName as RouteName) !== "Swap" &&
-              network.id !== osmosisNetwork.id &&
-              network.id !== osmosisTestnetNetwork.id) ||
-              (currentRouteName === "Swap" &&
-                (network.id === osmosisNetwork.id ||
-                  network.id === osmosisTestnetNetwork.id)));
+            (!forceNetworkIds || forceNetworkIds.includes(network.id)) && // check that it's a forced network id if forced to
+            (!forceNetworkKind || network.kind === forceNetworkKind); // check that it's the correct network kind if forced to
 
           return (
             <TouchableOpacity

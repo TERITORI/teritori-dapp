@@ -11,8 +11,8 @@ import { useEthMinterNFTAddress } from "./collection/useEthMinterNFTAddress";
 import { useEthMinterWhitelists } from "./collection/useEthMinterWhitelists";
 import { useEthNFTContractName } from "./collection/useEthNFTContractName";
 import { useEthNFTContractURI } from "./collection/useEthNFTContractURI";
+import { useCW721ContractInfo } from "./nfts/useNFTContractInfo";
 import { useBreedingConfig } from "./useBreedingConfig";
-import { useCW721ContractInfo } from "./useNFTContractInfo";
 import { useRemoteJSON } from "./useRemoteJSON";
 import { parseNetworkObjectId, NetworkKind } from "../networks";
 import {

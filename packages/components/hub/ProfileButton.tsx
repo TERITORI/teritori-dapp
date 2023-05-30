@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleProp, ViewStyle } from "react-native";
 
-import { useNSUserInfo } from "../../hooks/useNSUserInfo";
+import { useNSUserInfo } from "../../hooks/name-service/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getCosmosNetwork } from "../../networks";
 import { neutral00 } from "../../utils/style/colors";

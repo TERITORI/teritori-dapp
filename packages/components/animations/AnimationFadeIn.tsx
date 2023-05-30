@@ -6,6 +6,8 @@ import {
   ViewStyle,
 } from "react-native";
 
+import { shouldUseNativeDriver } from "../../utils/animations";
+
 interface FadeInProps {
   style?: StyleProp<ViewStyle>;
   duration?: number;
@@ -29,7 +31,7 @@ export const AnimationFadeIn: React.FC<FadeInProps> = ({
       toValue: 1,
       duration,
       delay,
-      useNativeDriver: true,
+      useNativeDriver: shouldUseNativeDriver,
     }).start();
   }, [duration, delay, fadeInAnimation]);
 

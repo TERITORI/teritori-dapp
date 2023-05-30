@@ -2,16 +2,26 @@ import { useFocusEffect } from "@react-navigation/native";
 import { useCallback } from "react";
 
 import { useSelectedNetworkId } from "./useSelectedNetwork";
-import { setSelectedNetworkId } from "../store/slices/settings";
-import { useAppDispatch } from "../store/store";
+import { useSwitchNetwork } from "./useSwitchNetwork";
+import { getNetwork } from "../networks";
 
-export const useForceNetworkSelection = (networkId: string | undefined) => {
+export const useForceNetworkSelection = (networkIds: string[] | undefined) => {
   const selectedNetworkId = useSelectedNetworkId();
-  const dispatch = useAppDispatch();
+  const switchNetwork = useSwitchNetwork();
+
   const effect = useCallback(() => {
-    if (networkId && networkId !== selectedNetworkId) {
-      dispatch(setSelectedNetworkId(networkId));
+    if (!networkIds?.length || networkIds.includes(selectedNetworkId)) {
+      return;
     }
-  }, [dispatch, networkId, selectedNetworkId]);
+
+    const shouldFindTestnet = !!getNetwork(selectedNetworkId)?.testnet;
+    const targetNetworkId =
+      (shouldFindTestnet &&
+        networkIds.find((id) => getNetwork(id)?.testnet === true)) ||
+      networkIds[0];
+
+    switchNetwork(targetNetworkId);
+  }, [networkIds, selectedNetworkId, switchNetwork]);
+
   useFocusEffect(effect);
 };

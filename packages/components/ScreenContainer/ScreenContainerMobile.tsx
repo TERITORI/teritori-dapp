@@ -44,14 +44,14 @@ export const ScreenContainerMobile: FC<{
   networkFilter: (n: NetworkInfo) => boolean;
   // hasScroll: Pages like Home, !hasScroll: Pages like Feed
   hasScroll: boolean;
-  forceNetworkId?: string;
+  forceNetworkIds?: string[];
   forceNetworkKind?: NetworkKind;
   mobileTitle?: string;
 }> = ({
   children,
   networkFilter,
   hasScroll,
-  forceNetworkId,
+  forceNetworkIds,
   forceNetworkKind,
   mobileTitle,
 }) => {
@@ -67,7 +67,7 @@ export const ScreenContainerMobile: FC<{
         visible={isSearchModalMobileOpen}
       />
       <HeaderMobile
-        forceNetworkId={forceNetworkId}
+        forceNetworkIds={forceNetworkIds}
         forceNetworkKind={forceNetworkKind}
       />
       <SidebarMobile />

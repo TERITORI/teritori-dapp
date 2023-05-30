@@ -5,7 +5,7 @@ import { BrandText } from "./BrandText";
 import FlexRow from "./FlexRow";
 import { OmniLink } from "./OmniLink";
 import { RoundedGradientImage } from "./images/RoundedGradientImage";
-import { useNSUserInfo } from "../hooks/useNSUserInfo";
+import { useNSUserInfo } from "../hooks/name-service/useNSUserInfo";
 import { useSelectedNetworkId } from "../hooks/useSelectedNetwork";
 import useSelectedWallet from "../hooks/useSelectedWallet";
 import { getCosmosNetwork } from "../networks";

@@ -1,4 +1,3 @@
-import { MsgVoteEncodeObject, isDeliverTxFailure } from "@cosmjs/stargate";
 import Long from "long";
 import moment from "moment";
 import React, { useState, useCallback } from "react";
@@ -13,9 +12,8 @@ import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { SecondaryButton } from "../../components/buttons/SecondaryButton";
 import ModalBase from "../../components/modals/ModalBase";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { useCosmosVote } from "../../hooks/governance/useCosmosVote";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getKeplrSigningStargateClient } from "../../networks";
 import { neutral44 } from "../../utils/style/colors";
 
 const Separator: React.FC<{ style?: StyleProp<ViewStyle> }> = ({ style }) => (
@@ -64,7 +62,8 @@ export const GovernanceDetails: React.FC<{
   const [displayConfirmationVote, setdisplayConfirmationVote] = useState(false);
   const [checked, setChecked] = useState("nothingChecked");
   const [displayPopup] = useState(visible);
-  const { setToastError } = useFeedbacks();
+  const wallet = useSelectedWallet();
+  const cosmosVote = useCosmosVote(wallet?.id);
 
   function activeVotePopup() {
     onClose();
@@ -75,7 +74,6 @@ export const GovernanceDetails: React.FC<{
   const valueChartNo = parseInt(percentageNo.replace("%", ""), 10);
   const valueChartAbstain = 100 - valueChartYes - valueChartNo;
 
-  const selectedWallet = useSelectedWallet();
   let voteOption = 0;
 
   if (checked === "Yes") {
@@ -94,58 +92,14 @@ export const GovernanceDetails: React.FC<{
     voteOption = 2;
   }
 
-  const handlePress = useCallback(async () => {
-    if (!selectedWallet?.connected || !selectedWallet.address) {
-      setToastError({
-        title: "Wallet Error",
-        message: "You need to register your teritori wallet",
-      });
-      return;
-    }
-
-    try {
-      const client = await getKeplrSigningStargateClient(
-        selectedWallet.networkId
-      );
-
-      const vote: MsgVoteEncodeObject = {
-        typeUrl: "/cosmos.gov.v1beta1.MsgVote",
-        value: {
-          proposalId: Long.fromNumber(
-            parseInt(numberProposal.substring(1), 10)
-          ),
-          voter: String(selectedWallet.address),
-          option: voteOption,
-        },
-      };
-      const result = await client.signAndBroadcast(
-        selectedWallet.address,
-        [vote],
-        "auto"
-      );
-      if (isDeliverTxFailure(result)) {
-        setToastError({
-          title: "Vote failed",
-          message: "Transaction failed",
-        });
-      }
-    } catch (err) {
-      console.error(err);
-      if (err instanceof Error) {
-        setToastError({
-          title: "Vote failed",
-          message: err.message,
-        });
-      }
-    }
-  }, [
-    numberProposal,
-    selectedWallet?.address,
-    selectedWallet?.connected,
-    selectedWallet?.networkId,
-    setToastError,
-    voteOption,
-  ]);
+  const handlePress = useCallback(
+    () =>
+      cosmosVote(
+        Long.fromNumber(parseInt(numberProposal.substring(1), 10)),
+        voteOption
+      ),
+    [cosmosVote, numberProposal, voteOption]
+  );
 
   function deleteConfirmationVote() {
     setdisplayConfirmationVote(false);

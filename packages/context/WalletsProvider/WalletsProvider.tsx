@@ -3,6 +3,7 @@ import React, { createContext, useContext, useMemo } from "react";
 import { useAdena } from "./adena";
 import { useKeplr } from "./keplr";
 import { useMetamask } from "./metamask";
+import { useTrust } from "./trust";
 import { Wallet } from "./wallet";
 import { WalletProvider } from "../../utils/walletProvider";
 // import { usePhantom } from "./phantom";
@@ -28,7 +29,7 @@ export const WalletsProvider: React.FC = React.memo(({ children }) => {
   const [hasKeplr, keplrIsReady, keplrWallets] = useKeplr();
   const [hasMetamask, metamaskIsReady, metamaskWallets] = useMetamask();
   const [hasAdena, adenaIsReady, adenaWallets] = useAdena();
-
+  const [hasTrust, trustIsReady, trustWallets] = useTrust();
   // const storeWallets = useSelector(selectStoreWallets);
 
   const value = useMemo(() => {
@@ -106,11 +107,16 @@ export const WalletsProvider: React.FC = React.memo(({ children }) => {
         wallets.push(adenaWallets[0]);
       }
     }
-
+    if (hasTrust) {
+      walletProviders.push(WalletProvider.Trust);
+      if (trustWallets?.[0]?.connected) {
+        wallets.push(trustWallets[0]);
+      }
+    }
     return {
       wallets,
       walletProviders,
-      ready: keplrIsReady && metamaskIsReady && adenaIsReady,
+      ready: keplrIsReady && metamaskIsReady && adenaIsReady && trustIsReady,
     };
   }, [
     // hasPhantom,
@@ -125,6 +131,9 @@ export const WalletsProvider: React.FC = React.memo(({ children }) => {
     hasAdena,
     adenaIsReady,
     adenaWallets,
+    hasTrust,
+    trustIsReady,
+    trustWallets,
     // storeWallets,
   ]);
 

@@ -8,8 +8,8 @@ import ModalBase from "../../components/modals/GradientModalBase";
 import { TNSSendFundsModal } from "../../components/modals/teritoriNameService/TNSSendFundsModal";
 import { FindAName } from "../../components/teritoriNameService/FindAName";
 import { useTNS } from "../../context/TNSProvider";
-import { useNSNameAvailability } from "../../hooks/useNSNameAvailability";
-import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
+import { useNSNameAvailability } from "../../hooks/name-service/useNSNameAvailability";
+import { useNSTokensByOwner } from "../../hooks/name-service/useNSTokensByOwner";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getCosmosNetwork } from "../../networks";
@@ -75,7 +75,7 @@ export const TNSExploreScreen: React.FC<TNSExploreScreenProps> = ({
             <PrimaryButtonOutline
               size="XL"
               width={154}
-              disabled={tokens.includes(tokenId) || !selectedWallet?.connected}
+              disabled={tokens.includes(tokenId) || !selectedWallet}
               text="Send funds"
               onPress={() => setSendFundsModalVisible(true)}
               squaresBackgroundColor={neutral17}

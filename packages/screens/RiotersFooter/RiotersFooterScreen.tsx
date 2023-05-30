@@ -39,9 +39,9 @@ import { TeritoriNftQueryClient } from "../../contracts-clients/teritori-nft/Ter
 import { useCollections } from "../../hooks/useCollections";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { useWalletCosmWasmClient } from "../../hooks/wallets/useWalletClients";
 import {
   getCosmosNetwork,
-  getKeplrSigningCosmWasmClient,
   mustGetNonSigningCosmWasmClient,
   parseNftId,
 } from "../../networks";
@@ -90,6 +90,8 @@ export const RiotersFooterScreen: React.FC = () => {
 
   const wallet = useSelectedWallet();
 
+  const getCosmwasmClient = useWalletCosmWasmClient(wallet?.id);
+
   const getFeeConfig = useCallback(async () => {
     if (client) {
       const { fee_per_size } = await client.queryFeeConfig();
@@ -137,10 +139,8 @@ export const RiotersFooterScreen: React.FC = () => {
         return;
       }
       try {
+        const cosmwasmClient = await getCosmwasmClient();
         const nftCount = await client.queryNftCount();
-        const cosmwasmClient = await getKeplrSigningCosmWasmClient(
-          selectedNetworkId
-        );
         const allNfts: FooterNftData[] = [];
         for (let i = 0; i < nftCount; i += 11) {
           const nfts = await client.queryNfts({
@@ -178,7 +178,7 @@ export const RiotersFooterScreen: React.FC = () => {
       }
     };
     effect();
-  }, [client, selectedNetworkId]);
+  }, [client, getCosmwasmClient]);
 
   const { collections, fetchMore: fetchMoreCollections } = useCollections({
     networkId: selectedNetworkId,
@@ -214,12 +214,10 @@ export const RiotersFooterScreen: React.FC = () => {
     setTransactionPaymentModalVisible(false);
     const finalPrice = await getPrice();
     if (!nftDropedAdjustment || finalPrice === undefined || !wallet) return;
-    const cosmwasmClientSignIn = await getKeplrSigningCosmWasmClient(
-      selectedNetworkId
-    );
     const network = getCosmosNetwork(selectedNetworkId);
+    const cosmwasmClient = await getCosmwasmClient();
     const rioterFooterClient = new RioterFooterNftClient(
-      cosmwasmClientSignIn,
+      cosmwasmClient,
       wallet.address,
       network?.riotersFooterContractAddress || ""
     );
@@ -271,7 +269,14 @@ export const RiotersFooterScreen: React.FC = () => {
       setTransactionPendingModalVisible(false);
       console.log("error", e);
     }
-  }, [getPrice, nftDroped?.id, nftDropedAdjustment, selectedNetworkId, wallet]);
+  }, [
+    getCosmwasmClient,
+    getPrice,
+    nftDroped?.id,
+    nftDropedAdjustment,
+    selectedNetworkId,
+    wallet,
+  ]);
 
   const isCloseToBottom = useCallback(
     ({ layoutMeasurement, contentOffset, contentSize }: NativeScrollEvent) => {

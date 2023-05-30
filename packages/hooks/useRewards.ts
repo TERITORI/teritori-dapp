@@ -7,13 +7,10 @@ import { useMemo } from "react";
 
 import { useCoingeckoPrices } from "./useCoingeckoPrices";
 import { useErrorHandler } from "./useErrorHandler";
+import { useWalletStargateClient } from "./wallets/useWalletClients";
 import { useFeedbacks } from "../context/FeedbacksProvider";
-import {
-  getKeplrSigningStargateClient,
-  getNetwork,
-  parseNetworkObjectId,
-  NetworkKind,
-} from "../networks";
+import { useWallets } from "../context/WalletsProvider";
+import { getNetwork, parseNetworkObjectId, NetworkKind } from "../networks";
 import { CoingeckoCoin, getCoingeckoPrice } from "../utils/coingecko";
 import { CosmosRewardsResponse } from "../utils/teritori";
 
@@ -35,10 +32,13 @@ const initialData = { rewards: [], total: [] };
 
 // Getting the rewards, by user's wallet address, and by network.
 export const useRewards = (userId: string | undefined) => {
+  const { wallets } = useWallets();
+  const wallet = wallets.find((w) => w.userId === userId); // FIXME: this might break if multiple wallets have the same user
   const [network, userAddress] = parseNetworkObjectId(userId);
   const networkId = network?.id || "";
   const { setToastSuccess, setToastError } = useFeedbacks();
   const { triggerError } = useErrorHandler();
+  const getClient = useWalletStargateClient(wallet?.id);
 
   const claimAllRewards = async (callback?: () => void) => {
     try {
@@ -51,7 +51,6 @@ export const useRewards = (userId: string | undefined) => {
       ) {
         return initialData;
       }
-      const client = await getKeplrSigningStargateClient(networkId);
 
       const msgs: MsgWithdrawDelegatorRewardEncodeObject[] = [];
       networkRewards.rewards?.forEach((rew) => {
@@ -65,6 +64,7 @@ export const useRewards = (userId: string | undefined) => {
         });
       });
       if (!msgs.length) return;
+      const client = await getClient();
       const txResponse = await client.signAndBroadcast(
         userAddress,
         msgs,
@@ -92,7 +92,6 @@ export const useRewards = (userId: string | undefined) => {
     try {
       if (!userAddress || !networkId) return;
 
-      const client = await getKeplrSigningStargateClient(networkId);
       const msg: MsgWithdrawDelegatorRewardEncodeObject = {
         typeUrl: "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward",
         value: {
@@ -100,6 +99,7 @@ export const useRewards = (userId: string | undefined) => {
           validatorAddress,
         },
       };
+      const client = await getClient();
       const txResponse = await client.signAndBroadcast(
         userAddress,
         [msg],

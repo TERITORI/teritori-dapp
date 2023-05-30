@@ -34,7 +34,7 @@ export const useKeplr: () => UseKeplrResult = () => {
         console.log("keplr installed");
       }
       setHasKeplr(hasKeplr);
-      if (!hasKeplr) {
+      if (hasKeplr) {
         setReady(true);
       }
     };
@@ -69,23 +69,23 @@ export const useKeplr: () => UseKeplrResult = () => {
   useEffect(() => {
     const effect = async () => {
       if (!hasKeplr || !isKeplrConnected) {
-        setReady(true);
+        // setReady(true);
         return;
       }
       try {
         const keplr = (window as KeplrWindow)?.keplr;
         if (!keplr) {
-          setReady(true);
+          // setReady(true);
           console.error("no keplr");
           return;
         }
         if (selectedNetworkInfo?.kind !== NetworkKind.Cosmos) {
-          setReady(true);
+          // setReady(true);
           return;
         }
         const chainId = selectedNetworkInfo.chainId;
         if (!chainId) {
-          setReady(true);
+          // setReady(true);
           console.error("missing chain id");
           return;
         }
@@ -97,7 +97,6 @@ export const useKeplr: () => UseKeplrResult = () => {
         console.warn("failed to connect to keplr", err);
         dispatch(setIsKeplrConnected(false));
       }
-
       setReady(true);
     };
     effect();

@@ -13,8 +13,8 @@ import { ScreenContainer } from "../../components/ScreenContainer";
 import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
 import { UPPNFTs } from "../../components/userPublicProfile/UPPNFTs";
 import { UPPQuests } from "../../components/userPublicProfile/UPPSucceedQuests";
+import { useNSUserInfo } from "../../hooks/name-service/useNSUserInfo";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
-import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { parseNetworkObjectId, parseUserId } from "../../networks";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
@@ -136,7 +136,7 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
   return (
     <ScreenContainer
       key={`UserPublicProfile ${id}`} // this key is to reset the screen state when the id changes
-      forceNetworkId={network?.id}
+      forceNetworkIds={[network?.id || ""]}
       responsive
       fullWidth
       noScroll={selectedTab === "userPosts" || selectedTab === "mentionsPosts"}

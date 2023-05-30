@@ -16,7 +16,7 @@ import raffleSVG from "../../../assets/icons/raffle.svg";
 import sendSVG from "../../../assets/icons/send.svg";
 import { NFT } from "../../api/marketplace/v1/marketplace";
 import { useDropdowns } from "../../context/DropdownsProvider";
-import { useNSUserInfo } from "../../hooks/useNSUserInfo";
+import { useNSUserInfo } from "../../hooks/name-service/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getCosmosNetwork, parseUserId } from "../../networks";
 import { prettyPrice } from "../../utils/coins";

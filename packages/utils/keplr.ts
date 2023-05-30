@@ -1,6 +1,6 @@
 import { Window as KeplrWindow } from "@keplr-wallet/types";
 
-export function isKeplrInstalled() {
+export function isKeplrExtensionInstalled() {
   return !!(window as KeplrWindow)?.keplr;
 }
 

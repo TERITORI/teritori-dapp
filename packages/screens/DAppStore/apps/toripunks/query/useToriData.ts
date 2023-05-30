@@ -1,11 +1,8 @@
+import { SigningStargateClient } from "@cosmjs/stargate";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 // import { getCodeError } from "./codeError";
 import { Wallet } from "../../../../../context/WalletsProvider/wallet";
-import {
-  getKeplrSigningCosmWasmClient,
-  getNetworkByIdPrefix,
-} from "../../../../../networks";
 import { getCodeError } from "../query/codeError";
 
 export const useList = ({ selectedWallet }: { selectedWallet?: Wallet }) => {
@@ -116,35 +113,31 @@ export const useProof = ({
 };
 
 export const sendKeplarTx = async ({
+  signingStargateClient,
   selectedWallet,
   amount,
 }: {
+  signingStargateClient?: SigningStargateClient;
   selectedWallet?: Wallet;
   amount: string;
 }) => {
-  const network = getNetworkByIdPrefix("tori");
-  if (network) {
-    const signingComswasmClient = await getKeplrSigningCosmWasmClient(
-      network?.id
-    );
-    if (selectedWallet) {
-      const tx = signingComswasmClient
-        .sendTokens(
-          selectedWallet?.address,
-          "tori148mh99jr2zl4wtdlqrr9gsv3v7ltg4hx8ekzl7",
-          [
-            {
-              denom: "utori",
-              amount,
-            },
-          ],
-          "auto"
-        )
-        .catch(() => {
-          return undefined;
-        });
-      return tx;
-    }
+  if (signingStargateClient && selectedWallet) {
+    const tx = signingStargateClient
+      .sendTokens(
+        selectedWallet?.address,
+        "tori148mh99jr2zl4wtdlqrr9gsv3v7ltg4hx8ekzl7",
+        [
+          {
+            denom: "utori",
+            amount,
+          },
+        ],
+        "auto"
+      )
+      .catch(() => {
+        return undefined;
+      });
+    return tx;
   }
 };
 

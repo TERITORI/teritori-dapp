@@ -3,8 +3,7 @@ import { View } from "react-native";
 
 import { ProfileButton } from "./ProfileButton";
 import logoSVG from "../../../assets/logos/logo.svg";
-import { useAreThereWallets } from "../../hooks/useAreThereWallets";
-import { useNSUserInfo } from "../../hooks/useNSUserInfo";
+import { useNSUserInfo } from "../../hooks/name-service/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { MyNFTs } from "../../screens/WalletManager/MyNFTs";
 import { WalletDashboardHeader } from "../../screens/WalletManager/WalletDashboardHeader";
@@ -91,7 +90,8 @@ const DisconnectedIntro: React.FC = () => {
 };
 
 export const HubIntro: React.FC = () => {
-  const hasWallet = useAreThereWallets();
+  const selectedWallet = useSelectedWallet();
+  const hasWallet = !!selectedWallet;
   if (hasWallet) {
     return <ConnectedIntro />;
   }

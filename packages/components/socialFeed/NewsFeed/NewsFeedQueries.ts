@@ -26,13 +26,12 @@ export const getAvailableFreePost = async ({
   wallet,
 }: GetAvailableFreePostParams) => {
   try {
-    if (!wallet?.connected || !wallet.address) {
+    if (!wallet?.address) {
       return;
     }
 
-    const client = await signingSocialFeedClient({
+    const client = await nonSigningSocialFeedClient({
       networkId,
-      walletAddress: wallet.address,
     });
 
     const freePostCount = await client.queryAvailableFreePosts({
@@ -123,12 +122,10 @@ export const createPost = async ({
   if (!wallet?.connected || !wallet.address) {
     return;
   }
-
   const client = await signingSocialFeedClient({
     networkId,
     walletAddress: wallet.address,
   });
-
   let files: RemoteFileData[] = [];
 
   if (formValues.files?.length && pinataJWTKey) {

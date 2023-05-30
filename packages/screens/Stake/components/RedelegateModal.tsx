@@ -20,8 +20,8 @@ import { useCosmosValidatorBondedAmount } from "../../../hooks/useCosmosValidato
 import { useErrorHandler } from "../../../hooks/useErrorHandler";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { useValidators } from "../../../hooks/useValidators";
+import { useWalletStargateClient } from "../../../hooks/wallets/useWalletClients";
 import {
-  getKeplrSigningStargateClient,
   getStakingCurrency,
   keplrCurrencyFromNativeCurrencyInfo,
 } from "../../../networks";
@@ -68,6 +68,7 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
   const { control, setValue, handleSubmit, reset } =
     useForm<StakeFormValuesType>();
   const stakingCurrency = getStakingCurrency(networkId);
+  const getClient = useWalletStargateClient(wallet?.id);
 
   // hooks
   useEffect(() => {
@@ -103,7 +104,7 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
           });
           return;
         }
-        if (!wallet?.connected || !wallet.address) {
+        if (!wallet?.address) {
           console.warn("invalid wallet", wallet);
           setToastError({
             title: "Invalid wallet",
@@ -125,7 +126,6 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
           });
           return;
         }
-        const client = await getKeplrSigningStargateClient(wallet.networkId);
         const msg: MsgBeginRedelegate = {
           delegatorAddress: wallet.address,
           validatorSrcAddress: validator.address,
@@ -139,6 +139,7 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
           },
         };
 
+        const client = await getClient();
         const txResponse = await client.signAndBroadcast(
           wallet.address,
           [
@@ -171,7 +172,7 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
       }
     },
     [
-      validator,
+      getClient,
       onClose,
       refreshBondedTokens,
       selectedValidator,
@@ -179,6 +180,7 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
       setToastSuccess,
       stakingCurrency,
       triggerError,
+      validator,
       wallet,
     ]
   );

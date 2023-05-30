@@ -95,10 +95,10 @@ export const useValidators = (networkId: string | undefined) => {
         );
 
         activeValidators.sort(sortByVotingPower);
-        formatValidators(activeValidators);
+        formatValidators(activeValidators, networkId);
 
         inactiveValidators.sort(sortByVotingPower);
-        formatValidators(inactiveValidators);
+        formatValidators(inactiveValidators, networkId);
 
         return {
           allValidators: [...activeValidators, ...inactiveValidators],
@@ -143,10 +143,13 @@ const getTendermintActiveValidators = async (
 const sortByVotingPower = (a: ValidatorInfo, b: ValidatorInfo) =>
   parseFloat(b.votingPower) - parseFloat(a.votingPower);
 
-const formatValidators = (vals: ValidatorInfo[]) => {
+const formatValidators = (
+  vals: ValidatorInfo[],
+  networkId: string | undefined
+) => {
   let i = 0;
   for (const v of vals) {
-    v.votingPower += " TORI";
+    v.votingPower += " " + getStakingCurrency(networkId)?.displayName;
     v.rank = (i + 1).toString();
     i++;
   }

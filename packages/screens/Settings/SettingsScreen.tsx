@@ -12,7 +12,7 @@ import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { SpacerColumn } from "../../components/spacer";
-import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
   selectAreTestnetsEnabled,
   selectNFTStorageAPI,
@@ -65,7 +65,8 @@ const NFTAPIKeyInput: React.FC = () => {
 export const SettingsScreen: ScreenFC<"Settings"> = () => {
   const navigation = useAppNavigation();
   const commonStyles = useCommonStyles();
-  const isKeplrConnected = useIsKeplrConnected();
+  const selectedWallet = useSelectedWallet();
+  const isWalletConnected = !!selectedWallet;
   const testnetEnabled = useSelector(selectAreTestnetsEnabled);
   const dispatch = useAppDispatch();
 
@@ -95,15 +96,15 @@ export const SettingsScreen: ScreenFC<"Settings"> = () => {
 
         <View style={commonStyles.cardContainer}>
           <TouchableOpacity
-            disabled={!isKeplrConnected}
+            disabled={!isWalletConnected}
             onPress={() => navigation.navigate("TNSHome", { modal: "manage" })}
             style={{
-              opacity: !isKeplrConnected ? 0.5 : 1,
+              opacity: !isWalletConnected ? 0.5 : 1,
             }}
           >
             <View style={[commonStyles.switchBox, { paddingTop: 0 }]}>
               <BrandText style={commonStyles.cardTitle}>
-                {isKeplrConnected
+                {isWalletConnected
                   ? "Customize my User Profile"
                   : "Customize my User Profile (Please connect wallet)"}
               </BrandText>

@@ -11,11 +11,11 @@ import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useTNS } from "../../context/TNSProvider";
 import { TeritoriNameServiceQueryClient } from "../../contracts-clients/teritori-name-service/TeritoriNameService.client";
 import { Metadata } from "../../contracts-clients/teritori-name-service/TeritoriNameService.types";
-import { nsNameInfoQueryKey } from "../../hooks/useNSNameInfo";
-import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
+import { nsNameInfoQueryKey } from "../../hooks/name-service/useNSNameInfo";
+import { useNSTokensByOwner } from "../../hooks/name-service/useNSTokensByOwner";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { useWalletTNSClient } from "../../hooks/wallets/useWalletClients";
 import {
-  getKeplrSigningCosmWasmClient,
   mustGetNonSigningCosmWasmClient,
   mustGetCosmosNetwork,
   getCosmosNetwork,
@@ -40,6 +40,7 @@ export const TNSUpdateNameScreen: React.FC<TNSUpdateNameScreenProps> = ({
   const normalizedTokenId = (
     name + network?.nameServiceTLD || ""
   ).toLowerCase();
+  const getNSClient = useWalletTNSClient(selectedWallet?.id);
 
   const initData = async () => {
     try {
@@ -93,27 +94,13 @@ export const TNSUpdateNameScreen: React.FC<TNSUpdateNameScreenProps> = ({
       return;
     }
 
-    const msg = {
-      update_metadata: {
-        token_id: normalizedTokenId,
-        metadata: data,
-      },
-    };
-
     try {
-      const network = mustGetCosmosNetwork(selectedWallet?.networkId);
-      if (!network.nameServiceContractAddress) {
-        throw new Error("network not supported");
-      }
+      const nsClient = await getNSClient();
+      const updatedToken = await nsClient.updateMetadata({
+        tokenId: normalizedTokenId,
+        metadata: data,
+      });
 
-      const signingClient = await getKeplrSigningCosmWasmClient(network.id);
-
-      const updatedToken = await signingClient.execute(
-        walletAddress,
-        network.nameServiceContractAddress,
-        msg,
-        "auto"
-      );
       if (updatedToken) {
         console.log(normalizedTokenId + " successfully updated"); //TODO: redirect to the token
         setToastSuccess({

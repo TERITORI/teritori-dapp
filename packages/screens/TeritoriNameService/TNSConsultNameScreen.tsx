@@ -13,22 +13,16 @@ import { NameData } from "../../components/teritoriNameService/NameData";
 import { NameNFT } from "../../components/teritoriNameService/NameNFT";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useTNS } from "../../context/TNSProvider";
-import { TeritoriNameServiceClient } from "../../contracts-clients/teritori-name-service/TeritoriNameService.client";
-import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
-import { useNSNameInfo } from "../../hooks/useNSNameInfo";
-import { useNSNameOwner } from "../../hooks/useNSNameOwner";
+import { useNSNameInfo } from "../../hooks/name-service/useNSNameInfo";
+import { useNSNameOwner } from "../../hooks/name-service/useNSNameOwner";
 import {
   nsPrimaryAliasQueryKey,
   useNSPrimaryAlias,
-} from "../../hooks/useNSPrimaryAlias";
+} from "../../hooks/name-service/useNSPrimaryAlias";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import {
-  getCosmosNetwork,
-  getKeplrSigningCosmWasmClient,
-  getUserId,
-  mustGetCosmosNetwork,
-} from "../../networks";
+import { useWalletTNSClient } from "../../hooks/wallets/useWalletClients";
+import { getCosmosNetwork, getUserId } from "../../networks";
 import { useAppNavigation } from "../../utils/navigation";
 import { neutral17, neutral33 } from "../../utils/style/colors";
 
@@ -39,7 +33,8 @@ const NotOwnerActions: React.FC<{
   onClose: TNSModalCommonProps["onClose"];
 }> = ({ isPrimary, ownerId, onClose }) => {
   const [sendFundsModalVisible, setSendFundsModalVisible] = useState(false);
-  const isKeplrConnected = useIsKeplrConnected();
+  const selectedWallet = useSelectedWallet();
+  const isWalletConnected = !!selectedWallet;
   const navigation = useAppNavigation();
   return (
     <View
@@ -64,7 +59,7 @@ const NotOwnerActions: React.FC<{
       )}
       <PrimaryButton
         size="XL"
-        disabled={!isKeplrConnected}
+        disabled={!isWalletConnected}
         text="Send funds"
         // TODO: if no signed, connectKeplr, then, open modal
         onPress={() => setSendFundsModalVisible(true)}
@@ -88,6 +83,7 @@ const OwnerActions: React.FC<{
   const { setToastError, setToastSuccess } = useFeedbacks();
   const queryClient = useQueryClient();
   const navigation = useAppNavigation();
+  const getClient = useWalletTNSClient(wallet?.id);
   return (
     <View
       style={{
@@ -135,18 +131,7 @@ const OwnerActions: React.FC<{
           squaresBackgroundColor={neutral17}
           onPress={async () => {
             try {
-              const network = mustGetCosmosNetwork(wallet?.networkId);
-              if (
-                !network.nameServiceContractAddress ||
-                !network.nameServiceTLD
-              ) {
-                throw new Error("network not supported");
-              }
-              const client = new TeritoriNameServiceClient(
-                await getKeplrSigningCosmWasmClient(network.id),
-                wallet?.address || "",
-                network.nameServiceContractAddress
-              );
+              const client = await getClient();
               await client.updatePrimaryAlias({
                 tokenId,
               });

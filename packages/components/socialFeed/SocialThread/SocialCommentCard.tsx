@@ -10,18 +10,17 @@ import {
 
 import { SocialCardHeader } from "./SocialCardHeader";
 import { SocialMessageContent } from "./SocialMessageContent";
-import { signingSocialFeedClient } from "../../../client-creators/socialFeedClient";
 import { useTeritoriSocialFeedReactPostMutation } from "../../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.react-query";
 import { Reaction as ReactionFromContract } from "../../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
 import {
   combineFetchCommentPages,
   useFetchComments,
 } from "../../../hooks/feed/useFetchComments";
+import { useNSUserInfo } from "../../../hooks/name-service/useNSUserInfo";
 import { useIsMobile } from "../../../hooks/useIsMobile";
-import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
 import { usePrevious } from "../../../hooks/usePrevious";
-import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { useWalletSocialFeedClient } from "../../../hooks/wallets/useWalletClients";
 import { parseUserId } from "../../../networks";
 import { OnPressReplyType } from "../../../screens/FeedPostView/FeedPostViewScreen";
 import { useAppNavigation } from "../../../utils/navigation";
@@ -90,7 +89,6 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
   const [replyListYOffset, setReplyListYOffset] = useState<number[]>([]);
   const [replyListLayout, setReplyListLayout] = useState<LayoutRectangle>();
   const wallet = useSelectedWallet();
-  const selectedNetworkId = useSelectedNetworkId();
   const [, userAddress] = parseUserId(localComment.createdBy);
   const { data, refetch, fetchNextPage, hasNextPage, isFetching } =
     useFetchComments({
@@ -99,6 +97,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
       enabled: replyShown,
     });
   const oldIsFetching = usePrevious(isFetching);
+  const getClient = useWalletSocialFeedClient(wallet?.id);
 
   const { mutate: postMutate, isLoading: isPostMutationLoading } =
     useTeritoriSocialFeedReactPostMutation({
@@ -172,16 +171,8 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
     });
 
   const handleReaction = async (e: string) => {
-    if (!wallet?.connected || !wallet.address) {
-      return;
-    }
-    const client = await signingSocialFeedClient({
-      networkId: selectedNetworkId,
-      walletAddress: wallet.address,
-    });
-
     postMutate({
-      client,
+      client: await getClient(),
       msg: {
         icon: e,
         identifier: localComment.identifier,

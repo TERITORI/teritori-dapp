@@ -1,10 +1,10 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useMemo, useRef } from "react";
 
-import { NFTsRequest, NFT } from "../api/marketplace/v1/marketplace";
-import { parseNetworkObjectId } from "../networks";
-import { mustGetMarketplaceClient } from "../utils/backend";
-import { addNftListMetadata } from "../utils/ethereum";
+import { NFTsRequest, NFT } from "../../api/marketplace/v1/marketplace";
+import { parseNetworkObjectId } from "../../networks";
+import { mustGetMarketplaceClient } from "../../utils/backend";
+import { addNftListMetadata } from "../../utils/ethereum";
 
 export const useNFTs = (req: NFTsRequest) => {
   const baseOffset = useRef(req.offset);

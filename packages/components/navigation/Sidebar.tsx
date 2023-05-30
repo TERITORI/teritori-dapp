@@ -16,7 +16,7 @@ import { SidebarType } from "./types";
 import addSVG from "../../../assets/icons/add-circle.svg";
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
 import { useSidebar } from "../../context/SidebarProvider";
-import { useNSUserInfo } from "../../hooks/useNSUserInfo";
+import { useNSUserInfo } from "../../hooks/name-service/useNSUserInfo";
 import { useSelectedNetworkKind } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkKind } from "../../networks";
@@ -55,7 +55,7 @@ export const Sidebar: React.FC = () => {
   const selectedWallet = useSelectedWallet();
   const userInfo = useNSUserInfo(selectedWallet?.userId);
   const selectedNetworkKind = useSelectedNetworkKind();
-  const connected = selectedWallet?.connected;
+  const connected = !!selectedWallet;
 
   // variables
   const navigation = useAppNavigation();
@@ -114,22 +114,8 @@ export const Sidebar: React.FC = () => {
         data={Object.values(dynamicSidebar)}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => {
-          let { route } = item;
-          if (
-            item.disabledOn?.includes(
-              selectedNetworkKind || NetworkKind.Unknown
-            )
-          ) {
-            route = "ComingSoon";
-          }
-
           return (
-            <SidebarButton
-              key={item.id}
-              onPress={onRouteChange}
-              {...item}
-              route={route}
-            />
+            <SidebarButton key={item.id} onPress={onRouteChange} {...item} />
           );
         }}
         ListHeaderComponent={<SpacerColumn size={1} />}

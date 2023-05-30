@@ -5,9 +5,10 @@ import { selectSelectedWalletId } from "../store/slices/settings";
 
 const useSelectedWallet = () => {
   const { wallets } = useWallets();
+
   const selectedWalletId = useSelector(selectSelectedWalletId);
 
-  return wallets.find((w) => w.connected && w.id === selectedWalletId);
+  return wallets.find((w) => w.id === selectedWalletId);
 };
 
 export default useSelectedWallet;

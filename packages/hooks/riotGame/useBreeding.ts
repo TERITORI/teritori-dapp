@@ -7,13 +7,13 @@ import { ConfigResponse } from "./../../contracts-clients/teritori-breeding/Teri
 import { TeritoriBreedingQueryClient } from "../../contracts-clients/teritori-breeding/TeritoriBreeding.client";
 import {
   getCosmosNetwork,
-  getKeplrSigningCosmWasmClient,
   mustGetNonSigningCosmWasmClient,
 } from "../../networks";
 import { buildApproveNFTMsg, buildBreedingMsg } from "../../utils/game";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { useBreedingConfig } from "../useBreedingConfig";
 import useSelectedWallet from "../useSelectedWallet";
+import { useWalletCosmWasmClient } from "../wallets/useWalletClients";
 
 export const useBreeding = (networkId: string | undefined) => {
   const [remainingTokens, setRemainingTokens] = useState<number>(0);
@@ -22,6 +22,7 @@ export const useBreeding = (networkId: string | undefined) => {
   const { breedingConfig } = useBreedingConfig(networkId);
   const breedingContractAddress =
     getCosmosNetwork(networkId)?.riotContractAddressGen1;
+  const getSigningCosmWasmClient = useWalletCosmWasmClient(selectedWallet?.id);
 
   const getBreedingQueryClient = useCallback(async () => {
     if (!networkId) {
@@ -54,10 +55,9 @@ export const useBreeding = (networkId: string | undefined) => {
       }
 
       if (!tokenId1 || !tokenId2) {
-        throw Error("Not select enough rippers to breed");
+        throw new Error("Not select enough rippers to breed");
       }
 
-      const client = await getKeplrSigningCosmWasmClient(networkId);
       const sender = selectedWallet?.address || "";
 
       let msgs: EncodeObject[] = [];
@@ -84,7 +84,12 @@ export const useBreeding = (networkId: string | undefined) => {
 
       msgs = [...msgs, breedMsg];
 
-      const tx = await client.signAndBroadcast(sender, msgs, "auto");
+      const signingCosmWasmClient = await getSigningCosmWasmClient();
+      const tx = await signingCosmWasmClient.signAndBroadcast(
+        sender,
+        msgs,
+        "auto"
+      );
 
       if (isDeliverTxFailure(tx)) {
         throw Error(tx.transactionHash);
@@ -92,7 +97,12 @@ export const useBreeding = (networkId: string | undefined) => {
 
       return tx;
     },
-    [breedingContractAddress, networkId, selectedWallet?.address]
+    [
+      breedingContractAddress,
+      getSigningCosmWasmClient,
+      networkId,
+      selectedWallet?.address,
+    ]
   );
 
   const getChildTokenIds = useCallback(

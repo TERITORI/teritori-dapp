@@ -1,6 +1,8 @@
 import { Coin } from "@cosmjs/amino";
 import { toUtf8 } from "@cosmjs/encoding";
 import { isDeliverTxFailure } from "@cosmjs/stargate";
+import { Keplr } from "@keplr-wallet/types";
+import { KeplrWalletConnectV1 } from "@keplr-wallet/wc-client";
 
 import { UserScore } from "./../api/p2e/v1/p2e";
 import { getKeplrSquadStakingClient } from "./contracts";
@@ -386,7 +388,10 @@ export const isNFTStaked = (ripper: NFT | undefined) => {
 export const SQUAD_STAKE_COEF = 0.125; // Duration (in hours) = 0.125 * stamin
 export const DURATION_TO_XP_COEF = 100; // XP = 100 * duration (in hours)
 
-export const squadWithdrawSeason1 = async (userId: string | undefined) => {
+export const squadWithdrawSeason1 = async (
+  keplr: KeplrWalletConnectV1 | Keplr | undefined,
+  userId: string | undefined
+) => {
   const [network, userAddress] = parseUserId(userId);
   if (!network || !userAddress) {
     return null;
@@ -399,7 +404,7 @@ export const squadWithdrawSeason1 = async (userId: string | undefined) => {
     return null;
   }
 
-  const signingClient = await getKeplrSigningCosmWasmClient(network.id);
+  const signingClient = await getKeplrSigningCosmWasmClient(keplr, network.id);
   const client = new TeritoriSquadStakingClient(
     signingClient,
     userAddress,
@@ -408,8 +413,11 @@ export const squadWithdrawSeason1 = async (userId: string | undefined) => {
   return await client.withdraw();
 };
 
-export const squadWithdraw = async (userId: string | undefined) => {
-  const squadStakingClient = await getKeplrSquadStakingClient(userId);
+export const squadWithdraw = async (
+  keplr: KeplrWalletConnectV1 | Keplr | undefined,
+  userId: string | undefined
+) => {
+  const squadStakingClient = await getKeplrSquadStakingClient(keplr, userId);
   return await squadStakingClient.withdraw();
 };
 
@@ -441,6 +449,7 @@ export const getSquadPresetId = (
 };
 
 export const squadStake = async (
+  keplr: KeplrWalletConnectV1 | Keplr | undefined,
   userId: string | undefined,
   selectedRippers: NFT[]
 ) => {
@@ -456,7 +465,7 @@ export const squadStake = async (
     throw new Error("missing squad staking contract address in network config");
   }
 
-  const client = await getKeplrSigningCosmWasmClient(network.id);
+  const client = await getKeplrSigningCosmWasmClient(keplr, network.id);
 
   const selectedNfts: SquadStakeNFT[] = [];
   for (const selectedRipper of selectedRippers) {

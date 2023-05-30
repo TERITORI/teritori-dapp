@@ -51,6 +51,7 @@ import {
   getNativeCurrency,
   NativeCurrencyInfo,
 } from "../../../../networks";
+import { shouldUseNativeDriver } from "../../../../utils/animations";
 import { Balance } from "../../../../utils/coins";
 import {
   neutral00,
@@ -101,12 +102,12 @@ export const SwapView: React.FC = () => {
       Animated.timing(opacity, {
         toValue: 0,
         duration: INVERT_ANIMATION_DURATION,
-        useNativeDriver: true,
+        useNativeDriver: shouldUseNativeDriver,
       }),
       Animated.timing(opacity, {
         toValue: 1,
         duration: INVERT_ANIMATION_DURATION,
-        useNativeDriver: true,
+        useNativeDriver: shouldUseNativeDriver,
       }),
     ]).start();
   };
@@ -126,12 +127,12 @@ export const SwapView: React.FC = () => {
       Animated.timing(translateToBottom, {
         toValue: 1,
         duration: INVERT_ANIMATION_DURATION,
-        useNativeDriver: true,
+        useNativeDriver: shouldUseNativeDriver,
       }),
       Animated.timing(translateToBottom, {
         toValue: 0,
         duration: INVERT_ANIMATION_DURATION,
-        useNativeDriver: true,
+        useNativeDriver: shouldUseNativeDriver,
       }),
     ]).start();
   };
@@ -141,12 +142,12 @@ export const SwapView: React.FC = () => {
       Animated.timing(translateToTop, {
         toValue: 1,
         duration: INVERT_ANIMATION_DURATION,
-        useNativeDriver: true,
+        useNativeDriver: shouldUseNativeDriver,
       }),
       Animated.timing(translateToTop, {
         toValue: 0,
         duration: INVERT_ANIMATION_DURATION,
-        useNativeDriver: true,
+        useNativeDriver: shouldUseNativeDriver,
       }),
     ]).start();
   };

@@ -10,8 +10,8 @@ import {
   Sort,
   SortDirection,
 } from "../api/marketplace/v1/marketplace";
+import { useNFTs } from "../hooks/nfts/useNFTs";
 import { useCollections } from "../hooks/useCollections";
-import { useNFTs } from "../hooks/useNFTs";
 import { parseNetworkObjectId } from "../networks";
 import { layout } from "../utils/style/layout";
 

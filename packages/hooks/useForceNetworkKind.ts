@@ -1,23 +1,35 @@
 import { useFocusEffect } from "@react-navigation/native";
 import { useCallback } from "react";
 
-import { useSelectedNetworkKind } from "./useSelectedNetwork";
+import { useSelectedNetworkInfo } from "./useSelectedNetwork";
+import { useSwitchNetwork } from "./useSwitchNetwork";
 import { NetworkKind, selectableNetworks } from "../networks";
-import { setSelectedNetworkId } from "../store/slices/settings";
-import { useAppDispatch } from "../store/store";
 
 export const useForceNetworkKind = (networkKind: NetworkKind | undefined) => {
-  const selectedNetworkKind = useSelectedNetworkKind();
-  const dispatch = useAppDispatch();
+  const selectedNetworkInfo = useSelectedNetworkInfo();
+  const switchNetwork = useSwitchNetwork();
+
   const effect = useCallback(() => {
-    if (networkKind && networkKind !== selectedNetworkKind) {
-      const newNetwork = selectableNetworks.find(
-        (network) => network.kind === networkKind
-      );
-      if (newNetwork) {
-        dispatch(setSelectedNetworkId(newNetwork.id));
-      }
+    if (!networkKind || networkKind === selectedNetworkInfo?.kind) {
+      return;
     }
-  }, [dispatch, networkKind, selectedNetworkKind]);
+
+    const validNetworks = selectableNetworks.filter(
+      (n) => n.kind === networkKind
+    );
+
+    // use testnet if previous is testnet
+    const shouldFindTestnet = !!selectedNetworkInfo?.testnet;
+    const targetNetwork =
+      (shouldFindTestnet && validNetworks.find((n) => n.testnet === true)) ||
+      validNetworks[0];
+
+    if (!targetNetwork) {
+      return;
+    }
+
+    switchNetwork(targetNetwork.id);
+  }, [networkKind, selectedNetworkInfo, switchNetwork]);
+
   useFocusEffect(effect);
 };

@@ -3,7 +3,7 @@ import { Image, StyleProp, ViewStyle, View } from "react-native";
 
 import { NameAndTldText } from "./NameAndTldText";
 import defaultNameNFT from "../../../assets/default-images/default-name-nft.png";
-import { useNSNameInfo } from "../../hooks/useNSNameInfo";
+import { useNSNameInfo } from "../../hooks/name-service/useNSNameInfo";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { getCosmosNetwork } from "../../networks";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";

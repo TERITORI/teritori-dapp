@@ -7,7 +7,7 @@ import {
 } from "../../api/marketplace/v1/marketplace";
 import { getCollectionId, getCosmosNetwork } from "../../networks";
 import { isNFTStaked } from "../../utils/game";
-import { useNFTs } from "../useNFTs";
+import { useNFTs } from "../nfts/useNFTs";
 import useSelectedWallet from "../useSelectedWallet";
 
 export const useRippers = () => {

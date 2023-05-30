@@ -5,8 +5,8 @@ import { StyleSheet, View } from "react-native";
 import { ConnectAdenaButton } from "./ConnectAdenaButton";
 import { ConnectKeplrButton } from "./ConnectKeplrButton";
 import { ConnectMetamaskButton } from "./ConnectMetamaskButton";
-import { ConnectWalletButton } from "./components/ConnectWalletButton";
-import walletConnectSVG from "../../../assets/icons/wallet-connect.svg";
+import { ConnectTrustWalletButton } from "./ConnectTrustWalletButton";
+import { ConnectTrustWalletMobileButton } from "./ConnectTrustWalletMobileButton";
 import { neutral77, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
@@ -42,6 +42,7 @@ export const ConnectWalletModal: React.FC<ConnectWalletProps> = ({
       hideMainSeparator
       width={457}
       noBrokenCorners
+      scrollable
     >
       <ConnectMetamaskButton onDone={onClose} />
       <SpacerColumn size={1.5} />
@@ -49,11 +50,9 @@ export const ConnectWalletModal: React.FC<ConnectWalletProps> = ({
       <SpacerColumn size={1.5} />
       <ConnectAdenaButton onDone={onClose} />
       <SpacerColumn size={1.5} />
-      <ConnectWalletButton
-        text="Wallet Connect"
-        isComingSoon
-        icon={walletConnectSVG}
-      />
+      <ConnectTrustWalletButton onDone={onClose} />
+      <SpacerColumn size={1.5} />
+      <ConnectTrustWalletMobileButton onDone={onClose} />
       <View style={styles.footer}>
         <SeparatorGradient />
         <SpacerColumn size={4} />

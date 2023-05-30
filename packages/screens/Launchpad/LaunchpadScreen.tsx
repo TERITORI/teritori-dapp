@@ -19,7 +19,14 @@ export const LaunchpadScreen: ScreenFC<"Launchpad"> = () => {
   const selectedNetworkId = useSelectedNetworkId();
 
   return (
-    <ScreenContainer>
+    <ScreenContainer
+      forceNetworkIds={[
+        "teritori",
+        "teritori-testnet",
+        "ethereum",
+        "ethereum-goerli",
+      ]}
+    >
       <View
         style={{
           paddingBottom: layout.contentPadding,

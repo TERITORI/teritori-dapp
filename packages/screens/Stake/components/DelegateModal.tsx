@@ -17,8 +17,8 @@ import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useBalances } from "../../../hooks/useBalances";
 import { useErrorHandler } from "../../../hooks/useErrorHandler";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { useWalletStargateClient } from "../../../hooks/wallets/useWalletClients";
 import {
-  getKeplrSigningStargateClient,
   getStakingCurrency,
   keplrCurrencyFromNativeCurrencyInfo,
 } from "../../../networks";
@@ -51,11 +51,14 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
   const networkId = wallet?.networkId || "";
   const balances = useBalances(networkId, wallet?.address);
   const stakingCurrency = getStakingCurrency(networkId);
-  const toriBalance = balances.find((bal) => bal.denom === "utori");
-  const toriBalanceDecimal = Decimal.fromAtomics(
-    toriBalance?.amount || "0",
+  const stakingBalance = balances.find(
+    (bal) => bal.denom === stakingCurrency?.denom
+  );
+  const stakingBalanceDecimal = Decimal.fromAtomics(
+    stakingBalance?.amount || "0",
     stakingCurrency?.decimals || 0
   );
+  const getClient = useWalletStargateClient(wallet?.id);
   const { control, setValue, handleSubmit, reset } =
     useForm<StakeFormValuesType>();
 
@@ -80,7 +83,7 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
           });
           return;
         }
-        if (!wallet?.connected || !wallet.address) {
+        if (!wallet?.address) {
           console.warn("invalid wallet", wallet);
           setToastError({
             title: "Invalid wallet",
@@ -95,7 +98,7 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
           });
           return;
         }
-        const client = await getKeplrSigningStargateClient(wallet.networkId);
+        const client = await getClient();
         const txResponse = await client.delegateTokens(
           wallet.address,
           validator.address,
@@ -126,12 +129,13 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
       }
     },
     [
-      validator,
+      getClient,
       onClose,
       setToastError,
       setToastSuccess,
       stakingCurrency,
       triggerError,
+      validator,
       wallet,
     ]
   );
@@ -209,11 +213,11 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
           placeHolder="0"
           currency={keplrCurrencyFromNativeCurrencyInfo(stakingCurrency)}
           defaultValue=""
-          rules={{ required: true, max: toriBalanceDecimal.toString() }}
+          rules={{ required: true, max: stakingBalanceDecimal.toString() }}
         >
           <MaxButton
             onPress={() =>
-              setValue("amount", toriBalanceDecimal.toString(), {
+              setValue("amount", stakingBalanceDecimal.toString(), {
                 shouldValidate: true,
               })
             }
@@ -225,7 +229,7 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
           Available balance:{" "}
           {prettyPrice(
             networkId,
-            toriBalanceDecimal.atomics,
+            stakingBalanceDecimal.atomics,
             stakingCurrency?.denom || ""
           )}
         </BrandText>

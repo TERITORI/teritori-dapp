@@ -19,11 +19,10 @@ import { ActivityTable } from "../../components/activity/ActivityTable";
 import { TNSNameFinderModal } from "../../components/modals/teritoriNameService/TNSNameFinderModal";
 import { FlowCard } from "../../components/teritoriNameService/FlowCard";
 import { useTNS } from "../../context/TNSProvider";
-import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
-import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
+import { useNSTokensByOwner } from "../../hooks/name-service/useNSTokensByOwner";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { NetworkKind, getCollectionId, getCosmosNetwork } from "../../networks";
+import { getCollectionId, getCosmosNetwork } from "../../networks";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 
 export type TNSItems = "TNSManage" | "TNSRegister" | "TNSExplore";
@@ -78,7 +77,7 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
     selectedNetwork?.nameServiceContractAddress
   );
 
-  const isKeplrConnected = useIsKeplrConnected();
+  const isWalletConnected = !!selectedWallet;
 
   const handleModalClose: TNSCloseHandler = (
     modalName,
@@ -140,7 +139,7 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
     <ScreenContainer
       noMargin={width <= 1600}
       headerChildren={<BrandText>Name Service</BrandText>}
-      forceNetworkKind={NetworkKind.Cosmos}
+      forceNetworkIds={["teritori", "teritori-testnet"]}
     >
       <View
         style={{
@@ -159,7 +158,7 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
           }}
         >
           <FlowCard
-            disabled={!isKeplrConnected}
+            disabled={!isWalletConnected}
             label="Register"
             description="Register and configure a new name"
             iconSVG={registerSVG}
@@ -168,7 +167,7 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
             }
           />
           <FlowCard
-            disabled={!isKeplrConnected || !tokens?.length}
+            disabled={!isWalletConnected || !tokens?.length}
             label="Manage"
             description="Transfer, edit, or burn a name that you own"
             iconSVG={penSVG}

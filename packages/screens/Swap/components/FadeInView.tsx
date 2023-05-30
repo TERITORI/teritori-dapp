@@ -1,6 +1,8 @@
 import React, { PropsWithChildren, useEffect, useRef } from "react";
 import { Animated, ViewStyle } from "react-native";
 
+import { shouldUseNativeDriver } from "../../../utils/animations";
+
 type FadeInViewProps = PropsWithChildren<{ style: ViewStyle }>;
 export const FadeInView: React.FC<FadeInViewProps> = (props) => {
   const fadeAnim = useRef(new Animated.Value(0)).current; // Initial value for opacity: 0
@@ -9,7 +11,7 @@ export const FadeInView: React.FC<FadeInViewProps> = (props) => {
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 400,
-      useNativeDriver: true,
+      useNativeDriver: shouldUseNativeDriver,
     }).start();
   }, [fadeAnim]);
 

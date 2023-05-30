@@ -9,10 +9,11 @@ import { NameNFT } from "../../components/teritoriNameService/NameNFT";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useTNS } from "../../context/TNSProvider";
 import { TeritoriNameServiceQueryClient } from "../../contracts-clients/teritori-name-service/TeritoriNameService.client";
-import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
+import { useNSTokensByOwner } from "../../hooks/name-service/useNSTokensByOwner";
+import { useTNSMintPrice } from "../../hooks/name-service/useTNSMintPrice";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { useWalletTNSClient } from "../../hooks/wallets/useWalletClients";
 import {
-  getKeplrSigningCosmWasmClient,
   mustGetNonSigningCosmWasmClient,
   mustGetCosmosNetwork,
   getCosmosNetwork,
@@ -43,10 +44,13 @@ export const TNSMintPathScreen: React.FC<TNSMintPathScreenProps> = ({
   const { tokens } = useNSTokensByOwner(selectedWallet?.userId);
   const network = getCosmosNetwork(selectedWallet?.networkId);
   const walletAddress = selectedWallet?.address;
+  const getNSClient = useWalletTNSClient(selectedWallet?.id);
 
   const normalizedTokenId = (
     name + network?.nameServiceTLD || ""
   ).toLowerCase();
+
+  const price = useTNSMintPrice(selectedWallet?.networkId, normalizedTokenId);
 
   const initData = async () => {
     try {
@@ -109,16 +113,20 @@ export const TNSMintPathScreen: React.FC<TNSMintPathScreenProps> = ({
     const normalizedPathId = normalize(pathId.toLowerCase());
 
     try {
-      const network = mustGetCosmosNetwork(selectedWallet?.networkId);
-      if (!network.nameServiceContractAddress) {
-        throw new Error("network not supported");
+      if (!walletAddress) {
+        throw new Error("bad wallet");
       }
 
-      const msg = {
-        update_metadata: {
+      if (!price) {
+        throw new Error("no price");
+      }
+
+      const nsClient = await getNSClient();
+      const mintedToken = await nsClient.mintPath(
+        {
           owner: walletAddress,
-          token_id: normalizedPathId,
-          token_uri: null, // TODO - support later
+          tokenId: normalizedPathId,
+          tokenUri: undefined, // TODO - support later
           extension: {
             image,
             image_data: null, // TODO - support later
@@ -134,16 +142,11 @@ export const TNSMintPathScreen: React.FC<TNSMintPathScreenProps> = ({
             parent_token_id: normalizedTokenId,
           },
         },
-      };
-
-      const signingClient = await getKeplrSigningCosmWasmClient(network.id);
-
-      const mintedToken = await signingClient.execute(
-        walletAddress,
-        network.nameServiceContractAddress,
-        msg,
-        "auto"
+        "auto",
+        "",
+        [price]
       );
+
       if (mintedToken) {
         console.log(normalizedPathId + " successfully minted"); //TODO: redirect to the token
         setToastSuccess({

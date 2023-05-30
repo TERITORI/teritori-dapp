@@ -38,9 +38,9 @@ import {
   useFetchComments,
 } from "../../hooks/feed/useFetchComments";
 import { usePost } from "../../hooks/feed/usePost";
+import { useNSUserInfo } from "../../hooks/name-service/useNSUserInfo";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
-import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { getUserId, NetworkKind, parseUserId } from "../../networks";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";

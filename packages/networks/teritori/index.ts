@@ -1,12 +1,12 @@
 import { teritoriCurrencies } from "./currencies";
-import { NetworkKind, NetworkInfo } from "../types";
+import { NetworkKind, CosmosNetworkInfo } from "../types";
 
 const nameServiceContractAddress =
   "tori1wkwy0xh89ksdgj9hr347dyd2dw7zesmtrue6kfzyml4vdtz6e5wscs7038";
 const riotContractAddressGen1 =
   "tori1gflccmghzfscmxl95z43v36y0rle8v9x8kvt9na03yzywtw86amsj9nf37";
 
-export const teritoriNetwork: NetworkInfo = {
+export const teritoriNetwork: CosmosNetworkInfo = {
   id: "teritori",
   kind: NetworkKind.Cosmos,
   chainId: "teritori-1",
@@ -29,13 +29,7 @@ export const teritoriNetwork: NetworkInfo = {
     average: 0.025,
     high: 0.04,
   },
-  features: [
-    "stargate",
-    "ibc-transfer",
-    "cosmwasm",
-    "no-legacy-stdTx",
-    "ibc-go",
-  ],
+  features: ["ibc-transfer", "cosmwasm", "ibc-go"],
   nameServiceContractAddress,
   nameServiceDefaultImage:
     "ipfs://bafkreieqcwmjcb64r42ygs6a4dswz63djzgayjn3rhzjber3e42cknawlm",

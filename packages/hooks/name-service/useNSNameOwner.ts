@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { getCosmosNameServiceQueryClient } from "../utils/contracts";
+import { getCosmosNameServiceQueryClient } from "../../utils/contracts";
 
 export const useNSNameOwner = (
   networkId: string | undefined,

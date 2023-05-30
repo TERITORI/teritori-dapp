@@ -1,7 +1,7 @@
 import { osmosisCurrencies } from "./currencies";
-import { NetworkKind, NetworkInfo } from "../types";
+import { NetworkKind, CosmosNetworkInfo } from "../types";
 
-export const osmosisNetwork: NetworkInfo = {
+export const osmosisNetwork: CosmosNetworkInfo = {
   id: "osmosis",
   kind: NetworkKind.Cosmos,
   chainId: "osmosis-1",
@@ -23,11 +23,5 @@ export const osmosisNetwork: NetworkInfo = {
     average: 0.025,
     high: 0.04,
   },
-  features: [
-    "stargate",
-    "ibc-transfer",
-    "cosmwasm",
-    "no-legacy-stdTx",
-    "ibc-go",
-  ],
+  features: ["ibc-transfer", "ibc-go"],
 };

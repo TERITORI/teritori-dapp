@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ImageBackground, TouchableOpacity, View } from "react-native";
 
 import { TransparentButtonOutline } from "../../../../../../components/buttons/TransparentButtonOutline";
-import { useNSUserInfo } from "../../../../../../hooks/useNSUserInfo";
+import { useNSUserInfo } from "../../../../../../hooks/name-service/useNSUserInfo";
 import { tinyAddress } from "../../../../../../utils/text";
 import exitButton from "../../assets/exit.png";
 import menuButton from "../../assets/menuButton.png";

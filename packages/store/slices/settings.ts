@@ -8,16 +8,18 @@ interface Settings {
   NFTStorageAPI: string;
   isKeplrConnected: boolean;
   isAdenaConnected: boolean;
+  isTrustWalletConnected: boolean;
   alreadyVisited: boolean;
   areTestnetsEnabled: boolean;
 }
 
 const initialState: Settings = {
   selectedWalletId: "",
-  selectedNetworkId: "",
+  selectedNetworkId: "teritori",
   NFTStorageAPI: process.env.NFT_STORAGE_API || "",
   isKeplrConnected: false,
   isAdenaConnected: false,
+  isTrustWalletConnected: false,
   alreadyVisited: false,
   areTestnetsEnabled: false,
 };
@@ -34,6 +36,9 @@ export const selectIsKeplrConnected = (state: RootState) =>
 export const selectIsAdenaConnected = (state: RootState) =>
   state.settings.isAdenaConnected;
 
+export const selectIsTrustWalletConnected = (state: RootState) =>
+  state.settings.isTrustWalletConnected;
+
 export const selectAreTestnetsEnabled = (state: RootState) =>
   state.settings.areTestnetsEnabled;
 
@@ -45,13 +50,18 @@ const settingsSlice = createSlice({
   initialState,
   reducers: {
     setSelectedNetworkId: (state, action: PayloadAction<string>) => {
+      console.log(action);
       state.selectedNetworkId = action.payload;
+      state.selectedWalletId = "";
     },
     setSelectedWalletId: (state, action: PayloadAction<string>) => {
       state.selectedWalletId = action.payload;
     },
     setIsKeplrConnected: (state, action: PayloadAction<boolean>) => {
       state.isKeplrConnected = action.payload;
+    },
+    setIsTrustWalletConnected: (state, action: PayloadAction<boolean>) => {
+      state.isTrustWalletConnected = action.payload;
     },
     setIsAdenaConnected: (state, action: PayloadAction<boolean>) => {
       state.isAdenaConnected = action.payload;
@@ -69,6 +79,7 @@ export const {
   setSelectedNetworkId,
   setSelectedWalletId,
   setIsKeplrConnected,
+  setIsTrustWalletConnected,
   setIsAdenaConnected,
   setAreTestnetsEnabled,
   setNFTStorageAPI,

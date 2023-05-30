@@ -41,7 +41,7 @@ export const TransactionPaymentModal: React.FC<{
   const balances = useBalances(nftNetworkId, selectedWallet?.address);
   const balance =
     balances.find((bal) => bal.denom === priceDenom)?.amount || "0";
-  const isWalletConnected = !!selectedWallet?.connected;
+  const isWalletConnected = !!selectedWallet;
 
   let WalletConnectComponent = null;
 

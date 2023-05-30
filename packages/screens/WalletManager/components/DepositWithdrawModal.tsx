@@ -1,7 +1,6 @@
 // libraries
 import { Decimal } from "@cosmjs/math";
 import { isDeliverTxFailure } from "@cosmjs/stargate";
-import { bech32 } from "bech32";
 import React, { useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { StyleSheet, View } from "react-native";
@@ -18,14 +17,14 @@ import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useBalances } from "../../../hooks/useBalances";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { useWalletStargateClient } from "../../../hooks/wallets/useWalletClients";
 import {
-  getCosmosNetwork,
   getIBCCurrency,
-  getKeplrSigningStargateClient,
   getNativeCurrency,
   getNetwork,
   keplrCurrencyFromNativeCurrencyInfo,
 } from "../../../networks";
+import { convertCosmosAddress } from "../../../utils/cosmos";
 import { neutral77, primaryColor } from "../../../utils/style/colors";
 import { fontSemibold13, fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
@@ -78,6 +77,11 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
 
   // variables
   const { control, setValue, handleSubmit } = useForm<TransactionForm>();
+
+  const getClient = useWalletStargateClient(
+    selectedWallet?.id,
+    sourceNetworkId
+  );
 
   // returns
   const ModalHeader = useCallback(
@@ -257,10 +261,7 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
                   ? ibcTargetCurrency.destinationChannelId
                   : ibcTargetCurrency.sourceChannelId;
 
-              const client = await getKeplrSigningStargateClient(
-                sourceNetworkId
-              );
-
+              const client = await getClient();
               const tx = await client.sendIbcTokens(
                 sender,
                 receiver,
@@ -337,23 +338,3 @@ const styles = StyleSheet.create({
     },
   ]),
 });
-
-const convertCosmosAddress = (
-  sourceAddress: string | undefined,
-  targetNetworkId: string | undefined
-) => {
-  if (!sourceAddress) {
-    return undefined;
-  }
-  const targetNetwork = getCosmosNetwork(targetNetworkId);
-  if (!targetNetwork) {
-    return undefined;
-  }
-  try {
-    const decoded = bech32.decode(sourceAddress);
-    return bech32.encode(targetNetwork.addressPrefix, decoded.words);
-  } catch (err) {
-    console.warn("failed to convert cosmos address", sourceAddress, err);
-    return undefined;
-  }
-};

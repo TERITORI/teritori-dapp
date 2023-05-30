@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { TeritoriNftQueryClient } from "../contracts-clients/teritori-nft/TeritoriNft.client";
-import { mustGetNonSigningCosmWasmClient } from "../networks";
+import { TeritoriNftQueryClient } from "../../contracts-clients/teritori-nft/TeritoriNft.client";
+import { mustGetNonSigningCosmWasmClient } from "../../networks";
 
 export const useCW721ContractInfo = (
   networkId: string | undefined,

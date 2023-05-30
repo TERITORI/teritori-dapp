@@ -24,8 +24,7 @@ export const ConnectAdenaButton: React.FC<{
         Linking.openURL("https://adena.app/");
         return;
       }
-      const establishResult = await adena.AddEstablish("Teritori dApp");
-      console.log("established", establishResult);
+      await adena.AddEstablish("Teritori dApp");
       dispatch(setIsAdenaConnected(true));
       setSelectedNetworkId(gnoTestnetNetwork.id);
       dispatch(

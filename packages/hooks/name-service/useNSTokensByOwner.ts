@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 
-import { parseUserId } from "../networks";
-import { getCosmosNameServiceQueryClient } from "../utils/contracts";
-import { isNSPath, isNSToken } from "../utils/tns";
+import { parseUserId } from "../../networks";
+import { getCosmosNameServiceQueryClient } from "../../utils/contracts";
+import { isNSPath, isNSToken } from "../../utils/tns";
 
 const batchSize = 10;
 

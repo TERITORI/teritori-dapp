@@ -45,14 +45,12 @@ export const useAdena: () => UseAdenaResult = () => {
   useEffect(() => {
     const effect = async () => {
       if (!hasAdena || !isAdenaConnected) {
-        setReady(true);
         return;
       }
       try {
         const adena = (window as any)?.adena;
         if (!adena) {
           console.error("no adena");
-          setReady(true);
           return;
         }
         const account = await adena.GetAccount();
@@ -64,7 +62,6 @@ export const useAdena: () => UseAdenaResult = () => {
         console.warn("failed to connect to adena", err);
         dispatch(setIsAdenaConnected(false));
       }
-
       setReady(true);
     };
     effect();
@@ -72,7 +69,6 @@ export const useAdena: () => UseAdenaResult = () => {
 
   const wallets = useMemo(() => {
     const networkId = gnoTestnetNetwork.id;
-
     if (addresses.length === 0) {
       const wallet: Wallet = {
         address: "",
