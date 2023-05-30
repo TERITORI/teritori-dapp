@@ -440,7 +440,7 @@ const proposeToRemoveMember = async (
     remove: string[];
   } = { add: [], remove: [memberToRemoveAddress] };
 
-  return await makeProposal(networkId, senderAddress, network.coreDAOAddress, {
+  return await makeProposal(networkId, senderAddress, daoAddress, {
     title: `Remove ${memberToRemoveAddress} from members`,
     description: "",
     msgs: [
@@ -494,7 +494,7 @@ const proposeToAddMembers = async (
     remove: string[];
   } = { add: membersToAdd.map((m) => ({ addr: m, weight })), remove: [] };
 
-  return await makeProposal(networkId, senderAddress, network.coreDAOAddress, {
+  return await makeProposal(networkId, senderAddress, daoAddress, {
     title: `Add ${membersToAdd.length} member(s) with weight ${weight}`,
     description: "",
     msgs: [
