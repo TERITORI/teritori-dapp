@@ -24,7 +24,6 @@ import {
 } from "../../utils/style/layout";
 import HeaderMessage from "../HeaderMessage";
 import { NetworkSelector } from "../NetworkSelector/NetworkSelector";
-import { SearchBar } from "../Search/SearchBar";
 import { SelectedNetworkGate } from "../SelectedNetworkGate";
 import { ConnectWalletButton } from "../TopMenu/ConnectWalletButton";
 import { Footer } from "../footers/Footer";
