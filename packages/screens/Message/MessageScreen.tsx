@@ -18,8 +18,9 @@ import { ScreenContainer } from "../../components/ScreenContainer";
 import { Separator } from "../../components/Separator";
 import MessageCard from "../../components/cards/MessageCard";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
-import { useAppNavigation } from "../../utils/navigation";
+import { useAppNavigation, ScreenFC } from "../../utils/navigation";
 import { layout } from "../../utils/style/layout";
+
 export const MessageScreen: ScreenFC<"Message"> = () => {
   const [showTertiaryBox, setShowTertiaryBox] = useState(false);
   const [showAddFriend, setShowAddFriend] = useState(false);
