@@ -17,30 +17,28 @@ const imageSize = 100;
 export const DAOItem: React.FC<{
   daoId: string;
   style?: StyleProp<ViewStyle>;
-}> = ({ daoId: userId, style }) => {
-  const [network, daoAddress] = parseUserId(userId);
+}> = ({ daoId, style }) => {
+  const [network, daoAddress] = parseUserId(daoId);
   const {
     metadata: { image, public_name: name, public_bio: description, tokenId },
-  } = useNSUserInfo(userId);
+  } = useNSUserInfo(daoId);
 
   const fallbackSource =
     network?.kind === NetworkKind.Cosmos
-      ? { uri: network.nameServiceDefaultImage }
+      ? network.nameServiceDefaultImage
       : undefined;
 
   return (
     <OmniLink
-      to={{ screen: "UserPublicProfile", params: { id: userId } }}
+      to={{ screen: "UserPublicProfile", params: { id: daoId } }}
       style={[styles.container, style]}
     >
       <View style={{ alignItems: "center" }}>
         <OptimizedImage
           width={imageSize}
           height={imageSize}
-          source={{
-            uri: image || "",
-          }}
-          fallback={fallbackSource}
+          sourceURI={image}
+          fallbackURI={fallbackSource}
           style={{
             width: imageSize,
             height: imageSize,

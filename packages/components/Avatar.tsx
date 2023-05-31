@@ -37,9 +37,7 @@ export const Avatar: React.FC<AvatarProps> = ({
     <OptimizedImage
       width={avatarSize}
       height={avatarSize}
-      source={{
-        uri,
-      }}
+      sourceURI={uri}
       style={{
         width: avatarSize,
         height: avatarSize,

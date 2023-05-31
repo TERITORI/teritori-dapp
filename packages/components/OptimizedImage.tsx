@@ -1,33 +1,27 @@
 import React from "react";
 import { Image, ImageProps } from "react-native";
 
+// This only supports uri images since the proxy is only for external images
+
 export const OptimizedImage: React.FC<
-  ImageProps & {
+  Omit<ImageProps, "source"> & {
     width: number;
     height: number;
-    fallback?: ImageProps["source"];
+    sourceURI?: string | null;
+    fallbackURI?: string | null;
   }
-> = ({ source: baseSource, width, height, fallback, ...other }) => {
+> = ({ sourceURI: baseSourceURI, width, height, fallbackURI, ...other }) => {
   const [isError, setIsError] = React.useState(false);
-  const shouldUseFallback = isError && fallback !== undefined;
-  const source = shouldUseFallback ? fallback : baseSource;
-  if (typeof source === "number") {
-    return <Image source={source} {...other} />;
-  }
+  const shouldUseFallback = (!baseSourceURI || isError) && !!fallbackURI;
+  const sourceURI = shouldUseFallback ? fallbackURI : baseSourceURI;
   return (
     <Image
       onError={() => {
         setIsError(true);
       }}
-      source={
-        Array.isArray(source)
-          ? source.map((s) => ({
-              uri: transformURI(s.uri, width, height),
-            }))
-          : {
-              uri: transformURI(source?.uri, width, height),
-            }
-      }
+      source={{
+        uri: transformURI(sourceURI || undefined, width, height),
+      }}
       {...other}
     />
   );

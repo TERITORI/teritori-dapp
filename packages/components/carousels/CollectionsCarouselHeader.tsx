@@ -90,7 +90,7 @@ const CarouselCollectionItem: React.FC<{
       <TertiaryBox style={{ marginBottom: 40 }}>
         {collection.imageUri ? (
           <OptimizedImage
-            source={{ uri: collection.imageUri }}
+            sourceURI={collection.imageUri}
             width={HERO_SIZE}
             height={HERO_SIZE}
             style={{

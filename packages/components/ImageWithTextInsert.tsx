@@ -14,7 +14,7 @@ export const ImageWithTextInsert: React.FC<{
   return (
     <View style={[{ overflow: "hidden" }, style]}>
       <OptimizedImage
-        source={{ uri: imageURL }}
+        sourceURI={imageURL}
         style={{ width: size, height: size }}
         height={size}
         width={size}

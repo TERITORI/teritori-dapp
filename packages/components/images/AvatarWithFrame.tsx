@@ -52,12 +52,10 @@ export const AvatarWithFrame: React.FC<{
       ) : (
         <AnimationFadeIn style={styles.absolute}>
           <OptimizedImage
-            width={sizedStyles.image.width} // FIXME: use discrete sizing
-            height={sizedStyles.image.height} // FIXME: use discrete sizing
-            source={{
-              uri: image ? image : network?.nameServiceDefaultImage || "",
-            }}
-            fallback={{ uri: network?.nameServiceDefaultImage }}
+            width={sizedStyles.image.width}
+            height={sizedStyles.image.height}
+            sourceURI={image}
+            fallbackURI={network?.nameServiceDefaultImage}
             style={[
               sizedStyles.image,
               isDAO && {

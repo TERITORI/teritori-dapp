@@ -52,7 +52,7 @@ export const CollectionView: React.FC<{
         height={sizedStyles.box.height}
       >
         <OptimizedImage
-          source={{ uri: item.imageUri }}
+          sourceURI={item.imageUri}
           width={sizedStyles.image.width}
           height={sizedStyles.image.height}
           style={{

@@ -55,9 +55,8 @@ export const UPPIntro: React.FC<{
         <OptimizedImage
           width={windowWidth < RESPONSIVE_BREAKPOINT_S ? windowWidth : width}
           height={320}
-          source={{
-            uri: metadata?.public_profile_header || defaultUserProfileBannerPNG,
-          }}
+          sourceURI={metadata?.public_profile_header}
+          fallbackURI={defaultUserProfileBannerPNG}
           style={{
             height: "100%",
             width: "100%",

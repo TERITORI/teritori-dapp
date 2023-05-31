@@ -50,7 +50,7 @@ export const EnrollSlot: React.FC<EnrollSlotProps> = ({
           <>
             <OptimizedImage
               style={[styles.ripperImage, isStaked && { opacity: 0.4 }]}
-              source={{ uri: ripper.imageUri }}
+              sourceURI={ripper.imageUri}
               width={imageSize}
               height={imageSize}
             />
