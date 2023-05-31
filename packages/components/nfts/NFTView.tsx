@@ -19,6 +19,7 @@ import sendSVG from "../../../assets/icons/send.svg";
 import { NFT } from "../../api/marketplace/v1/marketplace";
 import { useDropdowns } from "../../context/DropdownsProvider";
 import { useIsMobile } from "../../hooks/useIsMobile";
+import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getCosmosNetwork, parseUserId } from "../../networks";
@@ -54,6 +55,7 @@ export const NFTView: React.FC<{
 }> = ({ data: nft, style }) => {
   const isMobile = useIsMobile();
   const cardWidth = isMobile ? 220 : 250;
+  const { width } = useMaxResolution();
   const insideMargin = layout.padding_x2;
   const contentWidth = cardWidth - insideMargin * 2;
   const flatStyle = StyleSheet.flatten(style);
@@ -67,6 +69,7 @@ export const NFTView: React.FC<{
   const localSelected = new Set(useSelector(selectSelectedNFTIds)).has(nft.id);
   const dispatch = useAppDispatch();
   const handleClick = (nft: NFT, selected: boolean) => {
+    if (width < 500) return; // disable cart on mobile
     if (!selected) {
       dispatch(addSelected(nft));
     } else {
