@@ -89,7 +89,7 @@ export const Sidebar: React.FC = () => {
   );
 
   const onRouteChange = (name: SidebarType["route"]) => {
-    // @ts-ignore
+    // @ts-expect-error
     navigation.navigate(name);
   };
 
