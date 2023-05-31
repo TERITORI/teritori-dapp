@@ -38,7 +38,6 @@ export const ScreenContainer: React.FC<{
   noMargin?: boolean;
   noScroll?: boolean;
   fullWidth?: boolean;
-  smallMargin?: boolean;
   forceNetworkId?: string;
   forceNetworkKind?: NetworkKind;
   responsive?: boolean;

@@ -168,7 +168,6 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
     <ScreenContainer
       key={`UserPublicProfile ${id}`} // this key is to reset the screen state when the id changes
       forceNetworkId={network?.id}
-      smallMargin
       responsive
       fullWidth
       noScroll={selectedTab === "userPosts" || selectedTab === "mentionsPosts"}
