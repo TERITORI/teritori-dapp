@@ -2,6 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import { View } from "react-native";
 
+import { Coin } from "../../api/teritori/coin";
+import { MsgBurnTokens } from "../../api/teritori/mint";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
@@ -16,6 +18,7 @@ import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useVaultConfig } from "../../hooks/vault/useVaultConfig";
 import {
   getCosmosNetwork,
+  getKeplrSigningStargateClient,
   mustGetNonSigningCosmWasmClient,
 } from "../../networks";
 import { prettyPrice } from "../../utils/coins";
@@ -43,6 +46,7 @@ const DAOManager: React.FC = () => {
   const networkId = useSelectedNetworkId();
   const network = getCosmosNetwork(networkId);
   const balances = useBalances(networkId, network?.coreDAOAddress);
+  const selectedWallet = useSelectedWallet();
   return (
     <View>
       <BrandText>Funds</BrandText>
@@ -54,6 +58,74 @@ const DAOManager: React.FC = () => {
           </BrandText>
         );
       })}
+      <PrimaryButton
+        text="Burn your TORI"
+        loader
+        onPress={async () => {
+          if (!selectedWallet?.address) {
+            return;
+          }
+          const client = await getKeplrSigningStargateClient(
+            selectedWallet.networkId
+          );
+          const burnMsg: MsgBurnTokens = {
+            sender: selectedWallet?.address,
+            amount: [
+              Buffer.from(
+                Coin.encode({ amount: "1000000", denom: "utori" }).finish()
+              ).toString(),
+            ],
+          };
+          await client.signAndBroadcast(
+            selectedWallet?.address,
+            [
+              {
+                typeUrl: "/teritori.mint.v1beta1.MsgBurnTokens",
+                value: burnMsg,
+              },
+            ],
+            "auto"
+          );
+        }}
+      />
+      <PrimaryButton
+        text="Burn a TORI"
+        loader
+        onPress={async () => {
+          if (!network?.coreDAOAddress) {
+            return;
+          }
+
+          const burnMsg: MsgBurnTokens = {
+            sender: network.coreDAOAddress,
+            amount: [
+              Buffer.from(
+                Coin.encode({ amount: "1000000", denom: "utori" }).finish()
+              ).toString(),
+            ],
+          };
+
+          await makeProposal(
+            networkId,
+            selectedWallet?.address,
+            network?.coreDAOAddress,
+            {
+              title: "Burn a TORI",
+              description: "",
+              msgs: [
+                {
+                  stargate: {
+                    type_url: "/teritori.mint.v1beta1.MsgBurnTokens",
+                    value: Buffer.from(
+                      MsgBurnTokens.encode(burnMsg).finish()
+                    ).toString("base64"),
+                  },
+                },
+              ],
+            }
+          );
+        }}
+      />
     </View>
   );
 };
