@@ -35,7 +35,6 @@ export const TransactionProposalScreen = () => {
   // returns
   return (
     <ScreenContainer
-      isHeaderSmallMargin
       headerChildren={<BackTo label="Transactions history" />}
       footerChildren={<></>}
       noMargin

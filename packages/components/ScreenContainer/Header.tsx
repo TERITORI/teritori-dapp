@@ -2,18 +2,13 @@ import React from "react";
 import { View, ViewStyle, StyleProp } from "react-native";
 
 import { neutral33 } from "../../utils/style/colors";
-import {
-  headerHeight,
-  layout,
-  screenContainerContentMarginHorizontal,
-} from "../../utils/style/layout";
+import { headerHeight, layout } from "../../utils/style/layout";
 import { BackButton } from "../navigation/components/BackButton";
 
 export const Header: React.FC<{
-  isHeaderSmallMargin?: boolean;
   style?: StyleProp<ViewStyle>;
   onBackPress?: () => void;
-}> = ({ children, style, isHeaderSmallMargin, onBackPress }) => {
+}> = ({ children, style, onBackPress }) => {
   return (
     <View
       style={[
@@ -37,9 +32,7 @@ export const Header: React.FC<{
           flex: 1,
           flexDirection: "row",
           alignItems: "center",
-          marginLeft: isHeaderSmallMargin
-            ? layout.contentPadding
-            : screenContainerContentMarginHorizontal,
+          marginLeft: layout.contentPadding,
         }}
       >
         {onBackPress && <BackButton onPress={onBackPress} />}

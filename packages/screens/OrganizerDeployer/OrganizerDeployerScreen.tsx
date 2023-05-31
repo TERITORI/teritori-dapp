@@ -224,7 +224,6 @@ export const OrganizerDeployerScreen = () => {
       noMargin
       fullWidth
       noScroll
-      isHeaderSmallMargin
     >
       <View style={styles.row}>
         <View style={styles.fill}>

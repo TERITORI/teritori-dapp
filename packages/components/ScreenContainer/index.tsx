@@ -38,7 +38,6 @@ export const ScreenContainer: React.FC<{
   noMargin?: boolean;
   noScroll?: boolean;
   fullWidth?: boolean;
-  isHeaderSmallMargin?: boolean;
   smallMargin?: boolean;
   forceNetworkId?: string;
   forceNetworkKind?: NetworkKind;
@@ -54,7 +53,6 @@ export const ScreenContainer: React.FC<{
   noMargin,
   noScroll,
   fullWidth,
-  isHeaderSmallMargin,
   responsive,
   onBackPress,
   maxWidth,
@@ -118,12 +116,7 @@ export const ScreenContainer: React.FC<{
 
         <View style={{ width: "100%", flex: 1 }}>
           {/*==== Header*/}
-          <Header
-            isHeaderSmallMargin={isHeaderSmallMargin}
-            onBackPress={onBackPress}
-          >
-            {headerChildren}
-          </Header>
+          <Header onBackPress={onBackPress}>{headerChildren}</Header>
           <View
             style={{ width: "100%", flexDirection: "row", flex: 1, height }}
           >

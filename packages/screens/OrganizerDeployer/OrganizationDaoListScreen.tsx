@@ -29,7 +29,6 @@ export const OrganizationDaoListScreen = () => {
       noMargin
       fullWidth
       noScroll
-      isHeaderSmallMargin
       forceNetworkKind={NetworkKind.Cosmos}
     >
       <ScrollView>

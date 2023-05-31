@@ -45,7 +45,6 @@ export const MultisigWalletManageScreen = () => {
   // returns
   return (
     <ScreenContainer
-      isHeaderSmallMargin
       headerChildren={<BackTo label="Manage Multisig Wallet" />}
       footerChildren={<></>}
       noMargin
