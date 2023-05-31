@@ -124,7 +124,6 @@ func (h *Handler) handleExecuteInstantiateContractWithSelfAdmin(e *Message, exec
 	contractAddresses := e.Events["wasm._contract_address"]
 	daoContractAddress := contractAddresses[1]
 
-	// FIXME: this might crash if the proposal module is configured as expected
 	threshold := ""
 	if proposalModulesInsantiateInfoMsg.Threshold.Threshold.Percent != "" {
 		threshold = proposalModulesInsantiateInfoMsg.Threshold.Threshold.Percent
