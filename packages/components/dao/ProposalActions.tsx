@@ -27,9 +27,7 @@ export const ProposalActions: React.FC<{
   daoId: string | undefined;
   proposal: ProposalResponse;
 }> = ({ daoId, proposal }) => {
-  const wallet = useSelectedWallet();
-  const selectedWallet = wallet;
-  const proposalInfo = proposal;
+  const selectedWallet = useSelectedWallet();
   const { setToastError, setToastSuccess } = useFeedbacks();
   const { isDAOMember: selectedWalletIsDAOMember } = useIsDAOMember(
     daoId,
@@ -38,20 +36,20 @@ export const ProposalActions: React.FC<{
   const invalidateDAOProposals = useInvalidateDAOProposals(daoId);
   const invalidateDAOVoteInfo = useInvalidateDAOVoteInfo(
     daoId,
-    wallet?.userId,
+    selectedWallet?.userId,
     proposal.id
   );
   const { daoFirstProposalModule } = useDAOFirstProposalModule(daoId);
   const { daoVoteInfo: ownVote } = useDAOVoteInfo(
     daoId,
-    wallet?.userId,
+    selectedWallet?.userId,
     proposal.id
   );
 
   const vote = async (v: Vote) => {
     if (
       !selectedWallet ||
-      proposalInfo.proposal.status !== "open" ||
+      proposal.proposal.status !== "open" ||
       !daoFirstProposalModule?.address
     )
       return;
@@ -65,7 +63,7 @@ export const ProposalActions: React.FC<{
         daoFirstProposalModule?.address
       );
       await daoProposalClient.vote(
-        { proposalId: proposalInfo.id, vote: v },
+        { proposalId: proposal.id, vote: v },
         "auto"
       );
       await Promise.all([invalidateDAOVoteInfo(), invalidateDAOProposals()]);
@@ -81,7 +79,7 @@ export const ProposalActions: React.FC<{
   const execute = async () => {
     if (
       !selectedWallet ||
-      proposalInfo.proposal.status !== "passed" ||
+      proposal.proposal.status !== "passed" ||
       !daoFirstProposalModule?.address
     )
       return;
@@ -95,14 +93,14 @@ export const ProposalActions: React.FC<{
         daoFirstProposalModule?.address
       );
       const res = await daoProposalClient.execute({
-        proposalId: proposalInfo.id,
+        proposalId: proposal.id,
       });
       if (
         res.events.find((ev) =>
           ev.attributes.find(
             (attr) =>
               attr.key === "proposal_execution_failed" &&
-              attr.value === proposalInfo.id.toString()
+              attr.value === proposal.id.toString()
           )
         )
       ) {
