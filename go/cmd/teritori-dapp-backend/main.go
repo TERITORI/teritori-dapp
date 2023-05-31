@@ -122,7 +122,7 @@ func main() {
 		IndexerDB: indexerDB,
 	})
 
-	daoSvc := dao.NewDaoService(context.Background(), &dao.Config{
+	daoSvc := dao.NewDAOService(context.Background(), &dao.Config{
 		Logger:    logger,
 		IndexerDB: indexerDB,
 	})
@@ -137,7 +137,7 @@ func main() {
 	server := grpc.NewServer()
 	marketplacepb.RegisterMarketplaceServiceServer(server, marketplaceSvc)
 	p2epb.RegisterP2EServiceServer(server, p2eSvc)
-	daopb.RegisterDaoServiceServer(server, daoSvc)
+	daopb.RegisterDAOServiceServer(server, daoSvc)
 	feedpb.RegisterFeedServiceServer(server, feedSvc)
 
 	wrappedServer := grpcweb.WrapServer(server,

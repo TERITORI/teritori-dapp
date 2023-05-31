@@ -2,27 +2,29 @@ syntax = "proto3";
 package dao.v1;
 option go_package = "./daopb";
 
-service DaoService {
-    rpc DaoList(DaoListRequest) returns (DaoListResponse);
+service DAOService {
+    rpc DAOs(DAOsRequest) returns (DAOsResponse);
 }
 
-message DaoListRequest {
-  string member_address = 1;
+message DAOsRequest {
+  string network_id = 1;
+  string member_address = 2;
 }
 
-message DaoListResponse {
-    repeated DaoInfo daos = 1;
+message DAOsResponse {
+    repeated DAO daos = 1;
 }
 
-message DaoInfo {
-    string admin = 1;
-    string contract_address = 2;
-    string name = 3;
-    string description = 4;
-    string image_url = 5;
-    string quorum = 6;
-    string threshold = 7;
-    string token_name = 8;
-    string token_symbol = 9;
-    uint64 unstaking_duration = 10;
+message DAO {
+    string id = 1;
+    string admin = 2;
+    string contract_address = 3;
+    string name = 4;
+    string description = 5;
+    string image_url = 6;
+    string quorum = 7;
+    string threshold = 8;
+    string token_name = 9;
+    string token_symbol = 10;
+    uint64 unstaking_duration = 11;
 }

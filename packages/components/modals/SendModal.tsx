@@ -15,6 +15,7 @@ import {
   getNetwork,
   keplrCurrencyFromNativeCurrencyInfo,
   NativeCurrencyInfo,
+  parseUserId,
 } from "../../networks";
 import { TransactionForm } from "../../screens/WalletManager/types";
 import { prettyPrice } from "../../utils/coins";
@@ -64,14 +65,16 @@ export const SendModal: React.FC<SendModalProps> = ({
   const { setToastError, setToastSuccess } = useFeedbacks();
   const selectedWallet = useSelectedWallet();
   const { control, setValue, handleSubmit } = useForm<TransactionForm>();
-  const [selectedDAOAddress, setSelectedDAOAddress] = useState("");
-  const { daos } = useDAOs(networkId, {
+  const [selectedDAOId, setSelectedDAOId] = useState("");
+  const [, daoAddress] = parseUserId(selectedDAOId);
+  const { daos } = useDAOs({
+    networkId,
     memberAddress: selectedWallet?.address,
   });
 
   const balances = useBalances(
     networkId,
-    selectedDAOAddress || selectedWallet?.address
+    daoAddress || selectedWallet?.address
   );
 
   const ModalHeader = useCallback(
@@ -112,15 +115,15 @@ export const SendModal: React.FC<SendModalProps> = ({
         nativeCurrency.decimals
       ).atomics;
 
-      if (selectedDAOAddress) {
+      if (selectedDAOId) {
         // DAO send
         const selectedDAO = daos?.find(
-          (dao) => dao.address === selectedDAOAddress
+          (dao) => dao.contractAddress === selectedDAOId
         );
         if (!selectedDAO) {
           throw new Error("no selected DAO");
         }
-        await makeProposal(networkId, sender, selectedDAOAddress, {
+        await makeProposal(networkId, sender, selectedDAOId, {
           title: `Send ${prettyPrice(
             networkId,
             amount,
@@ -131,7 +134,7 @@ export const SendModal: React.FC<SendModalProps> = ({
             {
               bank: {
                 send: {
-                  from_address: selectedDAOAddress,
+                  from_address: selectedDAOId,
                   to_address: receiver,
                   amount: [{ amount, denom: nativeCurrency.denom }],
                 },
@@ -224,8 +227,8 @@ export const SendModal: React.FC<SendModalProps> = ({
       <SpacerColumn size={2.5} />
 
       <DAOSelector
-        value={selectedDAOAddress}
-        onSelect={setSelectedDAOAddress}
+        value={selectedDAOId}
+        onSelect={setSelectedDAOId}
         userId={selectedWallet?.userId}
         style={{ marginBottom: layout.padding_x2_5 }}
       />
@@ -256,7 +259,7 @@ export const SendModal: React.FC<SendModalProps> = ({
 
       <PrimaryButton
         size="XL"
-        text={selectedDAOAddress ? "Propose" : "Send"}
+        text={selectedDAOId ? "Propose" : "Send"}
         fullWidth
         disabled={max === "0"}
         loader

@@ -124,6 +124,7 @@ func (h *Handler) handleExecuteInstantiateContractWithSelfAdmin(e *Message, exec
 	contractAddresses := e.Events["wasm._contract_address"]
 	daoContractAddress := contractAddresses[1]
 
+	// FIXME: this might crash if the proposal module is configured as expected
 	threshold := ""
 	if proposalModulesInsantiateInfoMsg.Threshold.Threshold.Percent != "" {
 		threshold = proposalModulesInsantiateInfoMsg.Threshold.Threshold.Percent
@@ -131,7 +132,7 @@ func (h *Handler) handleExecuteInstantiateContractWithSelfAdmin(e *Message, exec
 		threshold = "MAJORITY"
 	}
 
-	dao := &indexerdb.Dao{
+	dao := &indexerdb.DAO{
 		ContractAddress:         daoContractAddress,
 		Admin:                   instantiateMsg.Admin,
 		Name:                    instantiateMsg.Name,
@@ -152,11 +153,11 @@ func (h *Handler) handleExecuteInstantiateContractWithSelfAdmin(e *Message, exec
 		dao.TokenSymbol = votingModuleInstantiateMsg.TokenInfo.New.Symbol
 		dao.UnstakingDuration = votingModuleInstantiateMsg.TokenInfo.New.UnstakingDuration.Time
 	} else {
-		members := make([]*indexerdb.DaoMember, len(votingModuleInstantiateMsg.InitialMembers))
+		members := make([]*indexerdb.DAOMember, len(votingModuleInstantiateMsg.InitialMembers))
 		for i, m := range votingModuleInstantiateMsg.InitialMembers {
-			members[i] = &indexerdb.DaoMember{
-				DaoNetworkID:       h.config.Network.ID,
-				DaoContractAddress: daoContractAddress,
+			members[i] = &indexerdb.DAOMember{
+				DAONetworkID:       h.config.Network.ID,
+				DAOContractAddress: daoContractAddress,
 				MemberAddress:      m.Address,
 			}
 		}
@@ -189,7 +190,7 @@ func (h *Handler) handleExecuteDAOExecute(e *Message, execMsg *wasmtypes.MsgExec
 	}
 
 	// find dao
-	var dao indexerdb.Dao
+	var dao indexerdb.DAO
 	err := h.db.First(&dao, "network_id = ? AND proposal_module_address = ?", h.config.Network.ID, execMsg.Contract).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		h.logger.Debug("ignored dao execute for unknown dao", zap.String("tx", e.TxHash), zap.String("sender", execMsg.Sender))
@@ -285,7 +286,7 @@ type UpdateMembers struct {
 
 func (h *Handler) handleExecuteDAOUpdateMembers(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
 	// find dao
-	var dao indexerdb.Dao
+	var dao indexerdb.DAO
 	err := h.db.First(&dao, "network_id = ? AND group_contract_address = ?", h.config.Network.ID, execMsg.Contract).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		h.logger.Debug("ignored update_members for unknown dao", zap.String("tx", e.TxHash), zap.String("sender", execMsg.Sender))
@@ -302,11 +303,11 @@ func (h *Handler) handleExecuteDAOUpdateMembers(e *Message, execMsg *wasmtypes.M
 
 	// add/update members
 	if len(payload.UpdateMembers.Add) != 0 {
-		dbMembers := make([]*indexerdb.DaoMember, len(payload.UpdateMembers.Add))
+		dbMembers := make([]*indexerdb.DAOMember, len(payload.UpdateMembers.Add))
 		for i, m := range payload.UpdateMembers.Add {
-			dbMembers[i] = &indexerdb.DaoMember{
-				DaoNetworkID:       h.config.Network.ID,
-				DaoContractAddress: dao.ContractAddress,
+			dbMembers[i] = &indexerdb.DAOMember{
+				DAONetworkID:       h.config.Network.ID,
+				DAOContractAddress: dao.ContractAddress,
 				MemberAddress:      m.Address,
 			}
 		}
@@ -319,7 +320,7 @@ func (h *Handler) handleExecuteDAOUpdateMembers(e *Message, execMsg *wasmtypes.M
 
 	// remove members
 	if len(payload.UpdateMembers.Remove) != 0 {
-		result := h.db.Delete(&indexerdb.DaoMember{},
+		result := h.db.Delete(&indexerdb.DAOMember{},
 			"dao_network_id = ? AND dao_contract_address = ? AND member_address IN ?",
 			h.config.Network.ID, dao.ContractAddress, payload.UpdateMembers.Remove,
 		)
@@ -348,7 +349,7 @@ type DaoProposeMsg struct {
 
 func (h *Handler) handleExecuteDAOPropose(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
 	// find dao
-	var dao indexerdb.Dao
+	var dao indexerdb.DAO
 	err := h.db.First(&dao, "network_id = ? AND pre_propose_module_address = ?", h.config.Network.ID, execMsg.Contract).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		h.logger.Debug("propose ignored for unknown dao", zap.String("tx", e.TxHash), zap.String("contract", execMsg.Contract))

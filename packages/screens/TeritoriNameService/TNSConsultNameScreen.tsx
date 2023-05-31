@@ -1,5 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { View } from "react-native";
 
 import { TNSModalCommonProps } from "./TNSHomeScreen";
@@ -188,11 +188,14 @@ export const TNSConsultNameScreen: React.FC<TNSConsultNameProps> = ({
   );
   const { nameOwner } = useNSNameOwner(networkId, tokenId);
   const ownerId = getUserId(networkId, nameOwner);
-  const { daos } = useDAOs(networkId, { memberAddress: wallet?.address });
+  const { daos } = useDAOs({ networkId, memberAddress: wallet?.address });
 
-  const isOwnedByUser =
-    ownerId === wallet?.userId ||
-    !!daos?.find((dao) => dao.address === nameOwner);
+  const isOwnedByUser = useMemo(
+    () =>
+      ownerId === wallet?.userId || !!daos?.find((dao) => dao.id === ownerId),
+    [daos, ownerId, wallet?.userId]
+  );
+
   const { primaryAlias } = useNSPrimaryAlias(ownerId);
   const isPrimary = primaryAlias === tokenId;
 

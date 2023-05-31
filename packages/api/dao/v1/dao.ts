@@ -6,15 +6,17 @@ import _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "dao.v1";
 
-export interface DaoListRequest {
+export interface DAOsRequest {
+  networkId: string;
   memberAddress: string;
 }
 
-export interface DaoListResponse {
-  daos: DaoInfo[];
+export interface DAOsResponse {
+  daos: DAO[];
 }
 
-export interface DaoInfo {
+export interface DAO {
+  id: string;
   admin: string;
   contractAddress: string;
   name: string;
@@ -27,26 +29,32 @@ export interface DaoInfo {
   unstakingDuration: number;
 }
 
-function createBaseDaoListRequest(): DaoListRequest {
-  return { memberAddress: "" };
+function createBaseDAOsRequest(): DAOsRequest {
+  return { networkId: "", memberAddress: "" };
 }
 
-export const DaoListRequest = {
-  encode(message: DaoListRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const DAOsRequest = {
+  encode(message: DAOsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.networkId !== "") {
+      writer.uint32(10).string(message.networkId);
+    }
     if (message.memberAddress !== "") {
-      writer.uint32(10).string(message.memberAddress);
+      writer.uint32(18).string(message.memberAddress);
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): DaoListRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): DAOsRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseDaoListRequest();
+    const message = createBaseDAOsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          message.networkId = reader.string();
+          break;
+        case 2:
           message.memberAddress = reader.string();
           break;
         default:
@@ -57,44 +65,49 @@ export const DaoListRequest = {
     return message;
   },
 
-  fromJSON(object: any): DaoListRequest {
-    return { memberAddress: isSet(object.memberAddress) ? String(object.memberAddress) : "" };
+  fromJSON(object: any): DAOsRequest {
+    return {
+      networkId: isSet(object.networkId) ? String(object.networkId) : "",
+      memberAddress: isSet(object.memberAddress) ? String(object.memberAddress) : "",
+    };
   },
 
-  toJSON(message: DaoListRequest): unknown {
+  toJSON(message: DAOsRequest): unknown {
     const obj: any = {};
+    message.networkId !== undefined && (obj.networkId = message.networkId);
     message.memberAddress !== undefined && (obj.memberAddress = message.memberAddress);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<DaoListRequest>, I>>(object: I): DaoListRequest {
-    const message = createBaseDaoListRequest();
+  fromPartial<I extends Exact<DeepPartial<DAOsRequest>, I>>(object: I): DAOsRequest {
+    const message = createBaseDAOsRequest();
+    message.networkId = object.networkId ?? "";
     message.memberAddress = object.memberAddress ?? "";
     return message;
   },
 };
 
-function createBaseDaoListResponse(): DaoListResponse {
+function createBaseDAOsResponse(): DAOsResponse {
   return { daos: [] };
 }
 
-export const DaoListResponse = {
-  encode(message: DaoListResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const DAOsResponse = {
+  encode(message: DAOsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.daos) {
-      DaoInfo.encode(v!, writer.uint32(10).fork()).ldelim();
+      DAO.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): DaoListResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): DAOsResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseDaoListResponse();
+    const message = createBaseDAOsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.daos.push(DaoInfo.decode(reader, reader.uint32()));
+          message.daos.push(DAO.decode(reader, reader.uint32()));
           break;
         default:
           reader.skipType(tag & 7);
@@ -104,29 +117,30 @@ export const DaoListResponse = {
     return message;
   },
 
-  fromJSON(object: any): DaoListResponse {
-    return { daos: Array.isArray(object?.daos) ? object.daos.map((e: any) => DaoInfo.fromJSON(e)) : [] };
+  fromJSON(object: any): DAOsResponse {
+    return { daos: Array.isArray(object?.daos) ? object.daos.map((e: any) => DAO.fromJSON(e)) : [] };
   },
 
-  toJSON(message: DaoListResponse): unknown {
+  toJSON(message: DAOsResponse): unknown {
     const obj: any = {};
     if (message.daos) {
-      obj.daos = message.daos.map((e) => e ? DaoInfo.toJSON(e) : undefined);
+      obj.daos = message.daos.map((e) => e ? DAO.toJSON(e) : undefined);
     } else {
       obj.daos = [];
     }
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<DaoListResponse>, I>>(object: I): DaoListResponse {
-    const message = createBaseDaoListResponse();
-    message.daos = object.daos?.map((e) => DaoInfo.fromPartial(e)) || [];
+  fromPartial<I extends Exact<DeepPartial<DAOsResponse>, I>>(object: I): DAOsResponse {
+    const message = createBaseDAOsResponse();
+    message.daos = object.daos?.map((e) => DAO.fromPartial(e)) || [];
     return message;
   },
 };
 
-function createBaseDaoInfo(): DaoInfo {
+function createBaseDAO(): DAO {
   return {
+    id: "",
     admin: "",
     contractAddress: "",
     name: "",
@@ -140,76 +154,82 @@ function createBaseDaoInfo(): DaoInfo {
   };
 }
 
-export const DaoInfo = {
-  encode(message: DaoInfo, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const DAO = {
+  encode(message: DAO, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
     if (message.admin !== "") {
-      writer.uint32(10).string(message.admin);
+      writer.uint32(18).string(message.admin);
     }
     if (message.contractAddress !== "") {
-      writer.uint32(18).string(message.contractAddress);
+      writer.uint32(26).string(message.contractAddress);
     }
     if (message.name !== "") {
-      writer.uint32(26).string(message.name);
+      writer.uint32(34).string(message.name);
     }
     if (message.description !== "") {
-      writer.uint32(34).string(message.description);
+      writer.uint32(42).string(message.description);
     }
     if (message.imageUrl !== "") {
-      writer.uint32(42).string(message.imageUrl);
+      writer.uint32(50).string(message.imageUrl);
     }
     if (message.quorum !== "") {
-      writer.uint32(50).string(message.quorum);
+      writer.uint32(58).string(message.quorum);
     }
     if (message.threshold !== "") {
-      writer.uint32(58).string(message.threshold);
+      writer.uint32(66).string(message.threshold);
     }
     if (message.tokenName !== "") {
-      writer.uint32(66).string(message.tokenName);
+      writer.uint32(74).string(message.tokenName);
     }
     if (message.tokenSymbol !== "") {
-      writer.uint32(74).string(message.tokenSymbol);
+      writer.uint32(82).string(message.tokenSymbol);
     }
     if (message.unstakingDuration !== 0) {
-      writer.uint32(80).uint64(message.unstakingDuration);
+      writer.uint32(88).uint64(message.unstakingDuration);
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): DaoInfo {
+  decode(input: _m0.Reader | Uint8Array, length?: number): DAO {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseDaoInfo();
+    const message = createBaseDAO();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.admin = reader.string();
+          message.id = reader.string();
           break;
         case 2:
-          message.contractAddress = reader.string();
+          message.admin = reader.string();
           break;
         case 3:
-          message.name = reader.string();
+          message.contractAddress = reader.string();
           break;
         case 4:
-          message.description = reader.string();
+          message.name = reader.string();
           break;
         case 5:
-          message.imageUrl = reader.string();
+          message.description = reader.string();
           break;
         case 6:
-          message.quorum = reader.string();
+          message.imageUrl = reader.string();
           break;
         case 7:
-          message.threshold = reader.string();
+          message.quorum = reader.string();
           break;
         case 8:
-          message.tokenName = reader.string();
+          message.threshold = reader.string();
           break;
         case 9:
-          message.tokenSymbol = reader.string();
+          message.tokenName = reader.string();
           break;
         case 10:
+          message.tokenSymbol = reader.string();
+          break;
+        case 11:
           message.unstakingDuration = longToNumber(reader.uint64() as Long);
           break;
         default:
@@ -220,8 +240,9 @@ export const DaoInfo = {
     return message;
   },
 
-  fromJSON(object: any): DaoInfo {
+  fromJSON(object: any): DAO {
     return {
+      id: isSet(object.id) ? String(object.id) : "",
       admin: isSet(object.admin) ? String(object.admin) : "",
       contractAddress: isSet(object.contractAddress) ? String(object.contractAddress) : "",
       name: isSet(object.name) ? String(object.name) : "",
@@ -235,8 +256,9 @@ export const DaoInfo = {
     };
   },
 
-  toJSON(message: DaoInfo): unknown {
+  toJSON(message: DAO): unknown {
     const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
     message.admin !== undefined && (obj.admin = message.admin);
     message.contractAddress !== undefined && (obj.contractAddress = message.contractAddress);
     message.name !== undefined && (obj.name = message.name);
@@ -250,8 +272,9 @@ export const DaoInfo = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<DaoInfo>, I>>(object: I): DaoInfo {
-    const message = createBaseDaoInfo();
+  fromPartial<I extends Exact<DeepPartial<DAO>, I>>(object: I): DAO {
+    const message = createBaseDAO();
+    message.id = object.id ?? "";
     message.admin = object.admin ?? "";
     message.contractAddress = object.contractAddress ?? "";
     message.name = object.name ?? "";
@@ -266,39 +289,39 @@ export const DaoInfo = {
   },
 };
 
-export interface DaoService {
-  DaoList(request: DeepPartial<DaoListRequest>, metadata?: grpc.Metadata): Promise<DaoListResponse>;
+export interface DAOService {
+  DAOs(request: DeepPartial<DAOsRequest>, metadata?: grpc.Metadata): Promise<DAOsResponse>;
 }
 
-export class DaoServiceClientImpl implements DaoService {
+export class DAOServiceClientImpl implements DAOService {
   private readonly rpc: Rpc;
 
   constructor(rpc: Rpc) {
     this.rpc = rpc;
-    this.DaoList = this.DaoList.bind(this);
+    this.DAOs = this.DAOs.bind(this);
   }
 
-  DaoList(request: DeepPartial<DaoListRequest>, metadata?: grpc.Metadata): Promise<DaoListResponse> {
-    return this.rpc.unary(DaoServiceDaoListDesc, DaoListRequest.fromPartial(request), metadata);
+  DAOs(request: DeepPartial<DAOsRequest>, metadata?: grpc.Metadata): Promise<DAOsResponse> {
+    return this.rpc.unary(DAOServiceDAOsDesc, DAOsRequest.fromPartial(request), metadata);
   }
 }
 
-export const DaoServiceDesc = { serviceName: "dao.v1.DaoService" };
+export const DAOServiceDesc = { serviceName: "dao.v1.DAOService" };
 
-export const DaoServiceDaoListDesc: UnaryMethodDefinitionish = {
-  methodName: "DaoList",
-  service: DaoServiceDesc,
+export const DAOServiceDAOsDesc: UnaryMethodDefinitionish = {
+  methodName: "DAOs",
+  service: DAOServiceDesc,
   requestStream: false,
   responseStream: false,
   requestType: {
     serializeBinary() {
-      return DaoListRequest.encode(this).finish();
+      return DAOsRequest.encode(this).finish();
     },
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
       return {
-        ...DaoListResponse.decode(data),
+        ...DAOsResponse.decode(data),
         toObject() {
           return this;
         },

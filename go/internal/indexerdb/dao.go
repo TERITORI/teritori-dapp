@@ -5,7 +5,7 @@ import (
 	"gorm.io/datatypes"
 )
 
-type Dao struct {
+type DAO struct {
 	NetworkID               string `gorm:"primaryKey"`
 	ContractAddress         string `gorm:"primaryKey"`
 	Admin                   string
@@ -22,13 +22,13 @@ type Dao struct {
 	PreProposeModuleAddress string `gorm:"index"`
 	GroupContractAddress    string `gorm:"index"`
 	ProposalModuleAddress   string `gorm:"index"`
-	Members                 []*DaoMember
+	Members                 []*DAOMember
 	Proposals               []*DaoProposal
 }
 
-type DaoMember struct {
-	DaoNetworkID       string `gorm:"primaryKey"`
-	DaoContractAddress string `gorm:"primaryKey"`
+type DAOMember struct {
+	DAONetworkID       string `gorm:"primaryKey"`
+	DAOContractAddress string `gorm:"primaryKey"`
 	MemberAddress      string `gorm:"primaryKey"`
 }
 

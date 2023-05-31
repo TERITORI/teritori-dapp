@@ -57,8 +57,8 @@ var allModels = []interface{}{
 	&Post{},
 
 	// orgs
-	&Dao{},
-	&DaoMember{},
+	&DAO{},
+	&DAOMember{},
 	&DaoProposal{},
 }
 

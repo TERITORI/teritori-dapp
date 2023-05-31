@@ -43,14 +43,15 @@ export const TNSUpdateNameScreen: React.FC<TNSUpdateNameScreenProps> = ({
   const normalizedTokenId = (
     name + network?.nameServiceTLD || ""
   ).toLowerCase();
-  const { daos } = useDAOs(selectedWallet?.networkId, {
+  const { daos } = useDAOs({
+    networkId: selectedWallet?.networkId,
     memberAddress: selectedWallet?.address,
   });
   const { nameOwner } = useNSNameOwner(
     selectedWallet?.networkId,
     network?.nameServiceTLD ? name + network.nameServiceTLD : ""
   );
-  const ownerDAO = daos?.find((dao) => dao.address === nameOwner);
+  const ownerDAO = daos?.find((dao) => dao.contractAddress === nameOwner);
 
   const initData = async () => {
     try {
@@ -122,7 +123,7 @@ export const TNSUpdateNameScreen: React.FC<TNSUpdateNameScreenProps> = ({
         const res = await makeProposal(
           networkId,
           selectedWallet.address,
-          ownerDAO.address,
+          ownerDAO.contractAddress,
           {
             title: `Update ${msg.update_metadata.token_id}`,
             description: "",

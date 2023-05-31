@@ -11,8 +11,8 @@ import { BrandText } from "../../components/BrandText";
 import { NotFound } from "../../components/NotFound";
 import { Quests } from "../../components/Quests";
 import { ScreenContainer } from "../../components/ScreenContainer";
+import { DAOMembers } from "../../components/dao/DAOMembers";
 import { DAOProposals } from "../../components/dao/DAOProposals";
-import { DAOMembers } from "../../components/dao/DaoMembers";
 import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
 import { UPPNFTs } from "../../components/userPublicProfile/UPPNFTs";
 import { useIsDAO } from "../../hooks/cosmwasm/useCosmWasmContractInfo";
@@ -133,7 +133,7 @@ const SelectedTabContent: React.FC<{
       return <Assets userId={userId} readOnly />;
     case "daos":
       return (
-        <DAOList networkId={network?.id} req={{ memberAddress: userAddress }} />
+        <DAOList req={{ networkId: network?.id, memberAddress: userAddress }} />
       );
     default:
       return null;

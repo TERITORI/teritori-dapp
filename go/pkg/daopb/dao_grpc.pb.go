@@ -18,86 +18,86 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// DaoServiceClient is the client API for DaoService service.
+// DAOServiceClient is the client API for DAOService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type DaoServiceClient interface {
-	DaoList(ctx context.Context, in *DaoListRequest, opts ...grpc.CallOption) (*DaoListResponse, error)
+type DAOServiceClient interface {
+	DAOs(ctx context.Context, in *DAOsRequest, opts ...grpc.CallOption) (*DAOsResponse, error)
 }
 
-type daoServiceClient struct {
+type dAOServiceClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewDaoServiceClient(cc grpc.ClientConnInterface) DaoServiceClient {
-	return &daoServiceClient{cc}
+func NewDAOServiceClient(cc grpc.ClientConnInterface) DAOServiceClient {
+	return &dAOServiceClient{cc}
 }
 
-func (c *daoServiceClient) DaoList(ctx context.Context, in *DaoListRequest, opts ...grpc.CallOption) (*DaoListResponse, error) {
-	out := new(DaoListResponse)
-	err := c.cc.Invoke(ctx, "/dao.v1.DaoService/DaoList", in, out, opts...)
+func (c *dAOServiceClient) DAOs(ctx context.Context, in *DAOsRequest, opts ...grpc.CallOption) (*DAOsResponse, error) {
+	out := new(DAOsResponse)
+	err := c.cc.Invoke(ctx, "/dao.v1.DAOService/DAOs", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// DaoServiceServer is the server API for DaoService service.
-// All implementations must embed UnimplementedDaoServiceServer
+// DAOServiceServer is the server API for DAOService service.
+// All implementations must embed UnimplementedDAOServiceServer
 // for forward compatibility
-type DaoServiceServer interface {
-	DaoList(context.Context, *DaoListRequest) (*DaoListResponse, error)
-	mustEmbedUnimplementedDaoServiceServer()
+type DAOServiceServer interface {
+	DAOs(context.Context, *DAOsRequest) (*DAOsResponse, error)
+	mustEmbedUnimplementedDAOServiceServer()
 }
 
-// UnimplementedDaoServiceServer must be embedded to have forward compatible implementations.
-type UnimplementedDaoServiceServer struct {
+// UnimplementedDAOServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedDAOServiceServer struct {
 }
 
-func (UnimplementedDaoServiceServer) DaoList(context.Context, *DaoListRequest) (*DaoListResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DaoList not implemented")
+func (UnimplementedDAOServiceServer) DAOs(context.Context, *DAOsRequest) (*DAOsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DAOs not implemented")
 }
-func (UnimplementedDaoServiceServer) mustEmbedUnimplementedDaoServiceServer() {}
+func (UnimplementedDAOServiceServer) mustEmbedUnimplementedDAOServiceServer() {}
 
-// UnsafeDaoServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to DaoServiceServer will
+// UnsafeDAOServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to DAOServiceServer will
 // result in compilation errors.
-type UnsafeDaoServiceServer interface {
-	mustEmbedUnimplementedDaoServiceServer()
+type UnsafeDAOServiceServer interface {
+	mustEmbedUnimplementedDAOServiceServer()
 }
 
-func RegisterDaoServiceServer(s grpc.ServiceRegistrar, srv DaoServiceServer) {
-	s.RegisterService(&DaoService_ServiceDesc, srv)
+func RegisterDAOServiceServer(s grpc.ServiceRegistrar, srv DAOServiceServer) {
+	s.RegisterService(&DAOService_ServiceDesc, srv)
 }
 
-func _DaoService_DaoList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DaoListRequest)
+func _DAOService_DAOs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DAOsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DaoServiceServer).DaoList(ctx, in)
+		return srv.(DAOServiceServer).DAOs(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dao.v1.DaoService/DaoList",
+		FullMethod: "/dao.v1.DAOService/DAOs",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DaoServiceServer).DaoList(ctx, req.(*DaoListRequest))
+		return srv.(DAOServiceServer).DAOs(ctx, req.(*DAOsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// DaoService_ServiceDesc is the grpc.ServiceDesc for DaoService service.
+// DAOService_ServiceDesc is the grpc.ServiceDesc for DAOService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var DaoService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "dao.v1.DaoService",
-	HandlerType: (*DaoServiceServer)(nil),
+var DAOService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "dao.v1.DAOService",
+	HandlerType: (*DAOServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "DaoList",
-			Handler:    _DaoService_DaoList_Handler,
+			MethodName: "DAOs",
+			Handler:    _DAOService_DAOs_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

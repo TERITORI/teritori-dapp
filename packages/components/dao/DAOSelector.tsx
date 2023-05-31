@@ -3,7 +3,7 @@ import { ComponentProps } from "react";
 
 import { useDAOs } from "../../hooks/dao/useDAOs";
 import { useNSPrimaryAlias } from "../../hooks/useNSPrimaryAlias";
-import { getUserId, parseUserId } from "../../networks";
+import { parseUserId } from "../../networks";
 import { neutral77 } from "../../utils/style/colors";
 import { fontSemibold12 } from "../../utils/style/fonts";
 
@@ -14,7 +14,8 @@ export const DAOSelector: React.FC<{
   style?: ComponentProps<typeof Picker>["style"];
 }> = ({ userId, value, onSelect, style }) => {
   const [network, userAddress] = parseUserId(userId);
-  const { daos } = useDAOs(network?.id, {
+  const { daos } = useDAOs({
+    networkId: network?.id,
     memberAddress: userAddress,
   });
   if (!daos?.length) {
@@ -38,8 +39,7 @@ export const DAOSelector: React.FC<{
     >
       <Picker.Item label="Use my wallet" value="" />
       {(daos || []).map((dao) => {
-        const daoId = getUserId(network?.id, dao.address);
-        return <DAOPickerItem key={daoId} daoId={daoId} />;
+        return <DAOPickerItem key={dao.id} daoId={dao.id} />;
       })}
     </Picker>
   );
@@ -49,5 +49,5 @@ export const DAOPickerItem: React.FC<{ daoId: string }> = ({ daoId }) => {
   const [, address] = parseUserId(daoId);
   const { primaryAlias } = useNSPrimaryAlias(daoId);
   const name = primaryAlias || address;
-  return <Picker.Item label={`Use ${name}`} value={address} />;
+  return <Picker.Item label={`Use ${name}`} value={daoId} />;
 };

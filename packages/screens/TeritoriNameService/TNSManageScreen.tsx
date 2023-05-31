@@ -13,7 +13,6 @@ import { useTNS } from "../../context/TNSProvider";
 import { useNSPrimaryAlias } from "../../hooks/useNSPrimaryAlias";
 import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getUserId } from "../../networks";
 import { neutral17, neutral33, neutral77 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { nsTokenWithoutTLD } from "../../utils/tns";
@@ -25,10 +24,13 @@ export const TNSManageScreen: React.FC<TNSManageScreenProps> = ({
 }) => {
   const [pageStartTokens, setPageStartTokens] = useState<string[]>([]);
   const selectedWallet = useSelectedWallet();
-  const [selectedDAOAddress, setSelectedDAOAddress] = useState("");
-  const daoId = getUserId(selectedWallet?.networkId, selectedDAOAddress);
-  const { tokens } = useNSTokensByOwner(daoId || selectedWallet?.userId);
-  const { primaryAlias } = useNSPrimaryAlias(daoId || selectedWallet?.userId);
+  const [selectedDAOId, setSelectedDAOId] = useState("");
+  const { tokens } = useNSTokensByOwner(
+    selectedDAOId || selectedWallet?.userId
+  );
+  const { primaryAlias } = useNSPrimaryAlias(
+    selectedDAOId || selectedWallet?.userId
+  );
 
   const { setName } = useTNS();
 
@@ -69,8 +71,8 @@ export const TNSManageScreen: React.FC<TNSManageScreenProps> = ({
             </BrandText>
 
             <DAOSelector
-              value={selectedDAOAddress}
-              onSelect={setSelectedDAOAddress}
+              value={selectedDAOId}
+              onSelect={setSelectedDAOId}
               userId={selectedWallet?.userId}
               style={{ width: "100%", marginBottom: 20 }}
             />

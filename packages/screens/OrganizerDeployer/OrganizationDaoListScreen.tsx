@@ -2,7 +2,7 @@ import React from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 
 import { DaoItem } from "./components/DaoItem";
-import { DaoListRequest } from "../../api/dao/v1/dao";
+import { DAOsRequest } from "../../api/dao/v1/dao";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
@@ -34,7 +34,7 @@ export const OrganizationDaoListScreen = () => {
     >
       <ScrollView>
         <DAOsSection
-          networkId={networkId}
+          req={{ networkId }}
           title="All DAOs"
           topRight={
             <PrimaryButton size="M" text="Create Dao" onPress={onCreateDao} />
@@ -48,16 +48,15 @@ export const OrganizationDaoListScreen = () => {
 const halfGap = layout.padding_x1;
 
 export const DAOList: React.FC<{
-  networkId: string | undefined;
-  req?: DaoListRequest;
-}> = ({ networkId, req = {} }) => {
-  const { daos } = useDAOs(networkId, req);
+  req: Partial<DAOsRequest>;
+}> = ({ req }) => {
+  const { daos } = useDAOs(req);
   return (
     <View style={styles.row}>
       {(daos || []).map((item) => (
         <DaoItem
-          key={item.address}
-          userId={getUserId(networkId, item.address)}
+          key={item.contractAddress} // TODO: use id
+          userId={getUserId(req.networkId, item.contractAddress)}
           style={{
             marginHorizontal: halfGap,
             marginVertical: halfGap,
@@ -69,11 +68,10 @@ export const DAOList: React.FC<{
 };
 
 const DAOsSection: React.FC<{
-  networkId: string | undefined;
   title: string;
-  req?: DaoListRequest;
+  req: Partial<DAOsRequest>;
   topRight?: React.ReactNode;
-}> = ({ networkId, title, req, topRight }) => {
+}> = ({ title, req, topRight }) => {
   return (
     <View style={styles.container}>
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
@@ -81,7 +79,7 @@ const DAOsSection: React.FC<{
         {topRight}
       </View>
       <SpacerColumn size={3} />
-      <DAOList networkId={networkId} req={req} />
+      <DAOList req={req} />
     </View>
   );
 };
