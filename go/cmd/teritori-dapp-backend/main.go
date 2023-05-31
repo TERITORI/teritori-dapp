@@ -111,22 +111,21 @@ func main() {
 		panic(errors.Wrap(err, "failed to create marketplace service"))
 	}
 
-	// P2E services
 	p2eSvc := p2e.NewP2eService(context.Background(), &p2e.Config{
 		Logger:    logger,
 		IndexerDB: indexerDB,
 	})
 
-	daoSvc := dao.NewDAOService(context.Background(), &dao.Config{
-		Logger:    logger,
-		IndexerDB: indexerDB,
-	})
-
-	// Feed services
 	feedSvc := feed.NewFeedService(context.Background(), &feed.Config{
 		Logger:    logger,
 		IndexerDB: indexerDB,
 		PinataJWT: *pinataJWT,
+	})
+
+	daoSvc := dao.NewDAOService(context.Background(), &dao.Config{
+		Logger:    logger,
+		IndexerDB: indexerDB,
+		NetStore:  &netstore,
 	})
 
 	server := grpc.NewServer()
