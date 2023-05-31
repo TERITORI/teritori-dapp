@@ -21,7 +21,6 @@ import { ScreenContainer } from "../../components/ScreenContainer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
-  NetworkKind,
   getKeplrSigningCosmWasmClient,
   getUserId,
   mustGetCosmosNetwork,
@@ -226,7 +225,6 @@ export const OrganizerDeployerScreen = () => {
       fullWidth
       noScroll
       isHeaderSmallMargin
-      forceNetworkKind={NetworkKind.Cosmos}
     >
       <View style={styles.row}>
         <View style={styles.fill}>
