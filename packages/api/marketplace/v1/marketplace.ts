@@ -14,7 +14,6 @@ export enum Sort {
   SORT_VOLUME = 2,
   SORT_MARKET_CAP = 3,
   SORT_CREATED_AT = 4,
-  /** SORT_VOLUME_USD - this is unreliable as is based on old USD values when the trade happened */
   SORT_VOLUME_USD = 5,
   UNRECOGNIZED = -1,
 }
@@ -215,6 +214,7 @@ export interface AttributeRarityFloor {
   value: string;
   counta: number;
   floor: number;
+  collectionId: string;
 }
 
 export interface NFTCollectionAttributesResponse {
@@ -1121,7 +1121,7 @@ export const CollectionStats = {
 };
 
 function createBaseAttributeRarityFloor(): AttributeRarityFloor {
-  return { traitType: "", value: "", counta: 0, floor: 0 };
+  return { traitType: "", value: "", counta: 0, floor: 0, collectionId: "" };
 }
 
 export const AttributeRarityFloor = {
@@ -1137,6 +1137,9 @@ export const AttributeRarityFloor = {
     }
     if (message.floor !== 0) {
       writer.uint32(37).float(message.floor);
+    }
+    if (message.collectionId !== "") {
+      writer.uint32(42).string(message.collectionId);
     }
     return writer;
   },
@@ -1160,6 +1163,9 @@ export const AttributeRarityFloor = {
         case 4:
           message.floor = reader.float();
           break;
+        case 5:
+          message.collectionId = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1174,6 +1180,7 @@ export const AttributeRarityFloor = {
       value: isSet(object.value) ? String(object.value) : "",
       counta: isSet(object.counta) ? Number(object.counta) : 0,
       floor: isSet(object.floor) ? Number(object.floor) : 0,
+      collectionId: isSet(object.collectionId) ? String(object.collectionId) : "",
     };
   },
 
@@ -1183,6 +1190,7 @@ export const AttributeRarityFloor = {
     message.value !== undefined && (obj.value = message.value);
     message.counta !== undefined && (obj.counta = Math.round(message.counta));
     message.floor !== undefined && (obj.floor = message.floor);
+    message.collectionId !== undefined && (obj.collectionId = message.collectionId);
     return obj;
   },
 
@@ -1192,6 +1200,7 @@ export const AttributeRarityFloor = {
     message.value = object.value ?? "";
     message.counta = object.counta ?? 0;
     message.floor = object.floor ?? 0;
+    message.collectionId = object.collectionId ?? "";
     return message;
   },
 };

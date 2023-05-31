@@ -511,12 +511,12 @@ func (s *MarkteplaceService) NFTCollectionAttributes(req *marketplacepb.NFTColle
 
 	var attributes []*marketplacepb.AttributeRarityFloor
 	err = s.conf.IndexerDB.Raw(
-		`select trait_type, value, counta, floor  from (
-      select trait_type, value, count(*) as counta, min(price_amount) as floor from (SELECT attr.trait_type as trait_type, attr.value, price_amount FROM nfts t,
+		`select trait_type, value, counta, floor, collection_id  from (
+      select trait_type, value, count(*) as counta, min(price_amount) as floor, collection_id from (SELECT attr.trait_type as trait_type, attr.value, price_amount, collection_id FROM nfts t,
            jsonb_to_recordset(t.attributes) as attr(value varchar, trait_type varchar)
            where collection_id = ?
       ) as sorted
-      group by trait_type, value
+      group by trait_type, value, collection_id
       order by floor, counta, trait_type asc, LENGTH(value) desc, value desc
       ) as col;
 		`,

@@ -36,11 +36,13 @@ import {
   txExplorerLink,
 } from "../../networks";
 import {
-  clearSelected,
+  emptyCart,
   removeSelected,
   selectAllSelectedNFTData,
   selectSelectedNFTDataById,
   selectSelectedNFTIds,
+  selectShowCart,
+  setShowCart,
 } from "../../store/slices/marketplaceCartItems";
 import { RootState, useAppDispatch } from "../../store/store";
 import { prettyPrice } from "../../utils/coins";
@@ -402,15 +404,19 @@ export const SideCart: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
 }) => {
   const dispatch = useAppDispatch();
   const selected = useSelector(selectSelectedNFTIds);
-  const emptyCart = () => {
-    dispatch(clearSelected());
+  const handleEmptyCart = () => {
+    dispatch(emptyCart());
   };
+  const handleHideCart = () => {
+    dispatch(setShowCart(false));
+  };
+
   return useShowCart() ? (
     <View style={style}>
       <Header
         items={selected}
-        onPressClear={() => emptyCart()}
-        onPressHide={() => emptyCart()}
+        onPressClear={() => handleEmptyCart()}
+        onPressHide={() => handleHideCart()}
       />
       <FlatList
         data={selected}
@@ -426,6 +432,5 @@ export const SideCart: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
 
 export const useShowCart = () => {
   const selected = useSelector(selectSelectedNFTIds);
-
-  return selected.length > 0;
+  return useSelector(selectShowCart) && selected.length > 0;
 };

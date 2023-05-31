@@ -25,7 +25,7 @@ enum Sort {
   SORT_VOLUME = 2;
   SORT_MARKET_CAP = 3;
   SORT_CREATED_AT = 4;
-  SORT_VOLUME_USD = 5; // this is unreliable as is based on old USD values when the trade happened
+  SORT_VOLUME_USD = 5;
 }
 
 enum SortDirection {
@@ -110,6 +110,7 @@ message AttributeRarityFloor {
   string value = 2;
   int32 counta = 3;
   float floor = 4;
+  string collection_id = 5;
 }
 
 message NFTCollectionAttributesResponse {

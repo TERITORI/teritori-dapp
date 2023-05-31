@@ -1,4 +1,9 @@
-import { createEntityAdapter, createSlice, EntityId } from "@reduxjs/toolkit";
+import {
+  createEntityAdapter,
+  createSlice,
+  EntityId,
+  PayloadAction,
+} from "@reduxjs/toolkit";
 
 import { NFT } from "../../api/marketplace/v1/marketplace";
 import { RootState } from "../store";
@@ -11,9 +16,30 @@ const marketplace = createSlice({
   reducers: {
     addSelected: nftAdapter.setOne,
     removeSelected: nftAdapter.removeOne,
-    clearSelected: nftAdapter.removeAll,
+    emptyCart: nftAdapter.removeAll,
   },
 });
+
+interface UIStates {
+  showCart: boolean;
+}
+
+const initialState: UIStates = {
+  showCart: false,
+};
+
+const cartUI = createSlice({
+  name: "marketPlaceFilters-ui",
+  initialState,
+  reducers: {
+    setShowCart: (state, action: PayloadAction<boolean>) => {
+      state.showCart = action.payload;
+    },
+  },
+});
+
+export const selectShowCart = (state: RootState) =>
+  state.marketplaceCartItemsUI.showCart;
 
 const selectors = nftAdapter.getSelectors();
 
@@ -25,7 +51,8 @@ export const selectAllSelectedNFTData = (state: RootState) =>
 export const selectSelectedNFTDataById = (state: RootState, id: EntityId) =>
   selectors.selectById(state.marketplaceCartItems, id);
 
-export const { addSelected, removeSelected, clearSelected } =
-  marketplace.actions;
+export const { addSelected, removeSelected, emptyCart } = marketplace.actions;
+export const { setShowCart } = cartUI.actions;
 
 export const marketplaceCartItems = marketplace.reducer;
+export const marketplaceCartItemsUI = cartUI.reducer;

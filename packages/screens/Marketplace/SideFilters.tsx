@@ -39,13 +39,13 @@ import {
   removeSelected,
   selectSelectedAttributeIds,
   clearSelected,
-  selectAllSelectedAttributeData,
   selectBuyNow,
   setBuyNow,
   setPriceRange,
   selectPriceRange,
+  selectAllSelectedAttributeDataByCollectionId,
 } from "../../store/slices/marketplaceFilters";
-import { useAppDispatch } from "../../store/store";
+import { RootState, useAppDispatch } from "../../store/store";
 import { mustGetMarketplaceClient } from "../../utils/backend";
 import { prettyPrice } from "../../utils/coins";
 import {
@@ -230,7 +230,11 @@ const FilterItems: React.FC<{
     if (!selected) {
       dispatch(addSelected(attribute));
     } else {
-      dispatch(removeSelected(`${attribute.traitType}-${attribute.value}`));
+      dispatch(
+        removeSelected(
+          `${attribute.collectionId}-${attribute.traitType}-${attribute.value}`
+        )
+      );
     }
   };
   const rareRatio = (attribute.counta * 100) / total;
@@ -335,16 +339,25 @@ const FilterItems: React.FC<{
   ) : null;
 };
 
-export const AppliedFilters: React.FC = () => {
+export const AppliedFilters: React.FC<{ collectionId: string }> = ({
+  collectionId,
+}) => {
   const dispatch = useAppDispatch();
   const filterIsShown = useShowFilters();
 
-  const selected = useSelector(selectAllSelectedAttributeData);
+  const selected = useSelector((state: RootState) =>
+    selectAllSelectedAttributeDataByCollectionId(state, collectionId)
+  );
+
   const clearAll = () => {
     dispatch(clearSelected());
   };
   const removeFilter = (attribute: AttributeRarityFloor) => {
-    dispatch(removeSelected(`${attribute.traitType}-${attribute.value}`));
+    dispatch(
+      removeSelected(
+        `${attribute.collectionId}-${attribute.traitType}-${attribute.value}`
+      )
+    );
   };
 
   const commonStyles: StyleProp<ViewStyle> = {
@@ -566,5 +579,7 @@ export const useShowFilters = () => {
 };
 export const useAttributeIsSelected = (attribute: AttributeRarityFloor) => {
   const selected = new Set(useSelector(selectSelectedAttributeIds));
-  return selected.has(`${attribute.traitType}-${attribute.value}`);
+  return selected.has(
+    `${attribute.collectionId}-${attribute.traitType}-${attribute.value}`
+  );
 };

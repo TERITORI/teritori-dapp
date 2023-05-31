@@ -39,7 +39,7 @@ export const NFTs: React.FC<{
         height,
       }}
     >
-      {!hideFilters && <AppliedFilters />}
+      {!hideFilters && <AppliedFilters collectionId={req.collectionId} />}
       <View style={{ flexDirection: "row", width: "100%" }}>
         {!hideFilters && (
           <SideFilters

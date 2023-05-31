@@ -10,10 +10,11 @@ import {
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
-  selectAllSelectedAttributeData,
+  selectAllSelectedAttributeDataByCollectionId,
   selectBuyNow,
   selectPriceRange,
 } from "../../store/slices/marketplaceFilters";
+import { RootState } from "../../store/store";
 import { alignDown } from "../../utils/align";
 import { ActivityTable } from "../activity/ActivityTable";
 import { NFTs } from "../nfts/NFTs";
@@ -29,7 +30,9 @@ export const CollectionContent: React.FC<{
 
   const { width } = useMaxResolution();
   const numColumns = Math.floor(width / nftWidth);
-  const selectedFilters = useSelector(selectAllSelectedAttributeData);
+  const selectedFilters = useSelector((state: RootState) =>
+    selectAllSelectedAttributeDataByCollectionId(state, id)
+  );
   const isBuyNow = useSelector(selectBuyNow);
   const priceRange = useSelector(selectPriceRange);
 

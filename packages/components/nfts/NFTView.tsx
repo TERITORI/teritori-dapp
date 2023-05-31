@@ -27,6 +27,7 @@ import {
   addSelected,
   removeSelected,
   selectSelectedNFTIds,
+  setShowCart,
 } from "../../store/slices/marketplaceCartItems";
 import { useAppDispatch } from "../../store/store";
 import { prettyPrice } from "../../utils/coins";
@@ -70,6 +71,7 @@ export const NFTView: React.FC<{
   const dispatch = useAppDispatch();
   const handleClick = (nft: NFT, selected: boolean) => {
     if (width < 500) return; // disable cart on mobile
+    dispatch(setShowCart(true));
     if (!selected) {
       dispatch(addSelected(nft));
     } else {

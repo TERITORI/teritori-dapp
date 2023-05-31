@@ -12,7 +12,8 @@ import {
 import { RootState } from "../store";
 
 const filter = createEntityAdapter<AttributeRarityFloor>({
-  selectId: (attribute) => `${attribute.traitType}-${attribute.value}`,
+  selectId: (attribute) =>
+    `${attribute.collectionId}-${attribute.traitType}-${attribute.value}`,
 });
 
 interface UIStates {
@@ -46,6 +47,7 @@ const filtersSlice = createSlice({
     addSelected: filter.setOne,
     removeSelected: filter.removeOne,
     clearSelected: filter.removeAll,
+    clearSelectedByCollection: filter.removeMany,
   },
 });
 
@@ -73,13 +75,25 @@ export const selectSelectedAttributeIds = (state: RootState) =>
 export const selectAllSelectedAttributeData = (state: RootState) =>
   selectors.selectAll(state.marketplaceFilters);
 
+export const selectAllSelectedAttributeDataByCollectionId = (
+  state: RootState,
+  collectionId: string
+) =>
+  selectors.selectAll(state.marketplaceFilters).filter((filter) => {
+    return filter.collectionId === collectionId;
+  });
+
 export const selectSelectedAttributeDataById = (
   state: RootState,
   id: EntityId
 ) => selectors.selectById(state.marketplaceFilters, id);
 
-export const { addSelected, removeSelected, clearSelected } =
-  filtersSlice.actions;
+export const {
+  addSelected,
+  removeSelected,
+  clearSelected,
+  clearSelectedByCollection,
+} = filtersSlice.actions;
 
 export const { setShowFilters, setBuyNow, setPriceRange } = filterUI.actions;
 
