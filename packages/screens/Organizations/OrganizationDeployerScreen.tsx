@@ -27,7 +27,7 @@ import {
 } from "../../networks";
 import { createDaoTokenBased, createDaoMemberBased } from "../../utils/dao";
 
-export const ORGANIZER_DEPLOYER_STEPS = [
+export const ORGANIZATION_DEPLOYER_STEPS = [
   "Create a DAO",
   "Configure voting",
   "Set tokens or members",
@@ -44,7 +44,7 @@ export const LAUNCHING_PROCESS_STEPS: LaunchingProcessStepType[] = [
   },
 ];
 
-export const OrganizerDeployerScreen = () => {
+export const OrganizationDeployerScreen = () => {
   const selectedWallet = useSelectedWallet();
   const { setToastError } = useFeedbacks();
   const [daoAddress, setDAOAddress] = useState("");
@@ -277,7 +277,7 @@ export const OrganizerDeployerScreen = () => {
         </View>
 
         <RightSection
-          steps={ORGANIZER_DEPLOYER_STEPS}
+          steps={ORGANIZATION_DEPLOYER_STEPS}
           currentStep={currentStep}
           onStepChange={setCurrentStep}
           isLaunching={currentStep === 4}

@@ -104,7 +104,7 @@ export function getAvailableApps(): dAppGroup {
           title: "Organizations",
           description: "Decentralized Autonomous Organizations",
           icon: multisig,
-          route: "OrganizationDaoList",
+          route: "Organizations",
           groupKey: "teritori-core-apps",
           selectedByDefault: false,
           alwaysOn: false,

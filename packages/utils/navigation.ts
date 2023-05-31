@@ -55,15 +55,13 @@ export type RootStackParamList = {
   ComingSoon: undefined;
 
   Settings: undefined;
-  OrganizationDeployer: undefined;
-  OrganizationDaoList: undefined;
 
-  MultisigWalletManage: undefined;
-  MultisigWalletTransaction: undefined;
-  TransactionProposal: undefined;
+  OrganizationDeployer: undefined;
+  Organizations: undefined;
+  CoreDAO: undefined;
+
   DAppStore: undefined;
   ToriPunks: { route: string };
-  CoreDAO: undefined;
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -119,13 +117,12 @@ const navConfig: {
 
     // ==== Staking
     Staking: "staking",
-    // === Organization
+
+    // === Organizations
     OrganizationDeployer: "create-org",
-    OrganizationDaoList: "orgs",
-    // === Multisig
-    MultisigWalletManage: "multisig-wallet/manage",
-    MultisigWalletTransaction: "multisig-wallet/transaction",
-    TransactionProposal: "multisig-wallet/proposal/transaction",
+    Organizations: "orgs",
+    CoreDAO: "core-dao",
+
     // ==== Swap
     Swap: "swap",
     // ==== ComingSoon
@@ -135,8 +132,6 @@ const navConfig: {
     DAppStore: "dapp-store",
     // === DApps
     ToriPunks: "dapp/tori-punks/:route?",
-
-    CoreDAO: "core-dao",
   },
 };
 

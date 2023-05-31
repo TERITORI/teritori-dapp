@@ -11,7 +11,7 @@ import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { neutral33, neutral77 } from "../../../utils/style/colors";
 import { fontSemibold20, fontSemibold28 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { ORGANIZER_DEPLOYER_STEPS } from "../OrganizerDeployerScreen";
+import { ORGANIZATION_DEPLOYER_STEPS } from "../OrganizationDeployerScreen";
 import { CreateDaoFormType, DaoType } from "../types";
 
 //const RADIO_DESCRIPTION_TYPES = ["Membership", "Governance", "Decentralized"];
@@ -138,7 +138,7 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
       <View style={styles.footer}>
         <PrimaryButton
           size="M"
-          text={`Next: ${ORGANIZER_DEPLOYER_STEPS[1]}`}
+          text={`Next: ${ORGANIZATION_DEPLOYER_STEPS[1]}`}
           onPress={handleSubmit(onSubmit)}
           disabled={!isValid}
         />

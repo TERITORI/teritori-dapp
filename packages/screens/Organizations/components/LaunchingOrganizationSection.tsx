@@ -14,12 +14,10 @@ export const LaunchingOrganizationSection: React.FC<{
   isLaunched: boolean;
   id: string | undefined;
 }> = ({ isLaunched, id }) => {
-  // variables
   const { navigate } = useAppNavigation();
   const successAnimateValue = useRef(new Animated.Value(0)).current;
   const lottieRef = useRef<LottieRefCurrentProps>(null);
 
-  // hooks
   useEffect(() => {
     if (isLaunched) {
       Animated.timing(successAnimateValue, {
@@ -32,7 +30,6 @@ export const LaunchingOrganizationSection: React.FC<{
     }
   }, [isLaunched, successAnimateValue]);
 
-  // animation
   const fadeOutAnim = successAnimateValue.interpolate({
     inputRange: [0, 1],
     outputRange: [1, 0],
@@ -69,7 +66,7 @@ export const LaunchingOrganizationSection: React.FC<{
             width: 200,
             height: 200,
           }}
-          animationData={require("../animation-success.json")}
+          animationData={require("../../../../assets/lottie/animation-success.json")}
           autoPlay={false}
           loop={false}
         />
@@ -81,7 +78,7 @@ export const LaunchingOrganizationSection: React.FC<{
             width: 200,
             height: 200,
           }}
-          animationData={require("../animation-loading.json")}
+          animationData={require("../../../../assets/lottie/animation-loading.json")}
           autoPlay
         />
       </Animated.View>

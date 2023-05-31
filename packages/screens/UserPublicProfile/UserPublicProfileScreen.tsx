@@ -23,7 +23,7 @@ import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { parseUserId } from "../../networks";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { fontSemibold20 } from "../../utils/style/fonts";
-import { DAOList } from "../OrganizerDeployer/OrganizationDaoListScreen";
+import { DAOList } from "../Organizations/OrganizationsScreen";
 import { Assets } from "../WalletManager/Assets";
 
 const TabContainer: React.FC = ({ children }) => {

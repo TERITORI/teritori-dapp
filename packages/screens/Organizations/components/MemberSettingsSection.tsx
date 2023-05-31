@@ -14,7 +14,7 @@ import { patternOnlyNumbers, validateAddress } from "../../../utils/formRules";
 import { neutral33, neutralA3 } from "../../../utils/style/colors";
 import { fontSemibold14, fontSemibold28 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { ORGANIZER_DEPLOYER_STEPS } from "../OrganizerDeployerScreen";
+import { ORGANIZATION_DEPLOYER_STEPS } from "../OrganizationDeployerScreen";
 import { MemberSettingFormType } from "../types";
 
 interface MemberSettingsSectionProps {
@@ -93,7 +93,7 @@ export const MemberSettingsSection: React.FC<MemberSettingsSectionProps> = ({
       <View style={styles.footer}>
         <PrimaryButton
           size="M"
-          text={`Next: ${ORGANIZER_DEPLOYER_STEPS[3]}`}
+          text={`Next: ${ORGANIZATION_DEPLOYER_STEPS[3]}`}
           onPress={handleSubmit(onSubmit)}
         />
       </View>

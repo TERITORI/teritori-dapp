@@ -9,20 +9,12 @@ import { neutral33, neutralA3 } from "../../../utils/style/colors";
 import { fontMedium13, fontSemibold16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 
-type RadioDescriptionSelectorProps = {
+export const RadioDescriptionSelector: React.FC<{
   selected: boolean;
   onPress: () => void;
   title: string;
   description: string;
-};
-
-export const RadioDescriptionSelector = ({
-  selected,
-  onPress,
-  title,
-  description,
-}: RadioDescriptionSelectorProps) => {
-  // returns
+}> = ({ selected, onPress, title, description }) => {
   return (
     <Pressable style={styles.container} onPress={onPress}>
       <View style={styles.row}>

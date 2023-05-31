@@ -11,7 +11,7 @@ import { patternOnlyNumbers } from "../../../utils/formRules";
 import { neutral33, neutral77, neutralA3 } from "../../../utils/style/colors";
 import { fontSemibold14, fontSemibold28 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { ORGANIZER_DEPLOYER_STEPS } from "../OrganizerDeployerScreen";
+import { ORGANIZATION_DEPLOYER_STEPS } from "../OrganizationDeployerScreen";
 import { ConfigureVotingFormType } from "../types";
 
 interface ConfigureVotingSectionProps {
@@ -101,7 +101,7 @@ export const ConfigureVotingSection: React.FC<ConfigureVotingSectionProps> = ({
       <View style={styles.footer}>
         <PrimaryButton
           size="M"
-          text={`Next: ${ORGANIZER_DEPLOYER_STEPS[2]}`}
+          text={`Next: ${ORGANIZATION_DEPLOYER_STEPS[2]}`}
           onPress={handleSubmit(onSubmit)}
         />
       </View>

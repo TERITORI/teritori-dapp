@@ -9,18 +9,14 @@ import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { SpacerColumn } from "../../components/spacer";
 import { useDAOs } from "../../hooks/dao/useDAOs";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import { NetworkKind, getUserId } from "../../networks";
+import { NetworkKind } from "../../networks";
 import { useAppNavigation } from "../../utils/navigation";
 import { fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 
-export const OrganizationDaoListScreen = () => {
+export const OrganizationsScreen = () => {
   const navigation = useAppNavigation();
   const networkId = useSelectedNetworkId();
-
-  const onCreateDao = () => {
-    navigation.navigate("OrganizationDeployer");
-  };
 
   return (
     <ScreenContainer
@@ -36,7 +32,10 @@ export const OrganizationDaoListScreen = () => {
           req={{ networkId }}
           title="All DAOs"
           topRight={
-            <PrimaryButton size="M" text="Create Dao" onPress={onCreateDao} />
+            <PrimaryButton
+              text="Create Dao"
+              onPress={() => navigation.navigate("OrganizationDeployer")}
+            />
           }
         />
       </ScrollView>
@@ -46,6 +45,8 @@ export const OrganizationDaoListScreen = () => {
 
 const halfGap = layout.padding_x1;
 
+// FIXME: extract
+
 export const DAOList: React.FC<{
   req: Partial<DAOsRequest>;
 }> = ({ req }) => {
@@ -54,8 +55,8 @@ export const DAOList: React.FC<{
     <View style={styles.row}>
       {(daos || []).map((item) => (
         <DaoItem
-          key={item.contractAddress} // TODO: use id
-          userId={getUserId(req.networkId, item.contractAddress)}
+          key={item.id}
+          daoId={item.id}
           style={{
             marginHorizontal: halfGap,
             marginVertical: halfGap,

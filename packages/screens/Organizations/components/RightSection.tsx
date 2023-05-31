@@ -20,7 +20,7 @@ import {
 } from "../../../utils/style/colors";
 import { fontSemibold12, fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { LAUNCHING_PROCESS_STEPS } from "../OrganizerDeployerScreen";
+import { LAUNCHING_PROCESS_STEPS } from "../OrganizationDeployerScreen";
 import { LaunchingProcessStepType } from "../types";
 
 interface RightSectionProps {

@@ -18,11 +18,11 @@ import { layout } from "../../../utils/style/layout";
 import { tinyAddress } from "../../../utils/text";
 
 interface DaoItemProps {
-  userId: string;
+  daoId: string;
   style?: StyleProp<ViewStyle>;
 }
 
-export const DaoItem: React.FC<DaoItemProps> = ({ userId, style }) => {
+export const DaoItem: React.FC<DaoItemProps> = ({ daoId: userId, style }) => {
   const [network, daoAddress] = parseUserId(userId);
   const {
     metadata: { image, public_name: name, public_bio: description, tokenId },
