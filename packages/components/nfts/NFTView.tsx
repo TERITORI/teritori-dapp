@@ -18,6 +18,7 @@ import raffleSVG from "../../../assets/icons/raffle.svg";
 import sendSVG from "../../../assets/icons/send.svg";
 import { NFT } from "../../api/marketplace/v1/marketplace";
 import { useDropdowns } from "../../context/DropdownsProvider";
+import { useIsMobile } from "../../hooks/useIsMobile";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getCosmosNetwork, parseUserId } from "../../networks";
@@ -51,8 +52,8 @@ export const NFTView: React.FC<{
   data: NFT;
   style?: StyleProp<ViewStyle>;
 }> = ({ data: nft, style }) => {
-  // variables
-  const cardWidth = 250;
+  const isMobile = useIsMobile();
+  const cardWidth = isMobile ? 220 : 250;
   const insideMargin = layout.padding_x2;
   const contentWidth = cardWidth - insideMargin * 2;
   const flatStyle = StyleSheet.flatten(style);

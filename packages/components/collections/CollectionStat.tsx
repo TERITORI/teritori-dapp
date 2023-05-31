@@ -24,7 +24,13 @@ export const CollectionStat = ({
 }: CollectionStatProps) => {
   return (
     <View style={styles.container}>
-      <BrandText style={styles.labelText}>{label}</BrandText>
+      <BrandText
+        numberOfLines={1}
+        ellipsizeMode="tail"
+        style={styles.labelText}
+      >
+        {label}
+      </BrandText>
       <SpacerColumn size={0.75} />
       <View style={styles.rowCenter}>
         <BrandText
@@ -69,6 +75,7 @@ const styles = StyleSheet.create({
   rowCenter: {
     flexDirection: "row",
     justifyContent: "center",
+    flexWrap: "nowrap",
     alignItems: "center",
   },
 });

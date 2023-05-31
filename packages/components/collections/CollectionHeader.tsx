@@ -16,6 +16,7 @@ import { SpacerRow } from "../../components/spacer";
 import { Tabs } from "../../components/tabs/Tabs";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useCollectionStats } from "../../hooks/useCollectionStats";
+import { useIsMobile } from "../../hooks/useIsMobile";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { contractExplorerLink, parseCollectionId } from "../../networks";
@@ -42,6 +43,7 @@ export const CollectionHeader: React.FC<{
   sortDirection,
   onChangeSortDirection,
 }) => {
+  const isMobile = useIsMobile();
   const wallet = useSelectedWallet();
   // variables
   const stats = useCollectionStats(collectionId, wallet?.userId);
@@ -101,7 +103,8 @@ export const CollectionHeader: React.FC<{
     >
       <View
         style={{
-          flexDirection: "row",
+          flexDirection: isMobile ? "column" : "row",
+          alignItems: "center",
           width: "100%",
           marginBottom: layout.padding_x2_5,
           borderRadius: layout.padding_x2,
@@ -112,11 +115,23 @@ export const CollectionHeader: React.FC<{
         }}
       >
         <RoundedGradientImage
-          sourceURI={collectionInfo.image}
-          style={{ marginRight: 24 }}
+          imageSource={{ uri: collectionInfo.image }}
+          style={{ marginRight: isMobile ? 0 : 24 }}
         />
         <View style={{ flex: 1 }}>
-          <BrandText style={fontSemibold28}>{collectionInfo.name}</BrandText>
+          <BrandText
+            style={[
+              fontSemibold28,
+              isMobile
+                ? {
+                    marginTop: layout.padding_x1,
+                    textAlign: "center",
+                  }
+                : {},
+            ]}
+          >
+            {collectionInfo.name}
+          </BrandText>
           <View style={styles.statRow}>
             <CollectionStat
               label="Floor"
@@ -152,30 +167,35 @@ export const CollectionHeader: React.FC<{
               }}
             />
             <SpacerRow size={1.5} />
-            <CollectionStat
-              label="Owners"
-              value={(stats?.owners || 0).toString()}
-            />
-            <SpacerRow size={1.5} />
-            <CollectionStat
-              label="Listed"
-              value={(stats?.listed || 0).toString()}
-            />
-            <SpacerRow size={1.5} />
-            <CollectionStat
-              label="Avg Sale (24hr)"
-              value={prettyPrice(
-                network.id,
-                stats.avgPricePeriod.toFixed(0),
-                stats.floorPrice[0].denom,
-                true
-              )}
-              currencyIcon={{
-                networkId: network.id,
-                value: stats.avgPricePeriod,
-                denom: stats.floorPrice[0].denom,
-              }}
-            />
+            {!isMobile && (
+              <>
+                <CollectionStat
+                  label="Owners"
+                  value={(stats?.owners || 0).toString()}
+                />
+                <SpacerRow size={1.5} />
+
+                <CollectionStat
+                  label="Listed"
+                  value={(stats?.listed || 0).toString()}
+                />
+                <SpacerRow size={1.5} />
+                <CollectionStat
+                  label="Avg Sale (24hr)"
+                  value={prettyPrice(
+                    network.id,
+                    stats.avgPricePeriod.toFixed(0),
+                    stats.floorPrice[0].denom,
+                    true
+                  )}
+                  currencyIcon={{
+                    networkId: network.id,
+                    value: stats.avgPricePeriod,
+                    denom: stats.floorPrice[0].denom,
+                  }}
+                />
+              </>
+            )}
             <SpacerRow size={1.5} />
             <CollectionStat
               label="Total Supply"
@@ -240,11 +260,14 @@ export const CollectionHeader: React.FC<{
           }}
           noUnderline
         />
-        <SortButton
-          mainContainerStyle={{ backgroundColor: neutral33 }}
-          sortDirection={sortDirection}
-          onChangeSortDirection={onChangeSortDirection}
-        />
+
+        {!isMobile && (
+          <SortButton
+            mainContainerStyle={{ backgroundColor: neutral33 }}
+            sortDirection={sortDirection}
+            onChangeSortDirection={onChangeSortDirection}
+          />
+        )}
       </View>
     </View>
   ) : null;
@@ -254,6 +277,7 @@ const styles = StyleSheet.create({
   statRow: {
     flexDirection: "row",
     flexWrap: "wrap",
+    justifyContent: "center",
     marginTop: layout.padding_x2_5,
     alignItems: "center",
     flex: 1,
