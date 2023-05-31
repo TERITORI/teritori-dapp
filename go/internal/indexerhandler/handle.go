@@ -21,6 +21,8 @@ import (
 	"gorm.io/gorm"
 )
 
+// FIXME: move contract address checks inside handlers so they can be reused
+
 type Message struct {
 	Msg          *codectypes.Any
 	Height       int64
@@ -245,20 +247,6 @@ func (h *Handler) handleExecute(e *Message) error {
 				return errors.Wrap(err, "failed to handle squad stake")
 			}
 		}
-	case "instantiate_contract_with_self_admin":
-		if executeMsg.Contract == h.config.Network.DaoFactoryContractAddress {
-			if err := h.handleExecuteInstantiateContractWithSelfAdmin(e, &executeMsg); err != nil {
-				return errors.Wrap(err, "failed to handle instantiate_contract_with_self_admin")
-			}
-		}
-	case "propose":
-		if err := h.handleExecuteDAOPropose(e, &executeMsg); err != nil {
-			return errors.Wrap(err, "failed to handle dao execute")
-		}
-	case "execute":
-		if err := h.handleExecuteDAOExecute(e, &executeMsg); err != nil {
-			return errors.Wrap(err, "failed to handle dao execute")
-		}
 	// Feeds actions
 	case "create_post":
 		if err := h.handleExecuteCreatePost(e, &executeMsg); err != nil {
@@ -287,6 +275,19 @@ func (h *Handler) handleExecute(e *Message) error {
 			if err := h.handleExecuteDeletePost(e, &executeMsg); err != nil {
 				return errors.Wrap(err, "failed to handle delete post")
 			}
+		}
+	// Orgs actions
+	case "instantiate_contract_with_self_admin":
+		if err := h.handleExecuteInstantiateContractWithSelfAdmin(e, &executeMsg); err != nil {
+			return errors.Wrap(err, "failed to handle instantiate_contract_with_self_admin")
+		}
+	case "propose":
+		if err := h.handleExecuteDAOPropose(e, &executeMsg); err != nil {
+			return errors.Wrap(err, "failed to handle dao execute")
+		}
+	case "execute":
+		if err := h.handleExecuteDAOExecute(e, &executeMsg); err != nil {
+			return errors.Wrap(err, "failed to handle dao execute")
 		}
 	}
 
