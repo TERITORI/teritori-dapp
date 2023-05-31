@@ -1,7 +1,7 @@
 import React from "react";
 import { Image, StyleSheet, View } from "react-native";
 
-import addSVG from "../../../../assets/icons/add.svg";
+import dorgSVG from "../../../../assets/icons/dorg-icon.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { neutral22, neutral33, neutralA3 } from "../../../utils/style/colors";
@@ -23,7 +23,11 @@ export const ImagePreviewer: React.FC<ImagePreviewerProps> = ({
         {uri ? (
           <Image source={{ uri }} style={styles.image} onError={onError} />
         ) : (
-          <SVG source={addSVG} height={32} width={32} />
+          <SVG
+            source={dorgSVG}
+            height={styles.image.height}
+            width={styles.image.width}
+          />
         )}
       </View>
 
@@ -43,6 +47,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginBottom: layout.padding_x1_5,
+    overflow: "hidden",
   },
   image: {
     height: 140,
