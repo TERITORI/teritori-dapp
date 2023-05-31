@@ -23,7 +23,7 @@ type DAO struct {
 	GroupContractAddress    string `gorm:"index"`
 	ProposalModuleAddress   string `gorm:"index"`
 	Members                 []*DAOMember
-	Proposals               []*DaoProposal
+	Proposals               []*DAOProposal
 }
 
 type DAOMember struct {
@@ -32,9 +32,9 @@ type DAOMember struct {
 	MemberAddress      string `gorm:"primaryKey"`
 }
 
-type DaoProposal struct {
-	DaoNetworkID       string `gorm:"primaryKey"`
-	DaoContractAddress string `gorm:"primaryKey"`
+type DAOProposal struct {
+	DAONetworkID       string `gorm:"primaryKey"`
+	DAOContractAddress string `gorm:"primaryKey"`
 	ProposalID         uint64 `gorm:"primaryKey;autoIncrement:false"`
 	Title              string
 	Description        string

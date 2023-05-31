@@ -59,7 +59,7 @@ var allModels = []interface{}{
 	// orgs
 	&DAO{},
 	&DAOMember{},
-	&DaoProposal{},
+	&DAOProposal{},
 }
 
 func NewSQLiteDB(path string) (*gorm.DB, error) {

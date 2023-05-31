@@ -206,7 +206,7 @@ func (h *Handler) handleExecuteDAOExecute(e *Message, execMsg *wasmtypes.MsgExec
 	}
 
 	// find proposal
-	var proposal indexerdb.DaoProposal
+	var proposal indexerdb.DAOProposal
 	err = h.db.First(&proposal, "dao_network_id = ? AND dao_contract_address = ? AND proposal_id = ?", dao.NetworkID, dao.ContractAddress, daoExecuteMsg.Execute.ProposalID).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		h.logger.Debug("ignored dao execute for unknown proposal", zap.String("tx", e.TxHash), zap.String("dao", dao.ContractAddress), zap.Uint64("proposal-id", daoExecuteMsg.Execute.ProposalID))
@@ -375,9 +375,9 @@ func (h *Handler) handleExecuteDAOPropose(e *Message, execMsg *wasmtypes.MsgExec
 	}
 
 	// create proposal in db
-	dbProposal := &indexerdb.DaoProposal{
-		DaoNetworkID:       h.config.Network.ID,
-		DaoContractAddress: dao.ContractAddress,
+	dbProposal := &indexerdb.DAOProposal{
+		DAONetworkID:       h.config.Network.ID,
+		DAOContractAddress: dao.ContractAddress,
 		ProposalID:         proposalId,
 		ProposerID:         h.config.Network.UserID(execMsg.Sender),
 		Title:              msg.Propose.Msg.Propose.Title,
