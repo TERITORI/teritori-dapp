@@ -1,37 +1,33 @@
 import React from "react";
 import { StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 
-import { BrandText } from "../../../components/BrandText";
-import { OmniLink } from "../../../components/OmniLink";
-import { OptimizedImage } from "../../../components/OptimizedImage";
-import { SpacerColumn } from "../../../components/spacer";
-import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
-import { NetworkKind, parseUserId } from "../../../networks";
-import {
-  neutral17,
-  neutral33,
-  neutral77,
-  secondaryColor,
-} from "../../../utils/style/colors";
-import { fontSemibold12, fontSemibold14 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { tinyAddress } from "../../../utils/text";
+import { useNSUserInfo } from "../../hooks/useNSUserInfo";
+import { parseUserId, NetworkKind } from "../../networks";
+import { secondaryColor, neutral77, neutral33 } from "../../utils/style/colors";
+import { fontSemibold14 } from "../../utils/style/fonts";
+import { layout } from "../../utils/style/layout";
+import { tinyAddress } from "../../utils/text";
+import { BrandText } from "../BrandText";
+import { OmniLink } from "../OmniLink";
+import { OptimizedImage } from "../OptimizedImage";
+import { SpacerColumn } from "../spacer";
 
-interface DaoItemProps {
+const imageSize = 100;
+
+export const DAOItem: React.FC<{
   daoId: string;
   style?: StyleProp<ViewStyle>;
-}
-
-export const DaoItem: React.FC<DaoItemProps> = ({ daoId: userId, style }) => {
+}> = ({ daoId: userId, style }) => {
   const [network, daoAddress] = parseUserId(userId);
   const {
     metadata: { image, public_name: name, public_bio: description, tokenId },
   } = useNSUserInfo(userId);
-  const imageWithFallback =
-    image ||
-    (network?.kind === NetworkKind.Cosmos && network.nameServiceDefaultImage) ||
-    "";
-  const imageSize = 100;
+
+  const fallbackSource =
+    network?.kind === NetworkKind.Cosmos
+      ? { uri: network.nameServiceDefaultImage }
+      : undefined;
+
   return (
     <OmniLink
       to={{ screen: "UserPublicProfile", params: { id: userId } }}
@@ -42,8 +38,9 @@ export const DaoItem: React.FC<DaoItemProps> = ({ daoId: userId, style }) => {
           width={imageSize}
           height={imageSize}
           source={{
-            uri: imageWithFallback,
+            uri: image || "",
           }}
+          fallback={fallbackSource}
           style={{
             width: imageSize,
             height: imageSize,
@@ -82,17 +79,4 @@ const styles = StyleSheet.create({
     borderColor: neutral33,
     borderRadius: 12,
   },
-  comingSoonText: StyleSheet.flatten([
-    fontSemibold12,
-    {
-      position: "absolute",
-      top: 0,
-      right: 0,
-      padding: layout.padding_x0_5,
-      paddingHorizontal: layout.padding_x1,
-      borderBottomLeftRadius: 12,
-      borderTopRightRadius: 12,
-      backgroundColor: neutral17,
-    },
-  ]),
 });

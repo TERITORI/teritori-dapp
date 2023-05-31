@@ -13,6 +13,7 @@ import { Quests } from "../../components/Quests";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { DAOMembers } from "../../components/dao/DAOMembers";
 import { DAOProposals } from "../../components/dao/DAOProposals";
+import { DAOsList } from "../../components/dao/DAOsList";
 import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
 import { UPPNFTs } from "../../components/userPublicProfile/UPPNFTs";
 import { useIsDAO } from "../../hooks/cosmwasm/useCosmWasmContractInfo";
@@ -23,7 +24,6 @@ import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { parseUserId } from "../../networks";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { fontSemibold20 } from "../../utils/style/fonts";
-import { DAOList } from "../Organizations/OrganizationsScreen";
 import { Assets } from "../WalletManager/Assets";
 
 const TabContainer: React.FC = ({ children }) => {
@@ -133,7 +133,9 @@ const SelectedTabContent: React.FC<{
       return <Assets userId={userId} readOnly />;
     case "daos":
       return (
-        <DAOList req={{ networkId: network?.id, memberAddress: userAddress }} />
+        <DAOsList
+          req={{ networkId: network?.id, memberAddress: userAddress }}
+        />
       );
     default:
       return null;

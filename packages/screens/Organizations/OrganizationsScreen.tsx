@@ -1,13 +1,12 @@
 import React from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, View } from "react-native";
 
-import { DaoItem } from "./components/DaoItem";
 import { DAOsRequest } from "../../api/dao/v1/dao";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
+import { DAOsList } from "../../components/dao/DAOsList";
 import { SpacerColumn } from "../../components/spacer";
-import { useDAOs } from "../../hooks/dao/useDAOs";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { NetworkKind } from "../../networks";
 import { useAppNavigation } from "../../utils/navigation";
@@ -43,57 +42,24 @@ export const OrganizationsScreen = () => {
   );
 };
 
-const halfGap = layout.padding_x1;
-
-// FIXME: extract
-
-export const DAOList: React.FC<{
-  req: Partial<DAOsRequest>;
-}> = ({ req }) => {
-  const { daos } = useDAOs(req);
-  return (
-    <View style={styles.row}>
-      {(daos || []).map((item) => (
-        <DaoItem
-          key={item.id}
-          daoId={item.id}
-          style={{
-            marginHorizontal: halfGap,
-            marginVertical: halfGap,
-          }}
-        />
-      ))}
-    </View>
-  );
-};
-
 const DAOsSection: React.FC<{
   title: string;
   req: Partial<DAOsRequest>;
   topRight?: React.ReactNode;
 }> = ({ title, req, topRight }) => {
   return (
-    <View style={styles.container}>
+    <View
+      style={{
+        padding: layout.contentPadding,
+        paddingTop: layout.topContentPaddingWithHeading,
+      }}
+    >
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
         <BrandText style={fontSemibold28}>{title}</BrandText>
         {topRight}
       </View>
       <SpacerColumn size={3} />
-      <DAOList req={req} />
+      <DAOsList req={req} />
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    padding: layout.contentPadding,
-    paddingTop: layout.topContentPaddingWithHeading,
-  },
-  row: {
-    flex: 1,
-    flexDirection: "row",
-    flexWrap: "wrap",
-    marginHorizontal: -halfGap,
-    marginVertical: -halfGap,
-  },
-});
