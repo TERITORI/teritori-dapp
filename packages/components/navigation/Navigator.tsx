@@ -71,7 +71,7 @@ export const Navigator: React.FC = () => {
     >
       <Stack.Screen
         name="Home"
-        component={MessageScreen}
+        component={ChatScreen}
         options={{ header: () => null, title: screenTitle("Home") }}
       />
       <Stack.Screen
