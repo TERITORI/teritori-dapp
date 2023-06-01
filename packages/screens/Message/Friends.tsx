@@ -8,7 +8,8 @@ import FriendList from "../../components/friends/FriendsList";
 import { TextInputCustomBorder } from "../../components/inputs/TextInputCustomBorder";
 import { SpacerColumn } from "../../components/spacer";
 import { neutral00, neutral33 } from "../../utils/style/colors";
-const Friends = ({ items }) => {
+
+export const Friends = ({ items }) => {
   const [searchQuery, setSearchQuery] = useState("");
 
   const filteredItems = items.filter((item) =>
@@ -51,5 +52,3 @@ const Friends = ({ items }) => {
     </View>
   );
 };
-
-export default Friends;

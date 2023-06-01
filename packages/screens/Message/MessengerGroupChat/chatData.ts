@@ -1,6 +1,7 @@
 import icon from "../../../../assets/banners/launchpad.jpg";
 import icons from "../../../../assets/banners/tns.png";
-const ChatData = [
+
+export const chatData = [
   {
     id: 1,
     message: "Hello! Intosoft ",
@@ -45,4 +46,3 @@ const ChatData = [
     source: icons,
   },
 ];
-export default ChatData;

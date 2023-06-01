@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, TouchableOpacity, Text, StyleSheet, Modal } from "react-native";
+import { View, TouchableOpacity, StyleSheet, Modal } from "react-native";
 
 import ShareScreen from "./ShareScreen";
 import audio from "../../../../assets/chat/audiocall.svg";
@@ -21,11 +21,11 @@ import {
   successColor,
 } from "../../../utils/style/colors";
 import { fontSemibold11, fontSemibold13 } from "../../../utils/style/fonts";
-interface AudioCallScreenProps {
+interface AudioCallProps {
   setAudioCall: (value: boolean) => void;
   audioCall: boolean;
 }
-const AudioCallScreen: React.FC<AudioCallScreenProps> = ({ setAudioCall }) => {
+export const AudioCall: React.FC<AudioCallProps> = ({ setAudioCall }) => {
   const [showTertiaryBox, setShowTertiaryBox] = useState(false);
   return (
     <View>
@@ -120,7 +120,6 @@ const AudioCallScreen: React.FC<AudioCallScreenProps> = ({ setAudioCall }) => {
   );
 };
 
-export default AudioCallScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,

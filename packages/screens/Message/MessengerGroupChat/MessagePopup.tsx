@@ -57,7 +57,7 @@ const data = [
   },
 ];
 
-const MessagePopup = ({ isForwarding, setIsForwarding }) => {
+export const MessagePopup = ({ isForwarding, setIsForwarding }) => {
   const handleForwardClick = () => {
     setIsForwarding(true);
   };
@@ -191,7 +191,7 @@ const MessagePopup = ({ isForwarding, setIsForwarding }) => {
     </View>
   );
 };
-export default MessagePopup;
+
 const styles = StyleSheet.create({
   forwardContainer: {
     backgroundColor: "rgba(41, 41, 41, 0.8)",

@@ -17,7 +17,8 @@ import {
   purpleDark,
 } from "../../../utils/style/colors";
 import { fontMedium10, fontSemibold13 } from "../../../utils/style/fonts";
-const CustomCalendar = () => {
+
+export const Calendar = () => {
   const [selected, setSelected] = useState("");
   console.log("selectedDate", selected);
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -181,7 +182,6 @@ const CustomCalendar = () => {
         <SpacerRow size={1} />
 
         <TertiaryBox
-          // fullWidth
           disabledBorderColor=""
           mainContainerStyle={{
             backgroundColor: neutral22,
@@ -202,10 +202,7 @@ const CustomCalendar = () => {
         </TertiaryBox>
       </View>
 
-      {/* Calendar */}
       <View>{weeks}</View>
     </View>
   );
 };
-
-export default CustomCalendar;
