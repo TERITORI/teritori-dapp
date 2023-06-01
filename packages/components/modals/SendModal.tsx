@@ -1,12 +1,14 @@
 import { Decimal } from "@cosmjs/math";
 import { isDeliverTxFailure } from "@cosmjs/stargate";
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import { StyleSheet, TouchableOpacity } from "react-native";
 
 import ModalBase from "./ModalBase";
 import contactsSVG from "../../../assets/icons/contacts.svg";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { useDAOMakeProposal } from "../../hooks/dao/useDAOMakeProposal";
+import { useDAOs } from "../../hooks/dao/useDAOs";
 import { useBalances } from "../../hooks/useBalances";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
@@ -14,6 +16,7 @@ import {
   getNetwork,
   keplrCurrencyFromNativeCurrencyInfo,
   NativeCurrencyInfo,
+  parseUserId,
 } from "../../networks";
 import { TransactionForm } from "../../screens/WalletManager/types";
 import { prettyPrice } from "../../utils/coins";
@@ -32,6 +35,7 @@ import { NetworkIcon } from "../NetworkIcon";
 import { SVG } from "../SVG";
 import { MaxButton } from "../buttons/MaxButton";
 import { PrimaryButton } from "../buttons/PrimaryButton";
+import { DAOSelector } from "../dao/DAOSelector";
 import { TextInputCustom } from "../inputs/TextInputCustom";
 import { SpacerColumn, SpacerRow } from "../spacer";
 
@@ -61,8 +65,18 @@ export const SendModal: React.FC<SendModalProps> = ({
   const { setToastError, setToastSuccess } = useFeedbacks();
   const selectedWallet = useSelectedWallet();
   const { control, setValue, handleSubmit } = useForm<TransactionForm>();
+  const [selectedDAOId, setSelectedDAOId] = useState("");
+  const makeProposal = useDAOMakeProposal(selectedDAOId);
+  const [, daoAddress] = parseUserId(selectedDAOId);
+  const { daos } = useDAOs({
+    networkId,
+    memberAddress: selectedWallet?.address,
+  });
 
-  const balances = useBalances(networkId, selectedWallet?.address);
+  const balances = useBalances(
+    networkId,
+    daoAddress || selectedWallet?.address
+  );
 
   const ModalHeader = useCallback(
     () => (
@@ -102,7 +116,36 @@ export const SendModal: React.FC<SendModalProps> = ({
         nativeCurrency.decimals
       ).atomics;
 
-      if (networkId === "gno-testnet") {
+      if (selectedDAOId) {
+        // DAO send
+        const selectedDAO = daos?.find((dao) => dao.id === selectedDAOId);
+        if (!selectedDAO) {
+          throw new Error("no selected DAO");
+        }
+        await makeProposal(sender, {
+          title: `Send ${prettyPrice(
+            networkId,
+            amount,
+            nativeCurrency.denom
+          )} to ${receiver}`,
+          description: "",
+          msgs: [
+            {
+              bank: {
+                send: {
+                  from_address: selectedDAOId,
+                  to_address: receiver,
+                  amount: [{ amount, denom: nativeCurrency.denom }],
+                },
+              },
+            },
+          ],
+        });
+        setToastSuccess({
+          title: "Proposal created",
+          message: "",
+        });
+      } else if (networkId === "gno-testnet") {
         const adena = (window as any).adena;
         const res = await adena.DoContract({
           messages: [
@@ -182,6 +225,13 @@ export const SendModal: React.FC<SendModalProps> = ({
 
       <SpacerColumn size={2.5} />
 
+      <DAOSelector
+        value={selectedDAOId}
+        onSelect={setSelectedDAOId}
+        userId={selectedWallet?.userId}
+        style={{ marginBottom: layout.padding_x2_5 }}
+      />
+
       <TextInputCustom<TransactionForm>
         height={48}
         control={control}
@@ -208,7 +258,7 @@ export const SendModal: React.FC<SendModalProps> = ({
 
       <PrimaryButton
         size="XL"
-        text="Send"
+        text={selectedDAOId ? "Propose" : "Send"}
         fullWidth
         disabled={max === "0"}
         loader

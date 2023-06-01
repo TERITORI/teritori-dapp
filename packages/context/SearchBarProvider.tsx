@@ -3,6 +3,7 @@ import React, { createContext, useContext, useState } from "react";
 import { useSelector } from "react-redux";
 
 import { Collection } from "../api/marketplace/v1/marketplace";
+import { useNameSearch } from "../hooks/search/useNameSearch";
 import { useSelectedNetworkId } from "../hooks/useSelectedNetwork";
 import { selectSearchText } from "../store/slices/search";
 import { getMarketplaceClient } from "../utils/backend";
@@ -35,27 +36,11 @@ export const SearchBarContextProvider: React.FC = ({ children }) => {
   const selectedNetworkId = useSelectedNetworkId();
   const text = useSelector(selectSearchText);
 
-  const { data: names = [] } = useQuery(
-    ["searchNames", selectedNetworkId, text],
-    async () => {
-      if (!selectedNetworkId || !text) {
-        return [];
-      }
-      const client = getMarketplaceClient(selectedNetworkId);
-      if (!client) {
-        return [];
-      }
-      const reply = await client.SearchNames({
-        networkId: selectedNetworkId,
-        input: text,
-        limit: 12,
-      });
-      return reply.names;
-    },
-    {
-      staleTime: Infinity,
-    }
-  );
+  const { names } = useNameSearch({
+    networkId: selectedNetworkId,
+    input: text,
+    limit: 12,
+  });
   const hasNames = !!names.length;
 
   const { data: collections = [] } = useQuery(

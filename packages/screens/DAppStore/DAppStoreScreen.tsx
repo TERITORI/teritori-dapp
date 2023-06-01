@@ -10,7 +10,7 @@ import { ScreenContainer } from "../../components/ScreenContainer";
 import { Separator } from "../../components/Separator";
 import { ScreenFC } from "../../utils/navigation";
 
-export const DAppStore: ScreenFC<"DAppStore"> = () => {
+export const DAppStoreScreen: ScreenFC<"DAppStore"> = () => {
   const [searchInput, setSearchInput] = useState("");
   const { width } = useWindowDimensions();
   const isMobile = width < 720;

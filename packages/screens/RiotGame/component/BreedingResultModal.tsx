@@ -74,7 +74,7 @@ export const BreedingResultModal: React.FC<BreedingResultModalProps> = ({
       <View style={{ alignItems: "center" }}>
         <OptimizedImage
           style={{ width: 330, height: 330 }}
-          source={{ uri: tokenInfo?.imageUri }}
+          sourceURI={tokenInfo?.imageUri}
           width={330}
           height={330}
         />

@@ -439,7 +439,7 @@ export const useSwap = (
       return {
         isError: true,
         title: "Transaction failed",
-        message: e.message,
+        message: e instanceof Error ? e.message : `${e}`,
       } as SwapResult;
     }
   };

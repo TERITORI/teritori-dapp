@@ -56,13 +56,10 @@ export const Sidebar: React.FC = () => {
   const userInfo = useNSUserInfo(selectedWallet?.userId);
   const selectedNetworkKind = useSelectedNetworkKind();
   const connected = selectedWallet?.connected;
-
-  // variables
   const navigation = useAppNavigation();
   const { name: currentRouteName } = useRoute();
   const { isSidebarExpanded, toggleSidebar, dynamicSidebar } = useSidebar();
 
-  // animations
   const layoutStyle = useAnimatedStyle(
     () => ({
       width: isSidebarExpanded
@@ -92,7 +89,6 @@ export const Sidebar: React.FC = () => {
     navigation.navigate(name);
   };
 
-  // returns
   return (
     <Animated.View style={[styles.container, layoutStyle]}>
       <View style={styles.headerContainer}>
@@ -157,10 +153,7 @@ export const Sidebar: React.FC = () => {
           connected &&
           userInfo.metadata && (
             <SidebarProfileButton
-              isLoading={userInfo.loading}
               userId={selectedWallet?.userId || ""}
-              tokenId={userInfo.metadata.tokenId || ""}
-              image={userInfo.metadata.image || ""}
               isExpanded={isSidebarExpanded}
             />
           )}

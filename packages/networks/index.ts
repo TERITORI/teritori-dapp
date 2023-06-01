@@ -3,6 +3,7 @@ import {
   SigningCosmWasmClient,
 } from "@cosmjs/cosmwasm-stargate";
 import { Decimal } from "@cosmjs/math";
+import { Registry } from "@cosmjs/proto-signing";
 import {
   SigningStargateClient,
   StargateClient,
@@ -29,6 +30,7 @@ import {
   NetworkInfo,
   NetworkKind,
 } from "./types";
+import { MsgBurnTokens } from "../api/teritori/mint";
 import { getKeplr } from "../utils/keplr";
 
 export * from "./types";
@@ -377,6 +379,9 @@ export const getKeplrSigningStargateClient = async (
     signer,
     {
       gasPrice,
+      registry: new Registry([
+        ["/teritori.mint.v1beta1.MsgBurnTokens", MsgBurnTokens],
+      ]),
     }
   );
 };
