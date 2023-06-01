@@ -143,6 +143,7 @@ export const RightSection: React.FC<RightSectionProps> = ({
               <Pressable
                 key={step}
                 style={styles.step}
+                disabled={index === steps.length - 1}
                 onPress={
                   unlockedSteps.includes(index)
                     ? () => onStepChange(index)
