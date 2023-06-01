@@ -17,7 +17,11 @@ export const RadioDescriptionSelector: React.FC<{
   description: string;
 }> = ({ selected, disabled, onPress, title, description }) => {
   return (
-    <Pressable style={[styles.container, {opacity: disabled ? 0.5 : undefined}]} onPress={onPress} disabled={disabled}>
+    <Pressable
+      style={[styles.container, { opacity: disabled ? 0.5 : undefined }]}
+      onPress={onPress}
+      disabled={disabled}
+    >
       <View style={styles.row}>
         <RadioButton selected={selected} />
         <SpacerRow size={2.5} />
