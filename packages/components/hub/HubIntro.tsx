@@ -47,7 +47,9 @@ const ConnectedIntro: React.FC = () => {
 
       <Section title="Quests">
         <FullWidthSeparator />
-        <Quests userId={selectedWallet?.userId} />
+        <View style={{ marginTop: 20 }}>
+          <Quests userId={selectedWallet?.userId} />
+        </View>
       </Section>
 
       <Section title="Wallets manager">
