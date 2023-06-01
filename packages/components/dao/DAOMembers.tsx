@@ -188,6 +188,7 @@ const AddMembersModal: React.FC<{
             selectedWallet?.address,
             ids.map((n) => parseUserId(n)[1])
           );
+          onClose();
         })}
       />
       <SearchBarInput
