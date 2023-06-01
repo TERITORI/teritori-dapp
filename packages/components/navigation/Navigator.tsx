@@ -200,7 +200,7 @@ export const Navigator: React.FC = () => {
         component={OrganizationsScreen}
         options={{
           header: () => null,
-          title: screenTitle("Dao List"),
+          title: screenTitle("Organizations"),
         }}
       />
 
