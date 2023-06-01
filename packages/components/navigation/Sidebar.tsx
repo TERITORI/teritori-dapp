@@ -52,18 +52,14 @@ const SidebarSeparator: React.FC = () => {
 };
 
 export const Sidebar: React.FC = () => {
-  // variables
   const selectedWallet = useSelectedWallet();
   const userInfo = useNSUserInfo(selectedWallet?.userId);
   const selectedNetworkKind = useSelectedNetworkKind();
   const connected = selectedWallet?.connected;
-
-  // variables
   const navigation = useAppNavigation();
   const { name: currentRouteName } = useRoute();
   const { isSidebarExpanded, toggleSidebar, dynamicSidebar } = useSidebar();
 
-  // animations
   const layoutStyle = useAnimatedStyle(
     () => ({
       width: isSidebarExpanded
@@ -93,7 +89,6 @@ export const Sidebar: React.FC = () => {
     navigation.navigate(name);
   };
 
-  // returns
   return (
     <Animated.View style={[styles.container, layoutStyle]}>
       <View style={styles.headerContainer}>
