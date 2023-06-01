@@ -92,7 +92,7 @@ message Collection {
   int64 num_trades = 19;
   int32 num_owners = 20;
   string denom = 21;
-  float comparison = 22;
+  float volume_compare = 22;
 }
 
 message CollectionStats {

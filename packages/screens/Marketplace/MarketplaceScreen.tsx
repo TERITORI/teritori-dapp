@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { FlatList, View } from "react-native";
+import {
+  FlatList,
+  StyleProp,
+  TextStyle,
+  View,
+  ViewProps,
+  ViewStyle,
+} from "react-native";
 
 import { PrettyPrint } from "./types";
 import {
@@ -22,7 +29,11 @@ import { useCollections } from "../../hooks/useCollections";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { prettyPrice } from "../../utils/coins";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
-import { mineShaftColor } from "../../utils/style/colors";
+import {
+  errorColor,
+  mineShaftColor,
+  successColor,
+} from "../../utils/style/colors";
 import {
   fontSemibold13,
   fontSemibold20,
@@ -96,6 +107,7 @@ export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
   };
 
   const { collections } = useCollections(req);
+
   const [filterText, setFilterText] = useState("");
 
   const handleChangeText = (e: string) => {
@@ -271,7 +283,15 @@ const CollectionRow: React.FC<{ collection: Collection; rank: number }> = ({
       </View>
       <PrettyPriceWithCurrency data={rowData.totalVolume} />
       <PrettyPriceWithCurrency data={rowData["TimePeriodVolume"]} />
-      <InnerCell>{rowData["TimePeriodPercentualVolume"]}</InnerCell>
+      <InnerCell
+        style={{
+          color: rowData["TimePeriodPercentualVolume"].includes("+")
+            ? successColor
+            : errorColor,
+        }}
+      >
+        {rowData["TimePeriodPercentualVolume"]}
+      </InnerCell>
       <InnerCell>{rowData.sales}</InnerCell>
       <PrettyPriceWithCurrency data={rowData.floorPrice} />
       <InnerCell>{rowData.owners}</InnerCell>
@@ -280,7 +300,11 @@ const CollectionRow: React.FC<{ collection: Collection; rank: number }> = ({
   );
 };
 
-const InnerCell: React.FC<{ flex?: number }> = ({ flex = 3, children }) => {
+const InnerCell: React.FC<{ flex?: number; style?: StyleProp<TextStyle> }> = ({
+  flex = 3,
+  children,
+  style,
+}) => {
   return (
     <View
       style={{
@@ -288,7 +312,7 @@ const InnerCell: React.FC<{ flex?: number }> = ({ flex = 3, children }) => {
         paddingRight: layout.padding_x1,
       }}
     >
-      <BrandText style={fontSemibold13} numberOfLines={1}>
+      <BrandText style={[fontSemibold13, style]} numberOfLines={1}>
         {children}
       </BrandText>
     </View>
@@ -333,7 +357,7 @@ interface RowData {
   };
   totalVolume: PrettyPrint;
   TimePeriodVolume: PrettyPrint;
-  TimePeriodPercentualVolume: number;
+  TimePeriodPercentualVolume: string;
   sales: string;
   floorPrice: PrettyPrint;
   owners: string;
@@ -359,7 +383,7 @@ const useRowData = (collection: Collection, rank: number): RowData => {
       value: parseFloat(collection.volume),
       denom: collection.denom,
     },
-    TimePeriodPercentualVolume: collection.comparison,
+    TimePeriodPercentualVolume: getDelta(collection),
     sales: nFormatter(collection.numTrades, 0),
     floorPrice: {
       networkId: collection.networkId,
@@ -375,4 +399,14 @@ const useRowData = (collection: Collection, rank: number): RowData => {
       collection.maxSupply.toString().length
     ),
   };
+};
+const getDelta = (collection: Collection) => {
+  if (collection.volume == "0") {
+    return "-";
+  }
+  const res = (collection.volumeCompare * 100) / parseFloat(collection.volume);
+  if (res > 100) {
+    return "+%" + res.toFixed(2);
+  }
+  return "-%" + (100 - res).toFixed(2);
 };

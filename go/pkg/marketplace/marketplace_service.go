@@ -85,7 +85,7 @@ type DBCollectionWithExtra struct {
 	Price               string
 	MaxSupply           int64
 	SecondaryDuringMint bool
-	Comparision         float32
+	VolumeCompare       float32
 }
 
 func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, srv marketplacepb.MarketplaceService_CollectionsServer) error {
@@ -202,15 +202,14 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 				GROUP BY nbc.id
       ),
      trades_by_collection_comparision AS (
-         SELECT round(cast(100*SUM(cast(t.price as float8))/trades_by_collection.volume as numeric), 2) comparision, nbc.id
+         SELECT SUM(cast(t.price as float8)) volume, nbc.id 
          FROM trades_on_period_comparision AS t
          INNER JOIN nft_by_collection nbc ON nbc.nft_id = t.nft_id
-         JOIN trades_by_collection on trades_by_collection.id = t.id
-         GROUP BY nbc.id,trades_by_collection.volume
+         GROUP BY nbc.id
      )
       SELECT tc.*, COALESCE((SELECT tbc.volume FROM trades_by_collection tbc WHERE tbc.id = tc.id), 0) volume,
          total_volume, floor_price, num_trades, num_owners, 
-         COALESCE((SELECT tcc.comparision FROM trades_by_collection_comparision tcc WHERE tcc.id = tc.id), 0) comparison
+       COALESCE((SELECT tcc.volume FROM trades_by_collection_comparision tcc WHERE tcc.id = tc.id), 0) volume_compare
       FROM tori_collections tc
       left join trades_by_collection_historic tch on tc.id = tch.id
       left join current_num_owners on tc.collection_id = current_num_owners.collection_id
@@ -239,7 +238,7 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 				NetworkId:           req.GetNetworkId(),
 				Volume:              c.Volume,
 				VolumeDenom:         c.Denom,
-				Comparison:          c.Comparision,
+				VolumeCompare:       c.VolumeCompare,
 				CreatorId:           string(network.UserID(c.CreatorAddress)),
 				SecondaryDuringMint: c.SecondaryDuringMint,
 				MintPrice:           c.Price,
