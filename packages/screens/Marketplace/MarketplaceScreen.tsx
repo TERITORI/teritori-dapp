@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  FlatList,
-  StyleProp,
-  TextStyle,
-  View,
-  ViewProps,
-  ViewStyle,
-} from "react-native";
+import { FlatList, StyleProp, TextStyle, View } from "react-native";
 
 import { PrettyPrint } from "./types";
 import {
@@ -403,7 +396,7 @@ const useRowData = (collection: Collection, rank: number): RowData => {
   };
 };
 const getDelta = (collection: Collection) => {
-  if (collection.volume == "0") {
+  if (collection.volume === "0") {
     return "-";
   }
   const res = (collection.volumeCompare * 100) / parseFloat(collection.volume);
