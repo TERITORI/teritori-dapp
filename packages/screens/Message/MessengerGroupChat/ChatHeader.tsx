@@ -8,8 +8,8 @@ import {
   TextInput,
 } from "react-native";
 
-import AudioCallScreen from "./AudioCall";
-import Calendars from "./Calendar";
+import { AudioCall } from "./AudioCall";
+import { Calendar } from "./Calendar";
 import VideoCallScreen from "./VideoCall";
 import audiocell from "../../../../assets/icons/audiocell.svg";
 import avatar from "../../../../assets/icons/avatar.svg";
@@ -38,7 +38,7 @@ import {
   fontMedium10,
   fontMedium14,
 } from "../../../utils/style/fonts";
-const ChatHeader = ({ messages }: any) => {
+export const ChatHeader = ({ messages }: any) => {
   const [showTextInput, setShowTextInput] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
   const [audioCall, setAudioCall] = useState(false);
@@ -199,7 +199,7 @@ const ChatHeader = ({ messages }: any) => {
               top: 46.8,
             }}
           >
-            <Calendars />
+            <Calendar />
           </View>
         )}
       </View>
@@ -226,7 +226,7 @@ const ChatHeader = ({ messages }: any) => {
             width: "100%",
           }}
         >
-          <AudioCallScreen audioCall={audioCall} setAudioCall={setAudioCall} />
+          <AudioCall audioCall={audioCall} setAudioCall={setAudioCall} />
         </View>
       )}
 
@@ -296,7 +296,7 @@ const ChatHeader = ({ messages }: any) => {
     </>
   );
 };
-export default ChatHeader;
+
 const styles = StyleSheet.create({
   container: {
     backgroundColor: neutral17,

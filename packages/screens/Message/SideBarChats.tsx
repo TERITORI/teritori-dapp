@@ -20,7 +20,7 @@ import {
 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 
-const SideBarChats: React.FC = () => {
+export const SideBarChats: React.FC = () => {
   const navigation = useAppNavigation();
   const MAX_WIDTH = 110;
   return (
@@ -87,4 +87,3 @@ const SideBarChats: React.FC = () => {
     </View>
   );
 };
-export default SideBarChats;

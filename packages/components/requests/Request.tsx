@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Avatar, Badge } from "react-native-paper";
 
@@ -17,6 +17,7 @@ import {
   fontSemibold13,
   fontSemibold14,
 } from "../../utils/style/fonts";
+import { weshClient } from "../../weshnet/client";
 import { BrandText } from "../BrandText";
 import FlexRow from "../FlexRow";
 import { TertiaryBox } from "../boxes/TertiaryBox";
@@ -29,6 +30,19 @@ type Props = {
 
 const RequestList: React.FC<Props> = ({ avatar, name, isOnline }) => {
   const onlineStatusBadgeColor = isOnline ? "green" : "yellow";
+
+  const handleAddFriend = async () => {
+    // await weshClient.ContactRequestAccept({
+    //   contactPk: accountPk,
+    // });
+  };
+
+  const handleCancelFriend = async () => {
+    // await weshClient.ContactRequestDiscard({
+    //   contactPk: accountPk,
+    // });
+  };
+
   return (
     <View>
       <FlexRow justifyContent="space-between">
@@ -60,7 +74,7 @@ const RequestList: React.FC<Props> = ({ avatar, name, isOnline }) => {
         <View>
           <FlexRow>
             <View>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={handleAddFriend}>
                 <TertiaryBox
                   height={40}
                   mainContainerStyle={{
@@ -82,7 +96,7 @@ const RequestList: React.FC<Props> = ({ avatar, name, isOnline }) => {
             </View>
             <SpacerRow size={1.5} />
             <View>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={handleCancelFriend}>
                 <TertiaryBox
                   height={40}
                   mainContainerStyle={{

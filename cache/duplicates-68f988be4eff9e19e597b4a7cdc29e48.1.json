@@ -1,0 +1,1286 @@
+{
+  "lru-cache@5.1.1": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@babel/helper-compilation-targets/node_modules/lru-cache",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/lru-cache",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/lru-cache",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/webpack-config/node_modules/webpack/node_modules/lru-cache",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/electron-webpack/node_modules/cacache/node_modules/lru-cache",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/terser-webpack-plugin/node_modules/lru-cache"
+  ],
+  "yallist@3.1.1": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@babel/helper-compilation-targets/node_modules/yallist",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/yallist",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/yallist",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/webpack-config/node_modules/yallist",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/electron-webpack/node_modules/yallist",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/terser-webpack-plugin/node_modules/yallist"
+  ],
+  "ansi-styles@3.2.1": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@babel/highlight/node_modules/ansi-styles",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/cli/node_modules/ansi-styles",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/webpack-config/node_modules/ansi-styles",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/ansi-fragments/node_modules/ansi-styles",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/cliui/node_modules/ansi-styles",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/coa/node_modules/ansi-styles",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/expo-cli/node_modules/ansi-styles",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/inquirerer/node_modules/ansi-styles",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/svgo/node_modules/ansi-styles",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/webpack-cli/node_modules/ansi-styles"
+  ],
+  "chalk@2.4.2": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@babel/highlight/node_modules/chalk",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/cli/node_modules/log-symbols/node_modules/chalk",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/cli/node_modules/ora/node_modules/chalk",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/webpack-config/node_modules/fork-ts-checker-webpack-plugin/node_modules/chalk",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/webpack-config/node_modules/react-dev-utils/node_modules/chalk",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/coa/node_modules/chalk",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/expo-cli/node_modules/log-symbols/node_modules/chalk",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/expo-cli/node_modules/ora/node_modules/chalk",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/inquirerer/node_modules/chalk",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/svgo/node_modules/chalk",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/webpack-cli/node_modules/chalk"
+  ],
+  "supports-color@5.5.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@babel/highlight/node_modules/supports-color",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/cli/node_modules/supports-color",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/webpack-config/node_modules/fork-ts-checker-webpack-plugin/node_modules/supports-color",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/webpack-config/node_modules/react-dev-utils/node_modules/supports-color",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/coa/node_modules/supports-color",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/expo-cli/node_modules/supports-color",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/inquirerer/node_modules/supports-color",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/svgo/node_modules/supports-color",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/webpack-cli/node_modules/chalk/node_modules/supports-color"
+  ],
+  "find-cache-dir@2.1.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@babel/register/node_modules/find-cache-dir",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/webpack-config/node_modules/babel-loader/node_modules/find-cache-dir",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/webpack-config/node_modules/webpack/node_modules/find-cache-dir",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/terser-webpack-plugin/node_modules/find-cache-dir"
+  ],
+  "ansi-escapes@4.3.2": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@bundlr-network/client/node_modules/ansi-escapes",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/terminal-link/node_modules/ansi-escapes"
+  ],
+  "cli-cursor@3.1.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@bundlr-network/client/node_modules/cli-cursor",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/ora/node_modules/cli-cursor"
+  ],
+  "commander@8.3.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@bundlr-network/client/node_modules/commander",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/html-minifier-terser/node_modules/commander"
+  ],
+  "restore-cursor@3.1.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@bundlr-network/client/node_modules/restore-cursor",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/ora/node_modules/restore-cursor"
+  ],
+  "rxjs@7.8.1": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@bundlr-network/client/node_modules/rxjs",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/wait-on/node_modules/rxjs"
+  ],
+  "deepmerge@3.3.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@callstack/react-theme-provider/node_modules/deepmerge",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@react-native-community/cli-config/node_modules/deepmerge"
+  ],
+  "buffer@6.0.3": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@coinbase/wallet-sdk/node_modules/buffer",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@metaplex-foundation/js-next/node_modules/buffer",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@solana/buffer-layout/node_modules/buffer",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@solana/spl-token/node_modules/buffer",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@solana/web3.js/node_modules/buffer",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@web3modal/core/node_modules/buffer",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/algosdk/node_modules/buffer",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/bl/node_modules/buffer",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/ipfs-utils/node_modules/buffer",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/it-to-stream/node_modules/buffer",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/sha3/node_modules/buffer"
+  ],
+  "readable-stream@3.6.2": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@coinbase/wallet-sdk/node_modules/readable-stream",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/are-we-there-yet/node_modules/readable-stream",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/bl/node_modules/readable-stream",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/browserify-sign/node_modules/readable-stream",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/hash-base/node_modules/readable-stream",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/it-to-stream/node_modules/readable-stream",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/keccak/node_modules/readable-stream",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/multistream/node_modules/readable-stream",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/ora/node_modules/readable-stream",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/pino-abstract-transport/node_modules/readable-stream",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/rabin-wasm/node_modules/readable-stream",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/spdy-transport/node_modules/readable-stream"
+  ],
+  "util@0.12.5": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@coinbase/wallet-sdk/node_modules/util",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/web-encoding/node_modules/util"
+  ],
+  "@cosmjs/crypto@0.29.5": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmjs/amino/node_modules/@cosmjs/crypto",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmjs/cosmwasm-stargate/node_modules/@cosmjs/crypto",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmjs/proto-signing/node_modules/@cosmjs/crypto",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmjs/stargate/node_modules/@cosmjs/crypto",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmjs/tendermint-rpc/node_modules/@cosmjs/crypto",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmology/core/node_modules/@cosmjs/crypto"
+  ],
+  "@cosmjs/amino@0.28.13": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmjs/cli/node_modules/@cosmjs/amino",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmjs/ledger-amino/node_modules/@cosmjs/amino",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/cosmwasm/node_modules/@cosmjs/amino"
+  ],
+  "@cosmjs/encoding@0.28.13": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmjs/cli/node_modules/@cosmjs/encoding",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmjs/crypto/node_modules/@cosmjs/encoding",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmjs/ledger-amino/node_modules/@cosmjs/encoding",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/cosmwasm/node_modules/@cosmjs/encoding"
+  ],
+  "@cosmjs/json-rpc@0.28.13": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmjs/cli/node_modules/@cosmjs/json-rpc",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/cosmwasm/node_modules/@cosmjs/json-rpc"
+  ],
+  "@cosmjs/math@0.28.13": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmjs/cli/node_modules/@cosmjs/math",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmjs/crypto/node_modules/@cosmjs/math",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmjs/ledger-amino/node_modules/@cosmjs/math",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/cosmwasm/node_modules/@cosmjs/math"
+  ],
+  "@cosmjs/proto-signing@0.28.13": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmjs/cli/node_modules/@cosmjs/proto-signing",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/cosmwasm/node_modules/@cosmjs/proto-signing"
+  ],
+  "@cosmjs/socket@0.28.13": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmjs/cli/node_modules/@cosmjs/socket",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/cosmwasm/node_modules/@cosmjs/socket"
+  ],
+  "@cosmjs/stargate@0.28.13": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmjs/cli/node_modules/@cosmjs/stargate",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/cosmwasm/node_modules/@cosmjs/stargate"
+  ],
+  "@cosmjs/stream@0.28.13": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmjs/cli/node_modules/@cosmjs/stream",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/cosmwasm/node_modules/@cosmjs/stream"
+  ],
+  "@cosmjs/tendermint-rpc@0.28.13": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmjs/cli/node_modules/@cosmjs/tendermint-rpc",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/cosmwasm/node_modules/@cosmjs/tendermint-rpc"
+  ],
+  "bech32@1.1.4": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmjs/cli/node_modules/bech32",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmjs/crypto/node_modules/bech32",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmjs/encoding/node_modules/bech32",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmjs/launchpad/node_modules/bech32",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmjs/ledger-amino/node_modules/bech32",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmology/core/node_modules/bech32",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@ethersproject/providers/node_modules/bech32",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@iov/crypto/node_modules/bech32",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@iov/encoding/node_modules/bech32",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/cosmwasm/node_modules/bech32",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/ledger-cosmos-js/node_modules/bech32"
+  ],
+  "cosmjs-types@0.4.1": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmjs/cli/node_modules/cosmjs-types",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/cosmwasm/node_modules/cosmjs-types"
+  ],
+  "long@4.0.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmjs/cli/node_modules/long",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmjs/cosmwasm-stargate/node_modules/long",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmjs/proto-signing/node_modules/long",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmjs/stargate/node_modules/long",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmology/core/node_modules/@cosmjs/proto-signing/node_modules/long",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmology/core/node_modules/@cosmjs/stargate/node_modules/long",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmology/core/node_modules/@keplr-wallet/types/node_modules/long",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@keplr-wallet/types/node_modules/long",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/cosmjs-types/node_modules/long",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/cosmwasm/node_modules/long",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/protobufjs/node_modules/long",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/ts-proto-descriptors/node_modules/long"
+  ],
+  "pako@2.1.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmjs/cli/node_modules/pako",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmjs/cosmwasm-stargate/node_modules/pako",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/cosmwasm/node_modules/pako"
+  ],
+  "@cosmjs/amino@0.29.5": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmjs/cosmwasm-stargate/node_modules/@cosmjs/amino",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmjs/proto-signing/node_modules/@cosmjs/amino",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmjs/stargate/node_modules/@cosmjs/amino",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmology/core/node_modules/@cosmjs/amino"
+  ],
+  "@cosmjs/proto-signing@0.29.5": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmjs/cosmwasm-stargate/node_modules/@cosmjs/proto-signing",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmjs/stargate/node_modules/@cosmjs/proto-signing",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmology/core/node_modules/@cosmjs/proto-signing"
+  ],
+  "@cosmjs/stargate@0.29.5": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmjs/cosmwasm-stargate/node_modules/@cosmjs/stargate",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmology/core/node_modules/@cosmjs/stargate"
+  ],
+  "semver@7.5.1": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmjs/ledger-amino/node_modules/semver",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/config-plugins/node_modules/semver",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@ledgerhq/devices/node_modules/semver",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@metamask/utils/node_modules/semver",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@npmcli/fs/node_modules/semver",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@typescript-eslint/eslint-plugin/node_modules/semver",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@typescript-eslint/typescript-estree/node_modules/semver",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@typescript-eslint/utils/node_modules/semver",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/app-builder-lib/node_modules/semver",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/cacache/node_modules/semver",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/electron-webpack/node_modules/semver",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/expo-dev-launcher/node_modules/semver",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/expo-dev-menu/node_modules/semver",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/global-agent/node_modules/semver",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/node-gyp/node_modules/semver",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/normalize-package-data/node_modules/semver",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/css-loader/node_modules/semver"
+  ],
+  "axios@0.27.2": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmology/core/node_modules/axios",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@keplr-wallet/types/node_modules/axios",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@osmonauts/lcd/node_modules/axios",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/wait-on/node_modules/axios"
+  ],
+  "@babel/generator@7.22.3": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/core/node_modules/@babel/generator",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/traverse/node_modules/@babel/generator"
+  ],
+  "@babel/types@7.22.4": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/core/node_modules/@babel/types",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/generator/node_modules/@babel/types",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/helper-remap-async-to-generator/node_modules/@babel/types",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/parser/node_modules/@babel/types",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/preset-env/node_modules/@babel/types",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/preset-modules/node_modules/@babel/types",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/traverse/node_modules/@babel/types"
+  ],
+  "@babel/helper-compilation-targets@7.22.1": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/helper-compilation-targets",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/helper-compilation-targets"
+  ],
+  "@babel/helper-create-class-features-plugin@7.22.1": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/helper-create-class-features-plugin",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/helper-create-class-features-plugin"
+  ],
+  "@babel/helper-create-regexp-features-plugin@7.22.1": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/helper-create-regexp-features-plugin",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/helper-create-regexp-features-plugin"
+  ],
+  "@babel/helper-remap-async-to-generator@7.18.9": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/helper-remap-async-to-generator",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/helper-remap-async-to-generator"
+  ],
+  "@babel/plugin-proposal-async-generator-functions@7.20.7": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-proposal-async-generator-functions",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-proposal-async-generator-functions"
+  ],
+  "@babel/plugin-proposal-class-properties@7.18.6": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-proposal-class-properties",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/preset-env/node_modules/@babel/plugin-proposal-class-properties"
+  ],
+  "@babel/plugin-proposal-dynamic-import@7.18.6": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-proposal-dynamic-import",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-proposal-dynamic-import"
+  ],
+  "@babel/plugin-proposal-export-namespace-from@7.18.9": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-proposal-export-namespace-from",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-proposal-export-namespace-from"
+  ],
+  "@babel/plugin-proposal-json-strings@7.18.6": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-proposal-json-strings",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-proposal-json-strings"
+  ],
+  "@babel/plugin-proposal-logical-assignment-operators@7.20.7": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-proposal-logical-assignment-operators",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-proposal-logical-assignment-operators"
+  ],
+  "@babel/plugin-proposal-nullish-coalescing-operator@7.18.6": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-proposal-nullish-coalescing-operator",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-proposal-nullish-coalescing-operator"
+  ],
+  "@babel/plugin-proposal-numeric-separator@7.18.6": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-proposal-numeric-separator",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-proposal-numeric-separator"
+  ],
+  "@babel/plugin-proposal-optional-catch-binding@7.18.6": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-proposal-optional-catch-binding",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-proposal-optional-catch-binding"
+  ],
+  "@babel/plugin-proposal-optional-chaining@7.21.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-proposal-optional-chaining",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-proposal-optional-chaining"
+  ],
+  "@babel/plugin-proposal-private-methods@7.18.6": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-proposal-private-methods",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-proposal-private-methods"
+  ],
+  "@babel/plugin-proposal-unicode-property-regex@7.18.6": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-proposal-unicode-property-regex",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-proposal-unicode-property-regex"
+  ],
+  "@babel/plugin-syntax-async-generators@7.8.4": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-syntax-async-generators",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-syntax-async-generators"
+  ],
+  "@babel/plugin-syntax-class-properties@7.12.13": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-syntax-class-properties",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-syntax-class-properties"
+  ],
+  "@babel/plugin-syntax-dynamic-import@7.8.3": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-syntax-dynamic-import",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-syntax-dynamic-import"
+  ],
+  "@babel/plugin-syntax-export-namespace-from@7.8.3": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-syntax-export-namespace-from",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-syntax-export-namespace-from"
+  ],
+  "@babel/plugin-syntax-json-strings@7.8.3": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-syntax-json-strings",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-syntax-json-strings"
+  ],
+  "@babel/plugin-syntax-logical-assignment-operators@7.10.4": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-syntax-logical-assignment-operators",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-syntax-logical-assignment-operators"
+  ],
+  "@babel/plugin-syntax-nullish-coalescing-operator@7.8.3": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-syntax-nullish-coalescing-operator",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-syntax-nullish-coalescing-operator"
+  ],
+  "@babel/plugin-syntax-numeric-separator@7.10.4": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-syntax-numeric-separator",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-syntax-numeric-separator"
+  ],
+  "@babel/plugin-syntax-object-rest-spread@7.8.3": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-syntax-object-rest-spread",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-syntax-object-rest-spread"
+  ],
+  "@babel/plugin-syntax-optional-catch-binding@7.8.3": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-syntax-optional-catch-binding",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-syntax-optional-catch-binding"
+  ],
+  "@babel/plugin-syntax-optional-chaining@7.8.3": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-syntax-optional-chaining",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-syntax-optional-chaining"
+  ],
+  "@babel/plugin-syntax-top-level-await@7.14.5": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-syntax-top-level-await",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-syntax-top-level-await"
+  ],
+  "@babel/plugin-syntax-typescript@7.21.4": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-syntax-typescript",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-syntax-typescript"
+  ],
+  "@babel/plugin-transform-arrow-functions@7.21.5": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-transform-arrow-functions",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-transform-arrow-functions"
+  ],
+  "@babel/plugin-transform-async-to-generator@7.20.7": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-transform-async-to-generator",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-transform-async-to-generator"
+  ],
+  "@babel/plugin-transform-block-scoped-functions@7.18.6": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-transform-block-scoped-functions",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-transform-block-scoped-functions"
+  ],
+  "@babel/plugin-transform-block-scoping@7.21.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-transform-block-scoping",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-transform-block-scoping"
+  ],
+  "@babel/plugin-transform-classes@7.21.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-transform-classes",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-transform-classes"
+  ],
+  "@babel/plugin-transform-computed-properties@7.21.5": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-transform-computed-properties",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-transform-computed-properties"
+  ],
+  "@babel/plugin-transform-destructuring@7.21.3": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-transform-destructuring",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-transform-destructuring"
+  ],
+  "@babel/plugin-transform-dotall-regex@7.18.6": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-transform-dotall-regex",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-transform-dotall-regex"
+  ],
+  "@babel/plugin-transform-duplicate-keys@7.18.9": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-transform-duplicate-keys",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-transform-duplicate-keys"
+  ],
+  "@babel/plugin-transform-exponentiation-operator@7.18.6": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-transform-exponentiation-operator",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-transform-exponentiation-operator"
+  ],
+  "@babel/plugin-transform-for-of@7.21.5": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-transform-for-of",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-transform-for-of"
+  ],
+  "@babel/plugin-transform-function-name@7.18.9": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-transform-function-name",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-transform-function-name"
+  ],
+  "@babel/plugin-transform-literals@7.18.9": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-transform-literals",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-transform-literals"
+  ],
+  "@babel/plugin-transform-member-expression-literals@7.18.6": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-transform-member-expression-literals",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-transform-member-expression-literals"
+  ],
+  "@babel/plugin-transform-modules-amd@7.20.11": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-transform-modules-amd",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-transform-modules-amd"
+  ],
+  "@babel/plugin-transform-modules-commonjs@7.21.5": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-transform-modules-commonjs",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-transform-modules-commonjs"
+  ],
+  "@babel/plugin-transform-modules-systemjs@7.22.3": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-transform-modules-systemjs",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-transform-modules-systemjs"
+  ],
+  "@babel/plugin-transform-modules-umd@7.18.6": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-transform-modules-umd",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-transform-modules-umd"
+  ],
+  "@babel/plugin-transform-named-capturing-groups-regex@7.22.3": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-transform-named-capturing-groups-regex",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-transform-named-capturing-groups-regex"
+  ],
+  "@babel/plugin-transform-new-target@7.22.3": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-transform-new-target",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-transform-new-target"
+  ],
+  "@babel/plugin-transform-object-super@7.18.6": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-transform-object-super",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-transform-object-super"
+  ],
+  "@babel/plugin-transform-parameters@7.22.3": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-transform-parameters",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-transform-parameters"
+  ],
+  "@babel/plugin-transform-property-literals@7.18.6": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-transform-property-literals",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-transform-property-literals"
+  ],
+  "@babel/plugin-transform-regenerator@7.21.5": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-transform-regenerator",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-transform-regenerator"
+  ],
+  "@babel/plugin-transform-reserved-words@7.18.6": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-transform-reserved-words",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-transform-reserved-words"
+  ],
+  "@babel/plugin-transform-shorthand-properties@7.18.6": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-transform-shorthand-properties",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-transform-shorthand-properties"
+  ],
+  "@babel/plugin-transform-spread@7.20.7": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-transform-spread",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-transform-spread"
+  ],
+  "@babel/plugin-transform-sticky-regex@7.18.6": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-transform-sticky-regex",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-transform-sticky-regex"
+  ],
+  "@babel/plugin-transform-template-literals@7.18.9": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-transform-template-literals",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-transform-template-literals"
+  ],
+  "@babel/plugin-transform-typeof-symbol@7.18.9": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-transform-typeof-symbol",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-transform-typeof-symbol"
+  ],
+  "@babel/plugin-transform-typescript@7.22.3": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-transform-typescript",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-transform-typescript"
+  ],
+  "@babel/plugin-transform-unicode-escapes@7.21.5": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-transform-unicode-escapes",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-transform-unicode-escapes"
+  ],
+  "@babel/plugin-transform-unicode-regex@7.18.6": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/plugin-transform-unicode-regex",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-transform-unicode-regex"
+  ],
+  "@babel/plugin-proposal-object-rest-spread@7.20.7": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/preset-env/node_modules/@babel/plugin-proposal-object-rest-spread",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/plugin-proposal-object-rest-spread"
+  ],
+  "@babel/preset-modules@0.1.5": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/preset-modules",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/preset-modules"
+  ],
+  "@babel/types@7.18.10": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/@babel/types",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/wasm-ast-types/node_modules/@babel/types"
+  ],
+  "brace-expansion@2.0.1": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/brace-expansion",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/filelist/node_modules/brace-expansion",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/make-fetch-happen/node_modules/brace-expansion",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/rimraf/node_modules/brace-expansion"
+  ],
+  "deepmerge@4.2.2": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/deepmerge",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/wasm-ast-types/node_modules/deepmerge"
+  ],
+  "minimatch@5.1.6": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/glob/node_modules/minimatch",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/filelist/node_modules/minimatch",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/make-fetch-happen/node_modules/glob/node_modules/minimatch"
+  ],
+  "glob@7.2.3": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/rimraf/node_modules/glob",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/expo-cli/node_modules/rimraf/node_modules/glob",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/make-fetch-happen/node_modules/rimraf/node_modules/glob",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/rimraf/node_modules/glob"
+  ],
+  "rimraf@3.0.2": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@cosmwasm/ts-codegen/node_modules/rimraf",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/cli/node_modules/rimraf",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/rimraf",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/package-manager/node_modules/rimraf",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@npmcli/move-file/node_modules/rimraf",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/cacache/node_modules/rimraf",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/expo-cli/node_modules/rimraf",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/flat-cache/node_modules/rimraf",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/make-fetch-happen/node_modules/rimraf",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/node-gyp/node_modules/rimraf",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/tmp-promise/node_modules/rimraf",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/rimraf"
+  ],
+  "fs-extra@8.1.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@electron/get/node_modules/fs-extra",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/cli/node_modules/fs-extra",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@react-native-community/cli-platform-android/node_modules/fs-extra",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@react-native-community/cli/node_modules/fs-extra",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/electron-webpack/node_modules/read-config-file/node_modules/fs-extra"
+  ],
+  "jsonfile@4.0.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@electron/get/node_modules/jsonfile",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/cli/node_modules/fs-extra/node_modules/jsonfile",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/webpack-config/node_modules/jsonfile",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@react-native-community/cli-platform-android/node_modules/jsonfile",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@react-native-community/cli/node_modules/jsonfile",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/electron-webpack/node_modules/read-config-file/node_modules/jsonfile"
+  ],
+  "fs-extra@9.1.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@electron/universal/node_modules/fs-extra",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/configure-splash-screen/node_modules/fs-extra",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/prebuild-config/node_modules/fs-extra",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@malept/flatpak-bundler/node_modules/fs-extra",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/electron-webpack/node_modules/fs-extra",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/expo-modules-autolinking/node_modules/fs-extra",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/patch-package/node_modules/fs-extra"
+  ],
+  "globals@13.20.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@eslint/eslintrc/node_modules/globals",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/eslint/node_modules/globals"
+  ],
+  "js-yaml@4.1.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@eslint/eslintrc/node_modules/js-yaml",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/xcpretty/node_modules/js-yaml",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/app-builder-lib/node_modules/js-yaml",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/builder-util/node_modules/js-yaml",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/dmg-builder/node_modules/js-yaml",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/eslint/node_modules/js-yaml",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/read-config-file/node_modules/js-yaml"
+  ],
+  "@babel/code-frame@7.10.4": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/cli/node_modules/@babel/code-frame",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/config/node_modules/@babel/code-frame",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/dev-server/node_modules/@babel/code-frame",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@expo/json-file/node_modules/@babel/code-frame",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/json-file/node_modules/@babel/code-frame",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/webpack-config/node_modules/react-dev-utils/node_modules/@babel/code-frame",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/xcpretty/node_modules/@babel/code-frame",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/expo-cli/node_modules/@babel/code-frame",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/@babel/code-frame"
+  ],
+  "@expo/spawn-async@1.7.2": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/cli/node_modules/@expo/dev-server/node_modules/@expo/spawn-async",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/cli/node_modules/@expo/package-manager/node_modules/@expo/spawn-async"
+  ],
+  "cross-spawn@7.0.3": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/cli/node_modules/@expo/dev-server/node_modules/cross-spawn",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/cli/node_modules/@expo/package-manager/node_modules/cross-spawn",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/spawn-async/node_modules/cross-spawn",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/webpack-config/node_modules/cross-spawn",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@malept/cross-spawn-promise/node_modules/cross-spawn",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/builder-util/node_modules/cross-spawn",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/eslint/node_modules/cross-spawn",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/start-server-and-test/node_modules/cross-spawn",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/execa/node_modules/cross-spawn"
+  ],
+  "fs-extra@9.0.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/cli/node_modules/@expo/dev-server/node_modules/fs-extra",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/prebuild-config/node_modules/@expo/image-utils/node_modules/fs-extra"
+  ],
+  "@expo/json-file@8.2.37": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/cli/node_modules/@expo/json-file",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/dev-server/node_modules/@expo/json-file",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/expo-cli/node_modules/@expo/json-file",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/@expo/json-file"
+  ],
+  "@expo/spawn-async@1.5.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/cli/node_modules/@expo/spawn-async",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/image-utils/node_modules/@expo/spawn-async",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/prebuild-config/node_modules/@expo/spawn-async",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/expo-cli/node_modules/@expo/spawn-async",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/@expo/spawn-async"
+  ],
+  "del@6.1.1": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/cli/node_modules/del",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/expo-cli/node_modules/del"
+  ],
+  "log-symbols@2.2.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/cli/node_modules/log-symbols",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/expo-cli/node_modules/log-symbols"
+  ],
+  "minipass@3.1.6": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/cli/node_modules/minipass",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/expo-cli/node_modules/minipass"
+  ],
+  "ora@3.4.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/cli/node_modules/ora",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/expo-cli/node_modules/ora"
+  ],
+  "shebang-command@2.0.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/cli/node_modules/shebang-command",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/spawn-async/node_modules/shebang-command",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/webpack-config/node_modules/shebang-command",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@malept/cross-spawn-promise/node_modules/shebang-command",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/builder-util/node_modules/shebang-command",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/eslint/node_modules/shebang-command",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/start-server-and-test/node_modules/shebang-command",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/shebang-command"
+  ],
+  "strip-ansi@5.2.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/cli/node_modules/strip-ansi",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/webpack-config/node_modules/string-width/node_modules/strip-ansi",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@react-native-community/cli-doctor/node_modules/strip-ansi",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/ansi-fragments/node_modules/strip-ansi",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/cliui/node_modules/strip-ansi",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/expo-cli/node_modules/ora/node_modules/strip-ansi",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/inquirerer/node_modules/inquirer/node_modules/strip-ansi",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/qrcode/node_modules/strip-ansi",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/webpack-cli/node_modules/strip-ansi",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/webpack-dev-server/node_modules/string-width/node_modules/strip-ansi"
+  ],
+  "tempy@0.7.1": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/cli/node_modules/tempy",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/expo-cli/node_modules/tempy"
+  ],
+  "unique-string@2.0.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/cli/node_modules/unique-string",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/expo-cli/node_modules/unique-string"
+  ],
+  "which@2.0.2": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/cli/node_modules/which",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/spawn-async/node_modules/which",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/webpack-config/node_modules/which",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@malept/cross-spawn-promise/node_modules/which",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/builder-util/node_modules/which",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/eslint/node_modules/which",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/node-gyp/node_modules/which",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/start-server-and-test/node_modules/which",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/which"
+  ],
+  "glob@7.1.6": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/config-plugins/node_modules/glob",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/config/node_modules/glob",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/dev-server/node_modules/glob",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@expo/config/node_modules/glob",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/expo-cli/node_modules/glob",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/sucrase/node_modules/glob",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/glob"
+  ],
+  "commander@5.1.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/configure-splash-screen/node_modules/commander",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/asar/node_modules/commander"
+  ],
+  "debug@3.2.7": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/devcert/node_modules/debug",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/eslint-import-resolver-node/node_modules/debug",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/eslint-module-utils/node_modules/debug",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/eslint-plugin-import/node_modules/debug",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/needle/node_modules/debug",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/portfinder/node_modules/debug",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/sockjs-client/node_modules/debug",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/webpack-dev-server/node_modules/sockjs-client/node_modules/debug"
+  ],
+  "rimraf@2.7.1": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/devcert/node_modules/rimraf",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/webpack-config/node_modules/rimraf",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/copy-concurrently/node_modules/rimraf",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/del/node_modules/rimraf",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/electron-devtools-installer/node_modules/rimraf",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/electron-webpack/node_modules/rimraf",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/metro-cache/node_modules/rimraf",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/metro/node_modules/rimraf",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/move-concurrently/node_modules/rimraf",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/patch-package/node_modules/rimraf",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/terser-webpack-plugin/node_modules/rimraf"
+  ],
+  "@babel/core@7.9.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@babel/core",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/webpack-config/node_modules/@babel/core"
+  ],
+  "json5@1.0.2": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/electron-adapter/node_modules/@expo/json-file/node_modules/json5",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/json-file/node_modules/json5",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/webpack-config/node_modules/babel-loader/node_modules/json5",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/webpack-config/node_modules/css-loader/node_modules/json5",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/webpack-config/node_modules/html-webpack-plugin/node_modules/json5",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/webpack-config/node_modules/mini-css-extract-plugin/node_modules/json5",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/webpack-config/node_modules/webpack/node_modules/json5",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/css-hot-loader/node_modules/json5",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/css-loader/node_modules/json5",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/expo-cli/node_modules/@expo/config/node_modules/json5",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/html-webpack-plugin/node_modules/json5",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/mini-css-extract-plugin/node_modules/json5",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/tsconfig-paths/node_modules/json5",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/webpack-cli/node_modules/json5",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/webpack/node_modules/json5",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/@expo/config/node_modules/json5",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/@expo/webpack-config/node_modules/json5"
+  ],
+  "mime@2.6.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/image-utils/node_modules/mime",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/prebuild-config/node_modules/mime",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/webpack-config/node_modules/mime",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@react-native-community/cli-tools/node_modules/mime",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/electron-publish/node_modules/mime",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/webpack-dev-middleware/node_modules/mime"
+  ],
+  "xmlbuilder@14.0.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/plist/node_modules/xmlbuilder",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/expo-cli/node_modules/xmlbuilder",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/xmlbuilder"
+  ],
+  "ajv-formats@2.1.1": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/schemer/node_modules/ajv-formats",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/copy-webpack-plugin/node_modules/ajv-formats",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/css-minimizer-webpack-plugin/node_modules/ajv-formats",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/mini-css-extract-plugin/node_modules/ajv-formats",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/webpack-dev-middleware/node_modules/ajv-formats",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/webpack-dev-server/node_modules/ajv-formats"
+  ],
+  "ajv@8.12.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/schemer/node_modules/ajv",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/copy-webpack-plugin/node_modules/ajv",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/css-minimizer-webpack-plugin/node_modules/ajv",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/mini-css-extract-plugin/node_modules/ajv",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/webpack-dev-middleware/node_modules/ajv",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/webpack-dev-server/node_modules/ajv"
+  ],
+  "loader-utils@1.4.2": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/webpack-config/node_modules/babel-loader/node_modules/loader-utils",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/webpack-config/node_modules/css-loader/node_modules/loader-utils",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/webpack-config/node_modules/html-webpack-plugin/node_modules/loader-utils",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/webpack-config/node_modules/mini-css-extract-plugin/node_modules/loader-utils",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/webpack-config/node_modules/webpack/node_modules/loader-utils",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/css-hot-loader/node_modules/loader-utils",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/css-loader/node_modules/loader-utils",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/html-webpack-plugin/node_modules/loader-utils",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/mini-css-extract-plugin/node_modules/loader-utils",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/webpack-cli/node_modules/loader-utils",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/webpack/node_modules/loader-utils"
+  ],
+  "schema-utils@2.7.1": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/webpack-config/node_modules/babel-loader/node_modules/schema-utils",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/webpack-config/node_modules/copy-webpack-plugin/node_modules/schema-utils",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/webpack-config/node_modules/css-loader/node_modules/schema-utils",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/webpack-config/node_modules/file-loader/node_modules/schema-utils",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/webpack-config/node_modules/html-loader/node_modules/schema-utils",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/webpack-config/node_modules/style-loader/node_modules/schema-utils",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/webpack-config/node_modules/terser-webpack-plugin/node_modules/schema-utils"
+  ],
+  "p-limit@3.1.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/webpack-config/node_modules/copy-webpack-plugin/node_modules/p-limit",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/webpack-config/node_modules/terser-webpack-plugin/node_modules/p-limit",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/find-up/node_modules/p-limit"
+  ],
+  "find-up@4.1.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/webpack-config/node_modules/find-up",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@istanbuljs/load-nyc-config/node_modules/find-up",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@react-native-community/cli/node_modules/find-up",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/find-cache-dir/node_modules/find-up",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/read-pkg-up/node_modules/find-up",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/yargs/node_modules/find-up"
+  ],
+  "supports-color@7.2.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/webpack-config/node_modules/jest-worker/node_modules/supports-color",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/chalk/node_modules/supports-color",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/electron-webpack/node_modules/supports-color",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/supports-hyperlinks/node_modules/supports-color"
+  ],
+  "schema-utils@1.0.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/webpack-config/node_modules/mini-css-extract-plugin/node_modules/schema-utils",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/webpack-config/node_modules/webpack-dev-server/node_modules/schema-utils",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/webpack-config/node_modules/webpack/node_modules/schema-utils",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/mini-css-extract-plugin/node_modules/schema-utils",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/terser-webpack-plugin/node_modules/schema-utils",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/webpack-dev-server/node_modules/schema-utils",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/webpack/node_modules/schema-utils"
+  ],
+  "open@7.4.2": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/webpack-config/node_modules/open",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/patch-package/node_modules/open"
+  ],
+  "p-locate@3.0.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/webpack-config/node_modules/p-locate",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/pkg-dir/node_modules/p-locate",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/pkg-up/node_modules/p-locate",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/qrcode/node_modules/p-locate",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/webpack-cli/node_modules/p-locate",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/webpack-dev-server/node_modules/p-locate"
+  ],
+  "postcss@7.0.39": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/webpack-config/node_modules/postcss",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/css-declaration-sorter/node_modules/postcss",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/css-loader/node_modules/postcss",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/cssnano-preset-default/node_modules/postcss",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/cssnano-util-raw-cache/node_modules/postcss",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/cssnano/node_modules/postcss",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/icss-utils/node_modules/postcss",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/postcss-calc/node_modules/postcss",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/postcss-colormin/node_modules/postcss",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/postcss-convert-values/node_modules/postcss",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/postcss-discard-comments/node_modules/postcss",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/postcss-discard-duplicates/node_modules/postcss",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/postcss-discard-empty/node_modules/postcss",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/postcss-discard-overridden/node_modules/postcss",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/postcss-merge-longhand/node_modules/postcss",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/postcss-merge-rules/node_modules/postcss",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/postcss-minify-font-values/node_modules/postcss",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/postcss-minify-gradients/node_modules/postcss",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/postcss-minify-params/node_modules/postcss",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/postcss-minify-selectors/node_modules/postcss",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/postcss-modules-extract-imports/node_modules/postcss",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/postcss-modules-local-by-default/node_modules/postcss",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/postcss-modules-scope/node_modules/postcss",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/postcss-modules-values/node_modules/postcss",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/postcss-normalize-charset/node_modules/postcss",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/postcss-normalize-display-values/node_modules/postcss",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/postcss-normalize-positions/node_modules/postcss",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/postcss-normalize-repeat-style/node_modules/postcss",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/postcss-normalize-string/node_modules/postcss",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/postcss-normalize-timing-functions/node_modules/postcss",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/postcss-normalize-unicode/node_modules/postcss",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/postcss-normalize-url/node_modules/postcss",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/postcss-normalize-whitespace/node_modules/postcss",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/postcss-ordered-values/node_modules/postcss",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/postcss-reduce-initial/node_modules/postcss",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/postcss-reduce-transforms/node_modules/postcss",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/postcss-safe-parser/node_modules/postcss",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/postcss-svgo/node_modules/postcss",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/postcss-unique-selectors/node_modules/postcss",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/stylehacks/node_modules/postcss"
+  ],
+  "schema-utils@3.1.2": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/webpack-config/node_modules/schema-utils",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/file-loader/node_modules/schema-utils",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/html-loader/node_modules/schema-utils",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/url-loader/node_modules/schema-utils",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/terser-webpack-plugin/node_modules/schema-utils",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/webpack/node_modules/schema-utils"
+  ],
+  "semver@7.3.8": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/webpack-config/node_modules/semver",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/@expo/webpack-config/node_modules/semver"
+  ],
+  "ssri@6.0.2": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/webpack-config/node_modules/ssri",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/terser-webpack-plugin/node_modules/ssri"
+  ],
+  "string-width@3.1.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/webpack-config/node_modules/string-width",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/cliui/node_modules/string-width",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/qrcode/node_modules/string-width",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/webpack-cli/node_modules/string-width",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/webpack-dev-server/node_modules/string-width"
+  ],
+  "strip-ansi@3.0.1": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/webpack-config/node_modules/webpack-dev-server/node_modules/strip-ansi",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/inquirer-autocomplete-prompt/node_modules/strip-ansi",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/inquirer/node_modules/strip-ansi",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/renderkid/node_modules/strip-ansi",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/webpack-dev-server/node_modules/strip-ansi"
+  ],
+  "cacache@12.0.4": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/webpack-config/node_modules/webpack/node_modules/cacache",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/terser-webpack-plugin/node_modules/cacache"
+  ],
+  "ws@6.2.2": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/webpack-config/node_modules/ws",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/react-native/node_modules/ws",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/webpack-dev-server/node_modules/ws"
+  ],
+  "find-up@3.0.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/webpack-config/node_modules/yargs/node_modules/find-up",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/pkg-dir/node_modules/find-up",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/pkg-up/node_modules/find-up",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/qrcode/node_modules/find-up",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/webpack-cli/node_modules/find-up",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/webpack-dev-server/node_modules/find-up"
+  ],
+  "locate-path@3.0.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/webpack-config/node_modules/yargs/node_modules/locate-path",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/pkg-dir/node_modules/locate-path",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/pkg-up/node_modules/locate-path",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/qrcode/node_modules/locate-path",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/webpack-cli/node_modules/locate-path",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/webpack-dev-server/node_modules/locate-path"
+  ],
+  "yargs@13.3.2": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@expo/webpack-config/node_modules/yargs",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/qrcode/node_modules/yargs",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/webpack-cli/node_modules/yargs",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/webpack-dev-server/node_modules/yargs"
+  ],
+  "@jest/types@27.5.1": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@jest/create-cache-key-function/node_modules/@jest/types",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/metro-file-map/node_modules/@jest/types"
+  ],
+  "@types/yargs@16.0.5": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@jest/create-cache-key-function/node_modules/@types/yargs",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/metro-file-map/node_modules/@types/yargs"
+  ],
+  "micromatch@4.0.5": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@jest/transform/node_modules/micromatch",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/fast-glob/node_modules/micromatch",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/find-yarn-workspace-root/node_modules/micromatch",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/jest-haste-map/node_modules/micromatch",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/metro-file-map/node_modules/micromatch",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/micromatch"
+  ],
+  "axios@0.21.1": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@keplr-wallet/types/node_modules/secretjs/node_modules/axios",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/secretjs/node_modules/axios",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/axios"
+  ],
+  "bs58@5.0.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@metaplex-foundation/js-next/node_modules/bs58",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@metaplex-foundation/mpl-token-metadata/node_modules/bs58"
+  ],
+  "form-data@2.5.1": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@pinata/sdk/node_modules/form-data",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/form-data"
+  ],
+  "cosmiconfig@5.2.1": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@react-native-community/cli-config/node_modules/cosmiconfig",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/cssnano/node_modules/cosmiconfig",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/metro-config/node_modules/cosmiconfig"
+  ],
+  "import-fresh@2.0.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@react-native-community/cli-config/node_modules/import-fresh",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/cssnano/node_modules/import-fresh",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/metro-config/node_modules/import-fresh"
+  ],
+  "parse-json@4.0.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@react-native-community/cli-config/node_modules/parse-json",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/cssnano/node_modules/parse-json",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/metro-config/node_modules/parse-json"
+  ],
+  "color-convert@2.0.1": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@react-navigation/drawer/node_modules/color-convert",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@react-navigation/material-top-tabs/node_modules/color-convert",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/ansi-styles/node_modules/color-convert"
+  ],
+  "color@4.2.3": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@react-navigation/drawer/node_modules/color",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@react-navigation/material-top-tabs/node_modules/color"
+  ],
+  "@react-native/virtualized-lists@0.72.5": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@types/react-native-countdown-component/node_modules/@react-native/virtualized-lists",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@types/react-native-svg-charts/node_modules/@react-native/virtualized-lists",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@types/react-native-video/node_modules/@react-native/virtualized-lists"
+  ],
+  "@types/react-native@0.72.2": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@types/react-native-countdown-component/node_modules/@types/react-native",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@types/react-native-svg-charts/node_modules/@types/react-native",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@types/react-native-video/node_modules/@types/react-native"
+  ],
+  "eslint-scope@5.1.1": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@typescript-eslint/utils/node_modules/eslint-scope",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/eslint-scope"
+  ],
+  "@walletconnect/types@2.7.7": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@walletconnect/sign-client/node_modules/@walletconnect/types",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@walletconnect/universal-provider/node_modules/@walletconnect/types"
+  ],
+  "@walletconnect/utils@2.7.7": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@walletconnect/sign-client/node_modules/@walletconnect/utils",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@walletconnect/universal-provider/node_modules/@walletconnect/utils"
+  ],
+  "@walletconnect/window-metadata@1.0.1": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@walletconnect/sign-client/node_modules/@walletconnect/window-metadata",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/@walletconnect/universal-provider/node_modules/@walletconnect/window-metadata"
+  ],
+  "fs-extra@10.1.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/app-builder-lib/node_modules/fs-extra",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/builder-util/node_modules/fs-extra",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/dmg-builder/node_modules/fs-extra",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/electron-builder/node_modules/fs-extra",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/electron-publish/node_modules/fs-extra",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/temp-file/node_modules/fs-extra"
+  ],
+  "make-dir@3.1.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/babel-loader/node_modules/make-dir",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/find-cache-dir/node_modules/make-dir",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/make-dir"
+  ],
+  "define-property@1.0.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/base/node_modules/define-property",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/extglob/node_modules/define-property",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/snapdragon-node/node_modules/define-property"
+  ],
+  "debug@2.6.9": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/body-parser/node_modules/debug",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/compression/node_modules/debug",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/connect/node_modules/debug",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/detect-port-alt/node_modules/debug",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/electron-osx-sign/node_modules/debug",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/expand-brackets/node_modules/debug",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/express/node_modules/debug",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/extract-zip/node_modules/debug",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/finalhandler/node_modules/debug",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/metro-file-map/node_modules/debug",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/metro-inspector-proxy/node_modules/debug",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/metro/node_modules/debug",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/send/node_modules/debug",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/serve-index/node_modules/debug",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/snapdragon/node_modules/debug",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/stream-parser/node_modules/debug",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/debug"
+  ],
+  "get-stream@5.2.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/cacheable-request/node_modules/get-stream",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/expo-cli/node_modules/get-stream"
+  ],
+  "@ipld/dag-cbor@6.0.15": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/carbites/node_modules/@ipld/dag-cbor",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/nft.storage/node_modules/@ipld/dag-cbor"
+  ],
+  "braces@2.3.2": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/chokidar/node_modules/braces",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/micromatch/node_modules/braces"
+  ],
+  "fill-range@4.0.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/chokidar/node_modules/fill-range",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/micromatch/node_modules/fill-range"
+  ],
+  "to-regex-range@2.1.1": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/chokidar/node_modules/to-regex-range",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/micromatch/node_modules/to-regex-range"
+  ],
+  "on-finished@2.3.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/connect/node_modules/on-finished",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/express/node_modules/on-finished"
+  ],
+  "normalize-url@1.9.1": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/css-hot-loader/node_modules/normalize-url",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/mini-css-extract-plugin/node_modules/normalize-url"
+  ],
+  "query-string@4.3.4": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/css-hot-loader/node_modules/query-string",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/mini-css-extract-plugin/node_modules/query-string"
+  ],
+  "kind-of@3.2.2": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/define-property/node_modules/kind-of",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/is-number/node_modules/kind-of",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/object-copy/node_modules/kind-of",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/snapdragon-util/node_modules/kind-of",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/to-object-path/node_modules/kind-of"
+  ],
+  "minimatch@3.0.4": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/dir-compare/node_modules/minimatch",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/recursive-readdir/node_modules/minimatch",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/minimatch"
+  ],
+  "iconv-lite@0.6.3": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/dmg-builder/node_modules/iconv-lite",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/encoding/node_modules/iconv-lite",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/source-map-loader/node_modules/iconv-lite"
+  ],
+  "chokidar@3.5.3": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/electron-reload/node_modules/chokidar",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/watchpack/node_modules/chokidar",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/chokidar"
+  ],
+  "is-binary-path@2.1.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/electron-reload/node_modules/is-binary-path",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/watchpack/node_modules/is-binary-path",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/is-binary-path"
+  ],
+  "readdirp@3.6.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/electron-reload/node_modules/readdirp",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/watchpack/node_modules/readdirp",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/readdirp"
+  ],
+  "p-map@3.0.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/electron-webpack/node_modules/p-map",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/p-map"
+  ],
+  "glob-parent@6.0.2": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/eslint/node_modules/glob-parent",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/copy-webpack-plugin/node_modules/glob-parent"
+  ],
+  "@expo/json-file@8.2.36": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/expo-cli/node_modules/@expo/config/node_modules/@expo/json-file",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/@expo/config/node_modules/@expo/json-file"
+  ],
+  "@expo/config@6.0.24": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/expo-cli/node_modules/@expo/config",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/@expo/config"
+  ],
+  "@expo/plist@0.0.20": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/expo-cli/node_modules/@expo/plist",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/@expo/plist"
+  ],
+  "commander@7.2.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/expo-modules-autolinking/node_modules/commander",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/react-native-svg-transformer/node_modules/commander",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/webpack-bundle-analyzer/node_modules/commander",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/svgo/node_modules/commander"
+  ],
+  "body-parser@1.20.1": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/express/node_modules/body-parser",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/body-parser"
+  ],
+  "commander@4.1.1": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/html-minifier-terser/node_modules/commander",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/sucrase/node_modules/commander"
+  ],
+  "chalk@1.1.3": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/inquirer-autocomplete-prompt/node_modules/chalk",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/inquirer/node_modules/chalk"
+  ],
+  "strip-ansi@4.0.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/inquirer/node_modules/string-width/node_modules/strip-ansi",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/inquirerer/node_modules/strip-ansi"
+  ],
+  "string-width@2.1.1": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/inquirer/node_modules/string-width",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/inquirerer/node_modules/string-width"
+  ],
+  "multibase@1.0.1": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/is-ipfs/node_modules/multiaddr/node_modules/cids/node_modules/multibase",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/is-ipfs/node_modules/multiaddr/node_modules/multihashes/node_modules/multibase",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/mafmt/node_modules/multibase"
+  ],
+  "cids@0.8.3": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/is-ipfs/node_modules/multiaddr/node_modules/cids",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/mafmt/node_modules/cids"
+  ],
+  "multibase@0.7.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/is-ipfs/node_modules/multiaddr/node_modules/multibase",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/mafmt/node_modules/multiaddr/node_modules/multibase",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/multihashes/node_modules/multibase"
+  ],
+  "multihashes@1.0.1": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/is-ipfs/node_modules/multiaddr/node_modules/multihashes",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/mafmt/node_modules/multihashes"
+  ],
+  "multiaddr@7.5.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/is-ipfs/node_modules/multiaddr",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/mafmt/node_modules/multiaddr"
+  ],
+  "supports-color@8.1.1": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/jest-haste-map/node_modules/supports-color",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/jest-worker/node_modules/supports-color"
+  ],
+  "@jest/types@26.6.2": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/jest-validate/node_modules/@jest/types",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/pretty-format/node_modules/@jest/types"
+  ],
+  "@types/yargs@15.0.15": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/jest-validate/node_modules/@types/yargs",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/pretty-format/node_modules/@types/yargs"
+  ],
+  "ci-info@2.0.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/metro/node_modules/ci-info",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/patch-package/node_modules/ci-info"
+  ],
+  "extend-shallow@2.0.1": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/micromatch/node_modules/braces/node_modules/extend-shallow",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/micromatch/node_modules/fill-range/node_modules/extend-shallow"
+  ],
+  "define-property@2.0.2": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/micromatch/node_modules/define-property",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/nanomatch/node_modules/define-property",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/to-regex/node_modules/define-property"
+  ],
+  "is-extendable@1.0.1": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/micromatch/node_modules/extend-shallow/node_modules/is-extendable",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/mixin-deep/node_modules/is-extendable",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/nanomatch/node_modules/is-extendable",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/regex-not/node_modules/is-extendable",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/split-string/node_modules/is-extendable",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/to-regex/node_modules/is-extendable"
+  ],
+  "extend-shallow@3.0.2": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/micromatch/node_modules/extend-shallow",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/nanomatch/node_modules/extend-shallow",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/regex-not/node_modules/extend-shallow",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/split-string/node_modules/extend-shallow",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/to-regex/node_modules/extend-shallow"
+  ],
+  "p-retry@4.6.2": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/nft.storage/node_modules/p-retry",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/webpack-dev-server/node_modules/p-retry"
+  ],
+  "retry@0.12.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/p-retry/node_modules/retry",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/promise-retry/node_modules/retry",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/p-retry/node_modules/retry"
+  ],
+  "postcss-selector-parser@3.1.2": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/postcss-merge-rules/node_modules/postcss-selector-parser",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/postcss-minify-selectors/node_modules/postcss-selector-parser",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/stylehacks/node_modules/postcss-selector-parser"
+  ],
+  "isarray@2.0.5": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/qrcode/node_modules/isarray",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/safe-array-concat/node_modules/isarray"
+  ],
+  "svgo@2.8.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/react-native-svg-transformer/node_modules/svgo",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/svgo"
+  ],
+  "htmlparser2@6.1.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/renderkid/node_modules/htmlparser2",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/htmlparser2"
+  ],
+  "http-errors@1.6.3": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/serve-index/node_modules/http-errors",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/express/node_modules/http-errors"
+  ],
+  "execa@5.1.1": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/start-server-and-test/node_modules/execa",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/execa"
+  ],
+  "npm-run-path@4.0.1": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/start-server-and-test/node_modules/npm-run-path",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/npm-run-path"
+  ],
+  "enhanced-resolve@5.14.1": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/webpack-deduplication-plugin/node_modules/enhanced-resolve",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/enhanced-resolve"
+  ],
+  "ajv-keywords@5.1.0": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/copy-webpack-plugin/node_modules/ajv-keywords",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/css-minimizer-webpack-plugin/node_modules/ajv-keywords",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/mini-css-extract-plugin/node_modules/ajv-keywords",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/webpack-dev-middleware/node_modules/ajv-keywords",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/webpack-dev-server/node_modules/ajv-keywords"
+  ],
+  "schema-utils@4.0.1": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/copy-webpack-plugin/node_modules/schema-utils",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/css-minimizer-webpack-plugin/node_modules/schema-utils",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/mini-css-extract-plugin/node_modules/schema-utils",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/webpack-dev-middleware/node_modules/schema-utils",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/webpack-dev-server/node_modules/schema-utils"
+  ],
+  "minimatch@3.1.2": [
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/glob/node_modules/minimatch",
+    "/Users/sakul/Desktop/repos/teritori-dapp/node_modules/xdl/node_modules/rimraf/node_modules/minimatch"
+  ]
+}

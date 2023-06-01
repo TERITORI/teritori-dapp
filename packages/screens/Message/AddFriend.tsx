@@ -24,7 +24,8 @@ import {
   fontSemibold14,
   fontSemibold16,
 } from "../../utils/style/fonts";
-const AddFriend = () => {
+
+export const AddFriend = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const filteredData = data.filter((item) =>
     item.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -88,4 +89,3 @@ const AddFriend = () => {
     </View>
   );
 };
-export default AddFriend;

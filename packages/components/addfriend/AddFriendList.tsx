@@ -16,6 +16,7 @@ import {
   fontSemibold13,
   fontSemibold14,
 } from "../../utils/style/fonts";
+import { weshClient } from "../../weshnet/client";
 import { BrandText } from "../BrandText";
 import FlexRow from "../FlexRow";
 import { TertiaryBox } from "../boxes/TertiaryBox";
@@ -26,9 +27,17 @@ type Props = {
   isOnline: boolean;
   avatar: any;
 };
-
 const AddFriendList: React.FC<Props> = ({ avatar, name, isOnline }) => {
   const onlineStatusBadgeColor = isOnline ? "green" : "yellow";
+
+  const handleSendRequest = async () => {
+    // await weshClient.ContactRequestSend({
+    //   contact: {
+    //     pk: accountPk,
+    //     publicRendezvousSeed,
+    //   },
+    // });
+  };
   return (
     <View>
       <FlexRow justifyContent="space-between">
@@ -58,7 +67,7 @@ const AddFriendList: React.FC<Props> = ({ avatar, name, isOnline }) => {
           </FlexRow>
         </View>
 
-        <TouchableOpacity>
+        <TouchableOpacity onPress={handleSendRequest}>
           <TertiaryBox
             height={40}
             mainContainerStyle={{

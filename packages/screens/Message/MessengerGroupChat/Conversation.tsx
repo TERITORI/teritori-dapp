@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, StyleSheet, TouchableOpacity, Image } from "react-native";
 
-import MessagePopup from "./MessagePopup";
+import { MessagePopup } from "./MessagePopup";
 import avatar from "../../../../assets/icons/avatar.svg";
 import reply from "../../../../assets/icons/reply.svg";
 import { BrandText } from "../../../components/BrandText";
@@ -21,7 +21,7 @@ import {
   fontMedium10,
   fontSemibold11,
 } from "../../../utils/style/fonts";
-import { replaceBetweenString } from "../../../utils/text";
+
 interface IChatMessageProps {
   message: string;
   isSender: boolean;
@@ -33,7 +33,7 @@ interface IChatMessageProps {
   imageStyle?: any;
 }
 
-const ChatMessage = ({
+export const Conversation = ({
   message,
   isSender,
   time,
@@ -132,8 +132,6 @@ const ChatMessage = ({
     </>
   );
 };
-
-export default ChatMessage;
 
 const styles = StyleSheet.create({
   senderWrapper: {

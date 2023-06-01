@@ -7,7 +7,7 @@ import {
   Platform,
 } from "react-native";
 
-import CheckboxGroup from "./MessengerHomeCreateChatDropdown/FriendNameDropdown";
+import { CheckboxGroup } from "./MessengerHomeCreateChatDropdown/CheckboxGroup";
 import avatar from "../../../assets/icons/avatar.svg";
 import { BrandText } from "../../components/BrandText";
 import FlexRow from "../../components/FlexRow";
@@ -27,6 +27,7 @@ import {
   secondaryColor,
 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
+import { weshClient } from "../../weshnet/client";
 const items = [
   { name: "Kristin Watson", checked: false },
   { name: "Kristin Watson", checked: false },
@@ -37,10 +38,32 @@ const items = [
   { name: "Kristin Watson", checked: false },
 ];
 
-const CreateGroup = ({ setShowTertiaryBox }) => {
+export const CreateGroup = ({ setShowTertiaryBox }) => {
   const handleChange = (items: CheckboxItem[]) => {
     console.log(items);
   };
+
+  const handleCreateGroup = async () => {
+    const group = await weshClient.MultiMemberGroupCreate({});
+
+    const activate = await weshClient.ActivateGroup({
+      groupPk: group.groupPk,
+    });
+    const groupInfo = await weshClient.GroupInfo({
+      groupPk: group.groupPk,
+    });
+
+    // await weshClient.ContactRequestSend({
+    //   contact: {
+    //     pk: accountPk,
+    //     publicRendezvousSeed,
+    //     metadata: groupInfo,
+    //   },
+    // });
+
+    setShowTertiaryBox(false);
+  };
+
   return (
     <ModalBase
       label="Create a group chat"
@@ -48,8 +71,6 @@ const CreateGroup = ({ setShowTertiaryBox }) => {
       visible
       hideMainSeparator
       width={450}
-      // containerStyle={{ height: 900 }}
-      closeButtonStyle={{ height: 300 }}
     >
       <SeparatorGradient />
 
@@ -92,7 +113,7 @@ const CreateGroup = ({ setShowTertiaryBox }) => {
 
       <Separator color={neutral33} />
       <SpacerColumn size={2} />
-      <TouchableOpacity onPress={() => setShowTertiaryBox(false)}>
+      <TouchableOpacity onPress={handleCreateGroup}>
         <TertiaryBox
           height={50}
           mainContainerStyle={{
@@ -109,4 +130,3 @@ const CreateGroup = ({ setShowTertiaryBox }) => {
     </ModalBase>
   );
 };
-export default CreateGroup;

@@ -20,7 +20,10 @@ interface CheckboxGroupProps {
   onChange: (items: CheckboxItem[]) => void;
 }
 
-const CheckboxGroup: React.FC<CheckboxGroupProps> = ({ items, onChange }) => {
+export const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
+  items,
+  onChange,
+}) => {
   const [checkboxItems, setCheckboxItems] = useState<CheckboxItem[]>(items);
   const [isChecked, setChecked] = useState(true);
   const handleCheckboxPress = (index: number) => {
@@ -39,11 +42,7 @@ const CheckboxGroup: React.FC<CheckboxGroupProps> = ({ items, onChange }) => {
               key={index}
               onPress={() => handleCheckboxPress(index)}
             >
-              {item.checked ? (
-                <CheckboxDappStore isChecked={isChecked} />
-              ) : (
-                <CheckboxDappStore isChecked={!isChecked} />
-              )}
+              <CheckboxDappStore isChecked={item.checked} />
             </TouchableOpacity>
             <SpacerRow size={2} />
             <SVG source={avatar} />
@@ -58,5 +57,3 @@ const CheckboxGroup: React.FC<CheckboxGroupProps> = ({ items, onChange }) => {
     </View>
   );
 };
-
-export default CheckboxGroup;

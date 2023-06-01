@@ -22,10 +22,10 @@ import { CollectionScreen } from "../../screens/Marketplace/CollectionScreen";
 import { CollectionToolsScreen } from "../../screens/Marketplace/CollectionToolsScreen";
 import { MarketplaceScreen } from "../../screens/Marketplace/MarketplaceScreen";
 import { NFTDetailScreen } from "../../screens/Marketplace/NFTDetailScreen";
-import AddFriend from "../../screens/Message/AddFriend";
-import FriendshipManager from "../../screens/Message/FriendshipManager";
+import { AddFriend } from "../../screens/Message/AddFriend";
+import { FriendshipManager } from "../../screens/Message/FriendshipManager";
 import { MessageScreen } from "../../screens/Message/MessageScreen";
-import ChatSection from "../../screens/Message/MessengerGroupChat/ChatSection";
+import { ChatSection } from "../../screens/Message/MessengerGroupChat/ChatSection";
 import { MultisigCreateScreen } from "../../screens/Multisig/MultisigCreateScreen";
 import { MultisigScreen } from "../../screens/Multisig/MultisigScreen";
 import { MultisigWalletDashboardScreen } from "../../screens/Multisig/MultisigWalletDashboardScreen";
@@ -73,7 +73,7 @@ export const Navigator: React.FC = () => {
     >
       <Stack.Screen
         name="Home"
-        component={ChatScreen}
+        component={HomeScreen}
         options={{ header: () => null, title: screenTitle("Home") }}
       />
       <Stack.Screen
