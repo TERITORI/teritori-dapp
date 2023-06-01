@@ -7,10 +7,10 @@ import {
 } from "../../networks";
 
 export const useFeedConfig = (networkId: string) => {
-  const network = getCosmosNetwork(networkId);
   const { data: feedConfig, ...other } = useQuery(
-    ["feedConfig", networkId, network?.socialFeedContractAddress],
+    ["feedConfig", networkId],
     async () => {
+      const network = getCosmosNetwork(networkId);
       if (!network?.socialFeedContractAddress) {
         return null;
       }
@@ -21,7 +21,8 @@ export const useFeedConfig = (networkId: string) => {
       );
       const conf = await client.config();
       return conf;
-    }
+    },
+    { staleTime: Infinity }
   );
   return { feedConfig, ...other };
 };
