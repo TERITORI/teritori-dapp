@@ -86,9 +86,9 @@ export const SIDEBAR_LIST: SidebarRecordType = {
     icon: stakingSVG,
     disabledOn: [NetworkKind.Ethereum],
   },
-  deployer: {
-    title: "Deployer",
-    id: "Deployer",
+  organizations: {
+    title: "Organizations",
+    id: "Organizations",
     route: "Organizations",
     icon: deployerSVG,
   },
