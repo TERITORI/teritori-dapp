@@ -328,11 +328,11 @@ export const NewsFeedInput = React.forwardRef<
             );
           }
         }
-      } catch (err: any) {
+      } catch (err) {
         console.error("post submit err", err);
         setToastError({
           title: "Post creation failed",
-          message: err.message,
+          message: err instanceof Error ? err.message : `${err}`,
         });
       }
       setLoading(false);
