@@ -85,7 +85,9 @@ const SelectedTabContent: React.FC<{
     case "userPosts":
       return (
         <NewsFeed
-          disablePosting={!selectedWallet?.connected || (isDAO && !isDAOMember)}
+          disablePosting={
+            isDAO ? !isDAOMember : selectedWallet?.userId !== userId
+          }
           daoId={isDAO ? userId : undefined}
           Header={() => (
             <UserPublicProfileScreenHeader
