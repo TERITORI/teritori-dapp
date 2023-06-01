@@ -12,14 +12,14 @@ export const CreateShortPostModal: React.FC<{
   additionalMention?: string;
   additionalHashtag?: string;
   onSubmitSuccess?: () => void;
-  daoAddress?: string;
+  daoId?: string;
 }> = ({
   onClose,
   isVisible,
   additionalMention,
   additionalHashtag,
   onSubmitSuccess,
-  daoAddress,
+  daoId,
 }) => {
   const { width: windowWidth } = useWindowDimensions();
   return (
@@ -31,7 +31,7 @@ export const CreateShortPostModal: React.FC<{
     >
       <MenuProvider>
         <NewsFeedInput
-          daoAddress={daoAddress}
+          daoId={daoId}
           onCloseCreateModal={onClose}
           type="post"
           onSubmitSuccess={onSubmitSuccess}

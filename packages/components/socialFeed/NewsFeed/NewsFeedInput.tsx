@@ -30,6 +30,7 @@ import priceSVG from "../../../../assets/icons/price.svg";
 import videoSVG from "../../../../assets/icons/video.svg";
 import { signingSocialFeedClient } from "../../../client-creators/socialFeedClient";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
+import { useDAOMakeProposal } from "../../../hooks/dao/useDAOMakeProposal";
 import { useBotPost } from "../../../hooks/feed/useBotPost";
 import { useCreatePost } from "../../../hooks/feed/useCreatePost";
 import { useUpdateAvailableFreePost } from "../../../hooks/feed/useUpdateAvailableFreePost";
@@ -41,7 +42,6 @@ import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { getUserId, mustGetCosmosNetwork } from "../../../networks";
 import { prettyPrice } from "../../../utils/coins";
-import { makeProposal } from "../../../utils/dao";
 import { defaultSocialFeedFee } from "../../../utils/fee";
 import {
   AUDIO_MIME_TYPES,
@@ -104,7 +104,7 @@ interface NewsFeedInputProps {
   additionalHashtag?: string;
   // Receive this if the post is created from UserPublicProfileScreen (If the user doesn't own the UPP)
   additionalMention?: string;
-  daoAddress?: string;
+  daoId?: string;
 }
 
 export interface NewsFeedInputHandle {
@@ -132,7 +132,7 @@ export const NewsFeedInput = React.forwardRef<
       onCloseCreateModal,
       additionalHashtag,
       additionalMention,
-      daoAddress,
+      daoId,
     },
     forwardRef
   ) => {
@@ -164,6 +164,7 @@ export const NewsFeedInput = React.forwardRef<
         onPostCreationSuccess();
       },
     });
+    const makeProposal = useDAOMakeProposal(daoId);
 
     const onPostCreationSuccess = () => {
       reset();
@@ -280,12 +281,15 @@ export const NewsFeedInput = React.forwardRef<
           parentPostIdentifier: hasUsername ? replyTo?.parentId : parentId,
         };
 
-        if (daoAddress) {
+        if (daoId) {
           const network = mustGetCosmosNetwork(selectedNetworkId);
           if (!network.socialFeedContractAddress) {
             throw new Error("Social feed contract address not found");
           }
-          await makeProposal(selectedNetworkId, wallet?.address, daoAddress, {
+          if (!wallet?.address) {
+            throw new Error("Invalid sender");
+          }
+          await makeProposal(wallet?.address, {
             title: "Post on feed",
             description: "",
             msgs: [
@@ -708,11 +712,7 @@ export const NewsFeedInput = React.forwardRef<
                 loader
                 size="M"
                 text={
-                  daoAddress
-                    ? "Propose"
-                    : type === "comment"
-                    ? "Comment"
-                    : "Publish"
+                  daoId ? "Propose" : type === "comment" ? "Comment" : "Publish"
                 }
                 squaresBackgroundColor={neutral17}
                 onPress={handleSubmit(processSubmit)}

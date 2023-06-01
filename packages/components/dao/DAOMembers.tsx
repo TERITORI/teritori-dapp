@@ -1,4 +1,4 @@
-import React, { ComponentProps, useRef, useState } from "react";
+import React, { ComponentProps, useCallback, useRef, useState } from "react";
 import {
   Pressable,
   StyleProp,
@@ -14,20 +14,14 @@ import trashSVG from "../../../assets/icons/trash.svg";
 import { useDropdowns } from "../../context/DropdownsProvider";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { Member } from "../../contracts-clients/cw4-group/Cw4Group.types";
-import { DaoCoreQueryClient } from "../../contracts-clients/dao-core/DaoCore.client";
-import { DaoVotingCw4QueryClient } from "../../contracts-clients/dao-voting-cw4/DaoVotingCw4.client";
+import { useDAOGroup } from "../../hooks/dao/useDAOGroup";
+import { useDAOMakeProposal } from "../../hooks/dao/useDAOMakeProposal";
 import { useIsDAOMember } from "../../hooks/dao/useDAOMember";
 import { useDAOMembers } from "../../hooks/dao/useDAOMembers";
 import { useNameSearch } from "../../hooks/search/useNameSearch";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import {
-  getUserId,
-  mustGetCosmosNetwork,
-  mustGetNonSigningCosmWasmClient,
-  parseUserId,
-} from "../../networks";
-import { makeProposal } from "../../utils/dao";
+import { getUserId, parseUserId } from "../../networks";
 import {
   neutral00,
   neutral33,
@@ -133,11 +127,12 @@ const AddMembersModal: React.FC<{
   show: boolean;
   onClose: () => void;
 }> = ({ daoId, show, onClose }) => {
-  const [network, daoAddress] = parseUserId(daoId);
+  const [network] = parseUserId(daoId);
   const { wrapWithFeedback } = useFeedbacks();
   const selectedWallet = useSelectedWallet();
   const [searchText, setSearchText] = useState("");
   const [ids, setIds] = useState<string[]>([]);
+  const proposeToAddMembers = useProposeToAddMembers(daoId);
 
   const { names } = useNameSearch({
     networkId: network?.id,
@@ -190,9 +185,7 @@ const AddMembersModal: React.FC<{
         fullWidth
         onPress={wrapWithFeedback(async () => {
           await proposeToAddMembers(
-            network?.id,
             selectedWallet?.address,
-            daoAddress,
             ids.map((n) => parseUserId(n)[1])
           );
         })}
@@ -246,7 +239,7 @@ const UserCard: React.FC<{
   style: StyleProp<ViewStyle>;
   daoId?: string;
 }> = ({ userId, style, daoId }) => {
-  const [network, address] = parseUserId(userId);
+  const [, userAddress] = parseUserId(userId);
   const { metadata } = useNSUserInfo(userId);
   const selectedWallet = useSelectedWallet();
   const { wrapWithFeedback } = useFeedbacks();
@@ -254,7 +247,7 @@ const UserCard: React.FC<{
     daoId,
     selectedWallet?.userId
   );
-  const [, daoAddress] = parseUserId(daoId);
+  const proposeToRemoveMember = useProposeToRemoveMember(daoId);
 
   const flatStyle = StyleSheet.flatten(style);
 
@@ -286,7 +279,7 @@ const UserCard: React.FC<{
         <BrandText
           style={[fontSemibold12, { lineHeight: 14, marginBottom: 8 }]}
         >
-          {metadata.public_name || address}
+          {metadata.public_name || userAddress}
         </BrandText>
         <View>
           <BrandText
@@ -365,10 +358,8 @@ const UserCard: React.FC<{
               onPress: wrapWithFeedback(
                 async () => {
                   await proposeToRemoveMember(
-                    network?.id,
                     selectedWallet?.address,
-                    daoAddress,
-                    address
+                    userAddress
                   );
                 },
                 { title: "Created proposal" }
@@ -467,109 +458,84 @@ const fakeRoles: { highlight?: boolean; text: string }[] = [
   { text: "Tester" },
 ];
 
-const proposeToRemoveMember = async (
-  networkId: string | undefined,
-  senderAddress: string | undefined,
-  daoAddress: string | undefined,
-  memberToRemoveAddress: string
-) => {
-  const network = mustGetCosmosNetwork(networkId);
-
-  if (!daoAddress) {
-    throw new Error("no DAO address");
-  }
-  if (!senderAddress) {
-    throw new Error("no selected wallet");
-  }
-
-  const cosmwasmClient = await mustGetNonSigningCosmWasmClient(network.id);
-
-  const daoCoreClient = new DaoCoreQueryClient(cosmwasmClient, daoAddress);
-
-  const votingModuleAddress = await daoCoreClient.votingModule();
-  const votingClient = new DaoVotingCw4QueryClient(
-    cosmwasmClient,
-    votingModuleAddress
-  );
-
-  const cw4Address = await votingClient.groupContract();
-
-  const updateMembersReq: {
-    add: Member[];
-    remove: string[];
-  } = { add: [], remove: [memberToRemoveAddress] };
-
-  return await makeProposal(networkId, senderAddress, daoAddress, {
-    title: `Remove ${memberToRemoveAddress} from members`,
-    description: "",
-    msgs: [
-      {
-        wasm: {
-          execute: {
-            contract_addr: cw4Address,
-            msg: Buffer.from(
-              JSON.stringify({
-                update_members: updateMembersReq,
-              })
-            ).toString("base64"),
-            funds: [],
+const useProposeToRemoveMember = (daoId: string | undefined) => {
+  const makeProposal = useDAOMakeProposal(daoId);
+  const { data: groupAddress } = useDAOGroup(daoId);
+  return useCallback(
+    async (
+      senderAddress: string | undefined,
+      memberToRemoveAddress: string
+    ) => {
+      if (!senderAddress) {
+        throw new Error("Invalid sender");
+      }
+      if (!groupAddress) {
+        throw new Error("DAO group address not found");
+      }
+      const updateMembersReq: {
+        add: Member[];
+        remove: string[];
+      } = { add: [], remove: [memberToRemoveAddress] };
+      return await makeProposal(senderAddress, {
+        title: `Remove ${memberToRemoveAddress} from members`,
+        description: "",
+        msgs: [
+          {
+            wasm: {
+              execute: {
+                contract_addr: groupAddress,
+                msg: Buffer.from(
+                  JSON.stringify({
+                    update_members: updateMembersReq,
+                  })
+                ).toString("base64"),
+                funds: [],
+              },
+            },
           },
-        },
-      },
-    ],
-  });
+        ],
+      });
+    },
+    [groupAddress, makeProposal]
+  );
 };
 
-const proposeToAddMembers = async (
-  networkId: string | undefined,
-  senderAddress: string | undefined,
-  daoAddress: string | undefined,
-  membersToAdd: string[]
-) => {
-  const network = mustGetCosmosNetwork(networkId);
-
-  if (!daoAddress) {
-    throw new Error("no DAO address");
-  }
-  if (!senderAddress) {
-    throw new Error("no selected wallet");
-  }
-
-  const cosmwasmClient = await mustGetNonSigningCosmWasmClient(network.id);
-
-  const daoCoreClient = new DaoCoreQueryClient(cosmwasmClient, daoAddress);
-
-  const votingModuleAddress = await daoCoreClient.votingModule();
-  const votingClient = new DaoVotingCw4QueryClient(
-    cosmwasmClient,
-    votingModuleAddress
-  );
-
-  const cw4Address = await votingClient.groupContract();
-
-  const weight = 1;
-  const updateMembersReq: {
-    add: Member[];
-    remove: string[];
-  } = { add: membersToAdd.map((m) => ({ addr: m, weight })), remove: [] };
-
-  return await makeProposal(networkId, senderAddress, daoAddress, {
-    title: `Add ${membersToAdd.length} member(s) with weight ${weight}`,
-    description: "",
-    msgs: [
-      {
-        wasm: {
-          execute: {
-            contract_addr: cw4Address,
-            msg: Buffer.from(
-              JSON.stringify({
-                update_members: updateMembersReq,
-              })
-            ).toString("base64"),
-            funds: [],
+const useProposeToAddMembers = (daoId: string | undefined) => {
+  const makeProposal = useDAOMakeProposal(daoId);
+  const { data: groupAddress } = useDAOGroup(daoId);
+  return useCallback(
+    async (senderAddress: string | undefined, membersToAdd: string[]) => {
+      if (!senderAddress) {
+        throw new Error("Invalid sender");
+      }
+      if (!groupAddress) {
+        throw new Error("DAO group address not found");
+      }
+      const weight = 1;
+      const updateMembersReq: {
+        add: Member[];
+        remove: string[];
+      } = { add: membersToAdd.map((m) => ({ addr: m, weight })), remove: [] };
+      return await makeProposal(senderAddress, {
+        title: `Add ${membersToAdd.length} member(s) with weight ${weight}`,
+        description: "",
+        msgs: [
+          {
+            wasm: {
+              execute: {
+                contract_addr: groupAddress,
+                msg: Buffer.from(
+                  JSON.stringify({
+                    update_members: updateMembersReq,
+                  })
+                ).toString("base64"),
+                funds: [],
+              },
+            },
           },
-        },
-      },
-    ],
-  });
+        ],
+      });
+    },
+    [groupAddress, makeProposal]
+  );
 };

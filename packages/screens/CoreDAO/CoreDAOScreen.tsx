@@ -10,6 +10,7 @@ import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { SpacerColumn } from "../../components/spacer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { TeritoriNameServiceQueryClient } from "../../contracts-clients/teritori-name-service/TeritoriNameService.client";
+import { useDAOMakeProposal } from "../../hooks/dao/useDAOMakeProposal";
 import { useFeedConfig } from "../../hooks/feed/useFeedConfig";
 import { useBalances } from "../../hooks/useBalances";
 import { useBreedingConfig } from "../../hooks/useBreedingConfig";
@@ -19,11 +20,13 @@ import { useVaultConfig } from "../../hooks/vault/useVaultConfig";
 import {
   getCosmosNetwork,
   getKeplrSigningStargateClient,
+  getUserId,
   mustGetNonSigningCosmWasmClient,
 } from "../../networks";
 import { prettyPrice } from "../../utils/coins";
-import { makeProposal } from "../../utils/dao";
 import { ScreenFC } from "../../utils/navigation";
+
+// This is a dev tool for now
 
 export const CoreDAOScreen: ScreenFC<"CoreDAO"> = () => {
   const networkId = useSelectedNetworkId();
@@ -47,6 +50,9 @@ const DAOManager: React.FC = () => {
   const network = getCosmosNetwork(networkId);
   const balances = useBalances(networkId, network?.coreDAOAddress);
   const selectedWallet = useSelectedWallet();
+  const makeProposal = useDAOMakeProposal(
+    getUserId(networkId, network?.coreDAOAddress)
+  );
   return (
     <View>
       <BrandText>Funds</BrandText>
@@ -96,6 +102,10 @@ const DAOManager: React.FC = () => {
             return;
           }
 
+          if (!selectedWallet?.address) {
+            return;
+          }
+
           const burnMsg: MsgBurnTokens = {
             sender: network.coreDAOAddress,
             amount: [
@@ -105,25 +115,20 @@ const DAOManager: React.FC = () => {
             ],
           };
 
-          await makeProposal(
-            networkId,
-            selectedWallet?.address,
-            network?.coreDAOAddress,
-            {
-              title: "Burn a TORI",
-              description: "",
-              msgs: [
-                {
-                  stargate: {
-                    type_url: "/teritori.mint.v1beta1.MsgBurnTokens",
-                    value: Buffer.from(
-                      MsgBurnTokens.encode(burnMsg).finish()
-                    ).toString("base64"),
-                  },
+          await makeProposal(selectedWallet?.address, {
+            title: "Burn a TORI",
+            description: "",
+            msgs: [
+              {
+                stargate: {
+                  type_url: "/teritori.mint.v1beta1.MsgBurnTokens",
+                  value: Buffer.from(
+                    MsgBurnTokens.encode(burnMsg).finish()
+                  ).toString("base64"),
                 },
-              ],
-            }
-          );
+              },
+            ],
+          });
         }}
       />
     </View>
@@ -136,6 +141,9 @@ const VaultManager: React.FC<{ networkId: string }> = ({ networkId }) => {
   const vaultBalances = useBalances(networkId, network?.vaultContractAddress);
   const { wrapWithFeedback } = useFeedbacks();
   const selectedWallet = useSelectedWallet();
+  const makeProposal = useDAOMakeProposal(
+    getUserId(networkId, network?.vaultContractAddress)
+  );
 
   return (
     <View>
@@ -156,30 +164,28 @@ const VaultManager: React.FC<{ networkId: string }> = ({ networkId }) => {
       <PrimaryButton
         text="Propose to withdraw marketplace fees"
         onPress={wrapWithFeedback(async () => {
+          if (!selectedWallet?.address) {
+            return;
+          }
           if (!network?.vaultContractAddress) {
             throw new Error("no vault contract address");
           }
           const msg = { withdraw_fee: {} };
-          await makeProposal(
-            networkId,
-            selectedWallet?.address,
-            network?.coreDAOAddress,
-            {
-              title: "Withdraw marketplace fees",
-              description: "",
-              msgs: [
-                {
-                  wasm: {
-                    execute: {
-                      contract_addr: network?.vaultContractAddress,
-                      funds: [],
-                      msg: Buffer.from(JSON.stringify(msg)).toString("base64"),
-                    },
+          await makeProposal(selectedWallet?.address, {
+            title: "Withdraw marketplace fees",
+            description: "",
+            msgs: [
+              {
+                wasm: {
+                  execute: {
+                    contract_addr: network?.vaultContractAddress,
+                    funds: [],
+                    msg: Buffer.from(JSON.stringify(msg)).toString("base64"),
                   },
                 },
-              ],
-            }
-          );
+              },
+            ],
+          });
         })}
       />
     </View>

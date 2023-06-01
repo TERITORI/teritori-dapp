@@ -11,6 +11,7 @@ import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useTNS } from "../../context/TNSProvider";
 import { TeritoriNameServiceQueryClient } from "../../contracts-clients/teritori-name-service/TeritoriNameService.client";
 import { Metadata } from "../../contracts-clients/teritori-name-service/TeritoriNameService.types";
+import { useDAOMakeProposal } from "../../hooks/dao/useDAOMakeProposal";
 import { useDAOs } from "../../hooks/dao/useDAOs";
 import { nsNameInfoQueryKey } from "../../hooks/useNSNameInfo";
 import { useNSNameOwner } from "../../hooks/useNSNameOwner";
@@ -22,7 +23,6 @@ import {
   mustGetCosmosNetwork,
   getCosmosNetwork,
 } from "../../networks";
-import { makeProposal } from "../../utils/dao";
 import { neutral17 } from "../../utils/style/colors";
 import { defaultMetaData } from "../../utils/types/tns";
 
@@ -52,6 +52,7 @@ export const TNSUpdateNameScreen: React.FC<TNSUpdateNameScreenProps> = ({
     network?.nameServiceTLD ? name + network.nameServiceTLD : ""
   );
   const ownerDAO = daos?.find((dao) => dao.contractAddress === nameOwner);
+  const makeProposal = useDAOMakeProposal(ownerDAO?.id);
 
   const initData = async () => {
     try {
@@ -120,26 +121,21 @@ export const TNSUpdateNameScreen: React.FC<TNSUpdateNameScreenProps> = ({
         if (!selectedWallet?.address) {
           throw new Error("no wallet address");
         }
-        const res = await makeProposal(
-          networkId,
-          selectedWallet.address,
-          ownerDAO.contractAddress,
-          {
-            title: `Update ${msg.update_metadata.token_id}`,
-            description: "",
-            msgs: [
-              {
-                wasm: {
-                  execute: {
-                    contract_addr: network.nameServiceContractAddress,
-                    msg: Buffer.from(JSON.stringify(msg)).toString("base64"),
-                    funds: [],
-                  },
+        const res = await makeProposal(selectedWallet.address, {
+          title: `Update ${msg.update_metadata.token_id}`,
+          description: "",
+          msgs: [
+            {
+              wasm: {
+                execute: {
+                  contract_addr: network.nameServiceContractAddress,
+                  msg: Buffer.from(JSON.stringify(msg)).toString("base64"),
+                  funds: [],
                 },
               },
-            ],
-          }
-        );
+            },
+          ],
+        });
         console.log("created proposal", res);
         setToastSuccess({
           title: "Created proposal",

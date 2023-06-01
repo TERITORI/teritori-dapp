@@ -4,14 +4,9 @@ import {
 } from "@cosmjs/cosmwasm-stargate";
 import { StdFee, Coin } from "@cosmjs/stargate";
 
-import { DaoCoreQueryClient } from "../contracts-clients/dao-core/DaoCore.client";
-import { DaoPreProposeSingleClient } from "../contracts-clients/dao-pre-propose-single/DaoPreProposeSingle.client";
-import { ProposeMessage } from "../contracts-clients/dao-pre-propose-single/DaoPreProposeSingle.types";
-import { DaoProposalSingleQueryClient } from "../contracts-clients/dao-proposal-single/DaoProposalSingle.client";
 import { TeritoriNameServiceClient } from "../contracts-clients/teritori-name-service/TeritoriNameService.client";
 import {
   mustGetCosmosNetwork,
-  mustGetNonSigningCosmWasmClient,
   getKeplrSigningCosmWasmClient,
   getStakingCurrency,
 } from "../networks";
@@ -354,56 +349,4 @@ export const createDaoMemberBased = async (
   await onStepChange?.(3);
 
   return { daoAddress, executeResult };
-};
-
-export const makeProposal = async (
-  networkId: string | undefined,
-  sender: string | undefined,
-  daoAddress: string | undefined,
-  proposal: ProposeMessage["propose"]
-) => {
-  if (!daoAddress) {
-    throw new Error("no DAO address");
-  }
-  if (!sender) {
-    throw new Error("no sender address");
-  }
-
-  const network = mustGetCosmosNetwork(networkId);
-
-  const cosmwasmClient = await mustGetNonSigningCosmWasmClient(network.id);
-
-  const daoCoreClient = new DaoCoreQueryClient(cosmwasmClient, daoAddress);
-
-  const proposalModules = await daoCoreClient.proposalModules({});
-  if (proposalModules.length === 0) {
-    throw new Error("no proposal module");
-  }
-  const proposalModuleAddress = proposalModules[0].address;
-  const proposalClient = new DaoProposalSingleQueryClient(
-    cosmwasmClient,
-    proposalModuleAddress
-  );
-
-  const proposalCreationPolicy = await proposalClient.proposalCreationPolicy();
-  if (!("module" in proposalCreationPolicy)) {
-    throw new Error("proposal creation policy is not module");
-  }
-
-  const signingClient = await getKeplrSigningCosmWasmClient(network.id);
-
-  const preProposeClient = new DaoPreProposeSingleClient(
-    signingClient,
-    sender,
-    proposalCreationPolicy.module.addr
-  );
-  const res = await preProposeClient.propose({
-    msg: {
-      propose: proposal,
-    },
-  });
-
-  // TODO: invalidate proposal list
-
-  return res;
 };

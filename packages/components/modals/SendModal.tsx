@@ -7,6 +7,7 @@ import { StyleSheet, TouchableOpacity } from "react-native";
 import ModalBase from "./ModalBase";
 import contactsSVG from "../../../assets/icons/contacts.svg";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { useDAOMakeProposal } from "../../hooks/dao/useDAOMakeProposal";
 import { useDAOs } from "../../hooks/dao/useDAOs";
 import { useBalances } from "../../hooks/useBalances";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
@@ -19,7 +20,6 @@ import {
 } from "../../networks";
 import { TransactionForm } from "../../screens/WalletManager/types";
 import { prettyPrice } from "../../utils/coins";
-import { makeProposal } from "../../utils/dao";
 import {
   neutral22,
   neutral33,
@@ -66,6 +66,7 @@ export const SendModal: React.FC<SendModalProps> = ({
   const selectedWallet = useSelectedWallet();
   const { control, setValue, handleSubmit } = useForm<TransactionForm>();
   const [selectedDAOId, setSelectedDAOId] = useState("");
+  const makeProposal = useDAOMakeProposal(selectedDAOId);
   const [, daoAddress] = parseUserId(selectedDAOId);
   const { daos } = useDAOs({
     networkId,
@@ -117,13 +118,11 @@ export const SendModal: React.FC<SendModalProps> = ({
 
       if (selectedDAOId) {
         // DAO send
-        const selectedDAO = daos?.find(
-          (dao) => dao.contractAddress === selectedDAOId
-        );
+        const selectedDAO = daos?.find((dao) => dao.id === selectedDAOId);
         if (!selectedDAO) {
           throw new Error("no selected DAO");
         }
-        await makeProposal(networkId, sender, selectedDAOId, {
+        await makeProposal(sender, {
           title: `Send ${prettyPrice(
             networkId,
             amount,
