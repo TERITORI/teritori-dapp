@@ -138,6 +138,7 @@ export const GeneralSelect: React.FC<GeneralSelectProps> = ({
         <View style={styles.dropdownMenu}>
           {data.map((item: string, index: number) => (
             <Pressable
+              // @ts-ignore
               onMouseEnter={() => setHoveredIndex(index + 1)}
               onMouseLeave={() => setHoveredIndex(0)}
               onPress={() => {

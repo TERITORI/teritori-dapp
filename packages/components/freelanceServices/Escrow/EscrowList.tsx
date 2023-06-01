@@ -1,21 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { FlatList, StyleProp, View, ViewStyle } from "react-native";
 
+import { TeritoriEscrowClient } from "../../../contracts-clients/teritori-freelance/TeritoriEscrow.client";
+import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import {
-  escrowAccept,
-  escrowPause,
-  escrowResume,
-  escrowCancel,
-  escrowComplete,
-} from "../../../screens/FreelanceServices/contract";
+  mustGetCosmosNetwork,
+  getKeplrSigningCosmWasmClient,
+} from "../../../networks";
 import { useAppNavigation } from "../../../utils/navigation";
 import { mineShaftColor } from "../../../utils/style/colors";
 import { fontSemibold13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { tinyAddress } from "../../../utils/text";
 import { EscrowInfo, EscrowStatus } from "../../../utils/types/freelance";
 import { BrandText } from "../../BrandText";
-import { tinyAddress } from "../../WalletSelector";
 import { SecondaryButtonOutline } from "../../buttons/SecondaryButtonOutline";
 import { SpacerRow } from "../../spacer";
 import { TableRow, TableRowHeading } from "../../table";
@@ -72,6 +71,8 @@ const EscrowRow: React.FC<{
   escrow: EscrowInfo;
 }> = ({ escrow }) => {
   const selectedWallet = useSelectedWallet();
+  const networkId = useSelectedNetworkId();
+
   const [isShowAccept, setIsShowAccept] = useState<boolean>(false);
   const [isShowCancel, setIsShowCancel] = useState<boolean>(false);
   const [isShowPause, setIsShowPause] = useState<boolean>(false);
@@ -117,18 +118,32 @@ const EscrowRow: React.FC<{
 
   const clickAccept = async () => {
     if (!selectedWallet) return;
-    const walletAddress = selectedWallet.address;
-    const escrowRes = await escrowAccept(walletAddress, escrow.id);
+    const signingClient = await getKeplrSigningCosmWasmClient(networkId);
+    const network = mustGetCosmosNetwork(networkId);
+    const client = new TeritoriEscrowClient(
+      signingClient,
+      selectedWallet?.address!,
+      network.freelanceEscrowAddress!
+    );
+
+    const escrowRes = await client.acceptContract({ id: escrow.id });
     if (escrowRes) {
       navigation.replace("FreelanceServicesEscrow");
     } else {
       console.log("failed");
     }
   };
+
   const clickPause = async () => {
     if (!selectedWallet) return;
-    const walletAddress = selectedWallet.address;
-    const escrowRes = await escrowPause(walletAddress, escrow.id);
+    const signingClient = await getKeplrSigningCosmWasmClient(networkId);
+    const network = mustGetCosmosNetwork(networkId);
+    const client = new TeritoriEscrowClient(
+      signingClient,
+      selectedWallet?.address!,
+      network.freelanceEscrowAddress!
+    );
+    const escrowRes = await client.pauseContract({ id: escrow.id });
     if (escrowRes) {
       navigation.replace("FreelanceServicesEscrow");
     } else {
@@ -137,33 +152,54 @@ const EscrowRow: React.FC<{
   };
   const clickResume = async () => {
     if (!selectedWallet) return;
-    const walletAddress = selectedWallet.address;
-    const increatedExpireAt = 0;
-    const escrowRes = await escrowResume(
-      walletAddress,
-      escrow.id,
-      increatedExpireAt
+    const increasedExpiredAt = 0;
+    const signingClient = await getKeplrSigningCosmWasmClient(networkId);
+    const network = mustGetCosmosNetwork(networkId);
+    const client = new TeritoriEscrowClient(
+      signingClient,
+      selectedWallet?.address!,
+      network.freelanceEscrowAddress!
     );
+    const escrowRes = await client.resumeContract({
+      id: escrow.id,
+      increasedExpiredAt,
+    });
+
     if (escrowRes) {
       navigation.replace("FreelanceServicesEscrow");
     } else {
       console.log("failed");
     }
   };
+
   const clickCancel = async () => {
     if (!selectedWallet) return;
-    const walletAddress = selectedWallet.address;
-    const escrowRes = await escrowCancel(walletAddress, escrow.id);
+    const signingClient = await getKeplrSigningCosmWasmClient(networkId);
+    const network = mustGetCosmosNetwork(networkId);
+    const client = new TeritoriEscrowClient(
+      signingClient,
+      selectedWallet?.address!,
+      network.freelanceEscrowAddress!
+    );
+
+    const escrowRes = await client.cancelContract({ id: escrow.id });
     if (escrowRes) {
       navigation.replace("FreelanceServicesEscrow");
     } else {
       console.log("failed");
     }
   };
+
   const clickComplete = async () => {
     if (!selectedWallet) return;
-    const walletAddress = selectedWallet.address;
-    const escrowRes = await escrowComplete(walletAddress, escrow.id);
+    const signingClient = await getKeplrSigningCosmWasmClient(networkId);
+    const network = mustGetCosmosNetwork(networkId);
+    const client = new TeritoriEscrowClient(
+      signingClient,
+      selectedWallet?.address!,
+      network.freelanceEscrowAddress!
+    );
+    const escrowRes = await client.completeContract({ id: escrow.id });
     if (escrowRes) {
       navigation.replace("FreelanceServicesEscrow");
     } else {

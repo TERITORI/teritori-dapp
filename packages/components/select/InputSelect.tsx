@@ -167,6 +167,7 @@ export const InputSelect: React.FC<InputSelectProps> = ({
             if (item.includes(value))
               return (
                 <Pressable
+                  //@ts-ignore
                   onMouseEnter={() => setHoveredIndex(index + 1)}
                   onMouseLeave={() => setHoveredIndex(0)}
                   onPress={() => {
@@ -194,6 +195,7 @@ export const InputSelect: React.FC<InputSelectProps> = ({
         <View style={styles.dropdownMenu}>
           {descriptionData.map((item: string, index: number) => (
             <Pressable
+              // @ts-ignore
               onMouseEnter={() => setHoveredIndex(index + 1)}
               onMouseLeave={() => setHoveredIndex(0)}
               onPress={() => {

@@ -1,7 +1,6 @@
 import { ImageSourcePropType } from "react-native";
 
 import { CountryType } from "../../../utils/allCountries";
-import { Network } from "../../../utils/network";
 
 export interface FreelanceServicePriceType {
   value: number;
@@ -65,14 +64,10 @@ export enum PriceContentType {
   standard,
   premium,
 }
-export interface AddressType {
-  address: string;
-  network: Network;
-}
 
 export interface GigInfo {
   id?: number;
-  address: AddressType;
+  address: string;
   //
   profileHash: string;
   //overview
@@ -99,6 +94,7 @@ export interface GigInfo {
   faq: Faq[];
   //requirement
   questions: Question[];
+  includeSourceCode: string | null;
 
   //gallery
   images: string[]; //ipfs_hash
@@ -186,10 +182,7 @@ export const emptyPackageInfo: PackageInfo = {
 };
 
 export const emptyGigInfo: GigInfo = {
-  address: {
-    address: "",
-    network: Network.Teritori,
-  },
+  address: "",
   profileHash: "",
   title: "",
   category: "",
@@ -274,7 +267,6 @@ export const emptyGigInfo: GigInfo = {
         ],
       } as ContentInfo,
     ],
-
     price: "0", //number
   },
   standardPackage: {
@@ -452,6 +444,7 @@ export const emptyGigInfo: GigInfo = {
   description: "",
   faq: [],
   questions: [],
+  includeSourceCode: null,
   //gallery
   images: [], //ipfs_hash
   video: "", //ipfs_hash

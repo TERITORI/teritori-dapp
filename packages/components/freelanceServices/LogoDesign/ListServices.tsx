@@ -8,9 +8,10 @@ import chevronRight from "../../../../assets/icons/chevron-right.svg";
 import chevronUp from "../../../../assets/icons/chevron-up.svg";
 import chevronDown from "../../../../assets/icons/freelance-service/chevron-down.svg";
 import { useWallets } from "../../../context/WalletsProvider";
+import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import { getGigData } from "../../../screens/FreelanceServices/query/data";
 import { GigData } from "../../../screens/FreelanceServices/types/fields";
-import { freelanceClient } from "../../../utils/backend";
+import { mustGetFreelanceClient } from "../../../utils/backend";
 import { useAppNavigation } from "../../../utils/navigation";
 import {
   neutral17,
@@ -62,11 +63,12 @@ export const ListServices: React.FC = () => {
   const [pageLimitMax, setPageLimitMax] = useState(numbersOfItemsPerPage);
   const navigation = useAppNavigation();
   const { wallets } = useWallets();
-
   const [gigDataList, setGigDataList] = useState<GigData[]>([]);
+  const networkId = useSelectedNetworkId();
   useEffect(() => {
     const getGigDataList = async () => {
-      const res = await freelanceClient.gigList({ limit: 2, offset: 0 });
+      const freelanceClient = mustGetFreelanceClient(networkId);
+      const res = await freelanceClient.GigList({ limit: 2, offset: 0 });
       const newGigDataList: GigData[] = [];
       res.gigs.map(async (gigInfo, index) => {
         newGigDataList.push(
@@ -80,7 +82,7 @@ export const ListServices: React.FC = () => {
       setGigDataList(newGigDataList);
     };
     getGigDataList();
-  }, [wallets]);
+  }, [wallets, networkId]);
   function reducePageLimits() {
     setPageLimitMin(pageLimitMin - numbersOfItemsPerPage);
     setPageLimitMax(pageLimitMax - numbersOfItemsPerPage);

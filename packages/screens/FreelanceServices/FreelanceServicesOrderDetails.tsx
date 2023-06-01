@@ -16,9 +16,13 @@ import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { TeritoriOrderClient } from "../../contracts-clients/teritori-freelance/TeritoriOrder.client";
 import { OrderParams } from "../../contracts-clients/teritori-freelance/TeritoriOrder.types";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { freelanceClient } from "../../utils/backend";
-import { getSigningCosmWasmClient } from "../../utils/keplr";
+import {
+  mustGetCosmosNetwork,
+  getKeplrSigningCosmWasmClient,
+} from "../../networks";
+import { mustGetFreelanceClient } from "../../utils/backend";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { neutral00, neutral33, primaryColor } from "../../utils/style/colors";
 import { fontSemibold16, fontSemibold20 } from "../../utils/style/fonts";
@@ -126,12 +130,13 @@ export const FreelanceServicesOrderDetails: ScreenFC<
   },
 }) => {
   const [gigData, setGigData] = useState<GigData | null>(null);
-
+  const networkId = useSelectedNetworkId();
   useEffect(() => {
     // if (id !== "") return;
     const setId = async () => {
       try {
-        const res = await freelanceClient.gigData({ id: gigId });
+        const freelanceClient = mustGetFreelanceClient(networkId);
+        const res = await freelanceClient.GigData({ id: gigId });
         if (res.gig) {
           setGigData(
             await getGigData(
@@ -146,7 +151,7 @@ export const FreelanceServicesOrderDetails: ScreenFC<
       }
     };
     setId();
-  }, [gigId]);
+  }, [gigId, networkId]);
 
   const [extraSelection, setExtraSelection] = useState<Set<number>>(new Set());
   const wallet = useSelectedWallet();
@@ -206,10 +211,12 @@ export const FreelanceServicesOrderDetails: ScreenFC<
       return;
     }
     try {
+      const signingClient = await getKeplrSigningCosmWasmClient(networkId);
+      const network = mustGetCosmosNetwork(networkId);
       const client = new TeritoriOrderClient(
-        await getSigningCosmWasmClient(),
-        wallet?.address || "",
-        process.env.TERITORI_ESCROW_CONTRACT_ADDRESS || ""
+        signingClient,
+        wallet?.address!,
+        network.freelanceEscrowAddress!
       );
 
       const cw20Addr = data.cw20Addr!;

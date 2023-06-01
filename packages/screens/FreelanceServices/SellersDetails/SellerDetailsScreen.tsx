@@ -25,9 +25,15 @@ import { StarRating } from "../../../components/freelanceServices/common/StarRat
 import { AvatarImage } from "../../../components/inputs/AvatarImage";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
+import { TeritoriSellerClient } from "../../../contracts-clients/teritori-freelance/TeritoriSeller.client";
 import { useIsKeplrConnected } from "../../../hooks/useIsKeplrConnected";
+import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { freelanceClient } from "../../../utils/backend";
+import {
+  mustGetCosmosNetwork,
+  getKeplrSigningCosmWasmClient,
+} from "../../../networks";
+import { mustGetFreelanceClient } from "../../../utils/backend";
 import { uploadJSONToIPFS } from "../../../utils/ipfs";
 import { ScreenFC } from "../../../utils/navigation";
 import {
@@ -53,7 +59,6 @@ import {
 } from "../../../utils/style/fonts";
 import { leftMarginMainContent } from "../../../utils/style/layout";
 import { FreelanceServicesScreenWrapper } from "../FreelanceServicesScreenWrapper";
-import { updateSellerProfileToContract } from "../contract";
 import { getSellerUser } from "../query/data";
 import {
   LangInfo,
@@ -72,11 +77,13 @@ export const SellerDetailsScreen: ScreenFC<
 }) => {
   const [sellerUser, setSellerUser] = useState<SellerUser | null>(null);
   const wallet = useSelectedWallet();
+  const networkId = useSelectedNetworkId();
   useEffect(() => {
     const getSellerUserInfo = async () => {
       try {
         if (!sellerAddress) return;
-        const res = await freelanceClient.sellerProfile({ sellerAddress });
+        const freelanceClient = mustGetFreelanceClient(networkId);
+        const res = await freelanceClient.SellerProfile({ sellerAddress });
         const profileHash = res.ipfs;
         const _sellerUser = await getSellerUser(profileHash);
         setAvatarUrl(_sellerUser.profilePic);
@@ -94,7 +101,7 @@ export const SellerDetailsScreen: ScreenFC<
     if (sellerAddress) {
       getSellerUserInfo();
     }
-  }, [sellerAddress, wallet]);
+  }, [sellerAddress, wallet, networkId]);
 
   const { width } = useWindowDimensions();
   const [isEditable, setIsEditable] = useState(false);
@@ -196,10 +203,17 @@ export const SellerDetailsScreen: ScreenFC<
       });
       return;
     }
-    const profileRes = await updateSellerProfileToContract(
-      wallet.address,
-      profileHash
+    const signingClient = await getKeplrSigningCosmWasmClient(networkId);
+    const network = mustGetCosmosNetwork(networkId);
+    const client = new TeritoriSellerClient(
+      signingClient,
+      wallet?.address!,
+      network.freelanceEscrowAddress!
     );
+    const profileRes = await client.updateSellerProfile({
+      seller: wallet.address,
+      ipfsHash: profileHash,
+    });
     if (profileRes) {
       console.log("updated profile successfully");
     } else {

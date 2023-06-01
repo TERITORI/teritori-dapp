@@ -39,11 +39,12 @@ export const DisplayReviews: React.FC<{ reviews: ReviewFields["items"] }> = ({
           >
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <Image
-                source={item.user.profilePic}
+                // @ts-ignore
+                source={item.sellerUser.profilePic}
                 style={{ width: 32, height: 32, marginRight: 8 }}
               />
               <BrandText style={fontSemibold16}>
-                @{item.user.username}
+                @{item.sellerUser.username}
               </BrandText>
               <View
                 style={{
@@ -54,9 +55,9 @@ export const DisplayReviews: React.FC<{ reviews: ReviewFields["items"] }> = ({
                   transform: [{ rotate: "90deg" }],
                 }}
               />
-              <FlagIcon alphaCode={item.user.country.alpha} />
+              <FlagIcon alphaCode={item.sellerUser.country.alpha} />
               <BrandText style={[{ color: neutral77 }, fontSemibold14]}>
-                {item.user.country.name}
+                {item.sellerUser.country.name}
               </BrandText>
             </View>
             <View style={{ flexDirection: "row", alignItems: "center" }}>

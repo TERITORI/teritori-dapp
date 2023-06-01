@@ -2,7 +2,6 @@ import React from "react";
 import { useWindowDimensions, View } from "react-native";
 
 import searchSVG from "../../../../assets/icons/search.svg";
-import { neutral33 } from "../../../utils/style/colors";
 import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
 import { Separator } from "../../Separator";
@@ -22,10 +21,6 @@ export const FreelanceServicesHeader: React.FC = () => {
         width={width > 1024 ? 480 : 300}
         placeHolder="Search..."
         style={{ alignSelf: "center", marginTop: 30 }}
-        mainContainerStyle={{
-          backgroundColor: "black",
-          borderColor: neutral33,
-        }}
       >
         <SVG
           source={searchSVG}

@@ -33,7 +33,6 @@ type Message struct {
 }
 
 type Config struct {
-<<<<<<< HEAD
 	TNSContractAddress             string
 	SellerContractAddress          string
 	EscrowContractAddress          string
@@ -46,17 +45,10 @@ type Config struct {
 	TheRiotBreedingContractAddress string
 	TNSDefaultImageURL             string
 	TendermintClient               *tmws.Client
-	NetworkID                      string
 	BlockTimeCache                 *bigcache.BigCache
 	PricesClient                   pricespb.PricesServiceClient
-=======
-	MinterCodeIDs    []uint64
-	TendermintClient *tmws.Client
-	BlockTimeCache   *bigcache.BigCache
-	PricesClient     pricespb.PricesServiceClient
 	Network          *networks.CosmosNetwork
 	NetworkStore     networks.NetworkStore
->>>>>>> e393992d3cbfb9d4139af9d0ec74b7d8aba334e5
 }
 
 type Handler struct {
@@ -263,7 +255,6 @@ func (h *Handler) handleExecute(e *Message) error {
 				return errors.Wrap(err, "failed to handle squad stake")
 			}
 		}
-<<<<<<< HEAD
 	// seller_contract
 	case "update_seller_profile":
 		if executeMsg.Contract == h.config.SellerContractAddress {
@@ -339,7 +330,6 @@ func (h *Handler) handleExecute(e *Message) error {
 				return errors.Wrap(err, "failed to handle report_contract")
 			}
 		}
-=======
 	// Feeds actions
 	case "create_post":
 		if executeMsg.Contract == h.config.Network.SocialFeedContractAddress {
@@ -371,9 +361,6 @@ func (h *Handler) handleExecute(e *Message) error {
 				return errors.Wrap(err, "failed to handle delete post")
 			}
 		}
-	}
->>>>>>> e393992d3cbfb9d4139af9d0ec74b7d8aba334e5
-
 	}
 	return nil
 }

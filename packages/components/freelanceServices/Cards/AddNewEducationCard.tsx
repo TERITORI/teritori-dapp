@@ -17,8 +17,8 @@ export const AddNewEducationCard: React.FC<{
   onAdd: (educationInfo: EducationInfo) => void;
 }> = ({ value, onClose, onAdd }) => {
   const [title, setTitle] = useState(value ? value.title : "");
-  const [description, setDescription] = useState(
-    value ? value.description : ""
+  const [universityName, setUniversityName] = useState(
+    value ? value.universityName : ""
   );
   return (
     <TertiaryBox fullWidth style={{ marginTop: 12, zIndex: 1 }}>
@@ -33,11 +33,11 @@ export const AddNewEducationCard: React.FC<{
         />
         <TextInputCustom
           label=""
-          name="description"
-          placeHolder="Description"
-          value={description}
+          name="universityName"
+          placeHolder="UniversityName"
+          value={universityName}
           style={{ marginTop: 5 }}
-          onChangeText={setDescription}
+          onChangeText={setUniversityName}
         />
         <View
           style={{
@@ -65,8 +65,14 @@ export const AddNewEducationCard: React.FC<{
             style={{ marginLeft: 10 }}
             onPress={() => {
               if (title.trim() === "") return;
-              if (description.trim() === "") return;
-              onAdd({ title, description } as EducationInfo);
+              if (universityName.trim() === "") return;
+              onAdd({
+                title,
+                universityName,
+                major: "",
+                year: 0,
+                country: "",
+              } as EducationInfo);
               onClose();
             }}
           />

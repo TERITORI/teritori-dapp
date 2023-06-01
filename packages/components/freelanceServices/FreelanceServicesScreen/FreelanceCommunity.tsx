@@ -26,49 +26,49 @@ const data = [
     name: "I am a Designer",
     icon: Feather,
     iconChangePage: GoToPageIcon,
-    navigation: "GraphicsAndDesign",
+    category: "GraphicsAndDesign",
   },
   {
     name: "I am a Marketer",
     icon: Computer,
     iconChangePage: GoToPageIcon,
-    navigation: "ComingSoon",
+    category: "ComingSoon",
   },
   {
     name: "I am a Writer",
     icon: Pen,
     iconChangePage: GoToPageIcon,
-    navigation: "ComingSoon",
+    category: "ComingSoon",
   },
   {
     name: "I am a Video Editor",
     icon: BallBounce,
     iconChangePage: GoToPageIcon,
-    navigation: "ComingSoon",
+    category: "ComingSoon",
   },
   {
     name: "I am a Musician",
     icon: Music,
     iconChangePage: GoToPageIcon,
-    navigation: "ComingSoon",
+    category: "ComingSoon",
   },
   {
     name: "I am a Developer",
     icon: Code,
     iconChangePage: GoToPageIcon,
-    navigation: "ComingSoon",
+    category: "ComingSoon",
   },
   {
     name: "I am an Entrepreneur",
     icon: Suitcase,
     iconChangePage: GoToPageIcon,
-    navigation: "ComingSoon",
+    category: "ComingSoon",
   },
   {
     name: "Another Skill",
     icon: Data,
     iconChangePage: GoToPageIcon,
-    navigation: "ComingSoon",
+    category: "ComingSoon",
   },
 ] as FreelancerServiceRouteTypes[];
 
@@ -110,7 +110,7 @@ export const FreelanceCommunity: React.FC = () => {
               marginTop: layout.padding_x2,
             }}
             key={index}
-            navigation={item.navigation}
+            category={item.category}
           />
         ))}
       </View>

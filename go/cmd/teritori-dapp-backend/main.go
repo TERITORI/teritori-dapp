@@ -136,11 +136,8 @@ func main() {
 	server := grpc.NewServer()
 	marketplacepb.RegisterMarketplaceServiceServer(server, marketplaceSvc)
 	p2epb.RegisterP2EServiceServer(server, p2eSvc)
-<<<<<<< HEAD
 	freelancepb.RegisterFreelanceServiceServer(server, freelanceSvc)
-=======
 	feedpb.RegisterFeedServiceServer(server, feedSvc)
->>>>>>> e393992d3cbfb9d4139af9d0ec74b7d8aba334e5
 
 	wrappedServer := grpcweb.WrapServer(server,
 		grpcweb.WithWebsockets(true),

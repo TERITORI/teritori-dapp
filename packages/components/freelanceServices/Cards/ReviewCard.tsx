@@ -77,11 +77,12 @@ export const ReviewCard: React.FC<{ reviews: ReviewFields["items"] }> = ({
                 }}
               >
                 <Image
-                  source={currentReview.user.profilePic}
+                  // @ts-ignore
+                  source={currentReview.sellerUser.profilePic}
                   style={{ width: 32, height: 32, marginRight: 8 }}
                 />
                 <BrandText style={fontSemibold14}>
-                  @{currentReview.user.username}
+                  @{currentReview.sellerUser.username}
                 </BrandText>
                 <View
                   style={{
@@ -91,9 +92,9 @@ export const ReviewCard: React.FC<{ reviews: ReviewFields["items"] }> = ({
                     transform: [{ rotate: "90deg" }],
                   }}
                 />
-                <FlagIcon alphaCode={currentReview.user.country.alpha} />
+                <FlagIcon alphaCode={currentReview.sellerUser.country.alpha} />
                 <BrandText style={[fontSemibold14, { color: neutral77 }]}>
-                  {currentReview.user.country.name}
+                  {currentReview.sellerUser.country.name}
                 </BrandText>
                 <StarRating rating={currentReview.rating} />
                 <BrandText

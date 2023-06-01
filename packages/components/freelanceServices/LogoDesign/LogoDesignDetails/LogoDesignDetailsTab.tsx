@@ -4,7 +4,7 @@ import { RadioButton } from "react-native-paper";
 
 import xIcon from "../../../../../assets/icons/Xicon.svg";
 import checkIcon from "../../../../../assets/icons/blue-check.svg";
-import { ServiceLevels } from "../../../../screens/FreelanceServices/types/fields";
+import { ServiceLevel } from "../../../../screens/FreelanceServices/types/fields";
 import {
   secondaryColor,
   neutral00,
@@ -17,7 +17,7 @@ import { SVG } from "../../../SVG";
 import { SecondaryButton } from "../../../buttons/SecondaryButton";
 
 export const LogoDesignDetailsTab: React.FC<{
-  serviceLevels: ServiceLevels[];
+  serviceLevels: ServiceLevel[];
 }> = ({ serviceLevels }) => {
   const [checked, setChecked] = useState<boolean>();
 
@@ -77,7 +77,7 @@ export const LogoDesignDetailsTab: React.FC<{
         ))}
       </View>
       {serviceLevels.length >= 2 &&
-        serviceLevels[2].included.map((serviceText, index) => (
+        serviceLevels[2].included.map((serviceText: any, index: number) => (
           <View key={index} style={{ flexDirection: "row" }}>
             <View
               style={{ width: "25%", borderColor: neutral33, borderWidth: 0.5 }}

@@ -36,7 +36,6 @@ func main() {
 	// handle args
 	fs := flag.NewFlagSet("teritori-indexer", flag.ContinueOnError)
 	var (
-<<<<<<< HEAD
 		chunkSize                      = fs.Int64("chunk-size", 10000, "maximum number of blocks to query from tendermint at once")
 		txsBatchSize                   = fs.Int("txs-batch-size", 10000, "maximum number of txs per query page")
 		pollDelay                      = fs.Duration("poll-delay", 2*time.Second, "delay between tail queries")
@@ -52,7 +51,6 @@ func main() {
 		dbPass                         = fs.String("postgres-password", "", "password for postgreSQL database")
 		dbName                         = fs.String("database-name", "", "database name for postgreSQL")
 		dbUser                         = fs.String("postgres-user", "", "username for postgreSQL")
-		teritoriNetworkID              = fs.String("teritori-network-id", "teritori", "teritori network id")
 		tendermintWebsocketEndpoint    = fs.String("tendermint-websocket-endpoint", "", "tendermint websocket endpoint")
 		tailSize                       = fs.Int64("tail-size", 8640, "x blocks tail size means that the tendermint indexer can lag x blocks behind before the indexer misses an event")
 		pricesServiceURI               = fs.String("prices-service-uri", "localhost:9091", "price service URI")
@@ -60,23 +58,8 @@ func main() {
 		sellerConractAddress           = fs.String("teritori-freelance-seller-address", "", "address of the teritori freelance seller contract")
 		escrowContractAddress          = fs.String("teritori-freelance-escrow-address", "", "address of the teritori freelance escrow contract")
 		reportContractAddress          = fs.String("teritori-freelance-report-address", "", "address of the teritori freelance repoprt contract")
-=======
-		chunkSize                   = fs.Int64("chunk-size", 10000, "maximum number of blocks to query from tendermint at once")
-		txsBatchSize                = fs.Int("txs-batch-size", 10000, "maximum number of txs per query page")
-		pollDelay                   = fs.Duration("poll-delay", 2*time.Second, "delay between tail queries")
-		minterCodeIDs               = fs.String("teritori-minter-code-ids", "", "code ids of teritori minter contracts")
-		dbHost                      = fs.String("db-indexer-host", "", "host postgreSQL database")
-		dbPort                      = fs.String("db-indexer-port", "", "port for postgreSQL database")
-		dbPass                      = fs.String("postgres-password", "", "password for postgreSQL database")
-		dbName                      = fs.String("database-name", "", "database name for postgreSQL")
-		dbUser                      = fs.String("postgres-user", "", "username for postgreSQL")
-		tendermintWebsocketEndpoint = fs.String("tendermint-websocket-endpoint", "", "tendermint websocket endpoint")
-		tailSize                    = fs.Int64("tail-size", 8640, "x blocks tail size means that the tendermint indexer can lag x blocks behind before the indexer misses an event")
-		pricesServiceURI            = fs.String("prices-service-uri", "localhost:9091", "price service URI")
-		insecurePrices              = fs.Bool("prices-insecure-grpc", false, "do not use TLS to connect to prices service")
-		networksFile                = fs.String("networks-file", "networks.json", "path to networks config file")
-		networkID                   = fs.String("indexer-network-id", "teritori", "network id to index")
->>>>>>> e393992d3cbfb9d4139af9d0ec74b7d8aba334e5
+		networksFile                   = fs.String("networks-file", "networks.json", "path to networks config file")
+		networkID                      = fs.String("indexer-network-id", "teritori", "network id to index")
 	)
 	if err := ff.Parse(fs, os.Args[1:],
 		ff.WithEnvVars(),
@@ -88,7 +71,6 @@ func main() {
 		panic(errors.Wrap(err, "failed to parse flags"))
 	}
 
-<<<<<<< HEAD
 	if *tnsContractAddress == "" {
 		panic(errors.New("missing teritori-name-service-contract-address flag"))
 	}
@@ -101,8 +83,6 @@ func main() {
 	if *reportContractAddress == "" {
 		panic(errors.New("missing teritori-freelance-report-address flag"))
 	}
-=======
->>>>>>> e393992d3cbfb9d4139af9d0ec74b7d8aba334e5
 	if *tendermintWebsocketEndpoint == "" {
 		panic(errors.New("missing tendermint-websocket-endpoint flag"))
 	}
@@ -285,7 +265,6 @@ func main() {
 
 			if err := db.Transaction(func(dbtx *gorm.DB) error {
 				handler, err := indexerhandler.NewHandler(dbtx, indexerhandler.Config{
-<<<<<<< HEAD
 					MinterCodeIDs:                  mcis,
 					VaultContractAddress:           *vaultContractAddress,
 					SquadStakingContractAddressV1:  *squadStakingContactAddressV1,
@@ -297,17 +276,10 @@ func main() {
 					ReportContractAddress:          *reportContractAddress,
 					TNSDefaultImageURL:             *tnsDefaultImageURL,
 					TendermintClient:               client,
-					NetworkID:                      *teritoriNetworkID,
 					BlockTimeCache:                 blockTimeCache,
 					PricesClient:                   ps,
-=======
-					MinterCodeIDs:    mcis,
-					TendermintClient: client,
-					BlockTimeCache:   blockTimeCache,
-					PricesClient:     ps,
-					Network:          network,
-					NetworkStore:     netstore,
->>>>>>> e393992d3cbfb9d4139af9d0ec74b7d8aba334e5
+					Network:          				network,
+					NetworkStore:     				netstore,
 				}, logger)
 				if err != nil {
 					return errors.Wrap(err, "failed to create handler")

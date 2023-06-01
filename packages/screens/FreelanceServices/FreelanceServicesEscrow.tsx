@@ -4,8 +4,9 @@ import { StyleSheet, View } from "react-native";
 import { FreelanceServicesScreenWrapper } from "./FreelanceServicesScreenWrapper";
 import { BrandText } from "../../components/BrandText";
 import { EscrowTable } from "../../components/freelanceServices/Escrow/EscrowList";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { freelanceClient } from "../../utils/backend";
+import { mustGetFreelanceClient } from "../../utils/backend";
 import { ScreenFC } from "../../utils/navigation";
 import { fontSemibold28 } from "../../utils/style/fonts";
 import {
@@ -19,6 +20,7 @@ export const FreelanceServicesEscrow: ScreenFC<"FreelanceServicesEscrow"> = ({
 }) => {
   const [escrows, setEscrows] = useState<EscrowInfo[]>([]);
   const selectedWallet = useSelectedWallet();
+  const networkId = useSelectedNetworkId();
   const marginStyle = {
     marginHorizontal: screenContainerContentMarginHorizontal,
   };
@@ -26,13 +28,14 @@ export const FreelanceServicesEscrow: ScreenFC<"FreelanceServicesEscrow"> = ({
   useEffect(() => {
     if (!selectedWallet) return;
     const getEscrowsData = async () => {
-      const res = await freelanceClient.escrowAllList({
+      const freelanceClient = mustGetFreelanceClient(networkId);
+      const res = await freelanceClient.EscrowAllList({
         address: selectedWallet.address,
       });
       setEscrows(res.escrows);
     };
     getEscrowsData();
-  }, [selectedWallet]);
+  }, [selectedWallet, networkId]);
 
   return (
     <FreelanceServicesScreenWrapper>

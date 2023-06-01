@@ -26,7 +26,8 @@ import { RelatedTags } from "../../../components/freelanceServices/LogoDesign/Lo
 import { ReviewsStats } from "../../../components/freelanceServices/LogoDesign/LogoDesignDetails/ReviewsStats";
 import { StarRating } from "../../../components/freelanceServices/common/StarRating";
 import { PortfolioImage } from "../../../components/inputs/PortfolioImage";
-import { freelanceClient } from "../../../utils/backend";
+import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
+import { mustGetFreelanceClient } from "../../../utils/backend";
 import { ipfsPinataUrl } from "../../../utils/ipfs";
 import { ScreenFC, useAppNavigation } from "../../../utils/navigation";
 import {
@@ -59,10 +60,12 @@ export const GigDetailScreen: ScreenFC<"FreelanceServicesGigDetail"> = ({
   const navigation = useAppNavigation();
   const [gigData, setGigData] = useState<GigData | null>(null);
   const { width } = useWindowDimensions();
+  const networkId = useSelectedNetworkId();
   useEffect(() => {
     const setId = async () => {
       try {
-        const res = await freelanceClient.gigData({ id: gigId });
+        const freelanceClient = mustGetFreelanceClient(networkId);
+        const res = await freelanceClient.GigData({ id: gigId });
 
         if (res.gig) {
           setGigData(
@@ -78,7 +81,7 @@ export const GigDetailScreen: ScreenFC<"FreelanceServicesGigDetail"> = ({
       }
     };
     setId();
-  }, [gigId]);
+  }, [gigId, networkId]);
 
   return (
     gigData && (

@@ -748,13 +748,13 @@ export const GigResponse = {
 };
 
 export interface FreelanceService {
-  sellerProfile(request: DeepPartial<SellerProfileRequest>, metadata?: grpc.Metadata): Promise<SellerProfileResponse>;
-  gigList(request: DeepPartial<GigListRequest>, metadata?: grpc.Metadata): Promise<GigListResponse>;
-  gigListUser(request: DeepPartial<GigListUserRequest>, metadata?: grpc.Metadata): Promise<GigListResponse>;
-  gigData(request: DeepPartial<GigDataRequest>, metadata?: grpc.Metadata): Promise<GigResponse>;
-  escrowAllList(request: DeepPartial<EscrowListRequest>, metadata?: grpc.Metadata): Promise<EscrowListResponse>;
-  escrowSenderList(request: DeepPartial<EscrowListRequest>, metadata?: grpc.Metadata): Promise<EscrowListResponse>;
-  escrowReceiverList(request: DeepPartial<EscrowListRequest>, metadata?: grpc.Metadata): Promise<EscrowListResponse>;
+  SellerProfile(request: DeepPartial<SellerProfileRequest>, metadata?: grpc.Metadata): Promise<SellerProfileResponse>;
+  GigList(request: DeepPartial<GigListRequest>, metadata?: grpc.Metadata): Promise<GigListResponse>;
+  GigListUser(request: DeepPartial<GigListUserRequest>, metadata?: grpc.Metadata): Promise<GigListResponse>;
+  GigData(request: DeepPartial<GigDataRequest>, metadata?: grpc.Metadata): Promise<GigResponse>;
+  EscrowAllList(request: DeepPartial<EscrowListRequest>, metadata?: grpc.Metadata): Promise<EscrowListResponse>;
+  EscrowSenderList(request: DeepPartial<EscrowListRequest>, metadata?: grpc.Metadata): Promise<EscrowListResponse>;
+  EscrowReceiverList(request: DeepPartial<EscrowListRequest>, metadata?: grpc.Metadata): Promise<EscrowListResponse>;
 }
 
 export class FreelanceServiceClientImpl implements FreelanceService {
@@ -762,40 +762,40 @@ export class FreelanceServiceClientImpl implements FreelanceService {
 
   constructor(rpc: Rpc) {
     this.rpc = rpc;
-    this.sellerProfile = this.sellerProfile.bind(this);
-    this.gigList = this.gigList.bind(this);
-    this.gigListUser = this.gigListUser.bind(this);
-    this.gigData = this.gigData.bind(this);
-    this.escrowAllList = this.escrowAllList.bind(this);
-    this.escrowSenderList = this.escrowSenderList.bind(this);
-    this.escrowReceiverList = this.escrowReceiverList.bind(this);
+    this.SellerProfile = this.SellerProfile.bind(this);
+    this.GigList = this.GigList.bind(this);
+    this.GigListUser = this.GigListUser.bind(this);
+    this.GigData = this.GigData.bind(this);
+    this.EscrowAllList = this.EscrowAllList.bind(this);
+    this.EscrowSenderList = this.EscrowSenderList.bind(this);
+    this.EscrowReceiverList = this.EscrowReceiverList.bind(this);
   }
 
-  sellerProfile(request: DeepPartial<SellerProfileRequest>, metadata?: grpc.Metadata): Promise<SellerProfileResponse> {
+  SellerProfile(request: DeepPartial<SellerProfileRequest>, metadata?: grpc.Metadata): Promise<SellerProfileResponse> {
     return this.rpc.unary(FreelanceServiceSellerProfileDesc, SellerProfileRequest.fromPartial(request), metadata);
   }
 
-  gigList(request: DeepPartial<GigListRequest>, metadata?: grpc.Metadata): Promise<GigListResponse> {
+  GigList(request: DeepPartial<GigListRequest>, metadata?: grpc.Metadata): Promise<GigListResponse> {
     return this.rpc.unary(FreelanceServiceGigListDesc, GigListRequest.fromPartial(request), metadata);
   }
 
-  gigListUser(request: DeepPartial<GigListUserRequest>, metadata?: grpc.Metadata): Promise<GigListResponse> {
+  GigListUser(request: DeepPartial<GigListUserRequest>, metadata?: grpc.Metadata): Promise<GigListResponse> {
     return this.rpc.unary(FreelanceServiceGigListUserDesc, GigListUserRequest.fromPartial(request), metadata);
   }
 
-  gigData(request: DeepPartial<GigDataRequest>, metadata?: grpc.Metadata): Promise<GigResponse> {
+  GigData(request: DeepPartial<GigDataRequest>, metadata?: grpc.Metadata): Promise<GigResponse> {
     return this.rpc.unary(FreelanceServiceGigDataDesc, GigDataRequest.fromPartial(request), metadata);
   }
 
-  escrowAllList(request: DeepPartial<EscrowListRequest>, metadata?: grpc.Metadata): Promise<EscrowListResponse> {
+  EscrowAllList(request: DeepPartial<EscrowListRequest>, metadata?: grpc.Metadata): Promise<EscrowListResponse> {
     return this.rpc.unary(FreelanceServiceEscrowAllListDesc, EscrowListRequest.fromPartial(request), metadata);
   }
 
-  escrowSenderList(request: DeepPartial<EscrowListRequest>, metadata?: grpc.Metadata): Promise<EscrowListResponse> {
+  EscrowSenderList(request: DeepPartial<EscrowListRequest>, metadata?: grpc.Metadata): Promise<EscrowListResponse> {
     return this.rpc.unary(FreelanceServiceEscrowSenderListDesc, EscrowListRequest.fromPartial(request), metadata);
   }
 
-  escrowReceiverList(request: DeepPartial<EscrowListRequest>, metadata?: grpc.Metadata): Promise<EscrowListResponse> {
+  EscrowReceiverList(request: DeepPartial<EscrowListRequest>, metadata?: grpc.Metadata): Promise<EscrowListResponse> {
     return this.rpc.unary(FreelanceServiceEscrowReceiverListDesc, EscrowListRequest.fromPartial(request), metadata);
   }
 }

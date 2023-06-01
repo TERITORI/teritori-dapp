@@ -62,8 +62,8 @@ export const GigItemCard: React.FC<{
         >
           <TouchableOpacity
             onPress={() => {
-              navigation.navigate("GigDetail", {
-                id: data.id!,
+              navigation.navigate("FreelanceServicesGigDetail", {
+                gigId: data.id!,
               });
             }}
           >
@@ -104,12 +104,13 @@ export const GigItemCard: React.FC<{
           <View style={styles.dropdownMenu}>
             {manageList.map((item: string, index: number) => (
               <Pressable
+                // @ts-ignore
                 onMouseEnter={() => setHoveredIndex(index + 1)}
                 onMouseLeave={() => setHoveredIndex(0)}
                 onPress={() => {
                   if (item === "Edit") {
                     navigation.navigate("FreelanceServicesGigCreation", {
-                      id: data.id,
+                      gigId: data.id,
                     });
                   }
                   setOpenMenu(false);

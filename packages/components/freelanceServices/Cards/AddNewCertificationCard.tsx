@@ -16,28 +16,26 @@ export const AddNewCertificationCard: React.FC<{
   onClose: () => void;
   onAdd: (certificateInfo: CertificationInfo) => void;
 }> = ({ value, onClose, onAdd }) => {
-  const [title, setTitle] = useState(value ? value.title : "");
-  const [description, setDescription] = useState(
-    value ? value.description : ""
-  );
+  const [name, setName] = useState(value ? value.name : "");
+  const [from, setFrom] = useState(value ? value.from : "");
   return (
     <TertiaryBox fullWidth style={{ marginTop: 10, zIndex: 1 }}>
       <View style={{ width: "100%", padding: 10 }}>
         <TextInputCustom
           label=""
-          name="title"
+          name="name"
           placeHolder="Certificate Or Award"
-          value={title}
+          value={name}
           style={{ marginTop: 5 }}
-          onChangeText={setTitle}
+          onChangeText={setName}
         />
         <TextInputCustom
           label=""
-          name="description"
+          name="from"
           placeHolder="Certified From (E.G. Adobe)"
-          value={description}
+          value={from}
           style={{ marginTop: 10 }}
-          onChangeText={setDescription}
+          onChangeText={setFrom}
         />
         <View
           style={{
@@ -64,9 +62,9 @@ export const AddNewCertificationCard: React.FC<{
             backgroundColor={secondaryColor}
             style={{ marginLeft: 10 }}
             onPress={() => {
-              if (title.trim() === "") return;
-              if (description.trim() === "") return;
-              onAdd({ title, description } as CertificationInfo);
+              if (name.trim() === "") return;
+              if (from.trim() === "") return;
+              onAdd({ name, from } as CertificationInfo);
               onClose();
             }}
           />

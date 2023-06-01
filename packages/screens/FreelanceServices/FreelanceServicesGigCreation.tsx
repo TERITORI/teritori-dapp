@@ -2,14 +2,22 @@ import React, { useState, useEffect } from "react";
 import { View } from "react-native";
 
 import { FreelanceServicesScreenWrapper } from "./FreelanceServicesScreenWrapper";
-import { addGigToContract, getSellerIpfsHash } from "./contract";
 import { emptyGigInfo, GigInfo } from "./types/fields";
 import { GigCreationBody } from "../../components/freelanceServices/GigCreation/GigCreationBody";
 import { GigCreationFooter } from "../../components/freelanceServices/GigCreation/GigCreationFooter";
 import { GigCreationHeader } from "../../components/freelanceServices/GigCreation/GigCreationHeader";
-import { useSelectedNetwork } from "../../hooks/useSelectedNetwork";
+import {
+  TeritoriSellerQueryClient,
+  TeritoriSellerClient,
+} from "../../contracts-clients/teritori-freelance/TeritoriSeller.client";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { freelanceClient } from "../../utils/backend";
+import {
+  mustGetNonSigningCosmWasmClient,
+  mustGetCosmosNetwork,
+  getKeplrSigningCosmWasmClient,
+} from "../../networks";
+import { mustGetFreelanceClient } from "../../utils/backend";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { GigStep } from "../../utils/types/freelance";
 
@@ -21,11 +29,12 @@ export const FreelanceServicesGigCreation: ScreenFC<
   const [gigInfo, setGigInfo] = useState<GigInfo>(emptyGigInfo);
   const navigation = useAppNavigation();
   const selectedWallet = useSelectedWallet();
-  const selectedNetwork = useSelectedNetwork();
+  const networkId = useSelectedNetworkId();
   useEffect(() => {
     const getGigData = async () => {
       if (route.params && route.params.gigId! >= 0) {
-        const res = await freelanceClient.gigData({ id: route.params.gigId });
+        const freelanceClient = mustGetFreelanceClient(networkId);
+        const res = await freelanceClient.GigData({ id: route.params.gigId });
         if (res.gig) {
           const _gigInfo = JSON.parse(res.gig.gigData) as GigInfo;
           _gigInfo.id = route.params.gigId;
@@ -34,22 +43,39 @@ export const FreelanceServicesGigCreation: ScreenFC<
       }
     };
     getGigData();
-  }, [route.params]);
+  }, [route.params, networkId]);
   useEffect(() => {
     const setProfileIpfs = async () => {
-      const profileHash = await getSellerIpfsHash(selectedWallet?.address!);
+      const cosmwasmClient = await mustGetNonSigningCosmWasmClient(networkId);
+      const network = mustGetCosmosNetwork(networkId);
+      const sellerQueryClient = new TeritoriSellerQueryClient(
+        cosmwasmClient,
+        network.freelanceSellerAddress!
+      );
+      const profileHash = await sellerQueryClient.getSellerProfile(
+        selectedWallet?.address!
+      );
       setGigInfo((g) => ({ ...g, profileHash }));
     };
     setProfileIpfs();
-  }, [selectedWallet]);
+  }, [selectedWallet, networkId]);
+
   const nextStep = async () => {
     if (currentStep === GigStep.Publish) {
-      if (!selectedWallet || !selectedNetwork) return;
+      if (!selectedWallet) return;
       const walletAddress = selectedWallet.address;
-      const addGigRes = await addGigToContract(
+      const signingClient = await getKeplrSigningCosmWasmClient(networkId);
+      const network = mustGetCosmosNetwork(networkId);
+      const sellerClient = new TeritoriSellerClient(
+        signingClient,
         walletAddress,
-        JSON.stringify(gigInfo)
+        network.freelanceSellerAddress!
       );
+
+      const addGigRes = await sellerClient.addGig({
+        seller: walletAddress,
+        gigInfo: JSON.stringify(gigInfo),
+      });
       if (addGigRes) {
         navigation.navigate("FreelanceServicesHomeSeller");
       } else {

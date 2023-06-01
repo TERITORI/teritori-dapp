@@ -2,11 +2,7 @@ package indexerdb
 
 import (
 	"database/sql"
-<<<<<<< HEAD
-=======
-
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
->>>>>>> e393992d3cbfb9d4139af9d0ec74b7d8aba334e5
 )
 
 type Attribute struct {

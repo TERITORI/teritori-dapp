@@ -3,22 +3,30 @@ import React, { useState, useEffect } from "react";
 import { View } from "react-native";
 
 import { FreelanceServicesScreenWrapper } from "./FreelanceServicesScreenWrapper";
-import { getSellerIpfsHash, updateSellerProfileToContract } from "./contract";
 import { emptySeller, SellerInfo } from "./types/fields";
 import { ProfileBody } from "../../components/freelanceServices/Profile/ProfileBody";
 import { ProfileFooter } from "../../components/freelanceServices/Profile/ProfileFooter";
 import { ProfileHeader } from "../../components/freelanceServices/Profile/ProfileHeader";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { useWallets } from "../../context/WalletsProvider";
+import {
+  TeritoriSellerQueryClient,
+  TeritoriSellerClient,
+} from "../../contracts-clients/teritori-freelance/TeritoriSeller.client";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
+import {
+  mustGetNonSigningCosmWasmClient,
+  mustGetCosmosNetwork,
+  getKeplrSigningCosmWasmClient,
+} from "../../networks";
 import { ipfsPinataUrl, uploadJSONToIPFS } from "../../utils/ipfs";
-import { getFirstKeplrAccount } from "../../utils/keplr";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { ProfileStep } from "../../utils/types/freelance";
 
 export const FreelanceServicesProfileSeller: ScreenFC<
   "FreelanceServicesProfileSeller"
 > = () => {
-  const { wallets } = useWallets();
+  const selectedWallet = useSelectedWallet();
   const [currentStep, setCurrentStep] = useState<ProfileStep>(
     ProfileStep.PersonalInfo
   );
@@ -27,59 +35,65 @@ export const FreelanceServicesProfileSeller: ScreenFC<
   const navigation = useAppNavigation();
 
   const { setToastError } = useFeedbacks();
+  const networkId = useSelectedNetworkId();
 
   useEffect(() => {
-    if (wallets.length > 0) {
-      getSellerInfo(wallets[0].address);
-    }
-  }, [wallets]);
-  const getSellerInfo = async (address: string) => {
-    try {
-      const ipfs_hash = await getSellerIpfsHash(address);
-      if (!ipfs_hash) return;
+    const getSellerInfo = async (address: string) => {
+      try {
+        const cosmwasmClient = await mustGetNonSigningCosmWasmClient(networkId);
+        const network = mustGetCosmosNetwork(networkId);
+        const sellerQueryClient = new TeritoriSellerQueryClient(
+          cosmwasmClient,
+          network.freelanceSellerAddress!
+        );
+        const profileHash = await sellerQueryClient.getSellerProfile(address);
 
-      const profile_json_res = await axios.get(ipfsPinataUrl(ipfs_hash));
-      if (profile_json_res.status !== 200) return;
-      const profile_json = profile_json_res.data;
-      setSellerInfo({
-        id: profile_json.id,
-        avatar: profile_json.avatar,
-        firstName: profile_json.firstName,
-        lastName: profile_json.lastName,
-        description: profile_json.description,
-        profilePicture: profile_json.profilePicture,
-        occupations: profile_json.occupations,
-        languages: profile_json.languages,
-        skills: profile_json.skills,
-        educations: profile_json.educations,
-        certifications: profile_json.certifications,
-        personalSite: profile_json.personalSite,
-      });
-    } catch (err) {
-      console.log(err);
-    }
-  };
+        if (!profileHash) return;
+
+        const profile_json_res = await axios.get(ipfsPinataUrl(profileHash));
+        if (profile_json_res.status !== 200) return;
+        const profile_json = profile_json_res.data;
+        setSellerInfo({
+          id: profile_json.id,
+          avatar: profile_json.avatar,
+          firstName: profile_json.firstName,
+          lastName: profile_json.lastName,
+          description: profile_json.description,
+          profilePicture: profile_json.profilePicture,
+          occupations: profile_json.occupations,
+          languages: profile_json.languages,
+          skills: profile_json.skills,
+          educations: profile_json.educations,
+          certifications: profile_json.certifications,
+          personalSite: profile_json.personalSite,
+        });
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    getSellerInfo(selectedWallet?.address!);
+  }, [selectedWallet, networkId]);
+
   const nextStep = () => {
     if (currentStep === ProfileStep.AccountSecurity) {
       // store  UserSeller to ipfs and db
       uploadJSONToIPFS(sellerInfo).then(async (ipfsHash) => {
         try {
-          const walletAddress = (await getFirstKeplrAccount()).address;
-          const updatedProfileRes = await updateSellerProfileToContract(
+          const walletAddress = selectedWallet?.address!;
+          const signingClient = await getKeplrSigningCosmWasmClient(networkId);
+          const network = mustGetCosmosNetwork(networkId);
+          const sellerClient = new TeritoriSellerClient(
+            signingClient,
             walletAddress,
-            ipfsHash
+            network.freelanceSellerAddress!
           );
+
+          const updatedProfileRes = await sellerClient.updateSellerProfile({
+            seller: walletAddress,
+            ipfsHash,
+          });
+
           if (updatedProfileRes) {
-            //   const res = await freelanceClient.updateProfile({
-            //     userId: walletAddress,
-            //     profileHash: ipfsHash,
-            //   });
-            //   if (res.result === 1) {
-            //     console.log("successful");
-            //   } else {
-            //     console.log("failed");
-            //   }
-            // }
             navigation.navigate("FreelanceServicesHomeSeller");
           }
         } catch (e) {

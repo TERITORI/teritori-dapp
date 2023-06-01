@@ -3,9 +3,10 @@ import { StyleProp, ViewStyle } from "react-native";
 
 import { GigItemCard } from "./GigItemCard";
 import { GigItemCardCreate } from "./GigItemCardCreate";
+import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { GigInfo } from "../../../screens/FreelanceServices/types/fields";
-import { freelanceClient } from "../../../utils/backend";
+import { mustGetFreelanceClient } from "../../../utils/backend";
 import { layout } from "../../../utils/style/layout";
 
 export const GigsTable: React.FC<{
@@ -14,10 +15,11 @@ export const GigsTable: React.FC<{
 }> = ({ gigAddress, style }) => {
   const [gigs, setGigs] = useState<GigInfo[]>([]);
   const wallet = useSelectedWallet();
-
+  const networkId = useSelectedNetworkId();
   useEffect(() => {
     const getGigList = async () => {
-      const res = await freelanceClient.gigListUser({ address: gigAddress });
+      const freelanceClient = mustGetFreelanceClient(networkId);
+      const res = await freelanceClient.GigListUser({ address: gigAddress });
       setGigs(
         res.gigs.map((item) => {
           const gigInfo = JSON.parse(item.gigData) as GigInfo;
@@ -29,7 +31,7 @@ export const GigsTable: React.FC<{
     if (gigAddress !== "") {
       getGigList();
     }
-  }, [gigAddress]);
+  }, [gigAddress, networkId]);
   return (
     <>
       {gigs.map((item, index) => (

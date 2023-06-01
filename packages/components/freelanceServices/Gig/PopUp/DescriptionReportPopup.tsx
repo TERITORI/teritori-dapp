@@ -3,8 +3,12 @@ import { View } from "react-native";
 
 import { useFeedbacks } from "../../../../context/FeedbacksProvider";
 import { TeritoriReportClient } from "../../../../contracts-clients/teritori-freelance/TeritoriReport.client";
+import { useSelectedNetworkId } from "../../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../../hooks/useSelectedWallet";
-import { getSigningCosmWasmClient } from "../../../../utils/keplr";
+import {
+  mustGetCosmosNetwork,
+  getKeplrSigningCosmWasmClient,
+} from "../../../../networks";
 import {
   neutral00,
   neutral33,
@@ -25,6 +29,7 @@ export const DescriptionReportPopup: React.FC<{
   onClose: () => void;
 }> = ({ seller, visible, optionIndex, onClose }) => {
   const wallet = useSelectedWallet();
+  const networkId = useSelectedNetworkId();
 
   const [displayDescriptionReportPopUp, setDisplayDescriptionReportPopUp] =
     useState(visible);
@@ -48,10 +53,12 @@ export const DescriptionReportPopup: React.FC<{
       return;
     }
     try {
+      const signingClient = await getKeplrSigningCosmWasmClient(networkId);
+      const network = mustGetCosmosNetwork(networkId);
       const client = new TeritoriReportClient(
-        await getSigningCosmWasmClient(),
-        wallet?.address || "",
-        process.env.TERITORI_FREELANCE_REPORT_ADDRESS || ""
+        signingClient,
+        wallet?.address!,
+        network.freelanceReportAddress!
       );
       const res = await client.sellerReportContract({
         seller,
@@ -107,21 +114,7 @@ export const DescriptionReportPopup: React.FC<{
               color={neutral00}
               backgroundColor={primaryColor}
               onPress={async () => {
-                //using contract
                 await sendReportToContract();
-
-                //using backend_api
-                // const obserable = backendReportClient.report({
-                //   desc: description,
-                //   refUrl: referenceUrl,
-                // });
-                // obserable.subscribe((ret) => {
-                //   if (ret.result === 0) {
-                //     console.log("successful");
-                //   } else {
-                //     console.log("failed: ", ret.result);
-                //   }
-                // });
               }}
             />
           </View>
@@ -138,7 +131,6 @@ export const DescriptionReportPopup: React.FC<{
         name="Description Input"
         placeHolder="Type description here"
         height={120}
-        mainContainerStyle={{}}
         multiline
         numberOfLines={5}
         value={description}
@@ -157,7 +149,6 @@ export const DescriptionReportPopup: React.FC<{
         name="Reference URL"
         placeHolder="Type Reference URL here"
         height={40}
-        mainContainerStyle={{}}
         value={refUrl}
         onChangeText={setRefUrl}
       />

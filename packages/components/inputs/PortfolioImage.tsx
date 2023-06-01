@@ -79,10 +79,15 @@ export const PortfolioImage: React.FC<{
             onChange={onFileInputChange}
             ref={fileRef}
           />
-          <Image source={ipfsPinataUrl(source)} style={{ width, height }} />
+          <Image
+            // @ts-ignore
+            source={ipfsPinataUrl(source)}
+            style={{ width, height }}
+          />
         </TouchableOpacity>
       )}
       {!onUpdate && (
+        // @ts-ignore
         <Image source={ipfsPinataUrl(source)} style={{ width, height }} />
       )}
     </TertiaryBox>

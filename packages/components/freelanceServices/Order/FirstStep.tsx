@@ -76,6 +76,7 @@ export const FirstStep: React.FC<{
             }}
           >
             <Image
+              // @ts-ignore
               source={gigData.sellerUser.profilePic}
               style={{ width: 32, height: 32, marginRight: 12 }}
             />

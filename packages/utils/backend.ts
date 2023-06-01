@@ -1,5 +1,3 @@
-import { grpc } from "@improbable-eng/grpc-web";
-
 import {
   FeedService,
   FeedServiceClientImpl,
@@ -8,6 +6,7 @@ import {
 import {
   FreelanceServiceClientImpl,
   GrpcWebImpl as FreelanceGrpcWebImpl,
+  FreelanceService,
 } from "../api/freelance/v1/freelance";
 import {
   MarketplaceServiceClientImpl,
@@ -48,14 +47,9 @@ export const mustGetMarketplaceClient = (networkId: string | undefined) => {
 };
 
 const backendEndpoint = process.env.TERITORI_BACKEND_ENDPOINT;
-const freelanceBackendEndpoint =
-  process.env.TERITORI_FREELANCE_BACKEND_ENDPOINT;
 
 if (!backendEndpoint) {
   throw new Error("missing TERITORI_BACKEND_ENDPOINT in env");
-}
-if (!freelanceBackendEndpoint) {
-  throw new Error("missing TERITORI_FREELANCE_BACKEND_ENDPOINT in env");
 }
 
 const p2eClients: { [key: string]: P2eService } = {};
@@ -98,18 +92,35 @@ export const getFeedClient = (networkId: string | undefined) => {
   return feedClients[network.id];
 };
 
-const freelanceRpc = new FreelanceGrpcWebImpl(freelanceBackendEndpoint, {
-  transport: grpc.WebsocketTransport(),
-  debug: false,
-  // metadata: new grpc.Metadata({ SomeHeader: "bar" }),
-});
-
-export const freelanceClient = new FreelanceServiceClientImpl(freelanceRpc);
-
 export const mustGetFeedClient = (networkId: string | undefined) => {
   const client = getFeedClient(networkId);
   if (!client) {
     throw new Error(`failed to get feed client for network '${networkId}'`);
+  }
+  return client;
+};
+
+const freelanceClients: { [key: string]: FreelanceService } = {};
+
+export const getFreelanceClient = (networkId: string | undefined) => {
+  const network = getNetwork(networkId);
+  if (!network) {
+    return undefined;
+  }
+  if (!freelanceClients[network.id]) {
+    const rpc = new FreelanceGrpcWebImpl(network.backendEndpoint, {
+      debug: false,
+    });
+    freelanceClients[network.id] = new FreelanceServiceClientImpl(rpc);
+  }
+  return freelanceClients[network.id];
+};
+export const mustGetFreelanceClient = (networkId: string | undefined) => {
+  const client = getFreelanceClient(networkId);
+  if (!client) {
+    throw new Error(
+      `failed to get freelance client for network '${networkId}'`
+    );
   }
   return client;
 };

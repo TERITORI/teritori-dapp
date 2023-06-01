@@ -25,7 +25,6 @@ export const FreelanceServicesScreenWrapper: React.FC<{
   const navigation = useAppNavigation();
   return (
     <ScreenContainer
-      smallMargin
       fullWidth
       noMargin
       headerChildren={

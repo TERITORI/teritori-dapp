@@ -15,6 +15,7 @@ export const TextComboBoxDownMenu: React.FC<{
   const downmenuRef = useRef(null);
   useEffect(() => {
     const handleClickOutside = (event: any) => {
+      // @ts-ignore
       if (downmenuRef && !downmenuRef.current?.contains(event.target)) {
         hideMenu();
       }
