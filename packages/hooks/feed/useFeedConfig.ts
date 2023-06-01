@@ -12,14 +12,14 @@ export const useFeedConfig = (networkId: string) => {
     ["feedConfig", networkId, network?.socialFeedContractAddress],
     async () => {
       if (!network?.socialFeedContractAddress) {
-        return undefined;
+        return null;
       }
       const cosmwasmClient = await mustGetNonSigningCosmWasmClient(networkId);
       const client = new TeritoriSocialFeedQueryClient(
         cosmwasmClient,
         network.socialFeedContractAddress
       );
-      const conf = await client.config(); // FIXME: config typing
+      const conf = await client.config();
       return conf;
     }
   );
