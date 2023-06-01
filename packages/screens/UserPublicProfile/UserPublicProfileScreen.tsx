@@ -1,5 +1,5 @@
 import { bech32 } from "bech32";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { View } from "react-native";
 
 import {
@@ -81,6 +81,16 @@ const SelectedTabContent: React.FC<{
     };
   }, [userInfo?.metadata.tokenId, userAddress]);
 
+  const Header = useCallback(() => {
+    return (
+      <UserPublicProfileScreenHeader
+        userId={userId}
+        selectedTab={selectedTab}
+        setSelectedTab={setSelectedTab}
+      />
+    );
+  }, [selectedTab, setSelectedTab, userId]);
+
   switch (selectedTab) {
     case "userPosts":
       return (
@@ -89,13 +99,7 @@ const SelectedTabContent: React.FC<{
             isDAO ? !isDAOMember : selectedWallet?.userId !== userId
           }
           daoId={isDAO ? userId : undefined}
-          Header={() => (
-            <UserPublicProfileScreenHeader
-              userId={userId}
-              selectedTab={selectedTab}
-              setSelectedTab={setSelectedTab}
-            />
-          )}
+          Header={Header}
           additionalMention={
             isDAO
               ? undefined
@@ -112,13 +116,7 @@ const SelectedTabContent: React.FC<{
           disablePosting={
             !selectedWallet?.connected || selectedWallet?.userId === userId
           }
-          Header={() => (
-            <UserPublicProfileScreenHeader
-              userId={userId}
-              selectedTab={selectedTab}
-              setSelectedTab={setSelectedTab}
-            />
-          )}
+          Header={Header}
           additionalMention={
             selectedWallet?.address !== userAddress
               ? userInfo?.metadata.tokenId || userAddress
