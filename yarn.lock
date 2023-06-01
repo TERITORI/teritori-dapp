@@ -27291,7 +27291,7 @@ __metadata:
     "@cosmjs/amino": 0.29.3
     "@cosmjs/cosmwasm-stargate": 0.29.3
     "@cosmjs/encoding": ^0.30.1
-    "@cosmjs/proto-signing": 0.29.3
+    "@cosmjs/proto-signing": 0.29.5
     "@cosmjs/stargate": 0.29.3
     "@cosmology/core": 1.20.0
     "@cosmwasm/ts-codegen": ^0.16.3

@@ -381,7 +381,7 @@ export const getKeplrSigningStargateClient = async (
       gasPrice,
       registry: new Registry([
         ["/teritori.mint.v1beta1.MsgBurnTokens", MsgBurnTokens],
-      ]) as any, // FIXME
+      ]),
     }
   );
 };
