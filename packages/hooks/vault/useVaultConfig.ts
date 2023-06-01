@@ -7,10 +7,10 @@ import {
 } from "../../networks";
 
 export const useVaultConfig = (networkId: string) => {
-  const network = getCosmosNetwork(networkId);
   const { data: vaultConfig, ...other } = useQuery(
-    ["vaultConfig", networkId, network?.vaultContractAddress],
+    ["vaultConfig", networkId],
     async () => {
+      const network = getCosmosNetwork(networkId);
       if (!network?.vaultContractAddress) {
         return undefined;
       }
@@ -20,7 +20,8 @@ export const useVaultConfig = (networkId: string) => {
         network.vaultContractAddress
       );
       return await client.config();
-    }
+    },
+    { staleTime: Infinity }
   );
   return { vaultConfig, ...other };
 };
