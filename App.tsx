@@ -58,22 +58,22 @@ export default function App() {
                 <FeedbacksContextProvider>
                   <DropdownsContextProvider>
                     <WalletsProvider>
-                     <SearchBarContextProvider>
-                      <TransactionModalsProvider>
-                        <TNSContextProvider>
-                          <TNSMetaDataListContextProvider>
-                            <MenuProvider>
-                              <SidebarContextProvider>
+                      <SearchBarContextProvider>
+                        <TransactionModalsProvider>
+                          <TNSContextProvider>
+                            <TNSMetaDataListContextProvider>
+                              <MenuProvider>
+                                <SidebarContextProvider>
                                   <MusicplayerContextProvider>
                                     <StatusBar style="inverted" />
                                     <Navigator />
                                   </MusicplayerContextProvider>
-                              </SidebarContextProvider>
-                            </MenuProvider>
-                          </TNSMetaDataListContextProvider>
-                        </TNSContextProvider>
-                      </TransactionModalsProvider>
-                     </SearchBarContextProvider>
+                                </SidebarContextProvider>
+                              </MenuProvider>
+                            </TNSMetaDataListContextProvider>
+                          </TNSContextProvider>
+                        </TransactionModalsProvider>
+                      </SearchBarContextProvider>
                     </WalletsProvider>
                   </DropdownsContextProvider>
                 </FeedbacksContextProvider>
