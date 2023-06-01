@@ -2,31 +2,24 @@ import React from "react";
 import { StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
-import { parseUserId, NetworkKind } from "../../networks";
+import { parseUserId } from "../../networks";
 import { secondaryColor, neutral77, neutral33 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { tinyAddress } from "../../utils/text";
 import { BrandText } from "../BrandText";
 import { OmniLink } from "../OmniLink";
-import { OptimizedImage } from "../OptimizedImage";
+import { AvatarWithFrame } from "../images/AvatarWithFrame";
 import { SpacerColumn } from "../spacer";
-
-const imageSize = 100;
 
 export const DAOItem: React.FC<{
   daoId: string;
   style?: StyleProp<ViewStyle>;
 }> = ({ daoId, style }) => {
-  const [network, daoAddress] = parseUserId(daoId);
+  const [, daoAddress] = parseUserId(daoId);
   const {
-    metadata: { image, public_name: name, public_bio: description, tokenId },
+    metadata: { public_name: name, public_bio: description, tokenId },
   } = useNSUserInfo(daoId);
-
-  const fallbackSource =
-    network?.kind === NetworkKind.Cosmos
-      ? network.nameServiceDefaultImage
-      : undefined;
 
   return (
     <OmniLink
@@ -34,17 +27,7 @@ export const DAOItem: React.FC<{
       style={[styles.container, style]}
     >
       <View style={{ alignItems: "center" }}>
-        <OptimizedImage
-          width={imageSize}
-          height={imageSize}
-          sourceURI={image}
-          fallbackURI={fallbackSource}
-          style={{
-            width: imageSize,
-            height: imageSize,
-            borderRadius: 9999,
-          }}
-        />
+        <AvatarWithFrame userId={daoId} size="L" />
         <SpacerColumn size={2.5} />
         <BrandText style={[fontSemibold14, { color: secondaryColor }]}>
           {name || "Anon DAO"}
