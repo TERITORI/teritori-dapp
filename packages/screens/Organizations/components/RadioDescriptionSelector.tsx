@@ -10,13 +10,14 @@ import { fontMedium13, fontSemibold16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 
 export const RadioDescriptionSelector: React.FC<{
+  disabled?: boolean;
   selected: boolean;
   onPress: () => void;
   title: string;
   description: string;
-}> = ({ selected, onPress, title, description }) => {
+}> = ({ selected, disabled, onPress, title, description }) => {
   return (
-    <Pressable style={styles.container} onPress={onPress}>
+    <Pressable style={[styles.container, {opacity: disabled ? 0.5 : undefined}]} onPress={onPress} disabled={disabled}>
       <View style={styles.row}>
         <RadioButton selected={selected} />
         <SpacerRow size={2.5} />

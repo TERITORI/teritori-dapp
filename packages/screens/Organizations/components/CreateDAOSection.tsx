@@ -125,6 +125,7 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
           <SpacerRow size={2} />
           <View style={styles.fill}>
             <RadioDescriptionSelector
+              disabled
               selected={selectedRadioStructure === DaoType.TOKEN_BASED}
               onPress={() => setValue("structure", DaoType.TOKEN_BASED)}
               title="Governance Token-based TORG - Teritori Organization"
