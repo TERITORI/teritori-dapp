@@ -295,7 +295,9 @@ const CollectionRow: React.FC<{ collection: Collection; rank: number }> = ({
       <InnerCell>{rowData.sales}</InnerCell>
       <PrettyPriceWithCurrency data={rowData.floorPrice} />
       <InnerCell>{rowData.owners}</InnerCell>
-      <InnerCell>{rowData.supply}</InnerCell>
+      <InnerCell>
+        {rowData.supply === "0" ? "No limit" : rowData.supply}
+      </InnerCell>
     </OmniLink>
   );
 };
