@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 
-import { prettyPrint } from "../../screens/Marketplace/types";
+import { PrettyPrint } from "../../screens/Marketplace/types";
 import { neutral22, neutralA3 } from "../../utils/style/colors";
 import { fontSemibold12, fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
@@ -12,7 +12,7 @@ import { SpacerColumn } from "../spacer";
 type CollectionStatProps = {
   label: string;
   value?: string;
-  currencyIcon?: prettyPrint;
+  currencyIcon?: PrettyPrint;
 };
 
 const ICON_SIZE = 16;

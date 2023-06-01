@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { FlatList, View } from "react-native";
 
-import { prettyPrint } from "./types";
+import { PrettyPrint } from "./types";
 import {
   Collection,
   MintState,
@@ -205,7 +205,7 @@ const CollectionTable: React.FC<{
   );
 };
 
-const PrettyPriceWithCurrency: React.FC<{ data: prettyPrint }> = ({ data }) => {
+const PrettyPriceWithCurrency: React.FC<{ data: PrettyPrint }> = ({ data }) => {
   return (
     <View
       style={{
@@ -331,11 +331,11 @@ interface RowData {
     collectionName?: string;
     image?: string;
   };
-  totalVolume: prettyPrint;
-  TimePeriodVolume: prettyPrint;
+  totalVolume: PrettyPrint;
+  TimePeriodVolume: PrettyPrint;
   TimePeriodPercentualVolume: number;
   sales: string;
-  floorPrice: prettyPrint;
+  floorPrice: PrettyPrint;
   owners: string;
   supply: string;
 }
