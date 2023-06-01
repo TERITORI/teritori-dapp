@@ -1,6 +1,4 @@
-// import chainSVG from "../../assets/icons/chain.svg";
 import dappStoreSVG from "../../assets/icons/dapp-store.svg";
-import deployerSVG from "../../assets/icons/deployer.svg";
 import feedSVG from "../../assets/icons/feed.svg";
 import rioterFooterSVG from "../../assets/icons/footer-rioters.svg";
 import governanceSVG from "../../assets/icons/governance.svg";
@@ -9,6 +7,7 @@ import launchpadApplySVG from "../../assets/icons/launchpad-apply.svg";
 import launchpadLaunchpadSVG from "../../assets/icons/launchpad-launchpad.svg";
 import launchpadSVG from "../../assets/icons/launchpad.svg";
 import messagesSVG from "../../assets/icons/messages.svg";
+import multisigSVG from "../../assets/icons/multisig.svg";
 import osmosisCircleSVG from "../../assets/icons/networks/osmosis-circle.svg";
 import pathwarSVG from "../../assets/icons/pathwar.svg";
 import riotersGameSVG from "../../assets/icons/rioters-game.svg";
@@ -90,7 +89,7 @@ export const SIDEBAR_LIST: SidebarRecordType = {
     title: "Organizations",
     id: "Organizations",
     route: "Organizations",
-    icon: deployerSVG,
+    icon: multisigSVG,
   },
   governance: {
     title: "Governance",
