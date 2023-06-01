@@ -1,32 +1,29 @@
 import { useQuery } from "@tanstack/react-query";
 
+import { useDAOGroup } from "./useDAOGroup";
 import { Cw4GroupQueryClient } from "../../contracts-clients/cw4-group/Cw4Group.client";
-import { DaoCoreQueryClient } from "../../contracts-clients/dao-core/DaoCore.client";
-import { DaoVotingCw4QueryClient } from "../../contracts-clients/dao-voting-cw4/DaoVotingCw4.client";
 import { parseUserId, mustGetNonSigningCosmWasmClient } from "../../networks";
 
-// FIXME: split
+// FIXME: pagination
 
 export const useDAOMembers = (daoId: string | undefined) => {
+  const [network] = parseUserId(daoId);
+  const { data: daoGroupAddress } = useDAOGroup(daoId);
   const { data: members, ...other } = useQuery(
-    ["daoMembers", daoId],
+    ["daoMembers", network?.id, daoGroupAddress],
     async () => {
-      const [network, daoAddr] = parseUserId(daoId);
-      if (!network || !daoAddr) {
+      if (!network?.id || !daoGroupAddress) {
         return null;
       }
       const cosmwasmClient = await mustGetNonSigningCosmWasmClient(network.id);
-      const daoCoreClient = new DaoCoreQueryClient(cosmwasmClient, daoAddr);
-      const votingModuleAddress = await daoCoreClient.votingModule();
-      const votingModuleClient = new DaoVotingCw4QueryClient(
+      const cw4Client = new Cw4GroupQueryClient(
         cosmwasmClient,
-        votingModuleAddress
+        daoGroupAddress
       );
-      const cw4Address = await votingModuleClient.groupContract();
-      const cw4Client = new Cw4GroupQueryClient(cosmwasmClient, cw4Address);
       const { members } = await cw4Client.listMembers({ limit: 100 });
       return members;
-    }
+    },
+    { staleTime: Infinity, enabled: !!(network?.id && daoGroupAddress) }
   );
   return { members, ...other };
 };
