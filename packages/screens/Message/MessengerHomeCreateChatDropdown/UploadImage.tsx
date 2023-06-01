@@ -49,7 +49,7 @@ interface IMessage {
   name: string;
 }
 
-const UploadImage = ({
+export const UploadImage = ({
   showAttachmentModal,
   setShowAttachmentModal,
   messages,
@@ -316,5 +316,3 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
 });
-
-export default UploadImage;

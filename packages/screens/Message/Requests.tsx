@@ -8,7 +8,8 @@ import { TextInputCustomBorder } from "../../components/inputs/TextInputCustomBo
 import RequestList from "../../components/requests/Request";
 import { SpacerColumn } from "../../components/spacer";
 import { neutral33 } from "../../utils/style/colors";
-const Requests = ({ items }) => {
+
+export const Requests = ({ items }) => {
   const [searchQuery, setSearchQuery] = useState("");
 
   const filteredItems = items.filter((item) =>
@@ -50,5 +51,3 @@ const Requests = ({ items }) => {
     </View>
   );
 };
-
-export default Requests;

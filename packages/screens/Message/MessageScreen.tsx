@@ -7,11 +7,11 @@ import {
   ScrollView,
 } from "react-native";
 
-import CreateGroup from "./CreateGroup";
-import FriendshipManager from "./FriendshipManager";
+import { CreateGroup } from "./CreateGroup";
+import { FriendshipManager } from "./FriendshipManager";
 import { MessageHeader } from "./MessageHeader";
-import MessengerGroupChat from "./MessengerGroupChat";
-import SideBarChats from "./SideBarChats";
+import { MessageGroupChat } from "./MessengerGroupChat/MessageGroupChat";
+import { SideBarChats } from "./SideBarChats";
 import data from "./data";
 import FlexRow from "../../components/FlexRow";
 import { ScreenContainer } from "../../components/ScreenContainer";
@@ -98,7 +98,7 @@ export const MessageScreen: ScreenFC<"Message"> = () => {
             <Separator horizontal />
 
             <View style={{ flex: 1 }}>
-              {showAddFriend ? <FriendshipManager /> : <MessengerGroupChat />}
+              {showAddFriend ? <FriendshipManager /> : <MessageGroupChat />}
             </View>
           </View>
         )}
