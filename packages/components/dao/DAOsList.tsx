@@ -1,6 +1,6 @@
 import { View } from "react-native";
 
-import { DAOItem } from "./DAOItem";
+import { DAOCard } from "./DAOCard";
 import { DAOsRequest } from "../../api/dao/v1/dao";
 import { useDAOs } from "../../hooks/dao/useDAOs";
 import { layout } from "../../utils/style/layout";
@@ -22,7 +22,7 @@ export const DAOsList: React.FC<{
       }}
     >
       {(daos || []).map((item) => (
-        <DAOItem
+        <DAOCard
           key={item.id}
           daoId={item.id}
           style={{

@@ -12,7 +12,7 @@ import { OmniLink } from "../OmniLink";
 import { AvatarWithFrame } from "../images/AvatarWithFrame";
 import { SpacerColumn } from "../spacer";
 
-export const DAOItem: React.FC<{
+export const DAOCard: React.FC<{
   daoId: string;
   style?: StyleProp<ViewStyle>;
 }> = ({ daoId, style }) => {
