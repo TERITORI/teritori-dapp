@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { StyleProp, TextInput, ViewStyle } from "react-native";
+import { StyleProp, TextInput, ViewStyle, StyleSheet } from "react-native";
 import { useSelector } from "react-redux";
 
 import searchSVG from "../../../assets/icons/search.svg";
@@ -12,13 +12,29 @@ import { TertiaryBox } from "../boxes/TertiaryBox";
 
 export const SEARCH_BAR_INPUT_HEIGHT = 40;
 
-export const SearchBarInput: React.FC<{
+export const SearchBarInputGlobal: React.FC<{
   onInteraction?: () => void;
   style?: StyleProp<ViewStyle>;
-}> = ({ onInteraction, style }) => {
+}> = (props) => {
   const text = useSelector(selectSearchText);
-  const ref = useRef<TextInput>(null);
   const dispatch = useAppDispatch();
+  return (
+    <SearchBarInput
+      {...props}
+      text={text}
+      onChangeText={(text) => dispatch(setSearchText(text))}
+    />
+  );
+};
+
+export const SearchBarInput: React.FC<{
+  text: string;
+  onChangeText: (text: string) => void;
+  onInteraction?: () => void;
+  style?: StyleProp<ViewStyle>;
+}> = ({ onInteraction, text, onChangeText, style }) => {
+  const ref = useRef<TextInput>(null);
+  const fullWidth = StyleSheet.flatten(style)?.width === "100%";
   return (
     <TertiaryBox
       style={style}
@@ -26,8 +42,9 @@ export const SearchBarInput: React.FC<{
         flexDirection: "row",
         paddingHorizontal: 12,
         backgroundColor: neutral17,
-        width: 250,
+        width: fullWidth ? undefined : 250,
       }}
+      fullWidth={fullWidth}
       height={SEARCH_BAR_INPUT_HEIGHT}
     >
       <SVG source={searchSVG} width={16} height={16} />
@@ -44,7 +61,7 @@ export const SearchBarInput: React.FC<{
           { outlineStyle: "none" } as any,
         ]}
         onChangeText={(text) => {
-          dispatch(setSearchText(text));
+          onChangeText(text);
           onInteraction?.();
           setTimeout(() => ref.current?.focus(), 10); // restore focus in case it got lost in previous side-effects, this happens in firefox
         }}

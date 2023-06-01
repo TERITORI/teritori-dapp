@@ -1,7 +1,10 @@
 import React, { useRef } from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 
-import { SEARCH_BAR_INPUT_HEIGHT, SearchBarInput } from "./SearchBarInput";
+import {
+  SEARCH_BAR_INPUT_HEIGHT,
+  SearchBarInputGlobal,
+} from "./SearchBarInput";
 import {
   SEARCH_RESULTS_COLLECTIONS_MARGIN,
   SEARCH_RESULTS_MARGIN,
@@ -12,14 +15,10 @@ import { useSearchBar } from "../../context/SearchBarProvider";
 import { COLLECTION_VIEW_SM_WIDTH } from "../CollectionView";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 
-export const SearchBar: React.FC<{
-  style?: StyleProp<ViewStyle>;
-  onPressName?: (name: string, userId: string) => void;
-  closeOnPress?: boolean;
-  navigateToName?: boolean;
-  noCollections?: boolean;
-}> = ({ style, onPressName, closeOnPress, navigateToName, noCollections }) => {
-  const { openDropdown, isDropdownOpen, closeOpenedDropdown } = useDropdowns();
+export const SearchBar: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
+  style,
+}) => {
+  const { openDropdown, isDropdownOpen } = useDropdowns();
   const dropdownRef = useRef<View>(null);
   const { hasCollections, hasNames } = useSearchBar();
   const hasSomething = hasNames || hasCollections;
@@ -29,7 +28,7 @@ export const SearchBar: React.FC<{
       style={[{ justifyContent: "center", alignItems: "center" }, style]}
       ref={dropdownRef}
     >
-      <SearchBarInput onInteraction={() => openDropdown(dropdownRef)} />
+      <SearchBarInputGlobal onInteraction={() => openDropdown(dropdownRef)} />
       {isDropdownOpen(dropdownRef) && hasSomething && (
         <TertiaryBox
           noBrokenCorners
@@ -47,14 +46,7 @@ export const SearchBar: React.FC<{
               2, // need to add 2 arbitrary pixel to fit in tertiary box, not needed if using a view
           }}
         >
-          <SearchBarResults
-            navigateToName={navigateToName}
-            onPressName={(name, userId) => {
-              closeOnPress && closeOpenedDropdown();
-              onPressName?.(name, userId);
-            }}
-            noCollections={noCollections}
-          />
+          <SearchBarResults />
         </TertiaryBox>
       )}
     </View>

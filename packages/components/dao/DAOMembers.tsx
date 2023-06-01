@@ -18,6 +18,7 @@ import { DaoCoreQueryClient } from "../../contracts-clients/dao-core/DaoCore.cli
 import { DaoVotingCw4QueryClient } from "../../contracts-clients/dao-voting-cw4/DaoVotingCw4.client";
 import { useIsDAOMember } from "../../hooks/dao/useDAOMember";
 import { useDAOMembers } from "../../hooks/dao/useDAOMembers";
+import { useNameSearch } from "../../hooks/search/useNameSearch";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
@@ -44,12 +45,12 @@ import { BrandText } from "../BrandText";
 import { DropdownOption } from "../DropdownOption";
 import { OmniLink } from "../OmniLink";
 import { SVG } from "../SVG";
-import { SearchBar } from "../Search/SearchBar";
-import { NameResult } from "../Search/SearchBarResults";
+import { SearchBarInput } from "../Search/SearchBarInput";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { PrimaryButton } from "../buttons/PrimaryButton";
 import { AvatarWithFrame } from "../images/AvatarWithFrame";
 import ModalBase from "../modals/ModalBase";
+import { AvatarWithName } from "../user/AvatarWithName";
 
 // FIXME: pagination
 
@@ -59,14 +60,13 @@ export const DAOMembers: React.FC<{
   daoId: string | undefined;
   style?: StyleProp<ViewStyle>;
 }> = ({ daoId, style }) => {
-  const [network, daoAddress] = parseUserId(daoId);
+  const [network] = parseUserId(daoId);
   const { members } = useDAOMembers(daoId);
   const { width: windowWidth } = useWindowDimensions();
+  const selectedWallet = useSelectedWallet();
   const [width, setWidth] = useState(0);
   const [showAddMemberModal, setShowAddMemberModal] = useState(false);
-  const { wrapWithFeedback } = useFeedbacks();
-  const selectedWallet = useSelectedWallet();
-  const [names, setNames] = useState<string[]>([]);
+  const { isDAOMember } = useIsDAOMember(daoId, selectedWallet?.userId);
 
   if (!members || !network) {
     return null;
@@ -93,11 +93,13 @@ export const DAOMembers: React.FC<{
         }}
       >
         <BrandText style={{ fontSize: 20 }}>{members.length} members</BrandText>
-        <PrimaryButton
-          text="Add members"
-          size="XS"
-          onPress={() => setShowAddMemberModal(true)}
-        />
+        {!!isDAOMember && (
+          <PrimaryButton
+            text="Add members"
+            size="XS"
+            onPress={() => setShowAddMemberModal(true)}
+          />
+        )}
       </View>
       <View
         style={{ flexWrap: "wrap", flexDirection: "row", margin: -halfGap }}
@@ -117,16 +119,47 @@ export const DAOMembers: React.FC<{
           );
         })}
       </View>
-      <ModalBase
-        visible={showAddMemberModal}
-        label="Add members to DAO"
+      <AddMembersModal
+        daoId={daoId}
+        show={showAddMemberModal}
         onClose={() => setShowAddMemberModal(false)}
-        noBrokenCorners
+      />
+    </View>
+  );
+};
+
+const AddMembersModal: React.FC<{
+  daoId: string | undefined;
+  show: boolean;
+  onClose: () => void;
+}> = ({ daoId, show, onClose }) => {
+  const [network, daoAddress] = parseUserId(daoId);
+  const { wrapWithFeedback } = useFeedbacks();
+  const selectedWallet = useSelectedWallet();
+  const [searchText, setSearchText] = useState("");
+  const [ids, setIds] = useState<string[]>([]);
+
+  const { names } = useNameSearch({
+    networkId: network?.id,
+    input: searchText,
+    limit: 16,
+  });
+  return (
+    <ModalBase
+      visible={show}
+      label="Add members to DAO"
+      onClose={onClose}
+      scrollable
+      noBrokenCorners
+    >
+      <View
+        style={{
+          minHeight: 300,
+          width: 400,
+        }}
       >
         <View
           style={{
-            minHeight: 200,
-            width: 400,
             margin: -4,
             flexDirection: "row",
             flexWrap: "wrap",
@@ -134,48 +167,77 @@ export const DAOMembers: React.FC<{
             alignItems: "flex-start",
           }}
         >
-          {names.map((n) => {
+          {ids.map((id) => {
             return (
-              <NameResult
+              <AvatarWithName
                 style={{ margin: 4 }}
-                key={n}
-                networkId={network.id}
-                userId={n}
-                onPress={(ownerId) =>
-                  setNames((names) => names.filter((na) => na !== ownerId))
+                key={id}
+                userId={id}
+                onPress={(userId) =>
+                  setIds((ids) => ids.filter((id) => id !== userId))
                 }
               />
             );
           })}
         </View>
-        <PrimaryButton
-          disabled={!names.length}
-          text="Propose to add members"
-          size="XS"
-          style={{ alignSelf: "center" }}
-          loader
-          onPress={wrapWithFeedback(async () => {
-            await proposeToAddMembers(
-              network.id,
-              selectedWallet?.address,
-              daoAddress,
-              names.map((n) => parseUserId(n)[1])
+      </View>
+      <PrimaryButton
+        disabled={!ids.length}
+        text="Propose to add members"
+        size="XS"
+        style={{ alignSelf: "center" }}
+        loader
+        fullWidth
+        onPress={wrapWithFeedback(async () => {
+          await proposeToAddMembers(
+            network?.id,
+            selectedWallet?.address,
+            daoAddress,
+            ids.map((n) => parseUserId(n)[1])
+          );
+        })}
+      />
+      <SearchBarInput
+        text={searchText}
+        onChangeText={setSearchText}
+        style={{
+          marginBottom: modalMarginPadding,
+          marginTop: 8,
+          width: "100%",
+        }}
+      />
+      <View
+        style={{
+          minHeight: 300,
+          width: 400,
+          marginBottom: modalMarginPadding,
+        }}
+      >
+        <View
+          style={{
+            margin: -4,
+            flexDirection: "row",
+            flexWrap: "wrap",
+            justifyContent: "flex-start",
+            alignItems: "flex-start",
+          }}
+        >
+          {names.map((name) => {
+            return (
+              <AvatarWithName
+                style={{ margin: 4 }}
+                key={name}
+                networkId={network?.id}
+                name={name}
+                onPress={(userId) =>
+                  setIds((ids) => [...new Set([...ids, userId])])
+                }
+              />
             );
           })}
-        />
-        <SearchBar
-          style={{
-            marginBottom: modalMarginPadding,
-            marginTop: 8,
-            width: "100%",
-          }}
-          onPressName={(_name, userId) => {
-            setNames((names) => [...new Set(names).add(userId)]);
-          }}
-          noCollections // FIXME: don't reuse the header search bar
-        />
-      </ModalBase>
-    </View>
+        </View>
+      </View>
+    </ModalBase>
   );
 };
 
