@@ -17,6 +17,7 @@ import { DAOsList } from "../../components/dao/DAOsList";
 import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
 import { UPPNFTs } from "../../components/userPublicProfile/UPPNFTs";
 import { useIsDAO } from "../../hooks/cosmwasm/useCosmWasmContractInfo";
+import { useIsDAOMember } from "../../hooks/dao/useDAOMember";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { usePrevious } from "../../hooks/usePrevious";
@@ -44,6 +45,11 @@ const SelectedTabContent: React.FC<{
   const userInfo = useNSUserInfo(userId);
   const [network, userAddress] = parseUserId(userId);
   const { isDAO } = useIsDAO(userId);
+  const { isDAOMember } = useIsDAOMember(
+    userId,
+    selectedWallet?.userId,
+    !!isDAO
+  );
 
   const feedRequestUser: PostsRequest = useMemo(() => {
     return {
@@ -79,6 +85,7 @@ const SelectedTabContent: React.FC<{
     case "userPosts":
       return (
         <NewsFeed
+          disablePosting={!selectedWallet?.connected || (isDAO && !isDAOMember)}
           daoAddress={isDAO ? userAddress : undefined}
           Header={() => (
             <UserPublicProfileScreenHeader
@@ -100,6 +107,7 @@ const SelectedTabContent: React.FC<{
     case "mentionsPosts":
       return (
         <NewsFeed
+          disablePosting={!selectedWallet?.connected}
           Header={() => (
             <UserPublicProfileScreenHeader
               userId={userId}
@@ -142,7 +150,7 @@ const SelectedTabContent: React.FC<{
   }
 };
 
-const initialTab: keyof typeof screenTabItems = "proposals";
+const initialTab: keyof typeof screenTabItems = "userPosts";
 
 export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
   route: {

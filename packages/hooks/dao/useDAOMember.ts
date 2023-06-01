@@ -6,7 +6,8 @@ import { mustGetNonSigningCosmWasmClient, parseUserId } from "../../networks";
 
 export const useDAOMember = (
   daoId: string | undefined,
-  userId: string | undefined
+  userId: string | undefined,
+  enabled?: boolean
 ) => {
   const { data: groupAddress } = useDAOGroup(daoId);
   const [network] = parseUserId(daoId);
@@ -20,15 +21,19 @@ export const useDAOMember = (
       const groupClient = new Cw4GroupQueryClient(cosmwasmClient, groupAddress);
       return await groupClient.member({ addr: userAddress });
     },
-    { staleTime: Infinity, enabled: !!(networkId && groupAddress && userId) }
+    {
+      staleTime: Infinity,
+      enabled: !!((enabled ?? true) && networkId && groupAddress && userId),
+    }
   );
 };
 
 export const useIsDAOMember = (
   daoId: string | undefined,
-  userId: string | undefined
+  userId: string | undefined,
+  enabled?: boolean
 ) => {
-  const { data: member, ...other } = useDAOMember(daoId, userId);
+  const { data: member, ...other } = useDAOMember(daoId, userId, enabled);
   return {
     isDAOMember: member === undefined ? undefined : (member?.weight ?? 0) > 0,
     ...other,
