@@ -109,7 +109,9 @@ const SelectedTabContent: React.FC<{
     case "mentionsPosts":
       return (
         <NewsFeed
-          disablePosting={!selectedWallet?.connected}
+          disablePosting={
+            !selectedWallet?.connected || selectedWallet?.userId === userId
+          }
           Header={() => (
             <UserPublicProfileScreenHeader
               userId={userId}
