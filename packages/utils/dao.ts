@@ -274,7 +274,6 @@ export const createDaoMemberBased = async (
     automatically_add_cw721s: true,
     name,
     description,
-    tns,
     image_url: imageUrl,
     proposal_modules_instantiate_info,
     voting_module_instantiate_info,
@@ -297,13 +296,13 @@ export const createDaoMemberBased = async (
     network.nameServiceContractAddress
   );
   const amount = await nameServiceClient.mintPrice({
-    tokenId: dao_core_instantiate_msg.tns,
+    tokenId: tns,
   });
   const denom = getStakingCurrency(networkId)?.denom;
   await nameServiceClient.mint(
     {
       owner: sender,
-      tokenId: dao_core_instantiate_msg.tns,
+      tokenId: tns,
       extension: {
         public_name: dao_core_instantiate_msg.name,
         image: dao_core_instantiate_msg.image_url,
@@ -343,7 +342,7 @@ export const createDaoMemberBased = async (
 
   await nameServiceClient.transferNft({
     recipient: daoAddress,
-    tokenId: dao_core_instantiate_msg.tns,
+    tokenId: tns,
   });
 
   await onStepChange?.(3);
