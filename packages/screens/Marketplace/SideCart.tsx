@@ -157,7 +157,7 @@ const CartItems: React.FC<{ id: EntityId }> = ({ id }) => {
           }}
         >
           <OptimizedImage
-            source={{ uri: nft?.imageUri }}
+            sourceURI={nft?.imageUri}
             width={40}
             height={40}
             style={{

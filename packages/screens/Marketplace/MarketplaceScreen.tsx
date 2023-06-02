@@ -267,7 +267,7 @@ const CollectionRow: React.FC<{ collection: Collection; rank: number }> = ({
       >
         <RoundedGradientImage
           size="XS"
-          imageSource={{ uri: rowData.collectionNameData.image }}
+          sourceURI={rowData.collectionNameData.image}
           style={{ marginRight: 24 }}
         />
         <BrandText style={fontSemibold13}>
@@ -348,7 +348,7 @@ interface RowData {
   collectionName?: string;
   collectionNameData: {
     collectionName?: string;
-    image?: string;
+    image: string;
   };
   totalVolume: PrettyPrint;
   TimePeriodVolume: PrettyPrint;

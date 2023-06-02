@@ -115,7 +115,7 @@ export const CollectionHeader: React.FC<{
         }}
       >
         <RoundedGradientImage
-          imageSource={{ uri: collectionInfo.image }}
+          sourceURI={collectionInfo.image}
           style={{ marginRight: isMobile ? 0 : 24 }}
         />
         <View style={{ flex: 1 }}>
