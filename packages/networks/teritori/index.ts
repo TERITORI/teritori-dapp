@@ -65,5 +65,11 @@ export const teritoriNetwork: CosmosNetworkInfo = {
   excludeFromLaunchpadList: [riotContractAddressGen1],
   socialFeedContractAddress:
     "tori1lxf8agg0wd2m7n2ultl0yx337jw23puh0mlkkw5vhtnkkfettwfqya7kpp",
-  daoFactoryContractAddress: "TODO",
+  daoFactoryContractAddress:
+    "tori16rxh5hgukhdq8rvm2j3t6v483dcqguwp4l825vlwz5pmfpw7s4rs45nnca",
+  daoCoreCodeId: 27,
+  daoPreProposeSingleCodeId: 28,
+  daoProposalSingleCodeId: 31,
+  daoCw4GroupCodeId: 32,
+  daoVotingCw4CodeId: 33,
 };
