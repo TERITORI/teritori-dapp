@@ -508,23 +508,49 @@ func (s *MarkteplaceService) NFTCollectionAttributes(req *marketplacepb.NFTColle
 		return errors.New("missing filter")
 	}
 
+	var attributeQuery []string
+	for _, attribute := range req.WhereAttributes {
+
+		attributeQuery = append(attributeQuery, fmt.Sprintf(`
+        (trait_type =  '%s' and value = '%s')`,
+			attribute.TraitType,
+			attribute.Value,
+		))
+
+	}
+
+	whereQuery := strings.Join(attributeQuery, " OR ")
+	if whereQuery != "" {
+		whereQuery = "where " + whereQuery
+	}
+
 	var attributes []*marketplacepb.AttributeRarityFloor
-	err = s.conf.IndexerDB.Raw(
-		`select trait_type, value, counta, floor, collection_id  from (
+	err = s.conf.IndexerDB.Raw(fmt.Sprintf(
+		`
+WITH count_by_collection AS (
+    SELECT count(1) as total, collection_id FROM nfts GROUP BY nfts.collection_id
+),
+    with_attributes as (
+select trait_type, value, counta, floor, collection_id  from (
       select trait_type, value, count(*) as counta, min(price_amount) as floor, collection_id from (SELECT attr.trait_type as trait_type, attr.value, price_amount, collection_id FROM nfts t,
            jsonb_to_recordset(t.attributes) as attr(value varchar, trait_type varchar)
            where collection_id = ?
       ) as sorted
+       %s
       group by trait_type, value, collection_id
       order by floor, counta, trait_type asc, LENGTH(value) desc, value desc
-      ) as col;
-		`,
+      ) as col
+)
+select *, (cast(counta as float) / total) * 100 as rare_ratio, total as collection_size
+from with_attributes
+join count_by_collection on with_attributes.collection_id = count_by_collection.collection_id
+		`, whereQuery),
 		collectionID,
 	).Scan(&attributes).Error
 
 	for _, attribute := range attributes {
 		if err := srv.Send(&marketplacepb.NFTCollectionAttributesResponse{Attributes: attribute}); err != nil {
-			return errors.Wrap(err, "failed to send nft")
+			return errors.Wrap(err, "failed to send attributes")
 		}
 	}
 

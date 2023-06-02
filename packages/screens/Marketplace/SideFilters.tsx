@@ -22,6 +22,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { useSelector } from "react-redux";
 
+import { resolveColor } from "./utils";
 import closeSVG from "../../../assets/icons/close.svg";
 import { AttributeRarityFloor } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
@@ -55,9 +56,7 @@ import {
   neutral44,
   neutralA3,
   primaryColor,
-  purpleDark,
   secondaryColor,
-  yellowDefault,
 } from "../../utils/style/colors";
 import {
   fontBold11,
@@ -168,7 +167,6 @@ const AccordionItem: React.FC<{
             .map((value) => (
               <FilterItems
                 attribute={value}
-                total={total}
                 networkId={networkId}
                 denom={denom}
               />
@@ -218,10 +216,9 @@ const styles = StyleSheet.create({
 
 const FilterItems: React.FC<{
   attribute: AttributeRarityFloor;
-  total: number;
   networkId: string;
   denom: string;
-}> = ({ attribute, total, networkId, denom }) => {
+}> = ({ attribute, networkId, denom }) => {
   const isSelected = useAttributeIsSelected(attribute);
 
   const dispatch = useAppDispatch();
@@ -237,23 +234,7 @@ const FilterItems: React.FC<{
       );
     }
   };
-  const rareRatio = (attribute.counta * 100) / total;
-  const resolveColor = (type: "backgroundColor" | "color") => {
-    switch (type) {
-      case "backgroundColor":
-        return rareRatio > 5
-          ? "rgba(22, 187, 255, 0.16)"
-          : rareRatio < 1
-          ? purpleDark
-          : yellowDefault;
-      case "color":
-        return rareRatio > 5
-          ? "white"
-          : rareRatio < 1
-          ? yellowDefault
-          : neutral00;
-    }
-  };
+
   return attribute ? (
     <View>
       <Pressable
@@ -287,7 +268,7 @@ const FilterItems: React.FC<{
           >
             <BrandText style={fontSemibold12}>{attribute.counta}</BrandText>
             <BrandText style={[fontSemibold12, { color: neutralA3 }]}>
-              /{total}
+              /{attribute.collectionSize}
             </BrandText>
           </View>
         </View>
@@ -317,12 +298,15 @@ const FilterItems: React.FC<{
           <BrandText
             style={[
               {
-                backgroundColor: resolveColor("backgroundColor"),
+                backgroundColor: resolveColor(
+                  "backgroundColor",
+                  attribute.rareRatio
+                ),
                 borderStyle: "solid",
                 borderWidth: 1,
                 borderRadius: 32,
                 height: 16,
-                color: resolveColor("color"),
+                color: resolveColor("color", attribute.rareRatio),
                 paddingTop: 2,
                 paddingRight: 6,
                 paddingBottom: 2,
@@ -331,7 +315,7 @@ const FilterItems: React.FC<{
               fontBold11,
             ]}
           >
-            {rareRatio.toFixed(2)}%
+            {attribute.rareRatio.toFixed(2)}%
           </BrandText>
         </View>
       </Pressable>

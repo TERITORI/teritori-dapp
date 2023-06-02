@@ -215,6 +215,8 @@ export interface AttributeRarityFloor {
   counta: number;
   floor: number;
   collectionId: string;
+  rareRatio: number;
+  collectionSize: number;
 }
 
 export interface NFTCollectionAttributesResponse {
@@ -264,6 +266,7 @@ export interface CollectionStatsRequest {
 
 export interface NFTCollectionAttributesRequest {
   collectionId: string;
+  whereAttributes: Attribute[];
 }
 
 export interface CollectionStatsResponse {
@@ -1121,7 +1124,7 @@ export const CollectionStats = {
 };
 
 function createBaseAttributeRarityFloor(): AttributeRarityFloor {
-  return { traitType: "", value: "", counta: 0, floor: 0, collectionId: "" };
+  return { traitType: "", value: "", counta: 0, floor: 0, collectionId: "", rareRatio: 0, collectionSize: 0 };
 }
 
 export const AttributeRarityFloor = {
@@ -1140,6 +1143,12 @@ export const AttributeRarityFloor = {
     }
     if (message.collectionId !== "") {
       writer.uint32(42).string(message.collectionId);
+    }
+    if (message.rareRatio !== 0) {
+      writer.uint32(53).float(message.rareRatio);
+    }
+    if (message.collectionSize !== 0) {
+      writer.uint32(56).int32(message.collectionSize);
     }
     return writer;
   },
@@ -1166,6 +1175,12 @@ export const AttributeRarityFloor = {
         case 5:
           message.collectionId = reader.string();
           break;
+        case 6:
+          message.rareRatio = reader.float();
+          break;
+        case 7:
+          message.collectionSize = reader.int32();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1181,6 +1196,8 @@ export const AttributeRarityFloor = {
       counta: isSet(object.counta) ? Number(object.counta) : 0,
       floor: isSet(object.floor) ? Number(object.floor) : 0,
       collectionId: isSet(object.collectionId) ? String(object.collectionId) : "",
+      rareRatio: isSet(object.rareRatio) ? Number(object.rareRatio) : 0,
+      collectionSize: isSet(object.collectionSize) ? Number(object.collectionSize) : 0,
     };
   },
 
@@ -1191,6 +1208,8 @@ export const AttributeRarityFloor = {
     message.counta !== undefined && (obj.counta = Math.round(message.counta));
     message.floor !== undefined && (obj.floor = message.floor);
     message.collectionId !== undefined && (obj.collectionId = message.collectionId);
+    message.rareRatio !== undefined && (obj.rareRatio = message.rareRatio);
+    message.collectionSize !== undefined && (obj.collectionSize = Math.round(message.collectionSize));
     return obj;
   },
 
@@ -1201,6 +1220,8 @@ export const AttributeRarityFloor = {
     message.counta = object.counta ?? 0;
     message.floor = object.floor ?? 0;
     message.collectionId = object.collectionId ?? "";
+    message.rareRatio = object.rareRatio ?? 0;
+    message.collectionSize = object.collectionSize ?? 0;
     return message;
   },
 };
@@ -1705,13 +1726,16 @@ export const CollectionStatsRequest = {
 };
 
 function createBaseNFTCollectionAttributesRequest(): NFTCollectionAttributesRequest {
-  return { collectionId: "" };
+  return { collectionId: "", whereAttributes: [] };
 }
 
 export const NFTCollectionAttributesRequest = {
   encode(message: NFTCollectionAttributesRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.collectionId !== "") {
       writer.uint32(10).string(message.collectionId);
+    }
+    for (const v of message.whereAttributes) {
+      Attribute.encode(v!, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
@@ -1726,6 +1750,9 @@ export const NFTCollectionAttributesRequest = {
         case 1:
           message.collectionId = reader.string();
           break;
+        case 2:
+          message.whereAttributes.push(Attribute.decode(reader, reader.uint32()));
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1735,12 +1762,22 @@ export const NFTCollectionAttributesRequest = {
   },
 
   fromJSON(object: any): NFTCollectionAttributesRequest {
-    return { collectionId: isSet(object.collectionId) ? String(object.collectionId) : "" };
+    return {
+      collectionId: isSet(object.collectionId) ? String(object.collectionId) : "",
+      whereAttributes: Array.isArray(object?.whereAttributes)
+        ? object.whereAttributes.map((e: any) => Attribute.fromJSON(e))
+        : [],
+    };
   },
 
   toJSON(message: NFTCollectionAttributesRequest): unknown {
     const obj: any = {};
     message.collectionId !== undefined && (obj.collectionId = message.collectionId);
+    if (message.whereAttributes) {
+      obj.whereAttributes = message.whereAttributes.map((e) => e ? Attribute.toJSON(e) : undefined);
+    } else {
+      obj.whereAttributes = [];
+    }
     return obj;
   },
 
@@ -1749,6 +1786,7 @@ export const NFTCollectionAttributesRequest = {
   ): NFTCollectionAttributesRequest {
     const message = createBaseNFTCollectionAttributesRequest();
     message.collectionId = object.collectionId ?? "";
+    message.whereAttributes = object.whereAttributes?.map((e) => Attribute.fromPartial(e)) || [];
     return message;
   },
 };

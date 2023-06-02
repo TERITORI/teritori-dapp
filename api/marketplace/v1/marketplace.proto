@@ -111,6 +111,8 @@ message AttributeRarityFloor {
   int32 counta = 3;
   float floor = 4;
   string collection_id = 5;
+  float rare_ratio = 6;
+  int32 collection_size = 7;
 }
 
 message NFTCollectionAttributesResponse {
@@ -162,6 +164,7 @@ message CollectionStatsRequest {
 
 message NFTCollectionAttributesRequest {
   string collection_id = 1;
+  repeated Attribute where_attributes = 2;
 }
 
 message CollectionStatsResponse {
