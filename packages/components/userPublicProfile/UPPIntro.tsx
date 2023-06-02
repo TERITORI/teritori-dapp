@@ -169,7 +169,6 @@ export const UPPIntro: React.FC<{
               fontMedium14,
               { maxWidth: 735, marginTop: layout.padding_x1 },
             ]}
-            numberOfLines={6}
           >
             {metadata?.public_bio}
           </BrandText>
