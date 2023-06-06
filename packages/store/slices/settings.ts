@@ -9,6 +9,7 @@ interface Settings {
   isKeplrConnected: boolean;
   alreadyVisited: boolean;
   areTestnetsEnabled: boolean;
+  PathwarToken: string;
 }
 
 const initialState: Settings = {
@@ -18,6 +19,7 @@ const initialState: Settings = {
   isKeplrConnected: false,
   alreadyVisited: false,
   areTestnetsEnabled: false,
+  PathwarToken: "",
 };
 
 export const selectSelectedNetworkId = (state: RootState) =>
@@ -35,6 +37,9 @@ export const selectAreTestnetsEnabled = (state: RootState) =>
 export const selectNFTStorageAPI = (state: RootState) =>
   state.settings.NFTStorageAPI;
 
+export const selectPathwarToken = (state: RootState) =>
+  state.settings.PathwarToken;
+
 const settingsSlice = createSlice({
   name: "settings",
   initialState,
@@ -43,8 +48,7 @@ const settingsSlice = createSlice({
       state.selectedNetworkId = action.payload;
     },
     setSelectedWalletId: (state, action: PayloadAction<string>) => {
-      state.selectedWalletId = action.payload;
-    },
+      state.selectedWalletId = action.payload;    },
     setIsKeplrConnected: (state, action: PayloadAction<boolean>) => {
       state.isKeplrConnected = action.payload;
     },
@@ -53,6 +57,9 @@ const settingsSlice = createSlice({
     },
     setNFTStorageAPI: (state, action: PayloadAction<string>) => {
       state.NFTStorageAPI = action.payload;
+    },
+    setPathwarToken: (state, action: PayloadAction<string>) => {
+      state.PathwarToken = action.payload;
     },
   },
 });
@@ -63,6 +70,7 @@ export const {
   setIsKeplrConnected,
   setAreTestnetsEnabled,
   setNFTStorageAPI,
+  setPathwarToken,
 } = settingsSlice.actions;
 
 export const settingsReducer = settingsSlice.reducer;
