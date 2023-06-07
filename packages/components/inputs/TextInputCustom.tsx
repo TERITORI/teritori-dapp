@@ -233,7 +233,11 @@ export const TextInputCustom = <T extends FieldValues>({
       <TertiaryBox
         squaresBackgroundColor={squaresBackgroundColor}
         style={style}
-        mainContainerStyle={[styles.mainContainer, boxMainContainerStyle,  variant === "noCropBorder" && styles.noCropBorderBg]}
+        mainContainerStyle={[
+          styles.mainContainer,
+          boxMainContainerStyle,
+          variant === "noCropBorder" && styles.noCropBorderBg,
+        ]}
         width={width}
         fullWidth={!width}
         height={height}

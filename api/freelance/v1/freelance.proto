@@ -5,12 +5,12 @@ option go_package = "./freelancepb";
 service FreelanceService {
   rpc SellerProfile(SellerProfileRequest) returns (SellerProfileResponse);
   rpc GigList(GigListRequest) returns (GigListResponse);
-  rpc GigListUser(GigListUserRequest) returns (GigListResponse);
-  rpc GigData(GigDataRequest) returns (GigResponse);
+  rpc GigListUser(GigListUserRequest) returns (GigListUserResponse);
+  rpc GigData(GigDataRequest) returns (GigDataResponse);
 
-  rpc EscrowAllList(EscrowListRequest) returns (EscrowListResponse);
-  rpc EscrowSenderList(EscrowListRequest) returns (EscrowListResponse);
-  rpc EscrowReceiverList(EscrowListRequest) returns (EscrowListResponse);
+  rpc EscrowAllList(EscrowAllListRequest) returns (EscrowAllListResponse);
+  rpc EscrowSenderList(EscrowSenderListRequest) returns (EscrowSenderListResponse);
+  rpc EscrowReceiverList(EscrowReceiverListRequest) returns (EscrowReceiverListResponse);
 }
 
 message SellerProfileRequest {
@@ -32,7 +32,13 @@ message  GigListUserRequest {
   string address = 1;
 }
 
-message EscrowListRequest{
+message EscrowAllListRequest{
+  string address = 1;
+}
+message EscrowSenderListRequest{
+  string address = 1;
+}
+message EscrowReceiverListRequest{
   string address = 1;
 }
 message EscrowInfo {
@@ -45,7 +51,13 @@ message EscrowInfo {
   uint32 status = 7;
 }
 
-message EscrowListResponse{
+message EscrowAllListResponse{
+  repeated EscrowInfo escrows = 1;
+}
+message EscrowSenderListResponse{
+  repeated EscrowInfo escrows = 1;
+}
+message EscrowReceiverListResponse{
   repeated EscrowInfo escrows = 1;
 }
 
@@ -57,9 +69,12 @@ message GigInfo {
 message GigListResponse {
   repeated GigInfo gigs = 1;
 }
+message GigListUserResponse {
+  repeated GigInfo gigs = 1;
+}
 message GigDataRequest {
   int32 id = 1;
 }
-message GigResponse{
+message GigDataResponse{
   GigInfo gig = 1;
 }
