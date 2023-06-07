@@ -198,7 +198,6 @@
       "tori1afwrcs58afaka6ltynevwcvq8zhejr3ssn703c0hky5emh890vzsry5wp5"
     ],
     "socialFeedContractAddress": "tori19y3xr6lghw04tj2ets8y70mrynlnflejanl2ys3n3c5vaasj358shjsk20",
-    "musicplayerContractAddress": "tori14ul4zced8uecd7aqtac4397ys0y2uyhgfj0zr0sjq78damxl7sxsc7dszj",
     "daoCw20CodeId": 99,
     "daoFactoryCodeId": 100,
     "daoCoreCodeId": 101,
@@ -209,7 +208,8 @@
     "daoCw4GroupCodeId": 106,
     "daoVotingCw4CodeId": 109,
     "daoFactoryContractAddress": "tori1r29chp8ufwgx9u3wr4sfk050aardhkzwve7nht6y06gvlaqutr3qt83z6r",
-    "coreDAOAddress": "tori1dy5h9q9zue4swxe9mzracm8gudp0fcf2ncllch6pfq9d0fq0ftgq546063"
+    "coreDAOAddress": "tori1dy5h9q9zue4swxe9mzracm8gudp0fcf2ncllch6pfq9d0fq0ftgq546063",
+    "musicplayerContractAddress": "tori14ul4zced8uecd7aqtac4397ys0y2uyhgfj0zr0sjq78damxl7sxsc7dszj"
   },
   {
     "id": "cosmos-hub-theta",
