@@ -3,10 +3,12 @@ import {
   SigningCosmWasmClient,
 } from "@cosmjs/cosmwasm-stargate";
 import { Decimal } from "@cosmjs/math";
+import { Registry } from "@cosmjs/proto-signing";
 import {
   SigningStargateClient,
   StargateClient,
   GasPrice,
+  defaultRegistryTypes,
 } from "@cosmjs/stargate";
 import { ChainInfo, Currency as KeplrCurrency } from "@keplr-wallet/types";
 
@@ -29,6 +31,7 @@ import {
   NetworkInfo,
   NetworkKind,
 } from "./types";
+import { MsgBurnTokens } from "../api/teritori/mint";
 import { getKeplr } from "../utils/keplr";
 
 export * from "./types";
@@ -48,6 +51,9 @@ export const allNetworks = [
   gnoTestnetNetwork,
   // solanaNetwork,
 ];
+
+const pbTypesRegistry = new Registry(defaultRegistryTypes);
+pbTypesRegistry.register("/teritori.mint.v1beta1.MsgBurnTokens", MsgBurnTokens);
 
 export const getCurrency = (
   networkId: string | undefined,
@@ -377,6 +383,7 @@ export const getKeplrSigningStargateClient = async (
     signer,
     {
       gasPrice,
+      registry: pbTypesRegistry,
     }
   );
 };

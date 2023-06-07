@@ -56,13 +56,10 @@ export const Sidebar: React.FC = () => {
   const userInfo = useNSUserInfo(selectedWallet?.userId);
   const selectedNetworkKind = useSelectedNetworkKind();
   const connected = selectedWallet?.connected;
-
-  // variables
   const navigation = useAppNavigation();
   const { name: currentRouteName } = useRoute();
   const { isSidebarExpanded, toggleSidebar, dynamicSidebar } = useSidebar();
 
-  // animations
   const layoutStyle = useAnimatedStyle(
     () => ({
       width: isSidebarExpanded
@@ -92,63 +89,6 @@ export const Sidebar: React.FC = () => {
     navigation.navigate(name);
   };
 
-  // const selectedApps = useSelector(selectCheckedApps);
-  // const availableApps = useSelector(selectAvailableApps);
-
-  // const dispatch = useAppDispatch();
-
-  // const dynamicSidebar = useMemo(() => {
-  //   if (selectedApps.length === 0 && Object.values(availableApps).length > 0) {
-  //     dispatch(
-  //       setSelectedApps(
-  //         Object.values(availableApps).flatMap((item) => {
-  //           return Object.values(item.options)
-  //             .filter((dapp) => dapp.selectedByDefault)
-  //             .map(({ groupKey, id }) => {
-  //               return `${groupKey}${SEPARATOR}${id}`;
-  //             });
-  //         })
-  //       )
-  //     );
-  //   }
-  //   const dynamicAppsSelection = [] as {
-  //     [key: string]: any;
-  //   };
-  //   selectedApps.map((element) => {
-  //     const { appId, groupKey } = getValuesFromId(element);
-  //     if (!availableApps[groupKey]) {
-  //       return;
-  //     }
-  //     const option = availableApps[groupKey].options[appId];
-  //     if (option === undefined) {
-  //       /*
-  //        we found something inconsistent between the selected apps and what is available.
-  //        I will reset user selection to go back to a sane state
-  //        */
-  //       dispatch(setSelectedApps([]));
-  //       return;
-  //     }
-
-  //     dynamicAppsSelection[element] = SIDEBAR_LIST[option.id]
-  //       ? SIDEBAR_LIST[option.id]
-  //       : {
-  //           id: option.id,
-  //           title: option.title,
-  //           route: option.route,
-  //           icon: option.icon,
-  //         };
-  //   });
-  //   dynamicAppsSelection["dappstore"] = SIDEBAR_LIST["DAppsStore"];
-
-  //   /* selectedApps comes from backend
-  //      to test MusicPlayer menu in sidebar, i appended music item in dynamicAppsSelection.
-  //   */
-  //   dynamicAppsSelection["musicplayer"] = SIDEBAR_LIST["musicplayer"];
-
-  //   return dynamicAppsSelection;
-  // }, [selectedApps, availableApps, dispatch]);
-
-  // returns
   return (
     <Animated.View style={[styles.container, layoutStyle]}>
       <View style={styles.headerContainer}>
@@ -213,10 +153,7 @@ export const Sidebar: React.FC = () => {
           connected &&
           userInfo.metadata && (
             <SidebarProfileButton
-              isLoading={userInfo.loading}
               userId={selectedWallet?.userId || ""}
-              tokenId={userInfo.metadata.tokenId || ""}
-              image={userInfo.metadata.image || ""}
               isExpanded={isSidebarExpanded}
             />
           )}

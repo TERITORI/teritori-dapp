@@ -56,20 +56,16 @@ func EventsMapFromEvents(s []abcitypes.Event) EventsMap {
 
 type EventsMap map[string][]string
 
-func (em EventsMap) OuterContractAddress() (string, error) {
-	wasmAddresses := em["wasm._contract_address"]
-	if len(wasmAddresses) == 0 {
-		return "", errors.New("no wasm contract addresses in result")
+func (em EventsMap) First(key string) (string, error) {
+	value := em[key]
+	if len(value) == 0 {
+		return "", errors.New(fmt.Sprintf("no %s in events", key))
 	}
-	return wasmAddresses[0], nil
+	return value[0], nil
 }
 
 func (em EventsMap) InstantiateContractAddress() (string, error) {
-	addresses := em["instantiate._contract_address"]
-	if len(addresses) == 0 {
-		return "", errors.New("no instantiate contract addresses in result")
-	}
-	return addresses[0], nil
+	return em.First("instantiate._contract_address")
 }
 
 func (em EventsMap) OuterInstantiateCodeID() (string, error) {

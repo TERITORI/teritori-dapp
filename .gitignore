@@ -8,6 +8,8 @@ npm-debug.*
 *.orig.*
 web-build/
 .idea/
+.vscode/
+/cache/
 
 # macOS
 .DS_Store
@@ -72,5 +74,3 @@ buck-out/
 .expo/
 
 # @end expo-cli
-
-/cache/

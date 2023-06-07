@@ -1,4 +1,3 @@
-import deployer from "../../../../assets/icons/deployer.svg";
 import socialFeed from "../../../../assets/icons/feed.svg";
 import freelance from "../../../../assets/icons/freelanceservice.svg";
 import governance from "../../../../assets/icons/governance.svg";
@@ -98,6 +97,16 @@ export function getAvailableApps(): dAppGroup {
           route: "Governance",
           groupKey: "teritori-core-apps",
           selectedByDefault: true,
+          alwaysOn: false,
+        },
+        organizations: {
+          id: "organizations",
+          title: "Organizations",
+          description: "Decentralized Autonomous Organizations",
+          icon: multisig,
+          route: "Organizations",
+          groupKey: "teritori-core-apps",
+          selectedByDefault: false,
           alwaysOn: false,
         },
       },
@@ -344,16 +353,6 @@ export function getAvailableApps(): dAppGroup {
           title: "Messages",
           description: "Messages",
           icon: messages,
-          route: "ComingSoon",
-          groupKey: "coming-soon",
-          selectedByDefault: false,
-          alwaysOn: false,
-        },
-        "org-deployer": {
-          id: "org-deployer",
-          title: "Org Deployer",
-          description: "Launch your DAO",
-          icon: deployer,
           route: "ComingSoon",
           groupKey: "coming-soon",
           selectedByDefault: false,

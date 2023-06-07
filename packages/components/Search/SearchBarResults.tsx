@@ -1,16 +1,17 @@
 import React, { FC } from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 
-import { NameResult } from "./SearchBar";
 import { MintState } from "../../api/marketplace/v1/marketplace";
 import { useSearchBar } from "../../context/SearchBarProvider";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import { useAppNavigation } from "../../utils/navigation";
 import { neutral22, neutralA3 } from "../../utils/style/colors";
 import { fontSemibold12 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { CollectionView } from "../CollectionView";
+import { AvatarWithName } from "../user/AvatarWithName";
 
 const SEARCH_RESULTS_NAMES_MARGIN = layout.padding_x1;
 export const SEARCH_RESULTS_MARGIN = layout.padding_x2;
@@ -25,6 +26,7 @@ export const SearchBarResults: FC = () => {
     collections,
     setSearchModalMobileOpen,
   } = useSearchBar();
+  const navigation = useAppNavigation();
 
   return (
     <>
@@ -42,12 +44,15 @@ export const SearchBarResults: FC = () => {
             }}
           >
             {names.map((n) => (
-              <NameResult
+              <AvatarWithName
                 key={n}
                 networkId={selectedNetworkId}
                 name={n}
                 style={{ margin: SEARCH_RESULTS_NAMES_MARGIN }}
-                onPress={() => setSearchModalMobileOpen(false)}
+                onPress={(userId) => {
+                  setSearchModalMobileOpen(false);
+                  navigation.navigate("UserPublicProfile", { id: userId });
+                }}
               />
             ))}
           </View>

@@ -29,6 +29,7 @@ export const Separator: React.FC<SeparatorProps> = ({
     />
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     width: "100%",

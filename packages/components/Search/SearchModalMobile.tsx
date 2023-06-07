@@ -1,7 +1,7 @@
 import React, { FC } from "react";
 import { useWindowDimensions } from "react-native";
 
-import { SearchBarInput } from "./SearchBarInput";
+import { SearchBarInputGlobal } from "./SearchBarInput";
 import { SearchBarResults } from "./SearchBarResults";
 import ModalBase from "../modals/ModalBase";
 export const SearchModalMobile: FC<{
@@ -18,7 +18,7 @@ export const SearchModalMobile: FC<{
       visible={visible}
       onClose={onClose}
       width={windowWidth}
-      labelComponent={<SearchBarInput style={{ alignSelf: "center" }} />}
+      labelComponent={<SearchBarInputGlobal style={{ alignSelf: "center" }} />}
       hideMainSeparator
       childrenContainerStyle={{ paddingHorizontal: 0 }}
       closeButtonStyle={{ alignSelf: "center", marginLeft: 0 }}

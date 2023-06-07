@@ -56,6 +56,11 @@ var allModels = []interface{}{
 	// feed
 	&Post{},
 
+	// orgs
+	&DAO{},
+	&DAOMember{},
+	&DAOProposal{},
+
 	//music player
 	&MusicAlbum{},
 }

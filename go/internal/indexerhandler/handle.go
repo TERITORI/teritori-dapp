@@ -14,7 +14,6 @@ import (
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	cosmostx "github.com/cosmos/cosmos-sdk/types/tx"
 	cosmosproto "github.com/cosmos/gogoproto/proto"
-	"github.com/davecgh/go-spew/spew"
 	"github.com/pkg/errors"
 	tenderminttypes "github.com/tendermint/tendermint/rpc/core/types"
 	"go.uber.org/zap"
@@ -22,8 +21,11 @@ import (
 	"gorm.io/gorm"
 )
 
+// FIXME: move contract address checks inside handlers so they can be reused
+
 type Message struct {
 	Msg          *codectypes.Any
+	Height       int64
 	MsgIndex     int
 	MsgID        string
 	TxHash       string
@@ -96,6 +98,7 @@ func (h *Handler) HandleTx(height int64, hash string, tx cosmostx.Tx, logs []Ten
 			MsgID:    fmt.Sprintf("%s-%d", hash, i),
 			Log:      logs[i],
 			TxHash:   hash,
+			Height:   height,
 			Events:   EventsMapFromStringEvents(logs[i].Events),
 			GetBlockTime: func() (time.Time, error) {
 				if blockTime == nil {
@@ -180,7 +183,7 @@ func (h *Handler) handleExecute(e *Message) error {
 		wasmAction = key
 	}
 
-	h.logger.Debug(fmt.Sprintf("%s %s", wasmAction, executeMsg.Contract))
+	h.logger.Debug("wasm", zap.String("action", wasmAction), zap.String("contract", executeMsg.Contract), zap.Int64("height", e.Height))
 
 	switch wasmAction {
 	case "mint":
@@ -246,10 +249,8 @@ func (h *Handler) handleExecute(e *Message) error {
 		}
 	// Feeds actions
 	case "create_post":
-		if executeMsg.Contract == h.config.Network.SocialFeedContractAddress {
-			if err := h.handleExecuteCreatePost(e, &executeMsg); err != nil {
-				return errors.Wrap(err, "failed to handle create post")
-			}
+		if err := h.handleExecuteCreatePost(e, &executeMsg); err != nil {
+			return errors.Wrap(err, "failed to handle create post")
 		}
 	case "create_post_by_bot":
 		if executeMsg.Contract == h.config.Network.SocialFeedContractAddress {
@@ -274,6 +275,19 @@ func (h *Handler) handleExecute(e *Message) error {
 			if err := h.handleExecuteDeletePost(e, &executeMsg); err != nil {
 				return errors.Wrap(err, "failed to handle delete post")
 			}
+		}
+	// Orgs actions
+	case "instantiate_contract_with_self_admin":
+		if err := h.handleExecuteInstantiateContractWithSelfAdmin(e, &executeMsg); err != nil {
+			return errors.Wrap(err, "failed to handle instantiate_contract_with_self_admin")
+		}
+	case "propose":
+		if err := h.handleExecuteDAOPropose(e, &executeMsg); err != nil {
+			return errors.Wrap(err, "failed to handle dao execute")
+		}
+	case "execute":
+		if err := h.handleExecuteDAOExecute(e, &executeMsg); err != nil {
+			return errors.Wrap(err, "failed to handle dao execute")
 		}
 	//Musicplayer actions
 	case "create_music_album":
@@ -300,7 +314,6 @@ func (h *Handler) handleExecuteMint(e *Message, execMsg *wasmtypes.MsgExecuteCon
 	}
 	collection := collections[0]
 	if collection.TeritoriCollection == nil {
-		spew.Dump(collection)
 		return errors.New("no teritori info in collection")
 	}
 
