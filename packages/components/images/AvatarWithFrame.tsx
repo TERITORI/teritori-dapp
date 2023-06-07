@@ -8,26 +8,33 @@ import {
 } from "react-native";
 
 import emptyCircleFrameSVG from "../../../assets/empty-circle-frame.svg";
+import { useIsDAO } from "../../hooks/cosmwasm/useCosmWasmContractInfo";
+import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { getCosmosNetwork } from "../../networks";
+import { primaryColor } from "../../utils/style/colors";
 import { OptimizedImage } from "../OptimizedImage";
 import { SVG } from "../SVG";
 import { AnimationFadeIn } from "../animations/AnimationFadeIn";
 
-type AvatarWithFrameSize = "XL" | "L" | "M" | "S";
+type AvatarWithFrameSize = "XL" | "L" | "M" | "S" | "XS";
 
 export const AvatarWithFrame: React.FC<{
-  image: string | null | undefined;
-  size: AvatarWithFrameSize;
-  isLoading?: boolean;
+  userId: string | undefined;
+  size?: AvatarWithFrameSize;
   style?: StyleProp<ViewStyle>;
-}> = ({ image, size, isLoading, style }) => {
+}> = ({ userId, size = "M", style }) => {
   const networkId = useSelectedNetworkId();
   const network = getCosmosNetwork(networkId);
   const sizedStyles = useMemo(
     () => StyleSheet.flatten(flatStyles[size]),
     [size]
   );
+  const {
+    metadata: { image },
+    loading: isLoading,
+  } = useNSUserInfo(userId);
+  const { isDAO } = useIsDAO(userId);
 
   return (
     <View style={[styles.container, style]}>
@@ -47,10 +54,16 @@ export const AvatarWithFrame: React.FC<{
           <OptimizedImage
             width={sizedStyles.image.width}
             height={sizedStyles.image.height}
-            source={{
-              uri: image ? image : network?.nameServiceDefaultImage || "",
-            }}
-            style={sizedStyles.image}
+            sourceURI={image}
+            fallbackURI={network?.nameServiceDefaultImage}
+            style={[
+              sizedStyles.image,
+              isDAO && {
+                borderRadius: sizedStyles.image.width * 0.05,
+                borderWidth: sizedStyles.image.width * 0.02,
+                borderColor: primaryColor,
+              },
+            ]}
           />
         </AnimationFadeIn>
       )}
@@ -123,6 +136,20 @@ const flatStyles = {
     frame: {
       width: 48,
       height: 48,
+    },
+  },
+
+  XS: {
+    image: {
+      height: 25,
+      left: 0.25,
+      top: -0.5,
+      width: 25,
+      borderRadius: 999,
+    },
+    frame: {
+      width: 38,
+      height: 38,
     },
   },
 };

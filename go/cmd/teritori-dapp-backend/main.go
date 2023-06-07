@@ -10,6 +10,8 @@ import (
 	"unicode"
 
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
+	"github.com/TERITORI/teritori-dapp/go/pkg/dao"
+	"github.com/TERITORI/teritori-dapp/go/pkg/daopb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/feed"
 	"github.com/TERITORI/teritori-dapp/go/pkg/feedpb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/marketplace"
@@ -116,7 +118,6 @@ func main() {
 		panic(errors.Wrap(err, "failed to create marketplace service"))
 	}
 
-	// P2E services
 	p2eSvc := p2e.NewP2eService(context.Background(), &p2e.Config{
 		Logger:    logger,
 		IndexerDB: indexerDB,
@@ -126,16 +127,22 @@ func main() {
     IndexerDB: indexerDB,
   })
 
-	// Feed services
 	feedSvc := feed.NewFeedService(context.Background(), &feed.Config{
 		Logger:    logger,
 		IndexerDB: indexerDB,
 		PinataJWT: *pinataJWT,
 	})
 
+	daoSvc := dao.NewDAOService(context.Background(), &dao.Config{
+		Logger:    logger,
+		IndexerDB: indexerDB,
+		NetStore:  &netstore,
+	})
+
 	server := grpc.NewServer()
 	marketplacepb.RegisterMarketplaceServiceServer(server, marketplaceSvc)
 	p2epb.RegisterP2EServiceServer(server, p2eSvc)
+	daopb.RegisterDAOServiceServer(server, daoSvc)
 	freelancepb.RegisterFreelanceServiceServer(server, freelanceSvc)
 	feedpb.RegisterFeedServiceServer(server, feedSvc)
 

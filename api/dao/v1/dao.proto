@@ -1,0 +1,30 @@
+syntax = "proto3";
+package dao.v1;
+option go_package = "./daopb";
+
+service DAOService {
+    rpc DAOs(DAOsRequest) returns (DAOsResponse);
+}
+
+message DAOsRequest {
+  string network_id = 1;
+  string member_address = 2;
+}
+
+message DAOsResponse {
+    repeated DAO daos = 1;
+}
+
+message DAO {
+    string id = 1;
+    string admin = 2;
+    string contract_address = 3;
+    string name = 4;
+    string description = 5;
+    string image_url = 6;
+    string quorum = 7;
+    string threshold = 8;
+    string token_name = 9;
+    string token_symbol = 10;
+    uint64 unstaking_duration = 11;
+}

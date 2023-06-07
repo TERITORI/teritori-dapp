@@ -21,15 +21,12 @@ import { layout } from "../../../utils/style/layout";
 import { SEPARATOR } from "../query/util";
 import { dAppType } from "../types";
 
-export function SelectedDraggable({
-  dragHandler,
-  index,
-  option: { groupKey, icon, id, title, alwaysOn },
-}: {
-  option: dAppType;
+export const SelectedDraggable: React.FC<{
+  option?: dAppType;
   index: number;
   dragHandler: (value: boolean) => void;
-}) {
+}> = ({ dragHandler, index, option }) => {
+  const { groupKey, icon, id, title, alwaysOn } = option || {};
   const [showTrashIcon, setShowTrashIcon] = useState(false);
   const dispatch = useAppDispatch();
   const draggableId = `${groupKey}${SEPARATOR}${id}`;
@@ -107,7 +104,7 @@ export function SelectedDraggable({
         }}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <SVGorImageIcon icon={icon} iconSize={24} />
+          {!!icon && <SVGorImageIcon icon={icon} iconSize={24} />}
 
           <BrandText
             style={[fontBold12, { marginLeft: layout.padding_x1_5 }]}
@@ -121,4 +118,4 @@ export function SelectedDraggable({
       </TertiaryBox>
     </Hoverable>
   );
-}
+};

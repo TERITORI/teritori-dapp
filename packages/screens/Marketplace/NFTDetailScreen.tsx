@@ -1,5 +1,5 @@
 import { ScrollView, Target } from "@nandorojo/anchor";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { View } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
@@ -29,8 +29,7 @@ import {
   parseNftId,
 } from "../../networks";
 import { getMetaMaskEthereumSigner } from "../../utils/ethereum";
-import { ScreenFC } from "../../utils/navigation";
-import { setDocumentTitle } from "../../utils/setDocumentTitle";
+import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { NFTAttribute } from "../../utils/types/nft";
 
 export interface NFTInfo {
@@ -66,7 +65,6 @@ const Content: React.FC<{
   const { setToastError } = useFeedbacks();
   const wallet = useSelectedWallet();
   const { info, refresh, notFound } = useNFTInfo(id, wallet?.userId);
-  setDocumentTitle(`NFT: ${info?.name}`);
   const { width } = useMaxResolution({ noMargin: true });
 
   const [network, collectionAddress] = parseNftId(id);
@@ -238,6 +236,14 @@ export const NFTDetailScreen: ScreenFC<"NFTDetail"> = ({
   id = decodeURIComponent(id);
 
   const [network] = parseNftId(id);
+  const { info } = useNFTInfo(id);
+  const navigation = useAppNavigation();
+
+  useEffect(() => {
+    navigation.setOptions({
+      title: `Teritori - NFT: ${info?.name}`,
+    });
+  }, [info?.name, navigation]);
 
   return (
     <ScreenContainer

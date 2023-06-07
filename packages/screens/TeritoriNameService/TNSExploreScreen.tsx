@@ -4,7 +4,7 @@ import { View } from "react-native";
 import { TNSModalCommonProps } from "./TNSHomeScreen";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
-import ModalBase from "../../components/modals/GradientModalBase";
+import GradientModalBase from "../../components/modals/GradientModalBase";
 import { TNSSendFundsModal } from "../../components/modals/teritoriNameService/TNSSendFundsModal";
 import { FindAName } from "../../components/teritoriNameService/FindAName";
 import { useTNS } from "../../context/TNSProvider";
@@ -33,7 +33,7 @@ export const TNSExploreScreen: React.FC<TNSExploreScreenProps> = ({
   );
 
   return (
-    <ModalBase
+    <GradientModalBase
       label="Find a name"
       hideMainSeparator
       onClose={() => onClose()}
@@ -88,6 +88,6 @@ export const TNSExploreScreen: React.FC<TNSExploreScreenProps> = ({
         onClose={() => setSendFundsModalVisible(false)}
         isVisible={sendFundsModalVisible}
       />
-    </ModalBase>
+    </GradientModalBase>
   );
 };

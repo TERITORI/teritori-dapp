@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { merge } from "lodash";
 import { memo, useEffect } from "react";
 
 import { setAvailableApps } from "../../../store/slices/dapps-store";
@@ -80,11 +81,9 @@ export const DAppStoreData: React.FC = memo(() => {
     });
 
     const dAppStoreValues = getAvailableApps();
-    const merged = { ...dAppStoreValues, ...formatted };
-
-    if (merged) {
-      dispatch(setAvailableApps(merged));
-    }
+    const merged = merge(dAppStoreValues, formatted);
+    merged["coming-soon"] = dAppStoreValues["coming-soon"];
+    dispatch(setAvailableApps(merged));
   }, [dApps, dAppsGroups, dispatch]);
 
   return <></>;

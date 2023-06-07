@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 
-import { useTNS } from "../../context/TNSProvider";
 import { Metadata } from "../../contracts-clients/teritori-name-service/TeritoriNameService.types";
 import { neutral17, neutral77 } from "../../utils/style/colors";
 import { BrandText } from "../BrandText";
@@ -19,7 +18,7 @@ export const NameDataForm: React.FC<{
   disabled?: boolean;
 }> = ({ isMintPath, btnLabel, onPressBtn, initialData, disabled }) => {
   const [pathId, setPathId] = useState("");
-  const { name } = useTNS();
+  const [publicName, setPublicName] = useState("");
   const [public_bio, setBio] = useState("");
   const [image, setImageUrl] = useState("");
   const [bannerImage, setBannerImage] = useState("");
@@ -39,7 +38,7 @@ export const NameDataForm: React.FC<{
   const handlePressBtn = () =>
     onPressBtn({
       pathId,
-      public_name: name, // Useless because TNSContext ?
+      public_name: publicName,
       public_bio,
       image,
       public_profile_header: bannerImage,
@@ -64,6 +63,7 @@ export const NameDataForm: React.FC<{
     setTelegrameUsername(initialData.telegram_id || "");
     setKeybaseIo(initialData.keybase_id || "");
     setValidatorOperatorAddress(initialData.validator_operator_address || "");
+    setPublicName(initialData.public_name || "");
   }, [initialData]);
 
   return (
@@ -113,8 +113,8 @@ export const NameDataForm: React.FC<{
         style={[inputStyle, !isMintPath && { marginTop: 4 }]}
         label="NAME"
         placeHolder="Type name here"
-        value={name}
-        disabled
+        value={publicName}
+        onChangeText={setPublicName}
         regexp={new RegExp(/^[a-zA-Z]+$/)}
         squaresBackgroundColor={neutral17}
       />

@@ -140,9 +140,8 @@ export const CollectionHeader: React.FC<{
       <OptimizedImage
         width={width}
         height={height}
-        source={{
-          uri: collectionInfo.bannerImage || bannerCollection,
-        }}
+        sourceURI={collectionInfo.bannerImage}
+        fallbackURI={bannerCollection}
         style={{
           height,
           width,
@@ -158,7 +157,7 @@ export const CollectionHeader: React.FC<{
         }}
       >
         <RoundedGradientImage
-          imageSource={{ uri: collectionInfo.image }}
+          sourceURI={collectionInfo.image}
           style={{ marginRight: 24 }}
         />
         <View style={{ flex: 1 }}>

@@ -71,7 +71,13 @@
     "excludeFromLaunchpadList": [
       "tori1gflccmghzfscmxl95z43v36y0rle8v9x8kvt9na03yzywtw86amsj9nf37"
     ],
-    "socialFeedContractAddress": "tori1lxf8agg0wd2m7n2ultl0yx337jw23puh0mlkkw5vhtnkkfettwfqya7kpp"
+    "socialFeedContractAddress": "tori1lxf8agg0wd2m7n2ultl0yx337jw23puh0mlkkw5vhtnkkfettwfqya7kpp",
+    "daoFactoryContractAddress": "tori16rxh5hgukhdq8rvm2j3t6v483dcqguwp4l825vlwz5pmfpw7s4rs45nnca",
+    "daoCoreCodeId": 27,
+    "daoPreProposeSingleCodeId": 28,
+    "daoProposalSingleCodeId": 31,
+    "daoCw4GroupCodeId": 32,
+    "daoVotingCw4CodeId": 33
   },
   {
     "id": "cosmos-hub",
@@ -193,7 +199,18 @@
     "socialFeedContractAddress": "tori19y3xr6lghw04tj2ets8y70mrynlnflejanl2ys3n3c5vaasj358shjsk20",
     "freelanceSellerAddress": "tori1x6w95eu6pm5tlxnztvdve5v6g3as92m45xt0xeczmtnpxd8r8j0sazws39",
     "freelanceEscrowAddress": "tori1njpsnvd6u4xalxt4y06xrx9n05ycmw3uwk2y7nmukw7h7xy7zwmqzadhmt",
-    "freelanceReportAddress": "tori1e7d76cew6mu6jfd00269usr7slvc5jklysxjymft0mlltuak2etqk7fg8g"
+    "freelanceReportAddress": "tori1e7d76cew6mu6jfd00269usr7slvc5jklysxjymft0mlltuak2etqk7fg8g",
+    "daoCw20CodeId": 99,
+    "daoFactoryCodeId": 100,
+    "daoCoreCodeId": 101,
+    "daoPreProposeSingleCodeId": 102,
+    "daoProposalSingleCodeId": 103,
+    "daoVotingCw20StakedCodeId": 104,
+    "daoCw20StakeCodeId": 105,
+    "daoCw4GroupCodeId": 106,
+    "daoVotingCw4CodeId": 109,
+    "daoFactoryContractAddress": "tori1r29chp8ufwgx9u3wr4sfk050aardhkzwve7nht6y06gvlaqutr3qt83z6r",
+    "coreDAOAddress": "tori1dy5h9q9zue4swxe9mzracm8gudp0fcf2ncllch6pfq9d0fq0ftgq546063"
   },
   {
     "id": "cosmos-hub-theta",

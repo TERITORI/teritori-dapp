@@ -3569,6 +3569,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@cosmjs/encoding@npm:^0.30.1":
+  version: 0.30.1
+  resolution: "@cosmjs/encoding@npm:0.30.1"
+  dependencies:
+    base64-js: ^1.3.0
+    bech32: ^1.1.4
+    readonly-date: ^1.0.0
+  checksum: bd1932fafecbf9876ad97dee8133cc955f52d2fd9b6040d8c991b40ba4195c02cb4dc3c4beec7c237217ba96db78cd914840b2b895348482190d459a21c2b6dd
+  languageName: node
+  linkType: hard
+
 "@cosmjs/json-rpc@npm:^0.29.5":
   version: 0.29.5
   resolution: "@cosmjs/json-rpc@npm:0.29.5"
@@ -7003,6 +7014,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@react-native-picker/picker@npm:2.4.0":
+  version: 2.4.0
+  resolution: "@react-native-picker/picker@npm:2.4.0"
+  peerDependencies:
+    react: 16 || 17
+    react-native: ">=0.57"
+  checksum: ccec86aaa54b8011479b7aa3e062534ccbe146c696ecefa456f1540da5de3d3b84c422beeaf499f3d1166898996d88186155432b7c51fbbdb5d576dc4f2c379f
+  languageName: node
+  linkType: hard
+
 "@react-native/assets@npm:1.0.0":
   version: 1.0.0
   resolution: "@react-native/assets@npm:1.0.0"
@@ -7021,6 +7042,13 @@ __metadata:
   version: 2.0.0
   resolution: "@react-native/normalize-color@npm:2.0.0"
   checksum: 2da373297f0d22b700edb9ab1b2cca34684e94a5dfe172e1cfd114e74ac17e139e802bc671e9868e0a580190eccbf3fa804f67be8cc1d9cbd0e216e994495931
+  languageName: node
+  linkType: hard
+
+"@react-native/normalize-colors@npm:*":
+  version: 0.73.0
+  resolution: "@react-native/normalize-colors@npm:0.73.0"
+  checksum: 0b98021f4d40e497f25e96d610d98602cb6d80d455e3a93676e99922c7cfa03829c531eae110b62585bfa567bb4d2b28f91f0b06f8539244619baac2c0bee9a9
   languageName: node
   linkType: hard
 
@@ -12822,6 +12850,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"commander@npm:^10.0.1":
+  version: 10.0.1
+  resolution: "commander@npm:10.0.1"
+  checksum: 436901d64a818295803c1996cd856621a74f30b9f9e28a588e726b2b1670665bccd7c1a77007ebf328729f0139838a88a19265858a0fa7a8728c4656796db948
+  languageName: node
+  linkType: hard
+
 "commander@npm:^2.19.0, commander@npm:^2.20.0, commander@npm:^2.20.3":
   version: 2.20.3
   resolution: "commander@npm:2.20.3"
@@ -14255,6 +14290,17 @@ __metadata:
     invariant: "*"
     prop-types: "*"
   checksum: d14f4be1dfe780a7fa9197a31b4a9a2b409c8cf1bf677713fd92d06733dee1043578662d1a8858541cf06164ae91d295db6e595f29bf13e808d9fb37bc58c90b
+  languageName: node
+  linkType: hard
+
+"deprecated-react-native-prop-types@npm:^4.0.0":
+  version: 4.1.0
+  resolution: "deprecated-react-native-prop-types@npm:4.1.0"
+  dependencies:
+    "@react-native/normalize-colors": "*"
+    invariant: "*"
+    prop-types: "*"
+  checksum: bba96622e196f650e782963598a2868a9c89b32e88fba1555fe1308d324eb387ab2a1f16235162b7bccc1900e8f43b7f8eae4f149a37f10cdf52e071990a7c9a
   languageName: node
   linkType: hard
 
@@ -24843,7 +24889,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:*, prop-types@npm:^15.5.8, prop-types@npm:^15.6.0, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
+"prop-types@npm:*, prop-types@npm:^15.5.6, prop-types@npm:^15.5.8, prop-types@npm:^15.6.0, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -25624,6 +25670,18 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: 8792203c2a1f9ab80b33814f78e7bd10be8c09dcc105f44fa22ca70f4417bc028613f49831c8972fbb49531ef45433e8971f07d6e0365d3da3042dc40f30f7a3
+  languageName: node
+  linkType: hard
+
+"react-native-smooth-slider@npm:^1.3.6":
+  version: 1.3.9
+  resolution: "react-native-smooth-slider@npm:1.3.9"
+  dependencies:
+    deprecated-react-native-prop-types: ^4.0.0
+    prop-types: ^15.5.6
+  peerDependencies:
+    react-native-gesture-handler: ">=1.1.0"
+  checksum: 9253e39f365cc291482c535046721a95b74b88fe9671fdcb79e24bd6a4be4e091ef69296ea4045578ea30688a5fa70c8ee3fd336dcd8d80dc5947b9a66ad6133
   languageName: node
   linkType: hard
 
@@ -28489,7 +28547,8 @@ __metadata:
     "@babel/plugin-proposal-numeric-separator": ^7.18.6
     "@cosmjs/amino": 0.29.3
     "@cosmjs/cosmwasm-stargate": 0.29.3
-    "@cosmjs/proto-signing": 0.29.3
+    "@cosmjs/encoding": ^0.30.1
+    "@cosmjs/proto-signing": 0.29.5
     "@cosmjs/stargate": 0.29.3
     "@cosmology/core": 1.20.0
     "@cosmwasm/ts-codegen": ^0.16.3
@@ -28514,6 +28573,7 @@ __metadata:
     "@react-native-async-storage/async-storage": ~1.17.3
     "@react-native-clipboard/clipboard": ^1.10.0
     "@react-native-masked-view/masked-view": 0.2.6
+    "@react-native-picker/picker": 2.4.0
     "@react-navigation/native": ^6.0.11
     "@react-navigation/native-stack": ^6.7.0
     "@reduxjs/toolkit": ^1.8.3
@@ -28536,6 +28596,7 @@ __metadata:
     babel-plugin-react-inline-svg-unique-id: ^1.3.1
     bech32: ^2.0.0
     browser-headers: ^0.4.1
+    commander: ^10.0.1
     dotenv-webpack: ^8.0.0
     draft-convert: ^2.1.13
     draft-js: ^0.11.7
@@ -28589,6 +28650,7 @@ __metadata:
     react-native-redash: ^18.0.0
     react-native-safe-area-context: 4.2.4
     react-native-screens: ~3.11.1
+    react-native-smooth-slider: ^1.3.6
     react-native-svg: ^13.7.0
     react-native-svg-transformer: ^1.0.0
     react-native-text-ticker: ^1.14.0

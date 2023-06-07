@@ -25,12 +25,15 @@ import {
   View,
   ViewStyle,
 } from "react-native";
+import { SvgProps } from "react-native-svg";
 
 import { DEFAULT_FORM_ERRORS } from "../../utils/errors";
 import { handleKeyPress } from "../../utils/keyboard";
 import {
   additionalRed,
+  neutral00,
   neutral22,
+  neutral33,
   neutral77,
   neutralA3,
   secondaryColor,
@@ -43,13 +46,15 @@ import {
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { ErrorText } from "../ErrorText";
+import { SVG } from "../SVG";
 import { TertiaryBox } from "../boxes/TertiaryBox";
-import { SpacerColumn } from "../spacer";
+import { SpacerColumn, SpacerRow } from "../spacer";
 
 export interface TextInputCustomProps<T extends FieldValues>
   extends Omit<TextInputProps, "accessibilityRole" | "defaultValue"> {
   label: string;
-  iconSVG?: StyleProp<ViewStyle>;
+  variant?: "regular" | "labelOutside" | "noCropBorder" | "noStyle";
+  iconSVG?: React.FC<SvgProps>;
   placeHolder?: string;
   squaresBackgroundColor?: string;
   style?: StyleProp<ViewStyle>;
@@ -60,12 +65,13 @@ export interface TextInputCustomProps<T extends FieldValues>
   regexp?: RegExp;
   width?: number;
   height?: number;
-  variant?: "regular" | "labelOutside" | "noStyle";
   control?: Control<T>;
   name: Path<T>;
   rules?: Omit<RegisterOptions, "valueAsNumber" | "valueAsDate" | "setValueAs">;
   defaultValue?: PathValue<T, Path<T>>;
   subtitle?: React.ReactElement;
+  hideLabel?: boolean;
+  valueModifier?: (value: string) => string;
   labelStyle?: TextStyle;
   containerStyle?: ViewStyle;
   boxMainContainerStyle?: ViewStyle;
@@ -115,17 +121,21 @@ export const TextInputCustom = <T extends FieldValues>({
   squaresBackgroundColor,
   width,
   height,
-  variant,
+  variant = "regular",
   name,
   control,
   defaultValue,
   rules,
   subtitle,
   labelStyle,
+  iconSVG,
+  noBrokenCorners,
+  // isAsterickSign,
+  hideLabel,
+  valueModifier,
   containerStyle,
   boxMainContainerStyle,
   error,
-  noBrokenCorners,
   fullWidth,
   setRef,
   ...restProps
@@ -168,14 +178,14 @@ export const TextInputCustom = <T extends FieldValues>({
   const handleChangeText = (value: string) => {
     if (currency) {
       const reg = new RegExp(`^\\d+\\.?\\d{0,${currency.coinDecimals}}$`);
-      // @ts-ignore
+
       if (rules?.max && parseFloat(value) > rules.max) {
         return;
       }
 
       if (reg.test(value) || !value) {
-        field.onChange(value);
-        if (restProps.onChangeText) {
+        field.onChange(valueModifier ? valueModifier(value) : value);
+        if (restProps?.onChangeText) {
           restProps.onChangeText(value);
           return;
         }
@@ -184,8 +194,8 @@ export const TextInputCustom = <T extends FieldValues>({
     }
 
     if ((regexp && (regexp.test(value) || value === "")) || !regexp) {
-      field.onChange(value);
-      if (restProps.onChangeText) {
+      field.onChange(valueModifier ? valueModifier(value) : value);
+      if (restProps?.onChangeText) {
         restProps.onChangeText(value);
       }
     }
@@ -223,23 +233,32 @@ export const TextInputCustom = <T extends FieldValues>({
       <TertiaryBox
         squaresBackgroundColor={squaresBackgroundColor}
         style={style}
-        mainContainerStyle={[styles.mainContainer, boxMainContainerStyle]}
+        mainContainerStyle={[styles.mainContainer, boxMainContainerStyle,  variant === "noCropBorder" && styles.noCropBorderBg]}
         width={width}
         fullWidth={!width}
         height={height}
         noBrokenCorners={noBrokenCorners}
       >
         <View style={styles.innerContainer}>
-          <>{children}</>
+          {iconSVG && (
+            <>
+              <SVG source={iconSVG} width={16} height={16} />
+              <SpacerRow size={1.5} />
+            </>
+          )}
           <View style={{ flex: 1, marginRight: children ? 12 : undefined }}>
-            {variant !== "labelOutside" && (
-              <Pressable onPress={() => inputRef.current?.focus()}>
-                <BrandText style={[styles.labelText, fontMedium10, labelStyle]}>
-                  {label}
-                </BrandText>
-                <SpacerColumn size={0.5} />
-              </Pressable>
-            )}
+            {!variant ||
+              (!["labelOutside", "noCropBorder"].includes(variant) &&
+                !hideLabel && (
+                  <Pressable onPress={() => inputRef.current?.focus()}>
+                    <BrandText
+                      style={[styles.labelText, fontMedium10, labelStyle]}
+                    >
+                      {label}
+                    </BrandText>
+                    <SpacerColumn size={0.5} />
+                  </Pressable>
+                ))}
             <TextInput
               ref={inputRef}
               editable={!disabled}
@@ -252,6 +271,8 @@ export const TextInputCustom = <T extends FieldValues>({
               {...restProps}
             />
           </View>
+
+          <>{children}</>
         </View>
       </TertiaryBox>
       <ErrorText>{error || fieldError}</ErrorText>
@@ -270,6 +291,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 10,
     backgroundColor: neutral22,
+  },
+  noCropBorderBg: {
+    backgroundColor: neutral00,
+    borderWidth: 1,
+    borderColor: neutral33,
+    borderRadius: 12,
+    paddingVertical: layout.padding_x1_5,
   },
   labelText: {
     color: neutral77,

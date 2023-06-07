@@ -5,6 +5,7 @@ import { ColorValue, ScrollView, TouchableOpacity, View } from "react-native";
 import { BrandText } from "../../components/BrandText/BrandText";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { ProposalStatus } from "../../screens/Governance/types";
+import { tulipTree } from "../../utils/style/colors";
 
 // FIXME: code dedup
 
@@ -68,7 +69,7 @@ export const GovernanceBox: React.FC<{
     colorMostVoted = "#16BBFF";
   } else {
     toppercentage = percentageNo;
-    colorMostVoted = "#EAA54B";
+    colorMostVoted = tulipTree;
   }
 
   const numberProposalHashtag = "#" + numberProposal;
@@ -284,7 +285,7 @@ export const GovernanceBox: React.FC<{
                   style={{
                     width: percentageNo,
                     height: 3,
-                    backgroundColor: "#EAA54B",
+                    backgroundColor: tulipTree,
                     borderRadius: 10,
                     position: "absolute",
                     left: percentageYes, //percentage of the width of the first view

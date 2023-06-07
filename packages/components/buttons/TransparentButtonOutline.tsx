@@ -13,7 +13,12 @@ import {
   ButtonsSize,
   heightButton,
 } from "../../utils/style/buttons";
-import { neutral22, neutral44 } from "../../utils/style/colors";
+import {
+  neutral22,
+  neutral44,
+  secondaryColor,
+  transparentColor,
+} from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
@@ -41,8 +46,8 @@ export const TransparentButtonOutline: React.FC<{
   text,
   onPress,
   squaresBackgroundColor,
-  backgroundColor = "transparent",
-  color = "#FFFFFF",
+  backgroundColor = transparentColor,
+  color = secondaryColor,
   borderColor = neutral44,
   style,
   iconSVG,

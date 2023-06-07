@@ -34,7 +34,7 @@ export const CollectionThumb: React.FC<CollectionThumbProps> = ({
         height={266}
       >
         <OptimizedImage
-          source={{ uri: info?.image }}
+          sourceURI={info?.image}
           style={{
             width: 172,
             height: 172,

@@ -34,7 +34,7 @@ export const UPPIntro: React.FC<{
   userId: string;
   isUserOwner?: boolean;
 }> = ({ userId, isUserOwner }) => {
-  const { metadata, loading } = useNSUserInfo(userId);
+  const { metadata } = useNSUserInfo(userId);
   const { copyToClipboard } = useCopyToClipboard();
   const socialButtonStyle = { margin: layout.padding_x0_75 };
   const [, userAddress] = parseUserId(userId);
@@ -55,9 +55,8 @@ export const UPPIntro: React.FC<{
         <OptimizedImage
           width={windowWidth < RESPONSIVE_BREAKPOINT_S ? windowWidth : width}
           height={320}
-          source={{
-            uri: metadata?.public_profile_header || defaultUserProfileBannerPNG,
-          }}
+          sourceURI={metadata?.public_profile_header}
+          fallbackURI={defaultUserProfileBannerPNG}
           style={{
             height: "100%",
             width: "100%",
@@ -123,8 +122,7 @@ export const UPPIntro: React.FC<{
           />
         )}
         <AvatarWithFrame
-          isLoading={loading}
-          image={metadata?.image}
+          userId={userId}
           style={{
             position: "absolute",
             top: 217,
@@ -171,7 +169,6 @@ export const UPPIntro: React.FC<{
               fontMedium14,
               { maxWidth: 735, marginTop: layout.padding_x1 },
             ]}
-            numberOfLines={6}
           >
             {metadata?.public_bio}
           </BrandText>

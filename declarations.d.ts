@@ -16,3 +16,5 @@ declare module "*.jpg" {
 
   export = value;
 }
+
+declare module "react-native-smooth-slider";
