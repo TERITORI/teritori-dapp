@@ -108,6 +108,7 @@ export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
   };
   return (
     <ScreenContainer
+      isLarge
       footerChildren={<></>}
       headerChildren={
         <BrandText style={fontSemibold20}>NFT Marketplace</BrandText>

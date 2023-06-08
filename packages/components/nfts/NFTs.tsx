@@ -24,7 +24,7 @@ export const NFTs: React.FC<{
 }> = ({ req, hideFilters = false }) => {
   const { nfts, fetchMore } = useNFTs(req);
 
-  const { height } = useMaxResolution();
+  const { height } = useMaxResolution({ isLarge: true });
   const filterIsShown = useShowFilters();
 
   const handleEndReached = useCallback(() => {

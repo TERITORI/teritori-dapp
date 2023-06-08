@@ -56,7 +56,7 @@ export const NFTView: React.FC<{
 }> = ({ data: nft, style }) => {
   const isMobile = useIsMobile();
   const cardWidth = isMobile ? 220 : 250;
-  const { width } = useMaxResolution();
+  const { width } = useMaxResolution({ isLarge: true });
   const insideMargin = layout.padding_x2;
   const contentWidth = cardWidth - insideMargin * 2;
   const flatStyle = StyleSheet.flatten(style);

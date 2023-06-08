@@ -41,6 +41,7 @@ export const ScreenContainer: React.FC<{
   forceNetworkId?: string;
   forceNetworkKind?: NetworkKind;
   responsive?: boolean;
+  isLarge?: boolean;
   onBackPress?: () => void;
   maxWidth?: number;
 }> = ({
@@ -53,6 +54,7 @@ export const ScreenContainer: React.FC<{
   noScroll,
   fullWidth,
   responsive,
+  isLarge,
   onBackPress,
   maxWidth,
   forceNetworkId,
@@ -62,7 +64,11 @@ export const ScreenContainer: React.FC<{
   const { height } = useWindowDimensions();
   const hasMargin = !noMargin;
   const hasScroll = !noScroll;
-  const { width: screenWidth } = useMaxResolution({ responsive, noMargin });
+  const { width: screenWidth } = useMaxResolution({
+    responsive,
+    noMargin,
+    isLarge,
+  });
   const isMobile = useIsMobile();
 
   const calculatedWidth = useMemo(

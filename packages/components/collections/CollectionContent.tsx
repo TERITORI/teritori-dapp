@@ -28,7 +28,7 @@ export const CollectionContent: React.FC<{
 }> = React.memo(({ id, selectedTab, sortDirection }) => {
   const wallet = useSelectedWallet();
 
-  const { width } = useMaxResolution();
+  const { width } = useMaxResolution({ isLarge: true });
   const numColumns = Math.floor(width / nftWidth);
   const selectedFilters = useSelector((state: RootState) =>
     selectAllSelectedAttributeDataByCollectionId(state, id)

@@ -47,7 +47,7 @@ export const CollectionHeader: React.FC<{
   const wallet = useSelectedWallet();
   // variables
   const stats = useCollectionStats(collectionId, wallet?.userId);
-  const { width } = useMaxResolution();
+  const { width } = useMaxResolution({ isLarge: true });
   const [network, collectionMintAddress] = parseCollectionId(collectionId);
   const { setToastSuccess } = useFeedbacks();
 

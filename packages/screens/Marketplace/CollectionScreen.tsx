@@ -29,7 +29,11 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
   );
   const [network] = parseCollectionId(id);
   const navigation = useAppNavigation();
-  const { width } = useMaxResolution({ responsive: true, noMargin: false });
+  const { width } = useMaxResolution({
+    responsive: true,
+    noMargin: false,
+    isLarge: true,
+  });
   const cartIsShown = useShowCart();
   const dispatch = useAppDispatch();
 
@@ -42,6 +46,7 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
   // returns
   return (
     <ScreenContainer
+      isLarge
       key={`Collection ${id}`} // this key is to reset the screen state when the id changes
       footerChildren={<></>}
       headerChildren={
