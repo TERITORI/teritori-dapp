@@ -29,6 +29,7 @@ import { SelectedNetworkGate } from "../SelectedNetworkGate";
 import { ConnectWalletButton } from "../TopMenu/ConnectWalletButton";
 import { Footer } from "../footers/Footer";
 import { Sidebar } from "../navigation/Sidebar";
+import { CartIconButtonBadge } from "../navigation/components/CartIconButtonBadge";
 
 export const ScreenContainer: React.FC<{
   headerChildren?: JSX.Element;
@@ -184,6 +185,7 @@ export const ScreenContainer: React.FC<{
                 width: 1,
               }}
             />
+            <CartIconButtonBadge style={{ marginRight: 12 }} />
             <NetworkSelector
               forceNetworkId={forceNetworkId}
               forceNetworkKind={forceNetworkKind}
