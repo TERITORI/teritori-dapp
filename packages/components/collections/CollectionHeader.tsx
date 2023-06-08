@@ -95,7 +95,6 @@ export const CollectionHeader: React.FC<{
   return width > 0 && stats && network ? (
     <View
       style={{
-        // maxWidth: width,
         width: "100%",
         alignSelf: "center",
         marginTop: layout.padding_x4,
@@ -255,7 +254,8 @@ export const CollectionHeader: React.FC<{
             height: "100%",
             flex: 8,
             paddingLeft: layout.padding_x2,
-            marginHorizontal: 1,
+            marginHorizontal: 16,
+            borderRadius: 8,
             backgroundColor: codGrayColor,
           }}
           noUnderline
