@@ -34,11 +34,10 @@ export const PathwarScreen: ScreenFC<"Pathwar"> = () => {
     myHeaders.append("Authorization", "Bearer " + token);
     const fetchData = async () => {
       const res = await fetch(
-        "https://api-unsafe.pathwar.land/season-challenges?season_id=1491161252464955392",
+        "http://localhost:8000/season-challenges?season_id=1666417759589765120",
         requestOptions
       );
       const data = await res.json();
-
       setCards(data.items);
     };
     fetchData().catch(console.error);

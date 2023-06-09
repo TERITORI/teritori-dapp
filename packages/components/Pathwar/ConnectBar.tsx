@@ -55,6 +55,16 @@ export const ConnectBar: React.FC<object> = () => {
     const res = await fetch("http://localhost:3000/token", requestOptions);
     const json = await res.json();
     dispatch(setPathwarToken(json.token));
+
+    const userRequestOptions = {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + json.token,
+      },
+    };
+
+    await fetch("http://localhost:8000/user/session", userRequestOptions);
   };
 
   return (

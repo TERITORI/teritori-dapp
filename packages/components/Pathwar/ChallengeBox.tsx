@@ -257,7 +257,7 @@ export const ChallengeBox: React.FC<{
               flexWrap: "wrap",
             }}
           >
-            {tags.map((tag, index) => (
+            {tags && tags.map((tag, index) => (
               <View
                 style={{
                   width: "fit-content",
