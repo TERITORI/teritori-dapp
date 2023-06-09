@@ -109,7 +109,7 @@ export const CollectionHeader: React.FC<{
           borderRadius: layout.padding_x2,
           borderColor: neutral33,
           borderWidth: 1,
-          padding: layout.padding_x2,
+          padding: layout.padding_x4,
           borderStyle: "solid",
         }}
       >
@@ -203,35 +203,31 @@ export const CollectionHeader: React.FC<{
           </View>
           <View style={styles.statRow}>
             <CollectionSocialButtons collectionInfo={collectionInfo} />
-            {collectionInfo.discord ||
-            collectionInfo.twitter ||
-            collectionInfo.website ? (
-              <View
-                style={{
-                  height: 24,
-                  width: 1,
-                  backgroundColor: neutral33,
-                  marginRight: 12,
+            <View
+              style={{
+                marginTop: isMobile ? layout.padding_x1 : 0,
+                flexWrap: "nowrap",
+                flexDirection: "row",
+              }}
+            >
+              <SocialButtonSecondary
+                text="Explorer"
+                iconSvg={etherscanSVG}
+                style={{ marginRight: 12 }}
+                onPress={() => {
+                  const url = contractExplorerLink(
+                    network?.id,
+                    collectionMintAddress
+                  );
+                  Linking.openURL(url);
                 }}
               />
-            ) : null}
-            <SocialButtonSecondary
-              text="Explorer"
-              iconSvg={etherscanSVG}
-              style={{ marginRight: 12 }}
-              onPress={() => {
-                const url = contractExplorerLink(
-                  network?.id,
-                  collectionMintAddress
-                );
-                Linking.openURL(url);
-              }}
-            />
-            <SocialButtonSecondary
-              text="Share"
-              iconSvg={shareSVG}
-              onPress={onShare}
-            />
+              <SocialButtonSecondary
+                text="Share"
+                iconSvg={shareSVG}
+                onPress={onShare}
+              />
+            </View>
           </View>
         </View>
       </View>

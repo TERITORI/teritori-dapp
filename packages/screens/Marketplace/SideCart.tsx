@@ -173,7 +173,7 @@ const CartItems: React.FC<{ id: EntityId }> = ({ id }) => {
               dispatch(removeSelected(id));
             }}
           >
-            <TrashIcon size={10} color={neutralA3} />
+            <TrashIcon size={14} color={neutralA3} />
           </Pressable>
         </View>
         <Separator />
@@ -195,13 +195,20 @@ const CartItems: React.FC<{ id: EntityId }> = ({ id }) => {
               flexDirection: "row",
             }}
           >
-            <BrandText style={fontSemibold12}>
+            <BrandText
+              style={[
+                fontSemibold12,
+                {
+                  marginRight: layout.padding_x0_5,
+                },
+              ]}
+            >
               {prettyPrice(nft.networkId, nft.price, nft.denom)}
             </BrandText>
             <CurrencyIcon
               networkId={nft.networkId}
               denom={nft.denom}
-              size={16}
+              size={15}
             />
           </View>
         </View>
@@ -237,12 +244,14 @@ const ItemTotal: React.FC<{
           justifyContent: "space-around",
         }}
       >
+        <BrandText
+          style={[fontSemibold12, { marginRight: layout.padding_x0_5 }]}
+        >
+          {typeof textRight === "number" ? textRight.toFixed(2) : textRight}
+        </BrandText>
         {showLogo && (
           <CurrencyIcon networkId={networkId} denom={denom} size={16} />
         )}
-        <BrandText style={[fontSemibold12, { marginLeft: layout.padding_x1 }]}>
-          {typeof textRight === "number" ? textRight.toFixed(2) : textRight}
-        </BrandText>
       </View>
     </View>
   );
