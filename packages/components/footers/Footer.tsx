@@ -123,7 +123,6 @@ export const Footer: React.FC<{
     <View
       style={[
         {
-          // maxWidth: screenContentMaxWidthLarge,
           width: "100%",
           justifyContent: "center",
           alignItems: "center",

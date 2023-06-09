@@ -20,6 +20,9 @@ export const MyNFTs: React.FC = () => {
     collectionId: "",
     sortDirection: SortDirection.SORT_DIRECTION_ASCENDING,
     sort: Sort.SORT_PRICE,
+    attributes: [],
+    isListed: false,
+    priceRange: undefined,
   });
   return (
     <View

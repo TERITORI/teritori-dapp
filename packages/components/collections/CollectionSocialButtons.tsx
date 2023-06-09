@@ -18,20 +18,20 @@ export const CollectionSocialButtons: React.FC<{
 
   return (
     <>
-      {discordLink && (
-        <SocialButton
-          text="Discord"
-          iconSvg={discordSVG}
-          style={{ marginRight: 12 }}
-          onPress={() => Linking.openURL(discordLink)}
-        />
-      )}
       {websiteLink && (
         <SocialButton
           text="Website"
           iconSvg={websiteSVG}
           style={{ marginRight: 12 }}
           onPress={() => Linking.openURL(websiteLink)}
+        />
+      )}
+      {discordLink && (
+        <SocialButton
+          text="Discord"
+          iconSvg={discordSVG}
+          style={{ marginRight: 12 }}
+          onPress={() => Linking.openURL(discordLink)}
         />
       )}
       {twitterLink && (

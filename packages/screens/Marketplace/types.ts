@@ -6,3 +6,9 @@ export type NFTActivityType = {
   buyer: string;
   seller: string;
 };
+
+export interface PrettyPrint {
+  networkId: string;
+  value: number;
+  denom: string;
+}

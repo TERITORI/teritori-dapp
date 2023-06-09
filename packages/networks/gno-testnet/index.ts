@@ -16,4 +16,5 @@ export const gnoTestnetNetwork: GnoNetworkInfo = {
   contractExplorer: "https://etherscan.io/address/$address",
   testnet: true,
   backendEndpoint: "https://dapp-backend.mainnet.teritori.com",
+  vaultContractAddress: "",
 };

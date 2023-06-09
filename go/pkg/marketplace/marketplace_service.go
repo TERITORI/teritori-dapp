@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/Khan/genqlient/graphql"
@@ -73,11 +74,18 @@ type DBCollectionWithExtra struct {
 	Name                string
 	ImageURI            string
 	Volume              string
+	TotalVolume         float32
+	FloorPrice          uint64
+	MintPrice           string
+	NumTrades           int64
+	NumOwners           int32
+	Denom               string
 	MintContractAddress string
 	CreatorAddress      string
-	Price               uint64
+	Price               string
 	MaxSupply           int64
 	SecondaryDuringMint bool
+	VolumeCompare       float32
 }
 
 func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, srv marketplacepb.MarketplaceService_CollectionsServer) error {
@@ -141,11 +149,13 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 			where = where + "AND tc.denom = utori" // not mixed denoms allowed !
 			orderSQL = "tc.price" + orderDirection
 		case marketplacepb.Sort_SORT_VOLUME:
-			orderSQL = "volume " + orderDirection + ", id ASC"
+			orderSQL = "case when total_volume is null then 1 else 0 end, total_volume " + orderDirection
 		case marketplacepb.Sort_SORT_CREATED_AT:
 			orderSQL = "c.time " + orderDirection
+		case marketplacepb.Sort_SORT_VOLUME_USD:
+			orderSQL = "case when total_volume_usd is null then 1 else 0 end, total_volume_usd " + orderDirection
 		case marketplacepb.Sort_SORT_UNSPECIFIED:
-			orderSQL = "volume DESC, id ASC"
+			orderSQL = "volume DESC"
 		}
 
 		err := s.conf.IndexerDB.Raw(fmt.Sprintf(`
@@ -169,20 +179,48 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 				SELECT * FROM trades t2 INNER JOIN activities_on_period aop
 				ON aop.id = t2.activity_id
 			),
+     activities_on_period_comparision AS (
+         SELECT * FROM activities a2 WHERE a2."time" < ? and a2."time" > ?
+     ),
+     trades_on_period_comparision AS (
+         SELECT * FROM trades t2 INNER JOIN activities_on_period_comparision aop
+                                            ON aop.id = t2.activity_id
+     ),
+     trades_by_collection_historic AS (
+         select COALESCE(sum(cast(t.price as float8)),0) as total_volume, COALESCE(sum(t.usd_price),0) as total_volume_usd, c.id, count(*) num_trades
+         FROM trades t join activities a on a.id = t.activity_id
+                       join teritori_collections tc on split_part(a.nft_id,'-',2)=tc.mint_contract_address
+                       join collections c on c.id = tc.collection_id
+         group by c.id),
+     current_num_owners AS (
+         select count (DISTINCT owner_id) num_owners, collection_id, min(price_amount) floor_price
+         from nfts
+         group by collection_id),
 			trades_by_collection AS (
-				SELECT SUM(t.usd_price) volume, nbc.id FROM trades_on_period AS t
+				SELECT SUM(cast(t.price as float8)) volume, nbc.id FROM trades_on_period AS t
 				INNER JOIN nft_by_collection nbc ON nbc.nft_id = t.nft_id
 				GROUP BY nbc.id
-			)
-			SELECT tc.*, COALESCE((SELECT tbc.volume FROM trades_by_collection tbc WHERE tbc.id = tc.id), 0) volume
-				FROM tori_collections tc
-			ORDER BY ?
+      ),
+     trades_by_collection_comparision AS (
+         SELECT SUM(cast(t.price as float8)) volume, nbc.id 
+         FROM trades_on_period_comparision AS t
+         INNER JOIN nft_by_collection nbc ON nbc.nft_id = t.nft_id
+         GROUP BY nbc.id
+     )
+      SELECT tc.*, COALESCE((SELECT tbc.volume FROM trades_by_collection tbc WHERE tbc.id = tc.id), 0) volume,
+         total_volume, floor_price, num_trades, num_owners, 
+       COALESCE((SELECT tcc.volume FROM trades_by_collection_comparision tcc WHERE tcc.id = tc.id), 0) volume_compare
+      FROM tori_collections tc
+      left join trades_by_collection_historic tch on tc.id = tch.id
+      left join current_num_owners on tc.collection_id = current_num_owners.collection_id
+			ORDER BY %s
 			LIMIT ?
 			OFFSET ?
-		`, where),
+		`, where, orderSQL), // order By here or it won't work
 			s.conf.Whitelist,
 			time.Now().AddDate(0, 0, -30),
-			orderSQL,
+			time.Now().AddDate(0, 0, -30),
+			time.Now().AddDate(0, 0, -60),
 			limit,
 			offset,
 		).Scan(&collections).Error
@@ -199,9 +237,16 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 				MintAddress:         c.MintContractAddress,
 				NetworkId:           req.GetNetworkId(),
 				Volume:              c.Volume,
+				VolumeDenom:         c.Denom,
+				VolumeCompare:       c.VolumeCompare,
 				CreatorId:           string(network.UserID(c.CreatorAddress)),
 				SecondaryDuringMint: c.SecondaryDuringMint,
-				FloorPrice:          c.Price,
+				MintPrice:           c.Price,
+				Denom:               c.Denom,
+				FloorPrice:          c.FloorPrice,
+				TotalVolume:         c.TotalVolume,
+				NumTrades:           c.NumTrades,
+				NumOwners:           c.NumOwners,
 				MaxSupply:           c.MaxSupply,
 			}}); err != nil {
 				return errors.Wrap(err, "failed to send collection")
@@ -359,6 +404,31 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 		if ownerID != "" {
 			query = query.Where("owner_id = ?", ownerID)
 		}
+		var attributeQuery []string
+		for _, attribute := range req.Attributes {
+
+			attributeQuery = append(attributeQuery, fmt.Sprintf(`
+        attributes  @> '[{"value": "%s", "trait_type": "%s" }]'::jsonb`,
+				attribute.Value,
+				attribute.TraitType,
+			))
+
+		}
+		query.Where(
+			strings.Join(attributeQuery, " OR "),
+		)
+
+		if req.IsListed != false {
+			query.Where("is_listed = ?", true) // Options are ALL or buy now
+		}
+		if req.PriceRange != nil {
+			if req.PriceRange.Min != 0 {
+				query.Where("price_amount > ?", req.PriceRange.Min)
+			}
+			if req.PriceRange.Max != 0 {
+				query.Where("price_amount < ?", req.PriceRange.Max)
+			}
+		}
 
 		var nfts []*indexerdb.NFT
 		if err := query. // FIXME: this doesn't support mixed denoms
@@ -420,6 +490,71 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 	}
 
 	return fmt.Errorf("unsupported network kind '%s'", network.GetBase().Kind)
+}
+
+func (s *MarkteplaceService) NFTCollectionAttributes(req *marketplacepb.NFTCollectionAttributesRequest, srv marketplacepb.MarketplaceService_NFTCollectionAttributesServer) error {
+
+	collectionID := req.GetCollectionId()
+
+	var err error
+	var (
+		_ networks.Network
+	)
+	if collectionID != "" {
+		if _, _, err = s.conf.NetworkStore.ParseCollectionID(collectionID); err != nil {
+			return errors.Wrap(err, "failed to parse collection id")
+		}
+	} else {
+		return errors.New("missing filter")
+	}
+
+	var attributeQuery []string
+	for _, attribute := range req.WhereAttributes {
+
+		attributeQuery = append(attributeQuery, fmt.Sprintf(`
+        (trait_type =  '%s' and value = '%s')`,
+			attribute.TraitType,
+			attribute.Value,
+		))
+
+	}
+
+	whereQuery := strings.Join(attributeQuery, " OR ")
+	if whereQuery != "" {
+		whereQuery = "where " + whereQuery
+	}
+
+	var attributes []*marketplacepb.AttributeRarityFloor
+	err = s.conf.IndexerDB.Raw(fmt.Sprintf(
+		`
+WITH count_by_collection AS (
+    SELECT count(1) as total, collection_id FROM nfts GROUP BY nfts.collection_id
+),
+    with_attributes as (
+select trait_type, value, counta, floor, collection_id  from (
+      select trait_type, value, count(*) as counta, min(price_amount) as floor, collection_id from (SELECT attr.trait_type as trait_type, attr.value, price_amount, collection_id FROM nfts t,
+           jsonb_to_recordset(t.attributes) as attr(value varchar, trait_type varchar)
+           where collection_id = ?
+      ) as sorted
+       %s
+      group by trait_type, value, collection_id
+      order by floor, counta, trait_type asc, LENGTH(value) desc, value desc
+      ) as col
+)
+select *, (cast(counta as float) / total) * 100 as rare_ratio, total as collection_size
+from with_attributes
+join count_by_collection on with_attributes.collection_id = count_by_collection.collection_id
+		`, whereQuery),
+		collectionID,
+	).Scan(&attributes).Error
+
+	for _, attribute := range attributes {
+		if err := srv.Send(&marketplacepb.NFTCollectionAttributesResponse{Attributes: attribute}); err != nil {
+			return errors.Wrap(err, "failed to send attributes")
+		}
+	}
+
+	return nil
 }
 
 func (s *MarkteplaceService) Activity(req *marketplacepb.ActivityRequest, srv marketplacepb.MarketplaceService_ActivityServer) error {
@@ -742,24 +877,35 @@ func (s *MarkteplaceService) CollectionStats(ctx context.Context, req *marketpla
         SELECT  *  FROM nfts n where n.collection_id = $1
       ),
       listed_nfts as (
-        SELECT  * from nfts_in_collection nic where is_listed = true
+        SELECT * from nfts_in_collection nic where is_listed = true
       ),
       min_price_by_denom as (
         select min(price_amount) price_amount, price_denom from listed_nfts ln2 group by ln2.price_denom 
       ),
       trades_in_collection as (
-        select COALESCE(sum(t.usd_price),0) total_volume FROM trades AS t
+        select COALESCE(sum(cast(t.price as float8)),0) total_volume FROM trades AS t
         INNER join activities AS a on a.id = t.activity_id 
         INNER join nfts_in_collection nic on nic.id = a.nft_id
-      )
+      ),
+			activities_on_period AS (
+				SELECT *, a2.id activity_id FROM activities a2 
+        right join nfts_in_collection on a2.nft_id = nfts_in_collection.id
+        WHERE a2."time" > $3
+			),
+			trades_on_period AS (
+        SELECT COALESCE(avg(cast(t2.price as float8)),0) avg_price_period FROM trades t2 INNER JOIN activities_on_period aop
+				ON aop.activity_id = t2.activity_id
+			)
       select 
         to_json(array( select json_build_object('amount',price_amount,'denom',ln2.price_denom) from min_price_by_denom ln2)) lower_price, 
         (select total_volume from trades_in_collection),
         (select count(distinct owner_id)  from nfts_in_collection) owners,
         (select count(1) from listed_nfts) listed,
+       (select avg_price_period from trades_on_period) as avg_price_period,
         count(1) total_supply,
         (select count(1) from nfts_in_collection where owner_id = $2) owned
-      from nfts_in_collection`, collectionID, ownerID).Bind(ctx, db, &stats)
+      from nfts_in_collection`, collectionID, ownerID, time.Now().AddDate(0, 0, -1)).Bind(ctx, db, &stats)
+
 		if err != nil {
 			return nil, errors.Wrap(err, "failed to make query")
 		}
