@@ -78,11 +78,6 @@ export const NFTAttributeCard: React.FC<{
               nftInfo.mintDenom
             )}
           </BrandText>
-          {/*<CurrencyIcon*/}
-          {/*  networkId={nftInfo.networkId}*/}
-          {/*  denom={nftInfo.mintDenom}*/}
-          {/*  size={16}*/}
-          {/*/>*/}
           <BrandText
             style={[
               fontSemibold12,
