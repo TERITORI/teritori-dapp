@@ -1,3 +1,4 @@
+import { EntityId } from "@reduxjs/toolkit";
 import { groupBy } from "lodash";
 import React, { useEffect, useState } from "react";
 import {
@@ -39,12 +40,12 @@ import {
   addSelected,
   removeSelected,
   selectSelectedAttributeIds,
-  clearSelected,
   selectBuyNow,
   setBuyNow,
   setPriceRange,
   selectPriceRange,
   selectAllSelectedAttributeDataByCollectionId,
+  clearSelectedByCollection,
 } from "../../store/slices/marketplaceFilters";
 import { RootState, useAppDispatch } from "../../store/store";
 import { mustGetMarketplaceClient } from "../../utils/backend";
@@ -334,7 +335,14 @@ export const AppliedFilters: React.FC<{ collectionId: string }> = ({
   );
 
   const clearAll = () => {
-    dispatch(clearSelected());
+    const idsToRemove: EntityId[] = [];
+    selected.map((attribute) => {
+      idsToRemove.push(
+        `${attribute.collectionId}-${attribute.traitType}-${attribute.value}`
+      );
+    });
+
+    dispatch(clearSelectedByCollection(idsToRemove));
   };
   const removeFilter = (attribute: AttributeRarityFloor) => {
     dispatch(

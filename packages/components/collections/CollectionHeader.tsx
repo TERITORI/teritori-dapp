@@ -239,9 +239,11 @@ export const CollectionHeader: React.FC<{
           flex: 10,
         }}
       >
-        <FilterButton
-          mainContainerStyle={{ backgroundColor: neutral33, width: 54 }}
-        />
+        {selectedTab !== "activity" && (
+          <FilterButton
+            mainContainerStyle={{ backgroundColor: neutral33, width: 54 }}
+          />
+        )}
         <Tabs
           items={collectionScreenTabItems}
           onSelect={onSelectTab}

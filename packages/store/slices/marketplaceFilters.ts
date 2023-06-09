@@ -18,12 +18,14 @@ const filter = createEntityAdapter<AttributeRarityFloor>({
 
 interface UIStates {
   showFilters: boolean;
+  showFilterButton: boolean;
   buyNowState: boolean;
   priceRange: PriceRange;
 }
 
 const initialState: UIStates = {
   showFilters: false,
+  showFilterButton: true,
   buyNowState: true,
   priceRange: {
     min: 0,
@@ -33,6 +35,9 @@ const initialState: UIStates = {
 
 export const selectShowFilters = (state: RootState) =>
   state.marketplaceFilterUI.showFilters;
+
+export const selectShowFilterButton = (state: RootState) =>
+  state.marketplaceFilterUI.showFilterButton;
 
 export const selectBuyNow = (state: RootState) =>
   state.marketplaceFilterUI.buyNowState;
@@ -57,6 +62,9 @@ const filterUI = createSlice({
   reducers: {
     setShowFilters: (state, action: PayloadAction<boolean>) => {
       state.showFilters = action.payload;
+    },
+    setShowFilterButton: (state, action: PayloadAction<boolean>) => {
+      state.showFilterButton = action.payload;
     },
     setBuyNow: (state, action: PayloadAction<boolean>) => {
       state.buyNowState = action.payload;
@@ -95,7 +103,8 @@ export const {
   clearSelectedByCollection,
 } = filtersSlice.actions;
 
-export const { setShowFilters, setBuyNow, setPriceRange } = filterUI.actions;
+export const { setShowFilters, setBuyNow, setPriceRange, setShowFilterButton } =
+  filterUI.actions;
 
 export const marketplaceFilters = filtersSlice.reducer;
 export const marketplaceFilterUI = filterUI.reducer;
