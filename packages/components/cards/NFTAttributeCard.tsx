@@ -12,7 +12,6 @@ import {
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
-import { CurrencyIcon } from "../CurrencyIcon";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 
 // TODO: Dynamic data + props
@@ -23,7 +22,8 @@ export const NFTAttributeCard: React.FC<{
   style?: StyleProp<ViewStyle>;
 }> = ({ nftAttribute, nftInfo, style }) => {
   return (
-    nftAttribute && (
+    nftAttribute &&
+    nftInfo && (
       <TertiaryBox
         height={92}
         width={192}
@@ -66,20 +66,23 @@ export const NFTAttributeCard: React.FC<{
           <BrandText
             style={[
               fontSemibold12,
-              { color: resolveColor("color", nftAttribute.rareRatio) },
+              {
+                color: resolveColor("color", nftAttribute.rareRatio),
+                marginRight: layout.padding_x0_5,
+              },
             ]}
           >
             {prettyPrice(
               nftInfo.networkId,
               nftAttribute.floor + "",
-              nftInfo.priceDenom
+              nftInfo.mintDenom
             )}
           </BrandText>
-          <CurrencyIcon
-            networkId={nftInfo.networkId}
-            denom={nftInfo.priceDenom}
-            size={16}
-          />
+          {/*<CurrencyIcon*/}
+          {/*  networkId={nftInfo.networkId}*/}
+          {/*  denom={nftInfo.mintDenom}*/}
+          {/*  size={16}*/}
+          {/*/>*/}
           <BrandText
             style={[
               fontSemibold12,
