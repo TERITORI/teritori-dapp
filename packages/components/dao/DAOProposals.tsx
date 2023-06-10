@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import {
   StyleProp,
   Text,
@@ -11,14 +11,18 @@ import { DAOProposalModal } from "./DAOProposalModal";
 import { ProposalActions } from "./ProposalActions";
 import orgSVG from "../../../assets/icons/multisig.svg";
 import { ProposalResponse } from "../../contracts-clients/dao-proposal-single/DaoProposalSingle.types";
-import { useDAOProposalVotes } from "../../hooks/dao/useDAOProposalVotes";
 import { useDAOProposals } from "../../hooks/dao/useDAOProposals";
 import { useDAOProposalsConfig } from "../../hooks/dao/useDAOProposalsConfig";
 import { useDAOTotalVotingPower } from "../../hooks/dao/useDAOTotalVotingPower";
 import { useNSPrimaryAlias } from "../../hooks/useNSPrimaryAlias";
 import { getUserId, parseUserId } from "../../networks";
-import { trimFixed } from "../../utils/numbers";
-import { neutral33, neutral55, neutral77 } from "../../utils/style/colors";
+import {
+  neutral33,
+  neutral55,
+  neutral77,
+  successColor,
+  errorColor,
+} from "../../utils/style/colors";
 import { fontSemibold13, fontSemibold14 } from "../../utils/style/fonts";
 import { tinyAddress } from "../../utils/text";
 import { BrandText } from "../BrandText";
@@ -45,7 +49,6 @@ const ProposalRow: React.FC<{
   proposal: ProposalResponse;
 }> = ({ daoId, proposal }) => {
   const [network] = parseUserId(daoId);
-  const { daoProposalVotes } = useDAOProposalVotes(daoId, proposal.id);
   const { daoTotalVotingPower } = useDAOTotalVotingPower(daoId);
   const { daoProposalsConfig } = useDAOProposalsConfig(daoId);
 
@@ -57,26 +60,34 @@ const ProposalRow: React.FC<{
     flex: 1,
   };
 
-  const approvedWeight = useMemo(() => {
-    if (!daoProposalVotes) {
-      return 0;
-    }
-    return daoProposalVotes
-      .filter((v) => v.vote === "yes")
-      .reduce((total, v) => total + parseFloat(v.power), 0);
-  }, [daoProposalVotes]);
+  const weights = {
+    approved: parseFloat(proposal.proposal.votes.yes),
+    declined: parseFloat(proposal.proposal.votes.no),
+    abstained: parseFloat(proposal.proposal.votes.abstain),
+    voted: 0,
+  };
+  weights.voted = weights.approved + weights.declined + weights.abstained;
 
   const totalWeight = parseFloat(daoTotalVotingPower?.power || "0");
 
-  const requiredWeight = daoProposalsConfig?.threshold
-    ? "threshold_quorum" in daoProposalsConfig.threshold
-      ? parseFloat(
-          "percent" in daoProposalsConfig.threshold.threshold_quorum.quorum
-            ? daoProposalsConfig.threshold.threshold_quorum.quorum.percent
-            : "0"
-        ) * totalWeight
-      : 0
-    : 0;
+  let quorumGain = 0;
+  let thresholdGain = 0;
+  if (
+    daoProposalsConfig?.threshold &&
+    "threshold_quorum" in daoProposalsConfig.threshold
+  ) {
+    const threshold = daoProposalsConfig.threshold.threshold_quorum.threshold;
+    if ("percent" in threshold) {
+      thresholdGain = parseFloat(threshold.percent);
+    }
+    const quorum = daoProposalsConfig.threshold.threshold_quorum.quorum;
+    if ("percent" in quorum) {
+      quorumGain = parseFloat(quorum.percent);
+    }
+  }
+  const thresholdWeight = thresholdGain * totalWeight;
+  const targetWeight = Math.max(weights.voted, thresholdWeight);
+  const quorumWeight = quorumGain * targetWeight;
 
   const [displayProposalModal, setDisplayProposalModal] =
     useState<boolean>(false);
@@ -156,45 +167,99 @@ const ProposalRow: React.FC<{
           </View>
         </View>
         <View style={elemStyle}>
-          <BrandText
-            style={[fontSemibold14, { lineHeight: 14, color: neutral77 }]}
-            numberOfLines={1}
-          >
-            Approved by{" "}
-            <Text style={{ color: "white" }}>
-              {trimFixed(approvedWeight.toFixed(4))}
-            </Text>{" "}
-            of{" "}
-            <Text style={{ color: "white" }}>
-              {trimFixed(totalWeight.toFixed(4))}
-            </Text>{" "}
-            ({trimFixed(requiredWeight.toFixed(4))} required)
-          </BrandText>
-          <View
-            style={{
-              flexDirection: "row",
-              width: "100%",
-              height: 13,
-              alignItems: "center",
-            }}
-          >
-            <View
-              style={{
-                flexDirection: "row",
-                backgroundColor: "white",
-                height: progressBarHeight,
-                flex: approvedWeight / requiredWeight,
-              }}
-            />
-            <View
-              style={{
-                flexDirection: "row",
-                height: progressBarHeight,
-                backgroundColor: neutral55,
-                flex: (requiredWeight - approvedWeight) / requiredWeight,
-              }}
-            />
-          </View>
+          {proposal.proposal.status === "open" && (
+            <>
+              <View
+                style={{
+                  flexDirection: "row",
+                  width: "100%",
+                  height: 13,
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                <BrandText
+                  style={[fontSemibold14, { lineHeight: 14, color: neutral77 }]}
+                  numberOfLines={1}
+                >
+                  Voted:{" "}
+                  <Text style={{ color: "white" }}>
+                    {Math.ceil(weights.voted)}
+                  </Text>
+                  /
+                  <Text style={{ color: "white" }}>
+                    {Math.ceil(thresholdWeight)}
+                  </Text>
+                </BrandText>
+                <BrandText
+                  style={[fontSemibold14, { lineHeight: 14, color: neutral77 }]}
+                  numberOfLines={1}
+                >
+                  Yes:{" "}
+                  <Text style={{ color: "white" }}>
+                    {Math.ceil(weights.approved)}
+                  </Text>
+                  /
+                  <Text style={{ color: "white" }}>
+                    {Math.ceil(quorumWeight)}
+                  </Text>
+                </BrandText>
+              </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  width: "100%",
+                  height: 13,
+                  alignItems: "center",
+                }}
+              >
+                <View style={{ flex: 1, flexDirection: "row" }}>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      backgroundColor: successColor,
+                      height: progressBarHeight,
+                      flex: weights.approved / targetWeight,
+                    }}
+                  />
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      backgroundColor: "white",
+                      height: progressBarHeight,
+                      flex: weights.abstained / targetWeight,
+                    }}
+                  />
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      backgroundColor: errorColor,
+                      height: progressBarHeight,
+                      flex: weights.declined / targetWeight,
+                    }}
+                  />
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      backgroundColor: neutral55,
+                      height: progressBarHeight,
+                      flex: (targetWeight - weights.voted) / targetWeight,
+                    }}
+                  />
+                </View>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    backgroundColor: "black",
+                    height: progressBarHeight,
+                    position: "absolute",
+                    left: `${quorumGain * 100}%`,
+                    width: 1,
+                  }}
+                />
+              </View>
+            </>
+          )}
         </View>
         <View
           style={{
