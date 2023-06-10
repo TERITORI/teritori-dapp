@@ -249,8 +249,8 @@ export const CollectionHeader: React.FC<{
           onSelect={onSelectTab}
           selected={selectedTab}
           style={{
-            height: "100%",
             flex: 8,
+            height: 48,
             paddingLeft: layout.padding_x2,
             marginHorizontal: 16,
             borderRadius: 8,

@@ -151,7 +151,7 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 		case marketplacepb.Sort_SORT_VOLUME:
 			orderSQL = "case when total_volume is null then 1 else 0 end, total_volume " + orderDirection
 		case marketplacepb.Sort_SORT_CREATED_AT:
-			orderSQL = "c.time " + orderDirection
+			orderSQL = "tc.time " + orderDirection
 		case marketplacepb.Sort_SORT_VOLUME_USD:
 			orderSQL = "case when total_volume_usd is null then 1 else 0 end, total_volume_usd " + orderDirection
 		case marketplacepb.Sort_SORT_UNSPECIFIED:
