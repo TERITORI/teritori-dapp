@@ -55,7 +55,8 @@ const gnoGetUsernameByAddress = async (
       "gno.land/r/demo/users",
       `GetUserByAddress("${userAddress}").name`
     );
-    return extractGnoString(username);
+    const gnoUsename = extractGnoString(username);
+    return `${gnoUsename}.gno`;
   } catch (err) {
     throw err;
   }
