@@ -52,15 +52,22 @@ func (h *Handler) handleInstantiateBreeding(e *Message, contractAddress string, 
 
 	maxSupply := minterInstantiateMsg.ChildNftMaxSupply
 
+	// get block time
+	blockTime, err := e.GetBlockTime()
+	if err != nil {
+		return errors.Wrap(err, "failed to get block time")
+	}
+
 	// create collection
 	collectionId := h.config.Network.CollectionID(contractAddress)
 	if err := h.db.Create(&indexerdb.Collection{
 		ID:                  collectionId,
-		NetworkId:           "teritori", // FIXME: get from networks config
+		NetworkId:           h.config.Network.ID,
 		Name:                minterInstantiateMsg.ChildNftName,
 		ImageURI:            metadata.ImageURI,
 		MaxSupply:           maxSupply,
 		SecondaryDuringMint: true,
+		Time:                blockTime,
 		TeritoriCollection: &indexerdb.TeritoriCollection{
 			MintContractAddress: contractAddress,
 			NFTContractAddress:  nftAddr,
@@ -267,10 +274,10 @@ func (h *Handler) handleExecuteSquadUnstake(e *Message, execMsg *wasmtypes.MsgEx
 		}
 
 		// Update score
-		if err := h.db.Model(&userScore).
-			UpdateColumn("score", gorm.Expr("score  + ?", adjustedStakingDuration)).
-			UpdateColumn("in_progress_score", gorm.Expr("score")).
-			Error; err != nil {
+		if err := h.db.Model(&indexerdb.P2eLeaderboard{
+			UserID:   userId,
+			SeasonID: seasonId,
+		}).UpdateColumn("score", gorm.Expr("score + ?", adjustedStakingDuration)).Error; err != nil {
 			return errors.Wrap(err, "failed to update user score")
 		}
 	}

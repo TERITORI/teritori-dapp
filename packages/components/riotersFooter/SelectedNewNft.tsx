@@ -36,8 +36,11 @@ const SelectNewNft: React.FC<{
       ownerId: "",
       limit: alignDown(20, 2) || 2,
       offset: 0,
-      sort: Sort.SORTING_PRICE,
+      sort: Sort.SORT_PRICE,
       sortDirection: SortDirection.SORT_DIRECTION_ASCENDING,
+      attributes: [],
+      isListed: false,
+      priceRange: undefined,
     });
 
     const RenderItem: React.FC<{ item: NFT }> = useCallback(

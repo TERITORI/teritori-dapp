@@ -9,7 +9,6 @@ import { useNSUserInfo } from "../hooks/useNSUserInfo";
 import { useSelectedNetworkId } from "../hooks/useSelectedNetwork";
 import useSelectedWallet from "../hooks/useSelectedWallet";
 import { getCosmosNetwork } from "../networks";
-import { ipfsURLToHTTPURL } from "../utils/ipfs";
 import { fontSemibold14 } from "../utils/style/fonts";
 import { layout } from "../utils/style/layout";
 import { tinyAddress } from "../utils/text";
@@ -50,13 +49,8 @@ export const UserNameInline: React.FC<PlayerNameProps> = ({
       >
         <RoundedGradientImage
           size="XXS"
-          imageSource={{
-            uri: ipfsURLToHTTPURL(
-              userInfo?.metadata?.image ||
-                network?.nameServiceDefaultImage ||
-                ""
-            ),
-          }}
+          sourceURI={userInfo?.metadata?.image}
+          fallbackURI={network?.nameServiceDefaultImage}
         />
         <BrandText
           style={[{ marginLeft: layout.padding_x1_5 }, fontSemibold14]}

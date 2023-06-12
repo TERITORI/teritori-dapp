@@ -1,8 +1,10 @@
 import React, { FC, useState } from "react";
 import { Pressable, StyleProp, View, ViewStyle } from "react-native";
+import { ActivityIndicator } from "react-native-paper";
 
 import { TopMenu } from "./TopMenu";
 import secondaryCardSmSVG from "../../../assets/cards/secondary-card-sm.svg";
+import { useWallets } from "../../context/WalletsProvider";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
@@ -18,6 +20,7 @@ export const ConnectWalletButton: FC<{ style?: StyleProp<ViewStyle> }> = ({
   // variables
   const { selectedWallet, selectedMultisignWallet } = useSelectedWallet();
   const [isConnectWalletVisible, setIsConnectWalletVisible] = useState(false);
+  const { ready } = useWallets();
 
   // functions
   const toggleConnectWallet = () =>
@@ -34,7 +37,10 @@ export const ConnectWalletButton: FC<{ style?: StyleProp<ViewStyle> }> = ({
             }
           />
         ) : (
-          <Pressable onPress={toggleConnectWallet}>
+          <Pressable
+            onPress={ready ? toggleConnectWallet : undefined}
+            disabled={!ready}
+          >
             <SVG
               width={WIDTH}
               height={HEIGHT}
@@ -53,7 +59,11 @@ export const ConnectWalletButton: FC<{ style?: StyleProp<ViewStyle> }> = ({
                 minWidth: WIDTH,
               }}
             >
-              <BrandText style={fontSemibold14}>Connect wallet</BrandText>
+              {ready ? (
+                <BrandText style={fontSemibold14}>Connect wallet</BrandText>
+              ) : (
+                <ActivityIndicator size={fontSemibold14.fontSize} />
+              )}
             </View>
           </Pressable>
         )}

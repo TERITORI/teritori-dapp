@@ -1,16 +1,13 @@
-import { Decimal } from "@cosmjs/math";
 import Clipboard from "@react-native-clipboard/clipboard";
-import React, { useMemo } from "react";
+import React from "react";
 import { View, Platform, StyleSheet, Linking } from "react-native";
 
 import { CollectionStat } from "./CollectionStat";
 import { TabsListType } from "./types";
-import bannerCollection from "../../../assets/default-images/banner-collection.jpg";
 import etherscanSVG from "../../../assets/icons/etherscan.svg";
 import shareSVG from "../../../assets/icons/share.svg";
 import { SortDirection } from "../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../components/BrandText";
-import { PrimaryBox } from "../../components/boxes/PrimaryBox";
 import { SocialButtonSecondary } from "../../components/buttons/SocialButtonSecondary";
 import { CollectionSocialButtons } from "../../components/collections/CollectionSocialButtons";
 import { RoundedGradientImage } from "../../components/images/RoundedGradientImage";
@@ -18,20 +15,17 @@ import { SortButton } from "../../components/sorts/SortButton";
 import { SpacerRow } from "../../components/spacer";
 import { Tabs } from "../../components/tabs/Tabs";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { useCoingeckoPrices } from "../../hooks/useCoingeckoPrices";
 import { useCollectionStats } from "../../hooks/useCollectionStats";
+import { useIsMobile } from "../../hooks/useIsMobile";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import {
-  contractExplorerLink,
-  getNativeCurrency,
-  parseCollectionId,
-} from "../../networks";
+import { contractExplorerLink, parseCollectionId } from "../../networks";
+import { prettyPrice } from "../../utils/coins";
 import { CollectionInfo } from "../../utils/collection";
-import { neutral33 } from "../../utils/style/colors";
+import { codGrayColor, neutral33 } from "../../utils/style/colors";
 import { fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { OptimizedImage } from "../OptimizedImage";
+import { FilterButton } from "../sorts/FilterButton";
 
 // All the screen content before the Flatlist used to display NFTs
 export const CollectionHeader: React.FC<{
@@ -49,29 +43,17 @@ export const CollectionHeader: React.FC<{
   sortDirection,
   onChangeSortDirection,
 }) => {
-  const { selectedWallet: wallet } = useSelectedWallet();
+  const isMobile = useIsMobile();
+  const wallet = useSelectedWallet();
   // variables
   const stats = useCollectionStats(collectionId, wallet?.userId);
-  const { width } = useMaxResolution();
-  const height = width * (311 / 1092); // aspect ratio of the r!ot collection banner
+  const { width } = useMaxResolution({ isLarge: true });
   const [network, collectionMintAddress] = parseCollectionId(collectionId);
   const { setToastSuccess } = useFeedbacks();
 
-  const coins = useMemo(() => {
-    if (!network?.id || !stats?.floorPrice) {
-      return [];
-    }
-    return stats.floorPrice.map((fp) => ({
-      networkId: network.id,
-      denom: fp.denom,
-    }));
-  }, [network?.id, stats?.floorPrice]);
-
-  const { prices } = useCoingeckoPrices(coins);
-
   const collectionScreenTabItems = {
-    allNFTs: {
-      name: "All NFTs",
+    collections: {
+      name: "Collection",
       badgeCount: stats?.totalSupply || 0,
     },
     ...(stats?.owned
@@ -85,36 +67,11 @@ export const CollectionHeader: React.FC<{
     activity: {
       name: "Activity",
     },
+    // this will be later for a "bid" system
+    // offers: {
+    //   name: "Offers",
+    // },
   };
-
-  const usdFloorPrice = useMemo(() => {
-    if (!stats?.floorPrice || stats.floorPrice.length < 1) {
-      return Infinity;
-    }
-    return [...stats.floorPrice]
-      .map((fp) => {
-        const currency = getNativeCurrency(network?.id, fp.denom);
-        if (!currency) {
-          return Infinity;
-        }
-        const id = currency.coingeckoId;
-        const usdValue = id && prices[id]?.usd;
-        if (!usdValue) {
-          return Infinity;
-        }
-
-        return (
-          usdValue *
-          Decimal.fromAtomics(
-            fp.quantity,
-            currency.decimals
-          ).toFloatApproximation()
-        );
-      })
-      .sort((a, b) => {
-        return b - a;
-      })[0];
-  }, [prices, stats?.floorPrice, network?.id]);
 
   // functions
   const onShare = () => {
@@ -135,62 +92,109 @@ export const CollectionHeader: React.FC<{
   };
 
   // returns
-  return width > 0 ? (
-    <View style={{ maxWidth: width, alignSelf: "center" }}>
-      <OptimizedImage
-        width={width}
-        height={height}
-        source={{
-          uri: collectionInfo.bannerImage || bannerCollection,
-        }}
-        style={{
-          height,
-          width,
-          marginBottom: layout.contentPadding,
-        }}
-      />
-
+  return width > 0 && stats && network ? (
+    <View
+      style={{
+        width: "100%",
+        alignSelf: "center",
+        marginTop: layout.padding_x4,
+      }}
+    >
       <View
         style={{
-          flexDirection: "row",
+          flexDirection: isMobile ? "column" : "row",
+          alignItems: "center",
           width: "100%",
-          marginBottom: 24,
+          marginBottom: layout.padding_x2_5,
+          borderRadius: layout.padding_x2,
+          borderColor: neutral33,
+          borderWidth: 1,
+          padding: layout.padding_x4,
+          borderStyle: "solid",
         }}
       >
         <RoundedGradientImage
-          imageSource={{ uri: collectionInfo.image }}
-          style={{ marginRight: 24 }}
+          sourceURI={collectionInfo.image}
+          style={{ marginRight: isMobile ? 0 : 24 }}
         />
         <View style={{ flex: 1 }}>
-          <BrandText style={fontSemibold28}>{collectionInfo.name}</BrandText>
+          <BrandText
+            style={[
+              fontSemibold28,
+              isMobile
+                ? {
+                    marginTop: layout.padding_x1,
+                    textAlign: "center",
+                  }
+                : {},
+            ]}
+          >
+            {collectionInfo.name}
+          </BrandText>
           <View style={styles.statRow}>
             <CollectionStat
               label="Floor"
               value={
-                usdFloorPrice === Infinity
-                  ? "-"
-                  : `$${usdFloorPrice.toFixed(2)}`
+                stats
+                  ? prettyPrice(
+                      network.id,
+                      stats.floorPrice[0].quantity,
+                      stats.floorPrice[0].denom,
+                      true
+                    )
+                  : "-"
               }
+              currencyIcon={{
+                networkId: network.id,
+                value: 0,
+                denom: stats.floorPrice[0].denom,
+              }}
             />
             <SpacerRow size={1.5} />
             <CollectionStat
               label="Total Volume"
-              value={
-                stats?.totalVolume
-                  ? "$" + parseFloat(stats.totalVolume).toFixed(2)
-                  : "$0"
-              }
+              value={prettyPrice(
+                network.id,
+                parseFloat(stats.totalVolume).toFixed(0),
+                stats.floorPrice[0].denom,
+                true
+              )}
+              currencyIcon={{
+                networkId: network.id,
+                value: parseFloat(stats.totalVolume),
+                denom: stats.floorPrice[0].denom,
+              }}
             />
             <SpacerRow size={1.5} />
-            <CollectionStat
-              label="Owners"
-              value={(stats?.owners || 0).toString()}
-            />
-            <SpacerRow size={1.5} />
-            <CollectionStat
-              label="Listed"
-              value={(stats?.listed || 0).toString()}
-            />
+            {!isMobile && (
+              <>
+                <CollectionStat
+                  label="Owners"
+                  value={(stats?.owners || 0).toString()}
+                />
+                <SpacerRow size={1.5} />
+
+                <CollectionStat
+                  label="Listed"
+                  value={(stats?.listed || 0).toString()}
+                />
+                <SpacerRow size={1.5} />
+                <CollectionStat
+                  label="Avg Sale (24hr)"
+                  value={prettyPrice(
+                    network.id,
+                    stats.avgPricePeriod.toFixed(0),
+                    stats.floorPrice[0].denom,
+                    true
+                  )}
+                  currencyIcon={{
+                    networkId: network.id,
+                    value: stats.avgPricePeriod,
+                    denom: stats.floorPrice[0].denom,
+                  }}
+                />
+              </>
+            )}
             <SpacerRow size={1.5} />
             <CollectionStat
               label="Total Supply"
@@ -199,65 +203,70 @@ export const CollectionHeader: React.FC<{
           </View>
           <View style={styles.statRow}>
             <CollectionSocialButtons collectionInfo={collectionInfo} />
-            {collectionInfo.discord ||
-            collectionInfo.twitter ||
-            collectionInfo.website ? (
-              <View
-                style={{
-                  height: 24,
-                  width: 1,
-                  backgroundColor: neutral33,
-                  marginRight: 12,
+            <View
+              style={{
+                marginTop: isMobile ? layout.padding_x1 : 0,
+                flexWrap: "nowrap",
+                flexDirection: "row",
+              }}
+            >
+              <SocialButtonSecondary
+                text="Explorer"
+                iconSvg={etherscanSVG}
+                style={{ marginRight: 12 }}
+                onPress={() => {
+                  const url = contractExplorerLink(
+                    network?.id,
+                    collectionMintAddress
+                  );
+                  Linking.openURL(url);
                 }}
               />
-            ) : null}
-            <SocialButtonSecondary
-              text="Explorer"
-              iconSvg={etherscanSVG}
-              style={{ marginRight: 12 }}
-              onPress={() => {
-                const url = contractExplorerLink(
-                  network?.id,
-                  collectionMintAddress
-                );
-                Linking.openURL(url);
-              }}
-            />
-            <SocialButtonSecondary
-              text="Share"
-              iconSvg={shareSVG}
-              onPress={onShare}
-            />
+              <SocialButtonSecondary
+                text="Share"
+                iconSvg={shareSVG}
+                onPress={onShare}
+              />
+            </View>
           </View>
         </View>
       </View>
-
-      <PrimaryBox
-        mainContainerStyle={{
+      <View
+        style={{
           flexDirection: "row",
           justifyContent: "space-between",
-          paddingRight: 8,
-          paddingLeft: 20,
+          marginBottom: layout.padding_x4,
+          flex: 10,
         }}
-        fullWidth
-        height={64}
-        style={{ marginBottom: 24 }}
       >
+        {selectedTab !== "activity" && (
+          <FilterButton
+            mainContainerStyle={{ backgroundColor: neutral33, width: 54 }}
+          />
+        )}
         <Tabs
           items={collectionScreenTabItems}
           onSelect={onSelectTab}
           selected={selectedTab}
           style={{
-            width: "fit-content",
-            height: "100%",
+            flex: 8,
+            height: 48,
+            paddingLeft: layout.padding_x2,
+            marginHorizontal: 16,
+            borderRadius: 8,
+            backgroundColor: codGrayColor,
           }}
           noUnderline
         />
-        <SortButton
-          sortDirection={sortDirection}
-          onChangeSortDirection={onChangeSortDirection}
-        />
-      </PrimaryBox>
+
+        {!isMobile && (
+          <SortButton
+            mainContainerStyle={{ backgroundColor: neutral33 }}
+            sortDirection={sortDirection}
+            onChangeSortDirection={onChangeSortDirection}
+          />
+        )}
+      </View>
     </View>
   ) : null;
 };
@@ -265,6 +274,8 @@ export const CollectionHeader: React.FC<{
 const styles = StyleSheet.create({
   statRow: {
     flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
     marginTop: layout.padding_x2_5,
     alignItems: "center",
     flex: 1,

@@ -3,10 +3,12 @@ import {
   SigningCosmWasmClient,
 } from "@cosmjs/cosmwasm-stargate";
 import { Decimal } from "@cosmjs/math";
+import { Registry } from "@cosmjs/proto-signing";
 import {
   SigningStargateClient,
   StargateClient,
   GasPrice,
+  defaultRegistryTypes,
 } from "@cosmjs/stargate";
 import { ChainInfo, Currency as KeplrCurrency } from "@keplr-wallet/types";
 
@@ -14,6 +16,7 @@ import { cosmosNetwork } from "./cosmos-hub";
 import { cosmosThetaNetwork } from "./cosmos-hub-theta";
 import { ethereumNetwork } from "./ethereum";
 import { ethereumGoerliNetwork } from "./ethereum-goerli";
+import { gnoTestnetNetwork } from "./gno-testnet";
 import { junoNetwork } from "./juno";
 import { osmosisNetwork } from "./osmosis";
 import { osmosisTestnetNetwork } from "./osmosis-testnet";
@@ -23,10 +26,12 @@ import { teritoriTestnetNetwork } from "./teritori-testnet";
 import {
   CosmosNetworkInfo,
   EthereumNetworkInfo,
+  GnoNetworkInfo,
   NativeCurrencyInfo,
   NetworkInfo,
   NetworkKind,
 } from "./types";
+import { MsgBurnTokens } from "../api/teritori/mint";
 import { getKeplr } from "../utils/keplr";
 
 export * from "./types";
@@ -43,8 +48,12 @@ export const allNetworks = [
   junoNetwork,
   osmosisNetwork,
   osmosisTestnetNetwork,
+  gnoTestnetNetwork,
   // solanaNetwork,
 ];
+
+const pbTypesRegistry = new Registry(defaultRegistryTypes);
+pbTypesRegistry.register("/teritori.mint.v1beta1.MsgBurnTokens", MsgBurnTokens);
 
 export const getCurrency = (
   networkId: string | undefined,
@@ -102,7 +111,7 @@ export const getNativeCurrency = (
 
 export const getStakingCurrency = (networkId: string | undefined) => {
   const network = getNetwork(networkId);
-  if (network?.kind !== NetworkKind.Cosmos) {
+  if (!network || !("stakeCurrency" in network)) {
     return undefined;
   }
   return getNativeCurrency(networkId, network.stakeCurrency);
@@ -113,6 +122,14 @@ export const getNetwork = (networkId: string | undefined) => {
     return undefined;
   }
   return allNetworks.find((n) => n.id === networkId);
+};
+
+export const mustGetNetwork = (networkId: string | undefined) => {
+  const network = getNetwork(networkId);
+  if (!network) {
+    throw new Error(`unknown network '${networkId}'`);
+  }
+  return network;
 };
 
 export const getNetworkByIdPrefix = (idPrefix: string | undefined) => {
@@ -220,6 +237,26 @@ export const mustGetCosmosNetwork = (
   }
   if (network.kind !== NetworkKind.Cosmos) {
     throw new Error(`'${networkId}' is not a cosmos network`);
+  }
+  return network;
+};
+
+export const getGnoNetwork = (
+  networkId: string | undefined
+): GnoNetworkInfo | undefined => {
+  const network = getNetwork(networkId);
+  if (network?.kind !== NetworkKind.Gno) {
+    return undefined;
+  }
+  return network;
+};
+
+export const mustGetGnoNetwork = (
+  networkId: string | undefined
+): GnoNetworkInfo => {
+  const network = mustGetNetwork(networkId);
+  if (network.kind !== NetworkKind.Gno) {
+    throw new Error(`'${networkId}' is not a gno network`);
   }
   return network;
 };
@@ -346,6 +383,7 @@ export const getKeplrSigningStargateClient = async (
     signer,
     {
       gasPrice,
+      registry: pbTypesRegistry,
     }
   );
 };

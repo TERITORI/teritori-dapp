@@ -10,12 +10,14 @@ import {
   headerHeight,
   screenContainerContentMarginHorizontal,
   screenContentMaxWidth,
+  screenContentMaxWidthLarge,
   smallSidebarWidth,
 } from "../utils/style/layout";
 
 export const useMaxResolution = ({
   noMargin = false,
   responsive = true,
+  isLarge = false,
 } = {}) => {
   const { width: windowWidth, height: windowHeight } = useWindowDimensions();
   const { isSidebarExpanded } = useSidebar();
@@ -40,7 +42,13 @@ export const useMaxResolution = ({
   }, [windowWidth, isSidebarExpanded, noMargin, responsive, isMobile]);
 
   return {
-    width: width > screenContentMaxWidth ? screenContentMaxWidth : width,
+    width: isLarge
+      ? width > screenContentMaxWidthLarge
+        ? screenContentMaxWidthLarge
+        : width
+      : width > screenContentMaxWidth
+      ? screenContentMaxWidth
+      : width,
     height: windowHeight - headerHeight,
   };
 };

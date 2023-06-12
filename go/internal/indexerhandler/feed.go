@@ -7,6 +7,7 @@ import (
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
 	"github.com/pkg/errors"
+	"go.uber.org/zap"
 )
 
 type Reaction struct {
@@ -145,6 +146,11 @@ func (h *Handler) handleExecuteCreatePostByBot(e *Message, execMsg *wasmtypes.Ms
 }
 
 func (h *Handler) handleExecuteCreatePost(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
+	if execMsg.Contract != h.config.Network.SocialFeedContractAddress {
+		h.logger.Debug("ignored create post for unknown contract", zap.String("tx", e.TxHash), zap.String("contract", execMsg.Contract))
+		return nil
+	}
+
 	var execCreatePostMsg ExecCreatePostMsg
 	if err := json.Unmarshal(execMsg.Msg, &execCreatePostMsg); err != nil {
 		return errors.Wrap(err, "failed to unmarshal execute create post msg")
@@ -183,6 +189,9 @@ func (h *Handler) createPost(
 	if err := h.db.Create(&post).Error; err != nil {
 		return errors.Wrap(err, "failed to create post")
 	}
+	if !isBot {
+		h.handleQuests(execMsg, createPostMsg)
+	}
 
 	return nil
 }
@@ -206,6 +215,51 @@ func (h *Handler) handleExecuteTipPost(e *Message, execMsg *wasmtypes.MsgExecute
 
 	if err := h.db.Save(&post).Error; err != nil {
 		return errors.Wrap(err, "failed to update tip amount")
+	}
+
+	// complete social_feed_tip_content_creator quest
+	if err := h.db.Save(&indexerdb.QuestCompletion{
+		UserID:    h.config.Network.UserID(execMsg.Sender),
+		QuestID:   "social_feed_tip_content_creator",
+		Completed: true,
+	}).Error; err != nil {
+		return errors.Wrap(err, "failed to save social_feed_tip_content_creator quest completion")
+	}
+	return nil
+}
+
+func (h *Handler) handleQuests(
+	execMsg *wasmtypes.MsgExecuteContract,
+	createPostMsg *CreatePostMsg,
+) error {
+	questId := "unknown"
+	switch createPostMsg.Category {
+	case 1:
+		questId = "social_feed_first_comment"
+	case 2:
+		questId = "social_feed_first_post"
+	case 3:
+		questId = "social_feed_first_article"
+	case 4:
+		questId = "social_feed_first_picture"
+	case 5:
+		questId = "social_feed_first_audio"
+	case 6:
+		questId = "social_feed_first_video"
+	case 7:
+		questId = "social_feed_first_ai_generation"
+	default:
+		questId = "unknown"
+	}
+
+	if questId != "unknown" {
+		if err := h.db.Save(&indexerdb.QuestCompletion{
+			UserID:    h.config.Network.UserID(execMsg.Sender),
+			QuestID:   questId,
+			Completed: true,
+		}).Error; err != nil {
+			return errors.Wrap(err, "failed to save quest completion")
+		}
 	}
 
 	return nil

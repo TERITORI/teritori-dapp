@@ -42,7 +42,7 @@ export const CustomMultipleSwitch: FC<Props> = ({ items, value, onChange }) => {
         useNativeDriver: true,
       }).start();
     }
-  }, [animatedValue, elements, items.length, value]);
+  }, [items.length, value, elements, animatedValue]);
 
   useEffect(() => {
     const startAnimation = (newVal: string) => {

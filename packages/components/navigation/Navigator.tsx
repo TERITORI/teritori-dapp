@@ -2,7 +2,8 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 
 import { ComingSoonScreen } from "../../screens/ComingSoon/ComingSoon";
-import { DAppStore } from "../../screens/DAppStore/HomeScreen";
+import { CoreDAOScreen } from "../../screens/CoreDAO/CoreDAOScreen";
+import { DAppStoreScreen } from "../../screens/DAppStore/DAppStoreScreen";
 import { ToriPunks } from "../../screens/DAppStore/apps/toripunks/HomeScreen";
 import { FeedScreen } from "../../screens/Feed/FeedScreen";
 import { FeedNewArticleScreen } from "../../screens/FeedNewArticle/FeedNewArticleScreen";
@@ -26,6 +27,8 @@ import { MultisigTransferScreen } from "../../screens/Multisig/MultisigTransferS
 import { MultisigWalletManageScreen } from "../../screens/Multisig/MultisigWalletManageScreen";
 import { MultisigWalletTransactionScreen } from "../../screens/Multisig/MultisigWalletTransactionScreen";
 import { MyCollectionScreen } from "../../screens/MyCollection/MyCollectionScreen";
+import { OrganizationDeployerScreen } from "../../screens/Organizations/OrganizationDeployerScreen";
+import { OrganizationsScreen } from "../../screens/Organizations/OrganizationsScreen";
 import { OrganizationGetStartedScreen } from "../../screens/OrganizerDeployer/OrganizationGetStartedScreen";
 import { OrganizerDeployerScreen } from "../../screens/OrganizerDeployer/OrganizerDeployerScreen";
 import { TransactionProposalScreen } from "../../screens/OrganizerDeployer/TransactionProposalScreen";
@@ -73,10 +76,14 @@ export const Navigator: React.FC = () => {
         component={RiotGameScreen}
         options={{ header: () => null }}
       />
+
       <Stack.Screen
         name="Marketplace"
         component={MarketplaceScreen}
-        options={{ header: () => null, title: screenTitle("Marketplace") }}
+        options={{
+          header: () => null,
+          title: screenTitle("NFT Marketplace - Popular Collections"),
+        }}
       />
       <Stack.Screen
         name="Governance"
@@ -277,6 +284,25 @@ export const Navigator: React.FC = () => {
         }}
       />
 
+      {/* ==== Organization */}
+
+      <Stack.Screen
+        name="OrganizationDeployer"
+        component={OrganizationDeployerScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Organization Deployer"),
+        }}
+      />
+      <Stack.Screen
+        name="Organizations"
+        component={OrganizationsScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Organizations"),
+        }}
+      />
+
       {/* ==== Teritori Name Service*/}
       <Stack.Screen
         name="TNSHome"
@@ -347,8 +373,13 @@ export const Navigator: React.FC = () => {
       />
       <Stack.Screen
         name="DAppStore"
-        component={DAppStore}
+        component={DAppStoreScreen}
         options={{ header: () => null, title: screenTitle("dApp Store") }}
+      />
+      <Stack.Screen
+        name="CoreDAO"
+        component={CoreDAOScreen}
+        options={{ header: () => null, title: screenTitle("Core DAO") }}
       />
     </Stack.Navigator>
   );

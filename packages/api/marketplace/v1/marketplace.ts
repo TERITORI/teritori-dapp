@@ -9,31 +9,35 @@ import { share } from "rxjs/operators";
 export const protobufPackage = "marketplace.v1";
 
 export enum Sort {
-  SORTING_UNSPECIFIED = 0,
-  SORTING_PRICE = 1,
-  SORTING_VOLUME = 2,
-  SORTING_MARKET_CAP = 3,
-  SORTING_CREATED_AT = 4,
+  SORT_UNSPECIFIED = 0,
+  SORT_PRICE = 1,
+  SORT_VOLUME = 2,
+  SORT_MARKET_CAP = 3,
+  SORT_CREATED_AT = 4,
+  SORT_VOLUME_USD = 5,
   UNRECOGNIZED = -1,
 }
 
 export function sortFromJSON(object: any): Sort {
   switch (object) {
     case 0:
-    case "SORTING_UNSPECIFIED":
-      return Sort.SORTING_UNSPECIFIED;
+    case "SORT_UNSPECIFIED":
+      return Sort.SORT_UNSPECIFIED;
     case 1:
-    case "SORTING_PRICE":
-      return Sort.SORTING_PRICE;
+    case "SORT_PRICE":
+      return Sort.SORT_PRICE;
     case 2:
-    case "SORTING_VOLUME":
-      return Sort.SORTING_VOLUME;
+    case "SORT_VOLUME":
+      return Sort.SORT_VOLUME;
     case 3:
-    case "SORTING_MARKET_CAP":
-      return Sort.SORTING_MARKET_CAP;
+    case "SORT_MARKET_CAP":
+      return Sort.SORT_MARKET_CAP;
     case 4:
-    case "SORTING_CREATED_AT":
-      return Sort.SORTING_CREATED_AT;
+    case "SORT_CREATED_AT":
+      return Sort.SORT_CREATED_AT;
+    case 5:
+    case "SORT_VOLUME_USD":
+      return Sort.SORT_VOLUME_USD;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -43,16 +47,18 @@ export function sortFromJSON(object: any): Sort {
 
 export function sortToJSON(object: Sort): string {
   switch (object) {
-    case Sort.SORTING_UNSPECIFIED:
-      return "SORTING_UNSPECIFIED";
-    case Sort.SORTING_PRICE:
-      return "SORTING_PRICE";
-    case Sort.SORTING_VOLUME:
-      return "SORTING_VOLUME";
-    case Sort.SORTING_MARKET_CAP:
-      return "SORTING_MARKET_CAP";
-    case Sort.SORTING_CREATED_AT:
-      return "SORTING_CREATED_AT";
+    case Sort.SORT_UNSPECIFIED:
+      return "SORT_UNSPECIFIED";
+    case Sort.SORT_PRICE:
+      return "SORT_PRICE";
+    case Sort.SORT_VOLUME:
+      return "SORT_VOLUME";
+    case Sort.SORT_MARKET_CAP:
+      return "SORT_MARKET_CAP";
+    case Sort.SORT_CREATED_AT:
+      return "SORT_CREATED_AT";
+    case Sort.SORT_VOLUME_USD:
+      return "SORT_VOLUME_USD";
     case Sort.UNRECOGNIZED:
     default:
       return "UNRECOGNIZED";
@@ -142,6 +148,11 @@ export interface Attribute {
   value: string;
 }
 
+export interface PriceRange {
+  min: number;
+  max: number;
+}
+
 export interface NFT {
   id: string;
   networkId: string;
@@ -180,6 +191,12 @@ export interface Collection {
   twitterUrl: string;
   floorPrice: number;
   maxSupply: number;
+  mintPrice: string;
+  totalVolume: number;
+  numTrades: number;
+  numOwners: number;
+  denom: string;
+  volumeCompare: number;
 }
 
 export interface CollectionStats {
@@ -189,6 +206,21 @@ export interface CollectionStats {
   listed: number;
   totalSupply: number;
   owned: number;
+  avgPricePeriod: number;
+}
+
+export interface AttributeRarityFloor {
+  traitType: string;
+  value: string;
+  counta: number;
+  floor: number;
+  collectionId: string;
+  rareRatio: number;
+  collectionSize: number;
+}
+
+export interface NFTCollectionAttributesResponse {
+  attributes: AttributeRarityFloor | undefined;
 }
 
 export interface Activity {
@@ -232,6 +264,11 @@ export interface CollectionStatsRequest {
   ownerId: string;
 }
 
+export interface NFTCollectionAttributesRequest {
+  collectionId: string;
+  whereAttributes: Attribute[];
+}
+
 export interface CollectionStatsResponse {
   stats: CollectionStats | undefined;
 }
@@ -247,6 +284,9 @@ export interface NFTsRequest {
   ownerId: string;
   sort: Sort;
   sortDirection: SortDirection;
+  attributes: Attribute[];
+  isListed: boolean;
+  priceRange: PriceRange | undefined;
 }
 
 export interface NFTsResponse {
@@ -336,15 +376,18 @@ export interface NewsResponse {
   news: News[];
 }
 
-export interface DAppsStoreRequest {
+export interface DAppsRequest {
 }
 
-export interface DAppGroupsResponse {
-  group: DAppGroup[];
-}
-
-export interface DAppResponse {
+export interface DAppsResponse {
   group: DApp[];
+}
+
+export interface DAppsGroupsRequest {
+}
+
+export interface DAppsGroupsResponse {
+  group: DAppGroup[];
 }
 
 export interface SearchNamesRequest {
@@ -420,6 +463,61 @@ export const Attribute = {
     const message = createBaseAttribute();
     message.traitType = object.traitType ?? "";
     message.value = object.value ?? "";
+    return message;
+  },
+};
+
+function createBasePriceRange(): PriceRange {
+  return { min: 0, max: 0 };
+}
+
+export const PriceRange = {
+  encode(message: PriceRange, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.min !== 0) {
+      writer.uint32(13).float(message.min);
+    }
+    if (message.max !== 0) {
+      writer.uint32(21).float(message.max);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): PriceRange {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBasePriceRange();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.min = reader.float();
+          break;
+        case 2:
+          message.max = reader.float();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): PriceRange {
+    return { min: isSet(object.min) ? Number(object.min) : 0, max: isSet(object.max) ? Number(object.max) : 0 };
+  },
+
+  toJSON(message: PriceRange): unknown {
+    const obj: any = {};
+    message.min !== undefined && (obj.min = message.min);
+    message.max !== undefined && (obj.max = message.max);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<PriceRange>, I>>(object: I): PriceRange {
+    const message = createBasePriceRange();
+    message.min = object.min ?? 0;
+    message.max = object.max ?? 0;
     return message;
   },
 };
@@ -684,6 +782,12 @@ function createBaseCollection(): Collection {
     twitterUrl: "",
     floorPrice: 0,
     maxSupply: 0,
+    mintPrice: "",
+    totalVolume: 0,
+    numTrades: 0,
+    numOwners: 0,
+    denom: "",
+    volumeCompare: 0,
   };
 }
 
@@ -733,6 +837,24 @@ export const Collection = {
     }
     if (message.maxSupply !== 0) {
       writer.uint32(128).int64(message.maxSupply);
+    }
+    if (message.mintPrice !== "") {
+      writer.uint32(138).string(message.mintPrice);
+    }
+    if (message.totalVolume !== 0) {
+      writer.uint32(149).float(message.totalVolume);
+    }
+    if (message.numTrades !== 0) {
+      writer.uint32(152).int64(message.numTrades);
+    }
+    if (message.numOwners !== 0) {
+      writer.uint32(160).int32(message.numOwners);
+    }
+    if (message.denom !== "") {
+      writer.uint32(170).string(message.denom);
+    }
+    if (message.volumeCompare !== 0) {
+      writer.uint32(181).float(message.volumeCompare);
     }
     return writer;
   },
@@ -789,6 +911,24 @@ export const Collection = {
         case 16:
           message.maxSupply = longToNumber(reader.int64() as Long);
           break;
+        case 17:
+          message.mintPrice = reader.string();
+          break;
+        case 18:
+          message.totalVolume = reader.float();
+          break;
+        case 19:
+          message.numTrades = longToNumber(reader.int64() as Long);
+          break;
+        case 20:
+          message.numOwners = reader.int32();
+          break;
+        case 21:
+          message.denom = reader.string();
+          break;
+        case 22:
+          message.volumeCompare = reader.float();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -814,6 +954,12 @@ export const Collection = {
       twitterUrl: isSet(object.twitterUrl) ? String(object.twitterUrl) : "",
       floorPrice: isSet(object.floorPrice) ? Number(object.floorPrice) : 0,
       maxSupply: isSet(object.maxSupply) ? Number(object.maxSupply) : 0,
+      mintPrice: isSet(object.mintPrice) ? String(object.mintPrice) : "",
+      totalVolume: isSet(object.totalVolume) ? Number(object.totalVolume) : 0,
+      numTrades: isSet(object.numTrades) ? Number(object.numTrades) : 0,
+      numOwners: isSet(object.numOwners) ? Number(object.numOwners) : 0,
+      denom: isSet(object.denom) ? String(object.denom) : "",
+      volumeCompare: isSet(object.volumeCompare) ? Number(object.volumeCompare) : 0,
     };
   },
 
@@ -834,6 +980,12 @@ export const Collection = {
     message.twitterUrl !== undefined && (obj.twitterUrl = message.twitterUrl);
     message.floorPrice !== undefined && (obj.floorPrice = Math.round(message.floorPrice));
     message.maxSupply !== undefined && (obj.maxSupply = Math.round(message.maxSupply));
+    message.mintPrice !== undefined && (obj.mintPrice = message.mintPrice);
+    message.totalVolume !== undefined && (obj.totalVolume = message.totalVolume);
+    message.numTrades !== undefined && (obj.numTrades = Math.round(message.numTrades));
+    message.numOwners !== undefined && (obj.numOwners = Math.round(message.numOwners));
+    message.denom !== undefined && (obj.denom = message.denom);
+    message.volumeCompare !== undefined && (obj.volumeCompare = message.volumeCompare);
     return obj;
   },
 
@@ -854,12 +1006,18 @@ export const Collection = {
     message.twitterUrl = object.twitterUrl ?? "";
     message.floorPrice = object.floorPrice ?? 0;
     message.maxSupply = object.maxSupply ?? 0;
+    message.mintPrice = object.mintPrice ?? "";
+    message.totalVolume = object.totalVolume ?? 0;
+    message.numTrades = object.numTrades ?? 0;
+    message.numOwners = object.numOwners ?? 0;
+    message.denom = object.denom ?? "";
+    message.volumeCompare = object.volumeCompare ?? 0;
     return message;
   },
 };
 
 function createBaseCollectionStats(): CollectionStats {
-  return { floorPrice: [], totalVolume: "", owners: 0, listed: 0, totalSupply: 0, owned: 0 };
+  return { floorPrice: [], totalVolume: "", owners: 0, listed: 0, totalSupply: 0, owned: 0, avgPricePeriod: 0 };
 }
 
 export const CollectionStats = {
@@ -881,6 +1039,9 @@ export const CollectionStats = {
     }
     if (message.owned !== 0) {
       writer.uint32(48).int32(message.owned);
+    }
+    if (message.avgPricePeriod !== 0) {
+      writer.uint32(61).float(message.avgPricePeriod);
     }
     return writer;
   },
@@ -910,6 +1071,9 @@ export const CollectionStats = {
         case 6:
           message.owned = reader.int32();
           break;
+        case 7:
+          message.avgPricePeriod = reader.float();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -926,6 +1090,7 @@ export const CollectionStats = {
       listed: isSet(object.listed) ? Number(object.listed) : 0,
       totalSupply: isSet(object.totalSupply) ? Number(object.totalSupply) : 0,
       owned: isSet(object.owned) ? Number(object.owned) : 0,
+      avgPricePeriod: isSet(object.avgPricePeriod) ? Number(object.avgPricePeriod) : 0,
     };
   },
 
@@ -941,6 +1106,7 @@ export const CollectionStats = {
     message.listed !== undefined && (obj.listed = Math.round(message.listed));
     message.totalSupply !== undefined && (obj.totalSupply = Math.round(message.totalSupply));
     message.owned !== undefined && (obj.owned = Math.round(message.owned));
+    message.avgPricePeriod !== undefined && (obj.avgPricePeriod = message.avgPricePeriod);
     return obj;
   },
 
@@ -952,6 +1118,162 @@ export const CollectionStats = {
     message.listed = object.listed ?? 0;
     message.totalSupply = object.totalSupply ?? 0;
     message.owned = object.owned ?? 0;
+    message.avgPricePeriod = object.avgPricePeriod ?? 0;
+    return message;
+  },
+};
+
+function createBaseAttributeRarityFloor(): AttributeRarityFloor {
+  return { traitType: "", value: "", counta: 0, floor: 0, collectionId: "", rareRatio: 0, collectionSize: 0 };
+}
+
+export const AttributeRarityFloor = {
+  encode(message: AttributeRarityFloor, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.traitType !== "") {
+      writer.uint32(10).string(message.traitType);
+    }
+    if (message.value !== "") {
+      writer.uint32(18).string(message.value);
+    }
+    if (message.counta !== 0) {
+      writer.uint32(24).int32(message.counta);
+    }
+    if (message.floor !== 0) {
+      writer.uint32(37).float(message.floor);
+    }
+    if (message.collectionId !== "") {
+      writer.uint32(42).string(message.collectionId);
+    }
+    if (message.rareRatio !== 0) {
+      writer.uint32(53).float(message.rareRatio);
+    }
+    if (message.collectionSize !== 0) {
+      writer.uint32(56).int32(message.collectionSize);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): AttributeRarityFloor {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAttributeRarityFloor();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.traitType = reader.string();
+          break;
+        case 2:
+          message.value = reader.string();
+          break;
+        case 3:
+          message.counta = reader.int32();
+          break;
+        case 4:
+          message.floor = reader.float();
+          break;
+        case 5:
+          message.collectionId = reader.string();
+          break;
+        case 6:
+          message.rareRatio = reader.float();
+          break;
+        case 7:
+          message.collectionSize = reader.int32();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): AttributeRarityFloor {
+    return {
+      traitType: isSet(object.traitType) ? String(object.traitType) : "",
+      value: isSet(object.value) ? String(object.value) : "",
+      counta: isSet(object.counta) ? Number(object.counta) : 0,
+      floor: isSet(object.floor) ? Number(object.floor) : 0,
+      collectionId: isSet(object.collectionId) ? String(object.collectionId) : "",
+      rareRatio: isSet(object.rareRatio) ? Number(object.rareRatio) : 0,
+      collectionSize: isSet(object.collectionSize) ? Number(object.collectionSize) : 0,
+    };
+  },
+
+  toJSON(message: AttributeRarityFloor): unknown {
+    const obj: any = {};
+    message.traitType !== undefined && (obj.traitType = message.traitType);
+    message.value !== undefined && (obj.value = message.value);
+    message.counta !== undefined && (obj.counta = Math.round(message.counta));
+    message.floor !== undefined && (obj.floor = message.floor);
+    message.collectionId !== undefined && (obj.collectionId = message.collectionId);
+    message.rareRatio !== undefined && (obj.rareRatio = message.rareRatio);
+    message.collectionSize !== undefined && (obj.collectionSize = Math.round(message.collectionSize));
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<AttributeRarityFloor>, I>>(object: I): AttributeRarityFloor {
+    const message = createBaseAttributeRarityFloor();
+    message.traitType = object.traitType ?? "";
+    message.value = object.value ?? "";
+    message.counta = object.counta ?? 0;
+    message.floor = object.floor ?? 0;
+    message.collectionId = object.collectionId ?? "";
+    message.rareRatio = object.rareRatio ?? 0;
+    message.collectionSize = object.collectionSize ?? 0;
+    return message;
+  },
+};
+
+function createBaseNFTCollectionAttributesResponse(): NFTCollectionAttributesResponse {
+  return { attributes: undefined };
+}
+
+export const NFTCollectionAttributesResponse = {
+  encode(message: NFTCollectionAttributesResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.attributes !== undefined) {
+      AttributeRarityFloor.encode(message.attributes, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): NFTCollectionAttributesResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseNFTCollectionAttributesResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.attributes = AttributeRarityFloor.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): NFTCollectionAttributesResponse {
+    return { attributes: isSet(object.attributes) ? AttributeRarityFloor.fromJSON(object.attributes) : undefined };
+  },
+
+  toJSON(message: NFTCollectionAttributesResponse): unknown {
+    const obj: any = {};
+    message.attributes !== undefined &&
+      (obj.attributes = message.attributes ? AttributeRarityFloor.toJSON(message.attributes) : undefined);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<NFTCollectionAttributesResponse>, I>>(
+    object: I,
+  ): NFTCollectionAttributesResponse {
+    const message = createBaseNFTCollectionAttributesResponse();
+    message.attributes = (object.attributes !== undefined && object.attributes !== null)
+      ? AttributeRarityFloor.fromPartial(object.attributes)
+      : undefined;
     return message;
   },
 };
@@ -1403,6 +1725,72 @@ export const CollectionStatsRequest = {
   },
 };
 
+function createBaseNFTCollectionAttributesRequest(): NFTCollectionAttributesRequest {
+  return { collectionId: "", whereAttributes: [] };
+}
+
+export const NFTCollectionAttributesRequest = {
+  encode(message: NFTCollectionAttributesRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.collectionId !== "") {
+      writer.uint32(10).string(message.collectionId);
+    }
+    for (const v of message.whereAttributes) {
+      Attribute.encode(v!, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): NFTCollectionAttributesRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseNFTCollectionAttributesRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.collectionId = reader.string();
+          break;
+        case 2:
+          message.whereAttributes.push(Attribute.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): NFTCollectionAttributesRequest {
+    return {
+      collectionId: isSet(object.collectionId) ? String(object.collectionId) : "",
+      whereAttributes: Array.isArray(object?.whereAttributes)
+        ? object.whereAttributes.map((e: any) => Attribute.fromJSON(e))
+        : [],
+    };
+  },
+
+  toJSON(message: NFTCollectionAttributesRequest): unknown {
+    const obj: any = {};
+    message.collectionId !== undefined && (obj.collectionId = message.collectionId);
+    if (message.whereAttributes) {
+      obj.whereAttributes = message.whereAttributes.map((e) => e ? Attribute.toJSON(e) : undefined);
+    } else {
+      obj.whereAttributes = [];
+    }
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<NFTCollectionAttributesRequest>, I>>(
+    object: I,
+  ): NFTCollectionAttributesRequest {
+    const message = createBaseNFTCollectionAttributesRequest();
+    message.collectionId = object.collectionId ?? "";
+    message.whereAttributes = object.whereAttributes?.map((e) => Attribute.fromPartial(e)) || [];
+    return message;
+  },
+};
+
 function createBaseCollectionStatsResponse(): CollectionStatsResponse {
   return { stats: undefined };
 }
@@ -1503,7 +1891,17 @@ export const CollectionsResponse = {
 };
 
 function createBaseNFTsRequest(): NFTsRequest {
-  return { limit: 0, offset: 0, collectionId: "", ownerId: "", sort: 0, sortDirection: 0 };
+  return {
+    limit: 0,
+    offset: 0,
+    collectionId: "",
+    ownerId: "",
+    sort: 0,
+    sortDirection: 0,
+    attributes: [],
+    isListed: false,
+    priceRange: undefined,
+  };
 }
 
 export const NFTsRequest = {
@@ -1525,6 +1923,15 @@ export const NFTsRequest = {
     }
     if (message.sortDirection !== 0) {
       writer.uint32(48).int32(message.sortDirection);
+    }
+    for (const v of message.attributes) {
+      Attribute.encode(v!, writer.uint32(58).fork()).ldelim();
+    }
+    if (message.isListed === true) {
+      writer.uint32(64).bool(message.isListed);
+    }
+    if (message.priceRange !== undefined) {
+      PriceRange.encode(message.priceRange, writer.uint32(74).fork()).ldelim();
     }
     return writer;
   },
@@ -1554,6 +1961,15 @@ export const NFTsRequest = {
         case 6:
           message.sortDirection = reader.int32() as any;
           break;
+        case 7:
+          message.attributes.push(Attribute.decode(reader, reader.uint32()));
+          break;
+        case 8:
+          message.isListed = reader.bool();
+          break;
+        case 9:
+          message.priceRange = PriceRange.decode(reader, reader.uint32());
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1570,6 +1986,9 @@ export const NFTsRequest = {
       ownerId: isSet(object.ownerId) ? String(object.ownerId) : "",
       sort: isSet(object.sort) ? sortFromJSON(object.sort) : 0,
       sortDirection: isSet(object.sortDirection) ? sortDirectionFromJSON(object.sortDirection) : 0,
+      attributes: Array.isArray(object?.attributes) ? object.attributes.map((e: any) => Attribute.fromJSON(e)) : [],
+      isListed: isSet(object.isListed) ? Boolean(object.isListed) : false,
+      priceRange: isSet(object.priceRange) ? PriceRange.fromJSON(object.priceRange) : undefined,
     };
   },
 
@@ -1581,6 +2000,14 @@ export const NFTsRequest = {
     message.ownerId !== undefined && (obj.ownerId = message.ownerId);
     message.sort !== undefined && (obj.sort = sortToJSON(message.sort));
     message.sortDirection !== undefined && (obj.sortDirection = sortDirectionToJSON(message.sortDirection));
+    if (message.attributes) {
+      obj.attributes = message.attributes.map((e) => e ? Attribute.toJSON(e) : undefined);
+    } else {
+      obj.attributes = [];
+    }
+    message.isListed !== undefined && (obj.isListed = message.isListed);
+    message.priceRange !== undefined &&
+      (obj.priceRange = message.priceRange ? PriceRange.toJSON(message.priceRange) : undefined);
     return obj;
   },
 
@@ -1592,6 +2019,11 @@ export const NFTsRequest = {
     message.ownerId = object.ownerId ?? "";
     message.sort = object.sort ?? 0;
     message.sortDirection = object.sortDirection ?? 0;
+    message.attributes = object.attributes?.map((e) => Attribute.fromPartial(e)) || [];
+    message.isListed = object.isListed ?? false;
+    message.priceRange = (object.priceRange !== undefined && object.priceRange !== null)
+      ? PriceRange.fromPartial(object.priceRange)
+      : undefined;
     return message;
   },
 };
@@ -2597,19 +3029,19 @@ export const NewsResponse = {
   },
 };
 
-function createBaseDAppsStoreRequest(): DAppsStoreRequest {
+function createBaseDAppsRequest(): DAppsRequest {
   return {};
 }
 
-export const DAppsStoreRequest = {
-  encode(_: DAppsStoreRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const DAppsRequest = {
+  encode(_: DAppsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): DAppsStoreRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): DAppsRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseDAppsStoreRequest();
+    const message = createBaseDAppsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -2621,88 +3053,37 @@ export const DAppsStoreRequest = {
     return message;
   },
 
-  fromJSON(_: any): DAppsStoreRequest {
+  fromJSON(_: any): DAppsRequest {
     return {};
   },
 
-  toJSON(_: DAppsStoreRequest): unknown {
+  toJSON(_: DAppsRequest): unknown {
     const obj: any = {};
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<DAppsStoreRequest>, I>>(_: I): DAppsStoreRequest {
-    const message = createBaseDAppsStoreRequest();
+  fromPartial<I extends Exact<DeepPartial<DAppsRequest>, I>>(_: I): DAppsRequest {
+    const message = createBaseDAppsRequest();
     return message;
   },
 };
 
-function createBaseDAppGroupsResponse(): DAppGroupsResponse {
+function createBaseDAppsResponse(): DAppsResponse {
   return { group: [] };
 }
 
-export const DAppGroupsResponse = {
-  encode(message: DAppGroupsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    for (const v of message.group) {
-      DAppGroup.encode(v!, writer.uint32(10).fork()).ldelim();
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): DAppGroupsResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseDAppGroupsResponse();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.group.push(DAppGroup.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): DAppGroupsResponse {
-    return { group: Array.isArray(object?.group) ? object.group.map((e: any) => DAppGroup.fromJSON(e)) : [] };
-  },
-
-  toJSON(message: DAppGroupsResponse): unknown {
-    const obj: any = {};
-    if (message.group) {
-      obj.group = message.group.map((e) => e ? DAppGroup.toJSON(e) : undefined);
-    } else {
-      obj.group = [];
-    }
-    return obj;
-  },
-
-  fromPartial<I extends Exact<DeepPartial<DAppGroupsResponse>, I>>(object: I): DAppGroupsResponse {
-    const message = createBaseDAppGroupsResponse();
-    message.group = object.group?.map((e) => DAppGroup.fromPartial(e)) || [];
-    return message;
-  },
-};
-
-function createBaseDAppResponse(): DAppResponse {
-  return { group: [] };
-}
-
-export const DAppResponse = {
-  encode(message: DAppResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const DAppsResponse = {
+  encode(message: DAppsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.group) {
       DApp.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): DAppResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): DAppsResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseDAppResponse();
+    const message = createBaseDAppsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -2717,11 +3098,11 @@ export const DAppResponse = {
     return message;
   },
 
-  fromJSON(object: any): DAppResponse {
+  fromJSON(object: any): DAppsResponse {
     return { group: Array.isArray(object?.group) ? object.group.map((e: any) => DApp.fromJSON(e)) : [] };
   },
 
-  toJSON(message: DAppResponse): unknown {
+  toJSON(message: DAppsResponse): unknown {
     const obj: any = {};
     if (message.group) {
       obj.group = message.group.map((e) => e ? DApp.toJSON(e) : undefined);
@@ -2731,9 +3112,99 @@ export const DAppResponse = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<DAppResponse>, I>>(object: I): DAppResponse {
-    const message = createBaseDAppResponse();
+  fromPartial<I extends Exact<DeepPartial<DAppsResponse>, I>>(object: I): DAppsResponse {
+    const message = createBaseDAppsResponse();
     message.group = object.group?.map((e) => DApp.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseDAppsGroupsRequest(): DAppsGroupsRequest {
+  return {};
+}
+
+export const DAppsGroupsRequest = {
+  encode(_: DAppsGroupsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): DAppsGroupsRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDAppsGroupsRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): DAppsGroupsRequest {
+    return {};
+  },
+
+  toJSON(_: DAppsGroupsRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<DAppsGroupsRequest>, I>>(_: I): DAppsGroupsRequest {
+    const message = createBaseDAppsGroupsRequest();
+    return message;
+  },
+};
+
+function createBaseDAppsGroupsResponse(): DAppsGroupsResponse {
+  return { group: [] };
+}
+
+export const DAppsGroupsResponse = {
+  encode(message: DAppsGroupsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.group) {
+      DAppGroup.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): DAppsGroupsResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDAppsGroupsResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.group.push(DAppGroup.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): DAppsGroupsResponse {
+    return { group: Array.isArray(object?.group) ? object.group.map((e: any) => DAppGroup.fromJSON(e)) : [] };
+  },
+
+  toJSON(message: DAppsGroupsResponse): unknown {
+    const obj: any = {};
+    if (message.group) {
+      obj.group = message.group.map((e) => e ? DAppGroup.toJSON(e) : undefined);
+    } else {
+      obj.group = [];
+    }
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<DAppsGroupsResponse>, I>>(object: I): DAppsGroupsResponse {
+    const message = createBaseDAppsGroupsResponse();
+    message.group = object.group?.map((e) => DAppGroup.fromPartial(e)) || [];
     return message;
   },
 };
@@ -2974,6 +3445,10 @@ export interface MarketplaceService {
     metadata?: grpc.Metadata,
   ): Promise<CollectionStatsResponse>;
   NFTs(request: DeepPartial<NFTsRequest>, metadata?: grpc.Metadata): Observable<NFTsResponse>;
+  NFTCollectionAttributes(
+    request: DeepPartial<NFTCollectionAttributesRequest>,
+    metadata?: grpc.Metadata,
+  ): Observable<NFTCollectionAttributesResponse>;
   Quests(request: DeepPartial<QuestsRequest>, metadata?: grpc.Metadata): Observable<QuestsResponse>;
   Activity(request: DeepPartial<ActivityRequest>, metadata?: grpc.Metadata): Observable<ActivityResponse>;
   NFTPriceHistory(
@@ -2982,8 +3457,8 @@ export interface MarketplaceService {
   ): Promise<NFTPriceHistoryResponse>;
   Banners(request: DeepPartial<BannersRequest>, metadata?: grpc.Metadata): Promise<BannersResponse>;
   News(request: DeepPartial<NewsRequest>, metadata?: grpc.Metadata): Promise<NewsResponse>;
-  DApps(request: DeepPartial<DAppsStoreRequest>, metadata?: grpc.Metadata): Promise<DAppResponse>;
-  DAppsGroups(request: DeepPartial<DAppsStoreRequest>, metadata?: grpc.Metadata): Promise<DAppGroupsResponse>;
+  DApps(request: DeepPartial<DAppsRequest>, metadata?: grpc.Metadata): Promise<DAppsResponse>;
+  DAppsGroups(request: DeepPartial<DAppsGroupsRequest>, metadata?: grpc.Metadata): Promise<DAppsGroupsResponse>;
   SearchNames(request: DeepPartial<SearchNamesRequest>, metadata?: grpc.Metadata): Promise<SearchNamesResponse>;
   SearchCollections(
     request: DeepPartial<SearchCollectionsRequest>,
@@ -2999,6 +3474,7 @@ export class MarketplaceServiceClientImpl implements MarketplaceService {
     this.Collections = this.Collections.bind(this);
     this.CollectionStats = this.CollectionStats.bind(this);
     this.NFTs = this.NFTs.bind(this);
+    this.NFTCollectionAttributes = this.NFTCollectionAttributes.bind(this);
     this.Quests = this.Quests.bind(this);
     this.Activity = this.Activity.bind(this);
     this.NFTPriceHistory = this.NFTPriceHistory.bind(this);
@@ -3025,6 +3501,17 @@ export class MarketplaceServiceClientImpl implements MarketplaceService {
     return this.rpc.invoke(MarketplaceServiceNFTsDesc, NFTsRequest.fromPartial(request), metadata);
   }
 
+  NFTCollectionAttributes(
+    request: DeepPartial<NFTCollectionAttributesRequest>,
+    metadata?: grpc.Metadata,
+  ): Observable<NFTCollectionAttributesResponse> {
+    return this.rpc.invoke(
+      MarketplaceServiceNFTCollectionAttributesDesc,
+      NFTCollectionAttributesRequest.fromPartial(request),
+      metadata,
+    );
+  }
+
   Quests(request: DeepPartial<QuestsRequest>, metadata?: grpc.Metadata): Observable<QuestsResponse> {
     return this.rpc.invoke(MarketplaceServiceQuestsDesc, QuestsRequest.fromPartial(request), metadata);
   }
@@ -3048,12 +3535,12 @@ export class MarketplaceServiceClientImpl implements MarketplaceService {
     return this.rpc.unary(MarketplaceServiceNewsDesc, NewsRequest.fromPartial(request), metadata);
   }
 
-  DApps(request: DeepPartial<DAppsStoreRequest>, metadata?: grpc.Metadata): Promise<DAppResponse> {
-    return this.rpc.unary(MarketplaceServiceDAppsDesc, DAppsStoreRequest.fromPartial(request), metadata);
+  DApps(request: DeepPartial<DAppsRequest>, metadata?: grpc.Metadata): Promise<DAppsResponse> {
+    return this.rpc.unary(MarketplaceServiceDAppsDesc, DAppsRequest.fromPartial(request), metadata);
   }
 
-  DAppsGroups(request: DeepPartial<DAppsStoreRequest>, metadata?: grpc.Metadata): Promise<DAppGroupsResponse> {
-    return this.rpc.unary(MarketplaceServiceDAppsGroupsDesc, DAppsStoreRequest.fromPartial(request), metadata);
+  DAppsGroups(request: DeepPartial<DAppsGroupsRequest>, metadata?: grpc.Metadata): Promise<DAppsGroupsResponse> {
+    return this.rpc.unary(MarketplaceServiceDAppsGroupsDesc, DAppsGroupsRequest.fromPartial(request), metadata);
   }
 
   SearchNames(request: DeepPartial<SearchNamesRequest>, metadata?: grpc.Metadata): Promise<SearchNamesResponse> {
@@ -3132,6 +3619,28 @@ export const MarketplaceServiceNFTsDesc: UnaryMethodDefinitionish = {
     deserializeBinary(data: Uint8Array) {
       return {
         ...NFTsResponse.decode(data),
+        toObject() {
+          return this;
+        },
+      };
+    },
+  } as any,
+};
+
+export const MarketplaceServiceNFTCollectionAttributesDesc: UnaryMethodDefinitionish = {
+  methodName: "NFTCollectionAttributes",
+  service: MarketplaceServiceDesc,
+  requestStream: false,
+  responseStream: true,
+  requestType: {
+    serializeBinary() {
+      return NFTCollectionAttributesRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      return {
+        ...NFTCollectionAttributesResponse.decode(data),
         toObject() {
           return this;
         },
@@ -3257,13 +3766,13 @@ export const MarketplaceServiceDAppsDesc: UnaryMethodDefinitionish = {
   responseStream: false,
   requestType: {
     serializeBinary() {
-      return DAppsStoreRequest.encode(this).finish();
+      return DAppsRequest.encode(this).finish();
     },
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
       return {
-        ...DAppResponse.decode(data),
+        ...DAppsResponse.decode(data),
         toObject() {
           return this;
         },
@@ -3279,13 +3788,13 @@ export const MarketplaceServiceDAppsGroupsDesc: UnaryMethodDefinitionish = {
   responseStream: false,
   requestType: {
     serializeBinary() {
-      return DAppsStoreRequest.encode(this).finish();
+      return DAppsGroupsRequest.encode(this).finish();
     },
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
       return {
-        ...DAppGroupsResponse.decode(data),
+        ...DAppsGroupsResponse.decode(data),
         toObject() {
           return this;
         },

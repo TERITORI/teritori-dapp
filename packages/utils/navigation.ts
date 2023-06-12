@@ -54,7 +54,6 @@ export type RootStackParamList = {
 
   ComingSoon: undefined;
 
-  OrganizationDeployer: undefined;
   OrganizationGetStarted: undefined;
 
   Multisig: undefined;
@@ -68,6 +67,10 @@ export type RootStackParamList = {
   MultisigTransactionProposal: { address: string; backText?: string };
   Settings: undefined;
 
+  OrganizationDeployer: undefined;
+  Organizations: undefined;
+  CoreDAO: undefined;
+
   DAppStore: undefined;
   ToriPunks: { route: string };
 };
@@ -78,11 +81,6 @@ export type ScreenFC<T extends keyof RootStackParamList> = React.FC<{
   navigation: NativeStackNavigationProp<RootStackParamList, T>;
   route: RouteProp<RootStackParamList, T>;
 }>;
-
-export type AppRouteType<T extends keyof RootStackParamList> = RouteProp<
-  RootStackParamList,
-  T
->;
 
 export const useAppNavigation = () => useNavigation<AppNavigationProp>();
 
@@ -113,10 +111,8 @@ const navConfig: {
     // ==== Launchpad
     Launchpad: "launchpad",
     LaunchpadApply: "launchpad/apply",
-
-    // ==== Mint NFT collection
+    // Mint NFT collection
     MintCollection: "collection/:id/mint",
-
     // ==== Teritori Name Service
     TNSHome: "tns/:modal?",
 
@@ -132,9 +128,14 @@ const navConfig: {
 
     // ==== Staking
     Staking: "staking",
+
+    // === Organizations
+    OrganizationDeployer: "create-org",
+    Organizations: "orgs",
+    CoreDAO: "core-dao",
+
     // === Organization
 
-    OrganizationDeployer: "organization-deployer",
     OrganizationGetStarted: "organization-get-started",
 
     // === Multisig
@@ -154,7 +155,6 @@ const navConfig: {
     Settings: "settings",
     // ==== DAppStore
     DAppStore: "dapp-store",
-
     // === DApps
     ToriPunks: "dapp/tori-punks/:route?",
   },

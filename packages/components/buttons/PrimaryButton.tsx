@@ -19,7 +19,7 @@ import { SVG } from "../SVG";
 import { SecondaryBox } from "../boxes/SecondaryBox";
 
 export const PrimaryButton: React.FC<{
-  size: ButtonsSize;
+  size?: ButtonsSize;
   text: string;
   width?: number;
   onPress?: (() => Promise<void>) | (() => void);
@@ -38,7 +38,7 @@ export const PrimaryButton: React.FC<{
 }> = ({
   // If no width, the buttons will fit the content including paddingHorizontal 20
   width,
-  size,
+  size = "M",
   text,
   onPress,
   squaresBackgroundColor,

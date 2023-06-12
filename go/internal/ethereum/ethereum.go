@@ -90,7 +90,7 @@ func (p *Provider) GetCollections(ctx context.Context, networkId string, req *ma
 			MintAddress:    contract.Minter,
 			Volume:         fmt.Sprint(volumeByCollection[contract.Id].volume),
 			CreatorId:      string(network.UserID(contract.Minter)),
-			VolumeDenom:    volumeByCollection[contract.Id].denom,
+			Denom:          volumeByCollection[contract.Id].denom,
 		})
 	}
 	p.cache.SetWithTTL(cacheKey, res, 0, refreshTime)

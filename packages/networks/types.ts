@@ -3,6 +3,7 @@ export enum NetworkKind {
   Ethereum = "Ethereum",
   Cosmos = "Cosmos",
   Solana = "Solana",
+  Gno = "Gno",
 }
 
 export interface NetworkInfoBase {
@@ -46,6 +47,17 @@ export type CosmosNetworkInfo = NetworkInfoBase & {
   riotSquadStakingContractAddressV2?: string;
   riotersFooterContractAddress?: string;
   socialFeedContractAddress?: string;
+  daoCw20CodeId?: number;
+  daoFactoryCodeId?: number;
+  daoCoreCodeId?: number;
+  daoPreProposeSingleCodeId?: number;
+  daoProposalSingleCodeId?: number;
+  daoVotingCw20StakedCodeId?: number;
+  daoCw20StakeCodeId?: number;
+  daoCw4GroupCodeId?: number;
+  daoVotingCw4CodeId?: number;
+  daoFactoryContractAddress?: string;
+  coreDAOAddress?: string;
 };
 
 export type EthereumNetworkInfo = NetworkInfoBase & {
@@ -61,12 +73,21 @@ export type EthereumNetworkInfo = NetworkInfoBase & {
 export type SolanaNetworkInfo = NetworkInfoBase & {
   kind: NetworkKind.Solana;
   holaplexGraphqlEndpoint: string;
+  vaultContractAddress: string;
+};
+export type GnoNetworkInfo = NetworkInfoBase & {
+  kind: NetworkKind.Gno;
+  chainId: string;
+  endpoint: string;
+  stakeCurrency: string;
+  vaultContractAddress: string;
 };
 
 export type NetworkInfo =
   | CosmosNetworkInfo
   | EthereumNetworkInfo
-  | SolanaNetworkInfo;
+  | SolanaNetworkInfo
+  | GnoNetworkInfo;
 
 export type CurrencyKind = "native" | "ibc";
 

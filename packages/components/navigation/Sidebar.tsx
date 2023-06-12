@@ -7,6 +7,7 @@ import Animated, {
   WithSpringConfig,
 } from "react-native-reanimated";
 
+import { BuyTokens } from "./BuyTokens";
 import { SideNotch } from "./components/SideNotch";
 import { SidebarButton } from "./components/SidebarButton";
 import { SidebarProfileButton } from "./components/SidebarProfileButton";
@@ -37,19 +38,29 @@ const SpringConfig: WithSpringConfig = {
   restDisplacementThreshold: 0.2,
 };
 
+const SidebarSeparator: React.FC = () => {
+  return (
+    <View
+      style={{
+        height: 1,
+        marginHorizontal: layout.padding_x2,
+        backgroundColor: neutral33,
+        marginBottom: layout.padding_x1,
+      }}
+    />
+  );
+};
+
 export const Sidebar: React.FC = () => {
   // variables
   const { selectedWallet } = useSelectedWallet();
   const userInfo = useNSUserInfo(selectedWallet?.userId);
   const selectedNetworkKind = useSelectedNetworkKind();
   const connected = selectedWallet?.connected;
-
-  // variables
   const navigation = useAppNavigation();
   const { name: currentRouteName } = useRoute();
   const { isSidebarExpanded, toggleSidebar, dynamicSidebar } = useSidebar();
 
-  // animations
   const layoutStyle = useAnimatedStyle(
     () => ({
       width: isSidebarExpanded
@@ -79,7 +90,6 @@ export const Sidebar: React.FC = () => {
     navigation.navigate(name);
   };
 
-  // returns
   return (
     <Animated.View style={[styles.container, layoutStyle]}>
       <View style={styles.headerContainer}>
@@ -136,23 +146,15 @@ export const Sidebar: React.FC = () => {
         }
       />
       <View>
-        <View
-          style={{
-            height: 1,
-            marginHorizontal: 18,
-            backgroundColor: neutral33,
-            marginBottom: layout.padding_x1,
-          }}
-        />
+        <SidebarSeparator />
+        <BuyTokens />
+        <SidebarSeparator />
 
         {selectedNetworkKind === NetworkKind.Cosmos &&
           connected &&
           userInfo.metadata && (
             <SidebarProfileButton
-              isLoading={userInfo.loading}
               userId={selectedWallet?.userId || ""}
-              tokenId={userInfo.metadata.tokenId || ""}
-              image={userInfo.metadata.image || ""}
               isExpanded={isSidebarExpanded}
             />
           )}

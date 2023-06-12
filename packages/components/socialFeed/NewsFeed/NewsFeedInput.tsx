@@ -30,6 +30,7 @@ import priceSVG from "../../../../assets/icons/price.svg";
 import videoSVG from "../../../../assets/icons/video.svg";
 import { signingSocialFeedClient } from "../../../client-creators/socialFeedClient";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
+import { useDAOMakeProposal } from "../../../hooks/dao/useDAOMakeProposal";
 import { useBotPost } from "../../../hooks/feed/useBotPost";
 import { useCreatePost } from "../../../hooks/feed/useCreatePost";
 import { useUpdateAvailableFreePost } from "../../../hooks/feed/useUpdateAvailableFreePost";
@@ -39,7 +40,7 @@ import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useMaxResolution } from "../../../hooks/useMaxResolution";
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { getUserId } from "../../../networks";
+import { getUserId, mustGetCosmosNetwork } from "../../../networks";
 import { prettyPrice } from "../../../utils/coins";
 import { defaultSocialFeedFee } from "../../../utils/fee";
 import {
@@ -103,6 +104,7 @@ interface NewsFeedInputProps {
   additionalHashtag?: string;
   // Receive this if the post is created from UserPublicProfileScreen (If the user doesn't own the UPP)
   additionalMention?: string;
+  daoId?: string;
 }
 
 export interface NewsFeedInputHandle {
@@ -130,6 +132,7 @@ export const NewsFeedInput = React.forwardRef<
       onCloseCreateModal,
       additionalHashtag,
       additionalMention,
+      daoId,
     },
     forwardRef
   ) => {
@@ -160,6 +163,7 @@ export const NewsFeedInput = React.forwardRef<
         onPostCreationSuccess();
       },
     });
+    const makeProposal = useDAOMakeProposal(daoId);
 
     const onPostCreationSuccess = () => {
       reset();
@@ -268,40 +272,69 @@ export const NewsFeedInput = React.forwardRef<
 
         const identifier = uuidv4();
 
-        await mutateAsync({
-          client,
-          msg: {
-            category: postCategory,
-            identifier,
-            metadata: JSON.stringify(metadata),
-            parentPostIdentifier: hasUsername ? replyTo?.parentId : parentId,
-          },
-          args: {
-            fee: defaultSocialFeedFee,
-            memo: "",
-            funds: [coin(postFee, "utori")],
-          },
-        });
+        const msg = {
+          category: postCategory,
+          identifier,
+          metadata: JSON.stringify(metadata),
+          parentPostIdentifier: hasUsername ? replyTo?.parentId : parentId,
+        };
 
-        if (
-          postCategory === PostCategory.Question ||
-          postCategory === PostCategory.BriefForStableDiffusion
-        ) {
-          await botPostMutate(
-            {
-              identifier,
-              category: postCategory,
+        if (daoId) {
+          const network = mustGetCosmosNetwork(selectedNetworkId);
+          if (!network.socialFeedContractAddress) {
+            throw new Error("Social feed contract address not found");
+          }
+          if (!wallet?.address) {
+            throw new Error("Invalid sender");
+          }
+          await makeProposal(wallet?.address, {
+            title: "Post on feed",
+            description: "",
+            msgs: [
+              {
+                wasm: {
+                  execute: {
+                    contract_addr: network.socialFeedContractAddress,
+                    msg: Buffer.from(
+                      JSON.stringify({ create_post: msg })
+                    ).toString("base64"),
+                    funds: [{ amount: postFee.toString(), denom: "utori" }],
+                  },
+                },
+              },
+            ],
+          });
+        } else {
+          await mutateAsync({
+            client,
+            msg,
+            args: {
+              fee: defaultSocialFeedFee,
+              memo: "",
+              funds: [coin(postFee, "utori")],
             },
-            {
-              onSuccess: onPostCreationSuccess,
-            }
-          );
+          });
+
+          if (
+            postCategory === PostCategory.Question ||
+            postCategory === PostCategory.BriefForStableDiffusion
+          ) {
+            await botPostMutate(
+              {
+                identifier,
+                category: postCategory,
+              },
+              {
+                onSuccess: onPostCreationSuccess,
+              }
+            );
+          }
         }
       } catch (err) {
         console.error("post submit err", err);
         setToastError({
           title: "Post creation failed",
-          message: err.message,
+          message: err instanceof Error ? err.message : `${err}`,
         });
       }
       setLoading(false);
@@ -676,7 +709,9 @@ export const NewsFeedInput = React.forwardRef<
                 isLoading={isLoading || isMutateLoading}
                 loader
                 size="M"
-                text={type === "comment" ? "Comment" : "Publish"}
+                text={
+                  daoId ? "Propose" : type === "comment" ? "Comment" : "Publish"
+                }
                 squaresBackgroundColor={neutral17}
                 onPress={handleSubmit(processSubmit)}
               />

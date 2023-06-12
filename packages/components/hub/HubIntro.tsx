@@ -4,7 +4,6 @@ import { View } from "react-native";
 import { ProfileButton } from "./ProfileButton";
 import logoSVG from "../../../assets/logos/logo.svg";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
-import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { MyNFTs } from "../../screens/WalletManager/MyNFTs";
 import { WalletDashboardHeader } from "../../screens/WalletManager/WalletDashboardHeader";
@@ -28,15 +27,11 @@ const walletsManagerTabItems = {
   },
 };
 
-// FIXME: fetch quests count
-
 const ConnectedIntro: React.FC = () => {
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof walletsManagerTabItems>("overview");
 
-  const { selectedWallet } = useSelectedWallet();
-
-  const userInfo = useNSUserInfo(selectedWallet?.userId);
+  const selectedWallet = useSelectedWallet();
 
   return (
     <View
@@ -46,17 +41,15 @@ const ConnectedIntro: React.FC = () => {
         width: "100%",
       }}
     >
-      <AvatarWithFrame
-        isLoading={userInfo?.loading}
-        image={userInfo?.metadata?.image}
-        size="XL"
-      />
+      <AvatarWithFrame userId={selectedWallet?.userId} size="XL" />
 
       <ProfileButton style={{ marginTop: 40 }} />
 
-      <Section title="Quests" subtitle="4">
+      <Section title="Quests">
         <FullWidthSeparator />
-        <Quests userId={selectedWallet?.userId} />
+        <View style={{ marginTop: 20 }}>
+          <Quests userId={selectedWallet?.userId} />
+        </View>
       </Section>
 
       <Section title="Wallets manager">

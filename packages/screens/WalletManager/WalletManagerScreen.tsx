@@ -12,6 +12,7 @@ import { useAreThereWallets } from "../../hooks/useAreThereWallets";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { ScreenFC } from "../../utils/navigation";
+import { neutral33 } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
 
 export const WalletManagerScreen: ScreenFC<"WalletManager"> = () => {
@@ -24,7 +25,15 @@ export const WalletManagerScreen: ScreenFC<"WalletManager"> = () => {
       {areThereWallets ? (
         <View style={styles.container}>
           <WalletDashboardHeader />
-          <Assets userId={selectedWallet?.userId} />
+          <Assets
+            userId={selectedWallet?.userId}
+            style={{
+              marginTop: 40,
+              borderTopWidth: 1,
+              borderColor: neutral33,
+              paddingTop: 40,
+            }}
+          />
           <Wallets />
           <MyNFTs />
         </View>

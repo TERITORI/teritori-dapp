@@ -55,6 +55,11 @@ var allModels = []interface{}{
 
 	// feed
 	&Post{},
+
+	// orgs
+	&DAO{},
+	&DAOMember{},
+	&DAOProposal{},
 }
 
 func NewSQLiteDB(path string) (*gorm.DB, error) {

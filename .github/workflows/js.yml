@@ -21,7 +21,7 @@ jobs:
         run: yarn
 
       - name: Lint
-        run: yarn lint
+        run: make lint.js
 
       - name: Validate networks
         run: make validate-networks

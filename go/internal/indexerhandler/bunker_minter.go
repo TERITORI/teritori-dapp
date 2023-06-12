@@ -7,7 +7,6 @@ import (
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/contracts/bunker_minter_types"
-	"github.com/davecgh/go-spew/spew"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 )
@@ -82,7 +81,7 @@ func (h *Handler) handleInstantiateBunker(e *Message, contractAddress string, in
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to create collection")
 	}
-	h.logger.Info("created collection", zap.String("id", string(collectionId)))
+	h.logger.Info("created collection", zap.String("id", string(collectionId)), zap.Time("time", blockTime))
 
 	return nil
 }
@@ -125,7 +124,6 @@ func (h *Handler) handleExecuteMintBunker(e *Message, collection *indexerdb.Coll
 	}
 
 	if err := h.db.Create(&nft).Error; err != nil {
-		spew.Dump(nft)
 		return errors.Wrap(err, "failed to create nft in db")
 	}
 

@@ -1,5 +1,5 @@
 import { useMetaMask } from "metamask-react";
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 
 import { Wallet } from "./wallet";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
@@ -22,9 +22,6 @@ export const useMetamask: () => UseMetamaskResult = () => {
   const wallet: Wallet | undefined = useMemo(() => {
     if (!address || !isConnected) return;
     const walletId = `metamask-${address}`;
-    if (selectedNetworkInfo?.kind === NetworkKind.Ethereum) {
-      dispatch(setSelectedWalletId(walletId));
-    }
     const wallet: Wallet = {
       id: walletId,
       address,
@@ -35,7 +32,16 @@ export const useMetamask: () => UseMetamaskResult = () => {
       connected: isConnected,
     };
     return wallet;
-  }, [address, dispatch, isConnected, selectedNetworkInfo]);
+  }, [address, isConnected, selectedNetworkInfo?.id]);
+
+  useEffect(() => {
+    if (
+      wallet?.connected &&
+      selectedNetworkInfo?.kind === NetworkKind.Ethereum
+    ) {
+      dispatch(setSelectedWalletId(wallet.id));
+    }
+  }, [dispatch, selectedNetworkInfo, wallet]);
 
   const hasMetamask = useMemo(() => {
     return typeof (window as any).ethereum !== "undefined";

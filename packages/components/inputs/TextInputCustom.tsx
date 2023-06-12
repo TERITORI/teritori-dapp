@@ -28,17 +28,16 @@ import {
 } from "react-native";
 import { SvgProps } from "react-native-svg";
 
-import { TextInputLabelProps } from "./TextInputOutsideLabel";
 import { DEFAULT_FORM_ERRORS } from "../../utils/errors";
 import { handleKeyPress } from "../../utils/keyboard";
 import {
+  additionalRed,
   neutral00,
   neutral22,
   neutral33,
   neutral77,
   neutralA3,
   secondaryColor,
-  additionalRed,
 } from "../../utils/style/colors";
 import {
   fontMedium10,
@@ -53,8 +52,8 @@ import { TertiaryBox } from "../boxes/TertiaryBox";
 import { SpacerColumn, SpacerRow } from "../spacer";
 
 export interface TextInputCustomProps<T extends FieldValues>
-  extends Omit<TextInputProps, "accessibilityRole" | "defaultValue">,
-    TextInputLabelProps {
+  extends Omit<TextInputProps, "accessibilityRole" | "defaultValue"> {
+  label: string;
   variant?: "regular" | "labelOutside" | "noCropBorder" | "noStyle";
   iconSVG?: React.FC<SvgProps>;
   placeHolder?: string;
@@ -132,7 +131,6 @@ export const TextInputCustom = <T extends FieldValues>({
   rules,
   subtitle,
   labelStyle,
-  isAsterickSign,
   iconSVG,
   inputStyle,
   hideLabel,
@@ -142,7 +140,6 @@ export const TextInputCustom = <T extends FieldValues>({
   containerStyle,
   boxMainContainerStyle,
   error,
-  noBrokenCorners,
   fullWidth,
   setRef,
   ...restProps
@@ -190,8 +187,8 @@ export const TextInputCustom = <T extends FieldValues>({
       }
 
       if (reg.test(value) || !value) {
-        field.onChange(value);
-        if (restProps.onChangeText) {
+        field.onChange(valueModifier ? valueModifier(value) : value);
+        if (restProps?.onChangeText) {
           restProps.onChangeText(value);
           return;
         }
@@ -200,8 +197,8 @@ export const TextInputCustom = <T extends FieldValues>({
     }
 
     if ((regexp && (regexp.test(value) || value === "")) || !regexp) {
-      field.onChange(value);
-      if (restProps.onChangeText) {
+      field.onChange(valueModifier ? valueModifier(value) : value);
+      if (restProps?.onChangeText) {
         restProps.onChangeText(value);
       }
     }
@@ -238,7 +235,10 @@ export const TextInputCustom = <T extends FieldValues>({
       <TertiaryBox
         squaresBackgroundColor={squaresBackgroundColor}
         style={style}
-        mainContainerStyle={[styles.mainContainer, boxMainContainerStyle]}
+        mainContainerStyle={[
+          styles.mainContainer,
+          variant === "noCropBorder" && styles.noCropBorderBg,
+        ]}
         width={width}
         fullWidth={!width}
         height={height}

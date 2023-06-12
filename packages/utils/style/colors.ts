@@ -63,6 +63,7 @@ export const currencyETHcolor = "#232731";
 export const currencyATOMcolor = "#5C26F5";
 export const currencyOSMOcolor = "#A401D4";
 export const currencyJUNOcolor = "#F0827D";
+export const currencyGNOcolor = "#232800";
 
 export const gradientBlue = "90deg, #00C6FB 0%, #005BEA 100%";
 export const gradientBlueReversed = "90deg, #005BEA 0%, #00C6FB 100%";

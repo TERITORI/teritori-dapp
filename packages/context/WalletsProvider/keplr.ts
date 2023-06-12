@@ -69,21 +69,24 @@ export const useKeplr: () => UseKeplrResult = () => {
   useEffect(() => {
     const effect = async () => {
       if (!hasKeplr || !isKeplrConnected) {
+        setReady(true);
         return;
       }
-
       try {
         const keplr = (window as KeplrWindow)?.keplr;
         if (!keplr) {
+          setReady(true);
           console.error("no keplr");
           return;
         }
 
         if (selectedNetworkInfo?.kind !== NetworkKind.Cosmos) {
+          setReady(true);
           return;
         }
         const chainId = selectedNetworkInfo.chainId;
         if (!chainId) {
+          setReady(true);
           console.error("missing chain id");
           return;
         }
@@ -146,13 +149,15 @@ export const useKeplr: () => UseKeplrResult = () => {
       return wallet;
     });
 
+    return wallets;
+  }, [addresses, selectedNetworkInfo]);
+
+  useEffect(() => {
     const selectedWallet = wallets.find((w) => w.connected);
     if (selectedWallet && selectedNetworkInfo?.kind === NetworkKind.Cosmos) {
       dispatch(setSelectedWalletId(selectedWallet.id));
     }
-
-    return wallets;
-  }, [addresses, dispatch, selectedNetworkInfo]);
+  }, [dispatch, selectedNetworkInfo?.kind, wallets]);
 
   return hasKeplr ? [true, ready, wallets] : [false, ready, undefined];
 };

@@ -20,6 +20,7 @@ import { Navigator } from "./packages/components/navigation/Navigator";
 import { DropdownsContextProvider } from "./packages/context/DropdownsProvider";
 import { FeedbacksContextProvider } from "./packages/context/FeedbacksProvider";
 import { MultisigContextProvider } from "./packages/context/MultisigReducer";
+import { SearchBarContextProvider } from "./packages/context/SearchBarProvider";
 import { SidebarContextProvider } from "./packages/context/SidebarProvider";
 import { TNSMetaDataListContextProvider } from "./packages/context/TNSMetaDataListProvider";
 import { TNSContextProvider } from "./packages/context/TNSProvider";
@@ -58,21 +59,23 @@ export default function App() {
                 <FeedbacksContextProvider>
                   <DropdownsContextProvider>
                     <WalletsProvider>
-                      <MultisigContextProvider>
-                        <TransactionModalsProvider>
-                          <TNSContextProvider>
-                            <TNSMetaDataListContextProvider>
-                              <MenuProvider>
-                                <SidebarContextProvider>
-                                  <StatusBar style="inverted" />
-                                  <Navigator />
-                                  <Toast autoHide visibilityTime={2000} />
-                                </SidebarContextProvider>
-                              </MenuProvider>
-                            </TNSMetaDataListContextProvider>
-                          </TNSContextProvider>
-                        </TransactionModalsProvider>
-                      </MultisigContextProvider>
+                      <SearchBarContextProvider>
+                        <MultisigContextProvider>
+                          <TransactionModalsProvider>
+                            <TNSContextProvider>
+                              <TNSMetaDataListContextProvider>
+                                <MenuProvider>
+                                  <SidebarContextProvider>
+                                    <StatusBar style="inverted" />
+                                    <Navigator />
+                                    <Toast autoHide visibilityTime={2000} />
+                                  </SidebarContextProvider>
+                                </MenuProvider>
+                              </TNSMetaDataListContextProvider>
+                            </TNSContextProvider>
+                          </TransactionModalsProvider>
+                        </MultisigContextProvider>
+                      </SearchBarContextProvider>
                     </WalletsProvider>
                   </DropdownsContextProvider>
                 </FeedbacksContextProvider>
