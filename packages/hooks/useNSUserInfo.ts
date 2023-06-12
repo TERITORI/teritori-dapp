@@ -5,6 +5,7 @@ import { parseUserId } from "../networks";
 export const useNSUserInfo = (userId: string | undefined) => {
   const [network] = parseUserId(userId);
   const { primaryAlias, isSuccess } = useNSPrimaryAlias(userId);
+
   const { nsInfo, isLoading, isError } = useNSNameInfo(
     network?.id,
     primaryAlias,
