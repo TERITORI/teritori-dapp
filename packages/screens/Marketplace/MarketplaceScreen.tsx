@@ -254,7 +254,10 @@ const CollectionRow: React.FC<{ collection: Collection; rank: number }> = ({
         paddingVertical: layout.padding_x2,
         paddingHorizontal: layout.padding_x2_5,
       }}
-      to={{ screen: "Collection", params: { id: collection.id } }}
+      to={{
+        screen: collection.floorPrice !== 0 ? "Collection" : "MintCollection",
+        params: { id: collection.id },
+      }}
     >
       <InnerCell flex={1}>{rowData.rank}</InnerCell>
       <View
@@ -372,19 +375,19 @@ const useRowData = (collection: Collection, rank: number): RowData => {
     totalVolume: {
       networkId: collection.networkId,
       value: collection.totalVolume,
-      denom: collection.denom,
+      denom: collection.denom !== "" ? collection.denom : "utori",
     },
     TimePeriodVolume: {
       networkId: collection.networkId,
       value: parseFloat(collection.volume),
-      denom: collection.denom,
+      denom: collection.denom !== "" ? collection.denom : "utori",
     },
     TimePeriodPercentualVolume: getDelta(collection),
     sales: nFormatter(collection.numTrades, 0),
     floorPrice: {
       networkId: collection.networkId,
       value: collection.floorPrice,
-      denom: collection.denom,
+      denom: collection.denom !== "" ? collection.denom : "utori",
     },
     owners: nFormatter(
       collection.numOwners,
@@ -402,7 +405,7 @@ const getDelta = (collection: Collection) => {
   }
   const res = (collection.volumeCompare * 100) / parseFloat(collection.volume);
   if (res > 100) {
-    return "+%" + res.toFixed(2);
+    return "+" + res.toFixed(2) + "%";
   }
-  return "-%" + (100 - res).toFixed(2);
+  return "-" + (100 - res).toFixed(2) + "%";
 };

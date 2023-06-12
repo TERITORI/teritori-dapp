@@ -1,6 +1,7 @@
 import React from "react";
 import { Linking } from "react-native";
 
+import coin from "../../../assets/icons/coin.svg";
 import discordSVG from "../../../assets/icons/discord.svg";
 import twitterSVG from "../../../assets/icons/twitter.svg";
 import websiteSVG from "../../../assets/icons/website.svg";
@@ -14,10 +15,19 @@ export const CollectionSocialButtons: React.FC<{
     discord: discordLink,
     twitter: twitterLink,
     website: websiteLink,
+    isMintable,
   } = collectionInfo;
 
   return (
     <>
+      {isMintable && (
+        <SocialButton
+          text="Mintable"
+          iconSvg={coin}
+          style={{ marginRight: 12 }}
+          onPress={() => Linking.openURL(window.location.href + "/mint")}
+        />
+      )}
       {websiteLink && (
         <SocialButton
           text="Website"
