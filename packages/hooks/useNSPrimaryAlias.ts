@@ -71,16 +71,18 @@ export const useNSPrimaryAlias = (userId: string | undefined) => {
       }
 
       const [network, userAddress] = parseUserId(userId);
-
-      if (network?.kind === NetworkKind.Cosmos) {
-        const cosmosNetwork = mustGetCosmosNetwork(network?.id);
-        return cosmosGetUsernameByAddress(cosmosNetwork, userAddress);
-      } else if (network?.kind === NetworkKind.Gno) {
-        const gnoNetwork = mustGetGnoNetwork(network?.id);
-        return gnoGetUsernameByAddress(gnoNetwork, userAddress);
+      if (!network) {
+        return null;
       }
 
-      return null;
+      switch (network.kind) {
+        case NetworkKind.Cosmos:
+          return cosmosGetUsernameByAddress(network, userAddress);
+        case NetworkKind.Gno:
+          return gnoGetUsernameByAddress(network, userAddress);
+        default:
+          return null;
+      }
     },
     { staleTime: Infinity }
   );
