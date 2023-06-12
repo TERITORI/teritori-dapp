@@ -18,4 +18,7 @@ export const gnoDevNetwork: GnoNetworkInfo = {
   testnet: true,
   backendEndpoint: "https://dapp-backend.mainnet.teritori.com",
   vaultContractAddress: "",
+  nameServiceContractAddress: "gno.land/r/demo/users",
+  nameServiceDefaultImage:
+    "ipfs://bafkreignptjimiu7wuux6mk6uh4hb4odb6ff62ny4bvdokrhes7g67huse",
 };

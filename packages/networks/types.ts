@@ -76,12 +76,15 @@ export type SolanaNetworkInfo = NetworkInfoBase & {
   holaplexGraphqlEndpoint: string;
   vaultContractAddress: string;
 };
+
 export type GnoNetworkInfo = NetworkInfoBase & {
   kind: NetworkKind.Gno;
   chainId: string;
   endpoint: string;
   stakeCurrency: string;
   vaultContractAddress: string;
+  nameServiceContractAddress: string;
+  nameServiceDefaultImage: string;
 };
 
 export type NetworkInfo =

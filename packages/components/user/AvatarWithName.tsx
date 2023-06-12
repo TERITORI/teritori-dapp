@@ -3,6 +3,7 @@ import { StyleProp, ViewStyle, View, TouchableOpacity } from "react-native";
 import { useNSNameOwner } from "../../hooks/useNSNameOwner";
 import { useNSPrimaryAlias } from "../../hooks/useNSPrimaryAlias";
 import { getUserId, parseUserId } from "../../networks";
+import { gnoTest3Network } from "../../networks/gno-test3";
 import { fontSemibold12 } from "../../utils/style/fonts";
 import { tinyAddress } from "../../utils/text";
 import { BrandText } from "../BrandText";
@@ -38,7 +39,11 @@ export const AvatarWithNameFromName: React.FC<{
   return (
     <AvatarWithNameView
       name={name}
-      userId={getUserId(networkId, nameOwner)}
+      userId={
+        name?.endsWith(".gno")
+          ? getUserId(gnoTest3Network.id, nameOwner)
+          : getUserId(networkId, nameOwner)
+      }
       style={style}
       onPress={onPress}
     />

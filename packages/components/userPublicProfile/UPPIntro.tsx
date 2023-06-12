@@ -3,7 +3,6 @@ import { Linking, useWindowDimensions, View } from "react-native";
 
 import defaultUserProfileBannerPNG from "../../../assets/default-images/default-user-profile-banner.png";
 import discordSVG from "../../../assets/icons/discord.svg";
-import teritoriSVG from "../../../assets/icons/networks/teritori.svg";
 import shareSVG from "../../../assets/icons/share.svg";
 import twitterSVG from "../../../assets/icons/twitter.svg";
 import websiteSVG from "../../../assets/icons/website.svg";
@@ -37,7 +36,7 @@ export const UPPIntro: React.FC<{
   const { metadata } = useNSUserInfo(userId);
   const { copyToClipboard } = useCopyToClipboard();
   const socialButtonStyle = { margin: layout.padding_x0_75 };
-  const [, userAddress] = parseUserId(userId);
+  const [network, userAddress] = parseUserId(userId);
   const { width } = useMaxResolution();
   const { width: windowWidth } = useWindowDimensions();
 
@@ -205,7 +204,7 @@ export const UPPIntro: React.FC<{
           <CopyToClipboardSecondary
             displayedText={tinyAddress(userAddress, 19)}
             text={userAddress}
-            iconSVG={teritoriSVG}
+            networkIcon={network?.id}
           />
         </TertiaryBox>
       </View>

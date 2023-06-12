@@ -4,7 +4,7 @@ import { Linking } from "react-native";
 import { ConnectWalletButton } from "./components/ConnectWalletButton";
 import adenaSVG from "../../../assets/icons/adena.svg";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { gnoTestnetNetwork } from "../../networks/gno-testnet";
+import { gnoTest3Network } from "../../networks/gno-test3";
 import {
   setIsAdenaConnected,
   setSelectedNetworkId,
@@ -27,7 +27,7 @@ export const ConnectAdenaButton: React.FC<{
       const establishResult = await adena.AddEstablish("Teritori dApp");
       console.log("established", establishResult);
       dispatch(setIsAdenaConnected(true));
-      setSelectedNetworkId(gnoTestnetNetwork.id);
+      setSelectedNetworkId(gnoTest3Network.id);
       dispatch(
         setSelectedWalletId(`adena-${(await adena.GetAccount()).data.address}`)
       );

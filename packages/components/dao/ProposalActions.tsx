@@ -13,8 +13,15 @@ import {
   useInvalidateDAOVoteInfo,
   useDAOVoteInfo,
 } from "../../hooks/dao/useDAOVoteInfo";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getKeplrSigningCosmWasmClient } from "../../networks";
+import {
+  NetworkKind,
+  getKeplrSigningCosmWasmClient,
+  getNetwork,
+  parseUserId,
+} from "../../networks";
+import { adenaVMCall } from "../../utils/gno";
 import { neutral77, primaryColor, errorColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
@@ -28,6 +35,7 @@ export const ProposalActions: React.FC<{
   proposal: ProposalResponse;
 }> = ({ daoId, proposal }) => {
   const selectedWallet = useSelectedWallet();
+  const networkId = useSelectedNetworkId();
   const { setToastError, setToastSuccess } = useFeedbacks();
   const { isDAOMember: selectedWalletIsDAOMember } = useIsDAOMember(
     daoId,
@@ -47,27 +55,64 @@ export const ProposalActions: React.FC<{
   );
 
   const vote = async (v: Vote) => {
-    if (
-      !selectedWallet ||
-      proposal.proposal.status !== "open" ||
-      !daoFirstProposalModule?.address
-    )
-      return;
     try {
-      const walletAddress = selectedWallet.address;
-      const networkId = selectedWallet.networkId;
-      const signingClient = await getKeplrSigningCosmWasmClient(networkId);
-      const daoProposalClient = new DaoProposalSingleClient(
-        signingClient,
-        walletAddress,
-        daoFirstProposalModule?.address
-      );
-      await daoProposalClient.vote(
-        { proposalId: proposal.id, vote: v },
-        "auto"
-      );
+      if (!selectedWallet) throw new Error("invalid wallet");
+      if (proposal.proposal.status !== "open")
+        throw new Error("proposal not open");
+      const network = getNetwork(networkId);
+      if (!network) throw new Error("network not found");
+      switch (network.kind) {
+        case NetworkKind.Cosmos: {
+          if (!daoFirstProposalModule?.address)
+            throw new Error("no proposal module");
+          const walletAddress = selectedWallet.address;
+          const networkId = selectedWallet.networkId;
+          const signingClient = await getKeplrSigningCosmWasmClient(networkId);
+          const daoProposalClient = new DaoProposalSingleClient(
+            signingClient,
+            walletAddress,
+            daoFirstProposalModule?.address
+          );
+          await daoProposalClient.vote(
+            { proposalId: proposal.id, vote: v },
+            "auto"
+          );
+          break;
+        }
+        case NetworkKind.Gno: {
+          const walletAddress = selectedWallet.address;
+          const [, pkgPath] = parseUserId(daoId);
+          let gnoVote;
+          switch (v) {
+            case "yes": {
+              gnoVote = "0";
+              break;
+            }
+            case "no": {
+              gnoVote = "1";
+              break;
+            }
+            case "abstain": {
+              gnoVote = "2";
+              break;
+            }
+            default:
+              throw new Error("invalid vote");
+          }
+          await adenaVMCall({
+            caller: walletAddress,
+            send: "",
+            pkg_path: pkgPath,
+            func: "Vote",
+            args: ["0", proposal.id.toString(), gnoVote, "Me like it"],
+          });
+          break;
+        }
+        default:
+          throw new Error("network not supported");
+      }
       await Promise.all([invalidateDAOVoteInfo(), invalidateDAOProposals()]);
-      setToastSuccess({ title: "Voted", message: "" });
+      setToastSuccess({ title: "Success", message: "Vote submitted" });
     } catch (err: any) {
       setToastError({
         title: "Failed to vote",
@@ -77,37 +122,60 @@ export const ProposalActions: React.FC<{
   };
 
   const execute = async () => {
-    if (
-      !selectedWallet ||
-      proposal.proposal.status !== "passed" ||
-      !daoFirstProposalModule?.address
-    )
-      return;
     try {
-      const walletAddress = selectedWallet.address;
-      const networkId = selectedWallet.networkId;
-      const signingClient = await getKeplrSigningCosmWasmClient(networkId);
-      const daoProposalClient = new DaoProposalSingleClient(
-        signingClient,
-        walletAddress,
-        daoFirstProposalModule?.address
-      );
-      const res = await daoProposalClient.execute({
-        proposalId: proposal.id,
-      });
-      if (
-        res.events.find((ev) =>
-          ev.attributes.find(
-            (attr) =>
-              attr.key === "proposal_execution_failed" &&
-              attr.value === proposal.id.toString()
-          )
-        )
-      ) {
-        console.error("failed to execute", res);
-        throw new Error("internal error");
+      if (!selectedWallet) {
+        throw new Error("invalid wallet");
       }
-      console.log("executed", res);
+      const network = getNetwork(networkId);
+      if (!network) {
+        throw new Error("invalid network");
+      }
+      switch (network.kind) {
+        case NetworkKind.Cosmos: {
+          if (
+            proposal.proposal.status !== "passed" ||
+            !daoFirstProposalModule?.address
+          )
+            return;
+          const walletAddress = selectedWallet.address;
+          const networkId = selectedWallet.networkId;
+          const signingClient = await getKeplrSigningCosmWasmClient(networkId);
+          const daoProposalClient = new DaoProposalSingleClient(
+            signingClient,
+            walletAddress,
+            daoFirstProposalModule?.address
+          );
+          const res = await daoProposalClient.execute({
+            proposalId: proposal.id,
+          });
+          if (
+            res.events.find((ev) =>
+              ev.attributes.find(
+                (attr) =>
+                  attr.key === "proposal_execution_failed" &&
+                  attr.value === proposal.id.toString()
+              )
+            )
+          ) {
+            console.error("failed to execute", res);
+            throw new Error("internal error");
+          }
+          console.log("executed", res);
+          break;
+        }
+        case NetworkKind.Gno: {
+          const walletAddress = selectedWallet.address;
+          const [, pkgPath] = parseUserId(daoId);
+          await adenaVMCall({
+            caller: walletAddress,
+            send: "",
+            pkg_path: pkgPath,
+            func: "Execute",
+            args: ["0", proposal.id.toString()],
+          });
+          break;
+        }
+      }
       await invalidateDAOProposals();
       setToastSuccess({ title: "Executed", message: "" });
     } catch (err) {

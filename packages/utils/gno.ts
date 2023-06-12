@@ -40,7 +40,7 @@ export const extractGnoNumber = (str: string) => {
   return parseFloat(str.replace("(", "").split(" ")[0]);
 };
 export const extractGnoString = (str: string) => {
-  return str.slice(2, -'" string)'.length);
+  return str.slice(2, -'" string)'.length).replaceAll("\\n", "\n");
 };
 export const proposalStatusFromNumber = (status: number): Status => {
   switch (status) {

@@ -21,7 +21,8 @@ import { useDAOMembers } from "../../hooks/dao/useDAOMembers";
 import { useNameSearch } from "../../hooks/search/useNameSearch";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getUserId, parseUserId } from "../../networks";
+import { NetworkKind, getUserId, parseUserId } from "../../networks";
+import { adenaVMCall } from "../../utils/gno";
 import {
   neutral00,
   neutral33,
@@ -506,37 +507,63 @@ const useProposeToAddMembers = (daoId: string | undefined) => {
   const { data: groupAddress } = useDAOGroup(daoId);
   return useCallback(
     async (senderAddress: string | undefined, membersToAdd: string[]) => {
+      const weight = 1;
+      const [network, daoAddress] = parseUserId(daoId);
       if (!senderAddress) {
         throw new Error("Invalid sender");
       }
-      if (!groupAddress) {
-        throw new Error("DAO group address not found");
-      }
-      const weight = 1;
-      const updateMembersReq: {
-        add: Member[];
-        remove: string[];
-      } = { add: membersToAdd.map((m) => ({ addr: m, weight })), remove: [] };
-      return await makeProposal(senderAddress, {
-        title: `Add ${membersToAdd.length} member(s) with weight ${weight}`,
-        description: "",
-        msgs: [
-          {
-            wasm: {
-              execute: {
-                contract_addr: groupAddress,
-                msg: Buffer.from(
-                  JSON.stringify({
-                    update_members: updateMembersReq,
-                  })
-                ).toString("base64"),
-                funds: [],
+      switch (network?.kind) {
+        case NetworkKind.Cosmos: {
+          if (!groupAddress) {
+            throw new Error("DAO group address not found");
+          }
+          const updateMembersReq: {
+            add: Member[];
+            remove: string[];
+          } = {
+            add: membersToAdd.map((m) => ({ addr: m, weight })),
+            remove: [],
+          };
+          await makeProposal(senderAddress, {
+            title: `Add ${membersToAdd.length} member(s) with weight ${weight}`,
+            description: "",
+            msgs: [
+              {
+                wasm: {
+                  execute: {
+                    contract_addr: groupAddress,
+                    msg: Buffer.from(
+                      JSON.stringify({
+                        update_members: updateMembersReq,
+                      })
+                    ).toString("base64"),
+                    funds: [],
+                  },
+                },
               },
-            },
-          },
-        ],
-      });
+            ],
+          });
+          return;
+        }
+        case NetworkKind.Gno: {
+          const message = `UpdateMembers\n---\n${membersToAdd
+            .map((m) => `${m}:${weight}`)
+            .join("\n")}`;
+          console.log("message\n", message);
+          await adenaVMCall({
+            caller: senderAddress,
+            send: "",
+            pkg_path: daoAddress,
+            func: "Propose",
+            args: ["0", "Update members", "", message],
+          });
+          return;
+        }
+        default: {
+          throw new Error("network not supported");
+        }
+      }
     },
-    [groupAddress, makeProposal]
+    [daoId, groupAddress, makeProposal]
   );
 };

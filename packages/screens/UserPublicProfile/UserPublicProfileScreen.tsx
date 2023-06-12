@@ -22,7 +22,7 @@ import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { usePrevious } from "../../hooks/usePrevious";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { parseUserId } from "../../networks";
+import { NetworkKind, parseUserId } from "../../networks";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import { Assets } from "../WalletManager/Assets";
@@ -176,6 +176,35 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
     });
   }, [navigation, userAddress, metadata.tokenId]);
 
+  const content =
+    network?.kind !== NetworkKind.Gno &&
+    (notFound || !userAddress || !bech32.decodeUnsafe(userAddress)) ? (
+      <NotFound label="User" />
+    ) : (
+      <>
+        {selectedTab !== "userPosts" && selectedTab !== "mentionsPosts" ? (
+          <TabContainer>
+            <UserPublicProfileScreenHeader
+              userId={id}
+              selectedTab={selectedTab}
+              setSelectedTab={setSelectedTab}
+            />
+            <SelectedTabContent
+              selectedTab={selectedTab}
+              userId={id}
+              setSelectedTab={setSelectedTab}
+            />
+          </TabContainer>
+        ) : (
+          <SelectedTabContent
+            selectedTab={selectedTab}
+            userId={id}
+            setSelectedTab={setSelectedTab}
+          />
+        )}
+      </>
+    );
+
   return (
     <ScreenContainer
       key={`UserPublicProfile ${id}`} // this key is to reset the screen state when the id changes
@@ -195,32 +224,7 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
           : navigation.navigate("Home")
       }
     >
-      {notFound || !userAddress || !bech32.decodeUnsafe(userAddress) ? (
-        <NotFound label="User" />
-      ) : (
-        <>
-          {selectedTab !== "userPosts" && selectedTab !== "mentionsPosts" ? (
-            <TabContainer>
-              <UserPublicProfileScreenHeader
-                userId={id}
-                selectedTab={selectedTab}
-                setSelectedTab={setSelectedTab}
-              />
-              <SelectedTabContent
-                selectedTab={selectedTab}
-                userId={id}
-                setSelectedTab={setSelectedTab}
-              />
-            </TabContainer>
-          ) : (
-            <SelectedTabContent
-              selectedTab={selectedTab}
-              userId={id}
-              setSelectedTab={setSelectedTab}
-            />
-          )}
-        </>
-      )}
+      {content}
     </ScreenContainer>
   );
 };

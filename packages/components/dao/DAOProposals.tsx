@@ -10,12 +10,17 @@ import {
 import { DAOProposalModal } from "./DAOProposalModal";
 import { ProposalActions } from "./ProposalActions";
 import orgSVG from "../../../assets/icons/multisig.svg";
-import { ProposalResponse } from "../../contracts-clients/dao-proposal-single/DaoProposalSingle.types";
-import { useDAOProposals } from "../../hooks/dao/useDAOProposals";
-import { useDAOProposalsConfig } from "../../hooks/dao/useDAOProposalsConfig";
+import { useFeedbacks } from "../../context/FeedbacksProvider";
+import {
+  AppProposalResponse,
+  useDAOProposals,
+  useInvalidateDAOProposals,
+} from "../../hooks/dao/useDAOProposals";
 import { useDAOTotalVotingPower } from "../../hooks/dao/useDAOTotalVotingPower";
 import { useNSPrimaryAlias } from "../../hooks/useNSPrimaryAlias";
-import { getUserId, parseUserId } from "../../networks";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { NetworkKind, getUserId, parseUserId } from "../../networks";
+import { adenaVMCall } from "../../utils/gno";
 import {
   neutral33,
   neutral55,
@@ -24,19 +29,24 @@ import {
   errorColor,
 } from "../../utils/style/colors";
 import { fontSemibold13, fontSemibold14 } from "../../utils/style/fonts";
+import { modalMarginPadding } from "../../utils/style/modals";
 import { tinyAddress } from "../../utils/text";
 import { BrandText } from "../BrandText";
 import { OmniLink } from "../OmniLink";
 import { SVG } from "../SVG";
+import { PrimaryButton } from "../buttons/PrimaryButton";
+import { TextInputCustom } from "../inputs/TextInputCustom";
+import ModalBase from "../modals/ModalBase";
+import { SpacerColumn } from "../spacer";
 
 export const DAOProposals: React.FC<{
   daoId: string | undefined;
   style?: StyleProp<ViewStyle>;
 }> = ({ daoId, style }) => {
   const { daoProposals } = useDAOProposals(daoId);
-
   return (
     <View style={style}>
+      <GnoCreateProposal daoId={daoId} />
       {[...(daoProposals || [])].reverse().map((proposal) => (
         <ProposalRow daoId={daoId} key={proposal.id} proposal={proposal} />
       ))}
@@ -44,13 +54,79 @@ export const DAOProposals: React.FC<{
   );
 };
 
+const GnoCreateProposal: React.FC<{ daoId: string | undefined }> = ({
+  daoId,
+}) => {
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [modalVisible, setModalVisible] = useState(false);
+  const [network, daoAddress] = parseUserId(daoId);
+  const selectedWallet = useSelectedWallet();
+  const { wrapWithFeedback } = useFeedbacks();
+  const invalidateDAOProposals = useInvalidateDAOProposals(daoId);
+  if (network?.kind !== NetworkKind.Gno || !selectedWallet) {
+    return null;
+  }
+  return (
+    <>
+      <PrimaryButton
+        text="Create sentiment proposal"
+        onPress={() => {
+          setModalVisible(true);
+        }}
+      />
+      <ModalBase
+        label={`Create proposal on ${daoAddress}`}
+        visible={modalVisible}
+        noBrokenCorners
+        onClose={() => setModalVisible(false)}
+      >
+        <TextInputCustom
+          label="Title"
+          name="title"
+          onChangeText={setTitle}
+          value={title}
+        />
+        <SpacerColumn size={2} />
+        <TextInputCustom
+          label="Description"
+          name="description"
+          onChangeText={setDescription}
+          value={description}
+          multiline
+          numberOfLines={10}
+        />
+        <SpacerColumn size={2} />
+        <PrimaryButton
+          text="Propose"
+          loader
+          style={{ marginBottom: modalMarginPadding }}
+          onPress={wrapWithFeedback(
+            async () => {
+              await adenaVMCall({
+                caller: selectedWallet.address,
+                send: "",
+                pkg_path: daoAddress,
+                func: "Propose",
+                args: ["0", title, description, ""],
+              });
+              setModalVisible(false);
+              await invalidateDAOProposals();
+            },
+            { title: "Success", message: "Proposal created" }
+          )}
+        />
+      </ModalBase>
+    </>
+  );
+};
+
 const ProposalRow: React.FC<{
   daoId: string | undefined;
-  proposal: ProposalResponse;
+  proposal: AppProposalResponse;
 }> = ({ daoId, proposal }) => {
   const [network] = parseUserId(daoId);
   const { daoTotalVotingPower } = useDAOTotalVotingPower(daoId);
-  const { daoProposalsConfig } = useDAOProposalsConfig(daoId);
 
   const halfGap = 24;
   const elemStyle: ViewStyle = {
@@ -73,18 +149,19 @@ const ProposalRow: React.FC<{
   let quorumGain = 0;
   let thresholdGain = 0;
   if (
-    daoProposalsConfig?.threshold &&
-    "threshold_quorum" in daoProposalsConfig.threshold
+    proposal?.proposal.threshold &&
+    "threshold_quorum" in proposal.proposal.threshold
   ) {
-    const threshold = daoProposalsConfig.threshold.threshold_quorum.threshold;
+    const threshold = proposal.proposal.threshold.threshold_quorum.threshold;
     if ("percent" in threshold) {
       thresholdGain = parseFloat(threshold.percent);
     }
-    const quorum = daoProposalsConfig.threshold.threshold_quorum.quorum;
+    const quorum = proposal.proposal.threshold.threshold_quorum.quorum;
     if ("percent" in quorum) {
       quorumGain = parseFloat(quorum.percent);
     }
   }
+
   const thresholdWeight = thresholdGain * totalWeight;
   const targetWeight = Math.max(weights.voted, thresholdWeight);
   const quorumWeight = quorumGain * targetWeight;
@@ -167,17 +244,17 @@ const ProposalRow: React.FC<{
           </View>
         </View>
         <View style={elemStyle}>
-          {proposal.proposal.status === "open" && (
-            <>
-              <View
-                style={{
-                  flexDirection: "row",
-                  width: "100%",
-                  height: 13,
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
-              >
+          <View
+            style={{
+              flexDirection: "row",
+              width: "100%",
+              height: 13,
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            {proposal.proposal.status === "open" && (
+              <>
                 <BrandText
                   style={[fontSemibold14, { lineHeight: 14, color: neutral77 }]}
                   numberOfLines={1}
@@ -204,62 +281,62 @@ const ProposalRow: React.FC<{
                     {Math.ceil(quorumWeight)}
                   </Text>
                 </BrandText>
-              </View>
+              </>
+            )}
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              width: "100%",
+              height: 13,
+              alignItems: "center",
+            }}
+          >
+            <View style={{ flex: 1, flexDirection: "row" }}>
               <View
                 style={{
                   flexDirection: "row",
-                  width: "100%",
-                  height: 13,
-                  alignItems: "center",
+                  backgroundColor: successColor,
+                  height: progressBarHeight,
+                  flex: weights.approved / targetWeight,
                 }}
-              >
-                <View style={{ flex: 1, flexDirection: "row" }}>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      backgroundColor: successColor,
-                      height: progressBarHeight,
-                      flex: weights.approved / targetWeight,
-                    }}
-                  />
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      backgroundColor: "white",
-                      height: progressBarHeight,
-                      flex: weights.abstained / targetWeight,
-                    }}
-                  />
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      backgroundColor: errorColor,
-                      height: progressBarHeight,
-                      flex: weights.declined / targetWeight,
-                    }}
-                  />
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      backgroundColor: neutral55,
-                      height: progressBarHeight,
-                      flex: (targetWeight - weights.voted) / targetWeight,
-                    }}
-                  />
-                </View>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    backgroundColor: "black",
-                    height: progressBarHeight,
-                    position: "absolute",
-                    left: `${quorumGain * 100}%`,
-                    width: 1,
-                  }}
-                />
-              </View>
-            </>
-          )}
+              />
+              <View
+                style={{
+                  flexDirection: "row",
+                  backgroundColor: "white",
+                  height: progressBarHeight,
+                  flex: weights.abstained / targetWeight,
+                }}
+              />
+              <View
+                style={{
+                  flexDirection: "row",
+                  backgroundColor: errorColor,
+                  height: progressBarHeight,
+                  flex: weights.declined / targetWeight,
+                }}
+              />
+              <View
+                style={{
+                  flexDirection: "row",
+                  backgroundColor: neutral55,
+                  height: progressBarHeight,
+                  flex: (targetWeight - weights.voted) / targetWeight,
+                }}
+              />
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                backgroundColor: "black",
+                height: progressBarHeight,
+                position: "absolute",
+                left: `${quorumGain * 100}%`,
+                width: 1,
+              }}
+            />
+          </View>
         </View>
         <View
           style={{
