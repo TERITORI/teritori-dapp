@@ -533,5 +533,32 @@
     "testnet": true,
     "backendEndpoint": "https://dapp-backend.mainnet.teritori.com",
     "vaultContractAddress": ""
+  },
+  {
+    "id": "gno-dev",
+    "kind": "Gno",
+    "displayName": "Gno Devnet",
+    "icon": "icons/networks/gno.svg",
+    "currencies": [
+      {
+        "denom": "ugnot",
+        "displayName": "GNOT",
+        "decimals": 6,
+        "coingeckoId": "gno",
+        "icon": "icons/networks/gno.svg",
+        "kind": "native",
+        "color": "#232800"
+      }
+    ],
+    "stakeCurrency": "ugnot",
+    "idPrefix": "gnodev",
+    "chainId": "dev",
+    "endpoint": "http://127.0.0.1:36657/http://localhost:26657",
+    "txExplorer": "https://etherscan.io/tx/$hash",
+    "accountExplorer": "https://etherscan.io/address/$address",
+    "contractExplorer": "https://etherscan.io/address/$address",
+    "testnet": true,
+    "backendEndpoint": "https://dapp-backend.mainnet.teritori.com",
+    "vaultContractAddress": ""
   }
 ]
