@@ -5,8 +5,6 @@ import {
   CosmosNetworkInfo,
   GnoNetworkInfo,
   NetworkKind,
-  mustGetCosmosNetwork,
-  mustGetGnoNetwork,
   parseUserId,
 } from "../networks";
 import { getCosmosNameServiceQueryClient } from "../utils/contracts";
