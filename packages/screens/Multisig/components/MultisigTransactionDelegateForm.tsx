@@ -39,7 +39,6 @@ interface MultisigTransactionDelegateFormProps {
 export const MultisigTransactionDelegateForm: React.FC<
   MultisigTransactionDelegateFormProps
 > = ({ title, transferText, submitBtnText, onSubmit = () => {}, type }) => {
-  // variables
   const {
     params: { address },
   } = useRoute<AppRouteType<"MultisigTransfer" | "MultisigDelegate">>();
@@ -89,7 +88,6 @@ export const MultisigTransactionDelegateForm: React.FC<
               control={control}
               label=""
               hideLabel
-              isAsterickSign
               name="multisigAddress"
               rules={{ required: true, validate: validateAddress }}
               defaultValue={address}
@@ -115,7 +113,6 @@ export const MultisigTransactionDelegateForm: React.FC<
                   <MultisigFormInput<MultisigTransactionDelegateFormType>
                     control={control}
                     label={"Address #" + (index + 1)}
-                    isAsterickSign
                     name={`membersAddress.${index}.address`}
                     rules={{ required: true, validate: validateAddress }}
                     isCopiable
@@ -170,7 +167,6 @@ export const MultisigTransactionDelegateForm: React.FC<
             <MultisigFormInput<MultisigTransactionDelegateFormType>
               control={control}
               label="Amount"
-              isAsterickSign
               name="amount"
               rules={{
                 required: true,
@@ -180,7 +176,11 @@ export const MultisigTransactionDelegateForm: React.FC<
               currency={toriCurrency}
               isDisabled={!membersAddress?.length}
               subtitle={
-                holidings?.value ? `${holidings.value} ${holidings.ticker}` : ""
+                <BrandText>
+                  {holidings?.value
+                    ? `${holidings.value} ${holidings.ticker}`
+                    : ""}
+                </BrandText>
               }
               placeHolder="0.00"
               onPressMax={onPressMax}
@@ -190,7 +190,6 @@ export const MultisigTransactionDelegateForm: React.FC<
             <MultisigFormInput<MultisigTransactionDelegateFormType>
               control={control}
               label="Gas Limit"
-              isAsterickSign
               name="gasLimit"
               rules={{ required: true, pattern: patternOnlyNumbers }}
               isDisabled={!membersAddress?.length}
@@ -202,7 +201,6 @@ export const MultisigTransactionDelegateForm: React.FC<
             <MultisigFormInput<MultisigTransactionDelegateFormType>
               control={control}
               label="Gas Price"
-              isAsterickSign
               name="gasPrice"
               rules={{ required: true }}
               isDisabled

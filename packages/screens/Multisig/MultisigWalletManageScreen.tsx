@@ -49,7 +49,6 @@ export const MULTISIG_WALLET_HEADING: { [key in string]: TableRowHeading } = {
 };
 
 export const MultisigWalletManageScreen = () => {
-  // variables
   const navigation = useAppNavigation();
   const [isInputMultisigAddressVisible, setInputMultisigAddressVisible] =
     useState(false);

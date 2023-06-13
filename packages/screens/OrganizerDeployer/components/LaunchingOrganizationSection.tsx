@@ -13,7 +13,6 @@ import { layout } from "../../../utils/style/layout";
 export const LaunchingOrganizationSection: React.FC<{
   isLaunched: boolean;
 }> = ({ isLaunched }) => {
-  // variables
   const { navigate } = useAppNavigation();
   const successAnimateValue = useRef(new Animated.Value(0)).current;
   const lottieRef = useRef<LottieRefCurrentProps>(null);

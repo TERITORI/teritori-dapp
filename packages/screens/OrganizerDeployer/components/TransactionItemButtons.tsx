@@ -59,7 +59,6 @@ export const TransactionItemButtons: React.FC<TransactionItemButtonsProps> = ({
   memo,
   shouldRetch,
 }) => {
-  // variables
   const { selectedWallet: wallet } = useSelectedWallet();
   const { mutate: approve } = useApproveTransaction();
   const { mutate: decline, isLoading: isDeclining } = useDeclineTransaction();

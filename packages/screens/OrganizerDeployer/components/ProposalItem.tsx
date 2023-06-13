@@ -10,7 +10,7 @@ import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { neutral17, neutral77, tulipTree } from "../../../utils/style/colors";
 import { fontSemibold13, fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { MultiSigWalletTransactionProposalType } from "../types";
+import { MultiSigWalletTransactionProposalType } from "../../Multisig/types";
 
 interface ProposalItemProps extends MultiSigWalletTransactionProposalType {
   onPress: () => void;

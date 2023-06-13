@@ -1,4 +1,3 @@
-// libraries
 import React, { useEffect, useRef, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import Animated, {
@@ -37,7 +36,6 @@ export const CollapsableSection: React.FC<CollapsableSectionProps> = ({
   children,
   isExpandedByDefault = false,
 }) => {
-  // variables
   const [isExpanded, setIsExpanded] = useState(false);
   const aref = useAnimatedRef<View>();
   const heightRef = useRef<number>(0);

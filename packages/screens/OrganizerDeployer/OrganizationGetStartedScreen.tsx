@@ -18,7 +18,6 @@ import { fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 
 export const OrganizationGetStartedScreen = () => {
-  // variables
   const navigation = useAppNavigation();
 
   // functions

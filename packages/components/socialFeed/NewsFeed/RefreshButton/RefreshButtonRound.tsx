@@ -34,7 +34,6 @@ export const RefreshButtonRound: React.FC<RefreshButtonProps> = ({
   isRefreshing,
   onPress,
 }) => {
-  // variables
   const isRefreshingAnim = useDerivedValue(() => {
     return isRefreshing.value;
   }, [isRefreshing.value]);

@@ -56,7 +56,6 @@ export const ValidatorsTable: React.FC<{
   actions?: (validator: ValidatorInfo) => ValidatorsListAction[];
   style?: StyleProp<ViewStyle>;
 }> = ({ validators, actions, style }) => {
-  // variables
   const ROWS = actions ? TABLE_ROWS : removeObjectKey(TABLE_ROWS, "actions");
   const { selectedWallet } = useSelectedWallet();
   const { rewards, claimReward } = useRewards(selectedWallet?.userId);

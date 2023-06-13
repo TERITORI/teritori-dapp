@@ -4,7 +4,6 @@ import { getTransactionCountByMultisigId } from "../../utils/founaDB/multisig/mu
 import useSelectedWallet from "../useSelectedWallet";
 
 export const useGetTransactionCount = (multisigId: string, types: string[]) => {
-  // variables
   const { selectedWallet: wallet } = useSelectedWallet();
 
   // request

@@ -40,7 +40,6 @@ export interface ProposalTransactionItemProps
 export const ProposalTransactionItem: React.FC<ProposalTransactionItemProps> = (
   props
 ) => {
-  // variables
   const {
     type,
     msgs,

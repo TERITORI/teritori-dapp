@@ -20,7 +20,6 @@ export const AnimationFadeIn: React.FC<FadeInProps> = ({
   delay,
   onLayout,
 }) => {
-  // variables
   const fadeInAnimation = useRef(new Animated.Value(0)).current;
 
   // hooks

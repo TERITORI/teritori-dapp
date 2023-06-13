@@ -19,7 +19,6 @@ export const MultisigTransferScreen: ScreenFC<"MultisigTransfer"> = ({
   route,
   navigation,
 }) => {
-  // variables
   const [isTransactionVisible, setIsTransactionVisible] = useState(false);
   const {
     isLoading,

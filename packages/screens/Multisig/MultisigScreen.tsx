@@ -57,7 +57,6 @@ enum SelectModalKind {
 }
 
 export const MultisigScreen = () => {
-  // variables
   const navigation = useAppNavigation();
   const { selectedWallet } = useSelectedWallet();
   const { state } = useMultisigContext();

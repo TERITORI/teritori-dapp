@@ -52,7 +52,6 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
   visible,
   validator,
 }) => {
-  // variables
   const { selectedWallet: wallet } = useSelectedWallet();
   const networkId = wallet?.networkId || "";
   const { bondedTokens, refreshBondedTokens } = useCosmosValidatorBondedAmount(

@@ -1,7 +1,7 @@
-import { Account } from "@cosmjs/stargate";
+import { Decimal } from "@cosmjs/math";
+import { Account, calculateFee } from "@cosmjs/stargate";
 import { assert } from "@cosmjs/utils";
 import { useMutation } from "@tanstack/react-query";
-import { calculateFee, Decimal } from "cosmwasm";
 import moment from "moment";
 
 import useSelectedWallet from "./../useSelectedWallet";
@@ -14,7 +14,6 @@ import { createTransaction } from "../../utils/founaDB/multisig/multisigGraphql"
 import { DbCreateTransaction } from "../../utils/founaDB/multisig/types";
 
 export const useCreateMultisigTransaction = () => {
-  // variables
   const { state } = useMultisigContext();
 
   const { selectedWallet } = useSelectedWallet();

@@ -11,7 +11,6 @@ interface FadeInProps {
 }
 
 export const AnimationExpand: React.FC<FadeInProps> = ({ style, children }) => {
-  // variables
   const [isExpanded, setIsExpanded] = useState(false);
   const aref = useAnimatedRef<View>();
   const heightRef = useRef<number>(0);

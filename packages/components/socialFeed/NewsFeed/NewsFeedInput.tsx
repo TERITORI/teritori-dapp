@@ -284,10 +284,10 @@ export const NewsFeedInput = React.forwardRef<
           if (!network.socialFeedContractAddress) {
             throw new Error("Social feed contract address not found");
           }
-          if (!wallet?.address) {
+          if (!selectedWallet?.address) {
             throw new Error("Invalid sender");
           }
-          await makeProposal(wallet?.address, {
+          await makeProposal(selectedWallet?.address, {
             title: "Post on feed",
             description: "",
             msgs: [

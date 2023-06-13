@@ -1,7 +1,6 @@
-import { Account } from "@cosmjs/stargate";
+import { Account, calculateFee } from "@cosmjs/stargate";
 import { assert } from "@cosmjs/utils";
 import { useMutation } from "@tanstack/react-query";
-import { calculateFee } from "cosmwasm";
 import moment from "moment";
 
 import useSelectedWallet from "./../useSelectedWallet";
@@ -15,8 +14,6 @@ import { DbCreateTransaction } from "../../utils/founaDB/multisig/types";
 import { useSelectedNetworkId } from "../useSelectedNetwork";
 
 export const useCreateMultisigTransactionForExecuteContract = () => {
-  // variables
-
   const { selectedWallet } = useSelectedWallet();
   const selectedNetworkId = useSelectedNetworkId();
 

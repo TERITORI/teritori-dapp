@@ -14,7 +14,6 @@ import { TNSMintNameMultisignScreen } from "../../TeritoriNameService/TNSMintNam
 import { TNSRegisterScreen } from "../../TeritoriNameService/TNSRegisterScreen";
 
 export const RightSection = () => {
-  // variables
   const navigation = useAppNavigation();
   const [visibleRegisterForm, setVisibleRegisterForm] =
     useState<boolean>(false);

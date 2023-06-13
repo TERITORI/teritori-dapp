@@ -4,7 +4,6 @@ import { MultisigType } from "../../screens/Multisig/types";
 import { multisigsByUserAddress } from "../../utils/founaDB/multisig/multisigGraphql";
 
 export const useFetchMultisigList = (userAddress: string, chainId: string) => {
-  // variables
   const req = useQuery<Omit<MultisigType, "pubkeyJSON">[]>(
     ["fetch-multisig-list", userAddress, chainId],
     async () => {

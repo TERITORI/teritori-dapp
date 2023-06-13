@@ -7,6 +7,7 @@ import {
   StyleProp,
   ViewStyle,
 } from "react-native";
+import { Hoverable } from "react-native-hoverable";
 
 import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../assets/icons/chevron-up.svg";
@@ -141,16 +142,16 @@ export const GeneralSelect: React.FC<GeneralSelectProps> = ({
       {openMenu && (
         <ScrollView style={getScrollViewStyle()}>
           {data.map((item: string, index: number) => (
-            <Pressable
+            <Hoverable
               onMouseEnter={() => setHoveredIndex(index + 1)}
               onMouseLeave={() => setHoveredIndex(0)}
-              onPress={() => {
-                setValue(item);
-                setOpenMenu(false);
-              }}
               key={index}
             >
               <BrandText
+                onPress={() => {
+                  setValue(item);
+                  setOpenMenu(false);
+                }}
                 style={
                   hoveredIndex === index + 1
                     ? styles.hoveredDropdownMenuText
@@ -159,7 +160,7 @@ export const GeneralSelect: React.FC<GeneralSelectProps> = ({
               >
                 {item}
               </BrandText>
-            </Pressable>
+            </Hoverable>
           ))}
         </ScrollView>
       )}

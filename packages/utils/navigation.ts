@@ -82,6 +82,11 @@ export type ScreenFC<T extends keyof RootStackParamList> = React.FC<{
   route: RouteProp<RootStackParamList, T>;
 }>;
 
+export type AppRouteType<T extends keyof RootStackParamList> = RouteProp<
+  RootStackParamList,
+  T
+>;
+
 export const useAppNavigation = () => useNavigation<AppNavigationProp>();
 
 const navConfig: {

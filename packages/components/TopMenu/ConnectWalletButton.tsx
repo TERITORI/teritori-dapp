@@ -17,7 +17,6 @@ const WIDTH = 220;
 export const ConnectWalletButton: FC<{ style?: StyleProp<ViewStyle> }> = ({
   style,
 }) => {
-  // variables
   const { selectedWallet, selectedMultisignWallet } = useSelectedWallet();
   const [isConnectWalletVisible, setIsConnectWalletVisible] = useState(false);
   const { ready } = useWallets();

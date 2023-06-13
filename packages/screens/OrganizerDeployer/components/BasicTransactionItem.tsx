@@ -26,7 +26,6 @@ export const BasicTransactionItem: React.FC<BasicTransactionItemProps> = ({
   amount,
   createdAt,
 }) => {
-  // variables
   const getIcon = useMemo(() => {
     switch (type) {
       case "received":

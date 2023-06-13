@@ -1,10 +1,6 @@
 import React, { useState } from "react";
-import {
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-} from "react-native";
+import { ScrollView, StyleSheet, TouchableOpacity } from "react-native";
+import { Hoverable } from "react-native-hoverable";
 
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
 import { useMultisigContext } from "../../context/MultisigReducer";
@@ -67,15 +63,15 @@ export const TopMenuAccount: React.FC = () => {
             <SVG source={chevronRightSVG} width={16} height={16} />
             {openMultisignDropList && (
               <ScrollView style={getScrollViewStyle()}>
-                <Pressable
+                <Hoverable
                   onMouseEnter={() => setHoveredIndex(1)}
                   onMouseLeave={() => setHoveredIndex(0)}
-                  onPress={() => {
-                    setMultisignWallet(null);
-                    setOpenMultisignDropList(false);
-                  }}
                 >
                   <BrandText
+                    onPress={() => {
+                      setMultisignWallet(null);
+                      setOpenMultisignDropList(false);
+                    }}
                     style={
                       hoveredIndex === 1
                         ? styles.hoveredDropdownMenuText
@@ -84,30 +80,30 @@ export const TopMenuAccount: React.FC = () => {
                   >
                     {selectedWallet?.address}
                   </BrandText>
-                </Pressable>
+                </Hoverable>
                 {multisigList !== undefined &&
                   multisigList.map((item, index: number) => (
-                    <Pressable
+                    <Hoverable
                       onMouseEnter={() => setHoveredIndex(index + 2)}
                       onMouseLeave={() => setHoveredIndex(0)}
-                      onPress={() => {
-                        setMultisignWallet({
-                          id: `keplr-${item.address}`,
-                          address: item.address,
-                          userId: getUserId(
-                            selectedNetworkInfo?.id,
-                            item.address
-                          ),
-                          networkId: selectedNetworkInfo?.id,
-                          networkKind: NetworkKind.Cosmos,
-                          provider: WalletProvider.Keplr,
-                          connected: true,
-                        } as Wallet);
-                        setOpenMultisignDropList(false);
-                      }}
                       key={index}
                     >
                       <BrandText
+                        onPress={() => {
+                          setMultisignWallet({
+                            id: `keplr-${item.address}`,
+                            address: item.address,
+                            userId: getUserId(
+                              selectedNetworkInfo?.id,
+                              item.address
+                            ),
+                            networkId: selectedNetworkInfo?.id,
+                            networkKind: NetworkKind.Cosmos,
+                            provider: WalletProvider.Keplr,
+                            connected: true,
+                          } as Wallet);
+                          setOpenMultisignDropList(false);
+                        }}
                         style={
                           hoveredIndex === index + 2
                             ? styles.hoveredDropdownMenuText
@@ -116,7 +112,7 @@ export const TopMenuAccount: React.FC = () => {
                       >
                         {item.address}
                       </BrandText>
-                    </Pressable>
+                    </Hoverable>
                   ))}
               </ScrollView>
             )}

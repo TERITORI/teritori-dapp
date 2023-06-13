@@ -1,4 +1,3 @@
-// libraries
 import React, { useEffect, useRef, useState } from "react";
 import { StyleSheet, TextProps, View, ViewStyle } from "react-native";
 import Animated, {
@@ -22,7 +21,6 @@ export const ErrorText: React.FC<ErrorTextProps> = ({
   style,
   ...restProps
 }) => {
-  // variables
   const aref = useAnimatedRef<View>();
   const heightRef = useRef<number>(0);
   const [isExpandable, setIsExpandable] = useState(false);

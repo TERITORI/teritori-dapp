@@ -1,4 +1,3 @@
-// libraries
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 
@@ -26,7 +25,6 @@ export const ConnectWalletModal: React.FC<ConnectWalletProps> = ({
   onClose,
   visible,
 }) => {
-  // variables
   const [isDisclaimerVisible, setIsDisclaimerVisible] = useState(false);
 
   // functions

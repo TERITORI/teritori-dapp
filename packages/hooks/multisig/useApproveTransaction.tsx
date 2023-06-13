@@ -1,8 +1,7 @@
 import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
-import { toUtf8 } from "@cosmjs/encoding";
+import { toBase64, toUtf8 } from "@cosmjs/encoding";
 import { Window as KeplrWindow } from "@keplr-wallet/types";
 import { useMutation } from "@tanstack/react-query";
-import { toBase64 } from "cosmwasm";
 
 import { MultisigTransactionListType } from "./useFetchMultisigTransactionsById";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
@@ -13,7 +12,6 @@ import { useSelectedNetworkId } from "../useSelectedNetwork";
 import useSelectedWallet from "../useSelectedWallet";
 
 export const useApproveTransaction = () => {
-  // variables
   const { setToastError } = useFeedbacks();
   const { selectedWallet: walletAccount } = useSelectedWallet();
   const selectedNetworkId = useSelectedNetworkId();

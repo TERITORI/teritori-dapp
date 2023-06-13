@@ -28,7 +28,6 @@ export const MultisigWalletItem: React.FC<MultisigWalletItemProps> = ({
   onPress,
   onPressTransactions,
 }) => {
-  // variables
   const [isMenuVisible, setIsMenuVisible] = useState<boolean>(false);
 
   // functions

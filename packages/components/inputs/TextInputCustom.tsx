@@ -70,11 +70,11 @@ export interface TextInputCustomProps<T extends FieldValues>
   name: Path<T>;
   rules?: Omit<RegisterOptions, "valueAsNumber" | "valueAsDate" | "setValueAs">;
   defaultValue?: PathValue<T, Path<T>>;
+  subtitle?: React.ReactElement;
   hideLabel?: boolean;
   errorStyle?: ViewStyle;
   valueModifier?: (value: string) => string;
   isLoading?: boolean;
-  subtitle?: string;
   labelStyle?: TextStyle;
   containerStyle?: ViewStyle;
   boxMainContainerStyle?: ViewStyle;
@@ -132,7 +132,6 @@ export const TextInputCustom = <T extends FieldValues>({
   subtitle,
   labelStyle,
   iconSVG,
-  inputStyle,
   hideLabel,
   valueModifier,
   errorStyle,
@@ -144,7 +143,6 @@ export const TextInputCustom = <T extends FieldValues>({
   setRef,
   ...restProps
 }: TextInputCustomProps<T>) => {
-  // variables
   const { field, fieldState } = useController<T>({
     name,
     control,

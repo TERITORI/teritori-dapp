@@ -4,7 +4,6 @@ import { updateTransactionDecliners } from "../../utils/founaDB/multisig/multisi
 import useSelectedWallet from "../useSelectedWallet";
 
 export const useDeclineTransaction = () => {
-  // variables
   const { selectedWallet: walletAccount } = useSelectedWallet();
 
   // req

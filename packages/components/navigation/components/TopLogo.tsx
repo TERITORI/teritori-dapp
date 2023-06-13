@@ -7,7 +7,6 @@ import { layout } from "../../../utils/style/layout";
 import { SVG } from "../../SVG";
 
 export const TopLogo = () => {
-  // variables
   const navigation = useAppNavigation();
 
   // returns

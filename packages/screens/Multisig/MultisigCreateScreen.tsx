@@ -43,7 +43,6 @@ import { layout } from "../../utils/style/layout";
 const emptyPubKeyGroup = () => ({ address: "", compressedPubkey: "" });
 
 export const MultisigCreateScreen = () => {
-  // variables
   const { control, handleSubmit, watch } =
     useForm<CreateMultisigWalletFormType>();
   const [addressIndexes, setAddressIndexes] = useState([
@@ -99,7 +98,7 @@ export const MultisigCreateScreen = () => {
       address = value;
     } else {
       const nsAddrInfo = await getNSAddress(value, networkId);
-      if (nsAddrInfo.status === false) {
+      if (!nsAddrInfo.status) {
         return nsAddrInfo.msg;
       }
       address = nsAddrInfo.address!;
@@ -152,7 +151,6 @@ export const MultisigCreateScreen = () => {
                 name={`addresses.${index}.address`}
                 variant="noCropBorder"
                 label={"Address #" + (index + 1)}
-                isAsterickSign
                 rules={{
                   required: true,
                   validate: (value) => onAddressChange(index, value),
@@ -187,12 +185,10 @@ export const MultisigCreateScreen = () => {
               <TextInputCustom<CreateMultisigWalletFormType>
                 control={control}
                 variant="noCropBorder"
-                mainContainerStyle={styles.smallInputContainerStyle}
                 name="signatureRequired"
                 label=""
                 hideLabel
                 width={80}
-                inputStyle={styles.textCenter}
                 rules={{
                   required: true,
                   pattern: patternOnlyNumbers,
@@ -209,12 +205,10 @@ export const MultisigCreateScreen = () => {
               <TextInputCustom<CreateMultisigWalletFormType>
                 control={control}
                 variant="noCropBorder"
-                mainContainerStyle={styles.smallInputContainerStyle}
                 name="maxSignature"
                 label=""
                 hideLabel
                 width={80}
-                inputStyle={styles.textCenter}
                 defaultValue={addressIndexes.length.toString()}
                 disabled
               />

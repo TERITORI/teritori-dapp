@@ -1,6 +1,6 @@
+import { StdFee } from "@cosmjs/amino";
 import { EncodeObject } from "@cosmjs/proto-signing";
 import { useQuery } from "@tanstack/react-query";
-import { StdFee } from "cosmwasm";
 
 import {
   MultisigTransactionType,
@@ -40,7 +40,6 @@ export const useFetchMultisigTransactionsById = (
   after: string | null,
   size: number
 ) => {
-  // variables
   const { selectedWallet: wallet } = useSelectedWallet();
 
   //  request

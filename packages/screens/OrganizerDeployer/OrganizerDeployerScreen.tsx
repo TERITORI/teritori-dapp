@@ -31,7 +31,6 @@ export const LAUNCHING_PROCESS_STEPS: LaunchingProcessStepType[] = [
 ];
 
 export const OrganizerDeployerScreen = () => {
-  // variables
   const [currentStep, setCurrentStep] = useState(0);
   const [step1FormData, setStep1FormData] = useState<CreateDaoFormType>();
   const [step2FormData, setStep2FormData] = useState<ConfigureVotingFormType>();

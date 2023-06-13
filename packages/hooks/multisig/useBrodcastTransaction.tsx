@@ -1,8 +1,8 @@
 import { MultisigThresholdPubkey } from "@cosmjs/amino";
+import { fromBase64 } from "@cosmjs/encoding";
 import { makeMultisignedTx, StargateClient } from "@cosmjs/stargate";
 import { useMutation } from "@tanstack/react-query";
 import { TxRaw } from "cosmjs-types/cosmos/tx/v1beta1/tx";
-import { fromBase64 } from "cosmwasm";
 
 import { MultisigTransactionListType } from "./useFetchMultisigTransactionsById";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
@@ -11,7 +11,6 @@ import { completeTransaction } from "../../utils/founaDB/multisig/multisigGraphq
 import { DbSignature } from "../../utils/founaDB/multisig/types";
 
 export const useBrodcastTransaction = () => {
-  // variables
   const { state } = useMultisigContext();
   const { setToastError, setToastSuccess } = useFeedbacks();
 

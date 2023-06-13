@@ -17,7 +17,7 @@ import { ScreenFC } from "../../utils/navigation";
 import { Assets } from "../WalletManager/Assets";
 
 export const SwapScreen: ScreenFC<"Swap"> = () => {
-  const selectedWallet = useSelectedWallet();
+  const { selectedWallet } = useSelectedWallet();
   const selectedNetwork = useSelectedNetworkInfo();
   const dispatch = useAppDispatch();
   const [connectModalVisible, setConnectModalVisible] = useState(false);

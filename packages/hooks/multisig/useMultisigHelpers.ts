@@ -1,10 +1,10 @@
+import { Pubkey, pubkeyToAddress } from "@cosmjs/amino";
+import { Decimal } from "@cosmjs/math";
 import { Coin, StargateClient } from "@cosmjs/stargate";
-import { Decimal, Pubkey, pubkeyToAddress } from "cosmwasm";
 
 import { useMultisigContext } from "../../context/MultisigReducer";
 
 export const useMultisigHelpers = () => {
-  // variables
   const { state } = useMultisigContext();
 
   // functions

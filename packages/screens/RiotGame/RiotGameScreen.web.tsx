@@ -13,7 +13,6 @@ import { headerHeight } from "../../utils/style/layout";
 export const RiotGameScreen = () => {
   const navigation = useAppNavigation();
 
-  // variables
   const { width, height } = useWindowDimensions();
   const cardSize = {
     height: (height - headerHeight) / 5,

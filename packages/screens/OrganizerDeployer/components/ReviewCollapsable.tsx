@@ -29,7 +29,6 @@ export const ReviewCollapsable: React.FC<ReviewCollapsableProps> = ({
   children,
   isExpandedByDefault = false,
 }) => {
-  // variables
   const [isExpanded, setIsExpanded] = useState(false);
   const aref = useAnimatedRef<View>();
   const heightRef = useRef<number>(0);

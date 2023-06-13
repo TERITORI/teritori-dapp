@@ -15,7 +15,6 @@ export const AnimationSlideDown: React.FC<SlideDownProps> = ({
   delay,
   toValue = 0,
 }) => {
-  // variables
   const slideDownAnimation = useRef(new Animated.Value(startPosition)).current;
 
   // hooks

@@ -1,4 +1,3 @@
-// libraries
 import React, { useRef } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 
@@ -36,7 +35,6 @@ export const AccountListDropdown: React.FC<AccountListDropdownProps> = ({
   accounts,
   onSelect,
 }) => {
-  // variables
   const { onPressDropdownButton, isDropdownOpen, closeOpenedDropdown } =
     useDropdowns();
   const dropdownRef = useRef<View>(null);

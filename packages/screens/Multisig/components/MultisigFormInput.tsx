@@ -37,7 +37,6 @@ export const MultisigFormInput = <T extends FieldValues>({
   onPressMax,
   ...restProps
 }: MultisigFormInputProps<T>) => {
-  // variables
   const { copyToClipboard } = useCopyToClipboard();
   const value = useWatch<T>({
     control: restProps.control,
@@ -52,9 +51,6 @@ export const MultisigFormInput = <T extends FieldValues>({
   return (
     <TextInputCustom<T>
       variant="noCropBorder"
-      mainContainerStyle={
-        isDisabled && !isOverrideDisabledBorder ? undefined : styles.borderStyle
-      }
       labelStyle={{ color: neutralA3 }}
       disabled={isDisabled}
       placeholderTextColor={neutral55}

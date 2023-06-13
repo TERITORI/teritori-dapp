@@ -11,7 +11,7 @@ import { WalletProvider } from "../../utils/walletProvider";
 
 type WalletsContextValue = {
   wallets: Wallet[];
-  multisignWallet: Wallet | null;
+  multisignWallet: Wallet | undefined;
   walletProviders: WalletProvider[];
   ready: boolean;
   setMultisignWallet: any;
@@ -19,7 +19,7 @@ type WalletsContextValue = {
 
 const WalletsContext = createContext<WalletsContextValue>({
   wallets: [],
-  multisignWallet: null,
+  multisignWallet: undefined,
   walletProviders: [],
   ready: false,
   setMultisignWallet: null,
@@ -31,7 +31,7 @@ export const WalletsProvider: React.FC = React.memo(({ children }) => {
   // const [hasPhantom, phantomIsReady, phantomWallet] = usePhantom();
   const [hasKeplr, keplrIsReady, keplrWallets] = useKeplr();
   const [hasMetamask, metamaskIsReady, metamaskWallets] = useMetamask();
-  const [multisignWallet, setMultisignWallet] = useState<Wallet | null>(null);
+  const [multisignWallet, setMultisignWallet] = useState<Wallet | undefined>();
   const [hasAdena, adenaIsReady, adenaWallets] = useAdena();
 
   // const storeWallets = useSelector(selectStoreWallets);

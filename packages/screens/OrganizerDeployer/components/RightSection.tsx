@@ -38,7 +38,6 @@ export const RightSection: React.FC<RightSectionProps> = ({
   isLaunching,
   launchingCompleteStep,
 }) => {
-  // variables
   const [unlockedSteps, setUnlockedSteps] = useState<number[]>([0]);
   const loadingPercentAnim = useRef(new Animated.Value(0)).current;
 

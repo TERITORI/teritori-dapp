@@ -56,7 +56,6 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
   const { setToastError, setToastSuccess } = useFeedbacks();
   const { triggerError } = useErrorHandler();
 
-  // variables
   const { control, setValue, handleSubmit, reset } =
     useForm<StakeFormValuesType>();
   const stakingCurrency = getStakingCurrency(networkId);

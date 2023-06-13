@@ -29,7 +29,6 @@ export const getMultisigAccount = async (
 };
 
 export const useGetMultisigAccount = (address: string) => {
-  // variables
   const { state } = useMultisigContext();
   const { setToastError } = useFeedbacks();
   //  request

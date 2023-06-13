@@ -21,7 +21,6 @@ interface ConfigureVotingSectionProps {
 export const ConfigureVotingSection: React.FC<ConfigureVotingSectionProps> = ({
   onSubmit,
 }) => {
-  // variables
   const { handleSubmit, control, watch, setValue } =
     useForm<ConfigureVotingFormType>({
       defaultValues: {

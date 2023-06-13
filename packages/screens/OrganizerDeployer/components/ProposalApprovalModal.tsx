@@ -16,7 +16,6 @@ export const ProposalApprovalModal: React.FC<ProposalApprovalModalProps> = ({
   visible,
   onRequestClose,
 }) => {
-  // variables
   const { width } = useWindowDimensions();
 
   // returns

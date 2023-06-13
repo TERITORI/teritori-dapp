@@ -28,7 +28,6 @@ interface TokenSettingsSectionProps {
 export const TokenSettingsSection: React.FC<TokenSettingsSectionProps> = ({
   onSubmit,
 }) => {
-  // variables
   const { handleSubmit, control } = useForm<TokenSettingFormType>();
   const [addressIndexes, setAddressIndexes] = useState<number[]>([0]);
 
@@ -59,7 +58,6 @@ export const TokenSettingsSection: React.FC<TokenSettingsSectionProps> = ({
               variant="noCropBorder"
               label="Token name"
               control={control}
-              // isAsterickSign
               rules={{ required: true }}
               placeHolder="My Organization Token"
             />
@@ -71,7 +69,6 @@ export const TokenSettingsSection: React.FC<TokenSettingsSectionProps> = ({
               variant="noCropBorder"
               label="Token Symbol"
               control={control}
-              // isAsterickSign
               valueModifier={(value) => value.toUpperCase()}
               rules={{ required: true, pattern: patternOnlyLetters }}
               placeHolder="ABC"
@@ -89,7 +86,6 @@ export const TokenSettingsSection: React.FC<TokenSettingsSectionProps> = ({
                 label="Token Holders"
                 hideLabel={index > 0}
                 control={control}
-                // isAsterickSign
                 rules={{ required: true, validate: validateAddress }}
                 placeHolder="Account address"
                 iconSVG={walletInputSVG}
@@ -110,7 +106,6 @@ export const TokenSettingsSection: React.FC<TokenSettingsSectionProps> = ({
                 label="Balances"
                 hideLabel={index > 0}
                 control={control}
-                // isAsterickSign
                 rules={{ required: true, pattern: patternOnlyNumbers }}
                 placeHolder="0"
               />

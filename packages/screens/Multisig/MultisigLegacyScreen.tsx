@@ -21,7 +21,6 @@ import { fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 
 export const MultisigLegacyScreen: ScreenFC<"MultisigLegacy"> = ({ route }) => {
-  // variables
   const { control } = useForm<MultisigLegacyFormType>();
   const { address, name } = route.params;
   const { isLoading, data } = useGetMultisigAccount(address);
@@ -91,7 +90,6 @@ export const MultisigLegacyScreen: ScreenFC<"MultisigLegacy"> = ({ route }) => {
                   <MultisigFormInput<MultisigLegacyFormType>
                     control={control}
                     label={"Address #" + (index + 1)}
-                    isAsterickSign
                     name={`membersAddress.${index}.address`}
                     rules={{ required: true, validate: validateAddress }}
                     isCopiable
@@ -111,7 +109,6 @@ export const MultisigLegacyScreen: ScreenFC<"MultisigLegacy"> = ({ route }) => {
             <MultisigFormInput<MultisigLegacyFormType>
               control={control}
               label="Assets"
-              isAsterickSign
               name="assets"
               rules={{ required: true, pattern: patternOnlyNumbers }}
               tiker={holidings?.ticker}

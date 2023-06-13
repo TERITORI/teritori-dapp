@@ -19,7 +19,6 @@ export const CheckLoadingModal: React.FC<CheckLoadingModalProps> = ({
   isVisible,
   onComplete,
 }) => {
-  // variables
   const { width, height } = useWindowDimensions();
   const successAnimateValue = useRef(new Animated.Value(0)).current;
   const lottieRef = useRef<LottieRefCurrentProps>(null);

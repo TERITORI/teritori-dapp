@@ -27,7 +27,6 @@ const RESULT_SIZE = 2;
 export const TransactionProposalScreen: ScreenFC<
   "MultisigTransactionProposal"
 > = ({ route }) => {
-  // variables
   const { address, backText } = route.params;
   const [selectedTab, setSelectedTab] = useState<keyof typeof tabs>("all");
   const { state } = useMultisigContext();
@@ -134,6 +133,8 @@ export const TransactionProposalScreen: ScreenFC<
               }
               setPageIndex(index);
             }}
+            dropdownOptions={[0]}
+            setItemsPerPage={() => 5}
           />
         )}
       </>

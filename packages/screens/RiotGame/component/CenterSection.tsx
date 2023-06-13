@@ -20,7 +20,6 @@ export const CenterSection: React.FC<CenterSectionProps> = ({
   cardHeight,
   onPress,
 }) => {
-  // variables
   const pulseOpacityRef = useRef(new Animated.Value(1));
 
   useEffect(() => {

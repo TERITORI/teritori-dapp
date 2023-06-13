@@ -53,6 +53,7 @@ export const SIDEBAR_LIST: SidebarRecordType = {
     },
   },
   multisig: {
+    id: "Multisig",
     title: "Multisig",
     route: "Multisig",
     icon: launchpadSVG,
@@ -98,6 +99,7 @@ export const SIDEBAR_LIST: SidebarRecordType = {
     icon: multisigSVG,
   },
   deployer: {
+    id: "Deployer",
     title: "Deployer",
     route: "OrganizationDeployer",
     icon: deployerSVG,

@@ -26,8 +26,6 @@ export const SignTransactionModal: React.FC<SignTransactionModalProps> = ({
   amount,
   address,
 }) => {
-  // variables
-
   // returns
   return (
     <ModalBase

@@ -35,7 +35,6 @@ export const MakeProposalModal: React.FC<MakeProposalModalProps> = ({
   visible,
   onRequestClose,
 }) => {
-  // variables
   const [isProposalApprovalVisible, setIsProposalApprovalVisible] =
     useState<boolean>(false);
   const { control, setValue, watch } = useForm<MakeProposalFormType>({
@@ -83,8 +82,6 @@ export const MakeProposalModal: React.FC<MakeProposalModalProps> = ({
         name="recipintAddress"
         variant="noCropBorder"
         label="Recipient address"
-        isAsterickSign
-        mainContainerStyle={styles.border}
         rules={{ required: true, validate: validateAddress }}
       />
       <SpacerColumn size={2.5} />
@@ -95,10 +92,8 @@ export const MakeProposalModal: React.FC<MakeProposalModalProps> = ({
             name="amount"
             variant="noCropBorder"
             label="Amount"
-            isAsterickSign
             width={210}
             rules={{ required: true }}
-            mainContainerStyle={styles.border}
             currency={toriCurrency}
           >
             {toriText()}
@@ -113,7 +108,6 @@ export const MakeProposalModal: React.FC<MakeProposalModalProps> = ({
             label="Network Fee"
             width={163}
             disabled
-            inputStyle={{ color: neutral77 }}
           >
             {toriText()}
           </TextInputCustom>
@@ -141,7 +135,6 @@ export const MakeProposalModal: React.FC<MakeProposalModalProps> = ({
           variant="noCropBorder"
           label="Approvals required"
           defaultValue="2 approvals of 2 participants"
-          isAsterickSign
           disabled
         >
           <SVG source={chevronRightSVG} width={16} height={16} />
