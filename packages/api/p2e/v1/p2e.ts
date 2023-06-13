@@ -74,17 +74,16 @@ export const AllSeasonsRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): AllSeasonsRequest {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseAllSeasonsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -96,10 +95,6 @@ export const AllSeasonsRequest = {
   toJSON(_: AllSeasonsRequest): unknown {
     const obj: any = {};
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<AllSeasonsRequest>, I>>(base?: I): AllSeasonsRequest {
-    return AllSeasonsRequest.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<AllSeasonsRequest>, I>>(_: I): AllSeasonsRequest {
@@ -127,38 +122,25 @@ export const SeasonWithoutPrize = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): SeasonWithoutPrize {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseSeasonWithoutPrize();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.id = reader.string();
-          continue;
+          break;
         case 2:
-          if (tag !== 18) {
-            break;
-          }
-
           message.bossName = reader.string();
-          continue;
+          break;
         case 3:
-          if (tag !== 24) {
-            break;
-          }
-
           message.bossHp = reader.int32();
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -177,10 +159,6 @@ export const SeasonWithoutPrize = {
     message.bossName !== undefined && (obj.bossName = message.bossName);
     message.bossHp !== undefined && (obj.bossHp = Math.round(message.bossHp));
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<SeasonWithoutPrize>, I>>(base?: I): SeasonWithoutPrize {
-    return SeasonWithoutPrize.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<SeasonWithoutPrize>, I>>(object: I): SeasonWithoutPrize {
@@ -205,24 +183,19 @@ export const AllSeasonsResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): AllSeasonsResponse {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseAllSeasonsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.seasons.push(SeasonWithoutPrize.decode(reader, reader.uint32()));
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -243,10 +216,6 @@ export const AllSeasonsResponse = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<AllSeasonsResponse>, I>>(base?: I): AllSeasonsResponse {
-    return AllSeasonsResponse.fromPartial(base ?? {});
-  },
-
   fromPartial<I extends Exact<DeepPartial<AllSeasonsResponse>, I>>(object: I): AllSeasonsResponse {
     const message = createBaseAllSeasonsResponse();
     message.seasons = object.seasons?.map((e) => SeasonWithoutPrize.fromPartial(e)) || [];
@@ -264,17 +233,16 @@ export const CurrentSeasonRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): CurrentSeasonRequest {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseCurrentSeasonRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -286,10 +254,6 @@ export const CurrentSeasonRequest = {
   toJSON(_: CurrentSeasonRequest): unknown {
     const obj: any = {};
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<CurrentSeasonRequest>, I>>(base?: I): CurrentSeasonRequest {
-    return CurrentSeasonRequest.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<CurrentSeasonRequest>, I>>(_: I): CurrentSeasonRequest {
@@ -332,73 +296,40 @@ export const CurrentSeasonResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): CurrentSeasonResponse {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseCurrentSeasonResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.id = reader.string();
-          continue;
+          break;
         case 2:
-          if (tag !== 18) {
-            break;
-          }
-
           message.denom = reader.string();
-          continue;
+          break;
         case 3:
-          if (tag !== 24) {
-            break;
-          }
-
           message.totalPrize = reader.int32();
-          continue;
+          break;
         case 4:
-          if (tag !== 34) {
-            break;
-          }
-
           message.bossName = reader.string();
-          continue;
+          break;
         case 5:
-          if (tag !== 40) {
-            break;
-          }
-
           message.bossHp = reader.int32();
-          continue;
+          break;
         case 6:
-          if (tag !== 53) {
-            break;
-          }
-
           message.remainingHp = reader.float();
-          continue;
+          break;
         case 7:
-          if (tag !== 58) {
-            break;
-          }
-
           message.bossImage = reader.string();
-          continue;
+          break;
         case 8:
-          if (tag !== 64) {
-            break;
-          }
-
           message.isPre = reader.bool();
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -427,10 +358,6 @@ export const CurrentSeasonResponse = {
     message.bossImage !== undefined && (obj.bossImage = message.bossImage);
     message.isPre !== undefined && (obj.isPre = message.isPre);
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<CurrentSeasonResponse>, I>>(base?: I): CurrentSeasonResponse {
-    return CurrentSeasonResponse.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<CurrentSeasonResponse>, I>>(object: I): CurrentSeasonResponse {
@@ -463,31 +390,22 @@ export const UserRankRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): UserRankRequest {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseUserRankRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.seasonId = reader.string();
-          continue;
+          break;
         case 2:
-          if (tag !== 18) {
-            break;
-          }
-
           message.userId = reader.string();
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -504,10 +422,6 @@ export const UserRankRequest = {
     message.seasonId !== undefined && (obj.seasonId = message.seasonId);
     message.userId !== undefined && (obj.userId = message.userId);
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<UserRankRequest>, I>>(base?: I): UserRankRequest {
-    return UserRankRequest.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<UserRankRequest>, I>>(object: I): UserRankRequest {
@@ -534,31 +448,22 @@ export const UserRankResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): UserRankResponse {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseUserRankResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.userScore = UserScore.decode(reader, reader.uint32());
-          continue;
+          break;
         case 2:
-          if (tag !== 16) {
-            break;
-          }
-
           message.totalUsers = reader.int32();
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -576,10 +481,6 @@ export const UserRankResponse = {
       (obj.userScore = message.userScore ? UserScore.toJSON(message.userScore) : undefined);
     message.totalUsers !== undefined && (obj.totalUsers = Math.round(message.totalUsers));
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<UserRankResponse>, I>>(base?: I): UserRankResponse {
-    return UserRankResponse.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<UserRankResponse>, I>>(object: I): UserRankResponse {
@@ -611,38 +512,25 @@ export const LeaderboardRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): LeaderboardRequest {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseLeaderboardRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.seasonId = reader.string();
-          continue;
+          break;
         case 2:
-          if (tag !== 16) {
-            break;
-          }
-
           message.limit = reader.int32();
-          continue;
+          break;
         case 3:
-          if (tag !== 24) {
-            break;
-          }
-
           message.offset = reader.int32();
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -661,10 +549,6 @@ export const LeaderboardRequest = {
     message.limit !== undefined && (obj.limit = Math.round(message.limit));
     message.offset !== undefined && (obj.offset = Math.round(message.offset));
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<LeaderboardRequest>, I>>(base?: I): LeaderboardRequest {
-    return LeaderboardRequest.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<LeaderboardRequest>, I>>(object: I): LeaderboardRequest {
@@ -704,59 +588,34 @@ export const UserScore = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): UserScore {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseUserScore();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 8) {
-            break;
-          }
-
           message.rank = reader.int32();
-          continue;
+          break;
         case 2:
-          if (tag !== 16) {
-            break;
-          }
-
           message.snapshotRank = reader.int32();
-          continue;
+          break;
         case 3:
-          if (tag !== 26) {
-            break;
-          }
-
           message.userId = reader.string();
-          continue;
+          break;
         case 4:
-          if (tag !== 32) {
-            break;
-          }
-
           message.inProgressScore = longToNumber(reader.int64() as Long);
-          continue;
+          break;
         case 5:
-          if (tag !== 40) {
-            break;
-          }
-
           message.snapshotScore = longToNumber(reader.int64() as Long);
-          continue;
+          break;
         case 6:
-          if (tag !== 50) {
-            break;
-          }
-
           message.seasonId = reader.string();
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -781,10 +640,6 @@ export const UserScore = {
     message.snapshotScore !== undefined && (obj.snapshotScore = Math.round(message.snapshotScore));
     message.seasonId !== undefined && (obj.seasonId = message.seasonId);
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<UserScore>, I>>(base?: I): UserScore {
-    return UserScore.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<UserScore>, I>>(object: I): UserScore {
@@ -812,24 +667,19 @@ export const LeaderboardResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): LeaderboardResponse {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseLeaderboardResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.userScore = UserScore.decode(reader, reader.uint32());
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -843,10 +693,6 @@ export const LeaderboardResponse = {
     message.userScore !== undefined &&
       (obj.userScore = message.userScore ? UserScore.toJSON(message.userScore) : undefined);
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<LeaderboardResponse>, I>>(base?: I): LeaderboardResponse {
-    return LeaderboardResponse.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<LeaderboardResponse>, I>>(object: I): LeaderboardResponse {
@@ -907,11 +753,10 @@ export const P2eServiceLeaderboardDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
-      const value = LeaderboardResponse.decode(data);
       return {
-        ...value,
+        ...LeaderboardResponse.decode(data),
         toObject() {
-          return value;
+          return this;
         },
       };
     },
@@ -930,11 +775,10 @@ export const P2eServiceCurrentSeasonDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
-      const value = CurrentSeasonResponse.decode(data);
       return {
-        ...value,
+        ...CurrentSeasonResponse.decode(data),
         toObject() {
-          return value;
+          return this;
         },
       };
     },
@@ -953,11 +797,10 @@ export const P2eServiceUserRankDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
-      const value = UserRankResponse.decode(data);
       return {
-        ...value,
+        ...UserRankResponse.decode(data),
         toObject() {
-          return value;
+          return this;
         },
       };
     },
@@ -976,11 +819,10 @@ export const P2eServiceAllSeasonsDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
-      const value = AllSeasonsResponse.decode(data);
       return {
-        ...value,
+        ...AllSeasonsResponse.decode(data),
         toObject() {
-          return value;
+          return this;
         },
       };
     },
@@ -1049,7 +891,7 @@ export class GrpcWebImpl {
         debug: this.options.debug,
         onEnd: function (response) {
           if (response.status === grpc.Code.OK) {
-            resolve(response.message!.toObject());
+            resolve(response.message);
           } else {
             const err = new GrpcWebError(response.statusMessage, response.status, response.trailers);
             reject(err);
@@ -1092,9 +934,7 @@ export class GrpcWebImpl {
             }
           },
         });
-        observer.add(() => {
-          return client.close();
-        });
+        observer.add(() => client.close());
       });
       upStream();
     }).pipe(share());
@@ -1104,7 +944,7 @@ export class GrpcWebImpl {
 declare var self: any | undefined;
 declare var window: any | undefined;
 declare var global: any | undefined;
-var tsProtoGlobalThis: any = (() => {
+var globalThis: any = (() => {
   if (typeof globalThis !== "undefined") {
     return globalThis;
   }
@@ -1133,7 +973,7 @@ export type Exact<P, I extends P> = P extends Builtin ? P
 
 function longToNumber(long: Long): number {
   if (long.gt(Number.MAX_SAFE_INTEGER)) {
-    throw new tsProtoGlobalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
+    throw new globalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
   }
   return long.toNumber();
 }
@@ -1147,7 +987,7 @@ function isSet(value: any): boolean {
   return value !== null && value !== undefined;
 }
 
-export class GrpcWebError extends tsProtoGlobalThis.Error {
+export class GrpcWebError extends Error {
   constructor(message: string, public code: grpc.Code, public metadata: grpc.Metadata) {
     super(message);
   }

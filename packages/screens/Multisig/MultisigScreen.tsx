@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useMemo } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -11,14 +11,9 @@ import Toast from "react-native-toast-message";
 
 import { CheckLoadingModal } from "./components/CheckLoadingModal";
 import { MultisigTransactionType } from "./types";
-import chatSVG from "../../../assets/icons/organization/chat.svg";
-import freelanceSVG from "../../../assets/icons/organization/freelance.svg";
-import launchSVG from "../../../assets/icons/organization/launch.svg";
 import multisigWalletSVG from "../../../assets/icons/organization/multisig-wallet.svg";
-import pathwarSVG from "../../../assets/icons/organization/pathwar.svg";
 import postJobSVG from "../../../assets/icons/organization/post-job.svg";
 import profileSVG from "../../../assets/icons/organization/profile.svg";
-import searchSVG from "../../../assets/icons/organization/search.svg";
 import { BrandText } from "../../components/BrandText";
 import { EmptyList } from "../../components/EmptyList";
 import { ScreenContainer } from "../../components/ScreenContainer";
@@ -36,7 +31,7 @@ import {
 } from "../../hooks/multisig";
 import { useCreateMultisigTransactionForExecuteContract } from "../../hooks/multisig/useCreateMultisigTransactionForExecuteContract";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { useAppNavigation } from "../../utils/navigation";
+import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { neutral33, neutral77, secondaryColor } from "../../utils/style/colors";
 import {
   fontSemibold14,
@@ -56,7 +51,7 @@ enum SelectModalKind {
   ManagePublicProfile,
 }
 
-export const MultisigScreen = () => {
+export const MultisigScreen: ScreenFC<"Multisig"> = () => {
   const navigation = useAppNavigation();
   const { selectedWallet } = useSelectedWallet();
   const { state } = useMultisigContext();
@@ -112,11 +107,6 @@ export const MultisigScreen = () => {
       ),
     [transactionData?.pages]
   );
-
-  // functions
-  const onPress = () => {
-    alert("TODO");
-  };
 
   const [openSelectMultiSignModal, setOpenSelectMultiSignModal] =
     useState<boolean>(false);
@@ -243,6 +233,7 @@ export const MultisigScreen = () => {
       footerChildren={<></>}
       noMargin
       fullWidth
+      onBackPress={() => navigation.navigate("Multisig")}
       noScroll
       isHeaderSmallMargin
     >
@@ -265,39 +256,40 @@ export const MultisigScreen = () => {
                 displayProposal(SelectModalKind.ManagePublicProfile)
               }
             />
-            <GetStartedOption
-              variant="small"
-              title="Create your first Post"
-              icon={searchSVG}
-              onPress={() => displayProposal(SelectModalKind.CreatePost)}
-            />
-            <GetStartedOption
-              variant="small"
-              title="Launch an NFT Collection"
-              icon={launchSVG}
-              onPress={() => displayProposal(SelectModalKind.LaunchNFT)}
-            />
-            <GetStartedOption
-              variant="small"
-              title="Create the Organization Chat"
-              icon={chatSVG}
-            />
-            <GetStartedOption
-              variant="small"
-              title="Post Job"
-              icon={postJobSVG}
-            />
-            <GetStartedOption
-              variant="small"
-              title="Create Challenge on Pathwar"
-              icon={pathwarSVG}
-            />
-            <GetStartedOption
-              variant="small"
-              title="Create Freelance Service"
-              icon={freelanceSVG}
-              onPress={onPress}
-            />
+            {/*// todo commented out but these were in the figma as planned features*/}
+            {/*<GetStartedOption*/}
+            {/*  variant="small"*/}
+            {/*  title="Create your first Post"*/}
+            {/*  icon={searchSVG}*/}
+            {/*  onPress={() => displayProposal(SelectModalKind.CreatePost)}*/}
+            {/*/>*/}
+            {/*<GetStartedOption*/}
+            {/*  variant="small"*/}
+            {/*  title="Launch an NFT Collection"*/}
+            {/*  icon={launchSVG}*/}
+            {/*  onPress={() => displayProposal(SelectModalKind.LaunchNFT)}*/}
+            {/*/>*/}
+            {/*<GetStartedOption*/}
+            {/*  variant="small"*/}
+            {/*  title="Create the Organization Chat"*/}
+            {/*  icon={chatSVG}*/}
+            {/*/>*/}
+            {/*<GetStartedOption*/}
+            {/*  variant="small"*/}
+            {/*  title="Post Job"*/}
+            {/*  icon={postJobSVG}*/}
+            {/*/>*/}
+            {/*<GetStartedOption*/}
+            {/*  variant="small"*/}
+            {/*  title="Create Challenge on Pathwar"*/}
+            {/*  icon={pathwarSVG}*/}
+            {/*/>*/}
+            {/*<GetStartedOption*/}
+            {/*  variant="small"*/}
+            {/*  title="Create Freelance Service"*/}
+            {/*  icon={freelanceSVG}*/}
+            {/*  onPress={onPress}*/}
+            {/*/>*/}
             <GetStartedOption
               variant="small"
               title="Manage Multisig Wallet"

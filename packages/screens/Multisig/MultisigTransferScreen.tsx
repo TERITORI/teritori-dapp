@@ -1,14 +1,13 @@
 import React, { useState } from "react";
 
 import { CheckLoadingModal } from "./components/CheckLoadingModal";
-import { MultisigTransactionDelegateForm } from "./components/MultisigTransactionDelegateForm";
+import { MultisigTransactionForm } from "./components/MultisigTransactionForm";
 import { SignTransactionModal } from "./components/SignTransactionModal";
 import {
   MultisigTransactionDelegateFormType,
   MultisigTransactionType,
 } from "./types";
 import { ScreenContainer } from "../../components/ScreenContainer";
-import { BackTo } from "../../components/navigation/BackTo";
 import {
   useCreateMultisigTransaction,
   useGetMultisigAccount,
@@ -25,7 +24,7 @@ export const MultisigTransferScreen: ScreenFC<"MultisigTransfer"> = ({
     mutate,
     data: transactionId,
   } = useCreateMultisigTransaction();
-  const { address, backText } = route.params;
+  const { address } = route.params;
   const { data } = useGetMultisigAccount(address);
   const [formData, setFormData] =
     useState<MultisigTransactionDelegateFormType>();
@@ -75,14 +74,14 @@ export const MultisigTransferScreen: ScreenFC<"MultisigTransfer"> = ({
   // returns
   return (
     <ScreenContainer
-      headerChildren={<BackTo label={backText || "Multisig Legacy"} />}
       footerChildren={<></>}
       noMargin
       fullWidth
       noScroll
+      onBackPress={() => navigation.navigate("Multisig")}
       isHeaderSmallMargin
     >
-      <MultisigTransactionDelegateForm
+      <MultisigTransactionForm
         type="transfer"
         title="Create a New Transaction"
         transferText="Send to"

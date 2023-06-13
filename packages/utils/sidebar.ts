@@ -52,11 +52,11 @@ export const SIDEBAR_LIST: SidebarRecordType = {
       },
     },
   },
-  multisig: {
+  "multisig-wallet": {
     id: "Multisig",
     title: "Multisig",
     route: "Multisig",
-    icon: launchpadSVG,
+    icon: multisigSVG,
   },
   namespace: {
     title: "Name Service",

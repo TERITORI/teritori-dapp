@@ -29,8 +29,6 @@ import { MultisigWalletTransactionScreen } from "../../screens/Multisig/Multisig
 import { MyCollectionScreen } from "../../screens/MyCollection/MyCollectionScreen";
 import { OrganizationDeployerScreen } from "../../screens/Organizations/OrganizationDeployerScreen";
 import { OrganizationsScreen } from "../../screens/Organizations/OrganizationsScreen";
-import { OrganizationGetStartedScreen } from "../../screens/OrganizerDeployer/OrganizationGetStartedScreen";
-import { OrganizerDeployerScreen } from "../../screens/OrganizerDeployer/OrganizerDeployerScreen";
 import { TransactionProposalScreen } from "../../screens/OrganizerDeployer/TransactionProposalScreen";
 import { RiotGameBreedingScreen } from "../../screens/RiotGame/RiotGameBreedingScreen";
 import { RiotGameEnrollScreen } from "../../screens/RiotGame/RiotGameEnrollScreen";
@@ -197,25 +195,6 @@ export const Navigator: React.FC = () => {
         name="MintCollection"
         component={MintCollectionScreen}
         options={{ header: () => null, title: screenTitle("Mint Collection") }}
-      />
-
-      {/* ==== Organization */}
-
-      <Stack.Screen
-        name="OrganizationDeployer"
-        component={OrganizerDeployerScreen}
-        options={{
-          header: () => null,
-          title: screenTitle("Organization Deployer"),
-        }}
-      />
-      <Stack.Screen
-        name="OrganizationGetStarted"
-        component={OrganizationGetStartedScreen}
-        options={{
-          header: () => null,
-          title: screenTitle("Organization Name"),
-        }}
       />
 
       {/* ==== Multisig */}
