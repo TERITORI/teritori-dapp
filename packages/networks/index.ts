@@ -16,6 +16,7 @@ import { cosmosNetwork } from "./cosmos-hub";
 import { cosmosThetaNetwork } from "./cosmos-hub-theta";
 import { ethereumNetwork } from "./ethereum";
 import { ethereumGoerliNetwork } from "./ethereum-goerli";
+import { gnoDevNetwork } from "./gno-dev";
 import { gnoTestnetNetwork } from "./gno-testnet";
 import { junoNetwork } from "./juno";
 import { osmosisNetwork } from "./osmosis";
@@ -49,6 +50,7 @@ export const allNetworks = [
   osmosisNetwork,
   osmosisTestnetNetwork,
   gnoTestnetNetwork,
+  gnoDevNetwork,
   // solanaNetwork,
 ];
 

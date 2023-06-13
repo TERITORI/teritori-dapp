@@ -27,6 +27,35 @@ module.exports = async function (env, argv) {
     },
   });
 
+  // needed by gnolang
+  config.module.rules.push({
+    test: /.*@cosmjs\/crypto\/build\/pbkdf2\.js/,
+    use: {
+      loader: "babel-loader",
+      options: {
+        sourceType: "unambiguous",
+      },
+    },
+  });
+  config.module.rules.push({
+    test: /.*@cosmjs\/amino\/build\/secp256k1hdwallet\.js/,
+    use: {
+      loader: "babel-loader",
+      options: {
+        sourceType: "unambiguous",
+      },
+    },
+  });
+  config.module.rules.push({
+    test: /.*@cosmjs\/utils\/build\/assert\.js/,
+    use: {
+      loader: "babel-loader",
+      options: {
+        sourceType: "unambiguous",
+      },
+    },
+  });
+
   config.module.rules.push({
     test: /.*rn-range-slider/,
     use: {
