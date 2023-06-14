@@ -421,12 +421,13 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 		if req.IsListed != false {
 			query.Where("is_listed = ?", true) // Options are ALL or buy now
 		}
+
 		if req.PriceRange != nil {
 			if req.PriceRange.Min != 0 {
-				query.Where("price_amount > ?", req.PriceRange.Min)
+				query.Where("price_amount >= ?", req.PriceRange.Min*1000000) // todo: resolve denom decimals
 			}
 			if req.PriceRange.Max != 0 {
-				query.Where("price_amount < ?", req.PriceRange.Max)
+				query.Where("price_amount <= ?", req.PriceRange.Max*1000000)
 			}
 		}
 
