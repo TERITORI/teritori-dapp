@@ -51,7 +51,7 @@ export const subscribeMetadata = async (groupPk: Uint8Array) => {
           data.metadata?.eventType !==
           EventType.EventTypeAccountContactRequestEnabled
         ) {
-          console.log("get", decodeUTF8(data.metadata?.payload));
+          console.log("get", GroupMetadataEvent.toJSON(data));
         }
         switch (data.metadata?.eventType) {
           case EventType.EventTypeAccountContactRequestIncomingReceived: {

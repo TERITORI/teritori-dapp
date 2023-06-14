@@ -8,6 +8,7 @@ import {
 } from "react-native";
 
 import { Header } from "./Header";
+import { Notification } from "./Notification";
 import { ScreenContainerMobile } from "./ScreenContainerMobile";
 import { useForceNetworkKind } from "../../hooks/useForceNetworkKind";
 import { useForceNetworkSelection } from "../../hooks/useForceNetworkSelection";
@@ -16,33 +17,22 @@ import { useIsMobile } from "../../hooks/useIsMobile";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { NetworkFeature, NetworkInfo, NetworkKind } from "../../networks";
 import { DAppStoreData } from "../../screens/DAppStore/components/DAppStoreData";
+import { neutral33 } from "../../utils/style/colors";
 import {
   getResponsiveScreenContainerMarginHorizontal,
   headerHeight,
   headerMarginHorizontal,
   screenContainerContentMarginHorizontal,
 } from "../../utils/style/layout";
-import HeaderMessage from "../HeaderMessage";
 import { NetworkSelector } from "../NetworkSelector/NetworkSelector";
+import { SearchBar } from "../Search/SearchBar";
 import { SelectedNetworkGate } from "../SelectedNetworkGate";
 import { ConnectWalletButton } from "../TopMenu/ConnectWalletButton";
 import { Footer } from "../footers/Footer";
 import { Sidebar } from "../navigation/Sidebar";
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
 import { CartIconButtonBadge } from "../navigation/components/CartIconButtonBadge";
-import { neutral33 } from "../../utils/style/colors";
+import { SpacerColumn, SpacerRow } from "../spacer";
 
-=======
->>>>>>> b7ac9fe5 (add chat section)
-=======
-import { Header } from "./Header";
-import { ScreenContainerMobile } from "./ScreenContainerMobile";
-import { SearchBar } from "./SearchBar";
->>>>>>> 72aa04f9 (Add chat message)
-=======
->>>>>>> b818cdaa (create a group completed)
 export const ScreenContainer: React.FC<{
   headerChildren?: JSX.Element;
   footerChildren?: React.ReactNode;
@@ -133,7 +123,7 @@ export const ScreenContainer: React.FC<{
       {/*FIXME: Too many containers levels*/}
 
       <View style={styles.container}>
-        {!hideSidebar ? <Sidebar expanded /> : null}
+        {!hideSidebar ? <Sidebar /> : null}
 
         <View style={{ width: "100%", flex: 1 }}>
           {/*==== Header*/}
@@ -163,7 +153,6 @@ export const ScreenContainer: React.FC<{
                     >
                       {children}
                     </View>
-
                     {footerChildren ? footerChildren : <Footer />}
                   </ScrollView>
                 ) : (
@@ -171,7 +160,6 @@ export const ScreenContainer: React.FC<{
                     style={[styles.childrenContainer, marginStyle, { width }]}
                   >
                     {children}
-
                     {footerChildren ? footerChildren : <Footer />}
                   </View>
                 )}
@@ -193,7 +181,6 @@ export const ScreenContainer: React.FC<{
               alignItems: "center",
             }}
           >
-<<<<<<< HEAD
             <SearchBar />
             <View
               style={{
@@ -203,6 +190,8 @@ export const ScreenContainer: React.FC<{
                 width: 1,
               }}
             />
+            <Notification />
+            <SpacerRow size={2} />
             <CartIconButtonBadge style={{ marginRight: 12 }} />
             <NetworkSelector
               forceNetworkId={forceNetworkId}
@@ -213,21 +202,6 @@ export const ScreenContainer: React.FC<{
             <ConnectWalletButton
               style={{ marginRight: headerMarginHorizontal }}
             />
-=======
-            {/* <SearchBar /> */}
-            {footerChildren ? (
-              <HeaderMessage />
-            ) : (
-              <>
-                <NetworkSelector
-                  forceNetworkId={forceNetworkId}
-                  forceNetworkKind={forceNetworkKind}
-                  style={{ marginRight: 12 }}
-                />
-                <ConnectWalletButton />
-              </>
-            )}
->>>>>>> ef3d77ab (implement emoji)
           </View>
         </View>
       </View>
