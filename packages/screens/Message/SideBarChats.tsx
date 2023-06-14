@@ -1,5 +1,7 @@
+import protobuf from "protobufjs";
 import React from "react";
 import { Platform, TouchableOpacity, View } from "react-native";
+import { useSelector } from "react-redux";
 
 import add from "../../../assets/icons/add-circle-filled.svg";
 import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
@@ -12,6 +14,11 @@ import ConversationData from "../../components/sidebarchat/ConversationData";
 import FriendListWithNewMessages from "../../components/sidebarchat/FriendListNewMessagesCard";
 import SideBarChatConversation from "../../components/sidebarchat/SideBarChatConversation";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
+import {
+  selectContactRequestList,
+  selectConversationList,
+  selectMetadataList,
+} from "../../store/slices/message";
 import { useAppNavigation } from "../../utils/navigation";
 import {
   primaryColor,
@@ -19,9 +26,15 @@ import {
   neutral22,
 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
+import { EventType, ProtocolMetadata } from "../../weshnet";
+import { weshClient } from "../../weshnet/client";
+import { decode, encode, stringFromBytes } from "../../weshnet/client/utils";
 
 export const SideBarChats: React.FC = () => {
   const navigation = useAppNavigation();
+  const metadataList = useSelector(selectMetadataList);
+  const conversationList = useSelector(selectConversationList);
+  const contactRequestList = useSelector(selectContactRequestList);
   const MAX_WIDTH = 110;
   return (
     <View>
@@ -61,29 +74,31 @@ export const SideBarChats: React.FC = () => {
 
       <Separator horizontal={false} color={neutral22} />
       <SpacerColumn size={1.5} />
-      {ConversationData.map((item, index) => (
-        <TouchableOpacity
-          onPress={() =>
-            ["android", "ios"].includes(Platform.OS)
-              ? navigation.navigate("ChatSection")
-              : null
-          }
-          key={index}
-        >
-          <SideBarChatConversation
-            avatar={item.avatar}
-            name={item.name}
-            isOnline={item.isOnline}
-            chat={
-              item.chat.length > 0.5 * MAX_WIDTH
-                ? `${item.chat.slice(0, MAX_WIDTH / 2)}...`
-                : item.chat
+      {conversationList.map((item, index) => {
+        return (
+          <TouchableOpacity
+            onPress={() =>
+              ["android", "ios"].includes(Platform.OS)
+                ? navigation.navigate("ChatSection")
+                : null
             }
-            time={item.time}
-            iconCheck={item?.icon}
-          />
-        </TouchableOpacity>
-      ))}
+            key={index}
+          >
+            <SideBarChatConversation
+              avatar={ConversationData[0].avatar}
+              name={ConversationData[0].name}
+              isOnline={ConversationData[0].isOnline}
+              chat={
+                ConversationData[0].chat.length > 0.5 * MAX_WIDTH
+                  ? `${ConversationData[0].chat.slice(0, MAX_WIDTH / 2)}...`
+                  : ConversationData[0].chat
+              }
+              time="test"
+              iconCheck={ConversationData[0].icon}
+            />
+          </TouchableOpacity>
+        );
+      })}
     </View>
   );
 };

@@ -12,6 +12,8 @@ import {
   marketplaceFilters,
   marketplaceFilterUI,
 } from "./slices/marketplaceFilters";
+import { messageReducer } from "./slices/message";
+import { notificationReducer } from "./slices/notification";
 import { searchReducer } from "./slices/search";
 import {
   multisigTokensAdapter,
@@ -70,6 +72,8 @@ const rootReducer = combineReducers({
   marketplaceFilters,
   marketplaceFilterUI,
   search: searchReducer,
+  message: messageReducer,
+  notification: notificationReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

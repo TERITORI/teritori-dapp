@@ -38,7 +38,11 @@ const items = [
   { name: "Kristin Watson", checked: false },
 ];
 
-export const CreateGroup = ({ setShowTertiaryBox }) => {
+interface CreateGroupProps {
+  onClose: () => void;
+}
+
+export const CreateGroup = ({ onClose }: CreateGroupProps) => {
   const handleChange = (items: CheckboxItem[]) => {
     console.log(items);
   };
@@ -61,13 +65,13 @@ export const CreateGroup = ({ setShowTertiaryBox }) => {
     //   },
     // });
 
-    setShowTertiaryBox(false);
+    onClose();
   };
 
   return (
     <ModalBase
       label="Create a group chat"
-      onClose={() => setShowTertiaryBox(false)}
+      onClose={onClose}
       visible
       hideMainSeparator
       width={450}

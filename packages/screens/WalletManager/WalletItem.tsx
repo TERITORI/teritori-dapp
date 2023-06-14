@@ -85,7 +85,7 @@ export const WalletItem: React.FC<WalletItemProps> = ({
               </BrandText>
               <TouchableOpacity
                 onPress={() => {
-                  Clipboard.setString(item.address);
+                  Clipboard.setStringAsync(item.address);
                   setToastSuccess({
                     title: "Copied",
                     message: "",

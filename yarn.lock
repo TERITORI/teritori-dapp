@@ -25022,7 +25022,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"qrcode@npm:1.5.3":
+"qrcode@npm:1.5.3, qrcode@npm:^1.5.1":
   version: 1.5.3
   resolution: "qrcode@npm:1.5.3"
   dependencies:
@@ -25563,6 +25563,20 @@ __metadata:
   version: 0.16.1
   resolution: "react-native-popup-menu@npm:0.16.1"
   checksum: 4a4cfdfdcd7ee0a2515dbd4fa427dd38af89121e375ea452a470091456ecb8fc35fd24d6a79936703ebc4a84905352e8df0de24d58b036f56d2a9ba61449a7d5
+  languageName: node
+  linkType: hard
+
+"react-native-qrcode-svg@npm:^6.2.0":
+  version: 6.2.0
+  resolution: "react-native-qrcode-svg@npm:6.2.0"
+  dependencies:
+    prop-types: ^15.8.0
+    qrcode: ^1.5.1
+  peerDependencies:
+    react: "*"
+    react-native: ">=0.63.4"
+    react-native-svg: ^13.2.0
+  checksum: e4e8a709900e16cf0116e9c5edd8ff7150cfbbb2c9763a5a7b171ba6efb1f84d8b93b919dedb915d16686d7a8b0c49c905c62dcbd86f98d471b1c0bcec6f1ae3
   languageName: node
   linkType: hard
 
@@ -28692,6 +28706,7 @@ __metadata:
     patch-package: ^7.0.2
     postinstall-postinstall: ^2.1.0
     prettier: ^2.7.1
+    protobufjs: ^7.2.3
     react: 18.1.0
     react-dom: 18.1.0
     react-hook-form: ^7.36.1
@@ -28712,6 +28727,7 @@ __metadata:
     react-native-pell-rich-editor: ^1.8.8
     react-native-pie-chart: ^3.0.1
     react-native-popup-menu: ^0.16.1
+    react-native-qrcode-svg: ^6.2.0
     react-native-reanimated: ~2.12.0
     react-native-reanimated-carousel: ^3.0.3
     react-native-redash: ^18.0.0

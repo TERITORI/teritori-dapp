@@ -78,7 +78,7 @@ export const CollectionHeader: React.FC<{
     }
 
     try {
-      Clipboard.setString(currentUrl || "");
+      Clipboard.setStringAsync(currentUrl || "");
       setToastSuccess({
         title: "URL Copied!",
         message: "",

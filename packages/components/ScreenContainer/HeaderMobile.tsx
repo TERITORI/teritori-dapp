@@ -2,6 +2,7 @@ import React, { FC } from "react";
 import { View, StyleSheet, TouchableOpacity, Platform } from "react-native";
 import { useSelector } from "react-redux";
 
+import { Notification } from "./Notification";
 import hamburgerCrossSVG from "../../../assets/icons/hamburger-button-cross.svg";
 import hamburgerSVG from "../../../assets/icons/hamburger-button.svg";
 import { useSidebar } from "../../context/SidebarProvider";
@@ -59,6 +60,8 @@ export const HeaderMobile: FC<{
         <SpacerRow size={1} />
         <ConnectWalletButtonMobile />
         <SpacerRow size={1} />
+        <Notification />
+
         <TouchableOpacity
           onPress={() => {
             if (["android", "ios"].includes(Platform.OS)) {

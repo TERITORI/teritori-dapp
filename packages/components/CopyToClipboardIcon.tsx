@@ -22,7 +22,7 @@ export const CopyToClipboardIcon: React.FC<{
       title: "Copied",
       message: "",
     });
-    Clipboard.setString(text);
+    Clipboard.setStringAsync(text);
   };
 
   return (
