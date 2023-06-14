@@ -17,6 +17,7 @@ require (
 	github.com/go-co-op/gocron v1.18.0
 	github.com/gorilla/websocket v1.5.0
 	github.com/improbable-eng/grpc-web v0.14.1
+	github.com/ipfs/go-datastore v0.6.0
 	github.com/jackc/pgx/v5 v5.3.0
 	github.com/mehanizm/airtable v0.2.8
 	github.com/peterbourgon/ff/v3 v3.3.0
@@ -35,21 +36,6 @@ require (
 	gorm.io/driver/postgres v1.5.0
 	gorm.io/driver/sqlite v1.4.3
 	gorm.io/gorm v1.25.2
-	go.uber.org/zap v1.19.1
-	golang.org/x/exp v0.0.0-20221108223516-5d533826c662
-	google.golang.org/grpc v1.49.0
-	google.golang.org/protobuf v1.28.1
-	gorm.io/datatypes v1.2.0
-	gorm.io/driver/postgres v1.5.0
-	gorm.io/driver/sqlite v1.4.3
-	gorm.io/gorm v1.24.7-0.20230306060331-85eaf9eeda11
-	go.uber.org/zap v1.24.0
-	golang.org/x/exp v0.0.0-20230307190834-24139beb5833
-	google.golang.org/grpc v1.50.1
-	google.golang.org/protobuf v1.29.1
-	gorm.io/driver/postgres v1.4.4
-	gorm.io/driver/sqlite v1.3.6
-	gorm.io/gorm v1.23.8
 	moul.io/srand v1.6.1
 )
 
@@ -218,7 +204,6 @@ require (
 	github.com/ipfs/go-blockservice v0.5.0 // indirect
 	github.com/ipfs/go-cid v0.4.0 // indirect
 	github.com/ipfs/go-cidutil v0.1.0 // indirect
-	github.com/ipfs/go-datastore v0.6.0 // indirect
 	github.com/ipfs/go-delegated-routing v0.7.0 // indirect
 	github.com/ipfs/go-ds-badger v0.3.0 // indirect
 	github.com/ipfs/go-ds-badger2 v0.1.3 // indirect
@@ -396,38 +381,6 @@ require (
 	google.golang.org/appengine v1.6.7 // indirect
 	gopkg.in/square/go-jose.v2 v2.6.0 // indirect
 	gorm.io/driver/mysql v1.4.7 // indirect
-	lukechampine.com/blake3 v1.1.7 // indirect
-	moul.io/openfiles v1.2.0 // indirect
-	moul.io/srand v1.6.1 // indirect
-	moul.io/u v1.27.0 // indirect
-	moul.io/zapfilter v1.7.0 // indirect
-	moul.io/zapring v1.3.3 // indirect
-	go.opencensus.io v0.24.0 // indirect
-	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.32.0 // indirect
-	go.opentelemetry.io/otel v1.11.1 // indirect
-	go.opentelemetry.io/otel/exporters/jaeger v1.7.0 // indirect
-	go.opentelemetry.io/otel/exporters/otlp/internal/retry v1.7.0 // indirect
-	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.7.0 // indirect
-	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.7.0 // indirect
-	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp v1.7.0 // indirect
-	go.opentelemetry.io/otel/exporters/stdout/stdouttrace v1.7.0 // indirect
-	go.opentelemetry.io/otel/exporters/zipkin v1.7.0 // indirect
-	go.opentelemetry.io/otel/metric v0.30.0 // indirect
-	go.opentelemetry.io/otel/sdk v1.11.1 // indirect
-	go.opentelemetry.io/otel/trace v1.11.1 // indirect
-	go.opentelemetry.io/proto/otlp v0.16.0 // indirect
-	go.uber.org/dig v1.15.0 // indirect
-	go.uber.org/fx v1.18.2 // indirect
-	go4.org v0.0.0-20200411211856-f5505b9728dd // indirect
-	golang.org/x/mobile v0.0.0-20200801112145-973feb4309de // indirect
-	golang.org/x/mod v0.9.0 // indirect
-	golang.org/x/oauth2 v0.1.0 // indirect
-	golang.org/x/sync v0.1.0 // indirect
-	golang.org/x/term v0.6.0 // indirect
-	golang.org/x/tools v0.7.0 // indirect
-	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect
-	google.golang.org/appengine v1.6.7 // indirect
-	gopkg.in/square/go-jose.v2 v2.6.0 // indirect
 	lukechampine.com/blake3 v1.1.7 // indirect
 	moul.io/openfiles v1.2.0 // indirect
 	moul.io/u v1.27.0 // indirect

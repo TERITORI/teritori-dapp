@@ -43,6 +43,7 @@ import { fontMedium10, fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { ErrorText } from "../ErrorText";
+import { SVG } from "../SVG";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { CustomPressable } from "../buttons/CustomPressable";
 import { SpacerColumn, SpacerRow } from "../spacer";
@@ -57,7 +58,6 @@ export interface TextInputCustomProps<T extends FieldValues>
   style?: StyleProp<ViewStyle>;
   textInputStyle?: StyleProp<TextStyle>;
   onPressEnter?: () => void;
-  onPress?: () => void;
   currency?: Currency;
   disabled?: boolean;
   regexp?: RegExp;
@@ -79,7 +79,6 @@ export interface TextInputCustomProps<T extends FieldValues>
   error?: string;
   fullWidth?: boolean;
   setRef?: Dispatch<SetStateAction<RefObject<any> | null>>;
-  iconActions?: React.ReactElement;
 }
 
 export const Label: React.FC<{
@@ -122,7 +121,6 @@ export const TextInputCustom = <T extends FieldValues>({
   label,
   placeHolder,
   onPressEnter,
-  iconStyle,
   style,
   textInputStyle,
   regexp,
@@ -135,7 +133,6 @@ export const TextInputCustom = <T extends FieldValues>({
   variant = "regular",
   noBrokenCorners,
   name,
-  iconSVG,
   control,
   defaultValue,
   rules,
@@ -151,7 +148,6 @@ export const TextInputCustom = <T extends FieldValues>({
   error,
   fullWidth,
   setRef,
-  iconActions,
   ...restProps
 }: TextInputCustomProps<T>) => {
   const { field, fieldState } = useController<T>({

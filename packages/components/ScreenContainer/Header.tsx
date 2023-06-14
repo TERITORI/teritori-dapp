@@ -45,7 +45,6 @@ export const Header: React.FC<{
           </>
         )}
       </View>
-      <Notification />
 
       {/* Wallet selector placeholder */}
       <View />
