@@ -23,6 +23,7 @@ export const TableRow: React.FC<TableRowProps> = ({ headings, labelStyle }) => {
             styles.labelText,
             {
               flex,
+              textAlign: "center",
               paddingRight:
                 headings.length - 1 === index ? 0 : layout.padding_x1,
             },

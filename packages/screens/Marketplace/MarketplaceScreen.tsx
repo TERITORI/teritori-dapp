@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FlatList, StyleProp, TextStyle, View } from "react-native";
+import { FlatList, StyleProp, TextStyle, View, ViewStyle } from "react-native";
 
 import { PrettyPrint } from "./types";
 import {
@@ -19,6 +19,7 @@ import { SpacerColumn } from "../../components/spacer";
 import { TableRow, TableRowHeading } from "../../components/table";
 import { Tabs } from "../../components/tabs/Tabs";
 import { useCollections } from "../../hooks/useCollections";
+import { useIsMobile } from "../../hooks/useIsMobile";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { prettyPrice } from "../../utils/coins";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
@@ -166,6 +167,7 @@ const CollectionTable: React.FC<{
 }> = ({ rows, filterText }) => {
   const [itemsPerPage, setItemsPerPage] = useState(50);
   const [pageIndex, setPageIndex] = useState(0);
+  const isMobile = useIsMobile();
 
   const filteredCollections = rows.filter(({ collectionName }) =>
     collectionName?.toLowerCase().includes(filterText.toLowerCase())
@@ -180,7 +182,13 @@ const CollectionTable: React.FC<{
         maxWidth: screenContentMaxWidthLarge,
       }}
     >
-      <TableRow headings={Object.values(TABLE_ROWS)} />
+      <TableRow
+        headings={
+          !isMobile
+            ? Object.values(TABLE_ROWS)
+            : Object.values(TABLE_ROWS).slice(0, -4)
+        }
+      />
       <FlatList
         data={filteredCollections}
         renderItem={({ item, index }) => (
@@ -214,13 +222,16 @@ const CollectionTable: React.FC<{
 const PrettyPriceWithCurrency: React.FC<{ data: PrettyPrint }> = ({ data }) => {
   return (
     <View
-      style={{
-        flex: 3,
-        paddingRight: layout.padding_x1,
-        flexDirection: "row",
-        flexWrap: "nowrap",
-        justifyContent: "center",
-      }}
+      style={
+        {
+          flex: 3,
+          paddingRight: layout.padding_x1,
+          flexDirection: "row",
+          flexWrap: "nowrap",
+          justifyContent: "center",
+          textAlign: "center",
+        } as ViewStyle
+      }
     >
       <BrandText
         style={[
@@ -242,6 +253,8 @@ const CollectionRow: React.FC<{ collection: Collection; rank: number }> = ({
   rank,
 }) => {
   const rowData = useRowData(collection, rank);
+  const isMobile = useIsMobile();
+
   return (
     <OmniLink
       style={{
@@ -260,6 +273,7 @@ const CollectionRow: React.FC<{ collection: Collection; rank: number }> = ({
       }}
     >
       <InnerCell flex={1}>{rowData.rank}</InnerCell>
+
       <View
         style={{
           flex: 5,
@@ -272,7 +286,7 @@ const CollectionRow: React.FC<{ collection: Collection; rank: number }> = ({
         <RoundedGradientImage
           size="XS"
           sourceURI={rowData.collectionNameData.image}
-          style={{ marginRight: 24 }}
+          style={{ marginRight: isMobile ? 8 : 30 }}
         />
         <BrandText style={fontSemibold13}>
           {rowData.collectionNameData.collectionName}
@@ -289,12 +303,16 @@ const CollectionRow: React.FC<{ collection: Collection; rank: number }> = ({
       >
         {rowData["TimePeriodPercentualVolume"]}
       </InnerCell>
-      <InnerCell>{rowData.sales}</InnerCell>
-      <PrettyPriceWithCurrency data={rowData.floorPrice} />
-      <InnerCell>{rowData.owners}</InnerCell>
-      <InnerCell>
-        {rowData.supply === "0" ? "No limit" : rowData.supply}
-      </InnerCell>
+      {!isMobile && (
+        <>
+          <InnerCell>{rowData.sales}</InnerCell>
+          <PrettyPriceWithCurrency data={rowData.floorPrice} />
+          <InnerCell>{rowData.owners}</InnerCell>
+          <InnerCell>
+            {rowData.supply === "0" ? "No limit" : rowData.supply}
+          </InnerCell>
+        </>
+      )}
     </OmniLink>
   );
 };
@@ -306,10 +324,13 @@ const InnerCell: React.FC<{ flex?: number; style?: StyleProp<TextStyle> }> = ({
 }) => {
   return (
     <View
-      style={{
-        flex,
-        paddingRight: layout.padding_x1,
-      }}
+      style={
+        {
+          flex,
+          textAlign: "center",
+          paddingRight: layout.padding_x1,
+        } as ViewStyle
+      }
     >
       <BrandText style={[fontSemibold13, style]} numberOfLines={1}>
         {children}
