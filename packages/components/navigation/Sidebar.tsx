@@ -53,7 +53,6 @@ const SidebarSeparator: React.FC = () => {
   );
 };
 
- 
 interface SidebarProps extends DrawerContentComponentProps {
   expanded: boolean;
 }
@@ -63,12 +62,9 @@ export const Sidebar = (props: SidebarProps) => {
   const userInfo = useNSUserInfo(selectedWallet?.userId);
   const selectedNetworkKind = useSelectedNetworkKind();
   const connected = selectedWallet?.connected;
-<<<<<<< HEAD
-=======
   const { top, bottom } = useSafeAreaInsets();
 
   // variables
->>>>>>> f2c83ba0 (mobile & desktop build)
   const navigation = useAppNavigation();
 
   const { isSidebarExpanded, toggleSidebar, dynamicSidebar } = useSidebar();
@@ -178,12 +174,11 @@ export const Sidebar = (props: SidebarProps) => {
         <BuyTokens />
         <SidebarSeparator />
 
-            <SidebarProfileButton
-              userId={selectedWallet?.userId || ""}
-              isExpanded={isSidebarExpanded}
-            />
-          </View>
-        
+        <SidebarProfileButton
+          userId={selectedWallet?.userId || ""}
+          isExpanded={isSidebarExpanded}
+        />
+      </View>
     </Animated.View>
   );
 };

@@ -50,33 +50,7 @@ export const Notification: React.FC<{
   return (
     <View style={style} ref={dropdownRef}>
       <TouchableOpacity onPress={() => onPressDropdownButton(dropdownRef)}>
-        <TertiaryBox
-          mainContainerStyle={{
-            flexDirection: "row",
-            paddingHorizontal: 12,
-            backgroundColor: neutral17,
-          }}
-          height={40}
-        >
-          <SpacerRow size={1} />
-          <BrandText
-            style={{
-              color: "white",
-              fontSize,
-              letterSpacing: -(fontSize * 0.04),
-              fontWeight: "500",
-            }}
-          >
-            dsfsdjfls;dfklsdjkl
-          </BrandText>
-          <SpacerRow size={1} />
-          <SVG
-            source={isDropdownOpen(dropdownRef) ? chevronUpSVG : chevronDownSVG}
-            width={16}
-            height={16}
-            color={secondaryColor}
-          />
-        </TertiaryBox>
+        {/* <SVG source={} width={16} height={16} color={secondaryColor} /> */}
       </TouchableOpacity>
 
       {isDropdownOpen(dropdownRef) && (
@@ -85,11 +59,18 @@ export const Notification: React.FC<{
           style={{ position: "absolute", top: 44 }}
           mainContainerStyle={{
             paddingHorizontal: layout.padding_x2,
-            paddingTop: layout.padding_x2,
+            paddingVertical: layout.padding_x2,
             backgroundColor: neutral17,
             alignItems: "flex-start",
           }}
         >
+          {!notification.length && (
+            <BrandText
+              style={[fontSemibold12, { marginLeft: layout.padding_x1_5 }]}
+            >
+              All caught up.
+            </BrandText>
+          )}
           {notification.map((network, index) => {
             return (
               <TouchableOpacity
