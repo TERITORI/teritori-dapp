@@ -12,6 +12,8 @@ import {
   marketplaceFilters,
   marketplaceFilterUI,
 } from "./slices/marketplaceFilters";
+import { messageReducer } from "./slices/message";
+import { notificationReducer } from "./slices/notification";
 import { searchReducer } from "./slices/search";
 import { settingsReducer } from "./slices/settings";
 import { squadPresetsReducer } from "./slices/squadPresets";
@@ -44,6 +46,8 @@ const rootReducer = combineReducers({
   marketplaceFilters,
   marketplaceFilterUI,
   search: searchReducer,
+  message: messageReducer,
+  notification: notificationReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -52,9 +56,7 @@ export const store = configureStore({
   reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
-      serializableCheck: {
-        ignoredActions: ["persist/PERSIST"],
-      },
+      serializableCheck: false,
     }),
 });
 

@@ -1,16 +1,36 @@
-import { createWeshClient } from "../../weshnet";
+import {
+  GroupInfo_Reply,
+  ServiceGetConfiguration_Reply,
+  base64FromBytes,
+  bytesFromBase64,
+  createWeshClient,
+} from "../../weshnet";
+import {
+  bytesFromString,
+  stringFromBytes,
+  stringToUint8Array,
+  uint8ToString,
+} from "../../weshnet/client/utils";
 const weshClient = createWeshClient("http://localhost:4242");
 const weshClient2 = createWeshClient("http://localhost:4243");
 
-let weshConfig;
-let weshConfig2;
-let contactGroup;
+let weshConfig: ServiceGetConfiguration_Reply;
+let weshConfig2: ServiceGetConfiguration_Reply;
+let contactGroup: GroupInfo_Reply;
+
+const getAccountPubKey = async (tp) => {
+  console.log(tp);
+  const accMemberDevice = await tp.Opts.SecretStore.GetGroupForAccount();
+
+  return accMemberDevice.Member().Raw();
+};
 
 const createConfig = async () => {
   try {
     weshConfig = await weshClient.ServiceGetConfiguration({});
     weshConfig2 = await weshClient2.ServiceGetConfiguration({});
-    console.log("create config success", weshConfig);
+
+    console.log("create config success", JSON.stringify(weshConfig));
   } catch (err) {
     console.log("create config err", err);
   }
@@ -20,6 +40,8 @@ const makeContact = async () => {
   try {
     const contactRef = await weshClient.ContactRequestReference({});
     const contactRef2 = await weshClient2.ContactRequestReference({});
+    await weshClient.ContactRequestEnable({});
+    await weshClient2.ContactRequestEnable({});
     if (contactRef.publicRendezvousSeed.length === 0) {
       // we need to reset the reference the first time
       const resetRef = await weshClient.ContactRequestResetReference({});
@@ -37,14 +59,36 @@ const makeContact = async () => {
       },
     });
 
-    console.log("contact request sent");
-    await weshClient2.ContactRequestAccept({
-      contactPk: weshConfig.accountPk,
-    });
+    // console.log("contact request sent");
+    // await weshClient2.ContactRequestAccept({
+    //   contactPk: weshConfig.accountPk,
+    // });
 
     console.log("make contact success");
   } catch (err) {
     console.log("make contact", err);
+  }
+};
+
+const subscribeContactRequest = async () => {
+  try {
+    const contactReq = await weshClient2.GroupMetadataList({
+      groupPk: weshConfig2.accountGroupPk,
+    });
+    const myObserver = {
+      next(data) {
+        console.log("get contact request", data);
+      },
+      error(e) {
+        console.log("get contact request obser...", e);
+      },
+      complete() {
+        console.log("get contact request complete");
+      },
+    };
+    contactReq.subscribe(myObserver);
+  } catch (err) {
+    console.log("get contact req err", err);
   }
 };
 
@@ -84,11 +128,44 @@ const makeGroup = async () => {
   }
 };
 
+const activateGroup = async () => {
+  try {
+    const contactGroup = await weshClient.GroupInfo({
+      contactPk: weshConfig2.accountPk,
+    });
+
+    await weshClient.ActivateGroup({
+      groupPk: contactGroup.group?.publicKey,
+    });
+
+    const contactGroup2 = await weshClient2.GroupInfo({
+      contactPk: weshConfig.accountPk,
+    });
+    await weshClient2.ActivateGroup({
+      groupPk: contactGroup2.group?.publicKey,
+    });
+  } catch (err) {
+    console.log("get group info", err);
+  }
+};
+
+const getGroupInfo = async () => {
+  try {
+    contactGroup = await weshClient.GroupInfo({
+      contactPk: weshConfig2.accountPk,
+    });
+
+    console.log("group info", contactGroup);
+  } catch (err) {
+    console.log("get group info", err);
+  }
+};
+
 const sendMessage = async () => {
   try {
     await weshClient.AppMessageSend({
-      groupPk: contactGroup.groupPk,
-      payload: new Uint8Array([1, 2, 3, 4, 5]),
+      groupPk: contactGroup.group?.publicKey,
+      payload: bytesFromString("test message"),
     });
     console.log("send message success");
   } catch (err) {
@@ -99,12 +176,13 @@ const sendMessage = async () => {
 const getMessages = async () => {
   try {
     const messages = await weshClient.GroupMessageList({
-      groupPk: contactGroup.groupPk,
+      groupPk: contactGroup.group?.publicKey,
       untilNow: true,
     });
     const myObserver = {
       next(data) {
         console.log("get message data", data);
+        console.log(stringFromBytes(data.message));
       },
       error(e) {
         console.log("get message obser...", e);
@@ -122,10 +200,13 @@ const getMessages = async () => {
 export async function testWesh() {
   try {
     await createConfig();
+
+    await subscribeContactRequest();
     await makeContact();
-    await makeGroup();
-    await getMessages();
+    await activateGroup();
+    await getGroupInfo(); // await makeGroup();
     await sendMessage();
+    await getMessages();
   } catch (err) {
     console.log("testWesh", err);
   }

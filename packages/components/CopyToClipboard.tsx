@@ -1,6 +1,6 @@
 import * as Clipboard from "expo-clipboard";
 import React from "react";
-import { TouchableOpacity } from "react-native";
+import { TouchableOpacity, ViewStyle } from "react-native";
 
 import { BrandText } from "./BrandText";
 import { SVG } from "./SVG";
@@ -17,23 +17,36 @@ export const useCopyToClipboard = () => {
       title: successText || "Copied",
       message: "",
     });
-    Clipboard.setString(text);
+    Clipboard.setStringAsync(text);
   };
 
   return { copyToClipboard };
 };
 
-export const CopyToClipboard: React.FC<{
+interface CopyToClipboardProps {
   text: string;
   squaresBackgroundColor?: string;
-}> = ({ text, squaresBackgroundColor }) => {
+  fullWidth?: boolean;
+  containerStyle?: ViewStyle;
+}
+
+export const CopyToClipboard = ({
+  text,
+  squaresBackgroundColor,
+  fullWidth,
+  containerStyle,
+}: CopyToClipboardProps) => {
   const { copyToClipboard } = useCopyToClipboard();
 
   return (
-    <TouchableOpacity onPress={() => copyToClipboard(text)}>
+    <TouchableOpacity
+      onPress={() => copyToClipboard(text)}
+      style={containerStyle}
+    >
       <TertiaryBox
         height={40}
-        width={332}
+        width={fullWidth ? undefined : 332}
+        fullWidth={fullWidth}
         mainContainerStyle={{
           justifyContent: "space-between",
           flexDirection: "row",
