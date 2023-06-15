@@ -45,31 +45,22 @@ export const DAOsRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): DAOsRequest {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseDAOsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.networkId = reader.string();
-          continue;
+          break;
         case 2:
-          if (tag !== 18) {
-            break;
-          }
-
           message.memberAddress = reader.string();
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -86,10 +77,6 @@ export const DAOsRequest = {
     message.networkId !== undefined && (obj.networkId = message.networkId);
     message.memberAddress !== undefined && (obj.memberAddress = message.memberAddress);
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<DAOsRequest>, I>>(base?: I): DAOsRequest {
-    return DAOsRequest.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<DAOsRequest>, I>>(object: I): DAOsRequest {
@@ -113,24 +100,19 @@ export const DAOsResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): DAOsResponse {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseDAOsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.daos.push(DAO.decode(reader, reader.uint32()));
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -147,10 +129,6 @@ export const DAOsResponse = {
       obj.daos = [];
     }
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<DAOsResponse>, I>>(base?: I): DAOsResponse {
-    return DAOsResponse.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<DAOsResponse>, I>>(object: I): DAOsResponse {
@@ -215,94 +193,49 @@ export const DAO = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): DAO {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseDAO();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.id = reader.string();
-          continue;
+          break;
         case 2:
-          if (tag !== 18) {
-            break;
-          }
-
           message.admin = reader.string();
-          continue;
+          break;
         case 3:
-          if (tag !== 26) {
-            break;
-          }
-
           message.contractAddress = reader.string();
-          continue;
+          break;
         case 4:
-          if (tag !== 34) {
-            break;
-          }
-
           message.name = reader.string();
-          continue;
+          break;
         case 5:
-          if (tag !== 42) {
-            break;
-          }
-
           message.description = reader.string();
-          continue;
+          break;
         case 6:
-          if (tag !== 50) {
-            break;
-          }
-
           message.imageUrl = reader.string();
-          continue;
+          break;
         case 7:
-          if (tag !== 58) {
-            break;
-          }
-
           message.quorum = reader.string();
-          continue;
+          break;
         case 8:
-          if (tag !== 66) {
-            break;
-          }
-
           message.threshold = reader.string();
-          continue;
+          break;
         case 9:
-          if (tag !== 74) {
-            break;
-          }
-
           message.tokenName = reader.string();
-          continue;
+          break;
         case 10:
-          if (tag !== 82) {
-            break;
-          }
-
           message.tokenSymbol = reader.string();
-          continue;
+          break;
         case 11:
-          if (tag !== 88) {
-            break;
-          }
-
           message.unstakingDuration = longToNumber(reader.uint64() as Long);
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -337,10 +270,6 @@ export const DAO = {
     message.tokenSymbol !== undefined && (obj.tokenSymbol = message.tokenSymbol);
     message.unstakingDuration !== undefined && (obj.unstakingDuration = Math.round(message.unstakingDuration));
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<DAO>, I>>(base?: I): DAO {
-    return DAO.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<DAO>, I>>(object: I): DAO {
@@ -391,11 +320,10 @@ export const DAOServiceDAOsDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
-      const value = DAOsResponse.decode(data);
       return {
-        ...value,
+        ...DAOsResponse.decode(data),
         toObject() {
-          return value;
+          return this;
         },
       };
     },
@@ -459,7 +387,7 @@ export class GrpcWebImpl {
         debug: this.options.debug,
         onEnd: function (response) {
           if (response.status === grpc.Code.OK) {
-            resolve(response.message!.toObject());
+            resolve(response.message);
           } else {
             const err = new GrpcWebError(response.statusMessage, response.status, response.trailers);
             reject(err);
@@ -473,7 +401,7 @@ export class GrpcWebImpl {
 declare var self: any | undefined;
 declare var window: any | undefined;
 declare var global: any | undefined;
-var tsProtoGlobalThis: any = (() => {
+var globalThis: any = (() => {
   if (typeof globalThis !== "undefined") {
     return globalThis;
   }
@@ -502,7 +430,7 @@ export type Exact<P, I extends P> = P extends Builtin ? P
 
 function longToNumber(long: Long): number {
   if (long.gt(Number.MAX_SAFE_INTEGER)) {
-    throw new tsProtoGlobalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
+    throw new globalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
   }
   return long.toNumber();
 }
@@ -516,7 +444,7 @@ function isSet(value: any): boolean {
   return value !== null && value !== undefined;
 }
 
-export class GrpcWebError extends tsProtoGlobalThis.Error {
+export class GrpcWebError extends Error {
   constructor(message: string, public code: grpc.Code, public metadata: grpc.Metadata) {
     super(message);
   }
