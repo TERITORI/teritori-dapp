@@ -5,6 +5,8 @@ import { Avatar, Badge } from "react-native-paper";
 
 import { Separator } from "../../components/Separator";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { useTNS } from "../../context/TNSProvider";
+import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import {
   neutral22,
   neutral30,
@@ -47,32 +49,9 @@ const RequestList = ({ isOnline, data }: Props) => {
   const { setToastSuccess, setToastError } = useFeedbacks();
   const [addLoading, setAddLoading] = useState(false);
   const [rejectLoading, setRejectLoading] = useState(false);
-  const [metadata, setMetadata] = useState({
-    name: "Anon",
-    avatar: "",
-    contactPk: "",
-  });
-
-  useEffect(() => {
-    if (data?.metadata?.payload) {
-      console.log(new TextDecoder().decode(data.metadata.payload));
-      try {
-        setMetadata(JSON.parse(decodeJSON(data.metadata.payload)));
-        // const match = decode(data.metadata.payload).match(/{".+"}/gm);
-
-        // if (!match?.[0]) {
-        //   setToastError({
-        //     title: "Invalid data",
-        //     message: "Failed to process the data",
-        //   });
-        // } else {
-        //   setMetadata(JSON.parse(match[0]));
-        // }
-      } catch (err) {
-        console.log("decode", err);
-      }
-    }
-  }, [data]);
+  const { metadata } = useNSUserInfo(
+    data?.payload?.contactMetadata?.tokenId || "sakul.tori"
+  );
 
   const onlineStatusBadgeColor = isOnline ? "green" : "yellow";
 
@@ -80,9 +59,7 @@ const RequestList = ({ isOnline, data }: Props) => {
     console.log(metadata);
     setAddLoading(true);
     try {
-      await acceptFriendRequest(
-        bytesFromString("YWEdA4W5D2CDKyXTMaF+waYmkjoNwvnyhc8hw8rvb20=")
-      );
+      await acceptFriendRequest(data?.payload?.contactPk);
     } catch (err) {
       console.log("add friend err", err);
       setToastError({
@@ -97,7 +74,7 @@ const RequestList = ({ isOnline, data }: Props) => {
     setRejectLoading(true);
     try {
       await weshClient.ContactRequestDiscard({
-        contactPk: bytesFromString(metadata.contactPk),
+        contactPk: bytesFromString(data?.payload?.contactPk),
       });
     } catch (err) {
       setToastError({
@@ -113,7 +90,7 @@ const RequestList = ({ isOnline, data }: Props) => {
       <FlexRow justifyContent="space-between">
         <View>
           <FlexRow>
-            <Avatar.Image size={40} source={metadata.avatar} />
+            <Avatar.Image size={40} source={metadata?.image} />
             <Badge
               style={{
                 position: "absolute",
@@ -127,7 +104,7 @@ const RequestList = ({ isOnline, data }: Props) => {
             <SpacerRow size={1.5} />
             <View>
               <BrandText style={[fontSemibold13, { color: secondaryColor }]}>
-                {metadata.name}
+                {metadata?.name || "Anon"}
               </BrandText>
               <SpacerColumn size={0.4} />
               <BrandText style={[fontSemibold11, { color: neutralA3 }]}>

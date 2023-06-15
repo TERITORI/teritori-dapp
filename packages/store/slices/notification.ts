@@ -1,9 +1,14 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 import { RootState } from "../store";
 
+interface Notification {
+  title: string;
+  desc: string;
+}
+
 interface Search {
-  notification: any[];
+  notification: Notification[];
 }
 
 const initialState: Search = {
@@ -17,7 +22,7 @@ const notificationSlice = createSlice({
   name: "notification",
   initialState,
   reducers: {
-    setNotification: (state, action: any) => {
+    setNotification: (state, action: PayloadAction<Notification>) => {
       state.notification = [action.payload, ...state.notification];
     },
   },

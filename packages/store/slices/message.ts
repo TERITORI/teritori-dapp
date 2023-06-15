@@ -6,13 +6,13 @@ import { RootState } from "../store";
 interface Search {
   contactRequestList: GroupMetadataEvent[];
   metadataList: GroupMetadataEvent[];
-  messageList: GroupMessageEvent[];
+  messageList: any;
   conversationList: GroupMetadataEvent[];
 }
 
 const initialState: Search = {
   metadataList: [],
-  messageList: [],
+  messageList: {},
   contactRequestList: [],
   conversationList: [],
 };
@@ -22,6 +22,10 @@ export const selectMetadataList = (state: RootState) =>
 
 export const selectMessageList = (state: RootState) =>
   state.message.messageList;
+
+export const selectMessageListByGroupPk =
+  (groupPk: string) => (state: RootState) =>
+    state.message.messageList[groupPk] || [];
 
 export const selectContactRequestList = (state: RootState) =>
   state.message.contactRequestList;
@@ -36,16 +40,33 @@ const messageSlice = createSlice({
       state.metadataList = [action.payload, ...state.metadataList];
     },
     setMessageList: (state, action: PayloadAction<GroupMessageEvent>) => {
-      state.messageList = [action.payload, ...state.messageList];
+      state.messageList[action.payload.groupPk] = [
+        ...(state.messageList[action.payload.groupPk] || []),
+        action.payload.data,
+      ];
     },
     setContactRequestList: (
       state,
-      action: PayloadAction<GroupMetadataEvent>
+      action: PayloadAction<GroupMetadataEvent | GroupMetadataEvent[]>
     ) => {
-      state.contactRequestList = [action.payload, ...state.contactRequestList];
+      if (Array.isArray(action.payload)) {
+        state.contactRequestList = action.payload;
+      } else {
+        state.contactRequestList = [
+          action.payload,
+          ...state.contactRequestList,
+        ];
+      }
     },
-    setConversationList: (state, action: PayloadAction<GroupMetadataEvent>) => {
-      state.conversationList = [action.payload, ...state.conversationList];
+    setConversationList: (
+      state,
+      action: PayloadAction<GroupMetadataEvent | GroupMetadataEvent[]>
+    ) => {
+      if (Array.isArray(action.payload)) {
+        state.conversationList = action.payload;
+      } else {
+        state.conversationList = [action.payload, ...state.conversationList];
+      }
     },
   },
 });

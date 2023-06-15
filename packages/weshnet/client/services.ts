@@ -9,6 +9,7 @@ import {
   bytesFromString,
   decode,
   encode,
+  encodeJSON,
   stringFromBytes,
   unicodeDecodeB64,
 } from "./utils";
@@ -29,21 +30,20 @@ export const createConfig = async () => {
     weshConfig.config = config;
 
     await weshClient.ContactRequestEnable({});
-    console.log("get config", ServiceGetConfiguration_Reply.toJSON(config));
+    console.log("get config", config);
 
     subscribeMetadata(weshConfig.config.accountGroupPk);
-    subscribeMessages(weshConfig.config.accountGroupPk);
+    // subscribeMessages(weshConfig.config.accountGroupPk);
   } catch (err) {
     console.log("create config err", err);
   }
 };
 
-export const createSharableLink = async (name: string) => {
+export const createSharableLink = async (tokenId: string = "Anon") => {
   try {
     const contactRef = await weshClient.ContactRequestReference({});
     await weshClient.ContactRequestEnable({});
     if (contactRef.publicRendezvousSeed.length === 0) {
-      // we need to reset the reference the first time
       const resetRef = await weshClient.ContactRequestResetReference({});
       contactRef.publicRendezvousSeed = resetRef.publicRendezvousSeed;
     }
@@ -52,17 +52,13 @@ export const createSharableLink = async (name: string) => {
       stringFromBytes(weshConfig.config.accountPk)
     )}&rdvSeed=${encodeURIComponent(
       stringFromBytes(contactRef.publicRendezvousSeed)
-    )}&name=${encodeURIComponent(name || "Anon")}`;
+    )}&tokenId=${encodeURIComponent(tokenId)}`;
   } catch (err) {
-    console.log("make contact", err);
+    console.log("create sharable link", err);
   }
 };
 
-export const addContact = async (
-  shareLink: string,
-  name: string,
-  avatar: string
-) => {
+export const addContact = async (shareLink: string, tokenId: string) => {
   const url = new URL(shareLink);
 
   if (!url.searchParams.has("accountPk") || !url.searchParams.has("rdvSeed")) {
@@ -80,15 +76,12 @@ export const addContact = async (
         publicRendezvousSeed: bytesFromString(
           decodeURIComponent(url.searchParams.get("rdvSeed") || "")
         ),
-        metadata: contactPk,
       },
-      ownMetadata: encode(
-        JSON.stringify({
-          name: url.searchParams.get("name") || "",
-          avatar: "",
-          contactPk: stringFromBytes(weshConfig.config.accountPk),
-        })
-      ),
+      ownMetadata: encodeJSON({
+        tokenId: tokenId || "",
+        contactTokenId: url.searchParams.get("name") || "",
+        timestamp: new Date().toISOString(),
+      }),
     });
   } catch (err) {
     if (!err?.message?.includes("ErrContactRequestContactAlreadyAdded")) {
@@ -100,6 +93,7 @@ export const addContact = async (
 };
 
 export const acceptFriendRequest = async (contactPk: Uint8Array) => {
+  console.log(contactPk);
   await weshClient.ContactRequestAccept({
     contactPk,
   });
@@ -112,6 +106,8 @@ export const activateGroup = async (contactPk: Uint8Array) => {
     const contactGroup = await weshClient.GroupInfo({
       contactPk,
     });
+
+    console.log("contact group", contactGroup);
 
     await weshClient.ActivateGroup({
       groupPk: contactGroup.group?.publicKey,
