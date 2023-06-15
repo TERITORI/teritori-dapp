@@ -34,11 +34,7 @@ export const CreateConversation = ({ onClose }: CreateConversationProps) => {
     setError("");
 
     try {
-      await weshServices.addContact(
-        contactLink,
-        userInfo?.metadata?.public_name || "",
-        userInfo?.metadata?.image || ""
-      );
+      await weshServices.addContact(contactLink, userInfo?.metadata?.tokenId);
       onClose();
     } catch (err) {
       setError(err?.message);

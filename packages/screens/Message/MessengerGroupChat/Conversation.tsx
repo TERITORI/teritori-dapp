@@ -7,8 +7,12 @@ import reply from "../../../../assets/icons/reply.svg";
 import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
+import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
+import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
+import { TertiaryButton } from "../../../components/buttons/TertiaryButton";
 import { EmojiSelector } from "../../../components/socialFeed/EmojiSelector";
-import { SpacerRow } from "../../../components/spacer";
+import { SpacerColumn, SpacerRow } from "../../../components/spacer";
+import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import {
   neutral77,
   secondaryColor,
@@ -21,6 +25,8 @@ import {
   fontMedium10,
   fontSemibold11,
 } from "../../../utils/style/fonts";
+import { GroupInfo_Reply } from "../../../weshnet";
+import { weshClient } from "../../../weshnet/client";
 
 interface IChatMessageProps {
   message: string;
@@ -31,6 +37,7 @@ interface IChatMessageProps {
   height: number;
   width: number;
   imageStyle?: any;
+  data: any;
 }
 
 export const Conversation = ({
@@ -42,11 +49,34 @@ export const Conversation = ({
   height,
   width,
   imageStyle,
+  data,
 }: IChatMessageProps) => {
+  const { setToastError, setToastSuccess } = useFeedbacks();
   const senderName = "me";
+
   const [showPopup, setShowPopup] = useState(false);
   const [isForwarding, setIsForwarding] = useState(false);
   const [showFarward, setShowFarward] = useState(false);
+
+  const handleAcceptGroup = async () => {
+    try {
+      const group = data.group;
+      console.log("group info", data);
+      const groupInfo = GroupInfo_Reply.fromJSON(group);
+
+      console.log("group info accpet", groupInfo);
+      await weshClient.MultiMemberGroupJoin({
+        group: groupInfo.group,
+      });
+    } catch (err) {
+      setToastError({
+        title: "Failed to accept group",
+        message: err?.message,
+      });
+    }
+  };
+
+  const handleRejectGroup = async () => {};
 
   const onEmojiSelected = (emoji: string | null) => {
     if (emoji) {
@@ -69,12 +99,51 @@ export const Conversation = ({
           style={[isSender ? styles.senderContainer : styles.receiverContainer]}
         >
           <TouchableOpacity onPress={() => setShowPopup(!showPopup)}>
-            <BrandText style={[fontSemibold11, { color: secondaryColor }]}>
-              {message}
-            </BrandText>
+            {!data?.type ? (
+              <BrandText style={[fontSemibold11, { color: secondaryColor }]}>
+                {data.message}
+              </BrandText>
+            ) : (
+              <>
+                {data?.type === "group-invitation" && !isSender && (
+                  <BrandText
+                    style={[fontSemibold11, { color: secondaryColor }]}
+                  >
+                    Anon has invited you to a group ${data.message.name}
+                  </BrandText>
+                )}
+                {data?.type === "group-invitation" && isSender && (
+                  <BrandText
+                    style={[fontSemibold11, { color: secondaryColor }]}
+                  >
+                    You have invited Anon to a group ${data.message.name}
+                  </BrandText>
+                )}
+              </>
+            )}
           </TouchableOpacity>
+          {data?.type === "group-invitation" && !isSender && (
+            <>
+              <SpacerColumn size={1} />
+              <FlexRow>
+                <PrimaryButton
+                  text="Accept"
+                  size="SM"
+                  squaresBackgroundColor={purpleDark}
+                  onPress={handleAcceptGroup}
+                />
+                <SpacerRow size={1} />
+                <TertiaryButton
+                  onPress={handleRejectGroup}
+                  text="Cancel"
+                  size="SM"
+                  squaresBackgroundColor={purpleDark}
+                />
+              </FlexRow>
+            </>
+          )}
 
-          {source && (
+          {!!source && (
             <Image source={source} style={{ height, width, ...imageStyle }} />
           )}
           {!isSender && showPopup && !showFarward && (
@@ -112,12 +181,12 @@ export const Conversation = ({
               left: 10,
             }}
           >
-            {!isSender && receiverName && (
+            {!isSender && !!receiverName && (
               <BrandText style={[fontBold10, { color: secondaryColor }]}>
                 {receiverName}
               </BrandText>
             )}
-            {isSender && (
+            {!!isSender && (
               <BrandText style={[fontBold10, { color: secondaryColor }]}>
                 {senderName}
               </BrandText>

@@ -87,7 +87,7 @@ export const ChatHeader = ({ messages }: any) => {
           <SpacerRow size={1} />
           <View>
             <BrandText style={[fontSemibold13, { color: secondaryColor }]}>
-              Office group
+              Anon
             </BrandText>
             <FlexRow>
               <View>

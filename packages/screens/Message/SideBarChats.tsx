@@ -1,8 +1,8 @@
-import protobuf from "protobufjs";
-import React from "react";
-import { Platform, TouchableOpacity, View } from "react-native";
+import React, { useEffect } from "react";
+import { View } from "react-native";
 import { useSelector } from "react-redux";
 
+import { ChatItem } from "./ChatItem";
 import add from "../../../assets/icons/add-circle-filled.svg";
 import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
 import Search from "../../../assets/icons/search.svg";
@@ -10,32 +10,27 @@ import { BrandText } from "../../components/BrandText";
 import FlexRow from "../../components/FlexRow";
 import { SVG } from "../../components/SVG";
 import { Separator } from "../../components/Separator";
-import ConversationData from "../../components/sidebarchat/ConversationData";
 import FriendListWithNewMessages from "../../components/sidebarchat/FriendListNewMessagesCard";
-import SideBarChatConversation from "../../components/sidebarchat/SideBarChatConversation";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
-import {
-  selectContactRequestList,
-  selectConversationList,
-  selectMetadataList,
-} from "../../store/slices/message";
-import { useAppNavigation } from "../../utils/navigation";
+import { selectConversationList } from "../../store/slices/message";
 import {
   primaryColor,
   secondaryColor,
   neutral22,
 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
-import { EventType, ProtocolMetadata } from "../../weshnet";
-import { weshClient } from "../../weshnet/client";
-import { decode, encode, stringFromBytes } from "../../weshnet/client/utils";
 
-export const SideBarChats: React.FC = () => {
-  const navigation = useAppNavigation();
-  const metadataList = useSelector(selectMetadataList);
+export const SideBarChats: React.FC = ({
+  setActiveConversation,
+  activeConversation,
+}) => {
   const conversationList = useSelector(selectConversationList);
-  const contactRequestList = useSelector(selectContactRequestList);
-  const MAX_WIDTH = 110;
+
+  useEffect(() => {
+    if (!activeConversation && conversationList.length) {
+      setActiveConversation(conversationList[0]);
+    }
+  }, [activeConversation, conversationList, setActiveConversation]);
   return (
     <View>
       <SpacerColumn size={2} />
@@ -74,31 +69,18 @@ export const SideBarChats: React.FC = () => {
 
       <Separator horizontal={false} color={neutral22} />
       <SpacerColumn size={1.5} />
-      {conversationList.map((item, index) => {
-        return (
-          <TouchableOpacity
-            onPress={() =>
-              ["android", "ios"].includes(Platform.OS)
-                ? navigation.navigate("ChatSection")
-                : null
-            }
-            key={index}
-          >
-            <SideBarChatConversation
-              avatar={ConversationData[0].avatar}
-              name={ConversationData[0].name}
-              isOnline={ConversationData[0].isOnline}
-              chat={
-                ConversationData[0].chat.length > 0.5 * MAX_WIDTH
-                  ? `${ConversationData[0].chat.slice(0, MAX_WIDTH / 2)}...`
-                  : ConversationData[0].chat
-              }
-              time="test"
-              iconCheck={ConversationData[0].icon}
-            />
-          </TouchableOpacity>
-        );
-      })}
+      {conversationList.map((item, index) => (
+        <ChatItem
+          data={item}
+          key={index}
+          onPress={() => {
+            setActiveConversation();
+            setTimeout(() => {
+              setActiveConversation(item);
+            }, 500);
+          }}
+        />
+      ))}
     </View>
   );
 };
