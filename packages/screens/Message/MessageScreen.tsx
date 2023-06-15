@@ -33,18 +33,15 @@ export const MessageScreen: ScreenFC<"Message"> = () => {
   const [isCreateConversation, setIsCreateConversation] = useState(false);
   const [isAddFriend, setIsAddFriend] = useState(false);
   const selectedWallet = useSelectedWallet();
+  const [activeConversation, setActiveConversation] = useState(false);
   const userInfo = useNSUserInfo(selectedWallet?.userId);
   console.log("userInfo", userInfo);
 
   const navigation = useAppNavigation();
 
   useEffect(() => {
-    weshServices.createConfig();
-  }, []);
-
-  useEffect(() => {
-    weshServices.createSharableLink(userInfo?.metadata?.public_name);
-  }, [userInfo?.metadata?.public_name]);
+    weshServices.createSharableLink(userInfo?.metadata?.tokenId);
+  }, [userInfo?.metadata?.tokenId]);
 
   const HEADER_CONFIG = [
     {
@@ -100,6 +97,7 @@ export const MessageScreen: ScreenFC<"Message"> = () => {
               <>
                 <TouchableOpacity key={item.title} onPress={item.onPress}>
                   <MessageCard
+                    key={item.title}
                     text={item.title}
                     icon={item.icon}
                     subtext={item?.subtitle || ""}
@@ -119,15 +117,29 @@ export const MessageScreen: ScreenFC<"Message"> = () => {
         />
 
         {["android", "ios"].includes(Platform.OS) ? (
-          <SideBarChats />
+          <SideBarChats
+            setActiveConversation={setActiveConversation}
+            activeConversation={activeConversation}
+          />
         ) : (
           <View style={{ flexDirection: "row" }}>
-            <SideBarChats />
+            <SideBarChats
+              setActiveConversation={setActiveConversation}
+              activeConversation={activeConversation}
+            />
             <SpacerRow size={2} />
             <Separator horizontal />
 
             <View style={{ flex: 1 }}>
-              {isAddFriend ? <FriendshipManager /> : <MessageGroupChat />}
+              {isAddFriend ? (
+                <FriendshipManager />
+              ) : (
+                <>
+                  {!!activeConversation && (
+                    <MessageGroupChat conversation={activeConversation} />
+                  )}
+                </>
+              )}
             </View>
           </View>
         )}

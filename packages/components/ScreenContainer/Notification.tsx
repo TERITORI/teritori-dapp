@@ -2,8 +2,7 @@ import React, { useRef } from "react";
 import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
 import { useSelector } from "react-redux";
 
-import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
-import chevronUpSVG from "../../../assets/icons/chevron-up.svg";
+import notificationIcon from "../../../assets/icons/badge.svg";
 import { useDropdowns } from "../../context/DropdownsProvider";
 import {
   getNetwork,
@@ -39,7 +38,7 @@ export const Notification: React.FC<{
     useDropdowns();
   const dropdownRef = useRef<View>(null);
   const dispatch = useAppDispatch();
-  const notification = useSelector(selectNotification);
+  const notifications = useSelector(selectNotification);
 
   const onPressNetwork = (networkId: string) => {
     closeOpenedDropdown();
@@ -50,7 +49,12 @@ export const Notification: React.FC<{
   return (
     <View style={style} ref={dropdownRef}>
       <TouchableOpacity onPress={() => onPressDropdownButton(dropdownRef)}>
-        {/* <SVG source={} width={16} height={16} color={secondaryColor} /> */}
+        <SVG
+          source={notificationIcon}
+          width={16}
+          height={16}
+          color={secondaryColor}
+        />
       </TouchableOpacity>
 
       {isDropdownOpen(dropdownRef) && (
@@ -64,43 +68,30 @@ export const Notification: React.FC<{
             alignItems: "flex-start",
           }}
         >
-          {!notification.length && (
+          {!notifications.length && (
             <BrandText
               style={[fontSemibold12, { marginLeft: layout.padding_x1_5 }]}
             >
               All caught up.
             </BrandText>
           )}
-          {notification.map((network, index) => {
+          {notifications.map((notification, index) => {
             return (
               <TouchableOpacity
                 style={{
                   marginBottom: layout.padding_x2,
-                  opacity: selectable ? 1 : 0.5,
                 }}
                 key={index}
-                onPress={() => onPressNetwork(network.id)}
+                onPress={() => {}}
               >
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  {iconHide ? (
-                    ""
-                  ) : (
-                    <>
-                      <NetworkIcon networkId={network.id} size={16} />
-                    </>
-                  )}
-
                   <BrandText
                     style={[
                       fontSemibold12,
                       { marginLeft: layout.padding_x1_5 },
                     ]}
                   >
-                    {hideDropdown ? (
-                      ""
-                    ) : (
-                      <>{network?.displayName || "Unknown"}</>
-                    )}
+                    {notification.title}
                   </BrandText>
                 </View>
               </TouchableOpacity>

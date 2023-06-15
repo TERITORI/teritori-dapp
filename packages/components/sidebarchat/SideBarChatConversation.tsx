@@ -2,7 +2,10 @@ import React from "react";
 import { View, StyleSheet } from "react-native";
 import { Avatar, Badge } from "react-native-paper";
 
+import avatarPNG from "../../../assets/icons/ava.png";
 import Doublecheck from "../../../assets/icons/doublecheck.svg";
+import singleCheck from "../../../assets/icons/singlecheck.svg";
+import warning from "../../../assets/icons/warning.svg";
 import { Separator } from "../../components/Separator";
 import { neutral22, neutralA3, secondaryColor } from "../../utils/style/colors";
 import {
@@ -22,7 +25,7 @@ type Props = {
 
   chat: string;
   time: string;
-  iconCheck: any;
+  iconCheck: boolean;
 };
 
 const SideBarChatConversation: React.FC<Props> = ({
@@ -39,7 +42,7 @@ const SideBarChatConversation: React.FC<Props> = ({
       <FlexRow justifyContent="space-between">
         <View>
           <FlexRow>
-            <Avatar.Image size={40} source={avatar} />
+            <Avatar.Image size={40} source={avatar || avatarPNG} />
             <Badge
               style={{
                 position: "absolute",
@@ -70,7 +73,11 @@ const SideBarChatConversation: React.FC<Props> = ({
               {time}
             </BrandText>
             <SpacerRow size={0.6} />
-            <SVG width={16} height={16} source={iconCheck} />
+            <SVG
+              width={16}
+              height={16}
+              source={iconCheck ? Doublecheck : singleCheck}
+            />
           </FlexRow>
         </View>
       </FlexRow>

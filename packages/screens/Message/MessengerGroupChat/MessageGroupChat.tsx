@@ -4,13 +4,13 @@ import { Platform } from "react-native";
 import { ChatSection } from "./ChatSection";
 import { ScreenContainer } from "../../../components/ScreenContainer";
 
-export const MessageGroupChat = () => {
+export const MessageGroupChat = (props) => {
   if (Platform.OS === "web") {
-    return <ChatSection />;
+    return <ChatSection {...props} />;
   }
   return (
     <ScreenContainer noScroll>
-      <ChatSection />
+      <ChatSection {...props} />
     </ScreenContainer>
   );
 };

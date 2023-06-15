@@ -59,12 +59,10 @@ export const UploadImage = ({
   thumbnailFile,
   setThumbnailFile,
 }) => {
-  console.log("thumnail", thumbnailFile);
   const [image, setImage] = useState(null);
   const [isImageLarge, setIsImageLarge] = useState(true);
   const [visible, setVisible] = useState(false);
 
-  console.log("value", visible);
   const handleSend = () => {
     const newMsg: IMessage = {
       message: newMessage,
