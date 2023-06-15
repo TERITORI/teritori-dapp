@@ -24,12 +24,14 @@ import { modalMarginPadding } from "../../utils/style/modals";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 
-const getModalColors = (status?: "danger" | "success") => {
+const getModalColors = (status?: ModalBaseProps["modalStatus"]) => {
   switch (status) {
     case "danger":
       return [neutral00, errorColor];
     case "success":
       return [neutral00, successColor];
+    case "dark":
+      return [neutral00, neutral33];
     default:
       return [neutral00];
   }
@@ -52,8 +54,7 @@ const SeparatorGradient: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
 
 // TODO: Simplify this component (Useless childrenBottom ?. Better to let the parent totally decides which children to use ? Used in WalletManager.tsx, be careful !)
 
-// The base components for modals. You can provide children (Modal's content) and childrenBottom (Optional Modal's bottom content)
-export const ModalBase: React.FC<{
+type ModalBaseProps = {
   label?: string;
   onClose?: () => void;
   onBackPress?: () => void;
@@ -63,10 +64,13 @@ export const ModalBase: React.FC<{
   childrenBottom?: JSX.Element | JSX.Element[];
   children?: JSX.Element | JSX.Element[];
   hideMainSeparator?: boolean;
-  modalStatus?: "danger" | "success";
+  modalStatus?: "danger" | "success" | "dark";
   scrollable?: boolean;
   contentStyle?: ViewStyle;
-}> = ({
+};
+
+// The base components for modals. You can provide children (Modal's content) and childrenBottom (Optional Modal's bottom content)
+export const GradientModalBase: React.FC<ModalBaseProps> = ({
   label,
   visible,
   width,
@@ -220,4 +224,4 @@ export const ModalBase: React.FC<{
   );
 };
 
-export default ModalBase;
+export default GradientModalBase;

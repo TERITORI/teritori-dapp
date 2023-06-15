@@ -1,6 +1,7 @@
 import React from "react";
 import { View } from "react-native";
 
+import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
 import { neutral77 } from "../../../utils/style/colors";
 import { fontSemibold12, fontSemibold9 } from "../../../utils/style/fonts";
 import { fullSidebarWidth, layout } from "../../../utils/style/layout";
@@ -10,12 +11,12 @@ import { AvatarWithFrame } from "../../images/AvatarWithFrame";
 
 export const SidebarProfileButton: React.FC<{
   userId: string;
-  image: string;
-  tokenId: string;
   isExpanded?: boolean;
-  isLoading?: boolean;
-}> = ({ userId, image, tokenId, isExpanded, isLoading }) => {
+}> = ({ userId, isExpanded }) => {
   const imageWidth = 68;
+  const {
+    metadata: { tokenId },
+  } = useNSUserInfo(userId);
 
   return (
     <OmniLink to={{ screen: "UserPublicProfile", params: { id: userId } }}>
@@ -28,7 +29,7 @@ export const SidebarProfileButton: React.FC<{
           isExpanded && { flexDirection: "row", alignItems: "center" },
         ]}
       >
-        <AvatarWithFrame image={image} size="M" isLoading={isLoading} />
+        <AvatarWithFrame userId={userId} />
 
         <View
           style={[

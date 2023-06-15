@@ -1,5 +1,5 @@
 import { bech32 } from "bech32";
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { View } from "react-native";
 
 import {
@@ -9,17 +9,23 @@ import {
 import { PostsRequest } from "../../api/feed/v1/feed";
 import { BrandText } from "../../components/BrandText";
 import { NotFound } from "../../components/NotFound";
+import { Quests } from "../../components/Quests";
 import { ScreenContainer } from "../../components/ScreenContainer";
+import { DAOMembers } from "../../components/dao/DAOMembers";
+import { DAOProposals } from "../../components/dao/DAOProposals";
+import { DAOsList } from "../../components/dao/DAOsList";
 import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
 import { UPPNFTs } from "../../components/userPublicProfile/UPPNFTs";
-import { UPPQuests } from "../../components/userPublicProfile/UPPSucceedQuests";
+import { useIsDAO } from "../../hooks/cosmwasm/useCosmWasmContractInfo";
+import { useIsDAOMember } from "../../hooks/dao/useDAOMember";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
+import { usePrevious } from "../../hooks/usePrevious";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { parseNetworkObjectId, parseUserId } from "../../networks";
+import { parseUserId } from "../../networks";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
-import { setDocumentTitle } from "../../utils/setDocumentTitle";
 import { fontSemibold20 } from "../../utils/style/fonts";
+import { Assets } from "../WalletManager/Assets";
 
 const TabContainer: React.FC = ({ children }) => {
   const { width } = useMaxResolution();
@@ -36,8 +42,15 @@ const SelectedTabContent: React.FC<{
   setSelectedTab: (tab: keyof typeof screenTabItems) => void;
 }> = ({ userId, selectedTab, setSelectedTab }) => {
   const selectedWallet = useSelectedWallet();
-  const [, userAddress] = parseNetworkObjectId(userId);
   const userInfo = useNSUserInfo(userId);
+  const [network, userAddress] = parseUserId(userId);
+  const { isDAO } = useIsDAO(userId);
+  const { isDAOMember } = useIsDAOMember(
+    userId,
+    selectedWallet?.userId,
+    !!isDAO
+  );
+
   const feedRequestUser: PostsRequest = useMemo(() => {
     return {
       filter: {
@@ -68,19 +81,29 @@ const SelectedTabContent: React.FC<{
     };
   }, [userInfo?.metadata.tokenId, userAddress]);
 
+  const Header = useCallback(() => {
+    return (
+      <UserPublicProfileScreenHeader
+        userId={userId}
+        selectedTab={selectedTab}
+        setSelectedTab={setSelectedTab}
+      />
+    );
+  }, [selectedTab, setSelectedTab, userId]);
+
   switch (selectedTab) {
     case "userPosts":
       return (
         <NewsFeed
-          Header={() => (
-            <UserPublicProfileScreenHeader
-              userId={userId}
-              selectedTab={selectedTab}
-              setSelectedTab={setSelectedTab}
-            />
-          )}
+          disablePosting={
+            isDAO ? !isDAOMember : selectedWallet?.userId !== userId
+          }
+          daoId={isDAO ? userId : undefined}
+          Header={Header}
           additionalMention={
-            selectedWallet?.address !== userAddress
+            isDAO
+              ? undefined
+              : selectedWallet?.address !== userAddress
               ? userInfo?.metadata.tokenId || userAddress
               : undefined
           }
@@ -90,13 +113,10 @@ const SelectedTabContent: React.FC<{
     case "mentionsPosts":
       return (
         <NewsFeed
-          Header={() => (
-            <UserPublicProfileScreenHeader
-              userId={userId}
-              selectedTab={selectedTab}
-              setSelectedTab={setSelectedTab}
-            />
-          )}
+          disablePosting={
+            !selectedWallet?.connected || selectedWallet?.userId === userId
+          }
+          Header={Header}
           additionalMention={
             selectedWallet?.address !== userAddress
               ? userInfo?.metadata.tokenId || userAddress
@@ -110,15 +130,29 @@ const SelectedTabContent: React.FC<{
     // case "activity":
     //   return <UPPActivity />;
     case "quests":
-      return <UPPQuests userId={userId} />;
+      return <Quests userId={userId} />;
     // case "pathwar":
     //   return <UPPPathwarChallenges />;
     // case "gig":
     //   return <UPPGigServices />;
+    case "members":
+      return <DAOMembers daoId={userId} />;
+    case "proposals":
+      return <DAOProposals daoId={userId} />;
+    case "funds":
+      return <Assets userId={userId} readOnly />;
+    case "daos":
+      return (
+        <DAOsList
+          req={{ networkId: network?.id, memberAddress: userAddress }}
+        />
+      );
     default:
       return null;
   }
 };
+
+const initialTab: keyof typeof screenTabItems = "userPosts";
 
 export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
   route: {
@@ -126,12 +160,21 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
   },
 }) => {
   const [selectedTab, setSelectedTab] =
-    useState<keyof typeof screenTabItems>("userPosts");
-
+    useState<keyof typeof screenTabItems>(initialTab);
+  const prevId = usePrevious(id);
+  useEffect(() => {
+    if (prevId && id !== prevId) {
+      setSelectedTab(initialTab);
+    }
+  }, [id, prevId]);
   const navigation = useAppNavigation();
   const [network, userAddress] = parseUserId(id);
   const { metadata, notFound } = useNSUserInfo(id);
-  setDocumentTitle(`User: ${metadata?.tokenId}`);
+  useEffect(() => {
+    navigation.setOptions({
+      title: `Teritori - User: ${metadata.tokenId || userAddress}`,
+    });
+  }, [navigation, userAddress, metadata.tokenId]);
 
   return (
     <ScreenContainer

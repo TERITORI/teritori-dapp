@@ -8,7 +8,6 @@ import {
 } from "../../api/marketplace/v1/marketplace";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { alignDown } from "../../utils/align";
-import { layout } from "../../utils/style/layout";
 import { NFTs } from "../nfts/NFTs";
 import { Tabs } from "../tabs/Tabs";
 
@@ -32,19 +31,16 @@ const SelectedTabContent: React.FC<{
     ownerId: userId,
     limit: alignDown(20, numColumns) || numColumns,
     offset: 0,
-    sort: Sort.SORTING_PRICE,
+    sort: Sort.SORT_PRICE,
     sortDirection: SortDirection.SORT_DIRECTION_ASCENDING,
+    attributes: [],
+    isListed: false,
+    priceRange: undefined,
   };
 
   switch (selectedTab) {
     case "collected":
-      return (
-        <NFTs
-          req={nftsRequest}
-          numColumns={numColumns}
-          ListHeaderComponent={<View style={{ height: 20 }} />}
-        />
-      );
+      return <NFTs req={nftsRequest} hideFilters />;
     case "created":
       return <></>;
     case "favorited":
@@ -64,8 +60,6 @@ export const UPPNFTs: React.FC<{ userId: string }> = ({ userId }) => {
         style={{
           flexDirection: "row",
           alignItems: "center",
-          height: 64,
-          marginTop: layout.padding_x2_5 / 2,
           marginBottom: 16,
         }}
       >
@@ -73,7 +67,7 @@ export const UPPNFTs: React.FC<{ userId: string }> = ({ userId }) => {
           selected={selectedTab}
           items={tabItemsNFTs}
           onSelect={setSelectedTab}
-          style={{ alignSelf: "flex-end", height: 45 }}
+          style={{ alignSelf: "flex-end", height: 45, marginTop: -10 }}
         />
       </View>
 

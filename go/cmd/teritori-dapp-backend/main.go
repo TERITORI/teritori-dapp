@@ -10,6 +10,8 @@ import (
 	"unicode"
 
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
+	"github.com/TERITORI/teritori-dapp/go/pkg/dao"
+	"github.com/TERITORI/teritori-dapp/go/pkg/daopb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/feed"
 	"github.com/TERITORI/teritori-dapp/go/pkg/feedpb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/marketplace"
@@ -86,6 +88,7 @@ func main() {
 	if err != nil {
 		panic(errors.Wrap(err, "failed to access db"))
 	}
+
 	port := 9090
 	if *enableTls {
 		port = 9091
@@ -108,22 +111,27 @@ func main() {
 		panic(errors.Wrap(err, "failed to create marketplace service"))
 	}
 
-	// P2E services
 	p2eSvc := p2e.NewP2eService(context.Background(), &p2e.Config{
 		Logger:    logger,
 		IndexerDB: indexerDB,
 	})
 
-	// Feed services
 	feedSvc := feed.NewFeedService(context.Background(), &feed.Config{
 		Logger:    logger,
 		IndexerDB: indexerDB,
 		PinataJWT: *pinataJWT,
 	})
 
+	daoSvc := dao.NewDAOService(context.Background(), &dao.Config{
+		Logger:    logger,
+		IndexerDB: indexerDB,
+		NetStore:  &netstore,
+	})
+
 	server := grpc.NewServer()
 	marketplacepb.RegisterMarketplaceServiceServer(server, marketplaceSvc)
 	p2epb.RegisterP2EServiceServer(server, p2eSvc)
+	daopb.RegisterDAOServiceServer(server, daoSvc)
 	feedpb.RegisterFeedServiceServer(server, feedSvc)
 
 	wrappedServer := grpcweb.WrapServer(server,

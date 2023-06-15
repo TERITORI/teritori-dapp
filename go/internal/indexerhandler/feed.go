@@ -7,6 +7,7 @@ import (
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
 	"github.com/pkg/errors"
+	"go.uber.org/zap"
 )
 
 type Reaction struct {
@@ -145,6 +146,11 @@ func (h *Handler) handleExecuteCreatePostByBot(e *Message, execMsg *wasmtypes.Ms
 }
 
 func (h *Handler) handleExecuteCreatePost(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
+	if execMsg.Contract != h.config.Network.SocialFeedContractAddress {
+		h.logger.Debug("ignored create post for unknown contract", zap.String("tx", e.TxHash), zap.String("contract", execMsg.Contract))
+		return nil
+	}
+
 	var execCreatePostMsg ExecCreatePostMsg
 	if err := json.Unmarshal(execMsg.Msg, &execCreatePostMsg); err != nil {
 		return errors.Wrap(err, "failed to unmarshal execute create post msg")

@@ -5,8 +5,14 @@ import { StyleSheet, View } from "react-native";
 
 import { NFTAttributes } from "./NFTAttributes";
 import starSVG from "../../../assets/icons/star.svg";
+import {
+  AttributeRarityFloor,
+  NFTCollectionAttributesRequest,
+} from "../../api/marketplace/v1/marketplace";
 import { useTransactionModals } from "../../context/TransactionModalsProvider";
+import { parseNetworkObjectId } from "../../networks";
 import { NFTInfo } from "../../screens/Marketplace/NFTDetailScreen";
+import { mustGetMarketplaceClient } from "../../utils/backend";
 import { RootStackParamList } from "../../utils/navigation";
 import { neutral77, primaryColor } from "../../utils/style/colors";
 import {
@@ -57,7 +63,43 @@ export const NFTMainInfo: React.FC<{
   const { params } = useRoute<RouteProp<RootStackParamList, "NFTDetail">>();
 
   const [selectedTab, setSelectedTab] =
-    useState<keyof typeof mainInfoTabItems>("about");
+    useState<keyof typeof mainInfoTabItems>("attributes");
+  const [network] = parseNetworkObjectId(nftInfo?.collectionId);
+  const [attributes, setAttributes] = useState<AttributeRarityFloor[]>([]);
+
+  useEffect(() => {
+    try {
+      setAttributes([]);
+      const backendClient = mustGetMarketplaceClient(network?.id);
+      const allAtributes: AttributeRarityFloor[] = [];
+      const stream = backendClient.NFTCollectionAttributes({
+        collectionId: nftInfo?.collectionId,
+        whereAttributes: nftInfo?.attributes.map((attr) => {
+          return {
+            traitType: attr.trait_type,
+            value: attr.value,
+          };
+        }),
+      } as NFTCollectionAttributesRequest);
+      stream.subscribe(
+        ({ attributes }) => {
+          if (attributes) {
+            allAtributes.push(attributes);
+          }
+        },
+        (e) => {
+          console.error(e);
+        },
+        () => {
+          if (allAtributes) {
+            setAttributes(allAtributes);
+          }
+        }
+      );
+    } catch (err) {
+      console.error(err);
+    }
+  }, [network?.id, nftInfo]);
 
   const SelectedTabItemRendering: React.FC = () => {
     switch (selectedTab) {
@@ -74,7 +116,9 @@ export const NFTMainInfo: React.FC<{
       case "attributes":
         return (
           <View style={styles.sectionContainer}>
-            <NFTAttributes nftAttributes={nftInfo?.attributes} />
+            {nftInfo && (
+              <NFTAttributes nftAttributes={attributes} nftInfo={nftInfo} />
+            )}
           </View>
         );
       case "details":

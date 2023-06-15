@@ -60,6 +60,10 @@ export type RootStackParamList = {
 
   Settings: undefined;
 
+  OrganizationDeployer: undefined;
+  Organizations: undefined;
+  CoreDAO: undefined;
+
   DAppStore: undefined;
   ToriPunks: { route: string };
 };
@@ -122,6 +126,12 @@ const navConfig: {
 
     // ==== Staking
     Staking: "staking",
+
+    // === Organizations
+    OrganizationDeployer: "create-org",
+    Organizations: "orgs",
+    CoreDAO: "core-dao",
+
     // ==== Swap
     Swap: "swap",
     // ==== ComingSoon
@@ -129,7 +139,6 @@ const navConfig: {
     Settings: "settings",
     // ==== DAppStore
     DAppStore: "dapp-store",
-
     // === DApps
     ToriPunks: "dapp/tori-punks/:route?",
   },

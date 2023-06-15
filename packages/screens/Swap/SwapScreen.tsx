@@ -88,6 +88,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   assets: {
-    borderTopWidth: 0,
+    marginTop: 40,
+    paddingTop: 40,
   },
 });
