@@ -26,7 +26,8 @@ import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useAppNavigation, ScreenFC } from "../../utils/navigation";
 import { layout } from "../../utils/style/layout";
-import { weshServices } from "../../weshnet/client";
+import { createWeshClient } from "../../weshnet";
+import { weshClient, weshServices } from "../../weshnet/client";
 
 export const MessageScreen: ScreenFC<"Message"> = () => {
   const [isCreateGroup, setIsCreateGroup] = useState(false);
@@ -38,6 +39,10 @@ export const MessageScreen: ScreenFC<"Message"> = () => {
   console.log("userInfo", userInfo);
 
   const navigation = useAppNavigation();
+
+  useEffect(() => {
+    weshServices.createConfig();
+  }, []);
 
   useEffect(() => {
     weshServices.createSharableLink(userInfo?.metadata?.tokenId);

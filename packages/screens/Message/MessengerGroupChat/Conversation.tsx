@@ -68,6 +68,10 @@ export const Conversation = ({
       await weshClient.MultiMemberGroupJoin({
         group: groupInfo.group,
       });
+
+      await weshClient.ActivateGroup({
+        groupPk: groupInfo.group?.publicKey,
+      });
     } catch (err) {
       setToastError({
         title: "Failed to accept group",

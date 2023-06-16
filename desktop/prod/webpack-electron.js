@@ -6,7 +6,7 @@ const commonWebpack = require("./webpack");
 
 module.exports = async (env) => {
   const rendererConfig = await commonWebpack();
-  const outputPath = path.resolve(__dirname, "dist");
+  const outputPath = path.resolve(__dirname, "go/electron/prod/resources/app");
 
   const mainProcessConfig = {
     mode: "production",
