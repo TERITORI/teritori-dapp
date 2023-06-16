@@ -86,8 +86,7 @@ export const ChatSection = ({ conversation }) => {
       setGroupInfo(_group);
       subsId = await subscribeMessages({
         groupPk: _group.group?.publicKey,
-        untilNow: true,
-        reverseOrder: true,
+        sinceNow: true,
       });
 
       setSubsId(subsId);

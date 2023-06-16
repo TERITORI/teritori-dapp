@@ -128,8 +128,13 @@ require (
 	github.com/Workiva/go-datastructures v1.0.53 // indirect
 	github.com/adlio/schema v1.3.3 // indirect
 	github.com/aead/ecdh v0.2.0 // indirect
+	github.com/akavel/rsrc v0.10.2 // indirect
 	github.com/alecthomas/units v0.0.0-20210927113745-59d0afb8317a // indirect
 	github.com/alexbrainman/goissue34681 v0.0.0-20191006012335-3fc7a47baff5 // indirect
+	github.com/asticode/go-astichartjs v0.2.0 // indirect
+	github.com/asticode/go-astilectron-bootstrap v0.4.14 // indirect
+	github.com/asticode/go-astilectron-bundler v0.7.12 // indirect
+	github.com/asticode/go-bindata v1.0.0 // indirect
 	github.com/benbjohnson/clock v1.3.0 // indirect
 	github.com/berty/emitter-go v0.0.0-20221031144724-5dae963c3622 // indirect
 	github.com/berty/go-libp2p-rendezvous v0.4.1 // indirect
@@ -335,6 +340,7 @@ require (
 	github.com/regen-network/cosmos-proto v0.3.1 // indirect
 	github.com/robfig/cron/v3 v3.0.1 // indirect
 	github.com/rs/zerolog v1.27.0 // indirect
+	github.com/sam-kamerer/go-plister v1.2.0 // indirect
 	github.com/samber/lo v1.36.0 // indirect
 	github.com/sirupsen/logrus v1.9.0 // indirect
 	github.com/spaolacci/murmur3 v1.1.0 // indirect
