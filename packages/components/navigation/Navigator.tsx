@@ -199,25 +199,6 @@ export const Navigator: React.FC = () => {
         options={{ header: () => null, title: screenTitle("Mint Collection") }}
       />
 
-      {/* ==== Organization */}
-
-      <Stack.Screen
-        name="OrganizationDeployer"
-        component={OrganizerDeployerScreen}
-        options={{
-          header: () => null,
-          title: screenTitle("Organization Deployer"),
-        }}
-      />
-      <Stack.Screen
-        name="OrganizationGetStarted"
-        component={OrganizationGetStartedScreen}
-        options={{
-          header: () => null,
-          title: screenTitle("Organization Name"),
-        }}
-      />
-
       {/* ==== Multisig */}
       <Stack.Screen
         name="Multisig"
