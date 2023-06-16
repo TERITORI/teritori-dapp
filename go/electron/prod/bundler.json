@@ -1,11 +1,11 @@
 {
   "app_name": "Teritori",
-  "icon_path_darwin": "./icon.icns",
+  "icon_path_darwin": "resources/icon.icns",
   "output_path": "../output",
   "info_plist": {
     "CFBundlePackageType": "APPL",
     "CFBundleInfoDictionaryVersion": "6.0",
-    "CFBundleIconFile": "./icon.icns",
+    "CFBundleIconFile": "resources/icon.icns",
     "CFBundleDisplayName": "Teritori",
     "CFBundleIdentifier": "com.teritori.app",
     "LSUIElement": "NO",
