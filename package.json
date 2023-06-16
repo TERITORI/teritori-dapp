@@ -7,11 +7,8 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "clean:dist": "rimraf dist",
     "build:web": "expo export:web",
-    "build:desktop": "electron-builder --config desktop/prod/builder.config.js",
-    "build:electron": "  cd ./go/electron/prod && astilectron-bundler",
-    "desktop": "electron desktop/dev/index.js",
+    "build:electron": "bash ./cmd/electron-build.sh",
     "eject": "expo eject",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx . && tsc",
     "lint-fix": "eslint --ext .js,.jsx,.ts,.tsx . --fix",
@@ -210,5 +207,6 @@
       "**/node_modules/**/*"
     ]
   },
-  "packageManager": "yarn@3.5.0"
+  "packageManager": "yarn@3.5.0",
+  "homepage": "./"
 }

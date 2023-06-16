@@ -169,8 +169,8 @@ func electron() {
 		AssetDir: AssetDir,
 		AstilectronOptions: astilectron.Options{
 			AppName:            AppName,
-			AppIconDarwinPath:  "./icon.icns",
-			AppIconDefaultPath: "./icon.png",
+			AppIconDarwinPath:  "resources/icon.icns",
+			AppIconDefaultPath: "resources/icon.png",
 			SingleInstance:     true,
 			VersionAstilectron: VersionAstilectron,
 			VersionElectron:    VersionElectron,
