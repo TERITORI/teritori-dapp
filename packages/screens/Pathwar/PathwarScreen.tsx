@@ -34,7 +34,7 @@ export const PathwarScreen: ScreenFC<"Pathwar"> = () => {
     myHeaders.append("Authorization", "Bearer " + token);
     const fetchData = async () => {
       const res = await fetch(
-        "http://localhost:8000/season-challenges?season_id=1666417759589765120",
+        "https://poc-api-dev.s2.pmg.tools/season-challenges?season_id=1669708561111846912",
         requestOptions
       );
       const data = await res.json();

@@ -52,7 +52,7 @@ export const ConnectBar: React.FC<object> = () => {
       body: JSON.stringify(data),
     };
 
-    const res = await fetch("http://localhost:3000/token", requestOptions);
+    const res = await fetch("http://51.77.156.3:3000/token", requestOptions);
     const json = await res.json();
     dispatch(setPathwarToken(json.token));
 
@@ -64,7 +64,7 @@ export const ConnectBar: React.FC<object> = () => {
       },
     };
 
-    await fetch("http://localhost:8000/user/session", userRequestOptions);
+    await fetch("https://poc-api-dev.s2.pmg.tools/user/session", userRequestOptions);
   };
 
   return (
