@@ -46,7 +46,6 @@ const contactRequestsSent = [];
 const conversations = [];
 
 export const handleMetadata = async (data: GroupMetadataEvent) => {
-  console.log("subscribe");
   try {
     if (
       data.metadata?.eventType !==
@@ -189,9 +188,8 @@ export const handleMetadata = async (data: GroupMetadataEvent) => {
         break;
       }
       case EventType.EventTypeAccountGroupJoined: {
-        console.log("group joined", data);
-
         const parsedData = GroupMetadataEvent.toJSON(data);
+        console.log("group joined", data, parsedData);
 
         parsedData.payload = AccountGroupJoined.decode(data.metadata.payload);
         store.dispatch(setConversationList(parsedData));

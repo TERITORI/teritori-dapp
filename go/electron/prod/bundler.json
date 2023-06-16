@@ -1,0 +1,18 @@
+{
+  "app_name": "Teritori",
+  "icon_path_darwin": "./icon.icns",
+  "output_path": "../output",
+  "info_plist": {
+    "CFBundlePackageType": "APPL",
+    "CFBundleInfoDictionaryVersion": "6.0",
+    "CFBundleIconFile": "./icon.icns",
+    "CFBundleDisplayName": "Teritori",
+    "CFBundleIdentifier": "com.teritori.app",
+    "LSUIElement": "NO",
+    "LSMinimumSystemVersion": "10.11",
+    "NSHighResolutionCapable": true,
+    "NSAppTransportSecurity": {
+      "NSAllowsArbitraryLoads": true
+    }
+  }
+}

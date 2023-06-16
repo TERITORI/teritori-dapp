@@ -80,19 +80,15 @@ export const subscribeMetadata = async (groupPk: Uint8Array) => {
       untilNow: true,
       reverseOrder: true,
     });
+
     const myObserver = {
-      next: async (data: GroupMetadataEvent) => {
+      next: (data: GroupMetadataEvent) => {
         handleMetadata(data);
       },
       error(e) {
-        console.log("get metadata obser...", e);
+        console.log("get metadata err", e);
       },
       complete: () => {
-        try {
-        } catch (err) {
-          console.log("update store err", err);
-        }
-
         console.log("get metadata complete");
       },
     };

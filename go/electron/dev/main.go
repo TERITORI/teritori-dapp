@@ -33,7 +33,7 @@ import (
 )
 
 
-func wesh(p) {
+func wesh() {
 	 
 	fs := flag.NewFlagSet("weshd", flag.ContinueOnError)
 	var (
