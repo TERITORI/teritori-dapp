@@ -22,6 +22,8 @@ export const PathwarScreen: ScreenFC<"Pathwar"> = () => {
   const [search, setSearch] = useState("");
   const token = useSelector(selectPathwarToken);
 
+  console.log('token ', token)
+
   const [cards, setCards] = useState<any[]>([]);
   const myHeaders = new Headers();
 
@@ -61,9 +63,11 @@ export const PathwarScreen: ScreenFC<"Pathwar"> = () => {
           }}
         />
       </View>
-      <View style={{ marginTop: layout.padding_x2_5 }}>
-        <ConnectBar />
-      </View>
+      {!token && (
+        <View style={{ marginTop: layout.padding_x2_5 }}>
+          <ConnectBar />
+        </View>
+      )}
       <NavBarPathwarOverview />
 
       <Separator
