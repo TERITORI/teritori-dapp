@@ -50,7 +50,7 @@ export const subscribeMessages = async (config: GroupMessageList_Request) => {
   let lastId;
   let firstId;
   try {
-    const messages = await weshClient.GroupMessageList(config);
+    const messages = await weshClient().GroupMessageList(config);
     const myObserver = {};
     return messages.subscribe({
       next: (data: GroupMessageEvent) => {
@@ -75,7 +75,7 @@ export const subscribeMessages = async (config: GroupMessageList_Request) => {
 
 export const subscribeMetadata = async (groupPk: Uint8Array) => {
   try {
-    const metadata = await weshClient.GroupMetadataList({
+    const metadata = await weshClient().GroupMetadataList({
       groupPk,
       untilNow: true,
       reverseOrder: true,

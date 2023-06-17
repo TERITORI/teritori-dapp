@@ -67,7 +67,6 @@ export type RootStackParamList = {
   DAppStore: undefined;
   ToriPunks: { route: string };
 
-  Chat: undefined;
   Message: undefined;
   ChatSection: undefined;
   FriendshipManager: undefined;
@@ -158,8 +157,6 @@ const navConfig: {
     DAppStore: "dapp-store",
     // === DApps
     ToriPunks: "dapp/tori-punks/:route?",
-
-    Chat: "chat",
   },
 };
 

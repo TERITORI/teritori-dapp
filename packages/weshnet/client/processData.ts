@@ -56,7 +56,7 @@ export const handleMetadata = async (data: GroupMetadataEvent) => {
     switch (data.metadata?.eventType) {
       case EventType.EventTypeGroupDeviceChainKeyAdded: {
         // try {
-        //   await weshClient.GroupInfo({});
+        //   await weshClient().GroupInfo({});
         // } catch (err) {
         //   console.log("group test err", err.message);
         // }
@@ -121,11 +121,11 @@ export const handleMetadata = async (data: GroupMetadataEvent) => {
 
           parsedData.payload.ownMetadata = decodeJSON(payload.ownMetadata);
           try {
-            const groupInfo = await weshClient.GroupInfo({
+            const groupInfo = await weshClient().GroupInfo({
               contactPk: payload.contact?.pk,
             });
 
-            await weshClient.ActivateGroup({
+            await weshClient().ActivateGroup({
               groupPk: groupInfo.group?.publicKey,
             });
 

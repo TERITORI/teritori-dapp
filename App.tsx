@@ -10,7 +10,6 @@ import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { MetaMaskProvider } from "metamask-react";
 import React, { memo, useEffect, useCallback } from "react";
-
 import { useForm, FormProvider } from "react-hook-form";
 import { Platform, View } from "react-native";
 import { MenuProvider } from "react-native-popup-menu";
@@ -35,8 +34,10 @@ import { useSelectedNetworkId } from "./packages/hooks/useSelectedNetwork";
 import useSelectedWallet from "./packages/hooks/useSelectedWallet";
 import { setSelectedWalletId } from "./packages/store/slices/settings";
 import { persistor, store, useAppDispatch } from "./packages/store/store";
+import { handleAstilectronMessages } from "./packages/utils/astilectron";
 import { linking } from "./packages/utils/navigation";
 SplashScreen.preventAutoHideAsync();
+handleAstilectronMessages();
 
 const queryClient = new QueryClient();
 
@@ -64,74 +65,53 @@ export default function App() {
 
   return (
     <ErrorBoundary>
-<<<<<<< HEAD
-      <ReduxProvider store={store}>
-        <PersistGate
-          loading={
-            <View
-              style={{
-                width: "100%",
-                height: "100%",
-                backgroundColor: "black",
-              }}
-            />
-          }
-          persistor={persistor}
-        >
-          <QueryClientProvider client={queryClient}>
-            <FormProvider<DefaultForm> {...methods}>
-              <MetaMaskProvider>
-                <NavigationContainer linking={linking}>
-                  <SafeAreaProvider>
-=======
       <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
-        <QueryClientProvider client={queryClient}>
-          <FormProvider<DefaultForm> {...methods}>
-            <MetaMaskProvider>
-              <NavigationContainer linking={linking}>
-                <SafeAreaProvider>
-                  <ReduxProvider store={store}>
->>>>>>> 9a0880e1 (mobile & desktop build)
-                    <FeedbacksContextProvider>
-                      <DropdownsContextProvider>
-                        <WalletsProvider>
-                          <WalletSyncer />
-<<<<<<< HEAD
-                          <MultisigDeauth />
-=======
->>>>>>> 9a0880e1 (mobile & desktop build)
-                          <SearchBarContextProvider>
-                            <TransactionModalsProvider>
-                              <TNSContextProvider>
-                                <TNSMetaDataListContextProvider>
-                                  <MenuProvider>
-                                    <StatusBar style="inverted" />
-                                    <Navigator />
-                                  </MenuProvider>
-                                </TNSMetaDataListContextProvider>
-                              </TNSContextProvider>
-                            </TransactionModalsProvider>
-                          </SearchBarContextProvider>
-                        </WalletsProvider>
-                      </DropdownsContextProvider>
-                    </FeedbacksContextProvider>
-<<<<<<< HEAD
-                  </SafeAreaProvider>
-                </NavigationContainer>
-              </MetaMaskProvider>
-            </FormProvider>
-          </QueryClientProvider>
-        </PersistGate>
-      </ReduxProvider>
-=======
-                  </ReduxProvider>
-                </SafeAreaProvider>
-              </NavigationContainer>
-            </MetaMaskProvider>
-          </FormProvider>
-        </QueryClientProvider>
+        <ReduxProvider store={store}>
+          <PersistGate
+            loading={
+              <View
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  backgroundColor: "black",
+                }}
+              />
+            }
+            persistor={persistor}
+          >
+            <QueryClientProvider client={queryClient}>
+              <FormProvider<DefaultForm> {...methods}>
+                <MetaMaskProvider>
+                  <NavigationContainer linking={linking}>
+                    <SafeAreaProvider>
+                      <FeedbacksContextProvider>
+                        <DropdownsContextProvider>
+                          <WalletsProvider>
+                            <WalletSyncer />
+                            <MultisigDeauth />
+                            <SearchBarContextProvider>
+                              <TransactionModalsProvider>
+                                <TNSContextProvider>
+                                  <TNSMetaDataListContextProvider>
+                                    <MenuProvider>
+                                      <StatusBar style="inverted" />
+                                      <Navigator />
+                                    </MenuProvider>
+                                  </TNSMetaDataListContextProvider>
+                                </TNSContextProvider>
+                              </TransactionModalsProvider>
+                            </SearchBarContextProvider>
+                          </WalletsProvider>
+                        </DropdownsContextProvider>
+                      </FeedbacksContextProvider>
+                    </SafeAreaProvider>
+                  </NavigationContainer>
+                </MetaMaskProvider>
+              </FormProvider>
+            </QueryClientProvider>
+          </PersistGate>
+        </ReduxProvider>
       </View>
->>>>>>> 9a0880e1 (mobile & desktop build)
     </ErrorBoundary>
   );
 }
