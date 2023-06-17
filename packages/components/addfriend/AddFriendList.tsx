@@ -31,7 +31,7 @@ const AddFriendList: React.FC<Props> = ({ avatar, name, isOnline }) => {
   const onlineStatusBadgeColor = isOnline ? "green" : "yellow";
 
   const handleSendRequest = async () => {
-    // await weshClient.ContactRequestSend({
+    // await weshClient().ContactRequestSend({
     //   contact: {
     //     pk: accountPk,
     //     publicRendezvousSeed,

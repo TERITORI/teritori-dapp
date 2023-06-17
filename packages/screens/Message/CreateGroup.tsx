@@ -77,15 +77,15 @@ export const CreateGroup = ({ onClose }: CreateGroupProps) => {
     }
     setLoading(true);
     try {
-      const group = await weshClient.MultiMemberGroupCreate({});
+      const group = await weshClient().MultiMemberGroupCreate({});
 
       console.log(group);
 
-      const groupInfo = await weshClient.GroupInfo({
+      const groupInfo = await weshClient().GroupInfo({
         groupPk: group.groupPk,
       });
 
-      await weshClient.ActivateGroup({
+      await weshClient().ActivateGroup({
         groupPk: group.groupPk,
       });
 
@@ -103,12 +103,12 @@ export const CreateGroup = ({ onClose }: CreateGroupProps) => {
           .map(async (item) => {
             const contactPk =
               item?.payload?.contact?.pk || item?.payload?.contactPk;
-            const _group = await weshClient.GroupInfo({
+            const _group = await weshClient().GroupInfo({
               contactPk,
             });
 
             console.log("tested", contactPk);
-            await weshClient.AppMessageSend({
+            await weshClient().AppMessageSend({
               groupPk: _group.group?.publicKey,
               payload: encodeJSON({
                 name: groupName,

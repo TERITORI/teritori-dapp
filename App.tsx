@@ -9,7 +9,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { MetaMaskProvider } from "metamask-react";
-import React, {useCallback} from "react";
+import React, { useCallback } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { Platform, View } from "react-native";
 import { MenuProvider } from "react-native-popup-menu";
@@ -26,8 +26,10 @@ import { TNSContextProvider } from "./packages/context/TNSProvider";
 import { TransactionModalsProvider } from "./packages/context/TransactionModalsProvider";
 import { WalletsProvider } from "./packages/context/WalletsProvider";
 import { store } from "./packages/store/store";
+import { handleAstilectronMessages } from "./packages/utils/astilectron";
 import { linking } from "./packages/utils/navigation";
 SplashScreen.preventAutoHideAsync();
+handleAstilectronMessages();
 
 const queryClient = new QueryClient();
 
@@ -55,38 +57,38 @@ export default function App() {
 
   return (
     <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
-    <QueryClientProvider client={queryClient}>
-      <FormProvider<DefaultForm> {...methods}>
-        <MetaMaskProvider>
-          <NavigationContainer linking={linking}>
-            <SafeAreaProvider>
-              <ReduxProvider store={store}>
-                <FeedbacksContextProvider>
-                  <DropdownsContextProvider>
-                    <WalletsProvider>
-                      <SearchBarContextProvider>
-                        <TransactionModalsProvider>
-                          <TNSContextProvider>
-                            <TNSMetaDataListContextProvider>
-                              <MenuProvider>
-                                <SidebarContextProvider>
-                                  <StatusBar style="inverted" />
-                                  <Navigator />
-                                </SidebarContextProvider>
-                              </MenuProvider>
-                            </TNSMetaDataListContextProvider>
-                          </TNSContextProvider>
-                        </TransactionModalsProvider>
-                      </SearchBarContextProvider>
-                    </WalletsProvider>
-                  </DropdownsContextProvider>
-                </FeedbacksContextProvider>
-              </ReduxProvider>
-            </SafeAreaProvider>
-          </NavigationContainer>
-        </MetaMaskProvider>
-      </FormProvider>
-    </QueryClientProvider>
+      <QueryClientProvider client={queryClient}>
+        <FormProvider<DefaultForm> {...methods}>
+          <MetaMaskProvider>
+            <NavigationContainer linking={linking}>
+              <SafeAreaProvider>
+                <ReduxProvider store={store}>
+                  <FeedbacksContextProvider>
+                    <DropdownsContextProvider>
+                      <WalletsProvider>
+                        <SearchBarContextProvider>
+                          <TransactionModalsProvider>
+                            <TNSContextProvider>
+                              <TNSMetaDataListContextProvider>
+                                <MenuProvider>
+                                  <SidebarContextProvider>
+                                    <StatusBar style="inverted" />
+                                    <Navigator />
+                                  </SidebarContextProvider>
+                                </MenuProvider>
+                              </TNSMetaDataListContextProvider>
+                            </TNSContextProvider>
+                          </TransactionModalsProvider>
+                        </SearchBarContextProvider>
+                      </WalletsProvider>
+                    </DropdownsContextProvider>
+                  </FeedbacksContextProvider>
+                </ReduxProvider>
+              </SafeAreaProvider>
+            </NavigationContainer>
+          </MetaMaskProvider>
+        </FormProvider>
+      </QueryClientProvider>
     </View>
   );
 }

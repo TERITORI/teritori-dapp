@@ -10507,6 +10507,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"astilectron@npm:^0.33.0":
+  version: 0.33.0
+  resolution: "astilectron@npm:0.33.0"
+  peerDependencies:
+    electron: ">=1.8.1"
+  bin:
+    astilectron: main.js
+  checksum: 4d108cd358bd19648fba34a7b6022dcdc71d8b4f61a6775b13847c286d69d2e926c76772fabd9c814d2414d8504a6aacbe03557b4d639c20670b3235963f53ee
+  languageName: node
+  linkType: hard
+
 "astral-regex@npm:^1.0.0":
   version: 1.0.0
   resolution: "astral-regex@npm:1.0.0"
@@ -28724,6 +28735,7 @@ __metadata:
     "@typescript-eslint/parser": ^5.30.5
     "@wagmi/core": ^0.8.5
     airtable: ^0.11.4
+    astilectron: ^0.33.0
     babel-loader: ^8.2.5
     babel-plugin-inline-dotenv: ^1.7.0
     babel-plugin-react-inline-svg-unique-id: ^1.3.1

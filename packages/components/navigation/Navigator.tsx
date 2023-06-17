@@ -4,7 +4,6 @@ import React from "react";
 import { Platform } from "react-native";
 
 import { Sidebar } from "./Sidebar";
-import { ChatScreen } from "../../screens/Chat/ChatScreen";
 import { ComingSoonScreen } from "../../screens/ComingSoon/ComingSoon";
 import { CoreDAOScreen } from "../../screens/CoreDAO/CoreDAOScreen";
 import { DAppStoreScreen } from "../../screens/DAppStore/DAppStoreScreen";
