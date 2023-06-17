@@ -65,11 +65,11 @@ export const Conversation = ({
       const groupInfo = GroupInfo_Reply.fromJSON(group);
 
       console.log("group info accpet", groupInfo);
-      await weshClient.MultiMemberGroupJoin({
+      await weshClient().MultiMemberGroupJoin({
         group: groupInfo.group,
       });
 
-      await weshClient.ActivateGroup({
+      await weshClient().ActivateGroup({
         groupPk: groupInfo.group?.publicKey,
       });
     } catch (err) {

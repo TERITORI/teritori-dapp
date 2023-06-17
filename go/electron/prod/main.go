@@ -1,17 +1,18 @@
 package main
 
 import (
-	"log"	 
 	"context"
 	"flag"
 	"fmt"
+	"log"
 	mrand "math/rand"
 	"net/http"
 	"os"
 	"sync"
-	"encoding/json"
 	"time"
-	 
+
+	"github.com/phayes/freeport"
+
 	"berty.tech/weshnet"
 	"berty.tech/weshnet/pkg/ipfsutil"
 	ipfs_mobile "berty.tech/weshnet/pkg/ipfsutil/mobile"
@@ -24,21 +25,16 @@ import (
 	"google.golang.org/grpc"
 	"moul.io/srand"
 
-	"github.com/improbable-eng/grpc-web/go/grpcweb"
-	"github.com/pkg/errors"
 	"github.com/asticode/go-astikit"
 	"github.com/asticode/go-astilectron"
 	bootstrap "github.com/asticode/go-astilectron-bootstrap"
-
-	 
+	"github.com/improbable-eng/grpc-web/go/grpcweb"
+	"github.com/pkg/errors"
 )
-
 
 // Constants
 const htmlAbout = `Welcome on <b>Astilectron</b> demo!<br>
 This is using the bootstrap and the bundler.`
-
-
 
 // Vars injected via ldflags by bundler
 var (
@@ -54,26 +50,29 @@ var (
 	fs    = flag.NewFlagSet(os.Args[0], flag.ContinueOnError)
 	debug = fs.Bool("d", false, "enables the debug mode")
 	w     *astilectron.Window
+	port  = 0
 )
 
+func checkFreePort() {
+	firstPort, err := freeport.GetFreePort()
+	if err == nil {
+		port = firstPort
+	}
 
+}
 
 func wesh() {
-	 
+
 	fs := flag.NewFlagSet("weshd", flag.ContinueOnError)
-	var (
-		port = fs.Int("port", 4242, "port")
-	)
 	if err := ff.Parse(fs, os.Args[1:]); err != nil {
 		panic(errors.Wrap(err, "failed to parse flags"))
 	}
 
 	logger, err := zap.NewDevelopment()
+
 	if err != nil {
 		panic(errors.Wrap(err, "failed to create logger"))
 	}
-
-	logger.Info("weshd", zap.Int("port", *port))
 
 	grpcServer := grpc.NewServer()
 
@@ -144,7 +143,7 @@ func wesh() {
 	}
 
 	httpServer := http.Server{
-		Addr:    fmt.Sprintf(":%d", *port),
+		Addr:    fmt.Sprintf(":%d", port),
 		Handler: http.HandlerFunc(handler),
 	}
 
@@ -152,7 +151,6 @@ func wesh() {
 		panic(errors.Wrap(err, "failed to start http server"))
 	}
 }
-
 
 func electron() {
 
@@ -181,23 +179,53 @@ func electron() {
 			Label: astikit.StrPtr("File"),
 			SubMenu: []*astilectron.MenuItemOptions{
 				{
-					Label: astikit.StrPtr("About"),
-					OnClick: func(e astilectron.Event) (deleteListener bool) {
-						if err := bootstrap.SendMessage(w, "about", htmlAbout, func(m *bootstrap.MessageIn) {
-							// Unmarshal payload
-							var s string
-							if err := json.Unmarshal(m.Payload, &s); err != nil {
-								l.Println(fmt.Errorf("unmarshaling payload failed: %w", err))
-								return
-							}
-							l.Printf("About modal has been displayed and payload is %s!\n", s)
-						}); err != nil {
-							l.Println(fmt.Errorf("sending about event failed: %w", err))
-						}
-						return
-					},
+					Accelerator: astilectron.NewAccelerator("Alt", "CommandOrControl", "I"),
+					Role:        astilectron.MenuItemRoleToggleDevTools,
 				},
-				{Role: astilectron.MenuItemRoleClose},
+
+				{Type: astilectron.MenuItemTypeSeparator},
+				{
+					Label: astikit.StrPtr(fmt.Sprintf("Quit %s", AppName)),
+					Role:  astilectron.MenuItemRoleQuit,
+				},
+			},
+		},
+		{
+			Label: astikit.StrPtr("Edit"),
+			SubMenu: []*astilectron.MenuItemOptions{
+				{
+					Label:       astikit.StrPtr("Undo"),
+					Accelerator: astilectron.NewAccelerator("CmdOrCtrl", "Z"),
+					Role:        astikit.StrPtr("undo:"),
+				},
+				{
+					Label:       astikit.StrPtr("Redo"),
+					Accelerator: astilectron.NewAccelerator("Shift", "CmdOrCtrl", "Z"),
+					Role:        astikit.StrPtr("redo"),
+				},
+				{
+					Type: astikit.StrPtr("separator"),
+				},
+				{
+					Label:       astikit.StrPtr("Cut"),
+					Accelerator: astilectron.NewAccelerator("CmdOrCtrl", "X"),
+					Role:        astikit.StrPtr("cut"),
+				},
+				{
+					Label:       astikit.StrPtr("Copy"),
+					Accelerator: astilectron.NewAccelerator("CmdOrCtrl", "C"),
+					Role:        astikit.StrPtr("copy"),
+				},
+				{
+					Label:       astikit.StrPtr("Paste"),
+					Accelerator: astilectron.NewAccelerator("CmdOrCtrl", "V"),
+					Role:        astikit.StrPtr("paste"),
+				},
+				{
+					Label:       astikit.StrPtr("Select All"),
+					Accelerator: astilectron.NewAccelerator("CmdOrCtrl", "A"),
+					Role:        astikit.StrPtr("selectAll"),
+				},
 			},
 		}},
 		OnWait: func(_ *astilectron.Astilectron, ws []*astilectron.Window, _ *astilectron.Menu, _ *astilectron.Tray, _ *astilectron.Menu) error {
@@ -207,6 +235,7 @@ func electron() {
 				if err := bootstrap.SendMessage(w, "check.out.menu", "Don't forget to check out the menu!"); err != nil {
 					l.Println(fmt.Errorf("sending check.out.menu event failed: %w", err))
 				}
+				bootstrap.SendMessage(w,"weshnet.port", port)
 			}()
 			return nil
 		},
@@ -226,13 +255,15 @@ func electron() {
 	}
 }
 
-
 func main() {
+	checkFreePort()
 	var wg sync.WaitGroup
 	wg.Add(2)
-	go electron();
-	go wesh();
+	go electron()
+	go wesh()
 
-	wg.Wait();
 	
+
+	wg.Wait()
+
 }

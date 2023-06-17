@@ -1,7 +1,16 @@
 import { createWeshClient } from "../index";
-const params = new URL(window.location.href);
-console.log(window.location.href);
-const weshPort = params.searchParams.get("weshPort") || 4242;
-console.log("weshPort", weshPort);
+import { ProtocolServiceClientImpl } from "../protocoltypes";
 
-export const weshClient = createWeshClient(`http://localhost:${weshPort}`);
+const params = new URL(window.location.href);
+const weshPort = Number(params.searchParams.get("weshPort"));
+
+let client: ProtocolServiceClientImpl;
+let lastPort = 0;
+
+export const weshClient = (port = weshPort || 0) => {
+  if (port && !lastPort) {
+    lastPort = port;
+    client = createWeshClient(`http://localhost:${port}`);
+  }
+  return client;
+};

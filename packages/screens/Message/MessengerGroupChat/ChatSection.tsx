@@ -71,13 +71,13 @@ export const ChatSection = ({ conversation }) => {
         conversation?.payload?.groupPk?.length ||
         conversation?.payload?.group?.publicKey
       ) {
-        _group = await weshClient.GroupInfo({
+        _group = await weshClient().GroupInfo({
           groupPk:
             conversation?.payload?.groupPk ||
             conversation?.payload?.group?.publicKey,
         });
       } else {
-        _group = await weshClient.GroupInfo({
+        _group = await weshClient().GroupInfo({
           contactPk:
             conversation?.payload?.contact?.pk ||
             conversation?.payload?.contactPk,
@@ -116,7 +116,7 @@ export const ChatSection = ({ conversation }) => {
         timestamp: new Date().toISOString(),
       });
 
-      await weshClient.AppMessageSend({
+      await weshClient().AppMessageSend({
         groupPk: groupInfo?.group?.publicKey,
         payload,
       });

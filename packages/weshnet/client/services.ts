@@ -13,6 +13,7 @@ import {
   stringFromBytes,
   unicodeDecodeB64,
 } from "./utils";
+import { store } from "../../store/store";
 import {
   GroupInfo_Reply,
   ServiceGetConfiguration_Reply,
@@ -26,10 +27,10 @@ export const createConfig = async () => {
   }
 
   try {
-    const config = await weshClient.ServiceGetConfiguration({});
+    const config = await weshClient().ServiceGetConfiguration({});
     weshConfig.config = config;
 
-    await weshClient.ContactRequestEnable({});
+    await weshClient().ContactRequestEnable({});
     console.log("get config", config);
 
     subscribeMetadata(weshConfig.config.accountGroupPk);
@@ -41,10 +42,10 @@ export const createConfig = async () => {
 
 export const createSharableLink = async (tokenId: string = "Anon") => {
   try {
-    const contactRef = await weshClient.ContactRequestReference({});
-    await weshClient.ContactRequestEnable({});
+    const contactRef = await weshClient().ContactRequestReference({});
+    await weshClient().ContactRequestEnable({});
     if (contactRef.publicRendezvousSeed.length === 0) {
-      const resetRef = await weshClient.ContactRequestResetReference({});
+      const resetRef = await weshClient().ContactRequestResetReference({});
       contactRef.publicRendezvousSeed = resetRef.publicRendezvousSeed;
     }
 
@@ -70,7 +71,7 @@ export const addContact = async (shareLink: string, tokenId: string) => {
     decodeURIComponent(url.searchParams.get("accountPk") || "")
   );
   try {
-    await weshClient.ContactRequestSend({
+    await weshClient().ContactRequestSend({
       contact: {
         pk: contactPk,
         publicRendezvousSeed: bytesFromString(
@@ -94,7 +95,7 @@ export const addContact = async (shareLink: string, tokenId: string) => {
 
 export const acceptFriendRequest = async (contactPk: Uint8Array) => {
   console.log(contactPk);
-  await weshClient.ContactRequestAccept({
+  await weshClient().ContactRequestAccept({
     contactPk,
   });
 
@@ -103,13 +104,13 @@ export const acceptFriendRequest = async (contactPk: Uint8Array) => {
 
 export const activateGroup = async (contactPk: Uint8Array) => {
   try {
-    const contactGroup = await weshClient.GroupInfo({
+    const contactGroup = await weshClient().GroupInfo({
       contactPk,
     });
 
     console.log("contact group", contactGroup);
 
-    await weshClient.ActivateGroup({
+    await weshClient().ActivateGroup({
       groupPk: contactGroup.group?.publicKey,
     });
   } catch (err) {
@@ -119,7 +120,7 @@ export const activateGroup = async (contactPk: Uint8Array) => {
 
 const sendMessage = async (groupPk: Uint8Array, message: string) => {
   try {
-    await weshClient.AppMessageSend({
+    await weshClient().AppMessageSend({
       groupPk,
       payload: bytesFromString(message),
     });
