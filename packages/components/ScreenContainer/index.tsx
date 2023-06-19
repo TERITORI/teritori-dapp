@@ -103,6 +103,7 @@ export const ScreenContainer: React.FC<{
   if (isMobile)
     return (
       <ScreenContainerMobile
+        onBackPress={onBackPress}
         children={children}
         networkFilter={networkFilter}
         hasScroll={hasScroll}
