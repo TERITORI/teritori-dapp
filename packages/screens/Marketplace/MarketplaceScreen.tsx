@@ -396,19 +396,19 @@ const useRowData = (collection: Collection, rank: number): RowData => {
     totalVolume: {
       networkId: collection.networkId,
       value: collection.totalVolume,
-      denom: collection.denom !== "" ? collection.denom : "utori",
+      denom: collection.denom,
     },
     TimePeriodVolume: {
       networkId: collection.networkId,
       value: parseFloat(collection.volume),
-      denom: collection.denom !== "" ? collection.denom : "utori",
+      denom: collection.denom,
     },
     TimePeriodPercentualVolume: getDelta(collection),
     sales: nFormatter(collection.numTrades, 0),
     floorPrice: {
       networkId: collection.networkId,
       value: collection.floorPrice,
-      denom: collection.denom !== "" ? collection.denom : "utori",
+      denom: collection.denom,
     },
     owners: nFormatter(
       collection.numOwners,
