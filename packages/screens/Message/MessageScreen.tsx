@@ -33,9 +33,10 @@ import { weshClient, weshServices } from "../../weshnet/client";
 export const MessageScreen: ScreenFC<"Message"> = () => {
   const [isCreateGroup, setIsCreateGroup] = useState(false);
   const [isCreateConversation, setIsCreateConversation] = useState(false);
-  const [isAddFriend, setIsAddFriend] = useState(false);
   const selectedWallet = useSelectedWallet();
   const [activeConversation, setActiveConversation] = useState(false);
+
+  const [activeTab, setActiveTab] = useState<"chat" | "add-friend">("chat");
   const userInfo = useNSUserInfo(selectedWallet?.userId);
   console.log("userInfo", userInfo);
 
@@ -73,7 +74,7 @@ export const MessageScreen: ScreenFC<"Message"> = () => {
       onPress() {
         ["android", "ios"].includes(Platform.OS)
           ? navigation.navigate("FriendshipManager")
-          : setIsAddFriend(true);
+          : setActiveTab("add-friend");
       },
     },
     {
@@ -81,9 +82,7 @@ export const MessageScreen: ScreenFC<"Message"> = () => {
       title: "Create a Teritori space",
       icon: space,
       subtitle: "coming soon",
-      onPress() {
-        setShowTertiaryBox(false);
-      },
+      onPress() {},
     },
   ];
 
@@ -119,7 +118,10 @@ export const MessageScreen: ScreenFC<"Message"> = () => {
 
         {["android", "ios"].includes(Platform.OS) ? (
           <SideBarChats
-            setActiveConversation={setActiveConversation}
+            setActiveConversation={(conv) => {
+              setActiveConversation(conv);
+              setActiveTab("chat");
+            }}
             activeConversation={activeConversation}
           />
         ) : (
@@ -129,14 +131,17 @@ export const MessageScreen: ScreenFC<"Message"> = () => {
             }}
           >
             <SideBarChats
-              setActiveConversation={setActiveConversation}
+              setActiveConversation={(conv) => {
+                setActiveConversation(conv);
+                setActiveTab("chat");
+              }}
               activeConversation={activeConversation}
             />
             <SpacerRow size={2} />
             <Separator horizontal />
 
             <View style={{ flex: 1 }}>
-              {isAddFriend ? (
+              {activeTab === "add-friend" ? (
                 <FriendshipManager />
               ) : (
                 <>

@@ -28,6 +28,7 @@ import {
 import { Message } from "../../../utils/types/message";
 import { GroupInfo_Reply } from "../../../weshnet";
 import { weshClient, weshConfig } from "../../../weshnet/client";
+import { sendMessage } from "../../../weshnet/client/services";
 import { stringFromBytes } from "../../../weshnet/client/utils";
 
 interface ConversationProps {
@@ -36,26 +37,42 @@ interface ConversationProps {
 
 export const Conversation = ({ message }: ConversationProps) => {
   const { setToastError, setToastSuccess } = useFeedbacks();
-  const senderName = "me";
 
   const [showPopup, setShowPopup] = useState(false);
   const [isForwarding, setIsForwarding] = useState(false);
   const [showFarward, setShowFarward] = useState(false);
   const isSender =
-    message.senderId === stringFromBytes(weshConfig.config.devicePk);
+    message.senderId === stringFromBytes(weshConfig.config.accountPk);
 
   const handleAcceptGroup = async () => {
     try {
       const group = message.payload?.metadata?.group;
-      const groupInfo = GroupInfo_Reply.fromJSON(group);
+      const groupInfo = GroupInfo_Reply.fromJSON({ group });
 
-      console.log("group info accpet", groupInfo);
       await weshClient().MultiMemberGroupJoin({
         group: groupInfo.group,
       });
 
       await weshClient().ActivateGroup({
         groupPk: groupInfo.group?.publicKey,
+      });
+
+      await sendMessage({
+        groupPk: groupInfo.group?.publicKey,
+        message: {
+          type: "group-join",
+          payload: {
+            message: "",
+            files: [],
+            metadata: {
+              contact: {
+                id: stringFromBytes(weshConfig.config.accountPk),
+                rdvSeed: stringFromBytes(weshConfig.metadata.rdvSeed),
+                tokenId: weshConfig.metadata.tokenId,
+              },
+            },
+          },
+        },
       });
     } catch (err) {
       setToastError({
@@ -81,7 +98,9 @@ export const Conversation = ({ message }: ConversationProps) => {
   };
 
   const receiverName = "Anon";
-  const time = "now";
+  const time = "";
+
+  console.log("message", message);
 
   return (
     <>
@@ -91,20 +110,20 @@ export const Conversation = ({ message }: ConversationProps) => {
           style={[isSender ? styles.senderContainer : styles.receiverContainer]}
         >
           <TouchableOpacity onPress={() => setShowPopup(!showPopup)}>
-            {true ? (
+            {message.type === "message" ? (
               <BrandText style={[fontSemibold11, { color: secondaryColor }]}>
                 {message.payload.message}
               </BrandText>
             ) : (
               <>
-                {message?.payload.type === "group-invitation" && !isSender && (
+                {message?.type === "group-invite" && !isSender && (
                   <BrandText
                     style={[fontSemibold11, { color: secondaryColor }]}
                   >
-                    Anon has invited you to a group ${message.message.name}
+                    Anon has invited you to a group ${message.payload.message}
                   </BrandText>
                 )}
-                {/* {message?.payload.type === "group-invitation" && isSender && (
+                {/* {message?.type === "group-invitation" && isSender && (
                   <BrandText
                     style={[fontSemibold11, { color: secondaryColor }]}
                   >
@@ -114,7 +133,7 @@ export const Conversation = ({ message }: ConversationProps) => {
               </>
             )}
           </TouchableOpacity>
-          {message?.payload.type === "group-invitation" && !isSender && (
+          {message?.type === "group-invite" && !isSender && (
             <>
               <SpacerColumn size={1} />
               <FlexRow>
@@ -183,7 +202,7 @@ export const Conversation = ({ message }: ConversationProps) => {
             )}
             {!!isSender && (
               <BrandText style={[fontBold10, { color: secondaryColor }]}>
-                {senderName}
+                me
               </BrandText>
             )}
             <SpacerRow size={0.5} />

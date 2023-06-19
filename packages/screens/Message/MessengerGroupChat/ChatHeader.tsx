@@ -38,7 +38,7 @@ import {
   fontMedium10,
   fontMedium14,
 } from "../../../utils/style/fonts";
-export const ChatHeader = ({ messages }: any) => {
+export const ChatHeader = ({ messages, name }: any) => {
   const [showTextInput, setShowTextInput] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
   const [audioCall, setAudioCall] = useState(false);
@@ -78,7 +78,7 @@ export const ChatHeader = ({ messages }: any) => {
   return (
     <>
       <View style={styles.container}>
-        <View style={{ flexDirection: "row" }}>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
           <Image
             source={require("../../../../assets/icons/groupicon.png")}
             style={{ width: 32, height: 32 }}
@@ -87,31 +87,8 @@ export const ChatHeader = ({ messages }: any) => {
           <SpacerRow size={1} />
           <View>
             <BrandText style={[fontSemibold13, { color: secondaryColor }]}>
-              Anon
+              {name}
             </BrandText>
-            <FlexRow>
-              <View>
-                <FlexRow>
-                  <View style={styles.badge} />
-                  <SpacerRow size={1} />
-                  <BrandText style={[fontSemibold11, { color: neutralA3 }]}>
-                    2 Online
-                  </BrandText>
-                </FlexRow>
-              </View>
-
-              <SpacerRow size={1} />
-
-              <View>
-                <FlexRow>
-                  <View style={styles.offlinebadge} />
-                  <SpacerRow size={1} />
-                  <BrandText style={[fontSemibold11, { color: neutralA3 }]}>
-                    3 Offline
-                  </BrandText>
-                </FlexRow>
-              </View>
-            </FlexRow>
           </View>
         </View>
 

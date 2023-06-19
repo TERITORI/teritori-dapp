@@ -6,27 +6,32 @@ import { Avatar, Badge } from "react-native-paper";
 import chaticon from "../../../assets/icons/chaticon.svg";
 import dots from "../../../assets/icons/dots.svg";
 import { Separator } from "../../components/Separator";
+import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { neutral22, neutralA3, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold13, fontSemibold11 } from "../../utils/style/fonts";
+import { Conversation } from "../../utils/types/message";
 import { BrandText } from "../BrandText";
 import FlexRow from "../FlexRow";
 import { SVG } from "../SVG";
 import { SpacerColumn, SpacerRow } from "../spacer";
 
-type Props = {
-  name: string;
-  isOnline: boolean;
-  avatar: any;
+type FriendListProps = {
+  item: Conversation;
 };
 
-const FriendList: React.FC<Props> = ({ avatar, name, isOnline }) => {
+const isOnline = true;
+const FriendList = ({ item }: FriendListProps) => {
+  const { metadata } = useNSUserInfo(
+    item.members?.[0]?.tokenId || "sakul.tori"
+  );
+
   const onlineStatusBadgeColor = isOnline ? "green" : "yellow";
   return (
     <View>
       <FlexRow justifyContent="space-between">
         <View>
           <FlexRow>
-            <Avatar.Image size={40} source={avatar} />
+            <Avatar.Image size={40} source={metadata.image || ""} />
             <Badge
               style={{
                 position: "absolute",
@@ -40,7 +45,7 @@ const FriendList: React.FC<Props> = ({ avatar, name, isOnline }) => {
             <SpacerRow size={1.5} />
             <View>
               <BrandText style={[fontSemibold13, { color: secondaryColor }]}>
-                {name}
+                {metadata.public_name || "Anon"}
               </BrandText>
               <SpacerColumn size={0.4} />
               <BrandText style={[fontSemibold11, { color: neutralA3 }]}>
@@ -67,49 +72,5 @@ const FriendList: React.FC<Props> = ({ avatar, name, isOnline }) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  row: {
-    flexDirection: "row",
-    marginTop: 10,
-    justifyContent: "space-between",
-  },
-  chatboxicon: { flexDirection: "row" },
-  icon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-  },
-  online: {
-    fontSize: 11,
-    fontWeight: "500",
-    color: "#A3A3A3",
-    lineHeight: 18,
-  },
-  badge: {
-    backgroundColor: "green",
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    position: "absolute",
-    bottom: -5,
-    right: -5,
-  },
-  name: {
-    fontSize: 13,
-    fontWeight: "600",
-    color: "#FFFFFF",
-    lineHeight: 18,
-  },
-  chatIcon: {
-    width: 24,
-    height: 24,
-    marginRight: 8,
-  },
-  dotsIcon: {
-    width: 24,
-    height: 24,
-  },
-});
 
 export default FriendList;

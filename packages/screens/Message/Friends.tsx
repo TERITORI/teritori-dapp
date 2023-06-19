@@ -8,8 +8,12 @@ import FriendList from "../../components/friends/FriendsList";
 import { TextInputCustomBorder } from "../../components/inputs/TextInputCustomBorder";
 import { SpacerColumn } from "../../components/spacer";
 import { neutral00, neutral33 } from "../../utils/style/colors";
+import { Conversation, ConversationList } from "../../utils/types/message";
 
-export const Friends = ({ items }) => {
+interface FriendsProps {
+  items: Conversation[];
+}
+export const Friends = ({ items }: FriendsProps) => {
   const [searchQuery, setSearchQuery] = useState("");
 
   const filteredItems = items.filter((item) =>
@@ -18,9 +22,6 @@ export const Friends = ({ items }) => {
 
   return (
     <View>
-      {/* FIXME: remaining in web */}
-      {/* <Separator horizontal={false} /> */}
-      {/* <SpacerColumn size={1} /> */}
       <TextInputCustomBorder
         placeHolder="Search..."
         style={{ backgroundColor: neutral00 }}
@@ -28,20 +29,10 @@ export const Friends = ({ items }) => {
         onChangeText={setSearchQuery}
       />
       <SpacerColumn size={2} />
-      {/* <Separator horizontal={false} color={neutral33} /> */}
+
       <SpacerColumn size={1} />
       {filteredItems?.length > 0 ? (
-        filteredItems?.map((item) => (
-          <View key={item.id}>
-            <ScrollView>
-              <FriendList
-                avatar={item.avatar}
-                name={item.name}
-                isOnline={item.isOnline}
-              />
-            </ScrollView>
-          </View>
-        ))
+        filteredItems?.map((item) => <FriendList key={item.id} item={item} />)
       ) : (
         <>
           <SpacerColumn size={15} />
