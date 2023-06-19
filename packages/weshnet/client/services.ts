@@ -1,43 +1,29 @@
 import { weshClient } from "./client";
 import { weshConfig } from "./config";
-import {
-  subscribeContactRequests,
-  subscribeMessages,
-  subscribeMetadata,
-} from "./subscribers";
-import {
-  bytesFromString,
-  decode,
-  encode,
-  encodeJSON,
-  stringFromBytes,
-  unicodeDecodeB64,
-} from "./utils";
-import { store } from "../../store/store";
-import {
-  GroupInfo_Reply,
-  ServiceGetConfiguration_Reply,
-  ServiceGetConfiguration_Request,
-  createWeshClient,
-} from "../../weshnet";
+import { subscribeMetadata } from "./subscribers";
+import { bytesFromString, encodeJSON, stringFromBytes } from "./utils";
+import { GroupInfo_Request } from "../protocoltypes";
+
+let isConfigLoading = false;
 
 export const createConfig = async () => {
-  if (weshConfig.config) {
+  if (weshConfig.config || isConfigLoading) {
     return;
   }
+  isConfigLoading = true;
 
   try {
     const config = await weshClient().ServiceGetConfiguration({});
     weshConfig.config = config;
 
     await weshClient().ContactRequestEnable({});
-    console.log("get config", config);
 
     subscribeMetadata(weshConfig.config.accountGroupPk);
-    // subscribeMessages(weshConfig.config.accountGroupPk);
   } catch (err) {
     console.log("create config err", err);
   }
+
+  isConfigLoading = false;
 };
 
 export const createSharableLink = async (tokenId: string = "Anon") => {
@@ -102,11 +88,9 @@ export const acceptFriendRequest = async (contactPk: Uint8Array) => {
   await activateGroup(contactPk);
 };
 
-export const activateGroup = async (contactPk: Uint8Array) => {
+export const activateGroup = async (params: Partial<GroupInfo_Request>) => {
   try {
-    const contactGroup = await weshClient().GroupInfo({
-      contactPk,
-    });
+    const contactGroup = await weshClient().GroupInfo(params);
 
     console.log("contact group", contactGroup);
 

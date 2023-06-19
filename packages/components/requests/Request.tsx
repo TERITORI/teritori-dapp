@@ -20,6 +20,7 @@ import {
   fontSemibold13,
   fontSemibold14,
 } from "../../utils/style/fonts";
+import { ContactRequest } from "../../utils/types/message";
 import { GroupMetadataEvent } from "../../weshnet";
 import { weshClient } from "../../weshnet/client";
 import {
@@ -42,16 +43,14 @@ type Props = {
   name: string;
   isOnline: boolean;
   avatar: any;
-  data: GroupMetadataEvent;
+  data: ContactRequest;
 };
 
 const RequestList = ({ isOnline, data }: Props) => {
   const { setToastSuccess, setToastError } = useFeedbacks();
   const [addLoading, setAddLoading] = useState(false);
   const [rejectLoading, setRejectLoading] = useState(false);
-  const { metadata } = useNSUserInfo(
-    data?.payload?.contactMetadata?.tokenId || "sakul.tori"
-  );
+  const { metadata } = useNSUserInfo(data.tokenId || "sakul.tori");
 
   const onlineStatusBadgeColor = isOnline ? "green" : "yellow";
 
@@ -59,7 +58,9 @@ const RequestList = ({ isOnline, data }: Props) => {
     console.log(metadata);
     setAddLoading(true);
     try {
-      await acceptFriendRequest(data?.payload?.contactPk);
+      const contactPk = bytesFromString(data?.contactId);
+      await acceptFriendRequest(contactPk);
+      await activateGroup({ contactPk });
     } catch (err) {
       console.log("add friend err", err);
       setToastError({
@@ -74,7 +75,7 @@ const RequestList = ({ isOnline, data }: Props) => {
     setRejectLoading(true);
     try {
       await weshClient().ContactRequestDiscard({
-        contactPk: bytesFromString(data?.payload?.contactPk),
+        contactPk: bytesFromString(data?.contactId),
       });
     } catch (err) {
       setToastError({
@@ -104,7 +105,7 @@ const RequestList = ({ isOnline, data }: Props) => {
             <SpacerRow size={1.5} />
             <View>
               <BrandText style={[fontSemibold13, { color: secondaryColor }]}>
-                {metadata?.name || "Anon"}
+                {metadata?.public_name || "Anon"}
               </BrandText>
               <SpacerColumn size={0.4} />
               <BrandText style={[fontSemibold11, { color: neutralA3 }]}>

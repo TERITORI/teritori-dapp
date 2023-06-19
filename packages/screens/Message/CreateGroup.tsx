@@ -38,6 +38,7 @@ import {
   MultiMemberGroupCreate_Reply,
 } from "../../weshnet";
 import { weshClient } from "../../weshnet/client";
+import { activateGroup } from "../../weshnet/client/services";
 import { encodeJSON, stringFromBytes } from "../../weshnet/client/utils";
 
 interface CreateGroupProps {
@@ -58,11 +59,10 @@ export const CreateGroup = ({ onClose }: CreateGroupProps) => {
 
   const items = useMemo(() => {
     return conversations
-      .filter((conv) => !conv?.payload?.groupPk?.length)
+      .filter((conv) => conv.type === "contact")
       .map((item) => {
-        const contactPk = stringFromBytes(
-          item?.payload?.contact?.pk || item?.payload?.contactPk
-        );
+        const contactPk = item?.members?.[0].id;
+
         return {
           name: "Anon",
           contactPk,
@@ -79,40 +79,24 @@ export const CreateGroup = ({ onClose }: CreateGroupProps) => {
     try {
       const group = await weshClient().MultiMemberGroupCreate({});
 
-      console.log(group);
-
-      const groupInfo = await weshClient().GroupInfo({
+      await activateGroup({
         groupPk: group.groupPk,
       });
-
-      await weshClient().ActivateGroup({
-        groupPk: group.groupPk,
-      });
-
-      console.log("upto here");
 
       await Promise.all(
         conversations
-          .filter((item) => {
-            const contactPk = stringFromBytes(
-              item?.payload?.contact?.pk || item?.payload?.contactPk
-            );
-
-            return checkedContacts.includes(contactPk);
-          })
+          .filter((item) => checkedContacts.includes(item.members[0].id))
           .map(async (item) => {
-            const contactPk =
-              item?.payload?.contact?.pk || item?.payload?.contactPk;
+            const contactPk = item.members[0].id;
             const _group = await weshClient().GroupInfo({
               contactPk,
             });
 
-            console.log("tested", contactPk);
             await weshClient().AppMessageSend({
               groupPk: _group.group?.publicKey,
               payload: encodeJSON({
                 name: groupName,
-                group: GroupInfo_Reply.toJSON(groupInfo),
+                group: GroupInfo_Reply.toJSON(_group),
                 createdAt: new Date().toISOString(),
                 type: "group-invitation",
                 message: `Anon has invited you to join group ${groupName}`,
@@ -177,7 +161,11 @@ export const CreateGroup = ({ onClose }: CreateGroupProps) => {
       <Separator color={neutral33} />
       <SpacerColumn size={2} />
 
-      <PrimaryButton text="Create group" onPress={handleCreateGroup} />
+      <PrimaryButton
+        text="Create group"
+        onPress={handleCreateGroup}
+        fullWidth
+      />
 
       <SpacerColumn size={2} />
     </ModalBase>

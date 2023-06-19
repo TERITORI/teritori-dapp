@@ -1,73 +1,52 @@
 import {
   GroupMessageList_Request,
-  ProtocolServiceGroupMessageListDesc,
-  EventType,
   GroupMessageEvent,
   GroupMetadataEvent,
-  GroupMetadataList,
-  GroupMetadata,
-  AccountContactRequestReceived,
-  AccountContactRequestEnabled,
-  DeviceChainKey,
-  GroupAddDeviceChainKey,
-  AccountContactRequestSent,
-  AccountContactRequestEnqueued,
-  GroupMessageList,
-  MessageEnvelope,
-  AppMessageSend,
-  AppMessageSend_Request,
-  EncryptedMessage,
-  MessageHeaders,
-  GroupEnvelope,
-  AppMessageSend_Reply,
-  AccountContactRequestAccepted,
 } from "./../protocoltypes";
 import { weshClient } from "./client";
 import { handleMetadata } from "./processData";
-import { activateGroup } from "./services";
-import {
-  bytesFromString,
-  decode,
-  decodeJSON,
-  decodeUTF8,
-  stringFromBytes,
-} from "./utils";
-import {
-  setContactRequestList,
-  setConversationList,
-  setMessageList,
-  setMetadataList,
-} from "../../store/slices/message";
-import { setNotification } from "../../store/slices/notification";
+import { decodeJSON, stringFromBytes } from "./utils";
+import { setMessageList } from "../../store/slices/message";
 import { store } from "../../store/store";
+import { Message } from "../../utils/types/message";
 
-const contactRequests = [];
-const contactRequestsSent = [];
-const conversations = [];
+let lastId: Uint8Array;
 
 export const subscribeMessages = async (config: GroupMessageList_Request) => {
-  console.log("subscribed", config);
-  let lastId;
-  let firstId;
+  console.log("subscribe message");
   try {
     const messages = await weshClient().GroupMessageList(config);
-    const myObserver = {};
-    return messages.subscribe({
+    const observer = {
       next: (data: GroupMessageEvent) => {
-        console.log("new message");
+        console.log("message until now received");
+        lastId = data.eventContext?.id;
         data.message = decodeJSON(data.message);
 
+        const message: Message = {
+          senderId: stringFromBytes(data.headers?.devicePk),
+          id: stringFromBytes(data.eventContext?.id),
+          groupId: data.eventContext?.groupPk
+            ? stringFromBytes(data.eventContext?.groupPk)
+            : "",
+          payload: data.message,
+        };
+
         store.dispatch(
-          setMessageList({ groupPk: stringFromBytes(config.groupPk), data })
+          setMessageList({
+            groupPk: stringFromBytes(config.groupPk),
+            data: message,
+          })
         );
       },
       error: (e) => {
         console.log("get message obser...", e);
       },
       complete: async () => {
-        console.log("get message complete", stringFromBytes(lastId, config));
+        console.log("get message complete");
+        subscribeMessages2({ groupPk: config.groupPk, sinceId: lastId });
       },
-    });
+    };
+    return messages.subscribe(observer);
   } catch (err) {
     console.log("get messages err", err);
   }
@@ -95,5 +74,28 @@ export const subscribeMetadata = async (groupPk: Uint8Array) => {
     metadata.subscribe(myObserver);
   } catch (err) {
     console.log("get metadatas err", err);
+  }
+};
+
+export const subscribeMessages2 = async (
+  config: Partial<GroupMessageList_Request>
+) => {
+  console.log("subscribe message 2 started");
+  try {
+    const messages = await weshClient().GroupMessageList(config);
+    const observer = {
+      next: (data: GroupMessageEvent) => {
+        console.log("message 2 incoming");
+      },
+      error: (e) => {
+        console.log("get message obser...", e);
+      },
+      complete: async () => {
+        console.log("get message complete");
+      },
+    };
+    return messages.subscribe(observer);
+  } catch (err) {
+    console.log("get messages err", err);
   }
 };
