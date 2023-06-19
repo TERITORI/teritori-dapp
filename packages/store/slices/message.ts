@@ -1,27 +1,31 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { GroupMessageEvent, GroupMetadataEvent } from "../../weshnet";
+import {
+  ContactRequest,
+  Conversation,
+  MessageList,
+  Message,
+} from "./../../utils/types/message";
 import { RootState } from "../store";
 
 interface Search {
-  contactRequestList: GroupMetadataEvent[];
-  metadataList: GroupMetadataEvent[];
-  messageList: any;
-  conversationList: GroupMetadataEvent[];
+  contactRequestList: ContactRequest[];
+  messageList: MessageList;
+  conversationList: Conversation[];
+  lastIds: {
+    [key: string]: string;
+  };
 }
 
 const initialState: Search = {
-  metadataList: [],
   messageList: {},
   contactRequestList: [],
   conversationList: [],
+  lastIds: {},
 };
 
-export const selectMetadataList = (state: RootState) =>
-  state.message.metadataList;
-
-export const selectMessageList = (state: RootState) =>
-  state.message.messageList;
+export const selectMessageList = (groupPk: string) => (state: RootState) =>
+  state.message.messageList[groupPk] || [];
 
 export const selectMessageListByGroupPk =
   (groupPk: string) => (state: RootState) =>
@@ -36,18 +40,18 @@ const messageSlice = createSlice({
   name: "message",
   initialState,
   reducers: {
-    setMetadataList: (state, action: PayloadAction<GroupMetadataEvent>) => {
-      state.metadataList = [action.payload, ...state.metadataList];
-    },
-    setMessageList: (state, action: PayloadAction<GroupMessageEvent>) => {
+    setMessageList: (
+      state,
+      action: PayloadAction<{ groupPk: string; data: Message }>
+    ) => {
       state.messageList[action.payload.groupPk] = [
-        ...(state.messageList[action.payload.groupPk] || []),
         action.payload.data,
+        ...(state.messageList[action.payload.groupPk] || []),
       ];
     },
     setContactRequestList: (
       state,
-      action: PayloadAction<GroupMetadataEvent | GroupMetadataEvent[]>
+      action: PayloadAction<ContactRequest | ContactRequest[]>
     ) => {
       if (Array.isArray(action.payload)) {
         state.contactRequestList = action.payload;
@@ -60,7 +64,7 @@ const messageSlice = createSlice({
     },
     setConversationList: (
       state,
-      action: PayloadAction<GroupMetadataEvent | GroupMetadataEvent[]>
+      action: PayloadAction<Conversation | Conversation[]>
     ) => {
       if (Array.isArray(action.payload)) {
         state.conversationList = action.payload;
@@ -71,11 +75,7 @@ const messageSlice = createSlice({
   },
 });
 
-export const {
-  setMessageList,
-  setMetadataList,
-  setContactRequestList,
-  setConversationList,
-} = messageSlice.actions;
+export const { setMessageList, setContactRequestList, setConversationList } =
+  messageSlice.actions;
 
 export const messageReducer = messageSlice.reducer;

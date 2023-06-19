@@ -25,43 +25,28 @@ import {
   fontMedium10,
   fontSemibold11,
 } from "../../../utils/style/fonts";
+import { Message } from "../../../utils/types/message";
 import { GroupInfo_Reply } from "../../../weshnet";
-import { weshClient } from "../../../weshnet/client";
+import { weshClient, weshConfig } from "../../../weshnet/client";
+import { stringFromBytes } from "../../../weshnet/client/utils";
 
-interface IChatMessageProps {
-  message: string;
-  isSender: boolean;
-  time: string;
-  receiverName?: string;
-  source?: any;
-  height: number;
-  width: number;
-  imageStyle?: any;
-  data: any;
+interface ConversationProps {
+  message: Message;
 }
 
-export const Conversation = ({
-  message,
-  isSender,
-  time,
-  receiverName,
-  source,
-  height,
-  width,
-  imageStyle,
-  data,
-}: IChatMessageProps) => {
+export const Conversation = ({ message }: ConversationProps) => {
   const { setToastError, setToastSuccess } = useFeedbacks();
   const senderName = "me";
 
   const [showPopup, setShowPopup] = useState(false);
   const [isForwarding, setIsForwarding] = useState(false);
   const [showFarward, setShowFarward] = useState(false);
+  const isSender =
+    message.senderId === stringFromBytes(weshConfig.config.devicePk);
 
   const handleAcceptGroup = async () => {
     try {
-      const group = data.group;
-      console.log("group info", data);
+      const group = message.payload?.metadata?.group;
       const groupInfo = GroupInfo_Reply.fromJSON(group);
 
       console.log("group info accpet", groupInfo);
@@ -95,6 +80,9 @@ export const Conversation = ({
     }
   };
 
+  const receiverName = "Anon";
+  const time = "now";
+
   return (
     <>
       <View style={isSender ? styles.senderWrapper : styles.receiverWrapper}>
@@ -103,30 +91,30 @@ export const Conversation = ({
           style={[isSender ? styles.senderContainer : styles.receiverContainer]}
         >
           <TouchableOpacity onPress={() => setShowPopup(!showPopup)}>
-            {!data?.type ? (
+            {true ? (
               <BrandText style={[fontSemibold11, { color: secondaryColor }]}>
-                {data.message}
+                {message.payload.message}
               </BrandText>
             ) : (
               <>
-                {data?.type === "group-invitation" && !isSender && (
+                {message?.payload.type === "group-invitation" && !isSender && (
                   <BrandText
                     style={[fontSemibold11, { color: secondaryColor }]}
                   >
-                    Anon has invited you to a group ${data.message.name}
+                    Anon has invited you to a group ${message.message.name}
                   </BrandText>
                 )}
-                {data?.type === "group-invitation" && isSender && (
+                {/* {message?.payload.type === "group-invitation" && isSender && (
                   <BrandText
                     style={[fontSemibold11, { color: secondaryColor }]}
                   >
-                    You have invited Anon to a group ${data.message.name}
+                    You have invited Anon to a group ${message.message.name}
                   </BrandText>
-                )}
+                )} */}
               </>
             )}
           </TouchableOpacity>
-          {data?.type === "group-invitation" && !isSender && (
+          {message?.payload.type === "group-invitation" && !isSender && (
             <>
               <SpacerColumn size={1} />
               <FlexRow>
@@ -147,8 +135,11 @@ export const Conversation = ({
             </>
           )}
 
-          {!!source && (
-            <Image source={source} style={{ height, width, ...imageStyle }} />
+          {!!message.payload.files?.[0]?.type === "image" && (
+            <Image
+              source={{ uri: message.payload.files[0].url }}
+              style={{ height: 200, width: 120, borderRadius: 10 }}
+            />
           )}
           {!isSender && showPopup && !showFarward && (
             <View style={styles.popupContainerIconAndReply}>
@@ -228,6 +219,7 @@ const styles = StyleSheet.create({
     width: "auto",
     maxWidth: "40%",
     zIndex: 1,
+    marginTop: 15,
   },
   receiverContainer: {
     backgroundColor: purpleDark,
@@ -239,6 +231,7 @@ const styles = StyleSheet.create({
     maxWidth: "40%",
     zIndex: 1,
     marginRight: "auto",
+    marginTop: 15,
   },
   popupContainer: {
     backgroundColor: "rgba(41, 41, 41, 0.8)",

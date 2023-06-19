@@ -1,13 +1,5 @@
 import { weshClient } from "./client";
-import { weshConfig } from "./config";
-import { activateGroup } from "./services";
-import {
-  bytesFromString,
-  decode,
-  decodeJSON,
-  decodeUTF8,
-  stringFromBytes,
-} from "./utils";
+import { decodeJSON, stringFromBytes } from "./utils";
 import {
   selectContactRequestList,
   setContactRequestList,
@@ -15,34 +7,16 @@ import {
 } from "../../store/slices/message";
 import { setNotification } from "../../store/slices/notification";
 import { store } from "../../store/store";
+import { ContactRequest } from "../../utils/types/message";
 import {
-  GroupMessageList_Request,
-  ProtocolServiceGroupMessageListDesc,
   EventType,
-  GroupMessageEvent,
   GroupMetadataEvent,
-  GroupMetadataList,
-  GroupMetadata,
   AccountContactRequestReceived,
-  AccountContactRequestEnabled,
-  DeviceChainKey,
-  GroupAddDeviceChainKey,
-  AccountContactRequestSent,
   AccountContactRequestEnqueued,
-  GroupMessageList,
-  MessageEnvelope,
-  AppMessageSend,
-  AppMessageSend_Request,
-  EncryptedMessage,
-  MessageHeaders,
-  GroupEnvelope,
-  AppMessageSend_Reply,
   AccountContactRequestAccepted,
   AccountGroupJoined,
 } from "../protocoltypes";
 
-const contactRequests = [];
-const contactRequestsSent = [];
 const conversations = [];
 
 export const handleMetadata = async (data: GroupMetadataEvent) => {
@@ -54,63 +28,6 @@ export const handleMetadata = async (data: GroupMetadataEvent) => {
       console.log(data.metadata?.eventType);
     }
     switch (data.metadata?.eventType) {
-      case EventType.EventTypeGroupDeviceChainKeyAdded: {
-        // try {
-        //   await weshClient().GroupInfo({});
-        // } catch (err) {
-        //   console.log("group test err", err.message);
-        // }
-        // try {
-        //   const parsedData = GroupMetadataEvent.toJSON(data);
-        //   parsedData.payload = GroupAddDeviceChainKey.decode(
-        //     data.metadata.payload
-        //   );
-
-        //   const contactRequestIndex = contactRequests.findIndex(
-        //     (request) =>
-        //       stringFromBytes(request.payload.contactPk) ===
-        //       stringFromBytes(parsedData.payload.destMemberPk)
-        //   );
-        //   const contactRequestSentIndex = contactRequestsSent.findIndex(
-        //     (request) =>
-        //       stringFromBytes(request.payload.devicePk) ===
-        //       stringFromBytes(parsedData.payload.devicePk)
-        //   );
-
-        //   console.log(contactRequests?.[0], parsedData, data);
-
-        //   if (contactRequestIndex !== -1) {
-        //     conversations.push(contactRequests[contactRequestIndex]);
-        //     contactRequests.splice(contactRequestIndex, 1);
-        //   } else {
-        //     store.dispatch(
-        //       setNotification({
-        //         title: "New Friend request",
-        //         desc: ``,
-        //       })
-        //     );
-        //   }
-        //   if (contactRequestSentIndex !== -1) {
-        //     const conversation =
-        //       contactRequestsSent[contactRequestSentIndex];
-        //     conversations.push(conversation);
-        //     contactRequestsSent.splice(contactRequestSentIndex, 1);
-
-        //     await activateGroup(conversation.payload.contact.pk);
-        //   } else {
-        //     store.dispatch(
-        //       setNotification({
-        //         title: "Friend request accepted",
-        //         desc: ``,
-        //       })
-        //     );
-        //   }
-        // } catch (err) {
-        //   console.log("test err", err);
-        // }
-
-        break;
-      }
       case EventType.EventTypeAccountContactRequestOutgoingEnqueued: {
         try {
           const parsedData = GroupMetadataEvent.toJSON(data);
@@ -133,8 +50,6 @@ export const handleMetadata = async (data: GroupMetadataEvent) => {
             console.log("group info", groupInfo);
           } catch (err) {
             console.log("group enque err", err?.message);
-
-            // store.dispatch(setContactRequestsSent(parsedData));
           }
         } catch (err) {
           console.log("test enque err", err);
@@ -153,7 +68,21 @@ export const handleMetadata = async (data: GroupMetadataEvent) => {
           parsedData.payload.contactMetadata
         );
 
-        store.dispatch(setContactRequestList(parsedData));
+        console.log("incoming", parsedData);
+
+        // const contactRequest: ContactRequest = {
+        //   id: data.metadata,
+        //   tokenId: parsedData.payload.
+        // };
+
+        store.dispatch(
+          setContactRequestList({
+            id: parsedData.eventContext.id,
+            tokenId: parsedData.payload.contactMetadata.tokenId,
+            contactId: stringFromBytes(parsedData.payload.contactPk),
+            rdvSeed: stringFromBytes(parsedData.payload.contactRendezvousSeed),
+          })
+        );
 
         break;
       }
@@ -169,20 +98,33 @@ export const handleMetadata = async (data: GroupMetadataEvent) => {
 
         const contactRequestIndex = contactRequests.findIndex(
           (request) =>
-            stringFromBytes(request.payload.contactPk) ===
-            stringFromBytes(parsedData.payload.contactPk)
+            request.contactId === stringFromBytes(parsedData.payload.contactPk)
         );
 
+        console.log("contactRequest", contactRequestIndex);
         if (contactRequestIndex !== -1) {
-          store.dispatch(
-            setConversationList(contactRequests[contactRequestIndex])
-          );
-          conversations.push(contactRequests[contactRequestIndex]);
+          const contactRequest = contactRequests[contactRequestIndex];
           store.dispatch(
             setContactRequestList(
               contactRequests.filter((_, i) => i === contactRequestIndex)
             )
           );
+
+          store.dispatch(
+            setConversationList({
+              id: parsedData.eventContext.id,
+              type: "contact",
+              members: [
+                {
+                  id: contactRequest.contactId,
+                  tokenId: contactRequest.tokenId,
+                  rdvSeed: contactRequest.rdvSeed,
+                },
+              ],
+              name: "",
+            })
+          );
+          // conversations.push(contactRequests[contactRequestIndex]);
         }
 
         break;
@@ -203,13 +145,4 @@ export const handleMetadata = async (data: GroupMetadataEvent) => {
   } catch (err) {
     console.log("metada next err", err);
   }
-
-  // try {
-  //   store.dispatch(setContactRequestList(contactRequests));
-  //   store.dispatch(setConversationList(conversations));
-  // } catch (err) {
-  //   console.log("update store err", err);
-  // }
-
-  // console.log("get metadata complete");
 };

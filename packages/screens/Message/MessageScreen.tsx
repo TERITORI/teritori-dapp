@@ -20,6 +20,7 @@ import space from "../../../assets/icons/space.svg";
 import FlexRow from "../../components/FlexRow";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { Separator } from "../../components/Separator";
+import { MessageBlankFiller } from "../../components/blankFiller/MessageBlankFiller";
 import MessageCard from "../../components/cards/MessageCard";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
@@ -99,27 +100,22 @@ export const MessageScreen: ScreenFC<"Message"> = () => {
         <FlexRow>
           <ScrollView horizontal>
             {HEADER_CONFIG.map((item) => (
-              <>
-                <TouchableOpacity key={item.title} onPress={item.onPress}>
+              <React.Fragment key={item.title}>
+                <TouchableOpacity onPress={item.onPress}>
                   <MessageCard
-                    key={item.title}
                     text={item.title}
                     icon={item.icon}
                     subtext={item?.subtitle || ""}
                   />
                 </TouchableOpacity>
-
                 <SpacerRow size={2} />
-              </>
+              </React.Fragment>
             ))}
           </ScrollView>
         </FlexRow>
         <SpacerColumn size={3} />
 
-        <Separator
-          horizontal={false}
-          style={{ width: 9000, marginLeft: -500 }}
-        />
+        <Separator />
 
         {["android", "ios"].includes(Platform.OS) ? (
           <SideBarChats
@@ -127,7 +123,11 @@ export const MessageScreen: ScreenFC<"Message"> = () => {
             activeConversation={activeConversation}
           />
         ) : (
-          <View style={{ flexDirection: "row" }}>
+          <View
+            style={{
+              flexDirection: "row",
+            }}
+          >
             <SideBarChats
               setActiveConversation={setActiveConversation}
               activeConversation={activeConversation}
@@ -140,8 +140,10 @@ export const MessageScreen: ScreenFC<"Message"> = () => {
                 <FriendshipManager />
               ) : (
                 <>
-                  {!!activeConversation && (
+                  {activeConversation ? (
                     <MessageGroupChat conversation={activeConversation} />
+                  ) : (
+                    <MessageBlankFiller />
                   )}
                 </>
               )}
