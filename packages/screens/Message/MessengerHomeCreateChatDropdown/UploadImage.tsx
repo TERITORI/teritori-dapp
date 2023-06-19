@@ -38,6 +38,7 @@ import {
   fontSemibold14,
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { HandleSendParams } from "../MessengerGroupChat/ChatSection";
 
 interface IMessage {
   id: Key | null | undefined;
@@ -49,28 +50,19 @@ interface IMessage {
   name: string;
 }
 
-export const UploadImage = ({
-  showAttachmentModal,
-  setShowAttachmentModal,
-  messages,
-  setMessages,
-  newMessage,
-  setNewMessage,
-  thumbnailFile,
-  setThumbnailFile,
-}) => {
+interface UploadImageProps {
+  onClose: () => void;
+  handleSend: HandleSendParams;
+}
+
+export const UploadImage = ({ onClose, handleSend }: UploadImageProps) => {
+  const [isAttachmentModal, setIsAttachmentModal] = useState(true);
+  const [thumbnail, setThumbnail] = useState(null);
   const [image, setImage] = useState(null);
   const [isImageLarge, setIsImageLarge] = useState(true);
   const [visible, setVisible] = useState(false);
+  const [message, setMessage] = useState("");
 
-  const handleSend = () => {
-    const newMsg: IMessage = {
-      message: newMessage,
-      isSender: true,
-    };
-    setMessages([...messages, newMsg, ...thumbnailFile?.url]);
-    setNewMessage("");
-  };
   const handleShowImage = () => {
     setIsImageLarge(true);
   };
@@ -85,16 +77,18 @@ export const UploadImage = ({
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
+      base64: true,
     });
-    setImage(result?.assets[0]);
+    console.log("base64 img", result);
+    // setImage(result?.assets[0]);
     setVisible(true);
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.textInputContainer}>
-        {showAttachmentModal &&
-        !thumbnailFile &&
+        {isAttachmentModal &&
+        !thumbnail &&
         ["ios", "android"].includes(Platform.OS) ? (
           <View style={styles.attachmentModal}>
             <TouchableOpacity style={styles.attachmentItem} onPress={pickImage}>
@@ -117,10 +111,11 @@ export const UploadImage = ({
             </TouchableOpacity>
           </View>
         ) : (
-          showAttachmentModal &&
-          !thumbnailFile && (
+          isAttachmentModal &&
+          !thumbnail && (
             <FileUploader
               onUpload={(files) => {
+                console.log("files", files);
                 setVisible(files[0]);
               }}
               mimeTypes={IMAGE_MIME_TYPES}
@@ -246,8 +241,8 @@ export const UploadImage = ({
               placeHolder="Add a message..."
               placeholderTextColor={neutral77}
               labelStyle={[fontMedium14, { color: neutral77 }]}
-              value={newMessage}
-              onChangeText={setNewMessage}
+              value={message}
+              onChangeText={setMessage}
               boxMainContainerStyle={{ backgroundColor: neutral17 }}
               textInputStyle={{ marginLeft: 10, top: -8 }}
             >

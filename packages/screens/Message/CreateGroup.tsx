@@ -37,8 +37,8 @@ import {
   GroupInfo_Reply,
   MultiMemberGroupCreate_Reply,
 } from "../../weshnet";
-import { weshClient } from "../../weshnet/client";
-import { activateGroup } from "../../weshnet/client/services";
+import { weshClient, weshConfig } from "../../weshnet/client";
+import { activateGroup, sendMessage } from "../../weshnet/client/services";
 import { encodeJSON, stringFromBytes } from "../../weshnet/client/utils";
 
 interface CreateGroupProps {
@@ -79,8 +79,22 @@ export const CreateGroup = ({ onClose }: CreateGroupProps) => {
     try {
       const group = await weshClient().MultiMemberGroupCreate({});
 
-      await activateGroup({
+      const groupInfo = await weshClient().GroupInfo({
         groupPk: group.groupPk,
+      });
+
+      await sendMessage({
+        groupPk: group.groupPk,
+        message: {
+          type: "group-create",
+          payload: {
+            message: "",
+            files: [],
+            metadata: {
+              groupName,
+            },
+          },
+        },
       });
 
       await Promise.all(
@@ -92,15 +106,20 @@ export const CreateGroup = ({ onClose }: CreateGroupProps) => {
               contactPk,
             });
 
-            await weshClient().AppMessageSend({
+            await sendMessage({
               groupPk: _group.group?.publicKey,
-              payload: encodeJSON({
-                name: groupName,
-                group: GroupInfo_Reply.toJSON(_group),
-                createdAt: new Date().toISOString(),
-                type: "group-invitation",
-                message: `Anon has invited you to join group ${groupName}`,
-              }),
+              message: {
+                type: "group-invite",
+                payload: {
+                  message: `Anon has invited you to join group ${groupName}`,
+                  metadata: {
+                    groupName,
+                    group: GroupInfo_Reply.toJSON(groupInfo).group,
+                    contact: item.members[0],
+                  },
+                  files: [],
+                },
+              },
             });
           })
       );
@@ -144,7 +163,7 @@ export const CreateGroup = ({ onClose }: CreateGroupProps) => {
           placeholderTextColor={secondaryColor}
           squaresBackgroundColor={neutral00}
           fullWidth
-          width={Platform.OS == "web" ? 370 : 305}
+          width={Platform.OS === "web" ? 370 : 305}
         />
       </FlexRow>
 

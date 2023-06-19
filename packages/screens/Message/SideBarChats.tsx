@@ -73,11 +73,9 @@ export const SideBarChats: React.FC = ({
         <ChatItem
           data={item}
           key={index}
+          isActive={item.id === activeConversation?.id}
           onPress={() => {
-            setActiveConversation();
-            setTimeout(() => {
-              setActiveConversation(item);
-            }, 500);
+            setActiveConversation(item);
           }}
         />
       ))}

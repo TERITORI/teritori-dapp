@@ -6,44 +6,94 @@ import {
 import { weshClient } from "./client";
 import { handleMetadata } from "./processData";
 import { decodeJSON, stringFromBytes } from "./utils";
-import { setMessageList } from "../../store/slices/message";
+import {
+  selectConversationList,
+  setConversationList,
+  setMessageList,
+} from "../../store/slices/message";
 import { store } from "../../store/store";
 import { Message } from "../../utils/types/message";
 
 let lastId: Uint8Array;
 
+const processedMessageIds: string[] = [];
+
 export const subscribeMessages = async (config: GroupMessageList_Request) => {
-  console.log("subscribe message");
+  console.log("subscribe message", config);
   try {
     const messages = await weshClient().GroupMessageList(config);
     const observer = {
       next: (data: GroupMessageEvent) => {
-        console.log("message until now received");
-        lastId = data.eventContext?.id;
+        const id = stringFromBytes(data.eventContext?.id);
+        if (processedMessageIds.includes(id)) {
+          return;
+        }
+        processedMessageIds.push(id);
         data.message = decodeJSON(data.message);
-
+        console.log("message until now received", data);
         const message: Message = {
-          senderId: stringFromBytes(data.headers?.devicePk),
           id: stringFromBytes(data.eventContext?.id),
-          groupId: data.eventContext?.groupPk
-            ? stringFromBytes(data.eventContext?.groupPk)
-            : "",
-          payload: data.message,
+          ...data.message,
         };
+        switch (message.type) {
+          case "group-join": {
+            console.log("group-join", message);
+            // const conversations = selectConversationList(store.getState());
 
-        store.dispatch(
-          setMessageList({
-            groupPk: stringFromBytes(config.groupPk),
-            data: message,
-          })
-        );
+            // store.dispatch(
+            //   setConversationList(
+            //     conversations.map((item) => {
+            //       if (item.id === stringFromBytes(data.eventContext?.groupPk)) {
+            //         return {
+            //           ...item,
+            //           name: message.payload.metadata?.groupName || "Anon Group",
+            //         };
+            //       }
+            //       return item;
+            //     })
+            //   )
+            // );
+
+            break;
+          }
+          case "group-create": {
+            const conversations = selectConversationList(store.getState());
+
+            store.dispatch(
+              setConversationList(
+                conversations.map((item) => {
+                  if (item.id === stringFromBytes(data.eventContext?.groupPk)) {
+                    return {
+                      ...item,
+                      name: message.payload.metadata?.groupName || "Anon Group",
+                    };
+                  }
+                  return item;
+                })
+              )
+            );
+
+            break;
+          }
+          default: {
+            store.dispatch(
+              setMessageList({
+                groupPk: stringFromBytes(config.groupPk),
+                data: message,
+              })
+            );
+          }
+        }
       },
       error: (e) => {
-        console.log("get message obser...", e);
+        console.log("get message error...", e);
       },
       complete: async () => {
         console.log("get message complete");
-        subscribeMessages2({ groupPk: config.groupPk, sinceId: lastId });
+        // await subscribeMessages2({ groupPk: config.groupPk, sinceId: lastId });
+        setTimeout(() => {
+          subscribeMessages(config);
+        }, 5000);
       },
     };
     return messages.subscribe(observer);
@@ -69,6 +119,9 @@ export const subscribeMetadata = async (groupPk: Uint8Array) => {
       },
       complete: () => {
         console.log("get metadata complete");
+        setTimeout(() => {
+          subscribeMetadata(groupPk);
+        }, 5000);
       },
     };
     metadata.subscribe(myObserver);
@@ -80,8 +133,11 @@ export const subscribeMetadata = async (groupPk: Uint8Array) => {
 export const subscribeMessages2 = async (
   config: Partial<GroupMessageList_Request>
 ) => {
-  console.log("subscribe message 2 started");
+  console.log("subscribe message 2 started", config.sinceId);
   try {
+    await weshClient().ActivateGroup({
+      groupPk: config.groupPk,
+    });
     const messages = await weshClient().GroupMessageList(config);
     const observer = {
       next: (data: GroupMessageEvent) => {

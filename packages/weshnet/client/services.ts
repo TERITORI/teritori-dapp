@@ -2,6 +2,7 @@ import { weshClient } from "./client";
 import { weshConfig } from "./config";
 import { subscribeMetadata } from "./subscribers";
 import { bytesFromString, encodeJSON, stringFromBytes } from "./utils";
+import { Message } from "../../utils/types/message";
 import { GroupInfo_Request } from "../protocoltypes";
 
 let isConfigLoading = false;
@@ -34,6 +35,11 @@ export const createSharableLink = async (tokenId: string = "Anon") => {
       const resetRef = await weshClient().ContactRequestResetReference({});
       contactRef.publicRendezvousSeed = resetRef.publicRendezvousSeed;
     }
+
+    weshConfig.metadata = {
+      rdvSeed: contactRef.publicRendezvousSeed,
+      tokenId,
+    };
 
     weshConfig.shareLink = `https://app.teritori.com/contact?accountPk=${encodeURIComponent(
       stringFromBytes(weshConfig.config.accountPk)
@@ -85,7 +91,7 @@ export const acceptFriendRequest = async (contactPk: Uint8Array) => {
     contactPk,
   });
 
-  await activateGroup(contactPk);
+  return await activateGroup({ contactPk });
 };
 
 export const activateGroup = async (params: Partial<GroupInfo_Request>) => {
@@ -97,16 +103,31 @@ export const activateGroup = async (params: Partial<GroupInfo_Request>) => {
     await weshClient().ActivateGroup({
       groupPk: contactGroup.group?.publicKey,
     });
+
+    return contactGroup;
   } catch (err) {
     console.log("get group info", err);
   }
 };
 
-const sendMessage = async (groupPk: Uint8Array, message: string) => {
+export const sendMessage = async ({
+  groupPk,
+  message,
+}: {
+  groupPk?: Uint8Array;
+  message: Omit<Message, "timestamp" | "senderId" | "id" | "groupId">;
+}) => {
+  if (!groupPk) {
+    return;
+  }
   try {
     await weshClient().AppMessageSend({
       groupPk,
-      payload: bytesFromString(message),
+      payload: encodeJSON({
+        ...message,
+        timestamp: new Date().toISOString(),
+        senderId: stringFromBytes(weshConfig.config.accountPk),
+      }),
     });
     console.log("send message success");
   } catch (err) {

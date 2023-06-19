@@ -2,11 +2,13 @@ import { AudioFileMetadata } from "./feed";
 
 export type MessageType =
   | "message"
-  | "group-join"
-  | "group-leave"
   | "accept-contact"
   | "reject-contact"
-  | "group-invite";
+  | "group-invite"
+  | "group-join"
+  | "group-leave"
+  | "group-create"
+  | "reaction";
 
 export type ConversationType = "contact" | "group";
 interface MessageFile {
@@ -20,11 +22,10 @@ interface MessageFile {
 interface MessagePayload {
   files: MessageFile[];
   message: string;
-  type: MessageType;
-  timestamp: string;
   metadata?: {
     groupName?: string;
-    group: any;
+    group?: any;
+    contact?: Contact;
   };
 }
 
@@ -32,13 +33,17 @@ export interface Message {
   id: string;
   senderId: string;
   groupId: string;
+  type: MessageType;
   payload: MessagePayload;
+  timestamp: string;
+  parentId?: string;
 }
 
 interface Contact {
   id: string;
   tokenId: string;
   rdvSeed: string;
+  hasLeft?: boolean;
 }
 
 export interface Conversation {

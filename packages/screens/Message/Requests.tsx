@@ -5,23 +5,27 @@ import { useSelector } from "react-redux";
 import nullIcon from "../../../assets/icons/illustration.svg";
 import { SVG } from "../../components/SVG";
 import { Separator } from "../../components/Separator";
+import { MessageBlankFiller } from "../../components/blankFiller/MessageBlankFiller";
 import { TextInputCustomBorder } from "../../components/inputs/TextInputCustomBorder";
 import RequestList from "../../components/requests/Request";
 import { SpacerColumn } from "../../components/spacer";
 import { selectContactRequestList } from "../../store/slices/message";
 import { neutral33 } from "../../utils/style/colors";
+import { ContactRequest } from "../../utils/types/message";
 
-export const Requests = ({ items }) => {
+interface RequestProps {
+  items: ContactRequest[];
+}
+
+export const Requests = ({ items }: RequestProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const contactRequestList = useSelector(selectContactRequestList);
-  const filteredItems = items.filter((item) =>
-    item.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredItems = items;
+  // .filter((item) =>
+  //   item?.name?.toLowerCase().includes(searchQuery.toLowerCase())
+  // );
   return (
     <View>
-      {/* FIXME: remaining in web */}
-      {/* <Separator horizontal={false} />
-      <SpacerColumn size={1} /> */}
       <TextInputCustomBorder
         placeHolder="Search..."
         style={{ backgroundColor: "#000" }}
@@ -29,22 +33,18 @@ export const Requests = ({ items }) => {
         onChangeText={setSearchQuery}
       />
       <SpacerColumn size={2} />
-      {/* <Separator horizontal={false} color={neutral33} /> */}
+
       <SpacerColumn size={1} />
       {filteredItems?.length > 0 ? (
         contactRequestList?.map((item) => (
-          <View key={items[0].id}>
+          <View key={item.id}>
             <ScrollView>
               <RequestList data={item} />
             </ScrollView>
           </View>
         ))
       ) : (
-        <>
-          <SpacerColumn size={12} />
-
-          <SVG source={nullIcon} style={{ alignSelf: "center" }} />
-        </>
+        <MessageBlankFiller />
       )}
     </View>
   );
