@@ -17,7 +17,7 @@ import {
   useGetTransactionCount,
   useMultisigValidator,
 } from "../../hooks/multisig";
-import { ScreenFC } from "../../utils/navigation";
+import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { secondaryColor } from "../../utils/style/colors";
 import { fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
@@ -27,6 +27,8 @@ const RESULT_SIZE = 2;
 export const TransactionProposalScreen: ScreenFC<
   "MultisigTransactionProposal"
 > = ({ route }) => {
+  const navigation = useAppNavigation();
+
   const { address, backText } = route.params;
   const [selectedTab, setSelectedTab] = useState<keyof typeof tabs>("all");
   const { state } = useMultisigContext();
@@ -47,7 +49,7 @@ export const TransactionProposalScreen: ScreenFC<
   const [afterIndex, setAfterIndex] = useState<string | null>(null);
   const [beforeIndex, setBeforeIndex] = useState<string | null>(null);
 
-  const itemsPerPage = 2;
+  const [itemsPerPage, setItemsPerPage] = useState(50);
   const tabs = useMemo(
     () => ({
       all: {
@@ -79,7 +81,7 @@ export const TransactionProposalScreen: ScreenFC<
 
   const maxPage = useMemo(
     () => Math.max(Math.ceil(total / itemsPerPage), 1),
-    [total]
+    [itemsPerPage, total]
   );
 
   const { data, isLoading, isFetching } = useFetchMultisigTransactionsById(
@@ -133,13 +135,22 @@ export const TransactionProposalScreen: ScreenFC<
               }
               setPageIndex(index);
             }}
-            dropdownOptions={[0]}
-            setItemsPerPage={() => 5}
+            dropdownOptions={[50, 100]}
+            setItemsPerPage={(e) => setItemsPerPage(e)}
           />
         )}
       </>
     ),
-    [isLoading, isFetching, data, pageIndex, maxPage, beforeIndex, afterIndex]
+    [
+      isLoading,
+      isFetching,
+      data,
+      pageIndex,
+      maxPage,
+      itemsPerPage,
+      beforeIndex,
+      afterIndex,
+    ]
   );
 
   return (
@@ -148,6 +159,7 @@ export const TransactionProposalScreen: ScreenFC<
       headerChildren={<BackTo label={backText} />}
       footerChildren={<></>}
       noMargin
+      onBackPress={() => navigation.navigate("Multisig")}
       fullWidth
       noScroll
     >
@@ -158,7 +170,7 @@ export const TransactionProposalScreen: ScreenFC<
           items={tabs}
           onSelect={setSelectedTab}
           selected={selectedTab}
-          tabStyle={{
+          tabContainerStyle={{
             height: 64,
           }}
         />

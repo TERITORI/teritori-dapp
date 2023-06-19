@@ -1,16 +1,17 @@
 import React, { useState } from "react";
 
 import { CheckLoadingModal } from "./components/CheckLoadingModal";
-import { MultisigTransactionDelegateForm } from "./components/MultisigTransactionDelegateForm";
+import { MultisigTransactionForm } from "./components/MultisigTransactionForm";
 import { SignTransactionModal } from "./components/SignTransactionModal";
 import {
   MultisigTransactionDelegateFormType,
   MultisigTransactionType,
 } from "./types";
 import { ScreenContainer } from "../../components/ScreenContainer";
-import { BackTo } from "../../components/navigation/BackTo";
-import { useCreateMultisigDelegate } from "../../hooks/multisig/useCreateMultisigDelegate";
-import { useGetMultisigAccount } from "../../hooks/multisig/useGetMultisigAccount";
+import {
+  useCreateMultisigDelegate,
+  useGetMultisigAccount,
+} from "../../hooks/multisig";
 import { ScreenFC } from "../../utils/navigation";
 
 export const MultisigDelegateScreen: ScreenFC<"MultisigDelegate"> = ({
@@ -23,7 +24,7 @@ export const MultisigDelegateScreen: ScreenFC<"MultisigDelegate"> = ({
     mutate,
     data: transactionId,
   } = useCreateMultisigDelegate();
-  const { address, backText } = route.params;
+  const { address } = route.params;
   const { data } = useGetMultisigAccount(address);
   const [formData, setFormData] =
     useState<MultisigTransactionDelegateFormType>();
@@ -72,14 +73,13 @@ export const MultisigDelegateScreen: ScreenFC<"MultisigDelegate"> = ({
   // returns
   return (
     <ScreenContainer
-      headerChildren={<BackTo label={backText || "Multisig Legacy"} />}
       footerChildren={<></>}
       noMargin
       fullWidth
       noScroll
       isHeaderSmallMargin
     >
-      <MultisigTransactionDelegateForm
+      <MultisigTransactionForm
         type="delegate"
         title="Create a New Transaction"
         transferText="Delegate to"

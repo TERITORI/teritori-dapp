@@ -12,14 +12,18 @@ import { AnimationExpand } from "../../../components/animations";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { GeneralSelect } from "../../../components/select/GeneralSelect";
 import { SpacerColumn } from "../../../components/spacer";
-import { useGetMultisigAccount } from "../../../hooks/multisig";
-import { useMultisigHelpers } from "../../../hooks/multisig/useMultisigHelpers";
+import { useMultisigContext } from "../../../context/MultisigReducer";
+import {
+  useGetMultisigAccount,
+  useMultisigHelpers,
+} from "../../../hooks/multisig";
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import { useValidators } from "../../../hooks/useValidators";
 import {
   patternOnlyNumbers,
   validateAddress,
   validateMaxNumber,
+  validateMultisigAddress,
 } from "../../../utils/formRules";
 import { AppRouteType } from "../../../utils/navigation";
 import { neutral77, secondaryColor } from "../../../utils/style/colors";
@@ -36,7 +40,7 @@ interface MultisigTransactionDelegateFormProps {
   onSubmit?: (formValues: MultisigTransactionDelegateFormType) => void;
 }
 
-export const MultisigTransactionDelegateForm: React.FC<
+export const MultisigTransactionForm: React.FC<
   MultisigTransactionDelegateFormProps
 > = ({ title, transferText, submitBtnText, onSubmit = () => {}, type }) => {
   const {
@@ -48,6 +52,7 @@ export const MultisigTransactionDelegateForm: React.FC<
     useForm<MultisigTransactionDelegateFormType>();
   const { coinSimplified, participantAddressesFromMultisig } =
     useMultisigHelpers();
+  const { state } = useMultisigContext();
   const {
     data: { activeValidators },
     isFetching,
@@ -145,21 +150,44 @@ export const MultisigTransactionDelegateForm: React.FC<
           >
             {isFetching && <ActivityIndicator color={secondaryColor} />}
             {!isFetching && (
-              <GeneralSelect
-                data={activeValidators.map((v) => v.moniker)}
-                initValue="Select"
-                value={selectValidator}
-                setValue={(v: string) => {
-                  let recipientAddr = "";
-                  activeValidators.map((av) => {
-                    if (av.moniker === v) {
-                      recipientAddr = av.address;
-                    }
-                  });
-                  setValue("recipientAddress", recipientAddr);
-                  setSelectValidator(v);
-                }}
-              />
+              <>
+                {type === "transfer" ? (
+                  <MultisigFormInput<MultisigTransactionDelegateFormType>
+                    control={control}
+                    label=""
+                    hideLabel
+                    name="recipientAddress"
+                    isDisabled={!membersAddress?.length}
+                    rules={{
+                      required: true,
+                      validate: (value) =>
+                        validateMultisigAddress(
+                          value,
+                          type === "transfer"
+                            ? state.chain?.addressPrefix || ""
+                            : state.chain?.validatorPrefix || ""
+                        ),
+                    }}
+                    placeHolder="E.g : torix23Jkj1ZSQJ128D928XJSkL2K30Dld1ksl"
+                  />
+                ) : (
+                  <GeneralSelect
+                    data={activeValidators.map((v) => v.moniker)}
+                    initValue="Select"
+                    value={selectValidator}
+                    setValue={(v: string) => {
+                      let recipientAddr = "";
+                      activeValidators.map((av) => {
+                        if (av.moniker === v) {
+                          recipientAddr = av.address;
+                        }
+                      });
+                      setValue("recipientAddress", recipientAddr);
+                      setSelectValidator(v);
+                    }}
+                  />
+                )}
+              </>
             )}
           </MultisigSection>
 

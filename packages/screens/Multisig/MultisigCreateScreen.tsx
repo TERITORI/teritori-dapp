@@ -17,7 +17,7 @@ import { TextInputOutsideLabel } from "../../components/inputs/TextInputOutsideL
 import { BackTo } from "../../components/navigation/BackTo";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
 import { useMultisigContext } from "../../context/MultisigReducer";
-import { useMultisigHelpers, useCreateMultisig } from "../../hooks/multisig";
+import { useCreateMultisig, useMultisigHelpers } from "../../hooks/multisig";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import {
   getNSAddress,
