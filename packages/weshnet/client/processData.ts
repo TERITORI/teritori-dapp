@@ -15,17 +15,23 @@ import {
   AccountContactRequestEnqueued,
   AccountContactRequestAccepted,
   AccountGroupJoined,
+  AccountContactRequestSent,
 } from "../protocoltypes";
 
-const conversations = [];
+const processedMetadataIds: string[] = [];
 
 export const handleMetadata = async (data: GroupMetadataEvent) => {
+  const id = stringFromBytes(data.eventContext?.id);
+  if (processedMetadataIds.includes(id)) {
+    return;
+  }
+  processedMetadataIds.push(id);
   try {
     if (
       data.metadata?.eventType !==
       EventType.EventTypeAccountContactRequestEnabled
     ) {
-      console.log(data.metadata?.eventType);
+      console.log("event-type", data.metadata?.eventType);
     }
     switch (data.metadata?.eventType) {
       case EventType.EventTypeAccountContactRequestOutgoingEnqueued: {
@@ -37,6 +43,8 @@ export const handleMetadata = async (data: GroupMetadataEvent) => {
           parsedData.payload = payload;
 
           parsedData.payload.ownMetadata = decodeJSON(payload.ownMetadata);
+
+          console.log("outgoing", parsedData);
           try {
             const groupInfo = await weshClient().GroupInfo({
               contactPk: payload.contact?.pk,
@@ -46,7 +54,20 @@ export const handleMetadata = async (data: GroupMetadataEvent) => {
               groupPk: groupInfo.group?.publicKey,
             });
 
-            store.dispatch(setConversationList(parsedData));
+            store.dispatch(
+              setConversationList({
+                id: parsedData.eventContext.id,
+                type: "contact",
+                name: "",
+                members: [
+                  {
+                    id: parsedData.payload.contact.pk,
+                    rdvSeed: parsedData.payload.contact.publicRendezvousSeed,
+                    tokenId: parsedData.payload.ownMetadata.contactTokenId,
+                  },
+                ],
+              })
+            );
             console.log("group info", groupInfo);
           } catch (err) {
             console.log("group enque err", err?.message);
@@ -57,6 +78,7 @@ export const handleMetadata = async (data: GroupMetadataEvent) => {
 
         break;
       }
+
       case EventType.EventTypeAccountContactRequestIncomingReceived: {
         const parsedData = GroupMetadataEvent.toJSON(data);
 
@@ -106,7 +128,10 @@ export const handleMetadata = async (data: GroupMetadataEvent) => {
           const contactRequest = contactRequests[contactRequestIndex];
           store.dispatch(
             setContactRequestList(
-              contactRequests.filter((_, i) => i === contactRequestIndex)
+              contactRequests.filter(
+                (item, i) =>
+                  item.id === stringFromBytes(parsedData.payload.contactPk)
+              )
             )
           );
 
@@ -124,7 +149,6 @@ export const handleMetadata = async (data: GroupMetadataEvent) => {
               name: "",
             })
           );
-          // conversations.push(contactRequests[contactRequestIndex]);
         }
 
         break;
@@ -134,7 +158,14 @@ export const handleMetadata = async (data: GroupMetadataEvent) => {
         console.log("group joined", data, parsedData);
 
         parsedData.payload = AccountGroupJoined.decode(data.metadata.payload);
-        store.dispatch(setConversationList(parsedData));
+        store.dispatch(
+          setConversationList({
+            id: stringFromBytes(parsedData.payload.group.publicKey),
+            type: "group",
+            members: [],
+            name: "Group",
+          })
+        );
 
         break;
       }

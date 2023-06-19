@@ -7,12 +7,18 @@ import Doublecheck from "../../../assets/icons/doublecheck.svg";
 import singleCheck from "../../../assets/icons/singlecheck.svg";
 import warning from "../../../assets/icons/warning.svg";
 import { Separator } from "../../components/Separator";
-import { neutral22, neutralA3, secondaryColor } from "../../utils/style/colors";
+import {
+  neutral00,
+  neutral22,
+  neutralA3,
+  secondaryColor,
+} from "../../utils/style/colors";
 import {
   fontMedium10,
   fontSemibold11,
   fontSemibold13,
 } from "../../utils/style/fonts";
+import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import FlexRow from "../FlexRow";
 import { SVG } from "../SVG";
@@ -26,6 +32,7 @@ type Props = {
   chat: string;
   time: string;
   iconCheck: boolean;
+  isActive: boolean;
 };
 
 const SideBarChatConversation: React.FC<Props> = ({
@@ -35,10 +42,16 @@ const SideBarChatConversation: React.FC<Props> = ({
   chat,
   time,
   iconCheck,
+  isActive,
 }) => {
   const onlineStatusBadgeColor = isOnline ? "green" : "yellow";
   return (
-    <View style={styles.container}>
+    <View
+      style={{
+        backgroundColor: isActive ? neutral22 : neutral00,
+        paddingVertical: layout.padding_x2,
+      }}
+    >
       <FlexRow justifyContent="space-between">
         <View>
           <FlexRow>
@@ -81,17 +94,8 @@ const SideBarChatConversation: React.FC<Props> = ({
           </FlexRow>
         </View>
       </FlexRow>
-      <SpacerColumn size={1.5} />
-      <Separator color={neutral22} />
-      <SpacerColumn size={1.5} />
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "#000000",
-  },
-});
 
 export default SideBarChatConversation;

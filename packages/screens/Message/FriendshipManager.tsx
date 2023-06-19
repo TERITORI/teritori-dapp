@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { View, Platform } from "react-native";
+import { useSelector } from "react-redux";
 
 import { AddFriend } from "./AddFriend";
 import { Friends } from "./Friends";
@@ -11,21 +12,28 @@ import friendData from "../../components/friends/data";
 import requestData from "../../components/requests/data";
 import { SpacerColumn } from "../../components/spacer";
 import { Tabs } from "../../components/tabs/Tabs";
+import {
+  selectContactRequestList,
+  selectConversationList,
+} from "../../store/slices/message";
 import { layout } from "../../utils/style/layout";
 
 export const FriendshipManager = () => {
+  const conversations = useSelector(selectConversationList);
+  const contactRequests = useSelector(selectContactRequestList);
+  console.log("contact-requests", contactRequests);
   const tabs = {
     friends: {
       name: "Friends",
-      badgeCount: friendData?.length,
+      badgeCount: conversations.length,
       icon: "",
     },
     request: {
       name: "Requests",
-      badgeCount: requestData?.length,
+      badgeCount: contactRequests.length,
       icon: "",
     },
-    addfriend: {
+    addFriend: {
       name: "Add a friend",
       icon: plus,
     },
@@ -44,9 +52,9 @@ export const FriendshipManager = () => {
       />
       <Separator horizontal={false} />
       <SpacerColumn size={2} />
-      {selectedTab === "friends" && <Friends items={friendData} />}
-      {selectedTab === "request" && <Requests items={requestData} />}
-      {selectedTab === "addfriend" && <AddFriend />}
+      {selectedTab === "friends" && <Friends items={conversations} />}
+      {selectedTab === "request" && <Requests items={contactRequests} />}
+      {selectedTab === "addFriend" && <AddFriend />}
     </>
   );
   if (Platform.OS === "web") {
