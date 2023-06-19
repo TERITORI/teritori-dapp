@@ -21,6 +21,7 @@ import { selectMessageListByGroupPk } from "../../../store/slices/message";
 import { neutral33 } from "../../../utils/style/colors";
 import { layout } from "../../../utils/style/layout";
 import { LocalFileData } from "../../../utils/types/feed";
+import { Conversation as IConversation } from "../../../utils/types/message";
 import { GroupInfo_Reply } from "../../../weshnet";
 import { weshClient, weshConfig } from "../../../weshnet/client";
 import { subscribeMessages } from "../../../weshnet/client/subscribers";
@@ -37,7 +38,11 @@ interface IMessage {
   name: string;
 }
 
-export const ChatSection = ({ conversation }) => {
+interface ChatSectionProps {
+  conversation: IConversation;
+}
+
+export const ChatSection = ({ conversation }: ChatSectionProps) => {
   const [message, setMessage] = useState<any>("");
   const [files, setFiles] = useState([]);
 
@@ -56,19 +61,10 @@ export const ChatSection = ({ conversation }) => {
   const getGroupInfo = async () => {
     let _group: GroupInfo_Reply;
     let subsId;
-    if (!conversation?.payload) {
-      console.log("no payload");
-      return;
-    }
-    console.log(
-      "conv",
-      conversation,
-      conversation?.payload?.groupPk?.length ||
-        conversation?.payload?.group?.publicKey
-    );
+
     try {
       if (
-        conversation?.payload?.groupPk?.length ||
+        (false && conversation?.payload?.groupPk?.length) ||
         conversation?.payload?.group?.publicKey
       ) {
         _group = await weshClient().GroupInfo({
@@ -78,15 +74,13 @@ export const ChatSection = ({ conversation }) => {
         });
       } else {
         _group = await weshClient().GroupInfo({
-          contactPk:
-            conversation?.payload?.contact?.pk ||
-            conversation?.payload?.contactPk,
+          contactPk: conversation.members[0].id,
         });
       }
       setGroupInfo(_group);
       subsId = await subscribeMessages({
         groupPk: _group.group?.publicKey,
-        sinceNow: true,
+        untilNow: true,
       });
 
       setSubsId(subsId);
@@ -161,16 +155,9 @@ export const ChatSection = ({ conversation }) => {
       >
         {messages.map((item, index) => (
           <Conversation
-            key={stringFromBytes(item.eventContext.id)}
+            key={item.id}
+            message={item}
             data={item.message}
-            isSender={
-              stringFromBytes(item.headers.devicePk) ===
-              stringFromBytes(weshConfig.config.devicePk)
-            }
-            time={item.time}
-            receiverName={item.isSender ? undefined : item.name}
-            source={item.source}
-            imageStyle={{ height: 200, width: 120, borderRadius: 10 }}
             height={0}
             width={0}
           />

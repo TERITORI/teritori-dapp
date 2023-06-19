@@ -35,12 +35,7 @@ export const Requests = ({ items }) => {
         contactRequestList?.map((item) => (
           <View key={items[0].id}>
             <ScrollView>
-              <RequestList
-                avatar={items[0].avatar}
-                name={items[0].name}
-                isOnline={items[0].isOnline}
-                data={item}
-              />
+              <RequestList data={item} />
             </ScrollView>
           </View>
         ))

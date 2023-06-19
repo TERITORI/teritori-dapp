@@ -56,11 +56,14 @@ export const CreateConversation = ({ onClose }: CreateConversationProps) => {
           alignItems: "center",
         }}
       >
-        <QRCode
-          value="http://awesome.link.qr"
-          logo={logoHexagonPNG}
-          logoSize={40}
-        />
+        {!!weshConfig.shareLink && (
+          <QRCode
+            size={200}
+            value={weshConfig.shareLink}
+            logo={logoHexagonPNG}
+            logoSize={40}
+          />
+        )}
       </View>
       <SpacerColumn size={2} />
       <View>
