@@ -142,7 +142,12 @@ export const MessageScreen: ScreenFC<"Message"> = () => {
 
             <View style={{ flex: 1 }}>
               {activeTab === "add-friend" ? (
-                <FriendshipManager />
+                <FriendshipManager
+                  setActiveConversation={(conv) => {
+                    setActiveConversation(conv);
+                    setActiveTab("chat");
+                  }}
+                />
               ) : (
                 <>
                   {activeConversation ? (
