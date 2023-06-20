@@ -1,4 +1,5 @@
 import * as ImagePicker from "expo-image-picker";
+import { omit } from "lodash";
 import React, { useState } from "react";
 import {
   View,
@@ -24,7 +25,12 @@ import { FileUploader } from "../../../components/fileUploader";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import ModalBase from "../../../components/modals/ModalBase";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
-import { IMAGE_MIME_TYPES } from "../../../utils/mime";
+import { convertFileToBase64 } from "../../../utils/file";
+import {
+  AUDIO_MIME_TYPES,
+  IMAGE_MIME_TYPES,
+  VIDEO_MIME_TYPES,
+} from "../../../utils/mime";
 import {
   additionalRed,
   neutral17,
@@ -38,6 +44,7 @@ import {
   fontSemibold14,
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { RemoteFileData } from "../../../utils/types/feed";
 import { HandleSendParams } from "../MessengerGroupChat/ChatSection";
 
 interface IMessage {
@@ -52,7 +59,7 @@ interface IMessage {
 
 interface UploadImageProps {
   onClose: () => void;
-  handleSend: HandleSendParams;
+  handleSend: (params: HandleSendParams) => void;
 }
 
 export const UploadImage = ({ onClose, handleSend }: UploadImageProps) => {
@@ -60,8 +67,8 @@ export const UploadImage = ({ onClose, handleSend }: UploadImageProps) => {
   const [thumbnail, setThumbnail] = useState(null);
   const [image, setImage] = useState(null);
   const [isImageLarge, setIsImageLarge] = useState(true);
-  const [visible, setVisible] = useState(false);
   const [message, setMessage] = useState("");
+  const [file, setFile] = useState<RemoteFileData>();
 
   const handleShowImage = () => {
     setIsImageLarge(true);
@@ -81,7 +88,6 @@ export const UploadImage = ({ onClose, handleSend }: UploadImageProps) => {
     });
     console.log("base64 img", result);
     // setImage(result?.assets[0]);
-    setVisible(true);
   };
 
   return (
@@ -113,15 +119,23 @@ export const UploadImage = ({ onClose, handleSend }: UploadImageProps) => {
         ) : (
           isAttachmentModal &&
           !thumbnail && (
-            <FileUploader
-              onUpload={(files) => {
-                console.log("files", files);
-                setVisible(files[0]);
-              }}
-              mimeTypes={IMAGE_MIME_TYPES}
-            >
-              {({ onPress }) => (
-                <View style={styles.attachmentModal}>
+            <View style={styles.attachmentModal}>
+              <FileUploader
+                onUpload={async (files) => {
+                  console.log("files", files);
+                  if (files[0].file) {
+                    const base64 = await convertFileToBase64(files[0].file);
+                    const file = files[0];
+                    files.length &&
+                      setFile({
+                        ...omit(file, "file"),
+                        url: base64,
+                      });
+                  }
+                }}
+                mimeTypes={[...AUDIO_MIME_TYPES]}
+              >
+                {({ onPress }) => (
                   <TouchableOpacity
                     style={styles.attachmentItem}
                     onPress={onPress}
@@ -130,6 +144,24 @@ export const UploadImage = ({ onClose, handleSend }: UploadImageProps) => {
                       Attach file
                     </BrandText>
                   </TouchableOpacity>
+                )}
+              </FileUploader>
+              <FileUploader
+                onUpload={async (files) => {
+                  console.log("files", files);
+                  if (files[0].file) {
+                    const base64 = await convertFileToBase64(files[0].file);
+                    const file = files[0];
+                    files.length &&
+                      setFile({
+                        ...omit(file, "file"),
+                        url: base64,
+                      });
+                  }
+                }}
+                mimeTypes={[...IMAGE_MIME_TYPES, ...VIDEO_MIME_TYPES]}
+              >
+                {({ onPress }) => (
                   <TouchableOpacity
                     style={styles.attachmentItem}
                     onPress={onPress}
@@ -138,9 +170,9 @@ export const UploadImage = ({ onClose, handleSend }: UploadImageProps) => {
                       Attach image/video
                     </BrandText>
                   </TouchableOpacity>
-                </View>
-              )}
-            </FileUploader>
+                )}
+              </FileUploader>
+            </View>
           )
         )}
 
@@ -163,8 +195,8 @@ export const UploadImage = ({ onClose, handleSend }: UploadImageProps) => {
               </TouchableOpacity>
             </FlexRow>
           }
-          onClose={() => setVisible(!visible)}
-          visible={visible}
+          onClose={() => setFile(undefined)}
+          visible={!!file}
           hideMainSeparator
           width={350}
 
@@ -184,7 +216,7 @@ export const UploadImage = ({ onClose, handleSend }: UploadImageProps) => {
                 <FlexRow>
                   <Image
                     source={{
-                      uri: Platform.OS === "web" ? visible?.url : image?.uri,
+                      uri: Platform.OS === "web" ? file?.url : image?.uri,
                     }}
                     style={styles.image}
                     resizeMode="cover"
@@ -203,7 +235,7 @@ export const UploadImage = ({ onClose, handleSend }: UploadImageProps) => {
                 <FlexRow>
                   <Image
                     source={{
-                      uri: Platform.OS === "web" ? visible?.url : image?.uri,
+                      uri: Platform.OS === "web" ? file?.url : image?.uri,
                     }}
                     style={styles.imagesmall}
                     resizeMode="stretch"
@@ -213,13 +245,11 @@ export const UploadImage = ({ onClose, handleSend }: UploadImageProps) => {
                     <BrandText
                       style={[fontSemibold14, { color: secondaryColor }]}
                     >
-                      {Platform.OS === "web"
-                        ? visible?.fileName
-                        : "filename.png"}
+                      {Platform.OS === "web" ? file?.fileName : "filename.png"}
                     </BrandText>
                     <SpacerColumn size={0.6} />
                     <BrandText style={[fontSemibold13, { color: neutral77 }]}>
-                      {Platform.OS === "web" ? visible?.size : image?.fileSize}
+                      {Platform.OS === "web" ? file?.size : image?.fileSize}
                     </BrandText>
                     <TouchableOpacity onPress={() => setImage(null)}>
                       <View style={styles.svgContainerShort}>
@@ -246,7 +276,19 @@ export const UploadImage = ({ onClose, handleSend }: UploadImageProps) => {
               boxMainContainerStyle={{ backgroundColor: neutral17 }}
               textInputStyle={{ marginLeft: 10, top: -8 }}
             >
-              <TouchableOpacity onPress={handleSend}>
+              <TouchableOpacity
+                onPress={async () => {
+                  if (file) {
+                    handleSend({
+                      files: [file],
+                      message,
+                    });
+                    setMessage("");
+                    setFile(undefined);
+                    onClose();
+                  }
+                }}
+              >
                 <SVG source={sent} />
               </TouchableOpacity>
               <SpacerRow size={1} />

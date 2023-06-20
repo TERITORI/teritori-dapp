@@ -1,4 +1,4 @@
-import { AudioFileMetadata } from "./feed";
+import { AudioFileMetadata, RemoteFileData } from "./feed";
 
 export type MessageType =
   | "message"
@@ -20,7 +20,7 @@ interface MessageFile {
 }
 
 interface MessagePayload {
-  files: MessageFile[];
+  files: RemoteFileData[];
   message: string;
   metadata?: {
     groupName?: string;

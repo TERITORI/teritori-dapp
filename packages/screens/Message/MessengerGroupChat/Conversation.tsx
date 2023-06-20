@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, StyleSheet, TouchableOpacity, Image } from "react-native";
 
+import { FileRenderer } from "./FileRenderer";
 import { MessagePopup } from "./MessagePopup";
 import avatar from "../../../../assets/icons/avatar.svg";
 import reply from "../../../../assets/icons/reply.svg";
@@ -11,6 +12,7 @@ import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
 import { TertiaryButton } from "../../../components/buttons/TertiaryButton";
 import { EmojiSelector } from "../../../components/socialFeed/EmojiSelector";
+import { SocialMessageContent } from "../../../components/socialFeed/SocialThread/SocialMessageContent";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import {
@@ -111,9 +113,14 @@ export const Conversation = ({ message }: ConversationProps) => {
         >
           <TouchableOpacity onPress={() => setShowPopup(!showPopup)}>
             {message.type === "message" ? (
-              <BrandText style={[fontSemibold11, { color: secondaryColor }]}>
-                {message.payload.message}
-              </BrandText>
+              <>
+                <BrandText style={[fontSemibold11, { color: secondaryColor }]}>
+                  {message.payload.message}
+                </BrandText>
+                {!!message.payload.files.length && (
+                  <FileRenderer files={message.payload.files || []} />
+                )}
+              </>
             ) : (
               <>
                 {message?.type === "group-invite" && !isSender && (

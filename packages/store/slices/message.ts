@@ -45,8 +45,8 @@ const messageSlice = createSlice({
       action: PayloadAction<{ groupPk: string; data: Message }>
     ) => {
       state.messageList[action.payload.groupPk] = [
-        action.payload.data,
         ...(state.messageList[action.payload.groupPk] || []),
+        action.payload.data,
       ];
     },
     setContactRequestList: (

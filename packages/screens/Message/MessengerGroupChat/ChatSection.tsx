@@ -119,7 +119,8 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
   }, [conversation.id]);
 
   const handleSend = async (data?: HandleSendParams) => {
-    if (!message || !data?.message) {
+    console.log("send test", !message || !data?.message, message, data);
+    if (!message && !data?.message) {
       return;
     }
     try {
@@ -128,8 +129,8 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
         message: {
           type: "message",
           payload: {
-            message: message || data.message,
-            files: data.files || [],
+            message: message || data?.message,
+            files: data?.files || [],
           },
         },
       });
@@ -205,6 +206,11 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
           label=""
           style={{
             width: width - 560,
+          }}
+          onSubmitEditing={() => {
+            if (message.length) {
+              handleSend();
+            }
           }}
         >
           <TouchableOpacity onPress={handleSend}>
