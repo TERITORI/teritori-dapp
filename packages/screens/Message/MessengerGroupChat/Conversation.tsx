@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { View, StyleSheet, TouchableOpacity, Image } from "react-native";
 
 import { FileRenderer } from "./FileRenderer";
+import { GroupInvitationAction } from "./GroupInvitationAction";
 import { MessagePopup } from "./MessagePopup";
 import avatar from "../../../../assets/icons/avatar.svg";
 import reply from "../../../../assets/icons/reply.svg";
@@ -38,53 +39,11 @@ interface ConversationProps {
 }
 
 export const Conversation = ({ message }: ConversationProps) => {
-  const { setToastError, setToastSuccess } = useFeedbacks();
-
   const [showPopup, setShowPopup] = useState(false);
   const [isForwarding, setIsForwarding] = useState(false);
   const [showFarward, setShowFarward] = useState(false);
   const isSender =
     message.senderId === stringFromBytes(weshConfig.config.accountPk);
-
-  const handleAcceptGroup = async () => {
-    try {
-      const group = message.payload?.metadata?.group;
-      const groupInfo = GroupInfo_Reply.fromJSON({ group });
-
-      await weshClient().MultiMemberGroupJoin({
-        group: groupInfo.group,
-      });
-
-      await weshClient().ActivateGroup({
-        groupPk: groupInfo.group?.publicKey,
-      });
-
-      await sendMessage({
-        groupPk: groupInfo.group?.publicKey,
-        message: {
-          type: "group-join",
-          payload: {
-            message: "",
-            files: [],
-            metadata: {
-              contact: {
-                id: stringFromBytes(weshConfig.config.accountPk),
-                rdvSeed: stringFromBytes(weshConfig.metadata.rdvSeed),
-                tokenId: weshConfig.metadata.tokenId,
-              },
-            },
-          },
-        },
-      });
-    } catch (err) {
-      setToastError({
-        title: "Failed to accept group",
-        message: err?.message,
-      });
-    }
-  };
-
-  const handleRejectGroup = async () => {};
 
   const onEmojiSelected = (emoji: string | null) => {
     if (emoji) {
@@ -141,24 +100,7 @@ export const Conversation = ({ message }: ConversationProps) => {
             )}
           </TouchableOpacity>
           {message?.type === "group-invite" && !isSender && (
-            <>
-              <SpacerColumn size={1} />
-              <FlexRow>
-                <PrimaryButton
-                  text="Accept"
-                  size="SM"
-                  squaresBackgroundColor={purpleDark}
-                  onPress={handleAcceptGroup}
-                />
-                <SpacerRow size={1} />
-                <TertiaryButton
-                  onPress={handleRejectGroup}
-                  text="Cancel"
-                  size="SM"
-                  squaresBackgroundColor={purpleDark}
-                />
-              </FlexRow>
-            </>
+            <GroupInvitationAction message={message} />
           )}
 
           {!!message.payload.files?.[0]?.type === "image" && (
