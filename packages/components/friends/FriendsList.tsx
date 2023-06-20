@@ -17,10 +17,11 @@ import { SpacerColumn, SpacerRow } from "../spacer";
 
 type FriendListProps = {
   item: Conversation;
+  handleChatPress: () => void;
 };
 
 const isOnline = true;
-const FriendList = ({ item }: FriendListProps) => {
+const FriendList = ({ item, handleChatPress }: FriendListProps) => {
   const { metadata } = useNSUserInfo(
     item.members?.[0]?.tokenId || "sakul.tori"
   );
@@ -56,7 +57,7 @@ const FriendList = ({ item }: FriendListProps) => {
         </View>
         <View>
           <FlexRow>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={handleChatPress}>
               <SVG source={chaticon} />
             </TouchableOpacity>
             <SpacerRow size={1.5} />

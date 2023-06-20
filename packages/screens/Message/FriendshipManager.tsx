@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { View, Platform } from "react-native";
 import { useSelector } from "react-redux";
 
@@ -18,14 +18,18 @@ import {
 } from "../../store/slices/message";
 import { layout } from "../../utils/style/layout";
 
-export const FriendshipManager = () => {
+export const FriendshipManager = ({ setActiveConversation }) => {
   const conversations = useSelector(selectConversationList);
   const contactRequests = useSelector(selectContactRequestList);
+
+  const contactConversations = useMemo(() => {
+    return conversations.filter((item) => item.type === "contact");
+  }, [conversations]);
   console.log("contact-requests", contactRequests);
   const tabs = {
     friends: {
       name: "Friends",
-      badgeCount: conversations.length,
+      badgeCount: contactConversations.length,
       icon: "",
     },
     request: {
@@ -52,7 +56,12 @@ export const FriendshipManager = () => {
       />
       <Separator horizontal={false} />
       <SpacerColumn size={2} />
-      {selectedTab === "friends" && <Friends items={conversations} />}
+      {selectedTab === "friends" && (
+        <Friends
+          items={contactConversations}
+          setActiveConversation={setActiveConversation}
+        />
+      )}
       {selectedTab === "request" && <Requests items={contactRequests} />}
       {selectedTab === "addFriend" && <AddFriend />}
     </>
