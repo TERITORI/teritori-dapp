@@ -13,4 +13,5 @@ export const solanaNetwork: NetworkInfo = {
   testnet: false,
   backendEndpoint: "https://dapp-backend.mainnet.teritori.com",
   holaplexGraphqlEndpoint: "",
+  vaultContractAddress: "",
 };

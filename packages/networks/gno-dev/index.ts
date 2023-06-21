@@ -1,16 +1,16 @@
 import { gnoCurrencies } from "./currencies";
 import { GnoNetworkInfo, NetworkKind } from "../types";
 
-export const gnoTestnetNetwork: GnoNetworkInfo = {
-  id: "gno-testnet",
+export const gnoDevNetwork: GnoNetworkInfo = {
+  id: "gno-dev",
   kind: NetworkKind.Gno,
-  displayName: "Gno Testnet",
+  displayName: "Gno Devnet",
   icon: "icons/networks/gno.svg",
   currencies: gnoCurrencies,
   stakeCurrency: "ugnot",
-  idPrefix: "gno",
-  chainId: "test3",
-  endpoint: "https://rpc.test3.gno.land",
+  idPrefix: "gnodev",
+  chainId: "dev",
+  endpoint: "http://127.0.0.1:36657/http://localhost:26657",
   txExplorer: "https://etherscan.io/tx/$hash",
   accountExplorer: "https://etherscan.io/address/$address",
   contractExplorer: "https://etherscan.io/address/$address",

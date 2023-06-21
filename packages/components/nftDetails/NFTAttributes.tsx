@@ -1,16 +1,18 @@
 import React, { useState } from "react";
 import { View } from "react-native";
 
+import { AttributeRarityFloor } from "../../api/marketplace/v1/marketplace";
+import { NFTInfo } from "../../screens/Marketplace/NFTDetailScreen";
 import { neutral33 } from "../../utils/style/colors";
-import { NFTAttribute } from "../../utils/types/nft";
 import { ToggleableButton } from "../buttons/ToggleableButton";
 import { NFTAttributeCard } from "../cards/NFTAttributeCard";
 
 const previewCount = 9;
 
 export const NFTAttributes: React.FC<{
-  nftAttributes?: NFTAttribute[];
-}> = ({ nftAttributes = [] }) => {
+  nftAttributes?: AttributeRarityFloor[];
+  nftInfo: NFTInfo;
+}> = ({ nftAttributes = [], nftInfo }) => {
   const [isMoreDisplayed, setIsMoreDisplayed] = useState(false);
 
   return (
@@ -31,6 +33,7 @@ export const NFTAttributes: React.FC<{
           <NFTAttributeCard
             key={index}
             nftAttribute={attribute}
+            nftInfo={nftInfo}
             style={{
               margin: 6,
             }}

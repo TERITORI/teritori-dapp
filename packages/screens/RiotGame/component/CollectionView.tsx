@@ -15,7 +15,7 @@ export const CollectionView: React.FC<CollectionViewProps> = ({
   collectionId,
 }) => {
   const { collectionInfo: info } = useCollectionInfo(collectionId);
-  const [selectedTab, setSelectedTab] = useState<TabsListType>("allNFTs");
+  const [selectedTab, setSelectedTab] = useState<TabsListType>("collections");
   const [sortDirection, setSortDirection] = useState(
     SortDirection.SORT_DIRECTION_ASCENDING
   );

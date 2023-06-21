@@ -1,41 +1,54 @@
-// libraries
 import React from "react";
 import { StyleSheet, View } from "react-native";
 
-import toriSVG from "../../../assets/icons/networks/teritori-circle.svg";
+import { PrettyPrint } from "../../screens/Marketplace/types";
 import { neutral22, neutralA3 } from "../../utils/style/colors";
 import { fontSemibold12, fontSemibold14 } from "../../utils/style/fonts";
+import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
-import { SVG } from "../SVG";
-import { SpacerColumn, SpacerRow } from "../spacer";
+import { CurrencyIcon } from "../CurrencyIcon";
+import { SpacerColumn } from "../spacer";
 
 type CollectionStatProps = {
   label: string;
-  value: string;
-  addLogo?: boolean;
+  value?: string;
+  currencyIcon?: PrettyPrint;
 };
 
-const iconSize = 16;
+const ICON_SIZE = 16;
 
 export const CollectionStat = ({
   label,
   value,
-  addLogo,
+  currencyIcon,
 }: CollectionStatProps) => {
-  // returns
   return (
     <View style={styles.container}>
-      <BrandText style={styles.labelText}>{label}</BrandText>
+      <BrandText
+        numberOfLines={1}
+        ellipsizeMode="tail"
+        style={styles.labelText}
+      >
+        {label}
+      </BrandText>
       <SpacerColumn size={0.75} />
       <View style={styles.rowCenter}>
-        <BrandText style={fontSemibold14}>{value}</BrandText>
-        {addLogo && (
-          <>
-            <SpacerRow size={0.75} />
-            <View style={{ width: iconSize, height: iconSize }}>
-              <SVG source={toriSVG} width={iconSize} height={iconSize} />
-            </View>
-          </>
+        <BrandText
+          style={[
+            fontSemibold14,
+            {
+              marginRight: layout.padding_x0_5,
+            },
+          ]}
+        >
+          {value}
+        </BrandText>
+        {currencyIcon && (
+          <CurrencyIcon
+            networkId={currencyIcon.networkId}
+            denom={currencyIcon.denom}
+            size={ICON_SIZE}
+          />
         )}
       </View>
     </View>
@@ -62,6 +75,7 @@ const styles = StyleSheet.create({
   rowCenter: {
     flexDirection: "row",
     justifyContent: "center",
+    flexWrap: "nowrap",
     alignItems: "center",
   },
 });

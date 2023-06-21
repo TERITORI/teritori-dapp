@@ -14,6 +14,7 @@ export enum Sort {
   SORT_VOLUME = 2,
   SORT_MARKET_CAP = 3,
   SORT_CREATED_AT = 4,
+  SORT_VOLUME_USD = 5,
   UNRECOGNIZED = -1,
 }
 
@@ -34,6 +35,9 @@ export function sortFromJSON(object: any): Sort {
     case 4:
     case "SORT_CREATED_AT":
       return Sort.SORT_CREATED_AT;
+    case 5:
+    case "SORT_VOLUME_USD":
+      return Sort.SORT_VOLUME_USD;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -53,6 +57,8 @@ export function sortToJSON(object: Sort): string {
       return "SORT_MARKET_CAP";
     case Sort.SORT_CREATED_AT:
       return "SORT_CREATED_AT";
+    case Sort.SORT_VOLUME_USD:
+      return "SORT_VOLUME_USD";
     case Sort.UNRECOGNIZED:
     default:
       return "UNRECOGNIZED";
@@ -142,6 +148,11 @@ export interface Attribute {
   value: string;
 }
 
+export interface PriceRange {
+  min: number;
+  max: number;
+}
+
 export interface NFT {
   id: string;
   networkId: string;
@@ -180,6 +191,12 @@ export interface Collection {
   twitterUrl: string;
   floorPrice: number;
   maxSupply: number;
+  mintPrice: string;
+  totalVolume: number;
+  numTrades: number;
+  numOwners: number;
+  denom: string;
+  volumeCompare: number;
 }
 
 export interface CollectionStats {
@@ -189,6 +206,21 @@ export interface CollectionStats {
   listed: number;
   totalSupply: number;
   owned: number;
+  avgPricePeriod: number;
+}
+
+export interface AttributeRarityFloor {
+  traitType: string;
+  value: string;
+  counta: number;
+  floor: number;
+  collectionId: string;
+  rareRatio: number;
+  collectionSize: number;
+}
+
+export interface NFTCollectionAttributesResponse {
+  attributes: AttributeRarityFloor | undefined;
 }
 
 export interface Activity {
@@ -232,6 +264,11 @@ export interface CollectionStatsRequest {
   ownerId: string;
 }
 
+export interface NFTCollectionAttributesRequest {
+  collectionId: string;
+  whereAttributes: Attribute[];
+}
+
 export interface CollectionStatsResponse {
   stats: CollectionStats | undefined;
 }
@@ -247,6 +284,9 @@ export interface NFTsRequest {
   ownerId: string;
   sort: Sort;
   sortDirection: SortDirection;
+  attributes: Attribute[];
+  isListed: boolean;
+  priceRange: PriceRange | undefined;
 }
 
 export interface NFTsResponse {
@@ -385,31 +425,22 @@ export const Attribute = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Attribute {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseAttribute();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.traitType = reader.string();
-          continue;
+          break;
         case 2:
-          if (tag !== 18) {
-            break;
-          }
-
           message.value = reader.string();
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -428,14 +459,65 @@ export const Attribute = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<Attribute>, I>>(base?: I): Attribute {
-    return Attribute.fromPartial(base ?? {});
-  },
-
   fromPartial<I extends Exact<DeepPartial<Attribute>, I>>(object: I): Attribute {
     const message = createBaseAttribute();
     message.traitType = object.traitType ?? "";
     message.value = object.value ?? "";
+    return message;
+  },
+};
+
+function createBasePriceRange(): PriceRange {
+  return { min: 0, max: 0 };
+}
+
+export const PriceRange = {
+  encode(message: PriceRange, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.min !== 0) {
+      writer.uint32(13).float(message.min);
+    }
+    if (message.max !== 0) {
+      writer.uint32(21).float(message.max);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): PriceRange {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBasePriceRange();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.min = reader.float();
+          break;
+        case 2:
+          message.max = reader.float();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): PriceRange {
+    return { min: isSet(object.min) ? Number(object.min) : 0, max: isSet(object.max) ? Number(object.max) : 0 };
+  },
+
+  toJSON(message: PriceRange): unknown {
+    const obj: any = {};
+    message.min !== undefined && (obj.min = message.min);
+    message.max !== undefined && (obj.max = message.max);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<PriceRange>, I>>(object: I): PriceRange {
+    const message = createBasePriceRange();
+    message.min = object.min ?? 0;
+    message.max = object.max ?? 0;
     return message;
   },
 };
@@ -507,115 +589,58 @@ export const NFT = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): NFT {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseNFT();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.id = reader.string();
-          continue;
+          break;
         case 14:
-          if (tag !== 114) {
-            break;
-          }
-
           message.networkId = reader.string();
-          continue;
+          break;
         case 3:
-          if (tag !== 26) {
-            break;
-          }
-
           message.imageUri = reader.string();
-          continue;
+          break;
         case 4:
-          if (tag !== 34) {
-            break;
-          }
-
           message.name = reader.string();
-          continue;
+          break;
         case 5:
-          if (tag !== 42) {
-            break;
-          }
-
           message.mintAddress = reader.string();
-          continue;
+          break;
         case 6:
-          if (tag !== 50) {
-            break;
-          }
-
           message.price = reader.string();
-          continue;
+          break;
         case 7:
-          if (tag !== 58) {
-            break;
-          }
-
           message.denom = reader.string();
-          continue;
+          break;
         case 8:
-          if (tag !== 64) {
-            break;
-          }
-
           message.isListed = reader.bool();
-          continue;
+          break;
         case 9:
-          if (tag !== 74) {
-            break;
-          }
-
           message.textInsert = reader.string();
-          continue;
+          break;
         case 10:
-          if (tag !== 82) {
-            break;
-          }
-
           message.collectionName = reader.string();
-          continue;
+          break;
         case 13:
-          if (tag !== 106) {
-            break;
-          }
-
           message.ownerId = reader.string();
-          continue;
+          break;
         case 15:
-          if (tag !== 122) {
-            break;
-          }
-
           message.nftContractAddress = reader.string();
-          continue;
+          break;
         case 16:
-          if (tag !== 130) {
-            break;
-          }
-
           message.lockedOn = reader.string();
-          continue;
+          break;
         case 17:
-          if (tag !== 138) {
-            break;
-          }
-
           message.attributes.push(Attribute.decode(reader, reader.uint32()));
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -662,10 +687,6 @@ export const NFT = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<NFT>, I>>(base?: I): NFT {
-    return NFT.fromPartial(base ?? {});
-  },
-
   fromPartial<I extends Exact<DeepPartial<NFT>, I>>(object: I): NFT {
     const message = createBaseNFT();
     message.id = object.id ?? "";
@@ -702,31 +723,22 @@ export const Amount = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Amount {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseAmount();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.denom = reader.string();
-          continue;
+          break;
         case 3:
-          if (tag !== 26) {
-            break;
-          }
-
           message.quantity = reader.string();
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -743,10 +755,6 @@ export const Amount = {
     message.denom !== undefined && (obj.denom = message.denom);
     message.quantity !== undefined && (obj.quantity = message.quantity);
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<Amount>, I>>(base?: I): Amount {
-    return Amount.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<Amount>, I>>(object: I): Amount {
@@ -774,6 +782,12 @@ function createBaseCollection(): Collection {
     twitterUrl: "",
     floorPrice: 0,
     maxSupply: 0,
+    mintPrice: "",
+    totalVolume: 0,
+    numTrades: 0,
+    numOwners: 0,
+    denom: "",
+    volumeCompare: 0,
   };
 }
 
@@ -824,126 +838,101 @@ export const Collection = {
     if (message.maxSupply !== 0) {
       writer.uint32(128).int64(message.maxSupply);
     }
+    if (message.mintPrice !== "") {
+      writer.uint32(138).string(message.mintPrice);
+    }
+    if (message.totalVolume !== 0) {
+      writer.uint32(149).float(message.totalVolume);
+    }
+    if (message.numTrades !== 0) {
+      writer.uint32(152).int64(message.numTrades);
+    }
+    if (message.numOwners !== 0) {
+      writer.uint32(160).int32(message.numOwners);
+    }
+    if (message.denom !== "") {
+      writer.uint32(170).string(message.denom);
+    }
+    if (message.volumeCompare !== 0) {
+      writer.uint32(181).float(message.volumeCompare);
+    }
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Collection {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseCollection();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.id = reader.string();
-          continue;
+          break;
         case 2:
-          if (tag !== 18) {
-            break;
-          }
-
           message.imageUri = reader.string();
-          continue;
+          break;
         case 3:
-          if (tag !== 26) {
-            break;
-          }
-
           message.collectionName = reader.string();
-          continue;
+          break;
         case 4:
-          if (tag !== 34) {
-            break;
-          }
-
           message.creatorName = reader.string();
-          continue;
+          break;
         case 5:
-          if (tag !== 40) {
-            break;
-          }
-
           message.verified = reader.bool();
-          continue;
+          break;
         case 6:
-          if (tag !== 50) {
-            break;
-          }
-
           message.mintAddress = reader.string();
-          continue;
+          break;
         case 11:
-          if (tag !== 90) {
-            break;
-          }
-
           message.networkId = reader.string();
-          continue;
+          break;
         case 8:
-          if (tag !== 66) {
-            break;
-          }
-
           message.volume = reader.string();
-          continue;
+          break;
         case 9:
-          if (tag !== 74) {
-            break;
-          }
-
           message.volumeDenom = reader.string();
-          continue;
+          break;
         case 10:
-          if (tag !== 82) {
-            break;
-          }
-
           message.creatorId = reader.string();
-          continue;
+          break;
         case 12:
-          if (tag !== 96) {
-            break;
-          }
-
           message.secondaryDuringMint = reader.bool();
-          continue;
+          break;
         case 13:
-          if (tag !== 106) {
-            break;
-          }
-
           message.websiteUrl = reader.string();
-          continue;
+          break;
         case 14:
-          if (tag !== 114) {
-            break;
-          }
-
           message.twitterUrl = reader.string();
-          continue;
+          break;
         case 15:
-          if (tag !== 120) {
-            break;
-          }
-
           message.floorPrice = longToNumber(reader.uint64() as Long);
-          continue;
+          break;
         case 16:
-          if (tag !== 128) {
-            break;
-          }
-
           message.maxSupply = longToNumber(reader.int64() as Long);
-          continue;
+          break;
+        case 17:
+          message.mintPrice = reader.string();
+          break;
+        case 18:
+          message.totalVolume = reader.float();
+          break;
+        case 19:
+          message.numTrades = longToNumber(reader.int64() as Long);
+          break;
+        case 20:
+          message.numOwners = reader.int32();
+          break;
+        case 21:
+          message.denom = reader.string();
+          break;
+        case 22:
+          message.volumeCompare = reader.float();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -965,6 +954,12 @@ export const Collection = {
       twitterUrl: isSet(object.twitterUrl) ? String(object.twitterUrl) : "",
       floorPrice: isSet(object.floorPrice) ? Number(object.floorPrice) : 0,
       maxSupply: isSet(object.maxSupply) ? Number(object.maxSupply) : 0,
+      mintPrice: isSet(object.mintPrice) ? String(object.mintPrice) : "",
+      totalVolume: isSet(object.totalVolume) ? Number(object.totalVolume) : 0,
+      numTrades: isSet(object.numTrades) ? Number(object.numTrades) : 0,
+      numOwners: isSet(object.numOwners) ? Number(object.numOwners) : 0,
+      denom: isSet(object.denom) ? String(object.denom) : "",
+      volumeCompare: isSet(object.volumeCompare) ? Number(object.volumeCompare) : 0,
     };
   },
 
@@ -985,11 +980,13 @@ export const Collection = {
     message.twitterUrl !== undefined && (obj.twitterUrl = message.twitterUrl);
     message.floorPrice !== undefined && (obj.floorPrice = Math.round(message.floorPrice));
     message.maxSupply !== undefined && (obj.maxSupply = Math.round(message.maxSupply));
+    message.mintPrice !== undefined && (obj.mintPrice = message.mintPrice);
+    message.totalVolume !== undefined && (obj.totalVolume = message.totalVolume);
+    message.numTrades !== undefined && (obj.numTrades = Math.round(message.numTrades));
+    message.numOwners !== undefined && (obj.numOwners = Math.round(message.numOwners));
+    message.denom !== undefined && (obj.denom = message.denom);
+    message.volumeCompare !== undefined && (obj.volumeCompare = message.volumeCompare);
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<Collection>, I>>(base?: I): Collection {
-    return Collection.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<Collection>, I>>(object: I): Collection {
@@ -1009,12 +1006,18 @@ export const Collection = {
     message.twitterUrl = object.twitterUrl ?? "";
     message.floorPrice = object.floorPrice ?? 0;
     message.maxSupply = object.maxSupply ?? 0;
+    message.mintPrice = object.mintPrice ?? "";
+    message.totalVolume = object.totalVolume ?? 0;
+    message.numTrades = object.numTrades ?? 0;
+    message.numOwners = object.numOwners ?? 0;
+    message.denom = object.denom ?? "";
+    message.volumeCompare = object.volumeCompare ?? 0;
     return message;
   },
 };
 
 function createBaseCollectionStats(): CollectionStats {
-  return { floorPrice: [], totalVolume: "", owners: 0, listed: 0, totalSupply: 0, owned: 0 };
+  return { floorPrice: [], totalVolume: "", owners: 0, listed: 0, totalSupply: 0, owned: 0, avgPricePeriod: 0 };
 }
 
 export const CollectionStats = {
@@ -1037,63 +1040,44 @@ export const CollectionStats = {
     if (message.owned !== 0) {
       writer.uint32(48).int32(message.owned);
     }
+    if (message.avgPricePeriod !== 0) {
+      writer.uint32(61).float(message.avgPricePeriod);
+    }
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): CollectionStats {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseCollectionStats();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.floorPrice.push(Amount.decode(reader, reader.uint32()));
-          continue;
+          break;
         case 2:
-          if (tag !== 18) {
-            break;
-          }
-
           message.totalVolume = reader.string();
-          continue;
+          break;
         case 3:
-          if (tag !== 24) {
-            break;
-          }
-
           message.owners = reader.int32();
-          continue;
+          break;
         case 4:
-          if (tag !== 32) {
-            break;
-          }
-
           message.listed = reader.int32();
-          continue;
+          break;
         case 5:
-          if (tag !== 40) {
-            break;
-          }
-
           message.totalSupply = longToNumber(reader.int64() as Long);
-          continue;
+          break;
         case 6:
-          if (tag !== 48) {
-            break;
-          }
-
           message.owned = reader.int32();
-          continue;
+          break;
+        case 7:
+          message.avgPricePeriod = reader.float();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -1106,6 +1090,7 @@ export const CollectionStats = {
       listed: isSet(object.listed) ? Number(object.listed) : 0,
       totalSupply: isSet(object.totalSupply) ? Number(object.totalSupply) : 0,
       owned: isSet(object.owned) ? Number(object.owned) : 0,
+      avgPricePeriod: isSet(object.avgPricePeriod) ? Number(object.avgPricePeriod) : 0,
     };
   },
 
@@ -1121,11 +1106,8 @@ export const CollectionStats = {
     message.listed !== undefined && (obj.listed = Math.round(message.listed));
     message.totalSupply !== undefined && (obj.totalSupply = Math.round(message.totalSupply));
     message.owned !== undefined && (obj.owned = Math.round(message.owned));
+    message.avgPricePeriod !== undefined && (obj.avgPricePeriod = message.avgPricePeriod);
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<CollectionStats>, I>>(base?: I): CollectionStats {
-    return CollectionStats.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<CollectionStats>, I>>(object: I): CollectionStats {
@@ -1136,6 +1118,162 @@ export const CollectionStats = {
     message.listed = object.listed ?? 0;
     message.totalSupply = object.totalSupply ?? 0;
     message.owned = object.owned ?? 0;
+    message.avgPricePeriod = object.avgPricePeriod ?? 0;
+    return message;
+  },
+};
+
+function createBaseAttributeRarityFloor(): AttributeRarityFloor {
+  return { traitType: "", value: "", counta: 0, floor: 0, collectionId: "", rareRatio: 0, collectionSize: 0 };
+}
+
+export const AttributeRarityFloor = {
+  encode(message: AttributeRarityFloor, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.traitType !== "") {
+      writer.uint32(10).string(message.traitType);
+    }
+    if (message.value !== "") {
+      writer.uint32(18).string(message.value);
+    }
+    if (message.counta !== 0) {
+      writer.uint32(24).int32(message.counta);
+    }
+    if (message.floor !== 0) {
+      writer.uint32(37).float(message.floor);
+    }
+    if (message.collectionId !== "") {
+      writer.uint32(42).string(message.collectionId);
+    }
+    if (message.rareRatio !== 0) {
+      writer.uint32(53).float(message.rareRatio);
+    }
+    if (message.collectionSize !== 0) {
+      writer.uint32(56).int32(message.collectionSize);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): AttributeRarityFloor {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAttributeRarityFloor();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.traitType = reader.string();
+          break;
+        case 2:
+          message.value = reader.string();
+          break;
+        case 3:
+          message.counta = reader.int32();
+          break;
+        case 4:
+          message.floor = reader.float();
+          break;
+        case 5:
+          message.collectionId = reader.string();
+          break;
+        case 6:
+          message.rareRatio = reader.float();
+          break;
+        case 7:
+          message.collectionSize = reader.int32();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): AttributeRarityFloor {
+    return {
+      traitType: isSet(object.traitType) ? String(object.traitType) : "",
+      value: isSet(object.value) ? String(object.value) : "",
+      counta: isSet(object.counta) ? Number(object.counta) : 0,
+      floor: isSet(object.floor) ? Number(object.floor) : 0,
+      collectionId: isSet(object.collectionId) ? String(object.collectionId) : "",
+      rareRatio: isSet(object.rareRatio) ? Number(object.rareRatio) : 0,
+      collectionSize: isSet(object.collectionSize) ? Number(object.collectionSize) : 0,
+    };
+  },
+
+  toJSON(message: AttributeRarityFloor): unknown {
+    const obj: any = {};
+    message.traitType !== undefined && (obj.traitType = message.traitType);
+    message.value !== undefined && (obj.value = message.value);
+    message.counta !== undefined && (obj.counta = Math.round(message.counta));
+    message.floor !== undefined && (obj.floor = message.floor);
+    message.collectionId !== undefined && (obj.collectionId = message.collectionId);
+    message.rareRatio !== undefined && (obj.rareRatio = message.rareRatio);
+    message.collectionSize !== undefined && (obj.collectionSize = Math.round(message.collectionSize));
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<AttributeRarityFloor>, I>>(object: I): AttributeRarityFloor {
+    const message = createBaseAttributeRarityFloor();
+    message.traitType = object.traitType ?? "";
+    message.value = object.value ?? "";
+    message.counta = object.counta ?? 0;
+    message.floor = object.floor ?? 0;
+    message.collectionId = object.collectionId ?? "";
+    message.rareRatio = object.rareRatio ?? 0;
+    message.collectionSize = object.collectionSize ?? 0;
+    return message;
+  },
+};
+
+function createBaseNFTCollectionAttributesResponse(): NFTCollectionAttributesResponse {
+  return { attributes: undefined };
+}
+
+export const NFTCollectionAttributesResponse = {
+  encode(message: NFTCollectionAttributesResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.attributes !== undefined) {
+      AttributeRarityFloor.encode(message.attributes, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): NFTCollectionAttributesResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseNFTCollectionAttributesResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.attributes = AttributeRarityFloor.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): NFTCollectionAttributesResponse {
+    return { attributes: isSet(object.attributes) ? AttributeRarityFloor.fromJSON(object.attributes) : undefined };
+  },
+
+  toJSON(message: NFTCollectionAttributesResponse): unknown {
+    const obj: any = {};
+    message.attributes !== undefined &&
+      (obj.attributes = message.attributes ? AttributeRarityFloor.toJSON(message.attributes) : undefined);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<NFTCollectionAttributesResponse>, I>>(
+    object: I,
+  ): NFTCollectionAttributesResponse {
+    const message = createBaseNFTCollectionAttributesResponse();
+    message.attributes = (object.attributes !== undefined && object.attributes !== null)
+      ? AttributeRarityFloor.fromPartial(object.attributes)
+      : undefined;
     return message;
   },
 };
@@ -1199,101 +1337,52 @@ export const Activity = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Activity {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseActivity();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.id = reader.string();
-          continue;
+          break;
         case 2:
-          if (tag !== 18) {
-            break;
-          }
-
           message.transactionKind = reader.string();
-          continue;
+          break;
         case 3:
-          if (tag !== 26) {
-            break;
-          }
-
           message.targetName = reader.string();
-          continue;
+          break;
         case 4:
-          if (tag !== 34) {
-            break;
-          }
-
           message.targetImageUri = reader.string();
-          continue;
+          break;
         case 5:
-          if (tag !== 42) {
-            break;
-          }
-
           message.contractName = reader.string();
-          continue;
+          break;
         case 6:
-          if (tag !== 50) {
-            break;
-          }
-
           message.time = reader.string();
-          continue;
+          break;
         case 7:
-          if (tag !== 58) {
-            break;
-          }
-
           message.amount = reader.string();
-          continue;
+          break;
         case 8:
-          if (tag !== 66) {
-            break;
-          }
-
           message.denom = reader.string();
-          continue;
+          break;
         case 9:
-          if (tag !== 74) {
-            break;
-          }
-
           message.transactionId = reader.string();
-          continue;
+          break;
         case 10:
-          if (tag !== 82) {
-            break;
-          }
-
           message.buyerId = reader.string();
-          continue;
+          break;
         case 11:
-          if (tag !== 90) {
-            break;
-          }
-
           message.sellerId = reader.string();
-          continue;
+          break;
         case 12:
-          if (tag !== 97) {
-            break;
-          }
-
           message.usdPrice = reader.double();
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -1330,10 +1419,6 @@ export const Activity = {
     message.sellerId !== undefined && (obj.sellerId = message.sellerId);
     message.usdPrice !== undefined && (obj.usdPrice = message.usdPrice);
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<Activity>, I>>(base?: I): Activity {
-    return Activity.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<Activity>, I>>(object: I): Activity {
@@ -1373,38 +1458,25 @@ export const Quest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Quest {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseQuest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.id = reader.string();
-          continue;
+          break;
         case 2:
-          if (tag !== 18) {
-            break;
-          }
-
           message.title = reader.string();
-          continue;
+          break;
         case 3:
-          if (tag !== 24) {
-            break;
-          }
-
           message.completed = reader.bool();
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -1423,10 +1495,6 @@ export const Quest = {
     message.title !== undefined && (obj.title = message.title);
     message.completed !== undefined && (obj.completed = message.completed);
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<Quest>, I>>(base?: I): Quest {
-    return Quest.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<Quest>, I>>(object: I): Quest {
@@ -1454,31 +1522,22 @@ export const PriceDatum = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): PriceDatum {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBasePriceDatum();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 3:
-          if (tag !== 26) {
-            break;
-          }
-
           message.price = reader.string();
-          continue;
+          break;
         case 2:
-          if (tag !== 18) {
-            break;
-          }
-
           message.time = reader.string();
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -1495,10 +1554,6 @@ export const PriceDatum = {
     message.price !== undefined && (obj.price = message.price);
     message.time !== undefined && (obj.time = message.time);
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<PriceDatum>, I>>(base?: I): PriceDatum {
-    return PriceDatum.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<PriceDatum>, I>>(object: I): PriceDatum {
@@ -1540,66 +1595,37 @@ export const CollectionsRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): CollectionsRequest {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseCollectionsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 2:
-          if (tag !== 16) {
-            break;
-          }
-
           message.limit = reader.int32();
-          continue;
+          break;
         case 3:
-          if (tag !== 24) {
-            break;
-          }
-
           message.offset = reader.int32();
-          continue;
+          break;
         case 4:
-          if (tag !== 32) {
-            break;
-          }
-
           message.sort = reader.int32() as any;
-          continue;
+          break;
         case 5:
-          if (tag !== 40) {
-            break;
-          }
-
           message.sortDirection = reader.int32() as any;
-          continue;
+          break;
         case 6:
-          if (tag !== 48) {
-            break;
-          }
-
           message.upcoming = reader.bool();
-          continue;
+          break;
         case 7:
-          if (tag !== 58) {
-            break;
-          }
-
           message.networkId = reader.string();
-          continue;
+          break;
         case 8:
-          if (tag !== 64) {
-            break;
-          }
-
           message.mintState = reader.int32() as any;
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -1626,10 +1652,6 @@ export const CollectionsRequest = {
     message.networkId !== undefined && (obj.networkId = message.networkId);
     message.mintState !== undefined && (obj.mintState = mintStateToJSON(message.mintState));
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<CollectionsRequest>, I>>(base?: I): CollectionsRequest {
-    return CollectionsRequest.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<CollectionsRequest>, I>>(object: I): CollectionsRequest {
@@ -1661,31 +1683,22 @@ export const CollectionStatsRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): CollectionStatsRequest {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseCollectionStatsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.collectionId = reader.string();
-          continue;
+          break;
         case 2:
-          if (tag !== 18) {
-            break;
-          }
-
           message.ownerId = reader.string();
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -1704,14 +1717,76 @@ export const CollectionStatsRequest = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<CollectionStatsRequest>, I>>(base?: I): CollectionStatsRequest {
-    return CollectionStatsRequest.fromPartial(base ?? {});
-  },
-
   fromPartial<I extends Exact<DeepPartial<CollectionStatsRequest>, I>>(object: I): CollectionStatsRequest {
     const message = createBaseCollectionStatsRequest();
     message.collectionId = object.collectionId ?? "";
     message.ownerId = object.ownerId ?? "";
+    return message;
+  },
+};
+
+function createBaseNFTCollectionAttributesRequest(): NFTCollectionAttributesRequest {
+  return { collectionId: "", whereAttributes: [] };
+}
+
+export const NFTCollectionAttributesRequest = {
+  encode(message: NFTCollectionAttributesRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.collectionId !== "") {
+      writer.uint32(10).string(message.collectionId);
+    }
+    for (const v of message.whereAttributes) {
+      Attribute.encode(v!, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): NFTCollectionAttributesRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseNFTCollectionAttributesRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.collectionId = reader.string();
+          break;
+        case 2:
+          message.whereAttributes.push(Attribute.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): NFTCollectionAttributesRequest {
+    return {
+      collectionId: isSet(object.collectionId) ? String(object.collectionId) : "",
+      whereAttributes: Array.isArray(object?.whereAttributes)
+        ? object.whereAttributes.map((e: any) => Attribute.fromJSON(e))
+        : [],
+    };
+  },
+
+  toJSON(message: NFTCollectionAttributesRequest): unknown {
+    const obj: any = {};
+    message.collectionId !== undefined && (obj.collectionId = message.collectionId);
+    if (message.whereAttributes) {
+      obj.whereAttributes = message.whereAttributes.map((e) => e ? Attribute.toJSON(e) : undefined);
+    } else {
+      obj.whereAttributes = [];
+    }
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<NFTCollectionAttributesRequest>, I>>(
+    object: I,
+  ): NFTCollectionAttributesRequest {
+    const message = createBaseNFTCollectionAttributesRequest();
+    message.collectionId = object.collectionId ?? "";
+    message.whereAttributes = object.whereAttributes?.map((e) => Attribute.fromPartial(e)) || [];
     return message;
   },
 };
@@ -1729,24 +1804,19 @@ export const CollectionStatsResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): CollectionStatsResponse {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseCollectionStatsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.stats = CollectionStats.decode(reader, reader.uint32());
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -1759,10 +1829,6 @@ export const CollectionStatsResponse = {
     const obj: any = {};
     message.stats !== undefined && (obj.stats = message.stats ? CollectionStats.toJSON(message.stats) : undefined);
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<CollectionStatsResponse>, I>>(base?: I): CollectionStatsResponse {
-    return CollectionStatsResponse.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<CollectionStatsResponse>, I>>(object: I): CollectionStatsResponse {
@@ -1787,24 +1853,19 @@ export const CollectionsResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): CollectionsResponse {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseCollectionsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.collection = Collection.decode(reader, reader.uint32());
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -1820,10 +1881,6 @@ export const CollectionsResponse = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<CollectionsResponse>, I>>(base?: I): CollectionsResponse {
-    return CollectionsResponse.fromPartial(base ?? {});
-  },
-
   fromPartial<I extends Exact<DeepPartial<CollectionsResponse>, I>>(object: I): CollectionsResponse {
     const message = createBaseCollectionsResponse();
     message.collection = (object.collection !== undefined && object.collection !== null)
@@ -1834,7 +1891,17 @@ export const CollectionsResponse = {
 };
 
 function createBaseNFTsRequest(): NFTsRequest {
-  return { limit: 0, offset: 0, collectionId: "", ownerId: "", sort: 0, sortDirection: 0 };
+  return {
+    limit: 0,
+    offset: 0,
+    collectionId: "",
+    ownerId: "",
+    sort: 0,
+    sortDirection: 0,
+    attributes: [],
+    isListed: false,
+    priceRange: undefined,
+  };
 }
 
 export const NFTsRequest = {
@@ -1857,63 +1924,56 @@ export const NFTsRequest = {
     if (message.sortDirection !== 0) {
       writer.uint32(48).int32(message.sortDirection);
     }
+    for (const v of message.attributes) {
+      Attribute.encode(v!, writer.uint32(58).fork()).ldelim();
+    }
+    if (message.isListed === true) {
+      writer.uint32(64).bool(message.isListed);
+    }
+    if (message.priceRange !== undefined) {
+      PriceRange.encode(message.priceRange, writer.uint32(74).fork()).ldelim();
+    }
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): NFTsRequest {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseNFTsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 8) {
-            break;
-          }
-
           message.limit = reader.int32();
-          continue;
+          break;
         case 2:
-          if (tag !== 16) {
-            break;
-          }
-
           message.offset = reader.int32();
-          continue;
+          break;
         case 3:
-          if (tag !== 26) {
-            break;
-          }
-
           message.collectionId = reader.string();
-          continue;
+          break;
         case 4:
-          if (tag !== 34) {
-            break;
-          }
-
           message.ownerId = reader.string();
-          continue;
+          break;
         case 5:
-          if (tag !== 40) {
-            break;
-          }
-
           message.sort = reader.int32() as any;
-          continue;
+          break;
         case 6:
-          if (tag !== 48) {
-            break;
-          }
-
           message.sortDirection = reader.int32() as any;
-          continue;
+          break;
+        case 7:
+          message.attributes.push(Attribute.decode(reader, reader.uint32()));
+          break;
+        case 8:
+          message.isListed = reader.bool();
+          break;
+        case 9:
+          message.priceRange = PriceRange.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -1926,6 +1986,9 @@ export const NFTsRequest = {
       ownerId: isSet(object.ownerId) ? String(object.ownerId) : "",
       sort: isSet(object.sort) ? sortFromJSON(object.sort) : 0,
       sortDirection: isSet(object.sortDirection) ? sortDirectionFromJSON(object.sortDirection) : 0,
+      attributes: Array.isArray(object?.attributes) ? object.attributes.map((e: any) => Attribute.fromJSON(e)) : [],
+      isListed: isSet(object.isListed) ? Boolean(object.isListed) : false,
+      priceRange: isSet(object.priceRange) ? PriceRange.fromJSON(object.priceRange) : undefined,
     };
   },
 
@@ -1937,11 +2000,15 @@ export const NFTsRequest = {
     message.ownerId !== undefined && (obj.ownerId = message.ownerId);
     message.sort !== undefined && (obj.sort = sortToJSON(message.sort));
     message.sortDirection !== undefined && (obj.sortDirection = sortDirectionToJSON(message.sortDirection));
+    if (message.attributes) {
+      obj.attributes = message.attributes.map((e) => e ? Attribute.toJSON(e) : undefined);
+    } else {
+      obj.attributes = [];
+    }
+    message.isListed !== undefined && (obj.isListed = message.isListed);
+    message.priceRange !== undefined &&
+      (obj.priceRange = message.priceRange ? PriceRange.toJSON(message.priceRange) : undefined);
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<NFTsRequest>, I>>(base?: I): NFTsRequest {
-    return NFTsRequest.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<NFTsRequest>, I>>(object: I): NFTsRequest {
@@ -1952,6 +2019,11 @@ export const NFTsRequest = {
     message.ownerId = object.ownerId ?? "";
     message.sort = object.sort ?? 0;
     message.sortDirection = object.sortDirection ?? 0;
+    message.attributes = object.attributes?.map((e) => Attribute.fromPartial(e)) || [];
+    message.isListed = object.isListed ?? false;
+    message.priceRange = (object.priceRange !== undefined && object.priceRange !== null)
+      ? PriceRange.fromPartial(object.priceRange)
+      : undefined;
     return message;
   },
 };
@@ -1969,24 +2041,19 @@ export const NFTsResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): NFTsResponse {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseNFTsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.nft = NFT.decode(reader, reader.uint32());
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -1999,10 +2066,6 @@ export const NFTsResponse = {
     const obj: any = {};
     message.nft !== undefined && (obj.nft = message.nft ? NFT.toJSON(message.nft) : undefined);
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<NFTsResponse>, I>>(base?: I): NFTsResponse {
-    return NFTsResponse.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<NFTsResponse>, I>>(object: I): NFTsResponse {
@@ -2031,38 +2094,25 @@ export const QuestsRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): QuestsRequest {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseQuestsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 8) {
-            break;
-          }
-
           message.limit = reader.int32();
-          continue;
+          break;
         case 2:
-          if (tag !== 16) {
-            break;
-          }
-
           message.offset = reader.int32();
-          continue;
+          break;
         case 3:
-          if (tag !== 26) {
-            break;
-          }
-
           message.userId = reader.string();
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -2081,10 +2131,6 @@ export const QuestsRequest = {
     message.offset !== undefined && (obj.offset = Math.round(message.offset));
     message.userId !== undefined && (obj.userId = message.userId);
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<QuestsRequest>, I>>(base?: I): QuestsRequest {
-    return QuestsRequest.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<QuestsRequest>, I>>(object: I): QuestsRequest {
@@ -2109,24 +2155,19 @@ export const QuestsResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): QuestsResponse {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseQuestsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.quest = Quest.decode(reader, reader.uint32());
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -2139,10 +2180,6 @@ export const QuestsResponse = {
     const obj: any = {};
     message.quest !== undefined && (obj.quest = message.quest ? Quest.toJSON(message.quest) : undefined);
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<QuestsResponse>, I>>(base?: I): QuestsResponse {
-    return QuestsResponse.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<QuestsResponse>, I>>(object: I): QuestsResponse {
@@ -2174,45 +2211,28 @@ export const ActivityRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ActivityRequest {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseActivityRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.collectionId = reader.string();
-          continue;
+          break;
         case 2:
-          if (tag !== 18) {
-            break;
-          }
-
           message.nftId = reader.string();
-          continue;
+          break;
         case 3:
-          if (tag !== 24) {
-            break;
-          }
-
           message.limit = reader.int32();
-          continue;
+          break;
         case 4:
-          if (tag !== 32) {
-            break;
-          }
-
           message.offset = reader.int32();
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -2233,10 +2253,6 @@ export const ActivityRequest = {
     message.limit !== undefined && (obj.limit = Math.round(message.limit));
     message.offset !== undefined && (obj.offset = Math.round(message.offset));
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<ActivityRequest>, I>>(base?: I): ActivityRequest {
-    return ActivityRequest.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<ActivityRequest>, I>>(object: I): ActivityRequest {
@@ -2265,31 +2281,22 @@ export const ActivityResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ActivityResponse {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseActivityResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.activity = Activity.decode(reader, reader.uint32());
-          continue;
+          break;
         case 2:
-          if (tag !== 16) {
-            break;
-          }
-
           message.total = longToNumber(reader.int64() as Long);
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -2306,10 +2313,6 @@ export const ActivityResponse = {
     message.activity !== undefined && (obj.activity = message.activity ? Activity.toJSON(message.activity) : undefined);
     message.total !== undefined && (obj.total = Math.round(message.total));
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<ActivityResponse>, I>>(base?: I): ActivityResponse {
-    return ActivityResponse.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<ActivityResponse>, I>>(object: I): ActivityResponse {
@@ -2335,24 +2338,19 @@ export const NFTPriceHistoryRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): NFTPriceHistoryRequest {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseNFTPriceHistoryRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.id = reader.string();
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -2365,10 +2363,6 @@ export const NFTPriceHistoryRequest = {
     const obj: any = {};
     message.id !== undefined && (obj.id = message.id);
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<NFTPriceHistoryRequest>, I>>(base?: I): NFTPriceHistoryRequest {
-    return NFTPriceHistoryRequest.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<NFTPriceHistoryRequest>, I>>(object: I): NFTPriceHistoryRequest {
@@ -2391,24 +2385,19 @@ export const NFTPriceHistoryResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): NFTPriceHistoryResponse {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseNFTPriceHistoryResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.data.push(PriceDatum.decode(reader, reader.uint32()));
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -2425,10 +2414,6 @@ export const NFTPriceHistoryResponse = {
       obj.data = [];
     }
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<NFTPriceHistoryResponse>, I>>(base?: I): NFTPriceHistoryResponse {
-    return NFTPriceHistoryResponse.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<NFTPriceHistoryResponse>, I>>(object: I): NFTPriceHistoryResponse {
@@ -2454,31 +2439,22 @@ export const Action = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Action {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseAction();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.label = reader.string();
-          continue;
+          break;
         case 2:
-          if (tag !== 18) {
-            break;
-          }
-
           message.url = reader.string();
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -2492,10 +2468,6 @@ export const Action = {
     message.label !== undefined && (obj.label = message.label);
     message.url !== undefined && (obj.url = message.url);
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<Action>, I>>(base?: I): Action {
-    return Action.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<Action>, I>>(object: I): Action {
@@ -2531,52 +2503,31 @@ export const News = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): News {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseNews();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.title = reader.string();
-          continue;
+          break;
         case 2:
-          if (tag !== 18) {
-            break;
-          }
-
           message.subtitle = reader.string();
-          continue;
+          break;
         case 3:
-          if (tag !== 26) {
-            break;
-          }
-
           message.text = reader.string();
-          continue;
+          break;
         case 4:
-          if (tag !== 34) {
-            break;
-          }
-
           message.image = reader.string();
-          continue;
+          break;
         case 5:
-          if (tag !== 42) {
-            break;
-          }
-
           message.actions.push(Action.decode(reader, reader.uint32()));
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -2603,10 +2554,6 @@ export const News = {
       obj.actions = [];
     }
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<News>, I>>(base?: I): News {
-    return News.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<News>, I>>(object: I): News {
@@ -2642,45 +2589,28 @@ export const DAppGroup = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): DAppGroup {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseDAppGroup();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.id = reader.string();
-          continue;
+          break;
         case 2:
-          if (tag !== 18) {
-            break;
-          }
-
           message.groupName = reader.string();
-          continue;
+          break;
         case 3:
-          if (tag !== 26) {
-            break;
-          }
-
           message.icon = reader.string();
-          continue;
+          break;
         case 4:
-          if (tag !== 34) {
-            break;
-          }
-
           message.options.push(reader.string());
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -2705,10 +2635,6 @@ export const DAppGroup = {
       obj.options = [];
     }
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<DAppGroup>, I>>(base?: I): DAppGroup {
-    return DAppGroup.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<DAppGroup>, I>>(object: I): DAppGroup {
@@ -2768,80 +2694,43 @@ export const DApp = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): DApp {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseDApp();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.id = reader.string();
-          continue;
+          break;
         case 2:
-          if (tag !== 18) {
-            break;
-          }
-
           message.title = reader.string();
-          continue;
+          break;
         case 3:
-          if (tag !== 26) {
-            break;
-          }
-
           message.description = reader.string();
-          continue;
+          break;
         case 4:
-          if (tag !== 34) {
-            break;
-          }
-
           message.icon = reader.string();
-          continue;
+          break;
         case 5:
-          if (tag !== 42) {
-            break;
-          }
-
           message.route = reader.string();
-          continue;
+          break;
         case 6:
-          if (tag !== 50) {
-            break;
-          }
-
           message.groupKey = reader.string();
-          continue;
+          break;
         case 7:
-          if (tag !== 58) {
-            break;
-          }
-
           message.linkingId = reader.string();
-          continue;
+          break;
         case 8:
-          if (tag !== 64) {
-            break;
-          }
-
           message.selectedByDefault = reader.bool();
-          continue;
+          break;
         case 9:
-          if (tag !== 72) {
-            break;
-          }
-
           message.alwaysOn = reader.bool();
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -2872,10 +2761,6 @@ export const DApp = {
     message.selectedByDefault !== undefined && (obj.selectedByDefault = message.selectedByDefault);
     message.alwaysOn !== undefined && (obj.alwaysOn = message.alwaysOn);
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<DApp>, I>>(base?: I): DApp {
-    return DApp.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<DApp>, I>>(object: I): DApp {
@@ -2909,31 +2794,22 @@ export const Banner = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Banner {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseBanner();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.image = reader.string();
-          continue;
+          break;
         case 2:
-          if (tag !== 18) {
-            break;
-          }
-
           message.url = reader.string();
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -2947,10 +2823,6 @@ export const Banner = {
     message.image !== undefined && (obj.image = message.image);
     message.url !== undefined && (obj.url = message.url);
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<Banner>, I>>(base?: I): Banner {
-    return Banner.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<Banner>, I>>(object: I): Banner {
@@ -2974,24 +2846,19 @@ export const BannersRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): BannersRequest {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseBannersRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 8) {
-            break;
-          }
-
           message.testnet = reader.bool();
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -3004,10 +2871,6 @@ export const BannersRequest = {
     const obj: any = {};
     message.testnet !== undefined && (obj.testnet = message.testnet);
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<BannersRequest>, I>>(base?: I): BannersRequest {
-    return BannersRequest.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<BannersRequest>, I>>(object: I): BannersRequest {
@@ -3030,24 +2893,19 @@ export const BannersResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): BannersResponse {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseBannersResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.banners.push(Banner.decode(reader, reader.uint32()));
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -3064,10 +2922,6 @@ export const BannersResponse = {
       obj.banners = [];
     }
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<BannersResponse>, I>>(base?: I): BannersResponse {
-    return BannersResponse.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<BannersResponse>, I>>(object: I): BannersResponse {
@@ -3090,24 +2944,19 @@ export const NewsRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): NewsRequest {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseNewsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 8) {
-            break;
-          }
-
           message.testnet = reader.bool();
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -3120,10 +2969,6 @@ export const NewsRequest = {
     const obj: any = {};
     message.testnet !== undefined && (obj.testnet = message.testnet);
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<NewsRequest>, I>>(base?: I): NewsRequest {
-    return NewsRequest.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<NewsRequest>, I>>(object: I): NewsRequest {
@@ -3146,24 +2991,19 @@ export const NewsResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): NewsResponse {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseNewsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.news.push(News.decode(reader, reader.uint32()));
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -3180,10 +3020,6 @@ export const NewsResponse = {
       obj.news = [];
     }
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<NewsResponse>, I>>(base?: I): NewsResponse {
-    return NewsResponse.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<NewsResponse>, I>>(object: I): NewsResponse {
@@ -3203,17 +3039,16 @@ export const DAppsRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): DAppsRequest {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseDAppsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -3225,10 +3060,6 @@ export const DAppsRequest = {
   toJSON(_: DAppsRequest): unknown {
     const obj: any = {};
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<DAppsRequest>, I>>(base?: I): DAppsRequest {
-    return DAppsRequest.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<DAppsRequest>, I>>(_: I): DAppsRequest {
@@ -3250,24 +3081,19 @@ export const DAppsResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): DAppsResponse {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseDAppsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.group.push(DApp.decode(reader, reader.uint32()));
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -3284,10 +3110,6 @@ export const DAppsResponse = {
       obj.group = [];
     }
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<DAppsResponse>, I>>(base?: I): DAppsResponse {
-    return DAppsResponse.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<DAppsResponse>, I>>(object: I): DAppsResponse {
@@ -3307,17 +3129,16 @@ export const DAppsGroupsRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): DAppsGroupsRequest {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseDAppsGroupsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -3329,10 +3150,6 @@ export const DAppsGroupsRequest = {
   toJSON(_: DAppsGroupsRequest): unknown {
     const obj: any = {};
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<DAppsGroupsRequest>, I>>(base?: I): DAppsGroupsRequest {
-    return DAppsGroupsRequest.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<DAppsGroupsRequest>, I>>(_: I): DAppsGroupsRequest {
@@ -3354,24 +3171,19 @@ export const DAppsGroupsResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): DAppsGroupsResponse {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseDAppsGroupsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.group.push(DAppGroup.decode(reader, reader.uint32()));
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -3388,10 +3200,6 @@ export const DAppsGroupsResponse = {
       obj.group = [];
     }
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<DAppsGroupsResponse>, I>>(base?: I): DAppsGroupsResponse {
-    return DAppsGroupsResponse.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<DAppsGroupsResponse>, I>>(object: I): DAppsGroupsResponse {
@@ -3420,38 +3228,25 @@ export const SearchNamesRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): SearchNamesRequest {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseSearchNamesRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.networkId = reader.string();
-          continue;
+          break;
         case 2:
-          if (tag !== 18) {
-            break;
-          }
-
           message.input = reader.string();
-          continue;
+          break;
         case 3:
-          if (tag !== 24) {
-            break;
-          }
-
           message.limit = reader.int32();
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -3470,10 +3265,6 @@ export const SearchNamesRequest = {
     message.input !== undefined && (obj.input = message.input);
     message.limit !== undefined && (obj.limit = Math.round(message.limit));
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<SearchNamesRequest>, I>>(base?: I): SearchNamesRequest {
-    return SearchNamesRequest.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<SearchNamesRequest>, I>>(object: I): SearchNamesRequest {
@@ -3498,24 +3289,19 @@ export const SearchNamesResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): SearchNamesResponse {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseSearchNamesResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.names.push(reader.string());
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -3532,10 +3318,6 @@ export const SearchNamesResponse = {
       obj.names = [];
     }
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<SearchNamesResponse>, I>>(base?: I): SearchNamesResponse {
-    return SearchNamesResponse.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<SearchNamesResponse>, I>>(object: I): SearchNamesResponse {
@@ -3561,31 +3343,22 @@ export const SearchCollectionsRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): SearchCollectionsRequest {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseSearchCollectionsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.input = reader.string();
-          continue;
+          break;
         case 2:
-          if (tag !== 16) {
-            break;
-          }
-
           message.limit = reader.int32();
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -3602,10 +3375,6 @@ export const SearchCollectionsRequest = {
     message.input !== undefined && (obj.input = message.input);
     message.limit !== undefined && (obj.limit = Math.round(message.limit));
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<SearchCollectionsRequest>, I>>(base?: I): SearchCollectionsRequest {
-    return SearchCollectionsRequest.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<SearchCollectionsRequest>, I>>(object: I): SearchCollectionsRequest {
@@ -3629,24 +3398,19 @@ export const SearchCollectionsResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): SearchCollectionsResponse {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseSearchCollectionsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.collections.push(Collection.decode(reader, reader.uint32()));
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -3667,10 +3431,6 @@ export const SearchCollectionsResponse = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<SearchCollectionsResponse>, I>>(base?: I): SearchCollectionsResponse {
-    return SearchCollectionsResponse.fromPartial(base ?? {});
-  },
-
   fromPartial<I extends Exact<DeepPartial<SearchCollectionsResponse>, I>>(object: I): SearchCollectionsResponse {
     const message = createBaseSearchCollectionsResponse();
     message.collections = object.collections?.map((e) => Collection.fromPartial(e)) || [];
@@ -3685,6 +3445,10 @@ export interface MarketplaceService {
     metadata?: grpc.Metadata,
   ): Promise<CollectionStatsResponse>;
   NFTs(request: DeepPartial<NFTsRequest>, metadata?: grpc.Metadata): Observable<NFTsResponse>;
+  NFTCollectionAttributes(
+    request: DeepPartial<NFTCollectionAttributesRequest>,
+    metadata?: grpc.Metadata,
+  ): Observable<NFTCollectionAttributesResponse>;
   Quests(request: DeepPartial<QuestsRequest>, metadata?: grpc.Metadata): Observable<QuestsResponse>;
   Activity(request: DeepPartial<ActivityRequest>, metadata?: grpc.Metadata): Observable<ActivityResponse>;
   NFTPriceHistory(
@@ -3710,6 +3474,7 @@ export class MarketplaceServiceClientImpl implements MarketplaceService {
     this.Collections = this.Collections.bind(this);
     this.CollectionStats = this.CollectionStats.bind(this);
     this.NFTs = this.NFTs.bind(this);
+    this.NFTCollectionAttributes = this.NFTCollectionAttributes.bind(this);
     this.Quests = this.Quests.bind(this);
     this.Activity = this.Activity.bind(this);
     this.NFTPriceHistory = this.NFTPriceHistory.bind(this);
@@ -3734,6 +3499,17 @@ export class MarketplaceServiceClientImpl implements MarketplaceService {
 
   NFTs(request: DeepPartial<NFTsRequest>, metadata?: grpc.Metadata): Observable<NFTsResponse> {
     return this.rpc.invoke(MarketplaceServiceNFTsDesc, NFTsRequest.fromPartial(request), metadata);
+  }
+
+  NFTCollectionAttributes(
+    request: DeepPartial<NFTCollectionAttributesRequest>,
+    metadata?: grpc.Metadata,
+  ): Observable<NFTCollectionAttributesResponse> {
+    return this.rpc.invoke(
+      MarketplaceServiceNFTCollectionAttributesDesc,
+      NFTCollectionAttributesRequest.fromPartial(request),
+      metadata,
+    );
   }
 
   Quests(request: DeepPartial<QuestsRequest>, metadata?: grpc.Metadata): Observable<QuestsResponse> {
@@ -3797,11 +3573,10 @@ export const MarketplaceServiceCollectionsDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
-      const value = CollectionsResponse.decode(data);
       return {
-        ...value,
+        ...CollectionsResponse.decode(data),
         toObject() {
-          return value;
+          return this;
         },
       };
     },
@@ -3820,11 +3595,10 @@ export const MarketplaceServiceCollectionStatsDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
-      const value = CollectionStatsResponse.decode(data);
       return {
-        ...value,
+        ...CollectionStatsResponse.decode(data),
         toObject() {
-          return value;
+          return this;
         },
       };
     },
@@ -3843,11 +3617,32 @@ export const MarketplaceServiceNFTsDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
-      const value = NFTsResponse.decode(data);
       return {
-        ...value,
+        ...NFTsResponse.decode(data),
         toObject() {
-          return value;
+          return this;
+        },
+      };
+    },
+  } as any,
+};
+
+export const MarketplaceServiceNFTCollectionAttributesDesc: UnaryMethodDefinitionish = {
+  methodName: "NFTCollectionAttributes",
+  service: MarketplaceServiceDesc,
+  requestStream: false,
+  responseStream: true,
+  requestType: {
+    serializeBinary() {
+      return NFTCollectionAttributesRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      return {
+        ...NFTCollectionAttributesResponse.decode(data),
+        toObject() {
+          return this;
         },
       };
     },
@@ -3866,11 +3661,10 @@ export const MarketplaceServiceQuestsDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
-      const value = QuestsResponse.decode(data);
       return {
-        ...value,
+        ...QuestsResponse.decode(data),
         toObject() {
-          return value;
+          return this;
         },
       };
     },
@@ -3889,11 +3683,10 @@ export const MarketplaceServiceActivityDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
-      const value = ActivityResponse.decode(data);
       return {
-        ...value,
+        ...ActivityResponse.decode(data),
         toObject() {
-          return value;
+          return this;
         },
       };
     },
@@ -3912,11 +3705,10 @@ export const MarketplaceServiceNFTPriceHistoryDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
-      const value = NFTPriceHistoryResponse.decode(data);
       return {
-        ...value,
+        ...NFTPriceHistoryResponse.decode(data),
         toObject() {
-          return value;
+          return this;
         },
       };
     },
@@ -3935,11 +3727,10 @@ export const MarketplaceServiceBannersDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
-      const value = BannersResponse.decode(data);
       return {
-        ...value,
+        ...BannersResponse.decode(data),
         toObject() {
-          return value;
+          return this;
         },
       };
     },
@@ -3958,11 +3749,10 @@ export const MarketplaceServiceNewsDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
-      const value = NewsResponse.decode(data);
       return {
-        ...value,
+        ...NewsResponse.decode(data),
         toObject() {
-          return value;
+          return this;
         },
       };
     },
@@ -3981,11 +3771,10 @@ export const MarketplaceServiceDAppsDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
-      const value = DAppsResponse.decode(data);
       return {
-        ...value,
+        ...DAppsResponse.decode(data),
         toObject() {
-          return value;
+          return this;
         },
       };
     },
@@ -4004,11 +3793,10 @@ export const MarketplaceServiceDAppsGroupsDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
-      const value = DAppsGroupsResponse.decode(data);
       return {
-        ...value,
+        ...DAppsGroupsResponse.decode(data),
         toObject() {
-          return value;
+          return this;
         },
       };
     },
@@ -4027,11 +3815,10 @@ export const MarketplaceServiceSearchNamesDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
-      const value = SearchNamesResponse.decode(data);
       return {
-        ...value,
+        ...SearchNamesResponse.decode(data),
         toObject() {
-          return value;
+          return this;
         },
       };
     },
@@ -4050,11 +3837,10 @@ export const MarketplaceServiceSearchCollectionsDesc: UnaryMethodDefinitionish =
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
-      const value = SearchCollectionsResponse.decode(data);
       return {
-        ...value,
+        ...SearchCollectionsResponse.decode(data),
         toObject() {
-          return value;
+          return this;
         },
       };
     },
@@ -4123,7 +3909,7 @@ export class GrpcWebImpl {
         debug: this.options.debug,
         onEnd: function (response) {
           if (response.status === grpc.Code.OK) {
-            resolve(response.message!.toObject());
+            resolve(response.message);
           } else {
             const err = new GrpcWebError(response.statusMessage, response.status, response.trailers);
             reject(err);
@@ -4166,9 +3952,7 @@ export class GrpcWebImpl {
             }
           },
         });
-        observer.add(() => {
-          return client.close();
-        });
+        observer.add(() => client.close());
       });
       upStream();
     }).pipe(share());
@@ -4178,7 +3962,7 @@ export class GrpcWebImpl {
 declare var self: any | undefined;
 declare var window: any | undefined;
 declare var global: any | undefined;
-var tsProtoGlobalThis: any = (() => {
+var globalThis: any = (() => {
   if (typeof globalThis !== "undefined") {
     return globalThis;
   }
@@ -4207,7 +3991,7 @@ export type Exact<P, I extends P> = P extends Builtin ? P
 
 function longToNumber(long: Long): number {
   if (long.gt(Number.MAX_SAFE_INTEGER)) {
-    throw new tsProtoGlobalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
+    throw new globalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
   }
   return long.toNumber();
 }
@@ -4221,7 +4005,7 @@ function isSet(value: any): boolean {
   return value !== null && value !== undefined;
 }
 
-export class GrpcWebError extends tsProtoGlobalThis.Error {
+export class GrpcWebError extends Error {
   constructor(message: string, public code: grpc.Code, public metadata: grpc.Metadata) {
     super(message);
   }

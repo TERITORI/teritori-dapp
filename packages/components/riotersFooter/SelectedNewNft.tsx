@@ -38,6 +38,9 @@ const SelectNewNft: React.FC<{
       offset: 0,
       sort: Sort.SORT_PRICE,
       sortDirection: SortDirection.SORT_DIRECTION_ASCENDING,
+      attributes: [],
+      isListed: false,
+      priceRange: undefined,
     });
 
     const RenderItem: React.FC<{ item: NFT }> = useCallback(
