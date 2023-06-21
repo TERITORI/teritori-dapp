@@ -2,7 +2,7 @@ import {
   CosmWasmClient,
   SigningCosmWasmClient,
 } from "@cosmjs/cosmwasm-stargate";
-import { Decimal } from "@cosmjs/crypto/node_modules/@cosmjs/math/build/decimal";
+import { Decimal } from "@cosmjs/math";
 import { Registry } from "@cosmjs/proto-signing";
 import {
   SigningStargateClient,
@@ -385,6 +385,7 @@ export const getKeplrSigningStargateClient = async (
     signer,
     {
       gasPrice,
+      // @ts-expect-error
       registry: pbTypesRegistry,
     }
   );

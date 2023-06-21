@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FlatList, StyleProp, View, ViewStyle } from "react-native";
 
+import { EscrowInfo } from "../../../api/freelance/v1/freelance";
 import { TeritoriEscrowClient } from "../../../contracts-clients/teritori-freelance/TeritoriEscrow.client";
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
@@ -13,7 +14,7 @@ import { mineShaftColor } from "../../../utils/style/colors";
 import { fontSemibold13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { tinyAddress } from "../../../utils/text";
-import { EscrowInfo, EscrowStatus } from "../../../utils/types/freelance";
+import { EscrowStatus } from "../../../utils/types/freelance";
 import { BrandText } from "../../BrandText";
 import { SecondaryButtonOutline } from "../../buttons/SecondaryButtonOutline";
 import { SpacerRow } from "../../spacer";
@@ -262,7 +263,7 @@ const EscrowRow: React.FC<{
           },
         ]}
       >
-        {getExpireAt(escrow.time, escrow.expireAt)}
+        {getExpireAt(escrow.expireAt + "", escrow.expireAt)}
       </BrandText>
       <BrandText
         style={[

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 
 import { FreelanceServicesScreenWrapper } from "./FreelanceServicesScreenWrapper";
+import { EscrowInfo } from "../../api/freelance/v1/freelance";
 import { BrandText } from "../../components/BrandText";
 import { EscrowTable } from "../../components/freelanceServices/Escrow/EscrowList";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
@@ -13,7 +14,6 @@ import {
   layout,
   screenContainerContentMarginHorizontal,
 } from "../../utils/style/layout";
-import { EscrowInfo } from "../../utils/types/freelance";
 
 export const FreelanceServicesEscrow: ScreenFC<"FreelanceServicesEscrow"> = ({
   route,
