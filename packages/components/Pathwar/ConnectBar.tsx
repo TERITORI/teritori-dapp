@@ -52,7 +52,7 @@ export const ConnectBar: React.FC<object> = () => {
       body: JSON.stringify(data),
     };
 
-    const res = await fetch("http://51.77.156.3:3000/token", requestOptions);
+    const res = await fetch("https://teriwar.mikatech.me/token", requestOptions);
     const json = await res.json();
     dispatch(setPathwarToken(json.token));
 
