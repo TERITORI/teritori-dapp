@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, TouchableOpacity, Image } from "react-native";
+import { Image, TouchableOpacity, View } from "react-native";
 
 import { ChallengeDetails } from "./ChallengeDetailsFiles/ChallengeDetails";
 import challengePic1 from "../../../assets/PathwarIllustration/challenge1.png";
@@ -21,18 +21,18 @@ import starSvg from "../../../assets/icons/Pathwar/starIcon.svg";
 import teritoriSvg from "../../../assets/icons/Pathwar/teritori.svg";
 import { SVG } from "../../components/SVG";
 import {
+  neutral00,
+  neutral17,
   neutral44,
   neutral77,
-  neutral17,
-  secondaryColor,
-  neutral00,
   primaryColor,
+  secondaryColor,
 } from "../../utils/style/colors";
 import {
+  fontSemibold12,
   fontSemibold13,
   fontSemibold14,
   fontSemibold16,
-  fontSemibold12,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";

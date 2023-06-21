@@ -1,6 +1,8 @@
 import React from "react";
 import { View, Image } from "react-native";
 
+import ava from "./ava.png";
+import avatar from "./avatar.png";
 import statisticBanner from "../../../../assets/banners/statisticBanner.png";
 import { BrandText } from "../../../components/BrandText";
 import { ScreenContainer } from "../../../components/ScreenContainer";
@@ -9,8 +11,6 @@ import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { neutral44, neutral77 } from "../../../utils/style/colors";
 import { fontSemibold14, fontSemibold12 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import ava from "./ava.png";
-import avatar from "./avatar.png";
 
 export const StatisticScreen: React.FC = () => {
   return (

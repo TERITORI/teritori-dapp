@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Image } from "react-native";
+import { Image, View } from "react-native";
 
 import challengePic1 from "../../../../assets/PathwarIllustration/challenge1.png";
 import challengePic10 from "../../../../assets/PathwarIllustration/challenge10.png";
@@ -18,24 +18,24 @@ import clockSvg from "../../../../assets/icons/Pathwar/clockIcon.svg";
 import diamondSvg from "../../../../assets/icons/Pathwar/diamondIcon.svg";
 import starSvg from "../../../../assets/icons/Pathwar/starIcon.svg";
 import teritoriSvg from "../../../../assets/icons/Pathwar/teritori.svg";
-import { SVG } from "../../../components/SVG";
 import {
-  neutral44,
-  neutral17,
   neutral00,
+  neutral17,
+  neutral44,
   neutral77,
-  successColor,
-  secondaryColor,
   primaryColor,
+  secondaryColor,
+  successColor,
 } from "../../../utils/style/colors";
 import {
-  fontSemibold16,
   fontSemibold12,
   fontSemibold13,
+  fontSemibold16,
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { BrandText } from "../../BrandText/BrandText";
+import { BrandText } from "../../BrandText";
 import FlexRow from "../../FlexRow";
+import { SVG } from "../../SVG";
 import { Separator } from "../../Separator";
 import { TertiaryBox } from "../../boxes/TertiaryBox";
 import { ModalGradient } from "../../modals/ModalGradient";

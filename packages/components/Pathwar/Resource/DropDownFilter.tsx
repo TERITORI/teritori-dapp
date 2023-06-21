@@ -1,16 +1,16 @@
 import Checkbox from "expo-checkbox";
 import React, { useState } from "react";
-import { View, TouchableOpacity } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 
 import chevronDownIcon from "../../../../assets/icons/Pathwar/chevronDownIcon.svg";
 import chevronUpIcon from "../../../../assets/icons/Pathwar/chevronUpIcon.svg";
 import SortIcon from "../../../../assets/icons/Pathwar/sortIcon.svg";
 import {
-  primaryColor,
   codGrayColor,
-  secondaryColor,
-  neutral44,
   neutral11,
+  neutral44,
+  primaryColor,
+  secondaryColor,
 } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";

@@ -20,12 +20,12 @@ import { CollectionToolsScreen } from "../../screens/Marketplace/CollectionTools
 import { MarketplaceScreen } from "../../screens/Marketplace/MarketplaceScreen";
 import { NFTDetailScreen } from "../../screens/Marketplace/NFTDetailScreen";
 import { MyCollectionScreen } from "../../screens/MyCollection/MyCollectionScreen";
+import { OrganizationDeployerScreen } from "../../screens/Organizations/OrganizationDeployerScreen";
+import { OrganizationsScreen } from "../../screens/Organizations/OrganizationsScreen";
 import { PathwarScreen } from "../../screens/Pathwar/PathwarScreen";
 import { ResourceScreen } from "../../screens/Pathwar/Resources/ResourceScreen";
 import { StatisticScreen } from "../../screens/Pathwar/Statistics/StatisticScreen";
 import { TournamentScreen } from "../../screens/Pathwar/Tournaments/TournamentScreen";
-import { OrganizationDeployerScreen } from "../../screens/Organizations/OrganizationDeployerScreen";
-import { OrganizationsScreen } from "../../screens/Organizations/OrganizationsScreen";
 import { RiotGameBreedingScreen } from "../../screens/RiotGame/RiotGameBreedingScreen";
 import { RiotGameEnrollScreen } from "../../screens/RiotGame/RiotGameEnrollScreen";
 import { RiotGameFightScreen } from "../../screens/RiotGame/RiotGameFightScreen";

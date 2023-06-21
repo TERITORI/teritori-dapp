@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { View, TouchableOpacity } from "react-native";
+import React, { useEffect, useState } from "react";
+import { TouchableOpacity, View } from "react-native";
 import { ProgressBar } from "react-native-paper";
 
 import closeIcon from "../../../../assets/icons/Pathwar/closeIcon.svg";
 import warningRedIcon from "../../../../assets/icons/Pathwar/warningRedIcon.svg";
-import { SVG } from "../../../components/SVG";
 import { errorColor } from "../../../utils/style/colors";
 import { fontSemibold16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { BrandText } from "../../BrandText/BrandText";
+import { BrandText } from "../../BrandText";
+import { SVG } from "../../SVG";
 import { ModalBase } from "../../modals/ModalBase";
 
 const useProgress = (maxTimeInSeconds = 60) => {
@@ -23,11 +23,11 @@ const useProgress = (maxTimeInSeconds = 60) => {
     }, 10);
 
     return () => clearInterval(intervalId);
-  }, []);
+  }, [progress]);
 
   useEffect(() => {
     setProgress(elapsedTime / maxTimeInSeconds);
-  }, [elapsedTime]);
+  }, [elapsedTime, maxTimeInSeconds]);
 
   return progress;
 };

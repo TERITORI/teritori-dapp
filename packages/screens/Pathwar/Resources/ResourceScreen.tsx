@@ -1,6 +1,7 @@
 import React from "react";
 import { View, TouchableOpacity, ImageBackground } from "react-native";
 
+import { ResourceBox } from "./ResourceBox";
 import resourceLogo from "../../../../assets/LogoPathwarOverview/ResourceLogo.svg";
 import resourceBanner from "../../../../assets/banners/resourcesBanner.png";
 import SearchIcon from "../../../../assets/icons/Pathwar/searchIcon.svg";
@@ -13,7 +14,6 @@ import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { secondaryColor, neutral00 } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { ResourceBox } from "./ResourceBox";
 
 export const ResourceScreen: React.FC = () => {
   return (
@@ -49,7 +49,9 @@ export const ResourceScreen: React.FC = () => {
             name="Search"
             width={270}
             placeHolder="Search..."
-            mainBoxBackgroundColor={neutral00}
+            boxMainContainerStyle={{
+              backgroundColor: neutral00,
+            }}
           >
             <View style={{ marginRight: layout.padding_x0_5 }}>
               <SVG source={SearchIcon} />

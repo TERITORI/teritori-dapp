@@ -9,9 +9,9 @@ import { SVG } from "../../components/SVG";
 import { SecondaryButton } from "../../components/buttons/SecondaryButton";
 import { SecondaryButtonOutline } from "../../components/buttons/SecondaryButtonOutline";
 import {
+  neutral00,
   neutral17,
   primaryColor,
-  neutral00,
   secondaryColor,
 } from "../../utils/style/colors";
 import { fontSemibold13 } from "../../utils/style/fonts";

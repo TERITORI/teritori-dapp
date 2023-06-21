@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, TouchableOpacity, Image } from "react-native";
+import { Image, TouchableOpacity, View } from "react-native";
 
 import KeplrLogo from "../../../assets/keplrLogo.png";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";

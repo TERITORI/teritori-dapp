@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { View, TouchableOpacity, useWindowDimensions } from "react-native";
+import React, { useEffect, useState } from "react";
+import { TouchableOpacity, useWindowDimensions, View } from "react-native";
 import { ProgressBar } from "react-native-paper";
 
 import closeIcon from "../../../../assets/icons/Pathwar/closeIcon.svg";
 import warningGreenIcon from "../../../../assets/icons/Pathwar/warningGreenIcon.svg";
-import { SVG } from "../../../components/SVG";
 import { successColor } from "../../../utils/style/colors";
 import { fontSemibold16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { BrandText } from "../../BrandText/BrandText";
+import { BrandText } from "../../BrandText";
+import { SVG } from "../../SVG";
 import { ModalBase } from "../../modals/ModalBase";
 
 const useProgress = (maxTimeInSeconds = 60) => {
@@ -23,11 +23,11 @@ const useProgress = (maxTimeInSeconds = 60) => {
     }, 10);
 
     return () => clearInterval(intervalId);
-  }, []);
+  }, [progress]);
 
   useEffect(() => {
     setProgress(elapsedTime / maxTimeInSeconds);
-  }, [elapsedTime]);
+  }, [elapsedTime, maxTimeInSeconds]);
 
   return progress;
 };
@@ -51,7 +51,7 @@ export const ModalValidation: React.FC<{
       width={350}
       hideMainSeparator
       displayHeader={false}
-      mainContainerStyle={{
+      containerStyle={{
         marginLeft: width - 355,
         marginTop: layout.padding_x0_5,
       }}

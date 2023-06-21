@@ -1,33 +1,33 @@
 import React, { useState } from "react";
-import { View, ScrollView } from "react-native";
+import { ScrollView, View } from "react-native";
 
+import { ChallengeValidation } from "./ChallengeValidation";
+import { DetailsCard } from "./DetailsCard";
+import { ModalError } from "./ModalError";
+import { ModalValidation } from "./ModalValidation";
 import checkIcon from "../../../../assets/icons/Pathwar/checkIcon.svg";
 import closeIcon from "../../../../assets/icons/Pathwar/closeIcon.svg";
-import { SVG } from "../../../components/SVG";
 import {
+  availableSoonColor,
   neutral17,
+  neutral33,
   neutral77,
   successColor,
-  availableSoonColor,
-  neutral33,
 } from "../../../utils/style/colors";
 import {
-  fontSemibold16,
   fontSemibold12,
   fontSemibold13,
   fontSemibold14,
+  fontSemibold16,
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { BrandText } from "../../BrandText/BrandText";
+import { BrandText } from "../../BrandText";
+import { SVG } from "../../SVG";
 import { TertiaryBox } from "../../boxes/TertiaryBox";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { SecondaryButton } from "../../buttons/SecondaryButton";
 import { TextInputCustom } from "../../inputs/TextInputCustom";
 import { ModalBase } from "../../modals/ModalBase";
-import { ChallengeValidation } from "./ChallengeValidation";
-import { DetailsCard } from "./DetailsCard";
-import { ModalError } from "./ModalError";
-import { ModalValidation } from "./ModalValidation";
 
 export const ChallengeDetails: React.FC<{
   visible?: boolean;

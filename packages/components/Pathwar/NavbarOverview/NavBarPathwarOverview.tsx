@@ -1,6 +1,7 @@
 import React from "react";
-import { View, TouchableOpacity } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 
+import { NavbarCard } from "./NavbarCard";
 import BookIcon from "../../../../assets/LogoPathwarOverview/BookIcon.svg";
 import CodeIcon from "../../../../assets/LogoPathwarOverview/CodeIcon.svg";
 import GoToPageIcon from "../../../../assets/LogoPathwarOverview/GoToPageIcon.svg";
@@ -9,9 +10,9 @@ import StatsIcon from "../../../../assets/LogoPathwarOverview/StatsIcon.svg";
 import TournamentIcon from "../../../../assets/LogoPathwarOverview/TournamentIcon.svg";
 import { useAppNavigation } from "../../../utils/navigation";
 import {
-  neutral33,
-  neutral17,
   neutral00,
+  neutral17,
+  neutral33,
   primaryColor,
 } from "../../../utils/style/colors";
 import {
@@ -24,7 +25,6 @@ import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
 import { TertiaryBox } from "../../boxes/TertiaryBox";
-import { NavbarCard } from "./NavbarCard";
 
 export const NavBarPathwarOverview: React.FC<object> = () => {
   const navigation = useAppNavigation();

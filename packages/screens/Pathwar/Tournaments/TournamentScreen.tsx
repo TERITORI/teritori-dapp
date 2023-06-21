@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Image } from "react-native";
 
+import { TournamentBox } from "./TournamentCard";
 import tounamentBanner from "../../../../assets/banners/tournamentBanner.png";
 import searchIcon from "../../../../assets/icons/Pathwar/searchIcon.svg";
 import { SVG } from "../../../components/SVG";
@@ -8,7 +9,6 @@ import { ScreenContainer } from "../../../components/ScreenContainer";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { neutral00 } from "../../../utils/style/colors";
 import { layout } from "../../../utils/style/layout";
-import { TournamentBox } from "./TournamentCard";
 
 export const TournamentScreen: React.FC = () => {
   return (
@@ -45,7 +45,9 @@ export const TournamentScreen: React.FC = () => {
             name="Search"
             width={270}
             placeHolder="Search..."
-            mainBoxBackgroundColor={neutral00}
+            boxMainContainerStyle={{
+              backgroundColor: neutral00,
+            }}
           >
             <View style={{ marginRight: layout.padding_x0_5 }}>
               <SVG source={searchIcon} />
