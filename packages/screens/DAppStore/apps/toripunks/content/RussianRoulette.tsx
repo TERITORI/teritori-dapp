@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 
+import { useBalances } from "../../../../../hooks/useBalances";
 import { ActionButton } from "../components/action-button/ActionButton";
 import { Button } from "../components/button/Button";
 import { ButtonLabel } from "../components/buttonLabel/ButtonLabel";
@@ -51,7 +52,10 @@ export const Russian = () => {
   const [winning, setWinning] = useState<number>(0);
   const [losing, setLosing] = useState<number>(0);
   const [remaningTicket, setRemaningTicket] = useState<number>(0);
-
+  const balance = useBalances(
+    selectedWallet?.networkId,
+    selectedWallet?.address
+  );
   const {
     data: userToriPunksList,
     refetch: handleGetToriList,
@@ -177,6 +181,15 @@ export const Russian = () => {
       return setResult(!result);
     }
     if (!bet) return;
+    if (balance.length > 0) {
+      if (
+        balance[0].denom === "utori" &&
+        parseInt(balance[0].amount, 10) < bet * 1000000
+      ) {
+        alert(`You need at least ${bet} TORI in your wallet to play.`);
+        return;
+      }
+    }
     setLoadingGame(true);
     sendKeplarTx({ selectedWallet, amount: `${bet * 1000000}` }).then((res) => {
       if (!res) {
@@ -312,6 +325,10 @@ export const Russian = () => {
                 text={result ? "PLAY AGAIN" : "PLAY"}
                 size={isMinimunWindowWidth ? "L" : "L-mobile"}
                 withImg
+                disabled={bet === 0}
+                style={{
+                  opacity: bet === 0 ? 0.5 : 1,
+                }}
               />
             </View>
           </View>
