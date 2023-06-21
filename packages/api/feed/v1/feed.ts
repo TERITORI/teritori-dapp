@@ -62,24 +62,19 @@ export const IPFSKeyRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): IPFSKeyRequest {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseIPFSKeyRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.userId = reader.string();
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -92,10 +87,6 @@ export const IPFSKeyRequest = {
     const obj: any = {};
     message.userId !== undefined && (obj.userId = message.userId);
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<IPFSKeyRequest>, I>>(base?: I): IPFSKeyRequest {
-    return IPFSKeyRequest.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<IPFSKeyRequest>, I>>(object: I): IPFSKeyRequest {
@@ -118,24 +109,19 @@ export const IPFSKeyResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): IPFSKeyResponse {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseIPFSKeyResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.jwt = reader.string();
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -148,10 +134,6 @@ export const IPFSKeyResponse = {
     const obj: any = {};
     message.jwt !== undefined && (obj.jwt = message.jwt);
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<IPFSKeyResponse>, I>>(base?: I): IPFSKeyResponse {
-    return IPFSKeyResponse.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<IPFSKeyResponse>, I>>(object: I): IPFSKeyResponse {
@@ -177,31 +159,22 @@ export const Reaction = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Reaction {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseReaction();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.icon = reader.string();
-          continue;
+          break;
         case 2:
-          if (tag !== 16) {
-            break;
-          }
-
           message.count = reader.uint32();
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -218,10 +191,6 @@ export const Reaction = {
     message.icon !== undefined && (obj.icon = message.icon);
     message.count !== undefined && (obj.count = Math.round(message.count));
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<Reaction>, I>>(base?: I): Reaction {
-    return Reaction.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<Reaction>, I>>(object: I): Reaction {
@@ -283,87 +252,46 @@ export const Post = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Post {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBasePost();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 8) {
-            break;
-          }
-
           message.category = reader.uint32();
-          continue;
+          break;
         case 2:
-          if (tag !== 16) {
-            break;
-          }
-
           message.isDeleted = reader.bool();
-          continue;
+          break;
         case 3:
-          if (tag !== 26) {
-            break;
-          }
-
           message.identifier = reader.string();
-          continue;
+          break;
         case 4:
-          if (tag !== 34) {
-            break;
-          }
-
           message.metadata = reader.string();
-          continue;
+          break;
         case 5:
-          if (tag !== 42) {
-            break;
-          }
-
           message.parentPostIdentifier = reader.string();
-          continue;
+          break;
         case 6:
-          if (tag !== 48) {
-            break;
-          }
-
           message.subPostLength = reader.uint32();
-          continue;
+          break;
         case 7:
-          if (tag !== 58) {
-            break;
-          }
-
           message.createdBy = reader.string();
-          continue;
+          break;
         case 8:
-          if (tag !== 64) {
-            break;
-          }
-
           message.createdAt = longToNumber(reader.int64() as Long);
-          continue;
+          break;
         case 10:
-          if (tag !== 80) {
-            break;
-          }
-
           message.tipAmount = longToNumber(reader.int64() as Long);
-          continue;
+          break;
         case 9:
-          if (tag !== 74) {
-            break;
-          }
-
           message.reactions.push(Reaction.decode(reader, reader.uint32()));
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -400,10 +328,6 @@ export const Post = {
       obj.reactions = [];
     }
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<Post>, I>>(base?: I): Post {
-    return Post.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<Post>, I>>(object: I): Post {
@@ -446,55 +370,35 @@ export const PostFilter = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): PostFilter {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBasePostFilter();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.user = reader.string();
-          continue;
+          break;
         case 2:
-          if (tag !== 18) {
-            break;
-          }
-
           message.mentions.push(reader.string());
-          continue;
+          break;
         case 3:
-          if (tag === 24) {
-            message.categories.push(reader.uint32());
-
-            continue;
-          }
-
-          if (tag === 26) {
+          if ((tag & 7) === 2) {
             const end2 = reader.uint32() + reader.pos;
             while (reader.pos < end2) {
               message.categories.push(reader.uint32());
             }
-
-            continue;
+          } else {
+            message.categories.push(reader.uint32());
           }
-
           break;
         case 4:
-          if (tag !== 34) {
-            break;
-          }
-
           message.hashtags.push(reader.string());
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -529,10 +433,6 @@ export const PostFilter = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<PostFilter>, I>>(base?: I): PostFilter {
-    return PostFilter.fromPartial(base ?? {});
-  },
-
   fromPartial<I extends Exact<DeepPartial<PostFilter>, I>>(object: I): PostFilter {
     const message = createBasePostFilter();
     message.user = object.user ?? "";
@@ -562,38 +462,25 @@ export const PostsRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): PostsRequest {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBasePostsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.filter = PostFilter.decode(reader, reader.uint32());
-          continue;
+          break;
         case 2:
-          if (tag !== 16) {
-            break;
-          }
-
           message.limit = reader.uint32();
-          continue;
+          break;
         case 3:
-          if (tag !== 24) {
-            break;
-          }
-
           message.offset = reader.uint32();
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -612,10 +499,6 @@ export const PostsRequest = {
     message.limit !== undefined && (obj.limit = Math.round(message.limit));
     message.offset !== undefined && (obj.offset = Math.round(message.offset));
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<PostsRequest>, I>>(base?: I): PostsRequest {
-    return PostsRequest.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<PostsRequest>, I>>(object: I): PostsRequest {
@@ -642,24 +525,19 @@ export const PostsResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): PostsResponse {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBasePostsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.posts.push(Post.decode(reader, reader.uint32()));
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -676,10 +554,6 @@ export const PostsResponse = {
       obj.posts = [];
     }
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<PostsResponse>, I>>(base?: I): PostsResponse {
-    return PostsResponse.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<PostsResponse>, I>>(object: I): PostsResponse {
@@ -726,11 +600,10 @@ export const FeedServicePostsDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
-      const value = PostsResponse.decode(data);
       return {
-        ...value,
+        ...PostsResponse.decode(data),
         toObject() {
-          return value;
+          return this;
         },
       };
     },
@@ -749,11 +622,10 @@ export const FeedServiceIPFSKeyDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
-      const value = IPFSKeyResponse.decode(data);
       return {
-        ...value,
+        ...IPFSKeyResponse.decode(data),
         toObject() {
-          return value;
+          return this;
         },
       };
     },
@@ -817,7 +689,7 @@ export class GrpcWebImpl {
         debug: this.options.debug,
         onEnd: function (response) {
           if (response.status === grpc.Code.OK) {
-            resolve(response.message!.toObject());
+            resolve(response.message);
           } else {
             const err = new GrpcWebError(response.statusMessage, response.status, response.trailers);
             reject(err);
@@ -831,7 +703,7 @@ export class GrpcWebImpl {
 declare var self: any | undefined;
 declare var window: any | undefined;
 declare var global: any | undefined;
-var tsProtoGlobalThis: any = (() => {
+var globalThis: any = (() => {
   if (typeof globalThis !== "undefined") {
     return globalThis;
   }
@@ -860,7 +732,7 @@ export type Exact<P, I extends P> = P extends Builtin ? P
 
 function longToNumber(long: Long): number {
   if (long.gt(Number.MAX_SAFE_INTEGER)) {
-    throw new tsProtoGlobalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
+    throw new globalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
   }
   return long.toNumber();
 }
@@ -874,7 +746,7 @@ function isSet(value: any): boolean {
   return value !== null && value !== undefined;
 }
 
-export class GrpcWebError extends tsProtoGlobalThis.Error {
+export class GrpcWebError extends Error {
   constructor(message: string, public code: grpc.Code, public metadata: grpc.Metadata) {
     super(message);
   }

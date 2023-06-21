@@ -94,24 +94,19 @@ export const SellerProfileRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): SellerProfileRequest {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseSellerProfileRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.sellerAddress = reader.string();
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -124,10 +119,6 @@ export const SellerProfileRequest = {
     const obj: any = {};
     message.sellerAddress !== undefined && (obj.sellerAddress = message.sellerAddress);
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<SellerProfileRequest>, I>>(base?: I): SellerProfileRequest {
-    return SellerProfileRequest.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<SellerProfileRequest>, I>>(object: I): SellerProfileRequest {
@@ -156,38 +147,25 @@ export const SellerProfileResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): SellerProfileResponse {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseSellerProfileResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.sellerAddress = reader.string();
-          continue;
+          break;
         case 2:
-          if (tag !== 18) {
-            break;
-          }
-
           message.ipfs = reader.string();
-          continue;
+          break;
         case 3:
-          if (tag !== 24) {
-            break;
-          }
-
           message.isActive = reader.bool();
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -206,10 +184,6 @@ export const SellerProfileResponse = {
     message.ipfs !== undefined && (obj.ipfs = message.ipfs);
     message.isActive !== undefined && (obj.isActive = message.isActive);
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<SellerProfileResponse>, I>>(base?: I): SellerProfileResponse {
-    return SellerProfileResponse.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<SellerProfileResponse>, I>>(object: I): SellerProfileResponse {
@@ -237,31 +211,22 @@ export const GigListRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GigListRequest {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGigListRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 8) {
-            break;
-          }
-
           message.limit = reader.int32();
-          continue;
+          break;
         case 2:
-          if (tag !== 16) {
-            break;
-          }
-
           message.offset = reader.int32();
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -278,10 +243,6 @@ export const GigListRequest = {
     message.limit !== undefined && (obj.limit = Math.round(message.limit));
     message.offset !== undefined && (obj.offset = Math.round(message.offset));
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<GigListRequest>, I>>(base?: I): GigListRequest {
-    return GigListRequest.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<GigListRequest>, I>>(object: I): GigListRequest {
@@ -305,24 +266,19 @@ export const GigListUserRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GigListUserRequest {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGigListUserRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.address = reader.string();
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -335,10 +291,6 @@ export const GigListUserRequest = {
     const obj: any = {};
     message.address !== undefined && (obj.address = message.address);
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<GigListUserRequest>, I>>(base?: I): GigListUserRequest {
-    return GigListUserRequest.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<GigListUserRequest>, I>>(object: I): GigListUserRequest {
@@ -361,24 +313,19 @@ export const EscrowAllListRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): EscrowAllListRequest {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseEscrowAllListRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.address = reader.string();
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -391,10 +338,6 @@ export const EscrowAllListRequest = {
     const obj: any = {};
     message.address !== undefined && (obj.address = message.address);
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<EscrowAllListRequest>, I>>(base?: I): EscrowAllListRequest {
-    return EscrowAllListRequest.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<EscrowAllListRequest>, I>>(object: I): EscrowAllListRequest {
@@ -417,24 +360,19 @@ export const EscrowSenderListRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): EscrowSenderListRequest {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseEscrowSenderListRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.address = reader.string();
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -447,10 +385,6 @@ export const EscrowSenderListRequest = {
     const obj: any = {};
     message.address !== undefined && (obj.address = message.address);
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<EscrowSenderListRequest>, I>>(base?: I): EscrowSenderListRequest {
-    return EscrowSenderListRequest.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<EscrowSenderListRequest>, I>>(object: I): EscrowSenderListRequest {
@@ -473,24 +407,19 @@ export const EscrowReceiverListRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): EscrowReceiverListRequest {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseEscrowReceiverListRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.address = reader.string();
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -503,10 +432,6 @@ export const EscrowReceiverListRequest = {
     const obj: any = {};
     message.address !== undefined && (obj.address = message.address);
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<EscrowReceiverListRequest>, I>>(base?: I): EscrowReceiverListRequest {
-    return EscrowReceiverListRequest.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<EscrowReceiverListRequest>, I>>(object: I): EscrowReceiverListRequest {
@@ -547,66 +472,37 @@ export const EscrowInfo = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): EscrowInfo {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseEscrowInfo();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 8) {
-            break;
-          }
-
           message.id = reader.uint32();
-          continue;
+          break;
         case 2:
-          if (tag !== 18) {
-            break;
-          }
-
           message.sender = reader.string();
-          continue;
+          break;
         case 3:
-          if (tag !== 26) {
-            break;
-          }
-
           message.receiver = reader.string();
-          continue;
+          break;
         case 4:
-          if (tag !== 34) {
-            break;
-          }
-
           message.amount = reader.string();
-          continue;
+          break;
         case 5:
-          if (tag !== 42) {
-            break;
-          }
-
           message.amountDenom = reader.string();
-          continue;
+          break;
         case 6:
-          if (tag !== 48) {
-            break;
-          }
-
           message.expireAt = longToNumber(reader.uint64() as Long);
-          continue;
+          break;
         case 7:
-          if (tag !== 56) {
-            break;
-          }
-
           message.status = reader.uint32();
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -635,10 +531,6 @@ export const EscrowInfo = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<EscrowInfo>, I>>(base?: I): EscrowInfo {
-    return EscrowInfo.fromPartial(base ?? {});
-  },
-
   fromPartial<I extends Exact<DeepPartial<EscrowInfo>, I>>(object: I): EscrowInfo {
     const message = createBaseEscrowInfo();
     message.id = object.id ?? 0;
@@ -665,24 +557,19 @@ export const EscrowAllListResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): EscrowAllListResponse {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseEscrowAllListResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.escrows.push(EscrowInfo.decode(reader, reader.uint32()));
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -699,10 +586,6 @@ export const EscrowAllListResponse = {
       obj.escrows = [];
     }
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<EscrowAllListResponse>, I>>(base?: I): EscrowAllListResponse {
-    return EscrowAllListResponse.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<EscrowAllListResponse>, I>>(object: I): EscrowAllListResponse {
@@ -725,24 +608,19 @@ export const EscrowSenderListResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): EscrowSenderListResponse {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseEscrowSenderListResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.escrows.push(EscrowInfo.decode(reader, reader.uint32()));
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -759,10 +637,6 @@ export const EscrowSenderListResponse = {
       obj.escrows = [];
     }
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<EscrowSenderListResponse>, I>>(base?: I): EscrowSenderListResponse {
-    return EscrowSenderListResponse.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<EscrowSenderListResponse>, I>>(object: I): EscrowSenderListResponse {
@@ -785,24 +659,19 @@ export const EscrowReceiverListResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): EscrowReceiverListResponse {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseEscrowReceiverListResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.escrows.push(EscrowInfo.decode(reader, reader.uint32()));
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -819,10 +688,6 @@ export const EscrowReceiverListResponse = {
       obj.escrows = [];
     }
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<EscrowReceiverListResponse>, I>>(base?: I): EscrowReceiverListResponse {
-    return EscrowReceiverListResponse.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<EscrowReceiverListResponse>, I>>(object: I): EscrowReceiverListResponse {
@@ -851,38 +716,25 @@ export const GigInfo = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GigInfo {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGigInfo();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 8) {
-            break;
-          }
-
           message.id = reader.int32();
-          continue;
+          break;
         case 2:
-          if (tag !== 18) {
-            break;
-          }
-
           message.address = reader.string();
-          continue;
+          break;
         case 3:
-          if (tag !== 26) {
-            break;
-          }
-
           message.gigData = reader.string();
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -901,10 +753,6 @@ export const GigInfo = {
     message.address !== undefined && (obj.address = message.address);
     message.gigData !== undefined && (obj.gigData = message.gigData);
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<GigInfo>, I>>(base?: I): GigInfo {
-    return GigInfo.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<GigInfo>, I>>(object: I): GigInfo {
@@ -929,24 +777,19 @@ export const GigListResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GigListResponse {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGigListResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.gigs.push(GigInfo.decode(reader, reader.uint32()));
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -963,10 +806,6 @@ export const GigListResponse = {
       obj.gigs = [];
     }
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<GigListResponse>, I>>(base?: I): GigListResponse {
-    return GigListResponse.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<GigListResponse>, I>>(object: I): GigListResponse {
@@ -989,24 +828,19 @@ export const GigListUserResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GigListUserResponse {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGigListUserResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.gigs.push(GigInfo.decode(reader, reader.uint32()));
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -1023,10 +857,6 @@ export const GigListUserResponse = {
       obj.gigs = [];
     }
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<GigListUserResponse>, I>>(base?: I): GigListUserResponse {
-    return GigListUserResponse.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<GigListUserResponse>, I>>(object: I): GigListUserResponse {
@@ -1049,24 +879,19 @@ export const GigDataRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GigDataRequest {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGigDataRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 8) {
-            break;
-          }
-
           message.id = reader.int32();
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -1079,10 +904,6 @@ export const GigDataRequest = {
     const obj: any = {};
     message.id !== undefined && (obj.id = Math.round(message.id));
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<GigDataRequest>, I>>(base?: I): GigDataRequest {
-    return GigDataRequest.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<GigDataRequest>, I>>(object: I): GigDataRequest {
@@ -1105,24 +926,19 @@ export const GigDataResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GigDataResponse {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGigDataResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.gig = GigInfo.decode(reader, reader.uint32());
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -1135,10 +951,6 @@ export const GigDataResponse = {
     const obj: any = {};
     message.gig !== undefined && (obj.gig = message.gig ? GigInfo.toJSON(message.gig) : undefined);
     return obj;
-  },
-
-  create<I extends Exact<DeepPartial<GigDataResponse>, I>>(base?: I): GigDataResponse {
-    return GigDataResponse.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<GigDataResponse>, I>>(object: I): GigDataResponse {
@@ -1231,11 +1043,10 @@ export const FreelanceServiceSellerProfileDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
-      const value = SellerProfileResponse.decode(data);
       return {
-        ...value,
+        ...SellerProfileResponse.decode(data),
         toObject() {
-          return value;
+          return this;
         },
       };
     },
@@ -1254,11 +1065,10 @@ export const FreelanceServiceGigListDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
-      const value = GigListResponse.decode(data);
       return {
-        ...value,
+        ...GigListResponse.decode(data),
         toObject() {
-          return value;
+          return this;
         },
       };
     },
@@ -1277,11 +1087,10 @@ export const FreelanceServiceGigListUserDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
-      const value = GigListUserResponse.decode(data);
       return {
-        ...value,
+        ...GigListUserResponse.decode(data),
         toObject() {
-          return value;
+          return this;
         },
       };
     },
@@ -1300,11 +1109,10 @@ export const FreelanceServiceGigDataDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
-      const value = GigDataResponse.decode(data);
       return {
-        ...value,
+        ...GigDataResponse.decode(data),
         toObject() {
-          return value;
+          return this;
         },
       };
     },
@@ -1323,11 +1131,10 @@ export const FreelanceServiceEscrowAllListDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
-      const value = EscrowAllListResponse.decode(data);
       return {
-        ...value,
+        ...EscrowAllListResponse.decode(data),
         toObject() {
-          return value;
+          return this;
         },
       };
     },
@@ -1346,11 +1153,10 @@ export const FreelanceServiceEscrowSenderListDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
-      const value = EscrowSenderListResponse.decode(data);
       return {
-        ...value,
+        ...EscrowSenderListResponse.decode(data),
         toObject() {
-          return value;
+          return this;
         },
       };
     },
@@ -1369,11 +1175,10 @@ export const FreelanceServiceEscrowReceiverListDesc: UnaryMethodDefinitionish = 
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
-      const value = EscrowReceiverListResponse.decode(data);
       return {
-        ...value,
+        ...EscrowReceiverListResponse.decode(data),
         toObject() {
-          return value;
+          return this;
         },
       };
     },
@@ -1437,7 +1242,7 @@ export class GrpcWebImpl {
         debug: this.options.debug,
         onEnd: function (response) {
           if (response.status === grpc.Code.OK) {
-            resolve(response.message!.toObject());
+            resolve(response.message);
           } else {
             const err = new GrpcWebError(response.statusMessage, response.status, response.trailers);
             reject(err);
@@ -1451,7 +1256,7 @@ export class GrpcWebImpl {
 declare var self: any | undefined;
 declare var window: any | undefined;
 declare var global: any | undefined;
-var tsProtoGlobalThis: any = (() => {
+var globalThis: any = (() => {
   if (typeof globalThis !== "undefined") {
     return globalThis;
   }
@@ -1480,7 +1285,7 @@ export type Exact<P, I extends P> = P extends Builtin ? P
 
 function longToNumber(long: Long): number {
   if (long.gt(Number.MAX_SAFE_INTEGER)) {
-    throw new tsProtoGlobalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
+    throw new globalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
   }
   return long.toNumber();
 }
@@ -1494,7 +1299,7 @@ function isSet(value: any): boolean {
   return value !== null && value !== undefined;
 }
 
-export class GrpcWebError extends tsProtoGlobalThis.Error {
+export class GrpcWebError extends Error {
   constructor(message: string, public code: grpc.Code, public metadata: grpc.Metadata) {
     super(message);
   }

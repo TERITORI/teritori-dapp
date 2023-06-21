@@ -2,7 +2,7 @@ import {
   CosmWasmClient,
   SigningCosmWasmClient,
 } from "@cosmjs/cosmwasm-stargate";
-import { Decimal } from "@cosmjs/math";
+import { Decimal } from "@cosmjs/crypto/node_modules/@cosmjs/math/build/decimal";
 import { Registry } from "@cosmjs/proto-signing";
 import {
   SigningStargateClient,
