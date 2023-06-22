@@ -257,37 +257,38 @@ export const ChallengeBox: React.FC<{
               flexWrap: "wrap",
             }}
           >
-            {tags.map((tag, index) => (
-              <View
-                style={{
-                  width: "fit-content",
-                  height: "fit-content",
-                  borderColor: neutral44,
-                  borderWidth: 1,
-                  borderRadius: 6,
-                  alignItems: "center",
-                  justifyContent: "center",
-                  marginRight: layout.padding_x1,
-                  marginBottom: layout.padding_x1,
-                }}
-                key={index}
-              >
-                <BrandText
-                  style={[
-                    {
-                      color: neutral77,
-                      paddingRight: layout.padding_x1,
-                      paddingLeft: layout.padding_x1,
-                      paddingBottom: layout.padding_x0_25,
-                      paddingTop: layout.padding_x0_25,
-                    },
-                    fontSemibold12,
-                  ]}
+            {tags &&
+              tags.map((tag, index) => (
+                <View
+                  style={{
+                    width: "fit-content",
+                    height: "fit-content",
+                    borderColor: neutral44,
+                    borderWidth: 1,
+                    borderRadius: 6,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginRight: layout.padding_x1,
+                    marginBottom: layout.padding_x1,
+                  }}
+                  key={index}
                 >
-                  {tag}
-                </BrandText>
-              </View>
-            ))}
+                  <BrandText
+                    style={[
+                      {
+                        color: neutral77,
+                        paddingRight: layout.padding_x1,
+                        paddingLeft: layout.padding_x1,
+                        paddingBottom: layout.padding_x0_25,
+                        paddingTop: layout.padding_x0_25,
+                      },
+                      fontSemibold12,
+                    ]}
+                  >
+                    {tag}
+                  </BrandText>
+                </View>
+              ))}
           </View>
 
           <Separator

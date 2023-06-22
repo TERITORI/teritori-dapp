@@ -10,6 +10,7 @@ interface Settings {
   isAdenaConnected: boolean;
   alreadyVisited: boolean;
   areTestnetsEnabled: boolean;
+  PathwarToken: string;
 }
 
 const initialState: Settings = {
@@ -20,6 +21,7 @@ const initialState: Settings = {
   isAdenaConnected: false,
   alreadyVisited: false,
   areTestnetsEnabled: false,
+  PathwarToken: "",
 };
 
 export const selectSelectedNetworkId = (state: RootState) =>
@@ -39,6 +41,9 @@ export const selectAreTestnetsEnabled = (state: RootState) =>
 
 export const selectNFTStorageAPI = (state: RootState) =>
   state.settings.NFTStorageAPI;
+
+export const selectPathwarToken = (state: RootState) =>
+  state.settings.PathwarToken;
 
 const settingsSlice = createSlice({
   name: "settings",
@@ -62,6 +67,9 @@ const settingsSlice = createSlice({
     setNFTStorageAPI: (state, action: PayloadAction<string>) => {
       state.NFTStorageAPI = action.payload;
     },
+    setPathwarToken: (state, action: PayloadAction<string>) => {
+      state.PathwarToken = action.payload;
+    },
   },
 });
 
@@ -72,6 +80,7 @@ export const {
   setIsAdenaConnected,
   setAreTestnetsEnabled,
   setNFTStorageAPI,
+  setPathwarToken,
 } = settingsSlice.actions;
 
 export const settingsReducer = settingsSlice.reducer;
