@@ -1,9 +1,15 @@
-import React, { useState } from "react";
+import React from "react";
 import { StyleProp, TouchableOpacity, ViewStyle } from "react-native";
+import { useSelector } from "react-redux";
 
 import chevronUpSVG from "../../../assets/icons/chevron-down.svg";
 import chevronDownSVG from "../../../assets/icons/chevron-up.svg";
 import filterSVG from "../../../assets/icons/filter.svg";
+import {
+  selectShowFilters,
+  setShowFilters,
+} from "../../store/slices/marketplaceFilters";
+import { useAppDispatch } from "../../store/store";
 import { secondaryColor } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
 import { SVG } from "../SVG";
@@ -11,10 +17,13 @@ import { TertiaryBox } from "../boxes/TertiaryBox";
 
 export const FilterButton: React.FC<{
   style?: StyleProp<ViewStyle>;
-}> = ({ style }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
+  mainContainerStyle?: StyleProp<ViewStyle>;
+  showChevron?: boolean;
+}> = ({ style, mainContainerStyle, showChevron = false }) => {
+  const dispatch = useAppDispatch();
+  const isExpanded = useSelector(selectShowFilters);
   const handlePress = () => {
-    setIsExpanded(!isExpanded);
+    dispatch(setShowFilters(!isExpanded));
   };
 
   return (
@@ -22,24 +31,29 @@ export const FilterButton: React.FC<{
       <TertiaryBox
         noBrokenCorners
         height={48}
-        mainContainerStyle={{
-          flexDirection: "row",
-          borderRadius: 6,
-          padding: layout.padding_x1_5,
-        }}
+        mainContainerStyle={[
+          {
+            flexDirection: "row",
+            borderRadius: 6,
+            padding: layout.padding_x1_5,
+          },
+          mainContainerStyle,
+        ]}
       >
         <SVG
           source={filterSVG}
-          width={24}
-          height={24}
+          width={20}
+          height={20}
           style={{ marginRight: layout.padding_x0_5 }}
         />
-        <SVG
-          source={isExpanded ? chevronUpSVG : chevronDownSVG}
-          width={16}
-          height={16}
-          color={secondaryColor}
-        />
+        {showChevron && (
+          <SVG
+            source={isExpanded ? chevronUpSVG : chevronDownSVG}
+            width={16}
+            height={16}
+            color={secondaryColor}
+          />
+        )}
       </TertiaryBox>
     </TouchableOpacity>
   );

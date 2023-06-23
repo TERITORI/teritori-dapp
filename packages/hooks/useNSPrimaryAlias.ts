@@ -1,12 +1,64 @@
+import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import { useQuery } from "@tanstack/react-query";
 
-import { parseUserId } from "../networks";
+import {
+  CosmosNetworkInfo,
+  GnoNetworkInfo,
+  NetworkKind,
+  parseUserId,
+} from "../networks";
 import { getCosmosNameServiceQueryClient } from "../utils/contracts";
+import { extractGnoString } from "../utils/gno";
 
 export const nsPrimaryAliasQueryKey = (userId: string | undefined) => [
   "nsPrimaryAlias",
   userId,
 ];
+
+const cosmosGetUsernameByAddress = async (
+  network: CosmosNetworkInfo,
+  userAddress: string
+) => {
+  const nsClient = await getCosmosNameServiceQueryClient(network.id);
+  if (!nsClient || !userAddress) {
+    return null;
+  }
+
+  let response;
+
+  try {
+    response = await nsClient.primaryAlias({ address: userAddress });
+  } catch (err) {
+    if (
+      err instanceof Error &&
+      err.message.includes("Primary alias not found not found")
+    ) {
+      return null;
+    }
+    throw err;
+  }
+
+  return response.username;
+};
+
+const gnoGetUsernameByAddress = async (
+  network: GnoNetworkInfo,
+  userAddress: string
+) => {
+  if (!userAddress) return null;
+
+  try {
+    const provider = new GnoJSONRPCProvider(network.endpoint);
+    const username = await provider.evaluateExpression(
+      "gno.land/r/demo/users",
+      `GetUserByAddress("${userAddress}").name`
+    );
+    const gnoUsename = extractGnoString(username);
+    return `${gnoUsename}.gno`;
+  } catch (err) {
+    throw err;
+  }
+};
 
 export const useNSPrimaryAlias = (userId: string | undefined) => {
   const { data, ...other } = useQuery(
@@ -17,26 +69,18 @@ export const useNSPrimaryAlias = (userId: string | undefined) => {
       }
 
       const [network, userAddress] = parseUserId(userId);
-      const nsClient = await getCosmosNameServiceQueryClient(network?.id);
-      if (!nsClient || !userAddress) {
+      if (!network) {
         return null;
       }
 
-      let response;
-
-      try {
-        response = await nsClient.primaryAlias({ address: userAddress });
-      } catch (err) {
-        if (
-          err instanceof Error &&
-          err.message.includes("Primary alias not found not found")
-        ) {
+      switch (network.kind) {
+        case NetworkKind.Cosmos:
+          return cosmosGetUsernameByAddress(network, userAddress);
+        case NetworkKind.Gno:
+          return gnoGetUsernameByAddress(network, userAddress);
+        default:
           return null;
-        }
-        throw err;
       }
-
-      return response.username;
     },
     { staleTime: Infinity }
   );

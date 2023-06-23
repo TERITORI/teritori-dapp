@@ -66,6 +66,9 @@ const OwnedNFTsSection: React.FC<{
     collectionId: collection.id,
     sort: Sort.SORT_PRICE,
     sortDirection: SortDirection.SORT_DIRECTION_ASCENDING,
+    attributes: [],
+    isListed: false,
+    priceRange: undefined,
   });
 
   if (nfts.length === 0) {

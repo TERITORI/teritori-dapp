@@ -69,10 +69,14 @@ export const Navigator: React.FC = () => {
         component={RiotGameScreen}
         options={{ header: () => null }}
       />
+
       <Stack.Screen
         name="Marketplace"
         component={MarketplaceScreen}
-        options={{ header: () => null, title: screenTitle("Marketplace") }}
+        options={{
+          header: () => null,
+          title: screenTitle("NFT Marketplace - Popular Collections"),
+        }}
       />
       <Stack.Screen
         name="Governance"

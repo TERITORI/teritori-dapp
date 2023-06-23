@@ -4,6 +4,14 @@ import { useDispatch } from "react-redux";
 import { persistStore, persistReducer } from "redux-persist";
 
 import { dAppsReducer, dAppsReducerPersisted } from "./slices/dapps-store";
+import {
+  marketplaceCartItems,
+  marketplaceCartItemsUI,
+} from "./slices/marketplaceCartItems";
+import {
+  marketplaceFilters,
+  marketplaceFilterUI,
+} from "./slices/marketplaceFilters";
 import { searchReducer } from "./slices/search";
 import { settingsReducer } from "./slices/settings";
 import { squadPresetsReducer } from "./slices/squadPresets";
@@ -12,8 +20,17 @@ import { walletsReducer } from "./slices/wallets";
 const persistConfig = {
   key: "root",
   storage: AsyncStorage,
-  whitelist: ["wallets", "settings", "dAppsStorePersisted", "squadPresets"],
-  blacklist: ["dAppsStore"],
+  whitelist: [
+    "wallets",
+    "settings",
+    "dAppsStorePersisted",
+    "squadPresets",
+    "marketplaceCartItems",
+    "marketplaceCartItemsUI",
+    "marketplaceFilters",
+    "marketplaceFilterUI",
+  ],
+  blacklist: ["dAppsStore, marketplaceFilterUI"],
 };
 
 const rootReducer = combineReducers({
@@ -22,6 +39,10 @@ const rootReducer = combineReducers({
   squadPresets: squadPresetsReducer,
   dAppsStorePersisted: dAppsReducerPersisted,
   dAppsStore: dAppsReducer,
+  marketplaceCartItems,
+  marketplaceCartItemsUI,
+  marketplaceFilters,
+  marketplaceFilterUI,
   search: searchReducer,
 });
 

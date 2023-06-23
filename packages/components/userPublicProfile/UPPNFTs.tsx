@@ -33,17 +33,14 @@ const SelectedTabContent: React.FC<{
     offset: 0,
     sort: Sort.SORT_PRICE,
     sortDirection: SortDirection.SORT_DIRECTION_ASCENDING,
+    attributes: [],
+    isListed: false,
+    priceRange: undefined,
   };
 
   switch (selectedTab) {
     case "collected":
-      return (
-        <NFTs
-          req={nftsRequest}
-          numColumns={numColumns}
-          ListHeaderComponent={<View style={{ height: 20 }} />}
-        />
-      );
+      return <NFTs req={nftsRequest} hideFilters />;
     case "created":
       return <></>;
     case "favorited":

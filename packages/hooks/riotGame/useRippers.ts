@@ -29,6 +29,9 @@ export const useRippers = () => {
     offset: 0,
     sort: Sort.SORT_UNSPECIFIED,
     sortDirection: SortDirection.SORT_DIRECTION_UNSPECIFIED,
+    attributes: [],
+    isListed: false,
+    priceRange: undefined,
   };
 
   // Support squad stake for rioter NFT + their child
