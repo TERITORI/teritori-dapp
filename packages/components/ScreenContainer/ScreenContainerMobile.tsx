@@ -47,6 +47,7 @@ export const ScreenContainerMobile: FC<{
   forceNetworkId?: string;
   forceNetworkKind?: NetworkKind;
   mobileTitle?: string;
+  onBackPress?: () => void;
 }> = ({
   children,
   networkFilter,
@@ -54,6 +55,7 @@ export const ScreenContainerMobile: FC<{
   forceNetworkId,
   forceNetworkKind,
   mobileTitle,
+  onBackPress,
 }) => {
   const { height: windowHeight } = useWindowDimensions();
   const { width } = useMaxResolution();
@@ -67,6 +69,7 @@ export const ScreenContainerMobile: FC<{
         visible={isSearchModalMobileOpen}
       />
       <HeaderMobile
+        onBackPress={onBackPress}
         forceNetworkId={forceNetworkId}
         forceNetworkKind={forceNetworkKind}
       />

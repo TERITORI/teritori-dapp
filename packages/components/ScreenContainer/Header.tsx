@@ -4,6 +4,7 @@ import { View, ViewStyle, StyleProp } from "react-native";
 import { neutral33 } from "../../utils/style/colors";
 import { headerHeight, layout } from "../../utils/style/layout";
 import { BackButton } from "../navigation/components/BackButton";
+import { SpacerRow } from "../spacer";
 
 export const Header: React.FC<{
   style?: StyleProp<ViewStyle>;
@@ -36,7 +37,12 @@ export const Header: React.FC<{
         }}
       >
         {onBackPress && <BackButton onPress={onBackPress} />}
-        {children}
+        {children && (
+          <>
+            <SpacerRow size={1.5} />
+            {children}
+          </>
+        )}
       </View>
 
       {/* Wallet selector placeholder */}

@@ -24,7 +24,7 @@ interface DefaultValue {
 }
 
 const defaultValue: DefaultValue = {
-  isSidebarExpanded: true,
+  isSidebarExpanded: false,
   toggleSidebar: () => {},
   dynamicSidebar: {},
 };
