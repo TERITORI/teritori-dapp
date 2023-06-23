@@ -9,6 +9,7 @@ export interface dAppType {
   groupKey: string;
   selectedByDefault: boolean;
   alwaysOn: boolean;
+  order?: number;
 }
 
 export interface dAppGroup {

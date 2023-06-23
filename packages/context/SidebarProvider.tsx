@@ -45,15 +45,16 @@ export const SidebarContextProvider: React.FC = ({ children }) => {
   useEffect(() => {
     if (selectedApps.length === 0 && Object.values(availableApps).length > 0) {
       dispatch(
-        setSelectedApps(
-          Object.values(availableApps).flatMap((item) => {
+        setSelectedApps([
+          "top-apps*SEPARATOR*social-feed",
+          ...Object.values(availableApps).flatMap((item) => {
             return Object.values(item.options)
               .filter((dapp) => dapp.selectedByDefault)
               .map(({ groupKey, id }) => {
                 return `${groupKey}${SEPARATOR}${id}`;
               });
-          })
-        )
+          }),
+        ])
       );
     }
   }, [availableApps, dispatch, selectedApps.length]);
@@ -61,6 +62,7 @@ export const SidebarContextProvider: React.FC = ({ children }) => {
     const dynamicAppsSelection = [] as {
       [key: string]: any;
     };
+
     selectedApps.map((element) => {
       const { appId, groupKey } = getValuesFromId(element);
       if (!availableApps[groupKey]) {
@@ -80,6 +82,7 @@ export const SidebarContextProvider: React.FC = ({ children }) => {
             icon: option.icon,
           };
     });
+
     dynamicAppsSelection["dappstore"] = SIDEBAR_LIST["DAppsStore"];
 
     return dynamicAppsSelection;
