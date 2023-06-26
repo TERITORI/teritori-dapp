@@ -416,7 +416,7 @@ const FilterContainer: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
   </View>
 );
 
-const PriceFilter: React.FC = () => {
+const PriceFilter: React.FC<{ denom: string }> = ({ denom }) => {
   const styles = StyleSheet.create({
     textInput: {
       color: "#FFFFFF",
@@ -432,15 +432,16 @@ const PriceFilter: React.FC = () => {
   });
   const textInputStyle = StyleSheet.flatten([styles.textInput, fontMedium14]);
   const priceRange = useSelector(selectPriceRange);
-  const [min, setMin] = useState<number>(priceRange?.min || 0);
-  const [max, setMax] = useState<number>(priceRange?.max || 0);
+  const [min, setMin] = useState<string>(priceRange?.min.toString(10) || "0");
+  const [max, setMax] = useState<string>(priceRange?.max.toString(10) || "0");
 
   const dispatch = useAppDispatch();
   const handlePress = () => {
     dispatch(
       setPriceRange({
-        min,
-        max,
+        min: parseFloat(min),
+        max: parseFloat(max),
+        denom,
       })
     );
   };
@@ -459,21 +460,17 @@ const PriceFilter: React.FC = () => {
       >
         <TextInput
           placeholder="Min"
-          onChangeText={(value) =>
-            value !== "" ? setMin(parseFloat(value)) : setMin(0)
-          }
+          onChangeText={(value) => (value !== "" ? setMin(value) : setMin("0"))}
           placeholderTextColor="#FFFFFF"
           style={textInputStyle}
-          value={min !== 0 ? min.toString(10) : ""}
+          value={min !== "0" ? min.replace(/[^0-9\\.]/g, "") : ""}
           keyboardType="decimal-pad"
         />
         <BrandText style={fontSemibold14}>to</BrandText>
         <TextInput
           placeholder="Max"
-          onChangeText={(value) =>
-            value !== "" ? setMax(parseFloat(value)) : setMax(0)
-          }
-          value={max !== 0 ? max.toString(10) : ""}
+          onChangeText={(value) => (value !== "" ? setMax(value) : setMax("0"))}
+          value={max !== "0" ? max.replace(/[^0-9\\.]/g, "") : ""}
           placeholderTextColor="#FFFFFF"
           style={textInputStyle}
           keyboardType="decimal-pad"
@@ -545,7 +542,7 @@ export const SideFilters: React.FC<{
           alignItems: "flex-start",
         }}
       >
-        <PriceFilter />
+        {stats && <PriceFilter denom={stats?.floorPrice[0]?.denom} />}
       </FilterContainer>
       {stats && network && (
         <FlatList

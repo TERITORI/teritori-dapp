@@ -151,6 +151,7 @@ export interface Attribute {
 export interface PriceRange {
   min: number;
   max: number;
+  denom: string;
 }
 
 export interface NFT {
@@ -468,7 +469,7 @@ export const Attribute = {
 };
 
 function createBasePriceRange(): PriceRange {
-  return { min: 0, max: 0 };
+  return { min: 0, max: 0, denom: "" };
 }
 
 export const PriceRange = {
@@ -478,6 +479,9 @@ export const PriceRange = {
     }
     if (message.max !== 0) {
       writer.uint32(21).float(message.max);
+    }
+    if (message.denom !== "") {
+      writer.uint32(26).string(message.denom);
     }
     return writer;
   },
@@ -495,6 +499,9 @@ export const PriceRange = {
         case 2:
           message.max = reader.float();
           break;
+        case 3:
+          message.denom = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -504,13 +511,18 @@ export const PriceRange = {
   },
 
   fromJSON(object: any): PriceRange {
-    return { min: isSet(object.min) ? Number(object.min) : 0, max: isSet(object.max) ? Number(object.max) : 0 };
+    return {
+      min: isSet(object.min) ? Number(object.min) : 0,
+      max: isSet(object.max) ? Number(object.max) : 0,
+      denom: isSet(object.denom) ? String(object.denom) : "",
+    };
   },
 
   toJSON(message: PriceRange): unknown {
     const obj: any = {};
     message.min !== undefined && (obj.min = message.min);
     message.max !== undefined && (obj.max = message.max);
+    message.denom !== undefined && (obj.denom = message.denom);
     return obj;
   },
 
@@ -518,6 +530,7 @@ export const PriceRange = {
     const message = createBasePriceRange();
     message.min = object.min ?? 0;
     message.max = object.max ?? 0;
+    message.denom = object.denom ?? "";
     return message;
   },
 };

@@ -30,6 +30,7 @@ const initialState: UIStates = {
   priceRange: {
     min: 0,
     max: 0,
+    denom: "",
   },
 };
 
