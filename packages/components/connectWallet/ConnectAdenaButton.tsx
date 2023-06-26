@@ -28,6 +28,7 @@ export const ConnectAdenaButton: React.FC<{
       console.log("established", establishResult);
       dispatch(setIsAdenaConnected(true));
       setSelectedNetworkId(gnoTestnetNetwork.id);
+
       dispatch(
         setSelectedWalletId(`adena-${(await adena.GetAccount()).data.address}`)
       );

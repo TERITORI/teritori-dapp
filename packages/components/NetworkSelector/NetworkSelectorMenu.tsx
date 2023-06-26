@@ -101,6 +101,7 @@ export const NetworkSelectorMenu: FC<{
           return testnetsEnabled || !network.testnet;
         })
         .map((network, index) => {
+
           const selectable =
             !!selectableNetworks.find((sn) => sn.id === network.id) && // check that it's in the selectable list
             selectedNetworkInfo?.id !== network.id && // check that it's not already selected

@@ -38,9 +38,16 @@ import { useUpdatePostFee } from "../../../hooks/feed/useUpdatePostFee";
 import { useBalances } from "../../../hooks/useBalances";
 import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useMaxResolution } from "../../../hooks/useMaxResolution";
-import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
+import {
+  useSelectedNetworkId,
+  useSelectedNetworkInfo,
+} from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { getUserId, mustGetCosmosNetwork } from "../../../networks";
+import {
+  NetworkKind,
+  getUserId,
+  mustGetCosmosNetwork,
+} from "../../../networks";
 import { prettyPrice } from "../../../utils/coins";
 import { defaultSocialFeedFee } from "../../../utils/fee";
 import {
@@ -144,7 +151,8 @@ export const NewsFeedInput = React.forwardRef<
     const inputMinHeight = 20;
     const inputHeight = useSharedValue(20);
     const wallet = useSelectedWallet();
-    const selectedNetworkId = useSelectedNetworkId();
+    const selectedNetwork = useSelectedNetworkInfo();
+    const selectedNetworkId = selectedNetwork?.id || "teritori";
     const selectedWallet = useSelectedWallet();
     const userId = getUserId(selectedNetworkId, selectedWallet?.address);
     const inputRef = useRef<TextInput>(null);
@@ -172,10 +180,7 @@ export const NewsFeedInput = React.forwardRef<
       onCloseCreateModal && onCloseCreateModal();
     };
 
-    const balances = useBalances(
-      process.env.TERITORI_NETWORK_ID,
-      wallet?.address
-    );
+    const balances = useBalances(selectedNetworkId, wallet?.address);
 
     const { setValue, handleSubmit, reset, watch } = useForm<NewPostFormValues>(
       {
@@ -201,8 +206,11 @@ export const NewsFeedInput = React.forwardRef<
     );
 
     const processSubmit = async () => {
-      const toriBalance = balances.find((bal) => bal.denom === "utori");
-      if (postFee > Number(toriBalance?.amount) && !freePostCount) {
+      const denom = selectedNetwork?.currencies[0].denom;
+
+      const currentBalance = balances.find((bal) => bal.denom === denom);
+
+      if (postFee > Number(currentBalance?.amount) && !freePostCount) {
         return setNotEnoughFundModal(true);
       }
 
@@ -255,13 +263,7 @@ export const NewsFeedInput = React.forwardRef<
           });
           return;
         }
-
         const postCategory = getPostCategory(formValues);
-
-        const client = await signingSocialFeedClient({
-          networkId: selectedNetworkId,
-          walletAddress: wallet?.address || "",
-        });
 
         const metadata: SocialFeedMetadata = generatePostMetadata({
           title: formValues.title || "",
@@ -283,6 +285,7 @@ export const NewsFeedInput = React.forwardRef<
 
         if (daoId) {
           const network = mustGetCosmosNetwork(selectedNetworkId);
+
           if (!network.socialFeedContractAddress) {
             throw new Error("Social feed contract address not found");
           }
@@ -307,6 +310,10 @@ export const NewsFeedInput = React.forwardRef<
             ],
           });
         } else {
+          const client = await signingSocialFeedClient({
+            networkId: selectedNetworkId,
+            walletAddress: wallet?.address || "",
+          });
           await mutateAsync({
             client,
             msg,
