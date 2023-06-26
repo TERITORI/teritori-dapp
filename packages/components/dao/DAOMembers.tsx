@@ -546,16 +546,24 @@ const useProposeToAddMembers = (daoId: string | undefined) => {
           return;
         }
         case NetworkKind.Gno: {
-          const message = `UpdateMembers\n---\n${membersToAdd
-            .map((m) => `${m}:${weight}`)
-            .join("\n")}`;
-          console.log("message\n", message);
+          const message = encodeUpdateMembers(
+            membersToAdd.map((addr) => ({
+              addr,
+              weight,
+            })),
+            []
+          );
+          const b64Msg = message
+            .toString("base64")
+            .replaceAll("=", "")
+            .replaceAll("+", "-")
+            .replaceAll("/", "_");
           await adenaVMCall({
             caller: senderAddress,
             send: "",
             pkg_path: daoAddress,
             func: "Propose",
-            args: ["0", "Update members", "", message],
+            args: ["0", "Update members", "", b64Msg],
           });
           return;
         }
@@ -566,4 +574,45 @@ const useProposeToAddMembers = (daoId: string | undefined) => {
     },
     [daoId, groupAddress, makeProposal]
   );
+};
+
+interface GnoMember {
+  addr: string;
+  weight: number;
+}
+
+const encodeUpdateMembers = (toAdd: GnoMember[], toRemove: string[]) => {
+  const b = Buffer.alloc(16000); // TODO: compute size or concat
+
+  const t = "UpdateMembers";
+  let offset = 0;
+  b.writeUInt16BE(t.length);
+  offset += 2;
+  b.write(t, offset);
+  offset += t.length;
+
+  b.writeUInt32BE(toAdd.length, offset);
+  offset += 4;
+  for (const m of toAdd) {
+    b.writeUInt32BE(0, offset);
+    offset += 4;
+    b.writeUInt32BE(m.weight, offset);
+    offset += 4;
+
+    b.writeUInt16BE(m.addr.length, offset);
+    offset += 2;
+    b.write(m.addr, offset);
+    offset += m.addr.length;
+  }
+
+  b.writeUInt32BE(toRemove.length, offset);
+  offset += 4;
+  for (const addr of toRemove) {
+    b.writeUInt16BE(addr.length, offset);
+    offset += 2;
+    b.write(addr, offset);
+    offset += addr.length;
+  }
+
+  return Buffer.from(b.subarray(0, offset));
 };

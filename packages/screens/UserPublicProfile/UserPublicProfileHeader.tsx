@@ -37,6 +37,9 @@ export const screenTabItems = {
   proposals: {
     name: "Proposals",
   },
+  daoSettings: {
+    name: "Settings",
+  },
   // pathwar: {
   //   name: "Pathwar Challenges",
   //   disabled: true,
@@ -78,7 +81,10 @@ export const UserPublicProfileScreenHeader = ({
     if (isDAO && ["daos"].includes(key)) {
       return o;
     }
-    if (!isDAO && ["members", "proposals", "funds"].includes(key)) {
+    if (
+      !isDAO &&
+      ["members", "proposals", "funds", "daoSettings"].includes(key)
+    ) {
       return o;
     }
     return { ...o, [key]: item };

@@ -16,10 +16,14 @@ import { ConfigureVotingFormType } from "../types";
 
 interface ConfigureVotingSectionProps {
   onSubmit: (form: ConfigureVotingFormType) => void;
+  noDuration?: boolean;
+  submitLabel?: string;
 }
 
 export const ConfigureVotingSection: React.FC<ConfigureVotingSectionProps> = ({
   onSubmit,
+  noDuration,
+  submitLabel,
 }) => {
   // variables
   const { handleSubmit, control, watch, setValue } =
@@ -54,54 +58,60 @@ export const ConfigureVotingSection: React.FC<ConfigureVotingSectionProps> = ({
           value={minApprovalValue}
           onValueChange={(val) => setValue("minimumApprovalPercent", val)}
         />
-        <SpacerColumn size={2.5} />
-        <BrandText style={styles.voteText}>Vote Duration</BrandText>
-        <View style={styles.voteInputContainer}>
-          <View style={styles.fill}>
-            <TextInputCustom<ConfigureVotingFormType>
-              name="days"
-              variant="noCropBorder"
-              hideLabel
-              control={control}
-              label=""
-              rules={{ required: true, pattern: patternOnlyNumbers }}
-            >
-              <BrandText style={styles.durationLabel}>Days</BrandText>
-            </TextInputCustom>
-          </View>
-          <SpacerRow size={1.5} />
-          <View style={styles.fill}>
-            <TextInputCustom<ConfigureVotingFormType>
-              name="hours"
-              variant="noCropBorder"
-              hideLabel
-              control={control}
-              label=""
-              rules={{ required: true, pattern: patternOnlyNumbers }}
-            >
-              <BrandText style={styles.durationLabel}>Hours</BrandText>
-            </TextInputCustom>
-          </View>
-          <SpacerRow size={1.5} />
-          <View style={styles.fill}>
-            <TextInputCustom<ConfigureVotingFormType>
-              name="minutes"
-              variant="noCropBorder"
-              hideLabel
-              control={control}
-              label=""
-              rules={{ required: true, pattern: patternOnlyNumbers }}
-            >
-              <BrandText style={styles.durationLabel}>Minutes</BrandText>
-            </TextInputCustom>
-          </View>
-        </View>
+        {!noDuration && (
+          <>
+            <SpacerColumn size={2.5} />
+            <BrandText style={styles.voteText}>Vote Duration</BrandText>
+            <View style={styles.voteInputContainer}>
+              <View style={styles.fill}>
+                <TextInputCustom<ConfigureVotingFormType>
+                  name="days"
+                  variant="noCropBorder"
+                  hideLabel
+                  control={control}
+                  label=""
+                  rules={{ required: true, pattern: patternOnlyNumbers }}
+                >
+                  <BrandText style={styles.durationLabel}>Days</BrandText>
+                </TextInputCustom>
+              </View>
+              <SpacerRow size={1.5} />
+              <View style={styles.fill}>
+                <TextInputCustom<ConfigureVotingFormType>
+                  name="hours"
+                  variant="noCropBorder"
+                  hideLabel
+                  control={control}
+                  label=""
+                  rules={{ required: true, pattern: patternOnlyNumbers }}
+                >
+                  <BrandText style={styles.durationLabel}>Hours</BrandText>
+                </TextInputCustom>
+              </View>
+
+              <SpacerRow size={1.5} />
+              <View style={styles.fill}>
+                <TextInputCustom<ConfigureVotingFormType>
+                  name="minutes"
+                  variant="noCropBorder"
+                  hideLabel
+                  control={control}
+                  label=""
+                  rules={{ required: true, pattern: patternOnlyNumbers }}
+                >
+                  <BrandText style={styles.durationLabel}>Minutes</BrandText>
+                </TextInputCustom>
+              </View>
+            </View>
+          </>
+        )}
       </ScrollView>
 
       <View style={styles.footer}>
         <PrimaryButton
           size="M"
-          text={`Next: ${ORGANIZATION_DEPLOYER_STEPS[2]}`}
+          text={submitLabel || `Next: ${ORGANIZATION_DEPLOYER_STEPS[2]}`}
+          loader
           onPress={handleSubmit(onSubmit)}
         />
       </View>

@@ -10,7 +10,6 @@ import { getCosmosNetwork, getUserId, parseUserId } from "../../networks";
 import { neutral33, neutral77, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { modalMarginPadding } from "../../utils/style/modals";
-import { tinyAddress } from "../../utils/text";
 import { BrandText } from "../BrandText";
 import ModalBase from "../modals/ModalBase";
 import { SocialMessageContent } from "../socialFeed/SocialThread/SocialMessageContent";
