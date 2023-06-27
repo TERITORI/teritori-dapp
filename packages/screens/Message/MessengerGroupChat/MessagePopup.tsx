@@ -57,7 +57,17 @@ const data = [
   },
 ];
 
-export const MessagePopup = ({ isForwarding, setIsForwarding }) => {
+interface MessagePopupProps {
+  isForwarding: boolean;
+  setIsForwarding: () => void;
+  onReply: () => void;
+}
+
+export const MessagePopup = ({
+  isForwarding,
+  setIsForwarding,
+  onReply,
+}: MessagePopupProps) => {
   const handleForwardClick = () => {
     setIsForwarding(true);
   };
@@ -72,7 +82,7 @@ export const MessagePopup = ({ isForwarding, setIsForwarding }) => {
 
   return (
     <View>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={onReply}>
         <FlexRow>
           <SVG source={reply} height={16} width={16} color={neutralA3} />
           <SpacerRow size={1} />

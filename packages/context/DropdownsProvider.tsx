@@ -7,11 +7,12 @@ import React, {
 } from "react";
 import { GestureResponderEvent, Pressable, StyleSheet } from "react-native";
 
-interface DefaultValue {
+export interface DefaultValue {
   onPressDropdownButton: (dropdownRef: RefObject<any>) => void;
   closeOpenedDropdown: () => void;
   isDropdownOpen: (dropdownRef: RefObject<any>) => boolean;
   openDropdown: (dropdownRef: RefObject<any>) => void;
+  openedDropdownRef?: RefObject<any>;
 }
 
 const defaultValue: DefaultValue = {
@@ -19,6 +20,7 @@ const defaultValue: DefaultValue = {
   closeOpenedDropdown: () => {},
   isDropdownOpen: () => false,
   openDropdown: () => {},
+  openedDropdownRef: { current: null },
 };
 
 export const DropdownsContext = createContext(defaultValue);
@@ -72,6 +74,7 @@ export const DropdownsContextProvider: React.FC = ({ children }) => {
         isDropdownOpen,
         closeOpenedDropdown,
         openDropdown,
+        openedDropdownRef,
       }}
     >
       <Pressable onPressOut={handlePressOut} style={styles.pressable}>
