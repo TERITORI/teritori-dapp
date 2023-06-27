@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import moment from "moment";
 
 import {
   ContactRequest,
@@ -29,7 +30,15 @@ export const selectMessageList = (groupPk: string) => (state: RootState) =>
 
 export const selectMessageListByGroupPk =
   (groupPk: string) => (state: RootState) =>
-    state.message.messageList[groupPk] || [];
+    Object.values(state.message.messageList[groupPk] || {})
+      .filter((item) => item.id)
+      .sort(
+        (a, b) => moment(b.timestamp).valueOf() - moment(a.timestamp).valueOf()
+      );
+
+export const selectLastMessageByGroupPk =
+  (groupPk: string) => (state: RootState) =>
+    selectMessageListByGroupPk(groupPk)(state)[0];
 
 export const selectContactRequestList = (state: RootState) =>
   state.message.contactRequestList;
@@ -44,10 +53,42 @@ const messageSlice = createSlice({
       state,
       action: PayloadAction<{ groupPk: string; data: Message }>
     ) => {
-      state.messageList[action.payload.groupPk] = [
-        ...(state.messageList[action.payload.groupPk] || []),
-        action.payload.data,
-      ];
+      if (!state.messageList[action.payload.groupPk]) {
+        state.messageList[action.payload.groupPk] = {};
+      }
+      state.messageList[action.payload.groupPk][action.payload.data.id] = {
+        ...state.messageList[action.payload.groupPk][action.payload.data.id],
+        ...action.payload.data,
+      };
+    },
+    updateMessageReaction: (
+      state,
+      action: PayloadAction<{ groupPk: string; data: Message }>
+    ) => {
+      try {
+        if (!state.messageList[action.payload.groupPk]) {
+          state.messageList[action.payload.groupPk] = {};
+        }
+        if (
+          !state.messageList[action.payload.groupPk][
+            action.payload.data?.parentId
+          ]
+        ) {
+          state.messageList[action.payload.groupPk][
+            action.payload.data?.parentId
+          ] = {};
+        }
+        state.messageList[action.payload.groupPk][
+          action.payload.data?.parentId
+        ].reactions = [
+          ...(state.messageList[action.payload.groupPk][
+            action.payload.data.parentId
+          ].reactions || []),
+          action.payload.data,
+        ];
+      } catch (err) {
+        console.log("updateMessageReaction err", err);
+      }
     },
     setContactRequestList: (
       state,
@@ -75,7 +116,11 @@ const messageSlice = createSlice({
   },
 });
 
-export const { setMessageList, setContactRequestList, setConversationList } =
-  messageSlice.actions;
+export const {
+  setMessageList,
+  setContactRequestList,
+  setConversationList,
+  updateMessageReaction,
+} = messageSlice.actions;
 
 export const messageReducer = messageSlice.reducer;

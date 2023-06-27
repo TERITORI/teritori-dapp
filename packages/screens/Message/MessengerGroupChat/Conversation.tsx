@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import { chain } from "lodash";
+import moment from "moment";
+import React, { useMemo, useState } from "react";
 import { View, StyleSheet, TouchableOpacity, Image } from "react-native";
 
 import { FileRenderer } from "./FileRenderer";
@@ -7,15 +9,14 @@ import { MessagePopup } from "./MessagePopup";
 import avatar from "../../../../assets/icons/avatar.svg";
 import reply from "../../../../assets/icons/reply.svg";
 import { BrandText } from "../../../components/BrandText";
+import { Dropdown } from "../../../components/Dropdown";
+import FlexCol from "../../../components/FlexCol";
 import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
-import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
-import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
-import { TertiaryButton } from "../../../components/buttons/TertiaryButton";
 import { EmojiSelector } from "../../../components/socialFeed/EmojiSelector";
-import { SocialMessageContent } from "../../../components/socialFeed/SocialThread/SocialMessageContent";
-import { SpacerColumn, SpacerRow } from "../../../components/spacer";
-import { useFeedbacks } from "../../../context/FeedbacksProvider";
+import { Reactions } from "../../../components/socialFeed/SocialActions/Reactions";
+import { DateTime } from "../../../components/socialFeed/SocialThread/DateTime";
+import { SpacerRow } from "../../../components/spacer";
 import {
   neutral77,
   secondaryColor,
@@ -28,49 +29,134 @@ import {
   fontMedium10,
   fontSemibold11,
 } from "../../../utils/style/fonts";
-import { Message } from "../../../utils/types/message";
-import { GroupInfo_Reply } from "../../../weshnet";
-import { weshClient, weshConfig } from "../../../weshnet/client";
+import { layout } from "../../../utils/style/layout";
+import { Message, ReplyTo } from "../../../utils/types/message";
+import { weshConfig } from "../../../weshnet/client";
 import { sendMessage } from "../../../weshnet/client/services";
 import { stringFromBytes } from "../../../weshnet/client/utils";
 
 interface ConversationProps {
   message: Message;
+  groupPk: Uint8Array;
+  isMessageChain: boolean;
+  isNextMine: boolean;
+  onReply: (params: ReplyTo) => void;
 }
 
-export const Conversation = ({ message }: ConversationProps) => {
+export const Conversation = ({
+  message,
+  groupPk,
+  isMessageChain,
+  isNextMine,
+  onReply,
+}: ConversationProps) => {
   const [showPopup, setShowPopup] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
   const [isForwarding, setIsForwarding] = useState(false);
-  const [showFarward, setShowFarward] = useState(false);
+
   const isSender =
     message.senderId === stringFromBytes(weshConfig.config.accountPk);
 
-  const onEmojiSelected = (emoji: string | null) => {
+  const reactions = useMemo(() => {
+    if (!message?.reactions?.length) {
+      return [];
+    }
+    return chain(message.reactions || [])
+      .groupBy(message.payload.message)
+      .map((value, key) => ({
+        icon: value?.[0]?.payload?.message || "",
+        count: value.length,
+      }))
+      .value();
+  }, [message?.reactions]);
+
+  const onEmojiSelected = async (emoji: string | null) => {
     if (emoji) {
-      // let copiedValue = `${formValues.message}`;
-      // copiedValue = replaceBetweenString(
-      //   copiedValue,
-      //   selection.start,
-      //   selection.end,
-      //   emoji
-      // );
-      // setValue("message", copiedValue);
+      await sendMessage({
+        groupPk,
+        message: {
+          type: "reaction",
+          parentId: message.id,
+          payload: {
+            message: emoji,
+            files: [],
+          },
+        },
+      });
     }
   };
 
   const receiverName = "Anon";
-  const time = "";
-
-  console.log("message", message);
 
   return (
-    <>
-      <View style={isSender ? styles.senderWrapper : styles.receiverWrapper}>
-        {!isSender && <SVG source={avatar} style={{ width: 30, height: 30 }} />}
+    <FlexRow
+      alignItems="flex-start"
+      justifyContent={isSender ? "flex-end" : "flex-start"}
+      style={{
+        paddingHorizontal: layout.padding_x1,
+        marginBottom:
+          reactions.length && isNextMine
+            ? layout.padding_x3_5
+            : layout.padding_x0_25,
+      }}
+    >
+      {!isSender && (
         <View
-          style={[isSender ? styles.senderContainer : styles.receiverContainer]}
+          style={{
+            width: 30,
+            marginRight: layout.padding_x1_5,
+            marginTop: layout.padding_x1,
+          }}
         >
-          <TouchableOpacity onPress={() => setShowPopup(!showPopup)}>
+          {!isMessageChain && (
+            <SVG source={avatar} style={{ width: 30, height: 30 }} />
+          )}
+        </View>
+      )}
+      <FlexCol
+        style={{
+          maxWidth: "40%",
+          width: "auto",
+        }}
+        alignItems={isSender ? "flex-end" : "flex-start"}
+      >
+        {!isMessageChain && (
+          <FlexRow
+            style={{
+              marginBottom: layout.padding_x0_25,
+            }}
+          >
+            <BrandText
+              style={[
+                fontBold10,
+                {
+                  color: secondaryColor,
+                },
+              ]}
+            >
+              {isSender ? "me" : receiverName}
+            </BrandText>
+            <BrandText
+              style={[
+                fontMedium10,
+                { color: neutral77, marginLeft: layout.padding_x0_5 },
+              ]}
+            >
+              {moment(message.timestamp).local().format("HH:mm")}
+            </BrandText>
+          </FlexRow>
+        )}
+        <View
+          style={{
+            backgroundColor: isSender ? neutral17 : purpleDark,
+            paddingVertical: 8,
+            paddingHorizontal: 16,
+            borderBottomLeftRadius: layout.padding_x0_75,
+            borderBottomRightRadius: layout.padding_x0_75,
+            borderTopRightRadius: layout.padding_x0_75,
+          }}
+        >
+          <TouchableOpacity onPress={() => setShowPopup(true)}>
             {message.type === "message" ? (
               <>
                 <BrandText style={[fontSemibold11, { color: secondaryColor }]}>
@@ -99,6 +185,7 @@ export const Conversation = ({ message }: ConversationProps) => {
               </>
             )}
           </TouchableOpacity>
+
           {message?.type === "group-invite" && !isSender && (
             <GroupInvitationAction message={message} />
           )}
@@ -109,124 +196,74 @@ export const Conversation = ({ message }: ConversationProps) => {
               style={{ height: 200, width: 120, borderRadius: 10 }}
             />
           )}
-          {!isSender && showPopup && !showFarward && (
-            <View style={styles.popupContainerIconAndReply}>
-              <FlexRow>
-                <EmojiSelector
-                  onEmojiSelected={onEmojiSelected}
-                  optionsContainer={{ marginLeft: 30 }}
-                />
-                <SpacerRow size={1} />
-                <TouchableOpacity onPress={() => setShowFarward(true)}>
-                  <SVG
-                    source={reply}
-                    height={16}
-                    width={16}
-                    color={neutralA3}
-                  />
-                </TouchableOpacity>
-              </FlexRow>
-            </View>
+          {!isSender && (
+            <>
+              {showPopup && (
+                <Dropdown onDropdownClosed={() => setShowPopup(false)}>
+                  <View style={styles.popupContainerIconAndReply}>
+                    <FlexRow>
+                      <EmojiSelector onEmojiSelected={onEmojiSelected} />
+                      <SpacerRow size={1} />
+                      <TouchableOpacity onPress={() => setShowMenu(true)}>
+                        <SVG
+                          source={reply}
+                          height={16}
+                          width={16}
+                          color={neutralA3}
+                        />
+                      </TouchableOpacity>
+                    </FlexRow>
+                  </View>
+                </Dropdown>
+              )}
+              {showMenu && (
+                <Dropdown onDropdownClosed={() => setShowMenu(false)}>
+                  <View style={styles.popupContainer}>
+                    <MessagePopup
+                      onReply={() =>
+                        onReply({
+                          id: message.id,
+                          message: message.payload.message,
+                        })
+                      }
+                      isForwarding={isForwarding}
+                      setIsForwarding={setIsForwarding}
+                    />
+                  </View>
+                </Dropdown>
+              )}
+            </>
           )}
-          {!isSender && showFarward && (
-            <View style={styles.popupContainer}>
-              <MessagePopup
-                isForwarding={isForwarding}
-                setIsForwarding={setIsForwarding}
-              />
-            </View>
-          )}
-          <View
-            style={{
-              flexDirection: "row",
-              position: "absolute",
-              top: -15,
-              left: 10,
-            }}
-          >
-            {!isSender && !!receiverName && (
-              <BrandText style={[fontBold10, { color: secondaryColor }]}>
-                {receiverName}
-              </BrandText>
-            )}
-            {!!isSender && (
-              <BrandText style={[fontBold10, { color: secondaryColor }]}>
-                me
-              </BrandText>
-            )}
-            <SpacerRow size={0.5} />
-            <BrandText style={[fontMedium10, { color: neutral77 }]}>
-              {time}
-            </BrandText>
-          </View>
         </View>
-      </View>
-    </>
+        <View
+          style={{
+            position: "absolute",
+            right: 0,
+            bottom: -22,
+          }}
+        >
+          <Reactions reactions={reactions} onPressReaction={() => {}} />
+        </View>
+      </FlexCol>
+    </FlexRow>
   );
 };
 
 const styles = StyleSheet.create({
-  senderWrapper: {
-    flexDirection: "row",
-    // flex: 1,
-    marginBottom: 20,
-    marginTop: 25,
-  },
-  receiverWrapper: {
-    flexDirection: "row",
-    marginBottom: 8,
-    marginLeft: 10,
-  },
-  senderContainer: {
-    backgroundColor: neutral17,
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 16,
-    marginHorizontal: 10,
-    marginLeft: "auto",
-    width: "auto",
-    maxWidth: "40%",
-    zIndex: 1,
-    marginTop: 15,
-  },
-  receiverContainer: {
-    backgroundColor: purpleDark,
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 16,
-    marginHorizontal: 10,
-    width: "auto",
-    maxWidth: "40%",
-    zIndex: 1,
-    marginRight: "auto",
-    marginTop: 15,
-  },
   popupContainer: {
     backgroundColor: "rgba(41, 41, 41, 0.8)",
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 16,
-
     width: "auto",
-
     zIndex: 11111,
-
-    position: "absolute",
-    right: -50,
-    top: -170,
   },
   popupContainerIconAndReply: {
     backgroundColor: "rgba(41, 41, 41, 0.8)",
     paddingVertical: 6,
     paddingHorizontal: 10,
     borderRadius: 6,
-
     width: "auto",
-
-    zIndex: 11111,
-
-    position: "absolute",
-    right: -77,
-    bottom: 0,
+    zIndex: 9,
   },
 });

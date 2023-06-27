@@ -1,3 +1,4 @@
+import moment from "moment";
 import React, { Key, useEffect, useMemo, useState } from "react";
 import {
   View,
@@ -13,18 +14,30 @@ import { Conversation } from "./Conversation";
 import { chatData } from "./chatData";
 import plus from "../../../../assets/icons/chatplus.svg";
 import sent from "../../../../assets/icons/sent.svg";
+import { BrandText } from "../../../components/BrandText";
+import { Dropdown } from "../../../components/Dropdown";
+import FlexCol from "../../../components/FlexCol";
 import { SVG } from "../../../components/SVG";
 import { Separator } from "../../../components/Separator";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { selectMessageListByGroupPk } from "../../../store/slices/message";
-import { neutral33 } from "../../../utils/style/colors";
+import {
+  neutral00,
+  neutral11,
+  neutral33,
+  neutral55,
+  neutral77,
+  neutralA3,
+} from "../../../utils/style/colors";
+import { fontSemibold10, fontSemibold12 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { LocalFileData } from "../../../utils/types/feed";
 import {
   Conversation as IConversation,
   Message,
+  ReplyTo,
 } from "../../../utils/types/message";
 import { GroupInfo_Reply } from "../../../weshnet";
 import { weshClient, weshConfig } from "../../../weshnet/client";
@@ -61,12 +74,12 @@ export interface HandleSendParams {
 export const ChatSection = ({ conversation }: ChatSectionProps) => {
   const { width } = useWindowDimensions();
   const [message, setMessage] = useState<any>("");
-  const [files, setFiles] = useState([]);
+  const [inputHeight, setInputHeight] = useState(40);
+  const [replyTo, setReplyTo] = useState<ReplyTo>();
 
-  const [newMessage, setNewMessage] = useState("");
   const [searchInput, setSearchInput] = useState("");
   const [isFileUploader, setIsFileUploader] = useState(false);
-  const [thumbnailFile, setThumbnailFile] = useState<LocalFileData>();
+
   const { setToastError } = useFeedbacks();
   const [groupInfo, setGroupInfo] = useState<GroupInfo_Reply>();
   const messages = useSelector(
@@ -95,6 +108,7 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
           groupPk: _group.group?.publicKey,
         });
       }
+      console.log(conversation.id, stringFromBytes(_group.group?.publicKey));
       setGroupInfo(_group);
       subsId = await subscribeMessages({
         groupPk: _group.group?.publicKey,
@@ -128,6 +142,7 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
         groupPk: groupInfo?.group?.publicKey,
         message: {
           type: "message",
+          parentId: replyTo?.id || "",
           payload: {
             message: message || data?.message,
             files: data?.files || [],
@@ -136,6 +151,7 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
       });
 
       setMessage("");
+      setReplyTo(undefined);
     } catch (err) {
       setToastError({
         title: "Failed to send message",
@@ -146,43 +162,103 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
   const { height } = useWindowDimensions();
 
   return (
-    <>
-      <View style={{ zIndex: 11111 }}>
-        <ChatHeader
-          messages={messages}
-          searchInput={searchInput}
-          setSearchInput={setSearchInput}
-          name={conversation.name || "Anon"}
-        />
-      </View>
-      <Separator color={neutral33} />
-
-      <FlatList
-        inverted
-        data={messages}
+    <View
+      style={{
+        height: height - 210,
+      }}
+    >
+      <View
         style={{
-          height: height - 340,
-          paddingVertical: layout.padding_x1_5,
+          flex: 1,
+          width: "100%",
         }}
-        renderItem={({ item }) => (
-          <Conversation
-            message={item}
-            data={item.message}
-            height={0}
-            width={0}
+      >
+        <View style={{ zIndex: 11111 }}>
+          <ChatHeader
+            messages={messages}
+            searchInput={searchInput}
+            setSearchInput={setSearchInput}
+            name={conversation.name || "Anon"}
+          />
+        </View>
+        <Separator color={neutral33} />
+
+        <FlatList
+          inverted
+          data={messages}
+          style={{
+            paddingVertical: layout.padding_x1_5,
+          }}
+          contentContainerStyle={{ flexGrow: 1 }}
+          renderItem={({ item, index }) => {
+            const previousMessage =
+              index < messages.length - 1 ? messages[index + 1] : undefined;
+            const nextMessage = index > 0 ? messages[index - 1] : undefined;
+
+            const separatorDate = previousMessage
+              ? moment(item.timestamp).format("DD/MM/YYYY") !==
+                  moment(previousMessage.timestamp).format("DD/MM/YYYY") &&
+                item.timestamp
+              : item.timestamp;
+            return (
+              <>
+                <Conversation
+                  onReply={setReplyTo}
+                  message={item}
+                  data={item.message}
+                  groupPk={groupInfo?.group?.publicKey}
+                  height={0}
+                  width={0}
+                  isMessageChain={previousMessage?.senderId === item.senderId}
+                  isNextMine={nextMessage?.senderId === item.senderId}
+                />
+                {!!separatorDate && (
+                  <View
+                    style={{
+                      position: "relative",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      marginVertical: layout.padding_x1,
+                    }}
+                  >
+                    <BrandText
+                      style={[
+                        fontSemibold10,
+                        {
+                          backgroundColor: neutral00,
+                          paddingHorizontal: layout.padding_x2,
+                          zIndex: 9,
+                        },
+                      ]}
+                    >
+                      {moment(separatorDate).format("DD/MM/YYYY")}
+                    </BrandText>
+                    <View
+                      style={{
+                        width: "80%",
+                        backgroundColor: neutral33,
+                        height: 0.5,
+                        position: "absolute",
+                        zIndex: 0,
+                      }}
+                    />
+                  </View>
+                )}
+              </>
+            );
+          }}
+          keyExtractor={(item) => item.id}
+        />
+
+        <SpacerColumn size={3} />
+
+        {isFileUploader && (
+          <UploadImage
+            onClose={() => setIsFileUploader(false)}
+            handleSend={handleSend}
           />
         )}
-        keyExtractor={(item) => item.id}
-      />
-
-      <SpacerColumn size={3} />
-
-      {isFileUploader && (
-        <UploadImage
-          onClose={() => setIsFileUploader(false)}
-          handleSend={handleSend}
-        />
-      )}
+      </View>
       <View
         style={{
           flexDirection: "row",
@@ -190,34 +266,67 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
           alignItems: "center",
         }}
       >
-        <TouchableOpacity onPress={() => setIsFileUploader(true)}>
+        <Dropdown triggerComponent={<SVG source={plus} />}>
+          {() => (
+            <UploadImage
+              onClose={() => setIsFileUploader(false)}
+              handleSend={handleSend}
+            />
+          )}
+        </Dropdown>
+        {/* <TouchableOpacity onPress={() => setIsFileUploader(true)}>
           <SVG source={plus} />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <SpacerRow size={2} />
-        <TextInputCustom
-          labelStyle={{ marginTop: -10 }}
-          containerStyle={{
-            marginHorizontal: layout.padding_x0_5,
-          }}
-          name="message"
-          placeHolder="Add a Message"
-          value={message}
-          onChangeText={setMessage}
-          label=""
-          style={{
-            width: width - 560,
-          }}
-          onSubmitEditing={() => {
-            if (message.length) {
-              handleSend();
+        <View>
+          {!!replyTo?.message && (
+            <View
+              style={{
+                backgroundColor: neutral33,
+                padding: layout.padding_x1,
+                marginLeft: layout.padding_x3,
+                borderRadius: 10,
+                maxWidth: 400,
+              }}
+            >
+              <BrandText style={[fontSemibold12, { color: "white" }]}>
+                Reply to: {replyTo?.message}
+              </BrandText>
+            </View>
+          )}
+          <TextInputCustom
+            containerStyle={{
+              marginHorizontal: layout.padding_x0_5,
+            }}
+            height={Math.max(40, inputHeight)}
+            name="message"
+            placeHolder={
+              replyTo?.message ? "Add reply message" : "Add a Message"
             }
-          }}
-        >
-          <TouchableOpacity onPress={handleSend}>
-            <SVG source={sent} />
-          </TouchableOpacity>
-        </TextInputCustom>
+            value={message}
+            onChangeText={setMessage}
+            label=""
+            style={{
+              width: width - 560,
+            }}
+            textInputStyle={{
+              height: Math.max(20, inputHeight - 20),
+            }}
+            onSubmitEditing={() => {
+              if (message.length) {
+                handleSend();
+              }
+            }}
+            onContentSizeChange={(event) => {
+              setInputHeight(event.nativeEvent.contentSize.height);
+            }}
+          >
+            <TouchableOpacity onPress={handleSend}>
+              <SVG source={sent} />
+            </TouchableOpacity>
+          </TextInputCustom>
+        </View>
       </View>
-    </>
+    </View>
   );
 };
