@@ -149,9 +149,8 @@ export interface Attribute {
 }
 
 export interface PriceRange {
-  min: number;
-  max: number;
-  denom: string;
+  min: string;
+  max: string;
 }
 
 export interface NFT {
@@ -469,19 +468,16 @@ export const Attribute = {
 };
 
 function createBasePriceRange(): PriceRange {
-  return { min: 0, max: 0, denom: "" };
+  return { min: "", max: "" };
 }
 
 export const PriceRange = {
   encode(message: PriceRange, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.min !== 0) {
-      writer.uint32(13).float(message.min);
+    if (message.min !== "") {
+      writer.uint32(10).string(message.min);
     }
-    if (message.max !== 0) {
-      writer.uint32(21).float(message.max);
-    }
-    if (message.denom !== "") {
-      writer.uint32(26).string(message.denom);
+    if (message.max !== "") {
+      writer.uint32(18).string(message.max);
     }
     return writer;
   },
@@ -494,13 +490,10 @@ export const PriceRange = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.min = reader.float();
+          message.min = reader.string();
           break;
         case 2:
-          message.max = reader.float();
-          break;
-        case 3:
-          message.denom = reader.string();
+          message.max = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -511,26 +504,20 @@ export const PriceRange = {
   },
 
   fromJSON(object: any): PriceRange {
-    return {
-      min: isSet(object.min) ? Number(object.min) : 0,
-      max: isSet(object.max) ? Number(object.max) : 0,
-      denom: isSet(object.denom) ? String(object.denom) : "",
-    };
+    return { min: isSet(object.min) ? String(object.min) : "", max: isSet(object.max) ? String(object.max) : "" };
   },
 
   toJSON(message: PriceRange): unknown {
     const obj: any = {};
     message.min !== undefined && (obj.min = message.min);
     message.max !== undefined && (obj.max = message.max);
-    message.denom !== undefined && (obj.denom = message.denom);
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<PriceRange>, I>>(object: I): PriceRange {
     const message = createBasePriceRange();
-    message.min = object.min ?? 0;
-    message.max = object.max ?? 0;
-    message.denom = object.denom ?? "";
+    message.min = object.min ?? "";
+    message.max = object.max ?? "";
     return message;
   },
 };

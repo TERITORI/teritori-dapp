@@ -28,9 +28,8 @@ const initialState: UIStates = {
   showFilterButton: true,
   buyNowState: true,
   priceRange: {
-    min: 0,
-    max: 0,
-    denom: "",
+    min: "0",
+    max: "0",
   },
 };
 

@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/bxcodec/faker/v3"
-	"math"
 	"strings"
 	"time"
 
@@ -424,22 +423,12 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 		}
 
 		if req.PriceRange != nil {
-
-			if req.PriceRange.GetDenom() != "" {
-				if ok, err := s.conf.NetworkStore.GetNativeCurrency(network.ID, req.PriceRange.GetDenom()); ok.GetDenom() != "" {
-					if req.PriceRange.Min != 0 {
-						query.Where("price_amount >= ?", req.PriceRange.Min*float32(math.Pow(10, float64(ok.Decimals)))) // Pow needs float64
-
-					}
-					if req.PriceRange.Max != 0 {
-						query.Where("price_amount <= ?", req.PriceRange.Max*float32(math.Pow(10, float64(ok.Decimals)))) // Pow needs float64
-					}
-				} else {
-					fmt.Println(err)
-				}
-
+			if req.PriceRange.Min != "0" {
+				query.Where("price_amount >= ?", req.PriceRange.Min)
 			}
-
+			if req.PriceRange.Max != "0" {
+				query.Where("price_amount <= ?", req.PriceRange.Max)
+			}
 		}
 
 		var nfts []*indexerdb.NFT
