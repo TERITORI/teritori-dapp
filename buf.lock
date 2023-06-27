@@ -4,8 +4,8 @@ deps:
   - remote: buf.build
     owner: berty
     repository: weshnet
-    commit: c7889cd7301e48d0a88b5cbd269e6add
-    digest: shake256:70bacd1ec307a8ffaab85c8fd6afe1641d2301ee5a23f34a015838d2aa6ab0e8d375a81b6b8ed5a440039b36de7c5eb51357eb0ef994c4bd6c1a184910159ce7
+    commit: c72d5759847b4dedb5411c19485e1a37
+    digest: shake256:8e64e9cc3f354fa90022ef562146d7f4e72d1de0584c799226a0f6cb8bb9cf52204176b1f6a0a3f6448b6ac3ad9a983c2a62e580aaed2a125880b5302e03fd30
   - remote: buf.build
     owner: gogo
     repository: protobuf

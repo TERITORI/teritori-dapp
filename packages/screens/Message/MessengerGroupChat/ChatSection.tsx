@@ -1,9 +1,8 @@
 import moment from "moment";
-import React, { Key, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   TouchableOpacity,
-  ScrollView,
   useWindowDimensions,
   FlatList,
 } from "react-native";
@@ -11,36 +10,26 @@ import { useSelector } from "react-redux";
 
 import { ChatHeader } from "./ChatHeader";
 import { Conversation } from "./Conversation";
-import { chatData } from "./chatData";
 import plus from "../../../../assets/icons/chatplus.svg";
 import sent from "../../../../assets/icons/sent.svg";
 import { BrandText } from "../../../components/BrandText";
 import { Dropdown } from "../../../components/Dropdown";
-import FlexCol from "../../../components/FlexCol";
 import { SVG } from "../../../components/SVG";
 import { Separator } from "../../../components/Separator";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { selectMessageListByGroupPk } from "../../../store/slices/message";
-import {
-  neutral00,
-  neutral11,
-  neutral33,
-  neutral55,
-  neutral77,
-  neutralA3,
-} from "../../../utils/style/colors";
+import { neutral00, neutral33, redDefault } from "../../../utils/style/colors";
 import { fontSemibold10, fontSemibold12 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { LocalFileData } from "../../../utils/types/feed";
 import {
   Conversation as IConversation,
   Message,
   ReplyTo,
 } from "../../../utils/types/message";
 import { GroupInfo_Reply } from "../../../weshnet";
-import { weshClient, weshConfig } from "../../../weshnet/client";
+import { weshClient } from "../../../weshnet/client";
 import { sendMessage } from "../../../weshnet/client/services";
 import {
   subscribeMessages,
@@ -48,20 +37,9 @@ import {
 } from "../../../weshnet/client/subscribers";
 import {
   bytesFromString,
-  encodeJSON,
   stringFromBytes,
 } from "../../../weshnet/client/utils";
 import { UploadImage } from "../MessengerHomeCreateChatDropdown/UploadImage";
-interface IMessage {
-  id: Key | null | undefined;
-  source: any;
-  message: string;
-  isSender: boolean;
-  file: LocalFileData;
-
-  time: string;
-  name: string;
-}
 
 interface ChatSectionProps {
   conversation: IConversation;
@@ -108,13 +86,13 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
           groupPk: _group.group?.publicKey,
         });
       }
-      console.log(conversation.id, stringFromBytes(_group.group?.publicKey));
+
       setGroupInfo(_group);
-      subsId = await subscribeMessages({
-        groupPk: _group.group?.publicKey,
-        untilNow: true,
-      });
-      await subscribeMetadata(_group.group?.publicKey);
+      // subsId = await subscribeMessages(
+      //  string groupPk: _group.group?.publicKey,
+
+      // );
+      // await subscribeMetadata(_group.group?.publicKey);
 
       setSubsId(subsId);
     } catch (err) {
@@ -133,7 +111,6 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
   }, [conversation.id]);
 
   const handleSend = async (data?: HandleSendParams) => {
-    console.log("send test", !message || !data?.message, message, data);
     if (!message && !data?.message) {
       return;
     }
@@ -200,6 +177,8 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
                   moment(previousMessage.timestamp).format("DD/MM/YYYY") &&
                 item.timestamp
               : item.timestamp;
+
+            const isNewSeparator = !previousMessage?.isRead && item.isRead;
             return (
               <>
                 <Conversation
@@ -212,31 +191,54 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
                   isMessageChain={previousMessage?.senderId === item.senderId}
                   isNextMine={nextMessage?.senderId === item.senderId}
                 />
-                {!!separatorDate && (
+                {(isNewSeparator || !!separatorDate) && (
                   <View
                     style={{
+                      flexDirection: "row",
                       position: "relative",
                       alignItems: "center",
                       justifyContent: "center",
-                      marginVertical: layout.padding_x1,
+                      marginVertical: layout.padding_x2,
+                      width: "80%",
+                      alignSelf: "center",
                     }}
                   >
-                    <BrandText
-                      style={[
-                        fontSemibold10,
-                        {
-                          backgroundColor: neutral00,
-                          paddingHorizontal: layout.padding_x2,
+                    {!!separatorDate && (
+                      <BrandText
+                        style={[
+                          fontSemibold10,
+                          {
+                            backgroundColor: neutral00,
+                            paddingHorizontal: layout.padding_x2,
+                            zIndex: 9,
+                          },
+                        ]}
+                      >
+                        {moment(separatorDate).format("DD/MM/YYYY")}
+                      </BrandText>
+                    )}
+
+                    {isNewSeparator && (
+                      <View
+                        style={{
+                          backgroundColor: redDefault,
+                          paddingVertical: layout.padding_x0_25,
+                          paddingHorizontal: layout.padding_x0_5,
+                          borderRadius: 2,
                           zIndex: 9,
-                        },
-                      ]}
-                    >
-                      {moment(separatorDate).format("DD/MM/YYYY")}
-                    </BrandText>
+                          position: "absolute",
+                          right: 0,
+                        }}
+                      >
+                        <BrandText style={[fontSemibold10]}>New</BrandText>
+                      </View>
+                    )}
                     <View
                       style={{
-                        width: "80%",
-                        backgroundColor: neutral33,
+                        width: "100%",
+                        backgroundColor: isNewSeparator
+                          ? redDefault
+                          : neutral33,
                         height: 0.5,
                         position: "absolute",
                         zIndex: 0,
@@ -274,9 +276,7 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
             />
           )}
         </Dropdown>
-        {/* <TouchableOpacity onPress={() => setIsFileUploader(true)}>
-          <SVG source={plus} />
-        </TouchableOpacity> */}
+
         <SpacerRow size={2} />
         <View>
           {!!replyTo?.message && (

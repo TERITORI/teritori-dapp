@@ -695,26 +695,34 @@ export const ErrDetails = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ErrDetails {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseErrDetails();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if ((tag & 7) === 2) {
+          if (tag === 8) {
+            message.codes.push(reader.int32() as any);
+
+            continue;
+          }
+
+          if (tag === 10) {
             const end2 = reader.uint32() + reader.pos;
             while (reader.pos < end2) {
               message.codes.push(reader.int32() as any);
             }
-          } else {
-            message.codes.push(reader.int32() as any);
+
+            continue;
           }
-          break;
-        default:
-          reader.skipType(tag & 7);
+
           break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -731,6 +739,10 @@ export const ErrDetails = {
       obj.codes = [];
     }
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ErrDetails>, I>>(base?: I): ErrDetails {
+    return ErrDetails.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<ErrDetails>, I>>(object: I): ErrDetails {
