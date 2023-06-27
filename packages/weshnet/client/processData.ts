@@ -1,9 +1,11 @@
 import { weshClient } from "./client";
+import { subscribeMessages } from "./subscribers";
 import { bytesFromString, decodeJSON, stringFromBytes } from "./utils";
 import {
   selectContactRequestList,
   setContactRequestList,
   setConversationList,
+  setLastId,
 } from "../../store/slices/message";
 import { setNotification } from "../../store/slices/notification";
 import { store } from "../../store/store";
@@ -11,17 +13,23 @@ import { ContactRequest } from "../../utils/types/message";
 import {
   EventType,
   GroupMetadataEvent,
-  AccountContactRequestReceived,
-  AccountContactRequestEnqueued,
-  AccountContactRequestAccepted,
+  AccountContactRequestIncomingReceived,
+  AccountContactRequestOutgoingEnqueued,
+  AccountContactRequestIncomingAccepted,
   AccountGroupJoined,
-  AccountContactRequestSent,
 } from "../protocoltypes";
 
 const processedMetadataIds: string[] = [];
 
 export const handleMetadata = async (data: GroupMetadataEvent) => {
   const id = stringFromBytes(data.eventContext?.id);
+
+  store.dispatch(
+    setLastId({
+      key: "metadata",
+      value: id,
+    })
+  );
   if (processedMetadataIds.includes(id)) {
     return;
   }
@@ -37,7 +45,7 @@ export const handleMetadata = async (data: GroupMetadataEvent) => {
       case EventType.EventTypeAccountContactRequestOutgoingEnqueued: {
         try {
           const parsedData = GroupMetadataEvent.toJSON(data);
-          const payload = AccountContactRequestEnqueued.decode(
+          const payload = AccountContactRequestOutgoingEnqueued.decode(
             data.metadata.payload
           );
           parsedData.payload = payload;
@@ -68,6 +76,7 @@ export const handleMetadata = async (data: GroupMetadataEvent) => {
                 ],
               })
             );
+            subscribeMessages(stringFromBytes(groupInfo.group?.publicKey));
             console.log("group info", groupInfo);
           } catch (err) {
             console.log("group enque err", err?.message);
@@ -82,7 +91,7 @@ export const handleMetadata = async (data: GroupMetadataEvent) => {
       case EventType.EventTypeAccountContactRequestIncomingReceived: {
         const parsedData = GroupMetadataEvent.toJSON(data);
 
-        parsedData.payload = AccountContactRequestReceived.decode(
+        parsedData.payload = AccountContactRequestIncomingReceived.decode(
           data.metadata.payload
         );
 
@@ -112,7 +121,7 @@ export const handleMetadata = async (data: GroupMetadataEvent) => {
         const contactRequests = selectContactRequestList(store.getState());
         const parsedData = GroupMetadataEvent.toJSON(data);
 
-        parsedData.payload = AccountContactRequestAccepted.decode(
+        parsedData.payload = AccountContactRequestIncomingAccepted.decode(
           data.metadata.payload
         );
 
@@ -155,6 +164,8 @@ export const handleMetadata = async (data: GroupMetadataEvent) => {
               name: "",
             })
           );
+
+          subscribeMessages(stringFromBytes(group.group?.publicKey));
         }
 
         break;
@@ -172,6 +183,7 @@ export const handleMetadata = async (data: GroupMetadataEvent) => {
             name: "Group",
           })
         );
+        subscribeMessages(stringFromBytes(parsedData.payload.group.publicKey));
 
         break;
       }

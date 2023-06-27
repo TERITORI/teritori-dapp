@@ -75,15 +75,15 @@ export enum EventType {
   EventTypeAccountContactRequestEnabled = 104,
   /** EventTypeAccountContactRequestReferenceReset - EventTypeAccountContactRequestReferenceReset indicates the payload includes that the account has a new contact request rendezvous seed */
   EventTypeAccountContactRequestReferenceReset = 105,
-  /** EventTypeAccountContactRequestOutgoingEnqueued - EventTypeAccountContactRequestEnqueued indicates the payload includes that the account will attempt to send a new contact request */
+  /** EventTypeAccountContactRequestOutgoingEnqueued - EventTypeAccountContactRequestOutgoingEnqueued indicates the payload includes that the account will attempt to send a new contact request */
   EventTypeAccountContactRequestOutgoingEnqueued = 106,
-  /** EventTypeAccountContactRequestOutgoingSent - EventTypeAccountContactRequestSent indicates the payload includes that the account has sent a contact request */
+  /** EventTypeAccountContactRequestOutgoingSent - EventTypeAccountContactRequestOutgoingSent indicates the payload includes that the account has sent a contact request */
   EventTypeAccountContactRequestOutgoingSent = 107,
-  /** EventTypeAccountContactRequestIncomingReceived - EventTypeAccountContactRequestReceived indicates the payload includes that the account has received a contact request */
+  /** EventTypeAccountContactRequestIncomingReceived - EventTypeAccountContactRequestIncomingReceived indicates the payload includes that the account has received a contact request */
   EventTypeAccountContactRequestIncomingReceived = 108,
   /** EventTypeAccountContactRequestIncomingDiscarded - EventTypeAccountContactRequestIncomingDiscarded indicates the payload includes that the account has ignored a contact request */
   EventTypeAccountContactRequestIncomingDiscarded = 109,
-  /** EventTypeAccountContactRequestIncomingAccepted - EventTypeAccountContactRequestAccepted indicates the payload includes that the account has accepted a contact request */
+  /** EventTypeAccountContactRequestIncomingAccepted - EventTypeAccountContactRequestIncomingAccepted indicates the payload includes that the account has accepted a contact request */
   EventTypeAccountContactRequestIncomingAccepted = 110,
   /** EventTypeAccountContactBlocked - EventTypeAccountContactBlocked indicates the payload includes that the account has blocked a contact */
   EventTypeAccountContactBlocked = 111,
@@ -528,16 +528,16 @@ export interface EventContext {
   groupPk: Uint8Array;
 }
 
-/** AppMetadata is an app defined message, accessible to future group members */
-export interface AppMetadata {
+/** GroupMetadataPayloadSent is an app defined message, accessible to future group members */
+export interface GroupMetadataPayloadSent {
   /** device_pk is the device sending the event, signs the message */
   devicePk: Uint8Array;
   /** message is the payload */
   message: Uint8Array;
 }
 
-/** ContactAddAliasKey is an event type where ones shares their alias public key */
-export interface ContactAddAliasKey {
+/** ContactAliasKeyAdded is an event type where ones shares their alias public key */
+export interface ContactAliasKeyAdded {
   /** device_pk is the device sending the event, signs the message */
   devicePk: Uint8Array;
   /** alias_pk is the alias key which will be used to verify a contact identity */
@@ -545,10 +545,10 @@ export interface ContactAddAliasKey {
 }
 
 /**
- * GroupAddMemberDevice is an event which indicates to a group a new device (and eventually a new member) is joining it
- * When added on AccountGroup, this event should be followed by appropriate GroupAddMemberDevice and GroupAddDeviceChainKey events
+ * GroupMemberDeviceAdded is an event which indicates to a group a new device (and eventually a new member) is joining it
+ * When added on AccountGroup, this event should be followed by appropriate GroupMemberDeviceAdded and GroupDeviceChainKeyAdded events
  */
-export interface GroupAddMemberDevice {
+export interface GroupMemberDeviceAdded {
   /** member_pk is the member sending the event */
   memberPk: Uint8Array;
   /** device_pk is the device sending the event, signs the message */
@@ -565,8 +565,8 @@ export interface DeviceChainKey {
   counter: number;
 }
 
-/** GroupAddDeviceChainKey is an event which indicates to a group member a device chain key */
-export interface GroupAddDeviceChainKey {
+/** GroupDeviceChainKeyAdded is an event which indicates to a group member a device chain key */
+export interface GroupDeviceChainKeyAdded {
   /** device_pk is the device sending the event, signs the message */
   devicePk: Uint8Array;
   /** dest_member_pk is the member who should receive the secret */
@@ -575,8 +575,8 @@ export interface GroupAddDeviceChainKey {
   payload: Uint8Array;
 }
 
-/** MultiMemberGroupAddAliasResolver indicates that a group member want to disclose their presence in the group to their contacts */
-export interface MultiMemberGroupAddAliasResolver {
+/** MultiMemberGroupAliasResolverAdded indicates that a group member want to disclose their presence in the group to their contacts */
+export interface MultiMemberGroupAliasResolverAdded {
   /** device_pk is the device sending the event, signs the message */
   devicePk: Uint8Array;
   /**
@@ -591,16 +591,16 @@ export interface MultiMemberGroupAddAliasResolver {
   aliasProof: Uint8Array;
 }
 
-/** MultiMemberGrantAdminRole indicates that a group admin allows another group member to act as an admin */
-export interface MultiMemberGrantAdminRole {
+/** MultiMemberGroupAdminRoleGranted indicates that a group admin allows another group member to act as an admin */
+export interface MultiMemberGroupAdminRoleGranted {
   /** device_pk is the device sending the event, signs the message, must be the device of an admin of the group */
   devicePk: Uint8Array;
   /** grantee_member_pk is the member public key of the member granted of the admin role */
   granteeMemberPk: Uint8Array;
 }
 
-/** MultiMemberInitialMember indicates that a member is the group creator, this event is signed using the group ID private key */
-export interface MultiMemberInitialMember {
+/** MultiMemberGroupInitialMemberAnnounced indicates that a member is the group creator, this event is signed using the group ID private key */
+export interface MultiMemberGroupInitialMemberAnnounced {
   /** member_pk is the public key of the member who is the group creator */
   memberPk: Uint8Array;
 }
@@ -629,7 +629,7 @@ export interface AccountGroupJoined {
   group: Group | undefined;
 }
 
-/** AccountGroupJoined indicates that the account has left a group */
+/** AccountGroupLeft indicates that the account has left a group */
 export interface AccountGroupLeft {
   /** device_pk is the device sending the event, signs the message */
   devicePk: Uint8Array;
@@ -643,13 +643,13 @@ export interface AccountContactRequestDisabled {
   devicePk: Uint8Array;
 }
 
-/** AccountContactRequestDisabled indicates that the account should be advertised on a public rendezvous point */
+/** AccountContactRequestEnabled indicates that the account should be advertised on a public rendezvous point */
 export interface AccountContactRequestEnabled {
   /** device_pk is the device sending the event, signs the message */
   devicePk: Uint8Array;
 }
 
-/** AccountContactRequestDisabled indicates that the account should be advertised on different public rendezvous points */
+/** AccountContactRequestReferenceReset indicates that the account should be advertised on different public rendezvous points */
 export interface AccountContactRequestReferenceReset {
   /** device_pk is the device sending the event, signs the message */
   devicePk: Uint8Array;
@@ -659,11 +659,11 @@ export interface AccountContactRequestReferenceReset {
 
 /**
  * This event should be followed by an AccountGroupJoined event
- * This event should be followed by a GroupAddMemberDevice event within the AccountGroup
- * This event should be followed by a GroupAddDeviceChainKey event within the AccountGroup
- * AccountContactRequestEnqueued indicates that the account will attempt to send a contact request when a matching peer is discovered
+ * This event should be followed by a GroupMemberDeviceAdded event within the AccountGroup
+ * This event should be followed by a GroupDeviceChainKeyAdded event within the AccountGroup
+ * AccountContactRequestOutgoingEnqueued indicates that the account will attempt to send a contact request when a matching peer is discovered
  */
-export interface AccountContactRequestEnqueued {
+export interface AccountContactRequestOutgoingEnqueued {
   /** device_pk is the device sending the event, signs the message */
   devicePk: Uint8Array;
   /** group_pk is the 1to1 group with the requested user */
@@ -676,16 +676,16 @@ export interface AccountContactRequestEnqueued {
   ownMetadata: Uint8Array;
 }
 
-/** AccountContactRequestSent indicates that the account has sent a contact request */
-export interface AccountContactRequestSent {
+/** AccountContactRequestOutgoingSent indicates that the account has sent a contact request */
+export interface AccountContactRequestOutgoingSent {
   /** device_pk is the device sending the account event, signs the message */
   devicePk: Uint8Array;
   /** contact_pk is the contacted account */
   contactPk: Uint8Array;
 }
 
-/** AccountContactRequestReceived indicates that the account has received a new contact request */
-export interface AccountContactRequestReceived {
+/** AccountContactRequestIncomingReceived indicates that the account has received a new contact request */
+export interface AccountContactRequestIncomingReceived {
   /** device_pk is the device sending the account event (which received the contact request), signs the message */
   devicePk: Uint8Array;
   /** contact_pk is the account sending the request */
@@ -702,8 +702,8 @@ export interface AccountContactRequestReceived {
   contactMetadata: Uint8Array;
 }
 
-/** AccountContactRequestDiscarded indicates that a contact request has been refused */
-export interface AccountContactRequestDiscarded {
+/** AccountContactRequestIncomingDiscarded indicates that a contact request has been refused */
+export interface AccountContactRequestIncomingDiscarded {
   /** device_pk is the device sending the event, signs the message */
   devicePk: Uint8Array;
   /** contact_pk is the contact whom request is refused */
@@ -712,10 +712,10 @@ export interface AccountContactRequestDiscarded {
 
 /**
  * This event should be followed by an AccountGroupJoined event
- * This event should be followed by GroupAddMemberDevice and GroupAddDeviceChainKey events within the AccountGroup
- * AccountContactRequestAccepted indicates that a contact request has been accepted
+ * This event should be followed by GroupMemberDeviceAdded and GroupDeviceChainKeyAdded events within the AccountGroup
+ * AccountContactRequestIncomingAccepted indicates that a contact request has been accepted
  */
-export interface AccountContactRequestAccepted {
+export interface AccountContactRequestIncomingAccepted {
   /** device_pk is the device sending the event, signs the message */
   devicePk: Uint8Array;
   /** contact_pk is the contact whom request is accepted */
@@ -923,6 +923,30 @@ export interface ContactRequestDiscard_Request {
 }
 
 export interface ContactRequestDiscard_Reply {
+}
+
+export interface ShareContact {
+}
+
+export interface ShareContact_Request {
+}
+
+export interface ShareContact_Reply {
+  /** encoded_contact is the Protobuf encoding of the ShareableContact. You can further encode the bytes for sharing, such as base58 or QR code. */
+  encodedContact: Uint8Array;
+}
+
+export interface DecodeContact {
+}
+
+export interface DecodeContact_Request {
+  /** encoded_contact is the Protobuf encoding of the shareable contact (as returned by ShareContact). */
+  encodedContact: Uint8Array;
+}
+
+export interface DecodeContact_Reply {
+  /** shareable_contact is the decoded shareable contact. */
+  contact: ShareableContact | undefined;
 }
 
 export interface ContactBlock {
@@ -1809,9 +1833,9 @@ export interface RefreshContactRequest_Reply {
 function createBaseAccount(): Account {
   return {
     group: undefined,
-    accountPrivateKey: new Uint8Array(),
-    aliasPrivateKey: new Uint8Array(),
-    publicRendezvousSeed: new Uint8Array(),
+    accountPrivateKey: new Uint8Array(0),
+    aliasPrivateKey: new Uint8Array(0),
+    publicRendezvousSeed: new Uint8Array(0),
   };
 }
 
@@ -1833,28 +1857,45 @@ export const Account = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Account {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseAccount();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.group = Group.decode(reader, reader.uint32());
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.accountPrivateKey = reader.bytes();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.aliasPrivateKey = reader.bytes();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.publicRendezvousSeed = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -1862,11 +1903,13 @@ export const Account = {
   fromJSON(object: any): Account {
     return {
       group: isSet(object.group) ? Group.fromJSON(object.group) : undefined,
-      accountPrivateKey: isSet(object.accountPrivateKey) ? bytesFromBase64(object.accountPrivateKey) : new Uint8Array(),
-      aliasPrivateKey: isSet(object.aliasPrivateKey) ? bytesFromBase64(object.aliasPrivateKey) : new Uint8Array(),
+      accountPrivateKey: isSet(object.accountPrivateKey)
+        ? bytesFromBase64(object.accountPrivateKey)
+        : new Uint8Array(0),
+      aliasPrivateKey: isSet(object.aliasPrivateKey) ? bytesFromBase64(object.aliasPrivateKey) : new Uint8Array(0),
       publicRendezvousSeed: isSet(object.publicRendezvousSeed)
         ? bytesFromBase64(object.publicRendezvousSeed)
-        : new Uint8Array(),
+        : new Uint8Array(0),
     };
   },
 
@@ -1875,38 +1918,42 @@ export const Account = {
     message.group !== undefined && (obj.group = message.group ? Group.toJSON(message.group) : undefined);
     message.accountPrivateKey !== undefined &&
       (obj.accountPrivateKey = base64FromBytes(
-        message.accountPrivateKey !== undefined ? message.accountPrivateKey : new Uint8Array(),
+        message.accountPrivateKey !== undefined ? message.accountPrivateKey : new Uint8Array(0),
       ));
     message.aliasPrivateKey !== undefined &&
       (obj.aliasPrivateKey = base64FromBytes(
-        message.aliasPrivateKey !== undefined ? message.aliasPrivateKey : new Uint8Array(),
+        message.aliasPrivateKey !== undefined ? message.aliasPrivateKey : new Uint8Array(0),
       ));
     message.publicRendezvousSeed !== undefined &&
       (obj.publicRendezvousSeed = base64FromBytes(
-        message.publicRendezvousSeed !== undefined ? message.publicRendezvousSeed : new Uint8Array(),
+        message.publicRendezvousSeed !== undefined ? message.publicRendezvousSeed : new Uint8Array(0),
       ));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<Account>, I>>(base?: I): Account {
+    return Account.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<Account>, I>>(object: I): Account {
     const message = createBaseAccount();
     message.group = (object.group !== undefined && object.group !== null) ? Group.fromPartial(object.group) : undefined;
-    message.accountPrivateKey = object.accountPrivateKey ?? new Uint8Array();
-    message.aliasPrivateKey = object.aliasPrivateKey ?? new Uint8Array();
-    message.publicRendezvousSeed = object.publicRendezvousSeed ?? new Uint8Array();
+    message.accountPrivateKey = object.accountPrivateKey ?? new Uint8Array(0);
+    message.aliasPrivateKey = object.aliasPrivateKey ?? new Uint8Array(0);
+    message.publicRendezvousSeed = object.publicRendezvousSeed ?? new Uint8Array(0);
     return message;
   },
 };
 
 function createBaseGroup(): Group {
   return {
-    publicKey: new Uint8Array(),
-    secret: new Uint8Array(),
-    secretSig: new Uint8Array(),
+    publicKey: new Uint8Array(0),
+    secret: new Uint8Array(0),
+    secretSig: new Uint8Array(0),
     groupType: 0,
-    signPub: new Uint8Array(),
-    linkKey: new Uint8Array(),
-    linkKeySig: new Uint8Array(),
+    signPub: new Uint8Array(0),
+    linkKey: new Uint8Array(0),
+    linkKeySig: new Uint8Array(0),
   };
 }
 
@@ -1937,91 +1984,124 @@ export const Group = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Group {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGroup();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.publicKey = reader.bytes();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.secret = reader.bytes();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.secretSig = reader.bytes();
-          break;
+          continue;
         case 4:
+          if (tag !== 32) {
+            break;
+          }
+
           message.groupType = reader.int32() as any;
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.signPub = reader.bytes();
-          break;
+          continue;
         case 6:
+          if (tag !== 50) {
+            break;
+          }
+
           message.linkKey = reader.bytes();
-          break;
+          continue;
         case 7:
+          if (tag !== 58) {
+            break;
+          }
+
           message.linkKeySig = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): Group {
     return {
-      publicKey: isSet(object.publicKey) ? bytesFromBase64(object.publicKey) : new Uint8Array(),
-      secret: isSet(object.secret) ? bytesFromBase64(object.secret) : new Uint8Array(),
-      secretSig: isSet(object.secretSig) ? bytesFromBase64(object.secretSig) : new Uint8Array(),
+      publicKey: isSet(object.publicKey) ? bytesFromBase64(object.publicKey) : new Uint8Array(0),
+      secret: isSet(object.secret) ? bytesFromBase64(object.secret) : new Uint8Array(0),
+      secretSig: isSet(object.secretSig) ? bytesFromBase64(object.secretSig) : new Uint8Array(0),
       groupType: isSet(object.groupType) ? groupTypeFromJSON(object.groupType) : 0,
-      signPub: isSet(object.signPub) ? bytesFromBase64(object.signPub) : new Uint8Array(),
-      linkKey: isSet(object.linkKey) ? bytesFromBase64(object.linkKey) : new Uint8Array(),
-      linkKeySig: isSet(object.linkKeySig) ? bytesFromBase64(object.linkKeySig) : new Uint8Array(),
+      signPub: isSet(object.signPub) ? bytesFromBase64(object.signPub) : new Uint8Array(0),
+      linkKey: isSet(object.linkKey) ? bytesFromBase64(object.linkKey) : new Uint8Array(0),
+      linkKeySig: isSet(object.linkKeySig) ? bytesFromBase64(object.linkKeySig) : new Uint8Array(0),
     };
   },
 
   toJSON(message: Group): unknown {
     const obj: any = {};
     message.publicKey !== undefined &&
-      (obj.publicKey = base64FromBytes(message.publicKey !== undefined ? message.publicKey : new Uint8Array()));
+      (obj.publicKey = base64FromBytes(message.publicKey !== undefined ? message.publicKey : new Uint8Array(0)));
     message.secret !== undefined &&
-      (obj.secret = base64FromBytes(message.secret !== undefined ? message.secret : new Uint8Array()));
+      (obj.secret = base64FromBytes(message.secret !== undefined ? message.secret : new Uint8Array(0)));
     message.secretSig !== undefined &&
-      (obj.secretSig = base64FromBytes(message.secretSig !== undefined ? message.secretSig : new Uint8Array()));
+      (obj.secretSig = base64FromBytes(message.secretSig !== undefined ? message.secretSig : new Uint8Array(0)));
     message.groupType !== undefined && (obj.groupType = groupTypeToJSON(message.groupType));
     message.signPub !== undefined &&
-      (obj.signPub = base64FromBytes(message.signPub !== undefined ? message.signPub : new Uint8Array()));
+      (obj.signPub = base64FromBytes(message.signPub !== undefined ? message.signPub : new Uint8Array(0)));
     message.linkKey !== undefined &&
-      (obj.linkKey = base64FromBytes(message.linkKey !== undefined ? message.linkKey : new Uint8Array()));
+      (obj.linkKey = base64FromBytes(message.linkKey !== undefined ? message.linkKey : new Uint8Array(0)));
     message.linkKeySig !== undefined &&
-      (obj.linkKeySig = base64FromBytes(message.linkKeySig !== undefined ? message.linkKeySig : new Uint8Array()));
+      (obj.linkKeySig = base64FromBytes(message.linkKeySig !== undefined ? message.linkKeySig : new Uint8Array(0)));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<Group>, I>>(base?: I): Group {
+    return Group.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<Group>, I>>(object: I): Group {
     const message = createBaseGroup();
-    message.publicKey = object.publicKey ?? new Uint8Array();
-    message.secret = object.secret ?? new Uint8Array();
-    message.secretSig = object.secretSig ?? new Uint8Array();
+    message.publicKey = object.publicKey ?? new Uint8Array(0);
+    message.secret = object.secret ?? new Uint8Array(0);
+    message.secretSig = object.secretSig ?? new Uint8Array(0);
     message.groupType = object.groupType ?? 0;
-    message.signPub = object.signPub ?? new Uint8Array();
-    message.linkKey = object.linkKey ?? new Uint8Array();
-    message.linkKeySig = object.linkKeySig ?? new Uint8Array();
+    message.signPub = object.signPub ?? new Uint8Array(0);
+    message.linkKey = object.linkKey ?? new Uint8Array(0);
+    message.linkKeySig = object.linkKeySig ?? new Uint8Array(0);
     return message;
   },
 };
 
 function createBaseGroupHeadsExport(): GroupHeadsExport {
   return {
-    publicKey: new Uint8Array(),
-    signPub: new Uint8Array(),
+    publicKey: new Uint8Array(0),
+    signPub: new Uint8Array(0),
     metadataHeadsCids: [],
     messagesHeadsCids: [],
-    linkKey: new Uint8Array(),
+    linkKey: new Uint8Array(0),
   };
 }
 
@@ -2046,87 +2126,112 @@ export const GroupHeadsExport = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GroupHeadsExport {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGroupHeadsExport();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.publicKey = reader.bytes();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.signPub = reader.bytes();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.metadataHeadsCids.push(reader.bytes());
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.messagesHeadsCids.push(reader.bytes());
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.linkKey = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): GroupHeadsExport {
     return {
-      publicKey: isSet(object.publicKey) ? bytesFromBase64(object.publicKey) : new Uint8Array(),
-      signPub: isSet(object.signPub) ? bytesFromBase64(object.signPub) : new Uint8Array(),
+      publicKey: isSet(object.publicKey) ? bytesFromBase64(object.publicKey) : new Uint8Array(0),
+      signPub: isSet(object.signPub) ? bytesFromBase64(object.signPub) : new Uint8Array(0),
       metadataHeadsCids: Array.isArray(object?.metadataHeadsCids)
         ? object.metadataHeadsCids.map((e: any) => bytesFromBase64(e))
         : [],
       messagesHeadsCids: Array.isArray(object?.messagesHeadsCids)
         ? object.messagesHeadsCids.map((e: any) => bytesFromBase64(e))
         : [],
-      linkKey: isSet(object.linkKey) ? bytesFromBase64(object.linkKey) : new Uint8Array(),
+      linkKey: isSet(object.linkKey) ? bytesFromBase64(object.linkKey) : new Uint8Array(0),
     };
   },
 
   toJSON(message: GroupHeadsExport): unknown {
     const obj: any = {};
     message.publicKey !== undefined &&
-      (obj.publicKey = base64FromBytes(message.publicKey !== undefined ? message.publicKey : new Uint8Array()));
+      (obj.publicKey = base64FromBytes(message.publicKey !== undefined ? message.publicKey : new Uint8Array(0)));
     message.signPub !== undefined &&
-      (obj.signPub = base64FromBytes(message.signPub !== undefined ? message.signPub : new Uint8Array()));
+      (obj.signPub = base64FromBytes(message.signPub !== undefined ? message.signPub : new Uint8Array(0)));
     if (message.metadataHeadsCids) {
       obj.metadataHeadsCids = message.metadataHeadsCids.map((e) =>
-        base64FromBytes(e !== undefined ? e : new Uint8Array())
+        base64FromBytes(e !== undefined ? e : new Uint8Array(0))
       );
     } else {
       obj.metadataHeadsCids = [];
     }
     if (message.messagesHeadsCids) {
       obj.messagesHeadsCids = message.messagesHeadsCids.map((e) =>
-        base64FromBytes(e !== undefined ? e : new Uint8Array())
+        base64FromBytes(e !== undefined ? e : new Uint8Array(0))
       );
     } else {
       obj.messagesHeadsCids = [];
     }
     message.linkKey !== undefined &&
-      (obj.linkKey = base64FromBytes(message.linkKey !== undefined ? message.linkKey : new Uint8Array()));
+      (obj.linkKey = base64FromBytes(message.linkKey !== undefined ? message.linkKey : new Uint8Array(0)));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<GroupHeadsExport>, I>>(base?: I): GroupHeadsExport {
+    return GroupHeadsExport.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<GroupHeadsExport>, I>>(object: I): GroupHeadsExport {
     const message = createBaseGroupHeadsExport();
-    message.publicKey = object.publicKey ?? new Uint8Array();
-    message.signPub = object.signPub ?? new Uint8Array();
+    message.publicKey = object.publicKey ?? new Uint8Array(0);
+    message.signPub = object.signPub ?? new Uint8Array(0);
     message.metadataHeadsCids = object.metadataHeadsCids?.map((e) => e) || [];
     message.messagesHeadsCids = object.messagesHeadsCids?.map((e) => e) || [];
-    message.linkKey = object.linkKey ?? new Uint8Array();
+    message.linkKey = object.linkKey ?? new Uint8Array(0);
     return message;
   },
 };
 
 function createBaseGroupMetadata(): GroupMetadata {
-  return { eventType: 0, payload: new Uint8Array(), sig: new Uint8Array(), protocolMetadata: undefined };
+  return { eventType: 0, payload: new Uint8Array(0), sig: new Uint8Array(0), protocolMetadata: undefined };
 }
 
 export const GroupMetadata = {
@@ -2147,28 +2252,45 @@ export const GroupMetadata = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GroupMetadata {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGroupMetadata();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.eventType = reader.int32() as any;
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.payload = reader.bytes();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.sig = reader.bytes();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.protocolMetadata = ProtocolMetadata.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -2176,8 +2298,8 @@ export const GroupMetadata = {
   fromJSON(object: any): GroupMetadata {
     return {
       eventType: isSet(object.eventType) ? eventTypeFromJSON(object.eventType) : 0,
-      payload: isSet(object.payload) ? bytesFromBase64(object.payload) : new Uint8Array(),
-      sig: isSet(object.sig) ? bytesFromBase64(object.sig) : new Uint8Array(),
+      payload: isSet(object.payload) ? bytesFromBase64(object.payload) : new Uint8Array(0),
+      sig: isSet(object.sig) ? bytesFromBase64(object.sig) : new Uint8Array(0),
       protocolMetadata: isSet(object.protocolMetadata) ? ProtocolMetadata.fromJSON(object.protocolMetadata) : undefined,
     };
   },
@@ -2186,19 +2308,23 @@ export const GroupMetadata = {
     const obj: any = {};
     message.eventType !== undefined && (obj.eventType = eventTypeToJSON(message.eventType));
     message.payload !== undefined &&
-      (obj.payload = base64FromBytes(message.payload !== undefined ? message.payload : new Uint8Array()));
+      (obj.payload = base64FromBytes(message.payload !== undefined ? message.payload : new Uint8Array(0)));
     message.sig !== undefined &&
-      (obj.sig = base64FromBytes(message.sig !== undefined ? message.sig : new Uint8Array()));
+      (obj.sig = base64FromBytes(message.sig !== undefined ? message.sig : new Uint8Array(0)));
     message.protocolMetadata !== undefined &&
       (obj.protocolMetadata = message.protocolMetadata ? ProtocolMetadata.toJSON(message.protocolMetadata) : undefined);
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<GroupMetadata>, I>>(base?: I): GroupMetadata {
+    return GroupMetadata.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<GroupMetadata>, I>>(object: I): GroupMetadata {
     const message = createBaseGroupMetadata();
     message.eventType = object.eventType ?? 0;
-    message.payload = object.payload ?? new Uint8Array();
-    message.sig = object.sig ?? new Uint8Array();
+    message.payload = object.payload ?? new Uint8Array(0);
+    message.sig = object.sig ?? new Uint8Array(0);
     message.protocolMetadata = (object.protocolMetadata !== undefined && object.protocolMetadata !== null)
       ? ProtocolMetadata.fromPartial(object.protocolMetadata)
       : undefined;
@@ -2207,7 +2333,7 @@ export const GroupMetadata = {
 };
 
 function createBaseGroupEnvelope(): GroupEnvelope {
-  return { nonce: new Uint8Array(), event: new Uint8Array() };
+  return { nonce: new Uint8Array(0), event: new Uint8Array(0) };
 }
 
 export const GroupEnvelope = {
@@ -2222,52 +2348,65 @@ export const GroupEnvelope = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GroupEnvelope {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGroupEnvelope();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.nonce = reader.bytes();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.event = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): GroupEnvelope {
     return {
-      nonce: isSet(object.nonce) ? bytesFromBase64(object.nonce) : new Uint8Array(),
-      event: isSet(object.event) ? bytesFromBase64(object.event) : new Uint8Array(),
+      nonce: isSet(object.nonce) ? bytesFromBase64(object.nonce) : new Uint8Array(0),
+      event: isSet(object.event) ? bytesFromBase64(object.event) : new Uint8Array(0),
     };
   },
 
   toJSON(message: GroupEnvelope): unknown {
     const obj: any = {};
     message.nonce !== undefined &&
-      (obj.nonce = base64FromBytes(message.nonce !== undefined ? message.nonce : new Uint8Array()));
+      (obj.nonce = base64FromBytes(message.nonce !== undefined ? message.nonce : new Uint8Array(0)));
     message.event !== undefined &&
-      (obj.event = base64FromBytes(message.event !== undefined ? message.event : new Uint8Array()));
+      (obj.event = base64FromBytes(message.event !== undefined ? message.event : new Uint8Array(0)));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<GroupEnvelope>, I>>(base?: I): GroupEnvelope {
+    return GroupEnvelope.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<GroupEnvelope>, I>>(object: I): GroupEnvelope {
     const message = createBaseGroupEnvelope();
-    message.nonce = object.nonce ?? new Uint8Array();
-    message.event = object.event ?? new Uint8Array();
+    message.nonce = object.nonce ?? new Uint8Array(0);
+    message.event = object.event ?? new Uint8Array(0);
     return message;
   },
 };
 
 function createBaseMessageHeaders(): MessageHeaders {
-  return { counter: 0, devicePk: new Uint8Array(), sig: new Uint8Array(), metadata: {} };
+  return { counter: 0, devicePk: new Uint8Array(0), sig: new Uint8Array(0), metadata: {} };
 }
 
 export const MessageHeaders = {
@@ -2288,31 +2427,48 @@ export const MessageHeaders = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MessageHeaders {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMessageHeaders();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.counter = longToNumber(reader.uint64() as Long);
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.devicePk = reader.bytes();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.sig = reader.bytes();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           const entry4 = MessageHeaders_MetadataEntry.decode(reader, reader.uint32());
           if (entry4.value !== undefined) {
             message.metadata[entry4.key] = entry4.value;
           }
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -2320,8 +2476,8 @@ export const MessageHeaders = {
   fromJSON(object: any): MessageHeaders {
     return {
       counter: isSet(object.counter) ? Number(object.counter) : 0,
-      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(),
-      sig: isSet(object.sig) ? bytesFromBase64(object.sig) : new Uint8Array(),
+      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(0),
+      sig: isSet(object.sig) ? bytesFromBase64(object.sig) : new Uint8Array(0),
       metadata: isObject(object.metadata)
         ? Object.entries(object.metadata).reduce<{ [key: string]: string }>((acc, [key, value]) => {
           acc[key] = String(value);
@@ -2335,9 +2491,9 @@ export const MessageHeaders = {
     const obj: any = {};
     message.counter !== undefined && (obj.counter = Math.round(message.counter));
     message.devicePk !== undefined &&
-      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array()));
+      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array(0)));
     message.sig !== undefined &&
-      (obj.sig = base64FromBytes(message.sig !== undefined ? message.sig : new Uint8Array()));
+      (obj.sig = base64FromBytes(message.sig !== undefined ? message.sig : new Uint8Array(0)));
     obj.metadata = {};
     if (message.metadata) {
       Object.entries(message.metadata).forEach(([k, v]) => {
@@ -2347,11 +2503,15 @@ export const MessageHeaders = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<MessageHeaders>, I>>(base?: I): MessageHeaders {
+    return MessageHeaders.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<MessageHeaders>, I>>(object: I): MessageHeaders {
     const message = createBaseMessageHeaders();
     message.counter = object.counter ?? 0;
-    message.devicePk = object.devicePk ?? new Uint8Array();
-    message.sig = object.sig ?? new Uint8Array();
+    message.devicePk = object.devicePk ?? new Uint8Array(0);
+    message.sig = object.sig ?? new Uint8Array(0);
     message.metadata = Object.entries(object.metadata ?? {}).reduce<{ [key: string]: string }>((acc, [key, value]) => {
       if (value !== undefined) {
         acc[key] = String(value);
@@ -2378,22 +2538,31 @@ export const MessageHeaders_MetadataEntry = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MessageHeaders_MetadataEntry {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMessageHeaders_MetadataEntry();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.key = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.value = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -2407,6 +2576,10 @@ export const MessageHeaders_MetadataEntry = {
     message.key !== undefined && (obj.key = message.key);
     message.value !== undefined && (obj.value = message.value);
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<MessageHeaders_MetadataEntry>, I>>(base?: I): MessageHeaders_MetadataEntry {
+    return MessageHeaders_MetadataEntry.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<MessageHeaders_MetadataEntry>, I>>(object: I): MessageHeaders_MetadataEntry {
@@ -2427,16 +2600,17 @@ export const ProtocolMetadata = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ProtocolMetadata {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseProtocolMetadata();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -2450,6 +2624,10 @@ export const ProtocolMetadata = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<ProtocolMetadata>, I>>(base?: I): ProtocolMetadata {
+    return ProtocolMetadata.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<ProtocolMetadata>, I>>(_: I): ProtocolMetadata {
     const message = createBaseProtocolMetadata();
     return message;
@@ -2457,7 +2635,7 @@ export const ProtocolMetadata = {
 };
 
 function createBaseEncryptedMessage(): EncryptedMessage {
-  return { plaintext: new Uint8Array(), protocolMetadata: undefined };
+  return { plaintext: new Uint8Array(0), protocolMetadata: undefined };
 }
 
 export const EncryptedMessage = {
@@ -2472,29 +2650,38 @@ export const EncryptedMessage = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): EncryptedMessage {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseEncryptedMessage();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.plaintext = reader.bytes();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.protocolMetadata = ProtocolMetadata.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): EncryptedMessage {
     return {
-      plaintext: isSet(object.plaintext) ? bytesFromBase64(object.plaintext) : new Uint8Array(),
+      plaintext: isSet(object.plaintext) ? bytesFromBase64(object.plaintext) : new Uint8Array(0),
       protocolMetadata: isSet(object.protocolMetadata) ? ProtocolMetadata.fromJSON(object.protocolMetadata) : undefined,
     };
   },
@@ -2502,15 +2689,19 @@ export const EncryptedMessage = {
   toJSON(message: EncryptedMessage): unknown {
     const obj: any = {};
     message.plaintext !== undefined &&
-      (obj.plaintext = base64FromBytes(message.plaintext !== undefined ? message.plaintext : new Uint8Array()));
+      (obj.plaintext = base64FromBytes(message.plaintext !== undefined ? message.plaintext : new Uint8Array(0)));
     message.protocolMetadata !== undefined &&
       (obj.protocolMetadata = message.protocolMetadata ? ProtocolMetadata.toJSON(message.protocolMetadata) : undefined);
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<EncryptedMessage>, I>>(base?: I): EncryptedMessage {
+    return EncryptedMessage.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<EncryptedMessage>, I>>(object: I): EncryptedMessage {
     const message = createBaseEncryptedMessage();
-    message.plaintext = object.plaintext ?? new Uint8Array();
+    message.plaintext = object.plaintext ?? new Uint8Array(0);
     message.protocolMetadata = (object.protocolMetadata !== undefined && object.protocolMetadata !== null)
       ? ProtocolMetadata.fromPartial(object.protocolMetadata)
       : undefined;
@@ -2519,7 +2710,7 @@ export const EncryptedMessage = {
 };
 
 function createBaseMessageEnvelope(): MessageEnvelope {
-  return { messageHeaders: new Uint8Array(), message: new Uint8Array(), nonce: new Uint8Array() };
+  return { messageHeaders: new Uint8Array(0), message: new Uint8Array(0), nonce: new Uint8Array(0) };
 }
 
 export const MessageEnvelope = {
@@ -2537,34 +2728,47 @@ export const MessageEnvelope = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MessageEnvelope {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMessageEnvelope();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.messageHeaders = reader.bytes();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.message = reader.bytes();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.nonce = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MessageEnvelope {
     return {
-      messageHeaders: isSet(object.messageHeaders) ? bytesFromBase64(object.messageHeaders) : new Uint8Array(),
-      message: isSet(object.message) ? bytesFromBase64(object.message) : new Uint8Array(),
-      nonce: isSet(object.nonce) ? bytesFromBase64(object.nonce) : new Uint8Array(),
+      messageHeaders: isSet(object.messageHeaders) ? bytesFromBase64(object.messageHeaders) : new Uint8Array(0),
+      message: isSet(object.message) ? bytesFromBase64(object.message) : new Uint8Array(0),
+      nonce: isSet(object.nonce) ? bytesFromBase64(object.nonce) : new Uint8Array(0),
     };
   },
 
@@ -2572,26 +2776,30 @@ export const MessageEnvelope = {
     const obj: any = {};
     message.messageHeaders !== undefined &&
       (obj.messageHeaders = base64FromBytes(
-        message.messageHeaders !== undefined ? message.messageHeaders : new Uint8Array(),
+        message.messageHeaders !== undefined ? message.messageHeaders : new Uint8Array(0),
       ));
     message.message !== undefined &&
-      (obj.message = base64FromBytes(message.message !== undefined ? message.message : new Uint8Array()));
+      (obj.message = base64FromBytes(message.message !== undefined ? message.message : new Uint8Array(0)));
     message.nonce !== undefined &&
-      (obj.nonce = base64FromBytes(message.nonce !== undefined ? message.nonce : new Uint8Array()));
+      (obj.nonce = base64FromBytes(message.nonce !== undefined ? message.nonce : new Uint8Array(0)));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<MessageEnvelope>, I>>(base?: I): MessageEnvelope {
+    return MessageEnvelope.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<MessageEnvelope>, I>>(object: I): MessageEnvelope {
     const message = createBaseMessageEnvelope();
-    message.messageHeaders = object.messageHeaders ?? new Uint8Array();
-    message.message = object.message ?? new Uint8Array();
-    message.nonce = object.nonce ?? new Uint8Array();
+    message.messageHeaders = object.messageHeaders ?? new Uint8Array(0);
+    message.message = object.message ?? new Uint8Array(0);
+    message.nonce = object.nonce ?? new Uint8Array(0);
     return message;
   },
 };
 
 function createBaseEventContext(): EventContext {
-  return { id: new Uint8Array(), parentIds: [], groupPk: new Uint8Array() };
+  return { id: new Uint8Array(0), parentIds: [], groupPk: new Uint8Array(0) };
 }
 
 export const EventContext = {
@@ -2609,65 +2817,82 @@ export const EventContext = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): EventContext {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseEventContext();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.id = reader.bytes();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.parentIds.push(reader.bytes());
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.groupPk = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): EventContext {
     return {
-      id: isSet(object.id) ? bytesFromBase64(object.id) : new Uint8Array(),
+      id: isSet(object.id) ? bytesFromBase64(object.id) : new Uint8Array(0),
       parentIds: Array.isArray(object?.parentIds) ? object.parentIds.map((e: any) => bytesFromBase64(e)) : [],
-      groupPk: isSet(object.groupPk) ? bytesFromBase64(object.groupPk) : new Uint8Array(),
+      groupPk: isSet(object.groupPk) ? bytesFromBase64(object.groupPk) : new Uint8Array(0),
     };
   },
 
   toJSON(message: EventContext): unknown {
     const obj: any = {};
-    message.id !== undefined && (obj.id = base64FromBytes(message.id !== undefined ? message.id : new Uint8Array()));
+    message.id !== undefined && (obj.id = base64FromBytes(message.id !== undefined ? message.id : new Uint8Array(0)));
     if (message.parentIds) {
-      obj.parentIds = message.parentIds.map((e) => base64FromBytes(e !== undefined ? e : new Uint8Array()));
+      obj.parentIds = message.parentIds.map((e) => base64FromBytes(e !== undefined ? e : new Uint8Array(0)));
     } else {
       obj.parentIds = [];
     }
     message.groupPk !== undefined &&
-      (obj.groupPk = base64FromBytes(message.groupPk !== undefined ? message.groupPk : new Uint8Array()));
+      (obj.groupPk = base64FromBytes(message.groupPk !== undefined ? message.groupPk : new Uint8Array(0)));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<EventContext>, I>>(base?: I): EventContext {
+    return EventContext.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<EventContext>, I>>(object: I): EventContext {
     const message = createBaseEventContext();
-    message.id = object.id ?? new Uint8Array();
+    message.id = object.id ?? new Uint8Array(0);
     message.parentIds = object.parentIds?.map((e) => e) || [];
-    message.groupPk = object.groupPk ?? new Uint8Array();
+    message.groupPk = object.groupPk ?? new Uint8Array(0);
     return message;
   },
 };
 
-function createBaseAppMetadata(): AppMetadata {
-  return { devicePk: new Uint8Array(), message: new Uint8Array() };
+function createBaseGroupMetadataPayloadSent(): GroupMetadataPayloadSent {
+  return { devicePk: new Uint8Array(0), message: new Uint8Array(0) };
 }
 
-export const AppMetadata = {
-  encode(message: AppMetadata, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const GroupMetadataPayloadSent = {
+  encode(message: GroupMetadataPayloadSent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.devicePk.length !== 0) {
       writer.uint32(10).bytes(message.devicePk);
     }
@@ -2677,57 +2902,70 @@ export const AppMetadata = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): AppMetadata {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): GroupMetadataPayloadSent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseAppMetadata();
+    const message = createBaseGroupMetadataPayloadSent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.devicePk = reader.bytes();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.message = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
-  fromJSON(object: any): AppMetadata {
+  fromJSON(object: any): GroupMetadataPayloadSent {
     return {
-      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(),
-      message: isSet(object.message) ? bytesFromBase64(object.message) : new Uint8Array(),
+      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(0),
+      message: isSet(object.message) ? bytesFromBase64(object.message) : new Uint8Array(0),
     };
   },
 
-  toJSON(message: AppMetadata): unknown {
+  toJSON(message: GroupMetadataPayloadSent): unknown {
     const obj: any = {};
     message.devicePk !== undefined &&
-      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array()));
+      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array(0)));
     message.message !== undefined &&
-      (obj.message = base64FromBytes(message.message !== undefined ? message.message : new Uint8Array()));
+      (obj.message = base64FromBytes(message.message !== undefined ? message.message : new Uint8Array(0)));
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<AppMetadata>, I>>(object: I): AppMetadata {
-    const message = createBaseAppMetadata();
-    message.devicePk = object.devicePk ?? new Uint8Array();
-    message.message = object.message ?? new Uint8Array();
+  create<I extends Exact<DeepPartial<GroupMetadataPayloadSent>, I>>(base?: I): GroupMetadataPayloadSent {
+    return GroupMetadataPayloadSent.fromPartial(base ?? {});
+  },
+
+  fromPartial<I extends Exact<DeepPartial<GroupMetadataPayloadSent>, I>>(object: I): GroupMetadataPayloadSent {
+    const message = createBaseGroupMetadataPayloadSent();
+    message.devicePk = object.devicePk ?? new Uint8Array(0);
+    message.message = object.message ?? new Uint8Array(0);
     return message;
   },
 };
 
-function createBaseContactAddAliasKey(): ContactAddAliasKey {
-  return { devicePk: new Uint8Array(), aliasPk: new Uint8Array() };
+function createBaseContactAliasKeyAdded(): ContactAliasKeyAdded {
+  return { devicePk: new Uint8Array(0), aliasPk: new Uint8Array(0) };
 }
 
-export const ContactAddAliasKey = {
-  encode(message: ContactAddAliasKey, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const ContactAliasKeyAdded = {
+  encode(message: ContactAliasKeyAdded, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.devicePk.length !== 0) {
       writer.uint32(10).bytes(message.devicePk);
     }
@@ -2737,57 +2975,70 @@ export const ContactAddAliasKey = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): ContactAddAliasKey {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): ContactAliasKeyAdded {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseContactAddAliasKey();
+    const message = createBaseContactAliasKeyAdded();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.devicePk = reader.bytes();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.aliasPk = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
-  fromJSON(object: any): ContactAddAliasKey {
+  fromJSON(object: any): ContactAliasKeyAdded {
     return {
-      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(),
-      aliasPk: isSet(object.aliasPk) ? bytesFromBase64(object.aliasPk) : new Uint8Array(),
+      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(0),
+      aliasPk: isSet(object.aliasPk) ? bytesFromBase64(object.aliasPk) : new Uint8Array(0),
     };
   },
 
-  toJSON(message: ContactAddAliasKey): unknown {
+  toJSON(message: ContactAliasKeyAdded): unknown {
     const obj: any = {};
     message.devicePk !== undefined &&
-      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array()));
+      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array(0)));
     message.aliasPk !== undefined &&
-      (obj.aliasPk = base64FromBytes(message.aliasPk !== undefined ? message.aliasPk : new Uint8Array()));
+      (obj.aliasPk = base64FromBytes(message.aliasPk !== undefined ? message.aliasPk : new Uint8Array(0)));
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<ContactAddAliasKey>, I>>(object: I): ContactAddAliasKey {
-    const message = createBaseContactAddAliasKey();
-    message.devicePk = object.devicePk ?? new Uint8Array();
-    message.aliasPk = object.aliasPk ?? new Uint8Array();
+  create<I extends Exact<DeepPartial<ContactAliasKeyAdded>, I>>(base?: I): ContactAliasKeyAdded {
+    return ContactAliasKeyAdded.fromPartial(base ?? {});
+  },
+
+  fromPartial<I extends Exact<DeepPartial<ContactAliasKeyAdded>, I>>(object: I): ContactAliasKeyAdded {
+    const message = createBaseContactAliasKeyAdded();
+    message.devicePk = object.devicePk ?? new Uint8Array(0);
+    message.aliasPk = object.aliasPk ?? new Uint8Array(0);
     return message;
   },
 };
 
-function createBaseGroupAddMemberDevice(): GroupAddMemberDevice {
-  return { memberPk: new Uint8Array(), devicePk: new Uint8Array(), memberSig: new Uint8Array() };
+function createBaseGroupMemberDeviceAdded(): GroupMemberDeviceAdded {
+  return { memberPk: new Uint8Array(0), devicePk: new Uint8Array(0), memberSig: new Uint8Array(0) };
 }
 
-export const GroupAddMemberDevice = {
-  encode(message: GroupAddMemberDevice, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const GroupMemberDeviceAdded = {
+  encode(message: GroupMemberDeviceAdded, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.memberPk.length !== 0) {
       writer.uint32(10).bytes(message.memberPk);
     }
@@ -2800,60 +3051,77 @@ export const GroupAddMemberDevice = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): GroupAddMemberDevice {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): GroupMemberDeviceAdded {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseGroupAddMemberDevice();
+    const message = createBaseGroupMemberDeviceAdded();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.memberPk = reader.bytes();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.devicePk = reader.bytes();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.memberSig = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
-  fromJSON(object: any): GroupAddMemberDevice {
+  fromJSON(object: any): GroupMemberDeviceAdded {
     return {
-      memberPk: isSet(object.memberPk) ? bytesFromBase64(object.memberPk) : new Uint8Array(),
-      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(),
-      memberSig: isSet(object.memberSig) ? bytesFromBase64(object.memberSig) : new Uint8Array(),
+      memberPk: isSet(object.memberPk) ? bytesFromBase64(object.memberPk) : new Uint8Array(0),
+      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(0),
+      memberSig: isSet(object.memberSig) ? bytesFromBase64(object.memberSig) : new Uint8Array(0),
     };
   },
 
-  toJSON(message: GroupAddMemberDevice): unknown {
+  toJSON(message: GroupMemberDeviceAdded): unknown {
     const obj: any = {};
     message.memberPk !== undefined &&
-      (obj.memberPk = base64FromBytes(message.memberPk !== undefined ? message.memberPk : new Uint8Array()));
+      (obj.memberPk = base64FromBytes(message.memberPk !== undefined ? message.memberPk : new Uint8Array(0)));
     message.devicePk !== undefined &&
-      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array()));
+      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array(0)));
     message.memberSig !== undefined &&
-      (obj.memberSig = base64FromBytes(message.memberSig !== undefined ? message.memberSig : new Uint8Array()));
+      (obj.memberSig = base64FromBytes(message.memberSig !== undefined ? message.memberSig : new Uint8Array(0)));
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<GroupAddMemberDevice>, I>>(object: I): GroupAddMemberDevice {
-    const message = createBaseGroupAddMemberDevice();
-    message.memberPk = object.memberPk ?? new Uint8Array();
-    message.devicePk = object.devicePk ?? new Uint8Array();
-    message.memberSig = object.memberSig ?? new Uint8Array();
+  create<I extends Exact<DeepPartial<GroupMemberDeviceAdded>, I>>(base?: I): GroupMemberDeviceAdded {
+    return GroupMemberDeviceAdded.fromPartial(base ?? {});
+  },
+
+  fromPartial<I extends Exact<DeepPartial<GroupMemberDeviceAdded>, I>>(object: I): GroupMemberDeviceAdded {
+    const message = createBaseGroupMemberDeviceAdded();
+    message.memberPk = object.memberPk ?? new Uint8Array(0);
+    message.devicePk = object.devicePk ?? new Uint8Array(0);
+    message.memberSig = object.memberSig ?? new Uint8Array(0);
     return message;
   },
 };
 
 function createBaseDeviceChainKey(): DeviceChainKey {
-  return { chainKey: new Uint8Array(), counter: 0 };
+  return { chainKey: new Uint8Array(0), counter: 0 };
 }
 
 export const DeviceChainKey = {
@@ -2868,29 +3136,38 @@ export const DeviceChainKey = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): DeviceChainKey {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseDeviceChainKey();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.chainKey = reader.bytes();
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.counter = longToNumber(reader.uint64() as Long);
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): DeviceChainKey {
     return {
-      chainKey: isSet(object.chainKey) ? bytesFromBase64(object.chainKey) : new Uint8Array(),
+      chainKey: isSet(object.chainKey) ? bytesFromBase64(object.chainKey) : new Uint8Array(0),
       counter: isSet(object.counter) ? Number(object.counter) : 0,
     };
   },
@@ -2898,25 +3175,29 @@ export const DeviceChainKey = {
   toJSON(message: DeviceChainKey): unknown {
     const obj: any = {};
     message.chainKey !== undefined &&
-      (obj.chainKey = base64FromBytes(message.chainKey !== undefined ? message.chainKey : new Uint8Array()));
+      (obj.chainKey = base64FromBytes(message.chainKey !== undefined ? message.chainKey : new Uint8Array(0)));
     message.counter !== undefined && (obj.counter = Math.round(message.counter));
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<DeviceChainKey>, I>>(base?: I): DeviceChainKey {
+    return DeviceChainKey.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<DeviceChainKey>, I>>(object: I): DeviceChainKey {
     const message = createBaseDeviceChainKey();
-    message.chainKey = object.chainKey ?? new Uint8Array();
+    message.chainKey = object.chainKey ?? new Uint8Array(0);
     message.counter = object.counter ?? 0;
     return message;
   },
 };
 
-function createBaseGroupAddDeviceChainKey(): GroupAddDeviceChainKey {
-  return { devicePk: new Uint8Array(), destMemberPk: new Uint8Array(), payload: new Uint8Array() };
+function createBaseGroupDeviceChainKeyAdded(): GroupDeviceChainKeyAdded {
+  return { devicePk: new Uint8Array(0), destMemberPk: new Uint8Array(0), payload: new Uint8Array(0) };
 }
 
-export const GroupAddDeviceChainKey = {
-  encode(message: GroupAddDeviceChainKey, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const GroupDeviceChainKeyAdded = {
+  encode(message: GroupDeviceChainKeyAdded, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.devicePk.length !== 0) {
       writer.uint32(10).bytes(message.devicePk);
     }
@@ -2929,66 +3210,83 @@ export const GroupAddDeviceChainKey = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): GroupAddDeviceChainKey {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): GroupDeviceChainKeyAdded {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseGroupAddDeviceChainKey();
+    const message = createBaseGroupDeviceChainKeyAdded();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.devicePk = reader.bytes();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.destMemberPk = reader.bytes();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.payload = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
-  fromJSON(object: any): GroupAddDeviceChainKey {
+  fromJSON(object: any): GroupDeviceChainKeyAdded {
     return {
-      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(),
-      destMemberPk: isSet(object.destMemberPk) ? bytesFromBase64(object.destMemberPk) : new Uint8Array(),
-      payload: isSet(object.payload) ? bytesFromBase64(object.payload) : new Uint8Array(),
+      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(0),
+      destMemberPk: isSet(object.destMemberPk) ? bytesFromBase64(object.destMemberPk) : new Uint8Array(0),
+      payload: isSet(object.payload) ? bytesFromBase64(object.payload) : new Uint8Array(0),
     };
   },
 
-  toJSON(message: GroupAddDeviceChainKey): unknown {
+  toJSON(message: GroupDeviceChainKeyAdded): unknown {
     const obj: any = {};
     message.devicePk !== undefined &&
-      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array()));
+      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array(0)));
     message.destMemberPk !== undefined &&
       (obj.destMemberPk = base64FromBytes(
-        message.destMemberPk !== undefined ? message.destMemberPk : new Uint8Array(),
+        message.destMemberPk !== undefined ? message.destMemberPk : new Uint8Array(0),
       ));
     message.payload !== undefined &&
-      (obj.payload = base64FromBytes(message.payload !== undefined ? message.payload : new Uint8Array()));
+      (obj.payload = base64FromBytes(message.payload !== undefined ? message.payload : new Uint8Array(0)));
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<GroupAddDeviceChainKey>, I>>(object: I): GroupAddDeviceChainKey {
-    const message = createBaseGroupAddDeviceChainKey();
-    message.devicePk = object.devicePk ?? new Uint8Array();
-    message.destMemberPk = object.destMemberPk ?? new Uint8Array();
-    message.payload = object.payload ?? new Uint8Array();
+  create<I extends Exact<DeepPartial<GroupDeviceChainKeyAdded>, I>>(base?: I): GroupDeviceChainKeyAdded {
+    return GroupDeviceChainKeyAdded.fromPartial(base ?? {});
+  },
+
+  fromPartial<I extends Exact<DeepPartial<GroupDeviceChainKeyAdded>, I>>(object: I): GroupDeviceChainKeyAdded {
+    const message = createBaseGroupDeviceChainKeyAdded();
+    message.devicePk = object.devicePk ?? new Uint8Array(0);
+    message.destMemberPk = object.destMemberPk ?? new Uint8Array(0);
+    message.payload = object.payload ?? new Uint8Array(0);
     return message;
   },
 };
 
-function createBaseMultiMemberGroupAddAliasResolver(): MultiMemberGroupAddAliasResolver {
-  return { devicePk: new Uint8Array(), aliasResolver: new Uint8Array(), aliasProof: new Uint8Array() };
+function createBaseMultiMemberGroupAliasResolverAdded(): MultiMemberGroupAliasResolverAdded {
+  return { devicePk: new Uint8Array(0), aliasResolver: new Uint8Array(0), aliasProof: new Uint8Array(0) };
 }
 
-export const MultiMemberGroupAddAliasResolver = {
-  encode(message: MultiMemberGroupAddAliasResolver, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const MultiMemberGroupAliasResolverAdded = {
+  encode(message: MultiMemberGroupAliasResolverAdded, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.devicePk.length !== 0) {
       writer.uint32(10).bytes(message.devicePk);
     }
@@ -3001,68 +3299,87 @@ export const MultiMemberGroupAddAliasResolver = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MultiMemberGroupAddAliasResolver {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MultiMemberGroupAliasResolverAdded {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseMultiMemberGroupAddAliasResolver();
+    const message = createBaseMultiMemberGroupAliasResolverAdded();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.devicePk = reader.bytes();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.aliasResolver = reader.bytes();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.aliasProof = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
-  fromJSON(object: any): MultiMemberGroupAddAliasResolver {
+  fromJSON(object: any): MultiMemberGroupAliasResolverAdded {
     return {
-      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(),
-      aliasResolver: isSet(object.aliasResolver) ? bytesFromBase64(object.aliasResolver) : new Uint8Array(),
-      aliasProof: isSet(object.aliasProof) ? bytesFromBase64(object.aliasProof) : new Uint8Array(),
+      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(0),
+      aliasResolver: isSet(object.aliasResolver) ? bytesFromBase64(object.aliasResolver) : new Uint8Array(0),
+      aliasProof: isSet(object.aliasProof) ? bytesFromBase64(object.aliasProof) : new Uint8Array(0),
     };
   },
 
-  toJSON(message: MultiMemberGroupAddAliasResolver): unknown {
+  toJSON(message: MultiMemberGroupAliasResolverAdded): unknown {
     const obj: any = {};
     message.devicePk !== undefined &&
-      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array()));
+      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array(0)));
     message.aliasResolver !== undefined &&
       (obj.aliasResolver = base64FromBytes(
-        message.aliasResolver !== undefined ? message.aliasResolver : new Uint8Array(),
+        message.aliasResolver !== undefined ? message.aliasResolver : new Uint8Array(0),
       ));
     message.aliasProof !== undefined &&
-      (obj.aliasProof = base64FromBytes(message.aliasProof !== undefined ? message.aliasProof : new Uint8Array()));
+      (obj.aliasProof = base64FromBytes(message.aliasProof !== undefined ? message.aliasProof : new Uint8Array(0)));
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MultiMemberGroupAddAliasResolver>, I>>(
+  create<I extends Exact<DeepPartial<MultiMemberGroupAliasResolverAdded>, I>>(
+    base?: I,
+  ): MultiMemberGroupAliasResolverAdded {
+    return MultiMemberGroupAliasResolverAdded.fromPartial(base ?? {});
+  },
+
+  fromPartial<I extends Exact<DeepPartial<MultiMemberGroupAliasResolverAdded>, I>>(
     object: I,
-  ): MultiMemberGroupAddAliasResolver {
-    const message = createBaseMultiMemberGroupAddAliasResolver();
-    message.devicePk = object.devicePk ?? new Uint8Array();
-    message.aliasResolver = object.aliasResolver ?? new Uint8Array();
-    message.aliasProof = object.aliasProof ?? new Uint8Array();
+  ): MultiMemberGroupAliasResolverAdded {
+    const message = createBaseMultiMemberGroupAliasResolverAdded();
+    message.devicePk = object.devicePk ?? new Uint8Array(0);
+    message.aliasResolver = object.aliasResolver ?? new Uint8Array(0);
+    message.aliasProof = object.aliasProof ?? new Uint8Array(0);
     return message;
   },
 };
 
-function createBaseMultiMemberGrantAdminRole(): MultiMemberGrantAdminRole {
-  return { devicePk: new Uint8Array(), granteeMemberPk: new Uint8Array() };
+function createBaseMultiMemberGroupAdminRoleGranted(): MultiMemberGroupAdminRoleGranted {
+  return { devicePk: new Uint8Array(0), granteeMemberPk: new Uint8Array(0) };
 }
 
-export const MultiMemberGrantAdminRole = {
-  encode(message: MultiMemberGrantAdminRole, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const MultiMemberGroupAdminRoleGranted = {
+  encode(message: MultiMemberGroupAdminRoleGranted, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.devicePk.length !== 0) {
       writer.uint32(10).bytes(message.devicePk);
     }
@@ -3072,103 +3389,133 @@ export const MultiMemberGrantAdminRole = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MultiMemberGrantAdminRole {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MultiMemberGroupAdminRoleGranted {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseMultiMemberGrantAdminRole();
+    const message = createBaseMultiMemberGroupAdminRoleGranted();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.devicePk = reader.bytes();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.granteeMemberPk = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
-  fromJSON(object: any): MultiMemberGrantAdminRole {
+  fromJSON(object: any): MultiMemberGroupAdminRoleGranted {
     return {
-      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(),
-      granteeMemberPk: isSet(object.granteeMemberPk) ? bytesFromBase64(object.granteeMemberPk) : new Uint8Array(),
+      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(0),
+      granteeMemberPk: isSet(object.granteeMemberPk) ? bytesFromBase64(object.granteeMemberPk) : new Uint8Array(0),
     };
   },
 
-  toJSON(message: MultiMemberGrantAdminRole): unknown {
+  toJSON(message: MultiMemberGroupAdminRoleGranted): unknown {
     const obj: any = {};
     message.devicePk !== undefined &&
-      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array()));
+      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array(0)));
     message.granteeMemberPk !== undefined &&
       (obj.granteeMemberPk = base64FromBytes(
-        message.granteeMemberPk !== undefined ? message.granteeMemberPk : new Uint8Array(),
+        message.granteeMemberPk !== undefined ? message.granteeMemberPk : new Uint8Array(0),
       ));
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MultiMemberGrantAdminRole>, I>>(object: I): MultiMemberGrantAdminRole {
-    const message = createBaseMultiMemberGrantAdminRole();
-    message.devicePk = object.devicePk ?? new Uint8Array();
-    message.granteeMemberPk = object.granteeMemberPk ?? new Uint8Array();
+  create<I extends Exact<DeepPartial<MultiMemberGroupAdminRoleGranted>, I>>(
+    base?: I,
+  ): MultiMemberGroupAdminRoleGranted {
+    return MultiMemberGroupAdminRoleGranted.fromPartial(base ?? {});
+  },
+
+  fromPartial<I extends Exact<DeepPartial<MultiMemberGroupAdminRoleGranted>, I>>(
+    object: I,
+  ): MultiMemberGroupAdminRoleGranted {
+    const message = createBaseMultiMemberGroupAdminRoleGranted();
+    message.devicePk = object.devicePk ?? new Uint8Array(0);
+    message.granteeMemberPk = object.granteeMemberPk ?? new Uint8Array(0);
     return message;
   },
 };
 
-function createBaseMultiMemberInitialMember(): MultiMemberInitialMember {
-  return { memberPk: new Uint8Array() };
+function createBaseMultiMemberGroupInitialMemberAnnounced(): MultiMemberGroupInitialMemberAnnounced {
+  return { memberPk: new Uint8Array(0) };
 }
 
-export const MultiMemberInitialMember = {
-  encode(message: MultiMemberInitialMember, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const MultiMemberGroupInitialMemberAnnounced = {
+  encode(message: MultiMemberGroupInitialMemberAnnounced, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.memberPk.length !== 0) {
       writer.uint32(10).bytes(message.memberPk);
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MultiMemberInitialMember {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): MultiMemberGroupInitialMemberAnnounced {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseMultiMemberInitialMember();
+    const message = createBaseMultiMemberGroupInitialMemberAnnounced();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.memberPk = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
-  fromJSON(object: any): MultiMemberInitialMember {
-    return { memberPk: isSet(object.memberPk) ? bytesFromBase64(object.memberPk) : new Uint8Array() };
+  fromJSON(object: any): MultiMemberGroupInitialMemberAnnounced {
+    return { memberPk: isSet(object.memberPk) ? bytesFromBase64(object.memberPk) : new Uint8Array(0) };
   },
 
-  toJSON(message: MultiMemberInitialMember): unknown {
+  toJSON(message: MultiMemberGroupInitialMemberAnnounced): unknown {
     const obj: any = {};
     message.memberPk !== undefined &&
-      (obj.memberPk = base64FromBytes(message.memberPk !== undefined ? message.memberPk : new Uint8Array()));
+      (obj.memberPk = base64FromBytes(message.memberPk !== undefined ? message.memberPk : new Uint8Array(0)));
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<MultiMemberInitialMember>, I>>(object: I): MultiMemberInitialMember {
-    const message = createBaseMultiMemberInitialMember();
-    message.memberPk = object.memberPk ?? new Uint8Array();
+  create<I extends Exact<DeepPartial<MultiMemberGroupInitialMemberAnnounced>, I>>(
+    base?: I,
+  ): MultiMemberGroupInitialMemberAnnounced {
+    return MultiMemberGroupInitialMemberAnnounced.fromPartial(base ?? {});
+  },
+
+  fromPartial<I extends Exact<DeepPartial<MultiMemberGroupInitialMemberAnnounced>, I>>(
+    object: I,
+  ): MultiMemberGroupInitialMemberAnnounced {
+    const message = createBaseMultiMemberGroupInitialMemberAnnounced();
+    message.memberPk = object.memberPk ?? new Uint8Array(0);
     return message;
   },
 };
 
 function createBaseGroupAddAdditionalRendezvousSeed(): GroupAddAdditionalRendezvousSeed {
-  return { devicePk: new Uint8Array(), seed: new Uint8Array() };
+  return { devicePk: new Uint8Array(0), seed: new Uint8Array(0) };
 }
 
 export const GroupAddAdditionalRendezvousSeed = {
@@ -3183,54 +3530,69 @@ export const GroupAddAdditionalRendezvousSeed = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GroupAddAdditionalRendezvousSeed {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGroupAddAdditionalRendezvousSeed();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.devicePk = reader.bytes();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.seed = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): GroupAddAdditionalRendezvousSeed {
     return {
-      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(),
-      seed: isSet(object.seed) ? bytesFromBase64(object.seed) : new Uint8Array(),
+      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(0),
+      seed: isSet(object.seed) ? bytesFromBase64(object.seed) : new Uint8Array(0),
     };
   },
 
   toJSON(message: GroupAddAdditionalRendezvousSeed): unknown {
     const obj: any = {};
     message.devicePk !== undefined &&
-      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array()));
+      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array(0)));
     message.seed !== undefined &&
-      (obj.seed = base64FromBytes(message.seed !== undefined ? message.seed : new Uint8Array()));
+      (obj.seed = base64FromBytes(message.seed !== undefined ? message.seed : new Uint8Array(0)));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<GroupAddAdditionalRendezvousSeed>, I>>(
+    base?: I,
+  ): GroupAddAdditionalRendezvousSeed {
+    return GroupAddAdditionalRendezvousSeed.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<GroupAddAdditionalRendezvousSeed>, I>>(
     object: I,
   ): GroupAddAdditionalRendezvousSeed {
     const message = createBaseGroupAddAdditionalRendezvousSeed();
-    message.devicePk = object.devicePk ?? new Uint8Array();
-    message.seed = object.seed ?? new Uint8Array();
+    message.devicePk = object.devicePk ?? new Uint8Array(0);
+    message.seed = object.seed ?? new Uint8Array(0);
     return message;
   },
 };
 
 function createBaseGroupRemoveAdditionalRendezvousSeed(): GroupRemoveAdditionalRendezvousSeed {
-  return { devicePk: new Uint8Array(), seed: new Uint8Array() };
+  return { devicePk: new Uint8Array(0), seed: new Uint8Array(0) };
 }
 
 export const GroupRemoveAdditionalRendezvousSeed = {
@@ -3245,54 +3607,69 @@ export const GroupRemoveAdditionalRendezvousSeed = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GroupRemoveAdditionalRendezvousSeed {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGroupRemoveAdditionalRendezvousSeed();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.devicePk = reader.bytes();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.seed = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): GroupRemoveAdditionalRendezvousSeed {
     return {
-      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(),
-      seed: isSet(object.seed) ? bytesFromBase64(object.seed) : new Uint8Array(),
+      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(0),
+      seed: isSet(object.seed) ? bytesFromBase64(object.seed) : new Uint8Array(0),
     };
   },
 
   toJSON(message: GroupRemoveAdditionalRendezvousSeed): unknown {
     const obj: any = {};
     message.devicePk !== undefined &&
-      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array()));
+      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array(0)));
     message.seed !== undefined &&
-      (obj.seed = base64FromBytes(message.seed !== undefined ? message.seed : new Uint8Array()));
+      (obj.seed = base64FromBytes(message.seed !== undefined ? message.seed : new Uint8Array(0)));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<GroupRemoveAdditionalRendezvousSeed>, I>>(
+    base?: I,
+  ): GroupRemoveAdditionalRendezvousSeed {
+    return GroupRemoveAdditionalRendezvousSeed.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<GroupRemoveAdditionalRendezvousSeed>, I>>(
     object: I,
   ): GroupRemoveAdditionalRendezvousSeed {
     const message = createBaseGroupRemoveAdditionalRendezvousSeed();
-    message.devicePk = object.devicePk ?? new Uint8Array();
-    message.seed = object.seed ?? new Uint8Array();
+    message.devicePk = object.devicePk ?? new Uint8Array(0);
+    message.seed = object.seed ?? new Uint8Array(0);
     return message;
   },
 };
 
 function createBaseAccountGroupJoined(): AccountGroupJoined {
-  return { devicePk: new Uint8Array(), group: undefined };
+  return { devicePk: new Uint8Array(0), group: undefined };
 }
 
 export const AccountGroupJoined = {
@@ -3307,29 +3684,38 @@ export const AccountGroupJoined = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): AccountGroupJoined {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseAccountGroupJoined();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.devicePk = reader.bytes();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.group = Group.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): AccountGroupJoined {
     return {
-      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(),
+      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(0),
       group: isSet(object.group) ? Group.fromJSON(object.group) : undefined,
     };
   },
@@ -3337,21 +3723,25 @@ export const AccountGroupJoined = {
   toJSON(message: AccountGroupJoined): unknown {
     const obj: any = {};
     message.devicePk !== undefined &&
-      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array()));
+      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array(0)));
     message.group !== undefined && (obj.group = message.group ? Group.toJSON(message.group) : undefined);
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<AccountGroupJoined>, I>>(base?: I): AccountGroupJoined {
+    return AccountGroupJoined.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<AccountGroupJoined>, I>>(object: I): AccountGroupJoined {
     const message = createBaseAccountGroupJoined();
-    message.devicePk = object.devicePk ?? new Uint8Array();
+    message.devicePk = object.devicePk ?? new Uint8Array(0);
     message.group = (object.group !== undefined && object.group !== null) ? Group.fromPartial(object.group) : undefined;
     return message;
   },
 };
 
 function createBaseAccountGroupLeft(): AccountGroupLeft {
-  return { devicePk: new Uint8Array(), groupPk: new Uint8Array() };
+  return { devicePk: new Uint8Array(0), groupPk: new Uint8Array(0) };
 }
 
 export const AccountGroupLeft = {
@@ -3366,52 +3756,65 @@ export const AccountGroupLeft = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): AccountGroupLeft {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseAccountGroupLeft();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.devicePk = reader.bytes();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.groupPk = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): AccountGroupLeft {
     return {
-      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(),
-      groupPk: isSet(object.groupPk) ? bytesFromBase64(object.groupPk) : new Uint8Array(),
+      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(0),
+      groupPk: isSet(object.groupPk) ? bytesFromBase64(object.groupPk) : new Uint8Array(0),
     };
   },
 
   toJSON(message: AccountGroupLeft): unknown {
     const obj: any = {};
     message.devicePk !== undefined &&
-      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array()));
+      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array(0)));
     message.groupPk !== undefined &&
-      (obj.groupPk = base64FromBytes(message.groupPk !== undefined ? message.groupPk : new Uint8Array()));
+      (obj.groupPk = base64FromBytes(message.groupPk !== undefined ? message.groupPk : new Uint8Array(0)));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<AccountGroupLeft>, I>>(base?: I): AccountGroupLeft {
+    return AccountGroupLeft.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<AccountGroupLeft>, I>>(object: I): AccountGroupLeft {
     const message = createBaseAccountGroupLeft();
-    message.devicePk = object.devicePk ?? new Uint8Array();
-    message.groupPk = object.groupPk ?? new Uint8Array();
+    message.devicePk = object.devicePk ?? new Uint8Array(0);
+    message.groupPk = object.groupPk ?? new Uint8Array(0);
     return message;
   },
 };
 
 function createBaseAccountContactRequestDisabled(): AccountContactRequestDisabled {
-  return { devicePk: new Uint8Array() };
+  return { devicePk: new Uint8Array(0) };
 }
 
 export const AccountContactRequestDisabled = {
@@ -3423,45 +3826,54 @@ export const AccountContactRequestDisabled = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): AccountContactRequestDisabled {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseAccountContactRequestDisabled();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.devicePk = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): AccountContactRequestDisabled {
-    return { devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array() };
+    return { devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(0) };
   },
 
   toJSON(message: AccountContactRequestDisabled): unknown {
     const obj: any = {};
     message.devicePk !== undefined &&
-      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array()));
+      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array(0)));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<AccountContactRequestDisabled>, I>>(base?: I): AccountContactRequestDisabled {
+    return AccountContactRequestDisabled.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<AccountContactRequestDisabled>, I>>(
     object: I,
   ): AccountContactRequestDisabled {
     const message = createBaseAccountContactRequestDisabled();
-    message.devicePk = object.devicePk ?? new Uint8Array();
+    message.devicePk = object.devicePk ?? new Uint8Array(0);
     return message;
   },
 };
 
 function createBaseAccountContactRequestEnabled(): AccountContactRequestEnabled {
-  return { devicePk: new Uint8Array() };
+  return { devicePk: new Uint8Array(0) };
 }
 
 export const AccountContactRequestEnabled = {
@@ -3473,43 +3885,52 @@ export const AccountContactRequestEnabled = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): AccountContactRequestEnabled {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseAccountContactRequestEnabled();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.devicePk = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): AccountContactRequestEnabled {
-    return { devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array() };
+    return { devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(0) };
   },
 
   toJSON(message: AccountContactRequestEnabled): unknown {
     const obj: any = {};
     message.devicePk !== undefined &&
-      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array()));
+      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array(0)));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<AccountContactRequestEnabled>, I>>(base?: I): AccountContactRequestEnabled {
+    return AccountContactRequestEnabled.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<AccountContactRequestEnabled>, I>>(object: I): AccountContactRequestEnabled {
     const message = createBaseAccountContactRequestEnabled();
-    message.devicePk = object.devicePk ?? new Uint8Array();
+    message.devicePk = object.devicePk ?? new Uint8Array(0);
     return message;
   },
 };
 
 function createBaseAccountContactRequestReferenceReset(): AccountContactRequestReferenceReset {
-  return { devicePk: new Uint8Array(), publicRendezvousSeed: new Uint8Array() };
+  return { devicePk: new Uint8Array(0), publicRendezvousSeed: new Uint8Array(0) };
 }
 
 export const AccountContactRequestReferenceReset = {
@@ -3524,62 +3945,82 @@ export const AccountContactRequestReferenceReset = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): AccountContactRequestReferenceReset {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseAccountContactRequestReferenceReset();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.devicePk = reader.bytes();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.publicRendezvousSeed = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): AccountContactRequestReferenceReset {
     return {
-      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(),
+      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(0),
       publicRendezvousSeed: isSet(object.publicRendezvousSeed)
         ? bytesFromBase64(object.publicRendezvousSeed)
-        : new Uint8Array(),
+        : new Uint8Array(0),
     };
   },
 
   toJSON(message: AccountContactRequestReferenceReset): unknown {
     const obj: any = {};
     message.devicePk !== undefined &&
-      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array()));
+      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array(0)));
     message.publicRendezvousSeed !== undefined &&
       (obj.publicRendezvousSeed = base64FromBytes(
-        message.publicRendezvousSeed !== undefined ? message.publicRendezvousSeed : new Uint8Array(),
+        message.publicRendezvousSeed !== undefined ? message.publicRendezvousSeed : new Uint8Array(0),
       ));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<AccountContactRequestReferenceReset>, I>>(
+    base?: I,
+  ): AccountContactRequestReferenceReset {
+    return AccountContactRequestReferenceReset.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<AccountContactRequestReferenceReset>, I>>(
     object: I,
   ): AccountContactRequestReferenceReset {
     const message = createBaseAccountContactRequestReferenceReset();
-    message.devicePk = object.devicePk ?? new Uint8Array();
-    message.publicRendezvousSeed = object.publicRendezvousSeed ?? new Uint8Array();
+    message.devicePk = object.devicePk ?? new Uint8Array(0);
+    message.publicRendezvousSeed = object.publicRendezvousSeed ?? new Uint8Array(0);
     return message;
   },
 };
 
-function createBaseAccountContactRequestEnqueued(): AccountContactRequestEnqueued {
-  return { devicePk: new Uint8Array(), groupPk: new Uint8Array(), contact: undefined, ownMetadata: new Uint8Array() };
+function createBaseAccountContactRequestOutgoingEnqueued(): AccountContactRequestOutgoingEnqueued {
+  return {
+    devicePk: new Uint8Array(0),
+    groupPk: new Uint8Array(0),
+    contact: undefined,
+    ownMetadata: new Uint8Array(0),
+  };
 }
 
-export const AccountContactRequestEnqueued = {
-  encode(message: AccountContactRequestEnqueued, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const AccountContactRequestOutgoingEnqueued = {
+  encode(message: AccountContactRequestOutgoingEnqueued, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.devicePk.length !== 0) {
       writer.uint32(10).bytes(message.devicePk);
     }
@@ -3595,75 +4036,98 @@ export const AccountContactRequestEnqueued = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): AccountContactRequestEnqueued {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): AccountContactRequestOutgoingEnqueued {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseAccountContactRequestEnqueued();
+    const message = createBaseAccountContactRequestOutgoingEnqueued();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.devicePk = reader.bytes();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.groupPk = reader.bytes();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.contact = ShareableContact.decode(reader, reader.uint32());
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.ownMetadata = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
-  fromJSON(object: any): AccountContactRequestEnqueued {
+  fromJSON(object: any): AccountContactRequestOutgoingEnqueued {
     return {
-      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(),
-      groupPk: isSet(object.groupPk) ? bytesFromBase64(object.groupPk) : new Uint8Array(),
+      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(0),
+      groupPk: isSet(object.groupPk) ? bytesFromBase64(object.groupPk) : new Uint8Array(0),
       contact: isSet(object.contact) ? ShareableContact.fromJSON(object.contact) : undefined,
-      ownMetadata: isSet(object.ownMetadata) ? bytesFromBase64(object.ownMetadata) : new Uint8Array(),
+      ownMetadata: isSet(object.ownMetadata) ? bytesFromBase64(object.ownMetadata) : new Uint8Array(0),
     };
   },
 
-  toJSON(message: AccountContactRequestEnqueued): unknown {
+  toJSON(message: AccountContactRequestOutgoingEnqueued): unknown {
     const obj: any = {};
     message.devicePk !== undefined &&
-      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array()));
+      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array(0)));
     message.groupPk !== undefined &&
-      (obj.groupPk = base64FromBytes(message.groupPk !== undefined ? message.groupPk : new Uint8Array()));
+      (obj.groupPk = base64FromBytes(message.groupPk !== undefined ? message.groupPk : new Uint8Array(0)));
     message.contact !== undefined &&
       (obj.contact = message.contact ? ShareableContact.toJSON(message.contact) : undefined);
     message.ownMetadata !== undefined &&
-      (obj.ownMetadata = base64FromBytes(message.ownMetadata !== undefined ? message.ownMetadata : new Uint8Array()));
+      (obj.ownMetadata = base64FromBytes(message.ownMetadata !== undefined ? message.ownMetadata : new Uint8Array(0)));
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<AccountContactRequestEnqueued>, I>>(
+  create<I extends Exact<DeepPartial<AccountContactRequestOutgoingEnqueued>, I>>(
+    base?: I,
+  ): AccountContactRequestOutgoingEnqueued {
+    return AccountContactRequestOutgoingEnqueued.fromPartial(base ?? {});
+  },
+
+  fromPartial<I extends Exact<DeepPartial<AccountContactRequestOutgoingEnqueued>, I>>(
     object: I,
-  ): AccountContactRequestEnqueued {
-    const message = createBaseAccountContactRequestEnqueued();
-    message.devicePk = object.devicePk ?? new Uint8Array();
-    message.groupPk = object.groupPk ?? new Uint8Array();
+  ): AccountContactRequestOutgoingEnqueued {
+    const message = createBaseAccountContactRequestOutgoingEnqueued();
+    message.devicePk = object.devicePk ?? new Uint8Array(0);
+    message.groupPk = object.groupPk ?? new Uint8Array(0);
     message.contact = (object.contact !== undefined && object.contact !== null)
       ? ShareableContact.fromPartial(object.contact)
       : undefined;
-    message.ownMetadata = object.ownMetadata ?? new Uint8Array();
+    message.ownMetadata = object.ownMetadata ?? new Uint8Array(0);
     return message;
   },
 };
 
-function createBaseAccountContactRequestSent(): AccountContactRequestSent {
-  return { devicePk: new Uint8Array(), contactPk: new Uint8Array() };
+function createBaseAccountContactRequestOutgoingSent(): AccountContactRequestOutgoingSent {
+  return { devicePk: new Uint8Array(0), contactPk: new Uint8Array(0) };
 }
 
-export const AccountContactRequestSent = {
-  encode(message: AccountContactRequestSent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const AccountContactRequestOutgoingSent = {
+  encode(message: AccountContactRequestOutgoingSent, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.devicePk.length !== 0) {
       writer.uint32(10).bytes(message.devicePk);
     }
@@ -3673,62 +4137,79 @@ export const AccountContactRequestSent = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): AccountContactRequestSent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): AccountContactRequestOutgoingSent {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseAccountContactRequestSent();
+    const message = createBaseAccountContactRequestOutgoingSent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.devicePk = reader.bytes();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.contactPk = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
-  fromJSON(object: any): AccountContactRequestSent {
+  fromJSON(object: any): AccountContactRequestOutgoingSent {
     return {
-      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(),
-      contactPk: isSet(object.contactPk) ? bytesFromBase64(object.contactPk) : new Uint8Array(),
+      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(0),
+      contactPk: isSet(object.contactPk) ? bytesFromBase64(object.contactPk) : new Uint8Array(0),
     };
   },
 
-  toJSON(message: AccountContactRequestSent): unknown {
+  toJSON(message: AccountContactRequestOutgoingSent): unknown {
     const obj: any = {};
     message.devicePk !== undefined &&
-      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array()));
+      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array(0)));
     message.contactPk !== undefined &&
-      (obj.contactPk = base64FromBytes(message.contactPk !== undefined ? message.contactPk : new Uint8Array()));
+      (obj.contactPk = base64FromBytes(message.contactPk !== undefined ? message.contactPk : new Uint8Array(0)));
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<AccountContactRequestSent>, I>>(object: I): AccountContactRequestSent {
-    const message = createBaseAccountContactRequestSent();
-    message.devicePk = object.devicePk ?? new Uint8Array();
-    message.contactPk = object.contactPk ?? new Uint8Array();
+  create<I extends Exact<DeepPartial<AccountContactRequestOutgoingSent>, I>>(
+    base?: I,
+  ): AccountContactRequestOutgoingSent {
+    return AccountContactRequestOutgoingSent.fromPartial(base ?? {});
+  },
+
+  fromPartial<I extends Exact<DeepPartial<AccountContactRequestOutgoingSent>, I>>(
+    object: I,
+  ): AccountContactRequestOutgoingSent {
+    const message = createBaseAccountContactRequestOutgoingSent();
+    message.devicePk = object.devicePk ?? new Uint8Array(0);
+    message.contactPk = object.contactPk ?? new Uint8Array(0);
     return message;
   },
 };
 
-function createBaseAccountContactRequestReceived(): AccountContactRequestReceived {
+function createBaseAccountContactRequestIncomingReceived(): AccountContactRequestIncomingReceived {
   return {
-    devicePk: new Uint8Array(),
-    contactPk: new Uint8Array(),
-    contactRendezvousSeed: new Uint8Array(),
-    contactMetadata: new Uint8Array(),
+    devicePk: new Uint8Array(0),
+    contactPk: new Uint8Array(0),
+    contactRendezvousSeed: new Uint8Array(0),
+    contactMetadata: new Uint8Array(0),
   };
 }
 
-export const AccountContactRequestReceived = {
-  encode(message: AccountContactRequestReceived, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const AccountContactRequestIncomingReceived = {
+  encode(message: AccountContactRequestIncomingReceived, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.devicePk.length !== 0) {
       writer.uint32(10).bytes(message.devicePk);
     }
@@ -3744,79 +4225,102 @@ export const AccountContactRequestReceived = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): AccountContactRequestReceived {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): AccountContactRequestIncomingReceived {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseAccountContactRequestReceived();
+    const message = createBaseAccountContactRequestIncomingReceived();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.devicePk = reader.bytes();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.contactPk = reader.bytes();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.contactRendezvousSeed = reader.bytes();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.contactMetadata = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
-  fromJSON(object: any): AccountContactRequestReceived {
+  fromJSON(object: any): AccountContactRequestIncomingReceived {
     return {
-      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(),
-      contactPk: isSet(object.contactPk) ? bytesFromBase64(object.contactPk) : new Uint8Array(),
+      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(0),
+      contactPk: isSet(object.contactPk) ? bytesFromBase64(object.contactPk) : new Uint8Array(0),
       contactRendezvousSeed: isSet(object.contactRendezvousSeed)
         ? bytesFromBase64(object.contactRendezvousSeed)
-        : new Uint8Array(),
-      contactMetadata: isSet(object.contactMetadata) ? bytesFromBase64(object.contactMetadata) : new Uint8Array(),
+        : new Uint8Array(0),
+      contactMetadata: isSet(object.contactMetadata) ? bytesFromBase64(object.contactMetadata) : new Uint8Array(0),
     };
   },
 
-  toJSON(message: AccountContactRequestReceived): unknown {
+  toJSON(message: AccountContactRequestIncomingReceived): unknown {
     const obj: any = {};
     message.devicePk !== undefined &&
-      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array()));
+      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array(0)));
     message.contactPk !== undefined &&
-      (obj.contactPk = base64FromBytes(message.contactPk !== undefined ? message.contactPk : new Uint8Array()));
+      (obj.contactPk = base64FromBytes(message.contactPk !== undefined ? message.contactPk : new Uint8Array(0)));
     message.contactRendezvousSeed !== undefined &&
       (obj.contactRendezvousSeed = base64FromBytes(
-        message.contactRendezvousSeed !== undefined ? message.contactRendezvousSeed : new Uint8Array(),
+        message.contactRendezvousSeed !== undefined ? message.contactRendezvousSeed : new Uint8Array(0),
       ));
     message.contactMetadata !== undefined &&
       (obj.contactMetadata = base64FromBytes(
-        message.contactMetadata !== undefined ? message.contactMetadata : new Uint8Array(),
+        message.contactMetadata !== undefined ? message.contactMetadata : new Uint8Array(0),
       ));
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<AccountContactRequestReceived>, I>>(
+  create<I extends Exact<DeepPartial<AccountContactRequestIncomingReceived>, I>>(
+    base?: I,
+  ): AccountContactRequestIncomingReceived {
+    return AccountContactRequestIncomingReceived.fromPartial(base ?? {});
+  },
+
+  fromPartial<I extends Exact<DeepPartial<AccountContactRequestIncomingReceived>, I>>(
     object: I,
-  ): AccountContactRequestReceived {
-    const message = createBaseAccountContactRequestReceived();
-    message.devicePk = object.devicePk ?? new Uint8Array();
-    message.contactPk = object.contactPk ?? new Uint8Array();
-    message.contactRendezvousSeed = object.contactRendezvousSeed ?? new Uint8Array();
-    message.contactMetadata = object.contactMetadata ?? new Uint8Array();
+  ): AccountContactRequestIncomingReceived {
+    const message = createBaseAccountContactRequestIncomingReceived();
+    message.devicePk = object.devicePk ?? new Uint8Array(0);
+    message.contactPk = object.contactPk ?? new Uint8Array(0);
+    message.contactRendezvousSeed = object.contactRendezvousSeed ?? new Uint8Array(0);
+    message.contactMetadata = object.contactMetadata ?? new Uint8Array(0);
     return message;
   },
 };
 
-function createBaseAccountContactRequestDiscarded(): AccountContactRequestDiscarded {
-  return { devicePk: new Uint8Array(), contactPk: new Uint8Array() };
+function createBaseAccountContactRequestIncomingDiscarded(): AccountContactRequestIncomingDiscarded {
+  return { devicePk: new Uint8Array(0), contactPk: new Uint8Array(0) };
 }
 
-export const AccountContactRequestDiscarded = {
-  encode(message: AccountContactRequestDiscarded, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const AccountContactRequestIncomingDiscarded = {
+  encode(message: AccountContactRequestIncomingDiscarded, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.devicePk.length !== 0) {
       writer.uint32(10).bytes(message.devicePk);
     }
@@ -3826,59 +4330,74 @@ export const AccountContactRequestDiscarded = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): AccountContactRequestDiscarded {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): AccountContactRequestIncomingDiscarded {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseAccountContactRequestDiscarded();
+    const message = createBaseAccountContactRequestIncomingDiscarded();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.devicePk = reader.bytes();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.contactPk = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
-  fromJSON(object: any): AccountContactRequestDiscarded {
+  fromJSON(object: any): AccountContactRequestIncomingDiscarded {
     return {
-      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(),
-      contactPk: isSet(object.contactPk) ? bytesFromBase64(object.contactPk) : new Uint8Array(),
+      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(0),
+      contactPk: isSet(object.contactPk) ? bytesFromBase64(object.contactPk) : new Uint8Array(0),
     };
   },
 
-  toJSON(message: AccountContactRequestDiscarded): unknown {
+  toJSON(message: AccountContactRequestIncomingDiscarded): unknown {
     const obj: any = {};
     message.devicePk !== undefined &&
-      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array()));
+      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array(0)));
     message.contactPk !== undefined &&
-      (obj.contactPk = base64FromBytes(message.contactPk !== undefined ? message.contactPk : new Uint8Array()));
+      (obj.contactPk = base64FromBytes(message.contactPk !== undefined ? message.contactPk : new Uint8Array(0)));
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<AccountContactRequestDiscarded>, I>>(
+  create<I extends Exact<DeepPartial<AccountContactRequestIncomingDiscarded>, I>>(
+    base?: I,
+  ): AccountContactRequestIncomingDiscarded {
+    return AccountContactRequestIncomingDiscarded.fromPartial(base ?? {});
+  },
+
+  fromPartial<I extends Exact<DeepPartial<AccountContactRequestIncomingDiscarded>, I>>(
     object: I,
-  ): AccountContactRequestDiscarded {
-    const message = createBaseAccountContactRequestDiscarded();
-    message.devicePk = object.devicePk ?? new Uint8Array();
-    message.contactPk = object.contactPk ?? new Uint8Array();
+  ): AccountContactRequestIncomingDiscarded {
+    const message = createBaseAccountContactRequestIncomingDiscarded();
+    message.devicePk = object.devicePk ?? new Uint8Array(0);
+    message.contactPk = object.contactPk ?? new Uint8Array(0);
     return message;
   },
 };
 
-function createBaseAccountContactRequestAccepted(): AccountContactRequestAccepted {
-  return { devicePk: new Uint8Array(), contactPk: new Uint8Array(), groupPk: new Uint8Array() };
+function createBaseAccountContactRequestIncomingAccepted(): AccountContactRequestIncomingAccepted {
+  return { devicePk: new Uint8Array(0), contactPk: new Uint8Array(0), groupPk: new Uint8Array(0) };
 }
 
-export const AccountContactRequestAccepted = {
-  encode(message: AccountContactRequestAccepted, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const AccountContactRequestIncomingAccepted = {
+  encode(message: AccountContactRequestIncomingAccepted, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.devicePk.length !== 0) {
       writer.uint32(10).bytes(message.devicePk);
     }
@@ -3891,62 +4410,81 @@ export const AccountContactRequestAccepted = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): AccountContactRequestAccepted {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): AccountContactRequestIncomingAccepted {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseAccountContactRequestAccepted();
+    const message = createBaseAccountContactRequestIncomingAccepted();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.devicePk = reader.bytes();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.contactPk = reader.bytes();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.groupPk = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
-  fromJSON(object: any): AccountContactRequestAccepted {
+  fromJSON(object: any): AccountContactRequestIncomingAccepted {
     return {
-      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(),
-      contactPk: isSet(object.contactPk) ? bytesFromBase64(object.contactPk) : new Uint8Array(),
-      groupPk: isSet(object.groupPk) ? bytesFromBase64(object.groupPk) : new Uint8Array(),
+      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(0),
+      contactPk: isSet(object.contactPk) ? bytesFromBase64(object.contactPk) : new Uint8Array(0),
+      groupPk: isSet(object.groupPk) ? bytesFromBase64(object.groupPk) : new Uint8Array(0),
     };
   },
 
-  toJSON(message: AccountContactRequestAccepted): unknown {
+  toJSON(message: AccountContactRequestIncomingAccepted): unknown {
     const obj: any = {};
     message.devicePk !== undefined &&
-      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array()));
+      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array(0)));
     message.contactPk !== undefined &&
-      (obj.contactPk = base64FromBytes(message.contactPk !== undefined ? message.contactPk : new Uint8Array()));
+      (obj.contactPk = base64FromBytes(message.contactPk !== undefined ? message.contactPk : new Uint8Array(0)));
     message.groupPk !== undefined &&
-      (obj.groupPk = base64FromBytes(message.groupPk !== undefined ? message.groupPk : new Uint8Array()));
+      (obj.groupPk = base64FromBytes(message.groupPk !== undefined ? message.groupPk : new Uint8Array(0)));
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<AccountContactRequestAccepted>, I>>(
+  create<I extends Exact<DeepPartial<AccountContactRequestIncomingAccepted>, I>>(
+    base?: I,
+  ): AccountContactRequestIncomingAccepted {
+    return AccountContactRequestIncomingAccepted.fromPartial(base ?? {});
+  },
+
+  fromPartial<I extends Exact<DeepPartial<AccountContactRequestIncomingAccepted>, I>>(
     object: I,
-  ): AccountContactRequestAccepted {
-    const message = createBaseAccountContactRequestAccepted();
-    message.devicePk = object.devicePk ?? new Uint8Array();
-    message.contactPk = object.contactPk ?? new Uint8Array();
-    message.groupPk = object.groupPk ?? new Uint8Array();
+  ): AccountContactRequestIncomingAccepted {
+    const message = createBaseAccountContactRequestIncomingAccepted();
+    message.devicePk = object.devicePk ?? new Uint8Array(0);
+    message.contactPk = object.contactPk ?? new Uint8Array(0);
+    message.groupPk = object.groupPk ?? new Uint8Array(0);
     return message;
   },
 };
 
 function createBaseAccountContactBlocked(): AccountContactBlocked {
-  return { devicePk: new Uint8Array(), contactPk: new Uint8Array() };
+  return { devicePk: new Uint8Array(0), contactPk: new Uint8Array(0) };
 }
 
 export const AccountContactBlocked = {
@@ -3961,52 +4499,65 @@ export const AccountContactBlocked = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): AccountContactBlocked {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseAccountContactBlocked();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.devicePk = reader.bytes();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.contactPk = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): AccountContactBlocked {
     return {
-      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(),
-      contactPk: isSet(object.contactPk) ? bytesFromBase64(object.contactPk) : new Uint8Array(),
+      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(0),
+      contactPk: isSet(object.contactPk) ? bytesFromBase64(object.contactPk) : new Uint8Array(0),
     };
   },
 
   toJSON(message: AccountContactBlocked): unknown {
     const obj: any = {};
     message.devicePk !== undefined &&
-      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array()));
+      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array(0)));
     message.contactPk !== undefined &&
-      (obj.contactPk = base64FromBytes(message.contactPk !== undefined ? message.contactPk : new Uint8Array()));
+      (obj.contactPk = base64FromBytes(message.contactPk !== undefined ? message.contactPk : new Uint8Array(0)));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<AccountContactBlocked>, I>>(base?: I): AccountContactBlocked {
+    return AccountContactBlocked.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<AccountContactBlocked>, I>>(object: I): AccountContactBlocked {
     const message = createBaseAccountContactBlocked();
-    message.devicePk = object.devicePk ?? new Uint8Array();
-    message.contactPk = object.contactPk ?? new Uint8Array();
+    message.devicePk = object.devicePk ?? new Uint8Array(0);
+    message.contactPk = object.contactPk ?? new Uint8Array(0);
     return message;
   },
 };
 
 function createBaseAccountContactUnblocked(): AccountContactUnblocked {
-  return { devicePk: new Uint8Array(), contactPk: new Uint8Array() };
+  return { devicePk: new Uint8Array(0), contactPk: new Uint8Array(0) };
 }
 
 export const AccountContactUnblocked = {
@@ -4021,52 +4572,65 @@ export const AccountContactUnblocked = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): AccountContactUnblocked {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseAccountContactUnblocked();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.devicePk = reader.bytes();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.contactPk = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): AccountContactUnblocked {
     return {
-      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(),
-      contactPk: isSet(object.contactPk) ? bytesFromBase64(object.contactPk) : new Uint8Array(),
+      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(0),
+      contactPk: isSet(object.contactPk) ? bytesFromBase64(object.contactPk) : new Uint8Array(0),
     };
   },
 
   toJSON(message: AccountContactUnblocked): unknown {
     const obj: any = {};
     message.devicePk !== undefined &&
-      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array()));
+      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array(0)));
     message.contactPk !== undefined &&
-      (obj.contactPk = base64FromBytes(message.contactPk !== undefined ? message.contactPk : new Uint8Array()));
+      (obj.contactPk = base64FromBytes(message.contactPk !== undefined ? message.contactPk : new Uint8Array(0)));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<AccountContactUnblocked>, I>>(base?: I): AccountContactUnblocked {
+    return AccountContactUnblocked.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<AccountContactUnblocked>, I>>(object: I): AccountContactUnblocked {
     const message = createBaseAccountContactUnblocked();
-    message.devicePk = object.devicePk ?? new Uint8Array();
-    message.contactPk = object.contactPk ?? new Uint8Array();
+    message.devicePk = object.devicePk ?? new Uint8Array(0);
+    message.contactPk = object.contactPk ?? new Uint8Array(0);
     return message;
   },
 };
 
 function createBaseAccountServiceTokenAdded(): AccountServiceTokenAdded {
-  return { devicePk: new Uint8Array(), serviceToken: undefined };
+  return { devicePk: new Uint8Array(0), serviceToken: undefined };
 }
 
 export const AccountServiceTokenAdded = {
@@ -4081,29 +4645,38 @@ export const AccountServiceTokenAdded = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): AccountServiceTokenAdded {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseAccountServiceTokenAdded();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.devicePk = reader.bytes();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.serviceToken = ServiceToken.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): AccountServiceTokenAdded {
     return {
-      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(),
+      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(0),
       serviceToken: isSet(object.serviceToken) ? ServiceToken.fromJSON(object.serviceToken) : undefined,
     };
   },
@@ -4111,15 +4684,19 @@ export const AccountServiceTokenAdded = {
   toJSON(message: AccountServiceTokenAdded): unknown {
     const obj: any = {};
     message.devicePk !== undefined &&
-      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array()));
+      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array(0)));
     message.serviceToken !== undefined &&
       (obj.serviceToken = message.serviceToken ? ServiceToken.toJSON(message.serviceToken) : undefined);
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<AccountServiceTokenAdded>, I>>(base?: I): AccountServiceTokenAdded {
+    return AccountServiceTokenAdded.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<AccountServiceTokenAdded>, I>>(object: I): AccountServiceTokenAdded {
     const message = createBaseAccountServiceTokenAdded();
-    message.devicePk = object.devicePk ?? new Uint8Array();
+    message.devicePk = object.devicePk ?? new Uint8Array(0);
     message.serviceToken = (object.serviceToken !== undefined && object.serviceToken !== null)
       ? ServiceToken.fromPartial(object.serviceToken)
       : undefined;
@@ -4128,7 +4705,7 @@ export const AccountServiceTokenAdded = {
 };
 
 function createBaseAccountServiceTokenRemoved(): AccountServiceTokenRemoved {
-  return { devicePk: new Uint8Array(), tokenId: "" };
+  return { devicePk: new Uint8Array(0), tokenId: "" };
 }
 
 export const AccountServiceTokenRemoved = {
@@ -4143,29 +4720,38 @@ export const AccountServiceTokenRemoved = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): AccountServiceTokenRemoved {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseAccountServiceTokenRemoved();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.devicePk = reader.bytes();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.tokenId = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): AccountServiceTokenRemoved {
     return {
-      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(),
+      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(0),
       tokenId: isSet(object.tokenId) ? String(object.tokenId) : "",
     };
   },
@@ -4173,21 +4759,25 @@ export const AccountServiceTokenRemoved = {
   toJSON(message: AccountServiceTokenRemoved): unknown {
     const obj: any = {};
     message.devicePk !== undefined &&
-      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array()));
+      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array(0)));
     message.tokenId !== undefined && (obj.tokenId = message.tokenId);
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<AccountServiceTokenRemoved>, I>>(base?: I): AccountServiceTokenRemoved {
+    return AccountServiceTokenRemoved.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<AccountServiceTokenRemoved>, I>>(object: I): AccountServiceTokenRemoved {
     const message = createBaseAccountServiceTokenRemoved();
-    message.devicePk = object.devicePk ?? new Uint8Array();
+    message.devicePk = object.devicePk ?? new Uint8Array(0);
     message.tokenId = object.tokenId ?? "";
     return message;
   },
 };
 
 function createBaseGroupReplicating(): GroupReplicating {
-  return { devicePk: new Uint8Array(), authenticationUrl: "", replicationServer: "" };
+  return { devicePk: new Uint8Array(0), authenticationUrl: "", replicationServer: "" };
 }
 
 export const GroupReplicating = {
@@ -4205,32 +4795,45 @@ export const GroupReplicating = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GroupReplicating {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGroupReplicating();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.devicePk = reader.bytes();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.authenticationUrl = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.replicationServer = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): GroupReplicating {
     return {
-      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(),
+      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(0),
       authenticationUrl: isSet(object.authenticationUrl) ? String(object.authenticationUrl) : "",
       replicationServer: isSet(object.replicationServer) ? String(object.replicationServer) : "",
     };
@@ -4239,15 +4842,19 @@ export const GroupReplicating = {
   toJSON(message: GroupReplicating): unknown {
     const obj: any = {};
     message.devicePk !== undefined &&
-      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array()));
+      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array(0)));
     message.authenticationUrl !== undefined && (obj.authenticationUrl = message.authenticationUrl);
     message.replicationServer !== undefined && (obj.replicationServer = message.replicationServer);
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<GroupReplicating>, I>>(base?: I): GroupReplicating {
+    return GroupReplicating.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<GroupReplicating>, I>>(object: I): GroupReplicating {
     const message = createBaseGroupReplicating();
-    message.devicePk = object.devicePk ?? new Uint8Array();
+    message.devicePk = object.devicePk ?? new Uint8Array(0);
     message.authenticationUrl = object.authenticationUrl ?? "";
     message.replicationServer = object.replicationServer ?? "";
     return message;
@@ -4264,16 +4871,17 @@ export const ServiceExportData = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ServiceExportData {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseServiceExportData();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -4285,6 +4893,10 @@ export const ServiceExportData = {
   toJSON(_: ServiceExportData): unknown {
     const obj: any = {};
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ServiceExportData>, I>>(base?: I): ServiceExportData {
+    return ServiceExportData.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<ServiceExportData>, I>>(_: I): ServiceExportData {
@@ -4303,16 +4915,17 @@ export const ServiceExportData_Request = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ServiceExportData_Request {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseServiceExportData_Request();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -4326,6 +4939,10 @@ export const ServiceExportData_Request = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<ServiceExportData_Request>, I>>(base?: I): ServiceExportData_Request {
+    return ServiceExportData_Request.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<ServiceExportData_Request>, I>>(_: I): ServiceExportData_Request {
     const message = createBaseServiceExportData_Request();
     return message;
@@ -4333,7 +4950,7 @@ export const ServiceExportData_Request = {
 };
 
 function createBaseServiceExportData_Reply(): ServiceExportData_Reply {
-  return { exportedData: new Uint8Array() };
+  return { exportedData: new Uint8Array(0) };
 }
 
 export const ServiceExportData_Reply = {
@@ -4345,39 +4962,48 @@ export const ServiceExportData_Reply = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ServiceExportData_Reply {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseServiceExportData_Reply();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.exportedData = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): ServiceExportData_Reply {
-    return { exportedData: isSet(object.exportedData) ? bytesFromBase64(object.exportedData) : new Uint8Array() };
+    return { exportedData: isSet(object.exportedData) ? bytesFromBase64(object.exportedData) : new Uint8Array(0) };
   },
 
   toJSON(message: ServiceExportData_Reply): unknown {
     const obj: any = {};
     message.exportedData !== undefined &&
       (obj.exportedData = base64FromBytes(
-        message.exportedData !== undefined ? message.exportedData : new Uint8Array(),
+        message.exportedData !== undefined ? message.exportedData : new Uint8Array(0),
       ));
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<ServiceExportData_Reply>, I>>(base?: I): ServiceExportData_Reply {
+    return ServiceExportData_Reply.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<ServiceExportData_Reply>, I>>(object: I): ServiceExportData_Reply {
     const message = createBaseServiceExportData_Reply();
-    message.exportedData = object.exportedData ?? new Uint8Array();
+    message.exportedData = object.exportedData ?? new Uint8Array(0);
     return message;
   },
 };
@@ -4392,16 +5018,17 @@ export const ServiceGetConfiguration = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ServiceGetConfiguration {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseServiceGetConfiguration();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -4413,6 +5040,10 @@ export const ServiceGetConfiguration = {
   toJSON(_: ServiceGetConfiguration): unknown {
     const obj: any = {};
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ServiceGetConfiguration>, I>>(base?: I): ServiceGetConfiguration {
+    return ServiceGetConfiguration.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<ServiceGetConfiguration>, I>>(_: I): ServiceGetConfiguration {
@@ -4431,16 +5062,17 @@ export const ServiceGetConfiguration_Request = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ServiceGetConfiguration_Request {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseServiceGetConfiguration_Request();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -4454,6 +5086,10 @@ export const ServiceGetConfiguration_Request = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<ServiceGetConfiguration_Request>, I>>(base?: I): ServiceGetConfiguration_Request {
+    return ServiceGetConfiguration_Request.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<ServiceGetConfiguration_Request>, I>>(_: I): ServiceGetConfiguration_Request {
     const message = createBaseServiceGetConfiguration_Request();
     return message;
@@ -4462,9 +5098,9 @@ export const ServiceGetConfiguration_Request = {
 
 function createBaseServiceGetConfiguration_Reply(): ServiceGetConfiguration_Reply {
   return {
-    accountPk: new Uint8Array(),
-    devicePk: new Uint8Array(),
-    accountGroupPk: new Uint8Array(),
+    accountPk: new Uint8Array(0),
+    devicePk: new Uint8Array(0),
+    accountGroupPk: new Uint8Array(0),
     peerId: "",
     listeners: [],
     bleEnabled: 0,
@@ -4515,58 +5151,103 @@ export const ServiceGetConfiguration_Reply = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ServiceGetConfiguration_Reply {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseServiceGetConfiguration_Reply();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.accountPk = reader.bytes();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.devicePk = reader.bytes();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.accountGroupPk = reader.bytes();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.peerId = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.listeners.push(reader.string());
-          break;
+          continue;
         case 6:
+          if (tag !== 48) {
+            break;
+          }
+
           message.bleEnabled = reader.int32() as any;
-          break;
+          continue;
         case 7:
+          if (tag !== 56) {
+            break;
+          }
+
           message.wifiP2pEnabled = reader.int32() as any;
-          break;
+          continue;
         case 8:
+          if (tag !== 64) {
+            break;
+          }
+
           message.mdnsEnabled = reader.int32() as any;
-          break;
+          continue;
         case 9:
+          if (tag !== 72) {
+            break;
+          }
+
           message.relayEnabled = reader.int32() as any;
-          break;
+          continue;
         case 10:
+          if (tag !== 82) {
+            break;
+          }
+
           message.devicePushToken = PushServiceReceiver.decode(reader, reader.uint32());
-          break;
+          continue;
         case 11:
+          if (tag !== 90) {
+            break;
+          }
+
           message.devicePushServer = PushServer.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): ServiceGetConfiguration_Reply {
     return {
-      accountPk: isSet(object.accountPk) ? bytesFromBase64(object.accountPk) : new Uint8Array(),
-      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(),
-      accountGroupPk: isSet(object.accountGroupPk) ? bytesFromBase64(object.accountGroupPk) : new Uint8Array(),
+      accountPk: isSet(object.accountPk) ? bytesFromBase64(object.accountPk) : new Uint8Array(0),
+      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(0),
+      accountGroupPk: isSet(object.accountGroupPk) ? bytesFromBase64(object.accountGroupPk) : new Uint8Array(0),
       peerId: isSet(object.peerId) ? String(object.peerId) : "",
       listeners: Array.isArray(object?.listeners) ? object.listeners.map((e: any) => String(e)) : [],
       bleEnabled: isSet(object.bleEnabled) ? serviceGetConfiguration_SettingStateFromJSON(object.bleEnabled) : 0,
@@ -4583,12 +5264,12 @@ export const ServiceGetConfiguration_Reply = {
   toJSON(message: ServiceGetConfiguration_Reply): unknown {
     const obj: any = {};
     message.accountPk !== undefined &&
-      (obj.accountPk = base64FromBytes(message.accountPk !== undefined ? message.accountPk : new Uint8Array()));
+      (obj.accountPk = base64FromBytes(message.accountPk !== undefined ? message.accountPk : new Uint8Array(0)));
     message.devicePk !== undefined &&
-      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array()));
+      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array(0)));
     message.accountGroupPk !== undefined &&
       (obj.accountGroupPk = base64FromBytes(
-        message.accountGroupPk !== undefined ? message.accountGroupPk : new Uint8Array(),
+        message.accountGroupPk !== undefined ? message.accountGroupPk : new Uint8Array(0),
       ));
     message.peerId !== undefined && (obj.peerId = message.peerId);
     if (message.listeners) {
@@ -4611,13 +5292,17 @@ export const ServiceGetConfiguration_Reply = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<ServiceGetConfiguration_Reply>, I>>(base?: I): ServiceGetConfiguration_Reply {
+    return ServiceGetConfiguration_Reply.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<ServiceGetConfiguration_Reply>, I>>(
     object: I,
   ): ServiceGetConfiguration_Reply {
     const message = createBaseServiceGetConfiguration_Reply();
-    message.accountPk = object.accountPk ?? new Uint8Array();
-    message.devicePk = object.devicePk ?? new Uint8Array();
-    message.accountGroupPk = object.accountGroupPk ?? new Uint8Array();
+    message.accountPk = object.accountPk ?? new Uint8Array(0);
+    message.devicePk = object.devicePk ?? new Uint8Array(0);
+    message.accountGroupPk = object.accountGroupPk ?? new Uint8Array(0);
     message.peerId = object.peerId ?? "";
     message.listeners = object.listeners?.map((e) => e) || [];
     message.bleEnabled = object.bleEnabled ?? 0;
@@ -4644,16 +5329,17 @@ export const ContactRequestReference = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ContactRequestReference {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseContactRequestReference();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -4665,6 +5351,10 @@ export const ContactRequestReference = {
   toJSON(_: ContactRequestReference): unknown {
     const obj: any = {};
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ContactRequestReference>, I>>(base?: I): ContactRequestReference {
+    return ContactRequestReference.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<ContactRequestReference>, I>>(_: I): ContactRequestReference {
@@ -4683,16 +5373,17 @@ export const ContactRequestReference_Request = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ContactRequestReference_Request {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseContactRequestReference_Request();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -4706,6 +5397,10 @@ export const ContactRequestReference_Request = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<ContactRequestReference_Request>, I>>(base?: I): ContactRequestReference_Request {
+    return ContactRequestReference_Request.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<ContactRequestReference_Request>, I>>(_: I): ContactRequestReference_Request {
     const message = createBaseContactRequestReference_Request();
     return message;
@@ -4713,7 +5408,7 @@ export const ContactRequestReference_Request = {
 };
 
 function createBaseContactRequestReference_Reply(): ContactRequestReference_Reply {
-  return { publicRendezvousSeed: new Uint8Array(), enabled: false };
+  return { publicRendezvousSeed: new Uint8Array(0), enabled: false };
 }
 
 export const ContactRequestReference_Reply = {
@@ -4728,22 +5423,31 @@ export const ContactRequestReference_Reply = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ContactRequestReference_Reply {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseContactRequestReference_Reply();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.publicRendezvousSeed = reader.bytes();
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.enabled = reader.bool();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -4752,7 +5456,7 @@ export const ContactRequestReference_Reply = {
     return {
       publicRendezvousSeed: isSet(object.publicRendezvousSeed)
         ? bytesFromBase64(object.publicRendezvousSeed)
-        : new Uint8Array(),
+        : new Uint8Array(0),
       enabled: isSet(object.enabled) ? Boolean(object.enabled) : false,
     };
   },
@@ -4761,17 +5465,21 @@ export const ContactRequestReference_Reply = {
     const obj: any = {};
     message.publicRendezvousSeed !== undefined &&
       (obj.publicRendezvousSeed = base64FromBytes(
-        message.publicRendezvousSeed !== undefined ? message.publicRendezvousSeed : new Uint8Array(),
+        message.publicRendezvousSeed !== undefined ? message.publicRendezvousSeed : new Uint8Array(0),
       ));
     message.enabled !== undefined && (obj.enabled = message.enabled);
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ContactRequestReference_Reply>, I>>(base?: I): ContactRequestReference_Reply {
+    return ContactRequestReference_Reply.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<ContactRequestReference_Reply>, I>>(
     object: I,
   ): ContactRequestReference_Reply {
     const message = createBaseContactRequestReference_Reply();
-    message.publicRendezvousSeed = object.publicRendezvousSeed ?? new Uint8Array();
+    message.publicRendezvousSeed = object.publicRendezvousSeed ?? new Uint8Array(0);
     message.enabled = object.enabled ?? false;
     return message;
   },
@@ -4787,16 +5495,17 @@ export const ContactRequestDisable = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ContactRequestDisable {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseContactRequestDisable();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -4808,6 +5517,10 @@ export const ContactRequestDisable = {
   toJSON(_: ContactRequestDisable): unknown {
     const obj: any = {};
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ContactRequestDisable>, I>>(base?: I): ContactRequestDisable {
+    return ContactRequestDisable.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<ContactRequestDisable>, I>>(_: I): ContactRequestDisable {
@@ -4826,16 +5539,17 @@ export const ContactRequestDisable_Request = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ContactRequestDisable_Request {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseContactRequestDisable_Request();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -4847,6 +5561,10 @@ export const ContactRequestDisable_Request = {
   toJSON(_: ContactRequestDisable_Request): unknown {
     const obj: any = {};
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ContactRequestDisable_Request>, I>>(base?: I): ContactRequestDisable_Request {
+    return ContactRequestDisable_Request.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<ContactRequestDisable_Request>, I>>(_: I): ContactRequestDisable_Request {
@@ -4865,16 +5583,17 @@ export const ContactRequestDisable_Reply = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ContactRequestDisable_Reply {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseContactRequestDisable_Reply();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -4886,6 +5605,10 @@ export const ContactRequestDisable_Reply = {
   toJSON(_: ContactRequestDisable_Reply): unknown {
     const obj: any = {};
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ContactRequestDisable_Reply>, I>>(base?: I): ContactRequestDisable_Reply {
+    return ContactRequestDisable_Reply.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<ContactRequestDisable_Reply>, I>>(_: I): ContactRequestDisable_Reply {
@@ -4904,16 +5627,17 @@ export const ContactRequestEnable = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ContactRequestEnable {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseContactRequestEnable();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -4925,6 +5649,10 @@ export const ContactRequestEnable = {
   toJSON(_: ContactRequestEnable): unknown {
     const obj: any = {};
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ContactRequestEnable>, I>>(base?: I): ContactRequestEnable {
+    return ContactRequestEnable.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<ContactRequestEnable>, I>>(_: I): ContactRequestEnable {
@@ -4943,16 +5671,17 @@ export const ContactRequestEnable_Request = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ContactRequestEnable_Request {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseContactRequestEnable_Request();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -4966,6 +5695,10 @@ export const ContactRequestEnable_Request = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<ContactRequestEnable_Request>, I>>(base?: I): ContactRequestEnable_Request {
+    return ContactRequestEnable_Request.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<ContactRequestEnable_Request>, I>>(_: I): ContactRequestEnable_Request {
     const message = createBaseContactRequestEnable_Request();
     return message;
@@ -4973,7 +5706,7 @@ export const ContactRequestEnable_Request = {
 };
 
 function createBaseContactRequestEnable_Reply(): ContactRequestEnable_Reply {
-  return { publicRendezvousSeed: new Uint8Array() };
+  return { publicRendezvousSeed: new Uint8Array(0) };
 }
 
 export const ContactRequestEnable_Reply = {
@@ -4985,19 +5718,24 @@ export const ContactRequestEnable_Reply = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ContactRequestEnable_Reply {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseContactRequestEnable_Reply();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.publicRendezvousSeed = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -5006,7 +5744,7 @@ export const ContactRequestEnable_Reply = {
     return {
       publicRendezvousSeed: isSet(object.publicRendezvousSeed)
         ? bytesFromBase64(object.publicRendezvousSeed)
-        : new Uint8Array(),
+        : new Uint8Array(0),
     };
   },
 
@@ -5014,14 +5752,18 @@ export const ContactRequestEnable_Reply = {
     const obj: any = {};
     message.publicRendezvousSeed !== undefined &&
       (obj.publicRendezvousSeed = base64FromBytes(
-        message.publicRendezvousSeed !== undefined ? message.publicRendezvousSeed : new Uint8Array(),
+        message.publicRendezvousSeed !== undefined ? message.publicRendezvousSeed : new Uint8Array(0),
       ));
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<ContactRequestEnable_Reply>, I>>(base?: I): ContactRequestEnable_Reply {
+    return ContactRequestEnable_Reply.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<ContactRequestEnable_Reply>, I>>(object: I): ContactRequestEnable_Reply {
     const message = createBaseContactRequestEnable_Reply();
-    message.publicRendezvousSeed = object.publicRendezvousSeed ?? new Uint8Array();
+    message.publicRendezvousSeed = object.publicRendezvousSeed ?? new Uint8Array(0);
     return message;
   },
 };
@@ -5036,16 +5778,17 @@ export const ContactRequestResetReference = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ContactRequestResetReference {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseContactRequestResetReference();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -5057,6 +5800,10 @@ export const ContactRequestResetReference = {
   toJSON(_: ContactRequestResetReference): unknown {
     const obj: any = {};
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ContactRequestResetReference>, I>>(base?: I): ContactRequestResetReference {
+    return ContactRequestResetReference.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<ContactRequestResetReference>, I>>(_: I): ContactRequestResetReference {
@@ -5075,16 +5822,17 @@ export const ContactRequestResetReference_Request = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ContactRequestResetReference_Request {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseContactRequestResetReference_Request();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -5098,6 +5846,12 @@ export const ContactRequestResetReference_Request = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<ContactRequestResetReference_Request>, I>>(
+    base?: I,
+  ): ContactRequestResetReference_Request {
+    return ContactRequestResetReference_Request.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<ContactRequestResetReference_Request>, I>>(
     _: I,
   ): ContactRequestResetReference_Request {
@@ -5107,7 +5861,7 @@ export const ContactRequestResetReference_Request = {
 };
 
 function createBaseContactRequestResetReference_Reply(): ContactRequestResetReference_Reply {
-  return { publicRendezvousSeed: new Uint8Array() };
+  return { publicRendezvousSeed: new Uint8Array(0) };
 }
 
 export const ContactRequestResetReference_Reply = {
@@ -5119,19 +5873,24 @@ export const ContactRequestResetReference_Reply = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ContactRequestResetReference_Reply {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseContactRequestResetReference_Reply();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.publicRendezvousSeed = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -5140,7 +5899,7 @@ export const ContactRequestResetReference_Reply = {
     return {
       publicRendezvousSeed: isSet(object.publicRendezvousSeed)
         ? bytesFromBase64(object.publicRendezvousSeed)
-        : new Uint8Array(),
+        : new Uint8Array(0),
     };
   },
 
@@ -5148,16 +5907,22 @@ export const ContactRequestResetReference_Reply = {
     const obj: any = {};
     message.publicRendezvousSeed !== undefined &&
       (obj.publicRendezvousSeed = base64FromBytes(
-        message.publicRendezvousSeed !== undefined ? message.publicRendezvousSeed : new Uint8Array(),
+        message.publicRendezvousSeed !== undefined ? message.publicRendezvousSeed : new Uint8Array(0),
       ));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ContactRequestResetReference_Reply>, I>>(
+    base?: I,
+  ): ContactRequestResetReference_Reply {
+    return ContactRequestResetReference_Reply.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<ContactRequestResetReference_Reply>, I>>(
     object: I,
   ): ContactRequestResetReference_Reply {
     const message = createBaseContactRequestResetReference_Reply();
-    message.publicRendezvousSeed = object.publicRendezvousSeed ?? new Uint8Array();
+    message.publicRendezvousSeed = object.publicRendezvousSeed ?? new Uint8Array(0);
     return message;
   },
 };
@@ -5172,16 +5937,17 @@ export const ContactRequestSend = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ContactRequestSend {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseContactRequestSend();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -5195,6 +5961,10 @@ export const ContactRequestSend = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<ContactRequestSend>, I>>(base?: I): ContactRequestSend {
+    return ContactRequestSend.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<ContactRequestSend>, I>>(_: I): ContactRequestSend {
     const message = createBaseContactRequestSend();
     return message;
@@ -5202,7 +5972,7 @@ export const ContactRequestSend = {
 };
 
 function createBaseContactRequestSend_Request(): ContactRequestSend_Request {
-  return { contact: undefined, ownMetadata: new Uint8Array() };
+  return { contact: undefined, ownMetadata: new Uint8Array(0) };
 }
 
 export const ContactRequestSend_Request = {
@@ -5217,22 +5987,31 @@ export const ContactRequestSend_Request = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ContactRequestSend_Request {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseContactRequestSend_Request();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.contact = ShareableContact.decode(reader, reader.uint32());
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.ownMetadata = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -5240,7 +6019,7 @@ export const ContactRequestSend_Request = {
   fromJSON(object: any): ContactRequestSend_Request {
     return {
       contact: isSet(object.contact) ? ShareableContact.fromJSON(object.contact) : undefined,
-      ownMetadata: isSet(object.ownMetadata) ? bytesFromBase64(object.ownMetadata) : new Uint8Array(),
+      ownMetadata: isSet(object.ownMetadata) ? bytesFromBase64(object.ownMetadata) : new Uint8Array(0),
     };
   },
 
@@ -5249,8 +6028,12 @@ export const ContactRequestSend_Request = {
     message.contact !== undefined &&
       (obj.contact = message.contact ? ShareableContact.toJSON(message.contact) : undefined);
     message.ownMetadata !== undefined &&
-      (obj.ownMetadata = base64FromBytes(message.ownMetadata !== undefined ? message.ownMetadata : new Uint8Array()));
+      (obj.ownMetadata = base64FromBytes(message.ownMetadata !== undefined ? message.ownMetadata : new Uint8Array(0)));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ContactRequestSend_Request>, I>>(base?: I): ContactRequestSend_Request {
+    return ContactRequestSend_Request.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<ContactRequestSend_Request>, I>>(object: I): ContactRequestSend_Request {
@@ -5258,7 +6041,7 @@ export const ContactRequestSend_Request = {
     message.contact = (object.contact !== undefined && object.contact !== null)
       ? ShareableContact.fromPartial(object.contact)
       : undefined;
-    message.ownMetadata = object.ownMetadata ?? new Uint8Array();
+    message.ownMetadata = object.ownMetadata ?? new Uint8Array(0);
     return message;
   },
 };
@@ -5273,16 +6056,17 @@ export const ContactRequestSend_Reply = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ContactRequestSend_Reply {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseContactRequestSend_Reply();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -5294,6 +6078,10 @@ export const ContactRequestSend_Reply = {
   toJSON(_: ContactRequestSend_Reply): unknown {
     const obj: any = {};
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ContactRequestSend_Reply>, I>>(base?: I): ContactRequestSend_Reply {
+    return ContactRequestSend_Reply.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<ContactRequestSend_Reply>, I>>(_: I): ContactRequestSend_Reply {
@@ -5312,16 +6100,17 @@ export const ContactRequestAccept = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ContactRequestAccept {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseContactRequestAccept();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -5335,6 +6124,10 @@ export const ContactRequestAccept = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<ContactRequestAccept>, I>>(base?: I): ContactRequestAccept {
+    return ContactRequestAccept.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<ContactRequestAccept>, I>>(_: I): ContactRequestAccept {
     const message = createBaseContactRequestAccept();
     return message;
@@ -5342,7 +6135,7 @@ export const ContactRequestAccept = {
 };
 
 function createBaseContactRequestAccept_Request(): ContactRequestAccept_Request {
-  return { contactPk: new Uint8Array() };
+  return { contactPk: new Uint8Array(0) };
 }
 
 export const ContactRequestAccept_Request = {
@@ -5354,37 +6147,46 @@ export const ContactRequestAccept_Request = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ContactRequestAccept_Request {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseContactRequestAccept_Request();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.contactPk = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): ContactRequestAccept_Request {
-    return { contactPk: isSet(object.contactPk) ? bytesFromBase64(object.contactPk) : new Uint8Array() };
+    return { contactPk: isSet(object.contactPk) ? bytesFromBase64(object.contactPk) : new Uint8Array(0) };
   },
 
   toJSON(message: ContactRequestAccept_Request): unknown {
     const obj: any = {};
     message.contactPk !== undefined &&
-      (obj.contactPk = base64FromBytes(message.contactPk !== undefined ? message.contactPk : new Uint8Array()));
+      (obj.contactPk = base64FromBytes(message.contactPk !== undefined ? message.contactPk : new Uint8Array(0)));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ContactRequestAccept_Request>, I>>(base?: I): ContactRequestAccept_Request {
+    return ContactRequestAccept_Request.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<ContactRequestAccept_Request>, I>>(object: I): ContactRequestAccept_Request {
     const message = createBaseContactRequestAccept_Request();
-    message.contactPk = object.contactPk ?? new Uint8Array();
+    message.contactPk = object.contactPk ?? new Uint8Array(0);
     return message;
   },
 };
@@ -5399,16 +6201,17 @@ export const ContactRequestAccept_Reply = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ContactRequestAccept_Reply {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseContactRequestAccept_Reply();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -5420,6 +6223,10 @@ export const ContactRequestAccept_Reply = {
   toJSON(_: ContactRequestAccept_Reply): unknown {
     const obj: any = {};
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ContactRequestAccept_Reply>, I>>(base?: I): ContactRequestAccept_Reply {
+    return ContactRequestAccept_Reply.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<ContactRequestAccept_Reply>, I>>(_: I): ContactRequestAccept_Reply {
@@ -5438,16 +6245,17 @@ export const ContactRequestDiscard = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ContactRequestDiscard {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseContactRequestDiscard();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -5461,6 +6269,10 @@ export const ContactRequestDiscard = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<ContactRequestDiscard>, I>>(base?: I): ContactRequestDiscard {
+    return ContactRequestDiscard.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<ContactRequestDiscard>, I>>(_: I): ContactRequestDiscard {
     const message = createBaseContactRequestDiscard();
     return message;
@@ -5468,7 +6280,7 @@ export const ContactRequestDiscard = {
 };
 
 function createBaseContactRequestDiscard_Request(): ContactRequestDiscard_Request {
-  return { contactPk: new Uint8Array() };
+  return { contactPk: new Uint8Array(0) };
 }
 
 export const ContactRequestDiscard_Request = {
@@ -5480,39 +6292,48 @@ export const ContactRequestDiscard_Request = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ContactRequestDiscard_Request {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseContactRequestDiscard_Request();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.contactPk = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): ContactRequestDiscard_Request {
-    return { contactPk: isSet(object.contactPk) ? bytesFromBase64(object.contactPk) : new Uint8Array() };
+    return { contactPk: isSet(object.contactPk) ? bytesFromBase64(object.contactPk) : new Uint8Array(0) };
   },
 
   toJSON(message: ContactRequestDiscard_Request): unknown {
     const obj: any = {};
     message.contactPk !== undefined &&
-      (obj.contactPk = base64FromBytes(message.contactPk !== undefined ? message.contactPk : new Uint8Array()));
+      (obj.contactPk = base64FromBytes(message.contactPk !== undefined ? message.contactPk : new Uint8Array(0)));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ContactRequestDiscard_Request>, I>>(base?: I): ContactRequestDiscard_Request {
+    return ContactRequestDiscard_Request.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<ContactRequestDiscard_Request>, I>>(
     object: I,
   ): ContactRequestDiscard_Request {
     const message = createBaseContactRequestDiscard_Request();
-    message.contactPk = object.contactPk ?? new Uint8Array();
+    message.contactPk = object.contactPk ?? new Uint8Array(0);
     return message;
   },
 };
@@ -5527,16 +6348,17 @@ export const ContactRequestDiscard_Reply = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ContactRequestDiscard_Reply {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseContactRequestDiscard_Reply();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -5550,8 +6372,325 @@ export const ContactRequestDiscard_Reply = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<ContactRequestDiscard_Reply>, I>>(base?: I): ContactRequestDiscard_Reply {
+    return ContactRequestDiscard_Reply.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<ContactRequestDiscard_Reply>, I>>(_: I): ContactRequestDiscard_Reply {
     const message = createBaseContactRequestDiscard_Reply();
+    return message;
+  },
+};
+
+function createBaseShareContact(): ShareContact {
+  return {};
+}
+
+export const ShareContact = {
+  encode(_: ShareContact, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ShareContact {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseShareContact();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): ShareContact {
+    return {};
+  },
+
+  toJSON(_: ShareContact): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ShareContact>, I>>(base?: I): ShareContact {
+    return ShareContact.fromPartial(base ?? {});
+  },
+
+  fromPartial<I extends Exact<DeepPartial<ShareContact>, I>>(_: I): ShareContact {
+    const message = createBaseShareContact();
+    return message;
+  },
+};
+
+function createBaseShareContact_Request(): ShareContact_Request {
+  return {};
+}
+
+export const ShareContact_Request = {
+  encode(_: ShareContact_Request, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ShareContact_Request {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseShareContact_Request();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): ShareContact_Request {
+    return {};
+  },
+
+  toJSON(_: ShareContact_Request): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ShareContact_Request>, I>>(base?: I): ShareContact_Request {
+    return ShareContact_Request.fromPartial(base ?? {});
+  },
+
+  fromPartial<I extends Exact<DeepPartial<ShareContact_Request>, I>>(_: I): ShareContact_Request {
+    const message = createBaseShareContact_Request();
+    return message;
+  },
+};
+
+function createBaseShareContact_Reply(): ShareContact_Reply {
+  return { encodedContact: new Uint8Array(0) };
+}
+
+export const ShareContact_Reply = {
+  encode(message: ShareContact_Reply, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.encodedContact.length !== 0) {
+      writer.uint32(10).bytes(message.encodedContact);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ShareContact_Reply {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseShareContact_Reply();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.encodedContact = reader.bytes();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ShareContact_Reply {
+    return {
+      encodedContact: isSet(object.encodedContact) ? bytesFromBase64(object.encodedContact) : new Uint8Array(0),
+    };
+  },
+
+  toJSON(message: ShareContact_Reply): unknown {
+    const obj: any = {};
+    message.encodedContact !== undefined &&
+      (obj.encodedContact = base64FromBytes(
+        message.encodedContact !== undefined ? message.encodedContact : new Uint8Array(0),
+      ));
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ShareContact_Reply>, I>>(base?: I): ShareContact_Reply {
+    return ShareContact_Reply.fromPartial(base ?? {});
+  },
+
+  fromPartial<I extends Exact<DeepPartial<ShareContact_Reply>, I>>(object: I): ShareContact_Reply {
+    const message = createBaseShareContact_Reply();
+    message.encodedContact = object.encodedContact ?? new Uint8Array(0);
+    return message;
+  },
+};
+
+function createBaseDecodeContact(): DecodeContact {
+  return {};
+}
+
+export const DecodeContact = {
+  encode(_: DecodeContact, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): DecodeContact {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDecodeContact();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): DecodeContact {
+    return {};
+  },
+
+  toJSON(_: DecodeContact): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<DecodeContact>, I>>(base?: I): DecodeContact {
+    return DecodeContact.fromPartial(base ?? {});
+  },
+
+  fromPartial<I extends Exact<DeepPartial<DecodeContact>, I>>(_: I): DecodeContact {
+    const message = createBaseDecodeContact();
+    return message;
+  },
+};
+
+function createBaseDecodeContact_Request(): DecodeContact_Request {
+  return { encodedContact: new Uint8Array(0) };
+}
+
+export const DecodeContact_Request = {
+  encode(message: DecodeContact_Request, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.encodedContact.length !== 0) {
+      writer.uint32(10).bytes(message.encodedContact);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): DecodeContact_Request {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDecodeContact_Request();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.encodedContact = reader.bytes();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): DecodeContact_Request {
+    return {
+      encodedContact: isSet(object.encodedContact) ? bytesFromBase64(object.encodedContact) : new Uint8Array(0),
+    };
+  },
+
+  toJSON(message: DecodeContact_Request): unknown {
+    const obj: any = {};
+    message.encodedContact !== undefined &&
+      (obj.encodedContact = base64FromBytes(
+        message.encodedContact !== undefined ? message.encodedContact : new Uint8Array(0),
+      ));
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<DecodeContact_Request>, I>>(base?: I): DecodeContact_Request {
+    return DecodeContact_Request.fromPartial(base ?? {});
+  },
+
+  fromPartial<I extends Exact<DeepPartial<DecodeContact_Request>, I>>(object: I): DecodeContact_Request {
+    const message = createBaseDecodeContact_Request();
+    message.encodedContact = object.encodedContact ?? new Uint8Array(0);
+    return message;
+  },
+};
+
+function createBaseDecodeContact_Reply(): DecodeContact_Reply {
+  return { contact: undefined };
+}
+
+export const DecodeContact_Reply = {
+  encode(message: DecodeContact_Reply, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.contact !== undefined) {
+      ShareableContact.encode(message.contact, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): DecodeContact_Reply {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDecodeContact_Reply();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.contact = ShareableContact.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): DecodeContact_Reply {
+    return { contact: isSet(object.contact) ? ShareableContact.fromJSON(object.contact) : undefined };
+  },
+
+  toJSON(message: DecodeContact_Reply): unknown {
+    const obj: any = {};
+    message.contact !== undefined &&
+      (obj.contact = message.contact ? ShareableContact.toJSON(message.contact) : undefined);
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<DecodeContact_Reply>, I>>(base?: I): DecodeContact_Reply {
+    return DecodeContact_Reply.fromPartial(base ?? {});
+  },
+
+  fromPartial<I extends Exact<DeepPartial<DecodeContact_Reply>, I>>(object: I): DecodeContact_Reply {
+    const message = createBaseDecodeContact_Reply();
+    message.contact = (object.contact !== undefined && object.contact !== null)
+      ? ShareableContact.fromPartial(object.contact)
+      : undefined;
     return message;
   },
 };
@@ -5566,16 +6705,17 @@ export const ContactBlock = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ContactBlock {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseContactBlock();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -5589,6 +6729,10 @@ export const ContactBlock = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<ContactBlock>, I>>(base?: I): ContactBlock {
+    return ContactBlock.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<ContactBlock>, I>>(_: I): ContactBlock {
     const message = createBaseContactBlock();
     return message;
@@ -5596,7 +6740,7 @@ export const ContactBlock = {
 };
 
 function createBaseContactBlock_Request(): ContactBlock_Request {
-  return { contactPk: new Uint8Array() };
+  return { contactPk: new Uint8Array(0) };
 }
 
 export const ContactBlock_Request = {
@@ -5608,37 +6752,46 @@ export const ContactBlock_Request = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ContactBlock_Request {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseContactBlock_Request();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.contactPk = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): ContactBlock_Request {
-    return { contactPk: isSet(object.contactPk) ? bytesFromBase64(object.contactPk) : new Uint8Array() };
+    return { contactPk: isSet(object.contactPk) ? bytesFromBase64(object.contactPk) : new Uint8Array(0) };
   },
 
   toJSON(message: ContactBlock_Request): unknown {
     const obj: any = {};
     message.contactPk !== undefined &&
-      (obj.contactPk = base64FromBytes(message.contactPk !== undefined ? message.contactPk : new Uint8Array()));
+      (obj.contactPk = base64FromBytes(message.contactPk !== undefined ? message.contactPk : new Uint8Array(0)));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ContactBlock_Request>, I>>(base?: I): ContactBlock_Request {
+    return ContactBlock_Request.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<ContactBlock_Request>, I>>(object: I): ContactBlock_Request {
     const message = createBaseContactBlock_Request();
-    message.contactPk = object.contactPk ?? new Uint8Array();
+    message.contactPk = object.contactPk ?? new Uint8Array(0);
     return message;
   },
 };
@@ -5653,16 +6806,17 @@ export const ContactBlock_Reply = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ContactBlock_Reply {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseContactBlock_Reply();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -5674,6 +6828,10 @@ export const ContactBlock_Reply = {
   toJSON(_: ContactBlock_Reply): unknown {
     const obj: any = {};
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ContactBlock_Reply>, I>>(base?: I): ContactBlock_Reply {
+    return ContactBlock_Reply.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<ContactBlock_Reply>, I>>(_: I): ContactBlock_Reply {
@@ -5692,16 +6850,17 @@ export const ContactUnblock = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ContactUnblock {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseContactUnblock();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -5715,6 +6874,10 @@ export const ContactUnblock = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<ContactUnblock>, I>>(base?: I): ContactUnblock {
+    return ContactUnblock.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<ContactUnblock>, I>>(_: I): ContactUnblock {
     const message = createBaseContactUnblock();
     return message;
@@ -5722,7 +6885,7 @@ export const ContactUnblock = {
 };
 
 function createBaseContactUnblock_Request(): ContactUnblock_Request {
-  return { contactPk: new Uint8Array() };
+  return { contactPk: new Uint8Array(0) };
 }
 
 export const ContactUnblock_Request = {
@@ -5734,37 +6897,46 @@ export const ContactUnblock_Request = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ContactUnblock_Request {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseContactUnblock_Request();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.contactPk = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): ContactUnblock_Request {
-    return { contactPk: isSet(object.contactPk) ? bytesFromBase64(object.contactPk) : new Uint8Array() };
+    return { contactPk: isSet(object.contactPk) ? bytesFromBase64(object.contactPk) : new Uint8Array(0) };
   },
 
   toJSON(message: ContactUnblock_Request): unknown {
     const obj: any = {};
     message.contactPk !== undefined &&
-      (obj.contactPk = base64FromBytes(message.contactPk !== undefined ? message.contactPk : new Uint8Array()));
+      (obj.contactPk = base64FromBytes(message.contactPk !== undefined ? message.contactPk : new Uint8Array(0)));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ContactUnblock_Request>, I>>(base?: I): ContactUnblock_Request {
+    return ContactUnblock_Request.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<ContactUnblock_Request>, I>>(object: I): ContactUnblock_Request {
     const message = createBaseContactUnblock_Request();
-    message.contactPk = object.contactPk ?? new Uint8Array();
+    message.contactPk = object.contactPk ?? new Uint8Array(0);
     return message;
   },
 };
@@ -5779,16 +6951,17 @@ export const ContactUnblock_Reply = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ContactUnblock_Reply {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseContactUnblock_Reply();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -5800,6 +6973,10 @@ export const ContactUnblock_Reply = {
   toJSON(_: ContactUnblock_Reply): unknown {
     const obj: any = {};
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ContactUnblock_Reply>, I>>(base?: I): ContactUnblock_Reply {
+    return ContactUnblock_Reply.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<ContactUnblock_Reply>, I>>(_: I): ContactUnblock_Reply {
@@ -5818,16 +6995,17 @@ export const ContactAliasKeySend = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ContactAliasKeySend {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseContactAliasKeySend();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -5841,6 +7019,10 @@ export const ContactAliasKeySend = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<ContactAliasKeySend>, I>>(base?: I): ContactAliasKeySend {
+    return ContactAliasKeySend.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<ContactAliasKeySend>, I>>(_: I): ContactAliasKeySend {
     const message = createBaseContactAliasKeySend();
     return message;
@@ -5848,7 +7030,7 @@ export const ContactAliasKeySend = {
 };
 
 function createBaseContactAliasKeySend_Request(): ContactAliasKeySend_Request {
-  return { groupPk: new Uint8Array() };
+  return { groupPk: new Uint8Array(0) };
 }
 
 export const ContactAliasKeySend_Request = {
@@ -5860,37 +7042,46 @@ export const ContactAliasKeySend_Request = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ContactAliasKeySend_Request {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseContactAliasKeySend_Request();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.groupPk = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): ContactAliasKeySend_Request {
-    return { groupPk: isSet(object.groupPk) ? bytesFromBase64(object.groupPk) : new Uint8Array() };
+    return { groupPk: isSet(object.groupPk) ? bytesFromBase64(object.groupPk) : new Uint8Array(0) };
   },
 
   toJSON(message: ContactAliasKeySend_Request): unknown {
     const obj: any = {};
     message.groupPk !== undefined &&
-      (obj.groupPk = base64FromBytes(message.groupPk !== undefined ? message.groupPk : new Uint8Array()));
+      (obj.groupPk = base64FromBytes(message.groupPk !== undefined ? message.groupPk : new Uint8Array(0)));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ContactAliasKeySend_Request>, I>>(base?: I): ContactAliasKeySend_Request {
+    return ContactAliasKeySend_Request.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<ContactAliasKeySend_Request>, I>>(object: I): ContactAliasKeySend_Request {
     const message = createBaseContactAliasKeySend_Request();
-    message.groupPk = object.groupPk ?? new Uint8Array();
+    message.groupPk = object.groupPk ?? new Uint8Array(0);
     return message;
   },
 };
@@ -5905,16 +7096,17 @@ export const ContactAliasKeySend_Reply = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ContactAliasKeySend_Reply {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseContactAliasKeySend_Reply();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -5926,6 +7118,10 @@ export const ContactAliasKeySend_Reply = {
   toJSON(_: ContactAliasKeySend_Reply): unknown {
     const obj: any = {};
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ContactAliasKeySend_Reply>, I>>(base?: I): ContactAliasKeySend_Reply {
+    return ContactAliasKeySend_Reply.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<ContactAliasKeySend_Reply>, I>>(_: I): ContactAliasKeySend_Reply {
@@ -5944,16 +7140,17 @@ export const MultiMemberGroupCreate = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MultiMemberGroupCreate {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMultiMemberGroupCreate();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -5965,6 +7162,10 @@ export const MultiMemberGroupCreate = {
   toJSON(_: MultiMemberGroupCreate): unknown {
     const obj: any = {};
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<MultiMemberGroupCreate>, I>>(base?: I): MultiMemberGroupCreate {
+    return MultiMemberGroupCreate.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<MultiMemberGroupCreate>, I>>(_: I): MultiMemberGroupCreate {
@@ -5983,16 +7184,17 @@ export const MultiMemberGroupCreate_Request = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MultiMemberGroupCreate_Request {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMultiMemberGroupCreate_Request();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -6006,6 +7208,10 @@ export const MultiMemberGroupCreate_Request = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<MultiMemberGroupCreate_Request>, I>>(base?: I): MultiMemberGroupCreate_Request {
+    return MultiMemberGroupCreate_Request.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<MultiMemberGroupCreate_Request>, I>>(_: I): MultiMemberGroupCreate_Request {
     const message = createBaseMultiMemberGroupCreate_Request();
     return message;
@@ -6013,7 +7219,7 @@ export const MultiMemberGroupCreate_Request = {
 };
 
 function createBaseMultiMemberGroupCreate_Reply(): MultiMemberGroupCreate_Reply {
-  return { groupPk: new Uint8Array() };
+  return { groupPk: new Uint8Array(0) };
 }
 
 export const MultiMemberGroupCreate_Reply = {
@@ -6025,37 +7231,46 @@ export const MultiMemberGroupCreate_Reply = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MultiMemberGroupCreate_Reply {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMultiMemberGroupCreate_Reply();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.groupPk = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MultiMemberGroupCreate_Reply {
-    return { groupPk: isSet(object.groupPk) ? bytesFromBase64(object.groupPk) : new Uint8Array() };
+    return { groupPk: isSet(object.groupPk) ? bytesFromBase64(object.groupPk) : new Uint8Array(0) };
   },
 
   toJSON(message: MultiMemberGroupCreate_Reply): unknown {
     const obj: any = {};
     message.groupPk !== undefined &&
-      (obj.groupPk = base64FromBytes(message.groupPk !== undefined ? message.groupPk : new Uint8Array()));
+      (obj.groupPk = base64FromBytes(message.groupPk !== undefined ? message.groupPk : new Uint8Array(0)));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<MultiMemberGroupCreate_Reply>, I>>(base?: I): MultiMemberGroupCreate_Reply {
+    return MultiMemberGroupCreate_Reply.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<MultiMemberGroupCreate_Reply>, I>>(object: I): MultiMemberGroupCreate_Reply {
     const message = createBaseMultiMemberGroupCreate_Reply();
-    message.groupPk = object.groupPk ?? new Uint8Array();
+    message.groupPk = object.groupPk ?? new Uint8Array(0);
     return message;
   },
 };
@@ -6070,16 +7285,17 @@ export const MultiMemberGroupJoin = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MultiMemberGroupJoin {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMultiMemberGroupJoin();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -6091,6 +7307,10 @@ export const MultiMemberGroupJoin = {
   toJSON(_: MultiMemberGroupJoin): unknown {
     const obj: any = {};
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<MultiMemberGroupJoin>, I>>(base?: I): MultiMemberGroupJoin {
+    return MultiMemberGroupJoin.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<MultiMemberGroupJoin>, I>>(_: I): MultiMemberGroupJoin {
@@ -6112,19 +7332,24 @@ export const MultiMemberGroupJoin_Request = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MultiMemberGroupJoin_Request {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMultiMemberGroupJoin_Request();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.group = Group.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -6137,6 +7362,10 @@ export const MultiMemberGroupJoin_Request = {
     const obj: any = {};
     message.group !== undefined && (obj.group = message.group ? Group.toJSON(message.group) : undefined);
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<MultiMemberGroupJoin_Request>, I>>(base?: I): MultiMemberGroupJoin_Request {
+    return MultiMemberGroupJoin_Request.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<MultiMemberGroupJoin_Request>, I>>(object: I): MultiMemberGroupJoin_Request {
@@ -6156,16 +7385,17 @@ export const MultiMemberGroupJoin_Reply = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MultiMemberGroupJoin_Reply {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMultiMemberGroupJoin_Reply();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -6177,6 +7407,10 @@ export const MultiMemberGroupJoin_Reply = {
   toJSON(_: MultiMemberGroupJoin_Reply): unknown {
     const obj: any = {};
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<MultiMemberGroupJoin_Reply>, I>>(base?: I): MultiMemberGroupJoin_Reply {
+    return MultiMemberGroupJoin_Reply.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<MultiMemberGroupJoin_Reply>, I>>(_: I): MultiMemberGroupJoin_Reply {
@@ -6195,16 +7429,17 @@ export const MultiMemberGroupLeave = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MultiMemberGroupLeave {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMultiMemberGroupLeave();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -6218,6 +7453,10 @@ export const MultiMemberGroupLeave = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<MultiMemberGroupLeave>, I>>(base?: I): MultiMemberGroupLeave {
+    return MultiMemberGroupLeave.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<MultiMemberGroupLeave>, I>>(_: I): MultiMemberGroupLeave {
     const message = createBaseMultiMemberGroupLeave();
     return message;
@@ -6225,7 +7464,7 @@ export const MultiMemberGroupLeave = {
 };
 
 function createBaseMultiMemberGroupLeave_Request(): MultiMemberGroupLeave_Request {
-  return { groupPk: new Uint8Array() };
+  return { groupPk: new Uint8Array(0) };
 }
 
 export const MultiMemberGroupLeave_Request = {
@@ -6237,39 +7476,48 @@ export const MultiMemberGroupLeave_Request = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MultiMemberGroupLeave_Request {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMultiMemberGroupLeave_Request();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.groupPk = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MultiMemberGroupLeave_Request {
-    return { groupPk: isSet(object.groupPk) ? bytesFromBase64(object.groupPk) : new Uint8Array() };
+    return { groupPk: isSet(object.groupPk) ? bytesFromBase64(object.groupPk) : new Uint8Array(0) };
   },
 
   toJSON(message: MultiMemberGroupLeave_Request): unknown {
     const obj: any = {};
     message.groupPk !== undefined &&
-      (obj.groupPk = base64FromBytes(message.groupPk !== undefined ? message.groupPk : new Uint8Array()));
+      (obj.groupPk = base64FromBytes(message.groupPk !== undefined ? message.groupPk : new Uint8Array(0)));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<MultiMemberGroupLeave_Request>, I>>(base?: I): MultiMemberGroupLeave_Request {
+    return MultiMemberGroupLeave_Request.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<MultiMemberGroupLeave_Request>, I>>(
     object: I,
   ): MultiMemberGroupLeave_Request {
     const message = createBaseMultiMemberGroupLeave_Request();
-    message.groupPk = object.groupPk ?? new Uint8Array();
+    message.groupPk = object.groupPk ?? new Uint8Array(0);
     return message;
   },
 };
@@ -6284,16 +7532,17 @@ export const MultiMemberGroupLeave_Reply = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MultiMemberGroupLeave_Reply {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMultiMemberGroupLeave_Reply();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -6305,6 +7554,10 @@ export const MultiMemberGroupLeave_Reply = {
   toJSON(_: MultiMemberGroupLeave_Reply): unknown {
     const obj: any = {};
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<MultiMemberGroupLeave_Reply>, I>>(base?: I): MultiMemberGroupLeave_Reply {
+    return MultiMemberGroupLeave_Reply.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<MultiMemberGroupLeave_Reply>, I>>(_: I): MultiMemberGroupLeave_Reply {
@@ -6323,16 +7576,17 @@ export const MultiMemberGroupAliasResolverDisclose = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MultiMemberGroupAliasResolverDisclose {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMultiMemberGroupAliasResolverDisclose();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -6346,6 +7600,12 @@ export const MultiMemberGroupAliasResolverDisclose = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<MultiMemberGroupAliasResolverDisclose>, I>>(
+    base?: I,
+  ): MultiMemberGroupAliasResolverDisclose {
+    return MultiMemberGroupAliasResolverDisclose.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<MultiMemberGroupAliasResolverDisclose>, I>>(
     _: I,
   ): MultiMemberGroupAliasResolverDisclose {
@@ -6355,7 +7615,7 @@ export const MultiMemberGroupAliasResolverDisclose = {
 };
 
 function createBaseMultiMemberGroupAliasResolverDisclose_Request(): MultiMemberGroupAliasResolverDisclose_Request {
-  return { groupPk: new Uint8Array() };
+  return { groupPk: new Uint8Array(0) };
 }
 
 export const MultiMemberGroupAliasResolverDisclose_Request = {
@@ -6367,39 +7627,50 @@ export const MultiMemberGroupAliasResolverDisclose_Request = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MultiMemberGroupAliasResolverDisclose_Request {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMultiMemberGroupAliasResolverDisclose_Request();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.groupPk = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MultiMemberGroupAliasResolverDisclose_Request {
-    return { groupPk: isSet(object.groupPk) ? bytesFromBase64(object.groupPk) : new Uint8Array() };
+    return { groupPk: isSet(object.groupPk) ? bytesFromBase64(object.groupPk) : new Uint8Array(0) };
   },
 
   toJSON(message: MultiMemberGroupAliasResolverDisclose_Request): unknown {
     const obj: any = {};
     message.groupPk !== undefined &&
-      (obj.groupPk = base64FromBytes(message.groupPk !== undefined ? message.groupPk : new Uint8Array()));
+      (obj.groupPk = base64FromBytes(message.groupPk !== undefined ? message.groupPk : new Uint8Array(0)));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<MultiMemberGroupAliasResolverDisclose_Request>, I>>(
+    base?: I,
+  ): MultiMemberGroupAliasResolverDisclose_Request {
+    return MultiMemberGroupAliasResolverDisclose_Request.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<MultiMemberGroupAliasResolverDisclose_Request>, I>>(
     object: I,
   ): MultiMemberGroupAliasResolverDisclose_Request {
     const message = createBaseMultiMemberGroupAliasResolverDisclose_Request();
-    message.groupPk = object.groupPk ?? new Uint8Array();
+    message.groupPk = object.groupPk ?? new Uint8Array(0);
     return message;
   },
 };
@@ -6414,16 +7685,17 @@ export const MultiMemberGroupAliasResolverDisclose_Reply = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MultiMemberGroupAliasResolverDisclose_Reply {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMultiMemberGroupAliasResolverDisclose_Reply();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -6435,6 +7707,12 @@ export const MultiMemberGroupAliasResolverDisclose_Reply = {
   toJSON(_: MultiMemberGroupAliasResolverDisclose_Reply): unknown {
     const obj: any = {};
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<MultiMemberGroupAliasResolverDisclose_Reply>, I>>(
+    base?: I,
+  ): MultiMemberGroupAliasResolverDisclose_Reply {
+    return MultiMemberGroupAliasResolverDisclose_Reply.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<MultiMemberGroupAliasResolverDisclose_Reply>, I>>(
@@ -6455,16 +7733,17 @@ export const MultiMemberGroupAdminRoleGrant = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MultiMemberGroupAdminRoleGrant {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMultiMemberGroupAdminRoleGrant();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -6478,6 +7757,10 @@ export const MultiMemberGroupAdminRoleGrant = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<MultiMemberGroupAdminRoleGrant>, I>>(base?: I): MultiMemberGroupAdminRoleGrant {
+    return MultiMemberGroupAdminRoleGrant.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<MultiMemberGroupAdminRoleGrant>, I>>(_: I): MultiMemberGroupAdminRoleGrant {
     const message = createBaseMultiMemberGroupAdminRoleGrant();
     return message;
@@ -6485,7 +7768,7 @@ export const MultiMemberGroupAdminRoleGrant = {
 };
 
 function createBaseMultiMemberGroupAdminRoleGrant_Request(): MultiMemberGroupAdminRoleGrant_Request {
-  return { groupPk: new Uint8Array(), memberPk: new Uint8Array() };
+  return { groupPk: new Uint8Array(0), memberPk: new Uint8Array(0) };
 }
 
 export const MultiMemberGroupAdminRoleGrant_Request = {
@@ -6500,48 +7783,63 @@ export const MultiMemberGroupAdminRoleGrant_Request = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MultiMemberGroupAdminRoleGrant_Request {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMultiMemberGroupAdminRoleGrant_Request();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.groupPk = reader.bytes();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.memberPk = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MultiMemberGroupAdminRoleGrant_Request {
     return {
-      groupPk: isSet(object.groupPk) ? bytesFromBase64(object.groupPk) : new Uint8Array(),
-      memberPk: isSet(object.memberPk) ? bytesFromBase64(object.memberPk) : new Uint8Array(),
+      groupPk: isSet(object.groupPk) ? bytesFromBase64(object.groupPk) : new Uint8Array(0),
+      memberPk: isSet(object.memberPk) ? bytesFromBase64(object.memberPk) : new Uint8Array(0),
     };
   },
 
   toJSON(message: MultiMemberGroupAdminRoleGrant_Request): unknown {
     const obj: any = {};
     message.groupPk !== undefined &&
-      (obj.groupPk = base64FromBytes(message.groupPk !== undefined ? message.groupPk : new Uint8Array()));
+      (obj.groupPk = base64FromBytes(message.groupPk !== undefined ? message.groupPk : new Uint8Array(0)));
     message.memberPk !== undefined &&
-      (obj.memberPk = base64FromBytes(message.memberPk !== undefined ? message.memberPk : new Uint8Array()));
+      (obj.memberPk = base64FromBytes(message.memberPk !== undefined ? message.memberPk : new Uint8Array(0)));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<MultiMemberGroupAdminRoleGrant_Request>, I>>(
+    base?: I,
+  ): MultiMemberGroupAdminRoleGrant_Request {
+    return MultiMemberGroupAdminRoleGrant_Request.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<MultiMemberGroupAdminRoleGrant_Request>, I>>(
     object: I,
   ): MultiMemberGroupAdminRoleGrant_Request {
     const message = createBaseMultiMemberGroupAdminRoleGrant_Request();
-    message.groupPk = object.groupPk ?? new Uint8Array();
-    message.memberPk = object.memberPk ?? new Uint8Array();
+    message.groupPk = object.groupPk ?? new Uint8Array(0);
+    message.memberPk = object.memberPk ?? new Uint8Array(0);
     return message;
   },
 };
@@ -6556,16 +7854,17 @@ export const MultiMemberGroupAdminRoleGrant_Reply = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MultiMemberGroupAdminRoleGrant_Reply {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMultiMemberGroupAdminRoleGrant_Reply();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -6577,6 +7876,12 @@ export const MultiMemberGroupAdminRoleGrant_Reply = {
   toJSON(_: MultiMemberGroupAdminRoleGrant_Reply): unknown {
     const obj: any = {};
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<MultiMemberGroupAdminRoleGrant_Reply>, I>>(
+    base?: I,
+  ): MultiMemberGroupAdminRoleGrant_Reply {
+    return MultiMemberGroupAdminRoleGrant_Reply.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<MultiMemberGroupAdminRoleGrant_Reply>, I>>(
@@ -6597,16 +7902,17 @@ export const MultiMemberGroupInvitationCreate = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MultiMemberGroupInvitationCreate {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMultiMemberGroupInvitationCreate();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -6620,6 +7926,12 @@ export const MultiMemberGroupInvitationCreate = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<MultiMemberGroupInvitationCreate>, I>>(
+    base?: I,
+  ): MultiMemberGroupInvitationCreate {
+    return MultiMemberGroupInvitationCreate.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<MultiMemberGroupInvitationCreate>, I>>(
     _: I,
   ): MultiMemberGroupInvitationCreate {
@@ -6629,7 +7941,7 @@ export const MultiMemberGroupInvitationCreate = {
 };
 
 function createBaseMultiMemberGroupInvitationCreate_Request(): MultiMemberGroupInvitationCreate_Request {
-  return { groupPk: new Uint8Array() };
+  return { groupPk: new Uint8Array(0) };
 }
 
 export const MultiMemberGroupInvitationCreate_Request = {
@@ -6641,39 +7953,50 @@ export const MultiMemberGroupInvitationCreate_Request = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MultiMemberGroupInvitationCreate_Request {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMultiMemberGroupInvitationCreate_Request();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.groupPk = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MultiMemberGroupInvitationCreate_Request {
-    return { groupPk: isSet(object.groupPk) ? bytesFromBase64(object.groupPk) : new Uint8Array() };
+    return { groupPk: isSet(object.groupPk) ? bytesFromBase64(object.groupPk) : new Uint8Array(0) };
   },
 
   toJSON(message: MultiMemberGroupInvitationCreate_Request): unknown {
     const obj: any = {};
     message.groupPk !== undefined &&
-      (obj.groupPk = base64FromBytes(message.groupPk !== undefined ? message.groupPk : new Uint8Array()));
+      (obj.groupPk = base64FromBytes(message.groupPk !== undefined ? message.groupPk : new Uint8Array(0)));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<MultiMemberGroupInvitationCreate_Request>, I>>(
+    base?: I,
+  ): MultiMemberGroupInvitationCreate_Request {
+    return MultiMemberGroupInvitationCreate_Request.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<MultiMemberGroupInvitationCreate_Request>, I>>(
     object: I,
   ): MultiMemberGroupInvitationCreate_Request {
     const message = createBaseMultiMemberGroupInvitationCreate_Request();
-    message.groupPk = object.groupPk ?? new Uint8Array();
+    message.groupPk = object.groupPk ?? new Uint8Array(0);
     return message;
   },
 };
@@ -6691,19 +8014,24 @@ export const MultiMemberGroupInvitationCreate_Reply = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MultiMemberGroupInvitationCreate_Reply {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMultiMemberGroupInvitationCreate_Reply();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.group = Group.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -6716,6 +8044,12 @@ export const MultiMemberGroupInvitationCreate_Reply = {
     const obj: any = {};
     message.group !== undefined && (obj.group = message.group ? Group.toJSON(message.group) : undefined);
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<MultiMemberGroupInvitationCreate_Reply>, I>>(
+    base?: I,
+  ): MultiMemberGroupInvitationCreate_Reply {
+    return MultiMemberGroupInvitationCreate_Reply.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<MultiMemberGroupInvitationCreate_Reply>, I>>(
@@ -6737,16 +8071,17 @@ export const AppMetadataSend = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): AppMetadataSend {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseAppMetadataSend();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -6760,6 +8095,10 @@ export const AppMetadataSend = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<AppMetadataSend>, I>>(base?: I): AppMetadataSend {
+    return AppMetadataSend.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<AppMetadataSend>, I>>(_: I): AppMetadataSend {
     const message = createBaseAppMetadataSend();
     return message;
@@ -6767,7 +8106,7 @@ export const AppMetadataSend = {
 };
 
 function createBaseAppMetadataSend_Request(): AppMetadataSend_Request {
-  return { groupPk: new Uint8Array(), payload: new Uint8Array() };
+  return { groupPk: new Uint8Array(0), payload: new Uint8Array(0) };
 }
 
 export const AppMetadataSend_Request = {
@@ -6782,52 +8121,65 @@ export const AppMetadataSend_Request = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): AppMetadataSend_Request {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseAppMetadataSend_Request();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.groupPk = reader.bytes();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.payload = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): AppMetadataSend_Request {
     return {
-      groupPk: isSet(object.groupPk) ? bytesFromBase64(object.groupPk) : new Uint8Array(),
-      payload: isSet(object.payload) ? bytesFromBase64(object.payload) : new Uint8Array(),
+      groupPk: isSet(object.groupPk) ? bytesFromBase64(object.groupPk) : new Uint8Array(0),
+      payload: isSet(object.payload) ? bytesFromBase64(object.payload) : new Uint8Array(0),
     };
   },
 
   toJSON(message: AppMetadataSend_Request): unknown {
     const obj: any = {};
     message.groupPk !== undefined &&
-      (obj.groupPk = base64FromBytes(message.groupPk !== undefined ? message.groupPk : new Uint8Array()));
+      (obj.groupPk = base64FromBytes(message.groupPk !== undefined ? message.groupPk : new Uint8Array(0)));
     message.payload !== undefined &&
-      (obj.payload = base64FromBytes(message.payload !== undefined ? message.payload : new Uint8Array()));
+      (obj.payload = base64FromBytes(message.payload !== undefined ? message.payload : new Uint8Array(0)));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<AppMetadataSend_Request>, I>>(base?: I): AppMetadataSend_Request {
+    return AppMetadataSend_Request.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<AppMetadataSend_Request>, I>>(object: I): AppMetadataSend_Request {
     const message = createBaseAppMetadataSend_Request();
-    message.groupPk = object.groupPk ?? new Uint8Array();
-    message.payload = object.payload ?? new Uint8Array();
+    message.groupPk = object.groupPk ?? new Uint8Array(0);
+    message.payload = object.payload ?? new Uint8Array(0);
     return message;
   },
 };
 
 function createBaseAppMetadataSend_Reply(): AppMetadataSend_Reply {
-  return { cid: new Uint8Array() };
+  return { cid: new Uint8Array(0) };
 }
 
 export const AppMetadataSend_Reply = {
@@ -6839,37 +8191,46 @@ export const AppMetadataSend_Reply = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): AppMetadataSend_Reply {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseAppMetadataSend_Reply();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.cid = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): AppMetadataSend_Reply {
-    return { cid: isSet(object.cid) ? bytesFromBase64(object.cid) : new Uint8Array() };
+    return { cid: isSet(object.cid) ? bytesFromBase64(object.cid) : new Uint8Array(0) };
   },
 
   toJSON(message: AppMetadataSend_Reply): unknown {
     const obj: any = {};
     message.cid !== undefined &&
-      (obj.cid = base64FromBytes(message.cid !== undefined ? message.cid : new Uint8Array()));
+      (obj.cid = base64FromBytes(message.cid !== undefined ? message.cid : new Uint8Array(0)));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<AppMetadataSend_Reply>, I>>(base?: I): AppMetadataSend_Reply {
+    return AppMetadataSend_Reply.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<AppMetadataSend_Reply>, I>>(object: I): AppMetadataSend_Reply {
     const message = createBaseAppMetadataSend_Reply();
-    message.cid = object.cid ?? new Uint8Array();
+    message.cid = object.cid ?? new Uint8Array(0);
     return message;
   },
 };
@@ -6884,16 +8245,17 @@ export const AppMessageSend = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): AppMessageSend {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseAppMessageSend();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -6907,6 +8269,10 @@ export const AppMessageSend = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<AppMessageSend>, I>>(base?: I): AppMessageSend {
+    return AppMessageSend.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<AppMessageSend>, I>>(_: I): AppMessageSend {
     const message = createBaseAppMessageSend();
     return message;
@@ -6914,7 +8280,7 @@ export const AppMessageSend = {
 };
 
 function createBaseAppMessageSend_Request(): AppMessageSend_Request {
-  return { groupPk: new Uint8Array(), payload: new Uint8Array() };
+  return { groupPk: new Uint8Array(0), payload: new Uint8Array(0) };
 }
 
 export const AppMessageSend_Request = {
@@ -6929,52 +8295,65 @@ export const AppMessageSend_Request = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): AppMessageSend_Request {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseAppMessageSend_Request();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.groupPk = reader.bytes();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.payload = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): AppMessageSend_Request {
     return {
-      groupPk: isSet(object.groupPk) ? bytesFromBase64(object.groupPk) : new Uint8Array(),
-      payload: isSet(object.payload) ? bytesFromBase64(object.payload) : new Uint8Array(),
+      groupPk: isSet(object.groupPk) ? bytesFromBase64(object.groupPk) : new Uint8Array(0),
+      payload: isSet(object.payload) ? bytesFromBase64(object.payload) : new Uint8Array(0),
     };
   },
 
   toJSON(message: AppMessageSend_Request): unknown {
     const obj: any = {};
     message.groupPk !== undefined &&
-      (obj.groupPk = base64FromBytes(message.groupPk !== undefined ? message.groupPk : new Uint8Array()));
+      (obj.groupPk = base64FromBytes(message.groupPk !== undefined ? message.groupPk : new Uint8Array(0)));
     message.payload !== undefined &&
-      (obj.payload = base64FromBytes(message.payload !== undefined ? message.payload : new Uint8Array()));
+      (obj.payload = base64FromBytes(message.payload !== undefined ? message.payload : new Uint8Array(0)));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<AppMessageSend_Request>, I>>(base?: I): AppMessageSend_Request {
+    return AppMessageSend_Request.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<AppMessageSend_Request>, I>>(object: I): AppMessageSend_Request {
     const message = createBaseAppMessageSend_Request();
-    message.groupPk = object.groupPk ?? new Uint8Array();
-    message.payload = object.payload ?? new Uint8Array();
+    message.groupPk = object.groupPk ?? new Uint8Array(0);
+    message.payload = object.payload ?? new Uint8Array(0);
     return message;
   },
 };
 
 function createBaseAppMessageSend_Reply(): AppMessageSend_Reply {
-  return { cid: new Uint8Array() };
+  return { cid: new Uint8Array(0) };
 }
 
 export const AppMessageSend_Reply = {
@@ -6986,43 +8365,52 @@ export const AppMessageSend_Reply = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): AppMessageSend_Reply {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseAppMessageSend_Reply();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.cid = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): AppMessageSend_Reply {
-    return { cid: isSet(object.cid) ? bytesFromBase64(object.cid) : new Uint8Array() };
+    return { cid: isSet(object.cid) ? bytesFromBase64(object.cid) : new Uint8Array(0) };
   },
 
   toJSON(message: AppMessageSend_Reply): unknown {
     const obj: any = {};
     message.cid !== undefined &&
-      (obj.cid = base64FromBytes(message.cid !== undefined ? message.cid : new Uint8Array()));
+      (obj.cid = base64FromBytes(message.cid !== undefined ? message.cid : new Uint8Array(0)));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<AppMessageSend_Reply>, I>>(base?: I): AppMessageSend_Reply {
+    return AppMessageSend_Reply.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<AppMessageSend_Reply>, I>>(object: I): AppMessageSend_Reply {
     const message = createBaseAppMessageSend_Reply();
-    message.cid = object.cid ?? new Uint8Array();
+    message.cid = object.cid ?? new Uint8Array(0);
     return message;
   },
 };
 
 function createBaseGroupMetadataEvent(): GroupMetadataEvent {
-  return { eventContext: undefined, metadata: undefined, event: new Uint8Array() };
+  return { eventContext: undefined, metadata: undefined, event: new Uint8Array(0) };
 }
 
 export const GroupMetadataEvent = {
@@ -7040,25 +8428,38 @@ export const GroupMetadataEvent = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GroupMetadataEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGroupMetadataEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.eventContext = EventContext.decode(reader, reader.uint32());
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.metadata = GroupMetadata.decode(reader, reader.uint32());
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.event = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -7067,7 +8468,7 @@ export const GroupMetadataEvent = {
     return {
       eventContext: isSet(object.eventContext) ? EventContext.fromJSON(object.eventContext) : undefined,
       metadata: isSet(object.metadata) ? GroupMetadata.fromJSON(object.metadata) : undefined,
-      event: isSet(object.event) ? bytesFromBase64(object.event) : new Uint8Array(),
+      event: isSet(object.event) ? bytesFromBase64(object.event) : new Uint8Array(0),
     };
   },
 
@@ -7078,8 +8479,12 @@ export const GroupMetadataEvent = {
     message.metadata !== undefined &&
       (obj.metadata = message.metadata ? GroupMetadata.toJSON(message.metadata) : undefined);
     message.event !== undefined &&
-      (obj.event = base64FromBytes(message.event !== undefined ? message.event : new Uint8Array()));
+      (obj.event = base64FromBytes(message.event !== undefined ? message.event : new Uint8Array(0)));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<GroupMetadataEvent>, I>>(base?: I): GroupMetadataEvent {
+    return GroupMetadataEvent.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<GroupMetadataEvent>, I>>(object: I): GroupMetadataEvent {
@@ -7090,13 +8495,13 @@ export const GroupMetadataEvent = {
     message.metadata = (object.metadata !== undefined && object.metadata !== null)
       ? GroupMetadata.fromPartial(object.metadata)
       : undefined;
-    message.event = object.event ?? new Uint8Array();
+    message.event = object.event ?? new Uint8Array(0);
     return message;
   },
 };
 
 function createBaseGroupMessageEvent(): GroupMessageEvent {
-  return { eventContext: undefined, headers: undefined, message: new Uint8Array() };
+  return { eventContext: undefined, headers: undefined, message: new Uint8Array(0) };
 }
 
 export const GroupMessageEvent = {
@@ -7114,25 +8519,38 @@ export const GroupMessageEvent = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GroupMessageEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGroupMessageEvent();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.eventContext = EventContext.decode(reader, reader.uint32());
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.headers = MessageHeaders.decode(reader, reader.uint32());
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.message = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -7141,7 +8559,7 @@ export const GroupMessageEvent = {
     return {
       eventContext: isSet(object.eventContext) ? EventContext.fromJSON(object.eventContext) : undefined,
       headers: isSet(object.headers) ? MessageHeaders.fromJSON(object.headers) : undefined,
-      message: isSet(object.message) ? bytesFromBase64(object.message) : new Uint8Array(),
+      message: isSet(object.message) ? bytesFromBase64(object.message) : new Uint8Array(0),
     };
   },
 
@@ -7152,8 +8570,12 @@ export const GroupMessageEvent = {
     message.headers !== undefined &&
       (obj.headers = message.headers ? MessageHeaders.toJSON(message.headers) : undefined);
     message.message !== undefined &&
-      (obj.message = base64FromBytes(message.message !== undefined ? message.message : new Uint8Array()));
+      (obj.message = base64FromBytes(message.message !== undefined ? message.message : new Uint8Array(0)));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<GroupMessageEvent>, I>>(base?: I): GroupMessageEvent {
+    return GroupMessageEvent.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<GroupMessageEvent>, I>>(object: I): GroupMessageEvent {
@@ -7164,7 +8586,7 @@ export const GroupMessageEvent = {
     message.headers = (object.headers !== undefined && object.headers !== null)
       ? MessageHeaders.fromPartial(object.headers)
       : undefined;
-    message.message = object.message ?? new Uint8Array();
+    message.message = object.message ?? new Uint8Array(0);
     return message;
   },
 };
@@ -7179,16 +8601,17 @@ export const GroupMetadataList = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GroupMetadataList {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGroupMetadataList();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -7202,6 +8625,10 @@ export const GroupMetadataList = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<GroupMetadataList>, I>>(base?: I): GroupMetadataList {
+    return GroupMetadataList.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<GroupMetadataList>, I>>(_: I): GroupMetadataList {
     const message = createBaseGroupMetadataList();
     return message;
@@ -7210,10 +8637,10 @@ export const GroupMetadataList = {
 
 function createBaseGroupMetadataList_Request(): GroupMetadataList_Request {
   return {
-    groupPk: new Uint8Array(),
-    sinceId: new Uint8Array(),
+    groupPk: new Uint8Array(0),
+    sinceId: new Uint8Array(0),
     sinceNow: false,
-    untilId: new Uint8Array(),
+    untilId: new Uint8Array(0),
     untilNow: false,
     reverseOrder: false,
   };
@@ -7243,44 +8670,69 @@ export const GroupMetadataList_Request = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GroupMetadataList_Request {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGroupMetadataList_Request();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.groupPk = reader.bytes();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.sinceId = reader.bytes();
-          break;
+          continue;
         case 3:
+          if (tag !== 24) {
+            break;
+          }
+
           message.sinceNow = reader.bool();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.untilId = reader.bytes();
-          break;
+          continue;
         case 5:
+          if (tag !== 40) {
+            break;
+          }
+
           message.untilNow = reader.bool();
-          break;
+          continue;
         case 6:
+          if (tag !== 48) {
+            break;
+          }
+
           message.reverseOrder = reader.bool();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): GroupMetadataList_Request {
     return {
-      groupPk: isSet(object.groupPk) ? bytesFromBase64(object.groupPk) : new Uint8Array(),
-      sinceId: isSet(object.sinceId) ? bytesFromBase64(object.sinceId) : new Uint8Array(),
+      groupPk: isSet(object.groupPk) ? bytesFromBase64(object.groupPk) : new Uint8Array(0),
+      sinceId: isSet(object.sinceId) ? bytesFromBase64(object.sinceId) : new Uint8Array(0),
       sinceNow: isSet(object.sinceNow) ? Boolean(object.sinceNow) : false,
-      untilId: isSet(object.untilId) ? bytesFromBase64(object.untilId) : new Uint8Array(),
+      untilId: isSet(object.untilId) ? bytesFromBase64(object.untilId) : new Uint8Array(0),
       untilNow: isSet(object.untilNow) ? Boolean(object.untilNow) : false,
       reverseOrder: isSet(object.reverseOrder) ? Boolean(object.reverseOrder) : false,
     };
@@ -7289,23 +8741,27 @@ export const GroupMetadataList_Request = {
   toJSON(message: GroupMetadataList_Request): unknown {
     const obj: any = {};
     message.groupPk !== undefined &&
-      (obj.groupPk = base64FromBytes(message.groupPk !== undefined ? message.groupPk : new Uint8Array()));
+      (obj.groupPk = base64FromBytes(message.groupPk !== undefined ? message.groupPk : new Uint8Array(0)));
     message.sinceId !== undefined &&
-      (obj.sinceId = base64FromBytes(message.sinceId !== undefined ? message.sinceId : new Uint8Array()));
+      (obj.sinceId = base64FromBytes(message.sinceId !== undefined ? message.sinceId : new Uint8Array(0)));
     message.sinceNow !== undefined && (obj.sinceNow = message.sinceNow);
     message.untilId !== undefined &&
-      (obj.untilId = base64FromBytes(message.untilId !== undefined ? message.untilId : new Uint8Array()));
+      (obj.untilId = base64FromBytes(message.untilId !== undefined ? message.untilId : new Uint8Array(0)));
     message.untilNow !== undefined && (obj.untilNow = message.untilNow);
     message.reverseOrder !== undefined && (obj.reverseOrder = message.reverseOrder);
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<GroupMetadataList_Request>, I>>(base?: I): GroupMetadataList_Request {
+    return GroupMetadataList_Request.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<GroupMetadataList_Request>, I>>(object: I): GroupMetadataList_Request {
     const message = createBaseGroupMetadataList_Request();
-    message.groupPk = object.groupPk ?? new Uint8Array();
-    message.sinceId = object.sinceId ?? new Uint8Array();
+    message.groupPk = object.groupPk ?? new Uint8Array(0);
+    message.sinceId = object.sinceId ?? new Uint8Array(0);
     message.sinceNow = object.sinceNow ?? false;
-    message.untilId = object.untilId ?? new Uint8Array();
+    message.untilId = object.untilId ?? new Uint8Array(0);
     message.untilNow = object.untilNow ?? false;
     message.reverseOrder = object.reverseOrder ?? false;
     return message;
@@ -7322,16 +8778,17 @@ export const GroupMessageList = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GroupMessageList {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGroupMessageList();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -7345,6 +8802,10 @@ export const GroupMessageList = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<GroupMessageList>, I>>(base?: I): GroupMessageList {
+    return GroupMessageList.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<GroupMessageList>, I>>(_: I): GroupMessageList {
     const message = createBaseGroupMessageList();
     return message;
@@ -7353,10 +8814,10 @@ export const GroupMessageList = {
 
 function createBaseGroupMessageList_Request(): GroupMessageList_Request {
   return {
-    groupPk: new Uint8Array(),
-    sinceId: new Uint8Array(),
+    groupPk: new Uint8Array(0),
+    sinceId: new Uint8Array(0),
     sinceNow: false,
-    untilId: new Uint8Array(),
+    untilId: new Uint8Array(0),
     untilNow: false,
     reverseOrder: false,
   };
@@ -7386,44 +8847,69 @@ export const GroupMessageList_Request = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GroupMessageList_Request {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGroupMessageList_Request();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.groupPk = reader.bytes();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.sinceId = reader.bytes();
-          break;
+          continue;
         case 3:
+          if (tag !== 24) {
+            break;
+          }
+
           message.sinceNow = reader.bool();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.untilId = reader.bytes();
-          break;
+          continue;
         case 5:
+          if (tag !== 40) {
+            break;
+          }
+
           message.untilNow = reader.bool();
-          break;
+          continue;
         case 6:
+          if (tag !== 48) {
+            break;
+          }
+
           message.reverseOrder = reader.bool();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): GroupMessageList_Request {
     return {
-      groupPk: isSet(object.groupPk) ? bytesFromBase64(object.groupPk) : new Uint8Array(),
-      sinceId: isSet(object.sinceId) ? bytesFromBase64(object.sinceId) : new Uint8Array(),
+      groupPk: isSet(object.groupPk) ? bytesFromBase64(object.groupPk) : new Uint8Array(0),
+      sinceId: isSet(object.sinceId) ? bytesFromBase64(object.sinceId) : new Uint8Array(0),
       sinceNow: isSet(object.sinceNow) ? Boolean(object.sinceNow) : false,
-      untilId: isSet(object.untilId) ? bytesFromBase64(object.untilId) : new Uint8Array(),
+      untilId: isSet(object.untilId) ? bytesFromBase64(object.untilId) : new Uint8Array(0),
       untilNow: isSet(object.untilNow) ? Boolean(object.untilNow) : false,
       reverseOrder: isSet(object.reverseOrder) ? Boolean(object.reverseOrder) : false,
     };
@@ -7432,23 +8918,27 @@ export const GroupMessageList_Request = {
   toJSON(message: GroupMessageList_Request): unknown {
     const obj: any = {};
     message.groupPk !== undefined &&
-      (obj.groupPk = base64FromBytes(message.groupPk !== undefined ? message.groupPk : new Uint8Array()));
+      (obj.groupPk = base64FromBytes(message.groupPk !== undefined ? message.groupPk : new Uint8Array(0)));
     message.sinceId !== undefined &&
-      (obj.sinceId = base64FromBytes(message.sinceId !== undefined ? message.sinceId : new Uint8Array()));
+      (obj.sinceId = base64FromBytes(message.sinceId !== undefined ? message.sinceId : new Uint8Array(0)));
     message.sinceNow !== undefined && (obj.sinceNow = message.sinceNow);
     message.untilId !== undefined &&
-      (obj.untilId = base64FromBytes(message.untilId !== undefined ? message.untilId : new Uint8Array()));
+      (obj.untilId = base64FromBytes(message.untilId !== undefined ? message.untilId : new Uint8Array(0)));
     message.untilNow !== undefined && (obj.untilNow = message.untilNow);
     message.reverseOrder !== undefined && (obj.reverseOrder = message.reverseOrder);
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<GroupMessageList_Request>, I>>(base?: I): GroupMessageList_Request {
+    return GroupMessageList_Request.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<GroupMessageList_Request>, I>>(object: I): GroupMessageList_Request {
     const message = createBaseGroupMessageList_Request();
-    message.groupPk = object.groupPk ?? new Uint8Array();
-    message.sinceId = object.sinceId ?? new Uint8Array();
+    message.groupPk = object.groupPk ?? new Uint8Array(0);
+    message.sinceId = object.sinceId ?? new Uint8Array(0);
     message.sinceNow = object.sinceNow ?? false;
-    message.untilId = object.untilId ?? new Uint8Array();
+    message.untilId = object.untilId ?? new Uint8Array(0);
     message.untilNow = object.untilNow ?? false;
     message.reverseOrder = object.reverseOrder ?? false;
     return message;
@@ -7465,16 +8955,17 @@ export const GroupInfo = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GroupInfo {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGroupInfo();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -7488,6 +8979,10 @@ export const GroupInfo = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<GroupInfo>, I>>(base?: I): GroupInfo {
+    return GroupInfo.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<GroupInfo>, I>>(_: I): GroupInfo {
     const message = createBaseGroupInfo();
     return message;
@@ -7495,7 +8990,7 @@ export const GroupInfo = {
 };
 
 function createBaseGroupInfo_Request(): GroupInfo_Request {
-  return { groupPk: new Uint8Array(), contactPk: new Uint8Array() };
+  return { groupPk: new Uint8Array(0), contactPk: new Uint8Array(0) };
 }
 
 export const GroupInfo_Request = {
@@ -7510,52 +9005,65 @@ export const GroupInfo_Request = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GroupInfo_Request {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGroupInfo_Request();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.groupPk = reader.bytes();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.contactPk = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): GroupInfo_Request {
     return {
-      groupPk: isSet(object.groupPk) ? bytesFromBase64(object.groupPk) : new Uint8Array(),
-      contactPk: isSet(object.contactPk) ? bytesFromBase64(object.contactPk) : new Uint8Array(),
+      groupPk: isSet(object.groupPk) ? bytesFromBase64(object.groupPk) : new Uint8Array(0),
+      contactPk: isSet(object.contactPk) ? bytesFromBase64(object.contactPk) : new Uint8Array(0),
     };
   },
 
   toJSON(message: GroupInfo_Request): unknown {
     const obj: any = {};
     message.groupPk !== undefined &&
-      (obj.groupPk = base64FromBytes(message.groupPk !== undefined ? message.groupPk : new Uint8Array()));
+      (obj.groupPk = base64FromBytes(message.groupPk !== undefined ? message.groupPk : new Uint8Array(0)));
     message.contactPk !== undefined &&
-      (obj.contactPk = base64FromBytes(message.contactPk !== undefined ? message.contactPk : new Uint8Array()));
+      (obj.contactPk = base64FromBytes(message.contactPk !== undefined ? message.contactPk : new Uint8Array(0)));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<GroupInfo_Request>, I>>(base?: I): GroupInfo_Request {
+    return GroupInfo_Request.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<GroupInfo_Request>, I>>(object: I): GroupInfo_Request {
     const message = createBaseGroupInfo_Request();
-    message.groupPk = object.groupPk ?? new Uint8Array();
-    message.contactPk = object.contactPk ?? new Uint8Array();
+    message.groupPk = object.groupPk ?? new Uint8Array(0);
+    message.contactPk = object.contactPk ?? new Uint8Array(0);
     return message;
   },
 };
 
 function createBaseGroupInfo_Reply(): GroupInfo_Reply {
-  return { group: undefined, memberPk: new Uint8Array(), devicePk: new Uint8Array() };
+  return { group: undefined, memberPk: new Uint8Array(0), devicePk: new Uint8Array(0) };
 }
 
 export const GroupInfo_Reply = {
@@ -7573,25 +9081,38 @@ export const GroupInfo_Reply = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GroupInfo_Reply {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGroupInfo_Reply();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.group = Group.decode(reader, reader.uint32());
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.memberPk = reader.bytes();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.devicePk = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -7599,8 +9120,8 @@ export const GroupInfo_Reply = {
   fromJSON(object: any): GroupInfo_Reply {
     return {
       group: isSet(object.group) ? Group.fromJSON(object.group) : undefined,
-      memberPk: isSet(object.memberPk) ? bytesFromBase64(object.memberPk) : new Uint8Array(),
-      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(),
+      memberPk: isSet(object.memberPk) ? bytesFromBase64(object.memberPk) : new Uint8Array(0),
+      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(0),
     };
   },
 
@@ -7608,17 +9129,21 @@ export const GroupInfo_Reply = {
     const obj: any = {};
     message.group !== undefined && (obj.group = message.group ? Group.toJSON(message.group) : undefined);
     message.memberPk !== undefined &&
-      (obj.memberPk = base64FromBytes(message.memberPk !== undefined ? message.memberPk : new Uint8Array()));
+      (obj.memberPk = base64FromBytes(message.memberPk !== undefined ? message.memberPk : new Uint8Array(0)));
     message.devicePk !== undefined &&
-      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array()));
+      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array(0)));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<GroupInfo_Reply>, I>>(base?: I): GroupInfo_Reply {
+    return GroupInfo_Reply.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<GroupInfo_Reply>, I>>(object: I): GroupInfo_Reply {
     const message = createBaseGroupInfo_Reply();
     message.group = (object.group !== undefined && object.group !== null) ? Group.fromPartial(object.group) : undefined;
-    message.memberPk = object.memberPk ?? new Uint8Array();
-    message.devicePk = object.devicePk ?? new Uint8Array();
+    message.memberPk = object.memberPk ?? new Uint8Array(0);
+    message.devicePk = object.devicePk ?? new Uint8Array(0);
     return message;
   },
 };
@@ -7633,16 +9158,17 @@ export const ActivateGroup = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ActivateGroup {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseActivateGroup();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -7656,6 +9182,10 @@ export const ActivateGroup = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<ActivateGroup>, I>>(base?: I): ActivateGroup {
+    return ActivateGroup.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<ActivateGroup>, I>>(_: I): ActivateGroup {
     const message = createBaseActivateGroup();
     return message;
@@ -7663,7 +9193,7 @@ export const ActivateGroup = {
 };
 
 function createBaseActivateGroup_Request(): ActivateGroup_Request {
-  return { groupPk: new Uint8Array(), localOnly: false };
+  return { groupPk: new Uint8Array(0), localOnly: false };
 }
 
 export const ActivateGroup_Request = {
@@ -7678,29 +9208,38 @@ export const ActivateGroup_Request = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ActivateGroup_Request {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseActivateGroup_Request();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.groupPk = reader.bytes();
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.localOnly = reader.bool();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): ActivateGroup_Request {
     return {
-      groupPk: isSet(object.groupPk) ? bytesFromBase64(object.groupPk) : new Uint8Array(),
+      groupPk: isSet(object.groupPk) ? bytesFromBase64(object.groupPk) : new Uint8Array(0),
       localOnly: isSet(object.localOnly) ? Boolean(object.localOnly) : false,
     };
   },
@@ -7708,14 +9247,18 @@ export const ActivateGroup_Request = {
   toJSON(message: ActivateGroup_Request): unknown {
     const obj: any = {};
     message.groupPk !== undefined &&
-      (obj.groupPk = base64FromBytes(message.groupPk !== undefined ? message.groupPk : new Uint8Array()));
+      (obj.groupPk = base64FromBytes(message.groupPk !== undefined ? message.groupPk : new Uint8Array(0)));
     message.localOnly !== undefined && (obj.localOnly = message.localOnly);
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<ActivateGroup_Request>, I>>(base?: I): ActivateGroup_Request {
+    return ActivateGroup_Request.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<ActivateGroup_Request>, I>>(object: I): ActivateGroup_Request {
     const message = createBaseActivateGroup_Request();
-    message.groupPk = object.groupPk ?? new Uint8Array();
+    message.groupPk = object.groupPk ?? new Uint8Array(0);
     message.localOnly = object.localOnly ?? false;
     return message;
   },
@@ -7731,16 +9274,17 @@ export const ActivateGroup_Reply = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ActivateGroup_Reply {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseActivateGroup_Reply();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -7752,6 +9296,10 @@ export const ActivateGroup_Reply = {
   toJSON(_: ActivateGroup_Reply): unknown {
     const obj: any = {};
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ActivateGroup_Reply>, I>>(base?: I): ActivateGroup_Reply {
+    return ActivateGroup_Reply.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<ActivateGroup_Reply>, I>>(_: I): ActivateGroup_Reply {
@@ -7770,16 +9318,17 @@ export const DeactivateGroup = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): DeactivateGroup {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseDeactivateGroup();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -7793,6 +9342,10 @@ export const DeactivateGroup = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<DeactivateGroup>, I>>(base?: I): DeactivateGroup {
+    return DeactivateGroup.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<DeactivateGroup>, I>>(_: I): DeactivateGroup {
     const message = createBaseDeactivateGroup();
     return message;
@@ -7800,7 +9353,7 @@ export const DeactivateGroup = {
 };
 
 function createBaseDeactivateGroup_Request(): DeactivateGroup_Request {
-  return { groupPk: new Uint8Array() };
+  return { groupPk: new Uint8Array(0) };
 }
 
 export const DeactivateGroup_Request = {
@@ -7812,37 +9365,46 @@ export const DeactivateGroup_Request = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): DeactivateGroup_Request {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseDeactivateGroup_Request();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.groupPk = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): DeactivateGroup_Request {
-    return { groupPk: isSet(object.groupPk) ? bytesFromBase64(object.groupPk) : new Uint8Array() };
+    return { groupPk: isSet(object.groupPk) ? bytesFromBase64(object.groupPk) : new Uint8Array(0) };
   },
 
   toJSON(message: DeactivateGroup_Request): unknown {
     const obj: any = {};
     message.groupPk !== undefined &&
-      (obj.groupPk = base64FromBytes(message.groupPk !== undefined ? message.groupPk : new Uint8Array()));
+      (obj.groupPk = base64FromBytes(message.groupPk !== undefined ? message.groupPk : new Uint8Array(0)));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<DeactivateGroup_Request>, I>>(base?: I): DeactivateGroup_Request {
+    return DeactivateGroup_Request.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<DeactivateGroup_Request>, I>>(object: I): DeactivateGroup_Request {
     const message = createBaseDeactivateGroup_Request();
-    message.groupPk = object.groupPk ?? new Uint8Array();
+    message.groupPk = object.groupPk ?? new Uint8Array(0);
     return message;
   },
 };
@@ -7857,16 +9419,17 @@ export const DeactivateGroup_Reply = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): DeactivateGroup_Reply {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseDeactivateGroup_Reply();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -7878,6 +9441,10 @@ export const DeactivateGroup_Reply = {
   toJSON(_: DeactivateGroup_Reply): unknown {
     const obj: any = {};
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<DeactivateGroup_Reply>, I>>(base?: I): DeactivateGroup_Reply {
+    return DeactivateGroup_Reply.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<DeactivateGroup_Reply>, I>>(_: I): DeactivateGroup_Reply {
@@ -7896,16 +9463,17 @@ export const GroupDeviceStatus = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GroupDeviceStatus {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGroupDeviceStatus();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -7919,6 +9487,10 @@ export const GroupDeviceStatus = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<GroupDeviceStatus>, I>>(base?: I): GroupDeviceStatus {
+    return GroupDeviceStatus.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<GroupDeviceStatus>, I>>(_: I): GroupDeviceStatus {
     const message = createBaseGroupDeviceStatus();
     return message;
@@ -7926,7 +9498,7 @@ export const GroupDeviceStatus = {
 };
 
 function createBaseGroupDeviceStatus_Request(): GroupDeviceStatus_Request {
-  return { groupPk: new Uint8Array() };
+  return { groupPk: new Uint8Array(0) };
 }
 
 export const GroupDeviceStatus_Request = {
@@ -7938,43 +9510,52 @@ export const GroupDeviceStatus_Request = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GroupDeviceStatus_Request {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGroupDeviceStatus_Request();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.groupPk = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): GroupDeviceStatus_Request {
-    return { groupPk: isSet(object.groupPk) ? bytesFromBase64(object.groupPk) : new Uint8Array() };
+    return { groupPk: isSet(object.groupPk) ? bytesFromBase64(object.groupPk) : new Uint8Array(0) };
   },
 
   toJSON(message: GroupDeviceStatus_Request): unknown {
     const obj: any = {};
     message.groupPk !== undefined &&
-      (obj.groupPk = base64FromBytes(message.groupPk !== undefined ? message.groupPk : new Uint8Array()));
+      (obj.groupPk = base64FromBytes(message.groupPk !== undefined ? message.groupPk : new Uint8Array(0)));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<GroupDeviceStatus_Request>, I>>(base?: I): GroupDeviceStatus_Request {
+    return GroupDeviceStatus_Request.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<GroupDeviceStatus_Request>, I>>(object: I): GroupDeviceStatus_Request {
     const message = createBaseGroupDeviceStatus_Request();
-    message.groupPk = object.groupPk ?? new Uint8Array();
+    message.groupPk = object.groupPk ?? new Uint8Array(0);
     return message;
   },
 };
 
 function createBaseGroupDeviceStatus_Reply(): GroupDeviceStatus_Reply {
-  return { type: 0, event: new Uint8Array() };
+  return { type: 0, event: new Uint8Array(0) };
 }
 
 export const GroupDeviceStatus_Reply = {
@@ -7989,22 +9570,31 @@ export const GroupDeviceStatus_Reply = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GroupDeviceStatus_Reply {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGroupDeviceStatus_Reply();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.type = reader.int32() as any;
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.event = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -8012,7 +9602,7 @@ export const GroupDeviceStatus_Reply = {
   fromJSON(object: any): GroupDeviceStatus_Reply {
     return {
       type: isSet(object.type) ? groupDeviceStatus_TypeFromJSON(object.type) : 0,
-      event: isSet(object.event) ? bytesFromBase64(object.event) : new Uint8Array(),
+      event: isSet(object.event) ? bytesFromBase64(object.event) : new Uint8Array(0),
     };
   },
 
@@ -8020,20 +9610,24 @@ export const GroupDeviceStatus_Reply = {
     const obj: any = {};
     message.type !== undefined && (obj.type = groupDeviceStatus_TypeToJSON(message.type));
     message.event !== undefined &&
-      (obj.event = base64FromBytes(message.event !== undefined ? message.event : new Uint8Array()));
+      (obj.event = base64FromBytes(message.event !== undefined ? message.event : new Uint8Array(0)));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<GroupDeviceStatus_Reply>, I>>(base?: I): GroupDeviceStatus_Reply {
+    return GroupDeviceStatus_Reply.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<GroupDeviceStatus_Reply>, I>>(object: I): GroupDeviceStatus_Reply {
     const message = createBaseGroupDeviceStatus_Reply();
     message.type = object.type ?? 0;
-    message.event = object.event ?? new Uint8Array();
+    message.event = object.event ?? new Uint8Array(0);
     return message;
   },
 };
 
 function createBaseGroupDeviceStatus_Reply_PeerConnected(): GroupDeviceStatus_Reply_PeerConnected {
-  return { peerId: "", devicePk: new Uint8Array(), transports: [], maddrs: [] };
+  return { peerId: "", devicePk: new Uint8Array(0), transports: [], maddrs: [] };
 }
 
 export const GroupDeviceStatus_Reply_PeerConnected = {
@@ -8056,35 +9650,55 @@ export const GroupDeviceStatus_Reply_PeerConnected = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GroupDeviceStatus_Reply_PeerConnected {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGroupDeviceStatus_Reply_PeerConnected();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.peerId = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.devicePk = reader.bytes();
-          break;
+          continue;
         case 3:
-          if ((tag & 7) === 2) {
+          if (tag === 24) {
+            message.transports.push(reader.int32() as any);
+
+            continue;
+          }
+
+          if (tag === 26) {
             const end2 = reader.uint32() + reader.pos;
             while (reader.pos < end2) {
               message.transports.push(reader.int32() as any);
             }
-          } else {
-            message.transports.push(reader.int32() as any);
+
+            continue;
           }
+
           break;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.maddrs.push(reader.string());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -8092,7 +9706,7 @@ export const GroupDeviceStatus_Reply_PeerConnected = {
   fromJSON(object: any): GroupDeviceStatus_Reply_PeerConnected {
     return {
       peerId: isSet(object.peerId) ? String(object.peerId) : "",
-      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(),
+      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(0),
       transports: Array.isArray(object?.transports)
         ? object.transports.map((e: any) => groupDeviceStatus_TransportFromJSON(e))
         : [],
@@ -8104,7 +9718,7 @@ export const GroupDeviceStatus_Reply_PeerConnected = {
     const obj: any = {};
     message.peerId !== undefined && (obj.peerId = message.peerId);
     message.devicePk !== undefined &&
-      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array()));
+      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array(0)));
     if (message.transports) {
       obj.transports = message.transports.map((e) => groupDeviceStatus_TransportToJSON(e));
     } else {
@@ -8118,12 +9732,18 @@ export const GroupDeviceStatus_Reply_PeerConnected = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<GroupDeviceStatus_Reply_PeerConnected>, I>>(
+    base?: I,
+  ): GroupDeviceStatus_Reply_PeerConnected {
+    return GroupDeviceStatus_Reply_PeerConnected.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<GroupDeviceStatus_Reply_PeerConnected>, I>>(
     object: I,
   ): GroupDeviceStatus_Reply_PeerConnected {
     const message = createBaseGroupDeviceStatus_Reply_PeerConnected();
     message.peerId = object.peerId ?? "";
-    message.devicePk = object.devicePk ?? new Uint8Array();
+    message.devicePk = object.devicePk ?? new Uint8Array(0);
     message.transports = object.transports?.map((e) => e) || [];
     message.maddrs = object.maddrs?.map((e) => e) || [];
     return message;
@@ -8143,19 +9763,24 @@ export const GroupDeviceStatus_Reply_PeerReconnecting = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GroupDeviceStatus_Reply_PeerReconnecting {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGroupDeviceStatus_Reply_PeerReconnecting();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.peerId = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -8168,6 +9793,12 @@ export const GroupDeviceStatus_Reply_PeerReconnecting = {
     const obj: any = {};
     message.peerId !== undefined && (obj.peerId = message.peerId);
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<GroupDeviceStatus_Reply_PeerReconnecting>, I>>(
+    base?: I,
+  ): GroupDeviceStatus_Reply_PeerReconnecting {
+    return GroupDeviceStatus_Reply_PeerReconnecting.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<GroupDeviceStatus_Reply_PeerReconnecting>, I>>(
@@ -8192,19 +9823,24 @@ export const GroupDeviceStatus_Reply_PeerDisconnected = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GroupDeviceStatus_Reply_PeerDisconnected {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGroupDeviceStatus_Reply_PeerDisconnected();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.peerId = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -8217,6 +9853,12 @@ export const GroupDeviceStatus_Reply_PeerDisconnected = {
     const obj: any = {};
     message.peerId !== undefined && (obj.peerId = message.peerId);
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<GroupDeviceStatus_Reply_PeerDisconnected>, I>>(
+    base?: I,
+  ): GroupDeviceStatus_Reply_PeerDisconnected {
+    return GroupDeviceStatus_Reply_PeerDisconnected.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<GroupDeviceStatus_Reply_PeerDisconnected>, I>>(
@@ -8238,16 +9880,17 @@ export const DebugListGroups = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): DebugListGroups {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseDebugListGroups();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -8259,6 +9902,10 @@ export const DebugListGroups = {
   toJSON(_: DebugListGroups): unknown {
     const obj: any = {};
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<DebugListGroups>, I>>(base?: I): DebugListGroups {
+    return DebugListGroups.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<DebugListGroups>, I>>(_: I): DebugListGroups {
@@ -8277,16 +9924,17 @@ export const DebugListGroups_Request = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): DebugListGroups_Request {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseDebugListGroups_Request();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -8300,6 +9948,10 @@ export const DebugListGroups_Request = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<DebugListGroups_Request>, I>>(base?: I): DebugListGroups_Request {
+    return DebugListGroups_Request.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<DebugListGroups_Request>, I>>(_: I): DebugListGroups_Request {
     const message = createBaseDebugListGroups_Request();
     return message;
@@ -8307,7 +9959,7 @@ export const DebugListGroups_Request = {
 };
 
 function createBaseDebugListGroups_Reply(): DebugListGroups_Reply {
-  return { groupPk: new Uint8Array(), groupType: 0, contactPk: new Uint8Array() };
+  return { groupPk: new Uint8Array(0), groupType: 0, contactPk: new Uint8Array(0) };
 }
 
 export const DebugListGroups_Reply = {
@@ -8325,52 +9977,69 @@ export const DebugListGroups_Reply = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): DebugListGroups_Reply {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseDebugListGroups_Reply();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.groupPk = reader.bytes();
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.groupType = reader.int32() as any;
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.contactPk = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): DebugListGroups_Reply {
     return {
-      groupPk: isSet(object.groupPk) ? bytesFromBase64(object.groupPk) : new Uint8Array(),
+      groupPk: isSet(object.groupPk) ? bytesFromBase64(object.groupPk) : new Uint8Array(0),
       groupType: isSet(object.groupType) ? groupTypeFromJSON(object.groupType) : 0,
-      contactPk: isSet(object.contactPk) ? bytesFromBase64(object.contactPk) : new Uint8Array(),
+      contactPk: isSet(object.contactPk) ? bytesFromBase64(object.contactPk) : new Uint8Array(0),
     };
   },
 
   toJSON(message: DebugListGroups_Reply): unknown {
     const obj: any = {};
     message.groupPk !== undefined &&
-      (obj.groupPk = base64FromBytes(message.groupPk !== undefined ? message.groupPk : new Uint8Array()));
+      (obj.groupPk = base64FromBytes(message.groupPk !== undefined ? message.groupPk : new Uint8Array(0)));
     message.groupType !== undefined && (obj.groupType = groupTypeToJSON(message.groupType));
     message.contactPk !== undefined &&
-      (obj.contactPk = base64FromBytes(message.contactPk !== undefined ? message.contactPk : new Uint8Array()));
+      (obj.contactPk = base64FromBytes(message.contactPk !== undefined ? message.contactPk : new Uint8Array(0)));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<DebugListGroups_Reply>, I>>(base?: I): DebugListGroups_Reply {
+    return DebugListGroups_Reply.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<DebugListGroups_Reply>, I>>(object: I): DebugListGroups_Reply {
     const message = createBaseDebugListGroups_Reply();
-    message.groupPk = object.groupPk ?? new Uint8Array();
+    message.groupPk = object.groupPk ?? new Uint8Array(0);
     message.groupType = object.groupType ?? 0;
-    message.contactPk = object.contactPk ?? new Uint8Array();
+    message.contactPk = object.contactPk ?? new Uint8Array(0);
     return message;
   },
 };
@@ -8385,16 +10054,17 @@ export const DebugInspectGroupStore = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): DebugInspectGroupStore {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseDebugInspectGroupStore();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -8408,6 +10078,10 @@ export const DebugInspectGroupStore = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<DebugInspectGroupStore>, I>>(base?: I): DebugInspectGroupStore {
+    return DebugInspectGroupStore.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<DebugInspectGroupStore>, I>>(_: I): DebugInspectGroupStore {
     const message = createBaseDebugInspectGroupStore();
     return message;
@@ -8415,7 +10089,7 @@ export const DebugInspectGroupStore = {
 };
 
 function createBaseDebugInspectGroupStore_Request(): DebugInspectGroupStore_Request {
-  return { groupPk: new Uint8Array(), logType: 0 };
+  return { groupPk: new Uint8Array(0), logType: 0 };
 }
 
 export const DebugInspectGroupStore_Request = {
@@ -8430,29 +10104,38 @@ export const DebugInspectGroupStore_Request = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): DebugInspectGroupStore_Request {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseDebugInspectGroupStore_Request();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.groupPk = reader.bytes();
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.logType = reader.int32() as any;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): DebugInspectGroupStore_Request {
     return {
-      groupPk: isSet(object.groupPk) ? bytesFromBase64(object.groupPk) : new Uint8Array(),
+      groupPk: isSet(object.groupPk) ? bytesFromBase64(object.groupPk) : new Uint8Array(0),
       logType: isSet(object.logType) ? debugInspectGroupLogTypeFromJSON(object.logType) : 0,
     };
   },
@@ -8460,16 +10143,20 @@ export const DebugInspectGroupStore_Request = {
   toJSON(message: DebugInspectGroupStore_Request): unknown {
     const obj: any = {};
     message.groupPk !== undefined &&
-      (obj.groupPk = base64FromBytes(message.groupPk !== undefined ? message.groupPk : new Uint8Array()));
+      (obj.groupPk = base64FromBytes(message.groupPk !== undefined ? message.groupPk : new Uint8Array(0)));
     message.logType !== undefined && (obj.logType = debugInspectGroupLogTypeToJSON(message.logType));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<DebugInspectGroupStore_Request>, I>>(base?: I): DebugInspectGroupStore_Request {
+    return DebugInspectGroupStore_Request.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<DebugInspectGroupStore_Request>, I>>(
     object: I,
   ): DebugInspectGroupStore_Request {
     const message = createBaseDebugInspectGroupStore_Request();
-    message.groupPk = object.groupPk ?? new Uint8Array();
+    message.groupPk = object.groupPk ?? new Uint8Array(0);
     message.logType = object.logType ?? 0;
     return message;
   },
@@ -8477,11 +10164,11 @@ export const DebugInspectGroupStore_Request = {
 
 function createBaseDebugInspectGroupStore_Reply(): DebugInspectGroupStore_Reply {
   return {
-    cid: new Uint8Array(),
+    cid: new Uint8Array(0),
     parentCids: [],
     metadataEventType: 0,
-    devicePk: new Uint8Array(),
-    payload: new Uint8Array(),
+    devicePk: new Uint8Array(0),
+    payload: new Uint8Array(0),
   };
 }
 
@@ -8506,69 +10193,94 @@ export const DebugInspectGroupStore_Reply = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): DebugInspectGroupStore_Reply {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseDebugInspectGroupStore_Reply();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.cid = reader.bytes();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.parentCids.push(reader.bytes());
-          break;
+          continue;
         case 3:
+          if (tag !== 24) {
+            break;
+          }
+
           message.metadataEventType = reader.int32() as any;
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.devicePk = reader.bytes();
-          break;
+          continue;
         case 6:
+          if (tag !== 50) {
+            break;
+          }
+
           message.payload = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): DebugInspectGroupStore_Reply {
     return {
-      cid: isSet(object.cid) ? bytesFromBase64(object.cid) : new Uint8Array(),
+      cid: isSet(object.cid) ? bytesFromBase64(object.cid) : new Uint8Array(0),
       parentCids: Array.isArray(object?.parentCids) ? object.parentCids.map((e: any) => bytesFromBase64(e)) : [],
       metadataEventType: isSet(object.metadataEventType) ? eventTypeFromJSON(object.metadataEventType) : 0,
-      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(),
-      payload: isSet(object.payload) ? bytesFromBase64(object.payload) : new Uint8Array(),
+      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(0),
+      payload: isSet(object.payload) ? bytesFromBase64(object.payload) : new Uint8Array(0),
     };
   },
 
   toJSON(message: DebugInspectGroupStore_Reply): unknown {
     const obj: any = {};
     message.cid !== undefined &&
-      (obj.cid = base64FromBytes(message.cid !== undefined ? message.cid : new Uint8Array()));
+      (obj.cid = base64FromBytes(message.cid !== undefined ? message.cid : new Uint8Array(0)));
     if (message.parentCids) {
-      obj.parentCids = message.parentCids.map((e) => base64FromBytes(e !== undefined ? e : new Uint8Array()));
+      obj.parentCids = message.parentCids.map((e) => base64FromBytes(e !== undefined ? e : new Uint8Array(0)));
     } else {
       obj.parentCids = [];
     }
     message.metadataEventType !== undefined && (obj.metadataEventType = eventTypeToJSON(message.metadataEventType));
     message.devicePk !== undefined &&
-      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array()));
+      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array(0)));
     message.payload !== undefined &&
-      (obj.payload = base64FromBytes(message.payload !== undefined ? message.payload : new Uint8Array()));
+      (obj.payload = base64FromBytes(message.payload !== undefined ? message.payload : new Uint8Array(0)));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<DebugInspectGroupStore_Reply>, I>>(base?: I): DebugInspectGroupStore_Reply {
+    return DebugInspectGroupStore_Reply.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<DebugInspectGroupStore_Reply>, I>>(object: I): DebugInspectGroupStore_Reply {
     const message = createBaseDebugInspectGroupStore_Reply();
-    message.cid = object.cid ?? new Uint8Array();
+    message.cid = object.cid ?? new Uint8Array(0);
     message.parentCids = object.parentCids?.map((e) => e) || [];
     message.metadataEventType = object.metadataEventType ?? 0;
-    message.devicePk = object.devicePk ?? new Uint8Array();
-    message.payload = object.payload ?? new Uint8Array();
+    message.devicePk = object.devicePk ?? new Uint8Array(0);
+    message.payload = object.payload ?? new Uint8Array(0);
     return message;
   },
 };
@@ -8583,16 +10295,17 @@ export const DebugGroup = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): DebugGroup {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseDebugGroup();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -8606,6 +10319,10 @@ export const DebugGroup = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<DebugGroup>, I>>(base?: I): DebugGroup {
+    return DebugGroup.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<DebugGroup>, I>>(_: I): DebugGroup {
     const message = createBaseDebugGroup();
     return message;
@@ -8613,7 +10330,7 @@ export const DebugGroup = {
 };
 
 function createBaseDebugGroup_Request(): DebugGroup_Request {
-  return { groupPk: new Uint8Array() };
+  return { groupPk: new Uint8Array(0) };
 }
 
 export const DebugGroup_Request = {
@@ -8625,37 +10342,46 @@ export const DebugGroup_Request = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): DebugGroup_Request {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseDebugGroup_Request();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.groupPk = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): DebugGroup_Request {
-    return { groupPk: isSet(object.groupPk) ? bytesFromBase64(object.groupPk) : new Uint8Array() };
+    return { groupPk: isSet(object.groupPk) ? bytesFromBase64(object.groupPk) : new Uint8Array(0) };
   },
 
   toJSON(message: DebugGroup_Request): unknown {
     const obj: any = {};
     message.groupPk !== undefined &&
-      (obj.groupPk = base64FromBytes(message.groupPk !== undefined ? message.groupPk : new Uint8Array()));
+      (obj.groupPk = base64FromBytes(message.groupPk !== undefined ? message.groupPk : new Uint8Array(0)));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<DebugGroup_Request>, I>>(base?: I): DebugGroup_Request {
+    return DebugGroup_Request.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<DebugGroup_Request>, I>>(object: I): DebugGroup_Request {
     const message = createBaseDebugGroup_Request();
-    message.groupPk = object.groupPk ?? new Uint8Array();
+    message.groupPk = object.groupPk ?? new Uint8Array(0);
     return message;
   },
 };
@@ -8673,19 +10399,24 @@ export const DebugGroup_Reply = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): DebugGroup_Reply {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseDebugGroup_Reply();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.peerIds.push(reader.string());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -8702,6 +10433,10 @@ export const DebugGroup_Reply = {
       obj.peerIds = [];
     }
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<DebugGroup_Reply>, I>>(base?: I): DebugGroup_Reply {
+    return DebugGroup_Reply.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<DebugGroup_Reply>, I>>(object: I): DebugGroup_Reply {
@@ -8736,34 +10471,55 @@ export const AuthExchangeResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): AuthExchangeResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseAuthExchangeResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.accessToken = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.scope = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.error = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.errorDescription = reader.string();
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           const entry5 = AuthExchangeResponse_ServicesEntry.decode(reader, reader.uint32());
           if (entry5.value !== undefined) {
             message.services[entry5.key] = entry5.value;
           }
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -8798,6 +10554,10 @@ export const AuthExchangeResponse = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<AuthExchangeResponse>, I>>(base?: I): AuthExchangeResponse {
+    return AuthExchangeResponse.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<AuthExchangeResponse>, I>>(object: I): AuthExchangeResponse {
     const message = createBaseAuthExchangeResponse();
     message.accessToken = object.accessToken ?? "";
@@ -8830,22 +10590,31 @@ export const AuthExchangeResponse_ServicesEntry = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): AuthExchangeResponse_ServicesEntry {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseAuthExchangeResponse_ServicesEntry();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.key = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.value = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -8859,6 +10628,12 @@ export const AuthExchangeResponse_ServicesEntry = {
     message.key !== undefined && (obj.key = message.key);
     message.value !== undefined && (obj.value = message.value);
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<AuthExchangeResponse_ServicesEntry>, I>>(
+    base?: I,
+  ): AuthExchangeResponse_ServicesEntry {
+    return AuthExchangeResponse_ServicesEntry.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<AuthExchangeResponse_ServicesEntry>, I>>(
@@ -8881,16 +10656,17 @@ export const DebugAuthServiceSetToken = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): DebugAuthServiceSetToken {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseDebugAuthServiceSetToken();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -8902,6 +10678,10 @@ export const DebugAuthServiceSetToken = {
   toJSON(_: DebugAuthServiceSetToken): unknown {
     const obj: any = {};
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<DebugAuthServiceSetToken>, I>>(base?: I): DebugAuthServiceSetToken {
+    return DebugAuthServiceSetToken.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<DebugAuthServiceSetToken>, I>>(_: I): DebugAuthServiceSetToken {
@@ -8926,22 +10706,31 @@ export const DebugAuthServiceSetToken_Request = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): DebugAuthServiceSetToken_Request {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseDebugAuthServiceSetToken_Request();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.token = AuthExchangeResponse.decode(reader, reader.uint32());
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.authenticationUrl = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -8958,6 +10747,12 @@ export const DebugAuthServiceSetToken_Request = {
     message.token !== undefined && (obj.token = message.token ? AuthExchangeResponse.toJSON(message.token) : undefined);
     message.authenticationUrl !== undefined && (obj.authenticationUrl = message.authenticationUrl);
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<DebugAuthServiceSetToken_Request>, I>>(
+    base?: I,
+  ): DebugAuthServiceSetToken_Request {
+    return DebugAuthServiceSetToken_Request.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<DebugAuthServiceSetToken_Request>, I>>(
@@ -8982,16 +10777,17 @@ export const DebugAuthServiceSetToken_Reply = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): DebugAuthServiceSetToken_Reply {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseDebugAuthServiceSetToken_Reply();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -9005,6 +10801,10 @@ export const DebugAuthServiceSetToken_Reply = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<DebugAuthServiceSetToken_Reply>, I>>(base?: I): DebugAuthServiceSetToken_Reply {
+    return DebugAuthServiceSetToken_Reply.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<DebugAuthServiceSetToken_Reply>, I>>(_: I): DebugAuthServiceSetToken_Reply {
     const message = createBaseDebugAuthServiceSetToken_Reply();
     return message;
@@ -9012,7 +10812,7 @@ export const DebugAuthServiceSetToken_Reply = {
 };
 
 function createBaseShareableContact(): ShareableContact {
-  return { pk: new Uint8Array(), publicRendezvousSeed: new Uint8Array(), metadata: new Uint8Array() };
+  return { pk: new Uint8Array(0), publicRendezvousSeed: new Uint8Array(0), metadata: new Uint8Array(0) };
 }
 
 export const ShareableContact = {
@@ -9030,56 +10830,73 @@ export const ShareableContact = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ShareableContact {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseShareableContact();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.pk = reader.bytes();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.publicRendezvousSeed = reader.bytes();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.metadata = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): ShareableContact {
     return {
-      pk: isSet(object.pk) ? bytesFromBase64(object.pk) : new Uint8Array(),
+      pk: isSet(object.pk) ? bytesFromBase64(object.pk) : new Uint8Array(0),
       publicRendezvousSeed: isSet(object.publicRendezvousSeed)
         ? bytesFromBase64(object.publicRendezvousSeed)
-        : new Uint8Array(),
-      metadata: isSet(object.metadata) ? bytesFromBase64(object.metadata) : new Uint8Array(),
+        : new Uint8Array(0),
+      metadata: isSet(object.metadata) ? bytesFromBase64(object.metadata) : new Uint8Array(0),
     };
   },
 
   toJSON(message: ShareableContact): unknown {
     const obj: any = {};
-    message.pk !== undefined && (obj.pk = base64FromBytes(message.pk !== undefined ? message.pk : new Uint8Array()));
+    message.pk !== undefined && (obj.pk = base64FromBytes(message.pk !== undefined ? message.pk : new Uint8Array(0)));
     message.publicRendezvousSeed !== undefined &&
       (obj.publicRendezvousSeed = base64FromBytes(
-        message.publicRendezvousSeed !== undefined ? message.publicRendezvousSeed : new Uint8Array(),
+        message.publicRendezvousSeed !== undefined ? message.publicRendezvousSeed : new Uint8Array(0),
       ));
     message.metadata !== undefined &&
-      (obj.metadata = base64FromBytes(message.metadata !== undefined ? message.metadata : new Uint8Array()));
+      (obj.metadata = base64FromBytes(message.metadata !== undefined ? message.metadata : new Uint8Array(0)));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ShareableContact>, I>>(base?: I): ShareableContact {
+    return ShareableContact.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<ShareableContact>, I>>(object: I): ShareableContact {
     const message = createBaseShareableContact();
-    message.pk = object.pk ?? new Uint8Array();
-    message.publicRendezvousSeed = object.publicRendezvousSeed ?? new Uint8Array();
-    message.metadata = object.metadata ?? new Uint8Array();
+    message.pk = object.pk ?? new Uint8Array(0);
+    message.publicRendezvousSeed = object.publicRendezvousSeed ?? new Uint8Array(0);
+    message.metadata = object.metadata ?? new Uint8Array(0);
     return message;
   },
 };
@@ -9100,22 +10917,31 @@ export const ServiceTokenSupportedService = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ServiceTokenSupportedService {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseServiceTokenSupportedService();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.serviceType = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.serviceEndpoint = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -9132,6 +10958,10 @@ export const ServiceTokenSupportedService = {
     message.serviceType !== undefined && (obj.serviceType = message.serviceType);
     message.serviceEndpoint !== undefined && (obj.serviceEndpoint = message.serviceEndpoint);
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ServiceTokenSupportedService>, I>>(base?: I): ServiceTokenSupportedService {
+    return ServiceTokenSupportedService.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<ServiceTokenSupportedService>, I>>(object: I): ServiceTokenSupportedService {
@@ -9164,28 +10994,45 @@ export const ServiceToken = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ServiceToken {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseServiceToken();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.token = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.authenticationUrl = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.supportedServices.push(ServiceTokenSupportedService.decode(reader, reader.uint32()));
-          break;
+          continue;
         case 4:
+          if (tag !== 32) {
+            break;
+          }
+
           message.expiration = longToNumber(reader.int64() as Long);
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -9216,6 +11063,10 @@ export const ServiceToken = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<ServiceToken>, I>>(base?: I): ServiceToken {
+    return ServiceToken.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<ServiceToken>, I>>(object: I): ServiceToken {
     const message = createBaseServiceToken();
     message.token = object.token ?? "";
@@ -9236,16 +11087,17 @@ export const AuthServiceCompleteFlow = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): AuthServiceCompleteFlow {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseAuthServiceCompleteFlow();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -9257,6 +11109,10 @@ export const AuthServiceCompleteFlow = {
   toJSON(_: AuthServiceCompleteFlow): unknown {
     const obj: any = {};
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<AuthServiceCompleteFlow>, I>>(base?: I): AuthServiceCompleteFlow {
+    return AuthServiceCompleteFlow.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<AuthServiceCompleteFlow>, I>>(_: I): AuthServiceCompleteFlow {
@@ -9278,19 +11134,24 @@ export const AuthServiceCompleteFlow_Request = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): AuthServiceCompleteFlow_Request {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseAuthServiceCompleteFlow_Request();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.callbackUrl = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -9303,6 +11164,10 @@ export const AuthServiceCompleteFlow_Request = {
     const obj: any = {};
     message.callbackUrl !== undefined && (obj.callbackUrl = message.callbackUrl);
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<AuthServiceCompleteFlow_Request>, I>>(base?: I): AuthServiceCompleteFlow_Request {
+    return AuthServiceCompleteFlow_Request.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<AuthServiceCompleteFlow_Request>, I>>(
@@ -9327,19 +11192,24 @@ export const AuthServiceCompleteFlow_Reply = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): AuthServiceCompleteFlow_Reply {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseAuthServiceCompleteFlow_Reply();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.tokenId = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -9352,6 +11222,10 @@ export const AuthServiceCompleteFlow_Reply = {
     const obj: any = {};
     message.tokenId !== undefined && (obj.tokenId = message.tokenId);
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<AuthServiceCompleteFlow_Reply>, I>>(base?: I): AuthServiceCompleteFlow_Reply {
+    return AuthServiceCompleteFlow_Reply.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<AuthServiceCompleteFlow_Reply>, I>>(
@@ -9373,16 +11247,17 @@ export const AuthServiceInitFlow = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): AuthServiceInitFlow {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseAuthServiceInitFlow();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -9394,6 +11269,10 @@ export const AuthServiceInitFlow = {
   toJSON(_: AuthServiceInitFlow): unknown {
     const obj: any = {};
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<AuthServiceInitFlow>, I>>(base?: I): AuthServiceInitFlow {
+    return AuthServiceInitFlow.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<AuthServiceInitFlow>, I>>(_: I): AuthServiceInitFlow {
@@ -9418,22 +11297,31 @@ export const AuthServiceInitFlow_Request = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): AuthServiceInitFlow_Request {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseAuthServiceInitFlow_Request();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.authUrl = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.services.push(reader.string());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -9454,6 +11342,10 @@ export const AuthServiceInitFlow_Request = {
       obj.services = [];
     }
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<AuthServiceInitFlow_Request>, I>>(base?: I): AuthServiceInitFlow_Request {
+    return AuthServiceInitFlow_Request.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<AuthServiceInitFlow_Request>, I>>(object: I): AuthServiceInitFlow_Request {
@@ -9480,22 +11372,31 @@ export const AuthServiceInitFlow_Reply = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): AuthServiceInitFlow_Reply {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseAuthServiceInitFlow_Reply();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.url = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.secureUrl = reader.bool();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -9512,6 +11413,10 @@ export const AuthServiceInitFlow_Reply = {
     message.url !== undefined && (obj.url = message.url);
     message.secureUrl !== undefined && (obj.secureUrl = message.secureUrl);
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<AuthServiceInitFlow_Reply>, I>>(base?: I): AuthServiceInitFlow_Reply {
+    return AuthServiceInitFlow_Reply.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<AuthServiceInitFlow_Reply>, I>>(object: I): AuthServiceInitFlow_Reply {
@@ -9532,16 +11437,17 @@ export const CredentialVerificationServiceInitFlow = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): CredentialVerificationServiceInitFlow {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseCredentialVerificationServiceInitFlow();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -9555,6 +11461,12 @@ export const CredentialVerificationServiceInitFlow = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<CredentialVerificationServiceInitFlow>, I>>(
+    base?: I,
+  ): CredentialVerificationServiceInitFlow {
+    return CredentialVerificationServiceInitFlow.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<CredentialVerificationServiceInitFlow>, I>>(
     _: I,
   ): CredentialVerificationServiceInitFlow {
@@ -9564,7 +11476,7 @@ export const CredentialVerificationServiceInitFlow = {
 };
 
 function createBaseCredentialVerificationServiceInitFlow_Request(): CredentialVerificationServiceInitFlow_Request {
-  return { serviceUrl: "", publicKey: new Uint8Array(), link: "" };
+  return { serviceUrl: "", publicKey: new Uint8Array(0), link: "" };
 }
 
 export const CredentialVerificationServiceInitFlow_Request = {
@@ -9582,25 +11494,38 @@ export const CredentialVerificationServiceInitFlow_Request = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): CredentialVerificationServiceInitFlow_Request {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseCredentialVerificationServiceInitFlow_Request();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.serviceUrl = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.publicKey = reader.bytes();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.link = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -9608,7 +11533,7 @@ export const CredentialVerificationServiceInitFlow_Request = {
   fromJSON(object: any): CredentialVerificationServiceInitFlow_Request {
     return {
       serviceUrl: isSet(object.serviceUrl) ? String(object.serviceUrl) : "",
-      publicKey: isSet(object.publicKey) ? bytesFromBase64(object.publicKey) : new Uint8Array(),
+      publicKey: isSet(object.publicKey) ? bytesFromBase64(object.publicKey) : new Uint8Array(0),
       link: isSet(object.link) ? String(object.link) : "",
     };
   },
@@ -9617,9 +11542,15 @@ export const CredentialVerificationServiceInitFlow_Request = {
     const obj: any = {};
     message.serviceUrl !== undefined && (obj.serviceUrl = message.serviceUrl);
     message.publicKey !== undefined &&
-      (obj.publicKey = base64FromBytes(message.publicKey !== undefined ? message.publicKey : new Uint8Array()));
+      (obj.publicKey = base64FromBytes(message.publicKey !== undefined ? message.publicKey : new Uint8Array(0)));
     message.link !== undefined && (obj.link = message.link);
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<CredentialVerificationServiceInitFlow_Request>, I>>(
+    base?: I,
+  ): CredentialVerificationServiceInitFlow_Request {
+    return CredentialVerificationServiceInitFlow_Request.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<CredentialVerificationServiceInitFlow_Request>, I>>(
@@ -9627,7 +11558,7 @@ export const CredentialVerificationServiceInitFlow_Request = {
   ): CredentialVerificationServiceInitFlow_Request {
     const message = createBaseCredentialVerificationServiceInitFlow_Request();
     message.serviceUrl = object.serviceUrl ?? "";
-    message.publicKey = object.publicKey ?? new Uint8Array();
+    message.publicKey = object.publicKey ?? new Uint8Array(0);
     message.link = object.link ?? "";
     return message;
   },
@@ -9649,22 +11580,31 @@ export const CredentialVerificationServiceInitFlow_Reply = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): CredentialVerificationServiceInitFlow_Reply {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseCredentialVerificationServiceInitFlow_Reply();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.url = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.secureUrl = reader.bool();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -9681,6 +11621,12 @@ export const CredentialVerificationServiceInitFlow_Reply = {
     message.url !== undefined && (obj.url = message.url);
     message.secureUrl !== undefined && (obj.secureUrl = message.secureUrl);
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<CredentialVerificationServiceInitFlow_Reply>, I>>(
+    base?: I,
+  ): CredentialVerificationServiceInitFlow_Reply {
+    return CredentialVerificationServiceInitFlow_Reply.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<CredentialVerificationServiceInitFlow_Reply>, I>>(
@@ -9703,16 +11649,17 @@ export const CredentialVerificationServiceCompleteFlow = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): CredentialVerificationServiceCompleteFlow {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseCredentialVerificationServiceCompleteFlow();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -9724,6 +11671,12 @@ export const CredentialVerificationServiceCompleteFlow = {
   toJSON(_: CredentialVerificationServiceCompleteFlow): unknown {
     const obj: any = {};
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<CredentialVerificationServiceCompleteFlow>, I>>(
+    base?: I,
+  ): CredentialVerificationServiceCompleteFlow {
+    return CredentialVerificationServiceCompleteFlow.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<CredentialVerificationServiceCompleteFlow>, I>>(
@@ -9750,19 +11703,24 @@ export const CredentialVerificationServiceCompleteFlow_Request = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): CredentialVerificationServiceCompleteFlow_Request {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseCredentialVerificationServiceCompleteFlow_Request();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.callbackUri = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -9775,6 +11733,12 @@ export const CredentialVerificationServiceCompleteFlow_Request = {
     const obj: any = {};
     message.callbackUri !== undefined && (obj.callbackUri = message.callbackUri);
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<CredentialVerificationServiceCompleteFlow_Request>, I>>(
+    base?: I,
+  ): CredentialVerificationServiceCompleteFlow_Request {
+    return CredentialVerificationServiceCompleteFlow_Request.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<CredentialVerificationServiceCompleteFlow_Request>, I>>(
@@ -9802,19 +11766,24 @@ export const CredentialVerificationServiceCompleteFlow_Reply = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): CredentialVerificationServiceCompleteFlow_Reply {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseCredentialVerificationServiceCompleteFlow_Reply();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.identifier = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -9827,6 +11796,12 @@ export const CredentialVerificationServiceCompleteFlow_Reply = {
     const obj: any = {};
     message.identifier !== undefined && (obj.identifier = message.identifier);
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<CredentialVerificationServiceCompleteFlow_Reply>, I>>(
+    base?: I,
+  ): CredentialVerificationServiceCompleteFlow_Reply {
+    return CredentialVerificationServiceCompleteFlow_Reply.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<CredentialVerificationServiceCompleteFlow_Reply>, I>>(
@@ -9848,16 +11823,17 @@ export const VerifiedCredentialsList = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): VerifiedCredentialsList {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseVerifiedCredentialsList();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -9869,6 +11845,10 @@ export const VerifiedCredentialsList = {
   toJSON(_: VerifiedCredentialsList): unknown {
     const obj: any = {};
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<VerifiedCredentialsList>, I>>(base?: I): VerifiedCredentialsList {
+    return VerifiedCredentialsList.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<VerifiedCredentialsList>, I>>(_: I): VerifiedCredentialsList {
@@ -9896,25 +11876,38 @@ export const VerifiedCredentialsList_Request = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): VerifiedCredentialsList_Request {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseVerifiedCredentialsList_Request();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.filterIdentifier = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.filterIssuer = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 24) {
+            break;
+          }
+
           message.excludeExpired = reader.bool();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -9933,6 +11926,10 @@ export const VerifiedCredentialsList_Request = {
     message.filterIssuer !== undefined && (obj.filterIssuer = message.filterIssuer);
     message.excludeExpired !== undefined && (obj.excludeExpired = message.excludeExpired);
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<VerifiedCredentialsList_Request>, I>>(base?: I): VerifiedCredentialsList_Request {
+    return VerifiedCredentialsList_Request.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<VerifiedCredentialsList_Request>, I>>(
@@ -9959,19 +11956,24 @@ export const VerifiedCredentialsList_Reply = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): VerifiedCredentialsList_Reply {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseVerifiedCredentialsList_Reply();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.credential = AccountVerifiedCredentialRegistered.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -9991,6 +11993,10 @@ export const VerifiedCredentialsList_Reply = {
         ? AccountVerifiedCredentialRegistered.toJSON(message.credential)
         : undefined);
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<VerifiedCredentialsList_Reply>, I>>(base?: I): VerifiedCredentialsList_Reply {
+    return VerifiedCredentialsList_Reply.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<VerifiedCredentialsList_Reply>, I>>(
@@ -10014,16 +12020,17 @@ export const ServicesTokenList = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ServicesTokenList {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseServicesTokenList();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -10035,6 +12042,10 @@ export const ServicesTokenList = {
   toJSON(_: ServicesTokenList): unknown {
     const obj: any = {};
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ServicesTokenList>, I>>(base?: I): ServicesTokenList {
+    return ServicesTokenList.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<ServicesTokenList>, I>>(_: I): ServicesTokenList {
@@ -10053,16 +12064,17 @@ export const ServicesTokenList_Request = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ServicesTokenList_Request {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseServicesTokenList_Request();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -10074,6 +12086,10 @@ export const ServicesTokenList_Request = {
   toJSON(_: ServicesTokenList_Request): unknown {
     const obj: any = {};
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ServicesTokenList_Request>, I>>(base?: I): ServicesTokenList_Request {
+    return ServicesTokenList_Request.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<ServicesTokenList_Request>, I>>(_: I): ServicesTokenList_Request {
@@ -10098,22 +12114,31 @@ export const ServicesTokenList_Reply = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ServicesTokenList_Reply {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseServicesTokenList_Reply();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.tokenId = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.service = ServiceToken.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -10130,6 +12155,10 @@ export const ServicesTokenList_Reply = {
     message.tokenId !== undefined && (obj.tokenId = message.tokenId);
     message.service !== undefined && (obj.service = message.service ? ServiceToken.toJSON(message.service) : undefined);
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ServicesTokenList_Reply>, I>>(base?: I): ServicesTokenList_Reply {
+    return ServicesTokenList_Reply.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<ServicesTokenList_Reply>, I>>(object: I): ServicesTokenList_Reply {
@@ -10161,25 +12190,38 @@ export const ServicesTokenCode = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ServicesTokenCode {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseServicesTokenCode();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.services.push(reader.string());
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.codeChallenge = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.tokenId = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -10204,6 +12246,10 @@ export const ServicesTokenCode = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<ServicesTokenCode>, I>>(base?: I): ServicesTokenCode {
+    return ServicesTokenCode.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<ServicesTokenCode>, I>>(object: I): ServicesTokenCode {
     const message = createBaseServicesTokenCode();
     message.services = object.services?.map((e) => e) || [];
@@ -10223,16 +12269,17 @@ export const ReplicationServiceRegisterGroup = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ReplicationServiceRegisterGroup {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseReplicationServiceRegisterGroup();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -10246,6 +12293,10 @@ export const ReplicationServiceRegisterGroup = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<ReplicationServiceRegisterGroup>, I>>(base?: I): ReplicationServiceRegisterGroup {
+    return ReplicationServiceRegisterGroup.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<ReplicationServiceRegisterGroup>, I>>(_: I): ReplicationServiceRegisterGroup {
     const message = createBaseReplicationServiceRegisterGroup();
     return message;
@@ -10253,7 +12304,7 @@ export const ReplicationServiceRegisterGroup = {
 };
 
 function createBaseReplicationServiceRegisterGroup_Request(): ReplicationServiceRegisterGroup_Request {
-  return { tokenId: "", groupPk: new Uint8Array() };
+  return { tokenId: "", groupPk: new Uint8Array(0) };
 }
 
 export const ReplicationServiceRegisterGroup_Request = {
@@ -10268,22 +12319,31 @@ export const ReplicationServiceRegisterGroup_Request = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ReplicationServiceRegisterGroup_Request {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseReplicationServiceRegisterGroup_Request();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.tokenId = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.groupPk = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -10291,7 +12351,7 @@ export const ReplicationServiceRegisterGroup_Request = {
   fromJSON(object: any): ReplicationServiceRegisterGroup_Request {
     return {
       tokenId: isSet(object.tokenId) ? String(object.tokenId) : "",
-      groupPk: isSet(object.groupPk) ? bytesFromBase64(object.groupPk) : new Uint8Array(),
+      groupPk: isSet(object.groupPk) ? bytesFromBase64(object.groupPk) : new Uint8Array(0),
     };
   },
 
@@ -10299,8 +12359,14 @@ export const ReplicationServiceRegisterGroup_Request = {
     const obj: any = {};
     message.tokenId !== undefined && (obj.tokenId = message.tokenId);
     message.groupPk !== undefined &&
-      (obj.groupPk = base64FromBytes(message.groupPk !== undefined ? message.groupPk : new Uint8Array()));
+      (obj.groupPk = base64FromBytes(message.groupPk !== undefined ? message.groupPk : new Uint8Array(0)));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ReplicationServiceRegisterGroup_Request>, I>>(
+    base?: I,
+  ): ReplicationServiceRegisterGroup_Request {
+    return ReplicationServiceRegisterGroup_Request.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<ReplicationServiceRegisterGroup_Request>, I>>(
@@ -10308,7 +12374,7 @@ export const ReplicationServiceRegisterGroup_Request = {
   ): ReplicationServiceRegisterGroup_Request {
     const message = createBaseReplicationServiceRegisterGroup_Request();
     message.tokenId = object.tokenId ?? "";
-    message.groupPk = object.groupPk ?? new Uint8Array();
+    message.groupPk = object.groupPk ?? new Uint8Array(0);
     return message;
   },
 };
@@ -10323,16 +12389,17 @@ export const ReplicationServiceRegisterGroup_Reply = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ReplicationServiceRegisterGroup_Reply {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseReplicationServiceRegisterGroup_Reply();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -10344,6 +12411,12 @@ export const ReplicationServiceRegisterGroup_Reply = {
   toJSON(_: ReplicationServiceRegisterGroup_Reply): unknown {
     const obj: any = {};
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ReplicationServiceRegisterGroup_Reply>, I>>(
+    base?: I,
+  ): ReplicationServiceRegisterGroup_Reply {
+    return ReplicationServiceRegisterGroup_Reply.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<ReplicationServiceRegisterGroup_Reply>, I>>(
@@ -10364,16 +12437,17 @@ export const ReplicationServiceReplicateGroup = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ReplicationServiceReplicateGroup {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseReplicationServiceReplicateGroup();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -10385,6 +12459,12 @@ export const ReplicationServiceReplicateGroup = {
   toJSON(_: ReplicationServiceReplicateGroup): unknown {
     const obj: any = {};
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ReplicationServiceReplicateGroup>, I>>(
+    base?: I,
+  ): ReplicationServiceReplicateGroup {
+    return ReplicationServiceReplicateGroup.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<ReplicationServiceReplicateGroup>, I>>(
@@ -10408,19 +12488,24 @@ export const ReplicationServiceReplicateGroup_Request = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ReplicationServiceReplicateGroup_Request {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseReplicationServiceReplicateGroup_Request();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.group = Group.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -10433,6 +12518,12 @@ export const ReplicationServiceReplicateGroup_Request = {
     const obj: any = {};
     message.group !== undefined && (obj.group = message.group ? Group.toJSON(message.group) : undefined);
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ReplicationServiceReplicateGroup_Request>, I>>(
+    base?: I,
+  ): ReplicationServiceReplicateGroup_Request {
+    return ReplicationServiceReplicateGroup_Request.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<ReplicationServiceReplicateGroup_Request>, I>>(
@@ -10457,19 +12548,24 @@ export const ReplicationServiceReplicateGroup_Reply = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ReplicationServiceReplicateGroup_Reply {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseReplicationServiceReplicateGroup_Reply();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.ok = reader.bool();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -10482,6 +12578,12 @@ export const ReplicationServiceReplicateGroup_Reply = {
     const obj: any = {};
     message.ok !== undefined && (obj.ok = message.ok);
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ReplicationServiceReplicateGroup_Reply>, I>>(
+    base?: I,
+  ): ReplicationServiceReplicateGroup_Reply {
+    return ReplicationServiceReplicateGroup_Reply.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<ReplicationServiceReplicateGroup_Reply>, I>>(
@@ -10503,16 +12605,17 @@ export const SystemInfo = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): SystemInfo {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseSystemInfo();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -10524,6 +12627,10 @@ export const SystemInfo = {
   toJSON(_: SystemInfo): unknown {
     const obj: any = {};
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<SystemInfo>, I>>(base?: I): SystemInfo {
+    return SystemInfo.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<SystemInfo>, I>>(_: I): SystemInfo {
@@ -10542,16 +12649,17 @@ export const SystemInfo_Request = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): SystemInfo_Request {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseSystemInfo_Request();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -10563,6 +12671,10 @@ export const SystemInfo_Request = {
   toJSON(_: SystemInfo_Request): unknown {
     const obj: any = {};
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<SystemInfo_Request>, I>>(base?: I): SystemInfo_Request {
+    return SystemInfo_Request.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<SystemInfo_Request>, I>>(_: I): SystemInfo_Request {
@@ -10593,28 +12705,45 @@ export const SystemInfo_Reply = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): SystemInfo_Reply {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseSystemInfo_Reply();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.process = SystemInfo_Process.decode(reader, reader.uint32());
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.p2p = SystemInfo_P2P.decode(reader, reader.uint32());
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.orbitdb = SystemInfo_OrbitDB.decode(reader, reader.uint32());
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.warns.push(reader.string());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -10641,6 +12770,10 @@ export const SystemInfo_Reply = {
       obj.warns = [];
     }
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<SystemInfo_Reply>, I>>(base?: I): SystemInfo_Reply {
+    return SystemInfo_Reply.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<SystemInfo_Reply>, I>>(object: I): SystemInfo_Reply {
@@ -10672,19 +12805,24 @@ export const SystemInfo_OrbitDB = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): SystemInfo_OrbitDB {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseSystemInfo_OrbitDB();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.accountMetadata = SystemInfo_OrbitDB_ReplicationStatus.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -10703,6 +12841,10 @@ export const SystemInfo_OrbitDB = {
       ? SystemInfo_OrbitDB_ReplicationStatus.toJSON(message.accountMetadata)
       : undefined);
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<SystemInfo_OrbitDB>, I>>(base?: I): SystemInfo_OrbitDB {
+    return SystemInfo_OrbitDB.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<SystemInfo_OrbitDB>, I>>(object: I): SystemInfo_OrbitDB {
@@ -10736,28 +12878,45 @@ export const SystemInfo_OrbitDB_ReplicationStatus = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): SystemInfo_OrbitDB_ReplicationStatus {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseSystemInfo_OrbitDB_ReplicationStatus();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.progress = longToNumber(reader.int64() as Long);
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.maximum = longToNumber(reader.int64() as Long);
-          break;
+          continue;
         case 3:
+          if (tag !== 24) {
+            break;
+          }
+
           message.buffered = longToNumber(reader.int64() as Long);
-          break;
+          continue;
         case 4:
+          if (tag !== 32) {
+            break;
+          }
+
           message.queued = longToNumber(reader.int64() as Long);
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -10778,6 +12937,12 @@ export const SystemInfo_OrbitDB_ReplicationStatus = {
     message.buffered !== undefined && (obj.buffered = Math.round(message.buffered));
     message.queued !== undefined && (obj.queued = Math.round(message.queued));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<SystemInfo_OrbitDB_ReplicationStatus>, I>>(
+    base?: I,
+  ): SystemInfo_OrbitDB_ReplicationStatus {
+    return SystemInfo_OrbitDB_ReplicationStatus.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<SystemInfo_OrbitDB_ReplicationStatus>, I>>(
@@ -10805,19 +12970,24 @@ export const SystemInfo_P2P = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): SystemInfo_P2P {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseSystemInfo_P2P();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.connectedPeers = longToNumber(reader.int64() as Long);
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -10830,6 +13000,10 @@ export const SystemInfo_P2P = {
     const obj: any = {};
     message.connectedPeers !== undefined && (obj.connectedPeers = Math.round(message.connectedPeers));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<SystemInfo_P2P>, I>>(base?: I): SystemInfo_P2P {
+    return SystemInfo_P2P.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<SystemInfo_P2P>, I>>(object: I): SystemInfo_P2P {
@@ -10938,82 +13112,171 @@ export const SystemInfo_Process = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): SystemInfo_Process {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseSystemInfo_Process();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.version = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.vcsRef = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 24) {
+            break;
+          }
+
           message.uptimeMs = longToNumber(reader.int64() as Long);
-          break;
+          continue;
         case 10:
+          if (tag !== 80) {
+            break;
+          }
+
           message.userCpuTimeMs = longToNumber(reader.int64() as Long);
-          break;
+          continue;
         case 11:
+          if (tag !== 88) {
+            break;
+          }
+
           message.systemCpuTimeMs = longToNumber(reader.int64() as Long);
-          break;
+          continue;
         case 12:
+          if (tag !== 96) {
+            break;
+          }
+
           message.startedAt = longToNumber(reader.int64() as Long);
-          break;
+          continue;
         case 13:
+          if (tag !== 104) {
+            break;
+          }
+
           message.rlimitCur = longToNumber(reader.uint64() as Long);
-          break;
+          continue;
         case 14:
+          if (tag !== 112) {
+            break;
+          }
+
           message.numGoroutine = longToNumber(reader.int64() as Long);
-          break;
+          continue;
         case 15:
+          if (tag !== 120) {
+            break;
+          }
+
           message.nofile = longToNumber(reader.int64() as Long);
-          break;
+          continue;
         case 16:
+          if (tag !== 128) {
+            break;
+          }
+
           message.tooManyOpenFiles = reader.bool();
-          break;
+          continue;
         case 17:
+          if (tag !== 136) {
+            break;
+          }
+
           message.numCpu = longToNumber(reader.int64() as Long);
-          break;
+          continue;
         case 18:
+          if (tag !== 146) {
+            break;
+          }
+
           message.goVersion = reader.string();
-          break;
+          continue;
         case 19:
+          if (tag !== 154) {
+            break;
+          }
+
           message.operatingSystem = reader.string();
-          break;
+          continue;
         case 20:
+          if (tag !== 162) {
+            break;
+          }
+
           message.hostName = reader.string();
-          break;
+          continue;
         case 21:
+          if (tag !== 170) {
+            break;
+          }
+
           message.arch = reader.string();
-          break;
+          continue;
         case 22:
+          if (tag !== 176) {
+            break;
+          }
+
           message.rlimitMax = longToNumber(reader.uint64() as Long);
-          break;
+          continue;
         case 23:
+          if (tag !== 184) {
+            break;
+          }
+
           message.pid = longToNumber(reader.int64() as Long);
-          break;
+          continue;
         case 24:
+          if (tag !== 192) {
+            break;
+          }
+
           message.ppid = longToNumber(reader.int64() as Long);
-          break;
+          continue;
         case 25:
+          if (tag !== 200) {
+            break;
+          }
+
           message.priority = longToNumber(reader.int64() as Long);
-          break;
+          continue;
         case 26:
+          if (tag !== 208) {
+            break;
+          }
+
           message.uid = longToNumber(reader.int64() as Long);
-          break;
+          continue;
         case 27:
+          if (tag !== 218) {
+            break;
+          }
+
           message.workingDir = reader.string();
-          break;
+          continue;
         case 28:
+          if (tag !== 226) {
+            break;
+          }
+
           message.systemUsername = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -11072,6 +13335,10 @@ export const SystemInfo_Process = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<SystemInfo_Process>, I>>(base?: I): SystemInfo_Process {
+    return SystemInfo_Process.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<SystemInfo_Process>, I>>(object: I): SystemInfo_Process {
     const message = createBaseSystemInfo_Process();
     message.version = object.version ?? "";
@@ -11110,16 +13377,17 @@ export const PeerList = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): PeerList {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBasePeerList();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -11131,6 +13399,10 @@ export const PeerList = {
   toJSON(_: PeerList): unknown {
     const obj: any = {};
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<PeerList>, I>>(base?: I): PeerList {
+    return PeerList.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<PeerList>, I>>(_: I): PeerList {
@@ -11149,16 +13421,17 @@ export const PeerList_Request = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): PeerList_Request {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBasePeerList_Request();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -11170,6 +13443,10 @@ export const PeerList_Request = {
   toJSON(_: PeerList_Request): unknown {
     const obj: any = {};
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<PeerList_Request>, I>>(base?: I): PeerList_Request {
+    return PeerList_Request.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<PeerList_Request>, I>>(_: I): PeerList_Request {
@@ -11191,19 +13468,24 @@ export const PeerList_Reply = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): PeerList_Reply {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBasePeerList_Reply();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.peers.push(PeerList_Peer.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -11220,6 +13502,10 @@ export const PeerList_Reply = {
       obj.peers = [];
     }
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<PeerList_Reply>, I>>(base?: I): PeerList_Reply {
+    return PeerList_Reply.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<PeerList_Reply>, I>>(object: I): PeerList_Reply {
@@ -11262,44 +13548,76 @@ export const PeerList_Peer = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): PeerList_Peer {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBasePeerList_Peer();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.id = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.routes.push(PeerList_Route.decode(reader, reader.uint32()));
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.errors.push(reader.string());
-          break;
+          continue;
         case 4:
-          if ((tag & 7) === 2) {
+          if (tag === 32) {
+            message.features.push(reader.int32() as any);
+
+            continue;
+          }
+
+          if (tag === 34) {
             const end2 = reader.uint32() + reader.pos;
             while (reader.pos < end2) {
               message.features.push(reader.int32() as any);
             }
-          } else {
-            message.features.push(reader.int32() as any);
+
+            continue;
           }
+
           break;
         case 5:
+          if (tag !== 40) {
+            break;
+          }
+
           message.minLatency = longToNumber(reader.int64() as Long);
-          break;
+          continue;
         case 6:
+          if (tag !== 48) {
+            break;
+          }
+
           message.isActive = reader.bool();
-          break;
+          continue;
         case 7:
+          if (tag !== 56) {
+            break;
+          }
+
           message.direction = reader.int32() as any;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -11340,6 +13658,10 @@ export const PeerList_Peer = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<PeerList_Peer>, I>>(base?: I): PeerList_Peer {
+    return PeerList_Peer.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<PeerList_Peer>, I>>(object: I): PeerList_Peer {
     const message = createBasePeerList_Peer();
     message.id = object.id ?? "";
@@ -11378,31 +13700,52 @@ export const PeerList_Route = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): PeerList_Route {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBasePeerList_Route();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.isActive = reader.bool();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.address = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 24) {
+            break;
+          }
+
           message.direction = reader.int32() as any;
-          break;
+          continue;
         case 4:
+          if (tag !== 32) {
+            break;
+          }
+
           message.latency = longToNumber(reader.int64() as Long);
-          break;
+          continue;
         case 5:
+          if (tag !== 42) {
+            break;
+          }
+
           message.streams.push(PeerList_Stream.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -11431,6 +13774,10 @@ export const PeerList_Route = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<PeerList_Route>, I>>(base?: I): PeerList_Route {
+    return PeerList_Route.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<PeerList_Route>, I>>(object: I): PeerList_Route {
     const message = createBasePeerList_Route();
     message.isActive = object.isActive ?? false;
@@ -11455,19 +13802,24 @@ export const PeerList_Stream = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): PeerList_Stream {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBasePeerList_Stream();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.id = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -11480,6 +13832,10 @@ export const PeerList_Stream = {
     const obj: any = {};
     message.id !== undefined && (obj.id = message.id);
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<PeerList_Stream>, I>>(base?: I): PeerList_Stream {
+    return PeerList_Stream.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<PeerList_Stream>, I>>(object: I): PeerList_Stream {
@@ -11517,34 +13873,59 @@ export const Progress = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Progress {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseProgress();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.state = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.doing = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 29) {
+            break;
+          }
+
           message.progress = reader.float();
-          break;
+          continue;
         case 4:
+          if (tag !== 32) {
+            break;
+          }
+
           message.completed = longToNumber(reader.uint64() as Long);
-          break;
+          continue;
         case 5:
+          if (tag !== 40) {
+            break;
+          }
+
           message.total = longToNumber(reader.uint64() as Long);
-          break;
+          continue;
         case 6:
+          if (tag !== 48) {
+            break;
+          }
+
           message.delay = longToNumber(reader.uint64() as Long);
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -11571,6 +13952,10 @@ export const Progress = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<Progress>, I>>(base?: I): Progress {
+    return Progress.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<Progress>, I>>(object: I): Progress {
     const message = createBaseProgress();
     message.state = object.state ?? "";
@@ -11584,7 +13969,7 @@ export const Progress = {
 };
 
 function createBaseMemberWithDevices(): MemberWithDevices {
-  return { memberPk: new Uint8Array(), devicesPks: [] };
+  return { memberPk: new Uint8Array(0), devicesPks: [] };
 }
 
 export const MemberWithDevices = {
@@ -11599,29 +13984,38 @@ export const MemberWithDevices = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MemberWithDevices {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMemberWithDevices();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.memberPk = reader.bytes();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.devicesPks.push(reader.bytes());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): MemberWithDevices {
     return {
-      memberPk: isSet(object.memberPk) ? bytesFromBase64(object.memberPk) : new Uint8Array(),
+      memberPk: isSet(object.memberPk) ? bytesFromBase64(object.memberPk) : new Uint8Array(0),
       devicesPks: Array.isArray(object?.devicesPks) ? object.devicesPks.map((e: any) => bytesFromBase64(e)) : [],
     };
   },
@@ -11629,18 +14023,22 @@ export const MemberWithDevices = {
   toJSON(message: MemberWithDevices): unknown {
     const obj: any = {};
     message.memberPk !== undefined &&
-      (obj.memberPk = base64FromBytes(message.memberPk !== undefined ? message.memberPk : new Uint8Array()));
+      (obj.memberPk = base64FromBytes(message.memberPk !== undefined ? message.memberPk : new Uint8Array(0)));
     if (message.devicesPks) {
-      obj.devicesPks = message.devicesPks.map((e) => base64FromBytes(e !== undefined ? e : new Uint8Array()));
+      obj.devicesPks = message.devicesPks.map((e) => base64FromBytes(e !== undefined ? e : new Uint8Array(0)));
     } else {
       obj.devicesPks = [];
     }
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<MemberWithDevices>, I>>(base?: I): MemberWithDevices {
+    return MemberWithDevices.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<MemberWithDevices>, I>>(object: I): MemberWithDevices {
     const message = createBaseMemberWithDevices();
-    message.memberPk = object.memberPk ?? new Uint8Array();
+    message.memberPk = object.memberPk ?? new Uint8Array(0);
     message.devicesPks = object.devicesPks?.map((e) => e) || [];
     return message;
   },
@@ -11648,13 +14046,13 @@ export const MemberWithDevices = {
 
 function createBaseOutOfStoreMessage(): OutOfStoreMessage {
   return {
-    cid: new Uint8Array(),
-    devicePk: new Uint8Array(),
+    cid: new Uint8Array(0),
+    devicePk: new Uint8Array(0),
     counter: 0,
-    sig: new Uint8Array(),
+    sig: new Uint8Array(0),
     flags: 0,
-    encryptedPayload: new Uint8Array(),
-    nonce: new Uint8Array(),
+    encryptedPayload: new Uint8Array(0),
+    nonce: new Uint8Array(0),
   };
 }
 
@@ -11685,87 +14083,120 @@ export const OutOfStoreMessage = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): OutOfStoreMessage {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseOutOfStoreMessage();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.cid = reader.bytes();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.devicePk = reader.bytes();
-          break;
+          continue;
         case 3:
+          if (tag !== 25) {
+            break;
+          }
+
           message.counter = longToNumber(reader.fixed64() as Long);
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.sig = reader.bytes();
-          break;
+          continue;
         case 5:
+          if (tag !== 45) {
+            break;
+          }
+
           message.flags = reader.fixed32();
-          break;
+          continue;
         case 6:
+          if (tag !== 50) {
+            break;
+          }
+
           message.encryptedPayload = reader.bytes();
-          break;
+          continue;
         case 7:
+          if (tag !== 58) {
+            break;
+          }
+
           message.nonce = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): OutOfStoreMessage {
     return {
-      cid: isSet(object.cid) ? bytesFromBase64(object.cid) : new Uint8Array(),
-      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(),
+      cid: isSet(object.cid) ? bytesFromBase64(object.cid) : new Uint8Array(0),
+      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(0),
       counter: isSet(object.counter) ? Number(object.counter) : 0,
-      sig: isSet(object.sig) ? bytesFromBase64(object.sig) : new Uint8Array(),
+      sig: isSet(object.sig) ? bytesFromBase64(object.sig) : new Uint8Array(0),
       flags: isSet(object.flags) ? Number(object.flags) : 0,
-      encryptedPayload: isSet(object.encryptedPayload) ? bytesFromBase64(object.encryptedPayload) : new Uint8Array(),
-      nonce: isSet(object.nonce) ? bytesFromBase64(object.nonce) : new Uint8Array(),
+      encryptedPayload: isSet(object.encryptedPayload) ? bytesFromBase64(object.encryptedPayload) : new Uint8Array(0),
+      nonce: isSet(object.nonce) ? bytesFromBase64(object.nonce) : new Uint8Array(0),
     };
   },
 
   toJSON(message: OutOfStoreMessage): unknown {
     const obj: any = {};
     message.cid !== undefined &&
-      (obj.cid = base64FromBytes(message.cid !== undefined ? message.cid : new Uint8Array()));
+      (obj.cid = base64FromBytes(message.cid !== undefined ? message.cid : new Uint8Array(0)));
     message.devicePk !== undefined &&
-      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array()));
+      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array(0)));
     message.counter !== undefined && (obj.counter = Math.round(message.counter));
     message.sig !== undefined &&
-      (obj.sig = base64FromBytes(message.sig !== undefined ? message.sig : new Uint8Array()));
+      (obj.sig = base64FromBytes(message.sig !== undefined ? message.sig : new Uint8Array(0)));
     message.flags !== undefined && (obj.flags = Math.round(message.flags));
     message.encryptedPayload !== undefined &&
       (obj.encryptedPayload = base64FromBytes(
-        message.encryptedPayload !== undefined ? message.encryptedPayload : new Uint8Array(),
+        message.encryptedPayload !== undefined ? message.encryptedPayload : new Uint8Array(0),
       ));
     message.nonce !== undefined &&
-      (obj.nonce = base64FromBytes(message.nonce !== undefined ? message.nonce : new Uint8Array()));
+      (obj.nonce = base64FromBytes(message.nonce !== undefined ? message.nonce : new Uint8Array(0)));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<OutOfStoreMessage>, I>>(base?: I): OutOfStoreMessage {
+    return OutOfStoreMessage.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<OutOfStoreMessage>, I>>(object: I): OutOfStoreMessage {
     const message = createBaseOutOfStoreMessage();
-    message.cid = object.cid ?? new Uint8Array();
-    message.devicePk = object.devicePk ?? new Uint8Array();
+    message.cid = object.cid ?? new Uint8Array(0);
+    message.devicePk = object.devicePk ?? new Uint8Array(0);
     message.counter = object.counter ?? 0;
-    message.sig = object.sig ?? new Uint8Array();
+    message.sig = object.sig ?? new Uint8Array(0);
     message.flags = object.flags ?? 0;
-    message.encryptedPayload = object.encryptedPayload ?? new Uint8Array();
-    message.nonce = object.nonce ?? new Uint8Array();
+    message.encryptedPayload = object.encryptedPayload ?? new Uint8Array(0);
+    message.nonce = object.nonce ?? new Uint8Array(0);
     return message;
   },
 };
 
 function createBasePushServiceReceiver(): PushServiceReceiver {
-  return { tokenType: 0, bundleId: "", token: new Uint8Array(), recipientPublicKey: new Uint8Array() };
+  return { tokenType: 0, bundleId: "", token: new Uint8Array(0), recipientPublicKey: new Uint8Array(0) };
 }
 
 export const PushServiceReceiver = {
@@ -11786,28 +14217,45 @@ export const PushServiceReceiver = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): PushServiceReceiver {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBasePushServiceReceiver();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.tokenType = reader.int32() as any;
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.bundleId = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.token = reader.bytes();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.recipientPublicKey = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -11816,10 +14264,10 @@ export const PushServiceReceiver = {
     return {
       tokenType: isSet(object.tokenType) ? pushServiceTokenTypeFromJSON(object.tokenType) : 0,
       bundleId: isSet(object.bundleId) ? String(object.bundleId) : "",
-      token: isSet(object.token) ? bytesFromBase64(object.token) : new Uint8Array(),
+      token: isSet(object.token) ? bytesFromBase64(object.token) : new Uint8Array(0),
       recipientPublicKey: isSet(object.recipientPublicKey)
         ? bytesFromBase64(object.recipientPublicKey)
-        : new Uint8Array(),
+        : new Uint8Array(0),
     };
   },
 
@@ -11828,26 +14276,30 @@ export const PushServiceReceiver = {
     message.tokenType !== undefined && (obj.tokenType = pushServiceTokenTypeToJSON(message.tokenType));
     message.bundleId !== undefined && (obj.bundleId = message.bundleId);
     message.token !== undefined &&
-      (obj.token = base64FromBytes(message.token !== undefined ? message.token : new Uint8Array()));
+      (obj.token = base64FromBytes(message.token !== undefined ? message.token : new Uint8Array(0)));
     message.recipientPublicKey !== undefined &&
       (obj.recipientPublicKey = base64FromBytes(
-        message.recipientPublicKey !== undefined ? message.recipientPublicKey : new Uint8Array(),
+        message.recipientPublicKey !== undefined ? message.recipientPublicKey : new Uint8Array(0),
       ));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<PushServiceReceiver>, I>>(base?: I): PushServiceReceiver {
+    return PushServiceReceiver.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<PushServiceReceiver>, I>>(object: I): PushServiceReceiver {
     const message = createBasePushServiceReceiver();
     message.tokenType = object.tokenType ?? 0;
     message.bundleId = object.bundleId ?? "";
-    message.token = object.token ?? new Uint8Array();
-    message.recipientPublicKey = object.recipientPublicKey ?? new Uint8Array();
+    message.token = object.token ?? new Uint8Array(0);
+    message.recipientPublicKey = object.recipientPublicKey ?? new Uint8Array(0);
     return message;
   },
 };
 
 function createBasePushServer(): PushServer {
-  return { serverKey: new Uint8Array(), serviceAddr: "" };
+  return { serverKey: new Uint8Array(0), serviceAddr: "" };
 }
 
 export const PushServer = {
@@ -11862,29 +14314,38 @@ export const PushServer = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): PushServer {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBasePushServer();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.serverKey = reader.bytes();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.serviceAddr = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): PushServer {
     return {
-      serverKey: isSet(object.serverKey) ? bytesFromBase64(object.serverKey) : new Uint8Array(),
+      serverKey: isSet(object.serverKey) ? bytesFromBase64(object.serverKey) : new Uint8Array(0),
       serviceAddr: isSet(object.serviceAddr) ? String(object.serviceAddr) : "",
     };
   },
@@ -11892,21 +14353,25 @@ export const PushServer = {
   toJSON(message: PushServer): unknown {
     const obj: any = {};
     message.serverKey !== undefined &&
-      (obj.serverKey = base64FromBytes(message.serverKey !== undefined ? message.serverKey : new Uint8Array()));
+      (obj.serverKey = base64FromBytes(message.serverKey !== undefined ? message.serverKey : new Uint8Array(0)));
     message.serviceAddr !== undefined && (obj.serviceAddr = message.serviceAddr);
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<PushServer>, I>>(base?: I): PushServer {
+    return PushServer.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<PushServer>, I>>(object: I): PushServer {
     const message = createBasePushServer();
-    message.serverKey = object.serverKey ?? new Uint8Array();
+    message.serverKey = object.serverKey ?? new Uint8Array(0);
     message.serviceAddr = object.serviceAddr ?? "";
     return message;
   },
 };
 
 function createBasePushDeviceTokenRegistered(): PushDeviceTokenRegistered {
-  return { token: undefined, devicePk: new Uint8Array() };
+  return { token: undefined, devicePk: new Uint8Array(0) };
 }
 
 export const PushDeviceTokenRegistered = {
@@ -11921,22 +14386,31 @@ export const PushDeviceTokenRegistered = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): PushDeviceTokenRegistered {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBasePushDeviceTokenRegistered();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.token = PushServiceReceiver.decode(reader, reader.uint32());
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.devicePk = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -11944,7 +14418,7 @@ export const PushDeviceTokenRegistered = {
   fromJSON(object: any): PushDeviceTokenRegistered {
     return {
       token: isSet(object.token) ? PushServiceReceiver.fromJSON(object.token) : undefined,
-      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(),
+      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(0),
     };
   },
 
@@ -11952,8 +14426,12 @@ export const PushDeviceTokenRegistered = {
     const obj: any = {};
     message.token !== undefined && (obj.token = message.token ? PushServiceReceiver.toJSON(message.token) : undefined);
     message.devicePk !== undefined &&
-      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array()));
+      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array(0)));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<PushDeviceTokenRegistered>, I>>(base?: I): PushDeviceTokenRegistered {
+    return PushDeviceTokenRegistered.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<PushDeviceTokenRegistered>, I>>(object: I): PushDeviceTokenRegistered {
@@ -11961,13 +14439,13 @@ export const PushDeviceTokenRegistered = {
     message.token = (object.token !== undefined && object.token !== null)
       ? PushServiceReceiver.fromPartial(object.token)
       : undefined;
-    message.devicePk = object.devicePk ?? new Uint8Array();
+    message.devicePk = object.devicePk ?? new Uint8Array(0);
     return message;
   },
 };
 
 function createBasePushDeviceServerRegistered(): PushDeviceServerRegistered {
-  return { server: undefined, devicePk: new Uint8Array() };
+  return { server: undefined, devicePk: new Uint8Array(0) };
 }
 
 export const PushDeviceServerRegistered = {
@@ -11982,22 +14460,31 @@ export const PushDeviceServerRegistered = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): PushDeviceServerRegistered {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBasePushDeviceServerRegistered();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.server = PushServer.decode(reader, reader.uint32());
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.devicePk = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -12005,7 +14492,7 @@ export const PushDeviceServerRegistered = {
   fromJSON(object: any): PushDeviceServerRegistered {
     return {
       server: isSet(object.server) ? PushServer.fromJSON(object.server) : undefined,
-      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(),
+      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(0),
     };
   },
 
@@ -12013,8 +14500,12 @@ export const PushDeviceServerRegistered = {
     const obj: any = {};
     message.server !== undefined && (obj.server = message.server ? PushServer.toJSON(message.server) : undefined);
     message.devicePk !== undefined &&
-      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array()));
+      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array(0)));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<PushDeviceServerRegistered>, I>>(base?: I): PushDeviceServerRegistered {
+    return PushDeviceServerRegistered.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<PushDeviceServerRegistered>, I>>(object: I): PushDeviceServerRegistered {
@@ -12022,15 +14513,15 @@ export const PushDeviceServerRegistered = {
     message.server = (object.server !== undefined && object.server !== null)
       ? PushServer.fromPartial(object.server)
       : undefined;
-    message.devicePk = object.devicePk ?? new Uint8Array();
+    message.devicePk = object.devicePk ?? new Uint8Array(0);
     return message;
   },
 };
 
 function createBaseAccountVerifiedCredentialRegistered(): AccountVerifiedCredentialRegistered {
   return {
-    devicePk: new Uint8Array(),
-    signedIdentityPublicKey: new Uint8Array(),
+    devicePk: new Uint8Array(0),
+    signedIdentityPublicKey: new Uint8Array(0),
     verifiedCredential: "",
     registrationDate: 0,
     expirationDate: 0,
@@ -12066,47 +14557,76 @@ export const AccountVerifiedCredentialRegistered = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): AccountVerifiedCredentialRegistered {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseAccountVerifiedCredentialRegistered();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.devicePk = reader.bytes();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.signedIdentityPublicKey = reader.bytes();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.verifiedCredential = reader.string();
-          break;
+          continue;
         case 4:
+          if (tag !== 32) {
+            break;
+          }
+
           message.registrationDate = longToNumber(reader.int64() as Long);
-          break;
+          continue;
         case 5:
+          if (tag !== 40) {
+            break;
+          }
+
           message.expirationDate = longToNumber(reader.int64() as Long);
-          break;
+          continue;
         case 6:
+          if (tag !== 50) {
+            break;
+          }
+
           message.identifier = reader.string();
-          break;
+          continue;
         case 7:
+          if (tag !== 58) {
+            break;
+          }
+
           message.issuer = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): AccountVerifiedCredentialRegistered {
     return {
-      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(),
+      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(0),
       signedIdentityPublicKey: isSet(object.signedIdentityPublicKey)
         ? bytesFromBase64(object.signedIdentityPublicKey)
-        : new Uint8Array(),
+        : new Uint8Array(0),
       verifiedCredential: isSet(object.verifiedCredential) ? String(object.verifiedCredential) : "",
       registrationDate: isSet(object.registrationDate) ? Number(object.registrationDate) : 0,
       expirationDate: isSet(object.expirationDate) ? Number(object.expirationDate) : 0,
@@ -12118,10 +14638,10 @@ export const AccountVerifiedCredentialRegistered = {
   toJSON(message: AccountVerifiedCredentialRegistered): unknown {
     const obj: any = {};
     message.devicePk !== undefined &&
-      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array()));
+      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array(0)));
     message.signedIdentityPublicKey !== undefined &&
       (obj.signedIdentityPublicKey = base64FromBytes(
-        message.signedIdentityPublicKey !== undefined ? message.signedIdentityPublicKey : new Uint8Array(),
+        message.signedIdentityPublicKey !== undefined ? message.signedIdentityPublicKey : new Uint8Array(0),
       ));
     message.verifiedCredential !== undefined && (obj.verifiedCredential = message.verifiedCredential);
     message.registrationDate !== undefined && (obj.registrationDate = Math.round(message.registrationDate));
@@ -12131,12 +14651,18 @@ export const AccountVerifiedCredentialRegistered = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<AccountVerifiedCredentialRegistered>, I>>(
+    base?: I,
+  ): AccountVerifiedCredentialRegistered {
+    return AccountVerifiedCredentialRegistered.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<AccountVerifiedCredentialRegistered>, I>>(
     object: I,
   ): AccountVerifiedCredentialRegistered {
     const message = createBaseAccountVerifiedCredentialRegistered();
-    message.devicePk = object.devicePk ?? new Uint8Array();
-    message.signedIdentityPublicKey = object.signedIdentityPublicKey ?? new Uint8Array();
+    message.devicePk = object.devicePk ?? new Uint8Array(0);
+    message.signedIdentityPublicKey = object.signedIdentityPublicKey ?? new Uint8Array(0);
     message.verifiedCredential = object.verifiedCredential ?? "";
     message.registrationDate = object.registrationDate ?? 0;
     message.expirationDate = object.expirationDate ?? 0;
@@ -12147,7 +14673,7 @@ export const AccountVerifiedCredentialRegistered = {
 };
 
 function createBasePushMemberTokenUpdate(): PushMemberTokenUpdate {
-  return { server: undefined, token: new Uint8Array(), devicePk: new Uint8Array() };
+  return { server: undefined, token: new Uint8Array(0), devicePk: new Uint8Array(0) };
 }
 
 export const PushMemberTokenUpdate = {
@@ -12165,25 +14691,38 @@ export const PushMemberTokenUpdate = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): PushMemberTokenUpdate {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBasePushMemberTokenUpdate();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.server = PushServer.decode(reader, reader.uint32());
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.token = reader.bytes();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.devicePk = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -12191,8 +14730,8 @@ export const PushMemberTokenUpdate = {
   fromJSON(object: any): PushMemberTokenUpdate {
     return {
       server: isSet(object.server) ? PushServer.fromJSON(object.server) : undefined,
-      token: isSet(object.token) ? bytesFromBase64(object.token) : new Uint8Array(),
-      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(),
+      token: isSet(object.token) ? bytesFromBase64(object.token) : new Uint8Array(0),
+      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(0),
     };
   },
 
@@ -12200,10 +14739,14 @@ export const PushMemberTokenUpdate = {
     const obj: any = {};
     message.server !== undefined && (obj.server = message.server ? PushServer.toJSON(message.server) : undefined);
     message.token !== undefined &&
-      (obj.token = base64FromBytes(message.token !== undefined ? message.token : new Uint8Array()));
+      (obj.token = base64FromBytes(message.token !== undefined ? message.token : new Uint8Array(0)));
     message.devicePk !== undefined &&
-      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array()));
+      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array(0)));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<PushMemberTokenUpdate>, I>>(base?: I): PushMemberTokenUpdate {
+    return PushMemberTokenUpdate.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<PushMemberTokenUpdate>, I>>(object: I): PushMemberTokenUpdate {
@@ -12211,8 +14754,8 @@ export const PushMemberTokenUpdate = {
     message.server = (object.server !== undefined && object.server !== null)
       ? PushServer.fromPartial(object.server)
       : undefined;
-    message.token = object.token ?? new Uint8Array();
-    message.devicePk = object.devicePk ?? new Uint8Array();
+    message.token = object.token ?? new Uint8Array(0);
+    message.devicePk = object.devicePk ?? new Uint8Array(0);
     return message;
   },
 };
@@ -12227,16 +14770,17 @@ export const OutOfStoreReceive = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): OutOfStoreReceive {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseOutOfStoreReceive();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -12250,6 +14794,10 @@ export const OutOfStoreReceive = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<OutOfStoreReceive>, I>>(base?: I): OutOfStoreReceive {
+    return OutOfStoreReceive.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<OutOfStoreReceive>, I>>(_: I): OutOfStoreReceive {
     const message = createBaseOutOfStoreReceive();
     return message;
@@ -12257,7 +14805,7 @@ export const OutOfStoreReceive = {
 };
 
 function createBaseOutOfStoreReceive_Request(): OutOfStoreReceive_Request {
-  return { payload: new Uint8Array() };
+  return { payload: new Uint8Array(0) };
 }
 
 export const OutOfStoreReceive_Request = {
@@ -12269,43 +14817,57 @@ export const OutOfStoreReceive_Request = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): OutOfStoreReceive_Request {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseOutOfStoreReceive_Request();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.payload = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): OutOfStoreReceive_Request {
-    return { payload: isSet(object.payload) ? bytesFromBase64(object.payload) : new Uint8Array() };
+    return { payload: isSet(object.payload) ? bytesFromBase64(object.payload) : new Uint8Array(0) };
   },
 
   toJSON(message: OutOfStoreReceive_Request): unknown {
     const obj: any = {};
     message.payload !== undefined &&
-      (obj.payload = base64FromBytes(message.payload !== undefined ? message.payload : new Uint8Array()));
+      (obj.payload = base64FromBytes(message.payload !== undefined ? message.payload : new Uint8Array(0)));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<OutOfStoreReceive_Request>, I>>(base?: I): OutOfStoreReceive_Request {
+    return OutOfStoreReceive_Request.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<OutOfStoreReceive_Request>, I>>(object: I): OutOfStoreReceive_Request {
     const message = createBaseOutOfStoreReceive_Request();
-    message.payload = object.payload ?? new Uint8Array();
+    message.payload = object.payload ?? new Uint8Array(0);
     return message;
   },
 };
 
 function createBaseOutOfStoreReceive_Reply(): OutOfStoreReceive_Reply {
-  return { message: undefined, cleartext: new Uint8Array(), groupPublicKey: new Uint8Array(), alreadyReceived: false };
+  return {
+    message: undefined,
+    cleartext: new Uint8Array(0),
+    groupPublicKey: new Uint8Array(0),
+    alreadyReceived: false,
+  };
 }
 
 export const OutOfStoreReceive_Reply = {
@@ -12326,28 +14888,45 @@ export const OutOfStoreReceive_Reply = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): OutOfStoreReceive_Reply {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseOutOfStoreReceive_Reply();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.message = OutOfStoreMessage.decode(reader, reader.uint32());
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.cleartext = reader.bytes();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.groupPublicKey = reader.bytes();
-          break;
+          continue;
         case 4:
+          if (tag !== 32) {
+            break;
+          }
+
           message.alreadyReceived = reader.bool();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -12355,8 +14934,8 @@ export const OutOfStoreReceive_Reply = {
   fromJSON(object: any): OutOfStoreReceive_Reply {
     return {
       message: isSet(object.message) ? OutOfStoreMessage.fromJSON(object.message) : undefined,
-      cleartext: isSet(object.cleartext) ? bytesFromBase64(object.cleartext) : new Uint8Array(),
-      groupPublicKey: isSet(object.groupPublicKey) ? bytesFromBase64(object.groupPublicKey) : new Uint8Array(),
+      cleartext: isSet(object.cleartext) ? bytesFromBase64(object.cleartext) : new Uint8Array(0),
+      groupPublicKey: isSet(object.groupPublicKey) ? bytesFromBase64(object.groupPublicKey) : new Uint8Array(0),
       alreadyReceived: isSet(object.alreadyReceived) ? Boolean(object.alreadyReceived) : false,
     };
   },
@@ -12366,13 +14945,17 @@ export const OutOfStoreReceive_Reply = {
     message.message !== undefined &&
       (obj.message = message.message ? OutOfStoreMessage.toJSON(message.message) : undefined);
     message.cleartext !== undefined &&
-      (obj.cleartext = base64FromBytes(message.cleartext !== undefined ? message.cleartext : new Uint8Array()));
+      (obj.cleartext = base64FromBytes(message.cleartext !== undefined ? message.cleartext : new Uint8Array(0)));
     message.groupPublicKey !== undefined &&
       (obj.groupPublicKey = base64FromBytes(
-        message.groupPublicKey !== undefined ? message.groupPublicKey : new Uint8Array(),
+        message.groupPublicKey !== undefined ? message.groupPublicKey : new Uint8Array(0),
       ));
     message.alreadyReceived !== undefined && (obj.alreadyReceived = message.alreadyReceived);
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<OutOfStoreReceive_Reply>, I>>(base?: I): OutOfStoreReceive_Reply {
+    return OutOfStoreReceive_Reply.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<OutOfStoreReceive_Reply>, I>>(object: I): OutOfStoreReceive_Reply {
@@ -12380,8 +14963,8 @@ export const OutOfStoreReceive_Reply = {
     message.message = (object.message !== undefined && object.message !== null)
       ? OutOfStoreMessage.fromPartial(object.message)
       : undefined;
-    message.cleartext = object.cleartext ?? new Uint8Array();
-    message.groupPublicKey = object.groupPublicKey ?? new Uint8Array();
+    message.cleartext = object.cleartext ?? new Uint8Array(0);
+    message.groupPublicKey = object.groupPublicKey ?? new Uint8Array(0);
     message.alreadyReceived = object.alreadyReceived ?? false;
     return message;
   },
@@ -12397,16 +14980,17 @@ export const OutOfStoreSeal = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): OutOfStoreSeal {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseOutOfStoreSeal();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -12420,6 +15004,10 @@ export const OutOfStoreSeal = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<OutOfStoreSeal>, I>>(base?: I): OutOfStoreSeal {
+    return OutOfStoreSeal.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<OutOfStoreSeal>, I>>(_: I): OutOfStoreSeal {
     const message = createBaseOutOfStoreSeal();
     return message;
@@ -12427,7 +15015,7 @@ export const OutOfStoreSeal = {
 };
 
 function createBaseOutOfStoreSeal_Request(): OutOfStoreSeal_Request {
-  return { cid: new Uint8Array(), groupPublicKey: new Uint8Array() };
+  return { cid: new Uint8Array(0), groupPublicKey: new Uint8Array(0) };
 }
 
 export const OutOfStoreSeal_Request = {
@@ -12442,54 +15030,67 @@ export const OutOfStoreSeal_Request = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): OutOfStoreSeal_Request {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseOutOfStoreSeal_Request();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.cid = reader.bytes();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.groupPublicKey = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): OutOfStoreSeal_Request {
     return {
-      cid: isSet(object.cid) ? bytesFromBase64(object.cid) : new Uint8Array(),
-      groupPublicKey: isSet(object.groupPublicKey) ? bytesFromBase64(object.groupPublicKey) : new Uint8Array(),
+      cid: isSet(object.cid) ? bytesFromBase64(object.cid) : new Uint8Array(0),
+      groupPublicKey: isSet(object.groupPublicKey) ? bytesFromBase64(object.groupPublicKey) : new Uint8Array(0),
     };
   },
 
   toJSON(message: OutOfStoreSeal_Request): unknown {
     const obj: any = {};
     message.cid !== undefined &&
-      (obj.cid = base64FromBytes(message.cid !== undefined ? message.cid : new Uint8Array()));
+      (obj.cid = base64FromBytes(message.cid !== undefined ? message.cid : new Uint8Array(0)));
     message.groupPublicKey !== undefined &&
       (obj.groupPublicKey = base64FromBytes(
-        message.groupPublicKey !== undefined ? message.groupPublicKey : new Uint8Array(),
+        message.groupPublicKey !== undefined ? message.groupPublicKey : new Uint8Array(0),
       ));
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<OutOfStoreSeal_Request>, I>>(base?: I): OutOfStoreSeal_Request {
+    return OutOfStoreSeal_Request.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<OutOfStoreSeal_Request>, I>>(object: I): OutOfStoreSeal_Request {
     const message = createBaseOutOfStoreSeal_Request();
-    message.cid = object.cid ?? new Uint8Array();
-    message.groupPublicKey = object.groupPublicKey ?? new Uint8Array();
+    message.cid = object.cid ?? new Uint8Array(0);
+    message.groupPublicKey = object.groupPublicKey ?? new Uint8Array(0);
     return message;
   },
 };
 
 function createBaseOutOfStoreSeal_Reply(): OutOfStoreSeal_Reply {
-  return { encrypted: new Uint8Array() };
+  return { encrypted: new Uint8Array(0) };
 }
 
 export const OutOfStoreSeal_Reply = {
@@ -12501,37 +15102,46 @@ export const OutOfStoreSeal_Reply = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): OutOfStoreSeal_Reply {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseOutOfStoreSeal_Reply();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.encrypted = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): OutOfStoreSeal_Reply {
-    return { encrypted: isSet(object.encrypted) ? bytesFromBase64(object.encrypted) : new Uint8Array() };
+    return { encrypted: isSet(object.encrypted) ? bytesFromBase64(object.encrypted) : new Uint8Array(0) };
   },
 
   toJSON(message: OutOfStoreSeal_Reply): unknown {
     const obj: any = {};
     message.encrypted !== undefined &&
-      (obj.encrypted = base64FromBytes(message.encrypted !== undefined ? message.encrypted : new Uint8Array()));
+      (obj.encrypted = base64FromBytes(message.encrypted !== undefined ? message.encrypted : new Uint8Array(0)));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<OutOfStoreSeal_Reply>, I>>(base?: I): OutOfStoreSeal_Reply {
+    return OutOfStoreSeal_Reply.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<OutOfStoreSeal_Reply>, I>>(object: I): OutOfStoreSeal_Reply {
     const message = createBaseOutOfStoreSeal_Reply();
-    message.encrypted = object.encrypted ?? new Uint8Array();
+    message.encrypted = object.encrypted ?? new Uint8Array(0);
     return message;
   },
 };
@@ -12552,22 +15162,31 @@ export const FirstLastCounters = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): FirstLastCounters {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseFirstLastCounters();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 8) {
+            break;
+          }
+
           message.first = longToNumber(reader.uint64() as Long);
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.last = longToNumber(reader.uint64() as Long);
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -12586,6 +15205,10 @@ export const FirstLastCounters = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<FirstLastCounters>, I>>(base?: I): FirstLastCounters {
+    return FirstLastCounters.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<FirstLastCounters>, I>>(object: I): FirstLastCounters {
     const message = createBaseFirstLastCounters();
     message.first = object.first ?? 0;
@@ -12595,7 +15218,7 @@ export const FirstLastCounters = {
 };
 
 function createBaseOrbitDBMessageHeads(): OrbitDBMessageHeads {
-  return { sealedBox: new Uint8Array(), rawRotation: new Uint8Array() };
+  return { sealedBox: new Uint8Array(0), rawRotation: new Uint8Array(0) };
 }
 
 export const OrbitDBMessageHeads = {
@@ -12610,52 +15233,65 @@ export const OrbitDBMessageHeads = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): OrbitDBMessageHeads {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseOrbitDBMessageHeads();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.sealedBox = reader.bytes();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.rawRotation = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): OrbitDBMessageHeads {
     return {
-      sealedBox: isSet(object.sealedBox) ? bytesFromBase64(object.sealedBox) : new Uint8Array(),
-      rawRotation: isSet(object.rawRotation) ? bytesFromBase64(object.rawRotation) : new Uint8Array(),
+      sealedBox: isSet(object.sealedBox) ? bytesFromBase64(object.sealedBox) : new Uint8Array(0),
+      rawRotation: isSet(object.rawRotation) ? bytesFromBase64(object.rawRotation) : new Uint8Array(0),
     };
   },
 
   toJSON(message: OrbitDBMessageHeads): unknown {
     const obj: any = {};
     message.sealedBox !== undefined &&
-      (obj.sealedBox = base64FromBytes(message.sealedBox !== undefined ? message.sealedBox : new Uint8Array()));
+      (obj.sealedBox = base64FromBytes(message.sealedBox !== undefined ? message.sealedBox : new Uint8Array(0)));
     message.rawRotation !== undefined &&
-      (obj.rawRotation = base64FromBytes(message.rawRotation !== undefined ? message.rawRotation : new Uint8Array()));
+      (obj.rawRotation = base64FromBytes(message.rawRotation !== undefined ? message.rawRotation : new Uint8Array(0)));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<OrbitDBMessageHeads>, I>>(base?: I): OrbitDBMessageHeads {
+    return OrbitDBMessageHeads.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<OrbitDBMessageHeads>, I>>(object: I): OrbitDBMessageHeads {
     const message = createBaseOrbitDBMessageHeads();
-    message.sealedBox = object.sealedBox ?? new Uint8Array();
-    message.rawRotation = object.rawRotation ?? new Uint8Array();
+    message.sealedBox = object.sealedBox ?? new Uint8Array(0);
+    message.rawRotation = object.rawRotation ?? new Uint8Array(0);
     return message;
   },
 };
 
 function createBaseOrbitDBMessageHeads_Box(): OrbitDBMessageHeads_Box {
-  return { address: "", heads: new Uint8Array(), devicePk: new Uint8Array(), peerId: new Uint8Array() };
+  return { address: "", heads: new Uint8Array(0), devicePk: new Uint8Array(0), peerId: new Uint8Array(0) };
 }
 
 export const OrbitDBMessageHeads_Box = {
@@ -12676,28 +15312,45 @@ export const OrbitDBMessageHeads_Box = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): OrbitDBMessageHeads_Box {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseOrbitDBMessageHeads_Box();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.address = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.heads = reader.bytes();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.devicePk = reader.bytes();
-          break;
+          continue;
         case 4:
+          if (tag !== 34) {
+            break;
+          }
+
           message.peerId = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -12705,9 +15358,9 @@ export const OrbitDBMessageHeads_Box = {
   fromJSON(object: any): OrbitDBMessageHeads_Box {
     return {
       address: isSet(object.address) ? String(object.address) : "",
-      heads: isSet(object.heads) ? bytesFromBase64(object.heads) : new Uint8Array(),
-      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(),
-      peerId: isSet(object.peerId) ? bytesFromBase64(object.peerId) : new Uint8Array(),
+      heads: isSet(object.heads) ? bytesFromBase64(object.heads) : new Uint8Array(0),
+      devicePk: isSet(object.devicePk) ? bytesFromBase64(object.devicePk) : new Uint8Array(0),
+      peerId: isSet(object.peerId) ? bytesFromBase64(object.peerId) : new Uint8Array(0),
     };
   },
 
@@ -12715,20 +15368,24 @@ export const OrbitDBMessageHeads_Box = {
     const obj: any = {};
     message.address !== undefined && (obj.address = message.address);
     message.heads !== undefined &&
-      (obj.heads = base64FromBytes(message.heads !== undefined ? message.heads : new Uint8Array()));
+      (obj.heads = base64FromBytes(message.heads !== undefined ? message.heads : new Uint8Array(0)));
     message.devicePk !== undefined &&
-      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array()));
+      (obj.devicePk = base64FromBytes(message.devicePk !== undefined ? message.devicePk : new Uint8Array(0)));
     message.peerId !== undefined &&
-      (obj.peerId = base64FromBytes(message.peerId !== undefined ? message.peerId : new Uint8Array()));
+      (obj.peerId = base64FromBytes(message.peerId !== undefined ? message.peerId : new Uint8Array(0)));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<OrbitDBMessageHeads_Box>, I>>(base?: I): OrbitDBMessageHeads_Box {
+    return OrbitDBMessageHeads_Box.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<OrbitDBMessageHeads_Box>, I>>(object: I): OrbitDBMessageHeads_Box {
     const message = createBaseOrbitDBMessageHeads_Box();
     message.address = object.address ?? "";
-    message.heads = object.heads ?? new Uint8Array();
-    message.devicePk = object.devicePk ?? new Uint8Array();
-    message.peerId = object.peerId ?? new Uint8Array();
+    message.heads = object.heads ?? new Uint8Array(0);
+    message.devicePk = object.devicePk ?? new Uint8Array(0);
+    message.peerId = object.peerId ?? new Uint8Array(0);
     return message;
   },
 };
@@ -12743,16 +15400,17 @@ export const RefreshContactRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): RefreshContactRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseRefreshContactRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -12764,6 +15422,10 @@ export const RefreshContactRequest = {
   toJSON(_: RefreshContactRequest): unknown {
     const obj: any = {};
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<RefreshContactRequest>, I>>(base?: I): RefreshContactRequest {
+    return RefreshContactRequest.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<RefreshContactRequest>, I>>(_: I): RefreshContactRequest {
@@ -12788,22 +15450,31 @@ export const RefreshContactRequest_Peer = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): RefreshContactRequest_Peer {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseRefreshContactRequest_Peer();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.id = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.addrs.push(reader.string());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -12826,6 +15497,10 @@ export const RefreshContactRequest_Peer = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<RefreshContactRequest_Peer>, I>>(base?: I): RefreshContactRequest_Peer {
+    return RefreshContactRequest_Peer.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<RefreshContactRequest_Peer>, I>>(object: I): RefreshContactRequest_Peer {
     const message = createBaseRefreshContactRequest_Peer();
     message.id = object.id ?? "";
@@ -12835,7 +15510,7 @@ export const RefreshContactRequest_Peer = {
 };
 
 function createBaseRefreshContactRequest_Request(): RefreshContactRequest_Request {
-  return { contactPk: new Uint8Array(), timeout: 0 };
+  return { contactPk: new Uint8Array(0), timeout: 0 };
 }
 
 export const RefreshContactRequest_Request = {
@@ -12850,29 +15525,38 @@ export const RefreshContactRequest_Request = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): RefreshContactRequest_Request {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseRefreshContactRequest_Request();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.contactPk = reader.bytes();
-          break;
+          continue;
         case 2:
+          if (tag !== 16) {
+            break;
+          }
+
           message.timeout = longToNumber(reader.int64() as Long);
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
   fromJSON(object: any): RefreshContactRequest_Request {
     return {
-      contactPk: isSet(object.contactPk) ? bytesFromBase64(object.contactPk) : new Uint8Array(),
+      contactPk: isSet(object.contactPk) ? bytesFromBase64(object.contactPk) : new Uint8Array(0),
       timeout: isSet(object.timeout) ? Number(object.timeout) : 0,
     };
   },
@@ -12880,16 +15564,20 @@ export const RefreshContactRequest_Request = {
   toJSON(message: RefreshContactRequest_Request): unknown {
     const obj: any = {};
     message.contactPk !== undefined &&
-      (obj.contactPk = base64FromBytes(message.contactPk !== undefined ? message.contactPk : new Uint8Array()));
+      (obj.contactPk = base64FromBytes(message.contactPk !== undefined ? message.contactPk : new Uint8Array(0)));
     message.timeout !== undefined && (obj.timeout = Math.round(message.timeout));
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<RefreshContactRequest_Request>, I>>(base?: I): RefreshContactRequest_Request {
+    return RefreshContactRequest_Request.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<RefreshContactRequest_Request>, I>>(
     object: I,
   ): RefreshContactRequest_Request {
     const message = createBaseRefreshContactRequest_Request();
-    message.contactPk = object.contactPk ?? new Uint8Array();
+    message.contactPk = object.contactPk ?? new Uint8Array(0);
     message.timeout = object.timeout ?? 0;
     return message;
   },
@@ -12908,19 +15596,24 @@ export const RefreshContactRequest_Reply = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): RefreshContactRequest_Reply {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseRefreshContactRequest_Reply();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.peersFound.push(RefreshContactRequest_Peer.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -12941,6 +15634,10 @@ export const RefreshContactRequest_Reply = {
       obj.peersFound = [];
     }
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<RefreshContactRequest_Reply>, I>>(base?: I): RefreshContactRequest_Reply {
+    return RefreshContactRequest_Reply.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<RefreshContactRequest_Reply>, I>>(object: I): RefreshContactRequest_Reply {
@@ -13000,6 +15697,14 @@ export interface ProtocolService {
     request: DeepPartial<ContactRequestDiscard_Request>,
     metadata?: grpc.Metadata,
   ): Promise<ContactRequestDiscard_Reply>;
+  /**
+   * ShareContact uses ContactRequestReference to get the contact information for the current account and
+   * returns the Protobuf encoding of a shareable contact which you can further encode and share. If needed, this
+   * will reset the contact request reference and enable contact requests. To decode the result, see DecodeContact.
+   */
+  ShareContact(request: DeepPartial<ShareContact_Request>, metadata?: grpc.Metadata): Promise<ShareContact_Reply>;
+  /** DecodeContact decodes the Protobuf encoding of a shareable contact which was returned by ShareContact. */
+  DecodeContact(request: DeepPartial<DecodeContact_Request>, metadata?: grpc.Metadata): Promise<DecodeContact_Reply>;
   /** ContactBlock blocks a contact from sending requests */
   ContactBlock(request: DeepPartial<ContactBlock_Request>, metadata?: grpc.Metadata): Promise<ContactBlock_Reply>;
   /** ContactUnblock unblocks a contact from sending requests */
@@ -13149,6 +15854,8 @@ export class ProtocolServiceClientImpl implements ProtocolService {
     this.ContactRequestSend = this.ContactRequestSend.bind(this);
     this.ContactRequestAccept = this.ContactRequestAccept.bind(this);
     this.ContactRequestDiscard = this.ContactRequestDiscard.bind(this);
+    this.ShareContact = this.ShareContact.bind(this);
+    this.DecodeContact = this.DecodeContact.bind(this);
     this.ContactBlock = this.ContactBlock.bind(this);
     this.ContactUnblock = this.ContactUnblock.bind(this);
     this.ContactAliasKeySend = this.ContactAliasKeySend.bind(this);
@@ -13281,6 +15988,14 @@ export class ProtocolServiceClientImpl implements ProtocolService {
       ContactRequestDiscard_Request.fromPartial(request),
       metadata,
     );
+  }
+
+  ShareContact(request: DeepPartial<ShareContact_Request>, metadata?: grpc.Metadata): Promise<ShareContact_Reply> {
+    return this.rpc.unary(ProtocolServiceShareContactDesc, ShareContact_Request.fromPartial(request), metadata);
+  }
+
+  DecodeContact(request: DeepPartial<DecodeContact_Request>, metadata?: grpc.Metadata): Promise<DecodeContact_Reply> {
+    return this.rpc.unary(ProtocolServiceDecodeContactDesc, DecodeContact_Request.fromPartial(request), metadata);
   }
 
   ContactBlock(request: DeepPartial<ContactBlock_Request>, metadata?: grpc.Metadata): Promise<ContactBlock_Reply> {
@@ -13595,10 +16310,11 @@ export const ProtocolServiceServiceExportDataDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = ServiceExportData_Reply.decode(data);
       return {
-        ...ServiceExportData_Reply.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -13617,10 +16333,11 @@ export const ProtocolServiceServiceGetConfigurationDesc: UnaryMethodDefinitionis
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = ServiceGetConfiguration_Reply.decode(data);
       return {
-        ...ServiceGetConfiguration_Reply.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -13639,10 +16356,11 @@ export const ProtocolServiceContactRequestReferenceDesc: UnaryMethodDefinitionis
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = ContactRequestReference_Reply.decode(data);
       return {
-        ...ContactRequestReference_Reply.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -13661,10 +16379,11 @@ export const ProtocolServiceContactRequestDisableDesc: UnaryMethodDefinitionish 
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = ContactRequestDisable_Reply.decode(data);
       return {
-        ...ContactRequestDisable_Reply.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -13683,10 +16402,11 @@ export const ProtocolServiceContactRequestEnableDesc: UnaryMethodDefinitionish =
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = ContactRequestEnable_Reply.decode(data);
       return {
-        ...ContactRequestEnable_Reply.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -13705,10 +16425,11 @@ export const ProtocolServiceContactRequestResetReferenceDesc: UnaryMethodDefinit
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = ContactRequestResetReference_Reply.decode(data);
       return {
-        ...ContactRequestResetReference_Reply.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -13727,10 +16448,11 @@ export const ProtocolServiceContactRequestSendDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = ContactRequestSend_Reply.decode(data);
       return {
-        ...ContactRequestSend_Reply.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -13749,10 +16471,11 @@ export const ProtocolServiceContactRequestAcceptDesc: UnaryMethodDefinitionish =
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = ContactRequestAccept_Reply.decode(data);
       return {
-        ...ContactRequestAccept_Reply.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -13771,10 +16494,57 @@ export const ProtocolServiceContactRequestDiscardDesc: UnaryMethodDefinitionish 
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = ContactRequestDiscard_Reply.decode(data);
       return {
-        ...ContactRequestDiscard_Reply.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
+        },
+      };
+    },
+  } as any,
+};
+
+export const ProtocolServiceShareContactDesc: UnaryMethodDefinitionish = {
+  methodName: "ShareContact",
+  service: ProtocolServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return ShareContact_Request.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      const value = ShareContact_Reply.decode(data);
+      return {
+        ...value,
+        toObject() {
+          return value;
+        },
+      };
+    },
+  } as any,
+};
+
+export const ProtocolServiceDecodeContactDesc: UnaryMethodDefinitionish = {
+  methodName: "DecodeContact",
+  service: ProtocolServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return DecodeContact_Request.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      const value = DecodeContact_Reply.decode(data);
+      return {
+        ...value,
+        toObject() {
+          return value;
         },
       };
     },
@@ -13793,10 +16563,11 @@ export const ProtocolServiceContactBlockDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = ContactBlock_Reply.decode(data);
       return {
-        ...ContactBlock_Reply.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -13815,10 +16586,11 @@ export const ProtocolServiceContactUnblockDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = ContactUnblock_Reply.decode(data);
       return {
-        ...ContactUnblock_Reply.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -13837,10 +16609,11 @@ export const ProtocolServiceContactAliasKeySendDesc: UnaryMethodDefinitionish = 
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = ContactAliasKeySend_Reply.decode(data);
       return {
-        ...ContactAliasKeySend_Reply.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -13859,10 +16632,11 @@ export const ProtocolServiceMultiMemberGroupCreateDesc: UnaryMethodDefinitionish
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = MultiMemberGroupCreate_Reply.decode(data);
       return {
-        ...MultiMemberGroupCreate_Reply.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -13881,10 +16655,11 @@ export const ProtocolServiceMultiMemberGroupJoinDesc: UnaryMethodDefinitionish =
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = MultiMemberGroupJoin_Reply.decode(data);
       return {
-        ...MultiMemberGroupJoin_Reply.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -13903,10 +16678,11 @@ export const ProtocolServiceMultiMemberGroupLeaveDesc: UnaryMethodDefinitionish 
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = MultiMemberGroupLeave_Reply.decode(data);
       return {
-        ...MultiMemberGroupLeave_Reply.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -13925,10 +16701,11 @@ export const ProtocolServiceMultiMemberGroupAliasResolverDiscloseDesc: UnaryMeth
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = MultiMemberGroupAliasResolverDisclose_Reply.decode(data);
       return {
-        ...MultiMemberGroupAliasResolverDisclose_Reply.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -13947,10 +16724,11 @@ export const ProtocolServiceMultiMemberGroupAdminRoleGrantDesc: UnaryMethodDefin
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = MultiMemberGroupAdminRoleGrant_Reply.decode(data);
       return {
-        ...MultiMemberGroupAdminRoleGrant_Reply.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -13969,10 +16747,11 @@ export const ProtocolServiceMultiMemberGroupInvitationCreateDesc: UnaryMethodDef
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = MultiMemberGroupInvitationCreate_Reply.decode(data);
       return {
-        ...MultiMemberGroupInvitationCreate_Reply.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -13991,10 +16770,11 @@ export const ProtocolServiceAppMetadataSendDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = AppMetadataSend_Reply.decode(data);
       return {
-        ...AppMetadataSend_Reply.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -14013,10 +16793,11 @@ export const ProtocolServiceAppMessageSendDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = AppMessageSend_Reply.decode(data);
       return {
-        ...AppMessageSend_Reply.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -14035,10 +16816,11 @@ export const ProtocolServiceGroupMetadataListDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = GroupMetadataEvent.decode(data);
       return {
-        ...GroupMetadataEvent.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -14057,10 +16839,11 @@ export const ProtocolServiceGroupMessageListDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = GroupMessageEvent.decode(data);
       return {
-        ...GroupMessageEvent.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -14079,10 +16862,11 @@ export const ProtocolServiceGroupInfoDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = GroupInfo_Reply.decode(data);
       return {
-        ...GroupInfo_Reply.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -14101,10 +16885,11 @@ export const ProtocolServiceActivateGroupDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = ActivateGroup_Reply.decode(data);
       return {
-        ...ActivateGroup_Reply.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -14123,10 +16908,11 @@ export const ProtocolServiceDeactivateGroupDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = DeactivateGroup_Reply.decode(data);
       return {
-        ...DeactivateGroup_Reply.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -14145,10 +16931,11 @@ export const ProtocolServiceGroupDeviceStatusDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = GroupDeviceStatus_Reply.decode(data);
       return {
-        ...GroupDeviceStatus_Reply.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -14167,10 +16954,11 @@ export const ProtocolServiceDebugListGroupsDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = DebugListGroups_Reply.decode(data);
       return {
-        ...DebugListGroups_Reply.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -14189,10 +16977,11 @@ export const ProtocolServiceDebugInspectGroupStoreDesc: UnaryMethodDefinitionish
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = DebugInspectGroupStore_Reply.decode(data);
       return {
-        ...DebugInspectGroupStore_Reply.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -14211,10 +17000,11 @@ export const ProtocolServiceDebugGroupDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = DebugGroup_Reply.decode(data);
       return {
-        ...DebugGroup_Reply.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -14233,10 +17023,11 @@ export const ProtocolServiceDebugAuthServiceSetTokenDesc: UnaryMethodDefinitioni
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = DebugAuthServiceSetToken_Reply.decode(data);
       return {
-        ...DebugAuthServiceSetToken_Reply.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -14255,10 +17046,11 @@ export const ProtocolServiceSystemInfoDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = SystemInfo_Reply.decode(data);
       return {
-        ...SystemInfo_Reply.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -14277,10 +17069,11 @@ export const ProtocolServiceAuthServiceInitFlowDesc: UnaryMethodDefinitionish = 
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = AuthServiceInitFlow_Reply.decode(data);
       return {
-        ...AuthServiceInitFlow_Reply.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -14299,10 +17092,11 @@ export const ProtocolServiceAuthServiceCompleteFlowDesc: UnaryMethodDefinitionis
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = AuthServiceCompleteFlow_Reply.decode(data);
       return {
-        ...AuthServiceCompleteFlow_Reply.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -14321,10 +17115,11 @@ export const ProtocolServiceCredentialVerificationServiceInitFlowDesc: UnaryMeth
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = CredentialVerificationServiceInitFlow_Reply.decode(data);
       return {
-        ...CredentialVerificationServiceInitFlow_Reply.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -14343,10 +17138,11 @@ export const ProtocolServiceCredentialVerificationServiceCompleteFlowDesc: Unary
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = CredentialVerificationServiceCompleteFlow_Reply.decode(data);
       return {
-        ...CredentialVerificationServiceCompleteFlow_Reply.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -14365,10 +17161,11 @@ export const ProtocolServiceVerifiedCredentialsListDesc: UnaryMethodDefinitionis
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = VerifiedCredentialsList_Reply.decode(data);
       return {
-        ...VerifiedCredentialsList_Reply.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -14387,10 +17184,11 @@ export const ProtocolServiceServicesTokenListDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = ServicesTokenList_Reply.decode(data);
       return {
-        ...ServicesTokenList_Reply.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -14409,10 +17207,11 @@ export const ProtocolServiceReplicationServiceRegisterGroupDesc: UnaryMethodDefi
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = ReplicationServiceRegisterGroup_Reply.decode(data);
       return {
-        ...ReplicationServiceRegisterGroup_Reply.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -14431,10 +17230,11 @@ export const ProtocolServicePeerListDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = PeerList_Reply.decode(data);
       return {
-        ...PeerList_Reply.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -14453,10 +17253,11 @@ export const ProtocolServiceOutOfStoreReceiveDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = OutOfStoreReceive_Reply.decode(data);
       return {
-        ...OutOfStoreReceive_Reply.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -14475,10 +17276,11 @@ export const ProtocolServiceOutOfStoreSealDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = OutOfStoreSeal_Reply.decode(data);
       return {
-        ...OutOfStoreSeal_Reply.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -14497,10 +17299,11 @@ export const ProtocolServiceRefreshContactRequestDesc: UnaryMethodDefinitionish 
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = RefreshContactRequest_Reply.decode(data);
       return {
-        ...RefreshContactRequest_Reply.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -14569,7 +17372,7 @@ export class GrpcWebImpl {
         debug: this.options.debug,
         onEnd: function (response) {
           if (response.status === grpc.Code.OK) {
-            resolve(response.message);
+            resolve(response.message!.toObject());
           } else {
             const err = new GrpcWebError(response.statusMessage, response.status, response.trailers);
             reject(err);
@@ -14612,7 +17415,9 @@ export class GrpcWebImpl {
             }
           },
         });
-        observer.add(() => client.close());
+        observer.add(() => {
+          return client.close();
+        });
       });
       upStream();
     }).pipe(share());
@@ -14622,7 +17427,7 @@ export class GrpcWebImpl {
 declare var self: any | undefined;
 declare var window: any | undefined;
 declare var global: any | undefined;
-var globalThis: any = (() => {
+var tsProtoGlobalThis: any = (() => {
   if (typeof globalThis !== "undefined") {
     return globalThis;
   }
@@ -14638,11 +17443,11 @@ var globalThis: any = (() => {
   throw "Unable to locate global object";
 })();
 
-export function bytesFromBase64(b64: string): Uint8Array {
-  if (globalThis.Buffer) {
-    return Uint8Array.from(globalThis.Buffer.from(b64, "base64"));
+function bytesFromBase64(b64: string): Uint8Array {
+  if (tsProtoGlobalThis.Buffer) {
+    return Uint8Array.from(tsProtoGlobalThis.Buffer.from(b64, "base64"));
   } else {
-    const bin = globalThis.atob(b64);
+    const bin = tsProtoGlobalThis.atob(b64);
     const arr = new Uint8Array(bin.length);
     for (let i = 0; i < bin.length; ++i) {
       arr[i] = bin.charCodeAt(i);
@@ -14651,15 +17456,15 @@ export function bytesFromBase64(b64: string): Uint8Array {
   }
 }
 
-export function base64FromBytes(arr: Uint8Array): string {
-  if (globalThis.Buffer) {
-    return globalThis.Buffer.from(arr).toString("base64");
+function base64FromBytes(arr: Uint8Array): string {
+  if (tsProtoGlobalThis.Buffer) {
+    return tsProtoGlobalThis.Buffer.from(arr).toString("base64");
   } else {
     const bin: string[] = [];
     arr.forEach((byte) => {
       bin.push(String.fromCharCode(byte));
     });
-    return globalThis.btoa(bin.join(""));
+    return tsProtoGlobalThis.btoa(bin.join(""));
   }
 }
 
@@ -14676,7 +17481,7 @@ export type Exact<P, I extends P> = P extends Builtin ? P
 
 function longToNumber(long: Long): number {
   if (long.gt(Number.MAX_SAFE_INTEGER)) {
-    throw new globalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
+    throw new tsProtoGlobalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
   }
   return long.toNumber();
 }
@@ -14694,7 +17499,7 @@ function isSet(value: any): boolean {
   return value !== null && value !== undefined;
 }
 
-export class GrpcWebError extends Error {
+export class GrpcWebError extends tsProtoGlobalThis.Error {
   constructor(message: string, public code: grpc.Code, public metadata: grpc.Metadata) {
     super(message);
   }

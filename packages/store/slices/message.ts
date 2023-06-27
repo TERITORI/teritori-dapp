@@ -28,6 +28,9 @@ const initialState: Search = {
 export const selectMessageList = (groupPk: string) => (state: RootState) =>
   state.message.messageList[groupPk] || [];
 
+export const selectLastIdByKey = (key: string) => (state: RootState) =>
+  state.message.lastIds[key];
+
 export const selectMessageListByGroupPk =
   (groupPk: string) => (state: RootState) =>
     Object.values(state.message.messageList[groupPk] || {})
@@ -113,6 +116,12 @@ const messageSlice = createSlice({
         state.conversationList = [action.payload, ...state.conversationList];
       }
     },
+    setLastId: (
+      state,
+      action: PayloadAction<{ key: string; value: string }>
+    ) => {
+      state.lastIds[action.payload.key] = action.payload.value;
+    },
   },
 });
 
@@ -121,6 +130,7 @@ export const {
   setContactRequestList,
   setConversationList,
   updateMessageReaction,
+  setLastId,
 } = messageSlice.actions;
 
 export const messageReducer = messageSlice.reducer;
