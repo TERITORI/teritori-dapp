@@ -1,4 +1,5 @@
 import { coin } from "@cosmjs/amino";
+import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import React, { useImperativeHandle, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
@@ -8,7 +9,7 @@ import {
   Pressable,
   useWindowDimensions,
 } from "react-native";
-import Animated, { useSharedValue } from "react-native-reanimated";
+import Animated, { log, useSharedValue } from "react-native-reanimated";
 import { v4 as uuidv4 } from "uuid";
 
 import {
@@ -50,6 +51,11 @@ import {
 } from "../../../networks";
 import { prettyPrice } from "../../../utils/coins";
 import { defaultSocialFeedFee } from "../../../utils/fee";
+import {
+  adenaVMCall,
+  extractGnoNumber,
+  extractGnoString,
+} from "../../../utils/gno";
 import {
   AUDIO_MIME_TYPES,
   IMAGE_MIME_TYPES,
@@ -310,19 +316,45 @@ export const NewsFeedInput = React.forwardRef<
             ],
           });
         } else {
-          const client = await signingSocialFeedClient({
-            networkId: selectedNetworkId,
-            walletAddress: wallet?.address || "",
-          });
-          await mutateAsync({
-            client,
-            msg,
-            args: {
-              fee: defaultSocialFeedFee,
-              memo: "",
-              funds: [coin(postFee, "utori")],
-            },
-          });
+          if (selectedNetwork?.kind === NetworkKind.Gno) {
+            const DEFAULT_BOARD_NAME = "teritori_board";
+
+            const provider = new GnoJSONRPCProvider(selectedNetwork.endpoint);
+
+            const boardIdFromName = await provider.evaluateExpression(
+              "gno.land/r/demo/boards",
+              `GetBoardIDFromName("${DEFAULT_BOARD_NAME}")`
+            );
+            const boardId = extractGnoNumber(boardIdFromName);
+
+            const vmCall = {
+              caller: selectedWallet?.address || "",
+              send: "",
+              pkg_path: "gno.land/r/demo/boards",
+              func: "CreateThread",
+              args: [`${boardId}`, "", finalMessage],
+            };
+
+            await adenaVMCall(vmCall, {
+              gasWanted: 2_000_000,
+            });
+
+            onPostCreationSuccess();
+          } else {
+            const client = await signingSocialFeedClient({
+              networkId: selectedNetworkId,
+              walletAddress: wallet?.address || "",
+            });
+            await mutateAsync({
+              client,
+              msg,
+              args: {
+                fee: defaultSocialFeedFee,
+                memo: "",
+                funds: [coin(postFee, "utori")],
+              },
+            });
+          }
 
           if (
             postCategory === PostCategory.Question ||

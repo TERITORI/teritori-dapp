@@ -34,6 +34,7 @@ import {
 } from "./types";
 import { MsgBurnTokens } from "../api/teritori/mint";
 import { getKeplr } from "../utils/keplr";
+import { bech32 } from "bech32";
 
 export * from "./types";
 
@@ -172,7 +173,15 @@ export const parseNftId = (
 export const parseUserId = (
   id: string | undefined
 ): [NetworkInfo | undefined, string] => {
-  return parseNetworkObjectId(id);
+  const [network, rest] = parseNetworkObjectId(id);
+  if (network?.kind === NetworkKind.Gno) {
+    try {
+      bech32.decode(rest);
+      return [network, rest];
+    } catch {}
+    return [network, "gno.land/" + rest.replaceAll("-", "/")];
+  }
+  return [network, rest];
 };
 
 export const parseCollectionId = (

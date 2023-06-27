@@ -33,6 +33,7 @@ export const adenaVMCall = async (
   if (res.status === "failure") {
     throw new Error(res.message);
   }
+  return res;
 };
 
 // this is hacky af
