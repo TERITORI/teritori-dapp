@@ -1,5 +1,5 @@
 import moment from "moment";
-import React, { useEffect, useState } from "react";
+import React, { RefObject, useEffect, useMemo, useRef, useState } from "react";
 import {
   View,
   TouchableOpacity,
@@ -10,6 +10,7 @@ import { useSelector } from "react-redux";
 
 import { ChatHeader } from "./ChatHeader";
 import { Conversation } from "./Conversation";
+import { UploadImage } from "./UploadImage";
 import plus from "../../../../assets/icons/chatplus.svg";
 import sent from "../../../../assets/icons/sent.svg";
 import { BrandText } from "../../../components/BrandText";
@@ -20,8 +21,17 @@ import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { selectMessageListByGroupPk } from "../../../store/slices/message";
-import { neutral00, neutral33, redDefault } from "../../../utils/style/colors";
-import { fontSemibold10, fontSemibold12 } from "../../../utils/style/fonts";
+import {
+  neutral00,
+  neutral33,
+  neutral77,
+  redDefault,
+} from "../../../utils/style/colors";
+import {
+  fontSemibold10,
+  fontSemibold12,
+  fontSemibold14,
+} from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import {
   Conversation as IConversation,
@@ -39,7 +49,6 @@ import {
   bytesFromString,
   stringFromBytes,
 } from "../../../weshnet/client/utils";
-import { UploadImage } from "../MessengerHomeCreateChatDropdown/UploadImage";
 
 interface ChatSectionProps {
   conversation: IConversation;
@@ -54,6 +63,7 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
   const [message, setMessage] = useState<any>("");
   const [inputHeight, setInputHeight] = useState(40);
   const [replyTo, setReplyTo] = useState<ReplyTo>();
+  const [inputRef, setInputRef] = useState<RefObject<any> | null>(null);
 
   const [searchInput, setSearchInput] = useState("");
   const [isFileUploader, setIsFileUploader] = useState(false);
@@ -63,6 +73,15 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
   const messages = useSelector(
     selectMessageListByGroupPk(stringFromBytes(groupInfo?.group?.publicKey))
   );
+
+  const searchResults = useMemo(() => {
+    if (!searchInput) {
+      return [];
+    }
+    return messages.filter((item) =>
+      item?.payload?.message?.toLowerCase().includes(searchInput?.toLowerCase())
+    );
+  }, [messages, searchInput]);
 
   const [subsId, setSubsId] = useState();
 
@@ -129,6 +148,7 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
 
       setMessage("");
       setReplyTo(undefined);
+      inputRef?.current?.focus();
     } catch (err) {
       setToastError({
         title: "Failed to send message",
@@ -159,6 +179,54 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
           />
         </View>
         <Separator color={neutral33} />
+        {!!searchInput && (
+          <View
+            style={{
+              width: 500,
+              maxWidth: "100%",
+              height: "100%",
+              backgroundColor: neutral33,
+              position: "absolute",
+              top: 0,
+              right: 0,
+              zIndex: 99,
+            }}
+          >
+            {!searchResults.length && (
+              <View
+                style={{
+                  alignItems: "center",
+                  justifyContent: "center",
+                  height: "100%",
+                }}
+              >
+                <BrandText style={[fontSemibold14, { color: neutral77 }]}>
+                  No result found
+                </BrandText>
+              </View>
+            )}
+            <FlatList
+              data={searchResults}
+              style={{
+                paddingTop: 50,
+              }}
+              contentContainerStyle={{ flexGrow: 1 }}
+              renderItem={({ item, index }) => {
+                return (
+                  <>
+                    <Conversation
+                      onReply={setReplyTo}
+                      message={item}
+                      data={item.message}
+                      groupPk={groupInfo?.group?.publicKey}
+                    />
+                  </>
+                );
+              }}
+              keyExtractor={(item) => item.id}
+            />
+          </View>
+        )}
 
         <FlatList
           inverted
@@ -179,6 +247,9 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
               : item.timestamp;
 
             const isNewSeparator = !previousMessage?.isRead && item.isRead;
+            const parentMessage =
+              item?.parentId &&
+              messages.find((msg) => msg.id === item.parentId);
             return (
               <>
                 <Conversation
@@ -190,6 +261,7 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
                   width={0}
                   isMessageChain={previousMessage?.senderId === item.senderId}
                   isNextMine={nextMessage?.senderId === item.senderId}
+                  parentMessage={parentMessage}
                 />
                 {(isNewSeparator || !!separatorDate) && (
                   <View
@@ -295,6 +367,7 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
             </View>
           )}
           <TextInputCustom
+            setRef={setInputRef}
             containerStyle={{
               marginHorizontal: layout.padding_x0_5,
             }}

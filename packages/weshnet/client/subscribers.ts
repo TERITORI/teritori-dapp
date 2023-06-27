@@ -161,6 +161,7 @@ export const subscribeMetadata = async (groupPk: Uint8Array) => {
     config.sinceId = bytesFromString(lastId);
   } else {
     config.untilNow = true;
+    config.reverseOrder = true;
   }
 
   try {
