@@ -10,6 +10,7 @@ import {
   selectConversationList,
   setConversationList,
   setMessageList,
+  updateMessageReaction,
 } from "../../store/slices/message";
 import { store } from "../../store/store";
 import { Message } from "../../utils/types/message";
@@ -36,6 +37,15 @@ export const subscribeMessages = async (config: GroupMessageList_Request) => {
           ...data.message,
         };
         switch (message.type) {
+          case "reaction": {
+            store.dispatch(
+              updateMessageReaction({
+                groupPk: stringFromBytes(config.groupPk),
+                data: message,
+              })
+            );
+            break;
+          }
           case "group-join": {
             console.log("group-join", message);
             // const conversations = selectConversationList(store.getState());
@@ -91,9 +101,9 @@ export const subscribeMessages = async (config: GroupMessageList_Request) => {
       complete: async () => {
         console.log("get message complete");
         // await subscribeMessages2({ groupPk: config.groupPk, sinceId: lastId });
-        setTimeout(() => {
-          subscribeMessages(config);
-        }, 5000);
+        // setTimeout(() => {
+        //   subscribeMessages(config);
+        // }, 5000);
       },
     };
     return messages.subscribe(observer);
@@ -119,9 +129,9 @@ export const subscribeMetadata = async (groupPk: Uint8Array) => {
       },
       complete: () => {
         console.log("get metadata complete");
-        setTimeout(() => {
-          subscribeMetadata(groupPk);
-        }, 5000);
+        // setTimeout(() => {
+        //   subscribeMetadata(groupPk);
+        // }, 5000);
       },
     };
     metadata.subscribe(myObserver);

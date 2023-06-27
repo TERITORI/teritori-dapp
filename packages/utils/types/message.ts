@@ -67,3 +67,8 @@ export interface ContactRequest {
   tokenId: string;
   rdvSeed: string;
 }
+
+export interface ReplyTo {
+  id: string;
+  message: string;
+}

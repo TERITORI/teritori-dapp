@@ -1,5 +1,5 @@
 import { weshClient } from "./client";
-import { decodeJSON, stringFromBytes } from "./utils";
+import { bytesFromString, decodeJSON, stringFromBytes } from "./utils";
 import {
   selectContactRequestList,
   setContactRequestList,
@@ -56,7 +56,7 @@ export const handleMetadata = async (data: GroupMetadataEvent) => {
 
             store.dispatch(
               setConversationList({
-                id: parsedData.eventContext.id,
+                id: stringFromBytes(groupInfo.group?.publicKey),
                 type: "contact",
                 name: "",
                 members: [
@@ -134,10 +134,16 @@ export const handleMetadata = async (data: GroupMetadataEvent) => {
               )
             )
           );
+          const group = await weshClient().GroupInfo({
+            contactPk: bytesFromString(contactRequest.contactId),
+          });
+          await weshClient().ActivateGroup({
+            groupPk: group.group?.publicKey,
+          });
 
           store.dispatch(
             setConversationList({
-              id: parsedData.eventContext.id,
+              id: stringFromBytes(group.group?.publicKey),
               type: "contact",
               members: [
                 {

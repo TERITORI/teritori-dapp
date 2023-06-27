@@ -49,7 +49,8 @@ const SideBarChatConversation: React.FC<Props> = ({
     <View
       style={{
         backgroundColor: isActive ? neutral22 : neutral00,
-        paddingVertical: layout.padding_x2,
+        padding: layout.padding_x1,
+        borderRadius: 4,
       }}
     >
       <FlexRow justifyContent="space-between">
