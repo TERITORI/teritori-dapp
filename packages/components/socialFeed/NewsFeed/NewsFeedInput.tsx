@@ -317,7 +317,7 @@ export const NewsFeedInput = React.forwardRef<
           });
         } else {
           if (selectedNetwork?.kind === NetworkKind.Gno) {
-            const DEFAULT_BOARD_NAME = "teritori_board";
+            const DEFAULT_BOARD_NAME = "testboard";
 
             const provider = new GnoJSONRPCProvider(selectedNetwork.endpoint);
 

@@ -4,7 +4,6 @@ import { useSelector } from "react-redux";
 import { Wallet } from "./wallet";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import { NetworkKind, getUserId } from "../../networks";
-import { gnoTestnetNetwork } from "../../networks/gno-testnet";
 import {
   selectIsAdenaConnected,
   setIsAdenaConnected,
@@ -71,7 +70,8 @@ export const useAdena: () => UseAdenaResult = () => {
   }, [dispatch, hasAdena, isAdenaConnected]);
 
   const wallets = useMemo(() => {
-    const networkId = gnoTestnetNetwork.id;
+    const networkId = selectedNetworkInfo?.id;
+    if (!networkId) return [];
 
     if (addresses.length === 0) {
       const wallet: Wallet = {
@@ -99,7 +99,7 @@ export const useAdena: () => UseAdenaResult = () => {
     });
 
     return wallets;
-  }, [addresses]);
+  }, [addresses, selectedNetworkInfo?.id]);
 
   useEffect(() => {
     const selectedWallet = wallets.find((w) => w.connected);
