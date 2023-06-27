@@ -2,28 +2,28 @@ import React, { useState } from "react";
 import { View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
-import nullIcon from "../../../assets/icons/illustration.svg";
-import { BrandText } from "../../components/BrandText";
-import FlexRow from "../../components/FlexRow";
-import { SVG } from "../../components/SVG";
-import { Separator } from "../../components/Separator";
-import AddFriendList from "../../components/addfriend/AddFriendList";
-import data from "../../components/addfriend/data";
-import { TertiaryBox } from "../../components/boxes/TertiaryBox";
-import { TextInputCustomBorder } from "../../components/inputs/TextInputCustomBorder";
-import { SpacerColumn, SpacerRow } from "../../components/spacer";
+import nullIcon from "../../../../assets/icons/illustration.svg";
+import { BrandText } from "../../../components/BrandText";
+import FlexRow from "../../../components/FlexRow";
+import { SVG } from "../../../components/SVG";
+import { Separator } from "../../../components/Separator";
+import AddFriendList from "../../../components/addfriend/AddFriendList";
+import data from "../../../components/addfriend/data";
+import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
+import { TextInputCustomBorder } from "../../../components/inputs/TextInputCustomBorder";
+import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import {
   neutral33,
   neutralA3,
   primaryColor,
   primaryTextColor,
   secondaryColor,
-} from "../../utils/style/colors";
+} from "../../../utils/style/colors";
 import {
   fontSemibold13,
   fontSemibold14,
   fontSemibold16,
-} from "../../utils/style/fonts";
+} from "../../../utils/style/fonts";
 
 export const AddFriend = () => {
   const [searchQuery, setSearchQuery] = useState("");

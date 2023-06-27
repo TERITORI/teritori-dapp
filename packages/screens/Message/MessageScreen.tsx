@@ -7,12 +7,12 @@ import {
   ScrollView,
 } from "react-native";
 
-import { CreateConversation } from "./CreateConversation";
-import { CreateGroup } from "./CreateGroup";
-import { FriendshipManager } from "./FriendshipManager";
-import { MessageHeader } from "./MessageHeader";
-import { MessageGroupChat } from "./MessengerGroupChat/MessageGroupChat";
-import { SideBarChats } from "./SideBarChats";
+import { CreateConversation } from "./components/CreateConversation";
+import { CreateGroup } from "./components/CreateGroup";
+import { FriendshipManager } from "./components/FriendshipManager";
+import { MessageGroupChat } from "./components/MessageGroupChat";
+import { MessageHeader } from "./components/MessageHeader";
+import { SideBarChats } from "./components/SideBarChats";
 import chat from "../../../assets/icons/add-chat.svg";
 import friend from "../../../assets/icons/friend.svg";
 import group from "../../../assets/icons/group.svg";

@@ -10,6 +10,7 @@ import {
   TextInput,
 } from "react-native";
 
+import { HandleSendParams } from "./ChatSection";
 import deleteIcon from "../../../../assets/icons/delete.svg";
 import file from "../../../../assets/icons/fileattach.svg";
 import largeActive from "../../../../assets/icons/large-active.svg";
@@ -45,7 +46,6 @@ import {
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { RemoteFileData } from "../../../utils/types/feed";
-import { HandleSendParams } from "../MessengerGroupChat/ChatSection";
 
 interface IMessage {
   id: Key | null | undefined;
