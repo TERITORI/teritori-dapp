@@ -8,38 +8,38 @@ import {
 } from "react-native";
 import { useSelector } from "react-redux";
 
-import { CheckboxGroup } from "./MessengerHomeCreateChatDropdown/CheckboxGroup";
-import avatar from "../../../assets/icons/avatar.svg";
-import { BrandText } from "../../components/BrandText";
-import FlexRow from "../../components/FlexRow";
-import { SVG } from "../../components/SVG";
-import { Separator } from "../../components/Separator";
-import { SeparatorGradient } from "../../components/SeparatorGradient";
-import { TertiaryBox } from "../../components/boxes/TertiaryBox";
-import { PrimaryButton } from "../../components/buttons/PrimaryButton";
-import { TextInputCustom } from "../../components/inputs/TextInputCustom";
-import ModalBase from "../../components/modals/ModalBase";
-import { SearchInput } from "../../components/sorts/SearchInput";
-import { SpacerColumn, SpacerRow } from "../../components/spacer";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { selectConversationList } from "../../store/slices/message";
+import { CheckboxGroup } from "./CheckboxGroup";
+import avatar from "../../../../assets/icons/avatar.svg";
+import { BrandText } from "../../../components/BrandText";
+import FlexRow from "../../../components/FlexRow";
+import { SVG } from "../../../components/SVG";
+import { Separator } from "../../../components/Separator";
+import { SeparatorGradient } from "../../../components/SeparatorGradient";
+import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
+import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
+import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
+import ModalBase from "../../../components/modals/ModalBase";
+import { SearchInput } from "../../../components/sorts/SearchInput";
+import { SpacerColumn, SpacerRow } from "../../../components/spacer";
+import { useFeedbacks } from "../../../context/FeedbacksProvider";
+import { selectConversationList } from "../../../store/slices/message";
 import {
   neutral00,
   neutral17,
   neutral33,
   primaryTextColor,
   secondaryColor,
-} from "../../utils/style/colors";
-import { fontSemibold14 } from "../../utils/style/fonts";
+} from "../../../utils/style/colors";
+import { fontSemibold14 } from "../../../utils/style/fonts";
 import {
   Group,
   GroupInfo,
   GroupInfo_Reply,
   MultiMemberGroupCreate_Reply,
-} from "../../weshnet";
-import { weshClient, weshConfig } from "../../weshnet/client";
-import { activateGroup, sendMessage } from "../../weshnet/client/services";
-import { encodeJSON, stringFromBytes } from "../../weshnet/client/utils";
+} from "../../../weshnet";
+import { weshClient, weshConfig } from "../../../weshnet/client";
+import { activateGroup, sendMessage } from "../../../weshnet/client/services";
+import { encodeJSON, stringFromBytes } from "../../../weshnet/client/utils";
 
 interface CreateGroupProps {
   onClose: () => void;

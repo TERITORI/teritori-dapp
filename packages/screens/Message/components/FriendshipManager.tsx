@@ -5,18 +5,18 @@ import { useSelector } from "react-redux";
 import { AddFriend } from "./AddFriend";
 import { Friends } from "./Friends";
 import { Requests } from "./Requests";
-import plus from "../../../assets/icons/Addplus.svg";
-import { ScreenContainer } from "../../components/ScreenContainer";
-import { Separator } from "../../components/Separator";
-import friendData from "../../components/friends/data";
-import requestData from "../../components/requests/data";
-import { SpacerColumn } from "../../components/spacer";
-import { Tabs } from "../../components/tabs/Tabs";
+import plus from "../../../../assets/icons/Addplus.svg";
+import { ScreenContainer } from "../../../components/ScreenContainer";
+import { Separator } from "../../../components/Separator";
+import requestData from "../../../components/requests/data";
+import { SpacerColumn } from "../../../components/spacer";
+import { Tabs } from "../../../components/tabs/Tabs";
 import {
   selectContactRequestList,
   selectConversationList,
-} from "../../store/slices/message";
-import { layout } from "../../utils/style/layout";
+} from "../../../store/slices/message";
+import { layout } from "../../../utils/style/layout";
+import friendData from "../../components/friends/data";
 
 export const FriendshipManager = ({ setActiveConversation }) => {
   const conversations = useSelector(selectConversationList);

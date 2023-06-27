@@ -14,7 +14,7 @@ import { useSearchBar } from "../../context/SearchBarProvider";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { NetworkFeature, NetworkInfo, NetworkKind } from "../../networks";
 import { DAppStoreData } from "../../screens/DAppStore/components/DAppStoreData";
-import SideBarChats from "../../screens/Message/SideBarChats";
+import SideBarChats from "../../screens/Message/components/SideBarChats";
 import { neutral33, neutral77 } from "../../utils/style/colors";
 import { fontBold12 } from "../../utils/style/fonts";
 import {

@@ -38,14 +38,12 @@ import {
   fontMedium10,
   fontMedium14,
 } from "../../../utils/style/fonts";
-export const ChatHeader = ({ messages, name }: any) => {
+export const ChatHeader = ({ searchInput, setSearchInput, name }: any) => {
   const [showTextInput, setShowTextInput] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
   const [audioCall, setAudioCall] = useState(false);
   const [videoCall, setVideoCall] = useState(false);
 
-  const [searchInput, setSearchInput] = useState("");
-  const [filterMessageData, setFilterMessageData] = useState<any[]>([]);
   const handleSearchIconPress = () => {
     setShowTextInput(true);
     setShowCalendar(false);
@@ -54,19 +52,11 @@ export const ChatHeader = ({ messages, name }: any) => {
     setShowTextInput(false);
     setSearchInput("");
     setShowCalendar(false);
-    setFilterMessageData(null);
   };
   const handleMessageSearch = (text: string) => {
     setSearchInput(text);
-    const filterMessages = messages?.filter((message: any) =>
-      message.message.toLowerCase().includes(text.toLowerCase())
-    );
-    setFilterMessageData(filterMessages);
   };
-  const HandleSearchData = () => {
-    setFilterMessageData(null);
-  };
-  const dataLength = filterMessageData?.length;
+
   const handleAudio = () => {
     setAudioCall(true);
     setVideoCall(false);
@@ -112,7 +102,7 @@ export const ChatHeader = ({ messages, name }: any) => {
                   <SpacerRow size={1} />
                   <TextInput
                     placeholder="Search..."
-                    // value={value}
+                    value={searchInput}
                     onChangeText={handleMessageSearch}
                     placeholderTextColor={secondaryColor}
                     style={[
@@ -206,70 +196,6 @@ export const ChatHeader = ({ messages, name }: any) => {
           <AudioCall audioCall={audioCall} setAudioCall={setAudioCall} />
         </View>
       )}
-
-      <View style={styles.filterMessageWrapper}>
-        {filterMessageData?.map((message: any, index) => {
-          return (
-            <View
-              key={index}
-              style={{
-                width: ["android", "ios"].includes(Platform.OS) ? 350 : 400,
-              }}
-            >
-              <TouchableOpacity onPress={HandleSearchData}>
-                <FlexRow
-                  justifyContent="space-between"
-                  alignItems="center"
-                  style={{ padding: 10 }}
-                >
-                  <View>
-                    <FlexRow>
-                      <SVG source={avatar} />
-                      <SpacerRow size={1} />
-                      <View>
-                        <BrandText
-                          style={[fontSemibold13, { color: "#FFFFFF" }]}
-                        >
-                          {message?.name}
-                        </BrandText>
-                        <SpacerColumn size={0.5} />
-
-                        <BrandText
-                          style={[fontSemibold11, { color: "#A3A3A3" }]}
-                        >
-                          {message?.message.split(" ").slice(0, 5).join(" ")}
-                          {message?.message.split(" ").length > 5 ? "..." : ""}
-                        </BrandText>
-                      </View>
-                      <SpacerColumn size={2} />
-                    </FlexRow>
-                  </View>
-                  <View>
-                    <BrandText style={[fontMedium10, { color: "#777777" }]}>
-                      {message?.date}
-                    </BrandText>
-
-                    <BrandText
-                      style={[
-                        fontMedium10,
-                        { color: "#777777", textAlign: "right", marginTop: 6 },
-                      ]}
-                    >
-                      {message?.time}
-                    </BrandText>
-                  </View>
-                </FlexRow>
-              </TouchableOpacity>
-
-              {index < dataLength - 1 && (
-                <View style={{ marginLeft: 10, marginRight: 10 }}>
-                  <Separator key={index} />
-                </View>
-              )}
-            </View>
-          );
-        })}
-      </View>
     </>
   );
 };

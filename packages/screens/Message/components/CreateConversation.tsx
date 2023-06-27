@@ -2,20 +2,20 @@ import React, { useState } from "react";
 import { View } from "react-native";
 import QRCode from "react-native-qrcode-svg";
 
-import logoHexagonPNG from "../../../assets/logos/logo-hexagon.png";
-import { BrandText } from "../../components/BrandText";
-import { CopyToClipboard } from "../../components/CopyToClipboard";
-import { ErrorText } from "../../components/ErrorText";
-import { PrimaryButton } from "../../components/buttons/PrimaryButton";
-import { TextInputCustom } from "../../components/inputs/TextInputCustom";
-import ModalBase from "../../components/modals/ModalBase";
-import { SpacerColumn, SpacerRow } from "../../components/spacer";
-import { useNSUserInfo } from "../../hooks/useNSUserInfo";
-import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { neutral00, secondaryColor } from "../../utils/style/colors";
-import { fontSemibold16 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
-import { weshClient, weshConfig, weshServices } from "../../weshnet/client";
+import logoHexagonPNG from "../../../../assets/logos/logo-hexagon.png";
+import { BrandText } from "../../../components/BrandText";
+import { CopyToClipboard } from "../../../components/CopyToClipboard";
+import { ErrorText } from "../../../components/ErrorText";
+import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
+import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
+import ModalBase from "../../../components/modals/ModalBase";
+import { SpacerColumn, SpacerRow } from "../../../components/spacer";
+import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
+import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { neutral00, secondaryColor } from "../../../utils/style/colors";
+import { fontSemibold16 } from "../../../utils/style/fonts";
+import { layout } from "../../../utils/style/layout";
+import { weshClient, weshConfig, weshServices } from "../../../weshnet/client";
 
 interface CreateConversationProps {
   onClose: () => void;

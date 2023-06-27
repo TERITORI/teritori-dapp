@@ -41,6 +41,7 @@ interface ConversationProps {
   isMessageChain: boolean;
   isNextMine: boolean;
   onReply: (params: ReplyTo) => void;
+  parentMessage?: Message;
 }
 
 export const Conversation = ({
@@ -49,6 +50,7 @@ export const Conversation = ({
   isMessageChain,
   isNextMine,
   onReply,
+  parentMessage,
 }: ConversationProps) => {
   const [showPopup, setShowPopup] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
@@ -156,6 +158,22 @@ export const Conversation = ({
             borderTopRightRadius: layout.padding_x0_75,
           }}
         >
+          {parentMessage?.id && (
+            <FlexRow>
+              <View
+                style={{
+                  height: "100%",
+                  width: 1,
+                  backgroundColor: neutralA3,
+                  paddingVertical: layout.padding_x1_5,
+                  marginRight: layout.padding_x0_5,
+                }}
+              />
+              <BrandText style={[fontSemibold11, { color: neutral77 }]}>
+                {message.payload.message}
+              </BrandText>
+            </FlexRow>
+          )}
           <TouchableOpacity onPress={() => setShowPopup(true)}>
             {message.type === "message" ? (
               <>

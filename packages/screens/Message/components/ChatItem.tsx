@@ -4,29 +4,26 @@ import { Platform, TouchableOpacity, View } from "react-native";
 import { Avatar } from "react-native-paper";
 import { useSelector } from "react-redux";
 
-import avatarPNG from "../../../assets/icons/ava.png";
-import doubleCheckSVG from "../../../assets/icons/doublecheck.svg";
-import singleCheckSVG from "../../../assets/icons/singlecheck.svg";
-import { BrandText } from "../../components/BrandText";
-import FlexRow from "../../components/FlexRow";
-import { SVG } from "../../components/SVG";
-import { SpacerColumn, SpacerRow } from "../../components/spacer";
-import { useNSUserInfo } from "../../hooks/useNSUserInfo";
-import { selectLastMessageByGroupPk } from "../../store/slices/message";
-import { useAppNavigation } from "../../utils/navigation";
+import avatarPNG from "../../../../assets/icons/ava.png";
+import { BrandText } from "../../../components/BrandText";
+import FlexRow from "../../../components/FlexRow";
+import { SpacerColumn, SpacerRow } from "../../../components/spacer";
+import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
+import { selectLastMessageByGroupPk } from "../../../store/slices/message";
+import { useAppNavigation } from "../../../utils/navigation";
 import {
   neutral00,
   neutral22,
   neutralA3,
   secondaryColor,
-} from "../../utils/style/colors";
+} from "../../../utils/style/colors";
 import {
   fontMedium10,
   fontSemibold11,
   fontSemibold13,
-} from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
-import { Conversation } from "../../utils/types/message";
+} from "../../../utils/style/fonts";
+import { layout } from "../../../utils/style/layout";
+import { Conversation } from "../../../utils/types/message";
 interface ChatItemProps {
   data: Conversation;
   onPress: () => void;
