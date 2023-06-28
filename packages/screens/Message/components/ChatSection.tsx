@@ -11,6 +11,7 @@ import { useSelector } from "react-redux";
 import { ChatHeader } from "./ChatHeader";
 import { Conversation } from "./Conversation";
 import { UploadImage } from "./UploadImage";
+import { UploadedPreview } from "./UploadedPreview";
 import plus from "../../../../assets/icons/chatplus.svg";
 import sent from "../../../../assets/icons/sent.svg";
 import { BrandText } from "../../../components/BrandText";
@@ -33,6 +34,7 @@ import {
   fontSemibold14,
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { RemoteFileData } from "../../../utils/types/feed";
 import {
   Conversation as IConversation,
   Message,
@@ -64,9 +66,9 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
   const [inputHeight, setInputHeight] = useState(40);
   const [replyTo, setReplyTo] = useState<ReplyTo>();
   const [inputRef, setInputRef] = useState<RefObject<any> | null>(null);
+  const [file, setFile] = useState<RemoteFileData>();
 
   const [searchInput, setSearchInput] = useState("");
-  const [isFileUploader, setIsFileUploader] = useState(false);
 
   const { setToastError } = useFeedbacks();
   const [groupInfo, setGroupInfo] = useState<GroupInfo_Reply>();
@@ -147,6 +149,7 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
       });
 
       setMessage("");
+      setFile(undefined);
       setReplyTo(undefined);
       inputRef?.current?.focus();
     } catch (err) {
@@ -325,13 +328,6 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
         />
 
         <SpacerColumn size={3} />
-
-        {isFileUploader && (
-          <UploadImage
-            onClose={() => setIsFileUploader(false)}
-            handleSend={handleSend}
-          />
-        )}
       </View>
       <View
         style={{
@@ -341,11 +337,8 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
         }}
       >
         <Dropdown triggerComponent={<SVG source={plus} />}>
-          {() => (
-            <UploadImage
-              onClose={() => setIsFileUploader(false)}
-              handleSend={handleSend}
-            />
+          {({ closeOpenedDropdown }) => (
+            <UploadImage onClose={closeOpenedDropdown} setFile={setFile} />
           )}
         </Dropdown>
 
@@ -367,6 +360,7 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
             </View>
           )}
           <TextInputCustom
+            autoFocus
             setRef={setInputRef}
             containerStyle={{
               marginHorizontal: layout.padding_x0_5,
@@ -400,6 +394,13 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
           </TextInputCustom>
         </View>
       </View>
+      {!!file && (
+        <UploadedPreview
+          setFile={setFile}
+          file={file}
+          handleSend={handleSend}
+        />
+      )}
     </View>
   );
 };
