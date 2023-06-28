@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Image, TouchableOpacity, View } from "react-native";
+import {
+  Image,
+  ImageStyle,
+  StyleProp,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 import { DeleteButton } from "./DeleteButton";
 import { ImagesFullViewModal } from "./ImagesFullViewModal";
@@ -12,9 +18,13 @@ import { BrandText } from "../BrandText";
 
 interface ImagePreviewProps {
   files: LocalFileData[] | RemoteFileData[];
+  imageStyle?: StyleProp<ImageStyle>;
 }
 
-export const ImageView: React.FC<ImagePreviewProps> = ({ files }) => {
+export const ImageView: React.FC<ImagePreviewProps> = ({
+  files,
+  imageStyle,
+}) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isFullView, setFullView] = useState(false);
 
@@ -53,11 +63,14 @@ export const ImageView: React.FC<ImagePreviewProps> = ({ files }) => {
             <Image
               source={{ uri: file.url }}
               resizeMode="contain"
-              style={{
-                height: 100,
-                width: 100,
-                borderRadius: 4,
-              }}
+              style={[
+                {
+                  height: 100,
+                  width: 100,
+                  borderRadius: 4,
+                },
+                imageStyle,
+              ]}
             />
           </TouchableOpacity>
         );

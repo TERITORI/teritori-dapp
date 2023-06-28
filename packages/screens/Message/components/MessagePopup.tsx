@@ -1,3 +1,4 @@
+import * as Clipboard from "expo-clipboard";
 import React, { useState, useMemo } from "react";
 import {
   View,
@@ -23,6 +24,7 @@ import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
 import { Separator } from "../../../components/Separator";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
+import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { neutralA3 } from "../../../utils/style/colors";
 import { fontSemibold13 } from "../../../utils/style/fonts";
 
@@ -58,16 +60,21 @@ const data = [
 ];
 
 interface MessagePopupProps {
+  message: string;
   isForwarding: boolean;
   setIsForwarding: () => void;
   onReply: () => void;
+  onClose: () => object;
 }
 
 export const MessagePopup = ({
   isForwarding,
   setIsForwarding,
   onReply,
+  message,
+  onClose,
 }: MessagePopupProps) => {
+  const { setToastSuccess } = useFeedbacks();
   const handleForwardClick = () => {
     setIsForwarding(true);
   };
@@ -82,7 +89,12 @@ export const MessagePopup = ({
 
   return (
     <View>
-      <TouchableOpacity onPress={onReply}>
+      <TouchableOpacity
+        onPress={() => {
+          onReply();
+          onClose();
+        }}
+      >
         <FlexRow>
           <SVG source={reply} height={16} width={16} color={neutralA3} />
           <SpacerRow size={1} />
@@ -94,7 +106,7 @@ export const MessagePopup = ({
 
       <SpacerColumn size={1} />
 
-      <TouchableOpacity onPress={handleForwardClick}>
+      {/* <TouchableOpacity onPress={handleForwardClick}>
         <FlexRow>
           <SVG source={farwardto} height={16} width={16} color={neutralA3} />
           <SpacerRow size={1} />
@@ -110,12 +122,21 @@ export const MessagePopup = ({
             style={{ marginTop: 4 }}
           />
         </FlexRow>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
       <SpacerColumn size={1} />
       <Separator />
       <SpacerColumn size={1} />
-      <TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => {
+          Clipboard.setStringAsync(message);
+          setToastSuccess({
+            title: "Copied",
+            message: "",
+          });
+          onClose();
+        }}
+      >
         <FlexRow>
           <SVG source={copy} height={20} width={20} color={neutralA3} />
           <SpacerRow size={1} />
@@ -125,7 +146,7 @@ export const MessagePopup = ({
         </FlexRow>
       </TouchableOpacity>
       <SpacerColumn size={1} />
-      <TouchableOpacity>
+      {/* <TouchableOpacity>
         <FlexRow>
           <SVG source={select} height={16} width={16} color={neutralA3} />
           <SpacerRow size={1} />
@@ -133,8 +154,8 @@ export const MessagePopup = ({
             Select
           </BrandText>
         </FlexRow>
-      </TouchableOpacity>
-      <SpacerColumn size={1} />
+      </TouchableOpacity> */}
+      {/* <SpacerColumn size={1} />
       <Separator />
       <SpacerColumn size={1} />
       <TouchableOpacity>
@@ -145,7 +166,7 @@ export const MessagePopup = ({
             Delete
           </BrandText>
         </FlexRow>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
       {isForwarding && (
         <View style={[styles.forwardContainer, { maxHeight: 5 * ITEM_HEIGHT }]}>
           <View

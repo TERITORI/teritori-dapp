@@ -7,10 +7,12 @@ import { VideoView } from "../../../components/FilePreview/VideoView";
 import { RemoteFileData } from "../../../utils/types/feed";
 interface Props {
   files: RemoteFileData[];
+  maxWidth?: number;
+  waveFormMaxWidth?: number;
 }
 export const THUMBNAIL_WIDTH = 140;
 
-export const FileRenderer = ({ files }: Props) => {
+export const FileRenderer = ({ files, maxWidth, waveFormMaxWidth }: Props) => {
   console.log(files);
 
   const { width } = useWindowDimensions();
@@ -36,19 +38,23 @@ export const FileRenderer = ({ files }: Props) => {
   );
 
   return (
-    <View
-      style={{
-        width: width - 700,
-      }}
-    >
-      {!!imageFiles?.length && <ImageView files={imageFiles || []} />}
+    <View style={{ width: maxWidth || "100%" }}>
+      {!!imageFiles?.length && (
+        <ImageView
+          files={imageFiles || []}
+          imageStyle={{
+            width: maxWidth,
+            height: 200,
+          }}
+        />
+      )}
 
       {videoFiles?.map((file, index) => (
         <VideoView key={index} file={file} />
       ))}
 
       {audioFiles?.map((file, index) => (
-        <AudioView key={index} file={file} />
+        <AudioView key={index} file={file} maxWidth={waveFormMaxWidth} />
       ))}
     </View>
   );
