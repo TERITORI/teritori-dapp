@@ -68,7 +68,10 @@ export const ChatItem = ({ data, onPress, isActive }: ChatItemProps) => {
                   </BrandText>
                 </FlexRow>
                 <SpacerColumn size={0.5} />
-                <BrandText style={[fontSemibold11, { color: neutralA3 }]}>
+                <BrandText
+                  numberOfLines={1}
+                  style={[fontSemibold11, { color: neutralA3, maxWidth: 100 }]}
+                >
                   {lastMessage?.payload?.message}
                 </BrandText>
               </View>
