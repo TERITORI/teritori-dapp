@@ -33,7 +33,7 @@ export const LeftRail = () => {
       }}
     >
       <BrandText style={{ marginBottom: layout.padding_x2_5 }}>
-        dApps in sidebar
+        dApps in Sidebar
       </BrandText>
       {selectedApps.length > 0 && Object.keys(availableApps).length > 0 ? (
         <DraxProvider>

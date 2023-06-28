@@ -43,7 +43,7 @@ export const DAppStoreData: React.FC = memo(() => {
     const dAppsCol: IdAppsLUT = {};
     const formatted: dAppGroup = {};
 
-    dApps?.group.forEach((record) => {
+    dApps?.group.forEach((record, index) => {
       dAppsCol[record.linkingId] = {
         [record.id]: {
           id: record.id,
@@ -54,6 +54,7 @@ export const DAppStoreData: React.FC = memo(() => {
           groupKey: record.groupKey,
           selectedByDefault: record.selectedByDefault,
           alwaysOn: record.alwaysOn,
+          order: index,
         },
       };
     });

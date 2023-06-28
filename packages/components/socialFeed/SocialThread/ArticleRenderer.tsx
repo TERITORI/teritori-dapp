@@ -1,6 +1,7 @@
 import React from "react";
 import { Image } from "react-native";
 
+import { ARTICLE_COVER_IMAGE_HEIGHT } from "../../../utils/social-feed";
 import { layout } from "../../../utils/style/layout";
 import { RemoteFileData } from "../../../utils/types/feed";
 import { BrandText } from "../../BrandText";
@@ -13,7 +14,7 @@ interface Props {
   audioFiles?: RemoteFileData[];
   isPreview?: boolean;
 }
-// TODO: Rework this ! Set a max height for preview
+
 export const ArticleRenderer: React.FC<Props> = ({
   metadata,
   audioFiles,
@@ -34,7 +35,7 @@ export const ArticleRenderer: React.FC<Props> = ({
           resizeMode="cover"
           style={{
             width: "100%",
-            height: 240,
+            height: ARTICLE_COVER_IMAGE_HEIGHT,
             marginBottom: layout.padding_x1_5,
           }}
         />

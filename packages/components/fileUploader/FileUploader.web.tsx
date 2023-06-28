@@ -21,7 +21,6 @@ import { SVG } from "../SVG";
 import { PrimaryBox } from "../boxes/PrimaryBox";
 import { GradientText } from "../gradientText";
 import { Label } from "../inputs/TextInputCustom";
-const FILE_HEIGHT = 256;
 
 export const FileUploader: FC<FileUploaderProps> = ({
   label,
@@ -32,6 +31,8 @@ export const FileUploader: FC<FileUploaderProps> = ({
   mimeTypes,
   children,
   maxUpload,
+  isImageCover,
+  fileHeight = 256,
 }) => {
   const { setToastError } = useFeedbacks();
   const hiddenFileInput = useRef<HTMLInputElement>(null);
@@ -132,7 +133,7 @@ export const FileUploader: FC<FileUploaderProps> = ({
               flexDirection: "row",
               alignItems: "center",
               justifyContent: "center",
-              height: file ? FILE_HEIGHT : 80,
+              height: file ? fileHeight : 80,
               borderRadius: 12,
             }}
           >
@@ -149,9 +150,12 @@ export const FileUploader: FC<FileUploaderProps> = ({
                   src={file}
                   style={{
                     overflow: "hidden",
-                    height: FILE_HEIGHT,
+                    height: fileHeight,
                     backgroundSize: "cover",
+                    width: isImageCover ? "100%" : "auto",
+                    objectFit: isImageCover ? "cover" : "fill",
                   }}
+                  alt="Uploaded file"
                 />
               </>
             ) : (
@@ -165,7 +169,7 @@ export const FileUploader: FC<FileUploaderProps> = ({
                 ]}
                 style={{ flex: 1 }}
                 mainContainerStyle={{
-                  height: file ? FILE_HEIGHT : 80,
+                  height: file ? fileHeight : 80,
                   alignItems: "center",
                   padding: layout.padding_x2_5,
                   borderRadius: 12,
