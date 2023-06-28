@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { uniqBy } from "lodash";
 import moment from "moment";
 
 import {
@@ -83,12 +84,15 @@ const messageSlice = createSlice({
         }
         state.messageList[action.payload.groupPk][
           action.payload.data?.parentId
-        ].reactions = [
-          ...(state.messageList[action.payload.groupPk][
-            action.payload.data.parentId
-          ].reactions || []),
-          action.payload.data,
-        ];
+        ].reactions = uniqBy(
+          [
+            ...(state.messageList[action.payload.groupPk][
+              action.payload.data.parentId
+            ].reactions || []),
+            action.payload.data,
+          ],
+          "id"
+        );
       } catch (err) {
         console.log("updateMessageReaction err", err);
       }

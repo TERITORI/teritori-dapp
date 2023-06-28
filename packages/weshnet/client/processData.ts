@@ -24,12 +24,12 @@ const processedMetadataIds: string[] = [];
 export const handleMetadata = async (data: GroupMetadataEvent) => {
   const id = stringFromBytes(data.eventContext?.id);
 
-  store.dispatch(
-    setLastId({
-      key: "metadata",
-      value: id,
-    })
-  );
+  // store.dispatch(
+  //   setLastId({
+  //     key: "metadata",
+  //     value: id,
+  //   })
+  // );
   if (processedMetadataIds.includes(id)) {
     return;
   }

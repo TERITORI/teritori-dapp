@@ -28,13 +28,13 @@ export const subscribeMessages = async (
   groupPk: string,
   ignoreCheck: boolean = false
 ) => {
-  if (!ignoreCheck) {
-    if (subscribedMessages.includes(groupPk)) {
-      return;
-    } else {
-      subscribedMessages.push(groupPk);
-    }
-  }
+  // if (!ignoreCheck) {
+  //   if (subscribedMessages.includes(groupPk)) {
+  //     return;
+  //   } else {
+  //     subscribedMessages.push(groupPk);
+  //   }
+  // }
 
   const lastId = selectLastIdByKey(groupPk)(store.getState());
 
@@ -55,16 +55,16 @@ export const subscribeMessages = async (
       next: (data: GroupMessageEvent) => {
         console.log("message");
         const id = stringFromBytes(data.eventContext?.id);
-        store.dispatch(
-          setLastId({
-            key: groupPk,
-            value: id,
-          })
-        );
-        // if (processedMessageIds.includes(id)) {
-        //   return;
-        // }
-        // processedMessageIds.push(id);
+        // store.dispatch(
+        //   setLastId({
+        //     key: groupPk,
+        //     value: id,
+        //   })
+        // );
+        if (processedMessageIds.includes(id)) {
+          return;
+        }
+        processedMessageIds.push(id);
         data.message = decodeJSON(data.message);
 
         const message: Message = {
@@ -136,13 +136,13 @@ export const subscribeMessages = async (
       complete: async () => {
         console.log("get message complete");
 
-        if (!lastId && !ignoreCheck) {
-          await subscribeMessages(groupPk, true);
-        }
-        // await subscribeMessages2({ groupPk: config.groupPk, sinceId: lastId });
-        // setTimeout(() => {
-        //   subscribeMessages(config);
-        // }, 5000);
+        // if (!lastId && !ignoreCheck) {
+        //   await subscribeMessages(groupPk, true);
+        // }
+
+        setTimeout(() => {
+          subscribeMessages(groupPk);
+        }, 2000);
       },
     };
     return messages.subscribe(observer);
@@ -175,7 +175,10 @@ export const subscribeMetadata = async (groupPk: Uint8Array) => {
         console.log("get metadata err", e);
       },
       complete: () => {
-        subscribeMetadata(groupPk);
+        // subscribeMetadata(groupPk);
+        setTimeout(() => {
+          subscribeMetadata(groupPk);
+        }, 5000);
       },
     };
     metadata.subscribe(myObserver);
