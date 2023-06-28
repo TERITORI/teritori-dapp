@@ -11,6 +11,7 @@ import {
 } from "react-native";
 
 import { HandleSendParams } from "./ChatSection";
+import { FileRenderer } from "./FileRenderer";
 import deleteIcon from "../../../../assets/icons/delete.svg";
 import file from "../../../../assets/icons/fileattach.svg";
 import largeActive from "../../../../assets/icons/large-active.svg";
@@ -177,32 +178,33 @@ export const UploadImage = ({ onClose, handleSend }: UploadImageProps) => {
         )}
 
         <ModalBase
-          label={
-            <FlexRow>
-              <TouchableOpacity onPress={handleShowImage}>
-                {isImageLarge ? (
-                  <SVG source={largeActive} />
-                ) : (
-                  <SVG source={large} />
-                )}
-              </TouchableOpacity>
-              <TouchableOpacity onPress={handleCloseImage}>
-                {isImageLarge ? (
-                  <SVG source={small} />
-                ) : (
-                  <SVG source={smallActive} />
-                )}
-              </TouchableOpacity>
-            </FlexRow>
-          }
+          label="File upload"
+          // label={
+          //   <FlexRow>
+          //     <TouchableOpacity onPress={handleShowImage}>
+          //       {isImageLarge ? (
+          //         <SVG source={largeActive} />
+          //       ) : (
+          //         <SVG source={large} />
+          //       )}
+          //     </TouchableOpacity>
+          //     <TouchableOpacity onPress={handleCloseImage}>
+          //       {isImageLarge ? (
+          //         <SVG source={small} />
+          //       ) : (
+          //         <SVG source={smallActive} />
+          //       )}
+          //     </TouchableOpacity>
+          //   </FlexRow>
+          // }
           onClose={() => setFile(undefined)}
           visible={!!file}
           hideMainSeparator
-          width={350}
+          width={400}
 
           // containerStyle={{ height: 900 }}
         >
-          {isImageLarge ? (
+          {/* {isImageLarge ? (
             <View
               style={{
                 backgroundColor: additionalRed,
@@ -260,12 +262,19 @@ export const UploadImage = ({ onClose, handleSend }: UploadImageProps) => {
                 </FlexRow>
               </View>
             </FlexRow>
+          )} */}
+          {!!file && (
+            <FileRenderer
+              files={[file]}
+              maxWidth={360}
+              waveFormMaxWidth={300}
+            />
           )}
-
           <SpacerColumn size={10} />
 
           <View style={styles.footer}>
             <TextInputCustom
+              fullWidth
               noBrokenCorners
               name="message"
               placeHolder="Add a message..."
@@ -304,7 +313,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  footer: { position: "absolute", bottom: 0, width: 350, left: 0 },
+  footer: { position: "absolute", bottom: 0, right: 0, left: 0 },
   attachmentModal: {
     position: "absolute",
     top: -55,

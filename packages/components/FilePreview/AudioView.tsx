@@ -24,7 +24,8 @@ import { THUMBNAIL_WIDTH } from "../socialFeed/SocialThread/SocialMessageContent
 
 export const AudioView: React.FC<{
   file: RemoteFileData;
-}> = ({ file }) => {
+  maxWidth?: number;
+}> = ({ file, maxWidth }) => {
   const { width } = useMaxResolution();
   const [sound, setSound] = useState<Audio.Sound>();
   const [playbackStatus, setPlaybackStatus] = useState<AVPlaybackStatus>();
@@ -166,11 +167,11 @@ export const AudioView: React.FC<{
             <View
               style={{
                 overflow: "hidden",
-                width: audioWaveWidth,
+                width: maxWidth || audioWaveWidth,
               }}
             >
               <AudioWaveform
-                waveFormContainerWidth={audioWaveWidth}
+                waveFormContainerWidth={maxWidth || audioWaveWidth}
                 waveform={file.audioMetadata?.waveform || []}
                 positionPercent={positionPercent}
                 duration={

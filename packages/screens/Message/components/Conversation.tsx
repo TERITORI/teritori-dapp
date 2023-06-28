@@ -170,7 +170,7 @@ export const Conversation = ({
                 }}
               />
               <BrandText style={[fontSemibold11, { color: neutral77 }]}>
-                {message.payload.message}
+                {parentMessage.payload.message}
               </BrandText>
             </FlexRow>
           )}
@@ -181,7 +181,11 @@ export const Conversation = ({
                   {message.payload.message}
                 </BrandText>
                 {!!message.payload.files.length && (
-                  <FileRenderer files={message.payload.files || []} />
+                  <FileRenderer
+                    files={message.payload.files || []}
+                    maxWidth={400}
+                    waveFormMaxWidth={340}
+                  />
                 )}
               </>
             ) : (
@@ -238,6 +242,8 @@ export const Conversation = ({
                 <Dropdown onDropdownClosed={() => setShowMenu(false)}>
                   <View style={styles.popupContainer}>
                     <MessagePopup
+                      onClose={() => setShowMenu(false)}
+                      message={message.payload.message}
                       onReply={() =>
                         onReply({
                           id: message.id,
