@@ -138,8 +138,8 @@ export const CollectionHeader: React.FC<{
                 stats
                   ? prettyPrice(
                       network.id,
-                      stats.floorPrice[0].quantity,
-                      stats.floorPrice[0].denom,
+                      stats.floorPrice[0]?.quantity,
+                      stats.floorPrice[0]?.denom,
                       true
                     )
                   : "-"
@@ -147,7 +147,7 @@ export const CollectionHeader: React.FC<{
               currencyIcon={{
                 networkId: network.id,
                 value: 0,
-                denom: stats.floorPrice[0].denom,
+                denom: stats.floorPrice[0]?.denom,
               }}
             />
             <SpacerRow size={1.5} />
@@ -156,13 +156,13 @@ export const CollectionHeader: React.FC<{
               value={prettyPrice(
                 network.id,
                 parseFloat(stats.totalVolume).toFixed(0),
-                stats.floorPrice[0].denom,
+                stats.floorPrice[0]?.denom,
                 true
               )}
               currencyIcon={{
                 networkId: network.id,
                 value: parseFloat(stats.totalVolume),
-                denom: stats.floorPrice[0].denom,
+                denom: stats.floorPrice[0]?.denom,
               }}
             />
             <SpacerRow size={1.5} />
@@ -184,13 +184,13 @@ export const CollectionHeader: React.FC<{
                   value={prettyPrice(
                     network.id,
                     stats.avgPricePeriod.toFixed(0),
-                    stats.floorPrice[0].denom,
+                    stats.floorPrice[0]?.denom,
                     true
                   )}
                   currencyIcon={{
                     networkId: network.id,
                     value: stats.avgPricePeriod,
-                    denom: stats.floorPrice[0].denom,
+                    denom: stats.floorPrice[0]?.denom,
                   }}
                 />
               </>

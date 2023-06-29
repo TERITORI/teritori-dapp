@@ -6,8 +6,8 @@ import (
 	"errors"
 )
 
-type ArrayJSONB []interface{}
-type ObjectJSONB map[string]interface{}
+type ArrayJSONB []interface{}           // TODO: use datatypes.JSON
+type ObjectJSONB map[string]interface{} // TODO: use datatypes.JSON
 
 func (p ArrayJSONB) Value() (driver.Value, error) {
 	j, err := json.Marshal(p)
