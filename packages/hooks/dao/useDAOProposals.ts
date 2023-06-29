@@ -111,13 +111,18 @@ export const useDAOProposals = (daoId: string | undefined) => {
         );
         const actions: string[] = [];
         for (let m = 0; m < numActions; m++) {
-          const action = extractGnoString(
-            await provider.evaluateExpression(
-              daoAddress,
-              `GetCore().ProposalModules()[0].Proposals()[${i}].Messages[${m}].String()`
-            )
-          );
-          actions.push(action);
+          try {
+            const action = extractGnoString(
+              await provider.evaluateExpression(
+                daoAddress,
+                `GetCore().ProposalModules()[0].Proposals()[${i}].Messages[${m}].String()`
+              )
+            );
+            actions.push(action);
+          } catch (e) {
+            console.error("failed to fetch action", e);
+            actions.push(`${e}`);
+          }
         }
         // TODO: render actions
         proposals.push({

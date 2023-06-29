@@ -166,13 +166,16 @@ export const ProposalActions: React.FC<{
         case NetworkKind.Gno: {
           const walletAddress = selectedWallet.address;
           const [, pkgPath] = parseUserId(daoId);
-          await adenaVMCall({
-            caller: walletAddress,
-            send: "",
-            pkg_path: pkgPath,
-            func: "Execute",
-            args: ["0", proposal.id.toString()],
-          });
+          await adenaVMCall(
+            {
+              caller: walletAddress,
+              send: "",
+              pkg_path: pkgPath,
+              func: "Execute",
+              args: ["0", proposal.id.toString()],
+            },
+            { gasWanted: 10000000 }
+          );
           break;
         }
       }
