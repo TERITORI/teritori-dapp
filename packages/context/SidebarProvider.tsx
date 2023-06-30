@@ -14,6 +14,10 @@ import {
   selectCheckedApps,
   setSelectedApps,
 } from "../store/slices/dapps-store";
+import {
+  selectSidebarExpanded,
+  setSidebarExpanded,
+} from "../store/slices/settings";
 import { useAppDispatch } from "../store/store";
 import { SIDEBAR_LIST } from "../utils/sidebar";
 
@@ -35,6 +39,8 @@ const MOBILE_WIDTH = 768;
 
 export const SidebarContextProvider: React.FC = ({ children }) => {
   // The entered isSidebarExpanded
+  const settingIsSidebarExpanded = useSelector(selectSidebarExpanded);
+
   const [isSidebarExpanded, setIsSidebarExpanded] = useState<boolean>(
     defaultValue.isSidebarExpanded
   );
@@ -91,11 +97,14 @@ export const SidebarContextProvider: React.FC = ({ children }) => {
 
   useEffect(() => {
     setIsSidebarExpanded(
-      windowWidth >= MOBILE_WIDTH ? defaultValue.isSidebarExpanded : false
+      windowWidth >= MOBILE_WIDTH ? settingIsSidebarExpanded : false
     );
-  }, [windowWidth]);
+  }, [settingIsSidebarExpanded, windowWidth]);
 
-  const toggleSidebar = () => setIsSidebarExpanded(!isSidebarExpanded);
+  const toggleSidebar = () => {
+    dispatch(setSidebarExpanded(!isSidebarExpanded));
+    setIsSidebarExpanded(!isSidebarExpanded);
+  };
 
   return (
     <SidebarContext.Provider
