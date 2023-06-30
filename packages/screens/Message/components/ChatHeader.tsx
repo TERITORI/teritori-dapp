@@ -126,13 +126,13 @@ export const ChatHeader = ({ searchInput, setSearchInput, name }: any) => {
           ) : (
             <View>
               <FlexRow>
-                <TouchableOpacity onPress={handleVideo}>
+                {/* <TouchableOpacity onPress={handleVideo}>
                   <SVG source={videocall} />
                 </TouchableOpacity>
                 <SpacerRow size={2} />
                 <TouchableOpacity onPress={handleAudio}>
                   <SVG source={audiocell} />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
                 <SpacerRow size={4} />
                 <TouchableOpacity onPress={handleSearchIconPress}>
                   <SVG
@@ -177,7 +177,6 @@ export const ChatHeader = ({ searchInput, setSearchInput, name }: any) => {
             backgroundColor: neutral17,
             padding: 12,
             width: "100%",
-
             top: 46.8,
           }}
         >

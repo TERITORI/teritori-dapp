@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  TouchableOpacity,
-  Modal,
-  Platform,
-  ScrollView,
-} from "react-native";
+import { View, TouchableOpacity, Platform, ScrollView } from "react-native";
 
 import { CreateConversation } from "./components/CreateConversation";
 import { CreateGroup } from "./components/CreateGroup";
@@ -27,8 +21,7 @@ import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useAppNavigation, ScreenFC } from "../../utils/navigation";
 import { layout } from "../../utils/style/layout";
-import { createWeshClient } from "../../weshnet";
-import { weshClient, weshServices } from "../../weshnet/client";
+import { weshServices } from "../../weshnet/client";
 
 export const MessageScreen: ScreenFC<"Message"> = () => {
   const [isCreateGroup, setIsCreateGroup] = useState(false);
@@ -38,7 +31,6 @@ export const MessageScreen: ScreenFC<"Message"> = () => {
 
   const [activeTab, setActiveTab] = useState<"chat" | "add-friend">("chat");
   const userInfo = useNSUserInfo(selectedWallet?.userId);
-  console.log("userInfo", userInfo);
 
   const navigation = useAppNavigation();
 
@@ -93,11 +85,16 @@ export const MessageScreen: ScreenFC<"Message"> = () => {
       responsive
       fullWidth
     >
-      <View style={{ padding: layout.padding_x1_5 }}>
+      <View style={{}}>
         <SpacerColumn size={3} />
 
         <FlexRow>
-          <ScrollView horizontal>
+          <ScrollView
+            horizontal
+            style={{
+              paddingHorizontal: layout.padding_x1_5,
+            }}
+          >
             {HEADER_CONFIG.map((item) => (
               <React.Fragment key={item.title}>
                 <TouchableOpacity onPress={item.onPress}>
@@ -137,7 +134,6 @@ export const MessageScreen: ScreenFC<"Message"> = () => {
               }}
               activeConversation={activeConversation}
             />
-            <SpacerRow size={2} />
             <Separator horizontal />
 
             <View style={{ flex: 1 }}>

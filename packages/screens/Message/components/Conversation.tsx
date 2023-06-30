@@ -221,7 +221,13 @@ export const Conversation = ({
           {!isSender && (
             <>
               {showPopup && (
-                <Dropdown onDropdownClosed={() => setShowPopup(false)}>
+                <Dropdown
+                  onDropdownClosed={() => setShowPopup(false)}
+                  positionStyle={{
+                    top: -40,
+                    right: -100,
+                  }}
+                >
                   <View style={styles.popupContainerIconAndReply}>
                     <FlexRow>
                       <EmojiSelector onEmojiSelected={onEmojiSelected} />
@@ -280,7 +286,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderRadius: 16,
     width: "auto",
-    zIndex: 11111,
   },
   popupContainerIconAndReply: {
     backgroundColor: "rgba(41, 41, 41, 0.8)",
@@ -288,6 +293,5 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 6,
     width: "auto",
-    zIndex: 9,
   },
 });

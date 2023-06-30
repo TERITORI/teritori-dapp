@@ -6788,13 +6788,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-native-picker/picker@npm:2.4.0":
-  version: 2.4.0
-  resolution: "@react-native-picker/picker@npm:2.4.0"
+"@react-native-picker/picker@npm:2.4.8":
+  version: 2.4.8
+  resolution: "@react-native-picker/picker@npm:2.4.8"
   peerDependencies:
-    react: 16 || 17
+    react: ">=16"
     react-native: ">=0.57"
-  checksum: ccec86aaa54b8011479b7aa3e062534ccbe146c696ecefa456f1540da5de3d3b84c422beeaf499f3d1166898996d88186155432b7c51fbbdb5d576dc4f2c379f
+  checksum: c2ac00b379a9a43188be53ce8e4eb849e6d02ad8a3afe18a88416d8d0d433ac33396eea34a6fdad27f8b4f8c88bc77b4a87fec146c99d987bd91244980762879
   languageName: node
   linkType: hard
 
@@ -25651,13 +25651,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-pager-view@npm:^6.2.0":
-  version: 6.2.0
-  resolution: "react-native-pager-view@npm:6.2.0"
+"react-native-pager-view@npm:6.0.1":
+  version: 6.0.1
+  resolution: "react-native-pager-view@npm:6.0.1"
   peerDependencies:
     react: "*"
     react-native: "*"
-  checksum: 3006fe29f008d472ebfb654922302d138b08f56e7796627263424b5e91a3169dd9d0c450b5396efffd88d511197c5006180430a2b687d2d827926b324f8fb947
+  checksum: 97b113aa96ab7ac06555d683417cac7678ab1ce28d54ecd2749ea499d0040c8066459d35637495c52a09c8324f16a2c0e3ff4afe18152f1ff9afe32561a9e996
   languageName: node
   linkType: hard
 
@@ -25814,16 +25814,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-svg@npm:^13.7.0":
-  version: 13.9.0
-  resolution: "react-native-svg@npm:13.9.0"
+"react-native-svg@npm:13.4.0":
+  version: 13.4.0
+  resolution: "react-native-svg@npm:13.4.0"
   dependencies:
     css-select: ^5.1.0
     css-tree: ^1.1.3
   peerDependencies:
     react: "*"
     react-native: "*"
-  checksum: f4fe1c9e802d7ea86b9efef74313a80fb75d486f40ca79aaa04d42ffd3f6e462a3f37ee54018fae9fd1efdc2d8b005d1e71b02bb266c0ab8baec70d9a5730892
+  checksum: e630c057d6a0947c4d729538f643585a1fd9380975c1cf9adffad7647822b35219a9e1e60407f422b2b70592ed7f7e8766fab15df74f9cfce0b1c8a1c3544676
   languageName: node
   linkType: hard
 
@@ -28714,7 +28714,7 @@ __metadata:
     "@react-native-clipboard/clipboard": ^1.10.0
     "@react-native-community/checkbox": ^0.5.15
     "@react-native-masked-view/masked-view": 0.2.8
-    "@react-native-picker/picker": 2.4.0
+    "@react-native-picker/picker": 2.4.8
     "@react-navigation/drawer": ^6.6.2
     "@react-navigation/material-top-tabs": ^6.6.2
     "@react-navigation/native": ^6.0.11
@@ -28803,7 +28803,7 @@ __metadata:
     react-native-heroicons: ^3.2.0
     react-native-hoverable: ^0.2.0
     react-native-image-picker: ^5.3.1
-    react-native-pager-view: ^6.2.0
+    react-native-pager-view: 6.0.1
     react-native-paper: ^4.12.5
     react-native-pell-rich-editor: ^1.8.8
     react-native-popup-menu: ^0.16.1
@@ -28814,7 +28814,7 @@ __metadata:
     react-native-safe-area-context: 4.4.1
     react-native-screens: ~3.18.0
     react-native-smooth-slider: ^1.3.6
-    react-native-svg: ^13.7.0
+    react-native-svg: 13.4.0
     react-native-svg-transformer: ^1.0.0
     react-native-tab-view: ^3.5.1
     react-native-text-ticker: ^1.14.0

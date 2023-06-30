@@ -343,7 +343,7 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
         </Dropdown>
 
         <SpacerRow size={2} />
-        <View>
+        <View style={{ flex: 1 }}>
           {!!replyTo?.message && (
             <View
               style={{
@@ -361,6 +361,7 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
           )}
           <TextInputCustom
             autoFocus
+            fullWidth
             setRef={setInputRef}
             containerStyle={{
               marginHorizontal: layout.padding_x0_5,
@@ -373,9 +374,6 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
             value={message}
             onChangeText={setMessage}
             label=""
-            style={{
-              width: width - 560,
-            }}
             textInputStyle={{
               height: Math.max(20, inputHeight - 20),
             }}
