@@ -22,6 +22,7 @@ import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkKind } from "../../networks";
 import { useAppNavigation } from "../../utils/navigation";
 import { neutral17, neutral33 } from "../../utils/style/colors";
+import { fontBold16, fontBold9 } from "../../utils/style/fonts";
 import {
   smallSidebarWidth,
   fullSidebarWidth,
@@ -146,7 +147,10 @@ export const Sidebar: React.FC = () => {
       />
       <View>
         <SidebarSeparator />
-        <BuyTokens />
+        <BuyTokens
+          flexDirection={isSidebarExpanded ? "row" : "column"}
+          textStyle={isSidebarExpanded ? fontBold16 : fontBold9}
+        />
         <SidebarSeparator />
 
         {selectedNetworkKind === NetworkKind.Cosmos &&
