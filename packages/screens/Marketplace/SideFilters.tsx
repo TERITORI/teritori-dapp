@@ -439,7 +439,6 @@ const PriceFilter: React.FC<{ currency: NativeCurrencyInfo }> = ({
   });
   const textInputStyle = StyleSheet.flatten([styles.textInput, fontMedium14]);
   const priceRange = useSelector(selectPriceRange);
-  console.log(priceRange);
   const [min, setMin] = useState<string>(priceRange?.min || "");
   const [max, setMax] = useState<string>(priceRange?.max || "");
 

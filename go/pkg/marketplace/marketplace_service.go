@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/bxcodec/faker/v3"
+	"github.com/mrz1836/go-sanitize"
 	"strings"
 	"time"
 
@@ -404,13 +405,25 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 		if ownerID != "" {
 			query = query.Where("owner_id = ?", ownerID)
 		}
+
+		jsonStr, err := json.Marshal(req.Attributes)
+		if err != nil {
+			return errors.Wrap(err, "failed to convert nft attributes => json string")
+		}
+
+		// json string => struct
+		var attributes []*marketplacepb.Attribute
+		if err := json.Unmarshal(jsonStr, &attributes); err != nil {
+			return errors.Wrap(err, "failed to convert nft json string => struct")
+		}
+
 		var attributeQuery []string
 		for _, attribute := range req.Attributes {
 
 			attributeQuery = append(attributeQuery, fmt.Sprintf(`
         attributes  @> '[{"value": "%s", "trait_type": "%s" }]'::jsonb`,
-				attribute.Value,
-				attribute.TraitType,
+				sanitize.Punctuation(attribute.Value),
+				sanitize.Punctuation(attribute.TraitType),
 			))
 
 		}
