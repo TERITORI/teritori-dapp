@@ -7,6 +7,7 @@ import {
 } from "react-native";
 
 import { DefaultValue, useDropdowns } from "../context/DropdownsProvider";
+type Position = "top" | "bottom" | "left" | "right" | "auto";
 
 interface DropdownProps {
   children:
@@ -15,15 +16,15 @@ interface DropdownProps {
   triggerComponent?: React.ReactNode;
   style?: ViewStyle;
   onDropdownClosed?: () => void;
+  positionStyle?: ViewStyle;
 }
-
-type Position = "top" | "bottom" | "left" | "right" | "auto";
 
 export const Dropdown = ({
   style,
   children,
   triggerComponent,
   onDropdownClosed,
+  positionStyle = {},
 }: DropdownProps) => {
   const [layout, setLayout] = useState({
     height: 0,
@@ -67,12 +68,15 @@ export const Dropdown = ({
       </TouchableOpacity>
       {isDropdownOpen(dropdownRef) && (
         <View
-          style={{
-            position: "absolute",
-            top: "-100%",
-            width: "auto",
-            flex: 1,
-          }}
+          style={[
+            {
+              position: "absolute",
+              width: "auto",
+              flex: 1,
+              zIndex: 999,
+            },
+            positionStyle,
+          ]}
         >
           {typeof children === "function"
             ? children({ isDropdownOpen, closeOpenedDropdown })

@@ -19,6 +19,7 @@ import {
   neutral22,
 } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
+import { layout } from "../../../utils/style/layout";
 
 export const SideBarChats: React.FC = ({
   setActiveConversation,
@@ -32,7 +33,11 @@ export const SideBarChats: React.FC = ({
     }
   }, [activeConversation, conversationList, setActiveConversation]);
   return (
-    <View>
+    <View
+      style={{
+        paddingHorizontal: layout.padding_x1_5,
+      }}
+    >
       <SpacerColumn size={2} />
       <FriendListWithNewMessages />
       <SpacerColumn size={2.5} />
