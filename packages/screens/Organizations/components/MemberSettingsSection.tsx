@@ -24,7 +24,6 @@ interface MemberSettingsSectionProps {
 export const MemberSettingsSection: React.FC<MemberSettingsSectionProps> = ({
   onSubmit,
 }) => {
-  // variables
   // const { handleSubmit, control, unregister } = useForm<MemberSettingFormType>();
   const { handleSubmit, control } = useForm<MemberSettingFormType>();
   const [addressIndexes, setAddressIndexes] = useState<number[]>([0]);
@@ -58,7 +57,6 @@ export const MemberSettingsSection: React.FC<MemberSettingsSectionProps> = ({
                 label="Member Address"
                 hideLabel={index > 0}
                 control={control}
-                // isAsterickSign
                 rules={{ required: true, validate: validateAddress }}
                 placeHolder="Account address"
                 iconSVG={walletInputSVG}
@@ -79,7 +77,6 @@ export const MemberSettingsSection: React.FC<MemberSettingsSectionProps> = ({
                 label="Weight"
                 hideLabel={index > 0}
                 control={control}
-                // isAsterickSign
                 rules={{ required: true, pattern: patternOnlyNumbers }}
                 placeHolder="1"
               />

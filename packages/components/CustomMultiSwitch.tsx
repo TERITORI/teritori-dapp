@@ -42,7 +42,7 @@ export const CustomMultipleSwitch: FC<Props> = ({ items, value, onChange }) => {
         useNativeDriver: true,
       }).start();
     }
-  }, [items, value, elements, animatedValue]);
+  }, [items.length, value, elements, animatedValue]);
 
   useEffect(() => {
     const startAnimation = (newVal: string) => {
@@ -58,7 +58,7 @@ export const CustomMultipleSwitch: FC<Props> = ({ items, value, onChange }) => {
       }).start();
     };
     startAnimation(value);
-  }, [value, animatedValue, elements]);
+  }, [animatedValue, elements, value]);
 
   const getSliderStyle = () => {
     return [

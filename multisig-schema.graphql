@@ -1,0 +1,71 @@
+type Multisig {
+  pubkeyJSON: String!
+  userAddresses: [String!]
+  address: String!
+  chainId: String!
+}
+
+type UserWallet{
+  userAddress: String!
+  walletName: String!
+  chainId: String!
+  multisig: Multisig @relation
+}
+
+type SourceAddress {
+  nickname: String
+  address: String!
+  pubkey: String!
+  multisig: Multisig @relation
+}
+
+type Transaction {
+  accountNumber: Int
+  sequence: Int
+  chainId: String
+  msgs: String
+  fee: String
+  memo: String
+  signatures: [Signature] @relation
+  txHash: String
+  multisig: Multisig! @relation
+  type: String
+  createdAt: String
+  createdBy: String
+  decliners: [String]
+  recipientAddress: String
+}
+
+type Signature {
+  transaction: Transaction! @relation
+  bodyBytes: String!
+  signature: String!
+  address: String!
+}
+
+type Query {
+  getTransactionCountByMultisigId(id: String!, types: [String!]!): [Int]!
+    @resolver(name: "getTransactionCountByMultisigId")
+  getMultisig(address: String!, chainId: String!): Multisig
+  multisigByUserAddress(address: String!, chainId: String!):[Multisig!] @resolver
+  transactionsByMultisigId(id: String!, type: String): [Transaction!]
+    @resolver(name: "transactionsByMultisigId", paginated: true)
+  transactionsByUserAddress(address: String!, type: String, chainId: String!): [Transaction!]
+    @resolver(name: "transactionsByUserAddress", paginated: true)
+  getMultisigsByUser(userAddress: String!, chainId: String!): [UserWallet!]
+    @resolver(name: "getMultisigsByUser", paginated: true)
+}
+
+type Mutation {
+  createOrFindMultisig(
+    address: String!
+    pubkeyJSON: String!
+    chainId: String!
+    userAddresses: [String!]
+  ): Multisig @resolver
+  completeTransaction(
+    id: String!
+    txHash: String!
+    updatedSequence: Int!
+  ): Transaction @resolver
+}

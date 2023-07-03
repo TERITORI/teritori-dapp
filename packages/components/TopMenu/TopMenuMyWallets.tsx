@@ -37,7 +37,7 @@ import { SecondaryButton } from "../buttons/SecondaryButton";
 import { SendModal } from "../modals/SendModal";
 
 const TokenBalance: React.FC = () => {
-  const selectedWallet = useSelectedWallet();
+  const { selectedWallet } = useSelectedWallet();
   const selectedNetworkId = useSelectedNetworkId();
   const { delegationsBalances } = useDelegations(
     selectedNetworkId,

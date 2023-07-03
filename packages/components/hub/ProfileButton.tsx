@@ -12,7 +12,7 @@ export const ProfileButton: React.FC<{
   style?: StyleProp<ViewStyle>;
   isEdit?: boolean;
 }> = ({ style, isEdit }) => {
-  const selectedWallet = useSelectedWallet();
+  const { selectedWallet } = useSelectedWallet();
   const network = getCosmosNetwork(selectedWallet?.networkId);
   const { metadata } = useNSUserInfo(selectedWallet?.userId);
 

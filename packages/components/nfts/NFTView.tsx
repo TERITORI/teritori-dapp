@@ -60,7 +60,7 @@ export const NFTView: React.FC<{
   const insideMargin = layout.padding_x2;
   const contentWidth = cardWidth - insideMargin * 2;
   const flatStyle = StyleSheet.flatten(style);
-  const selectedWallet = useSelectedWallet();
+  const { selectedWallet } = useSelectedWallet();
   const userInfo = useNSUserInfo(nft.ownerId);
   const cosmosNetwork = getCosmosNetwork(nft.networkId);
   const { onPressDropdownButton, isDropdownOpen, closeOpenedDropdown } =

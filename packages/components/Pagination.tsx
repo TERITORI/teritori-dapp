@@ -1,4 +1,3 @@
-// libraries
 import React, { useRef } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 
@@ -30,6 +29,7 @@ interface PaginationProps {
   dropdownOptions: number[];
   setItemsPerPage: (item: number) => void;
   onChangePage: (page: number) => void;
+  disableLastButton?: boolean;
 }
 
 export const Pagination = ({
@@ -39,6 +39,7 @@ export const Pagination = ({
   itemsPerPage,
   setItemsPerPage,
   onChangePage,
+  disableLastButton,
 }: PaginationProps) => {
   const handleChangePage = (pageIndex: number) => {
     if (pageIndex < 0) {
@@ -82,11 +83,13 @@ export const Pagination = ({
           </TertiaryBox>
         </TouchableOpacity>
         <SpacerRow size={1} />
-        <TouchableOpacity onPress={() => handleChangePage(maxPage - 1)}>
-          <TertiaryBox height={42} width={56}>
-            <SVG source={chevronRightDoubleSVG} height={16} width={16} />
-          </TertiaryBox>
-        </TouchableOpacity>
+        {!disableLastButton && (
+          <TouchableOpacity onPress={() => handleChangePage(maxPage - 1)}>
+            <TertiaryBox height={42} width={56}>
+              <SVG source={chevronRightDoubleSVG} height={16} width={16} />
+            </TertiaryBox>
+          </TouchableOpacity>
+        )}
       </View>
 
       <View style={[styles.section, { justifyContent: "flex-end" }]}>

@@ -18,7 +18,7 @@ import useSelectedWallet from "../useSelectedWallet";
 export const useBreeding = (networkId: string | undefined) => {
   const [remainingTokens, setRemainingTokens] = useState<number>(0);
 
-  const selectedWallet = useSelectedWallet();
+  const { selectedWallet } = useSelectedWallet();
   const { breedingConfig } = useBreedingConfig(networkId);
   const breedingContractAddress =
     getCosmosNetwork(networkId)?.riotContractAddressGen1;

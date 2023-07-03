@@ -103,7 +103,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
 }) => {
   const { width: currentWidth } = useWindowDimensions();
 
-  const wallet = useSelectedWallet();
+  const { selectedWallet: wallet } = useSelectedWallet();
   const [minted, setMinted] = useState(false);
   const [isDepositVisible, setDepositVisible] = useState(false);
   const {

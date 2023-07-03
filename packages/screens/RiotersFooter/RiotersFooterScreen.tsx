@@ -88,7 +88,7 @@ export const RiotersFooterScreen: React.FC = () => {
     width: "1030",
   });
 
-  const wallet = useSelectedWallet();
+  const { selectedWallet: wallet } = useSelectedWallet();
 
   const getFeeConfig = useCallback(async () => {
     if (client) {

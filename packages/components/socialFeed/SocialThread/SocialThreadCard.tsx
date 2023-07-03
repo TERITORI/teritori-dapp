@@ -66,7 +66,7 @@ export const SocialThreadCard: React.FC<{
       },
     });
 
-  const wallet = useSelectedWallet();
+  const { selectedWallet: wallet } = useSelectedWallet();
   const selectedNetworkId = useSelectedNetworkId();
   const authorNSInfo = useNSUserInfo(localPost.createdBy);
   const [, userAddress] = parseUserId(localPost.createdBy);

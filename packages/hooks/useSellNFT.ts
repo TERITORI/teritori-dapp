@@ -108,7 +108,7 @@ const ethereumSellNFT = async (
 
 export const useSellNFT = (networkKind: NetworkKind | undefined) => {
   const { setToastError } = useFeedbacks();
-  const wallet = useSelectedWallet();
+  const { selectedWallet: wallet } = useSelectedWallet();
 
   return useCallback(
     async (

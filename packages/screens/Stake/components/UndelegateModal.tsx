@@ -47,7 +47,7 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
   visible,
   validator,
 }) => {
-  const wallet = useSelectedWallet();
+  const { selectedWallet: wallet } = useSelectedWallet();
   const networkId = wallet?.networkId || "";
   const { bondedTokens, refreshBondedTokens } = useCosmosValidatorBondedAmount(
     wallet?.userId,
@@ -56,7 +56,6 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
   const { setToastError, setToastSuccess } = useFeedbacks();
   const { triggerError } = useErrorHandler();
 
-  // variables
   const { control, setValue, handleSubmit, reset } =
     useForm<StakeFormValuesType>();
   const stakingCurrency = getStakingCurrency(networkId);

@@ -63,7 +63,7 @@ export const RiotGameEnrollScreen = () => {
   const navigation = useAppNavigation();
   const { setToastError, setToastSuccess } = useFeedbacks();
   const [activeSquadId, setActiveSquadId] = useState<number>(1);
-  const selectedWallet = useSelectedWallet();
+  const { selectedWallet } = useSelectedWallet();
   const networkId = useSelectedNetworkId();
   const queryClient = useQueryClient();
 

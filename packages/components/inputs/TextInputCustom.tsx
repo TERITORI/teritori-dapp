@@ -16,6 +16,7 @@ import {
   FieldValues,
 } from "react-hook-form";
 import {
+  ActivityIndicator,
   Pressable,
   StyleProp,
   StyleSheet,
@@ -27,7 +28,6 @@ import {
 } from "react-native";
 import { SvgProps } from "react-native-svg";
 
-// import { TextInputLabelProps } from "./TextInputOutsideLabel";
 import { DEFAULT_FORM_ERRORS } from "../../utils/errors";
 import { handleKeyPress } from "../../utils/keyboard";
 import {
@@ -72,7 +72,9 @@ export interface TextInputCustomProps<T extends FieldValues>
   defaultValue?: PathValue<T, Path<T>>;
   subtitle?: React.ReactElement;
   hideLabel?: boolean;
+  errorStyle?: ViewStyle;
   valueModifier?: (value: string) => string;
+  isLoading?: boolean;
   labelStyle?: TextStyle;
   containerStyle?: ViewStyle;
   boxMainContainerStyle?: ViewStyle;
@@ -130,10 +132,10 @@ export const TextInputCustom = <T extends FieldValues>({
   subtitle,
   labelStyle,
   iconSVG,
-  noBrokenCorners,
-  // isAsterickSign,
   hideLabel,
   valueModifier,
+  errorStyle,
+  isLoading,
   containerStyle,
   boxMainContainerStyle,
   error,
@@ -141,12 +143,10 @@ export const TextInputCustom = <T extends FieldValues>({
   setRef,
   ...restProps
 }: TextInputCustomProps<T>) => {
-  // variables
   const { field, fieldState } = useController<T>({
     name,
     control,
     rules,
-    defaultValue,
   });
   const inputRef = useRef<TextInput>(null);
   // Passing ref to parent since I didn't find a pattern to handle generic argument <T extends FieldValues> AND forwardRef
@@ -158,7 +158,7 @@ export const TextInputCustom = <T extends FieldValues>({
 
   useEffect(() => {
     if (defaultValue) {
-      handleChangeText(defaultValue);
+      handleChangeText(defaultValue || "");
     }
     // handleChangeText changes on every render and we want to call handleChangeText only when default value changes so we disable exhaustive-deps
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -230,7 +230,6 @@ export const TextInputCustom = <T extends FieldValues>({
           <SpacerColumn size={1} />
         </>
       )}
-
       <TertiaryBox
         squaresBackgroundColor={squaresBackgroundColor}
         style={style}
@@ -241,7 +240,7 @@ export const TextInputCustom = <T extends FieldValues>({
         width={width}
         fullWidth={!width}
         height={height}
-        noBrokenCorners={noBrokenCorners}
+        noBrokenCorners={variant === "noCropBorder"}
       >
         <View style={styles.innerContainer}>
           {iconSVG && (
@@ -276,7 +275,11 @@ export const TextInputCustom = <T extends FieldValues>({
             />
           </View>
 
-          <>{children}</>
+          {isLoading ? (
+            <ActivityIndicator color={secondaryColor} />
+          ) : (
+            <>{children}</>
+          )}
         </View>
       </TertiaryBox>
       <ErrorText>{error || fieldError}</ErrorText>
@@ -285,11 +288,6 @@ export const TextInputCustom = <T extends FieldValues>({
 };
 
 const styles = StyleSheet.create({
-  rowEnd: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-end",
-  },
   mainContainer: {
     alignItems: "flex-start",
     paddingHorizontal: 12,
@@ -316,5 +314,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     width: "100%",
+  },
+  rowEnd: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-end",
   },
 });

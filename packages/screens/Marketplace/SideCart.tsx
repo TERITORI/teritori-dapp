@@ -258,7 +258,7 @@ const ItemTotal: React.FC<{
 };
 
 const Footer: React.FC<{ items: any[] }> = ({ items }) => {
-  const wallet = useSelectedWallet();
+  const { selectedWallet: wallet } = useSelectedWallet();
   const dispatch = useAppDispatch();
 
   const selectedNFTData = useSelector(selectAllSelectedNFTData);

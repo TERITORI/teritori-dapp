@@ -15,6 +15,7 @@ import { tinyAddress } from "../utils/text";
 
 type PlayerNameProps = {
   userId: string;
+  multisignWalletAddres?: string | null;
   style?: StyleProp<TextStyle>;
 };
 
@@ -22,13 +23,22 @@ export const UserNameInline: React.FC<PlayerNameProps> = ({
   userId,
   style,
 }) => {
-  const selectedWallet = useSelectedWallet();
-  const userInfo = useNSUserInfo(selectedWallet?.userId);
+  const { selectedWallet, selectedMultisignWallet } = useSelectedWallet();
+  const userInfo = useNSUserInfo(
+    selectedMultisignWallet
+      ? selectedMultisignWallet.userId
+      : selectedWallet?.userId
+  );
   const selectedNetworkId = useSelectedNetworkId();
   const network = getCosmosNetwork(selectedNetworkId);
   const name =
     userInfo?.metadata?.tokenId ||
-    tinyAddress(selectedWallet?.address, 30) ||
+    tinyAddress(
+      selectedMultisignWallet !== null
+        ? selectedMultisignWallet?.address
+        : selectedWallet?.address,
+      30
+    ) ||
     "";
 
   return (

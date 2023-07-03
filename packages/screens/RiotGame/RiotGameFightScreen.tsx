@@ -21,7 +21,7 @@ const FIGHT_BG_URI =
 
 export const RiotGameFightScreen = () => {
   const navigation = useAppNavigation();
-  const selectedWallet = useSelectedWallet();
+  const { selectedWallet } = useSelectedWallet();
   const networkId = useSelectedNetworkId();
 
   const { data: squadStakingConfig } = useSquadStakingConfig(networkId);

@@ -50,7 +50,7 @@ export const RiotGameBreedingScreen = () => {
     };
   }>({});
 
-  const selectedWallet = useSelectedWallet();
+  const { selectedWallet } = useSelectedWallet();
 
   const {
     breedingConfig,

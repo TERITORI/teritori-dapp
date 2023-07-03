@@ -16,7 +16,7 @@ import { neutral33 } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
 
 export const WalletManagerScreen: ScreenFC<"WalletManager"> = () => {
-  const selectedWallet = useSelectedWallet();
+  const { selectedWallet } = useSelectedWallet();
   const areThereWallets = useAreThereWallets();
   const { height } = useMaxResolution();
 

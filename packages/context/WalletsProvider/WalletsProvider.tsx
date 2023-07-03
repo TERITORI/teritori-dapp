@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useMemo } from "react";
+import React, { createContext, useContext, useMemo, useState } from "react";
 
 import { useAdena } from "./adena";
 import { useKeplr } from "./keplr";
@@ -11,14 +11,18 @@ import { WalletProvider } from "../../utils/walletProvider";
 
 type WalletsContextValue = {
   wallets: Wallet[];
+  multisignWallet: Wallet | undefined;
   walletProviders: WalletProvider[];
   ready: boolean;
+  setMultisignWallet: any;
 };
 
 const WalletsContext = createContext<WalletsContextValue>({
   wallets: [],
+  multisignWallet: undefined,
   walletProviders: [],
   ready: false,
+  setMultisignWallet: null,
 });
 
 export const useWallets = () => useContext(WalletsContext);
@@ -27,6 +31,7 @@ export const WalletsProvider: React.FC = React.memo(({ children }) => {
   // const [hasPhantom, phantomIsReady, phantomWallet] = usePhantom();
   const [hasKeplr, keplrIsReady, keplrWallets] = useKeplr();
   const [hasMetamask, metamaskIsReady, metamaskWallets] = useMetamask();
+  const [multisignWallet, setMultisignWallet] = useState<Wallet | undefined>();
   const [hasAdena, adenaIsReady, adenaWallets] = useAdena();
 
   // const storeWallets = useSelector(selectStoreWallets);
@@ -109,18 +114,18 @@ export const WalletsProvider: React.FC = React.memo(({ children }) => {
 
     return {
       wallets,
+      multisignWallet,
       walletProviders,
       ready: keplrIsReady && metamaskIsReady && adenaIsReady,
+      setMultisignWallet,
     };
   }, [
-    // hasPhantom,
-    // phantomIsReady,
-    // phantomWallet,
     hasKeplr,
-    keplrIsReady,
-    keplrWallets,
     hasMetamask,
+    multisignWallet,
+    keplrIsReady,
     metamaskIsReady,
+    keplrWallets,
     metamaskWallets,
     hasAdena,
     adenaIsReady,

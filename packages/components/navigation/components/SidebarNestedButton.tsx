@@ -25,7 +25,6 @@ export const SidebarNestedButton: React.FC<SidebarNestedButtonProps> = ({
   route,
   iconSize = 20,
 }) => {
-  // variables
   const { isSidebarExpanded } = useSidebar();
   const { name: currentRouteName } = useRoute();
   const isComingSoon = route === "ComingSoon";

@@ -52,7 +52,7 @@ import { pluralOrNot } from "../../utils/text";
 export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
   const isMobile = useIsMobile();
   const selectedNetworkId = useSelectedNetworkId();
-  const wallet = useSelectedWallet();
+  const { selectedWallet: wallet } = useSelectedWallet();
   const { postFee } = useUpdatePostFee(selectedNetworkId, PostCategory.Article);
   const { freePostCount } = useUpdateAvailableFreePost(
     selectedNetworkId,

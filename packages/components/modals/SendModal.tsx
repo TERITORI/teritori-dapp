@@ -64,7 +64,7 @@ export const SendModal: React.FC<SendModalProps> = ({
   networkId,
 }) => {
   const { setToastError, setToastSuccess } = useFeedbacks();
-  const selectedWallet = useSelectedWallet();
+  const { selectedWallet } = useSelectedWallet();
   const { control, setValue, handleSubmit, watch } = useForm<TransactionForm>();
   const [selectedDAOId, setSelectedDAOId] = useState("");
   const makeProposal = useDAOMakeProposal(selectedDAOId);

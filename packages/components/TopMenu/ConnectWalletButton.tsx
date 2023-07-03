@@ -17,8 +17,7 @@ const WIDTH = 220;
 export const ConnectWalletButton: FC<{ style?: StyleProp<ViewStyle> }> = ({
   style,
 }) => {
-  // variables
-  const selectedWallet = useSelectedWallet();
+  const { selectedWallet, selectedMultisignWallet } = useSelectedWallet();
   const [isConnectWalletVisible, setIsConnectWalletVisible] = useState(false);
   const { ready } = useWallets();
 
@@ -31,7 +30,11 @@ export const ConnectWalletButton: FC<{ style?: StyleProp<ViewStyle> }> = ({
     <>
       <View style={style}>
         {selectedWallet ? (
-          <TopMenu />
+          <TopMenu
+            selectedWallet={
+              selectedMultisignWallet ? selectedMultisignWallet : selectedWallet
+            }
+          />
         ) : (
           <Pressable
             onPress={ready ? toggleConnectWallet : undefined}

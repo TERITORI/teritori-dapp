@@ -11,7 +11,7 @@ import { useNFTs } from "../../hooks/useNFTs";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 
 export const MyNFTs: React.FC = () => {
-  const selectedWallet = useSelectedWallet();
+  const { selectedWallet } = useSelectedWallet();
 
   const { nfts, fetchMore } = useNFTs({
     offset: 0,

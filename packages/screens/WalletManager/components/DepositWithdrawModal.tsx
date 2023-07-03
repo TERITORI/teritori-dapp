@@ -1,4 +1,3 @@
-// libraries
 import { Decimal } from "@cosmjs/math";
 import { isDeliverTxFailure } from "@cosmjs/stargate";
 import { bech32 } from "bech32";
@@ -49,7 +48,7 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
 }) => {
   const { setToastError } = useFeedbacks();
 
-  const selectedWallet = useSelectedWallet(); // FIXME: this could not match networkId
+  const { selectedWallet } = useSelectedWallet(); // FIXME: this could not match networkId
 
   const ibcTargetCurrency = getIBCCurrency(networkId, targetCurrencyDenom);
 
@@ -76,7 +75,6 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
 
   const balances = useBalances(sourceNetworkId, fromAccount);
 
-  // variables
   const { control, setValue, handleSubmit } = useForm<TransactionForm>();
 
   // returns

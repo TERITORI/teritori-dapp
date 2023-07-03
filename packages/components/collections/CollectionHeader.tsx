@@ -44,8 +44,8 @@ export const CollectionHeader: React.FC<{
   onChangeSortDirection,
 }) => {
   const isMobile = useIsMobile();
-  const wallet = useSelectedWallet();
-  // variables
+  const { selectedWallet: wallet } = useSelectedWallet();
+
   const stats = useCollectionStats(collectionId, wallet?.userId);
   const { width } = useMaxResolution({ isLarge: true });
   const [network, collectionMintAddress] = parseCollectionId(collectionId);

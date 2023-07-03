@@ -70,7 +70,7 @@ export const UserPublicProfileScreenHeader = ({
   selectedTab,
   setSelectedTab,
 }: UserPublicProfileScreenHeaderProps) => {
-  const selectedWallet = useSelectedWallet();
+  const { selectedWallet } = useSelectedWallet();
   const { width } = useMaxResolution();
   const { isDAO } = useIsDAO(userId);
 

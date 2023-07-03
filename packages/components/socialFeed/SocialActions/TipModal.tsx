@@ -52,7 +52,7 @@ export const TipModal: React.FC<{
         setToastError({ title: "Tip failed", message: error.message });
       },
     });
-  const selectedWallet = useSelectedWallet();
+  const { selectedWallet } = useSelectedWallet();
   const selectedNetworkId = useSelectedNetworkId();
   const nativeCurrency = getStakingCurrency(selectedNetworkId);
   const { setToastError, setToastSuccess } = useFeedbacks();

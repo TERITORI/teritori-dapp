@@ -19,9 +19,17 @@ import { CollectionScreen } from "../../screens/Marketplace/CollectionScreen";
 import { CollectionToolsScreen } from "../../screens/Marketplace/CollectionToolsScreen";
 import { MarketplaceScreen } from "../../screens/Marketplace/MarketplaceScreen";
 import { NFTDetailScreen } from "../../screens/Marketplace/NFTDetailScreen";
+import { MultisigCreateScreen } from "../../screens/Multisig/MultisigCreateScreen";
+import { MultisigDelegateScreen } from "../../screens/Multisig/MultisigDelegateScreen";
+import { MultisigLegacyScreen } from "../../screens/Multisig/MultisigLegacyScreen";
+import { MultisigScreen } from "../../screens/Multisig/MultisigScreen";
+import { MultisigTransferScreen } from "../../screens/Multisig/MultisigTransferScreen";
+import { MultisigWalletManageScreen } from "../../screens/Multisig/MultisigWalletManageScreen";
+import { MultisigWalletTransactionScreen } from "../../screens/Multisig/MultisigWalletTransactionScreen";
 import { MyCollectionScreen } from "../../screens/MyCollection/MyCollectionScreen";
 import { OrganizationDeployerScreen } from "../../screens/Organizations/OrganizationDeployerScreen";
 import { OrganizationsScreen } from "../../screens/Organizations/OrganizationsScreen";
+import { TransactionProposalScreen } from "../../screens/OrganizerDeployer/TransactionProposalScreen";
 import { RiotGameBreedingScreen } from "../../screens/RiotGame/RiotGameBreedingScreen";
 import { RiotGameEnrollScreen } from "../../screens/RiotGame/RiotGameEnrollScreen";
 import { RiotGameFightScreen } from "../../screens/RiotGame/RiotGameFightScreen";
@@ -187,6 +195,72 @@ export const Navigator: React.FC = () => {
         name="MintCollection"
         component={MintCollectionScreen}
         options={{ header: () => null, title: screenTitle("Mint Collection") }}
+      />
+
+      {/* ==== Multisig */}
+      <Stack.Screen
+        name="Multisig"
+        component={MultisigScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Multisig Wallet"),
+        }}
+      />
+      <Stack.Screen
+        name="MultisigCreate"
+        component={MultisigCreateScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Multisig Wallet Create"),
+        }}
+      />
+      <Stack.Screen
+        name="MultisigLegacy"
+        component={MultisigLegacyScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Multisig Legacy"),
+        }}
+      />
+      <Stack.Screen
+        name="MultisigTransfer"
+        component={MultisigTransferScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Multisig Create Transaction"),
+        }}
+      />
+      <Stack.Screen
+        name="MultisigDelegate"
+        component={MultisigDelegateScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Multisig Delegate"),
+        }}
+      />
+      <Stack.Screen
+        name="MultisigWalletManage"
+        component={MultisigWalletManageScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Manage Multisig Wallet"),
+        }}
+      />
+      <Stack.Screen
+        name="MultisigWalletTransaction"
+        component={MultisigWalletTransactionScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Wallet Name 1"),
+        }}
+      />
+      <Stack.Screen
+        name="MultisigTransactionProposal"
+        component={TransactionProposalScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Transactions history"),
+        }}
       />
 
       {/* ==== Organization */}

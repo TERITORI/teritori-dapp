@@ -15,7 +15,7 @@ import { layout } from "../../utils/style/layout";
 */
 
 export const MyCollectionScreen: ScreenFC<"MyCollection"> = () => {
-  const selectedWallet = useSelectedWallet();
+  const { selectedWallet } = useSelectedWallet();
 
   const EmptyListComponent = useCallback(
     () => (

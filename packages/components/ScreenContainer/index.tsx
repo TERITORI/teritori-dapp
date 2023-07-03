@@ -5,6 +5,8 @@ import {
   View,
   StyleSheet,
   useWindowDimensions,
+  ViewStyle,
+  StyleProp,
 } from "react-native";
 
 import { Header } from "./Header";
@@ -34,11 +36,13 @@ import { CartIconButtonBadge } from "../navigation/components/CartIconButtonBadg
 export const ScreenContainer: React.FC<{
   headerChildren?: JSX.Element;
   footerChildren?: React.ReactNode;
+  headerStyle?: StyleProp<ViewStyle>;
   mobileTitle?: string;
   hideSidebar?: boolean;
   noMargin?: boolean;
   noScroll?: boolean;
   fullWidth?: boolean;
+  isHeaderSmallMargin?: boolean;
   forceNetworkId?: string;
   forceNetworkKind?: NetworkKind;
   forceNetworkFeatures?: NetworkFeature[];
@@ -50,11 +54,13 @@ export const ScreenContainer: React.FC<{
   children,
   headerChildren,
   footerChildren,
+  headerStyle,
   mobileTitle,
   hideSidebar,
   noMargin,
   noScroll,
   fullWidth,
+  isHeaderSmallMargin,
   responsive,
   isLarge,
   onBackPress,
@@ -63,7 +69,6 @@ export const ScreenContainer: React.FC<{
   forceNetworkKind,
   forceNetworkFeatures,
 }) => {
-  // variables
   const { height } = useWindowDimensions();
   const hasMargin = !noMargin;
   const hasScroll = !noScroll;
@@ -125,7 +130,14 @@ export const ScreenContainer: React.FC<{
 
         <View style={{ width: "100%", flex: 1 }}>
           {/*==== Header*/}
-          <Header onBackPress={onBackPress}>{headerChildren}</Header>
+
+          <Header
+            style={headerStyle}
+            isHeaderSmallMargin={isHeaderSmallMargin}
+            onBackPress={onBackPress}
+          >
+            {headerChildren}
+          </Header>
 
           <View
             style={{ width: "100%", flexDirection: "row", flex: 1, height }}

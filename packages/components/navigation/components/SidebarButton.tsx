@@ -45,7 +45,6 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
   iconSize = 28,
   nested,
 }) => {
-  // variables
   const { isSidebarExpanded } = useSidebar();
   const { name: currentRouteName } = useAppRoute();
   const allNestedRoutes = useMemo(
@@ -62,7 +61,7 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
         arrayIncludes(allNestedRoutes, currentRouteName) && !isNestedBarExpanded
       );
     } else {
-      return route === currentRouteName;
+      return route.substring(0, 8) === currentRouteName.substring(0, 8);
     }
   }, [nested, allNestedRoutes, currentRouteName, isNestedBarExpanded, route]);
 

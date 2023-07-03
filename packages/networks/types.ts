@@ -87,7 +87,6 @@ export type GnoNetworkInfo = NetworkInfoBase & {
 export type NetworkInfo =
   | CosmosNetworkInfo
   | EthereumNetworkInfo
-  | SolanaNetworkInfo
   | GnoNetworkInfo;
 
 export type CurrencyKind = "native" | "ibc";

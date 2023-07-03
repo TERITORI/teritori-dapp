@@ -13,11 +13,13 @@ import { useForm, FormProvider } from "react-hook-form";
 import { Platform } from "react-native";
 import { MenuProvider } from "react-native-popup-menu";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
 import { Provider as ReduxProvider } from "react-redux";
 
 import { Navigator } from "./packages/components/navigation/Navigator";
 import { DropdownsContextProvider } from "./packages/context/DropdownsProvider";
 import { FeedbacksContextProvider } from "./packages/context/FeedbacksProvider";
+import { MultisigContextProvider } from "./packages/context/MultisigReducer";
 import { SearchBarContextProvider } from "./packages/context/SearchBarProvider";
 import { TNSMetaDataListContextProvider } from "./packages/context/TNSMetaDataListProvider";
 import { TNSContextProvider } from "./packages/context/TNSProvider";
@@ -57,16 +59,21 @@ export default function App() {
                   <DropdownsContextProvider>
                     <WalletsProvider>
                       <SearchBarContextProvider>
-                        <TransactionModalsProvider>
-                          <TNSContextProvider>
-                            <TNSMetaDataListContextProvider>
-                              <MenuProvider>
-                                <StatusBar style="inverted" />
-                                <Navigator />
-                              </MenuProvider>
-                            </TNSMetaDataListContextProvider>
-                          </TNSContextProvider>
-                        </TransactionModalsProvider>
+                        <MultisigContextProvider>
+                          <TransactionModalsProvider>
+                            <TNSContextProvider>
+                              <TNSMetaDataListContextProvider>
+                                <MenuProvider>
+                                  <SidebarContextProvider>
+                                    <StatusBar style="inverted" />
+                                    <Navigator />
+                                    <Toast autoHide visibilityTime={2000} />
+                                  </SidebarContextProvider>
+                                </MenuProvider>
+                              </TNSMetaDataListContextProvider>
+                            </TNSContextProvider>
+                          </TransactionModalsProvider>
+                        </MultisigContextProvider>
                       </SearchBarContextProvider>
                     </WalletsProvider>
                   </DropdownsContextProvider>

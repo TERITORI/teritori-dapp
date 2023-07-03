@@ -1,4 +1,3 @@
-// libraries
 import React, { useMemo } from "react";
 import { StyleSheet, useWindowDimensions, View } from "react-native";
 
@@ -16,7 +15,6 @@ type GameBgOverlayProps = {
 const DEFAULT_SIZE = 190;
 
 export const GameBgOverlay: React.FC<GameBgOverlayProps> = ({ type }) => {
-  // variables
   const { width, height } = useWindowDimensions();
 
   const shadowHeight = useMemo(() => {

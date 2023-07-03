@@ -64,6 +64,7 @@ export const ConnectKeplrButton: React.FC<{
       onDone && onDone(err);
     }
   };
+
   return (
     <ConnectWalletButton
       text="Keplr Wallet"

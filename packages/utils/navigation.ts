@@ -51,6 +51,17 @@ export type RootStackParamList = {
 
   ComingSoon: undefined;
 
+  OrganizationGetStarted: undefined;
+
+  Multisig: undefined;
+  MultisigCreate: undefined;
+  MultisigWalletManage: undefined;
+  MultisigWalletTransaction: undefined;
+  MultisigLegacy: { address: string; name?: string };
+  MultisigTransfer: { address: string; backText?: string };
+  MultisigDelegate: { address: string; backText?: string };
+
+  MultisigTransactionProposal: { address: string; backText?: string };
   Settings: undefined;
 
   OrganizationDeployer: undefined;
@@ -67,6 +78,11 @@ export type ScreenFC<T extends keyof RootStackParamList> = React.FC<{
   navigation: NativeStackNavigationProp<RootStackParamList, T>;
   route: RouteProp<RootStackParamList, T>;
 }>;
+
+export type AppRouteType<T extends keyof RootStackParamList> = RouteProp<
+  RootStackParamList,
+  T
+>;
 
 export const useAppNavigation = () => useNavigation<AppNavigationProp>();
 
@@ -119,6 +135,20 @@ const navConfig: {
     OrganizationDeployer: "create-org",
     Organizations: "orgs",
     CoreDAO: "core-dao",
+
+    // === Organization
+
+    OrganizationGetStarted: "organization-get-started",
+
+    // === Multisig
+    Multisig: "multisig",
+    MultisigCreate: "multisig/create",
+    MultisigWalletManage: "multisig-wallet/manage",
+    MultisigWalletTransaction: "multisig-wallet/transaction",
+    MultisigTransactionProposal: "multisig/:address/transaction/proposals",
+    MultisigLegacy: "multisig/:address/:name",
+    MultisigTransfer: "multisig/:address/transfer",
+    MultisigDelegate: "multisig/:address/delegate",
 
     // ==== Swap
     Swap: "swap",

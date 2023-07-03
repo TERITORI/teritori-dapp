@@ -31,7 +31,7 @@ const ConnectedIntro: React.FC = () => {
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof walletsManagerTabItems>("overview");
 
-  const selectedWallet = useSelectedWallet();
+  const { selectedWallet } = useSelectedWallet();
 
   return (
     <View

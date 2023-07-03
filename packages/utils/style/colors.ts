@@ -40,6 +40,8 @@ export const transparentColor = "transparent";
 export const additionalRed = "#FFAEAE";
 export const additionalGreen = successColor;
 
+export const trashBackground = "rgba(244, 111, 118, 0.1)";
+
 export const orangeLight = "#EAA54B";
 
 export const gradientColorTurquoise = "#A5FECB";

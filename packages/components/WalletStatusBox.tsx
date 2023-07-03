@@ -18,7 +18,7 @@ import { tinyAddress } from "../utils/text";
 
 export const WalletStatusBox: React.FC = () => {
   const { width } = useWindowDimensions();
-  const selectedWallet = useSelectedWallet();
+  const { selectedWallet } = useSelectedWallet();
   const selectedNetworkInfo = useSelectedNetworkInfo();
 
   return (

@@ -41,7 +41,7 @@ const SelectedTabContent: React.FC<{
   selectedTab: keyof typeof screenTabItems;
   setSelectedTab: (tab: keyof typeof screenTabItems) => void;
 }> = ({ userId, selectedTab, setSelectedTab }) => {
-  const selectedWallet = useSelectedWallet();
+  const { selectedWallet } = useSelectedWallet();
   const userInfo = useNSUserInfo(userId);
   const [network, userAddress] = parseUserId(userId);
   const { isDAO } = useIsDAO(userId);
@@ -178,6 +178,7 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
 
   return (
     <ScreenContainer
+      isHeaderSmallMargin
       key={`UserPublicProfile ${id}`} // this key is to reset the screen state when the id changes
       forceNetworkId={network?.id}
       responsive
