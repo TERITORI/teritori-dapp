@@ -6,18 +6,21 @@ import shareIcon from "../../../../assets/icons/Pathwar/shareIcon.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
+import { useIsMobile } from "../../../hooks/useIsMobile";
 import { neutral00, withAlpha } from "../../../utils/style/colors";
 import { fontSemibold13, fontSemibold20 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 
 export const ResourceBox: React.FC<object> = () => {
+  const isMobile = useIsMobile();
   return (
     <TertiaryBox
-      width={630}
+      width={isMobile ? 320 : 480}
       height={330}
       mainContainerStyle={{ backgroundColor: "red" }}
       style={{
         marginRight: layout.padding_x1_5,
+        marginTop: layout.padding_x1_5,
       }}
     >
       <View

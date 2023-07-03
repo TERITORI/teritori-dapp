@@ -1,5 +1,10 @@
 import React from "react";
-import { View, TouchableOpacity, ImageBackground } from "react-native";
+import {
+  View,
+  TouchableOpacity,
+  ImageBackground,
+  FlatList,
+} from "react-native";
 
 import { ResourceBox } from "./ResourceBox";
 import resourceLogo from "../../../../assets/LogoPathwarOverview/ResourceLogo.svg";
@@ -11,13 +16,28 @@ import { SVG } from "../../../components/SVG";
 import { ScreenContainer } from "../../../components/ScreenContainer";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
+import { SpacerColumn } from "../../../components/spacer";
+import { useMaxResolution } from "../../../hooks/useMaxResolution";
+import { useAppNavigation } from "../../../utils/navigation";
 import { secondaryColor, neutral00 } from "../../../utils/style/colors";
-import { fontSemibold14 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+import { fontSemibold14, fontSemibold20 } from "../../../utils/style/fonts";
+import {
+  layout,
+  screenContentMaxWidthLarge,
+} from "../../../utils/style/layout";
 
 export const ResourceScreen: React.FC = () => {
+  const { height } = useMaxResolution({ isLarge: true });
+  const navigation = useAppNavigation();
+
   return (
-    <ScreenContainer>
+    <ScreenContainer
+      responsive
+      isLarge
+      footerChildren={<></>}
+      headerChildren={<BrandText style={fontSemibold20}>Resources</BrandText>}
+      onBackPress={() => navigation.navigate("Pathwar")}
+    >
       <View>
         <ImageBackground
           source={resourceBanner}
@@ -39,6 +59,7 @@ export const ResourceScreen: React.FC = () => {
           justifyContent: "space-between",
           alignItems: "flex-start",
           marginTop: layout.padding_x1_5,
+          zIndex: 2,
         }}
       >
         <DropDownButton />
@@ -58,7 +79,13 @@ export const ResourceScreen: React.FC = () => {
             </View>
           </TextInputCustom>
         </View>
-        <View>
+        <View
+          style={{
+            // hide as we don't have design for this
+            // @ts-ignore
+            visibility: "hidden",
+          }}
+        >
           <TouchableOpacity style={{ alignItems: "flex-start" }}>
             <TertiaryBox mainContainerStyle={{ borderColor: secondaryColor }}>
               <View
@@ -78,7 +105,6 @@ export const ResourceScreen: React.FC = () => {
 
       <View
         style={{
-          width: 1300,
           flexDirection: "row",
           flexWrap: "wrap",
           justifyContent: "center",
@@ -86,8 +112,26 @@ export const ResourceScreen: React.FC = () => {
           marginTop: layout.padding_x2_5,
         }}
       >
-        <ResourceBox />
-        <ResourceBox />
+        <FlatList
+          data={[0, 1]}
+          style={{
+            width: "100%",
+          }}
+          contentContainerStyle={{
+            maxWidth: screenContentMaxWidthLarge,
+            maxHeight: height,
+          }}
+          showsHorizontalScrollIndicator={false}
+          columnWrapperStyle={{ flexWrap: "wrap", flex: 1, marginTop: 5 }}
+          numColumns={99} // needed to deal with wrap via css
+          ItemSeparatorComponent={() => <SpacerColumn size={2} />}
+          ListEmptyComponent={
+            <BrandText style={fontSemibold20}>No results found.</BrandText>
+          }
+          renderItem={(item) => {
+            return <ResourceBox />;
+          }}
+        />
       </View>
     </ScreenContainer>
   );
