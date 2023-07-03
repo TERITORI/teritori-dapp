@@ -4,10 +4,13 @@ import { View, TouchableOpacity } from "react-native";
 import pwn from "../../../../assets/icons/Pathwar/PathwarCoin/pwn.svg";
 import checkIcon from "../../../../assets/icons/Pathwar/checkIcon.svg";
 import clockIcon from "../../../../assets/icons/Pathwar/clockIcon.svg";
+import { Tournament } from "../../../api/pathwar/v1/pathwar";
 import { BrandText } from "../../../components/BrandText";
+import { CurrencyIcon } from "../../../components/CurrencyIcon";
 import { SVG } from "../../../components/SVG";
 import { Separator } from "../../../components/Separator";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
+import { prettyPrice } from "../../../utils/coins";
 import {
   neutral44,
   hardColor,
@@ -15,6 +18,7 @@ import {
   neutral17,
   neutral77,
   neutral00,
+  successColor,
 } from "../../../utils/style/colors";
 import {
   fontSemibold12,
@@ -24,7 +28,7 @@ import {
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 
-export const TournamentBox: React.FC<object> = () => {
+export const TournamentBox: React.FC<{ data: Tournament }> = ({ data }) => {
   return (
     <TertiaryBox
       mainContainerStyle={{ backgroundColor: neutral17 }}
@@ -71,25 +75,35 @@ export const TournamentBox: React.FC<object> = () => {
               <BrandText style={[{ color: neutral77 }, fontSemibold13]}>
                 Price
               </BrandText>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  alignContent: "center",
-                }}
-              >
-                <BrandText style={[{ color: secondaryColor }, fontSemibold13]}>
-                  $1 {/* {price ? "$" + price : "Free"} */}
-                </BrandText>
-                {/* {price ? ( */}
-                <SVG
-                  source={pwn}
-                  width={42}
-                  height={42}
-                  style={{ marginBottom: layout.padding_x0_25 }}
-                />
-                {/* // ) : null} */}
-              </View>
+              {data.price && (
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    alignContent: "center",
+                  }}
+                >
+                  <BrandText
+                    style={[
+                      fontSemibold13,
+                      {
+                        marginRight: layout.padding_x0_5,
+                      },
+                    ]}
+                  >
+                    {prettyPrice(
+                      "teritori",
+                      data.price?.amount,
+                      data.price?.denom
+                    )}
+                  </BrandText>
+                  <CurrencyIcon
+                    networkId="teritori"
+                    denom={data.price?.denom}
+                    size={16}
+                  />
+                </View>
+              )}
             </View>
           </TertiaryBox>
           <View
@@ -141,7 +155,7 @@ export const TournamentBox: React.FC<object> = () => {
           >
             <View style={{ flexDirection: "column", width: "100%" }}>
               <BrandText style={[{ color: secondaryColor }, fontSemibold16]}>
-                Wild Top50 Contest
+                {data.title}
               </BrandText>
               <BrandText
                 style={[
@@ -149,7 +163,7 @@ export const TournamentBox: React.FC<object> = () => {
                   fontSemibold13,
                 ]}
               >
-                Reserved to the Top50 members!
+                {data.tagline}
               </BrandText>
             </View>
             <View style={{ flexDirection: "row" }}>
@@ -167,7 +181,9 @@ export const TournamentBox: React.FC<object> = () => {
                 <BrandText
                   style={[
                     {
-                      color: hardColor,
+                      color: data.difficulty.toLowerCase().includes("hard")
+                        ? hardColor
+                        : successColor,
                       paddingLeft: layout.padding_x1_5,
                       paddingRight: layout.padding_x1_5,
                       paddingTop: layout.padding_x0_5,
@@ -176,7 +192,7 @@ export const TournamentBox: React.FC<object> = () => {
                     fontSemibold13,
                   ]}
                 >
-                  Hard+
+                  {data.difficulty}
                 </BrandText>
               </View>
               <View
@@ -201,7 +217,7 @@ export const TournamentBox: React.FC<object> = () => {
                     fontSemibold13,
                   ]}
                 >
-                  Open
+                  {data.status}
                 </BrandText>
               </View>
             </View>
@@ -224,9 +240,7 @@ export const TournamentBox: React.FC<object> = () => {
             }}
           >
             <BrandText style={[{ color: neutral77 }, fontSemibold13]}>
-              This tournament is a premium online hackathon contest for best
-              pirates of the platform. Join the competitors for a 3 days of
-              cyberwar, dangerous investigations and intense challenges
+              {data.description}
             </BrandText>
           </View>
 
@@ -269,7 +283,7 @@ export const TournamentBox: React.FC<object> = () => {
                     fontSemibold12,
                   ]}
                 >
-                  31 pirates joined it
+                  {`${data.numUsersJoined} pirates joined it`}
                 </BrandText>
               </View>
             </View>
@@ -287,64 +301,57 @@ export const TournamentBox: React.FC<object> = () => {
                   fontSemibold12,
                 ]}
               >
-                Duration: 3 days
+                Duration: {data.duration}
               </BrandText>
             </View>
           </View>
 
-          <View style={{ width: "100%" }}>
-            <TertiaryBox
-              height={42}
-              squaresBackgroundColor={neutral17}
-              style={{ marginTop: layout.padding_x1_5, alignSelf: "center" }}
-            >
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  width: "fit-content",
-                  paddingLeft: layout.padding_x3_5,
-                  paddingRight: layout.padding_x3_5,
-                }}
+          {data.rewards.map((reward) => (
+            <View style={{ width: "100%" }}>
+              <TertiaryBox
+                height={42}
+                squaresBackgroundColor={neutral17}
+                style={{ marginTop: layout.padding_x1_5, alignSelf: "center" }}
               >
-                <View>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      alignContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <BrandText
-                      style={[
-                        { color: neutral77, marginRight: layout.padding_x2 },
-                        fontSemibold13,
-                      ]}
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    width: "fit-content",
+                    paddingLeft: layout.padding_x3_5,
+                    paddingRight: layout.padding_x3_5,
+                  }}
+                >
+                  <View>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignContent: "center",
+                        alignItems: "center",
+                      }}
                     >
-                      Reward
-                    </BrandText>
-                    <BrandText
-                      style={[
-                        {
-                          color: secondaryColor,
-                          marginLeft: layout.padding_x0_5,
-                        },
-                        fontSemibold12,
-                      ]}
-                    >
-                      $1 {/* ${reward} */}
-                    </BrandText>
-                    <SVG
-                      source={pwn}
-                      width={30}
-                      height={30}
-                      style={{ marginBottom: layout.padding_x0_25 }}
-                    />
+                      <BrandText
+                        style={[
+                          fontSemibold13,
+                          {
+                            marginRight: layout.padding_x0_5,
+                          },
+                        ]}
+                      >
+                        Reward{" "}
+                        {prettyPrice("teritori", reward.amount, reward.denom)}
+                      </BrandText>
+                      <CurrencyIcon
+                        networkId="teritori"
+                        denom={reward.denom}
+                        size={16}
+                      />
+                    </View>
                   </View>
                 </View>
-              </View>
-            </TertiaryBox>
-          </View>
+              </TertiaryBox>
+            </View>
+          ))}
         </View>
       </View>
     </TertiaryBox>
