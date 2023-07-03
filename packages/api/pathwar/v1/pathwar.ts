@@ -42,17 +42,17 @@ export interface LeaderboardRequest {
   offset: number;
 }
 
-export interface UserScore {
+export interface PathwarLeaderboardItem {
   rank: number;
-  userName: string;
+  address: string;
   team: string;
   lastTournament: string;
   score: number;
-  balance: string;
+  balance: Money | undefined;
 }
 
 export interface LeaderboardResponse {
-  userScore: UserScore | undefined;
+  statistics: PathwarLeaderboardItem[];
 }
 
 export interface ResourcesRequest {
@@ -530,17 +530,17 @@ export const LeaderboardRequest = {
   },
 };
 
-function createBaseUserScore(): UserScore {
-  return { rank: 0, userName: "", team: "", lastTournament: "", score: 0, balance: "" };
+function createBasePathwarLeaderboardItem(): PathwarLeaderboardItem {
+  return { rank: 0, address: "", team: "", lastTournament: "", score: 0, balance: undefined };
 }
 
-export const UserScore = {
-  encode(message: UserScore, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const PathwarLeaderboardItem = {
+  encode(message: PathwarLeaderboardItem, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.rank !== 0) {
       writer.uint32(8).int32(message.rank);
     }
-    if (message.userName !== "") {
-      writer.uint32(18).string(message.userName);
+    if (message.address !== "") {
+      writer.uint32(18).string(message.address);
     }
     if (message.team !== "") {
       writer.uint32(26).string(message.team);
@@ -551,16 +551,16 @@ export const UserScore = {
     if (message.score !== 0) {
       writer.uint32(40).int32(message.score);
     }
-    if (message.balance !== "") {
-      writer.uint32(50).string(message.balance);
+    if (message.balance !== undefined) {
+      Money.encode(message.balance, writer.uint32(50).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): UserScore {
+  decode(input: _m0.Reader | Uint8Array, length?: number): PathwarLeaderboardItem {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseUserScore();
+    const message = createBasePathwarLeaderboardItem();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -568,7 +568,7 @@ export const UserScore = {
           message.rank = reader.int32();
           break;
         case 2:
-          message.userName = reader.string();
+          message.address = reader.string();
           break;
         case 3:
           message.team = reader.string();
@@ -580,7 +580,7 @@ export const UserScore = {
           message.score = reader.int32();
           break;
         case 6:
-          message.balance = reader.string();
+          message.balance = Money.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -590,48 +590,50 @@ export const UserScore = {
     return message;
   },
 
-  fromJSON(object: any): UserScore {
+  fromJSON(object: any): PathwarLeaderboardItem {
     return {
       rank: isSet(object.rank) ? Number(object.rank) : 0,
-      userName: isSet(object.userName) ? String(object.userName) : "",
+      address: isSet(object.address) ? String(object.address) : "",
       team: isSet(object.team) ? String(object.team) : "",
       lastTournament: isSet(object.lastTournament) ? String(object.lastTournament) : "",
       score: isSet(object.score) ? Number(object.score) : 0,
-      balance: isSet(object.balance) ? String(object.balance) : "",
+      balance: isSet(object.balance) ? Money.fromJSON(object.balance) : undefined,
     };
   },
 
-  toJSON(message: UserScore): unknown {
+  toJSON(message: PathwarLeaderboardItem): unknown {
     const obj: any = {};
     message.rank !== undefined && (obj.rank = Math.round(message.rank));
-    message.userName !== undefined && (obj.userName = message.userName);
+    message.address !== undefined && (obj.address = message.address);
     message.team !== undefined && (obj.team = message.team);
     message.lastTournament !== undefined && (obj.lastTournament = message.lastTournament);
     message.score !== undefined && (obj.score = Math.round(message.score));
-    message.balance !== undefined && (obj.balance = message.balance);
+    message.balance !== undefined && (obj.balance = message.balance ? Money.toJSON(message.balance) : undefined);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<UserScore>, I>>(object: I): UserScore {
-    const message = createBaseUserScore();
+  fromPartial<I extends Exact<DeepPartial<PathwarLeaderboardItem>, I>>(object: I): PathwarLeaderboardItem {
+    const message = createBasePathwarLeaderboardItem();
     message.rank = object.rank ?? 0;
-    message.userName = object.userName ?? "";
+    message.address = object.address ?? "";
     message.team = object.team ?? "";
     message.lastTournament = object.lastTournament ?? "";
     message.score = object.score ?? 0;
-    message.balance = object.balance ?? "";
+    message.balance = (object.balance !== undefined && object.balance !== null)
+      ? Money.fromPartial(object.balance)
+      : undefined;
     return message;
   },
 };
 
 function createBaseLeaderboardResponse(): LeaderboardResponse {
-  return { userScore: undefined };
+  return { statistics: [] };
 }
 
 export const LeaderboardResponse = {
   encode(message: LeaderboardResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.userScore !== undefined) {
-      UserScore.encode(message.userScore, writer.uint32(10).fork()).ldelim();
+    for (const v of message.statistics) {
+      PathwarLeaderboardItem.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
@@ -644,7 +646,7 @@ export const LeaderboardResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.userScore = UserScore.decode(reader, reader.uint32());
+          message.statistics.push(PathwarLeaderboardItem.decode(reader, reader.uint32()));
           break;
         default:
           reader.skipType(tag & 7);
@@ -655,21 +657,26 @@ export const LeaderboardResponse = {
   },
 
   fromJSON(object: any): LeaderboardResponse {
-    return { userScore: isSet(object.userScore) ? UserScore.fromJSON(object.userScore) : undefined };
+    return {
+      statistics: Array.isArray(object?.statistics)
+        ? object.statistics.map((e: any) => PathwarLeaderboardItem.fromJSON(e))
+        : [],
+    };
   },
 
   toJSON(message: LeaderboardResponse): unknown {
     const obj: any = {};
-    message.userScore !== undefined &&
-      (obj.userScore = message.userScore ? UserScore.toJSON(message.userScore) : undefined);
+    if (message.statistics) {
+      obj.statistics = message.statistics.map((e) => e ? PathwarLeaderboardItem.toJSON(e) : undefined);
+    } else {
+      obj.statistics = [];
+    }
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<LeaderboardResponse>, I>>(object: I): LeaderboardResponse {
     const message = createBaseLeaderboardResponse();
-    message.userScore = (object.userScore !== undefined && object.userScore !== null)
-      ? UserScore.fromPartial(object.userScore)
-      : undefined;
+    message.statistics = object.statistics?.map((e) => PathwarLeaderboardItem.fromPartial(e)) || [];
     return message;
   },
 };

@@ -49,17 +49,17 @@ message LeaderboardRequest {
   int32 offset = 3;
 }
 
-message UserScore {
+message PathwarLeaderboardItem {
   int32 rank = 1;
-  string user_name = 2;
+  string address = 2;
   string team = 3;
   string last_tournament = 4;
   int32 score = 5;
-  string balance = 6;
+  Money balance = 6;
 }
 
 message LeaderboardResponse {
-  UserScore user_score = 1;
+ repeated PathwarLeaderboardItem statistics = 1;
 }
 
 // resources page
