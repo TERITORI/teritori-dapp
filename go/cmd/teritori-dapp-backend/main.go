@@ -4,6 +4,8 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"github.com/TERITORI/teritori-dapp/go/pkg/pathwar"
+	"github.com/TERITORI/teritori-dapp/go/pkg/pathwarpb"
 	"net/http"
 	"os"
 	"strings"
@@ -128,10 +130,17 @@ func main() {
 		NetStore:  &netstore,
 	})
 
+	pathwarSvc := pathwar.NewPathwarService(context.Background(), &pathwar.Config{
+		Logger:    logger,
+		IndexerDB: indexerDB,
+		NetStore:  &netstore,
+	})
+
 	server := grpc.NewServer()
 	marketplacepb.RegisterMarketplaceServiceServer(server, marketplaceSvc)
 	p2epb.RegisterP2EServiceServer(server, p2eSvc)
 	daopb.RegisterDAOServiceServer(server, daoSvc)
+	pathwarpb.RegisterPathwarServiceServer(server, pathwarSvc)
 	feedpb.RegisterFeedServiceServer(server, feedSvc)
 
 	wrappedServer := grpcweb.WrapServer(server,
