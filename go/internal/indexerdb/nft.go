@@ -7,8 +7,8 @@ import (
 )
 
 type Attribute struct {
-	TraitType string
-	Value     string
+	TraitType string `json:"trait_type"`
+	Value     string `json:"value"`
 }
 
 type NFT struct {

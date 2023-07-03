@@ -20,7 +20,7 @@ import { NetworkKind } from "../networks";
 
 export const SIDEBAR_LIST: SidebarRecordType = {
   feed: {
-    title: "Feed",
+    title: "Social Feed",
     route: "Feed",
     id: "Feed",
     icon: feedSVG,
