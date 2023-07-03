@@ -3,26 +3,23 @@ import { View, Image } from "react-native";
 import { useSelector } from "react-redux";
 
 import pathwarBanner from "../../../assets/banners/pathwarBanner.png";
-import searchIcon from "../../../assets/icons/Pathwar/searchIcon.svg";
 import { BrandText } from "../../components/BrandText";
 import { ChallengeBox } from "../../components/Pathwar/ChallengeBox";
 import { ConnectBar } from "../../components/Pathwar/ConnectBar";
 import { NavBarPathwarOverview } from "../../components/Pathwar/NavbarOverview/NavBarPathwarOverview";
-import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { Separator } from "../../components/Separator";
-import { TextInputCustom } from "../../components/inputs/TextInputCustom";
+import { SearchInput } from "../../components/sorts/SearchInput";
+import { useIsMobile } from "../../hooks/useIsMobile";
 import { selectPathwarToken } from "../../store/slices/settings";
 import { ScreenFC } from "../../utils/navigation";
-import { neutral00 } from "../../utils/style/colors";
 import { fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 
 export const PathwarScreen: ScreenFC<"Pathwar"> = () => {
   const [search, setSearch] = useState("");
   const token = useSelector(selectPathwarToken);
-
-  console.log("token ", token);
+  const isMobile = useIsMobile();
 
   const [cards, setCards] = useState<any[]>([]);
 
@@ -87,18 +84,16 @@ export const PathwarScreen: ScreenFC<"Pathwar"> = () => {
       >
         <BrandText style={fontSemibold28}>Challenges</BrandText>
         <View style={{ marginTop: layout.padding_x3_5 }}>
-          <TextInputCustom<{ Search: string }>
-            label=""
-            name="Search"
-            width={400}
-            placeHolder="Search..."
-            squaresBackgroundColor={neutral00}
-            onChangeText={setSearch}
-          >
-            <View style={{ marginRight: layout.padding_x0_5 }}>
-              <SVG source={searchIcon} />
-            </View>
-          </TextInputCustom>
+          <SearchInput
+            handleChangeText={setSearch}
+            borderRadius={layout.borderRadius}
+            style={{
+              width: isMobile ? "100%" : 432,
+              marginTop: layout.padding_x3,
+              marginBottom: layout.padding_x1,
+              height: 40,
+            }}
+          />
         </View>
       </View>
 

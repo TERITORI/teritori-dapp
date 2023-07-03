@@ -62,7 +62,7 @@ export const ChallengeDetails: React.FC<{
   }
 
   function displayChallengeValidation() {
-    if (displayPassedChallengeScreen === true) {
+    if (displayPassedChallengeScreen) {
       return (
         <ChallengeValidation
           visible
@@ -81,7 +81,7 @@ export const ChallengeDetails: React.FC<{
   }
 
   function ValidationModal() {
-    if (displayStateValidation === true) {
+    if (displayStateValidation) {
       return (
         <ModalValidation
           visible
@@ -95,7 +95,7 @@ export const ChallengeDetails: React.FC<{
   }
 
   function ErrorModal() {
-    if (displayStateValidationError === true) {
+    if (displayStateValidationError) {
       return (
         <ModalError
           visible
