@@ -3,6 +3,7 @@ import { View, ScrollView, TouchableOpacity } from "react-native";
 
 import heartIcon from "../../../../assets/icons/Pathwar/heartIcon.svg";
 import shareIcon from "../../../../assets/icons/Pathwar/shareIcon.svg";
+import { Resources } from "../../../api/pathwar/v1/pathwar";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
@@ -11,7 +12,7 @@ import { neutral00, withAlpha } from "../../../utils/style/colors";
 import { fontSemibold13, fontSemibold20 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 
-export const ResourceBox: React.FC<object> = () => {
+export const ResourceBox: React.FC<{ data: Resources }> = ({ data }) => {
   const isMobile = useIsMobile();
   return (
     <TertiaryBox
@@ -40,51 +41,31 @@ export const ResourceBox: React.FC<object> = () => {
           }}
         >
           <View style={{ flexDirection: "row" }}>
-            <View
-              style={{
-                backgroundColor: withAlpha(neutral00, 0.3),
-                borderRadius: 8,
-                width: "fit-content",
-                height: "fit-content",
-                marginRight: layout.padding_x0_5,
-              }}
-            >
-              <BrandText
-                style={[
-                  {
-                    paddingLeft: layout.padding_x1,
-                    paddingRight: layout.padding_x1,
-                    paddingTop: layout.padding_x0_5,
-                    paddingBottom: layout.padding_x0_5,
-                  },
-                  fontSemibold13,
-                ]}
+            {data.tags.map((tag) => (
+              <View
+                style={{
+                  backgroundColor: withAlpha(neutral00, 0.3),
+                  borderRadius: 8,
+                  width: "fit-content",
+                  height: "fit-content",
+                  marginRight: layout.padding_x0_5,
+                }}
               >
-                video
-              </BrandText>
-            </View>
-            <View
-              style={{
-                backgroundColor: withAlpha(neutral00, 0.3),
-                borderRadius: 8,
-                width: "fit-content",
-                height: "fit-content",
-              }}
-            >
-              <BrandText
-                style={[
-                  {
-                    paddingLeft: layout.padding_x1,
-                    paddingRight: layout.padding_x1,
-                    paddingTop: layout.padding_x0_5,
-                    paddingBottom: layout.padding_x0_5,
-                  },
-                  fontSemibold13,
-                ]}
-              >
-                video
-              </BrandText>
-            </View>
+                <BrandText
+                  style={[
+                    {
+                      paddingLeft: layout.padding_x1,
+                      paddingRight: layout.padding_x1,
+                      paddingTop: layout.padding_x0_5,
+                      paddingBottom: layout.padding_x0_5,
+                    },
+                    fontSemibold13,
+                  ]}
+                >
+                  {tag.text}
+                </BrandText>
+              </View>
+            ))}
           </View>
 
           <View
@@ -146,13 +127,13 @@ export const ResourceBox: React.FC<object> = () => {
             <BrandText
               style={[{ marginTop: layout.padding_x1_5 }, fontSemibold20]}
             >
-              Hello World!
+              {data.title}
             </BrandText>
             <ScrollView style={{ height: 60 }}>
               <BrandText
                 style={[{ marginBottom: layout.padding_x0_5 }, fontSemibold13]}
               >
-                Video description
+                {data.description}
               </BrandText>
             </ScrollView>
           </View>

@@ -71,15 +71,18 @@ message ResourcesRequest {
 }
 
 message Resources {
-  int32 type = 1; // video, article, etc
-  repeated Category category = 2; // cosmos, gno, web, etc
-  string thumbnail = 3;
-  string title = 4;
-  bool liked = 5;
+  int32 id = 1;
+  int32 type = 2; // video, article, etc
+  repeated Category category = 3; // cosmos, gno, web, etc
+  repeated Tag tags = 4;
+  string thumbnail = 5;
+  string title = 6;
+  bool liked = 7;
+  string description = 8;
 }
 
 message ResourcesResponse {
-  Resources resources = 1;
+  repeated Resources resources = 1;
 }
 
 // Tournaments

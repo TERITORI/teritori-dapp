@@ -62,17 +62,20 @@ export interface ResourcesRequest {
 }
 
 export interface Resources {
+  id: number;
   /** video, article, etc */
   type: number;
   /** cosmos, gno, web, etc */
   category: Category[];
+  tags: Tag[];
   thumbnail: string;
   title: string;
   liked: boolean;
+  description: string;
 }
 
 export interface ResourcesResponse {
-  resources: Resources | undefined;
+  resources: Resources[];
 }
 
 export interface TournamentsRequest {
@@ -739,25 +742,34 @@ export const ResourcesRequest = {
 };
 
 function createBaseResources(): Resources {
-  return { type: 0, category: [], thumbnail: "", title: "", liked: false };
+  return { id: 0, type: 0, category: [], tags: [], thumbnail: "", title: "", liked: false, description: "" };
 }
 
 export const Resources = {
   encode(message: Resources, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.id !== 0) {
+      writer.uint32(8).int32(message.id);
+    }
     if (message.type !== 0) {
-      writer.uint32(8).int32(message.type);
+      writer.uint32(16).int32(message.type);
     }
     for (const v of message.category) {
-      Category.encode(v!, writer.uint32(18).fork()).ldelim();
+      Category.encode(v!, writer.uint32(26).fork()).ldelim();
+    }
+    for (const v of message.tags) {
+      Tag.encode(v!, writer.uint32(34).fork()).ldelim();
     }
     if (message.thumbnail !== "") {
-      writer.uint32(26).string(message.thumbnail);
+      writer.uint32(42).string(message.thumbnail);
     }
     if (message.title !== "") {
-      writer.uint32(34).string(message.title);
+      writer.uint32(50).string(message.title);
     }
     if (message.liked === true) {
-      writer.uint32(40).bool(message.liked);
+      writer.uint32(56).bool(message.liked);
+    }
+    if (message.description !== "") {
+      writer.uint32(66).string(message.description);
     }
     return writer;
   },
@@ -770,19 +782,28 @@ export const Resources = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.type = reader.int32();
+          message.id = reader.int32();
           break;
         case 2:
-          message.category.push(Category.decode(reader, reader.uint32()));
+          message.type = reader.int32();
           break;
         case 3:
-          message.thumbnail = reader.string();
+          message.category.push(Category.decode(reader, reader.uint32()));
           break;
         case 4:
-          message.title = reader.string();
+          message.tags.push(Tag.decode(reader, reader.uint32()));
           break;
         case 5:
+          message.thumbnail = reader.string();
+          break;
+        case 6:
+          message.title = reader.string();
+          break;
+        case 7:
           message.liked = reader.bool();
+          break;
+        case 8:
+          message.description = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -794,47 +815,60 @@ export const Resources = {
 
   fromJSON(object: any): Resources {
     return {
+      id: isSet(object.id) ? Number(object.id) : 0,
       type: isSet(object.type) ? Number(object.type) : 0,
       category: Array.isArray(object?.category) ? object.category.map((e: any) => Category.fromJSON(e)) : [],
+      tags: Array.isArray(object?.tags) ? object.tags.map((e: any) => Tag.fromJSON(e)) : [],
       thumbnail: isSet(object.thumbnail) ? String(object.thumbnail) : "",
       title: isSet(object.title) ? String(object.title) : "",
       liked: isSet(object.liked) ? Boolean(object.liked) : false,
+      description: isSet(object.description) ? String(object.description) : "",
     };
   },
 
   toJSON(message: Resources): unknown {
     const obj: any = {};
+    message.id !== undefined && (obj.id = Math.round(message.id));
     message.type !== undefined && (obj.type = Math.round(message.type));
     if (message.category) {
       obj.category = message.category.map((e) => e ? Category.toJSON(e) : undefined);
     } else {
       obj.category = [];
     }
+    if (message.tags) {
+      obj.tags = message.tags.map((e) => e ? Tag.toJSON(e) : undefined);
+    } else {
+      obj.tags = [];
+    }
     message.thumbnail !== undefined && (obj.thumbnail = message.thumbnail);
     message.title !== undefined && (obj.title = message.title);
     message.liked !== undefined && (obj.liked = message.liked);
+    message.description !== undefined && (obj.description = message.description);
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<Resources>, I>>(object: I): Resources {
     const message = createBaseResources();
+    message.id = object.id ?? 0;
     message.type = object.type ?? 0;
     message.category = object.category?.map((e) => Category.fromPartial(e)) || [];
+    message.tags = object.tags?.map((e) => Tag.fromPartial(e)) || [];
     message.thumbnail = object.thumbnail ?? "";
     message.title = object.title ?? "";
     message.liked = object.liked ?? false;
+    message.description = object.description ?? "";
     return message;
   },
 };
 
 function createBaseResourcesResponse(): ResourcesResponse {
-  return { resources: undefined };
+  return { resources: [] };
 }
 
 export const ResourcesResponse = {
   encode(message: ResourcesResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.resources !== undefined) {
-      Resources.encode(message.resources, writer.uint32(10).fork()).ldelim();
+    for (const v of message.resources) {
+      Resources.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
@@ -847,7 +881,7 @@ export const ResourcesResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.resources = Resources.decode(reader, reader.uint32());
+          message.resources.push(Resources.decode(reader, reader.uint32()));
           break;
         default:
           reader.skipType(tag & 7);
@@ -858,21 +892,24 @@ export const ResourcesResponse = {
   },
 
   fromJSON(object: any): ResourcesResponse {
-    return { resources: isSet(object.resources) ? Resources.fromJSON(object.resources) : undefined };
+    return {
+      resources: Array.isArray(object?.resources) ? object.resources.map((e: any) => Resources.fromJSON(e)) : [],
+    };
   },
 
   toJSON(message: ResourcesResponse): unknown {
     const obj: any = {};
-    message.resources !== undefined &&
-      (obj.resources = message.resources ? Resources.toJSON(message.resources) : undefined);
+    if (message.resources) {
+      obj.resources = message.resources.map((e) => e ? Resources.toJSON(e) : undefined);
+    } else {
+      obj.resources = [];
+    }
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<ResourcesResponse>, I>>(object: I): ResourcesResponse {
     const message = createBaseResourcesResponse();
-    message.resources = (object.resources !== undefined && object.resources !== null)
-      ? Resources.fromPartial(object.resources)
-      : undefined;
+    message.resources = object.resources?.map((e) => Resources.fromPartial(e)) || [];
     return message;
   },
 };
