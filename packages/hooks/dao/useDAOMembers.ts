@@ -8,6 +8,7 @@ import {
   NetworkKind,
   parseUserId,
 } from "../../networks";
+import { extractGnoString } from "../../utils/gno";
 
 // FIXME: pagination
 
@@ -37,17 +38,13 @@ export const useDAOMembers = (daoId: string | undefined) => {
         }
         case NetworkKind.Gno: {
           const provider = new GnoJSONRPCProvider(network.endpoint);
-          const coreRender = await provider.getRenderOutput(daoAddress, "");
-          const lines = coreRender.split("\n");
+          const res = extractGnoString(
+            await provider.evaluateExpression(daoAddress, `GetBinaryMembers()`)
+          );
+          const membersB64 = res.split(",");
           const members: { addr: string; weight: number }[] = [];
-          for (const line of lines) {
-            if (line.startsWith("## Single choice proposals module")) {
-              break;
-            }
-            if (!line.startsWith("- ")) {
-              continue;
-            }
-            members.push({ addr: line.split(" ")[1], weight: 1 });
+          for (const memberB64 of membersB64) {
+            members.push(decodeGnoMember(Buffer.from(memberB64, "base64")));
           }
           return members;
         }
@@ -56,4 +53,23 @@ export const useDAOMembers = (daoId: string | undefined) => {
     { staleTime: Infinity }
   );
   return { members, ...other };
+};
+
+const decodeGnoMember = (buf: Buffer): { addr: string; weight: number } => {
+  let offset = 0;
+
+  // const id = buf.readBigUint64BE(offset);
+  offset += 8;
+
+  const addrLen = buf.readUInt16BE(offset);
+  offset += 2;
+  const addr = buf.slice(offset, offset + addrLen).toString();
+  offset += addrLen;
+
+  // const weightHighBits = buf.readUInt32BE(offset);
+  offset += 4;
+  const weight = buf.readUInt32BE(offset);
+  // offset += 4;
+
+  return { addr, weight };
 };

@@ -22,6 +22,7 @@ import { useNameSearch } from "../../hooks/search/useNameSearch";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkKind, getUserId, parseUserId } from "../../networks";
+import { toRawURLBase64String } from "../../utils/buffer";
 import { adenaVMCall } from "../../utils/gno";
 import {
   neutral00,
@@ -546,25 +547,32 @@ const useProposeToAddMembers = (daoId: string | undefined) => {
           return;
         }
         case NetworkKind.Gno: {
-          const message = encodeUpdateMembers(
-            membersToAdd.map((addr) => ({
-              addr,
-              weight,
-            })),
-            []
+          // TODO: get group id
+          const groupId = 1;
+
+          const b64Messages: string[] = [];
+          for (const member of membersToAdd) {
+            b64Messages.push(
+              toRawURLBase64String(
+                encodeAddMember({
+                  groupId,
+                  addr: member,
+                  weight,
+                  metadata: "",
+                })
+              )
+            );
+          }
+          await adenaVMCall(
+            {
+              caller: senderAddress,
+              send: "",
+              pkg_path: daoAddress,
+              func: "Propose",
+              args: ["0", "Add members", "", b64Messages.join(",")],
+            },
+            { gasWanted: 2000000 }
           );
-          const b64Msg = message
-            .toString("base64")
-            .replaceAll("=", "")
-            .replaceAll("+", "-")
-            .replaceAll("/", "_");
-          await adenaVMCall({
-            caller: senderAddress,
-            send: "",
-            pkg_path: daoAddress,
-            func: "Propose",
-            args: ["0", "Update members", "", b64Msg],
-          });
           return;
         }
         default: {
@@ -577,42 +585,40 @@ const useProposeToAddMembers = (daoId: string | undefined) => {
 };
 
 interface GnoMember {
+  groupId: number;
   addr: string;
   weight: number;
+  metadata: string;
 }
 
-const encodeUpdateMembers = (toAdd: GnoMember[], toRemove: string[]) => {
+const encodeAddMember = (member: GnoMember) => {
   const b = Buffer.alloc(16000); // TODO: compute size or concat
 
-  const t = "UpdateMembers";
   let offset = 0;
-  b.writeUInt16BE(t.length);
+
+  const type = "AddMember";
+  b.writeUInt16BE(type.length, offset);
   offset += 2;
-  b.write(t, offset);
-  offset += t.length;
+  b.write(type, offset);
+  offset += type.length;
 
-  b.writeUInt32BE(toAdd.length, offset);
+  b.writeUInt32BE(0, offset);
   offset += 4;
-  for (const m of toAdd) {
-    b.writeUInt32BE(0, offset);
-    offset += 4;
-    b.writeUInt32BE(m.weight, offset);
-    offset += 4;
-
-    b.writeUInt16BE(m.addr.length, offset);
-    offset += 2;
-    b.write(m.addr, offset);
-    offset += m.addr.length;
-  }
-
-  b.writeUInt32BE(toRemove.length, offset);
+  b.writeUInt32BE(member.groupId, offset);
   offset += 4;
-  for (const addr of toRemove) {
-    b.writeUInt16BE(addr.length, offset);
-    offset += 2;
-    b.write(addr, offset);
-    offset += addr.length;
-  }
+
+  b.writeUInt16BE(member.addr.length, offset);
+  offset += 2;
+  b.write(member.addr, offset);
+  offset += member.addr.length;
+
+  b.writeUInt32BE(member.weight, offset);
+  offset += 4;
+
+  b.writeUInt16BE(member.metadata.length, offset);
+  offset += 2;
+  b.write(member.metadata, offset);
+  offset += member.metadata.length;
 
   return Buffer.from(b.subarray(0, offset));
 };
