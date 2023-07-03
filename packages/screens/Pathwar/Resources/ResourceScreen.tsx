@@ -128,7 +128,9 @@ export const ResourceScreen: React.FC = () => {
         }}
       >
         <FlatList
-          data={data.filter((resource) => resource.title.includes(search))}
+          data={data.filter((resource) =>
+            resource.title.toLowerCase().includes(search.toLowerCase())
+          )}
           style={{
             width: "100%",
           }}
