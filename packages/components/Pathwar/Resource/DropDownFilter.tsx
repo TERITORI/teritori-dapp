@@ -1,10 +1,11 @@
 import Checkbox from "expo-checkbox";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 
-import chevronDownIcon from "../../../../assets/icons/Pathwar/chevronDownIcon.svg";
-import chevronUpIcon from "../../../../assets/icons/Pathwar/chevronUpIcon.svg";
 import SortIcon from "../../../../assets/icons/Pathwar/sortIcon.svg";
+import chevronDownSVG from "../../../../assets/icons/chevron-down.svg";
+import chevronUpSVG from "../../../../assets/icons/chevron-up.svg";
+import { useDropdowns } from "../../../context/DropdownsProvider";
 import {
   codGrayColor,
   neutral11,
@@ -17,10 +18,12 @@ import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText/BrandText";
 import { SVG } from "../../SVG";
 import { Separator } from "../../Separator";
+import { SecondaryBox } from "../../boxes/SecondaryBox";
 import { TertiaryBox } from "../../boxes/TertiaryBox";
 
 export const DropDownButton: React.FC<object> = () => {
-  const [isMoreDisplayed, setIsMoreDisplayed] = useState(false);
+  const { onPressDropdownButton, isDropdownOpen } = useDropdowns();
+  const dropdownRef = useRef<View>(null);
   const [allShowSelected, setAllShowSelected] = useState(false);
   const [techPostSelected, setTechPostSelected] = useState(false);
   const [securitySelected, setSecuritySelected] = useState(false);
@@ -51,28 +54,33 @@ export const DropDownButton: React.FC<object> = () => {
               fontSemibold14,
             ]}
           >
-            Content to show
+            Content to Show
           </BrandText>
-          <TouchableOpacity
-            onPress={() => setIsMoreDisplayed(!isMoreDisplayed)}
-          >
-            {isMoreDisplayed ? (
-              <SVG source={chevronDownIcon} />
-            ) : (
-              <SVG source={chevronUpIcon} />
-            )}
+          <TouchableOpacity onPress={() => onPressDropdownButton(dropdownRef)}>
+            <SVG
+              source={
+                isDropdownOpen(dropdownRef) ? chevronUpSVG : chevronDownSVG
+              }
+              width={16}
+              height={16}
+              color={secondaryColor}
+            />
           </TouchableOpacity>
         </View>
       </TertiaryBox>
 
       {/* DropDown Menu */}
 
-      {isMoreDisplayed && (
-        <TertiaryBox
+      {isDropdownOpen(dropdownRef) && (
+        <SecondaryBox
           width={185}
           height={350}
+          style={{
+            position: "absolute",
+            top: 42,
+            marginTop: layout.padding_x1_5,
+          }}
           mainContainerStyle={{ backgroundColor: codGrayColor }}
-          style={{ marginTop: layout.padding_x1_5 }}
         >
           <View
             style={{
@@ -337,7 +345,7 @@ export const DropDownButton: React.FC<object> = () => {
               </View>
             </View>
           </View>
-        </TertiaryBox>
+        </SecondaryBox>
       )}
     </View>
   );
