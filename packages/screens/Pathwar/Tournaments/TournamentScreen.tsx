@@ -1,36 +1,22 @@
 import React, { useState } from "react";
-import {
-  View,
-  Image,
-  ImageBackground,
-  TouchableOpacity,
-  FlatList,
-} from "react-native";
+import { View, ImageBackground, FlatList } from "react-native";
 
 import { TournamentBox } from "./TournamentCard";
-import resourceLogo from "../../../../assets/LogoPathwarOverview/ResourceLogo.svg";
-import resourceBanner from "../../../../assets/banners/resourcesBanner.png";
 import tounamentBanner from "../../../../assets/banners/tournamentBanner.png";
-import searchIcon from "../../../../assets/icons/Pathwar/searchIcon.svg";
-import { Resources, Tournament } from "../../../api/pathwar/v1/pathwar";
+import { Tournament } from "../../../api/pathwar/v1/pathwar";
 import { BrandText } from "../../../components/BrandText";
-import { DropDownButton } from "../../../components/Pathwar/Resource/DropDownFilter";
-import { SVG } from "../../../components/SVG";
 import { ScreenContainer } from "../../../components/ScreenContainer";
-import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
-import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { SearchInput } from "../../../components/sorts/SearchInput";
 import { SpacerColumn } from "../../../components/spacer";
 import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useMaxResolution } from "../../../hooks/useMaxResolution";
 import { useAppNavigation } from "../../../utils/navigation";
-import { neutral00, secondaryColor } from "../../../utils/style/colors";
-import { fontSemibold14, fontSemibold20 } from "../../../utils/style/fonts";
+import { neutral00 } from "../../../utils/style/colors";
+import { fontSemibold20 } from "../../../utils/style/fonts";
 import {
   layout,
   screenContentMaxWidthLarge,
 } from "../../../utils/style/layout";
-import { ResourceBox } from "../Resources/ResourceBox";
 
 export const TournamentScreen: React.FC = () => {
   const { height } = useMaxResolution({ isLarge: true });

@@ -9,14 +9,12 @@ import {
 import { ResourceBox } from "./ResourceBox";
 import resourceLogo from "../../../../assets/LogoPathwarOverview/ResourceLogo.svg";
 import resourceBanner from "../../../../assets/banners/resourcesBanner.png";
-import SearchIcon from "../../../../assets/icons/Pathwar/searchIcon.svg";
 import { Resources } from "../../../api/pathwar/v1/pathwar";
 import { BrandText } from "../../../components/BrandText";
 import { DropDownButton } from "../../../components/Pathwar/Resource/DropDownFilter";
 import { SVG } from "../../../components/SVG";
 import { ScreenContainer } from "../../../components/ScreenContainer";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
-import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { SearchInput } from "../../../components/sorts/SearchInput";
 import { SpacerColumn } from "../../../components/spacer";
 import { useIsMobile } from "../../../hooks/useIsMobile";

@@ -1,7 +1,6 @@
 import React from "react";
 import { View, TouchableOpacity } from "react-native";
 
-import pwn from "../../../../assets/icons/Pathwar/PathwarCoin/pwn.svg";
 import checkIcon from "../../../../assets/icons/Pathwar/checkIcon.svg";
 import clockIcon from "../../../../assets/icons/Pathwar/clockIcon.svg";
 import { Tournament } from "../../../api/pathwar/v1/pathwar";
