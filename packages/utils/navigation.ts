@@ -103,9 +103,9 @@ const navConfig: {
 
     // === Pathwar
     Pathwar: "pathwar",
-    Resources: "ressources",
-    Tournaments: "tournaments",
-    Statistics: "statistics",
+    Resources: "pathwar/resources",
+    Tournaments: "pathwar/tournaments",
+    Statistics: "pathwar/statistics",
     // ==== Launchpad
     Launchpad: "launchpad",
     LaunchpadApply: "launchpad/apply",
