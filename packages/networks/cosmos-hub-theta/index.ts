@@ -7,6 +7,7 @@ export const cosmosThetaNetwork: NetworkInfo = {
   chainId: "theta-testnet-001",
   displayName: "Cosmos Hub Theta",
   icon: "icons/networks/cosmos-hub.svg",
+  features: [],
   currencies: cosmosHubThetaCurrencies,
   txExplorer: "https://explorer.theta-testnet.polypore.xyz/transactions/$hash",
   accountExplorer:
@@ -24,7 +25,7 @@ export const cosmosThetaNetwork: NetworkInfo = {
     average: 0.025,
     high: 0.04,
   },
-  features: [
+  cosmosFeatures: [
     "stargate",
     "ibc-transfer",
     "cosmwasm",

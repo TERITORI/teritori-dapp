@@ -1,5 +1,5 @@
 import { useIsFocused } from "@react-navigation/native";
-import React, { Suspense, useEffect, useMemo, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 
 import { ConnectModal } from "./components/ConnectModal";
@@ -9,6 +9,7 @@ import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { MainConnectWalletButton } from "../../components/connectWallet/MainConnectWalletButton";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { NetworkFeature } from "../../networks";
 import { osmosisNetwork } from "../../networks/osmosis";
 import { osmosisTestnetNetwork } from "../../networks/osmosis-testnet";
 import { setSelectedNetworkId } from "../../store/slices/settings";
@@ -28,12 +29,8 @@ export const SwapScreen: ScreenFC<"Swap"> = () => {
     }))
   );
 
-  const osmosisConnected = useMemo(
-    () =>
-      selectedNetwork?.id === osmosisTestnetNetwork.id ||
-      selectedNetwork?.id === osmosisNetwork.id,
-    [selectedNetwork?.id]
-  );
+  const swapNetworkConnected =
+    selectedNetwork?.features.includes(NetworkFeature.Swap) || false;
 
   const onPressConnect = () => {
     dispatch(setSelectedNetworkId(osmosisNetwork.id));
@@ -45,16 +42,16 @@ export const SwapScreen: ScreenFC<"Swap"> = () => {
   };
 
   useEffect(() => {
-    if (osmosisConnected || !isScreenFocused) setConnectModalVisible(false);
+    if (swapNetworkConnected || !isScreenFocused) setConnectModalVisible(false);
     else setConnectModalVisible(true);
-  }, [osmosisConnected, isScreenFocused]);
+  }, [swapNetworkConnected, isScreenFocused]);
 
   return (
     <ScreenContainer headerChildren={<BrandText>Swap</BrandText>}>
       <View style={styles.mainContainer}>
         {!selectedWallet?.address ? (
           <MainConnectWalletButton style={{ alignSelf: "center" }} />
-        ) : osmosisConnected && isScreenFocused ? (
+        ) : swapNetworkConnected && isScreenFocused ? (
           <>
             <Suspense fallback={<BrandText>Loading...</BrandText>}>
               <SwapView />

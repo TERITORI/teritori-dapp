@@ -643,7 +643,10 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                       margin: -cardsHalfGap,
                     }}
                   >
-                    <CollectionSocialButtons collectionInfo={info} />
+                    <CollectionSocialButtons
+                      collectionInfo={info}
+                      hideMintButton
+                    />
                   </View>
                 </View>
               )}

@@ -7,6 +7,7 @@ export const cosmosNetwork: NetworkInfo = {
   chainId: "cosmoshub-4",
   displayName: "Cosmos Hub",
   icon: "icons/networks/cosmos-hub.svg",
+  features: [],
   currencies: cosmosHubCurrencies,
   txExplorer: "https://www.mintscan.io/cosmos/txs/$hash",
   accountExplorer: "https://www.mintscan.io/cosmos/account/$address",
@@ -23,7 +24,7 @@ export const cosmosNetwork: NetworkInfo = {
     average: 0.025,
     high: 0.04,
   },
-  features: [
+  cosmosFeatures: [
     "stargate",
     "ibc-transfer",
     "cosmwasm",

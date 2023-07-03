@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { FlatList, StyleProp, TextStyle, View } from "react-native";
+import { FlatList, StyleProp, TextStyle, View, ViewStyle } from "react-native";
+import { useSelector } from "react-redux";
 
 import { PrettyPrint } from "./types";
 import {
@@ -16,10 +17,13 @@ import { ScreenContainer } from "../../components/ScreenContainer";
 import { RoundedGradientImage } from "../../components/images/RoundedGradientImage";
 import { SearchInput } from "../../components/sorts/SearchInput";
 import { SpacerColumn } from "../../components/spacer";
-import { TableRow, TableRowHeading } from "../../components/table";
+import { TableRow } from "../../components/table";
 import { Tabs } from "../../components/tabs/Tabs";
 import { useCollections } from "../../hooks/useCollections";
+import { useIsMobile } from "../../hooks/useIsMobile";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import { NetworkFeature, selectableNetworks } from "../../networks";
+import { selectAreTestnetsEnabled } from "../../store/slices/settings";
 import { prettyPrice } from "../../utils/coins";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import {
@@ -33,8 +37,9 @@ import {
   fontSemibold28,
 } from "../../utils/style/fonts";
 import { layout, screenContentMaxWidthLarge } from "../../utils/style/layout";
+import { arrayIncludes } from "../../utils/typescript";
 
-const TABLE_ROWS: { [key: string]: TableRowHeading } = {
+const TABLE_ROWS = {
   rank: {
     label: "Rank",
     flex: 1,
@@ -76,18 +81,27 @@ const TABLE_ROWS: { [key: string]: TableRowHeading } = {
 export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
   const navigation = useAppNavigation();
   const selectedNetworkId = useSelectedNetworkId();
+  const areTestnetsEnabled = useSelector(selectAreTestnetsEnabled);
 
-  const tabs = {
-    teritori: {
-      name: "Teritori",
-    },
-    ethereum: {
-      name: "Ethereum",
-    },
-  };
-  const [selectedTab, setSelectedTab] =
-    // @ts-expect-error
-    useState<keyof typeof tabs>(selectedNetworkId);
+  const marketplaceNetworks = selectableNetworks.filter(
+    (network) =>
+      (areTestnetsEnabled || !network.testnet) &&
+      network.features.includes(NetworkFeature.NFTMarketplace)
+  );
+
+  const tabs = marketplaceNetworks.reduce(
+    (tabs, network) => ({
+      ...tabs,
+      [network.id]: { name: network.displayName },
+    }),
+    {} as Record<string, { name: string }>
+  );
+
+  const tabsKeys = Object.keys(tabs);
+
+  const [selectedTab, setSelectedTab] = useState(
+    arrayIncludes(tabsKeys, selectedNetworkId) ? selectedNetworkId : tabsKeys[0]
+  );
 
   const req = {
     networkId: selectedTab,
@@ -99,7 +113,24 @@ export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
     mintState: MintState.MINT_STATE_UNSPECIFIED,
   };
 
-  const { collections } = useCollections(req);
+  const { collections: borkenCollections } = useCollections(req);
+
+  // this is a hack, we need to fix these in the indexer but it's pain to replay due to current p2e implem and we need to fix this asap
+  // FIXME
+  const collections = borkenCollections.map((collection) => {
+    let denom = collection.denom;
+    if (denom) {
+      return collection;
+    }
+    switch (collection.id) {
+      case "tori-tori1gflccmghzfscmxl95z43v36y0rle8v9x8kvt9na03yzywtw86amsj9nf37": // tori gen-1
+      case "tori-tori167xst2jy9n6u92t3n8hf762adtpe3cs6acsgn0w5n2xlz9hv3xgs4ksc6t": // disease of the brain
+      case "tori-tori1wkwy0xh89ksdgj9hr347dyd2dw7zesmtrue6kfzyml4vdtz6e5wscs7038": // tns
+        denom = "utori";
+        break;
+    }
+    return { ...collection, denom, volumeDenom: denom };
+  });
 
   const [filterText, setFilterText] = useState("");
 
@@ -166,6 +197,7 @@ const CollectionTable: React.FC<{
 }> = ({ rows, filterText }) => {
   const [itemsPerPage, setItemsPerPage] = useState(50);
   const [pageIndex, setPageIndex] = useState(0);
+  const isMobile = useIsMobile();
 
   const filteredCollections = rows.filter(({ collectionName }) =>
     collectionName?.toLowerCase().includes(filterText.toLowerCase())
@@ -180,7 +212,13 @@ const CollectionTable: React.FC<{
         maxWidth: screenContentMaxWidthLarge,
       }}
     >
-      <TableRow headings={Object.values(TABLE_ROWS)} />
+      <TableRow
+        headings={
+          !isMobile
+            ? Object.values(TABLE_ROWS)
+            : Object.values(TABLE_ROWS).slice(0, -4)
+        }
+      />
       <FlatList
         data={filteredCollections}
         renderItem={({ item, index }) => (
@@ -211,16 +249,20 @@ const CollectionTable: React.FC<{
   );
 };
 
-const PrettyPriceWithCurrency: React.FC<{ data: PrettyPrint }> = ({ data }) => {
+const PrettyPriceWithCurrency: React.FC<{
+  data: PrettyPrint;
+  style?: StyleProp<ViewStyle>;
+}> = ({ data, style }) => {
   return (
     <View
-      style={{
-        flex: 3,
-        paddingRight: layout.padding_x1,
-        flexDirection: "row",
-        flexWrap: "nowrap",
-        justifyContent: "center",
-      }}
+      style={[
+        {
+          paddingRight: layout.padding_x1,
+          flexDirection: "row",
+          alignItems: "center",
+        },
+        style,
+      ]}
     >
       <BrandText
         style={[
@@ -229,6 +271,7 @@ const PrettyPriceWithCurrency: React.FC<{ data: PrettyPrint }> = ({ data }) => {
             marginRight: layout.padding_x0_5,
           },
         ]}
+        numberOfLines={1}
       >
         {prettyPrice(data.networkId, data.value.toString(10), data.denom)}
       </BrandText>
@@ -242,6 +285,8 @@ const CollectionRow: React.FC<{ collection: Collection; rank: number }> = ({
   rank,
 }) => {
   const rowData = useRowData(collection, rank);
+  const isMobile = useIsMobile();
+
   return (
     <OmniLink
       style={{
@@ -254,12 +299,18 @@ const CollectionRow: React.FC<{ collection: Collection; rank: number }> = ({
         paddingVertical: layout.padding_x2,
         paddingHorizontal: layout.padding_x2_5,
       }}
-      to={{ screen: "Collection", params: { id: collection.id } }}
+      to={{
+        screen: collection.floorPrice !== 0 ? "Collection" : "MintCollection",
+        params: { id: collection.id },
+      }}
     >
-      <InnerCell flex={1}>{rowData.rank}</InnerCell>
+      <InnerCell style={{ flex: TABLE_ROWS.rank.flex }}>
+        {rowData.rank}
+      </InnerCell>
+
       <View
         style={{
-          flex: 5,
+          flex: TABLE_ROWS.collectionNameData.flex,
           flexDirection: "row",
           flexWrap: "nowrap",
           alignItems: "center",
@@ -269,16 +320,23 @@ const CollectionRow: React.FC<{ collection: Collection; rank: number }> = ({
         <RoundedGradientImage
           size="XS"
           sourceURI={rowData.collectionNameData.image}
-          style={{ marginRight: 24 }}
+          style={{ marginRight: isMobile ? 8 : 30 }}
         />
         <BrandText style={fontSemibold13}>
           {rowData.collectionNameData.collectionName}
         </BrandText>
       </View>
-      <PrettyPriceWithCurrency data={rowData.totalVolume} />
-      <PrettyPriceWithCurrency data={rowData["TimePeriodVolume"]} />
+      <PrettyPriceWithCurrency
+        data={rowData.totalVolume}
+        style={{ flex: TABLE_ROWS.totalVolume.flex }}
+      />
+      <PrettyPriceWithCurrency
+        data={rowData["TimePeriodVolume"]}
+        style={{ flex: TABLE_ROWS.TimePeriodVolume.flex }}
+      />
       <InnerCell
-        style={{
+        style={{ flex: TABLE_ROWS.TimePeriodPercentualVolume.flex }}
+        textStyle={{
           color: rowData["TimePeriodPercentualVolume"].includes("+")
             ? successColor
             : errorColor,
@@ -286,29 +344,41 @@ const CollectionRow: React.FC<{ collection: Collection; rank: number }> = ({
       >
         {rowData["TimePeriodPercentualVolume"]}
       </InnerCell>
-      <InnerCell>{rowData.sales}</InnerCell>
-      <PrettyPriceWithCurrency data={rowData.floorPrice} />
-      <InnerCell>{rowData.owners}</InnerCell>
-      <InnerCell>
-        {rowData.supply === "0" ? "No limit" : rowData.supply}
-      </InnerCell>
+      {!isMobile && (
+        <>
+          <InnerCell style={{ flex: TABLE_ROWS.sales.flex }}>
+            {rowData.sales}
+          </InnerCell>
+          <PrettyPriceWithCurrency
+            data={rowData.floorPrice}
+            style={{ flex: TABLE_ROWS.floorPrice.flex }}
+          />
+          <InnerCell style={{ flex: TABLE_ROWS.owners.flex }}>
+            {rowData.owners}
+          </InnerCell>
+          <InnerCell style={{ flex: TABLE_ROWS.supply.flex, paddingRight: 0 }}>
+            {rowData.supply === "0" ? "No limit" : rowData.supply}
+          </InnerCell>
+        </>
+      )}
     </OmniLink>
   );
 };
 
-const InnerCell: React.FC<{ flex?: number; style?: StyleProp<TextStyle> }> = ({
-  flex = 3,
-  children,
-  style,
-}) => {
+const InnerCell: React.FC<{
+  style?: StyleProp<ViewStyle>;
+  textStyle?: StyleProp<TextStyle>;
+}> = ({ children, style, textStyle }) => {
   return (
     <View
-      style={{
-        flex,
-        paddingRight: layout.padding_x1,
-      }}
+      style={[
+        {
+          paddingRight: layout.padding_x1,
+        },
+        style,
+      ]}
     >
-      <BrandText style={[fontSemibold13, style]} numberOfLines={1}>
+      <BrandText style={[fontSemibold13, textStyle]} numberOfLines={1}>
         {children}
       </BrandText>
     </View>
@@ -402,7 +472,7 @@ const getDelta = (collection: Collection) => {
   }
   const res = (collection.volumeCompare * 100) / parseFloat(collection.volume);
   if (res > 100) {
-    return "+%" + res.toFixed(2);
+    return "+" + res.toFixed(2) + "%";
   }
-  return "-%" + (100 - res).toFixed(2);
+  return "-" + (100 - res).toFixed(2) + "%";
 };

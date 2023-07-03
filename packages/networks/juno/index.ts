@@ -7,6 +7,7 @@ export const junoNetwork: NetworkInfo = {
   chainId: "juno-1",
   displayName: "Juno",
   icon: "icons/networks/juno.svg",
+  features: [],
   currencies: junoCurrencies,
   txExplorer: "https://www.mintscan.io/juno/txs/$hash",
   accountExplorer: "https://www.mintscan.io/juno/account/$address",
@@ -23,7 +24,7 @@ export const junoNetwork: NetworkInfo = {
     average: 0.025,
     high: 0.04,
   },
-  features: [
+  cosmosFeatures: [
     "stargate",
     "ibc-transfer",
     "cosmwasm",
