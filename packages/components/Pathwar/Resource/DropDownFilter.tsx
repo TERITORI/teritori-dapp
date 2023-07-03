@@ -37,7 +37,7 @@ export const DropDownButton: React.FC<object> = () => {
     <View style={{ flexDirection: "column" }}>
       <TertiaryBox
         width={181}
-        height={50}
+        height={45}
         mainContainerStyle={{
           backgroundColor: neutral11,
           borderColor: secondaryColor,
