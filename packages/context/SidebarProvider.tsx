@@ -1,11 +1,4 @@
-import React, {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  useMemo,
-} from "react";
-import { useWindowDimensions } from "react-native";
+import { useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
 
 import { getValuesFromId, SEPARATOR } from "../screens/DAppStore/query/util";
@@ -21,29 +14,9 @@ import {
 import { useAppDispatch } from "../store/store";
 import { SIDEBAR_LIST } from "../utils/sidebar";
 
-interface DefaultValue {
-  isSidebarExpanded: boolean;
-  toggleSidebar: () => void;
-  dynamicSidebar: { [p: string]: any };
-}
-
-const defaultValue: DefaultValue = {
-  isSidebarExpanded: true,
-  toggleSidebar: () => {},
-  dynamicSidebar: {},
-};
-
-const SidebarContext = createContext(defaultValue);
-
-const MOBILE_WIDTH = 768;
-
-export const SidebarContextProvider: React.FC = ({ children }) => {
+export const useSidebar = () => {
   // The entered isSidebarExpanded
-  const settingIsSidebarExpanded = useSelector(selectSidebarExpanded);
-
-  const [isSidebarExpanded, setIsSidebarExpanded] = useState<boolean>(
-    defaultValue.isSidebarExpanded
-  );
+  const isSidebarExpanded = useSelector(selectSidebarExpanded);
 
   const selectedApps = useSelector(selectCheckedApps);
   const availableApps = useSelector(selectAvailableApps);
@@ -93,30 +66,14 @@ export const SidebarContextProvider: React.FC = ({ children }) => {
 
     return dynamicAppsSelection;
   }, [availableApps, selectedApps]);
-  const { width: windowWidth } = useWindowDimensions();
-
-  useEffect(() => {
-    setIsSidebarExpanded(
-      windowWidth >= MOBILE_WIDTH ? settingIsSidebarExpanded : false
-    );
-  }, [settingIsSidebarExpanded, windowWidth]);
 
   const toggleSidebar = () => {
     dispatch(setSidebarExpanded(!isSidebarExpanded));
-    setIsSidebarExpanded(!isSidebarExpanded);
   };
 
-  return (
-    <SidebarContext.Provider
-      value={{
-        isSidebarExpanded,
-        toggleSidebar,
-        dynamicSidebar,
-      }}
-    >
-      {children}
-    </SidebarContext.Provider>
-  );
+  return {
+    isSidebarExpanded,
+    toggleSidebar,
+    dynamicSidebar,
+  };
 };
-
-export const useSidebar = () => useContext(SidebarContext);
