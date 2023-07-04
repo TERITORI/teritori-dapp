@@ -24,7 +24,7 @@ export const BuyTokens: React.FC<{
     >
       <CreditCardIcon
         color={primaryColor}
-        style={{ marginRight: layout.padding_x1 }}
+        style={{ marginRight: flexDirection === "row" ? layout.padding_x1 : 0 }}
       />
       <BrandText style={textStyle}>Buy Tokens</BrandText>
     </TouchableOpacity>
