@@ -5,11 +5,9 @@ import checkIcon from "../../../../assets/icons/Pathwar/checkIcon.svg";
 import clockIcon from "../../../../assets/icons/Pathwar/clockIcon.svg";
 import { Tournament } from "../../../api/pathwar/v1/pathwar";
 import { BrandText } from "../../../components/BrandText";
-import { CurrencyIcon } from "../../../components/CurrencyIcon";
 import { SVG } from "../../../components/SVG";
 import { Separator } from "../../../components/Separator";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
-import { prettyPrice } from "../../../utils/coins";
 import {
   neutral44,
   hardColor,
@@ -26,6 +24,8 @@ import {
   fontSemibold16,
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { PathWarPrice } from "../components/PathWarPrice";
+import { PathWarRewards } from "../components/PathWarRewards";
 
 export const TournamentBox: React.FC<{ data: Tournament }> = ({ data }) => {
   return (
@@ -57,54 +57,7 @@ export const TournamentBox: React.FC<{ data: Tournament }> = ({ data }) => {
           >
             {/* img */}
           </TertiaryBox>
-          <TertiaryBox
-            width={200}
-            height={47}
-            squaresBackgroundColor={neutral17}
-            style={{ marginTop: layout.padding_x1_5 }}
-          >
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-around",
-                alignItems: "center",
-                width: "100%",
-              }}
-            >
-              <BrandText style={[{ color: neutral77 }, fontSemibold13]}>
-                Price
-              </BrandText>
-              {data.price && (
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    alignContent: "center",
-                  }}
-                >
-                  <BrandText
-                    style={[
-                      fontSemibold13,
-                      {
-                        marginRight: layout.padding_x0_5,
-                      },
-                    ]}
-                  >
-                    {prettyPrice(
-                      "teritori",
-                      data.price?.amount,
-                      data.price?.denom
-                    )}
-                  </BrandText>
-                  <CurrencyIcon
-                    networkId="teritori"
-                    denom={data.price?.denom}
-                    size={16}
-                  />
-                </View>
-              )}
-            </View>
-          </TertiaryBox>
+          <PathWarPrice price={data.price} />
           <View
             style={{
               flexDirection: "row",
@@ -305,52 +258,7 @@ export const TournamentBox: React.FC<{ data: Tournament }> = ({ data }) => {
             </View>
           </View>
 
-          {data.rewards.map((reward) => (
-            <View style={{ width: "100%" }}>
-              <TertiaryBox
-                height={42}
-                squaresBackgroundColor={neutral17}
-                style={{ marginTop: layout.padding_x1_5, alignSelf: "center" }}
-              >
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "center",
-                    width: "fit-content",
-                    paddingLeft: layout.padding_x3_5,
-                    paddingRight: layout.padding_x3_5,
-                  }}
-                >
-                  <View>
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        alignContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <BrandText
-                        style={[
-                          fontSemibold13,
-                          {
-                            marginRight: layout.padding_x0_5,
-                          },
-                        ]}
-                      >
-                        Reward{" "}
-                        {prettyPrice("teritori", reward.amount, reward.denom)}
-                      </BrandText>
-                      <CurrencyIcon
-                        networkId="teritori"
-                        denom={reward.denom}
-                        size={16}
-                      />
-                    </View>
-                  </View>
-                </View>
-              </TertiaryBox>
-            </View>
-          ))}
+          <PathWarRewards rewards={data.rewards} />
         </View>
       </View>
     </TertiaryBox>

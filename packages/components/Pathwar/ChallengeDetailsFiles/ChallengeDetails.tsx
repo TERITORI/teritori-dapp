@@ -7,6 +7,7 @@ import { ModalError } from "./ModalError";
 import { ModalValidation } from "./ModalValidation";
 import checkIcon from "../../../../assets/icons/Pathwar/checkIcon.svg";
 import closeIcon from "../../../../assets/icons/Pathwar/closeIcon.svg";
+import { Challenge } from "../../../api/pathwar/v1/pathwar";
 import {
   availableSoonColor,
   neutral17,
@@ -32,22 +33,8 @@ import { ModalBase } from "../../modals/ModalBase";
 export const ChallengeDetails: React.FC<{
   visible?: boolean;
   onClose: () => void;
-  title: string;
-  description: string;
-  tags: string[];
-  price: string;
-  reward: string;
-  indexPicture: number;
-}> = ({
-  visible,
-  onClose,
-  title,
-  description,
-  tags,
-  price,
-  reward,
-  indexPicture,
-}) => {
+  data: Challenge;
+}> = ({ visible, onClose, data }) => {
   const [displayChallengedDetails, setDisplayChallengedDetails] =
     useState(visible);
   const [displayStateValidation, setDisplayStateValidation] = useState(false);
@@ -70,11 +57,7 @@ export const ChallengeDetails: React.FC<{
             setDisplayPassedChallengeScreen(false);
             handleConfirmClick();
           }}
-          title={title}
-          description={description}
-          tags={tags}
-          reward={reward}
-          indexPicture={indexPicture}
+          data={data}
         />
       );
     } else return null;
@@ -119,14 +102,7 @@ export const ChallengeDetails: React.FC<{
       >
         <ScrollView style={{ height: 790 }}>
           <View style={{ alignSelf: "center" }}>
-            <DetailsCard
-              title={title}
-              description={description}
-              tags={tags}
-              price={price}
-              indexPicture={indexPicture}
-              reward={reward}
-            />
+            <DetailsCard data={data} />
           </View>
           <View
             style={{

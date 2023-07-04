@@ -1,23 +1,12 @@
 import React, { useState } from "react";
-import { Image, View } from "react-native";
+import { View } from "react-native";
 
-import challengePic1 from "../../../../assets/PathwarIllustration/challenge1.png";
-import challengePic10 from "../../../../assets/PathwarIllustration/challenge10.png";
-import challengePic11 from "../../../../assets/PathwarIllustration/challenge11.png";
-import challengePic12 from "../../../../assets/PathwarIllustration/challenge12.png";
-import challengePic2 from "../../../../assets/PathwarIllustration/challenge2.png";
-import challengePic3 from "../../../../assets/PathwarIllustration/challenge3.png";
-import challengePic4 from "../../../../assets/PathwarIllustration/challenge4.png";
-import challengePic5 from "../../../../assets/PathwarIllustration/challenge5.png";
-import challengePic6 from "../../../../assets/PathwarIllustration/challenge6.png";
-import challengePic7 from "../../../../assets/PathwarIllustration/challenge7.png";
-import challengePic8 from "../../../../assets/PathwarIllustration/challenge8.png";
-import challengePic9 from "../../../../assets/PathwarIllustration/challenge9.png";
 import checkSvg from "../../../../assets/icons/Pathwar/checkIcon.svg";
 import clockSvg from "../../../../assets/icons/Pathwar/clockIcon.svg";
 import diamondSvg from "../../../../assets/icons/Pathwar/diamondIcon.svg";
 import starSvg from "../../../../assets/icons/Pathwar/starIcon.svg";
 import teritoriSvg from "../../../../assets/icons/Pathwar/teritori.svg";
+import { Challenge } from "../../../api/pathwar/v1/pathwar";
 import {
   neutral00,
   neutral17,
@@ -35,35 +24,17 @@ import {
 import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import FlexRow from "../../FlexRow";
+import { OptimizedImage } from "../../OptimizedImage";
 import { SVG } from "../../SVG";
 import { Separator } from "../../Separator";
 import { TertiaryBox } from "../../boxes/TertiaryBox";
 import { ModalGradient } from "../../modals/ModalGradient";
 
-const listPictures = [
-  challengePic1,
-  challengePic2,
-  challengePic3,
-  challengePic4,
-  challengePic5,
-  challengePic6,
-  challengePic7,
-  challengePic8,
-  challengePic9,
-  challengePic10,
-  challengePic11,
-  challengePic12,
-];
-
 export const ChallengeValidation: React.FC<{
   visible?: boolean;
   onClose: () => void;
-  title: string;
-  description: string;
-  tags: string[];
-  reward: string;
-  indexPicture: number;
-}> = ({ visible, onClose, title, description, tags, reward, indexPicture }) => {
+  data: Challenge;
+}> = ({ visible, onClose, data }) => {
   const [displayConfirmation, setDisplayConfirmation] = useState(visible);
 
   function handleConfirmClick() {
@@ -104,14 +75,14 @@ export const ChallengeValidation: React.FC<{
             squaresBackgroundColor={neutral17}
             style={{ marginBottom: layout.padding_x2_5 }}
           >
-            <Image
-              source={listPictures[indexPicture]}
+            <OptimizedImage
+              sourceURI={data.thumbnail}
               style={{
-                width: 428,
-                height: 348,
                 borderTopRightRadius: 7,
                 borderBottomLeftRadius: 7,
               }}
+              width={428}
+              height={348}
             />
           </TertiaryBox>
 
@@ -130,7 +101,7 @@ export const ChallengeValidation: React.FC<{
             >
               <View style={{ flexDirection: "column", width: 270 }}>
                 <BrandText style={[{ color: secondaryColor }, fontSemibold16]}>
-                  {title}
+                  {data.title}
                 </BrandText>
                 <BrandText
                   style={[
@@ -138,7 +109,7 @@ export const ChallengeValidation: React.FC<{
                     fontSemibold13,
                   ]}
                 >
-                  {description}
+                  {data.description}
                 </BrandText>
               </View>
               <View style={{ flexDirection: "row" }}>
@@ -185,7 +156,7 @@ export const ChallengeValidation: React.FC<{
                 flexWrap: "wrap",
               }}
             >
-              {tags.map((tag, index) => (
+              {data.tags.map((tag, index) => (
                 <View
                   style={{
                     width: "fit-content",
@@ -212,7 +183,7 @@ export const ChallengeValidation: React.FC<{
                       fontSemibold12,
                     ]}
                   >
-                    {tag}
+                    {tag.text}
                   </BrandText>
                 </View>
               ))}
