@@ -35,15 +35,15 @@ export const OmniLink: React.FC<{
       <View
         // is required to ignore the following to fix a problem with the linter
         // and allow to use onClick in this special case
-        // @ts-ignore
+        // @ts-expect-error
         onClick={!disabled ? onPress : null}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         style={[
           {
-            transitionDuration: "150ms",
             opacity: isHovered ? 0.5 : 1,
-          } as StyleProp<ViewStyle>,
+          },
+          { transitionDuration: "150ms" } as ViewStyle, // browser specific
           style,
         ]}
         {...props}

@@ -1,13 +1,10 @@
-import { RouteProp, useNavigation } from "@react-navigation/native";
+import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React from "react";
 
-import { PickByValue } from "./types/helper";
 import { NewPostFormValues } from "../components/socialFeed/NewsFeed/NewsFeed.type";
 
-export type RouteName =
-  | keyof PickByValue<RootStackParamList, undefined>
-  | "TNSHome";
+export type RouteName = keyof RootStackParamList;
 
 export type RootStackParamList = {
   Home: undefined;
@@ -139,3 +136,5 @@ export const linking = {
   prefixes: [],
   config: navConfig,
 };
+
+export const useAppRoute = () => useRoute<RouteProp<RootStackParamList>>();
