@@ -120,8 +120,6 @@ export const ResourceScreen: React.FC = () => {
         style={{
           flexDirection: "row",
           flexWrap: "wrap",
-          justifyContent: "center",
-          alignSelf: "center",
           marginTop: layout.padding_x2_5,
         }}
       >
@@ -141,7 +139,9 @@ export const ResourceScreen: React.FC = () => {
           numColumns={99} // needed to deal with wrap via css
           ItemSeparatorComponent={() => <SpacerColumn size={2} />}
           ListEmptyComponent={
-            <BrandText style={fontSemibold20}>No results found.</BrandText>
+            <BrandText style={[fontSemibold20, { textAlign: "center" }]}>
+              No results found.
+            </BrandText>
           }
           renderItem={({ item, index }) => {
             return <ResourceBox data={item} key={index} />;
