@@ -14,11 +14,11 @@ import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { SecondaryButton } from "../../components/buttons/SecondaryButton";
 import { TextInputCustom } from "../../components/inputs/TextInputCustom";
 import { TextInputOutsideLabel } from "../../components/inputs/TextInputOutsideLabel";
-import { BackTo } from "../../components/navigation/BackTo";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
 import { useMultisigContext } from "../../context/MultisigReducer";
 import { useCreateMultisig, useMultisigHelpers } from "../../hooks/multisig";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import { NetworkKind } from "../../networks";
 import {
   getNSAddress,
   patternOnlyNumbers,
@@ -36,6 +36,7 @@ import {
 import {
   fontSemibold13,
   fontSemibold14,
+  fontSemibold20,
   fontSemibold28,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
@@ -123,11 +124,19 @@ export const MultisigCreateScreen = () => {
   return (
     <ScreenContainer
       isHeaderSmallMargin
-      headerChildren={<BackTo label="Multisig Wallet" />}
+      headerChildren={
+        <BrandText style={fontSemibold20}>Multisig Wallet</BrandText>
+      }
+      onBackPress={() =>
+        navigation.canGoBack()
+          ? navigation.goBack()
+          : navigation.navigate("Multisig")
+      }
       footerChildren={<></>}
       noMargin
       fullWidth
       noScroll
+      forceNetworkKind={NetworkKind.Cosmos}
     >
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.formContainer}>
@@ -233,7 +242,8 @@ export const MultisigCreateScreen = () => {
       <CheckLoadingModal
         isVisible={isLoading}
         onComplete={() => {
-          data && navigation.navigate("MultisigLegacy", { address: data });
+          data &&
+            navigation.navigate("MultisigWalletDashboard", { address: data });
         }}
       />
     </ScreenContainer>

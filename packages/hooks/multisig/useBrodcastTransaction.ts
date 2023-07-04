@@ -66,7 +66,7 @@ export const useBrodcastTransaction = () => {
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (e: any) {
-        console.log("err", e);
+        console.error("err", e);
 
         if (e instanceof Error) {
           setToastError({ title: "Something went wrong!", message: e.message });

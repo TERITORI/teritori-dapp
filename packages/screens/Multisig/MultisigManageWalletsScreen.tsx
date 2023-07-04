@@ -9,21 +9,20 @@ import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { SecondaryButton } from "../../components/buttons/SecondaryButton";
-import { BackTo } from "../../components/navigation/BackTo";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
 import { TableRow, TableRowHeading } from "../../components/table";
 import { useMultisigContext } from "../../context/MultisigReducer";
 import { useCreateUserWallet } from "../../hooks/multisig";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { NetworkKind } from "../../networks";
 import {
   getMultisig,
   getMultisigsByUserWallet,
 } from "../../utils/founaDB/multisig/multisigGraphql";
-import { useAppNavigation } from "../../utils/navigation";
+import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { neutral00, neutral33, neutral77 } from "../../utils/style/colors";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-// import data from "./multisig-wallet.json";
 
 export const MULTISIG_WALLET_HEADING: { [key in string]: TableRowHeading } = {
   id: {
@@ -48,7 +47,9 @@ export const MULTISIG_WALLET_HEADING: { [key in string]: TableRowHeading } = {
   },
 };
 
-export const MultisigWalletManageScreen = () => {
+export const MultisigManageWalletsScreen: ScreenFC<
+  "MultisigWalletsManage"
+> = () => {
   const navigation = useAppNavigation();
   const [isInputMultisigAddressVisible, setInputMultisigAddressVisible] =
     useState(false);
@@ -92,16 +93,24 @@ export const MultisigWalletManageScreen = () => {
   return (
     <ScreenContainer
       isHeaderSmallMargin
-      headerChildren={<BackTo label="Manage Multisig Wallet" />}
+      headerChildren={
+        <BrandText style={fontSemibold20}>Manage Multisig Wallets</BrandText>
+      }
+      onBackPress={() =>
+        navigation.canGoBack()
+          ? navigation.goBack()
+          : navigation.navigate("Multisig")
+      }
       footerChildren={<></>}
       noMargin
       fullWidth
       noScroll
+      forceNetworkKind={NetworkKind.Cosmos}
     >
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.headerRow}>
           <View style={styles.rowSB}>
-            <BrandText style={fontSemibold20}>Wallet</BrandText>
+            <BrandText style={fontSemibold20}>Wallets</BrandText>
             <SpacerRow size={1} />
             <BrandText style={[fontSemibold20, { color: neutral77 }]}>
               {multisigList.length}
@@ -132,7 +141,10 @@ export const MultisigWalletManageScreen = () => {
             data={wallet}
             key={`multisig-index-${index}`}
             onPressTransactions={() =>
-              navigation.navigate("MultisigWalletTransaction")
+              navigation.navigate("MultisigWIPTransactions", {
+                address: wallet.multisigAddress,
+                walletName: wallet.walletName,
+              })
             }
           />
         ))}

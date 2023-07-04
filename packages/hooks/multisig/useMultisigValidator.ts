@@ -3,14 +3,10 @@ import { useEffect, useState } from "react";
 import { useFetchMultisigList } from "./useFetchMultisigList";
 import useSelectedWallet from "../useSelectedWallet";
 
-export const useMultisigValidator = (
-  multisigAddress: string,
-  chainId: string
-) => {
+export const useMultisigValidator = (multisigAddress: string) => {
   const { selectedWallet: wallet } = useSelectedWallet();
   const { data, isLoading, isFetching } = useFetchMultisigList(
-    wallet?.address || "",
-    chainId
+    wallet?.address || ""
   );
   const [isUserMultisig, setIsUserMultisig] = useState<undefined | boolean>();
 

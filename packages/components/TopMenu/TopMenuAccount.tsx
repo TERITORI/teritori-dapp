@@ -3,7 +3,6 @@ import { ScrollView, StyleSheet, TouchableOpacity } from "react-native";
 import { Hoverable } from "react-native-hoverable";
 
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
-import { useMultisigContext } from "../../context/MultisigReducer";
 import { useWallets, Wallet } from "../../context/WalletsProvider";
 import { useFetchMultisigList } from "../../hooks/multisig";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
@@ -24,10 +23,8 @@ export const TopMenuAccount: React.FC = () => {
   const { selectedWallet, selectedMultisignWallet } = useSelectedWallet();
   const { setMultisignWallet } = useWallets();
   const selectedNetworkInfo = useSelectedNetworkInfo();
-  const { state } = useMultisigContext();
   const { data: multisigList } = useFetchMultisigList(
-    selectedWallet?.address || "",
-    state.chain.chainId!
+    selectedWallet?.address || ""
   );
 
   const [openMultisignDropList, setOpenMultisignDropList] =

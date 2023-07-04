@@ -4,14 +4,9 @@ export const useNSNameAvailability = (
   networkId: string | undefined,
   tokenId: string | undefined
 ) => {
-  const { nsInfo, notFound, isLoading, error } = useNSNameInfo(
-    networkId,
-    tokenId
-  );
-  console.log("----");
-  console.log(nsInfo);
+  const { notFound, isLoading, error } = useNSNameInfo(networkId, tokenId);
   return {
-    nameAvailable: notFound === true,
+    nameAvailable: notFound,
     nameError: !!error,
     loading: isLoading,
   };

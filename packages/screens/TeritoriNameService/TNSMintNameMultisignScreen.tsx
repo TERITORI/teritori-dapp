@@ -172,9 +172,10 @@ export const TNSMintNameMultisignScreen: React.FC<
           },
           accountOnChain: mltisignAccountInfo?.accountData,
         });
+        onClose();
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
 
@@ -227,7 +228,12 @@ export const TNSMintNameMultisignScreen: React.FC<
           }
         />
       </View>
-      <CheckLoadingModal isVisible={isLoading} onComplete={onClose} />
+      <CheckLoadingModal
+        isVisible={isLoading}
+        //FIXME: It closes automatically the modal
+        // onComplete={onClose}
+        onComplete={() => {}}
+      />
     </ModalBase>
   );
 };
@@ -250,7 +256,6 @@ const useTNSMintPrice = (networkId: string | undefined, tokenId: string) => {
         client,
         network.nameServiceContractAddress
       );
-      console.log("fetching price for", tokenId);
 
       const info = await tnsClient.contractInfo();
 

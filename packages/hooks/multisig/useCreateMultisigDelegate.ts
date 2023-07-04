@@ -80,7 +80,7 @@ export const useCreateMultisigDelegate = () => {
 
         return transactionID;
       } catch (err: any) {
-        console.log(err);
+        console.error(err);
       }
     }
   );

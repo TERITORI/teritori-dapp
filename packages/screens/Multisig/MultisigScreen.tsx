@@ -22,7 +22,6 @@ import { AnimationFadeIn } from "../../components/animations";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import ModalBase from "../../components/modals/ModalBase";
 import { SpacerColumn } from "../../components/spacer";
-import { useMultisigContext } from "../../context/MultisigReducer";
 import {
   getMultisigAccount,
   MultisigTransactionListType,
@@ -31,6 +30,7 @@ import {
 } from "../../hooks/multisig";
 import { useCreateMultisigTransactionForExecuteContract } from "../../hooks/multisig/useCreateMultisigTransactionForExecuteContract";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { NetworkKind } from "../../networks";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { neutral33, neutral77, secondaryColor } from "../../utils/style/colors";
 import {
@@ -54,7 +54,6 @@ enum SelectModalKind {
 export const MultisigScreen: ScreenFC<"Multisig"> = () => {
   const navigation = useAppNavigation();
   const { selectedWallet } = useSelectedWallet();
-  const { state } = useMultisigContext();
   const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -89,15 +88,12 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
     data,
     isLoading: isMultisigLoading,
     isFetching: isMultisigFetching,
-  } = useFetchMultisigList(selectedWallet?.address || "", state.chain.chainId!);
+  } = useFetchMultisigList(selectedWallet?.address || "");
   const {
     data: transactionData,
     isLoading: isTransactionsLoading,
     isFetching: isTransactionsFetching,
-  } = useFetchMultisigTransactionsByAddress(
-    selectedWallet?.address || "",
-    state.chain.chainId!
-  );
+  } = useFetchMultisigTransactionsByAddress(selectedWallet?.address || "");
 
   const list = useMemo(
     () =>
@@ -229,13 +225,14 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
 
   return (
     <ScreenContainer
-      headerChildren={<BrandText>Multisig Wallet</BrandText>}
+      headerChildren={<BrandText>Multisig Wallets</BrandText>}
       footerChildren={<></>}
       noMargin
       fullWidth
       onBackPress={() => navigation.navigate("Multisig")}
       noScroll
       isHeaderSmallMargin
+      forceNetworkKind={NetworkKind.Cosmos}
     >
       <ScrollView>
         <View style={styles.container}>
@@ -290,11 +287,13 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
             {/*  icon={freelanceSVG}*/}
             {/*  onPress={onPress}*/}
             {/*/>*/}
+
+            {/*TODO: Useless ?*/}
             <GetStartedOption
               variant="small"
-              title="Manage Multisig Wallet"
+              title="Manage Multisig Wallets"
               icon={multisigWalletSVG}
-              onPress={() => navigation.navigate("MultisigWalletManage")}
+              onPress={() => navigation.navigate("MultisigWalletsManage")}
             />
           </ScrollView>
           <SpacerColumn size={3} />
@@ -319,9 +318,9 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
                     icon={multisigWalletSVG}
                     isBetaVersion
                     onPress={() =>
-                      navigation.navigate("MultisigLegacy", {
+                      navigation.navigate("MultisigWalletDashboard", {
                         address: item.address,
-                        name: `Multisig #${index + 1}`,
+                        walletName: `Multisig #${index + 1}`,
                       })
                     }
                     subtitle={tinyAddress(item.address, 21)}

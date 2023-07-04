@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { FlatList, ListRenderItemInfo, StyleSheet, View } from "react-native";
 
 import { MultiSigWalletTransactionType } from "./types";
@@ -6,21 +6,49 @@ import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { Separator } from "../../components/Separator";
 import { SecondaryButton } from "../../components/buttons/SecondaryButton";
-import { BackTo } from "../../components/navigation/BackTo";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
-import { useAppNavigation } from "../../utils/navigation";
+import { useGetMultisigAccount } from "../../hooks/multisig";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { primaryColor } from "../../utils/style/colors";
-import { fontSemibold28 } from "../../utils/style/fonts";
+import { fontSemibold20, fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BasicTransactionItem } from "../OrganizerDeployer/components/BasicTransactionItem";
 import { MakeProposalModal } from "../OrganizerDeployer/components/MakeProposalModal";
 import { ProposalItem } from "../OrganizerDeployer/components/ProposalItem";
 import multisigTransactions from "../OrganizerDeployer/multisig-transactions.json";
 
-export const MultisigWalletTransactionScreen = () => {
+//TODO: Another Transactions page ?
+
+export const MultisigWIPTransactionsScreen: ScreenFC<
+  "MultisigWIPTransactions"
+> = ({ route }) => {
+  const { selectedWallet } = useSelectedWallet();
+  const navigation = useAppNavigation();
+  const { address, walletName } = route.params;
   // variabels
   const [isMakeProposalVisible, setIsMakeProposalVisible] = useState(false);
-  const navigation = useAppNavigation();
+  const { isLoading, data } = useGetMultisigAccount(address);
+
+  //TODO: Display loader until isLoading === false
+
+  // Leave screen if no wallet found from URL address, no name or if the user haven't this wallet
+  useEffect(() => {
+    if (
+      !isLoading &&
+      (!walletName ||
+        !data ||
+        !data?.dbData.userAddresses.find(
+          (address) => address === selectedWallet?.address
+        ))
+    ) {
+      navigation.goBack();
+      // navigation.navigate("MultisigWalletDashboard", {
+      //   address,
+      //   walletName
+      // })
+    }
+  }, [isLoading, data, selectedWallet?.address, navigation, walletName]);
 
   // functions
   const toggleIsMakeProposalVisible = () =>
@@ -35,7 +63,7 @@ export const MultisigWalletTransactionScreen = () => {
             <ProposalItem
               {...item}
               onPress={() =>
-                navigation.navigate("MultisigTransactionProposal", {
+                navigation.navigate("MultisigTransactions", {
                   address: "",
                 })
               }
@@ -52,7 +80,16 @@ export const MultisigWalletTransactionScreen = () => {
   return (
     <ScreenContainer
       isHeaderSmallMargin
-      headerChildren={<BackTo label="Wallet Name 1" />}
+      headerChildren={
+        <BrandText style={fontSemibold20}>
+          Transactions (Again ? TODO)
+        </BrandText>
+      }
+      onBackPress={() =>
+        navigation.canGoBack()
+          ? navigation.goBack()
+          : navigation.navigate("Multisig")
+      }
       footerChildren={<></>}
       noMargin
       fullWidth
@@ -66,7 +103,9 @@ export const MultisigWalletTransactionScreen = () => {
         contentContainerStyle={styles.container}
         ListHeaderComponent={() => (
           <>
-            <BrandText style={fontSemibold28}>Transactions history</BrandText>
+            <BrandText style={fontSemibold28}>
+              Transactions history for {walletName}
+            </BrandText>
             <SpacerColumn size={1.5} />
             <Separator />
             <View style={styles.header}>

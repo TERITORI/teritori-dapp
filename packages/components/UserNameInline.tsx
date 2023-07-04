@@ -34,7 +34,7 @@ export const UserNameInline: React.FC<PlayerNameProps> = ({
   const name =
     userInfo?.metadata?.tokenId ||
     tinyAddress(
-      selectedMultisignWallet !== null
+      selectedMultisignWallet
         ? selectedMultisignWallet?.address
         : selectedWallet?.address,
       30

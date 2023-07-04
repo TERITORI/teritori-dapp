@@ -1,15 +1,23 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
 
 import {
   MultisigTransactionListType,
   MultisigTransactionResponseType,
 } from "./useFetchMultisigTransactionsById";
+import { NetworkKind } from "../../networks";
 import { transactionsByUserAddress } from "../../utils/founaDB/multisig/multisigGraphql";
+import { useSelectedNetworkInfo } from "../useSelectedNetwork";
 
-export const useFetchMultisigTransactionsByAddress = (
-  userAddress: string,
-  chainId: string
-) => {
+export const useFetchMultisigTransactionsByAddress = (userAddress: string) => {
+  const selectedNetworkInfo = useSelectedNetworkInfo();
+  const chainId = useMemo(() => {
+    if (selectedNetworkInfo?.kind !== NetworkKind.Cosmos) {
+      return "";
+    }
+    return selectedNetworkInfo.chainId;
+  }, [selectedNetworkInfo?.chainId, selectedNetworkInfo?.kind]);
+
   //  request
   const request = useInfiniteQuery<{
     data: MultisigTransactionListType[];

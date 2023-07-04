@@ -14,7 +14,7 @@ import {
 import { fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { MultisigWalletItemMenu } from "../../OrganizerDeployer/components/MultisigWalletItemMenu";
-import { MULTISIG_WALLET_HEADING } from "../MultisigWalletManageScreen";
+import { MULTISIG_WALLET_HEADING } from "../MultisigManageWalletsScreen";
 import { UserWalletType } from "../types";
 
 interface MultisigWalletItemProps {

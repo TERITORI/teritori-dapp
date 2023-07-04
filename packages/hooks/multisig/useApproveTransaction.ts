@@ -93,7 +93,7 @@ export const useApproveTransaction = () => {
           addSignature(signature);
         }
       } catch (err: any) {
-        console.log(err);
+        console.error(err);
       }
     }
   );

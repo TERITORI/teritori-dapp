@@ -55,13 +55,13 @@ export type RootStackParamList = {
 
   Multisig: undefined;
   MultisigCreate: undefined;
-  MultisigWalletManage: undefined;
-  MultisigWalletTransaction: undefined;
-  MultisigLegacy: { address: string; name?: string };
-  MultisigTransfer: { address: string; backText?: string };
-  MultisigDelegate: { address: string; backText?: string };
+  MultisigWalletsManage: undefined;
+  MultisigWIPTransactions: { address: string; walletName?: string };
+  MultisigWalletDashboard: { address: string; walletName?: string };
+  MultisigTransfer: { address: string; walletName?: string };
+  MultisigDelegate: { address: string; walletName?: string };
 
-  MultisigTransactionProposal: { address: string; backText?: string };
+  MultisigTransactions: { address: string; walletName?: string };
   Settings: undefined;
 
   OrganizationDeployer: undefined;
@@ -143,12 +143,14 @@ const navConfig: {
     // === Multisig
     Multisig: "multisig",
     MultisigCreate: "multisig/create",
-    MultisigWalletManage: "multisig-wallet/manage",
-    MultisigWalletTransaction: "multisig-wallet/transaction",
-    MultisigTransactionProposal: "multisig/:address/transaction/proposals",
-    MultisigLegacy: "multisig/:address/:name",
+    MultisigWalletsManage: "multisig/manage-wallets",
+
+    MultisigWalletDashboard: "multisig/:address",
+    MultisigTransactions: "multisig/:address/transactions",
     MultisigTransfer: "multisig/:address/transfer",
     MultisigDelegate: "multisig/:address/delegate",
+    // TODO: What is it used for ?
+    MultisigWIPTransactions: "multisig/:address/transactions/WIP",
 
     // ==== Swap
     Swap: "swap",

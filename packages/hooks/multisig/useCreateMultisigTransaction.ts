@@ -79,13 +79,12 @@ export const useCreateMultisigTransaction = () => {
         };
 
         const saveRes = await createTransaction(multisigId, tx);
-        console.log("saveRes", saveRes);
 
         const transactionID = saveRes.data.data.createTransaction._id;
 
         return transactionID;
       } catch (err: any) {
-        console.log(err);
+        console.error(err);
       }
     }
   );

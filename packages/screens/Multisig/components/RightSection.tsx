@@ -19,8 +19,8 @@ export const RightSection = () => {
     useState<boolean>(false);
   const [visibleMintForm, setVisibleMintForm] = useState<boolean>(false);
   const {
-    params: { address, name },
-  } = useRoute<AppRouteType<"MultisigLegacy">>();
+    params: { address, walletName },
+  } = useRoute<AppRouteType<"MultisigWalletDashboard">>();
 
   const [modalNameFinderVisible, setModalNameFinderVisible] = useState(false);
 
@@ -52,7 +52,7 @@ export const RightSection = () => {
         text="Create Transaction"
         fullWidth
         onPress={() =>
-          navigation.navigate("MultisigTransfer", { address, backText: name })
+          navigation.navigate("MultisigTransfer", { address, walletName })
         }
       />
 
@@ -62,7 +62,7 @@ export const RightSection = () => {
         text="Create Delegation"
         fullWidth
         onPress={() =>
-          navigation.navigate("MultisigDelegate", { address, backText: name })
+          navigation.navigate("MultisigDelegate", { address, walletName })
         }
       />
 
@@ -82,9 +82,9 @@ export const RightSection = () => {
         text="Transactions"
         fullWidth
         onPress={() =>
-          navigation.navigate("MultisigTransactionProposal", {
+          navigation.navigate("MultisigTransactions", {
             address,
-            backText: name,
+            walletName,
           })
         }
       />

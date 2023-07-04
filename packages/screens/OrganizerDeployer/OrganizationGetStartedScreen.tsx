@@ -70,9 +70,9 @@ export const OrganizationGetStartedScreen = () => {
               onPress={onPress}
             />
             <GetStartedOption
-              title="Manage Multisig Wallet"
+              title="Manage Multisig Wallets"
               icon={multisigWalletSVG}
-              onPress={() => navigation.navigate("MultisigWalletManage")}
+              onPress={() => navigation.navigate("MultisigWalletsManage")}
             />
           </View>
         </View>

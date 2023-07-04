@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { CheckLoadingModal } from "./components/CheckLoadingModal";
 import { MultisigTransactionForm } from "./components/MultisigTransactionForm";
@@ -7,27 +7,56 @@ import {
   MultisigTransactionDelegateFormType,
   MultisigTransactionType,
 } from "./types";
+import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import {
   useCreateMultisigDelegate,
   useGetMultisigAccount,
 } from "../../hooks/multisig";
-import { ScreenFC } from "../../utils/navigation";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { NetworkKind } from "../../networks";
+import { ScreenFC, useAppNavigation } from "../../utils/navigation";
+import { fontSemibold20 } from "../../utils/style/fonts";
 
 export const MultisigDelegateScreen: ScreenFC<"MultisigDelegate"> = ({
   route,
-  navigation,
 }) => {
+  const navigation = useAppNavigation();
+  const { selectedWallet } = useSelectedWallet();
   const [isTransactionVisible, setIsTransactionVisible] = useState(false);
   const {
-    isLoading,
+    isLoading: createLoading,
     mutate,
     data: transactionId,
   } = useCreateMultisigDelegate();
-  const { address } = route.params;
-  const { data } = useGetMultisigAccount(address);
+  const { address, walletName } = route.params;
+  const { data, isLoading } = useGetMultisigAccount(address);
   const [formData, setFormData] =
     useState<MultisigTransactionDelegateFormType>();
+
+  // Leave screen if no wallet found from URL address, no name or if the user haven't this wallet
+  useEffect(() => {
+    if (
+      !isLoading &&
+      (!walletName ||
+        !data ||
+        !data?.dbData.userAddresses.find(
+          (address) => address === selectedWallet?.address
+        ))
+    ) {
+      navigation.navigate("MultisigWalletDashboard", {
+        address,
+        walletName,
+      });
+    }
+  }, [
+    isLoading,
+    data,
+    selectedWallet?.address,
+    address,
+    walletName,
+    navigation,
+  ]);
 
   // functions
   const toggleTransactionModal = () =>
@@ -59,10 +88,10 @@ export const MultisigDelegateScreen: ScreenFC<"MultisigDelegate"> = ({
         routes: [
           { name: "Multisig" },
           {
-            name: "MultisigTransactionProposal",
+            name: "MultisigTransactions",
             params: {
               address,
-              backText: "Multisig Dashboard",
+              walletName,
             },
           },
         ],
@@ -73,15 +102,27 @@ export const MultisigDelegateScreen: ScreenFC<"MultisigDelegate"> = ({
   // returns
   return (
     <ScreenContainer
+      headerChildren={
+        <BrandText style={fontSemibold20}>New Delegation</BrandText>
+      }
+      onBackPress={() =>
+        navigation.canGoBack()
+          ? navigation.goBack()
+          : navigation.navigate("MultisigWalletDashboard", {
+              walletName,
+              address,
+            })
+      }
       footerChildren={<></>}
       noMargin
       fullWidth
       noScroll
       isHeaderSmallMargin
+      forceNetworkKind={NetworkKind.Cosmos}
     >
       <MultisigTransactionForm
         type="delegate"
-        title="Create a New Transaction"
+        title={`Create a new Delegation from ${walletName}`}
         transferText="Delegate to"
         submitBtnText="Delegate"
         onSubmit={onSubmitForm}
@@ -96,7 +137,7 @@ export const MultisigDelegateScreen: ScreenFC<"MultisigDelegate"> = ({
       />
 
       <CheckLoadingModal
-        isVisible={isLoading}
+        isVisible={createLoading}
         onComplete={onCompleteCreation}
       />
     </ScreenContainer>

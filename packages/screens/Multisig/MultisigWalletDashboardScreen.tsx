@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { ScrollView, StyleSheet, View } from "react-native";
 
@@ -9,23 +9,44 @@ import { MultisigLegacyFormType } from "./types";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { AnimationExpand } from "../../components/animations";
-import { BackTo } from "../../components/navigation/BackTo";
 import { SpacerColumn } from "../../components/spacer";
 import {
   useGetMultisigAccount,
   useMultisigHelpers,
 } from "../../hooks/multisig";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { NetworkKind } from "../../networks";
 import { patternOnlyNumbers, validateAddress } from "../../utils/formRules";
-import { ScreenFC } from "../../utils/navigation";
-import { fontSemibold28 } from "../../utils/style/fonts";
+import { ScreenFC, useAppNavigation } from "../../utils/navigation";
+import { fontSemibold20, fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 
-export const MultisigLegacyScreen: ScreenFC<"MultisigLegacy"> = ({ route }) => {
+export const MultisigWalletDashboardScreen: ScreenFC<
+  "MultisigWalletDashboard"
+> = ({ route }) => {
+  const navigation = useAppNavigation();
+  const { selectedWallet } = useSelectedWallet();
   const { control } = useForm<MultisigLegacyFormType>();
-  const { address, name } = route.params;
+  const { address, walletName } = route.params;
   const { isLoading, data } = useGetMultisigAccount(address);
   const { coinSimplified, participantAddressesFromMultisig } =
     useMultisigHelpers();
+
+  //TODO: Display loader until isLoading === false
+
+  // Leave screen if no wallet found from URL address, no name or if the user havn't this wallet
+  useEffect(() => {
+    if (
+      !isLoading &&
+      (!walletName ||
+        !data ||
+        !data?.dbData.userAddresses.find(
+          (address) => address === selectedWallet?.address
+        ))
+    ) {
+      navigation.navigate("Multisig");
+    }
+  }, [isLoading, data, selectedWallet?.address, navigation, walletName]);
 
   const holidings = useMemo(() => {
     if (data?.holdings) {
@@ -44,12 +65,16 @@ export const MultisigLegacyScreen: ScreenFC<"MultisigLegacy"> = ({ route }) => {
   // returns
   return (
     <ScreenContainer
-      headerChildren={<BackTo label="Multisig Dashboard" />}
+      headerChildren={
+        <BrandText style={fontSemibold20}>Multisig Dashboard</BrandText>
+      }
+      onBackPress={() => navigation.navigate("Multisig")}
       footerChildren={<></>}
       noMargin
       fullWidth
       noScroll
       isHeaderSmallMargin
+      forceNetworkKind={NetworkKind.Cosmos}
     >
       <View style={styles.row}>
         <ScrollView
@@ -57,7 +82,7 @@ export const MultisigLegacyScreen: ScreenFC<"MultisigLegacy"> = ({ route }) => {
           showsVerticalScrollIndicator={false}
         >
           <BrandText style={fontSemibold28}>
-            {name || "Multisig Legacy"}
+            {walletName || "Multisig Legacy"}
           </BrandText>
           <SpacerColumn size={2.5} />
           <MultisigSection title="Multisig Address">
