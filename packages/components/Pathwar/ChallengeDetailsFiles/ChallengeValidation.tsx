@@ -5,8 +5,9 @@ import checkSvg from "../../../../assets/icons/Pathwar/checkIcon.svg";
 import clockSvg from "../../../../assets/icons/Pathwar/clockIcon.svg";
 import diamondSvg from "../../../../assets/icons/Pathwar/diamondIcon.svg";
 import starSvg from "../../../../assets/icons/Pathwar/starIcon.svg";
-import teritoriSvg from "../../../../assets/icons/Pathwar/teritori.svg";
 import { Challenge } from "../../../api/pathwar/v1/pathwar";
+import { PathWarRewards } from "../../../screens/Pathwar/components/PathWarRewards";
+import { PathWarTags } from "../../../screens/Pathwar/components/PathWarTags";
 import {
   neutral00,
   neutral17,
@@ -148,46 +149,7 @@ export const ChallengeValidation: React.FC<{
               color={neutral44}
             />
 
-            <View
-              style={{
-                width: 390,
-                flexDirection: "row",
-                marginBottom: layout.padding_x1,
-                flexWrap: "wrap",
-              }}
-            >
-              {data.tags.map((tag, index) => (
-                <View
-                  style={{
-                    width: "fit-content",
-                    height: "fit-content",
-                    borderColor: neutral44,
-                    borderWidth: 1,
-                    borderRadius: 6,
-                    alignItems: "center",
-                    justifyContent: "center",
-                    marginRight: layout.padding_x1,
-                    marginBottom: layout.padding_x1,
-                  }}
-                  key={index}
-                >
-                  <BrandText
-                    style={[
-                      {
-                        color: neutral77,
-                        paddingRight: layout.padding_x1,
-                        paddingLeft: layout.padding_x1,
-                        paddingBottom: layout.padding_x0_25,
-                        paddingTop: layout.padding_x0_25,
-                      },
-                      fontSemibold12,
-                    ]}
-                  >
-                    {tag.text}
-                  </BrandText>
-                </View>
-              ))}
-            </View>
+            <PathWarTags tags={data.tags} />
 
             <Separator
               style={{
@@ -305,27 +267,7 @@ export const ChallengeValidation: React.FC<{
                       m1ch3l
                     </BrandText>
                   </FlexRow>
-                  <FlexRow alignItems="center">
-                    <BrandText
-                      style={[
-                        { color: secondaryColor },
-                        fontSemibold12,
-                        { marginRight: 5 },
-                      ]}
-                    >
-                      50
-                    </BrandText>
-                    <SVG source={teritoriSvg} />
-                    <BrandText
-                      style={[
-                        { color: primaryColor },
-                        fontSemibold12,
-                        { marginLeft: 5 },
-                      ]}
-                    >
-                      Rewards
-                    </BrandText>
-                  </FlexRow>
+                  <PathWarRewards rewards={data.rewards} />
                 </View>
               </FlexRow>
             </TertiaryBox>
