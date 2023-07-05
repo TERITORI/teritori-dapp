@@ -119,17 +119,16 @@ export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
   // FIXME
   const collections = borkenCollections.map((collection) => {
     let denom = collection.denom;
-    if (denom) {
-      return collection;
-    }
+    let volumeDenom = collection.volumeDenom;
     switch (collection.id) {
       case "tori-tori1gflccmghzfscmxl95z43v36y0rle8v9x8kvt9na03yzywtw86amsj9nf37": // tori gen-1
       case "tori-tori167xst2jy9n6u92t3n8hf762adtpe3cs6acsgn0w5n2xlz9hv3xgs4ksc6t": // disease of the brain
       case "tori-tori1wkwy0xh89ksdgj9hr347dyd2dw7zesmtrue6kfzyml4vdtz6e5wscs7038": // tns
         denom = "utori";
+        volumeDenom = denom;
         break;
     }
-    return { ...collection, denom, volumeDenom: denom };
+    return { ...collection, denom, volumeDenom };
   });
 
   const [filterText, setFilterText] = useState("");
