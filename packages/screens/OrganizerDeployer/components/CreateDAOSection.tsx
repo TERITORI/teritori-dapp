@@ -63,7 +63,8 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
               <View style={styles.fill}>
                 <TextInputCustom<CreateDaoFormType>
                   control={control}
-                  variant="noCropBorder"
+                  noBrokenCorners
+                  variant="labelOutside"
                   label="Organization's name"
                   placeHolder="Type organization's name here"
                   name="organizationName"
@@ -74,7 +75,8 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
               <View style={styles.fill}>
                 <TextInputCustom<CreateDaoFormType>
                   control={control}
-                  variant="noCropBorder"
+                  noBrokenCorners
+                  variant="labelOutside"
                   label="Associated Teritori Name Service"
                   placeHolder="your-organization.tori"
                   name="associatedTeritoriNameService"
@@ -86,7 +88,8 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
             <SpacerColumn size={2.5} />
             <TextInputCustom<CreateDaoFormType>
               control={control}
-              variant="noCropBorder"
+              noBrokenCorners
+              variant="labelOutside"
               label="Organization's image url"
               placeHolder="https://example.com/preview.png"
               name="imageUrl"
@@ -95,7 +98,8 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
             <SpacerColumn size={2.5} />
             <TextInputCustom<CreateDaoFormType>
               control={control}
-              variant="noCropBorder"
+              noBrokenCorners
+              variant="labelOutside"
               label="Organization's description"
               placeHolder="Type organization's description here"
               name="organizationDescription"

@@ -6,7 +6,7 @@ import {
   MultisigTransactionResponseType,
 } from "./useFetchMultisigTransactionsById";
 import { NetworkKind } from "../../networks";
-import { transactionsByUserAddress } from "../../utils/founaDB/multisig/multisigGraphql";
+import { transactionsByUserAddress } from "../../utils/faunaDB/multisig/multisigGraphql";
 import { useSelectedNetworkInfo } from "../useSelectedNetwork";
 
 export const useFetchMultisigTransactionsByAddress = (userAddress: string) => {

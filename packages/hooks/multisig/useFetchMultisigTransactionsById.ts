@@ -6,8 +6,8 @@ import {
   MultisigTransactionType,
   MultisigType,
 } from "../../screens/Multisig/types";
-import { transactionsByMultisigId } from "../../utils/founaDB/multisig/multisigGraphql";
-import { DbSignature } from "../../utils/founaDB/multisig/types";
+import { transactionsByMultisigId } from "../../utils/faunaDB/multisig/multisigGraphql";
+import { DbSignature } from "../../utils/faunaDB/multisig/types";
 import useSelectedWallet from "../useSelectedWallet";
 
 export interface MultisigTransactionListType {

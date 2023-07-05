@@ -80,7 +80,8 @@ export const MakeProposalModal: React.FC<MakeProposalModalProps> = ({
       <TextInputCustom<MakeProposalFormType>
         control={control}
         name="recipintAddress"
-        variant="noCropBorder"
+        variant="labelOutside"
+        noBrokenCorners
         label="Recipient address"
         rules={{ required: true, validate: validateAddress }}
       />
@@ -90,7 +91,8 @@ export const MakeProposalModal: React.FC<MakeProposalModalProps> = ({
           <TextInputCustom<MakeProposalFormType>
             control={control}
             name="amount"
-            variant="noCropBorder"
+            variant="labelOutside"
+            noBrokenCorners
             label="Amount"
             width={210}
             rules={{ required: true }}
@@ -104,7 +106,8 @@ export const MakeProposalModal: React.FC<MakeProposalModalProps> = ({
           <TextInputCustom<MakeProposalFormType>
             control={control}
             name="networkFee"
-            variant="noCropBorder"
+            variant="labelOutside"
+            noBrokenCorners
             label="Network Fee"
             width={163}
             disabled
@@ -121,7 +124,8 @@ export const MakeProposalModal: React.FC<MakeProposalModalProps> = ({
       <TextInputCustom<MakeProposalFormType>
         control={control}
         name="senderAccount"
-        variant="noCropBorder"
+        variant="labelOutside"
+        noBrokenCorners
         label="Sender account"
         disabled
       />
@@ -132,7 +136,8 @@ export const MakeProposalModal: React.FC<MakeProposalModalProps> = ({
         <TextInputCustom<MakeProposalFormType>
           control={control}
           name="approvalRequired"
-          variant="noCropBorder"
+          variant="labelOutside"
+          noBrokenCorners
           label="Approvals required"
           defaultValue="2 approvals of 2 participants"
           disabled

@@ -59,7 +59,7 @@ export const ConfigureVotingSection: React.FC<ConfigureVotingSectionProps> = ({
           <View style={styles.fill}>
             <TextInputCustom<ConfigureVotingFormType>
               name="days"
-              variant="noCropBorder"
+              noBrokenCorners
               hideLabel
               control={control}
               label=""
@@ -72,7 +72,7 @@ export const ConfigureVotingSection: React.FC<ConfigureVotingSectionProps> = ({
           <View style={styles.fill}>
             <TextInputCustom<ConfigureVotingFormType>
               name="hours"
-              variant="noCropBorder"
+              noBrokenCorners
               hideLabel
               control={control}
               label=""
@@ -85,7 +85,7 @@ export const ConfigureVotingSection: React.FC<ConfigureVotingSectionProps> = ({
           <View style={styles.fill}>
             <TextInputCustom<ConfigureVotingFormType>
               name="minutes"
-              variant="noCropBorder"
+              noBrokenCorners
               hideLabel
               control={control}
               label=""

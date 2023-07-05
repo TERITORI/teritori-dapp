@@ -10,7 +10,7 @@ import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useMultisigContext } from "../../context/MultisigReducer";
 import { mustGetCosmosNetwork } from "../../networks";
 import { MultisigType } from "../../screens/Multisig/types";
-import { getMultisig } from "../../utils/founaDB/multisig/multisigGraphql";
+import { getMultisig } from "../../utils/faunaDB/multisig/multisigGraphql";
 
 export const getMultisigAccount = async (
   address: string,

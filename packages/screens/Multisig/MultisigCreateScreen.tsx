@@ -158,7 +158,8 @@ export const MultisigCreateScreen = () => {
               <TextInputCustom<CreateMultisigWalletFormType>
                 control={control}
                 name={`addresses.${index}.address`}
-                variant="noCropBorder"
+                variant="labelOutside"
+                noBrokenCorners
                 label={"Address #" + (index + 1)}
                 rules={{
                   required: true,
@@ -193,7 +194,7 @@ export const MultisigCreateScreen = () => {
             <View style={styles.rowCenter}>
               <TextInputCustom<CreateMultisigWalletFormType>
                 control={control}
-                variant="noCropBorder"
+                noBrokenCorners
                 name="signatureRequired"
                 label=""
                 hideLabel
@@ -213,7 +214,7 @@ export const MultisigCreateScreen = () => {
               <SpacerRow size={2} />
               <TextInputCustom<CreateMultisigWalletFormType>
                 control={control}
-                variant="noCropBorder"
+                noBrokenCorners
                 name="maxSignature"
                 label=""
                 hideLabel

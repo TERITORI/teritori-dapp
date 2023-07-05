@@ -7,8 +7,8 @@ import { TxRaw } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import { MultisigTransactionListType } from "./useFetchMultisigTransactionsById";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useMultisigContext } from "../../context/MultisigReducer";
-import { completeTransaction } from "../../utils/founaDB/multisig/multisigGraphql";
-import { DbSignature } from "../../utils/founaDB/multisig/types";
+import { completeTransaction } from "../../utils/faunaDB/multisig/multisigGraphql";
+import { DbSignature } from "../../utils/faunaDB/multisig/types";
 
 export const useBrodcastTransaction = () => {
   const { state } = useMultisigContext();
@@ -56,9 +56,9 @@ export const useBrodcastTransaction = () => {
         );
 
         setToastSuccess({
-          title: "Broadcasted successfully!",
+          title: "Broadcast successfully!",
           message:
-            "We have also removed signatures from all the obsolute transactions so you might need sign those again.",
+            "We have also removed signatures from all the obsolete transactions so you might need sign those again.",
           duration: 10000,
         });
 

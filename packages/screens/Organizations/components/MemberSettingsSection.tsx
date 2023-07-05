@@ -53,8 +53,9 @@ export const MemberSettingsSection: React.FC<MemberSettingsSectionProps> = ({
             <View style={styles.leftInput}>
               <TextInputCustom<MemberSettingFormType>
                 name={`members.${index}.addr`}
-                variant="noCropBorder"
-                label="Member Address"
+                noBrokenCorners
+                variant="labelOutside"
+                label="Member address"
                 hideLabel={index > 0}
                 control={control}
                 rules={{ required: true, validate: validateAddress }}
@@ -73,8 +74,8 @@ export const MemberSettingsSection: React.FC<MemberSettingsSectionProps> = ({
             <View style={styles.rightInput}>
               <TextInputCustom<MemberSettingFormType>
                 name={`members.${index}.weight`}
-                variant="noCropBorder"
                 label="Weight"
+                variant="labelOutside"
                 hideLabel={index > 0}
                 control={control}
                 rules={{ required: true, pattern: patternOnlyNumbers }}

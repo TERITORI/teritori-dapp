@@ -46,7 +46,7 @@ export const MultisigSection: React.FC<MultisigSectionProps> = ({
         {!isLoading && tresholdMax && (
           <View style={styles.badge}>
             <BrandText style={[fontSemibold14, { color: neutral77 }]}>
-              Treshhold: {tresholdCurrentCount}/{tresholdMax}
+              Threshold: {tresholdCurrentCount}/{tresholdMax}
             </BrandText>
           </View>
         )}

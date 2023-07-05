@@ -17,7 +17,7 @@ import {
   useMultisigHelpers,
 } from "../../../hooks/multisig";
 import { useTNSMetadata } from "../../../hooks/useTNSMetadata";
-import { DbSignature } from "../../../utils/founaDB/multisig/types";
+import { DbSignature } from "../../../utils/faunaDB/multisig/types";
 import {
   neutral33,
   neutral55,

@@ -10,8 +10,8 @@ import {
   MultisigTransactionDelegateFormType,
   MultisigTransactionType,
 } from "../../screens/Multisig/types";
-import { createTransaction } from "../../utils/founaDB/multisig/multisigGraphql";
-import { DbCreateTransaction } from "../../utils/founaDB/multisig/types";
+import { createTransaction } from "../../utils/faunaDB/multisig/multisigGraphql";
+import { DbCreateTransaction } from "../../utils/faunaDB/multisig/types";
 
 export const useCreateMultisigTransaction = () => {
   const { state } = useMultisigContext();

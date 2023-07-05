@@ -3,7 +3,7 @@ import { useMemo } from "react";
 
 import { NetworkKind } from "../../networks";
 import { MultisigType } from "../../screens/Multisig/types";
-import { multisigsByUserAddress } from "../../utils/founaDB/multisig/multisigGraphql";
+import { multisigsByUserAddress } from "../../utils/faunaDB/multisig/multisigGraphql";
 import { useSelectedNetworkInfo } from "../useSelectedNetwork";
 
 export const useFetchMultisigList = (userAddress: string) => {

@@ -54,7 +54,7 @@ import { SpacerColumn, SpacerRow } from "../spacer";
 export interface TextInputCustomProps<T extends FieldValues>
   extends Omit<TextInputProps, "accessibilityRole" | "defaultValue"> {
   label: string;
-  variant?: "regular" | "labelOutside" | "noCropBorder" | "noStyle";
+  variant?: "regular" | "labelOutside" | "noStyle";
   iconSVG?: React.FC<SvgProps>;
   placeHolder?: string;
   squaresBackgroundColor?: string;
@@ -86,7 +86,7 @@ export interface TextInputCustomProps<T extends FieldValues>
 
 export const Label: React.FC<{
   children: string;
-  style?: TextStyle;
+  style?: StyleProp<TextStyle>;
   isRequired?: boolean;
 }> = ({ children, style, isRequired }) => (
   <View
@@ -125,6 +125,7 @@ export const TextInputCustom = <T extends FieldValues>({
   width,
   height,
   variant = "regular",
+  noBrokenCorners,
   name,
   control,
   defaultValue,
@@ -219,10 +220,13 @@ export const TextInputCustom = <T extends FieldValues>({
 
   return (
     <View style={containerStyle}>
-      {variant === "labelOutside" && (
+      {variant === "labelOutside" && !hideLabel && (
         <>
           <View style={styles.rowEnd}>
-            <Label style={labelStyle} isRequired={!!rules?.required}>
+            <Label
+              style={[{ color: neutralA3 }, labelStyle]}
+              isRequired={!!rules?.required}
+            >
               {label}
             </Label>
             {subtitle}
@@ -235,12 +239,12 @@ export const TextInputCustom = <T extends FieldValues>({
         style={style}
         mainContainerStyle={[
           styles.mainContainer,
-          variant === "noCropBorder" && styles.noCropBorderBg,
+          noBrokenCorners && styles.noCropBorderBg,
         ]}
         width={width}
         fullWidth={!width}
         height={height}
-        noBrokenCorners={variant === "noCropBorder"}
+        noBrokenCorners={noBrokenCorners}
       >
         <View style={styles.innerContainer}>
           {iconSVG && (
@@ -251,24 +255,23 @@ export const TextInputCustom = <T extends FieldValues>({
           )}
           <View style={{ flex: 1, marginRight: children ? 12 : undefined }}>
             {!variant ||
-              (!["labelOutside", "noCropBorder"].includes(variant) &&
-                !hideLabel && (
-                  <Pressable onPress={() => inputRef.current?.focus()}>
-                    <BrandText
-                      style={[styles.labelText, fontMedium10, labelStyle]}
-                    >
-                      {label}
-                    </BrandText>
-                    <SpacerColumn size={0.5} />
-                  </Pressable>
-                ))}
+              (variant !== "labelOutside" && !hideLabel && (
+                <Pressable onPress={() => inputRef.current?.focus()}>
+                  <BrandText
+                    style={[styles.labelText, fontMedium10, labelStyle]}
+                  >
+                    {label}
+                  </BrandText>
+                  <SpacerColumn size={0.5} />
+                </Pressable>
+              ))}
             <TextInput
               ref={inputRef}
               editable={!disabled}
               placeholder={placeHolder}
               onChangeText={handleChangeText}
               onKeyPress={(event) => handleKeyPress({ event, onPressEnter })}
-              placeholderTextColor={neutralA3}
+              placeholderTextColor={neutral77}
               value={field.value}
               style={[styles.textInput, textInputStyle]}
               {...restProps}

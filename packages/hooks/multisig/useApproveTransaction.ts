@@ -6,8 +6,8 @@ import { useMutation } from "@tanstack/react-query";
 import { MultisigTransactionListType } from "./useFetchMultisigTransactionsById";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { mustGetCosmosNetwork } from "../../networks";
-import { createSignature } from "../../utils/founaDB/multisig/multisigGraphql";
-import { DbSignature } from "../../utils/founaDB/multisig/types";
+import { createSignature } from "../../utils/faunaDB/multisig/multisigGraphql";
+import { DbSignature } from "../../utils/faunaDB/multisig/types";
 import { useSelectedNetworkId } from "../useSelectedNetwork";
 import useSelectedWallet from "../useSelectedWallet";
 

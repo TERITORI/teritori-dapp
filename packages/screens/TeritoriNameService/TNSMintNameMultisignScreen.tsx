@@ -228,12 +228,7 @@ export const TNSMintNameMultisignScreen: React.FC<
           }
         />
       </View>
-      <CheckLoadingModal
-        isVisible={isLoading}
-        //FIXME: It closes automatically the modal
-        // onComplete={onClose}
-        onComplete={() => {}}
-      />
+      <CheckLoadingModal isVisible={isLoading} />
     </ModalBase>
   );
 };

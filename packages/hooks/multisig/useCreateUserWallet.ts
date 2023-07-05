@@ -1,8 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
 
 import { UserWalletType } from "../../screens/Multisig/types";
-import { createUserWallet } from "../../utils/founaDB/multisig/multisigGraphql";
-import { DbUserWallet } from "../../utils/founaDB/multisig/types";
+import { createUserWallet } from "../../utils/faunaDB/multisig/multisigGraphql";
+import { DbUserWallet } from "../../utils/faunaDB/multisig/types";
 
 type CreateUserWalletArguement = {
   walletName: string;

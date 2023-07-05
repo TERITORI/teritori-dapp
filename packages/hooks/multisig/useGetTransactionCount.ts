@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { getTransactionCountByMultisigId } from "../../utils/founaDB/multisig/multisigGraphql";
+import { getTransactionCountByMultisigId } from "../../utils/faunaDB/multisig/multisigGraphql";
 import useSelectedWallet from "../useSelectedWallet";
 
 export const useGetTransactionCount = (multisigId: string, types: string[]) => {

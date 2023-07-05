@@ -18,7 +18,7 @@ import { NetworkKind } from "../../networks";
 import {
   getMultisig,
   getMultisigsByUserWallet,
-} from "../../utils/founaDB/multisig/multisigGraphql";
+} from "../../utils/faunaDB/multisig/multisigGraphql";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { neutral00, neutral33, neutral77 } from "../../utils/style/colors";
 import { fontSemibold20 } from "../../utils/style/fonts";

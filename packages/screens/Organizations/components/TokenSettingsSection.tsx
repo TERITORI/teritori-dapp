@@ -55,7 +55,8 @@ export const TokenSettingsSection: React.FC<TokenSettingsSectionProps> = ({
           <View style={styles.leftInput}>
             <TextInputCustom<TokenSettingFormType>
               name="tokenName"
-              variant="noCropBorder"
+              variant="labelOutside"
+              noBrokenCorners
               label="Token name"
               control={control}
               rules={{ required: true }}
@@ -66,7 +67,8 @@ export const TokenSettingsSection: React.FC<TokenSettingsSectionProps> = ({
           <View style={styles.rightInput}>
             <TextInputCustom<TokenSettingFormType>
               name="tokenSymbol"
-              variant="noCropBorder"
+              variant="labelOutside"
+              noBrokenCorners
               label="Token Symbol"
               control={control}
               valueModifier={(value) => value.toUpperCase()}
@@ -82,7 +84,8 @@ export const TokenSettingsSection: React.FC<TokenSettingsSectionProps> = ({
             <View style={styles.leftInput}>
               <TextInputCustom<TokenSettingFormType>
                 name={`tokenHolders.${index}.address`}
-                variant="noCropBorder"
+                variant="labelOutside"
+                noBrokenCorners
                 label="Token Holders"
                 hideLabel={index > 0}
                 control={control}
@@ -102,7 +105,8 @@ export const TokenSettingsSection: React.FC<TokenSettingsSectionProps> = ({
             <View style={styles.rightInput}>
               <TextInputCustom<TokenSettingFormType>
                 name={`tokenHolders.${index}.balance`}
-                variant="noCropBorder"
+                variant="labelOutside"
+                noBrokenCorners
                 label="Balances"
                 hideLabel={index > 0}
                 control={control}

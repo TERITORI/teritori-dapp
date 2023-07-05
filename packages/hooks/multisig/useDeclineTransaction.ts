@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 
-import { updateTransactionDecliners } from "../../utils/founaDB/multisig/multisigGraphql";
+import { updateTransactionDecliners } from "../../utils/faunaDB/multisig/multisigGraphql";
 import useSelectedWallet from "../useSelectedWallet";
 
 export const useDeclineTransaction = () => {

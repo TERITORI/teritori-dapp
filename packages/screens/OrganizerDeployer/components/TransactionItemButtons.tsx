@@ -19,7 +19,7 @@ import {
   useDeclineTransaction,
 } from "../../../hooks/multisig";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { DbSignature } from "../../../utils/founaDB/multisig/types";
+import { DbSignature } from "../../../utils/faunaDB/multisig/types";
 import {
   errorColor,
   neutral00,
@@ -155,7 +155,7 @@ export const TransactionItemButtons: React.FC<TransactionItemButtonsProps> = ({
     })();
 
     const resultText = (() => {
-      if (txHash || resTxHash) return "BROADCASTED";
+      if (txHash || resTxHash) return "BROADCAST";
       if (hasDeclined) return "DECLINED";
       if (hasSigned) return "APPROVED";
     })();
@@ -163,13 +163,13 @@ export const TransactionItemButtons: React.FC<TransactionItemButtonsProps> = ({
     return (
       <AnimationFadeIn style={styles.container}>
         <Pressable
-          onPress={() => copyToClipboard(txHash || resTxHash || "")}
-          style={[
-            styles.resultContainer,
-            {
-              borderColor: color,
-            },
-          ]}
+          onPress={() =>
+            copyToClipboard(
+              txHash || resTxHash || "",
+              "Transaction hash copied"
+            )
+          }
+          style={styles.resultContainer}
         >
           <BrandText style={[styles.resultText, { color }]}>
             {resultText}
@@ -240,8 +240,6 @@ const styles = StyleSheet.create({
     width: 200,
     justifyContent: "center",
     alignItems: "center",
-    borderLeftWidth: 1,
-    borderRightWidth: 1,
   },
   resultText: StyleSheet.flatten([
     fontMedium14,

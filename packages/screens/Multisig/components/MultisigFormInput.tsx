@@ -50,7 +50,8 @@ export const MultisigFormInput = <T extends FieldValues>({
   // returns
   return (
     <TextInputCustom<T>
-      variant="noCropBorder"
+      variant="labelOutside"
+      noBrokenCorners
       labelStyle={{ color: neutralA3 }}
       disabled={isDisabled}
       placeholderTextColor={neutral55}
