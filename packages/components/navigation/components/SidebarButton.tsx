@@ -1,4 +1,4 @@
-import { useIsFocused, useRoute } from "@react-navigation/native";
+import { useIsFocused } from "@react-navigation/native";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import Animated, {
@@ -14,6 +14,7 @@ import { SidebarNestedButton } from "./SidebarNestedButton";
 import chevronDownSVG from "../../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../../assets/icons/chevron-up.svg";
 import { useSidebar } from "../../../context/SidebarProvider";
+import { useAppRoute } from "../../../utils/navigation";
 import {
   neutral17,
   neutral33,
@@ -23,6 +24,7 @@ import {
 } from "../../../utils/style/colors";
 import { fontSemibold12 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { arrayIncludes } from "../../../utils/typescript";
 import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
 import { SVGorImageIcon } from "../../SVG/SVGorImageIcon";
@@ -45,9 +47,9 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
 }) => {
   // variables
   const { isSidebarExpanded } = useSidebar();
-  const { name: currentRouteName } = useRoute();
+  const { name: currentRouteName } = useAppRoute();
   const allNestedRoutes = useMemo(
-    () => nested && Object.values(nested).map((d) => d.route),
+    () => (nested ? Object.values(nested).map((d) => d.route) : []),
     [nested]
   );
   const [isNestedBarExpanded, setIsNestedBarExpanded] =
@@ -58,8 +60,7 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
     console.log(currentRouteName);
     if (nested) {
       return (
-        allNestedRoutes?.includes(currentRouteName as SidebarType["route"]) &&
-        !isNestedBarExpanded
+        arrayIncludes(allNestedRoutes, currentRouteName) && !isNestedBarExpanded
       );
     } else {
       return route.substring(0, 8) === currentRouteName.substring(0, 8);
@@ -70,8 +71,7 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
   useEffect(() => {
     setIsNestedBarExpanded((isNestedBarExpanded) => {
       if (
-        allNestedRoutes &&
-        allNestedRoutes.includes(currentRouteName as SidebarType["route"]) &&
+        arrayIncludes(allNestedRoutes, currentRouteName) &&
         !isNestedBarExpanded
       ) {
         return true;

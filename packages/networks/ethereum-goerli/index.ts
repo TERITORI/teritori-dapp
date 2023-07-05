@@ -1,11 +1,12 @@
 import { ethereumGoerliCurrencies } from "./currencies";
-import { NetworkInfo, NetworkKind } from "../types";
+import { NetworkFeature, NetworkInfo, NetworkKind } from "../types";
 
 export const ethereumGoerliNetwork: NetworkInfo = {
   id: "ethereum-goerli",
   kind: NetworkKind.Ethereum,
   displayName: "Ethereum Goerli",
   icon: "icons/networks/ethereum.svg",
+  features: [NetworkFeature.NFTMarketplace],
   currencies: ethereumGoerliCurrencies,
   idPrefix: "testeth",
   endpoint: "https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",

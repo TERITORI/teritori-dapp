@@ -6,6 +6,7 @@ export const gnoDevNetwork: GnoNetworkInfo = {
   kind: NetworkKind.Gno,
   displayName: "Gno Devnet",
   icon: "icons/networks/gno.svg",
+  features: [],
   currencies: gnoCurrencies,
   stakeCurrency: "ugnot",
   idPrefix: "gnodev",

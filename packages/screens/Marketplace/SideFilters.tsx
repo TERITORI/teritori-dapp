@@ -1,3 +1,4 @@
+import { Decimal } from "@cosmjs/math";
 import { EntityId } from "@reduxjs/toolkit";
 import { groupBy } from "lodash";
 import React, { useEffect, useState } from "react";
@@ -33,7 +34,11 @@ import { Separator } from "../../components/Separator";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { SearchInput } from "../../components/sorts/SearchInput";
 import { useCollectionStats } from "../../hooks/useCollectionStats";
-import { parseNetworkObjectId } from "../../networks";
+import {
+  getNativeCurrency,
+  NativeCurrencyInfo,
+  parseNetworkObjectId,
+} from "../../networks";
 import {
   selectShowFilters,
   setShowFilters,
@@ -416,7 +421,9 @@ const FilterContainer: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
   </View>
 );
 
-const PriceFilter: React.FC = () => {
+const PriceFilter: React.FC<{ currency: NativeCurrencyInfo }> = ({
+  currency,
+}) => {
   const styles = StyleSheet.create({
     textInput: {
       color: "#FFFFFF",
@@ -432,15 +439,15 @@ const PriceFilter: React.FC = () => {
   });
   const textInputStyle = StyleSheet.flatten([styles.textInput, fontMedium14]);
   const priceRange = useSelector(selectPriceRange);
-  const [min, setMin] = useState<number>(priceRange?.min || 0);
-  const [max, setMax] = useState<number>(priceRange?.max || 0);
+  const [min, setMin] = useState<string>(priceRange?.min || "");
+  const [max, setMax] = useState<string>(priceRange?.max || "");
 
   const dispatch = useAppDispatch();
   const handlePress = () => {
     dispatch(
       setPriceRange({
-        min,
-        max,
+        min: Decimal.fromUserInput(min, currency.decimals).atomics,
+        max: Decimal.fromUserInput(max, currency.decimals).atomics,
       })
     );
   };
@@ -459,21 +466,17 @@ const PriceFilter: React.FC = () => {
       >
         <TextInput
           placeholder="Min"
-          onChangeText={(value) =>
-            value !== "" ? setMin(parseFloat(value)) : setMin(0)
-          }
+          onChangeText={(value) => (value !== "" ? setMin(value) : setMin(""))}
           placeholderTextColor="#FFFFFF"
           style={textInputStyle}
-          value={min !== 0 ? min.toString(10) : ""}
+          value={min !== "0" ? min.replace(/[^0-9\\.]/g, "") : ""}
           keyboardType="decimal-pad"
         />
         <BrandText style={fontSemibold14}>to</BrandText>
         <TextInput
           placeholder="Max"
-          onChangeText={(value) =>
-            value !== "" ? setMax(parseFloat(value)) : setMax(0)
-          }
-          value={max !== 0 ? max.toString(10) : ""}
+          onChangeText={(value) => (value !== "" ? setMax(value) : setMax(""))}
+          value={max !== "0" ? max.replace(/[^0-9\\.]/g, "") : ""}
           placeholderTextColor="#FFFFFF"
           style={textInputStyle}
           keyboardType="decimal-pad"
@@ -526,6 +529,8 @@ export const SideFilters: React.FC<{
     return e.traitType;
   });
 
+  const currency = getNativeCurrency(network?.id, stats?.floorPrice[0]?.denom);
+
   return useShowFilters() ? (
     <View style={style}>
       <Header />
@@ -545,7 +550,7 @@ export const SideFilters: React.FC<{
           alignItems: "flex-start",
         }}
       >
-        <PriceFilter />
+        {currency && <PriceFilter currency={currency} />}
       </FilterContainer>
       {stats && network && (
         <FlatList

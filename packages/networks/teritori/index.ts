@@ -1,5 +1,5 @@
 import { teritoriCurrencies } from "./currencies";
-import { NetworkKind, CosmosNetworkInfo } from "../types";
+import { NetworkKind, CosmosNetworkInfo, NetworkFeature } from "../types";
 
 const nameServiceContractAddress =
   "tori1wkwy0xh89ksdgj9hr347dyd2dw7zesmtrue6kfzyml4vdtz6e5wscs7038";
@@ -12,6 +12,7 @@ export const teritoriNetwork: CosmosNetworkInfo = {
   chainId: "teritori-1",
   displayName: "Teritori",
   icon: "icons/networks/teritori.svg",
+  features: [NetworkFeature.NFTMarketplace],
   walletUrlForStaking: "https://explorer.teritori.com/teritori/staking",
   currencies: teritoriCurrencies,
   txExplorer: "https://www.mintscan.io/teritori/txs/$hash",
@@ -29,7 +30,7 @@ export const teritoriNetwork: CosmosNetworkInfo = {
     average: 0.025,
     high: 0.04,
   },
-  features: [
+  cosmosFeatures: [
     "stargate",
     "ibc-transfer",
     "cosmwasm",

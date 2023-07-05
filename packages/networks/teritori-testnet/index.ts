@@ -1,5 +1,5 @@
 import { teritoriTestnetCurrencies } from "./currencies";
-import { NetworkInfo, NetworkKind } from "../types";
+import { NetworkFeature, NetworkInfo, NetworkKind } from "../types";
 
 const nameServiceContractAddress =
   "tori18etjzrma5604af50jjklk3wlkqcsxdrvmy6jzw5naw2t7kyv4rys3kpwky";
@@ -13,6 +13,7 @@ export const teritoriTestnetNetwork: NetworkInfo = {
   chainId: "teritori-testnet-v3",
   displayName: "Teritori Testnet",
   icon: "icons/networks/teritori.svg",
+  features: [NetworkFeature.NFTMarketplace],
   currencies: teritoriTestnetCurrencies,
   txExplorer: "https://explorer.teritori.com/teritori-testnet/tx/$hash",
   accountExplorer:
@@ -31,7 +32,7 @@ export const teritoriTestnetNetwork: NetworkInfo = {
     average: 0.025,
     high: 0.04,
   },
-  features: [
+  cosmosFeatures: [
     "stargate",
     "ibc-transfer",
     "cosmwasm",

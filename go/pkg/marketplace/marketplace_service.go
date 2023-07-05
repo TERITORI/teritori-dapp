@@ -404,29 +404,33 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 		if ownerID != "" {
 			query = query.Where("owner_id = ?", ownerID)
 		}
-		var attributeQuery []string
-		for _, attribute := range req.Attributes {
 
-			attributeQuery = append(attributeQuery, fmt.Sprintf(`
-        attributes  @> '[{"value": "%s", "trait_type": "%s" }]'::jsonb`,
-				attribute.Value,
-				attribute.TraitType,
-			))
-
+		if len(req.Attributes) > 0 {
+			var attributeQueryParts []string
+			var attributeQueryArgs []interface{}
+			for _, attribute := range req.Attributes {
+				attributeQueryParts = append(attributeQueryParts, "attributes @> ?::jsonb")
+				jsonQuery, err := json.Marshal([]indexerdb.Attribute{{Value: attribute.GetValue(), TraitType: attribute.GetTraitType()}})
+				if err != nil {
+					return errors.Wrap(err, "failed to marshal attribute query")
+				}
+				attributeQueryArgs = append(attributeQueryArgs, string(jsonQuery))
+			}
+			query.Where(
+				strings.Join(attributeQueryParts, " OR "), attributeQueryArgs...,
+			)
 		}
-		query.Where(
-			strings.Join(attributeQuery, " OR "),
-		)
 
-		if req.IsListed != false {
+		if req.IsListed {
 			query.Where("is_listed = ?", true) // Options are ALL or buy now
 		}
+
 		if req.PriceRange != nil {
-			if req.PriceRange.Min != 0 {
-				query.Where("price_amount > ?", req.PriceRange.Min)
+			if req.PriceRange.Min != "0" && req.PriceRange.Min != "" {
+				query.Where("price_amount >= ?", req.PriceRange.Min)
 			}
-			if req.PriceRange.Max != 0 {
-				query.Where("price_amount < ?", req.PriceRange.Max)
+			if req.PriceRange.Max != "0" && req.PriceRange.Max != "" {
+				query.Where("price_amount <= ?", req.PriceRange.Max)
 			}
 		}
 
@@ -462,9 +466,18 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 			}
 
 			// json string => struct
-			var attributes []*marketplacepb.Attribute
-			if err := json.Unmarshal(jsonStr, &attributes); err != nil {
+			var dbAttributes []indexerdb.Attribute
+			if err := json.Unmarshal(jsonStr, &dbAttributes); err != nil {
 				return errors.Wrap(err, "failed to convert nft json string => struct")
+			}
+
+			// db -> pb
+			var attributes []*marketplacepb.Attribute
+			for _, attribute := range dbAttributes {
+				attributes = append(attributes, &marketplacepb.Attribute{
+					TraitType: attribute.TraitType,
+					Value:     attribute.Value,
+				})
 			}
 
 			if err := srv.Send(&marketplacepb.NFTsResponse{Nft: &marketplacepb.NFT{
@@ -493,39 +506,21 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 }
 
 func (s *MarkteplaceService) NFTCollectionAttributes(req *marketplacepb.NFTCollectionAttributesRequest, srv marketplacepb.MarketplaceService_NFTCollectionAttributesServer) error {
-
 	collectionID := req.GetCollectionId()
+	queryArgs := []interface{}{collectionID}
 
-	var err error
-	var (
-		_ networks.Network
-	)
-	if collectionID != "" {
-		if _, _, err = s.conf.NetworkStore.ParseCollectionID(collectionID); err != nil {
-			return errors.Wrap(err, "failed to parse collection id")
-		}
-	} else {
-		return errors.New("missing filter")
-	}
-
-	var attributeQuery []string
+	var attributeQueryParts []string
 	for _, attribute := range req.WhereAttributes {
-
-		attributeQuery = append(attributeQuery, fmt.Sprintf(`
-        (trait_type =  '%s' and value = '%s')`,
-			attribute.TraitType,
-			attribute.Value,
-		))
-
+		attributeQueryParts = append(attributeQueryParts, "(trait_type = ? and value = ?)")
+		queryArgs = append(queryArgs, attribute.GetTraitType(), attribute.GetValue())
 	}
-
-	whereQuery := strings.Join(attributeQuery, " OR ")
-	if whereQuery != "" {
-		whereQuery = "where " + whereQuery
+	attributesQuery := strings.Join(attributeQueryParts, " OR ")
+	if attributesQuery != "" {
+		attributesQuery = "where " + attributesQuery
 	}
 
 	var attributes []*marketplacepb.AttributeRarityFloor
-	err = s.conf.IndexerDB.Raw(fmt.Sprintf(
+	if err := s.conf.IndexerDB.Raw(fmt.Sprintf(
 		`
 WITH count_by_collection AS (
     SELECT count(1) as total, collection_id FROM nfts GROUP BY nfts.collection_id
@@ -544,9 +539,10 @@ select trait_type, value, counta, floor, collection_id  from (
 select *, (cast(counta as float) / total) * 100 as rare_ratio, total as collection_size
 from with_attributes
 join count_by_collection on with_attributes.collection_id = count_by_collection.collection_id
-		`, whereQuery),
-		collectionID,
-	).Scan(&attributes).Error
+		`, attributesQuery), queryArgs...,
+	).Scan(&attributes).Error; err != nil {
+		return errors.Wrap(err, "failed to fetch collection attributes")
+	}
 
 	for _, attribute := range attributes {
 		if err := srv.Send(&marketplacepb.NFTCollectionAttributesResponse{Attributes: attribute}); err != nil {

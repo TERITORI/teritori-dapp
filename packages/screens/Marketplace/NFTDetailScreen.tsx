@@ -252,6 +252,13 @@ export const NFTDetailScreen: ScreenFC<"NFTDetail"> = ({
       footerChildren={<></>}
       noScroll
       noMargin
+      onBackPress={() =>
+        navigation.canGoBack()
+          ? navigation.goBack()
+          : info?.collectionId
+          ? navigation.navigate("Collection", { id: info?.collectionId })
+          : navigation.navigate("Marketplace")
+      }
     >
       <Content key={id} id={id} />
     </ScreenContainer>

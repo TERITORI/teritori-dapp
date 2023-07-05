@@ -12,6 +12,7 @@ export interface NetworkInfoBase {
   kind: NetworkKind;
   icon?: string;
   currencies: CurrencyInfo[];
+  features: NetworkFeature[];
   idPrefix: string;
   txExplorer: string;
   accountExplorer: string;
@@ -34,7 +35,7 @@ export type CosmosNetworkInfo = NetworkInfoBase & {
     average: number;
     high: number;
   };
-  features: string[];
+  cosmosFeatures: string[];
   walletUrlForStaking?: string;
   nameServiceContractAddress?: string;
   nameServiceDefaultImage?: string;
@@ -117,3 +118,10 @@ export type IBCCurrencyInfo = {
 };
 
 export type CurrencyInfo = NativeCurrencyInfo | IBCCurrencyInfo;
+
+export enum NetworkFeature {
+  NFTMarketplace = "NFTMarketplace",
+  NFTLaunchpad = "NFTLaunchpad",
+  NameService = "NameService",
+  Swap = "Swap",
+}
