@@ -1,16 +1,27 @@
 import React, { useState } from "react";
-import { ScrollView, StyleSheet, TouchableOpacity } from "react-native";
-import { Hoverable } from "react-native-hoverable";
+import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 
+import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
 import { useWallets, Wallet } from "../../context/WalletsProvider";
 import { useFetchMultisigList } from "../../hooks/multisig";
-import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
+import { useNSUserInfo } from "../../hooks/useNSUserInfo";
+import {
+  useSelectedNetworkId,
+  useSelectedNetworkInfo,
+} from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getUserId, NetworkKind } from "../../networks";
-import { neutral33, neutralA3, purpleLight } from "../../utils/style/colors";
-import { fontMedium13, fontSemibold14 } from "../../utils/style/fonts";
-import { layout, topMenuWidth } from "../../utils/style/layout";
+import { getCosmosNetwork, getUserId, NetworkKind } from "../../networks";
+import {
+  neutral00,
+  neutral22,
+  neutralA3,
+  purpleLight,
+  secondaryColor,
+} from "../../utils/style/colors";
+import { fontSemibold12, fontSemibold14 } from "../../utils/style/fonts";
+import { layout } from "../../utils/style/layout";
+import { tinyAddress } from "../../utils/text";
 import { WalletProvider } from "../../utils/walletProvider";
 import { BrandText } from "../BrandText";
 import FlexCol from "../FlexCol";
@@ -18,6 +29,10 @@ import FlexRow from "../FlexRow";
 import { OmniLink } from "../OmniLink";
 import { SVG } from "../SVG";
 import { UserNameInline } from "../UserNameInline";
+import { CustomPressable } from "../buttons/CustomPressable";
+import { RoundedGradientImage } from "../images/RoundedGradientImage";
+
+const TINY_ADDRESSES_COUNT = 40;
 
 export const TopMenuAccount: React.FC = () => {
   const { selectedWallet, selectedMultisignWallet } = useSelectedWallet();
@@ -27,19 +42,20 @@ export const TopMenuAccount: React.FC = () => {
     selectedWallet?.address || ""
   );
 
-  const [openMultisignDropList, setOpenMultisignDropList] =
-    useState<boolean>(false);
+  const [isAccountsListShown, setAccountsListShown] = useState<boolean>(false);
   const [hoveredIndex, setHoveredIndex] = useState<number>(0);
-  const getScrollViewStyle = () => {
-    if (multisigList && multisigList.length > 5) {
-      return [styles.dropdownMenu, { height: 200 }];
-    } else {
-      return styles.dropdownMenu;
-    }
-  };
+
+  const selectedNetworkId = useSelectedNetworkId();
+  const network = getCosmosNetwork(selectedNetworkId);
+  //TODO: Make same as bellow but with all user wallets and all multisig wallets (selectedMultisignWallet.userId)
+  const userInfo = useNSUserInfo(selectedWallet?.userId);
+  const userName =
+    userInfo?.metadata?.tokenId ||
+    tinyAddress(selectedWallet?.address, TINY_ADDRESSES_COUNT) ||
+    "";
 
   return (
-    <FlexCol style={[styles.container, { zIndex: 20 }]}>
+    <FlexCol>
       <UserNameInline
         userId={
           selectedMultisignWallet
@@ -49,72 +65,30 @@ export const TopMenuAccount: React.FC = () => {
         style={styles.userImageLine}
       />
 
-      <FlexRow alignItems="center" justifyContent="space-between">
+      <FlexRow
+        alignItems="center"
+        justifyContent="space-between"
+        style={[
+          { paddingHorizontal: layout.padding_x2 },
+          !isAccountsListShown && { marginBottom: layout.padding_x1_5 },
+        ]}
+      >
         <TouchableOpacity
           onPress={() => {
-            setOpenMultisignDropList((value) => !value);
+            setAccountsListShown((value) => !value);
           }}
         >
           <FlexRow alignItems="center">
             <BrandText style={styles.switchAccount}>Switch Account</BrandText>
-            <SVG source={chevronRightSVG} width={16} height={16} />
-            {openMultisignDropList && (
-              <ScrollView style={getScrollViewStyle()}>
-                <Hoverable
-                  onMouseEnter={() => setHoveredIndex(1)}
-                  onMouseLeave={() => setHoveredIndex(0)}
-                >
-                  <BrandText
-                    onPress={() => {
-                      setMultisignWallet(null);
-                      setOpenMultisignDropList(false);
-                    }}
-                    style={
-                      hoveredIndex === 1
-                        ? styles.hoveredDropdownMenuText
-                        : styles.normalDropdownMenuText
-                    }
-                  >
-                    {selectedWallet?.address}
-                  </BrandText>
-                </Hoverable>
-                {multisigList !== undefined &&
-                  multisigList.map((item, index: number) => (
-                    <Hoverable
-                      onMouseEnter={() => setHoveredIndex(index + 2)}
-                      onMouseLeave={() => setHoveredIndex(0)}
-                      key={index}
-                    >
-                      <BrandText
-                        onPress={() => {
-                          setMultisignWallet({
-                            id: `keplr-${item.address}`,
-                            address: item.address,
-                            userId: getUserId(
-                              selectedNetworkInfo?.id,
-                              item.address
-                            ),
-                            networkId: selectedNetworkInfo?.id,
-                            networkKind: NetworkKind.Cosmos,
-                            provider: WalletProvider.Keplr,
-                            connected: true,
-                          } as Wallet);
-                          setOpenMultisignDropList(false);
-                        }}
-                        style={
-                          hoveredIndex === index + 2
-                            ? styles.hoveredDropdownMenuText
-                            : styles.normalDropdownMenuText
-                        }
-                      >
-                        {item.address}
-                      </BrandText>
-                    </Hoverable>
-                  ))}
-              </ScrollView>
-            )}
+            <SVG
+              source={isAccountsListShown ? chevronDownSVG : chevronRightSVG}
+              width={16}
+              height={16}
+              color={secondaryColor}
+            />
           </FlexRow>
         </TouchableOpacity>
+
         <OmniLink
           to={{
             screen: "UserPublicProfile",
@@ -124,17 +98,91 @@ export const TopMenuAccount: React.FC = () => {
           <BrandText style={styles.manageProfile}>Manage Profile</BrandText>
         </OmniLink>
       </FlexRow>
+
+      {isAccountsListShown && (
+        <ScrollView style={styles.accountsListContainer}>
+          <View style={styles.menuSectionTitleContainer}>
+            <BrandText style={styles.menuSectionTitle}>User wallets</BrandText>
+          </View>
+
+          <CustomPressable
+            onHoverIn={() => setHoveredIndex(1)}
+            onHoverOut={() => setHoveredIndex(0)}
+            onPress={() => {
+              setMultisignWallet(null);
+              setAccountsListShown(false);
+            }}
+            style={[hoveredIndex === 1 && { opacity: 0.5 }, styles.walletLine]}
+          >
+            <RoundedGradientImage
+              size="XXS"
+              sourceURI={userInfo?.metadata?.image}
+              fallbackURI={network?.nameServiceDefaultImage}
+            />
+            <BrandText
+              style={styles.itemText}
+              ellipsizeMode="middle"
+              numberOfLines={1}
+            >
+              {userName}
+            </BrandText>
+          </CustomPressable>
+
+          <View style={styles.menuSectionTitleContainer}>
+            <BrandText style={styles.menuSectionTitle}>
+              Multisig wallets
+            </BrandText>
+          </View>
+
+          {multisigList !== undefined &&
+            multisigList.map((item, index: number) => (
+              <CustomPressable
+                onHoverIn={() => setHoveredIndex(index + 2)}
+                onHoverOut={() => setHoveredIndex(0)}
+                onPress={() => {
+                  setMultisignWallet({
+                    id: `keplr-${item.address}`,
+                    address: item.address,
+                    userId: getUserId(selectedNetworkInfo?.id, item.address),
+                    networkId: selectedNetworkInfo?.id,
+                    networkKind: NetworkKind.Cosmos,
+                    provider: WalletProvider.Keplr,
+                    connected: true,
+                  } as Wallet);
+                  setHoveredIndex(0);
+                  setAccountsListShown(false);
+                }}
+                style={[
+                  hoveredIndex === index + 2 && { opacity: 0.5 },
+                  styles.walletLine,
+                ]}
+              >
+                <RoundedGradientImage
+                  size="XXS"
+                  sourceURI={userInfo?.metadata?.image}
+                  fallbackURI={network?.nameServiceDefaultImage}
+                />
+                <BrandText
+                  style={styles.itemText}
+                  ellipsizeMode="middle"
+                  numberOfLines={1}
+                >
+                  {tinyAddress(item.address, TINY_ADDRESSES_COUNT)}
+                </BrandText>
+              </CustomPressable>
+            ))}
+        </ScrollView>
+      )}
     </FlexCol>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    padding: layout.padding_x2,
-  },
   userImageLine: {
     width: "100%",
     marginBottom: layout.padding_x1_5,
+    marginTop: layout.padding_x2,
+    paddingHorizontal: layout.padding_x2,
   },
   switchAccount: {
     ...(fontSemibold14 as object),
@@ -145,31 +193,33 @@ const styles = StyleSheet.create({
     color: purpleLight,
   },
 
-  dropdownMenu: {
-    backgroundColor: "#292929",
-    borderWidth: 1,
-    borderColor: neutral33,
-    borderRadius: layout.padding_x1_5,
-    paddingVertical: layout.padding_x2,
-    paddingHorizontal: layout.padding_x1,
-    position: "absolute",
-    top: 20,
-    width: topMenuWidth - 2 * layout.padding_x2,
-    zIndex: 10,
+  accountsListContainer: {
+    backgroundColor: neutral00,
+    width: "100%",
+    marginVertical: layout.padding_x0_75,
   },
-  normalDropdownMenuText: StyleSheet.flatten([
-    fontMedium13,
+  itemText: StyleSheet.flatten([
+    fontSemibold12,
+    {
+      marginLeft: layout.padding_x1_5,
+    },
+  ]),
+  menuSectionTitleContainer: {
+    backgroundColor: neutral22,
+    paddingVertical: layout.padding_x0_5,
+    marginVertical: layout.padding_x0_75,
+  },
+  menuSectionTitle: StyleSheet.flatten([
+    fontSemibold12,
     {
       color: neutralA3,
-      padding: layout.padding_x1,
+      marginLeft: layout.padding_x2,
     },
   ]),
-  hoveredDropdownMenuText: StyleSheet.flatten([
-    fontMedium13,
-    {
-      backgroundColor: neutral33,
-      borderRadius: 6,
-      padding: layout.padding_x1,
-    },
-  ]),
+  walletLine: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: layout.padding_x1_5,
+    paddingVertical: layout.padding_x0_75,
+  },
 });
