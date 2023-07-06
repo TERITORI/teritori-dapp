@@ -114,6 +114,11 @@ message TournamentsResponse {
 
 // challenge
 
+enum ChallengeStatus {
+  OPEN = 0;
+  CLOSE = 1;
+}
+
 message Challenge {
   int32 id = 1;
   Money price = 2;
@@ -122,7 +127,7 @@ message Challenge {
   string tagline = 5;
   string description = 6;
   string difficulty = 7;
-  string status = 8; // open, soon, closed
+  ChallengeStatus status = 8; // open, soon, closed
   string duration = 9;
   int32 num_users_joined = 10;
   repeated Money rewards = 11;

@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import { View, Image, FlatList } from "react-native";
 import { useSelector } from "react-redux";
 
+import { getChallenges } from "./getChallenges";
 import pathwarBanner from "../../../assets/banners/pathwarBanner.png";
+import { Challenge } from "../../api/pathwar/v1/pathwar";
 import { BrandText } from "../../components/BrandText";
 import { ChallengeBox } from "../../components/Pathwar/ChallengeBox";
 import { ConnectBar } from "../../components/Pathwar/ConnectBar";
@@ -19,15 +21,11 @@ import { fontSemibold20, fontSemibold28 } from "../../utils/style/fonts";
 import { layout, screenContentMaxWidthLarge } from "../../utils/style/layout";
 
 export const PathwarScreen: ScreenFC<"Pathwar"> = () => {
-  const [search, setSearch] = useState("");
+  const [searchInput, setSearchInput] = useState("");
   const token = useSelector(selectPathwarToken);
   const isMobile = useIsMobile();
-  const [cards, setCards] = useState<any[]>([]);
+  const challenges = Object.values(getChallenges());
   const { height } = useMaxResolution({ isLarge: true });
-
-  import("../Pathwar/data.json").then(({ items }) => {
-    setCards(items);
-  });
 
   return (
     <ScreenContainer>
@@ -72,7 +70,7 @@ export const PathwarScreen: ScreenFC<"Pathwar"> = () => {
         <BrandText style={fontSemibold28}>Challenges</BrandText>
         <View style={{ marginTop: layout.padding_x3_5 }}>
           <SearchInput
-            handleChangeText={setSearch}
+            handleChangeText={setSearchInput}
             borderRadius={layout.borderRadius}
             style={{
               width: isMobile ? "100%" : 432,
@@ -92,11 +90,11 @@ export const PathwarScreen: ScreenFC<"Pathwar"> = () => {
         }}
       >
         <FlatList
-          data={cards.filter((item) =>
-            item.flavor.challenge.name
+          data={challenges.filter((challenge) => {
+            return challenge.title
               .toLowerCase()
-              .includes(search.toLowerCase())
-          )}
+              .includes(searchInput.toLowerCase());
+          })}
           style={{
             width: "100%",
           }}

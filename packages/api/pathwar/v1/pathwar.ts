@@ -7,6 +7,39 @@ import { share } from "rxjs/operators";
 
 export const protobufPackage = "pathwar.v1";
 
+export enum ChallengeStatus {
+  OPEN = 0,
+  CLOSE = 1,
+  UNRECOGNIZED = -1,
+}
+
+export function challengeStatusFromJSON(object: any): ChallengeStatus {
+  switch (object) {
+    case 0:
+    case "OPEN":
+      return ChallengeStatus.OPEN;
+    case 1:
+    case "CLOSE":
+      return ChallengeStatus.CLOSE;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return ChallengeStatus.UNRECOGNIZED;
+  }
+}
+
+export function challengeStatusToJSON(object: ChallengeStatus): string {
+  switch (object) {
+    case ChallengeStatus.OPEN:
+      return "OPEN";
+    case ChallengeStatus.CLOSE:
+      return "CLOSE";
+    case ChallengeStatus.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
 export interface Category {
   id: number;
   text: string;
@@ -114,7 +147,7 @@ export interface Challenge {
   description: string;
   difficulty: string;
   /** open, soon, closed */
-  status: string;
+  status: ChallengeStatus;
   duration: string;
   numUsersJoined: number;
   rewards: Money[];
@@ -1215,7 +1248,7 @@ function createBaseChallenge(): Challenge {
     tagline: "",
     description: "",
     difficulty: "",
-    status: "",
+    status: 0,
     duration: "",
     numUsersJoined: 0,
     rewards: [],
@@ -1250,8 +1283,8 @@ export const Challenge = {
     if (message.difficulty !== "") {
       writer.uint32(58).string(message.difficulty);
     }
-    if (message.status !== "") {
-      writer.uint32(66).string(message.status);
+    if (message.status !== 0) {
+      writer.uint32(64).int32(message.status);
     }
     if (message.duration !== "") {
       writer.uint32(74).string(message.duration);
@@ -1309,7 +1342,7 @@ export const Challenge = {
           message.difficulty = reader.string();
           break;
         case 8:
-          message.status = reader.string();
+          message.status = reader.int32() as any;
           break;
         case 9:
           message.duration = reader.string();
@@ -1352,7 +1385,7 @@ export const Challenge = {
       tagline: isSet(object.tagline) ? String(object.tagline) : "",
       description: isSet(object.description) ? String(object.description) : "",
       difficulty: isSet(object.difficulty) ? String(object.difficulty) : "",
-      status: isSet(object.status) ? String(object.status) : "",
+      status: isSet(object.status) ? challengeStatusFromJSON(object.status) : 0,
       duration: isSet(object.duration) ? String(object.duration) : "",
       numUsersJoined: isSet(object.numUsersJoined) ? Number(object.numUsersJoined) : 0,
       rewards: Array.isArray(object?.rewards) ? object.rewards.map((e: any) => Money.fromJSON(e)) : [],
@@ -1373,7 +1406,7 @@ export const Challenge = {
     message.tagline !== undefined && (obj.tagline = message.tagline);
     message.description !== undefined && (obj.description = message.description);
     message.difficulty !== undefined && (obj.difficulty = message.difficulty);
-    message.status !== undefined && (obj.status = message.status);
+    message.status !== undefined && (obj.status = challengeStatusToJSON(message.status));
     message.duration !== undefined && (obj.duration = message.duration);
     message.numUsersJoined !== undefined && (obj.numUsersJoined = Math.round(message.numUsersJoined));
     if (message.rewards) {
@@ -1407,7 +1440,7 @@ export const Challenge = {
     message.tagline = object.tagline ?? "";
     message.description = object.description ?? "";
     message.difficulty = object.difficulty ?? "";
-    message.status = object.status ?? "";
+    message.status = object.status ?? 0;
     message.duration = object.duration ?? "";
     message.numUsersJoined = object.numUsersJoined ?? 0;
     message.rewards = object.rewards?.map((e) => Money.fromPartial(e)) || [];
