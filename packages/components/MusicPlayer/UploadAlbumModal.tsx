@@ -100,8 +100,6 @@ export const UploadAlbumModal: React.FC<UploadAlbumModalProps> = ({
       audios,
     };
 
-    // console.log(metadata);
-
     try {
       const res = await client.createMusicAlbum(
         {
@@ -274,7 +272,6 @@ const Step1Component: React.FC<{
           size="SM"
           disabled={!canContinue}
           onPress={() => {
-            console.log(uploadFiles1);
             setUploadFiles([...uploadFiles1]);
             setStep(1);
           }}

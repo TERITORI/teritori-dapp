@@ -23,15 +23,8 @@ func (h *Handler) handleExecuteCreateAlbum(e *Message, execMsg *wasmtypes.MsgExe
 	if err := json.Unmarshal(execMsg.Msg, &execCreateMusicAlbumMsg); err != nil {
 		return errors.Wrap(err, "failed to unmarshal execute create album msg")
 	}
+	createMusicAlbumMsg := &execCreateMusicAlbumMsg.CreateMusicAlbum
 
-	return h.createMusicAlbum(e, execMsg, &execCreateMusicAlbumMsg.CreateMusicAlbum)
-}
-
-func (h *Handler) createMusicAlbum(
-	e *Message,
-	execMsg *wasmtypes.MsgExecuteContract,
-	createMusicAlbumMsg *CreateMusicAlbumMsg,
-) error {
 	var metadataJSON map[string]interface{}
 	if err := json.Unmarshal([]byte(createMusicAlbumMsg.Metadata), &metadataJSON); err != nil {
 		return errors.Wrap(err, "failed to unmarshal metadata")
@@ -52,6 +45,58 @@ func (h *Handler) createMusicAlbum(
 
 	if err := h.db.Create(&musicAlbum).Error; err != nil {
 		return errors.Wrap(err, "failed to create music album")
+	}
+	return nil
+}
+
+type AddToLibraryMsg struct {
+	Identifier string `json:"identifier"`
+}
+
+type ExecAddToLibraryMsg struct {
+	AddToLibrary AddToLibraryMsg `json:"add_to_library"`
+}
+
+func (h *Handler) handleExecuteAddToLibrary(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
+	var execAddToLibraryMsg ExecAddToLibraryMsg
+	if err := json.Unmarshal(execMsg.Msg, &execAddToLibraryMsg); err != nil {
+		return errors.Wrap(err, "failed to unmarshal execute add_to_library msg")
+	}
+	addToLibraryMsg := &execAddToLibraryMsg.AddToLibrary
+
+	musicLibrary := indexerdb.MusicLibrary{
+		Identifier: addToLibraryMsg.Identifier,
+		Owner:      h.config.Network.UserID(execMsg.Sender),
+	}
+
+	if err := h.db.Create(&musicLibrary).Error; err != nil {
+		return errors.Wrap(err, "failed to add to library")
+	}
+	return nil
+}
+
+type RemoveFromLibraryMsg struct {
+	Identifier string `json:"identifier"`
+}
+
+type ExecRemoveFromLibraryMsg struct {
+	RemoveFromLibrary RemoveFromLibraryMsg `json:"remove_from_library"`
+}
+
+func (h *Handler) handleExecuteRemoveFromLibrary(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
+	var execRemoveFromLibraryMsg ExecRemoveFromLibraryMsg
+	if err := json.Unmarshal(execMsg.Msg, &execRemoveFromLibraryMsg); err != nil {
+		return errors.Wrap(err, "failed to unmarshal execute remove_from_library msg")
+	}
+	removeFromLibraryMsg := &execRemoveFromLibraryMsg.RemoveFromLibrary
+
+	musicLibrary := indexerdb.MusicLibrary{
+		Identifier: removeFromLibraryMsg.Identifier,
+		Owner:      h.config.Network.UserID(execMsg.Sender),
+	}
+
+	if err := h.db.Delete(&musicLibrary).Error; err != nil {
+		return errors.Wrap(err, "failed to remove from library")
 	}
 	return nil
 }

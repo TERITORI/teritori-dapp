@@ -316,6 +316,52 @@ export class TeritoriMusicPlayerClient
       funds
     );
   };
+  addToLibrary = async (
+    {
+      identifier,
+    }: {
+      identifier: string;
+    },
+    fee: number | StdFee | "auto" = "auto",
+    memo?: string,
+    funds?: Coin[]
+  ): Promise<ExecuteResult> => {
+    return await this.client.execute(
+      this.sender,
+      this.contractAddress,
+      {
+        add_to_library: {
+          identifier,
+        },
+      },
+      fee,
+      memo,
+      funds
+    );
+  };
+  removeFromLibrary = async (
+    {
+      identifier,
+    }: {
+      identifier: string;
+    },
+    fee: number | StdFee | "auto" = "auto",
+    memo?: string,
+    funds?: Coin[]
+  ): Promise<ExecuteResult> => {
+    return await this.client.execute(
+      this.sender,
+      this.contractAddress,
+      {
+        remove_from_library: {
+          identifier,
+        },
+      },
+      fee,
+      memo,
+      funds
+    );
+  };
   lockTokens = async (
     fee: number | StdFee | "auto" = "auto",
     memo?: string,

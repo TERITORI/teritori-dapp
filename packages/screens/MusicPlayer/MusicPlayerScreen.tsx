@@ -11,10 +11,15 @@ import { ScreenFC } from "../../utils/navigation";
 import { neutralA3, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-
+import { GetAllAlbumListRequest } from "../../api/musicplayer/v1/musicplayer";
 export const MusicPlayerScreen: ScreenFC<"MusicPlayer"> = () => {
   const tabData: string[] = ["Home", "My Library"];
   const [tab, setTab] = useState<string>(tabData[0]);
+
+  const musicRequest: GetAllAlbumListRequest = {
+      limit: 10,
+      offset: 0,
+  };
 
   return (
     <ScreenContainer
@@ -24,7 +29,7 @@ export const MusicPlayerScreen: ScreenFC<"MusicPlayer"> = () => {
       <View style={styles.pageConatiner}>
         <MusicPlayerTab tab={tab} setTab={setTab} />
 
-        {tab === tabData[0] && <MusicPlayerHomeContent />}
+        {tab === tabData[0] && <MusicPlayerHomeContent req={musicRequest}/>}
         {tab === tabData[1] && <MusicPlayerMyLibraryContent />}
       </View>
 

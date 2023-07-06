@@ -14,12 +14,39 @@ import { fontSemibold13 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
+import { AlbumInfo } from "../../utils/types/music";
+import { signingMusicPlayerClient } from "../../client-creators/musicplayerClient";
 
-export const TrackHoverMenu: React.FC = () => {
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
+
+interface TrackHoverMenuProps {
+  albumId: string
+}
+export const TrackHoverMenu: React.FC<TrackHoverMenuProps> = ({albumId}) => {
+  const selectedNetworkId = useSelectedNetworkId();
+  const wallet = useSelectedWallet();
+
   const shareMenuWidth = 188;
   const lineHeight = 18;
 
   const [openShareMenu, setOpenShareMenu] = useState<boolean>(false);
+
+  const addToLibrary = async()=>{
+    if (!wallet?.connected || !wallet.address) {
+      return;
+    }
+    const client = await signingMusicPlayerClient({
+      networkId: selectedNetworkId,
+      walletAddress: wallet.address,
+    });
+    try {
+      const res = await client.addToLibrary({identifier: albumId});
+      
+    }catch{
+
+    }
+  }
 
   const styles = StyleSheet.create({
     hoverBox: {
@@ -99,6 +126,7 @@ export const TrackHoverMenu: React.FC = () => {
       <HoverView
         normalStyle={styles.unitBoxNormal}
         hoverStyle={styles.unitBoxHovered}
+        onPress={()=>{addToLibrary()}}
       >
         <View style={styles.oneLine}>
           <SVG

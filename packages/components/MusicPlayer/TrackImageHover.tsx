@@ -11,7 +11,7 @@ import { useAppNavigation } from "../../utils/navigation";
 import { layout } from "../../utils/style/layout";
 import { SVG } from "../SVG";
 
-export const TrackImageHover: React.FC<{ mine: boolean; albumId: string }> = ({
+export const TrackImageHover: React.FC<{ mine?: boolean; albumId: string }> = ({
   mine = false,
   albumId,
 }) => {
@@ -85,7 +85,7 @@ export const TrackImageHover: React.FC<{ mine: boolean; albumId: string }> = ({
           onMouseEnter={() => setHoverMenuIcon(true)}
         />
       )}
-      {openMenu && !mine && <TrackHoverMenu />}
+      {openMenu && !mine && <TrackHoverMenu albumId={albumId}/>}
       {openMenu && mine && <MyAlbumMenu />}
     </Pressable>
   );

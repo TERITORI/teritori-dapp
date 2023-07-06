@@ -296,8 +296,19 @@ func (h *Handler) handleExecute(e *Message) error {
 				return errors.Wrap(err, "failed to handle create album")
 			}
 		}
+	case "add_to_library": //Add user's album to my library
+		if executeMsg.Contract == h.config.Network.MusicplayerContractAddress {
+			if err := h.handleExecuteAddToLibrary(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle add to library")
+			}
+		}
+	case "remove_from_library":
+		if executeMsg.Contract == h.config.Network.MusicplayerContractAddress {
+			if err := h.handleExecuteRemoveFromLibrary(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle remove from library")
+			}
+		}
 	}
-
 	return nil
 }
 

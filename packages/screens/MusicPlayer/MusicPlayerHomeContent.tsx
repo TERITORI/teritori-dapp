@@ -1,5 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { View, StyleSheet, Pressable } from "react-native";
+import Animated, {
+  useAnimatedScrollHandler,
+  useSharedValue,
+} from "react-native-reanimated";
 
 import Logo from "../../../assets/logos/logo.svg";
 import { BrandText } from "../../components/BrandText";
@@ -12,37 +16,68 @@ import { primaryColor } from "../../utils/style/colors";
 import { fontSemibold14, fontSemibold20 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { AlbumInfo, AlbumMetadataInfo } from "../../utils/types/music";
+import { GetAllAlbumListRequest } from "../../api/musicplayer/v1/musicplayer";
+import { combineFetchAlbumPages, useFetchAlbum } from "../../hooks/musicplayer/useFetchAlbum";
+interface MusicPlayerProps {
+  req: GetAllAlbumListRequest
+}
 
-export const MusicPlayerHomeContent: React.FC = () => {
+export const MusicPlayerHomeContent: React.FC<MusicPlayerProps> = ({req}) => {
   const [albumList, setAlbumList] = useState<AlbumInfo[]>([]);
 
   const [openUploadModal, setOpenUploadModal] = useState<boolean>(false);
   // const [openAlbumInfoModal, setOpenAlbumInfoModal] = useState<boolean>(false);
   const selectedNetworkId = useSelectedNetworkId();
-  useEffect(() => {
-    const getAlbumList = async () => {
-      try {
-        const res = await mustGetMusicplayerClient(
-          selectedNetworkId
-        ).GetAlbumList({});
-        const newAlbumList: AlbumInfo[] = [];
-        res.musicAlbums.map((albumInfo, index) => {
-          const metadata = JSON.parse(albumInfo.metadata) as AlbumMetadataInfo;
-          newAlbumList.push({
-            id: albumInfo.identifier,
-            name: metadata.title,
-            description: metadata.description,
-            image: metadata.image,
-            audios: [],
-          });
-        });
-        setAlbumList(newAlbumList);
-      } catch (err) {
-        console.log(err);
+  const { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading } =
+    useFetchAlbum(req);
+  const isLoadingValue = useSharedValue(false);
+  const isGoingUp = useSharedValue(false);
+  const [flatListContentOffsetY, setFlatListContentOffsetY] = useState(0);
+
+  const albums = useMemo(
+    () => (data ? combineFetchAlbumPages(data.pages) : []),
+    [data]
+  );
+
+  const scrollHandler = useAnimatedScrollHandler({
+    onScroll: (event) => {
+      setFlatListContentOffsetY(event.contentOffset.y);
+      if (flatListContentOffsetY > event.contentOffset.y) {
+        isGoingUp.value = true;
+      } else if (flatListContentOffsetY < event.contentOffset.y) {
+        isGoingUp.value = false;
       }
-    };
-    getAlbumList();
-  }, [selectedNetworkId]);
+      setFlatListContentOffsetY(event.contentOffset.y);
+    },
+  });
+
+  // useEffect(() => {
+  //   const getAlbumList = async () => {
+  //     try {
+  //       const res = await mustGetMusicplayerClient(
+  //         selectedNetworkId
+  //       ).GetAllAlbumList({
+  //         limit: 0,
+  //         offset: 10,
+  //       });
+  //       const newAlbumList: AlbumInfo[] = [];
+  //       res.musicAlbums.map((albumInfo, index) => {
+  //         const metadata = JSON.parse(albumInfo.metadata) as AlbumMetadataInfo;
+  //         newAlbumList.push({
+  //           id: albumInfo.identifier,
+  //           name: metadata.title,
+  //           description: metadata.description,
+  //           image: metadata.image,
+  //           audios: [],
+  //         });
+  //       });
+  //       setAlbumList(newAlbumList);
+  //     } catch (err) {
+  //       console.log(err);
+  //     }
+  //   };
+  //   getAlbumList();
+  // }, [selectedNetworkId]);
 
   const styles = StyleSheet.create({
     container: {
@@ -111,16 +146,21 @@ export const MusicPlayerHomeContent: React.FC = () => {
           </Pressable>
         </View>
       </View>
-
       <View style={styles.contentGroup}>
-        {albumList.map((item: AlbumInfo, index) => {
-          return <MusicPlayerCard item={item} index={index} key={index} />;
-        })}
+        <Animated.FlatList
+          scrollEventThrottle={0.1}
+          data={albums}
+          renderItem={({ item: albumInfo }) => (
+            <MusicPlayerCard item={albumInfo} />
+          )}
+          onScroll={scrollHandler}
+        />
       </View>
       <UploadAlbumModal
         isVisible={openUploadModal}
         onClose={() => setOpenUploadModal(false)}
       />
     </View>
+
   );
 };

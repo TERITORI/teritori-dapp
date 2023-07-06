@@ -12,3 +12,8 @@ type MusicAlbum struct {
 	CreatedAt  int64
 	IsDeleted  bool
 }
+
+type MusicLibrary struct {
+	Owner      networks.UserID `gorm:"primaryKey"`
+	Identifier string          `gorm:"PrimaryKey"`
+}

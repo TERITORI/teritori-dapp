@@ -12,12 +12,10 @@ import { BrandText } from "../BrandText";
 
 export const MusicPlayerCard: React.FC<{
   item: AlbumInfo;
-  index: number;
-  mine?: boolean;
-}> = ({ item, index, mine = false }) => {
+}> = ({ item }) => {
   const unitWidth = 240;
 
-  const [selectedIndex, setSelectedIndex] = useState<number>(0);
+  const [selectedIndex, setSelectedIndex] = useState<string>(item.id);
 
   const styles = StyleSheet.create({
     unitCard: {
@@ -60,27 +58,26 @@ export const MusicPlayerCard: React.FC<{
       <View
         style={styles.imgBox}
         // @ts-ignore
-        onMouseEnter={() => setSelectedIndex(index + 1)}
-        onMouseLeave={() => setSelectedIndex(0)}
+        onMouseEnter={() => setSelectedIndex(item.id)}
+        onMouseLeave={() => setSelectedIndex("")}
       >
         <Image
           // @ts-ignore
           source={ipfsPinataUrl(item.image)}
           style={styles.contentImg}
         />
-        {selectedIndex === index + 1 && (
-          <TrackImageHover mine={mine} albumId={item.id} />
+        {selectedIndex === item.id && (
+          <TrackImageHover albumId={item.id} />
         )}
       </View>
       <BrandText style={styles.contentTitle}>{item.name}</BrandText>
       <BrandText style={styles.contentDescription}>
         {item.description}
       </BrandText>
-      {!mine && (
-        <Pressable>
-          <BrandText style={styles.contentName}>@{item.name}</BrandText>
-        </Pressable>
-      )}
+      <Pressable>
+        <BrandText style={styles.contentName}>@{item.name}</BrandText>
+      </Pressable>
+      
     </View>
   );
 };

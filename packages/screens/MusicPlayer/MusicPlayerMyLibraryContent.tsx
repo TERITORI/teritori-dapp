@@ -117,7 +117,7 @@ export const MusicPlayerMyLibraryContent: React.FC = () => {
       </View>
       <View style={styles.contentGroup}>
         {myAlbumsData.map((item: any, index) => {
-          return <MusicPlayerCard item={item} index={index} mine key={index} />;
+          return <MusicPlayerCard item={item} />;
         })}
       </View>
 

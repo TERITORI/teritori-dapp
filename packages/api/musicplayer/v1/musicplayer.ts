@@ -5,7 +5,15 @@ import _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "musicplayer.v1";
 
-export interface GetAlbumListRequest {
+export interface GetAllAlbumListRequest {
+  limit: number;
+  offset: number;
+}
+
+export interface GetUserAlbumListRequest {
+  createdBy: string;
+  limit: number;
+  offset: number;
 }
 
 export interface MusicAlbumInfo {
@@ -26,41 +34,157 @@ export interface GetAlbumResponse {
   musicAlbum: MusicAlbumInfo | undefined;
 }
 
-function createBaseGetAlbumListRequest(): GetAlbumListRequest {
-  return {};
+function createBaseGetAllAlbumListRequest(): GetAllAlbumListRequest {
+  return { limit: 0, offset: 0 };
 }
 
-export const GetAlbumListRequest = {
-  encode(_: GetAlbumListRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const GetAllAlbumListRequest = {
+  encode(message: GetAllAlbumListRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.limit !== 0) {
+      writer.uint32(16).uint32(message.limit);
+    }
+    if (message.offset !== 0) {
+      writer.uint32(24).uint32(message.offset);
+    }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): GetAlbumListRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+  decode(input: _m0.Reader | Uint8Array, length?: number): GetAllAlbumListRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseGetAlbumListRequest();
+    const message = createBaseGetAllAlbumListRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.limit = reader.uint32();
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.offset = reader.uint32();
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
 
-  fromJSON(_: any): GetAlbumListRequest {
-    return {};
+  fromJSON(object: any): GetAllAlbumListRequest {
+    return {
+      limit: isSet(object.limit) ? Number(object.limit) : 0,
+      offset: isSet(object.offset) ? Number(object.offset) : 0,
+    };
   },
 
-  toJSON(_: GetAlbumListRequest): unknown {
+  toJSON(message: GetAllAlbumListRequest): unknown {
     const obj: any = {};
+    message.limit !== undefined && (obj.limit = Math.round(message.limit));
+    message.offset !== undefined && (obj.offset = Math.round(message.offset));
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<GetAlbumListRequest>, I>>(_: I): GetAlbumListRequest {
-    const message = createBaseGetAlbumListRequest();
+  create<I extends Exact<DeepPartial<GetAllAlbumListRequest>, I>>(base?: I): GetAllAlbumListRequest {
+    return GetAllAlbumListRequest.fromPartial(base ?? {});
+  },
+
+  fromPartial<I extends Exact<DeepPartial<GetAllAlbumListRequest>, I>>(object: I): GetAllAlbumListRequest {
+    const message = createBaseGetAllAlbumListRequest();
+    message.limit = object.limit ?? 0;
+    message.offset = object.offset ?? 0;
+    return message;
+  },
+};
+
+function createBaseGetUserAlbumListRequest(): GetUserAlbumListRequest {
+  return { createdBy: "", limit: 0, offset: 0 };
+}
+
+export const GetUserAlbumListRequest = {
+  encode(message: GetUserAlbumListRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.createdBy !== "") {
+      writer.uint32(10).string(message.createdBy);
+    }
+    if (message.limit !== 0) {
+      writer.uint32(16).uint32(message.limit);
+    }
+    if (message.offset !== 0) {
+      writer.uint32(24).uint32(message.offset);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): GetUserAlbumListRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGetUserAlbumListRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.createdBy = reader.string();
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.limit = reader.uint32();
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.offset = reader.uint32();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetUserAlbumListRequest {
+    return {
+      createdBy: isSet(object.createdBy) ? String(object.createdBy) : "",
+      limit: isSet(object.limit) ? Number(object.limit) : 0,
+      offset: isSet(object.offset) ? Number(object.offset) : 0,
+    };
+  },
+
+  toJSON(message: GetUserAlbumListRequest): unknown {
+    const obj: any = {};
+    message.createdBy !== undefined && (obj.createdBy = message.createdBy);
+    message.limit !== undefined && (obj.limit = Math.round(message.limit));
+    message.offset !== undefined && (obj.offset = Math.round(message.offset));
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<GetUserAlbumListRequest>, I>>(base?: I): GetUserAlbumListRequest {
+    return GetUserAlbumListRequest.fromPartial(base ?? {});
+  },
+
+  fromPartial<I extends Exact<DeepPartial<GetUserAlbumListRequest>, I>>(object: I): GetUserAlbumListRequest {
+    const message = createBaseGetUserAlbumListRequest();
+    message.createdBy = object.createdBy ?? "";
+    message.limit = object.limit ?? 0;
+    message.offset = object.offset ?? 0;
     return message;
   },
 };
@@ -84,25 +208,38 @@ export const MusicAlbumInfo = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MusicAlbumInfo {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMusicAlbumInfo();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.identifier = reader.string();
-          break;
+          continue;
         case 2:
+          if (tag !== 18) {
+            break;
+          }
+
           message.metadata = reader.string();
-          break;
+          continue;
         case 3:
+          if (tag !== 26) {
+            break;
+          }
+
           message.createdBy = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -121,6 +258,10 @@ export const MusicAlbumInfo = {
     message.metadata !== undefined && (obj.metadata = message.metadata);
     message.createdBy !== undefined && (obj.createdBy = message.createdBy);
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<MusicAlbumInfo>, I>>(base?: I): MusicAlbumInfo {
+    return MusicAlbumInfo.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<MusicAlbumInfo>, I>>(object: I): MusicAlbumInfo {
@@ -145,19 +286,24 @@ export const GetAlbumListResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GetAlbumListResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGetAlbumListResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.musicAlbums.push(MusicAlbumInfo.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -180,6 +326,10 @@ export const GetAlbumListResponse = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<GetAlbumListResponse>, I>>(base?: I): GetAlbumListResponse {
+    return GetAlbumListResponse.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<GetAlbumListResponse>, I>>(object: I): GetAlbumListResponse {
     const message = createBaseGetAlbumListResponse();
     message.musicAlbums = object.musicAlbums?.map((e) => MusicAlbumInfo.fromPartial(e)) || [];
@@ -200,19 +350,24 @@ export const GetAlbumRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GetAlbumRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGetAlbumRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.identifier = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -225,6 +380,10 @@ export const GetAlbumRequest = {
     const obj: any = {};
     message.identifier !== undefined && (obj.identifier = message.identifier);
     return obj;
+  },
+
+  create<I extends Exact<DeepPartial<GetAlbumRequest>, I>>(base?: I): GetAlbumRequest {
+    return GetAlbumRequest.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<GetAlbumRequest>, I>>(object: I): GetAlbumRequest {
@@ -247,19 +406,24 @@ export const GetAlbumResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GetAlbumResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGetAlbumResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
+          if (tag !== 10) {
+            break;
+          }
+
           message.musicAlbum = MusicAlbumInfo.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
+          continue;
       }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -275,6 +439,10 @@ export const GetAlbumResponse = {
     return obj;
   },
 
+  create<I extends Exact<DeepPartial<GetAlbumResponse>, I>>(base?: I): GetAlbumResponse {
+    return GetAlbumResponse.fromPartial(base ?? {});
+  },
+
   fromPartial<I extends Exact<DeepPartial<GetAlbumResponse>, I>>(object: I): GetAlbumResponse {
     const message = createBaseGetAlbumResponse();
     message.musicAlbum = (object.musicAlbum !== undefined && object.musicAlbum !== null)
@@ -285,7 +453,14 @@ export const GetAlbumResponse = {
 };
 
 export interface MusicplayerService {
-  GetAlbumList(request: DeepPartial<GetAlbumListRequest>, metadata?: grpc.Metadata): Promise<GetAlbumListResponse>;
+  GetAllAlbumList(
+    request: DeepPartial<GetAllAlbumListRequest>,
+    metadata?: grpc.Metadata,
+  ): Promise<GetAlbumListResponse>;
+  GetUserAlbumList(
+    request: DeepPartial<GetUserAlbumListRequest>,
+    metadata?: grpc.Metadata,
+  ): Promise<GetAlbumListResponse>;
   GetAlbum(request: DeepPartial<GetAlbumRequest>, metadata?: grpc.Metadata): Promise<GetAlbumResponse>;
 }
 
@@ -294,12 +469,27 @@ export class MusicplayerServiceClientImpl implements MusicplayerService {
 
   constructor(rpc: Rpc) {
     this.rpc = rpc;
-    this.GetAlbumList = this.GetAlbumList.bind(this);
+    this.GetAllAlbumList = this.GetAllAlbumList.bind(this);
+    this.GetUserAlbumList = this.GetUserAlbumList.bind(this);
     this.GetAlbum = this.GetAlbum.bind(this);
   }
 
-  GetAlbumList(request: DeepPartial<GetAlbumListRequest>, metadata?: grpc.Metadata): Promise<GetAlbumListResponse> {
-    return this.rpc.unary(MusicplayerServiceGetAlbumListDesc, GetAlbumListRequest.fromPartial(request), metadata);
+  GetAllAlbumList(
+    request: DeepPartial<GetAllAlbumListRequest>,
+    metadata?: grpc.Metadata,
+  ): Promise<GetAlbumListResponse> {
+    return this.rpc.unary(MusicplayerServiceGetAllAlbumListDesc, GetAllAlbumListRequest.fromPartial(request), metadata);
+  }
+
+  GetUserAlbumList(
+    request: DeepPartial<GetUserAlbumListRequest>,
+    metadata?: grpc.Metadata,
+  ): Promise<GetAlbumListResponse> {
+    return this.rpc.unary(
+      MusicplayerServiceGetUserAlbumListDesc,
+      GetUserAlbumListRequest.fromPartial(request),
+      metadata,
+    );
   }
 
   GetAlbum(request: DeepPartial<GetAlbumRequest>, metadata?: grpc.Metadata): Promise<GetAlbumResponse> {
@@ -309,22 +499,46 @@ export class MusicplayerServiceClientImpl implements MusicplayerService {
 
 export const MusicplayerServiceDesc = { serviceName: "musicplayer.v1.MusicplayerService" };
 
-export const MusicplayerServiceGetAlbumListDesc: UnaryMethodDefinitionish = {
-  methodName: "GetAlbumList",
+export const MusicplayerServiceGetAllAlbumListDesc: UnaryMethodDefinitionish = {
+  methodName: "GetAllAlbumList",
   service: MusicplayerServiceDesc,
   requestStream: false,
   responseStream: false,
   requestType: {
     serializeBinary() {
-      return GetAlbumListRequest.encode(this).finish();
+      return GetAllAlbumListRequest.encode(this).finish();
     },
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = GetAlbumListResponse.decode(data);
       return {
-        ...GetAlbumListResponse.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
+        },
+      };
+    },
+  } as any,
+};
+
+export const MusicplayerServiceGetUserAlbumListDesc: UnaryMethodDefinitionish = {
+  methodName: "GetUserAlbumList",
+  service: MusicplayerServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return GetUserAlbumListRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      const value = GetAlbumListResponse.decode(data);
+      return {
+        ...value,
+        toObject() {
+          return value;
         },
       };
     },
@@ -343,10 +557,11 @@ export const MusicplayerServiceGetAlbumDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
+      const value = GetAlbumResponse.decode(data);
       return {
-        ...GetAlbumResponse.decode(data),
+        ...value,
         toObject() {
-          return this;
+          return value;
         },
       };
     },
@@ -410,7 +625,7 @@ export class GrpcWebImpl {
         debug: this.options.debug,
         onEnd: function (response) {
           if (response.status === grpc.Code.OK) {
-            resolve(response.message);
+            resolve(response.message!.toObject());
           } else {
             const err = new GrpcWebError(response.statusMessage, response.status, response.trailers);
             reject(err);
@@ -420,6 +635,25 @@ export class GrpcWebImpl {
     });
   }
 }
+
+declare var self: any | undefined;
+declare var window: any | undefined;
+declare var global: any | undefined;
+var tsProtoGlobalThis: any = (() => {
+  if (typeof globalThis !== "undefined") {
+    return globalThis;
+  }
+  if (typeof self !== "undefined") {
+    return self;
+  }
+  if (typeof window !== "undefined") {
+    return window;
+  }
+  if (typeof global !== "undefined") {
+    return global;
+  }
+  throw "Unable to locate global object";
+})();
 
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
@@ -436,7 +670,7 @@ function isSet(value: any): boolean {
   return value !== null && value !== undefined;
 }
 
-export class GrpcWebError extends Error {
+export class GrpcWebError extends tsProtoGlobalThis.Error {
   constructor(message: string, public code: grpc.Code, public metadata: grpc.Metadata) {
     super(message);
   }

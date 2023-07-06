@@ -27,9 +27,47 @@ func NewMusicplayerService(ctx context.Context, conf *Config) musicplayerpb.Musi
 	}
 }
 
-func (s *MusicplayerService) GetAlbumList(ctx context.Context, req *musicplayerpb.GetAlbumListRequest) (*musicplayerpb.GetAlbumListResponse, error) {
+func (s *MusicplayerService) GetAllAlbumList(ctx context.Context, req *musicplayerpb.GetAllAlbumListRequest) (*musicplayerpb.GetAlbumListResponse, error) {
+	limit := req.GetLimit()
+	if limit <= 0 {
+		limit = 10
+	}
+	offset := req.GetOffset()
+	if offset <= 0 {
+		offset = 0
+	}
+
 	var albums []*musicplayerpb.MusicAlbumInfo
-	s.conf.IndexerDB.Model(&indexerdb.MusicAlbum{}).Order("created_at desc").Scan(&albums)
+	if err := s.conf.IndexerDB.
+		Model(&indexerdb.MusicAlbum{}).
+		Order("created_at desc").
+		Limit(int(limit)).
+		Offset(int(offset)).
+		Scan(&albums).Error; err != nil {
+		return nil, errors.Wrap(err, "failed to query database")
+	}
+	return &musicplayerpb.GetAlbumListResponse{MusicAlbums: albums}, nil
+}
+
+func (s *MusicplayerService) GetUserAlbumList(ctx context.Context, req *musicplayerpb.GetUserAlbumListRequest) (*musicplayerpb.GetAlbumListResponse, error) {
+	limit := req.GetLimit()
+	if limit <= 0 {
+		limit = 10
+	}
+	offset := req.GetOffset()
+	if offset <= 0 {
+		offset = 0
+	}
+	var albums []*musicplayerpb.MusicAlbumInfo
+	if err := s.conf.IndexerDB.
+		Model(&indexerdb.MusicAlbum{}).
+		Where("created_by = ?", req.GetCreatedBy()).
+		Order("created_at desc").
+		Limit(int(limit)).
+		Offset(int(offset)).
+		Scan(&albums).Error; err != nil {
+		return nil, errors.Wrap(err, "failed to query database")
+	}
 	return &musicplayerpb.GetAlbumListResponse{MusicAlbums: albums}, nil
 }
 
