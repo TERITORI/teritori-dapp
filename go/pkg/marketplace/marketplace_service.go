@@ -426,11 +426,11 @@ func (s *MarkteplaceService) NFTs(req *marketplacepb.NFTsRequest, srv marketplac
 		}
 
 		if req.PriceRange != nil {
-			if req.PriceRange.Min != 0 {
-				query.Where("price_amount > ?", req.PriceRange.Min)
+			if req.PriceRange.Min != "0" && req.PriceRange.Min != "" {
+				query.Where("price_amount >= ?", req.PriceRange.Min)
 			}
-			if req.PriceRange.Max != 0 {
-				query.Where("price_amount < ?", req.PriceRange.Max)
+			if req.PriceRange.Max != "0" && req.PriceRange.Max != "" {
+				query.Where("price_amount <= ?", req.PriceRange.Max)
 			}
 		}
 

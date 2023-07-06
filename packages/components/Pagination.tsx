@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   grayText: {
-    ...(fontSemibold14 as object),
+    ...fontSemibold14,
     color: neutral77,
     paddingRight: layout.padding_x1,
     lineHeight: 14,

@@ -1,4 +1,3 @@
-import { useRoute } from "@react-navigation/native";
 import React, { FC } from "react";
 import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
 import { useSelector } from "react-redux";
@@ -9,19 +8,17 @@ import { useWallets } from "../../context/WalletsProvider";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import {
   getNetwork,
+  NetworkFeature,
   NetworkInfo,
   NetworkKind,
   selectableNetworks,
 } from "../../networks";
-import { osmosisNetwork } from "../../networks/osmosis";
-import { osmosisTestnetNetwork } from "../../networks/osmosis-testnet";
 import {
   selectAreTestnetsEnabled,
   setSelectedNetworkId,
   setSelectedWalletId,
 } from "../../store/slices/settings";
 import { useAppDispatch } from "../../store/store";
-import { RouteName } from "../../utils/navigation";
 import { neutral17 } from "../../utils/style/colors";
 import { fontSemibold12 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
@@ -33,14 +30,14 @@ import { TertiaryBox } from "../boxes/TertiaryBox";
 export const NetworkSelectorMenu: FC<{
   forceNetworkId?: string;
   forceNetworkKind?: NetworkKind;
+  forceNetworkFeatures?: NetworkFeature[];
   style?: StyleProp<ViewStyle>;
-}> = ({ forceNetworkId, forceNetworkKind, style }) => {
+}> = ({ forceNetworkId, forceNetworkKind, forceNetworkFeatures, style }) => {
   const { closeOpenedDropdown } = useDropdowns();
   const dispatch = useAppDispatch();
   const { wallets } = useWallets();
   const { setToastError } = useFeedbacks();
   const testnetsEnabled = useSelector(selectAreTestnetsEnabled);
-  const { name: currentRouteName } = useRoute();
   const selectedNetworkInfo = useSelectedNetworkInfo();
 
   const onPressNetwork = (networkId: string) => {
@@ -106,13 +103,10 @@ export const NetworkSelectorMenu: FC<{
             selectedNetworkInfo?.id !== network.id && // check that it's not already selected
             (!forceNetworkId || network.id === forceNetworkId) && // check that it's the forced network id if forced to
             (!forceNetworkKind || network.kind === forceNetworkKind) && // check that it's the correct network kind if forced to
-            // handle Swap screen
-            (((currentRouteName as RouteName) !== "Swap" &&
-              network.id !== osmosisNetwork.id &&
-              network.id !== osmosisTestnetNetwork.id) ||
-              (currentRouteName === "Swap" &&
-                (network.id === osmosisNetwork.id ||
-                  network.id === osmosisTestnetNetwork.id)));
+            (!forceNetworkFeatures ||
+              forceNetworkFeatures.every((feature) =>
+                network.features.includes(feature)
+              ));
 
           return (
             <TouchableOpacity

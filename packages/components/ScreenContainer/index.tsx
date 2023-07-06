@@ -14,7 +14,7 @@ import { useForceNetworkSelection } from "../../hooks/useForceNetworkSelection";
 import { useForceUnselectNetworks } from "../../hooks/useForceUnselectNetworks";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
-import { NetworkInfo, NetworkKind } from "../../networks";
+import { NetworkFeature, NetworkInfo, NetworkKind } from "../../networks";
 import { DAppStoreData } from "../../screens/DAppStore/components/DAppStoreData";
 import { neutral33 } from "../../utils/style/colors";
 import {
@@ -41,6 +41,7 @@ export const ScreenContainer: React.FC<{
   fullWidth?: boolean;
   forceNetworkId?: string;
   forceNetworkKind?: NetworkKind;
+  forceNetworkFeatures?: NetworkFeature[];
   responsive?: boolean;
   isLarge?: boolean;
   onBackPress?: () => void;
@@ -60,6 +61,7 @@ export const ScreenContainer: React.FC<{
   maxWidth,
   forceNetworkId,
   forceNetworkKind,
+  forceNetworkFeatures,
 }) => {
   // variables
   const { height } = useWindowDimensions();
@@ -190,6 +192,7 @@ export const ScreenContainer: React.FC<{
             <NetworkSelector
               forceNetworkId={forceNetworkId}
               forceNetworkKind={forceNetworkKind}
+              forceNetworkFeatures={forceNetworkFeatures}
               style={{ marginRight: 12 }}
             />
             <ConnectWalletButton

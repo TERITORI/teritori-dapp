@@ -1,11 +1,12 @@
 import { ethereumCurrencies } from "./currencies";
-import { NetworkInfo, NetworkKind } from "../types";
+import { NetworkFeature, NetworkInfo, NetworkKind } from "../types";
 
 export const ethereumNetwork: NetworkInfo = {
   id: "ethereum",
   kind: NetworkKind.Ethereum,
   displayName: "Ethereum",
   icon: "icons/networks/ethereum.svg",
+  features: [NetworkFeature.NFTMarketplace],
   currencies: ethereumCurrencies,
   idPrefix: "eth",
   endpoint: "https://ethereum.publicnode.com",

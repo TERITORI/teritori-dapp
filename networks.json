@@ -5,6 +5,9 @@
     "chainId": "teritori-1",
     "displayName": "Teritori",
     "icon": "icons/networks/teritori.svg",
+    "features": [
+      "NFTMarketplace"
+    ],
     "walletUrlForStaking": "https://explorer.teritori.com/teritori/staking",
     "currencies": [
       {
@@ -42,7 +45,7 @@
       "average": 0.025,
       "high": 0.04
     },
-    "features": [
+    "cosmosFeatures": [
       "stargate",
       "ibc-transfer",
       "cosmwasm",
@@ -86,6 +89,7 @@
     "chainId": "cosmoshub-4",
     "displayName": "Cosmos Hub",
     "icon": "icons/networks/cosmos-hub.svg",
+    "features": [],
     "currencies": [
       {
         "denom": "uatom",
@@ -112,7 +116,7 @@
       "average": 0.025,
       "high": 0.04
     },
-    "features": [
+    "cosmosFeatures": [
       "stargate",
       "ibc-transfer",
       "cosmwasm",
@@ -126,6 +130,9 @@
     "chainId": "teritori-testnet-v3",
     "displayName": "Teritori Testnet",
     "icon": "icons/networks/teritori.svg",
+    "features": [
+      "NFTMarketplace"
+    ],
     "currencies": [
       {
         "denom": "utori",
@@ -173,7 +180,7 @@
       "average": 0.025,
       "high": 0.04
     },
-    "features": [
+    "cosmosFeatures": [
       "stargate",
       "ibc-transfer",
       "cosmwasm",
@@ -217,6 +224,7 @@
     "chainId": "theta-testnet-001",
     "displayName": "Cosmos Hub Theta",
     "icon": "icons/networks/cosmos-hub.svg",
+    "features": [],
     "currencies": [
       {
         "denom": "uatom",
@@ -243,7 +251,7 @@
       "average": 0.025,
       "high": 0.04
     },
-    "features": [
+    "cosmosFeatures": [
       "stargate",
       "ibc-transfer",
       "cosmwasm",
@@ -256,6 +264,9 @@
     "kind": "Ethereum",
     "displayName": "Ethereum Goerli",
     "icon": "icons/networks/ethereum.svg",
+    "features": [
+      "NFTMarketplace"
+    ],
     "currencies": [
       {
         "denom": "0x0000000000000000000000000000000000000000",
@@ -285,6 +296,9 @@
     "kind": "Ethereum",
     "displayName": "Ethereum",
     "icon": "icons/networks/ethereum.svg",
+    "features": [
+      "NFTMarketplace"
+    ],
     "currencies": [
       {
         "denom": "0x0000000000000000000000000000000000000000",
@@ -315,6 +329,7 @@
     "chainId": "juno-1",
     "displayName": "Juno",
     "icon": "icons/networks/juno.svg",
+    "features": [],
     "currencies": [
       {
         "denom": "ujuno",
@@ -371,7 +386,7 @@
       "average": 0.025,
       "high": 0.04
     },
-    "features": [
+    "cosmosFeatures": [
       "stargate",
       "ibc-transfer",
       "cosmwasm",
@@ -385,6 +400,9 @@
     "chainId": "osmosis-1",
     "displayName": "Osmosis",
     "icon": "icons/networks/osmosis.svg",
+    "features": [
+      "Swap"
+    ],
     "currencies": [
       {
         "denom": "uosmo",
@@ -441,7 +459,7 @@
       "average": 0.025,
       "high": 0.04
     },
-    "features": [
+    "cosmosFeatures": [
       "stargate",
       "ibc-transfer",
       "cosmwasm",
@@ -455,6 +473,9 @@
     "chainId": "osmo-test-4",
     "displayName": "Osmosis Testnet",
     "icon": "icons/networks/osmosis.svg",
+    "features": [
+      "Swap"
+    ],
     "currencies": [
       {
         "denom": "uosmo",
@@ -501,7 +522,7 @@
       "average": 0.025,
       "high": 0.04
     },
-    "features": [
+    "cosmosFeatures": [
       "stargate",
       "ibc-transfer",
       "cosmwasm",
@@ -514,6 +535,7 @@
     "kind": "Gno",
     "displayName": "Gno Testnet",
     "icon": "icons/networks/gno.svg",
+    "features": [],
     "currencies": [
       {
         "denom": "ugnot",
@@ -541,6 +563,7 @@
     "kind": "Gno",
     "displayName": "Gno Devnet",
     "icon": "icons/networks/gno.svg",
+    "features": [],
     "currencies": [
       {
         "denom": "ugnot",
