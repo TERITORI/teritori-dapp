@@ -90,8 +90,8 @@ desktop-build
 # electron
 desktop/vendor
 go/electron/output
-go/electron/prod/resources/app
 go/electron/prod/bind*
+go/electron/prod/resources/app
 
 
 
