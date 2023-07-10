@@ -48,19 +48,19 @@ export const subscribeMessages = async (
   } else {
     config.untilNow = true;
   }
+  console.log("subscribing", config);
 
   try {
     const messages = await weshClient().GroupMessageList(config);
     const observer = {
       next: (data: GroupMessageEvent) => {
-        console.log("message");
         const id = stringFromBytes(data.eventContext?.id);
-        // store.dispatch(
-        //   setLastId({
-        //     key: groupPk,
-        //     value: id,
-        //   })
-        // );
+        store.dispatch(
+          setLastId({
+            key: groupPk,
+            value: id,
+          })
+        );
         if (processedMessageIds.includes(id)) {
           return;
         }
@@ -136,13 +136,9 @@ export const subscribeMessages = async (
       complete: async () => {
         console.log("get message complete");
 
-        // if (!lastId && !ignoreCheck) {
-        //   await subscribeMessages(groupPk, true);
-        // }
-
-        setTimeout(() => {
-          subscribeMessages(groupPk);
-        }, 2000);
+        if (!lastId && !ignoreCheck) {
+          await subscribeMessages(groupPk, true);
+        }
       },
     };
     return messages.subscribe(observer);
@@ -175,10 +171,7 @@ export const subscribeMetadata = async (groupPk: Uint8Array) => {
         console.log("get metadata err", e);
       },
       complete: () => {
-        // subscribeMetadata(groupPk);
-        setTimeout(() => {
-          subscribeMetadata(groupPk);
-        }, 5000);
+        subscribeMetadata(groupPk);
       },
     };
     metadata.subscribe(myObserver);

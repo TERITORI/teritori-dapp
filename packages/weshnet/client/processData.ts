@@ -1,5 +1,5 @@
 import { weshClient } from "./client";
-import { subscribeMessages } from "./subscribers";
+import { subscribeMessages, subscribeMetadata } from "./subscribers";
 import { bytesFromString, decodeJSON, stringFromBytes } from "./utils";
 import {
   selectContactRequestList,
@@ -24,12 +24,12 @@ const processedMetadataIds: string[] = [];
 export const handleMetadata = async (data: GroupMetadataEvent) => {
   const id = stringFromBytes(data.eventContext?.id);
 
-  // store.dispatch(
-  //   setLastId({
-  //     key: "metadata",
-  //     value: id,
-  //   })
-  // );
+  store.dispatch(
+    setLastId({
+      key: "metadata",
+      value: id,
+    })
+  );
   if (processedMetadataIds.includes(id)) {
     return;
   }
@@ -77,6 +77,7 @@ export const handleMetadata = async (data: GroupMetadataEvent) => {
               })
             );
             subscribeMessages(stringFromBytes(groupInfo.group?.publicKey));
+            // subscribeMetadata(groupInfo.group?.publicKey);
             console.log("group info", groupInfo);
           } catch (err) {
             console.log("group enque err", err?.message);
