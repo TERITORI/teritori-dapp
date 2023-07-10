@@ -1,17 +1,18 @@
+import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
 import { Post, PostsRequest } from "../../api/feed/v1/feed";
 import { nonSigningSocialFeedClient } from "../../client-creators/socialFeedClient";
-import { mustGetFeedClient } from "../../utils/backend";
 import {
-  useSelectedNetworkId,
-  useSelectedNetworkInfo,
-} from "../useSelectedNetwork";
+  GNO_SOCIAL_FEEDS_PKG_PATH,
+  TERITORI_FEED_ID,
+} from "../../components/socialFeed/const";
+import { decodeGnoPost } from "../../components/socialFeed/utils";
 import { GnoNetworkInfo, NetworkInfo, NetworkKind } from "../../networks";
-import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
-import useSelectedWallet from "../useSelectedWallet";
-import { Wallet } from "ethers";
+import { mustGetFeedClient } from "../../utils/backend";
 import { extractGnoString } from "../../utils/gno";
+import { useSelectedNetworkInfo } from "../useSelectedNetwork";
+import useSelectedWallet from "../useSelectedWallet";
 
 export type PostsList = {
   list: Post[];
@@ -47,35 +48,34 @@ const fetchTeritoriFeed = async (
 
 const fetchGnoFeed = async (
   selectedNetwork: GnoNetworkInfo,
-  wallet: Wallet,
   req: PostsRequest,
   pageParam: number
 ) => {
   try {
-    try {
-      const provider = new GnoJSONRPCProvider(selectedNetwork.endpoint);
-      const username = await provider.evaluateExpression(
-        "gno.land/r/demo/users",
-        `GetUserByAddress("${wallet.address}").name`
-      );
-      const gnoUsename = extractGnoString(username);
-      console.log(gnoUsename, "=================")
-      return `${gnoUsename}.gno`;
-    } catch (err) {
-      throw err;
+    const offset = pageParam || 0;
+    const limit = 10;
+    const category = req.filter?.categories?.[0] || 2; // Normal
+
+    const provider = new GnoJSONRPCProvider(selectedNetwork.endpoint);
+    const output = await provider.evaluateExpression(
+      GNO_SOCIAL_FEEDS_PKG_PATH,
+      `GetPosts(${TERITORI_FEED_ID}, ${category}, ${offset}, ${limit})`
+    );
+
+    const posts: Post[] = [];
+
+    const outputStr = extractGnoString(output);
+    for (const postData of outputStr.split(",")) {
+      const post = decodeGnoPost(selectedNetwork.id, postData);
+      posts.push(post);
     }
 
-    const mainPostsCount = await client.queryMainPostsCount();
-
-    // Overriding the posts request with the current pageParam as offset
-    const postsRequest: PostsRequest = { ...req, offset: pageParam || 0 };
-    // Getting posts
-    const list = await getPosts(selectedNetworkId, postsRequest);
-
-    return { list, totalCount: mainPostsCount } as PostsList;
+    return {
+      list: posts.sort((p1, p2) => p2.createdAt - p1.createdAt),
+      totalCount: posts.length,
+    } as PostsList;
   } catch (err) {
-    console.error("gno initData err", err);
-    return { list: [], totalCount: 0 } as PostsList;
+    throw err;
   }
 };
 
@@ -91,7 +91,7 @@ export const useFetchFeed = (req: PostsRequest) => {
         if (selectedNetwork?.kind === NetworkKind.Cosmos) {
           return fetchTeritoriFeed(selectedNetwork, req, pageParam);
         } else if (selectedNetwork?.kind === NetworkKind.Gno) {
-          return fetchGnoFeed(selectedNetwork, wallet, req, pageParam);
+          return fetchGnoFeed(selectedNetwork, req, pageParam);
         }
 
         throw Error(`Network ${selectedNetwork?.id} is not supported`);

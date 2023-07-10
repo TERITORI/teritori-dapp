@@ -11,6 +11,7 @@ import {
   defaultRegistryTypes,
 } from "@cosmjs/stargate";
 import { ChainInfo, Currency as KeplrCurrency } from "@keplr-wallet/types";
+import { bech32 } from "bech32";
 
 import { cosmosNetwork } from "./cosmos-hub";
 import { cosmosThetaNetwork } from "./cosmos-hub-theta";
@@ -34,7 +35,6 @@ import {
 } from "./types";
 import { MsgBurnTokens } from "../api/teritori/mint";
 import { getKeplr } from "../utils/keplr";
-import { bech32 } from "bech32";
 
 export * from "./types";
 

@@ -9,7 +9,7 @@ import {
   Pressable,
   useWindowDimensions,
 } from "react-native";
-import Animated, { log, useSharedValue } from "react-native-reanimated";
+import Animated, { useSharedValue } from "react-native-reanimated";
 import { v4 as uuidv4 } from "uuid";
 
 import {
@@ -39,10 +39,7 @@ import { useUpdatePostFee } from "../../../hooks/feed/useUpdatePostFee";
 import { useBalances } from "../../../hooks/useBalances";
 import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useMaxResolution } from "../../../hooks/useMaxResolution";
-import {
-  useSelectedNetworkId,
-  useSelectedNetworkInfo,
-} from "../../../hooks/useSelectedNetwork";
+import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import {
   NetworkKind,
@@ -51,11 +48,7 @@ import {
 } from "../../../networks";
 import { prettyPrice } from "../../../utils/coins";
 import { defaultSocialFeedFee } from "../../../utils/fee";
-import {
-  adenaVMCall,
-  extractGnoNumber,
-  extractGnoString,
-} from "../../../utils/gno";
+import { adenaVMCall } from "../../../utils/gno";
 import {
   AUDIO_MIME_TYPES,
   IMAGE_MIME_TYPES,
@@ -104,6 +97,7 @@ import { FileUploader } from "../../fileUploader";
 import { SpacerColumn } from "../../spacer";
 import { EmojiSelector } from "../EmojiSelector";
 import { GIFSelector } from "../GIFSelector";
+import { GNO_SOCIAL_FEEDS_PKG_PATH, TERITORI_FEED_ID } from "../const";
 
 interface NewsFeedInputProps {
   type: "comment" | "post";
@@ -317,28 +311,33 @@ export const NewsFeedInput = React.forwardRef<
           });
         } else {
           if (selectedNetwork?.kind === NetworkKind.Gno) {
-            const DEFAULT_BOARD_NAME = "testboard";
+            // const provider = new GnoJSONRPCProvider(selectedNetwork.endpoint);
 
-            const provider = new GnoJSONRPCProvider(selectedNetwork.endpoint);
-
-            const boardIdFromName = await provider.evaluateExpression(
-              "gno.land/r/demo/boards",
-              `GetBoardIDFromName("${DEFAULT_BOARD_NAME}")`
-            );
-            const boardId = extractGnoNumber(boardIdFromName);
+            const msg = {
+              category: postCategory,
+              identifier,
+              metadata: JSON.stringify(metadata),
+              parentPostIdentifier: hasUsername ? replyTo?.parentId : parentId,
+            };
 
             const vmCall = {
               caller: selectedWallet?.address || "",
               send: "",
-              pkg_path: "gno.land/r/demo/boards",
-              func: "CreateThread",
-              args: [`${boardId}`, "", finalMessage],
+              pkg_path: GNO_SOCIAL_FEEDS_PKG_PATH,
+              func: "CreatePost",
+              args: [
+                TERITORI_FEED_ID,
+                msg.parentPostIdentifier || "0",
+                msg.category.toString(),
+                msg.metadata,
+              ],
             };
-
-            await adenaVMCall(vmCall, {
+            const tx = await adenaVMCall(vmCall, {
               gasWanted: 2_000_000,
             });
 
+            const provider = new GnoJSONRPCProvider(selectedNetwork.endpoint);
+            await provider.waitForTransaction(tx.data.hash);
             onPostCreationSuccess();
           } else {
             const client = await signingSocialFeedClient({
