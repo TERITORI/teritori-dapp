@@ -251,7 +251,7 @@ export const Navigator: React.FC = () => {
         component={MultisigWIPTransactionsScreen}
         options={{
           header: () => null,
-          title: screenTitle("Wallet Name 1"),
+          title: screenTitle("Transactions history"),
         }}
       />
       <Stack.Screen
@@ -259,7 +259,7 @@ export const Navigator: React.FC = () => {
         component={MultisigTransactionsScreen}
         options={{
           header: () => null,
-          title: screenTitle("Transactions history"),
+          title: screenTitle("Transactions"),
         }}
       />
 

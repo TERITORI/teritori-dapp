@@ -57,7 +57,7 @@ export const ProposalTransactionItem: React.FC<ProposalTransactionItemProps> = (
   );
   const [currentDecliners, setCurrentDecliners] = useState(decliners || []);
   const { coinSimplified } = useMultisigHelpers();
-  const feeSimple = coinSimplified(fee.amount[0]);
+  const feeSimple = coinSimplified(fee.amount?.[0]);
   const { copyToClipboard } = useCopyToClipboard();
 
   const amount =

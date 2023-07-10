@@ -1,5 +1,5 @@
 import { useFocusEffect } from "@react-navigation/native";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { View } from "react-native";
 
@@ -23,6 +23,7 @@ import { nsNameInfoQueryKey } from "../../hooks/useNSNameInfo";
 import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { useTNSMintPrice } from "../../hooks/useTNSMintPrice";
 import {
   getKeplrSigningCosmWasmClient,
   mustGetNonSigningCosmWasmClient,
@@ -269,35 +270,4 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
       <TNSRegisterSuccess visible={isSuccessModal} onClose={handleModalClose} />
     </ModalBase>
   );
-};
-
-const useTNSMintPrice = (networkId: string | undefined, tokenId: string) => {
-  const { data } = useQuery(
-    ["tnsMintPrice", networkId, tokenId],
-    async () => {
-      if (!networkId) {
-        return null;
-      }
-      const network = mustGetCosmosNetwork(networkId);
-      if (!network.nameServiceContractAddress) {
-        return null;
-      }
-
-      const client = await mustGetNonSigningCosmWasmClient(networkId);
-
-      const tnsClient = new TeritoriNameServiceQueryClient(
-        client,
-        network.nameServiceContractAddress
-      );
-      console.log("fetching price for", tokenId);
-
-      const info = await tnsClient.contractInfo();
-
-      const amount = await tnsClient.mintPrice({ tokenId });
-
-      return { denom: info.native_denom, amount: amount?.toString() || "0" };
-    },
-    { staleTime: Infinity }
-  );
-  return data;
 };

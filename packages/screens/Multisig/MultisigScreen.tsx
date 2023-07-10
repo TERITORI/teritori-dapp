@@ -136,6 +136,7 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
           contractAddress,
           multisigAddress: address,
           msg: { Execute: "CreateCollection" },
+          funds: [], //TODO: How much funds ?
           multisigId: mltisignAccountInfo.dbData._id,
           type: MultisigTransactionType.LAUNCH_NFT_COLLECTION,
         },
@@ -157,6 +158,7 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
           contractAddress,
           multisigAddress: address,
           msg: { Execute: "CreateCollection" },
+          funds: [], //TODO: How much funds ?
           multisigId: mltisignAccountInfo.dbData._id,
           type: MultisigTransactionType.CREATE_NEW_POST,
         },
@@ -178,6 +180,7 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
           contractAddress,
           multisigAddress: address,
           msg: { Execute: "CreateCollection" },
+          funds: [], //TODO: How much funds ?
           multisigId: mltisignAccountInfo.dbData._id,
           type: MultisigTransactionType.MANAGE_PUBLIC_PROFILE,
         },
@@ -288,7 +291,6 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
             {/*  onPress={onPress}*/}
             {/*/>*/}
 
-            {/*TODO: Useless ?*/}
             <GetStartedOption
               variant="small"
               title="Manage Multisig Wallets"
@@ -350,7 +352,9 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
           <View style={styles.horizontalContentPadding}>
             <Separator color={neutral33} />
             <SpacerColumn size={3} />
-            <BrandText style={fontSemibold28}>Transactions Proposals</BrandText>
+            <BrandText style={fontSemibold28}>
+              Multisig Transactions Overview
+            </BrandText>
 
             <FlatList
               data={list}

@@ -134,7 +134,7 @@ export const TransactionItemButtons: React.FC<TransactionItemButtonsProps> = ({
     );
   }
 
-  if (isUserMultisig === false) {
+  if (!isUserMultisig) {
     return (
       <View style={styles.container}>
         <EmptyList text="Connected wallet address doesn't to match any available multisig user address." />
@@ -155,7 +155,7 @@ export const TransactionItemButtons: React.FC<TransactionItemButtonsProps> = ({
     })();
 
     const resultText = (() => {
-      if (txHash || resTxHash) return "BROADCAST";
+      if (txHash || resTxHash) return "EXECUTED";
       if (hasDeclined) return "DECLINED";
       if (hasSigned) return "APPROVED";
     })();

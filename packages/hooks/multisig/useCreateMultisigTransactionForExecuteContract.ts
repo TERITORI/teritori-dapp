@@ -1,3 +1,4 @@
+import { Coin } from "@cosmjs/amino";
 import { Account, calculateFee } from "@cosmjs/stargate";
 import { assert } from "@cosmjs/utils";
 import { useMutation } from "@tanstack/react-query";
@@ -18,7 +19,7 @@ export const useCreateMultisigTransactionForExecuteContract = () => {
   const selectedNetworkId = useSelectedNetworkId();
 
   // req
-  const mutation = useMutation(
+  return useMutation(
     async ({
       formData: { multisigAddress, contractAddress, msg, multisigId, type },
       accountOnChain,
@@ -26,6 +27,7 @@ export const useCreateMultisigTransactionForExecuteContract = () => {
       formData: MultisigExecuteFormType & {
         multisigId: string;
         type: MultisigTransactionType;
+        funds: Coin[];
       };
       accountOnChain: Account | null;
     }) => {
@@ -45,7 +47,7 @@ export const useCreateMultisigTransactionForExecuteContract = () => {
           typeUrl: "/cosmwasm.wasm.v1.MsgExecuteContract",
           value: msgSend,
         };
-        const gasLimit = "200000";
+        const gasLimit = "1000000";
         const gasPrice = "0.03utori";
         const fee = calculateFee(Number(gasLimit), gasPrice);
 
@@ -65,13 +67,10 @@ export const useCreateMultisigTransactionForExecuteContract = () => {
         };
         const saveRes = await createTransaction(multisigId, tx);
 
-        const transactionID = saveRes.data.data.createTransaction._id;
-
-        return transactionID;
+        return saveRes.data.data.createTransaction._id;
       } catch (err: any) {
         console.log(err);
       }
     }
   );
-  return mutation;
 };

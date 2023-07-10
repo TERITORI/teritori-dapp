@@ -15,7 +15,7 @@ export const useBrodcastTransaction = () => {
   const { setToastError, setToastSuccess } = useFeedbacks();
 
   // req
-  const mutation = useMutation(
+  return useMutation(
     async ({
       tx,
       currentSignatures,
@@ -49,6 +49,14 @@ export const useBrodcastTransaction = () => {
           Uint8Array.from(TxRaw.encode(signedTx).finish())
         );
 
+        if (result.code !== 0) {
+          console.error("err", result.rawLog);
+          setToastError({
+            title: "The tx is emitted, but something went wrong!",
+            message: result.rawLog || "",
+          });
+        }
+
         await completeTransaction(
           transactionID,
           result.transactionHash,
@@ -74,5 +82,4 @@ export const useBrodcastTransaction = () => {
       }
     }
   );
-  return mutation;
 };

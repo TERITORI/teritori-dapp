@@ -1,5 +1,6 @@
 import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { toBase64, toUtf8 } from "@cosmjs/encoding";
+import { SigningStargateClient } from "@cosmjs/stargate";
 import { Window as KeplrWindow } from "@keplr-wallet/types";
 import { useMutation } from "@tanstack/react-query";
 
@@ -17,7 +18,7 @@ export const useApproveTransaction = () => {
   const selectedNetworkId = useSelectedNetworkId();
 
   // req
-  const mutation = useMutation(
+  return useMutation(
     async ({
       tx,
       currentSignatures,
@@ -42,60 +43,74 @@ export const useApproveTransaction = () => {
         const offlineSigner = keplr.getOfflineSignerOnlyAmino(network.chainId);
 
         const signerAddress = walletAccount.address;
-
-        const signingClient = await SigningCosmWasmClient.offline(
-          offlineSigner
-        );
-        // const signingClient = await SigningStargateClient.offline(
-        //   offlineSigner
-        // );
         const signerData = {
           accountNumber: tx.accountNumber,
           sequence: tx.sequence,
           chainId: network.chainId,
         };
-        const tx_msgs = [];
+
+        const stargateTxMsgs = [];
+        const cosmwasmTxMsgs = [];
         for (const msg of tx.msgs) {
           if (msg?.typeUrl === "/cosmwasm.wasm.v1.MsgExecuteContract") {
             msg.value.msg = toUtf8(msg.value.msg);
-            tx_msgs.push(msg);
+            cosmwasmTxMsgs.push(msg);
           } else {
-            tx_msgs.push(msg);
+            stargateTxMsgs.push(msg);
           }
         }
-        const { bodyBytes, signatures } = await signingClient.sign(
-          signerAddress,
-          tx_msgs,
-          tx.fee,
-          tx.memo,
-          signerData
-        );
 
-        // check existing signatures
-        const bases64EncodedSignature = toBase64(signatures[0]);
-        const bases64EncodedBodyBytes = toBase64(bodyBytes);
-        const prevSigMatch = currentSignatures.findIndex(
-          (signature) => signature.signature === bases64EncodedSignature
-        );
+        const signMessages = async (
+          messages: any[],
+          client: SigningCosmWasmClient | SigningStargateClient
+        ) => {
+          const { bodyBytes, signatures } = await client.sign(
+            signerAddress,
+            messages,
+            tx.fee,
+            tx.memo,
+            signerData
+          );
+          // check existing signatures
+          const bases64EncodedSignature = toBase64(signatures[0]);
+          const bases64EncodedBodyBytes = toBase64(bodyBytes);
+          const prevSigMatch = currentSignatures.findIndex(
+            (signature) => signature.signature === bases64EncodedSignature
+          );
+          if (prevSigMatch > -1) {
+            setToastError({
+              title: "Transaction signature failed!",
+              message: "This account has already signed.",
+            });
+          } else {
+            const signature = {
+              bodyBytes: bases64EncodedBodyBytes,
+              signature: bases64EncodedSignature,
+              address: signerAddress,
+            };
+            await createSignature(signature, transactionID);
+            addSignature(signature);
+          }
+        };
 
-        if (prevSigMatch > -1) {
-          setToastError({
-            title: "Transaction signature failed!",
-            message: "This account has already signed.",
-          });
-        } else {
-          const signature = {
-            bodyBytes: bases64EncodedBodyBytes,
-            signature: bases64EncodedSignature,
-            address: signerAddress,
-          };
-          await createSignature(signature, transactionID);
-          addSignature(signature);
+        // ===== CosmWasm
+        if (cosmwasmTxMsgs.length) {
+          const signingCosmwasmClient = await SigningCosmWasmClient.offline(
+            offlineSigner
+          );
+          await signMessages(cosmwasmTxMsgs, signingCosmwasmClient);
+        }
+
+        // ===== Stargate
+        if (stargateTxMsgs.length) {
+          const signingStargateClient = await SigningStargateClient.offline(
+            offlineSigner
+          );
+          await signMessages(stargateTxMsgs, signingStargateClient);
         }
       } catch (err: any) {
         console.error(err);
       }
     }
   );
-  return mutation;
 };

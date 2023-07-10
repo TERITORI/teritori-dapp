@@ -43,7 +43,7 @@ export const useFetchMultisigTransactionsById = (
   const { selectedWallet: wallet } = useSelectedWallet();
 
   //  request
-  const request = useQuery<{
+  return useQuery<{
     data: MultisigTransactionListType[];
     after: string | null;
     before: string | null;
@@ -70,13 +70,18 @@ export const useFetchMultisigTransactionsById = (
         data: data.map((s: MultisigTransactionResponseType) => ({
           ...s,
           msgs: JSON.parse(s.msgs),
-          fee: JSON.parse(s.fee),
+          // We use a JSON.parse fallback because some fee are "auto" in DB (Unexpected, but need this fallback to avoid error)
+          fee: () => {
+            try {
+              return JSON.parse(s.fee);
+            } catch {
+              return s.fee;
+            }
+          },
         })),
         after: afterData,
         before,
       };
     }
   );
-
-  return request;
 };

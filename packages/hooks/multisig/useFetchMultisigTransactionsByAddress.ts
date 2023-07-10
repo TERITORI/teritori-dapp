@@ -19,7 +19,7 @@ export const useFetchMultisigTransactionsByAddress = (userAddress: string) => {
   }, [selectedNetworkInfo?.chainId, selectedNetworkInfo?.kind]);
 
   //  request
-  const request = useInfiniteQuery<{
+  return useInfiniteQuery<{
     data: MultisigTransactionListType[];
     after: string;
   }>(
@@ -36,7 +36,14 @@ export const useFetchMultisigTransactionsByAddress = (userAddress: string) => {
         data: data.map((s: MultisigTransactionResponseType) => ({
           ...s,
           msgs: JSON.parse(s.msgs),
-          fee: JSON.parse(s.fee),
+          // We use a JSON.parse fallback because some fee are "auto" in DB (Unexpected, but need this fallback to avoid error)
+          fee: () => {
+            try {
+              return JSON.parse(s.fee);
+            } catch {
+              return s.fee;
+            }
+          },
         })),
         after,
       };
@@ -46,6 +53,4 @@ export const useFetchMultisigTransactionsByAddress = (userAddress: string) => {
       refetchOnWindowFocus: false,
     }
   );
-
-  return request;
 };

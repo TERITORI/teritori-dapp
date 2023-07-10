@@ -214,10 +214,6 @@ const VoteStatus: React.FC<{
         {
           textTransform: "uppercase",
           textAlign: "center",
-          borderLeftColor: color,
-          borderLeftWidth: 1,
-          borderRightColor: color,
-          borderRightWidth: 1,
           lineHeight: 14,
           color,
           width: "100%",

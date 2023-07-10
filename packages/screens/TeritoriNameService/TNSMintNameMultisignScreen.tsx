@@ -1,5 +1,4 @@
 import { useFocusEffect } from "@react-navigation/native";
-import { useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { View } from "react-native";
 
@@ -19,6 +18,7 @@ import { useCreateMultisigTransactionForExecuteContract } from "../../hooks/mult
 import { useBalances } from "../../hooks/useBalances";
 import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import { useTNSMintPrice } from "../../hooks/useTNSMintPrice";
 import {
   mustGetNonSigningCosmWasmClient,
   mustGetCosmosNetwork,
@@ -167,6 +167,7 @@ export const TNSMintNameMultisignScreen: React.FC<
             contractAddress: network.nameServiceContractAddress,
             multisigAddress: walletAddress,
             msg,
+            funds: [price],
             multisigId: mltisignAccountInfo.dbData._id,
             type: MultisigTransactionType.REGISTER_TNS,
           },
@@ -231,34 +232,4 @@ export const TNSMintNameMultisignScreen: React.FC<
       <CheckLoadingModal isVisible={isLoading} />
     </ModalBase>
   );
-};
-
-const useTNSMintPrice = (networkId: string | undefined, tokenId: string) => {
-  const { data } = useQuery(
-    ["tnsMintPrice", networkId, tokenId],
-    async () => {
-      if (!networkId) {
-        return null;
-      }
-      const network = mustGetCosmosNetwork(networkId);
-      if (!network.nameServiceContractAddress) {
-        return null;
-      }
-
-      const client = await mustGetNonSigningCosmWasmClient(networkId);
-
-      const tnsClient = new TeritoriNameServiceQueryClient(
-        client,
-        network.nameServiceContractAddress
-      );
-
-      const info = await tnsClient.contractInfo();
-
-      const amount = await tnsClient.mintPrice({ tokenId });
-
-      return { denom: info.native_denom, amount: amount?.toString() || "0" };
-    },
-    { staleTime: Infinity }
-  );
-  return data;
 };
