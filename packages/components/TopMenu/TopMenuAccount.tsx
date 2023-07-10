@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { FC, useState } from "react";
 import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 
 import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
@@ -36,7 +36,7 @@ const TINY_ADDRESSES_COUNT = 40;
 
 export const TopMenuAccount: React.FC = () => {
   const { selectedWallet, selectedMultisignWallet } = useSelectedWallet();
-  const { setMultisignWallet } = useWallets();
+  const { setMultisignWallet, wallets } = useWallets();
   const selectedNetworkInfo = useSelectedNetworkInfo();
   const { data: multisigList } = useFetchMultisigList(
     selectedWallet?.address || ""
@@ -44,15 +44,6 @@ export const TopMenuAccount: React.FC = () => {
 
   const [isAccountsListShown, setAccountsListShown] = useState<boolean>(false);
   const [hoveredIndex, setHoveredIndex] = useState<number>(0);
-
-  const selectedNetworkId = useSelectedNetworkId();
-  const network = getCosmosNetwork(selectedNetworkId);
-  //TODO: Make same as bellow but with all user wallets and all multisig wallets (selectedMultisignWallet.userId)
-  const userInfo = useNSUserInfo(selectedWallet?.userId);
-  const userName =
-    userInfo?.metadata?.tokenId ||
-    tinyAddress(selectedWallet?.address, TINY_ADDRESSES_COUNT) ||
-    "";
 
   return (
     <FlexCol>
@@ -105,75 +96,105 @@ export const TopMenuAccount: React.FC = () => {
             <BrandText style={styles.menuSectionTitle}>User wallets</BrandText>
           </View>
 
-          <CustomPressable
-            onHoverIn={() => setHoveredIndex(1)}
-            onHoverOut={() => setHoveredIndex(0)}
-            onPress={() => {
-              setMultisignWallet(null);
-              setAccountsListShown(false);
-            }}
-            style={[hoveredIndex === 1 && { opacity: 0.5 }, styles.walletLine]}
-          >
-            <RoundedGradientImage
-              size="XXS"
-              sourceURI={userInfo?.metadata?.image}
-              fallbackURI={network?.nameServiceDefaultImage}
-            />
-            <BrandText
-              style={styles.itemText}
-              ellipsizeMode="middle"
-              numberOfLines={1}
+          {/*===== Single wallets */}
+          {wallets.map((item, index) => (
+            <CustomPressable
+              key={index}
+              disabled={item.address === selectedWallet?.address}
+              onHoverIn={() => setHoveredIndex(1)}
+              onHoverOut={() => setHoveredIndex(0)}
+              onPress={() => {
+                setMultisignWallet(null);
+                setAccountsListShown(false);
+              }}
+              style={[
+                (hoveredIndex === 1 ||
+                  item.address === selectedWallet?.address) && { opacity: 0.5 },
+                styles.walletLine,
+              ]}
             >
-              {userName}
-            </BrandText>
-          </CustomPressable>
+              <WalletRow
+                address={item?.address || ""}
+                userId={item?.userId || ""}
+              />
+            </CustomPressable>
+          ))}
 
-          <View style={styles.menuSectionTitleContainer}>
-            <BrandText style={styles.menuSectionTitle}>
-              Multisig wallets
-            </BrandText>
-          </View>
-
-          {multisigList !== undefined &&
-            multisigList.map((item, index: number) => (
-              <CustomPressable
-                onHoverIn={() => setHoveredIndex(index + 2)}
-                onHoverOut={() => setHoveredIndex(0)}
-                onPress={() => {
-                  setMultisignWallet({
-                    id: `keplr-${item.address}`,
-                    address: item.address,
-                    userId: getUserId(selectedNetworkInfo?.id, item.address),
-                    networkId: selectedNetworkInfo?.id,
-                    networkKind: NetworkKind.Cosmos,
-                    provider: WalletProvider.Keplr,
-                    connected: true,
-                  } as Wallet);
-                  setHoveredIndex(0);
-                  setAccountsListShown(false);
-                }}
-                style={[
-                  hoveredIndex === index + 2 && { opacity: 0.5 },
-                  styles.walletLine,
-                ]}
-              >
-                <RoundedGradientImage
-                  size="XXS"
-                  sourceURI={userInfo?.metadata?.image}
-                  fallbackURI={network?.nameServiceDefaultImage}
-                />
-                <BrandText
-                  style={styles.itemText}
-                  ellipsizeMode="middle"
-                  numberOfLines={1}
-                >
-                  {tinyAddress(item.address, TINY_ADDRESSES_COUNT)}
+          {/*===== Multisig wallets */}
+          {!!multisigList?.length && (
+            <>
+              <View style={styles.menuSectionTitleContainer}>
+                <BrandText style={styles.menuSectionTitle}>
+                  Multisig wallets
                 </BrandText>
-              </CustomPressable>
-            ))}
+              </View>
+
+              {multisigList.map((item, index: number) => (
+                <CustomPressable
+                  key={index}
+                  disabled={item.address === selectedMultisignWallet?.address}
+                  onHoverIn={() => setHoveredIndex(index + 2)}
+                  onHoverOut={() => setHoveredIndex(0)}
+                  onPress={() => {
+                    setMultisignWallet({
+                      id: `keplr-${item.address}`,
+                      address: item.address,
+                      userId: getUserId(selectedNetworkInfo?.id, item.address),
+                      networkId: selectedNetworkInfo?.id,
+                      networkKind: NetworkKind.Cosmos,
+                      provider: WalletProvider.Keplr,
+                      connected: true,
+                    } as Wallet);
+                    setAccountsListShown(false);
+                  }}
+                  style={[
+                    (hoveredIndex === index + 2 ||
+                      item.address === selectedMultisignWallet?.address) && {
+                      opacity: 0.5,
+                    },
+                    styles.walletLine,
+                  ]}
+                >
+                  <WalletRow
+                    address={item.address}
+                    userId={getUserId(selectedNetworkInfo?.id, item.address)}
+                  />
+                </CustomPressable>
+              ))}
+            </>
+          )}
         </ScrollView>
       )}
     </FlexCol>
+  );
+};
+
+const WalletRow: FC<{ address: string; userId: string }> = ({
+  address,
+  userId,
+}) => {
+  const selectedNetworkId = useSelectedNetworkId();
+  const network = getCosmosNetwork(selectedNetworkId);
+  const userInfo = useNSUserInfo(userId);
+  const userName =
+    userInfo?.metadata?.tokenId ||
+    tinyAddress(address, TINY_ADDRESSES_COUNT) ||
+    "";
+  return (
+    <>
+      <RoundedGradientImage
+        size="XXS"
+        sourceURI={userInfo?.metadata?.image}
+        fallbackURI={network?.nameServiceDefaultImage}
+      />
+      <BrandText
+        style={styles.itemText}
+        ellipsizeMode="middle"
+        numberOfLines={1}
+      >
+        {userName}
+      </BrandText>
+    </>
   );
 };
 

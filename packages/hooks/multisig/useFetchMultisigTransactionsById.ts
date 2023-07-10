@@ -70,14 +70,7 @@ export const useFetchMultisigTransactionsById = (
         data: data.map((s: MultisigTransactionResponseType) => ({
           ...s,
           msgs: JSON.parse(s.msgs),
-          // We use a JSON.parse fallback because some fee are "auto" in DB (Unexpected, but need this fallback to avoid error)
-          fee: () => {
-            try {
-              return JSON.parse(s.fee);
-            } catch {
-              return s.fee;
-            }
-          },
+          fee: JSON.parse(s.fee),
         })),
         after: afterData,
         before,

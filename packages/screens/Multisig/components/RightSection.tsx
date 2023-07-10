@@ -49,7 +49,7 @@ export const RightSection = () => {
       <SpacerColumn size={2} />
       <PrimaryButton
         size="M"
-        text="Create Transaction"
+        text="Send"
         fullWidth
         onPress={() =>
           navigation.navigate("MultisigTransfer", { address, walletName })
@@ -59,7 +59,7 @@ export const RightSection = () => {
       <SpacerColumn size={2.5} />
       <PrimaryButton
         size="M"
-        text="Create Delegation"
+        text="Delegate"
         fullWidth
         onPress={() =>
           navigation.navigate("MultisigDelegate", { address, walletName })

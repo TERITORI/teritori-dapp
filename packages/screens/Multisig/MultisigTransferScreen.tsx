@@ -104,7 +104,7 @@ export const MultisigTransferScreen: ScreenFC<"MultisigTransfer"> = ({
   return (
     <ScreenContainer
       headerChildren={
-        <BrandText style={fontSemibold20}>New Transaction</BrandText>
+        <BrandText style={fontSemibold20}>New Transfer</BrandText>
       }
       onBackPress={() =>
         navigation.canGoBack()
@@ -123,7 +123,7 @@ export const MultisigTransferScreen: ScreenFC<"MultisigTransfer"> = ({
     >
       <MultisigTransactionForm
         type="transfer"
-        title={`Create a new Transaction from ${walletName}`}
+        title={`Create a new Transfer from ${walletName}`}
         transferText="Send to"
         submitBtnText="Create Transaction"
         onSubmit={onSubmitForm}
