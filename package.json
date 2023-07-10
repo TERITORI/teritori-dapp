@@ -79,6 +79,7 @@
     "expo-splash-screen": "~0.17.5",
     "expo-status-bar": "~1.4.2",
     "expo-updates": "~0.15.6",
+    "grpc-web": "^1.4.2",
     "html-to-draftjs": "^1.5.0",
     "lodash": "^4.17.21",
     "long": "^5.2.1",

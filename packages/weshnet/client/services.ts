@@ -129,7 +129,6 @@ export const sendMessage = async ({
         senderId: stringFromBytes(weshConfig.config.accountPk),
       }),
     });
-    console.log("send message success");
   } catch (err) {
     console.log("send message err", err);
   }

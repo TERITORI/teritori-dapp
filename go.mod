@@ -3,7 +3,7 @@ module github.com/TERITORI/teritori-dapp
 go 1.18
 
 require (
-	berty.tech/weshnet v1.12.1
+	berty.tech/weshnet v1.12.2
 	github.com/CosmWasm/wasmd v0.27.0
 	github.com/Khan/genqlient v0.5.0
 	github.com/allegro/bigcache/v3 v3.0.2
@@ -137,6 +137,7 @@ require (
 	github.com/benbjohnson/clock v1.3.0 // indirect
 	github.com/berty/emitter-go v0.0.0-20221031144724-5dae963c3622 // indirect
 	github.com/berty/go-libp2p-mock v1.0.1 // indirect
+	github.com/berty/go-libp2p-pubsub v0.9.4-0.20230706070911-6e35c0f470b8 // indirect
 	github.com/berty/go-libp2p-rendezvous v0.5.0 // indirect
 	github.com/bgentry/speakeasy v0.1.0 // indirect
 	github.com/blang/semver/v4 v4.0.0 // indirect
