@@ -2,7 +2,7 @@ import {
   Challenge,
   ChallengeStatus,
   Money,
-} from "../../api/pathwar/v1/pathwar";
+} from "../../../api/pathwar/v1/pathwar";
 
 export const getChallenges = () => {
   return [
