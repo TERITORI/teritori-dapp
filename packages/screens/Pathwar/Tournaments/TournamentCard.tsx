@@ -9,12 +9,10 @@ import { SVG } from "../../../components/SVG";
 import { Separator } from "../../../components/Separator";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import {
-  hardColor,
   neutral17,
   neutral44,
   neutral77,
   secondaryColor,
-  successColor,
 } from "../../../utils/style/colors";
 import {
   fontSemibold12,
@@ -22,8 +20,8 @@ import {
   fontSemibold16,
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { Badge } from "../components/Listing/Badge";
 import { LeftRail } from "../components/Listing/LeftRail";
+import { StatusBadges } from "../components/Listing/StatusBadges";
 import { PathWarRewards } from "../components/PathWarRewards";
 
 export const TournamentBox: React.FC<{ data: Tournament }> = ({ data }) => {
@@ -80,22 +78,7 @@ export const TournamentBox: React.FC<{ data: Tournament }> = ({ data }) => {
                 {data.tagline}
               </BrandText>
             </View>
-            <View style={{ flexDirection: "row" }}>
-              <Badge
-                color={
-                  data.difficulty.toLowerCase().includes("hard")
-                    ? hardColor
-                    : successColor
-                }
-                backgroundColor="#FF5C001A"
-                label={data.difficulty}
-              />
-              <Badge
-                color={secondaryColor}
-                label={data.status}
-                backgroundColor={neutral77}
-              />
-            </View>
+            <StatusBadges difficulty={data.difficulty} label={data.status} />
           </View>
 
           <Separator

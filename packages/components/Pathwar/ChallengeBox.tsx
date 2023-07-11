@@ -7,6 +7,7 @@ import diamondSvg from "../../../assets/icons/Pathwar/diamondIcon.svg";
 import starSvg from "../../../assets/icons/Pathwar/starIcon.svg";
 import { Challenge } from "../../api/pathwar/v1/pathwar";
 import { LeftRail } from "../../screens/Pathwar/components/Listing/LeftRail";
+import { StatusBadges } from "../../screens/Pathwar/components/Listing/StatusBadges";
 import { PathWarRewards } from "../../screens/Pathwar/components/PathWarRewards";
 import { PathWarTags } from "../../screens/Pathwar/components/PathWarTags";
 import { UserWIthTNS } from "../../screens/Pathwar/components/UserWIthTNS";
@@ -88,31 +89,7 @@ export const ChallengeBox: React.FC<{
                 {data.description}
               </BrandText>
             </View>
-            <View style={{ flexDirection: "row" }}>
-              <View
-                style={{
-                  backgroundColor: neutral77,
-                  borderRadius: 100,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <BrandText
-                  style={[
-                    {
-                      color: secondaryColor,
-                      paddingLeft: layout.padding_x1_5,
-                      paddingRight: layout.padding_x1_5,
-                      paddingTop: layout.padding_x0_5,
-                      paddingBottom: layout.padding_x0_5,
-                    },
-                    fontSemibold13,
-                  ]}
-                >
-                  {data.status}
-                </BrandText>
-              </View>
-            </View>
+            <StatusBadges difficulty={data.difficulty} label={data.status} />
           </View>
 
           <Separator

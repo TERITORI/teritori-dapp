@@ -13,7 +13,7 @@ export const getTournaments = () =>
       description: "description of the tournament",
       tagline: "reserved for the best",
       difficulty: "Hard+",
-      status: "Open",
+      status: 0,
       duration: "3 days",
       numUsersJoined: 30,
       rewards: [
@@ -22,6 +22,23 @@ export const getTournaments = () =>
           amount: "10000000000",
         },
       ],
+      bought: true,
+    },
+    {
+      id: 1,
+      price: {
+        denom: "utori",
+        amount: "10000000000",
+      },
+      thumbnail: "",
+      title: "Summer hacking event",
+      description: "description of the tournament",
+      tagline: "reserved for the best",
+      difficulty: "Easy",
+      status: 1,
+      duration: "2 hours",
+      numUsersJoined: 301,
+      rewards: [],
       bought: true,
     },
   ] as Tournament[];

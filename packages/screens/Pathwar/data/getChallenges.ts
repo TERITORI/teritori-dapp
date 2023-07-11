@@ -1,8 +1,4 @@
-import {
-  Challenge,
-  ChallengeStatus,
-  Money,
-} from "../../../api/pathwar/v1/pathwar";
+import { Challenge, Status, Money } from "../../../api/pathwar/v1/pathwar";
 
 export const getChallenges = () => {
   return [
@@ -18,7 +14,7 @@ export const getChallenges = () => {
       tagline: "tagline",
       description: "aoeuaoe",
       difficulty: "Hard+",
-      status: ChallengeStatus.OPEN,
+      status: Status.OPEN,
       duration: "3 days",
       numUsersJoined: 3,
       rewards: [
@@ -97,7 +93,7 @@ export const getChallenges = () => {
       tagline: "tagline",
       description: "aoeuaoe",
       difficulty: "Hard+",
-      status: ChallengeStatus.OPEN,
+      status: Status.OPEN,
       duration: "3 days",
       numUsersJoined: 3,
       rewards: [
