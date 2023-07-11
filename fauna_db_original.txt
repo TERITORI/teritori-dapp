@@ -63,7 +63,7 @@ Query(
               Match(Index("transactionsByMultisig"), Var("multisigRef")),
               { size: 20000 }
             ),
-            Lambda("doc", Get(Select(1, Var("doc"))))
+            Lambda("doc", Get(Var("doc")))
           ),
           Lambda(
             "doc",
