@@ -35,7 +35,7 @@ export const PathWarRewards: React.FC<{
       numColumns={99}
       ListEmptyComponent={
         <BrandText style={[fontSemibold20, { textAlign: "center" }]}>
-          No users solved this challenge yet.
+          No rewards.
         </BrandText>
       }
       renderItem={({ item, index }) => {
