@@ -10,6 +10,7 @@ import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { AnimationExpand } from "../../../components/animations";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
+import { SearchNSInputContainer } from "../../../components/inputs/SearchNSInputContainer";
 import { GeneralSelect } from "../../../components/select/GeneralSelect";
 import { SpacerColumn } from "../../../components/spacer";
 import { useMultisigContext } from "../../../context/MultisigReducer";
@@ -48,7 +49,7 @@ export const MultisigTransactionForm: React.FC<
   } = useRoute<AppRouteType<"MultisigTransfer" | "MultisigDelegate">>();
   const selectedNetworkId = useSelectedNetworkId();
   const { isLoading, data } = useGetMultisigAccount(address);
-  const { control, handleSubmit, setValue } =
+  const { control, handleSubmit, setValue, watch } =
     useForm<MultisigTransactionDelegateFormType>();
   const { coinSimplified, participantAddressesFromMultisig } =
     useMultisigHelpers();
@@ -152,24 +153,31 @@ export const MultisigTransactionForm: React.FC<
             {!isFetching && (
               <>
                 {type === "transfer" ? (
-                  <MultisigFormInput<MultisigTransactionDelegateFormType>
-                    control={control}
-                    label=""
-                    hideLabel
-                    name="recipientAddress"
-                    isDisabled={!membersAddress?.length}
-                    rules={{
-                      required: true,
-                      validate: (value) =>
-                        validateMultisigAddress(
-                          value,
-                          type === "transfer"
-                            ? state.chain?.addressPrefix || ""
-                            : state.chain?.validatorPrefix || ""
-                        ),
-                    }}
-                    placeHolder="E.g : torix23Jkj1ZSQJ128D928XJSkL2K30Dld1ksl"
-                  />
+                  <SearchNSInputContainer
+                    searchText={watch("recipientAddress")}
+                    onPressName={(address) =>
+                      setValue("recipientAddress", address)
+                    }
+                  >
+                    <MultisigFormInput<MultisigTransactionDelegateFormType>
+                      control={control}
+                      label=""
+                      hideLabel
+                      name="recipientAddress"
+                      isDisabled={!membersAddress?.length}
+                      rules={{
+                        required: true,
+                        validate: (value) =>
+                          validateMultisigAddress(
+                            value,
+                            type === "transfer"
+                              ? state.chain?.addressPrefix || ""
+                              : state.chain?.validatorPrefix || ""
+                          ),
+                      }}
+                      placeHolder="E.g : torix23Jkj1ZSQJ128D928XJSkL2K30Dld1ksl"
+                    />
+                  </SearchNSInputContainer>
                 ) : (
                   <GeneralSelect
                     data={activeValidators.map((v) => v.moniker)}

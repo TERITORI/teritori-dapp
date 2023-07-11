@@ -9,6 +9,6 @@ export * from "./useCreateMultisig";
 export * from "./useApproveTransaction";
 export * from "./useDeclineTransaction";
 export * from "./useGetTransactionCount";
-export * from "./useBrodcastTransaction";
+export * from "./useBroadcastTransaction";
 export * from "./useMultisigValidator";
 export * from "./useCreateUserWallet";

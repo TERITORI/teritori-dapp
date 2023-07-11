@@ -10,7 +10,7 @@ import { useMultisigContext } from "../../context/MultisigReducer";
 import { completeTransaction } from "../../utils/faunaDB/multisig/multisigGraphql";
 import { DbSignature } from "../../utils/faunaDB/multisig/types";
 
-export const useBrodcastTransaction = () => {
+export const useBroadcastTransaction = () => {
   const { state } = useMultisigContext();
   const { setToastError, setToastSuccess } = useFeedbacks();
 

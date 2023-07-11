@@ -12,6 +12,7 @@ import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { SecondaryButton } from "../../components/buttons/SecondaryButton";
+import { SearchNSInputContainer } from "../../components/inputs/SearchNSInputContainer";
 import { TextInputCustom } from "../../components/inputs/TextInputCustom";
 import { TextInputOutsideLabel } from "../../components/inputs/TextInputOutsideLabel";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
@@ -44,7 +45,7 @@ import { layout } from "../../utils/style/layout";
 const emptyPubKeyGroup = () => ({ address: "", compressedPubkey: "" });
 
 export const MultisigCreateScreen = () => {
-  const { control, handleSubmit, watch } =
+  const { control, handleSubmit, watch, setValue } =
     useForm<CreateMultisigWalletFormType>();
   const [addressIndexes, setAddressIndexes] = useState([
     emptyPubKeyGroup(),
@@ -155,28 +156,35 @@ export const MultisigCreateScreen = () => {
           <SpacerColumn size={3} />
           {addressIndexes.map((_, index) => (
             <View style={styles.inputContainer} key={index.toString()}>
-              <TextInputCustom<CreateMultisigWalletFormType>
-                control={control}
-                name={`addresses.${index}.address`}
-                variant="labelOutside"
-                noBrokenCorners
-                label={"Address #" + (index + 1)}
-                rules={{
-                  required: true,
-                  validate: (value) => onAddressChange(index, value),
-                }}
-                placeHolder="Account address"
-                iconSVG={walletInputSVG}
+              <SearchNSInputContainer
+                searchText={watch(`addresses.${index}.address`)}
+                onPressName={(address) =>
+                  setValue(`addresses.${index}.address`, address)
+                }
               >
-                {addressIndexes.length > 2 && (
-                  <Pressable
-                    style={styles.trashContainer}
-                    onPress={() => removeAddressField(index)}
-                  >
-                    <SVG source={trashSVG} width={12} height={12} />
-                  </Pressable>
-                )}
-              </TextInputCustom>
+                <TextInputCustom<CreateMultisigWalletFormType>
+                  control={control}
+                  name={`addresses.${index}.address`}
+                  variant="labelOutside"
+                  noBrokenCorners
+                  label={"Address #" + (index + 1)}
+                  rules={{
+                    required: true,
+                    validate: (value) => onAddressChange(index, value),
+                  }}
+                  placeHolder="Account address"
+                  iconSVG={walletInputSVG}
+                >
+                  {addressIndexes.length > 2 && (
+                    <Pressable
+                      style={styles.trashContainer}
+                      onPress={() => removeAddressField(index)}
+                    >
+                      <SVG source={trashSVG} width={12} height={12} />
+                    </Pressable>
+                  )}
+                </TextInputCustom>
+              </SearchNSInputContainer>
             </View>
           ))}
           <View style={styles.row}>

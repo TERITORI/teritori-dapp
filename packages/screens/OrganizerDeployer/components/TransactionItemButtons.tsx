@@ -15,7 +15,7 @@ import { MainConnectWalletButton } from "../../../components/connectWallet/MainC
 import { SpacerRow } from "../../../components/spacer";
 import {
   useApproveTransaction,
-  useBrodcastTransaction,
+  useBroadcastTransaction,
   useDeclineTransaction,
 } from "../../../hooks/multisig";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
@@ -66,7 +66,7 @@ export const TransactionItemButtons: React.FC<TransactionItemButtonsProps> = ({
     mutate: broadcast,
     isLoading: isBroacasting,
     data: resTxHash,
-  } = useBrodcastTransaction();
+  } = useBroadcastTransaction();
   const { copyToClipboard } = useCopyToClipboard();
 
   const hasSigned = useMemo(
@@ -110,7 +110,7 @@ export const TransactionItemButtons: React.FC<TransactionItemButtonsProps> = ({
       addDecliner,
     });
 
-  const onBrodcast = () =>
+  const onBroadcast = () =>
     broadcast({
       tx: {
         fee,
@@ -198,7 +198,7 @@ export const TransactionItemButtons: React.FC<TransactionItemButtonsProps> = ({
           color={successColor}
           borderColor={successColor}
           isLoading={isBroacasting}
-          onPress={onBrodcast}
+          onPress={onBroadcast}
         />
       </AnimationFadeIn>
     );
