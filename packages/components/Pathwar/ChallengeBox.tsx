@@ -1,17 +1,16 @@
 import React from "react";
-import { FlatList, TouchableOpacity, View } from "react-native";
+import { FlatList, View } from "react-native";
 
 import checkSvg from "../../../assets/icons/Pathwar/checkIcon.svg";
 import clockSvg from "../../../assets/icons/Pathwar/clockIcon.svg";
 import diamondSvg from "../../../assets/icons/Pathwar/diamondIcon.svg";
 import starSvg from "../../../assets/icons/Pathwar/starIcon.svg";
-import { Challenge, Money } from "../../api/pathwar/v1/pathwar";
+import { Challenge } from "../../api/pathwar/v1/pathwar";
+import { LeftRail } from "../../screens/Pathwar/components/LeftRail";
 import { PathWarRewards } from "../../screens/Pathwar/components/PathWarRewards";
 import { PathWarTags } from "../../screens/Pathwar/components/PathWarTags";
 import { UserWIthTNS } from "../../screens/Pathwar/components/UserWIthTNS";
-import { prettyPrice } from "../../utils/coins";
 import {
-  neutral00,
   neutral17,
   neutral44,
   neutral77,
@@ -20,133 +19,15 @@ import {
 import {
   fontSemibold12,
   fontSemibold13,
-  fontSemibold14,
   fontSemibold16,
   fontSemibold20,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
-import { CurrencyIcon } from "../CurrencyIcon";
 import FlexRow from "../FlexRow";
-import { OptimizedImage } from "../OptimizedImage";
 import { SVG } from "../SVG";
 import { Separator } from "../Separator";
 import { TertiaryBox } from "../boxes/TertiaryBox";
-
-function LeftRail(props: {
-  sourceURI: string;
-  price: Money | undefined;
-  onPress?: () => void;
-}) {
-  return (
-    <View
-      style={{
-        flexDirection: "column",
-        paddingRight: layout.padding_x2,
-        height: "100%",
-        justifyContent: "space-between",
-      }}
-    >
-      <View>
-        <TertiaryBox
-          width={200}
-          height={200}
-          squaresBackgroundColor={neutral17}
-        >
-          <OptimizedImage
-            sourceURI={props.sourceURI}
-            style={{
-              borderTopRightRadius: 7,
-              borderBottomLeftRadius: 7,
-            }}
-            height={198}
-            width={198}
-          />
-        </TertiaryBox>
-        <TertiaryBox
-          width={200}
-          height={47}
-          squaresBackgroundColor={neutral17}
-          style={{ marginTop: layout.padding_x1 }}
-        >
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-around",
-              alignItems: "center",
-              width: "100%",
-            }}
-          >
-            <BrandText style={[{ color: neutral77 }, fontSemibold13]}>
-              Price
-            </BrandText>
-            {props.price && (
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  alignContent: "center",
-                }}
-              >
-                <BrandText
-                  style={[
-                    fontSemibold13,
-                    {
-                      marginRight: layout.padding_x0_5,
-                    },
-                  ]}
-                >
-                  {prettyPrice(
-                    "teritori",
-                    props.price?.amount,
-                    props.price?.denom
-                  )}
-                </BrandText>
-                <CurrencyIcon
-                  networkId="teritori"
-                  denom={props.price?.denom}
-                  size={16}
-                />
-              </View>
-            )}{" "}
-          </View>
-        </TertiaryBox>
-      </View>
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          marginTop: layout.padding_x1,
-        }}
-      >
-        <TouchableOpacity>
-          <TertiaryBox
-            width={110}
-            height={40}
-            squaresBackgroundColor={neutral17}
-            mainContainerStyle={{ backgroundColor: secondaryColor }}
-          >
-            <BrandText style={[{ color: neutral00 }, fontSemibold14]}>
-              Buy
-            </BrandText>
-          </TertiaryBox>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={props.onPress}>
-          <TertiaryBox
-            width={80}
-            height={40}
-            squaresBackgroundColor={neutral17}
-            mainContainerStyle={{ borderColor: secondaryColor }}
-          >
-            <BrandText style={[{ color: secondaryColor }, fontSemibold14]}>
-              More
-            </BrandText>
-          </TertiaryBox>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
-}
 
 export const ChallengeBox: React.FC<{
   data: Challenge;

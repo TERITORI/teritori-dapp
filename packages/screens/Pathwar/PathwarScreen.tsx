@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, Image, FlatList } from "react-native";
 import { useSelector } from "react-redux";
 
-import { getChallenges } from "./getChallenges";
+import { getChallenges } from "./data/getChallenges";
 import pathwarBanner from "../../../assets/banners/pathwarBanner.png";
 import { BrandText } from "../../components/BrandText";
 import { ChallengeBox } from "../../components/Pathwar/ChallengeBox";
