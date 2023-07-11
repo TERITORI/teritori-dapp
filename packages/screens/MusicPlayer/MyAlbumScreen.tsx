@@ -11,9 +11,10 @@ import Track from "../../../assets/music-player/track.png";
 import { BrandText } from "../../components/BrandText";
 import { DetailAlbumMenu } from "../../components/MusicPlayer/DetailAlbumMenu";
 import { MusicPlayerTab } from "../../components/MusicPlayer/MusicPlayerTab";
-import { TrackHoverMenu } from "../../components/MusicPlayer/TrackHoverMenu";
+// import { TrackHoverMenu } from "../../components/MusicPlayer/TrackHoverMenu";
 import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
+// import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { ScreenFC } from "../../utils/navigation";
 import { neutral77, neutral17, primaryColor } from "../../utils/style/colors";
 import {
@@ -23,8 +24,18 @@ import {
   fontSemibold20,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
+// import { useUserFetchAlbum } from "../../hooks/musicplayer/useUserFetchAlbum";
 
 export const MyAlbumScreen: ScreenFC<"MyAlbum"> = () => {
+  // const wallet = useSelectedWallet();
+
+  // const { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading } =
+  //   useUserFetchAlbum({
+  //     limit: 10,
+  //     offset: 0,
+  //     createdBy: wallet? wallet.address: ""
+  //   });
+
   const unitTrackData = {
     name: "Song Name",
     img: Track,
@@ -40,8 +51,8 @@ export const MyAlbumScreen: ScreenFC<"MyAlbum"> = () => {
     useState<any>(initIndexHoverState);
   const [openDetailAlbumMenu, setOpenDetailAlbumMenu] =
     useState<boolean>(false);
-  const [openTrackMenu, setOpenTrackMenu] = useState<boolean>(false);
-  const [clickedIndex, setClickedIndex] = useState<number>(0);
+  const [, setOpenTrackMenu] = useState<boolean>(false);
+  const [, setClickedIndex] = useState<number>(0);
 
   const styles = StyleSheet.create({
     pageContainer: {
@@ -342,9 +353,9 @@ export const MyAlbumScreen: ScreenFC<"MyAlbum"> = () => {
                     />
                   </Pressable>
                 </View>
-                {openTrackMenu && clickedIndex === index + 1 && (
-                  <TrackHoverMenu />
-                )}
+                {/* {openTrackMenu && clickedIndex === index + 1 && (
+                  <TrackHoverMenu album={} />
+                )} */}
               </View>
             );
           })}

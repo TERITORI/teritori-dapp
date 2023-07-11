@@ -1,12 +1,28 @@
-import React, { useState } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { View, StyleSheet, Pressable } from "react-native";
+import Animated, {
+  useAnimatedScrollHandler,
+  useSharedValue,
+} from "react-native-reanimated";
 
 import Logo from "../../../assets/logos/logo.svg";
-import Album from "../../../assets/music-player/album.png";
+// import Album from "../../../assets/music-player/album.png";
 import { BrandText } from "../../components/BrandText";
 import { MusicPlayerCard } from "../../components/MusicPlayer/MusicPlayerCard";
 // import { UploadAlbumModal } from "../../components/MusicPlayer/UploadAlbumModal";
+import { UploadAlbumModal } from "../../components/MusicPlayer/UploadAlbumModal";
 import { SVG } from "../../components/SVG";
+import {
+  combineFetchAlbumPages as combineFetchAlbumPagesOther,
+  useOtherFetchAlbum,
+} from "../../hooks/musicplayer/useOtherFetchAlbum";
+import {
+  combineFetchAlbumPages,
+  useUserFetchAlbum,
+} from "../../hooks/musicplayer/useUserFetchAlbum";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { getUserId } from "../../networks";
 import { neutral77, primaryColor } from "../../utils/style/colors";
 import {
   fontMedium14,
@@ -15,20 +31,112 @@ import {
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 
-export const MusicPlayerMyLibraryContent: React.FC = () => {
+export const MusicPlayerMyLibraryContent: React.FC<{ idList: string[] }> = ({
+  idList,
+}) => {
   const unitWidth = 240;
 
-  const unitAlbumData = {
-    title: "Name",
-    description: "Description here lorem ipsum dolor sit amet",
-    img: Album,
-    name: "artistname",
+  // const unitAlbumData = {
+  //   title: "Name",
+  //   description: "Description here lorem ipsum dolor sit amet",
+  //   img: Album,
+  //   name: "artistname",
+  // };
+  const isLoadingValue = useSharedValue(false);
+  const isGoingUp = useSharedValue(false);
+
+  const isLoadingValueOther = useSharedValue(false);
+  const isGoingUpOther = useSharedValue(false);
+
+  const selectedNetworkId = useSelectedNetworkId();
+  const wallet = useSelectedWallet();
+  const userId = getUserId(selectedNetworkId, wallet?.address);
+
+  const [flatListContentOffsetY, setFlatListContentOffsetY] = useState(0);
+  const { data, isFetching, hasNextPage, fetchNextPage, isLoading } =
+    useUserFetchAlbum({
+      limit: 10,
+      offset: 0,
+      createdBy: userId,
+    });
+
+  const albums = useMemo(
+    () => (data ? combineFetchAlbumPages(data.pages) : []),
+    [data]
+  );
+
+  const {
+    data: dataOther,
+    isFetching: isFetchingOther,
+    hasNextPage: hasNextPageOther,
+    fetchNextPage: fetchNextPageOther,
+    isLoading: isLoadingOther,
+  } = useOtherFetchAlbum({
+    limit: 10,
+    offset: 0,
+    idList,
+  });
+  const otherAlbums = useMemo(
+    () => (dataOther ? combineFetchAlbumPagesOther(dataOther.pages) : []),
+    [dataOther]
+  );
+  // const myAlbumsData = Array(3).fill(unitAlbumData);
+  // const otherAlbumsData = Array(8).fill(unitAlbumData);
+
+  const [openUploadModal, setOpenUploadModal] = useState<boolean>(false);
+  useEffect(() => {
+    if (isFetching || isLoading) {
+      isGoingUp.value = false;
+      isLoadingValue.value = true;
+    } else {
+      isLoadingValue.value = false;
+    }
+  }, [isFetching, isLoading, isGoingUp, isLoadingValue]);
+
+  useEffect(() => {
+    if (isFetchingOther || isLoadingOther) {
+      isGoingUpOther.value = false;
+      isLoadingValueOther.value = true;
+    } else {
+      isLoadingValueOther.value = false;
+    }
+  }, [isFetchingOther, isLoadingOther, isGoingUpOther, isLoadingValueOther]);
+
+  const scrollHandler = useAnimatedScrollHandler({
+    onScroll: (event) => {
+      setFlatListContentOffsetY(event.contentOffset.y);
+      if (flatListContentOffsetY > event.contentOffset.y) {
+        isGoingUp.value = true;
+      } else if (flatListContentOffsetY < event.contentOffset.y) {
+        isGoingUp.value = false;
+      }
+      setFlatListContentOffsetY(event.contentOffset.y);
+    },
+  });
+
+  const scrollHandlerOther = useAnimatedScrollHandler({
+    onScroll: (event) => {
+      setFlatListContentOffsetY(event.contentOffset.y);
+      if (flatListContentOffsetY > event.contentOffset.y) {
+        isGoingUpOther.value = true;
+      } else if (flatListContentOffsetY < event.contentOffset.y) {
+        isGoingUpOther.value = false;
+      }
+      setFlatListContentOffsetY(event.contentOffset.y);
+    },
+  });
+
+  const onEndReached = () => {
+    if (!isLoading && hasNextPage && !isFetching) {
+      fetchNextPage();
+    }
   };
 
-  const myAlbumsData = Array(3).fill(unitAlbumData);
-  const otherAlbumsData = Array(8).fill(unitAlbumData);
-
-  const [, setOpenUploadModal] = useState<boolean>(false);
+  const onEndReachedOther = () => {
+    if (!isLoadingOther && hasNextPageOther && !isFetchingOther) {
+      fetchNextPageOther();
+    }
+  };
 
   const styles = StyleSheet.create({
     container: {
@@ -87,6 +195,9 @@ export const MusicPlayerMyLibraryContent: React.FC = () => {
         color: primaryColor,
       },
     ]),
+    albumGrid: {
+      margin: layout.padding_x3,
+    },
   });
 
   return (
@@ -105,39 +216,55 @@ export const MusicPlayerMyLibraryContent: React.FC = () => {
             />
             <BrandText style={styles.buttonText}>Upload album</BrandText>
           </Pressable>
-          <Pressable style={styles.buttonContainer}>
+          {/* <Pressable style={styles.buttonContainer}>
             <SVG
               source={Logo}
               width={layout.padding_x2}
               height={layout.padding_x2}
             />
             <BrandText style={styles.buttonText}>Create funding</BrandText>
-          </Pressable>
+          </Pressable> */}
         </View>
       </View>
       <View style={styles.contentGroup}>
-        {myAlbumsData.map((item: any, index) => {
-          return <MusicPlayerCard item={item} />;
-        })}
+        <Animated.FlatList
+          scrollEventThrottle={0.1}
+          data={albums}
+          numColumns={4}
+          renderItem={({ item: albumInfo }) => (
+            <View style={styles.albumGrid}>
+              <MusicPlayerCard item={albumInfo} hasLibrary />
+            </View>
+          )}
+          onScroll={scrollHandler}
+          onEndReachedThreshold={1}
+          onEndReached={onEndReached}
+        />
       </View>
 
       <View style={styles.oneLine}>
         <BrandText style={fontSemibold20}>Other Albums</BrandText>
       </View>
       <View style={styles.contentGroup}>
-        {otherAlbumsData.map((item: any, index) => {
-          return <MusicPlayerCard item={item} index={index} key={index} />;
-        })}
+        <Animated.FlatList
+          scrollEventThrottle={0.1}
+          data={otherAlbums}
+          numColumns={4}
+          renderItem={({ item: albumInfo }) => (
+            <View style={styles.albumGrid}>
+              <MusicPlayerCard item={albumInfo} hasLibrary />
+            </View>
+          )}
+          onScroll={scrollHandlerOther}
+          onEndReachedThreshold={1}
+          onEndReached={onEndReachedOther}
+        />
       </View>
-      {/*
       <UploadAlbumModal
         isVisible={openUploadModal}
         onClose={() => setOpenUploadModal(false)}
-        submit={() => {
-          setOpenUploadModal(false);
-          setOpenAlbumInfoModal(true);
-        }}
       />
+      {/*
       <AlbumInfoModal
         isVisible={openAlbumInfoModal}
         onClose={() => setOpenAlbumInfoModal(false)}

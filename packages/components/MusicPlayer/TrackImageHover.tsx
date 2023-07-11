@@ -7,18 +7,25 @@ import HoveredMenu from "../../../assets/music-player/hovered-menu.svg";
 import HoveredPlay from "../../../assets/music-player/hovered-play.svg";
 import NormalMenu from "../../../assets/music-player/normal-menu.svg";
 import NormalPlay from "../../../assets/music-player/normal-play.svg";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { getUserId } from "../../networks";
 import { useAppNavigation } from "../../utils/navigation";
 import { layout } from "../../utils/style/layout";
+import { AlbumInfo } from "../../utils/types/music";
 import { SVG } from "../SVG";
 
-export const TrackImageHover: React.FC<{ mine?: boolean; albumId: string }> = ({
-  mine = false,
-  albumId,
-}) => {
+export const TrackImageHover: React.FC<{
+  album: AlbumInfo;
+  hasLibrary: boolean;
+}> = ({ album, hasLibrary }) => {
+  const selectedNetworkId = useSelectedNetworkId();
+  const wallet = useSelectedWallet();
   const navigation = useAppNavigation();
   const [hoverMenuIcon, setHoverMenuIcon] = useState<boolean>(false);
   const [hoverPlayIcon, setHoverPlayIcon] = useState<boolean>(false);
   const [openMenu, setOpenMenu] = useState<boolean>(false);
+  const userId = getUserId(selectedNetworkId, wallet?.address);
 
   const styles = StyleSheet.create({
     hoverBox: {
@@ -39,8 +46,9 @@ export const TrackImageHover: React.FC<{ mine?: boolean; albumId: string }> = ({
     <Pressable
       style={styles.hoverBox}
       onPress={() => {
-        if (mine) navigation.navigate("MyAlbum");
-        else navigation.navigate("AlbumName", { id: albumId });
+        if (wallet && wallet.address === album.createdBy)
+          navigation.navigate("MyAlbum");
+        else navigation.navigate("AlbumName", { id: album.id });
       }}
     >
       {hoverPlayIcon && (
@@ -85,8 +93,10 @@ export const TrackImageHover: React.FC<{ mine?: boolean; albumId: string }> = ({
           onMouseEnter={() => setHoverMenuIcon(true)}
         />
       )}
-      {openMenu && !mine && <TrackHoverMenu albumId={albumId}/>}
-      {openMenu && mine && <MyAlbumMenu />}
+      {openMenu && userId !== album.createdBy && (
+        <TrackHoverMenu album={album} hasLibrary={hasLibrary} />
+      )}
+      {openMenu && userId === album.createdBy && <MyAlbumMenu album={album} />}
     </Pressable>
   );
 };

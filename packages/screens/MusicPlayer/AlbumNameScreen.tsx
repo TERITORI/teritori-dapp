@@ -42,6 +42,7 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = ({
     name: "",
     description: "",
     image: "",
+    createdBy: "",
     audios: [],
   });
 
@@ -60,6 +61,7 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = ({
           id: selectedMusicAlbum.identifier,
           description: metadata.description,
           image: metadata.image,
+          createdBy: selectedMusicAlbum.createdBy,
           name: metadata.title,
           audios,
         };
@@ -427,7 +429,7 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = ({
                   </Pressable>
                 </View>
                 {openTrackMenu && clickedIndex === index + 1 && (
-                  <TrackHoverMenu />
+                  <TrackHoverMenu album={albumInfo} hasLibrary={false} />
                 )}
               </View>
             );

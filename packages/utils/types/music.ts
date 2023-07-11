@@ -1,7 +1,3 @@
-export enum MusicAlbumCategory {
-  Normal,
-}
-
 export interface AlbumMetadataInfo {
   title: string;
   description: string;
@@ -19,5 +15,6 @@ export interface AlbumInfo {
   name: string;
   description: string;
   image: string;
+  createdBy: string;
   audios: UploadFileInfo[];
 }

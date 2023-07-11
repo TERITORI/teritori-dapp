@@ -3,6 +3,8 @@ import { View, StyleSheet, Image } from "react-native";
 import { Pressable } from "react-native-hoverable";
 
 import { TrackImageHover } from "./TrackImageHover";
+import { useNSUserInfo } from "../../hooks/useNSUserInfo";
+import { parseUserId } from "../../networks";
 import { ipfsPinataUrl } from "../../utils/ipfs";
 import { neutral17, neutral77, primaryColor } from "../../utils/style/colors";
 import { fontSemibold14, fontMedium14 } from "../../utils/style/fonts";
@@ -12,10 +14,16 @@ import { BrandText } from "../BrandText";
 
 export const MusicPlayerCard: React.FC<{
   item: AlbumInfo;
-}> = ({ item }) => {
+  hasLibrary: boolean;
+}> = ({ item, hasLibrary }) => {
   const unitWidth = 240;
-
+  const authorNSInfo = useNSUserInfo(item.createdBy);
+  const [, userAddress] = parseUserId(item.createdBy);
   const [selectedIndex, setSelectedIndex] = useState<string>(item.id);
+
+  const username = authorNSInfo?.metadata?.tokenId
+    ? authorNSInfo?.metadata?.tokenId
+    : userAddress;
 
   const styles = StyleSheet.create({
     unitCard: {
@@ -67,7 +75,7 @@ export const MusicPlayerCard: React.FC<{
           style={styles.contentImg}
         />
         {selectedIndex === item.id && (
-          <TrackImageHover albumId={item.id} />
+          <TrackImageHover album={item} hasLibrary={hasLibrary} />
         )}
       </View>
       <BrandText style={styles.contentTitle}>{item.name}</BrandText>
@@ -75,9 +83,8 @@ export const MusicPlayerCard: React.FC<{
         {item.description}
       </BrandText>
       <Pressable>
-        <BrandText style={styles.contentName}>@{item.name}</BrandText>
+        <BrandText style={styles.contentName}>@{username}</BrandText>
       </Pressable>
-      
     </View>
   );
 };

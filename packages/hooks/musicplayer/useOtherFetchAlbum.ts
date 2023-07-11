@@ -2,7 +2,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 
 import {
   MusicAlbumInfo,
-  GetAllAlbumListRequest,
+  GetOtherAlbumListRequest,
 } from "../../api/musicplayer/v1/musicplayer";
 import { mustGetMusicplayerClient } from "../../utils/backend";
 import { AlbumInfo, AlbumMetadataInfo } from "../../utils/types/music";
@@ -15,14 +15,14 @@ export type AlbumList = {
 export const combineFetchAlbumPages = (pages: AlbumList[]) =>
   pages.reduce((acc: AlbumInfo[], page) => [...acc, ...(page?.list || [])], []);
 
-export const useFetchAlbum = (req: GetAllAlbumListRequest) => {
+export const useOtherFetchAlbum = (req: GetOtherAlbumListRequest) => {
   const selectedNetworkId = useSelectedNetworkId();
   const { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading } =
     useInfiniteQuery(
       ["albums", selectedNetworkId, { ...req }],
       async ({ pageParam = req.offset }) => {
         try {
-          const postsRequest: GetAllAlbumListRequest = {
+          const postsRequest: GetOtherAlbumListRequest = {
             ...req,
             offset: pageParam || 0,
           };
@@ -61,14 +61,15 @@ export const useFetchAlbum = (req: GetAllAlbumListRequest) => {
     );
   return { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading };
 };
+
 const getMusicAlbums = async (
   networkId: string,
-  req: GetAllAlbumListRequest
+  req: GetOtherAlbumListRequest
 ) => {
   try {
     // ===== We use FeedService to be able to fetch filtered posts
     const musicplayerClient = mustGetMusicplayerClient(networkId);
-    const response = await musicplayerClient.GetAllAlbumList(req);
+    const response = await musicplayerClient.GetOtherAlbumList(req);
     // ---- We sort by creation date
     return response.musicAlbums;
   } catch (err) {

@@ -1,4 +1,3 @@
-import { coin } from "@cosmjs/amino";
 import React, {
   createRef,
   useState,
@@ -17,8 +16,6 @@ import Remove from "../../../assets/music-player/remove.svg";
 import Upload from "../../../assets/music-player/upload.svg";
 import { signingMusicPlayerClient } from "../../client-creators/musicplayerClient";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { useUpdateAvailableFreePost } from "../../hooks/musicplayer/useUpdateAvailableFreePost";
-import { useUpdatePostFee } from "../../hooks/musicplayer/useUpdatePostFee";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { defaultSocialFeedFee } from "../../utils/fee";
@@ -33,11 +30,7 @@ import {
 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import {
-  MusicAlbumCategory,
-  UploadFileInfo,
-  AlbumMetadataInfo,
-} from "../../utils/types/music";
+import { UploadFileInfo, AlbumMetadataInfo } from "../../utils/types/music";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { PrimaryButton } from "../buttons/PrimaryButton";
@@ -61,18 +54,9 @@ export const UploadAlbumModal: React.FC<UploadAlbumModalProps> = ({
   const { setToastError, setToastSuccess } = useFeedbacks();
   const selectedNetworkId = useSelectedNetworkId();
   const wallet = useSelectedWallet();
-  const { postFee } = useUpdatePostFee(
-    selectedNetworkId,
-    MusicAlbumCategory.Normal
-  );
-  const { freePostCount } = useUpdateAvailableFreePost(
-    selectedNetworkId,
-    MusicAlbumCategory.Normal,
-    wallet
-  );
-
   const [step, setStep] = useState<number>(0);
   const [uploadFiles, setUploadFiles] = useState<UploadFileInfo[]>([]);
+
   const [albumInfo, setAlbumInfo] = useState<AlbumInfo>({
     name: "",
     description: "",
@@ -80,6 +64,10 @@ export const UploadAlbumModal: React.FC<UploadAlbumModalProps> = ({
   });
   const uploadAlbum = async () => {
     if (!albumInfo) return;
+    if (!albumInfo.name) return;
+    if (!albumInfo.description) return;
+    if (uploadFiles.length === 0) return;
+
     if (!wallet?.connected || !wallet.address) {
       return;
     }
@@ -100,16 +88,16 @@ export const UploadAlbumModal: React.FC<UploadAlbumModalProps> = ({
       audios,
     };
 
+    // console.log(metadata);
+
     try {
       const res = await client.createMusicAlbum(
         {
-          category: MusicAlbumCategory.Normal,
           metadata: JSON.stringify(metadata),
           identifier: uuidv4(),
         },
         defaultSocialFeedFee,
-        "",
-        freePostCount || !postFee ? undefined : [coin(postFee, "utori")]
+        ""
       );
 
       if (res.transactionHash) {
@@ -216,7 +204,7 @@ const Step1Component: React.FC<{
 
   const [uploadFiles1, setUploadFiles1] = useState<UploadFileInfo[]>([]);
   const [canContinue, setCanContinue] = useState<boolean>(false);
-
+  const [isUploading, setIsUploading] = useState<boolean>(false);
   const inputFileRef = createRef<HTMLInputElement>();
 
   useEffect(() => {
@@ -224,6 +212,7 @@ const Step1Component: React.FC<{
   }, [uploadFiles1]);
 
   const uploadMusicFiles = async () => {
+    setIsUploading(true);
     inputFileRef.current?.click();
   };
   const onInputFileChange: React.ChangeEventHandler<HTMLInputElement> = async (
@@ -235,11 +224,14 @@ const Step1Component: React.FC<{
 
     audio.addEventListener("loadedmetadata", async () => {
       const ipfsHash = await uploadFileToIPFS(file);
-      setUploadFiles1([
-        ...uploadFiles1,
-        { name: file.name, ipfs: ipfsHash, duration: audio.duration },
-      ]);
-      URL.revokeObjectURL(url);
+      if (ipfsHash !== "") {
+        setUploadFiles1([
+          ...uploadFiles1,
+          { name: file.name, ipfs: ipfsHash, duration: audio.duration },
+        ]);
+        URL.revokeObjectURL(url);
+      }
+      setIsUploading(false);
     });
   };
 
@@ -271,7 +263,9 @@ const Step1Component: React.FC<{
           text="Continue"
           size="SM"
           disabled={!canContinue}
+          isLoading={isUploading}
           onPress={() => {
+            console.log(uploadFiles1);
             setUploadFiles([...uploadFiles1]);
             setStep(1);
           }}
@@ -519,9 +513,6 @@ const Step2Component: React.FC<{
               <BrandText style={fontSemibold14}>{item.name}</BrandText>
             </View>
             <View style={styles.oneLine}>
-              <BrandText style={[fontSemibold14, { color: neutral77 }]}>
-                {item.ipfs}
-              </BrandText>
               <Pressable onPress={() => removeSong(index)}>
                 <SVG
                   source={Remove}

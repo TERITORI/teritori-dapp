@@ -9,21 +9,25 @@ import Flag from "../../../assets/music-player/flag.svg";
 import Link from "../../../assets/music-player/link.svg";
 import Share from "../../../assets/music-player/share.svg";
 import Tip from "../../../assets/music-player/tip-other.svg";
+import { signingMusicPlayerClient } from "../../client-creators/musicplayerClient";
+import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { neutralA3, neutral33, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold13 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
+import { AlbumInfo } from "../../utils/types/music";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
-import { AlbumInfo } from "../../utils/types/music";
-import { signingMusicPlayerClient } from "../../client-creators/musicplayerClient";
-
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import useSelectedWallet from "../../hooks/useSelectedWallet";
 
 interface TrackHoverMenuProps {
-  albumId: string
+  album: AlbumInfo;
+  hasLibrary: boolean;
 }
-export const TrackHoverMenu: React.FC<TrackHoverMenuProps> = ({albumId}) => {
+export const TrackHoverMenu: React.FC<TrackHoverMenuProps> = ({
+  album,
+  hasLibrary,
+}) => {
   const selectedNetworkId = useSelectedNetworkId();
   const wallet = useSelectedWallet();
 
@@ -31,8 +35,9 @@ export const TrackHoverMenu: React.FC<TrackHoverMenuProps> = ({albumId}) => {
   const lineHeight = 18;
 
   const [openShareMenu, setOpenShareMenu] = useState<boolean>(false);
+  const { setToastError, setToastSuccess } = useFeedbacks();
 
-  const addToLibrary = async()=>{
+  const addToLibrary = async () => {
     if (!wallet?.connected || !wallet.address) {
       return;
     }
@@ -41,12 +46,44 @@ export const TrackHoverMenu: React.FC<TrackHoverMenuProps> = ({albumId}) => {
       walletAddress: wallet.address,
     });
     try {
-      const res = await client.addToLibrary({identifier: albumId});
-      
-    }catch{
-
+      const res = await client.addToLibrary({ identifier: album.id });
+      if (res.transactionHash) {
+        setToastSuccess({
+          title: "Add album to my library",
+          message: `tx_hash: ${res.transactionHash}`,
+        });
+      }
+    } catch (err) {
+      setToastError({
+        title: "Failed to add album to my library",
+        message: `Error: ${err}`,
+      });
     }
-  }
+  };
+
+  const removeFromLibrary = async () => {
+    if (!wallet?.connected || !wallet.address) {
+      return;
+    }
+    const client = await signingMusicPlayerClient({
+      networkId: selectedNetworkId,
+      walletAddress: wallet.address,
+    });
+    try {
+      const res = await client.removeFromLibrary({ identifier: album.id });
+      if (res.transactionHash) {
+        setToastSuccess({
+          title: "remove album from my library",
+          message: `tx_hash: ${res.transactionHash}`,
+        });
+      }
+    } catch (err) {
+      setToastError({
+        title: "Failed to remove album from my library",
+        message: `Error: ${err}`,
+      });
+    }
+  };
 
   const styles = StyleSheet.create({
     hoverBox: {
@@ -123,20 +160,42 @@ export const TrackHoverMenu: React.FC<TrackHoverMenuProps> = ({albumId}) => {
 
   return (
     <View style={styles.menuContainer}>
-      <HoverView
-        normalStyle={styles.unitBoxNormal}
-        hoverStyle={styles.unitBoxHovered}
-        onPress={()=>{addToLibrary()}}
-      >
-        <View style={styles.oneLine}>
-          <SVG
-            source={AddLibrary}
-            width={layout.padding_x2}
-            height={layout.padding_x2}
-          />
-          <BrandText style={styles.text}>Add to library</BrandText>
-        </View>
-      </HoverView>
+      {wallet && wallet.address !== album.createdBy && !hasLibrary && (
+        <HoverView
+          normalStyle={styles.unitBoxNormal}
+          hoverStyle={styles.unitBoxHovered}
+          onPress={() => {
+            addToLibrary();
+          }}
+        >
+          <View style={styles.oneLine}>
+            <SVG
+              source={AddLibrary}
+              width={layout.padding_x2}
+              height={layout.padding_x2}
+            />
+            <BrandText style={styles.text}>Add to library</BrandText>
+          </View>
+        </HoverView>
+      )}
+      {wallet && wallet.address !== album.createdBy && hasLibrary && (
+        <HoverView
+          normalStyle={styles.unitBoxNormal}
+          hoverStyle={styles.unitBoxHovered}
+          onPress={() => {
+            removeFromLibrary();
+          }}
+        >
+          <View style={styles.oneLine}>
+            <SVG
+              source={AddLibrary}
+              width={layout.padding_x2}
+              height={layout.padding_x2}
+            />
+            <BrandText style={styles.text}>Remove From library</BrandText>
+          </View>
+        </HoverView>
+      )}
 
       <View style={styles.divideLine} />
 

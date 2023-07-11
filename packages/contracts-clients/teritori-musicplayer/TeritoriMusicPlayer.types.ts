@@ -19,40 +19,10 @@ export type ExecuteMsg =
       };
     }
   | {
-      update_fee_by_category: {
-        category: number;
-        fee: Uint128;
-        [k: string]: unknown;
-      };
-    }
-  | {
-      add_free_posts: {
-        free_count: Uint128;
-        wallets: string[];
-        [k: string]: unknown;
-      };
-    }
-  | {
       create_music_album: {
         category: number;
         identifier: string;
         metadata: string;
-        [k: string]: unknown;
-      };
-    }
-  | {
-      lock_tokens: {
-        [k: string]: unknown;
-      };
-    }
-  | {
-      unlock_tokens: {
-        amount: Uint128;
-        [k: string]: unknown;
-      };
-    }
-  | {
-      withdraw_fund: {
         [k: string]: unknown;
       };
     };
@@ -62,7 +32,6 @@ export interface InstantiateMsg {
 }
 export type MusicAlbumCategory =  | "Normal";
 export interface MusicAlbumResult {
-  category: number;
   deleted: boolean;
   identifier: string;
   metadata: string;
@@ -70,11 +39,8 @@ export interface MusicAlbumResult {
   [k: string]: unknown;
 }
 export interface MusicAlbum {
-  category: number;
   deleted: boolean;
-  fee_amount: Uint128;
   identifier: string;
-  is_free: boolean;
   metadata: string;
   post_by: Addr;
   [k: string]: unknown;
@@ -82,24 +48,6 @@ export interface MusicAlbum {
 export type QueryMsg =
   | {
       config: {
-        [k: string]: unknown;
-      };
-    }
-  | {
-      query_fee_by_category: {
-        category: number;
-        [k: string]: unknown;
-      };
-    }
-  | {
-      query_locked_tokens: {
-        wallet: string;
-        [k: string]: unknown;
-      };
-    }
-  | {
-      query_available_free_posts: {
-        wallet: string;
         [k: string]: unknown;
       };
     }

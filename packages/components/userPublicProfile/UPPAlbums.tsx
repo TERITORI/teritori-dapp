@@ -14,15 +14,16 @@ export const UPPAlbums: React.FC<{ userId: string }> = ({ userId }) => {
       try {
         const res = await mustGetMusicplayerClient(
           selectedNetworkId
-        ).GetAlbumList({});
+        ).GetAllAlbumList({ offset: 0, limit: 10 });
         const newAlbumList: AlbumInfo[] = [];
-        res.musicAlbums.map((albumInfo, index) => {
+        res.musicAlbums.map((albumInfo: any) => {
           const metadata = JSON.parse(albumInfo.metadata) as AlbumMetadataInfo;
           newAlbumList.push({
             id: albumInfo.identifier,
             name: metadata.title,
             description: metadata.description,
             image: metadata.image,
+            createdBy: albumInfo.createdBy,
             audios: [],
           });
         });
@@ -36,7 +37,7 @@ export const UPPAlbums: React.FC<{ userId: string }> = ({ userId }) => {
   return (
     <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
       {albumList.map((item: AlbumInfo, index) => {
-        return <MusicPlayerCard item={item} index={index} key={index} />;
+        return <MusicPlayerCard item={item} hasLibrary={false} key={index} />;
       })}
     </View>
   );

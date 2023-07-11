@@ -10,7 +10,6 @@ import (
 
 type CreateMusicAlbumMsg struct {
 	Identifier string `json:"identifier"`
-	Category   uint32 `json:"category"`
 	Metadata   string `json:"metadata"`
 }
 
@@ -37,7 +36,6 @@ func (h *Handler) handleExecuteCreateAlbum(e *Message, execMsg *wasmtypes.MsgExe
 
 	musicAlbum := indexerdb.MusicAlbum{
 		Identifier: createMusicAlbumMsg.Identifier,
-		Category:   createMusicAlbumMsg.Category,
 		Metadata:   metadataJSON,
 		CreatedBy:  h.config.Network.UserID(execMsg.Sender),
 		CreatedAt:  createdAt.Unix(),
@@ -46,6 +44,34 @@ func (h *Handler) handleExecuteCreateAlbum(e *Message, execMsg *wasmtypes.MsgExe
 	if err := h.db.Create(&musicAlbum).Error; err != nil {
 		return errors.Wrap(err, "failed to create music album")
 	}
+	return nil
+}
+
+type DeleteMusicAlbumMsg struct {
+	Identifier string `json:"identifier"`
+}
+
+type ExecDeleteMusicAlbumMsg struct {
+	DeleteMusicAlbum DeleteMusicAlbumMsg `json:"delete_music_album"`
+}
+
+func (h *Handler) handleExecuteDeleteMusicAlbum(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
+	var execDeleteMusicAlbumMsg ExecDeleteMusicAlbumMsg
+	if err := json.Unmarshal(execMsg.Msg, &execDeleteMusicAlbumMsg); err != nil {
+		return errors.Wrap(err, "failed to unmarshal execute delete music album msg")
+	}
+	deleteMusicAlbumMsg := &execDeleteMusicAlbumMsg.DeleteMusicAlbum
+
+	musicAlbum := indexerdb.MusicAlbum{}
+	if err := h.db.Where("identifier = ?", deleteMusicAlbumMsg.Identifier).First(&musicAlbum).Error; err != nil {
+		return errors.Wrap(err, "failed to get music album to delete")
+	}
+	musicAlbum.IsDeleted = true
+
+	if err := h.db.Save(&musicAlbum).Error; err != nil {
+		return errors.Wrap(err, "failed to set deleted to music album")
+	}
+
 	return nil
 }
 
