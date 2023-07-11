@@ -3,7 +3,6 @@ import { View, ImageBackground, FlatList } from "react-native";
 
 import { TournamentBox } from "./TournamentCard";
 import tounamentBanner from "../../../../assets/banners/tournamentBanner.png";
-import { Tournament } from "../../../api/pathwar/v1/pathwar";
 import { BrandText } from "../../../components/BrandText";
 import { ScreenContainer } from "../../../components/ScreenContainer";
 import { SearchInput } from "../../../components/sorts/SearchInput";
@@ -17,36 +16,14 @@ import {
   layout,
   screenContentMaxWidthLarge,
 } from "../../../utils/style/layout";
+import { getTournaments } from "../data/getTournaments";
 
 export const TournamentScreen: React.FC = () => {
   const { height } = useMaxResolution({ isLarge: true });
   const navigation = useAppNavigation();
   const isMobile = useIsMobile();
   const [search, setSearch] = useState<string>("");
-  const data = [
-    {
-      id: 1,
-      price: {
-        denom: "utori",
-        amount: "100000000",
-      },
-      thumbnail: "",
-      title: "Wild Top 50",
-      description: "description of the tournament",
-      tagline: "reserved for the best",
-      difficulty: "Hard+",
-      status: "Open",
-      duration: "3 days",
-      numUsersJoined: 30,
-      rewards: [
-        {
-          denom: "utori",
-          amount: "10000000000",
-        },
-      ],
-      bought: true,
-    },
-  ] as Tournament[];
+  const data = getTournaments();
   return (
     <ScreenContainer
       responsive

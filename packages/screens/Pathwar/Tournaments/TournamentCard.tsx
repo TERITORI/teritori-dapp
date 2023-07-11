@@ -1,5 +1,5 @@
 import React from "react";
-import { View, TouchableOpacity } from "react-native";
+import { View } from "react-native";
 
 import checkIcon from "../../../../assets/icons/Pathwar/checkIcon.svg";
 import clockIcon from "../../../../assets/icons/Pathwar/clockIcon.svg";
@@ -9,22 +9,21 @@ import { SVG } from "../../../components/SVG";
 import { Separator } from "../../../components/Separator";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import {
-  neutral44,
   hardColor,
-  secondaryColor,
   neutral17,
+  neutral44,
   neutral77,
-  neutral00,
+  secondaryColor,
   successColor,
 } from "../../../utils/style/colors";
 import {
   fontSemibold12,
   fontSemibold13,
-  fontSemibold14,
   fontSemibold16,
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { PathWarPrice } from "../components/PathWarPrice";
+import { Badge } from "../components/Badge";
+import { LeftRail } from "../components/LeftRail";
 import { PathWarRewards } from "../components/PathWarRewards";
 
 export const TournamentBox: React.FC<{ data: Tournament }> = ({ data }) => {
@@ -47,54 +46,17 @@ export const TournamentBox: React.FC<{ data: Tournament }> = ({ data }) => {
           alignItems: "center",
         }}
       >
-        <View
-          style={{ flexDirection: "column", marginRight: layout.padding_x1_5 }}
-        >
-          <TertiaryBox
-            width={200}
-            height={200}
-            squaresBackgroundColor={neutral17}
-          >
-            {/* img */}
-          </TertiaryBox>
-          <PathWarPrice price={data.price} />
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              marginTop: layout.padding_x1_5,
-            }}
-          >
-            <TouchableOpacity>
-              <TertiaryBox
-                width={110}
-                height={40}
-                squaresBackgroundColor={neutral17}
-                mainContainerStyle={{ backgroundColor: secondaryColor }}
-              >
-                <BrandText style={[{ color: neutral00 }, fontSemibold14]}>
-                  Enter
-                </BrandText>
-              </TertiaryBox>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <TertiaryBox
-                width={80}
-                height={40}
-                squaresBackgroundColor={neutral17}
-                mainContainerStyle={{ borderColor: secondaryColor }}
-              >
-                <BrandText style={[{ color: secondaryColor }, fontSemibold14]}>
-                  More
-                </BrandText>
-              </TertiaryBox>
-            </TouchableOpacity>
-          </View>
-        </View>
+        <LeftRail
+          sourceURI={data.thumbnail}
+          price={data.price}
+          // onPress={() => setDisplayChallengeDetails(true)}
+        />
 
         <View
           style={{
+            height: "100%",
             flexDirection: "column",
+            justifyContent: "space-between",
           }}
         >
           <View
@@ -119,59 +81,20 @@ export const TournamentBox: React.FC<{ data: Tournament }> = ({ data }) => {
               </BrandText>
             </View>
             <View style={{ flexDirection: "row" }}>
-              <View
-                style={{
-                  backgroundColor: "#FF5C001A",
-                  width: "fit-content",
-                  height: "fit-content",
-                  borderRadius: 100,
-                  alignItems: "center",
-                  justifyContent: "center",
-                  marginRight: layout.padding_x1_5,
-                }}
-              >
-                <BrandText
-                  style={[
-                    {
-                      color: data.difficulty.toLowerCase().includes("hard")
-                        ? hardColor
-                        : successColor,
-                      paddingLeft: layout.padding_x1_5,
-                      paddingRight: layout.padding_x1_5,
-                      paddingTop: layout.padding_x0_5,
-                      paddingBottom: layout.padding_x0_5,
-                    },
-                    fontSemibold13,
-                  ]}
-                >
-                  {data.difficulty}
-                </BrandText>
-              </View>
-              <View
-                style={{
-                  backgroundColor: neutral77,
-                  width: "fit-content",
-                  height: "fit-content",
-                  borderRadius: 100,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <BrandText
-                  style={[
-                    {
-                      color: secondaryColor,
-                      paddingLeft: layout.padding_x1_5,
-                      paddingRight: layout.padding_x1_5,
-                      paddingTop: layout.padding_x0_5,
-                      paddingBottom: layout.padding_x0_5,
-                    },
-                    fontSemibold13,
-                  ]}
-                >
-                  {data.status}
-                </BrandText>
-              </View>
+              <Badge
+                color={
+                  data.difficulty.toLowerCase().includes("hard")
+                    ? hardColor
+                    : successColor
+                }
+                backgroundColor="#FF5C001A"
+                label={data.difficulty}
+              />
+              <Badge
+                color={secondaryColor}
+                label={data.status}
+                backgroundColor={neutral77}
+              />
             </View>
           </View>
 
