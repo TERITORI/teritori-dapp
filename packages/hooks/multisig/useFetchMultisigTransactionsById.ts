@@ -8,6 +8,7 @@ import {
 } from "../../screens/Multisig/types";
 import { transactionsByMultisigId } from "../../utils/faunaDB/multisig/multisigGraphql";
 import { DbSignature } from "../../utils/faunaDB/multisig/types";
+import { tryParseJSON } from "../../utils/jsons";
 import useSelectedWallet from "../useSelectedWallet";
 
 export interface MultisigTransactionListType {
@@ -26,6 +27,7 @@ export interface MultisigTransactionListType {
   msgs: EncodeObject[];
   fee: StdFee;
   memo: string;
+  isError?: boolean;
 }
 
 export interface MultisigTransactionResponseType
@@ -69,12 +71,27 @@ export const useFetchMultisigTransactionsById = (
       return {
         data: data.map((s: MultisigTransactionResponseType) => ({
           ...s,
-          msgs: JSON.parse(s.msgs),
-          fee: JSON.parse(s.fee),
+          msgs: tryParseJSON(s.msgs),
+          fee: tryParseJSON(s.fee),
+          isError: isMultisigTransactionResponseError(s),
         })),
         after: afterData,
         before,
       };
     }
+  );
+};
+
+// For now, we consider TX as error if the msgs or fee are not valid JSON
+export const isMultisigTransactionResponseError = (
+  s: MultisigTransactionResponseType
+) => {
+  console.log(
+    'typeof tryParseJSON(s.fee) !== "object"typeof tryParseJSON(s.fee) !== "object"typeof tryParseJSON(s.fee) !== "object"',
+    typeof tryParseJSON(s.fee) !== "object"
+  );
+  return (
+    typeof tryParseJSON(s.msgs) !== "object" ||
+    typeof tryParseJSON(s.fee) !== "object"
   );
 };

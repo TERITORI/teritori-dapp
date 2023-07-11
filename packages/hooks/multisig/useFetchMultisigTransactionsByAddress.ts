@@ -2,11 +2,13 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 
 import {
+  isMultisigTransactionResponseError,
   MultisigTransactionListType,
   MultisigTransactionResponseType,
 } from "./useFetchMultisigTransactionsById";
 import { NetworkKind } from "../../networks";
 import { transactionsByUserAddress } from "../../utils/faunaDB/multisig/multisigGraphql";
+import { tryParseJSON } from "../../utils/jsons";
 import { useSelectedNetworkInfo } from "../useSelectedNetwork";
 
 export const useFetchMultisigTransactionsByAddress = (userAddress: string) => {
@@ -35,8 +37,9 @@ export const useFetchMultisigTransactionsByAddress = (userAddress: string) => {
       return {
         data: data.map((s: MultisigTransactionResponseType) => ({
           ...s,
-          msgs: JSON.parse(s.msgs),
-          fee: JSON.parse(s.fee),
+          msgs: tryParseJSON(s.msgs),
+          fee: tryParseJSON(s.fee),
+          isError: isMultisigTransactionResponseError(s),
         })),
         after,
       };

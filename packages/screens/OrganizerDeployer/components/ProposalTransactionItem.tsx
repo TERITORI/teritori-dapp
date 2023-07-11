@@ -112,7 +112,7 @@ export const ProposalTransactionItem: React.FC<ProposalTransactionItemProps> = (
 
   // returns
   return (
-    <Pressable style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.svgContainer}>
         <SVG
           source={getIcon}
@@ -229,7 +229,7 @@ export const ProposalTransactionItem: React.FC<ProposalTransactionItemProps> = (
         isCompletedSignature={completedPercent === 100}
         isCompletelyDeclined={isCompletelyDeclined}
       />
-    </Pressable>
+    </View>
   );
 };
 

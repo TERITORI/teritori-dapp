@@ -1,13 +1,10 @@
-import React, { useEffect, useMemo } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import React, { FC, useEffect, useMemo } from "react";
+import { Linking, Pressable, StyleSheet, View } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 
 import { ProposalTransactionItemProps } from "./ProposalTransactionItem";
-import copySVG from "../../../../assets/icons/copy.svg";
 import { BrandText } from "../../../components/BrandText";
-import { useCopyToClipboard } from "../../../components/CopyToClipboard";
 import { EmptyList } from "../../../components/EmptyList";
-import { SVG } from "../../../components/SVG";
 import { AnimationFadeIn } from "../../../components/animations";
 import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
 import { SecondaryButtonOutline } from "../../../components/buttons/SecondaryButtonOutline";
@@ -18,7 +15,9 @@ import {
   useBroadcastTransaction,
   useDeclineTransaction,
 } from "../../../hooks/multisig";
+import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { txExplorerLink } from "../../../networks";
 import { DbSignature } from "../../../utils/faunaDB/multisig/types";
 import {
   errorColor,
@@ -29,6 +28,7 @@ import {
   successColor,
 } from "../../../utils/style/colors";
 import { fontMedium14, fontSemibold9 } from "../../../utils/style/fonts";
+import { layout } from "../../../utils/style/layout";
 import { tinyAddress } from "../../../utils/text";
 
 interface TransactionItemButtonsProps extends ProposalTransactionItemProps {
@@ -58,8 +58,10 @@ export const TransactionItemButtons: React.FC<TransactionItemButtonsProps> = ({
   sequence,
   memo,
   shouldRetch,
+  isError,
 }) => {
   const { selectedWallet: wallet } = useSelectedWallet();
+  const selectedNetworkId = useSelectedNetworkId();
   const { mutate: approve } = useApproveTransaction();
   const { mutate: decline, isLoading: isDeclining } = useDeclineTransaction();
   const {
@@ -67,7 +69,6 @@ export const TransactionItemButtons: React.FC<TransactionItemButtonsProps> = ({
     isLoading: isBroacasting,
     data: resTxHash,
   } = useBroadcastTransaction();
-  const { copyToClipboard } = useCopyToClipboard();
 
   const hasSigned = useMemo(
     () => currentSignatures?.some((sig) => sig.address === wallet?.address),
@@ -146,44 +147,49 @@ export const TransactionItemButtons: React.FC<TransactionItemButtonsProps> = ({
     (hasDeclined && !isCompletedSignature) ||
     (hasSigned && !isCompletedSignature) ||
     txHash ||
-    resTxHash
+    resTxHash ||
+    isError
   ) {
     const color = (() => {
+      if (isError) return errorColor;
       if (txHash || resTxHash) return successColor;
       if (hasDeclined) return errorColor;
       if (hasSigned) return primaryColor;
     })();
 
     const resultText = (() => {
+      if (isError) return "ERROR";
       if (txHash || resTxHash) return "EXECUTED";
       if (hasDeclined) return "DECLINED";
       if (hasSigned) return "APPROVED";
     })();
 
+    const Result: FC = () => (
+      <View style={styles.resultContainer}>
+        <BrandText style={[styles.resultText, { color }]}>
+          {resultText}
+        </BrandText>
+      </View>
+    );
+
     return (
       <AnimationFadeIn style={styles.container}>
-        <Pressable
-          onPress={() =>
-            copyToClipboard(
-              txHash || resTxHash || "",
-              "Transaction hash copied"
-            )
-          }
-          style={styles.resultContainer}
-        >
-          <BrandText style={[styles.resultText, { color }]}>
-            {resultText}
-          </BrandText>
-          {(txHash || resTxHash) && (
-            <View style={styles.txHashTextContainer}>
-              <SVG width={20} height={20} source={copySVG} />
-              <SpacerRow size={0.5} />
-              <BrandText style={styles.txHashText}>
-                {tinyAddress(txHash || resTxHash, 14)}
-              </BrandText>
-            </View>
-          )}
-        </Pressable>
+        {txHash || resTxHash ? (
+          <Pressable
+            onPress={() =>
+              Linking.openURL(
+                txExplorerLink(selectedNetworkId, txHash || resTxHash || "")
+              )
+            }
+          >
+            <Result />
+            <BrandText style={styles.txHashText}>
+              {tinyAddress(txHash || resTxHash, 14)}
+            </BrandText>
+          </Pressable>
+        ) : (
+          <Result />
+        )}
       </AnimationFadeIn>
     );
   }
@@ -245,14 +251,10 @@ const styles = StyleSheet.create({
     fontMedium14,
     { textTransform: "uppercase" },
   ]),
-  txHashTextContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-  },
   txHashText: StyleSheet.flatten([
     fontSemibold9,
     {
+      marginTop: layout.padding_x0_25,
       color: neutral77,
       flexWrap: "wrap",
       width: "100%",

@@ -99,22 +99,22 @@ const SearchResultsSection: React.FC<{
   const isMobile = useIsMobile();
   return (
     <View style={style}>
-        <View
+      <View
+        style={[
+          { backgroundColor: neutral22, paddingVertical: 4 },
+          isFirstSection &&
+            !isMobile && { borderTopStartRadius: 6, borderTopEndRadius: 6 },
+        ]}
+      >
+        <BrandText
           style={[
-            { backgroundColor: neutral22, paddingVertical: 4 },
-            isFirstSection &&
-              !isMobile && { borderTopStartRadius: 6, borderTopEndRadius: 6 },
+            { marginLeft: SEARCH_RESULTS_MARGIN, color: neutralA3 },
+            fontSemibold12,
           ]}
         >
-          <BrandText
-            style={[
-              { marginLeft: SEARCH_RESULTS_MARGIN, color: neutralA3 },
-              fontSemibold12,
-            ]}
-          >
-            {title}
-          </BrandText>
-        </View>
+          {title}
+        </BrandText>
+      </View>
       <View style={{ padding: SEARCH_RESULTS_MARGIN }}>{children}</View>
     </View>
   );
