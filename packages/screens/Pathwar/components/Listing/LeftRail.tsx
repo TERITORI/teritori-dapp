@@ -1,20 +1,20 @@
 import React from "react";
 import { TouchableOpacity, View } from "react-native";
 
-import { Money } from "../../../api/pathwar/v1/pathwar";
-import { BrandText } from "../../../components/BrandText";
-import { CurrencyIcon } from "../../../components/CurrencyIcon";
-import { OptimizedImage } from "../../../components/OptimizedImage";
-import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
-import { prettyPrice } from "../../../utils/coins";
+import { Money } from "../../../../api/pathwar/v1/pathwar";
+import { BrandText } from "../../../../components/BrandText";
+import { CurrencyIcon } from "../../../../components/CurrencyIcon";
+import { OptimizedImage } from "../../../../components/OptimizedImage";
+import { TertiaryBox } from "../../../../components/boxes/TertiaryBox";
+import { prettyPrice } from "../../../../utils/coins";
 import {
   neutral00,
   neutral17,
   neutral77,
   secondaryColor,
-} from "../../../utils/style/colors";
-import { fontSemibold13, fontSemibold14 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+} from "../../../../utils/style/colors";
+import { fontSemibold13, fontSemibold14 } from "../../../../utils/style/fonts";
+import { layout } from "../../../../utils/style/layout";
 
 export const LeftRail: React.FC<{
   sourceURI: string;

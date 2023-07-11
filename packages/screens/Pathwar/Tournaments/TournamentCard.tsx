@@ -22,8 +22,8 @@ import {
   fontSemibold16,
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { Badge } from "../components/Badge";
-import { LeftRail } from "../components/LeftRail";
+import { Badge } from "../components/Listing/Badge";
+import { LeftRail } from "../components/Listing/LeftRail";
 import { PathWarRewards } from "../components/PathWarRewards";
 
 export const TournamentBox: React.FC<{ data: Tournament }> = ({ data }) => {

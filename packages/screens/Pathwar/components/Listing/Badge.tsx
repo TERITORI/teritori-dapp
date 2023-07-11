@@ -1,9 +1,9 @@
 import React from "react";
 import { View } from "react-native";
 
-import { BrandText } from "../../../components/BrandText";
-import { fontSemibold13 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+import { BrandText } from "../../../../components/BrandText";
+import { fontSemibold13 } from "../../../../utils/style/fonts";
+import { layout } from "../../../../utils/style/layout";
 
 export const Badge: React.FC<{
   color: string;

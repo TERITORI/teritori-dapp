@@ -6,7 +6,7 @@ import clockSvg from "../../../assets/icons/Pathwar/clockIcon.svg";
 import diamondSvg from "../../../assets/icons/Pathwar/diamondIcon.svg";
 import starSvg from "../../../assets/icons/Pathwar/starIcon.svg";
 import { Challenge } from "../../api/pathwar/v1/pathwar";
-import { LeftRail } from "../../screens/Pathwar/components/LeftRail";
+import { LeftRail } from "../../screens/Pathwar/components/Listing/LeftRail";
 import { PathWarRewards } from "../../screens/Pathwar/components/PathWarRewards";
 import { PathWarTags } from "../../screens/Pathwar/components/PathWarTags";
 import { UserWIthTNS } from "../../screens/Pathwar/components/UserWIthTNS";
