@@ -9,7 +9,10 @@ import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
 import { getCosmosNetwork } from "../../../networks";
 import { neutral77 } from "../../../utils/style/colors";
 
-export const UserWIthTNS: React.FC<{ address: string }> = ({ address }) => {
+export const UserWIthTNS: React.FC<{ address: string; label?: string }> = ({
+  address,
+  label = "Owned by",
+}) => {
   // todo resolve user address network
   const userInfo = useNSUserInfo(address);
   const cosmosNetwork = getCosmosNetwork("teritori");
@@ -40,14 +43,16 @@ export const UserWIthTNS: React.FC<{ address: string }> = ({ address }) => {
           params: { id: address },
         }}
       >
-        <BrandText
-          style={{
-            fontSize: 10,
-            color: neutral77,
-          }}
-        >
-          Owned by
-        </BrandText>
+        {label !== "" && (
+          <BrandText
+            style={{
+              fontSize: 10,
+              color: neutral77,
+            }}
+          >
+            {label}
+          </BrandText>
+        )}
         <BrandText
           style={{
             fontSize: 12,

@@ -136,6 +136,7 @@ message Challenge {
   PublicUser star_user = 14;
   repeated PublicUser top_users = 15;
   bool solved = 16;
+  int32 solvedCount = 17;
 }
 
 message ChallengeRequest {

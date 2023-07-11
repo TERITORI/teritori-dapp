@@ -28,7 +28,14 @@ export const PathwarScreen: ScreenFC<"Pathwar"> = () => {
   const { height } = useMaxResolution({ isLarge: true });
 
   return (
-    <ScreenContainer>
+    <ScreenContainer
+      responsive
+      isLarge
+      footerChildren={<></>}
+      headerChildren={
+        <BrandText style={fontSemibold20}>PathWar: learn to hack</BrandText>
+      }
+    >
       <View
         style={{
           alignItems: "center",
@@ -82,40 +89,32 @@ export const PathwarScreen: ScreenFC<"Pathwar"> = () => {
         </View>
       </View>
 
-      <View
+      <FlatList
+        data={challenges.filter((challenge) => {
+          return challenge.title
+            .toLowerCase()
+            .includes(searchInput.toLowerCase());
+        })}
         style={{
-          flexDirection: "row",
-          flexWrap: "wrap",
-          marginTop: layout.padding_x2_5,
+          width: "100%",
         }}
-      >
-        <FlatList
-          data={challenges.filter((challenge) => {
-            return challenge.title
-              .toLowerCase()
-              .includes(searchInput.toLowerCase());
-          })}
-          style={{
-            width: "100%",
-          }}
-          contentContainerStyle={{
-            maxWidth: screenContentMaxWidthLarge,
-            maxHeight: height,
-          }}
-          showsHorizontalScrollIndicator={false}
-          columnWrapperStyle={{ flexWrap: "wrap", flex: 1, marginTop: 5 }}
-          numColumns={99} // needed to deal with wrap via css
-          ItemSeparatorComponent={() => <SpacerColumn size={2} />}
-          ListEmptyComponent={
-            <BrandText style={[fontSemibold20, { textAlign: "center" }]}>
-              No results found.
-            </BrandText>
-          }
-          renderItem={({ item, index }) => {
-            return <ChallengeBox key={index} data={item} />;
-          }}
-        />
-      </View>
+        contentContainerStyle={{
+          maxWidth: screenContentMaxWidthLarge,
+          maxHeight: height,
+        }}
+        showsHorizontalScrollIndicator={false}
+        columnWrapperStyle={{ flexWrap: "wrap", flex: 1, marginTop: 5 }}
+        numColumns={99} // needed to deal with wrap via css
+        ItemSeparatorComponent={() => <SpacerColumn size={2} />}
+        ListEmptyComponent={
+          <BrandText style={[fontSemibold20, { textAlign: "center" }]}>
+            No results found.
+          </BrandText>
+        }
+        renderItem={({ item, index }) => {
+          return <ChallengeBox key={index} data={item} />;
+        }}
+      />
     </ScreenContainer>
   );
 };

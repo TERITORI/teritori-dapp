@@ -156,6 +156,7 @@ export interface Challenge {
   starUser: PublicUser | undefined;
   topUsers: PublicUser[];
   solved: boolean;
+  solvedCount: number;
 }
 
 export interface ChallengeRequest {
@@ -1257,6 +1258,7 @@ function createBaseChallenge(): Challenge {
     starUser: undefined,
     topUsers: [],
     solved: false,
+    solvedCount: 0,
   };
 }
 
@@ -1309,6 +1311,9 @@ export const Challenge = {
     }
     if (message.solved === true) {
       writer.uint32(128).bool(message.solved);
+    }
+    if (message.solvedCount !== 0) {
+      writer.uint32(136).int32(message.solvedCount);
     }
     return writer;
   },
@@ -1368,6 +1373,9 @@ export const Challenge = {
         case 16:
           message.solved = reader.bool();
           break;
+        case 17:
+          message.solvedCount = reader.int32();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1394,6 +1402,7 @@ export const Challenge = {
       starUser: isSet(object.starUser) ? PublicUser.fromJSON(object.starUser) : undefined,
       topUsers: Array.isArray(object?.topUsers) ? object.topUsers.map((e: any) => PublicUser.fromJSON(e)) : [],
       solved: isSet(object.solved) ? Boolean(object.solved) : false,
+      solvedCount: isSet(object.solvedCount) ? Number(object.solvedCount) : 0,
     };
   },
 
@@ -1428,6 +1437,7 @@ export const Challenge = {
       obj.topUsers = [];
     }
     message.solved !== undefined && (obj.solved = message.solved);
+    message.solvedCount !== undefined && (obj.solvedCount = Math.round(message.solvedCount));
     return obj;
   },
 
@@ -1451,6 +1461,7 @@ export const Challenge = {
       : undefined;
     message.topUsers = object.topUsers?.map((e) => PublicUser.fromPartial(e)) || [];
     message.solved = object.solved ?? false;
+    message.solvedCount = object.solvedCount ?? 0;
     return message;
   },
 };

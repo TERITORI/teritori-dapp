@@ -113,7 +113,7 @@ export const NavBarPathwarOverview: React.FC<object> = () => {
               alignItems: "center",
             }}
           >
-            <BrandText style={fontSemibold14}>Ressources</BrandText>
+            <BrandText style={fontSemibold14}>Resources</BrandText>
             <TouchableOpacity onPress={() => navigation.navigate("Resources")}>
               <SVG source={GoToPageIcon} />
             </TouchableOpacity>
