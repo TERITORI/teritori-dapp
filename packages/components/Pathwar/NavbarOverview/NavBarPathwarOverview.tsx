@@ -1,5 +1,5 @@
 import React from "react";
-import { TouchableOpacity, View } from "react-native";
+import { Linking, Pressable, TouchableOpacity, View } from "react-native";
 
 import { NavbarCard } from "./NavbarCard";
 import BookIcon from "../../../../assets/LogoPathwarOverview/BookIcon.svg";
@@ -46,7 +46,11 @@ export const NavBarPathwarOverview: React.FC<object> = () => {
           justifyContent: "space-between",
         }}
       >
-        <NavbarCard width={200} height={150}>
+        <NavbarCard
+          width={200}
+          height={150}
+          onPress={() => navigation.navigate("Statistics")}
+        >
           <View
             style={{
               flexDirection: "row",
@@ -99,7 +103,11 @@ export const NavBarPathwarOverview: React.FC<object> = () => {
           </View>
         </NavbarCard>
 
-        <NavbarCard width={200} height={150}>
+        <NavbarCard
+          width={200}
+          height={150}
+          onPress={() => navigation.navigate("Resources")}
+        >
           <View style={{ marginLeft: layout.padding_x2_5 }}>
             <SVG source={BookIcon} />
           </View>
@@ -120,7 +128,11 @@ export const NavBarPathwarOverview: React.FC<object> = () => {
           </View>
         </NavbarCard>
 
-        <NavbarCard width={200} height={150}>
+        <NavbarCard
+          width={200}
+          height={150}
+          onPress={() => Linking.openURL("https://gno.land/")}
+        >
           <View style={{ marginLeft: layout.padding_x2_5 }}>
             <SVG source={PlaneteIcon} />
           </View>
@@ -141,7 +153,15 @@ export const NavBarPathwarOverview: React.FC<object> = () => {
           </View>
         </NavbarCard>
 
-        <NavbarCard width={200} height={150}>
+        <NavbarCard
+          width={200}
+          height={150}
+          onPress={() =>
+            Linking.openURL(
+              "https://tutorials.cosmos.network/academy/0-welcome/"
+            )
+          }
+        >
           <View style={{ marginLeft: layout.padding_x2_5 }}>
             <SVG source={CodeIcon} />
           </View>
@@ -162,7 +182,11 @@ export const NavBarPathwarOverview: React.FC<object> = () => {
           </View>
         </NavbarCard>
 
-        <NavbarCard width={200} height={150}>
+        <NavbarCard
+          width={200}
+          height={150}
+          onPress={() => navigation.navigate("Tournaments")}
+        >
           <View style={{ marginLeft: layout.padding_x2_5 }}>
             <SVG source={TournamentIcon} />
           </View>

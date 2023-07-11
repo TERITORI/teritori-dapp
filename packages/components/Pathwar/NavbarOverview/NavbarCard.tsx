@@ -1,5 +1,5 @@
 import React from "react";
-import { View } from "react-native";
+import { Pressable, View } from "react-native";
 import { SvgProps } from "react-native-svg";
 
 import { neutral17 } from "../../../utils/style/colors";
@@ -20,6 +20,7 @@ export const NavbarCard: React.FC<{
   // If no width, the buttons will fit the content including paddingHorizontal 20
   width,
   height,
+  onPress,
   children,
 }) => {
   return (
@@ -29,11 +30,11 @@ export const NavbarCard: React.FC<{
       mainContainerStyle={{ backgroundColor: neutral17 }}
     >
       {children && (
-        <View style={{ width: "100%" }}>
+        <Pressable style={{ width: "100%" }} onPress={onPress}>
           {/*------- Modal main content */}
           {/* {hideMainSeparator !== true && ( */}
           {children}
-        </View>
+        </Pressable>
       )}
     </TertiaryBox>
   );
