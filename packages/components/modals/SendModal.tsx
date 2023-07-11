@@ -224,7 +224,7 @@ export const SendModal: React.FC<SendModalProps> = ({
               rules={{ required: true }}
               placeHolder={`Enter a ${
                 getNetwork(networkId)?.displayName || networkId
-              } address`}
+              } name or address`}
               defaultValue=""
             />
           </SearchNSInputContainer>
