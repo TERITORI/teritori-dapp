@@ -36,6 +36,7 @@ import { SVG } from "../SVG";
 import { MaxButton } from "../buttons/MaxButton";
 import { PrimaryButton } from "../buttons/PrimaryButton";
 import { DAOSelector } from "../dao/DAOSelector";
+import { SearchNSInputContainer } from "../inputs/SearchNSInputContainer";
 import { TextInputCustom } from "../inputs/TextInputCustom";
 import { SpacerColumn, SpacerRow } from "../spacer";
 
@@ -64,7 +65,7 @@ export const SendModal: React.FC<SendModalProps> = ({
 }) => {
   const { setToastError, setToastSuccess } = useFeedbacks();
   const selectedWallet = useSelectedWallet();
-  const { control, setValue, handleSubmit } = useForm<TransactionForm>();
+  const { control, setValue, handleSubmit, watch } = useForm<TransactionForm>();
   const [selectedDAOId, setSelectedDAOId] = useState("");
   const makeProposal = useDAOMakeProposal(selectedDAOId);
   const [, daoAddress] = parseUserId(selectedDAOId);
@@ -206,19 +207,27 @@ export const SendModal: React.FC<SendModalProps> = ({
     >
       <FlexRow alignItems="flex-end">
         <FlexCol alignItems="flex-start" width={356}>
-          <TextInputCustom<TransactionForm>
-            height={48}
-            width={320}
-            control={control}
-            variant="labelOutside"
-            label="Receiver"
-            name="toAddress"
-            rules={{ required: true }}
-            placeHolder={`Enter a ${
-              getNetwork(networkId)?.displayName || networkId
-            } address`}
-            defaultValue=""
-          />
+          <SearchNSInputContainer
+            onPressName={(userId) => {
+              const [, userAddress] = parseUserId(userId);
+              setValue("toAddress", userAddress);
+            }}
+            searchText={watch("toAddress")}
+          >
+            <TextInputCustom<TransactionForm>
+              height={48}
+              width={320}
+              control={control}
+              variant="labelOutside"
+              label="Receiver"
+              name="toAddress"
+              rules={{ required: true }}
+              placeHolder={`Enter a ${
+                getNetwork(networkId)?.displayName || networkId
+              } address`}
+              defaultValue=""
+            />
+          </SearchNSInputContainer>
         </FlexCol>
         <ContactButton />
       </FlexRow>
