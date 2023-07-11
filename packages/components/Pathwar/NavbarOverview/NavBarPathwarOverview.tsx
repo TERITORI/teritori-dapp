@@ -1,5 +1,5 @@
 import React from "react";
-import { Linking, Pressable, TouchableOpacity, View } from "react-native";
+import { Linking, TouchableOpacity, View } from "react-native";
 
 import { NavbarCard } from "./NavbarCard";
 import BookIcon from "../../../../assets/LogoPathwarOverview/BookIcon.svg";

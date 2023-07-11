@@ -20,10 +20,10 @@ export const PathWarRewards: React.FC<{
     <FlatList
       data={rewards}
       style={{
-        width: 320,
+        width: "100%",
       }}
       contentContainerStyle={{
-        width: 320,
+        width: "100%",
       }}
       columnWrapperStyle={{
         justifyContent: "space-between",
@@ -42,6 +42,7 @@ export const PathWarRewards: React.FC<{
         return (
           <TertiaryBox
             height={42}
+            fullWidth
             squaresBackgroundColor={neutral17}
             style={
               isMobile

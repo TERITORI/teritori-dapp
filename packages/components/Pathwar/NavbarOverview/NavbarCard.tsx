@@ -1,5 +1,5 @@
 import React from "react";
-import { Pressable, View } from "react-native";
+import { Pressable } from "react-native";
 import { SvgProps } from "react-native-svg";
 
 import { neutral17 } from "../../../utils/style/colors";

@@ -1,12 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import { FlatList, TouchableOpacity, View } from "react-native";
 
-import { ChallengeDetails } from "./ChallengeDetailsFiles/ChallengeDetails";
 import checkSvg from "../../../assets/icons/Pathwar/checkIcon.svg";
 import clockSvg from "../../../assets/icons/Pathwar/clockIcon.svg";
 import diamondSvg from "../../../assets/icons/Pathwar/diamondIcon.svg";
 import starSvg from "../../../assets/icons/Pathwar/starIcon.svg";
-import { Challenge } from "../../api/pathwar/v1/pathwar";
+import { Challenge, Money } from "../../api/pathwar/v1/pathwar";
 import { PathWarRewards } from "../../screens/Pathwar/components/PathWarRewards";
 import { PathWarTags } from "../../screens/Pathwar/components/PathWarTags";
 import { UserWIthTNS } from "../../screens/Pathwar/components/UserWIthTNS";
@@ -25,20 +24,19 @@ import {
   fontSemibold16,
   fontSemibold20,
 } from "../../utils/style/fonts";
-import { layout, screenContentMaxWidthLarge } from "../../utils/style/layout";
+import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { CurrencyIcon } from "../CurrencyIcon";
 import FlexRow from "../FlexRow";
 import { OptimizedImage } from "../OptimizedImage";
 import { SVG } from "../SVG";
 import { Separator } from "../Separator";
-import { PrimaryBadge } from "../badges/PrimaryBadge";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 
 function LeftRail(props: {
   sourceURI: string;
   price: Money | undefined;
-  onPress: () => void;
+  onPress?: () => void;
 }) {
   return (
     <View
@@ -153,7 +151,7 @@ function LeftRail(props: {
 export const ChallengeBox: React.FC<{
   data: Challenge;
 }> = ({ data }) => {
-  const [displayChallengeDetails, setDisplayChallengeDetails] = useState(false);
+  // const [displayChallengeDetails, setDisplayChallengeDetails] = useState(false);
 
   return (
     <TertiaryBox
@@ -181,7 +179,7 @@ export const ChallengeBox: React.FC<{
         <LeftRail
           sourceURI={data.thumbnail}
           price={data.price}
-          onPress={() => setDisplayChallengeDetails(true)}
+          // onPress={() => setDisplayChallengeDetails(true)}
         />
 
         <View
@@ -236,23 +234,23 @@ export const ChallengeBox: React.FC<{
             </View>
           </View>
 
-          {/*<Separator*/}
-          {/*  style={{*/}
-          {/*    marginBottom: layout.padding_x2,*/}
-          {/*    width: "100%",*/}
-          {/*  }}*/}
-          {/*  color={neutral44}*/}
-          {/*/>*/}
+          <Separator
+            style={{
+              marginBottom: layout.padding_x2,
+              width: "100%",
+            }}
+            color={neutral44}
+          />
 
           <PathWarTags tags={data.tags} />
 
-          {/*<Separator*/}
-          {/*  style={{*/}
-          {/*    marginBottom: layout.padding_x2,*/}
-          {/*    width: "100%",*/}
-          {/*  }}*/}
-          {/*  color={neutral44}*/}
-          {/*/>*/}
+          <Separator
+            style={{
+              marginBottom: layout.padding_x2,
+              width: "100%",
+            }}
+            color={neutral44}
+          />
 
           <BrandText
             style={[
@@ -267,6 +265,7 @@ export const ChallengeBox: React.FC<{
             style={{
               flexDirection: "row",
               width: 440,
+              padding: layout.padding_x1,
               justifyContent: "space-between",
             }}
           >

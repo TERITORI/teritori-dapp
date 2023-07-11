@@ -4,7 +4,6 @@ import { useSelector } from "react-redux";
 
 import { getChallenges } from "./getChallenges";
 import pathwarBanner from "../../../assets/banners/pathwarBanner.png";
-import { Challenge } from "../../api/pathwar/v1/pathwar";
 import { BrandText } from "../../components/BrandText";
 import { ChallengeBox } from "../../components/Pathwar/ChallengeBox";
 import { ConnectBar } from "../../components/Pathwar/ConnectBar";
