@@ -141,7 +141,7 @@ export const ResourceBox: React.FC<{ data: Resources }> = ({ data }) => {
             alignContent: "center",
             justifyContent: "center",
             marginLeft: layout.padding_x1_5,
-            marginBottom: layout.padding_x1_5,
+            marginBottom: "10%",
           }}
         >
           <View
@@ -159,6 +159,8 @@ export const ResourceBox: React.FC<{ data: Resources }> = ({ data }) => {
             </BrandText>
             <ScrollView style={{ height: 60 }}>
               <BrandText
+                ellipsizeMode="tail"
+                numberOfLines={2}
                 style={[{ marginBottom: layout.padding_x0_5 }, fontSemibold13]}
               >
                 {data.description}

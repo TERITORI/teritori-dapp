@@ -36,7 +36,8 @@ export const ResourceScreen: React.FC = () => {
     {
       id: 1,
       title: "title",
-      description: "things and stuff",
+      description:
+        "things and stuff things and stuff things and stuff things and stuff things and stuff things and stuff things and stuff things and stuff things and stuff things and stuff",
 
       category: [{ id: 1, text: "video" }],
       url: "https://cloudflare-ipfs.com/ipfs/QmQakEBJ9aevUZz7eYH2jtqfb9V5D8FkLeH9Bwr47wVHYH",
