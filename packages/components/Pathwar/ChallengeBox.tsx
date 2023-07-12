@@ -37,7 +37,6 @@ export const ChallengeBox: React.FC<{
 
   return (
     <TertiaryBox
-      width={680}
       mainContainerStyle={{ backgroundColor: neutral17 }}
       style={{
         marginBottom: layout.padding_x2_5,

@@ -1,4 +1,5 @@
-import React from "react";
+import { ResizeMode, Video } from "expo-av";
+import React, { useState } from "react";
 import { View, ScrollView, TouchableOpacity } from "react-native";
 
 import heartIcon from "../../../../assets/icons/Pathwar/heartIcon.svg";
@@ -14,9 +15,10 @@ import { layout } from "../../../utils/style/layout";
 
 export const ResourceBox: React.FC<{ data: Resources }> = ({ data }) => {
   const isMobile = useIsMobile();
+  const [isPlaying, setIsPlaying] = useState(false);
   return (
     <TertiaryBox
-      width={isMobile ? 320 : 480}
+      width={isMobile ? 320 : 640}
       height={330}
       mainContainerStyle={{ backgroundColor: "red" }}
       style={{
@@ -32,15 +34,34 @@ export const ResourceBox: React.FC<{ data: Resources }> = ({ data }) => {
           height: "100%",
         }}
       >
+        <Video
+          style={{
+            zIndex: 1,
+            height: 330,
+            left: 0,
+            position: "absolute",
+          }}
+          source={{
+            uri: data.url,
+          }}
+          useNativeControls
+          resizeMode={ResizeMode.COVER}
+          onPlaybackStatusUpdate={(e) => {
+            if (e.isLoaded) {
+              setIsPlaying(e.isPlaying);
+            }
+          }}
+        />
         <View
           style={{
+            zIndex: 2,
+            display: isPlaying ? "none" : "flex",
+            marginTop: layout.padding_x1,
             flexDirection: "row",
             justifyContent: "space-between",
-            marginLeft: layout.padding_x1_5,
-            marginTop: layout.padding_x1_5,
           }}
         >
-          <View style={{ flexDirection: "row" }}>
+          <View style={{ flexDirection: "row", marginLeft: layout.padding_x1 }}>
             {data.tags.map((tag) => (
               <View
                 style={{
@@ -69,7 +90,12 @@ export const ResourceBox: React.FC<{ data: Resources }> = ({ data }) => {
           </View>
 
           <View
-            style={{ flexDirection: "row", marginRight: layout.padding_x1_5 }}
+            style={{
+              flexDirection: "row",
+              marginRight: layout.padding_x1_5,
+              display: isPlaying ? "none" : "flex",
+              zIndex: 2,
+            }}
           >
             <TouchableOpacity>
               <View
@@ -106,6 +132,8 @@ export const ResourceBox: React.FC<{ data: Resources }> = ({ data }) => {
 
         <View
           style={{
+            zIndex: 2,
+            display: isPlaying ? "none" : "flex",
             backgroundColor: withAlpha(neutral00, 0.3),
             width: 330,
             height: 86,

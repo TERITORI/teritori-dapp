@@ -76,9 +76,10 @@ message Resources {
   repeated Category category = 3; // cosmos, gno, web, etc
   repeated Tag tags = 4;
   string thumbnail = 5;
-  string title = 6;
-  bool liked = 7;
-  string description = 8;
+  string url = 6;
+  string title = 7;
+  bool liked = 8;
+  string description = 9;
 }
 
 message ResourcesResponse {

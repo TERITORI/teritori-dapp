@@ -102,6 +102,7 @@ export interface Resources {
   category: Category[];
   tags: Tag[];
   thumbnail: string;
+  url: string;
   title: string;
   liked: boolean;
   description: string;
@@ -783,7 +784,7 @@ export const ResourcesRequest = {
 };
 
 function createBaseResources(): Resources {
-  return { id: 0, type: 0, category: [], tags: [], thumbnail: "", title: "", liked: false, description: "" };
+  return { id: 0, type: 0, category: [], tags: [], thumbnail: "", url: "", title: "", liked: false, description: "" };
 }
 
 export const Resources = {
@@ -803,14 +804,17 @@ export const Resources = {
     if (message.thumbnail !== "") {
       writer.uint32(42).string(message.thumbnail);
     }
+    if (message.url !== "") {
+      writer.uint32(50).string(message.url);
+    }
     if (message.title !== "") {
-      writer.uint32(50).string(message.title);
+      writer.uint32(58).string(message.title);
     }
     if (message.liked === true) {
-      writer.uint32(56).bool(message.liked);
+      writer.uint32(64).bool(message.liked);
     }
     if (message.description !== "") {
-      writer.uint32(66).string(message.description);
+      writer.uint32(74).string(message.description);
     }
     return writer;
   },
@@ -838,12 +842,15 @@ export const Resources = {
           message.thumbnail = reader.string();
           break;
         case 6:
-          message.title = reader.string();
+          message.url = reader.string();
           break;
         case 7:
-          message.liked = reader.bool();
+          message.title = reader.string();
           break;
         case 8:
+          message.liked = reader.bool();
+          break;
+        case 9:
           message.description = reader.string();
           break;
         default:
@@ -861,6 +868,7 @@ export const Resources = {
       category: Array.isArray(object?.category) ? object.category.map((e: any) => Category.fromJSON(e)) : [],
       tags: Array.isArray(object?.tags) ? object.tags.map((e: any) => Tag.fromJSON(e)) : [],
       thumbnail: isSet(object.thumbnail) ? String(object.thumbnail) : "",
+      url: isSet(object.url) ? String(object.url) : "",
       title: isSet(object.title) ? String(object.title) : "",
       liked: isSet(object.liked) ? Boolean(object.liked) : false,
       description: isSet(object.description) ? String(object.description) : "",
@@ -882,6 +890,7 @@ export const Resources = {
       obj.tags = [];
     }
     message.thumbnail !== undefined && (obj.thumbnail = message.thumbnail);
+    message.url !== undefined && (obj.url = message.url);
     message.title !== undefined && (obj.title = message.title);
     message.liked !== undefined && (obj.liked = message.liked);
     message.description !== undefined && (obj.description = message.description);
@@ -895,6 +904,7 @@ export const Resources = {
     message.category = object.category?.map((e) => Category.fromPartial(e)) || [];
     message.tags = object.tags?.map((e) => Tag.fromPartial(e)) || [];
     message.thumbnail = object.thumbnail ?? "";
+    message.url = object.url ?? "";
     message.title = object.title ?? "";
     message.liked = object.liked ?? false;
     message.description = object.description ?? "";
