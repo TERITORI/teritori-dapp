@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
 
+import { useIsMobile } from "../hooks/useIsMobile";
 import { getValuesFromId, SEPARATOR } from "../screens/DAppStore/query/util";
 import {
   selectAvailableApps,
@@ -15,12 +16,18 @@ import { useAppDispatch } from "../store/store";
 import { SIDEBAR_LIST } from "../utils/sidebar";
 
 export const useSidebar = () => {
-  // The entered isSidebarExpanded
   const isSidebarExpanded = useSelector(selectSidebarExpanded);
-
   const selectedApps = useSelector(selectCheckedApps);
   const availableApps = useSelector(selectAvailableApps);
   const dispatch = useAppDispatch();
+  // on mobile sidebar is not expanded on load
+  const isMobile = useIsMobile();
+  useEffect(() => {
+    if (isMobile) {
+      dispatch(setSidebarExpanded(false));
+    }
+  }, [dispatch, isMobile]);
+
   useEffect(() => {
     if (selectedApps.length === 0 && Object.values(availableApps).length > 0) {
       dispatch(
