@@ -22,6 +22,7 @@ import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkKind } from "../../networks";
 import { useAppNavigation } from "../../utils/navigation";
 import { neutral17, neutral33 } from "../../utils/style/colors";
+import { fontBold16, fontBold9 } from "../../utils/style/fonts";
 import {
   smallSidebarWidth,
   fullSidebarWidth,
@@ -56,13 +57,10 @@ export const Sidebar: React.FC = () => {
   const userInfo = useNSUserInfo(selectedWallet?.userId);
   const selectedNetworkKind = useSelectedNetworkKind();
   const connected = selectedWallet?.connected;
-
-  // variables
   const navigation = useAppNavigation();
   const { name: currentRouteName } = useRoute();
   const { isSidebarExpanded, toggleSidebar, dynamicSidebar } = useSidebar();
 
-  // animations
   const layoutStyle = useAnimatedStyle(
     () => ({
       width: isSidebarExpanded
@@ -92,7 +90,6 @@ export const Sidebar: React.FC = () => {
     navigation.navigate(name);
   };
 
-  // returns
   return (
     <Animated.View style={[styles.container, layoutStyle]}>
       <View style={styles.headerContainer}>
@@ -150,17 +147,17 @@ export const Sidebar: React.FC = () => {
       />
       <View>
         <SidebarSeparator />
-        <BuyTokens />
+        <BuyTokens
+          flexDirection={isSidebarExpanded ? "row" : "column"}
+          textStyle={isSidebarExpanded ? fontBold16 : fontBold9}
+        />
         <SidebarSeparator />
 
         {selectedNetworkKind === NetworkKind.Cosmos &&
           connected &&
           userInfo.metadata && (
             <SidebarProfileButton
-              isLoading={userInfo.loading}
               userId={selectedWallet?.userId || ""}
-              tokenId={userInfo.metadata.tokenId || ""}
-              image={userInfo.metadata.image || ""}
               isExpanded={isSidebarExpanded}
             />
           )}

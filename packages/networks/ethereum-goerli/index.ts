@@ -1,5 +1,5 @@
 import { ethereumGoerliCurrencies } from "./currencies";
-import { NetworkInfo, NetworkKind } from "../types";
+import { NetworkFeature, NetworkInfo, NetworkKind } from "../types";
 
 const riotContractAddressGen1 = "0xdfff431d4c2275201dEd83dAd613A3DbDA1D11A7";
 
@@ -8,6 +8,7 @@ export const ethereumGoerliNetwork: NetworkInfo = {
   kind: NetworkKind.Ethereum,
   displayName: "Ethereum Goerli",
   icon: "icons/networks/ethereum.svg",
+  features: [NetworkFeature.NFTMarketplace],
   currencies: ethereumGoerliCurrencies,
   idPrefix: "testeth",
   endpoint: "https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",

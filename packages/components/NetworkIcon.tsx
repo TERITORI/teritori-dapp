@@ -5,7 +5,7 @@ import { SVG } from "./SVG";
 import { getNetwork } from "../networks";
 
 export const NetworkIcon: React.FC<{
-  networkId: string;
+  networkId: string | undefined;
   size: number;
 }> = ({ networkId, size }) => {
   const network = getNetwork(networkId);

@@ -94,7 +94,18 @@ const getNetworkBalances = async (
         `${network.restEndpoint}/cosmos/bank/v1beta1/balances/${address}`
       );
       const responseJSON: CosmosBalancesResponse = await response.json();
-      return responseJSON.balances;
+      return responseJSON.balances || [];
+    }
+
+    case NetworkKind.Gno: {
+      const res = await (window as any).adena.GetAccount();
+      return [
+        {
+          amount:
+            res?.data?.coins?.substring(0, res?.data?.coins?.length - 5) || "0",
+          denom: "ugnot",
+        },
+      ];
     }
 
     default:

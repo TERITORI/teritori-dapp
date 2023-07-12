@@ -6,8 +6,10 @@ import {
   StyleSheet,
   Pressable,
 } from "react-native";
+import { useSelector } from "react-redux";
 
 import { NFTTransferModal } from "./NFTTransferModal";
+import checkMark from "../../../assets/icons/checkmark-marketplace.svg";
 import dotsCircleSVG from "../../../assets/icons/dots-circle.svg";
 import footerSVG from "../../../assets/icons/footer-regular.svg";
 import gridSVG from "../../../assets/icons/grid.svg";
@@ -16,11 +18,25 @@ import raffleSVG from "../../../assets/icons/raffle.svg";
 import sendSVG from "../../../assets/icons/send.svg";
 import { NFT } from "../../api/marketplace/v1/marketplace";
 import { useDropdowns } from "../../context/DropdownsProvider";
+import { useIsMobile } from "../../hooks/useIsMobile";
+import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getCosmosNetwork, parseUserId } from "../../networks";
+import {
+  addSelected,
+  removeSelected,
+  selectSelectedNFTIds,
+  setShowCart,
+} from "../../store/slices/marketplaceCartItems";
+import { useAppDispatch } from "../../store/store";
 import { prettyPrice } from "../../utils/coins";
-import { neutral00, neutral33, neutral77 } from "../../utils/style/colors";
+import {
+  neutral00,
+  neutral22,
+  neutral33,
+  neutral77,
+} from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { CurrencyIcon } from "../CurrencyIcon";
@@ -37,9 +53,10 @@ import { SpacerColumn, SpacerRow } from "../spacer";
 export const NFTView: React.FC<{
   data: NFT;
   style?: StyleProp<ViewStyle>;
-}> = React.memo(({ data: nft, style }) => {
-  // variables
-  const cardWidth = 258;
+}> = ({ data: nft, style }) => {
+  const isMobile = useIsMobile();
+  const cardWidth = isMobile ? 220 : 250;
+  const { width } = useMaxResolution({ isLarge: true });
   const insideMargin = layout.padding_x2;
   const contentWidth = cardWidth - insideMargin * 2;
   const flatStyle = StyleSheet.flatten(style);
@@ -50,6 +67,17 @@ export const NFTView: React.FC<{
     useDropdowns();
   const [isTransferNFTVisible, setIsTransferNFTVisible] =
     useState<boolean>(false);
+  const localSelected = new Set(useSelector(selectSelectedNFTIds)).has(nft.id);
+  const dispatch = useAppDispatch();
+  const handleClick = (nft: NFT, selected: boolean) => {
+    if (width < 500) return; // disable cart on mobile
+    dispatch(setShowCart(true));
+    if (!selected) {
+      dispatch(addSelected(nft));
+    } else {
+      dispatch(removeSelected(nft.id));
+    }
+  };
   const dropdownRef = useRef<View>(null);
 
   const isOwner = nft.ownerId === selectedWallet?.userId;
@@ -89,17 +117,23 @@ export const NFTView: React.FC<{
       >
         <TertiaryBox
           key={nft.name}
-          height={438}
+          // height={438}
           width={cardWidth}
           style={styleWithoutMargins}
         >
           <View style={{ width: "100%" }}>
-            <View
+            <Pressable
+              disabled={!nft.isListed || isOwner}
               style={{
                 paddingTop: insideMargin,
                 paddingBottom: 12,
                 paddingHorizontal: insideMargin,
                 zIndex: 1000,
+                borderTopRightRadius: 7,
+                backgroundColor: localSelected ? neutral22 : neutral00,
+              }}
+              onPress={() => {
+                handleClick(nft, localSelected);
               }}
             >
               <View
@@ -118,12 +152,8 @@ export const NFTView: React.FC<{
                   }}
                 >
                   <OptimizedImage
-                    source={{
-                      uri:
-                        userInfo.metadata.image ||
-                        cosmosNetwork?.nameServiceDefaultImage ||
-                        "",
-                    }}
+                    sourceURI={userInfo.metadata.image}
+                    fallbackURI={cosmosNetwork?.nameServiceDefaultImage}
                     width={32}
                     height={32}
                     style={{
@@ -158,6 +188,11 @@ export const NFTView: React.FC<{
                     </BrandText>
                   </OmniLink>
                 </View>
+                {localSelected && (
+                  <View style={{ position: "relative", zIndex: 1000 }}>
+                    <SVG source={checkMark} height={32} width={32} />
+                  </View>
+                )}
                 {isOwnerAndNotListed && (
                   <View style={{ position: "relative", zIndex: 1000 }}>
                     <Pressable
@@ -225,6 +260,8 @@ export const NFTView: React.FC<{
                     fontSize: 14,
                     marginBottom: 12,
                   }}
+                  ellipsizeMode="tail"
+                  numberOfLines={1}
                 >
                   {nft.name}
                 </BrandText>
@@ -255,17 +292,19 @@ export const NFTView: React.FC<{
                   </View>
                 </View>
               </OmniLink>
-            </View>
+            </Pressable>
             <View
               style={{
                 borderTopWidth: 1,
                 borderTopColor: neutral33,
+                backgroundColor: localSelected ? neutral22 : neutral00,
                 height: 69,
                 paddingHorizontal: 16,
                 flexDirection: "row",
                 justifyContent: "space-between",
                 alignItems: "center",
                 width: "100%",
+                borderBottomLeftRadius: 7, // HAS to be 7
               }}
             >
               <View
@@ -314,6 +353,9 @@ export const NFTView: React.FC<{
                   >
                     <SecondaryButton
                       size="XS"
+                      squaresBackgroundColor={
+                        localSelected ? neutral22 : neutral00
+                      }
                       text={prettyPrice(nft.networkId, nft.price, nft.denom)}
                       fullWidth
                       numberOfLines={1}
@@ -334,7 +376,7 @@ export const NFTView: React.FC<{
       />
     </>
   );
-});
+};
 
 const styles = StyleSheet.create({
   optionContainer: {
@@ -352,7 +394,7 @@ const styles = StyleSheet.create({
 });
 
 // using this because ellipizeMode seems broken
-const shortUserAddressFromID = (id: string, size: number) => {
+export const shortUserAddressFromID = (id: string, size: number) => {
   const [network] = parseUserId(id);
   if (network) {
     const prefixLen = network.idPrefix.length + 1;

@@ -7,6 +7,7 @@ import launchpadApplySVG from "../../assets/icons/launchpad-apply.svg";
 import launchpadLaunchpadSVG from "../../assets/icons/launchpad-launchpad.svg";
 import launchpadSVG from "../../assets/icons/launchpad.svg";
 import messagesSVG from "../../assets/icons/messages.svg";
+import multisigSVG from "../../assets/icons/multisig.svg";
 import osmosisCircleSVG from "../../assets/icons/networks/osmosis-circle.svg";
 import pathwarSVG from "../../assets/icons/pathwar.svg";
 import riotersGameSVG from "../../assets/icons/rioters-game.svg";
@@ -19,7 +20,7 @@ import { NetworkKind } from "../networks";
 
 export const SIDEBAR_LIST: SidebarRecordType = {
   feed: {
-    title: "Feed",
+    title: "Social Feed",
     route: "Feed",
     id: "Feed",
     icon: feedSVG,
@@ -83,6 +84,12 @@ export const SIDEBAR_LIST: SidebarRecordType = {
     route: "Staking",
     icon: stakingSVG,
     disabledOn: [NetworkKind.Ethereum],
+  },
+  organizations: {
+    title: "Organizations",
+    id: "Organizations",
+    route: "Organizations",
+    icon: multisigSVG,
   },
   governance: {
     title: "Governance",

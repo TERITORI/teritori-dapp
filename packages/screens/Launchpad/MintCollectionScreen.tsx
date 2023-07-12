@@ -643,7 +643,10 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                       margin: -cardsHalfGap,
                     }}
                   >
-                    <CollectionSocialButtons collectionInfo={info} />
+                    <CollectionSocialButtons
+                      collectionInfo={info}
+                      hideMintButton
+                    />
                   </View>
                 </View>
               )}
@@ -663,7 +666,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
               <TertiaryBox style={{ marginBottom: 40 }}>
                 {info.image ? (
                   <OptimizedImage
-                    source={{ uri: info.image }}
+                    sourceURI={info.image}
                     width={imageSize}
                     height={imageSize}
                     style={{

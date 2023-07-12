@@ -4,7 +4,6 @@ import { TouchableOpacity, View } from "react-native";
 import backSVG from "../../../../assets/icons/back.svg";
 import { useAppNavigation } from "../../../utils/navigation";
 import { neutral22 } from "../../../utils/style/colors";
-import { layout } from "../../../utils/style/layout";
 import { SVG } from "../../SVG";
 
 export const BackButton: React.FC<{
@@ -28,7 +27,6 @@ export const BackButton: React.FC<{
           height: 32,
           backgroundColor: neutral22,
           borderRadius: 999,
-          marginRight: layout.padding_x1_5,
         }}
       >
         <SVG width={24} height={24} source={backSVG} />

@@ -17,6 +17,7 @@ export const redDefault = errorColor;
 export const codGrayColor = "#1C1C1C";
 export const mineShaftColor = "#3D3D3D";
 export const reefColor = "#D2FFAE";
+export const tulipTree = "#EAA54B";
 
 export const gameHighlight = "#FCEE4F";
 
@@ -60,6 +61,7 @@ export const currencyETHcolor = "#232731";
 export const currencyATOMcolor = "#5C26F5";
 export const currencyOSMOcolor = "#A401D4";
 export const currencyJUNOcolor = "#F0827D";
+export const currencyGNOcolor = "#232800";
 
 export const gradientBlue = "90deg, #00C6FB 0%, #005BEA 100%";
 export const gradientBlueReversed = "90deg, #005BEA 0%, #00C6FB 100%";

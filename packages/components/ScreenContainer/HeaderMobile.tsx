@@ -1,38 +1,62 @@
 import React, { FC } from "react";
 import { View, StyleSheet, TouchableOpacity } from "react-native";
+import { useSelector } from "react-redux";
 
 import hamburgerCrossSVG from "../../../assets/icons/hamburger-button-cross.svg";
 import hamburgerSVG from "../../../assets/icons/hamburger-button.svg";
 import { useSidebar } from "../../context/SidebarProvider";
-import { NetworkKind } from "../../networks";
+import { NetworkFeature, NetworkKind } from "../../networks";
+import { selectAllSelectedNFTData } from "../../store/slices/marketplaceCartItems";
 import { neutral00, neutral33 } from "../../utils/style/colors";
 import { layout, MOBILE_HEADER_HEIGHT } from "../../utils/style/layout";
 import { NetworkSelectorMobile } from "../NetworkSelector/NetworkSelectorMobile";
 import { SVG } from "../SVG";
 import { SearchButtonMobile } from "../Search/SearchButtonMobile";
 import { ConnectWalletButtonMobile } from "../TopMenu/ConnectWalletButtonMobile";
+import { BackButton } from "../navigation/components/BackButton";
+import { CartIconButtonBadge } from "../navigation/components/CartIconButtonBadge";
 import { TopLogoMobile } from "../navigation/components/TopLogoMobile";
 import { SpacerRow } from "../spacer";
 
 export const HeaderMobile: FC<{
   forceNetworkId?: string;
   forceNetworkKind?: NetworkKind;
-}> = ({ forceNetworkId, forceNetworkKind }) => {
+  forceNetworkFeatures?: NetworkFeature[];
+  onBackPress?: () => void;
+}> = ({
+  forceNetworkId,
+  forceNetworkKind,
+  forceNetworkFeatures,
+  onBackPress,
+}) => {
   const { isSidebarExpanded, toggleSidebar } = useSidebar();
+  const selectedNFTDataInCart = useSelector(selectAllSelectedNFTData);
 
   return (
     <View style={styles.container}>
       <TopLogoMobile />
       <View style={styles.rightContainer}>
+        <SpacerRow size={1} />
+        {onBackPress && <BackButton onPress={onBackPress} />}
+        <SpacerRow size={1} />
         <SearchButtonMobile />
-        <SpacerRow size={2} />
+
+        {selectedNFTDataInCart.length && (
+          <>
+            <SpacerRow size={1} />
+            <CartIconButtonBadge isMobile />
+            <SpacerRow size={1} />
+          </>
+        )}
+
         <NetworkSelectorMobile
           forceNetworkId={forceNetworkId}
           forceNetworkKind={forceNetworkKind}
+          forceNetworkFeatures={forceNetworkFeatures}
         />
-        <SpacerRow size={2} />
+        <SpacerRow size={1} />
         <ConnectWalletButtonMobile />
-        <SpacerRow size={2} />
+        <SpacerRow size={1} />
         <TouchableOpacity onPress={toggleSidebar}>
           <SVG
             source={isSidebarExpanded ? hamburgerCrossSVG : hamburgerSVG}

@@ -1,4 +1,4 @@
-import { ImageSourcePropType, View, ViewStyle, StyleSheet } from "react-native";
+import { View, ViewStyle, StyleSheet } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
 import { OptimizedImage } from "../../../components/OptimizedImage";
@@ -16,7 +16,7 @@ import { RipperRarity } from "../types";
 
 type RipperAvatarProps = {
   size: number;
-  source: string | ImageSourcePropType;
+  source: string;
   containerStyle?: ViewStyle;
   rarity?: RipperRarity;
   rounded?: boolean;
@@ -47,8 +47,6 @@ export const RipperAvatar: React.FC<RipperAvatarProps> = ({
       rarityColor = secondaryColor;
   }
 
-  const imageSource = typeof source === "string" ? { uri: source } : source;
-
   return (
     <View
       style={[
@@ -63,7 +61,7 @@ export const RipperAvatar: React.FC<RipperAvatarProps> = ({
     >
       <OptimizedImage
         style={{ width: "100%", height: "100%", opacity: isStaked ? 0.4 : 1 }}
-        source={imageSource}
+        sourceURI={source}
         width={size}
         height={size}
       />

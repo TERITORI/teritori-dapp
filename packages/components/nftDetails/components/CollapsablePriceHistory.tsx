@@ -19,6 +19,7 @@ import {
   neutral33,
   neutral77,
   primaryColor,
+  transparentColor,
 } from "../../../utils/style/colors";
 import { fontMedium10, fontMedium14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
@@ -84,7 +85,7 @@ export const CollapsablePriceHistory: React.FC<{ nftId: string }> = ({
           <VictoryLine
             style={{
               data: { stroke: primaryColor },
-              border: { stroke: "transparent" },
+              border: { stroke: transparentColor },
 
               parent: { border: "1px solid red" },
             }}

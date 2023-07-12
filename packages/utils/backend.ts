@@ -1,4 +1,9 @@
 import {
+  DAOServiceClientImpl,
+  GrpcWebImpl as DaoGrpcWebImpl,
+  DAOService,
+} from "../api/dao/v1/dao";
+import {
   FeedService,
   FeedServiceClientImpl,
   GrpcWebImpl as FeedGrpcWebImpl,
@@ -61,6 +66,30 @@ export const mustGetP2eClient = (networkId: string | undefined) => {
   const client = getP2eClient(networkId);
   if (!client) {
     throw new Error(`failed to get p2e client for network '${networkId}'`);
+  }
+  return client;
+};
+
+const daoClients: { [key: string]: DAOService } = {};
+
+export const getDAOClient = (networkId: string | undefined) => {
+  const network = getNetwork(networkId);
+  if (!network) {
+    return undefined;
+  }
+  if (!daoClients[network.id]) {
+    const rpc = new DaoGrpcWebImpl(network.backendEndpoint, {
+      debug: false,
+    });
+    daoClients[network.id] = new DAOServiceClientImpl(rpc);
+  }
+  return daoClients[network.id];
+};
+
+export const mustGetDAOClient = (networkId: string | undefined) => {
+  const client = getDAOClient(networkId);
+  if (!client) {
+    throw new Error(`failed to get dao client for network '${networkId}'`);
   }
   return client;
 };

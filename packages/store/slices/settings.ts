@@ -7,8 +7,10 @@ interface Settings {
   selectedWalletId: string;
   NFTStorageAPI: string;
   isKeplrConnected: boolean;
+  isAdenaConnected: boolean;
   alreadyVisited: boolean;
   areTestnetsEnabled: boolean;
+  sideBarExpanded: boolean;
 }
 
 const initialState: Settings = {
@@ -16,8 +18,10 @@ const initialState: Settings = {
   selectedNetworkId: "",
   NFTStorageAPI: process.env.NFT_STORAGE_API || "",
   isKeplrConnected: false,
+  isAdenaConnected: false,
   alreadyVisited: false,
   areTestnetsEnabled: false,
+  sideBarExpanded: true,
 };
 
 export const selectSelectedNetworkId = (state: RootState) =>
@@ -29,8 +33,14 @@ export const selectSelectedWalletId = (state: RootState) =>
 export const selectIsKeplrConnected = (state: RootState) =>
   state.settings.isKeplrConnected;
 
+export const selectIsAdenaConnected = (state: RootState) =>
+  state.settings.isAdenaConnected;
+
 export const selectAreTestnetsEnabled = (state: RootState) =>
   state.settings.areTestnetsEnabled;
+
+export const selectSidebarExpanded = (state: RootState) =>
+  state.settings.sideBarExpanded;
 
 export const selectNFTStorageAPI = (state: RootState) =>
   state.settings.NFTStorageAPI;
@@ -48,8 +58,14 @@ const settingsSlice = createSlice({
     setIsKeplrConnected: (state, action: PayloadAction<boolean>) => {
       state.isKeplrConnected = action.payload;
     },
+    setIsAdenaConnected: (state, action: PayloadAction<boolean>) => {
+      state.isAdenaConnected = action.payload;
+    },
     setAreTestnetsEnabled: (state, action: PayloadAction<boolean>) => {
       state.areTestnetsEnabled = action.payload;
+    },
+    setSidebarExpanded: (state, action: PayloadAction<boolean>) => {
+      state.sideBarExpanded = action.payload;
     },
     setNFTStorageAPI: (state, action: PayloadAction<string>) => {
       state.NFTStorageAPI = action.payload;
@@ -61,7 +77,9 @@ export const {
   setSelectedNetworkId,
   setSelectedWalletId,
   setIsKeplrConnected,
+  setIsAdenaConnected,
   setAreTestnetsEnabled,
+  setSidebarExpanded,
   setNFTStorageAPI,
 } = settingsSlice.actions;
 

@@ -3,7 +3,7 @@ export const headerHeight = 80;
 export const MOBILE_HEADER_HEIGHT = 64;
 export const legalFooterHeight = 58;
 export const screenContentMaxWidth = 1092;
-export const screenContentMaxWidthLarge = 1290;
+export const screenContentMaxWidthLarge = 1600; //"100%";
 export const headerMarginHorizontal = 22;
 export const avatarWidth = 40;
 export const topMenuWidth = 332;
@@ -79,5 +79,6 @@ export const layout = {
 
   borderRadius: 12,
   contentPadding: 48,
+  topContentPaddingWithHeading: 42,
   iconButton: 32,
 };

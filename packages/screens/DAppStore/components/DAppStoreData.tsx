@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { merge } from "lodash";
 import { memo, useEffect } from "react";
 
 import { setAvailableApps } from "../../../store/slices/dapps-store";
@@ -42,7 +43,7 @@ export const DAppStoreData: React.FC = memo(() => {
     const dAppsCol: IdAppsLUT = {};
     const formatted: dAppGroup = {};
 
-    dApps?.group.forEach((record) => {
+    dApps?.group.forEach((record, index) => {
       dAppsCol[record.linkingId] = {
         [record.id]: {
           id: record.id,
@@ -53,6 +54,7 @@ export const DAppStoreData: React.FC = memo(() => {
           groupKey: record.groupKey,
           selectedByDefault: record.selectedByDefault,
           alwaysOn: record.alwaysOn,
+          order: index,
         },
       };
     });
@@ -80,11 +82,9 @@ export const DAppStoreData: React.FC = memo(() => {
     });
 
     const dAppStoreValues = getAvailableApps();
-    const merged = { ...dAppStoreValues, ...formatted };
-
-    if (merged) {
-      dispatch(setAvailableApps(merged));
-    }
+    const merged = merge(dAppStoreValues, formatted);
+    merged["coming-soon"] = dAppStoreValues["coming-soon"];
+    dispatch(setAvailableApps(merged));
   }, [dApps, dAppsGroups, dispatch]);
 
   return <></>;

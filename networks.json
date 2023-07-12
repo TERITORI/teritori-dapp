@@ -5,6 +5,9 @@
     "chainId": "teritori-1",
     "displayName": "Teritori",
     "icon": "icons/networks/teritori.svg",
+    "features": [
+      "NFTMarketplace"
+    ],
     "walletUrlForStaking": "https://explorer.teritori.com/teritori/staking",
     "currencies": [
       {
@@ -42,7 +45,7 @@
       "average": 0.025,
       "high": 0.04
     },
-    "features": [
+    "cosmosFeatures": [
       "stargate",
       "ibc-transfer",
       "cosmwasm",
@@ -71,7 +74,13 @@
     "excludeFromLaunchpadList": [
       "tori1gflccmghzfscmxl95z43v36y0rle8v9x8kvt9na03yzywtw86amsj9nf37"
     ],
-    "socialFeedContractAddress": "tori1lxf8agg0wd2m7n2ultl0yx337jw23puh0mlkkw5vhtnkkfettwfqya7kpp"
+    "socialFeedContractAddress": "tori1lxf8agg0wd2m7n2ultl0yx337jw23puh0mlkkw5vhtnkkfettwfqya7kpp",
+    "daoFactoryContractAddress": "tori16rxh5hgukhdq8rvm2j3t6v483dcqguwp4l825vlwz5pmfpw7s4rs45nnca",
+    "daoCoreCodeId": 27,
+    "daoPreProposeSingleCodeId": 28,
+    "daoProposalSingleCodeId": 31,
+    "daoCw4GroupCodeId": 32,
+    "daoVotingCw4CodeId": 33
   },
   {
     "id": "cosmos-hub",
@@ -79,6 +88,7 @@
     "chainId": "cosmoshub-4",
     "displayName": "Cosmos Hub",
     "icon": "icons/networks/cosmos-hub.svg",
+    "features": [],
     "currencies": [
       {
         "denom": "uatom",
@@ -105,7 +115,7 @@
       "average": 0.025,
       "high": 0.04
     },
-    "features": [
+    "cosmosFeatures": [
       "stargate",
       "ibc-transfer",
       "cosmwasm",
@@ -119,6 +129,9 @@
     "chainId": "teritori-testnet-v3",
     "displayName": "Teritori Testnet",
     "icon": "icons/networks/teritori.svg",
+    "features": [
+      "NFTMarketplace"
+    ],
     "currencies": [
       {
         "denom": "utori",
@@ -166,7 +179,7 @@
       "average": 0.025,
       "high": 0.04
     },
-    "features": [
+    "cosmosFeatures": [
       "stargate",
       "ibc-transfer",
       "cosmwasm",
@@ -190,7 +203,18 @@
     "excludeFromLaunchpadList": [
       "tori1afwrcs58afaka6ltynevwcvq8zhejr3ssn703c0hky5emh890vzsry5wp5"
     ],
-    "socialFeedContractAddress": "tori19y3xr6lghw04tj2ets8y70mrynlnflejanl2ys3n3c5vaasj358shjsk20"
+    "socialFeedContractAddress": "tori19y3xr6lghw04tj2ets8y70mrynlnflejanl2ys3n3c5vaasj358shjsk20",
+    "daoCw20CodeId": 99,
+    "daoFactoryCodeId": 100,
+    "daoCoreCodeId": 101,
+    "daoPreProposeSingleCodeId": 102,
+    "daoProposalSingleCodeId": 103,
+    "daoVotingCw20StakedCodeId": 104,
+    "daoCw20StakeCodeId": 105,
+    "daoCw4GroupCodeId": 106,
+    "daoVotingCw4CodeId": 109,
+    "daoFactoryContractAddress": "tori1r29chp8ufwgx9u3wr4sfk050aardhkzwve7nht6y06gvlaqutr3qt83z6r",
+    "coreDAOAddress": "tori1dy5h9q9zue4swxe9mzracm8gudp0fcf2ncllch6pfq9d0fq0ftgq546063"
   },
   {
     "id": "cosmos-hub-theta",
@@ -198,6 +222,7 @@
     "chainId": "theta-testnet-001",
     "displayName": "Cosmos Hub Theta",
     "icon": "icons/networks/cosmos-hub.svg",
+    "features": [],
     "currencies": [
       {
         "denom": "uatom",
@@ -224,7 +249,7 @@
       "average": 0.025,
       "high": 0.04
     },
-    "features": [
+    "cosmosFeatures": [
       "stargate",
       "ibc-transfer",
       "cosmwasm",
@@ -237,6 +262,9 @@
     "kind": "Ethereum",
     "displayName": "Ethereum Goerli",
     "icon": "icons/networks/ethereum.svg",
+    "features": [
+      "NFTMarketplace"
+    ],
     "currencies": [
       {
         "denom": "0x0000000000000000000000000000000000000000",
@@ -278,6 +306,9 @@
     "kind": "Ethereum",
     "displayName": "Ethereum",
     "icon": "icons/networks/ethereum.svg",
+    "features": [
+      "NFTMarketplace"
+    ],
     "currencies": [
       {
         "denom": "0x0000000000000000000000000000000000000000",
@@ -315,6 +346,7 @@
     "chainId": "juno-1",
     "displayName": "Juno",
     "icon": "icons/networks/juno.svg",
+    "features": [],
     "currencies": [
       {
         "denom": "ujuno",
@@ -371,7 +403,7 @@
       "average": 0.025,
       "high": 0.04
     },
-    "features": [
+    "cosmosFeatures": [
       "stargate",
       "ibc-transfer",
       "cosmwasm",
@@ -385,6 +417,9 @@
     "chainId": "osmosis-1",
     "displayName": "Osmosis",
     "icon": "icons/networks/osmosis.svg",
+    "features": [
+      "Swap"
+    ],
     "currencies": [
       {
         "denom": "uosmo",
@@ -441,7 +476,7 @@
       "average": 0.025,
       "high": 0.04
     },
-    "features": [
+    "cosmosFeatures": [
       "stargate",
       "ibc-transfer",
       "cosmwasm",
@@ -455,6 +490,9 @@
     "chainId": "osmo-test-4",
     "displayName": "Osmosis Testnet",
     "icon": "icons/networks/osmosis.svg",
+    "features": [
+      "Swap"
+    ],
     "currencies": [
       {
         "denom": "uosmo",
@@ -501,12 +539,68 @@
       "average": 0.025,
       "high": 0.04
     },
-    "features": [
+    "cosmosFeatures": [
       "stargate",
       "ibc-transfer",
       "cosmwasm",
       "no-legacy-stdTx",
       "ibc-go"
     ]
+  },
+  {
+    "id": "gno-testnet",
+    "kind": "Gno",
+    "displayName": "Gno Testnet",
+    "icon": "icons/networks/gno.svg",
+    "features": [],
+    "currencies": [
+      {
+        "denom": "ugnot",
+        "displayName": "GNOT",
+        "decimals": 6,
+        "coingeckoId": "gno",
+        "icon": "icons/networks/gno.svg",
+        "kind": "native",
+        "color": "#232800"
+      }
+    ],
+    "stakeCurrency": "ugnot",
+    "idPrefix": "gno",
+    "chainId": "test3",
+    "endpoint": "https://rpc.test3.gno.land",
+    "txExplorer": "https://etherscan.io/tx/$hash",
+    "accountExplorer": "https://etherscan.io/address/$address",
+    "contractExplorer": "https://etherscan.io/address/$address",
+    "testnet": true,
+    "backendEndpoint": "https://dapp-backend.mainnet.teritori.com",
+    "vaultContractAddress": ""
+  },
+  {
+    "id": "gno-dev",
+    "kind": "Gno",
+    "displayName": "Gno Devnet",
+    "icon": "icons/networks/gno.svg",
+    "features": [],
+    "currencies": [
+      {
+        "denom": "ugnot",
+        "displayName": "GNOT",
+        "decimals": 6,
+        "coingeckoId": "gno",
+        "icon": "icons/networks/gno.svg",
+        "kind": "native",
+        "color": "#232800"
+      }
+    ],
+    "stakeCurrency": "ugnot",
+    "idPrefix": "gnodev",
+    "chainId": "dev",
+    "endpoint": "http://127.0.0.1:36657/http://localhost:26657",
+    "txExplorer": "https://etherscan.io/tx/$hash",
+    "accountExplorer": "https://etherscan.io/address/$address",
+    "contractExplorer": "https://etherscan.io/address/$address",
+    "testnet": true,
+    "backendEndpoint": "https://dapp-backend.mainnet.teritori.com",
+    "vaultContractAddress": ""
   }
 ]

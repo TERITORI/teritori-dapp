@@ -2,7 +2,8 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 
 import { ComingSoonScreen } from "../../screens/ComingSoon/ComingSoon";
-import { DAppStore } from "../../screens/DAppStore/HomeScreen";
+import { CoreDAOScreen } from "../../screens/CoreDAO/CoreDAOScreen";
+import { DAppStoreScreen } from "../../screens/DAppStore/DAppStoreScreen";
 import { ToriPunks } from "../../screens/DAppStore/apps/toripunks/HomeScreen";
 import { FeedScreen } from "../../screens/Feed/FeedScreen";
 import { FeedNewArticleScreen } from "../../screens/FeedNewArticle/FeedNewArticleScreen";
@@ -19,6 +20,8 @@ import { CollectionToolsScreen } from "../../screens/Marketplace/CollectionTools
 import { MarketplaceScreen } from "../../screens/Marketplace/MarketplaceScreen";
 import { NFTDetailScreen } from "../../screens/Marketplace/NFTDetailScreen";
 import { MyCollectionScreen } from "../../screens/MyCollection/MyCollectionScreen";
+import { OrganizationDeployerScreen } from "../../screens/Organizations/OrganizationDeployerScreen";
+import { OrganizationsScreen } from "../../screens/Organizations/OrganizationsScreen";
 import { RiotGameBreedingScreen } from "../../screens/RiotGame/RiotGameBreedingScreen";
 import { RiotGameEnrollScreen } from "../../screens/RiotGame/RiotGameEnrollScreen";
 import { RiotGameFightScreen } from "../../screens/RiotGame/RiotGameFightScreen";
@@ -63,10 +66,14 @@ export const Navigator: React.FC = () => {
         component={RiotGameScreen}
         options={{ header: () => null }}
       />
+
       <Stack.Screen
         name="Marketplace"
         component={MarketplaceScreen}
-        options={{ header: () => null, title: screenTitle("Marketplace") }}
+        options={{
+          header: () => null,
+          title: screenTitle("NFT Marketplace - Popular Collections"),
+        }}
       />
       <Stack.Screen
         name="Governance"
@@ -161,6 +168,7 @@ export const Navigator: React.FC = () => {
           title: screenTitle("Wallet Manager (Chains)"),
         }}
       />
+
       {/* ==== Launchpad */}
       <Stack.Screen
         name="Launchpad"
@@ -179,6 +187,25 @@ export const Navigator: React.FC = () => {
         name="MintCollection"
         component={MintCollectionScreen}
         options={{ header: () => null, title: screenTitle("Mint Collection") }}
+      />
+
+      {/* ==== Organization */}
+
+      <Stack.Screen
+        name="OrganizationDeployer"
+        component={OrganizationDeployerScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Organization Deployer"),
+        }}
+      />
+      <Stack.Screen
+        name="Organizations"
+        component={OrganizationsScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Organizations"),
+        }}
       />
 
       {/* ==== Teritori Name Service*/}
@@ -251,8 +278,13 @@ export const Navigator: React.FC = () => {
       />
       <Stack.Screen
         name="DAppStore"
-        component={DAppStore}
+        component={DAppStoreScreen}
         options={{ header: () => null, title: screenTitle("dApp Store") }}
+      />
+      <Stack.Screen
+        name="CoreDAO"
+        component={CoreDAOScreen}
+        options={{ header: () => null, title: screenTitle("Core DAO") }}
       />
     </Stack.Navigator>
   );

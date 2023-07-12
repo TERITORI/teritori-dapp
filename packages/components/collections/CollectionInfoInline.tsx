@@ -21,7 +21,7 @@ export const CollectionInfoInline: React.FC<{
     >
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <OptimizedImage
-          source={imageSource}
+          sourceURI={imageSource.uri}
           style={{ height: 32, width: 32, borderRadius: 999 }}
           height={32}
           width={32}

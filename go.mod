@@ -10,14 +10,12 @@ require (
 	github.com/cosmos/cosmos-sdk v0.45.4
 	github.com/cosmos/gogoproto v1.4.2
 	github.com/davecgh/go-spew v1.1.1
-	github.com/drone/envsubst v1.0.3
 	github.com/ethereum/go-ethereum v1.11.6
 	github.com/friendsofgo/errors v0.9.2
 	github.com/go-co-op/gocron v1.18.0
 	github.com/gorilla/websocket v1.5.0
 	github.com/improbable-eng/grpc-web v0.14.1
-	github.com/jackc/pgx/v5 v5.1.1
-	github.com/jimsmart/schema v0.2.0
+	github.com/jackc/pgx/v5 v5.3.0
 	github.com/joho/godotenv v1.5.1
 	github.com/mehanizm/airtable v0.2.8
 	github.com/peterbourgon/ff/v3 v3.3.0
@@ -25,12 +23,10 @@ require (
 	github.com/rubenv/sql-migrate v1.2.0
 	github.com/streamingfast/cli v0.0.4-0.20220630165922-bc58c6666fc8
 	github.com/streamingfast/derr v0.0.0-20221125175206-82e01d420d45
-	github.com/streamingfast/dmetrics v0.0.0-20221107142404-e88fe183f07d
 	github.com/streamingfast/logging v0.0.0-20220813175024-b4fbb0e893df
 	github.com/streamingfast/shutter v1.5.0
 	github.com/streamingfast/substreams v1.0.0
 	github.com/streamingfast/substreams-sink v0.0.0-20230403140748-db3b0d195289
-	github.com/streamingfast/substreams-sink-postgres v0.0.0-20230327184915-eca04aa43afd
 	github.com/tendermint/tendermint v0.34.19
 	github.com/volatiletech/null/v8 v8.1.2
 	github.com/volatiletech/sqlboiler/v4 v4.13.0
@@ -39,9 +35,10 @@ require (
 	golang.org/x/exp v0.0.0-20230206171751-46f607a40771
 	google.golang.org/grpc v1.50.1
 	google.golang.org/protobuf v1.28.1
-	gorm.io/driver/postgres v1.4.4
-	gorm.io/driver/sqlite v1.3.6
-	gorm.io/gorm v1.23.8
+	gorm.io/datatypes v1.2.0
+	gorm.io/driver/postgres v1.5.0
+	gorm.io/driver/sqlite v1.4.3
+	gorm.io/gorm v1.24.7-0.20230306060331-85eaf9eeda11
 )
 
 require (
@@ -51,11 +48,11 @@ require (
 	cloud.google.com/go/storage v1.23.0 // indirect
 	github.com/Azure/azure-pipeline-go v0.2.3 // indirect
 	github.com/Azure/azure-storage-blob-go v0.14.0 // indirect
+	github.com/DataDog/zstd v1.5.2 // indirect
 	github.com/StackExchange/wmi v0.0.0-20180116203802-5d049714c4a6 // indirect
 	github.com/aws/aws-sdk-go v1.44.187 // indirect
 	github.com/blendle/zapdriver v1.3.2-0.20200203083823-9200777f8a3d // indirect
 	github.com/btcsuite/btcd/btcec/v2 v2.2.0 // indirect
-	github.com/cbergoon/merkletree v0.2.0 // indirect
 	github.com/cenkalti/backoff/v4 v4.1.3 // indirect
 	github.com/census-instrumentation/opencensus-proto v0.3.0 // indirect
 	github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e // indirect
@@ -86,19 +83,21 @@ require (
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-ieproxy v0.0.1 // indirect
 	github.com/mitchellh/go-testing-interface v1.14.1 // indirect
+	github.com/onsi/ginkgo v1.16.5 // indirect
+	github.com/onsi/gomega v1.16.0 // indirect
 	github.com/paulbellamy/ratecounter v0.2.0 // indirect
 	github.com/sethvargo/go-retry v0.2.3 // indirect
 	github.com/shirou/gopsutil v3.21.4-0.20210419000835-c7a38de76ee5+incompatible // indirect
 	github.com/streamingfast/atm v0.0.0-20220131151839-18c87005e680 // indirect
 	github.com/streamingfast/dbin v0.0.0-20210809205249-73d5eca35dc5 // indirect
 	github.com/streamingfast/dgrpc v0.0.0-20230113212008-1898f17e0ac7 // indirect
+	github.com/streamingfast/dmetrics v0.0.0-20221107142404-e88fe183f07d // indirect
 	github.com/streamingfast/dstore v0.1.1-0.20230126133209-44cda2076cfe // indirect
 	github.com/streamingfast/opaque v0.0.0-20210811180740-0c01d37ea308 // indirect
 	github.com/streamingfast/pbgo v0.0.6-0.20220630154121-2e8bba36234e // indirect
 	github.com/teris-io/shortid v0.0.0-20171029131806-771a37caa5cf // indirect
 	github.com/tklauser/go-sysconf v0.3.5 // indirect
 	github.com/tklauser/numcpus v0.2.2 // indirect
-	github.com/wealdtech/go-merkletree v1.0.0 // indirect
 	github.com/yourbasic/graph v0.0.0-20210606180040-8ecfec1c2869 // indirect
 	go.opencensus.io v0.23.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.36.4 // indirect
@@ -112,7 +111,6 @@ require (
 )
 
 require (
-	github.com/DataDog/zstd v1.5.2 // indirect
 	github.com/armon/go-metrics v0.3.10 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/btcsuite/btcd v0.22.0-beta // indirect
@@ -150,7 +148,7 @@ require (
 	github.com/mattn/go-sqlite3 v1.14.16 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.4 // indirect
 	github.com/mimoo/StrobeGo v0.0.0-20181016162300-f8f6d4d2b643 // indirect
-	github.com/mitchellh/mapstructure v1.5.0 // indirect
+	github.com/mitchellh/mapstructure v1.5.0
 	github.com/pelletier/go-toml v1.9.5 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.0-beta.8 // indirect
 	github.com/petermattis/goid v0.0.0-20180202154549-b0b1615b78e5 // indirect
@@ -174,7 +172,7 @@ require (
 	go.etcd.io/bbolt v1.3.6 // indirect
 	go.uber.org/atomic v1.10.0 // indirect
 	go.uber.org/multierr v1.8.0 // indirect
-	golang.org/x/crypto v0.5.0 // indirect
+	golang.org/x/crypto v0.6.0
 	golang.org/x/net v0.8.0 // indirect
 	golang.org/x/sys v0.6.0 // indirect
 	golang.org/x/text v0.8.0 // indirect
@@ -204,6 +202,7 @@ require (
 	github.com/felixge/httpsnoop v1.0.1 // indirect
 	github.com/go-gorp/gorp/v3 v3.0.2 // indirect
 	github.com/go-playground/validator/v10 v10.4.1 // indirect
+	github.com/go-sql-driver/mysql v1.7.0 // indirect
 	github.com/godbus/dbus v0.0.0-20190726142602-4481cbc300e2 // indirect
 	github.com/gofrs/uuid v4.0.0+incompatible // indirect
 	github.com/gogo/gateway v1.1.0 // indirect
@@ -215,14 +214,8 @@ require (
 	github.com/gsterjov/go-libsecret v0.0.0-20161001094733-a6f4afe4910c // indirect
 	github.com/gtank/ristretto255 v0.1.2 // indirect
 	github.com/hdevalence/ed25519consensus v0.0.0-20220222234857-c00d1f31bab3 // indirect
-	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
-	github.com/jackc/pgconn v1.13.0 // indirect
-	github.com/jackc/pgio v1.0.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
-	github.com/jackc/pgproto3/v2 v2.3.1 // indirect
-	github.com/jackc/pgservicefile v0.0.0-20200714003250-2b9c44734f2b // indirect
-	github.com/jackc/pgtype v1.12.0 // indirect
-	github.com/jackc/pgx/v4 v4.17.2 // indirect
+	github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a // indirect
 	github.com/keybase/go-keychain v0.0.0-20190712205309-48d3d31d256d // indirect
 	github.com/lib/pq v1.10.7
 	github.com/mattn/go-isatty v0.0.16 // indirect
@@ -236,7 +229,7 @@ require (
 	github.com/robfig/cron/v3 v3.0.1 // indirect
 	github.com/rs/zerolog v1.26.0 // indirect
 	github.com/streamingfast/bstream v0.0.2-0.20230202150636-acd638a62663
-	github.com/stretchr/testify v1.8.1 // indirect
+	github.com/stretchr/testify v1.8.3 // indirect
 	github.com/tendermint/btcd v0.1.1 // indirect
 	github.com/tendermint/crypto v0.0.0-20191022145703-50d29ede1e15 // indirect
 	github.com/volatiletech/inflect v0.0.1 // indirect
@@ -245,6 +238,7 @@ require (
 	golang.org/x/sync v0.1.0 // indirect
 	golang.org/x/term v0.6.0 // indirect
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect
+	gorm.io/driver/mysql v1.4.7 // indirect
 )
 
 replace (

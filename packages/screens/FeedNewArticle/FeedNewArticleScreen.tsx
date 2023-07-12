@@ -33,7 +33,10 @@ import { getUserId, NetworkKind } from "../../networks";
 import { prettyPrice } from "../../utils/coins";
 import { IMAGE_MIME_TYPES } from "../../utils/mime";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
-import { generateIpfsKey } from "../../utils/social-feed";
+import {
+  ARTICLE_COVER_IMAGE_HEIGHT,
+  generateIpfsKey,
+} from "../../utils/social-feed";
 import {
   neutral00,
   neutral11,
@@ -155,7 +158,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
     } catch (err) {
       setToastError({
         title: "Something went wrong.",
-        message: err.message,
+        message: err instanceof Error ? err.message : `${err}`,
       });
       console.error("post submit error", err);
     }
@@ -235,6 +238,8 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
 
         <FileUploader
           label="Cover image"
+          fileHeight={ARTICLE_COVER_IMAGE_HEIGHT}
+          isImageCover
           style={{
             marginTop: layout.padding_x3,
             width: "100%",

@@ -274,10 +274,10 @@ func (h *Handler) handleExecuteSquadUnstake(e *Message, execMsg *wasmtypes.MsgEx
 		}
 
 		// Update score
-		if err := h.db.Model(&userScore).
-			UpdateColumn("score", gorm.Expr("score  + ?", adjustedStakingDuration)).
-			UpdateColumn("in_progress_score", gorm.Expr("score")).
-			Error; err != nil {
+		if err := h.db.Model(&indexerdb.P2eLeaderboard{
+			UserID:   userId,
+			SeasonID: seasonId,
+		}).UpdateColumn("score", gorm.Expr("score + ?", adjustedStakingDuration)).Error; err != nil {
 			return errors.Wrap(err, "failed to update user score")
 		}
 	}

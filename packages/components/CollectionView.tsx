@@ -52,7 +52,7 @@ export const CollectionView: React.FC<{
         height={sizedStyles.box.height}
       >
         <OptimizedImage
-          source={{ uri: item.imageUri }}
+          sourceURI={item.imageUri}
           width={sizedStyles.image.width}
           height={sizedStyles.image.height}
           style={{
@@ -164,13 +164,13 @@ const styles = {
       marginTop: layout.padding_x2,
     },
     collectionName: {
-      ...(fontSemibold14 as object),
+      ...fontSemibold14,
     },
     percentage: {
-      ...(fontSemibold14 as object),
+      ...fontSemibold14,
     },
     creatorName: {
-      ...(fontSemibold14 as object),
+      ...fontSemibold14,
     },
   },
 
@@ -193,13 +193,13 @@ const styles = {
       marginTop: layout.padding_x1,
     },
     collectionName: {
-      ...(fontBold11 as object),
+      ...fontBold11,
     },
     percentage: {
-      ...(fontBold11 as object),
+      ...fontBold11,
     },
     creatorName: {
-      ...(fontMedium10 as object),
+      ...fontMedium10,
     },
   },
 };

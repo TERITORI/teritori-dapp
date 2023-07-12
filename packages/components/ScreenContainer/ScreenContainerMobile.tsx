@@ -10,7 +10,7 @@ import {
 import { HeaderMobile } from "./HeaderMobile";
 import { useSearchBar } from "../../context/SearchBarProvider";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
-import { NetworkInfo, NetworkKind } from "../../networks";
+import { NetworkFeature, NetworkInfo, NetworkKind } from "../../networks";
 import { DAppStoreData } from "../../screens/DAppStore/components/DAppStoreData";
 import { neutral33, neutral77 } from "../../utils/style/colors";
 import { fontBold12 } from "../../utils/style/fonts";
@@ -46,14 +46,18 @@ export const ScreenContainerMobile: FC<{
   hasScroll: boolean;
   forceNetworkId?: string;
   forceNetworkKind?: NetworkKind;
+  forceNetworkFeatures?: NetworkFeature[];
   mobileTitle?: string;
+  onBackPress?: () => void;
 }> = ({
   children,
   networkFilter,
   hasScroll,
   forceNetworkId,
   forceNetworkKind,
+  forceNetworkFeatures,
   mobileTitle,
+  onBackPress,
 }) => {
   const { height: windowHeight } = useWindowDimensions();
   const { width } = useMaxResolution();
@@ -67,8 +71,10 @@ export const ScreenContainerMobile: FC<{
         visible={isSearchModalMobileOpen}
       />
       <HeaderMobile
+        onBackPress={onBackPress}
         forceNetworkId={forceNetworkId}
         forceNetworkKind={forceNetworkKind}
+        forceNetworkFeatures={forceNetworkFeatures}
       />
       <SidebarMobile />
 

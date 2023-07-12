@@ -30,7 +30,7 @@ const HERO_SIZE = 460;
 const defaultRequest: CollectionsRequest = {
   networkId: "fake",
   sortDirection: SortDirection.SORT_DIRECTION_UNSPECIFIED,
-  sort: Sort.SORTING_UNSPECIFIED,
+  sort: Sort.SORT_UNSPECIFIED,
   limit: 16,
   offset: 0,
   upcoming: false,
@@ -90,7 +90,7 @@ const CarouselCollectionItem: React.FC<{
       <TertiaryBox style={{ marginBottom: 40 }}>
         {collection.imageUri ? (
           <OptimizedImage
-            source={{ uri: collection.imageUri }}
+            sourceURI={collection.imageUri}
             width={HERO_SIZE}
             height={HERO_SIZE}
             style={{

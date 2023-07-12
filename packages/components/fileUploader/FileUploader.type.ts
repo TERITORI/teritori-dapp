@@ -1,12 +1,14 @@
 import React from "react";
-import { ViewStyle } from "react-native";
+import { StyleProp, ViewStyle } from "react-native";
 
 import { LocalFileData } from "../../utils/types/feed";
 
 export interface FileUploaderProps {
-  label?: string;
-  style?: ViewStyle;
   onUpload: (files: LocalFileData[]) => void;
+  label?: string;
+  style?: StyleProp<ViewStyle>;
+  isImageCover?: boolean;
+  fileHeight?: number;
   multiple?: boolean;
   mimeTypes?: string[];
   children?: ({ onPress }: { onPress: () => void }) => React.ReactNode;

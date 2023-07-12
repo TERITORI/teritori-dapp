@@ -7,23 +7,25 @@ service MarketplaceService {
   rpc Collections(CollectionsRequest) returns (stream CollectionsResponse);
   rpc CollectionStats(CollectionStatsRequest) returns ( CollectionStatsResponse);
   rpc NFTs(NFTsRequest) returns (stream NFTsResponse);
+  rpc NFTCollectionAttributes(NFTCollectionAttributesRequest) returns (stream NFTCollectionAttributesResponse);
   rpc Quests(QuestsRequest) returns (stream QuestsResponse);
   rpc Activity(ActivityRequest) returns (stream ActivityResponse);
   rpc NFTPriceHistory(NFTPriceHistoryRequest) returns (NFTPriceHistoryResponse);
   rpc Banners(BannersRequest) returns (BannersResponse);
   rpc News(NewsRequest) returns (NewsResponse);
-  rpc DApps(DAppsStoreRequest) returns (DAppResponse);
-  rpc DAppsGroups(DAppsStoreRequest) returns (DAppGroupsResponse);
+  rpc DApps(DAppsRequest) returns (DAppsResponse);
+  rpc DAppsGroups(DAppsGroupsRequest) returns (DAppsGroupsResponse);
   rpc SearchNames(SearchNamesRequest) returns (SearchNamesResponse);
   rpc SearchCollections(SearchCollectionsRequest) returns (SearchCollectionsResponse);
 }
 
 enum Sort {
-  SORTING_UNSPECIFIED = 0;
-  SORTING_PRICE = 1;
-  SORTING_VOLUME = 2;
-  SORTING_MARKET_CAP = 3;
-  SORTING_CREATED_AT = 4;
+  SORT_UNSPECIFIED = 0;
+  SORT_PRICE = 1;
+  SORT_VOLUME = 2;
+  SORT_MARKET_CAP = 3;
+  SORT_CREATED_AT = 4;
+  SORT_VOLUME_USD = 5;
 }
 
 enum SortDirection {
@@ -41,6 +43,11 @@ enum MintState {
 message Attribute {
   string trait_type = 1;
   string value = 2;
+}
+
+message PriceRange {
+  string min = 1;
+  string max = 2;
 }
 
 message NFT {
@@ -80,6 +87,12 @@ message Collection {
   string twitter_url = 14;
   uint64 floor_price = 15;
   int64 max_supply = 16;
+  string mint_price = 17;
+  float total_volume = 18;
+  int64 num_trades = 19;
+  int32 num_owners = 20;
+  string denom = 21;
+  float volume_compare = 22;
 }
 
 message CollectionStats {
@@ -89,6 +102,21 @@ message CollectionStats {
   int32 listed = 4;
   int64 total_supply = 5;
   int32 owned = 6;
+  float avg_price_period = 7;
+}
+
+message AttributeRarityFloor {
+  string trait_type = 1;
+  string value = 2;
+  int32 counta = 3;
+  float floor = 4;
+  string collection_id = 5;
+  float rare_ratio = 6;
+  int32 collection_size = 7;
+}
+
+message NFTCollectionAttributesResponse {
+  AttributeRarityFloor attributes = 1;
 }
 
 message Activity {
@@ -134,6 +162,11 @@ message CollectionStatsRequest {
   string owner_id = 2;
 }
 
+message NFTCollectionAttributesRequest {
+  string collection_id = 1;
+  repeated Attribute where_attributes = 2;
+}
+
 message CollectionStatsResponse {
   CollectionStats stats = 1;
 }
@@ -151,6 +184,9 @@ message NFTsRequest {
 
   Sort sort = 5;
   SortDirection sort_direction = 6;
+  repeated Attribute attributes = 7;
+  bool is_listed = 8;
+  PriceRange price_range = 9;
 }
 
 message NFTsResponse {
@@ -204,7 +240,7 @@ message News {
 
 message DAppGroup {
   string id = 1;
-  string groupName = 2;
+  string group_name = 2;
   string icon = 3;
   repeated string options = 4;
 }
@@ -215,10 +251,10 @@ message DApp {
   string description = 3;
   string icon = 4;
   string route = 5;
-  string groupKey = 6;
-  string linkingId = 7;
-  bool selectedByDefault = 8;
-  bool alwaysOn = 9;
+  string group_key = 6;
+  string linking_id = 7;
+  bool selected_by_default = 8;
+  bool always_on = 9;
 }
 
 message Banner {
@@ -242,15 +278,18 @@ message NewsResponse {
   repeated News news = 1;
 }
 
-message DAppsStoreRequest {
+message DAppsRequest {
 }
 
-message DAppGroupsResponse {
-  repeated DAppGroup group = 1;
-}
-
-message DAppResponse {
+message DAppsResponse {
   repeated DApp group = 1;
+}
+
+message DAppsGroupsRequest {
+}
+
+message DAppsGroupsResponse {
+  repeated DAppGroup group = 1;
 }
 
 message SearchNamesRequest {

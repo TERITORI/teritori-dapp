@@ -14,7 +14,7 @@ import { useForceNetworkSelection } from "../../hooks/useForceNetworkSelection";
 import { useForceUnselectNetworks } from "../../hooks/useForceUnselectNetworks";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
-import { NetworkInfo, NetworkKind } from "../../networks";
+import { NetworkFeature, NetworkInfo, NetworkKind } from "../../networks";
 import { DAppStoreData } from "../../screens/DAppStore/components/DAppStoreData";
 import { neutral33 } from "../../utils/style/colors";
 import {
@@ -29,6 +29,7 @@ import { SelectedNetworkGate } from "../SelectedNetworkGate";
 import { ConnectWalletButton } from "../TopMenu/ConnectWalletButton";
 import { Footer } from "../footers/Footer";
 import { Sidebar } from "../navigation/Sidebar";
+import { CartIconButtonBadge } from "../navigation/components/CartIconButtonBadge";
 
 export const ScreenContainer: React.FC<{
   headerChildren?: JSX.Element;
@@ -40,7 +41,9 @@ export const ScreenContainer: React.FC<{
   fullWidth?: boolean;
   forceNetworkId?: string;
   forceNetworkKind?: NetworkKind;
+  forceNetworkFeatures?: NetworkFeature[];
   responsive?: boolean;
+  isLarge?: boolean;
   onBackPress?: () => void;
   maxWidth?: number;
 }> = ({
@@ -53,16 +56,22 @@ export const ScreenContainer: React.FC<{
   noScroll,
   fullWidth,
   responsive,
+  isLarge,
   onBackPress,
   maxWidth,
   forceNetworkId,
   forceNetworkKind,
+  forceNetworkFeatures,
 }) => {
   // variables
   const { height } = useWindowDimensions();
   const hasMargin = !noMargin;
   const hasScroll = !noScroll;
-  const { width: screenWidth } = useMaxResolution({ responsive, noMargin });
+  const { width: screenWidth } = useMaxResolution({
+    responsive,
+    noMargin,
+    isLarge,
+  });
   const isMobile = useIsMobile();
 
   const calculatedWidth = useMemo(
@@ -96,6 +105,7 @@ export const ScreenContainer: React.FC<{
   if (isMobile)
     return (
       <ScreenContainerMobile
+        onBackPress={onBackPress}
         children={children}
         networkFilter={networkFilter}
         hasScroll={hasScroll}
@@ -178,9 +188,11 @@ export const ScreenContainer: React.FC<{
                 width: 1,
               }}
             />
+            <CartIconButtonBadge style={{ marginRight: 12 }} />
             <NetworkSelector
               forceNetworkId={forceNetworkId}
               forceNetworkKind={forceNetworkKind}
+              forceNetworkFeatures={forceNetworkFeatures}
               style={{ marginRight: 12 }}
             />
             <ConnectWalletButton

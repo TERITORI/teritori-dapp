@@ -1,17 +1,18 @@
 import { teritoriCurrencies } from "./currencies";
-import { NetworkKind, NetworkInfo } from "../types";
+import { NetworkKind, CosmosNetworkInfo, NetworkFeature } from "../types";
 
 const nameServiceContractAddress =
   "tori1wkwy0xh89ksdgj9hr347dyd2dw7zesmtrue6kfzyml4vdtz6e5wscs7038";
 const riotContractAddressGen1 =
   "tori1gflccmghzfscmxl95z43v36y0rle8v9x8kvt9na03yzywtw86amsj9nf37";
 
-export const teritoriNetwork: NetworkInfo = {
+export const teritoriNetwork: CosmosNetworkInfo = {
   id: "teritori",
   kind: NetworkKind.Cosmos,
   chainId: "teritori-1",
   displayName: "Teritori",
   icon: "icons/networks/teritori.svg",
+  features: [NetworkFeature.NFTMarketplace],
   walletUrlForStaking: "https://explorer.teritori.com/teritori/staking",
   currencies: teritoriCurrencies,
   txExplorer: "https://www.mintscan.io/teritori/txs/$hash",
@@ -29,7 +30,7 @@ export const teritoriNetwork: NetworkInfo = {
     average: 0.025,
     high: 0.04,
   },
-  features: [
+  cosmosFeatures: [
     "stargate",
     "ibc-transfer",
     "cosmwasm",
@@ -65,4 +66,11 @@ export const teritoriNetwork: NetworkInfo = {
   excludeFromLaunchpadList: [riotContractAddressGen1],
   socialFeedContractAddress:
     "tori1lxf8agg0wd2m7n2ultl0yx337jw23puh0mlkkw5vhtnkkfettwfqya7kpp",
+  daoFactoryContractAddress:
+    "tori16rxh5hgukhdq8rvm2j3t6v483dcqguwp4l825vlwz5pmfpw7s4rs45nnca",
+  daoCoreCodeId: 27,
+  daoPreProposeSingleCodeId: 28,
+  daoProposalSingleCodeId: 31,
+  daoCw4GroupCodeId: 32,
+  daoVotingCw4CodeId: 33,
 };

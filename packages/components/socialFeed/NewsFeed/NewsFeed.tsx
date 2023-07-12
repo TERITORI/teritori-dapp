@@ -42,6 +42,8 @@ interface NewsFeedProps {
   additionalHashtag?: string;
   // Receive this if the post is created from UserPublicProfileScreen (If the user doesn't own the UPP)
   additionalMention?: string;
+  daoId?: string;
+  disablePosting?: boolean;
 }
 
 export const NewsFeed: React.FC<NewsFeedProps> = ({
@@ -49,6 +51,8 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
   req,
   additionalHashtag,
   additionalMention,
+  daoId,
+  disablePosting,
 }) => {
   const isMobile = useIsMobile();
   const { width: windowWidth } = useWindowDimensions();
@@ -105,45 +109,50 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
         >
           <Header />
         </View>
-        <Animated.View
-          style={[
-            {
-              justifyContent: "center",
-              alignItems: "center",
-              flexDirection: isMobile ? "row" : "column",
-            },
-          ]}
-        >
-          {isMobile ? (
-            <>
-              <CreateShortPostButton
-                label="Create Post"
-                onPress={() => setCreateModalVisible(true)}
-              />
-              <SpacerRow size={1.5} />
-            </>
-          ) : (
-            <>
-              <NewsFeedInput
-                type="post"
-                onSubmitSuccess={refetch}
-                additionalMention={additionalMention}
-                additionalHashtag={additionalHashtag}
-              />
-              <SpacerColumn size={1.5} />
-            </>
-          )}
-          <RefreshButton isRefreshing={isLoadingValue} onPress={refetch} />
-        </Animated.View>
+        {!disablePosting && (
+          <Animated.View
+            style={[
+              {
+                justifyContent: "center",
+                alignItems: "center",
+                flexDirection: isMobile ? "row" : "column",
+              },
+            ]}
+          >
+            {isMobile ? (
+              <>
+                <CreateShortPostButton
+                  label="Create Post"
+                  onPress={() => setCreateModalVisible(true)}
+                />
+                <SpacerRow size={1.5} />
+              </>
+            ) : (
+              <>
+                <NewsFeedInput
+                  daoId={daoId}
+                  type="post"
+                  onSubmitSuccess={refetch}
+                  additionalMention={additionalMention}
+                  additionalHashtag={additionalHashtag}
+                />
+                <SpacerColumn size={1.5} />
+              </>
+            )}
+            <RefreshButton isRefreshing={isLoadingValue} onPress={refetch} />
+          </Animated.View>
+        )}
         <SpacerColumn size={1.5} />
       </>
     ),
     [
-      isMobile,
-      isLoadingValue,
       Header,
-      additionalMention,
       additionalHashtag,
+      additionalMention,
+      daoId,
+      disablePosting,
+      isLoadingValue,
+      isMobile,
       refetch,
       width,
     ]
@@ -216,6 +225,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
       )}
 
       <CreateShortPostModal
+        daoId={daoId}
         isVisible={isCreateModalVisible}
         onClose={() => setCreateModalVisible(false)}
         additionalMention={additionalMention}

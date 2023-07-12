@@ -1,13 +1,10 @@
-import { RouteProp, useNavigation } from "@react-navigation/native";
+import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React from "react";
 
-import { PickByValue } from "./types/helper";
 import { NewPostFormValues } from "../components/socialFeed/NewsFeed/NewsFeed.type";
 
-export type RouteName =
-  | keyof PickByValue<RootStackParamList, undefined>
-  | "TNSHome";
+export type RouteName = keyof RootStackParamList;
 
 export type RootStackParamList = {
   Home: undefined;
@@ -55,6 +52,10 @@ export type RootStackParamList = {
   ComingSoon: undefined;
 
   Settings: undefined;
+
+  OrganizationDeployer: undefined;
+  Organizations: undefined;
+  CoreDAO: undefined;
 
   DAppStore: undefined;
   ToriPunks: { route: string };
@@ -113,6 +114,12 @@ const navConfig: {
 
     // ==== Staking
     Staking: "staking",
+
+    // === Organizations
+    OrganizationDeployer: "create-org",
+    Organizations: "orgs",
+    CoreDAO: "core-dao",
+
     // ==== Swap
     Swap: "swap",
     // ==== ComingSoon
@@ -120,7 +127,6 @@ const navConfig: {
     Settings: "settings",
     // ==== DAppStore
     DAppStore: "dapp-store",
-
     // === DApps
     ToriPunks: "dapp/tori-punks/:route?",
   },
@@ -130,3 +136,5 @@ export const linking = {
   prefixes: [],
   config: navConfig,
 };
+
+export const useAppRoute = () => useRoute<RouteProp<RootStackParamList>>();
