@@ -11,7 +11,7 @@ import resourceLogo from "../../../../assets/LogoPathwarOverview/ResourceLogo.sv
 import resourceBanner from "../../../../assets/banners/resourcesBanner.png";
 import { Resources } from "../../../api/pathwar/v1/pathwar";
 import { BrandText } from "../../../components/BrandText";
-import { DropDownButton } from "../../../components/Pathwar/Resource/DropDownFilter";
+import { DropDownFilter } from "../../../components/Pathwar/Resource/DropDownFilter";
 import { SVG } from "../../../components/SVG";
 import { ScreenContainer } from "../../../components/ScreenContainer";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
@@ -26,6 +26,7 @@ import {
   layout,
   screenContentMaxWidthLarge,
 } from "../../../utils/style/layout";
+import { CategoryFilter, TagFilter } from "../types";
 
 export const ResourceScreen: React.FC = () => {
   const { height } = useMaxResolution({ isLarge: true });
@@ -48,7 +49,37 @@ export const ResourceScreen: React.FC = () => {
         },
       ],
     },
+    {
+      id: 1,
+      title: "What is Gno",
+      description:
+        "Gnoland is a blockchain L1 project started in 2020 by Jae Kwon, co-founder of Cosmos and Tendermint. Its goal is to create a decentralized, secure and scalable smart contract platform for people to create important applications, especially against censorship.",
+
+      category: [{ id: 1, text: "article" }],
+      url: "https://gnoland.space/docs/what-is-gno",
+      tags: [
+        {
+          id: 1,
+          text: "Gno.land",
+        },
+      ],
+    },
   ] as Resources[];
+
+  const [categoryFilter, setCategoryFilter] = useState<CategoryFilter[]>(
+    data.flatMap((resource) =>
+      resource.category.map((category) => {
+        return { ...category, selected: false };
+      })
+    )
+  );
+  const [tagFilter, setTagFilter] = useState<TagFilter[]>(
+    data.flatMap((resource) =>
+      resource.tags.map((tag) => {
+        return { ...tag, selected: false };
+      })
+    )
+  );
   return (
     <ScreenContainer
       responsive
@@ -81,7 +112,12 @@ export const ResourceScreen: React.FC = () => {
           zIndex: 2,
         }}
       >
-        <DropDownButton />
+        <DropDownFilter
+          categories={categoryFilter}
+          tags={tagFilter}
+          setCategoryFilter={setCategoryFilter}
+          setTagFilter={setTagFilter}
+        />
 
         <View style={{ alignItems: "flex-start" }}>
           <SearchInput

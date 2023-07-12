@@ -1,11 +1,12 @@
 import Checkbox from "expo-checkbox";
-import React, { useRef, useState } from "react";
-import { TouchableOpacity, View } from "react-native";
+import React, { useRef } from "react";
+import { Pressable, TouchableOpacity, View } from "react-native";
 
 import SortIcon from "../../../../assets/icons/Pathwar/sortIcon.svg";
 import chevronDownSVG from "../../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../../assets/icons/chevron-up.svg";
 import { useDropdowns } from "../../../context/DropdownsProvider";
+import { CategoryFilter, TagFilter } from "../../../screens/Pathwar/types";
 import {
   codGrayColor,
   neutral11,
@@ -15,23 +16,34 @@ import {
 } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { BrandText } from "../../BrandText/BrandText";
+import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
 import { Separator } from "../../Separator";
 import { SecondaryBox } from "../../boxes/SecondaryBox";
 import { TertiaryBox } from "../../boxes/TertiaryBox";
 
-export const DropDownButton: React.FC<object> = () => {
+export const DropDownFilter: React.FC<{
+  categories: CategoryFilter[];
+  tags: TagFilter[];
+  setCategoryFilter: React.Dispatch<React.SetStateAction<CategoryFilter[]>>;
+  setTagFilter: React.Dispatch<React.SetStateAction<TagFilter[]>>;
+}> = ({ categories, tags, setCategoryFilter, setTagFilter }) => {
   const { onPressDropdownButton, isDropdownOpen } = useDropdowns();
+  console.log(categories, tags);
   const dropdownRef = useRef<View>(null);
-  const [allShowSelected, setAllShowSelected] = useState(false);
-  const [techPostSelected, setTechPostSelected] = useState(false);
-  const [securitySelected, setSecuritySelected] = useState(false);
-  const [cosmosSelected, setCosmosSelected] = useState(false);
-  const [gnolandSelected, setGnolandSelected] = useState(false);
-  const [blogPostSelected, setBlogPostSelected] = useState(false);
-  const [videosSelected, setVideosSelected] = useState(false);
-  const [articlesSelected, setArticlesSelected] = useState(false);
+
+  const handleAllButton = () => {
+    setCategoryFilter(
+      categories.map((category) => {
+        return { ...category, selected: false };
+      })
+    );
+    setCategoryFilter(
+      tags.map((tags) => {
+        return { ...tags, selected: false };
+      })
+    );
+  };
 
   return (
     <View style={{ flexDirection: "column" }}>
@@ -90,27 +102,14 @@ export const DropDownButton: React.FC<object> = () => {
               justifyContent: "space-evenly",
             }}
           >
-            <View
+            <Pressable
               style={{
                 marginLeft: layout.padding_x4,
                 marginTop: layout.padding_x1_5,
                 flexDirection: "row",
               }}
+              onPress={handleAllButton}
             >
-              <Checkbox
-                value={allShowSelected}
-                onValueChange={() => {
-                  setTechPostSelected(!allShowSelected);
-                  setSecuritySelected(!allShowSelected);
-                  setCosmosSelected(!allShowSelected);
-                  setGnolandSelected(!allShowSelected);
-                  setBlogPostSelected(!allShowSelected);
-                  setVideosSelected(!allShowSelected);
-                  setArticlesSelected(!allShowSelected);
-                  setAllShowSelected(!allShowSelected);
-                }}
-                color={allShowSelected ? primaryColor : secondaryColor}
-              />
               <BrandText
                 style={[
                   {
@@ -122,7 +121,7 @@ export const DropDownButton: React.FC<object> = () => {
               >
                 Show All
               </BrandText>
-            </View>
+            </Pressable>
 
             <Separator
               style={{
@@ -141,16 +140,6 @@ export const DropDownButton: React.FC<object> = () => {
                 flexDirection: "row",
               }}
             >
-              <Checkbox
-                value={techPostSelected}
-                onValueChange={() => {
-                  setTechPostSelected(!techPostSelected);
-                  setSecuritySelected(!techPostSelected);
-                  setCosmosSelected(!techPostSelected);
-                  setGnolandSelected(!techPostSelected);
-                }}
-                color={techPostSelected ? primaryColor : secondaryColor}
-              />
               <BrandText
                 style={[
                   {
@@ -160,7 +149,7 @@ export const DropDownButton: React.FC<object> = () => {
                   fontSemibold14,
                 ]}
               >
-                Tech Post
+                Tags
               </BrandText>
             </View>
 
@@ -170,85 +159,39 @@ export const DropDownButton: React.FC<object> = () => {
                 marginRight: layout.padding_x2,
               }}
             >
-              <View
-                style={{
-                  marginTop: layout.padding_x2,
-                  flexDirection: "row",
-                }}
-              >
-                <Checkbox
-                  value={securitySelected}
-                  onValueChange={() => {
-                    setSecuritySelected(!securitySelected);
-                  }}
-                  color={securitySelected ? primaryColor : secondaryColor}
-                />
-                <BrandText
-                  style={[
-                    {
-                      marginLeft: layout.padding_x1_5,
-                      marginRight: layout.padding_x0_5,
-                    },
-                    fontSemibold14,
-                  ]}
-                >
-                  Security
-                </BrandText>
-              </View>
-
-              <View
-                style={{
-                  marginTop: layout.padding_x2,
-                  flexDirection: "row",
-                }}
-              >
-                <Checkbox
-                  value={cosmosSelected}
-                  onValueChange={() => {
-                    setCosmosSelected(!cosmosSelected);
-                  }}
-                  color={cosmosSelected ? primaryColor : secondaryColor}
-                />
-                <BrandText
-                  style={[
-                    {
-                      marginLeft: layout.padding_x1_5,
-                      marginRight: layout.padding_x0_5,
-                    },
-                    fontSemibold14,
-                  ]}
-                >
-                  Cosmos
-                </BrandText>
-              </View>
-
-              <View
-                style={{
-                  marginTop: layout.padding_x2,
-                  flexDirection: "row",
-                }}
-              >
-                <Checkbox
-                  value={gnolandSelected}
-                  onValueChange={() => {
-                    setGnolandSelected(!gnolandSelected);
-                  }}
-                  color={gnolandSelected ? primaryColor : secondaryColor}
-                />
-                <BrandText
-                  style={[
-                    {
-                      marginLeft: layout.padding_x1_5,
-                      marginRight: layout.padding_x0_5,
-                    },
-                    fontSemibold14,
-                  ]}
-                >
-                  Gnoland
-                </BrandText>
-              </View>
+              {tags.map((tag) => {
+                return (
+                  <View
+                    style={{
+                      marginTop: layout.padding_x2,
+                      flexDirection: "row",
+                    }}
+                  >
+                    <Checkbox
+                      value={tag.selected}
+                      onValueChange={() => {
+                        setTagFilter({
+                          ...tags,
+                          ...{ ...tag, selected: !tag.selected },
+                        });
+                      }}
+                      color={tag.selected ? primaryColor : secondaryColor}
+                    />
+                    <BrandText
+                      style={[
+                        {
+                          marginLeft: layout.padding_x1_5,
+                          marginRight: layout.padding_x0_5,
+                        },
+                        fontSemibold14,
+                      ]}
+                    >
+                      {tag.text}
+                    </BrandText>
+                  </View>
+                );
+              })}
             </View>
-
             <Separator
               style={{
                 borderBottomWidth: 1,
@@ -259,18 +202,13 @@ export const DropDownButton: React.FC<object> = () => {
               }}
               color={neutral44}
             />
-
             <View style={{ marginLeft: layout.padding_x4 }}>
-              <View style={{ flexDirection: "row" }}>
-                <Checkbox
-                  value={blogPostSelected}
-                  onValueChange={() => {
-                    setBlogPostSelected(!blogPostSelected);
-                    setVideosSelected(!blogPostSelected);
-                    setArticlesSelected(!blogPostSelected);
-                  }}
-                  color={blogPostSelected ? primaryColor : secondaryColor}
-                />
+              <View
+                style={{
+                  marginLeft: layout.padding_x4,
+                  flexDirection: "row",
+                }}
+              >
                 <BrandText
                   style={[
                     {
@@ -280,7 +218,7 @@ export const DropDownButton: React.FC<object> = () => {
                     fontSemibold14,
                   ]}
                 >
-                  Blog Post
+                  Categories
                 </BrandText>
               </View>
 
@@ -292,56 +230,40 @@ export const DropDownButton: React.FC<object> = () => {
                   marginRight: layout.padding_x2,
                 }}
               >
-                <View
-                  style={{
-                    marginBottom: layout.padding_x2,
-                    flexDirection: "row",
-                  }}
-                >
-                  <Checkbox
-                    value={videosSelected}
-                    onValueChange={() => {
-                      setVideosSelected(!videosSelected);
-                    }}
-                    color={videosSelected ? primaryColor : secondaryColor}
-                  />
-                  <BrandText
-                    style={[
-                      {
-                        marginLeft: layout.padding_x1_5,
-                        marginRight: layout.padding_x0_5,
-                      },
-                      fontSemibold14,
-                    ]}
-                  >
-                    Videos
-                  </BrandText>
-                </View>
-                <View
-                  style={{
-                    marginBottom: layout.padding_x2,
-                    flexDirection: "row",
-                  }}
-                >
-                  <Checkbox
-                    value={articlesSelected}
-                    onValueChange={() => {
-                      setArticlesSelected(!articlesSelected);
-                    }}
-                    color={articlesSelected ? primaryColor : secondaryColor}
-                  />
-                  <BrandText
-                    style={[
-                      {
-                        marginLeft: layout.padding_x1_5,
-                        marginRight: layout.padding_x0_5,
-                      },
-                      fontSemibold14,
-                    ]}
-                  >
-                    Articles
-                  </BrandText>
-                </View>
+                {categories.map((category) => {
+                  return (
+                    <View
+                      style={{
+                        marginTop: layout.padding_x2,
+                        flexDirection: "row",
+                      }}
+                    >
+                      <Checkbox
+                        value={category.selected}
+                        onValueChange={() => {
+                          setCategoryFilter({
+                            ...categories,
+                            ...{ ...category, selected: !category.selected },
+                          });
+                        }}
+                        color={
+                          category.selected ? primaryColor : secondaryColor
+                        }
+                      />
+                      <BrandText
+                        style={[
+                          {
+                            marginLeft: layout.padding_x1_5,
+                            marginRight: layout.padding_x0_5,
+                          },
+                          fontSemibold14,
+                        ]}
+                      >
+                        {category.text}
+                      </BrandText>
+                    </View>
+                  );
+                })}
               </View>
             </View>
           </View>
