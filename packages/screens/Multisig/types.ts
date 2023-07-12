@@ -47,10 +47,12 @@ export type UserWalletType = {
 export enum MultisigTransactionType {
   STAKE = "STAKE",
   TRANSFER = "TRANSFER",
-  LAUNCH_NFT_COLLECTION = "Launch Nft collection",
+  // LAUNCH_NFT_COLLECTION = "Launch Nft collection",
   CREATE_NEW_POST = "Create new post",
   MANAGE_PUBLIC_PROFILE = "Manage public profile",
   REGISTER_TNS = "Register TNS",
+
+  //TODO: More types
 }
 export type MultiSigWalletTransactionType =
   | MultiSigWalletTransactionBasicType

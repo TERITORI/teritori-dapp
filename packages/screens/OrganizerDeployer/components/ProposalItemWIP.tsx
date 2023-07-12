@@ -16,7 +16,7 @@ interface ProposalItemProps extends MultiSigWalletTransactionProposalType {
   onPress: () => void;
 }
 
-export const ProposalItem: React.FC<ProposalItemProps> = ({
+export const ProposalItemWIP: React.FC<ProposalItemProps> = ({
   type,
   count,
   onPress,

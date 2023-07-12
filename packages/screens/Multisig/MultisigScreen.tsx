@@ -116,36 +116,35 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
 
   const createProposal = (address: string) => {
     if (kind === SelectModalKind.LaunchNFT) {
-      createProposalForLaunchNFT(address);
+      // createProposalForLaunchNFT(address);
     } else if (kind === SelectModalKind.CreatePost) {
       createProposalForCreatePost(address);
     } else if (kind === SelectModalKind.ManagePublicProfile) {
       createProposalForManagePublicProfile(address);
     }
   };
-  //address: multisign address
-  const createProposalForLaunchNFT = async (address: string) => {
-    const contractAddress = "CONTRACT_ADDR1";
-    const mltisignAccountInfo = await getMultisigAccount(
-      address,
-      selectedWallet?.networkId!
-    );
-    if (mltisignAccountInfo?.accountData && mltisignAccountInfo.dbData._id) {
-      mutate({
-        formData: {
-          contractAddress,
-          multisigAddress: address,
-          msg: { Execute: "CreateCollection" },
-          funds: [], //TODO: How much funds ?
-          multisigId: mltisignAccountInfo.dbData._id,
-          type: MultisigTransactionType.LAUNCH_NFT_COLLECTION,
-        },
-        accountOnChain: mltisignAccountInfo?.accountData,
-      });
-    }
-  };
 
-  //address: multisign address
+  // const createProposalForLaunchNFT = async (address: string) => {
+  //   const contractAddress = "CONTRACT_ADDR1";
+  //   const mltisignAccountInfo = await getMultisigAccount(
+  //     address,
+  //     selectedWallet?.networkId!
+  //   );
+  //   if (mltisignAccountInfo?.accountData && mltisignAccountInfo.dbData._id) {
+  //     mutate({
+  //       formData: {
+  //         contractAddress,
+  //         multisigAddress: address,
+  //         msg: { Execute: "CreateCollection" },
+  //         funds: [], //TODO: How much funds ?
+  //         multisigId: mltisignAccountInfo.dbData._id,
+  //         type: MultisigTransactionType.LAUNCH_NFT_COLLECTION,
+  //       },
+  //       accountOnChain: mltisignAccountInfo?.accountData,
+  //     });
+  //   }
+  // };
+
   const createProposalForCreatePost = async (address: string) => {
     const contractAddress = "CONTRACT_ADDR1";
     const mltisignAccountInfo = await getMultisigAccount(

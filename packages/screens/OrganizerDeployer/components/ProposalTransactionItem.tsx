@@ -4,13 +4,13 @@ import React, { useEffect, useMemo, useState } from "react";
 import { ActivityIndicator, Pressable, StyleSheet, View } from "react-native";
 
 import { TransactionItemButtons } from "./TransactionItemButtons";
-import stakedSVG from "../../../../assets/icons/staked.svg";
-import transferSVG from "../../../../assets/icons/transfer.svg";
+import multisigWhiteSVG from "../../../../assets/icons/multisig_white.svg";
 import { BrandText } from "../../../components/BrandText";
 import { useCopyToClipboard } from "../../../components/CopyToClipboard";
 import { SVG } from "../../../components/SVG";
 import { Separator } from "../../../components/Separator";
 import { AnimationFadeIn } from "../../../components/animations";
+import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import {
   MultisigTransactionListType,
@@ -19,6 +19,7 @@ import {
 import { useTNSMetadata } from "../../../hooks/useTNSMetadata";
 import { DbSignature } from "../../../utils/faunaDB/multisig/types";
 import {
+  neutral17,
   neutral33,
   neutral55,
   neutral77,
@@ -59,6 +60,8 @@ export const ProposalTransactionItem: React.FC<ProposalTransactionItemProps> = (
   const { coinSimplified } = useMultisigHelpers();
   const feeSimple = coinSimplified(fee.amount?.[0]);
   const { copyToClipboard } = useCopyToClipboard();
+  const [isHovered, setHovered] = useState(false);
+  // const [isProposalModalVisible, setProposalModalVisible] = useState(false);
 
   const amount =
     type === MultisigTransactionType.STAKE
@@ -84,12 +87,12 @@ export const ProposalTransactionItem: React.FC<ProposalTransactionItemProps> = (
     approvalRequiredCount - approvedByCount;
 
   const getIcon = useMemo(() => {
+    //TODO: Add white icons and use them for each TX type
     switch (type) {
-      case MultisigTransactionType.STAKE:
-        return stakedSVG;
-      case MultisigTransactionType.TRANSFER:
+      // case MultisigTransactionType.STAKE:
+      //   return stakingWhiteSVG;
       default:
-        return transferSVG;
+        return multisigWhiteSVG;
     }
   }, [type]);
 
@@ -112,15 +115,14 @@ export const ProposalTransactionItem: React.FC<ProposalTransactionItemProps> = (
 
   // returns
   return (
-    <View style={styles.container}>
+    <CustomPressable
+      // onPress={() => setProposalModalVisible(true)}
+      style={[styles.container, isHovered && { backgroundColor: neutral17 }]}
+      onHoverIn={() => setHovered(true)}
+      onHoverOut={() => setHovered(false)}
+    >
       <View style={styles.svgContainer}>
-        <SVG
-          source={getIcon}
-          style={{
-            width: 32,
-            height: 32,
-          }}
-        />
+        <SVG source={getIcon} width={32} height={32} />
       </View>
 
       <View style={[styles.section, { flex: 0.75 }]}>
@@ -228,8 +230,19 @@ export const ProposalTransactionItem: React.FC<ProposalTransactionItemProps> = (
         addDecliner={addDecliner}
         isCompletedSignature={completedPercent === 100}
         isCompletelyDeclined={isCompletelyDeclined}
+        btnSquaresBackgroundColor={
+          isHovered ? neutral17 : props.btnSquaresBackgroundColor
+        }
       />
-    </View>
+
+      {/*TODO: Make a new modal or reuse/refactor DAOProposalModal ?*/}
+      {/*<DAOProposalModal*/}
+      {/*  visible={isProposalModalVisible}*/}
+      {/*  onClose={() => setProposalModalVisible(false)}*/}
+      {/*  proposalInfo={proposal}*/}
+      {/*  daoId={daoId}*/}
+      {/*/>*/}
+    </CustomPressable>
   );
 };
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 
@@ -8,18 +8,23 @@ import { CreateMultisigWalletFormType } from "./types";
 import trashSVG from "../../../assets/icons/trash.svg";
 import walletInputSVG from "../../../assets/icons/wallet-input.svg";
 import { BrandText } from "../../components/BrandText";
+import { NetworkIcon } from "../../components/NetworkIcon";
 import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { SecondaryButton } from "../../components/buttons/SecondaryButton";
 import { SearchNSInputContainer } from "../../components/inputs/SearchNSInputContainer";
+import {
+  SelectInput,
+  SelectInputData,
+} from "../../components/inputs/SelectInput";
 import { TextInputCustom } from "../../components/inputs/TextInputCustom";
 import { TextInputOutsideLabel } from "../../components/inputs/TextInputOutsideLabel";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
-import { useMultisigContext } from "../../context/MultisigReducer";
 import { useCreateMultisig, useMultisigHelpers } from "../../hooks/multisig";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import { NetworkKind } from "../../networks";
+import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { NetworkKind, selectableCosmosNetworks } from "../../networks";
 import {
   getNSAddress,
   patternOnlyNumbers,
@@ -53,11 +58,27 @@ export const MultisigCreateScreen = () => {
   ]);
   const navigation = useAppNavigation();
   const signatureRequiredValue = watch("signatureRequired");
-
   const { getPubkeyFromNode } = useMultisigHelpers();
   const { mutate, isLoading, data } = useCreateMultisig();
-  const { state } = useMultisigContext();
-  const networkId = useSelectedNetworkId();
+  const selectedNetworkInfo = useSelectedNetworkInfo();
+  const { selectedWallet } = useSelectedWallet();
+  const defaultNbSignaturesRequired = useMemo(
+    () => addressIndexes.length.toString(),
+    [addressIndexes.length]
+  );
+  const [selectedInputData, setSelectedInputData] = useState<SelectInputData>({
+    label: selectedNetworkInfo?.displayName || "",
+    value: selectedNetworkInfo?.id || "",
+    iconComponent: (
+      <NetworkIcon networkId={selectedNetworkInfo?.id} size={16} />
+    ),
+  });
+  //TODO: Later: Handle more networks
+  const selectedNetwork = useMemo(
+    () =>
+      selectableCosmosNetworks.find((n) => selectedInputData.value === n.id),
+    [selectedInputData.value]
+  );
 
   // functions
   const removeAddressField = (index: number) => {
@@ -71,17 +92,15 @@ export const MultisigCreateScreen = () => {
   };
 
   const onSubmit = ({ signatureRequired }: CreateMultisigWalletFormType) => {
-    if (state.chain?.chainId && state.chain?.addressPrefix) {
+    if (selectedNetwork?.chainId && selectedNetwork?.addressPrefix) {
       const compressedPubkeys = addressIndexes.map(
         (item) => item.compressedPubkey
       );
-
       const userAddresses = addressIndexes.map((item) => item.address);
-
       mutate({
         compressedPubkeys,
-        chainId: state.chain.chainId,
-        addressPrefix: state.chain?.addressPrefix,
+        chainId: selectedNetwork.chainId,
+        addressPrefix: selectedNetwork?.addressPrefix,
         threshold: parseInt(signatureRequired, 10),
         userAddresses,
       });
@@ -99,7 +118,10 @@ export const MultisigCreateScreen = () => {
     if (resValAddress === true) {
       address = value;
     } else {
-      const nsAddrInfo = await getNSAddress(value, networkId);
+      const nsAddrInfo = await getNSAddress(
+        value,
+        selectedNetwork?.id || ""
+      );
       if (!nsAddrInfo.status) {
         return nsAddrInfo.msg;
       }
@@ -154,38 +176,59 @@ export const MultisigCreateScreen = () => {
             </BrandText>
           </MultisigSection>
           <SpacerColumn size={3} />
+
+          <SelectInput
+            data={selectableCosmosNetworks.map((n) => {
+              return {
+                label: n.displayName,
+                value: n.id,
+                iconComponent: <NetworkIcon networkId={n?.id} size={16} />,
+              };
+            })}
+            selectedData={selectedInputData}
+            setData={(d) => {
+              setSelectedInputData(d);
+            }}
+            label="Network"
+          />
+          <SpacerColumn size={2.5} />
+
           {addressIndexes.map((_, index) => (
-            <View style={styles.inputContainer} key={index.toString()}>
-              <SearchNSInputContainer
-                searchText={watch(`addresses.${index}.address`)}
-                onPressName={(address) =>
-                  setValue(`addresses.${index}.address`, address)
-                }
-              >
-                <TextInputCustom<CreateMultisigWalletFormType>
-                  control={control}
-                  name={`addresses.${index}.address`}
-                  variant="labelOutside"
-                  noBrokenCorners
-                  label={"Address #" + (index + 1)}
-                  rules={{
-                    required: true,
-                    validate: (value) => onAddressChange(index, value),
-                  }}
-                  placeHolder="Account address"
-                  iconSVG={walletInputSVG}
+            <>
+              <View key={index.toString()}>
+                <SearchNSInputContainer
+                  searchText={watch(`addresses.${index}.address`)}
+                  onPressName={(address) =>
+                    setValue(`addresses.${index}.address`, address)
+                  }
                 >
-                  {addressIndexes.length > 2 && (
-                    <Pressable
-                      style={styles.trashContainer}
-                      onPress={() => removeAddressField(index)}
-                    >
-                      <SVG source={trashSVG} width={12} height={12} />
-                    </Pressable>
-                  )}
-                </TextInputCustom>
-              </SearchNSInputContainer>
-            </View>
+                  <TextInputCustom<CreateMultisigWalletFormType>
+                    defaultValue={index === 0 ? selectedWallet?.address : ""}
+                    control={control}
+                    name={`addresses.${index}.address`}
+                    variant="labelOutside"
+                    noBrokenCorners
+                    label={"Address #" + (index + 1)}
+                    rules={{
+                      required: true,
+                      validate: (value) => onAddressChange(index, value),
+                    }}
+                    placeHolder="Account address"
+                    iconSVG={walletInputSVG}
+                  >
+                    {addressIndexes.length > 2 && (
+                      <Pressable
+                        style={styles.trashContainer}
+                        onPress={() => removeAddressField(index)}
+                      >
+                        <SVG source={trashSVG} width={12} height={12} />
+                      </Pressable>
+                    )}
+                  </TextInputCustom>
+                </SearchNSInputContainer>
+              </View>
+              <SpacerColumn size={2.5} />
+            </>
           ))}
           <View style={styles.row}>
             <SecondaryButton
@@ -194,6 +237,7 @@ export const MultisigCreateScreen = () => {
               onPress={addAddressField}
             />
           </View>
+          <SpacerColumn size={2.5} />
           <View style={styles.signatureContainer}>
             <TextInputOutsideLabel
               label="Number of Signatures required"
@@ -201,6 +245,7 @@ export const MultisigCreateScreen = () => {
             />
             <View style={styles.rowCenter}>
               <TextInputCustom<CreateMultisigWalletFormType>
+                defaultValue={defaultNbSignaturesRequired}
                 control={control}
                 noBrokenCorners
                 name="signatureRequired"
@@ -227,17 +272,31 @@ export const MultisigCreateScreen = () => {
                 label=""
                 hideLabel
                 width={80}
-                defaultValue={addressIndexes.length.toString()}
+                defaultValue={defaultNbSignaturesRequired}
                 disabled
               />
             </View>
           </View>
+
           <BrandText style={[fontSemibold14, { color: neutral77 }]}>
             This means that each transaction this multisig makes will require{" "}
-            {signatureRequiredValue || 0} of the members to sign it for it to be
-            accepted by the validators.
+            {signatureRequiredValue || defaultNbSignaturesRequired} of the
+            members to sign it for it to be accepted by the validators.
           </BrandText>
+
           <SpacerColumn size={2.5} />
+
+          <View
+            style={{
+              borderTopWidth: 1,
+              borderColor: neutral33,
+              paddingTop: layout.padding_x2_5,
+              zIndex: 1,
+            }}
+          />
+
+          <SpacerColumn size={3} />
+
           <View style={styles.row}>
             <PrimaryButton
               size="XL"
@@ -279,17 +338,12 @@ const styles = StyleSheet.create({
   },
   signatureContainer: {
     paddingVertical: layout.padding_x2_5,
-    marginVertical: layout.padding_x2_5,
     borderTopWidth: 1,
-    borderBottomWidth: 1,
     borderColor: neutral33,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     maxWidth: 793,
-  },
-  inputContainer: {
-    marginBottom: layout.padding_x2_5,
   },
   trashContainer: {
     height: 32,

@@ -1,15 +1,9 @@
 import React, { useState } from "react";
-import {
-  StyleProp,
-  Text,
-  TouchableOpacity,
-  View,
-  ViewStyle,
-} from "react-native";
+import { StyleProp, Text, View, ViewStyle } from "react-native";
 
 import { DAOProposalModal } from "./DAOProposalModal";
 import { ProposalActions } from "./ProposalActions";
-import orgSVG from "../../../assets/icons/multisig.svg";
+import multisigWhiteSVG from "../../../assets/icons/multisig_white.svg";
 import { ProposalResponse } from "../../contracts-clients/dao-proposal-single/DaoProposalSingle.types";
 import { useDAOProposals } from "../../hooks/dao/useDAOProposals";
 import { useDAOProposalsConfig } from "../../hooks/dao/useDAOProposalsConfig";
@@ -22,12 +16,15 @@ import {
   neutral77,
   successColor,
   errorColor,
+  neutral17,
 } from "../../utils/style/colors";
 import { fontSemibold13, fontSemibold14 } from "../../utils/style/fonts";
+import { layout } from "../../utils/style/layout";
 import { tinyAddress } from "../../utils/text";
 import { BrandText } from "../BrandText";
 import { OmniLink } from "../OmniLink";
 import { SVG } from "../SVG";
+import { CustomPressable } from "../buttons/CustomPressable";
 
 export const DAOProposals: React.FC<{
   daoId: string | undefined;
@@ -54,7 +51,6 @@ const ProposalRow: React.FC<{
 
   const halfGap = 24;
   const elemStyle: ViewStyle = {
-    height: 32,
     justifyContent: "space-between",
     paddingHorizontal: halfGap,
     flex: 1,
@@ -97,187 +93,201 @@ const ProposalRow: React.FC<{
   const proposerId = getUserId(network?.id, proposal.proposal.proposer);
 
   const { primaryAlias: proposerAlias } = useNSPrimaryAlias(proposerId);
+  const [isHovered, setHovered] = useState(false);
 
   return (
-    <View
-      style={{
-        flexDirection: "row",
-        height: 64,
-        alignItems: "center",
-        borderBottomColor: neutral33,
-        borderBottomWidth: 1,
-      }}
-    >
-      <View
-        style={{
-          flexDirection: "row",
-          width: "100%",
-          alignItems: "center",
-        }}
+    <>
+      <CustomPressable
+        onHoverIn={() => setHovered(true)}
+        onHoverOut={() => setHovered(false)}
+        onPress={() => setDisplayProposalModal(true)}
+        style={[
+          {
+            flexDirection: "row",
+            height: 64,
+            alignItems: "center",
+            borderBottomColor: neutral33,
+            borderBottomWidth: 1,
+          },
+          isHovered && { backgroundColor: neutral17 },
+        ]}
       >
-        <View style={[elemStyle, { paddingLeft: 0 }]}>
-          <View
-            style={{
-              flexDirection: "row",
-              flex: 1,
-              alignItems: "center",
-              height: "100%",
-            }}
-          >
-            <SVG
-              source={orgSVG}
-              width={32}
-              height={32}
-              style={{ marginRight: 12 }}
-            />
+        <View
+          style={{
+            flexDirection: "row",
+            width: "100%",
+            alignItems: "center",
+          }}
+        >
+          <View style={[elemStyle, { paddingLeft: 0 }]}>
             <View
               style={{
-                height: "100%",
+                flexDirection: "row",
                 flex: 1,
-                justifyContent: "space-between",
+                alignItems: "center",
+                height: "100%",
               }}
             >
-              <TouchableOpacity onPress={() => setDisplayProposalModal(true)}>
-                <BrandText
-                  style={[fontSemibold14, { lineHeight: 14 }]}
-                  numberOfLines={1}
-                >
-                  #{proposal.id}: {proposal.proposal.title}
-                </BrandText>
-              </TouchableOpacity>
-              <BrandText
-                style={[fontSemibold13, { lineHeight: 13, color: neutral77 }]}
-                numberOfLines={1}
-              >
-                Created by{" "}
-                <OmniLink
-                  to={{
-                    screen: "UserPublicProfile",
-                    params: { id: proposerId },
-                  }}
-                >
-                  <Text style={{ color: "#16BBFF" }}>
-                    {proposerAlias
-                      ? `@${proposerAlias}`
-                      : tinyAddress(proposal.proposal.proposer, 10)}
-                  </Text>
-                </OmniLink>
-              </BrandText>
-            </View>
-          </View>
-        </View>
-        <View style={elemStyle}>
-          {proposal.proposal.status === "open" && (
-            <>
+              <SVG
+                source={multisigWhiteSVG}
+                width={32}
+                height={32}
+                style={{
+                  marginRight: layout.padding_x2,
+                  marginLeft: layout.padding_x2,
+                }}
+              />
               <View
                 style={{
-                  flexDirection: "row",
-                  width: "100%",
-                  height: 13,
-                  alignItems: "center",
+                  height: "100%",
+                  flex: 1,
                   justifyContent: "space-between",
                 }}
               >
                 <BrandText
-                  style={[fontSemibold14, { lineHeight: 14, color: neutral77 }]}
+                  style={[
+                    fontSemibold14,
+                    { marginBottom: layout.padding_x0_75 },
+                  ]}
                   numberOfLines={1}
                 >
-                  Voted:{" "}
-                  <Text style={{ color: "white" }}>
-                    {Math.ceil(weights.voted)}
-                  </Text>
-                  /
-                  <Text style={{ color: "white" }}>
-                    {Math.ceil(thresholdWeight)}
-                  </Text>
+                  #{proposal.id}: {proposal.proposal.title}
                 </BrandText>
                 <BrandText
-                  style={[fontSemibold14, { lineHeight: 14, color: neutral77 }]}
+                  style={[fontSemibold13, { color: neutral77 }]}
                   numberOfLines={1}
                 >
-                  Yes:{" "}
-                  <Text style={{ color: "white" }}>
-                    {Math.ceil(weights.approved)}
-                  </Text>
-                  /
-                  <Text style={{ color: "white" }}>
-                    {Math.ceil(quorumWeight)}
-                  </Text>
+                  Created by{" "}
+                  <OmniLink
+                    to={{
+                      screen: "UserPublicProfile",
+                      params: { id: proposerId },
+                    }}
+                  >
+                    <Text style={{ color: "#16BBFF" }}>
+                      {proposerAlias
+                        ? `@${proposerAlias}`
+                        : tinyAddress(proposal.proposal.proposer, 10)}
+                    </Text>
+                  </OmniLink>
                 </BrandText>
               </View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  width: "100%",
-                  height: 13,
-                  alignItems: "center",
-                }}
-              >
-                <View style={{ flex: 1, flexDirection: "row" }}>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      backgroundColor: successColor,
-                      height: progressBarHeight,
-                      flex: weights.approved / targetWeight,
-                    }}
-                  />
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      backgroundColor: "white",
-                      height: progressBarHeight,
-                      flex: weights.abstained / targetWeight,
-                    }}
-                  />
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      backgroundColor: errorColor,
-                      height: progressBarHeight,
-                      flex: weights.declined / targetWeight,
-                    }}
-                  />
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      backgroundColor: neutral55,
-                      height: progressBarHeight,
-                      flex: (targetWeight - weights.voted) / targetWeight,
-                    }}
-                  />
+            </View>
+          </View>
+          <View style={elemStyle}>
+            {proposal.proposal.status === "open" && (
+              <>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    width: "100%",
+                    height: 13,
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <BrandText
+                    style={[fontSemibold14, { color: neutral77 }]}
+                    numberOfLines={1}
+                  >
+                    Voted:{" "}
+                    <Text style={{ color: "white" }}>
+                      {Math.ceil(weights.voted)}
+                    </Text>
+                    /
+                    <Text style={{ color: "white" }}>
+                      {Math.ceil(thresholdWeight)}
+                    </Text>
+                  </BrandText>
+                  <BrandText
+                    style={[fontSemibold14, { color: neutral77 }]}
+                    numberOfLines={1}
+                  >
+                    Yes:{" "}
+                    <Text style={{ color: "white" }}>
+                      {Math.ceil(weights.approved)}
+                    </Text>
+                    /
+                    <Text style={{ color: "white" }}>
+                      {Math.ceil(quorumWeight)}
+                    </Text>
+                  </BrandText>
                 </View>
                 <View
                   style={{
                     flexDirection: "row",
-                    backgroundColor: "black",
-                    height: progressBarHeight,
-                    position: "absolute",
-                    left: `${quorumGain * 100}%`,
-                    width: 1,
+                    width: "100%",
+                    height: 13,
+                    alignItems: "center",
                   }}
-                />
-              </View>
-            </>
-          )}
+                >
+                  <View style={{ flex: 1, flexDirection: "row" }}>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        backgroundColor: successColor,
+                        height: progressBarHeight,
+                        flex: weights.approved / targetWeight,
+                      }}
+                    />
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        backgroundColor: "white",
+                        height: progressBarHeight,
+                        flex: weights.abstained / targetWeight,
+                      }}
+                    />
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        backgroundColor: errorColor,
+                        height: progressBarHeight,
+                        flex: weights.declined / targetWeight,
+                      }}
+                    />
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        backgroundColor: neutral55,
+                        height: progressBarHeight,
+                        flex: (targetWeight - weights.voted) / targetWeight,
+                      }}
+                    />
+                  </View>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      backgroundColor: "black",
+                      height: progressBarHeight,
+                      position: "absolute",
+                      left: `${quorumGain * 100}%`,
+                      width: 1,
+                    }}
+                  />
+                </View>
+              </>
+            )}
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              width: 300,
+              marginLeft: halfGap,
+            }}
+          >
+            <ProposalActions daoId={daoId} proposal={proposal} />
+          </View>
         </View>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            width: 300,
-            marginLeft: halfGap,
-          }}
-        >
-          <ProposalActions daoId={daoId} proposal={proposal} />
-        </View>
-      </View>
+      </CustomPressable>
+
       <DAOProposalModal
         visible={displayProposalModal}
         onClose={() => setDisplayProposalModal(false)}
         proposalInfo={proposal}
         daoId={daoId}
       />
-    </View>
+    </>
   );
 };

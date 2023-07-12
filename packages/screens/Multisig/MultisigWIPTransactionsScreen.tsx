@@ -15,7 +15,7 @@ import { fontSemibold20, fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BasicTransactionItem } from "../OrganizerDeployer/components/BasicTransactionItem";
 import { MakeProposalModal } from "../OrganizerDeployer/components/MakeProposalModal";
-import { ProposalItem } from "../OrganizerDeployer/components/ProposalItem";
+import { ProposalItemWIP } from "../OrganizerDeployer/components/ProposalItemWIP";
 import multisigTransactions from "../OrganizerDeployer/multisig-transactions.json";
 
 //TODO: Another Transactions page ?
@@ -60,7 +60,7 @@ export const MultisigWIPTransactionsScreen: ScreenFC<
       switch (item.type) {
         case "proposals":
           return (
-            <ProposalItem
+            <ProposalItemWIP
               {...item}
               onPress={() =>
                 navigation.navigate("MultisigTransactions", {

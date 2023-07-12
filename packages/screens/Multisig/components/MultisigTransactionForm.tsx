@@ -11,7 +11,10 @@ import { SVG } from "../../../components/SVG";
 import { AnimationExpand } from "../../../components/animations";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { SearchNSInputContainer } from "../../../components/inputs/SearchNSInputContainer";
-import { GeneralSelect } from "../../../components/select/GeneralSelect";
+import {
+  SelectInput,
+  SelectInputData,
+} from "../../../components/inputs/SelectInput";
 import { SpacerColumn } from "../../../components/spacer";
 import { useMultisigContext } from "../../../context/MultisigReducer";
 import {
@@ -78,7 +81,11 @@ export const MultisigTransactionForm: React.FC<
     setValue("amount", holidings?.value || "0", { shouldValidate: true });
   };
 
-  const [selectValidator, setSelectValidator] = useState<string>("");
+  const [selectedInputData, setSelectedInputData] = useState<SelectInputData>({
+    label: "",
+    value: "",
+  });
+
   // returns
   return (
     <ScrollView
@@ -179,19 +186,24 @@ export const MultisigTransactionForm: React.FC<
                     />
                   </SearchNSInputContainer>
                 ) : (
-                  <GeneralSelect
-                    data={activeValidators.map((v) => v.moniker)}
-                    initValue="Select"
-                    value={selectValidator}
-                    setValue={(v: string) => {
+                  <SelectInput
+                    data={activeValidators.map((v) => {
+                      return {
+                        label: v.moniker,
+                        value: v.moniker,
+                      };
+                    })}
+                    placeHolder="Select"
+                    selectedData={selectedInputData}
+                    setData={(d) => {
                       let recipientAddr = "";
                       activeValidators.map((av) => {
-                        if (av.moniker === v) {
+                        if (av.moniker === d.value) {
                           recipientAddr = av.address;
                         }
                       });
                       setValue("recipientAddress", recipientAddr);
-                      setSelectValidator(v);
+                      setSelectedInputData(d);
                     }}
                   />
                 )}
