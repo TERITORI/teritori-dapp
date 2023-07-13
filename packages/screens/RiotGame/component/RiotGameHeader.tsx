@@ -20,7 +20,7 @@ import { ConnectWalletButton } from "../../../components/TopMenu/ConnectWalletBu
 import { TopLogo } from "../../../components/navigation/components/TopLogo";
 import { SpacerRow } from "../../../components/spacer";
 import { useForceNetworkKind } from "../../../hooks/useForceNetworkKind";
-import { NetworkKind } from "../../../networks";
+import { NetworkFeature, NetworkKind } from "../../../networks";
 import {
   RootStackParamList,
   useAppNavigation,
@@ -161,9 +161,7 @@ export const RiotGameHeader: React.FC<RiotGameHeaderProps> = ({
           <SpacerRow size={1.5} />
           <Separator horizontal color={neutral33} />
           <SpacerRow size={1.5} />
-          <NetworkSelector
-            forceNetworkKind={[NetworkKind.Cosmos, NetworkKind.Ethereum]}
-          />
+          <NetworkSelector forceNetworkFeatures={[NetworkFeature.P2E]} />
           <SpacerRow size={1.5} />
           <ConnectWalletButton
             style={{ marginRight: headerMarginHorizontal }}
