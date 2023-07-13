@@ -80,6 +80,7 @@ export const ResourceScreen: React.FC = () => {
       })
     )
   );
+  console.log(tagFilter);
   return (
     <ScreenContainer
       responsive
@@ -165,9 +166,18 @@ export const ResourceScreen: React.FC = () => {
         }}
       >
         <FlatList
-          data={data.filter((resource) =>
-            resource.title.toLowerCase().includes(search.toLowerCase())
-          )}
+          data={data
+            .filter((resource) =>
+              resource.title.toLowerCase().includes(search.toLowerCase())
+            )
+            .filter(
+              (resource) =>
+                tagFilter
+                  .filter((tag) => tag.selected)
+                  .filter((e) =>
+                    resource.tags.some((resource) => resource.text === e.text)
+                  ).length > 0
+            )}
           style={{
             width: "100%",
           }}

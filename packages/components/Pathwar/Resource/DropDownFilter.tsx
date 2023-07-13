@@ -10,7 +10,6 @@ import { CategoryFilter, TagFilter } from "../../../screens/Pathwar/types";
 import {
   codGrayColor,
   neutral11,
-  neutral44,
   primaryColor,
   secondaryColor,
 } from "../../../utils/style/colors";
@@ -29,19 +28,22 @@ export const DropDownFilter: React.FC<{
   setTagFilter: React.Dispatch<React.SetStateAction<TagFilter[]>>;
 }> = ({ categories, tags, setCategoryFilter, setTagFilter }) => {
   const { onPressDropdownButton, isDropdownOpen } = useDropdowns();
-  console.log(categories, tags);
   const dropdownRef = useRef<View>(null);
 
   const handleAllButton = () => {
     setCategoryFilter(
-      categories.map((category) => {
-        return { ...category, selected: false };
-      })
+      Object.values(
+        categories.map((category) => {
+          return { ...category, selected: false };
+        })
+      )
     );
-    setCategoryFilter(
-      tags.map((tags) => {
-        return { ...tags, selected: false };
-      })
+    setTagFilter(
+      Object.values(
+        tags.map((tags) => {
+          return { ...tags, selected: false };
+        })
+      )
     );
   };
 
@@ -86,7 +88,6 @@ export const DropDownFilter: React.FC<{
       {isDropdownOpen(dropdownRef) && (
         <SecondaryBox
           width={185}
-          height={350}
           style={{
             position: "absolute",
             top: 42,
@@ -104,8 +105,8 @@ export const DropDownFilter: React.FC<{
           >
             <Pressable
               style={{
-                marginLeft: layout.padding_x4,
-                marginTop: layout.padding_x1_5,
+                marginLeft: layout.padding_x2,
+                marginVertical: layout.padding_x1,
                 flexDirection: "row",
               }}
               onPress={handleAllButton}
@@ -123,23 +124,79 @@ export const DropDownFilter: React.FC<{
               </BrandText>
             </Pressable>
 
-            <Separator
-              style={{
-                borderBottomWidth: 1,
-                borderColor: neutral44,
-                width: "100%",
-                marginTop: layout.padding_x0_5,
-                marginBottom: layout.padding_x0_5,
-              }}
-              color={neutral44}
+            <Section text="Tags" items={tags} setItems={setTagFilter} />
+            <Section
+              text="Categories"
+              items={categories}
+              setItems={setCategoryFilter}
             />
+          </View>
+        </SecondaryBox>
+      )}
+    </View>
+  );
+};
 
+const Section: React.FC<{
+  text: string;
+  items: TagFilter[];
+  setItems: (e: []) => void;
+}> = ({ text, items, setItems }) => {
+  return (
+    <>
+      <Separator />
+
+      <View
+        style={{
+          marginLeft: layout.padding_x2,
+          marginTop: layout.padding_x1,
+          marginVertical: layout.padding_x1,
+          flexDirection: "row",
+        }}
+      >
+        <BrandText
+          style={[
+            {
+              marginLeft: layout.padding_x1_5,
+              marginRight: layout.padding_x0_5,
+            },
+            fontSemibold14,
+          ]}
+        >
+          {text}
+        </BrandText>
+      </View>
+
+      <View
+        style={{
+          marginLeft: layout.padding_x3,
+        }}
+      >
+        {items.map((tag, index) => {
+          return (
             <View
               style={{
-                marginLeft: layout.padding_x4,
+                marginVertical: layout.padding_x0_5,
+                marginLeft: layout.padding_x1_5,
                 flexDirection: "row",
               }}
             >
+              <Checkbox
+                value={tag.selected}
+                onValueChange={() => {
+                  setItems(
+                    // @ts-expect-error
+                    Object.values({
+                      ...items,
+                      [index]: {
+                        ...tag,
+                        selected: !tag.selected,
+                      },
+                    })
+                  );
+                }}
+                color={tag.selected ? primaryColor : secondaryColor}
+              />
               <BrandText
                 style={[
                   {
@@ -149,126 +206,12 @@ export const DropDownFilter: React.FC<{
                   fontSemibold14,
                 ]}
               >
-                Tags
+                {tag.text}
               </BrandText>
             </View>
-
-            <View
-              style={{
-                marginLeft: 65,
-                marginRight: layout.padding_x2,
-              }}
-            >
-              {tags.map((tag) => {
-                return (
-                  <View
-                    style={{
-                      marginTop: layout.padding_x2,
-                      flexDirection: "row",
-                    }}
-                  >
-                    <Checkbox
-                      value={tag.selected}
-                      onValueChange={() => {
-                        setTagFilter({
-                          ...tags,
-                          ...{ ...tag, selected: !tag.selected },
-                        });
-                      }}
-                      color={tag.selected ? primaryColor : secondaryColor}
-                    />
-                    <BrandText
-                      style={[
-                        {
-                          marginLeft: layout.padding_x1_5,
-                          marginRight: layout.padding_x0_5,
-                        },
-                        fontSemibold14,
-                      ]}
-                    >
-                      {tag.text}
-                    </BrandText>
-                  </View>
-                );
-              })}
-            </View>
-            <Separator
-              style={{
-                borderBottomWidth: 1,
-                borderColor: neutral44,
-                width: "100%",
-                marginTop: layout.padding_x0_5,
-                marginBottom: layout.padding_x0_5,
-              }}
-              color={neutral44}
-            />
-            <View style={{ marginLeft: layout.padding_x4 }}>
-              <View
-                style={{
-                  marginLeft: layout.padding_x4,
-                  flexDirection: "row",
-                }}
-              >
-                <BrandText
-                  style={[
-                    {
-                      marginLeft: layout.padding_x1_5,
-                      marginRight: layout.padding_x0_5,
-                    },
-                    fontSemibold14,
-                  ]}
-                >
-                  Categories
-                </BrandText>
-              </View>
-
-              <View
-                style={{
-                  marginTop: layout.padding_x2_5,
-                  marginLeft: layout.padding_x4,
-                  marginBottom: layout.padding_x0_5,
-                  marginRight: layout.padding_x2,
-                }}
-              >
-                {categories.map((category) => {
-                  return (
-                    <View
-                      style={{
-                        marginTop: layout.padding_x2,
-                        flexDirection: "row",
-                      }}
-                    >
-                      <Checkbox
-                        value={category.selected}
-                        onValueChange={() => {
-                          setCategoryFilter({
-                            ...categories,
-                            ...{ ...category, selected: !category.selected },
-                          });
-                        }}
-                        color={
-                          category.selected ? primaryColor : secondaryColor
-                        }
-                      />
-                      <BrandText
-                        style={[
-                          {
-                            marginLeft: layout.padding_x1_5,
-                            marginRight: layout.padding_x0_5,
-                          },
-                          fontSemibold14,
-                        ]}
-                      >
-                        {category.text}
-                      </BrandText>
-                    </View>
-                  );
-                })}
-              </View>
-            </View>
-          </View>
-        </SecondaryBox>
-      )}
-    </View>
+          );
+        })}
+      </View>
+    </>
   );
 };
