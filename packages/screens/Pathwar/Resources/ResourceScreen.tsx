@@ -69,18 +69,18 @@ export const ResourceScreen: React.FC = () => {
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter[]>(
     data.flatMap((resource) =>
       resource.category.map((category) => {
-        return { ...category, selected: false };
+        return { ...category, selected: true };
       })
     )
   );
   const [tagFilter, setTagFilter] = useState<TagFilter[]>(
     data.flatMap((resource) =>
       resource.tags.map((tag) => {
-        return { ...tag, selected: false };
+        return { ...tag, selected: true };
       })
     )
   );
-  console.log(tagFilter);
+
   return (
     <ScreenContainer
       responsive
@@ -176,6 +176,13 @@ export const ResourceScreen: React.FC = () => {
                   .filter((tag) => tag.selected)
                   .filter((e) =>
                     resource.tags.some((resource) => resource.text === e.text)
+                  ).length > 0 &&
+                categoryFilter
+                  .filter((tag) => tag.selected)
+                  .filter((e) =>
+                    resource.category.some(
+                      (resource) => resource.text === e.text
+                    )
                   ).length > 0
             )}
           style={{
