@@ -9,6 +9,7 @@ import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { ScreenFC } from "../../utils/navigation";
 import { feedTabToCategories, feedsTabItems } from "../../utils/social-feed";
+import { NetworkFeature } from "../../networks";
 
 export const FeedScreen: ScreenFC<"Feed"> = () => {
   const isMobile = useIsMobile();
@@ -35,8 +36,7 @@ export const FeedScreen: ScreenFC<"Feed"> = () => {
       noMargin
       noScroll
       footerChildren={<></>}
-      // TODO: re-enable this and handle forceNetworkKind for multi kinds
-      // forceNetworkKind={NetworkKind.Cosmos}
+      forceNetworkFeatures={[NetworkFeature.SocialFeed]}
       headerChildren={<BrandText>Social Feed</BrandText>}
     >
       <NewsFeed

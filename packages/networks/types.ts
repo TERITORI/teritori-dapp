@@ -121,4 +121,5 @@ export enum NetworkFeature {
   NFTLaunchpad = "NFTLaunchpad",
   NameService = "NameService",
   Swap = "Swap",
+  SocialFeed = "SocialFeed",
 }
