@@ -31,17 +31,18 @@ export const DropDownFilter: React.FC<{
   const dropdownRef = useRef<View>(null);
 
   const handleAllButton = () => {
+    onPressDropdownButton(dropdownRef);
     setCategoryFilter(
       Object.values(
         categories.map((category) => {
-          return { ...category, selected: false };
+          return { ...category, selected: true };
         })
       )
     );
     setTagFilter(
       Object.values(
         tags.map((tags) => {
-          return { ...tags, selected: false };
+          return { ...tags, selected: true };
         })
       )
     );
@@ -91,9 +92,11 @@ export const DropDownFilter: React.FC<{
           style={{
             position: "absolute",
             top: 42,
-            marginTop: layout.padding_x1_5,
           }}
-          mainContainerStyle={{ backgroundColor: codGrayColor }}
+          mainContainerStyle={{
+            backgroundColor: codGrayColor,
+            paddingVertical: layout.padding_x2,
+          }}
         >
           <View
             style={{
@@ -106,7 +109,7 @@ export const DropDownFilter: React.FC<{
             <Pressable
               style={{
                 marginLeft: layout.padding_x2,
-                marginVertical: layout.padding_x1,
+                marginBottom: layout.padding_x1,
                 flexDirection: "row",
               }}
               onPress={handleAllButton}
@@ -124,11 +127,17 @@ export const DropDownFilter: React.FC<{
               </BrandText>
             </Pressable>
 
-            <Section text="Tags" items={tags} setItems={setTagFilter} />
+            <Section
+              text="Tags"
+              items={tags}
+              setItems={setTagFilter}
+              closeOpenedDropdown={() => onPressDropdownButton(dropdownRef)}
+            />
             <Section
               text="Categories"
               items={categories}
               setItems={setCategoryFilter}
+              closeOpenedDropdown={() => onPressDropdownButton(dropdownRef)}
             />
           </View>
         </SecondaryBox>
@@ -141,7 +150,8 @@ const Section: React.FC<{
   text: string;
   items: TagFilter[];
   setItems: (e: []) => void;
-}> = ({ text, items, setItems }) => {
+  closeOpenedDropdown: () => void;
+}> = ({ text, items, setItems, closeOpenedDropdown }) => {
   return (
     <>
       <Separator />
@@ -184,6 +194,7 @@ const Section: React.FC<{
               <Checkbox
                 value={tag.selected}
                 onValueChange={() => {
+                  closeOpenedDropdown();
                   setItems(
                     // @ts-expect-error
                     Object.values({
