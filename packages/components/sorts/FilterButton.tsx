@@ -31,23 +31,19 @@ export const FilterButton: React.FC<{
       <TertiaryBox
         noBrokenCorners
         height={48}
+        width={showChevron ? undefined : 48}
         mainContainerStyle={[
           {
             flexDirection: "row",
             borderRadius: 6,
-            padding: layout.padding_x1_5,
           },
           mainContainerStyle,
         ]}
       >
-        <SVG
-          source={filterSVG}
-          width={20}
-          height={20}
-          style={{ marginRight: layout.padding_x0_5 }}
-        />
+        <SVG source={filterSVG} width={20} height={20} />
         {showChevron && (
           <SVG
+            style={{ marginLeft: layout.padding_x0_5 }}
             source={isExpanded ? chevronUpSVG : chevronDownSVG}
             width={16}
             height={16}

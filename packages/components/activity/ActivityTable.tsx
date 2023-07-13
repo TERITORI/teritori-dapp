@@ -176,7 +176,6 @@ const ActivityRow: React.FC<{ activity: Activity }> = ({ activity }) => {
       <View
         style={{
           flex: TABLE_ROWS.seller.flex,
-          paddingRight: layout.padding_x1,
         }}
       >
         <Link

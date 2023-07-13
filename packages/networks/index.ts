@@ -344,7 +344,7 @@ export const keplrChainInfoFromNetworkInfo = (
     currencies: [stakeCurrency],
     feeCurrencies: [stakeCurrency],
     gasPriceStep: network.gasPriceStep,
-    features: network.features,
+    features: network.cosmosFeatures,
   };
 };
 

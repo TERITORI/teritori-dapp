@@ -12,7 +12,10 @@ import { TabsListType } from "../../components/collections/types";
 import { useCollectionInfo } from "../../hooks/useCollectionInfo";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { parseCollectionId } from "../../networks";
-import { setShowFilters } from "../../store/slices/marketplaceFilters";
+import {
+  setBuyNow,
+  setShowFilters,
+} from "../../store/slices/marketplaceFilters";
 import { useAppDispatch } from "../../store/store";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { neutral00, neutral33 } from "../../utils/style/colors";
@@ -38,7 +41,10 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
   const dispatch = useAppDispatch();
 
   const handleOnSelectTab = (item: TabsListType) => {
-    if (item !== "collections") dispatch(setShowFilters(false));
+    if (item !== "collections") {
+      dispatch(setShowFilters(false));
+      dispatch(setBuyNow(false));
+    }
     setSelectedTab(item);
   };
 

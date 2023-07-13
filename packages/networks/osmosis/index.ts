@@ -1,5 +1,5 @@
 import { osmosisCurrencies } from "./currencies";
-import { NetworkKind, NetworkInfo } from "../types";
+import { NetworkKind, NetworkInfo, NetworkFeature } from "../types";
 
 export const osmosisNetwork: NetworkInfo = {
   id: "osmosis",
@@ -7,6 +7,7 @@ export const osmosisNetwork: NetworkInfo = {
   chainId: "osmosis-1",
   displayName: "Osmosis",
   icon: "icons/networks/osmosis.svg",
+  features: [NetworkFeature.Swap],
   currencies: osmosisCurrencies,
   txExplorer: "https://www.mintscan.io/osmosis/txs/$hash",
   accountExplorer: "https://www.mintscan.io/osmosis/account/$address",
@@ -23,7 +24,7 @@ export const osmosisNetwork: NetworkInfo = {
     average: 0.025,
     high: 0.04,
   },
-  features: [
+  cosmosFeatures: [
     "stargate",
     "ibc-transfer",
     "cosmwasm",

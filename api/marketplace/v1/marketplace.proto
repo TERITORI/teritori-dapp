@@ -46,8 +46,8 @@ message Attribute {
 }
 
 message PriceRange {
-  float min = 1;
-  float max = 2;
+  string min = 1;
+  string max = 2;
 }
 
 message NFT {
