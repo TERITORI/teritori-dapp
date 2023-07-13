@@ -36,12 +36,6 @@ export const MusicPlayerMyLibraryContent: React.FC<{ idList: string[] }> = ({
 }) => {
   const unitWidth = 240;
 
-  // const unitAlbumData = {
-  //   title: "Name",
-  //   description: "Description here lorem ipsum dolor sit amet",
-  //   img: Album,
-  //   name: "artistname",
-  // };
   const isLoadingValue = useSharedValue(false);
   const isGoingUp = useSharedValue(false);
 
@@ -80,9 +74,6 @@ export const MusicPlayerMyLibraryContent: React.FC<{ idList: string[] }> = ({
     () => (dataOther ? combineFetchAlbumPagesOther(dataOther.pages) : []),
     [dataOther]
   );
-  // const myAlbumsData = Array(3).fill(unitAlbumData);
-  // const otherAlbumsData = Array(8).fill(unitAlbumData);
-
   const [openUploadModal, setOpenUploadModal] = useState<boolean>(false);
   useEffect(() => {
     if (isFetching || isLoading) {
@@ -264,11 +255,6 @@ export const MusicPlayerMyLibraryContent: React.FC<{ idList: string[] }> = ({
         isVisible={openUploadModal}
         onClose={() => setOpenUploadModal(false)}
       />
-      {/*
-      <AlbumInfoModal
-        isVisible={openAlbumInfoModal}
-        onClose={() => setOpenAlbumInfoModal(false)}
-      />*/}
     </View>
   );
 };

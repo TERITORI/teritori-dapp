@@ -18,7 +18,7 @@ export const AvatarWithName: React.FC<
         userId: string | undefined;
       }
   ) & {
-    style: StyleProp<ViewStyle>;
+    style?: StyleProp<ViewStyle>;
     onPress: (userId: string) => void;
   }
 > = (props) => {
@@ -31,7 +31,7 @@ export const AvatarWithName: React.FC<
 export const AvatarWithNameFromName: React.FC<{
   networkId: string | undefined;
   name: string | undefined;
-  style: StyleProp<ViewStyle>;
+  style?: StyleProp<ViewStyle>;
   onPress: (userId: string) => void;
 }> = ({ networkId, name, style, onPress }) => {
   const { nameOwner } = useNSNameOwner(networkId, name);
@@ -47,7 +47,7 @@ export const AvatarWithNameFromName: React.FC<{
 
 export const AvatarWithNameFromUserId: React.FC<{
   userId: string | undefined;
-  style: StyleProp<ViewStyle>;
+  style?: StyleProp<ViewStyle>;
   onPress: (userId: string) => void;
 }> = ({ userId, style, onPress }) => {
   const { primaryAlias } = useNSPrimaryAlias(userId);
@@ -64,7 +64,7 @@ export const AvatarWithNameFromUserId: React.FC<{
 export const AvatarWithNameView: React.FC<{
   name: string | undefined;
   userId: string | undefined;
-  style: StyleProp<ViewStyle>;
+  style?: StyleProp<ViewStyle>;
   onPress: (userId: string) => void;
 }> = ({ name, userId, style, onPress }) => {
   const [, userAddress] = parseUserId(userId);

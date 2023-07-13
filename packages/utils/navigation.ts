@@ -135,8 +135,7 @@ const navConfig: {
     ToriPunks: "dapp/tori-punks/:route?",
     // ==== MusicPlayer
     MusicPlayer: "music-player/home",
-    AlbumName: "music-player/album-name/:id",
-    MyAlbum: "music-player/my-album",
+    AlbumName: "music-player/album/:id",
   },
 };
 

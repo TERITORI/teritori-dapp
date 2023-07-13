@@ -10,6 +10,7 @@ interface Settings {
   isAdenaConnected: boolean;
   alreadyVisited: boolean;
   areTestnetsEnabled: boolean;
+  sideBarExpanded: boolean;
 }
 
 const initialState: Settings = {
@@ -20,6 +21,7 @@ const initialState: Settings = {
   isAdenaConnected: false,
   alreadyVisited: false,
   areTestnetsEnabled: false,
+  sideBarExpanded: true,
 };
 
 export const selectSelectedNetworkId = (state: RootState) =>
@@ -36,6 +38,9 @@ export const selectIsAdenaConnected = (state: RootState) =>
 
 export const selectAreTestnetsEnabled = (state: RootState) =>
   state.settings.areTestnetsEnabled;
+
+export const selectSidebarExpanded = (state: RootState) =>
+  state.settings.sideBarExpanded;
 
 export const selectNFTStorageAPI = (state: RootState) =>
   state.settings.NFTStorageAPI;
@@ -59,6 +64,9 @@ const settingsSlice = createSlice({
     setAreTestnetsEnabled: (state, action: PayloadAction<boolean>) => {
       state.areTestnetsEnabled = action.payload;
     },
+    setSidebarExpanded: (state, action: PayloadAction<boolean>) => {
+      state.sideBarExpanded = action.payload;
+    },
     setNFTStorageAPI: (state, action: PayloadAction<string>) => {
       state.NFTStorageAPI = action.payload;
     },
@@ -71,6 +79,7 @@ export const {
   setIsKeplrConnected,
   setIsAdenaConnected,
   setAreTestnetsEnabled,
+  setSidebarExpanded,
   setNFTStorageAPI,
 } = settingsSlice.actions;
 

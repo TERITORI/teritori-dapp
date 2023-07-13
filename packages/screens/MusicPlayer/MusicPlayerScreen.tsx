@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import { View, StyleSheet } from "react-native";
 
 import { MusicPlayerHomeContent } from "./MusicPlayerHomeContent";
@@ -8,10 +8,7 @@ import { BrandText } from "../../components/BrandText";
 import { MediaPlayer } from "../../components/MusicPlayer/MediaPlayer";
 import { MusicPlayerTab } from "../../components/MusicPlayer/MusicPlayerTab";
 import { ScreenContainer } from "../../components/ScreenContainer";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getUserId } from "../../networks";
-import { mustGetMusicplayerClient } from "../../utils/backend";
+import { useFetchLibraryIds } from "../../hooks/musicplayer/useFetchLibraryIds";
 import { ScreenFC } from "../../utils/navigation";
 import { neutralA3, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
@@ -20,35 +17,13 @@ import { layout } from "../../utils/style/layout";
 export const MusicPlayerScreen: ScreenFC<"MusicPlayer"> = () => {
   const tabData: string[] = ["Home", "My Library"];
   const [tab, setTab] = useState<string>(tabData[0]);
-  const [idForLibraryList, setIdForLibraryList] = useState<string[]>([]);
-  const selectedNetworkId = useSelectedNetworkId();
-  const wallet = useSelectedWallet();
-  const userId = getUserId(selectedNetworkId, wallet?.address);
-
+  const { data } = useFetchLibraryIds();
   const musicRequest: GetAllAlbumListRequest = {
     limit: 10,
     offset: 0,
   };
-  useEffect(() => {
-    const getLibraryIdList = async () => {
-      if (!userId) return;
-      try {
-        const res = await mustGetMusicplayerClient(
-          selectedNetworkId
-        ).GetAlbumIdListForLibrary({
-          user: userId,
-        });
-        const idList: string[] = [];
-        res.albumLibraries.map((libraryInfo, index) => {
-          idList.push(libraryInfo.identifier);
-        });
-        setIdForLibraryList(idList);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    getLibraryIdList();
-  }, [selectedNetworkId, userId]);
+
+  const libraryIdList = useMemo(() => (data ? data : []), [data]);
 
   return (
     <ScreenContainer
@@ -59,13 +34,10 @@ export const MusicPlayerScreen: ScreenFC<"MusicPlayer"> = () => {
         <MusicPlayerTab tab={tab} setTab={setTab} />
 
         {tab === tabData[0] && (
-          <MusicPlayerHomeContent
-            req={musicRequest}
-            idList={idForLibraryList}
-          />
+          <MusicPlayerHomeContent req={musicRequest} idList={libraryIdList} />
         )}
         {tab === tabData[1] && (
-          <MusicPlayerMyLibraryContent idList={idForLibraryList} />
+          <MusicPlayerMyLibraryContent idList={libraryIdList} />
         )}
       </View>
 
