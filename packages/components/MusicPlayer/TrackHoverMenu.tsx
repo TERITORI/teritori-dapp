@@ -3,11 +3,11 @@ import { View, StyleSheet } from "react-native";
 
 import { HoverView } from "./HoverView";
 import AddLibrary from "../../../assets/music-player/add-library.svg";
-import Code from "../../../assets/music-player/code.svg";
-import Enter from "../../../assets/music-player/enter.svg";
-import Flag from "../../../assets/music-player/flag.svg";
-import Link from "../../../assets/music-player/link.svg";
-import Share from "../../../assets/music-player/share.svg";
+// import Code from "../../../assets/music-player/code.svg";
+// import Enter from "../../../assets/music-player/enter.svg";
+// import Flag from "../../../assets/music-player/flag.svg";
+// import Link from "../../../assets/music-player/link.svg";
+// import Share from "../../../assets/music-player/share.svg";
 import Tip from "../../../assets/music-player/tip-other.svg";
 import { signingMusicPlayerClient } from "../../client-creators/musicplayerClient";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
@@ -19,14 +19,17 @@ import { layout } from "../../utils/style/layout";
 import { AlbumInfo } from "../../utils/types/music";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
+import { TipModal } from "../socialFeed/SocialActions/TipModal";
 
 interface TrackHoverMenuProps {
   album: AlbumInfo;
   hasLibrary: boolean;
+  userName: string;
 }
 export const TrackHoverMenu: React.FC<TrackHoverMenuProps> = ({
   album,
   hasLibrary,
+  userName,
 }) => {
   const selectedNetworkId = useSelectedNetworkId();
   const wallet = useSelectedWallet();
@@ -34,7 +37,8 @@ export const TrackHoverMenu: React.FC<TrackHoverMenuProps> = ({
   const shareMenuWidth = 188;
   const lineHeight = 18;
 
-  const [openShareMenu, setOpenShareMenu] = useState<boolean>(false);
+  // const [openShareMenu, setOpenShareMenu] = useState<boolean>(false);
+  const [tipModalVisible, setTipModalVisible] = useState<boolean>(false);
   const { setToastError, setToastSuccess } = useFeedbacks();
 
   const addToLibrary = async () => {
@@ -83,6 +87,15 @@ export const TrackHoverMenu: React.FC<TrackHoverMenuProps> = ({
         message: `Error: ${err}`,
       });
     }
+  };
+
+  const copyLinkTrack = () => {
+    window.navigator.clipboard.writeText(
+      `${window.location.origin}/music-player/album/${album.id}`
+    );
+  };
+  const handleTip = () => {
+    setTipModalVisible(true);
   };
 
   const styles = StyleSheet.create({
@@ -199,7 +212,7 @@ export const TrackHoverMenu: React.FC<TrackHoverMenuProps> = ({
 
       <View style={styles.divideLine} />
 
-      <HoverView
+      {/* <HoverView
         normalStyle={styles.unitBoxNormal}
         hoverStyle={styles.unitBoxHovered}
       >
@@ -213,11 +226,14 @@ export const TrackHoverMenu: React.FC<TrackHoverMenuProps> = ({
         </View>
       </HoverView>
 
-      <View style={styles.divideLine} />
+      <View style={styles.divideLine} /> */}
 
       <HoverView
         normalStyle={styles.unitBoxNormal}
         hoverStyle={styles.unitBoxHovered}
+        onPress={() => {
+          handleTip();
+        }}
       >
         <View style={styles.oneLine}>
           <SVG
@@ -228,7 +244,25 @@ export const TrackHoverMenu: React.FC<TrackHoverMenuProps> = ({
           <BrandText style={styles.text}>Tip this track</BrandText>
         </View>
       </HoverView>
+      <View style={styles.divideLine} />
       <HoverView
+        normalStyle={styles.unitBoxNormal}
+        hoverStyle={styles.unitBoxHovered}
+        onPress={() => {
+          copyLinkTrack();
+        }}
+      >
+        <View style={styles.oneLine}>
+          <SVG
+            source={Tip}
+            width={layout.padding_x2}
+            height={layout.padding_x2}
+          />
+          <BrandText style={styles.text}>Copy link to the track</BrandText>
+        </View>
+      </HoverView>
+
+      {/* <HoverView
         normalStyle={styles.unitBoxNormal}
         onPress={() => setOpenShareMenu((value) => !value)}
         hoverStyle={styles.unitBoxHovered}
@@ -279,7 +313,13 @@ export const TrackHoverMenu: React.FC<TrackHoverMenuProps> = ({
             </HoverView>
           </View>
         )}
-      </HoverView>
+      </HoverView> */}
+      <TipModal
+        author={userName}
+        postId={album.id}
+        onClose={() => setTipModalVisible(false)}
+        isVisible={tipModalVisible}
+      />
     </View>
   );
 };

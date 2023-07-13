@@ -3,20 +3,26 @@ import { View, StyleSheet, Pressable, Image } from "react-native";
 
 import Add from "../../../assets/music-player/add.svg";
 import MorePrimary from "../../../assets/music-player/more-primary.svg";
-import MoreSecondary from "../../../assets/music-player/more-secondary.svg";
+// import MoreSecondary from "../../../assets/music-player/more-secondary.svg";
 import PlayOther from "../../../assets/music-player/play-other.svg";
 import PlaySecondary from "../../../assets/music-player/play-secondary.svg";
 import Time from "../../../assets/music-player/time.svg";
 import Tip from "../../../assets/music-player/tip-primary.svg";
+import { signingMusicPlayerClient } from "../../client-creators/musicplayerClient";
 import { BrandText } from "../../components/BrandText";
 import { DetailAlbumMenu } from "../../components/MusicPlayer/DetailAlbumMenu";
 import { MediaPlayer } from "../../components/MusicPlayer/MediaPlayer";
 import { MusicPlayerTab } from "../../components/MusicPlayer/MusicPlayerTab";
-import { TrackHoverMenu } from "../../components/MusicPlayer/TrackHoverMenu";
+// import { TrackHoverMenu } from "../../components/MusicPlayer/TrackHoverMenu";
 import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
+import { TipModal } from "../../components/socialFeed/SocialActions/TipModal";
+import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useMusicplayer } from "../../context/MusicplayerProvider";
+import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { getUserId, parseUserId } from "../../networks";
 import { mustGetMusicplayerClient } from "../../utils/backend";
 import { ipfsPinataUrl } from "../../utils/ipfs";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
@@ -37,6 +43,11 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = ({
 }) => {
   const navigation = useAppNavigation();
   const selectedNetworkId = useSelectedNetworkId();
+  const wallet = useSelectedWallet();
+  const userId = getUserId(selectedNetworkId, wallet?.address);
+  const [idForLibraryList, setIdForLibraryList] = useState<string[]>([]);
+  const { setToastError, setToastSuccess } = useFeedbacks();
+  const [tipModalVisible, setTipModalVisible] = useState<boolean>(false);
   const [albumInfo, setAlbumInfo] = useState<AlbumInfo>({
     id: "0",
     name: "",
@@ -45,6 +56,33 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = ({
     createdBy: "",
     audios: [],
   });
+
+  const authorNSInfo = useNSUserInfo(albumInfo.createdBy);
+  const [, userAddress] = parseUserId(albumInfo.createdBy);
+  const username = authorNSInfo?.metadata?.tokenId
+    ? authorNSInfo?.metadata?.tokenId
+    : userAddress;
+
+  useEffect(() => {
+    const getLibraryIdList = async () => {
+      if (!userId) return;
+      try {
+        const res = await mustGetMusicplayerClient(
+          selectedNetworkId
+        ).GetAlbumIdListForLibrary({
+          user: userId,
+        });
+        const idList: string[] = [];
+        res.albumLibraries.map((libraryInfo, index) => {
+          idList.push(libraryInfo.identifier);
+        });
+        setIdForLibraryList(idList);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    getLibraryIdList();
+  }, [selectedNetworkId, userId]);
 
   useEffect(() => {
     const getAlbumInfo = async () => {
@@ -79,8 +117,58 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = ({
     useState<any>(initIndexHoverState);
   const [openDetailAlbumMenu, setOpenDetailAlbumMenu] =
     useState<boolean>(false);
-  const [openTrackMenu, setOpenTrackMenu] = useState<boolean>(false);
-  const [clickedIndex, setClickedIndex] = useState<number>(0);
+  // const [openTrackMenu, setOpenTrackMenu] = useState<boolean>(false);
+  // const [clickedIndex, setClickedIndex] = useState<number>(0);
+  const handleTip = () => {
+    setTipModalVisible(true);
+  };
+  const addToLibrary = async () => {
+    if (!wallet?.connected || !wallet.address) {
+      return;
+    }
+    const client = await signingMusicPlayerClient({
+      networkId: selectedNetworkId,
+      walletAddress: wallet.address,
+    });
+    try {
+      const res = await client.addToLibrary({ identifier: id });
+      if (res.transactionHash) {
+        setToastSuccess({
+          title: "Add album to my library",
+          message: `tx_hash: ${res.transactionHash}`,
+        });
+      }
+    } catch (err) {
+      setToastError({
+        title: "Failed to add album to my library",
+        message: `Error: ${err}`,
+      });
+    }
+  };
+
+  const removeFromLibrary = async () => {
+    if (!wallet?.connected || !wallet.address) {
+      return;
+    }
+    const client = await signingMusicPlayerClient({
+      networkId: selectedNetworkId,
+      walletAddress: wallet.address,
+    });
+    try {
+      const res = await client.removeFromLibrary({ identifier: id });
+      if (res.transactionHash) {
+        setToastSuccess({
+          title: "remove album from my library",
+          message: `tx_hash: ${res.transactionHash}`,
+        });
+      }
+    } catch (err) {
+      setToastError({
+        title: "Failed to remove album from my library",
+        message: `Error: ${err}`,
+      });
+    }
+  };
 
   const styles = StyleSheet.create({
     pageConatiner: {
@@ -262,24 +350,13 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = ({
     },
   });
 
-  // const [audioSrc, setAudioSrc] = useState("");
-  // const [audioIsPlay, setAudioIsPlay] = useState<boolean>(false);
-  // const audioRef = useRef<HTMLAudioElement>(null);
   const { setAudioSrc, setIsPlay } = useMusicplayer();
   const playAudio = () => {
     if (albumInfo.audios.length > 0) {
       setAudioSrc(ipfsPinataUrl(albumInfo.audios[0].ipfs));
       setIsPlay(true);
-      // setAudioSrc(ipfsPinataUrl(albumInfo.musics[0].ipfs));
-      // setAudioIsPlay(true);
     }
   };
-
-  // useEffect(() => {
-  //   if (audioIsPlay && audioSrc && audioRef.current) {
-  //     audioRef.current.play();
-  //   }
-  // }, [audioIsPlay, audioRef, audioSrc]);
 
   return (
     <ScreenContainer
@@ -302,16 +379,10 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = ({
             />
             <View style={styles.verticalBox}>
               <BrandText>{albumInfo.name}</BrandText>
-              <BrandText style={styles.artistText}>Artist</BrandText>
+              <BrandText style={styles.artistText}>{username}</BrandText>
               <BrandText style={styles.infoText}>
                 {albumInfo.description}
               </BrandText>
-              <Pressable>
-                <BrandText style={styles.tagText}>#tag</BrandText>
-              </Pressable>
-              <Pressable>
-                <BrandText style={styles.tagText}>#tag</BrandText>
-              </Pressable>
               <View style={styles.oneLine}>
                 <Pressable style={styles.playButton} onPress={playAudio}>
                   <SVG
@@ -321,7 +392,12 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = ({
                   />
                   <BrandText style={styles.playButtonText}>Play</BrandText>
                 </Pressable>
-                <Pressable style={styles.tipButton}>
+                <Pressable
+                  style={styles.tipButton}
+                  onPress={() => {
+                    handleTip();
+                  }}
+                >
                   <SVG
                     source={Tip}
                     width={layout.padding_x2_5}
@@ -336,18 +412,46 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = ({
             </View>
           </View>
           <View style={styles.actionBox}>
-            <Pressable style={styles.addButton}>
-              <SVG
-                height={layout.padding_x2_5}
-                width={layout.padding_x2_5}
-                source={Add}
-              />
-              <BrandText style={styles.addButtonText}>Add to library</BrandText>
-            </Pressable>
+            {userId &&
+              userId !== albumInfo.createdBy &&
+              idForLibraryList.findIndex((item) => item === id) !== -1 && (
+                <Pressable
+                  style={styles.addButton}
+                  onPress={() => {
+                    removeFromLibrary();
+                  }}
+                >
+                  <SVG
+                    height={layout.padding_x2_5}
+                    width={layout.padding_x2_5}
+                    source={Add}
+                  />
+                  <BrandText style={styles.addButtonText}>
+                    Remove from library
+                  </BrandText>
+                </Pressable>
+              )}
+            {userId &&
+              userId !== albumInfo.createdBy &&
+              idForLibraryList.findIndex((item) => item === id) === -1 && (
+                <Pressable style={styles.addButton}>
+                  <SVG
+                    height={layout.padding_x2_5}
+                    width={layout.padding_x2_5}
+                    source={Add}
+                    onPress={() => {
+                      addToLibrary();
+                    }}
+                  />
+                  <BrandText style={styles.addButtonText}>
+                    Add to library
+                  </BrandText>
+                </Pressable>
+              )}
             <Pressable
               style={styles.moreButton}
               onPress={() => {
-                setOpenTrackMenu(false);
+                // setOpenTrackMenu(false);
                 setOpenDetailAlbumMenu((value) => !value);
               }}
             >
@@ -357,7 +461,7 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = ({
                 source={MorePrimary}
               />
             </Pressable>
-            {openDetailAlbumMenu && <DetailAlbumMenu />}
+            {openDetailAlbumMenu && <DetailAlbumMenu id={albumInfo.id} />}
           </View>
         </View>
 
@@ -412,30 +516,20 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = ({
                 </View>
                 <View style={styles.rightBox}>
                   <BrandText style={[fontSemibold14]}>
-                    {item.duration}
+                    {parseFloat(item.duration).toFixed(0)} s
                   </BrandText>
-                  <Pressable
-                    onPress={() => {
-                      setClickedIndex(index + 1);
-                      setOpenDetailAlbumMenu(false);
-                      setOpenTrackMenu((value) => !value);
-                    }}
-                  >
-                    <SVG
-                      source={MoreSecondary}
-                      height={layout.padding_x2_5}
-                      width={layout.padding_x2_5}
-                    />
-                  </Pressable>
                 </View>
-                {openTrackMenu && clickedIndex === index + 1 && (
-                  <TrackHoverMenu album={albumInfo} hasLibrary={false} />
-                )}
               </View>
             );
           })}
         </View>
       </View>
+      <TipModal
+        author={username}
+        postId={id}
+        onClose={() => setTipModalVisible(false)}
+        isVisible={tipModalVisible}
+      />
       <MediaPlayer />
     </ScreenContainer>
   );

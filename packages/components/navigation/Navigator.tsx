@@ -21,7 +21,6 @@ import { MarketplaceScreen } from "../../screens/Marketplace/MarketplaceScreen";
 import { NFTDetailScreen } from "../../screens/Marketplace/NFTDetailScreen";
 import { AlbumNameScreen } from "../../screens/MusicPlayer/AlbumNameScreen";
 import { MusicPlayerScreen } from "../../screens/MusicPlayer/MusicPlayerScreen";
-import { MyAlbumScreen } from "../../screens/MusicPlayer/MyAlbumScreen";
 import { MyCollectionScreen } from "../../screens/MyCollection/MyCollectionScreen";
 import { OrganizationDeployerScreen } from "../../screens/Organizations/OrganizationDeployerScreen";
 import { OrganizationsScreen } from "../../screens/Organizations/OrganizationsScreen";
@@ -299,11 +298,6 @@ export const Navigator: React.FC = () => {
         name="AlbumName"
         component={AlbumNameScreen}
         options={{ header: () => null, title: screenTitle("Album Name") }}
-      />
-      <Stack.Screen
-        name="MyAlbum"
-        component={MyAlbumScreen}
-        options={{ header: () => null, title: screenTitle("My Album") }}
       />
     </Stack.Navigator>
   );

@@ -61,7 +61,6 @@ export type RootStackParamList = {
 
   MusicPlayer: undefined;
   AlbumName: { id: string };
-  MyAlbum: undefined;
 
   ToriPunks: { route: string };
 };

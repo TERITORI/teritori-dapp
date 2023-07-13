@@ -18,7 +18,8 @@ import { SVG } from "../SVG";
 export const TrackImageHover: React.FC<{
   album: AlbumInfo;
   hasLibrary: boolean;
-}> = ({ album, hasLibrary }) => {
+  userName: string;
+}> = ({ album, hasLibrary, userName }) => {
   const selectedNetworkId = useSelectedNetworkId();
   const wallet = useSelectedWallet();
   const navigation = useAppNavigation();
@@ -46,9 +47,7 @@ export const TrackImageHover: React.FC<{
     <Pressable
       style={styles.hoverBox}
       onPress={() => {
-        if (wallet && wallet.address === album.createdBy)
-          navigation.navigate("MyAlbum");
-        else navigation.navigate("AlbumName", { id: album.id });
+        navigation.navigate("AlbumName", { id: album.id });
       }}
     >
       {hoverPlayIcon && (
@@ -94,7 +93,11 @@ export const TrackImageHover: React.FC<{
         />
       )}
       {openMenu && userId !== album.createdBy && (
-        <TrackHoverMenu album={album} hasLibrary={hasLibrary} />
+        <TrackHoverMenu
+          album={album}
+          hasLibrary={hasLibrary}
+          userName={userName}
+        />
       )}
       {openMenu && userId === album.createdBy && <MyAlbumMenu album={album} />}
     </Pressable>

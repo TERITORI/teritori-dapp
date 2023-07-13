@@ -75,7 +75,11 @@ export const MusicPlayerCard: React.FC<{
           style={styles.contentImg}
         />
         {selectedIndex === item.id && (
-          <TrackImageHover album={item} hasLibrary={hasLibrary} />
+          <TrackImageHover
+            album={item}
+            hasLibrary={hasLibrary}
+            userName={username}
+          />
         )}
       </View>
       <BrandText style={styles.contentTitle}>{item.name}</BrandText>

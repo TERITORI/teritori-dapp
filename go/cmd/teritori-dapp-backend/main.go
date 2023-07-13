@@ -16,11 +16,11 @@ import (
 	"github.com/TERITORI/teritori-dapp/go/pkg/feedpb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/marketplace"
 	"github.com/TERITORI/teritori-dapp/go/pkg/marketplacepb"
+	"github.com/TERITORI/teritori-dapp/go/pkg/musicplayer"
+	"github.com/TERITORI/teritori-dapp/go/pkg/musicplayerpb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
 	"github.com/TERITORI/teritori-dapp/go/pkg/p2e"
 	"github.com/TERITORI/teritori-dapp/go/pkg/p2epb"
-	"github.com/TERITORI/teritori-dapp/go/pkg/musicplayer"
-	"github.com/TERITORI/teritori-dapp/go/pkg/musicplayerpb"
 	"github.com/improbable-eng/grpc-web/go/grpcweb"
 	"github.com/peterbourgon/ff/v3"
 	"github.com/pkg/errors"
@@ -34,15 +34,15 @@ func main() {
 		enableTls                = flag.Bool("enable_tls", false, "Use TLS - required for HTTP2.")
 		tlsCertFilePath          = flag.String("tls_cert_file", "../../misc/localhost.crt", "Path to the CRT/PEM file.")
 		tlsKeyFilePath           = flag.String("tls_key_file", "../../misc/localhost.key", "Path to the private key file.")
-		dbHost                   = fs.String("db-dapp-host", "localhost", "host postgreSQL database")
-		dbPort                   = fs.String("db-dapp-port", "5432", "port for postgreSQL database")
-		dbPass                   = fs.String("postgres-password", "123456", "password for postgreSQL database")
-		dbName                   = fs.String("database-name", "teritori", "database name for postgreSQL")
-		dbUser                   = fs.String("postgres-user", "postgres", "username for postgreSQL")
+		dbHost                   = fs.String("db-dapp-host", "", "host postgreSQL database")
+		dbPort                   = fs.String("db-dapp-port", "", "port for postgreSQL database")
+		dbPass                   = fs.String("postgres-password", "", "password for postgreSQL database")
+		dbName                   = fs.String("database-name", "", "database name for postgreSQL")
+		dbUser                   = fs.String("postgres-user", "", "username for postgreSQL")
 		whitelistString          = fs.String("teritori-collection-whitelist", "", "whitelist of collections to return")
 		airtableAPIKey           = fs.String("airtable-api-key", "", "api key of airtable for home and launchpad")
 		airtableAPIKeydappsStore = fs.String("airtable-api-key-dapps-store", "", "api key of airtable for the dapps store")
-		networksFile             = fs.String("networks-file", "../../../networks.json", "path to networks config file")
+		networksFile             = fs.String("networks-file", "networks.json", "path to networks config file")
 		pinataJWT                = fs.String("pinata-jwt", "", "Pinata admin JWT token")
 	)
 	if err := ff.Parse(fs, os.Args[1:],
@@ -92,9 +92,9 @@ func main() {
 	}
 
 	err = indexerdb.MigrateDB(indexerDB)
-  	if err != nil {
-  		panic(errors.Wrap(err, "failed migrate database models"))
-  	}
+	if err != nil {
+		panic(errors.Wrap(err, "failed migrate database models"))
+	}
 
 	port := 9090
 	if *enableTls {
@@ -137,7 +137,7 @@ func main() {
 
 	// musicplayer services
 	musicplayerSvc := musicplayer.NewMusicplayerService(context.Background(), &musicplayer.Config{
-		Logger: logger,
+		Logger:    logger,
 		IndexerDB: indexerDB,
 	})
 
