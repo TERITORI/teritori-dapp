@@ -38,7 +38,12 @@ import {
   fontMedium10,
   fontMedium14,
 } from "../../../utils/style/fonts";
-export const ChatHeader = ({ searchInput, setSearchInput, name }: any) => {
+export const ChatHeader = ({
+  searchInput,
+  setSearchInput,
+  name,
+  conversation,
+}: any) => {
   const [showTextInput, setShowTextInput] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
   const [audioCall, setAudioCall] = useState(false);
@@ -77,7 +82,7 @@ export const ChatHeader = ({ searchInput, setSearchInput, name }: any) => {
           <SpacerRow size={1} />
           <View>
             <BrandText style={[fontSemibold13, { color: secondaryColor }]}>
-              {name}
+              {conversation?.members?.[0]?.name || "Anon"}
             </BrandText>
           </View>
         </View>

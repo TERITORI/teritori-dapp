@@ -27,6 +27,7 @@ import {
 import {
   fontBold10,
   fontMedium10,
+  fontSemibold10,
   fontSemibold11,
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
@@ -89,6 +90,16 @@ export const Conversation = ({
   };
 
   const receiverName = "Anon";
+
+  if (message.type === "accept-contact") {
+    return (
+      <View style={{ alignItems: "center" }}>
+        <BrandText style={[fontSemibold10, { color: neutralA3 }]}>
+          Contact accepted
+        </BrandText>
+      </View>
+    );
+  }
 
   return (
     <FlexRow
@@ -178,11 +189,11 @@ export const Conversation = ({
             {message.type === "message" ? (
               <>
                 <BrandText style={[fontSemibold11, { color: secondaryColor }]}>
-                  {message.payload.message}
+                  {message?.payload?.message}
                 </BrandText>
-                {!!message.payload.files.length && (
+                {!!message.payload?.files?.length && (
                   <FileRenderer
-                    files={message.payload.files || []}
+                    files={message?.payload?.files || []}
                     maxWidth={400}
                     waveFormMaxWidth={340}
                   />

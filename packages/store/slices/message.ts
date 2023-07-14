@@ -10,7 +10,13 @@ import {
 } from "./../../utils/types/message";
 import { RootState } from "../store";
 
-interface Search {
+export interface MessageState {
+  contactInfo: {
+    name: string;
+    avatar: string;
+    publicRendezvousSeed: string;
+    shareLink: string;
+  };
   contactRequestList: ContactRequest[];
   messageList: MessageList;
   conversationList: Conversation[];
@@ -19,12 +25,21 @@ interface Search {
   };
 }
 
-const initialState: Search = {
+const initialState: MessageState = {
+  contactInfo: {
+    name: "",
+    avatar: "",
+    publicRendezvousSeed: "",
+    shareLink: "",
+  },
   messageList: {},
   contactRequestList: [],
   conversationList: [],
   lastIds: {},
 };
+
+export const selectContactInfo = (state: RootState) =>
+  state.message.contactInfo;
 
 export const selectMessageList = (groupPk: string) => (state: RootState) =>
   state.message.messageList[groupPk] || [];
@@ -126,6 +141,13 @@ const messageSlice = createSlice({
     ) => {
       state.lastIds[action.payload.key] = action.payload.value;
     },
+
+    setContactInfo: (
+      state,
+      action: PayloadAction<Partial<MessageState["contactInfo"]>>
+    ) => {
+      state.contactInfo = { ...state.contactInfo, ...action.payload };
+    },
   },
 });
 
@@ -135,6 +157,7 @@ export const {
   setConversationList,
   updateMessageReaction,
   setLastId,
+  setContactInfo,
 } = messageSlice.actions;
 
 export const messageReducer = messageSlice.reducer;

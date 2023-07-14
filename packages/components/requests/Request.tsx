@@ -26,6 +26,7 @@ import { weshClient } from "../../weshnet/client";
 import {
   acceptFriendRequest,
   activateGroup,
+  sendMessage,
 } from "../../weshnet/client/services";
 import {
   bytesFromString,
@@ -60,7 +61,13 @@ const RequestList = ({ isOnline, data }: Props) => {
     try {
       const contactPk = bytesFromString(data?.contactId);
       await acceptFriendRequest(contactPk);
-      await activateGroup({ contactPk });
+      const groupInfo = await activateGroup({ contactPk });
+      await sendMessage({
+        groupPk: groupInfo?.group?.publicKey,
+        message: {
+          type: "accept-contact",
+        },
+      });
     } catch (err) {
       console.log("add friend err", err);
       setToastError({
@@ -91,7 +98,7 @@ const RequestList = ({ isOnline, data }: Props) => {
       <FlexRow justifyContent="space-between">
         <View>
           <FlexRow>
-            <Avatar.Image size={40} source={metadata?.image} />
+            <Avatar.Image size={40} source={data.avatar} />
             <Badge
               style={{
                 position: "absolute",
@@ -105,7 +112,7 @@ const RequestList = ({ isOnline, data }: Props) => {
             <SpacerRow size={1.5} />
             <View>
               <BrandText style={[fontSemibold13, { color: secondaryColor }]}>
-                {metadata?.public_name || "Anon"}
+                {data?.name || "Anon"}
               </BrandText>
               <SpacerColumn size={0.4} />
               <BrandText style={[fontSemibold11, { color: neutralA3 }]}>

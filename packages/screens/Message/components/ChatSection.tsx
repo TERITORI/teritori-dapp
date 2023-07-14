@@ -178,7 +178,7 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
             messages={messages}
             searchInput={searchInput}
             setSearchInput={setSearchInput}
-            name={conversation.name || "Anon"}
+            conversation={conversation}
           />
         </View>
         <Separator color={neutral33} />
@@ -228,6 +228,20 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
               }}
               keyExtractor={(item) => item.id}
             />
+          </View>
+        )}
+
+        {!messages.length && (
+          <View
+            style={{
+              alignItems: "center",
+              marginTop: layout.padding_x2,
+            }}
+          >
+            <BrandText style={[fontSemibold12]}>
+              You created contact; Your contact request hasn't been accepted by{" "}
+              {conversation?.members?.[0]?.name || "Anon"}{" "}
+            </BrandText>
           </View>
         )}
 
