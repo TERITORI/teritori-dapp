@@ -7,7 +7,7 @@ import { neutral44, neutral77 } from "../../../utils/style/colors";
 import { fontSemibold12 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 
-export const PathWarTags: React.FC<{ tags: Tag[] }> = ({ data }) => {
+export const PathWarTags: React.FC<{ data: Tag[] }> = ({ data }) => {
   return (
     <View
       style={{

@@ -14,7 +14,7 @@ export const getChallenges = () => {
       tagline: "tagline",
       description: "aoeuaoe",
       difficulty: "Hard+",
-      status: Status.OPEN,
+      status: Status.STATUS_OPEN_UNSPECIFIED,
       duration: "3 days",
       numUsersJoined: 3,
       rewards: [
@@ -93,7 +93,7 @@ export const getChallenges = () => {
       tagline: "tagline",
       description: "aoeuaoe",
       difficulty: "Hard+",
-      status: Status.OPEN,
+      status: Status.STATUS_OPEN_UNSPECIFIED,
       duration: "3 days",
       numUsersJoined: 3,
       rewards: [

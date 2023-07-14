@@ -116,8 +116,8 @@ message TournamentsResponse {
 // challenge
 
 enum Status {
-  OPEN = 0;
-  CLOSE = 1;
+  STATUS_OPEN_UNSPECIFIED = 0;
+  STATUS_CLOSE_UNSPECIFIED = 1;
 }
 
 message Challenge {
@@ -137,7 +137,7 @@ message Challenge {
   PublicUser star_user = 14;
   repeated PublicUser top_users = 15;
   bool solved = 16;
-  int32 solvedCount = 17;
+  int32 solved_count = 17;
 }
 
 message ChallengeRequest {

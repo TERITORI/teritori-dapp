@@ -8,19 +8,19 @@ import { share } from "rxjs/operators";
 export const protobufPackage = "pathwar.v1";
 
 export enum Status {
-  OPEN = 0,
-  CLOSE = 1,
+  STATUS_OPEN_UNSPECIFIED = 0,
+  STATUS_CLOSE_UNSPECIFIED = 1,
   UNRECOGNIZED = -1,
 }
 
 export function statusFromJSON(object: any): Status {
   switch (object) {
     case 0:
-    case "OPEN":
-      return Status.OPEN;
+    case "STATUS_OPEN_UNSPECIFIED":
+      return Status.STATUS_OPEN_UNSPECIFIED;
     case 1:
-    case "CLOSE":
-      return Status.CLOSE;
+    case "STATUS_CLOSE_UNSPECIFIED":
+      return Status.STATUS_CLOSE_UNSPECIFIED;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -30,10 +30,10 @@ export function statusFromJSON(object: any): Status {
 
 export function statusToJSON(object: Status): string {
   switch (object) {
-    case Status.OPEN:
-      return "OPEN";
-    case Status.CLOSE:
-      return "CLOSE";
+    case Status.STATUS_OPEN_UNSPECIFIED:
+      return "STATUS_OPEN_UNSPECIFIED";
+    case Status.STATUS_CLOSE_UNSPECIFIED:
+      return "STATUS_CLOSE_UNSPECIFIED";
     case Status.UNRECOGNIZED:
     default:
       return "UNRECOGNIZED";
