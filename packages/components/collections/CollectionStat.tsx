@@ -15,7 +15,7 @@ type CollectionStatProps = {
   currencyIcon?: PrettyPrint;
 };
 
-const ICON_SIZE = 16;
+const ICON_SIZE = 19;
 
 export const CollectionStat = ({
   label,
@@ -37,6 +37,7 @@ export const CollectionStat = ({
           style={[
             fontSemibold14,
             {
+              lineHeight: 19,
               marginRight: layout.padding_x0_5,
             },
           ]}

@@ -6,7 +6,7 @@ import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../assets/icons/chevron-up.svg";
 import { useDropdowns } from "../../context/DropdownsProvider";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
-import { NetworkKind } from "../../networks";
+import { NetworkFeature, NetworkKind } from "../../networks";
 import { secondaryColor } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
 import { NetworkIcon } from "../NetworkIcon";
@@ -18,7 +18,8 @@ export const NetworkSelectorMobile: React.FC<{
   style?: StyleProp<ViewStyle>;
   forceNetworkId?: string;
   forceNetworkKind?: NetworkKind;
-}> = ({ style, forceNetworkId, forceNetworkKind }) => {
+  forceNetworkFeatures?: NetworkFeature[];
+}> = ({ style, forceNetworkId, forceNetworkKind, forceNetworkFeatures }) => {
   const { onPressDropdownButton, isDropdownOpen } = useDropdowns();
   const dropdownRef = useRef<View>(null);
   const selectedNetworkInfo = useSelectedNetworkInfo();
@@ -50,6 +51,7 @@ export const NetworkSelectorMobile: React.FC<{
           style={{ position: "absolute", top: 48, right: -108 }}
           forceNetworkId={forceNetworkId}
           forceNetworkKind={forceNetworkKind}
+          forceNetworkFeatures={forceNetworkFeatures}
         />
       )}
     </View>

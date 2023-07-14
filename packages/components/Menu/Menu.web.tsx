@@ -15,7 +15,7 @@ export const Menu: React.FC<MenuProps> = ({
 }) => {
   const [isMenuVisible, setMenuVisibility] = useState(false);
 
-  const menuRef = useRef();
+  const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     function handleClick(e: any) {
@@ -40,7 +40,7 @@ export const Menu: React.FC<MenuProps> = ({
       </TouchableOpacity>
       {isMenuVisible && (
         <div
-          ref={menuRef as any}
+          ref={menuRef}
           style={{
             zIndex: 99999,
             position: "absolute",

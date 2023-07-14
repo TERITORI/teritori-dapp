@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import hamburgerCrossSVG from "../../../assets/icons/hamburger-button-cross.svg";
 import hamburgerSVG from "../../../assets/icons/hamburger-button.svg";
 import { useSidebar } from "../../context/SidebarProvider";
-import { NetworkKind } from "../../networks";
+import { NetworkFeature, NetworkKind } from "../../networks";
 import { selectAllSelectedNFTData } from "../../store/slices/marketplaceCartItems";
 import { neutral00, neutral33 } from "../../utils/style/colors";
 import { layout, MOBILE_HEADER_HEIGHT } from "../../utils/style/layout";
@@ -21,8 +21,14 @@ import { SpacerRow } from "../spacer";
 export const HeaderMobile: FC<{
   forceNetworkId?: string;
   forceNetworkKind?: NetworkKind;
+  forceNetworkFeatures?: NetworkFeature[];
   onBackPress?: () => void;
-}> = ({ forceNetworkId, forceNetworkKind, onBackPress }) => {
+}> = ({
+  forceNetworkId,
+  forceNetworkKind,
+  forceNetworkFeatures,
+  onBackPress,
+}) => {
   const { isSidebarExpanded, toggleSidebar } = useSidebar();
   const selectedNFTDataInCart = useSelector(selectAllSelectedNFTData);
 
@@ -46,6 +52,7 @@ export const HeaderMobile: FC<{
         <NetworkSelectorMobile
           forceNetworkId={forceNetworkId}
           forceNetworkKind={forceNetworkKind}
+          forceNetworkFeatures={forceNetworkFeatures}
         />
         <SpacerRow size={1} />
         <ConnectWalletButtonMobile />

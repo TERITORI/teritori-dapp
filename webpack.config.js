@@ -21,7 +21,7 @@ module.exports = async function (env, argv) {
 
   // victory native specific code
   config.module.rules.push({
-    test: /.*victory-native\/.*\.js/,
+    test: /.*victory-native[\\/].*\.js/,
     use: {
       loader: "babel-loader",
     },
@@ -29,7 +29,7 @@ module.exports = async function (env, argv) {
 
   // needed by gnolang
   config.module.rules.push({
-    test: /.*@cosmjs\/crypto\/build\/pbkdf2\.js/,
+    test: /.*@cosmjs[\\/]crypto[\\/]build[\\/]pbkdf2\.js/,
     use: {
       loader: "babel-loader",
       options: {
@@ -38,7 +38,7 @@ module.exports = async function (env, argv) {
     },
   });
   config.module.rules.push({
-    test: /.*@cosmjs\/amino\/build\/secp256k1hdwallet\.js/,
+    test: /.*@cosmjs[\\/]amino[\\/]build[\\/]secp256k1hdwallet\.js/,
     use: {
       loader: "babel-loader",
       options: {
@@ -47,7 +47,7 @@ module.exports = async function (env, argv) {
     },
   });
   config.module.rules.push({
-    test: /.*@cosmjs\/utils\/build\/assert\.js/,
+    test: /.*@cosmjs[\\/]utils[\\/]build[\\/]assert\.js/,
     use: {
       loader: "babel-loader",
       options: {

@@ -260,6 +260,8 @@ export const NFTView: React.FC<{
                     fontSize: 14,
                     marginBottom: 12,
                   }}
+                  ellipsizeMode="tail"
+                  numberOfLines={1}
                 >
                   {nft.name}
                 </BrandText>
