@@ -7,7 +7,7 @@ import { neutral44, neutral77 } from "../../../utils/style/colors";
 import { fontSemibold12 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 
-export const PathWarTags: React.FC<{ tags: Tag[] }> = ({ tags }) => {
+export const PathWarTags: React.FC<{ tags: Tag[] }> = ({ data }) => {
   return (
     <View
       style={{
@@ -17,8 +17,8 @@ export const PathWarTags: React.FC<{ tags: Tag[] }> = ({ tags }) => {
         flexWrap: "wrap",
       }}
     >
-      {tags &&
-        tags.map((tag, index) => (
+      {data &&
+        data.map((tag, index) => (
           <View
             style={{
               width: "fit-content",

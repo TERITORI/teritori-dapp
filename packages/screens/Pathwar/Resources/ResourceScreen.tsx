@@ -45,7 +45,7 @@ export const ResourceScreen: React.FC = () => {
       tags: [
         {
           id: 1,
-          text: "video",
+          text: "Challenges",
         },
       ],
     },
@@ -54,7 +54,8 @@ export const ResourceScreen: React.FC = () => {
       title: "What is Gno",
       description:
         "Gnoland is a blockchain L1 project started in 2020 by Jae Kwon, co-founder of Cosmos and Tendermint. Its goal is to create a decentralized, secure and scalable smart contract platform for people to create important applications, especially against censorship.",
-
+      thumbnail:
+        "https://cloudflare-ipfs.com/ipfs/Qmcd8DcTCBqsDgHq21Pxbu2FcdDKnfQjqNfS6VNrJkyxkT",
       category: [{ id: 1, text: "article" }],
       url: "https://gnoland.space/docs/what-is-gno",
       tags: [
