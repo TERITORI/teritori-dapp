@@ -8,7 +8,8 @@ export type MessageType =
   | "group-join"
   | "group-leave"
   | "group-create"
-  | "reaction";
+  | "reaction"
+  | "contact-request";
 
 export type ConversationType = "contact" | "group";
 interface MessageFile {
@@ -34,14 +35,16 @@ export interface Message {
   senderId: string;
   groupId: string;
   type: MessageType;
-  payload: MessagePayload;
+  payload?: MessagePayload;
   timestamp: string;
   parentId?: string;
 }
 
 interface Contact {
   id: string;
-  tokenId: string;
+  tokenId?: string;
+  name: string;
+  avatar: string;
   rdvSeed: string;
   hasLeft?: boolean;
 }

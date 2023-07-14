@@ -71,7 +71,8 @@ export const handleMetadata = async (data: GroupMetadataEvent) => {
                   {
                     id: parsedData.payload.contact.pk,
                     rdvSeed: parsedData.payload.contact.publicRendezvousSeed,
-                    tokenId: parsedData.payload.ownMetadata.contactTokenId,
+                    name: parsedData.payload.ownMetadata.contact.name,
+                    avatar: parsedData.payload.ownMetadata.contact.avatar,
                   },
                 ],
               })
@@ -110,9 +111,11 @@ export const handleMetadata = async (data: GroupMetadataEvent) => {
         store.dispatch(
           setContactRequestList({
             id: parsedData.eventContext.id,
-            tokenId: parsedData.payload.contactMetadata.tokenId,
+            // tokenId: parsedData.payload.contactMetadata.tokenId,
             contactId: stringFromBytes(parsedData.payload.contactPk),
             rdvSeed: stringFromBytes(parsedData.payload.contactRendezvousSeed),
+            name: parsedData.payload.contactMetadata.name,
+            avatar: parsedData.payload.contactMetadata.avatar,
           })
         );
 
@@ -158,8 +161,9 @@ export const handleMetadata = async (data: GroupMetadataEvent) => {
               members: [
                 {
                   id: contactRequest.contactId,
-                  tokenId: contactRequest.tokenId,
                   rdvSeed: contactRequest.rdvSeed,
+                  name: contactRequest.name,
+                  avatar: contactRequest.avatar,
                 },
               ],
               name: "",

@@ -2,6 +2,8 @@ import { weshClient } from "./client";
 import { weshConfig } from "./config";
 import { subscribeMetadata } from "./subscribers";
 import { bytesFromString, encodeJSON, stringFromBytes } from "./utils";
+import { MessageState, setContactInfo } from "../../store/slices/message";
+import { store } from "../../store/store";
 import { Message } from "../../utils/types/message";
 import { GroupInfo_Request } from "../protocoltypes";
 
@@ -18,6 +20,18 @@ export const createConfig = async () => {
     weshConfig.config = config;
 
     await weshClient().ContactRequestEnable({});
+    const contactRef = await weshClient().ContactRequestReference({});
+
+    if (contactRef.publicRendezvousSeed.length === 0) {
+      const resetRef = await weshClient().ContactRequestResetReference({});
+      contactRef.publicRendezvousSeed = resetRef.publicRendezvousSeed;
+    }
+
+    store.dispatch(
+      setContactInfo({
+        publicRendezvousSeed: stringFromBytes(contactRef.publicRendezvousSeed),
+      })
+    );
 
     subscribeMetadata(weshConfig.config.accountGroupPk);
   } catch (err) {
@@ -27,31 +41,25 @@ export const createConfig = async () => {
   isConfigLoading = false;
 };
 
-export const createSharableLink = async (tokenId: string = "Anon") => {
-  try {
-    const contactRef = await weshClient().ContactRequestReference({});
-    await weshClient().ContactRequestEnable({});
-    if (contactRef.publicRendezvousSeed.length === 0) {
-      const resetRef = await weshClient().ContactRequestResetReference({});
-      contactRef.publicRendezvousSeed = resetRef.publicRendezvousSeed;
-    }
-
-    weshConfig.metadata = {
-      rdvSeed: contactRef.publicRendezvousSeed,
-      tokenId,
-    };
-
-    weshConfig.shareLink = `https://app.teritori.com/contact?accountPk=${encodeURIComponent(
-      stringFromBytes(weshConfig.config.accountPk)
-    )}&rdvSeed=${encodeURIComponent(
-      stringFromBytes(contactRef.publicRendezvousSeed)
-    )}&tokenId=${encodeURIComponent(tokenId)}`;
-  } catch (err) {
-    console.log("create sharable link", err);
+export const createSharableLink = (
+  contactInfo: MessageState["contactInfo"]
+) => {
+  if (!weshConfig?.config?.accountPk || !contactInfo.publicRendezvousSeed) {
+    return "";
   }
+  return `https://app.teritori.com/contact?accountPk=${encodeURIComponent(
+    stringFromBytes(weshConfig.config.accountPk)
+  )}&rdvSeed=${encodeURIComponent(
+    contactInfo.publicRendezvousSeed
+  )}&name=${encodeURIComponent(contactInfo.name)}&avatar=${encodeURIComponent(
+    contactInfo.avatar
+  )}`;
 };
 
-export const addContact = async (shareLink: string, tokenId: string) => {
+export const addContact = async (
+  shareLink: string,
+  contactInfo: MessageState["contactInfo"]
+) => {
   const url = new URL(shareLink);
 
   if (!url.searchParams.has("accountPk") || !url.searchParams.has("rdvSeed")) {
@@ -71,9 +79,13 @@ export const addContact = async (shareLink: string, tokenId: string) => {
         ),
       },
       ownMetadata: encodeJSON({
-        tokenId: tokenId || "",
-        contactTokenId: url.searchParams.get("name") || "",
+        name: contactInfo.name,
+        avatar: contactInfo.avatar,
         timestamp: new Date().toISOString(),
+        contact: {
+          name: decodeURIComponent(url.searchParams.get("name") || ""),
+          avatar: decodeURIComponent(url.searchParams.get("avatar") || ""),
+        },
       }),
     });
   } catch (err) {

@@ -38,10 +38,6 @@ export const MessageScreen: ScreenFC<"Message"> = () => {
     weshServices.createConfig();
   }, []);
 
-  useEffect(() => {
-    weshServices.createSharableLink(userInfo?.metadata?.tokenId);
-  }, [userInfo?.metadata?.tokenId]);
-
   const HEADER_CONFIG = [
     {
       id: 1,

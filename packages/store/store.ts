@@ -1,5 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import isElectron from "is-electron";
 import { useDispatch } from "react-redux";
 import { persistStore, persistReducer, createMigrate } from "redux-persist";
 
@@ -45,9 +46,11 @@ const migrations = {
 
 const persistConfig = {
   key: "root",
-  storage: AsyncStorage,
   version: 0,
   migrate: createMigrate(migrations, { debug: false }),
+  storage: isElectron()
+    ? require("redux-persist-electron-storage")()
+    : AsyncStorage,
   whitelist: [
     "wallets",
     "settings",
@@ -57,6 +60,7 @@ const persistConfig = {
     "marketplaceCartItemsUI",
     "marketplaceFilters",
     "marketplaceFilterUI",
+    "messages",
   ],
   blacklist: ["dAppsStore, marketplaceFilterUI"],
 };

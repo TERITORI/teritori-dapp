@@ -32,12 +32,8 @@ interface ChatItemProps {
 
 export const ChatItem = ({ data, onPress, isActive }: ChatItemProps) => {
   const navigation = useAppNavigation();
-
   const lastMessage = useSelector(selectLastMessageByGroupPk(data.id));
-
-  const { metadata } = useNSUserInfo(
-    data.members?.[0]?.tokenId || "sakul.tori"
-  );
+  const contactInfo = data.members?.[0];
 
   return (
     <TouchableOpacity
@@ -57,14 +53,17 @@ export const ChatItem = ({ data, onPress, isActive }: ChatItemProps) => {
         <FlexRow justifyContent="space-between">
           <View>
             <FlexRow>
-              <Avatar.Image size={40} source={metadata?.image || avatarPNG} />
+              <Avatar.Image
+                size={40}
+                source={contactInfo?.avatar || avatarPNG}
+              />
               <SpacerRow size={1.5} />
               <View>
                 <FlexRow>
                   <BrandText
                     style={[fontSemibold13, { color: secondaryColor }]}
                   >
-                    {data.name || metadata.public_name || "Anon"}
+                    {contactInfo?.name || "Anon"}
                   </BrandText>
                 </FlexRow>
                 <SpacerColumn size={0.5} />
