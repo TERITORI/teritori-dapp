@@ -1,12 +1,12 @@
 import { gnoCurrencies } from "./currencies";
-import { GnoNetworkInfo, NetworkKind } from "../types";
+import { GnoNetworkInfo, NetworkFeature, NetworkKind } from "../types";
 
 export const gnoDevNetwork: GnoNetworkInfo = {
   id: "gno-dev",
   kind: NetworkKind.Gno,
   displayName: "Gno Dev",
   icon: "icons/networks/gno.svg",
-  features: [],
+  features: [NetworkFeature.Organizations],
   currencies: gnoCurrencies,
   stakeCurrency: "ugnot",
   idPrefix: "gnodev",
