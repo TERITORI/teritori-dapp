@@ -5,6 +5,7 @@ import { ScrollView, StyleSheet, View } from "react-native";
 import { MultisigFormInput } from "./components/MultisigFormInput";
 import { MultisigSection } from "./components/MultisigSection";
 import { RightSection } from "./components/RightSection";
+import { Transactions } from "./components/Transactions";
 import { MultisigLegacyFormType } from "./types";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
@@ -18,6 +19,7 @@ import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkKind } from "../../networks";
 import { patternOnlyNumbers, validateAddress } from "../../utils/formRules";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
+import { neutral33 } from "../../utils/style/colors";
 import { fontSemibold20, fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 
@@ -66,13 +68,12 @@ export const MultisigWalletDashboardScreen: ScreenFC<
   return (
     <ScreenContainer
       headerChildren={
-        <BrandText style={fontSemibold20}>Multisig Dashboard</BrandText>
+        <BrandText style={fontSemibold20}>Dashboard {walletName}</BrandText>
       }
       onBackPress={() => navigation.navigate("Multisig")}
       footerChildren={<></>}
       noMargin
       fullWidth
-      noScroll
       isHeaderSmallMargin
       forceNetworkKind={NetworkKind.Cosmos}
     >
@@ -81,9 +82,7 @@ export const MultisigWalletDashboardScreen: ScreenFC<
           contentContainerStyle={styles.container}
           showsVerticalScrollIndicator={false}
         >
-          <BrandText style={fontSemibold28}>
-            {walletName || "Multisig Legacy"}
-          </BrandText>
+          <BrandText style={fontSemibold28}>General information</BrandText>
           <SpacerColumn size={2.5} />
           <MultisigSection title="Multisig Address">
             <MultisigFormInput<MultisigLegacyFormType>
@@ -100,6 +99,7 @@ export const MultisigWalletDashboardScreen: ScreenFC<
           </MultisigSection>
 
           <MultisigSection
+            isCollapsable
             title="Members Addresses"
             tresholdCurrentCount={
               data
@@ -130,7 +130,7 @@ export const MultisigWalletDashboardScreen: ScreenFC<
               ))}
           </MultisigSection>
 
-          <MultisigSection title="Holdings & Assets">
+          <MultisigSection title="Holdings & Assets" isCollapsable>
             <MultisigFormInput<MultisigLegacyFormType>
               control={control}
               label="Assets"
@@ -147,12 +147,20 @@ export const MultisigWalletDashboardScreen: ScreenFC<
 
         <RightSection />
       </View>
+
+      <Transactions address={address} title="Transactions" />
     </ScreenContainer>
   );
 };
 
 const styles = StyleSheet.create({
-  row: { flexDirection: "row", flex: 1 },
+  row: {
+    flexDirection: "row",
+    flex: 1,
+    borderBottomWidth: 1,
+    borderColor: neutral33,
+    minHeight: 460,
+  },
   container: {
     padding: layout.contentPadding,
     paddingTop: layout.topContentPaddingWithHeading,

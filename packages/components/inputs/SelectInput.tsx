@@ -88,22 +88,12 @@ export const SelectInput: React.FC<Props> = ({
             </BrandText>
           </View>
 
-          {!openMenu && (
-            <SVG
-              source={chevronDownSVG}
-              width={16}
-              height={16}
-              color={secondaryColor}
-            />
-          )}
-          {openMenu && (
-            <SVG
-              source={chevronUpSVG}
-              width={16}
-              height={16}
-              color={secondaryColor}
-            />
-          )}
+          <SVG
+            source={openMenu ? chevronUpSVG : chevronDownSVG}
+            width={16}
+            height={16}
+            color={secondaryColor}
+          />
         </View>
 
         {openMenu && (

@@ -3,6 +3,7 @@ import moment from "moment";
 import React, { useEffect, useMemo, useState } from "react";
 import { ActivityIndicator, Pressable, StyleSheet, View } from "react-native";
 
+import { ProposalTransactionModal } from "./ProposalTransactionModal";
 import { TransactionItemButtons } from "./TransactionItemButtons";
 import multisigWhiteSVG from "../../../../assets/icons/multisig_white.svg";
 import { BrandText } from "../../../components/BrandText";
@@ -61,7 +62,7 @@ export const ProposalTransactionItem: React.FC<ProposalTransactionItemProps> = (
   const feeSimple = coinSimplified(fee.amount?.[0]);
   const { copyToClipboard } = useCopyToClipboard();
   const [isHovered, setHovered] = useState(false);
-  // const [isProposalModalVisible, setProposalModalVisible] = useState(false);
+  const [isProposalModalVisible, setProposalModalVisible] = useState(false);
 
   const amount =
     type === MultisigTransactionType.STAKE
@@ -115,134 +116,134 @@ export const ProposalTransactionItem: React.FC<ProposalTransactionItemProps> = (
 
   // returns
   return (
-    <CustomPressable
-      // onPress={() => setProposalModalVisible(true)}
-      style={[styles.container, isHovered && { backgroundColor: neutral17 }]}
-      onHoverIn={() => setHovered(true)}
-      onHoverOut={() => setHovered(false)}
-    >
-      <View style={styles.svgContainer}>
-        <SVG source={getIcon} width={32} height={32} />
-      </View>
-
-      <View style={[styles.section, { flex: 0.75 }]}>
-        <BrandText style={styles.normal}>{capitalize(type)}</BrandText>
-        <SpacerColumn size={0.75} />
-        <View style={styles.rowCenter}>
-          <BrandText style={styles.small77}>
-            {moment(createdAt).format("DD/MM/yyyy")}
-          </BrandText>
-          <SpacerRow size={0.5} />
-          <Separator horizontal />
-          <SpacerRow size={0.5} />
-          <BrandText style={styles.small77}>
-            {moment(createdAt).format("h:mm")}
-          </BrandText>
+    <>
+      <CustomPressable
+        onPress={() => setProposalModalVisible(true)}
+        style={[styles.container, isHovered && { backgroundColor: neutral17 }]}
+        onHoverIn={() => setHovered(true)}
+        onHoverOut={() => setHovered(false)}
+      >
+        <View style={styles.svgContainer}>
+          <SVG source={getIcon} width={32} height={32} />
         </View>
-      </View>
 
-      <View style={styles.section}>
-        <View style={styles.rowCenter}>
-          <BrandText style={styles.normal77}>Sending to:</BrandText>
-          <SpacerRow size={0.5} />
-          <Pressable onPress={() => copyToClipboard(recipientAddress || "")}>
-            <BrandText style={styles.normal}>
-              {tinyAddress(recipientAddress, 14)}
+        <View style={[styles.section, { flex: 0.75 }]}>
+          <BrandText style={styles.normal}>{capitalize(type)}</BrandText>
+          <SpacerColumn size={0.75} />
+          <View style={styles.rowCenter}>
+            <BrandText style={styles.small77}>
+              {moment(createdAt).format("DD/MM/yyyy")}
             </BrandText>
-          </Pressable>
+            <SpacerRow size={0.5} />
+            <Separator horizontal />
+            <SpacerRow size={0.5} />
+            <BrandText style={styles.small77}>
+              {moment(createdAt).format("h:mm")}
+            </BrandText>
+          </View>
         </View>
-        <SpacerColumn size={0.75} />
-        <View style={styles.rowCenter}>
-          <BrandText style={styles.normal77}>Created by:</BrandText>
-          <SpacerRow size={0.5} />
-          {tnsMetadata.loading ? (
-            <ActivityIndicator size="small" />
-          ) : (
-            <AnimationFadeIn>
-              <Pressable
-                onPress={() =>
-                  copyToClipboard(
-                    tnsMetadata?.metadata?.tokenId || createdBy || ""
-                  )
-                }
-              >
-                <BrandText style={styles.smallPrimary}>
-                  {tnsMetadata?.metadata?.tokenId
-                    ? `@${tnsMetadata?.metadata?.tokenId}`
-                    : tinyAddress(createdBy, 14)}
-                </BrandText>
-              </Pressable>
-            </AnimationFadeIn>
-          )}
-        </View>
-      </View>
 
-      <View style={styles.section}>
-        <View style={styles.rowCenter}>
-          <BrandText style={styles.normal77}>Will receive:</BrandText>
-          <SpacerRow size={0.5} />
-          <BrandText style={styles.normal}>
-            {amount?.value} {amount?.ticker}
-          </BrandText>
+        <View style={styles.section}>
+          <View style={styles.rowCenter}>
+            <BrandText style={styles.normal77}>Sending to:</BrandText>
+            <SpacerRow size={0.5} />
+            <Pressable onPress={() => copyToClipboard(recipientAddress || "")}>
+              <BrandText style={styles.normal}>
+                {tinyAddress(recipientAddress, 14)}
+              </BrandText>
+            </Pressable>
+          </View>
+          <SpacerColumn size={0.75} />
+          <View style={styles.rowCenter}>
+            <BrandText style={styles.normal77}>Created by:</BrandText>
+            <SpacerRow size={0.5} />
+            {tnsMetadata.loading ? (
+              <ActivityIndicator size="small" />
+            ) : (
+              <AnimationFadeIn>
+                <Pressable
+                  onPress={() =>
+                    copyToClipboard(
+                      tnsMetadata?.metadata?.tokenId || createdBy || ""
+                    )
+                  }
+                >
+                  <BrandText style={styles.smallPrimary}>
+                    {tnsMetadata?.metadata?.tokenId
+                      ? `@${tnsMetadata?.metadata?.tokenId}`
+                      : tinyAddress(createdBy, 14)}
+                  </BrandText>
+                </Pressable>
+              </AnimationFadeIn>
+            )}
+          </View>
         </View>
-        <SpacerColumn size={0.75} />
-        <View style={styles.rowCenter}>
-          <BrandText style={styles.normal77}>Network fee:</BrandText>
-          <SpacerRow size={0.5} />
-          <BrandText style={styles.small77}>
-            {feeSimple?.value} {feeSimple?.ticker}
-          </BrandText>
-        </View>
-      </View>
 
-      <View style={[styles.section, { flex: 1.5 }]}>
-        <View style={styles.rowCenter}>
-          <BrandText style={styles.normal77}>Approved by:</BrandText>
-          <SpacerRow size={0.5} />
-          <BrandText style={styles.normal}>{approvedByCount}</BrandText>
-          <SpacerRow size={0.5} />
-          <BrandText style={styles.normal77}>of</BrandText>
-          <SpacerRow size={0.5} />
-          <BrandText style={styles.normal}>{approvalRequiredCount}</BrandText>
-          <SpacerRow size={0.5} />
-          <BrandText style={styles.normal77}>
-            ({approvalRequiredCount - approvedByCount} required)
-          </BrandText>
+        <View style={styles.section}>
+          <View style={styles.rowCenter}>
+            <BrandText style={styles.normal77}>Will receive:</BrandText>
+            <SpacerRow size={0.5} />
+            <BrandText style={styles.normal}>
+              {amount?.value} {amount?.ticker}
+            </BrandText>
+          </View>
+          <SpacerColumn size={0.75} />
+          <View style={styles.rowCenter}>
+            <BrandText style={styles.normal77}>Network fee:</BrandText>
+            <SpacerRow size={0.5} />
+            <BrandText style={styles.small77}>
+              {feeSimple?.value} {feeSimple?.ticker}
+            </BrandText>
+          </View>
         </View>
-        <SpacerColumn size={1.5} />
-        <View style={styles.loadingOutside}>
-          <View
-            style={[
-              styles.loadingInside,
-              {
-                width: `${completedPercent}%`,
-              },
-            ]}
-          />
-        </View>
-      </View>
 
-      <TransactionItemButtons
-        {...props}
-        currentDecliners={currentDecliners}
-        currentSignatures={currentSignatures}
-        addSignature={addSignature}
-        addDecliner={addDecliner}
-        isCompletedSignature={completedPercent === 100}
-        isCompletelyDeclined={isCompletelyDeclined}
-        btnSquaresBackgroundColor={
-          isHovered ? neutral17 : props.btnSquaresBackgroundColor
-        }
+        <View style={[styles.section, { flex: 1.5 }]}>
+          <View style={styles.rowCenter}>
+            <BrandText style={styles.normal77}>Approved by:</BrandText>
+            <SpacerRow size={0.5} />
+            <BrandText style={styles.normal}>{approvedByCount}</BrandText>
+            <SpacerRow size={0.5} />
+            <BrandText style={styles.normal77}>of</BrandText>
+            <SpacerRow size={0.5} />
+            <BrandText style={styles.normal}>{approvalRequiredCount}</BrandText>
+            <SpacerRow size={0.5} />
+            <BrandText style={styles.normal77}>
+              ({approvalRequiredCount - approvedByCount} required)
+            </BrandText>
+          </View>
+          <SpacerColumn size={1.5} />
+          <View style={styles.loadingOutside}>
+            <View
+              style={[
+                styles.loadingInside,
+                {
+                  width: `${completedPercent}%`,
+                },
+              ]}
+            />
+          </View>
+        </View>
+
+        <TransactionItemButtons
+          {...props}
+          currentDecliners={currentDecliners}
+          currentSignatures={currentSignatures}
+          addSignature={addSignature}
+          addDecliner={addDecliner}
+          isCompletedSignature={completedPercent === 100}
+          isCompletelyDeclined={isCompletelyDeclined}
+          btnSquaresBackgroundColor={
+            isHovered ? neutral17 : props.btnSquaresBackgroundColor
+          }
+        />
+      </CustomPressable>
+
+      <ProposalTransactionModal
+        visible={isProposalModalVisible}
+        onClose={() => setProposalModalVisible(false)}
+        transaction={props}
       />
-
-      {/*TODO: Make a new modal or reuse/refactor DAOProposalModal ?*/}
-      {/*<DAOProposalModal*/}
-      {/*  visible={isProposalModalVisible}*/}
-      {/*  onClose={() => setProposalModalVisible(false)}*/}
-      {/*  proposalInfo={proposal}*/}
-      {/*  daoId={daoId}*/}
-      {/*/>*/}
-    </CustomPressable>
+    </>
   );
 };
 

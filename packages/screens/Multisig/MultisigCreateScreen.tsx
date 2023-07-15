@@ -118,10 +118,7 @@ export const MultisigCreateScreen = () => {
     if (resValAddress === true) {
       address = value;
     } else {
-      const nsAddrInfo = await getNSAddress(
-        value,
-        selectedNetwork?.id || ""
-      );
+      const nsAddrInfo = await getNSAddress(value, selectedNetwork?.id || "");
       if (!nsAddrInfo.status) {
         return nsAddrInfo.msg;
       }

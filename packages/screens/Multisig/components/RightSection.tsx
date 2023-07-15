@@ -76,18 +76,6 @@ export const RightSection = () => {
         }}
       />
 
-      <SpacerColumn size={2.5} />
-      <PrimaryButton
-        size="M"
-        text="Transactions"
-        fullWidth
-        onPress={() =>
-          navigation.navigate("MultisigTransactions", {
-            address,
-            walletName,
-          })
-        }
-      />
       <TNSNameFinderModal
         visible={modalNameFinderVisible}
         onClose={() => {
@@ -96,11 +84,6 @@ export const RightSection = () => {
         onEnter={() => {
           setModalNameFinderVisible(false);
           setVisibleRegisterForm(true);
-          // pressedTNSItems &&
-          // navigation.navigate("TNSHome", {
-          //   modal: TNSPathMap[pressedTNSItems],
-          //   name,
-          // });
         }}
       />
       {visibleRegisterForm && (
