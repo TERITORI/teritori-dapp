@@ -1,3 +1,4 @@
+import { QueryClient } from "@tanstack/react-query";
 import React, { useCallback, useMemo, useState } from "react";
 import {
   ActivityIndicator,
@@ -12,6 +13,8 @@ import { CheckLoadingModal } from "./components/CheckLoadingModal";
 import { MultisigTransactionType } from "./types";
 import multisigWalletSVG from "../../../assets/icons/organization/multisig-wallet.svg";
 import postJobSVG from "../../../assets/icons/organization/post-job.svg";
+import profileSVG from "../../../assets/icons/organization/profile.svg";
+import { useGetUserTransactionsQuery } from "../../api/multisig";
 import { BrandText } from "../../components/BrandText";
 import { EmptyList } from "../../components/EmptyList";
 import { ScreenContainer } from "../../components/ScreenContainer";
@@ -22,13 +25,12 @@ import ModalBase from "../../components/modals/ModalBase";
 import { SpacerColumn } from "../../components/spacer";
 import {
   getMultisigAccount,
-  MultisigTransactionListType,
-  useFetchMultisigList,
   useFetchMultisigTransactionsByAddress,
+  useUserMultisigs,
 } from "../../hooks/multisig";
 import { useCreateMultisigTransactionForExecuteContract } from "../../hooks/multisig/useCreateMultisigTransactionForExecuteContract";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { NetworkKind } from "../../networks";
+import { getUserId, NetworkKind } from "../../networks";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { neutral33, neutral77, secondaryColor } from "../../utils/style/colors";
 import {
@@ -83,10 +85,11 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
   });
 
   const {
-    data,
+    multisigs: data,
     isLoading: isMultisigLoading,
     isFetching: isMultisigFetching,
-  } = useFetchMultisigList(selectedWallet?.address || "");
+  } = useUserMultisigs(selectedWallet?.userId);
+
   const {
     data: transactionData,
     isLoading: isTransactionsLoading,
@@ -99,8 +102,8 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
   const list = useMemo(
     () =>
       transactionData?.pages.reduce(
-        (ar: MultisigTransactionListType[], ac) => [...ar, ...ac.data],
-        []
+        (ar, ac) => [...ar, ...ac.data],
+        [] as (typeof transactionData)["pages"][0]["data"]
       ),
     [transactionData?.pages]
   );
@@ -146,9 +149,13 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
   //   }
   // };
 
-  const createProposalForCreatePost = async (address: string) => {
+  const createProposalForCreatePost = async (
+    queryClient: QueryClient,
+    address: string
+  ) => {
     const contractAddress = "CONTRACT_ADDR1";
     const mltisignAccountInfo = await getMultisigAccount(
+      queryClient,
       address,
       selectedWallet?.networkId!
     );
@@ -168,9 +175,13 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
   };
 
   //address: multisign address
-  const createProposalForManagePublicProfile = async (address: string) => {
+  const createProposalForManagePublicProfile = async (
+    queryClient: QueryClient,
+    address: string
+  ) => {
     const contractAddress = "CONTRACT_ADDR1";
     const mltisignAccountInfo = await getMultisigAccount(
+      queryClient,
       address,
       selectedWallet?.networkId!
     );
@@ -241,12 +252,17 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
                 <AnimationFadeIn delay={index * 50}>
                   <GetStartedOption
                     variant="small"
-                    title={`Multisig #${index + 1}`}
+                    title={
+                      item.name || `Multisig #${(data?.length || 0) - index}`
+                    }
                     icon={multisigWalletSVG}
                     isBetaVersion
                     onPress={() =>
                       navigation.navigate("MultisigWalletDashboard", {
-                        address: item.address,
+                        address: getUserId(
+                          selectedWallet?.networkId,
+                          item.address
+                        ),
                         walletName: `Multisig #${index + 1}`,
                       })
                     }
@@ -288,12 +304,18 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
                   <ProposalTransactionItem {...item} isUserMultisig />
                 </AnimationFadeIn>
               )}
+<<<<<<< HEAD
               initialNumToRender={MIN_ITEMS_PER_PAGE}
               keyExtractor={(item) => item._id.toString()}
+=======
+              initialNumToRender={RESULT_SIZE}
+              keyExtractor={(item) => item._id}
+>>>>>>> cb614e70 (chore: clean db)
               showsVerticalScrollIndicator={false}
               contentContainerStyle={styles.transactionListContent}
-              ListFooterComponent={ListFooter}
+              // ListFooterComponent={ListFooter} // FIXME: this causes infinite refetch
               extraData={selectedWallet?.address}
+              onEndReached={() => fetchNextTransactionsPage()}
               ListEmptyComponent={() =>
                 isTransactionsLoading ? null : <EmptyList text="No proposals" />
               }
@@ -314,6 +336,7 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
     </ScreenContainer>
   );
 };
+
 interface MultisigWalletSelectModalProps {
   visible: boolean;
   onClose: () => void;

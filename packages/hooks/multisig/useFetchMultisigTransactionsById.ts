@@ -1,97 +1,66 @@
-import { StdFee } from "@cosmjs/amino";
-import { EncodeObject } from "@cosmjs/proto-signing";
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 
 import {
-  MultisigTransactionType,
-  MultisigType,
-} from "../../screens/Multisig/types";
-import { transactionsByMultisigId } from "../../utils/faunaDB/multisig/multisigGraphql";
-import { DbSignature } from "../../utils/faunaDB/multisig/types";
+  TransactionFieldsFragment,
+  useGetMultisigTransactionsQuery,
+} from "../../api/multisig";
+import { getCosmosNetwork, parseUserId } from "../../networks";
+import { fetcherConfig } from "../../utils/faunaDB/multisig/multisigGraphql";
 import { tryParseJSON } from "../../utils/jsons";
-import useSelectedWallet from "../useSelectedWallet";
 
-export interface MultisigTransactionListType {
-  _id: string;
-  signatures?: { data: DbSignature[] };
-  txHash?: string;
-  type: MultisigTransactionType;
-  createdBy: string;
-  createdAt: string;
-  recipientAddress: string;
-  decliners?: string[];
-  multisig: MultisigType;
-  accountNumber: number;
-  sequence: number;
-  chainId: string;
-  msgs: EncodeObject[];
-  fee: StdFee;
-  memo: string;
-  isError?: boolean;
-}
+const batchSize = 16;
 
-export interface MultisigTransactionResponseType
-  extends Omit<MultisigTransactionListType, "msgs" | "fee"> {
-  msgs: string;
-  fee: string;
-}
-
-export const useFetchMultisigTransactionsById = (
-  multisigId: string,
-  type: "" | MultisigTransactionType = "",
-  after: string | null,
-  size: number
-) => {
-  const { selectedWallet: wallet } = useSelectedWallet();
+export const useFetchMultisigTransactionsById = (multisigId: string) => {
+  const [network, multisigAddress] = parseUserId(multisigId);
+  const cosmosNetwork = getCosmosNetwork(network?.id);
+  const chainId = cosmosNetwork?.chainId;
 
   //  request
-  return useQuery<{
-    data: MultisigTransactionListType[];
-    after: string | null;
-    before: string | null;
-  }>(
-    ["multisig-transactions", multisigId, type, wallet?.address, after],
-    async () => {
-      const saveRes = await transactionsByMultisigId(
-        multisigId,
-        type,
-        size,
-        after
-      );
-      const {
-        after: afterData,
-        before,
-        data,
-      } = saveRes?.data?.data?.transactionsByMultisigId || {
-        after: null,
-        before: null,
-        data: [],
-      };
+  return useInfiniteQuery(
+    ["multisig-transactions", chainId, multisigAddress],
+    async ({ pageParam }) => {
+      console.log("getting a page", chainId, multisigAddress, pageParam);
+
+      if (!chainId || !multisigAddress) {
+        return { data: [], next: null };
+      }
+
+      let transactions: TransactionFieldsFragment[];
+      let err: unknown;
+
+      try {
+        const { transactions: txs } =
+          await useGetMultisigTransactionsQuery.fetcher(fetcherConfig, {
+            chainId,
+            multisigAddress,
+            size: batchSize,
+            before: pageParam || null,
+          })();
+        transactions = txs;
+      } catch (e) {
+        err = e;
+        transactions = [];
+      }
 
       return {
-        data: data.map((s: MultisigTransactionResponseType) => ({
+        data: transactions.map((s) => ({
           ...s,
-          msgs: tryParseJSON(s.msgs),
-          fee: tryParseJSON(s.fee),
-          isError: isMultisigTransactionResponseError(s),
+          msgs: tryParseJSON(s.msgs || "[]"),
+          fee: tryParseJSON(s.fee || "{}"),
+          isError: !!err,
         })),
-        after: afterData,
-        before,
+        next:
+          transactions.length > 0
+            ? new Date(
+                Date.parse(transactions[transactions.length - 1]?.createdAt) - 1
+              ).toISOString()
+            : pageParam || null,
       };
+    },
+    {
+      getNextPageParam: (lastPage) => lastPage.next,
+      refetchOnWindowFocus: false,
+      enabled: !!chainId && !!multisigAddress,
     }
-  );
-};
-
-// For now, we consider TX as error if the msgs or fee are not valid JSON
-export const isMultisigTransactionResponseError = (
-  s: MultisigTransactionResponseType
-) => {
-  console.log(
-    'typeof tryParseJSON(s.fee) !== "object"typeof tryParseJSON(s.fee) !== "object"typeof tryParseJSON(s.fee) !== "object"',
-    typeof tryParseJSON(s.fee) !== "object"
-  );
-  return (
-    typeof tryParseJSON(s.msgs) !== "object" ||
-    typeof tryParseJSON(s.fee) !== "object"
   );
 };

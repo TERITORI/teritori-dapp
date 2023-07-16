@@ -33,7 +33,7 @@ export const MultisigTransactionsScreen: ScreenFC<"MultisigTransactions"> = ({
       noScroll
       forceNetworkKind={NetworkKind.Cosmos}
     >
-      <Transactions address={address} title={walletName} />
+      <Transactions multisigId={address} title={walletName} />
     </ScreenContainer>
   );
 };

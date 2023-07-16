@@ -72,7 +72,9 @@ export const ProposalTransactionItem: React.FC<ProposalTransactionItemProps> = (
       : { value: "", ticker: "" };
   const approvedByCount = currentSignatures?.length || 0;
   const approvalRequiredCount = parseInt(
-    JSON.parse(multisig.pubkeyJSON)?.value.threshold || "0",
+    multisig.pubkeyJSON
+      ? JSON.parse(multisig.pubkeyJSON)?.value.threshold || "0"
+      : "0",
     10
   );
   const completedPercent =

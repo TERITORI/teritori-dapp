@@ -27,11 +27,12 @@ export type MultisigTransactionDelegateFormType = {
   memo: string;
 };
 
-export type MultisigType = {
+export type CosmosMultisig = {
   _id: string;
+  chainId: string;
   address: string;
   pubkeyJSON: string;
-  chainId: string;
+  name: string;
   userAddresses: string[];
 };
 

@@ -1,18 +1,22 @@
 import { Pubkey, pubkeyToAddress } from "@cosmjs/amino";
 import { Decimal } from "@cosmjs/math";
-import { Coin, StargateClient } from "@cosmjs/stargate";
+import { Coin } from "@cosmjs/stargate";
 
 import { useMultisigContext } from "../../context/MultisigReducer";
+import { getNonSigningStargateClient } from "../../networks";
+import { useSelectedNetworkId } from "../useSelectedNetwork";
 
 export const useMultisigHelpers = () => {
   const { state } = useMultisigContext();
+
+  const selectedNetworkId = useSelectedNetworkId();
 
   // functions
   const getPubkeyFromNode = async (address: string) => {
     if (!state?.chain?.nodeAddress) {
       throw new Error("Unable to fetch");
     }
-    const client = await StargateClient.connect(state?.chain?.nodeAddress);
+    const client = await getNonSigningStargateClient(selectedNetworkId);
 
     const accountOnChain = await client.getAccount(address);
 

@@ -24,6 +24,7 @@ export interface DbCreateTransaction {
 }
 
 export interface DbAccount {
+  name: string;
   address: string;
   pubkeyJSON: string;
   chainId: string;

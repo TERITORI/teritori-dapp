@@ -2,18 +2,17 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 
 import {
-  isMultisigTransactionResponseError,
-  MultisigTransactionListType,
-  MultisigTransactionResponseType,
-} from "./useFetchMultisigTransactionsById";
+  TransactionFieldsFragment,
+  useGetUserTransactionsQuery,
+} from "../../api/multisig";
 import { NetworkKind } from "../../networks";
-import { transactionsByUserAddress } from "../../utils/faunaDB/multisig/multisigGraphql";
+import { fetcherConfig } from "../../utils/faunaDB/multisig/multisigGraphql";
 import { tryParseJSON } from "../../utils/jsons";
 import { useSelectedNetworkInfo } from "../useSelectedNetwork";
 
 export const useFetchMultisigTransactionsByAddress = (
   userAddress: string,
-  size?: number
+  size: number = 20
 ) => {
   const selectedNetworkInfo = useSelectedNetworkInfo();
   const chainId = useMemo(() => {
@@ -24,35 +23,49 @@ export const useFetchMultisigTransactionsByAddress = (
   }, [selectedNetworkInfo?.chainId, selectedNetworkInfo?.kind]);
 
   //  request
-  return useInfiniteQuery<{
-    data: MultisigTransactionListType[];
-    after: string;
-  }>(
+  return useInfiniteQuery(
     ["multisig-transactions", userAddress, chainId],
-    async () => {
+    async ({ pageParam }) => {
       if (!userAddress) {
-        return { data: [], after: "" };
+        return { data: [], next: null };
       }
-      const saveRes = await transactionsByUserAddress(
-        userAddress,
-        chainId,
-        size || 5
-      );
 
-      const { after, data } = saveRes.data.data.transactionsByUserAddress;
+      let transactions: TransactionFieldsFragment[];
+      let err: unknown;
+
+      try {
+        const { transactions: txs } = await useGetUserTransactionsQuery.fetcher(
+          fetcherConfig,
+          {
+            chainId,
+            userAddress,
+            size,
+            before: pageParam || null,
+          }
+        )();
+        transactions = txs;
+      } catch (e) {
+        err = e;
+        transactions = [];
+      }
 
       return {
-        data: data.map((s: MultisigTransactionResponseType) => ({
+        data: transactions.map((s) => ({
           ...s,
-          msgs: tryParseJSON(s.msgs),
-          fee: tryParseJSON(s.fee),
-          isError: isMultisigTransactionResponseError(s),
+          msgs: tryParseJSON(s.msgs || "[]"),
+          fee: tryParseJSON(s.fee || "{}"),
+          isError: !!err,
         })),
-        after,
+        next:
+          transactions.length > 0
+            ? new Date(
+                Date.parse(transactions[transactions.length - 1]?.createdAt) - 1
+              ).toISOString()
+            : pageParam || null,
       };
     },
     {
-      getNextPageParam: (lastPage) => lastPage.after,
+      getNextPageParam: (lastPage) => lastPage.next,
       refetchOnWindowFocus: false,
     }
   );

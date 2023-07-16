@@ -9,14 +9,13 @@ import { Transactions } from "./components/Transactions";
 import { MultisigLegacyFormType } from "./types";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
-import { AnimationExpand } from "../../components/animations";
 import { SpacerColumn } from "../../components/spacer";
 import {
   useGetMultisigAccount,
   useMultisigHelpers,
 } from "../../hooks/multisig";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { NetworkKind } from "../../networks";
+import { NetworkKind, parseUserId } from "../../networks";
 import { patternOnlyNumbers, validateAddress } from "../../utils/formRules";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { neutral33 } from "../../utils/style/colors";
@@ -30,6 +29,7 @@ export const MultisigWalletDashboardScreen: ScreenFC<
   const { selectedWallet } = useSelectedWallet();
   const { control } = useForm<MultisigLegacyFormType>();
   const { address, walletName } = route.params;
+  const [, multisigAddress] = parseUserId(address);
   const { isLoading, data } = useGetMultisigAccount(address);
   const { coinSimplified, participantAddressesFromMultisig } =
     useMultisigHelpers();
@@ -94,7 +94,7 @@ export const MultisigWalletDashboardScreen: ScreenFC<
               isCopiable
               isDisabled
               isOverrideDisabledBorder
-              defaultValue={address}
+              defaultValue={multisigAddress}
             />
           </MultisigSection>
 
@@ -111,7 +111,7 @@ export const MultisigWalletDashboardScreen: ScreenFC<
           >
             {membersAddress &&
               membersAddress.map((address, index) => (
-                <AnimationExpand key={address}>
+                <View key={address}>
                   <MultisigFormInput<MultisigLegacyFormType>
                     control={control}
                     label={"Address #" + (index + 1)}
@@ -126,7 +126,7 @@ export const MultisigWalletDashboardScreen: ScreenFC<
                   {index !== membersAddress.length - 1 && (
                     <SpacerColumn size={2.5} />
                   )}
-                </AnimationExpand>
+                </View>
               ))}
           </MultisigSection>
 
@@ -148,7 +148,7 @@ export const MultisigWalletDashboardScreen: ScreenFC<
         <RightSection />
       </View>
 
-      <Transactions address={address} title="Transactions" />
+      <Transactions multisigId={address} title="Transactions" />
     </ScreenContainer>
   );
 };

@@ -4,7 +4,7 @@ import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
 import { useWallets, Wallet } from "../../context/WalletsProvider";
-import { useFetchMultisigList } from "../../hooks/multisig";
+import { useUserMultisigs } from "../../hooks/multisig";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import {
   useSelectedNetworkId,
@@ -38,9 +38,7 @@ export const TopMenuAccount: React.FC = () => {
   const { selectedWallet, selectedMultisignWallet } = useSelectedWallet();
   const { setMultisignWallet, wallets } = useWallets();
   const selectedNetworkInfo = useSelectedNetworkInfo();
-  const { data: multisigList } = useFetchMultisigList(
-    selectedWallet?.address || ""
-  );
+  const { multisigs: multisigList } = useUserMultisigs(selectedWallet?.userId);
 
   const [isAccountsListShown, setAccountsListShown] = useState<boolean>(false);
   const [hoveredIndex, setHoveredIndex] = useState<number>(0);

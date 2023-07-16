@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 
@@ -5,6 +6,11 @@ import { CheckLoadingModal } from "./components/CheckLoadingModal";
 import { InputMultisigAddressModal } from "./components/InputMultisigAddressModal";
 import { MultisigWalletItem } from "./components/MultisigWalletItem";
 import { UserWalletType } from "./types";
+import {
+  GetMultisigQueryVariables,
+  useGetMultisigQuery,
+  useGetUserMultisigsQuery,
+} from "../../api/multisig";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
@@ -14,11 +20,8 @@ import { TableRow, TableRowHeading } from "../../components/table";
 import { useMultisigContext } from "../../context/MultisigReducer";
 import { useCreateUserWallet } from "../../hooks/multisig";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { NetworkKind } from "../../networks";
-import {
-  getMultisig,
-  getMultisigsByUserWallet,
-} from "../../utils/faunaDB/multisig/multisigGraphql";
+import { NetworkKind, mustGetCosmosNetwork } from "../../networks";
+import { faunaDbQuery } from "../../utils/faunaDB/multisig/multisigGraphql";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { neutral00, neutral33, neutral77 } from "../../utils/style/colors";
 import { fontSemibold20 } from "../../utils/style/fonts";
@@ -53,6 +56,7 @@ export const MultisigManageWalletsScreen: ScreenFC<
   const navigation = useAppNavigation();
   const [isInputMultisigAddressVisible, setInputMultisigAddressVisible] =
     useState(false);
+  const queryClient = useQueryClient();
 
   const { mutate, isLoading, data: multisigData } = useCreateUserWallet();
   const { state } = useMultisigContext();
@@ -68,26 +72,41 @@ export const MultisigManageWalletsScreen: ScreenFC<
         walletAccount?.address
       ) {
         const userAddress = walletAccount?.address;
-        const chainId = state.chain.chainId;
-        const res = await getMultisigsByUserWallet(userAddress, chainId);
+        const network = mustGetCosmosNetwork(walletAccount.networkId);
+        const { multisigs } = await faunaDbQuery(
+          useGetUserMultisigsQuery,
+          queryClient,
+          {
+            chainId: network.chainId,
+            userAddress: walletAccount.address,
+            size: 200,
+            before: null,
+          }
+        );
         const retArr: UserWalletType[] = [];
-        if (res.data.data.getMultisigsByUser) {
-          res.data.data.getMultisigsByUser.data.map((item: any) => {
+        if (multisigs) {
+          multisigs.map((item) => {
             retArr.push({
-              multisigId: item.multisig._id,
-              multisigAddress: item.multisig.address,
+              multisigId: item._id,
+              multisigAddress: item.address,
               userAddress,
-              multisigUserAddresses: item.multisig.userAddresses,
-              chainId,
-              walletName: item.walletName,
-            } as UserWalletType);
+              multisigUserAddresses: item.userAddresses || [],
+              chainId: network.chainId,
+              walletName: item.name || "",
+            });
           });
           setMultisigList(retArr);
         }
       }
     };
     getMultisigList();
-  }, [walletAccount, state.chain.chainId, state.chain?.addressPrefix]);
+  }, [
+    queryClient,
+    state.chain?.addressPrefix,
+    state.chain?.chainId,
+    walletAccount?.address,
+    walletAccount?.networkId,
+  ]);
 
   // returns
   return (
@@ -160,8 +179,22 @@ export const MultisigManageWalletsScreen: ScreenFC<
             walletAccount?.address
           ) {
             const chainId = state.chain.chainId;
-            const res = await getMultisig(address, chainId);
-            if (!res.data.data.getMultisig) {
+            const vars: GetMultisigQueryVariables = { address, chainId };
+            const res = await queryClient.fetchQuery(
+              useGetMultisigQuery.getKey(vars),
+              useGetMultisigQuery.fetcher(
+                {
+                  endpoint: "https://graphql.eu.fauna.com/graphql",
+                  fetchParams: {
+                    headers: {
+                      Authorization: `Bearer ${process.env.FAUNADB_SECRET}`,
+                    },
+                  },
+                },
+                vars
+              )
+            );
+            if (!res.multisig) {
               setToastError({
                 title: "Invalid Multisig address",
                 message:
@@ -171,7 +204,7 @@ export const MultisigManageWalletsScreen: ScreenFC<
             }
             setInputMultisigAddressVisible(false);
 
-            const multisigId = res.data.data.getMultisig._id;
+            const multisigId = res.multisig._id;
             const userAddress = walletAccount?.address;
             mutate({
               chainId,

@@ -1,3 +1,4 @@
+import { QueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
 import {
@@ -6,14 +7,24 @@ import {
   DbSignature,
   DbUserWallet,
 } from "./types";
+import { Exact } from "../../../api/multisig";
 
 // Graphql base request for Faunadb
 const graphqlReq = axios.create({
-  baseURL: "https://graphql.fauna.com/graphql",
+  baseURL: "https://graphql.eu.fauna.com/graphql",
   headers: {
     Authorization: `Bearer ${process.env.FAUNADB_SECRET}`,
   },
 });
+
+export const fetcherConfig = {
+  endpoint: "https://graphql.eu.fauna.com/graphql",
+  fetchParams: {
+    headers: {
+      Authorization: `Bearer ${process.env.FAUNADB_SECRET}`,
+    },
+  },
+};
 
 /**
  * Creates multisig record in faunadb
@@ -28,37 +39,11 @@ const createOrFindMultisig = async (multisig: DbAccount) => {
       query: `
         mutation {
           createOrFindMultisig(
-            address: "${multisig.address}",
+            address: ${JSON.stringify(multisig.address)},
             pubkeyJSON: ${JSON.stringify(multisig.pubkeyJSON)},
-            chainId: "${multisig.chainId}",
+            chainId: ${JSON.stringify(multisig.chainId)},
             userAddresses: ${JSON.stringify(multisig.userAddresses)},
           ) {
-            _id
-            address
-            pubkeyJSON
-            chainId
-            userAddresses
-          }
-        }
-      `,
-    },
-  });
-};
-
-/**
- * Gets multisig pubkey from faundb
- *
- * @param {string} address A multisig address.
- * @param {string} chainId The chainId the multisig belongs to.
- * @return Returns async function that makes a request to the faunadb graphql endpoint
- */
-const getMultisig = async (address: string, chainId: string) => {
-  return graphqlReq({
-    method: "POST",
-    data: {
-      query: `
-        query {
-          getMultisig(address: "${address}", chainId: "${chainId}",) {
             _id
             address
             pubkeyJSON
@@ -225,28 +210,26 @@ const transactionsByUserAddress = async (
   });
 };
 
-/**
- * Retrieves all transaction from faunadb
- *
- * @param {string} multisigId Faunadb resource txHash
- * @return Returns async function that makes a request to the faunadb graphql endpoint
- */
-const multisigsByUserAddress = async (userAddress: string, chainId: string) => {
-  return graphqlReq({
-    method: "POST",
-    data: {
-      query: `
-      query {
-        multisigByUserAddress(address: "${userAddress}", chainId: "${chainId}") {
-          _id
-          address
-          userAddresses
-          chainId
-        }
-      }
-      `,
-    },
-  });
+export const faunaDbQuery = async <
+  Hook extends {
+    getKey: (vars: Exact<any>) => any;
+    fetcher: (...args: any) => () => Promise<any>;
+  }
+>(
+  hook: Hook,
+  queryClient: QueryClient,
+  variables: Hook extends { getKey: (vars: infer Variables) => any }
+    ? Variables
+    : unknown
+): Promise<
+  Hook extends { fetcher: (...args: any) => () => Promise<infer Return> }
+    ? Return
+    : unknown
+> => {
+  return await queryClient.fetchQuery(
+    hook.getKey(variables),
+    hook.fetcher(fetcherConfig, variables)
+  );
 };
 
 /**
@@ -397,45 +380,14 @@ const createUserWallet = async (
   });
 };
 
-const getMultisigsByUserWallet = async (
-  userAddress: string,
-  chainId: string
-) => {
-  return graphqlReq({
-    method: "POST",
-    data: {
-      query: `
-        query{
-          getMultisigsByUser(
-            userAddress: "${userAddress}"
-            chainId: "${chainId}"
-          ){
-            data{
-              walletName
-              multisig{
-                 _id
-                 address
-                 userAddresses
-              }              
-            }
-          }
-       }
-      `,
-    },
-  });
-};
-
 export {
   createOrFindMultisig,
-  getMultisig,
   createTransaction,
   completeTransaction,
   createSignature,
   transactionsByMultisigId,
-  multisigsByUserAddress,
   getTransactionCountByMultisigId,
   transactionsByUserAddress,
   updateTransactionDecliners,
   createUserWallet,
-  getMultisigsByUserWallet,
 };

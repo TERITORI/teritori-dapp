@@ -1,0 +1,299 @@
+Do(
+  Map(
+    Select("data", Paginate(Functions(), { size: 1024 })),
+    Lambda("function", Delete(Var("function")))
+  ),
+
+  Map(
+    Select("data", Paginate(Indexes(), { size: 1024 })),
+    Lambda("index", Delete(Var("index")))
+  ),
+
+  CreateIndex({
+    name: "signature_transaction_by_transaction",
+    source: Collection("Signature"),
+    terms: [
+      { field: ["data", "transaction"]}
+    ]
+  }),
+
+  CreateIndex({
+    name: "transactionsByMultisigAddressAndType",
+    source: Collection("Transaction"),
+    terms: [
+      { field: ["data", "multisig"]},
+      { field: ["data", "type"]}
+    ]
+  }),
+
+  CreateIndex({
+    name: "transactionsByMultisig",
+    source: Collection("Transaction"),
+    terms: [
+      { field: ["data", "multisig"]},
+    ]
+  }),
+
+  CreateIndex({
+    name: "transactions_sort_by_creation_date_desc",
+    source: Collection("Transaction"),
+    terms: [
+      { field: ["data", "multisig"] },
+    ],
+    values: [
+      { field: ["data", "createdAt"], reverse: true },
+      { field: ["ref"] },
+    ],
+  }),
+
+  CreateIndex({
+    name: "multisigs_search_by_address",
+    source: Collection("Multisig"),
+    unique: true,
+    terms: [
+      { field: ["data", "chainId"] },
+      { field: ["data", "address"] }
+    ],
+  }),
+
+  CreateIndex({
+    name: "multisigs_sort_by_creation_date_desc",
+    source: Collection("Multisig"),
+    terms: [
+      { field: ["ref"] }
+    ],
+    values: [
+      { field: ["data", "createdAt"], reverse: true },
+      { field: ["ref"] },
+    ],
+  }),
+
+  CreateIndex({
+    name: "multisigs_search_by_user",
+    source: Collection("Multisig"),
+    terms: [
+      { field: ["data", "chainId"] },
+      { field: ["data", "userAddresses"] }
+    ],
+  }),
+
+  CreateFunction({name: "completeTransaction", body: Query(
+    Lambda(
+      ["transactionId", "txHash", "updatedSequence"],
+      Let(
+        {
+          updatedValue: Update(
+            Select(
+              "ref",
+              Get(Ref(Collection("Transaction"), Var("transactionId")))
+            ),
+            { data: { txHash: Var("txHash") } }
+          ),
+          multisigRef: Select("multisig", Select("data", Var("updatedValue"))),
+          transactions: Filter(
+            Map(
+              Paginate(
+                Match(Index("transactionsByMultisig"), Var("multisigRef")),
+                { size: 20000 }
+              ),
+              Lambda("doc", Get(Var("doc")))
+            ),
+            Lambda(
+              "doc",
+              Let(
+                {
+                  docData: Select("data", Var("doc")),
+                  docHash: If(
+                    ContainsField("txHash", Var("docData")),
+                    Select("txHash", Var("docData")),
+                    null
+                  )
+                },
+                Or(Equals(Var("docHash"), ""), IsNull(Var("docHash")))
+              )
+            )
+          ),
+          updateObsoluteTransaction: Foreach(
+            Var("transactions"),
+            Lambda(
+              "doc",
+              Let(
+                {
+                  upSeq: Update(Select("ref", Var("doc")), {
+                    data: { sequence: Var("updatedSequence") }
+                  }),
+                  rmvSign: Map(
+                    Paginate(
+                      Match(
+                        Index("signature_transaction_by_transaction"),
+                        Select("ref", Var("doc"))
+                      )
+                    ),
+                    Lambda("X", Delete(Var("X")))
+                  )
+                },
+                null
+              )
+            )
+          )
+        },
+        Var("updatedValue")
+      )
+    )
+  )}),
+
+  CreateFunction({name: "createOrFindMultisig", body: Query(
+    Lambda(
+      ["address", "pubkeyJSON", "chainId", "userAddresses"],
+      Let(
+        {
+          multisig: Match(Index("multisigs_search_by_address"), [
+            Var("chainId"),
+            Var("address"),
+          ])
+        },
+        If(
+          Exists(Var("multisig")),
+          Get(Var("multisig")),
+          Create(Collection("Multisig"), {
+            data: {
+              address: Var("address"),
+              pubkeyJSON: Var("pubkeyJSON"),
+              chainId: Var("chainId"),
+              userAddresses: Var("userAddresses"),
+              createdAt: Now()
+            }
+          })
+        )
+      )
+    )
+  )}),
+
+
+  CreateFunction({name: "getMultisigTransactionsCounts", body: Query(
+    Lambda(
+      ["multisigId", "types"],
+      Let(
+        {
+          q: Map(
+            Var("types"),
+            Lambda(
+              "type",
+              Count(
+                If(
+                  Or(Equals(Var("type"), ""), IsNull(Var("type"))),
+                  Match(
+                    Index("transactionsByMultisig"),
+                    Ref(Collection("Multisig"), Var("multisigId"))
+                  ),
+                  Match(Index("transactionsByMultisigAddressAndType"), [
+                    Ref(Collection("Multisig"), Var("multisigId")),
+                    Var("type")
+                  ])
+                )
+              )
+            )
+          )
+        },
+        Var("q")
+      )
+    )
+  )}),
+
+  CreateFunction({name: "getUserMultisigs", body: Query(
+    Lambda(
+      ["chainId", "userAddress", "size", "before"],
+      Select(
+        "data",
+        Map(
+          Paginate(
+            Join(
+              Match(Index("multisigs_search_by_user"), [
+                Var("chainId"),
+                Var("userAddress")
+              ]),
+              Index("multisigs_sort_by_creation_date_desc")
+            ),
+            {
+              size: Var("size"),
+              after: [Var("before")]
+            }
+          ),
+          Lambda(["createdAt", "ref"], Get(Var("ref")))
+        )
+      )
+    )
+  )}),
+
+  CreateFunction({name: "getMultisig", body: Query(
+    Lambda(
+      ["chainId", "multisigAddress"],
+      Select(
+        ["data", 0],
+        Map(
+          Paginate(
+            Match(Index("multisigs_search_by_address"), [
+                Var("chainId"),
+                Var("multisigAddress")
+            ]),
+            {
+              size: 1
+            }
+          ),
+          Lambda(["ref"], Get(Var("ref")))
+        )
+      )
+    )
+  )}),
+
+  CreateFunction({name: "getMultisigTransactions", body: Query(
+    Lambda(
+      ["chainId", "multisigAddress", "size", "before"],
+      Select(
+        "data",
+        Map(
+          Paginate(
+            Join(
+              Match(Index("multisigs_search_by_address"), [
+                Var("chainId"),
+                Var("multisigAddress"),
+              ]),
+              Index("transactions_sort_by_creation_date_desc"),
+            ),
+            {
+              size: Var("size"),
+              after: [ Var("before") ]
+            }
+          ),
+          Lambda(["createdAt", "ref"], Get(Var("ref"))),
+        )
+      )
+    )
+  )}),
+
+
+  CreateFunction({name: "getUserTransactions", body: Query(
+    Lambda(
+      ["chainId", "userAddress", "size", "before"],
+      Select(
+        "data",
+        Map(
+          Paginate(
+            Join(
+              Match(Index("multisigs_search_by_user"), [
+                Var("chainId"),
+                Var("userAddress"),
+              ]),
+              Index("transactions_sort_by_creation_date_desc"),
+            ),
+            {
+              size: Var("size"),
+              after: [ Var("before") ]
+            }
+          ),
+          Lambda(["createdAt", "ref"], Get(Var("ref"))),
+        )
+      )
+    )
+  )}),
+)

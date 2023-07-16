@@ -1,9 +1,8 @@
-import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
-import { ActivityIndicator, FlatList, StyleSheet, View } from "react-native";
+import React, { FC, useMemo, useState } from "react";
+import { FlatList, StyleSheet, View } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
 import { EmptyList } from "../../../components/EmptyList";
-import { Pagination } from "../../../components/Pagination";
 import { AnimationFadeIn } from "../../../components/animations";
 import { SpacerColumn } from "../../../components/spacer";
 import { Tabs } from "../../../components/tabs/Tabs";
@@ -13,7 +12,7 @@ import {
   useGetTransactionCount,
   useMultisigValidator,
 } from "../../../hooks/multisig";
-import { secondaryColor } from "../../../utils/style/colors";
+import { parseUserId } from "../../../networks";
 import { fontSemibold28 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { ProposalTransactionItem } from "../../OrganizerDeployer/components/ProposalTransactionItem";
@@ -22,11 +21,12 @@ import { MultisigTransactionType } from "../types";
 const MIN_ITEMS_PER_PAGE = 50;
 
 export const Transactions: FC<{
-  address: string;
+  multisigId?: string;
   title?: string;
-}> = ({ address, title }) => {
+}> = ({ multisigId, title }) => {
+  const [, multisigAddress] = parseUserId(multisigId);
   const [selectedTab, setSelectedTab] = useState<keyof typeof tabs>("all");
-  const { data: multisigData } = useGetMultisigAccount(address);
+  const { data: multisigData } = useGetMultisigAccount(multisigAddress);
 
   const { data: countList } = useGetTransactionCount(
     multisigData?.dbData._id || "",
@@ -42,12 +42,7 @@ export const Transactions: FC<{
       MultisigTransactionType.REGISTER_TNS,
     ]
   );
-  const { isUserMultisig } = useMultisigValidator(address);
-  const [pageIndex, setPageIndex] = useState(0);
-  const [currentIndex, setCurrentIndex] = useState<string | null>(null);
-  const [afterIndex, setAfterIndex] = useState<string | null>(null);
-  const [beforeIndex, setBeforeIndex] = useState<string | null>(null);
-  const [itemsPerPage, setItemsPerPage] = useState(MIN_ITEMS_PER_PAGE);
+  const { isUserMultisig } = useMultisigValidator(multisigAddress);
   const tabs = useMemo(
     () => ({
       // TODO: currentProposals must be proposals than require approbations or broadcast
@@ -105,91 +100,20 @@ export const Transactions: FC<{
     [countList]
   );
 
-  useEffect(() => {
-    setCurrentIndex(null);
-    setAfterIndex(null);
-    setBeforeIndex(null);
-  }, [selectedTab]);
-  const total = useMemo(() => {
-    return tabs[selectedTab].badgeCount;
-  }, [tabs, selectedTab]);
-
-  const maxPage = useMemo(
-    () => Math.max(Math.ceil(total / itemsPerPage), 1),
-    [itemsPerPage, total]
-  );
-
   const {
     data,
     isLoading: txLoading,
-    isFetching,
-  } = useFetchMultisigTransactionsById(
-    multisigData?.dbData._id || "",
-    tabs[selectedTab].value,
-    currentIndex,
-    MIN_ITEMS_PER_PAGE
-  );
-  useEffect(() => {
-    if (data && !txLoading && !isFetching) {
-      setAfterIndex(data.after);
-      setBeforeIndex(data.before);
-    }
-  }, [data, txLoading, isFetching]);
+    fetchNextPage: fetchNextTransactionsPage,
+  } = useFetchMultisigTransactionsById(multisigId || "");
+
   const list = useMemo(() => {
-    if (data) return data.data;
+    if (data)
+      return data.pages.reduce(
+        (r, p) => [...r, ...p.data],
+        [] as (typeof data)["pages"][0]["data"]
+      );
     return [];
   }, [data]);
-
-  const ListFooter = useCallback(
-    () => (
-      <>
-        <SpacerColumn size={6} />
-        {(txLoading || isFetching) && (
-          <>
-            <ActivityIndicator color={secondaryColor} />
-            <SpacerColumn size={2} />
-          </>
-        )}
-        {!txLoading && !isFetching && data && data.data.length > 0 && (
-          <Pagination
-            disableLastButton
-            currentPage={pageIndex}
-            maxPage={maxPage}
-            itemsPerPage={itemsPerPage}
-            onChangePage={(index) => {
-              if (index === pageIndex - 1) {
-                //back
-                setCurrentIndex(beforeIndex);
-              } else if (index === pageIndex + 1) {
-                //forward
-                setCurrentIndex(afterIndex);
-              } else {
-                if (index === 0) {
-                  //first
-                  setCurrentIndex(null);
-                } else if (index === maxPage - 1) {
-                  //last
-                }
-              }
-              setPageIndex(index);
-            }}
-            dropdownOptions={[MIN_ITEMS_PER_PAGE, 100]}
-            setItemsPerPage={(e) => setItemsPerPage(e)}
-          />
-        )}
-      </>
-    ),
-    [
-      txLoading,
-      isFetching,
-      data,
-      pageIndex,
-      maxPage,
-      itemsPerPage,
-      beforeIndex,
-      afterIndex,
-    ]
-  );
 
   return (
     <>
@@ -222,10 +146,10 @@ export const Transactions: FC<{
           </AnimationFadeIn>
         )}
         initialNumToRender={MIN_ITEMS_PER_PAGE}
-        keyExtractor={(item) => item._id.toString()}
+        keyExtractor={(item) => item._id}
+        onEndReached={() => fetchNextTransactionsPage()}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.container}
-        ListFooterComponent={ListFooter}
         ListEmptyComponent={() =>
           txLoading ? null : <EmptyList text="No proposals" />
         }

@@ -1,6 +1,6 @@
 export * from "./useCreateMultisigDelegate";
 export * from "./useCreateMultisigTransaction";
-export * from "./useFetchMultisigList";
+export * from "./useUserMultisigs";
 export * from "./useFetchMultisigTransactionsByAddress";
 export * from "./useFetchMultisigTransactionsById";
 export * from "./useGetMultisigAccount";

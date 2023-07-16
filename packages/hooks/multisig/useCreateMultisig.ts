@@ -21,35 +21,34 @@ export const useCreateMultisig = () => {
       chainId,
       userAddresses,
     }: CreateMultisigArguement) => {
-      try {
-        const pubkeys = compressedPubkeys.map((compressedPubkey) => {
-          return {
-            type: "tendermint/PubKeySecp256k1",
-            value: compressedPubkey,
-          };
-        });
-        const multisigPubkey = createMultisigThresholdPubkey(
-          pubkeys,
-          threshold
-        );
-
-        const multisigAddress = pubkeyToAddress(multisigPubkey, addressPrefix);
-
-        // save multisig to fauna
-        const multisig: DbAccount = {
-          address: multisigAddress,
-          pubkeyJSON: JSON.stringify(multisigPubkey),
-          chainId,
-          userAddresses,
+      const pubkeys = compressedPubkeys.map((compressedPubkey) => {
+        return {
+          type: "tendermint/PubKeySecp256k1",
+          value: compressedPubkey,
         };
+      });
+      const multisigPubkey = createMultisigThresholdPubkey(pubkeys, threshold);
 
-        const saveRes = await createOrFindMultisig(multisig);
+      const multisigAddress = pubkeyToAddress(multisigPubkey, addressPrefix);
 
-        return saveRes.data.data.createOrFindMultisig.address;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } catch (err: any) {
-        console.log(err);
+      // save multisig to fauna
+      const multisig: DbAccount = {
+        name: "yolo",
+        address: multisigAddress,
+        pubkeyJSON: JSON.stringify(multisigPubkey),
+        chainId,
+        userAddresses,
+      };
+
+      const saveRes = await createOrFindMultisig(multisig);
+
+      console.log("saveRes", saveRes);
+
+      if (saveRes.data.errors?.length > 0) {
+        throw new Error(saveRes.data.errors[0].message);
       }
+
+      return saveRes.data.data.createOrFindMultisig.address;
     }
   );
   return mutation;
