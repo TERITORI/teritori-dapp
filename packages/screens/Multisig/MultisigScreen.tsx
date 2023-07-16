@@ -7,13 +7,11 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-import Toast from "react-native-toast-message";
 
 import { CheckLoadingModal } from "./components/CheckLoadingModal";
 import { MultisigTransactionType } from "./types";
 import multisigWalletSVG from "../../../assets/icons/organization/multisig-wallet.svg";
 import postJobSVG from "../../../assets/icons/organization/post-job.svg";
-import profileSVG from "../../../assets/icons/organization/profile.svg";
 import { BrandText } from "../../components/BrandText";
 import { EmptyList } from "../../components/EmptyList";
 import { ScreenContainer } from "../../components/ScreenContainer";
@@ -43,7 +41,7 @@ import { tinyAddress } from "../../utils/text";
 import { GetStartedOption } from "../OrganizerDeployer/components/GetStartedOption";
 import { ProposalTransactionItem } from "../OrganizerDeployer/components/ProposalTransactionItem";
 
-const RESULT_SIZE = 20;
+const MIN_ITEMS_PER_PAGE = 20;
 
 enum SelectModalKind {
   LaunchNFT,
@@ -93,7 +91,10 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
     data: transactionData,
     isLoading: isTransactionsLoading,
     isFetching: isTransactionsFetching,
-  } = useFetchMultisigTransactionsByAddress(selectedWallet?.address || "");
+  } = useFetchMultisigTransactionsByAddress(
+    selectedWallet?.address || "",
+    MIN_ITEMS_PER_PAGE
+  );
 
   const list = useMemo(
     () =>
@@ -106,7 +107,7 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
 
   const [openSelectMultiSignModal, setOpenSelectMultiSignModal] =
     useState<boolean>(false);
-  const [kind, setKind] = useState<SelectModalKind>(SelectModalKind.LaunchNFT);
+  const [kind] = useState<SelectModalKind>(SelectModalKind.LaunchNFT);
 
   const {
     isLoading,
@@ -197,19 +198,6 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
     }
   };
 
-  const displayProposal = (modalKind: SelectModalKind) => {
-    if (data === undefined || data?.length === 0) {
-      Toast.show({
-        type: "error",
-        text1: "Error",
-        text2: "Please create Multisign wallet",
-      });
-      return;
-    }
-    setKind(modalKind);
-    setOpenSelectMultiSignModal(true);
-  };
-
   // returns
   const ListFooter = useCallback(
     () => (
@@ -239,68 +227,6 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
       <ScrollView>
         <View style={styles.container}>
           <View style={styles.horizontalContentPadding}>
-            <BrandText>What do you want to do?</BrandText>
-          </View>
-          <SpacerColumn size={3} />
-          <ScrollView
-            horizontal
-            contentContainerStyle={styles.optionsScrollContent}
-            showsHorizontalScrollIndicator={false}
-          >
-            <GetStartedOption
-              variant="small"
-              title="Manage Public Profile"
-              icon={profileSVG}
-              onPress={() =>
-                displayProposal(SelectModalKind.ManagePublicProfile)
-              }
-            />
-            {/*// todo commented out but these were in the figma as planned features*/}
-            {/*<GetStartedOption*/}
-            {/*  variant="small"*/}
-            {/*  title="Create your first Post"*/}
-            {/*  icon={searchSVG}*/}
-            {/*  onPress={() => displayProposal(SelectModalKind.CreatePost)}*/}
-            {/*/>*/}
-            {/*<GetStartedOption*/}
-            {/*  variant="small"*/}
-            {/*  title="Launch an NFT Collection"*/}
-            {/*  icon={launchSVG}*/}
-            {/*  onPress={() => displayProposal(SelectModalKind.LaunchNFT)}*/}
-            {/*/>*/}
-            {/*<GetStartedOption*/}
-            {/*  variant="small"*/}
-            {/*  title="Create the Organization Chat"*/}
-            {/*  icon={chatSVG}*/}
-            {/*/>*/}
-            {/*<GetStartedOption*/}
-            {/*  variant="small"*/}
-            {/*  title="Post Job"*/}
-            {/*  icon={postJobSVG}*/}
-            {/*/>*/}
-            {/*<GetStartedOption*/}
-            {/*  variant="small"*/}
-            {/*  title="Create Challenge on Pathwar"*/}
-            {/*  icon={pathwarSVG}*/}
-            {/*/>*/}
-            {/*<GetStartedOption*/}
-            {/*  variant="small"*/}
-            {/*  title="Create Freelance Service"*/}
-            {/*  icon={freelanceSVG}*/}
-            {/*  onPress={onPress}*/}
-            {/*/>*/}
-
-            <GetStartedOption
-              variant="small"
-              title="Manage Multisig Wallets"
-              icon={multisigWalletSVG}
-              onPress={() => navigation.navigate("MultisigWalletsManage")}
-            />
-          </ScrollView>
-          <SpacerColumn size={3} />
-          <View style={styles.horizontalContentPadding}>
-            <Separator color={neutral33} />
-            <SpacerColumn size={3} />
             <BrandText style={fontSemibold28}>My Multisigs</BrandText>
             <SpacerColumn size={1.5} />
             <BrandText style={[fontSemibold16, { color: neutral77 }]}>
@@ -362,7 +288,7 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
                   <ProposalTransactionItem {...item} isUserMultisig />
                 </AnimationFadeIn>
               )}
-              initialNumToRender={RESULT_SIZE}
+              initialNumToRender={MIN_ITEMS_PER_PAGE}
               keyExtractor={(item) => item._id.toString()}
               showsVerticalScrollIndicator={false}
               contentContainerStyle={styles.transactionListContent}

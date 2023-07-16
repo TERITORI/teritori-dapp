@@ -11,7 +11,10 @@ import { transactionsByUserAddress } from "../../utils/faunaDB/multisig/multisig
 import { tryParseJSON } from "../../utils/jsons";
 import { useSelectedNetworkInfo } from "../useSelectedNetwork";
 
-export const useFetchMultisigTransactionsByAddress = (userAddress: string) => {
+export const useFetchMultisigTransactionsByAddress = (
+  userAddress: string,
+  size?: number
+) => {
   const selectedNetworkInfo = useSelectedNetworkInfo();
   const chainId = useMemo(() => {
     if (selectedNetworkInfo?.kind !== NetworkKind.Cosmos) {
@@ -30,7 +33,11 @@ export const useFetchMultisigTransactionsByAddress = (userAddress: string) => {
       if (!userAddress) {
         return { data: [], after: "" };
       }
-      const saveRes = await transactionsByUserAddress(userAddress, chainId, 5);
+      const saveRes = await transactionsByUserAddress(
+        userAddress,
+        chainId,
+        size || 5
+      );
 
       const { after, data } = saveRes.data.data.transactionsByUserAddress;
 
