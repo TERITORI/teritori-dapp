@@ -64,11 +64,9 @@ export default function App() {
                             <TNSContextProvider>
                               <TNSMetaDataListContextProvider>
                                 <MenuProvider>
-                                  <SidebarContextProvider>
-                                    <StatusBar style="inverted" />
-                                    <Navigator />
-                                    <Toast autoHide visibilityTime={2000} />
-                                  </SidebarContextProvider>
+                                  <StatusBar style="inverted" />
+                                  <Navigator />
+                                  <Toast autoHide visibilityTime={2000} />
                                 </MenuProvider>
                               </TNSMetaDataListContextProvider>
                             </TNSContextProvider>

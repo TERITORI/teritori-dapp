@@ -183,7 +183,7 @@ export const MultisigCreateScreen = () => {
               };
             })}
             selectedData={selectedInputData}
-            setData={(d) => {
+            setData={(d: SelectInputData) => {
               setSelectedInputData(d);
             }}
             label="Network"
