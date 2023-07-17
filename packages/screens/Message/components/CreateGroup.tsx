@@ -38,6 +38,10 @@ import {
   MultiMemberGroupCreate_Reply,
 } from "../../../weshnet";
 import { weshClient, weshConfig } from "../../../weshnet/client";
+import {
+  getConversationAvatar,
+  getConversationName,
+} from "../../../weshnet/client/messageHelpers";
 import { activateGroup, sendMessage } from "../../../weshnet/client/services";
 import { encodeJSON, stringFromBytes } from "../../../weshnet/client/utils";
 
@@ -64,7 +68,8 @@ export const CreateGroup = ({ onClose }: CreateGroupProps) => {
         const contactPk = item?.members?.[0].id;
 
         return {
-          name: "Anon",
+          name: getConversationName(item),
+          avatar: getConversationAvatar(item),
           contactPk,
           checked: checkedContacts.includes(contactPk),
         };

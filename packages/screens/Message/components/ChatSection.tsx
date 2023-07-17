@@ -42,6 +42,7 @@ import {
 } from "../../../utils/types/message";
 import { GroupInfo_Reply } from "../../../weshnet";
 import { weshClient } from "../../../weshnet/client";
+import { getNewConversationText } from "../../../weshnet/client/messageHelpers";
 import { sendMessage } from "../../../weshnet/client/services";
 import {
   subscribeMessages,
@@ -239,8 +240,7 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
             }}
           >
             <BrandText style={[fontSemibold12]}>
-              You created contact; Your contact request hasn't been accepted by{" "}
-              {conversation?.members?.[0]?.name || "Anon"}{" "}
+              {getNewConversationText(conversation)}
             </BrandText>
           </View>
         )}
@@ -343,69 +343,71 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
 
         <SpacerColumn size={3} />
       </View>
-      <View
-        style={{
-          flexDirection: "row",
-          padding: layout.padding_x1,
-          alignItems: "center",
-        }}
-      >
-        <Dropdown triggerComponent={<SVG source={plus} />}>
-          {({ closeOpenedDropdown }) => (
-            <UploadImage onClose={closeOpenedDropdown} setFile={setFile} />
-          )}
-        </Dropdown>
+      {!!messages.length && (
+        <View
+          style={{
+            flexDirection: "row",
+            padding: layout.padding_x1,
+            alignItems: "center",
+          }}
+        >
+          <Dropdown triggerComponent={<SVG source={plus} />}>
+            {({ closeOpenedDropdown }) => (
+              <UploadImage onClose={closeOpenedDropdown} setFile={setFile} />
+            )}
+          </Dropdown>
 
-        <SpacerRow size={2} />
-        <View style={{ flex: 1 }}>
-          {!!replyTo?.message && (
-            <View
-              style={{
-                backgroundColor: neutral33,
-                padding: layout.padding_x1,
-                marginLeft: layout.padding_x3,
-                borderRadius: 10,
-                maxWidth: 400,
+          <SpacerRow size={2} />
+          <View style={{ flex: 1 }}>
+            {!!replyTo?.message && (
+              <View
+                style={{
+                  backgroundColor: neutral33,
+                  padding: layout.padding_x1,
+                  marginLeft: layout.padding_x3,
+                  borderRadius: 10,
+                  maxWidth: 400,
+                }}
+              >
+                <BrandText style={[fontSemibold12, { color: "white" }]}>
+                  Reply to: {replyTo?.message}
+                </BrandText>
+              </View>
+            )}
+            <TextInputCustom
+              autoFocus
+              fullWidth
+              setRef={setInputRef}
+              containerStyle={{
+                marginHorizontal: layout.padding_x0_5,
+              }}
+              height={Math.max(40, inputHeight)}
+              name="message"
+              placeHolder={
+                replyTo?.message ? "Add reply message" : "Add a Message"
+              }
+              value={message}
+              onChangeText={setMessage}
+              label=""
+              textInputStyle={{
+                height: Math.max(20, inputHeight - 20),
+              }}
+              onSubmitEditing={() => {
+                if (message.length) {
+                  handleSend();
+                }
+              }}
+              onContentSizeChange={(event) => {
+                setInputHeight(event.nativeEvent.contentSize.height);
               }}
             >
-              <BrandText style={[fontSemibold12, { color: "white" }]}>
-                Reply to: {replyTo?.message}
-              </BrandText>
-            </View>
-          )}
-          <TextInputCustom
-            autoFocus
-            fullWidth
-            setRef={setInputRef}
-            containerStyle={{
-              marginHorizontal: layout.padding_x0_5,
-            }}
-            height={Math.max(40, inputHeight)}
-            name="message"
-            placeHolder={
-              replyTo?.message ? "Add reply message" : "Add a Message"
-            }
-            value={message}
-            onChangeText={setMessage}
-            label=""
-            textInputStyle={{
-              height: Math.max(20, inputHeight - 20),
-            }}
-            onSubmitEditing={() => {
-              if (message.length) {
-                handleSend();
-              }
-            }}
-            onContentSizeChange={(event) => {
-              setInputHeight(event.nativeEvent.contentSize.height);
-            }}
-          >
-            <TouchableOpacity onPress={handleSend}>
-              <SVG source={sent} />
-            </TouchableOpacity>
-          </TextInputCustom>
+              <TouchableOpacity onPress={handleSend}>
+                <SVG source={sent} />
+              </TouchableOpacity>
+            </TextInputCustom>
+          </View>
         </View>
-      </View>
+      )}
       {!!file && (
         <UploadedPreview
           setFile={setFile}

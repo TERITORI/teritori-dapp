@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Image } from "react-native";
+import { Avatar } from "react-native-paper";
 
 import avatar from "../../../../assets/icons/avatar.svg";
 import { BrandText } from "../../../components/BrandText";
@@ -9,9 +10,9 @@ import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { secondaryColor } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
 import { CheckboxDappStore } from "../../DAppStore/components/CheckboxDappStore";
-
 interface CheckboxItem {
   name: string;
+  avatar: string;
   icon: string;
   checked: boolean;
 }
@@ -45,7 +46,8 @@ export const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
               <CheckboxDappStore isChecked={item.checked} />
             </TouchableOpacity>
             <SpacerRow size={2} />
-            <SVG source={avatar} />
+            <Avatar.Image size={40} source={item.avatar || ""} />
+
             <SpacerRow size={2} />
             <BrandText style={[fontSemibold14, { color: secondaryColor }]}>
               {item.name}
