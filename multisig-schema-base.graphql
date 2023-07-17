@@ -27,6 +27,11 @@ type Transaction {
   fee: String
 }
 
+type TransactionsCounts @embedded {
+  total: Int!
+  executed: Int!
+}
+
 type Query {
   getUserMultisigs(
     chainId: String!
@@ -51,4 +56,9 @@ type Query {
     size: Int!
     before: Time
   ): [Transaction!]! @resolver(name: "getMultisigTransactions")
+
+  getMultisigTransactionsCounts(
+    chainId: String!
+    address: String!
+  ): TransactionsCounts! @resolver(name: "getMultisigTransactionsCounts")
 }

@@ -62,15 +62,19 @@ export type Mutation = {
   createMultisig: Multisig;
   createSignature: Signature;
   createTransaction: Transaction;
+  createTransactionsCounts: TransactionsCounts;
   deleteMultisig?: Maybe<Multisig>;
   deleteSignature?: Maybe<Signature>;
   deleteTransaction?: Maybe<Transaction>;
+  deleteTransactionsCounts?: Maybe<TransactionsCounts>;
   partialUpdateMultisig?: Maybe<Multisig>;
   partialUpdateSignature?: Maybe<Signature>;
   partialUpdateTransaction?: Maybe<Transaction>;
+  partialUpdateTransactionsCounts?: Maybe<TransactionsCounts>;
   updateMultisig?: Maybe<Multisig>;
   updateSignature?: Maybe<Signature>;
   updateTransaction?: Maybe<Transaction>;
+  updateTransactionsCounts?: Maybe<TransactionsCounts>;
 };
 
 
@@ -89,6 +93,11 @@ export type MutationCreateTransactionArgs = {
 };
 
 
+export type MutationCreateTransactionsCountsArgs = {
+  data: TransactionsCountsInput;
+};
+
+
 export type MutationDeleteMultisigArgs = {
   id: Scalars['ID']['input'];
 };
@@ -100,6 +109,11 @@ export type MutationDeleteSignatureArgs = {
 
 
 export type MutationDeleteTransactionArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationDeleteTransactionsCountsArgs = {
   id: Scalars['ID']['input'];
 };
 
@@ -122,6 +136,12 @@ export type MutationPartialUpdateTransactionArgs = {
 };
 
 
+export type MutationPartialUpdateTransactionsCountsArgs = {
+  data: PartialUpdateTransactionsCountsInput;
+  id: Scalars['ID']['input'];
+};
+
+
 export type MutationUpdateMultisigArgs = {
   data: MultisigInput;
   id: Scalars['ID']['input'];
@@ -136,6 +156,12 @@ export type MutationUpdateSignatureArgs = {
 
 export type MutationUpdateTransactionArgs = {
   data: TransactionInput;
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationUpdateTransactionsCountsArgs = {
+  data: TransactionsCountsInput;
   id: Scalars['ID']['input'];
 };
 
@@ -168,13 +194,20 @@ export type PartialUpdateTransactionInput = {
   txHash?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type PartialUpdateTransactionsCountsInput = {
+  executed?: InputMaybe<Scalars['Int']['input']>;
+  total?: InputMaybe<Scalars['Int']['input']>;
+};
+
 export type Query = {
   __typename?: 'Query';
   findMultisigByID?: Maybe<Multisig>;
   findSignatureByID?: Maybe<Signature>;
   findTransactionByID?: Maybe<Transaction>;
+  findTransactionsCountsByID?: Maybe<TransactionsCounts>;
   getMultisig: Multisig;
   getMultisigTransactions: Array<Transaction>;
+  getMultisigTransactionsCounts: TransactionsCounts;
   getUserMultisigs: Array<Multisig>;
   getUserTransactions: Array<Transaction>;
 };
@@ -195,6 +228,11 @@ export type QueryFindTransactionByIdArgs = {
 };
 
 
+export type QueryFindTransactionsCountsByIdArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
 export type QueryGetMultisigArgs = {
   address: Scalars['String']['input'];
   chainId: Scalars['String']['input'];
@@ -206,6 +244,12 @@ export type QueryGetMultisigTransactionsArgs = {
   chainId: Scalars['String']['input'];
   multisigAddress: Scalars['String']['input'];
   size: Scalars['Int']['input'];
+};
+
+
+export type QueryGetMultisigTransactionsCountsArgs = {
+  address: Scalars['String']['input'];
+  chainId: Scalars['String']['input'];
 };
 
 
@@ -282,6 +326,19 @@ export type TransactionMultisigRelation = {
   create?: InputMaybe<MultisigInput>;
 };
 
+export type TransactionsCounts = {
+  __typename?: 'TransactionsCounts';
+  _id: Scalars['ID']['output'];
+  _ts: Scalars['Long']['output'];
+  executed: Scalars['Int']['output'];
+  total: Scalars['Int']['output'];
+};
+
+export type TransactionsCountsInput = {
+  executed: Scalars['Int']['input'];
+  total: Scalars['Int']['input'];
+};
+
 export type GetUserMultisigsQueryVariables = Exact<{
   chainId: Scalars['String']['input'];
   userAddress: Scalars['String']['input'];
@@ -320,10 +377,26 @@ export type GetMultisigTransactionsQueryVariables = Exact<{
 
 export type GetMultisigTransactionsQuery = { __typename?: 'Query', transactions: Array<{ __typename?: 'Transaction', _id: string, msgs?: string | null, createdAt: any, fee?: string | null, multisig: { __typename?: 'Multisig', chainId: string, address: string } }> };
 
+export type GetMultisigTransactionsCountsQueryVariables = Exact<{
+  chainId: Scalars['String']['input'];
+  address: Scalars['String']['input'];
+}>;
+
+
+export type GetMultisigTransactionsCountsQuery = { __typename?: 'Query', counts: { __typename?: 'TransactionsCounts', total: number, executed: number } };
+
+export type TransactionsCountsFieldsFragment = { __typename?: 'TransactionsCounts', total: number, executed: number };
+
 export type TransactionFieldsFragment = { __typename?: 'Transaction', _id: string, msgs?: string | null, createdAt: any, fee?: string | null, multisig: { __typename?: 'Multisig', chainId: string, address: string } };
 
 export type MultisigFieldsFragment = { __typename?: 'Multisig', _id: string, name?: string | null, address: string, pubkeyJSON: string, chainId: string, userAddresses: Array<string> };
 
+export const TransactionsCountsFieldsFragmentDoc = `
+    fragment TransactionsCountsFields on TransactionsCounts {
+  total
+  executed
+}
+    `;
 export const TransactionFieldsFragmentDoc = `
     fragment TransactionFields on Transaction {
   _id
@@ -469,3 +542,30 @@ useGetMultisigTransactionsQuery.getKey = (variables: GetMultisigTransactionsQuer
 ;
 
 useGetMultisigTransactionsQuery.fetcher = (dataSource: { endpoint: string, fetchParams?: RequestInit }, variables: GetMultisigTransactionsQueryVariables) => fetcher<GetMultisigTransactionsQuery, GetMultisigTransactionsQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, GetMultisigTransactionsDocument, variables);
+export const GetMultisigTransactionsCountsDocument = `
+    query getMultisigTransactionsCounts($chainId: String!, $address: String!) {
+  counts: getMultisigTransactionsCounts(chainId: $chainId, address: $address) {
+    ...TransactionsCountsFields
+  }
+}
+    ${TransactionsCountsFieldsFragmentDoc}`;
+export const useGetMultisigTransactionsCountsQuery = <
+      TData = GetMultisigTransactionsCountsQuery,
+      TError = unknown
+    >(
+      dataSource: { endpoint: string, fetchParams?: RequestInit },
+      variables: GetMultisigTransactionsCountsQueryVariables,
+      options?: UseQueryOptions<GetMultisigTransactionsCountsQuery, TError, TData>
+    ) =>
+    useQuery<GetMultisigTransactionsCountsQuery, TError, TData>(
+      ['getMultisigTransactionsCounts', variables],
+      fetcher<GetMultisigTransactionsCountsQuery, GetMultisigTransactionsCountsQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, GetMultisigTransactionsCountsDocument, variables),
+      options
+    );
+useGetMultisigTransactionsCountsQuery.document = GetMultisigTransactionsCountsDocument;
+
+
+useGetMultisigTransactionsCountsQuery.getKey = (variables: GetMultisigTransactionsCountsQueryVariables) => ['getMultisigTransactionsCounts', variables];
+;
+
+useGetMultisigTransactionsCountsQuery.fetcher = (dataSource: { endpoint: string, fetchParams?: RequestInit }, variables: GetMultisigTransactionsCountsQueryVariables) => fetcher<GetMultisigTransactionsCountsQuery, GetMultisigTransactionsCountsQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, GetMultisigTransactionsCountsDocument, variables);

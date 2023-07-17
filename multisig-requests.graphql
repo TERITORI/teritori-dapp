@@ -52,6 +52,17 @@ query getMultisigTransactions(
   }
 }
 
+query getMultisigTransactionsCounts($chainId: String!, $address: String!) {
+  counts: getMultisigTransactionsCounts(chainId: $chainId, address: $address) {
+    ...TransactionsCountsFields
+  }
+}
+
+fragment TransactionsCountsFields on TransactionsCounts {
+  total
+  executed
+}
+
 fragment TransactionFields on Transaction {
   _id
   msgs

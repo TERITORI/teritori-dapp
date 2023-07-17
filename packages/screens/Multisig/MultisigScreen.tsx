@@ -1,5 +1,5 @@
 import { QueryClient } from "@tanstack/react-query";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { FC, useCallback, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -21,6 +21,7 @@ import { ScreenContainer } from "../../components/ScreenContainer";
 import { Separator } from "../../components/Separator";
 import { AnimationFadeIn } from "../../components/animations";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
+import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import ModalBase from "../../components/modals/ModalBase";
 import { SpacerColumn } from "../../components/spacer";
 import {
@@ -31,6 +32,7 @@ import {
 import { useCreateMultisigTransactionForExecuteContract } from "../../hooks/multisig/useCreateMultisigTransactionForExecuteContract";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getUserId, NetworkKind } from "../../networks";
+import { keplrSignArbitrary, keplrVerifyArbitrary } from "../../utils/keplr";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { neutral33, neutral77, secondaryColor } from "../../utils/style/colors";
 import {
@@ -50,6 +52,31 @@ enum SelectModalKind {
   CreatePost,
   ManagePublicProfile,
 }
+
+const LoginButton: FC<{ userId: string | undefined }> = ({ userId }) => {
+  // TODO: if has valid token, show "Logout" instead
+  return (
+    <PrimaryButton
+      text="Login"
+      loader
+      disabled={!userId} // TODO: replace with connect wallet button in this case
+      onPress={async () => {
+        if (!userId) {
+          return;
+        }
+        // TODO: get nonce from server, probably sign it with server so we don't need to store it server-side
+        const nonce = "TODO";
+        const signature = await keplrSignArbitrary(userId, nonce);
+        console.log(signature);
+
+        const isOkay = await keplrVerifyArbitrary(userId, nonce, signature);
+        console.log(isOkay);
+        // TODO: send pubkey/address, signature and nonce to get auth token
+        // TODO: store token in persisted redux slice
+      }}
+    />
+  );
+};
 
 export const MultisigScreen: ScreenFC<"Multisig"> = () => {
   const navigation = useAppNavigation();
@@ -94,6 +121,7 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
     data: transactionData,
     isLoading: isTransactionsLoading,
     isFetching: isTransactionsFetching,
+    fetchNextPage: fetchNextTransactionsPage,
   } = useFetchMultisigTransactionsByAddress(
     selectedWallet?.address || "",
     MIN_ITEMS_PER_PAGE
@@ -238,6 +266,7 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
       <ScrollView>
         <View style={styles.container}>
           <View style={styles.horizontalContentPadding}>
+            <LoginButton userId={selectedWallet?.userId} />
             <BrandText style={fontSemibold28}>My Multisigs</BrandText>
             <SpacerColumn size={1.5} />
             <BrandText style={[fontSemibold16, { color: neutral77 }]}>
@@ -304,13 +333,8 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
                   <ProposalTransactionItem {...item} isUserMultisig />
                 </AnimationFadeIn>
               )}
-<<<<<<< HEAD
               initialNumToRender={MIN_ITEMS_PER_PAGE}
-              keyExtractor={(item) => item._id.toString()}
-=======
-              initialNumToRender={RESULT_SIZE}
               keyExtractor={(item) => item._id}
->>>>>>> cb614e70 (chore: clean db)
               showsVerticalScrollIndicator={false}
               contentContainerStyle={styles.transactionListContent}
               // ListFooterComponent={ListFooter} // FIXME: this causes infinite refetch

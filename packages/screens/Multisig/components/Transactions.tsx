@@ -1,6 +1,7 @@
 import React, { FC, useMemo, useState } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
 
+import { useGetMultisigTransactionsCountsQuery } from "../../../api/multisig";
 import { BrandText } from "../../../components/BrandText";
 import { EmptyList } from "../../../components/EmptyList";
 import { AnimationFadeIn } from "../../../components/animations";
@@ -8,11 +9,10 @@ import { SpacerColumn } from "../../../components/spacer";
 import { Tabs } from "../../../components/tabs/Tabs";
 import {
   useFetchMultisigTransactionsById,
-  useGetMultisigAccount,
-  useGetTransactionCount,
   useMultisigValidator,
 } from "../../../hooks/multisig";
-import { parseUserId } from "../../../networks";
+import { getCosmosNetwork, parseUserId } from "../../../networks";
+import { fetcherConfig } from "../../../utils/faunaDB/multisig/multisigGraphql";
 import { fontSemibold28 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { ProposalTransactionItem } from "../../OrganizerDeployer/components/ProposalTransactionItem";
@@ -24,38 +24,30 @@ export const Transactions: FC<{
   multisigId?: string;
   title?: string;
 }> = ({ multisigId, title }) => {
-  const [, multisigAddress] = parseUserId(multisigId);
+  const [network, multisigAddress] = parseUserId(multisigId);
+  const cosmosNetwork = getCosmosNetwork(network?.id);
   const [selectedTab, setSelectedTab] = useState<keyof typeof tabs>("all");
-  const { data: multisigData } = useGetMultisigAccount(multisigAddress);
-
-  const { data: countList } = useGetTransactionCount(
-    multisigData?.dbData._id || "",
-    [
-      "",
-      "",
-      "",
-      MultisigTransactionType.TRANSFER,
-      MultisigTransactionType.STAKE,
-      // MultisigTransactionType.LAUNCH_NFT_COLLECTION,
-      MultisigTransactionType.CREATE_NEW_POST,
-      MultisigTransactionType.MANAGE_PUBLIC_PROFILE,
-      MultisigTransactionType.REGISTER_TNS,
-    ]
+  const { data: countsData } = useGetMultisigTransactionsCountsQuery(
+    fetcherConfig,
+    {
+      chainId: cosmosNetwork?.chainId || "",
+      address: multisigAddress,
+    },
+    { enabled: !!cosmosNetwork?.chainId && !!multisigAddress }
   );
+  const counts = countsData?.counts;
   const { isUserMultisig } = useMultisigValidator(multisigAddress);
   const tabs = useMemo(
     () => ({
       // TODO: currentProposals must be proposals than require approbations or broadcast
       currentProposals: {
         name: "Current proposals",
-        // badgeCount: countList ? countList[0] : 0,
-        badgeCount: 0,
+        badgeCount: (counts?.total || 0) - (counts?.executed || 0),
         value: undefined,
-        disabled: true,
       },
       all: {
         name: "All",
-        badgeCount: countList ? countList[1] : 0,
+        badgeCount: counts?.total || 0,
         value: undefined,
       },
       // TODO: transferReceived must be the transfers sent to the multisig wallet
@@ -68,12 +60,12 @@ export const Transactions: FC<{
       },
       transferEmitted: {
         name: "Transfer emitted",
-        badgeCount: countList ? countList[3] : 0,
+        badgeCount: 0,
         value: MultisigTransactionType.TRANSFER,
       },
       stake: {
         name: "Stake",
-        badgeCount: countList ? countList[4] : 0,
+        badgeCount: 0,
         value: MultisigTransactionType.STAKE,
       },
       // collectionLaunch: {
@@ -83,21 +75,21 @@ export const Transactions: FC<{
       // },
       postCreation: {
         name: "Post creation",
-        badgeCount: countList ? countList[5] : 0,
+        badgeCount: 0,
         value: MultisigTransactionType.CREATE_NEW_POST,
       },
       profileManagement: {
         name: "Profile management",
-        badgeCount: countList ? countList[6] : 0,
+        badgeCount: 0,
         value: MultisigTransactionType.MANAGE_PUBLIC_PROFILE,
       },
       nameRegister: {
         name: "Name register",
-        badgeCount: countList ? countList[7] : 0,
+        badgeCount: 0,
         value: MultisigTransactionType.REGISTER_TNS,
       },
     }),
-    [countList]
+    [counts?.executed, counts?.total]
   );
 
   const {

@@ -1,0 +1,127 @@
+syntax = "proto3";
+
+package multisig.v1;
+option go_package = "./multisigpb";
+
+service MultisigService {
+  // Read
+  rpc Multisigs(MultisigsRequest) returns (MultisigsResponse);
+  rpc Transactions(TransactionsRequest) returns (TransactionsResponse);
+  rpc TransactionsCounts(TransactionsCountsRequest) returns (TransactionsCountsResponse);
+
+  // Write
+  rpc CreateOrJoinMultisig(CreateOrJoinMultisigRequest) returns (CreateOrJoinMultisigResponse);
+  rpc LeaveMultisig(CreateOrJoinMultisigRequest) returns (CreateOrJoinMultisigResponse);
+  rpc CreateTransaction(CreateTransactionRequest) returns (CreateTransactionResponse);
+  rpc SignTransaction(SignTransactionRequest) returns (SignTransactionResponse);
+
+  // Auth
+  rpc GetChallenge(GetChallengeRequest) returns (GetChallengeResponse);
+  rpc GetToken(GetTokenRequest) returns (GetTokenResponse);
+}
+
+message Multisig {
+  string created_at = 1;
+}
+
+message Transaction {
+  string created_at = 1;
+  string tx_hash = 2;
+}
+
+message Signature {
+  string created_at = 1;
+}
+
+message MultisigsRequest {
+  string auth_token = 1;
+  uint32 limit = 2;
+  string startAfter = 3;
+}
+
+message MultisigsResponse {
+  repeated Multisig multisigs = 1;
+}
+
+enum ExecutionState {
+  EXECUTION_STATE_UNSPECIFIED = 0;
+  EXECUTION_STATE_PENDING = 1;
+  EXECUTION_STATE_EXECUTED = 2;
+}
+
+message TransactionsRequest {
+  string auth_token = 1;
+  uint32 limit = 2;
+  string startAfter = 3;
+  ExecutionState execution_state = 4;
+  string multisig_address = 6; // if unspecified, return transactions for all multisigs of this user
+}
+
+message TransactionsResponse {
+  repeated Transaction transactions = 1;
+}
+
+message CreateOrJoinMultisigRequest {
+  string chain_id = 1;
+  string multisig_pubkey_json = 2;
+  string auth_token = 3;
+}
+
+message CreateOrJoinMultisigResponse {
+  bool created = 1;
+  bool joined = 2;
+}
+
+message LeaveMultisig {
+  string address = 1;
+  string auth_token = 2;
+}
+
+message LeaveMultisigResponse {
+  bool left = 1;
+}
+
+message CreateTransactionRequest {
+  string auth_token = 1;
+}
+
+message CreateTransactionResponse {
+
+}
+
+message SignTransactionRequest {
+  string auth_token = 1;
+}
+
+message SignTransactionResponse {
+  
+}
+
+message GetChallengeRequest {
+  string chain_id = 1;
+}
+
+message GetChallengeResponse {
+  string challenge = 1;
+}
+
+message GetTokenRequest {
+  string challenge = 1;
+  string signature = 2;
+  string user_pubkey_json = 3;
+}
+
+message GetTokenResponse {
+  string auth_token = 1;
+}
+
+message TransactionsCountsRequest {
+  string auth_token = 1;
+  string multisig_address = 2;
+}
+
+message TransactionsCountsResponse {
+  uint32 total = 1;
+  uint32 pending = 2;
+  uint32 executed = 3;
+}
