@@ -4,11 +4,9 @@ import { Platform, TouchableOpacity, View } from "react-native";
 import { Avatar } from "react-native-paper";
 import { useSelector } from "react-redux";
 
-import avatarPNG from "../../../../assets/icons/ava.png";
 import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
-import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
 import { selectLastMessageByGroupPk } from "../../../store/slices/message";
 import { useAppNavigation } from "../../../utils/navigation";
 import {
@@ -53,10 +51,7 @@ export const ChatItem = ({ data, onPress, isActive }: ChatItemProps) => {
         <FlexRow justifyContent="space-between">
           <View>
             <FlexRow>
-              <Avatar.Image
-                size={40}
-                source={contactInfo?.avatar || avatarPNG}
-              />
+              <Avatar.Image size={40} source={contactInfo?.avatar || ""} />
               <SpacerRow size={1.5} />
               <View>
                 <FlexRow>
@@ -82,12 +77,6 @@ export const ChatItem = ({ data, onPress, isActive }: ChatItemProps) => {
                 <BrandText style={[fontMedium10, { color: secondaryColor }]}>
                   {moment(lastMessage?.timestamp).fromNow()}
                 </BrandText>
-                {/* <SpacerRow size={0.6} />
-                <SVG
-                  width={16}
-                  height={16}
-                  source={lastMessage?.isRead ? doubleCheckSVG : singleCheckSVG}
-                /> */}
               </FlexRow>
             </View>
           )}

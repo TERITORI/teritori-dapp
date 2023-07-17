@@ -51,12 +51,10 @@ const RequestList = ({ isOnline, data }: Props) => {
   const { setToastSuccess, setToastError } = useFeedbacks();
   const [addLoading, setAddLoading] = useState(false);
   const [rejectLoading, setRejectLoading] = useState(false);
-  const { metadata } = useNSUserInfo(data.tokenId || "sakul.tori");
 
   const onlineStatusBadgeColor = isOnline ? "green" : "yellow";
 
   const handleAddFriend = async () => {
-    console.log(metadata);
     setAddLoading(true);
     try {
       const contactPk = bytesFromString(data?.contactId);
@@ -113,10 +111,6 @@ const RequestList = ({ isOnline, data }: Props) => {
             <View>
               <BrandText style={[fontSemibold13, { color: secondaryColor }]}>
                 {data?.name || "Anon"}
-              </BrandText>
-              <SpacerColumn size={0.4} />
-              <BrandText style={[fontSemibold11, { color: neutralA3 }]}>
-                {isOnline ? "Online" : "Offline"}
               </BrandText>
             </View>
           </FlexRow>

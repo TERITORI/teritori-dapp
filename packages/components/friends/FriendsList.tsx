@@ -10,6 +10,10 @@ import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { neutral22, neutralA3, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold13, fontSemibold11 } from "../../utils/style/fonts";
 import { Conversation } from "../../utils/types/message";
+import {
+  getConversationAvatar,
+  getConversationName,
+} from "../../weshnet/client/messageHelpers";
 import { BrandText } from "../BrandText";
 import FlexRow from "../FlexRow";
 import { SVG } from "../SVG";
@@ -22,17 +26,16 @@ type FriendListProps = {
 
 const isOnline = true;
 const FriendList = ({ item, handleChatPress }: FriendListProps) => {
-  const { metadata } = useNSUserInfo(
-    item.members?.[0]?.tokenId || "sakul.tori"
-  );
-
   const onlineStatusBadgeColor = isOnline ? "green" : "yellow";
   return (
     <View>
       <FlexRow justifyContent="space-between">
         <View>
           <FlexRow>
-            <Avatar.Image size={40} source={metadata.image || ""} />
+            <Avatar.Image
+              size={40}
+              source={getConversationAvatar(item) || ""}
+            />
             <Badge
               style={{
                 position: "absolute",
@@ -46,11 +49,7 @@ const FriendList = ({ item, handleChatPress }: FriendListProps) => {
             <SpacerRow size={1.5} />
             <View>
               <BrandText style={[fontSemibold13, { color: secondaryColor }]}>
-                {metadata.public_name || "Anon"}
-              </BrandText>
-              <SpacerColumn size={0.4} />
-              <BrandText style={[fontSemibold11, { color: neutralA3 }]}>
-                {isOnline ? "Online" : "Offline"}
+                {getConversationName(item)}
               </BrandText>
             </View>
           </FlexRow>
