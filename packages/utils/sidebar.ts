@@ -8,6 +8,7 @@ import gridSVG from "../../assets/icons/grid.svg";
 import launchpadApplySVG from "../../assets/icons/launchpad-apply.svg";
 import launchpadLaunchpadSVG from "../../assets/icons/launchpad-launchpad.svg";
 import launchpadSVG from "../../assets/icons/launchpad.svg";
+import marketplaceSVG from "../../assets/icons/marketplace.svg";
 import messagesSVG from "../../assets/icons/messages.svg";
 import multisigSVG from "../../assets/icons/multisig.svg";
 import osmosisCircleSVG from "../../assets/icons/networks/osmosis-circle.svg";
