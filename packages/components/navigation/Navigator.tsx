@@ -8,6 +8,16 @@ import { ToriPunks } from "../../screens/DAppStore/apps/toripunks/HomeScreen";
 import { FeedScreen } from "../../screens/Feed/FeedScreen";
 import { FeedNewArticleScreen } from "../../screens/FeedNewArticle/FeedNewArticleScreen";
 import { FeedPostViewScreen } from "../../screens/FeedPostView/FeedPostViewScreen";
+import { FreelanceServicesCategory } from "../../screens/FreelanceServices/FreelanceServicesCategory";
+import { FreelanceServicesEscrow } from "../../screens/FreelanceServices/FreelanceServicesEscrow";
+import { FreelanceServicesGigCreation } from "../../screens/FreelanceServices/FreelanceServicesGigCreation";
+import { FreelanceServicesHomeBuyer } from "../../screens/FreelanceServices/FreelanceServicesHomeBuyer";
+import { FreelanceServicesHomeSeller } from "../../screens/FreelanceServices/FreelanceServicesHomeSeller";
+import { FreelanceServicesOrderDetails } from "../../screens/FreelanceServices/FreelanceServicesOrderDetails";
+import { FreelanceServicesProfileSeller } from "../../screens/FreelanceServices/FreelanceServicesProfileSeller";
+import { FreelanceServicesSubCategory } from "../../screens/FreelanceServices/FreelanceServicesSubCategory";
+import { GigDetailScreen } from "../../screens/FreelanceServices/Gig/GigDetailScreen";
+import { SellerDetailsScreen } from "../../screens/FreelanceServices/SellersDetails/SellerDetailsScreen";
 import { GovernanceScreen } from "../../screens/Governance/GovernanceScreen";
 import { GuardiansScreen } from "../../screens/Guardians/GuardiansScreen";
 import { HashtagFeedScreen } from "../../screens/HashtagFeed/HashtagFeedScreen";
@@ -273,6 +283,78 @@ export const Navigator: React.FC = () => {
         name="CollectionTools"
         component={CollectionToolsScreen}
         options={{ header: () => null }}
+      />
+      {/* ==== Freelance Services */}
+
+      <Stack.Screen
+        name="FreelanceServicesHomeBuyer"
+        component={FreelanceServicesHomeBuyer}
+        options={{
+          header: () => null,
+          title: screenTitle("Freelance Services"),
+        }}
+      />
+      <Stack.Screen
+        name="FreelanceServicesHomeSeller"
+        component={FreelanceServicesHomeSeller}
+        options={{
+          header: () => null,
+          title: screenTitle("Freelance Services"),
+        }}
+      />
+      <Stack.Screen
+        name="FreelanceServicesCategory"
+        component={FreelanceServicesCategory}
+        options={{
+          header: () => null,
+          title: screenTitle("Freelance Services"),
+        }}
+      />
+      <Stack.Screen
+        name="FreelanceServicesSubCategory"
+        component={FreelanceServicesSubCategory}
+        options={{
+          header: () => null,
+          title: screenTitle("Freelance Services"),
+        }}
+      />
+      <Stack.Screen
+        name="FreelanceServicesProfileSeller"
+        component={FreelanceServicesProfileSeller}
+        options={{
+          header: () => null,
+          title: screenTitle("Freelance Services"),
+        }}
+      />
+      <Stack.Screen
+        name="FreelanceServicesGigCreation"
+        component={FreelanceServicesGigCreation}
+        options={{
+          header: () => null,
+          title: screenTitle("Gig Creation"),
+        }}
+      />
+
+      <Stack.Screen
+        name="FreelanceServicesGigDetail"
+        component={GigDetailScreen}
+        options={{ header: () => null, title: screenTitle("Logo & Design") }}
+      />
+
+      <Stack.Screen
+        name="FreelanceServicesSellerDetails"
+        component={SellerDetailsScreen}
+        options={{ header: () => null, title: screenTitle("Seller Details") }}
+      />
+      <Stack.Screen
+        name="FreelanceServicesOrder"
+        component={FreelanceServicesOrderDetails}
+        options={{ header: () => null, title: screenTitle("Order Details") }}
+      />
+      <Stack.Screen
+        name="FreelanceServicesEscrow"
+        component={FreelanceServicesEscrow}
+        options={{ header: () => null, title: screenTitle("Escrow List") }}
       />
       <Stack.Screen
         name="Settings"

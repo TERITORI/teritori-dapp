@@ -19,6 +19,8 @@ import (
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
 	"github.com/TERITORI/teritori-dapp/go/pkg/p2e"
 	"github.com/TERITORI/teritori-dapp/go/pkg/p2epb"
+	"github.com/TERITORI/teritori-dapp/go/pkg/freelance"
+	"github.com/TERITORI/teritori-dapp/go/pkg/freelancepb"
 	"github.com/improbable-eng/grpc-web/go/grpcweb"
 	"github.com/peterbourgon/ff/v3"
 	"github.com/pkg/errors"
@@ -89,6 +91,11 @@ func main() {
 		panic(errors.Wrap(err, "failed to access db"))
 	}
 
+	err = indexerdb.MigrateDB(indexerDB)
+  if err != nil {
+  		panic(errors.Wrap(err, "failed migrate database models"))
+  }
+
 	port := 9090
 	if *enableTls {
 		port = 9091
@@ -115,6 +122,10 @@ func main() {
 		Logger:    logger,
 		IndexerDB: indexerDB,
 	})
+  freelanceSvc := freelance.NewFreelanceService(context.Background(), &freelance.Config{
+    Logger:    logger,
+    IndexerDB: indexerDB,
+  })
 
 	feedSvc := feed.NewFeedService(context.Background(), &feed.Config{
 		Logger:    logger,
@@ -132,6 +143,7 @@ func main() {
 	marketplacepb.RegisterMarketplaceServiceServer(server, marketplaceSvc)
 	p2epb.RegisterP2EServiceServer(server, p2eSvc)
 	daopb.RegisterDAOServiceServer(server, daoSvc)
+	freelancepb.RegisterFreelanceServiceServer(server, freelanceSvc)
 	feedpb.RegisterFeedServiceServer(server, feedSvc)
 
 	wrappedServer := grpcweb.WrapServer(server,
@@ -141,7 +153,6 @@ func main() {
 	handler := func(resp http.ResponseWriter, req *http.Request) {
 		resp.Header().Set("Access-Control-Allow-Origin", "*")
 		resp.Header().Set("Access-Control-Allow-Headers", "*")
-		logger.Debug(fmt.Sprintf("Request: %v", req))
 		wrappedServer.ServeHTTP(resp, req)
 	}
 

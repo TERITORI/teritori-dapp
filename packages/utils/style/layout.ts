@@ -1,4 +1,5 @@
 export const screenContainerContentMarginHorizontal = 140; // Corresponding to the space H between the Sidebar and the page content
+export const leftMarginMainContent = 32;
 export const headerHeight = 80;
 export const MOBILE_HEADER_HEIGHT = 64;
 export const legalFooterHeight = 58;

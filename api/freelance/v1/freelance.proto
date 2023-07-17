@@ -1,0 +1,80 @@
+syntax = "proto3";
+package freelance.v1;
+option go_package = "./freelancepb";
+
+service FreelanceService {
+  rpc SellerProfile(SellerProfileRequest) returns (SellerProfileResponse);
+  rpc GigList(GigListRequest) returns (GigListResponse);
+  rpc GigListUser(GigListUserRequest) returns (GigListUserResponse);
+  rpc GigData(GigDataRequest) returns (GigDataResponse);
+
+  rpc EscrowAllList(EscrowAllListRequest) returns (EscrowAllListResponse);
+  rpc EscrowSenderList(EscrowSenderListRequest) returns (EscrowSenderListResponse);
+  rpc EscrowReceiverList(EscrowReceiverListRequest) returns (EscrowReceiverListResponse);
+}
+
+message SellerProfileRequest {
+  string seller_address = 1;
+}
+
+message SellerProfileResponse {
+  string seller_address = 1;
+  string ipfs = 2;
+  bool is_active = 3;
+}
+
+message GigListRequest {
+  int32 limit = 1;
+  int32 offset = 2;
+}
+
+message  GigListUserRequest {
+  string address = 1;
+}
+
+message EscrowAllListRequest{
+  string address = 1;
+}
+message EscrowSenderListRequest{
+  string address = 1;
+}
+message EscrowReceiverListRequest{
+  string address = 1;
+}
+message EscrowInfo {
+  uint32 id = 1;
+  string sender = 2;
+  string receiver = 3;
+  string amount = 4;
+  string amount_denom = 5;
+  uint64 expire_at = 6;
+  uint32 status = 7;
+}
+
+message EscrowAllListResponse{
+  repeated EscrowInfo escrows = 1;
+}
+message EscrowSenderListResponse{
+  repeated EscrowInfo escrows = 1;
+}
+message EscrowReceiverListResponse{
+  repeated EscrowInfo escrows = 1;
+}
+
+message GigInfo {
+  int32 id = 1;
+  string address = 2;
+  string gig_data = 3;
+}
+message GigListResponse {
+  repeated GigInfo gigs = 1;
+}
+message GigListUserResponse {
+  repeated GigInfo gigs = 1;
+}
+message GigDataRequest {
+  int32 id = 1;
+}
+message GigDataResponse{
+  GigInfo gig = 1;
+}

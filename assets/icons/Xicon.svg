@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns="http://www.w3.org/2000/svg"
+   width="33.866665mm"
+   height="33.866665mm"
+   viewBox="0 0 33.866665 33.866665"
+   version="1.1"
+   id="svg8">
+  <defs
+     id="defs2">
+    <rect
+       x="79.317602"
+       y="106.04192"
+       width="33.317901"
+       height="34.052855"
+       id="rect26" />
+  </defs>
+  <metadata
+     id="metadata5">
+  </metadata>
+  <g
+     id="layer1"
+     transform="translate(-79.072617,-106.2869)">
+    <text
+       xml:space="preserve"
+       id="text24"
+       style="font-style:normal;font-weight:normal;font-size:10.58329999999999949px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect26);fill:#ff0000;fill-opacity:1;stroke:none;"
+       transform="matrix(5.0378677,0,0,3.992821,-321.69595,-323.23031)"><tspan
+         x="79.318359"
+         y="115.69648"><tspan
+           style="fill:#ff0000">X</tspan></tspan></text>
+  </g>
+</svg>

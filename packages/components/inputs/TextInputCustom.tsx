@@ -255,6 +255,7 @@ export const TextInputCustom = <T extends FieldValues>({
           styles.mainContainer,
           noBrokenCorners && styles.noCropBorderBg,
           hovered && { borderColor: secondaryColor },
+          boxMainContainerStyle,
         ]}
         width={width}
         fullWidth={!width}

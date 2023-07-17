@@ -7,6 +7,7 @@ import gridSVG from "../../assets/icons/grid.svg";
 import launchpadApplySVG from "../../assets/icons/launchpad-apply.svg";
 import launchpadLaunchpadSVG from "../../assets/icons/launchpad-launchpad.svg";
 import launchpadSVG from "../../assets/icons/launchpad.svg";
+import marketplaceSVG from "../../assets/icons/marketplace.svg";
 import messagesSVG from "../../assets/icons/messages.svg";
 import multisigSVG from "../../assets/icons/multisig.svg";
 import osmosisCircleSVG from "../../assets/icons/networks/osmosis-circle.svg";
@@ -31,6 +32,24 @@ export const SIDEBAR_LIST: SidebarRecordType = {
     id: "Messages",
     route: "ComingSoon",
     icon: messagesSVG,
+  },
+  freelance: {
+    title: "Freelance",
+    id: "Freelance",
+    route: "FreelanceServicesHomeBuyer",
+    icon: marketplaceSVG,
+    // nested: {
+    //   freelance: {
+    //     title: "Freelance",
+    //     route: "FreelanceServices",
+    //     icon: marketplaceSVG,
+    //   },
+    //   order: {
+    //     title: "Order",
+    //     route: "FreelanceServicesOrderDetails",
+    //     icon: marketplaceSVG,
+    //   }
+    // }
   },
   launchpad: {
     title: "Launchpad",

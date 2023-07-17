@@ -48,11 +48,15 @@ var allModels = []interface{}{
 	// quests
 	&Quest{},
 	&QuestCompletion{},
-
 	// p2e
 	&P2eSquadStaking{},
 	&P2eLeaderboard{},
-
+	//report
+	&Report{},
+	//seller
+	&SellerProfile{},
+	&Escrow{},
+	&Gig{},
 	// feed
 	&Post{},
 
