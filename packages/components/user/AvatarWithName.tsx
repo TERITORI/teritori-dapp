@@ -2,8 +2,9 @@ import { StyleProp, ViewStyle, View, TouchableOpacity } from "react-native";
 
 import { useNSNameOwner } from "../../hooks/useNSNameOwner";
 import { useNSPrimaryAlias } from "../../hooks/useNSPrimaryAlias";
-import { getUserId, parseUserId } from "../../networks";
-import { gnoTest3Network } from "../../networks/gno-test3";
+import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
+import { NetworkKind, getUserId, parseUserId } from "../../networks";
+import { gnoTeritoriNetwork } from "../../networks/gno-teritori";
 import { fontSemibold12 } from "../../utils/style/fonts";
 import { tinyAddress } from "../../utils/text";
 import { BrandText } from "../BrandText";
@@ -35,13 +36,19 @@ export const AvatarWithNameFromName: React.FC<{
   style?: StyleProp<ViewStyle>;
   onPress: (userId: string) => void;
 }> = ({ networkId, name, style, onPress }) => {
+  const selectedNetworkInfo = useSelectedNetworkInfo();
   const { nameOwner } = useNSNameOwner(networkId, name);
   return (
     <AvatarWithNameView
       name={name}
       userId={
         name?.endsWith(".gno")
-          ? getUserId(gnoTest3Network.id, nameOwner)
+          ? getUserId(
+              selectedNetworkInfo?.kind === NetworkKind.Gno
+                ? selectedNetworkInfo.id
+                : gnoTeritoriNetwork.id,
+              nameOwner
+            )
           : getUserId(networkId, nameOwner)
       }
       style={style}

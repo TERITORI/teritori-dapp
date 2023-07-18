@@ -4,7 +4,9 @@ import { Linking } from "react-native";
 import { ConnectWalletButton } from "./components/ConnectWalletButton";
 import adenaSVG from "../../../assets/icons/adena.svg";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { gnoTest3Network } from "../../networks/gno-test3";
+import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
+import { NetworkKind } from "../../networks";
+import { gnoTeritoriNetwork } from "../../networks/gno-teritori";
 import {
   setIsAdenaConnected,
   setSelectedNetworkId,
@@ -17,6 +19,7 @@ export const ConnectAdenaButton: React.FC<{
 }> = ({ onDone }) => {
   const { setToastError } = useFeedbacks();
   const dispatch = useAppDispatch();
+  const selectedNetworkInfo = useSelectedNetworkInfo();
   const handlePress = async () => {
     try {
       const adena = (window as any)?.adena;
@@ -27,7 +30,9 @@ export const ConnectAdenaButton: React.FC<{
       const establishResult = await adena.AddEstablish("Teritori dApp");
       console.log("established", establishResult);
       dispatch(setIsAdenaConnected(true));
-      setSelectedNetworkId(gnoTest3Network.id);
+      if (selectedNetworkInfo?.kind !== NetworkKind.Gno) {
+        setSelectedNetworkId(gnoTeritoriNetwork.id);
+      }
       dispatch(
         setSelectedWalletId(`adena-${(await adena.GetAccount()).data.address}`)
       );
