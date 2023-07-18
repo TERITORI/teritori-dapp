@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { acc } from "react-native-reanimated";
 import { useSelector } from "react-redux";
 
 import { Wallet } from "./wallet";
@@ -73,9 +74,19 @@ export const useAdena: () => UseAdenaResult = () => {
         if (!account.data.address) {
           throw new Error("no address");
         }
+
+        // adena does not return chain id currently
+        let chainId = account.data.chainId;
+        if (!chainId && selectedNetworkInfo?.kind === NetworkKind.Gno) {
+          chainId = selectedNetworkInfo.chainId;
+        }
+        if (!chainId) {
+          chainId = "dev";
+        }
+
         setState({
           addresses: [account.data.address],
-          chainId: account.data.chainId,
+          chainId, // chain id is empty for local nodes
         });
       } catch (err) {
         console.warn("failed to connect to adena", err);
@@ -85,7 +96,7 @@ export const useAdena: () => UseAdenaResult = () => {
       setReady(true);
     };
     effect();
-  }, [dispatch, hasAdena, isAdenaConnected]);
+  }, [dispatch, hasAdena, isAdenaConnected, selectedNetworkInfo]);
 
   const wallets = useMemo(() => {
     const network = allNetworks.find(

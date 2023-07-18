@@ -205,7 +205,7 @@ export const OrganizationDeployerScreen = () => {
           }
         }
         default: {
-          throw new Error("Network not supported");
+          throw new Error("Network not supported " + selectedWallet?.networkId);
         }
       }
     } catch (err: any) {
