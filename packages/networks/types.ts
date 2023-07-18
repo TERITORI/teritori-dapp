@@ -85,6 +85,7 @@ export type GnoNetworkInfo = NetworkInfoBase & {
   vaultContractAddress: string;
   nameServiceContractAddress: string;
   nameServiceDefaultImage: string;
+  gnowebURL: string;
 };
 
 export type NetworkInfo =

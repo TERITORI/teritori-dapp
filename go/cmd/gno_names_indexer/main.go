@@ -29,7 +29,7 @@ func main() {
 		dbName       = fs.String("database-name", "", "database name for postgreSQL")
 		dbUser       = fs.String("postgres-user", "", "username for postgreSQL")
 		networksFile = fs.String("networks-file", "networks.json", "path to networks config file")
-		networkID    = fs.String("indexer-network-id", "teritori", "network id to index")
+		networkID    = fs.String("gno-network-id", "gno-teritori", "network id to index")
 	)
 	if err := ff.Parse(fs, os.Args[1:],
 		ff.WithEnvVars(),
@@ -57,14 +57,13 @@ func main() {
 	}
 
 	// get and validate selected network
-	network := netstore.MustGetCosmosNetwork(*networkID)
-	if network.VaultContractAddress == "" {
-		panic(errors.New("missing vaultContractAddress in network config"))
+	network := netstore.MustGetGnoNetwork(*networkID)
+	if network.ChainID == "" {
+		panic(errors.New("missing chainId in network config"))
 	}
 	if network.NameServiceContractAddress == "" {
 		panic(errors.New("missing nameServiceContractAddress in network config"))
 	}
-	// TODO: check other used fields
 
 	dataConnexion := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s",
 		*dbHost, *dbUser, *dbPass, *dbName, *dbPort)
@@ -81,7 +80,7 @@ func main() {
 	schedule := gocron.NewScheduler(time.UTC)
 	schedule.Every(2).Minutes().Do(func() {
 		logger.Info("indexing")
-		resp, err := http.Get("https://test3.gno.land/r/demo/users")
+		resp, err := http.Get(network.GnowebURL + "/r/demo/users")
 		if err != nil {
 			logger.Error("failed to get names list", zap.Error(err))
 			return
@@ -95,7 +94,7 @@ func main() {
 		matches := nameRegexp.FindAllStringSubmatch(render, -1)
 		var names []indexerdb.Name
 		for _, m := range matches {
-			names = append(names, indexerdb.Name{Value: m[1] + ".gno", NetworkID: "gno-test3"})
+			names = append(names, indexerdb.Name{Value: m[1] + ".gno", NetworkID: network.ChainID})
 		}
 		if err := db.Save(names).Error; err != nil {
 			logger.Error("failed to save names", zap.Error(err))

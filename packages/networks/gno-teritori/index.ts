@@ -21,4 +21,5 @@ export const gnoTeritoriNetwork: GnoNetworkInfo = {
   nameServiceContractAddress: "gno.land/r/demo/users",
   nameServiceDefaultImage:
     "ipfs://bafkreignptjimiu7wuux6mk6uh4hb4odb6ff62ny4bvdokrhes7g67huse",
+  gnowebURL: "https://568e-2001-bc8-47b0-1505-00-1.ngrok-free.app",
 };

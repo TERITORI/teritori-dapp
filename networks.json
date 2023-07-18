@@ -558,7 +558,8 @@
     "backendEndpoint": "https://dapp-backend.mainnet.teritori.com",
     "vaultContractAddress": "",
     "nameServiceContractAddress": "gno.land/r/demo/users",
-    "nameServiceDefaultImage": "ipfs://bafkreignptjimiu7wuux6mk6uh4hb4odb6ff62ny4bvdokrhes7g67huse"
+    "nameServiceDefaultImage": "ipfs://bafkreignptjimiu7wuux6mk6uh4hb4odb6ff62ny4bvdokrhes7g67huse",
+    "gnowebURL": "https://test3.gno.land"
   },
   {
     "id": "gno-dev",
@@ -590,7 +591,8 @@
     "backendEndpoint": "http://localhost:9090",
     "vaultContractAddress": "",
     "nameServiceContractAddress": "gno.land/r/demo/users",
-    "nameServiceDefaultImage": "ipfs://bafkreignptjimiu7wuux6mk6uh4hb4odb6ff62ny4bvdokrhes7g67huse"
+    "nameServiceDefaultImage": "ipfs://bafkreignptjimiu7wuux6mk6uh4hb4odb6ff62ny4bvdokrhes7g67huse",
+    "gnowebURL": "http://127.0.0.1:8888"
   },
   {
     "id": "gno-teritori",
@@ -622,6 +624,7 @@
     "backendEndpoint": "https://dapp-backend.testnet.teritori.com",
     "vaultContractAddress": "",
     "nameServiceContractAddress": "gno.land/r/demo/users",
-    "nameServiceDefaultImage": "ipfs://bafkreignptjimiu7wuux6mk6uh4hb4odb6ff62ny4bvdokrhes7g67huse"
+    "nameServiceDefaultImage": "ipfs://bafkreignptjimiu7wuux6mk6uh4hb4odb6ff62ny4bvdokrhes7g67huse",
+    "gnowebURL": "https://568e-2001-bc8-47b0-1505-00-1.ngrok-free.app"
   }
 ]
