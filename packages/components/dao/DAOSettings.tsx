@@ -1,5 +1,4 @@
 import { Decimal } from "@cosmjs/math";
-import { makeMultisignedTx } from "@cosmjs/stargate";
 import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
@@ -27,22 +26,6 @@ export const DAOSettings: React.FC<{
   if (network?.kind !== NetworkKind.Gno || !wallet) return null;
   return (
     <View>
-      <PrimaryButton
-        text="Test board"
-        loader
-        onPress={wrapWithFeedback(async () => {
-          if (network?.kind !== NetworkKind.Gno) {
-            throw new Error("invalid network");
-          }
-          const client = new GnoJSONRPCProvider(network.endpoint);
-          const res = await client.evaluateExpression(
-            daoAddress,
-            `GetCore().ProposalModules()[0].Proposals()[2].Messages[0]`
-          );
-          console.log(res);
-        })}
-      />
-      <SpacerColumn size={4} />
       <CreateBoard daoId={daoId} />
       <SpacerColumn size={4} />
       <DeletePost daoId={daoId} />
