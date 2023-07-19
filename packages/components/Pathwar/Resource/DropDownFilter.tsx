@@ -194,7 +194,6 @@ const Section: React.FC<{
               <Checkbox
                 value={tag.selected}
                 onValueChange={() => {
-                  closeOpenedDropdown();
                   setItems(
                     // @ts-expect-error
                     Object.values({
