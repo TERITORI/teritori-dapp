@@ -39,8 +39,10 @@ var SinkRunCmd = Command(sinkRunE,
 
 		flags.String("networks-file", "networks.json", "Path to networks config file")
 
-		flags.Int("undo-buffer-size", 0, "Number of blocks to keep buffered to handle fork reorganizations")
-		flags.Int("live-block-time-delta", 300, "Consider chain live if block time is within this number of seconds of current time. Default: 300 (5 minutes)")
+		flags.Bool("insecure", false, "TODO: dont known yet")
+		flags.Bool("plaintext", false, "TODO: dont known yet")
+		// flags.Int("undo-buffer-size", 0, "Number of blocks to keep buffered to handle fork reorganizations")
+		// flags.Int("live-block-time-delta", 300, "Consider chain live if block time is within this number of seconds of current time. Default: 300 (5 minutes)")
 	}),
 )
 

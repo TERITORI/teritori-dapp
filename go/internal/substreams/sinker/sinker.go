@@ -65,10 +65,33 @@ func New(sink *sink.Sinker, config *Config, logger *zap.Logger, tracer logging.T
 }
 
 func (s *PostgresSinker) Run(ctx context.Context) error {
+	// Start TX if everything is ok
+	s.MustStartDbTransaction()
+
 	cursor, err := s.GetOrCreateCursor()
 
 	if err != nil {
 		return fmt.Errorf("unable to retrieve cursor: %w", err)
+	}
+
+	s.sink, err = sink.New(
+		s.SubstreamsMode,
+		s.Pkg.Modules,
+		s.OutputModule,
+		s.OutputModuleHash,
+		s.handleBlockScopeData,
+		s.ClientConfig,
+		[]pbsubstreams.ForkStep{
+			pbsubstreams.ForkStep_STEP_NEW,
+			pbsubstreams.ForkStep_STEP_UNDO,
+			pbsubstreams.ForkStep_STEP_IRREVERSIBLE,
+		},
+		s.logger,
+		s.tracer,
+		sinkOptions...,
+	)
+	if err != nil {
+		return fmt.Errorf("unable to create sink: %w", err)
 	}
 
 	s.Sinker.OnTerminating(s.Shutdown)
@@ -157,22 +180,17 @@ func (s *PostgresSinker) GetOrCreateCursor() (*sink.Cursor, error) {
 		ID: s.OutputModuleHash(),
 	}
 
-	if err := s.indexerDB.First(&c).Error; err != nil {
-		if !errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, errors.Wrap(err, "failed to retrieve cursor")
-		}
+	err := s.indexerDB.First(&c).Error
 
-		// If cursor does not exist then create a new cursor
-		cursorStartBlock := s.OutputModule().InitialBlock
-		if s.BlockRange().StartBlock() > 0 {
-			cursorStartBlock = s.BlockRange().StartBlock() - 1
-		}
+	// If no error then return the cursor
+	if err == nil {
+		cursor := bstream.NewBlockRef(c.BlockId, c.BlockNum).String()
+		return sink.NewCursor(cursor)
+	}
 
-		cursor := bstream.NewBlockRef("", cursorStartBlock).String()
-		sinkCursor, err := sink.NewCursor(cursor)
-		if err != nil {
-			return nil, errors.Wrap(err, "failed to create sink cursor")
-		}
+	// If record not found then insert new cursor
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		sinkCursor := sink.NewBlankCursor()
 
 		if err := s.WriteCursor(sinkCursor); err != nil {
 			return nil, errors.Wrap(err, "failed to init cursor")
@@ -180,8 +198,8 @@ func (s *PostgresSinker) GetOrCreateCursor() (*sink.Cursor, error) {
 		return sinkCursor, nil
 	}
 
-	cursor := bstream.NewBlockRef(c.BlockId, c.BlockNum).String()
-	return sink.NewCursor(cursor)
+	// If other error then throw error
+	return nil, errors.Wrap(err, "failed to retrieve cursor")
 }
 
 func (s *PostgresSinker) WriteCursor(sinkCursor *sink.Cursor) error {
@@ -232,15 +250,14 @@ func (s *PostgresSinker) ApplyChanges(moduleHash string, sinkCursor *sink.Cursor
 	s.logger.Info(">>> applied changes into DB done !")
 
 	// Start new transaction
-	s.StartDbTransaction()
+	s.MustStartDbTransaction()
 
 	return nil
 }
 
-func (s *PostgresSinker) StartDbTransaction() error {
+func (s *PostgresSinker) MustStartDbTransaction() {
 	s.dbTransaction = s.indexerDB.Begin()
 	if s.dbTransaction.Error != nil {
 		panic("failed to start DB transaction")
 	}
-	return nil
 }
