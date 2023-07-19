@@ -18,6 +18,7 @@ import {
   mustGetNonSigningCosmWasmClient,
   mustGetCosmosNetwork,
   getKeplrSigningCosmWasmClient,
+  getUserId,
 } from "../../networks";
 import { ipfsURLToHTTPURL, uploadJSONToIPFS } from "../../utils/ipfs";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
@@ -36,6 +37,7 @@ export const FreelanceServicesProfileSeller: ScreenFC<
 
   const { setToastError } = useFeedbacks();
   const networkId = useSelectedNetworkId();
+  const userId = getUserId(networkId, selectedWallet?.address);
 
   useEffect(() => {
     const getSellerInfo = async (address: string) => {
@@ -74,37 +76,47 @@ export const FreelanceServicesProfileSeller: ScreenFC<
     getSellerInfo(selectedWallet?.address!);
   }, [selectedWallet, networkId]);
 
-  const nextStep = () => {
+  const nextStep = async () => {
     if (currentStep === ProfileStep.AccountSecurity) {
-      // store  UserSeller to ipfs and db
-      uploadJSONToIPFS(sellerInfo).then(async (ipfsHash) => {
-        try {
-          const walletAddress = selectedWallet?.address!;
-          const signingClient = await getKeplrSigningCosmWasmClient(networkId);
-          const network = mustGetCosmosNetwork(networkId);
-          const sellerClient = new TeritoriSellerClient(
-            signingClient,
-            walletAddress,
-            network.freelanceSellerAddress!
-          );
-
-          const updatedProfileRes = await sellerClient.updateSellerProfile({
-            seller: walletAddress,
-            ipfsHash,
+      try {
+        const uploadedJson = await uploadJSONToIPFS(
+          sellerInfo,
+          networkId,
+          userId
+        );
+        if (!uploadedJson?.url) {
+          setToastError({
+            title: "Failed",
+            message: "Failed to upload Profile",
           });
-
-          if (updatedProfileRes) {
-            navigation.navigate("FreelanceServicesHomeSeller");
-          }
-        } catch (e) {
-          if (e instanceof Error) {
-            setToastError({
-              title: "Transaction Failed",
-              message: e.message,
-            });
-          }
+          return;
         }
-      });
+        // store  UserSeller to ipfs and db
+        const walletAddress = selectedWallet?.address!;
+        const signingClient = await getKeplrSigningCosmWasmClient(networkId);
+        const network = mustGetCosmosNetwork(networkId);
+        const sellerClient = new TeritoriSellerClient(
+          signingClient,
+          walletAddress,
+          network.freelanceSellerAddress!
+        );
+
+        const updatedProfileRes = await sellerClient.updateSellerProfile({
+          seller: walletAddress,
+          ipfsHash: uploadedJson.url,
+        });
+
+        if (updatedProfileRes) {
+          navigation.navigate("FreelanceServicesHomeSeller");
+        }
+      } catch (e) {
+        if (e instanceof Error) {
+          setToastError({
+            title: "Transaction Failed",
+            message: e.message,
+          });
+        }
+      }
       return;
     }
 

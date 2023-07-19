@@ -1,7 +1,6 @@
 import { omit } from "lodash";
 
 import { mustGetFeedClient } from "./backend";
-import { LocalFileData, RemoteFileData } from "./types/files";
 import { pinataPinFileToIPFS } from "../candymachine/pinata-upload";
 import { pinataPinJSONToIPFS } from "../candymachine/pinata-upload";
 
@@ -109,6 +108,9 @@ export const uploadJSONToIPFS = async ({
       url: uploadedFile.IpfsHash,
     };
   }
+  if (!uploadedFile) {
+    console.error("upload file err : Fail to pin to IPFS");
+  } else return uploadedFile;
 };
 
 
