@@ -17,7 +17,6 @@ import { Separator } from "../../../components/Separator";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
 import { ReviewCard } from "../../../components/freelanceServices/Cards/ReviewCard";
-// import { DisplayMoreServices } from "../../../components/freelanceServices/LogoDesign/LogoDesignDetails/DisplayMoreServices";
 import { DisplayReviews } from "../../../components/freelanceServices/Gig/DisplayReviews";
 import { GigDetailHeader } from "../../../components/freelanceServices/Gig/GigDetailHeader";
 import { ServicesCard } from "../../../components/freelanceServices/Gig/ServicesCard";
@@ -28,7 +27,7 @@ import { StarRating } from "../../../components/freelanceServices/common/StarRat
 import { PortfolioImage } from "../../../components/inputs/PortfolioImage";
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import { mustGetFreelanceClient } from "../../../utils/backend";
-import { ipfsPinataUrl } from "../../../utils/ipfs";
+import { ipfsURLToHTTPURL } from "../../../utils/ipfs";
 import { ScreenFC, useAppNavigation } from "../../../utils/navigation";
 import {
   neutral00,
@@ -117,7 +116,7 @@ export const GigDetailScreen: ScreenFC<"FreelanceServicesGigDetail"> = ({
               >
                 <Image
                   // @ts-ignore
-                  source={ipfsPinataUrl(gigData.sellerUser.profilePic)}
+                  source={ipfsURLToHTTPURL(gigData.sellerUser.profilePic)}
                   style={{ width: 32, height: 32, marginRight: 12 }}
                 />
                 <BrandText style={[fontMedium14, { marginRight: 12 }]}>
@@ -301,7 +300,7 @@ export const GigDetailScreen: ScreenFC<"FreelanceServicesGigDetail"> = ({
                   <View style={{ flexDirection: "row" }}>
                     <Image
                       // @ts-ignore
-                      source={ipfsPinataUrl(gigData.sellerUser.profilePic)}
+                      source={ipfsURLToHTTPURL(gigData.sellerUser.profilePic)}
                       style={{ width: 104, height: 104 }}
                     />
                     <View
