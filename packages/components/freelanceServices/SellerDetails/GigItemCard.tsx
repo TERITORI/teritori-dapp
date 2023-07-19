@@ -11,7 +11,7 @@ import {
 
 import dotsCircle from "../../../../assets/icons/dots-circle.svg";
 import { GigInfo } from "../../../screens/FreelanceServices/types/fields";
-import { ipfsPinataUrl } from "../../../utils/ipfs";
+import { ipfsURLToHTTPURL } from "../../../utils/ipfs";
 import { useAppNavigation } from "../../../utils/navigation";
 import { neutral33, neutralA3 } from "../../../utils/style/colors";
 import {
@@ -47,7 +47,7 @@ export const GigItemCard: React.FC<{
       >
         {data.images.length > 0 && (
           <Image
-            source={{ uri: ipfsPinataUrl(data.images[0]) }}
+            source={{ uri: ipfsURLToHTTPURL(data.images[0]) }}
             style={{ width: 120, height: 120 }}
           />
         )}

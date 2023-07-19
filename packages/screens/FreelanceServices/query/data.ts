@@ -2,7 +2,7 @@ import axios from "axios";
 
 import serviceBackground from "../../../../assets/banners/freelance-service/service-card-background.png";
 import { allCountries } from "../../../utils/allCountries";
-import { ipfsPinataUrl } from "../../../utils/ipfs";
+import { ipfsURLToHTTPURL } from "../../../utils/ipfs";
 import {
   CheckableType,
   ContentInfo,
@@ -79,7 +79,7 @@ import {
 // }
 
 export const getSellerUser = async (ipfsHash: string): Promise<SellerUser> => {
-  const profile_json_res = await axios.get(ipfsPinataUrl(ipfsHash));
+  const profile_json_res = await axios.get(ipfsURLToHTTPURL(ipfsHash));
   const sellerProfile = profile_json_res.data as SellerInfo;
   return {
     id: ipfsHash,

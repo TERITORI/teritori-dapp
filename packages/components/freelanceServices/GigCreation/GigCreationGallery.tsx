@@ -5,8 +5,12 @@ import PdfIcon from "../../../../assets/icons/pdf.svg";
 import PicIcon from "../../../../assets/icons/pic.svg";
 import VideoIcon from "../../../../assets/icons/video.svg";
 import WarningIcon from "../../../../assets/icons/warning.svg";
+import { useFeedbacks } from "../../../context/FeedbacksProvider";
+import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
+import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { getUserId } from "../../../networks";
 import { GigInfo } from "../../../screens/FreelanceServices/types/fields";
-import { ipfsPinataUrl, uploadFileToIPFS } from "../../../utils/ipfs";
+import { ipfsURLToHTTPURL, uploadFileToIPFS } from "../../../utils/ipfs";
 import {
   neutralA3,
   neutral33,
@@ -21,6 +25,7 @@ import {
   fontSemibold14,
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { LocalFileData } from "../../../utils/types/feed";
 import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
 import { CheckBox } from "../../checkbox/CheckBox";
@@ -34,20 +39,47 @@ export const GigCreationGallery: React.FC<{
   gigInfo: GigInfo;
   setGig: React.Dispatch<React.SetStateAction<GigInfo>>;
 }> = ({ gigInfo, setGig }) => {
-  const uploadImageFile = async (file: File) => {
+  const selectedNetworkId = useSelectedNetworkId();
+  const selectedWallet = useSelectedWallet();
+  const userId = getUserId(selectedNetworkId, selectedWallet?.address);
+  const { setToastError } = useFeedbacks();
+
+  const uploadImageFile = async (file: LocalFileData) => {
     if (file) {
-      const ipfsHash = await uploadFileToIPFS(file);
+      const uploadedFile = await uploadFileToIPFS(
+        file,
+        selectedNetworkId,
+        userId
+      );
+      if (!uploadedFile) {
+        setToastError({
+          title: "File upload failed",
+          message: "Fail to pin to IPFS, please try to Publish again",
+        });
+        return;
+      }
       const images = gigInfo.images;
-      images.push(ipfsHash);
+      images.push(uploadedFile?.url || "");
       setGig({ ...gigInfo, images });
     }
   };
 
-  const uploadPdfFile = async (file: File) => {
+  const uploadPdfFile = async (file: LocalFileData) => {
     if (file) {
-      const ipfsHash = await uploadFileToIPFS(file);
+      const uploadedFile = await uploadFileToIPFS(
+        file,
+        selectedNetworkId,
+        userId
+      );
+      if (!uploadedFile) {
+        setToastError({
+          title: "File upload failed",
+          message: "Fail to pin to IPFS, please try to Publish again",
+        });
+        return;
+      }
       const documents = gigInfo.documents;
-      documents.push(ipfsHash);
+      documents.push(uploadedFile?.url || "");
       setGig({ ...gigInfo, documents });
     }
   };
@@ -70,7 +102,9 @@ export const GigCreationGallery: React.FC<{
         <DragDropFile
           setFile={uploadImageFile}
           url={
-            gigInfo.images.length >= 1 ? ipfsPinataUrl(gigInfo.images[0]) : ""
+            gigInfo.images.length >= 1
+              ? ipfsURLToHTTPURL(gigInfo.images[0])
+              : ""
           }
         >
           <SVG source={PicIcon} width={32} height={32} />
@@ -79,7 +113,9 @@ export const GigCreationGallery: React.FC<{
         <DragDropFile
           setFile={uploadImageFile}
           url={
-            gigInfo.images.length >= 2 ? ipfsPinataUrl(gigInfo.images[1]) : ""
+            gigInfo.images.length >= 2
+              ? ipfsURLToHTTPURL(gigInfo.images[1])
+              : ""
           }
         >
           <SVG source={PicIcon} width={32} height={32} />
@@ -88,7 +124,9 @@ export const GigCreationGallery: React.FC<{
         <DragDropFile
           setFile={uploadImageFile}
           url={
-            gigInfo.images.length >= 3 ? ipfsPinataUrl(gigInfo.images[2]) : ""
+            gigInfo.images.length >= 3
+              ? ipfsURLToHTTPURL(gigInfo.images[2])
+              : ""
           }
         >
           <SVG source={PicIcon} width={32} height={32} />
@@ -108,7 +146,7 @@ export const GigCreationGallery: React.FC<{
         accept={"video/*"}
         url={
           gigInfo.documents.length >= 1
-            ? ipfsPinataUrl(gigInfo.documents[0])
+            ? ipfsURLToHTTPURL(gigInfo.documents[0])
             : ""
         }
         fileType={GigUploadFileType.PDF}
@@ -126,7 +164,7 @@ export const GigCreationGallery: React.FC<{
           accept="application/pdf"
           url={
             gigInfo.documents.length >= 1
-              ? ipfsPinataUrl(gigInfo.documents[0])
+              ? ipfsURLToHTTPURL(gigInfo.documents[0])
               : ""
           }
           fileType={GigUploadFileType.PDF}
@@ -139,7 +177,7 @@ export const GigCreationGallery: React.FC<{
           accept="application/pdf"
           url={
             gigInfo.documents.length >= 2
-              ? ipfsPinataUrl(gigInfo.documents[1])
+              ? ipfsURLToHTTPURL(gigInfo.documents[1])
               : ""
           }
           fileType={GigUploadFileType.PDF}

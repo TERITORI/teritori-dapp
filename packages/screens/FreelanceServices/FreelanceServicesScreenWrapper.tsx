@@ -29,10 +29,7 @@ export const FreelanceServicesScreenWrapper: React.FC<{
       noMargin
       headerChildren={
         <>
-
-
           <BrandText>Freelance Service</BrandText>
-
 
           {showBuyerSeller && (
             <View

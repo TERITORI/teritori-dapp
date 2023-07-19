@@ -110,16 +110,16 @@ const navConfig: {
     FreelanceServicesHomeSeller: "freelance-services/seller",
     FreelanceServicesGigDetail: "freelance-services/gig/:gigId",
 
-    // FreelanceServicesMyAccountProfile: "freelance-services/profile_seller",
-    // FreelanceServicesManageGigList: "freelance-services/manage_gigs",
-    // FreelanceServicesManageGigCreation: "freelance-services/manage_gigs/new",
-    // FreelanceServicesManageGigEdit: "freelance-services/manage_gigs/edit/:gigId",
-    // FreelanceServicesManageOrders: "freelance-services/manage_orders"
+    // FreelanceServicesMyAccountProfile: "freelance-services/profile-seller",
+    // FreelanceServicesManageGigList: "freelance-services/manage-gigs",
+    // FreelanceServicesManageGigCreation: "freelance-services/manage-gigs/new",
+    // FreelanceServicesManageGigEdit: "freelance-services/manage-gigs/edit/:gigId",
+    // FreelanceServicesManageOrders: "freelance-services/manage-orders"
 
     // FreelanceServicesHome: "freelance-services/buyer",
 
-    FreelanceServicesProfileSeller: "freelance-services/profile_seller",
-    FreelanceServicesGigCreation: "freelance-services/gig_creation/:gigId?",
+    FreelanceServicesProfileSeller: "freelance-services/profile-seller",
+    FreelanceServicesGigCreation: "freelance-services/gig-creation/:gigId?",
     FreelanceServicesSellerDetails:
       "freelance-services/seller-details/:address",
     FreelanceServicesOrder:

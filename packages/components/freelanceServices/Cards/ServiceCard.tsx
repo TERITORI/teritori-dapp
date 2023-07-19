@@ -10,7 +10,7 @@ import {
 import dotsCircle from "../../../../assets/icons/dots-circle.svg";
 import star from "../../../../assets/icons/yellow-star.svg";
 import { GigData } from "../../../screens/FreelanceServices/types/fields";
-import { ipfsPinataUrl } from "../../../utils/ipfs";
+import { ipfsURLToHTTPURL } from "../../../utils/ipfs";
 import { neutral77, yellowDefault } from "../../../utils/style/colors";
 import {
   fontMedium10,
@@ -57,7 +57,7 @@ export const ServiceCard: React.FC<{
       >
         <View style={{ flexDirection: "row" }}>
           <Image
-            source={{ uri: ipfsPinataUrl(gigData.sellerUser.profilePic) }}
+            source={{ uri: ipfsURLToHTTPURL(gigData.sellerUser.profilePic) }}
             style={{ width: 32, height: 32, marginRight: 4 }}
           />
           <View style={{ flexDirection: "column" }}>

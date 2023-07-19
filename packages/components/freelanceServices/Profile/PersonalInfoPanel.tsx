@@ -1,4 +1,4 @@
-import React, { createRef } from "react";
+import React from "react";
 import {
   StyleSheet,
   TextInput,
@@ -8,8 +8,13 @@ import {
 } from "react-native";
 
 import emptySVG from "../../../../assets/icons/empty-list.svg";
+import { useFeedbacks } from "../../../context/FeedbacksProvider";
+import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
+import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { getUserId } from "../../../networks";
 import { SellerInfo } from "../../../screens/FreelanceServices/types/fields";
-import { ipfsPinataUrl, uploadFileToIPFS } from "../../../utils/ipfs";
+import { ipfsURLToHTTPURL, uploadFileToIPFS } from "../../../utils/ipfs";
+import { IMAGE_MIME_TYPES } from "../../../utils/mime";
 import {
   additionalRed,
   neutral33,
@@ -22,40 +27,53 @@ import {
   fontSemibold20,
   fontSemibold28,
 } from "../../../utils/style/fonts";
+import { LocalFileData } from "../../../utils/types/feed";
 import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
+import { FileUploader } from "../../fileUploader";
 
 export const PersonalInfoPanel: React.FC<{
   seller: SellerInfo;
   setSeller: React.Dispatch<React.SetStateAction<SellerInfo>>;
 }> = ({ seller, setSeller }) => {
-  const userPictureRef = createRef<HTMLInputElement>();
-  const profilePictureRef = createRef<HTMLInputElement>();
+  const selectedNetworkId = useSelectedNetworkId();
+  const selectedWallet = useSelectedWallet();
+  const userId = getUserId(selectedNetworkId, selectedWallet?.address);
+  const { setToastError } = useFeedbacks();
 
-  const uploadFile = async (file: File) => {
-    const ipfsHash = await uploadFileToIPFS(file);
-    return ipfsHash;
-  };
-
-  const onUserPictureChange: React.ChangeEventHandler<HTMLInputElement> = (
-    e
-  ) => {
-    const file = e.target?.files?.[0];
+  const onUserPictureChange = async (file: LocalFileData) => {
     if (file) {
-      uploadFile(file).then((ipfsHash) => {
-        setSeller({ ...seller, avatar: ipfsHash });
-      });
+      const uploadedFile = await uploadFileToIPFS(
+        file,
+        selectedNetworkId,
+        userId
+      );
+      if (!uploadedFile) {
+        setToastError({
+          title: "File upload failed",
+          message: "Fail to pin to IPFS, please try to Publish again",
+        });
+        return;
+      }
+      setSeller({ ...seller, avatar: uploadedFile?.url || "" });
     }
   };
 
-  const onProfilePictureChange: React.ChangeEventHandler<HTMLInputElement> = (
-    e
-  ) => {
-    const file = e.target?.files?.[0];
+  const onProfilePictureChange = async (file: LocalFileData) => {
     if (file) {
-      uploadFile(file).then((ipfsHash) => {
-        setSeller({ ...seller, profilePicture: ipfsHash });
-      });
+      const uploadedFile = await uploadFileToIPFS(
+        file,
+        selectedNetworkId,
+        userId
+      );
+      if (!uploadedFile) {
+        setToastError({
+          title: "File upload failed",
+          message: "Fail to pin to IPFS, please try to Publish again",
+        });
+        return;
+      }
+      setSeller({ ...seller, profilePicture: uploadedFile?.url || "" });
     }
   };
 
@@ -116,28 +134,23 @@ export const PersonalInfoPanel: React.FC<{
             User Picture
           </BrandText>
           <View style={styles.picture}>
-            <TouchableOpacity
-              onPress={() => {
-                userPictureRef.current?.click();
-              }}
+            <FileUploader
+              onUpload={(files) => onUserPictureChange(files[0])}
+              mimeTypes={IMAGE_MIME_TYPES}
             >
-              <input
-                type="file"
-                style={{ display: "none" }}
-                accept="image/png,image/jpg,image/gif"
-                onChange={onUserPictureChange}
-                ref={userPictureRef}
-              />
-              {seller.avatar === "" && (
-                <SVG source={emptySVG} width="100%" height="100%" />
+              {({ onPress }) => (
+                <TouchableOpacity onPress={onPress}>
+                  {!seller.avatar ? (
+                    <SVG source={emptySVG} width="100%" height="100%" />
+                  ) : (
+                    <Image
+                      source={{ uri: ipfsURLToHTTPURL(seller.avatar) }}
+                      style={styles.picture}
+                    />
+                  )}
+                </TouchableOpacity>
               )}
-              {seller.avatar !== "" && (
-                <Image
-                  source={{ uri: ipfsPinataUrl(seller.avatar) }}
-                  style={styles.picture}
-                />
-              )}
-            </TouchableOpacity>
+            </FileUploader>
           </View>
         </View>
         <View style={{ flexDirection: "row", marginTop: 20 }}>
@@ -145,28 +158,23 @@ export const PersonalInfoPanel: React.FC<{
             Profile Picture
           </BrandText>
           <View style={styles.picture}>
-            <TouchableOpacity
-              onPress={() => {
-                profilePictureRef.current?.click();
-              }}
+            <FileUploader
+              onUpload={(files) => onProfilePictureChange(files[0])}
+              mimeTypes={IMAGE_MIME_TYPES}
             >
-              <input
-                type="file"
-                style={{ display: "none" }}
-                accept="image/png,image/jpg,image/gif"
-                onChange={onProfilePictureChange}
-                ref={profilePictureRef}
-              />
-              {seller.profilePicture === "" && (
-                <SVG source={emptySVG} width="100%" height="100%" />
+              {({ onPress }) => (
+                <TouchableOpacity onPress={onPress}>
+                  {!seller.profilePicture ? (
+                    <SVG source={emptySVG} width="100%" height="100%" />
+                  ) : (
+                    <Image
+                      source={{ uri: ipfsURLToHTTPURL(seller.profilePicture) }}
+                      style={styles.picture}
+                    />
+                  )}
+                </TouchableOpacity>
               )}
-              {seller.profilePicture !== "" && (
-                <Image
-                  source={{ uri: ipfsPinataUrl(seller.profilePicture) }}
-                  style={styles.picture}
-                />
-              )}
-            </TouchableOpacity>
+            </FileUploader>
           </View>
         </View>
         <View style={{ flexDirection: "row", marginTop: 20 }}>

@@ -19,7 +19,7 @@ import {
   mustGetCosmosNetwork,
   getKeplrSigningCosmWasmClient,
 } from "../../networks";
-import { ipfsPinataUrl, uploadJSONToIPFS } from "../../utils/ipfs";
+import { ipfsURLToHTTPURL, uploadJSONToIPFS } from "../../utils/ipfs";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { ProfileStep } from "../../utils/types/freelance";
 
@@ -50,7 +50,7 @@ export const FreelanceServicesProfileSeller: ScreenFC<
 
         if (!profileHash) return;
 
-        const profile_json_res = await axios.get(ipfsPinataUrl(profileHash));
+        const profile_json_res = await axios.get(ipfsURLToHTTPURL(profileHash));
         if (profile_json_res.status !== 200) return;
         const profile_json = profile_json_res.data;
         setSellerInfo({

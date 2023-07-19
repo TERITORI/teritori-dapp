@@ -10,9 +10,9 @@ interface UploadPostFilesToPinataParams {
 }
 
 export const uploadFilesToPinata = async ({
-  files,
-  pinataJWTKey,
-}: UploadPostFilesToPinataParams): Promise<RemoteFileData[]> => {
+                                            files,
+                                            pinataJWTKey,
+                                          }: UploadPostFilesToPinataParams): Promise<RemoteFileData[]> => {
   const storedFile = async (file: LocalFileData): Promise<RemoteFileData> => {
     const fileData = await pinataPinFileToIPFS({
       file,

@@ -1,7 +1,14 @@
-import React, { useState, createRef } from "react";
+import React, { useState } from "react";
 import { TouchableOpacity, Image } from "react-native";
 
-import { uploadFileToIPFS, ipfsPinataUrl } from "../../utils/ipfs";
+import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { getUserId } from "../../networks";
+import { uploadFileToIPFS, ipfsURLToHTTPURL } from "../../utils/ipfs";
+import { IMAGE_MIME_TYPES } from "../../utils/mime";
+import { LocalFileData } from "../../utils/types/feed";
+import { FileUploader } from "../fileUploader";
 
 export const AvatarImage: React.FC<{
   source: any;
@@ -9,43 +16,48 @@ export const AvatarImage: React.FC<{
   onUpdate?: (url: string) => void;
 }> = ({ source, style, onUpdate }) => {
   const [sourceData, setSourceData] = useState(source);
-  const fileRef = createRef<HTMLInputElement>();
+  const selectedNetworkId = useSelectedNetworkId();
+  const selectedWallet = useSelectedWallet();
+  const userId = getUserId(selectedNetworkId, selectedWallet?.address);
+  const { setToastError } = useFeedbacks();
 
-  const uploadFile = async (file: File) => {
-    const ipfsHash = await uploadFileToIPFS(file);
-    if (ipfsHash) {
-      setSourceData(ipfsHash);
-      onUpdate!(ipfsHash);
-    }
-  };
-
-  const onFileInputChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
-    const file = e.target?.files?.[0];
+  const onFileInputChange = async (file: LocalFileData) => {
     if (file) {
-      uploadFile(file);
+      const uploadedFile = await uploadFileToIPFS(
+        file,
+        selectedNetworkId,
+        userId
+      );
+      if (!uploadedFile) {
+        setToastError({
+          title: "File upload failed",
+          message: "Fail to pin to IPFS, please try to Publish again",
+        });
+        return;
+      }
+      setSourceData(uploadedFile.url);
+      onUpdate!(uploadedFile.url);
     }
   };
 
   return (
     <>
-      {onUpdate && (
-        <TouchableOpacity
-          onPress={() => {
-            fileRef.current?.click();
-          }}
+      {onUpdate ? (
+        <FileUploader
+          onUpload={(files) => onFileInputChange(files[0])}
+          mimeTypes={IMAGE_MIME_TYPES}
         >
-          <input
-            type="file"
-            style={{ display: "none" }}
-            accept="image/png,image/jpg,image/gif"
-            onChange={onFileInputChange}
-            ref={fileRef}
-          />
-          <Image source={{ uri: ipfsPinataUrl(sourceData) }} style={[style]} />
-        </TouchableOpacity>
-      )}
-      {!onUpdate && (
-        <Image source={{ uri: ipfsPinataUrl(sourceData) }} style={[style]} />
+          {({ onPress }) => (
+            <TouchableOpacity onPress={onPress}>
+              <Image
+                source={{ uri: ipfsURLToHTTPURL(sourceData) }}
+                style={[style]}
+              />
+            </TouchableOpacity>
+          )}
+        </FileUploader>
+      ) : (
+        <Image source={{ uri: ipfsURLToHTTPURL(sourceData) }} style={[style]} />
       )}
     </>
   );

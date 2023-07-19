@@ -1,11 +1,18 @@
-import React, { createRef } from "react";
+import React from "react";
 import { TouchableOpacity, View, Image } from "react-native";
 
 import penSVG from "../../../assets/icons/manage.svg";
 import trashSVG from "../../../assets/icons/trash.svg";
 import { SVG } from "../../components/SVG";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
-import { uploadFileToIPFS, ipfsPinataUrl } from "../../utils/ipfs";
+import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { getUserId } from "../../networks";
+import { uploadFileToIPFS, ipfsURLToHTTPURL } from "../../utils/ipfs";
+import { IMAGE_MIME_TYPES } from "../../utils/mime";
+import { LocalFileData } from "../../utils/types/feed";
+import { FileUploader } from "../fileUploader";
 
 export const PortfolioImage: React.FC<{
   width: number;
@@ -15,18 +22,26 @@ export const PortfolioImage: React.FC<{
   onRemove?: () => void;
   style?: any;
 }> = ({ width, height, source, onUpdate, onRemove, style }) => {
-  const fileRef = createRef<HTMLInputElement>();
-  const onFileInputChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
-    const file = e.target?.files?.[0];
-    if (file) {
-      uploadFile(file);
-    }
-  };
+  const selectedNetworkId = useSelectedNetworkId();
+  const selectedWallet = useSelectedWallet();
+  const userId = getUserId(selectedNetworkId, selectedWallet?.address);
+  const { setToastError } = useFeedbacks();
 
-  const uploadFile = async (file: File) => {
-    const ipfsHash = await uploadFileToIPFS(file);
-    if (ipfsHash) {
-      onUpdate!(ipfsHash);
+  const onFileInputChange = async (file: LocalFileData) => {
+    if (file) {
+      const uploadedFile = await uploadFileToIPFS(
+        file,
+        selectedNetworkId,
+        userId
+      );
+      if (!uploadedFile) {
+        setToastError({
+          title: "File upload failed",
+          message: "Fail to pin to IPFS, please try to Publish again",
+        });
+        return;
+      }
+      onUpdate!(uploadedFile?.url);
     }
   };
 
@@ -41,20 +56,6 @@ export const PortfolioImage: React.FC<{
           zIndex: 1,
         }}
       >
-        {onUpdate && (
-          <TouchableOpacity
-            onPress={() => {
-              fileRef.current?.click();
-            }}
-          >
-            <SVG
-              source={penSVG}
-              width={24}
-              height={24}
-              style={{ marginTop: 2 }}
-            />
-          </TouchableOpacity>
-        )}
         {onRemove && (
           <TouchableOpacity onPress={onRemove}>
             <SVG
@@ -66,29 +67,32 @@ export const PortfolioImage: React.FC<{
           </TouchableOpacity>
         )}
       </View>
-      {onUpdate && (
-        <TouchableOpacity
-          onPress={() => {
-            fileRef.current?.click();
-          }}
+
+      {onUpdate ? (
+        <FileUploader
+          onUpload={(files) => onFileInputChange(files[0])}
+          mimeTypes={IMAGE_MIME_TYPES}
         >
-          <input
-            type="file"
-            style={{ display: "none" }}
-            accept="image/png,image/jpg,image/gif"
-            onChange={onFileInputChange}
-            ref={fileRef}
-          />
-          <Image
-            // @ts-ignore
-            source={ipfsPinataUrl(source)}
-            style={{ width, height }}
-          />
-        </TouchableOpacity>
-      )}
-      {!onUpdate && (
-        // @ts-ignore
-        <Image source={ipfsPinataUrl(source)} style={{ width, height }} />
+          {({ onPress }) => (
+            <TouchableOpacity onPress={onPress}>
+              <SVG
+                source={penSVG}
+                width={24}
+                height={24}
+                style={{ marginTop: 2 }}
+              />
+              <Image
+                source={{ uri: ipfsURLToHTTPURL(source) }}
+                style={{ width, height }}
+              />
+            </TouchableOpacity>
+          )}
+        </FileUploader>
+      ) : (
+        <Image
+          source={{ uri: ipfsURLToHTTPURL(source) }}
+          style={{ width, height }}
+        />
       )}
     </TertiaryBox>
   );
