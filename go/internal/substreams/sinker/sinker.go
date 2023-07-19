@@ -2,212 +2,133 @@ package sinker
 
 import (
 	"context"
-	"encoding/hex"
 	"fmt"
 	"time"
 
+	ethereumHandlers "github.com/TERITORI/teritori-dapp/go/internal/substreams/ethereum/handlers"
+
 	"github.com/pkg/errors"
+	"github.com/streamingfast/bstream"
 
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
-	ethereumHandlers "github.com/TERITORI/teritori-dapp/go/internal/substreams/ethereum/handlers"
-	pb "github.com/TERITORI/teritori-dapp/go/internal/substreams/ethereum/pb"
+	"github.com/TERITORI/teritori-dapp/go/internal/substreams/ethereum/pb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
-	"github.com/streamingfast/bstream"
 	"github.com/streamingfast/logging"
 	"github.com/streamingfast/shutter"
 	sink "github.com/streamingfast/substreams-sink"
-	"github.com/streamingfast/substreams/client"
-	"github.com/streamingfast/substreams/manifest"
-	pbsubstreams "github.com/streamingfast/substreams/pb/sf/substreams/v1"
-	"gorm.io/gorm"
-
+	pbsubstreamsrpc "github.com/streamingfast/substreams/pb/sf/substreams/rpc/v2"
 	"go.uber.org/zap"
 	"google.golang.org/protobuf/proto"
+	"gorm.io/gorm"
 )
 
-const BLOCK_PROGRESS = 5000
-
-type Config struct {
-	Network          *networks.EthereumNetwork
-	NetworkStore     *networks.NetworkStore
-	IndexerDB        *gorm.DB
-	BlockRange       string
-	Pkg              *pbsubstreams.Package
-	OutputModule     *pbsubstreams.Module
-	OutputModuleName string
-	OutputModuleHash manifest.ModuleHash
-	ClientConfig     *client.SubstreamsClientConfig
-
-	BlockProgress     uint64 // Define how many block we need to accumulate before commit the DB transactions
-	LiveBlockProgress uint64 // In live more, we update DB every block
-	SubstreamsMode    sink.SubstreamsMode
-
-	UndoBufferSize     int
-	LiveBlockTimeDelta time.Duration
-}
+const (
+	HISTORICAL_BLOCK_FLUSH_EACH = 1000
+	LIVE_BLOCK_FLUSH_EACH       = 1
+)
 
 type PostgresSinker struct {
 	*shutter.Shutter
-
-	Pkg              *pbsubstreams.Package
-	OutputModule     *pbsubstreams.Module
-	OutputModuleName string
-	OutputModuleHash manifest.ModuleHash
-	ClientConfig     *client.SubstreamsClientConfig
-
-	BlockProgress     uint64
-	LiveBlockProgress uint64
-	SubstreamsMode    sink.SubstreamsMode
-
-	UndoBufferSize  int
-	LivenessTracker *sink.LivenessChecker
-
-	sink       *sink.Sinker
-	lastCursor *sink.Cursor
-
-	blockRange *bstream.Range
+	*sink.Sinker
 
 	logger *zap.Logger
 	tracer logging.Tracer
 
-	network       *networks.EthereumNetwork
-	networkStore  *networks.NetworkStore
-	indexerDB     *gorm.DB
+	// Teritori config
+	network      *networks.EthereumNetwork
+	networkStore *networks.NetworkStore
+	indexerDB    *gorm.DB
+
+	// Set when create transaction
 	dbTransaction *gorm.DB
+	lastCursor    *sink.Cursor
 }
 
-func New(config *Config, logger *zap.Logger, tracer logging.Tracer) (*PostgresSinker, error) {
-	s := &PostgresSinker{
+type Config struct {
+	Network      *networks.EthereumNetwork
+	NetworkStore *networks.NetworkStore
+	IndexerDB    *gorm.DB
+}
+
+func New(sink *sink.Sinker, config *Config, logger *zap.Logger, tracer logging.Tracer) (*PostgresSinker, error) {
+	return &PostgresSinker{
 		Shutter: shutter.New(),
-		logger:  logger,
-		tracer:  tracer,
+		Sinker:  sink,
 
-		Pkg:              config.Pkg,
-		OutputModule:     config.OutputModule,
-		OutputModuleName: config.OutputModuleName,
-		OutputModuleHash: config.OutputModuleHash,
-		ClientConfig:     config.ClientConfig,
-
-		BlockProgress:     BLOCK_PROGRESS,
-		LiveBlockProgress: 1,
-		SubstreamsMode:    config.SubstreamsMode,
-
-		UndoBufferSize:  config.UndoBufferSize,
-		LivenessTracker: sink.NewLivenessChecker(config.LiveBlockTimeDelta),
+		logger: logger,
+		tracer: tracer,
 
 		network:      config.Network,
 		networkStore: config.NetworkStore,
 		indexerDB:    config.IndexerDB,
-	}
-
-	s.OnTerminating(func(err error) {
-		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-		defer cancel()
-		s.Stop(ctx, err)
-	})
-
-	var err error
-	s.blockRange, err = resolveBlockRange(config.BlockRange, config.OutputModule)
-	if err != nil {
-		return nil, fmt.Errorf("resolve block range: %w", err)
-	}
-
-	return s, nil
+	}, nil
 }
 
-func (s *PostgresSinker) Stop(ctx context.Context, err error) {
-	if s.lastCursor == nil || err != nil {
-		return
-	}
-
-	// TODO: Replace WriteCursor => UpdateCursor. => Check the behavior
-	// _ = s.WriteCursor(s.lastCursor)
-}
-
-func (s *PostgresSinker) Start(ctx context.Context) error {
+func (s *PostgresSinker) Run(ctx context.Context) error {
 	cursor, err := s.GetOrCreateCursor()
 
 	if err != nil {
 		return fmt.Errorf("unable to retrieve cursor: %w", err)
 	}
 
-	var sinkOptions []sink.Option
-	if s.UndoBufferSize > 0 {
-		sinkOptions = append(sinkOptions, sink.WithBlockDataBuffer(s.UndoBufferSize))
-	}
-
-	s.sink, err = sink.New(
-		s.SubstreamsMode,
-		s.Pkg.Modules,
-		s.OutputModule,
-		s.OutputModuleHash,
-		s.handleBlockScopeData,
-		s.ClientConfig,
-		[]pbsubstreams.ForkStep{
-			pbsubstreams.ForkStep_STEP_NEW,
-			pbsubstreams.ForkStep_STEP_UNDO,
-			pbsubstreams.ForkStep_STEP_IRREVERSIBLE,
-		},
-		s.logger,
-		s.tracer,
-		sinkOptions...,
-	)
-	if err != nil {
-		return fmt.Errorf("unable to create sink: %w", err)
-	}
-
-	// If sink is created successfully then start the DB transaction
-	s.StartDbTransaction()
-
-	s.sink.OnTerminating(s.Shutdown)
+	s.Sinker.OnTerminating(s.Shutdown)
 	s.OnTerminating(func(err error) {
-		s.logger.Info("terminating sink")
-		s.sink.Shutdown(err)
+		s.logger.Info("postgres sinker terminating", zap.String("last_block_written", s.lastCursor.Block().ID()))
+		s.Sinker.Shutdown(err)
 	})
 
-	if err := s.sink.Start(ctx, s.blockRange, cursor); err != nil {
-		return fmt.Errorf("sink failed: %w", err)
+	s.OnTerminated(func(err error) { s.Shutdown(err) })
+
+	logEach := 15 * time.Second
+	if s.logger.Core().Enabled(zap.DebugLevel) {
+		logEach = 5 * time.Second
 	}
+
+	s.logger.Info("starting postgres sink",
+		zap.Duration("stats_refresh_each", logEach),
+		zap.Stringer("restarting_at", cursor.Block()),
+	)
+	s.Sinker.Run(ctx, cursor, s)
 
 	return nil
 }
 
-func (s *PostgresSinker) handleBlockScopeData(ctx context.Context, cursor *sink.Cursor, data *pbsubstreams.BlockScopedData) error {
-	for _, output := range data.Outputs {
-		if output.Name != s.OutputModuleName {
-			continue
-		}
+func (s *PostgresSinker) HandleBlockScopedData(ctx context.Context, data *pbsubstreamsrpc.BlockScopedData, isLive *bool, cursor *sink.Cursor) error {
+	output := data.Output
 
-		var ethereumBlock pb.EthereumBlock
+	if output.Name != s.OutputModuleName() {
+		return fmt.Errorf("received data from wrong output module, expected to received from %q but got module's output for %q", s.OutputModuleName(), output.Name)
+	}
 
-		err := proto.Unmarshal(output.GetMapOutput().GetValue(), &ethereumBlock)
-		if err != nil {
-			return errors.Wrap(err, "failed to unmarshal transactions info")
-		}
+	var ethereumBlock pb.EthereumBlock
 
-		handler, err := ethereumHandlers.NewHandler(&ethereumHandlers.HandlerConfig{
-			Logger:        s.logger,
-			Network:       s.network,
-			NetworkStore:  s.networkStore,
-			IndexerDB:     s.indexerDB,
-			DbTransaction: s.dbTransaction,
-		})
+	err := proto.Unmarshal(output.GetMapOutput().GetValue(), &ethereumBlock)
+	if err != nil {
+		return errors.Wrap(err, "failed to unmarshal transactions info")
+	}
 
-		if err != nil {
-			return errors.Wrap(err, "failed to init new handler")
-		}
+	handler, err := ethereumHandlers.NewHandler(&ethereumHandlers.HandlerConfig{
+		Logger:        s.logger,
+		Network:       s.network,
+		NetworkStore:  s.networkStore,
+		IndexerDB:     s.indexerDB,
+		DbTransaction: s.dbTransaction,
+	})
 
-		for _, tx := range ethereumBlock.Txs {
-			if err := handler.HandleETHTx(tx); err != nil {
-				panic(err)
-			}
+	if err != nil {
+		return errors.Wrap(err, "failed to init new handler")
+	}
+
+	for _, tx := range ethereumBlock.Txs {
+		if err := handler.HandleETHTx(tx); err != nil {
+			panic(err)
 		}
 	}
 
 	s.lastCursor = cursor
 
-	if cursor.Block.Num()%s.batchBlockModulo(data) == 0 {
-		if err := s.ApplyChanges(hex.EncodeToString(s.OutputModuleHash), cursor); err != nil {
+	if cursor.Block().Num()%s.batchBlockModulo(data, isLive) == 0 {
+		if err := s.ApplyChanges(s.OutputModuleHash(), cursor); err != nil {
 			return fmt.Errorf("failed to flush: %w", err)
 		}
 	}
@@ -215,16 +136,25 @@ func (s *PostgresSinker) handleBlockScopeData(ctx context.Context, cursor *sink.
 	return nil
 }
 
-func (s *PostgresSinker) batchBlockModulo(blockData *pbsubstreams.BlockScopedData) uint64 {
-	if s.LivenessTracker.IsLive(blockData) {
-		return s.LiveBlockProgress
+func (s *PostgresSinker) HandleBlockUndoSignal(ctx context.Context, data *pbsubstreamsrpc.BlockUndoSignal, cursor *sink.Cursor) error {
+	return fmt.Errorf("received undo signal but there is no handling of undo, this is because you used `--undo-buffer-size=0` which is invalid right now")
+}
+
+func (s *PostgresSinker) batchBlockModulo(blockData *pbsubstreamsrpc.BlockScopedData, isLive *bool) uint64 {
+	if isLive == nil {
+		panic(fmt.Errorf("liveness checker has been disabled on the Sinker instance, this is invalid in the context of 'substreams-sink-postgres'"))
 	}
-	return s.BlockProgress
+
+	if *isLive {
+		return LIVE_BLOCK_FLUSH_EACH
+	}
+
+	return HISTORICAL_BLOCK_FLUSH_EACH
 }
 
 func (s *PostgresSinker) GetOrCreateCursor() (*sink.Cursor, error) {
 	c := indexerdb.Cursors{
-		ID: hex.EncodeToString(s.OutputModuleHash),
+		ID: s.OutputModuleHash(),
 	}
 
 	if err := s.indexerDB.First(&c).Error; err != nil {
@@ -233,12 +163,16 @@ func (s *PostgresSinker) GetOrCreateCursor() (*sink.Cursor, error) {
 		}
 
 		// If cursor does not exist then create a new cursor
-		cursorStartBlock := s.OutputModule.InitialBlock
-		if s.blockRange.StartBlock() > 0 {
-			cursorStartBlock = s.blockRange.StartBlock() - 1
+		cursorStartBlock := s.OutputModule().InitialBlock
+		if s.BlockRange().StartBlock() > 0 {
+			cursorStartBlock = s.BlockRange().StartBlock() - 1
 		}
 
-		sinkCursor := sink.NewCursor("", bstream.NewBlockRef("", cursorStartBlock))
+		cursor := bstream.NewBlockRef("", cursorStartBlock).String()
+		sinkCursor, err := sink.NewCursor(cursor)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to create sink cursor")
+		}
 
 		if err := s.WriteCursor(sinkCursor); err != nil {
 			return nil, errors.Wrap(err, "failed to init cursor")
@@ -246,15 +180,16 @@ func (s *PostgresSinker) GetOrCreateCursor() (*sink.Cursor, error) {
 		return sinkCursor, nil
 	}
 
-	return sink.NewCursor(c.Cursor, bstream.NewBlockRef(c.BlockId, c.BlockNum)), nil
+	cursor := bstream.NewBlockRef(c.BlockId, c.BlockNum).String()
+	return sink.NewCursor(cursor)
 }
 
 func (s *PostgresSinker) WriteCursor(sinkCursor *sink.Cursor) error {
 	cursor := indexerdb.Cursors{
-		ID:       hex.EncodeToString(s.OutputModuleHash),
-		Cursor:   sinkCursor.Cursor,
-		BlockNum: sinkCursor.Block.Num(),
-		BlockId:  sinkCursor.Block.ID(),
+		ID:       s.OutputModuleHash(),
+		Cursor:   sinkCursor.String(),
+		BlockNum: sinkCursor.Block().Num(),
+		BlockId:  sinkCursor.Block().ID(),
 		Network:  s.network.ID,
 	}
 
@@ -267,14 +202,14 @@ func (s *PostgresSinker) WriteCursor(sinkCursor *sink.Cursor) error {
 
 func (s *PostgresSinker) UpdateCursor(sinkCursor *sink.Cursor) error {
 	cursor := indexerdb.Cursors{
-		ID:      hex.EncodeToString(s.OutputModuleHash),
+		ID:      s.OutputModuleHash(),
 		Network: s.network.ID,
 	}
 
 	err := s.dbTransaction.Model(&cursor).Updates(indexerdb.Cursors{
-		Cursor:   sinkCursor.Cursor,
-		BlockNum: sinkCursor.Block.Num(),
-		BlockId:  sinkCursor.Block.ID(),
+		Cursor:   sinkCursor.Cursor.String(),
+		BlockNum: sinkCursor.Block().Num(),
+		BlockId:  sinkCursor.Block().ID(),
 	}).Error
 
 	if err != nil {

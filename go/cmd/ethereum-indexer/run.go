@@ -13,13 +13,10 @@ import (
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
-	"github.com/spf13/viper"
 	. "github.com/streamingfast/cli"
 	"github.com/streamingfast/derr"
 	"github.com/streamingfast/shutter"
 	sink "github.com/streamingfast/substreams-sink"
-	"github.com/streamingfast/substreams/client"
-	"github.com/streamingfast/substreams/manifest"
 	"go.uber.org/zap"
 )
 
@@ -70,7 +67,7 @@ func sinkRunE(cmd *cobra.Command, args []string) error {
 	network := netstore.MustGetEthereumNetwork(networkID)
 
 	// Load global env
-	apiToken := MustGetFlagString("substreams-api-token")
+	// apiToken := MustGetFlagString("substreams-api-token")
 
 	dbHost := MustGetFlagString("db-indexer-host")
 	dbPort := MustGetFlagString("db-indexer-port")
@@ -80,13 +77,12 @@ func sinkRunE(cmd *cobra.Command, args []string) error {
 
 	substreamsModeEnv := "production"
 
-	substreamsMode := sink.SubstreamsModeDevelopment
-	if substreamsModeEnv == "production" {
-		substreamsMode = sink.SubstreamsModeProduction
-	}
+	// substreamsMode := sink.SubstreamsModeDevelopment
+	// if substreamsModeEnv == "production" {
+	// 	substreamsMode = sink.SubstreamsModeProduction
+	// }
 
 	blockRange := fmt.Sprintf("%s:%s", network.IndexStartBlock, network.IndexStopBlock)
-
 	outputModuleName := "block_out"
 
 	zlog.Info("sync config",
@@ -133,64 +129,43 @@ func sinkRunE(cmd *cobra.Command, args []string) error {
 		cancelApp()
 	})
 
-	zlog.Info("reading substreams manifest", zap.String("manifest_path", network.SubstreamsManifest))
-	pkg, err := manifest.NewReader(network.SubstreamsManifest).Read()
-	if err != nil {
-		return fmt.Errorf("failed to read manifest: %w", err)
-	}
-
-	graph, err := manifest.NewModuleGraph(pkg.Modules.Modules)
-	if err != nil {
-		return fmt.Errorf("failed to create substreams model graph: %w", err)
-	}
-
-	zlog.Info("validating output module", zap.String("output_module", outputModuleName))
-	module, err := graph.Module(outputModuleName)
-	if err != nil {
-		return fmt.Errorf("get output module %q: %w", outputModuleName, err)
-	}
-	if module.GetKindMap() == nil {
-		return fmt.Errorf("output module %q is *not* of type 'Mapper'", outputModuleName)
-	}
-
-	hashes := manifest.NewModuleHashes()
-	outputModuleHash := hashes.HashModule(pkg.Modules, module, graph)
-
-	resolvedStartBlock, resolvedStopBlock, err := readBlockRange(module, blockRange)
-	if err != nil {
-		return fmt.Errorf("failed to resolve block range: %w", err)
-	}
-	zlog.Info("resolved block range",
-		zap.Int64("start_block", resolvedStartBlock),
-		zap.Uint64("stop_block", resolvedStopBlock),
-	)
-
-	liveBlockTimeDelta, err := time.ParseDuration(fmt.Sprintf("%ds", viper.GetInt("run-live-block-time-delta")))
-	if err != nil {
-		return fmt.Errorf("failed to parsed live-block-time-delta: %w", err)
-	}
-
 	config := &sinker.Config{
-		Network:            network,
-		NetworkStore:       &netstore,
-		IndexerDB:          indexerDB,
-		BlockRange:         blockRange,
-		Pkg:                pkg,
-		OutputModule:       module,
-		OutputModuleName:   outputModuleName,
-		OutputModuleHash:   outputModuleHash,
-		UndoBufferSize:     viper.GetInt("run-undo-buffer-size"),
-		LiveBlockTimeDelta: liveBlockTimeDelta,
-		SubstreamsMode:     substreamsMode,
-		ClientConfig: client.NewSubstreamsClientConfig(
-			network.FirehoseEndpoint,
-			apiToken,
-			false,
-			false,
-		),
+		Network:      network,
+		NetworkStore: &netstore,
+		IndexerDB:    indexerDB,
+		// BlockRange:         blockRange,
+		// Pkg:                pkg,
+		// OutputModule:       module,
+		// OutputModuleName:   outputModuleName,
+		// OutputModuleHash:   outputModuleHash,
+		// UndoBufferSize:     viper.GetInt("run-undo-buffer-size"),
+		// LiveBlockTimeDelta: liveBlockTimeDelta,
+		// SubstreamsMode:     substreamsMode,
+		// ClientConfig: client.NewSubstreamsClientConfig(
+		// 	network.FirehoseEndpoint,
+		// 	apiToken,
+		// 	false,
+		// 	false,
+		// ),
+	}
+
+	// New code ===========================
+	sink, err := sink.NewFromViper(
+		cmd,
+		"teritori.ethereum_block.v1.EthereumBlock",
+		network.FirehoseEndpoint,
+		network.SubstreamsManifest,
+		outputModuleName,
+		blockRange,
+		zlog,
+		tracer,
+	)
+	if err != nil {
+		return fmt.Errorf("unable to setup sinker: %w", err)
 	}
 
 	postgresSinker, err := sinker.New(
+		sink,
 		config,
 		zlog,
 		tracer,
@@ -206,7 +181,7 @@ func sinkRunE(cmd *cobra.Command, args []string) error {
 	})
 
 	go func() {
-		if err := postgresSinker.Start(ctx); err != nil {
+		if err := postgresSinker.Run(ctx); err != nil {
 			zlog.Error("sinker failed", zap.Error(err))
 			postgresSinker.Shutdown(err)
 		}
