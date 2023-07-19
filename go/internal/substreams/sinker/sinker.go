@@ -8,9 +8,7 @@ import (
 	ethereumHandlers "github.com/TERITORI/teritori-dapp/go/internal/substreams/ethereum/handlers"
 
 	"github.com/pkg/errors"
-	"github.com/streamingfast/bstream"
 
-	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/internal/substreams/ethereum/pb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
 	"github.com/streamingfast/logging"
@@ -19,7 +17,6 @@ import (
 	pbsubstreamsrpc "github.com/streamingfast/substreams/pb/sf/substreams/rpc/v2"
 	"go.uber.org/zap"
 	"google.golang.org/protobuf/proto"
-	"gorm.io/gorm"
 )
 
 const (
@@ -37,20 +34,19 @@ type PostgresSinker struct {
 	// Teritori config
 	network      *networks.EthereumNetwork
 	networkStore *networks.NetworkStore
-	indexerDB    *gorm.DB
+	loader       *Loader
 
 	// Set when create transaction
-	dbTransaction *gorm.DB
-	lastCursor    *sink.Cursor
+	lastCursor *sink.Cursor
 }
 
-type Config struct {
+type TeritoriConfig struct {
 	Network      *networks.EthereumNetwork
 	NetworkStore *networks.NetworkStore
-	IndexerDB    *gorm.DB
+	Loader       *Loader
 }
 
-func New(sink *sink.Sinker, config *Config, logger *zap.Logger, tracer logging.Tracer) (*PostgresSinker, error) {
+func New(sink *sink.Sinker, config *TeritoriConfig, logger *zap.Logger, tracer logging.Tracer) (*PostgresSinker, error) {
 	return &PostgresSinker{
 		Shutter: shutter.New(),
 		Sinker:  sink,
@@ -60,19 +56,19 @@ func New(sink *sink.Sinker, config *Config, logger *zap.Logger, tracer logging.T
 
 		network:      config.Network,
 		networkStore: config.NetworkStore,
-		indexerDB:    config.IndexerDB,
+		loader:       config.Loader,
 	}, nil
 }
 
 func (s *PostgresSinker) Run(ctx context.Context) error {
 	// cursor, mistmatchDetected, err := s.loader.GetCursor(ctx, s.OutputModuleHash())
-	cursor, err := s.GetOrCreateCursor()
+	cursor, err := s.loader.GetOrCreateCursor(s.OutputModuleHash(), s.network.ID)
 	if err != nil {
 		return fmt.Errorf("unable to retrieve cursor: %w", err)
 	}
 
 	// Start TX if everything is ok
-	s.MustStartDbTransaction()
+	s.loader.MustStartDbTransaction()
 
 	s.Sinker.OnTerminating(s.Shutdown)
 	s.OnTerminating(func(err error) {
@@ -114,8 +110,8 @@ func (s *PostgresSinker) HandleBlockScopedData(ctx context.Context, data *pbsubs
 		Logger:        s.logger,
 		Network:       s.network,
 		NetworkStore:  s.networkStore,
-		IndexerDB:     s.indexerDB,
-		DbTransaction: s.dbTransaction,
+		IndexerDB:     s.loader.indexerDB,
+		DbTransaction: s.loader.dbTransaction,
 	})
 
 	if err != nil {
@@ -129,9 +125,8 @@ func (s *PostgresSinker) HandleBlockScopedData(ctx context.Context, data *pbsubs
 	}
 
 	s.lastCursor = cursor
-
 	if cursor.Block().Num()%s.batchBlockModulo(data, isLive) == 0 {
-		if err := s.ApplyChanges(s.OutputModuleHash(), cursor); err != nil {
+		if err := s.loader.ApplyChanges(cursor, s.OutputModuleHash(), s.network.ID); err != nil {
 			return fmt.Errorf("failed to flush: %w", err)
 		}
 	}
@@ -153,99 +148,4 @@ func (s *PostgresSinker) batchBlockModulo(blockData *pbsubstreamsrpc.BlockScoped
 	}
 
 	return HISTORICAL_BLOCK_FLUSH_EACH
-}
-
-func (s *PostgresSinker) GetOrCreateCursor() (*sink.Cursor, error) {
-	c := indexerdb.Cursors{
-		ID: s.OutputModuleHash(),
-	}
-
-	err := s.indexerDB.First(&c).Error
-
-	// If no error then return the cursor
-	if err == nil {
-		cursor := bstream.NewBlockRef(c.BlockId, c.BlockNum).String()
-		return sink.NewCursor(cursor)
-	}
-
-	// If record not found then insert new cursor
-	if errors.Is(err, gorm.ErrRecordNotFound) {
-		sinkCursor := sink.NewBlankCursor()
-
-		if err := s.WriteCursor(sinkCursor); err != nil {
-			return nil, errors.Wrap(err, "failed to init cursor")
-		}
-		return sinkCursor, nil
-	}
-
-	//TODO: If mismatch then adjust cursor
-	// if mistmatchDetected {
-	// 	if err := s.loader.InsertCursor(ctx, s.OutputModuleHash(), cursor); err != nil {
-	// 		s.Shutdown(fmt.Errorf("unable to write new cursor after module mistmatch: %w", err))
-	// 		return
-	// 	}
-	// }
-
-	// If other error then throw error
-	return nil, errors.Wrap(err, "failed to retrieve cursor")
-}
-
-func (s *PostgresSinker) WriteCursor(sinkCursor *sink.Cursor) error {
-	cursor := indexerdb.Cursors{
-		ID:       s.OutputModuleHash(),
-		Cursor:   sinkCursor.String(),
-		BlockNum: sinkCursor.Block().Num(),
-		BlockId:  sinkCursor.Block().ID(),
-		Network:  s.network.ID,
-	}
-
-	if err := s.indexerDB.Create(&cursor).Error; err != nil {
-		return errors.Wrap(err, "failed to write cursor")
-	}
-
-	return nil
-}
-
-func (s *PostgresSinker) UpdateCursor(sinkCursor *sink.Cursor) error {
-	cursor := indexerdb.Cursors{
-		ID:      s.OutputModuleHash(),
-		Network: s.network.ID,
-	}
-
-	err := s.dbTransaction.Model(&cursor).Updates(indexerdb.Cursors{
-		Cursor:   sinkCursor.Cursor.String(),
-		BlockNum: sinkCursor.Block().Num(),
-		BlockId:  sinkCursor.Block().ID(),
-	}).Error
-
-	if err != nil {
-		return errors.Wrap(err, "failed to update cursor")
-	}
-
-	return nil
-}
-
-func (s *PostgresSinker) ApplyChanges(moduleHash string, sinkCursor *sink.Cursor) (err error) {
-	if err := s.UpdateCursor(sinkCursor); err != nil {
-		return errors.Wrap(err, "failed to update cursor when apply changes")
-	}
-
-	if err := s.dbTransaction.Commit().Error; err != nil {
-		s.dbTransaction.Rollback()
-		return err
-	}
-
-	s.logger.Info(">>> applied changes into DB done !")
-
-	// Start new transaction
-	s.MustStartDbTransaction()
-
-	return nil
-}
-
-func (s *PostgresSinker) MustStartDbTransaction() {
-	s.dbTransaction = s.indexerDB.Begin()
-	if s.dbTransaction.Error != nil {
-		panic("failed to start DB transaction")
-	}
 }

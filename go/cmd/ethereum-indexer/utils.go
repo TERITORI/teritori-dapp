@@ -73,7 +73,7 @@ func mustGetEnv(flagName string) string {
 }
 
 func MustGetFlagString(flagName string) string {
-	flagVal := viper.GetString("run-" + flagName)
+	flagVal := viper.GetString("sync-" + flagName)
 	if flagVal == "" {
 		flagVal = mustGetEnv(flagName)
 	}

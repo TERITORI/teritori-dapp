@@ -26,11 +26,12 @@ var (
 	}
 )
 
-var SinkRunCmd = Command(sinkRunE,
-	"run <network>",
+var SinkSyncCmd = Command(sinkSyncE,
+	"sync <network>",
 	"Sync the data from given network. Supported: ethereum",
 	RangeArgs(1, 1),
 	Flags(func(flags *pflag.FlagSet) {
+		// Teritori params ==========================================================
 		flags.String("db-indexer-host", "", "host postgreSQL database")
 		flags.String("db-indexer-port", "", "port for postgreSQL database")
 		flags.String("postgres-password", "", "password for postgreSQL database")
@@ -39,14 +40,12 @@ var SinkRunCmd = Command(sinkRunE,
 
 		flags.String("networks-file", "networks.json", "Path to networks config file")
 
-		flags.Bool("insecure", false, "TODO: dont known yet")
-		flags.Bool("plaintext", false, "TODO: dont known yet")
-		// flags.Int("undo-buffer-size", 0, "Number of blocks to keep buffered to handle fork reorganizations")
-		// flags.Int("live-block-time-delta", 300, "Consider chain live if block time is within this number of seconds of current time. Default: 300 (5 minutes)")
+		// Add default sink Flags ====================================================================
+		sink.AddFlagsToSet(flags)
 	}),
 )
 
-func sinkRunE(cmd *cobra.Command, args []string) error {
+func sinkSyncE(cmd *cobra.Command, args []string) error {
 	MustLoadEnv()
 
 	// Prepare params ===============================================================================================
@@ -140,24 +139,12 @@ func sinkRunE(cmd *cobra.Command, args []string) error {
 		cancelApp()
 	})
 
-	config := &sinker.Config{
+	loader := sinker.NewLoader(indexerDB, zlog)
+
+	config := &sinker.TeritoriConfig{
 		Network:      network,
 		NetworkStore: &netstore,
-		IndexerDB:    indexerDB,
-		// BlockRange:         blockRange,
-		// Pkg:                pkg,
-		// OutputModule:       module,
-		// OutputModuleName:   outputModuleName,
-		// OutputModuleHash:   outputModuleHash,
-		// UndoBufferSize:     viper.GetInt("run-undo-buffer-size"),
-		// LiveBlockTimeDelta: liveBlockTimeDelta,
-		// SubstreamsMode:     substreamsMode,
-		// ClientConfig: client.NewSubstreamsClientConfig(
-		// 	network.FirehoseEndpoint,
-		// 	apiToken,
-		// 	false,
-		// 	false,
-		// ),
+		Loader:       loader,
 	}
 
 	sink, err := sink.NewFromViper(
