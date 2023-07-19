@@ -84,21 +84,23 @@ type ExecAddToLibraryMsg struct {
 }
 
 func (h *Handler) handleExecuteAddToLibrary(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
-	var execAddToLibraryMsg ExecAddToLibraryMsg
-	if err := json.Unmarshal(execMsg.Msg, &execAddToLibraryMsg); err != nil {
-		return errors.Wrap(err, "failed to unmarshal execute add_to_library msg")
+	if execMsg.Contract == h.config.Network.MusicplayerContractAddress {
+		var execAddToLibraryMsg ExecAddToLibraryMsg
+		if err := json.Unmarshal(execMsg.Msg, &execAddToLibraryMsg); err != nil {
+			return errors.Wrap(err, "failed to unmarshal execute add_to_library msg")
+		}
+		addToLibraryMsg := &execAddToLibraryMsg.AddToLibrary
+		musicLibrary := indexerdb.MusicLibrary{
+			Identifier: addToLibraryMsg.Identifier,
+			Owner:      h.config.Network.UserID(execMsg.Sender),
+		}
+		if err := h.db.Create(&musicLibrary).Error; err != nil {
+			return errors.Wrap(err, "failed to add to library")
+		}
+		return nil
+	} else {
+		return nil
 	}
-	addToLibraryMsg := &execAddToLibraryMsg.AddToLibrary
-
-	musicLibrary := indexerdb.MusicLibrary{
-		Identifier: addToLibraryMsg.Identifier,
-		Owner:      h.config.Network.UserID(execMsg.Sender),
-	}
-
-	if err := h.db.Create(&musicLibrary).Error; err != nil {
-		return errors.Wrap(err, "failed to add to library")
-	}
-	return nil
 }
 
 type RemoveFromLibraryMsg struct {
