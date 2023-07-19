@@ -32,6 +32,7 @@ import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import {
   mustGetCosmosNetwork,
   getKeplrSigningCosmWasmClient,
+  getUserId,
 } from "../../../networks";
 import { mustGetFreelanceClient } from "../../../utils/backend";
 import { uploadJSONToIPFS } from "../../../utils/ipfs";
@@ -78,6 +79,8 @@ export const SellerDetailsScreen: ScreenFC<
   const [sellerUser, setSellerUser] = useState<SellerUser | null>(null);
   const wallet = useSelectedWallet();
   const networkId = useSelectedNetworkId();
+  const selectedWallet = useSelectedWallet();
+  const userId = getUserId(networkId, selectedWallet?.address);
   useEffect(() => {
     const getSellerUserInfo = async () => {
       try {
@@ -187,8 +190,8 @@ export const SellerDetailsScreen: ScreenFC<
       certification: certificationInfoList,
     };
 
-    const profileHash = await uploadJSONToIPFS(ipfs_msg);
-    if (!profileHash) {
+    const uploadedJson = await uploadJSONToIPFS(ipfs_msg, networkId, userId);
+    if (!uploadedJson?.url) {
       setToastError({
         title: "Failed",
         message: "Failed to upload Profile",
@@ -212,7 +215,7 @@ export const SellerDetailsScreen: ScreenFC<
     );
     const profileRes = await client.updateSellerProfile({
       seller: wallet.address,
-      ipfsHash: profileHash,
+      ipfsHash: uploadedJson.url,
     });
     if (profileRes) {
       console.log("updated profile successfully");
