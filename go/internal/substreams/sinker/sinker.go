@@ -65,34 +65,14 @@ func New(sink *sink.Sinker, config *Config, logger *zap.Logger, tracer logging.T
 }
 
 func (s *PostgresSinker) Run(ctx context.Context) error {
-	// Start TX if everything is ok
-	s.MustStartDbTransaction()
-
+	// cursor, mistmatchDetected, err := s.loader.GetCursor(ctx, s.OutputModuleHash())
 	cursor, err := s.GetOrCreateCursor()
-
 	if err != nil {
 		return fmt.Errorf("unable to retrieve cursor: %w", err)
 	}
 
-	s.sink, err = sink.New(
-		s.SubstreamsMode,
-		s.Pkg.Modules,
-		s.OutputModule,
-		s.OutputModuleHash,
-		s.handleBlockScopeData,
-		s.ClientConfig,
-		[]pbsubstreams.ForkStep{
-			pbsubstreams.ForkStep_STEP_NEW,
-			pbsubstreams.ForkStep_STEP_UNDO,
-			pbsubstreams.ForkStep_STEP_IRREVERSIBLE,
-		},
-		s.logger,
-		s.tracer,
-		sinkOptions...,
-	)
-	if err != nil {
-		return fmt.Errorf("unable to create sink: %w", err)
-	}
+	// Start TX if everything is ok
+	s.MustStartDbTransaction()
 
 	s.Sinker.OnTerminating(s.Shutdown)
 	s.OnTerminating(func(err error) {
@@ -197,6 +177,14 @@ func (s *PostgresSinker) GetOrCreateCursor() (*sink.Cursor, error) {
 		}
 		return sinkCursor, nil
 	}
+
+	//TODO: If mismatch then adjust cursor
+	// if mistmatchDetected {
+	// 	if err := s.loader.InsertCursor(ctx, s.OutputModuleHash(), cursor); err != nil {
+	// 		s.Shutdown(fmt.Errorf("unable to write new cursor after module mistmatch: %w", err))
+	// 		return
+	// 	}
+	// }
 
 	// If other error then throw error
 	return nil, errors.Wrap(err, "failed to retrieve cursor")

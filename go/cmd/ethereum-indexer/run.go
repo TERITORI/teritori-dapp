@@ -13,8 +13,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
+	"github.com/streamingfast/cli"
 	. "github.com/streamingfast/cli"
-	"github.com/streamingfast/derr"
 	"github.com/streamingfast/shutter"
 	sink "github.com/streamingfast/substreams-sink"
 	"go.uber.org/zap"
@@ -49,6 +49,7 @@ var SinkRunCmd = Command(sinkRunE,
 func sinkRunE(cmd *cobra.Command, args []string) error {
 	MustLoadEnv()
 
+	// Prepare params ===============================================================================================
 	networkID := args[0]
 	if networkID != "ethereum" && networkID != "ethereum-goerli" {
 		panic("given network is not supported")
@@ -87,6 +88,14 @@ func sinkRunE(cmd *cobra.Command, args []string) error {
 	blockRange := fmt.Sprintf("%s:%s", network.IndexStartBlock, network.IndexStopBlock)
 	outputModuleName := "block_out"
 
+	endpoint := network.FirehoseEndpoint
+	manifestPath := network.SubstreamsManifest
+	// flushInterval := 1000
+
+	// TODO:
+	// moduleMismatchMode, err := db.ParseOnModuleHashMismatch(sflags.MustGetString(cmd, "on-module-hash-mistmatch"))
+	// cli.NoError(err, "invalid mistmatch mode")
+
 	zlog.Info("sync config",
 		zap.String("database", fmt.Sprintf("%s:***@%s:%s", dbUser, dbHost, dbPort)),
 		zap.String("endpoint", network.FirehoseEndpoint),
@@ -123,7 +132,7 @@ func sinkRunE(cmd *cobra.Command, args []string) error {
 		})
 	}
 
-	// Begin app logics
+	// Begin substreams app logics ========================================================================================
 	app := shutter.New()
 
 	ctx, cancelApp := context.WithCancel(cmd.Context())
@@ -151,14 +160,10 @@ func sinkRunE(cmd *cobra.Command, args []string) error {
 		// ),
 	}
 
-	// New code ===========================
 	sink, err := sink.NewFromViper(
 		cmd,
 		"teritori.ethereum_block.v1.EthereumBlock",
-		network.FirehoseEndpoint,
-		network.SubstreamsManifest,
-		outputModuleName,
-		blockRange,
+		endpoint, manifestPath, outputModuleName, blockRange,
 		zlog,
 		tracer,
 	)
@@ -166,17 +171,12 @@ func sinkRunE(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("unable to setup sinker: %w", err)
 	}
 
-	postgresSinker, err := sinker.New(
-		sink,
-		config,
-		zlog,
-		tracer,
-	)
+	postgresSinker, err := sinker.New(sink, config, zlog, tracer)
 	if err != nil {
 		return fmt.Errorf("failed to setup sinker: %w", err)
 	}
-	postgresSinker.OnTerminating(app.Shutdown)
 
+	postgresSinker.OnTerminating(app.Shutdown)
 	app.OnTerminating(func(err error) {
 		zlog.Info("application terminating shutting down sinker")
 		postgresSinker.Shutdown(err)
@@ -189,24 +189,29 @@ func sinkRunE(cmd *cobra.Command, args []string) error {
 		}
 	}()
 
-	signalHandler := derr.SetupSignalHandler(0 * time.Second)
 	zlog.Info("ready, waiting for signal to quit")
+
+	signalHandler, isSignaled, _ := cli.SetupSignalHandler(0*time.Second, zlog)
 	select {
 	case <-signalHandler:
-		zlog.Info("received termination signal, quitting application")
 		go app.Shutdown(nil)
+		break
 	case <-app.Terminating():
-		NoError(app.Err(), "application shutdown unexpectedly, quitting")
+		zlog.Info("run terminating", zap.Bool("from_signal", isSignaled.Load()), zap.Bool("with_error", app.Err() != nil))
+		break
 	}
 
-	zlog.Info("waiting for app termination")
+	zlog.Info("waiting for run termination")
 	select {
 	case <-app.Terminated():
-	case <-ctx.Done():
 	case <-time.After(30 * time.Second):
-		zlog.Error("application did not terminated within 30s, forcing exit")
+		zlog.Warn("application did not terminate within 30s")
 	}
 
-	zlog.Info("app terminated")
+	if err := app.Err(); err != nil {
+		return err
+	}
+
+	zlog.Info("run terminated gracefully")
 	return nil
 }
