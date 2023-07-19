@@ -7,7 +7,7 @@ import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getUserId } from "../../networks";
 import { uploadFileToIPFS, ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { IMAGE_MIME_TYPES } from "../../utils/mime";
-import { LocalFileData } from "../../utils/types/feed";
+import { LocalFileData } from "../../utils/types/files";
 import { FileUploader } from "../fileUploader";
 
 export const AvatarImage: React.FC<{

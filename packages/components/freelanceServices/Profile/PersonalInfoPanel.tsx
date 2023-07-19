@@ -27,7 +27,7 @@ import {
   fontSemibold20,
   fontSemibold28,
 } from "../../../utils/style/fonts";
-import { LocalFileData } from "../../../utils/types/feed";
+import { LocalFileData } from "../../../utils/types/files";
 import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
 import { FileUploader } from "../../fileUploader";
