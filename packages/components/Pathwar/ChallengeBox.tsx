@@ -30,6 +30,8 @@ import { SVG } from "../SVG";
 import { Separator } from "../Separator";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 
+const WIDTH = 380;
+
 export const ChallengeBox: React.FC<{
   data: Challenge;
 }> = ({ data }) => {
@@ -121,7 +123,7 @@ export const ChallengeBox: React.FC<{
           <View
             style={{
               flexDirection: "row",
-              width: 440,
+              width: WIDTH,
               padding: layout.padding_x1,
               justifyContent: "space-between",
             }}
@@ -197,15 +199,15 @@ export const ChallengeBox: React.FC<{
               </FlexRow>
             </View>
           </View>
-          <TertiaryBox squaresBackgroundColor={neutral17} width={440}>
+          <TertiaryBox squaresBackgroundColor={neutral17} width={WIDTH}>
             <FlatList
               data={data.topUsers}
               style={{
-                width: 440,
+                width: WIDTH,
                 padding: layout.padding_x2,
               }}
               contentContainerStyle={{
-                width: 440,
+                width: WIDTH,
               }}
               columnWrapperStyle={{
                 justifyContent: "space-between",
