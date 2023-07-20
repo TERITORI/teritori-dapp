@@ -1,17 +1,17 @@
 import React from "react";
 
-import { FreelanceServicesScreenWrapper } from "./FreelanceServicesScreenWrapper";
+import { ScreenContainer } from "../../components/ScreenContainer";
 import { FreelanceCommunity } from "../../components/freelanceServices/FreelanceServicesScreen/FreelanceCommunity";
 import { FreelanceServicesSellerHeader } from "../../components/freelanceServices/FreelanceServicesScreen/FreelanceServicesSellerHeader";
 import { ScreenFC } from "../../utils/navigation";
 
-export const FreelanceServicesHomeSeller: ScreenFC<
+export const FreelanceServicesHomeSellerScreen: ScreenFC<
   "FreelanceServicesHomeSeller"
 > = () => {
   return (
-    <FreelanceServicesScreenWrapper showBuyerSeller isBuyer={false}>
+    <ScreenContainer fullWidth noMargin>
       <FreelanceServicesSellerHeader />
       <FreelanceCommunity />
-    </FreelanceServicesScreenWrapper>
+    </ScreenContainer>
   );
 };

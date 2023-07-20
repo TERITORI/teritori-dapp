@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { View } from "react-native";
 
-import { FreelanceServicesScreenWrapper } from "./FreelanceServicesScreenWrapper";
 import { emptyGigInfo, GigInfo } from "./types/fields";
+import { ScreenContainer } from "../../components/ScreenContainer";
 import { GigCreationBody } from "../../components/freelanceServices/GigCreation/GigCreationBody";
 import { GigCreationFooter } from "../../components/freelanceServices/GigCreation/GigCreationFooter";
 import { GigCreationHeader } from "../../components/freelanceServices/GigCreation/GigCreationHeader";
@@ -21,7 +21,7 @@ import { mustGetFreelanceClient } from "../../utils/backend";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { GigStep } from "../../utils/types/freelance";
 
-export const FreelanceServicesGigCreation: ScreenFC<
+export const FreelanceServicesGigCreationScreen: ScreenFC<
   "FreelanceServicesGigCreation"
 > = ({ route }) => {
   const [currentStep, setCurrentStep] = useState<GigStep>(GigStep.OverView);
@@ -142,7 +142,7 @@ export const FreelanceServicesGigCreation: ScreenFC<
     setCurrentStep(currentStep + 1);
   };
   return (
-    <FreelanceServicesScreenWrapper>
+    <ScreenContainer fullWidth noMargin>
       <View style={{ marginLeft: 35, zIndex: 1 }}>
         <GigCreationHeader
           currentStep={currentStep}
@@ -156,6 +156,6 @@ export const FreelanceServicesGigCreation: ScreenFC<
         />
       </View>
       <GigCreationFooter nextStep={nextStep} step={currentStep} />
-    </FreelanceServicesScreenWrapper>
+    </ScreenContainer>
   );
 };

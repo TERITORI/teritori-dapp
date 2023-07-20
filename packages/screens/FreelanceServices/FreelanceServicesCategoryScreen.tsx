@@ -1,9 +1,9 @@
 import React from "react";
 
 import { GraphicsAndDesign } from "./Category/GraphicsAndDesign";
-import { FreelanceServicesScreenWrapper } from "./FreelanceServicesScreenWrapper";
+import { ScreenContainer } from "../../components/ScreenContainer";
 import { ScreenFC } from "../../utils/navigation";
-export const FreelanceServicesCategory: ScreenFC<
+export const FreelanceServicesCategoryScreen: ScreenFC<
   "FreelanceServicesCategory"
 > = ({
   route: {
@@ -11,8 +11,8 @@ export const FreelanceServicesCategory: ScreenFC<
   },
 }) => {
   return (
-    <FreelanceServicesScreenWrapper>
+    <ScreenContainer fullWidth noMargin>
       {category === "GraphicsAndDesign" && <GraphicsAndDesign />}
-    </FreelanceServicesScreenWrapper>
+    </ScreenContainer>
   );
 };

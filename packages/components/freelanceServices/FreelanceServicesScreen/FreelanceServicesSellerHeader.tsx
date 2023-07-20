@@ -8,10 +8,12 @@ import {
   mustGetNonSigningCosmWasmClient,
   mustGetCosmosNetwork,
 } from "../../../networks";
+import { BuyerSellerToggle } from "../../../screens/FreelanceServices/components/BuyerSellerToggle";
 import { useAppNavigation } from "../../../utils/navigation";
 import { fontSemibold28 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
+import FlexRow from "../../FlexRow";
 import { Separator } from "../../Separator";
 import { SecondaryButton } from "../../buttons/SecondaryButton";
 
@@ -43,23 +45,30 @@ export const FreelanceServicesSellerHeader: React.FC = () => {
   }, [networkId, selectedWallet]);
 
   return (
-    <View style={{ alignItems: "center" }}>
-      <BrandText
-        style={[fontSemibold28, { alignSelf: "center", marginTop: 48 }]}
-      >
-        Progress through your Efforts
-      </BrandText>
-      {!isSeller && (
-        <SecondaryButton
-          style={{ marginTop: layout.padding_x3_5 }}
-          size="SM"
-          text="Become a Seller"
-          onPress={() => {
-            navigation.navigate("FreelanceServicesProfileSeller");
-          }}
-        />
-      )}
-      <Separator style={{ width: 360, alignSelf: "center", marginTop: 42 }} />
-    </View>
+    <FlexRow justifyContent="space-between">
+      <BuyerSellerToggle
+        isBuyer={false}
+        style={{ flex: 1, marginLeft: layout.padding_x4 }}
+      />
+
+      <View style={{ alignItems: "center" }}>
+        <BrandText style={[fontSemibold28, { marginTop: 48 }]}>
+          Progress through your Efforts
+        </BrandText>
+        {!isSeller && (
+          <SecondaryButton
+            style={{ marginTop: layout.padding_x4 }}
+            size="SM"
+            text="Become a Seller"
+            onPress={() => {
+              navigation.navigate("FreelanceServicesProfileSeller");
+            }}
+          />
+        )}
+        <Separator style={{ width: 360, marginTop: 42 }} />
+      </View>
+
+      <View style={{ flex: 1 }} />
+    </FlexRow>
   );
 };

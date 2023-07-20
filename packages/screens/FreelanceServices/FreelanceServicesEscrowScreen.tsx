@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 
-import { FreelanceServicesScreenWrapper } from "./FreelanceServicesScreenWrapper";
 import { EscrowInfo } from "../../api/freelance/v1/freelance";
 import { BrandText } from "../../components/BrandText";
+import { ScreenContainer } from "../../components/ScreenContainer";
 import { EscrowTable } from "../../components/freelanceServices/Escrow/EscrowList";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
@@ -15,9 +15,9 @@ import {
   screenContainerContentMarginHorizontal,
 } from "../../utils/style/layout";
 
-export const FreelanceServicesEscrow: ScreenFC<"FreelanceServicesEscrow"> = ({
-  route,
-}) => {
+export const FreelanceServicesEscrowScreen: ScreenFC<
+  "FreelanceServicesEscrow"
+> = ({ route }) => {
   const [escrows, setEscrows] = useState<EscrowInfo[]>([]);
   const selectedWallet = useSelectedWallet();
   const networkId = useSelectedNetworkId();
@@ -38,14 +38,14 @@ export const FreelanceServicesEscrow: ScreenFC<"FreelanceServicesEscrow"> = ({
   }, [selectedWallet, networkId]);
 
   return (
-    <FreelanceServicesScreenWrapper>
+    <ScreenContainer fullWidth noMargin>
       <View style={[styles.container, marginStyle]}>
         <View style={styles.rowHeader}>
           <BrandText style={fontSemibold28}>Manage Escrow</BrandText>
         </View>
         <EscrowTable escrows={escrows} />
       </View>
-    </FreelanceServicesScreenWrapper>
+    </ScreenContainer>
   );
 };
 

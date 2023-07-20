@@ -1,9 +1,9 @@
 import React from "react";
 
 import { LogoDesign } from "./Category/Subcategory/LogoDesign";
-import { FreelanceServicesScreenWrapper } from "./FreelanceServicesScreenWrapper";
+import { ScreenContainer } from "../../components/ScreenContainer";
 import { ScreenFC } from "../../utils/navigation";
-export const FreelanceServicesSubCategory: ScreenFC<
+export const FreelanceServicesSubCategoryScreen: ScreenFC<
   "FreelanceServicesSubCategory"
 > = ({
   route: {
@@ -11,10 +11,10 @@ export const FreelanceServicesSubCategory: ScreenFC<
   },
 }) => {
   return (
-    <FreelanceServicesScreenWrapper>
+    <ScreenContainer fullWidth noMargin>
       {category === "GraphicsAndDesign" && subcategory === "LogoDesign" && (
         <LogoDesign />
       )}
-    </FreelanceServicesScreenWrapper>
+    </ScreenContainer>
   );
 };

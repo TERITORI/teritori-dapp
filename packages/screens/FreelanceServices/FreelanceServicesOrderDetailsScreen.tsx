@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 import { RadioButton } from "react-native-paper";
 
-import { FreelanceServicesScreenWrapper } from "./FreelanceServicesScreenWrapper";
 import { getGigData } from "./query/data";
 import { GigInfo, GigData } from "./types/fields";
 import { BrandText } from "../../components/BrandText";
+import { ScreenContainer } from "../../components/ScreenContainer";
 import { SecondaryButton } from "../../components/buttons/SecondaryButton";
 import { FirstRightCard } from "../../components/freelanceServices/Order/FirstRightCard";
 import { FirstStep } from "../../components/freelanceServices/Order/FirstStep";
@@ -122,7 +122,7 @@ function SecondStep(props: {
   );
 }
 
-export const FreelanceServicesOrderDetails: ScreenFC<
+export const FreelanceServicesOrderDetailsScreen: ScreenFC<
   "FreelanceServicesOrder"
 > = ({
   route: {
@@ -252,7 +252,7 @@ export const FreelanceServicesOrderDetails: ScreenFC<
 
   return (
     gigData && (
-      <FreelanceServicesScreenWrapper>
+      <ScreenContainer fullWidth noMargin>
         <View
           style={{
             marginTop: 24,
@@ -322,7 +322,7 @@ export const FreelanceServicesOrderDetails: ScreenFC<
             />
           )}
         </View>
-      </FreelanceServicesScreenWrapper>
+      </ScreenContainer>
     )
   );
 };

@@ -2,8 +2,8 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { View } from "react-native";
 
-import { FreelanceServicesScreenWrapper } from "./FreelanceServicesScreenWrapper";
 import { emptySeller, SellerInfo } from "./types/fields";
+import { ScreenContainer } from "../../components/ScreenContainer";
 import { ProfileBody } from "../../components/freelanceServices/Profile/ProfileBody";
 import { ProfileFooter } from "../../components/freelanceServices/Profile/ProfileFooter";
 import { ProfileHeader } from "../../components/freelanceServices/Profile/ProfileHeader";
@@ -24,7 +24,7 @@ import { ipfsURLToHTTPURL, uploadJSONToIPFS } from "../../utils/ipfs";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { ProfileStep } from "../../utils/types/freelance";
 
-export const FreelanceServicesProfileSeller: ScreenFC<
+export const FreelanceServicesProfileSellerScreen: ScreenFC<
   "FreelanceServicesProfileSeller"
 > = () => {
   const selectedWallet = useSelectedWallet();
@@ -134,7 +134,7 @@ export const FreelanceServicesProfileSeller: ScreenFC<
   };
 
   return (
-    <FreelanceServicesScreenWrapper>
+    <ScreenContainer fullWidth noMargin>
       <View style={{ marginLeft: 35, zIndex: 1 }}>
         <ProfileHeader
           currentStep={currentStep}
@@ -148,6 +148,6 @@ export const FreelanceServicesProfileSeller: ScreenFC<
         />
       </View>
       <ProfileFooter step={currentStep} nextStep={nextStep} />
-    </FreelanceServicesScreenWrapper>
+    </ScreenContainer>
   );
 };

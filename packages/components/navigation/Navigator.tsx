@@ -8,14 +8,14 @@ import { ToriPunks } from "../../screens/DAppStore/apps/toripunks/HomeScreen";
 import { FeedScreen } from "../../screens/Feed/FeedScreen";
 import { FeedNewArticleScreen } from "../../screens/FeedNewArticle/FeedNewArticleScreen";
 import { FeedPostViewScreen } from "../../screens/FeedPostView/FeedPostViewScreen";
-import { FreelanceServicesCategory } from "../../screens/FreelanceServices/FreelanceServicesCategory";
-import { FreelanceServicesEscrow } from "../../screens/FreelanceServices/FreelanceServicesEscrow";
-import { FreelanceServicesGigCreation } from "../../screens/FreelanceServices/FreelanceServicesGigCreation";
-import { FreelanceServicesHomeBuyer } from "../../screens/FreelanceServices/FreelanceServicesHomeBuyer";
-import { FreelanceServicesHomeSeller } from "../../screens/FreelanceServices/FreelanceServicesHomeSeller";
-import { FreelanceServicesOrderDetails } from "../../screens/FreelanceServices/FreelanceServicesOrderDetails";
-import { FreelanceServicesProfileSeller } from "../../screens/FreelanceServices/FreelanceServicesProfileSeller";
-import { FreelanceServicesSubCategory } from "../../screens/FreelanceServices/FreelanceServicesSubCategory";
+import { FreelanceServicesCategoryScreen } from "../../screens/FreelanceServices/FreelanceServicesCategoryScreen";
+import { FreelanceServicesEscrowScreen } from "../../screens/FreelanceServices/FreelanceServicesEscrowScreen";
+import { FreelanceServicesGigCreationScreen } from "../../screens/FreelanceServices/FreelanceServicesGigCreationScreen";
+import { FreelanceServicesHomeBuyerScreen } from "../../screens/FreelanceServices/FreelanceServicesHomeBuyerScreen";
+import { FreelanceServicesHomeSellerScreen } from "../../screens/FreelanceServices/FreelanceServicesHomeSellerScreen";
+import { FreelanceServicesOrderDetailsScreen } from "../../screens/FreelanceServices/FreelanceServicesOrderDetailsScreen";
+import { FreelanceServicesProfileSellerScreen } from "../../screens/FreelanceServices/FreelanceServicesProfileSellerScreen";
+import { FreelanceServicesSubCategoryScreen } from "../../screens/FreelanceServices/FreelanceServicesSubCategoryScreen";
 import { GigDetailScreen } from "../../screens/FreelanceServices/Gig/GigDetailScreen";
 import { SellerDetailsScreen } from "../../screens/FreelanceServices/SellersDetails/SellerDetailsScreen";
 import { GovernanceScreen } from "../../screens/Governance/GovernanceScreen";
@@ -288,7 +288,7 @@ export const Navigator: React.FC = () => {
 
       <Stack.Screen
         name="FreelanceServicesHomeBuyer"
-        component={FreelanceServicesHomeBuyer}
+        component={FreelanceServicesHomeBuyerScreen}
         options={{
           header: () => null,
           title: screenTitle("Freelance Services"),
@@ -296,7 +296,7 @@ export const Navigator: React.FC = () => {
       />
       <Stack.Screen
         name="FreelanceServicesHomeSeller"
-        component={FreelanceServicesHomeSeller}
+        component={FreelanceServicesHomeSellerScreen}
         options={{
           header: () => null,
           title: screenTitle("Freelance Services"),
@@ -304,7 +304,7 @@ export const Navigator: React.FC = () => {
       />
       <Stack.Screen
         name="FreelanceServicesCategory"
-        component={FreelanceServicesCategory}
+        component={FreelanceServicesCategoryScreen}
         options={{
           header: () => null,
           title: screenTitle("Freelance Services"),
@@ -312,7 +312,7 @@ export const Navigator: React.FC = () => {
       />
       <Stack.Screen
         name="FreelanceServicesSubCategory"
-        component={FreelanceServicesSubCategory}
+        component={FreelanceServicesSubCategoryScreen}
         options={{
           header: () => null,
           title: screenTitle("Freelance Services"),
@@ -320,7 +320,7 @@ export const Navigator: React.FC = () => {
       />
       <Stack.Screen
         name="FreelanceServicesProfileSeller"
-        component={FreelanceServicesProfileSeller}
+        component={FreelanceServicesProfileSellerScreen}
         options={{
           header: () => null,
           title: screenTitle("Freelance Services"),
@@ -328,7 +328,7 @@ export const Navigator: React.FC = () => {
       />
       <Stack.Screen
         name="FreelanceServicesGigCreation"
-        component={FreelanceServicesGigCreation}
+        component={FreelanceServicesGigCreationScreen}
         options={{
           header: () => null,
           title: screenTitle("Gig Creation"),
@@ -348,12 +348,12 @@ export const Navigator: React.FC = () => {
       />
       <Stack.Screen
         name="FreelanceServicesOrder"
-        component={FreelanceServicesOrderDetails}
+        component={FreelanceServicesOrderDetailsScreen}
         options={{ header: () => null, title: screenTitle("Order Details") }}
       />
       <Stack.Screen
         name="FreelanceServicesEscrow"
-        component={FreelanceServicesEscrow}
+        component={FreelanceServicesEscrowScreen}
         options={{ header: () => null, title: screenTitle("Escrow List") }}
       />
       <Stack.Screen

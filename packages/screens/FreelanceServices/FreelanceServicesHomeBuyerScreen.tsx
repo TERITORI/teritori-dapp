@@ -1,7 +1,7 @@
 import React from "react";
 
-import { FreelanceServicesScreenWrapper } from "./FreelanceServicesScreenWrapper";
 import { Gallery, getGallery } from "./query/getGallery";
+import { ScreenContainer } from "../../components/ScreenContainer";
 import { ExplorerMarketPlace } from "../../components/freelanceServices/FreelanceServicesScreen/ExploreMarketPlace";
 import { FreelanceServicesHeader } from "../../components/freelanceServices/FreelanceServicesScreen/FreelanceServicesHeader";
 import { GenericGallery } from "../../components/freelanceServices/FreelanceServicesScreen/GenericGallery";
@@ -11,11 +11,11 @@ const galleries: Gallery[] = [
   getGallery("popular-services"),
   getGallery("freelancer-featured"),
 ];
-export const FreelanceServicesHomeBuyer: ScreenFC<
+export const FreelanceServicesHomeBuyerScreen: ScreenFC<
   "FreelanceServicesHomeBuyer"
 > = () => {
   return (
-    <FreelanceServicesScreenWrapper showBuyerSeller>
+    <ScreenContainer fullWidth noMargin>
       <FreelanceServicesHeader />
       <ExplorerMarketPlace />
       {galleries.map((gallery, index) => (
@@ -26,6 +26,6 @@ export const FreelanceServicesHomeBuyer: ScreenFC<
           cardsToShow={gallery.cardsToShow}
         />
       ))}
-    </FreelanceServicesScreenWrapper>
+    </ScreenContainer>
   );
 };
