@@ -8,6 +8,7 @@ import {
   mustGetNonSigningCosmWasmClient,
   mustGetCosmosNetwork,
 } from "../../../networks";
+import { BuyerSellerToggle } from "../../../screens/FreelanceServices/components/BuyerSellerToggle";
 import { useAppNavigation } from "../../../utils/navigation";
 import { fontSemibold28 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
