@@ -13,6 +13,7 @@ import chevronUp from "../../../../assets/icons/chevron-up.svg";
 import chevronDown from "../../../../assets/icons/freelance-service/chevron-down.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
+import { ScreenContainer } from "../../../components/ScreenContainer";
 import { Separator } from "../../../components/Separator";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
@@ -46,7 +47,6 @@ import {
   fontSemibold28,
 } from "../../../utils/style/fonts";
 import { leftMarginMainContent } from "../../../utils/style/layout";
-import { FreelanceServicesScreenWrapper } from "../FreelanceServicesScreenWrapper";
 import { TopRatedSeller } from "../SellersDetails/components/TopRatedSeller";
 import { getGigData } from "../query/data";
 import { GigInfo, GigData } from "../types/fields";
@@ -84,7 +84,7 @@ export const GigDetailScreen: ScreenFC<"FreelanceServicesGigDetail"> = ({
 
   return (
     gigData && (
-      <FreelanceServicesScreenWrapper>
+      <ScreenContainer fullWidth noMargin>
         <View
           style={{
             flexDirection: "column",
@@ -532,7 +532,7 @@ export const GigDetailScreen: ScreenFC<"FreelanceServicesGigDetail"> = ({
             ) : null}
           </View>
         </View>
-      </FreelanceServicesScreenWrapper>
+      </ScreenContainer>
     )
   );
 };
