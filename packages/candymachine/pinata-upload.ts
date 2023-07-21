@@ -49,10 +49,10 @@ export const pinataPinJSONToIPFS = async ({
     const responseFile = await axios({
       method: "post",
       url: "https://api.pinata.cloud/pinning/pinJSONToIPFS",
-      data: formData,
+      data: str,
       headers: {
         Authorization: "Bearer " + pinataJWTKey,
-        "Content-Type": "multipart/form-data",
+        "Content-Type": "application/json",
       },
     });
     return responseFile.data;

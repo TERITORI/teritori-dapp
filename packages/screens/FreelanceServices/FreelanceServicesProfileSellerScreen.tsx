@@ -79,11 +79,11 @@ export const FreelanceServicesProfileSellerScreen: ScreenFC<
   const nextStep = async () => {
     if (currentStep === ProfileStep.AccountSecurity) {
       try {
-        const uploadedJson = await uploadJSONToIPFS(
-          sellerInfo,
+        const uploadedJson = await uploadJSONToIPFS({
+          json: sellerInfo,
           networkId,
-          userId
-        );
+          userId,
+        });
         if (!uploadedJson?.url) {
           setToastError({
             title: "Failed",
