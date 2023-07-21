@@ -1,14 +1,22 @@
 package main
 
 import (
+	"context"
+	"crypto/ecdsa"
 	"encoding/json"
 	"fmt"
 	"math/big"
 	"strings"
 	"time"
 
+	abiGo "github.com/TERITORI/teritori-dapp/go/internal/substreams/ethereum/abi_go"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/ethereum/go-ethereum/ethclient"
+	hdwallet "github.com/miguelmota/go-ethereum-hdwallet"
 	"github.com/mitchellh/mapstructure"
 
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
@@ -311,7 +319,88 @@ func (s *LeaderboardService) ethereumSendRewardsList(
 	}
 	s.logger.Info("saved daily rewards", zap.String("dayID", todayID), zap.String("networkID", s.networkId))
 
-	return "tx: 1234", nil
+	tx, err := s.ethUpdateMerkleRoot(tree.GetHexRoot())
+	if err != nil {
+		return "", errors.Wrap(err, "failed to ethUpdateMerkleRoot")
+	}
+
+	return tx, nil
+}
+
+func (s *LeaderboardService) ethUpdateMerkleRoot(merkleRoot string) (string, error) {
+	mnemonic := s.mnemonic
+	wallet, err := hdwallet.NewFromMnemonic(mnemonic)
+	if err != nil {
+		return "", errors.Wrap(err, "failed to get wallet from given mnemonic")
+	}
+
+	path := hdwallet.MustParseDerivationPath("m/44'/60'/0'/0/0")
+	account, err := wallet.Derive(path, false)
+	if err != nil {
+		return "", errors.Wrap(err, "failed to get account from wallet")
+	}
+
+	privateKey, err := wallet.PrivateKey(account)
+	if err != nil {
+		return "", errors.Wrap(err, "failed to get privateKey from account")
+	}
+
+	// ===================================================================================
+	network := s.netstore.MustGetEthereumNetwork(s.networkId)
+	client, err := ethclient.Dial(network.Endpoint)
+	if err != nil {
+		return "", errors.Wrap(err, "failed to connect to blockchain endpoint")
+	}
+
+	publicKey := privateKey.Public()
+	publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)
+	if !ok {
+		return "", errors.Wrap(err, "failed to cast public key to ECDSA")
+	}
+
+	fromAddress := crypto.PubkeyToAddress(*publicKeyECDSA)
+	nonce, err := client.PendingNonceAt(context.Background(), fromAddress)
+	if err != nil {
+		return "", errors.Wrap(err, "failed to get nonce")
+	}
+
+	gasPrice, err := client.SuggestGasPrice(context.Background())
+	if err != nil {
+		return "", errors.Wrap(err, "failed to get suggest price")
+	}
+
+	auth := bind.NewKeyedTransactor(privateKey)
+	auth.Nonce = big.NewInt(int64(nonce))
+	auth.Value = big.NewInt(0)      // in wei
+	auth.GasLimit = uint64(500_000) // in units
+	auth.GasPrice = gasPrice
+
+	address := common.HexToAddress(network.DistributorContractAddress)
+	instance, err := abiGo.NewDistributor(address, client)
+	if err != nil {
+		return "", errors.Wrap(err, "failed to get nonce")
+	}
+
+	merkleRootBytes := [32]byte{}
+	copy(merkleRootBytes[:], []byte(merkleRoot))
+
+	tx, err := instance.UpdateMerkleRoot(auth, merkleRootBytes)
+	if err != nil {
+		return "", errors.Wrap(err, "failed to update merkle root")
+	}
+
+	txHash := tx.Hash().Hex()
+
+	receipt, err := bind.WaitMined(context.Background(), client, tx)
+	if err != nil {
+		return "", errors.Wrap(err, "failed to mint tx on blockchain")
+	}
+
+	if receipt.Status == 0 {
+		return "", errors.New("tx failed")
+	}
+
+	return txHash, nil
 }
 
 func (s *LeaderboardService) teritoriSendRewardsList(
