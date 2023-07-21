@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+import { Token as MultisigToken } from "../../api/multisig/v1/multisig";
 import { RootState } from "../store";
 
 interface Settings {
@@ -11,6 +12,7 @@ interface Settings {
   alreadyVisited: boolean;
   areTestnetsEnabled: boolean;
   sideBarExpanded: boolean;
+  multisigToken?: MultisigToken;
 }
 
 const initialState: Settings = {
@@ -45,6 +47,9 @@ export const selectSidebarExpanded = (state: RootState) =>
 export const selectNFTStorageAPI = (state: RootState) =>
   state.settings.NFTStorageAPI;
 
+export const selectMultisigToken = (state: RootState) =>
+  state.settings.multisigToken;
+
 const settingsSlice = createSlice({
   name: "settings",
   initialState,
@@ -70,6 +75,9 @@ const settingsSlice = createSlice({
     setNFTStorageAPI: (state, action: PayloadAction<string>) => {
       state.NFTStorageAPI = action.payload;
     },
+    setMultisigToken: (state, action: PayloadAction<MultisigToken>) => {
+      state.multisigToken = action.payload;
+    },
   },
 });
 
@@ -81,6 +89,7 @@ export const {
   setAreTestnetsEnabled,
   setSidebarExpanded,
   setNFTStorageAPI,
+  setMultisigToken,
 } = settingsSlice.actions;
 
 export const settingsReducer = settingsSlice.reducer;

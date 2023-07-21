@@ -1,12 +1,18 @@
+import { createMultisigThresholdPubkey, pubkeyToAddress } from "@cosmjs/amino";
 import React, { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Pressable, ScrollView, StyleSheet, View } from "react-native";
+import { useSelector } from "react-redux";
 
 import { CheckLoadingModal } from "./components/CheckLoadingModal";
 import { MultisigSection } from "./components/MultisigSection";
 import { CreateMultisigWalletFormType } from "./types";
 import trashSVG from "../../../assets/icons/trash.svg";
 import walletInputSVG from "../../../assets/icons/wallet-input.svg";
+import {
+  MultisigServiceClientImpl,
+  GrpcWebImpl as MultisigGrpcWebImpl,
+} from "../../api/multisig/v1/multisig";
 import { BrandText } from "../../components/BrandText";
 import { NetworkIcon } from "../../components/NetworkIcon";
 import { SVG } from "../../components/SVG";
@@ -25,6 +31,7 @@ import { useCreateMultisig, useMultisigHelpers } from "../../hooks/multisig";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkKind, selectableCosmosNetworks } from "../../networks";
+import { selectMultisigToken } from "../../store/slices/settings";
 import {
   getNSAddress,
   patternOnlyNumbers,
@@ -50,6 +57,7 @@ import { layout } from "../../utils/style/layout";
 const emptyPubKeyGroup = () => ({ address: "", compressedPubkey: "" });
 
 export const MultisigCreateScreen = () => {
+  const authToken = useSelector(selectMultisigToken);
   const { control, handleSubmit, watch, setValue } =
     useForm<CreateMultisigWalletFormType>();
   const [addressIndexes, setAddressIndexes] = useState([
@@ -91,12 +99,42 @@ export const MultisigCreateScreen = () => {
     setAddressIndexes([...addressIndexes, emptyPubKeyGroup()]);
   };
 
-  const onSubmit = ({ signatureRequired }: CreateMultisigWalletFormType) => {
+  const onSubmit = async ({
+    signatureRequired,
+  }: CreateMultisigWalletFormType) => {
     if (selectedNetwork?.chainId && selectedNetwork?.addressPrefix) {
       const compressedPubkeys = addressIndexes.map(
         (item) => item.compressedPubkey
       );
-      const userAddresses = addressIndexes.map((item) => item.address);
+      const pubkeys = compressedPubkeys.map((compressedPubkey) => {
+        return {
+          type: "tendermint/PubKeySecp256k1",
+          value: compressedPubkey,
+        };
+      });
+      const multisigPubkey = createMultisigThresholdPubkey(
+        pubkeys,
+        parseInt(signatureRequired, 10)
+      );
+
+      const rpc = new MultisigGrpcWebImpl("http://localhost:9091", {
+        debug: false,
+      });
+      const client = new MultisigServiceClientImpl(rpc);
+
+      console.log("multisigPubkey", multisigPubkey);
+
+      const res = await client.CreateOrJoinMultisig({
+        authToken,
+        chainId: selectedNetwork.chainId,
+        bech32Prefix: selectedNetwork.addressPrefix,
+        multisigPubkeyJson: JSON.stringify(multisigPubkey),
+        name: "Multisig #42",
+      });
+
+      console.log("res", res);
+
+      /*
       mutate({
         compressedPubkeys,
         chainId: selectedNetwork.chainId,
@@ -104,6 +142,7 @@ export const MultisigCreateScreen = () => {
         threshold: parseInt(signatureRequired, 10),
         userAddresses,
       });
+      */
     }
   };
 

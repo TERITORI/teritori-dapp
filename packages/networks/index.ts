@@ -230,6 +230,14 @@ export const getCosmosNetwork = (
   return network;
 };
 
+export const getCosmosNetworkByChainId = (chainId: string | undefined) => {
+  return allNetworks.find((n) => {
+    if (n.kind === NetworkKind.Cosmos && n.chainId === chainId) {
+      return n;
+    }
+  });
+};
+
 export const mustGetCosmosNetwork = (
   networkId: string | undefined
 ): CosmosNetworkInfo => {

@@ -2,21 +2,23 @@ import { Decimal } from "@cosmjs/math";
 import { Account, calculateFee } from "@cosmjs/stargate";
 import { assert } from "@cosmjs/utils";
 import { useMutation } from "@tanstack/react-query";
-import moment from "moment";
+import { useSelector } from "react-redux";
 
-import useSelectedWallet from "./../useSelectedWallet";
+import {
+  CreateTransactionRequest,
+  MultisigServiceClientImpl,
+  GrpcWebImpl as MultisigGrpcWebImpl,
+} from "../../api/multisig/v1/multisig";
 import { useMultisigContext } from "../../context/MultisigReducer";
 import {
   MultisigTransactionDelegateFormType,
   MultisigTransactionType,
 } from "../../screens/Multisig/types";
-import { createTransaction } from "../../utils/faunaDB/multisig/multisigGraphql";
-import { DbCreateTransaction } from "../../utils/faunaDB/multisig/types";
+import { selectMultisigToken } from "../../store/slices/settings";
 
 export const useCreateMultisigTransaction = () => {
+  const authToken = useSelector(selectMultisigToken);
   const { state } = useMultisigContext();
-
-  const { selectedWallet } = useSelectedWallet();
 
   // req
   const mutation = useMutation(
@@ -28,8 +30,6 @@ export const useCreateMultisigTransaction = () => {
         gasLimit,
         gasPrice,
         memo,
-        multisigId,
-        type,
       },
       accountOnChain,
     }: {
@@ -39,53 +39,49 @@ export const useCreateMultisigTransaction = () => {
       };
       accountOnChain: Account | null;
     }) => {
-      try {
-        const amountInAtomics = Decimal.fromUserInput(
-          amount,
-          Number(state.chain.displayDenomExponent)
-        ).atomics;
+      console.log("mftating");
 
-        const msgSend = {
-          fromAddress: multisigAddress,
-          toAddress: recipientAddress,
-          amount: [
-            {
-              amount: amountInAtomics,
-              denom: state.chain.denom,
-            },
-          ],
-        };
+      const amountInAtomics = Decimal.fromUserInput(
+        amount,
+        Number(state.chain.displayDenomExponent)
+      ).atomics;
 
-        const msg = {
-          typeUrl: "/cosmos.bank.v1beta1.MsgSend",
-          value: msgSend,
-        };
+      const msgSend = {
+        fromAddress: multisigAddress,
+        toAddress: recipientAddress,
+        amount: [
+          {
+            amount: amountInAtomics,
+            denom: state.chain.denom,
+          },
+        ],
+      };
 
-        const fee = calculateFee(Number(gasLimit), gasPrice);
+      const msg = {
+        typeUrl: "/cosmos.bank.v1beta1.MsgSend",
+        value: msgSend,
+      };
 
-        assert(accountOnChain, "accountOnChain missing");
+      const fee = calculateFee(Number(gasLimit), gasPrice);
 
-        const tx: DbCreateTransaction = {
-          accountNumber: accountOnChain.accountNumber,
-          sequence: accountOnChain.sequence,
-          chainId: state.chain?.chainId || "",
-          msgs: JSON.stringify([msg]),
-          fee: JSON.stringify(fee),
-          memo,
-          type,
-          createdAt: moment().toISOString(),
-          createdBy: selectedWallet?.address || "",
-          recipientAddress,
-        };
+      assert(accountOnChain, "accountOnChain missing");
 
-        const saveRes = await createTransaction(multisigId, tx);
+      const req: CreateTransactionRequest = {
+        multisigAddress,
+        accountNumber: accountOnChain.accountNumber,
+        sequence: accountOnChain.sequence,
+        msgsJson: JSON.stringify([msg]),
+        feeJson: JSON.stringify(fee),
+        chainId: state.chain?.chainId || "",
+        authToken,
+      };
 
-        const transactionID = saveRes.data.data.createTransaction._id;
+      const rpc = new MultisigGrpcWebImpl("http://localhost:9091", {
+        debug: false,
+      });
+      const client = new MultisigServiceClientImpl(rpc);
 
-        return transactionID;
-      } catch (err: any) {
-        console.error(err);
-      }
+      await client.CreateTransaction(req);
     }
   );
   return mutation;

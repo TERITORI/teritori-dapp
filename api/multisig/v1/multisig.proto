@@ -11,7 +11,7 @@ service MultisigService {
 
   // Write
   rpc CreateOrJoinMultisig(CreateOrJoinMultisigRequest) returns (CreateOrJoinMultisigResponse);
-  rpc LeaveMultisig(CreateOrJoinMultisigRequest) returns (CreateOrJoinMultisigResponse);
+  rpc LeaveMultisig(LeaveMultisigRequest) returns (LeaveMultisigResponse);
   rpc CreateTransaction(CreateTransactionRequest) returns (CreateTransactionResponse);
   rpc SignTransaction(SignTransactionRequest) returns (SignTransactionResponse);
 
@@ -21,22 +21,47 @@ service MultisigService {
 }
 
 message Multisig {
-  string created_at = 1;
+  uint32 created_at = 1;
+  string chain_id = 2;
+  string address = 4;
+  bool joined = 5;
+  string name = 6;
 }
 
 message Transaction {
-  string created_at = 1;
-  string tx_hash = 2;
+  uint32 created_at = 1;
+  string final_hash = 2;
+  string multisig_address = 3;
+  string chain_id = 4;
+  string msgs_json = 5;
+  string fee_json = 6;
+  uint32 account_number = 7;
+  uint32 sequence = 8;
+  string creator_address = 9;
 }
 
 message Signature {
-  string created_at = 1;
+  uint32 created_at = 1;
+}
+
+message Token {
+	string nonce = 1;
+	uint32 created_at = 2;
+	uint32 duration = 3;
+}
+
+enum JoinState {
+  JOIN_STATE_UNSPECIFIED = 0;
+  JOIN_STATE_IN = 1;
+  JOIN_STATE_OUT = 2;
 }
 
 message MultisigsRequest {
-  string auth_token = 1;
+  Token auth_token = 1;
   uint32 limit = 2;
-  string startAfter = 3;
+  uint32 start_after = 3;
+  string chain_id = 4;
+  JoinState join_state = 5;
 }
 
 message MultisigsResponse {
@@ -50,11 +75,12 @@ enum ExecutionState {
 }
 
 message TransactionsRequest {
-  string auth_token = 1;
+  Token auth_token = 1;
   uint32 limit = 2;
-  string startAfter = 3;
+  uint32 start_after = 3;
   ExecutionState execution_state = 4;
   string multisig_address = 6; // if unspecified, return transactions for all multisigs of this user
+  string chain_id = 7;
 }
 
 message TransactionsResponse {
@@ -64,7 +90,9 @@ message TransactionsResponse {
 message CreateOrJoinMultisigRequest {
   string chain_id = 1;
   string multisig_pubkey_json = 2;
-  string auth_token = 3;
+  Token auth_token = 3;
+  string name = 4;
+  string bech32_prefix = 5;
 }
 
 message CreateOrJoinMultisigResponse {
@@ -72,17 +100,25 @@ message CreateOrJoinMultisigResponse {
   bool joined = 2;
 }
 
-message LeaveMultisig {
-  string address = 1;
-  string auth_token = 2;
+message LeaveMultisigRequest {
+  string multisig_address = 1;
+  Token auth_token = 2;
+  string chain_id = 3;
 }
 
 message LeaveMultisigResponse {
   bool left = 1;
+  bool found = 2;
 }
 
 message CreateTransactionRequest {
-  string auth_token = 1;
+  Token auth_token = 1;
+	string multisig_address= 3;
+  uint32 accountNumber = 4;
+  uint32 sequence = 5;
+  string msgs_json = 6;
+  string fee_json = 7;
+  string chain_id = 8;
 }
 
 message CreateTransactionResponse {
@@ -90,7 +126,7 @@ message CreateTransactionResponse {
 }
 
 message SignTransactionRequest {
-  string auth_token = 1;
+  Token auth_token = 1;
 }
 
 message SignTransactionResponse {
@@ -98,7 +134,7 @@ message SignTransactionResponse {
 }
 
 message GetChallengeRequest {
-  string chain_id = 1;
+
 }
 
 message GetChallengeResponse {
@@ -107,16 +143,17 @@ message GetChallengeResponse {
 
 message GetTokenRequest {
   string challenge = 1;
-  string signature = 2;
-  string user_pubkey_json = 3;
+  string challenge_signature = 2;
+  string user_bech32_prefix = 4;
+  string user_pubkey_json = 5;
 }
 
 message GetTokenResponse {
-  string auth_token = 1;
+  Token auth_token = 1;
 }
 
 message TransactionsCountsRequest {
-  string auth_token = 1;
+  Token auth_token = 1;
   string multisig_address = 2;
 }
 

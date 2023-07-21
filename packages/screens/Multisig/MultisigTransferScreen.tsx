@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import { CheckLoadingModal } from "./components/CheckLoadingModal";
 import { MultisigTransactionForm } from "./components/MultisigTransactionForm";
@@ -13,8 +13,7 @@ import {
   useCreateMultisigTransaction,
   useGetMultisigAccount,
 } from "../../hooks/multisig";
-import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { NetworkKind } from "../../networks";
+import { NetworkKind, parseUserId } from "../../networks";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { fontSemibold20 } from "../../utils/style/fonts";
 
@@ -22,41 +21,17 @@ export const MultisigTransferScreen: ScreenFC<"MultisigTransfer"> = ({
   route,
 }) => {
   const navigation = useAppNavigation();
-  const { selectedWallet } = useSelectedWallet();
   const [isTransactionVisible, setIsTransactionVisible] = useState(false);
   const {
     isLoading: createLoading,
     mutate,
     data: transactionId,
   } = useCreateMultisigTransaction();
-  const { address, walletName } = route.params;
-  const { data, isLoading } = useGetMultisigAccount(address);
+  const { address: multisigId, walletName } = route.params;
+  const [, address] = parseUserId(multisigId);
+  const { data } = useGetMultisigAccount(multisigId);
   const [formData, setFormData] =
     useState<MultisigTransactionDelegateFormType>();
-
-  // Leave screen if no wallet found from URL address, no name or if the user haven't this wallet
-  useEffect(() => {
-    if (
-      !isLoading &&
-      (!walletName ||
-        !data ||
-        !data?.dbData.userAddresses.find(
-          (address) => address === selectedWallet?.address
-        ))
-    ) {
-      navigation.navigate("MultisigWalletDashboard", {
-        address,
-        walletName,
-      });
-    }
-  }, [
-    isLoading,
-    data,
-    selectedWallet?.address,
-    address,
-    navigation,
-    walletName,
-  ]);
 
   // functions
   const toggleTransactionModal = () =>
@@ -70,16 +45,20 @@ export const MultisigTransferScreen: ScreenFC<"MultisigTransfer"> = ({
   const handleCreate = () => {
     toggleTransactionModal();
 
-    if (data?.accountData && formData && data.dbData._id) {
-      mutate({
-        formData: {
-          ...formData,
-          multisigId: data.dbData._id,
-          type: MultisigTransactionType.TRANSFER,
-        },
-        accountOnChain: data?.accountData[1],
-      });
+    console.log("handle create", data?.accountData, formData);
+
+    if (!data?.accountData || !formData) {
+      throw new Error("Missing data");
     }
+
+    mutate({
+      formData: {
+        ...formData,
+        multisigId,
+        type: MultisigTransactionType.TRANSFER,
+      },
+      accountOnChain: data?.accountData[1],
+    });
   };
 
   const onCompleteCreation = () => {

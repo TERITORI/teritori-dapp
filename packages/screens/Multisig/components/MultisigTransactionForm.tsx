@@ -23,6 +23,7 @@ import {
 } from "../../../hooks/multisig";
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import { useValidators } from "../../../hooks/useValidators";
+import { parseUserId } from "../../../networks";
 import {
   patternOnlyNumbers,
   validateAddress,
@@ -48,10 +49,11 @@ export const MultisigTransactionForm: React.FC<
   MultisigTransactionDelegateFormProps
 > = ({ title, transferText, submitBtnText, onSubmit = () => {}, type }) => {
   const {
-    params: { address },
+    params: { address: multisigId },
   } = useRoute<AppRouteType<"MultisigTransfer" | "MultisigDelegate">>();
   const selectedNetworkId = useSelectedNetworkId();
-  const { isLoading, data } = useGetMultisigAccount(address);
+  const [, address] = parseUserId(multisigId);
+  const { isLoading, data } = useGetMultisigAccount(multisigId);
   const { control, handleSubmit, setValue, watch } =
     useForm<MultisigTransactionDelegateFormType>();
   const { coinSimplified, participantAddressesFromMultisig } =
@@ -171,7 +173,6 @@ export const MultisigTransactionForm: React.FC<
                       label=""
                       hideLabel
                       name="recipientAddress"
-                      isDisabled={!membersAddress?.length}
                       rules={{
                         required: true,
                         validate: (value) =>
@@ -222,7 +223,6 @@ export const MultisigTransactionForm: React.FC<
                   validateMaxNumber(value, parseFloat(holidings?.value || "0")),
               }}
               currency={toriCurrency}
-              isDisabled={!membersAddress?.length}
               subtitle={
                 <BrandText>
                   {holidings?.value
@@ -240,7 +240,6 @@ export const MultisigTransactionForm: React.FC<
               label="Gas Limit"
               name="gasLimit"
               rules={{ required: true, pattern: patternOnlyNumbers }}
-              isDisabled={!membersAddress?.length}
               placeHolder="0"
               defaultValue="200000"
             />
@@ -262,7 +261,6 @@ export const MultisigTransactionForm: React.FC<
               control={control}
               label="Memo"
               name="memo"
-              isDisabled={!membersAddress?.length}
             />
             <SpacerColumn size={2.5} />
 
@@ -271,7 +269,6 @@ export const MultisigTransactionForm: React.FC<
                 size="XL"
                 width={218}
                 text={submitBtnText}
-                disabled={!membersAddress?.length}
                 onPress={handleSubmit(onSubmit)}
               />
             </View>

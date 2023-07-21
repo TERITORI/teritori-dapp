@@ -1,19 +1,38 @@
+import { StdFee } from "@cosmjs/stargate";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
+import { useSelector } from "react-redux";
 
 import {
-  TransactionFieldsFragment,
-  useGetUserTransactionsQuery,
-} from "../../api/multisig";
+  MultisigServiceClientImpl,
+  GrpcWebImpl as MultisigGrpcWebImpl,
+  Transaction,
+  TransactionsRequest,
+} from "../../api/multisig/v1/multisig";
 import { NetworkKind } from "../../networks";
-import { fetcherConfig } from "../../utils/faunaDB/multisig/multisigGraphql";
+import { selectMultisigToken } from "../../store/slices/settings";
 import { tryParseJSON } from "../../utils/jsons";
 import { useSelectedNetworkInfo } from "../useSelectedNetwork";
+
+const rpc = new MultisigGrpcWebImpl("http://localhost:9091", {
+  debug: false,
+});
+const client = new MultisigServiceClientImpl(rpc);
+
+export type ParsedTransaction = Omit<
+  Transaction,
+  "createdAt" | "msgs" | "fee"
+> & {
+  createdAt: Date;
+  msgs: any[]; // FIXME: replace by unknown
+  fee: StdFee;
+};
 
 export const useFetchMultisigTransactionsByAddress = (
   userAddress: string,
   size: number = 20
 ) => {
+  const authToken = useSelector(selectMultisigToken);
   const selectedNetworkInfo = useSelectedNetworkInfo();
   const chainId = useMemo(() => {
     if (selectedNetworkInfo?.kind !== NetworkKind.Cosmos) {
@@ -24,44 +43,36 @@ export const useFetchMultisigTransactionsByAddress = (
 
   //  request
   return useInfiniteQuery(
-    ["multisig-transactions", userAddress, chainId],
+    ["multisig-transactions", userAddress, chainId, authToken],
     async ({ pageParam }) => {
       if (!userAddress) {
         return { data: [], next: null };
       }
 
-      let transactions: TransactionFieldsFragment[];
-      let err: unknown;
-
-      try {
-        const { transactions: txs } = await useGetUserTransactionsQuery.fetcher(
-          fetcherConfig,
-          {
-            chainId,
-            userAddress,
-            size,
-            before: pageParam || null,
-          }
-        )();
-        transactions = txs;
-      } catch (e) {
-        err = e;
-        transactions = [];
-      }
+      const req: Partial<TransactionsRequest> = {
+        authToken,
+        // chainId, // FIXME: correctly pass chainId during creation
+        limit: size,
+        startAfter: pageParam,
+      };
+      console.log("req", req);
+      const { transactions: txs } = await client.Transactions(req);
+      console.log("txs", txs);
 
       return {
-        data: transactions.map((s) => ({
-          ...s,
-          msgs: tryParseJSON(s.msgs || "[]"),
-          fee: tryParseJSON(s.fee || "{}"),
-          isError: !!err,
-        })),
+        data: txs.map((s) => {
+          const pt: ParsedTransaction = {
+            ...s,
+            msgs: tryParseJSON(s.msgsJson || "[]"),
+            fee: tryParseJSON(s.feeJson || "{}"),
+            createdAt: new Date(s.createdAt),
+          };
+          return pt;
+        }),
         next:
-          transactions.length > 0
-            ? new Date(
-                Date.parse(transactions[transactions.length - 1]?.createdAt) - 1
-              ).toISOString()
-            : pageParam || null,
+          txs.length > 0
+            ? txs[txs.length - 1].createdAt
+            : pageParam || undefined,
       };
     },
     {

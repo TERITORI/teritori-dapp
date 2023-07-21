@@ -1,4 +1,4 @@
-import { capitalize } from "lodash";
+import { capitalize, create } from "lodash";
 import moment from "moment";
 import React, { useEffect, useMemo, useState } from "react";
 import { ActivityIndicator, Pressable, StyleSheet, View } from "react-native";
@@ -15,9 +15,12 @@ import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import {
   MultisigTransactionListType,
+  ParsedTransaction,
   useMultisigHelpers,
 } from "../../../hooks/multisig";
+import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
 import { useTNSMetadata } from "../../../hooks/useTNSMetadata";
+import { getCosmosNetworkByChainId, getUserId } from "../../../networks";
 import { DbSignature } from "../../../utils/faunaDB/multisig/types";
 import {
   neutral17,
@@ -32,8 +35,7 @@ import { layout } from "../../../utils/style/layout";
 import { tinyAddress } from "../../../utils/text";
 import { MultisigTransactionType } from "../../Multisig/types";
 
-export interface ProposalTransactionItemProps
-  extends MultisigTransactionListType {
+export interface ProposalTransactionItemProps extends ParsedTransaction {
   btnSquaresBackgroundColor?: string;
   isUserMultisig?: boolean;
   shouldRetch?: () => void;
@@ -42,27 +44,23 @@ export interface ProposalTransactionItemProps
 export const ProposalTransactionItem: React.FC<ProposalTransactionItemProps> = (
   props
 ) => {
-  const {
-    type,
-    msgs,
-    createdAt,
-    createdBy,
-    signatures,
-    decliners,
-    recipientAddress,
-    multisig,
-    fee,
-  } = props;
-  const tnsMetadata = useTNSMetadata(createdBy);
+  const { chainId, msgs, createdAt, fee, creatorAddress } = props;
+  const network = getCosmosNetworkByChainId(chainId);
+  const creatorId = getUserId(network?.id, creatorAddress);
+  const tnsMetadata = useNSUserInfo(creatorId);
   const [currentSignatures, setCurrentSignatures] = useState(
-    signatures?.data || []
+    /*signatures?.data || */ []
   );
-  const [currentDecliners, setCurrentDecliners] = useState(decliners || []);
+  const [currentDecliners, setCurrentDecliners] = useState(
+    /*decliners || */ []
+  );
   const { coinSimplified } = useMultisigHelpers();
   const feeSimple = coinSimplified(fee.amount?.[0]);
   const { copyToClipboard } = useCopyToClipboard();
   const [isHovered, setHovered] = useState(false);
   const [isProposalModalVisible, setProposalModalVisible] = useState(false);
+
+  const type = undefined;
 
   const amount =
     type === MultisigTransactionType.STAKE
@@ -71,23 +69,24 @@ export const ProposalTransactionItem: React.FC<ProposalTransactionItemProps> = (
       ? coinSimplified(msgs[0].value.amount)
       : { value: "", ticker: "" };
   const approvedByCount = currentSignatures?.length || 0;
-  const approvalRequiredCount = parseInt(
+  const approvalRequiredCount = 1; /*parseInt(
     multisig.pubkeyJSON
       ? JSON.parse(multisig.pubkeyJSON)?.value.threshold || "0"
       : "0",
     10
-  );
+  );*/
   const completedPercent =
     ((approvedByCount > approvalRequiredCount
       ? approvalRequiredCount
       : approvedByCount) /
       approvalRequiredCount) *
     100;
-  const isCompletelyDeclined =
+  const isCompletelyDeclined = false; /*
     (multisig.userAddresses?.length || 0) -
       approvedByCount -
       currentDecliners.length <
     approvalRequiredCount - approvedByCount;
+    */
 
   const getIcon = useMemo(() => {
     //TODO: Add white icons and use them for each TX type
@@ -99,21 +98,27 @@ export const ProposalTransactionItem: React.FC<ProposalTransactionItemProps> = (
     }
   }, [type]);
 
+  /*
+
   // hooks
   useEffect(() => {
     setCurrentSignatures(signatures?.data || []);
   }, [signatures?.data]);
 
+  */
+
   // functions
   const addSignature = (signature: DbSignature) => {
+    /*
     setCurrentSignatures((prevState: DbSignature[]) => [
       ...prevState,
       signature,
     ]);
+    */
   };
 
   const addDecliner = (address: string) => {
-    setCurrentDecliners((prevState) => [...prevState, address]);
+    //setCurrentDecliners((prevState) => [...prevState, address]);
   };
 
   // returns
@@ -149,11 +154,13 @@ export const ProposalTransactionItem: React.FC<ProposalTransactionItemProps> = (
           <View style={styles.rowCenter}>
             <BrandText style={styles.normal77}>Sending to:</BrandText>
             <SpacerRow size={0.5} />
+            {/*
             <Pressable onPress={() => copyToClipboard(recipientAddress || "")}>
               <BrandText style={styles.normal}>
                 {tinyAddress(recipientAddress, 14)}
               </BrandText>
             </Pressable>
+  */}
           </View>
           <SpacerColumn size={0.75} />
           <View style={styles.rowCenter}>
@@ -166,14 +173,14 @@ export const ProposalTransactionItem: React.FC<ProposalTransactionItemProps> = (
                 <Pressable
                   onPress={() =>
                     copyToClipboard(
-                      tnsMetadata?.metadata?.tokenId || createdBy || ""
+                      tnsMetadata?.metadata?.tokenId || "createdBy" || ""
                     )
                   }
                 >
                   <BrandText style={styles.smallPrimary}>
                     {tnsMetadata?.metadata?.tokenId
                       ? `@${tnsMetadata?.metadata?.tokenId}`
-                      : tinyAddress(createdBy, 14)}
+                      : tinyAddress("createdBy", 14)}
                   </BrandText>
                 </Pressable>
               </AnimationFadeIn>

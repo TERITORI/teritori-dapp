@@ -1,4 +1,5 @@
 import { QueryClient } from "@tanstack/react-query";
+import { parseUnits } from "ethers/lib/utils";
 import React, { FC, useCallback, useMemo, useState } from "react";
 import {
   ActivityIndicator,
@@ -15,6 +16,11 @@ import multisigWalletSVG from "../../../assets/icons/organization/multisig-walle
 import postJobSVG from "../../../assets/icons/organization/post-job.svg";
 import profileSVG from "../../../assets/icons/organization/profile.svg";
 import { useGetUserTransactionsQuery } from "../../api/multisig";
+import {
+  MultisigServiceClientImpl,
+  GrpcWebImpl as MultisigGrpcWebImpl,
+  GetTokenRequest,
+} from "../../api/multisig/v1/multisig";
 import { BrandText } from "../../components/BrandText";
 import { EmptyList } from "../../components/EmptyList";
 import { ScreenContainer } from "../../components/ScreenContainer";
@@ -24,6 +30,7 @@ import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import ModalBase from "../../components/modals/ModalBase";
 import { SpacerColumn } from "../../components/spacer";
+import { useFeedbacks } from "../../context/FeedbacksProvider";
 import {
   getMultisigAccount,
   useFetchMultisigTransactionsByAddress,
@@ -31,8 +38,10 @@ import {
 } from "../../hooks/multisig";
 import { useCreateMultisigTransactionForExecuteContract } from "../../hooks/multisig/useCreateMultisigTransactionForExecuteContract";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getUserId, NetworkKind } from "../../networks";
-import { keplrSignArbitrary, keplrVerifyArbitrary } from "../../utils/keplr";
+import { getUserId, NetworkKind, parseUserId } from "../../networks";
+import { setMultisigToken } from "../../store/slices/settings";
+import { useAppDispatch } from "../../store/store";
+import { keplrSignArbitrary } from "../../utils/keplr";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { neutral33, neutral77, secondaryColor } from "../../utils/style/colors";
 import {
@@ -54,26 +63,66 @@ enum SelectModalKind {
 }
 
 const LoginButton: FC<{ userId: string | undefined }> = ({ userId }) => {
+  const { wrapWithFeedback } = useFeedbacks();
+  const dispatch = useAppDispatch();
   // TODO: if has valid token, show "Logout" instead
   return (
     <PrimaryButton
       text="Login"
       loader
       disabled={!userId} // TODO: replace with connect wallet button in this case
-      onPress={async () => {
+      onPress={wrapWithFeedback(async () => {
         if (!userId) {
-          return;
+          throw new Error("No user id");
         }
-        // TODO: get nonce from server, probably sign it with server so we don't need to store it server-side
-        const nonce = "TODO";
-        const signature = await keplrSignArbitrary(userId, nonce);
-        console.log(signature);
 
-        const isOkay = await keplrVerifyArbitrary(userId, nonce, signature);
-        console.log(isOkay);
+        const [network] = parseUserId(userId);
+        if (network?.kind !== NetworkKind.Cosmos) {
+          throw new Error("Invalid network");
+        }
+
+        const rpc = new MultisigGrpcWebImpl("http://localhost:9091", {
+          debug: false,
+        });
+        const client = new MultisigServiceClientImpl(rpc);
+
+        const { challenge } = await client.GetChallenge({});
+        console.log("challenge", challenge);
+
+        const stdsig = await keplrSignArbitrary(userId, challenge);
+        console.log(stdsig);
+
+        const req: GetTokenRequest = {
+          challenge,
+          challengeSignature: stdsig.signature,
+          userBech32Prefix: network.addressPrefix,
+          userPubkeyJson: JSON.stringify(stdsig.pub_key),
+        };
+
+        console.log("req", req);
+
+        const { authToken } = await client.GetToken(req);
+
+        console.log("authToken", authToken);
+
+        if (!authToken) {
+          throw new Error("No auth token returned from server");
+        }
+
+        dispatch(setMultisigToken(authToken));
+
+        const { multisigs } = await client.Multisigs({ authToken, limit: 100 });
+        console.log("multisigs", multisigs);
+
+        const { transactions } = await client.Transactions({
+          authToken,
+          limit: 100,
+        });
+        console.log("transactions", transactions);
+
         // TODO: send pubkey/address, signature and nonce to get auth token
         // TODO: store token in persisted redux slice
-      }}
+      })}
     />
   );
 };
@@ -276,7 +325,7 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
             <FlatList
               data={data}
               horizontal
-              keyExtractor={(item) => item._id}
+              keyExtractor={(item) => item.address}
               renderItem={({ item, index }) => (
                 <AnimationFadeIn delay={index * 50}>
                   <GetStartedOption
@@ -292,7 +341,7 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
                           selectedWallet?.networkId,
                           item.address
                         ),
-                        walletName: `Multisig #${index + 1}`,
+                        walletName: item.name || `Multisig #${index + 1}`,
                       })
                     }
                     subtitle={tinyAddress(item.address, 21)}
@@ -334,7 +383,7 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
                 </AnimationFadeIn>
               )}
               initialNumToRender={MIN_ITEMS_PER_PAGE}
-              keyExtractor={(item) => item._id}
+              keyExtractor={(item, index) => index.toString()}
               showsVerticalScrollIndicator={false}
               contentContainerStyle={styles.transactionListContent}
               // ListFooterComponent={ListFooter} // FIXME: this causes infinite refetch
