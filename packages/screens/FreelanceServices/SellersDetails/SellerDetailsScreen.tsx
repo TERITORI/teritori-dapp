@@ -192,7 +192,11 @@ export const SellerDetailsScreen: ScreenFC<
       certification: certificationInfoList,
     };
 
-    const uploadedJson = await uploadJSONToIPFS(ipfs_msg, networkId, userId);
+    const uploadedJson = await uploadJSONToIPFS({
+      json: ipfs_msg,
+      networkId,
+      userId,
+    });
     if (!uploadedJson?.url) {
       setToastError({
         title: "Failed",
