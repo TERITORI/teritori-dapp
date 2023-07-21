@@ -319,6 +319,7 @@ func (s *LeaderboardService) ethereumSendRewardsList(
 	}
 	s.logger.Info("saved daily rewards", zap.String("dayID", todayID), zap.String("networkID", s.networkId))
 
+	s.logger.Info("sending update merkle tree tx...")
 	tx, err := s.ethUpdateMerkleRoot(tree.GetHexRoot())
 	if err != nil {
 		return "", errors.Wrap(err, "failed to ethUpdateMerkleRoot")
