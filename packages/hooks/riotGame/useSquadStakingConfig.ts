@@ -26,13 +26,19 @@ const getCosmosSquadStakingConfig = async (networkId: string | undefined) => {
 const getEthereumSquadStakingConfig = async (networkId: string | undefined) => {
   const ethereumClient = await getEthereumSquadStakingQueryClient(networkId);
 
+  const cooldownPeriod = await ethereumClient.cooldownPeriod();
+  const owner = await ethereumClient.owner();
+  const squadCountLimit = await ethereumClient.maxSquadCount();
+
+  // TODO: Hardcode several values because it will not be changed and it take too much requests to get them
   const squadConfig: SquadConfig = {
+    owner,
+    cooldownPeriod: cooldownPeriod.toNumber(),
+    squadCountLimit: squadCountLimit.toNumber(),
+    // Hardcode
     bonusMultiplier: [100, 101, 102, 103, 104, 105],
-    cooldownPeriod: 360,
     maxSquadSize: 6,
     minSquadSize: 1,
-    owner: "owner",
-    squadCountLimit: 2,
   };
 
   return squadConfig;

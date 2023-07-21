@@ -46,9 +46,6 @@ export type CosmosNetworkInfo = NetworkInfoBase & {
   nameServiceDefaultImage?: string;
   nameServiceTLD?: string;
   vaultContractAddress?: string;
-  riotersFooterContractAddress?: string;
-  socialFeedContractAddress?: string;
-
   riotSquadStakingContractAddressV1?: string;
   riotSquadStakingContractAddressV2?: string;
   riotersFooterContractAddress?: string;

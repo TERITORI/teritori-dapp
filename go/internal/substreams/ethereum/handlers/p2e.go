@@ -23,6 +23,7 @@ func (h *Handler) handleSquadUnstake(contractABI *abi.ABI, tx *pb.Tx, args map[s
 	// TODO: find a way to decode topics with go ABI
 	for _, log := range tx.Receipt.Logs[:totalLogs-1] {
 		tokenID, err := DecodeTopicToInt(log.Topics[3])
+
 		if err != nil {
 			return errors.Wrap(err, "failed to parsed event log")
 		}

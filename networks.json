@@ -6,7 +6,8 @@
     "displayName": "Teritori",
     "icon": "icons/networks/teritori.svg",
     "features": [
-      "NFTMarketplace"
+      "NFTMarketplace",
+      "P2E"
     ],
     "walletUrlForStaking": "https://explorer.teritori.com/teritori/staking",
     "currencies": [
@@ -130,7 +131,8 @@
     "displayName": "Teritori Testnet",
     "icon": "icons/networks/teritori.svg",
     "features": [
-      "NFTMarketplace"
+      "NFTMarketplace",
+      "P2E"
     ],
     "currencies": [
       {
@@ -263,7 +265,8 @@
     "displayName": "Ethereum Goerli",
     "icon": "icons/networks/ethereum.svg",
     "features": [
-      "NFTMarketplace"
+      "NFTMarketplace",
+      "P2E"
     ],
     "currencies": [
       {
@@ -307,7 +310,8 @@
     "displayName": "Ethereum",
     "icon": "icons/networks/ethereum.svg",
     "features": [
-      "NFTMarketplace"
+      "NFTMarketplace",
+      "P2E"
     ],
     "currencies": [
       {

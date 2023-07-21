@@ -22,9 +22,12 @@ func main() {
 		dbPass = fs.String("postgres-password", "", "password for postgreSQL database")
 		dbName = fs.String("database-name", "", "database name for postgreSQL")
 		dbUser = fs.String("postgres-user", "", "username for postgreSQL")
+
+		teritoriDistributorOwnerMnemonic = fs.String("teritori-distributor-owner-mnemonic", "", "mnemonic of the owner of distributor contract")
+		ethereumDistributorOwnerMnemonic = fs.String("ethereum-distributor-owner-mnemonic", "", "mnemonic of the owner of distributor contract")
 	)
 
-	if err := ff.Parse(fs, os.Args[2:],
+	if err := ff.Parse(fs, os.Args[1:],
 		ff.WithEnvVars(),
 		ff.WithIgnoreUndefined(true),
 		ff.WithConfigFile(".env"),
@@ -38,12 +41,6 @@ func main() {
 	if networkId == "" {
 		panic(errors.New("network id must be provided. Ex: teritori-testnet,ethereum-goerli"))
 	}
-
-	mnemonic := os.Args[2]
-	if mnemonic == "" {
-		panic(errors.New("mnemonic for given network id must be provided"))
-	}
-	// TODO: check if mnemonic is correct, matched with distributor account =============================
 
 	// get logger
 	logger, err := zap.NewDevelopment()
@@ -60,6 +57,22 @@ func main() {
 	if err != nil {
 		panic(errors.Wrap(err, "failed to unmarshal networks config"))
 	}
+
+	network := netstore.MustGetNetwork(networkId)
+
+	var mnemonic string
+	switch network.GetBase().Kind {
+	case networks.NetworkKindEthereum:
+		mnemonic = *ethereumDistributorOwnerMnemonic
+	case networks.NetworkKindCosmos:
+		mnemonic = *teritoriDistributorOwnerMnemonic
+	default:
+		panic("Unknown network")
+	}
+	if mnemonic == "" {
+		panic("you must provide the mnemonic for given network")
+	}
+	// TODO: check if mnemonic is correct, matched with distributor account =============================
 
 	// get db
 	if dbHost == nil || dbUser == nil || dbPass == nil || dbName == nil || dbPort == nil {

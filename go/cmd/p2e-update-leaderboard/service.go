@@ -311,6 +311,8 @@ func (s *LeaderboardService) ethereumSendRewardsList(
 	}
 	s.logger.Info("saved daily rewards", zap.String("dayID", todayID), zap.String("networkID", s.networkId))
 
+	// Send merkle root
+
 	return "tx: 1234", nil
 }
 

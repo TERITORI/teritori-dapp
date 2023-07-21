@@ -1,8 +1,6 @@
 package sinker
 
 import (
-	"fmt"
-
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/pkg/errors"
 	sink "github.com/streamingfast/substreams-sink"
@@ -53,8 +51,6 @@ func (l *Loader) GetOrCreateCursor(cursorID string, networkID string) (*sink.Cur
 }
 
 func (l *Loader) WriteCursor(sinkCursor *sink.Cursor, cursorID string, networkID string) error {
-	fmt.Println(sinkCursor, cursorID)
-
 	cursor := indexerdb.Cursors{
 		ID:       cursorID,
 		Cursor:   sinkCursor.String(),
@@ -99,7 +95,7 @@ func (l *Loader) ApplyChanges(sinkCursor *sink.Cursor, cursorID string, networkI
 		return err
 	}
 
-	l.logger.Info(">>> applied changes into DB done !")
+	l.logger.Info(">>> cursor updated and changes applied !")
 
 	// Start new transaction
 	l.MustStartDbTransaction()

@@ -502,16 +502,24 @@ export const ethereumSquadStake = async (
   }
 
   const selectedNfts = [];
+
   for (const selectedRipper of selectedRippers) {
     const tokenId = getRipperTokenId(selectedRipper);
 
-    // NOTE: setApprovalForAll does not work because we can stake NFTs from diffrent contracts
+    // Set approveForAll for each NFT contract
     const nftClient = TeritoriNft__factory.connect(
       selectedRipper.nftContractAddress,
       signer
     );
-    const approveTx = await nftClient.approve(squadContract, tokenId);
-    await approveTx.wait();
+
+    const isApprovedForAll = await nftClient.isApprovedForAll(
+      sender,
+      squadContract
+    );
+    if (!isApprovedForAll) {
+      const approveTx = await nftClient.setApprovalForAll(squadContract, true);
+      await approveTx.wait();
+    }
 
     selectedNfts.push({
       collection: selectedRipper.nftContractAddress,
