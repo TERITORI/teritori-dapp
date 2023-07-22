@@ -70,12 +70,12 @@ func (s *LeaderboardService) startScheduler() {
 
 	schedule := gocron.NewScheduler(time.UTC)
 
-	schedule.Every(5).Minutes().Do(func() {
+	schedule.Every(1).Minutes().Do(func() {
 		s.execUpdateLeaderboard(network, rpcEndpoint)
 	})
 
 	// schedule.Every(1).Day().At("00:00").Do(func() {
-	schedule.Every(5).Seconds().Do(func() {
+	schedule.Every(15).Minutes().Do(func() {
 		s.execReportRewards(network, rpcEndpoint)
 	})
 
@@ -320,7 +320,8 @@ func (s *LeaderboardService) ethereumSendRewardsList(
 	s.logger.Info("saved daily rewards", zap.String("dayID", todayID), zap.String("networkID", s.networkId))
 
 	s.logger.Info("sending update merkle tree tx...")
-	tx, err := s.ethUpdateMerkleRoot(tree.GetHexRoot())
+
+	tx, err := s.ethUpdateMerkleRoot(tree.GetRoot())
 	if err != nil {
 		return "", errors.Wrap(err, "failed to ethUpdateMerkleRoot")
 	}
@@ -328,7 +329,7 @@ func (s *LeaderboardService) ethereumSendRewardsList(
 	return tx, nil
 }
 
-func (s *LeaderboardService) ethUpdateMerkleRoot(merkleRoot string) (string, error) {
+func (s *LeaderboardService) ethUpdateMerkleRoot(merkleRoot []byte) (string, error) {
 	mnemonic := s.mnemonic
 	wallet, err := hdwallet.NewFromMnemonic(mnemonic)
 	if err != nil {
@@ -383,7 +384,9 @@ func (s *LeaderboardService) ethUpdateMerkleRoot(merkleRoot string) (string, err
 	}
 
 	merkleRootBytes := [32]byte{}
-	copy(merkleRootBytes[:], []byte(merkleRoot))
+	copy(merkleRootBytes[:], merkleRoot)
+
+	s.logger.Info("sending with reporter", zap.String("reporter", fromAddress.String()))
 
 	tx, err := instance.UpdateMerkleRoot(auth, merkleRootBytes)
 	if err != nil {

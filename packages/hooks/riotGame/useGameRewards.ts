@@ -6,13 +6,104 @@ import {
   TeritoriDistributorClient,
   TeritoriDistributorQueryClient,
 } from "../../contracts-clients/teritori-distributor/TeritoriDistributor.client";
+import { Distributor__factory } from "../../evm-contracts-clients/distributor/Distributor__factory";
 import {
+  CosmosNetworkInfo,
+  EthereumNetworkInfo,
   getKeplrSigningCosmWasmClient,
   mustGetNonSigningCosmWasmClient,
+  NetworkInfo,
   NetworkKind,
   parseUserId,
+  WEI_TOKEN_ADDRESS,
 } from "../../networks";
+import { mustGetP2eClient } from "../../utils/backend";
+import { getMetaMaskEthereumSigner } from "../../utils/ethereum";
 import useSelectedWallet from "../useSelectedWallet";
+
+const cosmosGetClaimableAmount = async (
+  network: CosmosNetworkInfo,
+  distributorContractAddress: string,
+  userAddress: string
+) => {
+  const nonSigningClient = await mustGetNonSigningCosmWasmClient(network.id);
+  const distributorQueryClient = new TeritoriDistributorQueryClient(
+    nonSigningClient,
+    distributorContractAddress
+  );
+  return await distributorQueryClient.userClaimable({
+    addr: userAddress,
+  });
+};
+
+const ethereumGetClaimableAmount = async (
+  network: EthereumNetworkInfo,
+  userAddress: string
+) => {
+  const p2eClient = mustGetP2eClient(network?.id);
+  const proof = await p2eClient.MerkleProof({
+    userId: userAddress,
+    token: WEI_TOKEN_ADDRESS,
+    networkId: network?.id,
+  });
+  return proof.userReward?.amount;
+};
+
+const cosmosClaim = async (
+  networkId: string,
+  userAddress: string,
+  distributorContractAddress: string
+) => {
+  const signingClient = await getKeplrSigningCosmWasmClient(networkId);
+  const distributorClient = new TeritoriDistributorClient(
+    signingClient,
+    userAddress,
+    distributorContractAddress
+  );
+
+  await distributorClient.claim();
+};
+
+const ethereumClaim = async (
+  network: EthereumNetworkInfo,
+  userAddress: string,
+  distributorContractAddress: string
+) => {
+  const p2eClient = mustGetP2eClient(network.id);
+  const resp = await p2eClient.MerkleProof({
+    userId: userAddress,
+    token: WEI_TOKEN_ADDRESS,
+    networkId: network.id,
+  });
+  const allocation = resp.userReward?.amount || "0";
+
+  const signer = await getMetaMaskEthereumSigner(network, userAddress);
+  if (!signer) {
+    throw Error("Unable to get signer");
+  }
+
+  const distributorClient = Distributor__factory.connect(
+    distributorContractAddress,
+    signer
+  );
+
+  const { maxFeePerGas, maxPriorityFeePerGas } = await signer.getFeeData();
+  const estimatedGasLimit = await distributorClient.estimateGas.claim(
+    WEI_TOKEN_ADDRESS,
+    allocation,
+    resp.proof
+  );
+
+  // TODO: Handle native token transfer failed
+  const tx = await distributorClient.claim(WEI_TOKEN_ADDRESS, "1", resp.proof, {
+    maxFeePerGas: maxFeePerGas?.toNumber(),
+    maxPriorityFeePerGas: maxPriorityFeePerGas?.toNumber(),
+    gasLimit: estimatedGasLimit.mul(150).div(100),
+  });
+  await tx.wait();
+
+  return true;
+};
 
 export const useGameRewards = () => {
   const selectedWallet = useSelectedWallet();
@@ -24,24 +115,28 @@ export const useGameRewards = () => {
     ["claimableAmount", userId],
     async () => {
       const [network, userAddress] = parseUserId(userId);
-      if (
-        network?.kind !== NetworkKind.Cosmos ||
-        !network.distributorContractAddress ||
-        !userAddress
-      ) {
+
+      const distributorContractAddress = network?.distributorContractAddress;
+
+      if (!distributorContractAddress || !userAddress) {
         return "0";
       }
 
-      const nonSigningClient = await mustGetNonSigningCosmWasmClient(
-        network.id
-      );
-      const distributorQueryClient = new TeritoriDistributorQueryClient(
-        nonSigningClient,
-        network.distributorContractAddress
-      );
-      return await distributorQueryClient.userClaimable({
-        addr: userAddress,
-      });
+      if (network?.kind === NetworkKind.Cosmos) {
+        return await cosmosGetClaimableAmount(
+          network,
+          distributorContractAddress,
+          userAddress
+        );
+      } else if (network?.kind === NetworkKind.Ethereum) {
+        const claimable = await ethereumGetClaimableAmount(
+          network,
+          userAddress
+        );
+        return claimable;
+      } else {
+        throw Error("failed to get claimable amount: unknown network");
+      }
     },
     { staleTime: Infinity }
   );
@@ -52,22 +147,26 @@ export const useGameRewards = () => {
     try {
       const [network, userAddress] = parseUserId(userId);
 
-      if (
-        network?.kind !== NetworkKind.Cosmos ||
-        !network.distributorContractAddress ||
-        !userAddress
-      ) {
+      if (!network?.distributorContractAddress || !userAddress) {
         throw new Error("invalid user id");
       }
 
-      const signingClient = await getKeplrSigningCosmWasmClient(network.id);
-      const distributorClient = new TeritoriDistributorClient(
-        signingClient,
-        userAddress,
-        network.distributorContractAddress
-      );
+      if (network?.kind === NetworkKind.Cosmos) {
+        await cosmosClaim(
+          network.id,
+          userAddress,
+          network.distributorContractAddress
+        );
+      } else if (network?.kind === NetworkKind.Ethereum) {
+        await ethereumClaim(
+          network,
+          userAddress,
+          network.distributorContractAddress
+        );
+      } else {
+        throw Error("Unknown network");
+      }
 
-      await distributorClient.claim();
       setToastSuccess({
         title: "Success",
         message: "Your rewards have been sent to your wallet",

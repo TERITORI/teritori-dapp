@@ -1,10 +1,14 @@
+import { useMemo } from "react";
 import { StyleSheet, View, ViewStyle } from "react-native";
 
 import { InfoBox } from "./InfoBox";
 import { PrimaryButtonOutline } from "../../../components/buttons/PrimaryButtonOutline";
 import { useGameRewards } from "../../../hooks/riotGame/useGameRewards";
 import { useSeasonRank } from "../../../hooks/riotGame/useSeasonRank";
+import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { NetworkKind, WEI_TOKEN_ADDRESS } from "../../../networks";
+import { teritoriCurrencies } from "../../../networks/teritori/currencies";
 import { decimalFromAtomics } from "../../../utils/coins";
 import { yellowDefault } from "../../../utils/style/colors";
 import { layout } from "../../../utils/style/layout";
@@ -19,6 +23,26 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
   const selectedWallet = useSelectedWallet();
   const { userRank, prettyUserRank, currentSeason } = useSeasonRank();
   const { isClaiming, claimableAmount, claimRewards } = useGameRewards();
+  const selectedNetwork = useSelectedNetworkInfo();
+
+  const formattedClaimable = useMemo(() => {
+    if (
+      !selectedNetwork?.kind ||
+      !selectedWallet?.networkId ||
+      !claimableAmount
+    ) {
+      return "0";
+    }
+
+    const res = decimalFromAtomics(
+      selectedWallet.networkId,
+      "" + claimableAmount,
+      selectedNetwork.kind === NetworkKind.Ethereum
+        ? WEI_TOKEN_ADDRESS
+        : teritoriCurrencies[0].denom
+    );
+    return res;
+  }, [claimableAmount, selectedNetwork?.kind, selectedWallet?.networkId]);
 
   return (
     <View style={[containerStyle, styles.container]}>
@@ -46,11 +70,11 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
           text={
             isClaiming
               ? "Claiming..."
-              : `Claim available rewards: ${decimalFromAtomics(
-                  selectedWallet?.networkId,
-                  "" + claimableAmount,
-                  "utori" // FIXME: don't hardcode denom and use prettyPrice
-                )} TORI`
+              : `Claim available rewards: ${formattedClaimable} ${
+                  selectedNetwork?.kind === NetworkKind.Ethereum
+                    ? "WEI"
+                    : "TORI"
+                }`
           }
           touchableStyle={{ marginLeft: layout.padding_x1 }}
           onPress={claimRewards}

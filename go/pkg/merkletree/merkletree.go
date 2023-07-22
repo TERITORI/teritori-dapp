@@ -11,6 +11,7 @@ import (
 	"golang.org/x/crypto/sha3"
 )
 
+// @yo1110:
 // Teritori Version of Merkle tree. Support:
 // - keccak256
 // - sort pairs
@@ -94,7 +95,6 @@ func (m *MerkleTree) GetHexProof(content Content) ([]string, error) {
 		if ok {
 			currentParent := current.Parent
 			var proof []string
-
 			for currentParent != nil {
 				if bytes.Equal(currentParent.Left.Hash, current.Hash) {
 					rightHash := currentParent.Right.Hash
