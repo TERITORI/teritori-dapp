@@ -19,11 +19,12 @@ import MessageCard from "../../components/cards/MessageCard";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
 import { useAppNavigation, ScreenFC } from "../../utils/navigation";
 import { layout } from "../../utils/style/layout";
+import { Conversation } from "../../utils/types/message";
 
 export const MessageScreen: ScreenFC<"Message"> = () => {
   const [isCreateGroup, setIsCreateGroup] = useState(false);
   const [isCreateConversation, setIsCreateConversation] = useState(false);
-  const [activeConversation, setActiveConversation] = useState(false);
+  const [activeConversation, setActiveConversation] = useState<Conversation>();
   const [activeTab, setActiveTab] = useState<"chat" | "add-friend">("chat");
   const navigation = useAppNavigation();
 

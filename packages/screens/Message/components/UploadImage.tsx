@@ -12,11 +12,12 @@ import {
 } from "../../../utils/mime";
 import { neutralA3 } from "../../../utils/style/colors";
 import { fontSemibold13 } from "../../../utils/style/fonts";
-import { LocalFileData, RemoteFileData } from "../../../utils/types/feed";
+import { LocalFileData } from "../../../utils/types/feed";
+import { MessageFileData } from "../../../utils/types/message";
 
 interface UploadImageProps {
-  onClose: () => void;
-  setFile: (file: RemoteFileData) => void;
+  onClose?: () => void;
+  setFile: (file: MessageFileData) => void;
 }
 
 const LIST = [
@@ -38,7 +39,7 @@ export const UploadImage = ({ onClose, setFile }: UploadImageProps) => {
       window.onfocus = () => {
         setTimeout(() => {
           if (!hasFile) {
-            onClose();
+            onClose?.();
           }
         }, 1000);
       };
@@ -48,13 +49,14 @@ export const UploadImage = ({ onClose, setFile }: UploadImageProps) => {
   const handleUpload = async (file: LocalFileData) => {
     setHasFile(true);
     if (file) {
-      const base64 = await convertFileToBase64(file.file);
+      const base64: string = await convertFileToBase64(file.file);
 
       setFile({
         ...omit(file, "file"),
         url: base64,
+        type: "image",
       });
-      onClose();
+      onClose?.();
     }
   };
 

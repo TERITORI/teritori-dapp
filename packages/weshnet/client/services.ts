@@ -79,7 +79,7 @@ export const addContact = async (
         },
       }),
     });
-  } catch (err) {
+  } catch (err: any) {
     if (!err?.message?.includes("ErrContactRequestContactAlreadyAdded")) {
       throw err;
     }

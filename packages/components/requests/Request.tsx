@@ -29,7 +29,6 @@ type Props = {
 const RequestList = ({ isOnline, data }: Props) => {
   const { setToastError } = useFeedbacks();
   const [addLoading, setAddLoading] = useState(false);
-  const [rejectLoading, setRejectLoading] = useState(false);
 
   const onlineStatusBadgeColor = isOnline ? "green" : "yellow";
 
@@ -56,7 +55,6 @@ const RequestList = ({ isOnline, data }: Props) => {
   };
 
   const handleCancelFriend = async () => {
-    setRejectLoading(true);
     try {
       await weshClient.client.ContactRequestDiscard({
         contactPk: bytesFromString(data?.contactId),
@@ -68,7 +66,6 @@ const RequestList = ({ isOnline, data }: Props) => {
         message: "Failed to reject contact. Please try again later.",
       });
     }
-    setRejectLoading(false);
   };
 
   return (
@@ -76,7 +73,7 @@ const RequestList = ({ isOnline, data }: Props) => {
       <FlexRow justifyContent="space-between">
         <View>
           <FlexRow>
-            <Avatar.Image size={40} source={data.avatar} />
+            <Avatar.Image size={40} source={{ uri: data.avatar }} />
             <Badge
               style={{
                 position: "absolute",
@@ -106,7 +103,7 @@ const RequestList = ({ isOnline, data }: Props) => {
             <SpacerRow size={1.5} />
             <SecondaryButton
               onPress={handleCancelFriend}
-              isLoading={rejectLoading}
+              loader
               text="Reject"
               size="SM"
             />

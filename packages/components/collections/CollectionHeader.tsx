@@ -1,4 +1,4 @@
-import Clipboard from "@react-native-clipboard/clipboard";
+import Clipboard from "expo-clipboard";
 import React from "react";
 import { View, Platform, Linking } from "react-native";
 

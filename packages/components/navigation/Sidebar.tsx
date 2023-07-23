@@ -1,4 +1,3 @@
-import { DrawerContentComponentProps } from "@react-navigation/drawer";
 import React from "react";
 import { View, StyleSheet, Pressable, FlatList, Platform } from "react-native";
 import Animated, {
@@ -53,11 +52,11 @@ const SidebarSeparator: React.FC = () => {
   );
 };
 
-interface SidebarProps extends DrawerContentComponentProps {
+interface SidebarProps {
   expanded: boolean;
 }
 
-export const Sidebar = (props: SidebarProps) => {
+export const Sidebar = ({ expanded }: SidebarProps) => {
   const selectedWallet = useSelectedWallet();
   const selectedNetworkKind = useSelectedNetworkKind();
   const { top, bottom } = useSafeAreaInsets();
@@ -71,11 +70,11 @@ export const Sidebar = (props: SidebarProps) => {
   const layoutStyle = useAnimatedStyle(
     () => ({
       width:
-        isSidebarExpanded || props.expanded
+        isSidebarExpanded || expanded
           ? withSpring(fullSidebarWidth, SpringConfig)
           : withSpring(smallSidebarWidth, SpringConfig),
     }),
-    [isSidebarExpanded, props.expanded]
+    [isSidebarExpanded, expanded]
   );
 
   const toggleButtonStyle = useAnimatedStyle(
@@ -146,7 +145,7 @@ export const Sidebar = (props: SidebarProps) => {
               onPress={onRouteChange}
               {...item}
               route={route}
-              expanded={props.expanded}
+              expanded={expanded}
             />
           );
         }}
@@ -161,7 +160,7 @@ export const Sidebar = (props: SidebarProps) => {
               id="ComingSoon2"
               title=""
               onPress={() => navigation.navigate("ComingSoon")}
-              expanded={props.expanded}
+              expanded={expanded}
             />
             <SpacerColumn size={1} />
           </>

@@ -9,7 +9,7 @@ import { neutral00 } from "../../../utils/style/colors";
 import { Conversation } from "../../../utils/types/message";
 interface FriendsProps {
   items: Conversation[];
-  setActiveConversation: () => void;
+  setActiveConversation?: (item: Conversation) => void;
 }
 export const Friends = ({ items, setActiveConversation }: FriendsProps) => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -35,7 +35,7 @@ export const Friends = ({ items, setActiveConversation }: FriendsProps) => {
             key={item.id}
             item={item}
             handleChatPress={() => {
-              setActiveConversation(item);
+              setActiveConversation?.(item);
             }}
           />
         ))

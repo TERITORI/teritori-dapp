@@ -73,7 +73,7 @@ export const Calendar = () => {
                     currentMonth.getMonth() + 1
                   }-${currentMonth.getFullYear()}`
                     ? 90
-                    : null,
+                    : 0,
                 backgroundColor:
                   selected ===
                   `${day.getDate()}-${

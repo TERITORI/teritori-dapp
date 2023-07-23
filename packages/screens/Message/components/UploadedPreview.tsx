@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import { View, TouchableOpacity } from "react-native";
 
 import { HandleSendParams } from "./ChatSection";
@@ -10,12 +10,12 @@ import ModalBase from "../../../components/modals/ModalBase";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { neutral17, neutral77 } from "../../../utils/style/colors";
 import { fontMedium14 } from "../../../utils/style/fonts";
-import { RemoteFileData } from "../../../utils/types/feed";
+import { MessageFileData } from "../../../utils/types/message";
 
 interface UploadedPreviewProps {
   handleSend: (params: HandleSendParams) => void;
-  setFile: () => void;
-  file: RemoteFileData;
+  setFile: Dispatch<SetStateAction<MessageFileData | undefined>>;
+  file: MessageFileData;
 }
 
 export const UploadedPreview = ({
@@ -61,6 +61,7 @@ export const UploadedPreview = ({
           boxMainContainerStyle={{ backgroundColor: neutral17 }}
           textInputStyle={{ marginLeft: 10, top: -8 }}
           onSubmitEditing={onSend}
+          label=""
         >
           <TouchableOpacity onPress={onSend}>
             <SVG source={sent} />

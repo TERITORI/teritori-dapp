@@ -8,10 +8,10 @@ import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { secondaryColor } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
 import { CheckboxDappStore } from "../../DAppStore/components/CheckboxDappStore";
-interface CheckboxItem {
+export interface CheckboxItem {
+  id: string;
   name: string;
   avatar: string;
-  icon: string;
   checked: boolean;
 }
 interface CheckboxGroupProps {
@@ -43,7 +43,7 @@ export const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
               <CheckboxDappStore isChecked={item.checked} />
             </TouchableOpacity>
             <SpacerRow size={2} />
-            <Avatar.Image size={40} source={item.avatar || ""} />
+            <Avatar.Image size={40} source={{ uri: item.avatar || "" }} />
 
             <SpacerRow size={2} />
             <BrandText style={[fontSemibold14, { color: secondaryColor }]}>

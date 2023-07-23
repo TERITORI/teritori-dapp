@@ -73,7 +73,7 @@ export interface TextInputCustomProps<T extends FieldValues>
   subtitle?: React.ReactElement;
   hideLabel?: boolean;
   valueModifier?: (value: string) => string;
-  labelStyle?: TextStyle;
+  labelStyle?: TextStyle | TextStyle[];
   containerStyle?: ViewStyle;
   boxMainContainerStyle?: ViewStyle;
   noBrokenCorners?: boolean;
@@ -84,7 +84,7 @@ export interface TextInputCustomProps<T extends FieldValues>
 
 export const Label: React.FC<{
   children: string;
-  style?: TextStyle;
+  style?: TextStyle | TextStyle[];
   isRequired?: boolean;
 }> = ({ children, style, isRequired }) => (
   <View

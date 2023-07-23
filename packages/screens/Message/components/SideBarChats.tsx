@@ -20,11 +20,17 @@ import {
 } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { Conversation } from "../../../utils/types/message";
 
-export const SideBarChats: React.FC = ({
+interface SideBarChatsProps {
+  setActiveConversation: (conv: Conversation) => void;
+  activeConversation?: Conversation;
+}
+
+export const SideBarChats = ({
   setActiveConversation,
   activeConversation,
-}) => {
+}: SideBarChatsProps) => {
   const conversationList = useSelector(selectConversationList);
 
   useEffect(() => {

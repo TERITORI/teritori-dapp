@@ -6,7 +6,10 @@ import FlexRow from "../../../components/FlexRow";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
-import { selectConversationList } from "../../../store/slices/message";
+import {
+  selectContactInfo,
+  selectConversationList,
+} from "../../../store/slices/message";
 import { purpleDark, successColor } from "../../../utils/style/colors";
 import { fontMedium10 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
@@ -24,6 +27,8 @@ export const GroupInvitationAction = ({
   message,
 }: GroupInvitationActionProps) => {
   const { setToastError } = useFeedbacks();
+
+  const contactInfo = useSelector(selectContactInfo);
   const conversations = useSelector(selectConversationList);
 
   const [isAccepted, setIsAccepted] = useState(false);
@@ -68,13 +73,15 @@ export const GroupInvitationAction = ({
                 id: stringFromBytes(weshConfig.config.accountPk),
                 rdvSeed: stringFromBytes(weshConfig.metadata.rdvSeed),
                 tokenId: weshConfig.metadata.tokenId,
+                name: contactInfo.name,
+                avatar: contactInfo.avatar,
               },
               groupName: message?.payload?.metadata?.groupName,
             },
           },
         },
       });
-    } catch (err) {
+    } catch (err: any) {
       setToastError({
         title: "Failed to accept group",
         message: err?.message,

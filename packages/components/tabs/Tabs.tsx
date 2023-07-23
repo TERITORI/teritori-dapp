@@ -32,7 +32,7 @@ export interface TabDefinition {
   badgeCount?: number;
   disabled?: boolean;
   scrollTo?: string;
-  icon: any;
+  icon?: any;
 }
 
 export const Tabs = <T extends { [key: string]: TabDefinition }>({

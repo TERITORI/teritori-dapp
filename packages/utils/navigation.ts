@@ -2,6 +2,7 @@ import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React from "react";
 
+import { Conversation } from "./types/message";
 import { NewPostFormValues } from "../components/socialFeed/NewsFeed/NewsFeed.type";
 
 export type RouteName = keyof RootStackParamList;
@@ -61,7 +62,7 @@ export type RootStackParamList = {
   ToriPunks: { route: string };
 
   Message: undefined;
-  ChatSection: undefined;
+  ChatSection: Conversation;
   FriendshipManager: undefined;
   AddFriend: undefined;
 };
@@ -136,6 +137,9 @@ const navConfig: {
     DAppStore: "dapp-store",
     // === DApps
     ToriPunks: "dapp/tori-punks/:route?",
+    ChatSection: "",
+    FriendshipManager: "",
+    AddFriend: "",
   },
 };
 

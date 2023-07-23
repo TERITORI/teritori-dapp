@@ -1,2 +1,3 @@
-import Lottie from "lottie-react";
+import Lottie, { LottieRefCurrentProps } from "lottie-react";
+export { LottieRefCurrentProps };
 export default Lottie;

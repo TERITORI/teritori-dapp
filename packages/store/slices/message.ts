@@ -20,7 +20,7 @@ export interface MessageState {
   contactRequestList: ContactRequest[];
   messageList: MessageList;
   conversationList: {
-    [key: string]: Conversation[];
+    [key: string]: Conversation;
   };
   lastIds: {
     [key: string]: string;
@@ -86,17 +86,18 @@ const messageSlice = createSlice({
       state,
       action: PayloadAction<{ groupPk: string; data: Message }>
     ) => {
-      try {
+      if (action.payload.data.parentId) {
         if (!state.messageList[action.payload.groupPk]) {
           state.messageList[action.payload.groupPk] = {};
         }
         if (
           !state.messageList[action.payload.groupPk][
-            action.payload.data?.parentId
+            action.payload?.data?.parentId
           ]
         ) {
+          //@ts-ignore
           state.messageList[action.payload.groupPk][
-            action.payload.data?.parentId
+            action?.payload?.data?.parentId
           ] = {};
         }
         state.messageList[action.payload.groupPk][
@@ -110,8 +111,6 @@ const messageSlice = createSlice({
           ],
           "id"
         );
-      } catch (err) {
-        console.log("updateMessageReaction err", err);
       }
     },
     setContactRequestList: (
@@ -127,20 +126,19 @@ const messageSlice = createSlice({
         ];
       }
     },
-    setConversationList: (
-      state,
-      action: PayloadAction<Conversation | Conversation[]>
-    ) => {
+    setConversationList: (state, action: PayloadAction<Conversation>) => {
       state.conversationList[action.payload.id] = action.payload;
     },
     updateConversationById: (
       state,
       action: PayloadAction<Partial<Conversation>>
     ) => {
-      state.conversationList[action.payload.id] = {
-        ...(state.conversationList[action.payload.id] || {}),
-        ...action.payload,
-      };
+      if (action.payload.id) {
+        state.conversationList[action.payload.id] = {
+          ...(state.conversationList[action.payload.id] || {}),
+          ...action.payload,
+        };
+      }
     },
     setLastId: (
       state,

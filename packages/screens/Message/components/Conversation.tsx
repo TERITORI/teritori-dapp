@@ -46,7 +46,7 @@ import { stringFromBytes } from "../../../weshnet/client/utils";
 interface ConversationProps {
   conversation: IConversation;
   message: Message;
-  groupPk: Uint8Array;
+  groupPk?: Uint8Array;
   isMessageChain: boolean;
   isNextMine: boolean;
   onReply: (params: ReplyTo) => void;
@@ -74,7 +74,7 @@ export const Conversation = ({
       return [];
     }
     return chain(message.reactions || [])
-      .groupBy(message?.payload.message)
+      .groupBy(message?.payload?.message)
       .map((value, key) => ({
         icon: value?.[0]?.payload?.message || "",
         count: value.length,
@@ -132,7 +132,7 @@ export const Conversation = ({
         >
           {!isMessageChain && (
             <Avatar.Image
-              source={getConversationAvatar(conversation)}
+              source={{ uri: getConversationAvatar(conversation) }}
               size={30}
             />
           )}
@@ -236,7 +236,7 @@ export const Conversation = ({
             <GroupInvitationAction message={message} />
           )}
 
-          {!!message?.payload?.files?.[0]?.type === "image" && (
+          {message?.payload?.files?.[0]?.type === "image" && (
             <Image
               source={{ uri: message?.payload.files[0].url }}
               style={{ height: 200, width: 120, borderRadius: 10 }}
@@ -273,11 +273,11 @@ export const Conversation = ({
                   <View style={styles.popupContainer}>
                     <MessagePopup
                       onClose={() => setShowMenu(false)}
-                      message={message?.payload.message}
+                      message={message?.payload?.message || ""}
                       onReply={() =>
                         onReply({
                           id: message.id,
-                          message: message?.payload.message,
+                          message: message?.payload?.message || "",
                         })
                       }
                       isForwarding={isForwarding}

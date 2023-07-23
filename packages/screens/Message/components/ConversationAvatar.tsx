@@ -19,7 +19,7 @@ export const ConversationAvatar = ({
       <View>
         {conversation.members.map((conv, index) => (
           <Avatar.Image
-            source={getConversationAvatar(conversation, index)}
+            source={{ uri: getConversationAvatar(conversation, index) }}
             size={size}
           />
         ))}
@@ -28,7 +28,10 @@ export const ConversationAvatar = ({
   }
   return (
     <>
-      <Avatar.Image source={getConversationAvatar(conversation)} size={size} />
+      <Avatar.Image
+        source={{ uri: getConversationAvatar(conversation) }}
+        size={size}
+      />
     </>
   );
 };

@@ -2,16 +2,16 @@ import { Window as KeplrWindow } from "@keplr-wallet/types";
 import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 
-import { useSelectedNetworkInfo } from "./../../hooks/useSelectedNetwork";
-import { Wallet } from "./wallet";
-import { NetworkKind, getUserId } from "../../networks";
+import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
+import { NetworkKind, getUserId } from "../../../networks";
 import {
   selectIsKeplrConnected,
   setIsKeplrConnected,
   setSelectedWalletId,
-} from "../../store/slices/settings";
-import { useAppDispatch } from "../../store/store";
-import { WalletProvider } from "../../utils/walletProvider";
+} from "../../../store/slices/settings";
+import { useAppDispatch } from "../../../store/store";
+import { WalletProvider } from "../../../utils/walletProvider";
+import { Wallet } from "../wallet";
 
 export type UseKeplrResult =
   | [true, boolean, Wallet[]]

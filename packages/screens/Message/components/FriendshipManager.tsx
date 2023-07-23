@@ -15,8 +15,15 @@ import {
   selectConversationList,
 } from "../../../store/slices/message";
 import { layout } from "../../../utils/style/layout";
+import { Conversation } from "../../../utils/types/message";
 
-export const FriendshipManager = ({ setActiveConversation }) => {
+interface FriendshipManagerProps {
+  setActiveConversation?: (item: Conversation) => void;
+}
+
+export const FriendshipManager = ({
+  setActiveConversation,
+}: FriendshipManagerProps) => {
   const conversations = useSelector(selectConversationList);
   const contactRequests = useSelector(selectContactRequestList);
 
@@ -82,3 +89,5 @@ export const FriendshipManager = ({ setActiveConversation }) => {
     </ScreenContainer>
   );
 };
+
+export const FriendshipManagerScreen = () => <FriendshipManager />;

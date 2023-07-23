@@ -53,6 +53,7 @@ export const subscribeMessages = async (groupPk: string) => {
 
         data.message = decodeJSON(data.message);
 
+        // @ts-ignore
         const message: Message = {
           id: stringFromBytes(data.eventContext?.id),
           ...data.message,
@@ -105,7 +106,7 @@ export const subscribeMessages = async (groupPk: string) => {
           }
         }
       },
-      error: (e) => {
+      error: (e: any) => {
         console.log("get message error...", e);
       },
       complete: async () => {
@@ -144,7 +145,7 @@ export const subscribeMetadata = async (groupPk: Uint8Array) => {
         console.log("incoming metadata");
         handleMetadata(data);
       },
-      error(e) {
+      error(e: any) {
         console.log("get metadata err", e);
       },
       complete: () => {

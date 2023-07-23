@@ -38,7 +38,7 @@ export const ChatItem = ({ data, onPress, isActive }: ChatItemProps) => {
     <TouchableOpacity
       onPress={() =>
         ["android", "ios"].includes(Platform.OS)
-          ? navigation.navigate("ChatSection")
+          ? navigation.navigate("ChatSection", data)
           : onPress()
       }
     >
@@ -52,7 +52,10 @@ export const ChatItem = ({ data, onPress, isActive }: ChatItemProps) => {
         <FlexRow justifyContent="space-between">
           <View>
             <FlexRow>
-              <Avatar.Image size={40} source={contactInfo?.avatar || ""} />
+              <Avatar.Image
+                size={40}
+                source={{ uri: contactInfo?.avatar || "" }}
+              />
               <SpacerRow size={1.5} />
               <View>
                 <FlexRow>

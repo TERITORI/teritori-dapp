@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import { View, TouchableOpacity, ScrollView, Platform } from "react-native";
 
 import avatar from "../../../../assets/icons/avatar.svg";
-import copy from "../../../../assets/icons/copy.svg";
 import nullIcon from "../../../../assets/icons/illustration.svg";
 import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
@@ -24,7 +23,11 @@ import {
 } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
 
-const ShareScreen = ({ setShowTertiaryBox }) => {
+interface ShareScreenProps {
+  setShowTertiaryBox: Dispatch<SetStateAction<boolean>>;
+}
+
+const ShareScreen = ({ setShowTertiaryBox }: ShareScreenProps) => {
   const [searchQuery, setSearchQuery] = useState("");
 
   const filteredData = data.filter((item) =>
@@ -123,6 +126,7 @@ const ShareScreen = ({ setShowTertiaryBox }) => {
                 key={item.id}
                 avatar={item.avatar}
                 name={item.name}
+                isOnline
               />
             ))
           ) : (
@@ -151,11 +155,10 @@ const ShareScreen = ({ setShowTertiaryBox }) => {
           paddingVertical: 5,
           width: "100%",
         }}
-        variant="regular"
         rules={{ required: true }}
         placeholderTextColor={neutral77}
         squaresBackgroundColor={neutral00}
-        iconActions={copy}
+        label=""
       />
       <SpacerColumn size={2} />
     </ModalBase>
