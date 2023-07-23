@@ -103,7 +103,7 @@ export const UPPIntro: React.FC<{
             style={socialButtonStyle}
             iconSvg={shareSVG}
             text="Share"
-            onPress={() => copyToClipboard(window.location.href, "URL copied")}
+            onPress={() => copyToClipboard(window?.location.href, "URL copied")}
           />
         </View>
         {isUserOwner ? (

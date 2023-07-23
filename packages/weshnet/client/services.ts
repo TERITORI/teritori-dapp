@@ -7,23 +7,13 @@ import { store } from "../../store/store";
 import { Message } from "../../utils/types/message";
 import { GroupInfo_Request } from "../protocoltypes";
 
-let isConfigLoading = false;
-
-export const createConfig = async () => {
-  if (weshConfig.config || isConfigLoading) {
-    return;
-  }
-  isConfigLoading = true;
-
+export const bootWeshnet = async () => {
   try {
-    const config = await weshClient().ServiceGetConfiguration({});
-    weshConfig.config = config;
-
-    await weshClient().ContactRequestEnable({});
-    const contactRef = await weshClient().ContactRequestReference({});
+    await weshClient.client.ContactRequestEnable({});
+    const contactRef = await weshClient.client.ContactRequestReference({});
 
     if (contactRef.publicRendezvousSeed.length === 0) {
-      const resetRef = await weshClient().ContactRequestResetReference({});
+      const resetRef = await weshClient.client.ContactRequestResetReference({});
       contactRef.publicRendezvousSeed = resetRef.publicRendezvousSeed;
     }
 
@@ -37,8 +27,6 @@ export const createConfig = async () => {
   } catch (err) {
     console.log("create config err", err);
   }
-
-  isConfigLoading = false;
 };
 
 export const createSharableLink = (
@@ -62,20 +50,23 @@ export const addContact = async (
 ) => {
   const url = new URL(shareLink);
 
-  if (!url.searchParams.has("accountPk") || !url.searchParams.has("rdvSeed")) {
+  if (
+    !url?.searchParams.has("accountPk") ||
+    !url?.searchParams.has("rdvSeed")
+  ) {
     console.log("bool err contact send");
     throw new Error("Share link is invalid");
   }
 
   const contactPk = bytesFromString(
-    decodeURIComponent(url.searchParams.get("accountPk") || "")
+    decodeURIComponent(url?.searchParams.get("accountPk") || "")
   );
   try {
-    await weshClient().ContactRequestSend({
+    await weshClient.client.ContactRequestSend({
       contact: {
         pk: contactPk,
         publicRendezvousSeed: bytesFromString(
-          decodeURIComponent(url.searchParams.get("rdvSeed") || "")
+          decodeURIComponent(url?.searchParams.get("rdvSeed") || "")
         ),
       },
       ownMetadata: encodeJSON({
@@ -83,8 +74,8 @@ export const addContact = async (
         avatar: contactInfo.avatar,
         timestamp: new Date().toISOString(),
         contact: {
-          name: decodeURIComponent(url.searchParams.get("name") || ""),
-          avatar: decodeURIComponent(url.searchParams.get("avatar") || ""),
+          name: decodeURIComponent(url?.searchParams.get("name") || ""),
+          avatar: decodeURIComponent(url?.searchParams.get("avatar") || ""),
         },
       }),
     });
@@ -93,26 +84,19 @@ export const addContact = async (
       throw err;
     }
   }
-
-  // await activateGroup(contactPk);
 };
 
 export const acceptFriendRequest = async (contactPk: Uint8Array) => {
-  console.log(contactPk);
-  await weshClient().ContactRequestAccept({
+  await weshClient.client.ContactRequestAccept({
     contactPk,
   });
-
   return await activateGroup({ contactPk });
 };
 
 export const activateGroup = async (params: Partial<GroupInfo_Request>) => {
   try {
-    const contactGroup = await weshClient().GroupInfo(params);
-
-    console.log("contact group", contactGroup);
-
-    await weshClient().ActivateGroup({
+    const contactGroup = await weshClient.client.GroupInfo(params);
+    await weshClient.client.ActivateGroup({
       groupPk: contactGroup.group?.publicKey,
     });
 
@@ -133,7 +117,7 @@ export const sendMessage = async ({
     return;
   }
   try {
-    await weshClient().AppMessageSend({
+    await weshClient.client.AppMessageSend({
       groupPk,
       payload: encodeJSON({
         ...message,

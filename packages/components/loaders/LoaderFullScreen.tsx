@@ -1,6 +1,7 @@
-import Lottie from "lottie-react";
 import * as React from "react";
 import { View, Modal } from "react-native";
+
+import Lottie from "../Lottie";
 
 export const LoaderFullScreen: React.FC<{ visible: boolean }> = ({
   visible,

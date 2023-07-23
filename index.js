@@ -1,12 +1,8 @@
 import { registerRootComponent } from "expo";
 import moment from "moment";
-import React from "react";
-import { AppRegistry } from "react-native";
+import * as React from "react";
 
-import "@react-native-anywhere/polyfill-base64";
 import "react-native-gesture-handler";
-import "text-encoding-polyfill";
-import "react-native-get-random-values";
 import App from "./App";
 
 moment.locale("en", {
@@ -33,5 +29,3 @@ function Root() {
 }
 
 registerRootComponent(Root);
-
-AppRegistry.registerComponent("main", () => Root);

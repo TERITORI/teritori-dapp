@@ -4,7 +4,7 @@ import { BAR_LENGTH } from "./constants";
 import { AudioFileMetadata } from "../types/files";
 
 //@ts-ignore
-window.AudioContext = window.AudioContext || window?.webkitAudioContext;
+window.AudioContext = window?.AudioContext || window?.webkitAudioContext;
 
 const audioContext = new AudioContext();
 

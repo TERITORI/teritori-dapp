@@ -22,7 +22,10 @@ import ModalBase from "../../../components/modals/ModalBase";
 import { SearchInput } from "../../../components/sorts/SearchInput";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
-import { selectConversationList } from "../../../store/slices/message";
+import {
+  selectContactInfo,
+  selectConversationList,
+} from "../../../store/slices/message";
 import {
   neutral00,
   neutral17,
@@ -52,6 +55,7 @@ interface CreateGroupProps {
 export const CreateGroup = ({ onClose }: CreateGroupProps) => {
   const [groupName, setGroupName] = useState("");
   const [checkedContacts, setCheckedContacts] = useState([]);
+  const contactInfo = useSelector(selectContactInfo);
   const { setToastError, setToastSuccess } = useFeedbacks();
   const [loading, setLoading] = useState(false);
   const conversations = useSelector(selectConversationList);
@@ -82,9 +86,9 @@ export const CreateGroup = ({ onClose }: CreateGroupProps) => {
     }
     setLoading(true);
     try {
-      const group = await weshClient().MultiMemberGroupCreate({});
+      const group = await weshClient.client.MultiMemberGroupCreate({});
 
-      const groupInfo = await weshClient().GroupInfo({
+      const groupInfo = await weshClient.client.GroupInfo({
         groupPk: group.groupPk,
       });
 
@@ -104,10 +108,10 @@ export const CreateGroup = ({ onClose }: CreateGroupProps) => {
 
       await Promise.all(
         conversations
-          .filter((item) => checkedContacts.includes(item.members[0].id))
+          .filter((item) => checkedContacts.includes(item?.members?.[0]?.id))
           .map(async (item) => {
             const contactPk = item.members[0].id;
-            const _group = await weshClient().GroupInfo({
+            const _group = await weshClient.client.GroupInfo({
               contactPk,
             });
 
@@ -116,11 +120,13 @@ export const CreateGroup = ({ onClose }: CreateGroupProps) => {
               message: {
                 type: "group-invite",
                 payload: {
-                  message: `Anon has invited you to join group ${groupName}`,
+                  message: `${
+                    contactInfo.name || "Anon"
+                  } has invited you to join group ${groupName}`,
                   metadata: {
                     groupName,
                     group: GroupInfo_Reply.toJSON(groupInfo).group,
-                    contact: item.members[0],
+                    contact: item?.members?.[0],
                   },
                   files: [],
                 },
@@ -131,6 +137,7 @@ export const CreateGroup = ({ onClose }: CreateGroupProps) => {
 
       onClose();
     } catch (err) {
+      console.log("create group err", err);
       setToastError({
         title: "Group creation failed",
         message: err?.message,

@@ -1,5 +1,9 @@
 /**
+<<<<<<< HEAD
  * Copyright (c) Meta Platforms, Inc. and affiliates.
+=======
+ * Copyright (c) Facebook, Inc. and its affiliates.
+>>>>>>> 6e7a3c36 (weshnet ios integration)
  *
  * <p>This source code is licensed under the MIT license found in the LICENSE file in the root
  * directory of this source tree.
@@ -17,27 +21,43 @@ import com.facebook.flipper.plugins.inspector.DescriptorMapping;
 import com.facebook.flipper.plugins.inspector.InspectorFlipperPlugin;
 import com.facebook.flipper.plugins.network.FlipperOkhttpInterceptor;
 import com.facebook.flipper.plugins.network.NetworkFlipperPlugin;
+<<<<<<< HEAD
 import com.facebook.flipper.plugins.sharedpreferences.SharedPreferencesFlipperPlugin;
 import com.facebook.react.ReactInstanceEventListener;
+=======
+import com.facebook.flipper.plugins.react.ReactFlipperPlugin;
+import com.facebook.flipper.plugins.sharedpreferences.SharedPreferencesFlipperPlugin;
+>>>>>>> 6e7a3c36 (weshnet ios integration)
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.modules.network.NetworkingModule;
 import okhttp3.OkHttpClient;
 
+<<<<<<< HEAD
 /**
  * Class responsible of loading Flipper inside your React Native application. This is the debug
  * flavor of it. Here you can add your own plugins and customize the Flipper setup.
  */
+=======
+>>>>>>> 6e7a3c36 (weshnet ios integration)
 public class ReactNativeFlipper {
   public static void initializeFlipper(Context context, ReactInstanceManager reactInstanceManager) {
     if (FlipperUtils.shouldEnableFlipper(context)) {
       final FlipperClient client = AndroidFlipperClient.getInstance(context);
+<<<<<<< HEAD
 
       client.addPlugin(new InspectorFlipperPlugin(context, DescriptorMapping.withDefaults()));
       client.addPlugin(new DatabasesFlipperPlugin(context));
       client.addPlugin(new SharedPreferencesFlipperPlugin(context));
       client.addPlugin(CrashReporterPlugin.getInstance());
 
+=======
+      client.addPlugin(new InspectorFlipperPlugin(context, DescriptorMapping.withDefaults()));
+      client.addPlugin(new ReactFlipperPlugin());
+      client.addPlugin(new DatabasesFlipperPlugin(context));
+      client.addPlugin(new SharedPreferencesFlipperPlugin(context));
+      client.addPlugin(CrashReporterPlugin.getInstance());
+>>>>>>> 6e7a3c36 (weshnet ios integration)
       NetworkFlipperPlugin networkFlipperPlugin = new NetworkFlipperPlugin();
       NetworkingModule.setCustomClientBuilder(
           new NetworkingModule.CustomClientBuilder() {
@@ -48,13 +68,20 @@ public class ReactNativeFlipper {
           });
       client.addPlugin(networkFlipperPlugin);
       client.start();
+<<<<<<< HEAD
 
+=======
+>>>>>>> 6e7a3c36 (weshnet ios integration)
       // Fresco Plugin needs to ensure that ImagePipelineFactory is initialized
       // Hence we run if after all native modules have been initialized
       ReactContext reactContext = reactInstanceManager.getCurrentReactContext();
       if (reactContext == null) {
         reactInstanceManager.addReactInstanceEventListener(
+<<<<<<< HEAD
             new ReactInstanceEventListener() {
+=======
+            new ReactInstanceManager.ReactInstanceEventListener() {
+>>>>>>> 6e7a3c36 (weshnet ios integration)
               @Override
               public void onReactContextInitialized(ReactContext reactContext) {
                 reactInstanceManager.removeReactInstanceEventListener(this);
@@ -72,4 +99,8 @@ public class ReactNativeFlipper {
       }
     }
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 6e7a3c36 (weshnet ios integration)

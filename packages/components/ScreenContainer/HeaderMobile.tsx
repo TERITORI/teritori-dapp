@@ -1,5 +1,6 @@
 import React, { FC } from "react";
 import { View, StyleSheet, TouchableOpacity, Platform } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
 
 import { Notification } from "./Notification";
@@ -36,49 +37,51 @@ export const HeaderMobile: FC<{
   const navigation = useAppNavigation();
 
   return (
-    <View style={styles.container}>
-      <TopLogoMobile />
-      <View style={styles.rightContainer}>
-        <SpacerRow size={1} />
-        {onBackPress && <BackButton onPress={onBackPress} />}
-        <SpacerRow size={1} />
-        <SearchButtonMobile />
+    <SafeAreaView>
+      <View style={styles.container}>
+        <TopLogoMobile />
+        <View style={styles.rightContainer}>
+          <SpacerRow size={1} />
+          {onBackPress && <BackButton onPress={onBackPress} />}
+          <SpacerRow size={1} />
+          <SearchButtonMobile />
 
-        {selectedNFTDataInCart.length && (
-          <>
-            <SpacerRow size={1} />
-            <CartIconButtonBadge isMobile />
-            <SpacerRow size={1} />
-          </>
-        )}
+          {!!selectedNFTDataInCart.length && (
+            <>
+              <SpacerRow size={1} />
+              <CartIconButtonBadge isMobile />
+              <SpacerRow size={1} />
+            </>
+          )}
 
-        <NetworkSelectorMobile
-          forceNetworkId={forceNetworkId}
-          forceNetworkKind={forceNetworkKind}
-          forceNetworkFeatures={forceNetworkFeatures}
-        />
-        <SpacerRow size={1} />
-        <ConnectWalletButtonMobile />
-        <SpacerRow size={1} />
-        <Notification />
-
-        <TouchableOpacity
-          onPress={() => {
-            if (["android", "ios"].includes(Platform.OS)) {
-              navigation.openDrawer();
-            } else {
-              toggleSidebar();
-            }
-          }}
-        >
-          <SVG
-            source={isSidebarExpanded ? hamburgerCrossSVG : hamburgerSVG}
-            width={32}
-            height={32}
+          <NetworkSelectorMobile
+            forceNetworkId={forceNetworkId}
+            forceNetworkKind={forceNetworkKind}
+            forceNetworkFeatures={forceNetworkFeatures}
           />
-        </TouchableOpacity>
+          <SpacerRow size={1} />
+          <ConnectWalletButtonMobile />
+          <SpacerRow size={1} />
+          <Notification />
+
+          <TouchableOpacity
+            onPress={() => {
+              if (["android", "ios"].includes(Platform.OS)) {
+                navigation.openDrawer();
+              } else {
+                toggleSidebar();
+              }
+            }}
+          >
+            <SVG
+              source={isSidebarExpanded ? hamburgerCrossSVG : hamburgerSVG}
+              width={32}
+              height={32}
+            />
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

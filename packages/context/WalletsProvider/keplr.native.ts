@@ -2,6 +2,7 @@ import { Window as KeplrWindow } from "@keplr-wallet/types";
 import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 
+import { Wallet } from "./wallet";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import { NetworkKind, getUserId } from "../../networks";
 import {
@@ -11,7 +12,6 @@ import {
 } from "../../store/slices/settings";
 import { useAppDispatch } from "../../store/store";
 import { WalletProvider } from "../../utils/walletProvider";
-import { Wallet } from "./wallet";
 
 export type UseKeplrResult =
   | [true, boolean, Wallet[]]
@@ -38,8 +38,8 @@ export const useKeplr: () => UseKeplrResult = () => {
   //       setReady(true);
   //     }
   //   };
-  //   window.addEventListener("load", handleLoad);
-  //   return () => window.removeEventListener("load", handleLoad);
+  //   window?.addEventListener("load", handleLoad);
+  //   return () => window?.removeEventListener("load", handleLoad);
   // }, []);
 
   // useEffect(() => {
@@ -61,9 +61,9 @@ export const useKeplr: () => UseKeplrResult = () => {
   //     const accounts = await offlineSigner.getAccounts();
   //     setAddresses(accounts.map((account) => account.address));
   //   };
-  //   window.addEventListener("keplr_keystorechange", handleKeyChange);
+  //   window?.addEventListener("keplr_keystorechange", handleKeyChange);
   //   return () =>
-  //     window.removeEventListener("keplr_keystorechange", handleKeyChange);
+  //     window?.removeEventListener("keplr_keystorechange", handleKeyChange);
   // }, [hasKeplr, selectedNetworkInfo]);
 
   // useEffect(() => {

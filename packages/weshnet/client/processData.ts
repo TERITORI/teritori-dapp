@@ -54,11 +54,11 @@ export const handleMetadata = async (data: GroupMetadataEvent) => {
 
           console.log("outgoing", parsedData);
           try {
-            const groupInfo = await weshClient().GroupInfo({
+            const groupInfo = await weshClient.client.GroupInfo({
               contactPk: payload.contact?.pk,
             });
 
-            await weshClient().ActivateGroup({
+            await weshClient.client.ActivateGroup({
               groupPk: groupInfo.group?.publicKey,
             });
 
@@ -121,6 +121,25 @@ export const handleMetadata = async (data: GroupMetadataEvent) => {
 
         break;
       }
+      case EventType.EventTypeAccountContactRequestIncomingDiscarded: {
+        const contactRequests = selectContactRequestList(store.getState());
+        const parsedData = GroupMetadataEvent.toJSON(data);
+
+        parsedData.payload = AccountContactRequestIncomingAccepted.decode(
+          data.metadata.payload
+        );
+
+        store.dispatch(
+          setContactRequestList(
+            contactRequests.filter(
+              (item, i) =>
+                item.id === stringFromBytes(parsedData.payload.contactPk)
+            )
+          )
+        );
+
+        break;
+      }
       case EventType.EventTypeAccountContactRequestIncomingAccepted: {
         const contactRequests = selectContactRequestList(store.getState());
         const parsedData = GroupMetadataEvent.toJSON(data);
@@ -147,10 +166,10 @@ export const handleMetadata = async (data: GroupMetadataEvent) => {
               )
             )
           );
-          const group = await weshClient().GroupInfo({
+          const group = await weshClient.client.GroupInfo({
             contactPk: bytesFromString(contactRequest.contactId),
           });
-          await weshClient().ActivateGroup({
+          await weshClient.client.ActivateGroup({
             groupPk: group.group?.publicKey,
           });
 

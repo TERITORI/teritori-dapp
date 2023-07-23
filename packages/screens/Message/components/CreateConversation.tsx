@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { useForm, FormProvider } from "react-hook-form";
+import React, { useState, useEffect } from "react";
 import { View } from "react-native";
 import QRCode from "react-native-qrcode-svg";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,6 +12,7 @@ import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import ModalBase from "../../../components/modals/ModalBase";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
+import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import {
@@ -34,6 +34,7 @@ export const CreateConversation = ({ onClose }: CreateConversationProps) => {
   const [contactLink, setContactLink] = useState("");
   const [addContactLoading, setAddContactLoading] = useState(false);
   const [error, setError] = useState("");
+  const isMobile = useIsMobile();
 
   const dispatch = useDispatch();
   const selectedWallet = useSelectedWallet();
@@ -57,17 +58,23 @@ export const CreateConversation = ({ onClose }: CreateConversationProps) => {
     key: keyof MessageState["contactInfo"],
     value: string
   ) => {
-    const shareLink = createSharableLink({
-      ...contactInfo,
-      [key]: value,
-    });
     dispatch(
       setContactInfo({
         [key]: value,
-        shareLink,
       })
     );
   };
+
+  useEffect(() => {
+    const shareLink = createSharableLink({
+      ...contactInfo,
+    });
+    dispatch(
+      setContactInfo({
+        shareLink,
+      })
+    );
+  }, [contactInfo?.name, contactInfo?.avatar]);
 
   return (
     <ModalBase
@@ -76,46 +83,6 @@ export const CreateConversation = ({ onClose }: CreateConversationProps) => {
       visible
       width={580}
     >
-      <SpacerColumn size={2} />
-
-      <BrandText style={[fontSemibold16, { marginBottom: layout.padding_x1 }]}>
-        Name
-      </BrandText>
-
-      <TextInputCustom
-        name="name"
-        label=""
-        placeHolder="Add name here"
-        height={50}
-        fullWidth
-        onChangeText={(text) => handleContactInfoChange("name", text)}
-        value={contactInfo.name}
-        containerStyle={{
-          flex: 1,
-        }}
-        placeholderTextColor={secondaryColor}
-        squaresBackgroundColor={neutral00}
-      />
-      <SpacerColumn size={2} />
-      <BrandText style={[fontSemibold16, { marginBottom: layout.padding_x1 }]}>
-        Avatar
-      </BrandText>
-
-      <TextInputCustom
-        name="avatar"
-        label=""
-        placeHolder="Paste avatar URL here"
-        height={50}
-        fullWidth
-        onChangeText={(text) => handleContactInfoChange("avatar", text)}
-        value={contactInfo.avatar}
-        containerStyle={{
-          flex: 1,
-        }}
-        placeholderTextColor={secondaryColor}
-        squaresBackgroundColor={neutral00}
-      />
-
       <View
         style={{
           alignItems: "center",
@@ -131,6 +98,47 @@ export const CreateConversation = ({ onClose }: CreateConversationProps) => {
           />
         )}
       </View>
+      <SpacerColumn size={2} />
+      <BrandText style={[fontSemibold16, { marginBottom: layout.padding_x1 }]}>
+        Name
+      </BrandText>
+      <View style={{ height: 50 }}>
+        <TextInputCustom
+          name="name"
+          label=""
+          placeHolder="Add name here"
+          height={50}
+          fullWidth
+          onChangeText={(text) => handleContactInfoChange("name", text)}
+          value={contactInfo.name}
+          containerStyle={{
+            flex: 1,
+          }}
+          placeholderTextColor={secondaryColor}
+          squaresBackgroundColor={neutral00}
+        />
+      </View>
+      <SpacerColumn size={2} />
+      <BrandText style={[fontSemibold16, { marginBottom: layout.padding_x1 }]}>
+        Avatar
+      </BrandText>
+      <View style={{ height: 50 }}>
+        <TextInputCustom
+          name="avatar"
+          label=""
+          placeHolder="Paste avatar URL here"
+          height={50}
+          fullWidth
+          onChangeText={(text) => handleContactInfoChange("avatar", text)}
+          value={contactInfo.avatar}
+          containerStyle={{
+            flex: 1,
+          }}
+          placeholderTextColor={secondaryColor}
+          squaresBackgroundColor={neutral00}
+        />
+      </View>
+
       <SpacerColumn size={2} />
       <View>
         <BrandText
@@ -157,33 +165,37 @@ export const CreateConversation = ({ onClose }: CreateConversationProps) => {
         </BrandText>
         <View
           style={{
-            flexDirection: "row",
+            flexDirection: isMobile ? "column" : "row",
             alignItems: "center",
             justifyContent: "space-between",
             flex: 1,
           }}
         >
-          <TextInputCustom
-            name="contactLink"
-            label=""
-            placeHolder="Paste the contact link here"
-            height={50}
-            fullWidth
-            onChangeText={setContactLink}
-            value={contactLink}
-            containerStyle={{
-              flex: 1,
-            }}
-            placeholderTextColor={secondaryColor}
-            squaresBackgroundColor={neutral00}
-          />
+          <View style={{ height: 50, width: isMobile ? "100%" : 460 }}>
+            <TextInputCustom
+              name="contactLink"
+              label=""
+              placeHolder="Paste the contact link here"
+              height={50}
+              fullWidth
+              onChangeText={setContactLink}
+              value={contactLink}
+              containerStyle={{
+                flex: 1,
+              }}
+              placeholderTextColor={secondaryColor}
+              squaresBackgroundColor={neutral00}
+            />
+          </View>
           <SpacerRow size={2} />
+          {isMobile && <SpacerColumn size={2} />}
           <PrimaryButton
             loader
             isLoading={addContactLoading}
             size="M"
             text="Add"
             onPress={handleAddContact}
+            fullWidth={isMobile}
           />
         </View>
         {!!error && (

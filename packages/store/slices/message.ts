@@ -19,7 +19,9 @@ export interface MessageState {
   };
   contactRequestList: ContactRequest[];
   messageList: MessageList;
-  conversationList: Conversation[];
+  conversationList: {
+    [key: string]: Conversation[];
+  };
   lastIds: {
     [key: string]: string;
   };
@@ -27,14 +29,14 @@ export interface MessageState {
 
 const initialState: MessageState = {
   contactInfo: {
-    name: "",
+    name: "Anon",
     avatar: "",
     publicRendezvousSeed: "",
     shareLink: "",
   },
   messageList: {},
   contactRequestList: [],
-  conversationList: [],
+  conversationList: {},
   lastIds: {},
 };
 
@@ -62,7 +64,7 @@ export const selectLastMessageByGroupPk =
 export const selectContactRequestList = (state: RootState) =>
   state.message.contactRequestList;
 export const selectConversationList = (state: RootState) =>
-  state.message.conversationList;
+  Object.values(state.message.conversationList);
 
 const messageSlice = createSlice({
   name: "message",
@@ -129,11 +131,16 @@ const messageSlice = createSlice({
       state,
       action: PayloadAction<Conversation | Conversation[]>
     ) => {
-      if (Array.isArray(action.payload)) {
-        state.conversationList = action.payload;
-      } else {
-        state.conversationList = [action.payload, ...state.conversationList];
-      }
+      state.conversationList[action.payload.id] = action.payload;
+    },
+    updateConversationById: (
+      state,
+      action: PayloadAction<Partial<Conversation>>
+    ) => {
+      state.conversationList[action.payload.id] = {
+        ...(state.conversationList[action.payload.id] || {}),
+        ...action.payload,
+      };
     },
     setLastId: (
       state,
@@ -158,6 +165,7 @@ export const {
   updateMessageReaction,
   setLastId,
   setContactInfo,
+  updateConversationById,
 } = messageSlice.actions;
 
 export const messageReducer = messageSlice.reducer;

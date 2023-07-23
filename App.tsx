@@ -39,6 +39,17 @@ import { linking } from "./packages/utils/navigation";
 SplashScreen.preventAutoHideAsync();
 handleAstilectronMessages();
 
+const bootWesh = async () => {
+  if (Platform.OS === "web") {
+    return;
+  }
+  try {
+    const WeshnetModule = require("./modules/weshd");
+    WeshnetModule.hello();
+  } catch (err) {
+    console.log("bootWesh", err);
+  }
+};
 const queryClient = new QueryClient();
 
 // it's here just to fix a TS2589 error
@@ -56,6 +67,7 @@ export default function App() {
 
   const onLayoutRootView = useCallback(async () => {
     await SplashScreen.hideAsync();
+    bootWesh();
   }, []);
 
   // FIXME: Fonts don't load on electron

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { View, TouchableOpacity, Platform, ScrollView } from "react-native";
 
+import { ChatSection } from "./components/ChatSection";
 import { CreateConversation } from "./components/CreateConversation";
 import { CreateGroup } from "./components/CreateGroup";
 import { FriendshipManager } from "./components/FriendshipManager";
-import { MessageGroupChat } from "./components/MessageGroupChat";
 import { MessageHeader } from "./components/MessageHeader";
 import { SideBarChats } from "./components/SideBarChats";
 import chat from "../../../assets/icons/add-chat.svg";
@@ -33,10 +33,6 @@ export const MessageScreen: ScreenFC<"Message"> = () => {
   const userInfo = useNSUserInfo(selectedWallet?.userId);
 
   const navigation = useAppNavigation();
-
-  useEffect(() => {
-    weshServices.createConfig();
-  }, []);
 
   const HEADER_CONFIG = [
     {
@@ -112,8 +108,7 @@ export const MessageScreen: ScreenFC<"Message"> = () => {
         {["android", "ios"].includes(Platform.OS) ? (
           <SideBarChats
             setActiveConversation={(conv) => {
-              setActiveConversation(conv);
-              setActiveTab("chat");
+              navigation.navigate("ChatSection", conv);
             }}
             activeConversation={activeConversation}
           />
@@ -143,7 +138,7 @@ export const MessageScreen: ScreenFC<"Message"> = () => {
               ) : (
                 <>
                   {activeConversation ? (
-                    <MessageGroupChat conversation={activeConversation} />
+                    <ChatSection conversation={activeConversation} />
                   ) : (
                     <MessageBlankFiller />
                   )}

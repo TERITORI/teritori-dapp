@@ -22,6 +22,7 @@ import {
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { Conversation } from "../../../utils/types/message";
+import { getConversationName } from "../../../weshnet/client/messageHelpers";
 interface ChatItemProps {
   data: Conversation;
   onPress: () => void;
@@ -58,7 +59,7 @@ export const ChatItem = ({ data, onPress, isActive }: ChatItemProps) => {
                   <BrandText
                     style={[fontSemibold13, { color: secondaryColor }]}
                   >
-                    {contactInfo?.name || "Anon"}
+                    {getConversationName(data)}
                   </BrandText>
                 </FlexRow>
                 <SpacerColumn size={0.5} />

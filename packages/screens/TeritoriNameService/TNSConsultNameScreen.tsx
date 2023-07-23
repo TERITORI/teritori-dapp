@@ -251,7 +251,7 @@ export const TNSConsultNameScreen: React.FC<TNSConsultNameProps> = ({
               >
                 {isOwnedByUser ? (
                   <CopyToClipboard
-                    text={`https://${window.location.host}/tns/token/${name}`}
+                    text={`https://${window?.location.host}/tns/token/${name}`}
                     squaresBackgroundColor={neutral17}
                   />
                 ) : (

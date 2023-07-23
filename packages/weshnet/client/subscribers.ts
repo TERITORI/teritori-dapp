@@ -1,3 +1,5 @@
+import { Platform } from "react-native";
+
 import { weshClient } from "./client";
 import { handleMetadata } from "./processData";
 import { bytesFromString, decodeJSON, stringFromBytes } from "./utils";
@@ -7,6 +9,7 @@ import {
   setConversationList,
   setLastId,
   setMessageList,
+  updateConversationById,
   updateMessageReaction,
 } from "../../store/slices/message";
 import { store } from "../../store/store";
@@ -18,40 +21,28 @@ import {
   GroupMetadataList_Request,
 } from "../protocoltypes";
 
-let lastId: Uint8Array;
-
 const subscribedMessages: string[] = [];
 
-const processedMessageIds: string[] = [];
-
-export const subscribeMessages = async (
-  groupPk: string,
-  ignoreCheck: boolean = false
-) => {
-  // if (!ignoreCheck) {
-  //   if (subscribedMessages.includes(groupPk)) {
-  //     return;
-  //   } else {
-  //     subscribedMessages.push(groupPk);
-  //   }
-  // }
-
+export const subscribeMessages = async (groupPk: string) => {
+  if (Platform.OS !== "web") {
+    if (subscribedMessages.includes(groupPk)) {
+      return;
+    }
+    subscribedMessages.push(groupPk);
+  }
   const lastId = selectLastIdByKey(groupPk)(store.getState());
 
   const config: Partial<GroupMessageList_Request> = {
     groupPk: bytesFromString(groupPk),
   };
-  if (lastId) {
+  if (Platform.OS === "web" && lastId) {
     config.sinceId = bytesFromString(lastId);
-  } else if (ignoreCheck) {
-    config.sinceNow = true;
   } else {
     config.untilNow = true;
   }
-  console.log("subscribing", config);
 
   try {
-    const messages = await weshClient().GroupMessageList(config);
+    const messages = await weshClient.client.GroupMessageList(config);
     const observer = {
       next: (data: GroupMessageEvent) => {
         const id = stringFromBytes(data.eventContext?.id);
@@ -61,10 +52,7 @@ export const subscribeMessages = async (
             value: id,
           })
         );
-        if (processedMessageIds.includes(id)) {
-          return;
-        }
-        processedMessageIds.push(id);
+
         data.message = decodeJSON(data.message);
 
         const message: Message = {
@@ -81,43 +69,32 @@ export const subscribeMessages = async (
             );
             break;
           }
-          case "group-join": {
-            console.log("group-join", message);
-            // const conversations = selectConversationList(store.getState());
 
-            // store.dispatch(
-            //   setConversationList(
-            //     conversations.map((item) => {
-            //       if (item.id === stringFromBytes(data.eventContext?.groupPk)) {
-            //         return {
-            //           ...item,
-            //           name: message.payload.metadata?.groupName || "Anon Group",
-            //         };
-            //       }
-            //       return item;
-            //     })
-            //   )
-            // );
+          case "group-create": {
+            store.dispatch(
+              updateConversationById({
+                id: stringFromBytes(config.groupPk),
+                name: message?.payload?.metadata?.groupName,
+              })
+            );
 
             break;
           }
-          case "group-create": {
-            const conversations = selectConversationList(store.getState());
+          case "group-join": {
+            console.log("group-join", message);
 
             store.dispatch(
-              setConversationList(
-                conversations.map((item) => {
-                  if (item.id === stringFromBytes(data.eventContext?.groupPk)) {
-                    return {
-                      ...item,
-                      name: message.payload.metadata?.groupName || "Anon Group",
-                    };
-                  }
-                  return item;
-                })
-              )
+              updateConversationById({
+                id: stringFromBytes(config.groupPk),
+                name: message?.payload?.metadata?.groupName,
+              })
             );
-
+            store.dispatch(
+              setMessageList({
+                groupPk: stringFromBytes(config.groupPk),
+                data: message,
+              })
+            );
             break;
           }
           default: {
@@ -135,9 +112,11 @@ export const subscribeMessages = async (
       },
       complete: async () => {
         console.log("get message complete");
-
-        if (!lastId && !ignoreCheck) {
-          await subscribeMessages(groupPk, true);
+        const lastId = selectLastIdByKey(groupPk)(store.getState());
+        if (Platform.OS === "web" && lastId) {
+          subscribeMessages(groupPk);
+        } else {
+          setTimeout(() => subscribeMessages(groupPk), 3500);
         }
       },
     };
@@ -149,11 +128,10 @@ export const subscribeMessages = async (
 
 export const subscribeMetadata = async (groupPk: Uint8Array) => {
   const lastId = selectLastIdByKey("metadata")(store.getState());
-
   const config: Partial<GroupMetadataList_Request> = {
     groupPk,
   };
-  if (lastId) {
+  if (Platform.OS === "web" && lastId) {
     config.sinceId = bytesFromString(lastId);
   } else {
     config.untilNow = true;
@@ -161,17 +139,22 @@ export const subscribeMetadata = async (groupPk: Uint8Array) => {
   }
 
   try {
-    const metadata = await weshClient().GroupMetadataList(config);
+    const metadata = await weshClient.client.GroupMetadataList(config);
 
     const myObserver = {
       next: (data: GroupMetadataEvent) => {
+        console.log("incoming metadata");
         handleMetadata(data);
       },
       error(e) {
         console.log("get metadata err", e);
       },
       complete: () => {
-        subscribeMetadata(groupPk);
+        if (Platform.OS === "web") {
+          subscribeMetadata(groupPk);
+        } else {
+          setTimeout(() => subscribeMetadata(groupPk), 4000);
+        }
       },
     };
     metadata.subscribe(myObserver);

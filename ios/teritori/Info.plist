@@ -2,8 +2,11 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
   <dict>
+<<<<<<< HEAD
     <key>CADisableMinimumFrameDurationOnPhone</key>
     <true/>
+=======
+>>>>>>> 6e7a3c36 (weshnet ios integration)
     <key>CFBundleDevelopmentRegion</key>
     <string>$(DEVELOPMENT_LANGUAGE)</string>
     <key>CFBundleDisplayName</key>
@@ -19,7 +22,11 @@
     <key>CFBundlePackageType</key>
     <string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
     <key>CFBundleShortVersionString</key>
+<<<<<<< HEAD
     <string>1.0.3</string>
+=======
+    <string>1.0.0</string>
+>>>>>>> 6e7a3c36 (weshnet ios integration)
     <key>CFBundleSignature</key>
     <string>????</string>
     <key>CFBundleURLTypes</key>
@@ -45,6 +52,11 @@
     <dict>
       <key>NSAllowsArbitraryLoads</key>
       <true/>
+<<<<<<< HEAD
+=======
+         <key>NSAllowsLocalNetworking</key>
+    <true/>
+>>>>>>> 6e7a3c36 (weshnet ios integration)
       <key>NSExceptionDomains</key>
       <dict>
         <key>localhost</key>
@@ -54,12 +66,17 @@
         </dict>
       </dict>
     </dict>
+<<<<<<< HEAD
     <key>NSBluetoothAlwaysUsageDescription</key>
     <string>Used for Bluetooth communications</string>
     <key>NSBluetoothPeripheralUsageDescription</key>
     <string>Used for Bluetooth communications</string>
     <key>NSCameraUsageDescription</key>
     <string>Allow $(PRODUCT_NAME) to access your camera.</string>
+=======
+    <key>NSCameraUsageDescription</key>
+    <string>Allow $(PRODUCT_NAME) to access your camera</string>
+>>>>>>> 6e7a3c36 (weshnet ios integration)
     <key>NSMicrophoneUsageDescription</key>
     <string>Allow $(PRODUCT_NAME) to access your microphone</string>
     <key>NSPhotoLibraryUsageDescription</key>

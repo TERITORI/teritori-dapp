@@ -11,5 +11,14 @@ local.properties
 *.iml
 *.hprof
 
+<<<<<<< HEAD
+=======
+# BUCK
+buck-out/
+\.buckd/
+*.keystore
+!debug.keystore
+
+>>>>>>> 6e7a3c36 (weshnet ios integration)
 # Bundle artifacts
 *.jsbundle

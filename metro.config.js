@@ -10,7 +10,7 @@ module.exports = (() => {
       getTransformOptions: async () => ({
         transform: {
           experimentalImportSupport: false,
-          inlineRequires: false,
+          inlineRequires: true,
         },
       }),
     },
@@ -20,6 +20,8 @@ module.exports = (() => {
     ...resolver,
     assetExts: resolver.assetExts.filter((ext) => ext !== "svg"),
     sourceExts: [...resolver.sourceExts, "svg", "cjs"],
+    blacklistRE: /redux-persist-electron-storage/,
+    extraNodeModules: require("node-libs-react-native"),
   };
 
   config.server = {

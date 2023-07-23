@@ -1,4 +1,8 @@
 {
+<<<<<<< HEAD
   "expo.jsEngine": "hermes",
   "EX_DEV_CLIENT_NETWORK_INSPECTOR": "true"
+=======
+  "expo.jsEngine": "jsc"
+>>>>>>> 6e7a3c36 (weshnet ios integration)
 }

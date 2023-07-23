@@ -20,7 +20,7 @@ export const ShareButton = ({ postId }: ShareButtonProps) => {
       text: "Twitter",
       iconSvg: twitterSVG,
       onPress: () => {
-        const message = `${window.location.origin}/feed/post/${postId}
+        const message = `${window?.location.origin}/feed/post/${postId}
 #Teritori`;
 
         Linking.openURL(

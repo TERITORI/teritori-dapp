@@ -32,9 +32,6 @@ export const AddFriend = () => {
   );
   return (
     <View style={{ backgroundColor: "#000" }}>
-      {/* FIXME: remaining in web */}
-      {/* <Separator horizontal={false} />
-      <SpacerColumn size={2} /> */}
       <BrandText style={[fontSemibold16, { color: secondaryColor }]}>
         Add a friend
       </BrandText>
@@ -49,9 +46,7 @@ export const AddFriend = () => {
           value={searchQuery}
           onChangeText={setSearchQuery}
         />
-
         <SpacerRow size={1} />
-
         <TouchableOpacity>
           <TertiaryBox
             mainContainerStyle={{
@@ -81,7 +76,6 @@ export const AddFriend = () => {
       ) : (
         <>
           <SpacerColumn size={12} />
-
           <SVG source={nullIcon} style={{ alignSelf: "center" }} />
         </>
       )}

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useWindowDimensions, View } from "react-native";
+import { Platform, useWindowDimensions, View } from "react-native";
 
 import { Header } from "./components/Header";
 import { LeftRail } from "./components/LeftRail";
@@ -26,7 +26,7 @@ export const DAppStoreScreen: ScreenFC<"DAppStore"> = () => {
       <View
         style={{
           flexDirection: isMobile ? "column" : "row",
-          minHeight: "inherit",
+          minHeight: Platform.OS === "web" ? "inherit" : "100%",
         }}
       >
         <LeftRail />

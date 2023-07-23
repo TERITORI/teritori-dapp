@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { View } from "react-native";
+import { Platform, View } from "react-native";
 import { useSelector } from "react-redux";
 
 import { ChatItem } from "./ChatItem";
@@ -10,7 +10,7 @@ import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
 import { Separator } from "../../../components/Separator";
-import FriendListWithNewMessages from "../../../components/sidebarchat/FriendListNewMessagesCard";
+import { FriendsBar } from "../../../components/sidebarchat/FriendsBar";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { selectConversationList } from "../../../store/slices/message";
 import {
@@ -39,36 +39,40 @@ export const SideBarChats: React.FC = ({
       }}
     >
       <SpacerColumn size={2} />
-      <FriendListWithNewMessages />
-      <SpacerColumn size={2.5} />
-      <FlexRow justifyContent="space-between">
-        <View>
-          <FlexRow>
-            <BrandText style={[fontSemibold14, { color: secondaryColor }]}>
-              All conversation
-            </BrandText>
-            <SpacerRow size={0.8} />
-            <SVG
-              source={chevronDownSVG}
-              height={20}
-              width={20}
-              color={secondaryColor}
-            />
+      {Platform.OS === "web" && (
+        <>
+          <FriendsBar />
+          <SpacerColumn size={2.5} />
+          <FlexRow justifyContent="space-between">
+            <View>
+              <FlexRow>
+                <BrandText style={[fontSemibold14, { color: secondaryColor }]}>
+                  All conversation
+                </BrandText>
+                <SpacerRow size={0.8} />
+                <SVG
+                  source={chevronDownSVG}
+                  height={20}
+                  width={20}
+                  color={secondaryColor}
+                />
+              </FlexRow>
+            </View>
+            <View>
+              <FlexRow>
+                <SVG source={add} color={primaryColor} />
+                <SpacerRow size={2} />
+                <SVG
+                  source={Search}
+                  height={20}
+                  width={20}
+                  color={secondaryColor}
+                />
+              </FlexRow>
+            </View>
           </FlexRow>
-        </View>
-        <View>
-          <FlexRow>
-            <SVG source={add} color={primaryColor} />
-            <SpacerRow size={2} />
-            <SVG
-              source={Search}
-              height={20}
-              width={20}
-              color={secondaryColor}
-            />
-          </FlexRow>
-        </View>
-      </FlexRow>
+        </>
+      )}
 
       <SpacerColumn size={2.5} />
 
