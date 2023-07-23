@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   useWindowDimensions,
   FlatList,
+  Platform,
 } from "react-native";
 import { useSelector } from "react-redux";
 
@@ -17,11 +18,13 @@ import sent from "../../../../assets/icons/sent.svg";
 import { BrandText } from "../../../components/BrandText";
 import { Dropdown } from "../../../components/Dropdown";
 import { SVG } from "../../../components/SVG";
+import { ScreenContainer } from "../../../components/ScreenContainer";
 import { Separator } from "../../../components/Separator";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { selectMessageListByGroupPk } from "../../../store/slices/message";
+import { useAppRoute } from "../../../utils/navigation";
 import {
   neutral00,
   neutral33,
@@ -61,7 +64,7 @@ export interface HandleSendParams {
   files: Message["payload"]["files"];
 }
 
-export const ChatSection = ({ conversation }: ChatSectionProps) => {
+export const ChatSectionContent = ({ conversation }: ChatSectionProps) => {
   const { width } = useWindowDimensions();
   const [message, setMessage] = useState<any>("");
   const [inputHeight, setInputHeight] = useState(40);
@@ -94,17 +97,17 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
 
     try {
       if (conversation.type === "group") {
-        _group = await weshClient().GroupInfo({
+        _group = await weshClient.client.GroupInfo({
           groupPk: bytesFromString(conversation.id),
         });
-        await weshClient().ActivateGroup({
+        await weshClient.client.ActivateGroup({
           groupPk: _group.group?.publicKey,
         });
       } else {
-        _group = await weshClient().GroupInfo({
+        _group = await weshClient.client.GroupInfo({
           contactPk: conversation.members[0].id,
         });
-        await weshClient().ActivateGroup({
+        await weshClient.client.ActivateGroup({
           groupPk: _group.group?.publicKey,
         });
       }
@@ -267,9 +270,14 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
             const parentMessage =
               item?.parentId &&
               messages.find((msg) => msg.id === item.parentId);
+
+            if (item.type === "group-join") {
+              return null;
+            }
             return (
               <>
                 <Conversation
+                  conversation={conversation}
                   onReply={setReplyTo}
                   message={item}
                   data={item.message}
@@ -280,7 +288,7 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
                   isNextMine={nextMessage?.senderId === item.senderId}
                   parentMessage={parentMessage}
                 />
-                {(isNewSeparator || !!separatorDate) && (
+                {(!!isNewSeparator || !!separatorDate) && (
                   <View
                     style={{
                       flexDirection: "row",
@@ -307,7 +315,7 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
                       </BrandText>
                     )}
 
-                    {isNewSeparator && (
+                    {!!isNewSeparator && (
                       <View
                         style={{
                           backgroundColor: redDefault,
@@ -416,5 +424,17 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
         />
       )}
     </View>
+  );
+};
+
+export const ChatSection = (props) => {
+  const { params } = useAppRoute();
+  if (Platform.OS === "web") {
+    return <ChatSectionContent {...props} />;
+  }
+  return (
+    <ScreenContainer noScroll>
+      <ChatSectionContent conversation={params} />
+    </ScreenContainer>
   );
 };

@@ -10,6 +10,7 @@ import {
 
 import { AudioCall } from "./AudioCall";
 import { Calendar } from "./Calendar";
+import { ConversationAvatar } from "./ConversationAvatar";
 import VideoCallScreen from "./VideoCall";
 import audiocell from "../../../../assets/icons/audiocell.svg";
 import avatar from "../../../../assets/icons/avatar.svg";
@@ -38,6 +39,7 @@ import {
   fontMedium10,
   fontMedium14,
 } from "../../../utils/style/fonts";
+import { getConversationName } from "../../../weshnet/client/messageHelpers";
 export const ChatHeader = ({
   searchInput,
   setSearchInput,
@@ -74,19 +76,14 @@ export const ChatHeader = ({
     <>
       <View style={styles.container}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Image
-            source={require("../../../../assets/icons/groupicon.png")}
-            style={{ width: 32, height: 32 }}
-          />
-
+          <ConversationAvatar conversation={conversation} size={20} />
           <SpacerRow size={1} />
           <View>
             <BrandText style={[fontSemibold13, { color: secondaryColor }]}>
-              {conversation?.members?.[0]?.name || "Anon"}
+              {getConversationName(conversation)}
             </BrandText>
           </View>
         </View>
-
         <View
           style={{
             flexDirection: "row",
@@ -131,13 +128,6 @@ export const ChatHeader = ({
           ) : (
             <View>
               <FlexRow>
-                {/* <TouchableOpacity onPress={handleVideo}>
-                  <SVG source={videocall} />
-                </TouchableOpacity>
-                <SpacerRow size={2} />
-                <TouchableOpacity onPress={handleAudio}>
-                  <SVG source={audiocell} />
-                </TouchableOpacity> */}
                 <SpacerRow size={4} />
                 <TouchableOpacity onPress={handleSearchIconPress}>
                   <SVG
@@ -149,8 +139,9 @@ export const ChatHeader = ({
                   />
                 </TouchableOpacity>
                 <SpacerRow size={1} />
-                <SVG source={dots} />
-
+                <TouchableOpacity>
+                  <SVG source={dots} />
+                </TouchableOpacity>
                 <SpacerRow size={1} />
               </FlexRow>
             </View>
@@ -230,7 +221,6 @@ const styles = StyleSheet.create({
   filterMessageWrapper: {
     backgroundColor: neutral17,
     position: "absolute",
-
     right: 0,
     top: 46.8,
     zIndex: 11,
@@ -238,9 +228,7 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 10,
     borderLeftWidth: 1,
     borderBottomWidth: 1,
-
     borderRightWidth: 1,
-
     borderColor: neutral33,
   },
 });

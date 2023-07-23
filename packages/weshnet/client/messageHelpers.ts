@@ -21,14 +21,13 @@ export const getConversationName = (conversation: Conversation) => {
   if (conversation.type === "contact") {
     return conversation?.members?.[0]?.name || "Anon";
   } else {
-    return "Group";
+    return conversation?.name || "Group";
   }
 };
 
-export const getConversationAvatar = (conversation: Conversation) => {
-  if (conversation.type === "contact") {
-    return conversation?.members?.[0]?.avatar || "";
-  } else {
-    return "";
-  }
+export const getConversationAvatar = (
+  conversation: Conversation,
+  index = 0
+) => {
+  return conversation?.members?.[index]?.avatar || "";
 };

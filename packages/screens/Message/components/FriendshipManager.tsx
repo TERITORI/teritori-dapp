@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { View, Platform } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
 
 import { AddFriend } from "./AddFriend";
@@ -25,7 +26,7 @@ export const FriendshipManager = ({ setActiveConversation }) => {
   const contactConversations = useMemo(() => {
     return conversations.filter((item) => item.type === "contact");
   }, [conversations]);
-  console.log("contact-requests", contactRequests);
+
   const tabs = {
     friends: {
       name: "Friends",
@@ -53,6 +54,9 @@ export const FriendshipManager = ({ setActiveConversation }) => {
         tabContainerStyle={{
           paddingBottom: layout.padding_x1_5,
         }}
+        style={{
+          height: 40,
+        }}
       />
       <Separator horizontal={false} />
       <SpacerColumn size={2} />
@@ -74,7 +78,7 @@ export const FriendshipManager = ({ setActiveConversation }) => {
     );
   }
   return (
-    <ScreenContainer noScroll>
+    <ScreenContainer>
       <View style={{ paddingHorizontal: layout.padding_x0_5 }}>
         {renderContentWeb()}
       </View>

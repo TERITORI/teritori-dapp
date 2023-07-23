@@ -1,8 +1,8 @@
-import Lottie, { LottieRefCurrentProps } from "lottie-react";
 import React, { useRef, useEffect } from "react";
 import { StyleSheet, View, Animated } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
+import Lottie, { LottieRefCurrentProps } from "../../../components/Lottie";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { SpacerColumn } from "../../../components/spacer";
 import { useAppNavigation } from "../../../utils/navigation";

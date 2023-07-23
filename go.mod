@@ -3,6 +3,7 @@ module github.com/TERITORI/teritori-dapp
 go 1.18
 
 require (
+	bazil.org/fuse v0.0.0-20200407214033-5883e5a4b512
 	berty.tech/weshnet v1.12.2
 	github.com/CosmWasm/wasmd v0.27.0
 	github.com/Khan/genqlient v0.5.0
@@ -32,6 +33,7 @@ require (
 	github.com/volatiletech/strmangle v0.0.4
 	go.uber.org/zap v1.24.0
 	golang.org/x/exp v0.0.0-20230321023759-10a507213a29
+	golang.org/x/mobile v0.0.0-20200801112145-973feb4309de
 	google.golang.org/grpc v1.50.1
 	google.golang.org/protobuf v1.30.0
 	gorm.io/datatypes v1.2.0
@@ -116,7 +118,6 @@ require (
 )
 
 require (
-	bazil.org/fuse v0.0.0-20200407214033-5883e5a4b512 // indirect
 	berty.tech/go-ipfs-log v1.10.0 // indirect
 	berty.tech/go-ipfs-repo-encrypted v1.3.0 // indirect
 	berty.tech/go-orbit-db v1.22.0 // indirect

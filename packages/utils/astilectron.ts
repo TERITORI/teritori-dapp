@@ -7,7 +7,7 @@ export const messageHandler = (message: { name: string; payload: any }) => {
       case "weshnet.port": {
         console.log("weshnet port received", message);
 
-        weshClient(message.payload);
+        weshClient.createClient(message.payload);
 
         break;
       }

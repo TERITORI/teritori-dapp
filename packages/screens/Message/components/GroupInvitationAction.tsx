@@ -69,11 +69,11 @@ export const GroupInvitationAction = ({
       const group = message.payload?.metadata?.group;
       const groupInfo = GroupInfo_Reply.fromJSON({ group });
 
-      await weshClient().MultiMemberGroupJoin({
+      await weshClient.client.MultiMemberGroupJoin({
         group: groupInfo.group,
       });
 
-      await weshClient().ActivateGroup({
+      await weshClient.client.ActivateGroup({
         groupPk: groupInfo.group?.publicKey,
       });
 
@@ -90,6 +90,7 @@ export const GroupInvitationAction = ({
                 rdvSeed: stringFromBytes(weshConfig.metadata.rdvSeed),
                 tokenId: weshConfig.metadata.tokenId,
               },
+              groupName: message?.payload?.metadata?.groupName,
             },
           },
         },
@@ -102,7 +103,9 @@ export const GroupInvitationAction = ({
     }
   };
 
-  const handleRejectGroup = async () => {};
+  const handleRejectGroup = async () => {
+    await weshClient.client.MultiMemberGroupLeave({});
+  };
 
   if (isAccepted) {
     return (
@@ -130,12 +133,12 @@ export const GroupInvitationAction = ({
           onPress={handleAcceptGroup}
         />
         <SpacerRow size={1} />
-        <TertiaryButton
+        {/* <TertiaryButton
           onPress={handleRejectGroup}
           text="Cancel"
           size="SM"
           squaresBackgroundColor={purpleDark}
-        />
+        /> */}
       </FlexRow>
     </>
   );

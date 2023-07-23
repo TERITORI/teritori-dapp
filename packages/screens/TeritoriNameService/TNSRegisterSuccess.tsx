@@ -22,7 +22,7 @@ const Footer: React.FC<{ tokenId: string }> = ({ tokenId }) => {
       onPress: () => {
         const message = `I just acquired my '${tokenId}' handle on @TeritoriNetwork, which will allow me to use the decentralized Social Hub! ⛩️
 Alpha v0.1 is live 🔥
-${window.location.origin}/user/tori-${selectedWallet?.address}
+${window?.location.origin}/user/tori-${selectedWallet?.address}
 #Teritori #Alpha #SocialHub #Cosmos #IBCGang`;
         Linking.openURL(
           `https://twitter.com/intent/tweet?text=${encodeURIComponent(message)}`

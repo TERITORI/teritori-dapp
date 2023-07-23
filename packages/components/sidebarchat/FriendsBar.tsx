@@ -1,8 +1,13 @@
 import React from "react";
 import { View, StyleSheet, TouchableOpacity } from "react-native";
+import { useSelector } from "react-redux";
 
-import farward from "../../../assets/icons/farward.svg";
-import friends from "../../../assets/icons/friends.svg";
+import forwardSVG from "../../../assets/icons/forward.svg";
+import friendsSVG from "../../../assets/icons/friends.svg";
+import {
+  selectConversationList,
+  selectContactRequestList,
+} from "../../store/slices/message";
 import {
   neutral22,
   secondaryColor,
@@ -14,31 +19,40 @@ import FlexRow from "../FlexRow";
 import { SVG } from "../SVG";
 import { TertiaryBadge } from "../badges/TertiaryBadge";
 import { SpacerRow } from "../spacer";
-const FriendListWithNewMessages = () => {
+
+export const FriendsBar = () => {
+  const contactRequests = useSelector(selectContactRequestList);
+  const conversations = useSelector(selectConversationList);
   return (
     <View style={styles.friendBox}>
       <FlexRow justifyContent="space-between">
         <View>
           <FlexRow>
             <SpacerRow size={1.3} />
-            <SVG source={friends} />
+            <SVG source={friendsSVG} />
             <SpacerRow size={1} />
             <BrandText style={[fontSemibold13, { color: secondaryColor }]}>
               Friends
             </BrandText>
           </FlexRow>
         </View>
-
+        <SpacerRow size={1} />
         <View>
           <FlexRow>
-            <TertiaryBadge label="9 new" textColor={primaryColor} />
+            {!!contactRequests?.length && (
+              <TertiaryBadge
+                label={`${contactRequests.length} new`}
+                textColor={primaryColor}
+              />
+            )}
             <SpacerRow size={3} />
             <BrandText style={[fontSemibold13, { color: secondaryColor }]}>
-              100
+              {conversations?.filter((conv) => conv.type === "contact")
+                ?.length || ""}
             </BrandText>
             <SpacerRow size={2} />
             <TouchableOpacity>
-              <SVG source={farward} />
+              <SVG source={forwardSVG} />
             </TouchableOpacity>
             <SpacerRow size={2} />
           </FlexRow>
@@ -53,8 +67,6 @@ const styles = StyleSheet.create({
     backgroundColor: neutral22,
     height: 40,
     borderRadius: 6,
-
     flexDirection: "row",
   },
 });
-export default FriendListWithNewMessages;

@@ -79,7 +79,7 @@ const RequestList = ({ isOnline, data }: Props) => {
   const handleCancelFriend = async () => {
     setRejectLoading(true);
     try {
-      await weshClient().ContactRequestDiscard({
+      await weshClient.client.ContactRequestDiscard({
         contactPk: bytesFromString(data?.contactId),
       });
     } catch (err) {

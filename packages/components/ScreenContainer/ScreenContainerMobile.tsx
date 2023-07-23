@@ -73,7 +73,7 @@ export const ScreenContainerMobile: FC<{
   const Children: FC = useCallback(() => {
     return (
       <>
-        {mobileTitle && Platform.OS === "web" ? (
+        {!!mobileTitle && Platform.OS === "web" ? (
           <View
             style={{
               height: 48,

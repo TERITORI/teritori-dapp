@@ -77,7 +77,7 @@ export const CollectionHeader: React.FC<{
   const onShare = () => {
     let currentUrl;
     if (Platform.OS === "web") {
-      currentUrl = window.location.href;
+      currentUrl = window?.location.href;
     }
 
     try {

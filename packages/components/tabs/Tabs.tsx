@@ -64,7 +64,6 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
   const { scrollTo } = useScrollTo();
   const itemsArray = Object.entries(items);
   return (
-    // styles are applied weirdly to scrollview so it's better to apply them to a constraining view
     <View
       style={[
         !noUnderline && { borderBottomColor: neutral33, borderBottomWidth: 1 },
@@ -104,11 +103,10 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
                   flexDirection: "row",
                   alignItems: "center",
                   justifyContent: "space-between",
-
                   height: 24,
                 }}
               >
-                {isSelected && gradientText ? (
+                {isSelected && !!gradientText ? (
                   <GradientText
                     gradientType="blueExtended"
                     style={[fontSemibold14, tabTextStyle]}
@@ -128,7 +126,7 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
                   </BrandText>
                 )}
 
-                {item.badgeCount && <SpacerRow size={1} />}
+                {!!item.badgeCount && <SpacerRow size={1} />}
                 {item.badgeCount ? (
                   isSelected ? (
                     <PrimaryBadge

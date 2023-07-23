@@ -19,7 +19,7 @@ export const FeedPostShareModal = ({ postId }: FeedPostShareModalProps) => {
       text: "Twitter",
       iconSvg: twitterSVG,
       onPress: () => {
-        const message = `${window.location.origin}/feed/post/${postId}
+        const message = `${window?.location.origin}/feed/post/${postId}
 #Teritori`;
 
         Linking.openURL(

@@ -1,0 +1,9 @@
+{
+  "platforms": ["ios", "android", "web"],
+  "ios": {
+    "modules": ["WeshdModule"]
+  },
+  "android": {
+    "modules": ["expo.modules.weshd.WeshdModule"]
+  }
+}

@@ -26,7 +26,7 @@ export const CollectionSocialButtons: React.FC<{
           text="Mintable"
           iconSvg={coin}
           style={{ marginRight: 12 }}
-          onPress={() => Linking.openURL(window.location.href + "/mint")}
+          onPress={() => Linking.openURL(window?.location?.href + "/mint")}
         />
       )}
       {websiteLink && (

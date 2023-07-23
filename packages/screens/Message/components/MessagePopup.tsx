@@ -12,12 +12,11 @@ import {
 import avatar from "../../../../assets/icons/avatar.svg";
 import copy from "../../../../assets/icons/copy.svg";
 import deleteicon from "../../../../assets/icons/delete.svg";
-import farward from "../../../../assets/icons/farward.svg";
-import farwardto from "../../../../assets/icons/farwardto.svg";
 import nullIcon from "../../../../assets/icons/illustration.svg";
 import reply from "../../../../assets/icons/reply.svg";
 import searchSVG from "../../../../assets/icons/search.svg";
 import select from "../../../../assets/icons/select.svg";
+import forwardToSVG from "../../../assets/icons/forward-to.svg";
 import { BrandText } from "../../../components/BrandText";
 import { AudioView } from "../../../components/FilePreview/AudioView";
 import FlexRow from "../../../components/FlexRow";
@@ -108,7 +107,7 @@ export const MessagePopup = ({
 
       {/* <TouchableOpacity onPress={handleForwardClick}>
         <FlexRow>
-          <SVG source={farwardto} height={16} width={16} color={neutralA3} />
+          <SVG source={forwardToSVG} height={16} width={16} color={neutralA3} />
           <SpacerRow size={1} />
           <BrandText style={[fontSemibold13, { color: neutralA3 }]}>
             Forward to

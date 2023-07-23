@@ -1,6 +1,6 @@
 import { omit } from "lodash";
 import React, { useState } from "react";
-import { View, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity, Platform } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
 import { FileUploader } from "../../../components/fileUploader";
@@ -35,13 +35,15 @@ export const UploadImage = ({ onClose, setFile }: UploadImageProps) => {
 
   const checkUploadCancel = () => {
     try {
-      window.onfocus = () => {
-        setTimeout(() => {
-          if (!hasFile) {
-            onClose();
-          }
-        }, 1000);
-      };
+      if (Platform.OS !== "web") {
+        window.onfocus = () => {
+          setTimeout(() => {
+            if (!hasFile) {
+              onClose();
+            }
+          }, 1000);
+        };
+      }
     } catch (err) {}
   };
 

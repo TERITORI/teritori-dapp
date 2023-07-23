@@ -2,6 +2,7 @@ import { chain } from "lodash";
 import moment from "moment";
 import React, { useMemo, useState } from "react";
 import { View, StyleSheet, TouchableOpacity, Image } from "react-native";
+import { Avatar } from "react-native-paper";
 
 import { FileRenderer } from "./FileRenderer";
 import { GroupInvitationAction } from "./GroupInvitationAction";
@@ -31,12 +32,21 @@ import {
   fontSemibold11,
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { Message, ReplyTo } from "../../../utils/types/message";
+import {
+  Conversation as IConversation,
+  Message,
+  ReplyTo,
+} from "../../../utils/types/message";
 import { weshConfig } from "../../../weshnet/client";
+import {
+  getConversationAvatar,
+  getConversationName,
+} from "../../../weshnet/client/messageHelpers";
 import { sendMessage } from "../../../weshnet/client/services";
 import { stringFromBytes } from "../../../weshnet/client/utils";
 
 interface ConversationProps {
+  conversation: IConversation;
   message: Message;
   groupPk: Uint8Array;
   isMessageChain: boolean;
@@ -46,6 +56,7 @@ interface ConversationProps {
 }
 
 export const Conversation = ({
+  conversation,
   message,
   groupPk,
   isMessageChain,
@@ -122,7 +133,10 @@ export const Conversation = ({
           }}
         >
           {!isMessageChain && (
-            <SVG source={avatar} style={{ width: 30, height: 30 }} />
+            <Avatar.Image
+              source={getConversationAvatar(conversation)}
+              size={30}
+            />
           )}
         </View>
       )}
@@ -169,7 +183,7 @@ export const Conversation = ({
             borderTopRightRadius: layout.padding_x0_75,
           }}
         >
-          {parentMessage?.id && (
+          {!!parentMessage?.id && (
             <FlexRow>
               <View
                 style={{
@@ -205,7 +219,8 @@ export const Conversation = ({
                   <BrandText
                     style={[fontSemibold11, { color: secondaryColor }]}
                   >
-                    Anon has invited you to a group ${message.payload.message}
+                    {getConversationName(conversation)} has invited you to a
+                    group {message?.payload?.metadata?.groupName}
                   </BrandText>
                 )}
                 {/* {message?.type === "group-invitation" && isSender && (

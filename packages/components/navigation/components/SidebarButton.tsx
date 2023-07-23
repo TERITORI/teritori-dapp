@@ -14,6 +14,7 @@ import { SidebarNestedButton } from "./SidebarNestedButton";
 import chevronDownSVG from "../../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../../assets/icons/chevron-up.svg";
 import { useSidebar } from "../../../context/SidebarProvider";
+import { useCurrentRouteName } from "../../../hooks/useCurrentRouteName/index.native";
 import { useAppRoute } from "../../../utils/navigation";
 import {
   neutral17,
@@ -49,7 +50,7 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
 }) => {
   // variables
   const { isSidebarExpanded } = useSidebar();
-  const { name: currentRouteName } = useAppRoute();
+  const { name: currentRouteName } = useCurrentRouteName();
   const allNestedRoutes = useMemo(
     () => (nested ? Object.values(nested).map((d) => d.route) : []),
     [nested]
