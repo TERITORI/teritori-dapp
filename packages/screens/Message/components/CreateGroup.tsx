@@ -2,7 +2,7 @@ import React, { useMemo, useState } from "react";
 import { View, ScrollView, Platform } from "react-native";
 import { useSelector } from "react-redux";
 
-import { CheckboxGroup } from "./CheckboxGroup";
+import { CheckboxGroup, CheckboxItem } from "./CheckboxGroup";
 import avatar from "../../../../assets/icons/avatar.svg";
 import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
@@ -30,6 +30,7 @@ import {
   getConversationName,
 } from "../../../weshnet/client/messageHelpers";
 import { sendMessage } from "../../../weshnet/client/services";
+import { bytesFromString } from "../../../weshnet/client/utils";
 
 interface CreateGroupProps {
   onClose: () => void;
@@ -37,27 +38,27 @@ interface CreateGroupProps {
 
 export const CreateGroup = ({ onClose }: CreateGroupProps) => {
   const [groupName, setGroupName] = useState("");
-  const [checkedContacts, setCheckedContacts] = useState([]);
+  const [checkedContacts, setCheckedContacts] = useState<string[]>([]);
   const contactInfo = useSelector(selectContactInfo);
   const { setToastError } = useFeedbacks();
   const [loading, setLoading] = useState(false);
   const conversations = useSelector(selectConversationList);
   const handleChange = (items: CheckboxItem[]) => {
     setCheckedContacts(
-      items.filter((item) => item.checked).map((item) => item.contactPk)
+      items.filter((item) => item.checked).map((item) => item.id)
     );
   };
 
-  const items = useMemo(() => {
+  const items: CheckboxItem[] = useMemo(() => {
     return conversations
       .filter((conv) => conv.type === "contact")
       .map((item) => {
         const contactPk = item?.members?.[0].id;
 
         return {
+          id: contactPk,
           name: getConversationName(item),
           avatar: getConversationAvatar(item),
-          contactPk,
           checked: checkedContacts.includes(contactPk),
         };
       });
@@ -93,7 +94,7 @@ export const CreateGroup = ({ onClose }: CreateGroupProps) => {
         conversations
           .filter((item) => checkedContacts.includes(item?.members?.[0]?.id))
           .map(async (item) => {
-            const contactPk = item.members[0].id;
+            const contactPk = bytesFromString(item.members[0].id);
             const _group = await weshClient.client.GroupInfo({
               contactPk,
             });
@@ -108,7 +109,7 @@ export const CreateGroup = ({ onClose }: CreateGroupProps) => {
                   } has invited you to join group ${groupName}`,
                   metadata: {
                     groupName,
-                    group: GroupInfo_Reply.toJSON(groupInfo).group,
+                    group: (GroupInfo_Reply.toJSON(groupInfo) as any).group,
                     contact: item?.members?.[0],
                   },
                   files: [],
@@ -119,7 +120,7 @@ export const CreateGroup = ({ onClose }: CreateGroupProps) => {
       );
 
       onClose();
-    } catch (err) {
+    } catch (err: any) {
       console.log("create group err", err);
       setToastError({
         title: "Group creation failed",

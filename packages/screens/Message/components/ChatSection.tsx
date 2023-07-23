@@ -11,7 +11,6 @@ import {
   TouchableOpacity,
   useWindowDimensions,
   FlatList,
-  Platform,
 } from "react-native";
 import { useSelector } from "react-redux";
 
@@ -30,7 +29,7 @@ import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { selectMessageListByGroupPk } from "../../../store/slices/message";
-import { useAppRoute } from "../../../utils/navigation";
+import { ScreenFC, useAppRoute } from "../../../utils/navigation";
 import {
   neutral00,
   neutral33,
@@ -43,10 +42,9 @@ import {
   fontSemibold14,
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { RemoteFileData } from "../../../utils/types/feed";
 import {
   Conversation as IConversation,
-  Message,
+  MessageFileData,
   ReplyTo,
 } from "../../../utils/types/message";
 import { GroupInfo_Reply } from "../../../weshnet";
@@ -63,15 +61,15 @@ interface ChatSectionProps {
 }
 export interface HandleSendParams {
   message: string;
-  files: Message["payload"]["files"];
+  files: MessageFileData[];
 }
 
-export const ChatSectionContent = ({ conversation }: ChatSectionProps) => {
+export const ChatSection = ({ conversation }: ChatSectionProps) => {
   const [message, setMessage] = useState<any>("");
   const [inputHeight, setInputHeight] = useState(40);
   const [replyTo, setReplyTo] = useState<ReplyTo>();
   const [inputRef, setInputRef] = useState<RefObject<any> | null>(null);
-  const [file, setFile] = useState<RemoteFileData>();
+  const [file, setFile] = useState<MessageFileData>();
 
   const [searchInput, setSearchInput] = useState("");
 
@@ -103,7 +101,7 @@ export const ChatSectionContent = ({ conversation }: ChatSectionProps) => {
         });
       } else {
         _group = await weshClient.client.GroupInfo({
-          contactPk: conversation.members[0].id,
+          contactPk: bytesFromString(conversation.members[0].id),
         });
         await weshClient.client.ActivateGroup({
           groupPk: _group.group?.publicKey,
@@ -111,7 +109,7 @@ export const ChatSectionContent = ({ conversation }: ChatSectionProps) => {
       }
 
       setGroupInfo(_group);
-    } catch (err) {
+    } catch (err: any) {
       setToastError({
         title: "Failed to get group info",
         message: err?.message,
@@ -123,7 +121,7 @@ export const ChatSectionContent = ({ conversation }: ChatSectionProps) => {
     getGroupInfo();
   }, [getGroupInfo]);
 
-  const handleSend = async (data?: HandleSendParams) => {
+  const handleSend = async (data?: any) => {
     if (!message && !data?.message) {
       return;
     }
@@ -144,7 +142,7 @@ export const ChatSectionContent = ({ conversation }: ChatSectionProps) => {
       setFile(undefined);
       setReplyTo(undefined);
       inputRef?.current?.focus();
-    } catch (err) {
+    } catch (err: any) {
       setToastError({
         title: "Failed to send message",
         message: err?.message,
@@ -209,12 +207,13 @@ export const ChatSectionContent = ({ conversation }: ChatSectionProps) => {
               renderItem={({ item, index }) => {
                 return (
                   <>
-                    <Conversation
+                    {/* <Conversation
                       onReply={setReplyTo}
-                      message={item}
-                      data={item.message}
+                      conversation={item}
                       groupPk={groupInfo?.group?.publicKey}
-                    />
+                      isMessageChain={false}
+                      isNextMine={false}
+                    /> */}
                   </>
                 );
               }}
@@ -255,9 +254,9 @@ export const ChatSectionContent = ({ conversation }: ChatSectionProps) => {
               : item.timestamp;
 
             const isNewSeparator = !previousMessage?.isRead && item.isRead;
-            const parentMessage =
-              item?.parentId &&
-              messages.find((msg) => msg.id === item.parentId);
+            const parentMessage = item?.parentId
+              ? messages.find((msg) => msg.id === item.parentId)
+              : undefined;
 
             if (item.type === "group-join") {
               return null;
@@ -268,10 +267,7 @@ export const ChatSectionContent = ({ conversation }: ChatSectionProps) => {
                   conversation={conversation}
                   onReply={setReplyTo}
                   message={item}
-                  data={item.message}
                   groupPk={groupInfo?.group?.publicKey}
-                  height={0}
-                  width={0}
                   isMessageChain={previousMessage?.senderId === item.senderId}
                   isNextMine={nextMessage?.senderId === item.senderId}
                   parentMessage={parentMessage}
@@ -415,14 +411,11 @@ export const ChatSectionContent = ({ conversation }: ChatSectionProps) => {
   );
 };
 
-export const ChatSection = (props) => {
+export const ChatSectionScreen: ScreenFC<"ChatSection"> = () => {
   const { params } = useAppRoute();
-  if (Platform.OS === "web") {
-    return <ChatSectionContent {...props} />;
-  }
   return (
     <ScreenContainer noScroll>
-      <ChatSectionContent conversation={params} />
+      <ChatSection conversation={params as IConversation} />
     </ScreenContainer>
   );
 };

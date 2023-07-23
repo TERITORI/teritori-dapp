@@ -1,5 +1,5 @@
 import * as Clipboard from "expo-clipboard";
-import React, { useState } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -60,9 +60,9 @@ const data = [
 interface MessagePopupProps {
   message: string;
   isForwarding: boolean;
-  setIsForwarding: () => void;
+  setIsForwarding: Dispatch<SetStateAction<boolean>>;
   onReply: () => void;
-  onClose: () => object;
+  onClose: () => void;
 }
 
 export const MessagePopup = ({

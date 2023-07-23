@@ -122,7 +122,7 @@ export const ScreenContainer: React.FC<{
       {/*FIXME: Too many containers levels*/}
 
       <View style={styles.container}>
-        {!hideSidebar ? <Sidebar /> : null}
+        {!hideSidebar ? <Sidebar expanded={false} /> : null}
 
         <View style={{ width: "100%", flex: 1 }}>
           {/*==== Header*/}

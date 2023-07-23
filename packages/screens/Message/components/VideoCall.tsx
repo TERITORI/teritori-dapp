@@ -89,7 +89,7 @@ const VideoCallScreen: React.FC<VideoCallScreenProps> = ({ setVideoCall }) => {
                 iconSize={25}
                 noBrokenCorners
                 backgroundColor={neutral00}
-                size={10}
+                size="M"
                 style={{ width: 10 }}
               />
               <SpacerRow size={7} />
@@ -98,7 +98,7 @@ const VideoCallScreen: React.FC<VideoCallScreenProps> = ({ setVideoCall }) => {
                 iconSize={25}
                 noBrokenCorners
                 backgroundColor={neutral00}
-                size={10}
+                size="M"
                 style={{ width: 10 }}
               />
             </FlexRow>

@@ -43,7 +43,7 @@ export const CreateConversation = ({ onClose }: CreateConversationProps) => {
     try {
       await weshServices.addContact(contactLink, contactInfo);
       onClose();
-    } catch (err) {
+    } catch (err: any) {
       setError(err?.message);
     }
 

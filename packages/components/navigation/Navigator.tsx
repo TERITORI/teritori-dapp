@@ -24,8 +24,8 @@ import { MarketplaceScreen } from "../../screens/Marketplace/MarketplaceScreen";
 import { NFTDetailScreen } from "../../screens/Marketplace/NFTDetailScreen";
 import { MessageScreen } from "../../screens/Message/MessageScreen";
 import { AddFriend } from "../../screens/Message/components/AddFriend";
-import { ChatSection } from "../../screens/Message/components/ChatSection";
-import { FriendshipManager } from "../../screens/Message/components/FriendshipManager";
+import { ChatSectionScreen } from "../../screens/Message/components/ChatSection";
+import { FriendshipManagerScreen } from "../../screens/Message/components/FriendshipManager";
 import { MultisigCreateScreen } from "../../screens/Multisig/MultisigCreateScreen";
 import { MultisigScreen } from "../../screens/Multisig/MultisigScreen";
 import { MultisigWalletDashboardScreen } from "../../screens/Multisig/MultisigWalletDashboardScreen";
@@ -61,8 +61,8 @@ export const Navigator: React.FC = () => {
   return (
     <Drawer.Navigator
       initialRouteName="Home"
-      drawerContent={(props) =>
-        Platform.OS === "web" ? null : <Sidebar {...props} expanded />
+      drawerContent={() =>
+        Platform.OS === "web" ? null : <Sidebar expanded />
       }
       screenOptions={{
         drawerStyle: {
@@ -156,7 +156,7 @@ export const Navigator: React.FC = () => {
       />
       <Stack.Screen
         name="ChatSection"
-        component={ChatSection}
+        component={ChatSectionScreen}
         options={{
           header: () => null,
           title: screenTitle("Chat Message"),
@@ -172,7 +172,7 @@ export const Navigator: React.FC = () => {
       />
       <Stack.Screen
         name="FriendshipManager"
-        component={FriendshipManager}
+        component={FriendshipManagerScreen}
         options={{
           header: () => null,
           title: screenTitle("Friends Add"),

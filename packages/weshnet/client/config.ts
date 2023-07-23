@@ -1,6 +1,7 @@
 import { ServiceGetConfiguration_Reply } from "../protocoltypes";
 
 class WeshConfig {
+  //@ts-ignore
   private _config: ServiceGetConfiguration_Reply;
   private _shareLink: string = "";
   private _metadata = {

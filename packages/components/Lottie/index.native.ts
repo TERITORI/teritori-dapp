@@ -1,2 +1,3 @@
-import * as Lottie from "lottie-react-native";
+import Lottie from "lottie-react-native";
+
 export default Lottie;

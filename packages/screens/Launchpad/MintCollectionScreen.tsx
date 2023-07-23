@@ -851,6 +851,7 @@ const PhaseCountdown: React.FC<{
   return (
     <BrandText style={[fontSemibold16, { color: pinkDefault }]}>
       STARTS IN
+      {/** @ts-ignore */}
       <CountDown
         until={(startsAt || now) - now}
         onFinish={onCountdownEnd}

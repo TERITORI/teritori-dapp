@@ -13,8 +13,12 @@ export type MessageType =
 
 export type ConversationType = "contact" | "group";
 
+export interface MessageFileData extends RemoteFileData {
+  type: string;
+}
+
 interface MessagePayload {
-  files: RemoteFileData[];
+  files: MessageFileData[];
   message: string;
   metadata?: {
     groupName?: string;
@@ -31,6 +35,8 @@ export interface Message {
   payload?: MessagePayload;
   timestamp: string;
   parentId?: string;
+  reactions?: any[];
+  isRead?: boolean;
 }
 
 interface Contact {
@@ -50,7 +56,7 @@ export interface Conversation {
 }
 
 export interface MessageList {
-  [key: string]: Message[];
+  [key: string]: { [key: string]: Message };
 }
 
 export interface ConversationList {
@@ -60,8 +66,9 @@ export interface ConversationList {
 export interface ContactRequest {
   id: string;
   contactId: string;
-  tokenId: string;
   rdvSeed: string;
+  avatar: string;
+  name: string;
 }
 
 export interface ReplyTo {

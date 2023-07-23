@@ -36,7 +36,7 @@ export interface TabDefinition {
   scrollTo?: string;
   iconSVG?: any;
   iconColor?: string;
-  icon: any;
+  icon?: any;
 }
 
 export const Tabs = <T extends { [key: string]: TabDefinition }>({

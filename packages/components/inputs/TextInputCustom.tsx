@@ -72,7 +72,7 @@ export interface TextInputCustomProps<T extends FieldValues>
   errorStyle?: ViewStyle;
   valueModifier?: (value: string) => string;
   isLoading?: boolean;
-  labelStyle?: TextStyle;
+  labelStyle?: TextStyle | TextStyle[];
   containerStyle?: ViewStyle;
   boxMainContainerStyle?: ViewStyle;
   noBrokenCorners?: boolean;
@@ -83,7 +83,7 @@ export interface TextInputCustomProps<T extends FieldValues>
 
 export const Label: React.FC<{
   children: string;
-  style?: StyleProp<TextStyle>;
+  style?: TextStyle | TextStyle[];
   isRequired?: boolean;
   hovered?: boolean;
 }> = ({ children, style, isRequired, hovered }) => (

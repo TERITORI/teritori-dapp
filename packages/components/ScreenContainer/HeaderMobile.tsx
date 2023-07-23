@@ -67,6 +67,7 @@ export const HeaderMobile: FC<{
           <TouchableOpacity
             onPress={() => {
               if (["android", "ios"].includes(Platform.OS)) {
+                //@ts-ignore
                 navigation.openDrawer();
               } else {
                 toggleSidebar();

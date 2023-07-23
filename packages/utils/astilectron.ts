@@ -18,9 +18,10 @@ export const messageHandler = (message: { name: string; payload: any }) => {
 export const handleAstilectronMessages = () => {
   try {
     document.addEventListener("astilectron-ready", function () {
+      //@ts-ignore
       astilectron.onMessage(messageHandler);
     });
   } catch (err) {
-    console.log("handle msg err", err?.message);
+    console.log("handle msg err", err);
   }
 };

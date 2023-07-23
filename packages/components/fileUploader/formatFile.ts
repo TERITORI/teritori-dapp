@@ -6,7 +6,11 @@ import {
 import { FileType, LocalFileData } from "../../utils/types/files";
 import { getAudioData } from "../../utils/waveform";
 
-export const formatFile = async (file: File): Promise<LocalFileData> => {
+interface CustomFile extends File {
+  path?: string;
+}
+
+export const formatFile = async (file: CustomFile): Promise<LocalFileData> => {
   let fileType: FileType = "file";
   let audioMetadata;
 

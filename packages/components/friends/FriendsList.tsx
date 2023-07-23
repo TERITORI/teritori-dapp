@@ -33,7 +33,7 @@ const FriendList = ({ item, handleChatPress }: FriendListProps) => {
           <FlexRow>
             <Avatar.Image
               size={40}
-              source={getConversationAvatar(item) || ""}
+              source={{ uri: getConversationAvatar(item) || "" }}
             />
             <Badge
               style={{
