@@ -1,6 +1,6 @@
-import * as React from 'react';
+import * as React from "react";
 
-import { WeshdViewProps } from './Weshd.types';
+import { WeshdViewProps } from "./Weshd.types";
 
 export default function WeshdView(props: WeshdViewProps) {
   return (

@@ -16,7 +16,6 @@ import {
   fontSemibold13,
   fontSemibold14,
 } from "../../utils/style/fonts";
-import { weshClient } from "../../weshnet/client";
 import { BrandText } from "../BrandText";
 import FlexRow from "../FlexRow";
 import { TertiaryBox } from "../boxes/TertiaryBox";

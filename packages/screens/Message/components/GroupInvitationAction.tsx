@@ -1,35 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { useSelector } from "react-redux";
 
-import { FileRenderer } from "./FileRenderer";
-import { MessagePopup } from "./MessagePopup";
-import avatar from "../../../../assets/icons/avatar.svg";
-import reply from "../../../../assets/icons/reply.svg";
 import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
-import { SVG } from "../../../components/SVG";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
-import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
-import { TertiaryButton } from "../../../components/buttons/TertiaryButton";
-import { EmojiSelector } from "../../../components/socialFeed/EmojiSelector";
-import { SocialMessageContent } from "../../../components/socialFeed/SocialThread/SocialMessageContent";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { selectConversationList } from "../../../store/slices/message";
-import {
-  neutral77,
-  secondaryColor,
-  purpleDark,
-  neutral17,
-  neutralA3,
-  successColor,
-} from "../../../utils/style/colors";
-import {
-  fontBold10,
-  fontMedium10,
-  fontSemibold11,
-} from "../../../utils/style/fonts";
+import { purpleDark, successColor } from "../../../utils/style/colors";
+import { fontMedium10 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { Message } from "../../../utils/types/message";
 import { GroupInfo_Reply } from "../../../weshnet";
@@ -44,7 +23,7 @@ interface GroupInvitationActionProps {
 export const GroupInvitationAction = ({
   message,
 }: GroupInvitationActionProps) => {
-  const { setToastError, setToastSuccess } = useFeedbacks();
+  const { setToastError } = useFeedbacks();
   const conversations = useSelector(selectConversationList);
 
   const [isAccepted, setIsAccepted] = useState(false);
@@ -62,7 +41,7 @@ export const GroupInvitationAction = ({
         setIsAccepted(true);
       }
     }
-  }, [conversations]);
+  }, [conversations, message.payload?.metadata?.group]);
 
   const handleAcceptGroup = async () => {
     try {
@@ -103,10 +82,6 @@ export const GroupInvitationAction = ({
     }
   };
 
-  const handleRejectGroup = async () => {
-    await weshClient.client.MultiMemberGroupLeave({});
-  };
-
   if (isAccepted) {
     return (
       <BrandText
@@ -133,12 +108,6 @@ export const GroupInvitationAction = ({
           onPress={handleAcceptGroup}
         />
         <SpacerRow size={1} />
-        {/* <TertiaryButton
-          onPress={handleRejectGroup}
-          text="Cancel"
-          size="SM"
-          squaresBackgroundColor={purpleDark}
-        /> */}
       </FlexRow>
     </>
   );

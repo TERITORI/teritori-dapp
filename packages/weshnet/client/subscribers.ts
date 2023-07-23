@@ -4,9 +4,7 @@ import { weshClient } from "./client";
 import { handleMetadata } from "./processData";
 import { bytesFromString, decodeJSON, stringFromBytes } from "./utils";
 import {
-  selectConversationList,
   selectLastIdByKey,
-  setConversationList,
   setLastId,
   setMessageList,
   updateConversationById,

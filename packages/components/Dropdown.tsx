@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   LayoutChangeEvent,
   TouchableOpacity,
@@ -7,7 +7,6 @@ import {
 } from "react-native";
 
 import { DefaultValue, useDropdowns } from "../context/DropdownsProvider";
-type Position = "top" | "bottom" | "left" | "right" | "auto";
 
 interface DropdownProps {
   children:
@@ -26,7 +25,7 @@ export const Dropdown = ({
   onDropdownClosed,
   positionStyle = {},
 }: DropdownProps) => {
-  const [layout, setLayout] = useState({
+  const [, setLayout] = useState({
     height: 0,
     width: 0,
   });
@@ -47,7 +46,7 @@ export const Dropdown = ({
     if (!copyDropdownOpen && isDropdownOpen(dropdownRef)) {
       setCopyDropdownOpen(true);
     }
-  }, [openedDropdownRef]);
+  }, [copyDropdownOpen, isDropdownOpen, onDropdownClosed, openedDropdownRef]);
 
   const handleLayout = ({ nativeEvent: { layout } }: LayoutChangeEvent) => {
     setLayout(layout);
@@ -55,7 +54,7 @@ export const Dropdown = ({
 
   useEffect(() => {
     !triggerComponent && onPressDropdownButton(dropdownRef);
-  }, []);
+  }, [onPressDropdownButton, triggerComponent]);
 
   return (
     <View

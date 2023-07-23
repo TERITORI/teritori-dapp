@@ -1,4 +1,4 @@
-import { AudioFileMetadata, RemoteFileData } from "./feed";
+import { RemoteFileData } from "./feed";
 
 export type MessageType =
   | "message"
@@ -12,13 +12,6 @@ export type MessageType =
   | "contact-request";
 
 export type ConversationType = "contact" | "group";
-interface MessageFile {
-  name: string;
-  url: string;
-  mimeType: string;
-  type: "image" | "audio" | "video";
-  audioMetadata?: AudioFileMetadata;
-}
 
 interface MessagePayload {
   files: RemoteFileData[];

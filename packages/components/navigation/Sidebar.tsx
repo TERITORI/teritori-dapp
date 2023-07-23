@@ -64,6 +64,7 @@ export const Sidebar = (props: SidebarProps) => {
   const selectedNetworkInfo = useSelectedNetworkInfo();
   const selectedNetworkKind = selectedNetworkInfo?.kind;
   const connected = selectedWallet?.connected;
+
   const { top, bottom } = useSafeAreaInsets();
 
   // variables

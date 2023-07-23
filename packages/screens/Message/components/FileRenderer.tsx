@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { View, useWindowDimensions } from "react-native";
+import { View } from "react-native";
 
 import { AudioView } from "../../../components/FilePreview/AudioView";
 import { ImageView } from "../../../components/FilePreview/ImageView";
@@ -13,9 +13,6 @@ interface Props {
 export const THUMBNAIL_WIDTH = 140;
 
 export const FileRenderer = ({ files, maxWidth, waveFormMaxWidth }: Props) => {
-  console.log(files);
-
-  const { width } = useWindowDimensions();
   const audioFiles = useMemo(
     () => files?.filter((file) => file.fileType === "audio"),
     [files]
@@ -28,7 +25,6 @@ export const FileRenderer = ({ files, maxWidth, waveFormMaxWidth }: Props) => {
         )
         .map((file) => ({
           ...file,
-          // url: file.url.split(",")[1],
         })),
     [files]
   );

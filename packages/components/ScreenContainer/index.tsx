@@ -31,7 +31,7 @@ import { ConnectWalletButton } from "../TopMenu/ConnectWalletButton";
 import { Footer } from "../footers/Footer";
 import { Sidebar } from "../navigation/Sidebar";
 import { CartIconButtonBadge } from "../navigation/components/CartIconButtonBadge";
-import { SpacerColumn, SpacerRow } from "../spacer";
+import { SpacerRow } from "../spacer";
 
 export const ScreenContainer: React.FC<{
   headerChildren?: JSX.Element;

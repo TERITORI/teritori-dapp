@@ -2,15 +2,11 @@ import React, { useState } from "react";
 import { ScrollView, View } from "react-native";
 import { useSelector } from "react-redux";
 
-import nullIcon from "../../../assets/icons/illustration.svg";
-import { SVG } from "../../../components/SVG";
-import { Separator } from "../../../components/Separator";
 import { MessageBlankFiller } from "../../../components/blankFiller/MessageBlankFiller";
 import { TextInputCustomBorder } from "../../../components/inputs/TextInputCustomBorder";
 import RequestList from "../../../components/requests/Request";
 import { SpacerColumn } from "../../../components/spacer";
 import { selectContactRequestList } from "../../../store/slices/message";
-import { neutral33 } from "../../../utils/style/colors";
 import { ContactRequest } from "../../../utils/types/message";
 
 interface RequestProps {

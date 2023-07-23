@@ -1,4 +1,4 @@
-import { startCase, camelCase } from "lodash";
+import { camelCase } from "lodash";
 import React from "react";
 <<<<<<< HEAD
 import { Image, View } from "react-native";

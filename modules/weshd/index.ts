@@ -6,9 +6,9 @@ import {
 
 // Import the native module. On web, it will be resolved to Weshd.web.ts
 // and on native platforms to Weshd.ts
+import { ChangeEventPayload, WeshdViewProps } from "./src/Weshd.types";
 import WeshdModule from "./src/WeshdModule";
 import WeshdView from "./src/WeshdView";
-import { ChangeEventPayload, WeshdViewProps } from "./src/Weshd.types";
 
 // Get the native constant value.
 export const PI = WeshdModule.PI;

@@ -6,6 +6,8 @@ import Animated, {
   WithSpringConfig,
 } from "react-native-reanimated";
 
+import { SidebarButton } from "./components/SidebarButton";
+import { SidebarType } from "./types";
 import addSVG from "../../../assets/icons/add-circle.svg";
 import { useSidebar } from "../../context/SidebarProvider";
 import { useSelectedNetworkKind } from "../../hooks/useSelectedNetwork";
@@ -18,8 +20,6 @@ import {
   MOBILE_SIDEBAR_MAX_WIDTH,
 } from "../../utils/style/layout";
 import { SpacerColumn } from "../spacer";
-import { SidebarButton } from "./components/SidebarButton";
-import { SidebarType } from "./types";
 
 const SpringConfig: WithSpringConfig = {
   stiffness: 100,

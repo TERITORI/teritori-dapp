@@ -1,4 +1,3 @@
-import { useRoute } from "@react-navigation/native";
 import { StyleSheet, View } from "react-native";
 import Animated, {
   useAnimatedStyle,

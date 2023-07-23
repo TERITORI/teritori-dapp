@@ -1,5 +1,11 @@
 import moment from "moment";
-import React, { RefObject, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  RefObject,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import {
   View,
   TouchableOpacity,
@@ -48,10 +54,6 @@ import { weshClient } from "../../../weshnet/client";
 import { getNewConversationText } from "../../../weshnet/client/messageHelpers";
 import { sendMessage } from "../../../weshnet/client/services";
 import {
-  subscribeMessages,
-  subscribeMetadata,
-} from "../../../weshnet/client/subscribers";
-import {
   bytesFromString,
   stringFromBytes,
 } from "../../../weshnet/client/utils";
@@ -65,7 +67,6 @@ export interface HandleSendParams {
 }
 
 export const ChatSectionContent = ({ conversation }: ChatSectionProps) => {
-  const { width } = useWindowDimensions();
   const [message, setMessage] = useState<any>("");
   const [inputHeight, setInputHeight] = useState(40);
   const [replyTo, setReplyTo] = useState<ReplyTo>();
@@ -89,11 +90,8 @@ export const ChatSectionContent = ({ conversation }: ChatSectionProps) => {
     );
   }, [messages, searchInput]);
 
-  const [subsId, setSubsId] = useState();
-
-  const getGroupInfo = async () => {
+  const getGroupInfo = useCallback(async () => {
     let _group: GroupInfo_Reply;
-    let subsId;
 
     try {
       if (conversation.type === "group") {
@@ -113,27 +111,17 @@ export const ChatSectionContent = ({ conversation }: ChatSectionProps) => {
       }
 
       setGroupInfo(_group);
-      // subsId = await subscribeMessages(
-      //  string groupPk: _group.group?.publicKey,
-
-      // );
-      // await subscribeMetadata(_group.group?.publicKey);
-
-      setSubsId(subsId);
     } catch (err) {
       setToastError({
         title: "Failed to get group info",
         message: err?.message,
       });
     }
-  };
+  }, [conversation.id, conversation.members, conversation.type, setToastError]);
 
   useEffect(() => {
     getGroupInfo();
-    return () => {
-      subsId?.unsubscribe();
-    };
-  }, [conversation.id]);
+  }, [getGroupInfo]);
 
   const handleSend = async (data?: HandleSendParams) => {
     if (!message && !data?.message) {

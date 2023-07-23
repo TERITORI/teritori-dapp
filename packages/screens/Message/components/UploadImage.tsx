@@ -34,17 +34,15 @@ export const UploadImage = ({ onClose, setFile }: UploadImageProps) => {
   const [hasFile, setHasFile] = useState(false);
 
   const checkUploadCancel = () => {
-    try {
-      if (Platform.OS !== "web") {
-        window.onfocus = () => {
-          setTimeout(() => {
-            if (!hasFile) {
-              onClose();
-            }
-          }, 1000);
-        };
-      }
-    } catch (err) {}
+    if (Platform.OS === "web") {
+      window.onfocus = () => {
+        setTimeout(() => {
+          if (!hasFile) {
+            onClose();
+          }
+        }, 1000);
+      };
+    }
   };
 
   const handleUpload = async (file: LocalFileData) => {

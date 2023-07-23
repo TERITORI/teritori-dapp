@@ -1,44 +1,26 @@
 import React, { useState } from "react";
-import {
-  View,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-  Platform,
-  TextInput,
-} from "react-native";
+import { View, StyleSheet, TouchableOpacity, TextInput } from "react-native";
 
 import { AudioCall } from "./AudioCall";
 import { Calendar } from "./Calendar";
 import { ConversationAvatar } from "./ConversationAvatar";
 import VideoCallScreen from "./VideoCall";
-import audiocell from "../../../../assets/icons/audiocell.svg";
-import avatar from "../../../../assets/icons/avatar.svg";
 import calender from "../../../../assets/icons/calendar.svg";
 import close from "../../../../assets/icons/close.svg";
 import dots from "../../../../assets/icons/dots.svg";
-import search from "../../../../assets/icons/search.svg";
 import searchSVG from "../../../../assets/icons/search.svg";
-import videocall from "../../../../assets/icons/videocall.svg";
 import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
-import { Separator } from "../../../components/Separator";
-import { SpacerColumn, SpacerRow } from "../../../components/spacer";
+import { SpacerRow } from "../../../components/spacer";
 import {
   neutral17,
   neutral33,
-  neutralA3,
   secondaryColor,
   neutral55,
   successColor,
 } from "../../../utils/style/colors";
-import {
-  fontSemibold13,
-  fontSemibold11,
-  fontMedium10,
-  fontMedium14,
-} from "../../../utils/style/fonts";
+import { fontSemibold13, fontMedium14 } from "../../../utils/style/fonts";
 import { getConversationName } from "../../../weshnet/client/messageHelpers";
 export const ChatHeader = ({
   searchInput,
@@ -64,14 +46,14 @@ export const ChatHeader = ({
     setSearchInput(text);
   };
 
-  const handleAudio = () => {
-    setAudioCall(true);
-    setVideoCall(false);
-  };
-  const handleVideo = () => {
-    setVideoCall(true);
-    setAudioCall(false);
-  };
+  // const handleAudio = () => {
+  //   setAudioCall(true);
+  //   setVideoCall(false);
+  // };
+  // const handleVideo = () => {
+  //   setVideoCall(true);
+  //   setAudioCall(false);
+  // };
   return (
     <>
       <View style={styles.container}>
@@ -131,7 +113,7 @@ export const ChatHeader = ({
                 <SpacerRow size={4} />
                 <TouchableOpacity onPress={handleSearchIconPress}>
                   <SVG
-                    source={search}
+                    source={searchSVG}
                     style={{
                       height: 20,
                       width: 20,
