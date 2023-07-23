@@ -1,10 +1,10 @@
-import { requireNativeViewManager } from 'expo-modules-core';
-import * as React from 'react';
+import { requireNativeViewManager } from "expo-modules-core";
+import * as React from "react";
 
-import { WeshdViewProps } from './Weshd.types';
+import { WeshdViewProps } from "./Weshd.types";
 
 const NativeView: React.ComponentType<WeshdViewProps> =
-  requireNativeViewManager('Weshd');
+  requireNativeViewManager("Weshd");
 
 export default function WeshdView(props: WeshdViewProps) {
   return <NativeView {...props} />;

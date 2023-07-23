@@ -1,21 +1,16 @@
 import React from "react";
 import { View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { Avatar, Badge } from "react-native-paper";
+import { Avatar } from "react-native-paper";
 
 import { Separator } from "../../components/Separator";
 import {
   neutral22,
   neutral30,
-  neutralA3,
   primaryColor,
   secondaryColor,
 } from "../../utils/style/colors";
-import {
-  fontSemibold11,
-  fontSemibold13,
-  fontSemibold14,
-} from "../../utils/style/fonts";
+import { fontSemibold13, fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import FlexRow from "../FlexRow";
 import { TertiaryBox } from "../boxes/TertiaryBox";
@@ -27,8 +22,7 @@ type Props = {
   avatar: any;
 };
 
-const ScreenShare: React.FC<Props> = ({ avatar, name, isOnline }) => {
-  const onlineStatusBadgeColor = isOnline ? "green" : "yellow";
+const ScreenShare: React.FC<Props> = ({ avatar, name }) => {
   return (
     <View>
       <FlexRow justifyContent="space-between">

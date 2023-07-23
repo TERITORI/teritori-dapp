@@ -15,7 +15,6 @@ import chevronDownSVG from "../../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../../assets/icons/chevron-up.svg";
 import { useSidebar } from "../../../context/SidebarProvider";
 import { useCurrentRouteName } from "../../../hooks/useCurrentRouteName/index.native";
-import { useAppRoute } from "../../../utils/navigation";
 import {
   neutral17,
   neutral33,

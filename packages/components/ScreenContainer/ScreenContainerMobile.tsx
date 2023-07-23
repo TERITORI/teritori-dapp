@@ -1,4 +1,4 @@
-import React, { FC, useCallback } from "react";
+import React, { FC } from "react";
 import {
   Platform,
   SafeAreaView,
@@ -6,7 +6,6 @@ import {
   StyleSheet,
   useWindowDimensions,
   View,
-  Text,
 } from "react-native";
 
 import { HeaderMobile } from "./HeaderMobile";
@@ -14,7 +13,6 @@ import { useSearchBar } from "../../context/SearchBarProvider";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { NetworkFeature, NetworkInfo, NetworkKind } from "../../networks";
 import { DAppStoreData } from "../../screens/DAppStore/components/DAppStoreData";
-import SideBarChats from "../../screens/Message/components/SideBarChats";
 import { neutral33, neutral77 } from "../../utils/style/colors";
 import { fontBold12 } from "../../utils/style/fonts";
 import {
@@ -69,31 +67,6 @@ export const ScreenContainerMobile: FC<{
   const { width } = useMaxResolution();
   const { isSearchModalMobileOpen, setSearchModalMobileOpen } = useSearchBar();
   const { height: windowHeight, width: windowWidth } = useWindowDimensions();
-
-  const Children: FC = useCallback(() => {
-    return (
-      <>
-        {!!mobileTitle && Platform.OS === "web" ? (
-          <View
-            style={{
-              height: 48,
-              borderBottomWidth: 1,
-              flexDirection: "row",
-              alignItems: "center",
-              borderBottomColor: neutral33,
-              paddingHorizontal:
-                getMobileScreenContainerMarginHorizontal(windowWidth),
-            }}
-          >
-            <BrandText style={[fontBold12, { color: neutral77 }]}>
-              {mobileTitle}
-            </BrandText>
-          </View>
-        ) : null}
-        {children}
-      </>
-    );
-  }, [mobileTitle, children, windowWidth]);
 
   return (
     <SafeAreaView style={styles.container}>

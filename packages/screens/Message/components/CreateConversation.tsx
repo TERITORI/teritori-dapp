@@ -13,8 +13,6 @@ import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import ModalBase from "../../../components/modals/ModalBase";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { useIsMobile } from "../../../hooks/useIsMobile";
-import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
-import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import {
   MessageState,
   selectContactInfo,
@@ -23,7 +21,7 @@ import {
 import { neutral00, secondaryColor } from "../../../utils/style/colors";
 import { fontSemibold16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { weshClient, weshConfig, weshServices } from "../../../weshnet/client";
+import { weshServices } from "../../../weshnet/client";
 import { createSharableLink } from "../../../weshnet/client/services";
 interface CreateConversationProps {
   onClose: () => void;
@@ -37,8 +35,6 @@ export const CreateConversation = ({ onClose }: CreateConversationProps) => {
   const isMobile = useIsMobile();
 
   const dispatch = useDispatch();
-  const selectedWallet = useSelectedWallet();
-  const userInfo = useNSUserInfo(selectedWallet?.userId);
 
   const handleAddContact = async () => {
     setAddContactLoading(true);
@@ -74,7 +70,7 @@ export const CreateConversation = ({ onClose }: CreateConversationProps) => {
         shareLink,
       })
     );
-  }, [contactInfo?.name, contactInfo?.avatar]);
+  }, [contactInfo.name, contactInfo.avatar, contactInfo, dispatch]);
 
   return (
     <ModalBase

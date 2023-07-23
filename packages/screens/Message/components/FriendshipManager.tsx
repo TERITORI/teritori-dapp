@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from "react";
 import { View, Platform } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
 
 import { AddFriend } from "./AddFriend";
@@ -9,7 +8,6 @@ import { Requests } from "./Requests";
 import plus from "../../../../assets/icons/Addplus.svg";
 import { ScreenContainer } from "../../../components/ScreenContainer";
 import { Separator } from "../../../components/Separator";
-import requestData from "../../../components/requests/data";
 import { SpacerColumn } from "../../../components/spacer";
 import { Tabs } from "../../../components/tabs/Tabs";
 import {
@@ -17,7 +15,6 @@ import {
   selectConversationList,
 } from "../../../store/slices/message";
 import { layout } from "../../../utils/style/layout";
-import friendData from "../../components/friends/data";
 
 export const FriendshipManager = ({ setActiveConversation }) => {
   const conversations = useSelector(selectConversationList);

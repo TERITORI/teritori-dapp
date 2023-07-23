@@ -1,15 +1,9 @@
-import { Window as KeplrWindow } from "@keplr-wallet/types";
-import { useEffect, useMemo, useState } from "react";
-import { useSelector } from "react-redux";
+import { useMemo, useState } from "react";
 
 import { Wallet } from "./wallet";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import { NetworkKind, getUserId } from "../../networks";
-import {
-  selectIsKeplrConnected,
-  setIsKeplrConnected,
-  setSelectedWalletId,
-} from "../../store/slices/settings";
+import { setSelectedWalletId } from "../../store/slices/settings";
 import { useAppDispatch } from "../../store/store";
 import { WalletProvider } from "../../utils/walletProvider";
 
@@ -18,13 +12,13 @@ export type UseKeplrResult =
   | [false, boolean, undefined];
 
 export const useKeplr: () => UseKeplrResult = () => {
-  const isKeplrConnected = useSelector(selectIsKeplrConnected);
-  const [hasKeplr, setHasKeplr] = useState(false);
+  // const isKeplrConnected = useSelector(selectIsKeplrConnected);
+  const [hasKeplr] = useState(false);
   const selectedNetworkInfo = useSelectedNetworkInfo();
   const dispatch = useAppDispatch();
 
-  const [addresses, setAddresses] = useState<string[]>([]);
-  const [ready, setReady] = useState(false);
+  const [addresses] = useState<string[]>([]);
+  const [ready] = useState(false);
 
   // useEffect(() => {
   //   const handleLoad = () => {

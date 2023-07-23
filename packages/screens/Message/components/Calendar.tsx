@@ -23,18 +23,14 @@ export const Calendar = () => {
   console.log("selectedDate", selected);
   const [currentMonth, setCurrentMonth] = useState(new Date());
 
-  const weeks = [];
-  const monthDays = [];
+  const weeks: React.ReactElement[] = [];
+
   const monthStart = new Date(
     currentMonth.getFullYear(),
     currentMonth.getMonth(),
     1
   );
-  const monthEnd = new Date(
-    currentMonth.getFullYear(),
-    currentMonth.getMonth() + 1,
-    0
-  );
+
   const startDate = new Date(
     monthStart.getFullYear(),
     monthStart.getMonth(),

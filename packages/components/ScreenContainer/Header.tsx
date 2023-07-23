@@ -1,7 +1,6 @@
 import React from "react";
 import { View, ViewStyle, StyleProp } from "react-native";
 
-import { Notification } from "./Notification";
 import { neutral33 } from "../../utils/style/colors";
 import { headerHeight, layout } from "../../utils/style/layout";
 import { BackButton } from "../navigation/components/BackButton";

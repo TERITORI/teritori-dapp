@@ -1,11 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-  Platform,
-} from "react-native";
+import { View, TouchableOpacity, ScrollView, Platform } from "react-native";
 
 import avatar from "../../../../assets/icons/avatar.svg";
 import copy from "../../../../assets/icons/copy.svg";
@@ -19,19 +13,16 @@ import ScreenShare from "../../../components/ShareScreen/ShareScreen";
 import data from "../../../components/ShareScreen/data";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
-import { TextInputCustomBorder } from "../../../components/inputs/TextInputCustomBorder";
 import ModalBase from "../../../components/modals/ModalBase";
 import { SearchInput } from "../../../components/sorts/SearchInput";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import {
   neutral00,
-  neutral17,
   neutral33,
   neutral77,
   primaryTextColor,
 } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
 
 const ShareScreen = ({ setShowTertiaryBox }) => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -95,7 +86,7 @@ const ShareScreen = ({ setShowTertiaryBox }) => {
           placeholderTextColor={neutral77}
           squaresBackgroundColor={neutral00}
           fullWidth
-          width={Platform.OS == "web" ? 370 : 305}
+          width={Platform.OS === "web" ? 370 : 305}
         />
       </FlexRow>
 

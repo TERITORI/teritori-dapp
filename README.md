@@ -28,7 +28,7 @@ npx expo-electron start
 ### Build web app
 
 ```
-npx expo-optimize && npx expo build:web
+npx expo-optimize && npx expo export:web
 ```
 
 The site is in `web-build/`

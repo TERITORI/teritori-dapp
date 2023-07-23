@@ -4,28 +4,14 @@ import { useSelector } from "react-redux";
 
 import notificationIcon from "../../../assets/icons/badge.svg";
 import { useDropdowns } from "../../context/DropdownsProvider";
-import {
-  getNetwork,
-  NetworkInfo,
-  NetworkKind,
-  selectableNetworks,
-} from "../../networks";
+import { NetworkKind } from "../../networks";
 import { selectNotification } from "../../store/slices/notification";
-import {
-  setSelectedWalletId,
-  setSelectedNetworkId,
-  selectAreTestnetsEnabled,
-} from "../../store/slices/settings";
-import { useAppDispatch } from "../../store/store";
 import { neutral17, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold12 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { WalletProvider } from "../../utils/walletProvider";
 import { BrandText } from "../BrandText";
-import { NetworkIcon } from "../NetworkIcon";
 import { SVG } from "../SVG";
 import { TertiaryBox } from "../boxes/TertiaryBox";
-import { SpacerRow } from "../spacer";
 
 export const Notification: React.FC<{
   style?: StyleProp<ViewStyle>;
@@ -34,17 +20,10 @@ export const Notification: React.FC<{
   hideDropdown?: string;
   iconHide?: string;
 }> = ({ style, forceNetworkId, forceNetworkKind, hideDropdown, iconHide }) => {
-  const { onPressDropdownButton, isDropdownOpen, closeOpenedDropdown } =
-    useDropdowns();
+  const { onPressDropdownButton, isDropdownOpen } = useDropdowns();
   const dropdownRef = useRef<View>(null);
-  const dispatch = useAppDispatch();
+
   const notifications = useSelector(selectNotification);
-
-  const onPressNetwork = (networkId: string) => {
-    closeOpenedDropdown();
-  };
-
-  const fontSize = 14;
 
   return (
     <View style={style} ref={dropdownRef}>

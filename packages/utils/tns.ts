@@ -1,4 +1,3 @@
-import { env } from "./env";
 // Get the tld at the end of a token (TNS) (.xxxx)
 export const tldFromNSToken = (str: string): string =>
   str.substring(str.lastIndexOf("."));

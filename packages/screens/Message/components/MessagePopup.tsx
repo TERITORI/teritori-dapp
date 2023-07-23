@@ -1,8 +1,7 @@
 import * as Clipboard from "expo-clipboard";
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 import {
   View,
-  Text,
   StyleSheet,
   TouchableOpacity,
   TextInput,
@@ -11,14 +10,14 @@ import {
 
 import avatar from "../../../../assets/icons/avatar.svg";
 import copy from "../../../../assets/icons/copy.svg";
-import deleteicon from "../../../../assets/icons/delete.svg";
+// import deleteicon from "../../../../assets/icons/delete.svg";
+// import select from "../../../../assets/icons/select.svg";
+// import forwardToSVG from "../../../assets/icons/forward-to.svg";
+// import { AudioView } from "../../../components/FilePreview/AudioView";
 import nullIcon from "../../../../assets/icons/illustration.svg";
 import reply from "../../../../assets/icons/reply.svg";
 import searchSVG from "../../../../assets/icons/search.svg";
-import select from "../../../../assets/icons/select.svg";
-import forwardToSVG from "../../../assets/icons/forward-to.svg";
 import { BrandText } from "../../../components/BrandText";
-import { AudioView } from "../../../components/FilePreview/AudioView";
 import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
 import { Separator } from "../../../components/Separator";
@@ -74,11 +73,9 @@ export const MessagePopup = ({
   onClose,
 }: MessagePopupProps) => {
   const { setToastSuccess } = useFeedbacks();
-  const handleForwardClick = () => {
-    setIsForwarding(true);
-  };
+
   const handleSearch = () => {
-    setIsForwarding(false);
+    // setIsForwarding(false);
   };
   const ITEM_HEIGHT = 50;
   const [searchQuery, setSearchQuery] = useState("");

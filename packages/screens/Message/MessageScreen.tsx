@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { View, TouchableOpacity, Platform, ScrollView } from "react-native";
 
 import { ChatSection } from "./components/ChatSection";
@@ -17,21 +17,14 @@ import { Separator } from "../../components/Separator";
 import { MessageBlankFiller } from "../../components/blankFiller/MessageBlankFiller";
 import MessageCard from "../../components/cards/MessageCard";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
-import { useNSUserInfo } from "../../hooks/useNSUserInfo";
-import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useAppNavigation, ScreenFC } from "../../utils/navigation";
 import { layout } from "../../utils/style/layout";
-import { weshServices } from "../../weshnet/client";
 
 export const MessageScreen: ScreenFC<"Message"> = () => {
   const [isCreateGroup, setIsCreateGroup] = useState(false);
   const [isCreateConversation, setIsCreateConversation] = useState(false);
-  const selectedWallet = useSelectedWallet();
   const [activeConversation, setActiveConversation] = useState(false);
-
   const [activeTab, setActiveTab] = useState<"chat" | "add-friend">("chat");
-  const userInfo = useNSUserInfo(selectedWallet?.userId);
-
   const navigation = useAppNavigation();
 
   const HEADER_CONFIG = [
@@ -56,9 +49,11 @@ export const MessageScreen: ScreenFC<"Message"> = () => {
       title: "Add a friend",
       icon: friend,
       onPress() {
-        ["android", "ios"].includes(Platform.OS)
-          ? navigation.navigate("FriendshipManager")
-          : setActiveTab("add-friend");
+        if (["android", "ios"].includes(Platform.OS)) {
+          navigation.navigate("FriendshipManager");
+        } else {
+          setActiveTab("add-friend");
+        }
       },
     },
     {

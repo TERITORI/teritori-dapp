@@ -1,21 +1,13 @@
 import React, { useMemo, useState } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-  Platform,
-} from "react-native";
+import { View, ScrollView, Platform } from "react-native";
 import { useSelector } from "react-redux";
 
 import { CheckboxGroup } from "./CheckboxGroup";
 import avatar from "../../../../assets/icons/avatar.svg";
-import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
 import { Separator } from "../../../components/Separator";
 import { SeparatorGradient } from "../../../components/SeparatorGradient";
-import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import ModalBase from "../../../components/modals/ModalBase";
@@ -28,25 +20,16 @@ import {
 } from "../../../store/slices/message";
 import {
   neutral00,
-  neutral17,
   neutral33,
-  primaryTextColor,
   secondaryColor,
 } from "../../../utils/style/colors";
-import { fontSemibold14 } from "../../../utils/style/fonts";
-import {
-  Group,
-  GroupInfo,
-  GroupInfo_Reply,
-  MultiMemberGroupCreate_Reply,
-} from "../../../weshnet";
-import { weshClient, weshConfig } from "../../../weshnet/client";
+import { GroupInfo_Reply } from "../../../weshnet";
+import { weshClient } from "../../../weshnet/client";
 import {
   getConversationAvatar,
   getConversationName,
 } from "../../../weshnet/client/messageHelpers";
-import { activateGroup, sendMessage } from "../../../weshnet/client/services";
-import { encodeJSON, stringFromBytes } from "../../../weshnet/client/utils";
+import { sendMessage } from "../../../weshnet/client/services";
 
 interface CreateGroupProps {
   onClose: () => void;
@@ -56,7 +39,7 @@ export const CreateGroup = ({ onClose }: CreateGroupProps) => {
   const [groupName, setGroupName] = useState("");
   const [checkedContacts, setCheckedContacts] = useState([]);
   const contactInfo = useSelector(selectContactInfo);
-  const { setToastError, setToastSuccess } = useFeedbacks();
+  const { setToastError } = useFeedbacks();
   const [loading, setLoading] = useState(false);
   const conversations = useSelector(selectConversationList);
   const handleChange = (items: CheckboxItem[]) => {
@@ -193,6 +176,7 @@ export const CreateGroup = ({ onClose }: CreateGroupProps) => {
       <SpacerColumn size={2} />
 
       <PrimaryButton
+        isLoading={loading}
         text="Create group"
         onPress={handleCreateGroup}
         fullWidth

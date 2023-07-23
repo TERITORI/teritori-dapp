@@ -1,14 +1,13 @@
 import React from "react";
-import { View, Image, StyleSheet } from "react-native";
+import { View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Avatar, Badge } from "react-native-paper";
 
 import chaticon from "../../../assets/icons/chaticon.svg";
 import dots from "../../../assets/icons/dots.svg";
 import { Separator } from "../../components/Separator";
-import { useNSUserInfo } from "../../hooks/useNSUserInfo";
-import { neutral22, neutralA3, secondaryColor } from "../../utils/style/colors";
-import { fontSemibold13, fontSemibold11 } from "../../utils/style/fonts";
+import { neutral22, secondaryColor } from "../../utils/style/colors";
+import { fontSemibold13 } from "../../utils/style/fonts";
 import { Conversation } from "../../utils/types/message";
 import {
   getConversationAvatar,

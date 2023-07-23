@@ -7,7 +7,6 @@ import { Avatar } from "react-native-paper";
 import { FileRenderer } from "./FileRenderer";
 import { GroupInvitationAction } from "./GroupInvitationAction";
 import { MessagePopup } from "./MessagePopup";
-import avatar from "../../../../assets/icons/avatar.svg";
 import reply from "../../../../assets/icons/reply.svg";
 import { BrandText } from "../../../components/BrandText";
 import { Dropdown } from "../../../components/Dropdown";
@@ -16,7 +15,6 @@ import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
 import { EmojiSelector } from "../../../components/socialFeed/EmojiSelector";
 import { Reactions } from "../../../components/socialFeed/SocialActions/Reactions";
-import { DateTime } from "../../../components/socialFeed/SocialThread/DateTime";
 import { SpacerRow } from "../../../components/spacer";
 import {
   neutral77,
@@ -76,13 +74,13 @@ export const Conversation = ({
       return [];
     }
     return chain(message.reactions || [])
-      .groupBy(message.payload.message)
+      .groupBy(message?.payload.message)
       .map((value, key) => ({
         icon: value?.[0]?.payload?.message || "",
         count: value.length,
       }))
       .value();
-  }, [message?.reactions]);
+  }, [message?.payload?.message, message?.reactions]);
 
   const onEmojiSelected = async (emoji: string | null) => {
     if (emoji) {
@@ -195,7 +193,7 @@ export const Conversation = ({
                 }}
               />
               <BrandText style={[fontSemibold11, { color: neutral77 }]}>
-                {parentMessage.payload.message}
+                {parentMessage?.payload?.message}
               </BrandText>
             </FlexRow>
           )}
@@ -205,7 +203,7 @@ export const Conversation = ({
                 <BrandText style={[fontSemibold11, { color: secondaryColor }]}>
                   {message?.payload?.message}
                 </BrandText>
-                {!!message.payload?.files?.length && (
+                {!!message?.payload?.files?.length && (
                   <FileRenderer
                     files={message?.payload?.files || []}
                     maxWidth={400}
@@ -238,9 +236,9 @@ export const Conversation = ({
             <GroupInvitationAction message={message} />
           )}
 
-          {!!message.payload.files?.[0]?.type === "image" && (
+          {!!message?.payload?.files?.[0]?.type === "image" && (
             <Image
-              source={{ uri: message.payload.files[0].url }}
+              source={{ uri: message?.payload.files[0].url }}
               style={{ height: 200, width: 120, borderRadius: 10 }}
             />
           )}
@@ -275,11 +273,11 @@ export const Conversation = ({
                   <View style={styles.popupContainer}>
                     <MessagePopup
                       onClose={() => setShowMenu(false)}
-                      message={message.payload.message}
+                      message={message?.payload.message}
                       onReply={() =>
                         onReply({
                           id: message.id,
-                          message: message.payload.message,
+                          message: message?.payload.message,
                         })
                       }
                       isForwarding={isForwarding}

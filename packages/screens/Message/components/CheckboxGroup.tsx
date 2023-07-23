@@ -1,11 +1,9 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, Image } from "react-native";
+import { View, TouchableOpacity } from "react-native";
 import { Avatar } from "react-native-paper";
 
-import avatar from "../../../../assets/icons/avatar.svg";
 import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
-import { SVG } from "../../../components/SVG";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { secondaryColor } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
@@ -26,7 +24,6 @@ export const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
   onChange,
 }) => {
   const [checkboxItems, setCheckboxItems] = useState<CheckboxItem[]>(items);
-  const [isChecked, setChecked] = useState(true);
   const handleCheckboxPress = (index: number) => {
     const newItems = [...checkboxItems];
     newItems[index].checked = !newItems[index].checked;

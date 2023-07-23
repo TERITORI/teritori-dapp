@@ -42,7 +42,6 @@ import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { getUserId, mustGetCosmosNetwork } from "../../../networks";
 import { prettyPrice } from "../../../utils/coins";
-import { env } from "../../../utils/env";
 import { defaultSocialFeedFee } from "../../../utils/fee";
 import {
   AUDIO_MIME_TYPES,

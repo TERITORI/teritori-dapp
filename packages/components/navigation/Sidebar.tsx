@@ -18,7 +18,6 @@ import addSVG from "../../../assets/icons/add-circle.svg";
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
 import { useSidebar } from "../../context/SidebarProvider";
 import { useCurrentRouteName } from "../../hooks/useCurrentRouteName";
-import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useSelectedNetworkKind } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkKind } from "../../networks";
@@ -60,9 +59,7 @@ interface SidebarProps extends DrawerContentComponentProps {
 
 export const Sidebar = (props: SidebarProps) => {
   const selectedWallet = useSelectedWallet();
-  const userInfo = useNSUserInfo(selectedWallet?.userId);
   const selectedNetworkKind = useSelectedNetworkKind();
-  const connected = selectedWallet?.connected;
   const { top, bottom } = useSafeAreaInsets();
 
   // variables

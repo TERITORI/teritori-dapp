@@ -1,5 +1,5 @@
 import { weshClient } from "./client";
-import { subscribeMessages, subscribeMetadata } from "./subscribers";
+import { subscribeMessages } from "./subscribers";
 import { bytesFromString, decodeJSON, stringFromBytes } from "./utils";
 import {
   selectContactRequestList,
@@ -7,9 +7,7 @@ import {
   setConversationList,
   setLastId,
 } from "../../store/slices/message";
-import { setNotification } from "../../store/slices/notification";
 import { store } from "../../store/store";
-import { ContactRequest } from "../../utils/types/message";
 import {
   EventType,
   GroupMetadataEvent,
