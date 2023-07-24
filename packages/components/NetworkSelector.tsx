@@ -2,6 +2,11 @@ import React, { useRef } from "react";
 import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
 import { useSelector } from "react-redux";
 
+import { BrandText } from "./BrandText";
+import { NetworkIcon } from "./NetworkIcon";
+import { SVG } from "./SVG";
+import { TertiaryBox } from "./boxes/TertiaryBox";
+import { SpacerRow } from "./spacer";
 import chevronDownSVG from "../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../assets/icons/chevron-up.svg";
 import { useDropdowns } from "../context/DropdownsProvider";
@@ -24,11 +29,6 @@ import { neutral17, secondaryColor } from "../utils/style/colors";
 import { fontSemibold12 } from "../utils/style/fonts";
 import { layout } from "../utils/style/layout";
 import { WalletProvider } from "../utils/walletProvider";
-import { BrandText } from "./BrandText";
-import { NetworkIcon } from "./NetworkIcon";
-import { SVG } from "./SVG";
-import { TertiaryBox } from "./boxes/TertiaryBox";
-import { SpacerRow } from "./spacer";
 
 export const NetworkSelector: React.FC<{
   style?: StyleProp<ViewStyle>;

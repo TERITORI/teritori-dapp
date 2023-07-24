@@ -22,7 +22,6 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/rubenv/sql-migrate v1.2.0
 	github.com/streamingfast/cli v0.0.4-0.20230508203625-ecd532feb120
-	github.com/streamingfast/derr v0.0.0-20230515163924-8570aaa43fe1
 	github.com/streamingfast/logging v0.0.0-20221209193439-bff11742bf4c
 	github.com/streamingfast/shutter v1.5.0
 	github.com/streamingfast/substreams v1.1.8-0.20230705171054-90758978ac9c
@@ -108,6 +107,7 @@ require (
 	github.com/spaolacci/murmur3 v1.1.0 // indirect
 	github.com/streamingfast/atm v0.0.0-20220131151839-18c87005e680 // indirect
 	github.com/streamingfast/dbin v0.0.0-20210809205249-73d5eca35dc5 // indirect
+	github.com/streamingfast/derr v0.0.0-20230515163924-8570aaa43fe1 // indirect
 	github.com/streamingfast/dgrpc v0.0.0-20230621153617-bc715cdb9fd1 // indirect
 	github.com/streamingfast/dmetrics v0.0.0-20230516031116-28fcfeb4b9ed // indirect
 	github.com/streamingfast/dstore v0.1.1-0.20230620124109-3924b3b36c77 // indirect

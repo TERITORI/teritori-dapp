@@ -12,7 +12,6 @@ import {
   EthereumNetworkInfo,
   getKeplrSigningCosmWasmClient,
   mustGetNonSigningCosmWasmClient,
-  NetworkInfo,
   NetworkKind,
   parseUserId,
   WEI_TOKEN_ADDRESS,

@@ -1,12 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 
+import { NetworkKind } from "./../../networks/types";
 import { parseUserId } from "../../networks";
 import { SquadInfo } from "../../screens/RiotGame/types";
 import {
   getEthereumSquadStakingQueryClient,
   getCosmosSquadStakingQueryClient,
 } from "../../utils/contracts";
-import { NetworkKind } from "./../../networks/types";
 
 const cosmosGetSquads = async (
   networkId: string,
