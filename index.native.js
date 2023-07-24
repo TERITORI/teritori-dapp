@@ -10,6 +10,8 @@ import "react-native-get-random-values";
 import "react-native-url-polyfill/auto";
 import App from "./App";
 
+console.warn = () => {};
+
 moment.locale("en", {
   relativeTime: {
     future: "in %s",

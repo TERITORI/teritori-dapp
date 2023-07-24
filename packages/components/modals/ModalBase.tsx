@@ -9,6 +9,7 @@ import {
   StyleProp,
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import chevronLeft from "../../../assets/icons/chevron-left.svg";
 import closeSVG from "../../../assets/icons/hamburger-button-cross.svg";
@@ -65,11 +66,16 @@ export const ModalBase: React.FC<ModalBaseProps> = ({
   closeButtonStyle,
   verticalPosition = "center",
 }) => {
-  const { width: windowWidth } = useWindowDimensions();
+  const { width: windowWidth, height: windowHeight } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
 
   return (
     <Modal
-      style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+      style={{
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+      }}
       animationType="fade"
       transparent
       visible={visible}
@@ -83,6 +89,9 @@ export const ModalBase: React.FC<ModalBaseProps> = ({
             height: "100%",
             width: "100%",
             backgroundColor: "rgba(0, 0, 0, .8)",
+            paddingTop: insets.top,
+            paddingBottom: insets.bottom,
+            maxHeight: windowHeight,
           },
           containerStyle,
         ]}

@@ -27,65 +27,70 @@ interface ChatItemProps {
   data: Conversation;
   onPress: () => void;
   isActive: boolean;
+  isLastItem: boolean;
 }
 
-export const ChatItem = ({ data, onPress, isActive }: ChatItemProps) => {
+export const ChatItem = ({
+  data,
+  onPress,
+  isActive,
+  isLastItem,
+}: ChatItemProps) => {
   const navigation = useAppNavigation();
   const lastMessage = useSelector(selectLastMessageByGroupPk(data.id));
   const contactInfo = data.members?.[0];
 
   return (
     <TouchableOpacity
+      activeOpacity={0.9}
+      style={{
+        backgroundColor: isActive ? neutral22 : neutral00,
+        padding: layout.padding_x1,
+        borderRadius: 4,
+        borderBottomWidth:
+          ["android", "ios"].includes(Platform.OS) && !isLastItem ? 1 : 0,
+        borderBottomColor: neutral22,
+      }}
       onPress={() =>
         ["android", "ios"].includes(Platform.OS)
           ? navigation.navigate("ChatSection", data)
           : onPress()
       }
     >
-      <View
-        style={{
-          backgroundColor: isActive ? neutral22 : neutral00,
-          padding: layout.padding_x1,
-          borderRadius: 4,
-        }}
-      >
-        <FlexRow justifyContent="space-between">
-          <View>
-            <FlexRow>
-              <Avatar.Image
-                size={40}
-                source={{ uri: contactInfo?.avatar || "" }}
-              />
-              <SpacerRow size={1.5} />
-              <View>
-                <FlexRow>
-                  <BrandText
-                    style={[fontSemibold13, { color: secondaryColor }]}
-                  >
-                    {getConversationName(data)}
-                  </BrandText>
-                </FlexRow>
-                <SpacerColumn size={0.5} />
-                <BrandText
-                  numberOfLines={1}
-                  style={[fontSemibold11, { color: neutralA3, maxWidth: 100 }]}
-                >
-                  {lastMessage?.payload?.message}
-                </BrandText>
-              </View>
-            </FlexRow>
-          </View>
-          {!!lastMessage && (
+      <FlexRow justifyContent="space-between">
+        <View>
+          <FlexRow>
+            <Avatar.Image
+              size={40}
+              source={{ uri: contactInfo?.avatar || "" }}
+            />
+            <SpacerRow size={1.5} />
             <View>
               <FlexRow>
-                <BrandText style={[fontMedium10, { color: secondaryColor }]}>
-                  {moment(lastMessage?.timestamp).fromNow()}
+                <BrandText style={[fontSemibold13, { color: secondaryColor }]}>
+                  {getConversationName(data)}
                 </BrandText>
               </FlexRow>
+              <SpacerColumn size={0.5} />
+              <BrandText
+                numberOfLines={1}
+                style={[fontSemibold11, { color: neutralA3, maxWidth: 100 }]}
+              >
+                {lastMessage?.payload?.message}
+              </BrandText>
             </View>
-          )}
-        </FlexRow>
-      </View>
+          </FlexRow>
+        </View>
+        {!!lastMessage && (
+          <View>
+            <FlexRow>
+              <BrandText style={[fontMedium10, { color: secondaryColor }]}>
+                {moment(lastMessage?.timestamp).fromNow()}
+              </BrandText>
+            </FlexRow>
+          </View>
+        )}
+      </FlexRow>
     </TouchableOpacity>
   );
 };

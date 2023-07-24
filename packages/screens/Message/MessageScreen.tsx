@@ -68,19 +68,21 @@ export const MessageScreen: ScreenFC<"Message"> = () => {
 
   return (
     <ScreenContainer
-      footerChildren
       headerChildren={<MessageHeader />}
       responsive
       fullWidth
+      footerChildren={<></>}
     >
-      <View style={{}}>
+      <View>
         <SpacerColumn size={3} />
-
         <FlexRow>
           <ScrollView
             horizontal
             style={{
-              paddingHorizontal: layout.padding_x1_5,
+              paddingHorizontal:
+                Platform.OS === "web"
+                  ? layout.padding_x1_5
+                  : layout.padding_x0_5,
             }}
           >
             {HEADER_CONFIG.map((item) => (
@@ -99,15 +101,10 @@ export const MessageScreen: ScreenFC<"Message"> = () => {
         </FlexRow>
         <SpacerColumn size={3} />
 
-        <Separator />
+        {Platform.OS === "web" && <Separator />}
 
         {["android", "ios"].includes(Platform.OS) ? (
-          <SideBarChats
-            setActiveConversation={(conv) => {
-              navigation.navigate("ChatSection", conv);
-            }}
-            activeConversation={activeConversation}
-          />
+          <SideBarChats />
         ) : (
           <View
             style={{

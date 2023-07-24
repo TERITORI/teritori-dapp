@@ -5,6 +5,8 @@ import * as React from "react";
 import "react-native-gesture-handler";
 import App from "./App";
 
+console.warn = () => {};
+
 moment.locale("en", {
   relativeTime: {
     future: "in %s",

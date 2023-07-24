@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
   useWindowDimensions,
   FlatList,
+  Platform,
 } from "react-native";
 import { useSelector } from "react-redux";
 
@@ -23,6 +24,7 @@ import plus from "../../../../assets/icons/chatplus.svg";
 import sent from "../../../../assets/icons/sent.svg";
 import { BrandText } from "../../../components/BrandText";
 import { Dropdown } from "../../../components/Dropdown";
+import { KeyboardAvoidingView } from "../../../components/KeyboardAvoidingView";
 import { SVG } from "../../../components/SVG";
 import { ScreenContainer } from "../../../components/ScreenContainer";
 import { Separator } from "../../../components/Separator";
@@ -30,7 +32,11 @@ import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { selectMessageListByGroupPk } from "../../../store/slices/message";
-import { ScreenFC, useAppRoute } from "../../../utils/navigation";
+import {
+  ScreenFC,
+  useAppNavigation,
+  useAppRoute,
+} from "../../../utils/navigation";
 import {
   neutral00,
   neutral33,
@@ -153,267 +159,286 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
   const { height } = useWindowDimensions();
 
   return (
-    <View
-      style={{
-        height: height - 210,
-      }}
-    >
+    <KeyboardAvoidingView>
       <View
-        style={{
-          flex: 1,
-          width: "100%",
-        }}
+        style={[
+          {
+            height: height - (Platform.OS === "web" ? 210 : 150),
+            width: "100%",
+          },
+          Platform.OS !== "web" && {
+            flex: 1,
+          },
+        ]}
       >
-        <View style={{ zIndex: 11111 }}>
-          <ChatHeader
-            messages={messages}
-            searchInput={searchInput}
-            setSearchInput={setSearchInput}
-            conversation={conversation}
-          />
-        </View>
-        <Separator color={neutral33} />
-        {!!searchInput && (
-          <View
-            style={{
-              width: 500,
-              maxWidth: "100%",
-              height: "100%",
-              backgroundColor: neutral33,
-              position: "absolute",
-              top: 0,
-              right: 0,
-              zIndex: 99,
-            }}
-          >
-            {!searchResults.length && (
-              <View
-                style={{
-                  alignItems: "center",
-                  justifyContent: "center",
-                  height: "100%",
-                }}
-              >
-                <BrandText style={[fontSemibold14, { color: neutral77 }]}>
-                  No result found
-                </BrandText>
-              </View>
-            )}
-            <FlatList
-              data={searchResults}
-              style={{
-                paddingTop: 48,
-              }}
-              contentContainerStyle={{ flexGrow: 1 }}
-              renderItem={({ item, index }) => {
-                return (
-                  <>
-                    <SearchConversation
-                      conversation={conversation}
-                      message={item}
-                      groupPk={groupInfo?.group?.publicKey}
-                    />
-                  </>
-                );
-              }}
-              keyExtractor={(item) => item.id}
-            />
-          </View>
-        )}
-
-        {!messages.length && (
-          <View
-            style={{
-              alignItems: "center",
-              marginTop: layout.padding_x2,
-            }}
-          >
-            <BrandText style={[fontSemibold12]}>
-              {getNewConversationText(conversation)}
-            </BrandText>
-          </View>
-        )}
-
-        <FlatList
-          inverted
-          data={messages}
-          style={{
-            paddingVertical: layout.padding_x1_5,
-          }}
-          contentContainerStyle={{ flexGrow: 1 }}
-          renderItem={({ item, index }) => {
-            const previousMessage =
-              index < messages.length - 1 ? messages[index + 1] : undefined;
-            const nextMessage = index > 0 ? messages[index - 1] : undefined;
-
-            const separatorDate = previousMessage
-              ? moment(item.timestamp).format("DD/MM/YYYY") !==
-                  moment(previousMessage.timestamp).format("DD/MM/YYYY") &&
-                item.timestamp
-              : item.timestamp;
-
-            const isNewSeparator = !previousMessage?.isRead && item.isRead;
-            const parentMessage = item?.parentId
-              ? messages.find((msg) => msg.id === item.parentId)
-              : undefined;
-
-            if (item.type === "group-join") {
-              return null;
-            }
-            return (
-              <>
-                <Conversation
-                  conversation={conversation}
-                  onReply={setReplyTo}
-                  message={item}
-                  groupPk={groupInfo?.group?.publicKey}
-                  isMessageChain={previousMessage?.senderId === item.senderId}
-                  isNextMine={nextMessage?.senderId === item.senderId}
-                  parentMessage={parentMessage}
-                />
-                {(!!isNewSeparator || !!separatorDate) && (
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      position: "relative",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      marginVertical: layout.padding_x2,
-                      width: "80%",
-                      alignSelf: "center",
-                    }}
-                  >
-                    {!!separatorDate && (
-                      <BrandText
-                        style={[
-                          fontSemibold10,
-                          {
-                            backgroundColor: neutral00,
-                            paddingHorizontal: layout.padding_x2,
-                            zIndex: 9,
-                          },
-                        ]}
-                      >
-                        {moment(separatorDate).format("DD/MM/YYYY")}
-                      </BrandText>
-                    )}
-
-                    {!!isNewSeparator && (
-                      <View
-                        style={{
-                          backgroundColor: redDefault,
-                          paddingVertical: layout.padding_x0_25,
-                          paddingHorizontal: layout.padding_x0_5,
-                          borderRadius: 2,
-                          zIndex: 9,
-                          position: "absolute",
-                          right: 0,
-                        }}
-                      >
-                        <BrandText style={[fontSemibold10]}>New</BrandText>
-                      </View>
-                    )}
-                    <View
-                      style={{
-                        width: "100%",
-                        backgroundColor: isNewSeparator
-                          ? redDefault
-                          : neutral33,
-                        height: 0.5,
-                        position: "absolute",
-                        zIndex: 0,
-                      }}
-                    />
-                  </View>
-                )}
-              </>
-            );
-          }}
-          keyExtractor={(item) => item.id}
-        />
-
-        <SpacerColumn size={3} />
-      </View>
-      {!!messages.length && (
         <View
           style={{
-            flexDirection: "row",
-            padding: layout.padding_x1,
-            alignItems: "center",
+            flex: 1,
+            width: "100%",
+            minWidth: "100%",
           }}
         >
-          <Dropdown triggerComponent={<SVG source={plus} />}>
-            {({ closeOpenedDropdown }) => (
-              <UploadImage onClose={closeOpenedDropdown} setFile={setFile} />
-            )}
-          </Dropdown>
-
-          <SpacerRow size={2} />
-          <View style={{ flex: 1 }}>
-            {!!replyTo?.message && (
-              <View
-                style={{
-                  backgroundColor: neutral33,
-                  padding: layout.padding_x1,
-                  marginLeft: layout.padding_x3,
-                  borderRadius: 10,
-                  maxWidth: 400,
-                }}
-              >
-                <BrandText style={[fontSemibold12, { color: "white" }]}>
-                  Reply to: {replyTo?.message}
-                </BrandText>
-              </View>
-            )}
-            <TextInputCustom
-              autoFocus
-              fullWidth
-              setRef={setInputRef}
-              containerStyle={{
-                marginHorizontal: layout.padding_x0_5,
-              }}
-              height={Math.max(40, inputHeight)}
-              name="message"
-              placeHolder={
-                replyTo?.message ? "Add reply message" : "Add a Message"
-              }
-              value={message}
-              onChangeText={setMessage}
-              label=""
-              textInputStyle={{
-                height: Math.max(20, inputHeight - 20),
-              }}
-              onSubmitEditing={() => {
-                if (message.length) {
-                  handleSend();
-                }
-              }}
-              onContentSizeChange={(event) => {
-                setInputHeight(event.nativeEvent.contentSize.height);
+          <View style={{ zIndex: 11111 }}>
+            <ChatHeader
+              messages={messages}
+              searchInput={searchInput}
+              setSearchInput={setSearchInput}
+              conversation={conversation}
+            />
+          </View>
+          <Separator color={neutral33} />
+          {!!searchInput && (
+            <View
+              style={{
+                width: "100%",
+                maxWidth: 500,
+                height: "100%",
+                backgroundColor: neutral33,
+                position: "absolute",
+                top: 0,
+                right: 0,
+                zIndex: 99,
               }}
             >
-              <TouchableOpacity onPress={handleSend}>
-                <SVG source={sent} />
-              </TouchableOpacity>
-            </TextInputCustom>
-          </View>
+              {!searchResults.length && (
+                <View
+                  style={{
+                    alignItems: "center",
+                    justifyContent: "center",
+                    height: "100%",
+                  }}
+                >
+                  <BrandText style={[fontSemibold14, { color: neutral77 }]}>
+                    No result found
+                  </BrandText>
+                </View>
+              )}
+              <FlatList
+                data={searchResults}
+                style={{
+                  paddingTop: 48,
+                }}
+                contentContainerStyle={{ flexGrow: 1 }}
+                renderItem={({ item, index }) => {
+                  return (
+                    <>
+                      <SearchConversation
+                        conversation={conversation}
+                        message={item}
+                        groupPk={groupInfo?.group?.publicKey}
+                      />
+                    </>
+                  );
+                }}
+                keyExtractor={(item) => item.id}
+              />
+            </View>
+          )}
+
+          {!messages.length && (
+            <View
+              style={{
+                alignItems: "center",
+                marginTop: layout.padding_x2,
+              }}
+            >
+              <BrandText style={[fontSemibold12]}>
+                {getNewConversationText(conversation)}
+              </BrandText>
+            </View>
+          )}
+
+          <FlatList
+            inverted
+            data={messages}
+            style={{
+              paddingVertical: layout.padding_x1_5,
+            }}
+            contentContainerStyle={{ flexGrow: 1 }}
+            renderItem={({ item, index }) => {
+              const previousMessage =
+                index < messages.length - 1 ? messages[index + 1] : undefined;
+              const nextMessage = index > 0 ? messages[index - 1] : undefined;
+
+              const separatorDate = previousMessage
+                ? moment(item.timestamp).format("DD/MM/YYYY") !==
+                    moment(previousMessage.timestamp).format("DD/MM/YYYY") &&
+                  item.timestamp
+                : item.timestamp;
+
+              const isNewSeparator = !previousMessage?.isRead && item.isRead;
+              const parentMessage = item?.parentId
+                ? messages.find((msg) => msg.id === item.parentId)
+                : undefined;
+
+              if (item.type === "group-join") {
+                return null;
+              }
+              return (
+                <>
+                  <Conversation
+                    conversation={conversation}
+                    onReply={setReplyTo}
+                    message={item}
+                    groupPk={groupInfo?.group?.publicKey}
+                    isMessageChain={previousMessage?.senderId === item.senderId}
+                    isNextMine={nextMessage?.senderId === item.senderId}
+                    parentMessage={parentMessage}
+                  />
+                  {(!!isNewSeparator || !!separatorDate) && (
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        position: "relative",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        marginVertical: layout.padding_x2,
+                        width: "80%",
+                        alignSelf: "center",
+                      }}
+                    >
+                      {!!separatorDate && (
+                        <BrandText
+                          style={[
+                            fontSemibold10,
+                            {
+                              backgroundColor: neutral00,
+                              paddingHorizontal: layout.padding_x2,
+                              zIndex: 9,
+                            },
+                          ]}
+                        >
+                          {moment(separatorDate).format("DD/MM/YYYY")}
+                        </BrandText>
+                      )}
+
+                      {!!isNewSeparator && (
+                        <View
+                          style={{
+                            backgroundColor: redDefault,
+                            paddingVertical: layout.padding_x0_25,
+                            paddingHorizontal: layout.padding_x0_5,
+                            borderRadius: 2,
+                            zIndex: 9,
+                            position: "absolute",
+                            right: 0,
+                          }}
+                        >
+                          <BrandText style={[fontSemibold10]}>New</BrandText>
+                        </View>
+                      )}
+                      <View
+                        style={{
+                          width: "100%",
+                          backgroundColor: isNewSeparator
+                            ? redDefault
+                            : neutral33,
+                          height: 0.5,
+                          position: "absolute",
+                          zIndex: 0,
+                        }}
+                      />
+                    </View>
+                  )}
+                </>
+              );
+            }}
+            keyExtractor={(item) => item.id}
+          />
+
+          <SpacerColumn size={3} />
         </View>
-      )}
-      {!!file && (
-        <UploadedPreview
-          setFile={setFile}
-          file={file}
-          handleSend={handleSend}
-        />
-      )}
-    </View>
+        {!!messages.length && (
+          <View
+            style={{
+              flexDirection: "row",
+              padding: layout.padding_x1,
+              alignItems: "center",
+            }}
+          >
+            <Dropdown triggerComponent={<SVG source={plus} />}>
+              {({ closeOpenedDropdown }) => (
+                <UploadImage onClose={closeOpenedDropdown} setFile={setFile} />
+              )}
+            </Dropdown>
+
+            <SpacerRow size={2} />
+            <View style={{ flex: 1 }}>
+              {!!replyTo?.message && (
+                <View
+                  style={{
+                    backgroundColor: neutral33,
+                    padding: layout.padding_x1,
+                    marginLeft: layout.padding_x3,
+                    borderRadius: 10,
+                    maxWidth: 400,
+                  }}
+                >
+                  <BrandText style={[fontSemibold12, { color: "white" }]}>
+                    Reply to: {replyTo?.message}
+                  </BrandText>
+                </View>
+              )}
+              <TextInputCustom
+                fullWidth
+                setRef={setInputRef}
+                containerStyle={{
+                  marginHorizontal: layout.padding_x0_5,
+                }}
+                autoFocus={Platform.OS === "web"}
+                height={Math.max(40, inputHeight)}
+                name="message"
+                placeHolder={
+                  replyTo?.message ? "Add reply message" : "Add a Message"
+                }
+                multiline
+                value={message}
+                onChangeText={setMessage}
+                label=""
+                blurOnSubmit={false}
+                textInputStyle={{
+                  height: Math.max(20, inputHeight - 20),
+                }}
+                returnKeyType="send"
+                onSubmitEditing={() => {
+                  if (message.length) {
+                    handleSend();
+                  }
+                }}
+                onContentSizeChange={(event) => {
+                  setInputHeight(event.nativeEvent.contentSize.height);
+                }}
+              >
+                <TouchableOpacity onPress={handleSend}>
+                  <SVG source={sent} />
+                </TouchableOpacity>
+              </TextInputCustom>
+            </View>
+          </View>
+        )}
+        {!!file && (
+          <UploadedPreview
+            setFile={setFile}
+            file={file}
+            handleSend={handleSend}
+          />
+        )}
+      </View>
+    </KeyboardAvoidingView>
   );
 };
 
 export const ChatSectionScreen: ScreenFC<"ChatSection"> = () => {
   const { params } = useAppRoute();
+  const { navigate } = useAppNavigation();
   return (
-    <ScreenContainer noScroll>
+    <ScreenContainer
+      noScroll
+      fullWidth
+      noMargin
+      onBackPress={() => navigate("Message")}
+      footerChildren={<></>}
+    >
       <ChatSection conversation={params as IConversation} />
     </ScreenContainer>
   );

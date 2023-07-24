@@ -80,7 +80,7 @@ export const DAppBox: React.FC<{
             width={64}
             height={64}
           >
-            <SVGorImageIcon icon={icon} iconSize={48} />
+            {!!icon && <SVGorImageIcon icon={icon} iconSize={48} />}
           </SecondaryBox>
           <View
             style={{

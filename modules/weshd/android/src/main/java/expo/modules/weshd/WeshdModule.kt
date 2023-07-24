@@ -1,5 +1,5 @@
 package expo.modules.weshd
-
+package WeshFramework
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
 
@@ -22,8 +22,8 @@ class WeshdModule : Module() {
     Events("onChange")
 
     // Defines a JavaScript synchronous function that runs the native code on the JavaScript thread.
-    Function("hello") {
-      "Hello world! 👋"
+    Function("boot") {
+      return  WeshFramework.WeshFrameworkBoot()
     }
 
     // Defines a JavaScript function that always returns a Promise and whose native code

@@ -109,6 +109,16 @@ export function getAvailableApps(): dAppGroup {
           selectedByDefault: false,
           alwaysOn: false,
         },
+        messages: {
+          id: "messages",
+          title: "Messages",
+          description: "Messages",
+          icon: messages,
+          route: "Messages",
+          groupKey: "teritori-core-apps",
+          selectedByDefault: true,
+          alwaysOn: false,
+        },
       },
     },
     "top-apps": {
