@@ -185,6 +185,7 @@ export const TextInputCustom = <T extends FieldValues>({
       }
 
       if (reg.test(value) || !value) {
+        // @ts-expect-error
         field.onChange(valueModifier ? valueModifier(value) : value);
         if (restProps?.onChangeText) {
           restProps.onChangeText(value);
@@ -195,6 +196,7 @@ export const TextInputCustom = <T extends FieldValues>({
     }
 
     if ((regexp && (regexp.test(value) || value === "")) || !regexp) {
+      // @ts-expect-error
       field.onChange(valueModifier ? valueModifier(value) : value);
       if (restProps?.onChangeText) {
         restProps.onChangeText(value);

@@ -7,7 +7,6 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   StyleProp,
-  TextStyle,
   View,
   ViewStyle,
   useWindowDimensions,
@@ -83,15 +82,6 @@ import { DepositWithdrawModal } from "../WalletManager/components/DepositWithdra
 
 const maxImageSize = 532;
 const cardsHalfGap = 6;
-
-const countDownTxtStyleStarts: StyleProp<TextStyle> = {
-  fontSize: 16,
-  letterSpacing: 0,
-  lineHeight: 20,
-  fontFamily: "Exo_600SemiBold",
-  fontWeight: "600",
-  color: pinkDefault,
-};
 
 const sleep = (duration: number) =>
   new Promise((resolve) => setTimeout(resolve, duration));
@@ -855,9 +845,23 @@ const PhaseCountdown: React.FC<{
         until={(startsAt || now) - now}
         onFinish={onCountdownEnd}
         size={8}
+        digitTxtStyle={{
+          fontSize: 16,
+          letterSpacing: 0,
+          lineHeight: 20,
+          fontFamily: "Exo_600SemiBold",
+          fontWeight: "600",
+          color: pinkDefault,
+        }}
+        separatorStyle={{
+          fontSize: 16,
+          letterSpacing: 0,
+          lineHeight: 20,
+          fontFamily: "Exo_600SemiBold",
+          fontWeight: "600",
+          color: pinkDefault,
+        }}
         style={{ marginLeft: layout.padding_x1 }}
-        digitTxtStyle={countDownTxtStyleStarts}
-        separatorStyle={countDownTxtStyleStarts}
         digitStyle={{ backgroundColor: "none" }}
         showSeparator
         timeLabels={{ d: "", h: "", m: "", s: "" }}

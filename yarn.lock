@@ -8193,7 +8193,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-native-countdown-component@npm:^2.7.0":
+"@types/react-native-countdown-component@npm:2.7.0":
   version: 2.7.0
   resolution: "@types/react-native-countdown-component@npm:2.7.0"
   dependencies:
@@ -24460,7 +24460,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-countdown-component@npm:^2.7.1":
+"react-native-countdown-component@npm:2.7.1":
   version: 2.7.1
   resolution: "react-native-countdown-component@npm:2.7.1"
   dependencies:
@@ -24595,9 +24595,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-reanimated@npm:~2.8.0":
-  version: 2.8.0
-  resolution: "react-native-reanimated@npm:2.8.0"
+"react-native-reanimated@npm:2.10.0":
+  version: 2.10.0
+  resolution: "react-native-reanimated@npm:2.10.0"
   dependencies:
     "@babel/plugin-transform-object-assign": ^7.16.7
     "@babel/preset-typescript": ^7.16.7
@@ -24610,7 +24610,7 @@ __metadata:
     "@babel/core": ^7.0.0-0
     react: "*"
     react-native: "*"
-  checksum: 6409a941a177d04d9091953a05f493d4924eb0d3e2a4b24cf83bb20460b985f89dd879f0ab7337655dba6a3183ca50cc2ad2b3ea1c505cdc1eed6c5ee1296b59
+  checksum: 7f01ee15e0f2d48af543370b10b8d257e22d09c3fcdbeff1d74d68bfc72f0e9cf74d0634edb10beef4671a20068d7be128678bb52d976aefdf78f5c80a0baa90
   languageName: node
   linkType: hard
 
@@ -27514,9 +27514,9 @@ __metadata:
     "@types/draft-convert": ^2.1.4
     "@types/draft-js": ^0.11.9
     "@types/html-to-draftjs": ^1.4.0
-    "@types/react": ~17.0.21
+    "@types/react": ~17.0.2
     "@types/react-native": ~0.67.6
-    "@types/react-native-countdown-component": ^2.7.0
+    "@types/react-native-countdown-component": 2.7.0
     "@types/react-native-svg-charts": ^5.0.12
     "@types/react-native-video": ^5.0.14
     "@types/uuid": ^9.0.0
@@ -27567,7 +27567,7 @@ __metadata:
     react-hotkeys-hook: ^4.0.4
     react-native: 0.68.2
     react-native-confetti-cannon: ^1.5.2
-    react-native-countdown-component: ^2.7.1
+    react-native-countdown-component: 2.7.1
     react-native-drag-sort: ^2.4.4
     react-native-drax: ^0.10.2
     react-native-gesture-handler: ~2.2.1
@@ -27576,7 +27576,7 @@ __metadata:
     react-native-paper: ^4.12.5
     react-native-pell-rich-editor: ^1.8.8
     react-native-popup-menu: ^0.16.1
-    react-native-reanimated: ~2.8.0
+    react-native-reanimated: 2.10.0
     react-native-reanimated-carousel: ^3.0.3
     react-native-redash: ^18.0.0
     react-native-safe-area-context: 4.2.4
@@ -27592,7 +27592,7 @@ __metadata:
     redux-persist: ^6.0.0
     ts-node: ^10.9.1
     ts-proto: ^1.120.0
-    typescript: ~4.3.5
+    typescript: ~4.9.5
     uuid: ^9.0.0
     victory-native: ^36.6.8
     waveform-data: ^4.3.0
@@ -28306,7 +28306,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^4.7.4":
+"typescript@npm:^4.7.4, typescript@npm:~4.9.5":
   version: 4.9.5
   resolution: "typescript@npm:4.9.5"
   bin:
@@ -28316,33 +28316,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:~4.3.5":
-  version: 4.3.5
-  resolution: "typescript@npm:4.3.5"
-  bin:
-    tsc: bin/tsc
-    tsserver: bin/tsserver
-  checksum: bab033b5e2b0790dd35b77fd005df976ef80b8d84fd2c6e63cc31808151875beae9216e5a315fe7068e8499905c3c354248fe83272cdfc13b7705635f0c66c97
-  languageName: node
-  linkType: hard
-
-"typescript@patch:typescript@^4.7.4#~builtin<compat/typescript>":
+"typescript@patch:typescript@^4.7.4#~builtin<compat/typescript>, typescript@patch:typescript@~4.9.5#~builtin<compat/typescript>":
   version: 4.9.5
   resolution: "typescript@patch:typescript@npm%3A4.9.5#~builtin<compat/typescript>::version=4.9.5&hash=23ec76"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: ab417a2f398380c90a6cf5a5f74badd17866adf57f1165617d6a551f059c3ba0a3e4da0d147b3ac5681db9ac76a303c5876394b13b3de75fdd5b1eaa06181c9d
-  languageName: node
-  linkType: hard
-
-"typescript@patch:typescript@~4.3.5#~builtin<compat/typescript>":
-  version: 4.3.5
-  resolution: "typescript@patch:typescript@npm%3A4.3.5#~builtin<compat/typescript>::version=4.3.5&hash=dba6d9"
-  bin:
-    tsc: bin/tsc
-    tsserver: bin/tsserver
-  checksum: 365df18cf979c971ef9543b2acaa8694377a803f98e1804c41d0ede0b09d7046cb0cd98f2eaf3884b0fe923c01a60af1f653841bd8805c9715d5479c09a4ebe4
   languageName: node
   linkType: hard
 

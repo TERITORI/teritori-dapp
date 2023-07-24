@@ -340,6 +340,7 @@ const Footer: React.FC<{ items: any[] }> = ({ items }) => {
         } catch (e) {
           setToastError({
             title: "Error",
+            // @ts-expect-error
             message: e.toString() || "",
             duration: 30000,
           });
