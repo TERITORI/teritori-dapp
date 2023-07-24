@@ -391,7 +391,7 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
                 placeHolder={
                   replyTo?.message ? "Add reply message" : "Add a Message"
                 }
-                multiline
+                multiline={Platform.OS !== "web"}
                 value={message}
                 onChangeText={setMessage}
                 label=""

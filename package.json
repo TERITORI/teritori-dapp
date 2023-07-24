@@ -109,6 +109,7 @@
     "react-native-heroicons": "^3.2.0",
     "react-native-hoverable": "^0.2.0",
     "react-native-image-picker": "^5.3.1",
+    "react-native-keyboard-aware-scrollview": "^2.1.0",
     "react-native-pager-view": "6.0.1",
     "react-native-paper": "^4.12.5",
     "react-native-pell-rich-editor": "^1.8.8",

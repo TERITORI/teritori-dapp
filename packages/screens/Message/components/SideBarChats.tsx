@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Platform, View } from "react-native";
+import { Platform, View, useWindowDimensions } from "react-native";
 import { useSelector } from "react-redux";
 
 import { ChatItem } from "./ChatItem";
@@ -34,6 +34,7 @@ export const SideBarChats = ({
 }: SideBarChatsProps) => {
   const conversationList = useSelector(selectConversationList);
   const { navigate } = useAppNavigation();
+  const { width: windowWidth } = useWindowDimensions();
 
   useEffect(() => {
     if (!activeConversation && conversationList.length) {
@@ -44,46 +45,46 @@ export const SideBarChats = ({
     <View
       style={{
         paddingHorizontal: layout.padding_x1_5,
+        width: "100%",
+        maxWidth: Platform.OS === "web" ? 300 : windowWidth,
       }}
     >
-      {Platform.OS === "web" && (
-        <>
-          <SpacerColumn size={2} />
-          <FriendsBar />
-          <SpacerColumn size={2.5} />
-          <FlexRow justifyContent="space-between">
-            <View>
-              <FlexRow>
-                <BrandText style={[fontSemibold14, { color: secondaryColor }]}>
-                  All conversation
-                </BrandText>
-                <SpacerRow size={0.8} />
-                <SVG
-                  source={chevronDownSVG}
-                  height={20}
-                  width={20}
-                  color={secondaryColor}
-                />
-              </FlexRow>
-            </View>
-            <View>
-              <FlexRow>
-                <SVG source={add} color={primaryColor} />
-                <SpacerRow size={2} />
-                <SVG
-                  source={Search}
-                  height={20}
-                  width={20}
-                  color={secondaryColor}
-                />
-              </FlexRow>
-            </View>
-          </FlexRow>
-          <SpacerColumn size={2.5} />
-          <Separator horizontal={false} color={neutral22} />
-          <SpacerColumn size={1.5} />
-        </>
-      )}
+      <>
+        <SpacerColumn size={2} />
+        <FriendsBar />
+        <SpacerColumn size={2.5} />
+        <FlexRow justifyContent="space-between">
+          <View>
+            <FlexRow>
+              <BrandText style={[fontSemibold14, { color: secondaryColor }]}>
+                All conversation
+              </BrandText>
+              <SpacerRow size={0.8} />
+              <SVG
+                source={chevronDownSVG}
+                height={20}
+                width={20}
+                color={secondaryColor}
+              />
+            </FlexRow>
+          </View>
+          <View>
+            <FlexRow>
+              <SVG source={add} color={primaryColor} />
+              <SpacerRow size={2} />
+              <SVG
+                source={Search}
+                height={20}
+                width={20}
+                color={secondaryColor}
+              />
+            </FlexRow>
+          </View>
+        </FlexRow>
+        <SpacerColumn size={2.5} />
+        <Separator horizontal={false} color={neutral22} />
+        <SpacerColumn size={1.5} />
+      </>
 
       {conversationList.map((item, index) => (
         <ChatItem

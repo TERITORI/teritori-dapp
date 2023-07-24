@@ -14,6 +14,7 @@ import {
   selectContactRequestList,
   selectConversationList,
 } from "../../../store/slices/message";
+import { useAppNavigation } from "../../../utils/navigation";
 import { layout } from "../../../utils/style/layout";
 import { Conversation } from "../../../utils/types/message";
 
@@ -26,6 +27,7 @@ export const FriendshipManager = ({
 }: FriendshipManagerProps) => {
   const conversations = useSelector(selectConversationList);
   const contactRequests = useSelector(selectContactRequestList);
+  const { navigate } = useAppNavigation();
 
   const contactConversations = useMemo(() => {
     return conversations.filter((item) => item.type === "contact");
@@ -83,7 +85,7 @@ export const FriendshipManager = ({
     );
   }
   return (
-    <ScreenContainer>
+    <ScreenContainer onBackPress={() => navigate("Message")}>
       <View style={{ paddingHorizontal: layout.padding_x0_5 }}>
         {renderContentWeb()}
       </View>
