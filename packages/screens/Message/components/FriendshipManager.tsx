@@ -45,6 +45,7 @@ export const FriendshipManager = ({
     addFriend: {
       name: "Add a friend",
       icon: plus,
+      disabled: true,
     },
   };
   const [selectedTab, setSelectedTab] = useState<keyof typeof tabs>("friends");

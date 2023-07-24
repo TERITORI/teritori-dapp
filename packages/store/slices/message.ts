@@ -66,6 +66,9 @@ export const selectContactRequestList = (state: RootState) =>
 export const selectConversationList = (state: RootState) =>
   Object.values(state.message.conversationList);
 
+export const selectConversationById = (id: string) => (state: RootState) =>
+  state.message.conversationList[id];
+
 const messageSlice = createSlice({
   name: "message",
   initialState,

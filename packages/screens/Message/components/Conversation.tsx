@@ -36,10 +36,7 @@ import {
   ReplyTo,
 } from "../../../utils/types/message";
 import { weshConfig } from "../../../weshnet/client";
-import {
-  getConversationAvatar,
-  getConversationName,
-} from "../../../weshnet/client/messageHelpers";
+import { getConversationAvatar } from "../../../weshnet/client/messageHelpers";
 import { sendMessage } from "../../../weshnet/client/services";
 import { stringFromBytes } from "../../../weshnet/client/utils";
 
@@ -198,7 +195,7 @@ export const Conversation = ({
             </FlexRow>
           )}
           <TouchableOpacity onPress={() => setShowPopup(true)}>
-            {message.type === "message" ? (
+            {["message", "group-invite"].includes(message.type) ? (
               <>
                 <BrandText style={[fontSemibold11, { color: secondaryColor }]}>
                   {message?.payload?.message}
@@ -212,23 +209,7 @@ export const Conversation = ({
                 )}
               </>
             ) : (
-              <>
-                {message?.type === "group-invite" && !isSender && (
-                  <BrandText
-                    style={[fontSemibold11, { color: secondaryColor }]}
-                  >
-                    {getConversationName(conversation)} has invited you to a
-                    group {message?.payload?.metadata?.groupName}
-                  </BrandText>
-                )}
-                {/* {message?.type === "group-invitation" && isSender && (
-                  <BrandText
-                    style={[fontSemibold11, { color: secondaryColor }]}
-                  >
-                    You have invited Anon to a group ${message.message.name}
-                  </BrandText>
-                )} */}
-              </>
+              <></>
             )}
           </TouchableOpacity>
 

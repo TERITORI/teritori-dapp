@@ -67,7 +67,7 @@ export const handleMetadata = async (data: GroupMetadataEvent) => {
                 name: "",
                 members: [
                   {
-                    id: parsedData.payload.contact.pk,
+                    id: stringFromBytes(parsedData.payload.contact.pk),
                     rdvSeed: parsedData.payload.contact.publicRendezvousSeed,
                     name: parsedData.payload.ownMetadata.contact.name,
                     avatar: parsedData.payload.ownMetadata.contact.avatar,

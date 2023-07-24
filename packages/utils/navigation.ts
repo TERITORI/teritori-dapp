@@ -137,9 +137,9 @@ const navConfig: {
     DAppStore: "dapp-store",
     // === DApps
     ToriPunks: "dapp/tori-punks/:route?",
-    ChatSection: "",
-    FriendshipManager: "",
-    AddFriend: "",
+    ChatSection: "message/chat",
+    FriendshipManager: "/friends",
+    AddFriend: "friends/add",
   },
 };
 
