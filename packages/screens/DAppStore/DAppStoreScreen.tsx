@@ -20,18 +20,19 @@ export const DAppStoreScreen: ScreenFC<"DAppStore"> = () => {
       headerChildren={<BrandText>dApp Store</BrandText>}
     >
       <Header setSearchInput={setSearchInput} />
-
-      <FullWidthSeparator />
-
+      {/* <FullWidthSeparator /> */}
       <View
         style={{
           flexDirection: isMobile ? "column" : "row",
-          minHeight: Platform.OS === "web" ? "inherit" : "100%",
+          minHeight: Platform.OS === "web" ? "inherit" : 100,
         }}
       >
-        <LeftRail />
-
-        <Separator horizontal={!isMobile} />
+        {Platform.OS === "web" && (
+          <>
+            <LeftRail />
+            <Separator horizontal={!isMobile} />
+          </>
+        )}
 
         <RightRail searchInput={searchInput} />
       </View>

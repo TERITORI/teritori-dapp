@@ -7,6 +7,7 @@ import {
   useWindowDimensions,
   View,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { HeaderMobile } from "./HeaderMobile";
 import { useSearchBar } from "../../context/SearchBarProvider";
@@ -54,6 +55,7 @@ export const ScreenContainerMobile: FC<{
   forceNetworkFeatures?: NetworkFeature[];
   mobileTitle?: string;
   onBackPress?: () => void;
+  noMargin?: boolean;
 }> = ({
   children,
   networkFilter,
@@ -63,73 +65,83 @@ export const ScreenContainerMobile: FC<{
   forceNetworkFeatures,
   mobileTitle,
   onBackPress,
+  noMargin,
 }) => {
   const { width } = useMaxResolution();
   const { isSearchModalMobileOpen, setSearchModalMobileOpen } = useSearchBar();
   const { height: windowHeight, width: windowWidth } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
 
   return (
-    <SafeAreaView style={styles.container}>
-      <DAppStoreData />
-      <SearchModalMobile
-        onClose={() => setSearchModalMobileOpen(false)}
-        visible={isSearchModalMobileOpen}
-      />
-      <HeaderMobile
-        onBackPress={onBackPress}
-        forceNetworkId={forceNetworkId}
-        forceNetworkKind={forceNetworkKind}
-        forceNetworkFeatures={forceNetworkFeatures}
-      />
-      {!["ios", "android"].includes(Platform.OS) && <SidebarMobile />}
+    <View style={[styles.container]}>
+      <View
+        style={[
+          { marginTop: insets.top, marginBottom: insets.bottom, flex: 1 },
+        ]}
+      >
+        <DAppStoreData />
+        <SearchModalMobile
+          onClose={() => setSearchModalMobileOpen(false)}
+          visible={isSearchModalMobileOpen}
+        />
+        <HeaderMobile
+          onBackPress={onBackPress}
+          forceNetworkId={forceNetworkId}
+          forceNetworkKind={forceNetworkKind}
+          forceNetworkFeatures={forceNetworkFeatures}
+        />
+        {!["ios", "android"].includes(Platform.OS) && <SidebarMobile />}
 
-      {/*==== Scrollable screen content*/}
-      <View style={{ flex: 1, width: "100%", height: windowHeight }}>
-        <SelectedNetworkGate filter={networkFilter}>
-          {hasScroll ? (
-            <ScrollView
-              contentContainerStyle={[
-                {
-                  minHeight: windowHeight - MOBILE_HEADER_HEIGHT,
-                },
-              ]}
-            >
-              {mobileTitle ? <MobileTitle title={mobileTitle} /> : null}
-              <View
-                style={[
-                  styles.childrenContainer,
+        {/*==== Scrollable screen content*/}
+        <View style={{ flex: 1, width: "100%", height: windowHeight }}>
+          <SelectedNetworkGate filter={networkFilter}>
+            {hasScroll ? (
+              <ScrollView
+                contentContainerStyle={[
                   {
-                    flex: 1,
-                    width,
-                    marginHorizontal:
-                      getMobileScreenContainerMarginHorizontal(windowWidth),
+                    minHeight: windowHeight - MOBILE_HEADER_HEIGHT,
                   },
                 ]}
               >
-                {children}
-              </View>
-              {/*TODO: Put here Riotters Footer ?*/}
-            </ScrollView>
-          ) : (
-            <>
-              <View
-                style={[
-                  styles.childrenContainer,
-                  {
-                    flex: 1,
-                    marginHorizontal:
-                      getMobileScreenContainerMarginHorizontal(windowWidth),
-                  },
-                ]}
-              >
-                {children}
-              </View>
-            </>
-            // TODO: Put here Riotters Footer ?
-          )}
-        </SelectedNetworkGate>
+                {mobileTitle ? <MobileTitle title={mobileTitle} /> : null}
+                <View
+                  style={[
+                    styles.childrenContainer,
+                    {
+                      flex: 1,
+                      width,
+                      marginHorizontal: noMargin
+                        ? 0
+                        : getMobileScreenContainerMarginHorizontal(windowWidth),
+                    },
+                  ]}
+                >
+                  {children}
+                </View>
+                {/*TODO: Put here Riotters Footer ?*/}
+              </ScrollView>
+            ) : (
+              <>
+                <View
+                  style={[
+                    styles.childrenContainer,
+                    {
+                      flex: 1,
+                      marginHorizontal: noMargin
+                        ? 0
+                        : getMobileScreenContainerMarginHorizontal(windowWidth),
+                    },
+                  ]}
+                >
+                  {children}
+                </View>
+              </>
+              // TODO: Put here Riotters Footer ?
+            )}
+          </SelectedNetworkGate>
+        </View>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -139,6 +151,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: "100%",
+    height: "100%",
     backgroundColor: "#000000",
   },
   childrenContainer: {

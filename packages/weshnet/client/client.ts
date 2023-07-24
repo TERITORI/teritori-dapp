@@ -11,11 +11,10 @@ if (Platform.OS === "web") {
   urlDefinedPort = Number(params?.searchParams?.get("weshPort") || 0);
 }
 
-const getAddress = (port = 4248) => {
+const getAddress = (port) => {
   switch (Platform.OS) {
     case "android":
       return `10.0.2.2:${port}`;
-
     case "ios":
       return `http://127.0.0.1:${port}`;
     default:
@@ -24,34 +23,36 @@ const getAddress = (port = 4248) => {
 };
 
 class WeshClient {
-  private _client = createWeshClient(getAddress());
-  private intervalId: any;
-
-  public isClientCreated = false;
+  private _client;
 
   get client() {
     return this._client;
   }
-  async createClient(port = urlDefinedPort) {
-    if (this.isClientCreated) {
-      return clearInterval(this.intervalId);
-    }
-    const client = createWeshClient(getAddress(port));
-    const config = await client.ServiceGetConfiguration({});
-    weshConfig.config = config;
-    this._client = client;
-    this.isClientCreated = true;
-    await bootWeshnet();
-  }
+  async createClient(port) {
+    try {
+      if (port === 0) {
+        return;
+      }
 
-  startClientCreation() {
-    this.intervalId = setInterval(() => {
-      this.createClient();
-    }, 2500);
+      const address = getAddress(port);
+      console.log("url defined port", port, address);
+
+      const client = createWeshClient(address);
+      const config = await client.ServiceGetConfiguration({});
+      weshConfig.config = config;
+      this._client = client;
+      console.log("done -->");
+      await bootWeshnet();
+    } catch (err) {
+      console.log("create Client er", err);
+    }
   }
 }
 
 const weshClient = new WeshClient();
-weshClient.startClientCreation();
+
+if (Platform.OS === "web") {
+  weshClient.createClient(urlDefinedPort);
+}
 
 export { weshClient };

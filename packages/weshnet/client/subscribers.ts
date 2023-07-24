@@ -22,21 +22,14 @@ import {
   GroupMetadataList_Request,
 } from "../protocoltypes";
 
-const subscribedMessages: string[] = [];
-
 export const subscribeMessages = async (groupPk: string) => {
-  if (Platform.OS !== "web") {
-    if (subscribedMessages.includes(groupPk)) {
-      return;
-    }
-    subscribedMessages.push(groupPk);
-  }
   const lastId = selectLastIdByKey(groupPk)(store.getState());
 
   const config: Partial<GroupMessageList_Request> = {
     groupPk: bytesFromString(groupPk),
   };
-  if (Platform.OS === "web" && lastId) {
+
+  if (lastId) {
     config.sinceId = bytesFromString(lastId);
   } else {
     config.untilNow = true;
@@ -175,7 +168,8 @@ export const subscribeMetadata = async (groupPk: Uint8Array) => {
   const config: Partial<GroupMetadataList_Request> = {
     groupPk,
   };
-  if (Platform.OS === "web" && lastId) {
+
+  if (lastId) {
     config.sinceId = bytesFromString(lastId);
   } else {
     config.untilNow = true;
@@ -194,11 +188,7 @@ export const subscribeMetadata = async (groupPk: Uint8Array) => {
         console.log("get metadata err", e);
       },
       complete: () => {
-        if (Platform.OS === "web") {
-          subscribeMetadata(groupPk);
-        } else {
-          setTimeout(() => subscribeMetadata(groupPk), 4000);
-        }
+        subscribeMetadata(groupPk);
       },
     };
     metadata.subscribe(myObserver);

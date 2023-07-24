@@ -80,6 +80,7 @@ export const CreateConversation = ({ onClose }: CreateConversationProps) => {
       onClose={onClose}
       visible
       width={580}
+      scrollable
     >
       <View
         style={{

@@ -113,6 +113,7 @@ export const ScreenContainer: React.FC<{
         forceNetworkId={forceNetworkId}
         forceNetworkKind={forceNetworkKind}
         mobileTitle={mobileTitle}
+        noMargin={noMargin}
       />
     );
   /////////////// default returns
@@ -189,8 +190,8 @@ export const ScreenContainer: React.FC<{
                 width: 1,
               }}
             />
-            <Notification />
-            <SpacerRow size={2} />
+            {/* <Notification />
+            <SpacerRow size={2} /> */}
             <CartIconButtonBadge style={{ marginRight: 12 }} />
             <NetworkSelector
               forceNetworkId={forceNetworkId}
