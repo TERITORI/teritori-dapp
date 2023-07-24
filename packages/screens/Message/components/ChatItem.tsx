@@ -50,6 +50,7 @@ export const ChatItem = ({
         borderBottomWidth:
           ["android", "ios"].includes(Platform.OS) && !isLastItem ? 1 : 0,
         borderBottomColor: neutral22,
+        width: "100%",
       }}
       onPress={() =>
         ["android", "ios"].includes(Platform.OS)

@@ -25629,6 +25629,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-keyboard-aware-scrollview@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "react-native-keyboard-aware-scrollview@npm:2.1.0"
+  peerDependencies:
+    react: ">=0.14.5"
+    react-native: ">=0.25.1"
+  checksum: 070c6b15154608228214df4b9511d316181da38b95061c00752caa0890d428680bd00f25586467006e96673de96d4900db6e94adfcc3df17973eed3cb385589e
+  languageName: node
+  linkType: hard
+
 "react-native-pager-view@npm:6.0.1":
   version: 6.0.1
   resolution: "react-native-pager-view@npm:6.0.1"
@@ -28832,6 +28842,7 @@ __metadata:
     react-native-heroicons: ^3.2.0
     react-native-hoverable: ^0.2.0
     react-native-image-picker: ^5.3.1
+    react-native-keyboard-aware-scrollview: ^2.1.0
     react-native-pager-view: 6.0.1
     react-native-paper: ^4.12.5
     react-native-pell-rich-editor: ^1.8.8

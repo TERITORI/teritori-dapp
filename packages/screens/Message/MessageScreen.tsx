@@ -72,8 +72,14 @@ export const MessageScreen: ScreenFC<"Message"> = () => {
       responsive
       fullWidth
       footerChildren={<></>}
+      noScroll
     >
-      <View>
+      <View
+        style={{
+          width: "100%",
+          flex: 1,
+        }}
+      >
         <SpacerColumn size={3} />
         <FlexRow>
           <ScrollView
