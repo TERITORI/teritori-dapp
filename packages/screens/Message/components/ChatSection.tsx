@@ -16,6 +16,7 @@ import { useSelector } from "react-redux";
 
 import { ChatHeader } from "./ChatHeader";
 import { Conversation } from "./Conversation";
+import { SearchConversation } from "./SearchConversation";
 import { UploadImage } from "./UploadImage";
 import { UploadedPreview } from "./UploadedPreview";
 import plus from "../../../../assets/icons/chatplus.svg";
@@ -201,19 +202,17 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
             <FlatList
               data={searchResults}
               style={{
-                paddingTop: 50,
+                paddingTop: 48,
               }}
               contentContainerStyle={{ flexGrow: 1 }}
               renderItem={({ item, index }) => {
                 return (
                   <>
-                    {/* <Conversation
-                      onReply={setReplyTo}
-                      conversation={item}
+                    <SearchConversation
+                      conversation={conversation}
+                      message={item}
                       groupPk={groupInfo?.group?.publicKey}
-                      isMessageChain={false}
-                      isNextMine={false}
-                    /> */}
+                    />
                   </>
                 );
               }}
