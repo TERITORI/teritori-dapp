@@ -21,6 +21,7 @@ import (
 	ds "github.com/ipfs/go-datastore"
 	ds_sync "github.com/ipfs/go-datastore/sync"
 	"github.com/peterbourgon/ff/v3"
+	"github.com/phayes/freeport"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 
@@ -29,11 +30,21 @@ import (
 	"github.com/pkg/errors"
 )
 
-func Weshd() {
+var (
+	port  = 0
+)
+
+func checkFreePort() {
+	firstPort, err := freeport.GetFreePort()
+	if err == nil {
+		port = firstPort
+	} 
+}
+ 
+
+
+func Boot() {	
 	fs := flag.NewFlagSet("weshd", flag.ContinueOnError)
-	var (
-		port = fs.Int("port", 4248, "port")
-	)
 	if err := ff.Parse(fs, os.Args[1:]); err != nil {
 		panic(errors.Wrap(err, "failed to parse flags"))
 	}
@@ -43,7 +54,7 @@ func Weshd() {
 		panic(errors.Wrap(err, "failed to create logger"))
 	}
 
-	logger.Info("weshd", zap.Int("port", *port))
+	logger.Info("weshd", zap.Int("port", port))
 
 	grpcServer := grpc.NewServer()
 
@@ -92,7 +103,7 @@ func Weshd() {
 	}
 
 	httpServer := http.Server{
-		Addr:    fmt.Sprintf("127.0.0.1:%d", *port),
+		Addr:    fmt.Sprintf("127.0.0.1:%d", port),
 		Handler: http.HandlerFunc(handler),
 	}
 
@@ -100,6 +111,12 @@ func Weshd() {
 		logger.Debug(fmt.Sprintf("Request: %v", err))
 		panic(errors.Wrap(err, "failed to start http server"))
 	}
+}
+
+
+func GetPort()int {
+	checkFreePort()
+	return port;
 }
  
  
