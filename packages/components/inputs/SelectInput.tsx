@@ -224,9 +224,4 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     padding: layout.padding_x1,
   },
-  // dropdownMenuRow: {
-  //   backgroundColor: neutral00,
-  //   borderRadius: 6,
-  //   padding: layout.padding_x1,
-  // },
 });
