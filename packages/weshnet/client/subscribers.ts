@@ -1,9 +1,12 @@
 import { Platform } from "react-native";
 
 import { weshClient } from "./client";
+import { weshConfig } from "./config";
+import { getConversationName } from "./messageHelpers";
 import { handleMetadata } from "./processData";
 import { bytesFromString, decodeJSON, stringFromBytes } from "./utils";
 import {
+  selectConversationById,
   selectLastIdByKey,
   setLastId,
   setMessageList,
@@ -44,6 +47,9 @@ export const subscribeMessages = async (groupPk: string) => {
     const observer = {
       next: (data: GroupMessageEvent) => {
         const id = stringFromBytes(data.eventContext?.id);
+        const conversation = selectConversationById(
+          stringFromBytes(config.groupPk)
+        )(store.getState());
         store.dispatch(
           setLastId({
             key: groupPk,
@@ -58,6 +64,9 @@ export const subscribeMessages = async (groupPk: string) => {
           id: stringFromBytes(data.eventContext?.id),
           ...data.message,
         };
+        const isSender =
+          message.senderId === stringFromBytes(weshConfig.config.accountPk);
+
         switch (message.type) {
           case "reaction": {
             store.dispatch(
@@ -79,13 +88,49 @@ export const subscribeMessages = async (groupPk: string) => {
 
             break;
           }
+          case "group-invite": {
+            const formattedMessage = isSender
+              ? `You invited ${getConversationName(conversation)} to a group ${
+                  message?.payload?.metadata?.groupName
+                }`
+              : `${getConversationName(conversation)} invited you to a group ${
+                  message?.payload?.metadata?.groupName
+                }`;
+
+            if (!message.payload) {
+              message.payload = { files: [], message: "" };
+            }
+            message.payload.message = formattedMessage;
+
+            store.dispatch(
+              setMessageList({
+                groupPk: stringFromBytes(config.groupPk),
+                data: message,
+              })
+            );
+
+            break;
+          }
           case "group-join": {
             console.log("group-join", message);
+            const newMember = [];
 
+            if (
+              message?.payload?.metadata?.contact?.id &&
+              stringFromBytes(weshConfig.config.accountPk) !==
+                message?.payload?.metadata?.contact?.id
+            ) {
+              newMember.push(message?.payload?.metadata?.contact);
+            }
+
+            const conversation = selectConversationById(
+              stringFromBytes(config.groupPk)
+            )(store.getState());
             store.dispatch(
               updateConversationById({
                 id: stringFromBytes(config.groupPk),
                 name: message?.payload?.metadata?.groupName,
+                members: [...(conversation.members || []), ...newMember],
               })
             );
             store.dispatch(

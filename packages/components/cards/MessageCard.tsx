@@ -1,5 +1,6 @@
 import React, { FC } from "react";
 import { StyleSheet } from "react-native";
+import { SvgProps } from "react-native-svg";
 
 import {
   neutral00,
@@ -11,21 +12,15 @@ import { fontSemibold12, fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import FlexRow from "../FlexRow";
+import { SVG } from "../SVG";
 import { SpacerRow } from "../spacer";
 interface CardProps {
-  icon: React.ReactNode;
+  icon: React.FC<SvgProps>;
   text: string;
   subtext: string;
 }
 
-const MessageCard: FC<CardProps> = ({
-  icon,
-  text,
-
-  subtext,
-}) => {
-  const SVG: any = icon;
-
+const MessageCard: FC<CardProps> = ({ icon, text, subtext }) => {
   return (
     <FlexRow style={styles.container}>
       <SVG source={icon} />

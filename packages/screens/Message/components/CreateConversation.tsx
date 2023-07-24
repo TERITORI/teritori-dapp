@@ -70,7 +70,9 @@ export const CreateConversation = ({ onClose }: CreateConversationProps) => {
         shareLink,
       })
     );
-  }, [contactInfo.name, contactInfo.avatar, contactInfo, dispatch]);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch]);
 
   return (
     <ModalBase

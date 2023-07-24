@@ -115,7 +115,7 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
         message: err?.message,
       });
     }
-  }, [conversation.id, conversation.members, conversation.type, setToastError]);
+  }, [conversation, setToastError]);
 
   useEffect(() => {
     getGroupInfo();
