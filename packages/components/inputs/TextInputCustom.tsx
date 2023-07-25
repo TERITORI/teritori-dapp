@@ -238,7 +238,7 @@ export const TextInputCustom = <T extends FieldValues>({
           <View style={styles.rowEnd}>
             <Label
               hovered={hovered}
-              style={[{ color: neutralA3 }, labelStyle]}
+              style={labelStyle}
               isRequired={!!rules?.required}
             >
               {label}
@@ -320,7 +320,7 @@ const styles = StyleSheet.create({
     paddingVertical: layout.padding_x1_5,
   },
   labelText: {
-    color: neutral77, //TODO: neutralA3 by default here ?
+    color: neutralA3,
   },
   textInput: {
     fontSize: 14,

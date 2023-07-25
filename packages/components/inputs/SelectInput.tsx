@@ -10,6 +10,7 @@ import {
 import { Label } from "./TextInputCustom";
 import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../assets/icons/chevron-up.svg";
+import lockSVG from "../../../assets/icons/lock.svg";
 import {
   neutral00,
   neutral33,
@@ -39,6 +40,7 @@ type Props = {
   setData: (data: SelectInputData) => void;
   disabled?: boolean;
   style?: StyleProp<ViewStyle>;
+  boxStyle?: StyleProp<ViewStyle>;
   label?: string;
   isRequired?: boolean;
 };
@@ -50,6 +52,7 @@ export const SelectInput: React.FC<Props> = ({
   setData,
   disabled,
   style,
+ boxStyle,
   label,
   isRequired,
 }) => {
@@ -70,8 +73,9 @@ export const SelectInput: React.FC<Props> = ({
       onHoverIn={() => setHovered(true)}
       onHoverOut={() => setHovered(false)}
       onPress={() => {
-        if (!disabled) setOpenMenu((value) => !value);
+        if (!disabled || data.length) setOpenMenu((value) => !value);
       }}
+      disabled={disabled || !data.length}
     >
       {label && (
         <>
@@ -90,6 +94,7 @@ export const SelectInput: React.FC<Props> = ({
           style={[
             styles.selectInput,
             hovered && { borderColor: secondaryColor },
+            boxStyle,
           ]}
         >
           <View style={styles.iconLabel}>
@@ -110,22 +115,33 @@ export const SelectInput: React.FC<Props> = ({
             </BrandText>
           </View>
 
-          {!disabled &&
-            <SVG
-              source={openMenu ? chevronUpSVG : chevronDownSVG}
-              width={16}
-              height={16}
-              color={secondaryColor}
-            />
-          }
+          <SVG
+            source={
+              !data.length || disabled
+                ? lockSVG
+                : openMenu
+                ? chevronUpSVG
+                : chevronDownSVG
+            }
+            width={16}
+            height={16}
+            color={secondaryColor}
+          />
         </View>
 
+        {/*TODO: If the opened menu appears under other elements, you'll may need to set zIndex:-1 or something to these elements*/}
         {openMenu && (
           <ScrollView style={getScrollViewStyle()}>
             {data.map((item, index) => (
               <CustomPressable
-                onHoverIn={() => setHoveredIndex(index + 1)}
-                onHoverOut={() => setHoveredIndex(0)}
+                onHoverIn={() => {
+                  setHoveredIndex(index + 1);
+                  setHovered(true);
+                }}
+                onHoverOut={() => {
+                  setHoveredIndex(0);
+                  setHovered(false);
+                }}
                 onPress={() => {
                   setData(item);
                   setOpenMenu(false);
@@ -208,4 +224,9 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     padding: layout.padding_x1,
   },
+  // dropdownMenuRow: {
+  //   backgroundColor: neutral00,
+  //   borderRadius: 6,
+  //   padding: layout.padding_x1,
+  // },
 });

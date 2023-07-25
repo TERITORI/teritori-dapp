@@ -8,7 +8,6 @@ import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { WalletStatusBox } from "../../components/WalletStatusBox";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
-import { CustomPressable } from "../../components/buttons/CustomPressable";
 import { FileUploader } from "../../components/fileUploader";
 import {
   Label,
@@ -62,7 +61,6 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
   );
   const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [contentHovered, setContentHovered] = useState(false);
 
   const { setToastSuccess, setToastError } = useFeedbacks();
   const navigation = useAppNavigation();
@@ -271,38 +269,30 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
           }}
         />
         <View>
-          <Label isRequired hovered={contentHovered}>
-            Article content
-          </Label>
+          <Label>Article content</Label>
           <SpacerColumn size={1} />
-          <CustomPressable
-            onHoverOut={() => setContentHovered(false)}
-            onHoverIn={() => setContentHovered(true)}
-          >
-            {/**@ts-ignore  error:TS2589: Type instantiation is excessively deep and possibly infinite. */}
-            <Controller
-              name="message"
-              control={control}
-              rules={{
-                required: true,
-              }}
-              render={({ field: { onChange, onBlur } }) => (
-                <RichText
-                  onChange={onChange}
-                  onBlur={onBlur}
-                  initialValue={formValues.message}
-                  loading={loading}
-                  publishDisabled={
-                    errors?.message?.type === "required" ||
-                    !formValues.message ||
-                    !formValues.title ||
-                    !wallet
-                  }
-                  onPublish={onPublish}
-                />
-              )}
-            />
-          </CustomPressable>
+          <Controller
+            name="message"
+            control={control}
+            rules={{
+              required: true,
+            }}
+            render={({ field: { onChange, onBlur } }) => (
+              <RichText
+                onChange={onChange}
+                onBlur={onBlur}
+                initialValue={formValues.message}
+                loading={loading}
+                publishDisabled={
+                  errors?.message?.type === "required" ||
+                  !formValues.message ||
+                  !formValues.title ||
+                  !wallet
+                }
+                onPublish={onPublish}
+              />
+            )}
+          />
         </View>
       </View>
     </ScreenContainer>
