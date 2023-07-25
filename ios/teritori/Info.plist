@@ -2,15 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
   <dict>
-<<<<<<< HEAD
     <key>CADisableMinimumFrameDurationOnPhone</key>
     <true/>
-=======
->>>>>>> 6e7a3c36 (weshnet ios integration)
     <key>CFBundleDevelopmentRegion</key>
     <string>$(DEVELOPMENT_LANGUAGE)</string>
     <key>CFBundleDisplayName</key>
-    <string>teritori</string>
+    <string>Teritori</string>
     <key>CFBundleExecutable</key>
     <string>$(EXECUTABLE_NAME)</string>
     <key>CFBundleIdentifier</key>
@@ -23,10 +20,14 @@
     <string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
     <key>CFBundleShortVersionString</key>
 <<<<<<< HEAD
+<<<<<<< HEAD
     <string>1.0.3</string>
 =======
     <string>1.0.0</string>
 >>>>>>> 6e7a3c36 (weshnet ios integration)
+=======
+    <string>$(MARKETING_VERSION)</string>
+>>>>>>> 6aa24fa8 (re-added tinderService on weshnet config)
     <key>CFBundleSignature</key>
     <string>????</string>
     <key>CFBundleURLTypes</key>
@@ -79,6 +80,10 @@
 >>>>>>> 6e7a3c36 (weshnet ios integration)
     <key>NSMicrophoneUsageDescription</key>
     <string>Allow $(PRODUCT_NAME) to access your microphone</string>
+     <key>NSBluetoothAlwaysUsageDescription</key>
+    <string>Allow $(PRODUCT_NAME) to access your bluetooth</string>
+       <key>NSBluetoothPeripheralUsageDescription</key>
+    <string>Allow $(PRODUCT_NAME) to access your bluetooth</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>The app accesses your photos to let you share them with your friends.</string>
     <key>UILaunchStoryboardName</key>
