@@ -43,7 +43,8 @@ export const NavBarPathwarOverview: React.FC<object> = () => {
         style={{
           flexDirection: "row",
           alignContent: "center",
-          justifyContent: "space-between",
+          flexWrap: "wrap",
+          justifyContent: "center",
         }}
       >
         <NavbarCard

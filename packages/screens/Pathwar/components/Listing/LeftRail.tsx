@@ -6,6 +6,7 @@ import { BrandText } from "../../../../components/BrandText";
 import { CurrencyIcon } from "../../../../components/CurrencyIcon";
 import { OptimizedImage } from "../../../../components/OptimizedImage";
 import { TertiaryBox } from "../../../../components/boxes/TertiaryBox";
+import { useIsMobile } from "../../../../hooks/useIsMobile";
 import { prettyPrice } from "../../../../utils/coins";
 import {
   neutral00,
@@ -21,21 +22,21 @@ export const LeftRail: React.FC<{
   price: Money | undefined;
   onPress?: () => void;
 }> = ({ sourceURI, price, onPress }) => {
+  const isMobile = useIsMobile();
+
   return (
     <View
       style={{
         flexDirection: "column",
-        paddingRight: layout.padding_x2,
-        height: "100%",
+        paddingRight: isMobile ? 0 : layout.padding_x2,
+        height: isMobile ? "auto" : "100%",
         justifyContent: "space-between",
+        paddingBottom: isMobile ? layout.padding_x2 : 0,
+        width: isMobile ? "100%" : 210,
       }}
     >
       <View>
-        <TertiaryBox
-          width={200}
-          height={200}
-          squaresBackgroundColor={neutral17}
-        >
+        <TertiaryBox fullWidth height={200} squaresBackgroundColor={neutral17}>
           <OptimizedImage
             sourceURI={sourceURI}
             style={{
@@ -47,7 +48,7 @@ export const LeftRail: React.FC<{
           />
         </TertiaryBox>
         <TertiaryBox
-          width={200}
+          fullWidth
           height={47}
           squaresBackgroundColor={neutral17}
           style={{ marginTop: layout.padding_x1 }}

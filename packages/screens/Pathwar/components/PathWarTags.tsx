@@ -7,11 +7,14 @@ import { neutral44, neutral77 } from "../../../utils/style/colors";
 import { fontSemibold12 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 
-export const PathWarTags: React.FC<{ data: Tag[] }> = ({ data }) => {
+export const PathWarTags: React.FC<{ data: Tag[]; width: number }> = ({
+  data,
+  width,
+}) => {
   return (
     <View
       style={{
-        width: 390,
+        width,
         flexDirection: "row",
         marginBottom: layout.padding_x1,
         flexWrap: "wrap",

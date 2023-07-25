@@ -6,6 +6,7 @@ import clockSvg from "../../../assets/icons/Pathwar/clockIcon.svg";
 import diamondSvg from "../../../assets/icons/Pathwar/diamondIcon.svg";
 import starSvg from "../../../assets/icons/Pathwar/starIcon.svg";
 import { Challenge } from "../../api/pathwar/v1/pathwar";
+import { useIsMobile } from "../../hooks/useIsMobile";
 import { LeftRail } from "../../screens/Pathwar/components/Listing/LeftRail";
 import { StatusBadges } from "../../screens/Pathwar/components/Listing/StatusBadges";
 import { PathWarRewards } from "../../screens/Pathwar/components/PathWarRewards";
@@ -36,7 +37,7 @@ export const ChallengeBox: React.FC<{
   data: Challenge;
 }> = ({ data }) => {
   // const [displayChallengeDetails, setDisplayChallengeDetails] = useState(false);
-
+  const isMobile = useIsMobile();
   return (
     <TertiaryBox
       mainContainerStyle={{ backgroundColor: neutral17 }}
@@ -55,7 +56,7 @@ export const ChallengeBox: React.FC<{
       {/*/>*/}
       <View
         style={{
-          flexDirection: "row",
+          flexDirection: isMobile ? "column" : "row",
           margin: layout.padding_x2,
         }}
       >
@@ -101,7 +102,7 @@ export const ChallengeBox: React.FC<{
             color={neutral44}
           />
 
-          <PathWarTags data={data.tags} />
+          <PathWarTags data={data.tags} width={WIDTH} />
 
           <Separator
             style={{
@@ -242,6 +243,8 @@ export const ChallengeBox: React.FC<{
           <PathWarRewards
             rewards={data.rewards}
             style={{
+              position: "absolute",
+              bottom: 0,
               paddingTop: layout.padding_x2,
               flexDirection: "row",
               flexWrap: "wrap",

@@ -3,6 +3,7 @@ import { Pressable } from "react-native";
 import { SvgProps } from "react-native-svg";
 
 import { neutral17 } from "../../../utils/style/colors";
+import { layout } from "../../../utils/style/layout";
 import { TertiaryBox } from "../../boxes/TertiaryBox";
 
 export const NavbarCard: React.FC<{
@@ -28,6 +29,10 @@ export const NavbarCard: React.FC<{
       width={width}
       height={height}
       mainContainerStyle={{ backgroundColor: neutral17 }}
+      style={{
+        paddingRight: layout.padding_x2,
+        paddingBottom: layout.padding_x2,
+      }}
     >
       {children && (
         <Pressable style={{ width: "100%" }} onPress={onPress}>
