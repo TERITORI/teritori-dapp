@@ -93,7 +93,7 @@ desktop-build
 desktop/vendor
 go/electron/output
 go/electron/prod/bind*
-go/electron/prod/resources/app
+go/electron/prod/resources/app/
 
 ios/Frameworks/WeshFramework.xcframework/
 

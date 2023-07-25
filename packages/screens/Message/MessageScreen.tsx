@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { View, TouchableOpacity, Platform, ScrollView } from "react-native";
+import {
+  View,
+  TouchableOpacity,
+  Platform,
+  ScrollView,
+  ActivityIndicator,
+} from "react-native";
+import { useSelector } from "react-redux";
 
 import { ChatSection } from "./components/ChatSection";
 import { CreateConversation } from "./components/CreateConversation";
@@ -11,13 +18,16 @@ import chat from "../../../assets/icons/add-chat.svg";
 import friend from "../../../assets/icons/friend.svg";
 import group from "../../../assets/icons/group.svg";
 import space from "../../../assets/icons/space.svg";
+import { BrandText } from "../../components/BrandText";
 import FlexRow from "../../components/FlexRow";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { Separator } from "../../components/Separator";
 import { MessageBlankFiller } from "../../components/blankFiller/MessageBlankFiller";
 import MessageCard from "../../components/cards/MessageCard";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
+import { selectContactInfo } from "../../store/slices/message";
 import { useAppNavigation, ScreenFC } from "../../utils/navigation";
+import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { Conversation } from "../../utils/types/message";
 
@@ -27,6 +37,7 @@ export const MessageScreen: ScreenFC<"Message"> = () => {
   const [activeConversation, setActiveConversation] = useState<Conversation>();
   const [activeTab, setActiveTab] = useState<"chat" | "add-friend">("chat");
   const navigation = useAppNavigation();
+  const contactInfo = useSelector(selectContactInfo);
 
   const HEADER_CONFIG = [
     {
@@ -66,6 +77,38 @@ export const MessageScreen: ScreenFC<"Message"> = () => {
     },
   ];
 
+  if (!contactInfo.publicRendezvousSeed) {
+    return (
+      <ScreenContainer
+        headerChildren={<MessageHeader />}
+        responsive
+        fullWidth
+        footerChildren={<></>}
+        noScroll
+      >
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            padding: layout.padding_x1,
+          }}
+        >
+          <ActivityIndicator size="large" />
+          <BrandText
+            style={[
+              fontSemibold14,
+              { textAlign: "center", marginTop: layout.padding_x1_5 },
+            ]}
+          >
+            We are currently in the process of setting up Weshnet, and it will
+            be ready within just a few short minutes.{"\n"} Thank you for your
+            understanding
+          </BrandText>
+        </View>
+      </ScreenContainer>
+    );
+  }
   return (
     <ScreenContainer
       headerChildren={<MessageHeader />}

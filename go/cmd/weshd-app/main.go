@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
-	// mrand "math/rand"
+	mrand "math/rand"
 
 	"os"
 
@@ -14,6 +14,8 @@ import (
 	"berty.tech/weshnet/pkg/ipfsutil"
 	ipfs_mobile "berty.tech/weshnet/pkg/ipfsutil/mobile"
 	"berty.tech/weshnet/pkg/protocoltypes"
+	"berty.tech/weshnet/pkg/tinder"
+	"moul.io/srand"
 
 	// "github.com/cskr/pubsub"
 
@@ -58,8 +60,8 @@ func Boot() {
 
 	grpcServer := grpc.NewServer()
 
-	// rng := mrand.New(mrand.NewSource(srand.MustSecure())) // nolint:gosec // we need to use math/rand here, but it is seeded from crypto/rand
-	// drivers := []tinder.IDriver{}
+	rng := mrand.New(mrand.NewSource(srand.MustSecure())) // nolint:gosec // we need to use math/rand here, but it is seeded from crypto/rand
+	drivers := []tinder.IDriver{}
 
 	// setup ipfs node
 	dsync := ds_sync.MutexWrap(ds.NewMapDatastore())
@@ -79,9 +81,29 @@ func Boot() {
 		panic(errors.Wrap(err, "failed to create ipfs core api"))
 	}
 
+	host := mnode.PeerHost()
+
+	// setup loac disc
+	localdisc, err := tinder.NewLocalDiscovery(logger, host, rng)
+	if err != nil {
+		panic(errors.Wrap(err, "failed to create local discovery"))
+	}
+	drivers = append(drivers, localdisc)
+
+	if mnode != nil {
+		dhtdisc := tinder.NewRoutingDiscoveryDriver("dht", mnode.DHT)
+		drivers = append(drivers, dhtdisc)
+
+	}
+	tinderDriver, err := tinder.NewService(host, logger, drivers...)
+	if err != nil {
+		panic(errors.Wrap(err, "failed to create tinder driver"))
+	}
+
 	svc, err := weshnet.NewService(weshnet.Opts{
 		Logger:        logger,
 		DatastoreDir:  weshnet.InMemoryDirectory,
+		TinderService: tinderDriver,
 		IpfsCoreAPI:   ipfsCoreAPI,
 		RootDatastore: dsync,
 	})
