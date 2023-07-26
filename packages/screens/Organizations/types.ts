@@ -1,6 +1,8 @@
 export enum DaoType {
   MEMBER_BASED = 0,
   TOKEN_BASED = 1,
+  NFT_BASED = 2,
+  COOP_BASED = 3,
 }
 
 export type CreateDaoFormType = {
@@ -17,6 +19,11 @@ export type ConfigureVotingFormType = {
   days: string;
   hours: string;
   minutes: string;
+};
+
+export type NFTSettingFormType = {
+  considerListedNFT: boolean;
+  contracts: { address: string }[];
 };
 
 export type TokenSettingFormType = {

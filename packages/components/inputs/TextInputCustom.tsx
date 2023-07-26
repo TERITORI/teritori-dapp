@@ -1,7 +1,6 @@
 import { Currency } from "@keplr-wallet/types";
 import React, {
   Dispatch,
-  FC,
   RefObject,
   SetStateAction,
   useEffect,

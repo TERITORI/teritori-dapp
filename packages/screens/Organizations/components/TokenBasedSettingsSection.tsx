@@ -10,23 +10,24 @@ import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
-import { patternOnlyNumbers, validateAddress } from "../../../utils/formRules";
+import {
+  patternOnlyLetters,
+  patternOnlyNumbers,
+  validateAddress,
+} from "../../../utils/formRules";
 import { neutral33, neutralA3 } from "../../../utils/style/colors";
 import { fontSemibold14, fontSemibold28 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { ORGANIZATION_DEPLOYER_STEPS } from "../OrganizationDeployerScreen";
-import { MemberSettingFormType } from "../types";
+import { TokenSettingFormType } from "../types";
 
-interface MemberSettingsSectionProps {
-  onSubmit: (form: MemberSettingFormType) => void;
+interface Props {
+  onSubmit: (form: TokenSettingFormType) => void;
 }
 
-export const MemberSettingsSection: React.FC<MemberSettingsSectionProps> = ({
-  onSubmit,
-}) => {
+export const TokenBasedSettingsSection: React.FC<Props> = ({ onSubmit }) => {
   // variables
-  // const { handleSubmit, control, unregister } = useForm<MemberSettingFormType>();
-  const { handleSubmit, control } = useForm<MemberSettingFormType>();
+  const { handleSubmit, control } = useForm<TokenSettingFormType>();
   const [addressIndexes, setAddressIndexes] = useState<number[]>([0]);
 
   // functions
@@ -34,7 +35,6 @@ export const MemberSettingsSection: React.FC<MemberSettingsSectionProps> = ({
     if (addressIndexes.length > 1) {
       const copyIndex = [...addressIndexes].filter((i) => i !== id);
       setAddressIndexes(copyIndex);
-      // unregister(`members.${id}`);
     }
   };
 
@@ -46,16 +46,46 @@ export const MemberSettingsSection: React.FC<MemberSettingsSectionProps> = ({
   return (
     <View style={styles.fill}>
       <ScrollView contentContainerStyle={styles.container}>
-        <BrandText style={fontSemibold28}>Add member</BrandText>
+        <BrandText style={fontSemibold28}>
+          Choose your tokens settings below
+        </BrandText>
         <SpacerColumn size={2.5} />
+        <View style={styles.inputContainer}>
+          <View style={styles.leftInput}>
+            <TextInputCustom<TokenSettingFormType>
+              name="tokenName"
+              noBrokenCorners
+              label="Token name"
+              variant="labelOutside"
+              control={control}
+              rules={{ required: true }}
+              placeHolder="My Organization Token"
+            />
+          </View>
+          <SpacerRow size={2.5} />
+          <View style={styles.rightInput}>
+            <TextInputCustom<TokenSettingFormType>
+              name="tokenSymbol"
+              noBrokenCorners
+              label="Token Symbol"
+              variant="labelOutside"
+              control={control}
+              valueModifier={(value) => value.toUpperCase()}
+              rules={{ required: true, pattern: patternOnlyLetters }}
+              placeHolder="ABC"
+            />
+          </View>
+        </View>
+        <SpacerColumn size={3} />
 
         {addressIndexes.map((id, index) => (
           <View style={styles.inputContainer} key={id.toString()}>
             <View style={styles.leftInput}>
-              <TextInputCustom<MemberSettingFormType>
-                name={`members.${index}.addr`}
+              <TextInputCustom<TokenSettingFormType>
+                name={`tokenHolders.${index}.address`}
                 noBrokenCorners
-                label="Member Address"
+                label="Token Holders"
+                variant="labelOutside"
                 hideLabel={index > 0}
                 control={control}
                 rules={{ required: true, validate: validateAddress }}
@@ -72,20 +102,21 @@ export const MemberSettingsSection: React.FC<MemberSettingsSectionProps> = ({
             </View>
             <SpacerRow size={2.5} />
             <View style={styles.rightInput}>
-              <TextInputCustom<MemberSettingFormType>
-                name={`members.${index}.weight`}
+              <TextInputCustom<TokenSettingFormType>
+                name={`tokenHolders.${index}.balance`}
                 noBrokenCorners
-                label="Weight"
+                label="Balances"
+                variant="labelOutside"
                 hideLabel={index > 0}
                 control={control}
                 rules={{ required: true, pattern: patternOnlyNumbers }}
-                placeHolder="1"
+                placeHolder="0"
               />
             </View>
           </View>
         ))}
 
-        <SecondaryButton size="SM" text="Add More" onPress={addAddressField} />
+        <SecondaryButton size="M" text="Add More" onPress={addAddressField} />
       </ScrollView>
 
       <View style={styles.footer}>
@@ -118,7 +149,7 @@ const styles = StyleSheet.create({
     marginBottom: layout.padding_x2,
   },
   trashContainer: {
-    height: 16,
+    height: "100%",
     width: 16,
     justifyContent: "center",
     alignItems: "center",
