@@ -8,8 +8,7 @@ export const getChallenges = () => {
         denom: "utori",
         amount: "1000000000",
       } as Money,
-      thumbnail:
-        "ipfs%3A%2F%2Fbafybeic3r3pcxubbx5pg6vzmq7wniamxviflxfc4gstk743747viqeo67i%2Fnft.png",
+      thumbnail: "https://picsum.photos/200",
       title: "Cosmos Hacking 3-1",
       tagline: "Continue with phase 2",
       description: "Intermediate to experts",
@@ -56,6 +55,16 @@ export const getChallenges = () => {
         {
           id: 2,
           text: "tag 2",
+        },
+      ],
+      endpoints: [
+        {
+          url: "http://iadu7qp6.fr2.pathwar.net",
+          status: "available",
+        },
+        {
+          url: "http://iadu7qp6.fr2.pathwar.net",
+          status: "soon",
         },
       ],
       starUser: {
@@ -119,6 +128,16 @@ export const getChallenges = () => {
       starUser: {
         address: "tori-tori1c2t58ydw6ww7ukrm66xu67y2hmz66dermqax99",
       },
+      endpoints: [
+        {
+          url: "http://iadu7qp6.fr2.pathwar.net",
+          status: "unavailable",
+        },
+        {
+          url: "http://iadu7qp6.fr2.pathwar.net",
+          status: "soon",
+        },
+      ],
       topUsers: [
         {
           address: "tori-tori1c2t58ydw6ww7ukrm66xu67y2hmz66dermqax99",

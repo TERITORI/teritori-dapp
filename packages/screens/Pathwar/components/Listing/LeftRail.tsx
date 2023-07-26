@@ -20,10 +20,10 @@ import { layout } from "../../../../utils/style/layout";
 export const LeftRail: React.FC<{
   sourceURI: string;
   price: Money | undefined;
-  onPress?: () => void;
-}> = ({ sourceURI, price, onPress }) => {
+  onMoreButtonPress?: () => void;
+}> = ({ sourceURI, price, onMoreButtonPress }) => {
   const isMobile = useIsMobile();
-
+  console.log(typeof onMoreButtonPress);
   return (
     <View
       style={{
@@ -42,9 +42,11 @@ export const LeftRail: React.FC<{
             style={{
               borderTopRightRadius: 7,
               borderBottomLeftRadius: 7,
+              width: 195,
+              height: 195,
             }}
-            height={198}
-            width={198}
+            height={195}
+            width={195}
           />
         </TertiaryBox>
         <TertiaryBox
@@ -88,14 +90,17 @@ export const LeftRail: React.FC<{
                   size={16}
                 />
               </View>
-            )}{" "}
+            )}
           </View>
         </TertiaryBox>
       </View>
       <View
         style={{
           flexDirection: "row",
-          justifyContent: "space-between",
+          justifyContent:
+            typeof onMoreButtonPress !== "undefined"
+              ? "space-between"
+              : "center",
           marginTop: layout.padding_x1,
         }}
       >
@@ -111,18 +116,20 @@ export const LeftRail: React.FC<{
             </BrandText>
           </TertiaryBox>
         </TouchableOpacity>
-        <TouchableOpacity onPress={onPress}>
-          <TertiaryBox
-            width={80}
-            height={40}
-            squaresBackgroundColor={neutral17}
-            mainContainerStyle={{ borderColor: secondaryColor }}
-          >
-            <BrandText style={[{ color: secondaryColor }, fontSemibold14]}>
-              More
-            </BrandText>
-          </TertiaryBox>
-        </TouchableOpacity>
+        {typeof onMoreButtonPress !== "undefined" && (
+          <TouchableOpacity onPress={onMoreButtonPress}>
+            <TertiaryBox
+              width={80}
+              height={40}
+              squaresBackgroundColor={neutral17}
+              mainContainerStyle={{ borderColor: secondaryColor }}
+            >
+              <BrandText style={[{ color: secondaryColor }, fontSemibold14]}>
+                More
+              </BrandText>
+            </TertiaryBox>
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );

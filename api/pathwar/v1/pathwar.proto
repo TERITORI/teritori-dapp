@@ -120,6 +120,11 @@ enum Status {
   STATUS_CLOSE_UNSPECIFIED = 1;
 }
 
+message Endpoint {
+  string url = 1;
+  string status = 2;
+}
+
 message Challenge {
   int32 id = 1;
   Money price = 2;
@@ -138,6 +143,7 @@ message Challenge {
   repeated PublicUser top_users = 15;
   bool solved = 16;
   int32 solved_count = 17;
+  repeated Endpoint endpoints = 18;
 }
 
 message ChallengeRequest {

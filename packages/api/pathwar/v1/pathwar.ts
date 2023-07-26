@@ -139,6 +139,11 @@ export interface TournamentsResponse {
   tournaments: Tournament[];
 }
 
+export interface Endpoint {
+  url: string;
+  status: string;
+}
+
 export interface Challenge {
   id: number;
   price: Money | undefined;
@@ -158,6 +163,7 @@ export interface Challenge {
   topUsers: PublicUser[];
   solved: boolean;
   solvedCount: number;
+  endpoints: Endpoint[];
 }
 
 export interface ChallengeRequest {
@@ -1250,6 +1256,64 @@ export const TournamentsResponse = {
   },
 };
 
+function createBaseEndpoint(): Endpoint {
+  return { url: "", status: "" };
+}
+
+export const Endpoint = {
+  encode(message: Endpoint, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.url !== "") {
+      writer.uint32(10).string(message.url);
+    }
+    if (message.status !== "") {
+      writer.uint32(18).string(message.status);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): Endpoint {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseEndpoint();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.url = reader.string();
+          break;
+        case 2:
+          message.status = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Endpoint {
+    return {
+      url: isSet(object.url) ? String(object.url) : "",
+      status: isSet(object.status) ? String(object.status) : "",
+    };
+  },
+
+  toJSON(message: Endpoint): unknown {
+    const obj: any = {};
+    message.url !== undefined && (obj.url = message.url);
+    message.status !== undefined && (obj.status = message.status);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<Endpoint>, I>>(object: I): Endpoint {
+    const message = createBaseEndpoint();
+    message.url = object.url ?? "";
+    message.status = object.status ?? "";
+    return message;
+  },
+};
+
 function createBaseChallenge(): Challenge {
   return {
     id: 0,
@@ -1269,6 +1333,7 @@ function createBaseChallenge(): Challenge {
     topUsers: [],
     solved: false,
     solvedCount: 0,
+    endpoints: [],
   };
 }
 
@@ -1324,6 +1389,9 @@ export const Challenge = {
     }
     if (message.solvedCount !== 0) {
       writer.uint32(136).int32(message.solvedCount);
+    }
+    for (const v of message.endpoints) {
+      Endpoint.encode(v!, writer.uint32(146).fork()).ldelim();
     }
     return writer;
   },
@@ -1386,6 +1454,9 @@ export const Challenge = {
         case 17:
           message.solvedCount = reader.int32();
           break;
+        case 18:
+          message.endpoints.push(Endpoint.decode(reader, reader.uint32()));
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1413,6 +1484,7 @@ export const Challenge = {
       topUsers: Array.isArray(object?.topUsers) ? object.topUsers.map((e: any) => PublicUser.fromJSON(e)) : [],
       solved: isSet(object.solved) ? Boolean(object.solved) : false,
       solvedCount: isSet(object.solvedCount) ? Number(object.solvedCount) : 0,
+      endpoints: Array.isArray(object?.endpoints) ? object.endpoints.map((e: any) => Endpoint.fromJSON(e)) : [],
     };
   },
 
@@ -1448,6 +1520,11 @@ export const Challenge = {
     }
     message.solved !== undefined && (obj.solved = message.solved);
     message.solvedCount !== undefined && (obj.solvedCount = Math.round(message.solvedCount));
+    if (message.endpoints) {
+      obj.endpoints = message.endpoints.map((e) => e ? Endpoint.toJSON(e) : undefined);
+    } else {
+      obj.endpoints = [];
+    }
     return obj;
   },
 
@@ -1472,6 +1549,7 @@ export const Challenge = {
     message.topUsers = object.topUsers?.map((e) => PublicUser.fromPartial(e)) || [];
     message.solved = object.solved ?? false;
     message.solvedCount = object.solvedCount ?? 0;
+    message.endpoints = object.endpoints?.map((e) => Endpoint.fromPartial(e)) || [];
     return message;
   },
 };
