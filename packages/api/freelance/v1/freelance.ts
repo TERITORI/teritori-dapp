@@ -17,6 +17,8 @@ export interface SellerProfileResponse {
 }
 
 export interface GigListRequest {
+  category: string;
+  subcategory: string;
   limit: number;
   offset: number;
 }
@@ -196,16 +198,22 @@ export const SellerProfileResponse = {
 };
 
 function createBaseGigListRequest(): GigListRequest {
-  return { limit: 0, offset: 0 };
+  return { category: "", subcategory: "", limit: 0, offset: 0 };
 }
 
 export const GigListRequest = {
   encode(message: GigListRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.category !== "") {
+      writer.uint32(10).string(message.category);
+    }
+    if (message.subcategory !== "") {
+      writer.uint32(18).string(message.subcategory);
+    }
     if (message.limit !== 0) {
-      writer.uint32(8).int32(message.limit);
+      writer.uint32(24).int32(message.limit);
     }
     if (message.offset !== 0) {
-      writer.uint32(16).int32(message.offset);
+      writer.uint32(32).int32(message.offset);
     }
     return writer;
   },
@@ -218,9 +226,15 @@ export const GigListRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.limit = reader.int32();
+          message.category = reader.string();
           break;
         case 2:
+          message.subcategory = reader.string();
+          break;
+        case 3:
+          message.limit = reader.int32();
+          break;
+        case 4:
           message.offset = reader.int32();
           break;
         default:
@@ -233,6 +247,8 @@ export const GigListRequest = {
 
   fromJSON(object: any): GigListRequest {
     return {
+      category: isSet(object.category) ? String(object.category) : "",
+      subcategory: isSet(object.subcategory) ? String(object.subcategory) : "",
       limit: isSet(object.limit) ? Number(object.limit) : 0,
       offset: isSet(object.offset) ? Number(object.offset) : 0,
     };
@@ -240,6 +256,8 @@ export const GigListRequest = {
 
   toJSON(message: GigListRequest): unknown {
     const obj: any = {};
+    message.category !== undefined && (obj.category = message.category);
+    message.subcategory !== undefined && (obj.subcategory = message.subcategory);
     message.limit !== undefined && (obj.limit = Math.round(message.limit));
     message.offset !== undefined && (obj.offset = Math.round(message.offset));
     return obj;
@@ -247,6 +265,8 @@ export const GigListRequest = {
 
   fromPartial<I extends Exact<DeepPartial<GigListRequest>, I>>(object: I): GigListRequest {
     const message = createBaseGigListRequest();
+    message.category = object.category ?? "";
+    message.subcategory = object.subcategory ?? "";
     message.limit = object.limit ?? 0;
     message.offset = object.offset ?? 0;
     return message;

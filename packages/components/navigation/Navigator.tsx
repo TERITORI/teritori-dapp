@@ -8,6 +8,8 @@ import { ToriPunks } from "../../screens/DAppStore/apps/toripunks/HomeScreen";
 import { FeedScreen } from "../../screens/Feed/FeedScreen";
 import { FeedNewArticleScreen } from "../../screens/FeedNewArticle/FeedNewArticleScreen";
 import { FeedPostViewScreen } from "../../screens/FeedPostView/FeedPostViewScreen";
+import { FreelanceGigDetailScreen } from "../../screens/FreelanceServices/FreelanceGigDetailScreen";
+import { FreelanceSellerDetailsScreen } from "../../screens/FreelanceServices/FreelanceSellerDetailsScreen";
 import { FreelanceServicesCategoryScreen } from "../../screens/FreelanceServices/FreelanceServicesCategoryScreen";
 import { FreelanceServicesEscrowScreen } from "../../screens/FreelanceServices/FreelanceServicesEscrowScreen";
 import { FreelanceServicesGigCreationScreen } from "../../screens/FreelanceServices/FreelanceServicesGigCreationScreen";
@@ -16,8 +18,6 @@ import { FreelanceServicesHomeSellerScreen } from "../../screens/FreelanceServic
 import { FreelanceServicesOrderDetailsScreen } from "../../screens/FreelanceServices/FreelanceServicesOrderDetailsScreen";
 import { FreelanceServicesProfileSellerScreen } from "../../screens/FreelanceServices/FreelanceServicesProfileSellerScreen";
 import { FreelanceServicesSubCategoryScreen } from "../../screens/FreelanceServices/FreelanceServicesSubCategoryScreen";
-import { GigDetailScreen } from "../../screens/FreelanceServices/Gig/GigDetailScreen";
-import { SellerDetailsScreen } from "../../screens/FreelanceServices/SellersDetails/SellerDetailsScreen";
 import { GovernanceScreen } from "../../screens/Governance/GovernanceScreen";
 import { GuardiansScreen } from "../../screens/Guardians/GuardiansScreen";
 import { HashtagFeedScreen } from "../../screens/HashtagFeed/HashtagFeedScreen";
@@ -337,13 +337,13 @@ export const Navigator: React.FC = () => {
 
       <Stack.Screen
         name="FreelanceServicesGigDetail"
-        component={GigDetailScreen}
+        component={FreelanceGigDetailScreen}
         options={{ header: () => null, title: screenTitle("Logo & Design") }}
       />
 
       <Stack.Screen
         name="FreelanceServicesSellerDetails"
-        component={SellerDetailsScreen}
+        component={FreelanceSellerDetailsScreen}
         options={{ header: () => null, title: screenTitle("Seller Details") }}
       />
       <Stack.Screen

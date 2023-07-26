@@ -5,7 +5,6 @@ import FaceBookIcon from "../../../../assets/icons/gig-creation/facebook.svg";
 import GoogleIcon from "../../../../assets/icons/gig-creation/google.svg";
 import ShareIcon from "../../../../assets/icons/gig-creation/share.svg";
 import TwitterIcon from "../../../../assets/icons/gig-creation/twitter.svg";
-import { GigInfo } from "../../../screens/FreelanceServices/types/fields";
 import {
   neutralA3,
   primaryColor,
@@ -16,6 +15,7 @@ import { fontSemibold14, fontSemibold16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
+import { GigInfo } from "../types/fields";
 
 export const GigCreationPublish: React.FC<{
   gigInfo: GigInfo;

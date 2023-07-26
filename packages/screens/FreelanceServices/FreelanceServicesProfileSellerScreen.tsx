@@ -2,11 +2,14 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { View } from "react-native";
 
-import { emptySeller, SellerInfo } from "./types/fields";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { ProfileBody } from "../../components/freelanceServices/Profile/ProfileBody";
 import { ProfileFooter } from "../../components/freelanceServices/Profile/ProfileFooter";
 import { ProfileHeader } from "../../components/freelanceServices/Profile/ProfileHeader";
+import {
+  emptySeller,
+  SellerInfo,
+} from "../../components/freelanceServices/types/fields";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import {
   TeritoriSellerQueryClient,

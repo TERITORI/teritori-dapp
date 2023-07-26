@@ -52,11 +52,11 @@ var allModels = []interface{}{
 	&P2eSquadStaking{},
 	&P2eLeaderboard{},
 	//report
-	&Report{},
+	&FreelanceReport{},
 	//seller
-	&SellerProfile{},
-	&Escrow{},
-	&Gig{},
+	&FreelanceSellerProfile{},
+	&FreelanceEscrow{},
+	&FreelanceGig{},
 	// feed
 	&Post{},
 

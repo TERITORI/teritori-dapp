@@ -3,7 +3,6 @@ import { Image, TouchableOpacity, View } from "react-native";
 
 import chevronLeft from "../../../../assets/icons/chevron-left.svg";
 import chevronRight from "../../../../assets/icons/chevron-right.svg";
-import { ReviewFields } from "../../../screens/FreelanceServices/types/fields";
 import {
   neutral00,
   neutral33,
@@ -16,6 +15,7 @@ import { SVG } from "../../SVG";
 import { TertiaryBox } from "../../boxes/TertiaryBox";
 import { FlagIcon } from "../common/FlagIcon";
 import { StarRating } from "../common/StarRating";
+import { ReviewFields } from "../types/fields";
 
 export const ReviewCard: React.FC<{ reviews: ReviewFields["items"] }> = ({
   reviews,

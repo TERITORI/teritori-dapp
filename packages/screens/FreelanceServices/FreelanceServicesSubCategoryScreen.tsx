@@ -1,6 +1,7 @@
 import React from "react";
 
-import { LogoDesign } from "./Category/Subcategory/LogoDesign";
+// import { LogoDesign } from "./Category/Subcategory/LogoDesign";
+import { SubCategoryView } from "./Category/SubCategoryView";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { ScreenFC } from "../../utils/navigation";
 export const FreelanceServicesSubCategoryScreen: ScreenFC<
@@ -12,9 +13,7 @@ export const FreelanceServicesSubCategoryScreen: ScreenFC<
 }) => {
   return (
     <ScreenContainer fullWidth noMargin>
-      {category === "GraphicsAndDesign" && subcategory === "LogoDesign" && (
-        <LogoDesign />
-      )}
+      <SubCategoryView category={category} subcategory={subcategory} />
     </ScreenContainer>
   );
 };

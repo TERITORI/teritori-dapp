@@ -24,8 +24,10 @@ message SellerProfileResponse {
 }
 
 message GigListRequest {
-  int32 limit = 1;
-  int32 offset = 2;
+  string category = 1;
+  string subcategory=2;
+  int32 limit = 3;
+  int32 offset = 4;
 }
 
 message  GigListUserRequest {
@@ -65,6 +67,7 @@ message GigInfo {
   int32 id = 1;
   string address = 2;
   string gig_data = 3;
+  int64 created_at = 4;
 }
 message GigListResponse {
   repeated GigInfo gigs = 1;

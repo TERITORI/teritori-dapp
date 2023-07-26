@@ -4,7 +4,6 @@ import { View, StyleSheet } from "react-native";
 import { VerifyPhoneModal } from "./VerifyPhoneModal";
 import EmailIcon from "../../../../assets/icons/account/email-icon.svg";
 import PhoneIcon from "../../../../assets/icons/account/phone-icon.svg";
-import { SellerInfo } from "../../../screens/FreelanceServices/types/fields";
 import {
   neutral33,
   neutral77,
@@ -15,6 +14,7 @@ import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
 import { TertiaryButton } from "../../buttons/TertiaryButton";
+import { SellerInfo } from "../types/fields";
 
 export const AccountSecurityPanel: React.FC<{
   seller: SellerInfo;

@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { View } from "react-native";
 
 import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
-import { EducationInfo } from "../../../screens/FreelanceServices/types/fields";
 import {
   secondaryColor,
   neutral33,
@@ -10,6 +9,7 @@ import {
 } from "../../../utils/style/colors";
 import { TertiaryBox } from "../../boxes/TertiaryBox";
 import { TextInputCustom } from "../../inputs/TextInputCustom";
+import { EducationInfo } from "../types/fields";
 
 export const AddNewEducationCard: React.FC<{
   value?: EducationInfo;

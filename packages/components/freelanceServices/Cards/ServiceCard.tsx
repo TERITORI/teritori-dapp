@@ -9,7 +9,6 @@ import {
 
 import dotsCircle from "../../../../assets/icons/dots-circle.svg";
 import star from "../../../../assets/icons/yellow-star.svg";
-import { GigData } from "../../../screens/FreelanceServices/types/fields";
 import { ipfsURLToHTTPURL } from "../../../utils/ipfs";
 import { neutral77, yellowDefault } from "../../../utils/style/colors";
 import {
@@ -21,6 +20,7 @@ import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
 import { Separator } from "../../Separator";
 import { TertiaryBox } from "../../boxes/TertiaryBox";
+import { GigData } from "../types/fields";
 
 export const ServiceCard: React.FC<{
   width: number;

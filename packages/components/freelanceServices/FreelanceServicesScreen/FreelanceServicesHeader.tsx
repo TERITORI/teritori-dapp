@@ -2,7 +2,6 @@ import React from "react";
 import { useWindowDimensions, View } from "react-native";
 
 import searchSVG from "../../../../assets/icons/search.svg";
-import { BuyerSellerToggle } from "../../../screens/FreelanceServices/components/BuyerSellerToggle";
 import { fontSemibold28 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
@@ -10,6 +9,7 @@ import FlexRow from "../../FlexRow";
 import { SVG } from "../../SVG";
 import { Separator } from "../../Separator";
 import { TextInputCustom } from "../../inputs/TextInputCustom";
+import { BuyerSellerToggle } from "../common/BuyerSellerToggle";
 
 export const FreelanceServicesHeader: React.FC = () => {
   const { width } = useWindowDimensions();

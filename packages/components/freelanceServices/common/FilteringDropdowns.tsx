@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 
+import { BudgetDropDownMenu } from "./DropDownMenu/BudgetDropDownMenu";
+import { DeliveryTimeDropDownMenu } from "./DropDownMenu/DeliveryTimeDropDownMenu";
+import { DropdownFilterWithCheckbox } from "./DropDownMenu/DropdownFilterWithCheckbox";
 import chevronUp from "../../../../assets/icons/chevron-up.svg";
 import chevronDown from "../../../../assets/icons/freelance-service/chevron-down.svg";
 import sort from "../../../../assets/icons/sort.svg";
@@ -10,9 +13,6 @@ import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
 import { TertiaryBox } from "../../boxes/TertiaryBox";
-import { BudgetDropDownMenu } from "../LogoDesign/DropDownMenu/BudgetDropDownMenu";
-import { DeliveryTimeDropDownMenu } from "../LogoDesign/DropDownMenu/DeliveryTimeDropDownMenu";
-import { DropdownFilterWithCheckbox } from "../LogoDesign/DropDownMenu/DropdownFilterWithCheckbox";
 
 export const FilteringDropdowns = () => {
   const options = [

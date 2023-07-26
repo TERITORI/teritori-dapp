@@ -1,12 +1,8 @@
 import React from "react";
 
-import {
-  EditType,
-  GigInfo,
-  PriceContentType,
-} from "../../../screens/FreelanceServices/types/fields";
 import { TableCheckBox } from "../../checkbox/TableCheckBox";
 import { TableSelect } from "../../select/TableSelect";
+import { EditType, GigInfo, PriceContentType } from "../types/fields";
 
 const unitWidth = 226;
 const unitHeight = 38;

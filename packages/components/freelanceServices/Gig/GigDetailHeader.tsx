@@ -6,7 +6,6 @@ import { SharePopup } from "./PopUp/SharePopup";
 import heartIcon from "../../../../assets/icons/heart.svg";
 import reportIcon from "../../../../assets/icons/report.svg";
 import shareIcon from "../../../../assets/icons/share-white.svg";
-import { GigData } from "../../../screens/FreelanceServices/types/fields";
 import {
   neutral44,
   secondaryColor,
@@ -18,6 +17,7 @@ import { fontMedium14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
+import { GigData } from "../types/fields";
 
 const tabs = [
   "Overview",

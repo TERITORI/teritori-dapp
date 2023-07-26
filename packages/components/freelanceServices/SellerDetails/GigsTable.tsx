@@ -5,9 +5,9 @@ import { GigItemCard } from "./GigItemCard";
 import { GigItemCardCreate } from "./GigItemCardCreate";
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { GigInfo } from "../../../screens/FreelanceServices/types/fields";
 import { mustGetFreelanceClient } from "../../../utils/backend";
 import { layout } from "../../../utils/style/layout";
+import { GigInfo } from "../types/fields";
 
 export const GigsTable: React.FC<{
   gigAddress: string;

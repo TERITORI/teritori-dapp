@@ -6,7 +6,6 @@ import chevronUp from "../../../../assets/icons/chevron-up.svg";
 import chevronDown from "../../../../assets/icons/freelance-service/chevron-down.svg";
 import clockIcon from "../../../../assets/icons/grey-clock.svg";
 import refreshIcon from "../../../../assets/icons/refresh-grey.svg";
-import { ServiceLevel } from "../../../screens/FreelanceServices/types/fields";
 import { useAppNavigation } from "../../../utils/navigation";
 import {
   neutral44,
@@ -26,6 +25,7 @@ import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
 import { TertiaryBox } from "../../boxes/TertiaryBox";
 import { SecondaryButton } from "../../buttons/SecondaryButton";
+import { ServiceLevel } from "../types/fields";
 
 export const ServicesCard: React.FC<{
   gigId: number;

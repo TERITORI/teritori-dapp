@@ -4,7 +4,6 @@ import { RadioButton } from "react-native-paper";
 
 import xIcon from "../../../../../assets/icons/Xicon.svg";
 import checkIcon from "../../../../../assets/icons/blue-check.svg";
-import { ServiceLevel } from "../../../../screens/FreelanceServices/types/fields";
 import {
   secondaryColor,
   neutral00,
@@ -15,6 +14,7 @@ import { fontMedium14, fontSemibold16 } from "../../../../utils/style/fonts";
 import { BrandText } from "../../../BrandText";
 import { SVG } from "../../../SVG";
 import { SecondaryButton } from "../../../buttons/SecondaryButton";
+import { ServiceLevel } from "../../types/fields";
 
 export const LogoDesignDetailsTab: React.FC<{
   serviceLevels: ServiceLevel[];

@@ -2,12 +2,13 @@ import daoSVG from "../../assets/icons/dao.svg";
 import dappStoreSVG from "../../assets/icons/dapp-store.svg";
 import feedSVG from "../../assets/icons/feed.svg";
 import rioterFooterSVG from "../../assets/icons/footer-rioters.svg";
+import freelanceSvg from "../../assets/icons/freelanceservice.svg";
 import governanceSVG from "../../assets/icons/governance.svg";
 import gridSVG from "../../assets/icons/grid.svg";
 import launchpadApplySVG from "../../assets/icons/launchpad-apply.svg";
 import launchpadLaunchpadSVG from "../../assets/icons/launchpad-launchpad.svg";
 import launchpadSVG from "../../assets/icons/launchpad.svg";
-import marketplaceSVG from "../../assets/icons/marketplace.svg";
+// import marketplaceSVG from "../../assets/icons/marketplace.svg";
 import messagesSVG from "../../assets/icons/messages.svg";
 import multisigSVG from "../../assets/icons/multisig.svg";
 import osmosisCircleSVG from "../../assets/icons/networks/osmosis-circle.svg";
@@ -37,7 +38,7 @@ export const SIDEBAR_LIST: SidebarRecordType = {
     title: "Freelance",
     id: "Freelance",
     route: "FreelanceServicesHomeBuyer",
-    icon: marketplaceSVG,
+    icon: freelanceSvg,
     // nested: {
     //   freelance: {
     //     title: "Freelance",

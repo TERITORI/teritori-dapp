@@ -4,10 +4,6 @@ import { View, StyleSheet, TextInput } from "react-native";
 import { listExtraDeliveryTime } from "./GigBasedata";
 import { GigCreationPricingTable } from "./GigCreationPricingTable";
 import {
-  ExtraFast,
-  GigInfo,
-} from "../../../screens/FreelanceServices/types/fields";
-import {
   neutral77,
   neutralA3,
   neutral33,
@@ -20,6 +16,7 @@ import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import { CheckBox } from "../../checkbox/CheckBox";
 import { GeneralSelect } from "../../select/GeneralSelect";
+import { ExtraFast, GigInfo } from "../types/fields";
 
 const pageContentWidth = 908;
 

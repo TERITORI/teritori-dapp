@@ -8,7 +8,6 @@ import {
   mustGetNonSigningCosmWasmClient,
   mustGetCosmosNetwork,
 } from "../../../networks";
-import { BuyerSellerToggle } from "../../../screens/FreelanceServices/components/BuyerSellerToggle";
 import { useAppNavigation } from "../../../utils/navigation";
 import { fontSemibold28 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
@@ -16,6 +15,7 @@ import { BrandText } from "../../BrandText";
 import FlexRow from "../../FlexRow";
 import { Separator } from "../../Separator";
 import { SecondaryButton } from "../../buttons/SecondaryButton";
+import { BuyerSellerToggle } from "../common/BuyerSellerToggle";
 
 export const FreelanceServicesSellerHeader: React.FC = () => {
   const navigation = useAppNavigation();

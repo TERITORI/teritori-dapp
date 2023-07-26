@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { View } from "react-native";
 
 import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
-import { LangInfo } from "../../../screens/FreelanceServices/types/fields";
 import {
   secondaryColor,
   neutral33,
@@ -11,6 +10,7 @@ import {
 import { TertiaryBox } from "../../boxes/TertiaryBox";
 import { TextComboBox } from "../../inputs/TextComboBox";
 import { TextInputCustom } from "../../inputs/TextInputCustom";
+import { LangInfo } from "../types/fields";
 
 export const AddNewLangCard: React.FC<{
   value?: LangInfo;

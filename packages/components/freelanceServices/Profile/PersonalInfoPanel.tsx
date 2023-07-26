@@ -12,7 +12,6 @@ import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { getUserId } from "../../../networks";
-import { SellerInfo } from "../../../screens/FreelanceServices/types/fields";
 import { ipfsURLToHTTPURL, uploadFileToIPFS } from "../../../utils/ipfs";
 import { IMAGE_MIME_TYPES } from "../../../utils/mime";
 import {
@@ -31,6 +30,7 @@ import { LocalFileData } from "../../../utils/types/files";
 import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
 import { FileUploader } from "../../fileUploader";
+import { SellerInfo } from "../types/fields";
 
 export const PersonalInfoPanel: React.FC<{
   seller: SellerInfo;

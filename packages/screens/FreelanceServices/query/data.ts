@@ -1,8 +1,6 @@
 import axios from "axios";
 
 import serviceBackground from "../../../../assets/banners/freelance-service/service-card-background.png";
-import { allCountries } from "../../../utils/allCountries";
-import { ipfsURLToHTTPURL } from "../../../utils/ipfs";
 import {
   CheckableType,
   ContentInfo,
@@ -13,7 +11,9 @@ import {
   GigData,
   ServiceLevel,
   SellerUser,
-} from "../types/fields";
+} from "../../../components/freelanceServices/types/fields";
+import { allCountries } from "../../../utils/allCountries";
+import { ipfsURLToHTTPURL } from "../../../utils/ipfs";
 
 // export function getServiceListing(): ServiceFields[] {
 //   return [
@@ -434,7 +434,7 @@ export const getGigData = async (
         } as FreelanceServicePriceType,
         daysToDelivery: gigInfo.basicPackage.deliveryTime,
         maximumRevisions: maxiumRevisions(gigInfo.basicPackage.contents),
-        included: gigInfo.basicPackage.contents.map((item) => item.title),
+        included: gigInfo.basicPackage.contents.map((item: any) => item.title),
         extras: [],
       } as ServiceLevel,
       {
@@ -446,7 +446,9 @@ export const getGigData = async (
         } as FreelanceServicePriceType,
         daysToDelivery: gigInfo.standardPackage.deliveryTime,
         maximumRevisions: maxiumRevisions(gigInfo.standardPackage.contents),
-        included: gigInfo.standardPackage.contents.map((item) => item.title),
+        included: gigInfo.standardPackage.contents.map(
+          (item: any) => item.title
+        ),
         extras: [],
       } as ServiceLevel,
       {

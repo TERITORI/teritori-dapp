@@ -1,7 +1,6 @@
 import React from "react";
 import { View, Image, useWindowDimensions } from "react-native";
 
-import { ReviewFields } from "../../../screens/FreelanceServices/types/fields";
 import {
   yellowDefault,
   neutral77,
@@ -18,6 +17,7 @@ import { TertiaryBox } from "../../boxes/TertiaryBox";
 import { SecondaryButton } from "../../buttons/SecondaryButton";
 import { FlagIcon } from "../common/FlagIcon";
 import { StarRating } from "../common/StarRating";
+import { ReviewFields } from "../types/fields";
 
 export const DisplayReviews: React.FC<{ reviews: ReviewFields["items"] }> = ({
   reviews,

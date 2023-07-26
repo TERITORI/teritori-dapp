@@ -10,13 +10,6 @@ import {
 
 import trashSVG from "../../../../assets/icons/trash.svg";
 import {
-  CertificationInfo,
-  LangInfo,
-  Occupation,
-  SellerInfo,
-  SkillInfo,
-} from "../../../screens/FreelanceServices/types/fields";
-import {
   neutral00,
   neutral33,
   neutral77,
@@ -37,6 +30,13 @@ import { TertiaryButton } from "../../buttons/TertiaryButton";
 import { CheckBox } from "../../checkbox/CheckBox";
 import { GeneralSelect } from "../../select/GeneralSelect";
 import { InputSelect } from "../../select/InputSelect";
+import {
+  CertificationInfo,
+  LangInfo,
+  Occupation,
+  SellerInfo,
+  SkillInfo,
+} from "../types/fields";
 
 export const ProfessionalInfoPanel: React.FC<{
   seller: SellerInfo;

@@ -3,7 +3,6 @@ import { View } from "react-native";
 import { RadioButton } from "react-native-paper";
 
 import { getGigData } from "./query/data";
-import { GigInfo, GigData } from "./types/fields";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { SecondaryButton } from "../../components/buttons/SecondaryButton";
@@ -11,6 +10,10 @@ import { FirstRightCard } from "../../components/freelanceServices/Order/FirstRi
 import { FirstStep } from "../../components/freelanceServices/Order/FirstStep";
 import { OrderDetailsHeader } from "../../components/freelanceServices/Order/OrderDetailsHeader";
 import { SecondRightCard } from "../../components/freelanceServices/Order/SecondRightCard";
+import {
+  GigInfo,
+  GigData,
+} from "../../components/freelanceServices/types/fields";
 import { FreelanceOrderModal } from "../../components/modals/freelanceOrder/FreelanceOrderModal";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { TeritoriOrderClient } from "../../contracts-clients/teritori-freelance/TeritoriOrder.client";

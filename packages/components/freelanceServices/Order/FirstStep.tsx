@@ -3,8 +3,6 @@ import React from "react";
 import { FlatList, Image, ImageBackground, View } from "react-native";
 
 import checkIcon from "../../../../assets/icons/blue-check.svg";
-import { TopRatedSeller } from "../../../screens/FreelanceServices/SellersDetails/components/TopRatedSeller";
-import { GigData } from "../../../screens/FreelanceServices/types/fields";
 import {
   neutral00,
   neutral33,
@@ -23,6 +21,8 @@ import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
 import { StarRating } from "../common/StarRating";
+import { TopRatedSeller } from "../common/TopRatedSeller";
+import { GigData } from "../types/fields";
 
 function SelectedExtra(props: { item: any }) {
   return (

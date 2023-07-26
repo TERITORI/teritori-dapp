@@ -1,7 +1,6 @@
 import React from "react";
 import { View } from "react-native";
 
-import { ServiceLevel } from "../../../screens/FreelanceServices/types/fields";
 import {
   neutral00,
   neutral77,
@@ -16,6 +15,7 @@ import { OrderStep } from "../../../utils/types/freelance";
 import { BrandText } from "../../BrandText";
 import { TertiaryBox } from "../../boxes/TertiaryBox";
 import { SecondaryButton } from "../../buttons/SecondaryButton";
+import { ServiceLevel } from "../types/fields";
 
 const SERVICE_FEE_IN_TORI = 100;
 

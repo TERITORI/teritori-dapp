@@ -4,10 +4,6 @@ import { View, StyleSheet, Pressable, TextInput } from "react-native";
 import { requirementFormData } from "./GigBasedata";
 import DeleteIcon from "../../../../assets/icons/delete.svg";
 import {
-  GigInfo,
-  Question,
-} from "../../../screens/FreelanceServices/types/fields";
-import {
   neutral77,
   neutralA3,
   primaryColor,
@@ -23,6 +19,7 @@ import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { TertiaryButton } from "../../buttons/TertiaryButton";
 import { CheckBox } from "../../checkbox/CheckBox";
 import { GeneralSelect } from "../../select/GeneralSelect";
+import { GigInfo, Question } from "../types/fields";
 
 const pageContentWidth = 908;
 

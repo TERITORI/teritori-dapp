@@ -8,7 +8,6 @@ import {
   subcategoryData,
 } from "./GigBasedata";
 import RemoveIcon from "../../../../assets/icons/remove.svg";
-import { GigInfo } from "../../../screens/FreelanceServices/types/fields";
 import {
   neutral00,
   neutral22,
@@ -25,6 +24,7 @@ import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
 import { CheckBox } from "../../checkbox/CheckBox";
 import { GeneralSelect } from "../../select/GeneralSelect";
+import { GigInfo } from "../types/fields";
 
 const pageContentWidth = 908;
 const rightBoxWidth = 612;

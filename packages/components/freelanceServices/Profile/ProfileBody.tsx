@@ -5,8 +5,8 @@ import { AccountSecurityPanel } from "./AccountSecurityPanel";
 import { LinkedAccountsPanel } from "./LinkedAccountsPanel";
 import { PersonalInfoPanel } from "./PersonalInfoPanel";
 import { ProfessionalInfoPanel } from "./ProfessionalInfoPanel";
-import { SellerInfo } from "../../../screens/FreelanceServices/types/fields";
 import { ProfileStep } from "../../../utils/types/freelance";
+import { SellerInfo } from "../types/fields";
 
 export const ProfileBody: React.FC<{
   step: ProfileStep;

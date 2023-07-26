@@ -10,7 +10,6 @@ import {
 } from "react-native";
 
 import dotsCircle from "../../../../assets/icons/dots-circle.svg";
-import { GigInfo } from "../../../screens/FreelanceServices/types/fields";
 import { ipfsURLToHTTPURL } from "../../../utils/ipfs";
 import { useAppNavigation } from "../../../utils/navigation";
 import { neutral33, neutralA3 } from "../../../utils/style/colors";
@@ -23,6 +22,7 @@ import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
 import { TertiaryBox } from "../../boxes/TertiaryBox";
+import { GigInfo } from "../types/fields";
 
 export const GigItemCard: React.FC<{
   width: number;

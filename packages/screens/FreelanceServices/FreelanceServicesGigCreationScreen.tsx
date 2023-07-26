@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { View } from "react-native";
 
-import { emptyGigInfo, GigInfo } from "./types/fields";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { GigCreationBody } from "../../components/freelanceServices/GigCreation/GigCreationBody";
 import { GigCreationFooter } from "../../components/freelanceServices/GigCreation/GigCreationFooter";
 import { GigCreationHeader } from "../../components/freelanceServices/GigCreation/GigCreationHeader";
+import {
+  GigInfo,
+  emptyGigInfo,
+} from "../../components/freelanceServices/types/fields";
 import {
   TeritoriSellerQueryClient,
   TeritoriSellerClient,

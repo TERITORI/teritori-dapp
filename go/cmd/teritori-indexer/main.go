@@ -55,9 +55,6 @@ func main() {
 		tailSize                       = fs.Int64("tail-size", 8640, "x blocks tail size means that the tendermint indexer can lag x blocks behind before the indexer misses an event")
 		pricesServiceURI               = fs.String("prices-service-uri", "localhost:9091", "price service URI")
 		insecurePrices                 = fs.Bool("prices-insecure-grpc", false, "do not use TLS to connect to prices service")
-		sellerConractAddress           = fs.String("teritori-freelance-seller-address", "", "address of the teritori freelance seller contract")
-		escrowContractAddress          = fs.String("teritori-freelance-escrow-address", "", "address of the teritori freelance escrow contract")
-		reportContractAddress          = fs.String("teritori-freelance-report-address", "", "address of the teritori freelance repoprt contract")
 		networksFile                   = fs.String("networks-file", "networks.json", "path to networks config file")
 		networkID                      = fs.String("indexer-network-id", "teritori", "network id to index")
 	)
@@ -74,15 +71,7 @@ func main() {
 	if *tnsContractAddress == "" {
 		panic(errors.New("missing teritori-name-service-contract-address flag"))
 	}
-	if *sellerConractAddress == "" {
-		panic(errors.New("missing teritori-seller-contract-address flag"))
-	}
-	if *escrowContractAddress == "" {
-		panic(errors.New("missing teritori-freelance-escrow-address flag"))
-	}
-	if *reportContractAddress == "" {
-		panic(errors.New("missing teritori-freelance-report-address flag"))
-	}
+
 	if *tendermintWebsocketEndpoint == "" {
 		panic(errors.New("missing tendermint-websocket-endpoint flag"))
 	}
@@ -271,15 +260,12 @@ func main() {
 					SquadStakingContractAddressV2:  *squadStakingContactAddressV2,
 					TheRiotBreedingContractAddress: *theRiotBreedingContractAddress,
 					TNSContractAddress:             *tnsContractAddress,
-					SellerContractAddress:          *sellerConractAddress,
-					EscrowContractAddress:          *escrowContractAddress,
-					ReportContractAddress:          *reportContractAddress,
 					TNSDefaultImageURL:             *tnsDefaultImageURL,
 					TendermintClient:               client,
 					BlockTimeCache:                 blockTimeCache,
 					PricesClient:                   ps,
-					Network:          				network,
-					NetworkStore:     				netstore,
+					Network:                        network,
+					NetworkStore:                   netstore,
 				}, logger)
 				if err != nil {
 					return errors.Wrap(err, "failed to create handler")

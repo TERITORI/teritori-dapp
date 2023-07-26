@@ -4,10 +4,6 @@ import { View, StyleSheet, TextInput, TextProps } from "react-native";
 import { deliveryTimeData } from "./GigBasedata";
 import { GigPriceContentData } from "./GigPriceContentData";
 import {
-  GigInfo,
-  PriceContentType,
-} from "../../../screens/FreelanceServices/types/fields";
-import {
   neutral77,
   neutral33,
   secondaryColor,
@@ -23,6 +19,7 @@ import {
 import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import { TableSelect } from "../../select/TableSelect";
+import { GigInfo, PriceContentType } from "../types/fields";
 
 const tableWidth = 909;
 const borderWidth = 1;

@@ -3,7 +3,6 @@ import { ImageBackground, View } from "react-native";
 
 import backgroundPic from "../../../../assets/banners/freelance-service/background-pic.png";
 import checkIcon from "../../../../assets/icons/blue-check.svg";
-import { ServiceLevel } from "../../../screens/FreelanceServices/types/fields";
 import {
   neutral00,
   neutral33,
@@ -21,6 +20,7 @@ import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
 import { TertiaryBox } from "../../boxes/TertiaryBox";
 import { SecondaryButton } from "../../buttons/SecondaryButton";
+import { ServiceLevel } from "../types/fields";
 
 const SERVICE_FEE_IN_TORI = 150;
 

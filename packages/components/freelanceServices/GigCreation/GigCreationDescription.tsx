@@ -3,7 +3,6 @@ import { View, StyleSheet, Pressable, TextInput } from "react-native";
 
 import DeleteIcon from "../../../../assets/icons/delete.svg";
 import DropIcon from "../../../../assets/icons/drop.svg";
-import { Faq, GigInfo } from "../../../screens/FreelanceServices/types/fields";
 import {
   neutral00,
   neutral33,
@@ -18,6 +17,7 @@ import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { TertiaryButton } from "../../buttons/TertiaryButton";
+import { Faq, GigInfo } from "../types/fields";
 
 const pageContentWidth = 908;
 

@@ -9,7 +9,6 @@ import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { getUserId } from "../../../networks";
-import { GigInfo } from "../../../screens/FreelanceServices/types/fields";
 import { ipfsURLToHTTPURL, uploadFileToIPFS } from "../../../utils/ipfs";
 import {
   neutralA3,
@@ -30,6 +29,7 @@ import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
 import { CheckBox } from "../../checkbox/CheckBox";
 import { DragDropFile, GigUploadFileType } from "../../inputs/DragDropFile";
+import { GigInfo } from "../types/fields";
 
 const pageContentWidth = 760;
 const cardWidth = 240;
