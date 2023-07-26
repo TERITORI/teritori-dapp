@@ -11,7 +11,7 @@ export const gnoTeritoriNetwork: GnoNetworkInfo = {
   stakeCurrency: "ugnot",
   idPrefix: "gnotori",
   chainId: "teritori-1",
-  endpoint: "https://4cb7-2001-bc8-47b0-1505-00-1.ngrok-free.app",
+  endpoint: "https://testnet.gno.teritori.com:26658",
   txExplorer: "https://etherscan.io/tx/$hash",
   accountExplorer: "https://etherscan.io/address/$address",
   contractExplorer: "https://etherscan.io/address/$address",
@@ -21,5 +21,5 @@ export const gnoTeritoriNetwork: GnoNetworkInfo = {
   nameServiceContractAddress: "gno.land/r/demo/users",
   nameServiceDefaultImage:
     "ipfs://bafkreignptjimiu7wuux6mk6uh4hb4odb6ff62ny4bvdokrhes7g67huse",
-  gnowebURL: "https://568e-2001-bc8-47b0-1505-00-1.ngrok-free.app",
+  gnowebURL: "https://testnet.gno.teritori.com",
 };
