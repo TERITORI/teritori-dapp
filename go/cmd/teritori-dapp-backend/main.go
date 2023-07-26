@@ -21,8 +21,6 @@ import (
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
 	"github.com/TERITORI/teritori-dapp/go/pkg/p2e"
 	"github.com/TERITORI/teritori-dapp/go/pkg/p2epb"
-	"github.com/TERITORI/teritori-dapp/go/pkg/freelance"
-	"github.com/TERITORI/teritori-dapp/go/pkg/freelancepb"
 	"github.com/improbable-eng/grpc-web/go/grpcweb"
 	"github.com/peterbourgon/ff/v3"
 	"github.com/pkg/errors"
