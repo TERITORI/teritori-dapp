@@ -1,4 +1,7 @@
+import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
+
 import { Status } from "../contracts-clients/dao-proposal-single/DaoProposalSingle.types";
+import { gnoTeritoriNetwork } from "../networks/gno-teritori";
 
 export interface AdenaDoContractMessage {
   type: string;
@@ -23,6 +26,8 @@ export const adenaDoContract = async (
   opts?: AdenaDoContractOpts
 ) => {
   const adena = (window as any).adena;
+  const client = new GnoJSONRPCProvider(gnoTeritoriNetwork.endpoint);
+  const height = await client.getBlockNumber();
   const req: RequestDocontractMessage = {
     messages,
     gasFee: opts?.gasFee === undefined ? 1000000 : opts.gasFee,
@@ -33,6 +38,24 @@ export const adenaDoContract = async (
   if (res.status === "failure") {
     throw new Error(res.message);
   }
+  const hash: string = res.data.hash;
+  const { height: txHeight, index } = await client.waitForTransaction(
+    hash,
+    height
+  );
+  const blockResult = await client.getBlockResult(txHeight);
+  const deliverResults = blockResult.results.deliver_tx || [];
+  if (deliverResults.length <= index) {
+    throw new Error("tx result not found in block");
+  }
+  const err = deliverResults[index].ResponseBase.Error;
+  if (err) {
+    if (typeof err.value === "string") {
+      throw new Error(err.value);
+    }
+    throw new Error(`${err}`);
+  }
+  return hash;
 };
 
 export interface VmCall {

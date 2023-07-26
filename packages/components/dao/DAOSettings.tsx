@@ -143,18 +143,21 @@ const DeletePost: React.FC<{ daoId: string }> = ({ daoId }) => {
           const msg = toRawURLBase64String(
             encodeDeletePost(boardIdNum, threadIdNum, postIdNum, reason)
           );
-          await adenaVMCall({
-            pkg_path: daoAddress,
-            func: "Propose",
-            caller: wallet.address,
-            send: "",
-            args: [
-              "0",
-              threadIdNum === postIdNum ? "Delete thread" : "Delete post",
-              "",
-              msg,
-            ],
-          });
+          await adenaVMCall(
+            {
+              pkg_path: daoAddress,
+              func: "Propose",
+              caller: wallet.address,
+              send: "",
+              args: [
+                "0",
+                threadIdNum === postIdNum ? "Delete thread" : "Delete post",
+                "",
+                msg,
+              ],
+            },
+            { gasWanted: 10000000 }
+          );
         })}
       />
     </View>
@@ -184,13 +187,16 @@ const CreateBoard: React.FC<{ daoId: string }> = ({ daoId }) => {
         loader
         onPress={wrapWithFeedback(async () => {
           const msg = toRawURLBase64String(encodeCreateBoard(name));
-          await adenaVMCall({
-            pkg_path: daoAddress,
-            func: "Propose",
-            caller: wallet.address,
-            send: "",
-            args: ["0", "Create moderated board", "", msg],
-          });
+          await adenaVMCall(
+            {
+              pkg_path: daoAddress,
+              func: "Propose",
+              caller: wallet.address,
+              send: "",
+              args: ["0", "Create moderated board", "", msg],
+            },
+            { gasWanted: 10000000 }
+          );
         })}
       />
     </View>

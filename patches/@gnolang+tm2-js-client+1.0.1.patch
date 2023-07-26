@@ -1,0 +1,112 @@
+diff --git a/node_modules/@gnolang/tm2-js-client/bin/provider/endpoints.js b/node_modules/@gnolang/tm2-js-client/bin/provider/endpoints.js
+index e7ce4d7..0a35279 100644
+--- a/node_modules/@gnolang/tm2-js-client/bin/provider/endpoints.js
++++ b/node_modules/@gnolang/tm2-js-client/bin/provider/endpoints.js
+@@ -5,7 +5,7 @@ var CommonEndpoint;
+ (function (CommonEndpoint) {
+     CommonEndpoint["HEALTH"] = "health";
+     CommonEndpoint["STATUS"] = "status";
+-})(CommonEndpoint || (exports.CommonEndpoint = CommonEndpoint = {}));
++})(CommonEndpoint = exports.CommonEndpoint || (exports.CommonEndpoint = {}));
+ var ConsensusEndpoint;
+ (function (ConsensusEndpoint) {
+     ConsensusEndpoint["NET_INFO"] = "net_info";
+@@ -14,13 +14,13 @@ var ConsensusEndpoint;
+     ConsensusEndpoint["CONSENSUS_STATE"] = "consensus_state";
+     ConsensusEndpoint["COMMIT"] = "commit";
+     ConsensusEndpoint["VALIDATORS"] = "validators";
+-})(ConsensusEndpoint || (exports.ConsensusEndpoint = ConsensusEndpoint = {}));
++})(ConsensusEndpoint = exports.ConsensusEndpoint || (exports.ConsensusEndpoint = {}));
+ var BlockEndpoint;
+ (function (BlockEndpoint) {
+     BlockEndpoint["BLOCK"] = "block";
+     BlockEndpoint["BLOCK_RESULTS"] = "block_results";
+     BlockEndpoint["BLOCKCHAIN"] = "blockchain";
+-})(BlockEndpoint || (exports.BlockEndpoint = BlockEndpoint = {}));
++})(BlockEndpoint = exports.BlockEndpoint || (exports.BlockEndpoint = {}));
+ var TransactionEndpoint;
+ (function (TransactionEndpoint) {
+     TransactionEndpoint["NUM_UNCONFIRMED_TXS"] = "num_unconfirmed_txs";
+@@ -28,9 +28,9 @@ var TransactionEndpoint;
+     TransactionEndpoint["BROADCAST_TX_ASYNC"] = "broadcast_tx_async";
+     TransactionEndpoint["BROADCAST_TX_SYNC"] = "broadcast_tx_sync";
+     TransactionEndpoint["BROADCAST_TX_COMMIT"] = "broadcast_tx_commit";
+-})(TransactionEndpoint || (exports.TransactionEndpoint = TransactionEndpoint = {}));
++})(TransactionEndpoint = exports.TransactionEndpoint || (exports.TransactionEndpoint = {}));
+ var ABCIEndpoint;
+ (function (ABCIEndpoint) {
+     ABCIEndpoint["ABCI_INFO"] = "abci_info";
+     ABCIEndpoint["ABCI_QUERY"] = "abci_query";
+-})(ABCIEndpoint || (exports.ABCIEndpoint = ABCIEndpoint = {}));
++})(ABCIEndpoint = exports.ABCIEndpoint || (exports.ABCIEndpoint = {}));
+diff --git a/node_modules/@gnolang/tm2-js-client/bin/provider/jsonrpc/jsonrpc.d.ts b/node_modules/@gnolang/tm2-js-client/bin/provider/jsonrpc/jsonrpc.d.ts
+index 4342731..6a9b352 100644
+--- a/node_modules/@gnolang/tm2-js-client/bin/provider/jsonrpc/jsonrpc.d.ts
++++ b/node_modules/@gnolang/tm2-js-client/bin/provider/jsonrpc/jsonrpc.d.ts
+@@ -23,5 +23,5 @@ export declare class JSONRPCProvider implements Provider {
+     getAccountNumber(address: string, height?: number): Promise<number>;
+     getStatus(): Promise<Status>;
+     sendTransaction(tx: string): Promise<string>;
+-    waitForTransaction(hash: string, fromHeight?: number, timeout?: number): Promise<Tx>;
++    waitForTransaction(hash: string, fromHeight?: number, timeout?: number): Promise<{tx: Tx; height: number; index: number}>;
+ }
+diff --git a/node_modules/@gnolang/tm2-js-client/bin/provider/provider.d.ts b/node_modules/@gnolang/tm2-js-client/bin/provider/provider.d.ts
+index a5b37aa..0a5949b 100644
+--- a/node_modules/@gnolang/tm2-js-client/bin/provider/provider.d.ts
++++ b/node_modules/@gnolang/tm2-js-client/bin/provider/provider.d.ts
+@@ -82,5 +82,5 @@ export interface Provider {
+      * @param {number} [fromHeight=latest] The block height used to begin the search
+      * @param {number} [timeout=15000] Optional wait timeout in MS
+      */
+-    waitForTransaction(hash: string, fromHeight?: number, timeout?: number): Promise<Tx>;
++    waitForTransaction(hash: string, fromHeight?: number, timeout?: number): Promise<{tx: Tx; height: number; index: number}>;
+ }
+diff --git a/node_modules/@gnolang/tm2-js-client/bin/provider/types/abci.d.ts b/node_modules/@gnolang/tm2-js-client/bin/provider/types/abci.d.ts
+index 711bcda..0eaa40e 100644
+--- a/node_modules/@gnolang/tm2-js-client/bin/provider/types/abci.d.ts
++++ b/node_modules/@gnolang/tm2-js-client/bin/provider/types/abci.d.ts
+@@ -28,7 +28,7 @@ export interface ABCIAccount {
+         address: string;
+         coins: string;
+         public_key: {
+-            '@type': string;
++            type: string;
+             value: string;
+         } | null;
+         account_number: string;
+diff --git a/node_modules/@gnolang/tm2-js-client/bin/provider/utility/provider.utility.d.ts b/node_modules/@gnolang/tm2-js-client/bin/provider/utility/provider.utility.d.ts
+index d476e4e..95e9801 100644
+--- a/node_modules/@gnolang/tm2-js-client/bin/provider/utility/provider.utility.d.ts
++++ b/node_modules/@gnolang/tm2-js-client/bin/provider/utility/provider.utility.d.ts
+@@ -25,4 +25,4 @@ export declare const extractAccountNumberFromResponse: (abciData: string | null)
+  * @param {number} [fromHeight=latest] the starting height for the search. If omitted, it is the latest block in the chain
+  * @param {number} [timeout=15000] the timeout in MS for the search
+  */
+-export declare const waitForTransaction: (provider: Provider, hash: string, fromHeight?: number, timeout?: number) => Promise<Tx>;
++export declare const waitForTransaction: (provider: Provider, hash: string, fromHeight?: number, timeout?: number) => Promise<{tx: Tx; height: number; index: number}>;
+diff --git a/node_modules/@gnolang/tm2-js-client/bin/provider/utility/provider.utility.js b/node_modules/@gnolang/tm2-js-client/bin/provider/utility/provider.utility.js
+index 82a13a7..62f81c7 100644
+--- a/node_modules/@gnolang/tm2-js-client/bin/provider/utility/provider.utility.js
++++ b/node_modules/@gnolang/tm2-js-client/bin/provider/utility/provider.utility.js
+@@ -167,7 +167,7 @@ var waitForTransaction = function (provider, hash, fromHeight, timeout) { return
+                                                     // Clear the interval
+                                                     clearInterval(fetchInterval);
+                                                     // Decode the transaction from amino
+-                                                    resolve(proto_1.Tx.decode(txRaw));
++                                                    resolve({tx: proto_1.Tx.decode(txRaw), index: _i, height: block.block.header.height});
+                                                 }
+                                             }
+                                             _b.label = 4;
+diff --git a/node_modules/@gnolang/tm2-js-client/bin/provider/websocket/ws.js b/node_modules/@gnolang/tm2-js-client/bin/provider/websocket/ws.js
+index 29cefad..11a7163 100644
+--- a/node_modules/@gnolang/tm2-js-client/bin/provider/websocket/ws.js
++++ b/node_modules/@gnolang/tm2-js-client/bin/provider/websocket/ws.js
+@@ -150,7 +150,7 @@ var WSProvider = /** @class */ (function () {
+             return __generator(this, function (_a) {
+                 switch (_a.label) {
+                     case 0: return [4 /*yield*/, this.sendRequest((0, utility_1.newRequest)(endpoints_1.ABCIEndpoint.ABCI_QUERY, [
+-                            "bank/balances/".concat(address),
++                            "auth/accounts/".concat(address),
+                             '',
+                             '0',
+                             false,
