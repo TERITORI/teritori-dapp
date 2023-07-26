@@ -1,50 +1,71 @@
 import { MultisigThresholdPubkey } from "@cosmjs/amino";
-import { fromBase64 } from "@cosmjs/encoding";
-import { makeMultisignedTx, StargateClient } from "@cosmjs/stargate";
-import { useMutation } from "@tanstack/react-query";
+import { makeMultisignedTx } from "@cosmjs/stargate";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { TxRaw } from "cosmjs-types/cosmos/tx/v1beta1/tx";
+import { useSelector } from "react-redux";
 
-import { MultisigTransactionListType } from "./useFetchMultisigTransactionsById";
+import { useMultisigClient } from "./useMultisigClient";
+import {
+  ParsedTransaction,
+  multisigTransactionsQueryKey,
+} from "./useMultisigTransactions";
+import { Signature } from "../../api/multisig/v1/multisig";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { useMultisigContext } from "../../context/MultisigReducer";
-import { completeTransaction } from "../../utils/faunaDB/multisig/multisigGraphql";
-import { DbSignature } from "../../utils/faunaDB/multisig/types";
+import {
+  getCosmosNetworkByChainId,
+  getNonSigningStargateClient,
+} from "../../networks";
+import { selectMultisigToken } from "../../store/slices/settings";
+import { RootState } from "../../store/store";
+import useSelectedWallet from "../useSelectedWallet";
 
 export const useBroadcastTransaction = () => {
-  const { state } = useMultisigContext();
   const { setToastError, setToastSuccess } = useFeedbacks();
+  const { selectedWallet } = useSelectedWallet();
+  const authToken = useSelector((state: RootState) =>
+    selectMultisigToken(state, selectedWallet?.address)
+  );
+  const multisigClient = useMultisigClient();
+  const queryClient = useQueryClient();
 
   // req
   return useMutation(
     async ({
       tx,
       currentSignatures,
-      transactionID,
+      transactionId,
       pubkey,
     }: {
-      tx: Pick<MultisigTransactionListType, "sequence" | "fee">;
-      currentSignatures: DbSignature[];
-      transactionID: string;
+      tx: Pick<
+        ParsedTransaction,
+        "fee" | "sequence" | "chainId" | "multisigAddress"
+      >;
+      currentSignatures: Signature[];
+      transactionId: number;
       pubkey?: MultisigThresholdPubkey;
     }) => {
       try {
-        if (!state.chain?.nodeAddress || !pubkey || !state.chain?.nodeAddress) {
-          return;
+        if (!pubkey) {
+          throw new Error("Pubkey not found");
         }
 
-        const bodyBytes = fromBase64(currentSignatures[0].bodyBytes);
         const signedTx = makeMultisignedTx(
           pubkey,
           tx.sequence,
           tx.fee,
-          bodyBytes,
+          currentSignatures[0].bodyBytes,
           new Map(
-            currentSignatures.map((s) => [s.address, fromBase64(s.signature)])
+            currentSignatures.map((s) => [
+              s.userAddress,
+              Buffer.from(s.value, "base64"),
+            ])
           )
         );
-        const broadcaster = await StargateClient.connect(
-          state.chain.nodeAddress
-        );
+        const network = getCosmosNetworkByChainId(tx.chainId);
+        if (!network) {
+          throw new Error("Network not found");
+        }
+        const broadcaster = await getNonSigningStargateClient(network?.id);
         const result = await broadcaster.broadcastTx(
           Uint8Array.from(TxRaw.encode(signedTx).finish())
         );
@@ -57,11 +78,12 @@ export const useBroadcastTransaction = () => {
           });
         }
 
-        await completeTransaction(
-          transactionID,
-          result.transactionHash,
-          tx.sequence + 1
-        );
+        // FIXME: store result in db
+        await multisigClient.CompleteTransaction({
+          authToken,
+          transactionId,
+          finalHash: result.transactionHash,
+        });
 
         setToastSuccess({
           title: "Broadcast successfully!",
@@ -70,12 +92,16 @@ export const useBroadcastTransaction = () => {
           duration: 10000,
         });
 
+        queryClient.invalidateQueries(
+          multisigTransactionsQueryKey(tx.chainId, tx.multisigAddress)
+        );
+        queryClient.invalidateQueries(
+          multisigTransactionsQueryKey(tx.chainId, undefined)
+        );
+
         return result.transactionHash;
-
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } catch (e: any) {
+      } catch (e: unknown) {
         console.error("err", e);
-
         if (e instanceof Error) {
           setToastError({ title: "Something went wrong!", message: e.message });
         }

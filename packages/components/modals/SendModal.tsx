@@ -1,5 +1,5 @@
 import { Decimal } from "@cosmjs/math";
-import { isDeliverTxFailure } from "@cosmjs/stargate";
+import { MsgSendEncodeObject } from "@cosmjs/stargate";
 import React, { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import { StyleSheet, TouchableOpacity } from "react-native";
@@ -7,16 +7,16 @@ import { StyleSheet, TouchableOpacity } from "react-native";
 import ModalBase from "./ModalBase";
 import contactsSVG from "../../../assets/icons/contacts.svg";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { useDAOMakeProposal } from "../../hooks/dao/useDAOMakeProposal";
-import { useDAOs } from "../../hooks/dao/useDAOs";
 import { useBalances } from "../../hooks/useBalances";
+import { useRunOrProposeTransaction } from "../../hooks/useRunOrProposeTransaction";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
-  getKeplrSigningStargateClient,
   getNetwork,
   keplrCurrencyFromNativeCurrencyInfo,
   NativeCurrencyInfo,
+  NetworkKind,
   parseUserId,
+  UserKind,
 } from "../../networks";
 import { TransactionForm } from "../../screens/WalletManager/types";
 import { prettyPrice } from "../../utils/coins";
@@ -43,8 +43,9 @@ import { SpacerColumn, SpacerRow } from "../spacer";
 type SendModalProps = {
   isVisible: boolean;
   nativeCurrency?: NativeCurrencyInfo;
-  networkId: string;
   onClose: () => void;
+  userId?: string;
+  userKind: UserKind;
 };
 
 //TODO: Make a reusable component for that, or use an existing one (Which one ? Which other usage for ContactButton ?)
@@ -61,23 +62,21 @@ export const SendModal: React.FC<SendModalProps> = ({
   isVisible,
   onClose,
   nativeCurrency,
-  networkId,
+  userId,
+  userKind,
 }) => {
   const { setToastError, setToastSuccess } = useFeedbacks();
   const { selectedWallet } = useSelectedWallet();
   const { control, setValue, handleSubmit, watch } = useForm<TransactionForm>();
   const [selectedDAOId, setSelectedDAOId] = useState("");
-  const makeProposal = useDAOMakeProposal(selectedDAOId);
-  const [, daoAddress] = parseUserId(selectedDAOId);
-  const { daos } = useDAOs({
-    networkId,
-    memberAddress: selectedWallet?.address,
-  });
-
-  const balances = useBalances(
-    networkId,
-    daoAddress || selectedWallet?.address
+  const selectedUserKind = selectedDAOId ? UserKind.Organization : userKind;
+  const runOrProposeTransaction = useRunOrProposeTransaction(
+    userId,
+    selectedUserKind
   );
+  const [userNetwork, userAddress] = parseUserId(selectedDAOId || userId);
+  const networkId = userNetwork?.id;
+  const balances = useBalances(userNetwork?.id, userAddress);
 
   const ModalHeader = useCallback(
     () => (
@@ -117,36 +116,7 @@ export const SendModal: React.FC<SendModalProps> = ({
         nativeCurrency.decimals
       ).atomics;
 
-      if (selectedDAOId) {
-        // DAO send
-        const selectedDAO = daos?.find((dao) => dao.id === selectedDAOId);
-        if (!selectedDAO) {
-          throw new Error("no selected DAO");
-        }
-        await makeProposal(sender, {
-          title: `Send ${prettyPrice(
-            networkId,
-            amount,
-            nativeCurrency.denom
-          )} to ${receiver}`,
-          description: "",
-          msgs: [
-            {
-              bank: {
-                send: {
-                  from_address: selectedDAOId,
-                  to_address: receiver,
-                  amount: [{ amount, denom: nativeCurrency.denom }],
-                },
-              },
-            },
-          ],
-        });
-        setToastSuccess({
-          title: "Proposal created",
-          message: "",
-        });
-      } else if (networkId === "gno-testnet") {
+      if (userNetwork?.kind === NetworkKind.Gno) {
         const adena = (window as any).adena;
         const res = await adena.DoContract({
           messages: [
@@ -166,20 +136,27 @@ export const SendModal: React.FC<SendModalProps> = ({
           throw new Error(res.message);
         }
       } else {
-        const client = await getKeplrSigningStargateClient(networkId);
-
-        const tx = await client.sendTokens(
-          sender,
-          receiver,
-          [{ amount, denom: nativeCurrency.denom }],
-          "auto"
-        );
-        if (isDeliverTxFailure(tx)) {
-          throw new Error("Transaction failed");
-        }
+        const cosmosMsg: MsgSendEncodeObject = {
+          typeUrl: "/cosmos.bank.v1beta1.MsgSend",
+          value: {
+            fromAddress: userAddress,
+            toAddress: receiver,
+            amount: [{ amount, denom: nativeCurrency.denom }],
+          },
+        };
+        await runOrProposeTransaction({
+          msgs: [cosmosMsg],
+          title: `Send ${prettyPrice(
+            networkId,
+            amount,
+            nativeCurrency.denom
+          )} to ${receiver}`,
+        });
       }
       setToastSuccess({
-        title: `Sent ${prettyPrice(
+        title: `${
+          selectedUserKind === UserKind.Single ? "Sent" : "Proposed to send"
+        } ${prettyPrice(
           networkId,
           amount,
           nativeCurrency.denom
@@ -234,12 +211,16 @@ export const SendModal: React.FC<SendModalProps> = ({
 
       <SpacerColumn size={2.5} />
 
-      <DAOSelector
-        value={selectedDAOId}
-        onSelect={setSelectedDAOId}
-        userId={selectedWallet?.userId}
-        style={{ marginBottom: layout.padding_x2_5 }}
-      />
+      {!userId && (
+        <>
+          <DAOSelector
+            value={selectedDAOId}
+            onSelect={setSelectedDAOId}
+            userId={selectedWallet?.userId}
+          />
+          <SpacerColumn size={2.5} />
+        </>
+      )}
 
       <TextInputCustom<TransactionForm>
         height={48}
@@ -267,7 +248,7 @@ export const SendModal: React.FC<SendModalProps> = ({
 
       <PrimaryButton
         size="XL"
-        text={selectedDAOId ? "Propose" : "Send"}
+        text={selectedUserKind === UserKind.Single ? "Send" : "Propose"}
         fullWidth
         disabled={max === "0"}
         loader

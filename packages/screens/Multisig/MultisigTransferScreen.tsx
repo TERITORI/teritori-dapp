@@ -3,14 +3,11 @@ import React, { useState } from "react";
 import { CheckLoadingModal } from "./components/CheckLoadingModal";
 import { MultisigTransactionForm } from "./components/MultisigTransactionForm";
 import { SignTransactionModal } from "./components/SignTransactionModal";
-import {
-  MultisigTransactionDelegateFormType,
-  MultisigTransactionType,
-} from "./types";
+import { MultisigTransactionDelegateFormType } from "./types";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import {
-  useCreateMultisigTransaction,
+  useMultisigProposeSend,
   useGetMultisigAccount,
 } from "../../hooks/multisig";
 import { NetworkKind, parseUserId } from "../../networks";
@@ -26,7 +23,7 @@ export const MultisigTransferScreen: ScreenFC<"MultisigTransfer"> = ({
     isLoading: createLoading,
     mutate,
     data: transactionId,
-  } = useCreateMultisigTransaction();
+  } = useMultisigProposeSend();
   const { address: multisigId, walletName } = route.params;
   const [, address] = parseUserId(multisigId);
   const { data } = useGetMultisigAccount(multisigId);
@@ -55,9 +52,8 @@ export const MultisigTransferScreen: ScreenFC<"MultisigTransfer"> = ({
       formData: {
         ...formData,
         multisigId,
-        type: MultisigTransactionType.TRANSFER,
       },
-      accountOnChain: data?.accountData[1],
+      accountOnChain: data?.accountData[0],
     });
   };
 
@@ -89,8 +85,7 @@ export const MultisigTransferScreen: ScreenFC<"MultisigTransfer"> = ({
         navigation.canGoBack()
           ? navigation.goBack()
           : navigation.navigate("MultisigWalletDashboard", {
-              walletName,
-              address,
+              id: address,
             })
       }
       footerChildren={<></>}

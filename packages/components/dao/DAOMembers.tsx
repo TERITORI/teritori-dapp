@@ -235,7 +235,7 @@ const AddMembersModal: React.FC<{
   );
 };
 
-const UserCard: React.FC<{
+export const UserCard: React.FC<{
   userId: string;
   style: StyleProp<ViewStyle>;
   daoId?: string;
@@ -278,7 +278,11 @@ const UserCard: React.FC<{
           }}
         />
         <BrandText
-          style={[fontSemibold12, { lineHeight: 14, marginBottom: 8 }]}
+          style={[
+            fontSemibold12,
+            { lineHeight: 14, marginBottom: 8, width: width - 2 * padding }, // FIXME: we have to set a fixed width because TertiaryBox is broken
+          ]}
+          numberOfLines={1}
         >
           {metadata.public_name || userAddress}
         </BrandText>

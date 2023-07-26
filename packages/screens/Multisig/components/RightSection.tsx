@@ -4,13 +4,15 @@ import { StyleSheet, View } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
+import { SendModal } from "../../../components/modals/SendModal";
 import { TNSNameFinderModal } from "../../../components/modals/teritoriNameService/TNSNameFinderModal";
 import { SpacerColumn } from "../../../components/spacer";
+import { UserKind, getStakingCurrency, parseUserId } from "../../../networks";
 import { AppRouteType, useAppNavigation } from "../../../utils/navigation";
 import { neutral33, neutral55 } from "../../../utils/style/colors";
 import { fontSemibold12 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { TNSMintNameMultisignScreen } from "../../TeritoriNameService/TNSMintNameMultisignScreen";
+import { TNSMintNameModal } from "../../TeritoriNameService/TNSMintNameScreen";
 import { TNSRegisterScreen } from "../../TeritoriNameService/TNSRegisterScreen";
 
 export const RightSection = () => {
@@ -18,9 +20,11 @@ export const RightSection = () => {
   const [visibleRegisterForm, setVisibleRegisterForm] =
     useState<boolean>(false);
   const [visibleMintForm, setVisibleMintForm] = useState<boolean>(false);
+  const [showSendModal, setShowSendModal] = useState(false);
   const {
-    params: { address, walletName },
+    params: { id },
   } = useRoute<AppRouteType<"MultisigWalletDashboard">>();
+  const [network] = parseUserId(id);
 
   const [modalNameFinderVisible, setModalNameFinderVisible] = useState(false);
 
@@ -51,19 +55,24 @@ export const RightSection = () => {
         size="M"
         text="Send"
         fullWidth
-        onPress={() =>
-          navigation.navigate("MultisigTransfer", { address, walletName })
-        }
+        onPress={() => setShowSendModal(true)}
       />
+      {!!network && (
+        <SendModal
+          isVisible={showSendModal}
+          userId={id}
+          userKind={UserKind.Multisig}
+          onClose={() => setShowSendModal(false)}
+          nativeCurrency={getStakingCurrency(network.id)}
+        />
+      )}
 
       <SpacerColumn size={2.5} />
       <PrimaryButton
         size="M"
         text="Delegate"
         fullWidth
-        onPress={() =>
-          navigation.navigate("MultisigDelegate", { address, walletName })
-        }
+        onPress={() => navigation.navigate("Staking", { multisigId: id })}
       />
 
       <SpacerColumn size={2.5} />
@@ -90,9 +99,12 @@ export const RightSection = () => {
         <TNSRegisterScreen onClose={handleRegisterTnsModalClose} />
       )}
       {visibleMintForm && (
-        <TNSMintNameMultisignScreen
+        <TNSMintNameModal
+          initialData={{}}
+          userId={id}
+          userKind={UserKind.Multisig}
           onClose={handleMintTnsModalClose}
-          address={address}
+          navigateBackTo="TNSManage" // FIXME: this is weird
         />
       )}
     </View>

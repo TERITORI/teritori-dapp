@@ -7,8 +7,7 @@ import ModalBase from "../../../components/modals/ModalBase";
 import { SpacerColumn } from "../../../components/spacer";
 import { Coin } from "../../../contracts-clients/dao-pre-propose-single/DaoPreProposeSingle.types";
 import { useNSPrimaryAlias } from "../../../hooks/useNSPrimaryAlias";
-import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
-import { getUserId } from "../../../networks";
+import { getCosmosNetworkByChainId, getUserId } from "../../../networks";
 import {
   neutral33,
   neutral77,
@@ -23,20 +22,22 @@ export const ProposalTransactionModal: FC<{
   onClose: () => void;
   transaction: ProposalTransactionItemProps;
 }> = ({ visible, onClose, transaction }) => {
-  const selectedNetworkId = useSelectedNetworkId();
+  const network = getCosmosNetworkByChainId(transaction.chainId);
   const { primaryAlias } = useNSPrimaryAlias(
-    getUserId(selectedNetworkId, transaction.createdBy)
+    getUserId(network?.id, transaction.creatorAddress)
   );
   return (
     <ModalBase
       onClose={onClose}
-      label={`Transaction #${transaction._id}`}
+      label="Transaction #TODO"
       visible={visible}
       width={800}
     >
       <View style={styles.container}>
         <View style={styles.body}>
-          <BrandText style={fontSemibold14}>{transaction.type}</BrandText>
+          <BrandText style={fontSemibold14}>
+            {/*transaction.type*/ "TODO"}
+          </BrandText>
           <SpacerColumn size={2.5} />
 
           <View style={styles.row}>
@@ -44,7 +45,7 @@ export const ProposalTransactionModal: FC<{
             <BrandText style={styles.textGray}>
               {primaryAlias
                 ? `@${primaryAlias}`
-                : tinyAddress(transaction.createdBy, 24)}
+                : tinyAddress(transaction.creatorAddress, 24)}
             </BrandText>
           </View>
 
@@ -86,7 +87,7 @@ export const ProposalTransactionModal: FC<{
                 </>
               )}
 
-              {msg.value.msg && (
+              {/*msg.value.msg && (
                 <>
                   <BrandText style={fontSemibold14}>Message:</BrandText>
                   <SpacerColumn size={1} />
@@ -98,7 +99,7 @@ export const ProposalTransactionModal: FC<{
                   </View>
                   <SpacerColumn size={2.5} />
                 </>
-              )}
+              )*/}
             </Fragment>
           ))}
         </View>

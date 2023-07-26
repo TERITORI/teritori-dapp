@@ -1,6 +1,8 @@
-import React, { useEffect, useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { StyleProp, StyleSheet, View, ViewStyle } from "react-native";
+import { useSelector } from "react-redux";
 
 import { MultisigFormInput } from "./components/MultisigFormInput";
 import { MultisigSection } from "./components/MultisigSection";
@@ -9,60 +11,37 @@ import { Transactions } from "./components/Transactions";
 import { MultisigLegacyFormType } from "./types";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
+import { UserCard } from "../../components/dao/DAOMembers";
 import { SpacerColumn } from "../../components/spacer";
-import {
-  useGetMultisigAccount,
-  useMultisigHelpers,
-} from "../../hooks/multisig";
+import { useMultisigClient } from "../../hooks/multisig/useMultisigClient";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { NetworkKind, parseUserId } from "../../networks";
-import { patternOnlyNumbers, validateAddress } from "../../utils/formRules";
+import {
+  NetworkKind,
+  getCosmosNetwork,
+  getUserId,
+  parseUserId,
+} from "../../networks";
+import { selectMultisigToken } from "../../store/slices/settings";
+import { RootState } from "../../store/store";
+import { validateAddress } from "../../utils/formRules";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { neutral33 } from "../../utils/style/colors";
 import { fontSemibold20, fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
+import { Assets } from "../WalletManager/Assets";
 
 export const MultisigWalletDashboardScreen: ScreenFC<
   "MultisigWalletDashboard"
 > = ({ route }) => {
   const navigation = useAppNavigation();
-  const { selectedWallet } = useSelectedWallet();
   const { control } = useForm<MultisigLegacyFormType>();
-  const { address, walletName } = route.params;
-  const [, multisigAddress] = parseUserId(address);
-  const { isLoading, data } = useGetMultisigAccount(address);
-  const { coinSimplified, participantAddressesFromMultisig } =
-    useMultisigHelpers();
-
-  //TODO: Display loader until isLoading === false
-
-  // Leave screen if no wallet found from URL address, no name or if the user havn't this wallet
-  useEffect(() => {
-    if (
-      !isLoading &&
-      (!walletName ||
-        !data ||
-        !data?.dbData.userAddresses.find(
-          (address) => address === selectedWallet?.address
-        ))
-    ) {
-      navigation.navigate("Multisig");
-    }
-  }, [isLoading, data, selectedWallet?.address, navigation, walletName]);
-
-  const holidings = useMemo(() => {
-    if (data?.holdings) {
-      return coinSimplified(data.holdings);
-    }
-    return null;
-  }, [coinSimplified, data?.holdings]);
-
-  const membersAddress = useMemo(() => {
-    if (data?.accountData) {
-      return participantAddressesFromMultisig(data.accountData[0]);
-    }
-    return null;
-  }, [data?.accountData, participantAddressesFromMultisig]);
+  const { id } = route.params;
+  const [network, multisigAddress] = parseUserId(id);
+  const cosmosNetwork = getCosmosNetwork(network?.id);
+  const userAddress = useSelectedWallet()?.selectedWallet?.address;
+  const { multisig, isLoading } = useMultisigInfo(id);
+  const walletName = multisig?.name;
+  const membersAddress = multisig?.usersAddresses;
 
   // returns
   return (
@@ -75,12 +54,15 @@ export const MultisigWalletDashboardScreen: ScreenFC<
       noMargin
       fullWidth
       isHeaderSmallMargin
-      forceNetworkKind={NetworkKind.Cosmos}
+      forceNetworkId={network?.id}
     >
-      <View style={styles.row}>
-        <ScrollView
-          contentContainerStyle={styles.container}
-          showsVerticalScrollIndicator={false}
+      <View style={styles.row} key={id}>
+        <View
+          style={{
+            flex: 1,
+            padding: layout.contentPadding,
+            paddingTop: layout.topContentPaddingWithHeading,
+          }}
         >
           <BrandText style={fontSemibold28}>General information</BrandText>
           <SpacerColumn size={2.5} />
@@ -100,55 +82,36 @@ export const MultisigWalletDashboardScreen: ScreenFC<
 
           <MultisigSection
             isCollapsable
-            title="Members Addresses"
+            title="Members"
             tresholdCurrentCount={
-              data
-                ? parseInt(data.accountData[0].value.threshold, 10)
-                : undefined
+              multisig ? multisig?.threshold || 0 : undefined
             }
             tresholdMax={membersAddress ? membersAddress.length : undefined}
             isLoading={isLoading}
           >
-            {membersAddress &&
-              membersAddress.map((address, index) => (
-                <View key={address}>
-                  <MultisigFormInput<MultisigLegacyFormType>
-                    control={control}
-                    label={"Address #" + (index + 1)}
-                    name={`membersAddress.${index}.address`}
-                    rules={{ required: true, validate: validateAddress }}
-                    isCopiable
-                    isDisabled
-                    isOverrideDisabledBorder
-                    isLoading={isLoading}
-                    defaultValue={address}
-                  />
-                  {index !== membersAddress.length - 1 && (
-                    <SpacerColumn size={2.5} />
-                  )}
-                </View>
-              ))}
+            <MultisigMembers multisigId={id} />
           </MultisigSection>
 
           <MultisigSection title="Holdings & Assets" isCollapsable>
-            <MultisigFormInput<MultisigLegacyFormType>
-              control={control}
-              label="Assets"
-              name="assets"
-              rules={{ required: true, pattern: patternOnlyNumbers }}
-              tiker={holidings?.ticker}
-              isDisabled
-              isOverrideDisabledBorder
-              isLoading={isLoading}
-              defaultValue={holidings?.value}
-            />
+            <Assets userId={id} readOnly />
           </MultisigSection>
-        </ScrollView>
-
+        </View>
         <RightSection />
       </View>
 
-      <Transactions multisigId={address} title="Transactions" />
+      <View
+        style={{
+          marginHorizontal: layout.contentPadding,
+          marginTop: layout.topContentPaddingWithHeading,
+        }}
+      >
+        <Transactions
+          chainId={cosmosNetwork?.chainId}
+          multisigAddress={multisigAddress}
+          title="Transactions"
+          userAddress={userAddress}
+        />
+      </View>
     </ScreenContainer>
   );
 };
@@ -159,11 +122,87 @@ const styles = StyleSheet.create({
     flex: 1,
     borderBottomWidth: 1,
     borderColor: neutral33,
-    minHeight: 460,
-  },
-  container: {
-    padding: layout.contentPadding,
-    paddingTop: layout.topContentPaddingWithHeading,
-    maxWidth: 800,
+    minHeight: 490,
   },
 });
+
+const MultisigMembers: React.FC<{
+  multisigId: string | undefined;
+  style?: StyleProp<ViewStyle>;
+}> = ({ multisigId, style }) => {
+  const [network] = parseUserId(multisigId);
+  const [width, setWidth] = useState(0);
+  const { multisig } = useMultisigInfo(multisigId);
+  const members = multisig?.usersAddresses;
+  if (!members || !network) {
+    return null;
+  }
+
+  let elems = 3;
+  if (width < 702) {
+    elems = 1;
+  } else if (width < 1365) {
+    elems = 2;
+  }
+
+  return (
+    <View
+      style={style}
+      onLayout={(ev) => setWidth(ev.nativeEvent.layout.width)}
+    >
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: 16,
+        }}
+      >
+        <BrandText style={{ fontSize: 20 }}>{members.length} members</BrandText>
+      </View>
+      <View
+        style={{ flexWrap: "wrap", flexDirection: "row", margin: -halfGap }}
+      >
+        {members.map((member) => {
+          const userId = getUserId(network.id, member);
+          return (
+            <UserCard
+              key={userId}
+              userId={userId}
+              style={{
+                width: (width - (elems - 1) * 2 * halfGap) / elems,
+                margin: halfGap,
+              }}
+            />
+          );
+        })}
+      </View>
+    </View>
+  );
+};
+
+const halfGap = 8;
+
+const useMultisigInfo = (id: string | undefined) => {
+  const { selectedWallet } = useSelectedWallet();
+  const authToken = useSelector((state: RootState) =>
+    selectMultisigToken(state, selectedWallet?.address)
+  );
+  const client = useMultisigClient();
+  const { data, ...other } = useQuery(
+    ["multisig-info", id, authToken, client],
+    async () => {
+      const [network, multisigAddress] = parseUserId(id);
+      if (network?.kind !== NetworkKind.Cosmos) {
+        return null;
+      }
+      const { multisig } = await client?.MultisigInfo({
+        authToken,
+        multisigAddress,
+        chainId: network.chainId,
+      });
+      return multisig;
+    }
+  );
+  return { multisig: data, ...other };
+};

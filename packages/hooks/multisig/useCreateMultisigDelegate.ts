@@ -2,7 +2,6 @@ import { Decimal } from "@cosmjs/math";
 import { Account, calculateFee } from "@cosmjs/stargate";
 import { assert } from "@cosmjs/utils";
 import { useMutation } from "@tanstack/react-query";
-import moment from "moment";
 import { useSelector } from "react-redux";
 
 import {
@@ -16,9 +15,6 @@ import {
   MultisigTransactionType,
 } from "../../screens/Multisig/types";
 import { selectMultisigToken } from "../../store/slices/settings";
-import { createTransaction } from "../../utils/faunaDB/multisig/multisigGraphql";
-import { DbCreateTransaction } from "../../utils/faunaDB/multisig/types";
-import useSelectedWallet from "../useSelectedWallet";
 
 export const useCreateMultisigDelegate = (
   multisigAddress: string | undefined

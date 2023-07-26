@@ -5,9 +5,12 @@ import {
 
 // we use a hook to prevent huge refactor in the future if it starts depending on state
 
-const rpc = new GrpcWebImpl("http://localhost:9091", {
-  debug: false,
-});
+const rpc = new GrpcWebImpl(
+  process.env.MULTISIG_BACKEND_URL || "http://localhost:9091",
+  {
+    debug: false,
+  }
+);
 const client = new MultisigServiceClientImpl(rpc);
 
 export const useMultisigClient = () => {

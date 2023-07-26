@@ -1,113 +1,117 @@
-import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
-import { toBase64, toUtf8 } from "@cosmjs/encoding";
-import { SigningStargateClient } from "@cosmjs/stargate";
+import { toBase64 } from "@cosmjs/encoding";
 import { Window as KeplrWindow } from "@keplr-wallet/types";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useSelector } from "react-redux";
 
-import { MultisigTransactionListType } from "./useFetchMultisigTransactionsById";
+import { useMultisigClient } from "./useMultisigClient";
+import {
+  ParsedTransaction,
+  multisigTransactionsQueryKey,
+} from "./useMultisigTransactions";
+import { Signature } from "../../api/multisig/v1/multisig";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { mustGetCosmosNetwork } from "../../networks";
-import { createSignature } from "../../utils/faunaDB/multisig/multisigGraphql";
-import { DbSignature } from "../../utils/faunaDB/multisig/types";
-import { useSelectedNetworkId } from "../useSelectedNetwork";
+import { getKeplrOnlyAminoStargateClient } from "../../networks";
+import { selectMultisigToken } from "../../store/slices/settings";
+import { RootState } from "../../store/store";
 import useSelectedWallet from "../useSelectedWallet";
 
 export const useApproveTransaction = () => {
   const { setToastError } = useFeedbacks();
   const { selectedWallet: walletAccount } = useSelectedWallet();
-  const selectedNetworkId = useSelectedNetworkId();
-
+  const multisigClient = useMultisigClient();
+  const authToken = useSelector((state: RootState) =>
+    selectMultisigToken(state, walletAccount?.address)
+  );
+  const queryClient = useQueryClient();
   // req
   return useMutation(
     async ({
       tx,
       currentSignatures,
-      addSignature,
-      transactionID,
+      transactionId,
     }: {
       tx: Pick<
-        MultisigTransactionListType,
-        "sequence" | "fee" | "accountNumber" | "msgs" | "memo"
+        ParsedTransaction,
+        | "chainId"
+        | "multisigAddress"
+        | "accountNumber"
+        | "fee"
+        | "msgs"
+        | "sequence"
+        | "memo"
       >;
-      currentSignatures: DbSignature[];
-      addSignature: (sinature: DbSignature) => void;
-      transactionID: string;
-    }) => {
+      currentSignatures: Signature[];
+      transactionId: number;
+    }): Promise<void> => {
       try {
+        const prevSigMatch = currentSignatures.findIndex(
+          (signature) => signature.userAddress === walletAccount?.address
+        );
+        if (prevSigMatch > -1) {
+          setToastError({
+            title: "Transaction signature failed!",
+            message: "This account has already signed.",
+          });
+          return;
+        }
+
+        const selectedNetworkId = walletAccount?.networkId;
+
         const keplr = (window as KeplrWindow)?.keplr;
         if (!selectedNetworkId || !keplr || !walletAccount?.address) {
           return;
         }
-        const network = mustGetCosmosNetwork(selectedNetworkId);
 
-        const offlineSigner = keplr.getOfflineSignerOnlyAmino(network.chainId);
+        const client = await getKeplrOnlyAminoStargateClient(selectedNetworkId);
 
         const signerAddress = walletAccount.address;
         const signerData = {
           accountNumber: tx.accountNumber,
           sequence: tx.sequence,
-          chainId: network.chainId,
+          chainId: tx.chainId,
         };
 
-        const stargateTxMsgs = [];
-        const cosmwasmTxMsgs = [];
-        for (const msg of tx.msgs) {
-          if (msg?.typeUrl === "/cosmwasm.wasm.v1.MsgExecuteContract") {
-            msg.value.msg = toUtf8(msg.value.msg);
-            cosmwasmTxMsgs.push(msg);
-          } else {
-            stargateTxMsgs.push(msg);
-          }
-        }
-
-        const signMessages = async (
-          messages: any[],
-          client: SigningCosmWasmClient | SigningStargateClient
-        ) => {
-          const { bodyBytes, signatures } = await client.sign(
-            signerAddress,
-            messages,
-            tx.fee,
-            tx.memo,
-            signerData
-          );
-          // check existing signatures
-          const bases64EncodedSignature = toBase64(signatures[0]);
-          const bases64EncodedBodyBytes = toBase64(bodyBytes);
-          const prevSigMatch = currentSignatures.findIndex(
-            (signature) => signature.signature === bases64EncodedSignature
-          );
-          if (prevSigMatch > -1) {
-            setToastError({
-              title: "Transaction signature failed!",
-              message: "This account has already signed.",
-            });
-          } else {
-            const signature = {
-              bodyBytes: bases64EncodedBodyBytes,
-              signature: bases64EncodedSignature,
-              address: signerAddress,
+        // FIXME: remove this hack
+        const parsedMessages = tx.msgs.map((msg) => {
+          if (msg.typeUrl === "/cosmwasm.wasm.v1.MsgExecuteContract") {
+            const modified = {
+              ...msg,
+              value: {
+                ...msg.value,
+                msg: Uint8Array.from(Object.values(msg.value.msg)),
+              },
             };
-            await createSignature(signature, transactionID);
-            addSignature(signature);
+            console.log("modified", modified);
+            return modified;
           }
-        };
+          return msg;
+        });
 
-        // ===== CosmWasm
-        if (cosmwasmTxMsgs.length) {
-          const signingCosmwasmClient = await SigningCosmWasmClient.offline(
-            offlineSigner
-          );
-          await signMessages(cosmwasmTxMsgs, signingCosmwasmClient);
-        }
+        const { bodyBytes, signatures } = await client.sign(
+          signerAddress,
+          parsedMessages,
+          tx.fee,
+          tx.memo,
+          signerData
+        );
 
-        // ===== Stargate
-        if (stargateTxMsgs.length) {
-          const signingStargateClient = await SigningStargateClient.offline(
-            offlineSigner
-          );
-          await signMessages(stargateTxMsgs, signingStargateClient);
-        }
+        const bases64EncodedSignature = toBase64(signatures[0]);
+
+        await multisigClient.SignTransaction({
+          authToken,
+          signature: bases64EncodedSignature,
+          transactionId,
+          bodyBytes,
+        });
+
+        // FIXME: should I do that? addSignature(signature);
+
+        queryClient.invalidateQueries(
+          multisigTransactionsQueryKey(tx.chainId, tx.multisigAddress)
+        );
+        queryClient.invalidateQueries(
+          multisigTransactionsQueryKey(tx.chainId, undefined)
+        );
       } catch (err: any) {
         console.error(err);
       }

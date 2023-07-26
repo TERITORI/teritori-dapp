@@ -45,8 +45,7 @@ export const MultisigDelegateScreen: ScreenFC<"MultisigDelegate"> = ({
         ))
     ) {
       navigation.navigate("MultisigWalletDashboard", {
-        address,
-        walletName,
+        id: address, // TODO
       });
     }
   }, [
@@ -109,7 +108,6 @@ export const MultisigDelegateScreen: ScreenFC<"MultisigDelegate"> = ({
         navigation.canGoBack()
           ? navigation.goBack()
           : navigation.navigate("MultisigWalletDashboard", {
-              walletName,
               address,
             })
       }

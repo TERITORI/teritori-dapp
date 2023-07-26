@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
-import { persistStore, persistReducer } from "redux-persist";
+import { persistStore, persistReducer, createMigrate } from "redux-persist";
 
 import { dAppsReducer, dAppsReducerPersisted } from "./slices/dapps-store";
 import {
@@ -13,13 +13,27 @@ import {
   marketplaceFilterUI,
 } from "./slices/marketplaceFilters";
 import { searchReducer } from "./slices/search";
-import { settingsReducer } from "./slices/settings";
+import { multisigTokensAdapter, settingsReducer } from "./slices/settings";
 import { squadPresetsReducer } from "./slices/squadPresets";
 import { walletsReducer } from "./slices/wallets";
+
+const migrations = {
+  0: (state: any) => {
+    return {
+      ...state,
+      settings: {
+        ...state.settings,
+        multisigTokens: multisigTokensAdapter.getInitialState(),
+      },
+    };
+  },
+};
 
 const persistConfig = {
   key: "root",
   storage: AsyncStorage,
+  version: 0,
+  migrate: createMigrate(migrations, { debug: false }),
   whitelist: [
     "wallets",
     "settings",

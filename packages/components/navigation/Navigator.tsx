@@ -25,7 +25,6 @@ import { MultisigManageWalletsScreen } from "../../screens/Multisig/MultisigMana
 import { MultisigScreen } from "../../screens/Multisig/MultisigScreen";
 import { MultisigTransactionsScreen } from "../../screens/Multisig/MultisigTransactionsScreen";
 import { MultisigTransferScreen } from "../../screens/Multisig/MultisigTransferScreen";
-import { MultisigWIPTransactionsScreen } from "../../screens/Multisig/MultisigWIPTransactionsScreen";
 import { MultisigWalletDashboardScreen } from "../../screens/Multisig/MultisigWalletDashboardScreen";
 import { MyCollectionScreen } from "../../screens/MyCollection/MyCollectionScreen";
 import { OrganizationDeployerScreen } from "../../screens/Organizations/OrganizationDeployerScreen";
@@ -244,14 +243,6 @@ export const Navigator: React.FC = () => {
         options={{
           header: () => null,
           title: screenTitle("Manage Multisig Wallets"),
-        }}
-      />
-      <Stack.Screen
-        name="MultisigWIPTransactions"
-        component={MultisigWIPTransactionsScreen}
-        options={{
-          header: () => null,
-          title: screenTitle("Transactions history"),
         }}
       />
       <Stack.Screen

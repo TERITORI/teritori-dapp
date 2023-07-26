@@ -4,7 +4,6 @@ import { ActivityIndicator } from "react-native-paper";
 
 import { ProposalTransactionItemProps } from "./ProposalTransactionItem";
 import { BrandText } from "../../../components/BrandText";
-import { EmptyList } from "../../../components/EmptyList";
 import { AnimationFadeIn } from "../../../components/animations";
 import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
 import { SecondaryButtonOutline } from "../../../components/buttons/SecondaryButtonOutline";
@@ -18,7 +17,6 @@ import {
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { txExplorerLink } from "../../../networks";
-import { DbSignature } from "../../../utils/faunaDB/multisig/types";
 import {
   errorColor,
   neutral00,
@@ -32,33 +30,32 @@ import { layout } from "../../../utils/style/layout";
 import { tinyAddress } from "../../../utils/text";
 
 interface TransactionItemButtonsProps extends ProposalTransactionItemProps {
-  currentSignatures: DbSignature[];
   currentDecliners: string[];
-  addSignature: (signature: DbSignature) => void;
+  addSignature: (signature: unknown) => void;
   addDecliner: (address: string) => void;
-  isCompletedSignature: boolean;
   isCompletelyDeclined: boolean;
 }
 
 export const TransactionItemButtons: React.FC<TransactionItemButtonsProps> = ({
   btnSquaresBackgroundColor,
   currentDecliners,
-  currentSignatures,
+  signatures,
   addSignature,
   addDecliner,
-  _id,
-  isCompletedSignature,
-  txHash,
+  chainId,
+  multisigPubkeyJson,
+  id,
+  finalHash: txHash,
   isCompletelyDeclined,
-  multisig,
   isUserMultisig,
+  multisigAddress,
+  threshold,
   fee,
   accountNumber,
   msgs,
   sequence,
   memo,
   shouldRetch,
-  isError,
 }) => {
   const { selectedWallet: wallet } = useSelectedWallet();
   const selectedNetworkId = useSelectedNetworkId();
@@ -71,8 +68,8 @@ export const TransactionItemButtons: React.FC<TransactionItemButtonsProps> = ({
   } = useBroadcastTransaction();
 
   const hasSigned = useMemo(
-    () => currentSignatures?.some((sig) => sig.address === wallet?.address),
-    [currentSignatures, wallet?.address]
+    () => signatures?.some((sig) => sig.userAddress === wallet?.address),
+    [signatures, wallet?.address]
   );
 
   const hasDeclined = useMemo(
@@ -82,6 +79,8 @@ export const TransactionItemButtons: React.FC<TransactionItemButtonsProps> = ({
     [currentDecliners, isCompletelyDeclined, wallet?.address]
   );
 
+  const isCompletedSignature = signatures.length >= threshold;
+
   // hooks
   useEffect(() => {
     if (resTxHash) {
@@ -90,24 +89,26 @@ export const TransactionItemButtons: React.FC<TransactionItemButtonsProps> = ({
   }, [resTxHash, shouldRetch]);
 
   // functions
-  const onApprove = () =>
+  const onApprove = async () => {
     approve({
       tx: {
+        chainId,
+        multisigAddress,
         fee,
         accountNumber,
         msgs,
         sequence,
         memo,
       },
-      currentSignatures,
-      addSignature,
-      transactionID: _id,
+      currentSignatures: signatures,
+      transactionId: id,
     });
+  };
 
   const onDecline = async () =>
     decline({
       currentDecliners,
-      transactionID: _id,
+      transactionID: "TODO",
       addDecliner,
     });
 
@@ -116,10 +117,12 @@ export const TransactionItemButtons: React.FC<TransactionItemButtonsProps> = ({
       tx: {
         fee,
         sequence,
+        chainId,
+        multisigAddress,
       },
-      currentSignatures,
-      pubkey: JSON.parse(multisig.pubkeyJSON),
-      transactionID: _id,
+      currentSignatures: signatures,
+      pubkey: JSON.parse(multisigPubkeyJson),
+      transactionId: id,
     });
 
   // returns
@@ -135,30 +138,19 @@ export const TransactionItemButtons: React.FC<TransactionItemButtonsProps> = ({
     );
   }
 
-  if (!isUserMultisig) {
-    return (
-      <View style={styles.container}>
-        <EmptyList text="Connected wallet address doesn't to match any available multisig user address." />
-      </View>
-    );
-  }
-
   if (
     (hasDeclined && !isCompletedSignature) ||
     (hasSigned && !isCompletedSignature) ||
     txHash ||
-    resTxHash ||
-    isError
+    resTxHash
   ) {
     const color = (() => {
-      if (isError) return errorColor;
       if (txHash || resTxHash) return successColor;
       if (hasDeclined) return errorColor;
       if (hasSigned) return primaryColor;
     })();
 
     const resultText = (() => {
-      if (isError) return "ERROR";
       if (txHash || resTxHash) return "EXECUTED";
       if (hasDeclined) return "DECLINED";
       if (hasSigned) return "APPROVED";

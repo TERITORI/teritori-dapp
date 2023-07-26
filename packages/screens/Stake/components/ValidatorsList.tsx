@@ -10,7 +10,7 @@ import { SpacerRow } from "../../../components/spacer";
 import { TableRow, TableRowHeading } from "../../../components/table";
 import { useKeybaseAvatarURL } from "../../../hooks/useKeybaseAvatarURL";
 import { Reward, rewardsPrice, useRewards } from "../../../hooks/useRewards";
-import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { UserKind, parseUserId } from "../../../networks";
 import { removeObjectKey } from "../../../utils/object";
 import { mineShaftColor } from "../../../utils/style/colors";
 import { fontSemibold13 } from "../../../utils/style/fonts";
@@ -55,10 +55,11 @@ export const ValidatorsTable: React.FC<{
   validators: ValidatorInfo[];
   actions?: (validator: ValidatorInfo) => ValidatorsListAction[];
   style?: StyleProp<ViewStyle>;
-}> = ({ validators, actions, style }) => {
+  userId: string | undefined;
+  userKind: UserKind;
+}> = ({ validators, actions, style, userId, userKind }) => {
   const ROWS = actions ? TABLE_ROWS : removeObjectKey(TABLE_ROWS, "actions");
-  const { selectedWallet } = useSelectedWallet();
-  const { rewards, claimReward } = useRewards(selectedWallet?.userId);
+  const { rewards, claimReward } = useRewards(userId, userKind);
 
   // returns
   return (
@@ -71,6 +72,7 @@ export const ValidatorsTable: React.FC<{
         renderItem={({ item }) => (
           <ValidatorRow
             validator={item}
+            userId={userId}
             actions={actions}
             pendingRewards={rewards.filter(
               (reward) => reward.validator === item.address
@@ -88,10 +90,10 @@ const ValidatorRow: React.FC<{
   pendingRewards: Reward[];
   claimReward: (validatorAddress: string) => Promise<void>;
   actions?: (validator: ValidatorInfo) => ValidatorsListAction[];
-}> = ({ validator, claimReward, pendingRewards, actions }) => {
+  userId: string | undefined;
+}> = ({ validator, claimReward, pendingRewards, actions, userId }) => {
   const imageURL = useKeybaseAvatarURL(validator.identity);
-
-  const { selectedWallet } = useSelectedWallet();
+  const [, userAddress] = parseUserId(userId);
   // Rewards price with all denoms
   const claimablePrice = rewardsPrice(pendingRewards);
 
@@ -170,7 +172,7 @@ const ValidatorRow: React.FC<{
             size="XS"
             style={{ paddingLeft: layout.padding_x2 }}
             text="Claim"
-            disabled={!selectedWallet?.address}
+            disabled={!userAddress}
             onPress={() => {
               claimReward(validator.address);
             }}

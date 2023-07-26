@@ -1,6 +1,4 @@
-import { QueryClient } from "@tanstack/react-query";
-import { parseUnits } from "ethers/lib/utils";
-import React, { FC, useCallback, useMemo, useState } from "react";
+import React, { FC, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -9,20 +7,19 @@ import {
   StyleSheet,
   View,
 } from "react-native";
+import { useSelector } from "react-redux";
 
 import { CheckLoadingModal } from "./components/CheckLoadingModal";
-import { MultisigTransactionType } from "./types";
+import { Transactions } from "./components/Transactions";
 import multisigWalletSVG from "../../../assets/icons/organization/multisig-wallet.svg";
 import postJobSVG from "../../../assets/icons/organization/post-job.svg";
-import profileSVG from "../../../assets/icons/organization/profile.svg";
-import { useGetUserTransactionsQuery } from "../../api/multisig";
 import {
   MultisigServiceClientImpl,
   GrpcWebImpl as MultisigGrpcWebImpl,
   GetTokenRequest,
+  JoinState,
 } from "../../api/multisig/v1/multisig";
 import { BrandText } from "../../components/BrandText";
-import { EmptyList } from "../../components/EmptyList";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { Separator } from "../../components/Separator";
 import { AnimationFadeIn } from "../../components/animations";
@@ -31,16 +28,19 @@ import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import ModalBase from "../../components/modals/ModalBase";
 import { SpacerColumn } from "../../components/spacer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import {
-  getMultisigAccount,
-  useFetchMultisigTransactionsByAddress,
-  useUserMultisigs,
-} from "../../hooks/multisig";
-import { useCreateMultisigTransactionForExecuteContract } from "../../hooks/multisig/useCreateMultisigTransactionForExecuteContract";
+import { useUserMultisigs } from "../../hooks/multisig";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getUserId, NetworkKind, parseUserId } from "../../networks";
-import { setMultisigToken } from "../../store/slices/settings";
-import { useAppDispatch } from "../../store/store";
+import {
+  getCosmosNetwork,
+  getUserId,
+  NetworkKind,
+  parseUserId,
+} from "../../networks";
+import {
+  selectMultisigToken,
+  setMultisigToken,
+} from "../../store/slices/settings";
+import { RootState, useAppDispatch } from "../../store/store";
 import { keplrSignArbitrary } from "../../utils/keplr";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { neutral33, neutral77, secondaryColor } from "../../utils/style/colors";
@@ -52,9 +52,6 @@ import {
 import { layout } from "../../utils/style/layout";
 import { tinyAddress } from "../../utils/text";
 import { GetStartedOption } from "../OrganizerDeployer/components/GetStartedOption";
-import { ProposalTransactionItem } from "../OrganizerDeployer/components/ProposalTransactionItem";
-
-const MIN_ITEMS_PER_PAGE = 20;
 
 enum SelectModalKind {
   LaunchNFT,
@@ -63,15 +60,32 @@ enum SelectModalKind {
 }
 
 const LoginButton: FC<{ userId: string | undefined }> = ({ userId }) => {
-  const { wrapWithFeedback } = useFeedbacks();
+  const [, userAddress] = parseUserId(userId);
+  const storeAuthToken = useSelector((state: RootState) =>
+    selectMultisigToken(state, userAddress)
+  );
   const dispatch = useAppDispatch();
-  // TODO: if has valid token, show "Logout" instead
+  const hasValidToken =
+    storeAuthToken &&
+    Date.parse(storeAuthToken?.createdAt || "") + storeAuthToken.duration >
+      new Date().getTime(); // FIXME: this won't rerender when token expires
+  const { wrapWithFeedback } = useFeedbacks();
+
   return (
     <PrimaryButton
-      text="Login"
+      text={
+        hasValidToken
+          ? "Logout of Multisig service"
+          : "Login to Multisig service"
+      }
       loader
       disabled={!userId} // TODO: replace with connect wallet button in this case
       onPress={wrapWithFeedback(async () => {
+        if (hasValidToken) {
+          dispatch(setMultisigToken({ userAddress, token: undefined }));
+          return;
+        }
+
         if (!userId) {
           throw new Error("No user id");
         }
@@ -109,7 +123,7 @@ const LoginButton: FC<{ userId: string | undefined }> = ({ userId }) => {
           throw new Error("No auth token returned from server");
         }
 
-        dispatch(setMultisigToken(authToken));
+        dispatch(setMultisigToken({ userAddress, token: authToken }));
 
         const { multisigs } = await client.Multisigs({ authToken, limit: 100 });
         console.log("multisigs", multisigs);
@@ -134,7 +148,6 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
     container: {
       flex: 1,
       paddingTop: layout.topContentPaddingWithHeading,
-      paddingBottom: layout.contentPadding,
     },
     horizontalContentPadding: {
       paddingHorizontal: layout.contentPadding,
@@ -164,44 +177,34 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
     multisigs: data,
     isLoading: isMultisigLoading,
     isFetching: isMultisigFetching,
-  } = useUserMultisigs(selectedWallet?.userId);
+  } = useUserMultisigs(selectedWallet?.userId, JoinState.JOIN_STATE_IN);
 
-  const {
-    data: transactionData,
-    isLoading: isTransactionsLoading,
-    isFetching: isTransactionsFetching,
-    fetchNextPage: fetchNextTransactionsPage,
-  } = useFetchMultisigTransactionsByAddress(
-    selectedWallet?.address || "",
-    MIN_ITEMS_PER_PAGE
+  const { multisigs: invitations } = useUserMultisigs(
+    selectedWallet?.userId,
+    JoinState.JOIN_STATE_OUT
   );
 
-  const list = useMemo(
-    () =>
-      transactionData?.pages.reduce(
-        (ar, ac) => [...ar, ...ac.data],
-        [] as (typeof transactionData)["pages"][0]["data"]
-      ),
-    [transactionData?.pages]
-  );
+  const cosmosNetwork = getCosmosNetwork(selectedWallet?.networkId);
 
   const [openSelectMultiSignModal, setOpenSelectMultiSignModal] =
     useState<boolean>(false);
   const [kind] = useState<SelectModalKind>(SelectModalKind.LaunchNFT);
 
+  /*
   const {
     isLoading,
     mutate,
     data: transactionId,
   } = useCreateMultisigTransactionForExecuteContract();
+  */
 
   const createProposal = (address: string) => {
     if (kind === SelectModalKind.LaunchNFT) {
       // createProposalForLaunchNFT(address);
     } else if (kind === SelectModalKind.CreatePost) {
-      createProposalForCreatePost(address);
+      // createProposalForCreatePost(address);
     } else if (kind === SelectModalKind.ManagePublicProfile) {
-      createProposalForManagePublicProfile(address);
+      // createProposalForManagePublicProfile(address);
     }
   };
 
@@ -226,6 +229,7 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
   //   }
   // };
 
+  /*
   const createProposalForCreatePost = async (
     queryClient: QueryClient,
     address: string
@@ -250,8 +254,10 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
       });
     }
   };
+  */
 
   //address: multisign address
+  /*
   const createProposalForManagePublicProfile = async (
     queryClient: QueryClient,
     address: string
@@ -276,30 +282,18 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
       });
     }
   };
+  */
 
   const onCompleteTransactionCreation = () => {
+    /*
     if (transactionId) {
       navigation.reset({
         index: 1,
         routes: [{ name: "Multisig" }],
       });
     }
+    */
   };
-
-  // returns
-  const ListFooter = useCallback(
-    () => (
-      <>
-        {(isTransactionsLoading || isTransactionsFetching) && (
-          <>
-            <ActivityIndicator color={secondaryColor} />
-            <SpacerColumn size={2} />
-          </>
-        )}
-      </>
-    ),
-    [isTransactionsFetching, isTransactionsLoading]
-  );
 
   return (
     <ScreenContainer
@@ -315,8 +309,16 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
       <ScrollView>
         <View style={styles.container}>
           <View style={styles.horizontalContentPadding}>
-            <LoginButton userId={selectedWallet?.userId} />
-            <BrandText style={fontSemibold28}>My Multisigs</BrandText>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <BrandText style={fontSemibold28}>My Multisigs</BrandText>
+              <LoginButton userId={selectedWallet?.userId} />
+            </View>
             <SpacerColumn size={1.5} />
             <BrandText style={[fontSemibold16, { color: neutral77 }]}>
               Overview of your Multisignatures Wallets
@@ -337,11 +339,7 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
                     isBetaVersion
                     onPress={() =>
                       navigation.navigate("MultisigWalletDashboard", {
-                        address: getUserId(
-                          selectedWallet?.networkId,
-                          item.address
-                        ),
-                        walletName: item.name || `Multisig #${index + 1}`,
+                        id: getUserId(selectedWallet?.networkId, item.address),
                       })
                     }
                     subtitle={tinyAddress(item.address, 21)}
@@ -368,30 +366,61 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
             />
           </View>
           <SpacerColumn size={3} />
+          {!!invitations?.length && (
+            <>
+              <View style={styles.horizontalContentPadding}>
+                <BrandText style={fontSemibold28}>Invitations</BrandText>
+                <SpacerColumn size={1.5} />
+                <BrandText style={[fontSemibold16, { color: neutral77 }]}>
+                  Multisignatures Wallets you did not join yet
+                </BrandText>
+                <SpacerColumn size={2.5} />
+                <FlatList
+                  data={invitations}
+                  horizontal
+                  keyExtractor={(item) => item.address}
+                  renderItem={({ item, index }) => (
+                    <AnimationFadeIn delay={index * 50}>
+                      <GetStartedOption
+                        variant="small"
+                        title={
+                          item.name ||
+                          `Multisig #${(invitations?.length || 0) - index}`
+                        }
+                        icon={multisigWalletSVG}
+                        isBetaVersion
+                        onPress={() =>
+                          navigation.navigate("MultisigWalletDashboard", {
+                            id: getUserId(
+                              selectedWallet?.networkId,
+                              item.address
+                            ),
+                          })
+                        }
+                        subtitle={tinyAddress(item.address, 21)}
+                        titleStyle={{ color: secondaryColor }}
+                      />
+                    </AnimationFadeIn>
+                  )}
+                  ListFooterComponent={() =>
+                    isMultisigLoading && isMultisigFetching ? (
+                      <View style={styles.contentCenter}>
+                        <ActivityIndicator color={secondaryColor} />
+                      </View>
+                    ) : null
+                  }
+                />
+              </View>
+              <SpacerColumn size={3} />
+            </>
+          )}
           <View style={styles.horizontalContentPadding}>
             <Separator color={neutral33} />
             <SpacerColumn size={3} />
-            <BrandText style={fontSemibold28}>
-              Multisig Transactions Overview
-            </BrandText>
-
-            <FlatList
-              data={list}
-              renderItem={({ item, index }) => (
-                <AnimationFadeIn delay={index * 50}>
-                  <ProposalTransactionItem {...item} isUserMultisig />
-                </AnimationFadeIn>
-              )}
-              initialNumToRender={MIN_ITEMS_PER_PAGE}
-              keyExtractor={(item, index) => index.toString()}
-              showsVerticalScrollIndicator={false}
-              contentContainerStyle={styles.transactionListContent}
-              // ListFooterComponent={ListFooter} // FIXME: this causes infinite refetch
-              extraData={selectedWallet?.address}
-              onEndReached={() => fetchNextTransactionsPage()}
-              ListEmptyComponent={() =>
-                isTransactionsLoading ? null : <EmptyList text="No proposals" />
-              }
+            <Transactions
+              userAddress={selectedWallet?.address}
+              chainId={cosmosNetwork?.chainId}
+              title="Multisig Transactions Overview"
             />
           </View>
         </View>
@@ -403,7 +432,7 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
         callback={createProposal}
       />
       <CheckLoadingModal
-        isVisible={isLoading}
+        isVisible={/*isLoading*/ false}
         onComplete={onCompleteTransactionCreation}
       />
     </ScreenContainer>

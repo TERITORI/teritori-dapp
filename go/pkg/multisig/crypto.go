@@ -36,29 +36,29 @@ func parsePubKeyJSON(pubkeyJSON string, bech32Prefix string) (string, *secp256k1
 
 // FIXME: better challenge encoding
 func validateChallenge(publicKey ed25519.PublicKey, challenge string) (string, error) {
-	challengeParts := strings.Split(challenge, " ")
-	if len(challengeParts) != 2 {
-		return "", errors.New("invalid challenge: not enough parts")
+	parts := strings.Split(challenge, " ")
+	if len(parts) != 2 {
+		return "", errors.New("not enough parts")
 	}
-	nonceBase64 := challengeParts[0]
+	nonceBase64 := parts[0]
 	if nonceBase64 == "" {
-		return "", errors.New("invalid challenge: missing nonce")
+		return "", errors.New("missing nonce")
 	}
-	challengeSignatureBase64 := challengeParts[1]
-	if challengeSignatureBase64 == "" {
-		return "", errors.New("invalid challenge: missing signature")
+	signatureBase64 := parts[1]
+	if signatureBase64 == "" {
+		return "", errors.New("missing signature")
 	}
 
 	nonce, err := base64.RawURLEncoding.DecodeString(nonceBase64)
 	if err != nil {
-		return "", errors.Wrap(err, "invalid challenge: failed to decode nonce")
+		return "", errors.Wrap(err, "failed to decode nonce")
 	}
-	challengeSignature, err := base64.RawURLEncoding.DecodeString(challengeSignatureBase64)
+	signature, err := base64.RawURLEncoding.DecodeString(signatureBase64)
 	if err != nil {
-		return "", errors.Wrap(err, "invalid challenge: failed to decode signature")
+		return "", errors.Wrap(err, "failed to decode signature")
 	}
-	if !ed25519.Verify(publicKey, nonce, challengeSignature) {
-		return "", errors.New("invalid challenge: bad signature")
+	if !ed25519.Verify(publicKey, nonce, signature) {
+		return "", errors.New("bad signature")
 	}
 
 	return nonceBase64, nil

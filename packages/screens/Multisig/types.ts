@@ -2,6 +2,7 @@ export type CreateMultisigWalletFormType = {
   addresses: { address: string }[];
   signatureRequired: string;
   maxSignature: string;
+  name: string;
 };
 
 export type MultisigLegacyFormType = {

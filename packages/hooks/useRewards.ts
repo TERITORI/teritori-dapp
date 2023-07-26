@@ -1,18 +1,16 @@
-import {
-  isDeliverTxFailure,
-  MsgWithdrawDelegatorRewardEncodeObject,
-} from "@cosmjs/stargate";
+import { MsgWithdrawDelegatorRewardEncodeObject } from "@cosmjs/stargate";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 
 import { useCoingeckoPrices } from "./useCoingeckoPrices";
 import { useErrorHandler } from "./useErrorHandler";
+import { useRunOrProposeTransaction } from "./useRunOrProposeTransaction";
 import { useFeedbacks } from "../context/FeedbacksProvider";
 import {
-  getKeplrSigningStargateClient,
   getNetwork,
   parseNetworkObjectId,
   NetworkKind,
+  UserKind,
 } from "../networks";
 import { CoingeckoCoin, getCoingeckoPrice } from "../utils/coingecko";
 import { CosmosRewardsResponse } from "../utils/teritori";
@@ -34,11 +32,12 @@ const initialData = { rewards: [], total: [] };
 // TODO: Handle multiple wallets addresses (Maybe use useWallets + useQueries)
 
 // Getting the rewards, by user's wallet address, and by network.
-export const useRewards = (userId: string | undefined) => {
+export const useRewards = (userId: string | undefined, userKind: UserKind) => {
   const [network, userAddress] = parseNetworkObjectId(userId);
   const networkId = network?.id || "";
-  const { setToastSuccess, setToastError } = useFeedbacks();
+  const { setToastSuccess } = useFeedbacks();
   const { triggerError } = useErrorHandler();
+  const runOrProposeTransaction = useRunOrProposeTransaction(userId, userKind);
 
   const claimAllRewards = async (callback?: () => void) => {
     try {
@@ -51,8 +50,6 @@ export const useRewards = (userId: string | undefined) => {
       ) {
         return initialData;
       }
-      const client = await getKeplrSigningStargateClient(networkId);
-
       const msgs: MsgWithdrawDelegatorRewardEncodeObject[] = [];
       networkRewards.rewards?.forEach((rew) => {
         if (!rew.reward.length) return;
@@ -65,20 +62,7 @@ export const useRewards = (userId: string | undefined) => {
         });
       });
       if (!msgs.length) return;
-      const txResponse = await client.signAndBroadcast(
-        userAddress,
-        msgs,
-        "auto"
-      );
-      if (isDeliverTxFailure(txResponse)) {
-        callback && callback();
-        console.error("tx failed", txResponse);
-        setToastError({
-          title: "Transaction failed",
-          message: txResponse.rawLog || "",
-        });
-        return;
-      }
+      await runOrProposeTransaction({ msgs });
       setToastSuccess({ title: "Claim success", message: "" });
     } catch (error) {
       triggerError({ title: "Claim failed!", error, callback });
@@ -91,8 +75,6 @@ export const useRewards = (userId: string | undefined) => {
   ) => {
     try {
       if (!userAddress || !networkId) return;
-
-      const client = await getKeplrSigningStargateClient(networkId);
       const msg: MsgWithdrawDelegatorRewardEncodeObject = {
         typeUrl: "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward",
         value: {
@@ -100,20 +82,7 @@ export const useRewards = (userId: string | undefined) => {
           validatorAddress,
         },
       };
-      const txResponse = await client.signAndBroadcast(
-        userAddress,
-        [msg],
-        "auto"
-      );
-      if (isDeliverTxFailure(txResponse)) {
-        callback && callback();
-        console.error("tx failed", txResponse);
-        setToastError({
-          title: "Transaction failed",
-          message: txResponse.rawLog || "",
-        });
-        return;
-      }
+      await runOrProposeTransaction({ msgs: [msg] });
       setToastSuccess({ title: "Claim success", message: "" });
     } catch (error) {
       triggerError({ title: "Claim failed!", error, callback });

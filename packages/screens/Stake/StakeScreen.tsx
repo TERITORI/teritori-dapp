@@ -12,14 +12,25 @@ import { ScreenContainer } from "../../components/ScreenContainer";
 import { Tabs } from "../../components/tabs/Tabs";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useValidators } from "../../hooks/useValidators";
-import { NetworkKind } from "../../networks";
+import { NetworkKind, UserKind, parseUserId } from "../../networks";
+import { ScreenFC } from "../../utils/navigation";
 import { fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 
-export const StakeScreen: React.FC = () => {
-  //   variables
-  const selectedNetworkId = useSelectedNetworkId();
+export const StakeScreen: ScreenFC<"Staking"> = ({ route: { params } }) => {
+  const { selectedWallet } = useSelectedWallet();
+  let selectedNetworkId: string | undefined = useSelectedNetworkId();
+  let userId = selectedWallet?.userId;
+  const multisigId = params?.multisigId;
+  const userKind = multisigId ? UserKind.Multisig : UserKind.Single;
+  if (multisigId) {
+    const [network] = parseUserId(multisigId);
+    selectedNetworkId = network?.id;
+    userId = multisigId;
+  }
+
   const [stakeDetailModalVisible, setStakeDetailModalVisible] = useState(false);
   const [isStakeFormVisible, setIsStakeFormVisible] = useState(false);
   const [isUndelegateModalVisible, setIsUndelegateModalVisible] =
@@ -70,9 +81,14 @@ export const StakeScreen: React.FC = () => {
 
   // returns
   return (
-    <ScreenContainer forceNetworkKind={NetworkKind.Cosmos}>
+    <ScreenContainer
+      forceNetworkKind={NetworkKind.Cosmos}
+      forceNetworkId={multisigId && selectedNetworkId}
+    >
       <View style={styles.rowHeader}>
-        <BrandText style={fontSemibold28}>Stake</BrandText>
+        <BrandText style={fontSemibold28}>
+          Stake{multisigId && " with Multisig"}
+        </BrandText>
         <Tabs
           items={tabs}
           onSelect={setSelectedTab}
@@ -89,6 +105,8 @@ export const StakeScreen: React.FC = () => {
             ? () => [{ label: "Manage", onPress: toggleDetailModal }]
             : undefined
         }
+        userId={userId}
+        userKind={userKind}
       />
       <StakeDetailModal
         visible={stakeDetailModalVisible}
@@ -102,16 +120,22 @@ export const StakeScreen: React.FC = () => {
         visible={isUndelegateModalVisible}
         onClose={toggleUndelegateModal}
         validator={selectedStake}
+        userId={userId}
+        userKind={userKind}
       />
       <RedelegateModal
         visible={isRedelegateModalVisible}
         onClose={toggleRedelegateModal}
         validator={selectedStake}
+        userId={userId}
+        userKind={userKind}
       />
       <DelegateModal
         visible={isStakeFormVisible}
         onClose={toggleStakeForm}
         validator={selectedStake}
+        userKind={userKind}
+        userId={userId}
       />
     </ScreenContainer>
   );

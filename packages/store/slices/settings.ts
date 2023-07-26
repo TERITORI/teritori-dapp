@@ -1,7 +1,20 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import {
+  createEntityAdapter,
+  createSlice,
+  EntityState,
+  PayloadAction,
+} from "@reduxjs/toolkit";
+import { bech32 } from "bech32";
+import Long from "long";
 
-import { Token as MultisigToken } from "../../api/multisig/v1/multisig";
+import { Token as MultisigToken, Token } from "../../api/multisig/v1/multisig";
 import { RootState } from "../store";
+
+export const multisigTokensAdapter = createEntityAdapter<Token>({
+  selectId: (t) => t.userAddress,
+});
+
+const multisigTokensSelectors = multisigTokensAdapter.getSelectors();
 
 interface Settings {
   selectedNetworkId: string;
@@ -12,7 +25,7 @@ interface Settings {
   alreadyVisited: boolean;
   areTestnetsEnabled: boolean;
   sideBarExpanded: boolean;
-  multisigToken?: MultisigToken;
+  multisigTokens: EntityState<MultisigToken>;
 }
 
 const initialState: Settings = {
@@ -24,6 +37,7 @@ const initialState: Settings = {
   alreadyVisited: false,
   areTestnetsEnabled: false,
   sideBarExpanded: true,
+  multisigTokens: multisigTokensAdapter.getInitialState(),
 };
 
 export const selectSelectedNetworkId = (state: RootState) =>
@@ -47,8 +61,27 @@ export const selectSidebarExpanded = (state: RootState) =>
 export const selectNFTStorageAPI = (state: RootState) =>
   state.settings.NFTStorageAPI;
 
-export const selectMultisigToken = (state: RootState) =>
-  state.settings.multisigToken;
+const universalUserAddress = (userAddress: string) => {
+  const decoded = bech32.decode(userAddress);
+  return bech32.encode("user", decoded.words);
+};
+
+export const selectMultisigToken = (
+  state: RootState,
+  userAddress: string | undefined
+) => {
+  if (!userAddress) {
+    return undefined;
+  }
+  const token = multisigTokensSelectors.selectById(
+    state.settings.multisigTokens,
+    universalUserAddress(userAddress)
+  );
+  if (!token || Date.parse(token.createdAt) + token.duration < Date.now()) {
+    return undefined;
+  }
+  return token;
+};
 
 const settingsSlice = createSlice({
   name: "settings",
@@ -75,8 +108,24 @@ const settingsSlice = createSlice({
     setNFTStorageAPI: (state, action: PayloadAction<string>) => {
       state.NFTStorageAPI = action.payload;
     },
-    setMultisigToken: (state, action: PayloadAction<MultisigToken>) => {
-      state.multisigToken = action.payload;
+    setMultisigToken: (
+      state,
+      action: PayloadAction<{
+        userAddress: string;
+        token: MultisigToken | undefined;
+      }>
+    ) => {
+      if (!action.payload.token) {
+        multisigTokensAdapter.removeOne(
+          state.multisigTokens,
+          universalUserAddress(action.payload.userAddress)
+        );
+        return;
+      }
+      state.multisigTokens = multisigTokensAdapter.setOne(
+        state.multisigTokens,
+        action.payload.token
+      );
     },
   },
 });

@@ -6,6 +6,7 @@ option go_package = "./multisigpb";
 service MultisigService {
   // Read
   rpc Multisigs(MultisigsRequest) returns (MultisigsResponse);
+  rpc MultisigInfo(MultisigInfoRequest) returns (MultisigInfoResponse);
   rpc Transactions(TransactionsRequest) returns (TransactionsResponse);
   rpc TransactionsCounts(TransactionsCountsRequest) returns (TransactionsCountsResponse);
 
@@ -14,6 +15,7 @@ service MultisigService {
   rpc LeaveMultisig(LeaveMultisigRequest) returns (LeaveMultisigResponse);
   rpc CreateTransaction(CreateTransactionRequest) returns (CreateTransactionResponse);
   rpc SignTransaction(SignTransactionRequest) returns (SignTransactionResponse);
+  rpc CompleteTransaction(CompleteTransactionRequest) returns (CompleteTransactionResponse);
 
   // Auth
   rpc GetChallenge(GetChallengeRequest) returns (GetChallengeResponse);
@@ -21,15 +23,24 @@ service MultisigService {
 }
 
 message Multisig {
-  uint32 created_at = 1;
+  string created_at = 1;
   string chain_id = 2;
   string address = 4;
   bool joined = 5;
   string name = 6;
+  string pubkey_json = 7;
+  repeated string users_addresses = 8;
+  uint32 threshold = 9;
+}
+
+message Signature {
+  string value = 1;
+  string user_address = 2;
+  bytes body_bytes = 3;
 }
 
 message Transaction {
-  uint32 created_at = 1;
+  string created_at = 1;
   string final_hash = 2;
   string multisig_address = 3;
   string chain_id = 4;
@@ -38,16 +49,19 @@ message Transaction {
   uint32 account_number = 7;
   uint32 sequence = 8;
   string creator_address = 9;
-}
-
-message Signature {
-  uint32 created_at = 1;
+  uint32 threshold = 10;
+  uint32 members_count = 11;
+  string memo = 12;
+  repeated Signature signatures = 13;
+  string multisig_pubkey_json = 14;
+  uint32 id = 15;
 }
 
 message Token {
 	string nonce = 1;
-	uint32 created_at = 2;
+	string created_at = 2;
 	uint32 duration = 3;
+  string user_address = 4;
 }
 
 enum JoinState {
@@ -59,13 +73,23 @@ enum JoinState {
 message MultisigsRequest {
   Token auth_token = 1;
   uint32 limit = 2;
-  uint32 start_after = 3;
+  string start_after = 3;
   string chain_id = 4;
   JoinState join_state = 5;
 }
 
 message MultisigsResponse {
   repeated Multisig multisigs = 1;
+}
+
+message MultisigInfoRequest {
+  Token auth_token = 1;
+  string multisig_address = 2;
+  string chain_id = 3;
+}
+
+message MultisigInfoResponse {
+  Multisig multisig = 1;
 }
 
 enum ExecutionState {
@@ -77,10 +101,11 @@ enum ExecutionState {
 message TransactionsRequest {
   Token auth_token = 1;
   uint32 limit = 2;
-  uint32 start_after = 3;
-  ExecutionState execution_state = 4;
-  string multisig_address = 6; // if unspecified, return transactions for all multisigs of this user
-  string chain_id = 7;
+  string start_after = 3;
+  string multisig_address = 4; // if unspecified, return transactions for all multisigs of this user
+  string chain_id = 5;
+  repeated string types = 6;
+  ExecutionState execution_state = 7;
 }
 
 message TransactionsResponse {
@@ -98,6 +123,7 @@ message CreateOrJoinMultisigRequest {
 message CreateOrJoinMultisigResponse {
   bool created = 1;
   bool joined = 2;
+  string multisig_address = 3;
 }
 
 message LeaveMultisigRequest {
@@ -108,7 +134,6 @@ message LeaveMultisigRequest {
 
 message LeaveMultisigResponse {
   bool left = 1;
-  bool found = 2;
 }
 
 message CreateTransactionRequest {
@@ -127,10 +152,23 @@ message CreateTransactionResponse {
 
 message SignTransactionRequest {
   Token auth_token = 1;
+  string signature = 2;
+  uint32 transaction_id = 3;
+  bytes body_bytes = 4;
 }
 
 message SignTransactionResponse {
   
+}
+
+message CompleteTransactionRequest {
+  Token auth_token = 1;
+  uint32 transaction_id = 2;
+  string final_hash = 3;
+}
+
+message CompleteTransactionResponse {
+
 }
 
 message GetChallengeRequest {
@@ -154,11 +192,18 @@ message GetTokenResponse {
 
 message TransactionsCountsRequest {
   Token auth_token = 1;
-  string multisig_address = 2;
+  string multisig_address = 2; // if unspecified, return transactions for all multisigs of this user
+  string chain_id = 3;
 }
 
-message TransactionsCountsResponse {
+message TransactionsCount {
   uint32 total = 1;
   uint32 pending = 2;
   uint32 executed = 3;
+  string type = 4;
+}
+
+message TransactionsCountsResponse {
+  TransactionsCount all = 1;
+  repeated TransactionsCount by_type = 2;
 }

@@ -121,3 +121,9 @@ export enum NetworkFeature {
   NameService = "NameService",
   Swap = "Swap",
 }
+
+export enum UserKind {
+  Single = "Single",
+  Multisig = "Multisig",
+  Organization = "Organization",
+}

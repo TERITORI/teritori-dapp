@@ -47,7 +47,7 @@ export type RootStackParamList = {
   RiotGameInventory: undefined;
 
   Swap: undefined;
-  Staking: undefined;
+  Staking: { multisigId?: string; daoId?: string };
 
   ComingSoon: undefined;
 
@@ -55,13 +55,9 @@ export type RootStackParamList = {
 
   Multisig: undefined;
   MultisigCreate: undefined;
-  MultisigWalletsManage: undefined;
-  MultisigWIPTransactions: { address: string; walletName?: string };
-  MultisigWalletDashboard: { address: string; walletName?: string };
-  MultisigTransfer: { address: string; walletName?: string };
-  MultisigDelegate: { address: string; walletName?: string };
-
+  MultisigWalletDashboard: { id: string };
   MultisigTransactions: { address: string; walletName?: string };
+
   Settings: undefined;
 
   OrganizationDeployer: undefined;
@@ -143,14 +139,8 @@ const navConfig: {
     // === Multisig
     Multisig: "multisig",
     MultisigCreate: "multisig/create",
-    MultisigWalletsManage: "multisig/manage-wallets",
-
-    MultisigWalletDashboard: "multisig/:address",
+    MultisigWalletDashboard: "multisig/:id",
     MultisigTransactions: "multisig/:address/transactions",
-    MultisigTransfer: "multisig/:address/transfer",
-    MultisigDelegate: "multisig/:address/delegate",
-    // TODO: What is it used for ?
-    MultisigWIPTransactions: "multisig/:address/transactions/WIP",
 
     // ==== Swap
     Swap: "swap",

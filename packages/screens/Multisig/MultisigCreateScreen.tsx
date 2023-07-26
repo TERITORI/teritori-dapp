@@ -1,18 +1,13 @@
-import { createMultisigThresholdPubkey, pubkeyToAddress } from "@cosmjs/amino";
+import { createMultisigThresholdPubkey } from "@cosmjs/amino";
 import React, { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { useSelector } from "react-redux";
 
-import { CheckLoadingModal } from "./components/CheckLoadingModal";
 import { MultisigSection } from "./components/MultisigSection";
 import { CreateMultisigWalletFormType } from "./types";
 import trashSVG from "../../../assets/icons/trash.svg";
 import walletInputSVG from "../../../assets/icons/wallet-input.svg";
-import {
-  MultisigServiceClientImpl,
-  GrpcWebImpl as MultisigGrpcWebImpl,
-} from "../../api/multisig/v1/multisig";
 import { BrandText } from "../../components/BrandText";
 import { NetworkIcon } from "../../components/NetworkIcon";
 import { SVG } from "../../components/SVG";
@@ -27,11 +22,17 @@ import {
 import { TextInputCustom } from "../../components/inputs/TextInputCustom";
 import { TextInputOutsideLabel } from "../../components/inputs/TextInputOutsideLabel";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
-import { useCreateMultisig, useMultisigHelpers } from "../../hooks/multisig";
+import { useMultisigHelpers } from "../../hooks/multisig";
+import { useMultisigClient } from "../../hooks/multisig/useMultisigClient";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { NetworkKind, selectableCosmosNetworks } from "../../networks";
+import {
+  NetworkKind,
+  getUserId,
+  selectableCosmosNetworks,
+} from "../../networks";
 import { selectMultisigToken } from "../../store/slices/settings";
+import { RootState } from "../../store/store";
 import {
   getNSAddress,
   patternOnlyNumbers,
@@ -57,7 +58,10 @@ import { layout } from "../../utils/style/layout";
 const emptyPubKeyGroup = () => ({ address: "", compressedPubkey: "" });
 
 export const MultisigCreateScreen = () => {
-  const authToken = useSelector(selectMultisigToken);
+  const { selectedWallet } = useSelectedWallet();
+  const authToken = useSelector((state: RootState) =>
+    selectMultisigToken(state, selectedWallet?.address)
+  );
   const { control, handleSubmit, watch, setValue } =
     useForm<CreateMultisigWalletFormType>();
   const [addressIndexes, setAddressIndexes] = useState([
@@ -67,21 +71,20 @@ export const MultisigCreateScreen = () => {
   const navigation = useAppNavigation();
   const signatureRequiredValue = watch("signatureRequired");
   const { getPubkeyFromNode } = useMultisigHelpers();
-  const { mutate, isLoading, data } = useCreateMultisig();
-  const selectedNetworkInfo = useSelectedNetworkInfo();
-  const { selectedWallet } = useSelectedWallet();
   const defaultNbSignaturesRequired = useMemo(
     () => addressIndexes.length.toString(),
     [addressIndexes.length]
   );
+  const multisigClient = useMultisigClient();
+
+  const globalSelectedNetwork = useSelectedNetworkInfo();
   const [selectedInputData, setSelectedInputData] = useState<SelectInputData>({
-    label: selectedNetworkInfo?.displayName || "",
-    value: selectedNetworkInfo?.id || "",
+    label: globalSelectedNetwork?.displayName || "",
+    value: globalSelectedNetwork?.id || "",
     iconComponent: (
-      <NetworkIcon networkId={selectedNetworkInfo?.id} size={16} />
+      <NetworkIcon networkId={globalSelectedNetwork?.id} size={16} />
     ),
   });
-  //TODO: Later: Handle more networks
   const selectedNetwork = useMemo(
     () =>
       selectableCosmosNetworks.find((n) => selectedInputData.value === n.id),
@@ -101,6 +104,7 @@ export const MultisigCreateScreen = () => {
 
   const onSubmit = async ({
     signatureRequired,
+    name,
   }: CreateMultisigWalletFormType) => {
     if (selectedNetwork?.chainId && selectedNetwork?.addressPrefix) {
       const compressedPubkeys = addressIndexes.map(
@@ -117,32 +121,17 @@ export const MultisigCreateScreen = () => {
         parseInt(signatureRequired, 10)
       );
 
-      const rpc = new MultisigGrpcWebImpl("http://localhost:9091", {
-        debug: false,
-      });
-      const client = new MultisigServiceClientImpl(rpc);
-
-      console.log("multisigPubkey", multisigPubkey);
-
-      const res = await client.CreateOrJoinMultisig({
+      const res = await multisigClient.CreateOrJoinMultisig({
         authToken,
         chainId: selectedNetwork.chainId,
         bech32Prefix: selectedNetwork.addressPrefix,
         multisigPubkeyJson: JSON.stringify(multisigPubkey),
-        name: "Multisig #42",
+        name,
       });
 
-      console.log("res", res);
-
-      /*
-      mutate({
-        compressedPubkeys,
-        chainId: selectedNetwork.chainId,
-        addressPrefix: selectedNetwork?.addressPrefix,
-        threshold: parseInt(signatureRequired, 10),
-        userAddresses,
+      navigation.navigate("MultisigWalletDashboard", {
+        id: getUserId(selectedNetwork?.id, res.multisigAddress),
       });
-      */
     }
   };
 
@@ -173,9 +162,12 @@ export const MultisigCreateScreen = () => {
       tempPubkeys[index].address = address;
       tempPubkeys[index].compressedPubkey = pubkey;
       setAddressIndexes(tempPubkeys);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      return error.message;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return error.message;
+      } else {
+        return `${error}`;
+      }
     }
   };
 
@@ -212,7 +204,19 @@ export const MultisigCreateScreen = () => {
             </BrandText>
           </MultisigSection>
           <SpacerColumn size={3} />
-
+          <TextInputCustom<CreateMultisigWalletFormType>
+            name="name"
+            control={control}
+            variant="labelOutside"
+            noBrokenCorners
+            label="Multisig name"
+            rules={{
+              required: true,
+            }}
+            placeHolder="Type the name of the multisig"
+            iconSVG={walletInputSVG}
+          />
+          <SpacerColumn size={3} />
           <SelectInput
             data={selectableCosmosNetworks.map((n) => {
               return {
@@ -343,13 +347,6 @@ export const MultisigCreateScreen = () => {
           </View>
         </View>
       </ScrollView>
-      <CheckLoadingModal
-        isVisible={isLoading}
-        onComplete={() => {
-          data &&
-            navigation.navigate("MultisigWalletDashboard", { address: data });
-        }}
-      />
     </ScreenContainer>
   );
 };

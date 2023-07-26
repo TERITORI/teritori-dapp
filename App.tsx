@@ -10,12 +10,13 @@ import { StatusBar } from "expo-status-bar";
 import { MetaMaskProvider } from "metamask-react";
 import React from "react";
 import { useForm, FormProvider } from "react-hook-form";
-import { Platform } from "react-native";
+import { Platform, View } from "react-native";
 import { MenuProvider } from "react-native-popup-menu";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import { Provider as ReduxProvider } from "react-redux";
 
+import { BrandText } from "./packages/components/BrandText";
 import { Navigator } from "./packages/components/navigation/Navigator";
 import { DropdownsContextProvider } from "./packages/context/DropdownsProvider";
 import { FeedbacksContextProvider } from "./packages/context/FeedbacksProvider";
@@ -49,38 +50,70 @@ export default function App() {
   }
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <FormProvider<DefaultForm> {...methods}>
-        <MetaMaskProvider>
-          <NavigationContainer linking={linking}>
-            <SafeAreaProvider>
-              <ReduxProvider store={store}>
-                <FeedbacksContextProvider>
-                  <DropdownsContextProvider>
-                    <WalletsProvider>
-                      <SearchBarContextProvider>
-                        <MultisigContextProvider>
-                          <TransactionModalsProvider>
-                            <TNSContextProvider>
-                              <TNSMetaDataListContextProvider>
-                                <MenuProvider>
-                                  <StatusBar style="inverted" />
-                                  <Navigator />
-                                  <Toast autoHide visibilityTime={2000} />
-                                </MenuProvider>
-                              </TNSMetaDataListContextProvider>
-                            </TNSContextProvider>
-                          </TransactionModalsProvider>
-                        </MultisigContextProvider>
-                      </SearchBarContextProvider>
-                    </WalletsProvider>
-                  </DropdownsContextProvider>
-                </FeedbacksContextProvider>
-              </ReduxProvider>
-            </SafeAreaProvider>
-          </NavigationContainer>
-        </MetaMaskProvider>
-      </FormProvider>
-    </QueryClientProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <FormProvider<DefaultForm> {...methods}>
+          <MetaMaskProvider>
+            <NavigationContainer linking={linking}>
+              <SafeAreaProvider>
+                <ReduxProvider store={store}>
+                  <FeedbacksContextProvider>
+                    <DropdownsContextProvider>
+                      <WalletsProvider>
+                        <SearchBarContextProvider>
+                          <MultisigContextProvider>
+                            <TransactionModalsProvider>
+                              <TNSContextProvider>
+                                <TNSMetaDataListContextProvider>
+                                  <MenuProvider>
+                                    <StatusBar style="inverted" />
+                                    <Navigator />
+                                    <Toast autoHide visibilityTime={2000} />
+                                  </MenuProvider>
+                                </TNSMetaDataListContextProvider>
+                              </TNSContextProvider>
+                            </TransactionModalsProvider>
+                          </MultisigContextProvider>
+                        </SearchBarContextProvider>
+                      </WalletsProvider>
+                    </DropdownsContextProvider>
+                  </FeedbacksContextProvider>
+                </ReduxProvider>
+              </SafeAreaProvider>
+            </NavigationContainer>
+          </MetaMaskProvider>
+        </FormProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
+}
+
+class ErrorBoundary extends React.Component {
+  state: { error?: unknown; info?: any };
+  constructor(props: object) {
+    super(props);
+    this.state = {};
+  }
+
+  static getDerivedStateFromError(error: unknown) {
+    return { error };
+  }
+
+  componentDidCatch(error: unknown, info: any) {
+    this.setState({ error, info });
+  }
+
+  render() {
+    if (this.state.error) {
+      // You can render any custom fallback UI
+      return (
+        <View style={{ backgroundColor: "black", height: "100%", padding: 32 }}>
+          <BrandText>{`${this.state.error}`}</BrandText>
+          <BrandText>{`${this.state.info?.componentStack}`}</BrandText>
+        </View>
+      );
+    }
+
+    return this.props.children;
+  }
 }

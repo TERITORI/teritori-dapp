@@ -1,35 +1,41 @@
 import { useQuery } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 
-import {
-  MultisigServiceClientImpl,
-  GrpcWebImpl as MultisigGrpcWebImpl,
-} from "../../api/multisig/v1/multisig";
+import { useMultisigClient } from "./useMultisigClient";
+import { JoinState } from "../../api/multisig/v1/multisig";
 import { NetworkKind, parseUserId } from "../../networks";
 import { selectMultisigToken } from "../../store/slices/settings";
+import { RootState } from "../../store/store";
 
 const batchSize = 100;
 
-export const useUserMultisigs = (userId: string | undefined) => {
-  const authToken = useSelector(selectMultisigToken);
+export const useUserMultisigs = (
+  userId: string | undefined,
+  joinState?: JoinState
+) => {
+  const [network, userAddress] = parseUserId(userId);
+  const authToken = useSelector((state: RootState) =>
+    selectMultisigToken(state, userAddress)
+  );
+  const multisigClient = useMultisigClient();
   const { data, ...other } = useQuery(
-    ["userMultisigs", userId, authToken],
+    ["userMultisigs", userId, authToken, multisigClient, joinState],
     async () => {
-      const [network] = parseUserId(userId);
       if (network?.kind !== NetworkKind.Cosmos) {
         return [];
       }
-      const rpc = new MultisigGrpcWebImpl("http://localhost:9091", {
-        debug: false,
-      });
-      const client = new MultisigServiceClientImpl(rpc);
-      const { multisigs } = await client.Multisigs({
+      if (!authToken) {
+        return [];
+      }
+      const { multisigs } = await multisigClient.Multisigs({
         limit: batchSize,
         authToken,
+        joinState,
         chainId: network.chainId,
       });
       return multisigs;
-    }
+    },
+    { initialData: [] }
   );
   return { multisigs: data || [], ...other };
 };

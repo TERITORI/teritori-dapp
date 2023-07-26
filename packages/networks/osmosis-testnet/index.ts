@@ -4,7 +4,7 @@ import { NetworkFeature, NetworkInfo, NetworkKind } from "../types";
 export const osmosisTestnetNetwork: NetworkInfo = {
   id: "osmosis-testnet",
   kind: NetworkKind.Cosmos,
-  chainId: "osmo-test-4",
+  chainId: "osmo-test-5",
   displayName: "Osmosis Testnet",
   icon: "icons/networks/osmosis.svg",
   features: [NetworkFeature.Swap],
@@ -18,8 +18,8 @@ export const osmosisTestnetNetwork: NetworkInfo = {
   testnet: true,
   backendEndpoint: "https://dapp-backend.testnet.teritori.com",
   addressPrefix: "osmo",
-  restEndpoint: "https://lcd-test.osmosis.zone",
-  rpcEndpoint: "https://rpc-test.osmosis.zone:443",
+  restEndpoint: "https://lcd.testnet.osmosis.zone",
+  rpcEndpoint: "https://rpc.testnet.osmosis.zone:443",
   stakeCurrency: "uosmo",
   gasPriceStep: {
     low: 0.0,

@@ -96,19 +96,20 @@ export const NetworkSelectorMenu: FC<{
         .map(getNetwork)
         .filter((n): n is NetworkInfo => !!n)
         .filter((network) => {
-          return testnetsEnabled || !network.testnet;
-        })
-        .map((network, index) => {
-          const selectable =
-            !!selectableNetworks.find((sn) => sn.id === network.id) && // check that it's in the selectable list
-            selectedNetworkInfo?.id !== network.id && // check that it's not already selected
+          return (
+            (testnetsEnabled || !network.testnet) &&
             (!forceNetworkId || network.id === forceNetworkId) && // check that it's the forced network id if forced to
             (!forceNetworkKind || network.kind === forceNetworkKind) && // check that it's the correct network kind if forced to
             (!forceNetworkFeatures ||
               forceNetworkFeatures.every((feature) =>
                 network.features.includes(feature)
-              ));
-
+              )) &&
+            !!selectableNetworks.find((sn) => sn.id === network.id) && // check that it's in the selectable list
+            selectedNetworkInfo?.id !== network.id // check that it's not already selected
+          );
+        })
+        .map((network, index) => {
+          const selectable = true;
           return (
             <TouchableOpacity
               disabled={!selectable}

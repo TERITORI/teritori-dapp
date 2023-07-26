@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useUserMultisigs } from "./useUserMultisigs";
 import useSelectedWallet from "../useSelectedWallet";
 
-export const useMultisigValidator = (multisigAddress: string) => {
+export const useMultisigValidator = (multisigAddress: string | undefined) => {
   const { selectedWallet: wallet } = useSelectedWallet();
   const {
     multisigs: data,

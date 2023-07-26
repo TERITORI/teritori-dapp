@@ -2,6 +2,10 @@ import {
   CosmWasmClient,
   SigningCosmWasmClient,
 } from "@cosmjs/cosmwasm-stargate";
+import {
+  createWasmAminoConverters,
+  wasmTypes,
+} from "@cosmjs/cosmwasm-stargate/build/modules";
 import { Decimal } from "@cosmjs/math";
 import { Registry } from "@cosmjs/proto-signing";
 import {
@@ -9,6 +13,16 @@ import {
   StargateClient,
   GasPrice,
   defaultRegistryTypes,
+  AminoTypes,
+  AminoConverters,
+  createAuthzAminoConverters,
+  createBankAminoConverters,
+  createDistributionAminoConverters,
+  createFeegrantAminoConverters,
+  createGovAminoConverters,
+  createIbcAminoConverters,
+  createStakingAminoConverters,
+  createVestingAminoConverters,
 } from "@cosmjs/stargate";
 import { ChainInfo, Currency as KeplrCurrency } from "@keplr-wallet/types";
 
@@ -54,8 +68,33 @@ export const allNetworks = [
   // solanaNetwork,
 ];
 
-const pbTypesRegistry = new Registry(defaultRegistryTypes);
-pbTypesRegistry.register("/teritori.mint.v1beta1.MsgBurnTokens", MsgBurnTokens);
+export const cosmosTypesRegistry = new Registry([
+  ...defaultRegistryTypes,
+  ...wasmTypes,
+]);
+cosmosTypesRegistry.register(
+  "/teritori.mint.v1beta1.MsgBurnTokens",
+  MsgBurnTokens
+);
+
+// FIXME: upgrade stargate since it exposes this function in new versions
+export function createDefaultAminoConverters(): AminoConverters {
+  return {
+    ...createAuthzAminoConverters(),
+    ...createBankAminoConverters(),
+    ...createDistributionAminoConverters(),
+    ...createGovAminoConverters(),
+    ...createStakingAminoConverters(""),
+    ...createIbcAminoConverters(),
+    ...createFeegrantAminoConverters(),
+    ...createVestingAminoConverters(),
+  };
+}
+
+export const cosmosAminoTypes = new AminoTypes({
+  ...createDefaultAminoConverters(),
+  ...createWasmAminoConverters(),
+});
 
 export const getCurrency = (
   networkId: string | undefined,
@@ -231,10 +270,11 @@ export const getCosmosNetwork = (
 };
 
 export const getCosmosNetworkByChainId = (chainId: string | undefined) => {
-  return allNetworks.find((n) => {
+  return allNetworks.find((n): n is CosmosNetworkInfo => {
     if (n.kind === NetworkKind.Cosmos && n.chainId === chainId) {
-      return n;
+      return true;
     }
+    return false;
   });
 };
 
@@ -347,7 +387,7 @@ export const keplrChainInfoFromNetworkInfo = (
   };
 };
 
-const cosmosNetworkGasPrice = (
+export const cosmosNetworkGasPrice = (
   network: CosmosNetworkInfo,
   kind: "low" | "average" | "high"
 ) => {
@@ -375,6 +415,18 @@ export const getKeplrSigner = async (networkId: string) => {
   return keplr.getOfflineSignerAuto(network.chainId);
 };
 
+export const getKeplrOnlyAminoSigner = async (networkId: string) => {
+  const network = mustGetCosmosNetwork(networkId);
+
+  const keplr = getKeplr();
+
+  await keplr.experimentalSuggestChain(keplrChainInfoFromNetworkInfo(network));
+
+  await keplr.enable(network.chainId);
+
+  return keplr.getOfflineSignerOnlyAmino(network.chainId);
+};
+
 export const getKeplrSigningStargateClient = async (
   networkId: string,
   gasPriceKind: "low" | "average" | "high" = "average"
@@ -393,7 +445,32 @@ export const getKeplrSigningStargateClient = async (
     signer,
     {
       gasPrice,
-      registry: pbTypesRegistry,
+      registry: cosmosTypesRegistry,
+      aminoTypes: cosmosAminoTypes,
+    }
+  );
+};
+
+export const getKeplrOnlyAminoStargateClient = async (
+  networkId: string,
+  gasPriceKind: "low" | "average" | "high" = "average"
+) => {
+  const network = mustGetCosmosNetwork(networkId);
+
+  const gasPrice = cosmosNetworkGasPrice(network, gasPriceKind);
+  if (!gasPrice) {
+    throw new Error("gas price not found");
+  }
+
+  const signer = await getKeplrOnlyAminoSigner(networkId);
+
+  return await SigningStargateClient.connectWithSigner(
+    network.rpcEndpoint,
+    signer,
+    {
+      gasPrice,
+      registry: cosmosTypesRegistry,
+      aminoTypes: cosmosAminoTypes,
     }
   );
 };

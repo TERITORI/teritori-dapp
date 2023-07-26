@@ -1,102 +1,119 @@
 import React, { FC, useMemo, useState } from "react";
-import { FlatList, StyleSheet, View } from "react-native";
+import {
+  ActivityIndicator,
+  FlatList,
+  StyleSheet,
+  View,
+  useWindowDimensions,
+} from "react-native";
 
-import { useGetMultisigTransactionsCountsQuery } from "../../../api/multisig";
+import {
+  ExecutionState,
+  TransactionsCount,
+} from "../../../api/multisig/v1/multisig";
 import { BrandText } from "../../../components/BrandText";
 import { EmptyList } from "../../../components/EmptyList";
-import { AnimationFadeIn } from "../../../components/animations";
 import { SpacerColumn } from "../../../components/spacer";
 import { Tabs } from "../../../components/tabs/Tabs";
 import {
-  useFetchMultisigTransactionsById,
+  useMultisigTransactions,
+  useMultisigTransactionsCounts,
   useMultisigValidator,
 } from "../../../hooks/multisig";
-import { getCosmosNetwork, parseUserId } from "../../../networks";
-import { fetcherConfig } from "../../../utils/faunaDB/multisig/multisigGraphql";
+import { secondaryColor } from "../../../utils/style/colors";
 import { fontSemibold28 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+import { headerHeight, layout } from "../../../utils/style/layout";
 import { ProposalTransactionItem } from "../../OrganizerDeployer/components/ProposalTransactionItem";
-import { MultisigTransactionType } from "../types";
 
 const MIN_ITEMS_PER_PAGE = 50;
 
 export const Transactions: FC<{
-  multisigId?: string;
+  chainId: string | undefined;
+  multisigAddress?: string;
+  userAddress?: string;
   title?: string;
-}> = ({ multisigId, title }) => {
-  const [network, multisigAddress] = parseUserId(multisigId);
-  const cosmosNetwork = getCosmosNetwork(network?.id);
+}> = ({ chainId, multisigAddress, title, userAddress }) => {
+  const { height: windowHeight } = useWindowDimensions();
   const [selectedTab, setSelectedTab] = useState<keyof typeof tabs>("all");
-  const { data: countsData } = useGetMultisigTransactionsCountsQuery(
-    fetcherConfig,
-    {
-      chainId: cosmosNetwork?.chainId || "",
-      address: multisigAddress,
-    },
-    { enabled: !!cosmosNetwork?.chainId && !!multisigAddress }
+
+  const { transactionsCounts: counts } = useMultisigTransactionsCounts(
+    chainId,
+    multisigAddress
   );
-  const counts = countsData?.counts;
   const { isUserMultisig } = useMultisigValidator(multisigAddress);
   const tabs = useMemo(
     () => ({
-      // TODO: currentProposals must be proposals than require approbations or broadcast
       currentProposals: {
         name: "Current proposals",
-        badgeCount: (counts?.total || 0) - (counts?.executed || 0),
-        value: undefined,
+        badgeCount: counts?.all?.pending || 0,
+        types: [],
+        state: ExecutionState.EXECUTION_STATE_PENDING,
       },
       all: {
         name: "All",
-        badgeCount: counts?.total || 0,
-        value: undefined,
+        badgeCount: counts?.all?.total || 0,
+        types: [],
+        state: ExecutionState.EXECUTION_STATE_UNSPECIFIED,
       },
       // TODO: transferReceived must be the transfers sent to the multisig wallet
       transferReceived: {
         name: "Transfer received",
-        // badgeCount: countList ? countList[2] : 0,
         badgeCount: 0,
-        value: undefined,
         disabled: true,
+        types: [],
+        state: ExecutionState.EXECUTION_STATE_UNSPECIFIED,
       },
       transferEmitted: {
         name: "Transfer emitted",
-        badgeCount: 0,
-        value: MultisigTransactionType.TRANSFER,
+        ...filteredTabValues(
+          counts?.byType || [],
+          ExecutionState.EXECUTION_STATE_UNSPECIFIED,
+          ["/cosmos.bank.v1beta1.MsgSend"]
+        ),
       },
       stake: {
-        name: "Stake",
-        badgeCount: 0,
-        value: MultisigTransactionType.STAKE,
+        name: "Staking",
+        ...filteredTabValues(
+          counts?.byType || [],
+          ExecutionState.EXECUTION_STATE_UNSPECIFIED,
+          [
+            "/cosmos.staking.v1beta1.MsgDelegate",
+            "/cosmos.staking.v1beta1.MsgUndelegate",
+            "/cosmos.staking.v1beta1.MsgBeginRedelegate",
+          ]
+        ),
       },
       // collectionLaunch: {
       //   name: "Collection launch",
       //   badgeCount: countList ? countList[5] : 0,
       //   value: MultisigTransactionType.LAUNCH_NFT_COLLECTION,
       // },
-      postCreation: {
-        name: "Post creation",
-        badgeCount: 0,
-        value: MultisigTransactionType.CREATE_NEW_POST,
-      },
-      profileManagement: {
-        name: "Profile management",
-        badgeCount: 0,
-        value: MultisigTransactionType.MANAGE_PUBLIC_PROFILE,
-      },
-      nameRegister: {
-        name: "Name register",
-        badgeCount: 0,
-        value: MultisigTransactionType.REGISTER_TNS,
+      contracts: {
+        name: "Contracts",
+        ...filteredTabValues(
+          counts?.byType || [],
+          ExecutionState.EXECUTION_STATE_UNSPECIFIED,
+          [
+            "/cosmwasm.wasm.v1.MsgInstantiateContract",
+            "/cosmwasm.wasm.v1.MsgExecuteContract",
+          ]
+        ),
       },
     }),
-    [counts?.executed, counts?.total]
+    [counts]
   );
 
   const {
     data,
     isLoading: txLoading,
     fetchNextPage: fetchNextTransactionsPage,
-  } = useFetchMultisigTransactionsById(multisigId || "");
+  } = useMultisigTransactions(
+    chainId,
+    multisigAddress,
+    userAddress,
+    tabs[selectedTab].types,
+    tabs[selectedTab].state
+  );
 
   const list = useMemo(() => {
     if (data)
@@ -109,7 +126,7 @@ export const Transactions: FC<{
 
   return (
     <>
-      <View style={styles.header}>
+      <View>
         {title && (
           <>
             <BrandText style={fontSemibold28}>{title}</BrandText>
@@ -129,22 +146,19 @@ export const Transactions: FC<{
 
       <FlatList
         data={list}
-        renderItem={({ item, index }) => (
-          <AnimationFadeIn delay={index * 50}>
-            <ProposalTransactionItem
-              {...item}
-              isUserMultisig={isUserMultisig}
-            />
-          </AnimationFadeIn>
+        renderItem={({ item }) => (
+          <ProposalTransactionItem {...item} isUserMultisig={isUserMultisig} />
         )}
         initialNumToRender={MIN_ITEMS_PER_PAGE}
-        keyExtractor={(item) => item._id}
+        keyExtractor={(item) => item.id.toString()}
         onEndReached={() => fetchNextTransactionsPage()}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.container}
-        ListEmptyComponent={() =>
+        ListEmptyComponent={
           txLoading ? null : <EmptyList text="No proposals" />
         }
+        ListFooterComponent={<ListFooter isTransactionsLoading={txLoading} />}
+        style={{ height: windowHeight - headerHeight - 70 }}
       />
     </>
   );
@@ -152,12 +166,48 @@ export const Transactions: FC<{
 
 const styles = StyleSheet.create({
   container: {
-    padding: layout.contentPadding,
-    paddingTop: 0,
+    paddingBottom: layout.contentPadding,
     flex: 1,
   },
-  header: {
-    marginHorizontal: layout.contentPadding,
-    marginTop: layout.topContentPaddingWithHeading,
-  },
 });
+
+const filteredTabValues = (
+  counts: TransactionsCount[],
+  state: ExecutionState,
+  types: string[]
+) => {
+  const result = {
+    badgeCount: 0,
+    state,
+    types,
+  };
+  for (const count of counts) {
+    if (types.length === 0 || types.includes(count.type)) {
+      switch (state) {
+        case ExecutionState.EXECUTION_STATE_UNSPECIFIED:
+          result.badgeCount += count.total;
+          break;
+        case ExecutionState.EXECUTION_STATE_PENDING:
+          result.badgeCount += count.pending;
+          break;
+        case ExecutionState.EXECUTION_STATE_EXECUTED:
+          result.badgeCount += count.executed;
+          break;
+      }
+    }
+  }
+  return result;
+};
+
+const ListFooter: React.FC<{ isTransactionsLoading: boolean }> = ({
+  isTransactionsLoading,
+}) => (
+  <View>
+    {isTransactionsLoading && (
+      <>
+        <SpacerColumn size={4} />
+        <ActivityIndicator size="large" color={secondaryColor} />
+      </>
+    )}
+  </View>
+);

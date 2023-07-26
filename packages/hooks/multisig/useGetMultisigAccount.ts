@@ -1,13 +1,8 @@
-import {
-  MultisigThresholdPubkey,
-  Coin,
-  isMultisigThresholdPubkey,
-} from "@cosmjs/amino";
+import { Coin, isMultisigThresholdPubkey } from "@cosmjs/amino";
 import { StargateClient, Account } from "@cosmjs/stargate";
-import { QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
+import { QueryClient, useQuery } from "@tanstack/react-query";
 
 import {
-  GetMultisigQuery,
   GetMultisigQueryVariables,
   useGetMultisigQuery,
 } from "../../api/multisig";
@@ -50,14 +45,12 @@ export const getMultisigAccount = async (
   };
 };
 
-export const useGetMultisigAccount = (userId: string) => {
+export const useGetMultisigAccount = (userId: string | undefined) => {
   const { setToastError } = useFeedbacks();
-  const queryClient = useQueryClient();
   //  request
   const request = useQuery<{
-    accountData: [MultisigThresholdPubkey, Account | null];
+    accountData: [Account | null];
     holdings: Coin;
-    dbData: GetMultisigQuery["multisig"];
   } | null>(
     ["multisig-account", userId],
     async () => {
@@ -85,43 +78,9 @@ export const useGetMultisigAccount = (userId: string) => {
         return null;
       }
 
-      const vars: GetMultisigQueryVariables = {
-        address: userAddress,
-        chainId: network.chainId,
-      };
-      const res = await queryClient.fetchQuery(
-        useGetMultisigQuery.getKey(vars),
-        useGetMultisigQuery.fetcher(
-          {
-            endpoint: "https://graphql.eu.fauna.com/graphql",
-            fetchParams: {
-              headers: {
-                Authorization: `Bearer ${process.env.FAUNADB_SECRET}`,
-              },
-            },
-          },
-          vars
-        )
-      );
-
-      console.log("res", res);
-
-      const pubkeyJSON = res.multisig?.pubkeyJSON;
-      if (!pubkeyJSON) {
-        setToastError({
-          title: "Something went wrong!",
-          message:
-            "Multisig has no pubkey on node, and was not created using this tool.",
-        });
-        return null;
-      }
-      const pubkey = JSON.parse(pubkeyJSON);
-      const data = res.multisig;
-
       return {
-        accountData: [pubkey, accountOnChain],
+        accountData: [accountOnChain],
         holdings: tempHoldings,
-        dbData: data,
       };
     },
     {}

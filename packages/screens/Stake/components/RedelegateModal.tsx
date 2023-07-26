@@ -1,6 +1,5 @@
 import { Decimal } from "@cosmjs/math";
-import { isDeliverTxFailure } from "@cosmjs/stargate";
-import { MsgBeginRedelegate } from "osmojs/types/codegen/cosmos/staking/v1beta1/tx";
+import { MsgBeginRedelegateEncodeObject } from "@cosmjs/stargate";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Pressable, StyleSheet, View } from "react-native";
@@ -18,12 +17,13 @@ import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useCosmosValidatorBondedAmount } from "../../../hooks/useCosmosValidatorBondedAmount";
 import { useErrorHandler } from "../../../hooks/useErrorHandler";
-import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { useRunOrProposeTransaction } from "../../../hooks/useRunOrProposeTransaction";
 import { useValidators } from "../../../hooks/useValidators";
 import {
-  getKeplrSigningStargateClient,
+  UserKind,
   getStakingCurrency,
   keplrCurrencyFromNativeCurrencyInfo,
+  parseUserId,
 } from "../../../networks";
 import { prettyPrice } from "../../../utils/coins";
 import {
@@ -45,17 +45,22 @@ interface RedelegateModalProps {
   onClose?: () => void;
   visible?: boolean;
   validator?: ValidatorInfo;
+  userId: string | undefined;
+  userKind: UserKind;
 }
 
 export const RedelegateModal: React.FC<RedelegateModalProps> = ({
   onClose,
   visible,
   validator,
+  userId,
+  userKind,
 }) => {
-  const { selectedWallet: wallet } = useSelectedWallet();
-  const networkId = wallet?.networkId || "";
+  const runOrProposeTransaction = useRunOrProposeTransaction(userId, userKind);
+  const [network, userAddress] = parseUserId(userId);
+  const networkId = network?.id;
   const { bondedTokens, refreshBondedTokens } = useCosmosValidatorBondedAmount(
-    wallet?.userId,
+    userId,
     validator?.address
   );
   const [selectedValidator, setSelectedValidator] = useState<ValidatorInfo>();
@@ -102,14 +107,6 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
           });
           return;
         }
-        if (!wallet?.connected || !wallet.address) {
-          console.warn("invalid wallet", wallet);
-          setToastError({
-            title: "Invalid wallet",
-            message: "",
-          });
-          return;
-        }
         if (!validator) {
           setToastError({
             title: "Internal error",
@@ -124,40 +121,22 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
           });
           return;
         }
-        const client = await getKeplrSigningStargateClient(wallet.networkId);
-        const msg: MsgBeginRedelegate = {
-          delegatorAddress: wallet.address,
-          validatorSrcAddress: validator.address,
-          validatorDstAddress: selectedValidator.address,
-          amount: {
-            amount: Decimal.fromUserInput(
-              formData.amount,
-              stakingCurrency.decimals
-            ).atomics,
-            denom: stakingCurrency.denom,
+        const msg: MsgBeginRedelegateEncodeObject = {
+          typeUrl: "/cosmos.staking.v1beta1.MsgBeginRedelegate",
+          value: {
+            delegatorAddress: userAddress,
+            validatorSrcAddress: validator.address,
+            validatorDstAddress: selectedValidator.address,
+            amount: {
+              amount: Decimal.fromUserInput(
+                formData.amount,
+                stakingCurrency.decimals
+              ).atomics,
+              denom: stakingCurrency.denom,
+            },
           },
         };
-
-        const txResponse = await client.signAndBroadcast(
-          wallet.address,
-          [
-            {
-              typeUrl: "/cosmos.staking.v1beta1.MsgBeginRedelegate",
-              value: msg,
-            },
-          ],
-          "auto"
-        );
-        if (isDeliverTxFailure(txResponse)) {
-          onClose && onClose();
-          console.error("tx failed", txResponse);
-          setToastError({
-            title: "Transaction failed",
-            message: txResponse.rawLog || "",
-          });
-          return;
-        }
-
+        await runOrProposeTransaction({ msgs: [msg] });
         setToastSuccess({ title: "Redelegation success", message: "" });
         refreshBondedTokens();
         onClose && onClose();
@@ -170,15 +149,16 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
       }
     },
     [
-      validator,
       onClose,
       refreshBondedTokens,
+      runOrProposeTransaction,
       selectedValidator,
       setToastError,
       setToastSuccess,
       stakingCurrency,
       triggerError,
-      wallet,
+      userAddress,
+      validator,
     ]
   );
 
@@ -250,6 +230,8 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
         <ValidatorsTable
           validators={modifiedValidators}
           style={{ height: 200 }}
+          userId={userId}
+          userKind={userKind}
           actions={(validator) => {
             if (validator.address === selectedValidator?.address) {
               return [
