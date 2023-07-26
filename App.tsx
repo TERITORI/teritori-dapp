@@ -11,6 +11,7 @@ import { MetaMaskProvider } from "metamask-react";
 import React from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { Platform } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { MenuProvider } from "react-native-popup-menu";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider as ReduxProvider } from "react-redux";
@@ -47,35 +48,37 @@ export default function App() {
   }
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <FormProvider<DefaultForm> {...methods}>
-        <MetaMaskProvider>
-          <NavigationContainer linking={linking}>
-            <SafeAreaProvider>
-              <ReduxProvider store={store}>
-                <FeedbacksContextProvider>
-                  <DropdownsContextProvider>
-                    <WalletsProvider>
-                      <SearchBarContextProvider>
-                        <TransactionModalsProvider>
-                          <TNSContextProvider>
-                            <TNSMetaDataListContextProvider>
-                              <MenuProvider>
-                                <StatusBar style="inverted" />
-                                <Navigator />
-                              </MenuProvider>
-                            </TNSMetaDataListContextProvider>
-                          </TNSContextProvider>
-                        </TransactionModalsProvider>
-                      </SearchBarContextProvider>
-                    </WalletsProvider>
-                  </DropdownsContextProvider>
-                </FeedbacksContextProvider>
-              </ReduxProvider>
-            </SafeAreaProvider>
-          </NavigationContainer>
-        </MetaMaskProvider>
-      </FormProvider>
-    </QueryClientProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <QueryClientProvider client={queryClient}>
+        <FormProvider<DefaultForm> {...methods}>
+          <MetaMaskProvider>
+            <NavigationContainer linking={linking}>
+              <SafeAreaProvider>
+                <ReduxProvider store={store}>
+                  <FeedbacksContextProvider>
+                    <DropdownsContextProvider>
+                      <WalletsProvider>
+                        <SearchBarContextProvider>
+                          <TransactionModalsProvider>
+                            <TNSContextProvider>
+                              <TNSMetaDataListContextProvider>
+                                <MenuProvider>
+                                  <StatusBar style="inverted" />
+                                  <Navigator />
+                                </MenuProvider>
+                              </TNSMetaDataListContextProvider>
+                            </TNSContextProvider>
+                          </TransactionModalsProvider>
+                        </SearchBarContextProvider>
+                      </WalletsProvider>
+                    </DropdownsContextProvider>
+                  </FeedbacksContextProvider>
+                </ReduxProvider>
+              </SafeAreaProvider>
+            </NavigationContainer>
+          </MetaMaskProvider>
+        </FormProvider>
+      </QueryClientProvider>
+    </GestureHandlerRootView>
   );
 }
