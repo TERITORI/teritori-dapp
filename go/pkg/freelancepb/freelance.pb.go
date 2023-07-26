@@ -289,6 +289,20 @@ func (x *GigListRequest) GetSubcategory() string {
 	return ""
 }
 
+func (x *GigListRequest) GetCategory() string {
+	if x != nil {
+		return x.Category
+	}
+	return ""
+}
+
+func (x *GigListRequest) GetSubcategory() string {
+	if x != nil {
+		return x.Subcategory
+	}
+	return ""
+}
+
 func (x *GigListRequest) GetLimit() int32 {
 	if x != nil {
 		return x.Limit
