@@ -173,6 +173,7 @@ export const ResourceBox: React.FC<{ data: Resources }> = ({ data }) => {
   const isMobile = useIsMobile();
   const isVideo = () => data.category.some((item) => item.text === "video");
   const [isPlaying, setIsPlaying] = useState(false);
+  const [loadVideo, setLoadVideo] = useState(false);
 
   return (
     <TertiaryBox
@@ -191,35 +192,19 @@ export const ResourceBox: React.FC<{ data: Resources }> = ({ data }) => {
           height: 330,
         }}
       >
-        {isVideo() && (
-          <Video
-            style={{
-              zIndex: 1,
-              height: 330,
-              left: 0,
-              position: "absolute",
-            }}
-            source={{
-              uri: data.url,
-            }}
-            useNativeControls
-            resizeMode={ResizeMode.COVER}
-            onPlaybackStatusUpdate={(e) => {
-              if (e.isLoaded) {
-                setIsPlaying(e.isPlaying);
-              }
-            }}
-          />
-        )}
-        {!isVideo() && (
-          <Pressable
-            style={{
-              zIndex: 2,
-            }}
-            onPress={() => {
-              Linking.openURL(data.url);
-            }}
-          >
+        <Pressable
+          style={{
+            zIndex: 2,
+          }}
+          onPress={() => {
+            if (isVideo()) {
+              setLoadVideo(true);
+              return;
+            }
+            Linking.openURL(data.url);
+          }}
+        >
+          {!loadVideo ? (
             <OptimizedImage
               style={{
                 zIndex: 1,
@@ -232,8 +217,28 @@ export const ResourceBox: React.FC<{ data: Resources }> = ({ data }) => {
               height={330}
               sourceURI={data.thumbnail}
             />
-          </Pressable>
-        )}
+          ) : (
+            <Video
+              style={{
+                zIndex: 1,
+                height: 330,
+                left: 0,
+                position: "absolute",
+              }}
+              source={{
+                uri: data.url,
+              }}
+              useNativeControls
+              resizeMode={ResizeMode.COVER}
+              onPlaybackStatusUpdate={(e) => {
+                if (e.isLoaded) {
+                  setIsPlaying(e.isPlaying);
+                }
+              }}
+            />
+          )}
+        </Pressable>
+
         <View
           style={{
             zIndex: 3,

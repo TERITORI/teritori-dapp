@@ -41,6 +41,8 @@ export const ResourceScreen: React.FC = () => {
         "things and stuff things and stuff things and stuff things and stuff things and stuff things and stuff things and stuff things and stuff things and stuff things and stuff",
 
       category: [{ id: 1, text: "video" }],
+      thumbnail:
+        "https://cloudflare-ipfs.com/ipfs/Qmcd8DcTCBqsDgHq21Pxbu2FcdDKnfQjqNfS6VNrJkyxkT",
       url: "https://cloudflare-ipfs.com/ipfs/QmQakEBJ9aevUZz7eYH2jtqfb9V5D8FkLeH9Bwr47wVHYH",
       tags: [
         {
