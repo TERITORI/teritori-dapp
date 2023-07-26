@@ -154,7 +154,7 @@ export const DetailsCard: React.FC<{
             color={neutral44}
           />
 
-          <PathWarTags data={data.tags} />
+          <PathWarTags data={data.tags} width={390} />
 
           <Separator
             style={{

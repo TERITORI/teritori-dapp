@@ -149,7 +149,7 @@ export const ChallengeValidation: React.FC<{
               color={neutral44}
             />
 
-            <PathWarTags data={data.tags} />
+            <PathWarTags data={data.tags} width={430} />
 
             <Separator
               style={{
