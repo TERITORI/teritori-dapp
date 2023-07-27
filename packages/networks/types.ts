@@ -120,6 +120,7 @@ export enum NetworkFeature {
   NFTLaunchpad = "NFTLaunchpad",
   NameService = "NameService",
   Swap = "Swap",
+  BurnTokens = "BurnTokens",
 }
 
 export enum UserKind {

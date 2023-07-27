@@ -2,8 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import { View } from "react-native";
 
-import { Coin } from "../../api/teritori/coin";
-import { MsgBurnTokens } from "../../api/teritori/mint";
+import { Coin } from "../../api/teritori-chain/cosmos/base/v1beta1/coin";
+import { MsgBurnTokens } from "../../api/teritori-chain/teritori/mint/v1beta1/tx";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
@@ -19,6 +19,7 @@ import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useVaultConfig } from "../../hooks/vault/useVaultConfig";
 import {
   getCosmosNetwork,
+  getKeplrOnlyAminoStargateClient,
   getKeplrSigningStargateClient,
   getUserId,
   mustGetNonSigningCosmWasmClient,
@@ -107,7 +108,7 @@ const DAOManager: React.FC = () => {
           }
 
           const burnMsg: MsgBurnTokens = {
-            sender: network.coreDAOAddress,
+            sender: selectedWallet.address,
             amount: [
               Buffer.from(
                 Coin.encode({ amount: "1000000", denom: "utori" }).finish()
@@ -115,20 +116,20 @@ const DAOManager: React.FC = () => {
             ],
           };
 
-          await makeProposal(selectedWallet?.address, {
-            title: "Burn a TORI",
-            description: "",
-            msgs: [
+          const client = await getKeplrOnlyAminoStargateClient(
+            selectedWallet.networkId
+          );
+
+          await client.signAndBroadcast(
+            selectedWallet.address,
+            [
               {
-                stargate: {
-                  type_url: "/teritori.mint.v1beta1.MsgBurnTokens",
-                  value: Buffer.from(
-                    MsgBurnTokens.encode(burnMsg).finish()
-                  ).toString("base64"),
-                },
+                typeUrl: "/teritori.mint.v1beta1.MsgBurnTokens",
+                value: burnMsg,
               },
             ],
-          });
+            "auto"
+          );
         }}
       />
     </View>

@@ -1,9 +1,11 @@
 import { EncodeObject } from "@cosmjs/proto-signing";
 import { isDeliverTxFailure, StdFee } from "@cosmjs/stargate";
+import { QueryClient, useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";
 import { useSelector } from "react-redux";
 
 import { useDAOMakeProposal } from "./dao/useDAOMakeProposal";
+import { multisigTransactionsQueryKey } from "./multisig";
 import { useMultisigClient } from "./multisig/useMultisigClient";
 import useSelectedWallet from "./useSelectedWallet";
 import { MultisigService, Token } from "../api/multisig/v1/multisig";
@@ -32,6 +34,7 @@ export const useRunOrProposeTransaction = (
     userId,
     userKind === UserKind.Organization
   );
+  const queryClient = useQueryClient();
   return useCallback(
     async ({
       msgs,
@@ -52,6 +55,7 @@ export const useRunOrProposeTransaction = (
         multisigAuthToken,
         title,
         makeDAOProposal,
+        queryClient,
       });
     },
     [
@@ -61,6 +65,7 @@ export const useRunOrProposeTransaction = (
       userId,
       userKind,
       wallet?.address,
+      queryClient,
     ]
   );
 };
@@ -75,6 +80,7 @@ export const runOrProposeTransaction = async ({
   multisigAuthToken,
   title,
   makeDAOProposal,
+  queryClient,
 }: {
   userKind: UserKind;
   userId: string | undefined;
@@ -85,6 +91,7 @@ export const runOrProposeTransaction = async ({
   multisigAuthToken: Token | undefined;
   title?: string;
   makeDAOProposal: ReturnType<typeof useDAOMakeProposal>;
+  queryClient: QueryClient;
 }) => {
   const [network, userAddress] = parseUserId(userId);
   if (!network) {
@@ -145,6 +152,12 @@ export const runOrProposeTransaction = async ({
         sequence: account.sequence,
         accountNumber: account.accountNumber,
       });
+      queryClient.invalidateQueries([
+        ...multisigTransactionsQueryKey(cosmosNetwork.chainId, userAddress),
+      ]);
+      queryClient.invalidateQueries([
+        ...multisigTransactionsQueryKey(cosmosNetwork.chainId, undefined),
+      ]);
       break;
     }
     case UserKind.Organization: {

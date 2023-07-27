@@ -494,11 +494,22 @@ func (s *multisigService) CreateTransaction(_ context.Context, req *multisigpb.C
 			return errors.Wrap(err, "failed to find user multisig")
 		}
 
+		sequence := req.GetSequence()
+		var lastSequenceTx Transaction
+		if err := tx.Model(&Transaction{}).Order("sequence DESC").First(&lastSequenceTx, "multisig_chain_id = ? AND multisig_address = ?", req.ChainId, req.MultisigAddress).Error; err != nil {
+			if !errors.Is(err, gorm.ErrRecordNotFound) {
+				return errors.Wrap(err, "failed to find last tx")
+			}
+		}
+		if lastSequenceTx.Sequence >= sequence {
+			sequence = lastSequenceTx.Sequence + 1
+		}
+
 		if err := tx.Create(&Transaction{
 			MultisigChainID: req.GetChainId(),
 			MultisigAddress: req.GetMultisigAddress(),
 			AccountNumber:   req.GetAccountNumber(),
-			Sequence:        req.GetSequence(),
+			Sequence:        sequence,
 			MsgsJSON:        datatypes.JSON(req.GetMsgsJson()),
 			FeeJSON:         req.GetFeeJson(),
 			CreatorAddress:  userAddress,

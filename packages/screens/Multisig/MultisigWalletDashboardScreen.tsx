@@ -5,8 +5,8 @@ import { StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 import { useSelector } from "react-redux";
 
 import { MultisigFormInput } from "./components/MultisigFormInput";
+import { MultisigRightSection } from "./components/MultisigRightSection";
 import { MultisigSection } from "./components/MultisigSection";
-import { RightSection } from "./components/RightSection";
 import { Transactions } from "./components/Transactions";
 import { MultisigLegacyFormType } from "./types";
 import { BrandText } from "../../components/BrandText";
@@ -96,7 +96,7 @@ export const MultisigWalletDashboardScreen: ScreenFC<
             <Assets userId={id} readOnly />
           </MultisigSection>
         </View>
-        <RightSection />
+        <MultisigRightSection />
       </View>
 
       <View
@@ -183,7 +183,7 @@ const MultisigMembers: React.FC<{
 
 const halfGap = 8;
 
-const useMultisigInfo = (id: string | undefined) => {
+export const useMultisigInfo = (id: string | undefined) => {
   const { selectedWallet } = useSelectedWallet();
   const authToken = useSelector((state: RootState) =>
     selectMultisigToken(state, selectedWallet?.address)
@@ -192,6 +192,9 @@ const useMultisigInfo = (id: string | undefined) => {
   const { data, ...other } = useQuery(
     ["multisig-info", id, authToken, client],
     async () => {
+      if (!authToken) {
+        return null;
+      }
       const [network, multisigAddress] = parseUserId(id);
       if (network?.kind !== NetworkKind.Cosmos) {
         return null;

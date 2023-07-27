@@ -46,7 +46,10 @@ import {
   NetworkInfo,
   NetworkKind,
 } from "./types";
-import { MsgBurnTokens } from "../api/teritori/mint";
+import {
+  teritoriAminoConverters,
+  teritoriProtoRegistry,
+} from "../api/teritori-chain";
 import { getKeplr } from "../utils/keplr";
 
 export * from "./types";
@@ -71,11 +74,8 @@ export const allNetworks = [
 export const cosmosTypesRegistry = new Registry([
   ...defaultRegistryTypes,
   ...wasmTypes,
+  ...teritoriProtoRegistry,
 ]);
-cosmosTypesRegistry.register(
-  "/teritori.mint.v1beta1.MsgBurnTokens",
-  MsgBurnTokens
-);
 
 // FIXME: upgrade stargate since it exposes this function in new versions
 export function createDefaultAminoConverters(): AminoConverters {
@@ -94,6 +94,7 @@ export function createDefaultAminoConverters(): AminoConverters {
 export const cosmosAminoTypes = new AminoTypes({
   ...createDefaultAminoConverters(),
   ...createWasmAminoConverters(),
+  ...teritoriAminoConverters,
 });
 
 export const getCurrency = (

@@ -56,7 +56,7 @@ export const useMultisigTransactions = (
         types
       );
 
-      if (!chainId) {
+      if (!chainId || !authToken) {
         return { data: [], next: null };
       }
 
@@ -87,7 +87,6 @@ export const useMultisigTransactions = (
     },
     {
       getNextPageParam: (lastPage) => lastPage.next,
-      refetchOnWindowFocus: false,
       staleTime: Infinity,
     }
   );

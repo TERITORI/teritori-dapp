@@ -26,6 +26,7 @@ interface GetStartedOptionProps {
   isBetaVersion?: boolean;
   titleStyle?: TextStyle;
   onPress?: () => void;
+  disabled?: boolean;
 }
 
 export const GetStartedOption: React.FC<GetStartedOptionProps> = ({
@@ -36,12 +37,14 @@ export const GetStartedOption: React.FC<GetStartedOptionProps> = ({
   isBetaVersion,
   subtitle,
   titleStyle,
+  disabled,
 }) => {
   const styleDarker = onPress === undefined || isBetaVersion;
 
   return (
     <Pressable
       onPress={onPress}
+      disabled={disabled}
       style={[
         styles.container,
         { borderColor: styleDarker ? neutral17 : neutral33 },

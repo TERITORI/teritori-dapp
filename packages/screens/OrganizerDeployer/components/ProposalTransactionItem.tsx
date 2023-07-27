@@ -46,10 +46,18 @@ const getTxInfo = (
   network: NetworkInfo | undefined
 ): [string, React.ReactElement, React.ReactElement] => {
   if (msgs.length === 0) {
-    return ["Empty", <></>, <></>];
+    return [
+      "Empty",
+      <BrandText style={styles.normal77}> </BrandText>,
+      <BrandText style={styles.normal77}> </BrandText>,
+    ];
   }
   if (msgs.length > 1) {
-    return ["Complex", <></>, <></>];
+    return [
+      "Complex",
+      <BrandText style={styles.normal77}>{msgs.length} messages</BrandText>,
+      <BrandText style={styles.normal77}> </BrandText>,
+    ];
   }
   const msg = msgs[0];
   switch (msg.typeUrl) {
@@ -239,7 +247,11 @@ const getTxInfo = (
       ];
     }
   }
-  return ["Unknown", <></>, <></>];
+  return [
+    "Unknown",
+    <BrandText style={styles.normal77}>{msg.typeUrl}</BrandText>,
+    <BrandText style={styles.normal77}> </BrandText>,
+  ];
 };
 
 export const ProposalTransactionItem: React.FC<ProposalTransactionItemProps> = (

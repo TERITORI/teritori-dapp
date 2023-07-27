@@ -59,7 +59,7 @@ enum SelectModalKind {
   ManagePublicProfile,
 }
 
-const LoginButton: FC<{ userId: string | undefined }> = ({ userId }) => {
+export const LoginButton: FC<{ userId: string | undefined }> = ({ userId }) => {
   const [, userAddress] = parseUserId(userId);
   const storeAuthToken = useSelector((state: RootState) =>
     selectMultisigToken(state, userAddress)
@@ -172,6 +172,9 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
       marginTop: layout.padding_x2_5,
     },
   });
+  const authToken = useSelector((state: RootState) =>
+    selectMultisigToken(state, selectedWallet?.address)
+  );
 
   const {
     multisigs: data,
@@ -353,6 +356,7 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
                   title="Create new"
                   icon={postJobSVG}
                   isBetaVersion
+                  disabled={!authToken}
                   onPress={() => navigation.navigate("MultisigCreate")}
                 />
               )}
@@ -414,15 +418,17 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
               <SpacerColumn size={3} />
             </>
           )}
-          <View style={styles.horizontalContentPadding}>
-            <Separator color={neutral33} />
-            <SpacerColumn size={3} />
-            <Transactions
-              userAddress={selectedWallet?.address}
-              chainId={cosmosNetwork?.chainId}
-              title="Multisig Transactions Overview"
-            />
-          </View>
+          {!!authToken && (
+            <View style={styles.horizontalContentPadding}>
+              <Separator color={neutral33} />
+              <SpacerColumn size={3} />
+              <Transactions
+                userAddress={selectedWallet?.address}
+                chainId={cosmosNetwork?.chainId}
+                title="Multisig Transactions Overview"
+              />
+            </View>
+          )}
         </View>
       </ScrollView>
       <MultisigWalletSelectModal
