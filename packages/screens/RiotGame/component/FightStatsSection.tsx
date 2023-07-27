@@ -72,7 +72,7 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
               ? "Claiming..."
               : `Claim available rewards: ${formattedClaimable} ${
                   selectedNetwork?.kind === NetworkKind.Ethereum
-                    ? "WEI"
+                    ? "ETH"
                     : "TORI"
                 }`
           }

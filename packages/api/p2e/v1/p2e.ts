@@ -8,7 +8,7 @@ import { share } from "rxjs/operators";
 
 export const protobufPackage = "p2e.v1";
 
-export interface MerkleProofRequest {
+export interface MerkleDataRequest {
   userId: string;
   token: string;
   networkId: string;
@@ -20,9 +20,10 @@ export interface UserReward {
   amount: string;
 }
 
-export interface MerkleProofResponse {
+export interface MerkleDataResponse {
   proof: string[];
   userReward: UserReward | undefined;
+  claimableAmount: string;
 }
 
 export interface AllSeasonsRequest {
@@ -85,12 +86,12 @@ export interface LeaderboardResponse {
   userScore: UserScore | undefined;
 }
 
-function createBaseMerkleProofRequest(): MerkleProofRequest {
+function createBaseMerkleDataRequest(): MerkleDataRequest {
   return { userId: "", token: "", networkId: "" };
 }
 
-export const MerkleProofRequest = {
-  encode(message: MerkleProofRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const MerkleDataRequest = {
+  encode(message: MerkleDataRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.userId !== "") {
       writer.uint32(10).string(message.userId);
     }
@@ -103,10 +104,10 @@ export const MerkleProofRequest = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MerkleProofRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MerkleDataRequest {
     const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseMerkleProofRequest();
+    const message = createBaseMerkleDataRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -140,7 +141,7 @@ export const MerkleProofRequest = {
     return message;
   },
 
-  fromJSON(object: any): MerkleProofRequest {
+  fromJSON(object: any): MerkleDataRequest {
     return {
       userId: isSet(object.userId) ? String(object.userId) : "",
       token: isSet(object.token) ? String(object.token) : "",
@@ -148,7 +149,7 @@ export const MerkleProofRequest = {
     };
   },
 
-  toJSON(message: MerkleProofRequest): unknown {
+  toJSON(message: MerkleDataRequest): unknown {
     const obj: any = {};
     message.userId !== undefined && (obj.userId = message.userId);
     message.token !== undefined && (obj.token = message.token);
@@ -156,12 +157,12 @@ export const MerkleProofRequest = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<MerkleProofRequest>, I>>(base?: I): MerkleProofRequest {
-    return MerkleProofRequest.fromPartial(base ?? {});
+  create<I extends Exact<DeepPartial<MerkleDataRequest>, I>>(base?: I): MerkleDataRequest {
+    return MerkleDataRequest.fromPartial(base ?? {});
   },
 
-  fromPartial<I extends Exact<DeepPartial<MerkleProofRequest>, I>>(object: I): MerkleProofRequest {
-    const message = createBaseMerkleProofRequest();
+  fromPartial<I extends Exact<DeepPartial<MerkleDataRequest>, I>>(object: I): MerkleDataRequest {
+    const message = createBaseMerkleDataRequest();
     message.userId = object.userId ?? "";
     message.token = object.token ?? "";
     message.networkId = object.networkId ?? "";
@@ -253,25 +254,28 @@ export const UserReward = {
   },
 };
 
-function createBaseMerkleProofResponse(): MerkleProofResponse {
-  return { proof: [], userReward: undefined };
+function createBaseMerkleDataResponse(): MerkleDataResponse {
+  return { proof: [], userReward: undefined, claimableAmount: "" };
 }
 
-export const MerkleProofResponse = {
-  encode(message: MerkleProofResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const MerkleDataResponse = {
+  encode(message: MerkleDataResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.proof) {
       writer.uint32(10).string(v!);
     }
     if (message.userReward !== undefined) {
       UserReward.encode(message.userReward, writer.uint32(18).fork()).ldelim();
     }
+    if (message.claimableAmount !== "") {
+      writer.uint32(26).string(message.claimableAmount);
+    }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MerkleProofResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MerkleDataResponse {
     const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseMerkleProofResponse();
+    const message = createBaseMerkleDataResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -289,6 +293,13 @@ export const MerkleProofResponse = {
 
           message.userReward = UserReward.decode(reader, reader.uint32());
           continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.claimableAmount = reader.string();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -298,14 +309,15 @@ export const MerkleProofResponse = {
     return message;
   },
 
-  fromJSON(object: any): MerkleProofResponse {
+  fromJSON(object: any): MerkleDataResponse {
     return {
       proof: Array.isArray(object?.proof) ? object.proof.map((e: any) => String(e)) : [],
       userReward: isSet(object.userReward) ? UserReward.fromJSON(object.userReward) : undefined,
+      claimableAmount: isSet(object.claimableAmount) ? String(object.claimableAmount) : "",
     };
   },
 
-  toJSON(message: MerkleProofResponse): unknown {
+  toJSON(message: MerkleDataResponse): unknown {
     const obj: any = {};
     if (message.proof) {
       obj.proof = message.proof.map((e) => e);
@@ -314,19 +326,21 @@ export const MerkleProofResponse = {
     }
     message.userReward !== undefined &&
       (obj.userReward = message.userReward ? UserReward.toJSON(message.userReward) : undefined);
+    message.claimableAmount !== undefined && (obj.claimableAmount = message.claimableAmount);
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<MerkleProofResponse>, I>>(base?: I): MerkleProofResponse {
-    return MerkleProofResponse.fromPartial(base ?? {});
+  create<I extends Exact<DeepPartial<MerkleDataResponse>, I>>(base?: I): MerkleDataResponse {
+    return MerkleDataResponse.fromPartial(base ?? {});
   },
 
-  fromPartial<I extends Exact<DeepPartial<MerkleProofResponse>, I>>(object: I): MerkleProofResponse {
-    const message = createBaseMerkleProofResponse();
+  fromPartial<I extends Exact<DeepPartial<MerkleDataResponse>, I>>(object: I): MerkleDataResponse {
+    const message = createBaseMerkleDataResponse();
     message.proof = object.proof?.map((e) => e) || [];
     message.userReward = (object.userReward !== undefined && object.userReward !== null)
       ? UserReward.fromPartial(object.userReward)
       : undefined;
+    message.claimableAmount = object.claimableAmount ?? "";
     return message;
   },
 };
@@ -1180,7 +1194,7 @@ export interface P2eService {
   CurrentSeason(request: DeepPartial<CurrentSeasonRequest>, metadata?: grpc.Metadata): Promise<CurrentSeasonResponse>;
   UserRank(request: DeepPartial<UserRankRequest>, metadata?: grpc.Metadata): Promise<UserRankResponse>;
   AllSeasons(request: DeepPartial<AllSeasonsRequest>, metadata?: grpc.Metadata): Promise<AllSeasonsResponse>;
-  MerkleProof(request: DeepPartial<MerkleProofRequest>, metadata?: grpc.Metadata): Promise<MerkleProofResponse>;
+  MerkleData(request: DeepPartial<MerkleDataRequest>, metadata?: grpc.Metadata): Promise<MerkleDataResponse>;
 }
 
 export class P2eServiceClientImpl implements P2eService {
@@ -1192,7 +1206,7 @@ export class P2eServiceClientImpl implements P2eService {
     this.CurrentSeason = this.CurrentSeason.bind(this);
     this.UserRank = this.UserRank.bind(this);
     this.AllSeasons = this.AllSeasons.bind(this);
-    this.MerkleProof = this.MerkleProof.bind(this);
+    this.MerkleData = this.MerkleData.bind(this);
   }
 
   Leaderboard(request: DeepPartial<LeaderboardRequest>, metadata?: grpc.Metadata): Observable<LeaderboardResponse> {
@@ -1211,8 +1225,8 @@ export class P2eServiceClientImpl implements P2eService {
     return this.rpc.unary(P2eServiceAllSeasonsDesc, AllSeasonsRequest.fromPartial(request), metadata);
   }
 
-  MerkleProof(request: DeepPartial<MerkleProofRequest>, metadata?: grpc.Metadata): Promise<MerkleProofResponse> {
-    return this.rpc.unary(P2eServiceMerkleProofDesc, MerkleProofRequest.fromPartial(request), metadata);
+  MerkleData(request: DeepPartial<MerkleDataRequest>, metadata?: grpc.Metadata): Promise<MerkleDataResponse> {
+    return this.rpc.unary(P2eServiceMerkleDataDesc, MerkleDataRequest.fromPartial(request), metadata);
   }
 }
 
@@ -1310,19 +1324,19 @@ export const P2eServiceAllSeasonsDesc: UnaryMethodDefinitionish = {
   } as any,
 };
 
-export const P2eServiceMerkleProofDesc: UnaryMethodDefinitionish = {
-  methodName: "MerkleProof",
+export const P2eServiceMerkleDataDesc: UnaryMethodDefinitionish = {
+  methodName: "MerkleData",
   service: P2eServiceDesc,
   requestStream: false,
   responseStream: false,
   requestType: {
     serializeBinary() {
-      return MerkleProofRequest.encode(this).finish();
+      return MerkleDataRequest.encode(this).finish();
     },
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
-      const value = MerkleProofResponse.decode(data);
+      const value = MerkleDataResponse.decode(data);
       return {
         ...value,
         toObject() {

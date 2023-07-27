@@ -1,18 +1,63 @@
 package handlers
 
 import (
+	"math/big"
 	"strconv"
 	"strings"
+
+	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 
 	"github.com/TERITORI/teritori-dapp/go/internal/indexeraction"
 	abiGo "github.com/TERITORI/teritori-dapp/go/internal/substreams/ethereum/abi_go"
 	"github.com/TERITORI/teritori-dapp/go/internal/substreams/ethereum/pb"
 	"github.com/ethereum/go-ethereum/accounts/abi"
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/pkg/errors"
 )
 
 type SquadStakeInput struct {
 	Nfts []abiGo.SquadStakingV3NftInfo `json:"nfts"`
+}
+
+type ClaimInput struct {
+	Token      common.Address `json:"token"`
+	Allocation *big.Int       `json:"allocation"`
+	Proofs     [][32]byte     `json:"proofs"`
+}
+
+func (h *Handler) handleClaim(contractABI *abi.ABI, tx *pb.Tx, args map[string]interface{}) error {
+	caller := tx.Info.From
+
+	var input ClaimInput
+	if err := ArgsToStruct(args, &input); err != nil {
+		return errors.Wrap(err, "failed to parse claim input")
+	}
+
+	var totalClaimed = indexerdb.P2eTotalClaimed{
+		UserID:    h.network.UserID(caller),
+		NetworkID: h.network.NetworkBase.ID,
+	}
+	if err := h.dbTransaction.FirstOrCreate(&totalClaimed).Error; err != nil {
+		return errors.Wrap(err, "failed to get total claimed")
+	}
+
+	var amount *big.Int
+	if totalClaimed.Amount == "" {
+		amount = big.NewInt(0)
+	} else {
+		amount = new(big.Int)
+		if _, ok := amount.SetString(totalClaimed.Amount, 10); !ok {
+			return errors.New("failed to get current claimed amount")
+		}
+	}
+
+	totalClaimed.Amount = amount.Add(amount, input.Allocation).String()
+
+	if err := h.dbTransaction.Save(&totalClaimed).Error; err != nil {
+		return errors.New("failed to update claimed amount")
+	}
+
+	return nil
 }
 
 func (h *Handler) handleSquadUnstake(contractABI *abi.ABI, tx *pb.Tx, args map[string]interface{}) error {

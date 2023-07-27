@@ -189,7 +189,7 @@ func (s *P2eService) AllSeasons(ctx context.Context, req *p2epb.AllSeasonsReques
 	return &p2epb.AllSeasonsResponse{Seasons: data}, nil
 }
 
-func (s *P2eService) MerkleProof(ctx context.Context, req *p2epb.MerkleProofRequest) (*p2epb.MerkleProofResponse, error) {
+func (s *P2eService) MerkleData(ctx context.Context, req *p2epb.MerkleDataRequest) (*p2epb.MerkleDataResponse, error) {
 	userID := req.GetUserId()
 	token := req.GetToken()
 	networkID := req.GetNetworkId()
@@ -206,9 +206,9 @@ func (s *P2eService) MerkleProof(ctx context.Context, req *p2epb.MerkleProofRequ
 		return nil, errors.New("missing networkId")
 	}
 
-//   todayID := time.Now().UTC().Format("2006-01-02")
+	//   todayID := time.Now().UTC().Format("2006-01-02")
 	currentReward := indexerdb.P2eDailyReward{
-//     DayID:     todayID,
+		//     DayID:     todayID,
 		NetworkID: networkID,
 	}
 
@@ -258,8 +258,27 @@ func (s *P2eService) MerkleProof(ctx context.Context, req *p2epb.MerkleProofRequ
 		return nil, errors.Wrap(err, "failed to get proof")
 	}
 
-	return &p2epb.MerkleProofResponse{
-		Proof: proof,
+	// Get total claimed
+	ethNetwork := s.conf.NetworkStore.MustGetEthereumNetwork(networkID)
+	var totalClaimed = indexerdb.P2eTotalClaimed{
+		UserID:    ethNetwork.UserID(userID),
+		NetworkID: networkID,
+	}
+
+	claimedAmount := big.NewInt(0)
+	resultErr := s.conf.IndexerDB.First(&totalClaimed).Error
+
+	// If no error and there is claimed amount then convert that value to bigInt
+	if resultErr == nil && totalClaimed.Amount != "" {
+		claimedAmount = new(big.Int)
+		if _, ok := claimedAmount.SetString(totalClaimed.Amount, 10); !ok {
+			return nil, errors.New("failed to get current claimed amount")
+		}
+	}
+
+	return &p2epb.MerkleDataResponse{
+		Proof:           proof,
+		ClaimableAmount: userLeaf.Amount.Sub(userLeaf.Amount, claimedAmount).String(),
 		UserReward: &p2epb.UserReward{
 			To:     userLeaf.To.String(),
 			Token:  userLeaf.Token.String(),

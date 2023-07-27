@@ -41,12 +41,12 @@ const ethereumGetClaimableAmount = async (
   userAddress: string
 ) => {
   const p2eClient = mustGetP2eClient(network?.id);
-  const proof = await p2eClient.MerkleProof({
+  const data = await p2eClient.MerkleData({
     userId: userAddress,
     token: WEI_TOKEN_ADDRESS,
     networkId: network?.id,
   });
-  return proof.userReward?.amount;
+  return data.claimableAmount;
 };
 
 const cosmosClaim = async (
@@ -70,7 +70,7 @@ const ethereumClaim = async (
   distributorContractAddress: string
 ) => {
   const p2eClient = mustGetP2eClient(network.id);
-  const resp = await p2eClient.MerkleProof({
+  const resp = await p2eClient.MerkleData({
     userId: userAddress,
     token: WEI_TOKEN_ADDRESS,
     networkId: network.id,

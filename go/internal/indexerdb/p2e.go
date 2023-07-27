@@ -33,3 +33,9 @@ type P2eDailyReward struct {
 	TotalRewards ObjectJSONB `gorm:"type:jsonb;default:'{}'"`
 	MerkleRoot   string      `gorm:"merkleRoot"`
 }
+
+type P2eTotalClaimed struct {
+	UserID    networks.UserID `gorm:"primaryKey"`
+	NetworkID string          `gorm:"primaryKey"`
+	Amount    string
+}

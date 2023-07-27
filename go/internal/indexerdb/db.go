@@ -65,6 +65,7 @@ var allModels = []interface{}{
 	&P2eSquadStaking{},
 	&P2eLeaderboard{},
 	&P2eDailyReward{},
+	&P2eTotalClaimed{},
 
 	// feed
 	&Post{},

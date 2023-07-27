@@ -26,7 +26,7 @@ type P2EServiceClient interface {
 	CurrentSeason(ctx context.Context, in *CurrentSeasonRequest, opts ...grpc.CallOption) (*CurrentSeasonResponse, error)
 	UserRank(ctx context.Context, in *UserRankRequest, opts ...grpc.CallOption) (*UserRankResponse, error)
 	AllSeasons(ctx context.Context, in *AllSeasonsRequest, opts ...grpc.CallOption) (*AllSeasonsResponse, error)
-	MerkleProof(ctx context.Context, in *MerkleProofRequest, opts ...grpc.CallOption) (*MerkleProofResponse, error)
+	MerkleData(ctx context.Context, in *MerkleDataRequest, opts ...grpc.CallOption) (*MerkleDataResponse, error)
 }
 
 type p2EServiceClient struct {
@@ -96,9 +96,9 @@ func (c *p2EServiceClient) AllSeasons(ctx context.Context, in *AllSeasonsRequest
 	return out, nil
 }
 
-func (c *p2EServiceClient) MerkleProof(ctx context.Context, in *MerkleProofRequest, opts ...grpc.CallOption) (*MerkleProofResponse, error) {
-	out := new(MerkleProofResponse)
-	err := c.cc.Invoke(ctx, "/p2e.v1.P2eService/MerkleProof", in, out, opts...)
+func (c *p2EServiceClient) MerkleData(ctx context.Context, in *MerkleDataRequest, opts ...grpc.CallOption) (*MerkleDataResponse, error) {
+	out := new(MerkleDataResponse)
+	err := c.cc.Invoke(ctx, "/p2e.v1.P2eService/MerkleData", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -113,7 +113,7 @@ type P2EServiceServer interface {
 	CurrentSeason(context.Context, *CurrentSeasonRequest) (*CurrentSeasonResponse, error)
 	UserRank(context.Context, *UserRankRequest) (*UserRankResponse, error)
 	AllSeasons(context.Context, *AllSeasonsRequest) (*AllSeasonsResponse, error)
-	MerkleProof(context.Context, *MerkleProofRequest) (*MerkleProofResponse, error)
+	MerkleData(context.Context, *MerkleDataRequest) (*MerkleDataResponse, error)
 	mustEmbedUnimplementedP2EServiceServer()
 }
 
@@ -133,8 +133,8 @@ func (UnimplementedP2EServiceServer) UserRank(context.Context, *UserRankRequest)
 func (UnimplementedP2EServiceServer) AllSeasons(context.Context, *AllSeasonsRequest) (*AllSeasonsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AllSeasons not implemented")
 }
-func (UnimplementedP2EServiceServer) MerkleProof(context.Context, *MerkleProofRequest) (*MerkleProofResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method MerkleProof not implemented")
+func (UnimplementedP2EServiceServer) MerkleData(context.Context, *MerkleDataRequest) (*MerkleDataResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MerkleData not implemented")
 }
 func (UnimplementedP2EServiceServer) mustEmbedUnimplementedP2EServiceServer() {}
 
@@ -224,20 +224,20 @@ func _P2EService_AllSeasons_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
-func _P2EService_MerkleProof_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MerkleProofRequest)
+func _P2EService_MerkleData_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MerkleDataRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(P2EServiceServer).MerkleProof(ctx, in)
+		return srv.(P2EServiceServer).MerkleData(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/p2e.v1.P2eService/MerkleProof",
+		FullMethod: "/p2e.v1.P2eService/MerkleData",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(P2EServiceServer).MerkleProof(ctx, req.(*MerkleProofRequest))
+		return srv.(P2EServiceServer).MerkleData(ctx, req.(*MerkleDataRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -262,8 +262,8 @@ var P2EService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _P2EService_AllSeasons_Handler,
 		},
 		{
-			MethodName: "MerkleProof",
-			Handler:    _P2EService_MerkleProof_Handler,
+			MethodName: "MerkleData",
+			Handler:    _P2EService_MerkleData_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

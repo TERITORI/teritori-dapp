@@ -54,6 +54,8 @@ func (h *Handler) HandleETHTx(tx *pb.Tx) error {
 		metaData = abiGo.TeritoriMinterMetaData
 	case strings.EqualFold(tx.Info.To, h.network.VaultContractAddress):
 		metaData = abiGo.TeritoriVaultMetaData
+	case strings.EqualFold(tx.Info.To, h.network.DistributorContractAddress):
+		metaData = abiGo.DistributorMetaData
 	// If not matching with known handlers continue
 	default:
 		return nil
@@ -108,6 +110,10 @@ func (h *Handler) HandleETHTx(tx *pb.Tx) error {
 	case "transferFrom":
 		if err := h.handleTransferFrom(contractABI, tx, args); err != nil {
 			return errors.Wrap(err, "failed to handle transfer")
+		}
+	case "claim":
+		if err := h.handleClaim(contractABI, tx, args); err != nil {
+			return errors.Wrap(err, "failed to handle claim")
 		}
 	// Vault
 	case "listNFT":

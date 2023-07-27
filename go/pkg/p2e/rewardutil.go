@@ -82,10 +82,6 @@ func GetDailyRewardsConfigBySeason(seasonId string, network networks.Network) (s
 	}
 
 	seasonRewards, err := GetRewardsConfigBySeason(season.ID, network)
-	if err != nil {
-		return nil, err
-	}
-
 	bossHp, err := GetBossHp(season)
 	if err != nil {
 		return nil, err
@@ -94,9 +90,16 @@ func GetDailyRewardsConfigBySeason(seasonId string, network networks.Network) (s
 	var dailyRewards sdk.DecCoins
 	for _, reward := range seasonRewards {
 		amount := reward.QuoInt64(int64(bossHp))
+		kind := network.GetBase().Kind
+		var dailyAmountInt sdk.Int
+		if kind == networks.NetworkKindEthereum {
+			// Convert ETH => wei
+			dailyAmountInt = sdk.NewIntWithDecimal(amount.MulInt64(10_000_000_000).RoundInt64(), int(season.Decimals-10))
+		} else {
+			// Contract take utori so we need convert tori => utori
+			dailyAmountInt = sdk.NewIntWithDecimal(amount.RoundInt64(), int(season.Decimals))
+		}
 
-		// Contract take utori so we need convert tori => utori
-		dailyAmountInt := sdk.NewIntWithDecimal(amount.RoundInt64(), int(season.Decimals))
 		dailyCoin := sdk.NewDecCoin(season.Denom, dailyAmountInt)
 		dailyRewards = append(dailyRewards, dailyCoin)
 	}
@@ -113,10 +116,11 @@ func GetRewardsConfigBySeason(seasonId string, network networks.Network) ([]sdk.
 	if len(allSeasons) == 0 {
 		return nil, errors.New("failed to get seasons data")
 	}
-	baseSeason := allSeasons[0]
 
 	seasonPool := sdk.NewDec(int64(targetSeason.TotalPrize))
-	basePool := sdk.NewDec(int64(baseSeason.TotalPrize))
+
+	// Hardcode base pool because we base on this number for split the pool
+	basePool := sdk.NewDec(int64(1_800_000))
 
 	seasonCoef := seasonPool.Quo(basePool)
 	baseRewardsConfig := getBaseRewardsConfig()
@@ -126,7 +130,6 @@ func GetRewardsConfigBySeason(seasonId string, network networks.Network) ([]sdk.
 	for i, baseReward := range baseRewardsConfig {
 		seasonRewards[i] = baseReward.Mul(seasonCoef)
 	}
-
 	return seasonRewards, nil
 }
 
