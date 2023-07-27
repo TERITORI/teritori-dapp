@@ -74,11 +74,18 @@ export const PathwarScreen: ScreenFC<"Pathwar"> = () => {
         }}
       >
         <BrandText style={fontSemibold28}>Challenges</BrandText>
-        <View style={{ marginTop: layout.padding_x3_5 }}>
+        <View
+          style={{
+            marginTop: layout.padding_x3_5,
+            width: "100%",
+            justifyContent: "center",
+          }}
+        >
           <SearchInput
             handleChangeText={setSearchInput}
             borderRadius={layout.borderRadius}
             style={{
+              alignSelf: "center",
               width: isMobile ? "100%" : 432,
               marginTop: layout.padding_x3,
               marginBottom: layout.padding_x1,
@@ -102,7 +109,12 @@ export const PathwarScreen: ScreenFC<"Pathwar"> = () => {
           maxHeight: height,
         }}
         showsHorizontalScrollIndicator={false}
-        columnWrapperStyle={{ flexWrap: "wrap", flex: 1, marginTop: 5 }}
+        columnWrapperStyle={{
+          flexWrap: "wrap",
+          flex: 1,
+          marginTop: 5,
+          justifyContent: "center",
+        }}
         numColumns={99} // needed to deal with wrap via css
         ItemSeparatorComponent={() => <SpacerColumn size={2} />}
         ListEmptyComponent={

@@ -131,9 +131,6 @@ export const ResourceScreen: React.FC = () => {
             style={{
               width: isMobile ? "100%" : 270,
               backgroundColor: neutral00,
-              // position: "absolute",
-              // top: -93,
-              // right: -122,
             }}
           />
         </View>
@@ -196,7 +193,12 @@ export const ResourceScreen: React.FC = () => {
             maxHeight: height,
           }}
           showsHorizontalScrollIndicator={false}
-          columnWrapperStyle={{ flexWrap: "wrap", flex: 1, marginTop: 5 }}
+          columnWrapperStyle={{
+            flexWrap: "wrap",
+            flex: 1,
+            marginTop: 5,
+            justifyContent: "center",
+          }}
           numColumns={99} // needed to deal with wrap via css
           ItemSeparatorComponent={() => <SpacerColumn size={2} />}
           ListEmptyComponent={

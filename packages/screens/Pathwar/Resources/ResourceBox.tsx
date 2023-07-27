@@ -11,6 +11,7 @@ import {
 } from "react-native";
 
 import heartIcon from "../../../../assets/icons/pathwar/heartIcon.svg";
+import playCircle from "../../../../assets/icons/pathwar/playCircle.svg";
 import shareIcon from "../../../../assets/icons/pathwar/shareIcon.svg";
 import { Resources, Tag } from "../../../api/pathwar/v1/pathwar";
 import { BrandText } from "../../../components/BrandText";
@@ -177,7 +178,7 @@ export const ResourceBox: React.FC<{ data: Resources }> = ({ data }) => {
 
   return (
     <TertiaryBox
-      width={isMobile ? 320 : 640}
+      width={isMobile ? 495 : 640}
       height={330}
       style={{
         marginRight: layout.padding_x1_5,
@@ -187,8 +188,7 @@ export const ResourceBox: React.FC<{ data: Resources }> = ({ data }) => {
       <View
         style={{
           flexDirection: "column",
-          width: isMobile ? 320 : 640,
-
+          width: isMobile ? "100%" : 640,
           height: 330,
         }}
       >
@@ -205,23 +205,36 @@ export const ResourceBox: React.FC<{ data: Resources }> = ({ data }) => {
           }}
         >
           {!loadVideo ? (
-            <OptimizedImage
-              style={{
-                zIndex: 1,
-                height: 330,
-                width: 640,
-                left: 0,
-                position: "absolute",
-              }}
-              width={640}
-              height={330}
-              sourceURI={data.thumbnail}
-            />
+            <>
+              {isVideo() && (
+                <SVG
+                  source={playCircle}
+                  style={{
+                    zIndex: 2,
+                    position: "absolute",
+                    top: 132,
+                    left: isMobile ? 210 : 285,
+                  }}
+                />
+              )}
+              <OptimizedImage
+                style={{
+                  zIndex: 1,
+                  height: 330,
+                  width: isMobile ? "100%" : 640,
+                  left: 0,
+                  position: "absolute",
+                }}
+                width={640}
+                height={330}
+                sourceURI={data.thumbnail}
+              />
+            </>
           ) : (
             <Video
               style={{
                 zIndex: 1,
-                height: 330,
+                width: isMobile ? "100%" : 640,
                 left: 0,
                 position: "absolute",
               }}
@@ -262,7 +275,7 @@ export const ResourceBox: React.FC<{ data: Resources }> = ({ data }) => {
         </View>
         <Pressable
           style={{
-            bottom: 25,
+            bottom: loadVideo ? "38%" : 25,
             zIndex: 2,
             position: "absolute",
           }}

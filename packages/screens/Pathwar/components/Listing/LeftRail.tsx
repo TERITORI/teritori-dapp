@@ -42,8 +42,8 @@ export const LeftRail: React.FC<{
             style={{
               borderTopRightRadius: 7,
               borderBottomLeftRadius: 7,
-              width: 195,
-              height: 195,
+              width: "100%",
+              height: "100%",
             }}
             height={195}
             width={195}

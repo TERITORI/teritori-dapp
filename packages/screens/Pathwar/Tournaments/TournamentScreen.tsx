@@ -85,7 +85,12 @@ export const TournamentScreen: React.FC = () => {
             maxHeight: height,
           }}
           showsHorizontalScrollIndicator={false}
-          columnWrapperStyle={{ flexWrap: "wrap", flex: 1, marginTop: 5 }}
+          columnWrapperStyle={{
+            flexWrap: "wrap",
+            flex: 1,
+            marginTop: 5,
+            justifyContent: "center",
+          }}
           numColumns={99} // needed to deal with wrap via css
           ItemSeparatorComponent={() => <SpacerColumn size={2} />}
           ListEmptyComponent={
