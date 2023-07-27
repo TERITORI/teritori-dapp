@@ -122,6 +122,7 @@ func GetRewardsConfigBySeason(seasonId string, network networks.Network) ([]sdk.
 	baseRewardsConfig := getBaseRewardsConfig()
 
 	seasonRewards := make([]sdk.Dec, len(baseRewardsConfig))
+
 	for i, baseReward := range baseRewardsConfig {
 		seasonRewards[i] = baseReward.Mul(seasonCoef)
 	}

@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { BigNumber } from "ethers";
 import { useCallback, useState } from "react";
 
 import { useFeedbacks } from "../../context/FeedbacksProvider";
@@ -86,19 +87,25 @@ const ethereumClaim = async (
     signer
   );
 
+  const claimableAmount = BigNumber.from(allocation);
+
   const { maxFeePerGas, maxPriorityFeePerGas } = await signer.getFeeData();
   const estimatedGasLimit = await distributorClient.estimateGas.claim(
     WEI_TOKEN_ADDRESS,
-    allocation,
+    claimableAmount,
     resp.proof
   );
 
-  // TODO: Handle native token transfer failed
-  const tx = await distributorClient.claim(WEI_TOKEN_ADDRESS, "1", resp.proof, {
-    maxFeePerGas: maxFeePerGas?.toNumber(),
-    maxPriorityFeePerGas: maxPriorityFeePerGas?.toNumber(),
-    gasLimit: estimatedGasLimit.mul(150).div(100),
-  });
+  const tx = await distributorClient.claim(
+    WEI_TOKEN_ADDRESS,
+    claimableAmount,
+    resp.proof,
+    {
+      maxFeePerGas: maxFeePerGas?.toNumber(),
+      maxPriorityFeePerGas: maxPriorityFeePerGas?.toNumber(),
+      gasLimit: estimatedGasLimit.mul(150).div(100),
+    }
+  );
   await tx.wait();
 
   return true;
@@ -132,6 +139,7 @@ export const useGameRewards = () => {
           network,
           userAddress
         );
+
         return claimable;
       } else {
         throw Error("failed to get claimable amount: unknown network");

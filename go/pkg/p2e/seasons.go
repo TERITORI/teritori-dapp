@@ -160,13 +160,26 @@ var THE_RIOT_COSMOS_SEASONS = []Season{
 }
 
 var THE_RIOT_ETHEREUM_SEASONS = []Season{
+  // Keep Season 0 to have the base rewards to calculate
+	{
+		ID:         "Season 0",
+		GameID:     THE_RIOT_GAME_ID,
+		Denom:      "eth",
+		Decimals:   18,
+		TotalPrize: 1_800_000,
+		BossName:   "",
+		BossImage:  "",
+		TopN:       500,
+		StartsAt:   "2022-12-01T00:00:00",
+		EndsAt:     "2023-01-19T00:00:00",
+	},
 	// Season 1
 	{
 		ID:         "Season 1 - ETH",
 		GameID:     THE_RIOT_GAME_ID,
 		Denom:      "eth",
 		Decimals:   18,
-		TotalPrize: 1_200_000,
+		TotalPrize: 1,
 		BossName:   "Philipp Rustov",
 		BossImage:  "",
 		TopN:       500,

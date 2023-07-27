@@ -206,9 +206,9 @@ func (s *P2eService) MerkleProof(ctx context.Context, req *p2epb.MerkleProofRequ
 		return nil, errors.New("missing networkId")
 	}
 
-	todayID := time.Now().UTC().Format("2006-01-02")
+//   todayID := time.Now().UTC().Format("2006-01-02")
 	currentReward := indexerdb.P2eDailyReward{
-		DayID:     todayID,
+//     DayID:     todayID,
 		NetworkID: networkID,
 	}
 
