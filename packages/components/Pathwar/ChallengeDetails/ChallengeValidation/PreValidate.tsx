@@ -1,8 +1,8 @@
 import React from "react";
 import { View } from "react-native";
 
-import checkIcon from "../../../../../assets/icons/Pathwar/checkIcon.svg";
-import closeIcon from "../../../../../assets/icons/Pathwar/closeIcon.svg";
+import checkIcon from "../../../../../assets/icons/pathwar/checkIcon.svg";
+import closeIcon from "../../../../../assets/icons/pathwar/closeIcon.svg";
 import { Challenge } from "../../../../api/pathwar/v1/pathwar";
 import {
   availableSoonColor,

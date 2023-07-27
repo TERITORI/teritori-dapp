@@ -1,10 +1,10 @@
 import React from "react";
 import { FlatList, View } from "react-native";
 
-import checkSvg from "../../../../assets/icons/Pathwar/checkIcon.svg";
-import clockSvg from "../../../../assets/icons/Pathwar/clockIcon.svg";
-import diamondSvg from "../../../../assets/icons/Pathwar/diamondIcon.svg";
-import starSvg from "../../../../assets/icons/Pathwar/starIcon.svg";
+import checkSvg from "../../../../assets/icons/pathwar/checkIcon.svg";
+import clockSvg from "../../../../assets/icons/pathwar/clockIcon.svg";
+import diamondSvg from "../../../../assets/icons/pathwar/diamondIcon.svg";
+import starSvg from "../../../../assets/icons/pathwar/starIcon.svg";
 import { Challenge } from "../../../api/pathwar/v1/pathwar";
 import { useIsMobile } from "../../../hooks/useIsMobile";
 import { LeftRail } from "../../../screens/Pathwar/components/Listing/LeftRail";

@@ -10,8 +10,8 @@ import {
   Platform,
 } from "react-native";
 
-import heartIcon from "../../../../assets/icons/Pathwar/heartIcon.svg";
-import shareIcon from "../../../../assets/icons/Pathwar/shareIcon.svg";
+import heartIcon from "../../../../assets/icons/pathwar/heartIcon.svg";
+import shareIcon from "../../../../assets/icons/pathwar/shareIcon.svg";
 import { Resources, Tag } from "../../../api/pathwar/v1/pathwar";
 import { BrandText } from "../../../components/BrandText";
 import { OptimizedImage } from "../../../components/OptimizedImage";

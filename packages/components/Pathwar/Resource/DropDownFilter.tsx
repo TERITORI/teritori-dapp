@@ -2,9 +2,9 @@ import Checkbox from "expo-checkbox";
 import React, { useRef } from "react";
 import { Pressable, TouchableOpacity, View } from "react-native";
 
-import SortIcon from "../../../../assets/icons/Pathwar/sortIcon.svg";
 import chevronDownSVG from "../../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../../assets/icons/chevron-up.svg";
+import SortIcon from "../../../../assets/icons/pathwar/sortIcon.svg";
 import { useDropdowns } from "../../../context/DropdownsProvider";
 import { CategoryFilter, TagFilter } from "../../../screens/Pathwar/types";
 import {

@@ -2,12 +2,12 @@ import React from "react";
 import { Linking, TouchableOpacity, View } from "react-native";
 
 import { NavbarCard } from "./NavbarCard";
-import BookIcon from "../../../../assets/LogoPathwarOverview/BookIcon.svg";
-import CodeIcon from "../../../../assets/LogoPathwarOverview/CodeIcon.svg";
-import GoToPageIcon from "../../../../assets/LogoPathwarOverview/GoToPageIcon.svg";
-import PlaneteIcon from "../../../../assets/LogoPathwarOverview/PlaneteIcon.svg";
-import StatsIcon from "../../../../assets/LogoPathwarOverview/StatsIcon.svg";
-import TournamentIcon from "../../../../assets/LogoPathwarOverview/TournamentIcon.svg";
+import BookIcon from "../../../../assets/icons/pathwar/landing/BookIcon.svg";
+import CodeIcon from "../../../../assets/icons/pathwar/landing/CodeIcon.svg";
+import GoToPageIcon from "../../../../assets/icons/pathwar/landing/GoToPageIcon.svg";
+import PlaneteIcon from "../../../../assets/icons/pathwar/landing/PlaneteIcon.svg";
+import StatsIcon from "../../../../assets/icons/pathwar/landing/StatsIcon.svg";
+import TournamentIcon from "../../../../assets/icons/pathwar/landing/TournamentIcon.svg";
 import { useAppNavigation } from "../../../utils/navigation";
 import {
   neutral00,

@@ -7,8 +7,8 @@ import {
 } from "react-native";
 
 import { ResourceBox } from "./ResourceBox";
-import resourceLogo from "../../../../assets/LogoPathwarOverview/ResourceLogo.svg";
 import resourceBanner from "../../../../assets/banners/resourcesBanner.png";
+import resourceLogo from "../../../../assets/icons/pathwar/landing/ResourceLogo.svg";
 import { Resources } from "../../../api/pathwar/v1/pathwar";
 import { BrandText } from "../../../components/BrandText";
 import { DropDownFilter } from "../../../components/Pathwar/Resource/DropDownFilter";

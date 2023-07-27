@@ -1,8 +1,8 @@
 import React from "react";
 import { View } from "react-native";
 
-import checkIcon from "../../../../assets/icons/Pathwar/checkIcon.svg";
-import clockIcon from "../../../../assets/icons/Pathwar/clockIcon.svg";
+import checkIcon from "../../../../assets/icons/pathwar/checkIcon.svg";
+import clockIcon from "../../../../assets/icons/pathwar/clockIcon.svg";
 import { Tournament } from "../../../api/pathwar/v1/pathwar";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";

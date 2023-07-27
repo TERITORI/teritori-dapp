@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 import { ProgressBar } from "react-native-paper";
 
-import closeIcon from "../../../../assets/icons/Pathwar/closeIcon.svg";
-import warningRedIcon from "../../../../assets/icons/Pathwar/warningRedIcon.svg";
+import closeIcon from "../../../../assets/icons/pathwar/closeIcon.svg";
+import warningRedIcon from "../../../../assets/icons/pathwar/warningRedIcon.svg";
 import { errorColor } from "../../../utils/style/colors";
 import { fontSemibold16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";

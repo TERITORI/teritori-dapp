@@ -2,7 +2,7 @@ import { Window as KeplrWindow } from "@keplr-wallet/types/build/window";
 import React from "react";
 import { Linking, View } from "react-native";
 
-import informationBlueIcon from "../../../assets/icons/Pathwar/informationBlueIcon.svg";
+import informationBlueIcon from "../../../assets/icons/pathwar/informationBlueIcon.svg";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { getCosmosNetwork, selectableCosmosNetworks } from "../../networks";
 import { setPathwarToken } from "../../store/slices/settings";
