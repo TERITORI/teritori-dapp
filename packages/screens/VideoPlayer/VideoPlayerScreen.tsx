@@ -3,12 +3,12 @@ import { View, StyleSheet } from "react-native";
 
 import { VideoPlayerHomeContent } from "./VideoPlayerHomeContent";
 import { VideoPlayerMyLibraryContent } from "./VideoPlayerMyLibraryContent";
-import { GetVideoListRequest } from "../../api/video/v1/video";
+import { GetAllAlbumListRequest } from "../../api/musicplayer/v1/musicplayer";
 import { BrandText } from "../../components/BrandText";
+import { VideoPlayer } from "../../components/VideoPlayer/VideoPlayer";
+import { MusicPlayerTab } from "../../components/MusicPlayer/MusicPlayerTab";
 import { ScreenContainer } from "../../components/ScreenContainer";
-// import { VideoPlayer } from "../../components/videoPlayer/VideoPlayer";
-import { VideoPlayerTab } from "../../components/videoPlayer/VideoPlayerTab";
-import { useFetchVideosForLibrary } from "../../hooks/video/useFetchVideosForLibrary";
+import { useFetchLibraryIds } from "../../hooks/musicplayer/useFetchLibraryIds";
 import { ScreenFC } from "../../utils/navigation";
 import { neutralA3, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
@@ -17,13 +17,13 @@ import { layout } from "../../utils/style/layout";
 export const VideoPlayerScreen: ScreenFC<"VideoPlayer"> = () => {
   const tabData: string[] = ["Home", "My Library"];
   const [tab, setTab] = useState<string>(tabData[0]);
-  const { data } = useFetchVideosForLibrary();
-  const videoRequest: GetVideoListRequest = {
+  const { data } = useFetchLibraryIds();
+  const musicRequest: GetAllAlbumListRequest = {
     limit: 10,
     offset: 0,
   };
 
-  const videoListForLibrary = useMemo(() => (data ? data : []), [data]);
+  const libraryIdList = useMemo(() => (data ? data : []), [data]);
 
   return (
     <ScreenContainer
@@ -31,19 +31,15 @@ export const VideoPlayerScreen: ScreenFC<"VideoPlayer"> = () => {
       fullWidth
     >
       <View style={styles.pageConatiner}>
-        <VideoPlayerTab tab={tab} setTab={setTab} />
+        <MusicPlayerTab tab={tab} setTab={setTab} />
         {tab === tabData[0] && (
-          <VideoPlayerHomeContent
-            req={videoRequest}
-            videoListForLibrary={videoListForLibrary}
-          />
+          <VideoPlayerHomeContent req={musicRequest} idList={libraryIdList} />
         )}
         {tab === tabData[1] && (
-          <VideoPlayerMyLibraryContent
-            videoListForLibrary={videoListForLibrary}
-          />
+          <VideoPlayerMyLibraryContent idList={libraryIdList} />
         )}
       </View>
+      <VideoPlayer />
     </ScreenContainer>
   );
 };
