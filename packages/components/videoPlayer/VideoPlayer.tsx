@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { View, Pressable, StyleSheet } from "react-native";
 
-import Avatar from "../../../assets/icons/player/avatar.svg";
-import Next from "../../../assets/icons/player/next.svg";
-import Pause from "../../../assets/icons/player/pause.svg";
-import Play from "../../../assets/icons/player/play.svg";
+import Avatar from "../../../assets/media-player/avatar.svg";
+import Next from "../../../assets/media-player/next.svg";
+import Pause from "../../../assets/media-player/pause.svg";
+import Play from "../../../assets/media-player/play.svg";
 import {
   neutral17,
   neutral22,
@@ -17,6 +17,7 @@ import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 
 export const VideoPlayer: React.FC = () => {
+  const audioRef = useRef<HTMLAudioElement>(null);
   // const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlay, setIsPlay] = useState<boolean>(false);
 
@@ -56,12 +57,12 @@ export const VideoPlayer: React.FC = () => {
       gap: layout.padding_x0_5,
       justifyContent: "center",
     },
-    videoBox: {},
+    audioBox: {},
   });
   const clickPlayPause = () => {
-    // if (videoSrc !== "") {
-    setIsPlay(!isPlay);
-    // }
+    if (videoSrc !== "") {
+      setIsPlay(!isPlay);
+    }
   };
   return (
     <View style={styles.container}>
@@ -85,9 +86,9 @@ export const VideoPlayer: React.FC = () => {
           </BrandText>
         </View>
       </View>
-      {/* <View style={styles.videoBox}>
-        <video id="footer_video" src="" ref={videoRef} controls />
-      </View> */}
+      <View style={styles.audioBox}>
+        <audio id="footer_audio" src={audioSrc} ref={audioRef} controls />
+      </View>
     </View>
   );
 };
