@@ -108,19 +108,6 @@ export const VideoPlayerCard: React.FC<{
           <BrandText style={styles.contentName}>@{username}</BrandText>
         </Pressable>
       </View>
-      <View
-        style={{
-          display: "flex",
-          flexDirection: "row",
-        }}
-      >
-        {/* <BrandText style={styles.contentDescription}>
-          {item.videoMetaInfo.description} views
-        </BrandText>
-        <BrandText style={styles.contentDate}>
-          {item.videoMetaInfo.description} days ago
-        </BrandText> */}
-      </View>
     </View>
   );
 };

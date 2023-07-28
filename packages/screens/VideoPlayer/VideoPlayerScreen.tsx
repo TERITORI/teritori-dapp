@@ -6,7 +6,6 @@ import { VideoPlayerMyLibraryContent } from "./VideoPlayerMyLibraryContent";
 import { GetVideoListRequest } from "../../api/video/v1/video";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
-// import { VideoPlayer } from "../../components/videoPlayer/VideoPlayer";
 import { VideoPlayerTab } from "../../components/videoPlayer/VideoPlayerTab";
 import { useFetchVideosForLibrary } from "../../hooks/video/useFetchVideosForLibrary";
 import { ScreenFC } from "../../utils/navigation";

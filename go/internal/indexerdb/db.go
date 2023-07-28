@@ -60,9 +60,6 @@ var allModels = []interface{}{
 	&DAO{},
 	&DAOMember{},
 	&DAOProposal{},
-	&Video{},
-	&VideoLibrary{},
-	&VideoViewCount{},
 
 	// names
 	&Name{},
@@ -70,6 +67,7 @@ var allModels = []interface{}{
 	// music/video
 	&Video{},
 	&VideoLibrary{},
+	&VideoViewCount{},
 }
 
 func NewSQLiteDB(path string) (*gorm.DB, error) {
