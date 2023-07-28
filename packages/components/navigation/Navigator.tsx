@@ -44,6 +44,8 @@ import { VideoShowScreen } from "../../screens/VideoPlayer/VideoShowScreen";
 import { WalletManagerScreen } from "../../screens/WalletManager/WalletManagerScreen";
 import { WalletManagerWalletsScreen } from "../../screens/WalletManager/WalletsScreen";
 import { RootStackParamList } from "../../utils/navigation";
+import { VideoPlayerScreen } from "../../screens/VideoPlayer/VideoPlayerScreen";
+import { VideoShowScreen } from "../../screens/VideoPlayer/VideoShowScreen";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const screenTitle = (title: string) => "Teritori - " + title;
