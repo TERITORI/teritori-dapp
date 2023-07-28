@@ -1,0 +1,50 @@
+syntax = "proto3";
+package video.v1;
+option go_package = "./videopb";
+
+service VideoService {
+	rpc GetVideoList(GetVideoListRequest) returns (GetVideoListResponse);
+	rpc GetUserVideoList(GetUserVideoListRequest) returns (GetUserVideoListResponse);
+	rpc GetVideo(GetVideoRequest) returns (GetVideoResponse);
+	rpc GetVideoListForLibrary(GetVideoListForLibraryRequest) returns (GetVideoListForLibraryResponse);
+}
+message GetUserVideoListRequest {
+    string created_by = 1;
+	uint32 limit = 2;
+	uint32 offset = 3;
+}
+
+message GetUserVideoListResponse {
+    repeated VideoInfo video_infos = 1;
+}
+
+message GetVideoRequest {
+    string identifier = 1;
+}
+
+message GetVideoResponse {
+    VideoInfo video_info =1;
+}
+
+
+message GetVideoListRequest {
+	uint32 limit = 1;
+	uint32 offset = 2;
+}
+
+message GetVideoListResponse {
+	repeated VideoInfo video_infos = 1;
+}
+
+message GetVideoListForLibraryRequest {
+    string user = 1;
+}
+
+message GetVideoListForLibraryResponse {
+    repeated VideoInfo video_infos = 1;
+}
+message VideoInfo {
+	string identifier = 1;
+	string metadata = 2;
+	string created_by = 3;
+}

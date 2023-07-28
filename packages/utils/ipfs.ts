@@ -72,3 +72,7 @@ export const ipfsURLToHTTPURL = (ipfsURL: string | undefined) => {
   }
   return "https://nftstorage.link/ipfs/" + ipfsURL;
 };
+
+export const ipfsPinataUrl = (ipfsHash: string): string => {
+  return `${process.env.PINATA_GATEWAY}/${ipfsHash}`;
+};
