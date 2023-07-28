@@ -2,27 +2,32 @@ import React, { useState } from "react";
 import { View, StyleSheet } from "react-native";
 
 import { HoverView } from "./HoverView";
-import AddLibrary from "../../../assets/icons/player/add-library.svg";
-import Tip from "../../../assets/icons/player/tip-other.svg";
-import { signingVideoPlayerClient } from "../../client-creators/videoplayerClient";
+import AddLibrary from "../../../assets/music-player/add-library.svg";
+// import Code from "../../../assets/music-player/code.svg";
+// import Enter from "../../../assets/music-player/enter.svg";
+// import Flag from "../../../assets/music-player/flag.svg";
+// import Link from "../../../assets/music-player/link.svg";
+// import Share from "../../../assets/music-player/share.svg";
+import Tip from "../../../assets/music-player/tip-other.svg";
+import { signingMusicPlayerClient } from "../../client-creators/musicplayerClient";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { neutralA3, neutral33, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold13 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { VideoInfoWithMeta } from "../../utils/types/video";
+import { AlbumInfo } from "../../utils/types/music";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { TipModal } from "../socialFeed/SocialActions/TipModal";
 
 interface TrackHoverMenuProps {
-  videoInfo: VideoInfoWithMeta;
+  album: AlbumInfo;
   hasLibrary: boolean;
   userName: string;
 }
 export const TrackHoverMenu: React.FC<TrackHoverMenuProps> = ({
-  videoInfo,
+  album,
   hasLibrary,
   userName,
 }) => {
@@ -40,23 +45,21 @@ export const TrackHoverMenu: React.FC<TrackHoverMenuProps> = ({
     if (!wallet?.connected || !wallet.address) {
       return;
     }
-    const client = await signingVideoPlayerClient({
+    const client = await signingMusicPlayerClient({
       networkId: selectedNetworkId,
       walletAddress: wallet.address,
     });
     try {
-      const res = await client.addToLibrary({
-        identifier: videoInfo.identifier,
-      });
+      const res = await client.addToLibrary({ identifier: album.id });
       if (res.transactionHash) {
         setToastSuccess({
-          title: "Add video to my library",
+          title: "Add album to my library",
           message: `tx_hash: ${res.transactionHash}`,
         });
       }
     } catch (err) {
       setToastError({
-        title: "Failed to add video to my library",
+        title: "Failed to add album to my library",
         message: `Error: ${err}`,
       });
     }
@@ -66,23 +69,21 @@ export const TrackHoverMenu: React.FC<TrackHoverMenuProps> = ({
     if (!wallet?.connected || !wallet.address) {
       return;
     }
-    const client = await signingVideoPlayerClient({
+    const client = await signingMusicPlayerClient({
       networkId: selectedNetworkId,
       walletAddress: wallet.address,
     });
     try {
-      const res = await client.removeFromLibrary({
-        identifier: videoInfo.identifier,
-      });
+      const res = await client.removeFromLibrary({ identifier: album.id });
       if (res.transactionHash) {
         setToastSuccess({
-          title: "remove video from my library",
+          title: "remove album from my library",
           message: `tx_hash: ${res.transactionHash}`,
         });
       }
     } catch (err) {
       setToastError({
-        title: "Failed to remove video from my library",
+        title: "Failed to remove album from my library",
         message: `Error: ${err}`,
       });
     }
@@ -90,7 +91,7 @@ export const TrackHoverMenu: React.FC<TrackHoverMenuProps> = ({
 
   const copyLinkTrack = () => {
     window.navigator.clipboard.writeText(
-      `${window.location.origin}/video-player/show/${videoInfo.identifier}`
+      `${window.location.origin}/music-player/album/${album.id}`
     );
   };
   const handleTip = () => {
@@ -172,7 +173,7 @@ export const TrackHoverMenu: React.FC<TrackHoverMenuProps> = ({
 
   return (
     <View style={styles.menuContainer}>
-      {wallet && wallet.address !== videoInfo.createdBy && !hasLibrary && (
+      {wallet && wallet.address !== album.createdBy && !hasLibrary && (
         <HoverView
           normalStyle={styles.unitBoxNormal}
           hoverStyle={styles.unitBoxHovered}
@@ -190,7 +191,7 @@ export const TrackHoverMenu: React.FC<TrackHoverMenuProps> = ({
           </View>
         </HoverView>
       )}
-      {wallet && wallet.address !== videoInfo.createdBy && hasLibrary && (
+      {wallet && wallet.address !== album.createdBy && hasLibrary && (
         <HoverView
           normalStyle={styles.unitBoxNormal}
           hoverStyle={styles.unitBoxHovered}
@@ -315,7 +316,7 @@ export const TrackHoverMenu: React.FC<TrackHoverMenuProps> = ({
       </HoverView> */}
       <TipModal
         author={userName}
-        postId={videoInfo.identifier}
+        postId={album.id}
         onClose={() => setTipModalVisible(false)}
         isVisible={tipModalVisible}
       />
