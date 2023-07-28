@@ -1,9 +1,8 @@
 export interface VideoMetaInfo {
-  title: string;
-  description: string;
-  url: string; // ipfs
-  image: string; // ipfs
-  duration: number;
+    title: string;
+    description: string;
+    url: string;   // ipfs
+    image: string  // ipfs
 }
 
 export interface VideoInfoWithMeta {
@@ -15,6 +14,7 @@ export interface VideoInfoWithMeta {
   dislike: number;
   viewLastTimestamp: number;
 }
+
 
 
 

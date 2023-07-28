@@ -2,7 +2,11 @@ import React from "react";
 import { View, StyleSheet } from "react-native";
 
 import { HoverView } from "./HoverView";
-import Link from "../../../assets/player/link.svg";
+// import Code from "../../../assets/music-player/code.svg";
+// import Enter from "../../../assets/music-player/enter.svg";
+// import Flag from "../../../assets/music-player/flag.svg";
+import Link from "../../../assets/music-player/link.svg";
+// import Share from "../../../assets/music-player/share.svg";
 import { neutralA3, neutral33, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold13 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
