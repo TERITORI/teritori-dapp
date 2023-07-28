@@ -1,29 +1,20 @@
-import React, { useState } from "react";
-import { View, StyleSheet, Pressable, Image } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, StyleSheet, Pressable, Image, Animated } from "react-native";
 
-// import ArrowDown from "../../../assets/icons/arrow-down.svg";
-// import Report from "../../../assets/icons/report.svg";
-import Share from "../../../assets/icons/share.svg";
-// import Thumb_down from "../../../assets/icons/thumb_down.svg";
-// import Thumb_up from "../../../assets/icons/thumb_up.svg";
-import TipIcon from "../../../assets/icons/tip.svg";
-// import { VideoInfo } from "../../api/video/v1/video";
-// import { signingVideoPlayerClient } from "../../client-creators/videoplayerClient";
+import { signingMusicPlayerClient } from "../../client-creators/musicplayerClient";
 import { BrandText } from "../../components/BrandText";
+import { MusicPlayerTab } from "../../components/MusicPlayer/MusicPlayerTab";
 import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { TipModal } from "../../components/socialFeed/SocialActions/TipModal";
-import { VideoPlayer } from "../../components/videoPlayer/VideoPlayer";
-import { VideoPlayerTab } from "../../components/videoPlayer/VideoPlayerTab";
-// import { TrackHoverMenu } from "../../components/MusicPlayer/TrackHoverMenu";
-// import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { useMusicplayer } from "../../context/MusicplayerProvider";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
-// import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-// import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { useFetchVideo } from "../../hooks/video/useFetchVideo";
-import { parseUserId } from "../../networks";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { getUserId, parseUserId } from "../../networks";
+import { mustGetMusicplayerClient } from "../../utils/backend";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
-// import { mustGetVideoClient } from "../../utils/backend";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { neutral77, neutral17, primaryColor } from "../../utils/style/colors";
 import {
@@ -31,10 +22,17 @@ import {
   fontMedium14,
   fontSemibold13,
   fontSemibold20,
-  // fontSemibold12,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-// import { VideoPlayerCard } from "../../components/videoPlayer/VideoPlayerCard";
+import { AlbumInfo, AlbumMetadataInfo } from "../../utils/types/music";
+import { VideoPlayer } from "../../components/VideoPlayer/VideoPlayer";
+import { VideoPlayerCard } from "../../components/VideoPlayer/VideoPlayerCard";
+import Thumb_up from "../../../assets/icons/thumb_up.svg";
+import Thumb_down from "../../../assets/icons/thumb_down.svg";
+import TipIcon from "../../../assets/icons/tip.svg";
+import Share from "../../../assets/icons/share.svg";
+import Report from "../../../assets/icons/report.svg";
+import ArrowDown from "../../../assets/icons/arrow-down.svg";
 
 export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
   route: {
@@ -42,82 +40,133 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
   },
 }) => {
   const navigation = useAppNavigation();
-  // const selectedNetworkId = useSelectedNetworkId();
-  // const wallet = useSelectedWallet();
-  // const userId = getUserId(selectedNetworkId, wallet?.address);
-  // const [videoListForLibrary, setVideoListForLibrary] = useState<VideoInfo[]>(
-  //   []
-  // );
-  // const { setToastError, setToastSuccess } = useFeedbacks();
+  const selectedNetworkId = useSelectedNetworkId();
+  const wallet = useSelectedWallet();
+  const userId = getUserId(selectedNetworkId, wallet?.address);
+  const [idForLibraryList, setIdForLibraryList] = useState<string[]>([]);
+  const { setToastError, setToastSuccess } = useFeedbacks();
   const [tipModalVisible, setTipModalVisible] = useState<boolean>(false);
-  const { data } = useFetchVideo({ identifier: id });
+  const [albumInfo, setAlbumInfo] = useState<AlbumInfo>({
+    id: "0",
+    name: "",
+    description: "",
+    image: "",
+    createdBy: "",
+    audios: [],
+  });
 
-  const authorNSInfo = useNSUserInfo(data!.createdBy);
-  const [, userAddress] = parseUserId(data!.createdBy);
+  const authorNSInfo = useNSUserInfo(albumInfo.createdBy);
+  const [, userAddress] = parseUserId(albumInfo.createdBy);
   const username = authorNSInfo?.metadata?.tokenId
     ? authorNSInfo?.metadata?.tokenId
     : userAddress;
 
-  // const initIndexHoverState = {
-  //   index: 0,
-  //   state: false,
-  // };
-  // const [indexHoverState, setIndexHoverState] =
-  //   useState<any>(initIndexHoverState);
-  // const [openDetailAlbumMenu, setOpenDetailAlbumMenu] =
-  //   useState<boolean>(false);
+  useEffect(() => {
+    const getLibraryIdList = async () => {
+      if (!userId) return;
+      try {
+        const res = await mustGetMusicplayerClient(
+          selectedNetworkId
+        ).GetAlbumIdListForLibrary({
+          user: userId,
+        });
+        const idList: string[] = [];
+        res.albumLibraries.map((libraryInfo) => {
+          idList.push(libraryInfo.identifier);
+        });
+        setIdForLibraryList(idList);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    getLibraryIdList();
+  }, [selectedNetworkId, userId]);
+
+  useEffect(() => {
+    const getAlbumInfo = async () => {
+      const res = await mustGetMusicplayerClient(selectedNetworkId).GetAlbum({
+        identifier: id,
+      });
+      if (res.musicAlbum) {
+        const selectedMusicAlbum = res.musicAlbum;
+        const metadata = JSON.parse(
+          selectedMusicAlbum.metadata
+        ) as AlbumMetadataInfo;
+        const audios = metadata.audios;
+        const album: AlbumInfo = {
+          id: selectedMusicAlbum.identifier,
+          description: metadata.description,
+          image: metadata.image,
+          createdBy: selectedMusicAlbum.createdBy,
+          name: metadata.title,
+          audios,
+        };
+        setAlbumInfo(album);
+      }
+    };
+    getAlbumInfo();
+  }, [id, selectedNetworkId]);
+
+  const initIndexHoverState = {
+    index: 0,
+    state: false,
+  };
+  const [indexHoverState, setIndexHoverState] =
+    useState<any>(initIndexHoverState);
+  const [openDetailAlbumMenu, setOpenDetailAlbumMenu] =
+    useState<boolean>(false);
   // const [openTrackMenu, setOpenTrackMenu] = useState<boolean>(false);
   // const [clickedIndex, setClickedIndex] = useState<number>(0);
-  // const handleTip = () => {
-  //   setTipModalVisible(true);
-  // };
-  // const addToLibrary = async () => {
-  //   if (!wallet?.connected || !wallet.address) {
-  //     return;
-  //   }
-  //   const client = await signingVideoPlayerClient({
-  //     networkId: selectedNetworkId,
-  //     walletAddress: wallet.address,
-  //   });
-  //   try {
-  //     const res = await client.addToLibrary({ identifier: id });
-  //     if (res.transactionHash) {
-  //       setToastSuccess({
-  //         title: "Add video to my library",
-  //         message: `tx_hash: ${res.transactionHash}`,
-  //       });
-  //     }
-  //   } catch (err) {
-  //     setToastError({
-  //       title: "Failed to add video to my library",
-  //       message: `Error: ${err}`,
-  //     });
-  //   }
-  // };
+  const handleTip = () => {
+    setTipModalVisible(true);
+  };
+  const addToLibrary = async () => {
+    if (!wallet?.connected || !wallet.address) {
+      return;
+    }
+    const client = await signingMusicPlayerClient({
+      networkId: selectedNetworkId,
+      walletAddress: wallet.address,
+    });
+    try {
+      const res = await client.addToLibrary({ identifier: id });
+      if (res.transactionHash) {
+        setToastSuccess({
+          title: "Add album to my library",
+          message: `tx_hash: ${res.transactionHash}`,
+        });
+      }
+    } catch (err) {
+      setToastError({
+        title: "Failed to add album to my library",
+        message: `Error: ${err}`,
+      });
+    }
+  };
 
-  // const removeFromLibrary = async () => {
-  //   if (!wallet?.connected || !wallet.address) {
-  //     return;
-  //   }
-  //   const client = await signingVideoPlayerClient({
-  //     networkId: selectedNetworkId,
-  //     walletAddress: wallet.address,
-  //   });
-  //   try {
-  //     const res = await client.removeFromLibrary({ identifier: id });
-  //     if (res.transactionHash) {
-  //       setToastSuccess({
-  //         title: "remove video from my library",
-  //         message: `tx_hash: ${res.transactionHash}`,
-  //       });
-  //     }
-  //   } catch (err) {
-  //     setToastError({
-  //       title: "Failed to video album from my library",
-  //       message: `Error: ${err}`,
-  //     });
-  //   }
-  // };
+  const removeFromLibrary = async () => {
+    if (!wallet?.connected || !wallet.address) {
+      return;
+    }
+    const client = await signingMusicPlayerClient({
+      networkId: selectedNetworkId,
+      walletAddress: wallet.address,
+    });
+    try {
+      const res = await client.removeFromLibrary({ identifier: id });
+      if (res.transactionHash) {
+        setToastSuccess({
+          title: "remove album from my library",
+          message: `tx_hash: ${res.transactionHash}`,
+        });
+      }
+    } catch (err) {
+      setToastError({
+        title: "Failed to remove album from my library",
+        message: `Error: ${err}`,
+      });
+    }
+  };
 
   const styles = StyleSheet.create({
     commentContent: {
@@ -409,23 +458,23 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
     ]),
   });
 
-  // const { setAudioSrc, setIsPlay } = useMusicplayer();
-  // const playAudio = () => {
-  //   if (albumInfo.audios.length > 0) {
-  //     setAudioSrc(ipfsPinataUrl(albumInfo.audios[0].ipfs));
-  //     setIsPlay(true);
-  //   }
-  // };
+  const { setAudioSrc, setIsPlay } = useMusicplayer();
+  const playAudio = () => {
+    if (albumInfo.audios.length > 0) {
+      setAudioSrc(ipfsURLToHTTPURL(albumInfo.audios[0].ipfs));
+      setIsPlay(true);
+    }
+  };
 
   return (
     <ScreenContainer
-      headerChildren={<BrandText>Video name</BrandText>}
+      headerChildren={<BrandText>Album name</BrandText>}
       fullWidth
     >
       <View style={styles.pageConatiner}>
-        <VideoPlayerTab
+        <MusicPlayerTab
           setTab={() => {
-            navigation.navigate("VideoPlayer");
+            navigation.navigate("MusicPlayer");
           }}
         />
 
@@ -459,17 +508,19 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
                 }}
               >
                 <BrandText style={styles.contentDescription}>
-                  12 views
+                  {"12"} views
                 </BrandText>
-                <BrandText style={styles.contentDate}>12 days ago</BrandText>
+                <BrandText style={styles.contentDate}>
+                  {"12"} days ago
+                </BrandText>
               </View>
               <View style={styles.btnGroup}>
                 <Pressable style={styles.buttonContainer}>
-                  {/* <SVG source={Thumb_up} /> */}
+                  <SVG source={Thumb_up} />
                   143
                 </Pressable>
                 <Pressable style={styles.buttonContainer}>
-                  {/* <SVG source={Thumb_down} /> */}
+                  <SVG source={Thumb_down} />
                   143
                 </Pressable>
                 <Pressable style={styles.buttonContainer}>
@@ -481,12 +532,11 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
                   Share
                 </Pressable>
                 <Pressable style={styles.outlineButtonContainer}>
-                  {/* <SVG source={Report} /> */}
+                  <SVG source={Report} />
                   Report
                 </Pressable>
               </View>
             </View>
-            <View style={styles.blueContents} />
             <BrandText style={styles.contentName}>
               Description here <View style={styles.blueContents}>#tag</View>{" "}
               lorem ipsum dolor sit #tag amet lorem ipsum. Lorem ipsum dolor sit
@@ -540,17 +590,17 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
               <View style={styles.commentContent}>Comment here</View>
               <View style={styles.commentContent}>
                 <View style={styles.flexRowItemCenter}>
-                  {/* <SVG source={Thumb_up} /> */}
+                  <SVG source={Thumb_up} />
                   <View style={{ marginLeft: "0.3em" }}>11</View>
                 </View>
                 <View style={styles.flexRowItemCenter}>
-                  {/* <SVG source={Thumb_down} /> */}
+                  <SVG source={Thumb_down} />
                   <View style={{ marginLeft: "0.3em" }}>11</View>
                 </View>
                 <View style={{ marginLeft: "0.3em" }}>reply</View>
               </View>
               <View style={styles.commentContent}>
-                {/* <SVG source={ArrowDown} /> */}
+                <SVG source={ArrowDown} />
                 <View style={styles.blueContents}>1 reply</View>
               </View>
             </View>
@@ -574,23 +624,59 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
               <View style={styles.commentContent}>Comment here</View>
               <View style={styles.commentContent}>
                 <View style={styles.flexRowItemCenter}>
-                  {/* <SVG source={Thumb_up} /> */}
+                  <SVG source={Thumb_up} />
                   <View style={{ marginLeft: "0.3em" }}>11</View>
                 </View>
                 <View style={styles.flexRowItemCenter}>
-                  {/* <SVG source={Thumb_down} /> */}
+                  <SVG source={Thumb_down} />
                   <View style={{ marginLeft: "0.3em" }}>11</View>
                 </View>
                 <View style={{ marginLeft: "0.3em" }}>reply</View>
               </View>
               <View style={styles.commentContent}>
-                {/* <SVG source={ArrowDown} /> */}
+                <SVG source={ArrowDown} />
                 <View style={styles.blueContents}>1 reply</View>
               </View>
             </View>
           </View>
           <View style={styles.pageRightPanel}>
             <View style={styles.rightTitle}>More videos from @nickname</View>
+            <Animated.FlatList
+              scrollEventThrottle={0.1}
+              data={
+                // albums
+                [
+                  {
+                    id: "string",
+                    name: "string",
+                    description: "string",
+                    image: "string",
+                    createdBy: "string",
+                    audios: [
+                      {
+                        name: "string",
+                        ipfs: "string",
+                        duration: 1,
+                      },
+                    ],
+                  },
+                ]
+              }
+              numColumns={4}
+              renderItem={({ item: albumInfo }) => (
+                <View>
+                  <VideoPlayerCard
+                    item={albumInfo}
+                    hasLibrary={
+                      [].findIndex((item) => item === albumInfo.id) !== -1
+                    }
+                  />
+                </View>
+              )}
+              onScroll={() => {}}
+              onEndReachedThreshold={1}
+              onEndReached={() => {}}
+            />
           </View>
         </View>
       </View>

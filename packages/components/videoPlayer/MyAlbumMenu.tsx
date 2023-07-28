@@ -2,17 +2,12 @@ import React, { useState } from "react";
 import { View, StyleSheet } from "react-native";
 
 import { HoverView } from "./HoverView";
-import AddLibrary from "../../../assets/music-player/add-library.svg";
-// import Code from "../../../assets/music-player/code.svg";
-// import Enter from "../../../assets/music-player/enter.svg";
-// import Flag from "../../../assets/music-player/flag.svg";
-// import Link from "../../../assets/music-player/link.svg";
-// import Share from "../../../assets/music-player/share.svg";
-import Tip from "../../../assets/music-player/tip-other.svg";
+import Code from "../../../assets/music-player/code.svg";
+import Delete from "../../../assets/music-player/delete.svg";
+import Enter from "../../../assets/music-player/enter.svg";
+import Link from "../../../assets/music-player/link.svg";
+import Share from "../../../assets/music-player/share.svg";
 import { signingMusicPlayerClient } from "../../client-creators/musicplayerClient";
-import AddLibrary from "../../../assets/icons/player/add-library.svg";
-import Tip from "../../../assets/icons/player/tip-other.svg";
-import { signingVideoPlayerClient } from "../../client-creators/videoplayerClient";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
@@ -20,32 +15,21 @@ import { neutralA3, neutral33, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold13 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { AlbumInfo } from "../../utils/types/music";
-import { VideoInfoWithMeta } from "../../utils/types/video";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
-import { TipModal } from "../socialFeed/SocialActions/TipModal";
 
-interface TrackHoverMenuProps {
+interface MyAlbumMenuProps {
   album: AlbumInfo;
-  hasLibrary: boolean;
-  userName: string;
 }
-export const TrackHoverMenu: React.FC<TrackHoverMenuProps> = ({
-  album,
-  hasLibrary,
-  userName,
-}) => {
-  const selectedNetworkId = useSelectedNetworkId();
-  const wallet = useSelectedWallet();
-
+export const MyAlbumMenu: React.FC<MyAlbumMenuProps> = ({ album }) => {
   const shareMenuWidth = 188;
   const lineHeight = 18;
-
-  // const [openShareMenu, setOpenShareMenu] = useState<boolean>(false);
-  const [tipModalVisible, setTipModalVisible] = useState<boolean>(false);
+  const selectedNetworkId = useSelectedNetworkId();
+  const wallet = useSelectedWallet();
+  const [openShareMenu, setOpenShareMenu] = useState<boolean>(false);
   const { setToastError, setToastSuccess } = useFeedbacks();
 
-  const addToLibrary = async () => {
+  const deleteMusicAlbum = async () => {
     if (!wallet?.connected || !wallet.address) {
       return;
     }
@@ -54,54 +38,20 @@ export const TrackHoverMenu: React.FC<TrackHoverMenuProps> = ({
       walletAddress: wallet.address,
     });
     try {
-      const res = await client.addToLibrary({ identifier: album.id });
+      const res = await client.deleteMusicAlbum({ identifier: album.id });
       if (res.transactionHash) {
         setToastSuccess({
-          title: "Add album to my library",
+          title: "Delete album",
           message: `tx_hash: ${res.transactionHash}`,
         });
       }
     } catch (err) {
       setToastError({
-        title: "Failed to add album to my library",
+        title: "Failed to delete album",
         message: `Error: ${err}`,
       });
     }
   };
-
-  const removeFromLibrary = async () => {
-    if (!wallet?.connected || !wallet.address) {
-      return;
-    }
-    const client = await signingMusicPlayerClient({
-      networkId: selectedNetworkId,
-      walletAddress: wallet.address,
-    });
-    try {
-      const res = await client.removeFromLibrary({ identifier: album.id });
-      if (res.transactionHash) {
-        setToastSuccess({
-          title: "remove album from my library",
-          message: `tx_hash: ${res.transactionHash}`,
-        });
-      }
-    } catch (err) {
-      setToastError({
-        title: "Failed to remove album from my library",
-        message: `Error: ${err}`,
-      });
-    }
-  };
-
-  const copyLinkTrack = () => {
-    window.navigator.clipboard.writeText(
-      `${window.location.origin}/music-player/album/${album.id}`
-    );
-  };
-  const handleTip = () => {
-    setTipModalVisible(true);
-  };
-
   const styles = StyleSheet.create({
     hoverBox: {
       position: "absolute",
@@ -146,10 +96,16 @@ export const TrackHoverMenu: React.FC<TrackHoverMenuProps> = ({
       alignItems: "center",
       gap: layout.padding_x1,
     },
-    text: StyleSheet.flatten([
+    normalText: StyleSheet.flatten([
       fontSemibold13,
       {
         color: neutralA3,
+      },
+    ]),
+    deleteText: StyleSheet.flatten([
+      fontSemibold13,
+      {
+        color: "#F46F76",
       },
     ]),
     divideLine: {
@@ -177,96 +133,26 @@ export const TrackHoverMenu: React.FC<TrackHoverMenuProps> = ({
 
   return (
     <View style={styles.menuContainer}>
-      {wallet && wallet.address !== album.createdBy && !hasLibrary && (
-        <HoverView
-          normalStyle={styles.unitBoxNormal}
-          hoverStyle={styles.unitBoxHovered}
-          onPress={() => {
-            addToLibrary();
-          }}
-        >
-          <View style={styles.oneLine}>
-            <SVG
-              source={AddLibrary}
-              width={layout.padding_x2}
-              height={layout.padding_x2}
-            />
-            <BrandText style={styles.text}>Add to library</BrandText>
-          </View>
-        </HoverView>
-      )}
-      {wallet && wallet.address !== album.createdBy && hasLibrary && (
-        <HoverView
-          normalStyle={styles.unitBoxNormal}
-          hoverStyle={styles.unitBoxHovered}
-          onPress={() => {
-            removeFromLibrary();
-          }}
-        >
-          <View style={styles.oneLine}>
-            <SVG
-              source={AddLibrary}
-              width={layout.padding_x2}
-              height={layout.padding_x2}
-            />
-            <BrandText style={styles.text}>Remove From library</BrandText>
-          </View>
-        </HoverView>
-      )}
-
-      <View style={styles.divideLine} />
-
-      {/* <HoverView
-        normalStyle={styles.unitBoxNormal}
-        hoverStyle={styles.unitBoxHovered}
-      >
-        <View style={styles.oneLine}>
-          <SVG
-            source={Flag}
-            width={layout.padding_x2}
-            height={layout.padding_x2}
-          />
-          <BrandText style={styles.text}>Flag this track</BrandText>
-        </View>
-      </HoverView>
-
-      <View style={styles.divideLine} /> */}
-
       <HoverView
         normalStyle={styles.unitBoxNormal}
         hoverStyle={styles.unitBoxHovered}
         onPress={() => {
-          handleTip();
+          deleteMusicAlbum();
         }}
       >
         <View style={styles.oneLine}>
           <SVG
-            source={Tip}
+            source={Delete}
             width={layout.padding_x2}
             height={layout.padding_x2}
           />
-          <BrandText style={styles.text}>Tip this track</BrandText>
-        </View>
-      </HoverView>
-      <View style={styles.divideLine} />
-      <HoverView
-        normalStyle={styles.unitBoxNormal}
-        hoverStyle={styles.unitBoxHovered}
-        onPress={() => {
-          copyLinkTrack();
-        }}
-      >
-        <View style={styles.oneLine}>
-          <SVG
-            source={Tip}
-            width={layout.padding_x2}
-            height={layout.padding_x2}
-          />
-          <BrandText style={styles.text}>Copy link to the track</BrandText>
+          <BrandText style={styles.deleteText}>Delete album</BrandText>
         </View>
       </HoverView>
 
-      {/* <HoverView
+      <View style={styles.divideLine} />
+
+      <HoverView
         normalStyle={styles.unitBoxNormal}
         onPress={() => setOpenShareMenu((value) => !value)}
         hoverStyle={styles.unitBoxHovered}
@@ -277,7 +163,7 @@ export const TrackHoverMenu: React.FC<TrackHoverMenuProps> = ({
             width={layout.padding_x2}
             height={layout.padding_x2}
           />
-          <BrandText style={styles.text}>Share</BrandText>
+          <BrandText style={styles.normalText}>Share</BrandText>
         </View>
         <SVG
           source={Enter}
@@ -297,7 +183,7 @@ export const TrackHoverMenu: React.FC<TrackHoverMenuProps> = ({
                   width={layout.padding_x2}
                   height={layout.padding_x2}
                 />
-                <BrandText style={styles.text}>
+                <BrandText style={styles.normalText}>
                   Copy link to the track
                 </BrandText>
               </View>
@@ -312,18 +198,14 @@ export const TrackHoverMenu: React.FC<TrackHoverMenuProps> = ({
                   width={layout.padding_x2}
                   height={layout.padding_x2}
                 />
-                <BrandText style={styles.text}>Copy widget code</BrandText>
+                <BrandText style={styles.normalText}>
+                  Copy widget code
+                </BrandText>
               </View>
             </HoverView>
           </View>
         )}
-      </HoverView> */}
-      <TipModal
-        author={userName}
-        postId={album.id}
-        onClose={() => setTipModalVisible(false)}
-        isVisible={tipModalVisible}
-      />
+      </HoverView>
     </View>
   );
 };

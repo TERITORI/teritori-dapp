@@ -5,30 +5,25 @@ import Animated, {
   useSharedValue,
 } from "react-native-reanimated";
 
-import Upload from "../../../assets/icons/upload.svg";
 import Logo from "../../../assets/logos/logo.svg";
-import { GetVideoListRequest } from "../../api/video/v1/video";
+import Upload from "../../../assets/icons/upload.svg";
 import { BrandText } from "../../components/BrandText";
+import { VideoPlayerCard } from "../../components/VideoPlayer/VideoPlayerCard";
+import { UploadAlbumModal } from "../../components/MusicPlayer/UploadAlbumModal";
 import { SVG } from "../../components/SVG";
-import { UploadVideoModal } from "../../components/videoPlayer/UploadVideoModal";
-import { VideoPlayerCard } from "../../components/videoPlayer/VideoPlayerCard";
-import {
-  combineFetchVideoPages,
-  useFetchVideos,
-} from "../../hooks/video/useFetchVideos";
 import { primaryColor } from "../../utils/style/colors";
 import { fontSemibold14, fontSemibold20 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { VideoInfoWithMeta } from "../../utils/types/video";
+import { useFetchVideos } from "../../hooks/video/useFetchVideos";
 
-interface VideoPlayerProps {
-  req: GetVideoListRequest;
-  videoListForLibrary: VideoInfoWithMeta[];
+interface MusicPlayerProps {
+  req: GetAllAlbumListRequest;
+  idList: string[];
 }
 
-export const VideoPlayerHomeContent: React.FC<VideoPlayerProps> = ({
+export const VideoPlayerHomeContent: React.FC<MusicPlayerProps> = ({
   req,
-  videoListForLibrary,
+  idList,
 }) => {
   const [openUploadModal, setOpenUploadModal] = useState<boolean>(false);
   const { data, isFetching, hasNextPage, fetchNextPage, isLoading } =
@@ -143,14 +138,12 @@ export const VideoPlayerHomeContent: React.FC<VideoPlayerProps> = ({
           scrollEventThrottle={0.1}
           data={videos}
           numColumns={4}
-          renderItem={({ item: videoInfo }) => (
+          renderItem={({ item: albumInfo }) => (
             <View style={styles.albumGrid}>
               <VideoPlayerCard
-                item={videoInfo}
+                item={albumInfo}
                 hasLibrary={
-                  videoListForLibrary.findIndex(
-                    (item) => item.identifier === videoInfo.identifier
-                  ) !== -1
+                  idList.findIndex((item) => item === albumInfo.id) !== -1
                 }
               />
             </View>
@@ -160,7 +153,7 @@ export const VideoPlayerHomeContent: React.FC<VideoPlayerProps> = ({
           onEndReached={onEndReached}
         />
       </View>
-      <UploadVideoModal
+      <UploadAlbumModal
         isVisible={openUploadModal}
         onClose={() => setOpenUploadModal(false)}
       />
