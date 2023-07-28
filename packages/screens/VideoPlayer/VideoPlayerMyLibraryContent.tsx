@@ -7,15 +7,14 @@ import Animated, {
 
 import Logo from "../../../assets/logos/logo.svg";
 import { BrandText } from "../../components/BrandText";
+import { UploadAlbumModal } from "../../components/MusicPlayer/UploadAlbumModal";
 import { SVG } from "../../components/SVG";
-import { UploadVideoModal } from "../../components/videoPlayer/UploadVideoModal";
-import { VideoPlayerCard } from "../../components/videoPlayer/VideoPlayerCard";
+import {
+  combineFetchAlbumPages as combineFetchAlbumPagesOther,
+  useOtherFetchAlbum,
+} from "../../hooks/musicplayer/useOtherFetchAlbum";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import {
-  useUserFetchVideos,
-  combineFetchVideoPages,
-} from "../../hooks/video/useUserFetchVideos";
 import { getUserId } from "../../networks";
 import { neutral77, primaryColor } from "../../utils/style/colors";
 import {
@@ -24,16 +23,17 @@ import {
   fontSemibold14,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { VideoInfoWithMeta } from "../../utils/types/video";
+import { VideoPlayerCard } from "../../components/VideoPlayer/VideoPlayerCard";
 
-export const VideoPlayerMyLibraryContent: React.FC<{
-  videoListForLibrary: VideoInfoWithMeta[];
-}> = ({ videoListForLibrary }) => {
+export const VideoPlayerMyLibraryContent: React.FC<{ idList: string[] }> = ({
+  idList,
+}) => {
   const unitWidth = 240;
 
   const isLoadingValue = useSharedValue(false);
   const isGoingUp = useSharedValue(false);
 
+  const isLoadingValueOther = useSharedValue(false);
   const isGoingUpOther = useSharedValue(false);
 
   const selectedNetworkId = useSelectedNetworkId();
@@ -42,17 +42,32 @@ export const VideoPlayerMyLibraryContent: React.FC<{
 
   const [flatListContentOffsetY, setFlatListContentOffsetY] = useState(0);
   const { data, isFetching, hasNextPage, fetchNextPage, isLoading } =
-    useUserFetchVideos({
+    useUserFetchAlbum({
       limit: 10,
       offset: 0,
       createdBy: userId,
     });
 
-  const myVideos = useMemo(
-    () => (data ? combineFetchVideoPages(data.pages) : []),
+  const albums = useMemo(
+    () => (data ? combineFetchAlbumPages(data.pages) : []),
     [data]
   );
 
+  const {
+    data: dataOther,
+    isFetching: isFetchingOther,
+    hasNextPage: hasNextPageOther,
+    fetchNextPage: fetchNextPageOther,
+    isLoading: isLoadingOther,
+  } = useOtherFetchAlbum({
+    limit: 10,
+    offset: 0,
+    idList,
+  });
+  const otherAlbums = useMemo(
+    () => (dataOther ? combineFetchAlbumPagesOther(dataOther.pages) : []),
+    [dataOther]
+  );
   const [openUploadModal, setOpenUploadModal] = useState<boolean>(false);
   useEffect(() => {
     if (isFetching || isLoading) {
@@ -62,6 +77,15 @@ export const VideoPlayerMyLibraryContent: React.FC<{
       isLoadingValue.value = false;
     }
   }, [isFetching, isLoading, isGoingUp, isLoadingValue]);
+
+  useEffect(() => {
+    if (isFetchingOther || isLoadingOther) {
+      isGoingUpOther.value = false;
+      isLoadingValueOther.value = true;
+    } else {
+      isLoadingValueOther.value = false;
+    }
+  }, [isFetchingOther, isLoadingOther, isGoingUpOther, isLoadingValueOther]);
 
   const scrollHandler = useAnimatedScrollHandler({
     onScroll: (event) => {
@@ -93,7 +117,11 @@ export const VideoPlayerMyLibraryContent: React.FC<{
     }
   };
 
-  const onEndReachedOther = () => {};
+  const onEndReachedOther = () => {
+    if (!isLoadingOther && hasNextPageOther && !isFetchingOther) {
+      fetchNextPageOther();
+    }
+  };
 
   const styles = StyleSheet.create({
     container: {
@@ -178,11 +206,11 @@ export const VideoPlayerMyLibraryContent: React.FC<{
       <View style={styles.contentGroup}>
         <Animated.FlatList
           scrollEventThrottle={0.1}
-          data={myVideos}
+          data={albums}
           numColumns={4}
-          renderItem={({ item: videoInfo }) => (
+          renderItem={({ item: albumInfo }) => (
             <View style={styles.albumGrid}>
-              <VideoPlayerCard item={videoInfo} hasLibrary />
+              <VideoPlayerCard item={albumInfo} hasLibrary />
             </View>
           )}
           onScroll={scrollHandler}
@@ -197,7 +225,7 @@ export const VideoPlayerMyLibraryContent: React.FC<{
       <View style={styles.contentGroup}>
         <Animated.FlatList
           scrollEventThrottle={0.1}
-          data={videoListForLibrary}
+          data={otherAlbums}
           numColumns={4}
           renderItem={({ item: albumInfo }) => (
             <View style={styles.albumGrid}>
@@ -209,7 +237,7 @@ export const VideoPlayerMyLibraryContent: React.FC<{
           onEndReached={onEndReachedOther}
         />
       </View>
-      <UploadVideoModal
+      <UploadAlbumModal
         isVisible={openUploadModal}
         onClose={() => setOpenUploadModal(false)}
       />

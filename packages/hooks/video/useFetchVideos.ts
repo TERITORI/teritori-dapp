@@ -1,8 +1,11 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 
+import {
+  VideoInfo,
+  GetVideoListRequest
+} from "../../api/video/v1/video";
 import { mustGetVideoClient } from "../../utils/backend";
-import { VideoInfoWithMeta, VideoMetaInfo } from "../../utils/types/video";
-import { VideoInfo, GetVideoListRequest } from "../../api/video/v1/video";
+import { VideoInfoWithMeta,   VideoMetaInfo } from "../../utils/types/video";
 import { useSelectedNetworkId } from "../useSelectedNetwork";
 
 export type VideosList = {
@@ -11,10 +14,7 @@ export type VideosList = {
 } | null;
 
 export const combineFetchVideoPages = (pages: VideosList[]) =>
-  pages.reduce(
-    (acc: VideoInfoWithMeta[], page) => [...acc, ...(page?.list || [])],
-    []
-  );
+  pages.reduce((acc: VideoInfoWithMeta[], page) => [...acc, ...(page?.list || [])], []);
 
 export const useFetchVideos = (req: GetVideoListRequest) => {
   const selectedNetworkId = useSelectedNetworkId();
@@ -28,10 +28,15 @@ export const useFetchVideos = (req: GetVideoListRequest) => {
             offset: pageParam || 0,
           };
           // Getting Albums
-          const videoList = await getVideos(selectedNetworkId, postsRequest);
+          const videoList = await getVideos(
+            selectedNetworkId,
+            postsRequest
+          );
           const videoInfos: VideoInfoWithMeta[] = [];
-          videoList.map((videoInfo) => {
-            const metadata = JSON.parse(videoInfo.metadata) as VideoMetaInfo;
+          videoList.map((videoInfo, index) => {
+            const metadata = JSON.parse(
+              videoInfo.metadata
+            ) as VideoMetaInfo;
             videoInfos.push({
               identifier: videoInfo.identifier,
               videoMetaInfo: metadata,
@@ -54,7 +59,10 @@ export const useFetchVideos = (req: GetVideoListRequest) => {
     );
   return { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading };
 };
-const getVideos = async (networkId: string, req: GetVideoListRequest) => {
+const getVideos = async (
+  networkId: string,
+  req: GetVideoListRequest
+) => {
   try {
     // ===== We use FeedService to be able to fetch filtered posts
     const videoClient = mustGetVideoClient(networkId);
@@ -66,4 +74,3 @@ const getVideos = async (networkId: string, req: GetVideoListRequest) => {
     return [] as VideoInfo[];
   }
 };
-
