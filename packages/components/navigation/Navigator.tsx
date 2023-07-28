@@ -39,6 +39,8 @@ import { UserPublicProfileScreen } from "../../screens/UserPublicProfile/UserPub
 import { WalletManagerScreen } from "../../screens/WalletManager/WalletManagerScreen";
 import { WalletManagerWalletsScreen } from "../../screens/WalletManager/WalletsScreen";
 import { RootStackParamList } from "../../utils/navigation";
+import { VideoPlayerScreen } from "../../screens/VideoPlayer/VideoPlayerScreen";
+import { VideoShowScreen } from "../../screens/VideoPlayer/VideoShowScreen";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 export const screenTitle = (title: string) => "Teritori - " + title;
@@ -285,6 +287,16 @@ export const Navigator: React.FC = () => {
         name="CoreDAO"
         component={CoreDAOScreen}
         options={{ header: () => null, title: screenTitle("Core DAO") }}
+      />
+      <Stack.Screen
+        name="VideoPlayer"
+        component={VideoPlayerScreen}
+        options={{ header: () => null, title: screenTitle("Video Player") }}
+      />
+      <Stack.Screen
+        name="VideoShow"
+        component={VideoShowScreen}
+        options={{ header: () => null, title: screenTitle("Video Show") }}
       />
     </Stack.Navigator>
   );
