@@ -74,8 +74,8 @@ func (s *LeaderboardService) startScheduler() {
 		s.execUpdateLeaderboard(network, rpcEndpoint)
 	})
 
-	// schedule.Every(1).Day().At("00:00").Do(func() {
-	schedule.Every(15).Minutes().Do(func() {
+	schedule.Every(1).Day().At("00:00").Do(func() {
+  // schedule.Every(15).Minutes().Do(func() {
 		s.execReportRewards(network, rpcEndpoint)
 	})
 

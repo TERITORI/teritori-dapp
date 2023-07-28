@@ -26,7 +26,7 @@ message UserReward {
 message MerkleDataResponse {
   repeated string proof = 1;
   UserReward user_reward = 2;
-  string claimableAmount = 3;
+  string claimable_amount = 3;
 }
 
 message AllSeasonsRequest {
