@@ -18,7 +18,6 @@ export const DetailAlbumMenu: React.FC<DetailAlbumMenuProps> = ({ id }) => {
   const lineHeight = 18;
   const buttonHeight = 36;
 
-  // const [openShareMenu, setOpenShareMenu] = useState<boolean>(false);
   const handleCopyLinkTrack = () => {
     window.navigator.clipboard.writeText(
       `${window.location.origin}/music-player/album/${id}`
@@ -102,77 +101,6 @@ export const DetailAlbumMenu: React.FC<DetailAlbumMenuProps> = ({ id }) => {
           <BrandText style={styles.text}>Copy link to the track</BrandText>
         </View>
       </HoverView>
-
-      {/* {!mine && (
-        <HoverView
-          normalStyle={styles.unitBoxNormal}
-          hoverStyle={styles.unitBoxHovered}
-        >
-          <View style={styles.oneLine}>
-            <SVG
-              source={Flag}
-              width={layout.padding_x2}
-              height={layout.padding_x2}
-            />
-            <BrandText style={styles.text}>Flag this Album</BrandText>
-          </View>
-        </HoverView>
-      )} */}
-
-      {/* {!mine && <View style={styles.divideLine} />} */}
-
-      {/* <HoverView
-        normalStyle={styles.unitBoxNormal}
-        onPress={() => setOpenShareMenu((value) => !value)}
-        hoverStyle={styles.unitBoxHovered}
-      >
-        <View style={[styles.oneLine, { paddingRight: mine ? 40 : 0 }]}>
-          <SVG
-            source={Share}
-            width={layout.padding_x2}
-            height={layout.padding_x2}
-          />
-          <BrandText style={styles.text}>Share</BrandText>
-        </View>
-        <SVG
-          source={Enter}
-          width={layout.padding_x2}
-          height={layout.padding_x2}
-        />
-
-        {openShareMenu && (
-          <View style={styles.shareMenuContainer}>
-            <HoverView
-              normalStyle={styles.unitBoxNormal}
-              hoverStyle={styles.unitBoxHovered}
-            >
-              <View style={styles.oneLine}>
-                <SVG
-                  source={Link}
-                  width={layout.padding_x2}
-                  height={layout.padding_x2}
-                />
-                <BrandText style={styles.text}>
-                  Copy link to the track
-                </BrandText>
-              </View>
-            </HoverView>
-            <HoverView
-              normalStyle={styles.unitBoxNormal}
-              hoverStyle={styles.unitBoxHovered}
-            >
-              <View style={styles.oneLine}>
-                <SVG
-                  source={Code}
-                  width={layout.padding_x2}
-                  height={layout.padding_x2}
-                />
-                <BrandText style={styles.text}>Copy widget code</BrandText>
-              </View>
-            </HoverView>
-          </View>
-        )}
-      </HoverView> */}
     </View>
   );
 };
