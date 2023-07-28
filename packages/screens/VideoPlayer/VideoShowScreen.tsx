@@ -1,7 +1,19 @@
 import React, {useEffect, useMemo, useState} from "react";
 import { View, StyleSheet, Pressable, Image } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, StyleSheet, Pressable, Image, Animated } from "react-native";
 
+import Add from "../../../assets/music-player/add.svg";
+import MorePrimary from "../../../assets/music-player/more-primary.svg";
+import PlayOther from "../../../assets/music-player/play-other.svg";
+import PlaySecondary from "../../../assets/music-player/play-secondary.svg";
+import Time from "../../../assets/music-player/time.svg";
+import Tip from "../../../assets/music-player/tip-primary.svg";
+import { signingMusicPlayerClient } from "../../client-creators/musicplayerClient";
 import { BrandText } from "../../components/BrandText";
+import { DetailAlbumMenu } from "../../components/MusicPlayer/DetailAlbumMenu";
+import { MediaPlayer } from "../../components/MusicPlayer/MediaPlayer";
+import { MusicPlayerTab } from "../../components/MusicPlayer/MusicPlayerTab";
 import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import Avatar from "../../../assets/icons/player/avatar.svg";
@@ -11,11 +23,19 @@ import Like from "../../../assets/icons/player/like.svg";
 import Share from "../../../assets/icons/player/share.svg";
 import TipIcon from "../../../assets/icons/tip.svg";
 import { VideoPlayerTab } from "../../components/videoPlayer/VideoPlayerTab";
+import { TipModal } from "../../components/socialFeed/SocialActions/TipModal";
+import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { useMusicplayer } from "../../context/MusicplayerProvider";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useFetchVideo } from "../../hooks/video/useFetchVideo";
 import {getUserId, parseUserId} from "../../networks";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { getUserId, parseUserId } from "../../networks";
+import { mustGetMusicplayerClient } from "../../utils/backend";
+import { ipfsPinataUrl } from "../../utils/ipfs";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { neutral77, neutral17, primaryColor } from "../../utils/style/colors";
 import {
@@ -23,6 +43,7 @@ import {
   fontMedium14,
   fontSemibold13,
   fontSemibold20, fontMedium16,
+  fontSemibold20,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { lastViewDate } from "../../utils/videoPlayer";
@@ -31,6 +52,15 @@ import {useIncreaseViewCount} from "../../hooks/video/useIncreaseViewCount";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { tinyAddress } from "../../utils/text";
 import {useSelectedNetworkId} from "../../hooks/useSelectedNetwork";
+import { AlbumInfo, AlbumMetadataInfo } from "../../utils/types/music";
+import { VideoPlayer } from "../../components/VideoPlayer/VideoPlayer";
+import { VideoPlayerCard } from "../../components/VideoPlayer/VideoPlayerCard";
+import Thumb_up from "../../../assets/icons/thumb_up.svg";
+import Thumb_down from "../../../assets/icons/thumb_down.svg";
+import TipIcon from "../../../assets/icons/tip.svg";
+import Share from "../../../assets/icons/share.svg";
+import Report from "../../../assets/icons/report.svg";
+import ArrowDown from "../../../assets/icons/arrow-down.svg";
 
 export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
   route: {
@@ -73,12 +103,10 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
       fontSize: 13,
       gap: "0.6em",
     },
-    blueContents: StyleSheet.flatten([
-      fontSemibold13,
-      {
-        color: "#16BBFF",
-      },
-    ]),
+    blueContents: {
+      color: "#16BBFF",
+      display: "contents",
+    },
     flexRowItemCenter: {
       display: "flex",
       flexDirection: "row",
@@ -120,6 +148,7 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
       paddingVertical: layout.padding_x1,
       backgroundColor: "transparent",
       borderRadius: layout.padding_x4,
+
       gap: layout.padding_x1_5,
       border: "1px solid #2B2B33",
     },
@@ -132,6 +161,7 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
       paddingVertical: layout.padding_x1,
       backgroundColor: "#2B2B33",
       borderRadius: layout.padding_x4,
+
       gap: layout.padding_x1_5,
     },
     pageConatiner: {
@@ -377,9 +407,9 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
       fullWidth
     >
       <View style={styles.pageConatiner}>
-        <VideoPlayerTab
+        <MusicPlayerTab
           setTab={() => {
-            navigation.navigate("VideoPlayer");
+            navigation.navigate("MusicPlayer");
           }}
         />
 
@@ -422,7 +452,6 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
                 <BrandText style={styles.contentDate}>
                   {lastViewDate(data?.viewLastTimestamp)}
                 </BrandText>
-                <BrandText style={styles.contentDate}>12 days ago</BrandText>
               </View>
               <View style={styles.btnGroup}>
                 <Pressable style={styles.buttonContainer}>
@@ -447,7 +476,6 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
                 </Pressable>
               </View>
             </View>
-            <View style={styles.blueContents} />
             <BrandText style={styles.contentName}>
               {data?.videoMetaInfo.description}
             </BrandText>
