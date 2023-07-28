@@ -1,0 +1,180 @@
+import React, { useState, useEffect, useMemo } from "react";
+import { View, StyleSheet, Pressable } from "react-native";
+import Animated, {
+  useAnimatedScrollHandler,
+  useSharedValue,
+} from "react-native-reanimated";
+
+import Logo from "../../../assets/logos/logo.svg";
+import Upload from "../../../assets/icons/upload.svg";
+import { GetVideoListRequest } from "../../api/video/v1/video";
+import { BrandText } from "../../components/BrandText";
+import { VideoPlayerCard } from "../../components/VideoPlayer/VideoPlayerCard";
+import { UploadAlbumModal } from "../../components/MusicPlayer/UploadAlbumModal";
+import { SVG } from "../../components/SVG";
+import { useFetchVideoList } from "../../hooks/musicplayer/useFetchAlbum";
+// import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+// import { mustGetMusicplayerClient } from "../../utils/backend";
+// import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { primaryColor } from "../../utils/style/colors";
+import { fontSemibold14, fontSemibold20 } from "../../utils/style/fonts";
+import { layout } from "../../utils/style/layout";
+import { useFetchVideos } from "../../hooks/video/useFetchVideos";
+// import { AlbumInfo, AlbumMetadataInfo } from "../../utils/types/music";
+interface MusicPlayerProps {
+  req: GetAllAlbumListRequest;
+  idList: string[];
+}
+
+export const VideoPlayerHomeContent: React.FC<MusicPlayerProps> = ({
+  req,
+  idList,
+}) => {
+  const [openUploadModal, setOpenUploadModal] = useState<boolean>(false);
+  const { data, isFetching, hasNextPage, fetchNextPage, isLoading } =
+    useFetchVideos(req);
+
+  const isLoadingValue = useSharedValue(false);
+  const isGoingUp = useSharedValue(false);
+  const [flatListContentOffsetY, setFlatListContentOffsetY] = useState(0);
+
+  const scrollHandler = useAnimatedScrollHandler({
+    onScroll: (event) => {
+      setFlatListContentOffsetY(event.contentOffset.y);
+      if (flatListContentOffsetY > event.contentOffset.y) {
+        isGoingUp.value = true;
+      } else if (flatListContentOffsetY < event.contentOffset.y) {
+        isGoingUp.value = false;
+      }
+      setFlatListContentOffsetY(event.contentOffset.y);
+    },
+  });
+  useEffect(() => {
+    if (isFetching || isLoading) {
+      isGoingUp.value = false;
+      isLoadingValue.value = true;
+    } else {
+      isLoadingValue.value = false;
+    }
+  }, [isFetching, isLoading, isGoingUp, isLoadingValue]);
+  const onEndReached = () => {
+    if (!isLoading && hasNextPage && !isFetching) {
+      fetchNextPage();
+    }
+  };
+
+  const styles = StyleSheet.create({
+    container: {
+      marginTop: layout.padding_x3,
+      width: "100%",
+    },
+    oneLine: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+    },
+    contentGroup: {
+      flexDirection: "row",
+      justifyContent: "center",
+      flexWrap: "wrap",
+      marginTop: layout.padding_x3,
+      gap: layout.padding_x2_5,
+      marginBottom: 40,
+    },
+    buttonGroup: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: layout.padding_x2,
+    },
+    buttonContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      paddingLeft: layout.padding_x1,
+      paddingRight: layout.padding_x1_5,
+      paddingVertical: layout.padding_x1,
+      backgroundColor: "#2B2B33",
+      borderRadius: layout.padding_x4,
+      gap: layout.padding_x1_5,
+    },
+    buttonText: StyleSheet.flatten([
+      fontSemibold14,
+      {
+        color: primaryColor,
+      },
+    ]),
+    albumGrid: {
+      margin: layout.padding_x3,
+    },
+  });
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.oneLine}>
+        <BrandText style={fontSemibold20}>All Videos</BrandText>
+        <View style={styles.buttonGroup}>
+          <Pressable style={styles.buttonContainer}>
+            <SVG
+              source={Logo}
+              width={layout.padding_x2}
+              height={layout.padding_x2}
+            />
+            <BrandText style={styles.buttonText}>Create funding</BrandText>
+          </Pressable>
+          <Pressable
+            style={styles.buttonContainer}
+            onPress={() => setOpenUploadModal(true)}
+          >
+            <SVG
+              source={Upload}
+              width={layout.padding_x2}
+              height={layout.padding_x2}
+            />
+            <BrandText style={styles.buttonText}>Upload video</BrandText>
+          </Pressable>
+        </View>
+      </View>
+      <View style={styles.contentGroup}>
+        <Animated.FlatList
+          scrollEventThrottle={0.1}
+          data={
+            // albums
+            [
+              {
+                id: "string",
+                name: "string",
+                description: "string",
+                image: "string",
+                createdBy: "string",
+                audios: [
+                  {
+                    name: "string",
+                    ipfs: "string",
+                    duration: 1,
+                  },
+                ],
+              },
+            ]
+          }
+          numColumns={4}
+          renderItem={({ item: albumInfo }) => (
+            <View style={styles.albumGrid}>
+              <VideoPlayerCard
+                item={albumInfo}
+                hasLibrary={
+                  idList.findIndex((item) => item === albumInfo.id) !== -1
+                }
+              />
+            </View>
+          )}
+          onScroll={scrollHandler}
+          onEndReachedThreshold={1}
+          onEndReached={onEndReached}
+        />
+      </View>
+      <UploadAlbumModal
+        isVisible={openUploadModal}
+        onClose={() => setOpenUploadModal(false)}
+      />
+    </View>
+  );
+};
