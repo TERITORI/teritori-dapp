@@ -6,6 +6,7 @@
     <string>ALWAYS</string>
     <key>EXUpdatesEnabled</key>
 <<<<<<< HEAD
+<<<<<<< HEAD
     <false/>
     <key>EXUpdatesLaunchWaitMs</key>
     <integer>0</integer>
@@ -13,12 +14,18 @@
     <string>49.0.0</string>
 =======
     <true/>
+=======
+    <false/>
+>>>>>>> 89125d27 (ios local build update)
     <key>EXUpdatesLaunchWaitMs</key>
     <integer>0</integer>
     <key>EXUpdatesSDKVersion</key>
     <string>47.0.0</string>
+<<<<<<< HEAD
     <key>EXUpdatesURL</key>
     <string>https://exp.host/@teritori/teritori</string>
 >>>>>>> 6e7a3c36 (weshnet ios integration)
+=======
+>>>>>>> 89125d27 (ios local build update)
   </dict>
 </plist>

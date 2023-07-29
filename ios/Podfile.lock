@@ -649,6 +649,8 @@ PODS:
     - React-Core
   - Weshd (1.0.0):
     - ExpoModulesCore
+    - WeshFramework
+  - WeshFramework (1.0.0)
   - Yoga (1.14.0)
 >>>>>>> 6e7a3c36 (weshnet ios integration)
 
@@ -771,9 +773,13 @@ DEPENDENCIES:
   - RNSVG (from `../node_modules/react-native-svg`)
   - Weshd (from `../modules/weshd/ios`)
 <<<<<<< HEAD
+<<<<<<< HEAD
   - WeshFramework (from `../modules/wesh/ios`)
 =======
 >>>>>>> 6e7a3c36 (weshnet ios integration)
+=======
+  - WeshFramework (from `../modules/wesh/ios`)
+>>>>>>> 89125d27 (ios local build update)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -994,10 +1000,15 @@ EXTERNAL SOURCES:
   Weshd:
     :path: "../modules/weshd/ios"
 <<<<<<< HEAD
+<<<<<<< HEAD
   WeshFramework:
     :path: "../modules/wesh/ios"
 =======
 >>>>>>> 6e7a3c36 (weshnet ios integration)
+=======
+  WeshFramework:
+    :path: "../modules/wesh/ios"
+>>>>>>> 89125d27 (ios local build update)
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -1172,7 +1183,8 @@ COCOAPODS: 1.13.0
   RNReanimated: 2a91e85fcd343f8af3c58d3425b99fdd285590a5
   RNScreens: 34cc502acf1b916c582c60003dc3089fa01dc66d
   RNSVG: 07dbd870b0dcdecc99b3a202fa37c8ca163caec2
-  Weshd: 2a00e7bd86201e5fafd560f3a97b09fc78464477
+  Weshd: 17144625178dbf57d849ad4000015c7833df0cdc
+  WeshFramework: ef7da2f15c82d4ef7693a1e415684c5b53828680
   Yoga: d6133108734e69e8c0becc6ba587294b94829687
 
 PODFILE CHECKSUM: 12ae33f6fcdea6877e48176c63eea6f3c05a194f
