@@ -3,42 +3,45 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 46;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		34FF77EE773643CD8A5D1BBA /* noop-file.swift in Sources */ = {isa = PBXBuildFile; fileRef = 257F984C2F08444783D76DB5 /* noop-file.swift */; };
+		2E783F5D9ACB5D1C7E052F36 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3D23D7FFDFDA38D3DDA2877 /* CoreBluetooth.framework */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
-		803EA8E12A6E8B1800230C48 /* MultipeerConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 803EA8E02A6E8B1800230C48 /* MultipeerConnectivity.framework */; };
-		803EA8E32A6E8B1D00230C48 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 803EA8E22A6E8B1D00230C48 /* CoreBluetooth.framework */; };
-		803EA8E52A6E8B2200230C48 /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 803EA8E42A6E8B2200230C48 /* libresolv.tbd */; };
-		803EA8EA2A6E934B00230C48 /* WeshFramework.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 803EA8E62A6E8B2600230C48 /* WeshFramework.xcframework */; };
+		4BC7E83A12D64093BF0ED2B5 /* noop-file.swift in Sources */ = {isa = PBXBuildFile; fileRef = 619FA606D24F4B068771B0C4 /* noop-file.swift */; };
+		80BAD5822A74434100164646 /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 80BAD57C2A73F96500164646 /* libresolv.tbd */; };
 		96905EF65AED1B983A6B3ABC /* libPods-teritori.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 58EEBF8E8E6FB1BC6CAF49B5 /* libPods-teritori.a */; };
 		B18059E884C0ABDD17F3DC3D /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC715A2D49A985799AEE119 /* ExpoModulesProvider.swift */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
+		F05A079D58569A1591FB7A2A /* MultipeerConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 49EB23C8A7E976D5A2E28F87 /* MultipeerConnectivity.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		008F07F21AC5B25A0029DE68 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
+		0734B631AFBE0FBD702028AA /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* teritori.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = teritori.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = teritori/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = teritori/AppDelegate.mm; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = teritori/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = teritori/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = teritori/main.m; sourceTree = "<group>"; };
-		257F984C2F08444783D76DB5 /* noop-file.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; name = "noop-file.swift"; path = "teritori/noop-file.swift"; sourceTree = "<group>"; };
+		49EB23C8A7E976D5A2E28F87 /* MultipeerConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MultipeerConnectivity.framework; path = System/Library/Frameworks/MultipeerConnectivity.framework; sourceTree = "<group>"; };
 		58EEBF8E8E6FB1BC6CAF49B5 /* libPods-teritori.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-teritori.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		619FA606D24F4B068771B0C4 /* noop-file.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; name = "noop-file.swift"; path = "teritori/noop-file.swift"; sourceTree = "<group>"; };
 		6C2E3173556A471DD304B334 /* Pods-teritori.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-teritori.debug.xcconfig"; path = "Target Support Files/Pods-teritori/Pods-teritori.debug.xcconfig"; sourceTree = "<group>"; };
 		7A4D352CD337FB3A3BF06240 /* Pods-teritori.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-teritori.release.xcconfig"; path = "Target Support Files/Pods-teritori/Pods-teritori.release.xcconfig"; sourceTree = "<group>"; };
-		803EA8E02A6E8B1800230C48 /* MultipeerConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MultipeerConnectivity.framework; path = System/Library/Frameworks/MultipeerConnectivity.framework; sourceTree = SDKROOT; };
-		803EA8E22A6E8B1D00230C48 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
-		803EA8E42A6E8B2200230C48 /* libresolv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = usr/lib/libresolv.tbd; sourceTree = SDKROOT; };
-		803EA8E62A6E8B2600230C48 /* WeshFramework.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = WeshFramework.xcframework; path = Frameworks/WeshFramework.xcframework; sourceTree = "<group>"; };
+		80BAD57C2A73F96500164646 /* libresolv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = usr/lib/libresolv.tbd; sourceTree = SDKROOT; };
+		80BAD57E2A73F98300164646 /* MultipeerConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MultipeerConnectivity.framework; path = System/Library/Frameworks/MultipeerConnectivity.framework; sourceTree = SDKROOT; };
+		80BAD5802A73F98B00164646 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
+		8D5A8BC85E84A0B705ADA54C /* MultipeerConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MultipeerConnectivity.framework; path = System/Library/Frameworks/MultipeerConnectivity.framework; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = teritori/SplashScreen.storyboard; sourceTree = "<group>"; };
+		B239E55129A2287D3B25D0E0 /* lresolv */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = lresolv; path = System/Library/Frameworks/lresolv; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
+		C3D23D7FFDFDA38D3DDA2877 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		FAC715A2D49A985799AEE119 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-teritori/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -48,11 +51,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				803EA8EA2A6E934B00230C48 /* WeshFramework.xcframework in Frameworks */,
-				803EA8E52A6E8B2200230C48 /* libresolv.tbd in Frameworks */,
-				803EA8E32A6E8B1D00230C48 /* CoreBluetooth.framework in Frameworks */,
-				803EA8E12A6E8B1800230C48 /* MultipeerConnectivity.framework in Frameworks */,
+				80BAD5822A74434100164646 /* libresolv.tbd in Frameworks */,
 				96905EF65AED1B983A6B3ABC /* libPods-teritori.a in Frameworks */,
+				2E783F5D9ACB5D1C7E052F36 /* CoreBluetooth.framework in Frameworks */,
+				F05A079D58569A1591FB7A2A /* MultipeerConnectivity.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -70,7 +72,7 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB71A68108700A75B9A /* main.m */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
-				257F984C2F08444783D76DB5 /* noop-file.swift */,
+				619FA606D24F4B068771B0C4 /* noop-file.swift */,
 			);
 			name = teritori;
 			sourceTree = "<group>";
@@ -78,12 +80,16 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				803EA8E62A6E8B2600230C48 /* WeshFramework.xcframework */,
-				803EA8E42A6E8B2200230C48 /* libresolv.tbd */,
-				803EA8E22A6E8B1D00230C48 /* CoreBluetooth.framework */,
-				803EA8E02A6E8B1800230C48 /* MultipeerConnectivity.framework */,
+				80BAD5802A73F98B00164646 /* CoreBluetooth.framework */,
+				80BAD57E2A73F98300164646 /* MultipeerConnectivity.framework */,
+				80BAD57C2A73F96500164646 /* libresolv.tbd */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				58EEBF8E8E6FB1BC6CAF49B5 /* libPods-teritori.a */,
+				C3D23D7FFDFDA38D3DDA2877 /* CoreBluetooth.framework */,
+				8D5A8BC85E84A0B705ADA54C /* MultipeerConnectivity.framework */,
+				0734B631AFBE0FBD702028AA /* CoreBluetooth.framework */,
+				49EB23C8A7E976D5A2E28F87 /* MultipeerConnectivity.framework */,
+				B239E55129A2287D3B25D0E0 /* lresolv */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -185,6 +191,7 @@
 				LastUpgradeCheck = 1130;
 				TargetAttributes = {
 					13B07F861A680F5B00A75B9A = {
+						DevelopmentTeam = Y7D67GAV2M;
 						LastSwiftMigration = 1250;
 					};
 				};
@@ -312,7 +319,7 @@
 				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 				B18059E884C0ABDD17F3DC3D /* ExpoModulesProvider.swift in Sources */,
-				34FF77EE773643CD8A5D1BBA /* noop-file.swift in Sources */,
+				4BC7E83A12D64093BF0ED2B5 /* noop-file.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -326,7 +333,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = teritori/teritori.entitlements;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = Y7D67GAV2M;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -334,14 +341,8 @@
 					"FB_SONARKIT_ENABLED=1",
 				);
 				INFOPLIST_FILE = teritori/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Teritori;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.finance";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				MARKETING_VERSION = 1.0.1;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -364,17 +365,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = teritori/teritori.entitlements;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = Y7D67GAV2M;
 				INFOPLIST_FILE = teritori/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Teritori;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.finance";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				MARKETING_VERSION = 1.0.1;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -438,10 +433,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					/usr/lib/swift,
-					"$(inherited)",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "/usr/lib/swift $(inherited)";
 				LIBRARY_SEARCH_PATHS = "$(SDKROOT)/usr/lib/swift\"$(inherited)\"";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -492,10 +484,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					/usr/lib/swift,
-					"$(inherited)",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "/usr/lib/swift $(inherited)";
 				LIBRARY_SEARCH_PATHS = "$(SDKROOT)/usr/lib/swift\"$(inherited)\"";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
