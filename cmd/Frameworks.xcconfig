@@ -1,1 +1,0 @@
-OTHER_LDFLAGS = -framework CoreBluetooth -framework MultipeerConnectivity -lresolv
