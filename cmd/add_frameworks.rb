@@ -1,6 +1,6 @@
 require 'xcodeproj'
 
-project_path = '../ios/teritori.xcodeproj'
+project_path = './ios/teritori.xcodeproj'
 target_name = 'teritori'
 frameworks_to_add = ['CoreBluetooth.framework', 'MultipeerConnectivity.framework', "libresolv.tbd"]
 

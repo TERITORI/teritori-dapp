@@ -27,6 +27,9 @@ P2E_DOCKER_IMAGE=$(DOCKER_REGISTRY)/p2e-update-leaderboard:$(shell git rev-parse
 FEED_DOCKER_IMAGE=$(DOCKER_REGISTRY)/feed-clean-pinata-keys:$(shell git rev-parse --short HEAD)
 MULTISIG_DOCKER_IMAGE=$(DOCKER_REGISTRY)/cosmos-multisig-backend:$(shell git rev-parse --short HEAD)
 
+WESHD_PATH=go/cmd/weshd-app/
+WESHFRAMEWORK_PATH=/modules/wesh/ios/WeshFramework.xcframework
+
 node_modules: package.json yarn.lock
 	yarn
 	touch $@
@@ -268,7 +271,9 @@ build-ios: build-weshframework
 	@npx expo run:ios
 .PHONY: build-weshframework
 build-weshframework:
-	@cd ./go/cmd/weshd-app/
-	@go env GOPATH/bin
-	@CGO_CPPFLAGS="-Wno-error -Wno-nullability-completeness -Wno-expansion-to-defined -DHAVE_GETHOSTUUID=0"
-	@gomobile bind -o ../../modules/wesh/ios/WeshFramework.xcframework -tags "fts5 sqlite sqlite_unlock_notify" -tags 'nowatchdog' -target ios -iosversion 13.0
+	go env $(GOPATH)/bin
+	CGO_CPPFLAGS="-Wno-error -Wno-nullability-completeness -Wno-expansion-to-defined -DHAVE_GETHOSTUUID=0"
+	gomobile bind \
+	-o ./modules/wesh/ios/WeshFramework.xcframework \
+	-tags "fts5 sqlite sqlite_unlock_notify" -tags 'nowatchdog' -target ios -iosversion 13.0 \
+	./go/cmd/weshd-app/
