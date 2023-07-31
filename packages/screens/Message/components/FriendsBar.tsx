@@ -2,23 +2,23 @@ import React from "react";
 import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { useSelector } from "react-redux";
 
-import forwardSVG from "../../../assets/icons/forward.svg";
-import friendsSVG from "../../../assets/icons/friends.svg";
+import forwardSVG from "../../../../assets/icons/forward.svg";
+import friendsSVG from "../../../../assets/icons/friends.svg";
+import { BrandText } from "../../../components/BrandText";
+import FlexRow from "../../../components/FlexRow";
+import { SVG } from "../../../components/SVG";
+import { TertiaryBadge } from "../../../components/badges/TertiaryBadge";
+import { SpacerRow } from "../../../components/spacer";
 import {
   selectConversationList,
   selectContactRequestList,
-} from "../../store/slices/message";
+} from "../../../store/slices/message";
 import {
   neutral22,
   secondaryColor,
   primaryColor,
-} from "../../utils/style/colors";
-import { fontSemibold13 } from "../../utils/style/fonts";
-import { BrandText } from "../BrandText";
-import FlexRow from "../FlexRow";
-import { SVG } from "../SVG";
-import { TertiaryBadge } from "../badges/TertiaryBadge";
-import { SpacerRow } from "../spacer";
+} from "../../../utils/style/colors";
+import { fontSemibold13 } from "../../../utils/style/fonts";
 
 export const FriendsBar = () => {
   const contactRequests = useSelector(selectContactRequestList);

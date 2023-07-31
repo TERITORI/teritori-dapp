@@ -4,6 +4,7 @@ import React, {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import {
@@ -79,6 +80,8 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
   const [file, setFile] = useState<MessageFileData>();
 
   const [searchInput, setSearchInput] = useState("");
+
+  const flatListRef = useRef<FlatList>(null);
 
   const { setToastError } = useFeedbacks();
   const [groupInfo, setGroupInfo] = useState<GroupInfo_Reply>();
@@ -223,6 +226,14 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
                   return (
                     <>
                       <SearchConversation
+                        onPress={() => {
+                          setSearchInput("");
+                          flatListRef.current?.scrollToIndex({
+                            index: messages.findIndex(
+                              (message) => message.id === item.id
+                            ),
+                          });
+                        }}
                         conversation={conversation}
                         message={item}
                         groupPk={groupInfo?.group?.publicKey}
@@ -249,6 +260,7 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
           )}
 
           <FlatList
+            ref={flatListRef}
             inverted
             data={messages}
             style={{

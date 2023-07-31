@@ -1,9 +1,9 @@
 import React from "react";
 import { View } from "react-native";
 
-import illustrationSVG from "../../../assets/icons/illustration.svg";
-import { SVG } from "../../components/SVG";
-import { neutral00 } from "../../utils/style/colors";
+import illustrationSVG from "../../../../assets/icons/illustration.svg";
+import { SVG } from "../../../components/SVG";
+import { neutral00 } from "../../../utils/style/colors";
 
 export const MessageBlankFiller = () => {
   return (

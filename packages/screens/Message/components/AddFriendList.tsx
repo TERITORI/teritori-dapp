@@ -3,23 +3,23 @@ import { View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Avatar, Badge } from "react-native-paper";
 
-import { Separator } from "../../components/Separator";
+import { BrandText } from "../../../components/BrandText";
+import FlexRow from "../../../components/FlexRow";
+import { Separator } from "../../../components/Separator";
+import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
+import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import {
   neutral22,
   neutral30,
   neutralA3,
   primaryColor,
   secondaryColor,
-} from "../../utils/style/colors";
+} from "../../../utils/style/colors";
 import {
   fontSemibold11,
   fontSemibold13,
   fontSemibold14,
-} from "../../utils/style/fonts";
-import { BrandText } from "../BrandText";
-import FlexRow from "../FlexRow";
-import { TertiaryBox } from "../boxes/TertiaryBox";
-import { SpacerColumn, SpacerRow } from "../spacer";
+} from "../../../utils/style/fonts";
 
 type Props = {
   name: string;

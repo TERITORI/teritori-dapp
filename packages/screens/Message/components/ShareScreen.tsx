@@ -1,6 +1,7 @@
 import React, { Dispatch, SetStateAction, useState } from "react";
 import { View, TouchableOpacity, ScrollView, Platform } from "react-native";
 
+import ScreenShare from "./ShareScreen/ShareScreen";
 import avatar from "../../../../assets/icons/avatar.svg";
 import nullIcon from "../../../../assets/icons/illustration.svg";
 import { BrandText } from "../../../components/BrandText";
@@ -8,8 +9,6 @@ import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
 import { Separator } from "../../../components/Separator";
 import { SeparatorGradient } from "../../../components/SeparatorGradient";
-import ScreenShare from "../../../components/ShareScreen/ShareScreen";
-import data from "../../../components/ShareScreen/data";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import ModalBase from "../../../components/modals/ModalBase";
@@ -30,7 +29,7 @@ interface ShareScreenProps {
 const ShareScreen = ({ setShowTertiaryBox }: ShareScreenProps) => {
   const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredData = data.filter((item) =>
+  const filteredData = [].filter((item) =>
     item.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
   return (

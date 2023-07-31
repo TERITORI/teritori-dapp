@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View } from "react-native";
 
-import { MessageBlankFiller } from "../../../components/blankFiller/MessageBlankFiller";
+import { MessageBlankFiller } from "./MessageBlankFiller";
 import FriendList from "../../../components/friends/FriendsList";
 import { TextInputCustomBorder } from "../../../components/inputs/TextInputCustomBorder";
 import { SpacerColumn } from "../../../components/spacer";
