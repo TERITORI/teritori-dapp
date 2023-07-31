@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { Fragment, useCallback } from "react";
 import { Image, ScrollView, StyleSheet, View } from "react-native";
 
 import { ReviewCollapsable } from "./ReviewCollapsable";
@@ -17,6 +17,7 @@ import {
   TokenSettingFormType,
   MemberSettingFormType,
   DaoType,
+  NFTSettingFormType,
 } from "../types";
 
 interface ReviewInformationSectionProps {
@@ -24,6 +25,7 @@ interface ReviewInformationSectionProps {
   votingSettingData?: ConfigureVotingFormType;
   tokenSettingData?: TokenSettingFormType;
   memberSettingData?: MemberSettingFormType;
+  nftContractSettingData?: NFTSettingFormType;
   onSubmit: () => void;
 }
 
@@ -34,6 +36,7 @@ export const ReviewInformationSection: React.FC<
   votingSettingData,
   tokenSettingData,
   memberSettingData,
+  nftContractSettingData,
   onSubmit,
 }) => {
   // returns
@@ -145,20 +148,20 @@ export const ReviewInformationSection: React.FC<
             />
             <SpacerColumn size={1} />
             {tokenSettingData?.tokenHolders.map((holder, index) => (
-              <View key={holder.address} style={styles.fill}>
-                <ReviewCollapsableItem
-                  title={`TOKENHOLDER #${index + 1}`}
-                  value={() => (
-                    <AddressBalanceValue
-                      address={holder.address}
-                      balance={`${holder.balance} ${tokenSettingData?.tokenSymbol}`}
-                    />
-                  )}
-                />
-                {tokenSettingData?.tokenHolders.length !== index + 1 && (
-                  <SpacerColumn size={1} />
-                )}
-              </View>
+              <Fragment key={index}>
+                <SpacerColumn size={1} />
+                <View style={styles.fill}>
+                  <ReviewCollapsableItem
+                    title={`TOKENHOLDER #${index + 1}`}
+                    value={() => (
+                      <AddressBalanceValue
+                        address={holder.address}
+                        balance={`${holder.balance} ${tokenSettingData?.tokenSymbol}`}
+                      />
+                    )}
+                  />
+                </View>
+              </Fragment>
             ))}
           </ReviewCollapsable>
         )}
@@ -166,23 +169,46 @@ export const ReviewInformationSection: React.FC<
         organizationData.structure === DaoType.MEMBER_BASED && (
           <ReviewCollapsable title="Member settings">
             {memberSettingData?.members.map((member, index) => (
-              <View key={member.addr} style={styles.fill}>
-                <ReviewCollapsableItem
-                  title={`MEMBER #${index + 1}`}
-                  value={() => (
-                    <AddressWeightValue
-                      address={member.addr}
-                      weight={`${member.weight}`}
-                    />
-                  )}
-                />
-                {tokenSettingData?.tokenHolders.length !== index + 1 && (
-                  <SpacerColumn size={1} />
-                )}
-              </View>
+              <Fragment key={index}>
+                <SpacerColumn size={1} />
+                <View key={index} style={styles.fill}>
+                  <ReviewCollapsableItem
+                    title={`MEMBER #${index + 1}`}
+                    value={() => (
+                      <AddressWeightValue
+                        address={member.addr}
+                        weight={`${member.weight}`}
+                      />
+                    )}
+                  />
+                </View>
+              </Fragment>
             ))}
           </ReviewCollapsable>
         )}
+      {organizationData && organizationData.structure === DaoType.NFT_BASED && (
+        <ReviewCollapsable title="Contracts settings">
+          <ReviewCollapsableItem
+            title="NFT Collection Contract"
+            value={nftContractSettingData?.nftContractAddress}
+          />
+
+          {/*{nftContractSettingData?.contracts.map((contract, index) => (*/}
+          {/*  <Fragment key={index}>*/}
+          {/*  <View key={index} style={styles.fill}>*/}
+          {/*    <ReviewCollapsableItem*/}
+          {/*      title={`CONTRACT #${index + 1}`}*/}
+          {/*      value={contract.address}*/}
+          {/*    />*/}
+          {/*    <SpacerColumn size={1}/>*/}
+          {/*    /!*{nftContractSettingData?.contracts.length !== index + 1 && (*!/*/}
+          {/*    /!*  <SpacerColumn size={1} />*!/*/}
+          {/*    /!*)}*!/*/}
+          {/*  </View>*/}
+          {/*  </Fragment>*/}
+          {/*))}*/}
+        </ReviewCollapsable>
+      )}
 
       <SpacerColumn size={4} />
 

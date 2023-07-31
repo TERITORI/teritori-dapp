@@ -12,11 +12,11 @@ import { TokenBasedSettingsSection } from "./components/TokenBasedSettingsSectio
 import {
   ConfigureVotingFormType,
   CreateDaoFormType,
-  LaunchingProcessStepType,
-  TokenSettingFormType,
-  MemberSettingFormType,
   DaoType,
+  LaunchingProcessStepType,
+  MemberSettingFormType,
   NFTSettingFormType,
+  TokenSettingFormType,
 } from "./types";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
@@ -24,25 +24,37 @@ import { useFeedbacks } from "../../context/FeedbacksProvider";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
   NetworkKind,
-  getKeplrSigningCosmWasmClient,
   getNetwork,
   getUserId,
   mustGetCosmosNetwork,
 } from "../../networks";
-import { createDaoTokenBased, createDaoMemberBased } from "../../utils/dao";
-import { adenaDeployGnoDAO } from "../../utils/gnodao/deploy";
+import { createDaoTokenBased, createDaoMemberBased, createDaoNftBased } from "../../utils/dao";
 
 export const ORGANIZATION_DEPLOYER_STEPS = [
   "Create a DAO",
   "Configure voting",
-  "Set tokens, contracts or members",
+  "Set",
   "Review information",
   "Launch organization",
 ];
 
 export const LAUNCHING_PROCESS_STEPS: LaunchingProcessStepType[] = [
+  { title: "Book name", completeText: "Transaction finalized" },
   { title: "Create organization", completeText: "Transaction finalized" },
+  {
+    title: "Transfer name to organization",
+    completeText: "Transaction finalized",
+  },
 ];
+
+export const votingType = (type: DaoType) =>
+  type === DaoType.NFT_BASED
+    ? "contracts"
+    : type === DaoType.MEMBER_BASED
+    ? "members"
+    : type === DaoType.TOKEN_BASED
+    ? "tokens"
+    : "";
 
 export const OrganizationDeployerScreen = () => {
   const selectedWallet = useSelectedWallet();
@@ -78,7 +90,7 @@ export const OrganizationDeployerScreen = () => {
     return num_days * 3600 * 24 + num_hours * 3600 + num_minutes * 60;
   };
 
-  const network = getNetwork(selectedWallet?.networkId);
+  const network = getNetwork(step1DaoInfoFormData?.networkId);
 
   const createDaoContract = async (): Promise<boolean> => {
     try {
@@ -114,7 +126,6 @@ export const OrganizationDeployerScreen = () => {
           return true;
         }
         case NetworkKind.Cosmos: {
-
           if (
             !selectedWallet ||
             !step1DaoInfoFormData ||
@@ -127,57 +138,43 @@ export const OrganizationDeployerScreen = () => {
           const network = mustGetCosmosNetwork(networkId);
           const daoFactoryContractAddress = network.daoFactoryContractAddress!;
           const walletAddress = selectedWallet.address;
-          const signingClient = await getKeplrSigningCosmWasmClient(networkId);
 
           let createDaoRes = null;
           if (step1DaoInfoFormData.structure === DaoType.NFT_BASED) {
             if (!step3NFTSettingFormData) return false;
-            // createDaoRes = await createDaoNftBased(
-            //   {
-            //     client: signingClient,
-            //     sender: walletAddress,
-            //     contractAddress: daoFactoryContractAddress,
-            //     daoPreProposeSingleCodeId: network.daoPreProposeSingleCodeId!,
-            //     daoProposalSingleCodeId: network.daoProposalSingleCodeId!,
-            //     daoCw20CodeId: network.daoCw20CodeId!,
-            //     daoCw20StakeCodeId: network.daoCw20StakeCodeId!,
-            //     daoVotingCw20StakedCodeId: network.daoVotingCw20StakedCodeId!,
-            //     daoCoreCodeId: network.daoCoreCodeId!,
-            //     name: step1DaoInfoFormData.organizationName,
-            //     description: step1DaoInfoFormData.organizationDescription,
-            //     tns: step1DaoInfoFormData.associatedTeritoriNameService,
-            //     imageUrl: step1DaoInfoFormData.imageUrl,
-            //     considerListedNFT: step3NFTSettingFormData.considerListedNFT,
-            //     contracts: step3NFTSettingFormData.contracts.map((item) => {
-            //       return { address: item.address };
-            //     }),
-            //     quorum: getPercent(step2ConfigureVotingFormData.supportPercent),
-            //     threshold: getPercent(
-            //       step2ConfigureVotingFormData.minimumApprovalPercent
-            //     ),
-            //     maxVotingPeriod: getDuration(
-            //       step2ConfigureVotingFormData.days,
-            //       step2ConfigureVotingFormData.hours,
-            //       step2ConfigureVotingFormData.minutes
-            //     ),
-            //   },
-            //   "auto"
-            // );
-            console.log("createDaoRescreateDaoRescreateDaoRes", createDaoRes);
-          }
-          else if (step1DaoInfoFormData.structure === DaoType.TOKEN_BASED) {
+
+            createDaoRes = await createDaoNftBased(
+              {
+                networkId: step1DaoInfoFormData.networkId,
+                sender: walletAddress,
+                contractAddress: daoFactoryContractAddress,
+                name: step1DaoInfoFormData.organizationName,
+                description: step1DaoInfoFormData.organizationDescription,
+                tns: step1DaoInfoFormData.associatedTeritoriNameService,
+                imageUrl: step1DaoInfoFormData.imageUrl,
+                considerListedNFTs: step3NFTSettingFormData.considerListedNFTs,
+                nftContractAddress: step3NFTSettingFormData.nftContractAddress,
+                quorum: getPercent(step2ConfigureVotingFormData.supportPercent),
+                threshold: getPercent(
+                  step2ConfigureVotingFormData.minimumApprovalPercent
+                ),
+                maxVotingPeriod: getDuration(
+                  step2ConfigureVotingFormData.days,
+                  step2ConfigureVotingFormData.hours,
+                  step2ConfigureVotingFormData.minutes
+                ),
+                isNameAlreadyMinted: step1DaoInfoFormData.isNameAlreadyMinted,
+                onStepChange: setLaunchingStep,
+              },
+              "auto"
+            );
+          } else if (step1DaoInfoFormData.structure === DaoType.TOKEN_BASED) {
             if (!step3TokenSettingFormData) return false;
             createDaoRes = await createDaoTokenBased(
               {
-                client: signingClient,
+                networkId: step1DaoInfoFormData.networkId,
                 sender: walletAddress,
                 contractAddress: daoFactoryContractAddress,
-                daoPreProposeSingleCodeId: network.daoPreProposeSingleCodeId!,
-                daoProposalSingleCodeId: network.daoProposalSingleCodeId!,
-                daoCw20CodeId: network.daoCw20CodeId!,
-                daoCw20StakeCodeId: network.daoCw20StakeCodeId!,
-                daoVotingCw20StakedCodeId: network.daoVotingCw20StakedCodeId!,
-                daoCoreCodeId: network.daoCoreCodeId!,
                 name: step1DaoInfoFormData.organizationName,
                 description: step1DaoInfoFormData.organizationDescription,
                 tns: step1DaoInfoFormData.associatedTeritoriNameService,
@@ -196,22 +193,18 @@ export const OrganizationDeployerScreen = () => {
                   step2ConfigureVotingFormData.hours,
                   step2ConfigureVotingFormData.minutes
                 ),
+                isNameAlreadyMinted: step1DaoInfoFormData.isNameAlreadyMinted,
+                onStepChange: setLaunchingStep,
               },
               "auto"
             );
-            console.log("createDaoRescreateDaoRescreateDaoRes", createDaoRes);
           } else if (step1DaoInfoFormData.structure === DaoType.MEMBER_BASED) {
             if (!step3MemberSettingFormData) return false;
             const { daoAddress, executeResult } = await createDaoMemberBased(
               {
-                networkId,
+                networkId: step1DaoInfoFormData.networkId,
                 sender: walletAddress,
                 contractAddress: daoFactoryContractAddress,
-                daoCoreCodeId: network.daoCoreCodeId!,
-                daoPreProposeSingleCodeId: network.daoPreProposeSingleCodeId!,
-                daoProposalSingleCodeId: network.daoProposalSingleCodeId!,
-                daoCw4GroupCodeId: network.daoCw4GroupCodeId!,
-                daoVotingCw4CodeId: network.daoVotingCw4CodeId!,
                 name: step1DaoInfoFormData.organizationName,
                 description: step1DaoInfoFormData.organizationDescription,
                 tns: step1DaoInfoFormData.associatedTeritoriNameService,
@@ -229,6 +222,7 @@ export const OrganizationDeployerScreen = () => {
                   step2ConfigureVotingFormData.hours,
                   step2ConfigureVotingFormData.minutes
                 ),
+                isNameAlreadyMinted: step1DaoInfoFormData.isNameAlreadyMinted,
                 onStepChange: setLaunchingStep,
               },
               "auto"
@@ -238,6 +232,8 @@ export const OrganizationDeployerScreen = () => {
           } else {
             return false;
           }
+
+          // console.log("TX hash: ", createDaoRes.transactionHash);
           if (createDaoRes) {
             return true;
           } else {
@@ -249,7 +245,6 @@ export const OrganizationDeployerScreen = () => {
           }
         }
       }
-
     } catch (err: unknown) {
       console.log("failed to create DAO:", err);
       if (err instanceof Error) {
@@ -304,6 +299,7 @@ export const OrganizationDeployerScreen = () => {
       noMargin
       fullWidth
       noScroll
+      forceNetworkKind={NetworkKind.Cosmos}
     >
       <View style={styles.row}>
         <View style={styles.fill}>
@@ -312,7 +308,10 @@ export const OrganizationDeployerScreen = () => {
           </View>
 
           <View style={currentStep === 1 ? styles.show : styles.hidden}>
-            <ConfigureVotingSection onSubmit={onSubmitConfigureVoting} />
+            <ConfigureVotingSection
+              onSubmit={onSubmitConfigureVoting}
+              type={step1DaoInfoFormData?.structure}
+            />
           </View>
 
           <View

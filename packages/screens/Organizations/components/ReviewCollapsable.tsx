@@ -127,7 +127,8 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   childInsideContainer: {
-    padding: layout.padding_x1,
+    paddingHorizontal: layout.padding_x1,
+    paddingTop: layout.padding_x1,
     borderTopWidth: 1,
     borderColor: neutral33,
   },

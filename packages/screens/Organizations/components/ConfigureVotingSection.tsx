@@ -15,15 +15,20 @@ import { patternOnlyNumbers } from "../../../utils/formRules";
 import { neutral33, neutral77, neutralA3 } from "../../../utils/style/colors";
 import { fontSemibold14, fontSemibold28 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { ORGANIZATION_DEPLOYER_STEPS } from "../OrganizationDeployerScreen";
-import { ConfigureVotingFormType } from "../types";
+import {
+  ORGANIZATION_DEPLOYER_STEPS,
+  votingType,
+} from "../OrganizationDeployerScreen";
+import { ConfigureVotingFormType, DaoType } from "../types";
 
 interface ConfigureVotingSectionProps {
   onSubmit: (form: ConfigureVotingFormType) => void;
+  type?: DaoType;
 }
 
 export const ConfigureVotingSection: React.FC<ConfigureVotingSectionProps> = ({
   onSubmit,
+  type,
 }) => {
   // variables
   const { handleSubmit, control, watch, setValue } =
@@ -107,7 +112,9 @@ export const ConfigureVotingSection: React.FC<ConfigureVotingSectionProps> = ({
       <View style={styles.footer}>
         <PrimaryButton
           size="M"
-          text={`Next: ${ORGANIZATION_DEPLOYER_STEPS[2]}`}
+          text={`Next: ${ORGANIZATION_DEPLOYER_STEPS[2]} ${
+            type ? votingType(type) : "..."
+          }`}
           onPress={handleSubmit(onSubmit)}
         />
       </View>

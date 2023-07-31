@@ -179,8 +179,6 @@ const styles = StyleSheet.create({
   selectInputLabel: StyleSheet.flatten([fontSemibold14, { color: neutralA3 }]),
   selectInput: {
     backgroundColor: neutral00,
-    fontSize: 14,
-    fontWeight: 600,
     color: secondaryColor,
     borderColor: neutral33,
     borderWidth: 1,

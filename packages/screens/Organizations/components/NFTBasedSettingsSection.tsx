@@ -1,10 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Pressable, ScrollView, StyleSheet, Switch, View } from "react-native";
+import { ScrollView, StyleSheet, Switch, View } from "react-native";
 
-import trashSVG from "../../../../assets/icons/trash.svg";
 import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
@@ -30,17 +28,29 @@ interface Props {
 
 export const NFTBasedSettingsSection: React.FC<Props> = ({ onSubmit }) => {
   // variables
+  const {
+    setValue,
+    formState: { isValid },
+  } = useForm<NFTSettingFormType>({
+    defaultValues: { considerListedNFTs: false },
+    mode: "all",
+  });
   const { handleSubmit, control } = useForm<NFTSettingFormType>();
   const [contractsIndexes, setContractsIndexes] = useState<number[]>([0]);
   const [considerListedNFTs, setConsiderListedNFTs] = useState(false);
 
+  // Specify considerListedNFTs
+  useEffect(() => {
+    setValue("considerListedNFTs", considerListedNFTs);
+  }, [considerListedNFTs, setValue]);
+
   // functions
-  const removeContractField = (id: number) => {
-    if (contractsIndexes.length > 1) {
-      const copyIndex = [...contractsIndexes].filter((i) => i !== id);
-      setContractsIndexes(copyIndex);
-    }
-  };
+  // const removeContractField = (id: number) => {
+  //   if (contractsIndexes.length > 1) {
+  //     const copyIndex = [...contractsIndexes].filter((i) => i !== id);
+  //     setContractsIndexes(copyIndex);
+  //   }
+  // };
 
   const addContractField = () => {
     setContractsIndexes([
@@ -85,28 +95,41 @@ export const NFTBasedSettingsSection: React.FC<Props> = ({ onSubmit }) => {
         </CustomPressable>
         <SpacerColumn size={3} />
 
-        {contractsIndexes.map((id, index) => (
-          <View style={styles.inputContainer} key={id.toString()}>
-            <TextInputCustom<NFTSettingFormType>
-              name={`contracts.${index}.address`}
-              noBrokenCorners
-              variant="labelOutside"
-              label="NFT Collection Contract"
-              hideLabel={index > 0}
-              control={control}
-              rules={{ required: true, validate: validateAddress }}
-              placeHolder="tori..."
-              containerStyle={{ width: "100%" }}
-            >
-              <Pressable
-                style={styles.trashContainer}
-                onPress={() => removeContractField(id)}
-              >
-                <SVG source={trashSVG} width={12} height={12} />
-              </Pressable>
-            </TextInputCustom>
-          </View>
-        ))}
+        <TextInputCustom<NFTSettingFormType>
+          name="nftContractAddress"
+          noBrokenCorners
+          variant="labelOutside"
+          label="NFT Collection Contract"
+          control={control}
+          rules={{ required: true, validate: validateAddress }}
+          placeHolder="tori..."
+          containerStyle={{ width: "100%" }}
+        />
+
+        <SpacerColumn size={2} />
+
+        {/*{contractsIndexes.map((id, index) => (*/}
+        {/*  <View style={styles.inputContainer} key={id.toString()}>*/}
+        {/*    <TextInputCustom<NFTSettingFormType>*/}
+        {/*      name={`contracts.${index}.address`}*/}
+        {/*      noBrokenCorners*/}
+        {/*      variant="labelOutside"*/}
+        {/*      label="NFT Collection Contract"*/}
+        {/*      hideLabel={index > 0}*/}
+        {/*      control={control}*/}
+        {/*      rules={{ required: true, validate: validateAddress }}*/}
+        {/*      placeHolder="tori..."*/}
+        {/*      containerStyle={{ width: "100%" }}*/}
+        {/*    >*/}
+        {/*      <Pressable*/}
+        {/*        style={styles.trashContainer}*/}
+        {/*        onPress={() => removeContractField(id)}*/}
+        {/*      >*/}
+        {/*        <SVG source={trashSVG} width={12} height={12} />*/}
+        {/*      </Pressable>*/}
+        {/*    </TextInputCustom>*/}
+        {/*  </View>*/}
+        {/*))}*/}
 
         <SecondaryButton size="M" text="Add More" onPress={addContractField} />
       </ScrollView>
@@ -116,6 +139,7 @@ export const NFTBasedSettingsSection: React.FC<Props> = ({ onSubmit }) => {
           size="M"
           text={`Next: ${ORGANIZATION_DEPLOYER_STEPS[3]}`}
           onPress={handleSubmit(onSubmit)}
+          disabled={!isValid}
         />
       </View>
     </View>

@@ -8,6 +8,8 @@ export enum DaoType {
 export type CreateDaoFormType = {
   organizationName: string;
   associatedTeritoriNameService: string;
+  isNameAlreadyMinted: boolean;
+  networkId: string;
   organizationDescription: string;
   structure: DaoType;
   imageUrl: string;
@@ -22,8 +24,8 @@ export type ConfigureVotingFormType = {
 };
 
 export type NFTSettingFormType = {
-  considerListedNFT: boolean;
-  contracts: { address: string }[];
+  considerListedNFTs: boolean;
+  nftContractAddress: string;
 };
 
 export type TokenSettingFormType = {

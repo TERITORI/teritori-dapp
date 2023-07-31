@@ -16,6 +16,11 @@ RIOTER_FOOTER_PACKAGE=rioter-footer-nft
 VAULT_REPO=teritori-vault
 VAULT_PACKAGE=teritori-nft-vault
 
+DAO_CONTRACTS_REPO=dao-contracts
+DAO_VOTING_CW4_PACKAGE=dao-voting-cw4
+DAO_VOTING_CW20_STAKED_PACKAGE=dao-voting-cw20-staked
+DAO_VOTING_CW721_STAKED_PACKAGE=dao-voting-cw721-staked
+
 CONTRACTS_CLIENTS_DIR=packages/contracts-clients
 
 DOCKER_REGISTRY=rg.nl-ams.scw.cloud/teritori
@@ -69,7 +74,7 @@ docker.backend:
 	docker build . -f go/cmd/teritori-dapp-backend/Dockerfile -t teritori/teritori-dapp-backend:$(shell git rev-parse --short HEAD)
 
 .PHONY: generate.contracts-clients
-generate.contracts-clients: $(CONTRACTS_CLIENTS_DIR)/$(BUNKER_MINTER_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(NAME_SERVICE_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(RIOTER_FOOTER_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(TOKEN_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(VAULT_PACKAGE)
+generate.contracts-clients: $(CONTRACTS_CLIENTS_DIR)/$(BUNKER_MINTER_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(NAME_SERVICE_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(RIOTER_FOOTER_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(TOKEN_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(VAULT_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(DAO_VOTING_CW4_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(DAO_VOTING_CW721_STAKED_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(DAO_VOTING_CW20_STAKED_PACKAGE)
 
 .PHONY: generate.go-networks
 generate.go-networks: node_modules validate-networks
@@ -179,7 +184,7 @@ $(CONTRACTS_CLIENTS_DIR)/$(BREEDING_PACKAGE): node_modules
 		--no-bundle
 	mkdir -p go/pkg/contracts/breeding_types
 	go run github.com/a-h/generate/cmd/schema-generate@v0.0.0-20220105161013-96c14dfdfb60 -i $(CANDYMACHINE_REPO)/schema/nft-breeding/instantiate_msg.json -o go/pkg/contracts/breeding_types/instantiate_msg.go -p breeding_types
-	go fmt ./go/pkg/contracts/breeding_minter_types		
+	go fmt ./go/pkg/contracts/breeding_minter_types
 	rm -fr $(CANDYMACHINE_REPO)
 
 .PHONY: $(CONTRACTS_CLIENTS_DIR)/$(VAULT_PACKAGE)
@@ -198,6 +203,49 @@ $(CONTRACTS_CLIENTS_DIR)/$(VAULT_PACKAGE): node_modules
 	go run github.com/a-h/generate/cmd/schema-generate@v0.0.0-20220105161013-96c14dfdfb60 -i $(VAULT_REPO)/contracts/nft-vault/schema/execute_msg.json -o go/pkg/contracts/vault_types/execute_msg.go -p vault_types
 	go fmt ./go/pkg/contracts/vault_types
 	rm -fr $(VAULT_REPO)
+
+.PHONY: $(CONTRACTS_CLIENTS_DIR)/$(DAO_VOTING_CW4_PACKAGE)
+$(CONTRACTS_CLIENTS_DIR)/$(DAO_VOTING_CW4_PACKAGE): node_modules
+	rm -fr $(DAO_CONTRACTS_REPO)
+	git clone git@github.com:TERITORI/$(DAO_CONTRACTS_REPO).git
+	cd $(DAO_CONTRACTS_REPO) && git checkout 7f89ad1604e8022f202aef729853b0c8c7196988
+	rm -fr $@
+	npx cosmwasm-ts-codegen generate \
+		--plugin client \
+		--schema $(DAO_CONTRACTS_REPO)/contracts/voting/dao-voting-cw4/schema \
+		--out $@ \
+		--name $(DAO_VOTING_CW4_PACKAGE) \
+		--no-bundle
+	rm -fr $(DAO_CONTRACTS_REPO)
+
+.PHONY: $(CONTRACTS_CLIENTS_DIR)/$(DAO_VOTING_CW20_STAKED_PACKAGE)
+$(CONTRACTS_CLIENTS_DIR)/$(DAO_VOTING_CW20_STAKED_PACKAGE): node_modules
+	rm -fr $(DAO_CONTRACTS_REPO)
+	git clone git@github.com:TERITORI/$(DAO_CONTRACTS_REPO).git
+	cd $(DAO_CONTRACTS_REPO) && git checkout v2.2.0
+	rm -fr $@
+	npx cosmwasm-ts-codegen generate \
+		--plugin client \
+		--schema $(DAO_CONTRACTS_REPO)/contracts/voting/dao-voting-cw20-staked/schema \
+		--out $@ \
+		--name $(DAO_VOTING_CW20_STAKED_PACKAGE) \
+		--no-bundle
+	rm -fr $(DAO_CONTRACTS_REPO)
+
+.PHONY: $(CONTRACTS_CLIENTS_DIR)/$(DAO_VOTING_CW721_STAKED_PACKAGE)
+$(CONTRACTS_CLIENTS_DIR)/$(DAO_VOTING_CW721_STAKED_PACKAGE): node_modules
+	rm -fr $(DAO_CONTRACTS_REPO)
+	git clone git@github.com:TERITORI/$(DAO_CONTRACTS_REPO).git
+	cd $(DAO_CONTRACTS_REPO) && git checkout v2.2.0
+	rm -fr $@
+	npx cosmwasm-ts-codegen generate \
+		--plugin client \
+		--schema $(DAO_CONTRACTS_REPO)/contracts/voting/dao-voting-cw721-staked/schema \
+		--out $@ \
+		--name $(DAO_VOTING_CW721_STAKED_PACKAGE) \
+		--no-bundle
+	rm -fr $(DAO_CONTRACTS_REPO)
+
 
 .PHONY: publish.backend
 publish.backend:

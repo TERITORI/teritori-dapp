@@ -57,6 +57,7 @@ export type CosmosNetworkInfo = NetworkInfoBase & {
   daoCw20StakeCodeId?: number;
   daoCw4GroupCodeId?: number;
   daoVotingCw4CodeId?: number;
+  daoVotingCw721StakedCodeId?: number;
   daoFactoryContractAddress?: string;
   coreDAOAddress?: string;
 };

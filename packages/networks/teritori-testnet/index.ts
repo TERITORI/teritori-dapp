@@ -1,5 +1,5 @@
 import { teritoriTestnetCurrencies } from "./currencies";
-import { NetworkFeature, NetworkInfo, NetworkKind } from "../types";
+import { CosmosNetworkInfo, NetworkFeature, NetworkKind } from "../types";
 
 const nameServiceContractAddress =
   "tori18etjzrma5604af50jjklk3wlkqcsxdrvmy6jzw5naw2t7kyv4rys3kpwky";
@@ -7,7 +7,7 @@ const nameServiceContractAddress =
 const riotContractAddressGen1 =
   "tori1afwrcs58afaka6ltynevwcvq8zhejr3ssn703c0hky5emh890vzsry5wp5";
 
-export const teritoriTestnetNetwork: NetworkInfo = {
+export const teritoriTestnetNetwork: CosmosNetworkInfo = {
   id: "teritori-testnet",
   kind: NetworkKind.Cosmos,
   chainId: "teritori-testnet-v3",
@@ -77,6 +77,7 @@ export const teritoriTestnetNetwork: NetworkInfo = {
   daoCw20StakeCodeId: 105,
   daoCw4GroupCodeId: 106,
   daoVotingCw4CodeId: 109,
+  daoVotingCw721StakedCodeId: 130,
   daoFactoryContractAddress:
     "tori1r29chp8ufwgx9u3wr4sfk050aardhkzwve7nht6y06gvlaqutr3qt83z6r",
   coreDAOAddress:
