@@ -27,17 +27,19 @@ interface SearchConversationProps {
   message: Message;
   groupPk?: Uint8Array;
   parentMessage?: Message;
+  onPress: () => void;
 }
 
 export const SearchConversation = ({
   conversation,
   message,
   parentMessage,
+  onPress,
 }: SearchConversationProps) => {
   const receiverName = "Anon";
 
   return (
-    <TouchableOpacity onPress={() => {}}>
+    <TouchableOpacity onPress={onPress}>
       <FlexRow
         alignItems="flex-start"
         justifyContent="flex-start"

@@ -2,23 +2,23 @@ import React, { useState } from "react";
 import { View } from "react-native";
 import { Avatar, Badge } from "react-native-paper";
 
-import { Separator } from "../../components/Separator";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { neutral22, secondaryColor } from "../../utils/style/colors";
-import { fontSemibold13 } from "../../utils/style/fonts";
-import { ContactRequest } from "../../utils/types/message";
-import { weshClient } from "../../weshnet/client";
+import { BrandText } from "../../../components/BrandText";
+import FlexRow from "../../../components/FlexRow";
+import { Separator } from "../../../components/Separator";
+import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
+import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
+import { SpacerColumn, SpacerRow } from "../../../components/spacer";
+import { useFeedbacks } from "../../../context/FeedbacksProvider";
+import { neutral22, secondaryColor } from "../../../utils/style/colors";
+import { fontSemibold13 } from "../../../utils/style/fonts";
+import { ContactRequest } from "../../../utils/types/message";
+import { weshClient } from "../../../weshnet/client";
 import {
   acceptFriendRequest,
   activateGroup,
   sendMessage,
-} from "../../weshnet/client/services";
-import { bytesFromString } from "../../weshnet/client/utils";
-import { BrandText } from "../BrandText";
-import FlexRow from "../FlexRow";
-import { PrimaryButton } from "../buttons/PrimaryButton";
-import { SecondaryButton } from "../buttons/SecondaryButton";
-import { SpacerColumn, SpacerRow } from "../spacer";
+} from "../../../weshnet/client/services";
+import { bytesFromString } from "../../../weshnet/client/utils";
 type Props = {
   name: string;
   isOnline: boolean;

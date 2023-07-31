@@ -3,6 +3,7 @@ import { Platform, View, useWindowDimensions } from "react-native";
 import { useSelector } from "react-redux";
 
 import { ChatItem } from "./ChatItem";
+import { FriendsBar } from "./FriendsBar";
 import add from "../../../../assets/icons/add-circle-filled.svg";
 import chevronDownSVG from "../../../../assets/icons/chevron-down.svg";
 import Search from "../../../../assets/icons/search.svg";
@@ -10,7 +11,6 @@ import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
 import { Separator } from "../../../components/Separator";
-import { FriendsBar } from "../../../components/sidebarchat/FriendsBar";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { selectConversationList } from "../../../store/slices/message";
 import { useAppNavigation } from "../../../utils/navigation";

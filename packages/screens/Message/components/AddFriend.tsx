@@ -2,13 +2,12 @@ import React, { useState } from "react";
 import { View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
+import AddFriendList from "./AddFriendList";
 import nullIcon from "../../../../assets/icons/illustration.svg";
 import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
 import { Separator } from "../../../components/Separator";
-import AddFriendList from "../../../components/addfriend/AddFriendList";
-import data from "../../../components/addfriend/data";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { TextInputCustomBorder } from "../../../components/inputs/TextInputCustomBorder";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
@@ -27,7 +26,7 @@ import {
 
 export const AddFriend = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const filteredData = data.filter((item) =>
+  const filteredData = [].filter((item) =>
     item.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
   return (
