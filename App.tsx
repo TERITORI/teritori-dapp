@@ -11,7 +11,8 @@ import { StatusBar } from "expo-status-bar";
 import { MetaMaskProvider } from "metamask-react";
 import React, { useCallback } from "react";
 import { useForm, FormProvider } from "react-hook-form";
-import { Platform, View } from "react-native";
+import { Platform } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { MenuProvider } from "react-native-popup-menu";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider as ReduxProvider } from "react-redux";
@@ -73,7 +74,7 @@ export default function App() {
   }
 
   return (
-    <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
+    <GestureHandlerRootView style={{ flex: 1 }} onLayout={onLayoutRootView}>
       <QueryClientProvider client={queryClient}>
         <FormProvider<DefaultForm> {...methods}>
           <MetaMaskProvider>
@@ -104,6 +105,6 @@ export default function App() {
           </MetaMaskProvider>
         </FormProvider>
       </QueryClientProvider>
-    </View>
+    </GestureHandlerRootView>
   );
 }

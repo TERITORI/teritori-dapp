@@ -79,8 +79,6 @@ buck-out/
 # Expo
 .expo/
 web-build/
-dist/
-desktop-build
 
 # @end expo-cli
 
@@ -90,11 +88,13 @@ desktop-build
 
 
 # electron
-desktop/vendor
 go/electron/output
 go/electron/prod/bind*
 go/electron/prod/resources/app/
 
+# weshnet
 modules/wesh/ios/WeshFramework.xcframework/
 
-
+# expo prebuild
+ios/
+android/

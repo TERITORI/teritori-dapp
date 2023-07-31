@@ -3,20 +3,20 @@ import { View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Avatar, Badge } from "react-native-paper";
 
-import chaticon from "../../../assets/icons/chaticon.svg";
-import dots from "../../../assets/icons/dots.svg";
-import { Separator } from "../../components/Separator";
-import { neutral22, secondaryColor } from "../../utils/style/colors";
-import { fontSemibold13 } from "../../utils/style/fonts";
-import { Conversation } from "../../utils/types/message";
+import chaticon from "../../../../assets/icons/chaticon.svg";
+import dots from "../../../../assets/icons/dots.svg";
+import { BrandText } from "../../../components/BrandText";
+import FlexRow from "../../../components/FlexRow";
+import { SVG } from "../../../components/SVG";
+import { Separator } from "../../../components/Separator";
+import { SpacerColumn, SpacerRow } from "../../../components/spacer";
+import { neutral22, secondaryColor } from "../../../utils/style/colors";
+import { fontSemibold13 } from "../../../utils/style/fonts";
+import { Conversation } from "../../../utils/types/message";
 import {
   getConversationAvatar,
   getConversationName,
-} from "../../weshnet/client/messageHelpers";
-import { BrandText } from "../BrandText";
-import FlexRow from "../FlexRow";
-import { SVG } from "../SVG";
-import { SpacerColumn, SpacerRow } from "../spacer";
+} from "../../../weshnet/client/messageHelpers";
 
 type FriendListProps = {
   item: Conversation;

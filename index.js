@@ -2,10 +2,11 @@ import { registerRootComponent } from "expo";
 import moment from "moment";
 import * as React from "react";
 
-import "react-native-gesture-handler";
 import App from "./App";
 
 console.warn = () => {};
+
+console.log("web ts");
 
 moment.locale("en", {
   relativeTime: {
