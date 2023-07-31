@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { View } from "react-native";
 
+import FriendList from "./FriendsList";
 import { MessageBlankFiller } from "./MessageBlankFiller";
-import FriendList from "../../../components/friends/FriendsList";
 import { TextInputCustomBorder } from "../../../components/inputs/TextInputCustomBorder";
 import { SpacerColumn } from "../../../components/spacer";
 import { neutral00 } from "../../../utils/style/colors";
