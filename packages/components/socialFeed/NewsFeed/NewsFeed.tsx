@@ -6,6 +6,7 @@ import {
   useWindowDimensions,
 } from "react-native";
 import Animated, {
+  runOnJS,
   useAnimatedScrollHandler,
   useSharedValue,
 } from "react-native-reanimated";
@@ -73,13 +74,13 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
 
   const scrollHandler = useAnimatedScrollHandler({
     onScroll: (event) => {
-      setFlatListContentOffsetY(event.contentOffset.y);
+      runOnJS(setFlatListContentOffsetY)(event.contentOffset.y);
       if (flatListContentOffsetY > event.contentOffset.y) {
         isGoingUp.value = true;
       } else if (flatListContentOffsetY < event.contentOffset.y) {
         isGoingUp.value = false;
       }
-      setFlatListContentOffsetY(event.contentOffset.y);
+      runOnJS(setFlatListContentOffsetY)(event.contentOffset.y);
     },
   });
 

@@ -6,6 +6,7 @@ import {
   View,
 } from "react-native";
 import Animated, {
+  runOnJS,
   useAnimatedRef,
   useAnimatedScrollHandler,
   useSharedValue,
@@ -148,7 +149,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
           event.contentOffset.y >= event.contentSize.height - offsetPadding &&
           isNextPageAvailable.value
         ) {
-          fetchNextPage();
+          runOnJS(fetchNextPage)();
         }
 
         if (flatListContentOffsetY > event.contentOffset.y) {
@@ -156,7 +157,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
         } else if (flatListContentOffsetY < event.contentOffset.y) {
           isGoingUp.value = false;
         }
-        setFlatListContentOffsetY(event.contentOffset.y);
+        runOnJS(setFlatListContentOffsetY)(event.contentOffset.y);
       },
     },
     [postResult?.identifier]
