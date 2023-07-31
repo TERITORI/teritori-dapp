@@ -19,9 +19,9 @@ import (
 
 	// "github.com/cskr/pubsub"
 
+	"github.com/dgraph-io/badger/options"
 	"github.com/improbable-eng/grpc-web/go/grpcweb"
-	ds "github.com/ipfs/go-datastore"
-	ds_sync "github.com/ipfs/go-datastore/sync"
+	badger "github.com/ipfs/go-ds-badger"
 	"github.com/peterbourgon/ff/v3"
 	"github.com/phayes/freeport"
 	"go.uber.org/zap"
@@ -45,7 +45,7 @@ func checkFreePort() {
  
 
 
-func Boot() {	
+func Boot(path string) {	
 	fs := flag.NewFlagSet("weshd", flag.ContinueOnError)
 	if err := ff.Parse(fs, os.Args[1:]); err != nil {
 		panic(errors.Wrap(err, "failed to parse flags"))
@@ -64,13 +64,19 @@ func Boot() {
 	drivers := []tinder.IDriver{}
 
 	// setup ipfs node
-	dsync := ds_sync.MutexWrap(ds.NewMapDatastore())
-	repo, err := ipfsutil.CreateMockedRepo(dsync)
+	bopts := badger.DefaultOptions
+	bopts.ValueLogLoadingMode = options.FileIO
+	ds, err := badger.NewDatastore(path, &bopts)
+	if err != nil {
+		panic(errors.Wrap(err, "unable to init badger datastore"))
+	}
+
+	repo, err := ipfsutil.LoadRepoFromPath(path)
 	if err != nil {
 		panic(errors.Wrap(err, "failed to create ipfs repo"))
 	}
 
-	mrepo := ipfs_mobile.NewRepoMobile("", repo)
+	mrepo := ipfs_mobile.NewRepoMobile(path, repo)
 	mnode, err := ipfsutil.NewIPFSMobile(context.Background(), mrepo, &ipfsutil.MobileOptions{})
 	if err != nil {
 		panic(errors.Wrap(err, "failed to create ipfs node"))
@@ -102,10 +108,9 @@ func Boot() {
 
 	svc, err := weshnet.NewService(weshnet.Opts{
 		Logger:        logger,
-		DatastoreDir:  weshnet.InMemoryDirectory,
 		TinderService: tinderDriver,
 		IpfsCoreAPI:   ipfsCoreAPI,
-		RootDatastore: dsync,
+		RootDatastore: ds,
 	})
 	if err != nil {
 		panic(errors.Wrap(err, "failed to create weshnet server"))

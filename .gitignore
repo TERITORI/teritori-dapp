@@ -94,6 +94,7 @@ go/electron/prod/resources/app/
 
 # weshnet
 modules/wesh/ios/WeshFramework.xcframework/
+wesh-dir
 
 # expo prebuild
 ios/

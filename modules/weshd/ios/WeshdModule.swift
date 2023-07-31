@@ -1,6 +1,13 @@
 import WeshFramework
 import ExpoModulesCore
 
+
+func getDocumentsDirectory() -> String {
+    let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+    let documentsDirectory = paths[0]
+    return documentsDirectory.appendingPathComponent("wesh-dir").path
+}
+
 public class WeshdModule: Module {
   // Each module class must implement the definition function. The definition consists of components
   // that describes the module's functionality and behavior.
@@ -21,7 +28,7 @@ public class WeshdModule: Module {
 
     // Defines a JavaScript synchronous function that runs the native code on the JavaScript thread.
       AsyncFunction("boot") {
-           WeshFramework.WeshFrameworkBoot()
+           WeshFramework.WeshFrameworkBoot(getDocumentsDirectory())
     }
       AsyncFunction("getPort") { () -> Int in
           return WeshFramework.WeshFrameworkGetPort()

@@ -1,4 +1,4 @@
-package main
+package WeshFramework
 
 import (
 	"context"
@@ -17,8 +17,8 @@ import (
 	"moul.io/srand"
 
 	// "github.com/cskr/pubsub"
-	ds "github.com/ipfs/go-datastore"
-	ds_sync "github.com/ipfs/go-datastore/sync"
+	"github.com/dgraph-io/badger/options"
+	badger "github.com/ipfs/go-ds-badger"
 	"github.com/peterbourgon/ff/v3"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
@@ -30,10 +30,9 @@ import (
 )
 
 func main() {
+	port := 4242;
 	fs := flag.NewFlagSet("weshd", flag.ContinueOnError)
-	var (
-		port = fs.Int("port", 4242, "port")
-	)
+	path := "./wesh-dir"
 	if err := ff.Parse(fs, os.Args[1:]); err != nil {
 		panic(errors.Wrap(err, "failed to parse flags"))
 	}
@@ -43,7 +42,7 @@ func main() {
 		panic(errors.Wrap(err, "failed to create logger"))
 	}
 
-	logger.Info("weshd", zap.Int("port", *port))
+	logger.Info("weshd", zap.Int("port", port))
 
 	grpcServer := grpc.NewServer()
 
@@ -51,13 +50,19 @@ func main() {
 	drivers := []tinder.IDriver{}
 
 	// setup ipfs node
-	dsync := ds_sync.MutexWrap(ds.NewMapDatastore())
-	repo, err := ipfsutil.CreateMockedRepo(dsync)
+	bopts := badger.DefaultOptions
+	bopts.ValueLogLoadingMode = options.FileIO
+	ds, err := badger.NewDatastore(path, &bopts)
+	if err != nil {
+		panic(errors.Wrap(err, "unable to init badger datastore"))
+	}
+
+	repo, err := ipfsutil.LoadRepoFromPath(path)
 	if err != nil {
 		panic(errors.Wrap(err, "failed to create ipfs repo"))
 	}
 
-	mrepo := ipfs_mobile.NewRepoMobile("", repo)
+	mrepo := ipfs_mobile.NewRepoMobile(path, repo)
 	mnode, err := ipfsutil.NewIPFSMobile(context.Background(), mrepo, &ipfsutil.MobileOptions{})
 	if err != nil {
 		panic(errors.Wrap(err, "failed to create ipfs node"))
@@ -87,12 +92,14 @@ func main() {
 		panic(errors.Wrap(err, "failed to create tinder driver"))
 	}
 
+
+	
 	svc, err := weshnet.NewService(weshnet.Opts{
 		Logger:        logger,
-		DatastoreDir:  weshnet.InMemoryDirectory,
+		// DatastoreDir:  weshnet.InMemoryDirectory,
 		TinderService: tinderDriver,
 		IpfsCoreAPI:   ipfsCoreAPI,
-		RootDatastore: dsync,
+		RootDatastore: ds,
 	})
 	if err != nil {
 		panic(errors.Wrap(err, "failed to create weshnet server"))
@@ -112,7 +119,7 @@ func main() {
 	}
 
 	httpServer := http.Server{
-		Addr:    fmt.Sprintf(":%d", *port),
+		Addr:    fmt.Sprintf(":%d", port),
 		Handler: http.HandlerFunc(handler),
 	}
 
