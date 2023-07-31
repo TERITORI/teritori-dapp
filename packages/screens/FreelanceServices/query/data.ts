@@ -407,7 +407,7 @@ export const getFilterOptions = (type: string): FilterOptionType[] => {
 };
 
 export const getGigData = async (
-  gigId: number,
+  gigId: string,
   gigInfo: GigInfo,
   sellerAddress: string
 ): Promise<GigData> => {

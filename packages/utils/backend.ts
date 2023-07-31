@@ -121,9 +121,12 @@ export const getFreelanceClient = (networkId: string | undefined) => {
     return undefined;
   }
   if (!freelanceClients[network.id]) {
-    const rpc = new FreelanceGrpcWebImpl(network.backendEndpoint, {
+    const rpc = new FreelanceGrpcWebImpl("http://localhost:9090", {
       debug: false,
     });
+    // const rpc = new FreelanceGrpcWebImpl(network.backendEndpoint, {
+    //   debug: false,
+    // });
     freelanceClients[network.id] = new FreelanceServiceClientImpl(rpc);
   }
   return freelanceClients[network.id];

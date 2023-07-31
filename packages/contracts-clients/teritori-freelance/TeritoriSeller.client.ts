@@ -1,4 +1,5 @@
 import { CosmWasmClient, SigningCosmWasmClient, ExecuteResult } from "@cosmjs/cosmwasm-stargate";
+import { Coin, StdFee } from "@cosmjs/amino";
 export class TeritoriSellerQueryClient {
     client: CosmWasmClient;
     contractAddress: string;
@@ -27,17 +28,31 @@ export class TeritoriSellerClient extends TeritoriSellerQueryClient{
         this.client = client;
         this.sender = sender;
         this.contractAddress = contractAddress;
-        this.addGig = this.addGig.bind(this);
+        this.createGig = this.createGig.bind(this);
         this.updateSellerProfile = this.updateSellerProfile.bind(this);
     }
 
-    addGig = async({ seller, gigInfo }: { seller: string, gigInfo: string}):Promise<ExecuteResult> => {
-        return await this.client.execute( this.sender, this.contractAddress, {
-            add_gig:{
-                seller,
-                gig_info: gigInfo
-            }
-        }, "auto");
+    createGig = async({ identifier, category, subcategory, gigInfo }: {
+        identifier: string, category: string, subcategory: string, gigInfo: string
+    }, fee: number | StdFee | "auto" = "auto",
+    memo?: string,
+    funds?: Coin[]
+    ):Promise<ExecuteResult> => {
+        return await this.client.execute(
+            this.sender,
+            this.contractAddress,
+            {
+                create_gig:{
+                    identifier,
+                    category,
+                    subcategory,
+                    metadata: gigInfo
+                }
+            },
+            fee,
+            memo,
+            funds
+        ) ;
     }
 
     updateSellerProfile = async({seller, ipfsHash}: {seller: string, ipfsHash: string}): Promise<ExecuteResult> => {

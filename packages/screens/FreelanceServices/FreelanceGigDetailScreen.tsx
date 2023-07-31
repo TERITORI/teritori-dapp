@@ -32,8 +32,7 @@ import {
   GigData,
 } from "../../components/freelanceServices/types/fields";
 import { PortfolioImage } from "../../components/inputs/PortfolioImage";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import { mustGetFreelanceClient } from "../../utils/backend";
+import { useFetchGig } from "../../hooks/freelance/useFetchGig";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import {
@@ -64,28 +63,24 @@ export const FreelanceGigDetailScreen: ScreenFC<
   const navigation = useAppNavigation();
   const [gigData, setGigData] = useState<GigData | null>(null);
   const { width } = useWindowDimensions();
-  const networkId = useSelectedNetworkId();
+  const { data } = useFetchGig({ identifier: gigId });
   useEffect(() => {
     const setId = async () => {
       try {
-        const freelanceClient = mustGetFreelanceClient(networkId);
-        const res = await freelanceClient.GigData({ id: gigId });
-
-        if (res.gig) {
-          setGigData(
-            await getGigData(
-              gigId,
-              JSON.parse(res.gig.gigData) as GigInfo,
-              res.gig.address
-            )
-          );
-        }
+        if (!data) return;
+        setGigData(
+          await getGigData(
+            data.identifier,
+            JSON.parse(data.metadata) as GigInfo,
+            data.createdBy
+          )
+        );
       } catch (err) {
         console.log(err);
       }
     };
     setId();
-  }, [gigId, networkId]);
+  }, [data]);
 
   return (
     gigData && (

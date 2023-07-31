@@ -6,6 +6,15 @@ import _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "freelance.v1";
 
+export interface GigCountRequest {
+  category: string;
+  subcategory: string;
+}
+
+export interface GigCountResponse {
+  count: number;
+}
+
 export interface SellerProfileRequest {
   sellerAddress: string;
 }
@@ -62,9 +71,10 @@ export interface EscrowReceiverListResponse {
 }
 
 export interface GigInfo {
-  id: number;
-  address: string;
-  gigData: string;
+  identifier: string;
+  createdBy: string;
+  metadata: string;
+  createdAt: number;
 }
 
 export interface GigListResponse {
@@ -76,12 +86,117 @@ export interface GigListUserResponse {
 }
 
 export interface GigDataRequest {
-  id: number;
+  identifier: string;
 }
 
 export interface GigDataResponse {
   gig: GigInfo | undefined;
 }
+
+function createBaseGigCountRequest(): GigCountRequest {
+  return { category: "", subcategory: "" };
+}
+
+export const GigCountRequest = {
+  encode(message: GigCountRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.category !== "") {
+      writer.uint32(10).string(message.category);
+    }
+    if (message.subcategory !== "") {
+      writer.uint32(18).string(message.subcategory);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): GigCountRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGigCountRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.category = reader.string();
+          break;
+        case 2:
+          message.subcategory = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GigCountRequest {
+    return {
+      category: isSet(object.category) ? String(object.category) : "",
+      subcategory: isSet(object.subcategory) ? String(object.subcategory) : "",
+    };
+  },
+
+  toJSON(message: GigCountRequest): unknown {
+    const obj: any = {};
+    message.category !== undefined && (obj.category = message.category);
+    message.subcategory !== undefined && (obj.subcategory = message.subcategory);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<GigCountRequest>, I>>(object: I): GigCountRequest {
+    const message = createBaseGigCountRequest();
+    message.category = object.category ?? "";
+    message.subcategory = object.subcategory ?? "";
+    return message;
+  },
+};
+
+function createBaseGigCountResponse(): GigCountResponse {
+  return { count: 0 };
+}
+
+export const GigCountResponse = {
+  encode(message: GigCountResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.count !== 0) {
+      writer.uint32(8).int32(message.count);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): GigCountResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGigCountResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.count = reader.int32();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GigCountResponse {
+    return { count: isSet(object.count) ? Number(object.count) : 0 };
+  },
+
+  toJSON(message: GigCountResponse): unknown {
+    const obj: any = {};
+    message.count !== undefined && (obj.count = Math.round(message.count));
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<GigCountResponse>, I>>(object: I): GigCountResponse {
+    const message = createBaseGigCountResponse();
+    message.count = object.count ?? 0;
+    return message;
+  },
+};
 
 function createBaseSellerProfileRequest(): SellerProfileRequest {
   return { sellerAddress: "" };
@@ -718,19 +833,22 @@ export const EscrowReceiverListResponse = {
 };
 
 function createBaseGigInfo(): GigInfo {
-  return { id: 0, address: "", gigData: "" };
+  return { identifier: "", createdBy: "", metadata: "", createdAt: 0 };
 }
 
 export const GigInfo = {
   encode(message: GigInfo, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.id !== 0) {
-      writer.uint32(8).int32(message.id);
+    if (message.identifier !== "") {
+      writer.uint32(10).string(message.identifier);
     }
-    if (message.address !== "") {
-      writer.uint32(18).string(message.address);
+    if (message.createdBy !== "") {
+      writer.uint32(18).string(message.createdBy);
     }
-    if (message.gigData !== "") {
-      writer.uint32(26).string(message.gigData);
+    if (message.metadata !== "") {
+      writer.uint32(26).string(message.metadata);
+    }
+    if (message.createdAt !== 0) {
+      writer.uint32(32).int64(message.createdAt);
     }
     return writer;
   },
@@ -743,13 +861,16 @@ export const GigInfo = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.id = reader.int32();
+          message.identifier = reader.string();
           break;
         case 2:
-          message.address = reader.string();
+          message.createdBy = reader.string();
           break;
         case 3:
-          message.gigData = reader.string();
+          message.metadata = reader.string();
+          break;
+        case 4:
+          message.createdAt = longToNumber(reader.int64() as Long);
           break;
         default:
           reader.skipType(tag & 7);
@@ -761,25 +882,28 @@ export const GigInfo = {
 
   fromJSON(object: any): GigInfo {
     return {
-      id: isSet(object.id) ? Number(object.id) : 0,
-      address: isSet(object.address) ? String(object.address) : "",
-      gigData: isSet(object.gigData) ? String(object.gigData) : "",
+      identifier: isSet(object.identifier) ? String(object.identifier) : "",
+      createdBy: isSet(object.createdBy) ? String(object.createdBy) : "",
+      metadata: isSet(object.metadata) ? String(object.metadata) : "",
+      createdAt: isSet(object.createdAt) ? Number(object.createdAt) : 0,
     };
   },
 
   toJSON(message: GigInfo): unknown {
     const obj: any = {};
-    message.id !== undefined && (obj.id = Math.round(message.id));
-    message.address !== undefined && (obj.address = message.address);
-    message.gigData !== undefined && (obj.gigData = message.gigData);
+    message.identifier !== undefined && (obj.identifier = message.identifier);
+    message.createdBy !== undefined && (obj.createdBy = message.createdBy);
+    message.metadata !== undefined && (obj.metadata = message.metadata);
+    message.createdAt !== undefined && (obj.createdAt = Math.round(message.createdAt));
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<GigInfo>, I>>(object: I): GigInfo {
     const message = createBaseGigInfo();
-    message.id = object.id ?? 0;
-    message.address = object.address ?? "";
-    message.gigData = object.gigData ?? "";
+    message.identifier = object.identifier ?? "";
+    message.createdBy = object.createdBy ?? "";
+    message.metadata = object.metadata ?? "";
+    message.createdAt = object.createdAt ?? 0;
     return message;
   },
 };
@@ -887,13 +1011,13 @@ export const GigListUserResponse = {
 };
 
 function createBaseGigDataRequest(): GigDataRequest {
-  return { id: 0 };
+  return { identifier: "" };
 }
 
 export const GigDataRequest = {
   encode(message: GigDataRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.id !== 0) {
-      writer.uint32(8).int32(message.id);
+    if (message.identifier !== "") {
+      writer.uint32(10).string(message.identifier);
     }
     return writer;
   },
@@ -906,7 +1030,7 @@ export const GigDataRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.id = reader.int32();
+          message.identifier = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -917,18 +1041,18 @@ export const GigDataRequest = {
   },
 
   fromJSON(object: any): GigDataRequest {
-    return { id: isSet(object.id) ? Number(object.id) : 0 };
+    return { identifier: isSet(object.identifier) ? String(object.identifier) : "" };
   },
 
   toJSON(message: GigDataRequest): unknown {
     const obj: any = {};
-    message.id !== undefined && (obj.id = Math.round(message.id));
+    message.identifier !== undefined && (obj.identifier = message.identifier);
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<GigDataRequest>, I>>(object: I): GigDataRequest {
     const message = createBaseGigDataRequest();
-    message.id = object.id ?? 0;
+    message.identifier = object.identifier ?? "";
     return message;
   },
 };
@@ -983,6 +1107,7 @@ export const GigDataResponse = {
 export interface FreelanceService {
   SellerProfile(request: DeepPartial<SellerProfileRequest>, metadata?: grpc.Metadata): Promise<SellerProfileResponse>;
   GigList(request: DeepPartial<GigListRequest>, metadata?: grpc.Metadata): Promise<GigListResponse>;
+  GigCount(request: DeepPartial<GigCountRequest>, metadata?: grpc.Metadata): Promise<GigCountResponse>;
   GigListUser(request: DeepPartial<GigListUserRequest>, metadata?: grpc.Metadata): Promise<GigListUserResponse>;
   GigData(request: DeepPartial<GigDataRequest>, metadata?: grpc.Metadata): Promise<GigDataResponse>;
   EscrowAllList(request: DeepPartial<EscrowAllListRequest>, metadata?: grpc.Metadata): Promise<EscrowAllListResponse>;
@@ -1003,6 +1128,7 @@ export class FreelanceServiceClientImpl implements FreelanceService {
     this.rpc = rpc;
     this.SellerProfile = this.SellerProfile.bind(this);
     this.GigList = this.GigList.bind(this);
+    this.GigCount = this.GigCount.bind(this);
     this.GigListUser = this.GigListUser.bind(this);
     this.GigData = this.GigData.bind(this);
     this.EscrowAllList = this.EscrowAllList.bind(this);
@@ -1016,6 +1142,10 @@ export class FreelanceServiceClientImpl implements FreelanceService {
 
   GigList(request: DeepPartial<GigListRequest>, metadata?: grpc.Metadata): Promise<GigListResponse> {
     return this.rpc.unary(FreelanceServiceGigListDesc, GigListRequest.fromPartial(request), metadata);
+  }
+
+  GigCount(request: DeepPartial<GigCountRequest>, metadata?: grpc.Metadata): Promise<GigCountResponse> {
+    return this.rpc.unary(FreelanceServiceGigCountDesc, GigCountRequest.fromPartial(request), metadata);
   }
 
   GigListUser(request: DeepPartial<GigListUserRequest>, metadata?: grpc.Metadata): Promise<GigListUserResponse> {
@@ -1087,6 +1217,28 @@ export const FreelanceServiceGigListDesc: UnaryMethodDefinitionish = {
     deserializeBinary(data: Uint8Array) {
       return {
         ...GigListResponse.decode(data),
+        toObject() {
+          return this;
+        },
+      };
+    },
+  } as any,
+};
+
+export const FreelanceServiceGigCountDesc: UnaryMethodDefinitionish = {
+  methodName: "GigCount",
+  service: FreelanceServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return GigCountRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      return {
+        ...GigCountResponse.decode(data),
         toObject() {
           return this;
         },

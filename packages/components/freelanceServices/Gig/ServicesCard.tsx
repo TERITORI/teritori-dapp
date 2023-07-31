@@ -28,7 +28,7 @@ import { SecondaryButton } from "../../buttons/SecondaryButton";
 import { ServiceLevel } from "../types/fields";
 
 export const ServicesCard: React.FC<{
-  gigId: number;
+  gigId: string;
   serviceLevels: ServiceLevel[];
 }> = ({ gigId, serviceLevels }) => {
   const [selected, setSelected] = useState<number>(0);

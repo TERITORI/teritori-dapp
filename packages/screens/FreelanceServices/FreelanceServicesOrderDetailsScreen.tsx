@@ -18,6 +18,7 @@ import { FreelanceOrderModal } from "../../components/modals/freelanceOrder/Free
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { TeritoriOrderClient } from "../../contracts-clients/teritori-freelance/TeritoriOrder.client";
 import { OrderParams } from "../../contracts-clients/teritori-freelance/TeritoriOrder.types";
+import { useFetchGig } from "../../hooks/freelance/useFetchGig";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
@@ -25,12 +26,10 @@ import {
   mustGetCosmosNetwork,
   getKeplrSigningCosmWasmClient,
 } from "../../networks";
-import { mustGetFreelanceClient } from "../../utils/backend";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { neutral00, neutral33, primaryColor } from "../../utils/style/colors";
 import { fontSemibold16, fontSemibold20 } from "../../utils/style/fonts";
 import { OrderStep } from "../../utils/types/freelance";
-
 export type OrderModals = "Order";
 const OrderPathMap = {
   Order: "order",
@@ -134,27 +133,24 @@ export const FreelanceServicesOrderDetailsScreen: ScreenFC<
 }) => {
   const [gigData, setGigData] = useState<GigData | null>(null);
   const networkId = useSelectedNetworkId();
+  const { data } = useFetchGig({ identifier: gigId });
   useEffect(() => {
-    // if (id !== "") return;
     const setId = async () => {
       try {
-        const freelanceClient = mustGetFreelanceClient(networkId);
-        const res = await freelanceClient.GigData({ id: gigId });
-        if (res.gig) {
-          setGigData(
-            await getGigData(
-              gigId,
-              JSON.parse(res.gig.gigData) as GigInfo,
-              res.gig.address
-            )
-          );
-        }
+        if (!data) return;
+        setGigData(
+          await getGigData(
+            data.identifier,
+            JSON.parse(data.metadata) as GigInfo,
+            data.createdBy
+          )
+        );
       } catch (err) {
         console.log(err);
       }
     };
     setId();
-  }, [gigId, networkId]);
+  }, [data]);
 
   const [extraSelection, setExtraSelection] = useState<Set<number>>(new Set());
   const wallet = useSelectedWallet();

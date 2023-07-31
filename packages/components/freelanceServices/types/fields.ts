@@ -66,7 +66,7 @@ export enum PriceContentType {
 }
 
 export interface GigInfo {
-  id?: number;
+  id?: string;
   address: string;
   //
   profileHash: string;
@@ -500,7 +500,7 @@ export interface SellerUser {
 }
 
 export interface GigData {
-  id: number;
+  id: string;
   sellerAddress: string;
   sellerUser: SellerUser;
   title: string;

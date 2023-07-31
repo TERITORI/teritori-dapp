@@ -24,6 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 type FreelanceServiceClient interface {
 	SellerProfile(ctx context.Context, in *SellerProfileRequest, opts ...grpc.CallOption) (*SellerProfileResponse, error)
 	GigList(ctx context.Context, in *GigListRequest, opts ...grpc.CallOption) (*GigListResponse, error)
+	GigCount(ctx context.Context, in *GigCountRequest, opts ...grpc.CallOption) (*GigCountResponse, error)
 	GigListUser(ctx context.Context, in *GigListUserRequest, opts ...grpc.CallOption) (*GigListUserResponse, error)
 	GigData(ctx context.Context, in *GigDataRequest, opts ...grpc.CallOption) (*GigDataResponse, error)
 	EscrowAllList(ctx context.Context, in *EscrowAllListRequest, opts ...grpc.CallOption) (*EscrowAllListResponse, error)
@@ -51,6 +52,15 @@ func (c *freelanceServiceClient) SellerProfile(ctx context.Context, in *SellerPr
 func (c *freelanceServiceClient) GigList(ctx context.Context, in *GigListRequest, opts ...grpc.CallOption) (*GigListResponse, error) {
 	out := new(GigListResponse)
 	err := c.cc.Invoke(ctx, "/freelance.v1.FreelanceService/GigList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *freelanceServiceClient) GigCount(ctx context.Context, in *GigCountRequest, opts ...grpc.CallOption) (*GigCountResponse, error) {
+	out := new(GigCountResponse)
+	err := c.cc.Invoke(ctx, "/freelance.v1.FreelanceService/GigCount", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -108,6 +118,7 @@ func (c *freelanceServiceClient) EscrowReceiverList(ctx context.Context, in *Esc
 type FreelanceServiceServer interface {
 	SellerProfile(context.Context, *SellerProfileRequest) (*SellerProfileResponse, error)
 	GigList(context.Context, *GigListRequest) (*GigListResponse, error)
+	GigCount(context.Context, *GigCountRequest) (*GigCountResponse, error)
 	GigListUser(context.Context, *GigListUserRequest) (*GigListUserResponse, error)
 	GigData(context.Context, *GigDataRequest) (*GigDataResponse, error)
 	EscrowAllList(context.Context, *EscrowAllListRequest) (*EscrowAllListResponse, error)
@@ -125,6 +136,9 @@ func (UnimplementedFreelanceServiceServer) SellerProfile(context.Context, *Selle
 }
 func (UnimplementedFreelanceServiceServer) GigList(context.Context, *GigListRequest) (*GigListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GigList not implemented")
+}
+func (UnimplementedFreelanceServiceServer) GigCount(context.Context, *GigCountRequest) (*GigCountResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GigCount not implemented")
 }
 func (UnimplementedFreelanceServiceServer) GigListUser(context.Context, *GigListUserRequest) (*GigListUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GigListUser not implemented")
@@ -186,6 +200,24 @@ func _FreelanceService_GigList_Handler(srv interface{}, ctx context.Context, dec
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(FreelanceServiceServer).GigList(ctx, req.(*GigListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FreelanceService_GigCount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GigCountRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FreelanceServiceServer).GigCount(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/freelance.v1.FreelanceService/GigCount",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FreelanceServiceServer).GigCount(ctx, req.(*GigCountRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -294,6 +326,10 @@ var FreelanceService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GigList",
 			Handler:    _FreelanceService_GigList_Handler,
+		},
+		{
+			MethodName: "GigCount",
+			Handler:    _FreelanceService_GigCount_Handler,
 		},
 		{
 			MethodName: "GigListUser",

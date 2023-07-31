@@ -2,27 +2,22 @@ import React, { useState, useEffect } from "react";
 import { TouchableOpacity, View } from "react-native";
 
 import chevronLeftDouble from "../../../../assets/icons/chevron-left-double.svg";
-import chevronLeft from "../../../../assets/icons/chevron-left.svg";
+// import chevronLeft from "../../../../assets/icons/chevron-left.svg";
 import chevronRightDouble from "../../../../assets/icons/chevron-right-double.svg";
-import chevronRight from "../../../../assets/icons/chevron-right.svg";
+// import chevronRight from "../../../../assets/icons/chevron-right.svg";
 import chevronUp from "../../../../assets/icons/chevron-up.svg";
 import chevronDown from "../../../../assets/icons/freelance-service/chevron-down.svg";
-import { useWallets } from "../../../context/WalletsProvider";
-import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
+import { useFetchGigs } from "../../../hooks/freelance/useFetchGigs";
+import { usePagination } from "../../../hooks/freelance/usePagination";
 import { getGigData } from "../../../screens/FreelanceServices/query/data";
-import { mustGetFreelanceClient } from "../../../utils/backend";
 import { useAppNavigation } from "../../../utils/navigation";
 import {
-  neutral17,
+  // neutral17,
   neutral22,
   neutral77,
   primaryColor,
 } from "../../../utils/style/colors";
-import {
-  fontBold16,
-  fontMedium14,
-  fontSemibold20,
-} from "../../../utils/style/fonts";
+import { fontBold16, fontMedium14 } from "../../../utils/style/fonts";
 import { layout, leftMarginMainContent } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
@@ -32,78 +27,94 @@ import { ServiceCard } from "../Cards/ServiceCard";
 import { GigData } from "../types/fields";
 
 // const data = getServiceListing();
-const logoDesignTags = [
-  "retro",
-  "styleguides",
-  "minimalism",
-  "logoanimation",
-  "signature",
-  "3dlogo",
-  "vintage",
-  "modern",
-  "handdrawn",
-  "vector",
-  "studio",
-  "futuristic",
-  "crypto",
-  "space",
-  "abstract",
-  "chrome",
-  "glass",
-  "fintech",
-  "insurance",
-  "geometric",
-];
+// const logoDesignTags = [
+//   "retro",
+//   "styleguides",
+//   "minimalism",
+//   "logoanimation",
+//   "signature",
+//   "3dlogo",
+//   "vintage",
+//   "modern",
+//   "handdrawn",
+//   "vector",
+//   "studio",
+//   "futuristic",
+//   "crypto",
+//   "space",
+//   "abstract",
+//   "chrome",
+//   "glass",
+//   "fintech",
+//   "insurance",
+//   "geometric",
+// ];
 
 type ListGigsProps = {
   category: string;
   subcategory: string;
-}
-export const ListGigs: React.FC<ListGigsProps> = ({category, subcategory}) => {
-  const [changePage, setChangePage] = useState("1");
+};
+export const ListGigs: React.FC<ListGigsProps> = ({
+  category,
+  subcategory,
+}) => {
+  const [currentPage, setCurrentPage] = useState(1);
+
   const [chooseItemsPerPage, setChooseItemsPerPage] = useState(false);
   const [numbersOfItemsPerPage] = useState(10);
-  const [pageLimitMin, setPageLimitMin] = useState(0);
-  const [pageLimitMax, setPageLimitMax] = useState(numbersOfItemsPerPage);
   const navigation = useAppNavigation();
-  const { wallets } = useWallets();
   const [gigDataList, setGigDataList] = useState<GigData[]>([]);
-  const networkId = useSelectedNetworkId();
+  const [pageNum, setPageNum] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+
+  const { data: gigs } = useFetchGigs({
+    category,
+    subcategory,
+    limit: 10,
+    offset: 10 * pageNum,
+  });
+  const paginationRange = usePagination({
+    currentPage,
+    totalCount,
+    siblingCount: 1,
+    pageSize: numbersOfItemsPerPage,
+  });
+
+  const onNext = () => {
+    setCurrentPage(currentPage + 1);
+  };
+  const onPrevious = () => {
+    setCurrentPage(currentPage - 1);
+  };
+  const lastPage = paginationRange
+    ? paginationRange[paginationRange.length - 1]
+    : 1;
+
   useEffect(() => {
+    const newGigDataList: GigData[] = [];
     const getGigDataList = async () => {
-      const freelanceClient = mustGetFreelanceClient(networkId);
-      const res = await freelanceClient.GigList({ limit: 2, offset: 0 });
-      const newGigDataList: GigData[] = [];
-      res.gigs.map(async (gigInfo, index) => {
+      if (!gigs) return;
+      setTotalCount(gigs.totalCount);
+      gigs.list.map(async (gigInfo) => {
         newGigDataList.push(
           await getGigData(
-            gigInfo.id,
-            JSON.parse(gigInfo.gigData),
-            gigInfo.address
+            gigInfo.identifier,
+            JSON.parse(gigInfo.metadata),
+            gigInfo.createdBy
           )
         );
       });
       setGigDataList(newGigDataList);
     };
     getGigDataList();
-  }, [wallets, networkId]);
-  function reducePageLimits() {
-    setPageLimitMin(pageLimitMin - numbersOfItemsPerPage);
-    setPageLimitMax(pageLimitMax - numbersOfItemsPerPage);
-  }
+  }, [gigs]);
 
-  function addPageLimits() {
-    setPageLimitMin(pageLimitMin + numbersOfItemsPerPage);
-    setPageLimitMax(pageLimitMax + numbersOfItemsPerPage);
-  }
-
-  function checkIfLowerLimitIsReached() {
-    return pageLimitMin === 0;
-  }
-
-  function checkIfMaxLimitIsReached() {
-    return pageLimitMax >= gigDataList.length;
-  }
+  const handleChangePageNum = (pageNum: string) => {
+    const nPageNum = parseInt(pageNum, 10);
+    if (isNaN(nPageNum) || nPageNum === 0) {
+      setPageNum(1);
+    }
+  };
 
   return (
     <>
@@ -154,20 +165,21 @@ export const ListGigs: React.FC<ListGigsProps> = ({category, subcategory}) => {
           <BrandText
             style={[{ color: neutral77, marginRight: 4 }, fontMedium14]}
           >
-            Page 1 of 2 | Go to page:
+            Page 1 of {Math.floor(totalCount / numbersOfItemsPerPage) + 1} | Go
+            to page:
           </BrandText>
           <TextInputCustom
             label=""
             name="minInput"
-            value={changePage}
-            onChangeText={setChangePage}
+            value={pageNum.toString()}
+            onChangeText={handleChangePageNum}
             width={60}
             height={30}
           />
         </View>
 
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             disabled={checkIfLowerLimitIsReached()}
             onPress={() => {
               if (pageLimitMax !== 0) {
@@ -178,34 +190,66 @@ export const ListGigs: React.FC<ListGigsProps> = ({category, subcategory}) => {
             <TertiaryBox width={56} height={40}>
               <SVG source={chevronLeft} width={16} height={16} />
             </TertiaryBox>
-          </TouchableOpacity>
-          <TouchableOpacity>
+          </TouchableOpacity> */}
+          {/* <TouchableOpacity>
             <TertiaryBox style={{ marginLeft: 12 }} width={56} height={40}>
               <SVG source={chevronLeftDouble} width={16} height={16} />
             </TertiaryBox>
-          </TouchableOpacity>
-          <TertiaryBox
-            style={{ marginRight: 4, marginLeft: 12 }}
-            mainContainerStyle={{ backgroundColor: primaryColor }}
-            width={56}
-            height={40}
-          >
-            <BrandText style={fontBold16}>1</BrandText>
-          </TertiaryBox>
-          <TertiaryBox
-            style={{ marginRight: 12 }}
-            mainContainerStyle={{ backgroundColor: neutral22 }}
-            width={56}
-            height={40}
-          >
-            <BrandText style={fontBold16}>2</BrandText>
-          </TertiaryBox>
-          <TouchableOpacity>
+          </TouchableOpacity> */}
+          {currentPage !== 1 && (
+            <TouchableOpacity onPress={onPrevious}>
+              <TertiaryBox style={{ marginLeft: 12 }} width={56} height={40}>
+                <SVG source={chevronLeftDouble} width={16} height={16} />
+              </TertiaryBox>
+            </TouchableOpacity>
+          )}
+          {paginationRange &&
+            paginationRange.map((page) => {
+              return (
+                <>
+                  {page === "..." && (
+                    <TertiaryBox
+                      style={{ marginRight: 4, marginLeft: 12 }}
+                      mainContainerStyle={{ backgroundColor: primaryColor }}
+                      width={56}
+                      height={40}
+                    >
+                      <BrandText style={fontBold16}>...</BrandText>
+                    </TertiaryBox>
+                  )}
+                  {page !== "..." && (
+                    <TertiaryBox
+                      style={{ marginRight: 4, marginLeft: 12 }}
+                      mainContainerStyle={{ backgroundColor: primaryColor }}
+                      width={56}
+                      height={40}
+                    >
+                      <TouchableOpacity
+                        onPress={() => {
+                          setCurrentPage(page as number);
+                        }}
+                      >
+                        <BrandText style={fontBold16}>{page}</BrandText>
+                      </TouchableOpacity>
+                    </TertiaryBox>
+                  )}
+                </>
+              );
+            })}
+          {currentPage !== lastPage && (
+            <TouchableOpacity onPress={onNext}>
+              <TertiaryBox style={{ marginLeft: 12 }} width={56} height={40}>
+                <SVG source={chevronRightDouble} width={16} height={16} />
+              </TertiaryBox>
+            </TouchableOpacity>
+          )}
+
+          {/* <TouchableOpacity>
             <TertiaryBox style={{ marginRight: 8 }} width={56} height={40}>
               <SVG source={chevronRightDouble} width={16} height={16} />
             </TertiaryBox>
-          </TouchableOpacity>
-          <TouchableOpacity
+          </TouchableOpacity> */}
+          {/* <TouchableOpacity
             disabled={checkIfMaxLimitIsReached()}
             onPress={() => {
               if (pageLimitMax < gigDataList.length) {
@@ -216,7 +260,7 @@ export const ListGigs: React.FC<ListGigsProps> = ({category, subcategory}) => {
             <TertiaryBox width={56} height={40}>
               <SVG source={chevronRight} width={16} height={16} />
             </TertiaryBox>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
 
         <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -254,7 +298,7 @@ export const ListGigs: React.FC<ListGigsProps> = ({category, subcategory}) => {
           </TertiaryBox>
         </View>
       </View>
-      <BrandText
+      {/* <BrandText
         style={[fontSemibold20, { alignSelf: "center", marginTop: 50 }]}
       >
         Explore More Logo Design Tags
@@ -267,8 +311,8 @@ export const ListGigs: React.FC<ListGigsProps> = ({category, subcategory}) => {
           justifyContent: "center",
           marginTop: 20,
         }}
-      >
-        {logoDesignTags.map((item, index) => (
+      > */}
+      {/* {logoDesignTags.map((item, index) => (
           <TertiaryBox
             key={index}
             noBrokenCorners
@@ -290,8 +334,8 @@ export const ListGigs: React.FC<ListGigsProps> = ({category, subcategory}) => {
               {item}
             </BrandText>
           </TertiaryBox>
-        ))}
-      </View>
+        ))} */}
+      {/* </View> */}
     </>
   );
 };

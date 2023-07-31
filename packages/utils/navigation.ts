@@ -21,13 +21,13 @@ export type RootStackParamList = {
   FreelanceServicesCategory: { category: string };
   FreelanceServicesSubCategory: { category: string; subcategory: string };
   FreelanceServicesHomeSeller: undefined;
-  FreelanceServicesGigDetail: { gigId: number };
+  FreelanceServicesGigDetail: { gigId: string };
 
   FreelanceServicesProfileSeller: undefined;
-  FreelanceServicesGigCreation: { gigId?: number } | undefined;
+  FreelanceServicesGigCreation: { gigId?: string } | undefined;
   FreelanceServicesSellerDetails: { address: string };
   FreelanceServicesOrder: {
-    gigId: number;
+    gigId: string;
     serviceLevelIndex: number;
     modal?: string;
     name?: string;

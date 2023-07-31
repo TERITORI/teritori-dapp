@@ -37,12 +37,18 @@ func (s *FreelanceService) SellerProfile(ctx context.Context, req *freelancepb.S
 	}
 
 	return &freelancepb.SellerProfileResponse{
-		SellerAddress: sellerProfile.SellerAddress,
-		Ipfs:          sellerProfile.Ipfs,
+		SellerAddress: string(sellerProfile.Seller),
+		Ipfs:          sellerProfile.MetadataIpfs,
 		IsActive:      sellerProfile.IsActive,
 	}, nil
 }
-
+func (s *FreelanceService) GigCount(ctx context.Context, req *freelancepb.GigCountRequest) (*freelancepb.GigCountResponse, error) {
+	var count int64
+	s.conf.IndexerDB.Model(&indexerdb.FreelanceGig{}).
+		Where("category = ? and subcategory = ?", req.Category, req.Subcategory).
+		Count(&count)
+	return &freelancepb.GigCountResponse{Count: int32(count)}, nil
+}
 func (s *FreelanceService) GigList(ctx context.Context, req *freelancepb.GigListRequest) (*freelancepb.GigListResponse, error) {
 	limit := req.GetLimit()
 	if limit <= 0 {
@@ -54,7 +60,9 @@ func (s *FreelanceService) GigList(ctx context.Context, req *freelancepb.GigList
 	}
 	var gigs []*freelancepb.GigInfo
 	//var gig_infos []indexerdb.Gig
-	s.conf.IndexerDB.Model(&indexerdb.FreelanceGig{}).Limit(int(limit)).Offset(int(offset)).Scan(&gigs)
+	s.conf.IndexerDB.Model(&indexerdb.FreelanceGig{}).
+		Where("category = ? and subcategory = ?", req.Category, req.Subcategory).
+		Limit(int(limit)).Offset(int(offset)).Scan(&gigs)
 	return &freelancepb.GigListResponse{Gigs: gigs}, nil
 }
 
@@ -66,19 +74,17 @@ func (s *FreelanceService) GigListUser(ctx context.Context, req *freelancepb.Gig
 }
 
 func (s *FreelanceService) GigData(ctx context.Context, req *freelancepb.GigDataRequest) (*freelancepb.GigDataResponse, error) {
-	id := req.GetId()
-	if id < 0 {
-		return nil, errors.New("offset must be greater or equal to 0")
-	}
+	identifier := req.GetIdentifier()
 	var gig indexerdb.FreelanceGig
-	if result := s.conf.IndexerDB.First(&gig, id); result.Error != nil {
+	if result := s.conf.IndexerDB.First(&gig, identifier); result.Error != nil {
 		return nil, errors.New("failed to fetch gig")
 	}
 
 	return &freelancepb.GigDataResponse{Gig: &freelancepb.GigInfo{
-		Id:      int32(gig.Id),
-		Address: gig.Address,
-		GigData: gig.GigData,
+		Identifier: gig.Identifier,
+		Metadata:   gig.MetaData,
+		CreatedBy:  string(gig.CreatedBy),
+		CreatedAt:  gig.CreatedAt,
 	}}, nil
 }
 

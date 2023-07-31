@@ -5,12 +5,21 @@ option go_package = "./freelancepb";
 service FreelanceService {
   rpc SellerProfile(SellerProfileRequest) returns (SellerProfileResponse);
   rpc GigList(GigListRequest) returns (GigListResponse);
+  rpc GigCount(GigCountRequest) returns (GigCountResponse);
   rpc GigListUser(GigListUserRequest) returns (GigListUserResponse);
   rpc GigData(GigDataRequest) returns (GigDataResponse);
 
   rpc EscrowAllList(EscrowAllListRequest) returns (EscrowAllListResponse);
   rpc EscrowSenderList(EscrowSenderListRequest) returns (EscrowSenderListResponse);
   rpc EscrowReceiverList(EscrowReceiverListRequest) returns (EscrowReceiverListResponse);
+}
+
+message GigCountRequest {
+  string category = 1;
+  string subcategory = 2;
+}
+message GigCountResponse {
+  int32 count = 1;
 }
 
 message SellerProfileRequest {
@@ -64,9 +73,9 @@ message EscrowReceiverListResponse{
 }
 
 message GigInfo {
-  int32 id = 1;
-  string address = 2;
-  string gig_data = 3;
+  string identifier = 1;
+  string created_by = 2;
+  string metadata = 3;
   int64 created_at = 4;
 }
 message GigListResponse {
@@ -76,7 +85,7 @@ message GigListUserResponse {
   repeated GigInfo gigs = 1;
 }
 message GigDataRequest {
-  int32 id = 1;
+  string identifier = 1;
 }
 message GigDataResponse{
   GigInfo gig = 1;

@@ -1,11 +1,13 @@
 package indexerdb
 
-import "time"
+import (
+	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
+)
 
 type FreelanceSellerProfile struct {
-	SellerId      uint64 `gorm:"primaryKey;autoIncrement"`
-	SellerAddress string
-	Ipfs          string
-	Time          time.Time
-	IsActive      bool
+	Seller       networks.UserID `gorm:"primaryKey"`
+	MetadataIpfs string
+	UpdatedAt    int64
+	IsDeleted    bool
+	IsActive     bool
 }

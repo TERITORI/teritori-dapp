@@ -8,11 +8,11 @@ import (
 	"github.com/pkg/errors"
 )
 
+type ExecUpdateSellerProfileMsg struct {
+	UpdateSellerProfile UpdateSellerProfileMsg `json:"update_seller_profile"`
+}
 type UpdateSellerProfileMsg struct {
-	UpdateSellerProfile struct {
-		Seller   string `json:"seller"`
-		IpfsHash string `json:"ipfs_hash"`
-	} `json:"update_seller_profile"`
+	Ipfs string `json:"ipfs"`
 }
 
 func (h *Handler) handleExecuteUpdateSellerProfile(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
@@ -20,33 +20,35 @@ func (h *Handler) handleExecuteUpdateSellerProfile(e *Message, execMsg *wasmtype
 	if contractAddress != h.config.Network.FreelanceSellerContractAddress {
 		return nil
 	}
-	var msg UpdateSellerProfileMsg
-	if err := json.Unmarshal(execMsg.Msg, &msg); err != nil {
+	var execUpdateSellerProfileMsg ExecUpdateSellerProfileMsg
+	if err := json.Unmarshal(execMsg.Msg, &execUpdateSellerProfileMsg); err != nil {
 		return errors.Wrap(err, "failed to unmarshal update_seller_profile msg")
 	}
+	updateProfile := execUpdateSellerProfileMsg.UpdateSellerProfile
 	// get block time
 	blockTime, err := e.GetBlockTime()
 	if err != nil {
 		return errors.Wrap(err, "failed to get block time")
 	}
+	seller := h.config.Network.UserID(execMsg.Sender)
 	var sellerProfile indexerdb.FreelanceSellerProfile
 	result := h.db.
 		Model(&indexerdb.FreelanceSellerProfile{}).
-		Where("seller_address = ?", msg.UpdateSellerProfile.Seller).
+		Where("seller = ?", seller).
 		First(&sellerProfile)
 	if result.Error == nil {
 		if err := h.db.Create(&indexerdb.FreelanceSellerProfile{
-			SellerAddress: msg.UpdateSellerProfile.Seller,
-			Ipfs:          msg.UpdateSellerProfile.IpfsHash,
-			Time:          blockTime,
-			IsActive:      true,
+			Seller:       seller,
+			MetadataIpfs: updateProfile.Ipfs,
+			UpdatedAt:    blockTime.Unix(),
+			IsActive:     true,
 		}).Error; err != nil {
 			return errors.Wrap(err, "failed to create seller_profile")
 		}
 		h.logger.Info("created seller profile")
 	} else {
-		sellerProfile.Ipfs = msg.UpdateSellerProfile.IpfsHash
-		sellerProfile.Time = blockTime
+		sellerProfile.MetadataIpfs = updateProfile.Ipfs
+		sellerProfile.UpdatedAt = blockTime.Unix()
 		if err := h.db.Save(sellerProfile).Error; err != nil {
 			return errors.Wrap(err, "failed to update seller_profile")
 		}

@@ -1,5 +1,7 @@
+import { coin } from "@cosmjs/amino";
 import React, { useState, useEffect } from "react";
 import { View } from "react-native";
+import { v4 as uuidv4 } from "uuid";
 
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { GigCreationBody } from "../../components/freelanceServices/GigCreation/GigCreationBody";
@@ -21,6 +23,7 @@ import {
   getKeplrSigningCosmWasmClient,
 } from "../../networks";
 import { mustGetFreelanceClient } from "../../utils/backend";
+import { defaultGigFee } from "../../utils/fee";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { GigStep } from "../../utils/types/freelance";
 
@@ -33,13 +36,16 @@ export const FreelanceServicesGigCreationScreen: ScreenFC<
   const navigation = useAppNavigation();
   const selectedWallet = useSelectedWallet();
   const networkId = useSelectedNetworkId();
+
   useEffect(() => {
     const getGigData = async () => {
-      if (route.params && route.params.gigId! >= 0) {
+      if (route.params && route.params.gigId! !== "") {
         const freelanceClient = mustGetFreelanceClient(networkId);
-        const res = await freelanceClient.GigData({ id: route.params.gigId });
+        const res = await freelanceClient.GigData({
+          identifier: route.params.gigId,
+        });
         if (res.gig) {
-          const _gigInfo = JSON.parse(res.gig.gigData) as GigInfo;
+          const _gigInfo = JSON.parse(res.gig.metadata) as GigInfo;
           _gigInfo.id = route.params.gigId;
           setGigInfo(_gigInfo);
         }
@@ -74,15 +80,25 @@ export const FreelanceServicesGigCreationScreen: ScreenFC<
         walletAddress,
         network.freelanceSellerAddress!
       );
-
-      const addGigRes = await sellerClient.addGig({
-        seller: walletAddress,
-        gigInfo: JSON.stringify(gigInfo),
-      });
-      if (addGigRes) {
+      const identifier = uuidv4();
+      const category = "";
+      const subcategory = "";
+      const gigFee = 100;
+      const createGigRes = await sellerClient.createGig(
+        {
+          identifier,
+          category,
+          subcategory,
+          gigInfo: JSON.stringify(gigInfo),
+        },
+        defaultGigFee,
+        "",
+        [coin(gigFee, "utori")]
+      );
+      if (createGigRes) {
         navigation.navigate("FreelanceServicesHomeSeller");
       } else {
-        console.log("failed to add gig into contract");
+        console.log("failed to create gig into contract");
       }
 
       // uploadJSONToIPFS(gigInfo).then(async (ipfsHash) => {
