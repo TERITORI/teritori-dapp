@@ -5,30 +5,30 @@ import Animated, {
   useSharedValue,
 } from "react-native-reanimated";
 
-import Logo from "../../../assets/logos/logo.svg";
 import Upload from "../../../assets/icons/upload.svg";
+import Logo from "../../../assets/logos/logo.svg";
 import { GetVideoListRequest } from "../../api/video/v1/video";
 import { BrandText } from "../../components/BrandText";
-import { VideoPlayerCard } from "../../components/VideoPlayer/VideoPlayerCard";
-import { UploadAlbumModal } from "../../components/MusicPlayer/UploadAlbumModal";
 import { SVG } from "../../components/SVG";
-import { useFetchVideoList } from "../../hooks/musicplayer/useFetchAlbum";
-// import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-// import { mustGetMusicplayerClient } from "../../utils/backend";
-// import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { UploadVideoModal } from "../../components/videoPlayer/UploadVideoModal";
+import { VideoPlayerCard } from "../../components/videoPlayer/VideoPlayerCard";
+import {
+  combineFetchVideoPages,
+  useFetchVideos,
+} from "../../hooks/video/useFetchVideos";
 import { primaryColor } from "../../utils/style/colors";
 import { fontSemibold14, fontSemibold20 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { useFetchVideos } from "../../hooks/video/useFetchVideos";
-// import { AlbumInfo, AlbumMetadataInfo } from "../../utils/types/music";
-interface MusicPlayerProps {
-  req: GetAllAlbumListRequest;
-  idList: string[];
+import { VideoInfoWithMeta } from "../../utils/types/video";
+
+interface VideoPlayerProps {
+  req: GetVideoListRequest;
+  videoListForLibrary: VideoInfoWithMeta[];
 }
 
-export const VideoPlayerHomeContent: React.FC<MusicPlayerProps> = ({
+export const VideoPlayerHomeContent: React.FC<VideoPlayerProps> = ({
   req,
-  idList,
+  videoListForLibrary,
 }) => {
   const [openUploadModal, setOpenUploadModal] = useState<boolean>(false);
   const { data, isFetching, hasNextPage, fetchNextPage, isLoading } =
@@ -37,6 +37,11 @@ export const VideoPlayerHomeContent: React.FC<MusicPlayerProps> = ({
   const isLoadingValue = useSharedValue(false);
   const isGoingUp = useSharedValue(false);
   const [flatListContentOffsetY, setFlatListContentOffsetY] = useState(0);
+
+  const videos = useMemo(
+    () => (data ? combineFetchVideoPages(data.pages) : []),
+    [data]
+  );
 
   const scrollHandler = useAnimatedScrollHandler({
     onScroll: (event) => {
@@ -136,32 +141,16 @@ export const VideoPlayerHomeContent: React.FC<MusicPlayerProps> = ({
       <View style={styles.contentGroup}>
         <Animated.FlatList
           scrollEventThrottle={0.1}
-          data={
-            // albums
-            [
-              {
-                id: "string",
-                name: "string",
-                description: "string",
-                image: "string",
-                createdBy: "string",
-                audios: [
-                  {
-                    name: "string",
-                    ipfs: "string",
-                    duration: 1,
-                  },
-                ],
-              },
-            ]
-          }
+          data={videos}
           numColumns={4}
-          renderItem={({ item: albumInfo }) => (
+          renderItem={({ item: videoInfo }) => (
             <View style={styles.albumGrid}>
               <VideoPlayerCard
-                item={albumInfo}
+                item={videoInfo}
                 hasLibrary={
-                  idList.findIndex((item) => item === albumInfo.id) !== -1
+                  videoListForLibrary.findIndex(
+                    (item) => item.identifier === videoInfo.identifier
+                  ) !== -1
                 }
               />
             </View>
@@ -171,7 +160,7 @@ export const VideoPlayerHomeContent: React.FC<MusicPlayerProps> = ({
           onEndReached={onEndReached}
         />
       </View>
-      <UploadAlbumModal
+      <UploadVideoModal
         isVisible={openUploadModal}
         onClose={() => setOpenUploadModal(false)}
       />

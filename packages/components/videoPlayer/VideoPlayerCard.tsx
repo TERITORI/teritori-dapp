@@ -5,7 +5,7 @@ import { Pressable } from "react-native-hoverable";
 import { TrackImageHover } from "./TrackImageHover";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { parseUserId } from "../../networks";
-import { ipfsPinataUrl } from "../../utils/ipfs";
+import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { neutral77, primaryColor } from "../../utils/style/colors";
 import { fontSemibold14, fontMedium14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
@@ -73,18 +73,20 @@ export const VideoPlayerCard: React.FC<{
         onMouseLeave={() => setSelectedIndex("")}
       >
         <video
-          src={ipfsPinataUrl(item.videoMetaInfo.url)}
+          src={ipfsURLToHTTPURL(item.videoMetaInfo.url)}
           style={{ backgroundColor: "gray", borderRadius: 10 }}
         />
         {selectedIndex === item.identifier && (
           <TrackImageHover
-            album={item}
+            videoInfo={item}
             hasLibrary={hasLibrary}
             userName={username}
           />
         )}
       </View>
-      <BrandText style={styles.contentTitle}>{item.videoMetaInfo.title}</BrandText>
+      <BrandText style={styles.contentTitle}>
+        {item.videoMetaInfo.title}
+      </BrandText>
       <View
         style={{
           display: "flex",

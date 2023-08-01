@@ -24,8 +24,8 @@ import Share from "../../../assets/icons/player/share.svg";
 import TipIcon from "../../../assets/icons/tip.svg";
 import { VideoPlayerTab } from "../../components/videoPlayer/VideoPlayerTab";
 import { TipModal } from "../../components/socialFeed/SocialActions/TipModal";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { useMusicplayer } from "../../context/MusicplayerProvider";
+import { VideoPlayer } from "../../components/videoPlayer/VideoPlayer";
+import { VideoPlayerTab } from "../../components/videoPlayer/VideoPlayerTab";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useFetchVideo } from "../../hooks/video/useFetchVideo";
 import {getUserId, parseUserId} from "../../networks";
@@ -44,6 +44,7 @@ import {
   fontSemibold13,
   fontSemibold20, fontMedium16,
   fontSemibold20,
+  // fontSemibold12,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { lastViewDate } from "../../utils/videoPlayer";
@@ -103,10 +104,12 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
       fontSize: 13,
       gap: "0.6em",
     },
-    blueContents: {
-      color: "#16BBFF",
-      display: "contents",
-    },
+    blueContents: StyleSheet.flatten([
+      fontSemibold13,
+      {
+        color: "#16BBFF",
+      },
+    ]),
     flexRowItemCenter: {
       display: "flex",
       flexDirection: "row",
@@ -148,7 +151,6 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
       paddingVertical: layout.padding_x1,
       backgroundColor: "transparent",
       borderRadius: layout.padding_x4,
-
       gap: layout.padding_x1_5,
       border: "1px solid #2B2B33",
     },
@@ -161,7 +163,6 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
       paddingVertical: layout.padding_x1,
       backgroundColor: "#2B2B33",
       borderRadius: layout.padding_x4,
-
       gap: layout.padding_x1_5,
     },
     pageConatiner: {
@@ -407,9 +408,9 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
       fullWidth
     >
       <View style={styles.pageConatiner}>
-        <MusicPlayerTab
+        <VideoPlayerTab
           setTab={() => {
-            navigation.navigate("MusicPlayer");
+            navigation.navigate("VideoPlayer");
           }}
         />
 
@@ -452,6 +453,7 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
                 <BrandText style={styles.contentDate}>
                   {lastViewDate(data?.viewLastTimestamp)}
                 </BrandText>
+                <BrandText style={styles.contentDate}>12 days ago</BrandText>
               </View>
               <View style={styles.btnGroup}>
                 <Pressable style={styles.buttonContainer}>
@@ -476,6 +478,7 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
                 </Pressable>
               </View>
             </View>
+            <View style={styles.blueContents} />
             <BrandText style={styles.contentName}>
               {data?.videoMetaInfo.description}
             </BrandText>
