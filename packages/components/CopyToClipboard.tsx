@@ -1,4 +1,4 @@
-import * as Clipboard from "expo-clipboard";
+import Clipboard from "@react-native-clipboard/clipboard";
 import React from "react";
 import { TouchableOpacity, ViewStyle } from "react-native";
 
@@ -13,11 +13,11 @@ export const useCopyToClipboard = () => {
   const { setToastSuccess } = useFeedbacks();
 
   const copyToClipboard = (text: string, successText?: string) => {
+    Clipboard.setString(text);
     setToastSuccess({
       title: successText || "Copied",
       message: "",
     });
-    Clipboard.setStringAsync(text);
   };
 
   return { copyToClipboard };

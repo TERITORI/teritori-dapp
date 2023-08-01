@@ -1,4 +1,4 @@
-package WeshFramework
+package main
 
 import (
 	"context"

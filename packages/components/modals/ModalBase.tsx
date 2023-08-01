@@ -47,6 +47,14 @@ type ModalBaseProps = {
   closeOnBlur?: boolean;
 };
 
+const ScrollableComponent = ({ scrollable, ...props }) => {
+  if (scrollable) {
+    return <ScrollView {...props} />;
+  } else {
+    return <View {...props} />;
+  }
+};
+
 // The base components for modals. You can provide children (Modal's content) and childrenBottom (Optional Modal's bottom content)
 const ModalBase: React.FC<ModalBaseProps> = ({
   label,
@@ -85,7 +93,6 @@ const ModalBase: React.FC<ModalBaseProps> = ({
   return (
     <Modal
       style={{
-        flex: 1,
         alignItems: "center",
         justifyContent: "center",
       }}
@@ -95,8 +102,8 @@ const ModalBase: React.FC<ModalBaseProps> = ({
       onRequestClose={onClose}
     >
       {/*------ Modal background */}
-      <ScrollView
-        scrollEnabled={scrollable}
+      <ScrollableComponent
+        scrollable={scrollable}
         style={[
           {
             height: "100%",
@@ -107,11 +114,17 @@ const ModalBase: React.FC<ModalBaseProps> = ({
             maxHeight: windowHeight,
           },
           containerStyle,
+          !scrollable && {
+            alignItems: "center",
+            justifyContent: "center",
+          },
         ]}
         contentContainerStyle={[
           {
             alignItems: "center",
             justifyContent: "center",
+            flex: 1,
+            height: windowHeight,
           },
           !scrollable && {
             height: "100%",
@@ -242,7 +255,7 @@ const ModalBase: React.FC<ModalBaseProps> = ({
           {/*------- Modal bottom content */}
           {childrenBottom}
         </TertiaryBox>
-      </ScrollView>
+      </ScrollableComponent>
     </Modal>
   );
 };

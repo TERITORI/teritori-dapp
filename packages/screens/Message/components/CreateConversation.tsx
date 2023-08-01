@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { KeyboardAvoidingView, Platform, View } from "react-native";
+import { Platform, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scrollview";
 import QRCode from "react-native-qrcode-svg";
 import { useDispatch, useSelector } from "react-redux";
@@ -81,11 +81,8 @@ export const CreateConversation = ({ onClose }: CreateConversationProps) => {
       onClose={onClose}
       visible
       width={580}
-      scrollable
     >
-      <KeyboardAwareScrollView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-      >
+      <KeyboardAwareScrollView>
         <View
           style={{
             alignItems: "center",
@@ -94,13 +91,14 @@ export const CreateConversation = ({ onClose }: CreateConversationProps) => {
           <SpacerColumn size={2} />
           {!!contactInfo.shareLink && (
             <QRCode
-              size={200}
+              size={Platform.OS === "web" ? 200 : 180}
               value={contactInfo.shareLink}
               logo={logoHexagonPNG}
               logoSize={40}
             />
           )}
         </View>
+
         <SpacerColumn size={2} />
         <BrandText
           style={[fontSemibold16, { marginBottom: layout.padding_x1 }]}

@@ -1,3 +1,6 @@
+import isElectron from "is-electron";
+import { Platform } from "react-native";
+
 import dao from "../../../../assets/icons/dao.svg";
 import socialFeed from "../../../../assets/icons/feed.svg";
 import freelance from "../../../../assets/icons/freelanceservice.svg";
@@ -31,7 +34,6 @@ import theGraph from "../../../../assets/logos/theGraph.png";
 import toripunks from "../../../../assets/logos/toniPunks.png";
 import uniswap from "../../../../assets/logos/uniswap.png";
 import { dAppGroup } from "../types";
-
 export function getAvailableApps(): dAppGroup {
   return {
     "teritori-core-apps": {
@@ -100,6 +102,20 @@ export function getAvailableApps(): dAppGroup {
           selectedByDefault: true,
           alwaysOn: false,
         },
+        ...(isElectron() || ["android", "ios"].includes(Platform.OS)
+          ? {
+              messages: {
+                id: "messages",
+                title: "Messages",
+                description: "Messages",
+                icon: messages,
+                route: "Message",
+                groupKey: "teritori-core-apps",
+                selectedByDefault: true,
+                alwaysOn: true,
+              },
+            }
+          : {}),
         organizations: {
           id: "organizations",
           title: "Organizations",
@@ -177,16 +193,6 @@ export function getAvailableApps(): dAppGroup {
           groupKey: "top-apps",
           selectedByDefault: false,
           alwaysOn: false,
-        },
-        messages: {
-          id: "messages",
-          title: "Messages",
-          description: "Messages",
-          icon: messages,
-          route: "ComingSoon",
-          groupKey: "coming-soon",
-          selectedByDefault: true,
-          alwaysOn: true,
         },
       },
     },
