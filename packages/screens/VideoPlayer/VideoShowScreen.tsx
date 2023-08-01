@@ -546,9 +546,9 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
       fullWidth
     >
       <View style={styles.pageConatiner}>
-        <MusicPlayerTab
+        <VideoPlayerTab
           setTab={() => {
-            navigation.navigate("MusicPlayer");
+            navigation.navigate("VideoPlayer");
           }}
         />
 
@@ -623,6 +623,7 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
                 </Pressable>
               </View>
             </View>
+            <View style={styles.blueContents} />
             <BrandText style={styles.contentName}>
               {data?.videoMetaInfo.description}
             </BrandText>
