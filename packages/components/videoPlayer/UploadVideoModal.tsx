@@ -8,18 +8,18 @@ import React, {
 import { View, Pressable, StyleSheet, Image, TextInput } from "react-native";
 import { v4 as uuidv4 } from "uuid";
 
-import Add from "../../../assets/music-player/add-primary.svg";
-import DefaultAlbumImage from "../../../assets/music-player/album.png";
-import Img from "../../../assets/music-player/img.svg";
-import List from "../../../assets/music-player/list.svg";
-import Remove from "../../../assets/music-player/remove.svg";
-import Upload from "../../../assets/music-player/upload.svg";
-import { signingMusicPlayerClient } from "../../client-creators/musicplayerClient";
+import DefaultAlbumImage from "../../../assets/icons/player/album.png";
+import Img from "../../../assets/icons/player/img.svg";
+import Upload from "../../../assets/icons/player/upload.svg";
+import { pinataPinFileToIPFS } from "../../candymachine/pinata-upload";
+import { signingVideoPlayerClient } from "../../client-creators/videoplayerClient";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { getUserId } from "../../networks";
 import { defaultSocialFeedFee } from "../../utils/fee";
-import { uploadFileToIPFS, ipfsPinataUrl } from "../../utils/ipfs";
+import { ipfsURLToHTTPURL } from "../../utils/ipfs";
+import { generateIpfsKey } from "../../utils/social-feed";
 import {
   neutral17,
   neutral33,
@@ -30,24 +30,20 @@ import {
 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { UploadFileInfo, AlbumMetadataInfo } from "../../utils/types/music";
+import { LocalFileData } from "../../utils/types/feed";
+import { VideoMetaInfo } from "../../utils/types/video";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { PrimaryButton } from "../buttons/PrimaryButton";
 import ModalBase from "../modals/ModalBase";
-interface AlbumInfo {
-  name: string;
-  description: string;
-  image: string;
-}
 
-interface UploadAlbumModalProps {
+interface UploadVideoModalProps {
   onClose: () => void;
   isVisible: boolean;
 }
 const modalWidth = 564;
 
-export const UploadAlbumModal: React.FC<UploadAlbumModalProps> = ({
+export const UploadVideoModal: React.FC<UploadVideoModalProps> = ({
   onClose,
   isVisible,
 }) => {
@@ -55,46 +51,23 @@ export const UploadAlbumModal: React.FC<UploadAlbumModalProps> = ({
   const selectedNetworkId = useSelectedNetworkId();
   const wallet = useSelectedWallet();
   const [step, setStep] = useState<number>(0);
-  const [uploadFiles, setUploadFiles] = useState<UploadFileInfo[]>([]);
+  const [videoFile, setVideoFile] = useState<VideoMetaInfo | null>(null);
 
-  const [albumInfo, setAlbumInfo] = useState<AlbumInfo>({
-    name: "",
-    description: "",
-    image: "",
-  });
-  const uploadAlbum = async () => {
-    if (!albumInfo) return;
-    if (!albumInfo.name) return;
-    if (!albumInfo.description) return;
-    if (uploadFiles.length === 0) return;
-
+  const uploadVideo = async () => {
+    if (!videoFile) return;
     if (!wallet?.connected || !wallet.address) {
       return;
     }
-    const client = await signingMusicPlayerClient({
+    const client = await signingVideoPlayerClient({
       networkId: selectedNetworkId,
       walletAddress: wallet.address,
     });
-    const audios: UploadFileInfo[] = uploadFiles.map((uploadFile) => ({
-      name: uploadFile.name,
-      ipfs: uploadFile.ipfs,
-      duration: uploadFile.duration,
-    }));
-
-    const metadata: AlbumMetadataInfo = {
-      title: albumInfo.name,
-      description: albumInfo.description,
-      image: albumInfo.image,
-      audios,
-    };
-
-    // console.log(metadata);
 
     try {
-      const res = await client.createMusicAlbum(
+      const res = await client.createVideo(
         {
-          metadata: JSON.stringify(metadata),
           identifier: uuidv4(),
+          metadata: JSON.stringify(videoFile),
         },
         defaultSocialFeedFee,
         ""
@@ -102,13 +75,13 @@ export const UploadAlbumModal: React.FC<UploadAlbumModalProps> = ({
 
       if (res.transactionHash) {
         setToastSuccess({
-          title: "Uploaded album successfully",
+          title: "Uploaded video successfully",
           message: `tx_hash: ${res.transactionHash}`,
         });
       }
     } catch (err) {
       setToastError({
-        title: "Failed to upload album",
+        title: "Failed to upload video",
         message: `Error: ${err}`,
       });
     }
@@ -118,7 +91,7 @@ export const UploadAlbumModal: React.FC<UploadAlbumModalProps> = ({
 
   return (
     <ModalBase
-      label="Upload album"
+      label="Upload Video"
       visible={isVisible}
       onClose={() => {
         setStep(0);
@@ -127,15 +100,13 @@ export const UploadAlbumModal: React.FC<UploadAlbumModalProps> = ({
       width={modalWidth}
     >
       {step === 0 && (
-        <Step1Component setStep={setStep} setUploadFiles={setUploadFiles} />
+        <Step1Component setStep={setStep} setUploadVideo={setVideoFile} />
       )}
       {step === 1 && (
         <Step2Component
-          uploadFiles={uploadFiles}
-          setUploadFiles={setUploadFiles}
-          albumInfo={albumInfo}
-          setAlbumInfo={setAlbumInfo}
-          uploadAlbum={uploadAlbum}
+          videoFile={videoFile!}
+          setVideoFile={setVideoFile}
+          uploadVideo={uploadVideo}
         />
       )}
     </ModalBase>
@@ -144,8 +115,12 @@ export const UploadAlbumModal: React.FC<UploadAlbumModalProps> = ({
 
 const Step1Component: React.FC<{
   setStep: Dispatch<SetStateAction<number>>;
-  setUploadFiles: Dispatch<SetStateAction<UploadFileInfo[]>>;
-}> = ({ setStep, setUploadFiles }) => {
+  setUploadVideo: Dispatch<SetStateAction<VideoMetaInfo | null>>;
+}> = ({ setStep, setUploadVideo }) => {
+  const selectedNetworkId = useSelectedNetworkId();
+  const selectedWallet = useSelectedWallet();
+  const userId = getUserId(selectedNetworkId, selectedWallet?.address);
+
   const paddingHorizontal = layout.padding_x2_5;
   const styles = StyleSheet.create({
     contentContainer: {
@@ -202,16 +177,16 @@ const Step1Component: React.FC<{
     ]),
   });
 
-  const [uploadFiles1, setUploadFiles1] = useState<UploadFileInfo[]>([]);
+  const [uploadFile, setUploadFile] = useState<VideoMetaInfo | null>(null);
   const [canContinue, setCanContinue] = useState<boolean>(false);
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const inputFileRef = createRef<HTMLInputElement>();
 
   useEffect(() => {
-    setCanContinue(uploadFiles1.length > 0);
-  }, [uploadFiles1]);
+    setCanContinue(!!uploadFile);
+  }, [uploadFile]);
 
-  const uploadMusicFiles = async () => {
+  const uploadVideoFile = async () => {
     setIsUploading(true);
     inputFileRef.current?.click();
   };
@@ -219,20 +194,39 @@ const Step1Component: React.FC<{
     e
   ) => {
     const file = e.target?.files![0];
-    const url = URL.createObjectURL(file);
-    const audio = new Audio(url);
-
-    audio.addEventListener("loadedmetadata", async () => {
-      const ipfsHash = await uploadFileToIPFS(file);
-      if (ipfsHash !== "") {
-        setUploadFiles1([
-          ...uploadFiles1,
-          { name: file.name, ipfs: ipfsHash, duration: audio.duration },
-        ]);
-        URL.revokeObjectURL(url);
+    const video = document.createElement("video");
+    video.preload = "metadata";
+    const pinataJWTKey = await generateIpfsKey(selectedNetworkId, userId);
+    video.addEventListener("loadedmetadata", async () => {
+      window.URL.revokeObjectURL(video.src);
+      if (!pinataJWTKey) {
+        return;
+      }
+      const local_file_data = {
+        file,
+        fileName: file.name,
+        mimeType: "",
+        size: 0,
+        url: "",
+        fileType: "video",
+      } as LocalFileData;
+      const ipfsHash_data = await pinataPinFileToIPFS({
+        file: local_file_data,
+        pinataJWTKey,
+      });
+      const duration = video.duration;
+      if (ipfsHash_data.IpfsHash! !== "") {
+        setUploadFile({
+          title: file.name,
+          description: "",
+          url: ipfsHash_data.IpfsHash,
+          image: "",
+          duration,
+        });
       }
       setIsUploading(false);
     });
+    video.src = URL.createObjectURL(file);
   };
 
   return (
@@ -244,10 +238,10 @@ const Step1Component: React.FC<{
             width={layout.padding_x2}
             height={layout.padding_x2}
           />
-          <BrandText>Drag and drop your tracks & albums here</BrandText>
+          <BrandText>Drag and drop your video here</BrandText>
         </Pressable>
         <View style={styles.buttonContainer}>
-          <Pressable onPress={uploadMusicFiles}>
+          <Pressable onPress={uploadVideoFile}>
             <BrandText style={styles.buttonText}>
               or choose files to upload
             </BrandText>
@@ -265,8 +259,7 @@ const Step1Component: React.FC<{
           disabled={!canContinue}
           isLoading={isUploading}
           onPress={() => {
-            console.log(uploadFiles1);
-            setUploadFiles([...uploadFiles1]);
+            setUploadVideo(uploadFile);
             setStep(1);
           }}
         />
@@ -274,7 +267,7 @@ const Step1Component: React.FC<{
       <input
         type="file"
         style={{ display: "none" }}
-        accept="audio/mp3"
+        accept="video/mp4"
         onChange={onInputFileChange}
         ref={inputFileRef}
       />
@@ -283,18 +276,10 @@ const Step1Component: React.FC<{
 };
 
 const Step2Component: React.FC<{
-  uploadFiles: UploadFileInfo[];
-  setUploadFiles: Dispatch<SetStateAction<UploadFileInfo[]>>;
-  albumInfo: AlbumInfo;
-  setAlbumInfo: Dispatch<SetStateAction<AlbumInfo>>;
-  uploadAlbum: () => void;
-}> = ({
-  uploadFiles,
-  setUploadFiles,
-  albumInfo,
-  setAlbumInfo,
-  uploadAlbum,
-}) => {
+  videoFile: VideoMetaInfo;
+  setVideoFile: Dispatch<SetStateAction<VideoMetaInfo | null>>;
+  uploadVideo: () => void;
+}> = ({ videoFile, setVideoFile, uploadVideo }) => {
   const paddingHorizontal = layout.padding_x2_5;
   const imgSize = 172;
   const styles = StyleSheet.create({
@@ -416,35 +401,46 @@ const Step2Component: React.FC<{
     },
   });
 
-  const removeSong = (index: number) => {
-    setUploadFiles((data: UploadFileInfo[]) => {
-      data.splice(index, 1);
-      return [...data];
-    });
-  };
-
-  const clickUploadAlbumImage = () => {
+  const clickUploadImage = () => {
     inputFileRef.current?.click();
   };
 
   const inputFileRef = createRef<HTMLInputElement>();
 
+  const selectedNetworkId = useSelectedNetworkId();
+  const selectedWallet = useSelectedWallet();
+  const userId = getUserId(selectedNetworkId, selectedWallet?.address);
+
   const onInputFileChange: React.ChangeEventHandler<HTMLInputElement> = async (
     e
   ) => {
     const file = e.target?.files?.[0];
-    if (file) {
-      const albumImage = await uploadFileToIPFS(file);
-      setAlbumInfo({ ...albumInfo, image: albumImage });
+    const pinataJWTKey = await generateIpfsKey(selectedNetworkId, userId);
+    if (file && pinataJWTKey) {
+      const local_file_data = {
+        file,
+        fileName: file.name,
+        mimeType: "",
+        size: 0,
+        url: "",
+        fileType: "image",
+      } as LocalFileData;
+      const ipfsHash_data = await pinataPinFileToIPFS({
+        file: local_file_data,
+        pinataJWTKey,
+      });
+
+      const videoImage = ipfsHash_data.IpfsHash;
+      setVideoFile({ ...videoFile, image: videoImage });
     }
   };
 
-  const handleAlbumNameTextChange = (text: string) => {
-    setAlbumInfo({ ...albumInfo, name: text });
+  const handleVideoNameTextChange = (text: string) => {
+    setVideoFile({ ...videoFile, title: text });
   };
 
-  const handleAlbumDescriptionTextChange = (text: string) => {
-    setAlbumInfo({ ...albumInfo, description: text });
+  const handleVideoDescriptionTextChange = (text: string) => {
+    setVideoFile({ ...videoFile, description: text });
   };
 
   return (
@@ -460,17 +456,14 @@ const Step2Component: React.FC<{
         <View style={styles.imgBox}>
           <Image
             source={
-              albumInfo.image === ""
-                ? DefaultAlbumImage
-                : ipfsPinataUrl(albumInfo.image)
+              videoFile && videoFile.image !== ""
+                ? ipfsURLToHTTPURL(videoFile.image)
+                : DefaultAlbumImage
             }
             style={styles.img}
           />
           <View style={styles.uploadImg}>
-            <Pressable
-              style={styles.uploadButton}
-              onPress={clickUploadAlbumImage}
-            >
+            <Pressable style={styles.uploadButton} onPress={clickUploadImage}>
               <SVG
                 source={Img}
                 width={layout.padding_x2}
@@ -482,56 +475,23 @@ const Step2Component: React.FC<{
         </View>
         <View style={styles.textBox}>
           <BrandText style={styles.inputTitle}>
-            Album name<BrandText style={styles.required}>*</BrandText>
+            Video name<BrandText style={styles.required}>*</BrandText>
           </BrandText>
           <TextInput
             style={styles.input}
-            onChangeText={handleAlbumNameTextChange}
+            onChangeText={handleVideoNameTextChange}
           />
           <BrandText style={styles.inputTitle}>
             Album Description<BrandText style={styles.required}>*</BrandText>
           </BrandText>
           <TextInput
             style={styles.input}
-            onChangeText={handleAlbumDescriptionTextChange}
+            onChangeText={handleVideoDescriptionTextChange}
             numberOfLines={4}
             multiline
           />
         </View>
       </View>
-      <View style={styles.songGroup}>
-        {uploadFiles.map((item, index) => (
-          <View key={index} style={styles.unitBox}>
-            <View style={styles.oneLine}>
-              <Pressable>
-                <SVG
-                  source={List}
-                  width={layout.padding_x2}
-                  height={layout.padding_x2}
-                />
-              </Pressable>
-              <BrandText style={fontSemibold14}>{item.name}</BrandText>
-            </View>
-            <View style={styles.oneLine}>
-              <Pressable onPress={() => removeSong(index)}>
-                <SVG
-                  source={Remove}
-                  width={layout.padding_x3}
-                  height={layout.padding_x3}
-                />
-              </Pressable>
-            </View>
-          </View>
-        ))}
-      </View>
-      <Pressable style={styles.buttonContainer}>
-        <SVG
-          source={Add}
-          width={layout.padding_x2_5}
-          height={layout.padding_x2_5}
-        />
-        <BrandText style={styles.buttonText}>Add more</BrandText>
-      </Pressable>
 
       <View style={styles.divideLine} />
 
@@ -540,7 +500,7 @@ const Step2Component: React.FC<{
           By uploading, you confirm that your sounds comply with our Terms of
           Use.
         </BrandText>
-        <PrimaryButton text="Upload" size="SM" onPress={uploadAlbum} />
+        <PrimaryButton text="Upload" size="SM" onPress={uploadVideo} />
       </View>
     </>
   );
