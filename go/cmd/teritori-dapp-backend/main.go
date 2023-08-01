@@ -88,6 +88,11 @@ func main() {
 	if err != nil {
 		panic(errors.Wrap(err, "failed to access db"))
 	}
+	//test
+	err = indexerdb.MigrateDB(indexerDB)
+	if err != nil {
+		panic(errors.Wrap(err, "failed migrate database models"))
+	}
 
 	port := 9090
 	if *enableTls {

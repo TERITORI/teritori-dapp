@@ -1,22 +1,22 @@
 import React from "react";
 import { View, StyleSheet, Pressable } from "react-native";
 
-import HomeSelected from "../../../assets/music-player/home-selected.svg";
-import HomeUnselected from "../../../assets/music-player/home-unselected.svg";
-import MusicSelected from "../../../assets/music-player/music-selected.svg";
-import MusicUnselected from "../../../assets/music-player/music-unselected.svg";
+import HomeSelected from "../../../assets/icons/player/home-selected.svg";
+import HomeUnselected from "../../../assets/icons/player/home-unselected.svg";
+import MusicSelected from "../../../assets/icons/player/music-selected.svg";
+import MusicUnselected from "../../../assets/icons/player/music-unselected.svg";
 import { neutral33, neutralA3, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText/BrandText.electron";
 import { SVG } from "../SVG";
 
-interface MusicPlayerTabProps {
+interface VideoPlayerTabProps {
   tab?: string;
   setTab?: any;
 }
 
-export const MusicPlayerTab: React.FC<MusicPlayerTabProps> = ({
+export const VideoPlayerTab: React.FC<VideoPlayerTabProps> = ({
   tab,
   setTab,
 }) => {
