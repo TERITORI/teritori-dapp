@@ -78,13 +78,15 @@ export const VideoPlayerCard: React.FC<{
         />
         {selectedIndex === item.identifier && (
           <TrackImageHover
-            album={item}
+            videoInfo={item}
             hasLibrary={hasLibrary}
             userName={username}
           />
         )}
       </View>
-      <BrandText style={styles.contentTitle}>{item.videoMetaInfo.title}</BrandText>
+      <BrandText style={styles.contentTitle}>
+        {item.videoMetaInfo.title}
+      </BrandText>
       <View
         style={{
           display: "flex",
