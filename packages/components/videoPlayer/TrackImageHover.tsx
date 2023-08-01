@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { StyleSheet, Pressable } from "react-native";
 
-import { MyAlbumMenu } from "./MyAlbumMenu";
+import { MyVideoMenu } from "./MyVideoMenu";
 import { TrackHoverMenu } from "./TrackHoverMenu";
 import HoveredMenu from "../../../assets/icons/player/hovered-menu.svg";
 import HoveredPlay from "../../../assets/icons/player/hovered-play.svg";
@@ -12,14 +12,14 @@ import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getUserId } from "../../networks";
 import { useAppNavigation } from "../../utils/navigation";
 import { layout } from "../../utils/style/layout";
-import { AlbumInfo } from "../../utils/types/music";
+import { VideoInfoWithMeta } from "../../utils/types/video";
 import { SVG } from "../SVG";
 
 export const TrackImageHover: React.FC<{
-  album: AlbumInfo;
+  videoInfo: VideoInfoWithMeta;
   hasLibrary: boolean;
   userName: string;
-}> = ({ album, hasLibrary, userName }) => {
+}> = ({ videoInfo, hasLibrary, userName }) => {
   const selectedNetworkId = useSelectedNetworkId();
   const wallet = useSelectedWallet();
   const navigation = useAppNavigation();
@@ -48,7 +48,7 @@ export const TrackImageHover: React.FC<{
     <Pressable
       style={styles.hoverBox}
       onPress={() => {
-        navigation.navigate("VideoName", { id: album.id });
+        navigation.navigate("VideoShow", { id: videoInfo.identifier });
       }}
     >
       {hoverPlayIcon && (
@@ -93,14 +93,16 @@ export const TrackImageHover: React.FC<{
           onMouseEnter={() => setHoverMenuIcon(true)}
         />
       )}
-      {openMenu && userId !== album.createdBy && (
+      {openMenu && userId !== videoInfo.createdBy && (
         <TrackHoverMenu
-          album={album}
+          videoInfo={videoInfo}
           hasLibrary={hasLibrary}
           userName={userName}
         />
       )}
-      {openMenu && userId === album.createdBy && <MyAlbumMenu album={album} />}
+      {openMenu && userId === videoInfo.createdBy && (
+        <MyVideoMenu videoInfo={videoInfo} />
+      )}
     </Pressable>
   );
 };
