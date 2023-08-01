@@ -11,7 +11,7 @@ import {
   useSelectedNetworkInfo,
 } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getStakingCurrency, NetworkKind } from "../../networks";
+import { getStakingCurrency, NetworkKind, UserKind } from "../../networks";
 import { DepositWithdrawModal } from "../../screens/WalletManager/components/DepositWithdrawModal";
 import { useAppNavigation } from "../../utils/navigation";
 import {
@@ -216,7 +216,7 @@ export const TopMenuMyWallets: React.FC = () => {
             paddingHorizontal={layout.padding_x2}
             text="Stake"
             size="XS"
-            onPress={() => navigation.navigate("Staking")}
+            onPress={() => navigation.navigate("Staking", {})}
           />
           <SecondaryButton
             disabled={
@@ -260,7 +260,7 @@ export const TopMenuMyWallets: React.FC = () => {
             isVisible={isDepositVisible}
           />
           <SendModal
-            networkId={selectedNetworkInfo.id}
+            userKind={UserKind.Single}
             nativeCurrency={getStakingCurrency(selectedNetworkInfo.id)}
             onClose={() => setSendVisible(false)}
             isVisible={isSendVisible}

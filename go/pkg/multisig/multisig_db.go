@@ -53,7 +53,6 @@ type Transaction struct {
 	Type            string `gorm:"index"`
 }
 
-// TODO: UserTransaction
 type Signature struct {
 	Signature     string
 	TransactionID uint `gorm:"primaryKey"`
@@ -64,7 +63,7 @@ type Signature struct {
 }
 
 func transactionsQuery(db *gorm.DB, userAddress string, chainId string, multisigAddress string, executionState multisigpb.ExecutionState, types []string) *gorm.DB {
-	// we can't use .Joins(...) on signature because it does not expect a slice
+	// we can't use .Joins(...) on signatures because it does not expect a slice
 	query := db.Model(&Transaction{}).
 		Joins("Multisig").
 		Joins("JOIN user_multisigs ON user_multisigs.multisig_address = Multisig.address AND user_multisigs.multisig_chain_id = Multisig.chain_id AND user_multisigs.user_address = ?", userAddress).

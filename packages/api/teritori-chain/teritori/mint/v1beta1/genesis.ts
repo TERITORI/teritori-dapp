@@ -1,3 +1,6 @@
+// @ts-nocheck
+// @ts-nocheck
+
 import { Minter, MinterSDKType, Params, ParamsSDKType, TeamVestingMonthInfo, TeamVestingMonthInfoSDKType } from "./mint";
 import { Long, DeepPartial } from "../../../helpers";
 import * as _m0 from "protobufjs/minimal";

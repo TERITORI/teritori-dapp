@@ -4,22 +4,16 @@ import { ActivityIndicator, Pressable, StyleSheet, View } from "react-native";
 
 import { ProposalTransactionModal } from "./ProposalTransactionModal";
 import { TransactionItemButtons } from "./TransactionItemButtons";
-import multisigWhiteSVG from "../../../../assets/icons/multisig_white.svg";
-import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
-import { Separator } from "../../../components/Separator";
-import { AnimationFadeIn } from "../../../components/animations";
-import { CustomPressable } from "../../../components/buttons/CustomPressable";
-import { SpacerColumn, SpacerRow } from "../../../components/spacer";
-import { ParsedTransaction } from "../../../hooks/multisig/useMultisigTransactions";
-import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
+import multisigWhiteSVG from "../../../assets/icons/multisig_white.svg";
+import { ParsedTransaction } from "../../hooks/multisig/useMultisigTransactions";
+import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import {
   NetworkInfo,
   getCosmosNetworkByChainId,
   getUserId,
-} from "../../../networks";
-import { prettyPrice } from "../../../utils/coins";
-import { AppNavigationProp, useAppNavigation } from "../../../utils/navigation";
+} from "../../networks";
+import { prettyPrice } from "../../utils/coins";
+import { AppNavigationProp, useAppNavigation } from "../../utils/navigation";
 import {
   neutral17,
   neutral33,
@@ -27,10 +21,16 @@ import {
   neutral77,
   primaryColor,
   secondaryColor,
-} from "../../../utils/style/colors";
-import { fontSemibold13, fontSemibold14 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { tinyAddress } from "../../../utils/text";
+} from "../../utils/style/colors";
+import { fontSemibold13, fontSemibold14 } from "../../utils/style/fonts";
+import { layout } from "../../utils/style/layout";
+import { tinyAddress } from "../../utils/text";
+import { BrandText } from "../BrandText";
+import { SVG } from "../SVG";
+import { Separator } from "../Separator";
+import { AnimationFadeIn } from "../animations";
+import { CustomPressable } from "../buttons/CustomPressable";
+import { SpacerColumn, SpacerRow } from "../spacer";
 
 export interface ProposalTransactionItemProps extends ParsedTransaction {
   btnSquaresBackgroundColor?: string;

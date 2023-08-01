@@ -1,3 +1,4 @@
+// @ts-nocheck
 import * as _11 from "./airdrop/v1beta1/allocation";
 import * as _12 from "./airdrop/v1beta1/genesis";
 import * as _13 from "./airdrop/v1beta1/params";

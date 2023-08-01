@@ -13,7 +13,6 @@ import { Header } from "./Header";
 import { ScreenContainerMobile } from "./ScreenContainerMobile";
 import { useForceNetworkKind } from "../../hooks/useForceNetworkKind";
 import { useForceNetworkSelection } from "../../hooks/useForceNetworkSelection";
-import { useForceUnselectNetworks } from "../../hooks/useForceUnselectNetworks";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { NetworkFeature, NetworkInfo, NetworkKind } from "../../networks";

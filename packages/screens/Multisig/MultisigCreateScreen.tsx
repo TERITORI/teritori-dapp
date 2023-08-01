@@ -22,12 +22,14 @@ import {
 import { TextInputCustom } from "../../components/inputs/TextInputCustom";
 import { TextInputOutsideLabel } from "../../components/inputs/TextInputOutsideLabel";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
+import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useMultisigHelpers } from "../../hooks/multisig";
 import { useMultisigClient } from "../../hooks/multisig/useMultisigClient";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
   NetworkKind,
+  allNetworks,
   getUserId,
   selectableCosmosNetworks,
 } from "../../networks";
@@ -62,6 +64,7 @@ export const MultisigCreateScreen = () => {
   const authToken = useSelector((state: RootState) =>
     selectMultisigToken(state, selectedWallet?.address)
   );
+  const { wrapWithFeedback } = useFeedbacks();
   const { control, handleSubmit, watch, setValue } =
     useForm<CreateMultisigWalletFormType>();
   const [addressIndexes, setAddressIndexes] = useState([
@@ -86,8 +89,7 @@ export const MultisigCreateScreen = () => {
     ),
   });
   const selectedNetwork = useMemo(
-    () =>
-      selectableCosmosNetworks.find((n) => selectedInputData.value === n.id),
+    () => allNetworks.find((n) => selectedInputData.value === n.id),
     [selectedInputData.value]
   );
 
@@ -106,33 +108,37 @@ export const MultisigCreateScreen = () => {
     signatureRequired,
     name,
   }: CreateMultisigWalletFormType) => {
-    if (selectedNetwork?.chainId && selectedNetwork?.addressPrefix) {
-      const compressedPubkeys = addressIndexes.map(
-        (item) => item.compressedPubkey
-      );
-      const pubkeys = compressedPubkeys.map((compressedPubkey) => {
-        return {
-          type: "tendermint/PubKeySecp256k1",
-          value: compressedPubkey,
-        };
-      });
-      const multisigPubkey = createMultisigThresholdPubkey(
-        pubkeys,
-        parseInt(signatureRequired, 10)
-      );
-
-      const res = await multisigClient.CreateOrJoinMultisig({
-        authToken,
-        chainId: selectedNetwork.chainId,
-        bech32Prefix: selectedNetwork.addressPrefix,
-        multisigPubkeyJson: JSON.stringify(multisigPubkey),
-        name,
-      });
-
-      navigation.navigate("MultisigWalletDashboard", {
-        id: getUserId(selectedNetwork?.id, res.multisigAddress),
-      });
+    if (!selectedNetwork) {
+      throw new Error("No network selected");
     }
+
+    const compressedPubkeys = addressIndexes.map(
+      (item) => item.compressedPubkey
+    );
+    const pubkeys = compressedPubkeys.map((compressedPubkey) => {
+      return {
+        type: "tendermint/PubKeySecp256k1",
+        value: compressedPubkey,
+      };
+    });
+    const multisigPubkey = createMultisigThresholdPubkey(
+      pubkeys,
+      parseInt(signatureRequired, 10)
+    );
+
+    const res = await multisigClient.CreateOrJoinMultisig({
+      authToken,
+      chainId: selectedNetwork.chainId,
+      bech32Prefix: selectedNetwork.addressPrefix,
+      multisigPubkeyJson: JSON.stringify(multisigPubkey),
+      name,
+    });
+
+    console.log("res", res);
+
+    navigation.navigate("MultisigWalletDashboard", {
+      id: getUserId(selectedNetwork?.id, res.multisigAddress),
+    });
   };
 
   const onAddressChange = async (index: number, value: string) => {
@@ -341,7 +347,9 @@ export const MultisigCreateScreen = () => {
             <PrimaryButton
               size="XL"
               text="Create Multisig"
-              onPress={handleSubmit(onSubmit)}
+              onPress={handleSubmit((arg) =>
+                wrapWithFeedback(() => onSubmit(arg))()
+              )}
               loader
             />
           </View>

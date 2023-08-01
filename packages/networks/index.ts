@@ -28,11 +28,11 @@ import { ChainInfo, Currency as KeplrCurrency } from "@keplr-wallet/types";
 
 import { cosmosNetwork } from "./cosmos-hub";
 import { cosmosThetaNetwork } from "./cosmos-hub-theta";
+import { networksFromCosmosRegistry } from "./cosmos-registry";
 import { ethereumNetwork } from "./ethereum";
 import { ethereumGoerliNetwork } from "./ethereum-goerli";
 import { gnoDevNetwork } from "./gno-dev";
 import { gnoTestnetNetwork } from "./gno-testnet";
-import { junoNetwork } from "./juno";
 import { osmosisNetwork } from "./osmosis";
 import { osmosisTestnetNetwork } from "./osmosis-testnet";
 // import { solanaNetwork } from "./solana";
@@ -56,20 +56,36 @@ export * from "./types";
 
 export const WEI_TOKEN_ADDRESS = "0x0000000000000000000000000000000000000000";
 
-export const allNetworks = [
+const packageNetworks = [
   teritoriNetwork,
   cosmosNetwork,
   teritoriTestnetNetwork,
   cosmosThetaNetwork,
   ethereumGoerliNetwork,
   ethereumNetwork,
-  junoNetwork,
   osmosisNetwork,
   osmosisTestnetNetwork,
   gnoTestnetNetwork,
   gnoDevNetwork,
-  // solanaNetwork,
 ];
+
+export const defaultEnabledNetworks = [
+  "teritori",
+  "cosmos-hub",
+  "osmosis",
+  "cosmos-registry:juno",
+  "cosmos-registry:kujira",
+  "cosmos-registry:axelar",
+  "cosmos-registry:evmos",
+  "cosmos-registry:chihuahua",
+];
+
+export const allNetworks = [
+  ...packageNetworks,
+  ...networksFromCosmosRegistry().filter(
+    (rn) => !packageNetworks.some((pn) => pn.overrides === rn.id)
+  ),
+].sort((a, b) => a.displayName.localeCompare(b.displayName));
 
 export const cosmosTypesRegistry = new Registry([
   ...defaultRegistryTypes,

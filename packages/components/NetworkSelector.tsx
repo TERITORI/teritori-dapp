@@ -15,17 +15,17 @@ import { useMultisigContext } from "../context/MultisigReducer";
 import { useWallets } from "../context/WalletsProvider";
 import { useSelectedNetworkInfo } from "../hooks/useSelectedNetwork";
 import {
+  allNetworks,
   getNetwork,
   mustGetCosmosNetwork,
   NativeCurrencyInfo,
-  NetworkInfo,
   NetworkKind,
-  selectableNetworks,
 } from "../networks";
 import {
   setSelectedWalletId,
   setSelectedNetworkId,
   selectAreTestnetsEnabled,
+  selectNetworksSettings,
 } from "../store/slices/settings";
 import { useAppDispatch } from "../store/store";
 import { neutral17, secondaryColor } from "../utils/style/colors";
@@ -46,6 +46,7 @@ export const NetworkSelector: React.FC<{
   const { setToastError } = useFeedbacks();
   const selectedNetworkInfo = useSelectedNetworkInfo();
   const testnetsEnabled = useSelector(selectAreTestnetsEnabled);
+  const networksSettings = useSelector(selectNetworksSettings);
 
   const { state, dispatch: multisigDispatch } = useMultisigContext();
 
@@ -151,13 +152,10 @@ export const NetworkSelector: React.FC<{
             alignItems: "flex-start",
           }}
         >
-          {(process.env.DISPLAYED_NETWORKS_IDS || "")
-            .split(",")
-            .map((s) => s.trim())
-            .map(getNetwork)
-            .filter((n): n is NetworkInfo => !!n)
+          {allNetworks
             .filter((network) => {
               return (
+                networksSettings[network.id]?.enabled &&
                 (testnetsEnabled || !network.testnet) &&
                 (!forceNetworkId || network.id === forceNetworkId) && // check that it's the forced network id if forced to
                 (!forceNetworkKind || network.kind === forceNetworkKind) // check that it's the correct network kind if forced to
@@ -165,7 +163,7 @@ export const NetworkSelector: React.FC<{
             })
             .map((network, index) => {
               const selectable =
-                !!selectableNetworks.find((sn) => sn.id === network.id) && // check that it's in the selectable list
+                // !!selectableNetworks.find((sn) => sn.id === network.id) && // check that it's in the selectable list
                 selectedNetworkInfo?.id !== network.id; // check that it's not already selected
 
               return (

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Rpc } from "../../../helpers";
 import * as _m0 from "protobufjs/minimal";
 import { MsgClaimAllocation, MsgClaimAllocationResponse, MsgSetAllocation, MsgSetAllocationResponse, MsgTransferModuleOwnership, MsgTransferModuleOwnershipResponse, MsgDepositTokens, MsgDepositTokensResponse } from "./tx";

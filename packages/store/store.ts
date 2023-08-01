@@ -13,9 +13,14 @@ import {
   marketplaceFilterUI,
 } from "./slices/marketplaceFilters";
 import { searchReducer } from "./slices/search";
-import { multisigTokensAdapter, settingsReducer } from "./slices/settings";
+import {
+  multisigTokensAdapter,
+  networkSettingsAdapter,
+  settingsReducer,
+} from "./slices/settings";
 import { squadPresetsReducer } from "./slices/squadPresets";
 import { walletsReducer } from "./slices/wallets";
+import { defaultEnabledNetworks } from "../networks";
 
 const migrations = {
   0: (state: any) => {
@@ -27,12 +32,36 @@ const migrations = {
       },
     };
   },
+  1: (state: any) => {
+    return {
+      ...state,
+      settings: {
+        ...state.settings,
+        networkSettings: networkSettingsAdapter.getInitialState(),
+      },
+    };
+  },
+  2: (state: any) => {
+    return {
+      ...state,
+      settings: {
+        ...state.settings,
+        networkSettings: networkSettingsAdapter.upsertMany(
+          state.settings.networkSettings,
+          defaultEnabledNetworks.map((nid) => ({
+            networkId: nid,
+            enabled: true,
+          }))
+        ),
+      },
+    };
+  },
 };
 
 const persistConfig = {
   key: "root",
   storage: AsyncStorage,
-  version: 0,
+  version: 2,
   migrate: createMigrate(migrations, { debug: false }),
   whitelist: [
     "wallets",

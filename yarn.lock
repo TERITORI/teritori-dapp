@@ -3470,7 +3470,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.0.0":
+"@babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.21.0":
   version: 7.22.6
   resolution: "@babel/runtime@npm:7.22.6"
   dependencies:
@@ -3735,6 +3735,15 @@ __metadata:
   dependencies:
     "@babel/runtime": ^7.19.4
   checksum: 88106166545321a394d1ea74eb42a1d4eed01170715f319454e11777a49657423ba7a1d6bfe7ef0cc10348a691055d835e04b73e42116f40728f9cbd32bf2a7a
+  languageName: node
+  linkType: hard
+
+"@chain-registry/types@npm:^0.16.0":
+  version: 0.16.0
+  resolution: "@chain-registry/types@npm:0.16.0"
+  dependencies:
+    "@babel/runtime": ^7.21.0
+  checksum: 494c42f494583cd9aa05c0088191864591ac28909c0323fd0d0d6922b2866c3690c59558391ac3843778275ad308845a791019081d0f65d11d72e0d64071d345
   languageName: node
   linkType: hard
 
@@ -12802,6 +12811,16 @@ __metadata:
     "@babel/runtime": ^7.19.4
     "@chain-registry/types": ^0.14.0
   checksum: 33638a23b9266ba350cab52f794f3dbc33b9eb8090051ae3a878f7f21f263fccb5b48f89397bbc7d35281d5eadeac90a90312210f42057f4e9989f15bbf42802
+  languageName: node
+  linkType: hard
+
+"chain-registry@npm:^1.18.1":
+  version: 1.18.1
+  resolution: "chain-registry@npm:1.18.1"
+  dependencies:
+    "@babel/runtime": ^7.21.0
+    "@chain-registry/types": ^0.16.0
+  checksum: 41470f0935da7fe3d1814b3dc306931549ab8cfdbe2e3d2fd5beee8c900417ba1e2da4850cc38ff0d19ba0554b3c3b29348c5459587bfeb8488510bfd90c8d30
   languageName: node
   linkType: hard
 
@@ -29320,6 +29339,7 @@ __metadata:
     babel-plugin-react-inline-svg-unique-id: ^1.3.1
     bech32: ^2.0.0
     browser-headers: ^0.4.1
+    chain-registry: ^1.18.1
     commander: ^10.0.1
     cors-anywhere: ^0.4.4
     dotenv-webpack: ^8.0.0

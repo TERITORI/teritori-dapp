@@ -70,11 +70,15 @@ export const SendModal: React.FC<SendModalProps> = ({
   const { control, setValue, handleSubmit, watch } = useForm<TransactionForm>();
   const [selectedDAOId, setSelectedDAOId] = useState("");
   const selectedUserKind = selectedDAOId ? UserKind.Organization : userKind;
+  const selectedUserId =
+    selectedUserKind === UserKind.Single
+      ? selectedWallet?.userId
+      : selectedDAOId || userId;
   const runOrProposeTransaction = useRunOrProposeTransaction(
-    userId,
+    selectedUserId,
     selectedUserKind
   );
-  const [userNetwork, userAddress] = parseUserId(selectedDAOId || userId);
+  const [userNetwork, userAddress] = parseUserId(selectedUserId);
   const networkId = userNetwork?.id;
   const balances = useBalances(userNetwork?.id, userAddress);
 

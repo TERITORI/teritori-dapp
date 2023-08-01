@@ -1,7 +1,6 @@
 import { MultisigThresholdPubkey } from "@cosmjs/amino";
-import { makeMultisignedTx } from "@cosmjs/stargate";
+import { makeMultisignedTxBytes } from "@cosmjs/stargate";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { TxRaw } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import { useSelector } from "react-redux";
 
 import { useMultisigClient } from "./useMultisigClient";
@@ -49,7 +48,7 @@ export const useBroadcastTransaction = () => {
           throw new Error("Pubkey not found");
         }
 
-        const signedTx = makeMultisignedTx(
+        const signedTx = makeMultisignedTxBytes(
           pubkey,
           tx.sequence,
           tx.fee,
@@ -61,14 +60,13 @@ export const useBroadcastTransaction = () => {
             ])
           )
         );
+        console.log("signedTx", Buffer.from(signedTx).toString());
         const network = getCosmosNetworkByChainId(tx.chainId);
         if (!network) {
           throw new Error("Network not found");
         }
         const broadcaster = await getNonSigningStargateClient(network?.id);
-        const result = await broadcaster.broadcastTx(
-          Uint8Array.from(TxRaw.encode(signedTx).finish())
-        );
+        const result = await broadcaster.broadcastTx(signedTx);
 
         if (result.code !== 0) {
           console.error("err", result.rawLog);

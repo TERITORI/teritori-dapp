@@ -3,20 +3,14 @@ import { Linking, Pressable, StyleSheet, View } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 
 import { ProposalTransactionItemProps } from "./ProposalTransactionItem";
-import { BrandText } from "../../../components/BrandText";
-import { AnimationFadeIn } from "../../../components/animations";
-import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
-import { SecondaryButtonOutline } from "../../../components/buttons/SecondaryButtonOutline";
-import { MainConnectWalletButton } from "../../../components/connectWallet/MainConnectWalletButton";
-import { SpacerRow } from "../../../components/spacer";
 import {
   useApproveTransaction,
   useBroadcastTransaction,
   useDeclineTransaction,
-} from "../../../hooks/multisig";
-import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
-import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { txExplorerLink } from "../../../networks";
+} from "../../hooks/multisig";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { txExplorerLink } from "../../networks";
 import {
   errorColor,
   neutral00,
@@ -24,10 +18,16 @@ import {
   primaryColor,
   secondaryColor,
   successColor,
-} from "../../../utils/style/colors";
-import { fontMedium14, fontSemibold9 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { tinyAddress } from "../../../utils/text";
+} from "../../utils/style/colors";
+import { fontMedium14, fontSemibold9 } from "../../utils/style/fonts";
+import { layout } from "../../utils/style/layout";
+import { tinyAddress } from "../../utils/text";
+import { BrandText } from "../BrandText";
+import { AnimationFadeIn } from "../animations";
+import { SecondaryButton } from "../buttons/SecondaryButton";
+import { SecondaryButtonOutline } from "../buttons/SecondaryButtonOutline";
+import { MainConnectWalletButton } from "../connectWallet/MainConnectWalletButton";
+import { SpacerRow } from "../spacer";
 
 interface TransactionItemButtonsProps extends ProposalTransactionItemProps {
   currentDecliners: string[];

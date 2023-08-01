@@ -5,10 +5,11 @@ export const osmosisTestnetNetwork: NetworkInfo = {
   id: "osmosis-testnet",
   kind: NetworkKind.Cosmos,
   chainId: "osmo-test-5",
-  displayName: "Osmosis Testnet",
+  displayName: "Osmosis Latest Testnet",
   icon: "icons/networks/osmosis.svg",
   features: [NetworkFeature.Swap],
   currencies: osmosisTestnetCurrencies,
+  overrides: "cosmos-registry:osmosistestnet5",
   txExplorer: "https://testnet.mintscan.io/osmosis-testnet/txs/$hash",
   accountExplorer:
     "https://testnet.mintscan.io/osmosis-testnet/account/$address",

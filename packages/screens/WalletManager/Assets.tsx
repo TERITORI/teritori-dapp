@@ -147,30 +147,23 @@ export const Assets: React.FC<{
                 denom={currency.denom}
               />
               <View style={{ marginLeft: 16 }}>
-                <View
+                <BrandText numberOfLines={1} style={{ maxWidth: 600 }}>
+                  {prettyPrice(
+                    network.id,
+                    balance?.amount || "0",
+                    currency.denom
+                  )}
+                </BrandText>
+                <BrandText
                   style={{
-                    flexDirection: "row",
-                    alignItems: "center",
+                    marginTop: 8,
+                    fontSize: 14,
                   }}
                 >
-                  <BrandText>
-                    {prettyPrice(
-                      network.id,
-                      balance?.amount || "0",
-                      currency.denom
-                    )}
-                  </BrandText>
-                </View>
-                {!!balance?.usdAmount && (
-                  <BrandText
-                    style={{
-                      marginTop: 8,
-                      fontSize: 14,
-                    }}
-                  >
-                    ≈ ${balance.usdAmount.toFixed(2)}
-                  </BrandText>
-                )}
+                  {balance?.usdAmount
+                    ? `≈ ${balance.usdAmount.toFixed(2)}`
+                    : " "}
+                </BrandText>
               </View>
             </View>
             <View

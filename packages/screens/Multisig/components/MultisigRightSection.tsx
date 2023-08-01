@@ -13,8 +13,10 @@ import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import ModalBase from "../../../components/modals/ModalBase";
 import { SendModal } from "../../../components/modals/SendModal";
 import { TNSNameFinderModal } from "../../../components/modals/teritoriNameService/TNSNameFinderModal";
+import { LoginButton } from "../../../components/multisig/LoginButton";
 import { SpacerColumn } from "../../../components/spacer";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
+import { useMultisigAuthToken } from "../../../hooks/multisig/useMultisigAuthToken";
 import { useMultisigClient } from "../../../hooks/multisig/useMultisigClient";
 import { useBalances } from "../../../hooks/useBalances";
 import { useRunOrProposeTransaction } from "../../../hooks/useRunOrProposeTransaction";
@@ -41,7 +43,6 @@ import { fontSemibold12, fontSemibold13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { TNSMintNameModal } from "../../TeritoriNameService/TNSMintNameScreen";
 import { TNSRegisterScreen } from "../../TeritoriNameService/TNSRegisterScreen";
-import { LoginButton } from "../MultisigScreen";
 import { useMultisigInfo } from "../MultisigWalletDashboardScreen";
 
 export const MultisigRightSection: React.FC = () => {
@@ -56,7 +57,8 @@ export const MultisigRightSection: React.FC = () => {
   const [network] = parseUserId(id);
   const stakingCurrency = getStakingCurrency(network?.id);
   const { multisig, isInitialLoading } = useMultisigInfo(id);
-  const multisigClient = useMultisigClient();
+  const [joinMultisigModalVisible, setJoinMultisigModalVisible] =
+    useState(false);
   const { selectedWallet } = useSelectedWallet();
   const authToken = useSelector((state: RootState) =>
     selectMultisigToken(state, selectedWallet?.address)
@@ -90,31 +92,21 @@ export const MultisigRightSection: React.FC = () => {
   } else {
     if (!multisig?.joined) {
       actions.push(
-        <PrimaryButton
-          size="M"
-          text="Join"
-          loader
-          fullWidth
-          onPress={async () => {
-            if (!multisig) {
-              throw new Error("multisig not found");
-            }
-            if (!authToken) {
-              throw new Error("need an auth token");
-            }
-            const cosmosNetwork = getCosmosNetworkByChainId(multisig.chainId);
-            if (!cosmosNetwork) {
-              throw new Error("invalid multisig network");
-            }
-            await multisigClient.CreateOrJoinMultisig({
-              chainId: multisig.chainId,
-              multisigPubkeyJson: multisig.pubkeyJson,
-              authToken,
-              name: "TODO", // FIXME: use modal
-              bech32Prefix: cosmosNetwork.addressPrefix,
-            });
-          }}
-        />
+        <>
+          <PrimaryButton
+            size="M"
+            text="Join this multisig"
+            loader
+            fullWidth
+            onPress={() => setJoinMultisigModalVisible(true)}
+          />
+          <JoinMultisigModal
+            visible={joinMultisigModalVisible}
+            onClose={() => setJoinMultisigModalVisible(false)}
+            multisigId={id}
+            userId={selectedWallet?.userId}
+          />
+        </>
       );
     }
 
@@ -310,7 +302,7 @@ const BurnModal: React.FC<{
   );
 };
 
-const joinElements = <ElementType, SeparatorType>(
+export const joinElements = <ElementType, SeparatorType>(
   elements: ElementType[],
   separator: SeparatorType
 ) => {
@@ -322,4 +314,57 @@ const joinElements = <ElementType, SeparatorType>(
     }
   });
   return result;
+};
+
+const JoinMultisigModal: React.FC<{
+  multisigId: string | undefined;
+  userId: string | undefined;
+  visible: boolean;
+  onClose?: () => void;
+}> = ({ multisigId, userId, visible, onClose }) => {
+  const [name, setName] = useState("");
+  const authToken = useMultisigAuthToken(userId);
+  const { multisig } = useMultisigInfo(multisigId);
+  const multisigClient = useMultisigClient();
+  const { wrapWithFeedback } = useFeedbacks();
+
+  return (
+    <ModalBase visible={visible} onClose={onClose} label="Join multisig">
+      <TextInputCustom
+        value={name}
+        onChangeText={setName}
+        height={48}
+        variant="labelOutside"
+        label="Amount"
+        name="amount"
+        rules={{ required: true }}
+        placeHolder="Type the local name for this multisig..."
+        defaultValue=""
+      />
+      <SpacerColumn size={2.5} />
+      <PrimaryButton
+        text="Join"
+        onPress={wrapWithFeedback(async () => {
+          if (!multisig) {
+            throw new Error("multisig not found");
+          }
+          if (!authToken) {
+            throw new Error("need an auth token");
+          }
+          const cosmosNetwork = getCosmosNetworkByChainId(multisig.chainId);
+          if (!cosmosNetwork) {
+            throw new Error("invalid multisig network");
+          }
+          await multisigClient.CreateOrJoinMultisig({
+            chainId: multisig.chainId,
+            multisigPubkeyJson: multisig.pubkeyJson,
+            authToken,
+            name,
+            bech32Prefix: cosmosNetwork.addressPrefix,
+          });
+        })}
+      />
+      <SpacerColumn size={2.5} />
+    </ModalBase>
+  );
 };

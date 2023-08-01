@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { AminoMsg } from "@cosmjs/amino";
 import { MsgClaimAllocation, MsgSetAllocation, MsgTransferModuleOwnership, MsgDepositTokens } from "./tx";
 export interface MsgClaimAllocationAminoType extends AminoMsg {

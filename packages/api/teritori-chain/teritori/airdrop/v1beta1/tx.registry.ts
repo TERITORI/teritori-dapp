@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { GeneratedType, Registry } from "@cosmjs/proto-signing";
 import { MsgClaimAllocation, MsgSetAllocation, MsgTransferModuleOwnership, MsgDepositTokens } from "./tx";
 export const registry: ReadonlyArray<[string, GeneratedType]> = [["/teritori.airdrop.v1beta1.MsgClaimAllocation", MsgClaimAllocation], ["/teritori.airdrop.v1beta1.MsgSetAllocation", MsgSetAllocation], ["/teritori.airdrop.v1beta1.MsgTransferModuleOwnership", MsgTransferModuleOwnership], ["/teritori.airdrop.v1beta1.MsgDepositTokens", MsgDepositTokens]];

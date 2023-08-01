@@ -12,6 +12,7 @@ import { useDelegations } from "../../hooks/useDelegations";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { rewardsPrice, useRewards } from "../../hooks/useRewards";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { UserKind } from "../../networks";
 import { useAppNavigation } from "../../utils/navigation";
 import { neutral17, neutral22, neutralA3 } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
@@ -109,7 +110,10 @@ export const WalletDashboardHeader: React.FC = () => {
       ),
     [delegationsBalances]
   );
-  const { totalsRewards, claimAllRewards } = useRewards(selectedWallet?.userId);
+  const { totalsRewards, claimAllRewards } = useRewards(
+    selectedWallet?.userId,
+    UserKind.Single
+  );
   // Total rewards price with all denoms
   const claimablePrice = rewardsPrice(totalsRewards);
 

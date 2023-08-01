@@ -20,11 +20,7 @@ import { CollectionToolsScreen } from "../../screens/Marketplace/CollectionTools
 import { MarketplaceScreen } from "../../screens/Marketplace/MarketplaceScreen";
 import { NFTDetailScreen } from "../../screens/Marketplace/NFTDetailScreen";
 import { MultisigCreateScreen } from "../../screens/Multisig/MultisigCreateScreen";
-import { MultisigDelegateScreen } from "../../screens/Multisig/MultisigDelegateScreen";
-import { MultisigManageWalletsScreen } from "../../screens/Multisig/MultisigManageWalletsScreen";
 import { MultisigScreen } from "../../screens/Multisig/MultisigScreen";
-import { MultisigTransactionsScreen } from "../../screens/Multisig/MultisigTransactionsScreen";
-import { MultisigTransferScreen } from "../../screens/Multisig/MultisigTransferScreen";
 import { MultisigWalletDashboardScreen } from "../../screens/Multisig/MultisigWalletDashboardScreen";
 import { MyCollectionScreen } from "../../screens/MyCollection/MyCollectionScreen";
 import { OrganizationDeployerScreen } from "../../screens/Organizations/OrganizationDeployerScreen";
@@ -219,38 +215,6 @@ export const Navigator: React.FC = () => {
         options={{
           header: () => null,
           title: screenTitle("Multisig Legacy"),
-        }}
-      />
-      <Stack.Screen
-        name="MultisigTransfer"
-        component={MultisigTransferScreen}
-        options={{
-          header: () => null,
-          title: screenTitle("Multisig Create Transaction"),
-        }}
-      />
-      <Stack.Screen
-        name="MultisigDelegate"
-        component={MultisigDelegateScreen}
-        options={{
-          header: () => null,
-          title: screenTitle("Multisig Delegate"),
-        }}
-      />
-      <Stack.Screen
-        name="MultisigWalletsManage"
-        component={MultisigManageWalletsScreen}
-        options={{
-          header: () => null,
-          title: screenTitle("Manage Multisig Wallets"),
-        }}
-      />
-      <Stack.Screen
-        name="MultisigTransactions"
-        component={MultisigTransactionsScreen}
-        options={{
-          header: () => null,
-          title: screenTitle("Transactions"),
         }}
       />
 

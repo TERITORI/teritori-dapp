@@ -18,6 +18,7 @@ export const teritoriNetwork: CosmosNetworkInfo = {
     NetworkFeature.BurnTokens,
     NetworkFeature.NFTLaunchpad,
   ],
+  overrides: "cosmos-registry:teritori",
   walletUrlForStaking: "https://explorer.teritori.com/teritori/staking",
   currencies: teritoriCurrencies,
   txExplorer: "https://www.mintscan.io/teritori/txs/$hash",

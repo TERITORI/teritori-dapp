@@ -21,6 +21,7 @@ export interface NetworkInfoBase {
   backendEndpoint: string;
   secondaryDuringMintList?: string[];
   excludeFromLaunchpadList?: string[];
+  overrides?: string;
 }
 
 export type CosmosNetworkInfo = NetworkInfoBase & {

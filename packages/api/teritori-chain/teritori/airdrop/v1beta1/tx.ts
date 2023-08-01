@@ -1,3 +1,6 @@
+// @ts-nocheck
+// @ts-nocheck
+
 import { AirdropAllocation, AirdropAllocationSDKType } from "./allocation";
 import * as _m0 from "protobufjs/minimal";
 import { DeepPartial } from "../../../helpers";

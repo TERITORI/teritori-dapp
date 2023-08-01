@@ -7,23 +7,23 @@ import {
   useWindowDimensions,
 } from "react-native";
 
+import { ProposalTransactionItem } from "./ProposalTransactionItem";
 import {
   ExecutionState,
   TransactionsCount,
-} from "../../../api/multisig/v1/multisig";
-import { BrandText } from "../../../components/BrandText";
-import { EmptyList } from "../../../components/EmptyList";
-import { SpacerColumn } from "../../../components/spacer";
-import { Tabs } from "../../../components/tabs/Tabs";
+} from "../../api/multisig/v1/multisig";
 import {
   useMultisigTransactions,
   useMultisigTransactionsCounts,
   useMultisigValidator,
-} from "../../../hooks/multisig";
-import { secondaryColor } from "../../../utils/style/colors";
-import { fontSemibold28 } from "../../../utils/style/fonts";
-import { headerHeight, layout } from "../../../utils/style/layout";
-import { ProposalTransactionItem } from "../../OrganizerDeployer/components/ProposalTransactionItem";
+} from "../../hooks/multisig";
+import { secondaryColor } from "../../utils/style/colors";
+import { fontSemibold28 } from "../../utils/style/fonts";
+import { headerHeight, layout } from "../../utils/style/layout";
+import { BrandText } from "../BrandText";
+import { EmptyList } from "../EmptyList";
+import { SpacerColumn } from "../spacer";
+import { Tabs } from "../tabs/Tabs";
 
 const MIN_ITEMS_PER_PAGE = 50;
 
@@ -80,6 +80,7 @@ export const Transactions: FC<{
             "/cosmos.staking.v1beta1.MsgDelegate",
             "/cosmos.staking.v1beta1.MsgUndelegate",
             "/cosmos.staking.v1beta1.MsgBeginRedelegate",
+            "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward",
           ]
         ),
       },

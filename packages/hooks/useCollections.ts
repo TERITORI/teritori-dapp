@@ -37,7 +37,8 @@ export const useCollections = (
     async ({ pageParam = 0 }) => {
       let collections: Collection[] = [];
 
-      if (!req.networkId) {
+      const network = getNetwork(req.networkId);
+      if (!network?.backendEndpoint || network?.backendEndpoint === "TODO") {
         return { nextCursor: pageParam + req.limit, collections };
       }
 

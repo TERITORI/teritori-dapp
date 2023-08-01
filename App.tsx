@@ -108,7 +108,11 @@ class ErrorBoundary extends React.Component {
       // You can render any custom fallback UI
       return (
         <View style={{ backgroundColor: "black", height: "100%", padding: 32 }}>
-          <BrandText>{`${this.state.error}`}</BrandText>
+          {this.state.error instanceof Error ? (
+            <BrandText>{this.state.error.stack}</BrandText>
+          ) : (
+            <BrandText>{`${this.state.error}`}</BrandText>
+          )}
           <BrandText>{`${this.state.info?.componentStack}`}</BrandText>
         </View>
       );

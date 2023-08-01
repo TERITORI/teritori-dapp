@@ -47,7 +47,7 @@ export type RootStackParamList = {
   RiotGameInventory: undefined;
 
   Swap: undefined;
-  Staking: { multisigId?: string; daoId?: string };
+  Staking: { multisigId?: string; daoId?: string } | undefined;
 
   ComingSoon: undefined;
 
@@ -56,7 +56,6 @@ export type RootStackParamList = {
   Multisig: undefined;
   MultisigCreate: undefined;
   MultisigWalletDashboard: { id: string };
-  MultisigTransactions: { address: string; walletName?: string };
 
   Settings: undefined;
 
@@ -140,7 +139,6 @@ const navConfig: {
     Multisig: "multisig",
     MultisigCreate: "multisig/create",
     MultisigWalletDashboard: "multisig/:id",
-    MultisigTransactions: "multisig/:address/transactions",
 
     // ==== Swap
     Swap: "swap",

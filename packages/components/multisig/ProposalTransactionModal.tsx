@@ -2,20 +2,16 @@ import React, { FC, Fragment } from "react";
 import { StyleSheet, View } from "react-native";
 
 import { ProposalTransactionItemProps } from "./ProposalTransactionItem";
-import { BrandText } from "../../../components/BrandText";
-import ModalBase from "../../../components/modals/ModalBase";
-import { SpacerColumn } from "../../../components/spacer";
-import { Coin } from "../../../contracts-clients/dao-pre-propose-single/DaoPreProposeSingle.types";
-import { useNSPrimaryAlias } from "../../../hooks/useNSPrimaryAlias";
-import { getCosmosNetworkByChainId, getUserId } from "../../../networks";
-import {
-  neutral33,
-  neutral77,
-  secondaryColor,
-} from "../../../utils/style/colors";
-import { fontSemibold14 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { tinyAddress } from "../../../utils/text";
+import { Coin } from "../../contracts-clients/dao-pre-propose-single/DaoPreProposeSingle.types";
+import { useNSPrimaryAlias } from "../../hooks/useNSPrimaryAlias";
+import { getCosmosNetworkByChainId, getUserId } from "../../networks";
+import { neutral33, neutral77, secondaryColor } from "../../utils/style/colors";
+import { fontSemibold14 } from "../../utils/style/fonts";
+import { layout } from "../../utils/style/layout";
+import { tinyAddress } from "../../utils/text";
+import { BrandText } from "../BrandText";
+import ModalBase from "../modals/ModalBase";
+import { SpacerColumn } from "../spacer";
 
 export const ProposalTransactionModal: FC<{
   visible?: boolean;

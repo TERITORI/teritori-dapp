@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"net/http"
-	"time"
 
 	"github.com/TERITORI/teritori-dapp/go/pkg/multisig"
 	"github.com/TERITORI/teritori-dapp/go/pkg/multisigpb"
@@ -21,7 +20,7 @@ func main() {
 		panic(errors.Wrap(err, "failed to create logger"))
 	}
 
-	svc, err := multisig.NewMultisigService(time.Hour, "multisig.db")
+	svc, err := multisig.NewMultisigService(multisig.MultisigServiceOpts{})
 	if err != nil {
 		panic(errors.Wrap(err, "failed to create multisig service"))
 	}

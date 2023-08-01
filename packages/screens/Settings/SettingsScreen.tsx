@@ -1,5 +1,13 @@
-import React from "react";
-import { Pressable, Text, TouchableOpacity, View } from "react-native";
+import React, { useMemo } from "react";
+import {
+  Pressable,
+  StyleProp,
+  Switch,
+  Text,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+} from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import { useSelector } from "react-redux";
 
@@ -9,20 +17,33 @@ import { useCommonStyles } from "./components/commonStyles";
 import { SettingItemType } from "./types";
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
 import { BrandText } from "../../components/BrandText";
+import { NetworkIcon } from "../../components/NetworkIcon";
 import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
-import { SpacerColumn } from "../../components/spacer";
+import { TertiaryBox } from "../../components/boxes/TertiaryBox";
+import { TextInputCustom } from "../../components/inputs/TextInputCustom";
+import { SpacerColumn, SpacerRow } from "../../components/spacer";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
+import { allNetworks, getNetwork } from "../../networks";
 import {
   selectAreTestnetsEnabled,
   selectNFTStorageAPI,
+  selectNetworkEnabled,
   setAreTestnetsEnabled,
   setNFTStorageAPI,
+  toggleNetwork,
 } from "../../store/slices/settings";
-import { useAppDispatch } from "../../store/store";
+import { RootState, useAppDispatch } from "../../store/store";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
-import { neutralA3, primaryColor } from "../../utils/style/colors";
+import {
+  neutral55,
+  neutralA3,
+  primaryColor,
+  secondaryColor,
+} from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
+import { layout } from "../../utils/style/layout";
+import { joinElements } from "../Multisig/components/MultisigRightSection";
 
 const NFTAPIKeyInput: React.FC = () => {
   const NFTApiKey = useSelector(selectNFTStorageAPI);
@@ -87,6 +108,10 @@ export const SettingsScreen: ScreenFC<"Settings"> = () => {
 
         <SpacerColumn size={3} />
 
+        <NetworksSettings />
+
+        <SpacerColumn size={3} />
+
         <NFTAPIKeyInput />
 
         <Notifications />
@@ -120,5 +145,82 @@ export const SettingsScreen: ScreenFC<"Settings"> = () => {
         {/*/>*/}
       </View>
     </ScreenContainer>
+  );
+};
+
+const NetworksSettings: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
+  style,
+}) => {
+  const [searchTerm, setSearchTerm] = React.useState("");
+  const areTestnetsEnabled = useSelector(selectAreTestnetsEnabled);
+  const results = useMemo(() => {
+    const searchTerms = searchTerm
+      .split(" ")
+      .filter((s) => !!s)
+      .map((s) => s.toLowerCase());
+    return allNetworks.filter((network) => {
+      if (!areTestnetsEnabled && network.testnet) return false;
+      const dn = network.displayName.toLowerCase();
+      return searchTerms.every((searchTerm) => dn.includes(searchTerm));
+    });
+  }, [searchTerm, areTestnetsEnabled]);
+  return (
+    <View style={style}>
+      <TextInputCustom
+        label="Networks"
+        name="networks"
+        value={searchTerm}
+        onChangeText={setSearchTerm}
+        placeholder="Search for a network to enable or disable it"
+      />
+      {searchTerm && (
+        <>
+          <SpacerColumn size={2} />
+          {joinElements(
+            results.map((n) => <NetworkSettings key={n.id} networkId={n.id} />),
+            <SpacerColumn size={1} />
+          )}
+        </>
+      )}
+    </View>
+  );
+};
+
+const NetworkSettings: React.FC<{ networkId: string }> = ({ networkId }) => {
+  const state = useSelector((state: RootState) =>
+    selectNetworkEnabled(state, networkId)
+  );
+  const dispatch = useAppDispatch();
+  const n = getNetwork(networkId);
+  if (!n) return null;
+  return (
+    <TertiaryBox fullWidth mainContainerStyle={{ padding: layout.padding_x1 }}>
+      <TouchableOpacity
+        onPress={() => {
+          dispatch(toggleNetwork({ networkId }));
+        }}
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          width: "100%",
+          justifyContent: "space-between",
+        }}
+      >
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <NetworkIcon networkId={n.id} size={20} />
+          <SpacerRow size={1} />
+          <BrandText style={fontSemibold14} key={n.id}>
+            {n.displayName}
+          </BrandText>
+        </View>
+        <Switch
+          // @ts-expect-error
+          activeThumbColor={primaryColor}
+          thumbColor={state ? primaryColor : neutral55}
+          trackColor={{ true: secondaryColor, false: neutralA3 }}
+          value={state}
+        />
+      </TouchableOpacity>
+    </TertiaryBox>
   );
 };

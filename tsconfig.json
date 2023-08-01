@@ -7,5 +7,5 @@
     "removeComments": false, // maybe required for webpack magic comments
     "target": "es6",
     "module": "esnext", // 👈️ set to esnext
-  }
+  },
 }

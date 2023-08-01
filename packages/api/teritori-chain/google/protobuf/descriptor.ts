@@ -1,3 +1,6 @@
+// @ts-nocheck
+// @ts-nocheck
+
 import { Long, DeepPartial } from "../../helpers";
 import * as _m0 from "protobufjs/minimal";
 export enum FieldDescriptorProto_Type {

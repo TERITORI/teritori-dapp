@@ -15,6 +15,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/crypto/keys/multisig"
 	"github.com/cosmos/cosmos-sdk/types/bech32"
 	"github.com/pkg/errors"
+	"go.uber.org/zap"
 	"gorm.io/datatypes"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -25,19 +26,39 @@ const universalBech32Prefix = "user"
 type multisigService struct {
 	multisigpb.UnimplementedMultisigServiceServer
 
-	publicKey      ed25519.PublicKey
-	privateKey     ed25519.PrivateKey
-	tokensDuration time.Duration
-	db             *gorm.DB
+	publicKey  ed25519.PublicKey
+	privateKey ed25519.PrivateKey
+	db         *gorm.DB
+	opts       *MultisigServiceOpts
 }
 
-func NewMultisigService(tokensDuration time.Duration, dbPath string) (multisigpb.MultisigServiceServer, error) {
+type MultisigServiceOpts struct {
+	TokensDuration time.Duration
+	DBPath         string
+	Logger         *zap.Logger
+}
+
+func (opts *MultisigServiceOpts) applyDefaults() {
+	if opts.TokensDuration == 0 {
+		opts.TokensDuration = time.Hour
+	}
+	if opts.DBPath == "" {
+		opts.DBPath = "multisig.db"
+	}
+	if opts.Logger == nil {
+		opts.Logger = zap.NewNop()
+	}
+}
+
+func NewMultisigService(opts MultisigServiceOpts) (multisigpb.MultisigServiceServer, error) {
+	opts.applyDefaults()
+
 	publicKey, privateKey, err := ed25519.GenerateKey(srand.Reader)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to generate key")
 	}
 
-	db, err := gorm.Open(sqlite.Open(dbPath), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open(opts.DBPath), &gorm.Config{})
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to open db")
 	}
@@ -46,10 +67,10 @@ func NewMultisigService(tokensDuration time.Duration, dbPath string) (multisigpb
 	}
 
 	return &multisigService{
-		publicKey:      publicKey,
-		privateKey:     privateKey,
-		tokensDuration: tokensDuration,
-		db:             db,
+		publicKey:  publicKey,
+		privateKey: privateKey,
+		db:         db,
+		opts:       &opts,
 	}, nil
 }
 
@@ -254,7 +275,6 @@ func (s *multisigService) TransactionsCounts(_ context.Context, req *multisigpb.
 	}
 
 	var countsByType []TransactionsCount
-	// we can't use .Joins( on signature because gorm does not expect a slice
 	query := transactionsQuery(s.db, userAddress, req.ChainId, req.MultisigAddress, multisigpb.ExecutionState_EXECUTION_STATE_UNSPECIFIED, nil)
 	if err := query.
 		Select("count(type) as Count, type as Type, final_hash IS NOT NULL as Executed").
@@ -658,7 +678,7 @@ func (s *multisigService) GetToken(_ context.Context, req *multisigpb.GetTokenRe
 		UserAddress: crossChainAddress,
 		Nonce:       nonce,
 		CreatedAt:   time.Now().UTC(),
-		Duration:    s.tokensDuration,
+		Duration:    s.opts.TokensDuration,
 	}
 
 	if err := s.db.Transaction(func(tx *gorm.DB) error {

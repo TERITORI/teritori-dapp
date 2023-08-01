@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { AminoMsg } from "@cosmjs/amino";
 import { MsgBurnTokens } from "./tx";
 import {Coin} from "../../../cosmos/base/v1beta1/coin";
@@ -19,13 +20,12 @@ export const AminoConverter = {
         amount: amount.map(coinStr => {
           const coin = Coin.decode(Buffer.from(coinStr));
           return {
-            amount: coin.amount,
             denom: coin.denom,
+            amount: coin.amount,
           }
         }),
         sender,
       }
-      console.log("converted", m)
       return m
     },
     fromAmino: ({
@@ -34,7 +34,10 @@ export const AminoConverter = {
     }: MsgBurnTokensAminoType["value"]): MsgBurnTokens => {
       return {
         sender,
-        amount // TODO
+        amount: amount.map(coin => {
+          const str = Buffer.from(Coin.encode(coin).finish()).toString();
+          return str;
+        })
       };
     }
   }

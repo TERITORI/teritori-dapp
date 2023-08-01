@@ -94,6 +94,7 @@ const getNetworkBalances = async (
         `${network.restEndpoint}/cosmos/bank/v1beta1/balances/${address}`
       );
       const responseJSON: CosmosBalancesResponse = await response.json();
+      console.log("responseJSON", responseJSON);
       return responseJSON.balances || [];
     }
 

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { GeneratedType, Registry } from "@cosmjs/proto-signing";
 import { MsgBurnTokens } from "./tx";
 export const registry: ReadonlyArray<[string, GeneratedType]> = [["/teritori.mint.v1beta1.MsgBurnTokens", MsgBurnTokens]];

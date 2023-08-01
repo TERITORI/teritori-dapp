@@ -51,9 +51,6 @@ const DAOManager: React.FC = () => {
   const network = getCosmosNetwork(networkId);
   const balances = useBalances(networkId, network?.coreDAOAddress);
   const { selectedWallet } = useSelectedWallet();
-  const makeProposal = useDAOMakeProposal(
-    getUserId(networkId, network?.coreDAOAddress)
-  );
   return (
     <View>
       <BrandText>Funds</BrandText>

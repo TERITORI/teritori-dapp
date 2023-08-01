@@ -7,14 +7,14 @@ import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useWallets } from "../../context/WalletsProvider";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import {
+  allNetworks,
   getNetwork,
   NetworkFeature,
-  NetworkInfo,
   NetworkKind,
-  selectableNetworks,
 } from "../../networks";
 import {
   selectAreTestnetsEnabled,
+  selectNetworksSettings,
   setSelectedNetworkId,
   setSelectedWalletId,
 } from "../../store/slices/settings";
@@ -39,6 +39,7 @@ export const NetworkSelectorMenu: FC<{
   const { setToastError } = useFeedbacks();
   const testnetsEnabled = useSelector(selectAreTestnetsEnabled);
   const selectedNetworkInfo = useSelectedNetworkInfo();
+  const networksSettings = useSelector(selectNetworksSettings);
 
   const onPressNetwork = (networkId: string) => {
     let walletProvider: WalletProvider | null = null;
@@ -90,13 +91,10 @@ export const NetworkSelectorMenu: FC<{
         borderBottomRightRadius: 0,
       }}
     >
-      {(process.env.DISPLAYED_NETWORKS_IDS || "")
-        .split(",")
-        .map((s) => s.trim())
-        .map(getNetwork)
-        .filter((n): n is NetworkInfo => !!n)
+      {allNetworks
         .filter((network) => {
           return (
+            networksSettings[network.id]?.enabled &&
             (testnetsEnabled || !network.testnet) &&
             (!forceNetworkId || network.id === forceNetworkId) && // check that it's the forced network id if forced to
             (!forceNetworkKind || network.kind === forceNetworkKind) && // check that it's the correct network kind if forced to
@@ -104,7 +102,7 @@ export const NetworkSelectorMenu: FC<{
               forceNetworkFeatures.every((feature) =>
                 network.features.includes(feature)
               )) &&
-            !!selectableNetworks.find((sn) => sn.id === network.id) && // check that it's in the selectable list
+            // !!selectableNetworks.find((sn) => sn.id === network.id) && // check that it's in the selectable list
             selectedNetworkInfo?.id !== network.id // check that it's not already selected
           );
         })
