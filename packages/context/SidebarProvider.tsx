@@ -70,6 +70,7 @@ export const useSidebar = () => {
     });
 
     dynamicAppsSelection["dappstore"] = SIDEBAR_LIST["DAppsStore"];
+    dynamicAppsSelection["videoplayer"] = SIDEBAR_LIST["videoplayer"];
 
     return dynamicAppsSelection;
   }, [availableApps, selectedApps]);

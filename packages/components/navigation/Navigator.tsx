@@ -36,11 +36,11 @@ import { StakeScreen } from "../../screens/Stake";
 import { SwapScreen } from "../../screens/Swap/SwapScreen";
 import { TNSHomeScreen } from "../../screens/TeritoriNameService/TNSHomeScreen";
 import { UserPublicProfileScreen } from "../../screens/UserPublicProfile/UserPublicProfileScreen";
+import { VideoPlayerScreen } from "../../screens/VideoPlayer/VideoPlayerScreen";
+import { VideoShowScreen } from "../../screens/VideoPlayer/VideoShowScreen";
 import { WalletManagerScreen } from "../../screens/WalletManager/WalletManagerScreen";
 import { WalletManagerWalletsScreen } from "../../screens/WalletManager/WalletsScreen";
 import { RootStackParamList } from "../../utils/navigation";
-import { VideoPlayerScreen } from "../../screens/VideoPlayer/VideoPlayerScreen";
-import { VideoShowScreen } from "../../screens/VideoPlayer/VideoShowScreen";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 export const screenTitle = (title: string) => "Teritori - " + title;
