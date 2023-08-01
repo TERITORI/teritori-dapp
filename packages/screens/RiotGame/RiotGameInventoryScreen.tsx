@@ -1,6 +1,7 @@
 import React from "react";
-import { Image, FlatList, View } from "react-native";
+import { Image, FlatList, View, StyleSheet } from "react-native";
 
+import { ButtonGroup } from "./component/ButtonGroup";
 import { GameContentView } from "./component/GameContentView";
 import { RipperAvatar } from "./component/RipperAvatar";
 import breedSVG from "../../../assets/game/breed.svg";
@@ -15,7 +16,7 @@ import { useRippers } from "../../hooks/riotGame/useRippers";
 import { isNFTStaked } from "../../utils/game";
 import { useAppNavigation } from "../../utils/navigation";
 import { yellowDefault } from "../../utils/style/colors";
-import { fontMedium32 } from "../../utils/style/fonts";
+import { fontMedium32, fontMedium48 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 
 export const RiotGameInventoryScreen = () => {
@@ -23,28 +24,31 @@ export const RiotGameInventoryScreen = () => {
 
   const { myAvailableRippers } = useRippers();
 
-  const gotoBreeding = () => {
-    navigation.navigate("RiotGameBreeding");
+  const gotoFusion = () => {
+    navigation.navigate("RiotGameFusion");
   };
 
   return (
     <GameContentView>
-      <FlexRow breakpoint={1200} justifyContent="space-around">
-        <View style={{ opacity: 0.6, marginTop: layout.padding_x4 }}>
+      <BrandText style={styles.pageTitle}>Invetory</BrandText>
+
+      <FlexRow
+        breakpoint={1200}
+        justifyContent="space-around"
+        style={{ marginTop: layout.padding_x2 }}
+      >
+        <View>
           <FlexRow justifyContent="space-between" alignItems="center">
             <BrandText style={fontMedium32}>Available Items</BrandText>
 
-            <CustomPressable>
-              {({ hovered }): React.ReactElement => (
-                <PrimaryButtonOutline
-                  disabled
-                  color={yellowDefault}
-                  size="SM"
-                  text={hovered ? "Coming soon" : "Fusion"}
-                  iconSVG={addCircleFilledSVG}
-                />
-              )}
-            </CustomPressable>
+            <ButtonGroup
+              size="XS"
+              buttons={[
+                { text: "Boxes", onPress: () => {} },
+                { text: "Keys", onPress: () => {} },
+                { text: "Perks", onPress: () => {} },
+              ]}
+            />
           </FlexRow>
 
           <FlatList
@@ -69,16 +73,21 @@ export const RiotGameInventoryScreen = () => {
           />
         </View>
 
-        <View style={{ minWidth: "500px", marginTop: layout.padding_x4 }}>
+        <View
+          style={{
+            minWidth: "500px",
+            alignSelf: "flex-start",
+          }}
+        >
           <FlexRow
             style={{ justifyContent: "space-between", alignItems: "center" }}
           >
             <BrandText style={fontMedium32}>Available Rippers</BrandText>
             <PrimaryButtonOutline
-              onPress={gotoBreeding}
+              onPress={gotoFusion}
               color={yellowDefault}
               size="SM"
-              text="Breed"
+              text="Fusion"
               iconSVG={breedSVG}
             />
           </FlexRow>
@@ -110,3 +119,10 @@ export const RiotGameInventoryScreen = () => {
     </GameContentView>
   );
 };
+
+const styles = StyleSheet.create({
+  pageTitle: {
+    alignSelf: "center",
+    ...(fontMedium48 as object),
+  },
+});

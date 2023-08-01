@@ -6,6 +6,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { FlatList, Pressable, StyleSheet, View } from "react-native";
 import { useSelector } from "react-redux";
 
+import { ButtonGroup } from "./component/ButtonGroup";
 import { EnrollSlot } from "./component/EnrollSlot";
 import { GameContentView } from "./component/GameContentView";
 import { RipperSelectorModal } from "./component/RipperGridSelectorModal";
@@ -40,12 +41,6 @@ import {
   squadWithdrawSeason1,
 } from "../../utils/game";
 import { useAppNavigation } from "../../utils/navigation";
-import {
-  neutral00,
-  neutral33,
-  secondaryColor,
-  yellowDefault,
-} from "../../utils/style/colors";
 import {
   fontMedium32,
   fontMedium48,
@@ -280,30 +275,14 @@ export const RiotGameEnrollScreen = () => {
           >
             <BrandText style={fontMedium32}>Enroll your Ripper(s)</BrandText>
 
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                marginRight: layout.padding_x2_5,
-              }}
-            >
-              <SimpleButton
-                text="Squad 1"
-                size="XS"
-                color={activeSquadId === 1 ? neutral00 : secondaryColor}
-                bgColor={activeSquadId === 1 ? yellowDefault : neutral33}
-                style={{ borderTopRightRadius: 0, borderBottomRightRadius: 0 }}
-                onPress={() => setActiveSquadId(1)}
-              />
-              <SimpleButton
-                text="Squad 2"
-                size="XS"
-                color={activeSquadId === 2 ? neutral00 : secondaryColor}
-                bgColor={activeSquadId === 2 ? yellowDefault : neutral33}
-                style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
-                onPress={() => setActiveSquadId(2)}
-              />
-            </View>
+            <ButtonGroup
+              size="XS"
+              style={{ marginRight: layout.padding_x2_5 }}
+              buttons={[
+                { text: "Squad 1", onPress: () => setActiveSquadId(1) },
+                { text: "Squad 2", onPress: () => setActiveSquadId(2) },
+              ]}
+            />
           </View>
 
           <FlatList

@@ -68,7 +68,9 @@ export const RipperAvatar: React.FC<RipperAvatarProps> = ({
 
       {isStaked && (
         <View style={[styles.labelContainer, { top: layout.padding_x1 }]}>
-          <BrandText style={[styles.label, styles.labelRed]}>Staked</BrandText>
+          <BrandText style={[styles.label, styles.labelRed]}>
+            In Fight
+          </BrandText>
         </View>
       )}
 

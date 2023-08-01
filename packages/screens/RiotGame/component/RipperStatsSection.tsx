@@ -50,6 +50,12 @@ export const RipperStatsSection: React.FC<RipperStatsSectionProps> = ({
         value={ripper && getRipperTraitValue(ripper, "Luck")}
         size={size}
       />
+      <RipperStat
+        containerStyle={{ marginTop }}
+        name="HP"
+        value={ripper && getRipperTraitValue(ripper, "Luck")}
+        size={size}
+      />
 
       {breedingsLeft !== undefined && (
         <RipperStat

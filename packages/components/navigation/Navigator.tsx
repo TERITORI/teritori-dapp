@@ -25,6 +25,7 @@ import { OrganizationsScreen } from "../../screens/Organizations/OrganizationsSc
 import { RiotGameBreedingScreen } from "../../screens/RiotGame/RiotGameBreedingScreen";
 import { RiotGameEnrollScreen } from "../../screens/RiotGame/RiotGameEnrollScreen";
 import { RiotGameFightScreen } from "../../screens/RiotGame/RiotGameFightScreen";
+import { RiotGameFusionScreen } from "../../screens/RiotGame/RiotGameFusionScreen";
 import { RiotGameInventoryScreen } from "../../screens/RiotGame/RiotGameInventoryScreen";
 import { RiotGameLeaderboardScreen } from "../../screens/RiotGame/RiotGameLeaderboardScreen";
 import { RiotGameMarketplaceScreen } from "../../screens/RiotGame/RiotGameMarketplaceScreen";
@@ -111,6 +112,14 @@ export const Navigator: React.FC = () => {
         options={{
           header: () => null,
           title: screenTitle("Riot Game Breeding"),
+        }}
+      />
+      <Stack.Screen
+        name="RiotGameFusion"
+        component={RiotGameFusionScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Riot Game Fusion"),
         }}
       />
       <Stack.Screen
