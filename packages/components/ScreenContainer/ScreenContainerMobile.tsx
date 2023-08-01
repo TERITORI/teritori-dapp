@@ -1,7 +1,6 @@
 import React, { FC } from "react";
 import {
   Platform,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   useWindowDimensions,

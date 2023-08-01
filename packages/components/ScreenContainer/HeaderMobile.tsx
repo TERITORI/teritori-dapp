@@ -1,9 +1,8 @@
 import React, { FC } from "react";
 import { View, StyleSheet, TouchableOpacity, Platform } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
 
-import { Notification } from "./Notification";
+// import { Notification } from "./Notification";
 import hamburgerCrossSVG from "../../../assets/icons/hamburger-button-cross.svg";
 import hamburgerSVG from "../../../assets/icons/hamburger-button.svg";
 import { useSidebar } from "../../context/SidebarProvider";

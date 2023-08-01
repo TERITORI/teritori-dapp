@@ -5872,6 +5872,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@react-native-clipboard/clipboard@npm:^1.11.2":
+  version: 1.11.2
+  resolution: "@react-native-clipboard/clipboard@npm:1.11.2"
+  peerDependencies:
+    react: ">=16.0"
+    react-native: ">=0.57.0"
+  checksum: a797ae8156451f58e75fd495e36396444e28b9859e35dd657720e4eb8859330ffe73341135db95ce2144c1ffb82de74587e494203217cbf255ff16f91b95db1e
+  languageName: node
+  linkType: hard
+
 "@react-native-community/checkbox@npm:^0.5.15":
   version: 0.5.16
   resolution: "@react-native-community/checkbox@npm:0.5.16"
@@ -14536,15 +14546,6 @@ __metadata:
   version: 2.4.0
   resolution: "expo-checkbox@npm:2.4.0"
   checksum: d468a6d8d23ea4f34651f1817b9ee46fce714cfb32d6461d12ec8514e65fc441748ba4752b688c2aa83f0c728b111fa81560bb6064dac24917d600ec69b2916e
-  languageName: node
-  linkType: hard
-
-"expo-clipboard@npm:~4.3.0":
-  version: 4.3.0
-  resolution: "expo-clipboard@npm:4.3.0"
-  peerDependencies:
-    expo: "*"
-  checksum: 7e278de9cb7eba88d78e42aec5c5f6c66cec2c5cdf9935a2ea15459e6192d9297e232c63f2926e6091d017fd1a51b2a96cf600e8961579264fb7d4ca882f7590
   languageName: node
   linkType: hard
 
@@ -26105,6 +26106,7 @@ __metadata:
     "@pinata/sdk": ^2.1.0
     "@react-native-anywhere/polyfill-base64": ^0.0.1-alpha.0
     "@react-native-async-storage/async-storage": 1.18.2
+    "@react-native-clipboard/clipboard": ^1.11.2
     "@react-native-community/checkbox": ^0.5.15
     "@react-native-masked-view/masked-view": 0.2.9
     "@react-native-picker/picker": 2.4.10
@@ -26148,7 +26150,6 @@ __metadata:
     expo: ^49.0.0
     expo-av: ~13.4.1
     expo-checkbox: ~2.4.0
-    expo-clipboard: ~4.3.0
     expo-dev-client: ~2.4.6
     expo-font: ~11.4.0
     expo-image-picker: ~14.3.2

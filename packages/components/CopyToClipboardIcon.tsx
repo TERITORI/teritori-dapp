@@ -1,4 +1,4 @@
-import * as Clipboard from "expo-clipboard";
+import Clipboard from "@react-native-clipboard/clipboard";
 import React from "react";
 import { TouchableOpacity } from "react-native";
 
@@ -22,7 +22,7 @@ export const CopyToClipboardIcon: React.FC<{
       title: "Copied",
       message: "",
     });
-    Clipboard.setStringAsync(text);
+    Clipboard.setString(text);
   };
 
   return (

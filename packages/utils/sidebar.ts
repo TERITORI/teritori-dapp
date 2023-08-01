@@ -25,12 +25,7 @@ export const SIDEBAR_LIST: SidebarRecordType = {
     id: "Feed",
     icon: feedSVG,
   },
-  messages: {
-    title: "Messages",
-    id: "Messages",
-    route: "Message",
-    icon: messagesSVG,
-  },
+
   launchpad: {
     title: "Launchpad",
     id: "Launchpad",
@@ -84,6 +79,12 @@ export const SIDEBAR_LIST: SidebarRecordType = {
     route: "Staking",
     icon: stakingSVG,
     disabledOn: [NetworkKind.Ethereum],
+  },
+  messages: {
+    title: "Messages",
+    id: "messages",
+    route: "Message",
+    icon: messagesSVG,
   },
   organizations: {
     title: "Organizations",

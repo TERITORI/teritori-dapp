@@ -19,7 +19,7 @@ import {
   fontSemibold11,
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { Conversation, Message, ReplyTo } from "../../../utils/types/message";
+import { Conversation, Message } from "../../../utils/types/message";
 import { getConversationAvatar } from "../../../weshnet/client/messageHelpers";
 
 interface SearchConversationProps {

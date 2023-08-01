@@ -7,7 +7,15 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { MOBILE_HEADER_HEIGHT } from "../utils/style/layout";
 
-export const KeyboardAvoidingView: React.FC = ({ children }) => {
+interface KeyboardAvoidingViewProps {
+  extraVerticalOffset?: number;
+  children: React.ReactNode;
+}
+
+export const KeyboardAvoidingView = ({
+  extraVerticalOffset = 0,
+  children,
+}: KeyboardAvoidingViewProps) => {
   const insets = useSafeAreaInsets();
 
   if (Platform.OS === "web") {
@@ -19,7 +27,11 @@ export const KeyboardAvoidingView: React.FC = ({ children }) => {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={{ flex: 1 }}
       keyboardVerticalOffset={
-        insets.top + insets.bottom + MOBILE_HEADER_HEIGHT - 20
+        insets.top +
+        insets.bottom +
+        MOBILE_HEADER_HEIGHT -
+        20 +
+        extraVerticalOffset
       }
     >
       {children}

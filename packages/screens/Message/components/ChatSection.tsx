@@ -162,7 +162,7 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
   const { height } = useWindowDimensions();
 
   return (
-    <KeyboardAvoidingView>
+    <KeyboardAvoidingView extraVerticalOffset={20}>
       <View
         style={[
           {
@@ -398,7 +398,7 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
                   marginHorizontal: layout.padding_x0_5,
                 }}
                 autoFocus={Platform.OS === "web"}
-                height={Math.max(40, inputHeight)}
+                height={Math.max(50, inputHeight)}
                 name="message"
                 placeHolder={
                   replyTo?.message ? "Add reply message" : "Add a Message"
@@ -409,7 +409,7 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
                 label=""
                 blurOnSubmit={false}
                 textInputStyle={{
-                  height: Math.max(20, inputHeight - 20),
+                  height: Math.max(30, inputHeight - 30),
                 }}
                 returnKeyType="send"
                 onSubmitEditing={() => {

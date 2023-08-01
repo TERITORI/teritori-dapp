@@ -20,7 +20,7 @@ export const DAppStoreScreen: ScreenFC<"DAppStore"> = () => {
       headerChildren={<BrandText>dApp Store</BrandText>}
     >
       <Header setSearchInput={setSearchInput} />
-      {/* <FullWidthSeparator /> */}
+      <FullWidthSeparator />
       <View
         style={{
           flexDirection: isMobile ? "column" : "row",

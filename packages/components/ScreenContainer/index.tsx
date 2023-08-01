@@ -8,7 +8,7 @@ import {
 } from "react-native";
 
 import { Header } from "./Header";
-import { Notification } from "./Notification";
+// import { Notification } from "./Notification";
 import { ScreenContainerMobile } from "./ScreenContainerMobile";
 import { useForceNetworkKind } from "../../hooks/useForceNetworkKind";
 import { useForceNetworkSelection } from "../../hooks/useForceNetworkSelection";
@@ -31,7 +31,6 @@ import { ConnectWalletButton } from "../TopMenu/ConnectWalletButton";
 import { Footer } from "../footers/Footer";
 import { Sidebar } from "../navigation/Sidebar";
 import { CartIconButtonBadge } from "../navigation/components/CartIconButtonBadge";
-import { SpacerRow } from "../spacer";
 
 export const ScreenContainer: React.FC<{
   headerChildren?: JSX.Element;

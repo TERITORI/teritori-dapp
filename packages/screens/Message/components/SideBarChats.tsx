@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Platform, View, useWindowDimensions } from "react-native";
 import { useSelector } from "react-redux";
 

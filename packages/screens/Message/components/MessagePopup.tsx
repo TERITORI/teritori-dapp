@@ -1,4 +1,4 @@
-import * as Clipboard from "expo-clipboard";
+import Clipboard from "@react-native-clipboard/clipboard";
 import React, { Dispatch, SetStateAction, useState } from "react";
 import {
   View,
@@ -125,7 +125,7 @@ export const MessagePopup = ({
       <SpacerColumn size={1} />
       <TouchableOpacity
         onPress={() => {
-          Clipboard.setStringAsync(message);
+          Clipboard.setString(message);
           setToastSuccess({
             title: "Copied",
             message: "",
