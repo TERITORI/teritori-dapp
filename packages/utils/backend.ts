@@ -18,13 +18,11 @@ import {
   GrpcWebImpl as P2eGrpcWebImpl,
   P2eService,
 } from "../api/p2e/v1/p2e";
-
 import {
   VideoServiceClientImpl,
   GrpcWebImpl as VideoGrpcWebImpl,
   VideoService,
 } from "../api/video/v1/video";
-
 import { getNetwork } from "../networks";
 
 const marketplaceClients: { [key: string]: MarketplaceService } = {};
@@ -125,7 +123,6 @@ export const mustGetFeedClient = (networkId: string | undefined) => {
   return client;
 };
 
-
 const videoClients: { [key: string]: VideoService } = {};
 export const getVideoClient = (networkId: string | undefined) => {
   const network = getNetwork(networkId);
@@ -134,8 +131,8 @@ export const getVideoClient = (networkId: string | undefined) => {
   }
   if (!videoClients[network.id]) {
     //test
-    const backendEndpoint = network.backendEndpoint;
-    // const backendEndpoint = "http://localhost:9090";
+    // const backendEndpoint = network.backendEndpoint;
+    const backendEndpoint = "http://localhost:9090";
 
     const rpc = new VideoGrpcWebImpl(backendEndpoint, {
       debug: false,
@@ -148,9 +145,7 @@ export const getVideoClient = (networkId: string | undefined) => {
 export const mustGetVideoClient = (networkId: string | undefined) => {
   const client = getVideoClient(networkId);
   if (!client) {
-    throw new Error(
-      `failed to get video client for network '${networkId}'`
-    );
+    throw new Error(`failed to get video client for network '${networkId}'`);
   }
   return client;
 };
