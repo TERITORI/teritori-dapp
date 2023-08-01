@@ -5,7 +5,7 @@ import { Pressable } from "react-native-hoverable";
 import { TrackVideoHover } from "./TrackVideoHover";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { parseUserId } from "../../networks";
-import { ipfsPinataUrl } from "../../utils/ipfs";
+import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { neutral77, primaryColor } from "../../utils/style/colors";
 import { fontSemibold14, fontMedium14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
@@ -86,13 +86,15 @@ export const VideoPlayerCard: React.FC<{
         />
         {selectedIndex === item.identifier && (
           <TrackImageHover
-            album={item}
+            videoInfo={item}
             hasLibrary={hasLibrary}
             userName={username}
           />
         )}
       </View>
-      <BrandText style={styles.contentTitle}>{item.videoMetaInfo.title}</BrandText>
+      <BrandText style={styles.contentTitle}>
+        {item.videoMetaInfo.title}
+      </BrandText>
       <View
         style={{
           display: "flex",
