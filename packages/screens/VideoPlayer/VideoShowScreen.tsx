@@ -621,14 +621,6 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
                   <SVG source={TipIcon} />
                   <BrandText style={styles.tipContent}>Tip</BrandText>
                 </Pressable>
-                {/* <Pressable style={styles.buttonContainer}>
-                  <SVG source={Share} />
-                  <BrandText style={styles.tipContent}>Share</BrandText>
-                </Pressable> */}
-                {/* <Pressable style={styles.buttonContainer}>
-                  <SVG source={Flag} />
-                  <BrandText style={styles.tipContent}>Report</BrandText>
-                </Pressable> */}
               </View>
             </View>
             <View style={styles.blueContents} />
