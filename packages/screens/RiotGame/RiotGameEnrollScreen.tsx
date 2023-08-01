@@ -6,7 +6,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { FlatList, Pressable, StyleSheet, View } from "react-native";
 import { useSelector } from "react-redux";
 
-import { ButtonGroup } from "./component/ButtonGroup";
+import { SimpleButtonGroup } from "./component/SimpleButtonGroup";
 import { EnrollSlot } from "./component/EnrollSlot";
 import { GameContentView } from "./component/GameContentView";
 import { RipperSelectorModal } from "./component/RipperGridSelectorModal";
@@ -275,7 +275,7 @@ export const RiotGameEnrollScreen = () => {
           >
             <BrandText style={fontMedium32}>Enroll your Ripper(s)</BrandText>
 
-            <ButtonGroup
+            <SimpleButtonGroup
               size="XS"
               style={{ marginRight: layout.padding_x2_5 }}
               buttons={[

@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import { StyleProp, View, ViewStyle } from "react-native";
+import { View, ViewStyle } from "react-native";
 
 import { SimpleButton } from "./SimpleButton";
 import {
   neutral00,
-  neutral22,
   neutral33,
   secondaryColor,
   yellowDefault,
@@ -15,13 +14,13 @@ type ButtonItem = {
   onPress: (idx: number) => void;
 };
 
-type ButtonGroupProps = {
+type SimpleButtonGroupProps = {
   size?: "XS" | "SM" | "M" | "XL";
   style?: ViewStyle;
   buttons: ButtonItem[];
 };
 
-export const ButtonGroup: React.FC<ButtonGroupProps> = (props) => {
+export const SimpleButtonGroup: React.FC<SimpleButtonGroupProps> = (props) => {
   const [activeIdx, setActiveIdx] = useState(0);
 
   const firstIdx = 0;

@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, TouchableOpacity, ViewStyle } from "react-native";
+import { StyleProp, StyleSheet, TouchableOpacity, ViewStyle } from "react-native";
 import { SvgProps } from "react-native-svg";
 
 import { BrandText } from "../../../components/BrandText";
@@ -18,8 +18,8 @@ interface SimpleButtonProps {
   color?: string;
   bgColor?: string;
   onPress?(): void;
-  containerStyle?: ViewStyle;
-  style?: ViewStyle;
+  containerStyle?: StyleProp<ViewStyle> | undefined;
+  style?: StyleProp<ViewStyle> | undefined;
   loading?: boolean;
   disabled?: boolean;
   iconSVG?: React.FC<SvgProps>;

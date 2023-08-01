@@ -1,16 +1,14 @@
 import React from "react";
 import { Image, FlatList, View, StyleSheet } from "react-native";
 
-import { ButtonGroup } from "./component/ButtonGroup";
 import { GameContentView } from "./component/GameContentView";
 import { RipperAvatar } from "./component/RipperAvatar";
+import { SimpleButtonGroup } from "./component/SimpleButtonGroup";
 import breedSVG from "../../../assets/game/breed.svg";
 import defaultInventoryItemPNG from "../../../assets/game/default-inventory-item.png";
-import addCircleFilledSVG from "../../../assets/icons/add-circle-filled.svg";
 import { BrandText } from "../../components/BrandText";
 import FlexRow from "../../components/FlexRow";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
-import { CustomPressable } from "../../components/buttons/CustomPressable";
 import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
 import { useRippers } from "../../hooks/riotGame/useRippers";
 import { isNFTStaked } from "../../utils/game";
@@ -41,7 +39,7 @@ export const RiotGameInventoryScreen = () => {
           <FlexRow justifyContent="space-between" alignItems="center">
             <BrandText style={fontMedium32}>Available Items</BrandText>
 
-            <ButtonGroup
+            <SimpleButtonGroup
               size="XS"
               buttons={[
                 { text: "Boxes", onPress: () => {} },
