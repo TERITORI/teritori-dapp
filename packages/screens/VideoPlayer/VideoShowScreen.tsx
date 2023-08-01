@@ -422,6 +422,7 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
                 <BrandText style={styles.contentDate}>
                   {lastViewDate(data?.viewLastTimestamp)}
                 </BrandText>
+                <BrandText style={styles.contentDate}>12 days ago</BrandText>
               </View>
               <View style={styles.btnGroup}>
                 <Pressable style={styles.buttonContainer}>

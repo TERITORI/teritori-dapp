@@ -1,5 +1,6 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import { View, Pressable, StyleSheet } from "react-native";
+
 import Avatar from "../../../assets/icons/player/avatar.svg";
 import Next from "../../../assets/icons/player/next.svg";
 import Pause from "../../../assets/icons/player/pause.svg";
@@ -51,7 +52,7 @@ export const VideoPlayer: React.FC = () => {
       gap: layout.padding_x0_5,
       justifyContent: "center",
     },
-    audioBox: {},
+    videoBox: {},
   });
   const clickPlayPause = () => {
     setIsPlay(!isPlay);
@@ -77,9 +78,6 @@ export const VideoPlayer: React.FC = () => {
             Artist
           </BrandText>
         </View>
-      </View>
-      <View style={styles.audioBox}>
-        <audio id="footer_audio" src={audioSrc} ref={audioRef} controls />
       </View>
     </View>
   );
