@@ -2,26 +2,26 @@ import React, { useState } from "react";
 import { View, StyleSheet } from "react-native";
 
 import { HoverView } from "./HoverView";
-import Code from "../../../assets/music-player/code.svg";
-import Delete from "../../../assets/music-player/delete.svg";
-import Enter from "../../../assets/music-player/enter.svg";
-import Link from "../../../assets/music-player/link.svg";
-import Share from "../../../assets/music-player/share.svg";
-import { signingMusicPlayerClient } from "../../client-creators/musicplayerClient";
+import Code from "../../../assets/icons/player/code.svg";
+import Delete from "../../../assets/icons/player/delete.svg";
+import Enter from "../../../assets/icons/player/enter.svg";
+import Link from "../../../assets/icons/player/link.svg";
+import Share from "../../../assets/icons/player/share.svg";
+import { signingVideoPlayerClient } from "../../client-creators/videoplayerClient";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { neutralA3, neutral33, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold13 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { AlbumInfo } from "../../utils/types/music";
+import { VideoInfoWithMeta } from "../../utils/types/video";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 
-interface MyAlbumMenuProps {
-  album: AlbumInfo;
+interface MyVideoMenuProps {
+  videoInfo: VideoInfoWithMeta;
 }
-export const MyAlbumMenu: React.FC<MyAlbumMenuProps> = ({ album }) => {
+export const MyVideoMenu: React.FC<MyVideoMenuProps> = ({ videoInfo }) => {
   const shareMenuWidth = 188;
   const lineHeight = 18;
   const selectedNetworkId = useSelectedNetworkId();
@@ -33,21 +33,23 @@ export const MyAlbumMenu: React.FC<MyAlbumMenuProps> = ({ album }) => {
     if (!wallet?.connected || !wallet.address) {
       return;
     }
-    const client = await signingMusicPlayerClient({
+    const client = await signingVideoPlayerClient({
       networkId: selectedNetworkId,
       walletAddress: wallet.address,
     });
     try {
-      const res = await client.deleteMusicAlbum({ identifier: album.id });
+      const res = await client.deleteVideo({
+        identifier: videoInfo.identifier,
+      });
       if (res.transactionHash) {
         setToastSuccess({
-          title: "Delete album",
+          title: "Delete video",
           message: `tx_hash: ${res.transactionHash}`,
         });
       }
     } catch (err) {
       setToastError({
-        title: "Failed to delete album",
+        title: "Failed to delete video",
         message: `Error: ${err}`,
       });
     }

@@ -129,4 +129,10 @@ export const SIDEBAR_LIST: SidebarRecordType = {
     route: "DAppStore",
     icon: dappStoreSVG,
   },
+  videoplayer: {
+    title: "Video",
+    id: "Video",
+    route: "VideoPlayer",
+    icon: dappStoreSVG,
+  },
 };
