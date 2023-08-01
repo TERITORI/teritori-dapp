@@ -1,10 +1,10 @@
-import React, { useRef, useEffect } from "react";
+import React, { useState } from "react";
 import { View, Pressable, StyleSheet } from "react-native";
 
-import Avatar from "../../../assets/media-player/avatar.svg";
-import Next from "../../../assets/media-player/next.svg";
-import Pause from "../../../assets/media-player/pause.svg";
-import Play from "../../../assets/media-player/play.svg";
+import Avatar from "../../../assets/icons/player/avatar.svg";
+import Next from "../../../assets/icons/player/next.svg";
+import Pause from "../../../assets/icons/player/pause.svg";
+import Play from "../../../assets/icons/player/play.svg";
 import {
   neutral17,
   neutral22,
@@ -52,7 +52,7 @@ export const VideoPlayer: React.FC = () => {
       gap: layout.padding_x0_5,
       justifyContent: "center",
     },
-    audioBox: {},
+    videoBox: {},
   });
   const clickPlayPause = () => {
     setIsPlay(!isPlay);
