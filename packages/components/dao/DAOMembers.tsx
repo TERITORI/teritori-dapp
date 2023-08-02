@@ -547,8 +547,7 @@ const useProposeToAddMembers = (daoId: string | undefined) => {
               },
             ],
           });
-          invalidateDAOProposals();
-          return;
+          break;
         }
         case NetworkKind.Gno: {
           const client = new GnoJSONRPCProvider(network.endpoint);
@@ -583,9 +582,10 @@ const useProposeToAddMembers = (daoId: string | undefined) => {
             },
             { gasWanted: 2000000 }
           );
-          invalidateDAOProposals();
+          break;
         }
       }
+      invalidateDAOProposals();
     },
     [daoId, groupAddress, invalidateDAOProposals, makeProposal]
   );
