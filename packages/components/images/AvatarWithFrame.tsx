@@ -8,6 +8,7 @@ import {
   CosmosNetworkInfo,
   GnoNetworkInfo,
   NetworkKind,
+  getNetwork,
   parseUserId,
 } from "../../networks";
 import { primaryColor } from "../../utils/style/colors";
@@ -17,21 +18,40 @@ import { AnimationFadeIn } from "../animations/AnimationFadeIn";
 
 type AvatarWithFrameSize = "XL" | "L" | "M" | "S" | "XS";
 
-export const AvatarWithFrame: React.FC<{
+export const UserAvatarWithFrame: React.FC<{
   userId: string | undefined;
   size?: AvatarWithFrameSize;
   style?: StyleProp<ViewStyle>;
 }> = ({ userId, size = "M", style }) => {
   const [network] = parseUserId(userId);
-  const sizedStyles = useMemo(
-    () => StyleSheet.flatten(flatStyles[size]),
-    [size]
-  );
   const {
     metadata: { image },
   } = useNSUserInfo(userId);
   const { isDAO } = useIsDAO(userId);
 
+  return (
+    <AvatarWithFrame
+      networkId={network?.id}
+      image={image}
+      isDAO={isDAO}
+      size={size}
+      style={style}
+    />
+  );
+};
+
+export const AvatarWithFrame: React.FC<{
+  networkId: string | undefined;
+  image: string | null | undefined;
+  size?: AvatarWithFrameSize;
+  isDAO: boolean;
+  style?: StyleProp<ViewStyle>;
+}> = ({ networkId, image, isDAO, size = "M", style }) => {
+  const network = getNetwork(networkId);
+  const sizedStyles = useMemo(
+    () => StyleSheet.flatten(flatStyles[size]),
+    [size]
+  );
   return (
     <View style={[styles.container, style]}>
       <SVG

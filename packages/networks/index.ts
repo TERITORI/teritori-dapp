@@ -214,6 +214,9 @@ export const getUserId = (
     return "";
   }
   const network = getNetwork(networkId);
+  if (network?.kind === NetworkKind.Gno && address.startsWith("gno.land/")) {
+    address = address.substring("gno.land/".length).replaceAll("/", "-");
+  }
   return `${network?.idPrefix}-${address}`;
 };
 

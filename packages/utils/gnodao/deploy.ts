@@ -11,6 +11,9 @@ export interface GnoDAOConfig {
   initialMembers: GnoDAOMember[];
   thresholdPercent: number;
   quorumPercent: number;
+  displayName: string;
+  description: string;
+  imageURI: string;
 }
 
 export const generateDAORealmSource = (conf: GnoDAOConfig) => `package ${
@@ -26,9 +29,10 @@ import (
 	dao_core "gno.land/p/demo/daodao/core"
 	dao_interfaces "gno.land/p/demo/daodao/interfaces"
 	"gno.land/p/demo/daodao/proposal_single"
-	"gno.land/p/demo/daodao/voting_group"
-	"gno.land/r/demo/groups"
+	"gno.land/p/demo/daodao/voting_group_v3"
+	"gno.land/r/demo/groups_v4"
 	modboards "gno.land/r/demo/modboards"
+  "gno.land/r/demo/dao_registry_v5"
 )
 
 var (
@@ -72,6 +76,10 @@ func init() {
 	registry.Register(modboards.NewCreateBoardHandler())
 	registry.Register(modboards.NewDeletePostHandler())
 	modboards.CreateBoard(mainBoardName)
+
+  dao_registry.Register(${JSON.stringify(conf.displayName)}, ${JSON.stringify(
+  conf.description
+)}, ${JSON.stringify(conf.imageURI)})
 }
 
 func Render(path string) string {
@@ -110,23 +118,30 @@ func GetBinaryMembers() string {
 		ss = append(ss, base64.RawURLEncoding.EncodeToString(member.Bytes()))
 	}
 	return strings.Join(ss, ",")
-}`;
+}
+
+func GetGroupID() uint64 {
+  return uint64(groupID)
+}
+`;
 
 export const adenaDeployGnoDAO = async (
   creator: string,
   conf: GnoDAOConfig
 ) => {
   const source = generateDAORealmSource(conf);
+  const pkgPath = `gno.land/r/demo/${conf.name}`;
   await adenaAddPkg(
     {
       creator,
       deposit: "1ugnot",
       package: {
         Name: conf.name,
-        Path: `gno.land/r/demo/${conf.name}`,
+        Path: pkgPath,
         Files: [{ Name: `${conf.name}.gno`, Body: source }],
       },
     },
     { gasWanted: 10000000 }
   );
+  return pkgPath;
 };

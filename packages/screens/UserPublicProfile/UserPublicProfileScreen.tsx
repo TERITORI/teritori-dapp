@@ -13,8 +13,8 @@ import { Quests } from "../../components/Quests";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { DAOMembers } from "../../components/dao/DAOMembers";
 import { DAOProposals } from "../../components/dao/DAOProposals";
-import { DAOSettings } from "../../components/dao/DAOSettings";
 import { DAOsList } from "../../components/dao/DAOsList";
+import { GnoDemo } from "../../components/dao/GnoDemo";
 import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
 import { UPPNFTs } from "../../components/userPublicProfile/UPPNFTs";
 import { useIsDAO } from "../../hooks/cosmwasm/useCosmWasmContractInfo";
@@ -148,8 +148,8 @@ const SelectedTabContent: React.FC<{
           req={{ networkId: network?.id, memberAddress: userAddress }}
         />
       );
-    case "daoSettings":
-      return <DAOSettings daoId={userId} />;
+    case "gnoDemo":
+      return <GnoDemo daoId={userId} />;
     default:
       return null;
   }

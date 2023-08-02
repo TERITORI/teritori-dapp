@@ -39,19 +39,13 @@ export const ORGANIZATION_DEPLOYER_STEPS = [
 ];
 
 export const LAUNCHING_PROCESS_STEPS: LaunchingProcessStepType[] = [
-  { title: "Book name", completeText: "Transaction finalized" },
   { title: "Create organization", completeText: "Transaction finalized" },
-  {
-    title: "Transfer name to organization",
-    completeText: "Transaction finalized",
-  },
 ];
 
 export const OrganizationDeployerScreen = () => {
   const selectedWallet = useSelectedWallet();
   const { setToastError } = useFeedbacks();
   const [daoAddress, setDAOAddress] = useState("");
-  // variables
   const [currentStep, setCurrentStep] = useState(0);
   const [step1DaoInfoFormData, setStep1DaoInfoFormData] =
     useState<CreateDaoFormType>();
@@ -85,7 +79,7 @@ export const OrganizationDeployerScreen = () => {
       switch (getNetwork(selectedWallet?.networkId)?.kind) {
         case NetworkKind.Gno: {
           const name = step1DaoInfoFormData?.associatedTeritoriNameService!;
-          await adenaDeployGnoDAO(selectedWallet?.address!, {
+          const pkgPath = await adenaDeployGnoDAO(selectedWallet?.address!, {
             name,
             maxVotingPeriodSeconds:
               parseInt(step2ConfigureVotingFormData?.days!, 10) * 24 * 60 * 60,
@@ -98,8 +92,12 @@ export const OrganizationDeployerScreen = () => {
             thresholdPercent:
               step2ConfigureVotingFormData?.minimumApprovalPercent!,
             quorumPercent: step2ConfigureVotingFormData?.supportPercent!,
+            displayName: step1DaoInfoFormData?.organizationName!,
+            description: step1DaoInfoFormData?.organizationDescription!,
+            imageURI: step1DaoInfoFormData?.imageUrl!,
           });
-          setDAOAddress("gno.land-r-demo-dao-" + name);
+          setLaunchingStep(1);
+          setDAOAddress(pkgPath);
           return true;
         }
         case NetworkKind.Cosmos: {
@@ -208,12 +206,14 @@ export const OrganizationDeployerScreen = () => {
           throw new Error("Network not supported " + selectedWallet?.networkId);
         }
       }
-    } catch (err: any) {
-      console.log(err.message);
-      setToastError({
-        title: "Failed to create DAO",
-        message: err.message,
-      });
+    } catch (err: unknown) {
+      console.log("failed to create DAO:", err);
+      if (err instanceof Error) {
+        setToastError({
+          title: "Failed to create DAO",
+          message: err.message,
+        });
+      }
       return false;
     }
   };

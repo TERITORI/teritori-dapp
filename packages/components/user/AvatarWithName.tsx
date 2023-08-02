@@ -8,7 +8,7 @@ import { gnoTeritoriNetwork } from "../../networks/gno-teritori";
 import { fontSemibold12 } from "../../utils/style/fonts";
 import { tinyAddress } from "../../utils/text";
 import { BrandText } from "../BrandText";
-import { AvatarWithFrame } from "../images/AvatarWithFrame";
+import { UserAvatarWithFrame } from "../images/AvatarWithFrame";
 
 export const AvatarWithName: React.FC<
   (
@@ -82,7 +82,7 @@ export const AvatarWithNameView: React.FC<{
   const [, userAddress] = parseUserId(userId);
   const content = (
     <View style={{ flexDirection: "row", alignItems: "center" }}>
-      <AvatarWithFrame
+      <UserAvatarWithFrame
         userId={userId}
         size="XS"
         style={{

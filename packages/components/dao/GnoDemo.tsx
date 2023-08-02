@@ -5,19 +5,21 @@ import { useState } from "react";
 import { TextInput, View } from "react-native";
 
 import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { useInvalidateDAOProposals } from "../../hooks/dao/useDAOProposals";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkKind, parseUserId } from "../../networks";
 import { ConfigureVotingSection } from "../../screens/Organizations/components/ConfigureVotingSection";
 import { toRawURLBase64String } from "../../utils/buffer";
 import { adenaVMCall, extractGnoNumber } from "../../utils/gno";
 import { fontSemibold20 } from "../../utils/style/fonts";
+import { modalMarginPadding } from "../../utils/style/modals";
 import { BrandText } from "../BrandText";
 import { PrimaryButton } from "../buttons/PrimaryButton";
+import { TextInputCustom } from "../inputs/TextInputCustom";
+import ModalBase from "../modals/ModalBase";
 import { SpacerColumn } from "../spacer";
 
-const defaultBoard = "dao_realm";
-
-export const DAOSettings: React.FC<{
+export const GnoDemo: React.FC<{
   daoId: string;
 }> = ({ daoId }) => {
   const [network, daoAddress] = parseUserId(daoId);
@@ -26,10 +28,11 @@ export const DAOSettings: React.FC<{
   if (network?.kind !== NetworkKind.Gno || !wallet) return null;
   return (
     <View>
+      <GnoCreateProposal daoId={daoId} />
+      <SpacerColumn size={4} />
       <CreateBoard daoId={daoId} />
       <SpacerColumn size={4} />
       <DeletePost daoId={daoId} />
-      <SpacerColumn size={4} />
       <SpacerColumn size={4} />
       <MintTori daoId={daoId} />
       <ConfigureVotingSection
@@ -61,7 +64,10 @@ const DeletePost: React.FC<{ daoId: string }> = ({ daoId }) => {
   const [network, daoAddress] = parseUserId(daoId);
   const wallet = useSelectedWallet();
   const { wrapWithFeedback } = useFeedbacks();
-  const [name, setName] = useState(defaultBoard);
+  const addressParts = daoAddress.split("/");
+  const [name, setName] = useState(
+    addressParts.length > 0 ? addressParts[addressParts.length - 1] : ""
+  );
   const [threadId, setThreadId] = useState("1");
   const [postId, setPostId] = useState("1");
   const [reason, setReason] = useState("Moderated");
@@ -168,7 +174,7 @@ const CreateBoard: React.FC<{ daoId: string }> = ({ daoId }) => {
   const [network, daoAddress] = parseUserId(daoId);
   const wallet = useSelectedWallet();
   const { wrapWithFeedback } = useFeedbacks();
-  const [name, setName] = useState(defaultBoard);
+  const [name, setName] = useState("");
 
   if (network?.kind !== NetworkKind.Gno || !wallet) return null;
   return (
@@ -244,6 +250,73 @@ const MintTori: React.FC<{ daoId: string }> = ({ daoId }) => {
         })}
       />
     </View>
+  );
+};
+
+export const GnoCreateProposal: React.FC<{ daoId: string | undefined }> = ({
+  daoId,
+}) => {
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [modalVisible, setModalVisible] = useState(false);
+  const [network, daoAddress] = parseUserId(daoId);
+  const selectedWallet = useSelectedWallet();
+  const { wrapWithFeedback } = useFeedbacks();
+  const invalidateDAOProposals = useInvalidateDAOProposals(daoId);
+  if (network?.kind !== NetworkKind.Gno || !selectedWallet) {
+    return null;
+  }
+  return (
+    <>
+      <PrimaryButton
+        text="Create sentiment proposal"
+        onPress={() => {
+          setModalVisible(true);
+        }}
+      />
+      <ModalBase
+        label={`Create proposal on ${daoAddress}`}
+        visible={modalVisible}
+        noBrokenCorners
+        onClose={() => setModalVisible(false)}
+      >
+        <TextInputCustom
+          label="Title"
+          name="title"
+          onChangeText={setTitle}
+          value={title}
+        />
+        <SpacerColumn size={2} />
+        <TextInputCustom
+          label="Description"
+          name="description"
+          onChangeText={setDescription}
+          value={description}
+          multiline
+          numberOfLines={10}
+        />
+        <SpacerColumn size={2} />
+        <PrimaryButton
+          text="Propose"
+          loader
+          style={{ marginBottom: modalMarginPadding }}
+          onPress={wrapWithFeedback(
+            async () => {
+              await adenaVMCall({
+                caller: selectedWallet.address,
+                send: "",
+                pkg_path: daoAddress,
+                func: "Propose",
+                args: ["0", title, description, ""],
+              });
+              setModalVisible(false);
+              await invalidateDAOProposals();
+            },
+            { title: "Success", message: "Proposal created" }
+          )}
+        />
+      </ModalBase>
+    </>
   );
 };
 

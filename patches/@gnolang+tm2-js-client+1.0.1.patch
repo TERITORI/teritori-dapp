@@ -40,7 +40,7 @@ index e7ce4d7..0a35279 100644
 -})(ABCIEndpoint || (exports.ABCIEndpoint = ABCIEndpoint = {}));
 +})(ABCIEndpoint = exports.ABCIEndpoint || (exports.ABCIEndpoint = {}));
 diff --git a/node_modules/@gnolang/tm2-js-client/bin/provider/jsonrpc/jsonrpc.d.ts b/node_modules/@gnolang/tm2-js-client/bin/provider/jsonrpc/jsonrpc.d.ts
-index 4342731..6a9b352 100644
+index 4342731..69f2922 100644
 --- a/node_modules/@gnolang/tm2-js-client/bin/provider/jsonrpc/jsonrpc.d.ts
 +++ b/node_modules/@gnolang/tm2-js-client/bin/provider/jsonrpc/jsonrpc.d.ts
 @@ -23,5 +23,5 @@ export declare class JSONRPCProvider implements Provider {
@@ -48,10 +48,10 @@ index 4342731..6a9b352 100644
      getStatus(): Promise<Status>;
      sendTransaction(tx: string): Promise<string>;
 -    waitForTransaction(hash: string, fromHeight?: number, timeout?: number): Promise<Tx>;
-+    waitForTransaction(hash: string, fromHeight?: number, timeout?: number): Promise<{tx: Tx; height: number; index: number}>;
++    waitForTransaction(hash: string, fromHeight?: number, timeout?: number): Promise<{tx: Tx, height: number, index: number}>;
  }
 diff --git a/node_modules/@gnolang/tm2-js-client/bin/provider/provider.d.ts b/node_modules/@gnolang/tm2-js-client/bin/provider/provider.d.ts
-index a5b37aa..0a5949b 100644
+index a5b37aa..d9aa2d8 100644
 --- a/node_modules/@gnolang/tm2-js-client/bin/provider/provider.d.ts
 +++ b/node_modules/@gnolang/tm2-js-client/bin/provider/provider.d.ts
 @@ -82,5 +82,5 @@ export interface Provider {
@@ -59,7 +59,7 @@ index a5b37aa..0a5949b 100644
       * @param {number} [timeout=15000] Optional wait timeout in MS
       */
 -    waitForTransaction(hash: string, fromHeight?: number, timeout?: number): Promise<Tx>;
-+    waitForTransaction(hash: string, fromHeight?: number, timeout?: number): Promise<{tx: Tx; height: number; index: number}>;
++    waitForTransaction(hash: string, fromHeight?: number, timeout?: number): Promise<{tx: Tx, height: number, index: number}>;
  }
 diff --git a/node_modules/@gnolang/tm2-js-client/bin/provider/types/abci.d.ts b/node_modules/@gnolang/tm2-js-client/bin/provider/types/abci.d.ts
 index 711bcda..0eaa40e 100644
@@ -75,7 +75,7 @@ index 711bcda..0eaa40e 100644
          } | null;
          account_number: string;
 diff --git a/node_modules/@gnolang/tm2-js-client/bin/provider/utility/provider.utility.d.ts b/node_modules/@gnolang/tm2-js-client/bin/provider/utility/provider.utility.d.ts
-index d476e4e..95e9801 100644
+index d476e4e..16a4448 100644
 --- a/node_modules/@gnolang/tm2-js-client/bin/provider/utility/provider.utility.d.ts
 +++ b/node_modules/@gnolang/tm2-js-client/bin/provider/utility/provider.utility.d.ts
 @@ -25,4 +25,4 @@ export declare const extractAccountNumberFromResponse: (abciData: string | null)
@@ -83,9 +83,9 @@ index d476e4e..95e9801 100644
   * @param {number} [timeout=15000] the timeout in MS for the search
   */
 -export declare const waitForTransaction: (provider: Provider, hash: string, fromHeight?: number, timeout?: number) => Promise<Tx>;
-+export declare const waitForTransaction: (provider: Provider, hash: string, fromHeight?: number, timeout?: number) => Promise<{tx: Tx; height: number; index: number}>;
++export declare const waitForTransaction: (provider: Provider, hash: string, fromHeight?: number, timeout?: number) => Promise<{tx: Tx, height: number, index: number}>;
 diff --git a/node_modules/@gnolang/tm2-js-client/bin/provider/utility/provider.utility.js b/node_modules/@gnolang/tm2-js-client/bin/provider/utility/provider.utility.js
-index 82a13a7..62f81c7 100644
+index 82a13a7..b860d1d 100644
 --- a/node_modules/@gnolang/tm2-js-client/bin/provider/utility/provider.utility.js
 +++ b/node_modules/@gnolang/tm2-js-client/bin/provider/utility/provider.utility.js
 @@ -167,7 +167,7 @@ var waitForTransaction = function (provider, hash, fromHeight, timeout) { return
@@ -93,7 +93,7 @@ index 82a13a7..62f81c7 100644
                                                      clearInterval(fetchInterval);
                                                      // Decode the transaction from amino
 -                                                    resolve(proto_1.Tx.decode(txRaw));
-+                                                    resolve({tx: proto_1.Tx.decode(txRaw), index: _i, height: block.block.header.height});
++                                                    resolve({tx: proto_1.Tx.decode(txRaw), height: parseInt(block.block.header.height, 10), index: _i});
                                                  }
                                              }
                                              _b.label = 4;

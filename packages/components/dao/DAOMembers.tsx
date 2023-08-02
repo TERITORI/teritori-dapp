@@ -1,3 +1,4 @@
+import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import React, { ComponentProps, useCallback, useRef, useState } from "react";
 import {
   Pressable,
@@ -23,7 +24,7 @@ import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkKind, getUserId, parseUserId } from "../../networks";
 import { toRawURLBase64String } from "../../utils/buffer";
-import { adenaVMCall } from "../../utils/gno";
+import { adenaVMCall, extractGnoNumber } from "../../utils/gno";
 import {
   neutral00,
   neutral33,
@@ -44,7 +45,7 @@ import { SVG } from "../SVG";
 import { SearchBarInput } from "../Search/SearchBarInput";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { PrimaryButton } from "../buttons/PrimaryButton";
-import { AvatarWithFrame } from "../images/AvatarWithFrame";
+import { UserAvatarWithFrame } from "../images/AvatarWithFrame";
 import ModalBase from "../modals/ModalBase";
 import { AvatarWithName } from "../user/AvatarWithName";
 
@@ -270,7 +271,7 @@ const UserCard: React.FC<{
       ]}
     >
       <OmniLink to={{ screen: "UserPublicProfile", params: { id: userId } }}>
-        <AvatarWithFrame
+        <UserAvatarWithFrame
           userId={userId}
           size="L"
           style={{
@@ -547,8 +548,13 @@ const useProposeToAddMembers = (daoId: string | undefined) => {
           return;
         }
         case NetworkKind.Gno: {
-          // TODO: get group id
-          const groupId = 1;
+          const client = new GnoJSONRPCProvider(network.endpoint);
+
+          const groupId = extractGnoNumber(
+            await client.evaluateExpression(daoAddress, "GetGroupID()")
+          );
+
+          console.log("groupId", groupId);
 
           const b64Messages: string[] = [];
           for (const member of membersToAdd) {

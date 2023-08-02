@@ -27,7 +27,7 @@ import { SecondaryButtonOutline } from "../buttons/SecondaryButtonOutline";
 import { SocialButton } from "../buttons/SocialButton";
 import { SocialButtonSecondary } from "../buttons/SocialButtonSecondary";
 import { ProfileButton } from "../hub/ProfileButton";
-import { AvatarWithFrame } from "../images/AvatarWithFrame";
+import { UserAvatarWithFrame } from "../images/AvatarWithFrame";
 
 export const UPPIntro: React.FC<{
   userId: string;
@@ -120,7 +120,7 @@ export const UPPIntro: React.FC<{
             disabled
           />
         )}
-        <AvatarWithFrame
+        <UserAvatarWithFrame
           userId={userId}
           style={{
             position: "absolute",
