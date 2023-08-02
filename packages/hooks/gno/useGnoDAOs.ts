@@ -21,7 +21,7 @@ export const useGnoDAOs = (networkId: string | undefined) => {
     const res: GnoDAORegistration[] = extractGnoJSONString(
       await client.evaluateExpression(
         "gno.land/r/demo/dao_registry_v5",
-        'ListJSON("", "", 0, false)'
+        'ListJSON("", "", 0, true)'
       )
     );
     console.log("gnoDAOs", res);
