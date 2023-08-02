@@ -1,7 +1,7 @@
 import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import { useQuery } from "@tanstack/react-query";
 
-import { gnoTest3Network } from "../networks/gno-test3";
+import { getGnoNetwork } from "../networks";
 import { getCosmosNameServiceQueryClient } from "../utils/contracts";
 import { extractGnoString } from "../utils/gno";
 
@@ -17,18 +17,25 @@ export const useNSNameOwner = (
         return null;
       }
 
+      if (tokenId.startsWith("gno.land/")) {
+        return tokenId;
+      }
+
       if (tokenId.endsWith(".gno")) {
-        const client = new GnoJSONRPCProvider(gnoTest3Network.endpoint);
+        const network = getGnoNetwork(networkId);
+        if (!network) {
+          return null;
+        }
+        const client = new GnoJSONRPCProvider(network.endpoint);
         const addr = extractGnoString(
           await client.evaluateExpression(
-            gnoTest3Network.nameServiceContractAddress,
+            network.nameServiceContractAddress,
             `string(GetUserByName("${tokenId.substring(
               0,
-              tokenId.length - 4
+              tokenId.length - ".gno".length
             )}").address)`
           )
         );
-        console.log("addr for", tokenId, "is", addr);
         return addr;
       }
 

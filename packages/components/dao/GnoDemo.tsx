@@ -44,7 +44,7 @@ export const GnoDemo: React.FC<{
                 form.minimumApprovalPercent
               )
             );
-            await adenaVMCall({
+            await adenaVMCall(network.id, {
               pkg_path: daoAddress,
               func: "Propose",
               caller: wallet.address,
@@ -80,7 +80,7 @@ const DeletePost: React.FC<{ daoId: string }> = ({ daoId }) => {
       }
       const client = new GnoJSONRPCProvider(network.endpoint);
       const boardIdRes = await client.evaluateExpression(
-        "gno.land/r/demo/modboards",
+        "gno.land/r/demo/modboards_v2",
         `GetBoardIDFromName("${name}")`
       );
       const boardIdNum = extractGnoNumber(boardIdRes);
@@ -89,7 +89,7 @@ const DeletePost: React.FC<{ daoId: string }> = ({ daoId }) => {
       }
       return extractGnoNumber(
         await client.evaluateExpression(
-          "gno.land/r/demo/modboards",
+          "gno.land/r/demo/modboards_v2",
           `getBoard(${boardIdNum}).flags.GetFlagCount(getFlagID(${threadId}, ${postId}))`
         )
       );
@@ -136,7 +136,7 @@ const DeletePost: React.FC<{ daoId: string }> = ({ daoId }) => {
           }
           const client = new GnoJSONRPCProvider(network.endpoint);
           const boardIdRes = await client.evaluateExpression(
-            "gno.land/r/demo/modboards",
+            "gno.land/r/demo/modboards_v2",
             `GetBoardIDFromName("${name}")`
           );
           console.log(boardIdRes);
@@ -150,6 +150,7 @@ const DeletePost: React.FC<{ daoId: string }> = ({ daoId }) => {
             encodeDeletePost(boardIdNum, threadIdNum, postIdNum, reason)
           );
           await adenaVMCall(
+            network.id,
             {
               pkg_path: daoAddress,
               func: "Propose",
@@ -194,6 +195,7 @@ const CreateBoard: React.FC<{ daoId: string }> = ({ daoId }) => {
         onPress={wrapWithFeedback(async () => {
           const msg = toRawURLBase64String(encodeCreateBoard(name));
           await adenaVMCall(
+            network.id,
             {
               pkg_path: daoAddress,
               func: "Propose",
@@ -240,7 +242,7 @@ const MintTori: React.FC<{ daoId: string }> = ({ daoId }) => {
         loader
         onPress={wrapWithFeedback(async () => {
           const msg = toRawURLBase64String(encodeMintTori(amount, recipient));
-          await adenaVMCall({
+          await adenaVMCall(network.id, {
             pkg_path: daoAddress,
             func: "Propose",
             caller: wallet.address,
@@ -302,7 +304,7 @@ export const GnoCreateProposal: React.FC<{ daoId: string | undefined }> = ({
           style={{ marginBottom: modalMarginPadding }}
           onPress={wrapWithFeedback(
             async () => {
-              await adenaVMCall({
+              await adenaVMCall(network.id, {
                 caller: selectedWallet.address,
                 send: "",
                 pkg_path: daoAddress,

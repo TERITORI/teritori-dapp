@@ -99,7 +99,7 @@ export const ProposalActions: React.FC<{
             default:
               throw new Error("invalid vote");
           }
-          await adenaVMCall({
+          await adenaVMCall(networkId, {
             caller: walletAddress,
             send: "",
             pkg_path: pkgPath,
@@ -168,6 +168,7 @@ export const ProposalActions: React.FC<{
           const walletAddress = selectedWallet.address;
           const [, pkgPath] = parseUserId(daoId);
           await adenaVMCall(
+            networkId,
             {
               caller: walletAddress,
               send: "",

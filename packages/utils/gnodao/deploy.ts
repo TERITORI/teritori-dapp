@@ -26,12 +26,13 @@ import (
 	"strings"
 	"time"
 
-	dao_core "gno.land/p/demo/daodao/core"
-	dao_interfaces "gno.land/p/demo/daodao/interfaces"
-	"gno.land/p/demo/daodao/proposal_single"
-	"gno.land/p/demo/daodao/voting_group_v3"
-	"gno.land/r/demo/groups_v4"
-	modboards "gno.land/r/demo/modboards"
+  dao_core "gno.land/p/demo/daodao/core_v3"
+	dao_interfaces "gno.land/p/demo/daodao/interfaces_v3"
+	"gno.land/p/demo/daodao/proposal_single_v4"
+	"gno.land/p/demo/daodao/voting_group_v5"
+	"gno.land/p/demo/jsonutil_v2"
+	"gno.land/r/demo/groups_v6"
+	modboards "gno.land/r/demo/modboards_v3"
   "gno.land/r/demo/dao_registry_v5"
 )
 
@@ -120,18 +121,24 @@ func GetBinaryMembers() string {
 	return strings.Join(ss, ",")
 }
 
+func GetProposalsJSON(moduleIndex int) string {
+	return jsonutil.FormatSlice(dao_core.GetProposalModule(daoCore, moduleIndex).Proposals())
+}
+
 func GetGroupID() uint64 {
   return uint64(groupID)
 }
 `;
 
 export const adenaDeployGnoDAO = async (
+  networkId: string,
   creator: string,
   conf: GnoDAOConfig
 ) => {
   const source = generateDAORealmSource(conf);
   const pkgPath = `gno.land/r/demo/${conf.name}`;
   await adenaAddPkg(
+    networkId,
     {
       creator,
       deposit: "1ugnot",

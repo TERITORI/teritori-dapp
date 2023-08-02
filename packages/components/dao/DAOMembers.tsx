@@ -19,6 +19,7 @@ import { useDAOGroup } from "../../hooks/dao/useDAOGroup";
 import { useDAOMakeProposal } from "../../hooks/dao/useDAOMakeProposal";
 import { useIsDAOMember } from "../../hooks/dao/useDAOMember";
 import { useDAOMembers } from "../../hooks/dao/useDAOMembers";
+import { useInvalidateDAOProposals } from "../../hooks/dao/useDAOProposals";
 import { useNameSearch } from "../../hooks/search/useNameSearch";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
@@ -507,6 +508,7 @@ const useProposeToRemoveMember = (daoId: string | undefined) => {
 const useProposeToAddMembers = (daoId: string | undefined) => {
   const makeProposal = useDAOMakeProposal(daoId);
   const { data: groupAddress } = useDAOGroup(daoId);
+  const invalidateDAOProposals = useInvalidateDAOProposals(daoId);
   return useCallback(
     async (senderAddress: string | undefined, membersToAdd: string[]) => {
       const weight = 1;
@@ -545,6 +547,7 @@ const useProposeToAddMembers = (daoId: string | undefined) => {
               },
             ],
           });
+          invalidateDAOProposals();
           return;
         }
         case NetworkKind.Gno: {
@@ -570,6 +573,7 @@ const useProposeToAddMembers = (daoId: string | undefined) => {
             );
           }
           await adenaVMCall(
+            network.id,
             {
               caller: senderAddress,
               send: "",
@@ -579,14 +583,11 @@ const useProposeToAddMembers = (daoId: string | undefined) => {
             },
             { gasWanted: 2000000 }
           );
-          return;
-        }
-        default: {
-          throw new Error("network not supported");
+          invalidateDAOProposals();
         }
       }
     },
-    [daoId, groupAddress, makeProposal]
+    [daoId, groupAddress, invalidateDAOProposals, makeProposal]
   );
 };
 

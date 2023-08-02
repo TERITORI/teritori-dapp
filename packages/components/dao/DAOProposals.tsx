@@ -34,6 +34,7 @@ export const DAOProposals: React.FC<{
   daoId: string | undefined;
   style?: StyleProp<ViewStyle>;
 }> = ({ daoId, style }) => {
+  console.log("proposals render", daoId);
   const { daoProposals } = useDAOProposals(daoId);
   return (
     <View style={style}>

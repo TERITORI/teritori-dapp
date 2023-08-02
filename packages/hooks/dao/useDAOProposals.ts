@@ -4,91 +4,81 @@ import { useCallback } from "react";
 
 import { useDAOFirstProposalModule } from "./useDAOProposalModules";
 import { DaoProposalSingleQueryClient } from "../../contracts-clients/dao-proposal-single/DaoProposalSingle.client";
-import { ProposalResponse } from "../../contracts-clients/dao-proposal-single/DaoProposalSingle.types";
+import {
+  ProposalResponse,
+  Status,
+} from "../../contracts-clients/dao-proposal-single/DaoProposalSingle.types";
 import {
   NetworkKind,
   mustGetNonSigningCosmWasmClient,
   parseUserId,
 } from "../../networks";
 import {
+  extractGnoJSONString,
   extractGnoNumber,
   extractGnoString,
-  proposalStatusFromNumber,
 } from "../../utils/gno";
 
-export const daoProposalsQueryKey = (
-  networkId: string | undefined,
-  proposalModuleAddres: string | undefined
-) => ["daoProposals", networkId, proposalModuleAddres];
+export const daoProposalsQueryKey = (daoId: string | undefined) => [
+  "dao-proposals",
+  daoId,
+];
 
 export type AppProposalResponse = ProposalResponse & {
   proposal: { actions: string[] };
 };
 
+type GnoProposalVotes = {
+  yes: number;
+  no: number;
+  abstain: number;
+};
+
+type GnoDAOProposal = {
+  id: number;
+  title: string;
+  description: string;
+  proposer: string;
+  status: "Open" | "Passed" | "Executed"; // can also be Unknown($value)
+  messages: unknown[]; // TODO: type
+  // Ballots     *avl.Tree // dev
+  votes: GnoProposalVotes;
+  // Status ProposalStatus
+};
+
 export const useDAOProposals = (daoId: string | undefined) => {
   const [network, daoAddress] = parseUserId(daoId);
-  const { daoProposals: cosmWasmDAOProposals, ...other } =
+  const { daoProposals: cosmWasmDAOProposals, ...cosmWasmOther } =
     useCosmWasmDAOProposals(daoId);
-  const { data: gnoDAOProposals } = useQuery(
-    daoProposalsQueryKey(network?.id, daoAddress),
+  const { data: gnoDAOProposals, ...gnoOther } = useQuery(
+    [daoProposalsQueryKey(daoId), NetworkKind.Gno],
     async () => {
+      console.log("halo");
+
       if (network?.kind !== NetworkKind.Gno) return [];
       const provider = new GnoJSONRPCProvider(network.endpoint);
 
-      const proposalsCount = extractGnoNumber(
-        await provider.evaluateExpression(
-          daoAddress,
-          "len(GetCore().ProposalModules()[0].Proposals())"
-        )
+      console.log("fetching proposals ", daoAddress, "GetProposalsJSON(0)");
+
+      const gnoProposals: GnoDAOProposal[] = extractGnoJSONString(
+        await provider.evaluateExpression(daoAddress, "GetProposalsJSON(0)")
       );
+
+      console.log("gnoProposals", gnoProposals);
 
       const proposals: AppProposalResponse[] = [];
 
-      for (let i = 0; i < proposalsCount; i++) {
-        const title = extractGnoString(
-          await provider.evaluateExpression(
-            daoAddress,
-            `GetCore().ProposalModules()[0].Proposals()[${i}].Title`
-          )
-        );
-        const description = extractGnoString(
-          await provider.evaluateExpression(
-            daoAddress,
-            `GetCore().ProposalModules()[0].Proposals()[${i}].Description`
-          )
-        );
-        const status = proposalStatusFromNumber(
-          extractGnoNumber(
-            await provider.evaluateExpression(
-              daoAddress,
-              `GetCore().ProposalModules()[0].Proposals()[${i}].Status`
-            )
-          )
-        );
-        const proposer = extractGnoString(
-          await provider.evaluateExpression(
-            daoAddress,
-            `GetCore().ProposalModules()[0].Proposals()[${i}].Proposer.String()`
-          )
-        );
-        const yesVotes = extractGnoNumber(
-          await provider.evaluateExpression(
-            daoAddress,
-            `GetCore().ProposalModules()[0].Proposals()[${i}].Votes.Yes`
-          )
-        );
-        const noVotes = extractGnoNumber(
-          await provider.evaluateExpression(
-            daoAddress,
-            `GetCore().ProposalModules()[0].Proposals()[${i}].Votes.No`
-          )
-        );
-        const abstainVotes = extractGnoNumber(
-          await provider.evaluateExpression(
-            daoAddress,
-            `GetCore().ProposalModules()[0].Proposals()[${i}].Votes.Abstain`
-          )
-        );
+      for (let i = 0; i < gnoProposals.length; i++) {
+        const prop = gnoProposals[i];
+        const title = prop.title;
+        const description = prop.description;
+        const status = prop.status.toLowerCase() as Status;
+        const proposer = prop.proposer;
+        const yesVotes = prop.votes.yes;
+        const noVotes = prop.votes.no;
+        const abstainVotes = prop.votes.abstain;
+
+        // threshold should be stored in the proposal for executed proposals (maybe passed too)
         const threshold =
           extractGnoNumber(
             await provider.evaluateExpression(
@@ -103,12 +93,8 @@ export const useDAOProposals = (daoId: string | undefined) => {
               `uint64(*GetCore().ProposalModules()[0].Threshold().ThresholdQuorum.Quorum.Percent)`
             )
           ) / 10000;
-        const numActions = extractGnoNumber(
-          await provider.evaluateExpression(
-            daoAddress,
-            `len(GetCore().ProposalModules()[0].Proposals()[${i}].Messages)`
-          )
-        );
+
+        const numActions = prop.messages.length;
         const actions: string[] = [];
         for (let m = 0; m < numActions; m++) {
           try {
@@ -156,12 +142,15 @@ export const useDAOProposals = (daoId: string | undefined) => {
     },
     { staleTime: Infinity, enabled: !!daoId }
   );
+  if (network?.kind === NetworkKind.Gno) {
+    return {
+      daoProposals: gnoDAOProposals,
+      ...gnoOther,
+    };
+  }
   return {
-    daoProposals:
-      network?.kind === NetworkKind.Gno
-        ? gnoDAOProposals
-        : cosmWasmDAOProposals,
-    ...other,
+    daoProposals: cosmWasmDAOProposals,
+    ...cosmWasmOther,
   };
 };
 
@@ -173,7 +162,7 @@ export const useCosmWasmDAOProposals = (daoId: string | undefined) => {
   const proposalModuleAddress = daoFirstProposalModule?.address;
 
   const { data, ...other } = useQuery(
-    daoProposalsQueryKey(networkId, proposalModuleAddress),
+    [daoProposalsQueryKey(daoId), NetworkKind.Cosmos],
     async () => {
       if (!networkId || !proposalModuleAddress) return null;
 
@@ -213,20 +202,8 @@ export const useCosmWasmDAOProposals = (daoId: string | undefined) => {
 
 export const useInvalidateDAOProposals = (daoId: string | undefined) => {
   const queryClient = useQueryClient();
-  const { daoFirstProposalModule } = useDAOFirstProposalModule(daoId);
-  return useCallback(() => {
-    const [network, daoAddress] = parseUserId(daoId);
-    switch (network?.kind) {
-      case NetworkKind.Cosmos:
-        return queryClient.invalidateQueries(
-          daoProposalsQueryKey(network?.id, daoFirstProposalModule?.address)
-        );
-      case NetworkKind.Gno:
-        return queryClient.invalidateQueries(
-          daoProposalsQueryKey(network?.id, daoAddress)
-        );
-      default:
-        return () => {};
-    }
-  }, [daoFirstProposalModule?.address, daoId, queryClient]);
+  return useCallback(
+    () => queryClient.invalidateQueries(daoProposalsQueryKey(daoId)),
+    [queryClient, daoId]
+  );
 };

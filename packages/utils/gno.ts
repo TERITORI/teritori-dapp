@@ -1,7 +1,7 @@
 import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 
 import { Status } from "../contracts-clients/dao-proposal-single/DaoProposalSingle.types";
-import { gnoTeritoriNetwork } from "../networks/gno-teritori";
+import { mustGetGnoNetwork } from "../networks";
 
 export interface AdenaDoContractMessage {
   type: string;
@@ -22,11 +22,13 @@ export interface AdenaDoContractOpts {
 }
 
 export const adenaDoContract = async (
+  networkId: string,
   messages: AdenaDoContractMessage[],
   opts?: AdenaDoContractOpts
 ) => {
   const adena = (window as any).adena;
-  const client = new GnoJSONRPCProvider(gnoTeritoriNetwork.endpoint);
+  const network = mustGetGnoNetwork(networkId);
+  const client = new GnoJSONRPCProvider(network.endpoint);
   const height = await client.getBlockNumber();
   const req: RequestDocontractMessage = {
     messages,
@@ -66,10 +68,15 @@ export interface VmCall {
 }
 
 export const adenaVMCall = async (
+  networkId: string,
   vmCall: VmCall,
   opts?: AdenaDoContractOpts
 ) => {
-  await adenaDoContract([{ type: "/vm.m_call", value: vmCall }], opts);
+  await adenaDoContract(
+    networkId,
+    [{ type: "/vm.m_call", value: vmCall }],
+    opts
+  );
 };
 
 export interface Package {
@@ -90,15 +97,19 @@ export interface VmAddPackage {
 }
 
 export const adenaAddPkg = async (
+  networkId: string,
   vmAddPackage: VmAddPackage,
   opts?: AdenaDoContractOpts
 ) => {
-  console.log("vmAddPackage", vmAddPackage);
-  await adenaDoContract([{ type: "/vm.m_addpkg", value: vmAddPackage }], {
-    gasFee: 1,
-    gasWanted: 5000000,
-    ...opts,
-  });
+  await adenaDoContract(
+    networkId,
+    [{ type: "/vm.m_addpkg", value: vmAddPackage }],
+    {
+      gasFee: 1,
+      gasWanted: 5000000,
+      ...opts,
+    }
+  );
 };
 
 // this is hacky af

@@ -74,28 +74,37 @@ export const OrganizationDeployerScreen = () => {
     return num_days * 3600 * 24 + num_hours * 3600 + num_minutes * 60;
   };
 
+  const network = getNetwork(selectedWallet?.networkId);
+
   const createDaoContract = async (): Promise<boolean> => {
     try {
-      switch (getNetwork(selectedWallet?.networkId)?.kind) {
+      switch (network?.kind) {
         case NetworkKind.Gno: {
           const name = step1DaoInfoFormData?.associatedTeritoriNameService!;
-          const pkgPath = await adenaDeployGnoDAO(selectedWallet?.address!, {
-            name,
-            maxVotingPeriodSeconds:
-              parseInt(step2ConfigureVotingFormData?.days!, 10) * 24 * 60 * 60,
-            initialMembers: (step3MemberSettingFormData?.members || []).map(
-              (member) => ({
-                address: member.addr,
-                weight: parseInt(member.weight, 10),
-              })
-            ),
-            thresholdPercent:
-              step2ConfigureVotingFormData?.minimumApprovalPercent!,
-            quorumPercent: step2ConfigureVotingFormData?.supportPercent!,
-            displayName: step1DaoInfoFormData?.organizationName!,
-            description: step1DaoInfoFormData?.organizationDescription!,
-            imageURI: step1DaoInfoFormData?.imageUrl!,
-          });
+          const pkgPath = await adenaDeployGnoDAO(
+            network.id,
+            selectedWallet?.address!,
+            {
+              name,
+              maxVotingPeriodSeconds:
+                parseInt(step2ConfigureVotingFormData?.days!, 10) *
+                24 *
+                60 *
+                60,
+              initialMembers: (step3MemberSettingFormData?.members || []).map(
+                (member) => ({
+                  address: member.addr,
+                  weight: parseInt(member.weight, 10),
+                })
+              ),
+              thresholdPercent:
+                step2ConfigureVotingFormData?.minimumApprovalPercent!,
+              quorumPercent: step2ConfigureVotingFormData?.supportPercent!,
+              displayName: step1DaoInfoFormData?.organizationName!,
+              description: step1DaoInfoFormData?.organizationDescription!,
+              imageURI: step1DaoInfoFormData?.imageUrl!,
+            }
+          );
           setLaunchingStep(1);
           setDAOAddress(pkgPath);
           return true;

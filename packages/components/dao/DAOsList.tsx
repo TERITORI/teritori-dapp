@@ -39,10 +39,7 @@ export const DAOsList: React.FC<{
       {(gnoDAOs || []).map((item) => (
         <GnoDAOCard
           key={item.pkgPath}
-          daoId={getUserId(
-            networkId,
-            item.pkgPath.substring("gno.land/".length).replaceAll("/", "-")
-          )}
+          daoId={getUserId(networkId, item.pkgPath)}
           registration={item}
           style={{
             marginHorizontal: halfGap,
