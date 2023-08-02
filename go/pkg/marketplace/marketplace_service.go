@@ -959,7 +959,6 @@ func (s *MarkteplaceService) DApps(ctx context.Context, req *marketplacepb.DApps
 	return &marketplacepb.DAppsResponse{Group: s.dAppStoreProvider.GetDapps()}, nil
 }
 
-// TODO: consider merging this into NFTs call
 func (s *MarkteplaceService) SearchNames(ctx context.Context, req *marketplacepb.SearchNamesRequest) (*marketplacepb.SearchNamesResponse, error) {
 	const maxLimit = 21
 	limit := req.Limit
@@ -990,15 +989,13 @@ func (s *MarkteplaceService) SearchNames(ctx context.Context, req *marketplacepb
 		}
 	}
 
-	var dbNames []indexerdb.Name
-	if err := s.conf.IndexerDB.Limit(int(limit)).Where("names.value ~* ?", req.Input).Find(&dbNames).Error; err != nil {
-		return nil, errors.Wrap(err, "failed to read names db")
-	}
-
-	s.conf.Logger.Info("search names", zap.Int("db", len(dbNames)))
-
 	missing := int(limit) - len(names)
 	if missing > 0 {
+		var dbNames []indexerdb.Name
+		if err := s.conf.IndexerDB.Limit(missing).Where("names.value ~* ?", req.Input).Find(&dbNames).Error; err != nil {
+			return nil, errors.Wrap(err, "failed to read names db")
+		}
+		s.conf.Logger.Info("search names", zap.Int("db", len(dbNames)))
 		for _, n := range dbNames[:min(missing, len(dbNames))] {
 			names = append(names, n.Value)
 		}
