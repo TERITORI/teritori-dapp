@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-import { acc } from "react-native-reanimated";
 import { useSelector } from "react-redux";
 
 import { Wallet } from "./wallet";

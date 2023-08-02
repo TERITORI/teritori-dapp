@@ -111,7 +111,8 @@ export const ProposalActions: React.FC<{
         default:
           throw new Error("network not supported");
       }
-      await Promise.all([invalidateDAOVoteInfo(), invalidateDAOProposals()]);
+      invalidateDAOVoteInfo();
+      invalidateDAOProposals();
       setToastSuccess({ title: "Success", message: "Vote submitted" });
     } catch (err: any) {
       setToastError({

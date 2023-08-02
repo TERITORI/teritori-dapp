@@ -8,7 +8,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { StatusBar } from "expo-status-bar";
 import { MetaMaskProvider } from "metamask-react";
-import React, { ComponentProps } from "react";
+import React from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { Platform, View } from "react-native";
 import { MenuProvider } from "react-native-popup-menu";
