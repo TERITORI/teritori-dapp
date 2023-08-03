@@ -6,6 +6,7 @@ import React, {
   useEffect,
 } from "react";
 import { View, Pressable, StyleSheet, Image, TextInput } from "react-native";
+import { useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 
 import DefaultAlbumImage from "../../../assets/icons/player/album.png";
@@ -17,9 +18,9 @@ import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getUserId } from "../../networks";
+import { selectNFTStorageAPI } from "../../store/slices/settings";
 import { defaultSocialFeedFee } from "../../utils/fee";
-import { ipfsURLToHTTPURL } from "../../utils/ipfs";
-import { generateIpfsKey } from "../../utils/social-feed";
+import { generateIpfsKey, ipfsURLToHTTPURL } from "../../utils/ipfs";
 import {
   neutral17,
   neutral33,
@@ -30,7 +31,7 @@ import {
 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { LocalFileData } from "../../utils/types/feed";
+import { LocalFileData } from "../../utils/types/files";
 import { VideoMetaInfo } from "../../utils/types/video";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
@@ -120,6 +121,7 @@ const Step1Component: React.FC<{
   const selectedNetworkId = useSelectedNetworkId();
   const selectedWallet = useSelectedWallet();
   const userId = getUserId(selectedNetworkId, selectedWallet?.address);
+  const userIPFSKey = useSelector(selectNFTStorageAPI);
 
   const paddingHorizontal = layout.padding_x2_5;
   const styles = StyleSheet.create({
@@ -196,7 +198,8 @@ const Step1Component: React.FC<{
     const file = e.target?.files![0];
     const video = document.createElement("video");
     video.preload = "metadata";
-    const pinataJWTKey = await generateIpfsKey(selectedNetworkId, userId);
+    const pinataJWTKey =
+      userIPFSKey || (await generateIpfsKey(selectedNetworkId, userId));
     video.addEventListener("loadedmetadata", async () => {
       window.URL.revokeObjectURL(video.src);
       if (!pinataJWTKey) {
