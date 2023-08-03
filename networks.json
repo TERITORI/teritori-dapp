@@ -6,7 +6,8 @@
     "displayName": "Teritori",
     "icon": "icons/networks/teritori.svg",
     "features": [
-      "NFTMarketplace"
+      "NFTMarketplace",
+      "SocialFeed"
     ],
     "walletUrlForStaking": "https://explorer.teritori.com/teritori/staking",
     "currencies": [
@@ -130,7 +131,8 @@
     "displayName": "Teritori Testnet",
     "icon": "icons/networks/teritori.svg",
     "features": [
-      "NFTMarketplace"
+      "NFTMarketplace",
+      "SocialFeed"
     ],
     "currencies": [
       {
@@ -533,7 +535,9 @@
     "kind": "Gno",
     "displayName": "Gno Testnet",
     "icon": "icons/networks/gno.svg",
-    "features": [],
+    "features": [
+      "SocialFeed"
+    ],
     "currencies": [
       {
         "denom": "ugnot",
@@ -561,7 +565,9 @@
     "kind": "Gno",
     "displayName": "Gno Devnet",
     "icon": "icons/networks/gno.svg",
-    "features": [],
+    "features": [
+      "SocialFeed"
+    ],
     "currencies": [
       {
         "denom": "ugnot",
