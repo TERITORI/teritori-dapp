@@ -277,6 +277,15 @@ export const mustGetGnoNetwork = (
   return network;
 };
 
+export const getGnoNetworkFromChainId = (chainId: string | undefined) => {
+  if (!chainId) {
+    return undefined;
+  }
+  return allNetworks.find(
+    (network) => network.kind === NetworkKind.Gno && network.chainId === chainId
+  );
+};
+
 export const getEthereumNetwork = (
   networkId: string | undefined
 ): EthereumNetworkInfo | undefined => {
