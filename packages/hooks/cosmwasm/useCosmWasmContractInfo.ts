@@ -76,6 +76,6 @@ export const useIsDAO = (userId: string | undefined) => {
     return { isDAO: true };
   }
   return {
-    isDAO: contractVersion?.contract === "crates.io:dao-core",
+    isDAO: contractVersion?.contract.includes("dao-core"),
   };
 };

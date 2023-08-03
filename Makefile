@@ -208,7 +208,7 @@ $(CONTRACTS_CLIENTS_DIR)/$(VAULT_PACKAGE): node_modules
 $(CONTRACTS_CLIENTS_DIR)/$(DAO_VOTING_CW4_PACKAGE): node_modules
 	rm -fr $(DAO_CONTRACTS_REPO)
 	git clone git@github.com:TERITORI/$(DAO_CONTRACTS_REPO).git
-	cd $(DAO_CONTRACTS_REPO) && git checkout 7f89ad1604e8022f202aef729853b0c8c7196988
+	cd $(DAO_CONTRACTS_REPO) && git checkout v2.1.0
 	rm -fr $@
 	npx cosmwasm-ts-codegen generate \
 		--plugin client \
@@ -222,7 +222,7 @@ $(CONTRACTS_CLIENTS_DIR)/$(DAO_VOTING_CW4_PACKAGE): node_modules
 $(CONTRACTS_CLIENTS_DIR)/$(DAO_VOTING_CW20_STAKED_PACKAGE): node_modules
 	rm -fr $(DAO_CONTRACTS_REPO)
 	git clone git@github.com:TERITORI/$(DAO_CONTRACTS_REPO).git
-	cd $(DAO_CONTRACTS_REPO) && git checkout v2.2.0
+	cd $(DAO_CONTRACTS_REPO) && git checkout v2.1.0
 	rm -fr $@
 	npx cosmwasm-ts-codegen generate \
 		--plugin client \
@@ -236,7 +236,7 @@ $(CONTRACTS_CLIENTS_DIR)/$(DAO_VOTING_CW20_STAKED_PACKAGE): node_modules
 $(CONTRACTS_CLIENTS_DIR)/$(DAO_VOTING_CW721_STAKED_PACKAGE): node_modules
 	rm -fr $(DAO_CONTRACTS_REPO)
 	git clone git@github.com:TERITORI/$(DAO_CONTRACTS_REPO).git
-	cd $(DAO_CONTRACTS_REPO) && git checkout v2.2.0
+	cd $(DAO_CONTRACTS_REPO) && git checkout v2.1.0
 	rm -fr $@
 	npx cosmwasm-ts-codegen generate \
 		--plugin client \

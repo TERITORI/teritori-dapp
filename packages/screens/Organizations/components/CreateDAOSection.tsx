@@ -1,30 +1,43 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 
 import { ImagePreviewer } from "./ImagePreviewer";
 import { RadioDescriptionSelector } from "./RadioDescriptionSelector";
 import { BrandText } from "../../../components/BrandText";
 import { NetworkIcon } from "../../../components/NetworkIcon";
+import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
+import { FileUploader } from "../../../components/fileUploader";
 import { SearchNSInputContainer } from "../../../components/inputs/SearchNSInputContainer";
 import {
   SelectInput,
   SelectInputData,
 } from "../../../components/inputs/SelectInput";
-import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
+import {
+  Label,
+  TextInputCustom,
+} from "../../../components/inputs/TextInputCustom";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { teritoriNetwork } from "../../../networks/teritori";
 import { teritoriTestnetNetwork } from "../../../networks/teritori-testnet";
-import { selectableCosmosNetworks } from "../../../networks";
+import { IMAGE_MIME_TYPES } from "../../../utils/mime";
+import {
+  neutral33,
+  neutral77,
+  neutralA3,
+  secondaryColor,
+} from "../../../utils/style/colors";
 import { NetworkKind } from "../../../networks";
-import { neutral33, neutral77 } from "../../../utils/style/colors";
 import { fontSemibold20, fontSemibold28 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { ORGANIZATION_DEPLOYER_STEPS } from "../OrganizationDeployerScreen";
 import { CreateDaoFormType, DaoType } from "../types";
+import {gnoTeritoriNetwork} from "../../../networks/gno-teritori";
+import {gnoDevNetwork} from "../../../networks/gno-dev";
+
 
 interface CreateDAOSectionProps {
   onSubmit: (form: CreateDaoFormType) => void;
@@ -48,11 +61,11 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
     mode: "all",
   });
   const structure = watch("structure");
-  const imageUrl = watch("imageUrl");
+  const image = watch("image");
   const associatedTeritoriNameService = watch("associatedTeritoriNameService");
 
   // Networks concerned by the feature //TODO: Add more later
-  const networks = [teritoriNetwork, teritoriTestnetNetwork];
+  const networks = [teritoriNetwork, teritoriTestnetNetwork, gnoTeritoriNetwork, gnoDevNetwork];
   // Networks selectable in the SelectInput
   const selectableNetworks = networks.map((n) => {
     return {
@@ -84,15 +97,17 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
 
   // Specify if associatedTeritoriNameService is an existing name held by the user. This name will not be minted ah the DAO creation
   useEffect(() => {
-    setValue("isNameAlreadyMinted", !!selectedName);
+    setValue("userOwnsName", !!selectedName);
   }, [selectedName, setValue]);
 
   // functions
   const onErrorImageLoading = () =>
-    setError("imageUrl", {
+    setError("image", {
       type: "pattern",
       message: "This image is invalid",
     });
+
+  const [isImageHovered, setImageHovered] = useState(false);
 
   // returns
   return (
@@ -105,7 +120,43 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
         <BrandText style={styles.sectionTitle}>Claim a name</BrandText>
         <SpacerColumn size={2.5} />
         <View style={styles.section}>
-          <ImagePreviewer uri={imageUrl} onError={onErrorImageLoading} />
+          {/*<ImagePreviewer uri={imageUrl} onError={onErrorImageLoading} />*/}
+
+          <CustomPressable
+            onHoverOut={() => setImageHovered(false)}
+            onHoverIn={() => setImageHovered(true)}
+          >
+            <Label
+              style={{ color: isImageHovered ? secondaryColor : neutralA3 }}
+              isRequired
+            >
+              Organization's image
+            </Label>
+            <SpacerColumn size={1.5} />
+            <FileUploader
+              onUpload={(files) => setValue("image", files?.[0])}
+              mimeTypes={IMAGE_MIME_TYPES}
+            >
+              {({ onPress }) => (
+                <TouchableOpacity onPress={onPress}>
+                  <ImagePreviewer
+                    uri={image?.url}
+                    onError={onErrorImageLoading}
+                    style={isImageHovered && { borderColor: secondaryColor }}
+                  />
+                </TouchableOpacity>
+                // <IconBox
+                //   icon={audioSVG}
+                //   onPress={onPress}
+                //   style={{ marginRight: layout.padding_x2_5 }}
+                //   disabled={
+                //     !!formValues.files?.length || !!formValues.gifs?.length
+                //   }
+                // />
+              )}
+            </FileUploader>
+          </CustomPressable>
+
           <SpacerRow size={2.5} />
           <View style={styles.fill}>
             <View style={styles.row}>
@@ -145,9 +196,7 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
                   }}
                   networkId={selectedNetwork.value.toString()}
                   ownerAddress={selectedWallet?.address}
-                  searchText={
-                    selectedName ? "" : watch("associatedTeritoriNameService")
-                  }
+                  searchText={selectedName ? "" : associatedTeritoriNameService}
                 >
                   <TextInputCustom<CreateDaoFormType>
                     noBrokenCorners
@@ -167,7 +216,7 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
                       selectedNetwork?.kind === NetworkKind.Gno
                         ? "your_organization"
                         : "your-organization"
-                    }                    
+                    }
                     name="associatedTeritoriNameService"
                     rules={{ required: true }}
                   />
@@ -175,17 +224,17 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
               </View>
             </View>
             <View style={{ zIndex: -1 }}>
-              <SpacerColumn size={2.5} />
-              <TextInputCustom<CreateDaoFormType>
-                noBrokenCorners
-                height={48}
-                control={control}
-                variant="labelOutside"
-                label="Organization's image url"
-                placeHolder="https://example.com/preview.png"
-                name="imageUrl"
-                rules={{ required: true }}
-              />
+              {/*<SpacerColumn size={2.5} />*/}
+              {/*<TextInputCustom<CreateDaoFormType>*/}
+              {/*  noBrokenCorners*/}
+              {/*  height={48}*/}
+              {/*  control={control}*/}
+              {/*  variant="labelOutside"*/}
+              {/*  label="Organization's image url"*/}
+              {/*  placeHolder="https://example.com/preview.png"*/}
+              {/*  name="imageUrl"*/}
+              {/*  rules={{ required: true }}*/}
+              {/*/>*/}
               <SpacerColumn size={2.5} />
               <TextInputCustom<CreateDaoFormType>
                 noBrokenCorners
@@ -255,7 +304,7 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
           size="M"
           text={`Next: ${ORGANIZATION_DEPLOYER_STEPS[1]}`}
           onPress={handleSubmit(onSubmit)}
-          disabled={!isValid}
+          disabled={!isValid || !image}
         />
       </View>
     </View>

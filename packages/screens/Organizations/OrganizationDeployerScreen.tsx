@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
+import { useSelector } from "react-redux";
 
 import { ConfigureVotingSection } from "./components/ConfigureVotingSection";
 import { CreateDAOSection } from "./components/CreateDAOSection";
@@ -28,8 +29,13 @@ import {
   getUserId,
   mustGetCosmosNetwork,
 } from "../../networks";
-import { createDaoTokenBased, createDaoMemberBased, createDaoNftBased } from "../../utils/dao";
-import {adenaDeployGnoDAO} from "../../utils/gnodao/deploy";
+import { selectNFTStorageAPI } from "../../store/slices/settings";
+import {
+  createDaoTokenBased,
+  createDaoMemberBased,
+  createDaoNftBased,
+} from "../../utils/dao";
+import { adenaDeployGnoDAO } from "../../utils/gnodao/deploy";
 
 export const ORGANIZATION_DEPLOYER_STEPS = [
   "Create a DAO",
@@ -50,6 +56,7 @@ export const LAUNCHING_PROCESS_STEPS: LaunchingProcessStepType[] = [
 
 export const OrganizationDeployerScreen = () => {
   const selectedWallet = useSelectedWallet();
+  const userIPFSKey = useSelector(selectNFTStorageAPI);
   const { setToastError } = useFeedbacks();
   const [daoAddress, setDAOAddress] = useState("");
   const [currentStep, setCurrentStep] = useState(0);
@@ -110,7 +117,7 @@ export const OrganizationDeployerScreen = () => {
               quorumPercent: step2ConfigureVotingFormData?.supportPercent!,
               displayName: step1DaoInfoFormData?.organizationName!,
               description: step1DaoInfoFormData?.organizationDescription!,
-              imageURI: step1DaoInfoFormData?.imageUrl!,
+              imageURI: step1DaoInfoFormData?.image.url!,
             }
           );
           setLaunchingStep(1);
@@ -125,7 +132,6 @@ export const OrganizationDeployerScreen = () => {
           ) {
             return false;
           }
-
           const networkId = selectedWallet.networkId;
           const network = mustGetCosmosNetwork(networkId);
           const daoFactoryContractAddress = network.daoFactoryContractAddress!;
@@ -134,7 +140,6 @@ export const OrganizationDeployerScreen = () => {
           let createDaoRes = null;
           if (step1DaoInfoFormData.structure === DaoType.NFT_BASED) {
             if (!step3NFTSettingFormData) return false;
-
             createDaoRes = await createDaoNftBased(
               {
                 networkId: step1DaoInfoFormData.networkId,
@@ -143,7 +148,7 @@ export const OrganizationDeployerScreen = () => {
                 name: step1DaoInfoFormData.organizationName,
                 description: step1DaoInfoFormData.organizationDescription,
                 tns: step1DaoInfoFormData.associatedTeritoriNameService,
-                imageUrl: step1DaoInfoFormData.imageUrl,
+                image: step1DaoInfoFormData.image,
                 considerListedNFTs: step3NFTSettingFormData.considerListedNFTs,
                 nftContractAddress: step3NFTSettingFormData.nftContractAddress,
                 quorum: getPercent(step2ConfigureVotingFormData.supportPercent),
@@ -155,8 +160,9 @@ export const OrganizationDeployerScreen = () => {
                   step2ConfigureVotingFormData.hours,
                   step2ConfigureVotingFormData.minutes
                 ),
-                isNameAlreadyMinted: step1DaoInfoFormData.isNameAlreadyMinted,
+                userOwnsName: step1DaoInfoFormData.userOwnsName,
                 onStepChange: setLaunchingStep,
+                userIPFSKey,
               },
               "auto"
             );
@@ -170,12 +176,14 @@ export const OrganizationDeployerScreen = () => {
                 name: step1DaoInfoFormData.organizationName,
                 description: step1DaoInfoFormData.organizationDescription,
                 tns: step1DaoInfoFormData.associatedTeritoriNameService,
-                imageUrl: step1DaoInfoFormData.imageUrl,
+                image: step1DaoInfoFormData.image,
                 tokenName: step3TokenSettingFormData.tokenName,
                 tokenSymbol: step3TokenSettingFormData.tokenSymbol,
-                tokenHolders: step3TokenSettingFormData.tokenHolders.map((item) => {
-                  return { address: item.address, amount: item.balance };
-                }),
+                tokenHolders: step3TokenSettingFormData.tokenHolders.map(
+                  (item) => {
+                    return { address: item.address, amount: item.balance };
+                  }
+                ),
                 quorum: getPercent(step2ConfigureVotingFormData.supportPercent),
                 threshold: getPercent(
                   step2ConfigureVotingFormData.minimumApprovalPercent
@@ -185,14 +193,15 @@ export const OrganizationDeployerScreen = () => {
                   step2ConfigureVotingFormData.hours,
                   step2ConfigureVotingFormData.minutes
                 ),
-                isNameAlreadyMinted: step1DaoInfoFormData.isNameAlreadyMinted,
+                userOwnsName: step1DaoInfoFormData.userOwnsName,
                 onStepChange: setLaunchingStep,
+                userIPFSKey,
               },
               "auto"
             );
           } else if (step1DaoInfoFormData.structure === DaoType.MEMBER_BASED) {
             if (!step3MemberSettingFormData) return false;
-            const { daoAddress, executeResult } = await createDaoMemberBased(
+            createDaoRes = await createDaoMemberBased(
               {
                 networkId: step1DaoInfoFormData.networkId,
                 sender: walletAddress,
@@ -200,7 +209,7 @@ export const OrganizationDeployerScreen = () => {
                 name: step1DaoInfoFormData.organizationName,
                 description: step1DaoInfoFormData.organizationDescription,
                 tns: step1DaoInfoFormData.associatedTeritoriNameService,
-                imageUrl: step1DaoInfoFormData.imageUrl,
+                image: step1DaoInfoFormData.image,
                 members: step3MemberSettingFormData.members.map((value) => ({
                   addr: value.addr,
                   weight: parseInt(value.weight, 10),
@@ -214,19 +223,18 @@ export const OrganizationDeployerScreen = () => {
                   step2ConfigureVotingFormData.hours,
                   step2ConfigureVotingFormData.minutes
                 ),
-                isNameAlreadyMinted: step1DaoInfoFormData.isNameAlreadyMinted,
+                userOwnsName: step1DaoInfoFormData.userOwnsName,
                 onStepChange: setLaunchingStep,
+                userIPFSKey,
               },
               "auto"
             );
-            createDaoRes = executeResult;
-            setDAOAddress(daoAddress);
           } else {
             return false;
           }
 
-          // console.log("TX hash: ", createDaoRes.transactionHash);
           if (createDaoRes) {
+            setDAOAddress(createDaoRes.daoAddress);
             return true;
           } else {
             setToastError({
@@ -236,10 +244,10 @@ export const OrganizationDeployerScreen = () => {
             return false;
           }
         }
-        default: return false;
+        default:
+          return false;
       }
-    }
-    catch (err: unknown) {
+    } catch (err: unknown) {
       console.log("failed to create DAO:", err);
       if (err instanceof Error) {
         setToastError({
@@ -339,7 +347,10 @@ export const OrganizationDeployerScreen = () => {
                 : styles.hidden
             }
           >
-            <MemberBasedSettingsSection onSubmit={onSubmitMemberSettings} />
+            <MemberBasedSettingsSection
+              onSubmit={onSubmitMemberSettings}
+              networkId={step1DaoInfoFormData?.networkId}
+            />
           </View>
 
           <View style={currentStep === 3 ? styles.show : styles.hidden}>
@@ -348,6 +359,7 @@ export const OrganizationDeployerScreen = () => {
               votingSettingData={step2ConfigureVotingFormData}
               tokenSettingData={step3TokenSettingFormData}
               memberSettingData={step3MemberSettingFormData}
+              nftContractSettingData={step3NFTSettingFormData}
               onSubmit={onStartLaunchingProcess}
             />
           </View>

@@ -83,7 +83,7 @@ export const ReviewInformationSection: React.FC<
           title="Organization's image"
           value={() => (
             <Image
-              source={{ uri: organizationData?.imageUrl }}
+              source={{ uri: organizationData?.image.url }}
               style={styles.image}
             />
           )}
@@ -167,10 +167,10 @@ export const ReviewInformationSection: React.FC<
         )}
       {organizationData &&
         organizationData.structure === DaoType.MEMBER_BASED && (
-          <ReviewCollapsable title="Member settings">
+          <ReviewCollapsable title="Members settings">
             {memberSettingData?.members.map((member, index) => (
               <Fragment key={index}>
-                <SpacerColumn size={1} />
+                {index > 0 && <SpacerColumn size={1} />}
                 <View key={index} style={styles.fill}>
                   <ReviewCollapsableItem
                     title={`MEMBER #${index + 1}`}
@@ -187,10 +187,16 @@ export const ReviewInformationSection: React.FC<
           </ReviewCollapsable>
         )}
       {organizationData && organizationData.structure === DaoType.NFT_BASED && (
-        <ReviewCollapsable title="Contracts settings">
+        <ReviewCollapsable title="Contract settings">
           <ReviewCollapsableItem
             title="NFT Collection Contract"
             value={nftContractSettingData?.nftContractAddress}
+          />
+          <SpacerColumn size={1} />
+          <ReviewCollapsableItem
+            title="Consider NFTs listed on the marketplace (but not sold yet) eligible
+            to the DAO"
+            value={nftContractSettingData?.considerListedNFTs ? "true" : "false"}
           />
 
           {/*{nftContractSettingData?.contracts.map((contract, index) => (*/}

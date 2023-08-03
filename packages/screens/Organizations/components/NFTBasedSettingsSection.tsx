@@ -64,7 +64,7 @@ export const NFTBasedSettingsSection: React.FC<Props> = ({ onSubmit }) => {
     <View style={styles.fill}>
       <ScrollView contentContainerStyle={styles.container}>
         <BrandText style={fontSemibold28}>
-          Choose your contracts settings below
+          Choose your contract settings below
         </BrandText>
         <SpacerColumn size={2.5} />
 
@@ -131,7 +131,7 @@ export const NFTBasedSettingsSection: React.FC<Props> = ({ onSubmit }) => {
         {/*  </View>*/}
         {/*))}*/}
 
-        <SecondaryButton size="M" text="Add More" onPress={addContractField} />
+        {/*<SecondaryButton size="M" text="Add More" onPress={addContractField} />*/}
       </ScrollView>
 
       <View style={styles.footer}>

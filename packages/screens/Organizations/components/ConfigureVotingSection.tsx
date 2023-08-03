@@ -1,10 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import {
-  ScrollView,
-  StyleSheet,
-  View,
-} from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
 import { RangeSlider } from "../../../components/RangeSlider";
@@ -15,9 +11,7 @@ import { patternOnlyNumbers } from "../../../utils/formRules";
 import { neutral33, neutral77, neutralA3 } from "../../../utils/style/colors";
 import { fontSemibold14, fontSemibold28 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import {
-  ORGANIZATION_DEPLOYER_STEPS,
-} from "../OrganizationDeployerScreen";
+import { ORGANIZATION_DEPLOYER_STEPS } from "../OrganizationDeployerScreen";
 import { ConfigureVotingFormType, DaoType } from "../types";
 
 interface ConfigureVotingSectionProps {
@@ -46,9 +40,7 @@ export const ConfigureVotingSection: React.FC<ConfigureVotingSectionProps> = ({
   // returns
   return (
     <View style={styles.fill}>
-      <ScrollView
-        contentContainerStyle={styles.container}
-      >
+      <ScrollView contentContainerStyle={styles.container}>
         <BrandText style={fontSemibold28}>
           Choose your voting settings below
         </BrandText>

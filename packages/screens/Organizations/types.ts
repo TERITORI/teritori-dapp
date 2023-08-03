@@ -1,3 +1,5 @@
+import { LocalFileData } from "../../utils/types/files";
+
 export enum DaoType {
   MEMBER_BASED = 0,
   TOKEN_BASED = 1,
@@ -8,11 +10,11 @@ export enum DaoType {
 export type CreateDaoFormType = {
   organizationName: string;
   associatedTeritoriNameService: string;
-  isNameAlreadyMinted: boolean;
+  userOwnsName: boolean;
   networkId: string;
   organizationDescription: string;
   structure: DaoType;
-  imageUrl: string;
+  image: LocalFileData;
 };
 
 export type ConfigureVotingFormType = {
