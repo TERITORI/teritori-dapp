@@ -52,7 +52,7 @@ export const SelectInput: React.FC<Props> = ({
   setData,
   disabled,
   style,
- boxStyle,
+  boxStyle,
   label,
   isRequired,
 }) => {
