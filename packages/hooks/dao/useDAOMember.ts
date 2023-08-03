@@ -30,7 +30,13 @@ export const useDAOMember = (
     },
     {
       staleTime: Infinity,
-      enabled: !!((enabled ?? true) && networkId && groupAddress && userId),
+      enabled: !!(
+        (enabled ?? true) &&
+        network?.kind === NetworkKind.Cosmos &&
+        networkId &&
+        groupAddress &&
+        userId
+      ),
     }
   );
   const { data: gnoData } = useQuery(
@@ -55,7 +61,12 @@ export const useDAOMember = (
     },
     {
       staleTime: Infinity,
-      enabled: !!((enabled ?? true) && daoId && userId),
+      enabled: !!(
+        (enabled ?? true) &&
+        network?.kind === NetworkKind.Gno &&
+        daoId &&
+        userId
+      ),
     }
   );
   return {
