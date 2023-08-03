@@ -17,7 +17,6 @@ import { fontSemibold14, fontSemibold28 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import {
   ORGANIZATION_DEPLOYER_STEPS,
-  votingType,
 } from "../OrganizationDeployerScreen";
 import { ConfigureVotingFormType, DaoType } from "../types";
 
@@ -112,9 +111,7 @@ export const ConfigureVotingSection: React.FC<ConfigureVotingSectionProps> = ({
       <View style={styles.footer}>
         <PrimaryButton
           size="M"
-          text={`Next: ${ORGANIZATION_DEPLOYER_STEPS[2]} ${
-            type ? votingType(type) : "..."
-          }`}
+          text={`Next: ${ORGANIZATION_DEPLOYER_STEPS[2]}`}
           onPress={handleSubmit(onSubmit)}
         />
       </View>

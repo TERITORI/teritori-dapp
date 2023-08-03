@@ -29,11 +29,12 @@ import {
   mustGetCosmosNetwork,
 } from "../../networks";
 import { createDaoTokenBased, createDaoMemberBased, createDaoNftBased } from "../../utils/dao";
+import {adenaDeployGnoDAO} from "../../utils/gnodao/deploy";
 
 export const ORGANIZATION_DEPLOYER_STEPS = [
   "Create a DAO",
   "Configure voting",
-  "Set",
+  "Set members or contract",
   "Review information",
   "Launch organization",
 ];
@@ -46,15 +47,6 @@ export const LAUNCHING_PROCESS_STEPS: LaunchingProcessStepType[] = [
     completeText: "Transaction finalized",
   },
 ];
-
-export const votingType = (type: DaoType) =>
-  type === DaoType.NFT_BASED
-    ? "contracts"
-    : type === DaoType.MEMBER_BASED
-    ? "members"
-    : type === DaoType.TOKEN_BASED
-    ? "tokens"
-    : "";
 
 export const OrganizationDeployerScreen = () => {
   const selectedWallet = useSelectedWallet();
@@ -244,8 +236,10 @@ export const OrganizationDeployerScreen = () => {
             return false;
           }
         }
+        default: return false;
       }
-    } catch (err: unknown) {
+    }
+    catch (err: unknown) {
       console.log("failed to create DAO:", err);
       if (err instanceof Error) {
         setToastError({
