@@ -174,7 +174,7 @@ export const SwapView: React.FC = () => {
   const atomCurrency = useMemo(
     () =>
       selectedNetwork?.currencies.find(
-        (currencyInfo) =>
+        (currencyInfo: CurrencyInfo) =>
           getNativeCurrency(selectedNetworkId, currencyInfo?.denom)?.denom ===
           cosmosNetwork?.stakeCurrency
       ),
@@ -187,7 +187,7 @@ export const SwapView: React.FC = () => {
   const toriCurrency = useMemo(
     () =>
       selectedNetwork?.currencies.find(
-        (currencyInfo) =>
+        (currencyInfo: CurrencyInfo) =>
           getNativeCurrency(selectedNetworkId, currencyInfo?.denom)?.denom ===
           teritoriNetwork?.stakeCurrency
       ),
@@ -222,7 +222,7 @@ export const SwapView: React.FC = () => {
   const selectableCurrencies = useMemo(
     () =>
       selectedNetwork?.currencies.filter(
-        (currencyInfo) =>
+        (currencyInfo: CurrencyInfo) =>
           currencyIn?.denom !== currencyInfo.denom &&
           currencyOut?.denom !== currencyInfo.denom &&
           ((currencyInfo.kind === "ibc" && !currencyInfo.deprecated) ||

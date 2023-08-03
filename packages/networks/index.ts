@@ -18,7 +18,8 @@ import { cosmosThetaNetwork } from "./cosmos-hub-theta";
 import { ethereumNetwork } from "./ethereum";
 import { ethereumGoerliNetwork } from "./ethereum-goerli";
 import { gnoDevNetwork } from "./gno-dev";
-import { gnoTestnetNetwork } from "./gno-testnet";
+import { gnoTeritoriNetwork } from "./gno-teritori";
+import { gnoTest3Network } from "./gno-test3";
 import { junoNetwork } from "./juno";
 import { osmosisNetwork } from "./osmosis";
 import { osmosisTestnetNetwork } from "./osmosis-testnet";
@@ -27,6 +28,7 @@ import { teritoriNetwork } from "./teritori";
 import { teritoriTestnetNetwork } from "./teritori-testnet";
 import {
   CosmosNetworkInfo,
+  CurrencyInfo,
   EthereumNetworkInfo,
   GnoNetworkInfo,
   NativeCurrencyInfo,
@@ -50,8 +52,9 @@ export const allNetworks = [
   junoNetwork,
   osmosisNetwork,
   osmosisTestnetNetwork,
-  gnoTestnetNetwork,
+  gnoTest3Network,
   gnoDevNetwork,
+  gnoTeritoriNetwork,
   // solanaNetwork,
 ];
 
@@ -72,11 +75,11 @@ export const getToriNativeCurrency = (networkId: string) => {
   const network = getNetwork(networkId);
   if (network?.kind === NetworkKind.Cosmos)
     return network?.currencies.find(
-      (currencyInfo) => currencyInfo.kind === "native"
+      (currencyInfo: CurrencyInfo) => currencyInfo.kind === "native"
     ) as NativeCurrencyInfo;
   else {
     const toriIbcCurrency = network?.currencies.find(
-      (currencyInfo) =>
+      (currencyInfo: CurrencyInfo) =>
         currencyInfo.kind === "ibc" && currencyInfo.sourceDenom === "utori"
     );
     return getNativeCurrency(networkId, toriIbcCurrency?.denom);
