@@ -2,7 +2,7 @@ import { Decimal } from "@cosmjs/math";
 import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { TextInput, View } from "react-native";
+import { View } from "react-native";
 
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useInvalidateDAOProposals } from "../../hooks/dao/useDAOProposals";
@@ -55,6 +55,7 @@ export const GnoDemo: React.FC<{
         }
         noDuration
         submitLabel="Propose settings change"
+        contentContainerStyle={{ paddingHorizontal: 0 }}
       />
     </View>
   );
@@ -101,30 +102,38 @@ const DeletePost: React.FC<{ daoId: string }> = ({ daoId }) => {
     <View>
       <BrandText style={fontSemibold20}>Delete a post</BrandText>
       <SpacerColumn size={2} />
-      <TextInput
+      <TextInputCustom
+        label="Board name"
+        name="boardName"
         placeholder="Board name"
         onChangeText={setName}
         value={name}
-        style={{ backgroundColor: "white" }}
       />
-      <TextInput
+      <SpacerColumn size={2} />
+      <TextInputCustom
+        label="Thread ID"
+        name="threadId"
         placeholder="Thread ID"
         onChangeText={setThreadId}
         value={threadId}
-        style={{ backgroundColor: "white" }}
       />
-      <TextInput
+      <SpacerColumn size={2} />
+      <TextInputCustom
+        label="Post ID"
+        name="postId"
         placeholder="Post ID"
         onChangeText={setPostId}
         value={postId}
-        style={{ backgroundColor: "white" }}
       />
-      <TextInput
+      <SpacerColumn size={2} />
+      <TextInputCustom
+        label="Reason"
+        name="reason"
         placeholder="Reason"
         onChangeText={setReason}
         value={reason}
-        style={{ backgroundColor: "white" }}
       />
+      <SpacerColumn size={2} />
       <BrandText>Flagged: {flagCount || 0} time(s)</BrandText>
       <SpacerColumn size={2} />
       <PrimaryButton
@@ -182,11 +191,12 @@ const CreateBoard: React.FC<{ daoId: string }> = ({ daoId }) => {
     <View>
       <BrandText style={fontSemibold20}>Create a board</BrandText>
       <SpacerColumn size={2} />
-      <TextInput
+      <TextInputCustom
+        label="Board name"
+        name="boardName"
         placeholder="Board name"
         onChangeText={setName}
         value={name}
-        style={{ backgroundColor: "white" }}
       />
       <SpacerColumn size={2} />
       <PrimaryButton
@@ -223,18 +233,20 @@ const MintTori: React.FC<{ daoId: string }> = ({ daoId }) => {
     <View>
       <BrandText style={fontSemibold20}>Mint Tori</BrandText>
       <SpacerColumn size={2} />
-      <TextInput
+      <TextInputCustom
+        label="Amount"
+        name="amount"
         placeholder="Amount"
         onChangeText={setAmount}
         value={amount}
-        style={{ backgroundColor: "white" }}
       />
       <SpacerColumn size={2} />
-      <TextInput
+      <TextInputCustom
+        label="Recipient"
+        name="recipient"
         placeholder="Recipient"
         onChangeText={setRecipient}
         value={recipient}
-        style={{ backgroundColor: "white" }}
       />
       <SpacerColumn size={2} />
       <PrimaryButton

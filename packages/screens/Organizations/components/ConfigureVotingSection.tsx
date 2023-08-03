@@ -1,6 +1,12 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { ScrollView, StyleSheet, View } from "react-native";
+import {
+  ScrollView,
+  StyleProp,
+  StyleSheet,
+  View,
+  ViewStyle,
+} from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
 import { RangeSlider } from "../../../components/RangeSlider";
@@ -18,12 +24,14 @@ interface ConfigureVotingSectionProps {
   onSubmit: (form: ConfigureVotingFormType) => void;
   noDuration?: boolean;
   submitLabel?: string;
+  contentContainerStyle?: StyleProp<ViewStyle>;
 }
 
 export const ConfigureVotingSection: React.FC<ConfigureVotingSectionProps> = ({
   onSubmit,
   noDuration,
   submitLabel,
+  contentContainerStyle,
 }) => {
   // variables
   const { handleSubmit, control, watch, setValue } =
@@ -42,7 +50,9 @@ export const ConfigureVotingSection: React.FC<ConfigureVotingSectionProps> = ({
   // returns
   return (
     <View style={styles.fill}>
-      <ScrollView contentContainerStyle={styles.container}>
+      <ScrollView
+        contentContainerStyle={[styles.container, contentContainerStyle]}
+      >
         <BrandText style={fontSemibold28}>
           Choose your voting settings below
         </BrandText>
