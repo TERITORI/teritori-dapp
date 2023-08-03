@@ -44,6 +44,9 @@ export const DAOProposals: React.FC<{
   );
 };
 
+// TODO: double check we properly use threshold and quorum
+// TODO: use correct threshold, quorum and total power for passed/executed proposals
+
 const ProposalRow: React.FC<{
   daoId: string | undefined;
   proposal: AppProposalResponse;
@@ -69,8 +72,8 @@ const ProposalRow: React.FC<{
 
   const totalWeight = parseFloat(daoTotalVotingPower?.power || "0");
 
-  let quorumGain = 0;
   let thresholdGain = 0;
+  let quorumGain = 0;
   if (
     proposal?.proposal.threshold &&
     "threshold_quorum" in proposal.proposal.threshold
@@ -85,9 +88,12 @@ const ProposalRow: React.FC<{
     }
   }
 
-  const thresholdWeight = thresholdGain * totalWeight;
-  const targetWeight = Math.max(weights.voted, thresholdWeight);
-  const quorumWeight = quorumGain * targetWeight;
+  const quorumWeight =
+    proposal.proposal.status === "open"
+      ? quorumGain * totalWeight
+      : quorumGain * weights.voted;
+  const targetWeight = Math.max(weights.voted, quorumWeight);
+  const thresholdWeight = thresholdGain * targetWeight;
 
   const [displayProposalModal, setDisplayProposalModal] =
     useState<boolean>(false);
@@ -188,7 +194,7 @@ const ProposalRow: React.FC<{
                   </Text>
                   /
                   <Text style={{ color: "white" }}>
-                    {Math.ceil(thresholdWeight)}
+                    {Math.ceil(quorumWeight)}
                   </Text>
                 </BrandText>
                 <BrandText
@@ -201,7 +207,7 @@ const ProposalRow: React.FC<{
                   </Text>
                   /
                   <Text style={{ color: "white" }}>
-                    {Math.ceil(quorumWeight)}
+                    {Math.ceil(thresholdWeight)}
                   </Text>
                 </BrandText>
               </>
@@ -255,7 +261,7 @@ const ProposalRow: React.FC<{
                 backgroundColor: "black",
                 height: progressBarHeight,
                 position: "absolute",
-                left: `${quorumGain * 100}%`,
+                left: `${thresholdGain * 100}%`,
                 width: 1,
               }}
             />
