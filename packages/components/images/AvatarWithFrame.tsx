@@ -1,17 +1,16 @@
 import React, { useMemo } from "react";
-import {
-  StyleProp,
-  View,
-  ViewStyle,
-  StyleSheet,
-  ActivityIndicator,
-} from "react-native";
+import { StyleProp, View, ViewStyle, StyleSheet } from "react-native";
 
 import emptyCircleFrameSVG from "../../../assets/empty-circle-frame.svg";
 import { useIsDAO } from "../../hooks/cosmwasm/useCosmWasmContractInfo";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import { getCosmosNetwork } from "../../networks";
+import {
+  CosmosNetworkInfo,
+  GnoNetworkInfo,
+  NetworkKind,
+  getNetwork,
+  parseUserId,
+} from "../../networks";
 import { primaryColor } from "../../utils/style/colors";
 import { OptimizedImage } from "../OptimizedImage";
 import { SVG } from "../SVG";
@@ -19,23 +18,40 @@ import { AnimationFadeIn } from "../animations/AnimationFadeIn";
 
 type AvatarWithFrameSize = "XL" | "L" | "M" | "S" | "XS";
 
-export const AvatarWithFrame: React.FC<{
+export const UserAvatarWithFrame: React.FC<{
   userId: string | undefined;
   size?: AvatarWithFrameSize;
   style?: StyleProp<ViewStyle>;
 }> = ({ userId, size = "M", style }) => {
-  const networkId = useSelectedNetworkId();
-  const network = getCosmosNetwork(networkId);
+  const [network] = parseUserId(userId);
+  const {
+    metadata: { image },
+  } = useNSUserInfo(userId);
+  const { isDAO } = useIsDAO(userId);
+
+  return (
+    <AvatarWithFrame
+      networkId={network?.id}
+      image={image}
+      isDAO={isDAO}
+      size={size}
+      style={style}
+    />
+  );
+};
+
+export const AvatarWithFrame: React.FC<{
+  networkId: string | undefined;
+  image: string | null | undefined;
+  size?: AvatarWithFrameSize;
+  isDAO: boolean;
+  style?: StyleProp<ViewStyle>;
+}> = ({ networkId, image, isDAO, size = "M", style }) => {
+  const network = getNetwork(networkId);
   const sizedStyles = useMemo(
     () => StyleSheet.flatten(flatStyles[size]),
     [size]
   );
-  const {
-    metadata: { image },
-    loading: isLoading,
-  } = useNSUserInfo(userId);
-  const { isDAO } = useIsDAO(userId);
-
   return (
     <View style={[styles.container, style]}>
       <SVG
@@ -44,29 +60,29 @@ export const AvatarWithFrame: React.FC<{
         height={sizedStyles.frame.height}
       />
 
-      {isLoading ? (
-        <ActivityIndicator
-          size={sizedStyles.image.width * 0.5}
-          style={styles.absolute}
+      <AnimationFadeIn style={styles.absolute}>
+        <OptimizedImage
+          width={sizedStyles.image.width}
+          height={sizedStyles.image.height}
+          sourceURI={image}
+          fallbackURI={
+            [NetworkKind.Cosmos, NetworkKind.Gno].includes(
+              network?.kind || NetworkKind.Unknown
+            )
+              ? (network as CosmosNetworkInfo | GnoNetworkInfo)
+                  .nameServiceDefaultImage
+              : undefined
+          }
+          style={[
+            sizedStyles.image,
+            isDAO && {
+              borderRadius: sizedStyles.image.width * 0.05,
+              borderWidth: sizedStyles.image.width * 0.02,
+              borderColor: primaryColor,
+            },
+          ]}
         />
-      ) : (
-        <AnimationFadeIn style={styles.absolute}>
-          <OptimizedImage
-            width={sizedStyles.image.width}
-            height={sizedStyles.image.height}
-            sourceURI={image}
-            fallbackURI={network?.nameServiceDefaultImage}
-            style={[
-              sizedStyles.image,
-              isDAO && {
-                borderRadius: sizedStyles.image.width * 0.05,
-                borderWidth: sizedStyles.image.width * 0.02,
-                borderColor: primaryColor,
-              },
-            ]}
-          />
-        </AnimationFadeIn>
-      )}
+      </AnimationFadeIn>
     </View>
   );
 };

@@ -1,0 +1,56 @@
+diff --git a/bin/provider/jsonrpc/jsonrpc.d.ts b/bin/provider/jsonrpc/jsonrpc.d.ts
+index 434273193c4f38a5eefaa9d43b3114bc44e5fd0e..69f2922f8fd30cd56021db887619fab0f012935c 100644
+--- a/bin/provider/jsonrpc/jsonrpc.d.ts
++++ b/bin/provider/jsonrpc/jsonrpc.d.ts
+@@ -23,5 +23,5 @@ export declare class JSONRPCProvider implements Provider {
+     getAccountNumber(address: string, height?: number): Promise<number>;
+     getStatus(): Promise<Status>;
+     sendTransaction(tx: string): Promise<string>;
+-    waitForTransaction(hash: string, fromHeight?: number, timeout?: number): Promise<Tx>;
++    waitForTransaction(hash: string, fromHeight?: number, timeout?: number): Promise<{tx: Tx, height: number, index: number}>;
+ }
+diff --git a/bin/provider/provider.d.ts b/bin/provider/provider.d.ts
+index a5b37aacb3b9c47bec2a4bc6fe1bb7f653656ee5..d9aa2d8a703c9c40d58695643e3718b2c82aaf5a 100644
+--- a/bin/provider/provider.d.ts
++++ b/bin/provider/provider.d.ts
+@@ -82,5 +82,5 @@ export interface Provider {
+      * @param {number} [fromHeight=latest] The block height used to begin the search
+      * @param {number} [timeout=15000] Optional wait timeout in MS
+      */
+-    waitForTransaction(hash: string, fromHeight?: number, timeout?: number): Promise<Tx>;
++    waitForTransaction(hash: string, fromHeight?: number, timeout?: number): Promise<{tx: Tx, height: number, index: number}>;
+ }
+diff --git a/bin/provider/utility/provider.utility.d.ts b/bin/provider/utility/provider.utility.d.ts
+index d476e4ef17146c3001ac538699dc6dd5ee1256e0..16a444812443399344d250d6e66a49eed23eff94 100644
+--- a/bin/provider/utility/provider.utility.d.ts
++++ b/bin/provider/utility/provider.utility.d.ts
+@@ -25,4 +25,4 @@ export declare const extractAccountNumberFromResponse: (abciData: string | null)
+  * @param {number} [fromHeight=latest] the starting height for the search. If omitted, it is the latest block in the chain
+  * @param {number} [timeout=15000] the timeout in MS for the search
+  */
+-export declare const waitForTransaction: (provider: Provider, hash: string, fromHeight?: number, timeout?: number) => Promise<Tx>;
++export declare const waitForTransaction: (provider: Provider, hash: string, fromHeight?: number, timeout?: number) => Promise<{tx: Tx, height: number, index: number}>;
+diff --git a/bin/provider/utility/provider.utility.js b/bin/provider/utility/provider.utility.js
+index 82a13a73ec49ed3970dc0567bac5b4bfc4fa8c41..b860d1d4d4d45dd24073a3a3aba665be5bc35690 100644
+--- a/bin/provider/utility/provider.utility.js
++++ b/bin/provider/utility/provider.utility.js
+@@ -167,7 +167,7 @@ var waitForTransaction = function (provider, hash, fromHeight, timeout) { return
+                                                     // Clear the interval
+                                                     clearInterval(fetchInterval);
+                                                     // Decode the transaction from amino
+-                                                    resolve(proto_1.Tx.decode(txRaw));
++                                                    resolve({tx: proto_1.Tx.decode(txRaw), height: parseInt(block.block.header.height, 10), index: _i});
+                                                 }
+                                             }
+                                             _b.label = 4;
+diff --git a/bin/provider/websocket/ws.d.ts b/bin/provider/websocket/ws.d.ts
+index a373b6af1d5cb158d4c129199e565b9fe16f5548..05e8cc7c9a7fd7d89154a1f4a0441f1133ff742f 100644
+--- a/bin/provider/websocket/ws.d.ts
++++ b/bin/provider/websocket/ws.d.ts
+@@ -51,5 +51,5 @@ export declare class WSProvider implements Provider {
+     getAccountNumber(address: string, height?: number): Promise<number>;
+     getStatus(): Promise<Status>;
+     sendTransaction(tx: string): Promise<string>;
+-    waitForTransaction(hash: string, fromHeight?: number, timeout?: number): Promise<Tx>;
++    waitForTransaction(hash: string, fromHeight?: number, timeout?: number): Promise<{tx: Tx, height: number, index: number}>;
+ }

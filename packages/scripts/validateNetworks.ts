@@ -4,6 +4,7 @@ const ids: { [key: string]: boolean } = {};
 const idPrefixes: { [key: string]: boolean } = {};
 const cosmosChainIds: { [key: string]: boolean } = {};
 const ethereumChainIds: { [key: number]: boolean } = {};
+const gnoChainIds: { [key: string]: boolean } = {};
 
 for (const net of allNetworks) {
   // id must be unique
@@ -36,6 +37,15 @@ for (const net of allNetworks) {
         );
       }
       cosmosChainIds[net.chainId] = true;
+      break;
+    }
+    case NetworkKind.Gno: {
+      if (gnoChainIds[net.chainId]) {
+        throw new Error(
+          `gno chain id '${net.chainId}' for network '${net.id}' is not unique`
+        );
+      }
+      gnoChainIds[net.chainId] = true;
       break;
     }
   }
