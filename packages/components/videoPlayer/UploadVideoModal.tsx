@@ -18,6 +18,7 @@ import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getUserId } from "../../networks";
+import { selectNFTStorageAPI } from "../../store/slices/settings";
 import { defaultSocialFeedFee } from "../../utils/fee";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { generateIpfsKey } from "../../utils/social-feed";
