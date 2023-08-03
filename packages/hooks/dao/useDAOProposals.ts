@@ -53,18 +53,12 @@ export const useDAOProposals = (daoId: string | undefined) => {
   const { data: gnoDAOProposals, ...gnoOther } = useQuery(
     [daoProposalsQueryKey(daoId), NetworkKind.Gno],
     async () => {
-      console.log("halo");
-
       if (network?.kind !== NetworkKind.Gno) return [];
       const provider = new GnoJSONRPCProvider(network.endpoint);
-
-      console.log("fetching proposals ", daoAddress, "GetProposalsJSON(0)");
 
       const gnoProposals: GnoDAOProposal[] = extractGnoJSONString(
         await provider.evaluateExpression(daoAddress, "GetProposalsJSON(0)")
       );
-
-      console.log("gnoProposals", gnoProposals);
 
       const proposals: AppProposalResponse[] = [];
 
@@ -78,7 +72,7 @@ export const useDAOProposals = (daoId: string | undefined) => {
         const noVotes = prop.votes.no;
         const abstainVotes = prop.votes.abstain;
 
-        // threshold should be stored in the proposal for executed proposals (maybe passed too)
+        // TODO: threshold should be stored in the proposal for executed proposals (maybe passed too)
         const threshold =
           extractGnoNumber(
             await provider.evaluateExpression(
@@ -97,6 +91,7 @@ export const useDAOProposals = (daoId: string | undefined) => {
         const numActions = prop.messages.length;
         const actions: string[] = [];
         for (let m = 0; m < numActions; m++) {
+          // TODO: don't do one request per message
           try {
             const action = extractGnoString(
               await provider.evaluateExpression(
@@ -195,7 +190,7 @@ export const useCosmWasmDAOProposals = (daoId: string | undefined) => {
 
       return allProposals;
     },
-    { staleTime: Infinity, enabled: !!(networkId || proposalModuleAddress) }
+    { staleTime: Infinity, enabled: !!(networkId && proposalModuleAddress) }
   );
   return { daoProposals: data, ...other };
 };

@@ -41,12 +41,10 @@ export const adenaDoContract = async (
     throw new Error(res.message);
   }
   const hash: string = res.data.hash;
-  console.log("waiting for tx", hash);
   const { height: txHeight, index } = await client.waitForTransaction(
     hash,
     height
   );
-  console.log("tx finalized", txHeight, index);
   const blockResult = await client.getBlockResult(txHeight);
   const deliverResults = blockResult.results.deliver_tx || [];
   if (deliverResults.length <= index) {

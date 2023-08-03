@@ -124,7 +124,7 @@ const MessagePreview: React.FC<{
   message: CosmosMsgForEmpty | string;
 }> = ({ networkId, message }) => {
   const socialFeedContractAddress =
-    getCosmosNetwork(networkId)?.socialFeedContractAddress; // FIXME
+    getCosmosNetwork(networkId)?.socialFeedContractAddress;
   const m = cloneDeep(message);
   if (typeof m === "object" && "wasm" in m && "execute" in m.wasm) {
     const msg = JSON.parse(
