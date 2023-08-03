@@ -1,3 +1,4 @@
+import { mustGetGnoNetwork } from "../../networks";
 import { adenaAddPkg } from "../gno";
 
 export interface GnoDAOMember {
@@ -16,9 +17,12 @@ export interface GnoDAOConfig {
   imageURI: string;
 }
 
-export const generateDAORealmSource = (conf: GnoDAOConfig) => `package ${
-  conf.name
-}
+export const generateDAORealmSource = (
+  networkId: string,
+  conf: GnoDAOConfig
+) => {
+  const network = mustGetGnoNetwork(networkId);
+  return `package ${conf.name}
 
 import (
 	"encoding/base64"
@@ -33,7 +37,7 @@ import (
 	"gno.land/p/demo/jsonutil_v2"
 	"gno.land/r/demo/groups_v6"
 	modboards "gno.land/r/demo/modboards_v3"
-  "gno.land/r/demo/dao_registry_v5"
+  "${network.daoRegistryPkgPath}"
 )
 
 var (
@@ -57,11 +61,11 @@ func init() {
 	daoCore = dao_core.NewDAOCore(dao_voting_group.NewGRC4Voting(groupID), nil)
 
 	tt := dao_interfaces.Percent(${Math.ceil(conf.thresholdPercent * 100)}) // ${
-  Math.ceil(conf.thresholdPercent * 100) / 100
-}%
+    Math.ceil(conf.thresholdPercent * 100) / 100
+  }%
 	tq := dao_interfaces.Percent(${Math.ceil(conf.quorumPercent * 100)}) // ${
-  Math.ceil(conf.quorumPercent * 100) / 100
-}%
+    Math.ceil(conf.quorumPercent * 100) / 100
+  }%
 	proposalMod := dao_proposal_single.NewDAOProposalSingle(daoCore, &dao_proposal_single.DAOProposalSingleOpts{
 		MaxVotingPeriod: time.Second * ${conf.maxVotingPeriodSeconds},
 		Threshold: dao_interfaces.Threshold{ThresholdQuorum: &dao_interfaces.ThresholdQuorum{
@@ -79,8 +83,8 @@ func init() {
 	modboards.CreateBoard(mainBoardName)
 
   dao_registry.Register(${JSON.stringify(conf.displayName)}, ${JSON.stringify(
-  conf.description
-)}, ${JSON.stringify(conf.imageURI)})
+    conf.description
+  )}, ${JSON.stringify(conf.imageURI)})
 }
 
 func Render(path string) string {
@@ -129,13 +133,14 @@ func GetGroupID() uint64 {
   return uint64(groupID)
 }
 `;
+};
 
 export const adenaDeployGnoDAO = async (
   networkId: string,
   creator: string,
   conf: GnoDAOConfig
 ) => {
-  const source = generateDAORealmSource(conf);
+  const source = generateDAORealmSource(networkId, conf);
   const pkgPath = `gno.land/r/demo/${conf.name}`;
   await adenaAddPkg(
     networkId,

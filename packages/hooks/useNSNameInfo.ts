@@ -55,16 +55,13 @@ export const useNSNameInfo = (
           return nftInfo;
         }
         case NetworkKind.Gno: {
-          if (!tokenId.startsWith("gno.land/")) {
+          if (!tokenId.startsWith("gno.land/") || !network.daoRegistryPkgPath) {
             return null;
           }
           const provider = new GnoJSONRPCProvider(network.endpoint);
           const query = `GetJSON(${JSON.stringify(tokenId)})`;
           const res: GnoDAORegistration = extractGnoJSONString(
-            await provider.evaluateExpression(
-              "gno.land/r/demo/dao_registry_v5",
-              query
-            )
+            await provider.evaluateExpression(network.daoRegistryPkgPath, query)
           );
           const data: Metadata = {
             public_name: res.name,

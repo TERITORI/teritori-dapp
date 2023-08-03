@@ -16,11 +16,11 @@ export type GnoDAORegistration = {
 export const useGnoDAOs = (networkId: string | undefined) => {
   const { data, ...other } = useQuery(["gno-daos", networkId], async () => {
     const network = getGnoNetwork(networkId);
-    if (!network) return [];
+    if (!network?.daoRegistryPkgPath) return [];
     const client = new GnoJSONRPCProvider(network.endpoint);
     const res: GnoDAORegistration[] = extractGnoJSONString(
       await client.evaluateExpression(
-        "gno.land/r/demo/dao_registry_v5",
+        network.daoRegistryPkgPath,
         'ListJSON("", "", 0, true)'
       )
     );
