@@ -86,7 +86,8 @@ export type GnoNetworkInfo = NetworkInfoBase & {
   nameServiceContractAddress: string;
   nameServiceDefaultImage: string;
   gnowebURL: string;
-  daoRegistryPkgPath: string;
+  daoRegistryPkgPath?: string;
+  modboardsPkgPath?: string;
 };
 
 export type NetworkInfo =

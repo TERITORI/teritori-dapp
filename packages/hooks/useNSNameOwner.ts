@@ -1,7 +1,7 @@
 import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import { useQuery } from "@tanstack/react-query";
 
-import { getGnoNetwork } from "../networks";
+import { NetworkKind, getGnoNetwork, getNetwork } from "../networks";
 import { getCosmosNameServiceQueryClient } from "../utils/contracts";
 import { extractGnoString } from "../utils/gno";
 

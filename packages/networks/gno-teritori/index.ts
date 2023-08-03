@@ -22,5 +22,6 @@ export const gnoTeritoriNetwork: GnoNetworkInfo = {
   nameServiceDefaultImage:
     "ipfs://bafkreignptjimiu7wuux6mk6uh4hb4odb6ff62ny4bvdokrhes7g67huse",
   daoRegistryPkgPath: "gno.land/r/demo/dao_registry_v5",
+  modboardsPkgPath: "gno.land/r/demo/modboards_v3",
   gnowebURL: "https://testnet.gno.teritori.com",
 };

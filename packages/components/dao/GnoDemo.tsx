@@ -75,12 +75,12 @@ const DeletePost: React.FC<{ daoId: string }> = ({ daoId }) => {
   const { data: flagCount } = useQuery(
     ["flagCount", name, threadId, postId],
     async () => {
-      if (network?.kind !== NetworkKind.Gno) {
+      if (network?.kind !== NetworkKind.Gno || !network.modboardsPkgPath) {
         return 0;
       }
       const client = new GnoJSONRPCProvider(network.endpoint);
       const boardIdRes = await client.evaluateExpression(
-        "gno.land/r/demo/modboards_v2",
+        network.modboardsPkgPath,
         `GetBoardIDFromName("${name}")`
       );
       const boardIdNum = extractGnoNumber(boardIdRes);
@@ -89,7 +89,7 @@ const DeletePost: React.FC<{ daoId: string }> = ({ daoId }) => {
       }
       return extractGnoNumber(
         await client.evaluateExpression(
-          "gno.land/r/demo/modboards_v2",
+          network.modboardsPkgPath,
           `getBoard(${boardIdNum}).flags.GetFlagCount(getFlagID(${threadId}, ${postId}))`
         )
       );
@@ -131,12 +131,12 @@ const DeletePost: React.FC<{ daoId: string }> = ({ daoId }) => {
         text="Propose delete"
         loader
         onPress={wrapWithFeedback(async () => {
-          if (network?.kind !== NetworkKind.Gno) {
+          if (network?.kind !== NetworkKind.Gno || !network.modboardsPkgPath) {
             throw new Error("invalid network");
           }
           const client = new GnoJSONRPCProvider(network.endpoint);
           const boardIdRes = await client.evaluateExpression(
-            "gno.land/r/demo/modboards_v2",
+            network.modboardsPkgPath,
             `GetBoardIDFromName("${name}")`
           );
           console.log(boardIdRes);

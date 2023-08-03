@@ -36,7 +36,7 @@ import (
 	"gno.land/p/demo/daodao/voting_group_v5"
 	"gno.land/p/demo/jsonutil_v2"
 	"gno.land/r/demo/groups_v6"
-	modboards "gno.land/r/demo/modboards_v3"
+	modboards "${network.modboardsPkgPath}"
   "${network.daoRegistryPkgPath}"
 )
 
