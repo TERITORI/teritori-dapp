@@ -24,7 +24,6 @@ export const useGnoDAOs = (networkId: string | undefined) => {
         'ListJSON("", "", 0, true)'
       )
     );
-    console.log("gnoDAOs", res);
     return res;
   });
   return { gnoDAOs: data, ...other };
