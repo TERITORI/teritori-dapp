@@ -8,7 +8,7 @@ import { VideoView } from "./VideoView";
 import { GIF_MIME_TYPE } from "../../utils/mime";
 import { convertGIFToLocalFileType } from "../../utils/social-feed";
 import { layout } from "../../utils/style/layout";
-import { LocalFileData, RemoteFileData } from "../../utils/types/feed";
+import { LocalFileData, RemoteFileData } from "../../utils/types/files";
 
 interface FilePreviewContainerProps {
   files?: LocalFileData[];

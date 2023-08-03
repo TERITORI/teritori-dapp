@@ -1,6 +1,6 @@
 import { Post } from "../../../api/feed/v1/feed";
 import { PostResult } from "../../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
-import { LocalFileData, RemoteFileData } from "../../../utils/types/feed";
+import { LocalFileData, RemoteFileData } from "../../../utils/types/files";
 
 export enum PostCategory {
   Reaction,
