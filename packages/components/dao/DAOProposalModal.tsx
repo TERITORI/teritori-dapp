@@ -33,6 +33,7 @@ export const DAOProposalModal: React.FC<{
       }}
       label={`Proposal #${proposalInfo.id}`}
       visible={visible}
+      scrollable
       width={800}
     >
       <View style={styles.container}>
