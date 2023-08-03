@@ -24,14 +24,12 @@ export const useDAOVoteInfo = (
   proposalId: number | undefined,
   enabled?: boolean
 ) => {
-  console.log("vote info hook", daoId, userId, proposalId);
   const { daoFirstProposalModule } = useDAOFirstProposalModule(daoId);
   const proposalModuleAddress = daoFirstProposalModule?.address;
 
   const { data, ...other } = useQuery(
     daoVoteInfoQueryKey(daoId, userId, proposalId),
     async () => {
-      console.log("vote info query", daoId, userId, proposalId);
       const [network] = parseUserId(daoId);
       const networkId = network?.id;
 
