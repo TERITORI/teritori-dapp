@@ -1,11 +1,11 @@
 import React from "react";
 import { Image } from "react-native";
 
+import { ipfsURLToHTTPURL } from "../../../utils/ipfs";
 import { ARTICLE_COVER_IMAGE_HEIGHT } from "../../../utils/social-feed";
 import { layout } from "../../../utils/style/layout";
-import { RemoteFileData } from "../../../utils/types/feed";
+import { RemoteFileData } from "../../../utils/types/files";
 import { BrandText } from "../../BrandText";
-import { ipfsURLToHTTPURL } from "../../FilePreview/ipfs";
 import { SocialFeedMetadata } from "../NewsFeed/NewsFeed.type";
 import { RichText } from "../RichText";
 
