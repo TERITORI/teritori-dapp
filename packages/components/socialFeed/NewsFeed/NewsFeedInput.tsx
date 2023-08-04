@@ -9,6 +9,7 @@ import {
   useWindowDimensions,
 } from "react-native";
 import Animated, { useSharedValue } from "react-native-reanimated";
+import { useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 
 import {
@@ -17,11 +18,7 @@ import {
   ReplyToType,
   SocialFeedMetadata,
 } from "./NewsFeed.type";
-import {
-  generatePostMetadata,
-  getPostCategory,
-  uploadPostFilesToPinata,
-} from "./NewsFeedQueries";
+import { generatePostMetadata, getPostCategory } from "./NewsFeedQueries";
 import { NotEnoughFundModal } from "./NotEnoughFundModal";
 import audioSVG from "../../../../assets/icons/audio.svg";
 import cameraSVG from "../../../../assets/icons/camera.svg";
@@ -41,8 +38,10 @@ import { useMaxResolution } from "../../../hooks/useMaxResolution";
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { getUserId, mustGetCosmosNetwork } from "../../../networks";
+import { selectNFTStorageAPI } from "../../../store/slices/settings";
 import { prettyPrice } from "../../../utils/coins";
 import { defaultSocialFeedFee } from "../../../utils/fee";
+import { generateIpfsKey, uploadFilesToPinata } from "../../../utils/ipfs";
 import {
   AUDIO_MIME_TYPES,
   IMAGE_MIME_TYPES,
@@ -52,7 +51,6 @@ import {
   SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT,
   hashtagMatch,
   mentionMatch,
-  generateIpfsKey,
   replaceFileInArray,
   removeFileFromArray,
 } from "../../../utils/social-feed";
@@ -77,7 +75,7 @@ import {
   SOCIAL_FEED_BREAKPOINT_M,
 } from "../../../utils/style/layout";
 import { replaceBetweenString } from "../../../utils/text";
-import { LocalFileData, RemoteFileData } from "../../../utils/types/feed";
+import { LocalFileData, RemoteFileData } from "../../../utils/types/files";
 import { BrandText } from "../../BrandText";
 import { FilesPreviewsContainer } from "../../FilePreview/FilesPreviewsContainer";
 import FlexRow from "../../FlexRow";
@@ -189,7 +187,7 @@ export const NewsFeedInput = React.forwardRef<
       }
     );
     const formValues = watch();
-
+    const userIPFSKey = useSelector(selectNFTStorageAPI);
     const { postFee } = useUpdatePostFee(
       selectedNetworkId,
       getPostCategory(formValues)
@@ -239,9 +237,10 @@ export const NewsFeedInput = React.forwardRef<
         let files: RemoteFileData[] = [];
 
         if (formValues.files?.length) {
-          const pinataJWTKey = await generateIpfsKey(selectedNetworkId, userId);
+          const pinataJWTKey =
+            userIPFSKey || (await generateIpfsKey(selectedNetworkId, userId));
           if (pinataJWTKey) {
-            files = await uploadPostFilesToPinata({
+            files = await uploadFilesToPinata({
               files: formValues.files,
               pinataJWTKey,
             });

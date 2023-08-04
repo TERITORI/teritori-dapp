@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { LocalFileData } from "../utils/types/feed";
+import { LocalFileData } from "../utils/types/files";
 
 interface PinataFileProps {
   file: LocalFileData;

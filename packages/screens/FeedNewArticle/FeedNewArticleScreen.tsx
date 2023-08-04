@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { View } from "react-native";
+import { useSelector } from "react-redux";
 
 import priceSVG from "../../../assets/icons/price.svg";
 import { BrandText } from "../../components/BrandText";
@@ -30,13 +31,12 @@ import { useIsMobile } from "../../hooks/useIsMobile";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getUserId, NetworkKind } from "../../networks";
+import { selectNFTStorageAPI } from "../../store/slices/settings";
 import { prettyPrice } from "../../utils/coins";
+import { generateIpfsKey } from "../../utils/ipfs";
 import { IMAGE_MIME_TYPES } from "../../utils/mime";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
-import {
-  ARTICLE_COVER_IMAGE_HEIGHT,
-  generateIpfsKey,
-} from "../../utils/social-feed";
+import { ARTICLE_COVER_IMAGE_HEIGHT } from "../../utils/social-feed";
 import {
   neutral00,
   neutral11,
@@ -61,6 +61,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
   );
   const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
   const [loading, setLoading] = useState(false);
+  const userIPFSKey = useSelector(selectNFTStorageAPI);
 
   const { setToastSuccess, setToastError } = useFeedbacks();
   const navigation = useAppNavigation();
@@ -113,7 +114,8 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
     }
     let pinataJWTKey = undefined;
     if (files?.length) {
-      pinataJWTKey = await generateIpfsKey(selectedNetworkId, userId);
+      pinataJWTKey =
+        userIPFSKey || (await generateIpfsKey(selectedNetworkId, userId));
     }
 
     const result = await createPost({
