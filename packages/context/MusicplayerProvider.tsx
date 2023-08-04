@@ -10,6 +10,8 @@ interface DefaultValue {
   setAudioIndex: Function;
   playType: PlayType;
   setPlayType: Function;
+  artist: string;
+  setArtist: Function;
 }
 
 const defaultValue: DefaultValue = {
@@ -21,6 +23,8 @@ const defaultValue: DefaultValue = {
   setAudioIndex: () => {},
   playType: PlayType.LOOP,
   setPlayType: () => {},
+  artist: "",
+  setArtist: () => {},
 };
 
 const MusicplayerContext = createContext(defaultValue);
@@ -30,7 +34,7 @@ export const MusicplayerContextProvider: React.FC = ({ children }) => {
   const [audioList, setAudioList] = useState(defaultValue.audioList);
   const [audioIndex, setAudioIndex] = useState(defaultValue.audioIndex);
   const [playType, setPlayType] = useState<PlayType>(defaultValue.playType);
-
+  const [artist, setArtist] = useState("");
   return (
     <MusicplayerContext.Provider
       value={{
@@ -42,6 +46,8 @@ export const MusicplayerContextProvider: React.FC = ({ children }) => {
         setAudioIndex,
         playType,
         setPlayType,
+        artist,
+        setArtist,
       }}
     >
       {children}

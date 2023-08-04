@@ -14,12 +14,15 @@ import Img from "../../../assets/music-player/img.svg";
 import List from "../../../assets/music-player/list.svg";
 import Remove from "../../../assets/music-player/remove.svg";
 import Upload from "../../../assets/music-player/upload.svg";
+import { pinataPinFileToIPFS } from "../../candymachine/pinata-upload";
 import { signingMusicPlayerClient } from "../../client-creators/musicplayerClient";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { getUserId } from "../../networks";
 import { defaultSocialFeedFee } from "../../utils/fee";
-import { uploadFileToIPFS, ipfsPinataUrl } from "../../utils/ipfs";
+import { ipfsURLToHTTPURL } from "../../utils/ipfs";
+import { generateIpfsKey } from "../../utils/social-feed";
 import {
   neutral17,
   neutral33,
@@ -30,6 +33,7 @@ import {
 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
+import { LocalFileData } from "../../utils/types/feed";
 import { UploadFileInfo, AlbumMetadataInfo } from "../../utils/types/music";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
@@ -87,8 +91,11 @@ export const UploadAlbumModal: React.FC<UploadAlbumModalProps> = ({
       image: albumInfo.image,
       audios,
     };
-
-    // console.log(metadata);
+    console.log("---------metadata");
+    console.log({
+      metadata: JSON.stringify(metadata),
+      identifier: uuidv4(),
+    });
 
     try {
       const res = await client.createMusicAlbum(
@@ -206,6 +213,9 @@ const Step1Component: React.FC<{
   const [canContinue, setCanContinue] = useState<boolean>(false);
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const inputFileRef = createRef<HTMLInputElement>();
+  const selectedNetworkId = useSelectedNetworkId();
+  const selectedWallet = useSelectedWallet();
+  const userId = getUserId(selectedNetworkId, selectedWallet?.address);
 
   useEffect(() => {
     setCanContinue(uploadFiles1.length > 0);
@@ -221,15 +231,37 @@ const Step1Component: React.FC<{
     const file = e.target?.files![0];
     const url = URL.createObjectURL(file);
     const audio = new Audio(url);
-
+    const pinataJWTKey = await generateIpfsKey(selectedNetworkId, userId);
+    // const pinataJWTKey =
+    //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiIxZjdjMGE4Yy00MjEyLTQ1ZTItOWUzMC00NDFmMjUxZDk5YzUiLCJlbWFpbCI6Im1pbmlvbmxhbmNlcjI4QGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJwaW5fcG9saWN5Ijp7InJlZ2lvbnMiOlt7ImlkIjoiRlJBMSIsImRlc2lyZWRSZXBsaWNhdGlvbkNvdW50IjoxfV0sInZlcnNpb24iOjF9LCJtZmFfZW5hYmxlZCI6ZmFsc2UsInN0YXR1cyI6IkFDVElWRSJ9LCJhdXRoZW50aWNhdGlvblR5cGUiOiJzY29wZWRLZXkiLCJzY29wZWRLZXlLZXkiOiI4NmMwMjNlNDMyNjY4MjZmMTYzZSIsInNjb3BlZEtleVNlY3JldCI6IjA5YTA0NGFlZWUzOTk4NjNmNWU3MzBmZGY0N2Y3ODdhM2ZiMTI0ZDczNDE5ZTNmYWI3NjhlMmQ5NjQ5NTVmMDMiLCJpYXQiOjE2OTEwOTU4NTZ9.uLekzSqr9gzn6e91PumoAVDAu1X8Smm5QveBUoElbj8";
     audio.addEventListener("loadedmetadata", async () => {
-      const ipfsHash = await uploadFileToIPFS(file);
-      if (ipfsHash !== "") {
+      window.URL.revokeObjectURL(url);
+      if (!pinataJWTKey) {
+        setIsUploading(false);
+        return;
+      }
+      const local_file_data = {
+        file,
+        fileName: file.name,
+        mimeType: "",
+        size: 0,
+        url: "",
+        fileType: "audio",
+      } as LocalFileData;
+
+      const pinataRes = await pinataPinFileToIPFS({
+        file: local_file_data,
+        pinataJWTKey,
+      });
+      if (pinataRes.IpfsHash !== "") {
         setUploadFiles1([
           ...uploadFiles1,
-          { name: file.name, ipfs: ipfsHash, duration: audio.duration },
+          {
+            name: file.name,
+            ipfs: pinataRes.IpfsHash,
+            duration: audio.duration,
+          },
         ]);
-        URL.revokeObjectURL(url);
       }
       setIsUploading(false);
     });
@@ -265,7 +297,6 @@ const Step1Component: React.FC<{
           disabled={!canContinue}
           isLoading={isUploading}
           onPress={() => {
-            console.log(uploadFiles1);
             setUploadFiles([...uploadFiles1]);
             setStep(1);
           }}
@@ -295,6 +326,13 @@ const Step2Component: React.FC<{
   setAlbumInfo,
   uploadAlbum,
 }) => {
+  const [isUploading, setIsUploading] = useState(false);
+  const selectedNetworkId = useSelectedNetworkId();
+  const selectedWallet = useSelectedWallet();
+  const userId = getUserId(selectedNetworkId, selectedWallet?.address);
+  const inputImageFileRef = createRef<HTMLInputElement>();
+  const inputMusicFileRef = createRef<HTMLInputElement>();
+
   const paddingHorizontal = layout.padding_x2_5;
   const imgSize = 172;
   const styles = StyleSheet.create({
@@ -424,27 +462,92 @@ const Step2Component: React.FC<{
   };
 
   const clickUploadAlbumImage = () => {
-    inputFileRef.current?.click();
+    inputImageFileRef.current?.click();
   };
 
-  const inputFileRef = createRef<HTMLInputElement>();
+  const clickUploadMusicFile = () => {
+    inputMusicFileRef.current?.click();
+  };
 
-  const onInputFileChange: React.ChangeEventHandler<HTMLInputElement> = async (
-    e
-  ) => {
+  const onInputImageFileChange: React.ChangeEventHandler<
+    HTMLInputElement
+  > = async (e) => {
+    setIsUploading(true);
     const file = e.target?.files?.[0];
     if (file) {
-      const albumImage = await uploadFileToIPFS(file);
-      setAlbumInfo({ ...albumInfo, image: albumImage });
+      const local_file_data = {
+        file,
+        fileName: file.name,
+        mimeType: "",
+        size: 0,
+        url: "",
+        fileType: "image",
+      } as LocalFileData;
+      const pinataJWTKey = await generateIpfsKey(selectedNetworkId, userId);
+      // const pinataJWTKey =
+      //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiIxZjdjMGE4Yy00MjEyLTQ1ZTItOWUzMC00NDFmMjUxZDk5YzUiLCJlbWFpbCI6Im1pbmlvbmxhbmNlcjI4QGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJwaW5fcG9saWN5Ijp7InJlZ2lvbnMiOlt7ImlkIjoiRlJBMSIsImRlc2lyZWRSZXBsaWNhdGlvbkNvdW50IjoxfV0sInZlcnNpb24iOjF9LCJtZmFfZW5hYmxlZCI6ZmFsc2UsInN0YXR1cyI6IkFDVElWRSJ9LCJhdXRoZW50aWNhdGlvblR5cGUiOiJzY29wZWRLZXkiLCJzY29wZWRLZXlLZXkiOiI4NmMwMjNlNDMyNjY4MjZmMTYzZSIsInNjb3BlZEtleVNlY3JldCI6IjA5YTA0NGFlZWUzOTk4NjNmNWU3MzBmZGY0N2Y3ODdhM2ZiMTI0ZDczNDE5ZTNmYWI3NjhlMmQ5NjQ5NTVmMDMiLCJpYXQiOjE2OTEwOTU4NTZ9.uLekzSqr9gzn6e91PumoAVDAu1X8Smm5QveBUoElbj8";
+      if (!pinataJWTKey) {
+        setIsUploading(false);
+        return;
+      }
+      const pinataRes = await pinataPinFileToIPFS({
+        file: local_file_data,
+        pinataJWTKey,
+      });
+      // const pinataRes = await uploadFileToIPFS(file);
+      setAlbumInfo({ ...albumInfo, image: pinataRes.IpfsHash });
+      setIsUploading(false);
     }
+  };
+  const onInputMusicFileChange: React.ChangeEventHandler<
+    HTMLInputElement
+  > = async (e) => {
+    setIsUploading(true);
+    const file = e.target?.files![0];
+    const url = URL.createObjectURL(file);
+    const audio = new Audio(url);
+    const pinataJWTKey = await generateIpfsKey(selectedNetworkId, userId);
+    // const pinataJWTKey =
+    //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiIxZjdjMGE4Yy00MjEyLTQ1ZTItOWUzMC00NDFmMjUxZDk5YzUiLCJlbWFpbCI6Im1pbmlvbmxhbmNlcjI4QGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJwaW5fcG9saWN5Ijp7InJlZ2lvbnMiOlt7ImlkIjoiRlJBMSIsImRlc2lyZWRSZXBsaWNhdGlvbkNvdW50IjoxfV0sInZlcnNpb24iOjF9LCJtZmFfZW5hYmxlZCI6ZmFsc2UsInN0YXR1cyI6IkFDVElWRSJ9LCJhdXRoZW50aWNhdGlvblR5cGUiOiJzY29wZWRLZXkiLCJzY29wZWRLZXlLZXkiOiI4NmMwMjNlNDMyNjY4MjZmMTYzZSIsInNjb3BlZEtleVNlY3JldCI6IjA5YTA0NGFlZWUzOTk4NjNmNWU3MzBmZGY0N2Y3ODdhM2ZiMTI0ZDczNDE5ZTNmYWI3NjhlMmQ5NjQ5NTVmMDMiLCJpYXQiOjE2OTEwOTU4NTZ9.uLekzSqr9gzn6e91PumoAVDAu1X8Smm5QveBUoElbj8";
+    audio.addEventListener("loadedmetadata", async () => {
+      window.URL.revokeObjectURL(url);
+      if (!pinataJWTKey) {
+        setIsUploading(false);
+        return;
+      }
+      const local_file_data = {
+        file,
+        fileName: file.name,
+        mimeType: "",
+        size: 0,
+        url: "",
+        fileType: "audio",
+      } as LocalFileData;
+
+      const pinataRes = await pinataPinFileToIPFS({
+        file: local_file_data,
+        pinataJWTKey,
+      });
+      if (pinataRes.IpfsHash !== "") {
+        setUploadFiles([
+          ...uploadFiles,
+          {
+            name: file.name,
+            ipfs: pinataRes.IpfsHash,
+            duration: audio.duration,
+          },
+        ]);
+      }
+      setIsUploading(false);
+    });
   };
 
   const handleAlbumNameTextChange = (text: string) => {
-    setAlbumInfo({ ...albumInfo, name: text });
+    setAlbumInfo({ ...albumInfo, name: text.trim() });
   };
 
   const handleAlbumDescriptionTextChange = (text: string) => {
-    setAlbumInfo({ ...albumInfo, description: text });
+    setAlbumInfo({ ...albumInfo, description: text.trim() });
   };
 
   return (
@@ -453,8 +556,15 @@ const Step2Component: React.FC<{
         type="file"
         style={{ display: "none" }}
         accept="image/*"
-        onChange={onInputFileChange}
-        ref={inputFileRef}
+        onChange={onInputImageFileChange}
+        ref={inputImageFileRef}
+      />
+      <input
+        type="file"
+        style={{ display: "none" }}
+        accept="audio/mp3"
+        onChange={onInputMusicFileChange}
+        ref={inputMusicFileRef}
       />
       <View style={styles.inputBox}>
         <View style={styles.imgBox}>
@@ -462,7 +572,7 @@ const Step2Component: React.FC<{
             source={
               albumInfo.image === ""
                 ? DefaultAlbumImage
-                : ipfsPinataUrl(albumInfo.image)
+                : ipfsURLToHTTPURL(albumInfo.image)
             }
             style={styles.img}
           />
@@ -524,7 +634,10 @@ const Step2Component: React.FC<{
           </View>
         ))}
       </View>
-      <Pressable style={styles.buttonContainer}>
+      <Pressable
+        style={styles.buttonContainer}
+        onPress={() => clickUploadMusicFile()}
+      >
         <SVG
           source={Add}
           width={layout.padding_x2_5}
@@ -540,7 +653,13 @@ const Step2Component: React.FC<{
           By uploading, you confirm that your sounds comply with our Terms of
           Use.
         </BrandText>
-        <PrimaryButton text="Upload" size="SM" onPress={uploadAlbum} />
+        <PrimaryButton
+          text="Upload"
+          disabled={albumInfo.name === "" || albumInfo.description === ""}
+          size="SM"
+          onPress={uploadAlbum}
+          isLoading={isUploading}
+        />
       </View>
     </>
   );

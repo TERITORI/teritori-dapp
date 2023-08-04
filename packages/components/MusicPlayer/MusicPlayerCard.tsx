@@ -5,10 +5,11 @@ import { Pressable } from "react-native-hoverable";
 import { TrackImageHover } from "./TrackImageHover";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { parseUserId } from "../../networks";
-import { ipfsPinataUrl } from "../../utils/ipfs";
+import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { neutral17, neutral77, primaryColor } from "../../utils/style/colors";
 import { fontSemibold14, fontMedium14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
+import { tinyAddress } from "../../utils/text";
 import { AlbumInfo } from "../../utils/types/music";
 import { BrandText } from "../BrandText";
 
@@ -23,7 +24,7 @@ export const MusicPlayerCard: React.FC<{
 
   const username = authorNSInfo?.metadata?.tokenId
     ? authorNSInfo?.metadata?.tokenId
-    : userAddress;
+    : tinyAddress(userAddress);
 
   const styles = StyleSheet.create({
     unitCard: {
@@ -71,7 +72,7 @@ export const MusicPlayerCard: React.FC<{
       >
         <Image
           // @ts-ignore
-          source={ipfsPinataUrl(item.image)}
+          source={ipfsURLToHTTPURL(item.image)}
           style={styles.contentImg}
         />
         {selectedIndex === item.id && (

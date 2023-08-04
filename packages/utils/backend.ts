@@ -131,8 +131,8 @@ export const getMusicplayerClient = (networkId: string | undefined) => {
   }
   if (!musicplayerClients[network.id]) {
     //test
-    const backendEndpoint = network.backendEndpoint;
-    // const backendEndpoint = "http://localhost:9090";
+    // const backendEndpoint = network.backendEndpoint;
+    const backendEndpoint = "http://localhost:9090";
 
     const rpc = new MusicplayerGrpcWebImpl(backendEndpoint, {
       debug: false,

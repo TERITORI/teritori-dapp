@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useCallback, memo } from "react";
 import { View, Pressable, StyleSheet } from "react-native";
 
 import Add from "../../../assets/media-player/add.svg";
@@ -11,16 +11,22 @@ import Play from "../../../assets/media-player/play.svg";
 import Previous from "../../../assets/media-player/previous.svg";
 import Random from "../../../assets/media-player/random.svg";
 import { useMusicplayer } from "../../context/MusicplayerProvider";
-import { ipfsPinataUrl } from "../../utils/ipfs";
-import { neutral17, neutral22, neutral33 } from "../../utils/style/colors";
+import { ipfsURLToHTTPURL } from "../../utils/ipfs";
+// import { ipfsPinataUrl } from "../../utils/ipfs";
+import {
+  neutral17,
+  neutral22,
+  neutral33,
+  neutral77,
+} from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { PlayType } from "../../utils/types/music";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
-
-export const MediaPlayerBar: React.FC = () => {
+const MediaPlayerBar: React.FC = () => {
   const audioRef = useRef<HTMLAudioElement>(null);
+  const seekBarRef = useRef<HTMLInputElement>(null);
   const {
     isPlay,
     setIsPlay,
@@ -29,9 +35,20 @@ export const MediaPlayerBar: React.FC = () => {
     setAudioIndex,
     playType,
     setPlayType,
+    artist,
   } = useMusicplayer();
   const [audioSrc, setAudioSrc] = useState<string>("");
   const [songName, setSongName] = useState<string>("");
+  const [volume, setVolume] = useState("60");
+  const playAnimationRef = useRef(0);
+  const repeat = useCallback(() => {
+    if (!audioRef.current || !seekBarRef.current) return;
+    const currentTime = audioRef.current.currentTime;
+    seekBarRef.current.value = currentTime.toString();
+
+    playAnimationRef.current = requestAnimationFrame(repeat);
+  }, [audioRef, seekBarRef]);
+
   useEffect(() => {
     if (isPlay && audioRef.current && audioIndex >= 0) {
       audioRef.current.play();
@@ -39,14 +56,25 @@ export const MediaPlayerBar: React.FC = () => {
     if (!isPlay && audioRef.current && audioIndex >= 0) {
       audioRef.current.pause();
     }
-  }, [isPlay, audioIndex]);
+    playAnimationRef.current = requestAnimationFrame(repeat);
+    return () => {
+      cancelAnimationFrame(playAnimationRef.current);
+      // audioRef.current?.pause();
+    };
+  }, [isPlay, audioIndex, repeat]);
 
   useEffect(() => {
     if (audioList.length > 0 && audioIndex >= 0) {
-      setAudioSrc(ipfsPinataUrl(audioList[audioIndex].ipfs));
+      setAudioSrc(ipfsURLToHTTPURL(audioList[audioIndex].ipfs));
       setSongName(audioList[audioIndex].name);
     }
   }, [audioList, audioIndex]);
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = parseInt(volume, 10) / 100;
+      // audioRef.current.muted = muteVolume;
+    }
+  }, [volume, audioRef]);
 
   const componentHight = 48;
   // const headerHeight = 79;
@@ -121,6 +149,23 @@ export const MediaPlayerBar: React.FC = () => {
         break;
     }
   };
+
+  const handleSeekbarChange = () => {
+    if (!audioRef.current || !seekBarRef.current) return;
+    audioRef.current.currentTime = parseInt(seekBarRef.current.value, 10);
+  };
+  const handleMusicEnd = () => {
+    if (playType === PlayType.LOOP) {
+      audioRef.current?.play();
+    } else {
+      setIsPlay(false);
+    }
+  };
+  const onLoadedMetadata = () => {
+    if (!audioRef.current || !seekBarRef.current) return;
+    const seconds = audioRef.current.duration;
+    seekBarRef.current.max = seconds.toString();
+  };
   return (
     <View style={styles.container}>
       <View style={styles.playHandleBox}>
@@ -137,12 +182,20 @@ export const MediaPlayerBar: React.FC = () => {
         <Pressable onPress={clickNextAudio}>
           <StandardIcon source={Next} />
         </Pressable>
-        <Pressable onPress={switchLoop}>
+        <Pressable onPress={() => switchLoop()}>
           {playType === PlayType.LOOP && <StandardIcon source={Loop} />}
           {playType === PlayType.LOOP_OFF && <StandardIcon source={LoopOff} />}
         </Pressable>
         <View style={styles.verticalLine} />
         <StandardIcon source={Add} />
+      </View>
+      <View>
+        <input
+          type="range"
+          ref={seekBarRef}
+          onChange={handleSeekbarChange}
+          style={{ width: "300px" }}
+        />
       </View>
       <View style={styles.durationBox}>
         <SVG
@@ -152,26 +205,42 @@ export const MediaPlayerBar: React.FC = () => {
         />
         <View style={styles.infoBox}>
           <BrandText style={fontSemibold14}>{songName}</BrandText>
-          {/* <BrandText style={[fontSemibold14, { color: neutral77 }]}>
-            Artist
-          </BrandText> */}
+          <BrandText style={[fontSemibold14, { color: neutral77 }]}>
+            {artist}
+          </BrandText>
+        </View>
+        <View>
+          <input
+            type="range"
+            onChange={(e) => setVolume(e.target.value)}
+            min={0}
+            max={100}
+            style={{ width: "100px" }}
+          />
         </View>
       </View>
-      <View style={styles.audioBox}>
-        <audio id="footer_audio" src={audioSrc} ref={audioRef} controls />
-      </View>
+      <audio
+        id="footer_audio"
+        src={audioSrc}
+        defaultValue={0}
+        ref={audioRef}
+        style={{ display: "none" }}
+        controls
+        onLoadedMetadata={onLoadedMetadata}
+        onEnded={handleMusicEnd}
+      />
     </View>
   );
 };
 
 const StandardIcon: React.FC<{ source: any }> = ({ source }) => {
   return (
-    <Pressable>
-      <SVG
-        source={source}
-        width={layout.padding_x2_5}
-        height={layout.padding_x2_5}
-      />
-    </Pressable>
+    <SVG
+      source={source}
+      width={layout.padding_x2_5}
+      height={layout.padding_x2_5}
+    />
   );
 };
+
+export default memo(MediaPlayerBar);

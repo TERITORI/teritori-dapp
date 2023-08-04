@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, Pressable } from "react-native";
+import { StyleSheet, Pressable, View } from "react-native";
 
 import { MyAlbumMenu } from "./MyAlbumMenu";
 import { TrackHoverMenu } from "./TrackHoverMenu";
@@ -7,14 +7,14 @@ import HoveredMenu from "../../../assets/music-player/hovered-menu.svg";
 import HoveredPlay from "../../../assets/music-player/hovered-play.svg";
 import NormalMenu from "../../../assets/music-player/normal-menu.svg";
 import NormalPlay from "../../../assets/music-player/normal-play.svg";
+import { useMusicplayer } from "../../context/MusicplayerProvider";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getUserId } from "../../networks";
-import { useAppNavigation } from "../../utils/navigation";
+import { getUserId, parseUserId } from "../../networks";
 import { layout } from "../../utils/style/layout";
+import { tinyAddress } from "../../utils/text";
 import { AlbumInfo } from "../../utils/types/music";
 import { SVG } from "../SVG";
-
 export const TrackImageHover: React.FC<{
   album: AlbumInfo;
   hasLibrary: boolean;
@@ -22,12 +22,12 @@ export const TrackImageHover: React.FC<{
 }> = ({ album, hasLibrary, userName }) => {
   const selectedNetworkId = useSelectedNetworkId();
   const wallet = useSelectedWallet();
-  const navigation = useAppNavigation();
   const [hoverMenuIcon, setHoverMenuIcon] = useState<boolean>(false);
   const [hoverPlayIcon, setHoverPlayIcon] = useState<boolean>(false);
   const [openMenu, setOpenMenu] = useState<boolean>(false);
   const userId = getUserId(selectedNetworkId, wallet?.address);
-
+  const { setAudioList, setIsPlay, setAudioIndex, setArtist } =
+    useMusicplayer();
   const styles = StyleSheet.create({
     hoverBox: {
       position: "absolute",
@@ -44,14 +44,17 @@ export const TrackImageHover: React.FC<{
   });
 
   return (
-    <Pressable
-      style={styles.hoverBox}
-      onPress={() => {
-        navigation.navigate("AlbumName", { id: album.id });
-      }}
-    >
+    <View style={styles.hoverBox}>
       {hoverPlayIcon && (
-        <Pressable>
+        <Pressable
+          onPress={() => {
+            setAudioList(album.audios);
+            const [, userAddress] = parseUserId(album.createdBy);
+            setArtist(tinyAddress(userAddress));
+            setAudioIndex(0);
+            setIsPlay(true);
+          }}
+        >
           <SVG
             source={HoveredPlay}
             width={28}
@@ -100,6 +103,6 @@ export const TrackImageHover: React.FC<{
         />
       )}
       {openMenu && userId === album.createdBy && <MyAlbumMenu album={album} />}
-    </Pressable>
+    </View>
   );
 };

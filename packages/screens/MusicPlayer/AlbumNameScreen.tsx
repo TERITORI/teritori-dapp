@@ -11,7 +11,7 @@ import Tip from "../../../assets/music-player/tip-primary.svg";
 import { signingMusicPlayerClient } from "../../client-creators/musicplayerClient";
 import { BrandText } from "../../components/BrandText";
 import { DetailAlbumMenu } from "../../components/MusicPlayer/DetailAlbumMenu";
-import { MediaPlayerBar } from "../../components/MusicPlayer/MediaPlayerBar";
+import MediaPlayerBar from "../../components/MusicPlayer/MediaPlayerBar";
 import { MusicPlayerTab } from "../../components/MusicPlayer/MusicPlayerTab";
 // import { TrackHoverMenu } from "../../components/MusicPlayer/TrackHoverMenu";
 import { SVG } from "../../components/SVG";
@@ -24,7 +24,7 @@ import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getUserId, parseUserId } from "../../networks";
 import { mustGetMusicplayerClient } from "../../utils/backend";
-import { ipfsPinataUrl } from "../../utils/ipfs";
+import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { neutral77, neutral17, primaryColor } from "../../utils/style/colors";
 import {
@@ -34,6 +34,7 @@ import {
   fontSemibold20,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
+import { tinyAddress } from "../../utils/text";
 import { AlbumInfo, AlbumMetadataInfo } from "../../utils/types/music";
 
 export const AlbumNameScreen: ScreenFC<"AlbumName"> = ({
@@ -41,6 +42,8 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = ({
     params: { id },
   },
 }) => {
+  const { setAudioList, setIsPlay, setAudioIndex, setArtist } =
+    useMusicplayer();
   const navigation = useAppNavigation();
   const selectedNetworkId = useSelectedNetworkId();
   const wallet = useSelectedWallet();
@@ -61,7 +64,7 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = ({
   const [, userAddress] = parseUserId(albumInfo.createdBy);
   const username = authorNSInfo?.metadata?.tokenId
     ? authorNSInfo?.metadata?.tokenId
-    : userAddress;
+    : tinyAddress(userAddress);
 
   useEffect(() => {
     const getLibraryIdList = async () => {
@@ -104,10 +107,14 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = ({
           audios,
         };
         setAlbumInfo(album);
+        setAudioList(album.audios);
+        const [, userAddress] = parseUserId(album.createdBy);
+        setArtist(tinyAddress(userAddress));
+        setAudioIndex(0);
       }
     };
     getAlbumInfo();
-  }, [id, selectedNetworkId]);
+  }, [id, selectedNetworkId, setArtist, setAudioIndex, setAudioList]);
 
   const initIndexHoverState = {
     index: 0,
@@ -167,6 +174,13 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = ({
         title: "Failed to remove album from my library",
         message: `Error: ${err}`,
       });
+    }
+  };
+
+  const playAlbum = () => {
+    if (albumInfo.audios.length > 0) {
+      setIsPlay(true);
+      // setAudioSrc(ipfsPinataUrl(albumInfo.audios[0].ipfs));
     }
   };
 
@@ -350,16 +364,6 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = ({
     },
   });
 
-  const { setAudioList, setIsPlay, setAudioIndex } = useMusicplayer();
-  const playAlbum = () => {
-    if (albumInfo.audios.length > 0) {
-      setAudioList(albumInfo.audios);
-      setIsPlay(true);
-      setAudioIndex(0);
-      // setAudioSrc(ipfsPinataUrl(albumInfo.audios[0].ipfs));
-    }
-  };
-
   return (
     <ScreenContainer
       headerChildren={<BrandText>Album name</BrandText>}
@@ -376,7 +380,7 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = ({
           <View style={styles.infoBox}>
             <Image
               // @ts-ignore
-              source={ipfsPinataUrl(albumInfo.image)}
+              source={ipfsURLToHTTPURL(albumInfo.image)}
               style={styles.albumImg}
             />
             <View style={styles.verticalBox}>
