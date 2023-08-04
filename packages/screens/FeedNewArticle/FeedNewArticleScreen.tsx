@@ -268,31 +268,32 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
             borderRadius: 12,
           }}
         />
-        <Label isRequired>Article content</Label>
-        <SpacerColumn size={1} />
-        {/**@ts-ignore  error:TS2589: Type instantiation is excessively deep and possibly infinite. */}
-        <Controller
-          name="message"
-          control={control}
-          rules={{
-            required: true,
-          }}
-          render={({ field: { onChange, onBlur } }) => (
-            <RichText
-              onChange={onChange}
-              onBlur={onBlur}
-              initialValue={formValues.message}
-              loading={loading}
-              publishDisabled={
-                errors?.message?.type === "required" ||
-                !formValues.message ||
-                !formValues.title ||
-                !wallet
-              }
-              onPublish={onPublish}
-            />
-          )}
-        />
+        <View>
+          <Label>Article content</Label>
+          <SpacerColumn size={1} />
+          <Controller
+            name="message"
+            control={control}
+            rules={{
+              required: true,
+            }}
+            render={({ field: { onChange, onBlur } }) => (
+              <RichText
+                onChange={onChange}
+                onBlur={onBlur}
+                initialValue={formValues.message}
+                loading={loading}
+                publishDisabled={
+                  errors?.message?.type === "required" ||
+                  !formValues.message ||
+                  !formValues.title ||
+                  !wallet
+                }
+                onPublish={onPublish}
+              />
+            )}
+          />
+        </View>
       </View>
     </ScreenContainer>
   );

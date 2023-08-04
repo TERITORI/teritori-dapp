@@ -64,6 +64,9 @@ var allModels = []interface{}{
 	//music player
 	&MusicAlbum{},
 	&MusicLibrary{},
+
+	// names
+	&Name{},
 }
 
 func NewSQLiteDB(path string) (*gorm.DB, error) {

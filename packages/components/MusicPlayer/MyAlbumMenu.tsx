@@ -1,12 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import { View, StyleSheet } from "react-native";
 
 import { HoverView } from "./HoverView";
-import Code from "../../../assets/music-player/code.svg";
 import Delete from "../../../assets/music-player/delete.svg";
-import Enter from "../../../assets/music-player/enter.svg";
 import Link from "../../../assets/music-player/link.svg";
-import Share from "../../../assets/music-player/share.svg";
 import { signingMusicPlayerClient } from "../../client-creators/musicplayerClient";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
@@ -26,7 +23,6 @@ export const MyAlbumMenu: React.FC<MyAlbumMenuProps> = ({ album }) => {
   const lineHeight = 18;
   const selectedNetworkId = useSelectedNetworkId();
   const wallet = useSelectedWallet();
-  const [openShareMenu, setOpenShareMenu] = useState<boolean>(false);
   const { setToastError, setToastSuccess } = useFeedbacks();
 
   const deleteMusicAlbum = async () => {
@@ -51,6 +47,11 @@ export const MyAlbumMenu: React.FC<MyAlbumMenuProps> = ({ album }) => {
         message: `Error: ${err}`,
       });
     }
+  };
+  const copyLinkTrack = () => {
+    window.navigator.clipboard.writeText(
+      `${window.location.origin}/music-player/album/${album.id}`
+    );
   };
   const styles = StyleSheet.create({
     hoverBox: {
@@ -151,60 +152,23 @@ export const MyAlbumMenu: React.FC<MyAlbumMenuProps> = ({ album }) => {
       </HoverView>
 
       <View style={styles.divideLine} />
-
       <HoverView
         normalStyle={styles.unitBoxNormal}
-        onPress={() => setOpenShareMenu((value) => !value)}
         hoverStyle={styles.unitBoxHovered}
+        onPress={() => {
+          copyLinkTrack();
+        }}
       >
         <View style={styles.oneLine}>
           <SVG
-            source={Share}
+            source={Link}
             width={layout.padding_x2}
             height={layout.padding_x2}
           />
-          <BrandText style={styles.normalText}>Share</BrandText>
+          <BrandText style={styles.normalText}>
+            Copy link to the track
+          </BrandText>
         </View>
-        <SVG
-          source={Enter}
-          width={layout.padding_x2}
-          height={layout.padding_x2}
-        />
-
-        {openShareMenu && (
-          <View style={styles.shareMenuContainer}>
-            <HoverView
-              normalStyle={styles.unitBoxNormal}
-              hoverStyle={styles.unitBoxHovered}
-            >
-              <View style={styles.oneLine}>
-                <SVG
-                  source={Link}
-                  width={layout.padding_x2}
-                  height={layout.padding_x2}
-                />
-                <BrandText style={styles.normalText}>
-                  Copy link to the track
-                </BrandText>
-              </View>
-            </HoverView>
-            <HoverView
-              normalStyle={styles.unitBoxNormal}
-              hoverStyle={styles.unitBoxHovered}
-            >
-              <View style={styles.oneLine}>
-                <SVG
-                  source={Code}
-                  width={layout.padding_x2}
-                  height={layout.padding_x2}
-                />
-                <BrandText style={styles.normalText}>
-                  Copy widget code
-                </BrandText>
-              </View>
-            </HoverView>
-          </View>
-        )}
       </HoverView>
     </View>
   );

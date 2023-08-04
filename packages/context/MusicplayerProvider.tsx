@@ -1,30 +1,47 @@
 import React, { createContext, useContext, useState } from "react";
 
+import { PlayType, UploadFileInfo } from "../utils/types/music";
 interface DefaultValue {
   isPlay: boolean;
-  audioSrc: string;
-  setIsPlay?: any;
-  setAudioSrc?: any;
+  setIsPlay: Function;
+  audioList: UploadFileInfo[];
+  setAudioList: Function;
+  audioIndex: number;
+  setAudioIndex: Function;
+  playType: PlayType;
+  setPlayType: Function;
 }
 
 const defaultValue: DefaultValue = {
   isPlay: false,
-  audioSrc: "",
+  setIsPlay: () => {},
+  audioList: [],
+  setAudioList: () => {},
+  audioIndex: -1,
+  setAudioIndex: () => {},
+  playType: PlayType.LOOP,
+  setPlayType: () => {},
 };
 
 const MusicplayerContext = createContext(defaultValue);
 
 export const MusicplayerContextProvider: React.FC = ({ children }) => {
   const [isPlay, setIsPlay] = useState(defaultValue.isPlay);
-  const [audioSrc, setAudioSrc] = useState(defaultValue.audioSrc);
+  const [audioList, setAudioList] = useState(defaultValue.audioList);
+  const [audioIndex, setAudioIndex] = useState(defaultValue.audioIndex);
+  const [playType, setPlayType] = useState<PlayType>(defaultValue.playType);
 
   return (
     <MusicplayerContext.Provider
       value={{
         isPlay,
-        audioSrc,
         setIsPlay,
-        setAudioSrc,
+        audioList,
+        setAudioList,
+        audioIndex,
+        setAudioIndex,
+        playType,
+        setPlayType,
       }}
     >
       {children}

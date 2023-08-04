@@ -56,10 +56,9 @@ export const TokenSettingsSection: React.FC<TokenSettingsSectionProps> = ({
           <View style={styles.leftInput}>
             <TextInputCustom<TokenSettingFormType>
               name="tokenName"
-              variant="noCropBorder"
+              noBrokenCorners
               label="Token name"
               control={control}
-              // isAsterickSign
               rules={{ required: true }}
               placeHolder="My Organization Token"
             />
@@ -68,10 +67,9 @@ export const TokenSettingsSection: React.FC<TokenSettingsSectionProps> = ({
           <View style={styles.rightInput}>
             <TextInputCustom<TokenSettingFormType>
               name="tokenSymbol"
-              variant="noCropBorder"
+              noBrokenCorners
               label="Token Symbol"
               control={control}
-              // isAsterickSign
               valueModifier={(value) => value.toUpperCase()}
               rules={{ required: true, pattern: patternOnlyLetters }}
               placeHolder="ABC"
@@ -85,11 +83,10 @@ export const TokenSettingsSection: React.FC<TokenSettingsSectionProps> = ({
             <View style={styles.leftInput}>
               <TextInputCustom<TokenSettingFormType>
                 name={`tokenHolders.${index}.address`}
-                variant="noCropBorder"
+                noBrokenCorners
                 label="Token Holders"
                 hideLabel={index > 0}
                 control={control}
-                // isAsterickSign
                 rules={{ required: true, validate: validateAddress }}
                 placeHolder="Account address"
                 iconSVG={walletInputSVG}
@@ -106,11 +103,10 @@ export const TokenSettingsSection: React.FC<TokenSettingsSectionProps> = ({
             <View style={styles.rightInput}>
               <TextInputCustom<TokenSettingFormType>
                 name={`tokenHolders.${index}.balance`}
-                variant="noCropBorder"
+                noBrokenCorners
                 label="Balances"
                 hideLabel={index > 0}
                 control={control}
-                // isAsterickSign
                 rules={{ required: true, pattern: patternOnlyNumbers }}
                 placeHolder="0"
               />

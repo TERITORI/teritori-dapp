@@ -6,6 +6,7 @@ import React, {
   useEffect,
   useMemo,
   useRef,
+  useState,
 } from "react";
 import {
   RegisterOptions,
@@ -16,7 +17,7 @@ import {
   FieldValues,
 } from "react-hook-form";
 import {
-  Pressable,
+  ActivityIndicator,
   StyleProp,
   StyleSheet,
   TextInput,
@@ -27,7 +28,6 @@ import {
 } from "react-native";
 import { SvgProps } from "react-native-svg";
 
-// import { TextInputLabelProps } from "./TextInputOutsideLabel";
 import { DEFAULT_FORM_ERRORS } from "../../utils/errors";
 import { handleKeyPress } from "../../utils/keyboard";
 import {
@@ -39,22 +39,19 @@ import {
   neutralA3,
   secondaryColor,
 } from "../../utils/style/colors";
-import {
-  fontMedium10,
-  fontSemibold14,
-  fontSemibold20,
-} from "../../utils/style/fonts";
+import { fontMedium10, fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { ErrorText } from "../ErrorText";
 import { SVG } from "../SVG";
 import { TertiaryBox } from "../boxes/TertiaryBox";
+import { CustomPressable } from "../buttons/CustomPressable";
 import { SpacerColumn, SpacerRow } from "../spacer";
 
 export interface TextInputCustomProps<T extends FieldValues>
   extends Omit<TextInputProps, "accessibilityRole" | "defaultValue"> {
   label: string;
-  variant?: "regular" | "labelOutside" | "noCropBorder" | "noStyle";
+  variant?: "regular" | "labelOutside" | "noStyle";
   iconSVG?: React.FC<SvgProps>;
   placeHolder?: string;
   squaresBackgroundColor?: string;
@@ -72,7 +69,9 @@ export interface TextInputCustomProps<T extends FieldValues>
   defaultValue?: PathValue<T, Path<T>>;
   subtitle?: React.ReactElement;
   hideLabel?: boolean;
+  errorStyle?: ViewStyle;
   valueModifier?: (value: string) => string;
+  isLoading?: boolean;
   labelStyle?: TextStyle;
   containerStyle?: ViewStyle;
   boxMainContainerStyle?: ViewStyle;
@@ -84,21 +83,30 @@ export interface TextInputCustomProps<T extends FieldValues>
 
 export const Label: React.FC<{
   children: string;
-  style?: TextStyle;
+  style?: StyleProp<TextStyle>;
   isRequired?: boolean;
-}> = ({ children, style, isRequired }) => (
+  hovered?: boolean;
+}> = ({ children, style, isRequired, hovered }) => (
   <View
     style={{
       flexDirection: "row",
     }}
   >
-    <BrandText style={[styles.labelText, fontSemibold14, style]}>
+    <BrandText
+      style={[
+        styles.labelText,
+        fontSemibold14,
+        style,
+        hovered && { color: secondaryColor },
+      ]}
+    >
       {children}
     </BrandText>
     {!!isRequired && children && (
       <BrandText
         style={[
-          fontSemibold20,
+          styles.labelText,
+          fontSemibold14,
           { color: additionalRed, marginLeft: layout.padding_x0_5 },
         ]}
       >
@@ -123,6 +131,7 @@ export const TextInputCustom = <T extends FieldValues>({
   width,
   height,
   variant = "regular",
+  noBrokenCorners,
   name,
   control,
   defaultValue,
@@ -130,10 +139,10 @@ export const TextInputCustom = <T extends FieldValues>({
   subtitle,
   labelStyle,
   iconSVG,
-  noBrokenCorners,
-  // isAsterickSign,
   hideLabel,
   valueModifier,
+  errorStyle,
+  isLoading,
   containerStyle,
   boxMainContainerStyle,
   error,
@@ -141,14 +150,13 @@ export const TextInputCustom = <T extends FieldValues>({
   setRef,
   ...restProps
 }: TextInputCustomProps<T>) => {
-  // variables
   const { field, fieldState } = useController<T>({
     name,
     control,
     rules,
-    defaultValue,
   });
   const inputRef = useRef<TextInput>(null);
+  const [hovered, setHovered] = useState(false);
   // Passing ref to parent since I didn't find a pattern to handle generic argument <T extends FieldValues> AND forwardRef
   useEffect(() => {
     if (inputRef.current && setRef) {
@@ -158,7 +166,7 @@ export const TextInputCustom = <T extends FieldValues>({
 
   useEffect(() => {
     if (defaultValue) {
-      handleChangeText(defaultValue);
+      handleChangeText(defaultValue || "");
     }
     // handleChangeText changes on every render and we want to call handleChangeText only when default value changes so we disable exhaustive-deps
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -218,25 +226,35 @@ export const TextInputCustom = <T extends FieldValues>({
     );
 
   return (
-    <View style={containerStyle}>
-      {variant === "labelOutside" && (
+    <CustomPressable
+      style={containerStyle}
+      onHoverIn={() => setHovered(true)}
+      onHoverOut={() => setHovered(false)}
+      onPress={() => inputRef?.current?.focus()}
+      disabled={disabled}
+    >
+      {variant === "labelOutside" && !hideLabel && (
         <>
           <View style={styles.rowEnd}>
-            <Label style={labelStyle} isRequired={!!rules?.required}>
+            <Label
+              hovered={hovered}
+              style={labelStyle}
+              isRequired={!!rules?.required}
+            >
               {label}
             </Label>
             {subtitle}
           </View>
-          <SpacerColumn size={1} />
+          <SpacerColumn size={1.5} />
         </>
       )}
-
       <TertiaryBox
         squaresBackgroundColor={squaresBackgroundColor}
         style={style}
         mainContainerStyle={[
           styles.mainContainer,
-          variant === "noCropBorder" && styles.noCropBorderBg,
+          noBrokenCorners && styles.noCropBorderBg,
+          hovered && { borderColor: secondaryColor },
         ]}
         width={width}
         fullWidth={!width}
@@ -252,44 +270,42 @@ export const TextInputCustom = <T extends FieldValues>({
           )}
           <View style={{ flex: 1, marginRight: children ? 12 : undefined }}>
             {!variant ||
-              (!["labelOutside", "noCropBorder"].includes(variant) &&
-                !hideLabel && (
-                  <Pressable onPress={() => inputRef.current?.focus()}>
-                    <BrandText
-                      style={[styles.labelText, fontMedium10, labelStyle]}
-                    >
-                      {label}
-                    </BrandText>
-                    <SpacerColumn size={0.5} />
-                  </Pressable>
-                ))}
+              (variant !== "labelOutside" && !hideLabel && (
+                <>
+                  <BrandText
+                    style={[styles.labelText, fontMedium10, labelStyle]}
+                  >
+                    {label}
+                  </BrandText>
+                  <SpacerColumn size={0.5} />
+                </>
+              ))}
             <TextInput
               ref={inputRef}
               editable={!disabled}
               placeholder={placeHolder}
               onChangeText={handleChangeText}
               onKeyPress={(event) => handleKeyPress({ event, onPressEnter })}
-              placeholderTextColor={neutralA3}
+              placeholderTextColor={neutral77}
               value={field.value}
               style={[styles.textInput, textInputStyle]}
               {...restProps}
             />
           </View>
 
-          <>{children}</>
+          {isLoading ? (
+            <ActivityIndicator color={secondaryColor} />
+          ) : (
+            <>{children}</>
+          )}
         </View>
       </TertiaryBox>
       <ErrorText>{error || fieldError}</ErrorText>
-    </View>
+    </CustomPressable>
   );
 };
 
 const styles = StyleSheet.create({
-  rowEnd: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-end",
-  },
   mainContainer: {
     alignItems: "flex-start",
     paddingHorizontal: 12,
@@ -304,7 +320,7 @@ const styles = StyleSheet.create({
     paddingVertical: layout.padding_x1_5,
   },
   labelText: {
-    color: neutral77,
+    color: neutralA3,
   },
   textInput: {
     fontSize: 14,
@@ -316,5 +332,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     width: "100%",
+  },
+  rowEnd: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-end",
   },
 });

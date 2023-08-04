@@ -5,7 +5,7 @@ import { MusicPlayerHomeContent } from "./MusicPlayerHomeContent";
 import { MusicPlayerMyLibraryContent } from "./MusicPlayerMyLibraryContent";
 import { GetAllAlbumListRequest } from "../../api/musicplayer/v1/musicplayer";
 import { BrandText } from "../../components/BrandText";
-import { MediaPlayer } from "../../components/MusicPlayer/MediaPlayer";
+import { MediaPlayerBar } from "../../components/MusicPlayer/MediaPlayerBar";
 import { MusicPlayerTab } from "../../components/MusicPlayer/MusicPlayerTab";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { useFetchLibraryIds } from "../../hooks/musicplayer/useFetchLibraryIds";
@@ -41,7 +41,7 @@ export const MusicPlayerScreen: ScreenFC<"MusicPlayer"> = () => {
         )}
       </View>
 
-      <MediaPlayer />
+      <MediaPlayerBar />
     </ScreenContainer>
   );
 };

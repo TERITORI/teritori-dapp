@@ -1,12 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import { Tabs } from "../../components/tabs/Tabs";
 import { UPPIntro } from "../../components/userPublicProfile/UPPIntro";
 import { useIsDAO } from "../../hooks/cosmwasm/useCosmWasmContractInfo";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { NetworkKind, parseUserId } from "../../networks";
 import { primaryColor } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
+import { objectKeys } from "../../utils/typescript";
 
 export const screenTabItems = {
   userPosts: {
@@ -28,14 +30,17 @@ export const screenTabItems = {
   daos: {
     name: "Organizations",
   },
-  funds: {
-    name: "Funds",
+  proposals: {
+    name: "Proposals",
   },
   members: {
     name: "Members",
   },
-  proposals: {
-    name: "Proposals",
+  funds: {
+    name: "Funds",
+  },
+  gnoDemo: {
+    name: "POCs",
   },
   musicAlbums: {
     name: "Albums",
@@ -76,16 +81,40 @@ export const UserPublicProfileScreenHeader = ({
   const selectedWallet = useSelectedWallet();
   const { width } = useMaxResolution();
   const { isDAO } = useIsDAO(userId);
+  const [network] = parseUserId(userId);
 
+  // TODO: refactor this to use network features filter defined on tab
   const items = Object.entries(screenTabItems).reduce((o, [key, item]) => {
-    if (isDAO && ["daos"].includes(key)) {
+    if (
+      network?.kind === NetworkKind.Gno &&
+      ["userPosts", "nfts", "quests", "mentionsPosts", "funds"].includes(key)
+    ) {
       return o;
     }
-    if (!isDAO && ["members", "proposals", "funds"].includes(key)) {
+    if (network?.kind !== NetworkKind.Gno && ["gnoDemo"].includes(key)) {
+      return o;
+    }
+    if (
+      (isDAO || network?.kind === NetworkKind.Gno) &&
+      ["daos"].includes(key)
+    ) {
+      return o;
+    }
+    if (!isDAO && ["members", "proposals", "funds", "gnoDemo"].includes(key)) {
       return o;
     }
     return { ...o, [key]: item };
   }, {} as { [key in keyof typeof screenTabItems]: { name: string } });
+
+  // TODO: refactor the way we handle the tabs to better support dynamic list of tabs
+  const forcedSelection = items[selectedTab]
+    ? selectedTab
+    : objectKeys(items)[0];
+  useEffect(() => {
+    if (selectedTab !== forcedSelection) {
+      setSelectedTab(forcedSelection);
+    }
+  }, [setSelectedTab, selectedTab, forcedSelection]);
 
   return (
     <>

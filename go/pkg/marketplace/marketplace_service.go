@@ -19,6 +19,7 @@ import (
 	"github.com/volatiletech/sqlboiler/v4/queries"
 	"github.com/volatiletech/sqlboiler/v4/types"
 	"go.uber.org/zap"
+	"golang.org/x/exp/constraints"
 	"gorm.io/gorm"
 )
 
@@ -958,7 +959,6 @@ func (s *MarkteplaceService) DApps(ctx context.Context, req *marketplacepb.DApps
 	return &marketplacepb.DAppsResponse{Group: s.dAppStoreProvider.GetDapps()}, nil
 }
 
-// TODO: consider merging this into NFTs call
 func (s *MarkteplaceService) SearchNames(ctx context.Context, req *marketplacepb.SearchNamesRequest) (*marketplacepb.SearchNamesResponse, error) {
 	const maxLimit = 21
 	limit := req.Limit
@@ -966,34 +966,49 @@ func (s *MarkteplaceService) SearchNames(ctx context.Context, req *marketplacepb
 		limit = maxLimit
 	}
 
-	var nfts []indexerdb.NFT
+	var names []string
 
 	network, err := s.conf.NetworkStore.GetCosmosNetwork(req.NetworkId)
-	if err != nil {
-		return nil, errors.Wrap(err, "bad network id")
-	}
-
-	collectionID := network.CollectionID(network.NameServiceContractAddress)
-
-	if err := s.conf.IndexerDB.
-		Preload("TeritoriNFT").
-		Joins("JOIN teritori_nfts ON teritori_nfts.nft_id = nfts.id").
-		Where("teritori_nfts.token_id ~* ? AND nfts.collection_id = ? AND nfts.burnt = false", req.Input, collectionID).
-		Limit(int(limit)).
-		Find(&nfts).Error; err != nil {
-		return nil, errors.Wrap(err, "failed to read db")
-	}
-
-	var names []string
-	for _, nft := range nfts {
-		if nft.TeritoriNFT == nil {
-			s.conf.Logger.Debug("failed to get nft token id")
-			continue
+	if err == nil {
+		collectionID := network.CollectionID(network.NameServiceContractAddress)
+		var nfts []indexerdb.NFT
+		if err := s.conf.IndexerDB.
+			Preload("TeritoriNFT").
+			Joins("JOIN teritori_nfts ON teritori_nfts.nft_id = nfts.id").
+			Where("teritori_nfts.token_id ~* ? AND nfts.collection_id = ? AND nfts.burnt = false", req.Input, collectionID).
+			Limit(int(limit)).
+			Find(&nfts).Error; err != nil {
+			return nil, errors.Wrap(err, "failed to read nfts in db")
 		}
-		names = append(names, nft.TeritoriNFT.TokenID)
+		for _, nft := range nfts {
+			if nft.TeritoriNFT == nil {
+				s.conf.Logger.Debug("failed to get nft token id")
+				continue
+			}
+			names = append(names, nft.TeritoriNFT.TokenID)
+		}
+	}
+
+	missing := int(limit) - len(names)
+	if missing > 0 {
+		var dbNames []indexerdb.Name
+		if err := s.conf.IndexerDB.Limit(missing).Where("names.value ~* ?", req.Input).Find(&dbNames).Error; err != nil {
+			return nil, errors.Wrap(err, "failed to read names db")
+		}
+		s.conf.Logger.Info("search names", zap.Int("db", len(dbNames)))
+		for _, n := range dbNames[:min(missing, len(dbNames))] {
+			names = append(names, n.Value)
+		}
 	}
 
 	return &marketplacepb.SearchNamesResponse{Names: names}, nil
+}
+
+func min[T constraints.Ordered](a, b T) T {
+	if a < b {
+		return a
+	}
+	return b
 }
 
 // TODO: consider merging this into Collections call

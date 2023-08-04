@@ -11,13 +11,15 @@ import {
   defaultRegistryTypes,
 } from "@cosmjs/stargate";
 import { ChainInfo, Currency as KeplrCurrency } from "@keplr-wallet/types";
+import { bech32 } from "bech32";
 
 import { cosmosNetwork } from "./cosmos-hub";
 import { cosmosThetaNetwork } from "./cosmos-hub-theta";
 import { ethereumNetwork } from "./ethereum";
 import { ethereumGoerliNetwork } from "./ethereum-goerli";
 import { gnoDevNetwork } from "./gno-dev";
-import { gnoTestnetNetwork } from "./gno-testnet";
+import { gnoTeritoriNetwork } from "./gno-teritori";
+import { gnoTest3Network } from "./gno-test3";
 import { junoNetwork } from "./juno";
 import { osmosisNetwork } from "./osmosis";
 import { osmosisTestnetNetwork } from "./osmosis-testnet";
@@ -49,8 +51,9 @@ export const allNetworks = [
   junoNetwork,
   osmosisNetwork,
   osmosisTestnetNetwork,
-  gnoTestnetNetwork,
+  gnoTest3Network,
   gnoDevNetwork,
+  gnoTeritoriNetwork,
   // solanaNetwork,
 ];
 
@@ -172,7 +175,15 @@ export const parseNftId = (
 export const parseUserId = (
   id: string | undefined
 ): [NetworkInfo | undefined, string] => {
-  return parseNetworkObjectId(id);
+  const [network, rest] = parseNetworkObjectId(id);
+  if (network?.kind === NetworkKind.Gno) {
+    try {
+      bech32.decode(rest);
+      return [network, rest];
+    } catch {}
+    return [network, "gno.land/" + rest.replaceAll("-", "/")];
+  }
+  return [network, rest];
 };
 
 export const parseCollectionId = (
@@ -203,6 +214,9 @@ export const getUserId = (
     return "";
   }
   const network = getNetwork(networkId);
+  if (network?.kind === NetworkKind.Gno && address.startsWith("gno.land/")) {
+    address = address.substring("gno.land/".length).replaceAll("/", "-");
+  }
   return `${network?.idPrefix}-${address}`;
 };
 
@@ -261,6 +275,15 @@ export const mustGetGnoNetwork = (
     throw new Error(`'${networkId}' is not a gno network`);
   }
   return network;
+};
+
+export const getGnoNetworkFromChainId = (chainId: string | undefined) => {
+  if (!chainId) {
+    return undefined;
+  }
+  return allNetworks.find(
+    (network) => network.kind === NetworkKind.Gno && network.chainId === chainId
+  );
 };
 
 export const getEthereumNetwork = (

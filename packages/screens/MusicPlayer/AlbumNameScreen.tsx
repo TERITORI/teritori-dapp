@@ -11,7 +11,7 @@ import Tip from "../../../assets/music-player/tip-primary.svg";
 import { signingMusicPlayerClient } from "../../client-creators/musicplayerClient";
 import { BrandText } from "../../components/BrandText";
 import { DetailAlbumMenu } from "../../components/MusicPlayer/DetailAlbumMenu";
-import { MediaPlayer } from "../../components/MusicPlayer/MediaPlayer";
+import { MediaPlayerBar } from "../../components/MusicPlayer/MediaPlayerBar";
 import { MusicPlayerTab } from "../../components/MusicPlayer/MusicPlayerTab";
 // import { TrackHoverMenu } from "../../components/MusicPlayer/TrackHoverMenu";
 import { SVG } from "../../components/SVG";
@@ -350,11 +350,13 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = ({
     },
   });
 
-  const { setAudioSrc, setIsPlay } = useMusicplayer();
-  const playAudio = () => {
+  const { setAudioList, setIsPlay, setAudioIndex } = useMusicplayer();
+  const playAlbum = () => {
     if (albumInfo.audios.length > 0) {
-      setAudioSrc(ipfsPinataUrl(albumInfo.audios[0].ipfs));
+      setAudioList(albumInfo.audios);
       setIsPlay(true);
+      setAudioIndex(0);
+      // setAudioSrc(ipfsPinataUrl(albumInfo.audios[0].ipfs));
     }
   };
 
@@ -384,7 +386,7 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = ({
                 {albumInfo.description}
               </BrandText>
               <View style={styles.oneLine}>
-                <Pressable style={styles.playButton} onPress={playAudio}>
+                <Pressable style={styles.playButton} onPress={playAlbum}>
                   <SVG
                     source={PlayOther}
                     width={layout.padding_x2_5}
@@ -530,7 +532,7 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = ({
         onClose={() => setTipModalVisible(false)}
         isVisible={tipModalVisible}
       />
-      <MediaPlayer />
+      <MediaPlayerBar />
     </ScreenContainer>
   );
 };

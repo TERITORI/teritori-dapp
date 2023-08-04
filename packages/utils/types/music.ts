@@ -18,3 +18,8 @@ export interface AlbumInfo {
   createdBy: string;
   audios: UploadFileInfo[];
 }
+
+export enum PlayType {
+  LOOP = 0,
+  LOOP_OFF = 1,
+}
