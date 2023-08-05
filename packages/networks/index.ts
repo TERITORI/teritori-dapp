@@ -215,6 +215,9 @@ export const getUserId = (
     return "";
   }
   const network = getNetwork(networkId);
+  if (network?.kind === NetworkKind.Gno && address.startsWith("gno.land/")) {
+    address = address.substring("gno.land/".length).replaceAll("/", "-");
+  }
   return `${network?.idPrefix}-${address}`;
 };
 
@@ -273,6 +276,15 @@ export const mustGetGnoNetwork = (
     throw new Error(`'${networkId}' is not a gno network`);
   }
   return network;
+};
+
+export const getGnoNetworkFromChainId = (chainId: string | undefined) => {
+  if (!chainId) {
+    return undefined;
+  }
+  return allNetworks.find(
+    (network) => network.kind === NetworkKind.Gno && network.chainId === chainId
+  );
 };
 
 export const getEthereumNetwork = (

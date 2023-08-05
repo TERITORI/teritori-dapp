@@ -7,6 +7,7 @@
     "icon": "icons/networks/teritori.svg",
     "features": [
       "NFTMarketplace",
+      "Organizations",
       "SocialFeed"
     ],
     "walletUrlForStaking": "https://explorer.teritori.com/teritori/staking",
@@ -132,6 +133,7 @@
     "icon": "icons/networks/teritori.svg",
     "features": [
       "NFTMarketplace",
+      "Organizations",
       "SocialFeed"
     ],
     "currencies": [
@@ -171,7 +173,7 @@
     "contractExplorer": "https://explorer.teritori.com/teritori-testnet/account/$address",
     "idPrefix": "testori",
     "testnet": true,
-    "backendEndpoint": "https://dapp-backend.testnet.teritori.com",
+    "backendEndpoint": "http://localhost:9090",
     "addressPrefix": "tori",
     "restEndpoint": "https://rest.testnet.teritori.com",
     "rpcEndpoint": "https://rpc.testnet.teritori.com",
@@ -567,6 +569,7 @@
     "displayName": "Gno Dev",
     "icon": "icons/networks/gno.svg",
     "features": [
+      "Organizations",
       "SocialFeed"
     ],
     "currencies": [
@@ -600,6 +603,7 @@
     "displayName": "Gno Teritori",
     "icon": "icons/networks/gno.svg",
     "features": [
+      "Organizations",
       "SocialFeed"
     ],
     "currencies": [
@@ -625,6 +629,8 @@
     "vaultContractAddress": "",
     "nameServiceContractAddress": "gno.land/r/demo/users",
     "nameServiceDefaultImage": "ipfs://bafkreignptjimiu7wuux6mk6uh4hb4odb6ff62ny4bvdokrhes7g67huse",
+    "daoRegistryPkgPath": "gno.land/r/demo/dao_registry_v5",
+    "modboardsPkgPath": "gno.land/r/demo/modboards_v3",
     "gnowebURL": "https://testnet.gno.teritori.com"
   }
 ]

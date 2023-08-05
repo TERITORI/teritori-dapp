@@ -4,7 +4,7 @@ import { Linking } from "react-native";
 import { ConnectWalletButton } from "./components/ConnectWalletButton";
 import adenaSVG from "../../../assets/icons/adena.svg";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import { getGnoNetworkFromChainId } from "../../networks";
 import {
   setIsAdenaConnected,
   setSelectedNetworkId,
@@ -17,8 +17,6 @@ export const ConnectAdenaButton: React.FC<{
 }> = ({ onDone }) => {
   const { setToastError } = useFeedbacks();
   const dispatch = useAppDispatch();
-  const selectedNetworkId = useSelectedNetworkId();
-
   const handlePress = async () => {
     try {
       const adena = (window as any)?.adena;
@@ -29,11 +27,15 @@ export const ConnectAdenaButton: React.FC<{
       const establishResult = await adena.AddEstablish("Teritori dApp");
       console.log("established", establishResult);
       dispatch(setIsAdenaConnected(true));
-      setSelectedNetworkId(selectedNetworkId);
-
-      dispatch(
-        setSelectedWalletId(`adena-${(await adena.GetAccount()).data.address}`)
-      );
+      const account = await adena.GetAccount();
+      const address = account.data.address;
+      const chainId = account.data.chainId;
+      const network = getGnoNetworkFromChainId(chainId);
+      if (!network) {
+        throw new Error(`Unsupported chainId ${chainId}`);
+      }
+      dispatch(setSelectedNetworkId(network.id));
+      dispatch(setSelectedWalletId(`adena-${network.id}-${address}`));
       onDone && onDone();
     } catch (err) {
       console.error(err);
