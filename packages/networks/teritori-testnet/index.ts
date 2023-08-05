@@ -13,7 +13,11 @@ export const teritoriTestnetNetwork: NetworkInfo = {
   chainId: "teritori-testnet-v3",
   displayName: "Teritori Testnet",
   icon: "icons/networks/teritori.svg",
-  features: [NetworkFeature.NFTMarketplace, NetworkFeature.Organizations, NetworkFeature.SocialFeed],
+  features: [
+    NetworkFeature.NFTMarketplace,
+    NetworkFeature.Organizations,
+    NetworkFeature.SocialFeed,
+  ],
   currencies: teritoriTestnetCurrencies,
   txExplorer: "https://explorer.teritori.com/teritori-testnet/tx/$hash",
   accountExplorer:

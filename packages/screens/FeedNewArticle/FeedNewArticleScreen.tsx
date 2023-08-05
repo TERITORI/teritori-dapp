@@ -28,12 +28,9 @@ import { useUpdateAvailableFreePost } from "../../hooks/feed/useUpdateAvailableF
 import { useUpdatePostFee } from "../../hooks/feed/useUpdatePostFee";
 import { useBalances } from "../../hooks/useBalances";
 import { useIsMobile } from "../../hooks/useIsMobile";
-import {
-  useSelectedNetworkId,
-  useSelectedNetworkInfo,
-} from "../../hooks/useSelectedNetwork";
+import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getUserId, NetworkFeature, NetworkKind } from "../../networks";
+import { getUserId, NetworkFeature } from "../../networks";
 import { selectNFTStorageAPI } from "../../store/slices/settings";
 import { prettyPrice } from "../../utils/coins";
 import { generateIpfsKey } from "../../utils/ipfs";

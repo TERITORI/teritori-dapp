@@ -1,4 +1,5 @@
 import { coin } from "@cosmjs/amino";
+import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import { v4 as uuidv4 } from "uuid";
 
 import {
@@ -13,11 +14,10 @@ import {
 import { Wallet } from "../../../context/WalletsProvider";
 import { mustGetNetwork, NetworkKind } from "../../../networks";
 import { defaultSocialFeedFee } from "../../../utils/fee";
+import { adenaDoContract } from "../../../utils/gno";
 import { ipfsURLToHTTPURL, uploadFilesToPinata } from "../../../utils/ipfs";
 import { RemoteFileData } from "../../../utils/types/files";
 import { GNO_SOCIAL_FEEDS_PKG_PATH, TERITORI_FEED_ID } from "../const";
-import { adenaDoContract } from "../../../utils/gno";
-import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 
 interface GetAvailableFreePostParams {
   networkId: string;

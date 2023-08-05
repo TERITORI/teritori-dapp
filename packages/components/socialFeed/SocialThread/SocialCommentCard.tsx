@@ -25,7 +25,7 @@ import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { NetworkKind, parseUserId } from "../../../networks";
 import { OnPressReplyType } from "../../../screens/FeedPostView/FeedPostViewScreen";
-import { adenaVMCall } from "../../../utils/gno";
+import { adenaDoContract } from "../../../utils/gno";
 import { useAppNavigation } from "../../../utils/navigation";
 import {
   DEFAULT_USERNAME,
@@ -192,14 +192,18 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
       args: [TERITORI_FEED_ID, localComment.identifier, icon, "true"],
     };
 
-    const tx = await adenaVMCall(vmCall, {
-      gasWanted: 2_000_000,
-    });
+    const txHash = await adenaDoContract(
+      selectedNetworkId || "",
+      [{ type: "/vm.m_call", value: vmCall }],
+      {
+        gasWanted: 2_000_000,
+      }
+    );
 
     const provider = new GnoJSONRPCProvider(rpcEndpoint);
 
     // Wait for tx done
-    await provider.waitForTransaction(tx.data.hash);
+    await provider.waitForTransaction(txHash);
 
     const reactions = getUpdatedReactions(localComment.reactions, icon);
     setLocalComment({
