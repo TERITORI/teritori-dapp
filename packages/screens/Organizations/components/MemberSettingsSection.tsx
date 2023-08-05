@@ -54,11 +54,10 @@ export const MemberSettingsSection: React.FC<MemberSettingsSectionProps> = ({
             <View style={styles.leftInput}>
               <TextInputCustom<MemberSettingFormType>
                 name={`members.${index}.addr`}
-                variant="noCropBorder"
+                noBrokenCorners
                 label="Member Address"
                 hideLabel={index > 0}
                 control={control}
-                // isAsterickSign
                 rules={{ required: true, validate: validateAddress }}
                 placeHolder="Account address"
                 iconSVG={walletInputSVG}
@@ -75,11 +74,10 @@ export const MemberSettingsSection: React.FC<MemberSettingsSectionProps> = ({
             <View style={styles.rightInput}>
               <TextInputCustom<MemberSettingFormType>
                 name={`members.${index}.weight`}
-                variant="noCropBorder"
+                noBrokenCorners
                 label="Weight"
                 hideLabel={index > 0}
                 control={control}
-                // isAsterickSign
                 rules={{ required: true, pattern: patternOnlyNumbers }}
                 placeHolder="1"
               />
