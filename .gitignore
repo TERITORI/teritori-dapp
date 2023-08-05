@@ -56,7 +56,8 @@ node_modules/
 npm-debug.log
 yarn-error.log
 package-lock.json
-.yarn/
+.yarn/cache
+.yarn/install-state.gz
 
 # BUCK
 buck-out/

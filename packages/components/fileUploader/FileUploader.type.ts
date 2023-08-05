@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleProp, ViewStyle } from "react-native";
 
-import { LocalFileData } from "../../utils/types/feed";
+import { LocalFileData } from "../../utils/types/files";
 
 export interface FileUploaderProps {
   onUpload: (files: LocalFileData[]) => void;

@@ -12,7 +12,11 @@ export const teritoriNetwork: CosmosNetworkInfo = {
   chainId: "teritori-1",
   displayName: "Teritori",
   icon: "icons/networks/teritori.svg",
-  features: [NetworkFeature.NFTMarketplace, NetworkFeature.P2E],
+  features: [
+    NetworkFeature.NFTMarketplace,
+    NetworkFeature.P2E,
+    NetworkFeature.Organizations,
+  ],
   walletUrlForStaking: "https://explorer.teritori.com/teritori/staking",
   currencies: teritoriCurrencies,
   txExplorer: "https://www.mintscan.io/teritori/txs/$hash",

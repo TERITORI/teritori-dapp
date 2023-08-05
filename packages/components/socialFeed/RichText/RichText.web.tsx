@@ -81,7 +81,7 @@ import {
 import { neutral77 } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
 import { layout, SOCIAL_FEED_BREAKPOINT_M } from "../../../utils/style/layout";
-import { LocalFileData } from "../../../utils/types/feed";
+import { LocalFileData } from "../../../utils/types/files";
 import { BrandText } from "../../BrandText";
 import { AudioView } from "../../FilePreview/AudioView";
 import { EditableAudioPreview } from "../../FilePreview/EditableAudioPreview";
