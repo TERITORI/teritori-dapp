@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { FlatList, View } from "react-native";
 
 import { NFTView } from "./NFTView";
@@ -8,15 +8,18 @@ import { useNFTs } from "../../hooks/useNFTs";
 import {
   AppliedFilters,
   SideFilters,
-  useShowFilters,
 } from "../../screens/Marketplace/SideFilters";
 import { neutral00, neutral33 } from "../../utils/style/colors";
 import { fontSemibold20 } from "../../utils/style/fonts";
-import { layout, screenContentMaxWidthLarge } from "../../utils/style/layout";
+import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { SpacerColumn } from "../spacer";
 
 const keyExtractor = (item: NFT) => item.id;
+
+const halfGap = layout.padding_x1;
+
+export const minNFTWidth = 250;
 
 export const NFTs: React.FC<{
   req: NFTsRequest;
@@ -25,7 +28,37 @@ export const NFTs: React.FC<{
   const { nfts, fetchMore } = useNFTs(req);
 
   const { height } = useMaxResolution({ isLarge: true });
-  const filterIsShown = useShowFilters();
+  const [containerWidth, setContainerWidth] = useState(0);
+  const elemsPerRow = Math.floor(containerWidth / minNFTWidth) || 1;
+  const elemSize = elemsPerRow
+    ? (containerWidth - halfGap * (elemsPerRow - 1) * 2) / elemsPerRow
+    : nfts?.length || 0;
+
+  let padded: NFT[] = nfts;
+  if (nfts.length % elemsPerRow !== 0 && elemsPerRow > 1) {
+    const padding = Array(elemsPerRow - (nfts.length % elemsPerRow))
+      .fill(undefined)
+      .map((_, i) => {
+        const n: NFT = {
+          id: `padded-${i}`,
+          networkId: "",
+          imageUri: "",
+          name: "",
+          mintAddress: "",
+          price: "",
+          denom: "",
+          isListed: false,
+          textInsert: "",
+          collectionName: "",
+          ownerId: "",
+          nftContractAddress: "",
+          lockedOn: "",
+          attributes: [],
+        };
+        return n;
+      });
+    padded = nfts.concat(padding);
+  }
 
   const handleEndReached = useCallback(() => {
     fetchMore();
@@ -48,7 +81,6 @@ export const NFTs: React.FC<{
               left: 0,
               flexDirection: "column",
               width: 245,
-              marginBottom: layout.padding_x2_5,
               backgroundColor: neutral00,
               borderRadius: layout.padding_x2,
               borderColor: neutral33,
@@ -56,24 +88,23 @@ export const NFTs: React.FC<{
               height,
               padding: layout.padding_x2,
               borderStyle: "solid",
+              marginRight: layout.padding_x1_5,
             }}
           />
         )}
         <FlatList
-          style={{
-            width: "100%",
-            marginLeft: filterIsShown ? layout.padding_x1_5 : 0,
-          }}
-          contentContainerStyle={{
-            maxWidth: screenContentMaxWidthLarge,
-            maxHeight: height,
-          }}
-          showsHorizontalScrollIndicator={false}
-          columnWrapperStyle={{ flexWrap: "wrap", flex: 1, marginTop: 5 }}
-          numColumns={99} // needed to deal with wrap via css
+          onLayout={(e) => setContainerWidth(e.nativeEvent.layout.width)}
+          style={{ width: "100%" }}
+          contentContainerStyle={{ maxHeight: height }}
+          columnWrapperStyle={
+            elemsPerRow < 2
+              ? undefined
+              : { flex: 1, justifyContent: "space-between" }
+          }
+          numColumns={elemsPerRow}
           ItemSeparatorComponent={() => <SpacerColumn size={2} />}
-          key="nft-flat-list"
-          data={nfts}
+          key={`nft-flat-list-${elemsPerRow}`}
+          data={padded}
           onEndReached={handleEndReached}
           keyExtractor={keyExtractor}
           ListEmptyComponent={
@@ -84,12 +115,10 @@ export const NFTs: React.FC<{
               key={info.item.mintAddress}
               data={info.item}
               style={{
-                marginRight: layout.padding_x2,
-                marginBottom: layout.padding_x2,
+                width: elemSize,
               }}
             />
           )}
-          removeClippedSubviews
         />
       </View>
     </View>
