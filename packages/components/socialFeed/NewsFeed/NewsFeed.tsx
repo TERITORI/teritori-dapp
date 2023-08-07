@@ -1,3 +1,4 @@
+import MasonryList from "@react-native-seoul/masonry-list";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   LayoutChangeEvent,
@@ -22,12 +23,7 @@ import {
   useFetchFeed,
 } from "../../../hooks/feed/useFetchFeed";
 import { useIsMobile } from "../../../hooks/useIsMobile";
-import { useMaxResolution } from "../../../hooks/useMaxResolution";
-import {
-  layout,
-  RESPONSIVE_BREAKPOINT_S,
-  screenContentMaxWidth,
-} from "../../../utils/style/layout";
+import { layout, RESPONSIVE_BREAKPOINT_S } from "../../../utils/style/layout";
 import { SpacerColumn, SpacerRow } from "../../spacer";
 import { SocialThreadCard } from "../SocialThread/SocialThreadCard";
 
@@ -46,6 +42,10 @@ interface NewsFeedProps {
   disablePosting?: boolean;
 }
 
+const halfGap = layout.padding_x1;
+
+const maxElemWidth = 400;
+
 export const NewsFeed: React.FC<NewsFeedProps> = ({
   Header,
   req,
@@ -56,7 +56,6 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
 }) => {
   const isMobile = useIsMobile();
   const { width: windowWidth } = useWindowDimensions();
-  const { width } = useMaxResolution();
   const { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading } =
     useFetchFeed(req);
   const isLoadingValue = useSharedValue(false);
@@ -65,6 +64,11 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
     () => (data ? combineFetchFeedPages(data.pages) : []),
     [data]
   );
+  const [containerWidth, setContainerWidth] = useState(0);
+  const elemsPerRow = Math.floor(containerWidth / maxElemWidth) || 1;
+  const elemSize = elemsPerRow
+    ? (containerWidth - halfGap * elemsPerRow * 2) / elemsPerRow
+    : posts.length || 0;
   const [isCreateModalVisible, setCreateModalVisible] = useState(false);
   const [flatListContentOffsetY, setFlatListContentOffsetY] = useState(0);
   const [headerHeight, setHeaderHeight] = useState(0);
@@ -105,7 +109,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
       <>
         <View
           onLayout={onHeaderLayout}
-          style={{ width, alignSelf: "center", alignItems: "center" }}
+          style={{ width: "100%", alignSelf: "center", alignItems: "center" }}
         >
           <Header />
         </View>
@@ -116,6 +120,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
                 justifyContent: "center",
                 alignItems: "center",
                 flexDirection: isMobile ? "row" : "column",
+                width: "100%",
               },
             ]}
           >
@@ -154,16 +159,10 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
       isLoadingValue,
       isMobile,
       refetch,
-      width,
     ]
   );
 
   const styles = StyleSheet.create({
-    content: {
-      alignItems: "center",
-      alignSelf: "center",
-      width: "100%",
-    },
     floatingActions: {
       position: "absolute",
       justifyContent: "center",
@@ -175,41 +174,33 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
 
   return (
     <>
-      <Animated.FlatList
-        scrollEventThrottle={0.1}
+      <MasonryList
+        onLayout={(e) => setContainerWidth(e.nativeEvent.layout.width)}
+        key={`${elemsPerRow}`}
+        numColumns={elemsPerRow}
         data={posts}
         renderItem={({ item: post }) => (
-          <View
-            style={{
-              width:
-                windowWidth < RESPONSIVE_BREAKPOINT_S ? windowWidth : width,
-              maxWidth: screenContentMaxWidth,
-            }}
-          >
+          <View style={{ width: elemSize, margin: halfGap }}>
             <SocialThreadCard
-              post={post}
+              post={post as any}
               isPreview
-              style={
+              style={[
+                { width: "100%" },
                 windowWidth < RESPONSIVE_BREAKPOINT_S && {
                   borderRadius: 0,
                   borderLeftWidth: 0,
                   borderRightWidth: 0,
-                }
-              }
+                },
+              ]}
             />
-            <SpacerColumn size={2} />
           </View>
         )}
-        ListHeaderComponentStyle={{
-          zIndex: 1,
-          width: windowWidth,
-          maxWidth: screenContentMaxWidth,
-        }}
+        style={{ width: "100%", marginTop: 32 }}
         ListHeaderComponent={ListHeaderComponent}
         keyExtractor={(post: Post) => post.identifier}
-        onScroll={scrollHandler}
-        contentContainerStyle={styles.content}
-        onEndReachedThreshold={1}
+        // onScroll={scrollHandler}
+        contentContainerStyle={{ width: "100%", margin: -halfGap }}
+        onEndReachedThreshold={1.5}
         onEndReached={onEndReached}
       />
 

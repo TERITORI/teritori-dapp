@@ -3,7 +3,6 @@ import { StyleSheet } from "react-native";
 
 import { SpacerColumn } from "../../../components/spacer";
 import { Tabs } from "../../../components/tabs/Tabs";
-import { useMaxResolution } from "../../../hooks/useMaxResolution";
 import { feedsTabItems } from "../../../utils/social-feed";
 import { primaryColor } from "../../../utils/style/colors";
 import { fontSemibold16 } from "../../../utils/style/fonts";
@@ -17,14 +16,13 @@ export const FeedHeader: React.FC<FeedHeaderProps> = ({
   selectedTab,
   onTabChange,
 }) => {
-  const { width } = useMaxResolution();
   return (
     <>
       <Tabs
         items={feedsTabItems}
         selected={selectedTab}
         onSelect={onTabChange}
-        style={[styles.header, { width }]}
+        style={[styles.header, { width: "100%" }]}
         borderColorTabSelected={primaryColor}
         gradientText
         tabTextStyle={fontSemibold16}

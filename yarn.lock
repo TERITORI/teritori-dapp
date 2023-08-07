@@ -7163,6 +7163,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@react-native-seoul/masonry-list@npm:^1.4.2":
+  version: 1.4.2
+  resolution: "@react-native-seoul/masonry-list@npm:1.4.2"
+  dependencies:
+    dooboolab-welcome: ^1.3.2
+  peerDependencies:
+    expo: "*"
+    react: ">=16.9"
+    react-native: ">=0.58"
+  checksum: d208f76b539913e70b6f3085715c36234a7a5344c3877d3ad4e20620b28e98814d491622ca70a7948f359c89c295f000cb54d8dd9aee8c278e1a20f39ec779c6
+  languageName: node
+  linkType: hard
+
 "@react-native/assets@npm:1.0.0":
   version: 1.0.0
   resolution: "@react-native/assets@npm:1.0.0"
@@ -14005,6 +14018,15 @@ __metadata:
     domelementtype: ^2.3.0
     domhandler: ^5.0.1
   checksum: 23aa7a840572d395220e173cb6263b0d028596e3950100520870a125af33ff819e6f609e1606d6f7d73bd9e7feb03bb404286e57a39063b5384c62b724d987b3
+  languageName: node
+  linkType: hard
+
+"dooboolab-welcome@npm:^1.3.2":
+  version: 1.3.2
+  resolution: "dooboolab-welcome@npm:1.3.2"
+  bin:
+    dooboolab-welcome: bin/hello.js
+  checksum: 9a4e5c17a16b5cf874bdc1482ee7a2a221a8f269d8bfe6ba1425f678e764d256e265e30ca6169635ce9fa77af53b2e5a0b810a5c4b48b01c13d906613f799c96
   languageName: node
   linkType: hard
 
@@ -27645,6 +27667,7 @@ __metadata:
     "@react-native-clipboard/clipboard": ^1.10.0
     "@react-native-masked-view/masked-view": 0.2.6
     "@react-native-picker/picker": 2.4.0
+    "@react-native-seoul/masonry-list": ^1.4.2
     "@react-navigation/native": ^6.0.11
     "@react-navigation/native-stack": ^6.7.0
     "@reduxjs/toolkit": ^1.8.3

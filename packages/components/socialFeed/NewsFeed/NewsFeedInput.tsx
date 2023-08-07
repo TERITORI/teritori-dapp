@@ -35,7 +35,6 @@ import { useUpdateAvailableFreePost } from "../../../hooks/feed/useUpdateAvailab
 import { useUpdatePostFee } from "../../../hooks/feed/useUpdatePostFee";
 import { useBalances } from "../../../hooks/useBalances";
 import { useIsMobile } from "../../../hooks/useIsMobile";
-import { useMaxResolution } from "../../../hooks/useMaxResolution";
 import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import {
@@ -142,7 +141,6 @@ export const NewsFeedInput = React.forwardRef<
     forwardRef
   ) => {
     const { width: windowWidth } = useWindowDimensions();
-    const { width } = useMaxResolution();
     const isMobile = useIsMobile();
     const [viewWidth, setViewWidth] = useState(0);
     const inputMaxHeight = 400;
@@ -410,7 +408,7 @@ export const NewsFeedInput = React.forwardRef<
 
     return (
       <View
-        style={[{ width }, style]}
+        style={[{ width: "100%" }, style]}
         onLayout={(e) => setViewWidth(e.nativeEvent.layout.width)}
       >
         {isNotEnoughFundModal && (

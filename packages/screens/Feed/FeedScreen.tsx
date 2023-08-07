@@ -31,12 +31,11 @@ export const FeedScreen: ScreenFC<"Feed"> = () => {
 
   return (
     <ScreenContainer
-      fullWidth
+      isLarge
       responsive
-      noMargin
-      noScroll
       footerChildren={<></>}
       forceNetworkFeatures={[NetworkFeature.SocialFeed]}
+      noScroll
       headerChildren={<BrandText>Social Feed</BrandText>}
     >
       <NewsFeed

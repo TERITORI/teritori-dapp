@@ -166,6 +166,7 @@ export const SocialThreadCard: React.FC<{
       onPress={() =>
         navigation.navigate("FeedPostView", { id: localPost.identifier })
       }
+      style={{ width: "100%" }}
     >
       <AnimationFadeIn
         style={[

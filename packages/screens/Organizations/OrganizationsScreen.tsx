@@ -1,5 +1,5 @@
 import React from "react";
-import { ScrollView, View } from "react-native";
+import { View } from "react-native";
 
 import { DAOsRequest } from "../../api/dao/v1/dao";
 import { BrandText } from "../../components/BrandText";
@@ -19,25 +19,22 @@ export const OrganizationsScreen = () => {
 
   return (
     <ScreenContainer
+      isLarge
       headerChildren={<BrandText>DAO List</BrandText>}
       footerChildren={<></>}
-      noMargin
-      fullWidth
-      noScroll
+      responsive
       forceNetworkFeatures={[NetworkFeature.Organizations]}
     >
-      <ScrollView>
-        <DAOsSection
-          req={{ networkId }}
-          title="All DAOs"
-          topRight={
-            <PrimaryButton
-              text="Create Dao"
-              onPress={() => navigation.navigate("OrganizationDeployer")}
-            />
-          }
-        />
-      </ScrollView>
+      <DAOsSection
+        req={{ networkId }}
+        title="All DAOs"
+        topRight={
+          <PrimaryButton
+            text="Create Dao"
+            onPress={() => navigation.navigate("OrganizationDeployer")}
+          />
+        }
+      />
     </ScreenContainer>
   );
 };
@@ -50,7 +47,7 @@ const DAOsSection: React.FC<{
   return (
     <View
       style={{
-        padding: layout.contentPadding,
+        paddingBottom: layout.contentPadding,
         paddingTop: layout.topContentPaddingWithHeading,
       }}
     >
