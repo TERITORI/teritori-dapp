@@ -22,7 +22,7 @@ export const useCosmWasmContract = (
       const contract = await client.getContract(address);
       return contract;
     },
-    { staleTime: Infinity }
+    { staleTime: Infinity, cacheTime: Infinity }
   );
 };
 
@@ -40,7 +40,7 @@ export const useCosmWasmCodeDetails = (
       const info = await client.getCodeDetails(codeId);
       return info;
     },
-    { staleTime: Infinity }
+    { staleTime: Infinity, cacheTime: Infinity }
   );
 };
 
@@ -58,7 +58,7 @@ export const useCosmWasmContractVersion = (
       const { info } = await client.queryContractSmart(address, { info: {} });
       return info as ContractVersion;
     },
-    { staleTime: Infinity }
+    { staleTime: Infinity, cacheTime: Infinity }
   );
 };
 

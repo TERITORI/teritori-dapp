@@ -104,6 +104,7 @@ export const useFetchFeed = (req: PostsRequest) => {
           }
         },
         staleTime: Infinity,
+        cacheTime: Infinity,
         refetchOnWindowFocus: false,
       }
     );

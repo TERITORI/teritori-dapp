@@ -169,6 +169,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
   return (
     <>
       <MasonryList
+        // don't put a scroll handler it will ruin perfs
         onLayout={(e) => setContainerWidth(e.nativeEvent.layout.width)}
         key={`${elemsPerRow}`}
         numColumns={elemsPerRow}

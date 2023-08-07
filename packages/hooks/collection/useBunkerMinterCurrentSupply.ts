@@ -21,7 +21,7 @@ export const useBunkerMinterCurrentSupply = (
       );
       return await minterClient.currentSupply();
     },
-    { staleTime: Infinity, enabled }
+    { staleTime: Infinity, cacheTime: Infinity, enabled }
   );
   return { bunkerMinterCurrentSupply: data, ...other };
 };

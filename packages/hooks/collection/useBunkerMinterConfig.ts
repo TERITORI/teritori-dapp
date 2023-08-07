@@ -26,6 +26,7 @@ export const useBunkerMinterConfig = (
     },
     {
       staleTime: Infinity,
+      cacheTime: Infinity,
       enabled: !!networkId && !!contractAddress && enabled,
     }
   );

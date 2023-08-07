@@ -18,7 +18,7 @@ export const useDAOVotingModule = (daoId: string | undefined) => {
       const coreClient = new DaoCoreQueryClient(cosmwasmClient, daoCoreAddress);
       return await coreClient.votingModule();
     },
-    { staleTime: Infinity, enabled: !!daoId }
+    { staleTime: Infinity, cacheTime: Infinity, enabled: !!daoId }
   );
   return { daoVotingModule: data, ...other };
 };

@@ -12,7 +12,6 @@ import FlexRow from "../../FlexRow";
 import { OmniLink } from "../../OmniLink";
 import { AnimationFadeIn } from "../../animations/AnimationFadeIn";
 import { UserAvatarWithFrame } from "../../images/AvatarWithFrame";
-import { SpacerRow } from "../../spacer";
 import { SocialFeedMetadata } from "../NewsFeed/NewsFeed.type";
 
 export const SocialCardHeader: FC<{
