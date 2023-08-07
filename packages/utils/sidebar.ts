@@ -8,6 +8,7 @@ import launchpadLaunchpadSVG from "../../assets/icons/launchpad-launchpad.svg";
 import launchpadSVG from "../../assets/icons/launchpad.svg";
 import messagesSVG from "../../assets/icons/messages.svg";
 import multisigSVG from "../../assets/icons/multisig.svg";
+import musicSVG from "../../assets/icons/musicplayer.svg";
 import osmosisCircleSVG from "../../assets/icons/networks/osmosis-circle.svg";
 import pathwarSVG from "../../assets/icons/pathwar.svg";
 import riotersGameSVG from "../../assets/icons/rioters-game.svg";
@@ -133,6 +134,6 @@ export const SIDEBAR_LIST: SidebarRecordType = {
     title: "Music",
     id: "Music",
     route: "MusicPlayer",
-    icon: dappStoreSVG,
+    icon: musicSVG,
   },
 };

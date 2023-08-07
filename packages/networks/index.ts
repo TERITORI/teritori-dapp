@@ -28,6 +28,7 @@ import { teritoriNetwork } from "./teritori";
 import { teritoriTestnetNetwork } from "./teritori-testnet";
 import {
   CosmosNetworkInfo,
+  CurrencyInfo,
   EthereumNetworkInfo,
   GnoNetworkInfo,
   NativeCurrencyInfo,
@@ -74,11 +75,11 @@ export const getToriNativeCurrency = (networkId: string) => {
   const network = getNetwork(networkId);
   if (network?.kind === NetworkKind.Cosmos)
     return network?.currencies.find(
-      (currencyInfo) => currencyInfo.kind === "native"
+      (currencyInfo: CurrencyInfo) => currencyInfo.kind === "native"
     ) as NativeCurrencyInfo;
   else {
     const toriIbcCurrency = network?.currencies.find(
-      (currencyInfo) =>
+      (currencyInfo: CurrencyInfo) =>
         currencyInfo.kind === "ibc" && currencyInfo.sourceDenom === "utori"
     );
     return getNativeCurrency(networkId, toriIbcCurrency?.denom);
