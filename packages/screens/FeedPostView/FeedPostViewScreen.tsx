@@ -42,7 +42,7 @@ import { useIsMobile } from "../../hooks/useIsMobile";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import { getUserId, NetworkKind, parseUserId } from "../../networks";
+import { NetworkFeature, getUserId, parseUserId } from "../../networks";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { DEFAULT_USERNAME, postResultToPost } from "../../utils/social-feed";
 import { primaryColor } from "../../utils/style/colors";
@@ -164,7 +164,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
 
   return (
     <ScreenContainer
-      forceNetworkKind={NetworkKind.Cosmos}
+      forceNetworkFeatures={[NetworkFeature.SocialFeed]}
       fullWidth
       responsive
       noMargin

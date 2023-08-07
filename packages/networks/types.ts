@@ -137,4 +137,5 @@ export enum NetworkFeature {
   Swap = "Swap",
   Organizations = "Organizations",
   P2E = "P2E",
+  SocialFeed = "SocialFeed",
 }
