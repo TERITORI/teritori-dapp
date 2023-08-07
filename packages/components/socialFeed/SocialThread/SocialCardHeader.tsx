@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, memo } from "react";
 import { useWindowDimensions, View } from "react-native";
 
 import { DateTime } from "./DateTime";
@@ -20,95 +20,100 @@ export const SocialCardHeader: FC<{
   postMetadata: SocialFeedMetadata;
   authorMetadata?: any;
   loading?: boolean;
-}> = ({ authorId, authorAddress, authorMetadata, postMetadata, loading }) => {
-  const { width } = useWindowDimensions();
-  return (
-    <FlexRow justifyContent="space-between">
-      <View style={{ flexDirection: "row", alignItems: "center" }}>
-        <OmniLink
-          to={{ screen: "UserPublicProfile", params: { id: authorId } }}
-        >
-          {/*---- User image */}
-          <UserAvatarWithFrame
-            style={{
-              marginRight:
-                width < RESPONSIVE_BREAKPOINT_S
-                  ? layout.padding_x1
-                  : layout.padding_x2,
-            }}
-            userId={authorId}
-            size={width < RESPONSIVE_BREAKPOINT_S ? "S" : "M"}
-          />
-        </OmniLink>
-        <View
-          style={{
-            flexDirection: width < RESPONSIVE_BREAKPOINT_S ? "column" : "row",
-            justifyContent: "space-between",
-          }}
-        >
+}> = memo(
+  ({ authorId, authorAddress, authorMetadata, postMetadata, loading }) => {
+    const { width } = useWindowDimensions();
+    return (
+      <FlexRow justifyContent="space-between">
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
           <OmniLink
             to={{ screen: "UserPublicProfile", params: { id: authorId } }}
           >
-            {/*---- User name */}
-            <AnimationFadeIn>
-              <BrandText style={fontSemibold16}>
-                {authorMetadata?.public_name || DEFAULT_NAME}
-              </BrandText>
-              <View style={{ flexDirection: "row" }}>
-                <OmniLink
-                  to={{ screen: "UserPublicProfile", params: { id: authorId } }}
-                >
-                  <BrandText
-                    style={[
-                      fontSemibold14,
-                      {
-                        color: neutral77,
-                      },
-                    ]}
-                    numberOfLines={1}
-                  >
-                    {" "}
-                    @
-                    {authorMetadata?.tokenId
-                      ? authorMetadata.tokenId
-                      : tinyAddress(authorAddress, 19)}
-                  </BrandText>
-                </OmniLink>
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  {/*---- User TNS name */}
-
-                  {/* A dot separator */}
-                  <View
-                    style={{
-                      backgroundColor: neutral77,
-                      height: 2,
-                      width: 2,
-                      borderRadius: 999,
-                      marginHorizontal: layout.padding_x0_75,
+            {/*---- User image */}
+            <UserAvatarWithFrame
+              style={{
+                marginRight:
+                  width < RESPONSIVE_BREAKPOINT_S
+                    ? layout.padding_x1
+                    : layout.padding_x2,
+              }}
+              userId={authorId}
+              size={width < RESPONSIVE_BREAKPOINT_S ? "S" : "M"}
+            />
+          </OmniLink>
+          <View
+            style={{
+              flexDirection: width < RESPONSIVE_BREAKPOINT_S ? "column" : "row",
+              justifyContent: "space-between",
+            }}
+          >
+            <OmniLink
+              to={{ screen: "UserPublicProfile", params: { id: authorId } }}
+            >
+              {/*---- User name */}
+              <View>
+                <BrandText style={fontSemibold16}>
+                  {authorMetadata?.public_name || DEFAULT_NAME}
+                </BrandText>
+                <View style={{ flexDirection: "row" }}>
+                  <OmniLink
+                    to={{
+                      screen: "UserPublicProfile",
+                      params: { id: authorId },
                     }}
-                  />
-                  {/*---- Date */}
-                  <DateTime
-                    date={postMetadata.createdAt}
-                    textStyle={{ color: neutral77 }}
-                  />
+                  >
+                    <BrandText
+                      style={[
+                        fontSemibold14,
+                        {
+                          color: neutral77,
+                        },
+                      ]}
+                      numberOfLines={1}
+                    >
+                      {" "}
+                      @
+                      {authorMetadata?.tokenId
+                        ? authorMetadata.tokenId
+                        : tinyAddress(authorAddress, 19)}
+                    </BrandText>
+                  </OmniLink>
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    {/*---- User TNS name */}
+
+                    {/* A dot separator */}
+                    <View
+                      style={{
+                        backgroundColor: neutral77,
+                        height: 2,
+                        width: 2,
+                        borderRadius: 999,
+                        marginHorizontal: layout.padding_x0_75,
+                      }}
+                    />
+                    {/*---- Date */}
+                    <DateTime
+                      date={postMetadata.createdAt}
+                      textStyle={{ color: neutral77 }}
+                    />
+                  </View>
                 </View>
               </View>
-            </AnimationFadeIn>
-          </OmniLink>
+            </OmniLink>
+          </View>
         </View>
-      </View>
 
-      {/*---- Badges TODO: Handle this later */}
-      {/*{!!communityHashtag && (*/}
-      {/*  <DotBadge*/}
-      {/*    label={communityHashtag.hashtag}*/}
-      {/*    dotColor={communityHashtag.color}*/}
-      {/*    style={{*/}
-      {/*      backgroundColor: isPostConsultation ? neutral00 : neutral17,*/}
-      {/*    }}*/}
-      {/*  />*/}
-      {/*)}*/}
-    </FlexRow>
-  );
-};
+        {/*---- Badges TODO: Handle this later */}
+        {/*{!!communityHashtag && (*/}
+        {/*  <DotBadge*/}
+        {/*    label={communityHashtag.hashtag}*/}
+        {/*    dotColor={communityHashtag.color}*/}
+        {/*    style={{*/}
+        {/*      backgroundColor: isPostConsultation ? neutral00 : neutral17,*/}
+        {/*    }}*/}
+        {/*  />*/}
+        {/*)}*/}
+      </FlexRow>
+    );
+  }
+);

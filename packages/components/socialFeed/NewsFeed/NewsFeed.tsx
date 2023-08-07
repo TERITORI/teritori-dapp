@@ -1,6 +1,14 @@
 import MasonryList from "@react-native-seoul/masonry-list";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { LayoutChangeEvent, StyleSheet, View } from "react-native";
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  Suspense,
+  useState,
+} from "react";
+import { LayoutChangeEvent, StyleSheet, View, ViewStyle } from "react-native";
 import Animated, {
   useAnimatedScrollHandler,
   useSharedValue,
@@ -18,7 +26,10 @@ import {
   useFetchFeed,
 } from "../../../hooks/feed/useFetchFeed";
 import { useIsMobile } from "../../../hooks/useIsMobile";
+import { usePrevious } from "../../../hooks/usePrevious";
+import { neutral33, neutral77 } from "../../../utils/style/colors";
 import { layout } from "../../../utils/style/layout";
+import { BrandText } from "../../BrandText";
 import { SpacerColumn, SpacerRow } from "../../spacer";
 import { SocialThreadCard } from "../SocialThread/SocialThreadCard";
 
@@ -40,6 +51,11 @@ interface NewsFeedProps {
 const halfGap = layout.padding_x1;
 
 const maxElemWidth = 400;
+
+const keyExtractor = (post: Post) => post.identifier;
+
+const listStyle: ViewStyle = { width: "100%", marginTop: 32 };
+const contentContainerStyle: ViewStyle = { width: "100%", margin: -halfGap };
 
 export const NewsFeed: React.FC<NewsFeedProps> = ({
   Header,
@@ -88,11 +104,11 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
     }
   }, [isFetching, isLoading, isGoingUp, isLoadingValue]);
 
-  const onEndReached = () => {
+  const onEndReached = useCallback(() => {
     if (!isLoading && hasNextPage && !isFetching) {
       fetchNextPage();
     }
-  };
+  }, [fetchNextPage, hasNextPage, isFetching, isLoading]);
 
   const onHeaderLayout = (e: LayoutChangeEvent) => {
     setHeaderHeight(e.nativeEvent.layout.height);
@@ -108,7 +124,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
           <Header />
         </View>
         {!disablePosting && (
-          <Animated.View
+          <View
             style={[
               {
                 justifyContent: "center",
@@ -139,7 +155,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
               </>
             )}
             <RefreshButton isRefreshing={isLoadingValue} onPress={refetch} />
-          </Animated.View>
+          </View>
         )}
         <SpacerColumn size={1.5} />
       </>
@@ -166,26 +182,69 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
     },
   });
 
+  const render = useCallback(
+    ({ item: post }: { item: unknown; i: number }) => (
+      <View style={{ width: elemSize, margin: halfGap }}>
+        <SocialThreadCard post={post as Post} isPreview />
+      </View>
+    ),
+    [elemSize]
+  );
+
+  const handleLayout = useCallback(
+    (e: LayoutChangeEvent) => setContainerWidth(e.nativeEvent.layout.width),
+    []
+  );
+
+  const [resizing, setResizing] = useState(false);
+  const prevContainerWidth = usePrevious(containerWidth);
+  useLayoutEffect(() => {
+    if (
+      containerWidth !== prevContainerWidth &&
+      prevContainerWidth !== 0 &&
+      containerWidth !== 0 &&
+      !resizing
+    ) {
+      setResizing(true);
+      setTimeout(() => setResizing(false), 500);
+    }
+  }, [containerWidth, prevContainerWidth, resizing]);
+
+  /*
+  if (resizing) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          marginTop: 32,
+          borderRadius: 8,
+          width: "100%",
+          borderWidth: 1,
+          borderColor: neutral77,
+          backgroundColor: neutral33,
+        }}
+      />
+    );
+  }
+  */
+
   return (
-    <>
+    <View style={{ width: "100%", flex: 1 }} onLayout={handleLayout}>
       <MasonryList
         // don't put a scroll handler it will ruin perfs
-        onLayout={(e) => setContainerWidth(e.nativeEvent.layout.width)}
-        key={`${elemsPerRow}`}
+        key={`news-feed-list-x${elemsPerRow}`}
         numColumns={elemsPerRow}
         data={posts}
-        renderItem={({ item: post }) => (
-          <View style={{ width: elemSize, margin: halfGap }}>
-            <SocialThreadCard post={post as any} isPreview />
-          </View>
-        )}
-        style={{ width: "100%", marginTop: 32 }}
+        refreshing
+        renderItem={render}
+        style={listStyle}
         ListHeaderComponent={ListHeaderComponent}
-        keyExtractor={(post: Post) => post.identifier}
+        keyExtractor={keyExtractor}
         // onScroll={scrollHandler}
-        contentContainerStyle={{ width: "100%", margin: -halfGap }}
+        contentContainerStyle={contentContainerStyle}
         onEndReachedThreshold={1.5}
         onEndReached={onEndReached}
+        removeClippedSubviews
       />
 
       {flatListContentOffsetY >= OFFSET_Y_LIMIT_FLOATING + headerHeight && (
@@ -207,6 +266,6 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
         additionalHashtag={additionalHashtag}
         onSubmitSuccess={refetch}
       />
-    </>
+    </View>
   );
 };

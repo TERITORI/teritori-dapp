@@ -1,5 +1,5 @@
 import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
-import React, { memo, useEffect, useState } from "react";
+import React, { Suspense, memo, useEffect, useMemo, useState } from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 
 import { SocialCardHeader } from "./SocialCardHeader";
@@ -19,9 +19,11 @@ import {
   neutral00,
   neutral17,
   neutral33,
+  neutral77,
   withAlpha,
 } from "../../../utils/style/colors";
 import { layout } from "../../../utils/style/layout";
+import { BrandText } from "../../BrandText";
 import FlexRow from "../../FlexRow";
 import { AnimationFadeIn } from "../../animations/AnimationFadeIn";
 import { CustomPressable } from "../../buttons/CustomPressable";
@@ -77,7 +79,10 @@ export const SocialThreadCard: React.FC<{
     const [, userAddress] = parseUserId(localPost.createdBy);
     const userInfo = useNSUserInfo(wallet?.userId);
     const navigation = useAppNavigation();
-    const metadata: SocialFeedMetadata = JSON.parse(localPost.metadata);
+    const metadata: SocialFeedMetadata = useMemo(
+      () => JSON.parse(localPost.metadata),
+      [localPost.metadata]
+    );
     const username = authorNSInfo?.metadata?.tokenId
       ? authorNSInfo?.metadata?.tokenId
       : userAddress;
@@ -102,6 +107,23 @@ export const SocialThreadCard: React.FC<{
         },
       });
     };
+
+    const viewStyle = useMemo(
+      () => [
+        {
+          borderWidth: isPostConsultation ? 4 : 1,
+          borderColor: isPostConsultation
+            ? withAlpha(neutral33, 0.5)
+            : neutral33,
+          borderRadius: 12,
+          paddingVertical: layout.padding_x2,
+          paddingHorizontal: layout.padding_x2_5,
+          backgroundColor: neutral00,
+        },
+        style,
+      ],
+      [isPostConsultation, style]
+    );
 
     const gnoReaction = async (emoji: string, rpcEndpoint: string) => {
       const vmCall = {
@@ -160,6 +182,21 @@ export const SocialThreadCard: React.FC<{
       setLocalPost(post);
     }, [post]);
 
+    /*
+    return (
+      <View
+        style={{
+          borderRadius: 8,
+          width: "100%",
+          height: 400,
+          borderWidth: 1,
+          borderColor: neutral77,
+          backgroundColor: neutral33,
+        }}
+      />
+    );
+    */
+
     return (
       <CustomPressable
         onLayout={(e) => setViewWidth(e.nativeEvent.layout.width)}
@@ -169,21 +206,9 @@ export const SocialThreadCard: React.FC<{
         }
         style={{ width: "100%" }}
       >
-        <AnimationFadeIn
-          style={[
-            {
-              borderWidth: isPostConsultation ? 4 : 1,
-              borderColor: isPostConsultation
-                ? withAlpha(neutral33, 0.5)
-                : neutral33,
-              borderRadius: 12,
-              paddingVertical: layout.padding_x2,
-              paddingHorizontal: layout.padding_x2_5,
-              backgroundColor: neutral00,
-            },
-            style,
-          ]}
-          delay={fadeInDelay}
+        <View
+          style={viewStyle}
+          // delay={fadeInDelay}
         >
           {/*====== Card Header */}
           <SocialCardHeader
@@ -275,7 +300,7 @@ export const SocialThreadCard: React.FC<{
               </View>
             </FlexRow>
           )}
-        </AnimationFadeIn>
+        </View>
       </CustomPressable>
     );
   }
