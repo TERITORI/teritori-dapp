@@ -3,7 +3,6 @@ import { View, StyleSheet, Pressable, Image } from "react-native";
 
 import Add from "../../../assets/music-player/add.svg";
 import MorePrimary from "../../../assets/music-player/more-primary.svg";
-// import MoreSecondary from "../../../assets/music-player/more-secondary.svg";
 import PlayOther from "../../../assets/music-player/play-other.svg";
 import PlaySecondary from "../../../assets/music-player/play-secondary.svg";
 import Time from "../../../assets/music-player/time.svg";
@@ -13,17 +12,17 @@ import { BrandText } from "../../components/BrandText";
 import { DetailAlbumMenu } from "../../components/MusicPlayer/DetailAlbumMenu";
 import MediaPlayerBar from "../../components/MusicPlayer/MediaPlayerBar";
 import { MusicPlayerTab } from "../../components/MusicPlayer/MusicPlayerTab";
-// import { TrackHoverMenu } from "../../components/MusicPlayer/TrackHoverMenu";
 import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { TipModal } from "../../components/socialFeed/SocialActions/TipModal";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useMusicplayer } from "../../context/MusicplayerProvider";
+import { useFetchAlbum } from "../../hooks/musicplayer/useFetchAlbum";
+import { useFetchLibraryIds } from "../../hooks/musicplayer/useFetchLibraryIds";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getUserId, parseUserId } from "../../networks";
-import { mustGetMusicplayerClient } from "../../utils/backend";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { neutral77, neutral17, primaryColor } from "../../utils/style/colors";
@@ -35,9 +34,9 @@ import {
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { tinyAddress } from "../../utils/text";
-import { AlbumInfo, AlbumMetadataInfo } from "../../utils/types/music";
+import { AlbumInfo } from "../../utils/types/music";
 
-export const AlbumNameScreen: ScreenFC<"AlbumName"> = ({
+export const MusicPlayerAlbumScreen: ScreenFC<"MusicPlayerAlbum"> = ({
   route: {
     params: { id },
   },
@@ -48,9 +47,10 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = ({
   const selectedNetworkId = useSelectedNetworkId();
   const wallet = useSelectedWallet();
   const userId = getUserId(selectedNetworkId, wallet?.address);
-  const [idForLibraryList, setIdForLibraryList] = useState<string[]>([]);
   const { setToastError, setToastSuccess } = useFeedbacks();
   const [tipModalVisible, setTipModalVisible] = useState<boolean>(false);
+  const { data: fetchedAlbumInfo } = useFetchAlbum({ identifier: id });
+  const { data: idForLibraryList } = useFetchLibraryIds();
   const [albumInfo, setAlbumInfo] = useState<AlbumInfo>({
     id: "0",
     name: "",
@@ -67,54 +67,15 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = ({
     : tinyAddress(userAddress);
 
   useEffect(() => {
-    const getLibraryIdList = async () => {
-      if (!userId) return;
-      try {
-        const res = await mustGetMusicplayerClient(
-          selectedNetworkId
-        ).GetAlbumIdListForLibrary({
-          user: userId,
-        });
-        const idList: string[] = [];
-        res.albumLibraries.map((libraryInfo, index) => {
-          idList.push(libraryInfo.identifier);
-        });
-        setIdForLibraryList(idList);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    getLibraryIdList();
-  }, [selectedNetworkId, userId]);
-
+    if (fetchedAlbumInfo) {
+      setAlbumInfo(fetchedAlbumInfo);
+      setAudioList(fetchedAlbumInfo.audios);
+      setAudioIndex(0);
+    }
+  }, [fetchedAlbumInfo, setAudioIndex, setAudioList]);
   useEffect(() => {
-    const getAlbumInfo = async () => {
-      const res = await mustGetMusicplayerClient(selectedNetworkId).GetAlbum({
-        identifier: id,
-      });
-      if (res.musicAlbum) {
-        const selectedMusicAlbum = res.musicAlbum;
-        const metadata = JSON.parse(
-          selectedMusicAlbum.metadata
-        ) as AlbumMetadataInfo;
-        const audios = metadata.audios;
-        const album: AlbumInfo = {
-          id: selectedMusicAlbum.identifier,
-          description: metadata.description,
-          image: metadata.image,
-          createdBy: selectedMusicAlbum.createdBy,
-          name: metadata.title,
-          audios,
-        };
-        setAlbumInfo(album);
-        setAudioList(album.audios);
-        const [, userAddress] = parseUserId(album.createdBy);
-        setArtist(tinyAddress(userAddress));
-        setAudioIndex(0);
-      }
-    };
-    getAlbumInfo();
-  }, [id, selectedNetworkId, setArtist, setAudioIndex, setAudioList]);
+    setArtist(username);
+  }, [username, setArtist]);
 
   const initIndexHoverState = {
     index: 0,
@@ -366,7 +327,7 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = ({
 
   return (
     <ScreenContainer
-      headerChildren={<BrandText>Album name</BrandText>}
+      headerChildren={<BrandText>{albumInfo.name}</BrandText>}
       fullWidth
     >
       <View style={styles.pageConatiner}>
@@ -420,6 +381,7 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = ({
           <View style={styles.actionBox}>
             {userId &&
               userId !== albumInfo.createdBy &&
+              idForLibraryList &&
               idForLibraryList.findIndex((item) => item === id) !== -1 && (
                 <Pressable
                   style={styles.addButton}
@@ -439,6 +401,7 @@ export const AlbumNameScreen: ScreenFC<"AlbumName"> = ({
               )}
             {userId &&
               userId !== albumInfo.createdBy &&
+              idForLibraryList &&
               idForLibraryList.findIndex((item) => item === id) === -1 && (
                 <Pressable style={styles.addButton}>
                   <SVG

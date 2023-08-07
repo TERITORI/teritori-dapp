@@ -1,78 +1,38 @@
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
-import {
-  MusicAlbumInfo,
-  GetAllAlbumListRequest,
-} from "../../api/musicplayer/v1/musicplayer";
+import { GetAlbumRequest } from "../../api/musicplayer/v1/musicplayer";
 import { mustGetMusicplayerClient } from "../../utils/backend";
-import { AlbumInfo, AlbumMetadataInfo } from "../../utils/types/music";
+import { AlbumMetadataInfo, AlbumInfo } from "../../utils/types/music";
 import { useSelectedNetworkId } from "../useSelectedNetwork";
-export type AlbumList = {
-  list: AlbumInfo[];
-  totalCount: number;
-} | null;
 
-export const combineFetchAlbumPages = (pages: AlbumList[]) =>
-  pages.reduce((acc: AlbumInfo[], page) => [...acc, ...(page?.list || [])], []);
-
-export const useFetchAlbum = (req: GetAllAlbumListRequest) => {
+export const useFetchAlbum = (req: GetAlbumRequest) => {
   const selectedNetworkId = useSelectedNetworkId();
-  const { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading } =
-    useInfiniteQuery(
-      ["albums", selectedNetworkId, { ...req }],
-      async ({ pageParam = req.offset }) => {
-        try {
-          const postsRequest: GetAllAlbumListRequest = {
-            ...req,
-            offset: pageParam || 0,
+  const { data, isFetching, isLoading } = useQuery(
+    ["music-album", selectedNetworkId, { ...req }],
+    async () => {
+      try {
+        const res = await mustGetMusicplayerClient(selectedNetworkId).GetAlbum({
+          identifier: req.identifier,
+        });
+        const musicAlbum = res.musicAlbum;
+        if (musicAlbum) {
+          const metadata = JSON.parse(musicAlbum.metadata) as AlbumMetadataInfo;
+          const albumInfo: AlbumInfo = {
+            id: musicAlbum.identifier,
+            description: metadata.description,
+            image: metadata.image,
+            createdBy: musicAlbum.createdBy,
+            name: metadata.title,
+            audios: metadata.audios,
           };
-          // Getting Albums
-          const musicAlbumList = await getMusicAlbums(
-            selectedNetworkId,
-            postsRequest
-          );
-          const albumInfoList: AlbumInfo[] = [];
-          musicAlbumList.map((albumInfo, index) => {
-            const metadata = JSON.parse(
-              albumInfo.metadata
-            ) as AlbumMetadataInfo;
-            albumInfoList.push({
-              id: albumInfo.identifier,
-              name: metadata.title,
-              description: metadata.description,
-              createdBy: albumInfo.createdBy,
-              image: metadata.image,
-              audios: metadata.audios,
-            } as AlbumInfo);
-          });
-
-          const totalCount = 1000; // test
-          return { list: albumInfoList, totalCount } as AlbumList;
-        } catch (err) {
-          console.error("initData err", err);
-          return { list: [], totalCount: 0 } as AlbumList;
+          return albumInfo;
+        } else {
+          return null;
         }
-      },
-      {
-        getNextPageParam: (lastPage, pages) => {},
-        staleTime: Infinity,
-        refetchOnWindowFocus: false,
+      } catch {
+        return null;
       }
-    );
-  return { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading };
-};
-const getMusicAlbums = async (
-  networkId: string,
-  req: GetAllAlbumListRequest
-) => {
-  try {
-    // ===== We use FeedService to be able to fetch filtered posts
-    const musicplayerClient = mustGetMusicplayerClient(networkId);
-    const response = await musicplayerClient.GetAllAlbumList(req);
-    // ---- We sort by creation date
-    return response.musicAlbums;
-  } catch (err) {
-    console.log("initData err", err);
-    return [] as MusicAlbumInfo[];
-  }
+    }
+  );
+  return { data, isFetching, isLoading };
 };

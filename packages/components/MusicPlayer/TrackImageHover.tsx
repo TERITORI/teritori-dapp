@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, Pressable, View } from "react-native";
+import { StyleSheet, Pressable } from "react-native";
 
 import { MyAlbumMenu } from "./MyAlbumMenu";
 import { TrackHoverMenu } from "./TrackHoverMenu";
@@ -11,6 +11,7 @@ import { useMusicplayer } from "../../context/MusicplayerProvider";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getUserId, parseUserId } from "../../networks";
+import { useAppNavigation } from "../../utils/navigation";
 import { layout } from "../../utils/style/layout";
 import { tinyAddress } from "../../utils/text";
 import { AlbumInfo } from "../../utils/types/music";
@@ -22,6 +23,7 @@ export const TrackImageHover: React.FC<{
 }> = ({ album, hasLibrary, userName }) => {
   const selectedNetworkId = useSelectedNetworkId();
   const wallet = useSelectedWallet();
+  const navigation = useAppNavigation();
   const [hoverMenuIcon, setHoverMenuIcon] = useState<boolean>(false);
   const [hoverPlayIcon, setHoverPlayIcon] = useState<boolean>(false);
   const [openMenu, setOpenMenu] = useState<boolean>(false);
@@ -44,7 +46,12 @@ export const TrackImageHover: React.FC<{
   });
 
   return (
-    <View style={styles.hoverBox}>
+    <Pressable
+      style={styles.hoverBox}
+      onPress={() => {
+        navigation.navigate("MusicPlayerAlbum", { id: album.id });
+      }}
+    >
       {hoverPlayIcon && (
         <Pressable
           onPress={() => {
@@ -103,6 +110,6 @@ export const TrackImageHover: React.FC<{
         />
       )}
       {openMenu && userId === album.createdBy && <MyAlbumMenu album={album} />}
-    </View>
+    </Pressable>
   );
 };

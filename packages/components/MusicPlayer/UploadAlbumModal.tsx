@@ -21,8 +21,7 @@ import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getUserId } from "../../networks";
 import { defaultSocialFeedFee } from "../../utils/fee";
-import { ipfsURLToHTTPURL } from "../../utils/ipfs";
-import { generateIpfsKey } from "../../utils/social-feed";
+import { ipfsURLToHTTPURL, generateIpfsKey } from "../../utils/ipfs";
 import {
   neutral17,
   neutral33,
@@ -33,7 +32,7 @@ import {
 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { LocalFileData } from "../../utils/types/feed";
+import { LocalFileData } from "../../utils/types/files";
 import { UploadFileInfo, AlbumMetadataInfo } from "../../utils/types/music";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";

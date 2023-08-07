@@ -60,7 +60,7 @@ export type RootStackParamList = {
   DAppStore: undefined;
 
   MusicPlayer: undefined;
-  AlbumName: { id: string };
+  MusicPlayerAlbum: { id: string };
 
   ToriPunks: { route: string };
 };
@@ -135,7 +135,7 @@ const navConfig: {
     ToriPunks: "dapp/tori-punks/:route?",
     // ==== MusicPlayer
     MusicPlayer: "music-player/home",
-    AlbumName: "music-player/album/:id",
+    MusicPlayerAlbum: "music-player/album/:id",
   },
 };
 

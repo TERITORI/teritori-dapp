@@ -11,8 +11,6 @@ import Play from "../../../assets/media-player/play.svg";
 import Previous from "../../../assets/media-player/previous.svg";
 import Random from "../../../assets/media-player/random.svg";
 import { useMusicplayer } from "../../context/MusicplayerProvider";
-import { ipfsURLToHTTPURL } from "../../utils/ipfs";
-// import { ipfsPinataUrl } from "../../utils/ipfs";
 import {
   neutral17,
   neutral22,
@@ -25,8 +23,6 @@ import { PlayType } from "../../utils/types/music";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 const MediaPlayerBar: React.FC = () => {
-  const audioRef = useRef<HTMLAudioElement>(null);
-  const seekBarRef = useRef<HTMLInputElement>(null);
   const {
     isPlay,
     setIsPlay,
@@ -36,10 +32,15 @@ const MediaPlayerBar: React.FC = () => {
     playType,
     setPlayType,
     artist,
+    audioRef,
+    setSeekbarRef,
+    duration,
+    volume,
+    setVolume,
   } = useMusicplayer();
-  const [audioSrc, setAudioSrc] = useState<string>("");
+
+  const seekBarRef = useRef<HTMLInputElement>(null);
   const [songName, setSongName] = useState<string>("");
-  const [volume, setVolume] = useState("60");
   const playAnimationRef = useRef(0);
   const repeat = useCallback(() => {
     if (!audioRef.current || !seekBarRef.current) return;
@@ -48,7 +49,14 @@ const MediaPlayerBar: React.FC = () => {
 
     playAnimationRef.current = requestAnimationFrame(repeat);
   }, [audioRef, seekBarRef]);
-
+  useEffect(() => {
+    setSeekbarRef(seekBarRef);
+  }, [seekBarRef, setSeekbarRef]);
+  useEffect(() => {
+    if (seekBarRef && seekBarRef.current) {
+      seekBarRef.current.max = duration.toString();
+    }
+  }, [duration, seekBarRef]);
   useEffect(() => {
     if (isPlay && audioRef.current && audioIndex >= 0) {
       audioRef.current.play();
@@ -61,17 +69,16 @@ const MediaPlayerBar: React.FC = () => {
       cancelAnimationFrame(playAnimationRef.current);
       // audioRef.current?.pause();
     };
-  }, [isPlay, audioIndex, repeat]);
+  }, [audioRef, isPlay, audioIndex, repeat]);
 
   useEffect(() => {
     if (audioList.length > 0 && audioIndex >= 0) {
-      setAudioSrc(ipfsURLToHTTPURL(audioList[audioIndex].ipfs));
       setSongName(audioList[audioIndex].name);
     }
   }, [audioList, audioIndex]);
   useEffect(() => {
     if (audioRef.current) {
-      audioRef.current.volume = parseInt(volume, 10) / 100;
+      audioRef.current.volume = volume / 100;
       // audioRef.current.muted = muteVolume;
     }
   }, [volume, audioRef]);
@@ -152,20 +159,9 @@ const MediaPlayerBar: React.FC = () => {
 
   const handleSeekbarChange = () => {
     if (!audioRef.current || !seekBarRef.current) return;
-    audioRef.current.currentTime = parseInt(seekBarRef.current.value, 10);
+    audioRef.current.currentTime = parseFloat(seekBarRef.current.value);
   };
-  const handleMusicEnd = () => {
-    if (playType === PlayType.LOOP) {
-      audioRef.current?.play();
-    } else {
-      setIsPlay(false);
-    }
-  };
-  const onLoadedMetadata = () => {
-    if (!audioRef.current || !seekBarRef.current) return;
-    const seconds = audioRef.current.duration;
-    seekBarRef.current.max = seconds.toString();
-  };
+
   return (
     <View style={styles.container}>
       <View style={styles.playHandleBox}>
@@ -212,23 +208,14 @@ const MediaPlayerBar: React.FC = () => {
         <View>
           <input
             type="range"
-            onChange={(e) => setVolume(e.target.value)}
+            value={volume}
+            onChange={(e) => setVolume(parseInt(e.target.value, 10))}
             min={0}
             max={100}
             style={{ width: "100px" }}
           />
         </View>
       </View>
-      <audio
-        id="footer_audio"
-        src={audioSrc}
-        defaultValue={0}
-        ref={audioRef}
-        style={{ display: "none" }}
-        controls
-        onLoadedMetadata={onLoadedMetadata}
-        onEnded={handleMusicEnd}
-      />
     </View>
   );
 };

@@ -13,8 +13,8 @@ import { UploadAlbumModal } from "../../components/MusicPlayer/UploadAlbumModal"
 import { SVG } from "../../components/SVG";
 import {
   combineFetchAlbumPages,
-  useFetchAlbum,
-} from "../../hooks/musicplayer/useFetchAlbum";
+  useFetchAlbums,
+} from "../../hooks/musicplayer/useFetchAlbums";
 // import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 // import { mustGetMusicplayerClient } from "../../utils/backend";
 // import useSelectedWallet from "../../hooks/useSelectedWallet";
@@ -33,7 +33,7 @@ export const MusicPlayerHomeContent: React.FC<MusicPlayerProps> = ({
 }) => {
   const [openUploadModal, setOpenUploadModal] = useState<boolean>(false);
   const { data, isFetching, hasNextPage, fetchNextPage, isLoading } =
-    useFetchAlbum(req);
+    useFetchAlbums(req);
 
   const isLoadingValue = useSharedValue(false);
   const isGoingUp = useSharedValue(false);

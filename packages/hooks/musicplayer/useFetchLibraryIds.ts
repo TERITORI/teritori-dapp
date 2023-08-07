@@ -13,6 +13,7 @@ export const useFetchLibraryIds = () => {
     ["library_ids", selectedNetworkId, userId],
     async () => {
       try {
+        if (!userId) return [];
         const res = await mustGetMusicplayerClient(
           selectedNetworkId
         ).GetAlbumIdListForLibrary({
@@ -23,8 +24,7 @@ export const useFetchLibraryIds = () => {
           idList.push(libraryInfo.identifier);
         });
         return idList;
-      } catch (err) {
-        console.log(err);
+      } catch {
         return [];
       }
     }
