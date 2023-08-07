@@ -9,6 +9,7 @@ import {
 import { useSelector } from "react-redux";
 
 import { NFTTransferModal } from "./NFTTransferModal";
+import { minNFTWidth } from "./NFTs";
 import checkMark from "../../../assets/icons/checkmark-marketplace.svg";
 import dotsCircleSVG from "../../../assets/icons/dots-circle.svg";
 import footerSVG from "../../../assets/icons/footer-regular.svg";
@@ -56,9 +57,8 @@ export const NFTView: React.FC<{
 }> = ({ data: nft, style }) => {
   const isMobile = useIsMobile();
   const cardWidth = isMobile ? 220 : 250;
-  const { width } = useMaxResolution({ isLarge: true });
+  const { width: maxWidth } = useMaxResolution({ isLarge: true });
   const insideMargin = layout.padding_x2;
-  const contentWidth = cardWidth - insideMargin * 2;
   const flatStyle = StyleSheet.flatten(style);
   const selectedWallet = useSelectedWallet();
   const userInfo = useNSUserInfo(nft.ownerId);
@@ -70,7 +70,7 @@ export const NFTView: React.FC<{
   const localSelected = new Set(useSelector(selectSelectedNFTIds)).has(nft.id);
   const dispatch = useAppDispatch();
   const handleClick = (nft: NFT, selected: boolean) => {
-    if (width < 500) return; // disable cart on mobile
+    if (maxWidth < 500) return; // disable cart on mobile
     dispatch(setShowCart(true));
     if (!selected) {
       dispatch(addSelected(nft));
@@ -93,12 +93,20 @@ export const NFTView: React.FC<{
     marginEnd,
     marginStart,
     marginTop,
+    width,
     ...styleWithoutMargins
   } = flatStyle || {};
 
   // functions
   const toggleTransferNFT = () =>
     setIsTransferNFTVisible(!isTransferNFTVisible);
+
+  if (nft.id.startsWith("padded-")) {
+    return <View style={{ width }} />;
+  }
+
+  const widthNumber =
+    typeof width === "number" ? width : parseInt(width || "0", 10) || cardWidth;
 
   // returns
   return (
@@ -118,7 +126,7 @@ export const NFTView: React.FC<{
         <TertiaryBox
           key={nft.name}
           // height={438}
-          width={cardWidth}
+          width={widthNumber}
           style={styleWithoutMargins}
         >
           <View style={{ width: "100%" }}>
@@ -250,10 +258,16 @@ export const NFTView: React.FC<{
                 }}
               >
                 <ImageWithTextInsert
-                  size={contentWidth}
+                  size={minNFTWidth}
                   imageURL={nft.imageUri}
                   textInsert={nft.textInsert}
-                  style={{ marginTop: 15, marginBottom: 20, borderRadius: 12 }}
+                  style={{
+                    marginTop: 15,
+                    marginBottom: 20,
+                    borderRadius: 12,
+                    width: widthNumber - insideMargin * 2,
+                    height: widthNumber - insideMargin * 2,
+                  }}
                 />
                 <BrandText
                   style={{

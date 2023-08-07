@@ -6,7 +6,7 @@ export const gnoTeritoriNetwork: GnoNetworkInfo = {
   kind: NetworkKind.Gno,
   displayName: "Gno Teritori",
   icon: "icons/networks/gno.svg",
-  features: [NetworkFeature.Organizations],
+  features: [NetworkFeature.Organizations, NetworkFeature.SocialFeed],
   currencies: gnoCurrencies,
   stakeCurrency: "ugnot",
   idPrefix: "gnotori",

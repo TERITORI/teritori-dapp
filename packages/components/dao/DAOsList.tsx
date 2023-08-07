@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { View } from "react-native";
 
 import { DAOCard, GnoDAOCard } from "./DAOCard";
@@ -10,14 +11,22 @@ import { layout } from "../../utils/style/layout";
 
 const halfGap = layout.padding_x1;
 
+const maxElemWidth = 250;
+
 export const DAOsList: React.FC<{
   req: Partial<DAOsRequest>;
 }> = ({ req }) => {
   const { daos } = useDAOs(req);
   const networkId = useSelectedNetworkId();
   const { gnoDAOs } = useGnoDAOs(networkId);
+  const [containerWidth, setContainerWidth] = useState(0);
+  const elemsPerRow = Math.floor(containerWidth / maxElemWidth) || 1;
+  const elemSize = elemsPerRow
+    ? (containerWidth - halfGap * elemsPerRow * 2) / elemsPerRow
+    : daos?.length || 0;
   return (
     <View
+      onLayout={(e) => setContainerWidth(e.nativeEvent.layout.width)}
       style={{
         flex: 1,
         flexDirection: "row",
@@ -31,6 +40,7 @@ export const DAOsList: React.FC<{
           key={item.id}
           daoId={item.id}
           style={{
+            width: elemSize,
             marginHorizontal: halfGap,
             marginVertical: halfGap,
           }}
@@ -42,6 +52,7 @@ export const DAOsList: React.FC<{
           daoId={getUserId(networkId, item.pkgPath)}
           registration={item}
           style={{
+            width: elemSize,
             marginHorizontal: halfGap,
             marginVertical: halfGap,
           }}

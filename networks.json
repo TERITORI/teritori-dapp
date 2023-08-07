@@ -7,7 +7,8 @@
     "icon": "icons/networks/teritori.svg",
     "features": [
       "NFTMarketplace",
-      "Organizations"
+      "Organizations",
+      "SocialFeed"
     ],
     "walletUrlForStaking": "https://explorer.teritori.com/teritori/staking",
     "currencies": [
@@ -133,7 +134,8 @@
     "icon": "icons/networks/teritori.svg",
     "features": [
       "NFTMarketplace",
-      "Organizations"
+      "Organizations",
+      "SocialFeed"
     ],
     "currencies": [
       {
@@ -569,7 +571,8 @@
     "displayName": "Gno Dev",
     "icon": "icons/networks/gno.svg",
     "features": [
-      "Organizations"
+      "Organizations",
+      "SocialFeed"
     ],
     "currencies": [
       {
@@ -602,7 +605,8 @@
     "displayName": "Gno Teritori",
     "icon": "icons/networks/gno.svg",
     "features": [
-      "Organizations"
+      "Organizations",
+      "SocialFeed"
     ],
     "currencies": [
       {
