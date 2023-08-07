@@ -181,18 +181,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
         data={posts}
         renderItem={({ item: post }) => (
           <View style={{ width: elemSize, margin: halfGap }}>
-            <SocialThreadCard
-              post={post as any}
-              isPreview
-              style={[
-                { width: "100%" },
-                windowWidth < RESPONSIVE_BREAKPOINT_S && {
-                  borderRadius: 0,
-                  borderLeftWidth: 0,
-                  borderRightWidth: 0,
-                },
-              ]}
-            />
+            <SocialThreadCard post={post as any} isPreview />
           </View>
         )}
         style={{ width: "100%", marginTop: 32 }}

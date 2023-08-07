@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { FlatList, View } from "react-native";
 
 import { NFTView } from "./NFTView";
@@ -33,6 +33,12 @@ export const NFTs: React.FC<{
   const elemSize = elemsPerRow
     ? (containerWidth - halfGap * (elemsPerRow - 1) * 2) / elemsPerRow
     : nfts?.length || 0;
+
+  const elemStyle = useMemo(() => {
+    return {
+      width: elemSize,
+    };
+  }, [elemSize]);
 
   let padded: NFT[] = nfts;
   if (nfts.length % elemsPerRow !== 0 && elemsPerRow > 1) {
@@ -114,9 +120,7 @@ export const NFTs: React.FC<{
             <NFTView
               key={info.item.mintAddress}
               data={info.item}
-              style={{
-                width: elemSize,
-              }}
+              style={elemStyle}
             />
           )}
         />
