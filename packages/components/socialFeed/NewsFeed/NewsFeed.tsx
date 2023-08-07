@@ -1,11 +1,6 @@
 import MasonryList from "@react-native-seoul/masonry-list";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import {
-  LayoutChangeEvent,
-  StyleSheet,
-  View,
-  useWindowDimensions,
-} from "react-native";
+import { LayoutChangeEvent, StyleSheet, View } from "react-native";
 import Animated, {
   useAnimatedScrollHandler,
   useSharedValue,
@@ -23,7 +18,7 @@ import {
   useFetchFeed,
 } from "../../../hooks/feed/useFetchFeed";
 import { useIsMobile } from "../../../hooks/useIsMobile";
-import { layout, RESPONSIVE_BREAKPOINT_S } from "../../../utils/style/layout";
+import { layout } from "../../../utils/style/layout";
 import { SpacerColumn, SpacerRow } from "../../spacer";
 import { SocialThreadCard } from "../SocialThread/SocialThreadCard";
 
@@ -55,7 +50,6 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
   disablePosting,
 }) => {
   const isMobile = useIsMobile();
-  const { width: windowWidth } = useWindowDimensions();
   const { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading } =
     useFetchFeed(req);
   const isLoadingValue = useSharedValue(false);

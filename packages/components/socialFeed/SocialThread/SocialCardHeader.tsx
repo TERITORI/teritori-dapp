@@ -55,46 +55,48 @@ export const SocialCardHeader: FC<{
               <BrandText style={fontSemibold16}>
                 {authorMetadata?.public_name || DEFAULT_NAME}
               </BrandText>
+              <View style={{ flexDirection: "row" }}>
+                <OmniLink
+                  to={{ screen: "UserPublicProfile", params: { id: authorId } }}
+                >
+                  <BrandText
+                    style={[
+                      fontSemibold14,
+                      {
+                        color: neutral77,
+                      },
+                    ]}
+                    numberOfLines={1}
+                  >
+                    {" "}
+                    @
+                    {authorMetadata?.tokenId
+                      ? authorMetadata.tokenId
+                      : tinyAddress(authorAddress, 19)}
+                  </BrandText>
+                </OmniLink>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  {/*---- User TNS name */}
+
+                  {/* A dot separator */}
+                  <View
+                    style={{
+                      backgroundColor: neutral77,
+                      height: 2,
+                      width: 2,
+                      borderRadius: 999,
+                      marginHorizontal: layout.padding_x0_75,
+                    }}
+                  />
+                  {/*---- Date */}
+                  <DateTime
+                    date={postMetadata.createdAt}
+                    textStyle={{ color: neutral77 }}
+                  />
+                </View>
+              </View>
             </AnimationFadeIn>
           </OmniLink>
-          {width >= RESPONSIVE_BREAKPOINT_S && <SpacerRow size={1.5} />}
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            {/*---- User TNS name */}
-            <OmniLink
-              to={{ screen: "UserPublicProfile", params: { id: authorId } }}
-            >
-              <BrandText
-                style={[
-                  fontSemibold14,
-                  {
-                    color: neutral77,
-                  },
-                ]}
-                numberOfLines={1}
-              >
-                {" "}
-                @
-                {authorMetadata?.tokenId
-                  ? authorMetadata.tokenId
-                  : tinyAddress(authorAddress, 19)}
-              </BrandText>
-            </OmniLink>
-            {/* A dot separator */}
-            <View
-              style={{
-                backgroundColor: neutral77,
-                height: 2,
-                width: 2,
-                borderRadius: 999,
-                marginHorizontal: layout.padding_x0_75,
-              }}
-            />
-            {/*---- Date */}
-            <DateTime
-              date={postMetadata.createdAt}
-              textStyle={{ color: neutral77 }}
-            />
-          </View>
         </View>
       </View>
 
