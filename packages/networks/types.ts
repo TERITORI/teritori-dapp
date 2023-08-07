@@ -128,4 +128,5 @@ export enum NetworkFeature {
   NameService = "NameService",
   Swap = "Swap",
   Organizations = "Organizations",
+  SocialFeed = "SocialFeed",
 }

@@ -28,9 +28,9 @@ import { useUpdateAvailableFreePost } from "../../hooks/feed/useUpdateAvailableF
 import { useUpdatePostFee } from "../../hooks/feed/useUpdatePostFee";
 import { useBalances } from "../../hooks/useBalances";
 import { useIsMobile } from "../../hooks/useIsMobile";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getUserId, NetworkKind } from "../../networks";
+import { getUserId, NetworkFeature } from "../../networks";
 import { selectNFTStorageAPI } from "../../store/slices/settings";
 import { prettyPrice } from "../../utils/coins";
 import { generateIpfsKey } from "../../utils/ipfs";
@@ -51,7 +51,8 @@ import { pluralOrNot } from "../../utils/text";
 
 export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
   const isMobile = useIsMobile();
-  const selectedNetworkId = useSelectedNetworkId();
+  const selectNetworkInfo = useSelectedNetworkInfo();
+  const selectedNetworkId = selectNetworkInfo?.id || "";
   const wallet = useSelectedWallet();
   const { postFee } = useUpdatePostFee(selectedNetworkId, PostCategory.Article);
   const { freePostCount } = useUpdateAvailableFreePost(
@@ -180,7 +181,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
 
   return (
     <ScreenContainer
-      forceNetworkKind={NetworkKind.Cosmos}
+      forceNetworkFeatures={[NetworkFeature.SocialFeed]}
       responsive
       mobileTitle="NEW ARTICLE"
       maxWidth={screenContentMaxWidth}
@@ -233,7 +234,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
               : `The cost for this Article is ${prettyPrice(
                   selectedNetworkId,
                   postFee.toString(),
-                  "utori"
+                  selectNetworkInfo?.currencies?.[0].denom || "utori"
                 )}`}
           </BrandText>
         </TertiaryBox>

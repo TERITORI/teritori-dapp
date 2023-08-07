@@ -1,9 +1,10 @@
 import { coin } from "@cosmjs/amino";
+import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import { v4 as uuidv4 } from "uuid";
 
 import {
-  PostCategory,
   NewPostFormValues,
+  PostCategory,
   SocialFeedMetadata,
 } from "./NewsFeed.type";
 import {
@@ -11,9 +12,13 @@ import {
   signingSocialFeedClient,
 } from "../../../client-creators/socialFeedClient";
 import { Wallet } from "../../../context/WalletsProvider";
+import { mustGetNetwork, NetworkKind } from "../../../networks";
 import { defaultSocialFeedFee } from "../../../utils/fee";
+import { adenaDoContract } from "../../../utils/gno";
 import { ipfsURLToHTTPURL, uploadFilesToPinata } from "../../../utils/ipfs";
 import { RemoteFileData } from "../../../utils/types/files";
+import { GNO_SOCIAL_FEEDS_PKG_PATH, TERITORI_FEED_ID } from "../const";
+
 interface GetAvailableFreePostParams {
   networkId: string;
   wallet?: Wallet;
@@ -122,11 +127,6 @@ export const createPost = async ({
     return;
   }
 
-  const client = await signingSocialFeedClient({
-    networkId,
-    walletAddress: wallet.address,
-  });
-
   let files: RemoteFileData[] = [];
 
   if (formValues.files?.length && pinataJWTKey) {
@@ -161,17 +161,58 @@ export const createPost = async ({
     mentions: formValues.mentions || [],
   });
 
-  await client.createPost(
-    {
+  const network = mustGetNetwork(networkId);
+
+  if (network.kind === NetworkKind.Gno) {
+    const msg = {
       category,
-      identifier: identifier || uuidv4(),
+      identifier,
       metadata: JSON.stringify(metadata),
       parentPostIdentifier: parentId,
-    },
-    defaultSocialFeedFee,
-    "",
-    freePostCount ? undefined : [coin(fee, "utori")]
-  );
+    };
+
+    const vmCall = {
+      caller: wallet.address,
+      send: "",
+      pkg_path: GNO_SOCIAL_FEEDS_PKG_PATH,
+      func: "CreatePost",
+      args: [
+        TERITORI_FEED_ID,
+        msg.parentPostIdentifier || "0",
+        msg.category.toString(),
+        msg.metadata,
+      ],
+    };
+
+    const txHash = await adenaDoContract(
+      networkId,
+      [{ type: "/vm.m_call", value: vmCall }],
+      {
+        gasWanted: 2_000_000,
+      }
+    );
+
+    const provider = new GnoJSONRPCProvider(network.endpoint);
+    await provider.waitForTransaction(txHash);
+  } else {
+    const client = await signingSocialFeedClient({
+      networkId,
+      walletAddress: wallet.address,
+    });
+
+    await client.createPost(
+      {
+        category,
+        identifier: identifier || uuidv4(),
+        metadata: JSON.stringify(metadata),
+        parentPostIdentifier: parentId,
+      },
+      defaultSocialFeedFee,
+      "",
+      freePostCount ? undefined : [coin(fee, "utori")]
+    );
+  }
+
   return true;
 };
 
