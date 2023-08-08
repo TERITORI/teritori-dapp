@@ -15,7 +15,6 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { RipperAvatar } from "./RipperAvatar";
 import { RipperStatsSection } from "./RipperStatsSection";
 import { SimpleButton } from "./SimpleButton";
-import controllerSVG from "../../../../assets/game/controller.svg";
 import dashedBorderPNG from "../../../../assets/game/dashed-border.png";
 import closeSVG from "../../../../assets/icons/close.svg";
 import { NFT } from "../../../api/marketplace/v1/marketplace";
@@ -23,13 +22,13 @@ import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
-import { SpacerRow } from "../../../components/spacer";
+import { SpacerColumn } from "../../../components/spacer";
 import { getRipperRarity, isNFTStaked } from "../../../utils/game";
+import { useAppNavigation } from "../../../utils/navigation";
 import {
   neutral00,
   secondaryColor,
   withAlpha,
-  yellowDefault,
 } from "../../../utils/style/colors";
 import {
   fontMedium32,
@@ -40,7 +39,6 @@ import { headerHeight, layout } from "../../../utils/style/layout";
 
 type RipperSelectorModalProps = ModalProps & {
   slotId: number | undefined;
-  confirmButton: string;
   availableRippers: NFT[];
   onSelectRipper(slotId: number, ripper: NFT): void;
   onClose?(): void;
@@ -53,17 +51,17 @@ const THUMB_SIZE = 100;
 
 const RIPPER_IMAGE_SIZE = 540;
 
-export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
+export const RipperGridSelectorModal: React.FC<RipperSelectorModalProps> = ({
   slotId,
   onClose,
   onSelectRipper,
   availableRippers,
   visible,
-  confirmButton,
   ...props
 }) => {
   const [selectedRipper, setSelectedRipper] = useState<NFT | undefined>();
   const { width: currentWidth } = useWindowDimensions();
+  const navigation = useAppNavigation();
 
   const breakPoint = 1200;
 
@@ -76,6 +74,9 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
     setSelectedRipper(ripper);
   };
 
+  const healRipper = () => {
+    navigation.navigate("RiotGameTheDoc");
+  };
   const enrollRipper = () => {
     if (!selectedRipper) return;
     onSelectRipper(slotId as number, selectedRipper);
@@ -199,14 +200,24 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
 
               <RipperStatsSection ripper={selectedRipper} size="LG" />
 
-              <View style={styles.btnGroup}>
-                <SVG color={yellowDefault} source={controllerSVG} />
-                <SpacerRow size={2} />
+              <View style={{ marginTop: layout.padding_x4 * 2 }}>
+                <SimpleButton
+                  outline
+                  disabled={!selectedRipper}
+                  onPress={healRipper}
+                  size="SM"
+                  text="Heal this Ripper"
+                  style={{ paddingHorizontal: layout.padding_x4 * 2 }}
+                />
+
+                <SpacerColumn size={2} />
+
                 <SimpleButton
                   disabled={!selectedRipper}
                   onPress={enrollRipper}
                   size="SM"
-                  text={confirmButton}
+                  text="Enroll this Ripper"
+                  style={{ paddingHorizontal: layout.padding_x4 * 2 }}
                 />
               </View>
             </View>

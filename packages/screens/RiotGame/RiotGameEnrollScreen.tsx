@@ -6,11 +6,11 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { FlatList, Pressable, StyleSheet, View } from "react-native";
 import { useSelector } from "react-redux";
 
-import { SimpleButtonGroup } from "./component/SimpleButtonGroup";
 import { EnrollSlot } from "./component/EnrollSlot";
 import { GameContentView } from "./component/GameContentView";
-import { RipperSelectorModal } from "./component/RipperGridSelectorModal";
+import { RipperGridSelectorModal } from "./component/RipperGridSelectorModal";
 import { SimpleButton } from "./component/SimpleButton";
+import { SimpleButtonGroup } from "./component/SimpleButtonGroup";
 import controllerSVG from "../../../assets/game/controller-yellow.svg";
 import closeSVG from "../../../assets/icons/close.svg";
 import { NFT } from "../../api/marketplace/v1/marketplace";
@@ -391,13 +391,12 @@ export const RiotGameEnrollScreen = () => {
         />
       )}
 
-      <RipperSelectorModal
+      <RipperGridSelectorModal
         visible={selectedSlot !== undefined}
         onClose={hideRipperSelector}
         slotId={selectedSlot}
         availableRippers={availableForEnrollRippers}
         onSelectRipper={selectRipper}
-        confirmButton="Enroll this Ripper"
       />
     </GameContentView>
   );

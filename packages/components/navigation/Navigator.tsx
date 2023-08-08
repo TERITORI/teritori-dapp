@@ -31,6 +31,7 @@ import { RiotGameLeaderboardScreen } from "../../screens/RiotGame/RiotGameLeader
 import { RiotGameMarketplaceScreen } from "../../screens/RiotGame/RiotGameMarketplaceScreen";
 import { RiotGameMemoriesScreen } from "../../screens/RiotGame/RiotGameMemoriesScreen";
 import { RiotGameScreen } from "../../screens/RiotGame/RiotGameScreen.web";
+import { RiotGameTheDocScreen } from "../../screens/RiotGame/RiotGameTheDocScreen";
 import { RiotersFooterScreen } from "../../screens/RiotersFooter/RiotersFooterScreen";
 import { SettingsScreen } from "../../screens/Settings/SettingsScreen";
 import { StakeScreen } from "../../screens/Stake";
@@ -120,6 +121,14 @@ export const Navigator: React.FC = () => {
         options={{
           header: () => null,
           title: screenTitle("Riot Game Fusion"),
+        }}
+      />
+      <Stack.Screen
+        name="RiotGameTheDoc"
+        component={RiotGameTheDocScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Riot Game The Doc"),
         }}
       />
       <Stack.Screen

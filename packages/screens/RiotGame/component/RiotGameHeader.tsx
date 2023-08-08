@@ -5,6 +5,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import { SvgProps } from "react-native-svg";
 
 import cartSVG from "../../../../assets/icons/cart.svg";
+import lightningSVG from "../../../../assets/icons/lightning.svg";
 import diamondSVG from "../../../../assets/icons/diamond.svg";
 import fightSVG from "../../../../assets/icons/fight.svg";
 import filmSVG from "../../../../assets/icons/film.svg";
@@ -57,10 +58,22 @@ const MENU_ITEMS: MenuItem[] = [
     iconSVG: inventorySVG,
   },
   {
+    id: "fusion",
+    name: "Fusion",
+    route: "RiotGameFusion",
+    iconSVG: gameBoxSVG,
+  },
+  {
     id: "breeding",
     name: "Breeding",
     route: "RiotGameBreeding",
     iconSVG: gameBoxSVG,
+  },
+  {
+    id: "theDoc",
+    name: "TheDoc",
+    route: "RiotGameTheDoc",
+    iconSVG: lightningSVG,
   },
   {
     id: "leaderboard",
