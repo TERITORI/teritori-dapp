@@ -27,7 +27,7 @@ export type RootStackParamList = {
   Collection: { id: string };
   CollectionTools: { id: string };
   NFTDetail: { id: string; openBuy?: boolean };
-  Feed: undefined;
+  Feed?: { network?: string };
   FeedNewArticle:
     | (NewPostFormValues & {
         additionalMention?: string;
@@ -54,7 +54,7 @@ export type RootStackParamList = {
   Settings: undefined;
 
   OrganizationDeployer: undefined;
-  Organizations: undefined;
+  Organizations?: { network?: string };
   CoreDAO: undefined;
 
   DAppStore: undefined;
