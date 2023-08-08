@@ -105,7 +105,7 @@ export const ComicBooks = () => {
           <TouchableOpacity
             onPress={() => setSelectedSectionHandler("comic-book-history")}
           >
-            <ButtonLabel text="PREVIOUS POOL PRICE" size="S" actionable />
+            <ButtonLabel text="PREVIOUS POOL PRIZES" size="S" actionable />
           </TouchableOpacity>
         </View>
       </View>

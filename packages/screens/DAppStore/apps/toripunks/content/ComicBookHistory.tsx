@@ -19,7 +19,7 @@ const ListItem: React.FC<{
   item: HistoryItem;
   styleTypeSize: string;
 }> = ({ item, styleTypeSize }) => {
-  const header = ["", "Pool price $tori", "Numbers wallet"];
+  const header = ["", "Pool prize $tori", "Number of wallets"];
   const { isMinimunWindowWidth } = useContentContext();
 
   const datumWidth = isMinimunWindowWidth ? 320 : 160;

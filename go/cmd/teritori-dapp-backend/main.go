@@ -19,6 +19,8 @@ import (
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
 	"github.com/TERITORI/teritori-dapp/go/pkg/p2e"
 	"github.com/TERITORI/teritori-dapp/go/pkg/p2epb"
+	"github.com/TERITORI/teritori-dapp/go/pkg/video"
+	"github.com/TERITORI/teritori-dapp/go/pkg/videopb"
 	"github.com/improbable-eng/grpc-web/go/grpcweb"
 	"github.com/peterbourgon/ff/v3"
 	"github.com/pkg/errors"
@@ -132,12 +134,17 @@ func main() {
 		IndexerDB: indexerDB,
 		NetStore:  &netstore,
 	})
+	videoSvc := video.NewVideoService(context.Background(), &video.Config{
+		Logger:    logger,
+		IndexerDB: indexerDB,
+	})
 
 	server := grpc.NewServer()
 	marketplacepb.RegisterMarketplaceServiceServer(server, marketplaceSvc)
 	p2epb.RegisterP2EServiceServer(server, p2eSvc)
 	daopb.RegisterDAOServiceServer(server, daoSvc)
 	feedpb.RegisterFeedServiceServer(server, feedSvc)
+	videopb.RegisterVideoServiceServer(server, videoSvc)
 
 	wrappedServer := grpcweb.WrapServer(server,
 		grpcweb.WithWebsockets(true),

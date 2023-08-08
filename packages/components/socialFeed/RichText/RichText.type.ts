@@ -1,6 +1,6 @@
 import { EntityInstance } from "draft-js";
 
-import { LocalFileData, RemoteFileData } from "../../../utils/types/feed";
+import { LocalFileData, RemoteFileData } from "../../../utils/types/files";
 
 export type PublishValues = {
   hashtags: string[];

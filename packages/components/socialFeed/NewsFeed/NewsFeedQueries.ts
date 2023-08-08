@@ -1,5 +1,4 @@
 import { coin } from "@cosmjs/amino";
-import { omit } from "lodash";
 import { v4 as uuidv4 } from "uuid";
 
 import {
@@ -7,15 +6,14 @@ import {
   NewPostFormValues,
   SocialFeedMetadata,
 } from "./NewsFeed.type";
-import { pinataPinFileToIPFS } from "../../../candymachine/pinata-upload";
 import {
   nonSigningSocialFeedClient,
   signingSocialFeedClient,
 } from "../../../client-creators/socialFeedClient";
 import { Wallet } from "../../../context/WalletsProvider";
 import { defaultSocialFeedFee } from "../../../utils/fee";
-import { ipfsURLToHTTPURL } from "../../../utils/ipfs";
-import { LocalFileData, RemoteFileData } from "../../../utils/types/feed";
+import { ipfsURLToHTTPURL, uploadFilesToPinata } from "../../../utils/ipfs";
+import { RemoteFileData } from "../../../utils/types/files";
 interface GetAvailableFreePostParams {
   networkId: string;
   wallet?: Wallet;
@@ -132,7 +130,7 @@ export const createPost = async ({
   let files: RemoteFileData[] = [];
 
   if (formValues.files?.length && pinataJWTKey) {
-    files = await uploadPostFilesToPinata({
+    files = await uploadFilesToPinata({
       files: formValues.files,
       pinataJWTKey,
     });
@@ -175,50 +173,6 @@ export const createPost = async ({
     freePostCount ? undefined : [coin(fee, "utori")]
   );
   return true;
-};
-
-interface UploadPostFilesToPinataParams {
-  files: LocalFileData[];
-  pinataJWTKey: string;
-}
-
-export const uploadPostFilesToPinata = async ({
-  files,
-  pinataJWTKey,
-}: UploadPostFilesToPinataParams): Promise<RemoteFileData[]> => {
-  const storedFile = async (file: LocalFileData): Promise<RemoteFileData> => {
-    const fileData = await pinataPinFileToIPFS({
-      file,
-      pinataJWTKey,
-    });
-    if (file.thumbnailFileData) {
-      const thumbnailData = await pinataPinFileToIPFS({
-        file: file.thumbnailFileData,
-        pinataJWTKey,
-      });
-
-      return {
-        ...omit(file, "file"),
-        url: fileData?.IpfsHash || "",
-        thumbnailFileData: {
-          ...omit(file.thumbnailFileData, "file"),
-          url: thumbnailData?.IpfsHash || "",
-        },
-      };
-    } else {
-      return {
-        ...omit(file, "file"),
-        url: fileData?.IpfsHash || "",
-      };
-    }
-  };
-
-  const queries = [];
-  for (const file of files) {
-    const storedFileQuery = storedFile(file);
-    queries.push(storedFileQuery);
-  }
-  return await Promise.all(queries);
 };
 
 interface GeneratePostMetadataParams {

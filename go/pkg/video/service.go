@@ -52,9 +52,9 @@ func (s *VideoService) GetVideoListForLibrary(ctx context.Context, req *videopb.
 	var videos []*videopb.VideoInfo
 	if err := s.conf.IndexerDB.
 		Model(&indexerdb.VideoLibrary{}).
-		Joins("left join video video on video.identifier = video_library.identifier").
-		Where("video_library.owner = ? ", req.User).
-		Where("video.is_deleted = ?", false).
+		Joins("left join videos videos on videos.identifier = video_libraries.identifier").
+		Where("video_libraries.owner = ? ", req.User).
+		Where("videos.is_deleted = ?", false).
 		Scan(&videos).Error; err != nil {
 		return nil, errors.Wrap(err, "failed to query database")
 	}

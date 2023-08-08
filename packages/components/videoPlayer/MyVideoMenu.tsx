@@ -1,12 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import { View, StyleSheet } from "react-native";
 
 import { HoverView } from "./HoverView";
-import Code from "../../../assets/icons/player/code.svg";
 import Delete from "../../../assets/icons/player/delete.svg";
-import Enter from "../../../assets/icons/player/enter.svg";
 import Link from "../../../assets/icons/player/link.svg";
-import Share from "../../../assets/icons/player/share.svg";
 import { signingVideoPlayerClient } from "../../client-creators/videoplayerClient";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
@@ -26,10 +23,9 @@ export const MyVideoMenu: React.FC<MyVideoMenuProps> = ({ videoInfo }) => {
   const lineHeight = 18;
   const selectedNetworkId = useSelectedNetworkId();
   const wallet = useSelectedWallet();
-  const [openShareMenu, setOpenShareMenu] = useState<boolean>(false);
   const { setToastError, setToastSuccess } = useFeedbacks();
 
-  const deleteMusicAlbum = async () => {
+  const deleteVideo = async () => {
     if (!wallet?.connected || !wallet.address) {
       return;
     }
@@ -53,6 +49,11 @@ export const MyVideoMenu: React.FC<MyVideoMenuProps> = ({ videoInfo }) => {
         message: `Error: ${err}`,
       });
     }
+  };
+  const copyLinkTrack = () => {
+    window.navigator.clipboard.writeText(
+      `${window.location.origin}/video-player/show/${videoInfo.identifier}`
+    );
   };
   const styles = StyleSheet.create({
     hoverBox: {
@@ -139,7 +140,7 @@ export const MyVideoMenu: React.FC<MyVideoMenuProps> = ({ videoInfo }) => {
         normalStyle={styles.unitBoxNormal}
         hoverStyle={styles.unitBoxHovered}
         onPress={() => {
-          deleteMusicAlbum();
+          deleteVideo();
         }}
       >
         <View style={styles.oneLine}>
@@ -148,65 +149,28 @@ export const MyVideoMenu: React.FC<MyVideoMenuProps> = ({ videoInfo }) => {
             width={layout.padding_x2}
             height={layout.padding_x2}
           />
-          <BrandText style={styles.deleteText}>Delete album</BrandText>
+          <BrandText style={styles.deleteText}>Delete Video</BrandText>
         </View>
       </HoverView>
 
       <View style={styles.divideLine} />
-
       <HoverView
         normalStyle={styles.unitBoxNormal}
-        onPress={() => setOpenShareMenu((value) => !value)}
         hoverStyle={styles.unitBoxHovered}
+        onPress={() => {
+          copyLinkTrack();
+        }}
       >
         <View style={styles.oneLine}>
           <SVG
-            source={Share}
+            source={Link}
             width={layout.padding_x2}
             height={layout.padding_x2}
           />
-          <BrandText style={styles.normalText}>Share</BrandText>
+          <BrandText style={styles.normalText}>
+            Copy link to the track
+          </BrandText>
         </View>
-        <SVG
-          source={Enter}
-          width={layout.padding_x2}
-          height={layout.padding_x2}
-        />
-
-        {openShareMenu && (
-          <View style={styles.shareMenuContainer}>
-            <HoverView
-              normalStyle={styles.unitBoxNormal}
-              hoverStyle={styles.unitBoxHovered}
-            >
-              <View style={styles.oneLine}>
-                <SVG
-                  source={Link}
-                  width={layout.padding_x2}
-                  height={layout.padding_x2}
-                />
-                <BrandText style={styles.normalText}>
-                  Copy link to the track
-                </BrandText>
-              </View>
-            </HoverView>
-            <HoverView
-              normalStyle={styles.unitBoxNormal}
-              hoverStyle={styles.unitBoxHovered}
-            >
-              <View style={styles.oneLine}>
-                <SVG
-                  source={Code}
-                  width={layout.padding_x2}
-                  height={layout.padding_x2}
-                />
-                <BrandText style={styles.normalText}>
-                  Copy widget code
-                </BrandText>
-              </View>
-            </HoverView>
-          </View>
-        )}
       </HoverView>
     </View>
   );

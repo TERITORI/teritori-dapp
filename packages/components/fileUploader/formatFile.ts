@@ -3,7 +3,7 @@ import {
   IMAGE_MIME_TYPES,
   VIDEO_MIME_TYPES,
 } from "./../../utils/mime";
-import { FileType, LocalFileData } from "../../utils/types/feed";
+import { FileType, LocalFileData } from "../../utils/types/files";
 import { getAudioData } from "../../utils/waveform";
 
 export const formatFile = async (file: File): Promise<LocalFileData> => {

@@ -1,16 +1,20 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Image } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { Pressable } from "react-native-hoverable";
 
-import { TrackImageHover } from "./TrackImageHover";
+import { TrackVideoHover } from "./TrackVideoHover";
+import Avatar from "../../../assets/icons/player/avatar.svg";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { parseUserId } from "../../networks";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { neutral77, primaryColor } from "../../utils/style/colors";
 import { fontSemibold14, fontMedium14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
+import { tinyAddress } from "../../utils/text";
 import { VideoInfoWithMeta } from "../../utils/types/video";
+import { durationToString } from "../../utils/videoPlayer";
 import { BrandText } from "../BrandText";
+import { SVG } from "../SVG";
 
 export const VideoPlayerCard: React.FC<{
   item: VideoInfoWithMeta;
@@ -23,17 +27,18 @@ export const VideoPlayerCard: React.FC<{
 
   const username = authorNSInfo?.metadata?.tokenId
     ? authorNSInfo?.metadata?.tokenId
-    : userAddress;
+    : tinyAddress(userAddress);
 
   const styles = StyleSheet.create({
     unitCard: {
       width: unitWidth,
     },
-    contentImg: {
-      width: "100%",
-      borderRadius: layout.padding_x1,
-      aspectRatio: 1,
+    contentVideo: {
+      backgroundColor: "gray",
+      borderRadius: 10,
+      aspectRatio: 1.5,
     },
+
     contentTitle: StyleSheet.flatten([
       fontSemibold14,
       {
@@ -56,6 +61,20 @@ export const VideoPlayerCard: React.FC<{
     imgBox: {
       position: "relative",
     },
+    videoDuration: {
+      position: "absolute",
+      left: 10,
+      top: 10,
+      backgroundColor: "gray",
+      color: "white",
+      borderRadius: layout.padding_x1,
+    },
+    contentDuration: StyleSheet.flatten([
+      fontSemibold14,
+      {
+        padding: layout.padding_x0_5,
+      },
+    ]),
     contentName: StyleSheet.flatten([
       fontSemibold14,
       {
@@ -69,15 +88,20 @@ export const VideoPlayerCard: React.FC<{
       <View
         style={styles.imgBox}
         // @ts-ignore
-        onMouseEnter={() => setSelectedIndex(item.id)}
+        onMouseEnter={() => setSelectedIndex(item.identifier)}
         onMouseLeave={() => setSelectedIndex("")}
       >
         <video
           src={ipfsURLToHTTPURL(item.videoMetaInfo.url)}
           style={{ backgroundColor: "gray", borderRadius: 10 }}
         />
+        <View style={styles.videoDuration}>
+          <BrandText style={styles.contentDuration}>
+            {durationToString(item.videoMetaInfo.duration)}
+          </BrandText>
+        </View>
         {selectedIndex === item.identifier && (
-          <TrackImageHover
+          <TrackVideoHover
             videoInfo={item}
             hasLibrary={hasLibrary}
             userName={username}
@@ -94,16 +118,17 @@ export const VideoPlayerCard: React.FC<{
           alignItems: "center",
         }}
       >
-        <Image
-          // @ts-ignore
-          source={require("../../../assets/icon.png")}
-          style={{
-            aspectRatio: 1,
-            width: "32px",
-            borderRadius: 1000,
-            marginRight: layout.padding_x1,
-          }}
-        />
+        <View>
+          <SVG
+            source={Avatar}
+            style={{
+              aspectRatio: 1,
+              width: "32px",
+              borderRadius: 1000,
+              marginRight: layout.padding_x1,
+            }}
+          />
+        </View>
         <Pressable>
           <BrandText style={styles.contentName}>@{username}</BrandText>
         </Pressable>

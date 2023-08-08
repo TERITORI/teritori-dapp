@@ -15,7 +15,7 @@ import { layout } from "../../utils/style/layout";
 import { VideoInfoWithMeta } from "../../utils/types/video";
 import { SVG } from "../SVG";
 
-export const TrackImageHover: React.FC<{
+export const TrackVideoHover: React.FC<{
   videoInfo: VideoInfoWithMeta;
   hasLibrary: boolean;
   userName: string;

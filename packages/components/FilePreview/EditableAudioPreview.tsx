@@ -15,7 +15,7 @@ import {
 } from "../../utils/style/colors";
 import { fontMedium32, fontSemibold12 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { LocalFileData } from "../../utils/types/feed";
+import { LocalFileData } from "../../utils/types/files";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { FileUploader } from "../fileUploader";

@@ -1,7 +1,6 @@
-import { mustGetFeedClient } from "./backend";
 import { GIF_MIME_TYPE } from "./mime";
 import { HASHTAG_REGEX, MENTION_REGEX, URL_REGEX } from "./regex";
-import { LocalFileData } from "./types/feed";
+import { LocalFileData } from "./types/files";
 import { Post, Reaction } from "../api/feed/v1/feed";
 import {
   PostCategory,
@@ -98,17 +97,6 @@ export const postResultToPost = (
     return { ...post, isInLocal: postResult.isInLocal } as PostExtra;
   }
   return post;
-};
-
-export const generateIpfsKey = async (networkId: string, userId: string) => {
-  try {
-    const backendClient = mustGetFeedClient(networkId);
-    const response = await backendClient.IPFSKey({ userId });
-    return response.jwt;
-  } catch (e) {
-    console.error("ERROR WHILE GENERATING IPFSKey : ", e);
-    return undefined;
-  }
 };
 
 export const replaceFileInArray = (

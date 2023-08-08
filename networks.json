@@ -6,7 +6,8 @@
     "displayName": "Teritori",
     "icon": "icons/networks/teritori.svg",
     "features": [
-      "NFTMarketplace"
+      "NFTMarketplace",
+      "Organizations"
     ],
     "walletUrlForStaking": "https://explorer.teritori.com/teritori/staking",
     "currencies": [
@@ -131,7 +132,8 @@
     "displayName": "Teritori Testnet",
     "icon": "icons/networks/teritori.svg",
     "features": [
-      "NFTMarketplace"
+      "NFTMarketplace",
+      "Organizations"
     ],
     "currencies": [
       {
@@ -170,7 +172,7 @@
     "contractExplorer": "https://explorer.teritori.com/teritori-testnet/account/$address",
     "idPrefix": "testori",
     "testnet": true,
-    "backendEndpoint": "https://dapp-backend.testnet.teritori.com",
+    "backendEndpoint": "http://localhost:9090",
     "addressPrefix": "tori",
     "restEndpoint": "https://rest.testnet.teritori.com",
     "rpcEndpoint": "https://rpc.testnet.teritori.com",
@@ -531,9 +533,9 @@
     ]
   },
   {
-    "id": "gno-testnet",
+    "id": "gno-test3",
     "kind": "Gno",
-    "displayName": "Gno Testnet",
+    "displayName": "Gno Test3",
     "icon": "icons/networks/gno.svg",
     "features": [],
     "currencies": [
@@ -548,7 +550,7 @@
       }
     ],
     "stakeCurrency": "ugnot",
-    "idPrefix": "gno",
+    "idPrefix": "gnotest3",
     "chainId": "test3",
     "endpoint": "https://rpc.test3.gno.land",
     "txExplorer": "https://etherscan.io/tx/$hash",
@@ -556,14 +558,19 @@
     "contractExplorer": "https://etherscan.io/address/$address",
     "testnet": true,
     "backendEndpoint": "https://dapp-backend.mainnet.teritori.com",
-    "vaultContractAddress": ""
+    "vaultContractAddress": "",
+    "nameServiceContractAddress": "gno.land/r/demo/users",
+    "nameServiceDefaultImage": "ipfs://bafkreignptjimiu7wuux6mk6uh4hb4odb6ff62ny4bvdokrhes7g67huse",
+    "gnowebURL": "https://test3.gno.land"
   },
   {
     "id": "gno-dev",
     "kind": "Gno",
-    "displayName": "Gno Devnet",
+    "displayName": "Gno Dev",
     "icon": "icons/networks/gno.svg",
-    "features": [],
+    "features": [
+      "Organizations"
+    ],
     "currencies": [
       {
         "denom": "ugnot",
@@ -583,7 +590,45 @@
     "accountExplorer": "https://etherscan.io/address/$address",
     "contractExplorer": "https://etherscan.io/address/$address",
     "testnet": true,
-    "backendEndpoint": "https://dapp-backend.mainnet.teritori.com",
-    "vaultContractAddress": ""
+    "backendEndpoint": "http://localhost:9090",
+    "vaultContractAddress": "",
+    "nameServiceContractAddress": "gno.land/r/demo/users",
+    "nameServiceDefaultImage": "ipfs://bafkreignptjimiu7wuux6mk6uh4hb4odb6ff62ny4bvdokrhes7g67huse",
+    "gnowebURL": "http://127.0.0.1:8888"
+  },
+  {
+    "id": "gno-teritori",
+    "kind": "Gno",
+    "displayName": "Gno Teritori",
+    "icon": "icons/networks/gno.svg",
+    "features": [
+      "Organizations"
+    ],
+    "currencies": [
+      {
+        "denom": "ugnot",
+        "displayName": "GNOT",
+        "decimals": 6,
+        "coingeckoId": "gno",
+        "icon": "icons/networks/gno.svg",
+        "kind": "native",
+        "color": "#232800"
+      }
+    ],
+    "stakeCurrency": "ugnot",
+    "idPrefix": "gnotori",
+    "chainId": "teritori-1",
+    "endpoint": "https://testnet.gno.teritori.com:26658",
+    "txExplorer": "https://etherscan.io/tx/$hash",
+    "accountExplorer": "https://etherscan.io/address/$address",
+    "contractExplorer": "https://etherscan.io/address/$address",
+    "testnet": true,
+    "backendEndpoint": "https://dapp-backend.testnet.teritori.com",
+    "vaultContractAddress": "",
+    "nameServiceContractAddress": "gno.land/r/demo/users",
+    "nameServiceDefaultImage": "ipfs://bafkreignptjimiu7wuux6mk6uh4hb4odb6ff62ny4bvdokrhes7g67huse",
+    "daoRegistryPkgPath": "gno.land/r/demo/dao_registry_v5",
+    "modboardsPkgPath": "gno.land/r/demo/modboards_v3",
+    "gnowebURL": "https://testnet.gno.teritori.com"
   }
 ]

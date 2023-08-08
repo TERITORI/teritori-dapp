@@ -260,59 +260,6 @@ export const TrackHoverMenu: React.FC<TrackHoverMenuProps> = ({
           <BrandText style={styles.text}>Copy link to the track</BrandText>
         </View>
       </HoverView>
-
-      {/* <HoverView
-        normalStyle={styles.unitBoxNormal}
-        onPress={() => setOpenShareMenu((value) => !value)}
-        hoverStyle={styles.unitBoxHovered}
-      >
-        <View style={styles.oneLine}>
-          <SVG
-            source={Share}
-            width={layout.padding_x2}
-            height={layout.padding_x2}
-          />
-          <BrandText style={styles.text}>Share</BrandText>
-        </View>
-        <SVG
-          source={Enter}
-          width={layout.padding_x2}
-          height={layout.padding_x2}
-        />
-
-        {openShareMenu && (
-          <View style={styles.shareMenuContainer}>
-            <HoverView
-              normalStyle={styles.unitBoxNormal}
-              hoverStyle={styles.unitBoxHovered}
-            >
-              <View style={styles.oneLine}>
-                <SVG
-                  source={Link}
-                  width={layout.padding_x2}
-                  height={layout.padding_x2}
-                />
-                <BrandText style={styles.text}>
-                  Copy link to the track
-                </BrandText>
-              </View>
-            </HoverView>
-            <HoverView
-              normalStyle={styles.unitBoxNormal}
-              hoverStyle={styles.unitBoxHovered}
-            >
-              <View style={styles.oneLine}>
-                <SVG
-                  source={Code}
-                  width={layout.padding_x2}
-                  height={layout.padding_x2}
-                />
-                <BrandText style={styles.text}>Copy widget code</BrandText>
-              </View>
-            </HoverView>
-          </View>
-        )}
-      </HoverView> */}
       <TipModal
         author={userName}
         postId={videoInfo.identifier}
