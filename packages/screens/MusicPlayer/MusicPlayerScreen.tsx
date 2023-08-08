@@ -29,6 +29,7 @@ export const MusicPlayerScreen: ScreenFC<"MusicPlayer"> = () => {
     <ScreenContainer
       headerChildren={<BrandText>Music Player</BrandText>}
       fullWidth
+      footerChildren={<></>}
     >
       <View style={styles.pageConatiner}>
         <MusicPlayerTab tab={tab} setTab={setTab} />
