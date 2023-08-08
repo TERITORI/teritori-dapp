@@ -7,13 +7,17 @@ import { ScreenContainer } from "../../components/ScreenContainer";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { DAOsList } from "../../components/dao/DAOsList";
 import { SpacerColumn } from "../../components/spacer";
+import { useForceNetworkSelection } from "../../hooks/useForceNetworkSelection";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { NetworkFeature } from "../../networks";
-import { useAppNavigation } from "../../utils/navigation";
+import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 
-export const OrganizationsScreen = () => {
+export const OrganizationsScreen: ScreenFC<"Organizations"> = ({
+  route: { params },
+}) => {
+  useForceNetworkSelection(params?.network);
   const navigation = useAppNavigation();
   const networkId = useSelectedNetworkId();
 
