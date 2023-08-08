@@ -10,11 +10,12 @@ import { StatusBar } from "expo-status-bar";
 import { MetaMaskProvider } from "metamask-react";
 import React from "react";
 import { useForm, FormProvider } from "react-hook-form";
-import { Platform } from "react-native";
+import { Platform, View } from "react-native";
 import { MenuProvider } from "react-native-popup-menu";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider as ReduxProvider } from "react-redux";
 
+import { BrandText } from "./packages/components/BrandText";
 import { Navigator } from "./packages/components/navigation/Navigator";
 import { DropdownsContextProvider } from "./packages/context/DropdownsProvider";
 import { FeedbacksContextProvider } from "./packages/context/FeedbacksProvider";
@@ -47,35 +48,80 @@ export default function App() {
   }
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <FormProvider<DefaultForm> {...methods}>
-        <MetaMaskProvider>
-          <NavigationContainer linking={linking}>
-            <SafeAreaProvider>
-              <ReduxProvider store={store}>
-                <FeedbacksContextProvider>
-                  <DropdownsContextProvider>
-                    <WalletsProvider>
-                      <SearchBarContextProvider>
-                        <TransactionModalsProvider>
-                          <TNSContextProvider>
-                            <TNSMetaDataListContextProvider>
-                              <MenuProvider>
-                                <StatusBar style="inverted" />
-                                <Navigator />
-                              </MenuProvider>
-                            </TNSMetaDataListContextProvider>
-                          </TNSContextProvider>
-                        </TransactionModalsProvider>
-                      </SearchBarContextProvider>
-                    </WalletsProvider>
-                  </DropdownsContextProvider>
-                </FeedbacksContextProvider>
-              </ReduxProvider>
-            </SafeAreaProvider>
-          </NavigationContainer>
-        </MetaMaskProvider>
-      </FormProvider>
-    </QueryClientProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <FormProvider<DefaultForm> {...methods}>
+          <MetaMaskProvider>
+            <NavigationContainer linking={linking}>
+              <SafeAreaProvider>
+                <ReduxProvider store={store}>
+                  <FeedbacksContextProvider>
+                    <DropdownsContextProvider>
+                      <WalletsProvider>
+                        <SearchBarContextProvider>
+                          <TransactionModalsProvider>
+                            <TNSContextProvider>
+                              <TNSMetaDataListContextProvider>
+                                <MenuProvider>
+                                  <StatusBar style="inverted" />
+                                  <Navigator />
+                                </MenuProvider>
+                              </TNSMetaDataListContextProvider>
+                            </TNSContextProvider>
+                          </TransactionModalsProvider>
+                        </SearchBarContextProvider>
+                      </WalletsProvider>
+                    </DropdownsContextProvider>
+                  </FeedbacksContextProvider>
+                </ReduxProvider>
+              </SafeAreaProvider>
+            </NavigationContainer>
+          </MetaMaskProvider>
+        </FormProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
+}
+
+class ErrorBoundary extends React.Component {
+  state: {
+    hasError: boolean;
+    error?: unknown;
+    catchError?: unknown;
+    catchInfo?: React.ErrorInfo;
+  };
+
+  constructor(props: object) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error: unknown) {
+    console.log("derived state from error");
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: unknown, info: React.ErrorInfo) {
+    console.log("did catch");
+    console.error(error, info);
+    this.setState({ catchError: error, catchInfo: info });
+  }
+
+  render() {
+    if (this.state.hasError) {
+      console.log("rendering error boundary");
+      // You can render any custom fallback UI
+      return (
+        <View style={{ backgroundColor: "black", height: "100%" }}>
+          <BrandText>{`${this.state.error}`}</BrandText>
+          {this.state.error !== this.state.catchError && (
+            <BrandText>{`${this.state.catchError}`}</BrandText>
+          )}
+          <BrandText>{this.state.catchInfo?.componentStack}</BrandText>
+        </View>
+      );
+    }
+
+    return this.props.children;
+  }
 }

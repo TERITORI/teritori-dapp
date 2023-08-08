@@ -63,43 +63,44 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
             <View style={styles.row}>
               <View style={styles.fill}>
                 <TextInputCustom<CreateDaoFormType>
+                  noBrokenCorners
+                  variant="labelOutside"
                   control={control}
-                  variant="noCropBorder"
                   label="Organization's name"
                   placeHolder="Type organization's name here"
                   name="organizationName"
                   rules={{ required: true }}
-                  // isAsterickSign
                 />
               </View>
               <SpacerRow size={2.5} />
               <View style={styles.fill}>
                 <TextInputCustom<CreateDaoFormType>
+                  noBrokenCorners
+                  variant="labelOutside"
                   control={control}
-                  variant="noCropBorder"
                   label="Associated Teritori Name Service"
                   placeHolder="your-organization.tori"
                   name="associatedTeritoriNameService"
                   rules={{ required: true }}
-                  // isAsterickSign
                 />
               </View>
             </View>
 
             <SpacerColumn size={2.5} />
             <TextInputCustom<CreateDaoFormType>
+              noBrokenCorners
               control={control}
-              variant="noCropBorder"
+              variant="labelOutside"
               label="Organization's image url"
               placeHolder="https://example.com/preview.png"
               name="imageUrl"
               rules={{ required: true }}
-              // isAsterickSign
             />
             <SpacerColumn size={2.5} />
             <TextInputCustom<CreateDaoFormType>
+              noBrokenCorners
+              variant="labelOutside"
               control={control}
-              variant="noCropBorder"
               label="Organization's description"
               placeHolder="Type organization's description here"
               name="organizationDescription"

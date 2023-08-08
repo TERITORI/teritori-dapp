@@ -8,7 +8,7 @@ import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { DAOsList } from "../../components/dao/DAOsList";
 import { SpacerColumn } from "../../components/spacer";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import { NetworkKind } from "../../networks";
+import { NetworkFeature } from "../../networks";
 import { useAppNavigation } from "../../utils/navigation";
 import { fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
@@ -24,7 +24,7 @@ export const OrganizationsScreen = () => {
       noMargin
       fullWidth
       noScroll
-      forceNetworkKind={NetworkKind.Cosmos}
+      forceNetworkFeatures={[NetworkFeature.Organizations]}
     >
       <ScrollView>
         <DAOsSection

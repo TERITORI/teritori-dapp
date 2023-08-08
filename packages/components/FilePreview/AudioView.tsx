@@ -4,11 +4,11 @@ import { View, Image, TouchableOpacity } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 
 import { AudioWaveform } from "./AudioWaveform";
-import { ipfsURLToHTTPURL } from "./ipfs";
 import pauseSVG from "../../../assets/icons/pause.svg";
 import playSVG from "../../../assets/icons/play.svg";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { getAudioDuration } from "../../utils/audio";
+import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import {
   errorColor,
   neutral00,
@@ -17,7 +17,7 @@ import {
 } from "../../utils/style/colors";
 import { fontSemibold13, fontSemibold14 } from "../../utils/style/fonts";
 import { layout, screenContentMaxWidth } from "../../utils/style/layout";
-import { RemoteFileData } from "../../utils/types/feed";
+import { RemoteFileData } from "../../utils/types/files";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { THUMBNAIL_WIDTH } from "../socialFeed/SocialThread/SocialMessageContent";

@@ -1,12 +1,12 @@
 import { gnoCurrencies } from "./currencies";
-import { GnoNetworkInfo, NetworkKind } from "../types";
+import { GnoNetworkInfo, NetworkFeature, NetworkKind } from "../types";
 
 export const gnoDevNetwork: GnoNetworkInfo = {
   id: "gno-dev",
   kind: NetworkKind.Gno,
-  displayName: "Gno Devnet",
+  displayName: "Gno Dev",
   icon: "icons/networks/gno.svg",
-  features: [],
+  features: [NetworkFeature.Organizations, NetworkFeature.SocialFeed],
   currencies: gnoCurrencies,
   stakeCurrency: "ugnot",
   idPrefix: "gnodev",
@@ -16,6 +16,10 @@ export const gnoDevNetwork: GnoNetworkInfo = {
   accountExplorer: "https://etherscan.io/address/$address",
   contractExplorer: "https://etherscan.io/address/$address",
   testnet: true,
-  backendEndpoint: "https://dapp-backend.mainnet.teritori.com",
+  backendEndpoint: "http://localhost:9090",
   vaultContractAddress: "",
+  nameServiceContractAddress: "gno.land/r/demo/users",
+  nameServiceDefaultImage:
+    "ipfs://bafkreignptjimiu7wuux6mk6uh4hb4odb6ff62ny4bvdokrhes7g67huse",
+  gnowebURL: "http://127.0.0.1:8888",
 };

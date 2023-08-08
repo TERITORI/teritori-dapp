@@ -1,8 +1,14 @@
+import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import { useQuery } from "@tanstack/react-query";
 
 import { useDAOVotingModule } from "./useDAOVotingModule";
 import { DaoVotingCw4QueryClient } from "../../contracts-clients/dao-voting-cw4/DaoVotingCw4.client";
-import { mustGetNonSigningCosmWasmClient, parseUserId } from "../../networks";
+import {
+  NetworkKind,
+  mustGetNonSigningCosmWasmClient,
+  parseUserId,
+} from "../../networks";
+import { extractGnoNumber } from "../../utils/gno";
 
 export const useDAOTotalVotingPower = (
   daoId: string | undefined,
@@ -12,8 +18,8 @@ export const useDAOTotalVotingPower = (
   const [network] = parseUserId(daoId);
   const networkId = network?.id;
 
-  const { data, ...other } = useQuery(
-    ["daoTotalVotingPower", networkId, daoVotingModule, height],
+  const { data: cosmWasmData, ...other } = useQuery(
+    ["cosmWasmDAOTotalVotingPower", networkId, daoVotingModule, height],
     async () => {
       if (!networkId || !daoVotingModule) {
         return null;
@@ -30,5 +36,32 @@ export const useDAOTotalVotingPower = (
       enabled: !!(networkId && daoVotingModule),
     }
   );
-  return { daoTotalVotingPower: data, ...other };
+
+  const { data: gnoData } = useQuery(
+    ["gnoDAOTotalVotingPower", daoId],
+    async () => {
+      const [network, packagePath] = parseUserId(daoId);
+      if (network?.kind !== NetworkKind.Gno) {
+        return { power: "0" };
+      }
+      const provider = new GnoJSONRPCProvider(network.endpoint);
+      const power = extractGnoNumber(
+        await provider.evaluateExpression(
+          packagePath,
+          `GetCore().VotingModule().TotalPower()`
+        )
+      );
+      return { power: `${power}` };
+    },
+    {
+      staleTime: Infinity,
+      enabled: !!daoId,
+    }
+  );
+
+  return {
+    daoTotalVotingPower:
+      network?.kind === NetworkKind.Gno ? gnoData : cosmWasmData,
+    ...other,
+  };
 };
