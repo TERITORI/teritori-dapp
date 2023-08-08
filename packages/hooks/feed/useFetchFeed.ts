@@ -54,12 +54,13 @@ const fetchGnoFeed = async (
   try {
     const offset = pageParam || 0;
     const limit = 10;
-    const category = req.filter?.categories?.[0] || 2; // Normal
+    const categories = req.filter?.categories || []; // Default = all
+    const categoriesStr = `[]uint64{${categories.join(",")}}`;
 
     const provider = new GnoJSONRPCProvider(selectedNetwork.endpoint);
     const output = await provider.evaluateExpression(
       GNO_SOCIAL_FEEDS_PKG_PATH,
-      `GetPosts(${TERITORI_FEED_ID}, ${category}, ${offset}, ${limit})`
+      `GetPosts(${TERITORI_FEED_ID}, ${categoriesStr}, ${offset}, ${limit})`
     );
 
     const posts: Post[] = [];
