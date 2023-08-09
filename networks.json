@@ -8,7 +8,8 @@
     "features": [
       "NFTMarketplace",
       "Organizations",
-      "SocialFeed"
+      "SocialFeed",
+      "UPP"
     ],
     "walletUrlForStaking": "https://explorer.teritori.com/teritori/staking",
     "currencies": [
@@ -134,7 +135,8 @@
     "features": [
       "NFTMarketplace",
       "Organizations",
-      "SocialFeed"
+      "SocialFeed",
+      "UPP"
     ],
     "currencies": [
       {
@@ -570,7 +572,8 @@
     "icon": "icons/networks/gno.svg",
     "features": [
       "Organizations",
-      "SocialFeed"
+      "SocialFeed",
+      "UPP"
     ],
     "currencies": [
       {
@@ -591,7 +594,7 @@
     "accountExplorer": "https://etherscan.io/address/$address",
     "contractExplorer": "https://etherscan.io/address/$address",
     "testnet": true,
-    "backendEndpoint": "http://localhost:9090",
+    "backendEndpoint": "https://dapp-backend.testnet.teritori.com",
     "vaultContractAddress": "",
     "nameServiceContractAddress": "gno.land/r/demo/users",
     "nameServiceDefaultImage": "ipfs://bafkreignptjimiu7wuux6mk6uh4hb4odb6ff62ny4bvdokrhes7g67huse",
@@ -604,7 +607,8 @@
     "icon": "icons/networks/gno.svg",
     "features": [
       "Organizations",
-      "SocialFeed"
+      "SocialFeed",
+      "UPP"
     ],
     "currencies": [
       {
