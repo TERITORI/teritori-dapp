@@ -1,14 +1,6 @@
 import { Post, Reaction } from "../../api/feed/v1/feed";
-import { getUserId } from "../../networks";
 
-export const decodeGnoPost = (
-  networkId: string,
-  postData: string,
-  // FIXME: due data inconsistency when we fetch data from chain
-  // for individual post (contains user address) vs from indexer for post list (contains user id)
-  // this args is for adapting the scenario but we should fix properly by standardizing output when get from chain vs from indexer
-  includingNetwork = true
-): Post => {
+export const decodeGnoPost = (postData: string): Post => {
   const buf = Buffer.from(postData, "base64");
 
   let offset = 0;
@@ -78,7 +70,7 @@ export const decodeGnoPost = (
     metadata,
     parentPostIdentifier: "" + parentPostIdentifier,
     subPostLength: subpostIDs.length,
-    createdBy: includingNetwork ? getUserId(networkId, createdBy) : createdBy,
+    createdBy,
     createdAt: +createdAt * 1000,
     tipAmount: 0,
     reactions,

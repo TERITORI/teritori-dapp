@@ -21,11 +21,12 @@ export const usePost = (id: string, networkId: string) => {
         );
 
         const postData = extractGnoString(output);
-        const post = decodeGnoPost(network.id, postData, false);
+        const post = decodeGnoPost(postData);
 
         return {
           identifier: id,
-          parent_post_identifier: post.parentPostIdentifier, // identifier of linked post
+          parent_post_identifier:
+            post.parentPostIdentifier !== "0" ? post.parentPostIdentifier : "", // identifier of linked post
           category: post.category, // PostCategory
           metadata: post.metadata,
           reactions: post.reactions,

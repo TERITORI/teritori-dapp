@@ -70,11 +70,11 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
     id,
     selectedNetworkId
   );
-  const authorNSInfo = useNSUserInfo(
-    getUserId(selectedNetworkId, postResult?.post_by)
-  );
+  const userId = getUserId(selectedNetworkId, postResult?.post_by);
+  const authorNSInfo = useNSUserInfo(userId);
 
   const [, userAddress] = parseUserId(postResult?.post_by);
+
   const feedInputRef = useRef<NewsFeedInputHandle>(null);
   const [replyTo, setReplyTo] = useState<ReplyToType>();
   const aref = useAnimatedRef<Animated.ScrollView>();
@@ -152,9 +152,15 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
     else if (!postResult) return "Post not found";
     const author =
       authorNSInfo?.metadata?.tokenId || userAddress || DEFAULT_USERNAME;
-    if (postResult.category === PostCategory.Article)
+
+    if (postResult.category === PostCategory.Article) {
       return `Article by ${author}`;
-    if (postResult?.parent_post_identifier) return `Comment by ${author}`;
+    }
+
+    if (postResult?.parent_post_identifier) {
+      return `Comment by ${author}`;
+    }
+
     return `Post by ${author}`;
   }, [
     postResult,
@@ -173,8 +179,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
         <BrandText style={fontSemibold20}>{headerLabel}</BrandText>
       }
       onBackPress={() =>
-        postResult?.parent_post_identifier &&
-        postResult?.parent_post_identifier !== "0"
+        postResult?.parent_post_identifier
           ? navigation.navigate("FeedPostView", {
               id: postResult?.parent_post_identifier || "",
             })

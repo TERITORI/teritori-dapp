@@ -1,7 +1,6 @@
 import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
-import { Post } from "../../api/feed/v1/feed";
 import { nonSigningSocialFeedClient } from "../../client-creators/socialFeedClient";
 import {
   GNO_SOCIAL_FEEDS_PKG_PATH,
@@ -58,14 +57,27 @@ const fetchGnoComments = async (
     `GetComments(${TERITORI_FEED_ID}, ${parentId})`
   );
 
-  const posts: Post[] = [];
+  const posts = [];
 
   const outputStr = extractGnoString(output);
   for (const postData of outputStr.split(",")) {
-    const post = decodeGnoPost(selectedNetwork.id, postData);
-    posts.push(post);
+    const post = decodeGnoPost(postData);
+
+    posts.push({
+      identifier: post.identifier,
+      parent_post_identifier: post.parentPostIdentifier,
+      category: post.category,
+      metadata: post.metadata,
+      reactions: post.reactions,
+      user_reactions: [],
+      post_by: post.createdBy,
+      deleted: post.isDeleted,
+      sub_post_length: post.subPostLength,
+      tip_amount: post.subPostLength,
+      created_at: post.createdAt,
+    });
   }
-  return { list: posts.sort((p1, p2) => p2.createdAt - p1.createdAt) };
+  return { list: posts.sort((p1, p2) => p2.created_at - p1.created_at) };
 };
 
 export const useFetchComments = ({
