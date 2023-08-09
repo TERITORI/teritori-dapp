@@ -7,7 +7,7 @@ import { NewPostFormValues } from "../components/socialFeed/NewsFeed/NewsFeed.ty
 export type RouteName = keyof RootStackParamList;
 
 export type RootStackParamList = {
-  Home: undefined;
+  Home?: { network?: string };
   MyCollection: undefined;
   Activity: undefined;
   Guardians: undefined;
