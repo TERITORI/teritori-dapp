@@ -23,7 +23,7 @@ import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { usePrevious } from "../../hooks/usePrevious";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { NetworkFeature, NetworkKind, parseUserId } from "../../networks";
+import { NetworkKind, parseUserId } from "../../networks";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import { Assets } from "../WalletManager/Assets";
