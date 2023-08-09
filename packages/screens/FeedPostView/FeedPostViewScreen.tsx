@@ -73,6 +73,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
   const authorNSInfo = useNSUserInfo(
     getUserId(selectedNetworkId, postResult?.post_by)
   );
+
   const [, userAddress] = parseUserId(postResult?.post_by);
   const feedInputRef = useRef<NewsFeedInputHandle>(null);
   const [replyTo, setReplyTo] = useState<ReplyToType>();
@@ -172,7 +173,8 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
         <BrandText style={fontSemibold20}>{headerLabel}</BrandText>
       }
       onBackPress={() =>
-        postResult?.parent_post_identifier
+        postResult?.parent_post_identifier &&
+        postResult?.parent_post_identifier !== "0"
           ? navigation.navigate("FeedPostView", {
               id: postResult?.parent_post_identifier || "",
             })

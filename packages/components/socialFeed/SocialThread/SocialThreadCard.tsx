@@ -77,9 +77,7 @@ export const SocialThreadCard: React.FC<{
   const userInfo = useNSUserInfo(wallet?.userId);
   const navigation = useAppNavigation();
   const metadata: SocialFeedMetadata = JSON.parse(localPost.metadata);
-  const username = authorNSInfo?.metadata?.tokenId
-    ? authorNSInfo?.metadata?.tokenId
-    : userAddress;
+  const username = authorNSInfo?.metadata?.tokenId || userAddress;
 
   //TODO: Handle this later
   // const communityHashtag = useMemo(() => {

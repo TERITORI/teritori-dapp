@@ -21,7 +21,7 @@ export const usePost = (id: string, networkId: string) => {
         );
 
         const postData = extractGnoString(output);
-        const post = decodeGnoPost(network.id, postData);
+        const post = decodeGnoPost(network.id, postData, false);
 
         return {
           identifier: id,
