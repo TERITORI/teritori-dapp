@@ -38,7 +38,6 @@ const fetchTeritoriFeed = async (
     const postsRequest: PostsRequest = { ...req, offset: pageParam || 0 };
     // Getting posts
     const list = await getPosts(selectedNetwork.id, postsRequest);
-
     return { list, totalCount: mainPostsCount } as PostsList;
   } catch (err) {
     console.error("teritori initData err", err);

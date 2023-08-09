@@ -1,7 +1,11 @@
 import { Post, Reaction } from "../../api/feed/v1/feed";
 import { getUserId } from "../../networks";
 
-export const decodeGnoPost = (networkId: string, postData: string): Post => {
+export const decodeGnoPost = (
+  networkId: string,
+  postData: string,
+  includingNetwork = true
+): Post => {
   const buf = Buffer.from(postData, "base64");
 
   let offset = 0;
@@ -71,7 +75,7 @@ export const decodeGnoPost = (networkId: string, postData: string): Post => {
     metadata,
     parentPostIdentifier: "" + parentPostIdentifier,
     subPostLength: subpostIDs.length,
-    createdBy: getUserId(networkId, createdBy),
+    createdBy: includingNetwork ? getUserId(networkId, createdBy) : createdBy,
     createdAt: +createdAt * 1000,
     tipAmount: 0,
     reactions,
