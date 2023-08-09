@@ -41,12 +41,12 @@ export const OmniLink: React.FC<{
         onMouseLeave={() => setIsHovered(false)}
         style={[
           {
-            opacity: isHovered ? 0.5 : 1,
+            opacity: isHovered && !disabled ? 0.5 : 1,
           },
           { transitionDuration: "150ms" } as ViewStyle, // browser specific
           style,
         ]}
-        {...props}
+        {...(disabled ? {} : props)}
       >
         {children}
       </View>
