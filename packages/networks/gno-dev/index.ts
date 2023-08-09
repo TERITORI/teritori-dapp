@@ -6,7 +6,11 @@ export const gnoDevNetwork: GnoNetworkInfo = {
   kind: NetworkKind.Gno,
   displayName: "Gno Dev",
   icon: "icons/networks/gno.svg",
-  features: [NetworkFeature.Organizations, NetworkFeature.SocialFeed],
+  features: [
+    NetworkFeature.Organizations,
+    NetworkFeature.SocialFeed,
+    NetworkFeature.UPP,
+  ],
   currencies: gnoCurrencies,
   stakeCurrency: "ugnot",
   idPrefix: "gnodev",
@@ -16,7 +20,7 @@ export const gnoDevNetwork: GnoNetworkInfo = {
   accountExplorer: "https://etherscan.io/address/$address",
   contractExplorer: "https://etherscan.io/address/$address",
   testnet: true,
-  backendEndpoint: "http://localhost:9090",
+  backendEndpoint: "https://dapp-backend.testnet.teritori.com",
   vaultContractAddress: "",
   nameServiceContractAddress: "gno.land/r/demo/users",
   nameServiceDefaultImage:

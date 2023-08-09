@@ -16,6 +16,7 @@ export const teritoriNetwork: CosmosNetworkInfo = {
     NetworkFeature.NFTMarketplace,
     NetworkFeature.Organizations,
     NetworkFeature.SocialFeed,
+    NetworkFeature.UPP,
   ],
   walletUrlForStaking: "https://explorer.teritori.com/teritori/staking",
   currencies: teritoriCurrencies,

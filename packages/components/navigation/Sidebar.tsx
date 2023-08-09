@@ -153,7 +153,8 @@ export const Sidebar: React.FC = () => {
         />
         <SidebarSeparator />
 
-        {selectedNetworkKind === NetworkKind.Cosmos &&
+        {(selectedNetworkKind === NetworkKind.Cosmos ||
+          selectedNetworkKind === NetworkKind.Gno) &&
           connected &&
           userInfo.metadata && (
             <SidebarProfileButton

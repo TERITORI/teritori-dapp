@@ -23,7 +23,7 @@ import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { usePrevious } from "../../hooks/usePrevious";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { NetworkKind, parseUserId } from "../../networks";
+import { NetworkFeature, NetworkKind, parseUserId } from "../../networks";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import { Assets } from "../WalletManager/Assets";
@@ -211,7 +211,7 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
   return (
     <ScreenContainer
       key={`UserPublicProfile ${id}`} // this key is to reset the screen state when the id changes
-      forceNetworkId={network?.id}
+      forceNetworkFeatures={[NetworkFeature.UPP]}
       responsive
       fullWidth
       noScroll={selectedTab === "userPosts" || selectedTab === "mentionsPosts"}
