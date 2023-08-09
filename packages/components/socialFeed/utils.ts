@@ -4,6 +4,9 @@ import { getUserId } from "../../networks";
 export const decodeGnoPost = (
   networkId: string,
   postData: string,
+  // FIXME: due data inconsistency when we fetch data from chain
+  // for individual post (contains user address) vs from indexer for post list (contains user id)
+  // this args is for adapting the scenario but we should fix properly by standardizing output when get from chain vs from indexer
   includingNetwork = true
 ): Post => {
   const buf = Buffer.from(postData, "base64");
