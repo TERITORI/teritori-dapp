@@ -159,7 +159,8 @@ const ActivityRow: React.FC<{ activity: Activity }> = ({ activity }) => {
           },
         ]}
       >
-        {prettyPrice(network?.id || "", activity.amount, activity.denom)}
+        {!!activity.amount &&
+          prettyPrice(network?.id || "", activity.amount, activity.denom)}
       </BrandText>
       <View
         style={{ flex: TABLE_ROWS.buyer.flex, paddingRight: layout.padding_x1 }}
