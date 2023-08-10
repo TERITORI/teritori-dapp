@@ -76,12 +76,18 @@ export type SolanaNetworkInfo = NetworkInfoBase & {
   holaplexGraphqlEndpoint: string;
   vaultContractAddress: string;
 };
+
 export type GnoNetworkInfo = NetworkInfoBase & {
   kind: NetworkKind.Gno;
   chainId: string;
   endpoint: string;
   stakeCurrency: string;
   vaultContractAddress: string;
+  nameServiceContractAddress: string;
+  nameServiceDefaultImage: string;
+  gnowebURL: string;
+  daoRegistryPkgPath?: string;
+  modboardsPkgPath?: string;
 };
 
 export type NetworkInfo =
@@ -121,4 +127,7 @@ export enum NetworkFeature {
   NFTLaunchpad = "NFTLaunchpad",
   NameService = "NameService",
   Swap = "Swap",
+  Organizations = "Organizations",
+  SocialFeed = "SocialFeed",
+  UPP = "UPP",
 }

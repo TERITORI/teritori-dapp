@@ -7,7 +7,7 @@ import { fontSemibold12, fontSemibold9 } from "../../../utils/style/fonts";
 import { fullSidebarWidth, layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import { OmniLink } from "../../OmniLink";
-import { AvatarWithFrame } from "../../images/AvatarWithFrame";
+import { UserAvatarWithFrame } from "../../images/AvatarWithFrame";
 
 export const SidebarProfileButton: React.FC<{
   userId: string;
@@ -29,7 +29,7 @@ export const SidebarProfileButton: React.FC<{
           isExpanded && { flexDirection: "row", alignItems: "center" },
         ]}
       >
-        <AvatarWithFrame userId={userId} />
+        <UserAvatarWithFrame userId={userId} />
 
         <View
           style={[

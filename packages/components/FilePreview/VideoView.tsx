@@ -3,11 +3,11 @@ import React from "react";
 import { View } from "react-native";
 
 import { DeleteButton } from "./DeleteButton";
-import { ipfsURLToHTTPURL } from "./ipfs";
+import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { errorColor } from "../../utils/style/colors";
 import { fontSemibold13 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { LocalFileData, RemoteFileData } from "../../utils/types/feed";
+import { LocalFileData, RemoteFileData } from "../../utils/types/files";
 import { BrandText } from "../BrandText";
 
 interface VideoPreviewProps {

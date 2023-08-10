@@ -8,6 +8,8 @@ import { BrandText } from "../../../components/BrandText";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
+import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
+import { NetworkKind } from "../../../networks";
 import { neutral33, neutral77 } from "../../../utils/style/colors";
 import { fontSemibold20, fontSemibold28 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
@@ -36,8 +38,10 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
     mode: "all",
   });
 
+  const selectedNetwork = useSelectedNetworkInfo();
   const selectedRadioStructure = watch("structure");
   const uri = watch("imageUrl");
+  const name = watch("associatedTeritoriNameService");
 
   // functions
   const onErrorImageLoading = () =>
@@ -63,43 +67,56 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
             <View style={styles.row}>
               <View style={styles.fill}>
                 <TextInputCustom<CreateDaoFormType>
+                  noBrokenCorners
+                  variant="labelOutside"
                   control={control}
-                  variant="noCropBorder"
                   label="Organization's name"
                   placeHolder="Type organization's name here"
                   name="organizationName"
                   rules={{ required: true }}
-                  // isAsterickSign
                 />
               </View>
               <SpacerRow size={2.5} />
               <View style={styles.fill}>
                 <TextInputCustom<CreateDaoFormType>
+                  noBrokenCorners
+                  variant="labelOutside"
                   control={control}
-                  variant="noCropBorder"
-                  label="Associated Teritori Name Service"
-                  placeHolder="your-organization.tori"
+                  label={`Associated Handle${
+                    name
+                      ? `: ${name}${
+                          selectedNetwork?.kind === NetworkKind.Gno
+                            ? ""
+                            : ".tori"
+                        }`
+                      : ""
+                  }`}
+                  placeHolder={
+                    selectedNetwork?.kind === NetworkKind.Gno
+                      ? "your_organization"
+                      : "your-organization"
+                  }
                   name="associatedTeritoriNameService"
                   rules={{ required: true }}
-                  // isAsterickSign
                 />
               </View>
             </View>
 
             <SpacerColumn size={2.5} />
             <TextInputCustom<CreateDaoFormType>
+              noBrokenCorners
               control={control}
-              variant="noCropBorder"
+              variant="labelOutside"
               label="Organization's image url"
               placeHolder="https://example.com/preview.png"
               name="imageUrl"
               rules={{ required: true }}
-              // isAsterickSign
             />
             <SpacerColumn size={2.5} />
             <TextInputCustom<CreateDaoFormType>
+              noBrokenCorners
+              variant="labelOutside"
               control={control}
-              variant="noCropBorder"
               label="Organization's description"
               placeHolder="Type organization's description here"
               name="organizationDescription"

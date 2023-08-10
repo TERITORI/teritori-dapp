@@ -3,16 +3,13 @@ import React from "react";
 import { StyleSheet, View } from "react-native";
 
 import { ProposalActions } from "./ProposalActions";
-import {
-  ProposalResponse,
-  CosmosMsgForEmpty,
-} from "../../contracts-clients/dao-proposal-single/DaoProposalSingle.types";
+import { CosmosMsgForEmpty } from "../../contracts-clients/dao-proposal-single/DaoProposalSingle.types";
+import { AppProposalResponse } from "../../hooks/dao/useDAOProposals";
 import { useNSPrimaryAlias } from "../../hooks/useNSPrimaryAlias";
 import { getCosmosNetwork, getUserId, parseUserId } from "../../networks";
 import { neutral33, neutral77, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { modalMarginPadding } from "../../utils/style/modals";
-import { tinyAddress } from "../../utils/text";
 import { BrandText } from "../BrandText";
 import ModalBase from "../modals/ModalBase";
 import { SocialMessageContent } from "../socialFeed/SocialThread/SocialMessageContent";
@@ -22,7 +19,7 @@ export const DAOProposalModal: React.FC<{
   visible?: boolean;
   onClose: () => void;
   daoId: string | undefined;
-  proposalInfo: ProposalResponse;
+  proposalInfo: AppProposalResponse;
 }> = ({ visible, onClose, daoId, proposalInfo }) => {
   const [network] = parseUserId(daoId);
   const networkId = network?.id;
@@ -36,23 +33,27 @@ export const DAOProposalModal: React.FC<{
       }}
       label={`Proposal #${proposalInfo.id}`}
       visible={visible}
+      scrollable
       width={800}
     >
       <View style={styles.container}>
         <View style={styles.body}>
-          <BrandText style={fontSemibold14}>
-            {proposalInfo.proposal.title}
-          </BrandText>
-          <SpacerColumn size={2.5} />
+          {proposalInfo.proposal.title && (
+            <>
+              <BrandText style={fontSemibold14}>
+                {proposalInfo.proposal.title}
+              </BrandText>
+              <SpacerColumn size={2.5} />
+            </>
+          )}
           <View style={styles.row}>
             <BrandText style={fontSemibold14}>Creator: </BrandText>
             <BrandText style={styles.textGray}>
               {primaryAlias
                 ? `@${primaryAlias}`
-                : tinyAddress(proposalInfo.proposal.proposer)}
+                : proposalInfo.proposal.proposer}
             </BrandText>
           </View>
-          <SpacerColumn size={2.5} />
           {!!proposalInfo.proposal.description && (
             <>
               <SpacerColumn size={2.5} />
@@ -61,9 +62,21 @@ export const DAOProposalModal: React.FC<{
               </BrandText>
             </>
           )}
-          <BrandText style={fontSemibold14}>Actions:</BrandText>
           <SpacerColumn size={2.5} />
-          <ProposalMessagesList proposal={proposalInfo} />
+          {proposalInfo.proposal.msgs.length +
+            proposalInfo.proposal.actions.length >
+          0 ? (
+            <>
+              <BrandText style={fontSemibold14}>Actions:</BrandText>
+              <SpacerColumn size={2.5} />
+              <ProposalMessagesList
+                networkId={network?.id}
+                proposal={proposalInfo}
+              />
+            </>
+          ) : (
+            <BrandText style={fontSemibold14}>Sentiment proposal</BrandText>
+          )}
         </View>
         <SpacerColumn size={2.5} />
         <View style={{ marginBottom: modalMarginPadding }}>
@@ -74,39 +87,47 @@ export const DAOProposalModal: React.FC<{
   );
 };
 
-const ProposalMessagesList: React.FC<{ proposal: ProposalResponse }> = ({
-  proposal,
-}) => {
+const ProposalMessagesList: React.FC<{
+  networkId: string | undefined;
+  proposal: AppProposalResponse;
+}> = ({ networkId, proposal }) => {
   return (
     <>
-      {proposal.proposal.msgs.map((message, index) => {
-        return (
-          <>
-            {index !== 0 && <SpacerColumn size={2.5} />}
-            <View
-              style={{
-                borderWidth: 1,
-                borderColor: neutral77,
-                borderRadius: 8,
-                padding: 8,
-              }}
-            >
-              <MessagePreview message={message} key={index} />
-            </View>
-          </>
-        );
-      })}
+      {[...proposal.proposal.msgs, ...proposal.proposal.actions].map(
+        (message, index) => {
+          return (
+            <>
+              {index !== 0 && <SpacerColumn size={2.5} />}
+              <View
+                style={{
+                  borderWidth: 1,
+                  borderColor: neutral77,
+                  borderRadius: 8,
+                  padding: 8,
+                }}
+              >
+                <MessagePreview
+                  networkId={networkId}
+                  message={message}
+                  key={index}
+                />
+              </View>
+            </>
+          );
+        }
+      )}
     </>
   );
 };
 
-const MessagePreview: React.FC<{ message: CosmosMsgForEmpty }> = ({
-  message,
-}) => {
+const MessagePreview: React.FC<{
+  networkId: string | undefined;
+  message: CosmosMsgForEmpty | string;
+}> = ({ networkId, message }) => {
   const socialFeedContractAddress =
-    getCosmosNetwork("teritori-testnet")?.socialFeedContractAddress; // FIXME
+    getCosmosNetwork(networkId)?.socialFeedContractAddress;
   const m = cloneDeep(message);
-  if ("wasm" in m && "execute" in m.wasm) {
+  if (typeof m === "object" && "wasm" in m && "execute" in m.wasm) {
     const msg = JSON.parse(
       Buffer.from(m.wasm.execute.msg, "base64").toString()
     );
@@ -132,7 +153,9 @@ const MessagePreview: React.FC<{ message: CosmosMsgForEmpty }> = ({
     }
   }
   return (
-    <BrandText style={styles.textGray}>{JSON.stringify(m, null, 4)}</BrandText>
+    <BrandText style={styles.textGray}>
+      {typeof message === "string" ? message : JSON.stringify(m, null, 4)}
+    </BrandText>
   );
 };
 

@@ -42,7 +42,7 @@ import { useIsMobile } from "../../hooks/useIsMobile";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import { getUserId, NetworkKind, parseUserId } from "../../networks";
+import { NetworkFeature, getUserId, parseUserId } from "../../networks";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { DEFAULT_USERNAME, postResultToPost } from "../../utils/social-feed";
 import { primaryColor } from "../../utils/style/colors";
@@ -73,6 +73,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
   const authorNSInfo = useNSUserInfo(
     getUserId(selectedNetworkId, postResult?.post_by)
   );
+
   const [, userAddress] = parseUserId(postResult?.post_by);
   const feedInputRef = useRef<NewsFeedInputHandle>(null);
   const [replyTo, setReplyTo] = useState<ReplyToType>();
@@ -164,7 +165,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
 
   return (
     <ScreenContainer
-      forceNetworkKind={NetworkKind.Cosmos}
+      forceNetworkFeatures={[NetworkFeature.SocialFeed]}
       fullWidth
       responsive
       noMargin
@@ -172,7 +173,8 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
         <BrandText style={fontSemibold20}>{headerLabel}</BrandText>
       }
       onBackPress={() =>
-        postResult?.parent_post_identifier
+        postResult?.parent_post_identifier &&
+        postResult?.parent_post_identifier !== "0"
           ? navigation.navigate("FeedPostView", {
               id: postResult?.parent_post_identifier || "",
             })

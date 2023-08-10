@@ -1,4 +1,5 @@
 import { coin } from "@cosmjs/amino";
+import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import React, { useImperativeHandle, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
@@ -9,6 +10,7 @@ import {
   useWindowDimensions,
 } from "react-native";
 import Animated, { useSharedValue } from "react-native-reanimated";
+import { useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 
 import {
@@ -17,11 +19,7 @@ import {
   ReplyToType,
   SocialFeedMetadata,
 } from "./NewsFeed.type";
-import {
-  generatePostMetadata,
-  getPostCategory,
-  uploadPostFilesToPinata,
-} from "./NewsFeedQueries";
+import { generatePostMetadata, getPostCategory } from "./NewsFeedQueries";
 import { NotEnoughFundModal } from "./NotEnoughFundModal";
 import audioSVG from "../../../../assets/icons/audio.svg";
 import cameraSVG from "../../../../assets/icons/camera.svg";
@@ -38,11 +36,18 @@ import { useUpdatePostFee } from "../../../hooks/feed/useUpdatePostFee";
 import { useBalances } from "../../../hooks/useBalances";
 import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useMaxResolution } from "../../../hooks/useMaxResolution";
-import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
+import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { getUserId, mustGetCosmosNetwork } from "../../../networks";
+import {
+  NetworkKind,
+  getUserId,
+  mustGetCosmosNetwork,
+} from "../../../networks";
+import { selectNFTStorageAPI } from "../../../store/slices/settings";
 import { prettyPrice } from "../../../utils/coins";
 import { defaultSocialFeedFee } from "../../../utils/fee";
+import { adenaDoContract } from "../../../utils/gno";
+import { generateIpfsKey, uploadFilesToPinata } from "../../../utils/ipfs";
 import {
   AUDIO_MIME_TYPES,
   IMAGE_MIME_TYPES,
@@ -52,7 +57,6 @@ import {
   SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT,
   hashtagMatch,
   mentionMatch,
-  generateIpfsKey,
   replaceFileInArray,
   removeFileFromArray,
 } from "../../../utils/social-feed";
@@ -77,7 +81,7 @@ import {
   SOCIAL_FEED_BREAKPOINT_M,
 } from "../../../utils/style/layout";
 import { replaceBetweenString } from "../../../utils/text";
-import { LocalFileData, RemoteFileData } from "../../../utils/types/feed";
+import { LocalFileData, RemoteFileData } from "../../../utils/types/files";
 import { BrandText } from "../../BrandText";
 import { FilesPreviewsContainer } from "../../FilePreview/FilesPreviewsContainer";
 import FlexRow from "../../FlexRow";
@@ -91,6 +95,7 @@ import { FileUploader } from "../../fileUploader";
 import { SpacerColumn } from "../../spacer";
 import { EmojiSelector } from "../EmojiSelector";
 import { GIFSelector } from "../GIFSelector";
+import { GNO_SOCIAL_FEEDS_PKG_PATH, TERITORI_FEED_ID } from "../const";
 
 interface NewsFeedInputProps {
   type: "comment" | "post";
@@ -144,7 +149,8 @@ export const NewsFeedInput = React.forwardRef<
     const inputMinHeight = 20;
     const inputHeight = useSharedValue(20);
     const wallet = useSelectedWallet();
-    const selectedNetworkId = useSelectedNetworkId();
+    const selectedNetwork = useSelectedNetworkInfo();
+    const selectedNetworkId = selectedNetwork?.id || "teritori";
     const selectedWallet = useSelectedWallet();
     const userId = getUserId(selectedNetworkId, selectedWallet?.address);
     const inputRef = useRef<TextInput>(null);
@@ -172,10 +178,7 @@ export const NewsFeedInput = React.forwardRef<
       onCloseCreateModal && onCloseCreateModal();
     };
 
-    const balances = useBalances(
-      process.env.TERITORI_NETWORK_ID,
-      wallet?.address
-    );
+    const balances = useBalances(selectedNetworkId, wallet?.address);
 
     const { setValue, handleSubmit, reset, watch } = useForm<NewPostFormValues>(
       {
@@ -189,7 +192,7 @@ export const NewsFeedInput = React.forwardRef<
       }
     );
     const formValues = watch();
-
+    const userIPFSKey = useSelector(selectNFTStorageAPI);
     const { postFee } = useUpdatePostFee(
       selectedNetworkId,
       getPostCategory(formValues)
@@ -201,8 +204,11 @@ export const NewsFeedInput = React.forwardRef<
     );
 
     const processSubmit = async () => {
-      const toriBalance = balances.find((bal) => bal.denom === "utori");
-      if (postFee > Number(toriBalance?.amount) && !freePostCount) {
+      const denom = selectedNetwork?.currencies[0].denom;
+
+      const currentBalance = balances.find((bal) => bal.denom === denom);
+
+      if (postFee > Number(currentBalance?.amount) && !freePostCount) {
         return setNotEnoughFundModal(true);
       }
 
@@ -239,9 +245,10 @@ export const NewsFeedInput = React.forwardRef<
         let files: RemoteFileData[] = [];
 
         if (formValues.files?.length) {
-          const pinataJWTKey = await generateIpfsKey(selectedNetworkId, userId);
+          const pinataJWTKey =
+            userIPFSKey || (await generateIpfsKey(selectedNetworkId, userId));
           if (pinataJWTKey) {
-            files = await uploadPostFilesToPinata({
+            files = await uploadFilesToPinata({
               files: formValues.files,
               pinataJWTKey,
             });
@@ -255,13 +262,7 @@ export const NewsFeedInput = React.forwardRef<
           });
           return;
         }
-
         const postCategory = getPostCategory(formValues);
-
-        const client = await signingSocialFeedClient({
-          networkId: selectedNetworkId,
-          walletAddress: wallet?.address || "",
-        });
 
         const metadata: SocialFeedMetadata = generatePostMetadata({
           title: formValues.title || "",
@@ -283,6 +284,7 @@ export const NewsFeedInput = React.forwardRef<
 
         if (daoId) {
           const network = mustGetCosmosNetwork(selectedNetworkId);
+
           if (!network.socialFeedContractAddress) {
             throw new Error("Social feed contract address not found");
           }
@@ -307,15 +309,53 @@ export const NewsFeedInput = React.forwardRef<
             ],
           });
         } else {
-          await mutateAsync({
-            client,
-            msg,
-            args: {
-              fee: defaultSocialFeedFee,
-              memo: "",
-              funds: [coin(postFee, "utori")],
-            },
-          });
+          if (selectedNetwork?.kind === NetworkKind.Gno) {
+            // const provider = new GnoJSONRPCProvider(selectedNetwork.endpoint);
+
+            const msg = {
+              category: postCategory,
+              identifier,
+              metadata: JSON.stringify(metadata),
+              parentPostIdentifier: hasUsername ? replyTo?.parentId : parentId,
+            };
+
+            const vmCall = {
+              caller: selectedWallet?.address || "",
+              send: "",
+              pkg_path: GNO_SOCIAL_FEEDS_PKG_PATH,
+              func: "CreatePost",
+              args: [
+                TERITORI_FEED_ID,
+                msg.parentPostIdentifier || "0",
+                msg.category.toString(),
+                msg.metadata,
+              ],
+            };
+
+            const txHash = await adenaDoContract(
+              selectedNetworkId,
+              [{ type: "/vm.m_call", value: vmCall }],
+              { gasWanted: 2_000_000 }
+            );
+
+            const provider = new GnoJSONRPCProvider(selectedNetwork.endpoint);
+            await provider.waitForTransaction(txHash);
+            onPostCreationSuccess();
+          } else {
+            const client = await signingSocialFeedClient({
+              networkId: selectedNetworkId,
+              walletAddress: wallet?.address || "",
+            });
+            await mutateAsync({
+              client,
+              msg,
+              args: {
+                fee: defaultSocialFeedFee,
+                memo: "",
+                funds: [coin(postFee, "utori")],
+              },
+            });
+          }
 
           if (
             postCategory === PostCategory.Question ||
@@ -553,7 +593,7 @@ export const NewsFeedInput = React.forwardRef<
                 : `The cost for this ${type} is ${prettyPrice(
                     selectedNetworkId,
                     postFee.toString(),
-                    "utori"
+                    selectedNetwork?.currencies?.[0].denom || "utori"
                   )}`}
             </BrandText>
           </View>

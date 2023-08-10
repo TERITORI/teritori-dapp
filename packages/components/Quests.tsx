@@ -27,7 +27,7 @@ export const Quests: React.FC<{
         setQuests((qs) => [...qs, quest]);
       });
     } catch (err) {
-      console.error(err);
+      console.warn("failed to fetch quests", err);
     }
   }, [network?.id, userId]);
 

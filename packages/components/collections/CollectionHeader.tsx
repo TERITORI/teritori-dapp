@@ -11,7 +11,6 @@ import { SortDirection } from "../../api/marketplace/v1/marketplace";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useCollectionStats } from "../../hooks/useCollectionStats";
 import { useIsMobile } from "../../hooks/useIsMobile";
-import { useMaxResolution } from "../../hooks/useMaxResolution";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { contractExplorerLink, parseCollectionId } from "../../networks";
 import { prettyPrice } from "../../utils/coins";
@@ -47,7 +46,6 @@ export const CollectionHeader: React.FC<{
   const wallet = useSelectedWallet();
   // variables
   const stats = useCollectionStats(collectionId, wallet?.userId);
-  const { width } = useMaxResolution({ isLarge: true });
   const [network, collectionMintAddress] = parseCollectionId(collectionId);
   const { setToastSuccess } = useFeedbacks();
 
@@ -92,7 +90,7 @@ export const CollectionHeader: React.FC<{
   };
 
   // returns
-  return width > 0 && stats && network ? (
+  return (
     <View
       style={{
         width: "100%",
@@ -129,89 +127,108 @@ export const CollectionHeader: React.FC<{
                 : {},
             ]}
           >
-            {collectionInfo.name}
+            {collectionInfo.name || "Loading..."}
           </BrandText>
-          {stats.floorPrice.length > 0 && (
-            <View
-              style={{
-                flexDirection: "row",
-                flexWrap: "wrap",
-                justifyContent: isMobile ? "center" : "flex-start",
-                marginTop: layout.padding_x2_5,
-                alignItems: "center",
-                flex: 1,
-              }}
-            >
-              <CollectionStat
-                label="Floor"
-                value={
-                  stats
-                    ? prettyPrice(
-                        network.id,
-                        stats.floorPrice[0].quantity,
-                        stats.floorPrice[0].denom,
-                        true
-                      )
-                    : "-"
-                }
-                currencyIcon={{
-                  networkId: network.id,
-                  value: 0,
-                  denom: stats.floorPrice[0].denom,
-                }}
-              />
-              <SpacerRow size={1.5} />
-              <CollectionStat
-                label="Total Volume"
-                value={prettyPrice(
-                  network.id,
-                  parseFloat(stats.totalVolume).toFixed(0),
-                  stats.floorPrice[0].denom,
-                  true
-                )}
-                currencyIcon={{
-                  networkId: network.id,
-                  value: parseFloat(stats.totalVolume),
-                  denom: stats.floorPrice[0].denom,
-                }}
-              />
-              <SpacerRow size={1.5} />
-              {!isMobile && (
-                <>
-                  <CollectionStat
-                    label="Owners"
-                    value={(stats?.owners || 0).toString()}
-                  />
-                  <SpacerRow size={1.5} />
-
-                  <CollectionStat
-                    label="Listed"
-                    value={(stats?.listed || 0).toString()}
-                  />
-                  <SpacerRow size={1.5} />
-                  <CollectionStat
-                    label="Avg Sale (24hr)"
-                    value={prettyPrice(
+          <View
+            style={{
+              flexDirection: "row",
+              flexWrap: "wrap",
+              justifyContent: isMobile ? "center" : "flex-start",
+              marginTop: layout.padding_x2_5,
+              alignItems: "center",
+              flex: 1,
+            }}
+          >
+            <CollectionStat
+              label="Floor"
+              value={
+                stats?.floorPrice?.length && network
+                  ? prettyPrice(
                       network.id,
-                      stats.avgPricePeriod.toFixed(0),
+                      stats.floorPrice[0].quantity,
                       stats.floorPrice[0].denom,
                       true
-                    )}
-                    currencyIcon={{
+                    )
+                  : "-"
+              }
+              currencyIcon={
+                stats?.floorPrice?.length && network
+                  ? {
                       networkId: network.id,
-                      value: stats.avgPricePeriod,
+                      value: 0,
                       denom: stats.floorPrice[0].denom,
-                    }}
-                  />
-                </>
-              )}
-              <SpacerRow size={1.5} />
-              <CollectionStat
-                label="Total Supply"
-                value={(stats?.totalSupply || 0).toString()}
-              />
-            </View>
-          )}
+                    }
+                  : undefined
+              }
+            />
+            <SpacerRow size={1.5} />
+            <CollectionStat
+              label="Total Volume"
+              value={
+                stats?.floorPrice?.length && network
+                  ? prettyPrice(
+                      network.id,
+                      parseFloat(stats.totalVolume).toFixed(0),
+                      stats.floorPrice[0].denom,
+                      true
+                    )
+                  : "-"
+              }
+              currencyIcon={
+                stats?.floorPrice?.length && network
+                  ? {
+                      networkId: network.id,
+                      value: parseFloat(stats.totalVolume),
+                      denom: stats.floorPrice[0].denom,
+                    }
+                  : undefined
+              }
+            />
+            <SpacerRow size={1.5} />
+            {!isMobile && (
+              <>
+                <CollectionStat
+                  label="Owners"
+                  value={(stats?.owners || 0).toString()}
+                />
+                <SpacerRow size={1.5} />
+
+                <CollectionStat
+                  label="Listed"
+                  value={(stats?.listed || 0).toString()}
+                />
+                <SpacerRow size={1.5} />
+                <CollectionStat
+                  label="Avg Sale (24hr)"
+                  value={
+                    stats?.floorPrice?.length && network
+                      ? prettyPrice(
+                          network.id,
+                          stats.avgPricePeriod.toFixed(0),
+                          stats.floorPrice[0].denom,
+                          true
+                        )
+                      : "-"
+                  }
+                  currencyIcon={
+                    stats?.floorPrice?.length && network
+                      ? {
+                          networkId: network.id,
+                          value: stats.avgPricePeriod,
+                          denom: stats.floorPrice[0].denom,
+                        }
+                      : undefined
+                  }
+                />
+              </>
+            )}
+            <SpacerRow size={1.5} />
+            <CollectionStat
+              label="Total Supply"
+              value={(stats?.totalSupply || 0).toString()}
+            />
+          </View>
+
           <View
             style={{
               flexDirection: "row",
@@ -286,5 +303,5 @@ export const CollectionHeader: React.FC<{
         )}
       </View>
     </View>
-  ) : null;
+  );
 };

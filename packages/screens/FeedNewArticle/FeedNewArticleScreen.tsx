@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { View } from "react-native";
+import { useSelector } from "react-redux";
 
 import priceSVG from "../../../assets/icons/price.svg";
 import { BrandText } from "../../components/BrandText";
@@ -27,16 +28,15 @@ import { useUpdateAvailableFreePost } from "../../hooks/feed/useUpdateAvailableF
 import { useUpdatePostFee } from "../../hooks/feed/useUpdatePostFee";
 import { useBalances } from "../../hooks/useBalances";
 import { useIsMobile } from "../../hooks/useIsMobile";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getUserId, NetworkKind } from "../../networks";
+import { getUserId, NetworkFeature } from "../../networks";
+import { selectNFTStorageAPI } from "../../store/slices/settings";
 import { prettyPrice } from "../../utils/coins";
+import { generateIpfsKey } from "../../utils/ipfs";
 import { IMAGE_MIME_TYPES } from "../../utils/mime";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
-import {
-  ARTICLE_COVER_IMAGE_HEIGHT,
-  generateIpfsKey,
-} from "../../utils/social-feed";
+import { ARTICLE_COVER_IMAGE_HEIGHT } from "../../utils/social-feed";
 import {
   neutral00,
   neutral11,
@@ -51,7 +51,8 @@ import { pluralOrNot } from "../../utils/text";
 
 export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
   const isMobile = useIsMobile();
-  const selectedNetworkId = useSelectedNetworkId();
+  const selectNetworkInfo = useSelectedNetworkInfo();
+  const selectedNetworkId = selectNetworkInfo?.id || "";
   const wallet = useSelectedWallet();
   const { postFee } = useUpdatePostFee(selectedNetworkId, PostCategory.Article);
   const { freePostCount } = useUpdateAvailableFreePost(
@@ -61,6 +62,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
   );
   const [isNotEnoughFundModal, setNotEnoughFundModal] = useState(false);
   const [loading, setLoading] = useState(false);
+  const userIPFSKey = useSelector(selectNFTStorageAPI);
 
   const { setToastSuccess, setToastError } = useFeedbacks();
   const navigation = useAppNavigation();
@@ -113,7 +115,8 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
     }
     let pinataJWTKey = undefined;
     if (files?.length) {
-      pinataJWTKey = await generateIpfsKey(selectedNetworkId, userId);
+      pinataJWTKey =
+        userIPFSKey || (await generateIpfsKey(selectedNetworkId, userId));
     }
 
     const result = await createPost({
@@ -178,7 +181,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
 
   return (
     <ScreenContainer
-      forceNetworkKind={NetworkKind.Cosmos}
+      forceNetworkFeatures={[NetworkFeature.SocialFeed]}
       responsive
       mobileTitle="NEW ARTICLE"
       maxWidth={screenContentMaxWidth}
@@ -231,7 +234,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
               : `The cost for this Article is ${prettyPrice(
                   selectedNetworkId,
                   postFee.toString(),
-                  "utori"
+                  selectNetworkInfo?.currencies?.[0].denom || "utori"
                 )}`}
           </BrandText>
         </TertiaryBox>
@@ -268,31 +271,32 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
             borderRadius: 12,
           }}
         />
-        <Label isRequired>Article content</Label>
-        <SpacerColumn size={1} />
-        {/**@ts-ignore  error:TS2589: Type instantiation is excessively deep and possibly infinite. */}
-        <Controller
-          name="message"
-          control={control}
-          rules={{
-            required: true,
-          }}
-          render={({ field: { onChange, onBlur } }) => (
-            <RichText
-              onChange={onChange}
-              onBlur={onBlur}
-              initialValue={formValues.message}
-              loading={loading}
-              publishDisabled={
-                errors?.message?.type === "required" ||
-                !formValues.message ||
-                !formValues.title ||
-                !wallet
-              }
-              onPublish={onPublish}
-            />
-          )}
-        />
+        <View>
+          <Label>Article content</Label>
+          <SpacerColumn size={1} />
+          <Controller
+            name="message"
+            control={control}
+            rules={{
+              required: true,
+            }}
+            render={({ field: { onChange, onBlur } }) => (
+              <RichText
+                onChange={onChange}
+                onBlur={onBlur}
+                initialValue={formValues.message}
+                loading={loading}
+                publishDisabled={
+                  errors?.message?.type === "required" ||
+                  !formValues.message ||
+                  !formValues.title ||
+                  !wallet
+                }
+                onPublish={onPublish}
+              />
+            )}
+          />
+        </View>
       </View>
     </ScreenContainer>
   );

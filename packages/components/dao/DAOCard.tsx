@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 
+import { GnoDAORegistration } from "../../hooks/gno/useGnoDAOs";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { parseUserId } from "../../networks";
 import { secondaryColor, neutral77, neutral33 } from "../../utils/style/colors";
@@ -9,25 +10,71 @@ import { layout } from "../../utils/style/layout";
 import { tinyAddress } from "../../utils/text";
 import { BrandText } from "../BrandText";
 import { OmniLink } from "../OmniLink";
-import { AvatarWithFrame } from "../images/AvatarWithFrame";
+import {
+  AvatarWithFrame,
+  UserAvatarWithFrame,
+} from "../images/AvatarWithFrame";
 import { SpacerColumn } from "../spacer";
 
 export const DAOCard: React.FC<{
   daoId: string;
   style?: StyleProp<ViewStyle>;
 }> = ({ daoId, style }) => {
-  const [, daoAddress] = parseUserId(daoId);
   const {
     metadata: { public_name: name, public_bio: description, tokenId },
   } = useNSUserInfo(daoId);
+  return (
+    <DAOCardView
+      daoId={daoId}
+      name={name}
+      description={description}
+      tokenId={tokenId}
+      style={style}
+      avatar={<UserAvatarWithFrame userId={daoId} size="L" />}
+    />
+  );
+};
 
+export const GnoDAOCard: React.FC<{
+  daoId: string;
+  registration: GnoDAORegistration;
+  style?: StyleProp<ViewStyle>;
+}> = ({ daoId, style, registration }) => {
+  const [network] = parseUserId(daoId);
+  return (
+    <DAOCardView
+      daoId={daoId}
+      name={registration.name}
+      description={registration.description}
+      style={style}
+      avatar={
+        <AvatarWithFrame
+          networkId={network?.id}
+          image={registration.imageURI}
+          isDAO
+          size="L"
+        />
+      }
+    />
+  );
+};
+
+export const DAOCardView: React.FC<{
+  daoId: string;
+  name: string | null | undefined;
+  tokenId?: string | null;
+  description: string | null | undefined;
+  style?: StyleProp<ViewStyle>;
+  avatar: React.ReactElement;
+}> = ({ daoId, name, tokenId, description, style, avatar }) => {
+  const [, daoAddress] = parseUserId(daoId);
   return (
     <OmniLink
       to={{ screen: "UserPublicProfile", params: { id: daoId } }}
       style={[styles.container, style]}
     >
       <View style={{ alignItems: "center" }}>
-        <AvatarWithFrame userId={daoId} size="L" />
+        {avatar}
         <SpacerColumn size={2.5} />
         <BrandText style={[fontSemibold14, { color: secondaryColor }]}>
           {name || "Anon DAO"}
