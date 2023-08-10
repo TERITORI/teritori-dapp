@@ -7,9 +7,7 @@
     "icon": "icons/networks/teritori.svg",
     "features": [
       "NFTMarketplace",
-      "Organizations",
-      "SocialFeed",
-      "UPP"
+      "Organizations"
     ],
     "walletUrlForStaking": "https://explorer.teritori.com/teritori/staking",
     "currencies": [
@@ -135,9 +133,7 @@
     "icon": "icons/networks/teritori.svg",
     "features": [
       "NFTMarketplace",
-      "Organizations",
-      "SocialFeed",
-      "UPP"
+      "Organizations"
     ],
     "currencies": [
       {
@@ -176,7 +172,7 @@
     "contractExplorer": "https://explorer.teritori.com/teritori-testnet/account/$address",
     "idPrefix": "testori",
     "testnet": true,
-    "backendEndpoint": "https://dapp-backend.testnet.teritori.com",
+    "backendEndpoint": "http://localhost:9090",
     "addressPrefix": "tori",
     "restEndpoint": "https://rest.testnet.teritori.com",
     "rpcEndpoint": "https://rpc.testnet.teritori.com",
@@ -573,9 +569,7 @@
     "displayName": "Gno Dev",
     "icon": "icons/networks/gno.svg",
     "features": [
-      "Organizations",
-      "SocialFeed",
-      "UPP"
+      "Organizations"
     ],
     "currencies": [
       {
@@ -608,9 +602,7 @@
     "displayName": "Gno Teritori",
     "icon": "icons/networks/gno.svg",
     "features": [
-      "Organizations",
-      "SocialFeed",
-      "UPP"
+      "Organizations"
     ],
     "currencies": [
       {
