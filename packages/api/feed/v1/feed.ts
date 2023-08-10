@@ -237,7 +237,7 @@ export const Post = {
       writer.uint32(48).uint32(message.subPostLength);
     }
     if (message.authorId !== "") {
-      writer.uint32(58).string(message.authorId);
+      writer.uint32(90).string(message.authorId);
     }
     if (message.createdAt !== 0) {
       writer.uint32(64).int64(message.createdAt);
@@ -276,7 +276,7 @@ export const Post = {
         case 6:
           message.subPostLength = reader.uint32();
           break;
-        case 7:
+        case 11:
           message.authorId = reader.string();
           break;
         case 8:
