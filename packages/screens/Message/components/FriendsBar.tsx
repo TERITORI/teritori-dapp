@@ -13,6 +13,7 @@ import {
   selectConversationList,
   selectContactRequestList,
 } from "../../../store/slices/message";
+import { useAppNavigation } from "../../../utils/navigation";
 import {
   neutral22,
   secondaryColor,
@@ -23,6 +24,7 @@ import { fontSemibold13 } from "../../../utils/style/fonts";
 export const FriendsBar = () => {
   const contactRequests = useSelector(selectContactRequestList);
   const conversations = useSelector(selectConversationList);
+  const { navigate } = useAppNavigation();
   return (
     <View style={styles.friendBox}>
       <FlexRow justifyContent="space-between">
@@ -40,21 +42,33 @@ export const FriendsBar = () => {
         <View>
           <FlexRow>
             {!!contactRequests?.length && (
-              <TertiaryBadge
-                label={`${contactRequests.length} new`}
-                textColor={primaryColor}
-              />
+              <TouchableOpacity
+                onPress={() =>
+                  navigate("FriendshipManager", { tab: "request" })
+                }
+              >
+                <TertiaryBadge
+                  label={`${contactRequests.length} new`}
+                  textColor={primaryColor}
+                />
+              </TouchableOpacity>
             )}
             <SpacerRow size={3} />
-            <BrandText style={[fontSemibold13, { color: secondaryColor }]}>
-              {conversations?.filter((conv) => conv.type === "contact")
-                ?.length || ""}
-            </BrandText>
-            <SpacerRow size={2} />
-            <TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+              onPress={() => navigate("FriendshipManager", { tab: "friends" })}
+            >
+              <BrandText style={[fontSemibold13, { color: secondaryColor }]}>
+                {conversations?.filter((conv) => conv.type === "contact")
+                  ?.length || ""}
+              </BrandText>
+              <SpacerRow size={2} />
               <SVG source={forwardSVG} />
+              <SpacerRow size={2} />
             </TouchableOpacity>
-            <SpacerRow size={2} />
           </FlexRow>
         </View>
       </FlexRow>

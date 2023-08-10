@@ -61,9 +61,9 @@ export type RootStackParamList = {
   DAppStore: undefined;
   ToriPunks: { route: string };
 
-  Message: undefined;
+  Message: { view: string; tab?: string } | undefined;
   ChatSection: Conversation;
-  FriendshipManager: undefined;
+  FriendshipManager: { tab?: string } | undefined;
   AddFriend: undefined;
 };
 
@@ -108,7 +108,7 @@ const navConfig: {
     // ==== Teritori Name Service
     TNSHome: "tns/:modal?",
     //==Message
-    Message: "message",
+    Message: "message/:view?",
 
     // ==== Marketplace
     Marketplace: "marketplace",

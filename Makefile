@@ -254,7 +254,7 @@ validate-networks: node_modules
 networks.json: node_modules validate-networks
 	npx ts-node packages/scripts/generateJSONNetworks.ts > $@
 .PHONY: build-ios
-build-ios: build-weshframework
+build-ios:
 	@npx expo prebuild --clean
 	@ruby ./cmd/add_frameworks.rb
 	@npx expo run:ios
