@@ -27,9 +27,9 @@ message Post {
   string metadata = 4;
   string parent_post_identifier = 5;
   uint32 sub_post_length = 6;
+  string author_id = 7;
   int64 created_at = 8;
   int64 tip_amount = 10;
-  string author_id = 11;
   repeated Reaction reactions = 9;
 }
 

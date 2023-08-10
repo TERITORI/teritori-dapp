@@ -26,9 +26,9 @@ export interface Post {
   metadata: string;
   parentPostIdentifier: string;
   subPostLength: number;
+  authorId: string;
   createdAt: number;
   tipAmount: number;
-  authorId: string;
   reactions: Reaction[];
 }
 
@@ -209,9 +209,9 @@ function createBasePost(): Post {
     metadata: "",
     parentPostIdentifier: "",
     subPostLength: 0,
+    authorId: "",
     createdAt: 0,
     tipAmount: 0,
-    authorId: "",
     reactions: [],
   };
 }
@@ -236,14 +236,14 @@ export const Post = {
     if (message.subPostLength !== 0) {
       writer.uint32(48).uint32(message.subPostLength);
     }
+    if (message.authorId !== "") {
+      writer.uint32(58).string(message.authorId);
+    }
     if (message.createdAt !== 0) {
       writer.uint32(64).int64(message.createdAt);
     }
     if (message.tipAmount !== 0) {
       writer.uint32(80).int64(message.tipAmount);
-    }
-    if (message.authorId !== "") {
-      writer.uint32(90).string(message.authorId);
     }
     for (const v of message.reactions) {
       Reaction.encode(v!, writer.uint32(74).fork()).ldelim();
@@ -276,14 +276,14 @@ export const Post = {
         case 6:
           message.subPostLength = reader.uint32();
           break;
+        case 7:
+          message.authorId = reader.string();
+          break;
         case 8:
           message.createdAt = longToNumber(reader.int64() as Long);
           break;
         case 10:
           message.tipAmount = longToNumber(reader.int64() as Long);
-          break;
-        case 11:
-          message.authorId = reader.string();
           break;
         case 9:
           message.reactions.push(Reaction.decode(reader, reader.uint32()));
@@ -304,9 +304,9 @@ export const Post = {
       metadata: isSet(object.metadata) ? String(object.metadata) : "",
       parentPostIdentifier: isSet(object.parentPostIdentifier) ? String(object.parentPostIdentifier) : "",
       subPostLength: isSet(object.subPostLength) ? Number(object.subPostLength) : 0,
+      authorId: isSet(object.authorId) ? String(object.authorId) : "",
       createdAt: isSet(object.createdAt) ? Number(object.createdAt) : 0,
       tipAmount: isSet(object.tipAmount) ? Number(object.tipAmount) : 0,
-      authorId: isSet(object.authorId) ? String(object.authorId) : "",
       reactions: Array.isArray(object?.reactions) ? object.reactions.map((e: any) => Reaction.fromJSON(e)) : [],
     };
   },
@@ -319,9 +319,9 @@ export const Post = {
     message.metadata !== undefined && (obj.metadata = message.metadata);
     message.parentPostIdentifier !== undefined && (obj.parentPostIdentifier = message.parentPostIdentifier);
     message.subPostLength !== undefined && (obj.subPostLength = Math.round(message.subPostLength));
+    message.authorId !== undefined && (obj.authorId = message.authorId);
     message.createdAt !== undefined && (obj.createdAt = Math.round(message.createdAt));
     message.tipAmount !== undefined && (obj.tipAmount = Math.round(message.tipAmount));
-    message.authorId !== undefined && (obj.authorId = message.authorId);
     if (message.reactions) {
       obj.reactions = message.reactions.map((e) => e ? Reaction.toJSON(e) : undefined);
     } else {
@@ -338,9 +338,9 @@ export const Post = {
     message.metadata = object.metadata ?? "";
     message.parentPostIdentifier = object.parentPostIdentifier ?? "";
     message.subPostLength = object.subPostLength ?? 0;
+    message.authorId = object.authorId ?? "";
     message.createdAt = object.createdAt ?? 0;
     message.tipAmount = object.tipAmount ?? 0;
-    message.authorId = object.authorId ?? "";
     message.reactions = object.reactions?.map((e) => Reaction.fromPartial(e)) || [];
     return message;
   },
