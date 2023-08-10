@@ -1,6 +1,7 @@
 import { Post, Reaction } from "../../api/feed/v1/feed";
+import { getUserId } from "../../networks";
 
-export const decodeGnoPost = (postData: string): Post => {
+export const decodeGnoPost = (networkId: string, postData: string): Post => {
   const buf = Buffer.from(postData, "base64");
 
   let offset = 0;
@@ -31,7 +32,7 @@ export const decodeGnoPost = (postData: string): Post => {
 
   const addrLen = buf.readUInt16BE(offset);
   offset += 2;
-  const authorId = buf.slice(offset, offset + addrLen).toString();
+  const authorAddress = buf.slice(offset, offset + addrLen).toString();
   offset += addrLen;
 
   const createdAt = buf.readUInt32BE(offset);
@@ -70,7 +71,7 @@ export const decodeGnoPost = (postData: string): Post => {
     metadata,
     parentPostIdentifier: parentPostIdentifier ? "" + parentPostIdentifier : "",
     subPostLength: subpostIDs.length,
-    authorId,
+    authorId: getUserId(networkId, authorAddress),
     createdAt: +createdAt * 1000,
     tipAmount: 0,
     reactions,

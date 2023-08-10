@@ -66,7 +66,7 @@ const fetchGnoFeed = async (
 
     const outputStr = extractGnoString(output);
     for (const postData of outputStr.split(",")) {
-      const post = decodeGnoPost(postData);
+      const post = decodeGnoPost(selectedNetwork.id, postData);
       posts.push(post);
     }
 

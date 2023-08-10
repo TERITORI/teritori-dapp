@@ -42,7 +42,7 @@ import { useIsMobile } from "../../hooks/useIsMobile";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import { NetworkFeature, getUserId, parseUserId } from "../../networks";
+import { NetworkFeature, parseUserId } from "../../networks";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { DEFAULT_USERNAME } from "../../utils/social-feed";
 import { primaryColor } from "../../utils/style/colors";
@@ -70,7 +70,8 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
     id,
     selectedNetworkId
   );
-  const authorId = getUserId(selectedNetworkId, postResult?.authorId);
+
+  const authorId = postResult?.authorId;
   const authorNSInfo = useNSUserInfo(authorId);
 
   const [, authorAddress] = parseUserId(postResult?.authorId);

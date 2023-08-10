@@ -5,7 +5,7 @@ import { Post } from "../../api/feed/v1/feed";
 import { nonSigningSocialFeedClient } from "../../client-creators/socialFeedClient";
 import { GNO_SOCIAL_FEEDS_PKG_PATH } from "../../components/socialFeed/const";
 import { decodeGnoPost } from "../../components/socialFeed/utils";
-import { NetworkKind, getNetwork } from "../../networks";
+import { NetworkKind, getNetwork, getUserId } from "../../networks";
 import { extractGnoString } from "../../utils/gno";
 
 export const usePost = (id: string, networkId: string) => {
@@ -21,7 +21,7 @@ export const usePost = (id: string, networkId: string) => {
         );
 
         const postData = extractGnoString(output);
-        const post = decodeGnoPost(postData);
+        const post = decodeGnoPost(networkId, postData);
         return post;
       } else {
         const client = await nonSigningSocialFeedClient({
@@ -31,12 +31,12 @@ export const usePost = (id: string, networkId: string) => {
 
         const post: Post = {
           identifier: id,
-          parentPostIdentifier: res.parent_post_identifier,
+          parentPostIdentifier: res.parent_post_identifier || "",
           category: res.category,
           metadata: res.metadata,
-          reactions: res.user_reactions,
-          authorId: res.post_by,
-          isDeleted: res.delete,
+          reactions: res.reactions,
+          authorId: getUserId(networkId, res.post_by),
+          isDeleted: res.deleted,
           subPostLength: res.sub_post_length,
           createdAt: res.created_at,
           tipAmount: res.tip_amount,
