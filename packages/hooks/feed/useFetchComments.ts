@@ -70,7 +70,7 @@ const fetchGnoComments = async (
       metadata: post.metadata,
       reactions: post.reactions,
       user_reactions: [],
-      post_by: post.createdBy,
+      post_by: post.authorId,
       deleted: post.isDeleted,
       sub_post_length: post.subPostLength,
       tip_amount: post.subPostLength,

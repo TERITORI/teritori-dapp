@@ -8,12 +8,7 @@ import {
   TERITORI_FEED_ID,
 } from "../../components/socialFeed/const";
 import { decodeGnoPost } from "../../components/socialFeed/utils";
-import {
-  getUserId,
-  GnoNetworkInfo,
-  NetworkInfo,
-  NetworkKind,
-} from "../../networks";
+import { GnoNetworkInfo, NetworkInfo, NetworkKind } from "../../networks";
 import { mustGetFeedClient } from "../../utils/backend";
 import { extractGnoString } from "../../utils/gno";
 import { useSelectedNetworkInfo } from "../useSelectedNetwork";
@@ -72,7 +67,6 @@ const fetchGnoFeed = async (
     const outputStr = extractGnoString(output);
     for (const postData of outputStr.split(",")) {
       const post = decodeGnoPost(postData);
-      post.createdBy = getUserId(selectedNetwork.id, post.createdBy);
       posts.push(post);
     }
 

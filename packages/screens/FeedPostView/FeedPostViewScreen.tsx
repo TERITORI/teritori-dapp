@@ -44,7 +44,7 @@ import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { NetworkFeature, getUserId, parseUserId } from "../../networks";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
-import { DEFAULT_USERNAME, postResultToPost } from "../../utils/social-feed";
+import { DEFAULT_USERNAME } from "../../utils/social-feed";
 import { primaryColor } from "../../utils/style/colors";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import {
@@ -70,10 +70,10 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
     id,
     selectedNetworkId
   );
-  const userId = getUserId(selectedNetworkId, postResult?.post_by);
-  const authorNSInfo = useNSUserInfo(userId);
+  const authorId = getUserId(selectedNetworkId, postResult?.authorId);
+  const authorNSInfo = useNSUserInfo(authorId);
 
-  const [, userAddress] = parseUserId(postResult?.post_by);
+  const [, authorAddress] = parseUserId(postResult?.authorId);
 
   const feedInputRef = useRef<NewsFeedInputHandle>(null);
   const [replyTo, setReplyTo] = useState<ReplyToType>();
@@ -91,7 +91,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
     isLoading: isLoadingComments,
   } = useFetchComments({
     parentId: postResult?.identifier,
-    totalCount: postResult?.sub_post_length,
+    totalCount: postResult?.subPostLength,
     enabled: true,
   });
   const isNextPageAvailable = useSharedValue(hasNextPage);
@@ -151,13 +151,13 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
     if (isLoadingPostResult) return "Loading Post...";
     else if (!postResult) return "Post not found";
     const author =
-      authorNSInfo?.metadata?.tokenId || userAddress || DEFAULT_USERNAME;
+      authorNSInfo?.metadata?.tokenId || authorAddress || DEFAULT_USERNAME;
 
     if (postResult.category === PostCategory.Article) {
       return `Article by ${author}`;
     }
 
-    if (postResult?.parent_post_identifier) {
+    if (postResult?.parentPostIdentifier) {
       return `Comment by ${author}`;
     }
 
@@ -165,7 +165,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
   }, [
     postResult,
     authorNSInfo?.metadata?.tokenId,
-    userAddress,
+    authorAddress,
     isLoadingPostResult,
   ]);
 
@@ -179,9 +179,9 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
         <BrandText style={fontSemibold20}>{headerLabel}</BrandText>
       }
       onBackPress={() =>
-        postResult?.parent_post_identifier
+        postResult?.parentPostIdentifier
           ? navigation.navigate("FeedPostView", {
-              id: postResult?.parent_post_identifier || "",
+              id: postResult?.parentPostIdentifier || "",
             })
           : navigation.canGoBack()
           ? navigation.goBack()
@@ -237,7 +237,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
                         borderRightWidth: 0,
                       }
                     }
-                    post={postResultToPost(selectedNetworkId, postResult)}
+                    post={postResult}
                     isPostConsultation
                     onPressReply={onPressReply}
                   />

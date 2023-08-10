@@ -168,7 +168,7 @@ func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*fee
 			Metadata:             string(metadata),
 			ParentPostIdentifier: dbPost.ParentPostIdentifier,
 			SubPostLength:        dbPost.SubPostLength,
-			CreatedBy:            string(dbPost.CreatedBy),
+			AuthorId:             string(dbPost.AuthorId),
 			CreatedAt:            dbPost.CreatedAt,
 			Reactions:            reactions,
 			TipAmount:            dbPost.TipAmount,
