@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { View, Platform } from "react-native";
 import { useSelector } from "react-redux";
 
@@ -14,16 +14,18 @@ import {
   selectContactRequestList,
   selectConversationList,
 } from "../../../store/slices/message";
-import { useAppNavigation } from "../../../utils/navigation";
+import { ScreenFC, useAppNavigation } from "../../../utils/navigation";
 import { layout } from "../../../utils/style/layout";
 import { Conversation } from "../../../utils/types/message";
 
 interface FriendshipManagerProps {
   setActiveConversation?: (item: Conversation) => void;
+  activeTab: string;
 }
 
 export const FriendshipManager = ({
   setActiveConversation,
+  activeTab = "friends",
 }: FriendshipManagerProps) => {
   const conversations = useSelector(selectConversationList);
   const contactRequests = useSelector(selectContactRequestList);
@@ -50,14 +52,18 @@ export const FriendshipManager = ({
       disabled: true,
     },
   };
-  const [selectedTab, setSelectedTab] = useState<keyof typeof tabs>("friends");
+
   const renderContentWeb = () => (
     <>
       <SpacerColumn size={2} />
       <Tabs
         items={tabs}
-        onSelect={setSelectedTab}
-        selected={selectedTab}
+        onSelect={(tab) => {
+          Platform.OS === "web"
+            ? navigate("Message", { view: "AddFriend", tab })
+            : navigate("FriendshipManager", { tab });
+        }}
+        selected={activeTab}
         tabContainerStyle={{
           paddingBottom: layout.padding_x1_5,
         }}
@@ -67,14 +73,14 @@ export const FriendshipManager = ({
       />
       <Separator horizontal={false} />
       <SpacerColumn size={2} />
-      {selectedTab === "friends" && (
+      {activeTab === "friends" && (
         <Friends
           items={contactConversations}
           setActiveConversation={setActiveConversation}
         />
       )}
-      {selectedTab === "request" && <Requests items={contactRequests} />}
-      {selectedTab === "addFriend" && <AddFriend />}
+      {activeTab === "request" && <Requests items={contactRequests} />}
+      {activeTab === "addFriend" && <AddFriend />}
     </>
   );
   if (Platform.OS === "web") {
@@ -93,4 +99,10 @@ export const FriendshipManager = ({
   );
 };
 
-export const FriendshipManagerScreen = () => <FriendshipManager />;
+export const FriendshipManagerScreen: ScreenFC<"FriendshipManager"> = ({
+  route,
+}) => {
+  const activeTab = route?.params?.tab;
+
+  return <FriendshipManager activeTab={activeTab} />;
+};

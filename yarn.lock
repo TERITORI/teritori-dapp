@@ -14637,6 +14637,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"expo-barcode-scanner@npm:~12.5.3":
+  version: 12.5.3
+  resolution: "expo-barcode-scanner@npm:12.5.3"
+  dependencies:
+    expo-image-loader: ~4.3.0
+  peerDependencies:
+    expo: "*"
+  checksum: 10923168c29620c64935f9b171c37e2a22d86bedc7dd263460683c2e27c9620c857b3f852194f58cc7109a68380174a4c0faa502e715445aacec95f622d38e54
+  languageName: node
+  linkType: hard
+
 "expo-checkbox@npm:~2.4.0":
   version: 2.4.0
   resolution: "expo-checkbox@npm:2.4.0"
@@ -26384,6 +26395,7 @@ __metadata:
     ethers: ^5.7.2
     expo: ^49.0.0
     expo-av: ~13.4.1
+    expo-barcode-scanner: ~12.5.3
     expo-checkbox: ~2.4.0
     expo-dev-client: ~2.4.6
     expo-font: ~11.4.0

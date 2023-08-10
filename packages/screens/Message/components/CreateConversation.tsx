@@ -10,8 +10,10 @@ import { CopyToClipboard } from "../../../components/CopyToClipboard";
 import { ErrorText } from "../../../components/ErrorText";
 import { Separator } from "../../../components/Separator";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
+import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import ModalBase from "../../../components/modals/ModalBase";
+import { QRCodeScannerModal } from "../../../components/modals/QRCodeScannerModal";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { useIsMobile } from "../../../hooks/useIsMobile";
 import {
@@ -33,16 +35,17 @@ export const CreateConversation = ({ onClose }: CreateConversationProps) => {
   const [contactLink, setContactLink] = useState("");
   const [addContactLoading, setAddContactLoading] = useState(false);
   const [error, setError] = useState("");
+  const [isScan, setIsScan] = useState(false);
   const isMobile = useIsMobile();
 
   const dispatch = useDispatch();
 
-  const handleAddContact = async () => {
+  const handleAddContact = async (link = contactLink) => {
     setAddContactLoading(true);
     setError("");
 
     try {
-      await weshServices.addContact(contactLink, contactInfo);
+      await weshServices.addContact(link, contactInfo);
       onClose();
     } catch (err: any) {
       setError(err?.message);
@@ -75,6 +78,19 @@ export const CreateConversation = ({ onClose }: CreateConversationProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
 
+  const handleScan = async (link: string) => {
+    if (link) {
+      await handleAddContact(link);
+      onClose();
+    } else {
+      setIsScan(false);
+    }
+  };
+
+  if (isScan) {
+    return <QRCodeScannerModal onClose={handleScan} />;
+  }
+
   return (
     <ModalBase
       label="Create conversation"
@@ -98,7 +114,12 @@ export const CreateConversation = ({ onClose }: CreateConversationProps) => {
             />
           )}
         </View>
-
+        <SpacerColumn size={2} />
+        <SecondaryButton
+          text="Scan QR"
+          size="M"
+          onPress={() => setIsScan(true)}
+        />
         <SpacerColumn size={2} />
         <BrandText
           style={[fontSemibold16, { marginBottom: layout.padding_x1 }]}

@@ -265,7 +265,7 @@ unused-exports: node_modules
 	## TODO unexclude all paths except packages/api;packages/contracts-clients;packages/evm-contracts-clients
 	npx ts-unused-exports ./tsconfig.json --excludePathsFromReport="packages/api;packages/contracts-clients;packages/evm-contracts-clients;packages/components/socialFeed/RichText/inline-toolbar;./App.tsx;.*\.web|.electron|.d.ts" --ignoreTestFiles 
 .PHONY: build-ios
-build-ios: build-weshframework
+build-ios:
 	@npx expo prebuild --clean
 	@ruby ./cmd/add_frameworks.rb
 	@npx expo run:ios

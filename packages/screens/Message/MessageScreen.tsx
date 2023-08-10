@@ -31,11 +31,11 @@ import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { Conversation } from "../../utils/types/message";
 
-export const MessageScreen: ScreenFC<"Message"> = () => {
-  const [isCreateGroup, setIsCreateGroup] = useState(false);
-  const [isCreateConversation, setIsCreateConversation] = useState(false);
+export const MessageScreen: ScreenFC<"Message"> = ({ route }) => {
+  const activeView = route?.params?.view;
+  const activeTab = route?.params?.tab;
+
   const [activeConversation, setActiveConversation] = useState<Conversation>();
-  const [activeTab, setActiveTab] = useState<"chat" | "add-friend">("chat");
   const navigation = useAppNavigation();
   const contactInfo = useSelector(selectContactInfo);
 
@@ -45,7 +45,7 @@ export const MessageScreen: ScreenFC<"Message"> = () => {
       title: "Create a conversation",
       icon: chat,
       onPress: () => {
-        setIsCreateConversation(true);
+        navigation.navigate("Message", { view: "CreateConversation" });
       },
     },
     {
@@ -53,7 +53,7 @@ export const MessageScreen: ScreenFC<"Message"> = () => {
       title: "Create a group",
       icon: group,
       onPress() {
-        setIsCreateGroup(true);
+        navigation.navigate("Message", { view: "CreateGroup" });
       },
     },
     {
@@ -64,7 +64,7 @@ export const MessageScreen: ScreenFC<"Message"> = () => {
         if (["android", "ios"].includes(Platform.OS)) {
           navigation.navigate("FriendshipManager");
         } else {
-          setActiveTab("add-friend");
+          navigation.navigate("Message", { view: "AddFriend" });
         }
       },
     },
@@ -163,18 +163,19 @@ export const MessageScreen: ScreenFC<"Message"> = () => {
             <SideBarChats
               setActiveConversation={(conv) => {
                 setActiveConversation(conv);
-                setActiveTab("chat");
+                navigation.navigate("Message");
               }}
               activeConversation={activeConversation}
             />
             <Separator horizontal />
 
             <View style={{ flex: 1 }}>
-              {activeTab === "add-friend" ? (
+              {activeView === "AddFriend" ? (
                 <FriendshipManager
+                  activeTab={activeTab}
                   setActiveConversation={(conv) => {
                     setActiveConversation(conv);
-                    setActiveTab("chat");
+                    navigation.navigate("Message");
                   }}
                 />
               ) : (
@@ -190,11 +191,11 @@ export const MessageScreen: ScreenFC<"Message"> = () => {
           </View>
         )}
 
-        {isCreateGroup && (
-          <CreateGroup onClose={() => setIsCreateGroup(false)} />
+        {activeView === "CreateGroup" && (
+          <CreateGroup onClose={() => navigation.navigate("Message")} />
         )}
-        {isCreateConversation && (
-          <CreateConversation onClose={() => setIsCreateConversation(false)} />
+        {activeView === "CreateConversation" && (
+          <CreateConversation onClose={() => navigation.navigate("Message")} />
         )}
       </View>
     </ScreenContainer>
