@@ -151,18 +151,18 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
   const headerLabel = useMemo(() => {
     if (isLoadingPostResult) return "Loading Post...";
     else if (!postResult) return "Post not found";
-    const author =
+    const authorDisplayName =
       authorNSInfo?.metadata?.tokenId || authorAddress || DEFAULT_USERNAME;
 
     if (postResult.category === PostCategory.Article) {
-      return `Article by ${author}`;
+      return `Article by ${authorDisplayName}`;
     }
 
     if (postResult?.parentPostIdentifier) {
-      return `Comment by ${author}`;
+      return `Comment by ${authorDisplayName}`;
     }
 
-    return `Post by ${author}`;
+    return `Post by ${authorDisplayName}`;
   }, [
     postResult,
     authorNSInfo?.metadata?.tokenId,

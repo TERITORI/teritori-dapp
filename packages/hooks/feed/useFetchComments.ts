@@ -7,14 +7,25 @@ import {
   TERITORI_FEED_ID,
 } from "../../components/socialFeed/const";
 import { decodeGnoPost } from "../../components/socialFeed/utils";
-import { PostResult } from "../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
-import { GnoNetworkInfo, NetworkKind } from "../../networks";
+import {
+  PostResult,
+  Reaction,
+} from "../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
+import {
+  GnoNetworkInfo,
+  NetworkKind,
+  parseNetworkObjectId,
+} from "../../networks";
 import { extractGnoString } from "../../utils/gno";
 import { useSelectedNetworkInfo } from "../useSelectedNetwork";
 
 export type FetchCommentResponse = {
   list: PostResult[];
 } | null;
+
+export type PostResultWithCreatedAt = PostResult & {
+  created_at: number;
+};
 
 export const combineFetchCommentPages = (pages: FetchCommentResponse[]) =>
   pages.reduce(
@@ -50,34 +61,38 @@ const fetchTeritoriComments = async (
 const fetchGnoComments = async (
   selectedNetwork: GnoNetworkInfo,
   parentId: string
-) => {
+): Promise<FetchCommentResponse> => {
   const provider = new GnoJSONRPCProvider(selectedNetwork.endpoint);
   const output = await provider.evaluateExpression(
     GNO_SOCIAL_FEEDS_PKG_PATH,
     `GetComments(${TERITORI_FEED_ID}, ${parentId})`
   );
 
-  const posts = [];
+  const posts: PostResultWithCreatedAt[] = [];
 
   const outputStr = extractGnoString(output);
   for (const postData of outputStr.split(",")) {
     const post = decodeGnoPost(selectedNetwork.id, postData);
+    const [, creatorAddress] = parseNetworkObjectId(post.authorId);
 
     posts.push({
       identifier: post.identifier,
       parent_post_identifier: post.parentPostIdentifier,
       category: post.category,
       metadata: post.metadata,
-      reactions: post.reactions,
+      reactions: post.reactions as Reaction[],
       user_reactions: [],
-      post_by: post.authorId,
+      post_by: creatorAddress,
       deleted: post.isDeleted,
       sub_post_length: post.subPostLength,
-      tip_amount: post.subPostLength,
+      tip_amount: "" + post.tipAmount,
       created_at: post.createdAt,
     });
   }
-  return { list: posts.sort((p1, p2) => p2.created_at - p1.created_at) };
+
+  return {
+    list: posts.sort((p1, p2) => p2.created_at - p1.created_at) as PostResult[],
+  };
 };
 
 export const useFetchComments = ({
@@ -92,15 +107,17 @@ export const useFetchComments = ({
   const data = useInfiniteQuery<FetchCommentResponse>(
     ["FetchComment", parentId, selectedNetwork?.id],
     async ({ pageParam }) => {
+      let comments: FetchCommentResponse;
       if (selectedNetwork?.kind === NetworkKind.Gno) {
-        return await fetchGnoComments(selectedNetwork, parentId || "");
+        comments = await fetchGnoComments(selectedNetwork, parentId || "");
       } else {
-        return await fetchTeritoriComments(
+        comments = await fetchTeritoriComments(
           selectedNetwork?.id || "",
           pageParam,
           parentId
         );
       }
+      return comments;
     },
     {
       getNextPageParam: (_, pages) => {

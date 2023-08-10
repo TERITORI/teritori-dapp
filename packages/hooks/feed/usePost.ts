@@ -21,8 +21,7 @@ export const usePost = (id: string, networkId: string) => {
         );
 
         const postData = extractGnoString(output);
-        const post = decodeGnoPost(networkId, postData);
-        return post;
+        return decodeGnoPost(networkId, postData);
       } else {
         const client = await nonSigningSocialFeedClient({
           networkId,
