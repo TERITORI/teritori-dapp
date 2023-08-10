@@ -23,7 +23,6 @@ export const LeftRail: React.FC<{
   onMoreButtonPress?: () => void;
 }> = ({ sourceURI, price, onMoreButtonPress }) => {
   const isMobile = useIsMobile();
-  console.log(typeof onMoreButtonPress);
   return (
     <View
       style={{

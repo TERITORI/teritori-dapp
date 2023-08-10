@@ -18,6 +18,11 @@ import {
   GrpcWebImpl as P2eGrpcWebImpl,
   P2eService,
 } from "../api/p2e/v1/p2e";
+import {
+  PathwarService,
+  GrpcWebImpl as PathwarGrpcWebImpl,
+  PathwarServiceClientImpl,
+} from "../api/pathwar/v1/pathwar";
 import { getNetwork } from "../networks";
 
 const marketplaceClients: { [key: string]: MarketplaceService } = {};
@@ -114,6 +119,30 @@ export const mustGetFeedClient = (networkId: string | undefined) => {
   const client = getFeedClient(networkId);
   if (!client) {
     throw new Error(`failed to get feed client for network '${networkId}'`);
+  }
+  return client;
+};
+
+const pathwarClients: { [key: string]: PathwarService } = {};
+
+export const getPathwarClient = (networkId: string | undefined) => {
+  const network = getNetwork(networkId);
+  if (!network) {
+    return undefined;
+  }
+  if (!pathwarClients[network.id]) {
+    const rpc = new PathwarGrpcWebImpl(network.backendEndpoint, {
+      debug: false,
+    });
+    pathwarClients[network.id] = new PathwarServiceClientImpl(rpc);
+  }
+  return pathwarClients[network.id];
+};
+
+export const mustGetPathwarClient = (networkId: string | undefined) => {
+  const client = getPathwarClient(networkId);
+  if (!client) {
+    throw new Error(`failed to get pathwar client for network '${networkId}'`);
   }
   return client;
 };

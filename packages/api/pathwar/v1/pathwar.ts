@@ -2,8 +2,6 @@
 import { grpc } from "@improbable-eng/grpc-web";
 import { BrowserHeaders } from "browser-headers";
 import _m0 from "protobufjs/minimal";
-import { Observable } from "rxjs";
-import { share } from "rxjs/operators";
 
 export const protobufPackage = "pathwar.v1";
 
@@ -178,10 +176,15 @@ export interface ChallengeValidateRequest {
   id: number;
   passphrase: string;
   comment: string;
+  networkId: string;
 }
 
 export interface ChallengeValidateResponse {
-  status: string;
+  msg: string;
+  sig: string;
+  key: string;
+  /** not really sure if useful, just to confirm which network is this proof valid in */
+  networkId: string;
 }
 
 export interface ChallengeListingRequest {
@@ -1652,7 +1655,7 @@ export const ChallengeResponse = {
 };
 
 function createBaseChallengeValidateRequest(): ChallengeValidateRequest {
-  return { id: 0, passphrase: "", comment: "" };
+  return { id: 0, passphrase: "", comment: "", networkId: "" };
 }
 
 export const ChallengeValidateRequest = {
@@ -1665,6 +1668,9 @@ export const ChallengeValidateRequest = {
     }
     if (message.comment !== "") {
       writer.uint32(26).string(message.comment);
+    }
+    if (message.networkId !== "") {
+      writer.uint32(34).string(message.networkId);
     }
     return writer;
   },
@@ -1685,6 +1691,9 @@ export const ChallengeValidateRequest = {
         case 3:
           message.comment = reader.string();
           break;
+        case 4:
+          message.networkId = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1698,6 +1707,7 @@ export const ChallengeValidateRequest = {
       id: isSet(object.id) ? Number(object.id) : 0,
       passphrase: isSet(object.passphrase) ? String(object.passphrase) : "",
       comment: isSet(object.comment) ? String(object.comment) : "",
+      networkId: isSet(object.networkId) ? String(object.networkId) : "",
     };
   },
 
@@ -1706,6 +1716,7 @@ export const ChallengeValidateRequest = {
     message.id !== undefined && (obj.id = Math.round(message.id));
     message.passphrase !== undefined && (obj.passphrase = message.passphrase);
     message.comment !== undefined && (obj.comment = message.comment);
+    message.networkId !== undefined && (obj.networkId = message.networkId);
     return obj;
   },
 
@@ -1714,18 +1725,28 @@ export const ChallengeValidateRequest = {
     message.id = object.id ?? 0;
     message.passphrase = object.passphrase ?? "";
     message.comment = object.comment ?? "";
+    message.networkId = object.networkId ?? "";
     return message;
   },
 };
 
 function createBaseChallengeValidateResponse(): ChallengeValidateResponse {
-  return { status: "" };
+  return { msg: "", sig: "", key: "", networkId: "" };
 }
 
 export const ChallengeValidateResponse = {
   encode(message: ChallengeValidateResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.status !== "") {
-      writer.uint32(10).string(message.status);
+    if (message.msg !== "") {
+      writer.uint32(10).string(message.msg);
+    }
+    if (message.sig !== "") {
+      writer.uint32(18).string(message.sig);
+    }
+    if (message.key !== "") {
+      writer.uint32(26).string(message.key);
+    }
+    if (message.networkId !== "") {
+      writer.uint32(34).string(message.networkId);
     }
     return writer;
   },
@@ -1738,7 +1759,16 @@ export const ChallengeValidateResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.status = reader.string();
+          message.msg = reader.string();
+          break;
+        case 2:
+          message.sig = reader.string();
+          break;
+        case 3:
+          message.key = reader.string();
+          break;
+        case 4:
+          message.networkId = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -1749,18 +1779,29 @@ export const ChallengeValidateResponse = {
   },
 
   fromJSON(object: any): ChallengeValidateResponse {
-    return { status: isSet(object.status) ? String(object.status) : "" };
+    return {
+      msg: isSet(object.msg) ? String(object.msg) : "",
+      sig: isSet(object.sig) ? String(object.sig) : "",
+      key: isSet(object.key) ? String(object.key) : "",
+      networkId: isSet(object.networkId) ? String(object.networkId) : "",
+    };
   },
 
   toJSON(message: ChallengeValidateResponse): unknown {
     const obj: any = {};
-    message.status !== undefined && (obj.status = message.status);
+    message.msg !== undefined && (obj.msg = message.msg);
+    message.sig !== undefined && (obj.sig = message.sig);
+    message.key !== undefined && (obj.key = message.key);
+    message.networkId !== undefined && (obj.networkId = message.networkId);
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<ChallengeValidateResponse>, I>>(object: I): ChallengeValidateResponse {
     const message = createBaseChallengeValidateResponse();
-    message.status = object.status ?? "";
+    message.msg = object.msg ?? "";
+    message.sig = object.sig ?? "";
+    message.key = object.key ?? "";
+    message.networkId = object.networkId ?? "";
     return message;
   },
 };
@@ -1886,19 +1927,18 @@ export const ChallengeListingResponse = {
 };
 
 export interface PathwarService {
-  RegisterUser(request: DeepPartial<RegisterUserRequest>, metadata?: grpc.Metadata): Observable<RegisterUserResponse>;
-  Leaderboard(request: DeepPartial<LeaderboardRequest>, metadata?: grpc.Metadata): Observable<LeaderboardResponse>;
-  Resources(request: DeepPartial<ResourcesRequest>, metadata?: grpc.Metadata): Observable<ResourcesResponse>;
-  Tournaments(request: DeepPartial<TournamentsRequest>, metadata?: grpc.Metadata): Observable<TournamentsResponse>;
-  Challenge(request: DeepPartial<ChallengeRequest>, metadata?: grpc.Metadata): Observable<ChallengeResponse>;
-  ChallengeListing(
-    request: DeepPartial<ChallengeListingRequest>,
-    metadata?: grpc.Metadata,
-  ): Observable<ChallengeListingResponse>;
+  /**
+   * rpc RegisterUser(RegisterUserRequest) returns (stream RegisterUserResponse);
+   *  rpc Leaderboard(LeaderboardRequest) returns (stream LeaderboardResponse);
+   *  rpc Resources(ResourcesRequest) returns (stream ResourcesResponse);
+   *  rpc Tournaments(TournamentsRequest) returns (stream TournamentsResponse);
+   *  rpc Challenge(ChallengeRequest) returns (stream ChallengeResponse);
+   *  rpc ChallengeListing(ChallengeListingRequest) returns (stream ChallengeListingResponse);
+   */
   ChallengeValidate(
     request: DeepPartial<ChallengeValidateRequest>,
     metadata?: grpc.Metadata,
-  ): Observable<ChallengeValidateResponse>;
+  ): Promise<ChallengeValidateResponse>;
 }
 
 export class PathwarServiceClientImpl implements PathwarService {
@@ -1906,193 +1946,24 @@ export class PathwarServiceClientImpl implements PathwarService {
 
   constructor(rpc: Rpc) {
     this.rpc = rpc;
-    this.RegisterUser = this.RegisterUser.bind(this);
-    this.Leaderboard = this.Leaderboard.bind(this);
-    this.Resources = this.Resources.bind(this);
-    this.Tournaments = this.Tournaments.bind(this);
-    this.Challenge = this.Challenge.bind(this);
-    this.ChallengeListing = this.ChallengeListing.bind(this);
     this.ChallengeValidate = this.ChallengeValidate.bind(this);
-  }
-
-  RegisterUser(request: DeepPartial<RegisterUserRequest>, metadata?: grpc.Metadata): Observable<RegisterUserResponse> {
-    return this.rpc.invoke(PathwarServiceRegisterUserDesc, RegisterUserRequest.fromPartial(request), metadata);
-  }
-
-  Leaderboard(request: DeepPartial<LeaderboardRequest>, metadata?: grpc.Metadata): Observable<LeaderboardResponse> {
-    return this.rpc.invoke(PathwarServiceLeaderboardDesc, LeaderboardRequest.fromPartial(request), metadata);
-  }
-
-  Resources(request: DeepPartial<ResourcesRequest>, metadata?: grpc.Metadata): Observable<ResourcesResponse> {
-    return this.rpc.invoke(PathwarServiceResourcesDesc, ResourcesRequest.fromPartial(request), metadata);
-  }
-
-  Tournaments(request: DeepPartial<TournamentsRequest>, metadata?: grpc.Metadata): Observable<TournamentsResponse> {
-    return this.rpc.invoke(PathwarServiceTournamentsDesc, TournamentsRequest.fromPartial(request), metadata);
-  }
-
-  Challenge(request: DeepPartial<ChallengeRequest>, metadata?: grpc.Metadata): Observable<ChallengeResponse> {
-    return this.rpc.invoke(PathwarServiceChallengeDesc, ChallengeRequest.fromPartial(request), metadata);
-  }
-
-  ChallengeListing(
-    request: DeepPartial<ChallengeListingRequest>,
-    metadata?: grpc.Metadata,
-  ): Observable<ChallengeListingResponse> {
-    return this.rpc.invoke(PathwarServiceChallengeListingDesc, ChallengeListingRequest.fromPartial(request), metadata);
   }
 
   ChallengeValidate(
     request: DeepPartial<ChallengeValidateRequest>,
     metadata?: grpc.Metadata,
-  ): Observable<ChallengeValidateResponse> {
-    return this.rpc.invoke(
-      PathwarServiceChallengeValidateDesc,
-      ChallengeValidateRequest.fromPartial(request),
-      metadata,
-    );
+  ): Promise<ChallengeValidateResponse> {
+    return this.rpc.unary(PathwarServiceChallengeValidateDesc, ChallengeValidateRequest.fromPartial(request), metadata);
   }
 }
 
 export const PathwarServiceDesc = { serviceName: "pathwar.v1.PathwarService" };
 
-export const PathwarServiceRegisterUserDesc: UnaryMethodDefinitionish = {
-  methodName: "RegisterUser",
-  service: PathwarServiceDesc,
-  requestStream: false,
-  responseStream: true,
-  requestType: {
-    serializeBinary() {
-      return RegisterUserRequest.encode(this).finish();
-    },
-  } as any,
-  responseType: {
-    deserializeBinary(data: Uint8Array) {
-      return {
-        ...RegisterUserResponse.decode(data),
-        toObject() {
-          return this;
-        },
-      };
-    },
-  } as any,
-};
-
-export const PathwarServiceLeaderboardDesc: UnaryMethodDefinitionish = {
-  methodName: "Leaderboard",
-  service: PathwarServiceDesc,
-  requestStream: false,
-  responseStream: true,
-  requestType: {
-    serializeBinary() {
-      return LeaderboardRequest.encode(this).finish();
-    },
-  } as any,
-  responseType: {
-    deserializeBinary(data: Uint8Array) {
-      return {
-        ...LeaderboardResponse.decode(data),
-        toObject() {
-          return this;
-        },
-      };
-    },
-  } as any,
-};
-
-export const PathwarServiceResourcesDesc: UnaryMethodDefinitionish = {
-  methodName: "Resources",
-  service: PathwarServiceDesc,
-  requestStream: false,
-  responseStream: true,
-  requestType: {
-    serializeBinary() {
-      return ResourcesRequest.encode(this).finish();
-    },
-  } as any,
-  responseType: {
-    deserializeBinary(data: Uint8Array) {
-      return {
-        ...ResourcesResponse.decode(data),
-        toObject() {
-          return this;
-        },
-      };
-    },
-  } as any,
-};
-
-export const PathwarServiceTournamentsDesc: UnaryMethodDefinitionish = {
-  methodName: "Tournaments",
-  service: PathwarServiceDesc,
-  requestStream: false,
-  responseStream: true,
-  requestType: {
-    serializeBinary() {
-      return TournamentsRequest.encode(this).finish();
-    },
-  } as any,
-  responseType: {
-    deserializeBinary(data: Uint8Array) {
-      return {
-        ...TournamentsResponse.decode(data),
-        toObject() {
-          return this;
-        },
-      };
-    },
-  } as any,
-};
-
-export const PathwarServiceChallengeDesc: UnaryMethodDefinitionish = {
-  methodName: "Challenge",
-  service: PathwarServiceDesc,
-  requestStream: false,
-  responseStream: true,
-  requestType: {
-    serializeBinary() {
-      return ChallengeRequest.encode(this).finish();
-    },
-  } as any,
-  responseType: {
-    deserializeBinary(data: Uint8Array) {
-      return {
-        ...ChallengeResponse.decode(data),
-        toObject() {
-          return this;
-        },
-      };
-    },
-  } as any,
-};
-
-export const PathwarServiceChallengeListingDesc: UnaryMethodDefinitionish = {
-  methodName: "ChallengeListing",
-  service: PathwarServiceDesc,
-  requestStream: false,
-  responseStream: true,
-  requestType: {
-    serializeBinary() {
-      return ChallengeListingRequest.encode(this).finish();
-    },
-  } as any,
-  responseType: {
-    deserializeBinary(data: Uint8Array) {
-      return {
-        ...ChallengeListingResponse.decode(data),
-        toObject() {
-          return this;
-        },
-      };
-    },
-  } as any,
-};
-
 export const PathwarServiceChallengeValidateDesc: UnaryMethodDefinitionish = {
   methodName: "ChallengeValidate",
   service: PathwarServiceDesc,
   requestStream: false,
-  responseStream: true,
+  responseStream: false,
   requestType: {
     serializeBinary() {
       return ChallengeValidateRequest.encode(this).finish();
@@ -2123,18 +1994,13 @@ interface Rpc {
     request: any,
     metadata: grpc.Metadata | undefined,
   ): Promise<any>;
-  invoke<T extends UnaryMethodDefinitionish>(
-    methodDesc: T,
-    request: any,
-    metadata: grpc.Metadata | undefined,
-  ): Observable<any>;
 }
 
 export class GrpcWebImpl {
   private host: string;
   private options: {
     transport?: grpc.TransportFactory;
-    streamingTransport?: grpc.TransportFactory;
+
     debug?: boolean;
     metadata?: grpc.Metadata;
     upStreamRetryCodes?: number[];
@@ -2144,7 +2010,7 @@ export class GrpcWebImpl {
     host: string,
     options: {
       transport?: grpc.TransportFactory;
-      streamingTransport?: grpc.TransportFactory;
+
       debug?: boolean;
       metadata?: grpc.Metadata;
       upStreamRetryCodes?: number[];
@@ -2180,45 +2046,6 @@ export class GrpcWebImpl {
         },
       });
     });
-  }
-
-  invoke<T extends UnaryMethodDefinitionish>(
-    methodDesc: T,
-    _request: any,
-    metadata: grpc.Metadata | undefined,
-  ): Observable<any> {
-    const upStreamCodes = this.options.upStreamRetryCodes || [];
-    const DEFAULT_TIMEOUT_TIME: number = 3_000;
-    const request = { ..._request, ...methodDesc.requestType };
-    const maybeCombinedMetadata = metadata && this.options.metadata
-      ? new BrowserHeaders({ ...this.options?.metadata.headersMap, ...metadata?.headersMap })
-      : metadata || this.options.metadata;
-    return new Observable((observer) => {
-      const upStream = (() => {
-        const client = grpc.invoke(methodDesc, {
-          host: this.host,
-          request,
-          transport: this.options.streamingTransport || this.options.transport,
-          metadata: maybeCombinedMetadata,
-          debug: this.options.debug,
-          onMessage: (next) => observer.next(next),
-          onEnd: (code: grpc.Code, message: string, trailers: grpc.Metadata) => {
-            if (code === 0) {
-              observer.complete();
-            } else if (upStreamCodes.includes(code)) {
-              setTimeout(upStream, DEFAULT_TIMEOUT_TIME);
-            } else {
-              const err = new Error(message) as any;
-              err.code = code;
-              err.metadata = trailers;
-              observer.error(err);
-            }
-          },
-        });
-        observer.add(() => client.close());
-      });
-      upStream();
-    }).pipe(share());
   }
 }
 

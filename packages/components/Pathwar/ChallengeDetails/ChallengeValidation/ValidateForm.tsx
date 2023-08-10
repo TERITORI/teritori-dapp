@@ -4,6 +4,8 @@ import { View } from "react-native";
 import { ChallengeValidation } from "./ChallengeValidation";
 import { ModalValidation } from "./ModalValidation";
 import { Challenge } from "../../../../api/pathwar/v1/pathwar";
+import { useSelectedNetworkId } from "../../../../hooks/useSelectedNetwork";
+import { mustGetPathwarClient } from "../../../../utils/backend";
 import { neutral17, neutral77 } from "../../../../utils/style/colors";
 import { fontSemibold14 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
@@ -19,6 +21,27 @@ export const ValidateForm: React.FC<{ data: Challenge }> = ({ data }) => {
     useState(false);
   const [displayPassedChallengeScreen, setDisplayPassedChallengeScreen] =
     useState(false);
+  const [answer, setAnswer] = useState("");
+
+  const selectedNetworkId = useSelectedNetworkId();
+
+  const handleSend = async () => {
+    try {
+      const res = await mustGetPathwarClient(
+        selectedNetworkId
+      ).ChallengeValidate({
+        id: 1,
+        networkId: selectedNetworkId,
+        passphrase: answer,
+      });
+
+      console.log(res);
+      // setDisplayPassedChallengeScreen(true);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <TertiaryBox
       height={236}
@@ -44,6 +67,8 @@ export const ValidateForm: React.FC<{ data: Challenge }> = ({ data }) => {
           </BrandText>
           <TextInputCustom<{ Passphrase: string }>
             label=""
+            onChangeText={setAnswer}
+            value={answer}
             name="Passphrase"
             placeHolder="Passphrases separated by ','"
             width={600}
@@ -74,7 +99,7 @@ export const ValidateForm: React.FC<{ data: Challenge }> = ({ data }) => {
           width={100}
           squaresBackgroundColor={neutral17}
           onPress={() => {
-            setDisplayPassedChallengeScreen(true);
+            handleSend();
           }}
         />
       </View>

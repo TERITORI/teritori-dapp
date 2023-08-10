@@ -4,13 +4,13 @@ package pathwar.v1;
 option go_package = "./pathwarpb";
 
 service PathwarService {
-  rpc RegisterUser(RegisterUserRequest) returns (stream RegisterUserResponse);
-  rpc Leaderboard(LeaderboardRequest) returns (stream LeaderboardResponse);
-  rpc Resources(ResourcesRequest) returns (stream ResourcesResponse);
-  rpc Tournaments(TournamentsRequest) returns (stream TournamentsResponse);
-  rpc Challenge(ChallengeRequest) returns (stream ChallengeResponse);
-  rpc ChallengeListing(ChallengeListingRequest) returns (stream ChallengeListingResponse);
-  rpc ChallengeValidate(ChallengeValidateRequest) returns (stream ChallengeValidateResponse);
+//  rpc RegisterUser(RegisterUserRequest) returns (stream RegisterUserResponse);
+//  rpc Leaderboard(LeaderboardRequest) returns (stream LeaderboardResponse);
+//  rpc Resources(ResourcesRequest) returns (stream ResourcesResponse);
+//  rpc Tournaments(TournamentsRequest) returns (stream TournamentsResponse);
+//  rpc Challenge(ChallengeRequest) returns (stream ChallengeResponse);
+//  rpc ChallengeListing(ChallengeListingRequest) returns (stream ChallengeListingResponse);
+  rpc ChallengeValidate(ChallengeValidateRequest) returns (ChallengeValidateResponse);
 }
 // common
 
@@ -160,10 +160,14 @@ message ChallengeValidateRequest {
   int32 id = 1;
   string passphrase = 2;
   string comment = 3;
+  string network_id = 4;
 }
 
 message ChallengeValidateResponse {
-  string status = 1;
+  string msg = 1;
+  string sig = 2;
+  string key = 3;
+  string network_id = 4; // not really sure if useful, just to confirm which network is this proof valid in
 }
 
 // challenge listing
