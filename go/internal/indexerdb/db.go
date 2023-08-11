@@ -62,6 +62,7 @@ var allModels = []interface{}{
 	&DAOProposal{},
 	&Video{},
 	&VideoLibrary{},
+	&VideoViewCount{},
 
 	// names
 	&Name{},

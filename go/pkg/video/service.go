@@ -3,6 +3,8 @@ package video
 import (
 	"context"
 
+	"time"
+
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/videopb"
 	"github.com/pkg/errors"
@@ -93,4 +95,30 @@ func (s *VideoService) GetVideo(ctx context.Context, req *videopb.GetVideoReques
 		return nil, errors.New("failed to fetch video")
 	}
 	return &videopb.GetVideoResponse{VideoInfo: &video}, nil
+}
+
+func (s *VideoService) IncreaseViewCount(ctx context.Context, req *videopb.IncreaseViewCountRequest) (*videopb.IncreaseViewCountResponse, error) {
+	id := req.GetIdentifier()
+	user := req.GetUser()
+	var c int64
+	s.conf.IndexerDB.Model(&indexerdb.VideoViewCount{}).
+		Where("identifier = ? and view_user = ?", id, user).Count(&c)
+	if c != 0 {
+		return &videopb.IncreaseViewCountResponse{Res: 0}, nil
+	}
+	view := indexerdb.VideoViewCount{
+		Identifier: id,
+		ViewUser:   user,
+	}
+	if err := s.conf.IndexerDB.Create(&view).Error; err != nil {
+		return &videopb.IncreaseViewCountResponse{Res: 0}, nil
+	}
+	var video indexerdb.Video
+	s.conf.IndexerDB.Model(&indexerdb.Video{}).
+		Where("identifier = ?", id).Find(&video)
+	video.ViewCount += 1
+	video.LastView = time.Now().Unix()
+	s.conf.IndexerDB.Save(&video)
+
+	return &videopb.IncreaseViewCountResponse{Res: 0}, nil
 }

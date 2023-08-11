@@ -38,6 +38,8 @@ func (h *Handler) handleExecuteCreateVideo(e *Message, execMsg *wasmtypes.MsgExe
 		Metadata:   metadataJSON,
 		CreatedBy:  h.config.Network.UserID(execMsg.Sender),
 		CreatedAt:  createdAt.Unix(),
+		ViewCount:  0,
+		LastView:   0,
 	}
 
 	if err := h.db.Create(&video).Error; err != nil {

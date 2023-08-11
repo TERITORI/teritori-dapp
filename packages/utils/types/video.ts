@@ -9,4 +9,6 @@ export interface VideoInfoWithMeta {
   identifier: string;
   videoMetaInfo: VideoMetaInfo;
   createdBy: string;
+  viewCount: number;
+  viewLastTimestamp: number;
 }

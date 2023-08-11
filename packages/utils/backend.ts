@@ -107,7 +107,10 @@ export const getFeedClient = (networkId: string | undefined) => {
     return undefined;
   }
   if (!feedClients[network.id]) {
-    const rpc = new FeedGrpcWebImpl(network.backendEndpoint, {
+    const backendEndpoint = network.backendEndpoint;
+    //test
+    // const backendEndpoint = "http://localhost:9090";
+    const rpc = new FeedGrpcWebImpl(backendEndpoint, {
       debug: false,
     });
     feedClients[network.id] = new FeedServiceClientImpl(rpc);
@@ -131,8 +134,8 @@ export const getVideoClient = (networkId: string | undefined) => {
   }
   if (!videoClients[network.id]) {
     //test
-    // const backendEndpoint = network.backendEndpoint;
-    const backendEndpoint = "http://localhost:9090";
+    const backendEndpoint = network.backendEndpoint;
+    // const backendEndpoint = "http://localhost:9090";
 
     const rpc = new VideoGrpcWebImpl(backendEndpoint, {
       debug: false,
