@@ -1,41 +1,68 @@
-import React, { useState } from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import { View, StyleSheet, Pressable, Image } from "react-native";
 
-import Share from "../../../assets/icons/share.svg";
-import TipIcon from "../../../assets/icons/tip.svg";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
-import { TipModal } from "../../components/socialFeed/SocialActions/TipModal";
-import { VideoPlayer } from "../../components/videoPlayer/VideoPlayer";
+import Avatar from "../../../assets/icons/player/avatar.svg";
+import Dislike from "../../../assets/icons/player/dislike.svg";
+import Flag from "../../../assets/icons/player/flag.svg";
+import Like from "../../../assets/icons/player/like.svg";
+import Share from "../../../assets/icons/player/share.svg";
+import TipIcon from "../../../assets/icons/tip.svg";
 import { VideoPlayerTab } from "../../components/videoPlayer/VideoPlayerTab";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useFetchVideo } from "../../hooks/video/useFetchVideo";
-import { parseUserId } from "../../networks";
+import {getUserId, parseUserId} from "../../networks";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
+
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { neutral77, neutral17, primaryColor } from "../../utils/style/colors";
 import {
   fontSemibold14,
   fontMedium14,
   fontSemibold13,
-  fontSemibold20,
+  fontSemibold20, fontMedium16,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
+import { lastViewDate } from "../../utils/videoPlayer";
+
+import {useIncreaseViewCount} from "../../hooks/video/useIncreaseViewCount";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { tinyAddress } from "../../utils/text";
+import {useSelectedNetworkId} from "../../hooks/useSelectedNetwork";
+
 export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
   route: {
     params: { id },
   },
 }) => {
   const navigation = useAppNavigation();
-  const [tipModalVisible, setTipModalVisible] = useState<boolean>(false);
-  const { data } = useFetchVideo({ identifier: id });
+  const selectedNetworkId = useSelectedNetworkId();
+  const wallet = useSelectedWallet();
+  const userId = getUserId(selectedNetworkId, wallet?.address);
 
-  const authorNSInfo = useNSUserInfo(data!.createdBy);
-  const [, userAddress] = parseUserId(data!.createdBy);
-  const username = authorNSInfo?.metadata?.tokenId
-    ? authorNSInfo?.metadata?.tokenId
-    : userAddress;
+  const { data } = useFetchVideo({ identifier: id });
+  useIncreaseViewCount({
+    identifier: id,
+    user: userId,
+  });
+  const [createdBy, setCreatedBy] = useState("");
+  const authorNSInfo = useNSUserInfo(createdBy);
+  const [userAddress, setUserAddress] = useState("");
+  useEffect(() => {
+    if (data) {
+      setCreatedBy(data.createdBy);
+      const [, userAddr] = parseUserId(data.createdBy);
+      setUserAddress(userAddr);
+    }
+  }, [data]);
+
+  const username = useMemo(() => {
+    return authorNSInfo?.metadata?.tokenId
+      ? authorNSInfo?.metadata?.tokenId
+      : tinyAddress(userAddress);
+  }, [authorNSInfo, userAddress]);
 
   const styles = StyleSheet.create({
     commentContent: {
@@ -325,11 +352,28 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
         marginLeft: "0.5em",
       },
     ]),
+    tipContent: StyleSheet.flatten([fontMedium14]),
+    commentTip: StyleSheet.flatten([
+      fontMedium14,
+      {
+        color: neutral77,
+        marginLeft: "0.5em",
+      },
+    ]),
+    commentReply: StyleSheet.flatten([
+      fontMedium16,
+      {
+        marginLeft: "0.5em",
+      },
+    ]),
   });
 
+  if (!data) {
+    return <></>;
+  }
   return (
     <ScreenContainer
-      headerChildren={<BrandText>Video name</BrandText>}
+      headerChildren={<BrandText>{data.videoMetaInfo.title}</BrandText>}
       fullWidth
     >
       <View style={styles.pageConatiner}>
@@ -341,15 +385,19 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
 
         <View style={styles.pagePanel}>
           <View style={styles.pageLeftPanel}>
-            <video
-              src={ipfsURLToHTTPURL("item.image")}
-              controls
-              style={{
-                borderRadius: 10,
-                paddingBottom: layout.padding_x1_5,
-              }}
-            />
-            <View style={styles.leftVideoName}>Video Name</View>
+            {data && (
+              <video
+                src={ipfsURLToHTTPURL(data.videoMetaInfo.url)}
+                controls
+                style={{
+                  borderRadius: 10,
+                  paddingBottom: layout.padding_x1_5,
+                }}
+              />
+            )}
+            <View style={styles.leftVideoName}>
+              <BrandText>{data?.videoMetaInfo.title}</BrandText>
+            </View>
             <View style={styles.videoInfo}>
               <View style={styles.avatarDetail}>
                 <Image
@@ -369,51 +417,43 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
                 }}
               >
                 <BrandText style={styles.contentDescription}>
-                  12 views
+                  {data?.viewCount} views
                 </BrandText>
-                <BrandText style={styles.contentDate}>12 days ago</BrandText>
+                <BrandText style={styles.contentDate}>
+                  {lastViewDate(data?.viewLastTimestamp)}
+                </BrandText>
               </View>
               <View style={styles.btnGroup}>
                 <Pressable style={styles.buttonContainer}>
-                  {/* <SVG source={Thumb_up} /> */}
-                  143
+                  <SVG source={Like} />
+                  <BrandText style={styles.tipContent}>143</BrandText>
                 </Pressable>
                 <Pressable style={styles.buttonContainer}>
-                  {/* <SVG source={Thumb_down} /> */}
-                  143
+                  <SVG source={Dislike} />
+                  <BrandText style={styles.tipContent}>143</BrandText>
                 </Pressable>
                 <Pressable style={styles.buttonContainer}>
                   <SVG source={TipIcon} />
-                  Tip
+                  <BrandText style={styles.tipContent}>Tip</BrandText>
                 </Pressable>
-                <Pressable style={styles.outlineButtonContainer}>
+                <Pressable style={styles.buttonContainer}>
                   <SVG source={Share} />
-                  Share
+                  <BrandText style={styles.tipContent}>Share</BrandText>
                 </Pressable>
-                <Pressable style={styles.outlineButtonContainer}>
-                  {/* <SVG source={Report} /> */}
-                  Report
+                <Pressable style={styles.buttonContainer}>
+                  <SVG source={Flag} />
+                  <BrandText style={styles.tipContent}>Report</BrandText>
                 </Pressable>
               </View>
             </View>
             <View style={styles.blueContents} />
             <BrandText style={styles.contentName}>
-              Description here <View style={styles.blueContents}>#tag</View>{" "}
-              lorem ipsum dolor sit #tag amet lorem ipsum. Lorem ipsum dolor sit
-              amet!
-              <br />
-              <View style={styles.blueContents}>#tag</View>
-              <br />
-              <View style={styles.blueContents}>#tag</View>
+              {data?.videoMetaInfo.description}
             </BrandText>
             <BrandText style={styles.comments}>17 comments</BrandText>
             <View style={styles.flexRowItemCenter}>
               <View style={styles.flexRowItemCenter}>
-                <Image
-                  // @ts-ignore
-                  source={require("../../../assets/icon.png")}
-                  style={styles.avatar}
-                />
+                <SVG source={Avatar} style={{ borderRadius: 1000 }} />
                 <input
                   type="text"
                   placeholder="Leave your comment here"
@@ -444,73 +484,34 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
                   source={require("../../../assets/icon.png")}
                   style={styles.avatar}
                 />
-                <View style={styles.blueContents}>Nickname</View>
+                <BrandText style={styles.blueContents}>Nickname</BrandText>
                 <BrandText style={styles.contentDate}>3 days ago</BrandText>
               </View>
               <View style={styles.commentContent}>Comment here</View>
               <View style={styles.commentContent}>
                 <View style={styles.flexRowItemCenter}>
-                  {/* <SVG source={Thumb_up} /> */}
-                  <View style={{ marginLeft: "0.3em" }}>11</View>
+                  <SVG source={Like} />
+                  <BrandText style={styles.commentTip}>11</BrandText>
                 </View>
                 <View style={styles.flexRowItemCenter}>
-                  {/* <SVG source={Thumb_down} /> */}
-                  <View style={{ marginLeft: "0.3em" }}>11</View>
+                  <SVG source={Dislike} />
+                  <BrandText style={styles.commentTip}>11</BrandText>
                 </View>
-                <View style={{ marginLeft: "0.3em" }}>reply</View>
+                <BrandText style={styles.commentReply}>reply</BrandText>
               </View>
               <View style={styles.commentContent}>
                 {/* <SVG source={ArrowDown} /> */}
-                <View style={styles.blueContents}>1 reply</View>
-              </View>
-            </View>
-            <View>
-              <View
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginTop: "20px",
-                }}
-              >
-                <Image
-                  // @ts-ignore
-                  source={require("../../../assets/icon.png")}
-                  style={styles.avatar}
-                />
-                <View style={styles.blueContents}>Nickname</View>
-                <BrandText style={styles.contentDate}>3 days ago</BrandText>
-              </View>
-              <View style={styles.commentContent}>Comment here</View>
-              <View style={styles.commentContent}>
-                <View style={styles.flexRowItemCenter}>
-                  {/* <SVG source={Thumb_up} /> */}
-                  <View style={{ marginLeft: "0.3em" }}>11</View>
-                </View>
-                <View style={styles.flexRowItemCenter}>
-                  {/* <SVG source={Thumb_down} /> */}
-                  <View style={{ marginLeft: "0.3em" }}>11</View>
-                </View>
-                <View style={{ marginLeft: "0.3em" }}>reply</View>
-              </View>
-              <View style={styles.commentContent}>
-                {/* <SVG source={ArrowDown} /> */}
-                <View style={styles.blueContents}>1 reply</View>
+                <BrandText style={styles.blueContents}>1 reply</BrandText>
               </View>
             </View>
           </View>
           <View style={styles.pageRightPanel}>
-            <View style={styles.rightTitle}>More videos from @nickname</View>
+            <BrandText style={styles.rightTitle}>
+              More videos from @nickname
+            </BrandText>
           </View>
         </View>
       </View>
-      <TipModal
-        author={username}
-        postId={id}
-        onClose={() => setTipModalVisible(false)}
-        isVisible={tipModalVisible}
-      />
-      <VideoPlayer />
     </ScreenContainer>
   );
 };

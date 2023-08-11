@@ -7,6 +7,7 @@ service VideoService {
 	rpc GetUserVideoList(GetUserVideoListRequest) returns (GetUserVideoListResponse);
 	rpc GetVideo(GetVideoRequest) returns (GetVideoResponse);
 	rpc GetVideoListForLibrary(GetVideoListForLibraryRequest) returns (GetVideoListForLibraryResponse);
+	rpc IncreaseViewCount(IncreaseViewCountRequest) returns (IncreaseViewCountResponse);
 }
 message GetUserVideoListRequest {
     string created_by = 1;
@@ -47,4 +48,13 @@ message VideoInfo {
 	string identifier = 1;
 	string metadata = 2;
 	string created_by = 3;
+	uint32 view_count = 4;
+	uint32 last_view = 5;
+}
+message IncreaseViewCountRequest {
+	string identifier = 1;
+	string user = 2;
+}
+message IncreaseViewCountResponse {
+	uint32 res = 1;
 }
