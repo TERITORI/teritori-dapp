@@ -1,13 +1,17 @@
 import React, {
   createRef,
+  useRef,
   useState,
   Dispatch,
   SetStateAction,
   useEffect,
 } from "react";
-import { View, Pressable, StyleSheet, TextInput } from "react-native";
+import { View, Pressable, StyleSheet, TextInput, Image } from "react-native";
+import { useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 
+import CoverImg from "../../../assets/icons/player/cover-img.png";
+import Img from "../../../assets/icons/player/img.svg";
 import Upload from "../../../assets/icons/player/upload.svg";
 import { pinataPinFileToIPFS } from "../../candymachine/pinata-upload";
 import { signingVideoPlayerClient } from "../../client-creators/videoplayerClient";
@@ -15,8 +19,9 @@ import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getUserId } from "../../networks";
+import { selectNFTStorageAPI } from "../../store/slices/settings";
 import { defaultSocialFeedFee } from "../../utils/fee";
-import { generateIpfsKey } from "../../utils/social-feed";
+import { generateIpfsKey, ipfsURLToHTTPURL } from "../../utils/ipfs";
 import {
   neutral17,
   neutral33,
@@ -27,7 +32,7 @@ import {
 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { LocalFileData } from "../../utils/types/feed";
+import { LocalFileData } from "../../utils/types/files";
 import { VideoMetaInfo } from "../../utils/types/video";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
@@ -95,10 +100,10 @@ export const UploadVideoModal: React.FC<UploadVideoModalProps> = ({
       }}
       width={modalWidth}
     >
-      {step === 0 && (
+      {step === 1 && (
         <Step1Component setStep={setStep} setUploadVideo={setVideoFile} />
       )}
-      {step === 1 && (
+      {step === 0 && (
         <Step2Component
           videoFile={videoFile!}
           setVideoFile={setVideoFile}
@@ -176,6 +181,7 @@ const Step1Component: React.FC<{
   const selectedNetworkId = useSelectedNetworkId();
   const selectedWallet = useSelectedWallet();
   const userId = getUserId(selectedNetworkId, selectedWallet?.address);
+  const userIPFSKey = useSelector(selectNFTStorageAPI);
 
   useEffect(() => {
     setCanContinue(!!uploadFile);
@@ -191,9 +197,12 @@ const Step1Component: React.FC<{
     const file = e.target?.files![0];
     const video = document.createElement("video");
     video.preload = "metadata";
-    const pinataJWTKey = await generateIpfsKey(selectedNetworkId, userId);
+
     // const pinataJWTKey =
     //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiIxZjdjMGE4Yy00MjEyLTQ1ZTItOWUzMC00NDFmMjUxZDk5YzUiLCJlbWFpbCI6Im1pbmlvbmxhbmNlcjI4QGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJwaW5fcG9saWN5Ijp7InJlZ2lvbnMiOlt7ImlkIjoiRlJBMSIsImRlc2lyZWRSZXBsaWNhdGlvbkNvdW50IjoxfV0sInZlcnNpb24iOjF9LCJtZmFfZW5hYmxlZCI6ZmFsc2UsInN0YXR1cyI6IkFDVElWRSJ9LCJhdXRoZW50aWNhdGlvblR5cGUiOiJzY29wZWRLZXkiLCJzY29wZWRLZXlLZXkiOiI4NmMwMjNlNDMyNjY4MjZmMTYzZSIsInNjb3BlZEtleVNlY3JldCI6IjA5YTA0NGFlZWUzOTk4NjNmNWU3MzBmZGY0N2Y3ODdhM2ZiMTI0ZDczNDE5ZTNmYWI3NjhlMmQ5NjQ5NTVmMDMiLCJpYXQiOjE2OTEwOTU4NTZ9.uLekzSqr9gzn6e91PumoAVDAu1X8Smm5QveBUoElbj8";
+
+    const pinataJWTKey =
+      userIPFSKey || (await generateIpfsKey(selectedNetworkId, userId));
 
     video.addEventListener("loadedmetadata", async () => {
       window.URL.revokeObjectURL(video.src);
@@ -215,9 +224,10 @@ const Step1Component: React.FC<{
       const duration = video.duration;
       if (pinataRes.IpfsHash! !== "") {
         setUploadFile({
-          title: "",
+          title: file.name,
           description: "",
           url: pinataRes.IpfsHash,
+          coverImage: "",
           duration,
         });
       }
@@ -278,6 +288,7 @@ const Step2Component: React.FC<{
   uploadVideo: () => void;
 }> = ({ videoFile, setVideoFile, uploadVideo }) => {
   const paddingHorizontal = layout.padding_x2_5;
+  const imgSize = 172;
   const styles = StyleSheet.create({
     buttonContainer: {
       marginTop: layout.padding_x2,
@@ -325,13 +336,26 @@ const Step2Component: React.FC<{
       borderRadius: layout.padding_x1,
       height: 40,
     },
+    oneLine: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: layout.padding_x1_5,
+    },
     inputBox: {
       flexDirection: "row",
       alignItems: "flex-start",
       justifyContent: "space-between",
     },
+    imgBox: {
+      position: "relative",
+    },
+    img: {
+      width: imgSize,
+      height: imgSize,
+      borderRadius: layout.padding_x1,
+    },
     textBox: {
-      width: "100%",
+      width: 332,
     },
     inputTitle: StyleSheet.flatten([
       fontSemibold14,
@@ -359,10 +383,36 @@ const Step2Component: React.FC<{
         outlineStyle: "none",
       },
     ]),
+
+    uploadImg: {
+      width: "100%",
+      position: "absolute",
+      left: 0,
+      bottom: layout.padding_x1,
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    uploadButton: {
+      flexDirection: "row",
+      alignItems: "center",
+      backgroundColor: "#2B2B33",
+      borderRadius: layout.padding_x4,
+      gap: layout.padding_x1,
+      paddingLeft: layout.padding_x1,
+      paddingRight: layout.padding_x1_5,
+      paddingVertical: layout.padding_x1,
+    },
   });
 
+  const [isUploading, setIsUploading] = useState(false);
+  const inputImageFileRef = useRef<HTMLInputElement>(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+
+  const selectedNetworkId = useSelectedNetworkId();
+  const selectedWallet = useSelectedWallet();
+  const userId = getUserId(selectedNetworkId, selectedWallet?.address);
 
   const handleVideoNameTextChange = (text: string) => {
     setTitle(text.trim());
@@ -374,9 +424,72 @@ const Step2Component: React.FC<{
     setVideoFile({ ...videoFile, description: text });
   };
 
+  const clickUploadCoverImage = () => {
+    inputImageFileRef.current?.click();
+  };
+  const onInputCoverImagehange: React.ChangeEventHandler<
+    HTMLInputElement
+  > = async (e) => {
+    setIsUploading(true);
+    const file = e.target?.files?.[0];
+    if (file) {
+      const local_file_data = {
+        file,
+        fileName: file.name,
+        mimeType: "",
+        size: 0,
+        url: "",
+        fileType: "image",
+      } as LocalFileData;
+      const pinataJWTKey = await generateIpfsKey(selectedNetworkId, userId);
+      // const pinataJWTKey =
+      //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiIxZjdjMGE4Yy00MjEyLTQ1ZTItOWUzMC00NDFmMjUxZDk5YzUiLCJlbWFpbCI6Im1pbmlvbmxhbmNlcjI4QGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJwaW5fcG9saWN5Ijp7InJlZ2lvbnMiOlt7ImlkIjoiRlJBMSIsImRlc2lyZWRSZXBsaWNhdGlvbkNvdW50IjoxfV0sInZlcnNpb24iOjF9LCJtZmFfZW5hYmxlZCI6ZmFsc2UsInN0YXR1cyI6IkFDVElWRSJ9LCJhdXRoZW50aWNhdGlvblR5cGUiOiJzY29wZWRLZXkiLCJzY29wZWRLZXlLZXkiOiI4NmMwMjNlNDMyNjY4MjZmMTYzZSIsInNjb3BlZEtleVNlY3JldCI6IjA5YTA0NGFlZWUzOTk4NjNmNWU3MzBmZGY0N2Y3ODdhM2ZiMTI0ZDczNDE5ZTNmYWI3NjhlMmQ5NjQ5NTVmMDMiLCJpYXQiOjE2OTEwOTU4NTZ9.uLekzSqr9gzn6e91PumoAVDAu1X8Smm5QveBUoElbj8";
+      if (!pinataJWTKey) {
+        setIsUploading(false);
+        return;
+      }
+      const pinataRes = await pinataPinFileToIPFS({
+        file: local_file_data,
+        pinataJWTKey,
+      });
+      setVideoFile({ ...videoFile, coverImage: pinataRes.IpfsHash });
+      setIsUploading(false);
+    }
+  };
+
   return (
     <>
+      <input
+        type="file"
+        style={{ display: "none" }}
+        accept="image/*"
+        onChange={onInputCoverImagehange}
+        ref={inputImageFileRef}
+      />
       <View style={styles.inputBox}>
+        <View style={styles.imgBox}>
+          <Image
+            source={
+              videoFile.coverImage === ""
+                ? CoverImg
+                : ipfsURLToHTTPURL(videoFile.coverImage)
+            }
+            style={styles.img}
+          />
+          <View style={styles.uploadImg}>
+            <Pressable
+              style={styles.uploadButton}
+              onPress={clickUploadCoverImage}
+            >
+              <SVG
+                source={Img}
+                width={layout.padding_x2}
+                height={layout.padding_x2}
+              />
+              <BrandText style={fontSemibold14}>upload image</BrandText>
+            </Pressable>
+          </View>
+        </View>
         <View style={styles.textBox}>
           <BrandText style={styles.inputTitle}>
             Video name<BrandText style={styles.required}>*</BrandText>
@@ -409,6 +522,7 @@ const Step2Component: React.FC<{
           size="SM"
           disabled={title.trim() === "" || description.trim() === ""}
           onPress={uploadVideo}
+          isLoading={isUploading}
         />
       </View>
     </>

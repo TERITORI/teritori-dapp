@@ -12,10 +12,12 @@ import TipIcon from "../../../assets/icons/tip.svg";
 // import { VideoInfo } from "../../api/video/v1/video";
 // import { signingVideoPlayerClient } from "../../client-creators/videoplayerClient";
 import { BrandText } from "../../components/BrandText";
+import { OmniLink } from "../../components/OmniLink";
 import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
-
-import { TipModal } from "../../components/socialFeed/SocialActions/TipModal";
+import { UserAvatarWithFrame } from "../../components/images/AvatarWithFrame";
+// import { TipModal } from "../../components/socialFeed/SocialActions/TipModal";
+import { DateTime } from "../../components/socialFeed/SocialThread/DateTime";
 import { VideoPlayerTab } from "../../components/videoPlayer/VideoPlayerTab";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
@@ -24,7 +26,6 @@ import { useFetchVideo } from "../../hooks/video/useFetchVideo";
 import { useIncreaseViewCount } from "../../hooks/video/useIncreaseViewCount";
 import { parseUserId, getUserId } from "../../networks";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
-
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { neutral77, neutral17, primaryColor } from "../../utils/style/colors";
 import {
@@ -37,7 +38,7 @@ import {
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { tinyAddress } from "../../utils/text";
-import { lastViewDate } from "../../utils/videoPlayer";
+
 // import { VideoPlayerCard } from "../../components/videoPlayer/VideoPlayerCard";
 
 export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
@@ -46,9 +47,11 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
   },
 }) => {
   const navigation = useAppNavigation();
+
   const selectedNetworkId = useSelectedNetworkId();
   const wallet = useSelectedWallet();
   const userId = getUserId(selectedNetworkId, wallet?.address);
+
   // const [videoListForLibrary, setVideoListForLibrary] = useState<VideoInfo[]>(
   //   []
   // );
@@ -75,6 +78,7 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
       ? authorNSInfo?.metadata?.tokenId
       : tinyAddress(userAddress);
   }, [authorNSInfo, userAddress]);
+
   // const initIndexHoverState = {
   //   index: 0,
   //   state: false,
@@ -479,11 +483,21 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
             </View>
             <View style={styles.videoInfo}>
               <View style={styles.avatarDetail}>
-                <Image
-                  // @ts-ignore
-                  source={require("../../../assets/icon.png")}
-                  style={styles.avatar}
-                />
+                <OmniLink
+                  to={{
+                    screen: "UserPublicProfile",
+                    params: { id: createdBy },
+                  }}
+                >
+                  {/*---- User image */}
+                  <UserAvatarWithFrame
+                    style={{
+                      marginRight: layout.padding_x2,
+                    }}
+                    userId={createdBy}
+                    size="S"
+                  />
+                </OmniLink>
                 <Pressable>
                   <BrandText style={styles.contentName}>@{username}</BrandText>
                 </Pressable>
@@ -493,14 +507,30 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
                   marginLeft: "0.5em",
                   display: "flex",
                   flexDirection: "row",
+                  alignItems: "center",
                 }}
               >
                 <BrandText style={styles.contentDescription}>
                   {data?.viewCount} views
                 </BrandText>
-                <BrandText style={styles.contentDate}>
-                  {lastViewDate(data?.viewLastTimestamp)}
-                </BrandText>
+                {/* A dot separator */}
+                <View
+                  style={{
+                    backgroundColor: neutral77,
+                    height: 2,
+                    width: 2,
+                    borderRadius: 999,
+                    marginHorizontal: layout.padding_x0_75,
+                  }}
+                />
+                {/*---- Date */}
+                <DateTime
+                  date={data.createdAt}
+                  textStyle={{ color: neutral77 }}
+                />
+                {/* <BrandText style={styles.contentDate}>
+                  {lastViewDate(data?.createdAt)}
+                </BrandText> */}
               </View>
               <View style={styles.btnGroup}>
                 <Pressable style={styles.buttonContainer}>
@@ -586,7 +616,7 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
           </View>
           <View style={styles.pageRightPanel}>
             <BrandText style={styles.rightTitle}>
-              More videos from @nickname
+              More videos from @{username}
             </BrandText>
           </View>
         </View>

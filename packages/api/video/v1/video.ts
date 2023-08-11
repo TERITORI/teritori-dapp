@@ -44,8 +44,8 @@ export interface VideoInfo {
   identifier: string;
   metadata: string;
   createdBy: string;
+  createdAt: number;
   viewCount: number;
-  lastView: number;
 }
 
 export interface IncreaseViewCountRequest {
@@ -490,7 +490,7 @@ export const GetVideoListForLibraryResponse = {
 };
 
 function createBaseVideoInfo(): VideoInfo {
-  return { identifier: "", metadata: "", createdBy: "", viewCount: 0, lastView: 0 };
+  return { identifier: "", metadata: "", createdBy: "", createdAt: 0, viewCount: 0 };
 }
 
 export const VideoInfo = {
@@ -504,11 +504,11 @@ export const VideoInfo = {
     if (message.createdBy !== "") {
       writer.uint32(26).string(message.createdBy);
     }
-    if (message.viewCount !== 0) {
-      writer.uint32(32).uint32(message.viewCount);
+    if (message.createdAt !== 0) {
+      writer.uint32(32).uint32(message.createdAt);
     }
-    if (message.lastView !== 0) {
-      writer.uint32(40).uint32(message.lastView);
+    if (message.viewCount !== 0) {
+      writer.uint32(40).uint32(message.viewCount);
     }
     return writer;
   },
@@ -530,10 +530,10 @@ export const VideoInfo = {
           message.createdBy = reader.string();
           break;
         case 4:
-          message.viewCount = reader.uint32();
+          message.createdAt = reader.uint32();
           break;
         case 5:
-          message.lastView = reader.uint32();
+          message.viewCount = reader.uint32();
           break;
         default:
           reader.skipType(tag & 7);
@@ -548,8 +548,8 @@ export const VideoInfo = {
       identifier: isSet(object.identifier) ? String(object.identifier) : "",
       metadata: isSet(object.metadata) ? String(object.metadata) : "",
       createdBy: isSet(object.createdBy) ? String(object.createdBy) : "",
+      createdAt: isSet(object.createdAt) ? Number(object.createdAt) : 0,
       viewCount: isSet(object.viewCount) ? Number(object.viewCount) : 0,
-      lastView: isSet(object.lastView) ? Number(object.lastView) : 0,
     };
   },
 
@@ -558,8 +558,8 @@ export const VideoInfo = {
     message.identifier !== undefined && (obj.identifier = message.identifier);
     message.metadata !== undefined && (obj.metadata = message.metadata);
     message.createdBy !== undefined && (obj.createdBy = message.createdBy);
+    message.createdAt !== undefined && (obj.createdAt = Math.round(message.createdAt));
     message.viewCount !== undefined && (obj.viewCount = Math.round(message.viewCount));
-    message.lastView !== undefined && (obj.lastView = Math.round(message.lastView));
     return obj;
   },
 
@@ -568,8 +568,8 @@ export const VideoInfo = {
     message.identifier = object.identifier ?? "";
     message.metadata = object.metadata ?? "";
     message.createdBy = object.createdBy ?? "";
+    message.createdAt = object.createdAt ?? 0;
     message.viewCount = object.viewCount ?? 0;
-    message.lastView = object.lastView ?? 0;
     return message;
   },
 };

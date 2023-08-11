@@ -6,12 +6,14 @@ import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { MobileTitle } from "../../components/ScreenContainer/ScreenContainerMobile";
 import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
+import { useForceNetworkSelection } from "../../hooks/useForceNetworkSelection";
 import { useIsMobile } from "../../hooks/useIsMobile";
-import { NetworkKind } from "../../networks";
+import { NetworkFeature } from "../../networks";
 import { ScreenFC } from "../../utils/navigation";
 import { feedTabToCategories, feedsTabItems } from "../../utils/social-feed";
 
-export const FeedScreen: ScreenFC<"Feed"> = () => {
+export const FeedScreen: ScreenFC<"Feed"> = ({ route: { params } }) => {
+  useForceNetworkSelection(params?.network);
   const isMobile = useIsMobile();
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof feedsTabItems>("all");
@@ -36,7 +38,7 @@ export const FeedScreen: ScreenFC<"Feed"> = () => {
       noMargin
       noScroll
       footerChildren={<></>}
-      forceNetworkKind={NetworkKind.Cosmos}
+      forceNetworkFeatures={[NetworkFeature.SocialFeed]}
       headerChildren={<BrandText>Social Feed</BrandText>}
     >
       <NewsFeed

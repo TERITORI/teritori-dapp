@@ -63,7 +63,6 @@ var allModels = []interface{}{
 	&Video{},
 	&VideoLibrary{},
 	&VideoViewCount{},
-
 	// names
 	&Name{},
 }

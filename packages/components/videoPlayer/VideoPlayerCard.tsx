@@ -28,7 +28,6 @@ export const VideoPlayerCard: React.FC<{
   const username = authorNSInfo?.metadata?.tokenId
     ? authorNSInfo?.metadata?.tokenId
     : tinyAddress(userAddress);
-
   const styles = StyleSheet.create({
     unitCard: {
       width: unitWidth,
@@ -38,7 +37,6 @@ export const VideoPlayerCard: React.FC<{
       borderRadius: 10,
       aspectRatio: 1.5,
     },
-
     contentTitle: StyleSheet.flatten([
       fontSemibold14,
       {

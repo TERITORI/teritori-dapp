@@ -28,10 +28,16 @@ const units = ["", "K", "M", "G", "T", "P", "E", "Z", "Y"];
 // Returns the price with denom (Text + denom)
 export const prettyPrice = (
   networkId: string | undefined,
-  value: string,
-  denom: string,
+  value: string | undefined,
+  denom: string | undefined,
   noDenom?: boolean
 ) => {
+  if (!value) {
+    value = "0";
+  }
+  if (!denom) {
+    denom = "unknown";
+  }
   const currency = getNativeCurrency(networkId, denom);
   if (currency) {
     const decval = Decimal.fromAtomics(value, currency.decimals);

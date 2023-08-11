@@ -48,8 +48,8 @@ message VideoInfo {
 	string identifier = 1;
 	string metadata = 2;
 	string created_by = 3;
-	uint32 view_count = 4;
-	uint32 last_view = 5;
+	uint32 created_at = 4;
+	uint32 view_count = 5;
 }
 message IncreaseViewCountRequest {
 	string identifier = 1;

@@ -13,7 +13,12 @@ export const teritoriTestnetNetwork: NetworkInfo = {
   chainId: "teritori-testnet-v3",
   displayName: "Teritori Testnet",
   icon: "icons/networks/teritori.svg",
-  features: [NetworkFeature.NFTMarketplace, NetworkFeature.Organizations],
+  features: [
+    NetworkFeature.NFTMarketplace,
+    NetworkFeature.Organizations,
+    NetworkFeature.SocialFeed,
+    NetworkFeature.UPP,
+  ],
   currencies: teritoriTestnetCurrencies,
   txExplorer: "https://explorer.teritori.com/teritori-testnet/tx/$hash",
   accountExplorer:
@@ -22,7 +27,7 @@ export const teritoriTestnetNetwork: NetworkInfo = {
     "https://explorer.teritori.com/teritori-testnet/account/$address",
   idPrefix: "testori",
   testnet: true,
-  backendEndpoint: "http://localhost:9090",
+  backendEndpoint: "https://dapp-backend.testnet.teritori.com",
   addressPrefix: "tori",
   restEndpoint: "https://rest.testnet.teritori.com",
   rpcEndpoint: "https://rpc.testnet.teritori.com",
