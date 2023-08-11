@@ -26,6 +26,7 @@ type VideoServiceClient interface {
 	GetUserVideoList(ctx context.Context, in *GetUserVideoListRequest, opts ...grpc.CallOption) (*GetUserVideoListResponse, error)
 	GetVideo(ctx context.Context, in *GetVideoRequest, opts ...grpc.CallOption) (*GetVideoResponse, error)
 	GetVideoListForLibrary(ctx context.Context, in *GetVideoListForLibraryRequest, opts ...grpc.CallOption) (*GetVideoListForLibraryResponse, error)
+	IncreaseViewCount(ctx context.Context, in *IncreaseViewCountRequest, opts ...grpc.CallOption) (*IncreaseViewCountResponse, error)
 }
 
 type videoServiceClient struct {
@@ -72,6 +73,15 @@ func (c *videoServiceClient) GetVideoListForLibrary(ctx context.Context, in *Get
 	return out, nil
 }
 
+func (c *videoServiceClient) IncreaseViewCount(ctx context.Context, in *IncreaseViewCountRequest, opts ...grpc.CallOption) (*IncreaseViewCountResponse, error) {
+	out := new(IncreaseViewCountResponse)
+	err := c.cc.Invoke(ctx, "/video.v1.VideoService/IncreaseViewCount", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // VideoServiceServer is the server API for VideoService service.
 // All implementations must embed UnimplementedVideoServiceServer
 // for forward compatibility
@@ -80,6 +90,7 @@ type VideoServiceServer interface {
 	GetUserVideoList(context.Context, *GetUserVideoListRequest) (*GetUserVideoListResponse, error)
 	GetVideo(context.Context, *GetVideoRequest) (*GetVideoResponse, error)
 	GetVideoListForLibrary(context.Context, *GetVideoListForLibraryRequest) (*GetVideoListForLibraryResponse, error)
+	IncreaseViewCount(context.Context, *IncreaseViewCountRequest) (*IncreaseViewCountResponse, error)
 	mustEmbedUnimplementedVideoServiceServer()
 }
 
@@ -98,6 +109,9 @@ func (UnimplementedVideoServiceServer) GetVideo(context.Context, *GetVideoReques
 }
 func (UnimplementedVideoServiceServer) GetVideoListForLibrary(context.Context, *GetVideoListForLibraryRequest) (*GetVideoListForLibraryResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetVideoListForLibrary not implemented")
+}
+func (UnimplementedVideoServiceServer) IncreaseViewCount(context.Context, *IncreaseViewCountRequest) (*IncreaseViewCountResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IncreaseViewCount not implemented")
 }
 func (UnimplementedVideoServiceServer) mustEmbedUnimplementedVideoServiceServer() {}
 
@@ -184,6 +198,24 @@ func _VideoService_GetVideoListForLibrary_Handler(srv interface{}, ctx context.C
 	return interceptor(ctx, in, info, handler)
 }
 
+func _VideoService_IncreaseViewCount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IncreaseViewCountRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VideoServiceServer).IncreaseViewCount(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/video.v1.VideoService/IncreaseViewCount",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VideoServiceServer).IncreaseViewCount(ctx, req.(*IncreaseViewCountRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // VideoService_ServiceDesc is the grpc.ServiceDesc for VideoService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -206,6 +238,10 @@ var VideoService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetVideoListForLibrary",
 			Handler:    _VideoService_GetVideoListForLibrary_Handler,
+		},
+		{
+			MethodName: "IncreaseViewCount",
+			Handler:    _VideoService_IncreaseViewCount_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

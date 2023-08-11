@@ -9,7 +9,13 @@ type Video struct {
 	Metadata   ObjectJSONB     `gorm:"type:jsonb;default:'{}'"`
 	CreatedBy  networks.UserID `gorm:"index"`
 	CreatedAt  int64
+	ViewCount  int64
+	LastView   int64
 	IsDeleted  bool
+}
+type VideoViewCount struct {
+	Identifier string `gorm:"primaryKey"`
+	ViewUser   string `gorm:"primaryKey"`
 }
 
 type VideoLibrary struct {
