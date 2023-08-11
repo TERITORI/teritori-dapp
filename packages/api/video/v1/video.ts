@@ -44,6 +44,17 @@ export interface VideoInfo {
   identifier: string;
   metadata: string;
   createdBy: string;
+  viewCount: number;
+  lastView: number;
+}
+
+export interface IncreaseViewCountRequest {
+  identifier: string;
+  user: string;
+}
+
+export interface IncreaseViewCountResponse {
+  res: number;
 }
 
 function createBaseGetUserVideoListRequest(): GetUserVideoListRequest {
@@ -479,7 +490,7 @@ export const GetVideoListForLibraryResponse = {
 };
 
 function createBaseVideoInfo(): VideoInfo {
-  return { identifier: "", metadata: "", createdBy: "" };
+  return { identifier: "", metadata: "", createdBy: "", viewCount: 0, lastView: 0 };
 }
 
 export const VideoInfo = {
@@ -492,6 +503,12 @@ export const VideoInfo = {
     }
     if (message.createdBy !== "") {
       writer.uint32(26).string(message.createdBy);
+    }
+    if (message.viewCount !== 0) {
+      writer.uint32(32).uint32(message.viewCount);
+    }
+    if (message.lastView !== 0) {
+      writer.uint32(40).uint32(message.lastView);
     }
     return writer;
   },
@@ -512,6 +529,12 @@ export const VideoInfo = {
         case 3:
           message.createdBy = reader.string();
           break;
+        case 4:
+          message.viewCount = reader.uint32();
+          break;
+        case 5:
+          message.lastView = reader.uint32();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -525,6 +548,8 @@ export const VideoInfo = {
       identifier: isSet(object.identifier) ? String(object.identifier) : "",
       metadata: isSet(object.metadata) ? String(object.metadata) : "",
       createdBy: isSet(object.createdBy) ? String(object.createdBy) : "",
+      viewCount: isSet(object.viewCount) ? Number(object.viewCount) : 0,
+      lastView: isSet(object.lastView) ? Number(object.lastView) : 0,
     };
   },
 
@@ -533,6 +558,8 @@ export const VideoInfo = {
     message.identifier !== undefined && (obj.identifier = message.identifier);
     message.metadata !== undefined && (obj.metadata = message.metadata);
     message.createdBy !== undefined && (obj.createdBy = message.createdBy);
+    message.viewCount !== undefined && (obj.viewCount = Math.round(message.viewCount));
+    message.lastView !== undefined && (obj.lastView = Math.round(message.lastView));
     return obj;
   },
 
@@ -541,6 +568,113 @@ export const VideoInfo = {
     message.identifier = object.identifier ?? "";
     message.metadata = object.metadata ?? "";
     message.createdBy = object.createdBy ?? "";
+    message.viewCount = object.viewCount ?? 0;
+    message.lastView = object.lastView ?? 0;
+    return message;
+  },
+};
+
+function createBaseIncreaseViewCountRequest(): IncreaseViewCountRequest {
+  return { identifier: "", user: "" };
+}
+
+export const IncreaseViewCountRequest = {
+  encode(message: IncreaseViewCountRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.identifier !== "") {
+      writer.uint32(10).string(message.identifier);
+    }
+    if (message.user !== "") {
+      writer.uint32(18).string(message.user);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): IncreaseViewCountRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseIncreaseViewCountRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.identifier = reader.string();
+          break;
+        case 2:
+          message.user = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): IncreaseViewCountRequest {
+    return {
+      identifier: isSet(object.identifier) ? String(object.identifier) : "",
+      user: isSet(object.user) ? String(object.user) : "",
+    };
+  },
+
+  toJSON(message: IncreaseViewCountRequest): unknown {
+    const obj: any = {};
+    message.identifier !== undefined && (obj.identifier = message.identifier);
+    message.user !== undefined && (obj.user = message.user);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<IncreaseViewCountRequest>, I>>(object: I): IncreaseViewCountRequest {
+    const message = createBaseIncreaseViewCountRequest();
+    message.identifier = object.identifier ?? "";
+    message.user = object.user ?? "";
+    return message;
+  },
+};
+
+function createBaseIncreaseViewCountResponse(): IncreaseViewCountResponse {
+  return { res: 0 };
+}
+
+export const IncreaseViewCountResponse = {
+  encode(message: IncreaseViewCountResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.res !== 0) {
+      writer.uint32(8).uint32(message.res);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): IncreaseViewCountResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseIncreaseViewCountResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.res = reader.uint32();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): IncreaseViewCountResponse {
+    return { res: isSet(object.res) ? Number(object.res) : 0 };
+  },
+
+  toJSON(message: IncreaseViewCountResponse): unknown {
+    const obj: any = {};
+    message.res !== undefined && (obj.res = Math.round(message.res));
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<IncreaseViewCountResponse>, I>>(object: I): IncreaseViewCountResponse {
+    const message = createBaseIncreaseViewCountResponse();
+    message.res = object.res ?? 0;
     return message;
   },
 };
@@ -556,6 +690,10 @@ export interface VideoService {
     request: DeepPartial<GetVideoListForLibraryRequest>,
     metadata?: grpc.Metadata,
   ): Promise<GetVideoListForLibraryResponse>;
+  IncreaseViewCount(
+    request: DeepPartial<IncreaseViewCountRequest>,
+    metadata?: grpc.Metadata,
+  ): Promise<IncreaseViewCountResponse>;
 }
 
 export class VideoServiceClientImpl implements VideoService {
@@ -567,6 +705,7 @@ export class VideoServiceClientImpl implements VideoService {
     this.GetUserVideoList = this.GetUserVideoList.bind(this);
     this.GetVideo = this.GetVideo.bind(this);
     this.GetVideoListForLibrary = this.GetVideoListForLibrary.bind(this);
+    this.IncreaseViewCount = this.IncreaseViewCount.bind(this);
   }
 
   GetVideoList(request: DeepPartial<GetVideoListRequest>, metadata?: grpc.Metadata): Promise<GetVideoListResponse> {
@@ -593,6 +732,13 @@ export class VideoServiceClientImpl implements VideoService {
       GetVideoListForLibraryRequest.fromPartial(request),
       metadata,
     );
+  }
+
+  IncreaseViewCount(
+    request: DeepPartial<IncreaseViewCountRequest>,
+    metadata?: grpc.Metadata,
+  ): Promise<IncreaseViewCountResponse> {
+    return this.rpc.unary(VideoServiceIncreaseViewCountDesc, IncreaseViewCountRequest.fromPartial(request), metadata);
   }
 }
 
@@ -678,6 +824,28 @@ export const VideoServiceGetVideoListForLibraryDesc: UnaryMethodDefinitionish = 
     deserializeBinary(data: Uint8Array) {
       return {
         ...GetVideoListForLibraryResponse.decode(data),
+        toObject() {
+          return this;
+        },
+      };
+    },
+  } as any,
+};
+
+export const VideoServiceIncreaseViewCountDesc: UnaryMethodDefinitionish = {
+  methodName: "IncreaseViewCount",
+  service: VideoServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return IncreaseViewCountRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      return {
+        ...IncreaseViewCountResponse.decode(data),
         toObject() {
           return this;
         },
