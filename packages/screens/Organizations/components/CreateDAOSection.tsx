@@ -221,17 +221,6 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
               </View>
             </View>
             <View style={{ zIndex: -1 }}>
-              {/*<SpacerColumn size={2.5} />*/}
-              {/*<TextInputCustom<CreateDaoFormType>*/}
-              {/*  noBrokenCorners*/}
-              {/*  height={48}*/}
-              {/*  control={control}*/}
-              {/*  variant="labelOutside"*/}
-              {/*  label="Organization's image url"*/}
-              {/*  placeHolder="https://example.com/preview.png"*/}
-              {/*  name="imageUrl"*/}
-              {/*  rules={{ required: true }}*/}
-              {/*/>*/}
               <SpacerColumn size={2.5} />
               <TextInputCustom<CreateDaoFormType>
                 noBrokenCorners

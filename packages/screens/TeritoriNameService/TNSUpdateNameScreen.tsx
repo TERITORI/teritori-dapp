@@ -90,7 +90,6 @@ export const TNSUpdateNameScreen: React.FC<TNSUpdateNameScreenProps> = ({
   const queryClient = useQueryClient();
 
   const submitData = async (data: Metadata) => {
-    console.log("datatata", data);
     if (!walletAddress) {
       setToastError({
         title: "No wallet address",

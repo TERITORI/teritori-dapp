@@ -419,29 +419,32 @@ const createDAO = async ({
   const tokenId = tns.includes(".tori") ? tns : tns + ".tori";
 
   try {
-    //TODO: Handle "send token to dao if user owns"
-    if (!userOwnsName) {
-      const amount = await nameServiceClient.mintPrice({
-        // TODO: handle more TLD later
-        tokenId,
-      });
-
-      const denom = getStakingCurrency(network.id)?.denom;
-      await nameServiceClient.mint(
-        {
-          owner: sender,
-          tokenId,
-          extension: {
-            public_name: dao_core_instantiate_msg.name,
-            image: dao_core_instantiate_msg.image_url,
-            public_bio: dao_core_instantiate_msg.description,
-          },
-        },
-        "auto",
-        undefined,
-        amount && denom ? [{ denom, amount }] : []
-      );
+    if (userOwnsName) {
+      // To let the user use a owned name, we burn it to release it
+      const nameServiceNftInfo = await nameServiceClient.nftInfo({ tokenId });
+      if (nameServiceNftInfo) await nameServiceClient.burn({ tokenId });
     }
+
+    const amount = await nameServiceClient.mintPrice({
+      // TODO: handle more TLD later
+      tokenId,
+    });
+
+    const denom = getStakingCurrency(network.id)?.denom;
+    await nameServiceClient.mint(
+      {
+        owner: sender,
+        tokenId,
+        extension: {
+          public_name: dao_core_instantiate_msg.name,
+          image: dao_core_instantiate_msg.image_url,
+          public_bio: dao_core_instantiate_msg.description,
+        },
+      },
+      "auto",
+      undefined,
+      amount && denom ? [{ denom, amount }] : []
+    );
 
     await onStepChange(1);
 
@@ -483,8 +486,5 @@ const createDAO = async ({
     return { daoAddress, executeResult };
   } catch (e) {
     console.error("Error creating DAO: ", e);
-    // Burn the minted name if the DAO creation fails
-    const nameServiceNftInfo = await nameServiceClient.nftInfo({ tokenId });
-    if (nameServiceNftInfo) await nameServiceClient.burn({ tokenId });
   }
 };
