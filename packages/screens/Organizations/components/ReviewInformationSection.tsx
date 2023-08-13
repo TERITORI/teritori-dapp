@@ -196,7 +196,9 @@ export const ReviewInformationSection: React.FC<
           <ReviewCollapsableItem
             title="Consider NFTs listed on the marketplace (but not sold yet) eligible
             to the DAO"
-            value={nftContractSettingData?.considerListedNFTs ? "true" : "false"}
+            value={
+              nftContractSettingData?.considerListedNFTs ? "true" : "false"
+            }
           />
 
           {/*{nftContractSettingData?.contracts.map((contract, index) => (*/}

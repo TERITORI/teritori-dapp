@@ -325,7 +325,10 @@ export const OrganizationDeployerScreen = () => {
                 : styles.hidden
             }
           >
-            <NFTBasedSettingsSection onSubmit={onSubmitContractSettings} />
+            <NFTBasedSettingsSection
+              onSubmit={onSubmitContractSettings}
+              networkId={step1DaoInfoFormData?.networkId}
+            />
           </View>
           <View
             style={

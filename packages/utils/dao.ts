@@ -90,9 +90,7 @@ export const createDaoNftBased = async (
         addr: sender,
       },
     },
-    unstaking_duration: {
-      time: 3600000,
-    },
+    unstaking_duration: null,
   };
 
   return await createDAO({
@@ -244,9 +242,6 @@ export const createDaoMemberBased = async (
   funds?: Coin[]
 ): CreateDaoResult => {
   const network = mustGetCosmosNetwork(networkId);
-
-  console.log("members", members);
-
   if (!network.daoCw4GroupCodeId || !network.daoVotingCw4CodeId) return;
 
   const dao_voting_cw4_msg: InstantiateMsgCW4 = {
@@ -330,11 +325,6 @@ const createDAO = async ({
     open_proposal_submission: false,
   };
 
-  console.log(
-    "dao_pre_propose_single_msgdao_pre_propose_single_msgdao_pre_propose_single_msg",
-    dao_pre_propose_single_msg
-  );
-
   const dao_proposal_single_msg: InstantiateMsgProposalSingle = {
     threshold: {
       threshold_quorum: {
@@ -364,12 +354,6 @@ const createDAO = async ({
       },
     },
   };
-
-  console.log(
-    "dao_proposal_single_msgdao_proposal_single_msg",
-    dao_proposal_single_msg
-  );
-
   const proposal_modules_instantiate_info: ModuleInstantiateInfo[] = [
     {
       admin: { core_module: {} },
@@ -380,27 +364,12 @@ const createDAO = async ({
       ),
     },
   ];
-
-  console.log(
-    "proposal_modules_instantiate_infoproposal_modules_instantiate_info",
-    proposal_modules_instantiate_info
-  );
-
   const voting_module_instantiate_info: ModuleInstantiateInfo = {
     admin: { core_module: {} },
     code_id: daoVotingCodeId!,
     label: instantiateLabel,
     msg: Buffer.from(JSON.stringify(daoVotingMsg)).toString("base64"),
   };
-
-  console.log(
-    "proposal_modules_instantiate_infoproposal_modules_instantiate_info",
-    proposal_modules_instantiate_info
-  );
-  console.log(
-    "voting_module_instantiate_infovoting_module_instantiate_info",
-    voting_module_instantiate_info
-  );
 
   // ======= Store the DAO image to IPFS
   const userId = getUserId(network.id, sender);
@@ -427,10 +396,7 @@ const createDAO = async ({
     proposal_modules_instantiate_info,
     voting_module_instantiate_info,
   };
-  console.log(
-    "dao_core_instantiate_msgdao_core_instantiate_msgdao_core_instantiate_msg",
-    dao_core_instantiate_msg
-  );
+
   const instantiate_msg = Buffer.from(
     JSON.stringify(dao_core_instantiate_msg)
   ).toString("base64");
@@ -452,31 +418,16 @@ const createDAO = async ({
   // ======= Getting the name from Name Service
   const tokenId = tns.includes(".tori") ? tns : tns + ".tori";
 
-  console.log("tokenIdtokenIdtokenId", tokenId);
-  // If the user chooses a name that he holds, there is no need to mint. The name will just be transferred
-  console.log(
-    "isNameAlreadyMintedisNameAlreadyMintedisNameAlreadyMinted",
-    userOwnsName
-  );
-  console.log("tnstnstnstnstnstnstns", tns);
-  console.log("extensioextensionextensionextension", {
-    public_name: dao_core_instantiate_msg.name,
-    image: dao_core_instantiate_msg.image_url,
-    public_bio: dao_core_instantiate_msg.description,
-  });
-
   try {
     //TODO: Handle "send token to dao if user owns"
     if (!userOwnsName) {
-      console.log("==========fsfgsgqs");
       const amount = await nameServiceClient.mintPrice({
         // TODO: handle more TLD later
         tokenId,
       });
-      console.log("========== amount", amount);
 
       const denom = getStakingCurrency(network.id)?.denom;
-      const xxxxx = await nameServiceClient.mint(
+      await nameServiceClient.mint(
         {
           owner: sender,
           tokenId,
@@ -490,28 +441,11 @@ const createDAO = async ({
         undefined,
         amount && denom ? [{ denom, amount }] : []
       );
-      console.log("========== xxxxx", xxxxx);
     }
 
     await onStepChange(1);
-    console.log("==========sfsfqsf", instantiate_msg);
 
     // ============== STEP 2 ================================================================
-    console.log(
-      "fsfuohhshoihoisfehoisoie",
-      sender,
-      contractAddress,
-      {
-        instantiate_contract_with_self_admin: {
-          code_id: network.daoCoreCodeId,
-          instantiate_msg,
-          label: name,
-        },
-      },
-      fee,
-      memo,
-      funds
-    );
     const executeResult = await client.execute(
       sender,
       contractAddress,
@@ -526,7 +460,6 @@ const createDAO = async ({
       memo,
       funds
     );
-    console.log("--executeResultuteResult", executeResult);
     const daoAddress = executeResult.logs
       .find((l) => l.events.find((e) => e.type === "instantiate"))
       ?.events.find((e) => e.type === "instantiate")
@@ -545,8 +478,6 @@ const createDAO = async ({
       recipient: daoAddress,
       tokenId,
     });
-    console.log("------- daoAddress", daoAddress);
-
     await onStepChange(3);
 
     return { daoAddress, executeResult };
@@ -554,7 +485,6 @@ const createDAO = async ({
     console.error("Error creating DAO: ", e);
     // Burn the minted name if the DAO creation fails
     const nameServiceNftInfo = await nameServiceClient.nftInfo({ tokenId });
-    console.log("nftInfonftInfo", nameServiceNftInfo);
     if (nameServiceNftInfo) await nameServiceClient.burn({ tokenId });
   }
 };

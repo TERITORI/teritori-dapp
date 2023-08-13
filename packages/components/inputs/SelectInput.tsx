@@ -1,4 +1,4 @@
-import React, { ReactElement, useState } from "react";
+import React, { ReactElement, useEffect, useMemo, useState } from "react";
 import {
   View,
   ScrollView,
@@ -7,7 +7,7 @@ import {
   ViewStyle,
 } from "react-native";
 
-import { Label } from "./TextInputCustom";
+import { Label, TextInputCustom } from "./TextInputCustom";
 import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../assets/icons/chevron-up.svg";
 import lockSVG from "../../../assets/icons/lock.svg";
@@ -37,31 +37,59 @@ type Props = {
   data: SelectInputData[];
   placeHolder?: string;
   selectedData: SelectInputData;
-  setData: (data: SelectInputData) => void;
+  selectData: (data: SelectInputData) => void;
   disabled?: boolean;
   style?: StyleProp<ViewStyle>;
   boxStyle?: StyleProp<ViewStyle>;
   label?: string;
   isRequired?: boolean;
+  allowEnteringValue?: boolean;
+  name?: string;
 };
 
 export const SelectInput: React.FC<Props> = ({
   data,
   placeHolder,
   selectedData,
-  setData,
+  selectData,
   disabled,
   style,
   boxStyle,
   label,
   isRequired,
+  allowEnteringValue,
+  name,
 }) => {
   const [openMenu, setOpenMenu] = useState<boolean>(false);
   const [hoveredIndex, setHoveredIndex] = useState<number>(0);
   const [hovered, setHovered] = useState(false);
+  const [enteredValue, setEnteredValue] = useState("");
+  const selectableData = useMemo(
+    () =>
+      allowEnteringValue && enteredValue
+        ? data.filter((d) =>
+            d.label.toLowerCase().includes(enteredValue.toLowerCase())
+          )
+        : data,
+    [allowEnteringValue, data, enteredValue]
+  );
+
+  // It obliges the user to select a value from the list to trigger a valid selectData. The enteredValue will not be used as selectedData.
+  // Also, after the user selected a value, if he modifies the enteredValue, he will have to re-select a value from the list.
+  useEffect(() => {
+    if (allowEnteringValue && enteredValue !== selectedData.label) {
+      selectData({ label: "", value: "" });
+    }
+  }, [allowEnteringValue, enteredValue, selectData, selectedData]);
+
+  useEffect(() => {
+    if (!selectableData.length) {
+      setOpenMenu(false);
+    }
+  }, [selectableData]);
 
   const getScrollViewStyle = () => {
-    if (data.length > 5) {
+    if (selectableData.length > 5) {
       return [styles.dropdownMenu, { height: 200 }];
     }
     return styles.dropdownMenu;
@@ -73,9 +101,9 @@ export const SelectInput: React.FC<Props> = ({
       onHoverIn={() => setHovered(true)}
       onHoverOut={() => setHovered(false)}
       onPress={() => {
-        if (!disabled || data.length) setOpenMenu((value) => !value);
+        if (!disabled || selectableData.length) setOpenMenu((value) => !value);
       }}
-      disabled={disabled || !data.length}
+      disabled={disabled || !selectableData.length}
     >
       {label && (
         <>
@@ -105,14 +133,34 @@ export const SelectInput: React.FC<Props> = ({
               </>
             )}
 
-            <BrandText
-              style={[
-                fontSemibold14,
-                { color: selectedData ? secondaryColor : neutral77 },
-              ]}
-            >
-              {selectedData?.label ? selectedData.label : placeHolder}
-            </BrandText>
+            {allowEnteringValue ? (
+              <TextInputCustom
+                placeHolder={placeHolder}
+                name={name || ""}
+                hideLabel
+                label=""
+                variant="noStyle"
+                value={enteredValue}
+                onChangeText={(text) => {
+                  setEnteredValue(text);
+                  setOpenMenu(!!selectableData.length);
+                }}
+                rules={{ required: isRequired }}
+                style={{ flex: 1 }}
+                containerStyle={{ flex: 1 }}
+                boxMainContainerStyle={{ flex: 1 }}
+                textInputStyle={{ flex: 1 }}
+              />
+            ) : (
+              <BrandText
+                style={[
+                  fontSemibold14,
+                  { color: selectedData ? secondaryColor : neutral77 },
+                ]}
+              >
+                {selectedData?.label ? selectedData.label : placeHolder}
+              </BrandText>
+            )}
           </View>
 
           <SVG
@@ -132,7 +180,7 @@ export const SelectInput: React.FC<Props> = ({
         {/*TODO: If the opened menu appears under other elements, you'll may need to set zIndex:-1 or something to these elements*/}
         {openMenu && (
           <ScrollView style={getScrollViewStyle()}>
-            {data.map((item, index) => (
+            {selectableData.map((item, index) => (
               <CustomPressable
                 onHoverIn={() => {
                   setHoveredIndex(index + 1);
@@ -143,7 +191,8 @@ export const SelectInput: React.FC<Props> = ({
                   setHovered(false);
                 }}
                 onPress={() => {
-                  setData(item);
+                  selectData(item);
+                  setEnteredValue(item.label);
                   setOpenMenu(false);
                 }}
                 key={index}
@@ -204,6 +253,7 @@ const styles = StyleSheet.create({
   iconLabel: {
     flexDirection: "row",
     alignItems: "center",
+    flex: 1,
   },
 
   dropdownMenu: {

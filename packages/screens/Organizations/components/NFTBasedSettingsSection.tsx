@@ -1,13 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { ScrollView, StyleSheet, Switch, View } from "react-native";
 
+import {
+  MintState,
+  Sort,
+  SortDirection,
+} from "../../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../../components/BrandText";
 import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
-import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
-import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
+import {
+  SelectInput,
+  SelectInputData,
+} from "../../../components/inputs/SelectInput";
 import { SpacerColumn } from "../../../components/spacer";
+import { useCollections } from "../../../hooks/useCollections";
 import { validateAddress } from "../../../utils/formRules";
 import {
   neutral17,
@@ -24,40 +32,56 @@ import { NFTSettingFormType } from "../types";
 
 interface Props {
   onSubmit: (form: NFTSettingFormType) => void;
+  networkId?: string;
 }
 
-export const NFTBasedSettingsSection: React.FC<Props> = ({ onSubmit }) => {
+export const NFTBasedSettingsSection: React.FC<Props> = ({
+  onSubmit,
+  networkId,
+}) => {
   // variables
   const {
     setValue,
     formState: { isValid },
+    handleSubmit,
   } = useForm<NFTSettingFormType>({
     defaultValues: { considerListedNFTs: false },
     mode: "all",
   });
-  const { handleSubmit, control } = useForm<NFTSettingFormType>();
-  const [contractsIndexes, setContractsIndexes] = useState<number[]>([0]);
   const [considerListedNFTs, setConsiderListedNFTs] = useState(false);
+  const { collections } = useCollections({
+    networkId: networkId!,
+    sortDirection: SortDirection.SORT_DIRECTION_UNSPECIFIED,
+    upcoming: false,
+    sort: Sort.SORT_UNSPECIFIED,
+    limit: 1000,
+    offset: 0,
+    mintState: MintState.MINT_STATE_UNSPECIFIED,
+  });
+  const selectableContracts: SelectInputData[] = useMemo(
+    () =>
+      collections.map((c) => {
+        return {
+          label: `${c.collectionName} - ${c.mintAddress}`,
+          value: c.mintAddress,
+        };
+      }),
+    [collections]
+  );
+  const [selectedContract, setSelectedContract] = useState<SelectInputData>({
+    label: "",
+    value: "",
+  });
+
+  // Specify nftContractAddress
+  useEffect(() => {
+    setValue("nftContractAddress", selectedContract.value.toString());
+  }, [selectedContract.value, setValue]);
 
   // Specify considerListedNFTs
   useEffect(() => {
     setValue("considerListedNFTs", considerListedNFTs);
   }, [considerListedNFTs, setValue]);
-
-  // functions
-  // const removeContractField = (id: number) => {
-  //   if (contractsIndexes.length > 1) {
-  //     const copyIndex = [...contractsIndexes].filter((i) => i !== id);
-  //     setContractsIndexes(copyIndex);
-  //   }
-  // };
-
-  const addContractField = () => {
-    setContractsIndexes([
-      ...contractsIndexes,
-      Math.floor(Math.random() * 200000),
-    ]);
-  };
 
   // returns
   return (
@@ -95,43 +119,17 @@ export const NFTBasedSettingsSection: React.FC<Props> = ({ onSubmit }) => {
         </CustomPressable>
         <SpacerColumn size={3} />
 
-        <TextInputCustom<NFTSettingFormType>
-          name="nftContractAddress"
-          noBrokenCorners
-          variant="labelOutside"
+        <SelectInput
+          data={selectableContracts}
+          selectedData={selectedContract}
+          selectData={setSelectedContract}
           label="NFT Collection Contract"
-          control={control}
-          rules={{ required: true, validate: validateAddress }}
+          name="nftContractAddress"
           placeHolder="tori..."
-          containerStyle={{ width: "100%" }}
+          isRequired
+          allowEnteringValue
         />
-
         <SpacerColumn size={2} />
-
-        {/*{contractsIndexes.map((id, index) => (*/}
-        {/*  <View style={styles.inputContainer} key={id.toString()}>*/}
-        {/*    <TextInputCustom<NFTSettingFormType>*/}
-        {/*      name={`contracts.${index}.address`}*/}
-        {/*      noBrokenCorners*/}
-        {/*      variant="labelOutside"*/}
-        {/*      label="NFT Collection Contract"*/}
-        {/*      hideLabel={index > 0}*/}
-        {/*      control={control}*/}
-        {/*      rules={{ required: true, validate: validateAddress }}*/}
-        {/*      placeHolder="tori..."*/}
-        {/*      containerStyle={{ width: "100%" }}*/}
-        {/*    >*/}
-        {/*      <Pressable*/}
-        {/*        style={styles.trashContainer}*/}
-        {/*        onPress={() => removeContractField(id)}*/}
-        {/*      >*/}
-        {/*        <SVG source={trashSVG} width={12} height={12} />*/}
-        {/*      </Pressable>*/}
-        {/*    </TextInputCustom>*/}
-        {/*  </View>*/}
-        {/*))}*/}
-
-        {/*<SecondaryButton size="M" text="Add More" onPress={addContractField} />*/}
       </ScrollView>
 
       <View style={styles.footer}>
@@ -139,7 +137,11 @@ export const NFTBasedSettingsSection: React.FC<Props> = ({ onSubmit }) => {
           size="M"
           text={`Next: ${ORGANIZATION_DEPLOYER_STEPS[3]}`}
           onPress={handleSubmit(onSubmit)}
-          disabled={!isValid}
+          disabled={
+            !isValid ||
+            !selectedContract.value ||
+            !validateAddress(selectedContract.value.toString())
+          }
         />
       </View>
     </View>

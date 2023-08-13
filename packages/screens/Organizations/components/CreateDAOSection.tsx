@@ -21,6 +21,8 @@ import {
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { gnoDevNetwork } from "../../../networks/gno-dev";
+import { gnoTeritoriNetwork } from "../../../networks/gno-teritori";
 import { teritoriNetwork } from "../../../networks/teritori";
 import { teritoriTestnetNetwork } from "../../../networks/teritori-testnet";
 import { IMAGE_MIME_TYPES } from "../../../utils/mime";
@@ -35,8 +37,6 @@ import { fontSemibold20, fontSemibold28 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { ORGANIZATION_DEPLOYER_STEPS } from "../OrganizationDeployerScreen";
 import { CreateDaoFormType, DaoType } from "../types";
-import {gnoTeritoriNetwork} from "../../../networks/gno-teritori";
-import {gnoDevNetwork} from "../../../networks/gno-dev";
 
 
 interface CreateDAOSectionProps {
@@ -65,7 +65,12 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
   const associatedTeritoriNameService = watch("associatedTeritoriNameService");
 
   // Networks concerned by the feature //TODO: Add more later
-  const networks = [teritoriNetwork, teritoriTestnetNetwork, gnoTeritoriNetwork, gnoDevNetwork];
+  const networks = [
+    teritoriNetwork,
+    teritoriTestnetNetwork,
+    gnoTeritoriNetwork,
+    gnoDevNetwork,
+  ];
   // Networks selectable in the SelectInput
   const selectableNetworks = networks.map((n) => {
     return {
@@ -178,7 +183,7 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
                 style={{ width: 251 }}
                 data={selectableNetworks}
                 selectedData={selectedNetwork}
-                setData={(d: SelectInputData) => {
+                selectData={(d: SelectInputData) => {
                   setSelectedNetwork(d);
                 }}
                 label="Network"
