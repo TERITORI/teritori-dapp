@@ -53,7 +53,6 @@ export const GnoDemo: React.FC<{
             });
           })()
         }
-        noDuration
         submitLabel="Propose settings change"
         contentContainerStyle={{ paddingHorizontal: 0 }}
       />

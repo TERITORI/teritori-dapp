@@ -11,7 +11,7 @@ import { AvatarWithName } from "../user/AvatarWithName";
 export const SearchNSInputContainer: FC<{
   searchText: string;
   onPressName: (userId: string, name?: string) => void;
-  networkId: string;
+  networkId?: string;
   style?: StyleProp<ViewStyle>;
   ownerAddress?: string;
 }> = ({

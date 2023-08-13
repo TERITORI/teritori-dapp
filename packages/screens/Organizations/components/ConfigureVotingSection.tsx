@@ -1,6 +1,12 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { ScrollView, StyleSheet, View } from "react-native";
+import {
+  ScrollView,
+  StyleProp,
+  StyleSheet,
+  View,
+  ViewStyle,
+} from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
 import { RangeSlider } from "../../../components/RangeSlider";
@@ -17,11 +23,14 @@ import { ConfigureVotingFormType, DaoType } from "../types";
 interface ConfigureVotingSectionProps {
   onSubmit: (form: ConfigureVotingFormType) => void;
   type?: DaoType;
+  submitLabel?: string;
+  contentContainerStyle?: StyleProp<ViewStyle>;
 }
 
 export const ConfigureVotingSection: React.FC<ConfigureVotingSectionProps> = ({
   onSubmit,
-  type,
+  submitLabel,
+  contentContainerStyle,
 }) => {
   // variables
   const { handleSubmit, control, watch, setValue } =
@@ -40,7 +49,9 @@ export const ConfigureVotingSection: React.FC<ConfigureVotingSectionProps> = ({
   // returns
   return (
     <View style={styles.fill}>
-      <ScrollView contentContainerStyle={styles.container}>
+      <ScrollView
+        contentContainerStyle={[styles.container, contentContainerStyle]}
+      >
         <BrandText style={fontSemibold28}>
           Choose your voting settings below
         </BrandText>
@@ -103,7 +114,7 @@ export const ConfigureVotingSection: React.FC<ConfigureVotingSectionProps> = ({
       <View style={styles.footer}>
         <PrimaryButton
           size="M"
-          text={`Next: ${ORGANIZATION_DEPLOYER_STEPS[2]}`}
+          text={submitLabel || `Next: ${ORGANIZATION_DEPLOYER_STEPS[2]}`}
           onPress={handleSubmit(onSubmit)}
         />
       </View>

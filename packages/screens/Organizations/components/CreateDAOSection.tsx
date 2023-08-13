@@ -21,6 +21,7 @@ import {
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { getNetwork, NetworkKind } from "../../../networks";
 import { gnoDevNetwork } from "../../../networks/gno-dev";
 import { gnoTeritoriNetwork } from "../../../networks/gno-teritori";
 import { teritoriNetwork } from "../../../networks/teritori";
@@ -32,12 +33,10 @@ import {
   neutralA3,
   secondaryColor,
 } from "../../../utils/style/colors";
-import { NetworkKind } from "../../../networks";
 import { fontSemibold20, fontSemibold28 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { ORGANIZATION_DEPLOYER_STEPS } from "../OrganizationDeployerScreen";
 import { CreateDaoFormType, DaoType } from "../types";
-
 
 interface CreateDAOSectionProps {
   onSubmit: (form: CreateDaoFormType) => void;
@@ -88,6 +87,7 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
       <NetworkIcon networkId={dappSelectedNetworkInfo?.id} size={16} />
     ),
   });
+  const selectedNetworkInfo = getNetwork(selectedNetwork?.value.toString());
 
   // Specify networkId
   useEffect(() => {
@@ -150,14 +150,6 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
                     style={isImageHovered && { borderColor: secondaryColor }}
                   />
                 </TouchableOpacity>
-                // <IconBox
-                //   icon={audioSVG}
-                //   onPress={onPress}
-                //   style={{ marginRight: layout.padding_x2_5 }}
-                //   disabled={
-                //     !!formValues.files?.length || !!formValues.gifs?.length
-                //   }
-                // />
               )}
             </FileUploader>
           </CustomPressable>
@@ -199,7 +191,7 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
                       setSelectedName(name);
                     }
                   }}
-                  networkId={selectedNetwork.value.toString()}
+                  networkId={selectedNetworkInfo?.id}
                   ownerAddress={selectedWallet?.address}
                   searchText={selectedName ? "" : associatedTeritoriNameService}
                 >
@@ -211,14 +203,14 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
                     label={`Associated Handle${
                       associatedTeritoriNameService
                         ? `: ${associatedTeritoriNameService}${
-                          selectedNetwork?.kind === NetworkKind.Gno
-                            ? ""
-                            : ".tori"
-                        }`
+                            selectedNetworkInfo?.kind === NetworkKind.Gno
+                              ? ""
+                              : ".tori"
+                          }`
                         : ""
                     }`}
                     placeHolder={
-                      selectedNetwork?.kind === NetworkKind.Gno
+                      selectedNetworkInfo?.kind === NetworkKind.Gno
                         ? "your_organization"
                         : "your-organization"
                     }

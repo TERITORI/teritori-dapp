@@ -44,7 +44,7 @@ export const AvatarWithFrame: React.FC<{
   networkId: string | undefined;
   image: string | null | undefined;
   size?: AvatarWithFrameSize;
-  isDAO: boolean;
+  isDAO?: boolean;
   style?: StyleProp<ViewStyle>;
 }> = ({ networkId, image, isDAO, size = "M", style }) => {
   const network = getNetwork(networkId);
