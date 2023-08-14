@@ -8,9 +8,13 @@ import { signingSocialFeedClient } from "../../../client-creators/socialFeedClie
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useTeritoriSocialFeedTipPostMutation } from "../../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.react-query";
 import { useBalances } from "../../../hooks/useBalances";
-import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
+import {
+  useSelectedNetworkId,
+  useSelectedNetworkInfo,
+} from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import {
+  NetworkKind,
   getStakingCurrency,
   keplrCurrencyFromNativeCurrencyInfo,
 } from "../../../networks";
@@ -53,7 +57,8 @@ export const TipModal: React.FC<{
       },
     });
   const selectedWallet = useSelectedWallet();
-  const selectedNetworkId = useSelectedNetworkId();
+  const selectedNetworkInfo = useSelectedNetworkInfo();
+  const selectedNetworkId = selectedNetworkInfo?.id || "";
   const nativeCurrency = getStakingCurrency(selectedNetworkId);
   const { setToastError, setToastSuccess } = useFeedbacks();
   const balances = useBalances(selectedNetworkId, selectedWallet?.address);
@@ -70,25 +75,49 @@ export const TipModal: React.FC<{
     ) {
       return;
     }
-    const client = await signingSocialFeedClient({
-      networkId: selectedNetworkId,
-      walletAddress: selectedWallet.address,
-    });
+
     const amount = Decimal.fromUserInput(
       fieldValues.amount,
       nativeCurrency.decimals
     ).atomics;
-    postMutate({
-      client,
-      msg: {
-        identifier: postId,
-      },
-      args: {
-        fee: defaultSocialFeedFee,
-        memo: "",
-        funds: [coin(amount, nativeCurrency.denom)],
-      },
-    });
+
+    if (selectedNetworkInfo?.kind === NetworkKind.Gno) {
+      const adena = (window as any).adena;
+      const res = await adena.DoContract({
+        messages: [
+          {
+            type: "/bank.MsgSend",
+            value: {
+              from_address: selectedWallet.address,
+              to_address: author,
+              amount: `${amount}ugnot`,
+            },
+          },
+        ],
+        gasFee: 1,
+        gasWanted: 50000,
+      });
+      if (res.status !== "success") {
+        throw new Error(res.message);
+      }
+    } else {
+      const client = await signingSocialFeedClient({
+        networkId: selectedNetworkId,
+        walletAddress: selectedWallet.address,
+      });
+
+      postMutate({
+        client,
+        msg: {
+          identifier: postId,
+        },
+        args: {
+          fee: defaultSocialFeedFee,
+          memo: "",
+          funds: [coin(amount, nativeCurrency.denom)],
+        },
+      });
+    }
   };
 
   const maxAtomics =
