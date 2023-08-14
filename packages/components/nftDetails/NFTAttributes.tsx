@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { View } from "react-native";
 
 import { AttributeRarityFloor } from "../../api/marketplace/v1/marketplace";
-import { NFTInfo } from "../../screens/Marketplace/NFTDetailScreen";
 import { neutral33 } from "../../utils/style/colors";
+import { NFTInfo } from "../../utils/types/nft";
 import { ToggleableButton } from "../buttons/ToggleableButton";
 import { NFTAttributeCard } from "../cards/NFTAttributeCard";
 

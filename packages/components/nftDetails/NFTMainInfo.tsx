@@ -11,7 +11,6 @@ import {
 } from "../../api/marketplace/v1/marketplace";
 import { useTransactionModals } from "../../context/TransactionModalsProvider";
 import { parseNetworkObjectId } from "../../networks";
-import { NFTInfo } from "../../screens/Marketplace/NFTDetailScreen";
 import { mustGetMarketplaceClient } from "../../utils/backend";
 import { RootStackParamList } from "../../utils/navigation";
 import { neutral77, primaryColor } from "../../utils/style/colors";
@@ -22,6 +21,7 @@ import {
   fontSemibold28,
 } from "../../utils/style/fonts";
 import { layout, screenContentMaxWidth } from "../../utils/style/layout";
+import { NFTInfo } from "../../utils/types/nft";
 import { BrandText } from "../BrandText";
 import { ImageWithTextInsert } from "../ImageWithTextInsert";
 import { ActivityTable } from "../activity/ActivityTable";
@@ -262,7 +262,13 @@ export const NFTMainInfo: React.FC<{
               )}
             </>
           ) : (
-            <SpacerColumn size={2} />
+            <>
+              <SpacerColumn size={2} />
+              <BrandText style={{ color: neutral77 }}>
+                Marketplace Not Opened Yet
+              </BrandText>
+              <SpacerColumn size={2} />
+            </>
           )}
           <Tabs
             onSelect={setSelectedTab}
