@@ -1,9 +1,12 @@
 package feed
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
+	"net/http"
 	"strings"
 	"time"
 
@@ -22,9 +25,10 @@ type FeedService struct {
 }
 
 type Config struct {
-	Logger    *zap.Logger
-	IndexerDB *gorm.DB
-	PinataJWT string
+	Logger     *zap.Logger
+	IndexerDB  *gorm.DB
+	PinataJWT  string
+	ChatApiKey string
 }
 
 type DBPostWithExtra struct {
@@ -176,4 +180,99 @@ func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*fee
 	}
 
 	return &feedpb.PostsResponse{Posts: posts}, nil
+}
+
+type CreateCompletionsRequest struct {
+	Model            string            `json:"model,omitempty"`
+	Prompt           string            `json:"prompt,omitempty"`
+	Messages         []Message         `json:"messages,omitempty"`
+	Suffix           string            `json:"suffix,omitempty"`
+	MaxTokens        int               `json:"max_tokens,omitempty"`
+	Temperature      float64           `json:"temperature,omitempty"`
+	TopP             float64           `json:"top_p,omitempty"`
+	N                int               `json:"n,omitempty"`
+	Stream           bool              `json:"stream,omitempty"`
+	LogProbs         int               `json:"logprobs,omitempty"`
+	Echo             bool              `json:"echo,omitempty"`
+	PresencePenalty  float64           `json:"presence_penalty,omitempty"`
+	FrequencyPenalty float64           `json:"frequency_penalty,omitempty"`
+	BestOf           int               `json:"best_of,omitempty"`
+	LogitBias        map[string]string `json:"logit_bias,omitempty"`
+	User             string            `json:"user,omitempty"`
+}
+type CreateCompletionsResponse struct {
+	ID      string `json:"id,omitempty"`
+	Object  string `json:"object,omitempty"`
+	Created int    `json:"created,omitempty"`
+	Model   string `json:"model,omitempty"`
+	Choices []struct {
+		Message struct {
+			Role    string `json:"role,omitempty"`
+			Content string `json:"content,omitempty"`
+		} `json:"message"`
+		Text         string      `json:"text,omitempty"`
+		Index        int         `json:"index,omitempty"`
+		Logprobs     interface{} `json:"logprobs,omitempty"`
+		FinishReason string      `json:"finish_reason,omitempty"`
+	} `json:"choices,omitempty"`
+	Usage struct {
+		PromptTokens     int `json:"prompt_tokens,omitempty"`
+		CompletionTokens int `json:"completion_tokens,omitempty"`
+		TotalTokens      int `json:"total_tokens,omitempty"`
+	} `json:"usage,omitempty"`
+
+	Error Error `json:"error,omitempty"`
+}
+type Error struct {
+	Message string      `json:"message,omitempty"`
+	Type    string      `json:"type,omitempty"`
+	Param   interface{} `json:"param,omitempty"`
+	Code    interface{} `json:"code,omitempty"`
+}
+
+type Message struct {
+	Role    string `json:"role,omitempty"`
+	Content string `json:"content,omitempty"`
+}
+
+func (s *FeedService) ChatBot(ctx context.Context, req *feedpb.ChatBotRequest) (*feedpb.ChatBotResponse, error) {
+	apiKey := s.conf.ChatApiKey
+	url := "https://api.openai.com/v1/completions"
+	response := make([]byte, 0)
+	input := CreateCompletionsRequest{
+		Model:       "text-davinci-003",
+		Prompt:      req.GetQuestion(),
+		Temperature: 0.7,
+	}
+	rJson, err := json.Marshal(input)
+	if err != nil {
+		return nil, err
+	}
+	body := bytes.NewReader(rJson)
+	req1, err1 := http.NewRequest(http.MethodPost, url, body)
+	if err != nil {
+		return nil, err1
+	}
+
+	req1.Header.Add("Authorization", "Bearer "+apiKey)
+	req1.Header.Add("Content-Type", "application/json")
+	client := &http.Client{}
+	resp, err2 := client.Do(req1)
+	if err2 != nil {
+		return nil, err2
+	}
+	defer resp.Body.Close()
+	response, err3 := io.ReadAll(resp.Body)
+	if err3 != nil {
+		return nil, err3
+	}
+	res3 := CreateCompletionsResponse{}
+	err = json.Unmarshal(response, &res3)
+	if err != nil {
+		return nil, err
+	}
+	if res3.Error.Message != "" {
+		return nil, errors.New(res3.Error.Message)
+	}
+	return &feedpb.ChatBotResponse{Answer: res3.Choices[0].Text}, nil
 }

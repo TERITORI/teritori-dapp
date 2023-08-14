@@ -44,6 +44,8 @@ import {
   mustGetCosmosNetwork,
 } from "../../../networks";
 import { selectNFTStorageAPI } from "../../../store/slices/settings";
+import { getUserId, mustGetCosmosNetwork } from "../../../networks";
+import { mustGetFeedClient } from "../../../utils/backend";
 import { prettyPrice } from "../../../utils/coins";
 import { defaultSocialFeedFee } from "../../../utils/fee";
 import { adenaDoContract } from "../../../utils/gno";
@@ -388,11 +390,25 @@ export const NewsFeedInput = React.forwardRef<
       focusInput,
     }));
 
-    const handleTextChange = (text: string) => {
+    const handleTextChange = async (text: string) => {
       // Comments are blocked at 2500
       if (type !== "post" && text.length > SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT)
         return;
       setValue("message", text);
+      //check bot
+      const rows = text.split("\n");
+      if (
+        rows.length > 2 &&
+        rows[0].trim() === "/question" &&
+        rows[1].trim() !== ""
+      ) {
+        const question = rows[1];
+        const socialFeedClient = mustGetFeedClient(selectedNetworkId);
+        const response = await socialFeedClient.ChatBot({ question });
+        if (response.answer) {
+          setValue("message", response.answer);
+        }
+      }
     };
 
     const onEmojiSelected = (emoji: string | null) => {

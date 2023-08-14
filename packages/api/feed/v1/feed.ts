@@ -14,6 +14,14 @@ export interface IPFSKeyResponse {
   jwt: string;
 }
 
+export interface ChatBotRequest {
+  question: string;
+}
+
+export interface ChatBotResponse {
+  answer: string;
+}
+
 export interface Reaction {
   icon: string;
   count: number;
@@ -139,6 +147,100 @@ export const IPFSKeyResponse = {
   fromPartial<I extends Exact<DeepPartial<IPFSKeyResponse>, I>>(object: I): IPFSKeyResponse {
     const message = createBaseIPFSKeyResponse();
     message.jwt = object.jwt ?? "";
+    return message;
+  },
+};
+
+function createBaseChatBotRequest(): ChatBotRequest {
+  return { question: "" };
+}
+
+export const ChatBotRequest = {
+  encode(message: ChatBotRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.question !== "") {
+      writer.uint32(10).string(message.question);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ChatBotRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseChatBotRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.question = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ChatBotRequest {
+    return { question: isSet(object.question) ? String(object.question) : "" };
+  },
+
+  toJSON(message: ChatBotRequest): unknown {
+    const obj: any = {};
+    message.question !== undefined && (obj.question = message.question);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<ChatBotRequest>, I>>(object: I): ChatBotRequest {
+    const message = createBaseChatBotRequest();
+    message.question = object.question ?? "";
+    return message;
+  },
+};
+
+function createBaseChatBotResponse(): ChatBotResponse {
+  return { answer: "" };
+}
+
+export const ChatBotResponse = {
+  encode(message: ChatBotResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.answer !== "") {
+      writer.uint32(10).string(message.answer);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ChatBotResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseChatBotResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.answer = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ChatBotResponse {
+    return { answer: isSet(object.answer) ? String(object.answer) : "" };
+  },
+
+  toJSON(message: ChatBotResponse): unknown {
+    const obj: any = {};
+    message.answer !== undefined && (obj.answer = message.answer);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<ChatBotResponse>, I>>(object: I): ChatBotResponse {
+    const message = createBaseChatBotResponse();
+    message.answer = object.answer ?? "";
     return message;
   },
 };
@@ -565,6 +667,7 @@ export const PostsResponse = {
 
 export interface FeedService {
   Posts(request: DeepPartial<PostsRequest>, metadata?: grpc.Metadata): Promise<PostsResponse>;
+  ChatBot(request: DeepPartial<ChatBotRequest>, metadata?: grpc.Metadata): Promise<ChatBotResponse>;
   IPFSKey(request: DeepPartial<IPFSKeyRequest>, metadata?: grpc.Metadata): Promise<IPFSKeyResponse>;
 }
 
@@ -574,11 +677,16 @@ export class FeedServiceClientImpl implements FeedService {
   constructor(rpc: Rpc) {
     this.rpc = rpc;
     this.Posts = this.Posts.bind(this);
+    this.ChatBot = this.ChatBot.bind(this);
     this.IPFSKey = this.IPFSKey.bind(this);
   }
 
   Posts(request: DeepPartial<PostsRequest>, metadata?: grpc.Metadata): Promise<PostsResponse> {
     return this.rpc.unary(FeedServicePostsDesc, PostsRequest.fromPartial(request), metadata);
+  }
+
+  ChatBot(request: DeepPartial<ChatBotRequest>, metadata?: grpc.Metadata): Promise<ChatBotResponse> {
+    return this.rpc.unary(FeedServiceChatBotDesc, ChatBotRequest.fromPartial(request), metadata);
   }
 
   IPFSKey(request: DeepPartial<IPFSKeyRequest>, metadata?: grpc.Metadata): Promise<IPFSKeyResponse> {
@@ -602,6 +710,28 @@ export const FeedServicePostsDesc: UnaryMethodDefinitionish = {
     deserializeBinary(data: Uint8Array) {
       return {
         ...PostsResponse.decode(data),
+        toObject() {
+          return this;
+        },
+      };
+    },
+  } as any,
+};
+
+export const FeedServiceChatBotDesc: UnaryMethodDefinitionish = {
+  methodName: "ChatBot",
+  service: FeedServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return ChatBotRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      return {
+        ...ChatBotResponse.decode(data),
         toObject() {
           return this;
         },

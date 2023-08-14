@@ -15,6 +15,13 @@ message IPFSKeyResponse {
   string jwt = 1;
 }
 
+message ChatBotRequest {
+  string question = 1;
+}
+message ChatBotResponse {
+  string answer = 1;
+}
+
 message Reaction {
   string icon = 1;
   uint32 count = 2;

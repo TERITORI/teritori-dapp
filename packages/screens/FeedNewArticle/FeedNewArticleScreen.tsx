@@ -158,7 +158,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
         navigateBack();
         reset();
       }
-    } catch (err) {
+    } catch (err: any) {
       setToastError({
         title: "Something went wrong.",
         message: err instanceof Error ? err.message : `${err}`,

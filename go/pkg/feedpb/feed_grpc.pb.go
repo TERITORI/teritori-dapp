@@ -23,6 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type FeedServiceClient interface {
 	Posts(ctx context.Context, in *PostsRequest, opts ...grpc.CallOption) (*PostsResponse, error)
+	ChatBot(ctx context.Context, in *ChatBotRequest, opts ...grpc.CallOption) (*ChatBotResponse, error)
 	IPFSKey(ctx context.Context, in *IPFSKeyRequest, opts ...grpc.CallOption) (*IPFSKeyResponse, error)
 }
 
@@ -43,6 +44,15 @@ func (c *feedServiceClient) Posts(ctx context.Context, in *PostsRequest, opts ..
 	return out, nil
 }
 
+func (c *feedServiceClient) ChatBot(ctx context.Context, in *ChatBotRequest, opts ...grpc.CallOption) (*ChatBotResponse, error) {
+	out := new(ChatBotResponse)
+	err := c.cc.Invoke(ctx, "/feed.v1.FeedService/ChatBot", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *feedServiceClient) IPFSKey(ctx context.Context, in *IPFSKeyRequest, opts ...grpc.CallOption) (*IPFSKeyResponse, error) {
 	out := new(IPFSKeyResponse)
 	err := c.cc.Invoke(ctx, "/feed.v1.FeedService/IPFSKey", in, out, opts...)
@@ -57,6 +67,7 @@ func (c *feedServiceClient) IPFSKey(ctx context.Context, in *IPFSKeyRequest, opt
 // for forward compatibility
 type FeedServiceServer interface {
 	Posts(context.Context, *PostsRequest) (*PostsResponse, error)
+	ChatBot(context.Context, *ChatBotRequest) (*ChatBotResponse, error)
 	IPFSKey(context.Context, *IPFSKeyRequest) (*IPFSKeyResponse, error)
 	mustEmbedUnimplementedFeedServiceServer()
 }
@@ -67,6 +78,9 @@ type UnimplementedFeedServiceServer struct {
 
 func (UnimplementedFeedServiceServer) Posts(context.Context, *PostsRequest) (*PostsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Posts not implemented")
+}
+func (UnimplementedFeedServiceServer) ChatBot(context.Context, *ChatBotRequest) (*ChatBotResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChatBot not implemented")
 }
 func (UnimplementedFeedServiceServer) IPFSKey(context.Context, *IPFSKeyRequest) (*IPFSKeyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method IPFSKey not implemented")
@@ -102,6 +116,24 @@ func _FeedService_Posts_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _FeedService_ChatBot_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ChatBotRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FeedServiceServer).ChatBot(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/feed.v1.FeedService/ChatBot",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FeedServiceServer).ChatBot(ctx, req.(*ChatBotRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _FeedService_IPFSKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(IPFSKeyRequest)
 	if err := dec(in); err != nil {
@@ -130,6 +162,10 @@ var FeedService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Posts",
 			Handler:    _FeedService_Posts_Handler,
+		},
+		{
+			MethodName: "ChatBot",
+			Handler:    _FeedService_ChatBot_Handler,
 		},
 		{
 			MethodName: "IPFSKey",
