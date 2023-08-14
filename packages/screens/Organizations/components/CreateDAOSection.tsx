@@ -35,6 +35,7 @@ import {
 } from "../../../utils/style/colors";
 import { fontSemibold20, fontSemibold28 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { nsTokenWithoutTLD } from "../../../utils/tns";
 import { ORGANIZATION_DEPLOYER_STEPS } from "../OrganizationDeployerScreen";
 import { CreateDaoFormType, DaoType } from "../types";
 
@@ -187,8 +188,11 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
                 <SearchNSInputContainer
                   onPressName={(userId, name) => {
                     if (name) {
-                      setValue("associatedTeritoriNameService", name);
-                      setSelectedName(name);
+                      setValue(
+                        "associatedTeritoriNameService",
+                        nsTokenWithoutTLD(name)
+                      );
+                      setSelectedName(nsTokenWithoutTLD(name));
                     }
                   }}
                   networkId={selectedNetworkInfo?.id}

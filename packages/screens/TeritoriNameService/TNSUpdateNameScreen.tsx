@@ -135,9 +135,9 @@ export const TNSUpdateNameScreen: React.FC<TNSUpdateNameScreenProps> = ({
             },
           ],
         });
-        console.log("created proposal", res);
+        console.log("Proposal submitted", res);
         setToastSuccess({
-          title: "Created proposal",
+          title: "Proposal submitted",
           message: "",
         });
         setName(name);

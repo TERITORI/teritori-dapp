@@ -104,15 +104,12 @@ export const GradientModalBase: React.FC<ModalBaseProps> = ({
           {
             alignItems: "center",
             justifyContent: "center",
+            height: "100%",
+            width: "100%",
           },
-          scrollable
-            ? {
-                marginVertical: 20,
-              }
-            : {
-                height: "100%",
-                width: "100%",
-              },
+          scrollable && {
+            marginVertical: 20,
+          },
         ]}
       >
         {/*------ Modal main container */}

@@ -14,6 +14,7 @@ export const SearchNSInputContainer: FC<{
   networkId?: string;
   style?: StyleProp<ViewStyle>;
   ownerAddress?: string;
+  hideDAOs?: boolean;
 }> = ({
   searchText,
   onPressName,
@@ -21,6 +22,7 @@ export const SearchNSInputContainer: FC<{
   style,
   ownerAddress,
   children,
+  hideDAOs,
 }) => {
   const { names } = useNameSearch({
     networkId,
@@ -69,6 +71,7 @@ export const SearchNSInputContainer: FC<{
               name={n}
               onPress={(userId, name) => onPressName(userId, name)}
               style={{ marginRight: layout.padding_x1 }}
+              hideDAOs={hideDAOs}
             />
           ))}
         </View>

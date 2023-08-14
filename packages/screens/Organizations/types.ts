@@ -1,3 +1,4 @@
+import { Member } from "../../contracts-clients/cw4-group/Cw4Group.types";
 import { LocalFileData } from "../../utils/types/files";
 
 export enum DaoType {
@@ -37,7 +38,7 @@ export type TokenSettingFormType = {
 };
 
 export type MemberSettingFormType = {
-  members: { addr: string; weight: string }[];
+  members: Member[];
 };
 
 export type LaunchingProcessStepType = {

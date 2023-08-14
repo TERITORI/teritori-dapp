@@ -109,7 +109,10 @@ export const OrganizationDeployerScreen = () => {
               initialMembers: (step3MemberSettingFormData?.members || []).map(
                 (member) => ({
                   address: member.addr,
-                  weight: parseInt(member.weight, 10),
+                  weight:
+                    typeof member.weight === "number"
+                      ? member.weight
+                      : parseInt(member.weight, 10),
                 })
               ),
               thresholdPercent:
@@ -210,9 +213,12 @@ export const OrganizationDeployerScreen = () => {
                 description: step1DaoInfoFormData.organizationDescription,
                 tns: step1DaoInfoFormData.associatedTeritoriNameService,
                 image: step1DaoInfoFormData.image,
-                members: step3MemberSettingFormData.members.map((value) => ({
-                  addr: value.addr,
-                  weight: parseInt(value.weight, 10),
+                members: step3MemberSettingFormData.members.map((member) => ({
+                  addr: member.addr,
+                  weight:
+                    typeof member.weight === "number"
+                      ? member.weight
+                      : parseInt(member.weight, 10),
                 })),
                 quorum: getPercent(step2ConfigureVotingFormData.supportPercent),
                 threshold: getPercent(

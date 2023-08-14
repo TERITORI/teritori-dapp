@@ -1,4 +1,3 @@
-import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import React, { ComponentProps, useCallback, useRef, useState } from "react";
 import {
   Pressable,
@@ -10,6 +9,7 @@ import {
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
+import { AddMembersModal } from "./AddMembersModal";
 import dotsCircleSVG from "../../../assets/icons/dots-circle.svg";
 import trashSVG from "../../../assets/icons/trash.svg";
 import { useDropdowns } from "../../context/DropdownsProvider";
@@ -19,13 +19,9 @@ import { useDAOGroup } from "../../hooks/dao/useDAOGroup";
 import { useDAOMakeProposal } from "../../hooks/dao/useDAOMakeProposal";
 import { useIsDAOMember } from "../../hooks/dao/useDAOMember";
 import { useDAOMembers } from "../../hooks/dao/useDAOMembers";
-import { useInvalidateDAOProposals } from "../../hooks/dao/useDAOProposals";
-import { useNameSearch } from "../../hooks/search/useNameSearch";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { NetworkKind, getUserId, parseUserId } from "../../networks";
-import { toRawURLBase64String } from "../../utils/buffer";
-import { adenaVMCall, extractGnoNumber } from "../../utils/gno";
+import { getUserId, parseUserId } from "../../networks";
 import {
   neutral00,
   neutral33,
@@ -38,17 +34,13 @@ import {
   fontSemibold8,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { modalMarginPadding } from "../../utils/style/modals";
 import { BrandText } from "../BrandText";
 import { DropdownOption } from "../DropdownOption";
 import { OmniLink } from "../OmniLink";
 import { SVG } from "../SVG";
-import { SearchBarInput } from "../Search/SearchBarInput";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { PrimaryButton } from "../buttons/PrimaryButton";
 import { UserAvatarWithFrame } from "../images/AvatarWithFrame";
-import ModalBase from "../modals/ModalBase";
-import { AvatarWithName } from "../user/AvatarWithName";
 
 // FIXME: pagination
 
@@ -123,119 +115,6 @@ export const DAOMembers: React.FC<{
         onClose={() => setShowAddMemberModal(false)}
       />
     </View>
-  );
-};
-
-const AddMembersModal: React.FC<{
-  daoId: string | undefined;
-  show: boolean;
-  onClose: () => void;
-}> = ({ daoId, show, onClose }) => {
-  const [network] = parseUserId(daoId);
-  const { wrapWithFeedback } = useFeedbacks();
-  const selectedWallet = useSelectedWallet();
-  const [searchText, setSearchText] = useState("");
-  const [ids, setIds] = useState<string[]>([]);
-  const proposeToAddMembers = useProposeToAddMembers(daoId);
-
-  const { names } = useNameSearch({
-    networkId: network?.id,
-    input: searchText,
-    limit: 16,
-  });
-  return (
-    <ModalBase
-      visible={show}
-      label="Add members to DAO"
-      onClose={onClose}
-      scrollable
-      noBrokenCorners
-    >
-      <View
-        style={{
-          minHeight: 300,
-          width: 400,
-        }}
-      >
-        <View
-          style={{
-            margin: -4,
-            flexDirection: "row",
-            flexWrap: "wrap",
-            justifyContent: "flex-start",
-            alignItems: "flex-start",
-          }}
-        >
-          {ids.map((id) => {
-            return (
-              <AvatarWithName
-                style={{ margin: 4 }}
-                key={id}
-                userId={id}
-                onPress={(userId) =>
-                  setIds((ids) => ids.filter((id) => id !== userId))
-                }
-              />
-            );
-          })}
-        </View>
-      </View>
-      <PrimaryButton
-        disabled={!ids.length}
-        text="Propose to add members"
-        size="XS"
-        style={{ alignSelf: "center" }}
-        loader
-        fullWidth
-        onPress={wrapWithFeedback(async () => {
-          await proposeToAddMembers(
-            selectedWallet?.address,
-            ids.map((n) => parseUserId(n)[1])
-          );
-          onClose();
-        })}
-      />
-      <SearchBarInput
-        text={searchText}
-        onChangeText={setSearchText}
-        style={{
-          marginBottom: modalMarginPadding,
-          marginTop: 8,
-          width: "100%",
-        }}
-      />
-      <View
-        style={{
-          minHeight: 300,
-          width: 400,
-          marginBottom: modalMarginPadding,
-        }}
-      >
-        <View
-          style={{
-            margin: -4,
-            flexDirection: "row",
-            flexWrap: "wrap",
-            justifyContent: "flex-start",
-            alignItems: "flex-start",
-          }}
-        >
-          {names.map((name) => {
-            return (
-              <AvatarWithName
-                style={{ margin: 4 }}
-                key={name}
-                networkId={network?.id}
-                name={name}
-                onPress={(userId) =>
-                  setIds((ids) => [...new Set([...ids, userId])])
-                }
-              />
-            );
-          })}
-        </View>
-      </View>
-    </ModalBase>
   );
 };
 
@@ -323,6 +202,7 @@ const UserCard: React.FC<{
           {fakeRoles.map((role, index) => {
             return (
               <View
+                key={index}
                 style={[
                   {
                     marginLeft: index === 0 ? undefined : 4,
@@ -367,7 +247,7 @@ const UserCard: React.FC<{
                     userAddress
                   );
                 },
-                { title: "Created proposal" }
+                { title: "Proposal submitted" }
               ),
             },
           ]}
@@ -503,129 +383,4 @@ const useProposeToRemoveMember = (daoId: string | undefined) => {
     },
     [groupAddress, makeProposal]
   );
-};
-
-const useProposeToAddMembers = (daoId: string | undefined) => {
-  const makeProposal = useDAOMakeProposal(daoId);
-  const { data: groupAddress } = useDAOGroup(daoId);
-  const invalidateDAOProposals = useInvalidateDAOProposals(daoId);
-  return useCallback(
-    async (senderAddress: string | undefined, membersToAdd: string[]) => {
-      const weight = 1;
-      const [network, daoAddress] = parseUserId(daoId);
-      if (!senderAddress) {
-        throw new Error("Invalid sender");
-      }
-      switch (network?.kind) {
-        case NetworkKind.Cosmos: {
-          if (!groupAddress) {
-            throw new Error("DAO group address not found");
-          }
-          const updateMembersReq: {
-            add: Member[];
-            remove: string[];
-          } = {
-            add: membersToAdd.map((m) => ({ addr: m, weight })),
-            remove: [],
-          };
-          await makeProposal(senderAddress, {
-            title: `Add ${membersToAdd.length} member(s) with weight ${weight}`,
-            description: "",
-            msgs: [
-              {
-                wasm: {
-                  execute: {
-                    contract_addr: groupAddress,
-                    msg: Buffer.from(
-                      JSON.stringify({
-                        update_members: updateMembersReq,
-                      })
-                    ).toString("base64"),
-                    funds: [],
-                  },
-                },
-              },
-            ],
-          });
-          break;
-        }
-        case NetworkKind.Gno: {
-          const client = new GnoJSONRPCProvider(network.endpoint);
-
-          const groupId = extractGnoNumber(
-            await client.evaluateExpression(daoAddress, "GetGroupID()")
-          );
-
-          console.log("groupId", groupId);
-
-          const b64Messages: string[] = [];
-          for (const member of membersToAdd) {
-            b64Messages.push(
-              toRawURLBase64String(
-                encodeAddMember({
-                  groupId,
-                  addr: member,
-                  weight,
-                  metadata: "",
-                })
-              )
-            );
-          }
-          await adenaVMCall(
-            network.id,
-            {
-              caller: senderAddress,
-              send: "",
-              pkg_path: daoAddress,
-              func: "Propose",
-              args: ["0", "Add members", "", b64Messages.join(",")],
-            },
-            { gasWanted: 2000000 }
-          );
-          break;
-        }
-      }
-      invalidateDAOProposals();
-    },
-    [daoId, groupAddress, invalidateDAOProposals, makeProposal]
-  );
-};
-
-interface GnoMember {
-  groupId: number;
-  addr: string;
-  weight: number;
-  metadata: string;
-}
-
-const encodeAddMember = (member: GnoMember) => {
-  const b = Buffer.alloc(16000); // TODO: compute size or concat
-
-  let offset = 0;
-
-  const type = "AddMember";
-  b.writeUInt16BE(type.length, offset);
-  offset += 2;
-  b.write(type, offset);
-  offset += type.length;
-
-  b.writeUInt32BE(0, offset);
-  offset += 4;
-  b.writeUInt32BE(member.groupId, offset);
-  offset += 4;
-
-  b.writeUInt16BE(member.addr.length, offset);
-  offset += 2;
-  b.write(member.addr, offset);
-  offset += member.addr.length;
-
-  b.writeUInt32BE(member.weight, offset);
-  offset += 4;
-
-  b.writeUInt16BE(member.metadata.length, offset);
-  offset += 2;
-  b.write(member.metadata, offset);
-  offset += member.metadata.length;
-
-  return Buffer.from(b.subarray(0, offset));
 };

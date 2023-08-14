@@ -3,6 +3,7 @@ import { StdFee, Coin } from "@cosmjs/stargate";
 
 import { ipfsURLToHTTPURL, uploadFileToIPFS } from "./ipfs";
 import { LocalFileData } from "./types/files";
+import { Member } from "../contracts-clients/cw4-group/Cw4Group.types";
 import {
   InstantiateMsg as InstantiateMsgCore,
   ModuleInstantiateInfo,
@@ -24,10 +25,6 @@ import {
 export interface TokenHolder {
   address: string;
   amount: string;
-}
-export interface DaoMember {
-  addr: string;
-  weight: number;
 }
 type CreateDaoResult = Promise<
   | {
@@ -229,7 +226,7 @@ export const createDaoMemberBased = async (
     description: string;
     tns: string;
     image: LocalFileData;
-    members: DaoMember[];
+    members: Member[];
     quorum: string;
     maxVotingPeriod: number;
     threshold: string;
