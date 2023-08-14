@@ -85,20 +85,21 @@ export const PricesRequest = {
 
   toJSON(message: PricesRequest): unknown {
     const obj: any = {};
-    message.id !== undefined && (obj.id = message.id);
-    message.time !== undefined && (obj.time = message.time);
-    if (message.vsIds) {
-      obj.vsIds = message.vsIds.map((e) => e);
-    } else {
-      obj.vsIds = [];
+    if (message.id !== "") {
+      obj.id = message.id;
+    }
+    if (message.time !== "") {
+      obj.time = message.time;
+    }
+    if (message.vsIds?.length) {
+      obj.vsIds = message.vsIds;
     }
     return obj;
   },
 
   create<I extends Exact<DeepPartial<PricesRequest>, I>>(base?: I): PricesRequest {
-    return PricesRequest.fromPartial(base ?? {});
+    return PricesRequest.fromPartial(base ?? ({} as any));
   },
-
   fromPartial<I extends Exact<DeepPartial<PricesRequest>, I>>(object: I): PricesRequest {
     const message = createBasePricesRequest();
     message.id = object.id ?? "";
@@ -159,15 +160,18 @@ export const Price = {
 
   toJSON(message: Price): unknown {
     const obj: any = {};
-    message.id !== undefined && (obj.id = message.id);
-    message.value !== undefined && (obj.value = message.value);
+    if (message.id !== "") {
+      obj.id = message.id;
+    }
+    if (message.value !== 0) {
+      obj.value = message.value;
+    }
     return obj;
   },
 
   create<I extends Exact<DeepPartial<Price>, I>>(base?: I): Price {
-    return Price.fromPartial(base ?? {});
+    return Price.fromPartial(base ?? ({} as any));
   },
-
   fromPartial<I extends Exact<DeepPartial<Price>, I>>(object: I): Price {
     const message = createBasePrice();
     message.id = object.id ?? "";
@@ -217,18 +221,15 @@ export const PricesResponse = {
 
   toJSON(message: PricesResponse): unknown {
     const obj: any = {};
-    if (message.prices) {
-      obj.prices = message.prices.map((e) => e ? Price.toJSON(e) : undefined);
-    } else {
-      obj.prices = [];
+    if (message.prices?.length) {
+      obj.prices = message.prices.map((e) => Price.toJSON(e));
     }
     return obj;
   },
 
   create<I extends Exact<DeepPartial<PricesResponse>, I>>(base?: I): PricesResponse {
-    return PricesResponse.fromPartial(base ?? {});
+    return PricesResponse.fromPartial(base ?? ({} as any));
   },
-
   fromPartial<I extends Exact<DeepPartial<PricesResponse>, I>>(object: I): PricesResponse {
     const message = createBasePricesResponse();
     message.prices = object.prices?.map((e) => Price.fromPartial(e)) || [];

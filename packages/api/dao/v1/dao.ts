@@ -83,15 +83,18 @@ export const DAOsRequest = {
 
   toJSON(message: DAOsRequest): unknown {
     const obj: any = {};
-    message.networkId !== undefined && (obj.networkId = message.networkId);
-    message.memberAddress !== undefined && (obj.memberAddress = message.memberAddress);
+    if (message.networkId !== "") {
+      obj.networkId = message.networkId;
+    }
+    if (message.memberAddress !== "") {
+      obj.memberAddress = message.memberAddress;
+    }
     return obj;
   },
 
   create<I extends Exact<DeepPartial<DAOsRequest>, I>>(base?: I): DAOsRequest {
-    return DAOsRequest.fromPartial(base ?? {});
+    return DAOsRequest.fromPartial(base ?? ({} as any));
   },
-
   fromPartial<I extends Exact<DeepPartial<DAOsRequest>, I>>(object: I): DAOsRequest {
     const message = createBaseDAOsRequest();
     message.networkId = object.networkId ?? "";
@@ -141,18 +144,15 @@ export const DAOsResponse = {
 
   toJSON(message: DAOsResponse): unknown {
     const obj: any = {};
-    if (message.daos) {
-      obj.daos = message.daos.map((e) => e ? DAO.toJSON(e) : undefined);
-    } else {
-      obj.daos = [];
+    if (message.daos?.length) {
+      obj.daos = message.daos.map((e) => DAO.toJSON(e));
     }
     return obj;
   },
 
   create<I extends Exact<DeepPartial<DAOsResponse>, I>>(base?: I): DAOsResponse {
-    return DAOsResponse.fromPartial(base ?? {});
+    return DAOsResponse.fromPartial(base ?? ({} as any));
   },
-
   fromPartial<I extends Exact<DeepPartial<DAOsResponse>, I>>(object: I): DAOsResponse {
     const message = createBaseDAOsResponse();
     message.daos = object.daos?.map((e) => DAO.fromPartial(e)) || [];
@@ -325,24 +325,45 @@ export const DAO = {
 
   toJSON(message: DAO): unknown {
     const obj: any = {};
-    message.id !== undefined && (obj.id = message.id);
-    message.admin !== undefined && (obj.admin = message.admin);
-    message.contractAddress !== undefined && (obj.contractAddress = message.contractAddress);
-    message.name !== undefined && (obj.name = message.name);
-    message.description !== undefined && (obj.description = message.description);
-    message.imageUrl !== undefined && (obj.imageUrl = message.imageUrl);
-    message.quorum !== undefined && (obj.quorum = message.quorum);
-    message.threshold !== undefined && (obj.threshold = message.threshold);
-    message.tokenName !== undefined && (obj.tokenName = message.tokenName);
-    message.tokenSymbol !== undefined && (obj.tokenSymbol = message.tokenSymbol);
-    message.unstakingDuration !== undefined && (obj.unstakingDuration = Math.round(message.unstakingDuration));
+    if (message.id !== "") {
+      obj.id = message.id;
+    }
+    if (message.admin !== "") {
+      obj.admin = message.admin;
+    }
+    if (message.contractAddress !== "") {
+      obj.contractAddress = message.contractAddress;
+    }
+    if (message.name !== "") {
+      obj.name = message.name;
+    }
+    if (message.description !== "") {
+      obj.description = message.description;
+    }
+    if (message.imageUrl !== "") {
+      obj.imageUrl = message.imageUrl;
+    }
+    if (message.quorum !== "") {
+      obj.quorum = message.quorum;
+    }
+    if (message.threshold !== "") {
+      obj.threshold = message.threshold;
+    }
+    if (message.tokenName !== "") {
+      obj.tokenName = message.tokenName;
+    }
+    if (message.tokenSymbol !== "") {
+      obj.tokenSymbol = message.tokenSymbol;
+    }
+    if (message.unstakingDuration !== 0) {
+      obj.unstakingDuration = Math.round(message.unstakingDuration);
+    }
     return obj;
   },
 
   create<I extends Exact<DeepPartial<DAO>, I>>(base?: I): DAO {
-    return DAO.fromPartial(base ?? {});
+    return DAO.fromPartial(base ?? ({} as any));
   },
-
   fromPartial<I extends Exact<DeepPartial<DAO>, I>>(object: I): DAO {
     const message = createBaseDAO();
     message.id = object.id ?? "";

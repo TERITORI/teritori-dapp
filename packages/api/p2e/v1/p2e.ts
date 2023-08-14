@@ -151,16 +151,21 @@ export const MerkleDataRequest = {
 
   toJSON(message: MerkleDataRequest): unknown {
     const obj: any = {};
-    message.userId !== undefined && (obj.userId = message.userId);
-    message.token !== undefined && (obj.token = message.token);
-    message.networkId !== undefined && (obj.networkId = message.networkId);
+    if (message.userId !== "") {
+      obj.userId = message.userId;
+    }
+    if (message.token !== "") {
+      obj.token = message.token;
+    }
+    if (message.networkId !== "") {
+      obj.networkId = message.networkId;
+    }
     return obj;
   },
 
   create<I extends Exact<DeepPartial<MerkleDataRequest>, I>>(base?: I): MerkleDataRequest {
-    return MerkleDataRequest.fromPartial(base ?? {});
+    return MerkleDataRequest.fromPartial(base ?? ({} as any));
   },
-
   fromPartial<I extends Exact<DeepPartial<MerkleDataRequest>, I>>(object: I): MerkleDataRequest {
     const message = createBaseMerkleDataRequest();
     message.userId = object.userId ?? "";
@@ -235,16 +240,21 @@ export const UserReward = {
 
   toJSON(message: UserReward): unknown {
     const obj: any = {};
-    message.to !== undefined && (obj.to = message.to);
-    message.token !== undefined && (obj.token = message.token);
-    message.amount !== undefined && (obj.amount = message.amount);
+    if (message.to !== "") {
+      obj.to = message.to;
+    }
+    if (message.token !== "") {
+      obj.token = message.token;
+    }
+    if (message.amount !== "") {
+      obj.amount = message.amount;
+    }
     return obj;
   },
 
   create<I extends Exact<DeepPartial<UserReward>, I>>(base?: I): UserReward {
-    return UserReward.fromPartial(base ?? {});
+    return UserReward.fromPartial(base ?? ({} as any));
   },
-
   fromPartial<I extends Exact<DeepPartial<UserReward>, I>>(object: I): UserReward {
     const message = createBaseUserReward();
     message.to = object.to ?? "";
@@ -319,21 +329,21 @@ export const MerkleDataResponse = {
 
   toJSON(message: MerkleDataResponse): unknown {
     const obj: any = {};
-    if (message.proof) {
-      obj.proof = message.proof.map((e) => e);
-    } else {
-      obj.proof = [];
+    if (message.proof?.length) {
+      obj.proof = message.proof;
     }
-    message.userReward !== undefined &&
-      (obj.userReward = message.userReward ? UserReward.toJSON(message.userReward) : undefined);
-    message.claimableAmount !== undefined && (obj.claimableAmount = message.claimableAmount);
+    if (message.userReward !== undefined) {
+      obj.userReward = UserReward.toJSON(message.userReward);
+    }
+    if (message.claimableAmount !== "") {
+      obj.claimableAmount = message.claimableAmount;
+    }
     return obj;
   },
 
   create<I extends Exact<DeepPartial<MerkleDataResponse>, I>>(base?: I): MerkleDataResponse {
-    return MerkleDataResponse.fromPartial(base ?? {});
+    return MerkleDataResponse.fromPartial(base ?? ({} as any));
   },
-
   fromPartial<I extends Exact<DeepPartial<MerkleDataResponse>, I>>(object: I): MerkleDataResponse {
     const message = createBaseMerkleDataResponse();
     message.proof = object.proof?.map((e) => e) || [];
@@ -386,14 +396,15 @@ export const AllSeasonsRequest = {
 
   toJSON(message: AllSeasonsRequest): unknown {
     const obj: any = {};
-    message.networkId !== undefined && (obj.networkId = message.networkId);
+    if (message.networkId !== "") {
+      obj.networkId = message.networkId;
+    }
     return obj;
   },
 
   create<I extends Exact<DeepPartial<AllSeasonsRequest>, I>>(base?: I): AllSeasonsRequest {
-    return AllSeasonsRequest.fromPartial(base ?? {});
+    return AllSeasonsRequest.fromPartial(base ?? ({} as any));
   },
-
   fromPartial<I extends Exact<DeepPartial<AllSeasonsRequest>, I>>(object: I): AllSeasonsRequest {
     const message = createBaseAllSeasonsRequest();
     message.networkId = object.networkId ?? "";
@@ -466,16 +477,21 @@ export const SeasonWithoutPrize = {
 
   toJSON(message: SeasonWithoutPrize): unknown {
     const obj: any = {};
-    message.id !== undefined && (obj.id = message.id);
-    message.bossName !== undefined && (obj.bossName = message.bossName);
-    message.bossHp !== undefined && (obj.bossHp = Math.round(message.bossHp));
+    if (message.id !== "") {
+      obj.id = message.id;
+    }
+    if (message.bossName !== "") {
+      obj.bossName = message.bossName;
+    }
+    if (message.bossHp !== 0) {
+      obj.bossHp = Math.round(message.bossHp);
+    }
     return obj;
   },
 
   create<I extends Exact<DeepPartial<SeasonWithoutPrize>, I>>(base?: I): SeasonWithoutPrize {
-    return SeasonWithoutPrize.fromPartial(base ?? {});
+    return SeasonWithoutPrize.fromPartial(base ?? ({} as any));
   },
-
   fromPartial<I extends Exact<DeepPartial<SeasonWithoutPrize>, I>>(object: I): SeasonWithoutPrize {
     const message = createBaseSeasonWithoutPrize();
     message.id = object.id ?? "";
@@ -528,18 +544,15 @@ export const AllSeasonsResponse = {
 
   toJSON(message: AllSeasonsResponse): unknown {
     const obj: any = {};
-    if (message.seasons) {
-      obj.seasons = message.seasons.map((e) => e ? SeasonWithoutPrize.toJSON(e) : undefined);
-    } else {
-      obj.seasons = [];
+    if (message.seasons?.length) {
+      obj.seasons = message.seasons.map((e) => SeasonWithoutPrize.toJSON(e));
     }
     return obj;
   },
 
   create<I extends Exact<DeepPartial<AllSeasonsResponse>, I>>(base?: I): AllSeasonsResponse {
-    return AllSeasonsResponse.fromPartial(base ?? {});
+    return AllSeasonsResponse.fromPartial(base ?? ({} as any));
   },
-
   fromPartial<I extends Exact<DeepPartial<AllSeasonsResponse>, I>>(object: I): AllSeasonsResponse {
     const message = createBaseAllSeasonsResponse();
     message.seasons = object.seasons?.map((e) => SeasonWithoutPrize.fromPartial(e)) || [];
@@ -588,14 +601,15 @@ export const CurrentSeasonRequest = {
 
   toJSON(message: CurrentSeasonRequest): unknown {
     const obj: any = {};
-    message.networkId !== undefined && (obj.networkId = message.networkId);
+    if (message.networkId !== "") {
+      obj.networkId = message.networkId;
+    }
     return obj;
   },
 
   create<I extends Exact<DeepPartial<CurrentSeasonRequest>, I>>(base?: I): CurrentSeasonRequest {
-    return CurrentSeasonRequest.fromPartial(base ?? {});
+    return CurrentSeasonRequest.fromPartial(base ?? ({} as any));
   },
-
   fromPartial<I extends Exact<DeepPartial<CurrentSeasonRequest>, I>>(object: I): CurrentSeasonRequest {
     const message = createBaseCurrentSeasonRequest();
     message.networkId = object.networkId ?? "";
@@ -723,21 +737,36 @@ export const CurrentSeasonResponse = {
 
   toJSON(message: CurrentSeasonResponse): unknown {
     const obj: any = {};
-    message.id !== undefined && (obj.id = message.id);
-    message.denom !== undefined && (obj.denom = message.denom);
-    message.totalPrize !== undefined && (obj.totalPrize = Math.round(message.totalPrize));
-    message.bossName !== undefined && (obj.bossName = message.bossName);
-    message.bossHp !== undefined && (obj.bossHp = Math.round(message.bossHp));
-    message.remainingHp !== undefined && (obj.remainingHp = message.remainingHp);
-    message.bossImage !== undefined && (obj.bossImage = message.bossImage);
-    message.isPre !== undefined && (obj.isPre = message.isPre);
+    if (message.id !== "") {
+      obj.id = message.id;
+    }
+    if (message.denom !== "") {
+      obj.denom = message.denom;
+    }
+    if (message.totalPrize !== 0) {
+      obj.totalPrize = Math.round(message.totalPrize);
+    }
+    if (message.bossName !== "") {
+      obj.bossName = message.bossName;
+    }
+    if (message.bossHp !== 0) {
+      obj.bossHp = Math.round(message.bossHp);
+    }
+    if (message.remainingHp !== 0) {
+      obj.remainingHp = message.remainingHp;
+    }
+    if (message.bossImage !== "") {
+      obj.bossImage = message.bossImage;
+    }
+    if (message.isPre === true) {
+      obj.isPre = message.isPre;
+    }
     return obj;
   },
 
   create<I extends Exact<DeepPartial<CurrentSeasonResponse>, I>>(base?: I): CurrentSeasonResponse {
-    return CurrentSeasonResponse.fromPartial(base ?? {});
+    return CurrentSeasonResponse.fromPartial(base ?? ({} as any));
   },
-
   fromPartial<I extends Exact<DeepPartial<CurrentSeasonResponse>, I>>(object: I): CurrentSeasonResponse {
     const message = createBaseCurrentSeasonResponse();
     message.id = object.id ?? "";
@@ -817,16 +846,21 @@ export const UserRankRequest = {
 
   toJSON(message: UserRankRequest): unknown {
     const obj: any = {};
-    message.seasonId !== undefined && (obj.seasonId = message.seasonId);
-    message.userId !== undefined && (obj.userId = message.userId);
-    message.networkId !== undefined && (obj.networkId = message.networkId);
+    if (message.seasonId !== "") {
+      obj.seasonId = message.seasonId;
+    }
+    if (message.userId !== "") {
+      obj.userId = message.userId;
+    }
+    if (message.networkId !== "") {
+      obj.networkId = message.networkId;
+    }
     return obj;
   },
 
   create<I extends Exact<DeepPartial<UserRankRequest>, I>>(base?: I): UserRankRequest {
-    return UserRankRequest.fromPartial(base ?? {});
+    return UserRankRequest.fromPartial(base ?? ({} as any));
   },
-
   fromPartial<I extends Exact<DeepPartial<UserRankRequest>, I>>(object: I): UserRankRequest {
     const message = createBaseUserRankRequest();
     message.seasonId = object.seasonId ?? "";
@@ -890,16 +924,18 @@ export const UserRankResponse = {
 
   toJSON(message: UserRankResponse): unknown {
     const obj: any = {};
-    message.userScore !== undefined &&
-      (obj.userScore = message.userScore ? UserScore.toJSON(message.userScore) : undefined);
-    message.totalUsers !== undefined && (obj.totalUsers = Math.round(message.totalUsers));
+    if (message.userScore !== undefined) {
+      obj.userScore = UserScore.toJSON(message.userScore);
+    }
+    if (message.totalUsers !== 0) {
+      obj.totalUsers = Math.round(message.totalUsers);
+    }
     return obj;
   },
 
   create<I extends Exact<DeepPartial<UserRankResponse>, I>>(base?: I): UserRankResponse {
-    return UserRankResponse.fromPartial(base ?? {});
+    return UserRankResponse.fromPartial(base ?? ({} as any));
   },
-
   fromPartial<I extends Exact<DeepPartial<UserRankResponse>, I>>(object: I): UserRankResponse {
     const message = createBaseUserRankResponse();
     message.userScore = (object.userScore !== undefined && object.userScore !== null)
@@ -986,17 +1022,24 @@ export const LeaderboardRequest = {
 
   toJSON(message: LeaderboardRequest): unknown {
     const obj: any = {};
-    message.seasonId !== undefined && (obj.seasonId = message.seasonId);
-    message.limit !== undefined && (obj.limit = Math.round(message.limit));
-    message.offset !== undefined && (obj.offset = Math.round(message.offset));
-    message.networkId !== undefined && (obj.networkId = message.networkId);
+    if (message.seasonId !== "") {
+      obj.seasonId = message.seasonId;
+    }
+    if (message.limit !== 0) {
+      obj.limit = Math.round(message.limit);
+    }
+    if (message.offset !== 0) {
+      obj.offset = Math.round(message.offset);
+    }
+    if (message.networkId !== "") {
+      obj.networkId = message.networkId;
+    }
     return obj;
   },
 
   create<I extends Exact<DeepPartial<LeaderboardRequest>, I>>(base?: I): LeaderboardRequest {
-    return LeaderboardRequest.fromPartial(base ?? {});
+    return LeaderboardRequest.fromPartial(base ?? ({} as any));
   },
-
   fromPartial<I extends Exact<DeepPartial<LeaderboardRequest>, I>>(object: I): LeaderboardRequest {
     const message = createBaseLeaderboardRequest();
     message.seasonId = object.seasonId ?? "";
@@ -1105,19 +1148,30 @@ export const UserScore = {
 
   toJSON(message: UserScore): unknown {
     const obj: any = {};
-    message.rank !== undefined && (obj.rank = Math.round(message.rank));
-    message.snapshotRank !== undefined && (obj.snapshotRank = Math.round(message.snapshotRank));
-    message.userId !== undefined && (obj.userId = message.userId);
-    message.inProgressScore !== undefined && (obj.inProgressScore = Math.round(message.inProgressScore));
-    message.snapshotScore !== undefined && (obj.snapshotScore = Math.round(message.snapshotScore));
-    message.seasonId !== undefined && (obj.seasonId = message.seasonId);
+    if (message.rank !== 0) {
+      obj.rank = Math.round(message.rank);
+    }
+    if (message.snapshotRank !== 0) {
+      obj.snapshotRank = Math.round(message.snapshotRank);
+    }
+    if (message.userId !== "") {
+      obj.userId = message.userId;
+    }
+    if (message.inProgressScore !== 0) {
+      obj.inProgressScore = Math.round(message.inProgressScore);
+    }
+    if (message.snapshotScore !== 0) {
+      obj.snapshotScore = Math.round(message.snapshotScore);
+    }
+    if (message.seasonId !== "") {
+      obj.seasonId = message.seasonId;
+    }
     return obj;
   },
 
   create<I extends Exact<DeepPartial<UserScore>, I>>(base?: I): UserScore {
-    return UserScore.fromPartial(base ?? {});
+    return UserScore.fromPartial(base ?? ({} as any));
   },
-
   fromPartial<I extends Exact<DeepPartial<UserScore>, I>>(object: I): UserScore {
     const message = createBaseUserScore();
     message.rank = object.rank ?? 0;
@@ -1171,15 +1225,15 @@ export const LeaderboardResponse = {
 
   toJSON(message: LeaderboardResponse): unknown {
     const obj: any = {};
-    message.userScore !== undefined &&
-      (obj.userScore = message.userScore ? UserScore.toJSON(message.userScore) : undefined);
+    if (message.userScore !== undefined) {
+      obj.userScore = UserScore.toJSON(message.userScore);
+    }
     return obj;
   },
 
   create<I extends Exact<DeepPartial<LeaderboardResponse>, I>>(base?: I): LeaderboardResponse {
-    return LeaderboardResponse.fromPartial(base ?? {});
+    return LeaderboardResponse.fromPartial(base ?? ({} as any));
   },
-
   fromPartial<I extends Exact<DeepPartial<LeaderboardResponse>, I>>(object: I): LeaderboardResponse {
     const message = createBaseLeaderboardResponse();
     message.userScore = (object.userScore !== undefined && object.userScore !== null)
