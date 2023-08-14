@@ -32,7 +32,7 @@ export const decodeGnoPost = (networkId: string, postData: string): Post => {
 
   const addrLen = buf.readUInt16BE(offset);
   offset += 2;
-  const createdBy = buf.slice(offset, offset + addrLen).toString();
+  const authorAddress = buf.slice(offset, offset + addrLen).toString();
   offset += addrLen;
 
   const createdAt = buf.readUInt32BE(offset);
@@ -67,11 +67,11 @@ export const decodeGnoPost = (networkId: string, postData: string): Post => {
   const post: Post = {
     category,
     isDeleted: false,
-    identifier: "" + identifier,
+    identifier: identifier ? "" + identifier : "",
     metadata,
-    parentPostIdentifier: "" + parentPostIdentifier,
+    parentPostIdentifier: parentPostIdentifier ? "" + parentPostIdentifier : "",
     subPostLength: subpostIDs.length,
-    createdBy: getUserId(networkId, createdBy),
+    authorId: getUserId(networkId, authorAddress),
     createdAt: +createdAt * 1000,
     tipAmount: 0,
     reactions,

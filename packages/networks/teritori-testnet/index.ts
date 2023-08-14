@@ -18,6 +18,7 @@ export const teritoriTestnetNetwork: NetworkInfo = {
     NetworkFeature.P2E,
     NetworkFeature.Organizations,
     NetworkFeature.SocialFeed,
+    NetworkFeature.UPP,
   ],
   currencies: teritoriTestnetCurrencies,
   txExplorer: "https://explorer.teritori.com/teritori-testnet/tx/$hash",

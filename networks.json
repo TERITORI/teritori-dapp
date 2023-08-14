@@ -9,7 +9,8 @@
       "NFTMarketplace",
       "P2E",
       "Organizations",
-      "SocialFeed"
+      "SocialFeed",
+      "UPP"
     ],
     "walletUrlForStaking": "https://explorer.teritori.com/teritori/staking",
     "currencies": [
@@ -136,7 +137,8 @@
       "NFTMarketplace",
       "P2E",
       "Organizations",
-      "SocialFeed"
+      "SocialFeed",
+      "UPP"
     ],
     "currencies": [
       {
@@ -593,7 +595,8 @@
     "icon": "icons/networks/gno.svg",
     "features": [
       "Organizations",
-      "SocialFeed"
+      "SocialFeed",
+      "UPP"
     ],
     "currencies": [
       {
@@ -627,7 +630,8 @@
     "icon": "icons/networks/gno.svg",
     "features": [
       "Organizations",
-      "SocialFeed"
+      "SocialFeed",
+      "UPP"
     ],
     "currencies": [
       {

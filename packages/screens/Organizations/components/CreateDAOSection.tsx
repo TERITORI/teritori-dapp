@@ -8,6 +8,8 @@ import { BrandText } from "../../../components/BrandText";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
+import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
+import { NetworkKind } from "../../../networks";
 import { neutral33, neutral77 } from "../../../utils/style/colors";
 import { fontSemibold20, fontSemibold28 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
@@ -36,8 +38,10 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
     mode: "all",
   });
 
+  const selectedNetwork = useSelectedNetworkInfo();
   const selectedRadioStructure = watch("structure");
   const uri = watch("imageUrl");
+  const name = watch("associatedTeritoriNameService");
 
   // functions
   const onErrorImageLoading = () =>
@@ -78,8 +82,20 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
                   noBrokenCorners
                   variant="labelOutside"
                   control={control}
-                  label="Associated Teritori Name Service"
-                  placeHolder="your-organization.tori"
+                  label={`Associated Handle${
+                    name
+                      ? `: ${name}${
+                          selectedNetwork?.kind === NetworkKind.Gno
+                            ? ""
+                            : ".tori"
+                        }`
+                      : ""
+                  }`}
+                  placeHolder={
+                    selectedNetwork?.kind === NetworkKind.Gno
+                      ? "your_organization"
+                      : "your-organization"
+                  }
                   name="associatedTeritoriNameService"
                   rules={{ required: true }}
                 />

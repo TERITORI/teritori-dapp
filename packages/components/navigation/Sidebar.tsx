@@ -1,6 +1,6 @@
 import { useRoute } from "@react-navigation/native";
 import React from "react";
-import { View, StyleSheet, Pressable, FlatList } from "react-native";
+import { FlatList, Pressable, StyleSheet, View } from "react-native";
 import Animated, {
   useAnimatedStyle,
   withSpring,
@@ -17,17 +17,17 @@ import addSVG from "../../../assets/icons/add-circle.svg";
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
 import { useSidebar } from "../../context/SidebarProvider";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
-import { useSelectedNetworkKind } from "../../hooks/useSelectedNetwork";
+import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { NetworkKind } from "../../networks";
+import { NetworkFeature, NetworkKind } from "../../networks";
 import { useAppNavigation } from "../../utils/navigation";
 import { neutral17, neutral33 } from "../../utils/style/colors";
 import { fontBold16, fontBold9 } from "../../utils/style/fonts";
 import {
-  smallSidebarWidth,
   fullSidebarWidth,
-  layout,
   headerHeight,
+  layout,
+  smallSidebarWidth,
 } from "../../utils/style/layout";
 import { SVG } from "../SVG";
 import { Separator } from "../Separator";
@@ -55,7 +55,8 @@ const SidebarSeparator: React.FC = () => {
 export const Sidebar: React.FC = () => {
   const selectedWallet = useSelectedWallet();
   const userInfo = useNSUserInfo(selectedWallet?.userId);
-  const selectedNetworkKind = useSelectedNetworkKind();
+  const selectedNetworkInfo = useSelectedNetworkInfo();
+  const selectedNetworkKind = selectedNetworkInfo?.kind;
   const connected = selectedWallet?.connected;
   const navigation = useAppNavigation();
   const { name: currentRouteName } = useRoute();
@@ -153,7 +154,7 @@ export const Sidebar: React.FC = () => {
         />
         <SidebarSeparator />
 
-        {selectedNetworkKind === NetworkKind.Cosmos &&
+        {selectedNetworkInfo?.features.includes(NetworkFeature.UPP) &&
           connected &&
           userInfo.metadata && (
             <SidebarProfileButton

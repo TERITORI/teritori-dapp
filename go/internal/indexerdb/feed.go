@@ -17,7 +17,7 @@ type Post struct {
 	IsBot                bool            `gorm:"default:false"`
 	Metadata             ObjectJSONB     `gorm:"type:jsonb;default:'{}'"`
 	UserReactions        ObjectJSONB     `gorm:"type:jsonb;default:'{}'"`
-	CreatedBy            networks.UserID `gorm:"index"`
+	AuthorId             networks.UserID `gorm:"index"`
 	CreatedAt            int64
 	IsDeleted            bool
 	IsFree               bool

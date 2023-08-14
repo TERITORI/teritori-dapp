@@ -115,7 +115,8 @@ export const extractGnoNumber = (str: string) => {
   return parseFloat(str.slice("(".length).split(" ")[0]);
 };
 export const extractGnoString = (str: string) => {
-  return JSON.parse(str.slice("(".length, -" string)".length)) as string;
+  const jsonStr = str.slice(str.indexOf(`"`), str.lastIndexOf(`"`) + 1);
+  return JSON.parse(jsonStr) as string;
 };
 export const extractGnoJSONString = (str: string) => {
   return JSON.parse(extractGnoString(str));
