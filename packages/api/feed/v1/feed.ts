@@ -667,8 +667,8 @@ export const PostsResponse = {
 
 export interface FeedService {
   Posts(request: DeepPartial<PostsRequest>, metadata?: grpc.Metadata): Promise<PostsResponse>;
-  ChatBot(request: DeepPartial<ChatBotRequest>, metadata?: grpc.Metadata): Promise<ChatBotResponse>;
   IPFSKey(request: DeepPartial<IPFSKeyRequest>, metadata?: grpc.Metadata): Promise<IPFSKeyResponse>;
+  ChatBot(request: DeepPartial<ChatBotRequest>, metadata?: grpc.Metadata): Promise<ChatBotResponse>;
 }
 
 export class FeedServiceClientImpl implements FeedService {
@@ -677,20 +677,20 @@ export class FeedServiceClientImpl implements FeedService {
   constructor(rpc: Rpc) {
     this.rpc = rpc;
     this.Posts = this.Posts.bind(this);
-    this.ChatBot = this.ChatBot.bind(this);
     this.IPFSKey = this.IPFSKey.bind(this);
+    this.ChatBot = this.ChatBot.bind(this);
   }
 
   Posts(request: DeepPartial<PostsRequest>, metadata?: grpc.Metadata): Promise<PostsResponse> {
     return this.rpc.unary(FeedServicePostsDesc, PostsRequest.fromPartial(request), metadata);
   }
 
-  ChatBot(request: DeepPartial<ChatBotRequest>, metadata?: grpc.Metadata): Promise<ChatBotResponse> {
-    return this.rpc.unary(FeedServiceChatBotDesc, ChatBotRequest.fromPartial(request), metadata);
-  }
-
   IPFSKey(request: DeepPartial<IPFSKeyRequest>, metadata?: grpc.Metadata): Promise<IPFSKeyResponse> {
     return this.rpc.unary(FeedServiceIPFSKeyDesc, IPFSKeyRequest.fromPartial(request), metadata);
+  }
+
+  ChatBot(request: DeepPartial<ChatBotRequest>, metadata?: grpc.Metadata): Promise<ChatBotResponse> {
+    return this.rpc.unary(FeedServiceChatBotDesc, ChatBotRequest.fromPartial(request), metadata);
   }
 }
 
@@ -718,28 +718,6 @@ export const FeedServicePostsDesc: UnaryMethodDefinitionish = {
   } as any,
 };
 
-export const FeedServiceChatBotDesc: UnaryMethodDefinitionish = {
-  methodName: "ChatBot",
-  service: FeedServiceDesc,
-  requestStream: false,
-  responseStream: false,
-  requestType: {
-    serializeBinary() {
-      return ChatBotRequest.encode(this).finish();
-    },
-  } as any,
-  responseType: {
-    deserializeBinary(data: Uint8Array) {
-      return {
-        ...ChatBotResponse.decode(data),
-        toObject() {
-          return this;
-        },
-      };
-    },
-  } as any,
-};
-
 export const FeedServiceIPFSKeyDesc: UnaryMethodDefinitionish = {
   methodName: "IPFSKey",
   service: FeedServiceDesc,
@@ -754,6 +732,28 @@ export const FeedServiceIPFSKeyDesc: UnaryMethodDefinitionish = {
     deserializeBinary(data: Uint8Array) {
       return {
         ...IPFSKeyResponse.decode(data),
+        toObject() {
+          return this;
+        },
+      };
+    },
+  } as any,
+};
+
+export const FeedServiceChatBotDesc: UnaryMethodDefinitionish = {
+  methodName: "ChatBot",
+  service: FeedServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return ChatBotRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      return {
+        ...ChatBotResponse.decode(data),
         toObject() {
           return this;
         },

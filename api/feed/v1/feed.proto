@@ -6,6 +6,7 @@ option go_package = "./feedpb";
 service FeedService {
   rpc Posts(PostsRequest) returns (PostsResponse);
   rpc IPFSKey(IPFSKeyRequest) returns (IPFSKeyResponse);
+  rpc ChatBot(ChatBotRequest) returns (ChatBotResponse);
 }
 
 message IPFSKeyRequest {

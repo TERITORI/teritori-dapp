@@ -44,7 +44,6 @@ import {
   mustGetCosmosNetwork,
 } from "../../../networks";
 import { selectNFTStorageAPI } from "../../../store/slices/settings";
-import { getUserId, mustGetCosmosNetwork } from "../../../networks";
 import { mustGetFeedClient } from "../../../utils/backend";
 import { prettyPrice } from "../../../utils/coins";
 import { defaultSocialFeedFee } from "../../../utils/fee";
