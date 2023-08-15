@@ -2,10 +2,8 @@ import { Decimal } from "@cosmjs/math";
 import { isDeliverTxFailure } from "@cosmjs/stargate";
 import React, { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
-import { StyleSheet, TouchableOpacity } from "react-native";
 
 import ModalBase from "./ModalBase";
-import contactsSVG from "../../../assets/icons/contacts.svg";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useDAOMakeProposal } from "../../hooks/dao/useDAOMakeProposal";
 import { useDAOs } from "../../hooks/dao/useDAOs";
@@ -20,19 +18,12 @@ import {
 } from "../../networks";
 import { TransactionForm } from "../../screens/WalletManager/types";
 import { prettyPrice } from "../../utils/coins";
-import {
-  neutral22,
-  neutral33,
-  neutral77,
-  primaryColor,
-} from "../../utils/style/colors";
+import { neutral77, primaryColor } from "../../utils/style/colors";
 import { fontSemibold13 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
-import FlexCol from "../FlexCol";
 import FlexRow from "../FlexRow";
 import { NetworkIcon } from "../NetworkIcon";
-import { SVG } from "../SVG";
 import { MaxButton } from "../buttons/MaxButton";
 import { PrimaryButton } from "../buttons/PrimaryButton";
 import { DAOSelector } from "../dao/DAOSelector";
@@ -47,16 +38,6 @@ type SendModalProps = {
   onClose: () => void;
 };
 
-//TODO: Make a reusable component for that, or use an existing one (Which one ? Which other usage for ContactButton ?)
-const ContactButton: React.FC<{ onPress?: () => void }> = ({ onPress }) => {
-  //TODO: Remove disabled when contacts are handled
-  return (
-    <TouchableOpacity style={styles.contactsButton} onPress={onPress} disabled>
-      <SVG source={contactsSVG} width={16} height={16} />
-    </TouchableOpacity>
-  );
-};
-
 export const SendModal: React.FC<SendModalProps> = ({
   isVisible,
   onClose,
@@ -66,6 +47,8 @@ export const SendModal: React.FC<SendModalProps> = ({
   const { setToastError, setToastSuccess } = useFeedbacks();
   const selectedWallet = useSelectedWallet();
   const { control, setValue, handleSubmit, watch } = useForm<TransactionForm>();
+  const toAddress = watch("toAddress");
+  const amount = watch("amount");
   const [selectedDAOId, setSelectedDAOId] = useState("");
   const makeProposal = useDAOMakeProposal(selectedDAOId);
   const [, daoAddress] = parseUserId(selectedDAOId);
@@ -205,37 +188,30 @@ export const SendModal: React.FC<SendModalProps> = ({
       Header={ModalHeader}
       width={456}
     >
-      <FlexRow alignItems="flex-end">
-        <FlexCol alignItems="flex-start" width={356}>
-          <SearchNSInputContainer
-            onPressName={(userId) => {
-              const [, userAddress] = parseUserId(userId);
-              setValue("toAddress", userAddress);
-            }}
-            searchText={watch("toAddress")}
-          >
-            <TextInputCustom<TransactionForm>
-              height={48}
-              width={320}
-              control={control}
-              variant="labelOutside"
-              label="Receiver"
-              name="toAddress"
-              rules={{ required: true }}
-              placeHolder={`Enter a ${
-                getNetwork(networkId)?.displayName || networkId
-              } name or address`}
-              defaultValue=""
-            />
-          </SearchNSInputContainer>
-        </FlexCol>
-        <ContactButton />
-      </FlexRow>
+      <SearchNSInputContainer
+        onPressName={(userId) => {
+          const [, userAddress] = parseUserId(userId);
+          setValue("toAddress", userAddress);
+        }}
+        searchText={toAddress}
+      >
+        <TextInputCustom<TransactionForm>
+          height={48}
+          control={control}
+          variant="labelOutside"
+          label="Receiver"
+          name="toAddress"
+          rules={{ required: true }}
+          placeHolder={`Enter a ${
+            getNetwork(networkId)?.displayName || networkId
+          } name or address`}
+          defaultValue=""
+        />
+      </SearchNSInputContainer>
 
       <SpacerColumn size={2.5} />
 
       <DAOSelector
-        value={selectedDAOId}
         onSelect={setSelectedDAOId}
         userId={selectedWallet?.userId}
         style={{ marginBottom: layout.padding_x2_5 }}
@@ -269,7 +245,7 @@ export const SendModal: React.FC<SendModalProps> = ({
         size="XL"
         text={selectedDAOId ? "Propose" : "Send"}
         fullWidth
-        disabled={max === "0"}
+        disabled={max === "0" || !toAddress || !amount}
         loader
         onPress={handleSubmit(onPressSend)}
       />
@@ -277,19 +253,3 @@ export const SendModal: React.FC<SendModalProps> = ({
     </ModalBase>
   );
 };
-
-const styles = StyleSheet.create({
-  contactsButton: {
-    width: 48,
-    height: 48,
-    borderRadius: 999,
-    borderWidth: 1,
-    borderColor: neutral33,
-    backgroundColor: neutral22,
-    justifyContent: "center",
-    alignItems: "center",
-    marginLeft: layout.padding_x1_5,
-    //TODO: Remove that when contacts are handled
-    opacity: 0.5,
-  },
-});
