@@ -409,6 +409,14 @@ export interface SearchCollectionsResponse {
   collections: Collection[];
 }
 
+export interface OwnersByCollectionRequest {
+  collectionId: string;
+}
+
+export interface OwnersByCollectionResponse {
+  owners: string[];
+}
+
 function createBaseAttribute(): Attribute {
   return { traitType: "", value: "" };
 }
@@ -3438,6 +3446,104 @@ export const SearchCollectionsResponse = {
   },
 };
 
+function createBaseOwnersByCollectionRequest(): OwnersByCollectionRequest {
+  return { collectionId: "" };
+}
+
+export const OwnersByCollectionRequest = {
+  encode(message: OwnersByCollectionRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.collectionId !== "") {
+      writer.uint32(10).string(message.collectionId);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): OwnersByCollectionRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseOwnersByCollectionRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.collectionId = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): OwnersByCollectionRequest {
+    return { collectionId: isSet(object.collectionId) ? String(object.collectionId) : "" };
+  },
+
+  toJSON(message: OwnersByCollectionRequest): unknown {
+    const obj: any = {};
+    message.collectionId !== undefined && (obj.collectionId = message.collectionId);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<OwnersByCollectionRequest>, I>>(object: I): OwnersByCollectionRequest {
+    const message = createBaseOwnersByCollectionRequest();
+    message.collectionId = object.collectionId ?? "";
+    return message;
+  },
+};
+
+function createBaseOwnersByCollectionResponse(): OwnersByCollectionResponse {
+  return { owners: [] };
+}
+
+export const OwnersByCollectionResponse = {
+  encode(message: OwnersByCollectionResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.owners) {
+      writer.uint32(10).string(v!);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): OwnersByCollectionResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseOwnersByCollectionResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.owners.push(reader.string());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): OwnersByCollectionResponse {
+    return { owners: Array.isArray(object?.owners) ? object.owners.map((e: any) => String(e)) : [] };
+  },
+
+  toJSON(message: OwnersByCollectionResponse): unknown {
+    const obj: any = {};
+    if (message.owners) {
+      obj.owners = message.owners.map((e) => e);
+    } else {
+      obj.owners = [];
+    }
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<OwnersByCollectionResponse>, I>>(object: I): OwnersByCollectionResponse {
+    const message = createBaseOwnersByCollectionResponse();
+    message.owners = object.owners?.map((e) => e) || [];
+    return message;
+  },
+};
+
 export interface MarketplaceService {
   Collections(request: DeepPartial<CollectionsRequest>, metadata?: grpc.Metadata): Observable<CollectionsResponse>;
   CollectionStats(
@@ -3464,6 +3570,10 @@ export interface MarketplaceService {
     request: DeepPartial<SearchCollectionsRequest>,
     metadata?: grpc.Metadata,
   ): Promise<SearchCollectionsResponse>;
+  OwnersByCollection(
+    request: DeepPartial<OwnersByCollectionRequest>,
+    metadata?: grpc.Metadata,
+  ): Promise<OwnersByCollectionResponse>;
 }
 
 export class MarketplaceServiceClientImpl implements MarketplaceService {
@@ -3484,6 +3594,7 @@ export class MarketplaceServiceClientImpl implements MarketplaceService {
     this.DAppsGroups = this.DAppsGroups.bind(this);
     this.SearchNames = this.SearchNames.bind(this);
     this.SearchCollections = this.SearchCollections.bind(this);
+    this.OwnersByCollection = this.OwnersByCollection.bind(this);
   }
 
   Collections(request: DeepPartial<CollectionsRequest>, metadata?: grpc.Metadata): Observable<CollectionsResponse> {
@@ -3554,6 +3665,17 @@ export class MarketplaceServiceClientImpl implements MarketplaceService {
     return this.rpc.unary(
       MarketplaceServiceSearchCollectionsDesc,
       SearchCollectionsRequest.fromPartial(request),
+      metadata,
+    );
+  }
+
+  OwnersByCollection(
+    request: DeepPartial<OwnersByCollectionRequest>,
+    metadata?: grpc.Metadata,
+  ): Promise<OwnersByCollectionResponse> {
+    return this.rpc.unary(
+      MarketplaceServiceOwnersByCollectionDesc,
+      OwnersByCollectionRequest.fromPartial(request),
       metadata,
     );
   }
@@ -3839,6 +3961,28 @@ export const MarketplaceServiceSearchCollectionsDesc: UnaryMethodDefinitionish =
     deserializeBinary(data: Uint8Array) {
       return {
         ...SearchCollectionsResponse.decode(data),
+        toObject() {
+          return this;
+        },
+      };
+    },
+  } as any,
+};
+
+export const MarketplaceServiceOwnersByCollectionDesc: UnaryMethodDefinitionish = {
+  methodName: "OwnersByCollection",
+  service: MarketplaceServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return OwnersByCollectionRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      return {
+        ...OwnersByCollectionResponse.decode(data),
         toObject() {
           return this;
         },
