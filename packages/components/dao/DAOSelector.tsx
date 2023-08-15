@@ -1,53 +1,62 @@
-import { Picker } from "@react-native-picker/picker";
-import { ComponentProps } from "react";
+import React, { useMemo, useState } from "react";
+import { StyleProp, ViewStyle } from "react-native";
 
 import { useDAOs } from "../../hooks/dao/useDAOs";
-import { useNSPrimaryAlias } from "../../hooks/useNSPrimaryAlias";
+import { useNSPrimaryAliases } from "../../hooks/useNSPrimaryAlias";
 import { parseUserId } from "../../networks";
-import { neutral77 } from "../../utils/style/colors";
-import { fontSemibold12 } from "../../utils/style/fonts";
+import { tinyAddress } from "../../utils/text";
+import { SelectInput, SelectInputData } from "../inputs/SelectInput";
+
+const ownWalletToSelect: SelectInputData = {
+  label: "Use my wallet",
+  value: "",
+};
 
 export const DAOSelector: React.FC<{
   userId: string | undefined;
-  value: string;
-  onSelect: (address: string) => void;
-  style?: ComponentProps<typeof Picker>["style"];
-}> = ({ userId, value, onSelect, style }) => {
+  onSelect: (userId: string) => void;
+  style?: StyleProp<ViewStyle>;
+}> = ({ userId, onSelect, style }) => {
   const [network, userAddress] = parseUserId(userId);
+  const [selectedData, setSelectedData] =
+    useState<SelectInputData>(ownWalletToSelect);
   const { daos } = useDAOs({
     networkId: network?.id,
     memberAddress: userAddress,
   });
-  if (!daos?.length) {
-    return null;
-  }
-  return (
-    <Picker
-      selectedValue={value}
-      placeholder="Select a DAO"
-      onValueChange={onSelect}
-      style={[
-        {
-          backgroundColor: "black",
-          color: "white",
-          borderRadius: 4,
-          borderColor: neutral77,
-        },
-        fontSemibold12,
-        style,
-      ]}
-    >
-      <Picker.Item label="Use my wallet" value="" />
-      {(daos || []).map((dao) => {
-        return <DAOPickerItem key={dao.id} daoId={dao.id} />;
-      })}
-    </Picker>
+  // We get the aliases for all these daos and provide them in the SelectInput. We display aliases or addresses and use userId as value
+  const { primaryAliases: daosAliases, isLoading } = useNSPrimaryAliases(
+    daos?.map((d) => d.id)
   );
-};
+  const selectableData: SelectInputData[] = useMemo(
+    () =>
+      !daosAliases?.length
+        ? []
+        : [
+            ownWalletToSelect,
+            ...daosAliases.map((d) => {
+              const [, daoAddress] = parseUserId(d.userId);
+              return {
+                label: `Use ${d.alias ? "@" + d.alias : tinyAddress(daoAddress, 40)}`,
+                value: d.userId,
+              };
+            }),
+          ],
+    [daosAliases]
+  );
 
-export const DAOPickerItem: React.FC<{ daoId: string }> = ({ daoId }) => {
-  const [, address] = parseUserId(daoId);
-  const { primaryAlias } = useNSPrimaryAlias(daoId);
-  const name = primaryAlias || address;
-  return <Picker.Item label={`Use ${name}`} value={daoId} />;
+  return (
+    <SelectInput
+      style={style}
+      data={selectableData}
+      selectedData={selectedData}
+      selectData={(data) => {
+        setSelectedData(data);
+        onSelect(data.value.toString());
+      }}
+      name="daoSelector"
+      placeHolder="Select a DAO to use"
+      isLoading={isLoading}
+    />
+  );
 };

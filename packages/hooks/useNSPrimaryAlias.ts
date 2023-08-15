@@ -10,6 +10,11 @@ import {
 import { getCosmosNameServiceQueryClient } from "../utils/contracts";
 import { extractGnoString } from "../utils/gno";
 
+export interface AliasUserId {
+  alias: string | null;
+  userId: string;
+}
+
 export const nsPrimaryAliasQueryKey = (userId: string | undefined) => [
   "nsPrimaryAlias",
   userId,
@@ -86,4 +91,44 @@ export const useNSPrimaryAlias = (userId: string | undefined) => {
     { staleTime: Infinity }
   );
   return { primaryAlias: data, ...other };
+};
+
+export const useNSPrimaryAliases = (userIds: string[] | undefined) => {
+  const { data, ...other } = useQuery(
+    nsPrimaryAliasQueryKey(userIds?.map((id) => id.slice(-3)).toString()),
+    async () => {
+      if (!userIds) return null;
+      const aliases: AliasUserId[] = [];
+
+      for (const userId of userIds) {
+        if (!userId) {
+          return null;
+        }
+        const [network, userAddress] = parseUserId(userId);
+        if (!network) {
+          return null;
+        }
+        let username: string | null = "";
+
+        switch (network.kind) {
+          case NetworkKind.Cosmos:
+            username = await cosmosGetUsernameByAddress(network, userAddress);
+            break;
+          case NetworkKind.Gno:
+            username = await gnoGetUsernameByAddress(network, userAddress);
+            break;
+          default:
+            return null;
+        }
+
+        aliases.push({
+          alias: username,
+          userId,
+        });
+      }
+      return aliases;
+    },
+    { staleTime: Infinity }
+  );
+  return { primaryAliases: data, ...other };
 };
