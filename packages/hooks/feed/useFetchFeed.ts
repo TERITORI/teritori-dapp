@@ -59,9 +59,8 @@ const fetchGnoFeed = async (
     const provider = new GnoJSONRPCProvider(selectedNetwork.endpoint);
     const output = await provider.evaluateExpression(
       GNO_SOCIAL_FEEDS_PKG_PATH,
-      `GetPosts(${TERITORI_FEED_ID}, ${categoriesStr}, ${offset}, ${limit})`
+      `GetPosts(${TERITORI_FEED_ID}, "", ${categoriesStr}, ${offset}, ${limit})`
     );
-
     const posts: Post[] = [];
 
     const outputStr = extractGnoString(output);

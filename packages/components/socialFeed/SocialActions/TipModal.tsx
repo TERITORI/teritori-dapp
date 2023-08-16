@@ -8,10 +8,7 @@ import { signingSocialFeedClient } from "../../../client-creators/socialFeedClie
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useTeritoriSocialFeedTipPostMutation } from "../../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.react-query";
 import { useBalances } from "../../../hooks/useBalances";
-import {
-  useSelectedNetworkId,
-  useSelectedNetworkInfo,
-} from "../../../hooks/useSelectedNetwork";
+import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import {
   NetworkKind,
@@ -20,6 +17,7 @@ import {
 } from "../../../networks";
 import { prettyPrice } from "../../../utils/coins";
 import { defaultSocialFeedFee } from "../../../utils/fee";
+import { adenaDoContract } from "../../../utils/gno";
 import { neutral77, primaryColor } from "../../../utils/style/colors";
 import { fontSemibold13, fontSemibold14 } from "../../../utils/style/fonts";
 import { BrandText } from "../../BrandText";
@@ -28,6 +26,7 @@ import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { TextInputCustom } from "../../inputs/TextInputCustom";
 import ModalBase from "../../modals/ModalBase";
 import { SpacerColumn } from "../../spacer";
+import { GNO_SOCIAL_FEEDS_PKG_PATH, TERITORI_FEED_ID } from "../const";
 
 type TipFormType = {
   amount: string;
@@ -36,7 +35,7 @@ type TipFormType = {
 export const TipModal: React.FC<{
   author: string;
   postId: string;
-  onClose: () => void;
+  onClose: (newTipAmount?: number) => void;
   isVisible: boolean;
 }> = ({ author, postId, onClose, isVisible }) => {
   const {
@@ -82,23 +81,29 @@ export const TipModal: React.FC<{
     ).atomics;
 
     if (selectedNetworkInfo?.kind === NetworkKind.Gno) {
-      const adena = (window as any).adena;
-      const res = await adena.DoContract({
-        messages: [
+      // We use Tip function from Social_feed contract to keep track of tip amount
+      const vmCall = {
+        caller: selectedWallet.address,
+        send: `${amount}ugnot`,
+        pkg_path: GNO_SOCIAL_FEEDS_PKG_PATH,
+        func: "TipPost",
+        args: [TERITORI_FEED_ID, postId, amount],
+      };
+
+      try {
+        await adenaDoContract(
+          selectedNetworkId || "",
+          [{ type: "/vm.m_call", value: vmCall }],
           {
-            type: "/bank.MsgSend",
-            value: {
-              from_address: selectedWallet.address,
-              to_address: author,
-              amount: `${amount}ugnot`,
-            },
-          },
-        ],
-        gasFee: 1,
-        gasWanted: 50000,
-      });
-      if (res.status !== "success") {
-        throw new Error(res.message);
+            gasWanted: 1_000_000,
+          }
+        );
+
+        onClose(+amount);
+        setToastSuccess({ title: "Tip success", message: "" });
+      } catch (err: any) {
+        console.error(err);
+        setToastError({ title: "Tip failed", message: err.message });
       }
     } else {
       const client = await signingSocialFeedClient({

@@ -74,7 +74,6 @@ export const SocialThreadCard: React.FC<{
   const selectedNetworkId = selectedNetworkInfo?.id;
   const authorNSInfo = useNSUserInfo(localPost.authorId);
   const [, authorAddress] = parseUserId(localPost.authorId);
-  const userInfo = useNSUserInfo(wallet?.userId);
   const navigation = useAppNavigation();
   const metadata: SocialFeedMetadata = JSON.parse(localPost.metadata);
   const username = authorNSInfo?.metadata?.tokenId || authorAddress;
@@ -249,10 +248,7 @@ export const SocialThreadCard: React.FC<{
 
               <SpacerRow size={2.5} />
               <TipButton
-                disabled={
-                  authorNSInfo?.metadata?.tokenId ===
-                  userInfo?.metadata?.tokenId
-                }
+                disabled={localPost.authorId === wallet?.userId}
                 amount={localPost.tipAmount}
                 author={username}
                 postId={localPost.identifier}

@@ -84,10 +84,10 @@ export const useNSNameInfo = (
             public_bio: res.description,
             image: res.imageURI,
           };
-          const ures: NftInfoResponse = {
+          const user: NftInfoResponse = {
             extension: data,
           };
-          return ures;
+          return user;
         }
       }
     },
