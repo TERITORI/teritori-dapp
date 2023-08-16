@@ -90,11 +90,6 @@ export const UploadAlbumModal: React.FC<UploadAlbumModalProps> = ({
       image: albumInfo.image,
       audios,
     };
-    console.log("---------metadata");
-    console.log({
-      metadata: JSON.stringify(metadata),
-      identifier: uuidv4(),
-    });
 
     try {
       const res = await client.createMusicAlbum(
@@ -240,7 +235,7 @@ const Step1Component: React.FC<{
             ...uploadFiles1,
             {
               name: file.file.name,
-              ipfs: "ipfs1", //pinataRes.IpfsHash,
+              ipfs: pinataRes.IpfsHash,
               duration: audio.duration,
             },
           ]);
