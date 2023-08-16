@@ -1067,6 +1067,7 @@ func (s *MarkteplaceService) OwnersByCollection(ctx context.Context, req *market
 	var owners []Owners
 
 	_ = s.conf.IndexerDB.Raw(`
+        select distinct owner from (
             select nfts.id, max(a.time) atime, COALESCE(m.buyer_id, t.buyer_id, tn.receiver) as owner
             from nfts
             join activities a on nfts.id = a.nft_id
@@ -1075,9 +1076,11 @@ func (s *MarkteplaceService) OwnersByCollection(ctx context.Context, req *market
             left join transfer_nfts tn on a.id = tn.activity_id
             where collection_id  = ? and a.kind in ('mint', 'trade','transfer-nft') and a.kind != 'burn'
             group by nfts.id, m.buyer_id, t.buyer_id, tn.receiver
-            order by atime desc`, collectionId).Scan(
-		&owners,
-	).Error
+            order by atime desc
+        ) as sub`, collectionId).
+		Scan(
+			&owners,
+		).Error
 
 	var out []string
 	for _, owner := range owners {
