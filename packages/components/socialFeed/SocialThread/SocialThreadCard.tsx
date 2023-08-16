@@ -29,6 +29,7 @@ import { SpacerColumn, SpacerRow } from "../../spacer";
 import { EmojiSelector } from "../EmojiSelector";
 import { SocialFeedMetadata } from "../NewsFeed/NewsFeed.type";
 import { CommentsCount } from "../SocialActions/CommentsCount";
+import { FlagButton } from "../SocialActions/FlagButton";
 import { nbReactionsShown, Reactions } from "../SocialActions/Reactions";
 import { ReplyButton } from "../SocialActions/ReplyButton";
 import { ShareButton } from "../SocialActions/ShareButton";
@@ -253,6 +254,15 @@ export const SocialThreadCard: React.FC<{
                 author={username}
                 postId={localPost.identifier}
               />
+
+              <SpacerRow size={2.5} />
+
+              {selectedNetworkInfo?.kind === NetworkKind.Cosmos && (
+                <FlagButton
+                  networkInfo={selectedNetworkInfo}
+                  postId={localPost.identifier}
+                />
+              )}
 
               {isPostConsultation && (
                 <>
