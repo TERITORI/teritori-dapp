@@ -6,7 +6,7 @@ import {
   getNativeCurrency,
   keplrCurrencyFromNativeCurrencyInfo,
 } from "../../networks";
-import { NFTInfo } from "../../screens/Marketplace/NFTDetailScreen";
+import { NFTInfo } from "../../utils/types/nft";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { PrimaryButton } from "../buttons/PrimaryButton";
 import { TextInputCustom } from "../inputs/TextInputCustom";
