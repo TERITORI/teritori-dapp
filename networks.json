@@ -11,7 +11,7 @@
       "SocialFeed",
       "UPP"
     ],
-    "walletUrlForStaking": "https://explorer.teritori.com/teritori/staking",
+    "walletUrlForStaking": "https://app.teritori.com/staking",
     "currencies": [
       {
         "denom": "utori",
