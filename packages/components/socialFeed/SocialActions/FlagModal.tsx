@@ -2,7 +2,10 @@ import React, { useState } from "react";
 import { Pressable, View } from "react-native";
 
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
-import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
+import {
+  useSelectedNetworkId,
+  useSelectedNetworkInfo,
+} from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { mustGetGnoNetwork } from "../../../networks";
 import { adenaDoContract } from "../../../utils/gno";
@@ -14,6 +17,7 @@ import { RadioButton } from "../../RadioButton";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
 import ModalBase from "../../modals/ModalBase";
 import { SpacerColumn, SpacerRow } from "../../spacer";
+import { TERITORI_FEED_ID } from "../const";
 
 type FlagModalProps = {
   postId: string;
@@ -21,14 +25,17 @@ type FlagModalProps = {
   isVisible: boolean;
 };
 
+type FlagType = "hideForMe" | "hideForAll";
+
 export const FlagModal: React.FC<FlagModalProps> = ({
   postId,
   onClose,
   isVisible,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [radioIdx, setRadioIdx] = useState(0);
-  const selectedNetworkId = useSelectedNetworkId();
+  const [flagType, setFlagType] = useState<FlagType>("hideForMe");
+  const selectedNetworkInfo = useSelectedNetworkInfo();
+  const selectedNetworkId = selectedNetworkInfo?.id;
   const selectedWallet = useSelectedWallet();
   const { setToastError, setToastSuccess } = useFeedbacks();
 
@@ -40,8 +47,8 @@ export const FlagModal: React.FC<FlagModalProps> = ({
       caller: selectedWallet?.address,
       send: "",
       pkg_path: gnoNetwork.socialFeedsPkgPath,
-      func: "FlagPost",
-      args: [],
+      func: flagType === "hideForMe" ? "HidePostForMe" : "FlagPost",
+      args: [TERITORI_FEED_ID, postId],
     };
 
     try {
@@ -53,12 +60,12 @@ export const FlagModal: React.FC<FlagModalProps> = ({
         }
       );
 
-      onClose();
       setToastSuccess({ title: "Report success", message: "" });
     } catch (err: any) {
       console.error(err);
       setToastError({ title: "Report failed", message: err.message });
     } finally {
+      onClose();
       setIsLoading(false);
     }
   };
@@ -83,9 +90,9 @@ export const FlagModal: React.FC<FlagModalProps> = ({
         </BrandText>
         <SpacerColumn size={2.5} />
 
-        <Pressable onPress={() => setRadioIdx(0)}>
+        <Pressable onPress={() => setFlagType("hideForMe")}>
           <FlexRow>
-            <RadioButton selected={radioIdx === 0} />
+            <RadioButton selected={flagType === "hideForMe"} />
             <SpacerRow size={1} />
             <BrandText style={fontSemibold16}>
               Hide this content from my feed
@@ -95,9 +102,9 @@ export const FlagModal: React.FC<FlagModalProps> = ({
 
         <SpacerColumn size={2} />
 
-        <Pressable onPress={() => setRadioIdx(1)}>
+        <Pressable onPress={() => setFlagType("hideForAll")}>
           <FlexRow>
-            <RadioButton selected={radioIdx === 1} />
+            <RadioButton selected={flagType === "hideForAll"} />
             <SpacerRow size={1} />
             <BrandText style={fontSemibold16}>
               Vote to hide this content for all users
