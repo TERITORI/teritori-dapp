@@ -1,9 +1,10 @@
 import React from "react";
 import { Image, View } from "react-native";
+import PieChart from "react-native-pie-chart";
 
 import contributionIllustrationPNG from "../../../../assets/social-feeds/contribution-illustration.png";
+import { primaryColor, purpleDark } from "../../../utils/style/colors";
 import { fontSemibold13, fontSemibold16 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import FlexRow from "../../FlexRow";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
@@ -16,6 +17,8 @@ type FlagDetailsModalProps = {
   isVisible: boolean;
 };
 
+const ILLUSTRATION_SIZE = 200;
+
 export const FlagDetailsModal: React.FC<FlagDetailsModalProps> = ({
   postId,
   onClose,
@@ -24,6 +27,13 @@ export const FlagDetailsModal: React.FC<FlagDetailsModalProps> = ({
   const checkDetails = async () => {
     onClose("FlagDetailsModal");
   };
+
+  const totalVoteBan = 123;
+  const totalVoteNoBan = 543;
+  const voteBanPercent = Math.round(
+    (totalVoteBan / (totalVoteBan + totalVoteNoBan)) * 100
+  );
+  const voteNoBanPercent = 100 - voteBanPercent;
 
   return (
     <ModalBase
@@ -40,24 +50,43 @@ export const FlagDetailsModal: React.FC<FlagDetailsModalProps> = ({
         <SpacerColumn size={4} />
 
         <FlexRow style={{ justifyContent: "space-evenly" }}>
-          <Image
-            source={contributionIllustrationPNG}
+          <View
             style={{
-              width: 200,
-              height: 200,
-              marginVertical: layout.padding_x2,
+              position: "relative",
+              width: ILLUSTRATION_SIZE,
+              height: ILLUSTRATION_SIZE,
             }}
-          />
+          >
+            <PieChart
+              widthAndHeight={ILLUSTRATION_SIZE}
+              series={[voteBanPercent, voteNoBanPercent]}
+              sliceColor={[purpleDark, primaryColor]}
+              coverRadius={0.8}
+              coverFill={null}
+              style={{ position: "absolute", zIndex: 2 }}
+            />
+
+            <Image
+              source={contributionIllustrationPNG}
+              style={{
+                width: ILLUSTRATION_SIZE - 10,
+                height: ILLUSTRATION_SIZE - 10,
+                top: 2,
+                left: 5,
+                position: "absolute",
+              }}
+            />
+          </View>
 
           <View>
             <BrandText style={fontSemibold13}>
-              Vote for Ban: 1248 votes - 50%
+              Vote for Ban: {totalVoteBan} votes - {voteBanPercent}%
             </BrandText>
 
             <SpacerColumn size={2} />
 
             <BrandText style={fontSemibold13}>
-              Vote for No Ban: 1248 votes - 50%
+              Vote for No Ban: {totalVoteNoBan} votes - {voteNoBanPercent}%
             </BrandText>
 
             <SpacerColumn size={2} />
