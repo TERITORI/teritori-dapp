@@ -2,10 +2,7 @@ import React, { useState } from "react";
 import { Pressable, View } from "react-native";
 
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
-import {
-  useSelectedNetworkId,
-  useSelectedNetworkInfo,
-} from "../../../hooks/useSelectedNetwork";
+import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { mustGetGnoNetwork } from "../../../networks";
 import { adenaDoContract } from "../../../utils/gno";
@@ -21,7 +18,7 @@ import { TERITORI_FEED_ID } from "../const";
 
 type FlagModalProps = {
   postId: string;
-  onClose: () => void;
+  onClose: (nextModalName?: string) => void;
   isVisible: boolean;
 };
 
@@ -39,7 +36,7 @@ export const FlagModal: React.FC<FlagModalProps> = ({
   const selectedWallet = useSelectedWallet();
   const { setToastError, setToastSuccess } = useFeedbacks();
 
-  const sendReport = async () => {
+  const hideForMe = async () => {
     setIsLoading(true);
     const gnoNetwork = mustGetGnoNetwork(selectedNetworkId);
 
@@ -70,11 +67,18 @@ export const FlagModal: React.FC<FlagModalProps> = ({
     }
   };
 
+  const sendReport = async () => {
+    if (flagType === "hideForMe") hideForMe();
+    else if (flagType === "hideForAll") {
+      onClose("FlagConfirmModal");
+    }
+  };
+
   return (
     <ModalBase
       visible={isVisible}
       onClose={onClose}
-      width={400}
+      width={480}
       label="Flag this content"
     >
       <View
