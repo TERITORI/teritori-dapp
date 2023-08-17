@@ -50,9 +50,22 @@ export const FlagDetailsModal: React.FC<FlagDetailsModalProps> = ({
           />
 
           <View>
-            <BrandText style={fontSemibold13}>fdsfdss Safe.</BrandText>
-            <BrandText style={fontSemibold13}>fdsfdss Safe.</BrandText>
-            <BrandText style={fontSemibold13}>fdsfdss Safe.</BrandText>
+            <BrandText style={fontSemibold13}>
+              Vote for Ban: 1248 votes - 50%
+            </BrandText>
+
+            <SpacerColumn size={2} />
+
+            <BrandText style={fontSemibold13}>
+              Vote for No Ban: 1248 votes - 50%
+            </BrandText>
+
+            <SpacerColumn size={2} />
+
+            <BrandText style={fontSemibold13}>Thank you Teritorians,</BrandText>
+            <BrandText style={fontSemibold13}>
+              for contributing to make the Cosmos Safe.
+            </BrandText>
           </View>
         </FlexRow>
 
