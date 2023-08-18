@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, StyleSheet, Image } from "react-native";
 import { Pressable } from "react-native-hoverable";
 
-import { TrackImageHover } from "./TrackImageHover";
+import { TrackVideoHover } from "./TrackVideoHover";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { parseUserId } from "../../networks";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
@@ -11,6 +11,8 @@ import { fontSemibold14, fontMedium14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { VideoInfoWithMeta } from "../../utils/types/video";
 import { BrandText } from "../BrandText";
+import { OmniLink } from "../OmniLink";
+import { UserAvatarWithFrame } from "../images/AvatarWithFrame";
 
 export const VideoPlayerCard: React.FC<{
   item: VideoInfoWithMeta;
@@ -62,6 +64,11 @@ export const VideoPlayerCard: React.FC<{
         color: primaryColor,
       },
     ]),
+    contentImg: {
+      width: "100%",
+      borderRadius: layout.padding_x1,
+      aspectRatio: 1.7,
+    },
   });
 
   return (
@@ -72,9 +79,10 @@ export const VideoPlayerCard: React.FC<{
         onMouseEnter={() => setSelectedIndex(item.id)}
         onMouseLeave={() => setSelectedIndex("")}
       >
-        <video
-          src={ipfsURLToHTTPURL(item.videoMetaInfo.url)}
-          style={{ backgroundColor: "gray", borderRadius: 10 }}
+        <Image
+          // @ts-ignore
+          source={ipfsURLToHTTPURL(item.videoMetaInfo.coverImage)}
+          style={styles.contentImg}
         />
         {selectedIndex === item.identifier && (
           <TrackImageHover
@@ -94,16 +102,21 @@ export const VideoPlayerCard: React.FC<{
           alignItems: "center",
         }}
       >
-        <Image
-          // @ts-ignore
-          source={require("../../../assets/icon.png")}
-          style={{
-            aspectRatio: 1,
-            width: "32px",
-            borderRadius: 1000,
-            marginRight: layout.padding_x1,
+        <OmniLink
+          to={{
+            screen: "UserPublicProfile",
+            params: { id: item.createdBy },
           }}
-        />
+        >
+          {/*---- User image */}
+          <UserAvatarWithFrame
+            style={{
+              marginRight: layout.padding_x2,
+            }}
+            userId={item.createdBy}
+            size="S"
+          />
+        </OmniLink>
         <Pressable>
           <BrandText style={styles.contentName}>@{username}</BrandText>
         </Pressable>

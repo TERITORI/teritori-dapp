@@ -22,6 +22,9 @@ export const useFetchVideo = (req: GetVideoRequest) => {
           createdBy: videoInfo.createdBy,
           videoMetaInfo: metadata,
           viewCount: isNaN(videoInfo.viewCount) ? 0 : videoInfo.viewCount,
+          createdAt: new Date(videoInfo.createdAt * 1000).toISOString(),
+          like: videoInfo.like,
+          dislike: videoInfo.dislike,
           viewLastTimestamp: videoInfo.lastView,
         } as VideoInfoWithMeta;
       } catch {

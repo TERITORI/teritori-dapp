@@ -7,7 +7,10 @@ service VideoService {
 	rpc GetUserVideoList(GetUserVideoListRequest) returns (GetUserVideoListResponse);
 	rpc GetVideo(GetVideoRequest) returns (GetVideoResponse);
 	rpc GetVideoListForLibrary(GetVideoListForLibraryRequest) returns (GetVideoListForLibraryResponse);
+	rpc GetCommentList(GetCommentListRequest) returns (GetCommentListResponse);
 	rpc IncreaseViewCount(IncreaseViewCountRequest) returns (IncreaseViewCountResponse);
+	rpc Like(LikeRequest) returns (LikeResponse);
+	rpc Dislike(DislikeRequest) returns (DislikeResponse);
 }
 message GetUserVideoListRequest {
     string created_by = 1;
@@ -26,7 +29,6 @@ message GetVideoRequest {
 message GetVideoResponse {
     VideoInfo video_info =1;
 }
-
 
 message GetVideoListRequest {
 	uint32 limit = 1;
@@ -48,13 +50,43 @@ message VideoInfo {
 	string identifier = 1;
 	string metadata = 2;
 	string created_by = 3;
-	uint32 view_count = 4;
-	uint32 last_view = 5;
+	uint32 created_at = 4;
+	uint32 view_count = 5;
+	uint32 like = 6;
+	uint32 dislike = 7;
 }
+message CommentInfo {
+	string comment = 1;
+	string created_by = 2;
+	uint32 created_at = 3;
+}
+
 message IncreaseViewCountRequest {
 	string identifier = 1;
 	string user = 2;
 }
 message IncreaseViewCountResponse {
 	uint32 res = 1;
+}
+message LikeRequest{
+	string identifier = 1;
+	string user = 2;
+}
+message LikeResponse{
+	uint32 res = 1;
+}
+message DislikeRequest{
+	string identifier = 1;
+	string user = 2;
+}
+message DislikeResponse{
+	uint32 res = 1;
+}
+
+message GetCommentListRequest {
+	string identifier = 1;
+}
+
+message GetCommentListResponse {
+	repeated CommentInfo comment_infos = 1;
 }

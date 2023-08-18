@@ -6,15 +6,20 @@
 
 import { CosmWasmClient, SigningCosmWasmClient, ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 import { Coin, StdFee } from "@cosmjs/amino";
-import { Uint128, Addr, ConfigResponse, Config, ExecuteMsg, InstantiateMsg, QueryMsg, VideoResponse, Video } from "./TeritoriVideoPlayer.types";
+import { Uint128, Addr, ConfigResponse, Config, ExecuteMsg, InstantiateMsg, QueryMsg, VideoCommentInfoResponse, VideoComment, VideoInfoResponse, Video } from "./TeritoriVideoPlayer.types";
 export interface TeritoriVideoPlayerReadOnlyInterface {
   contractAddress: string;
   config: () => Promise<ConfigResponse>;
-  queryVideo: ({
+  videoInfo: ({
     identifier
   }: {
     identifier: string;
-  }) => Promise<VideoResponse>;
+  }) => Promise<VideoInfoResponse>;
+  videoCommentInfo: ({
+    identifier
+  }: {
+    identifier: string;
+  }) => Promise<VideoCommentInfoResponse>;
 }
 export class TeritoriVideoPlayerQueryClient implements TeritoriVideoPlayerReadOnlyInterface {
   client: CosmWasmClient;
@@ -24,7 +29,8 @@ export class TeritoriVideoPlayerQueryClient implements TeritoriVideoPlayerReadOn
     this.client = client;
     this.contractAddress = contractAddress;
     this.config = this.config.bind(this);
-    this.queryVideo = this.queryVideo.bind(this);
+    this.videoInfo = this.videoInfo.bind(this);
+    this.videoCommentInfo = this.videoCommentInfo.bind(this);
   }
 
   config = async (): Promise<ConfigResponse> => {
@@ -32,13 +38,24 @@ export class TeritoriVideoPlayerQueryClient implements TeritoriVideoPlayerReadOn
       config: {}
     });
   };
-  queryVideo = async ({
+  videoInfo = async ({
     identifier
   }: {
     identifier: string;
-  }): Promise<VideoResponse> => {
+  }): Promise<VideoInfoResponse> => {
     return this.client.queryContractSmart(this.contractAddress, {
-      query_video: {
+      video_info: {
+        identifier
+      }
+    });
+  };
+  videoCommentInfo = async ({
+    identifier
+  }: {
+    identifier: string;
+  }): Promise<VideoCommentInfoResponse> => {
+    return this.client.queryContractSmart(this.contractAddress, {
+      video_comment_info: {
         identifier
       }
     });
@@ -79,6 +96,20 @@ export interface TeritoriVideoPlayerInterface extends TeritoriVideoPlayerReadOnl
   }: {
     identifier: string;
   }, fee?: number | StdFee | "auto", memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
+  createVideoComment: ({
+    comment,
+    identifier,
+    videoIdentifier
+  }: {
+    comment: string;
+    identifier: string;
+    videoIdentifier: string;
+  }, fee?: number | StdFee | "auto", memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
+  deleteVideoComment: ({
+    identifier
+  }: {
+    identifier: string;
+  }, fee?: number | StdFee | "auto", memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
 }
 export class TeritoriVideoPlayerClient extends TeritoriVideoPlayerQueryClient implements TeritoriVideoPlayerInterface {
   client: SigningCosmWasmClient;
@@ -96,6 +127,8 @@ export class TeritoriVideoPlayerClient extends TeritoriVideoPlayerQueryClient im
     this.deleteVideo = this.deleteVideo.bind(this);
     this.addToLibrary = this.addToLibrary.bind(this);
     this.removeFromLibrary = this.removeFromLibrary.bind(this);
+    this.createVideoComment = this.createVideoComment.bind(this);
+    this.deleteVideoComment = this.deleteVideoComment.bind(this);
   }
 
   updateOwner = async ({
@@ -163,6 +196,34 @@ export class TeritoriVideoPlayerClient extends TeritoriVideoPlayerQueryClient im
   }, fee: number | StdFee | "auto" = "auto", memo?: string, _funds?: Coin[]): Promise<ExecuteResult> => {
     return await this.client.execute(this.sender, this.contractAddress, {
       remove_from_library: {
+        identifier
+      }
+    }, fee, memo, _funds);
+  };
+  createVideoComment = async ({
+    comment,
+    identifier,
+    videoIdentifier
+  }: {
+    comment: string;
+    identifier: string;
+    videoIdentifier: string;
+  }, fee: number | StdFee | "auto" = "auto", memo?: string, _funds?: Coin[]): Promise<ExecuteResult> => {
+    return await this.client.execute(this.sender, this.contractAddress, {
+      create_video_comment: {
+        comment,
+        identifier,
+        video_identifier: videoIdentifier
+      }
+    }, fee, memo, _funds);
+  };
+  deleteVideoComment = async ({
+    identifier
+  }: {
+    identifier: string;
+  }, fee: number | StdFee | "auto" = "auto", memo?: string, _funds?: Coin[]): Promise<ExecuteResult> => {
+    return await this.client.execute(this.sender, this.contractAddress, {
+      delete_video_comment: {
         identifier
       }
     }, fee, memo, _funds);

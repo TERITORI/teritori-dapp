@@ -10,8 +10,8 @@ import Logo from "../../../assets/logos/logo.svg";
 import { GetVideoListRequest } from "../../api/video/v1/video";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
-import { UploadVideoModal } from "../../components/videoPlayer/UploadVideoModal";
-import { VideoPlayerCard } from "../../components/videoPlayer/VideoPlayerCard";
+import { UploadVideoModal } from "../../components/VideoPlayer/UploadVideoModal";
+import { VideoPlayerCard } from "../../components/VideoPlayer/VideoPlayerCard";
 import {
   combineFetchVideoPages,
   useFetchVideos,
