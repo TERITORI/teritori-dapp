@@ -21,6 +21,7 @@ type DAO struct {
 	UnstakingDuration       uint
 	PreProposeModuleAddress string `gorm:"index"`
 	GroupContractAddress    string `gorm:"index"`
+	VotingModuleAddress     string `gorm:"index"`
 	ProposalModuleAddress   string `gorm:"index"`
 	Members                 []*DAOMember
 	Proposals               []*DAOProposal
@@ -30,6 +31,7 @@ type DAOMember struct {
 	DAONetworkID       string `gorm:"primaryKey"`
 	DAOContractAddress string `gorm:"primaryKey"`
 	MemberAddress      string `gorm:"primaryKey"`
+	Weight             uint64
 }
 
 type DAOProposal struct {

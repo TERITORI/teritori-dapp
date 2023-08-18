@@ -43,6 +43,15 @@ func (h *Handler) handleExecuteSendNFT(e *Message, execMsg *wasmtypes.MsgExecute
 		return nil
 	}
 
+	// cw721 dao
+	handled, err := h.handleExecuteDAOCW721VotingStake(e, execMsg, &sendNFTMsg)
+	if err != nil {
+		return errors.Wrap(err, "failed to handle dao cw721 voting stake")
+	}
+	if handled {
+		return nil
+	}
+
 	// fallback
 	if err := h.handleExecuteSendNFTFallback(e, execMsg, &sendNFTMsg); err != nil {
 		return errors.Wrap(err, "failed to handle fallback send_nft")

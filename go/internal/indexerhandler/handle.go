@@ -289,6 +289,10 @@ func (h *Handler) handleExecute(e *Message) error {
 		if err := h.handleExecuteDAOExecute(e, &executeMsg); err != nil {
 			return errors.Wrap(err, "failed to handle dao execute")
 		}
+	case "unstake":
+		if _, err := h.handleExecuteDAOCW721VotingUnstake(e, &executeMsg); err != nil {
+			return errors.Wrap(err, "failed to handle dao cw721 voting unstake")
+		}
 	}
 
 	return nil
