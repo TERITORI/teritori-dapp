@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Image } from "react-native";
 import { Pressable } from "react-native-hoverable";
 
 import { TrackVideoHover } from "./TrackVideoHover";
-import Avatar from "../../../assets/icons/player/avatar.svg";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { parseUserId } from "../../networks";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
@@ -14,7 +13,8 @@ import { tinyAddress } from "../../utils/text";
 import { VideoInfoWithMeta } from "../../utils/types/video";
 import { durationToString } from "../../utils/videoPlayer";
 import { BrandText } from "../BrandText";
-import { SVG } from "../SVG";
+import { OmniLink } from "../OmniLink";
+import { UserAvatarWithFrame } from "../images/AvatarWithFrame";
 
 export const VideoPlayerCard: React.FC<{
   item: VideoInfoWithMeta;
@@ -79,6 +79,11 @@ export const VideoPlayerCard: React.FC<{
         color: primaryColor,
       },
     ]),
+    contentImg: {
+      width: "100%",
+      borderRadius: layout.padding_x1,
+      aspectRatio: 1.7,
+    },
   });
 
   return (
@@ -89,9 +94,10 @@ export const VideoPlayerCard: React.FC<{
         onMouseEnter={() => setSelectedIndex(item.identifier)}
         onMouseLeave={() => setSelectedIndex("")}
       >
-        <video
-          src={ipfsURLToHTTPURL(item.videoMetaInfo.url)}
-          style={{ backgroundColor: "gray", borderRadius: 10 }}
+        <Image
+          // @ts-ignore
+          source={ipfsURLToHTTPURL(item.videoMetaInfo.coverImage)}
+          style={styles.contentImg}
         />
         <View style={styles.videoDuration}>
           <BrandText style={styles.contentDuration}>
@@ -116,17 +122,21 @@ export const VideoPlayerCard: React.FC<{
           alignItems: "center",
         }}
       >
-        <View>
-          <SVG
-            source={Avatar}
+        <OmniLink
+          to={{
+            screen: "UserPublicProfile",
+            params: { id: item.createdBy },
+          }}
+        >
+          {/*---- User image */}
+          <UserAvatarWithFrame
             style={{
-              aspectRatio: 1,
-              width: "32px",
-              borderRadius: 1000,
-              marginRight: layout.padding_x1,
+              marginRight: layout.padding_x2,
             }}
+            userId={item.createdBy}
+            size="S"
           />
-        </View>
+        </OmniLink>
         <Pressable>
           <BrandText style={styles.contentName}>@{username}</BrandText>
         </Pressable>

@@ -1,5 +1,4 @@
 import React, {
-  createRef,
   useRef,
   useState,
   Dispatch,
@@ -12,7 +11,6 @@ import { v4 as uuidv4 } from "uuid";
 
 import CoverImg from "../../../assets/icons/player/cover-img.png";
 import Img from "../../../assets/icons/player/img.svg";
-import Upload from "../../../assets/icons/player/upload.svg";
 import { pinataPinFileToIPFS } from "../../candymachine/pinata-upload";
 import { signingVideoPlayerClient } from "../../client-creators/videoplayerClient";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
@@ -22,6 +20,7 @@ import { getUserId } from "../../networks";
 import { selectNFTStorageAPI } from "../../store/slices/settings";
 import { defaultSocialFeedFee } from "../../utils/fee";
 import { generateIpfsKey, ipfsURLToHTTPURL } from "../../utils/ipfs";
+import { VIDEO_MIME_TYPES } from "../../utils/mime";
 import {
   neutral17,
   neutral33,
@@ -37,6 +36,7 @@ import { VideoMetaInfo } from "../../utils/types/video";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { PrimaryButton } from "../buttons/PrimaryButton";
+import { FileUploader } from "../fileUploader";
 import ModalBase from "../modals/ModalBase";
 
 interface UploadVideoModalProps {
@@ -100,10 +100,10 @@ export const UploadVideoModal: React.FC<UploadVideoModalProps> = ({
       }}
       width={modalWidth}
     >
-      {step === 1 && (
+      {step === 0 && (
         <Step1Component setStep={setStep} setUploadVideo={setVideoFile} />
       )}
-      {step === 0 && (
+      {step === 1 && (
         <Step2Component
           videoFile={videoFile!}
           setVideoFile={setVideoFile}
@@ -177,7 +177,6 @@ const Step1Component: React.FC<{
   const [uploadFile, setUploadFile] = useState<VideoMetaInfo | null>(null);
   const [canContinue, setCanContinue] = useState<boolean>(false);
   const [isUploading, setIsUploading] = useState<boolean>(false);
-  const inputFileRef = createRef<HTMLInputElement>();
   const selectedNetworkId = useSelectedNetworkId();
   const selectedWallet = useSelectedWallet();
   const userId = getUserId(selectedNetworkId, selectedWallet?.address);
@@ -187,44 +186,28 @@ const Step1Component: React.FC<{
     setCanContinue(!!uploadFile);
   }, [uploadFile]);
 
-  const uploadVideoFile = async () => {
-    setIsUploading(true);
-    inputFileRef.current?.click();
-  };
-  const onInputFileChange: React.ChangeEventHandler<HTMLInputElement> = async (
-    e
-  ) => {
-    const file = e.target?.files![0];
+  const uploadVideoFile = async (files: LocalFileData[]) => {
+    if (files.length === 0) return;
+    const file = files[0];
+    const url = URL.createObjectURL(file.file);
     const video = document.createElement("video");
     video.preload = "metadata";
-
-    // const pinataJWTKey =
-    //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiIxZjdjMGE4Yy00MjEyLTQ1ZTItOWUzMC00NDFmMjUxZDk5YzUiLCJlbWFpbCI6Im1pbmlvbmxhbmNlcjI4QGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJwaW5fcG9saWN5Ijp7InJlZ2lvbnMiOlt7ImlkIjoiRlJBMSIsImRlc2lyZWRSZXBsaWNhdGlvbkNvdW50IjoxfV0sInZlcnNpb24iOjF9LCJtZmFfZW5hYmxlZCI6ZmFsc2UsInN0YXR1cyI6IkFDVElWRSJ9LCJhdXRoZW50aWNhdGlvblR5cGUiOiJzY29wZWRLZXkiLCJzY29wZWRLZXlLZXkiOiI4NmMwMjNlNDMyNjY4MjZmMTYzZSIsInNjb3BlZEtleVNlY3JldCI6IjA5YTA0NGFlZWUzOTk4NjNmNWU3MzBmZGY0N2Y3ODdhM2ZiMTI0ZDczNDE5ZTNmYWI3NjhlMmQ5NjQ5NTVmMDMiLCJpYXQiOjE2OTEwOTU4NTZ9.uLekzSqr9gzn6e91PumoAVDAu1X8Smm5QveBUoElbj8";
-
     const pinataJWTKey =
       userIPFSKey || (await generateIpfsKey(selectedNetworkId, userId));
-
     video.addEventListener("loadedmetadata", async () => {
       window.URL.revokeObjectURL(video.src);
       if (!pinataJWTKey) {
         return;
       }
-      const local_file_data = {
-        file,
-        fileName: file.name,
-        mimeType: "",
-        size: 0,
-        url: "",
-        fileType: "video",
-      } as LocalFileData;
+      setIsUploading(true);
       const pinataRes = await pinataPinFileToIPFS({
-        file: local_file_data,
+        file,
         pinataJWTKey,
       });
       const duration = video.duration;
       if (pinataRes.IpfsHash! !== "") {
         setUploadFile({
-          title: file.name,
+          title: file.file.name,
           description: "",
           url: pinataRes.IpfsHash,
           coverImage: "",
@@ -233,27 +216,20 @@ const Step1Component: React.FC<{
       }
       setIsUploading(false);
     });
-    video.src = URL.createObjectURL(file);
+    video.src = url;
   };
 
   return (
     <>
       <View style={styles.contentContainer}>
-        <Pressable style={styles.uploadBox}>
-          <SVG
-            source={Upload}
-            width={layout.padding_x2}
-            height={layout.padding_x2}
-          />
-          <BrandText>Drag and drop your video here</BrandText>
-        </Pressable>
-        <View style={styles.buttonContainer}>
-          <Pressable onPress={uploadVideoFile}>
-            <BrandText style={styles.buttonText}>
-              or choose files to upload
-            </BrandText>
-          </Pressable>
-        </View>
+        <FileUploader
+          onUpload={uploadVideoFile}
+          mimeTypes={VIDEO_MIME_TYPES}
+          style={{
+            marginTop: layout.padding_x3,
+            width: "100%",
+          }}
+        />
       </View>
       <View style={styles.divideLine} />
       <View style={styles.footer}>
@@ -271,13 +247,6 @@ const Step1Component: React.FC<{
           }}
         />
       </View>
-      <input
-        type="file"
-        style={{ display: "none" }}
-        accept="video/mp4"
-        onChange={onInputFileChange}
-        ref={inputFileRef}
-      />
     </>
   );
 };
@@ -413,6 +382,7 @@ const Step2Component: React.FC<{
   const selectedNetworkId = useSelectedNetworkId();
   const selectedWallet = useSelectedWallet();
   const userId = getUserId(selectedNetworkId, selectedWallet?.address);
+  const userIPFSKey = useSelector(selectNFTStorageAPI);
 
   const handleVideoNameTextChange = (text: string) => {
     setTitle(text.trim());
@@ -441,7 +411,8 @@ const Step2Component: React.FC<{
         url: "",
         fileType: "image",
       } as LocalFileData;
-      const pinataJWTKey = await generateIpfsKey(selectedNetworkId, userId);
+      const pinataJWTKey =
+        userIPFSKey || (await generateIpfsKey(selectedNetworkId, userId));
       // const pinataJWTKey =
       //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiIxZjdjMGE4Yy00MjEyLTQ1ZTItOWUzMC00NDFmMjUxZDk5YzUiLCJlbWFpbCI6Im1pbmlvbmxhbmNlcjI4QGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJwaW5fcG9saWN5Ijp7InJlZ2lvbnMiOlt7ImlkIjoiRlJBMSIsImRlc2lyZWRSZXBsaWNhdGlvbkNvdW50IjoxfV0sInZlcnNpb24iOjF9LCJtZmFfZW5hYmxlZCI6ZmFsc2UsInN0YXR1cyI6IkFDVElWRSJ9LCJhdXRoZW50aWNhdGlvblR5cGUiOiJzY29wZWRLZXkiLCJzY29wZWRLZXlLZXkiOiI4NmMwMjNlNDMyNjY4MjZmMTYzZSIsInNjb3BlZEtleVNlY3JldCI6IjA5YTA0NGFlZWUzOTk4NjNmNWU3MzBmZGY0N2Y3ODdhM2ZiMTI0ZDczNDE5ZTNmYWI3NjhlMmQ5NjQ5NTVmMDMiLCJpYXQiOjE2OTEwOTU4NTZ9.uLekzSqr9gzn6e91PumoAVDAu1X8Smm5QveBUoElbj8";
       if (!pinataJWTKey) {
@@ -470,7 +441,7 @@ const Step2Component: React.FC<{
         <View style={styles.imgBox}>
           <Image
             source={
-              videoFile.coverImage === ""
+              !videoFile || videoFile.coverImage === ""
                 ? CoverImg
                 : ipfsURLToHTTPURL(videoFile.coverImage)
             }
@@ -520,7 +491,11 @@ const Step2Component: React.FC<{
         <PrimaryButton
           text="Upload"
           size="SM"
-          disabled={title.trim() === "" || description.trim() === ""}
+          disabled={
+            videoFile.coverImage === "" ||
+            title.trim() === "" ||
+            description.trim() === ""
+          }
           onPress={uploadVideo}
           isLoading={isUploading}
         />

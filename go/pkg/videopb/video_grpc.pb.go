@@ -26,7 +26,10 @@ type VideoServiceClient interface {
 	GetUserVideoList(ctx context.Context, in *GetUserVideoListRequest, opts ...grpc.CallOption) (*GetUserVideoListResponse, error)
 	GetVideo(ctx context.Context, in *GetVideoRequest, opts ...grpc.CallOption) (*GetVideoResponse, error)
 	GetVideoListForLibrary(ctx context.Context, in *GetVideoListForLibraryRequest, opts ...grpc.CallOption) (*GetVideoListForLibraryResponse, error)
+	GetCommentList(ctx context.Context, in *GetCommentListRequest, opts ...grpc.CallOption) (*GetCommentListResponse, error)
 	IncreaseViewCount(ctx context.Context, in *IncreaseViewCountRequest, opts ...grpc.CallOption) (*IncreaseViewCountResponse, error)
+	Like(ctx context.Context, in *LikeRequest, opts ...grpc.CallOption) (*LikeResponse, error)
+	Dislike(ctx context.Context, in *DislikeRequest, opts ...grpc.CallOption) (*DislikeResponse, error)
 }
 
 type videoServiceClient struct {
@@ -73,9 +76,36 @@ func (c *videoServiceClient) GetVideoListForLibrary(ctx context.Context, in *Get
 	return out, nil
 }
 
+func (c *videoServiceClient) GetCommentList(ctx context.Context, in *GetCommentListRequest, opts ...grpc.CallOption) (*GetCommentListResponse, error) {
+	out := new(GetCommentListResponse)
+	err := c.cc.Invoke(ctx, "/video.v1.VideoService/GetCommentList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *videoServiceClient) IncreaseViewCount(ctx context.Context, in *IncreaseViewCountRequest, opts ...grpc.CallOption) (*IncreaseViewCountResponse, error) {
 	out := new(IncreaseViewCountResponse)
 	err := c.cc.Invoke(ctx, "/video.v1.VideoService/IncreaseViewCount", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *videoServiceClient) Like(ctx context.Context, in *LikeRequest, opts ...grpc.CallOption) (*LikeResponse, error) {
+	out := new(LikeResponse)
+	err := c.cc.Invoke(ctx, "/video.v1.VideoService/Like", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *videoServiceClient) Dislike(ctx context.Context, in *DislikeRequest, opts ...grpc.CallOption) (*DislikeResponse, error) {
+	out := new(DislikeResponse)
+	err := c.cc.Invoke(ctx, "/video.v1.VideoService/Dislike", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -90,7 +120,10 @@ type VideoServiceServer interface {
 	GetUserVideoList(context.Context, *GetUserVideoListRequest) (*GetUserVideoListResponse, error)
 	GetVideo(context.Context, *GetVideoRequest) (*GetVideoResponse, error)
 	GetVideoListForLibrary(context.Context, *GetVideoListForLibraryRequest) (*GetVideoListForLibraryResponse, error)
+	GetCommentList(context.Context, *GetCommentListRequest) (*GetCommentListResponse, error)
 	IncreaseViewCount(context.Context, *IncreaseViewCountRequest) (*IncreaseViewCountResponse, error)
+	Like(context.Context, *LikeRequest) (*LikeResponse, error)
+	Dislike(context.Context, *DislikeRequest) (*DislikeResponse, error)
 	mustEmbedUnimplementedVideoServiceServer()
 }
 
@@ -110,8 +143,17 @@ func (UnimplementedVideoServiceServer) GetVideo(context.Context, *GetVideoReques
 func (UnimplementedVideoServiceServer) GetVideoListForLibrary(context.Context, *GetVideoListForLibraryRequest) (*GetVideoListForLibraryResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetVideoListForLibrary not implemented")
 }
+func (UnimplementedVideoServiceServer) GetCommentList(context.Context, *GetCommentListRequest) (*GetCommentListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetCommentList not implemented")
+}
 func (UnimplementedVideoServiceServer) IncreaseViewCount(context.Context, *IncreaseViewCountRequest) (*IncreaseViewCountResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method IncreaseViewCount not implemented")
+}
+func (UnimplementedVideoServiceServer) Like(context.Context, *LikeRequest) (*LikeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Like not implemented")
+}
+func (UnimplementedVideoServiceServer) Dislike(context.Context, *DislikeRequest) (*DislikeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Dislike not implemented")
 }
 func (UnimplementedVideoServiceServer) mustEmbedUnimplementedVideoServiceServer() {}
 
@@ -198,6 +240,24 @@ func _VideoService_GetVideoListForLibrary_Handler(srv interface{}, ctx context.C
 	return interceptor(ctx, in, info, handler)
 }
 
+func _VideoService_GetCommentList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetCommentListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VideoServiceServer).GetCommentList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/video.v1.VideoService/GetCommentList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VideoServiceServer).GetCommentList(ctx, req.(*GetCommentListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _VideoService_IncreaseViewCount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(IncreaseViewCountRequest)
 	if err := dec(in); err != nil {
@@ -212,6 +272,42 @@ func _VideoService_IncreaseViewCount_Handler(srv interface{}, ctx context.Contex
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(VideoServiceServer).IncreaseViewCount(ctx, req.(*IncreaseViewCountRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _VideoService_Like_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LikeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VideoServiceServer).Like(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/video.v1.VideoService/Like",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VideoServiceServer).Like(ctx, req.(*LikeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _VideoService_Dislike_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DislikeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VideoServiceServer).Dislike(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/video.v1.VideoService/Dislike",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VideoServiceServer).Dislike(ctx, req.(*DislikeRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -240,8 +336,20 @@ var VideoService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _VideoService_GetVideoListForLibrary_Handler,
 		},
 		{
+			MethodName: "GetCommentList",
+			Handler:    _VideoService_GetCommentList_Handler,
+		},
+		{
 			MethodName: "IncreaseViewCount",
 			Handler:    _VideoService_IncreaseViewCount_Handler,
+		},
+		{
+			MethodName: "Like",
+			Handler:    _VideoService_Like_Handler,
+		},
+		{
+			MethodName: "Dislike",
+			Handler:    _VideoService_Dislike_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

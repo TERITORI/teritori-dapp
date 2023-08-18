@@ -4,7 +4,6 @@ import { IncreaseViewCountRequest } from "../../api/video/v1/video";
 import { mustGetVideoClient } from "../../utils/backend";
 import { useSelectedNetworkId } from "../useSelectedNetwork";
 export const useIncreaseViewCount = (req: IncreaseViewCountRequest) => {
-  console.log("--------useIncreaseViewCount:", req);
   const selectedNetworkId = useSelectedNetworkId();
   const { data, isFetching, isLoading } = useQuery(
     ["increase_view_count", selectedNetworkId, { ...req }],

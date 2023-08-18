@@ -60,9 +60,13 @@ var allModels = []interface{}{
 	&DAO{},
 	&DAOMember{},
 	&DAOProposal{},
+
 	&Video{},
 	&VideoLibrary{},
 	&VideoViewCount{},
+	&VideoLike{},
+	&VideoDislike{},
+	&VideoComment{},
 	// names
 	&Name{},
 }

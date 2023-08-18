@@ -314,6 +314,12 @@ func (h *Handler) handleExecute(e *Message) error {
 				return errors.Wrap(err, "failed to handle remove from library execute")
 			}
 		}
+	case "create_video_comment":
+		if executeMsg.Contract == h.config.Network.VideoContractAddress {
+			if err := h.handleExecuteCreateComment(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle create comment for video")
+			}
+		}
 	}
 
 	return nil
