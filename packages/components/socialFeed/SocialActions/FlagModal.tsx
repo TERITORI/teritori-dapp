@@ -36,7 +36,7 @@ export const FlagModal: React.FC<FlagModalProps> = ({
   const selectedWallet = useSelectedWallet();
   const { setToastError, setToastSuccess } = useFeedbacks();
 
-  const hideForMe = async () => {
+  const doAction = async () => {
     setIsLoading(true);
     const gnoNetwork = mustGetGnoNetwork(selectedNetworkId);
 
@@ -64,13 +64,6 @@ export const FlagModal: React.FC<FlagModalProps> = ({
     } finally {
       onClose();
       setIsLoading(false);
-    }
-  };
-
-  const sendReport = async () => {
-    if (flagType === "hideForMe") hideForMe();
-    else if (flagType === "hideForAll") {
-      onClose("FlagConfirmModal");
     }
   };
 
@@ -131,7 +124,7 @@ export const FlagModal: React.FC<FlagModalProps> = ({
             text="Send report"
             loader
             isLoading={isLoading}
-            onPress={sendReport}
+            onPress={doAction}
             disabled={false}
           />
         </View>

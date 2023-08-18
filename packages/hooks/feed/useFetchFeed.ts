@@ -47,9 +47,17 @@ const fetchTeritoriFeed = async (
 
 const fetchGnoFeed = async (
   selectedNetwork: GnoNetworkInfo,
+  callerAddress: string | undefined,
   req: PostsRequest,
   pageParam: number
 ) => {
+  if (!callerAddress) {
+    return {
+      list: [],
+      totalCount: 0,
+    };
+  }
+
   try {
     const offset = pageParam || 0;
     const limit = 10;
@@ -59,7 +67,7 @@ const fetchGnoFeed = async (
     const provider = new GnoJSONRPCProvider(selectedNetwork.endpoint);
     const output = await provider.evaluateExpression(
       GNO_SOCIAL_FEEDS_PKG_PATH,
-      `GetPosts(${TERITORI_FEED_ID}, "", ${categoriesStr}, ${offset}, ${limit})`
+      `GetPostsWithCaller(${TERITORI_FEED_ID}, "${callerAddress}", "", ${categoriesStr}, ${offset}, ${limit})`
     );
     const posts: Post[] = [];
 
@@ -90,7 +98,7 @@ export const useFetchFeed = (req: PostsRequest) => {
         if (selectedNetwork?.kind === NetworkKind.Cosmos) {
           return fetchTeritoriFeed(selectedNetwork, req, pageParam);
         } else if (selectedNetwork?.kind === NetworkKind.Gno) {
-          return fetchGnoFeed(selectedNetwork, req, pageParam);
+          return fetchGnoFeed(selectedNetwork, wallet?.address, req, pageParam);
         }
 
         throw Error(`Network ${selectedNetwork?.id} is not supported`);

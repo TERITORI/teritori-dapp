@@ -1,6 +1,8 @@
 import { GIF_MIME_TYPE } from "./mime";
 import { HASHTAG_REGEX, MENTION_REGEX, URL_REGEX } from "./regex";
+import { redDefault } from "./style/colors";
 import { LocalFileData } from "./types/files";
+import flagSVG from "../../assets/icons/notification.svg";
 import { Post, Reaction } from "../api/feed/v1/feed";
 import {
   PostCategory,
@@ -49,8 +51,13 @@ export const feedsTabItems = {
     name: "Articles Feed",
   },
   governance: {
-    name: "Governance Feed ",
+    name: "Governance Feed",
     disabled: true,
+  },
+  moderationDAO: {
+    name: "Moderation DAO",
+    iconSVG: flagSVG,
+    iconColor: redDefault,
   },
 };
 
@@ -65,6 +72,8 @@ export const feedTabToCategories = (tab: keyof typeof feedsTabItems) => {
       return [PostCategory.Video];
     case "articles":
       return [PostCategory.Article];
+    case "moderationDAO":
+      return [PostCategory.Flagged];
     default:
       return [];
   }

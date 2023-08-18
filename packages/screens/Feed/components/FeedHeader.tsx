@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { StyleSheet } from "react-native";
 
 import { SpacerColumn } from "../../../components/spacer";
 import { Tabs } from "../../../components/tabs/Tabs";
 import { useMaxResolution } from "../../../hooks/useMaxResolution";
+import { useSelectedNetworkKind } from "../../../hooks/useSelectedNetwork";
+import { NetworkKind } from "../../../networks";
 import { feedsTabItems } from "../../../utils/social-feed";
 import { primaryColor } from "../../../utils/style/colors";
 import { fontSemibold16 } from "../../../utils/style/fonts";
@@ -18,10 +20,26 @@ export const FeedHeader: React.FC<FeedHeaderProps> = ({
   onTabChange,
 }) => {
   const { width } = useMaxResolution();
+
+  const selectedNetworkKind = useSelectedNetworkKind();
+
+  // NODE: Keep moderationDAO tab only on Gno for now
+  const adjustedFeedsTabItems = useMemo(() => {
+    if (selectedNetworkKind === NetworkKind.Gno) {
+      return feedsTabItems;
+    }
+
+    const feedsTabItemsWithoutModerationDAO = { ...feedsTabItems };
+    // @ts-ignore
+    // Ignore to avoid: The operand of a 'delete' operator must be optional
+    delete feedsTabItemsWithoutModerationDAO.moderationDAO;
+    return feedsTabItemsWithoutModerationDAO;
+  }, [selectedNetworkKind]);
+
   return (
     <>
       <Tabs
-        items={feedsTabItems}
+        items={adjustedFeedsTabItems}
         selected={selectedTab}
         onSelect={onTabChange}
         style={[styles.header, { width }]}

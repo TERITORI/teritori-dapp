@@ -257,7 +257,7 @@ export const SocialThreadCard: React.FC<{
 
               <SpacerRow size={2.5} />
 
-              {selectedNetworkInfo?.kind === NetworkKind.Cosmos && (
+              {selectedNetworkInfo?.kind === NetworkKind.Gno && (
                 <FlagButton
                   networkInfo={selectedNetworkInfo}
                   postId={localPost.identifier}

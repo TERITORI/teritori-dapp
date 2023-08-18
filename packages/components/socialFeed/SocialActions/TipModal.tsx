@@ -87,7 +87,7 @@ export const TipModal: React.FC<{
         send: `${amount}ugnot`,
         pkg_path: GNO_SOCIAL_FEEDS_PKG_PATH,
         func: "TipPost",
-        args: [TERITORI_FEED_ID, postId, amount],
+        args: [TERITORI_FEED_ID, postId],
       };
 
       try {

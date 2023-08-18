@@ -22,6 +22,7 @@ import {
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
+import { SVG } from "../SVG";
 import { PrimaryBadge } from "../badges/PrimaryBadge";
 import { TertiaryBadge } from "../badges/TertiaryBadge";
 import { GradientText } from "../gradientText";
@@ -32,6 +33,8 @@ export interface TabDefinition {
   badgeCount?: number;
   disabled?: boolean;
   scrollTo?: string;
+  iconSVG?: any;
+  iconColor?: string;
 }
 
 export const Tabs = <T extends { [key: string]: TabDefinition }>({
@@ -138,6 +141,18 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
                     <TertiaryBadge size="SM" label={item.badgeCount} />
                   )
                 ) : null}
+
+                {item.iconSVG && (
+                  <View style={{ position: "relative" }}>
+                    <SVG
+                      source={item.iconSVG}
+                      color={item.iconColor || secondaryColor}
+                      width={16}
+                      height={16}
+                      style={{ position: "absolute", top: -16, left: -2 }}
+                    />
+                  </View>
+                )}
               </View>
               {!hideSelector && isSelected && (
                 <>
