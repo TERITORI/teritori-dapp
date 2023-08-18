@@ -68,6 +68,9 @@ var allModels = []interface{}{
 	&Video{},
 	&VideoLibrary{},
 	&VideoViewCount{},
+  &VideoLike{},
+  &VideoDislike{},
+  &VideoComment{},
 }
 
 func NewSQLiteDB(path string) (*gorm.DB, error) {

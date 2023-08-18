@@ -48,6 +48,41 @@ func (h *Handler) handleExecuteCreateVideo(e *Message, execMsg *wasmtypes.MsgExe
 	return nil
 }
 
+type ExecCreateCommentMsg struct {
+	CreateComment CreateCommentMsg `json:"create_comment"`
+}
+type CreateCommentMsg struct {
+	Identifier      string `json:"identifier"`
+	VideoIdentifier string `json:"video_identifier"`
+	Comment         string `json:"comment"`
+}
+
+func (h *Handler) handleExecuteCreateComment(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
+	var execCreateCommentMsg ExecCreateCommentMsg
+	if err := json.Unmarshal(execMsg.Msg, &execCreateCommentMsg); err != nil {
+		return errors.Wrap(err, "failed to unmarshal execute create comment msg")
+	}
+	createComment := &execCreateCommentMsg.CreateComment
+
+	createdAt, err := e.GetBlockTime()
+	if err != nil {
+		return errors.Wrap(err, "failed to get block time")
+	}
+
+	comment := indexerdb.VideoComment{
+		Identifier:      createComment.Identifier,
+		VideoIdentifier: createComment.VideoIdentifier,
+		Comment:         createComment.Comment,
+		CreatedBy:       h.config.Network.UserID(execMsg.Sender),
+		CreatedAt:       createdAt.Unix(),
+	}
+
+	if err := h.db.Create(&comment).Error; err != nil {
+		return errors.Wrap(err, "failed to create comment")
+	}
+	return nil
+}
+
 type DeleteVideoMsg struct {
 	Identifier string `json:"identifier"`
 }

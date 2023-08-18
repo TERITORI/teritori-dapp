@@ -7,11 +7,13 @@
 export type Uint128 = string;
 export type Addr = string;
 export interface ConfigResponse {
+  comment_fee: Uint128;
   fee: Uint128;
   owner: Addr;
   [k: string]: unknown;
 }
 export interface Config {
+  comment_fee: Uint128;
   fee: Uint128;
   owner: Addr;
   [k: string]: unknown;
@@ -47,8 +49,21 @@ export type ExecuteMsg = {
     identifier: string;
     [k: string]: unknown;
   };
+} | {
+  create_video_comment: {
+    comment: string;
+    identifier: string;
+    video_identifier: string;
+    [k: string]: unknown;
+  };
+} | {
+  delete_video_comment: {
+    identifier: string;
+    [k: string]: unknown;
+  };
 };
 export interface InstantiateMsg {
+  comment_fee: Uint128;
   fee: Uint128;
   [k: string]: unknown;
 }
@@ -57,12 +72,31 @@ export type QueryMsg = {
     [k: string]: unknown;
   };
 } | {
-  query_video: {
+  video_info: {
+    identifier: string;
+    [k: string]: unknown;
+  };
+} | {
+  video_comment_info: {
     identifier: string;
     [k: string]: unknown;
   };
 };
-export interface VideoResponse {
+export interface VideoCommentInfoResponse {
+  deleted: boolean;
+  identifier: string;
+  post_by: Addr;
+  video_identifier: string;
+  [k: string]: unknown;
+}
+export interface VideoComment {
+  comment: string;
+  deleted: boolean;
+  post_by: Addr;
+  video_identifier: string;
+  [k: string]: unknown;
+}
+export interface VideoInfoResponse {
   deleted: boolean;
   identifier: string;
   metadata: string;

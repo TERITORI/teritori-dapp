@@ -8,8 +8,8 @@ import Animated, {
 import Logo from "../../../assets/logos/logo.svg";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
-import { UploadVideoModal } from "../../components/videoPlayer/UploadVideoModal";
-import { VideoPlayerCard } from "../../components/videoPlayer/VideoPlayerCard";
+import { UploadVideoModal } from "../../components/VideoPlayer/UploadVideoModal";
+import { VideoPlayerCard } from "../../components/VideoPlayer/VideoPlayerCard";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
@@ -171,7 +171,7 @@ export const VideoPlayerMyLibraryContent: React.FC<{
               width={layout.padding_x2}
               height={layout.padding_x2}
             />
-            <BrandText style={styles.buttonText}>Upload album</BrandText>
+            <BrandText style={styles.buttonText}>Upload video</BrandText>
           </Pressable>
         </View>
       </View>
@@ -192,16 +192,16 @@ export const VideoPlayerMyLibraryContent: React.FC<{
       </View>
 
       <View style={styles.oneLine}>
-        <BrandText style={fontSemibold20}>Other Albums</BrandText>
+        <BrandText style={fontSemibold20}>Other Videos</BrandText>
       </View>
       <View style={styles.contentGroup}>
         <Animated.FlatList
           scrollEventThrottle={0.1}
           data={videoListForLibrary}
           numColumns={4}
-          renderItem={({ item: albumInfo }) => (
+          renderItem={({ item: videoInfo }) => (
             <View style={styles.albumGrid}>
-              <VideoPlayerCard item={albumInfo} hasLibrary />
+              <VideoPlayerCard item={videoInfo} hasLibrary />
             </View>
           )}
           onScroll={scrollHandlerOther}

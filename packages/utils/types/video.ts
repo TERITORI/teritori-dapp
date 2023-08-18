@@ -11,6 +11,8 @@ export interface VideoInfoWithMeta {
   videoMetaInfo: VideoMetaInfo;
   createdBy: string;
   viewCount: number;
+  like: number;
+  dislike: number;
   viewLastTimestamp: number;
 }
 
