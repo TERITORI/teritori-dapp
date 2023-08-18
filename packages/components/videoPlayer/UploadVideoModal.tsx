@@ -1,4 +1,5 @@
 import React, {
+  useRef,
   createRef,
   useState,
   Dispatch,
@@ -11,7 +12,6 @@ import { v4 as uuidv4 } from "uuid";
 
 import DefaultAlbumImage from "../../../assets/icons/player/album.png";
 import Img from "../../../assets/icons/player/img.svg";
-import Upload from "../../../assets/icons/player/upload.svg";
 import { pinataPinFileToIPFS } from "../../candymachine/pinata-upload";
 import { signingVideoPlayerClient } from "../../client-creators/videoplayerClient";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
@@ -25,6 +25,7 @@ import { generateIpfsKey } from "../../utils/social-feed";
 import { selectNFTStorageAPI } from "../../store/slices/settings";
 import { defaultSocialFeedFee } from "../../utils/fee";
 import { generateIpfsKey, ipfsURLToHTTPURL } from "../../utils/ipfs";
+import { VIDEO_MIME_TYPES } from "../../utils/mime";
 import {
   neutral17,
   neutral33,
@@ -40,6 +41,7 @@ import { VideoMetaInfo } from "../../utils/types/video";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { PrimaryButton } from "../buttons/PrimaryButton";
+import { FileUploader } from "../fileUploader";
 import ModalBase from "../modals/ModalBase";
 
 interface UploadVideoModalProps {
@@ -186,20 +188,19 @@ const Step1Component: React.FC<{
   const [uploadFile, setUploadFile] = useState<VideoMetaInfo | null>(null);
   const [canContinue, setCanContinue] = useState<boolean>(false);
   const [isUploading, setIsUploading] = useState<boolean>(false);
-  const inputFileRef = createRef<HTMLInputElement>();
+  const selectedNetworkId = useSelectedNetworkId();
+  const selectedWallet = useSelectedWallet();
+  const userId = getUserId(selectedNetworkId, selectedWallet?.address);
+  const userIPFSKey = useSelector(selectNFTStorageAPI);
 
   useEffect(() => {
     setCanContinue(!!uploadFile);
   }, [uploadFile]);
 
-  const uploadVideoFile = async () => {
-    setIsUploading(true);
-    inputFileRef.current?.click();
-  };
-  const onInputFileChange: React.ChangeEventHandler<HTMLInputElement> = async (
-    e
-  ) => {
-    const file = e.target?.files![0];
+  const uploadVideoFile = async (files: LocalFileData[]) => {
+    if (files.length === 0) return;
+    const file = files[0];
+    const url = URL.createObjectURL(file.file);
     const video = document.createElement("video");
     video.preload = "metadata";
     const pinataJWTKey =
@@ -209,22 +210,15 @@ const Step1Component: React.FC<{
       if (!pinataJWTKey) {
         return;
       }
-      const local_file_data = {
+      setIsUploading(true);
+      const pinataRes = await pinataPinFileToIPFS({
         file,
-        fileName: file.name,
-        mimeType: "",
-        size: 0,
-        url: "",
-        fileType: "video",
-      } as LocalFileData;
-      const ipfsHash_data = await pinataPinFileToIPFS({
-        file: local_file_data,
         pinataJWTKey,
       });
       const duration = video.duration;
       if (ipfsHash_data.IpfsHash! !== "") {
         setUploadFile({
-          title: file.name,
+          title: file.file.name,
           description: "",
           url: ipfsHash_data.IpfsHash,
           image: "",
@@ -233,27 +227,20 @@ const Step1Component: React.FC<{
       }
       setIsUploading(false);
     });
-    video.src = URL.createObjectURL(file);
+    video.src = url;
   };
 
   return (
     <>
       <View style={styles.contentContainer}>
-        <Pressable style={styles.uploadBox}>
-          <SVG
-            source={Upload}
-            width={layout.padding_x2}
-            height={layout.padding_x2}
-          />
-          <BrandText>Drag and drop your video here</BrandText>
-        </Pressable>
-        <View style={styles.buttonContainer}>
-          <Pressable onPress={uploadVideoFile}>
-            <BrandText style={styles.buttonText}>
-              or choose files to upload
-            </BrandText>
-          </Pressable>
-        </View>
+        <FileUploader
+          onUpload={uploadVideoFile}
+          mimeTypes={VIDEO_MIME_TYPES}
+          style={{
+            marginTop: layout.padding_x3,
+            width: "100%",
+          }}
+        />
       </View>
       <View style={styles.divideLine} />
       <View style={styles.footer}>
@@ -271,13 +258,6 @@ const Step1Component: React.FC<{
           }}
         />
       </View>
-      <input
-        type="file"
-        style={{ display: "none" }}
-        accept="video/mp4"
-        onChange={onInputFileChange}
-        ref={inputFileRef}
-      />
     </>
   );
 };
@@ -417,6 +397,7 @@ const Step2Component: React.FC<{
   const selectedNetworkId = useSelectedNetworkId();
   const selectedWallet = useSelectedWallet();
   const userId = getUserId(selectedNetworkId, selectedWallet?.address);
+  const userIPFSKey = useSelector(selectNFTStorageAPI);
 
   const onInputFileChange: React.ChangeEventHandler<HTMLInputElement> = async (
     e
@@ -432,7 +413,13 @@ const Step2Component: React.FC<{
         url: "",
         fileType: "image",
       } as LocalFileData;
-      const ipfsHash_data = await pinataPinFileToIPFS({
+      const pinataJWTKey =
+        userIPFSKey || (await generateIpfsKey(selectedNetworkId, userId));
+      if (!pinataJWTKey) {
+        setIsUploading(false);
+        return;
+      }
+      const pinataRes = await pinataPinFileToIPFS({
         file: local_file_data,
         pinataJWTKey,
       });
@@ -463,9 +450,9 @@ const Step2Component: React.FC<{
         <View style={styles.imgBox}>
           <Image
             source={
-              videoFile && videoFile.image !== ""
-                ? ipfsURLToHTTPURL(videoFile.image)
-                : DefaultAlbumImage
+              !videoFile || videoFile.coverImage === ""
+                ? CoverImg
+                : ipfsURLToHTTPURL(videoFile.coverImage)
             }
             style={styles.img}
           />
@@ -507,7 +494,17 @@ const Step2Component: React.FC<{
           By uploading, you confirm that your sounds comply with our Terms of
           Use.
         </BrandText>
-        <PrimaryButton text="Upload" size="SM" onPress={uploadVideo} />
+        <PrimaryButton
+          text="Upload"
+          size="SM"
+          disabled={
+            videoFile.coverImage === "" ||
+            title.trim() === "" ||
+            description.trim() === ""
+          }
+          onPress={uploadVideo}
+          isLoading={isUploading}
+        />
       </View>
     </>
   );

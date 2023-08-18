@@ -122,3 +122,75 @@ func (s *VideoService) IncreaseViewCount(ctx context.Context, req *videopb.Incre
 
 	return &videopb.IncreaseViewCountResponse{Res: 0}, nil
 }
+
+func (s *VideoService) Like(ctx context.Context, req *videopb.LikeRequest) (*videopb.LikeResponse, error) {
+	id := req.GetIdentifier()
+	user := req.GetUser()
+	if user == "" {
+		return &videopb.LikeResponse{Res: 1}, nil
+	}
+	var c int64
+	s.conf.IndexerDB.Model(&indexerdb.VideoLike{}).
+		Where("identifier = ? and user = ?", id, user).Count(&c)
+	if c != 0 {
+		return &videopb.LikeResponse{Res: 1}, nil
+	}
+	view := indexerdb.VideoLike{
+		Identifier: id,
+		User:       user,
+	}
+	if err := s.conf.IndexerDB.Create(&view).Error; err != nil {
+		return &videopb.LikeResponse{Res: 1}, nil
+	}
+	var video indexerdb.Video
+	s.conf.IndexerDB.Model(&indexerdb.Video{}).
+		Where("identifier = ?", id).Find(&video)
+	video.Like += 1
+	s.conf.IndexerDB.Save(&video)
+
+	return &videopb.LikeResponse{Res: 0}, nil
+}
+
+func (s *VideoService) Dislike(ctx context.Context, req *videopb.DislikeRequest) (*videopb.DislikeResponse, error) {
+	id := req.GetIdentifier()
+	user := req.GetUser()
+	if user == "" {
+		return &videopb.DislikeResponse{Res: 1}, nil
+	}
+	var c int64
+	s.conf.IndexerDB.Model(&indexerdb.VideoDislike{}).
+		Where("identifier = ? and user = ?", id, user).Count(&c)
+	if c != 0 {
+		return &videopb.DislikeResponse{Res: 1}, nil
+	}
+	view := indexerdb.VideoDislike{
+		Identifier: id,
+		User:       user,
+	}
+	if err := s.conf.IndexerDB.Create(&view).Error; err != nil {
+		return &videopb.DislikeResponse{Res: 1}, nil
+	}
+	var video indexerdb.Video
+	s.conf.IndexerDB.Model(&indexerdb.Video{}).
+		Where("identifier = ?", id).Find(&video)
+	video.Dislike += 1
+	// video.LastView = time.Now().Unix()
+	s.conf.IndexerDB.Save(&video)
+
+	return &videopb.DislikeResponse{Res: 0}, nil
+}
+
+func (s *VideoService) GetCommentList(ctx context.Context, req *videopb.GetCommentListRequest) (*videopb.GetCommentListResponse, error) {
+	id := req.GetIdentifier()
+	var comments []*videopb.CommentInfo
+	if err := s.conf.IndexerDB.
+		Model(&indexerdb.VideoComment{}).
+		Where("video_identifier = ?", id).
+		Where("is_deleted = ?", false).
+		Order("created_at desc").
+		Scan(&comments).Error; err != nil {
+		return nil, errors.Wrap(err, "failed to query database")
+	}
+	return &videopb.GetCommentListResponse{CommentInfos: comments}, nil
+
+}

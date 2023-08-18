@@ -35,6 +35,8 @@ export const useUserFetchVideos = (req: GetUserVideoListRequest) => {
               identifier: videoInfo.identifier,
               videoMetaInfo: metadata,
               createdBy: videoInfo.createdBy,
+              createdAt: new Date(videoInfo.createdAt * 1000).toISOString(),
+              viewCount: videoInfo.viewCount,
             } as VideoInfoWithMeta);
           });
 
