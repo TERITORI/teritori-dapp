@@ -5,6 +5,7 @@ import {
   StyleSheet,
   StyleProp,
   ViewStyle,
+  ActivityIndicator,
 } from "react-native";
 
 import { Label, TextInputCustom } from "./TextInputCustom";
@@ -43,8 +44,9 @@ type Props = {
   boxStyle?: StyleProp<ViewStyle>;
   label?: string;
   isRequired?: boolean;
-  allowEnteringValue?: boolean;
+  allowSearchValue?: boolean;
   name?: string;
+  isLoading?: boolean;
 };
 
 export const SelectInput: React.FC<Props> = ({
@@ -57,30 +59,37 @@ export const SelectInput: React.FC<Props> = ({
   boxStyle,
   label,
   isRequired,
-  allowEnteringValue,
+  allowSearchValue,
   name,
+  isLoading,
 }) => {
   const [openMenu, setOpenMenu] = useState<boolean>(false);
   const [hoveredIndex, setHoveredIndex] = useState<number>(0);
   const [hovered, setHovered] = useState(false);
-  const [enteredValue, setEnteredValue] = useState("");
+  const [searchValue, setSearchValue] = useState("");
   const selectableData = useMemo(
     () =>
-      allowEnteringValue && enteredValue
-        ? data.filter((d) =>
-            d.label.toLowerCase().includes(enteredValue.toLowerCase())
+      allowSearchValue && searchValue
+        ? // selectableData depends on searchValue
+          data.filter((d) =>
+            d.label.toLowerCase().includes(searchValue.toLowerCase())
           )
-        : data,
-    [allowEnteringValue, data, enteredValue]
+        : // Or selectableData is just the given data
+          data,
+    [allowSearchValue, data, searchValue]
   );
 
-  // It obliges the user to select a value from the list to trigger a valid selectData. The enteredValue will not be used as selectedData.
-  // Also, after the user selected a value, if he modifies the enteredValue, he will have to re-select a value from the list.
+  // It obliges the user to select a value from the list to trigger a valid selectData. The searchValue will not be used as selectedData.
+  // Also, after the user selected a value, if he modifies the searchValue, he will have to re-select a value from the list.
   useEffect(() => {
-    if (allowEnteringValue && enteredValue !== selectedData.label) {
+    if (
+      allowSearchValue &&
+      selectedData.label &&
+      searchValue !== selectedData.label
+    ) {
       selectData({ label: "", value: "" });
     }
-  }, [allowEnteringValue, enteredValue, selectData, selectedData]);
+  }, [allowSearchValue, searchValue, selectData, selectedData]);
 
   useEffect(() => {
     if (!selectableData.length) {
@@ -133,23 +142,24 @@ export const SelectInput: React.FC<Props> = ({
               </>
             )}
 
-            {allowEnteringValue ? (
+            {allowSearchValue ? (
               <TextInputCustom
                 placeHolder={placeHolder}
                 name={name || ""}
                 hideLabel
                 label=""
                 variant="noStyle"
-                value={enteredValue}
+                value={searchValue}
                 onChangeText={(text) => {
-                  setEnteredValue(text);
+                  setSearchValue(text);
                   setOpenMenu(!!selectableData.length);
                 }}
                 rules={{ required: isRequired }}
                 style={{ flex: 1 }}
                 containerStyle={{ flex: 1 }}
                 boxMainContainerStyle={{ flex: 1 }}
-                textInputStyle={{ flex: 1 }}
+                textInputStyle={{ width: "100%" }}
+                disabled={disabled || isLoading}
               />
             ) : (
               <BrandText
@@ -163,18 +173,26 @@ export const SelectInput: React.FC<Props> = ({
             )}
           </View>
 
-          <SVG
-            source={
-              !data.length || disabled
-                ? lockSVG
-                : openMenu
-                ? chevronUpSVG
-                : chevronDownSVG
-            }
-            width={16}
-            height={16}
-            color={secondaryColor}
-          />
+          {isLoading ? (
+            <ActivityIndicator
+              color={secondaryColor}
+              style={{ marginLeft: layout.padding_x1_5 }}
+            />
+          ) : (
+            <SVG
+              source={
+                !selectableData.length || disabled
+                  ? lockSVG
+                  : openMenu
+                  ? chevronUpSVG
+                  : chevronDownSVG
+              }
+              width={16}
+              height={16}
+              color={secondaryColor}
+              style={{ marginLeft: layout.padding_x1_5 }}
+            />
+          )}
         </View>
 
         {/*TODO: If the opened menu appears under other elements, you'll may need to set zIndex:-1 or something to these elements*/}
@@ -192,7 +210,7 @@ export const SelectInput: React.FC<Props> = ({
                 }}
                 onPress={() => {
                   selectData(item);
-                  setEnteredValue(item.label);
+                  setSearchValue(item.label);
                   setOpenMenu(false);
                 }}
                 key={index}
@@ -271,5 +289,8 @@ const styles = StyleSheet.create({
   dropdownMenuRow: {
     borderRadius: 6,
     padding: layout.padding_x1,
+  },
+  inputIconContainer: {
+    marginLeft: layout.padding_x1_5,
   },
 });

@@ -28,7 +28,7 @@ interface GnoMember {
 }
 
 export const AddMembersModal: React.FC<{
-  daoId: string | undefined;
+  daoId: string;
   show: boolean;
   onClose: () => void;
 }> = ({ daoId, show, onClose }) => {
@@ -67,16 +67,6 @@ export const AddMembersModal: React.FC<{
     } finally {
       setSubmitLoading(false);
     }
-
-    // TODO: Make this work. Donnow why proposeToAddMembers fails (or not triggered ?)
-    // wrapWithFeedback(async () => {
-    //   console.log('OOOOO')
-    //   await proposeToAddMembers(
-    //     selectedWallet?.address,
-    //     members
-    //   );
-    //   onClose();
-    // })
   };
 
   return (
@@ -111,7 +101,7 @@ export const AddMembersModal: React.FC<{
   );
 };
 
-const useProposeToAddMembers = (daoId: string | undefined) => {
+const useProposeToAddMembers = (daoId: string) => {
   const makeProposal = useDAOMakeProposal(daoId);
   const { data: groupAddress } = useDAOGroup(daoId);
   const invalidateDAOProposals = useInvalidateDAOProposals(daoId);

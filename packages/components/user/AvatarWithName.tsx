@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { StyleProp, ViewStyle, View, TouchableOpacity } from "react-native";
 
-import { useIsDAO } from "../../hooks/cosmwasm/useCosmWasmContractInfo";
+import { useIsDAO } from "../../hooks/dao/useIsDAO";
 import { useNSNameOwner } from "../../hooks/useNSNameOwner";
 import { useNSPrimaryAlias } from "../../hooks/useNSPrimaryAlias";
 import { getUserId, parseUserId } from "../../networks";

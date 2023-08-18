@@ -93,8 +93,7 @@ func (h *Handler) handleExecuteInstantiateContractWithSelfAdmin(e *Message, exec
 	// TODO: support other dao kinds (only supports member-based for now)
 	groupContractAddress, err := e.Events.First("wasm.group_contract_address")
 	if err != nil {
-		h.logger.Debug("ignored instantiate dao with no group contract address", zap.String("tx", e.TxHash), zap.Error(err))
-		return nil
+	  groupContractAddress = ""
 	}
 
 	var msg InstantiateContractWithSelfAdminMsg

@@ -103,18 +103,21 @@ export const NFTBasedSettingsSection: React.FC<Props> = ({
           onPress={() =>
             setConsiderListedNFTs((considerListedNFTs) => !considerListedNFTs)
           }
+          // TODO: Enable later (need new contract implementation
+          disabled
         >
           <BrandText style={fontSemibold14}>
             Consider NFTs listed on the marketplace (but not sold yet) eligible
             to the DAO
           </BrandText>
-          {/*TODO: TOggle*/}
           <Switch
             // @ts-expect-error
             activeThumbColor={primaryColor}
             thumbColor={considerListedNFTs ? primaryColor : neutral55}
             trackColor={{ true: secondaryColor, false: neutralA3 }}
             value={considerListedNFTs}
+            // TODO: Enable later (need new contract implementation
+            disabled
           />
         </CustomPressable>
         <SpacerColumn size={3} />
@@ -127,7 +130,7 @@ export const NFTBasedSettingsSection: React.FC<Props> = ({
           name="nftContractAddress"
           placeHolder="tori..."
           isRequired
-          allowEnteringValue
+          allowSearchValue
         />
         <SpacerColumn size={2} />
       </ScrollView>

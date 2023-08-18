@@ -1,7 +1,8 @@
 import { ExecuteResult } from "@cosmjs/cosmwasm-stargate";
-import { StdFee, Coin } from "@cosmjs/stargate";
+import { Coin, StdFee } from "@cosmjs/stargate";
 
 import { ipfsURLToHTTPURL, uploadFileToIPFS } from "./ipfs";
+import { nsTokenWithoutTLD } from "./tns";
 import { LocalFileData } from "./types/files";
 import { Member } from "../contracts-clients/cw4-group/Cw4Group.types";
 import {
@@ -15,11 +16,11 @@ import { InstantiateMsg as InstantiateMsgCW4 } from "../contracts-clients/dao-vo
 import { InstantiateMsg as InstantiateMsgCW721S } from "../contracts-clients/dao-voting-cw721-staked/DaoVotingCw721Staked.types";
 import { TeritoriNameServiceClient } from "../contracts-clients/teritori-name-service/TeritoriNameService.client";
 import {
-  mustGetCosmosNetwork,
+  CosmosNetworkInfo,
   getKeplrSigningCosmWasmClient,
   getStakingCurrency,
-  CosmosNetworkInfo,
   getUserId,
+  mustGetCosmosNetwork,
 } from "../networks";
 
 export interface TokenHolder {
@@ -77,6 +78,7 @@ export const createDaoNftBased = async (
   memo?: string,
   funds?: Coin[]
 ): CreateDaoResult => {
+  // TODO: handle more networks later (Gno)
   const network = mustGetCosmosNetwork(networkId);
   if (!network.daoVotingCw721StakedCodeId) return;
 
@@ -154,6 +156,7 @@ export const createDaoTokenBased = async (
   memo?: string,
   funds?: Coin[]
 ): CreateDaoResult => {
+  // TODO: handle more networks later (Gno)
   const network = mustGetCosmosNetwork(networkId);
   if (
     !network.daoCw20CodeId ||
@@ -238,6 +241,7 @@ export const createDaoMemberBased = async (
   memo?: string,
   funds?: Coin[]
 ): CreateDaoResult => {
+  // TODO: handle more networks later (Gno)
   const network = mustGetCosmosNetwork(networkId);
   if (!network.daoCw4GroupCodeId || !network.daoVotingCw4CodeId) return;
 
@@ -413,7 +417,10 @@ const createDAO = async ({
   );
 
   // ======= Getting the name from Name Service
-  const tokenId = tns.includes(".tori") ? tns : tns + ".tori";
+  // TODO: handle more TLD later
+  const tokenId = (
+    nsTokenWithoutTLD(tns) + (network?.nameServiceTLD || "")
+  ).toLowerCase();
 
   try {
     if (userOwnsName) {
@@ -423,7 +430,6 @@ const createDAO = async ({
     }
 
     const amount = await nameServiceClient.mintPrice({
-      // TODO: handle more TLD later
       tokenId,
     });
 

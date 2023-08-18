@@ -32,13 +32,13 @@ import { TertiaryButton } from "../buttons/TertiaryButton";
 import { SpacerRow } from "../spacer";
 
 export const ProposalActions: React.FC<{
-  daoId: string | undefined;
+  daoId: string;
   proposal: ProposalResponse;
 }> = ({ daoId, proposal }) => {
   const selectedWallet = useSelectedWallet();
   const networkId = useSelectedNetworkId();
   const { setToastError, setToastSuccess } = useFeedbacks();
-  const { isDAOMember: selectedWalletIsDAOMember } = useIsDAOMember(
+  const selectedWalletIsDAOMember = useIsDAOMember(
     daoId,
     selectedWallet?.userId
   );

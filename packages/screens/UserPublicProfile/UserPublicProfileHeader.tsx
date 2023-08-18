@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 
 import { Tabs } from "../../components/tabs/Tabs";
 import { UPPIntro } from "../../components/userPublicProfile/UPPIntro";
-import { useIsDAO } from "../../hooks/cosmwasm/useCosmWasmContractInfo";
+import { useIsDAO } from "../../hooks/dao/useIsDAO";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkKind, parseUserId } from "../../networks";

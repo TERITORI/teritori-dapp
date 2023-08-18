@@ -18,7 +18,7 @@ import { SpacerColumn } from "../spacer";
 export const DAOProposalModal: React.FC<{
   visible?: boolean;
   onClose: () => void;
-  daoId: string | undefined;
+  daoId: string;
   proposalInfo: AppProposalResponse;
 }> = ({ visible, onClose, daoId, proposalInfo }) => {
   const [network] = parseUserId(daoId);

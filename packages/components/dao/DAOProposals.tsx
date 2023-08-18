@@ -31,7 +31,7 @@ import { OmniLink } from "../OmniLink";
 import { SVG } from "../SVG";
 
 export const DAOProposals: React.FC<{
-  daoId: string | undefined;
+  daoId: string;
   style?: StyleProp<ViewStyle>;
 }> = ({ daoId, style }) => {
   const { daoProposals } = useDAOProposals(daoId);
@@ -48,7 +48,7 @@ export const DAOProposals: React.FC<{
 // TODO: use correct threshold, quorum and total power for passed/executed proposals
 
 const ProposalRow: React.FC<{
-  daoId: string | undefined;
+  daoId: string;
   proposal: AppProposalResponse;
 }> = ({ daoId, proposal }) => {
   const [network] = parseUserId(daoId);

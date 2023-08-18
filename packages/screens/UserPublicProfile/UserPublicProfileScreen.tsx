@@ -17,8 +17,8 @@ import { DAOsList } from "../../components/dao/DAOsList";
 import { GnoDemo } from "../../components/dao/GnoDemo";
 import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
 import { UPPNFTs } from "../../components/userPublicProfile/UPPNFTs";
-import { useIsDAO } from "../../hooks/cosmwasm/useCosmWasmContractInfo";
 import { useIsDAOMember } from "../../hooks/dao/useDAOMember";
+import { useIsDAO } from "../../hooks/dao/useIsDAO";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { usePrevious } from "../../hooks/usePrevious";
@@ -46,11 +46,7 @@ const SelectedTabContent: React.FC<{
   const userInfo = useNSUserInfo(userId);
   const [network, userAddress] = parseUserId(userId);
   const { isDAO } = useIsDAO(userId);
-  const { isDAOMember } = useIsDAOMember(
-    userId,
-    selectedWallet?.userId,
-    !!isDAO
-  );
+  const isDAOMember = useIsDAOMember(userId, selectedWallet?.userId, isDAO);
 
   const feedRequestUser: PostsRequest = useMemo(() => {
     return {

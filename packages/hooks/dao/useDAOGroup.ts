@@ -9,7 +9,7 @@ import {
   getNetwork,
 } from "../../networks";
 
-export const useDAOGroup = (daoId: string | undefined, enabled?: boolean) => {
+export const useDAOGroup = (daoId: string, enabled?: boolean) => {
   const { daoVotingModule } = useDAOVotingModule(daoId);
   const [network] = parseUserId(daoId);
   const networkId = network?.id;

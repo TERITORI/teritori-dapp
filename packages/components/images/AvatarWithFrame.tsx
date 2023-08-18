@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import { StyleProp, View, ViewStyle, StyleSheet } from "react-native";
 
 import emptyCircleFrameSVG from "../../../assets/empty-circle-frame.svg";
-import { useIsDAO } from "../../hooks/cosmwasm/useCosmWasmContractInfo";
+import { useIsDAO } from "../../hooks/dao/useIsDAO";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import {
   CosmosNetworkInfo,
