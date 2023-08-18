@@ -207,7 +207,7 @@ $(CONTRACTS_CLIENTS_DIR)/$(VAULT_PACKAGE): node_modules
 .PHONY: $(CONTRACTS_CLIENTS_DIR)/$(DAO_VOTING_CW4_PACKAGE)
 $(CONTRACTS_CLIENTS_DIR)/$(DAO_VOTING_CW4_PACKAGE): node_modules
 	rm -fr $(DAO_CONTRACTS_REPO)
-	git clone git@github.com:TERITORI/$(DAO_CONTRACTS_REPO).git
+	git clone git@github.com:DA0-DA0/$(DAO_CONTRACTS_REPO).git
 	cd $(DAO_CONTRACTS_REPO) && git checkout v2.1.0
 	rm -fr $@
 	npx cosmwasm-ts-codegen generate \
@@ -221,7 +221,7 @@ $(CONTRACTS_CLIENTS_DIR)/$(DAO_VOTING_CW4_PACKAGE): node_modules
 .PHONY: $(CONTRACTS_CLIENTS_DIR)/$(DAO_VOTING_CW20_STAKED_PACKAGE)
 $(CONTRACTS_CLIENTS_DIR)/$(DAO_VOTING_CW20_STAKED_PACKAGE): node_modules
 	rm -fr $(DAO_CONTRACTS_REPO)
-	git clone git@github.com:TERITORI/$(DAO_CONTRACTS_REPO).git
+	git clone git@github.com:DA0-DA0/$(DAO_CONTRACTS_REPO).git
 	cd $(DAO_CONTRACTS_REPO) && git checkout v2.1.0
 	rm -fr $@
 	npx cosmwasm-ts-codegen generate \
@@ -235,7 +235,7 @@ $(CONTRACTS_CLIENTS_DIR)/$(DAO_VOTING_CW20_STAKED_PACKAGE): node_modules
 .PHONY: $(CONTRACTS_CLIENTS_DIR)/$(DAO_VOTING_CW721_STAKED_PACKAGE)
 $(CONTRACTS_CLIENTS_DIR)/$(DAO_VOTING_CW721_STAKED_PACKAGE): node_modules
 	rm -fr $(DAO_CONTRACTS_REPO)
-	git clone git@github.com:TERITORI/$(DAO_CONTRACTS_REPO).git
+	git clone git@github.com:DA0-DA0/$(DAO_CONTRACTS_REPO).git
 	cd $(DAO_CONTRACTS_REPO) && git checkout v2.1.0
 	rm -fr $@
 	npx cosmwasm-ts-codegen generate \
