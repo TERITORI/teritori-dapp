@@ -8,19 +8,19 @@ import {
   mustGetCosmosNetwork,
 } from "../networks";
 
-interface SigningMusicPlayerClientParams {
+interface SigningClientParams {
   networkId: string;
   walletAddress: string;
 }
 
-interface NonSigningMusicPlayerClientParams {
+interface NonSigningClientParams {
   networkId: string;
 }
 
 export const signingVideoPlayerClient = async ({
   networkId,
   walletAddress,
-}: SigningMusicPlayerClientParams) => {
+}: SigningClientParams) => {
   const network = mustGetCosmosNetwork(networkId);
   const videoContractAddress = network.videoContractAddress || "";
 
@@ -46,7 +46,7 @@ export const signingVideoPlayerClient = async ({
 
 export const nonSigningVideoPlayerClient = async ({
   networkId,
-}: NonSigningMusicPlayerClientParams) => {
+}: NonSigningClientParams) => {
   const network = mustGetCosmosNetwork(networkId);
   const videoContractAddress = network.videoContractAddress || "";
 

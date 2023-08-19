@@ -352,7 +352,6 @@ const Step2Component: React.FC<{
         outlineStyle: "none",
       },
     ]),
-
     uploadImg: {
       width: "100%",
       position: "absolute",

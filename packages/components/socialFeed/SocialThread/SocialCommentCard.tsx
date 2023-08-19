@@ -95,7 +95,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
   const wallet = useSelectedWallet();
   const selectedNetwork = useSelectedNetworkInfo();
   const selectedNetworkId = selectedNetwork?.id || "";
-  const [, userAddress] = parseUserId(localComment.createdBy);
+  const [, authorAddress] = parseUserId(localComment.authorId);
   const { data, refetch, fetchNextPage, hasNextPage, isFetching } =
     useFetchComments({
       parentId: localComment.identifier,
@@ -124,7 +124,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
   );
   const moreCommentsCount = localComment.subPostLength - comments.length;
   const metadata = JSON.parse(localComment.metadata);
-  const authorNSInfo = useNSUserInfo(localComment.createdBy);
+  const authorNSInfo = useNSUserInfo(localComment.authorId);
   const userInfo = useNSUserInfo(wallet?.userId);
   const username = authorNSInfo?.metadata?.tokenId
     ? tinyAddress(authorNSInfo?.metadata?.tokenId || "", 19)
@@ -269,8 +269,8 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
             <View style={styles.commentContainerInside}>
               {/*====== Card Header */}
               <SocialCardHeader
-                authorAddress={userAddress}
-                authorId={localComment.createdBy}
+                authorAddress={authorAddress}
+                authorId={localComment.authorId}
                 postMetadata={metadata}
                 authorMetadata={authorNSInfo?.metadata}
               />

@@ -89,7 +89,7 @@ export const postResultToPost = (
     parentPostIdentifier: postResult.parent_post_identifier || "",
     subPostLength: postResult.sub_post_length,
     reactions: postResult.reactions,
-    createdBy: getUserId(networkId, postResult.post_by),
+    authorId: getUserId(networkId, postResult.post_by),
     createdAt: JSON.parse(postResult.metadata).createdAt,
     tipAmount: parseFloat(postResult.tip_amount),
   };

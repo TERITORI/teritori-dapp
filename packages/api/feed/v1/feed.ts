@@ -26,7 +26,7 @@ export interface Post {
   metadata: string;
   parentPostIdentifier: string;
   subPostLength: number;
-  createdBy: string;
+  authorId: string;
   createdAt: number;
   tipAmount: number;
   reactions: Reaction[];
@@ -209,7 +209,7 @@ function createBasePost(): Post {
     metadata: "",
     parentPostIdentifier: "",
     subPostLength: 0,
-    createdBy: "",
+    authorId: "",
     createdAt: 0,
     tipAmount: 0,
     reactions: [],
@@ -236,8 +236,8 @@ export const Post = {
     if (message.subPostLength !== 0) {
       writer.uint32(48).uint32(message.subPostLength);
     }
-    if (message.createdBy !== "") {
-      writer.uint32(58).string(message.createdBy);
+    if (message.authorId !== "") {
+      writer.uint32(58).string(message.authorId);
     }
     if (message.createdAt !== 0) {
       writer.uint32(64).int64(message.createdAt);
@@ -277,7 +277,7 @@ export const Post = {
           message.subPostLength = reader.uint32();
           break;
         case 7:
-          message.createdBy = reader.string();
+          message.authorId = reader.string();
           break;
         case 8:
           message.createdAt = longToNumber(reader.int64() as Long);
@@ -304,7 +304,7 @@ export const Post = {
       metadata: isSet(object.metadata) ? String(object.metadata) : "",
       parentPostIdentifier: isSet(object.parentPostIdentifier) ? String(object.parentPostIdentifier) : "",
       subPostLength: isSet(object.subPostLength) ? Number(object.subPostLength) : 0,
-      createdBy: isSet(object.createdBy) ? String(object.createdBy) : "",
+      authorId: isSet(object.authorId) ? String(object.authorId) : "",
       createdAt: isSet(object.createdAt) ? Number(object.createdAt) : 0,
       tipAmount: isSet(object.tipAmount) ? Number(object.tipAmount) : 0,
       reactions: Array.isArray(object?.reactions) ? object.reactions.map((e: any) => Reaction.fromJSON(e)) : [],
@@ -319,7 +319,7 @@ export const Post = {
     message.metadata !== undefined && (obj.metadata = message.metadata);
     message.parentPostIdentifier !== undefined && (obj.parentPostIdentifier = message.parentPostIdentifier);
     message.subPostLength !== undefined && (obj.subPostLength = Math.round(message.subPostLength));
-    message.createdBy !== undefined && (obj.createdBy = message.createdBy);
+    message.authorId !== undefined && (obj.authorId = message.authorId);
     message.createdAt !== undefined && (obj.createdAt = Math.round(message.createdAt));
     message.tipAmount !== undefined && (obj.tipAmount = Math.round(message.tipAmount));
     if (message.reactions) {
@@ -338,7 +338,7 @@ export const Post = {
     message.metadata = object.metadata ?? "";
     message.parentPostIdentifier = object.parentPostIdentifier ?? "";
     message.subPostLength = object.subPostLength ?? 0;
-    message.createdBy = object.createdBy ?? "";
+    message.authorId = object.authorId ?? "";
     message.createdAt = object.createdAt ?? 0;
     message.tipAmount = object.tipAmount ?? 0;
     message.reactions = object.reactions?.map((e) => Reaction.fromPartial(e)) || [];

@@ -217,12 +217,17 @@ export const NFTView: React.FC<{
                           label="Set as Avatar"
                         />
                         <SpacerColumn size={0.5} />
-                        <DropdownOption
-                          onPress={closeOpenedDropdown}
-                          isComingSoon
-                          icon={gridSVG}
-                          label="List this NFT"
-                        />
+                        <OmniLink
+                          to={{
+                            screen: "NFTDetail",
+                            params: { id: nft.id },
+                          }}
+                        >
+                          <DropdownOption
+                            icon={gridSVG}
+                            label="List this NFT"
+                          />
+                        </OmniLink>
                         <SpacerColumn size={0.5} />
                         <DropdownOption
                           onPress={closeOpenedDropdown}
