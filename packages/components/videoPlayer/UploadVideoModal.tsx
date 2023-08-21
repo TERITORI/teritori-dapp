@@ -1,5 +1,4 @@
 import React, {
-  useRef,
   createRef,
   useState,
   Dispatch,
@@ -10,7 +9,7 @@ import { View, Pressable, StyleSheet, Image, TextInput } from "react-native";
 import { useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 
-import DefaultAlbumImage from "../../../assets/icons/player/album.png";
+import CoverImg from "../../../assets/icons/player/cover-img.png";
 import Img from "../../../assets/icons/player/img.svg";
 import { pinataPinFileToIPFS } from "../../candymachine/pinata-upload";
 import { signingVideoPlayerClient } from "../../client-creators/videoplayerClient";
@@ -18,10 +17,6 @@ import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getUserId } from "../../networks";
-import { selectNFTStorageAPI } from "../../store/slices/settings";
-import { defaultSocialFeedFee } from "../../utils/fee";
-import { ipfsURLToHTTPURL } from "../../utils/ipfs";
-import { generateIpfsKey } from "../../utils/social-feed";
 import { selectNFTStorageAPI } from "../../store/slices/settings";
 import { defaultSocialFeedFee } from "../../utils/fee";
 import { generateIpfsKey, ipfsURLToHTTPURL } from "../../utils/ipfs";
@@ -128,6 +123,9 @@ const Step1Component: React.FC<{
   const selectedWallet = useSelectedWallet();
   const userId = getUserId(selectedNetworkId, selectedWallet?.address);
   const userIPFSKey = useSelector(selectNFTStorageAPI);
+  const [uploadFile, setUploadFile] = useState<VideoMetaInfo | null>(null);
+  const [canContinue, setCanContinue] = useState<boolean>(false);
+  const [isUploading, setIsUploading] = useState<boolean>(false);
 
   const paddingHorizontal = layout.padding_x2_5;
   const styles = StyleSheet.create({
@@ -185,14 +183,6 @@ const Step1Component: React.FC<{
     ]),
   });
 
-  const [uploadFile, setUploadFile] = useState<VideoMetaInfo | null>(null);
-  const [canContinue, setCanContinue] = useState<boolean>(false);
-  const [isUploading, setIsUploading] = useState<boolean>(false);
-  const selectedNetworkId = useSelectedNetworkId();
-  const selectedWallet = useSelectedWallet();
-  const userId = getUserId(selectedNetworkId, selectedWallet?.address);
-  const userIPFSKey = useSelector(selectNFTStorageAPI);
-
   useEffect(() => {
     setCanContinue(!!uploadFile);
   }, [uploadFile]);
@@ -211,7 +201,7 @@ const Step1Component: React.FC<{
         return;
       }
       setIsUploading(true);
-      const pinataRes = await pinataPinFileToIPFS({
+      const ipfsHash_data = await pinataPinFileToIPFS({
         file,
         pinataJWTKey,
       });
@@ -267,6 +257,13 @@ const Step2Component: React.FC<{
   setVideoFile: Dispatch<SetStateAction<VideoMetaInfo | null>>;
   uploadVideo: () => void;
 }> = ({ videoFile, setVideoFile, uploadVideo }) => {
+  const inputFileRef = createRef<HTMLInputElement>();
+  const selectedNetworkId = useSelectedNetworkId();
+  const selectedWallet = useSelectedWallet();
+  const userId = getUserId(selectedNetworkId, selectedWallet?.address);
+  const userIPFSKey = useSelector(selectNFTStorageAPI);
+  const [isUploading, setIsUploading] = useState<boolean>(false);
+
   const paddingHorizontal = layout.padding_x2_5;
   const imgSize = 172;
   const styles = StyleSheet.create({
@@ -392,13 +389,6 @@ const Step2Component: React.FC<{
     inputFileRef.current?.click();
   };
 
-  const inputFileRef = createRef<HTMLInputElement>();
-
-  const selectedNetworkId = useSelectedNetworkId();
-  const selectedWallet = useSelectedWallet();
-  const userId = getUserId(selectedNetworkId, selectedWallet?.address);
-  const userIPFSKey = useSelector(selectNFTStorageAPI);
-
   const onInputFileChange: React.ChangeEventHandler<HTMLInputElement> = async (
     e
   ) => {
@@ -419,7 +409,7 @@ const Step2Component: React.FC<{
         setIsUploading(false);
         return;
       }
-      const pinataRes = await pinataPinFileToIPFS({
+      const ipfsHash_data = await pinataPinFileToIPFS({
         file: local_file_data,
         pinataJWTKey,
       });
@@ -450,9 +440,7 @@ const Step2Component: React.FC<{
         <View style={styles.imgBox}>
           <Image
             source={
-              !videoFile || videoFile.coverImage === ""
-                ? CoverImg
-                : ipfsURLToHTTPURL(videoFile.coverImage)
+              !videoFile?.image ? CoverImg : ipfsURLToHTTPURL(videoFile.image)
             }
             style={styles.img}
           />
@@ -498,9 +486,9 @@ const Step2Component: React.FC<{
           text="Upload"
           size="SM"
           disabled={
-            videoFile.coverImage === "" ||
-            title.trim() === "" ||
-            description.trim() === ""
+            videoFile.image === "" ||
+            videoFile.title.trim() === "" ||
+            videoFile.description.trim() === ""
           }
           onPress={uploadVideo}
           isLoading={isUploading}
