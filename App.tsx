@@ -8,7 +8,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { StatusBar } from "expo-status-bar";
 import { MetaMaskProvider } from "metamask-react";
-import React from "react";
+import React, { memo, useEffect } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { Platform, View } from "react-native";
 import { MenuProvider } from "react-native-popup-menu";
@@ -24,8 +24,14 @@ import { SearchBarContextProvider } from "./packages/context/SearchBarProvider";
 import { TNSMetaDataListContextProvider } from "./packages/context/TNSMetaDataListProvider";
 import { TNSContextProvider } from "./packages/context/TNSProvider";
 import { TransactionModalsProvider } from "./packages/context/TransactionModalsProvider";
-import { WalletsProvider } from "./packages/context/WalletsProvider";
-import { store } from "./packages/store/store";
+import {
+  WalletsProvider,
+  useWallets,
+} from "./packages/context/WalletsProvider";
+import { useSelectedNetworkId } from "./packages/hooks/useSelectedNetwork";
+import useSelectedWallet from "./packages/hooks/useSelectedWallet";
+import { setSelectedWalletId } from "./packages/store/slices/settings";
+import { store, useAppDispatch } from "./packages/store/store";
 import { linking } from "./packages/utils/navigation";
 
 const queryClient = new QueryClient();
@@ -59,6 +65,7 @@ export default function App() {
                   <FeedbacksContextProvider>
                     <DropdownsContextProvider>
                       <WalletsProvider>
+                        <WalletSyncer />
                         <SearchBarContextProvider>
                           <TransactionModalsProvider>
                             <TNSContextProvider>
@@ -128,3 +135,20 @@ class ErrorBoundary extends React.Component {
     return this.props.children;
   }
 }
+
+const WalletSyncer: React.FC = memo(() => {
+  const selectedWallet = useSelectedWallet();
+  const selectedNetworkId = useSelectedNetworkId();
+  const { wallets } = useWallets();
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    if (!selectedWallet || selectedWallet.networkId !== selectedNetworkId) {
+      dispatch(
+        setSelectedWalletId(
+          wallets.find((w) => w.networkId === selectedNetworkId)?.id
+        )
+      );
+    }
+  }, [dispatch, selectedNetworkId, selectedWallet, wallets]);
+  return null;
+});

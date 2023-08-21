@@ -42,9 +42,9 @@ import { useIsMobile } from "../../hooks/useIsMobile";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import { NetworkFeature, getUserId, parseUserId } from "../../networks";
+import { NetworkFeature, parseUserId } from "../../networks";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
-import { DEFAULT_USERNAME, postResultToPost } from "../../utils/social-feed";
+import { DEFAULT_USERNAME } from "../../utils/social-feed";
 import { primaryColor } from "../../utils/style/colors";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import {
@@ -70,10 +70,12 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
     id,
     selectedNetworkId
   );
-  const authorNSInfo = useNSUserInfo(
-    getUserId(selectedNetworkId, postResult?.post_by)
-  );
-  const [, userAddress] = parseUserId(postResult?.post_by);
+
+  const authorId = postResult?.authorId;
+  const authorNSInfo = useNSUserInfo(authorId);
+
+  const [, authorAddress] = parseUserId(postResult?.authorId);
+
   const feedInputRef = useRef<NewsFeedInputHandle>(null);
   const [replyTo, setReplyTo] = useState<ReplyToType>();
   const aref = useAnimatedRef<Animated.ScrollView>();
@@ -90,7 +92,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
     isLoading: isLoadingComments,
   } = useFetchComments({
     parentId: postResult?.identifier,
-    totalCount: postResult?.sub_post_length,
+    totalCount: postResult?.subPostLength,
     enabled: true,
   });
   const isNextPageAvailable = useSharedValue(hasNextPage);
@@ -149,16 +151,22 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
   const headerLabel = useMemo(() => {
     if (isLoadingPostResult) return "Loading Post...";
     else if (!postResult) return "Post not found";
-    const author =
-      authorNSInfo?.metadata?.tokenId || userAddress || DEFAULT_USERNAME;
-    if (postResult.category === PostCategory.Article)
-      return `Article by ${author}`;
-    if (postResult?.parent_post_identifier) return `Comment by ${author}`;
-    return `Post by ${author}`;
+    const authorDisplayName =
+      authorNSInfo?.metadata?.tokenId || authorAddress || DEFAULT_USERNAME;
+
+    if (postResult.category === PostCategory.Article) {
+      return `Article by ${authorDisplayName}`;
+    }
+
+    if (postResult?.parentPostIdentifier) {
+      return `Comment by ${authorDisplayName}`;
+    }
+
+    return `Post by ${authorDisplayName}`;
   }, [
     postResult,
     authorNSInfo?.metadata?.tokenId,
-    userAddress,
+    authorAddress,
     isLoadingPostResult,
   ]);
 
@@ -172,9 +180,9 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
         <BrandText style={fontSemibold20}>{headerLabel}</BrandText>
       }
       onBackPress={() =>
-        postResult?.parent_post_identifier
+        postResult?.parentPostIdentifier
           ? navigation.navigate("FeedPostView", {
-              id: postResult?.parent_post_identifier || "",
+              id: postResult?.parentPostIdentifier || "",
             })
           : navigation.canGoBack()
           ? navigation.goBack()
@@ -230,7 +238,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
                         borderRightWidth: 0,
                       }
                     }
-                    post={postResultToPost(selectedNetworkId, postResult)}
+                    post={postResult}
                     isPostConsultation
                     onPressReply={onPressReply}
                   />

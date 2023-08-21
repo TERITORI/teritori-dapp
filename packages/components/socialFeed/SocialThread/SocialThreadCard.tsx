@@ -72,14 +72,12 @@ export const SocialThreadCard: React.FC<{
   const wallet = useSelectedWallet();
   const selectedNetworkInfo = useSelectedNetworkInfo();
   const selectedNetworkId = selectedNetworkInfo?.id;
-  const authorNSInfo = useNSUserInfo(localPost.createdBy);
-  const [, userAddress] = parseUserId(localPost.createdBy);
+  const authorNSInfo = useNSUserInfo(localPost.authorId);
+  const [, authorAddress] = parseUserId(localPost.authorId);
   const userInfo = useNSUserInfo(wallet?.userId);
   const navigation = useAppNavigation();
   const metadata: SocialFeedMetadata = JSON.parse(localPost.metadata);
-  const username = authorNSInfo?.metadata?.tokenId
-    ? authorNSInfo?.metadata?.tokenId
-    : userAddress;
+  const username = authorNSInfo?.metadata?.tokenId || authorAddress;
 
   //TODO: Handle this later
   // const communityHashtag = useMemo(() => {
@@ -185,8 +183,8 @@ export const SocialThreadCard: React.FC<{
       >
         {/*====== Card Header */}
         <SocialCardHeader
-          authorAddress={userAddress}
-          authorId={localPost.createdBy}
+          authorAddress={authorAddress}
+          authorId={localPost.authorId}
           postMetadata={metadata}
           authorMetadata={authorNSInfo?.metadata}
         />

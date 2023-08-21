@@ -6,9 +6,9 @@ import {
   Metadata,
   NftInfoResponse,
 } from "../contracts-clients/teritori-name-service/TeritoriNameService.types";
-import { NetworkKind, getNetwork } from "../networks";
+import { GnoNetworkInfo, NetworkKind, getNetwork } from "../networks";
 import { getCosmosNameServiceQueryClient } from "../utils/contracts";
-import { extractGnoJSONString } from "../utils/gno";
+import { extractGnoJSONString, extractGnoString } from "../utils/gno";
 
 export const nsNameInfoQueryKey = (
   networkId: string | undefined,
@@ -55,7 +55,23 @@ export const useNSNameInfo = (
           return nftInfo;
         }
         case NetworkKind.Gno: {
-          if (!tokenId.startsWith("gno.land/") || !network.daoRegistryPkgPath) {
+          if (!tokenId.startsWith("gno.land/") && tokenId.endsWith(".gno")) {
+            const address = await gnoGetAddressByUsername(
+              network,
+              tokenId.slice(0, -".gno".length)
+            );
+            if (!address) {
+              return null;
+            }
+            const res: NftInfoResponse = {
+              extension: {},
+            };
+            return res;
+          }
+          if (!tokenId.startsWith("gno.land/")) {
+            return null;
+          }
+          if (!network.daoRegistryPkgPath) {
             return null;
           }
           const provider = new GnoJSONRPCProvider(network.endpoint);
@@ -78,4 +94,31 @@ export const useNSNameInfo = (
     { staleTime: Infinity, enabled }
   );
   return { nsInfo, notFound: nsInfo === null, ...other };
+};
+
+const gnoGetAddressByUsername = async (
+  network: GnoNetworkInfo,
+  name: string
+) => {
+  if (!name) return null;
+
+  const provider = new GnoJSONRPCProvider(network.endpoint);
+
+  try {
+    const res = await provider.evaluateExpression(
+      network.nameServiceContractAddress,
+      `GetUserByName(${JSON.stringify(name)}).address`
+    );
+    const address = extractGnoString(res);
+    return address;
+  } catch (err) {
+    if (
+      err instanceof Error &&
+      err.message.includes("ABCI response is not initialized")
+    ) {
+      // not registered
+      return null;
+    }
+    throw err;
+  }
 };

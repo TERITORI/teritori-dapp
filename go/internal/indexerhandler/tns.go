@@ -2,6 +2,7 @@ package indexerhandler
 
 import (
 	"encoding/json"
+	"strings"
 
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
@@ -72,7 +73,7 @@ type ExecuteCW721MintMsg struct {
 func (h *Handler) handleExecuteMintTNS(e *Message, collection *indexerdb.Collection, tokenId string, execMsg *wasmtypes.MsgExecuteContract) error {
 	minter := execMsg.Sender
 	ownerId := h.config.Network.UserID(minter)
-
+	tokenId = strings.ToLower(tokenId) // mint action in name service contract emits non-normalized token id in events
 	nftId := h.config.Network.NFTID(collection.TeritoriCollection.MintContractAddress, tokenId)
 
 	// get image URI

@@ -332,9 +332,11 @@ export const NewsFeedInput = React.forwardRef<
               ],
             };
 
-            const txHash = await adenaDoContract(selectedNetworkId, [
-              { type: "/vm.m_call", value: vmCall },
-            ]);
+            const txHash = await adenaDoContract(
+              selectedNetworkId,
+              [{ type: "/vm.m_call", value: vmCall }],
+              { gasWanted: 2_000_000 }
+            );
 
             const provider = new GnoJSONRPCProvider(selectedNetwork.endpoint);
             await provider.waitForTransaction(txHash);
