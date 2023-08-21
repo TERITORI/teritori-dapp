@@ -90,12 +90,7 @@ export const ipfsURLToHTTPURL = (ipfsURL: string | undefined) => {
     return ipfsURL;
   }
   if (ipfsURL.startsWith("ipfs://")) {
-    return ipfsURL.replace(
-      "ipfs://",
-      "https://magenta-convenient-felidae-524.mypinata.cloud/ipfs/"
-    );
+    return ipfsURL.replace("ipfs://", "https://nftstorage.link/ipfs/");
   }
-  return (
-    "https://magenta-convenient-felidae-524.mypinata.cloud/ipfs/" + ipfsURL
-  );
+  return "https://nftstorage.link/ipfs/" + ipfsURL;
 };
