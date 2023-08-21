@@ -43,3 +43,8 @@ export interface NFTInfo {
   networkId: string;
   collectionId: string;
 }
+
+export type TransferNftMsg = {
+  recipient: string;
+  token_id: string;
+};

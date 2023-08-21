@@ -1,3 +1,4 @@
+import { isDeliverTxFailure } from "@cosmjs/stargate";
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { useSelector } from "react-redux";
@@ -36,6 +37,7 @@ import {
   createDaoNftBased,
 } from "../../utils/dao";
 import { adenaDeployGnoDAO } from "../../utils/gnodao/deploy";
+import { nsTokenWithoutTLD } from "../../utils/tns";
 
 export const ORGANIZATION_DEPLOYER_STEPS = [
   "Create a DAO",
@@ -46,12 +48,8 @@ export const ORGANIZATION_DEPLOYER_STEPS = [
 ];
 
 export const LAUNCHING_PROCESS_STEPS: LaunchingProcessStepType[] = [
-  { title: "Book name", completeText: "Transaction finalized" },
   { title: "Create organization", completeText: "Transaction finalized" },
-  {
-    title: "Transfer name to organization",
-    completeText: "Transaction finalized",
-  },
+  { title: "Assign a Name", completeText: "Transaction finalized" },
 ];
 
 export const OrganizationDeployerScreen = () => {
@@ -88,14 +86,18 @@ export const OrganizationDeployerScreen = () => {
     const num_minutes = !minutes ? 0 : parseInt(minutes, 10);
     return num_days * 3600 * 24 + num_hours * 3600 + num_minutes * 60;
   };
-
   const network = getNetwork(step1DaoInfoFormData?.networkId);
+  const nsTokenId = (
+    nsTokenWithoutTLD(
+      step1DaoInfoFormData?.associatedTeritoriNameService || ""
+    ) + (network?.kind === NetworkKind.Cosmos ? network?.nameServiceTLD : "")
+  ).toLowerCase();
 
   const createDaoContract = async (): Promise<boolean> => {
     try {
       switch (network?.kind) {
         case NetworkKind.Gno: {
-          const name = step1DaoInfoFormData?.associatedTeritoriNameService!;
+          const name = nsTokenId;
           const pkgPath = await adenaDeployGnoDAO(
             network.id,
             selectedWallet?.address!,
@@ -150,7 +152,7 @@ export const OrganizationDeployerScreen = () => {
                 contractAddress: daoFactoryContractAddress,
                 name: step1DaoInfoFormData.organizationName,
                 description: step1DaoInfoFormData.organizationDescription,
-                tns: step1DaoInfoFormData.associatedTeritoriNameService,
+                nsTokenId,
                 image: step1DaoInfoFormData.image,
                 considerListedNFTs: step3NFTSettingFormData.considerListedNFTs,
                 nftContractAddress: step3NFTSettingFormData.nftContractAddress,
@@ -178,7 +180,7 @@ export const OrganizationDeployerScreen = () => {
                 contractAddress: daoFactoryContractAddress,
                 name: step1DaoInfoFormData.organizationName,
                 description: step1DaoInfoFormData.organizationDescription,
-                tns: step1DaoInfoFormData.associatedTeritoriNameService,
+                nsTokenId,
                 image: step1DaoInfoFormData.image,
                 tokenName: step3TokenSettingFormData.tokenName,
                 tokenSymbol: step3TokenSettingFormData.tokenSymbol,
@@ -211,7 +213,7 @@ export const OrganizationDeployerScreen = () => {
                 contractAddress: daoFactoryContractAddress,
                 name: step1DaoInfoFormData.organizationName,
                 description: step1DaoInfoFormData.organizationDescription,
-                tns: step1DaoInfoFormData.associatedTeritoriNameService,
+                nsTokenId,
                 image: step1DaoInfoFormData.image,
                 members: step3MemberSettingFormData.members.map((member) => ({
                   addr: member.addr,
@@ -237,6 +239,21 @@ export const OrganizationDeployerScreen = () => {
             );
           } else {
             return false;
+          }
+
+          if (
+            createDaoRes &&
+            isDeliverTxFailure(createDaoRes.nameServiceTxResponse)
+          ) {
+            console.error(
+              "name service txs failed",
+              createDaoRes.nameServiceTxResponse
+            );
+            setToastError({
+              title:
+                "Name Service transactions failed. The DAO may created, but the Name has not been assigned.",
+              message: createDaoRes.nameServiceTxResponse.rawLog || "",
+            });
           }
 
           if (createDaoRes) {

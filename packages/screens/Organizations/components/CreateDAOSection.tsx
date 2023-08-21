@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 
@@ -19,6 +19,7 @@ import {
   TextInputCustom,
 } from "../../../components/inputs/TextInputCustom";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
+import { useNSNameOwner } from "../../../hooks/useNSNameOwner";
 import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { getNetwork, NetworkKind } from "../../../networks";
@@ -46,7 +47,6 @@ interface CreateDAOSectionProps {
 export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
   onSubmit,
 }) => {
-  // variables
   const selectedWallet = useSelectedWallet();
 
   const {
@@ -101,12 +101,38 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
     if (associatedTeritoriNameService !== selectedName) setSelectedName("");
   }, [associatedTeritoriNameService, selectedName]);
 
+  // Check if the selectedName is already owned by another user
+  const {
+    nameOwner,
+    notFound,
+    isLoading: nsNameOwnerLoading,
+  } = useNSNameOwner(
+    selectedNetwork.value.toString(),
+    (
+      associatedTeritoriNameService +
+      (selectedNetworkInfo?.kind === NetworkKind.Cosmos
+        ? selectedNetworkInfo?.nameServiceTLD
+        : "")
+    ).toLowerCase()
+  );
+  const isNameAvailable = useMemo(
+    () =>
+      (!notFound && nameOwner === selectedWallet?.address) ||
+      notFound ||
+      !associatedTeritoriNameService,
+    [
+      notFound,
+      nameOwner,
+      selectedWallet?.address,
+      associatedTeritoriNameService,
+    ]
+  );
+
   // Specify if associatedTeritoriNameService is an existing name held by the user. This name will not be minted ah the DAO creation
   useEffect(() => {
     setValue("userOwnsName", !!selectedName);
   }, [selectedName, setValue]);
 
-  // functions
   const onErrorImageLoading = () =>
     setError("image", {
       type: "pattern",
@@ -126,8 +152,6 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
         <BrandText style={styles.sectionTitle}>Claim a name</BrandText>
         <SpacerColumn size={2.5} />
         <View style={styles.section}>
-          {/*<ImagePreviewer uri={imageUrl} onError={onErrorImageLoading} />*/}
-
           <CustomPressable
             onHoverOut={() => setImageHovered(false)}
             onHoverIn={() => setImageHovered(true)}
@@ -187,7 +211,7 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
               <View style={styles.fill}>
                 <SearchNSInputContainer
                   onPressName={(userId, name) => {
-                    if (name) {
+                    if (name && isNameAvailable) {
                       setValue(
                         "associatedTeritoriNameService",
                         nsTokenWithoutTLD(name)
@@ -200,6 +224,11 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
                   searchText={selectedName ? "" : associatedTeritoriNameService}
                 >
                   <TextInputCustom<CreateDaoFormType>
+                    error={
+                      !isNameAvailable && !nsNameOwnerLoading
+                        ? "This name is already owned"
+                        : undefined
+                    }
                     noBrokenCorners
                     height={48}
                     control={control}
@@ -294,7 +323,7 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
           size="M"
           text={`Next: ${ORGANIZATION_DEPLOYER_STEPS[1]}`}
           onPress={handleSubmit(onSubmit)}
-          disabled={!isValid || !image}
+          disabled={!isValid || !image || !isNameAvailable}
         />
       </View>
     </View>

@@ -1,9 +1,11 @@
-import { ExecuteResult } from "@cosmjs/cosmwasm-stargate";
+import { DeliverTxResponse, ExecuteResult } from "@cosmjs/cosmwasm-stargate";
+import { MsgExecuteContractEncodeObject } from "@cosmjs/cosmwasm-stargate/build/modules";
+import { toUtf8 } from "@cosmjs/encoding";
 import { Coin, StdFee } from "@cosmjs/stargate";
 
 import { ipfsURLToHTTPURL, uploadFileToIPFS } from "./ipfs";
-import { nsTokenWithoutTLD } from "./tns";
 import { LocalFileData } from "./types/files";
+import { TransferNftMsg } from "./types/nft";
 import { Member } from "../contracts-clients/cw4-group/Cw4Group.types";
 import {
   InstantiateMsg as InstantiateMsgCore,
@@ -15,6 +17,10 @@ import { InstantiateMsg as InstantiateMsgCW20S } from "../contracts-clients/dao-
 import { InstantiateMsg as InstantiateMsgCW4 } from "../contracts-clients/dao-voting-cw4/DaoVotingCw4.types";
 import { InstantiateMsg as InstantiateMsgCW721S } from "../contracts-clients/dao-voting-cw721-staked/DaoVotingCw721Staked.types";
 import { TeritoriNameServiceClient } from "../contracts-clients/teritori-name-service/TeritoriNameService.client";
+import {
+  MintMsgForMetadata,
+  UpdateMetadataMsg,
+} from "../contracts-clients/teritori-name-service/TeritoriNameService.types";
 import {
   CosmosNetworkInfo,
   getKeplrSigningCosmWasmClient,
@@ -30,7 +36,8 @@ export interface TokenHolder {
 type CreateDaoResult = Promise<
   | {
       daoAddress: string;
-      executeResult: ExecuteResult;
+      daoCreationResult: ExecuteResult;
+      nameServiceTxResponse: DeliverTxResponse;
     }
   | undefined
 >;
@@ -47,7 +54,7 @@ export const createDaoNftBased = async (
     contractAddress,
     name,
     description,
-    tns,
+    nsTokenId,
     image,
     considerListedNFTs,
     nftContractAddress,
@@ -63,7 +70,7 @@ export const createDaoNftBased = async (
     contractAddress: string;
     name: string;
     description: string;
-    tns: string;
+    nsTokenId: string;
     image: LocalFileData;
     nftContractAddress: string;
     quorum: string;
@@ -104,7 +111,7 @@ export const createDaoNftBased = async (
     image,
     instantiateLabel: `DAO_${name}_DaoVotingCw721Staked`,
     sender,
-    tns,
+    nsTokenId,
     network,
     userOwnsName,
     contractAddress,
@@ -123,7 +130,7 @@ export const createDaoTokenBased = async (
     contractAddress,
     name,
     description,
-    tns,
+    nsTokenId,
     image,
     tokenName,
     tokenSymbol,
@@ -140,7 +147,7 @@ export const createDaoTokenBased = async (
     contractAddress: string;
     name: string;
     description: string;
-    tns: string;
+    nsTokenId: string;
     image: LocalFileData;
     tokenHolders: TokenHolder[];
     quorum: string;
@@ -193,7 +200,7 @@ export const createDaoTokenBased = async (
     image,
     instantiateLabel: `DAO_${name}_DaoVotingCw20Staked`,
     sender,
-    tns,
+    nsTokenId,
     network,
     userOwnsName,
     contractAddress,
@@ -212,7 +219,7 @@ export const createDaoMemberBased = async (
     contractAddress,
     name,
     description,
-    tns,
+    nsTokenId,
     image,
     members,
     quorum,
@@ -227,7 +234,7 @@ export const createDaoMemberBased = async (
     contractAddress: string;
     name: string;
     description: string;
-    tns: string;
+    nsTokenId: string;
     image: LocalFileData;
     members: Member[];
     quorum: string;
@@ -262,7 +269,7 @@ export const createDaoMemberBased = async (
     image,
     instantiateLabel: `DAO_${name}_DaoVotingCw4`,
     sender,
-    tns,
+    nsTokenId,
     network,
     userOwnsName,
     contractAddress,
@@ -284,7 +291,7 @@ const createDAO = async ({
   image,
   instantiateLabel,
   sender,
-  tns,
+  nsTokenId,
   network,
   contractAddress,
   fee = "auto",
@@ -304,7 +311,7 @@ const createDAO = async ({
   image: LocalFileData;
   instantiateLabel: string;
   sender: string;
-  tns: string;
+  nsTokenId: string;
   network: CosmosNetworkInfo;
   contractAddress: string;
   fee: number | StdFee | "auto";
@@ -316,16 +323,16 @@ const createDAO = async ({
 }): CreateDaoResult => {
   if (!network.daoPreProposeSingleCodeId || !network.daoProposalSingleCodeId)
     return;
+  const tokenId = nsTokenId;
 
   await onStepChange(0);
 
-  // ============== STEP 1 ================================================================
+  // We need some DAO client stuff
   const dao_pre_propose_single_msg: InstantiateMsgPrePropose = {
     deposit_info: null,
     extension: {},
     open_proposal_submission: false,
   };
-
   const dao_proposal_single_msg: InstantiateMsgProposalSingle = {
     threshold: {
       threshold_quorum: {
@@ -372,86 +379,46 @@ const createDAO = async ({
     msg: Buffer.from(JSON.stringify(daoVotingMsg)).toString("base64"),
   };
 
-  // ======= Store the DAO image to IPFS
-  const userId = getUserId(network.id, sender);
-  const uploadedImage = await uploadFileToIPFS(
-    image,
-    network.id,
-    userId,
-    userIPFSKey
-  );
-  let imageUrl = "";
-  if (!uploadedImage?.url) {
-    console.error("Upload DAO image err : Fail to pin to IPFS");
-  } else {
-    imageUrl = ipfsURLToHTTPURL(uploadedImage?.url);
-  }
-
-  const dao_core_instantiate_msg: InstantiateMsgCore = {
-    admin: null,
-    automatically_add_cw20s: true,
-    automatically_add_cw721s: true,
-    name,
-    description,
-    image_url: imageUrl,
-    proposal_modules_instantiate_info,
-    voting_module_instantiate_info,
-  };
-
-  const instantiate_msg = Buffer.from(
-    JSON.stringify(dao_core_instantiate_msg)
-  ).toString("base64");
-
-  if (!network.nameServiceContractAddress) {
-    console.error("no name service contract address");
-    return;
-    // throw new Error("no name service contract address");
-  }
-
-  const client = await getKeplrSigningCosmWasmClient(network.id);
-
-  const nameServiceClient = new TeritoriNameServiceClient(
-    client,
-    sender,
-    network.nameServiceContractAddress
-  );
-
-  // ======= Getting the name from Name Service
-  // TODO: handle more TLD later
-  const tokenId = (
-    nsTokenWithoutTLD(tns) + (network?.nameServiceTLD || "")
-  ).toLowerCase();
-
   try {
-    if (userOwnsName) {
-      // To let the user use a owned name, we burn it to release it
-      const nameServiceNftInfo = await nameServiceClient.nftInfo({ tokenId });
-      if (nameServiceNftInfo) await nameServiceClient.burn({ tokenId });
+    // ============== STEP 1 ================================================================
+    // ======= Store the DAO image to IPFS
+    const userId = getUserId(network.id, sender);
+    const uploadedImage = await uploadFileToIPFS(
+      image,
+      network.id,
+      userId,
+      userIPFSKey
+    );
+    let imageUrl = "";
+    if (!uploadedImage?.url) {
+      console.error("Upload DAO image err : Fail to pin to IPFS");
+    } else {
+      imageUrl = ipfsURLToHTTPURL(uploadedImage?.url);
     }
 
-    const amount = await nameServiceClient.mintPrice({
-      tokenId,
-    });
+    const dao_core_instantiate_msg: InstantiateMsgCore = {
+      admin: null,
+      automatically_add_cw20s: true,
+      automatically_add_cw721s: true,
+      name,
+      description,
+      image_url: imageUrl,
+      proposal_modules_instantiate_info,
+      voting_module_instantiate_info,
+    };
 
-    const denom = getStakingCurrency(network.id)?.denom;
-    await nameServiceClient.mint(
-      {
-        owner: sender,
-        tokenId,
-        extension: {
-          public_name: dao_core_instantiate_msg.name,
-          image: dao_core_instantiate_msg.image_url,
-          public_bio: dao_core_instantiate_msg.description,
-        },
-      },
-      "auto",
-      undefined,
-      amount && denom ? [{ denom, amount }] : []
-    );
+    const instantiate_msg = Buffer.from(
+      JSON.stringify(dao_core_instantiate_msg)
+    ).toString("base64");
 
-    await onStepChange(1);
+    if (!network.nameServiceContractAddress) {
+      console.error("no name service contract address");
+      return;
+    }
 
-    // ============== STEP 2 ================================================================
+    const client = await getKeplrSigningCosmWasmClient(network.id);
+
+    // ======= Creating the DAO
     const executeResult = await client.execute(
       sender,
       contractAddress,
@@ -473,21 +440,110 @@ const createDAO = async ({
     if (!daoAddress) {
       console.error("No DAO address in transaction results");
       return;
-      // throw new Error("No DAO address in transaction results");
+    }
+    await onStepChange(1);
+
+    // ============== STEP 2 ================================================================
+    // ======= Getting a Name from Name Service
+    const nameServiceClient = new TeritoriNameServiceClient(
+      client,
+      sender,
+      network.nameServiceContractAddress
+    );
+    let msg1: MsgExecuteContractEncodeObject;
+    // If the user provides a not owned Name, we just mint the nft
+    if (!userOwnsName) {
+      const amount = await nameServiceClient.mintPrice({
+        tokenId,
+      });
+      const denom = getStakingCurrency(network.id)?.denom;
+      const mintMessage: MintMsgForMetadata = {
+        owner: sender,
+        token_id: tokenId,
+        extension: {
+          public_name: name,
+          image: imageUrl,
+          public_bio: description,
+        },
+      };
+      msg1 = {
+        typeUrl: "/cosmwasm.wasm.v1.MsgExecuteContract",
+        value: {
+          sender,
+          msg: toUtf8(
+            JSON.stringify({
+              mint: mintMessage,
+            })
+          ),
+          funds: amount && denom ? [{ denom, amount }] : [],
+          contract: network.nameServiceContractAddress,
+        },
+      };
+    }
+    // If the user provides an owned Name, we update the image, desc and public name with the DAO info
+    else {
+      const nftInfo = await nameServiceClient.nftInfo({
+        tokenId,
+      });
+
+      const updateMetadataMsg: UpdateMetadataMsg = {
+        token_id: tokenId,
+        metadata: {
+          ...nftInfo.extension,
+          image: imageUrl,
+          public_bio: description,
+          public_name: name,
+        },
+      };
+      msg1 = {
+        typeUrl: "/cosmwasm.wasm.v1.MsgExecuteContract",
+        value: {
+          sender,
+          msg: toUtf8(
+            JSON.stringify({
+              update_metadata: updateMetadataMsg,
+              // fee: "auto",
+            })
+          ),
+          funds: [],
+          contract: network.nameServiceContractAddress,
+        },
+      };
     }
 
+    // ======= Transferring the Name from Name Service
+    const transferNftMsg: TransferNftMsg = {
+      recipient: daoAddress,
+      token_id: tokenId,
+    };
+    const msg2: MsgExecuteContractEncodeObject = {
+      typeUrl: "/cosmwasm.wasm.v1.MsgExecuteContract",
+      value: {
+        sender,
+        msg: toUtf8(
+          JSON.stringify({
+            transfer_nft: transferNftMsg,
+          })
+        ),
+        funds: [],
+        contract: network.nameServiceContractAddress,
+      },
+    };
+
+    // We broadcast Name Service TXs
+    const txResponse = await client.signAndBroadcast(
+      sender,
+      [msg1, msg2],
+      "auto"
+    );
     await onStepChange(2);
 
-    // ============== STEP 3 ================================================================
-    // ======= Transferring the name from Name Service
-    await nameServiceClient.transferNft({
-      recipient: daoAddress,
-      tokenId,
-    });
-    await onStepChange(3);
-
-    return { daoAddress, executeResult };
+    return {
+      daoAddress,
+      daoCreationResult: executeResult,
+      nameServiceTxResponse: txResponse,
+    };
   } catch (e) {
-    console.error("Error creating DAO: ", e);
+    console.error("Error while DAO creation: ", e);
   }
 };
