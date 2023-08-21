@@ -11,6 +11,19 @@
 
 ## TLDR : Let's build together.
 
+### Tested environment
+
+```
+❯ yarn --version
+3.5.0
+❯ node --version
+v16.17.0
+❯ npx --version
+8.15.0
+```
+
+If you have trouble, try to match these versions
+
 ### Dev for web
 
 ```
