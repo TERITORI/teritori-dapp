@@ -32,12 +32,6 @@ yarn && npx expo start
 
 Then press `w` to open the page in your browser
 
-### Dev for desktop
-
-```
-yarn && npx expo-electron start
-```
-
 ### Build web app
 
 ```
@@ -45,14 +39,6 @@ yarn && npx expo-optimize && npx expo build:web
 ```
 
 The site is in `web-build/`
-
-### Build desktop apps
-
-```
-yarn && yarn electron-webpack && yarn electron-builder --arm64 --x64 -mwl --dir -c.compression=store -c.mac.identity=null
-```
-
-The apps are in `dist/`
 
 ## Introduction
 
