@@ -17,6 +17,7 @@ service MarketplaceService {
   rpc DAppsGroups(DAppsGroupsRequest) returns (DAppsGroupsResponse);
   rpc SearchNames(SearchNamesRequest) returns (SearchNamesResponse);
   rpc SearchCollections(SearchCollectionsRequest) returns (SearchCollectionsResponse);
+  rpc OwnersByCollection(OwnersByCollectionRequest) returns (OwnersByCollectionResponse);
 }
 
 enum Sort {
@@ -309,4 +310,12 @@ message SearchCollectionsRequest {
 
 message SearchCollectionsResponse {
   repeated Collection collections = 1;
+}
+
+message OwnersByCollectionRequest {
+  string collection_id = 1;
+}
+
+message OwnersByCollectionResponse {
+  repeated string owners = 1;
 }

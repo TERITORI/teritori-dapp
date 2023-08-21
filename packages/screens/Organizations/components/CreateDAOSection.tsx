@@ -1,22 +1,44 @@
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 
 import { ImagePreviewer } from "./ImagePreviewer";
 import { RadioDescriptionSelector } from "./RadioDescriptionSelector";
 import { BrandText } from "../../../components/BrandText";
+import { NetworkIcon } from "../../../components/NetworkIcon";
+import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
-import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
+import { FileUploader } from "../../../components/fileUploader";
+import { SearchNSInputContainer } from "../../../components/inputs/SearchNSInputContainer";
+import {
+  SelectInput,
+  SelectInputData,
+} from "../../../components/inputs/SelectInput";
+import {
+  Label,
+  TextInputCustom,
+} from "../../../components/inputs/TextInputCustom";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
+import { useNSNameOwner } from "../../../hooks/useNSNameOwner";
 import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
-import { NetworkKind } from "../../../networks";
-import { neutral33, neutral77 } from "../../../utils/style/colors";
+import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { getNetwork, NetworkKind } from "../../../networks";
+import { gnoDevNetwork } from "../../../networks/gno-dev";
+import { gnoTeritoriNetwork } from "../../../networks/gno-teritori";
+import { teritoriNetwork } from "../../../networks/teritori";
+import { teritoriTestnetNetwork } from "../../../networks/teritori-testnet";
+import { IMAGE_MIME_TYPES } from "../../../utils/mime";
+import {
+  neutral33,
+  neutral77,
+  neutralA3,
+  secondaryColor,
+} from "../../../utils/style/colors";
 import { fontSemibold20, fontSemibold28 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
+import { nsTokenWithoutTLD } from "../../../utils/tns";
 import { ORGANIZATION_DEPLOYER_STEPS } from "../OrganizationDeployerScreen";
 import { CreateDaoFormType, DaoType } from "../types";
-
-//const RADIO_DESCRIPTION_TYPES = ["Membership", "Governance", "Decentralized"];
 
 interface CreateDAOSectionProps {
   onSubmit: (form: CreateDaoFormType) => void;
@@ -25,7 +47,8 @@ interface CreateDAOSectionProps {
 export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
   onSubmit,
 }) => {
-  // variables
+  const selectedWallet = useSelectedWallet();
+
   const {
     control,
     handleSubmit,
@@ -37,18 +60,86 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
     defaultValues: { structure: DaoType.MEMBER_BASED },
     mode: "all",
   });
+  const structure = watch("structure");
+  const image = watch("image");
+  const associatedTeritoriNameService = watch("associatedTeritoriNameService");
 
-  const selectedNetwork = useSelectedNetworkInfo();
-  const selectedRadioStructure = watch("structure");
-  const uri = watch("imageUrl");
-  const name = watch("associatedTeritoriNameService");
+  // Networks concerned by the feature //TODO: Add more later
+  const networks = [
+    teritoriNetwork,
+    teritoriTestnetNetwork,
+    gnoTeritoriNetwork,
+    gnoDevNetwork,
+  ];
+  // Networks selectable in the SelectInput
+  const selectableNetworks = networks.map((n) => {
+    return {
+      label: n.displayName,
+      value: n.id,
+      iconComponent: <NetworkIcon networkId={n?.id} size={16} />,
+    };
+  });
+  // Default network in the SelectInput
+  const dappSelectedNetworkInfo = useSelectedNetworkInfo();
+  const [selectedNetwork, setSelectedNetwork] = useState<SelectInputData>({
+    label: dappSelectedNetworkInfo?.displayName || "",
+    value: dappSelectedNetworkInfo?.id || "",
+    iconComponent: (
+      <NetworkIcon networkId={dappSelectedNetworkInfo?.id} size={16} />
+    ),
+  });
+  const selectedNetworkInfo = getNetwork(selectedNetwork?.value.toString());
 
-  // functions
+  // Specify networkId
+  useEffect(() => {
+    setValue("networkId", selectedNetwork.value.toString());
+  }, [selectedNetwork, setValue]);
+
+  // Reset the SearchNSInputContainer searchText to hide the list of the found names
+  const [selectedName, setSelectedName] = useState("");
+  useEffect(() => {
+    if (associatedTeritoriNameService !== selectedName) setSelectedName("");
+  }, [associatedTeritoriNameService, selectedName]);
+
+  // Check if the selectedName is already owned by another user
+  const {
+    nameOwner,
+    notFound,
+    isLoading: nsNameOwnerLoading,
+  } = useNSNameOwner(
+    selectedNetwork.value.toString(),
+    (
+      associatedTeritoriNameService +
+      (selectedNetworkInfo?.kind === NetworkKind.Cosmos
+        ? selectedNetworkInfo?.nameServiceTLD
+        : "")
+    ).toLowerCase()
+  );
+  const isNameAvailable = useMemo(
+    () =>
+      (!notFound && nameOwner === selectedWallet?.address) ||
+      notFound ||
+      !associatedTeritoriNameService,
+    [
+      notFound,
+      nameOwner,
+      selectedWallet?.address,
+      associatedTeritoriNameService,
+    ]
+  );
+
+  // Specify if associatedTeritoriNameService is an existing name held by the user. This name will not be minted ah the DAO creation
+  useEffect(() => {
+    setValue("userOwnsName", !!selectedName);
+  }, [selectedName, setValue]);
+
   const onErrorImageLoading = () =>
-    setError("imageUrl", {
+    setError("image", {
       type: "pattern",
       message: "This image is invalid",
     });
+
+  const [isImageHovered, setImageHovered] = useState(false);
 
   // returns
   return (
@@ -61,15 +152,42 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
         <BrandText style={styles.sectionTitle}>Claim a name</BrandText>
         <SpacerColumn size={2.5} />
         <View style={styles.section}>
-          <ImagePreviewer uri={uri} onError={onErrorImageLoading} />
+          <CustomPressable
+            onHoverOut={() => setImageHovered(false)}
+            onHoverIn={() => setImageHovered(true)}
+          >
+            <Label
+              style={{ color: isImageHovered ? secondaryColor : neutralA3 }}
+              isRequired
+            >
+              Organization's image
+            </Label>
+            <SpacerColumn size={1.5} />
+            <FileUploader
+              onUpload={(files) => setValue("image", files?.[0])}
+              mimeTypes={IMAGE_MIME_TYPES}
+            >
+              {({ onPress }) => (
+                <TouchableOpacity onPress={onPress}>
+                  <ImagePreviewer
+                    uri={image?.url}
+                    onError={onErrorImageLoading}
+                    style={isImageHovered && { borderColor: secondaryColor }}
+                  />
+                </TouchableOpacity>
+              )}
+            </FileUploader>
+          </CustomPressable>
+
           <SpacerRow size={2.5} />
           <View style={styles.fill}>
             <View style={styles.row}>
               <View style={styles.fill}>
                 <TextInputCustom<CreateDaoFormType>
                   noBrokenCorners
-                  variant="labelOutside"
+                  height={48}
                   control={control}
+                  variant="labelOutside"
                   label="Organization's name"
                   placeHolder="Type organization's name here"
                   name="organizationName"
@@ -77,54 +195,78 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
                 />
               </View>
               <SpacerRow size={2.5} />
+
+              <SelectInput
+                style={{ width: 251 }}
+                data={selectableNetworks}
+                selectedData={selectedNetwork}
+                selectData={(d: SelectInputData) => {
+                  setSelectedNetwork(d);
+                }}
+                label="Network"
+                isRequired
+                boxStyle={{ height: 48 }}
+              />
+              <SpacerRow size={2.5} />
               <View style={styles.fill}>
-                <TextInputCustom<CreateDaoFormType>
-                  noBrokenCorners
-                  variant="labelOutside"
-                  control={control}
-                  label={`Associated Handle${
-                    name
-                      ? `: ${name}${
-                          selectedNetwork?.kind === NetworkKind.Gno
-                            ? ""
-                            : ".tori"
-                        }`
-                      : ""
-                  }`}
-                  placeHolder={
-                    selectedNetwork?.kind === NetworkKind.Gno
-                      ? "your_organization"
-                      : "your-organization"
-                  }
-                  name="associatedTeritoriNameService"
-                  rules={{ required: true }}
-                />
+                <SearchNSInputContainer
+                  onPressName={(userId, name) => {
+                    if (name && isNameAvailable) {
+                      setValue(
+                        "associatedTeritoriNameService",
+                        nsTokenWithoutTLD(name)
+                      );
+                      setSelectedName(nsTokenWithoutTLD(name));
+                    }
+                  }}
+                  networkId={selectedNetworkInfo?.id}
+                  ownerAddress={selectedWallet?.address}
+                  searchText={selectedName ? "" : associatedTeritoriNameService}
+                >
+                  <TextInputCustom<CreateDaoFormType>
+                    error={
+                      !isNameAvailable && !nsNameOwnerLoading
+                        ? "This name is already owned"
+                        : undefined
+                    }
+                    noBrokenCorners
+                    height={48}
+                    control={control}
+                    variant="labelOutside"
+                    label={`Associated Handle${
+                      associatedTeritoriNameService
+                        ? `: ${associatedTeritoriNameService}${
+                            selectedNetworkInfo?.kind === NetworkKind.Gno
+                              ? ""
+                              : ".tori"
+                          }`
+                        : ""
+                    }`}
+                    placeHolder={
+                      selectedNetworkInfo?.kind === NetworkKind.Gno
+                        ? "your_organization"
+                        : "your-organization"
+                    }
+                    name="associatedTeritoriNameService"
+                    rules={{ required: true }}
+                  />
+                </SearchNSInputContainer>
               </View>
             </View>
-
-            <SpacerColumn size={2.5} />
-            <TextInputCustom<CreateDaoFormType>
-              noBrokenCorners
-              control={control}
-              variant="labelOutside"
-              label="Organization's image url"
-              placeHolder="https://example.com/preview.png"
-              name="imageUrl"
-              rules={{ required: true }}
-            />
-            <SpacerColumn size={2.5} />
-            <TextInputCustom<CreateDaoFormType>
-              noBrokenCorners
-              variant="labelOutside"
-              control={control}
-              label="Organization's description"
-              placeHolder="Type organization's description here"
-              name="organizationDescription"
-              rules={{ required: true }}
-              // isAsterickSign
-              multiline
-              numberOfLines={3}
-            />
+            <View style={{ zIndex: -1 }}>
+              <SpacerColumn size={2.5} />
+              <TextInputCustom<CreateDaoFormType>
+                noBrokenCorners
+                control={control}
+                variant="labelOutside"
+                label="Organization's description"
+                placeHolder="Type organization's description here"
+                name="organizationDescription"
+                rules={{ required: true }}
+                multiline
+                numberOfLines={3}
+              />
+            </View>
           </View>
         </View>
 
@@ -133,20 +275,43 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
         <View style={styles.row}>
           <View style={styles.fill}>
             <RadioDescriptionSelector
-              selected={selectedRadioStructure === DaoType.MEMBER_BASED}
+              selected={structure === DaoType.MEMBER_BASED}
               onPress={() => setValue("structure", DaoType.MEMBER_BASED)}
               title="Membership-based TORG - Teritori Organization"
-              description="Small organization with a few members who are likely to stick around. Members can be added and removed by a vote of existing members."
+              description={`Small organization with a few members who are likely to stick around.\nMembers can be added and removed by a vote of existing members.`}
             />
           </View>
           <SpacerRow size={2} />
           <View style={styles.fill}>
             <RadioDescriptionSelector
               disabled
-              selected={selectedRadioStructure === DaoType.TOKEN_BASED}
+              selected={structure === DaoType.TOKEN_BASED}
               onPress={() => setValue("structure", DaoType.TOKEN_BASED)}
               title="Governance Token-based TORG - Teritori Organization"
-              description="Fluid organization with many members who leave and join frequently. Members can join and leave by exchanging governance shares."
+              description={`Fluid organization with many members who leave and join frequently.\nMembers can join and leave by exchanging governance shares.`}
+            />
+          </View>
+        </View>
+        <SpacerColumn size={2} />
+
+        <View style={styles.row}>
+          <View style={styles.fill}>
+            <RadioDescriptionSelector
+              disabled
+              selected={structure === DaoType.COOP_BASED}
+              onPress={() => setValue("structure", DaoType.COOP_BASED)}
+              title="Decentralized Coop Org (Coming Soon)"
+              description={`A cooperative company is based on a simple rule: 1 people = 1 voice,\nwhatever the number of holded tokens.`}
+              style={{ height: "100%" }}
+            />
+          </View>
+          <SpacerRow size={2} />
+          <View style={styles.fill}>
+            <RadioDescriptionSelector
+              selected={structure === DaoType.NFT_BASED}
+              onPress={() => setValue("structure", DaoType.NFT_BASED)}
+              title="NFT token-gated TORG - Teritori Organization "
+              description={`Fluid organization with many members who leave and join frequently\nMembers can join and leave by holding one or multiple NFTs.`}
             />
           </View>
         </View>
@@ -158,7 +323,7 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
           size="M"
           text={`Next: ${ORGANIZATION_DEPLOYER_STEPS[1]}`}
           onPress={handleSubmit(onSubmit)}
-          disabled={!isValid}
+          disabled={!isValid || !image || !isNameAvailable}
         />
       </View>
     </View>

@@ -1,26 +1,28 @@
 import React from "react";
-import { Image, StyleSheet, View } from "react-native";
+import { Image, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 
 import dorgSVG from "../../../../assets/icons/dorg-icon.svg";
 import { BrandText } from "../../../components/BrandText";
 import { SVG } from "../../../components/SVG";
 import { ipfsURLToHTTPURL } from "../../../utils/ipfs";
-import { neutral22, neutral33, neutralA3 } from "../../../utils/style/colors";
+import { neutral22, neutral33, neutral77 } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 
 interface ImagePreviewerProps {
   uri?: string;
   onError?: () => void;
+  style?: StyleProp<ViewStyle>;
 }
 
 export const ImagePreviewer: React.FC<ImagePreviewerProps> = ({
   uri,
   onError,
+  style,
 }) => {
   return (
-    <View>
-      <View style={styles.imagePreviewer}>
+    <>
+      <View style={[styles.imagePreviewer, style]}>
         {uri ? (
           <Image
             source={{ uri: ipfsURLToHTTPURL(uri) }}
@@ -35,9 +37,8 @@ export const ImagePreviewer: React.FC<ImagePreviewerProps> = ({
           />
         )}
       </View>
-
       <BrandText style={styles.text}>Preview</BrandText>
-    </View>
+    </>
   );
 };
 
@@ -61,6 +62,6 @@ const styles = StyleSheet.create({
   },
   text: StyleSheet.flatten([
     fontSemibold14,
-    { color: neutralA3, textAlign: "center" },
+    { color: neutral77, textAlign: "center" },
   ]),
 });

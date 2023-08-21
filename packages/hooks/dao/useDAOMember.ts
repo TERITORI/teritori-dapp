@@ -1,7 +1,10 @@
 import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import { useQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
 
 import { useDAOGroup } from "./useDAOGroup";
+import { useDAOMembers } from "./useDAOMembers";
+import { useDAOType } from "./useDAOType";
 import { Cw4GroupQueryClient } from "../../contracts-clients/cw4-group/Cw4Group.client";
 import { MemberResponse } from "../../contracts-clients/cw4-group/Cw4Group.types";
 import {
@@ -9,10 +12,11 @@ import {
   mustGetNonSigningCosmWasmClient,
   parseUserId,
 } from "../../networks";
+import { DaoType } from "../../screens/Organizations/types";
 import { extractGnoNumber } from "../../utils/gno";
 
 export const useDAOMember = (
-  daoId: string | undefined,
+  daoId: string,
   userId: string | undefined,
   enabled?: boolean
 ) => {
@@ -76,13 +80,24 @@ export const useDAOMember = (
 };
 
 export const useIsDAOMember = (
-  daoId: string | undefined,
+  daoId: string,
   userId: string | undefined,
   enabled?: boolean
 ) => {
-  const { data: member, ...other } = useDAOMember(daoId, userId, enabled);
-  return {
-    isDAOMember: member === undefined ? undefined : (member?.weight ?? 0) > 0,
-    ...other,
-  };
+  const [network, address] = parseUserId(daoId);
+  const daoType = useDAOType(network?.id, daoId);
+  const { data: member } = useDAOMember(daoId, userId, enabled);
+  const dataMembers = useDAOMembers(daoId);
+  const members = useMemo(() => dataMembers?.members, [dataMembers]);
+
+  switch (daoType) {
+    case DaoType.MEMBER_BASED: {
+      return member === undefined ? undefined : (member?.weight ?? 0) > 0;
+    }
+    case DaoType.NFT_BASED: {
+      return !!members?.find((m) => m.addr === address);
+    }
+    default:
+      return null;
+  }
 };

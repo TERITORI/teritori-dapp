@@ -1,5 +1,7 @@
+import { useMemo } from "react";
 import { StyleProp, ViewStyle, View, TouchableOpacity } from "react-native";
 
+import { useIsDAO } from "../../hooks/dao/useIsDAO";
 import { useNSNameOwner } from "../../hooks/useNSNameOwner";
 import { useNSPrimaryAlias } from "../../hooks/useNSPrimaryAlias";
 import { getUserId, parseUserId } from "../../networks";
@@ -19,20 +21,37 @@ export const AvatarWithName: React.FC<
       }
   ) & {
     style?: StyleProp<ViewStyle>;
-    onPress: (userId: string) => void;
+    onPress: (userId: string, name?: string) => void;
+    hideDAOs?: boolean;
   }
 > = (props) => {
+  const { nameOwner } = useNSNameOwner(
+    "networkId" in props ? props.networkId : undefined,
+    "name" in props ? props.name : undefined
+  );
+
+  const userId = useMemo(() => {
+    if ("name" in props && "networkId" in props) {
+      return getUserId(props.networkId, nameOwner);
+    }
+    if ("userId" in props) {
+      return props.userId;
+    }
+  }, [props, nameOwner]);
+
+  const { isDAO } = useIsDAO(userId);
+  if (isDAO && props.hideDAOs) return <></>;
   if ("name" in props) {
     return <AvatarWithNameFromName {...props} />;
   }
   return <AvatarWithNameFromUserId {...props} />;
 };
 
-export const AvatarWithNameFromName: React.FC<{
+const AvatarWithNameFromName: React.FC<{
   networkId: string | undefined;
   name: string | undefined;
   style?: StyleProp<ViewStyle>;
-  onPress: (userId: string) => void;
+  onPress: (userId: string, name?: string) => void;
 }> = ({ networkId, name, style, onPress }) => {
   const { nameOwner } = useNSNameOwner(networkId, name);
   return (
@@ -45,10 +64,10 @@ export const AvatarWithNameFromName: React.FC<{
   );
 };
 
-export const AvatarWithNameFromUserId: React.FC<{
+const AvatarWithNameFromUserId: React.FC<{
   userId: string | undefined;
   style?: StyleProp<ViewStyle>;
-  onPress: (userId: string) => void;
+  onPress: (userId: string, name?: string) => void;
 }> = ({ userId, style, onPress }) => {
   const { primaryAlias } = useNSPrimaryAlias(userId);
   return (
@@ -61,11 +80,11 @@ export const AvatarWithNameFromUserId: React.FC<{
   );
 };
 
-export const AvatarWithNameView: React.FC<{
+const AvatarWithNameView: React.FC<{
   name: string | undefined;
   userId: string | undefined;
   style?: StyleProp<ViewStyle>;
-  onPress: (userId: string) => void;
+  onPress: (userId: string, name?: string) => void;
 }> = ({ name, userId, style, onPress }) => {
   const [, userAddress] = parseUserId(userId);
   const content = (
@@ -87,7 +106,7 @@ export const AvatarWithNameView: React.FC<{
       {userId ? (
         <TouchableOpacity
           onPress={() => {
-            onPress(userId);
+            onPress(userId, name);
           }}
         >
           {content}

@@ -33,6 +33,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: neutral17,
     padding: layout.padding_x1_5,
+    borderRadius: 8,
   },
   title: StyleSheet.flatten([fontSemibold12, { color: neutralA3 }]),
   value: StyleSheet.flatten([fontSemibold14]),

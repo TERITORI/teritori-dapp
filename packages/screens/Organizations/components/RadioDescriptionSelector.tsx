@@ -1,11 +1,16 @@
 // libraries
-import React from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import React, { useState } from "react";
+import { StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
 import { RadioButton } from "../../../components/RadioButton";
+import { CustomPressable } from "../../../components/buttons/CustomPressable";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
-import { neutral33, neutralA3 } from "../../../utils/style/colors";
+import {
+  neutral33,
+  neutralA3,
+  secondaryColor,
+} from "../../../utils/style/colors";
 import { fontMedium13, fontSemibold16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 
@@ -15,12 +20,21 @@ export const RadioDescriptionSelector: React.FC<{
   onPress: () => void;
   title: string;
   description: string;
-}> = ({ selected, disabled, onPress, title, description }) => {
+  style?: StyleProp<ViewStyle>;
+}> = ({ selected, disabled, onPress, title, description, style }) => {
+  const [hovered, setHovered] = useState(false);
   return (
-    <Pressable
-      style={[styles.container, { opacity: disabled ? 0.5 : undefined }]}
+    <CustomPressable
+      style={[
+        styles.container,
+        disabled && { opacity: 0.5 },
+        hovered && { borderColor: secondaryColor },
+        style,
+      ]}
       onPress={onPress}
       disabled={disabled}
+      onHoverIn={() => setHovered(true)}
+      onHoverOut={() => setHovered(false)}
     >
       <View style={styles.row}>
         <RadioButton selected={selected} />
@@ -31,7 +45,7 @@ export const RadioDescriptionSelector: React.FC<{
       <BrandText style={[fontMedium13, { color: neutralA3 }]}>
         {description}
       </BrandText>
-    </Pressable>
+    </CustomPressable>
   );
 };
 

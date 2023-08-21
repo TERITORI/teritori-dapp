@@ -86,16 +86,12 @@ export const ModalBase: React.FC<ModalBaseProps> = ({
           },
           containerStyle,
         ]}
-        contentContainerStyle={[
-          {
-            alignItems: "center",
-            justifyContent: "center",
-          },
-          !scrollable && {
-            height: "100%",
-            width: "100%",
-          },
-        ]}
+        contentContainerStyle={{
+          alignItems: "center",
+          justifyContent: "center",
+          height: "100%",
+          width: "100%",
+        }}
       >
         {/*------ Modal main container */}
         <TertiaryBox

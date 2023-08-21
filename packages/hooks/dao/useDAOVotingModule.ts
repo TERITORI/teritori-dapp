@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { DaoCoreQueryClient } from "../../contracts-clients/dao-core/DaoCore.client";
 import { mustGetNonSigningCosmWasmClient, parseUserId } from "../../networks";
 
-export const useDAOVotingModule = (daoId: string | undefined) => {
+export const useDAOVotingModule = (daoId: string | null | undefined) => {
   const { data, ...other } = useQuery(
     ["daoVotingModule", daoId],
     async () => {

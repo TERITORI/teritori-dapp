@@ -21,13 +21,11 @@ import { layout } from "../../../utils/style/layout";
 import { ORGANIZATION_DEPLOYER_STEPS } from "../OrganizationDeployerScreen";
 import { TokenSettingFormType } from "../types";
 
-interface TokenSettingsSectionProps {
+interface Props {
   onSubmit: (form: TokenSettingFormType) => void;
 }
 
-export const TokenSettingsSection: React.FC<TokenSettingsSectionProps> = ({
-  onSubmit,
-}) => {
+export const TokenBasedSettingsSection: React.FC<Props> = ({ onSubmit }) => {
   // variables
   const { handleSubmit, control } = useForm<TokenSettingFormType>();
   const [addressIndexes, setAddressIndexes] = useState<number[]>([0]);
@@ -58,6 +56,7 @@ export const TokenSettingsSection: React.FC<TokenSettingsSectionProps> = ({
               name="tokenName"
               noBrokenCorners
               label="Token name"
+              variant="labelOutside"
               control={control}
               rules={{ required: true }}
               placeHolder="My Organization Token"
@@ -69,6 +68,7 @@ export const TokenSettingsSection: React.FC<TokenSettingsSectionProps> = ({
               name="tokenSymbol"
               noBrokenCorners
               label="Token Symbol"
+              variant="labelOutside"
               control={control}
               valueModifier={(value) => value.toUpperCase()}
               rules={{ required: true, pattern: patternOnlyLetters }}
@@ -85,6 +85,7 @@ export const TokenSettingsSection: React.FC<TokenSettingsSectionProps> = ({
                 name={`tokenHolders.${index}.address`}
                 noBrokenCorners
                 label="Token Holders"
+                variant="labelOutside"
                 hideLabel={index > 0}
                 control={control}
                 rules={{ required: true, validate: validateAddress }}
@@ -105,6 +106,7 @@ export const TokenSettingsSection: React.FC<TokenSettingsSectionProps> = ({
                 name={`tokenHolders.${index}.balance`}
                 noBrokenCorners
                 label="Balances"
+                variant="labelOutside"
                 hideLabel={index > 0}
                 control={control}
                 rules={{ required: true, pattern: patternOnlyNumbers }}
@@ -114,7 +116,7 @@ export const TokenSettingsSection: React.FC<TokenSettingsSectionProps> = ({
           </View>
         ))}
 
-        <SecondaryButton size="SM" text="Add More" onPress={addAddressField} />
+        <SecondaryButton size="M" text="Add More" onPress={addAddressField} />
       </ScrollView>
 
       <View style={styles.footer}>
@@ -147,7 +149,7 @@ const styles = StyleSheet.create({
     marginBottom: layout.padding_x2,
   },
   trashContainer: {
-    height: 16,
+    height: "100%",
     width: 16,
     justifyContent: "center",
     alignItems: "center",

@@ -1,14 +1,21 @@
+import { Member } from "../../contracts-clients/cw4-group/Cw4Group.types";
+import { LocalFileData } from "../../utils/types/files";
+
 export enum DaoType {
   MEMBER_BASED = 0,
   TOKEN_BASED = 1,
+  NFT_BASED = 2,
+  COOP_BASED = 3,
 }
 
 export type CreateDaoFormType = {
   organizationName: string;
   associatedTeritoriNameService: string;
+  userOwnsName: boolean;
+  networkId: string;
   organizationDescription: string;
   structure: DaoType;
-  imageUrl: string;
+  image: LocalFileData;
 };
 
 export type ConfigureVotingFormType = {
@@ -19,6 +26,11 @@ export type ConfigureVotingFormType = {
   minutes: string;
 };
 
+export type NFTSettingFormType = {
+  considerListedNFTs: boolean;
+  nftContractAddress: string;
+};
+
 export type TokenSettingFormType = {
   tokenName: string;
   tokenSymbol: string;
@@ -26,7 +38,7 @@ export type TokenSettingFormType = {
 };
 
 export type MemberSettingFormType = {
-  members: { addr: string; weight: string }[];
+  members: Member[];
 };
 
 export type LaunchingProcessStepType = {

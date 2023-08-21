@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import { StyleProp, View, ViewStyle, StyleSheet } from "react-native";
 
 import emptyCircleFrameSVG from "../../../assets/empty-circle-frame.svg";
-import { useIsDAO } from "../../hooks/cosmwasm/useCosmWasmContractInfo";
+import { useIsDAO } from "../../hooks/dao/useIsDAO";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import {
   CosmosNetworkInfo,
@@ -44,7 +44,7 @@ export const AvatarWithFrame: React.FC<{
   networkId: string | undefined;
   image: string | null | undefined;
   size?: AvatarWithFrameSize;
-  isDAO: boolean;
+  isDAO?: boolean;
   style?: StyleProp<ViewStyle>;
 }> = ({ networkId, image, isDAO, size = "M", style }) => {
   const network = getNetwork(networkId);

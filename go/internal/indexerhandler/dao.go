@@ -2,6 +2,7 @@ package indexerhandler
 
 import (
 	"encoding/json"
+	"fmt"
 	"strconv"
 
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
@@ -84,17 +85,22 @@ func (h *Handler) handleExecuteInstantiateContractWithSelfAdmin(e *Message, exec
 		return nil
 	}
 
+	votingModuleAddress, err := e.Events.First("wasm.voting_module")
+	if err != nil {
+		h.logger.Debug("ignored instantiate dao with no voting module address", zap.String("tx", e.TxHash), zap.Error(err))
+		return nil
+	}
+
 	preProposeAddress, err := e.Events.First("wasm.update_pre_propose_module")
 	if err != nil {
 		h.logger.Debug("ignored instantiate dao with no pre-propose module address", zap.String("tx", e.TxHash), zap.Error(err))
 		return nil
 	}
 
-	// TODO: support other dao kinds (only supports member-based for now)
 	groupContractAddress, err := e.Events.First("wasm.group_contract_address")
 	if err != nil {
-		h.logger.Debug("ignored instantiate dao with no group contract address", zap.String("tx", e.TxHash), zap.Error(err))
-		return nil
+		// group contract address only exists for member-based daos
+		groupContractAddress = ""
 	}
 
 	var msg InstantiateContractWithSelfAdminMsg
@@ -145,6 +151,7 @@ func (h *Handler) handleExecuteInstantiateContractWithSelfAdmin(e *Message, exec
 		GroupContractAddress:    groupContractAddress,
 		PreProposeModuleAddress: preProposeAddress,
 		ProposalModuleAddress:   proposalModuleAddress,
+		VotingModuleAddress:     votingModuleAddress,
 	}
 
 	if votingModuleInstantiateMsg.TokenInfo != nil {
@@ -389,4 +396,80 @@ func (h *Handler) handleExecuteDAOPropose(e *Message, execMsg *wasmtypes.MsgExec
 
 	h.logger.Info("created dao proposal", zap.Any("proposal", dbProposal))
 	return nil
+}
+
+func (h *Handler) handleExecuteDAOCW721VotingStake(e *Message, execMsg *wasmtypes.MsgExecuteContract, sendNFTMsg *SendNFTExecuteMsg) (bool, error) {
+	votingModuleAddr := sendNFTMsg.Data.Contract
+
+	var dao indexerdb.DAO
+	daoRes := h.db.Find(&dao, "network_id = ? AND voting_module_address = ?", h.config.Network.ID, votingModuleAddr)
+	if err := daoRes.Error; err != nil {
+		return false, errors.Wrap(err, "failed to query dao")
+	}
+	if daoRes.RowsAffected == 0 {
+		h.logger.Debug("ignored cw721 voting stake for unknown dao", zap.String("tx", e.TxHash), zap.String("contract", votingModuleAddr))
+		return false, nil
+	}
+
+	var member indexerdb.DAOMember
+	memberRes := h.db.Find(&member, "dao_network_id = ? AND dao_contract_address = ? AND member_address = ?", h.config.Network.ID, dao.ContractAddress, execMsg.Sender)
+	if err := memberRes.Error; err != nil {
+		return false, errors.Wrap(err, "failed to query dao member")
+	}
+
+	if memberRes.RowsAffected == 0 {
+		if err := h.db.Create(&indexerdb.DAOMember{
+			DAONetworkID:       h.config.Network.ID,
+			DAOContractAddress: dao.ContractAddress,
+			MemberAddress:      execMsg.Sender,
+			Weight:             1,
+		}).Error; err != nil {
+			return false, errors.Wrap(err, "failed to create dao member")
+		}
+	} else {
+		member.Weight += 1
+		if err := h.db.Save(&member).Error; err != nil {
+			return false, errors.Wrap(err, "failed to update dao member")
+		}
+	}
+
+	h.logger.Info("cw721 voting stake", zap.String("tx", e.TxHash), zap.String("contract", votingModuleAddr), zap.String("sender", execMsg.Sender))
+	return true, nil
+}
+
+func (h *Handler) handleExecuteDAOCW721VotingUnstake(e *Message, execMsg *wasmtypes.MsgExecuteContract) (bool, error) {
+	votingModuleAddr := execMsg.Contract
+
+	var dao indexerdb.DAO
+	daoRes := h.db.Find(&dao, "network_id = ? AND voting_module_address = ?", h.config.Network.ID, votingModuleAddr)
+	if err := daoRes.Error; err != nil {
+		return false, errors.Wrap(err, "failed to query dao")
+	}
+	if daoRes.RowsAffected == 0 {
+		h.logger.Debug("ignored cw721 voting unstake for unknown dao", zap.String("tx", e.TxHash), zap.String("contract", votingModuleAddr))
+		return false, nil
+	}
+
+	var member indexerdb.DAOMember
+	memberRes := h.db.Find(&member, "dao_network_id = ? AND dao_contract_address = ? AND member_address = ?", h.config.Network.ID, dao.ContractAddress, execMsg.Sender)
+	if err := memberRes.Error; err != nil {
+		return false, errors.Wrap(err, "failed to query dao member")
+	}
+	if memberRes.RowsAffected == 0 {
+		return false, fmt.Errorf("member %s not found in dao %s", execMsg.Sender, dao.ContractAddress)
+	}
+
+	member.Weight -= 1
+	if member.Weight == 0 {
+		if err := h.db.Delete(&member).Error; err != nil {
+			return false, errors.Wrap(err, "failed to delete dao member")
+		}
+	} else {
+		if err := h.db.Save(&member).Error; err != nil {
+			return false, errors.Wrap(err, "failed to update dao member")
+		}
+	}
+
+	h.logger.Info("cw721 voting unstake", zap.String("tx", e.TxHash), zap.String("contract", votingModuleAddr), zap.String("sender", execMsg.Sender))
+	return true, nil
 }

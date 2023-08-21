@@ -1,5 +1,5 @@
 import { teritoriTestnetCurrencies } from "./currencies";
-import { NetworkFeature, NetworkInfo, NetworkKind } from "../types";
+import { CosmosNetworkInfo, NetworkFeature, NetworkKind } from "../types";
 
 const nameServiceContractAddress =
   "tori18etjzrma5604af50jjklk3wlkqcsxdrvmy6jzw5naw2t7kyv4rys3kpwky";
@@ -7,7 +7,7 @@ const nameServiceContractAddress =
 const riotContractAddressGen1 =
   "tori1afwrcs58afaka6ltynevwcvq8zhejr3ssn703c0hky5emh890vzsry5wp5";
 
-export const teritoriTestnetNetwork: NetworkInfo = {
+export const teritoriTestnetNetwork: CosmosNetworkInfo = {
   id: "teritori-testnet",
   kind: NetworkKind.Cosmos,
   chainId: "teritori-testnet-v3",
@@ -68,17 +68,35 @@ export const teritoriTestnetNetwork: NetworkInfo = {
   excludeFromLaunchpadList: [riotContractAddressGen1],
   socialFeedContractAddress:
     "tori19y3xr6lghw04tj2ets8y70mrynlnflejanl2ys3n3c5vaasj358shjsk20",
-  daoCw20CodeId: 99,
-  daoFactoryCodeId: 100,
-  daoCoreCodeId: 101,
-  daoPreProposeSingleCodeId: 102,
-  daoProposalSingleCodeId: 103,
-  daoVotingCw20StakedCodeId: 104,
-  daoCw20StakeCodeId: 105,
-  daoCw4GroupCodeId: 106,
-  daoVotingCw4CodeId: 109,
-  daoFactoryContractAddress:
-    "tori1r29chp8ufwgx9u3wr4sfk050aardhkzwve7nht6y06gvlaqutr3qt83z6r",
+
   coreDAOAddress:
     "tori1dy5h9q9zue4swxe9mzracm8gudp0fcf2ncllch6pfq9d0fq0ftgq546063",
+  daoFactoryContractAddress:
+    "tori1r29chp8ufwgx9u3wr4sfk050aardhkzwve7nht6y06gvlaqutr3qt83z6r",
+  daoCw4GroupCodeId: 138,
+  daoCw20StakeCodeId: 137, // used but front disabled (in CreateDAOSection.tsx)
+  daoVotingCw721StakedCodeId: 136, // used but front disabled (in CreateDAOSection.tsx)
+  daoCoreCodeId: 139,
+  daoPreProposeSingleCodeId: 140,
+  daoProposalSingleCodeId: 141,
+  daoVotingCw20StakedCodeId: 142, // used but front disabled (in CreateDAOSection.tsx)
+  daoVotingCw4CodeId: 143,
+  //TODO: Udpdate these codes (with dao-contracts v2.1.0)
+  daoCw20CodeId: 99, // used but front disabled (in CreateDAOSection.tsx)
+  daoFactoryCodeId: 100, // unused
+
+  // daoCw20CodeId: 99,
+  // daoFactoryCodeId: 100,
+  // daoCoreCodeId: 101,
+  // daoPreProposeSingleCodeId: 102,
+  // daoProposalSingleCodeId: 103,
+  // daoVotingCw20StakedCodeId: 104,
+  // daoCw20StakeCodeId: 105,
+  // daoCw4GroupCodeId: 106,
+  // daoVotingCw4CodeId: 109,
+  // daoVotingCw721StakedCodeId: 130,
+  // daoFactoryContractAddress:
+  //   "tori1r29chp8ufwgx9u3wr4sfk050aardhkzwve7nht6y06gvlaqutr3qt83z6r",
+  // coreDAOAddress:
+  //   "tori1dy5h9q9zue4swxe9mzracm8gudp0fcf2ncllch6pfq9d0fq0ftgq546063",
 };

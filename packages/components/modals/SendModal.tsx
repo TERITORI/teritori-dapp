@@ -208,6 +208,7 @@ export const SendModal: React.FC<SendModalProps> = ({
       <FlexRow alignItems="flex-end">
         <FlexCol alignItems="flex-start" width={356}>
           <SearchNSInputContainer
+            networkId={networkId}
             onPressName={(userId) => {
               const [, userAddress] = parseUserId(userId);
               setValue("toAddress", userAddress);

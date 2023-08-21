@@ -29,15 +29,16 @@ import { PrimaryButton } from "../buttons/PrimaryButton";
 import { PrimaryButtonOutline } from "../buttons/PrimaryButtonOutline";
 import { SecondaryButton } from "../buttons/SecondaryButton";
 import { TertiaryButton } from "../buttons/TertiaryButton";
+import { SpacerRow } from "../spacer";
 
 export const ProposalActions: React.FC<{
-  daoId: string | undefined;
+  daoId: string;
   proposal: ProposalResponse;
 }> = ({ daoId, proposal }) => {
   const selectedWallet = useSelectedWallet();
   const networkId = useSelectedNetworkId();
   const { setToastError, setToastSuccess } = useFeedbacks();
-  const { isDAOMember: selectedWalletIsDAOMember } = useIsDAOMember(
+  const selectedWalletIsDAOMember = useIsDAOMember(
     daoId,
     selectedWallet?.userId
   );
@@ -247,7 +248,7 @@ export const ProposalActions: React.FC<{
         style={{
           flexDirection: "row",
           flex: 1,
-          justifyContent: "space-between",
+          justifyContent: "flex-end",
         }}
       >
         <SecondaryButton
@@ -256,6 +257,7 @@ export const ProposalActions: React.FC<{
           onPress={() => vote("yes")}
           loader
         />
+        <SpacerRow size={1.5} />
         <PrimaryButtonOutline
           text="Decline"
           size="M"
@@ -263,6 +265,7 @@ export const ProposalActions: React.FC<{
           onPress={() => vote("no")}
           // loader
         />
+        <SpacerRow size={1.5} />
         <TertiaryButton
           text="Abstain"
           size="M"
