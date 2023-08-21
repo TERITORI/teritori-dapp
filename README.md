@@ -14,7 +14,7 @@
 ### Dev for web
 
 ```
-npx expo start
+yarn && npx expo start
 ```
 
 Then press `w` to open the page in your browser
@@ -22,13 +22,13 @@ Then press `w` to open the page in your browser
 ### Dev for desktop
 
 ```
-npx expo-electron start
+yarn && npx expo-electron start
 ```
 
 ### Build web app
 
 ```
-npx expo-optimize && npx expo build:web
+yarn && npx expo-optimize && npx expo build:web
 ```
 
 The site is in `web-build/`
