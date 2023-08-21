@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
 import { StyleSheet } from "react-native";
 
+import { BrandText } from "../../../components/BrandText";
 import { SpacerColumn } from "../../../components/spacer";
 import { Tabs } from "../../../components/tabs/Tabs";
 import { useMaxResolution } from "../../../hooks/useMaxResolution";
@@ -49,6 +50,11 @@ export const FeedHeader: React.FC<FeedHeaderProps> = ({
         tabContainerStyle={{ height: 64 }}
       />
       <SpacerColumn size={1.5} />
+      {selectedTab === "moderationDAO" && (
+        <BrandText style={{ alignSelf: "flex-start" }}>
+          Please review all applications carefully and give your verdict.
+        </BrandText>
+      )}
     </>
   );
 };

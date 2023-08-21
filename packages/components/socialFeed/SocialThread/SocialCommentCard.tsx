@@ -54,6 +54,7 @@ import { SpacerColumn, SpacerRow } from "../../spacer";
 import { EmojiSelector } from "../EmojiSelector";
 import { PostExtra } from "../NewsFeed/NewsFeed.type";
 import { CommentsCount } from "../SocialActions/CommentsCount";
+import { FlagButton } from "../SocialActions/FlagButton";
 import { nbReactionsShown, Reactions } from "../SocialActions/Reactions";
 import { ReplyButton } from "../SocialActions/ReplyButton";
 import { ShareButton } from "../SocialActions/ShareButton";
@@ -96,6 +97,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
   const selectedNetwork = useSelectedNetworkInfo();
   const selectedNetworkId = selectedNetwork?.id || "";
   const [, authorAddress] = parseUserId(localComment.authorId);
+
   const { data, refetch, fetchNextPage, hasNextPage, isFetching } =
     useFetchComments({
       parentId: localComment.identifier,
@@ -330,6 +332,16 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
                   />
 
                   <SpacerRow size={2.5} />
+
+                  {selectedNetwork?.kind === NetworkKind.Gno && (
+                    <FlagButton
+                      networkInfo={selectedNetwork}
+                      postId={localComment.identifier}
+                    />
+                  )}
+
+                  <SpacerRow size={2.5} />
+
                   <ShareButton postId={localComment.identifier} />
                 </View>
               </FlexRow>

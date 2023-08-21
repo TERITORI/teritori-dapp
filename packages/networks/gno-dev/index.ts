@@ -20,7 +20,7 @@ export const gnoDevNetwork: GnoNetworkInfo = {
   accountExplorer: "https://etherscan.io/address/$address",
   contractExplorer: "https://etherscan.io/address/$address",
   testnet: true,
-  backendEndpoint: "http://localhost:9090",
+  backendEndpoint: "https://dapp-backend.testnet.teritori.com",
   vaultContractAddress: "",
   socialFeedsPkgPath: "gno.land/r/demo/social_feeds",
   nameServiceContractAddress: "gno.land/r/demo/users",

@@ -43,6 +43,8 @@ export const FeedScreen: ScreenFC<"Feed"> = ({ route: { params } }) => {
     >
       <NewsFeed
         req={feedRequest}
+        isFlagged={selectedTab === "moderationDAO"}
+        disablePosting={selectedTab === "moderationDAO"}
         Header={() => (
           <>
             {/* ScreenContainer has noScroll, so we need to add MobileTitle here */}
