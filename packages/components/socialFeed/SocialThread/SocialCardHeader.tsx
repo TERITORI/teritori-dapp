@@ -11,7 +11,7 @@ import { BrandText } from "../../BrandText";
 import FlexRow from "../../FlexRow";
 import { OmniLink } from "../../OmniLink";
 import { AnimationFadeIn } from "../../animations/AnimationFadeIn";
-import { AvatarWithFrame } from "../../images/AvatarWithFrame";
+import { UserAvatarWithFrame } from "../../images/AvatarWithFrame";
 import { SpacerRow } from "../../spacer";
 import { SocialFeedMetadata } from "../NewsFeed/NewsFeed.type";
 
@@ -30,7 +30,7 @@ export const SocialCardHeader: FC<{
           to={{ screen: "UserPublicProfile", params: { id: authorId } }}
         >
           {/*---- User image */}
-          <AvatarWithFrame
+          <UserAvatarWithFrame
             style={{
               marginRight:
                 width < RESPONSIVE_BREAKPOINT_S

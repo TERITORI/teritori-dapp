@@ -14,6 +14,7 @@ import { ScreenContainer } from "../../components/ScreenContainer";
 import { DAOMembers } from "../../components/dao/DAOMembers";
 import { DAOProposals } from "../../components/dao/DAOProposals";
 import { DAOsList } from "../../components/dao/DAOsList";
+import { GnoDemo } from "../../components/dao/GnoDemo";
 import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
 import { UPPNFTs } from "../../components/userPublicProfile/UPPNFTs";
 import { useIsDAO } from "../../hooks/cosmwasm/useCosmWasmContractInfo";
@@ -22,7 +23,7 @@ import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { usePrevious } from "../../hooks/usePrevious";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { parseUserId } from "../../networks";
+import { NetworkKind, parseUserId } from "../../networks";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import { Assets } from "../WalletManager/Assets";
@@ -147,6 +148,8 @@ const SelectedTabContent: React.FC<{
           req={{ networkId: network?.id, memberAddress: userAddress }}
         />
       );
+    case "gnoDemo":
+      return <GnoDemo daoId={userId} />;
     default:
       return null;
   }
@@ -176,6 +179,35 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
     });
   }, [navigation, userAddress, metadata.tokenId]);
 
+  const content =
+    network?.kind !== NetworkKind.Gno &&
+    (notFound || !userAddress || !bech32.decodeUnsafe(userAddress)) ? (
+      <NotFound label="User" />
+    ) : (
+      <>
+        {selectedTab !== "userPosts" && selectedTab !== "mentionsPosts" ? (
+          <TabContainer>
+            <UserPublicProfileScreenHeader
+              userId={id}
+              selectedTab={selectedTab}
+              setSelectedTab={setSelectedTab}
+            />
+            <SelectedTabContent
+              selectedTab={selectedTab}
+              userId={id}
+              setSelectedTab={setSelectedTab}
+            />
+          </TabContainer>
+        ) : (
+          <SelectedTabContent
+            selectedTab={selectedTab}
+            userId={id}
+            setSelectedTab={setSelectedTab}
+          />
+        )}
+      </>
+    );
+
   return (
     <ScreenContainer
       isHeaderSmallMargin
@@ -196,32 +228,7 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
           : navigation.navigate("Home")
       }
     >
-      {notFound || !userAddress || !bech32.decodeUnsafe(userAddress) ? (
-        <NotFound label="User" />
-      ) : (
-        <>
-          {selectedTab !== "userPosts" && selectedTab !== "mentionsPosts" ? (
-            <TabContainer>
-              <UserPublicProfileScreenHeader
-                userId={id}
-                selectedTab={selectedTab}
-                setSelectedTab={setSelectedTab}
-              />
-              <SelectedTabContent
-                selectedTab={selectedTab}
-                userId={id}
-                setSelectedTab={setSelectedTab}
-              />
-            </TabContainer>
-          ) : (
-            <SelectedTabContent
-              selectedTab={selectedTab}
-              userId={id}
-              setSelectedTab={setSelectedTab}
-            />
-          )}
-        </>
-      )}
+      {content}
     </ScreenContainer>
   );
 };

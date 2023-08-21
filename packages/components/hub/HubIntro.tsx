@@ -15,7 +15,7 @@ import { Quests } from "../Quests";
 import { SVG } from "../SVG";
 import { Section } from "../Section";
 import { MainConnectWalletButton } from "../connectWallet/MainConnectWalletButton";
-import { AvatarWithFrame } from "../images/AvatarWithFrame";
+import { UserAvatarWithFrame } from "../images/AvatarWithFrame";
 import { Tabs } from "../tabs/Tabs";
 
 const walletsManagerTabItems = {
@@ -41,7 +41,7 @@ const ConnectedIntro: React.FC = () => {
         width: "100%",
       }}
     >
-      <AvatarWithFrame userId={selectedWallet?.userId} size="XL" />
+      <UserAvatarWithFrame userId={selectedWallet?.userId} size="XL" />
 
       <ProfileButton style={{ marginTop: 40 }} />
 

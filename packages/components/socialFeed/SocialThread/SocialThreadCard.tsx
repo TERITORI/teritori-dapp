@@ -1,3 +1,4 @@
+import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import React, { useEffect, useState } from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 
@@ -7,10 +8,11 @@ import { Post } from "../../../api/feed/v1/feed";
 import { signingSocialFeedClient } from "../../../client-creators/socialFeedClient";
 import { useTeritoriSocialFeedReactPostMutation } from "../../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.react-query";
 import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
-import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
+import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { parseUserId } from "../../../networks";
+import { NetworkKind, parseUserId } from "../../../networks";
 import { OnPressReplyType } from "../../../screens/FeedPostView/FeedPostViewScreen";
+import { adenaDoContract } from "../../../utils/gno";
 import { useAppNavigation } from "../../../utils/navigation";
 import { getUpdatedReactions } from "../../../utils/social-feed";
 import {
@@ -32,6 +34,7 @@ import { ReplyButton } from "../SocialActions/ReplyButton";
 import { ShareButton } from "../SocialActions/ShareButton";
 import { SocialThreadGovernance } from "../SocialActions/SocialThreadGovernance";
 import { TipButton } from "../SocialActions/TipButton";
+import { GNO_SOCIAL_FEEDS_PKG_PATH, TERITORI_FEED_ID } from "../const";
 
 const BREAKPOINT_S = 480;
 
@@ -66,29 +69,26 @@ export const SocialThreadCard: React.FC<{
       },
     });
 
+  const selectedNetworkInfo = useSelectedNetworkInfo();
+  const selectedNetworkId = selectedNetworkInfo?.id;
+  const authorNSInfo = useNSUserInfo(localPost.authorId);
+  const [, authorAddress] = parseUserId(localPost.authorId);
   const { selectedWallet: wallet } = useSelectedWallet();
-  const selectedNetworkId = useSelectedNetworkId();
-  const authorNSInfo = useNSUserInfo(localPost.createdBy);
-  const [, userAddress] = parseUserId(localPost.createdBy);
+
   const userInfo = useNSUserInfo(wallet?.userId);
   const navigation = useAppNavigation();
   const metadata: SocialFeedMetadata = JSON.parse(localPost.metadata);
-  const username = authorNSInfo?.metadata?.tokenId
-    ? authorNSInfo?.metadata?.tokenId
-    : userAddress;
+  const username = authorNSInfo?.metadata?.tokenId || authorAddress;
 
   //TODO: Handle this later
   // const communityHashtag = useMemo(() => {
   //   return getCommunityHashtag(metadata?.hashtags || []);
   // }, [metadata]);
 
-  const handleReaction = async (emoji: string) => {
-    if (!wallet?.connected || !wallet.address) {
-      return;
-    }
+  const cosmosReaction = async (emoji: string, walletAddress: string) => {
     const client = await signingSocialFeedClient({
-      networkId: selectedNetworkId,
-      walletAddress: wallet.address,
+      networkId: selectedNetworkId || "",
+      walletAddress,
     });
 
     postMutate({
@@ -99,6 +99,54 @@ export const SocialThreadCard: React.FC<{
         up: true,
       },
     });
+  };
+
+  const gnoReaction = async (emoji: string, rpcEndpoint: string) => {
+    const vmCall = {
+      caller: wallet?.address || "",
+      send: "",
+      pkg_path: GNO_SOCIAL_FEEDS_PKG_PATH,
+      func: "ReactPost",
+      args: [TERITORI_FEED_ID, localPost.identifier, emoji, "true"],
+    };
+
+    const txHash = await adenaDoContract(
+      selectedNetworkId || "",
+      [{ type: "/vm.m_call", value: vmCall }],
+      {
+        gasWanted: 2_000_000,
+      }
+    );
+
+    const provider = new GnoJSONRPCProvider(rpcEndpoint);
+
+    // Wait for tx done
+    await provider.waitForTransaction(txHash);
+
+    const reactions = [...post.reactions];
+    const currentReactionIdx = reactions.findIndex((r) => r.icon === emoji);
+
+    if (currentReactionIdx > -1) {
+      reactions[currentReactionIdx].count++;
+    } else {
+      reactions.push({
+        icon: emoji,
+        count: 1,
+      });
+    }
+    setLocalPost({ ...localPost, reactions });
+  };
+
+  const handleReaction = async (emoji: string) => {
+    if (!wallet?.connected || !wallet.address) {
+      return;
+    }
+
+    if (selectedNetworkInfo?.kind === NetworkKind.Gno) {
+      gnoReaction(emoji, selectedNetworkInfo?.endpoint || "");
+    } else {
+      cosmosReaction(emoji, wallet.address);
+    }
   };
 
   const handleReply = () =>
@@ -136,8 +184,8 @@ export const SocialThreadCard: React.FC<{
       >
         {/*====== Card Header */}
         <SocialCardHeader
-          authorAddress={userAddress}
-          authorId={localPost.createdBy}
+          authorAddress={authorAddress}
+          authorId={localPost.authorId}
           postMetadata={metadata}
           authorMetadata={authorNSInfo?.metadata}
         />

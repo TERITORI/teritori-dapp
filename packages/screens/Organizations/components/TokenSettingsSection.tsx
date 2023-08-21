@@ -28,6 +28,7 @@ interface TokenSettingsSectionProps {
 export const TokenSettingsSection: React.FC<TokenSettingsSectionProps> = ({
   onSubmit,
 }) => {
+  // variables
   const { handleSubmit, control } = useForm<TokenSettingFormType>();
   const [addressIndexes, setAddressIndexes] = useState<number[]>([0]);
 
@@ -55,7 +56,6 @@ export const TokenSettingsSection: React.FC<TokenSettingsSectionProps> = ({
           <View style={styles.leftInput}>
             <TextInputCustom<TokenSettingFormType>
               name="tokenName"
-              variant="labelOutside"
               noBrokenCorners
               label="Token name"
               control={control}
@@ -67,7 +67,6 @@ export const TokenSettingsSection: React.FC<TokenSettingsSectionProps> = ({
           <View style={styles.rightInput}>
             <TextInputCustom<TokenSettingFormType>
               name="tokenSymbol"
-              variant="labelOutside"
               noBrokenCorners
               label="Token Symbol"
               control={control}
@@ -84,7 +83,6 @@ export const TokenSettingsSection: React.FC<TokenSettingsSectionProps> = ({
             <View style={styles.leftInput}>
               <TextInputCustom<TokenSettingFormType>
                 name={`tokenHolders.${index}.address`}
-                variant="labelOutside"
                 noBrokenCorners
                 label="Token Holders"
                 hideLabel={index > 0}
@@ -105,7 +103,6 @@ export const TokenSettingsSection: React.FC<TokenSettingsSectionProps> = ({
             <View style={styles.rightInput}>
               <TextInputCustom<TokenSettingFormType>
                 name={`tokenHolders.${index}.balance`}
-                variant="labelOutside"
                 noBrokenCorners
                 label="Balances"
                 hideLabel={index > 0}

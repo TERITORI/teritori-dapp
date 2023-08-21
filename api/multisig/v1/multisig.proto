@@ -139,7 +139,7 @@ message LeaveMultisigResponse {
 message CreateTransactionRequest {
   Token auth_token = 1;
 	string multisig_address= 3;
-  uint32 accountNumber = 4;
+  uint32 account_number = 4;
   uint32 sequence = 5;
   string msgs_json = 6;
   string fee_json = 7;

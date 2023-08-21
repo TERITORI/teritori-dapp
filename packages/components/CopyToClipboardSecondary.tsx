@@ -4,6 +4,7 @@ import { SvgProps } from "react-native-svg";
 
 import { BrandText } from "./BrandText";
 import { useCopyToClipboard } from "./CopyToClipboard";
+import { NetworkIcon } from "./NetworkIcon";
 import { SVG } from "./SVG";
 import { TertiaryBox } from "./boxes/TertiaryBox";
 import copySVG from "../../assets/icons/copy.svg";
@@ -14,7 +15,8 @@ export const CopyToClipboardSecondary: React.FC<{
   text: string;
   displayedText: string;
   iconSVG?: React.FC<SvgProps>;
-}> = ({ text, displayedText, iconSVG }) => {
+  networkIcon?: string;
+}> = ({ text, displayedText, iconSVG, networkIcon }) => {
   const { copyToClipboard } = useCopyToClipboard();
 
   return (
@@ -28,6 +30,7 @@ export const CopyToClipboardSecondary: React.FC<{
           flexDirection: "row",
         }}
       >
+        {networkIcon && <NetworkIcon size={16} networkId={networkIcon} />}
         {iconSVG && <SVG width={16} height={16} source={iconSVG} />}
         <BrandText
           style={[

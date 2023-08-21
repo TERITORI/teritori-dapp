@@ -88,10 +88,7 @@ export const MultisigCreateScreen = () => {
       <NetworkIcon networkId={globalSelectedNetwork?.id} size={16} />
     ),
   });
-  const selectedNetwork = useMemo(
-    () => allNetworks.find((n) => selectedInputData.value === n.id),
-    [selectedInputData.value]
-  );
+  const selectedNetwork = useSelectedNetworkInfo();
 
   // functions
   const removeAddressField = (index: number) => {

@@ -47,17 +47,18 @@ const gnoGetUsernameByAddress = async (
 ) => {
   if (!userAddress) return null;
 
-  try {
-    const provider = new GnoJSONRPCProvider(network.endpoint);
-    const username = await provider.evaluateExpression(
-      "gno.land/r/demo/users",
-      `GetUserByAddress("${userAddress}").name`
-    );
-    const gnoUsename = extractGnoString(username);
-    return `${gnoUsename}.gno`;
-  } catch (err) {
-    throw err;
+  if (userAddress.startsWith("gno.land/r/")) {
+    return userAddress;
   }
+
+  const provider = new GnoJSONRPCProvider(network.endpoint);
+
+  const username = await provider.evaluateExpression(
+    network.nameServiceContractAddress,
+    `GetUserByAddress("${userAddress}").name`
+  );
+  const gnoUsename = extractGnoString(username);
+  return `${gnoUsename}.gno`;
 };
 
 export const useNSPrimaryAlias = (userId: string | undefined) => {

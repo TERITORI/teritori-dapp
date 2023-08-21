@@ -1,3 +1,4 @@
+import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import React, { ComponentProps, useCallback, useRef, useState } from "react";
 import {
   Pressable,
@@ -18,10 +19,13 @@ import { useDAOGroup } from "../../hooks/dao/useDAOGroup";
 import { useDAOMakeProposal } from "../../hooks/dao/useDAOMakeProposal";
 import { useIsDAOMember } from "../../hooks/dao/useDAOMember";
 import { useDAOMembers } from "../../hooks/dao/useDAOMembers";
+import { useInvalidateDAOProposals } from "../../hooks/dao/useDAOProposals";
 import { useNameSearch } from "../../hooks/search/useNameSearch";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getUserId, parseUserId } from "../../networks";
+import { NetworkKind, getUserId, parseUserId } from "../../networks";
+import { toRawURLBase64String } from "../../utils/buffer";
+import { adenaVMCall, extractGnoNumber } from "../../utils/gno";
 import {
   neutral00,
   neutral33,
@@ -42,7 +46,7 @@ import { SVG } from "../SVG";
 import { SearchBarInput } from "../Search/SearchBarInput";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { PrimaryButton } from "../buttons/PrimaryButton";
-import { AvatarWithFrame } from "../images/AvatarWithFrame";
+import { UserAvatarWithFrame } from "../images/AvatarWithFrame";
 import ModalBase from "../modals/ModalBase";
 import { AvatarWithName } from "../user/AvatarWithName";
 
@@ -268,7 +272,7 @@ export const UserCard: React.FC<{
       ]}
     >
       <OmniLink to={{ screen: "UserPublicProfile", params: { id: userId } }}>
-        <AvatarWithFrame
+        <UserAvatarWithFrame
           userId={userId}
           size="L"
           style={{
@@ -508,39 +512,124 @@ const useProposeToRemoveMember = (daoId: string | undefined) => {
 const useProposeToAddMembers = (daoId: string | undefined) => {
   const makeProposal = useDAOMakeProposal(daoId);
   const { data: groupAddress } = useDAOGroup(daoId);
+  const invalidateDAOProposals = useInvalidateDAOProposals(daoId);
   return useCallback(
     async (senderAddress: string | undefined, membersToAdd: string[]) => {
+      const weight = 1;
+      const [network, daoAddress] = parseUserId(daoId);
       if (!senderAddress) {
         throw new Error("Invalid sender");
       }
-      if (!groupAddress) {
-        throw new Error("DAO group address not found");
-      }
-      const weight = 1;
-      const updateMembersReq: {
-        add: Member[];
-        remove: string[];
-      } = { add: membersToAdd.map((m) => ({ addr: m, weight })), remove: [] };
-      return await makeProposal(senderAddress, {
-        title: `Add ${membersToAdd.length} member(s) with weight ${weight}`,
-        description: "",
-        msgs: [
-          {
-            wasm: {
-              execute: {
-                contract_addr: groupAddress,
-                msg: Buffer.from(
-                  JSON.stringify({
-                    update_members: updateMembersReq,
-                  })
-                ).toString("base64"),
-                funds: [],
+      switch (network?.kind) {
+        case NetworkKind.Cosmos: {
+          if (!groupAddress) {
+            throw new Error("DAO group address not found");
+          }
+          const updateMembersReq: {
+            add: Member[];
+            remove: string[];
+          } = {
+            add: membersToAdd.map((m) => ({ addr: m, weight })),
+            remove: [],
+          };
+          await makeProposal(senderAddress, {
+            title: `Add ${membersToAdd.length} member(s) with weight ${weight}`,
+            description: "",
+            msgs: [
+              {
+                wasm: {
+                  execute: {
+                    contract_addr: groupAddress,
+                    msg: Buffer.from(
+                      JSON.stringify({
+                        update_members: updateMembersReq,
+                      })
+                    ).toString("base64"),
+                    funds: [],
+                  },
+                },
               },
+            ],
+          });
+          break;
+        }
+        case NetworkKind.Gno: {
+          const client = new GnoJSONRPCProvider(network.endpoint);
+
+          const groupId = extractGnoNumber(
+            await client.evaluateExpression(daoAddress, "GetGroupID()")
+          );
+
+          console.log("groupId", groupId);
+
+          const b64Messages: string[] = [];
+          for (const member of membersToAdd) {
+            b64Messages.push(
+              toRawURLBase64String(
+                encodeAddMember({
+                  groupId,
+                  addr: member,
+                  weight,
+                  metadata: "",
+                })
+              )
+            );
+          }
+          await adenaVMCall(
+            network.id,
+            {
+              caller: senderAddress,
+              send: "",
+              pkg_path: daoAddress,
+              func: "Propose",
+              args: ["0", "Add members", "", b64Messages.join(",")],
             },
-          },
-        ],
-      });
+            { gasWanted: 2000000 }
+          );
+          break;
+        }
+      }
+      invalidateDAOProposals();
     },
-    [groupAddress, makeProposal]
+    [daoId, groupAddress, invalidateDAOProposals, makeProposal]
   );
+};
+
+interface GnoMember {
+  groupId: number;
+  addr: string;
+  weight: number;
+  metadata: string;
+}
+
+const encodeAddMember = (member: GnoMember) => {
+  const b = Buffer.alloc(16000); // TODO: compute size or concat
+
+  let offset = 0;
+
+  const type = "AddMember";
+  b.writeUInt16BE(type.length, offset);
+  offset += 2;
+  b.write(type, offset);
+  offset += type.length;
+
+  b.writeUInt32BE(0, offset);
+  offset += 4;
+  b.writeUInt32BE(member.groupId, offset);
+  offset += 4;
+
+  b.writeUInt16BE(member.addr.length, offset);
+  offset += 2;
+  b.write(member.addr, offset);
+  offset += member.addr.length;
+
+  b.writeUInt32BE(member.weight, offset);
+  offset += 4;
+
+  b.writeUInt16BE(member.metadata.length, offset);
+  offset += 2;
+  b.write(member.metadata, offset);
+  offset += member.metadata.length;
+
+  return Buffer.from(b.subarray(0, offset));
 };

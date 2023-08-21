@@ -8,6 +8,8 @@ import { BrandText } from "../../../components/BrandText";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
+import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
+import { NetworkKind } from "../../../networks";
 import { neutral33, neutral77 } from "../../../utils/style/colors";
 import { fontSemibold20, fontSemibold28 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
@@ -23,6 +25,7 @@ interface CreateDAOSectionProps {
 export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
   onSubmit,
 }) => {
+  // variables
   const {
     control,
     handleSubmit,
@@ -35,8 +38,10 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
     mode: "all",
   });
 
+  const selectedNetwork = useSelectedNetworkInfo();
   const selectedRadioStructure = watch("structure");
   const uri = watch("imageUrl");
+  const name = watch("associatedTeritoriNameService");
 
   // functions
   const onErrorImageLoading = () =>
@@ -62,9 +67,9 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
             <View style={styles.row}>
               <View style={styles.fill}>
                 <TextInputCustom<CreateDaoFormType>
-                  control={control}
                   noBrokenCorners
                   variant="labelOutside"
+                  control={control}
                   label="Organization's name"
                   placeHolder="Type organization's name here"
                   name="organizationName"
@@ -74,11 +79,23 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
               <SpacerRow size={2.5} />
               <View style={styles.fill}>
                 <TextInputCustom<CreateDaoFormType>
-                  control={control}
                   noBrokenCorners
                   variant="labelOutside"
-                  label="Associated Teritori Name Service"
-                  placeHolder="your-organization.tori"
+                  control={control}
+                  label={`Associated Handle${
+                    name
+                      ? `: ${name}${
+                          selectedNetwork?.kind === NetworkKind.Gno
+                            ? ""
+                            : ".tori"
+                        }`
+                      : ""
+                  }`}
+                  placeHolder={
+                    selectedNetwork?.kind === NetworkKind.Gno
+                      ? "your_organization"
+                      : "your-organization"
+                  }
                   name="associatedTeritoriNameService"
                   rules={{ required: true }}
                 />
@@ -87,8 +104,8 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
 
             <SpacerColumn size={2.5} />
             <TextInputCustom<CreateDaoFormType>
-              control={control}
               noBrokenCorners
+              control={control}
               variant="labelOutside"
               label="Organization's image url"
               placeHolder="https://example.com/preview.png"
@@ -97,13 +114,14 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
             />
             <SpacerColumn size={2.5} />
             <TextInputCustom<CreateDaoFormType>
-              control={control}
               noBrokenCorners
               variant="labelOutside"
+              control={control}
               label="Organization's description"
               placeHolder="Type organization's description here"
               name="organizationDescription"
               rules={{ required: true }}
+              // isAsterickSign
               multiline
               numberOfLines={3}
             />

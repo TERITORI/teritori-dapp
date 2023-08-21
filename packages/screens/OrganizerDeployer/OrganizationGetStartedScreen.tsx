@@ -72,7 +72,7 @@ export const OrganizationGetStartedScreen = () => {
             <GetStartedOption
               title="Manage Multisig Wallets"
               icon={multisigWalletSVG}
-              onPress={() => navigation.navigate("MultisigWalletsManage")}
+              onPress={() => navigation.navigate("MultisigWalletDashboard")}
             />
           </View>
         </View>

@@ -314,8 +314,6 @@ export const createDaoMemberBased = async (
     amount && denom ? [{ denom, amount }] : []
   );
 
-  await onStepChange?.(1);
-
   const executeResult = await client.execute(
     sender,
     contractAddress,
@@ -338,14 +336,12 @@ export const createDaoMemberBased = async (
     throw new Error("No DAO address in transaction results");
   }
 
-  await onStepChange?.(2);
-
   await nameServiceClient.transferNft({
     recipient: daoAddress,
     tokenId: tns,
   });
 
-  await onStepChange?.(3);
+  await onStepChange?.(1);
 
   return { daoAddress, executeResult };
 };

@@ -11,7 +11,12 @@ import {
   useSelectedNetworkInfo,
 } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getStakingCurrency, NetworkKind, UserKind } from "../../networks";
+import {
+  CurrencyInfo,
+  getStakingCurrency,
+  NetworkKind,
+  UserKind,
+} from "../../networks";
 import { DepositWithdrawModal } from "../../screens/WalletManager/components/DepositWithdrawModal";
 import { useAppNavigation } from "../../utils/navigation";
 import {
@@ -189,7 +194,7 @@ export const TopMenuMyWallets: React.FC = () => {
 
   const atomIbcCurrency = useMemo(() => {
     return selectedNetworkInfo?.currencies.find(
-      (currencyInfo) =>
+      (currencyInfo: CurrencyInfo) =>
         currencyInfo.kind === "ibc" && currencyInfo.sourceDenom === "uatom"
     );
   }, [selectedNetworkInfo]);

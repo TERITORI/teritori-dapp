@@ -41,7 +41,7 @@ export const useCreatePost = ({
       );
       onMutate && onMutate();
       // Return a context with the previous user and updated user
-      return { prevData, newComment }; // contextx
+      return { prevData, newComment }; // context
     },
     onSuccess: async (_, data, context: any) => {
       const updatedComment = context.newComment as PostResultExtra;

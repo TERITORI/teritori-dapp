@@ -29,7 +29,7 @@ const multisigTokensSelectors = multisigTokensAdapter.getSelectors();
 
 interface Settings {
   selectedNetworkId: string;
-  selectedWalletId: string;
+  selectedWalletId: string | undefined;
   NFTStorageAPI: string;
   isKeplrConnected: boolean;
   isAdenaConnected: boolean;
@@ -126,7 +126,7 @@ const settingsSlice = createSlice({
     setSelectedNetworkId: (state, action: PayloadAction<string>) => {
       state.selectedNetworkId = action.payload;
     },
-    setSelectedWalletId: (state, action: PayloadAction<string>) => {
+    setSelectedWalletId: (state, action: PayloadAction<string | undefined>) => {
       state.selectedWalletId = action.payload;
     },
     setIsKeplrConnected: (state, action: PayloadAction<boolean>) => {

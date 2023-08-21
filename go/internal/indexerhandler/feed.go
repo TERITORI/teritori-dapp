@@ -181,7 +181,7 @@ func (h *Handler) createPost(
 		Category:             createPostMsg.Category,
 		Metadata:             metadataJSON,
 		UserReactions:        map[string]interface{}{},
-		CreatedBy:            h.config.Network.UserID(execMsg.Sender),
+		AuthorId:             h.config.Network.UserID(execMsg.Sender),
 		CreatedAt:            createdAt.Unix(),
 		IsBot:                isBot,
 	}

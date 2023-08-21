@@ -7,7 +7,7 @@ import { NewPostFormValues } from "../components/socialFeed/NewsFeed/NewsFeed.ty
 export type RouteName = keyof RootStackParamList;
 
 export type RootStackParamList = {
-  Home: undefined;
+  Home?: { network?: string };
   MyCollection: undefined;
   Activity: undefined;
   Guardians: undefined;
@@ -27,7 +27,7 @@ export type RootStackParamList = {
   Collection: { id: string };
   CollectionTools: { id: string };
   NFTDetail: { id: string; openBuy?: boolean };
-  Feed: undefined;
+  Feed?: { network?: string };
   FeedNewArticle:
     | (NewPostFormValues & {
         additionalMention?: string;
@@ -60,7 +60,7 @@ export type RootStackParamList = {
   Settings: undefined;
 
   OrganizationDeployer: undefined;
-  Organizations: undefined;
+  Organizations?: { network?: string };
   CoreDAO: undefined;
 
   DAppStore: undefined;

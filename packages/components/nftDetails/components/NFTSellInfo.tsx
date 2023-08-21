@@ -8,10 +8,10 @@ import {
   mustGetNonSigningCosmWasmClient,
   NetworkKind,
 } from "../../../networks";
-import { NFTInfo } from "../../../screens/Marketplace/NFTDetailScreen";
 import { prettyPrice } from "../../../utils/coins";
 import { trimFixed } from "../../../utils/numbers";
 import { fontMedium14 } from "../../../utils/style/fonts";
+import { NFTInfo } from "../../../utils/types/nft";
 import { BrandText } from "../../BrandText";
 
 export const NFTSellInfo: React.FC<{

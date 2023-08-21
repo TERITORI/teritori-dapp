@@ -15,6 +15,9 @@ export const teritoriTestnetNetwork: NetworkInfo = {
   icon: "icons/networks/teritori.svg",
   features: [
     NetworkFeature.NFTMarketplace,
+    NetworkFeature.Organizations,
+    NetworkFeature.SocialFeed,
+    NetworkFeature.UPP,
     NetworkFeature.NameService,
     NetworkFeature.BurnTokens,
     NetworkFeature.NFTLaunchpad,

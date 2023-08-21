@@ -21,41 +21,16 @@ import { useNFTInfo } from "../../hooks/useNFTInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useSellNFT } from "../../hooks/useSellNFT";
 import {
-  NetworkKind,
   getCollectionId,
   getKeplrSigningCosmWasmClient,
   mustGetCosmosNetwork,
   mustGetEthereumNetwork,
+  NetworkKind,
   parseNftId,
 } from "../../networks";
 import { getMetaMaskEthereumSigner } from "../../utils/ethereum";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
-import { NFTAttribute } from "../../utils/types/nft";
-
-export interface NFTInfo {
-  name: string;
-  description: string;
-  attributes: NFTAttribute[];
-  nftAddress: string;
-  imageURL: string;
-  tokenId: string;
-  mintAddress: string;
-  ownerAddress: string;
-  isSeller: boolean;
-  isListed: boolean;
-  isOwner: boolean;
-  canSell: boolean;
-  price: string;
-  priceDenom: string;
-  collectionName: string;
-  textInsert?: string;
-  collectionImageURL: string;
-  mintDenom: string;
-  royalty: number;
-  breedingsAvailable?: number;
-  networkId: string;
-  collectionId: string;
-}
+import { NFTInfo } from "../../utils/types/nft";
 
 const Content: React.FC<{
   id: string;

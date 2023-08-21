@@ -32,6 +32,12 @@ export const prettyPrice = (
   denom: string | undefined,
   noDenom?: boolean
 ) => {
+  if (!value) {
+    value = "0";
+  }
+  if (!denom) {
+    denom = "unknown";
+  }
   const currency = getNativeCurrency(networkId, denom);
   if (currency) {
     const decval = Decimal.fromAtomics(value || "0", currency.decimals);

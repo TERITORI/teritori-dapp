@@ -1,3 +1,4 @@
+import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import React, { useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
@@ -20,10 +21,11 @@ import {
 import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
 import { usePrevious } from "../../../hooks/usePrevious";
-import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
+import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { parseUserId } from "../../../networks";
+import { NetworkKind, parseUserId } from "../../../networks";
 import { OnPressReplyType } from "../../../screens/FeedPostView/FeedPostViewScreen";
+import { adenaDoContract } from "../../../utils/gno";
 import { useAppNavigation } from "../../../utils/navigation";
 import {
   DEFAULT_USERNAME,
@@ -56,6 +58,7 @@ import { nbReactionsShown, Reactions } from "../SocialActions/Reactions";
 import { ReplyButton } from "../SocialActions/ReplyButton";
 import { ShareButton } from "../SocialActions/ShareButton";
 import { TipButton } from "../SocialActions/TipButton";
+import { GNO_SOCIAL_FEEDS_PKG_PATH, TERITORI_FEED_ID } from "../const";
 
 const BREAKPOINT_S = 480;
 
@@ -90,8 +93,9 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
   const [replyListYOffset, setReplyListYOffset] = useState<number[]>([]);
   const [replyListLayout, setReplyListLayout] = useState<LayoutRectangle>();
   const { selectedWallet: wallet } = useSelectedWallet();
-  const selectedNetworkId = useSelectedNetworkId();
-  const [, userAddress] = parseUserId(localComment.createdBy);
+  const selectedNetwork = useSelectedNetworkInfo();
+  const selectedNetworkId = selectedNetwork?.id || "";
+  const [, authorAddress] = parseUserId(localComment.authorId);
   const { data, refetch, fetchNextPage, hasNextPage, isFetching } =
     useFetchComments({
       parentId: localComment.identifier,
@@ -120,7 +124,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
   );
   const moreCommentsCount = localComment.subPostLength - comments.length;
   const metadata = JSON.parse(localComment.metadata);
-  const authorNSInfo = useNSUserInfo(localComment.createdBy);
+  const authorNSInfo = useNSUserInfo(localComment.authorId);
   const userInfo = useNSUserInfo(wallet?.userId);
   const username = authorNSInfo?.metadata?.tokenId
     ? tinyAddress(authorNSInfo?.metadata?.tokenId || "", 19)
@@ -163,6 +167,51 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
     }
   };
 
+  const cosmosReaction = async (icon: string, walletAddress: string) => {
+    const client = await signingSocialFeedClient({
+      networkId: selectedNetworkId,
+      walletAddress,
+    });
+
+    postMutate({
+      client,
+      msg: {
+        icon,
+        identifier: localComment.identifier,
+        up: true,
+      },
+    });
+  };
+
+  const gnoReaction = async (icon: string, rpcEndpoint: string) => {
+    const vmCall = {
+      caller: wallet?.address || "",
+      send: "",
+      pkg_path: GNO_SOCIAL_FEEDS_PKG_PATH,
+      func: "ReactPost",
+      args: [TERITORI_FEED_ID, localComment.identifier, icon, "true"],
+    };
+
+    const txHash = await adenaDoContract(
+      selectedNetworkId || "",
+      [{ type: "/vm.m_call", value: vmCall }],
+      {
+        gasWanted: 2_000_000,
+      }
+    );
+
+    const provider = new GnoJSONRPCProvider(rpcEndpoint);
+
+    // Wait for tx done
+    await provider.waitForTransaction(txHash);
+
+    const reactions = getUpdatedReactions(localComment.reactions, icon);
+    setLocalComment({
+      ...localComment,
+      reactions: reactions as ReactionFromContract[],
+    });
+  };
+
   const handleReply = () =>
     onPressReply?.({
       username,
@@ -175,19 +224,12 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
     if (!wallet?.connected || !wallet.address) {
       return;
     }
-    const client = await signingSocialFeedClient({
-      networkId: selectedNetworkId,
-      walletAddress: wallet.address,
-    });
 
-    postMutate({
-      client,
-      msg: {
-        icon: e,
-        identifier: localComment.identifier,
-        up: true,
-      },
-    });
+    if (selectedNetwork?.kind === NetworkKind.Gno) {
+      gnoReaction(e, selectedNetwork.endpoint);
+    } else {
+      cosmosReaction(e, wallet.address);
+    }
   };
 
   return (
@@ -227,8 +269,8 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
             <View style={styles.commentContainerInside}>
               {/*====== Card Header */}
               <SocialCardHeader
-                authorAddress={userAddress}
-                authorId={localComment.createdBy}
+                authorAddress={authorAddress}
+                authorId={localComment.authorId}
                 postMetadata={metadata}
                 authorMetadata={authorNSInfo?.metadata}
               />

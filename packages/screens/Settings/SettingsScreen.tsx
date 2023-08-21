@@ -46,7 +46,7 @@ import { layout } from "../../utils/style/layout";
 import { joinElements } from "../Multisig/components/MultisigRightSection";
 
 const NFTAPIKeyInput: React.FC = () => {
-  const NFTApiKey = useSelector(selectNFTStorageAPI);
+  const userIPFSKey = useSelector(selectNFTStorageAPI);
   const dispatch = useAppDispatch();
   const commonStyles = useCommonStyles();
 
@@ -61,11 +61,12 @@ const NFTAPIKeyInput: React.FC = () => {
             },
           ]}
         >
-          NFT.Storage/Pinata.cloud API key (for Social Feed)
+          app.pinata.cloud JWT key (For file upload)
         </BrandText>
         <Pressable
           onPress={() =>
-            dispatch(setNFTStorageAPI(process.env.NFT_STORAGE_API || ""))
+            // We ask key at each upload for now (Don't have Teritori's key for now)
+            dispatch(setNFTStorageAPI(""))
           }
         >
           <Text style={[fontSemibold14, { color: primaryColor }]}>
@@ -76,7 +77,7 @@ const NFTAPIKeyInput: React.FC = () => {
       <SpacerColumn size={1.5} />
       <TextInput
         style={[commonStyles.apiInput]}
-        value={NFTApiKey}
+        value={userIPFSKey}
         onChangeText={(value) => dispatch(setNFTStorageAPI(value))}
       />
     </View>

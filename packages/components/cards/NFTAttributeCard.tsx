@@ -2,7 +2,6 @@ import React from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 
 import { AttributeRarityFloor } from "../../api/marketplace/v1/marketplace";
-import { NFTInfo } from "../../screens/Marketplace/NFTDetailScreen";
 import { resolveColor } from "../../screens/Marketplace/utils";
 import { prettyPrice } from "../../utils/coins";
 import {
@@ -11,6 +10,7 @@ import {
   fontSemibold12,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
+import { NFTInfo } from "../../utils/types/nft";
 import { BrandText } from "../BrandText";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 

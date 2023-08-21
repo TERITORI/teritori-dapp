@@ -7,8 +7,10 @@ import {
   ViewStyle,
 } from "react-native";
 
+import { Label } from "./TextInputCustom";
 import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../assets/icons/chevron-up.svg";
+import lockSVG from "../../../assets/icons/lock.svg";
 import {
   neutral00,
   neutral33,
@@ -36,9 +38,11 @@ type Props = {
   placeHolder?: string;
   selectedData: SelectInputData;
   setData: (data: SelectInputData) => void;
-  disable?: boolean;
+  disabled?: boolean;
   style?: StyleProp<ViewStyle>;
+  boxStyle?: StyleProp<ViewStyle>;
   label?: string;
+  isRequired?: boolean;
 };
 
 export const SelectInput: React.FC<Props> = ({
@@ -46,12 +50,15 @@ export const SelectInput: React.FC<Props> = ({
   placeHolder,
   selectedData,
   setData,
-  disable,
+  disabled,
   style,
+  boxStyle,
   label,
+  isRequired,
 }) => {
   const [openMenu, setOpenMenu] = useState<boolean>(false);
   const [hoveredIndex, setHoveredIndex] = useState<number>(0);
+  const [hovered, setHovered] = useState(false);
 
   const getScrollViewStyle = () => {
     if (data.length > 5) {
@@ -59,22 +66,42 @@ export const SelectInput: React.FC<Props> = ({
     }
     return styles.dropdownMenu;
   };
-  return (
-    <View style={[style, { position: "relative", zIndex: 999 }]}>
-      {label && <BrandText style={styles.selectInputLabel}>{label}</BrandText>}
-      <SpacerColumn size={1} />
 
-      <CustomPressable
-        onPress={() => {
-          if (!disable) setOpenMenu((value) => !value);
-        }}
-      >
-        <View style={[styles.selectInput]}>
+  return (
+    <CustomPressable
+      style={[style, { position: "relative", zIndex: 999 }]}
+      onHoverIn={() => setHovered(true)}
+      onHoverOut={() => setHovered(false)}
+      onPress={() => {
+        if (!disabled || data.length) setOpenMenu((value) => !value);
+      }}
+      disabled={disabled || !data.length}
+    >
+      {label && (
+        <>
+          <Label
+            hovered={hovered}
+            style={{ color: neutralA3 }}
+            isRequired={isRequired}
+          >
+            {label}
+          </Label>
+          <SpacerColumn size={1.5} />
+        </>
+      )}
+      <View>
+        <View
+          style={[
+            styles.selectInput,
+            hovered && { borderColor: secondaryColor },
+            boxStyle,
+          ]}
+        >
           <View style={styles.iconLabel}>
             {selectedData.iconComponent && (
               <>
                 {selectedData.iconComponent}
-                <SpacerRow size={1.5} />
+                <SpacerRow size={1} />
               </>
             )}
 
@@ -89,31 +116,45 @@ export const SelectInput: React.FC<Props> = ({
           </View>
 
           <SVG
-            source={openMenu ? chevronUpSVG : chevronDownSVG}
+            source={
+              !data.length || disabled
+                ? lockSVG
+                : openMenu
+                ? chevronUpSVG
+                : chevronDownSVG
+            }
             width={16}
             height={16}
             color={secondaryColor}
           />
         </View>
 
+        {/*TODO: If the opened menu appears under other elements, you'll may need to set zIndex:-1 or something to these elements*/}
         {openMenu && (
           <ScrollView style={getScrollViewStyle()}>
             {data.map((item, index) => (
               <CustomPressable
-                onHoverIn={() => setHoveredIndex(index + 1)}
-                onHoverOut={() => setHoveredIndex(0)}
+                onHoverIn={() => {
+                  setHoveredIndex(index + 1);
+                  setHovered(true);
+                }}
+                onHoverOut={() => {
+                  setHoveredIndex(0);
+                  setHovered(false);
+                }}
                 onPress={() => {
                   setData(item);
                   setOpenMenu(false);
                 }}
                 key={index}
-                style={
-                  hoveredIndex === index + 1
-                    ? styles.hoveredDropdownMenuRow
-                    : styles.normalDropdownMenuRow
-                }
+                style={styles.dropdownMenuRow}
               >
-                <View style={styles.iconLabel}>
+                <View
+                  style={[
+                    styles.iconLabel,
+                    hoveredIndex === index + 1 && { opacity: 0.5 },
+                  ]}
+                >
                   {item.iconComponent && (
                     <>
                       {item.iconComponent}
@@ -129,8 +170,8 @@ export const SelectInput: React.FC<Props> = ({
             ))}
           </ScrollView>
         )}
-      </CustomPressable>
-    </View>
+      </View>
+    </CustomPressable>
   );
 };
 
@@ -164,6 +205,7 @@ const styles = StyleSheet.create({
   },
   iconLabel: {
     flexDirection: "row",
+    alignItems: "center",
   },
 
   dropdownMenu: {
@@ -178,13 +220,13 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   dropdownMenuText: StyleSheet.flatten([fontMedium13]),
-  normalDropdownMenuRow: {
+  dropdownMenuRow: {
     borderRadius: 6,
     padding: layout.padding_x1,
   },
-  hoveredDropdownMenuRow: {
-    backgroundColor: neutral00,
-    borderRadius: 6,
-    padding: layout.padding_x1,
-  },
+  // dropdownMenuRow: {
+  //   backgroundColor: neutral00,
+  //   borderRadius: 6,
+  //   padding: layout.padding_x1,
+  // },
 });
