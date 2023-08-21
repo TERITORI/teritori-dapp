@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, StyleSheet, Image } from "react-native";
 import { Pressable } from "react-native-hoverable";
 
-import { TrackVideoHover } from "./TrackVideoHover";
+import { TrackImageHover } from "./TrackImageHover";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { parseUserId } from "../../networks";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
@@ -30,11 +30,6 @@ export const VideoPlayerCard: React.FC<{
   const styles = StyleSheet.create({
     unitCard: {
       width: unitWidth,
-    },
-    contentImg: {
-      width: "100%",
-      borderRadius: layout.padding_x1,
-      aspectRatio: 1,
     },
     contentTitle: StyleSheet.flatten([
       fontSemibold14,

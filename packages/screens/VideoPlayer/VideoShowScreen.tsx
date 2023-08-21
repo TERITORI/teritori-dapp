@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
-import { View, StyleSheet, Pressable, TextInput } from "react-native";
+import { View, StyleSheet, Pressable, TextInput, Image } from "react-native";
 import Animated from "react-native-reanimated";
 import { v4 as uuidv4 } from "uuid";
 
@@ -13,7 +13,6 @@ import {
 } from "../../api/video/v1/video";
 import { signingVideoPlayerClient } from "../../client-creators/videoplayerClient";
 import { BrandText } from "../../components/BrandText";
-import { OmniLink } from "../../components/OmniLink";
 import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { CreatedByView } from "../../components/VideoPlayer/CreatedByView";
@@ -43,12 +42,6 @@ import {
 import { parseUserId, getUserId } from "../../networks";
 import { defaultSocialFeedFee } from "../../utils/fee";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
-
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getUserId, parseUserId } from "../../networks";
-import { mustGetMusicplayerClient } from "../../utils/backend";
-import { ipfsPinataUrl } from "../../utils/ipfs";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT } from "../../utils/social-feed";
 import {
@@ -61,17 +54,11 @@ import {
   fontSemibold14,
   fontMedium14,
   fontSemibold13,
-  fontSemibold20, fontMedium16,
   fontSemibold20,
   fontMedium16,
   fontSemibold16,
-  // fontSemibold12,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { lastViewDate } from "../../utils/videoPlayer";
-
-import {useIncreaseViewCount} from "../../hooks/video/useIncreaseViewCount";
-import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { tinyAddress } from "../../utils/text";
 
 const styles = StyleSheet.create({
@@ -571,7 +558,6 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
             <View style={styles.videoInfo}>
               <View style={styles.avatarDetail}>
                 <Image
-                  // @ts-ignore
                   source={require("../../../assets/icon.png")}
                   style={styles.avatar}
                 />
@@ -601,7 +587,7 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
                 />
                 {/*---- Date */}
                 <DateTime
-                  date={data.createdAt}
+                  date={data.createdAt.toString()}
                   textStyle={{ color: neutral77 }}
                 />
               </View>

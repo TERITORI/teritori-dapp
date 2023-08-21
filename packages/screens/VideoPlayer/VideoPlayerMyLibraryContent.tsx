@@ -7,7 +7,6 @@ import Animated, {
 
 import Logo from "../../../assets/logos/logo.svg";
 import { BrandText } from "../../components/BrandText";
-import { UploadAlbumModal } from "../../components/MusicPlayer/UploadAlbumModal";
 import { SVG } from "../../components/SVG";
 import { UploadVideoModal } from "../../components/VideoPlayer/UploadVideoModal";
 import { VideoPlayerCard } from "../../components/VideoPlayer/VideoPlayerCard";
