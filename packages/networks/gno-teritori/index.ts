@@ -27,6 +27,7 @@ export const gnoTeritoriNetwork: GnoNetworkInfo = {
     "ipfs://bafkreignptjimiu7wuux6mk6uh4hb4odb6ff62ny4bvdokrhes7g67huse",
   daoRegistryPkgPath: "gno.land/r/demo/dao_registry_v5",
   modboardsPkgPath: "gno.land/r/demo/modboards_v3",
-  socialFeedsPkgPath: "gno.land/r/demo/social_feeds_v4",
+  socialFeedsPkgPath: "gno.land/r/demo/social_feeds_v7",
+  socialFeedsDAOPkgPath: "gno.land/r/demo/social_feeds_dao",
   gnowebURL: "https://testnet.gno.teritori.com",
 };
