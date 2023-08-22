@@ -3,10 +3,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 
 import { Post, PostsRequest } from "../../api/feed/v1/feed";
 import { nonSigningSocialFeedClient } from "../../client-creators/socialFeedClient";
-import {
-  GNO_SOCIAL_FEEDS_PKG_PATH,
-  TERITORI_FEED_ID,
-} from "../../components/socialFeed/const";
+import { TERITORI_FEED_ID } from "../../components/socialFeed/const";
 import { decodeGnoPost } from "../../components/socialFeed/utils";
 import { GnoNetworkInfo, NetworkInfo, NetworkKind } from "../../networks";
 import { mustGetFeedClient } from "../../utils/backend";
@@ -66,7 +63,7 @@ const fetchGnoFeed = async (
 
     const provider = new GnoJSONRPCProvider(selectedNetwork.endpoint);
     const output = await provider.evaluateExpression(
-      GNO_SOCIAL_FEEDS_PKG_PATH,
+      selectedNetwork.socialFeedsPkgPath || "",
       `GetPostsWithCaller(${TERITORI_FEED_ID}, "${callerAddress}", "", ${categoriesStr}, ${offset}, ${limit})`
     );
     const posts: Post[] = [];

@@ -23,7 +23,7 @@ import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
 import { usePrevious } from "../../../hooks/usePrevious";
 import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { NetworkKind, parseUserId } from "../../../networks";
+import { mustGetGnoNetwork, NetworkKind, parseUserId } from "../../../networks";
 import { OnPressReplyType } from "../../../screens/FeedPostView/FeedPostViewScreen";
 import { adenaDoContract } from "../../../utils/gno";
 import { useAppNavigation } from "../../../utils/navigation";
@@ -59,7 +59,7 @@ import { nbReactionsShown, Reactions } from "../SocialActions/Reactions";
 import { ReplyButton } from "../SocialActions/ReplyButton";
 import { ShareButton } from "../SocialActions/ShareButton";
 import { TipButton } from "../SocialActions/TipButton";
-import { GNO_SOCIAL_FEEDS_PKG_PATH, TERITORI_FEED_ID } from "../const";
+import { TERITORI_FEED_ID } from "../const";
 
 const BREAKPOINT_S = 480;
 
@@ -188,10 +188,12 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
   };
 
   const gnoReaction = async (icon: string, rpcEndpoint: string) => {
+    const gnoNetwork = mustGetGnoNetwork(selectedNetworkId);
+
     const vmCall = {
       caller: wallet?.address || "",
       send: "",
-      pkg_path: GNO_SOCIAL_FEEDS_PKG_PATH,
+      pkg_path: gnoNetwork.socialFeedsPkgPath,
       func: "ReactPost",
       args: [TERITORI_FEED_ID, localComment.identifier, icon, "true"],
     };

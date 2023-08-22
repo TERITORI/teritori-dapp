@@ -95,7 +95,7 @@ import { FileUploader } from "../../fileUploader";
 import { SpacerColumn } from "../../spacer";
 import { EmojiSelector } from "../EmojiSelector";
 import { GIFSelector } from "../GIFSelector";
-import { GNO_SOCIAL_FEEDS_PKG_PATH, TERITORI_FEED_ID } from "../const";
+import { TERITORI_FEED_ID } from "../const";
 
 interface NewsFeedInputProps {
   type: "comment" | "post";
@@ -322,7 +322,7 @@ export const NewsFeedInput = React.forwardRef<
             const vmCall = {
               caller: selectedWallet?.address || "",
               send: "",
-              pkg_path: GNO_SOCIAL_FEEDS_PKG_PATH,
+              pkg_path: selectedNetwork.socialFeedsPkgPath,
               func: "CreatePost",
               args: [
                 TERITORI_FEED_ID,

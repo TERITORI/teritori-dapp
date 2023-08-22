@@ -26,7 +26,7 @@ import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { TextInputCustom } from "../../inputs/TextInputCustom";
 import ModalBase from "../../modals/ModalBase";
 import { SpacerColumn } from "../../spacer";
-import { GNO_SOCIAL_FEEDS_PKG_PATH, TERITORI_FEED_ID } from "../const";
+import { TERITORI_FEED_ID } from "../const";
 
 type TipFormType = {
   amount: string;
@@ -85,7 +85,7 @@ export const TipModal: React.FC<{
       const vmCall = {
         caller: selectedWallet.address,
         send: `${amount}ugnot`,
-        pkg_path: GNO_SOCIAL_FEEDS_PKG_PATH,
+        pkg_path: selectedNetworkInfo.socialFeedsPkgPath,
         func: "TipPost",
         args: [TERITORI_FEED_ID, postId],
       };

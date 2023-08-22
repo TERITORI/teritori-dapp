@@ -17,7 +17,7 @@ import { defaultSocialFeedFee } from "../../../utils/fee";
 import { adenaDoContract } from "../../../utils/gno";
 import { ipfsURLToHTTPURL, uploadFilesToPinata } from "../../../utils/ipfs";
 import { RemoteFileData } from "../../../utils/types/files";
-import { GNO_SOCIAL_FEEDS_PKG_PATH, TERITORI_FEED_ID } from "../const";
+import { TERITORI_FEED_ID } from "../const";
 
 interface GetAvailableFreePostParams {
   networkId: string;
@@ -174,7 +174,7 @@ export const createPost = async ({
     const vmCall = {
       caller: wallet.address,
       send: "",
-      pkg_path: GNO_SOCIAL_FEEDS_PKG_PATH,
+      pkg_path: network.socialFeedsPkgPath,
       func: "CreatePost",
       args: [
         TERITORI_FEED_ID,

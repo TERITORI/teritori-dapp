@@ -13,7 +13,7 @@ import { useGetBanPostProposals } from "../../../hooks/feed/useBanPostProposals"
 import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
 import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { NetworkKind, parseUserId } from "../../../networks";
+import { mustGetGnoNetwork, NetworkKind, parseUserId } from "../../../networks";
 import { OnPressReplyType } from "../../../screens/FeedPostView/FeedPostViewScreen";
 import { toRawURLBase64String } from "../../../utils/buffer";
 import { adenaDoContract, adenaVMCall } from "../../../utils/gno";
@@ -50,7 +50,7 @@ import { ReplyButton } from "../SocialActions/ReplyButton";
 import { ShareButton } from "../SocialActions/ShareButton";
 import { SocialThreadGovernance } from "../SocialActions/SocialThreadGovernance";
 import { TipButton } from "../SocialActions/TipButton";
-import { GNO_SOCIAL_FEEDS_PKG_PATH, TERITORI_FEED_ID } from "../const";
+import { TERITORI_FEED_ID } from "../const";
 import { FlagConfirmModal } from "../modals/FlagConfirmModal";
 import { FlagConfirmedModal } from "../modals/FlagConfirmedModal";
 import { FlagDetailsModal } from "../modals/FlagDetailsModal";
@@ -176,10 +176,12 @@ export const SocialThreadCard: React.FC<{
   };
 
   const gnoReaction = async (emoji: string, rpcEndpoint: string) => {
+    const gnoNetwork = mustGetGnoNetwork(selectedNetworkId);
+
     const vmCall = {
       caller: wallet?.address || "",
       send: "",
-      pkg_path: GNO_SOCIAL_FEEDS_PKG_PATH,
+      pkg_path: gnoNetwork.socialFeedsPkgPath,
       func: "ReactPost",
       args: [TERITORI_FEED_ID, localPost.identifier, emoji, "true"],
     };
