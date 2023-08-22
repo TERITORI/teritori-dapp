@@ -20,6 +20,7 @@ type FlagModalProps = {
   postId: string;
   onClose: (nextModalName?: string) => void;
   isVisible: boolean;
+  refetchFeed?: () => Promise<any>;
 };
 
 type FlagType = "hideForMe" | "hideForAll";
@@ -28,6 +29,7 @@ export const FlagModal: React.FC<FlagModalProps> = ({
   postId,
   onClose,
   isVisible,
+  refetchFeed,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [flagType, setFlagType] = useState<FlagType>("hideForMe");
@@ -53,9 +55,11 @@ export const FlagModal: React.FC<FlagModalProps> = ({
         selectedNetworkId || "",
         [{ type: "/vm.m_call", value: vmCall }],
         {
-          gasWanted: 1_000_000,
+          gasWanted: 2_000_000,
         }
       );
+
+      await refetchFeed?.();
 
       setToastSuccess({ title: "Report success", message: "" });
     } catch (err: any) {
@@ -104,7 +108,7 @@ export const FlagModal: React.FC<FlagModalProps> = ({
             <RadioButton selected={flagType === "hideForAll"} />
             <SpacerRow size={1} />
             <BrandText style={fontSemibold16}>
-              Vote to hide this content for all users
+              Flag this content for all users
             </BrandText>
           </FlexRow>
         </Pressable>

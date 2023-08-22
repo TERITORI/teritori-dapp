@@ -1,5 +1,5 @@
 import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 
 import { SocialCardHeader } from "./SocialCardHeader";
@@ -7,18 +7,16 @@ import { SocialMessageContent } from "./SocialMessageContent";
 import addThreadSVG from "../../../../assets/icons/add-thread.svg";
 import { Post } from "../../../api/feed/v1/feed";
 import { signingSocialFeedClient } from "../../../client-creators/socialFeedClient";
+import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useTeritoriSocialFeedReactPostMutation } from "../../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.react-query";
+import { useGetBanPostProposals } from "../../../hooks/feed/useBanPostProposals";
 import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
 import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { NetworkKind, parseUserId } from "../../../networks";
 import { OnPressReplyType } from "../../../screens/FeedPostView/FeedPostViewScreen";
 import { toRawURLBase64String } from "../../../utils/buffer";
-import {
-  adenaDoContract,
-  adenaVMCall,
-  extractGnoNumber,
-} from "../../../utils/gno";
+import { adenaDoContract, adenaVMCall } from "../../../utils/gno";
 import { useAppNavigation } from "../../../utils/navigation";
 import { getUpdatedReactions } from "../../../utils/social-feed";
 import {
@@ -27,6 +25,7 @@ import {
   neutral22,
   neutral33,
   neutral77,
+  redDefault,
   secondaryColor,
   withAlpha,
 } from "../../../utils/style/colors";
@@ -46,28 +45,23 @@ import { EmojiSelector } from "../EmojiSelector";
 import { SocialFeedMetadata } from "../NewsFeed/NewsFeed.type";
 import { CommentsCount } from "../SocialActions/CommentsCount";
 import { FlagButton } from "../SocialActions/FlagButton";
-import { FlagConfirmModal } from "../SocialActions/FlagConfirmModal";
-import { FlagConfirmedModal } from "../SocialActions/FlagConfirmedModal";
-import { FlagDetailsModal } from "../SocialActions/FlagDetailsModal";
 import { nbReactionsShown, Reactions } from "../SocialActions/Reactions";
 import { ReplyButton } from "../SocialActions/ReplyButton";
 import { ShareButton } from "../SocialActions/ShareButton";
 import { SocialThreadGovernance } from "../SocialActions/SocialThreadGovernance";
 import { TipButton } from "../SocialActions/TipButton";
 import { GNO_SOCIAL_FEEDS_PKG_PATH, TERITORI_FEED_ID } from "../const";
+import { FlagConfirmModal } from "../modals/FlagConfirmModal";
+import { FlagConfirmedModal } from "../modals/FlagConfirmedModal";
+import { FlagDetailsModal } from "../modals/FlagDetailsModal";
 
 const BREAKPOINT_S = 480;
 
-const encodeBanPost = (
-  boardId: number,
-  threadId: number,
-  postId: number,
-  reason: string
-) => {
+const encodeBanPost = (feedId: number, postId: number, reason: string) => {
   const b = Buffer.alloc(16000); // TODO: compute size or concat
   let offset = 0;
 
-  const t = "DeletePost";
+  const t = "BanPost";
   b.writeUInt16BE(t.length, offset);
   offset += 2;
   b.write(t, offset);
@@ -75,12 +69,7 @@ const encodeBanPost = (
 
   b.writeUInt32BE(0, offset);
   offset += 4;
-  b.writeUInt32BE(boardId, offset);
-  offset += 4;
-
-  b.writeUInt32BE(0, offset);
-  offset += 4;
-  b.writeUInt32BE(threadId, offset);
+  b.writeUInt32BE(feedId, offset);
   offset += 4;
 
   b.writeUInt32BE(0, offset);
@@ -105,6 +94,7 @@ export const SocialThreadCard: React.FC<{
   isGovernance?: boolean;
   isPreview?: boolean;
   isFlagged?: boolean;
+  refetchFeed?: () => Promise<any>;
 }> = ({
   post,
   style,
@@ -114,6 +104,7 @@ export const SocialThreadCard: React.FC<{
   isGovernance,
   isPreview,
   isFlagged,
+  refetchFeed,
 }) => {
   const [isShowFlagConfirmModal, setIsShowFlagConfirmModal] = useState(false);
   const [isShowFlagConfirmedModal, setIsShowFlagConfirmedModal] =
@@ -134,14 +125,34 @@ export const SocialThreadCard: React.FC<{
       },
     });
 
+  const { setToastError, setToastSuccess } = useFeedbacks();
   const wallet = useSelectedWallet();
   const selectedNetworkInfo = useSelectedNetworkInfo();
-  const selectedNetworkId = selectedNetworkInfo?.id;
+  const selectedNetworkId = selectedNetworkInfo?.id || "";
   const authorNSInfo = useNSUserInfo(localPost.authorId);
   const [, authorAddress] = parseUserId(localPost.authorId);
   const navigation = useAppNavigation();
   const metadata: SocialFeedMetadata = JSON.parse(localPost.metadata);
   const username = authorNSInfo?.metadata?.tokenId || authorAddress;
+  const {
+    banPostProposals,
+    isLoading: isLoadingProposals,
+    refetch: refetchProposals,
+  } = useGetBanPostProposals(selectedNetworkId);
+  const [isSendingProposal, setIsSendingProposal] = useState(false);
+  const [isExecutingProposal, setIsExecutingProposal] = useState(false);
+
+  const banPostProposalTitle = useMemo(() => {
+    return `Ban Post: ${post.identifier}`;
+  }, [post.identifier]);
+
+  const proposal = useMemo(() => {
+    return banPostProposals.find((p: any) => p.title === banPostProposalTitle);
+  }, [banPostProposalTitle, banPostProposals]);
+
+  const proposalId = useMemo(() => {
+    return proposal?.id !== undefined ? String(proposal.id) : "";
+  }, [proposal]);
 
   //TODO: Handle this later
   // const communityHashtag = useMemo(() => {
@@ -150,7 +161,7 @@ export const SocialThreadCard: React.FC<{
 
   const cosmosReaction = async (emoji: string, walletAddress: string) => {
     const client = await signingSocialFeedClient({
-      networkId: selectedNetworkId || "",
+      networkId: selectedNetworkId,
       walletAddress,
     });
 
@@ -174,7 +185,7 @@ export const SocialThreadCard: React.FC<{
     };
 
     const txHash = await adenaDoContract(
-      selectedNetworkId || "",
+      selectedNetworkId,
       [{ type: "/vm.m_call", value: vmCall }],
       {
         gasWanted: 2_000_000,
@@ -217,43 +228,101 @@ export const SocialThreadCard: React.FC<{
       username,
     });
 
-  const proposeToBan = async () => {
+  const executeProposal = async () => {
     if (
       selectedNetworkInfo?.kind !== NetworkKind.Gno ||
-      !selectedNetworkInfo.modboardsPkgPath
+      !selectedNetworkInfo.socialFeedsDAOPkgPath
     ) {
       throw new Error("invalid network");
     }
-    const client = new GnoJSONRPCProvider(selectedNetworkInfo.endpoint);
-    const boardIdRes = await client.evaluateExpression(
-      selectedNetworkInfo.modboardsPkgPath,
-      `GetBoardIDFromName("${name}")`
-    );
-    console.log(boardIdRes);
-    const boardIdNum = extractGnoNumber(boardIdRes);
-    if (!boardIdNum) {
-      throw new Error(`invalid board id ${boardIdNum}`);
+
+    if (!wallet?.address) {
+      throw new Error("address is empty");
     }
 
+    setIsExecutingProposal(true);
+
+    try {
+      const moduleIndex = "0";
+
+      await adenaVMCall(
+        selectedNetworkInfo.id,
+        {
+          pkg_path: selectedNetworkInfo.socialFeedsDAOPkgPath,
+          func: "Execute",
+          caller: wallet.address,
+          send: "",
+          args: [moduleIndex, proposalId],
+        },
+        { gasWanted: 10000000 }
+      );
+
+      await refetchFeed?.();
+      await refetchProposals();
+
+      setToastSuccess({
+        title: "Success",
+        message: "Executed proposal successfully",
+      });
+    } catch (e: any) {
+      setToastError({
+        title: "Error",
+        message: e.message,
+      });
+    } finally {
+      setIsExecutingProposal(false);
+    }
+  };
+
+  const proposeToBan = async () => {
+    if (
+      selectedNetworkInfo?.kind !== NetworkKind.Gno ||
+      !selectedNetworkInfo.socialFeedsDAOPkgPath
+    ) {
+      throw new Error("invalid network");
+    }
+
+    if (!wallet?.address) {
+      throw new Error("address is empty");
+    }
+
+    setIsSendingProposal(true);
+
     const msg = toRawURLBase64String(
-      encodeBanPost(boardIdNum, threadIdNum, postIdNum, reason)
+      encodeBanPost(
+        +TERITORI_FEED_ID,
+        +localPost.identifier,
+        `Flag the post: ${localPost.identifier}`
+      )
     );
-    await adenaVMCall(
-      selectedNetworkInfo.id,
-      {
-        pkg_path: daoAddress,
-        func: "Propose",
-        caller: wallet?.address || "",
-        send: "",
-        args: [
-          "0",
-          threadIdNum === postIdNum ? "Delete thread" : "Delete post",
-          "",
-          msg,
-        ],
-      },
-      { gasWanted: 10000000 }
-    );
+    try {
+      await adenaVMCall(
+        selectedNetworkInfo.id,
+        {
+          pkg_path: selectedNetworkInfo.socialFeedsDAOPkgPath,
+          func: "Propose",
+          caller: wallet.address,
+          send: "",
+          args: ["0", banPostProposalTitle, "", msg],
+        },
+        { gasWanted: 10000000 }
+      );
+
+      await refetchFeed?.();
+      refetchProposals();
+
+      setToastSuccess({
+        title: "Success",
+        message: "Sending proposal successfully",
+      });
+    } catch (e: any) {
+      setToastError({
+        title: "Error",
+        message: e.message,
+      });
+    } finally {
+      setIsSendingProposal(false);
+    }
   };
 
   useEffect(() => {
@@ -428,7 +497,7 @@ export const SocialThreadCard: React.FC<{
 
                 {selectedNetworkInfo?.kind === NetworkKind.Gno && (
                   <FlagButton
-                    networkInfo={selectedNetworkInfo}
+                    refetchFeed={refetchFeed}
                     postId={localPost.identifier}
                   />
                 )}
@@ -445,41 +514,58 @@ export const SocialThreadCard: React.FC<{
         </AnimationFadeIn>
       </CustomPressable>
 
-      {isFlagged && (
+      {isFlagged && !isLoadingProposals && (
         <>
           <SpacerColumn size={2} />
 
-          <FlexRow style={{ justifyContent: "flex-end" }}>
-            <BrandText style={[fontSemibold14, { color: neutral77 }]}>
-              My verdict
-            </BrandText>
-            <SpacerRow size={2} />
-            <SecondaryButton
-              onPress={() => setIsShowFlagConfirmModal(true)}
-              size="M"
-              text="Don't ban"
-              width={120}
-            />
-            <SpacerRow size={2} />
-            <PrimaryButton
-              onPress={() => setIsShowFlagConfirmModal(true)}
-              size="M"
-              text="Ban"
-              width={120}
-            />
-          </FlexRow>
-
-          <PrimaryButton
-            onPress={proposeToBan}
-            size="M"
-            text="Propose to Ban"
-            width={120}
-          />
+          {proposalId !== "" ? (
+            <FlexRow style={{ justifyContent: "flex-end" }}>
+              <BrandText style={[fontSemibold14, { color: neutral77 }]}>
+                My verdict
+              </BrandText>
+              <SpacerRow size={2} />
+              <SecondaryButton
+                onPress={() => setIsShowFlagConfirmModal(true)}
+                size="M"
+                text="Don't ban"
+                width={120}
+              />
+              <SpacerRow size={2} />
+              <PrimaryButton
+                onPress={() => setIsShowFlagConfirmModal(true)}
+                size="M"
+                text="Ban"
+                width={120}
+              />
+              <SpacerRow size={2} />
+              {proposal?.status === "Passed" && (
+                <PrimaryButton
+                  color={redDefault}
+                  onPress={executeProposal}
+                  size="M"
+                  loader={isExecutingProposal}
+                  text="Execute proposal"
+                  width={160}
+                />
+              )}
+            </FlexRow>
+          ) : (
+            <View style={{ alignSelf: "flex-end" }}>
+              <PrimaryButton
+                isLoading={isSendingProposal}
+                onPress={proposeToBan}
+                size="M"
+                text="Make a proposal to Ban"
+                width={200}
+              />
+            </View>
+          )}
         </>
       )}
 
       <FlagConfirmModal
-        postId={localPost.identifier}
+        proposalId={proposalId}
+        refetchProposals={refetchProposals}
         onClose={(nextModalName) => {
           setIsShowFlagConfirmModal(false);
           nextModalName === "FlagConfirmedModal" &&
@@ -489,7 +575,6 @@ export const SocialThreadCard: React.FC<{
       />
 
       <FlagConfirmedModal
-        postId={localPost.identifier}
         onClose={(nextModalName) => {
           setIsShowFlagConfirmedModal(false);
           nextModalName === "FlagDetailsModal" &&
@@ -499,8 +584,9 @@ export const SocialThreadCard: React.FC<{
       />
 
       <FlagDetailsModal
-        postId={localPost.identifier}
-        onClose={(nextModalName) => {
+        networkId={selectedNetworkId}
+        proposalId={proposalId}
+        onClose={() => {
           setIsShowFlagDetailsModal(false);
         }}
         isVisible={isShowFlagDetailsModal}

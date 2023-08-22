@@ -74,6 +74,7 @@ export interface SocialCommentCardProps {
   overrideParentId?: string;
   onScrollTo?: (y: number) => void;
   parentOffsetValue?: number;
+  refetchFeed?: () => Promise<any>;
 }
 
 export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
@@ -85,6 +86,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
   onScrollTo,
   parentOffsetValue = 0,
   cardWidth,
+  refetchFeed,
 }) => {
   const [localComment, setLocalComment] = useState<PostExtra>({ ...comment });
   const [viewWidth, setViewWidth] = useState(0);
@@ -335,7 +337,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
 
                   {selectedNetwork?.kind === NetworkKind.Gno && (
                     <FlagButton
-                      networkInfo={selectedNetwork}
+                      refetchFeed={refetchFeed}
                       postId={localComment.identifier}
                     />
                   )}
@@ -369,6 +371,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
                   ? cardWidth
                   : cardWidth - LINES_HORIZONTAL_SPACE * 2 - 1 // If not -1, the borderRight is hidden on small screens
               }
+              refetchFeed={refetchFeed}
               comments={comments}
               onPressReply={onPressReply}
               overrideParentId={localComment.identifier}

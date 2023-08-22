@@ -190,6 +190,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
           >
             <SocialThreadCard
               post={post}
+              refetchFeed={refetch}
               isPreview
               isFlagged={isFlagged}
               style={

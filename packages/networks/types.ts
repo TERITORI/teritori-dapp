@@ -89,6 +89,7 @@ export type GnoNetworkInfo = NetworkInfoBase & {
   daoRegistryPkgPath?: string;
   modboardsPkgPath?: string;
   socialFeedsPkgPath?: string;
+  socialFeedsDAOPkgPath?: string;
 };
 
 export type NetworkInfo =

@@ -23,6 +23,7 @@ export const gnoDevNetwork: GnoNetworkInfo = {
   backendEndpoint: "https://dapp-backend.testnet.teritori.com",
   vaultContractAddress: "",
   socialFeedsPkgPath: "gno.land/r/demo/social_feeds",
+  socialFeedsDAOPkgPath: "gno.land/r/demo/social_feeds_dao",
   nameServiceContractAddress: "gno.land/r/demo/users",
   nameServiceDefaultImage:
     "ipfs://bafkreignptjimiu7wuux6mk6uh4hb4odb6ff62ny4bvdokrhes7g67huse",

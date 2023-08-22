@@ -1,21 +1,17 @@
 import React, { useState } from "react";
 import { TouchableOpacity } from "react-native";
 
-import { FlagConfirmModal } from "./FlagConfirmModal";
-import { FlagConfirmedModal } from "./FlagConfirmedModal";
-import { FlagDetailsModal } from "./FlagDetailsModal";
 import { FlagModal } from "./FlagModal";
 import flagSVG from "../../../../assets/icons/flag.svg";
-import { NetworkInfo } from "../../../networks";
 import { SVG } from "../../SVG";
 
 type FlagButtonProps = {
-  networkInfo: NetworkInfo;
+  refetchFeed?: () => Promise<any>;
   postId: string;
 };
 
 export const FlagButton: React.FC<FlagButtonProps> = ({
-  networkInfo,
+  refetchFeed,
   postId,
 }) => {
   const [isShowFlagModal, setIsShowFlagModal] = useState(false);
@@ -30,6 +26,7 @@ export const FlagButton: React.FC<FlagButtonProps> = ({
       </TouchableOpacity>
 
       <FlagModal
+        refetchFeed={refetchFeed}
         postId={postId}
         onClose={(nextModalName) => {
           setIsShowFlagModal(false);

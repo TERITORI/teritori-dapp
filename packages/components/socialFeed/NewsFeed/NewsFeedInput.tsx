@@ -174,8 +174,8 @@ export const NewsFeedInput = React.forwardRef<
 
     const onPostCreationSuccess = () => {
       reset();
-      onSubmitSuccess && onSubmitSuccess();
-      onCloseCreateModal && onCloseCreateModal();
+      onSubmitSuccess?.();
+      onCloseCreateModal?.();
     };
 
     const balances = useBalances(selectedNetworkId, wallet?.address);
