@@ -596,7 +596,7 @@
     "testnet": true,
     "backendEndpoint": "http://localhost:9090",
     "vaultContractAddress": "",
-    "socialFeedsPkgPath": "gno.land/r/demo/social_feeds",
+    "socialFeedsPkgPath": "gno.land/r/demo/social_feeds_v7",
     "socialFeedsDAOPkgPath": "gno.land/r/demo/social_feeds_dao",
     "nameServiceContractAddress": "gno.land/r/demo/users",
     "nameServiceDefaultImage": "ipfs://bafkreignptjimiu7wuux6mk6uh4hb4odb6ff62ny4bvdokrhes7g67huse",
