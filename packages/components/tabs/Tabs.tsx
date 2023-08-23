@@ -1,18 +1,25 @@
+import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import { useScrollTo } from "@nandorojo/anchor";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useMemo } from "react";
+import { cloneDeep } from "lodash";
+import React, { useEffect, useMemo, useState } from "react";
 import {
-  TouchableOpacity,
-  View,
+  ScrollView,
   StyleProp,
   StyleSheet,
-  ViewStyle,
   TextStyle,
-  ScrollView,
+  TouchableOpacity,
+  View,
+  ViewStyle,
 } from "react-native";
 
-import { useSelectedNetworkKind } from "../../hooks/useSelectedNetwork";
+import { useFetchFeed } from "../../hooks/feed/useFetchFeed";
+import { GnoDAORegistration } from "../../hooks/gno/useGnoDAOs";
+import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkKind } from "../../networks";
+import { extractGnoJSONString, extractGnoNumber } from "../../utils/gno";
+import { feedsTabItems } from "../../utils/social-feed";
 import {
   gradientColorBlue,
   gradientColorDarkerBlue,
@@ -28,7 +35,8 @@ import { SVG } from "../SVG";
 import { PrimaryBadge } from "../badges/PrimaryBadge";
 import { TertiaryBadge } from "../badges/TertiaryBadge";
 import { GradientText } from "../gradientText";
-import { SpacerRow } from "../spacer";
+import { PostCategory } from "../socialFeed/NewsFeed/NewsFeed.type";
+import { SpacerColumn, SpacerRow } from "../spacer";
 
 export interface TabDefinition {
   name: string;
@@ -65,136 +73,212 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
   noUnderline?: boolean;
 }) => {
   const { scrollTo } = useScrollTo();
-  const selectedNetworkKind = useSelectedNetworkKind();
+
+  const selectedNetworkInfo = useSelectedNetworkInfo();
+  const selectedNetworkKind = selectedNetworkInfo?.kind;
+  const selectedWallet = useSelectedWallet();
+  const [isDAOMember, setIsDAOMember] = useState(false);
+
+  const req = {
+    filter: {
+      categories: [PostCategory.Flagged],
+      user: "",
+      mentions: [],
+      hashtags: [],
+    },
+    limit: 1,
+    offset: 0,
+  };
+  const { data } = useFetchFeed(req);
+
+  const hasFlaggedPosts = useMemo(() => {
+    return (data?.pages?.[0]?.totalCount || 0) > 0;
+  }, [data]);
+
+  const adjustedFeedsTabItems = useMemo(() => {
+    const res = cloneDeep(feedsTabItems);
+    const iconSVG = res.moderationDAO.iconSVG;
+    res.moderationDAO.iconSVG = null;
+
+    if (selectedNetworkKind === NetworkKind.Gno && hasFlaggedPosts) {
+      res.moderationDAO.iconSVG = iconSVG;
+    }
+
+    return res;
+  }, [selectedNetworkKind, hasFlaggedPosts]);
 
   const itemsArray = useMemo(() => {
-    return Object.entries(items).filter((item) => {
-      if (selectedNetworkKind === NetworkKind.Gno) return true;
+    return Object.entries(adjustedFeedsTabItems).filter((item) => {
+      if (selectedNetworkKind === NetworkKind.Gno && isDAOMember) return true;
       return item[0] !== "moderationDAO";
     });
-  }, [selectedNetworkKind, items]);
+  }, [selectedNetworkKind, adjustedFeedsTabItems, isDAOMember]);
+
+  useEffect(() => {
+    if (selectedNetworkInfo?.kind !== NetworkKind.Gno) {
+      return;
+    }
+
+    if (!selectedWallet?.address) {
+      return;
+    }
+
+    if (!selectedNetworkInfo.groupsPkgPath) {
+      console.error("groupsPkgPath is not provided");
+      return;
+    }
+
+    const client = new GnoJSONRPCProvider(selectedNetworkInfo?.endpoint);
+    const socialFeedsDAOGGroupId = "1"; // 0000000001
+
+    client
+      .evaluateExpression(
+        selectedNetworkInfo.groupsPkgPath,
+        `GetMemberWeightByAddress(${socialFeedsDAOGGroupId}, "${selectedWallet.address}")`
+      )
+      .then((result) => {
+        const value = extractGnoNumber(result);
+        setIsDAOMember(value > 0);
+      })
+      .catch((e) => console.error(e));
+  }, [selectedNetworkInfo, selectedWallet?.address]);
 
   return (
     // styles are applied weirdly to scrollview so it's better to apply them to a constraining view
-    <View
-      style={[
-        !noUnderline && { borderBottomColor: neutral33, borderBottomWidth: 1 },
-        style,
-      ]}
-    >
-      <ScrollView
-        showsHorizontalScrollIndicator={false}
-        horizontal
-        contentContainerStyle={{
-          alignItems: "center",
-        }}
+    <>
+      <View
+        style={[
+          !noUnderline && {
+            borderBottomColor: neutral33,
+            borderBottomWidth: 1,
+          },
+          style,
+        ]}
       >
-        {itemsArray.map(([key, item], index) => {
-          const isSelected = selected === key;
-          return (
-            <TouchableOpacity
-              key={key}
-              onPress={() =>
-                item.scrollTo
-                  ? scrollTo(item.scrollTo, { offset: -60 })
-                  : onSelect(key, item)
-              }
-              disabled={item.disabled}
-              style={[
-                {
-                  height: "100%",
-                  justifyContent: "center",
-                  marginRight:
-                    index !== itemsArray.length - 1 ? layout.padding_x3 : 0,
-                },
-                tabContainerStyle,
-              ]}
-            >
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-
-                  height: 24,
-                }}
+        <ScrollView
+          showsHorizontalScrollIndicator={false}
+          horizontal
+          contentContainerStyle={{
+            alignItems: "center",
+          }}
+        >
+          {itemsArray.map(([key, item], index) => {
+            const isSelected = selected === key;
+            return (
+              <TouchableOpacity
+                key={key}
+                onPress={() =>
+                  item.scrollTo
+                    ? scrollTo(item.scrollTo, { offset: -60 })
+                    : onSelect(key, item)
+                }
+                disabled={item.disabled}
+                style={[
+                  {
+                    height: "100%",
+                    justifyContent: "center",
+                    marginRight:
+                      index !== itemsArray.length - 1 ? layout.padding_x3 : 0,
+                  },
+                  tabContainerStyle,
+                ]}
               >
-                {isSelected && gradientText ? (
-                  <GradientText
-                    gradientType="blueExtended"
-                    style={[fontSemibold14, tabTextStyle]}
-                  >
-                    {item.name}
-                  </GradientText>
-                ) : (
-                  <BrandText
-                    style={[
-                      fontSemibold14,
-                      { lineHeight: 14 },
-                      item.disabled && { color: neutral77 },
-                      tabTextStyle,
-                    ]}
-                  >
-                    {item.name}
-                  </BrandText>
-                )}
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
 
-                {item.badgeCount && <SpacerRow size={1} />}
-                {item.badgeCount ? (
-                  isSelected ? (
-                    <PrimaryBadge
-                      size="SM"
-                      backgroundColor="secondary"
-                      label={item.badgeCount}
-                    />
+                    height: 24,
+                  }}
+                >
+                  {isSelected && gradientText ? (
+                    <GradientText
+                      gradientType="blueExtended"
+                      style={[fontSemibold14, tabTextStyle]}
+                    >
+                      {item.name}
+                    </GradientText>
                   ) : (
-                    <TertiaryBadge size="SM" label={item.badgeCount} />
-                  )
-                ) : null}
-
-                {item.iconSVG && (
-                  <View style={{ position: "relative" }}>
-                    <SVG
-                      source={item.iconSVG}
-                      color={item.iconColor || secondaryColor}
-                      width={16}
-                      height={16}
-                      style={{ position: "absolute", top: -16, left: -2 }}
-                    />
-                  </View>
-                )}
-              </View>
-              {!hideSelector && isSelected && (
-                <>
-                  {gradientText ? (
-                    <LinearGradient
-                      start={{ x: 0, y: 0.5 }}
-                      end={{ x: 1, y: 0.5 }}
+                    <BrandText
                       style={[
-                        styles.selectedBorder,
-                        { height: 2, width: "100%" },
+                        fontSemibold14,
+                        { lineHeight: 14 },
+                        item.disabled && { color: neutral77 },
+                        tabTextStyle,
                       ]}
-                      colors={[
-                        gradientColorDarkerBlue,
-                        gradientColorBlue,
-                        gradientColorTurquoise,
-                      ]}
-                    />
-                  ) : (
-                    <View
-                      style={[
-                        styles.selectedBorder,
-                        { backgroundColor: borderColorTabSelected },
-                      ]}
-                    />
+                    >
+                      {item.name}
+                    </BrandText>
                   )}
-                </>
-              )}
-            </TouchableOpacity>
-          );
-        })}
-      </ScrollView>
-    </View>
+
+                  {item.badgeCount && <SpacerRow size={1} />}
+                  {item.badgeCount ? (
+                    isSelected ? (
+                      <PrimaryBadge
+                        size="SM"
+                        backgroundColor="secondary"
+                        label={item.badgeCount}
+                      />
+                    ) : (
+                      <TertiaryBadge size="SM" label={item.badgeCount} />
+                    )
+                  ) : null}
+
+                  {item.iconSVG && (
+                    <View style={{ position: "relative" }}>
+                      <SVG
+                        source={item.iconSVG}
+                        color={item.iconColor || secondaryColor}
+                        width={16}
+                        height={16}
+                        style={{ position: "absolute", top: -16, left: -2 }}
+                      />
+                    </View>
+                  )}
+                </View>
+                {!hideSelector && isSelected && (
+                  <>
+                    {gradientText ? (
+                      <LinearGradient
+                        start={{ x: 0, y: 0.5 }}
+                        end={{ x: 1, y: 0.5 }}
+                        style={[
+                          styles.selectedBorder,
+                          { height: 2, width: "100%" },
+                        ]}
+                        colors={[
+                          gradientColorDarkerBlue,
+                          gradientColorBlue,
+                          gradientColorTurquoise,
+                        ]}
+                      />
+                    ) : (
+                      <View
+                        style={[
+                          styles.selectedBorder,
+                          { backgroundColor: borderColorTabSelected },
+                        ]}
+                      />
+                    )}
+                  </>
+                )}
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
+      </View>
+
+      <SpacerColumn size={1.5} />
+
+      {selected === "moderationDAO" && (
+        <BrandText style={{ alignSelf: "flex-start" }}>
+          {hasFlaggedPosts
+            ? "Please review all applications carefully and give your verdict."
+            : "There are no items to moderate yet."}
+        </BrandText>
+      )}
+    </>
   );
 };
 
