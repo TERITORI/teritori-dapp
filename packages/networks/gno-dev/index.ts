@@ -25,6 +25,7 @@ export const gnoDevNetwork: GnoNetworkInfo = {
   socialFeedsPkgPath: "gno.land/r/demo/social_feeds",
   socialFeedsDAOPkgPath: "gno.land/r/demo/social_feeds_dao",
   nameServiceContractAddress: "gno.land/r/demo/users",
+  groupsPkgPath: "gno.land/r/demo/groups_v9",
   nameServiceDefaultImage:
     "ipfs://bafkreignptjimiu7wuux6mk6uh4hb4odb6ff62ny4bvdokrhes7g67huse",
   gnowebURL: "http://127.0.0.1:8888",
