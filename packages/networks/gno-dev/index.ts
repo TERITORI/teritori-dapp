@@ -22,7 +22,7 @@ export const gnoDevNetwork: GnoNetworkInfo = {
   testnet: true,
   backendEndpoint: "http://localhost:9090",
   vaultContractAddress: "",
-  socialFeedsPkgPath: "gno.land/r/demo/social_feeds",
+  socialFeedsPkgPath: "gno.land/r/demo/social_feeds_v7",
   socialFeedsDAOPkgPath: "gno.land/r/demo/social_feeds_dao",
   nameServiceContractAddress: "gno.land/r/demo/users",
   groupsPkgPath: "gno.land/r/demo/groups_v9",

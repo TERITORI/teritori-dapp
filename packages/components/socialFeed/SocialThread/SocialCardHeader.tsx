@@ -53,7 +53,11 @@ export const SocialCardHeader: FC<{
             {/*---- User name */}
             <AnimationFadeIn>
               <BrandText style={fontSemibold16}>
-                {authorMetadata?.public_name || DEFAULT_NAME}
+                {authorMetadata?.public_name ||
+                  (!authorMetadata?.tokenId
+                    ? DEFAULT_NAME
+                    : authorMetadata.tokenId.split(".")[0]) ||
+                  DEFAULT_NAME}
               </BrandText>
             </AnimationFadeIn>
           </OmniLink>

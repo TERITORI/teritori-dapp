@@ -48,13 +48,6 @@ const fetchGnoFeed = async (
   req: PostsRequest,
   pageParam: number
 ) => {
-  if (!callerAddress) {
-    return {
-      list: [],
-      totalCount: 0,
-    };
-  }
-
   try {
     const offset = pageParam || 0;
     const limit = 10;

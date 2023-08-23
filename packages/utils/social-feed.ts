@@ -9,6 +9,7 @@ import {
   PostExtra,
   PostResultExtra,
 } from "../components/socialFeed/NewsFeed/NewsFeed.type";
+import { TabDefinition } from "../components/tabs/Tabs";
 import { PostResult } from "../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
 import { getUserId } from "../networks";
 
@@ -34,7 +35,7 @@ export const getUpdatedReactions = (reactions: Reaction[], icon: string) => {
   return reactions;
 };
 
-export const feedsTabItems = {
+export const feedsTabItems: { [key: string]: TabDefinition } = {
   all: {
     name: "Jungle News Feed",
   },

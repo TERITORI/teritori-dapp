@@ -1,6 +1,6 @@
 import { useScrollTo } from "@nandorojo/anchor";
 import { LinearGradient } from "expo-linear-gradient";
-import React from "react";
+import React, { useMemo } from "react";
 import {
   TouchableOpacity,
   View,
@@ -11,6 +11,8 @@ import {
   ScrollView,
 } from "react-native";
 
+import { useSelectedNetworkKind } from "../../hooks/useSelectedNetwork";
+import { NetworkKind } from "../../networks";
 import {
   gradientColorBlue,
   gradientColorDarkerBlue,
@@ -63,7 +65,15 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
   noUnderline?: boolean;
 }) => {
   const { scrollTo } = useScrollTo();
-  const itemsArray = Object.entries(items);
+  const selectedNetworkKind = useSelectedNetworkKind();
+
+  const itemsArray = useMemo(() => {
+    return Object.entries(items).filter((item) => {
+      if (selectedNetworkKind === NetworkKind.Gno) return true;
+      return item[0] !== "moderationDAO";
+    });
+  }, [selectedNetworkKind, items]);
+
   return (
     // styles are applied weirdly to scrollview so it's better to apply them to a constraining view
     <View
