@@ -12,7 +12,7 @@ import {
   signingSocialFeedClient,
 } from "../../../client-creators/socialFeedClient";
 import { Wallet } from "../../../context/WalletsProvider";
-import { mustGetNetwork, NetworkKind } from "../../../networks";
+import { getNetwork, mustGetNetwork, NetworkKind } from "../../../networks";
 import { defaultSocialFeedFee } from "../../../utils/fee";
 import { adenaDoContract } from "../../../utils/gno";
 import { ipfsURLToHTTPURL, uploadFilesToPinata } from "../../../utils/ipfs";
@@ -29,7 +29,13 @@ export const getAvailableFreePost = async ({
   wallet,
 }: GetAvailableFreePostParams) => {
   try {
-    if (!wallet?.connected || !wallet.address) {
+    const network = getNetwork(networkId);
+
+    if (
+      !wallet?.connected ||
+      !wallet.address ||
+      network?.kind !== NetworkKind.Cosmos
+    ) {
       return;
     }
 
@@ -58,6 +64,12 @@ export const getPostFee = async ({
   postCategory,
 }: GetPostFeeParams) => {
   try {
+    const network = getNetwork(networkId);
+
+    if (network?.kind !== NetworkKind.Cosmos) {
+      return;
+    }
+
     const client = await nonSigningSocialFeedClient({
       networkId,
     });
