@@ -9,9 +9,9 @@ import {
   PostExtra,
   PostResultExtra,
 } from "../components/socialFeed/NewsFeed/NewsFeed.type";
+import { TabDefinition } from "../components/tabs/Tabs";
 import { PostResult } from "../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
 import { getUserId } from "../networks";
-import { TabDefinition } from "../components/tabs/Tabs";
 
 export const DEFAULT_NAME = "Anon";
 export const DEFAULT_USERNAME = "anonymous";
