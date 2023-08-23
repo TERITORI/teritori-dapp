@@ -14,11 +14,10 @@ import {
 } from "react-native";
 
 import { useFetchFeed } from "../../hooks/feed/useFetchFeed";
-import { GnoDAORegistration } from "../../hooks/gno/useGnoDAOs";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkKind } from "../../networks";
-import { extractGnoJSONString, extractGnoNumber } from "../../utils/gno";
+import { extractGnoNumber } from "../../utils/gno";
 import { feedsTabItems } from "../../utils/social-feed";
 import {
   gradientColorBlue,
