@@ -26,7 +26,7 @@ export const SubCategoryView: React.FC<SubCategoryViewProps> = ({
     <>
       <SubCategoryHeader title={sub_cat.title} iconSvg={sub_cat.icon} />
       <SubCategoryMenu />
-      <ListGigs category={category} subcategory={subcategory}/>
+      <ListGigs category={category} subcategory={subcategory} />
     </>
   );
 };

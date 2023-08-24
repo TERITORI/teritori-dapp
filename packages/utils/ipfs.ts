@@ -16,9 +16,9 @@ interface UploadPostJSONToPinataParams {
 }
 
 export const uploadFilesToPinata = async ({
-                                            files,
-                                            pinataJWTKey,
-                                          }: UploadPostFilesToPinataParams): Promise<RemoteFileData[]> => {
+  files,
+  pinataJWTKey,
+}: UploadPostFilesToPinataParams): Promise<RemoteFileData[]> => {
   const storedFile = async (file: LocalFileData): Promise<RemoteFileData> => {
     const fileData = await pinataPinFileToIPFS({
       file,
@@ -88,10 +88,10 @@ export const uploadFileToIPFS = async (
 };
 
 export const uploadJSONToIPFS = async ({
-                                         json,
-                                         networkId,
-                                         userId,
-                                       }: UploadPostJSONToPinataParams): Promise<
+  json,
+  networkId,
+  userId,
+}: UploadPostJSONToPinataParams): Promise<
   (object & { url: string }) | undefined
 > => {
   const pinataJWTKey = await generateIpfsKey(networkId, userId);
