@@ -37,7 +37,9 @@ export const DAOSelector: React.FC<{
             ...daosAliases.map((d) => {
               const [, daoAddress] = parseUserId(d.userId);
               return {
-                label: `Use ${d.alias ? "@" + d.alias : tinyAddress(daoAddress, 40)}`,
+                label: `Use ${
+                  d.alias ? "@" + d.alias : tinyAddress(daoAddress, 40)
+                }`,
                 value: d.userId,
               };
             }),
