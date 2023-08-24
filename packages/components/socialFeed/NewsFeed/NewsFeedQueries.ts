@@ -15,8 +15,6 @@ import { Wallet } from "../../../context/WalletsProvider";
 import { getNetwork, mustGetNetwork, NetworkKind } from "../../../networks";
 import { defaultSocialFeedFee } from "../../../utils/fee";
 import { adenaDoContract } from "../../../utils/gno";
-import { GNO_SOCIAL_FEEDS_PKG_PATH, TERITORI_FEED_ID } from "../const";
-
 import { ipfsURLToHTTPURL, uploadFilesToPinata } from "../../../utils/ipfs";
 import { RemoteFileData } from "../../../utils/types/files";
 import { TERITORI_FEED_ID } from "../const";
