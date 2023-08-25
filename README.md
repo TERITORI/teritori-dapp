@@ -11,35 +11,34 @@
 
 ## TLDR : Let's build together.
 
+### Tested environment
+
+```
+❯ yarn --version
+3.5.0
+❯ node --version
+v16.17.0
+❯ npx --version
+8.15.0
+```
+
+If you have trouble, try to match these versions
+
 ### Dev for web
 
 ```
-npx expo start
+yarn && npx expo start
 ```
 
 Then press `w` to open the page in your browser
 
-### Dev for desktop
-
-```
-npx expo-electron start
-```
-
 ### Build web app
 
 ```
-npx expo-optimize && npx expo build:web
+yarn && npx expo-optimize && npx expo build:web
 ```
 
 The site is in `web-build/`
-
-### Build desktop apps
-
-```
-yarn && yarn electron-webpack && yarn electron-builder --arm64 --x64 -mwl --dir -c.compression=store -c.mac.identity=null
-```
-
-The apps are in `dist/`
 
 ## Introduction
 
