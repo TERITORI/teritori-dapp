@@ -18,7 +18,6 @@ import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkKind } from "../../networks";
 import { extractGnoNumber } from "../../utils/gno";
-import { feedsTabItems } from "../../utils/social-feed";
 import {
   gradientColorBlue,
   gradientColorDarkerBlue,
@@ -94,24 +93,26 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
     return (data?.pages?.[0]?.totalCount || 0) > 0;
   }, [data]);
 
-  const adjustedFeedsTabItems = useMemo(() => {
-    const res = cloneDeep(feedsTabItems);
-    const iconSVG = res.moderationDAO.iconSVG;
-    res.moderationDAO.iconSVG = null;
+  const adjustedTabItems = useMemo(() => {
+    const res = cloneDeep(items);
 
-    if (selectedNetworkKind === NetworkKind.Gno && hasFlaggedPosts) {
-      res.moderationDAO.iconSVG = iconSVG;
+    if (
+      selectedNetworkKind === NetworkKind.Gno &&
+      res.moderationDAO &&
+      !hasFlaggedPosts
+    ) {
+      res.moderationDAO.iconSVG = null;
     }
 
     return res;
-  }, [selectedNetworkKind, hasFlaggedPosts]);
+  }, [selectedNetworkKind, hasFlaggedPosts, items]);
 
   const itemsArray = useMemo(() => {
-    return Object.entries(adjustedFeedsTabItems).filter((item) => {
+    return Object.entries(adjustedTabItems).filter((item) => {
       if (selectedNetworkKind === NetworkKind.Gno && isDAOMember) return true;
       return item[0] !== "moderationDAO";
     });
-  }, [selectedNetworkKind, adjustedFeedsTabItems, isDAOMember]);
+  }, [selectedNetworkKind, adjustedTabItems, isDAOMember]);
 
   useEffect(() => {
     if (selectedNetworkInfo?.kind !== NetworkKind.Gno) {

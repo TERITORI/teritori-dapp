@@ -5,7 +5,12 @@ import { Post, PostsRequest } from "../../api/feed/v1/feed";
 import { nonSigningSocialFeedClient } from "../../client-creators/socialFeedClient";
 import { TERITORI_FEED_ID } from "../../components/socialFeed/const";
 import { decodeGnoPost } from "../../components/socialFeed/utils";
-import { GnoNetworkInfo, NetworkInfo, NetworkKind } from "../../networks";
+import {
+  GnoNetworkInfo,
+  NetworkInfo,
+  NetworkKind,
+  parseUserId,
+} from "../../networks";
 import { mustGetFeedClient } from "../../utils/backend";
 import { extractGnoString } from "../../utils/gno";
 import { useSelectedNetworkInfo } from "../useSelectedNetwork";
@@ -48,6 +53,13 @@ const fetchGnoFeed = async (
   req: PostsRequest,
   pageParam: number
 ) => {
+  if (!selectedNetwork.socialFeedsPkgPath) return { list: [], totalCount: 0 };
+
+  callerAddress = callerAddress || "";
+  const userId = req.filter?.user || "";
+
+  const [, userAddress] = parseUserId(userId);
+
   try {
     const offset = pageParam || 0;
     const limit = 10;
@@ -56,9 +68,10 @@ const fetchGnoFeed = async (
 
     const provider = new GnoJSONRPCProvider(selectedNetwork.endpoint);
     const output = await provider.evaluateExpression(
-      selectedNetwork.socialFeedsPkgPath || "",
-      `GetPostsWithCaller(${TERITORI_FEED_ID}, "${callerAddress}", "", ${categoriesStr}, ${offset}, ${limit})`
+      selectedNetwork.socialFeedsPkgPath,
+      `GetPostsWithCaller(${TERITORI_FEED_ID}, "${callerAddress}", "${userAddress}", ${categoriesStr}, ${offset}, ${limit})`
     );
+
     const posts: Post[] = [];
 
     const outputStr = extractGnoString(output);
