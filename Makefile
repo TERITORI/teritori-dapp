@@ -201,22 +201,22 @@ $(CONTRACTS_CLIENTS_DIR)/$(VAULT_PACKAGE): node_modules
 
 .PHONY: publish.backend
 publish.backend:
-	docker build -f go/cmd/teritori-dapp-backend/Dockerfile .  --platform amd64 -t $(BACKEND_DOCKER_IMAGE)
+	docker build -f go/cmd/teritori-dapp-backend/Dockerfile .  --platform linux/amd64 -t $(BACKEND_DOCKER_IMAGE)
 	docker push $(BACKEND_DOCKER_IMAGE)
 
 .PHONY: publish.indexer
 publish.indexer:
-	docker build -f go/cmd/teritori-indexer/Dockerfile . --platform amd64 -t $(INDEXER_DOCKER_IMAGE)
+	docker build -f go/cmd/teritori-indexer/Dockerfile . --platform linux/amd64 -t $(INDEXER_DOCKER_IMAGE)
 	docker push $(INDEXER_DOCKER_IMAGE)
 
 .PHONY: publish.prices-service
 publish.prices-service:
-	docker build -f go/cmd/prices-service/Dockerfile .  --platform amd64 -t $(PRICES_SERVICE_DOCKER_IMAGE)
+	docker build -f go/cmd/prices-service/Dockerfile .  --platform linux/amd64 -t $(PRICES_SERVICE_DOCKER_IMAGE)
 	docker push $(PRICES_SERVICE_DOCKER_IMAGE)
 
 .PHONY: publish.prices-ohlc-refresh
 publish.prices-ohlc-refresh:
-	docker build -f go/cmd/prices-ohlc-refresh/Dockerfile . --platform amd64 -t $(PRICES_OHLC_REFRESH_DOCKER_IMAGE)
+	docker build -f go/cmd/prices-ohlc-refresh/Dockerfile . --platform linux/amd64 -t $(PRICES_OHLC_REFRESH_DOCKER_IMAGE)
 	docker push $(PRICES_OHLC_REFRESH_DOCKER_IMAGE)
 
 .PHONY: generate.sqlboiler-prices
@@ -227,12 +227,12 @@ generate.sqlboiler-prices:
 
 .PHONY: publish.p2e-update-leaderboard
 publish.p2e-update-leaderboard:
-	docker build -f go/cmd/p2e-update-leaderboard/Dockerfile . --platform amd64 -t $(P2E_DOCKER_IMAGE)
+	docker build -f go/cmd/p2e-update-leaderboard/Dockerfile . --platform linux/amd64 -t $(P2E_DOCKER_IMAGE)
 	docker push $(P2E_DOCKER_IMAGE)
 
 .PHONY: publish.feed-clean-pinata-keys
 publish.feed-clean-pinata-keys:
-	docker build -f go/cmd/feed-clean-pinata-keys/Dockerfile . --platform amd64 -t $(FEED_DOCKER_IMAGE)
+	docker build -f go/cmd/feed-clean-pinata-keys/Dockerfile . --platform linux/amd64 -t $(FEED_DOCKER_IMAGE)
 	docker push $(FEED_DOCKER_IMAGE)
 
 .PHONY: validate-networks
