@@ -1,43 +1,45 @@
 import React, { useState } from "react";
 import { View, StyleSheet } from "react-native";
 
-import { HoverView } from "./HoverView";
-import AddLibrary from "../../../assets/music-player/add-library.svg";
-import Tip from "../../../assets/music-player/tip-other.svg";
-import { signingMusicPlayerClient } from "../../client-creators/musicplayerClient";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { neutralA3, neutral33, secondaryColor } from "../../utils/style/colors";
-import { fontSemibold13 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
-import { AlbumInfo } from "../../utils/types/music";
-import { BrandText } from "../BrandText";
-import { SVG } from "../SVG";
-import { TipModal } from "../socialFeed/SocialActions/TipModal";
+import AddLibrary from "../../../../assets/music-player/add-library.svg";
+import Tip from "../../../../assets/music-player/tip-other.svg";
+import { signingMusicPlayerClient } from "../../../client-creators/musicplayerClient";
+import { useFeedbacks } from "../../../context/FeedbacksProvider";
+import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
+import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import {
+  neutralA3,
+  neutral33,
+  secondaryColor,
+} from "../../../utils/style/colors";
+import { fontSemibold13 } from "../../../utils/style/fonts";
+import { layout } from "../../../utils/style/layout";
+import { AlbumInfo } from "../../../utils/types/mediaPlayer";
+import { BrandText } from "../../BrandText";
+import { SVG } from "../../SVG";
+import { TipModal } from "../../socialFeed/SocialActions/TipModal";
+import { HoverView } from "../HoverView";
 
 interface TrackHoverMenuProps {
   album: AlbumInfo;
   hasLibrary: boolean;
-  userName: string;
+  owner: string;
 }
 export const TrackHoverMenu: React.FC<TrackHoverMenuProps> = ({
   album,
   hasLibrary,
-  userName,
+  owner,
 }) => {
   const selectedNetworkId = useSelectedNetworkId();
   const wallet = useSelectedWallet();
+  const [tipModalVisible, setTipModalVisible] = useState<boolean>(false);
+  const { setToastError, setToastSuccess } = useFeedbacks();
 
   const shareMenuWidth = 188;
   const lineHeight = 18;
 
-  // const [openShareMenu, setOpenShareMenu] = useState<boolean>(false);
-  const [tipModalVisible, setTipModalVisible] = useState<boolean>(false);
-  const { setToastError, setToastSuccess } = useFeedbacks();
-
   const addToLibrary = async () => {
-    if (!wallet?.connected || !wallet.address) {
+    if (!wallet?.connected || !wallet.address || !album.id) {
       return;
     }
     const client = await signingMusicPlayerClient({
@@ -61,7 +63,7 @@ export const TrackHoverMenu: React.FC<TrackHoverMenuProps> = ({
   };
 
   const removeFromLibrary = async () => {
-    if (!wallet?.connected || !wallet.address) {
+    if (!wallet?.connected || !wallet.address || !album.id) {
       return;
     }
     const client = await signingMusicPlayerClient({
@@ -239,8 +241,8 @@ export const TrackHoverMenu: React.FC<TrackHoverMenuProps> = ({
         </View>
       </HoverView>
       <TipModal
-        author={userName}
-        postId={album.id}
+        author={owner}
+        postId={album.id || ""}
         onClose={() => setTipModalVisible(false)}
         isVisible={tipModalVisible}
       />

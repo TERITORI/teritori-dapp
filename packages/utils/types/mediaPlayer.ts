@@ -2,21 +2,30 @@ export interface AlbumMetadataInfo {
   title: string;
   description: string;
   image: string;
-  audios: UploadFileInfo[];
+  audios: MetadataAudio[];
 }
 
-export interface UploadFileInfo {
-  name: string;
-  ipfs: string;
+export interface MetadataAudio {
   duration: number;
+  ipfs: string;
+  name: string;
 }
+
 export interface AlbumInfo {
-  id: string;
+  id?: string;
   name: string;
   description: string;
   image: string;
   createdBy: string;
-  audios: UploadFileInfo[];
+  audios: Media[];
+}
+
+export interface Media {
+  imageUrl?: string;
+  name: string;
+  createdBy: string;
+  fileUrl: string;
+  duration?: number;
 }
 
 export enum PlayType {

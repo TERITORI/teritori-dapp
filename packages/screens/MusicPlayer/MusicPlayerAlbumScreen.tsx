@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, Pressable, Image } from "react-native";
+import { View, StyleSheet, Image, TouchableOpacity } from "react-native";
 
 import Add from "../../../assets/music-player/add.svg";
 import MorePrimary from "../../../assets/music-player/more-primary.svg";
@@ -9,14 +9,15 @@ import Time from "../../../assets/music-player/time.svg";
 import Tip from "../../../assets/music-player/tip-primary.svg";
 import { signingMusicPlayerClient } from "../../client-creators/musicplayerClient";
 import { BrandText } from "../../components/BrandText";
-import { DetailAlbumMenu } from "../../components/MusicPlayer/DetailAlbumMenu";
-import MediaPlayerBar from "../../components/MusicPlayer/MediaPlayerBar";
-import { MusicPlayerTab } from "../../components/MusicPlayer/MusicPlayerTab";
+import { OmniLink } from "../../components/OmniLink";
 import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
+import { CustomPressable } from "../../components/buttons/CustomPressable";
+import { DetailAlbumMenu } from "../../components/mediaPlayer/DetailAlbumMenu";
+import { MusicPlayerTab } from "../../components/mediaPlayer/MusicPlayerTab";
 import { TipModal } from "../../components/socialFeed/SocialActions/TipModal";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { useMusicplayer } from "../../context/MusicplayerProvider";
+import { useMediaPlayer } from "../../context/MediaPlayerProvider";
 import { useFetchAlbum } from "../../hooks/musicplayer/useFetchAlbum";
 import { useFetchLibraryIds } from "../../hooks/musicplayer/useFetchLibraryIds";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
@@ -34,15 +35,18 @@ import {
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { tinyAddress } from "../../utils/text";
-import { AlbumInfo } from "../../utils/types/music";
+import { AlbumInfo, Media } from "../../utils/types/mediaPlayer";
 
 export const MusicPlayerAlbumScreen: ScreenFC<"MusicPlayerAlbum"> = ({
   route: {
     params: { id },
   },
 }) => {
-  const { setAudioList, setIsPlay, setAudioIndex, setArtist } =
-    useMusicplayer();
+  const {
+    loadAndPlayQueue,
+    media: playedMedia,
+    setAudioIndex,
+  } = useMediaPlayer();
   const navigation = useAppNavigation();
   const selectedNetworkId = useSelectedNetworkId();
   const wallet = useSelectedWallet();
@@ -69,13 +73,9 @@ export const MusicPlayerAlbumScreen: ScreenFC<"MusicPlayerAlbum"> = ({
   useEffect(() => {
     if (fetchedAlbumInfo) {
       setAlbumInfo(fetchedAlbumInfo);
-      setAudioList(fetchedAlbumInfo.audios);
       setAudioIndex(0);
     }
-  }, [fetchedAlbumInfo, setAudioIndex, setAudioList]);
-  useEffect(() => {
-    setArtist(username);
-  }, [username, setArtist]);
+  }, [fetchedAlbumInfo, setAudioIndex]);
 
   const initIndexHoverState = {
     index: 0,
@@ -85,8 +85,6 @@ export const MusicPlayerAlbumScreen: ScreenFC<"MusicPlayerAlbum"> = ({
     useState<any>(initIndexHoverState);
   const [openDetailAlbumMenu, setOpenDetailAlbumMenu] =
     useState<boolean>(false);
-  // const [openTrackMenu, setOpenTrackMenu] = useState<boolean>(false);
-  // const [clickedIndex, setClickedIndex] = useState<number>(0);
   const handleTip = () => {
     setTipModalVisible(true);
   };
@@ -137,193 +135,15 @@ export const MusicPlayerAlbumScreen: ScreenFC<"MusicPlayerAlbum"> = ({
       });
     }
   };
-
-  const playAlbum = () => {
-    if (albumInfo.audios.length > 0) {
-      setIsPlay(true);
-      // setAudioSrc(ipfsPinataUrl(albumInfo.audios[0].ipfs));
-    }
+  const onPressPlayAlbum = async () => {
+    if (!fetchedAlbumInfo) return;
+    await loadAndPlayQueue(fetchedAlbumInfo.audios);
   };
 
-  const styles = StyleSheet.create({
-    pageConatiner: {
-      width: "100%",
-      paddingHorizontal: 80,
-    },
-    menuBox: {
-      marginTop: layout.padding_x2_5,
-      marginBottom: layout.padding_x1,
-      width: "100%",
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
-      paddingHorizontal: layout.padding_x3,
-    },
-    contentGroup: {
-      flexDirection: "column",
-      justifyContent: "space-between",
-      gap: layout.padding_x1,
-      zIndex: 999,
-    },
-    unitBoxEven: {
-      width: "100%",
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
-      paddingHorizontal: layout.padding_x3,
-      paddingVertical: layout.padding_x0_5,
-      backgroundColor: neutral17,
-      borderRadius: layout.padding_x1,
-      height: 48,
-    },
-    uniBoxOdd: {
-      width: "100%",
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
-      paddingHorizontal: layout.padding_x3,
-      paddingVertical: layout.padding_x0_5,
-      borderRadius: layout.padding_x1,
-      height: 48,
-    },
-    menuText: StyleSheet.flatten([
-      fontSemibold13,
-      {
-        color: neutral77,
-      },
-    ]),
-    index: {
-      width: layout.padding_x2_5,
-      textAlign: "center",
-    },
-    text: StyleSheet.flatten([
-      fontMedium14,
-      {
-        color: neutral77,
-        marginTop: layout.padding_x0_5,
-      },
-    ]),
-    leftBox: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: layout.padding_x1_5,
-    },
-    textBox: {
-      flexDirection: "column",
-      justifyContent: "space-between",
-      height: 40,
-    },
-    rightBox: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: layout.padding_x2_5,
-    },
-    albumBox: {
-      marginTop: layout.padding_x2_5,
-      flexDirection: "row",
-      alignItems: "flex-end",
-      justifyContent: "space-between",
-      zIndex: 999,
-    },
-    infoBox: {
-      flexDirection: "row",
-      alignItems: "flex-end",
-      gap: layout.padding_x4,
-    },
-    albumImg: {
-      width: 216,
-      height: 216,
-    },
-    artistText: StyleSheet.flatten([
-      fontSemibold20,
-      {
-        color: primaryColor,
-        marginTop: layout.padding_x0_5,
-      },
-    ]),
-    infoText: StyleSheet.flatten([
-      fontSemibold13,
-      {
-        marginTop: layout.padding_x1,
-        marginBottom: layout.padding_x0_5,
-      },
-    ]),
-    tagText: StyleSheet.flatten([
-      fontSemibold13,
-      {
-        color: primaryColor,
-      },
-    ]),
-    verticalBox: {
-      flexDirection: "column",
-      alignItems: "flex-start",
-      width: 420,
-    },
-    oneLine: {
-      flexDirection: "row",
-      alignItems: "center",
-      marginTop: layout.padding_x2_5,
-      gap: layout.padding_x2,
-    },
-    playButton: {
-      padding: layout.padding_x1,
-      paddingRight: layout.padding_x1_5,
-      flexDirection: "row",
-      alignItems: "center",
-      gap: layout.padding_x1,
-      borderRadius: layout.padding_x1,
-      backgroundColor: primaryColor,
-    },
-    tipButton: {
-      padding: layout.padding_x1,
-      paddingRight: layout.padding_x1_5,
-      flexDirection: "row",
-      alignItems: "center",
-      gap: layout.padding_x1,
-      borderRadius: layout.padding_x1,
-      backgroundColor: "#2B2B33",
-    },
-    playButtonText: StyleSheet.flatten([
-      fontSemibold14,
-      {
-        color: "#2B0945",
-      },
-    ]),
-    tipButtonText: StyleSheet.flatten([
-      fontSemibold14,
-      {
-        color: primaryColor,
-      },
-    ]),
-    actionBox: {
-      flexDirection: "row",
-      gap: layout.padding_x2,
-    },
-    addButton: {
-      padding: layout.padding_x1,
-      paddingRight: layout.padding_x1_5,
-      flexDirection: "row",
-      alignItems: "center",
-      gap: layout.padding_x1,
-      borderRadius: layout.padding_x1,
-      backgroundColor: "#2B2B33",
-    },
-    addButtonText: StyleSheet.flatten([
-      fontSemibold14,
-      {
-        color: primaryColor,
-      },
-    ]),
-    moreButton: {
-      width: 36,
-      height: 36,
-      borderRadius: 18,
-      flexDirection: "row",
-      justifyContent: "center",
-      alignItems: "center",
-      backgroundColor: "#2B2B33",
-    },
-  });
+  const onPressTrack = async (media: Media) => {
+    if (!fetchedAlbumInfo) return;
+    await loadAndPlayQueue(fetchedAlbumInfo.audios, media);
+  };
 
   return (
     <ScreenContainer
@@ -340,26 +160,38 @@ export const MusicPlayerAlbumScreen: ScreenFC<"MusicPlayerAlbum"> = ({
         <View style={styles.albumBox}>
           <View style={styles.infoBox}>
             <Image
-              // @ts-ignore
-              source={ipfsURLToHTTPURL(albumInfo.image)}
+              source={{ uri: ipfsURLToHTTPURL(albumInfo.image) }}
               style={styles.albumImg}
             />
             <View style={styles.verticalBox}>
               <BrandText>{albumInfo.name}</BrandText>
-              <BrandText style={styles.artistText}>{username}</BrandText>
+              <OmniLink
+                to={{
+                  screen: "UserPublicProfile",
+                  params: { id: albumInfo?.createdBy || "" },
+                }}
+              >
+                <BrandText style={styles.artistText}>
+                  {"@" + username}
+                </BrandText>
+              </OmniLink>
               <BrandText style={styles.infoText}>
                 {albumInfo.description}
               </BrandText>
               <View style={styles.oneLine}>
-                <Pressable style={styles.playButton} onPress={playAlbum}>
+                <TouchableOpacity
+                  style={styles.playButton}
+                  onPress={onPressPlayAlbum}
+                >
                   <SVG
                     source={PlayOther}
                     width={layout.padding_x2_5}
                     height={layout.padding_x2_5}
                   />
                   <BrandText style={styles.playButtonText}>Play</BrandText>
-                </Pressable>
-                <Pressable
+                </TouchableOpacity>
+
+                <TouchableOpacity
                   style={styles.tipButton}
                   onPress={() => {
                     handleTip();
@@ -373,8 +205,7 @@ export const MusicPlayerAlbumScreen: ScreenFC<"MusicPlayerAlbum"> = ({
                   <BrandText style={styles.tipButtonText}>
                     Tip this album
                   </BrandText>
-                </Pressable>
-                {/* <audio id="audio" src={audioSrc} ref={audioRef} controls /> */}
+                </TouchableOpacity>
               </View>
             </View>
           </View>
@@ -383,7 +214,7 @@ export const MusicPlayerAlbumScreen: ScreenFC<"MusicPlayerAlbum"> = ({
               userId !== albumInfo.createdBy &&
               idForLibraryList &&
               idForLibraryList.findIndex((item) => item === id) !== -1 && (
-                <Pressable
+                <TouchableOpacity
                   style={styles.addButton}
                   onPress={() => {
                     removeFromLibrary();
@@ -397,13 +228,13 @@ export const MusicPlayerAlbumScreen: ScreenFC<"MusicPlayerAlbum"> = ({
                   <BrandText style={styles.addButtonText}>
                     Remove from library
                   </BrandText>
-                </Pressable>
+                </TouchableOpacity>
               )}
             {userId &&
               userId !== albumInfo.createdBy &&
               idForLibraryList &&
               idForLibraryList.findIndex((item) => item === id) === -1 && (
-                <Pressable style={styles.addButton}>
+                <TouchableOpacity style={styles.addButton}>
                   <SVG
                     height={layout.padding_x2_5}
                     width={layout.padding_x2_5}
@@ -415,12 +246,11 @@ export const MusicPlayerAlbumScreen: ScreenFC<"MusicPlayerAlbum"> = ({
                   <BrandText style={styles.addButtonText}>
                     Add to library
                   </BrandText>
-                </Pressable>
+                </TouchableOpacity>
               )}
-            <Pressable
+            <TouchableOpacity
               style={styles.moreButton}
               onPress={() => {
-                // setOpenTrackMenu(false);
                 setOpenDetailAlbumMenu((value) => !value);
               }}
             >
@@ -429,15 +259,15 @@ export const MusicPlayerAlbumScreen: ScreenFC<"MusicPlayerAlbum"> = ({
                 width={layout.padding_x2_5}
                 source={MorePrimary}
               />
-            </Pressable>
-            {openDetailAlbumMenu && <DetailAlbumMenu id={albumInfo.id} />}
+            </TouchableOpacity>
+            {openDetailAlbumMenu && <DetailAlbumMenu id={albumInfo.id || ""} />}
           </View>
         </View>
 
         <View style={styles.menuBox}>
           <View style={styles.leftBox}>
             <BrandText style={[styles.menuText, styles.index]}>#</BrandText>
-            <BrandText style={styles.menuText}>Name</BrandText>
+            <BrandText style={styles.menuText}>Track</BrandText>
           </View>
           <SVG
             source={Time}
@@ -448,28 +278,28 @@ export const MusicPlayerAlbumScreen: ScreenFC<"MusicPlayerAlbum"> = ({
         </View>
 
         <View style={styles.contentGroup}>
-          {albumInfo.audios.map((item: any, index: number) => {
+          {albumInfo.audios.map((media: Media, index: number) => {
             return (
-              <View
+              <CustomPressable
+                onPress={() => onPressTrack(media)}
+                onHoverIn={() =>
+                  setIndexHoverState(() => {
+                    return { index: index + 1, state: true };
+                  })
+                }
+                onHoverOut={() =>
+                  setIndexHoverState(() => {
+                    return initIndexHoverState;
+                  })
+                }
                 style={index % 2 === 0 ? styles.unitBoxEven : styles.uniBoxOdd}
                 key={index}
               >
                 <View style={styles.leftBox}>
-                  <Pressable
-                    // @ts-ignore
-                    onMouseEnter={() =>
-                      setIndexHoverState(() => {
-                        return { index: index + 1, state: true };
-                      })
-                    }
-                    onMouseLeave={() =>
-                      setIndexHoverState(() => {
-                        return initIndexHoverState;
-                      })
-                    }
-                  >
-                    {indexHoverState.state &&
-                    indexHoverState.index === index + 1 ? (
+                  <View>
+                    {(indexHoverState.state &&
+                      indexHoverState.index === index + 1) ||
+                    media.fileUrl === playedMedia?.fileUrl ? (
                       <SVG
                         source={PlaySecondary}
                         width={layout.padding_x2_5}
@@ -480,15 +310,16 @@ export const MusicPlayerAlbumScreen: ScreenFC<"MusicPlayerAlbum"> = ({
                         {index + 1}
                       </BrandText>
                     )}
-                  </Pressable>
-                  <BrandText style={fontSemibold14}>{item.name}</BrandText>
+                  </View>
+                  <BrandText style={fontSemibold14}>{media.name}</BrandText>
                 </View>
                 <View style={styles.rightBox}>
                   <BrandText style={[fontSemibold14]}>
-                    {parseFloat(item.duration).toFixed(0)} s
+                    {/*TODO: Make this format => 00 h 00 m 00 s*/}
+                    {prettyTime(media.duration || 0)}
                   </BrandText>
                 </View>
-              </View>
+              </CustomPressable>
             );
           })}
         </View>
@@ -499,7 +330,200 @@ export const MusicPlayerAlbumScreen: ScreenFC<"MusicPlayerAlbum"> = ({
         onClose={() => setTipModalVisible(false)}
         isVisible={tipModalVisible}
       />
-      <MediaPlayerBar />
     </ScreenContainer>
   );
 };
+
+// time in ms
+const prettyTime = (time: number) => {
+  const seconds = time / 1000;
+  const minutes = Math.floor(seconds / 60);
+  const extraSeconds = seconds % 60;
+  const minutesStr =
+    minutes < 10 ? "0" + Math.floor(minutes).toString() : minutes.toString();
+  const extraSecondsStr =
+    extraSeconds < 10
+      ? "0" + Math.floor(extraSeconds).toString()
+      : Math.floor(extraSeconds).toString();
+  return minutesStr + " m " + extraSecondsStr + " s";
+};
+
+const styles = StyleSheet.create({
+  pageConatiner: {
+    width: "100%",
+    paddingHorizontal: 80,
+  },
+  menuBox: {
+    marginTop: layout.padding_x2_5,
+    marginBottom: layout.padding_x1,
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: layout.padding_x3,
+  },
+  contentGroup: {
+    flexDirection: "column",
+    justifyContent: "space-between",
+    gap: layout.padding_x1,
+    zIndex: 999,
+  },
+  unitBoxEven: {
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: layout.padding_x3,
+    paddingVertical: layout.padding_x0_5,
+    backgroundColor: neutral17,
+    borderRadius: layout.padding_x1,
+    height: 48,
+  },
+  uniBoxOdd: {
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: layout.padding_x3,
+    paddingVertical: layout.padding_x0_5,
+    borderRadius: layout.padding_x1,
+    height: 48,
+  },
+  menuText: StyleSheet.flatten([
+    fontSemibold13,
+    {
+      color: neutral77,
+    },
+  ]),
+  index: {
+    width: layout.padding_x2_5,
+    textAlign: "center",
+  },
+  text: StyleSheet.flatten([
+    fontMedium14,
+    {
+      color: neutral77,
+      marginTop: layout.padding_x0_5,
+    },
+  ]),
+  leftBox: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: layout.padding_x1_5,
+  },
+  textBox: {
+    flexDirection: "column",
+    justifyContent: "space-between",
+    height: 40,
+  },
+  rightBox: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: layout.padding_x2_5,
+  },
+  albumBox: {
+    marginTop: layout.padding_x2_5,
+    flexDirection: "row",
+    alignItems: "flex-end",
+    justifyContent: "space-between",
+    zIndex: 999,
+  },
+  infoBox: {
+    flexDirection: "row",
+    alignItems: "flex-end",
+    gap: layout.padding_x4,
+  },
+  albumImg: {
+    width: 216,
+    height: 216,
+  },
+  artistText: StyleSheet.flatten([
+    fontSemibold20,
+    {
+      color: primaryColor,
+      marginTop: layout.padding_x0_5,
+    },
+  ]),
+  infoText: StyleSheet.flatten([
+    fontSemibold13,
+    {
+      marginTop: layout.padding_x1,
+      marginBottom: layout.padding_x0_5,
+    },
+  ]),
+  tagText: StyleSheet.flatten([
+    fontSemibold13,
+    {
+      color: primaryColor,
+    },
+  ]),
+  verticalBox: {
+    flexDirection: "column",
+    alignItems: "flex-start",
+    width: 420,
+  },
+  oneLine: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: layout.padding_x2_5,
+    gap: layout.padding_x2,
+  },
+  playButton: {
+    padding: layout.padding_x1,
+    paddingRight: layout.padding_x1_5,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: layout.padding_x1,
+    borderRadius: layout.padding_x1,
+    backgroundColor: primaryColor,
+  },
+  tipButton: {
+    padding: layout.padding_x1,
+    paddingRight: layout.padding_x1_5,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: layout.padding_x1,
+    borderRadius: layout.padding_x1,
+    backgroundColor: "#2B2B33",
+  },
+  playButtonText: StyleSheet.flatten([
+    fontSemibold14,
+    {
+      color: "#2B0945",
+    },
+  ]),
+  tipButtonText: StyleSheet.flatten([
+    fontSemibold14,
+    {
+      color: primaryColor,
+    },
+  ]),
+  actionBox: {
+    flexDirection: "row",
+    gap: layout.padding_x2,
+  },
+  addButton: {
+    padding: layout.padding_x1,
+    paddingRight: layout.padding_x1_5,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: layout.padding_x1,
+    borderRadius: layout.padding_x1,
+    backgroundColor: "#2B2B33",
+  },
+  addButtonText: StyleSheet.flatten([
+    fontSemibold14,
+    {
+      color: primaryColor,
+    },
+  ]),
+  moreButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#2B2B33",
+  },
+});

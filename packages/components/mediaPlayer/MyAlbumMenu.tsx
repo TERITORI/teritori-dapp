@@ -11,7 +11,7 @@ import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { neutralA3, neutral33, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold13 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { AlbumInfo } from "../../utils/types/music";
+import { AlbumInfo } from "../../utils/types/mediaPlayer";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 
@@ -34,7 +34,7 @@ export const MyAlbumMenu: React.FC<MyAlbumMenuProps> = ({ album }) => {
       walletAddress: wallet.address,
     });
     try {
-      const res = await client.deleteMusicAlbum({ identifier: album.id });
+      const res = await client.deleteMusicAlbum({ identifier: album.id || "" });
       if (res.transactionHash) {
         setToastSuccess({
           title: "Delete album",

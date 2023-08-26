@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet, Pressable } from "react-native";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
 
 import HomeSelected from "../../../assets/music-player/home-selected.svg";
 import HomeUnselected from "../../../assets/music-player/home-unselected.svg";
@@ -10,6 +10,8 @@ import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText/BrandText.electron";
 import { SVG } from "../SVG";
+
+// TODO: Use Tabs + add optional SVG icon in Tabs
 
 interface MusicPlayerTabProps {
   tab?: string;
@@ -67,7 +69,7 @@ export const MusicPlayerTab: React.FC<MusicPlayerTabProps> = ({
 
   return (
     <View style={styles.tabContainer}>
-      <Pressable
+      <TouchableOpacity
         style={
           tab === tabData[0] ? styles.selectedUnitBox : styles.unselectedUnitBox
         }
@@ -85,8 +87,8 @@ export const MusicPlayerTab: React.FC<MusicPlayerTabProps> = ({
         >
           Home
         </BrandText>
-      </Pressable>
-      <Pressable
+      </TouchableOpacity>
+      <TouchableOpacity
         style={
           tab === tabData[1] ? styles.selectedUnitBox : styles.unselectedUnitBox
         }
@@ -104,7 +106,7 @@ export const MusicPlayerTab: React.FC<MusicPlayerTabProps> = ({
         >
           My Library
         </BrandText>
-      </Pressable>
+      </TouchableOpacity>
       <View style={styles.divideLine} />
     </View>
   );

@@ -133,7 +133,7 @@ const navConfig: {
     DAppStore: "dapp-store",
     // === DApps
     ToriPunks: "dapp/tori-punks/:route?",
-    // ==== MusicPlayer
+    // ==== mediaPlayer
     MusicPlayer: "music-player/home",
     MusicPlayerAlbum: "music-player/album/:id",
   },

@@ -1,7 +1,6 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 
-import FooterPlayers from "../../components/footers/FooterPlayers";
 import { ComingSoonScreen } from "../../screens/ComingSoon/ComingSoon";
 import { CoreDAOScreen } from "../../screens/CoreDAO/CoreDAOScreen";
 import { DAppStoreScreen } from "../../screens/DAppStore/DAppStoreScreen";
@@ -307,7 +306,6 @@ export const Navigator: React.FC = () => {
           options={{ header: () => null, title: screenTitle("Album Name") }}
         />
       </Stack.Navigator>
-      <FooterPlayers />
     </>
   );
 };

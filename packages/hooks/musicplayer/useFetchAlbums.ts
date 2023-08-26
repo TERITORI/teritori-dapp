@@ -5,7 +5,7 @@ import {
   GetAllAlbumListRequest,
 } from "../../api/musicplayer/v1/musicplayer";
 import { mustGetMusicplayerClient } from "../../utils/backend";
-import { AlbumInfo, AlbumMetadataInfo } from "../../utils/types/music";
+import { AlbumInfo, AlbumMetadataInfo } from "../../utils/types/mediaPlayer";
 import { useSelectedNetworkId } from "../useSelectedNetwork";
 export type AlbumList = {
   list: AlbumInfo[];
@@ -32,7 +32,7 @@ export const useFetchAlbums = (req: GetAllAlbumListRequest) => {
             postsRequest
           );
           const albumInfoList: AlbumInfo[] = [];
-          musicAlbumList.map((albumInfo, index) => {
+          musicAlbumList.map((albumInfo) => {
             const metadata = JSON.parse(
               albumInfo.metadata
             ) as AlbumMetadataInfo;
@@ -42,14 +42,22 @@ export const useFetchAlbums = (req: GetAllAlbumListRequest) => {
               description: metadata.description,
               createdBy: albumInfo.createdBy,
               image: metadata.image,
-              audios: metadata.audios,
+              audios: metadata.audios.map((a) => {
+                return {
+                  duration: a.duration * 1000, //ms
+                  imageUrl: metadata.image,
+                  name: a.name,
+                  fileUrl: a.ipfs,
+                  createdBy: albumInfo.createdBy,
+                };
+              }),
             } as AlbumInfo);
           });
 
           const totalCount = 1000; // test
           return { list: albumInfoList, totalCount } as AlbumList;
         } catch (err) {
-          console.error("initData err", err);
+          console.error("Error fetching albums", err);
           return { list: [], totalCount: 0 } as AlbumList;
         }
       },
@@ -72,7 +80,7 @@ const getMusicAlbums = async (
     // ---- We sort by creation date
     return response.musicAlbums;
   } catch (err) {
-    console.log("initData err", err);
+    console.error("Error fetching all albums list", err);
     return [] as MusicAlbumInfo[];
   }
 };

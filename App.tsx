@@ -19,7 +19,7 @@ import { BrandText } from "./packages/components/BrandText";
 import { Navigator } from "./packages/components/navigation/Navigator";
 import { DropdownsContextProvider } from "./packages/context/DropdownsProvider";
 import { FeedbacksContextProvider } from "./packages/context/FeedbacksProvider";
-import { MusicplayerContextProvider } from "./packages/context/MusicplayerProvider";
+import { MediaPlayerContextProvider } from "./packages/context/MediaPlayerProvider";
 import { SearchBarContextProvider } from "./packages/context/SearchBarProvider";
 import { TNSMetaDataListContextProvider } from "./packages/context/TNSMetaDataListProvider";
 import { TNSContextProvider } from "./packages/context/TNSProvider";
@@ -71,10 +71,10 @@ export default function App() {
                             <TNSContextProvider>
                               <TNSMetaDataListContextProvider>
                                 <MenuProvider>
-                                  <MusicplayerContextProvider>
+                                  <MediaPlayerContextProvider>
                                     <StatusBar style="inverted" />
                                     <Navigator />
-                                  </MusicplayerContextProvider>
+                                  </MediaPlayerContextProvider>
                                 </MenuProvider>
                               </TNSMetaDataListContextProvider>
                             </TNSContextProvider>

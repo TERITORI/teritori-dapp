@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-import { Pressable, ViewStyle } from "react-native";
+import { ViewStyle } from "react-native";
+
+import { CustomPressable } from "../buttons/CustomPressable";
 
 interface HoverViewProps {
   normalStyle: ViewStyle;
@@ -16,16 +18,13 @@ export const HoverView: React.FC<HoverViewProps> = ({
   const [hoverState, setHoverState] = useState<boolean>(false);
 
   return (
-    <Pressable
-      // is required to ignore the following to fix a problem with the linter
-      // and allow to use onClick in this special case
-      // @ts-ignore
-      onMouseEnter={() => setHoverState(true)}
-      onMouseLeave={() => setHoverState(false)}
+    <CustomPressable
+      onHoverIn={() => setHoverState(true)}
+      onHoverOut={() => setHoverState(false)}
       style={hoverState ? hoverStyle : normalStyle}
       onPress={onPress}
     >
       {children}
-    </Pressable>
+    </CustomPressable>
   );
 };

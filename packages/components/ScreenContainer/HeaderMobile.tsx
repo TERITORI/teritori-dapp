@@ -13,6 +13,7 @@ import { NetworkSelectorMobile } from "../NetworkSelector/NetworkSelectorMobile"
 import { SVG } from "../SVG";
 import { SearchButtonMobile } from "../Search/SearchButtonMobile";
 import { ConnectWalletButtonMobile } from "../TopMenu/ConnectWalletButtonMobile";
+import { TogglePlayerButton } from "../mediaPlayer/TogglePlayerButton";
 import { BackButton } from "../navigation/components/BackButton";
 import { CartIconButtonBadge } from "../navigation/components/CartIconButtonBadge";
 import { TopLogoMobile } from "../navigation/components/TopLogoMobile";
@@ -36,8 +37,14 @@ export const HeaderMobile: FC<{
     <View style={styles.container}>
       <TopLogoMobile />
       <View style={styles.rightContainer}>
+        {onBackPress && (
+          <>
+            <SpacerRow size={1} />
+            <BackButton onPress={onBackPress} />
+          </>
+        )}
         <SpacerRow size={1} />
-        {onBackPress && <BackButton onPress={onBackPress} />}
+        <TogglePlayerButton />
         <SpacerRow size={1} />
         <SearchButtonMobile />
 

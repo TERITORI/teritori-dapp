@@ -2,11 +2,7 @@ import React from "react";
 import { View, StyleSheet } from "react-native";
 
 import { HoverView } from "./HoverView";
-// import Code from "../../../assets/music-player/code.svg";
-// import Enter from "../../../assets/music-player/enter.svg";
-// import Flag from "../../../assets/music-player/flag.svg";
 import Link from "../../../assets/music-player/link.svg";
-// import Share from "../../../assets/music-player/share.svg";
 import { neutralA3, neutral33, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold13 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
@@ -16,79 +12,15 @@ import { SVG } from "../SVG";
 interface DetailAlbumMenuProps {
   id: string;
 }
-
+const shareMenuWidth = 188;
+const lineHeight = 18;
+const buttonHeight = 36;
 export const DetailAlbumMenu: React.FC<DetailAlbumMenuProps> = ({ id }) => {
-  const shareMenuWidth = 188;
-  const lineHeight = 18;
-  const buttonHeight = 36;
-
-  // const [openShareMenu, setOpenShareMenu] = useState<boolean>(false);
   const handleCopyLinkTrack = () => {
     window.navigator.clipboard.writeText(
       `${window.location.origin}/music-player/album/${id}`
     );
   };
-
-  const styles = StyleSheet.create({
-    menuContainer: {
-      borderRadius: layout.padding_x1_5,
-      position: "absolute",
-      right: 0,
-      bottom: buttonHeight + layout.padding_x0_5,
-      backgroundColor: "rgba(41, 41, 41, 1)",
-      padding: layout.padding_x1_5,
-      flexDirection: "column",
-      gap: layout.padding_x0_75,
-      zIndex: 999,
-    },
-    unitBoxNormal: {
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
-      padding: layout.padding_x0_75,
-      borderRadius: layout.padding_x0_75,
-    },
-    unitBoxHovered: {
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
-      padding: layout.padding_x0_75,
-      backgroundColor: neutral33,
-      borderRadius: layout.padding_x0_75,
-    },
-    oneLine: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: layout.padding_x1,
-    },
-    text: StyleSheet.flatten([
-      fontSemibold13,
-      {
-        color: neutralA3,
-      },
-    ]),
-    divideLine: {
-      height: 1,
-      opacity: 0.12,
-      backgroundColor: secondaryColor,
-    },
-    shareMenuContainer: {
-      borderRadius: layout.padding_x1_5,
-      position: "absolute",
-      left: -(layout.padding_x1_5 + shareMenuWidth),
-      bottom: -(
-        layout.padding_x1_5 +
-        lineHeight +
-        layout.padding_x1_5 +
-        1 * layout.padding_x0_75
-      ),
-      backgroundColor: "rgba(41, 41, 41, 1)",
-      padding: layout.padding_x1_5,
-      flexDirection: "column",
-      gap: layout.padding_x0_75,
-      width: shareMenuWidth,
-    },
-  });
 
   return (
     <View style={styles.menuContainer}>
@@ -180,3 +112,64 @@ export const DetailAlbumMenu: React.FC<DetailAlbumMenuProps> = ({ id }) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  menuContainer: {
+    borderRadius: layout.padding_x1_5,
+    position: "absolute",
+    right: 0,
+    bottom: buttonHeight + layout.padding_x0_5,
+    backgroundColor: "rgba(41, 41, 41, 1)",
+    padding: layout.padding_x1_5,
+    flexDirection: "column",
+    gap: layout.padding_x0_75,
+    zIndex: 999,
+  },
+  unitBoxNormal: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: layout.padding_x0_75,
+    borderRadius: layout.padding_x0_75,
+  },
+  unitBoxHovered: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: layout.padding_x0_75,
+    backgroundColor: neutral33,
+    borderRadius: layout.padding_x0_75,
+  },
+  oneLine: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: layout.padding_x1,
+  },
+  text: StyleSheet.flatten([
+    fontSemibold13,
+    {
+      color: neutralA3,
+    },
+  ]),
+  divideLine: {
+    height: 1,
+    opacity: 0.12,
+    backgroundColor: secondaryColor,
+  },
+  shareMenuContainer: {
+    borderRadius: layout.padding_x1_5,
+    position: "absolute",
+    left: -(layout.padding_x1_5 + shareMenuWidth),
+    bottom: -(
+      layout.padding_x1_5 +
+      lineHeight +
+      layout.padding_x1_5 +
+      1 * layout.padding_x0_75
+    ),
+    backgroundColor: "rgba(41, 41, 41, 1)",
+    padding: layout.padding_x1_5,
+    flexDirection: "column",
+    gap: layout.padding_x0_75,
+    width: shareMenuWidth,
+  },
+});

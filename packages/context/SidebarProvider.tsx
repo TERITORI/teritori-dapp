@@ -71,11 +71,6 @@ export const useSidebar = () => {
 
     dynamicAppsSelection["dappstore"] = SIDEBAR_LIST["DAppsStore"];
 
-    /* selectedApps comes from backend
-          to test MusicPlayer menu in sidebar, i appended music item in dynamicAppsSelection.
-    */
-    dynamicAppsSelection["musicplayer"] = SIDEBAR_LIST["musicplayer"];
-
     return dynamicAppsSelection;
   }, [availableApps, selectedApps]);
 

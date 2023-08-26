@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import { GetAlbumRequest } from "../../api/musicplayer/v1/musicplayer";
 import { mustGetMusicplayerClient } from "../../utils/backend";
-import { AlbumMetadataInfo, AlbumInfo } from "../../utils/types/music";
+import { AlbumMetadataInfo, AlbumInfo } from "../../utils/types/mediaPlayer";
 import { useSelectedNetworkId } from "../useSelectedNetwork";
 
 export const useFetchAlbum = (req: GetAlbumRequest) => {
@@ -23,7 +23,15 @@ export const useFetchAlbum = (req: GetAlbumRequest) => {
             image: metadata.image,
             createdBy: musicAlbum.createdBy,
             name: metadata.title,
-            audios: metadata.audios,
+            audios: metadata.audios.map((a) => {
+              return {
+                duration: a.duration * 1000, //ms,
+                imageUrl: metadata.image,
+                name: a.name,
+                fileUrl: a.ipfs,
+                createdBy: musicAlbum.createdBy,
+              };
+            }),
           };
           return albumInfo;
         } else {

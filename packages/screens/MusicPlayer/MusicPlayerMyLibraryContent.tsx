@@ -6,12 +6,10 @@ import Animated, {
 } from "react-native-reanimated";
 
 import Logo from "../../../assets/logos/logo.svg";
-// import Album from "../../../assets/music-player/album.png";
 import { BrandText } from "../../components/BrandText";
-import { MusicPlayerCard } from "../../components/MusicPlayer/MusicPlayerCard";
-// import { UploadAlbumModal } from "../../components/MusicPlayer/UploadAlbumModal";
-import { UploadAlbumModal } from "../../components/MusicPlayer/UploadAlbumModal";
 import { SVG } from "../../components/SVG";
+import { MusicPlayerCard } from "../../components/mediaPlayer/MusicPlayerCard";
+import { UploadAlbumModal } from "../../components/mediaPlayer/UploadAlbumModal";
 import {
   combineFetchAlbumPages as combineFetchAlbumPagesOther,
   useOtherFetchAlbum,
@@ -34,8 +32,6 @@ import { layout } from "../../utils/style/layout";
 export const MusicPlayerMyLibraryContent: React.FC<{ idList: string[] }> = ({
   idList,
 }) => {
-  const unitWidth = 240;
-
   const isLoadingValue = useSharedValue(false);
   const isGoingUp = useSharedValue(false);
 
@@ -129,68 +125,6 @@ export const MusicPlayerMyLibraryContent: React.FC<{ idList: string[] }> = ({
     }
   };
 
-  const styles = StyleSheet.create({
-    container: {
-      marginTop: layout.padding_x3,
-      width: "100%",
-    },
-    oneLine: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-    },
-    contentGroup: {
-      flexDirection: "row",
-      flexWrap: "wrap",
-      justifyContent: "center",
-      marginTop: layout.padding_x3,
-      gap: layout.padding_x2_5,
-      marginBottom: 40,
-    },
-    trackItem: {
-      width: unitWidth,
-      flexDirection: "row",
-      alignItems: "center",
-      gap: layout.padding_x1_5,
-    },
-    itemImg: {
-      width: 40,
-      height: 40,
-      borderRadius: layout.padding_x0_5,
-    },
-    itemText: StyleSheet.flatten([
-      fontMedium14,
-      {
-        color: neutral77,
-        marginTop: layout.padding_x0_5,
-      },
-    ]),
-    buttonGroup: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: layout.padding_x2,
-    },
-    buttonContainer: {
-      flexDirection: "row",
-      alignItems: "center",
-      paddingLeft: layout.padding_x1,
-      paddingRight: layout.padding_x1_5,
-      paddingVertical: layout.padding_x1,
-      backgroundColor: "#2B2B33",
-      borderRadius: layout.padding_x4,
-      gap: layout.padding_x1_5,
-    },
-    buttonText: StyleSheet.flatten([
-      fontSemibold14,
-      {
-        color: primaryColor,
-      },
-    ]),
-    albumGrid: {
-      margin: layout.padding_x3,
-    },
-  });
-
   return (
     <View style={styles.container}>
       <View style={styles.oneLine}>
@@ -224,7 +158,7 @@ export const MusicPlayerMyLibraryContent: React.FC<{ idList: string[] }> = ({
           numColumns={4}
           renderItem={({ item: albumInfo }) => (
             <View style={styles.albumGrid}>
-              <MusicPlayerCard item={albumInfo} hasLibrary />
+              <MusicPlayerCard album={albumInfo} hasLibrary />
             </View>
           )}
           onScroll={scrollHandler}
@@ -243,7 +177,7 @@ export const MusicPlayerMyLibraryContent: React.FC<{ idList: string[] }> = ({
           numColumns={4}
           renderItem={({ item: albumInfo }) => (
             <View style={styles.albumGrid}>
-              <MusicPlayerCard item={albumInfo} hasLibrary />
+              <MusicPlayerCard album={albumInfo} hasLibrary />
             </View>
           )}
           onScroll={scrollHandlerOther}
@@ -258,3 +192,65 @@ export const MusicPlayerMyLibraryContent: React.FC<{ idList: string[] }> = ({
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    marginTop: layout.padding_x3,
+    width: "100%",
+  },
+  oneLine: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  contentGroup: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    marginTop: layout.padding_x3,
+    gap: layout.padding_x2_5,
+    marginBottom: 40,
+  },
+  trackItem: {
+    width: 240,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: layout.padding_x1_5,
+  },
+  itemImg: {
+    width: 40,
+    height: 40,
+    borderRadius: layout.padding_x0_5,
+  },
+  itemText: StyleSheet.flatten([
+    fontMedium14,
+    {
+      color: neutral77,
+      marginTop: layout.padding_x0_5,
+    },
+  ]),
+  buttonGroup: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: layout.padding_x2,
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingLeft: layout.padding_x1,
+    paddingRight: layout.padding_x1_5,
+    paddingVertical: layout.padding_x1,
+    backgroundColor: "#2B2B33",
+    borderRadius: layout.padding_x4,
+    gap: layout.padding_x1_5,
+  },
+  buttonText: StyleSheet.flatten([
+    fontSemibold14,
+    {
+      color: primaryColor,
+    },
+  ]),
+  albumGrid: {
+    margin: layout.padding_x3,
+  },
+});

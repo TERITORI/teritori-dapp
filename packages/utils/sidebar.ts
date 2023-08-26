@@ -130,9 +130,9 @@ export const SIDEBAR_LIST: SidebarRecordType = {
     route: "DAppStore",
     icon: dappStoreSVG,
   },
-  musicplayer: {
-    title: "Music",
-    id: "Music",
+  musicPlayer: {
+    title: "Music Player",
+    id: "musicPlayer",
     route: "MusicPlayer",
     icon: musicSVG,
   },

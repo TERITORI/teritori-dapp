@@ -3,8 +3,8 @@ import { View } from "react-native";
 
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { mustGetMusicplayerClient } from "../../utils/backend";
-import { AlbumInfo, AlbumMetadataInfo } from "../../utils/types/music";
-import { MusicPlayerCard } from "../MusicPlayer/MusicPlayerCard";
+import { AlbumInfo, AlbumMetadataInfo } from "../../utils/types/mediaPlayer";
+import { MusicPlayerCard } from "../mediaPlayer/MusicPlayerCard";
 
 export const UPPAlbums: React.FC<{ userId: string }> = ({ userId }) => {
   const selectedNetworkId = useSelectedNetworkId();
@@ -37,7 +37,7 @@ export const UPPAlbums: React.FC<{ userId: string }> = ({ userId }) => {
   return (
     <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
       {albumList.map((item: AlbumInfo, index) => {
-        return <MusicPlayerCard item={item} hasLibrary={false} key={index} />;
+        return <MusicPlayerCard album={item} hasLibrary={false} key={index} />;
       })}
     </View>
   );

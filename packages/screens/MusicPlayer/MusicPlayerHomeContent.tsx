@@ -8,20 +8,16 @@ import Animated, {
 import Logo from "../../../assets/logos/logo.svg";
 import { GetAllAlbumListRequest } from "../../api/musicplayer/v1/musicplayer";
 import { BrandText } from "../../components/BrandText";
-import { MusicPlayerCard } from "../../components/MusicPlayer/MusicPlayerCard";
-import { UploadAlbumModal } from "../../components/MusicPlayer/UploadAlbumModal";
 import { SVG } from "../../components/SVG";
+import { MusicPlayerCard } from "../../components/mediaPlayer/MusicPlayerCard";
+import { UploadAlbumModal } from "../../components/mediaPlayer/UploadAlbumModal";
 import {
   combineFetchAlbumPages,
   useFetchAlbums,
 } from "../../hooks/musicplayer/useFetchAlbums";
-// import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-// import { mustGetMusicplayerClient } from "../../utils/backend";
-// import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { primaryColor } from "../../utils/style/colors";
 import { fontSemibold14, fontSemibold20 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-// import { AlbumInfo, AlbumMetadataInfo } from "../../utils/types/music";
 interface MusicPlayerProps {
   req: GetAllAlbumListRequest;
   idList: string[];
@@ -69,50 +65,6 @@ export const MusicPlayerHomeContent: React.FC<MusicPlayerProps> = ({
     }
   };
 
-  const styles = StyleSheet.create({
-    container: {
-      marginTop: layout.padding_x3,
-      width: "100%",
-    },
-    oneLine: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-    },
-    contentGroup: {
-      flexDirection: "row",
-      justifyContent: "center",
-      flexWrap: "wrap",
-      marginTop: layout.padding_x3,
-      gap: layout.padding_x2_5,
-      marginBottom: 40,
-    },
-    buttonGroup: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: layout.padding_x2,
-    },
-    buttonContainer: {
-      flexDirection: "row",
-      alignItems: "center",
-      paddingLeft: layout.padding_x1,
-      paddingRight: layout.padding_x1_5,
-      paddingVertical: layout.padding_x1,
-      backgroundColor: "#2B2B33",
-      borderRadius: layout.padding_x4,
-      gap: layout.padding_x1_5,
-    },
-    buttonText: StyleSheet.flatten([
-      fontSemibold14,
-      {
-        color: primaryColor,
-      },
-    ]),
-    albumGrid: {
-      margin: layout.padding_x3,
-    },
-  });
-
   return (
     <View style={styles.container}>
       <View style={styles.oneLine}>
@@ -147,7 +99,7 @@ export const MusicPlayerHomeContent: React.FC<MusicPlayerProps> = ({
           renderItem={({ item: albumInfo }) => (
             <View style={styles.albumGrid}>
               <MusicPlayerCard
-                item={albumInfo}
+                album={albumInfo}
                 hasLibrary={
                   idList.findIndex((item) => item === albumInfo.id) !== -1
                 }
@@ -166,3 +118,47 @@ export const MusicPlayerHomeContent: React.FC<MusicPlayerProps> = ({
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    marginTop: layout.padding_x3,
+    width: "100%",
+  },
+  oneLine: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  contentGroup: {
+    flexDirection: "row",
+    justifyContent: "center",
+    flexWrap: "wrap",
+    marginTop: layout.padding_x3,
+    gap: layout.padding_x2_5,
+    marginBottom: 40,
+  },
+  buttonGroup: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: layout.padding_x2,
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingLeft: layout.padding_x1,
+    paddingRight: layout.padding_x1_5,
+    paddingVertical: layout.padding_x1,
+    backgroundColor: "#2B2B33",
+    borderRadius: layout.padding_x4,
+    gap: layout.padding_x1_5,
+  },
+  buttonText: StyleSheet.flatten([
+    fontSemibold14,
+    {
+      color: primaryColor,
+    },
+  ]),
+  albumGrid: {
+    margin: layout.padding_x3,
+  },
+});

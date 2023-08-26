@@ -5,7 +5,7 @@ import {
   GetOtherAlbumListRequest,
 } from "../../api/musicplayer/v1/musicplayer";
 import { mustGetMusicplayerClient } from "../../utils/backend";
-import { AlbumInfo, AlbumMetadataInfo } from "../../utils/types/music";
+import { AlbumInfo, AlbumMetadataInfo } from "../../utils/types/mediaPlayer";
 import { useSelectedNetworkId } from "../useSelectedNetwork";
 export type AlbumList = {
   list: AlbumInfo[];
@@ -32,7 +32,7 @@ export const useOtherFetchAlbum = (req: GetOtherAlbumListRequest) => {
             postsRequest
           );
           const albumInfoList: AlbumInfo[] = [];
-          musicAlbumList.map((albumInfo, index) => {
+          musicAlbumList.map((albumInfo) => {
             const metadata = JSON.parse(
               albumInfo.metadata
             ) as AlbumMetadataInfo;
@@ -42,7 +42,15 @@ export const useOtherFetchAlbum = (req: GetOtherAlbumListRequest) => {
               description: metadata.description,
               createdBy: albumInfo.createdBy,
               image: metadata.image,
-              audios: metadata.audios,
+              audios: metadata.audios.map((a) => {
+                return {
+                  duration: a.duration * 1000, //ms,
+                  imageUrl: metadata.image,
+                  name: a.name,
+                  fileUrl: a.ipfs,
+                  createdBy: albumInfo.createdBy,
+                };
+              }),
             } as AlbumInfo);
           });
 
