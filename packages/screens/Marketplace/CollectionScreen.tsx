@@ -96,7 +96,7 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
           style={{
             position: "absolute",
             right: -10,
-            marginTop: 36,
+            marginTop: layout.padding_x4,
             flexDirection: "column",
             width: 245,
             marginBottom: layout.padding_x2_5,

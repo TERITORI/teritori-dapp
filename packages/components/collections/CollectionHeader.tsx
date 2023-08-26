@@ -103,7 +103,7 @@ export const CollectionHeader: React.FC<{
           flexDirection: isMobile ? "column" : "row",
           alignItems: "center",
           width: "100%",
-          marginBottom: layout.padding_x2_5,
+          marginBottom: layout.padding_x4,
           borderRadius: layout.padding_x2,
           borderColor: neutral33,
           borderWidth: 1,
@@ -272,12 +272,15 @@ export const CollectionHeader: React.FC<{
         style={{
           flexDirection: "row",
           justifyContent: "space-between",
-          marginBottom: layout.padding_x4,
+          marginBottom: layout.padding_x2_5,
           flex: 10,
         }}
       >
         {selectedTab !== "activity" && (
-          <FilterButton mainContainerStyle={{ backgroundColor: neutral33 }} />
+          <FilterButton
+            style={{ marginRight: 16 }}
+            mainContainerStyle={{ backgroundColor: neutral33 }}
+          />
         )}
         <Tabs
           items={collectionScreenTabItems}
@@ -287,15 +290,15 @@ export const CollectionHeader: React.FC<{
             flex: 8,
             height: 48,
             paddingLeft: layout.padding_x2,
-            marginHorizontal: 16,
             borderRadius: 8,
             backgroundColor: codGrayColor,
           }}
           noUnderline
         />
 
-        {!isMobile && (
+        {!isMobile && selectedTab !== "activity" && (
           <SortButton
+            style={{ marginLeft: 16 }}
             mainContainerStyle={{ backgroundColor: neutral33 }}
             sortDirection={sortDirection}
             onChangeSortDirection={onChangeSortDirection}
