@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, FC } from "react";
 import { View, StyleSheet, Image, TouchableOpacity } from "react-native";
 
 import Add from "../../../assets/music-player/add.svg";
@@ -16,6 +16,7 @@ import { CustomPressable } from "../../components/buttons/CustomPressable";
 import { DetailAlbumMenu } from "../../components/mediaPlayer/DetailAlbumMenu";
 import { MusicPlayerTab } from "../../components/mediaPlayer/MusicPlayerTab";
 import { TipModal } from "../../components/socialFeed/SocialActions/TipModal";
+import { SpacerRow } from "../../components/spacer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useMediaPlayer } from "../../context/MediaPlayerProvider";
 import { useFetchAlbum } from "../../hooks/musicplayer/useFetchAlbum";
@@ -24,6 +25,7 @@ import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getUserId, parseUserId } from "../../networks";
+import { getAudioDuration } from "../../utils/audio";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { neutral77, neutral17, primaryColor } from "../../utils/style/colors";
@@ -42,11 +44,7 @@ export const MusicPlayerAlbumScreen: ScreenFC<"MusicPlayerAlbum"> = ({
     params: { id },
   },
 }) => {
-  const {
-    loadAndPlayQueue,
-    media: playedMedia,
-    setAudioIndex,
-  } = useMediaPlayer();
+  const { loadAndPlayQueue } = useMediaPlayer();
   const navigation = useAppNavigation();
   const selectedNetworkId = useSelectedNetworkId();
   const wallet = useSelectedWallet();
@@ -73,16 +71,9 @@ export const MusicPlayerAlbumScreen: ScreenFC<"MusicPlayerAlbum"> = ({
   useEffect(() => {
     if (fetchedAlbumInfo) {
       setAlbumInfo(fetchedAlbumInfo);
-      setAudioIndex(0);
     }
-  }, [fetchedAlbumInfo, setAudioIndex]);
+  }, [fetchedAlbumInfo]);
 
-  const initIndexHoverState = {
-    index: 0,
-    state: false,
-  };
-  const [indexHoverState, setIndexHoverState] =
-    useState<any>(initIndexHoverState);
   const [openDetailAlbumMenu, setOpenDetailAlbumMenu] =
     useState<boolean>(false);
   const handleTip = () => {
@@ -136,13 +127,13 @@ export const MusicPlayerAlbumScreen: ScreenFC<"MusicPlayerAlbum"> = ({
     }
   };
   const onPressPlayAlbum = async () => {
-    if (!fetchedAlbumInfo) return;
-    await loadAndPlayQueue(fetchedAlbumInfo.audios);
+    if (!albumInfo.audios.length) return;
+    await loadAndPlayQueue(albumInfo.audios);
   };
 
   const onPressTrack = async (media: Media) => {
-    if (!fetchedAlbumInfo) return;
-    await loadAndPlayQueue(fetchedAlbumInfo.audios, media);
+    if (!albumInfo.audios.length) return;
+    await loadAndPlayQueue(albumInfo.audios, media);
   };
 
   return (
@@ -267,61 +258,25 @@ export const MusicPlayerAlbumScreen: ScreenFC<"MusicPlayerAlbum"> = ({
         <View style={styles.menuBox}>
           <View style={styles.leftBox}>
             <BrandText style={[styles.menuText, styles.index]}>#</BrandText>
+            <SpacerRow size={2.5} />
             <BrandText style={styles.menuText}>Track</BrandText>
           </View>
           <SVG
             source={Time}
             width={layout.padding_x2}
             height={layout.padding_x2}
-            style={{ marginRight: 44 }}
           />
         </View>
 
         <View style={styles.contentGroup}>
-          {albumInfo.audios.map((media: Media, index: number) => {
-            return (
-              <CustomPressable
-                onPress={() => onPressTrack(media)}
-                onHoverIn={() =>
-                  setIndexHoverState(() => {
-                    return { index: index + 1, state: true };
-                  })
-                }
-                onHoverOut={() =>
-                  setIndexHoverState(() => {
-                    return initIndexHoverState;
-                  })
-                }
-                style={index % 2 === 0 ? styles.unitBoxEven : styles.uniBoxOdd}
-                key={index}
-              >
-                <View style={styles.leftBox}>
-                  <View>
-                    {(indexHoverState.state &&
-                      indexHoverState.index === index + 1) ||
-                    media.fileUrl === playedMedia?.fileUrl ? (
-                      <SVG
-                        source={PlaySecondary}
-                        width={layout.padding_x2_5}
-                        height={layout.padding_x2_5}
-                      />
-                    ) : (
-                      <BrandText style={[styles.menuText, styles.index]}>
-                        {index + 1}
-                      </BrandText>
-                    )}
-                  </View>
-                  <BrandText style={fontSemibold14}>{media.name}</BrandText>
-                </View>
-                <View style={styles.rightBox}>
-                  <BrandText style={[fontSemibold14]}>
-                    {/*TODO: Make this format => 00 h 00 m 00 s*/}
-                    {prettyTime(media.duration || 0)}
-                  </BrandText>
-                </View>
-              </CustomPressable>
-            );
-          })}
+          {albumInfo.audios.map((media: Media, index: number) => (
+            <Track
+              key={index}
+              trackNumber={index + 1}
+              mediaToPlay={media}
+              onPressTrack={onPressTrack}
+            />
+          ))}
         </View>
       </View>
       <TipModal
@@ -334,18 +289,43 @@ export const MusicPlayerAlbumScreen: ScreenFC<"MusicPlayerAlbum"> = ({
   );
 };
 
-// time in ms
-const prettyTime = (time: number) => {
-  const seconds = time / 1000;
-  const minutes = Math.floor(seconds / 60);
-  const extraSeconds = seconds % 60;
-  const minutesStr =
-    minutes < 10 ? "0" + Math.floor(minutes).toString() : minutes.toString();
-  const extraSecondsStr =
-    extraSeconds < 10
-      ? "0" + Math.floor(extraSeconds).toString()
-      : Math.floor(extraSeconds).toString();
-  return minutesStr + " m " + extraSecondsStr + " s";
+const Track: FC<{
+  onPressTrack: (media: Media) => void;
+  mediaToPlay: Media;
+  trackNumber: number;
+}> = ({ onPressTrack, mediaToPlay, trackNumber }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const { media: currentMedia } = useMediaPlayer();
+
+  return (
+    <CustomPressable
+      onPress={() => onPressTrack(mediaToPlay)}
+      onHoverIn={() => setIsHovered(true)}
+      onHoverOut={() => setIsHovered(false)}
+      style={[styles.track, isHovered && { opacity: 0.5 }]}
+    >
+      <View style={styles.leftBox}>
+        <BrandText style={[styles.menuText, styles.index]}>
+          {trackNumber}
+        </BrandText>
+
+        {isHovered ||
+        (mediaToPlay.fileUrl === currentMedia?.fileUrl &&
+          currentMedia.albumId === mediaToPlay.albumId) ? (
+          <SVG source={PlaySecondary} width={20} height={20} />
+        ) : (
+          <SpacerRow size={2.5} />
+        )}
+
+        <BrandText style={fontSemibold14}>{mediaToPlay.name}</BrandText>
+      </View>
+      <View style={styles.rightBox}>
+        <BrandText style={[fontSemibold14]}>
+          {getAudioDuration(mediaToPlay.duration || 0)}
+        </BrandText>
+      </View>
+    </CustomPressable>
+  );
 };
 
 const styles = StyleSheet.create({
@@ -368,25 +348,15 @@ const styles = StyleSheet.create({
     gap: layout.padding_x1,
     zIndex: 999,
   },
-  unitBoxEven: {
+  track: {
     width: "100%",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: layout.padding_x3,
     paddingVertical: layout.padding_x0_5,
+    borderRadius: layout.padding_x1,
     backgroundColor: neutral17,
-    borderRadius: layout.padding_x1,
-    height: 48,
-  },
-  uniBoxOdd: {
-    width: "100%",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: layout.padding_x3,
-    paddingVertical: layout.padding_x0_5,
-    borderRadius: layout.padding_x1,
     height: 48,
   },
   menuText: StyleSheet.flatten([

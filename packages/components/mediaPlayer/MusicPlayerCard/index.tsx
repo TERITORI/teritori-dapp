@@ -38,18 +38,13 @@ export const MusicPlayerCard: React.FC<{
   const navigation = useAppNavigation();
   const [openMenu, setOpenMenu] = useState<boolean>(false);
   const userId = getUserId(selectedNetworkId, wallet?.address);
-  const { loadAndPlayQueue, setIsPlay, setAudioIndex, setArtist } =
-    useMediaPlayer();
+  const { loadAndPlayQueue } = useMediaPlayer();
   const username = authorNSInfo?.metadata?.tokenId
     ? authorNSInfo?.metadata?.tokenId
     : tinyAddress(userAddress);
 
   const onPressPlayAlbum = async () => {
     await loadAndPlayQueue(album.audios);
-    const [, userAddress] = parseUserId(album.createdBy);
-    setArtist(tinyAddress(userAddress));
-    setAudioIndex(0);
-    setIsPlay(true);
   };
 
   return (

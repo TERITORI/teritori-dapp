@@ -1,12 +1,12 @@
-import { Audio, AVPlaybackStatus } from "expo-av";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { View, Image, TouchableOpacity } from "react-native";
-import { ActivityIndicator } from "react-native-paper";
 
 import { AudioWaveform } from "./AudioWaveform";
 import pauseSVG from "../../../assets/icons/pause.svg";
 import playSVG from "../../../assets/icons/play.svg";
+import { useMediaPlayer } from "../../context/MediaPlayerProvider";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
+import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { getAudioDuration } from "../../utils/audio";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import {
@@ -18,48 +18,50 @@ import {
 import { fontSemibold13, fontSemibold14 } from "../../utils/style/fonts";
 import { layout, screenContentMaxWidth } from "../../utils/style/layout";
 import { RemoteFileData } from "../../utils/types/files";
+import { Media } from "../../utils/types/mediaPlayer";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
-import { THUMBNAIL_WIDTH } from "../socialFeed/SocialThread/SocialMessageContent";
 
 export const AudioView: React.FC<{
   file: RemoteFileData;
-}> = ({ file }) => {
+  authorId: string;
+  postId: string;
+}> = ({ file, authorId, postId }) => {
   const { width } = useMaxResolution();
-  const [sound, setSound] = useState<Audio.Sound>();
-  const [playbackStatus, setPlaybackStatus] = useState<AVPlaybackStatus>();
+  const userInfo = useNSUserInfo(authorId);
+  const {
+    media,
+    isPlaying,
+    didJustFinish,
+    handlePlayPause,
+    loadAndPlayAudio,
+    lastTimePosition,
+  } = useMediaPlayer();
+  const isInMediaPlayer = useMemo(
+    () => media?.postId === postId,
+    [media?.postId, postId]
+  );
   const duration = useMemo(
     () => getAudioDuration(file.audioMetadata?.duration),
     [file]
   );
 
-  const handlePlayPause = async () => {
-    if (playbackStatus?.isLoaded && playbackStatus?.isPlaying) {
-      await sound?.pauseAsync();
+  const onPressPlayPause = async () => {
+    if (isInMediaPlayer) {
+      await handlePlayPause();
     } else {
-      await sound?.playAsync();
+      const songToPlay: Media = {
+        imageUrl: userInfo.metadata.image || undefined,
+        name: "Song from Social Feed",
+        createdBy: authorId,
+        fileUrl: file.url,
+        duration: file.audioMetadata?.duration,
+        // postId is used to difference audios from Social Feed (News feed  or Article consultation)
+        postId: postId || Math.floor(Math.random() * 200000).toString(),
+      };
+      await loadAndPlayAudio(songToPlay);
     }
   };
-
-  useEffect(() => {
-    return sound
-      ? () => {
-          sound.unloadAsync();
-        }
-      : undefined;
-  }, [sound]);
-
-  useEffect(() => {
-    const loadSound = async () => {
-      const { sound } = await Audio.Sound.createAsync(
-        { uri: ipfsURLToHTTPURL(file.url) },
-        { progressUpdateIntervalMillis: 400 },
-        (status) => setPlaybackStatus(status)
-      );
-      setSound(sound);
-    };
-    loadSound();
-  }, [file.url]);
 
   const hasThumbnail = useMemo(
     () => typeof file?.thumbnailFileData?.url === "string",
@@ -68,17 +70,17 @@ export const AudioView: React.FC<{
 
   const audioWaveWidth = useMemo(() => {
     if (width > screenContentMaxWidth) {
-      return screenContentMaxWidth - 212 - (hasThumbnail ? THUMBNAIL_WIDTH : 0);
+      return screenContentMaxWidth - 540;
     } else {
-      return width - 212 - (hasThumbnail ? THUMBNAIL_WIDTH : 0);
+      return width - 540;
     }
-  }, [width, hasThumbnail]);
+  }, [width]);
 
   const positionPercent = useMemo(
     () =>
-      ((playbackStatus?.isLoaded && playbackStatus?.positionMillis) || 0) /
-      ((playbackStatus?.isLoaded && playbackStatus?.durationMillis) || 1),
-    [playbackStatus]
+      (isInMediaPlayer ? lastTimePosition : 0) /
+      (file.audioMetadata?.duration || 1),
+    [file.audioMetadata?.duration, lastTimePosition, isInMediaPlayer]
   );
 
   if (!file?.url)
@@ -92,14 +94,15 @@ export const AudioView: React.FC<{
       style={{
         flexDirection: "row",
         alignItems: "center",
+        height: 140,
       }}
     >
       <TouchableOpacity
-        onPress={handlePlayPause}
+        onPress={onPressPlayPause}
         activeOpacity={0.9}
         style={{
           backgroundColor:
-            playbackStatus?.isLoaded && playbackStatus?.isPlaying
+            isInMediaPlayer && isPlaying && !didJustFinish
               ? secondaryColor
               : neutral00,
           height: 40,
@@ -109,24 +112,18 @@ export const AudioView: React.FC<{
           justifyContent: "center",
         }}
       >
-        {playbackStatus?.isLoaded && playbackStatus?.isBuffering ? (
-          <ActivityIndicator size={14} color={secondaryColor} />
-        ) : (
-          <SVG
-            source={
-              playbackStatus?.isLoaded && playbackStatus?.isPlaying
-                ? pauseSVG
-                : playSVG
-            }
-            width={24}
-            height={24}
-            color={
-              playbackStatus?.isLoaded && playbackStatus?.isPlaying
-                ? neutral00
-                : secondaryColor
-            }
-          />
-        )}
+        <SVG
+          source={
+            isInMediaPlayer && isPlaying && !didJustFinish ? pauseSVG : playSVG
+          }
+          width={24}
+          height={24}
+          color={
+            isInMediaPlayer && isPlaying && !didJustFinish
+              ? neutral00
+              : secondaryColor
+          }
+        />
       </TouchableOpacity>
 
       <View
@@ -153,11 +150,7 @@ export const AudioView: React.FC<{
               }}
             >
               <BrandText style={[fontSemibold14]}>
-                {getAudioDuration(
-                  (playbackStatus?.isLoaded &&
-                    playbackStatus?.positionMillis) ||
-                    0
-                )}
+                {getAudioDuration(isInMediaPlayer ? lastTimePosition : 0)}
               </BrandText>
               <BrandText style={[fontSemibold14, { color: neutral77 }]}>
                 {duration}
@@ -173,14 +166,7 @@ export const AudioView: React.FC<{
                 waveFormContainerWidth={audioWaveWidth}
                 waveform={file.audioMetadata?.waveform || []}
                 positionPercent={positionPercent}
-                duration={
-                  playbackStatus?.isLoaded
-                    ? playbackStatus?.durationMillis || 0
-                    : 1
-                }
-                currentDuration={
-                  playbackStatus?.isLoaded ? playbackStatus?.positionMillis : 0
-                }
+                duration={file.audioMetadata?.duration || 1}
               />
             </View>
           </View>
@@ -192,8 +178,8 @@ export const AudioView: React.FC<{
               }}
               resizeMode="cover"
               style={{
-                height: THUMBNAIL_WIDTH,
-                width: THUMBNAIL_WIDTH,
+                height: 140,
+                width: 140,
                 marginLeft: layout.padding_x1,
                 borderRadius: 4,
               }}

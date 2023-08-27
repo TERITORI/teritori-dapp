@@ -3,6 +3,7 @@ import { StyleSheet, View } from "react-native";
 import Slider from "react-native-smooth-slider";
 
 import { useMediaPlayer } from "../../context/MediaPlayerProvider";
+import { getAudioDuration } from "../../utils/audio";
 import { neutral55, neutral77, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold12 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
@@ -16,7 +17,7 @@ export const TimerSlider: FC = () => {
       <View style={{ width: 46, alignItems: "flex-end" }}>
         {!!media?.duration && (
           <BrandText style={styles.timeText}>
-            {prettyTime(lastTimePosition)}
+            {getAudioDuration(lastTimePosition)}
           </BrandText>
         )}
       </View>
@@ -37,7 +38,7 @@ export const TimerSlider: FC = () => {
       <View style={{ width: 40 }}>
         {!!media?.duration && (
           <BrandText style={styles.timeText}>
-            {prettyTime(media?.duration)}
+            {getAudioDuration(media?.duration)}
           </BrandText>
         )}
       </View>
@@ -57,17 +58,3 @@ const styles = StyleSheet.create({
     },
   ]),
 });
-
-// time in ms
-const prettyTime = (time: number) => {
-  const seconds = time / 1000;
-  const minutes = Math.floor(seconds / 60);
-  const extraSeconds = seconds % 60;
-  const minutesStr =
-    minutes < 10 ? "0" + Math.floor(minutes).toString() : minutes.toString();
-  const extraSecondsStr =
-    extraSeconds < 10
-      ? "0" + Math.floor(extraSeconds).toString()
-      : Math.floor(extraSeconds).toString();
-  return minutesStr + ":" + extraSecondsStr;
-};

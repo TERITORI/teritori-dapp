@@ -8,12 +8,8 @@ import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { defaultSocialFeedFee } from "../../../utils/fee";
-import { LocalFileData } from "../../../utils/types/files";
-import {
-  AlbumInfo,
-  AlbumMetadataInfo,
-  Media,
-} from "../../../utils/types/mediaPlayer";
+import { RemoteFileData } from "../../../utils/types/files";
+import { AlbumInfo, AlbumMetadataInfo } from "../../../utils/types/mediaPlayer";
 import ModalBase from "../../modals/ModalBase";
 
 interface UploadAlbumModalProps {
@@ -30,19 +26,13 @@ export const UploadAlbumModal: React.FC<UploadAlbumModalProps> = ({
   const selectedNetworkId = useSelectedNetworkId();
   const wallet = useSelectedWallet();
   const [step, setStep] = useState<number>(0);
-  const [uploadFiles, setUploadFiles] = useState<LocalFileData[]>([]);
-  const [albumInfo, setAlbumInfo] = useState<AlbumInfo>({
-    name: "",
-    description: "",
-    image: "",
-    createdBy: "",
-    audios: [],
-  });
-  const uploadAlbum = async () => {
-    if (!albumInfo) return;
-    if (!albumInfo.name) return;
-    if (!albumInfo.description) return;
-    if (uploadFiles.length === 0) return;
+  const [uploadedAudioFilesStep1, setUploadedAudioFilesStep1] = useState<
+    RemoteFileData[]
+  >([]);
+
+  const [isLoading, setIsLoading] = useState(false);
+  const uploadAlbum = async (albumInfo: AlbumInfo) => {
+    setIsLoading(true);
 
     if (!wallet?.connected || !wallet.address) {
       return;
@@ -51,26 +41,20 @@ export const UploadAlbumModal: React.FC<UploadAlbumModalProps> = ({
       networkId: selectedNetworkId,
       walletAddress: wallet.address,
     });
-    const audios: Media[] = uploadFiles.map((uploadFile) => ({
-      name: uploadFile.fileName,
-      fileUrl: uploadFile.url,
-      duration: uploadFile.audioMetadata?.duration,
-      createdBy: albumInfo.createdBy,
-      imageUrl: albumInfo.image,
-    }));
-
     const metadata: AlbumMetadataInfo = {
       title: albumInfo.name,
       description: albumInfo.description,
       image: albumInfo.image,
-      audios: audios.map((a) => {
+      audios: albumInfo.audios.map((a) => {
         return {
-          duration: (a?.duration || 0) * 1000,
+          duration: a?.duration || 0,
           ipfs: a.fileUrl,
           name: a.name,
         };
       }),
     };
+
+    console.log("metadatametadatametadatametadatametadatametadata", metadata);
 
     try {
       const res = await client.createMusicAlbum(
@@ -81,6 +65,8 @@ export const UploadAlbumModal: React.FC<UploadAlbumModalProps> = ({
         defaultSocialFeedFee,
         ""
       );
+
+      console.log("===== res");
 
       if (res.transactionHash) {
         setToastSuccess({
@@ -94,6 +80,7 @@ export const UploadAlbumModal: React.FC<UploadAlbumModalProps> = ({
         message: `Error: ${err}`,
       });
     }
+    setIsLoading(false);
     setStep(0);
     onClose();
   };
@@ -109,14 +96,16 @@ export const UploadAlbumModal: React.FC<UploadAlbumModalProps> = ({
       width={UPLOAD_ALBUM_MODAL_WIDTH}
     >
       {step === 0 && (
-        <Step1Component setStep={setStep} setUploadFiles={setUploadFiles} />
+        <Step1Component
+          setStep={setStep}
+          setUploadedAudioFilesStep1={setUploadedAudioFilesStep1}
+          isLoading={isLoading}
+        />
       )}
       {step === 1 && (
         <Step2Component
-          uploadFiles={uploadFiles}
-          setUploadFiles={setUploadFiles}
-          albumInfo={albumInfo}
-          setAlbumInfo={setAlbumInfo}
+          isLoading={isLoading}
+          uploadedAudioFilesStep1={uploadedAudioFilesStep1}
           uploadAlbum={uploadAlbum}
         />
       )}

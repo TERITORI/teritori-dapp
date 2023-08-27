@@ -1,4 +1,4 @@
-import React, { createRef, Dispatch, SetStateAction, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Image,
   StyleSheet,
@@ -14,12 +14,18 @@ import DefaultAlbumImage from "../../../../assets/music-player/album.png";
 import Img from "../../../../assets/music-player/img.svg";
 import List from "../../../../assets/music-player/list.svg";
 import Remove from "../../../../assets/music-player/remove.svg";
-import { pinataPinFileToIPFS } from "../../../candymachine/pinata-upload";
+import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { getUserId } from "../../../networks";
 import { selectNFTStorageAPI } from "../../../store/slices/settings";
-import { generateIpfsKey, ipfsURLToHTTPURL } from "../../../utils/ipfs";
+import {
+  generateIpfsKey,
+  ipfsURLToHTTPURL,
+  uploadFilesToPinata,
+  uploadFileToIPFS,
+} from "../../../utils/ipfs";
+import { AUDIO_MIME_TYPES, IMAGE_MIME_TYPES } from "../../../utils/mime";
 import {
   neutral17,
   neutral33,
@@ -30,119 +36,105 @@ import {
 } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { LocalFileData } from "../../../utils/types/files";
+import { LocalFileData, RemoteFileData } from "../../../utils/types/files";
 import { AlbumInfo } from "../../../utils/types/mediaPlayer";
 import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
+import { FileUploader } from "../../fileUploader";
 
 export const Step2Component: React.FC<{
-  uploadFiles: LocalFileData[];
-  setUploadFiles: Dispatch<SetStateAction<LocalFileData[]>>;
-  albumInfo: AlbumInfo;
-  setAlbumInfo: Dispatch<SetStateAction<AlbumInfo>>;
-  uploadAlbum: () => void;
-}> = ({
-  uploadFiles,
-  setUploadFiles,
-  albumInfo,
-  setAlbumInfo,
-  uploadAlbum,
-}) => {
+  uploadedAudioFilesStep1: RemoteFileData[];
+  uploadAlbum: (albumInfo: AlbumInfo) => void;
+  isLoading: boolean;
+}> = ({ uploadedAudioFilesStep1, uploadAlbum, isLoading }) => {
   const [isUploading, setIsUploading] = useState(false);
   const selectedNetworkId = useSelectedNetworkId();
   const selectedWallet = useSelectedWallet();
   const userId = getUserId(selectedNetworkId, selectedWallet?.address);
-  const inputImageFileRef = createRef<HTMLInputElement>();
-  const inputMusicFileRef = createRef<HTMLInputElement>();
   const userIPFSKey = useSelector(selectNFTStorageAPI);
+  const [albumInfo, setAlbumInfo] = useState<AlbumInfo>({
+    name: "",
+    description: "",
+    image: "",
+    createdBy: "",
+    audios: [],
+  });
+  const { setToastError } = useFeedbacks();
 
-  const removeSong = (index: number) => {
-    setUploadFiles((data: LocalFileData[]) => {
-      data.splice(index, 1);
-      return [...data];
+  const removeTrack = (index: number) => {
+    const audios = albumInfo.audios.splice(index, 1);
+    setAlbumInfo({ ...albumInfo, audios });
+  };
+
+  const onUploadAlbumImage = async (files: LocalFileData[]) => {
+    setIsUploading(true);
+    console.log("files[0]files[0]files[0]", files[0]);
+    const uploadedFile = await uploadFileToIPFS({
+      userKey: userIPFSKey,
+      file: files[0],
+      networkId: selectedNetworkId,
+      userId,
     });
-  };
-
-  const clickUploadAlbumImage = () => {
-    inputImageFileRef.current?.click();
-  };
-
-  const clickUploadMusicFile = () => {
-    inputMusicFileRef.current?.click();
-  };
-
-  const onInputImageFileChange: React.ChangeEventHandler<
-    HTMLInputElement
-  > = async (e) => {
-    setIsUploading(true);
-    const file = e.target?.files?.[0];
-    if (file) {
-      const local_file_data = {
-        file,
-        fileName: file.name,
-        mimeType: "",
-        size: 0,
-        url: "",
-        fileType: "image",
-      } as LocalFileData;
-      const pinataJWTKey =
-        userIPFSKey || (await generateIpfsKey(selectedNetworkId, userId));
-      if (!pinataJWTKey) {
-        setIsUploading(false);
-        return;
-      }
-      const pinataRes = await pinataPinFileToIPFS({
-        file: local_file_data,
-        pinataJWTKey,
+    console.log("uploadedFileuploadedFileuploadedFile", uploadedFile);
+    if (!uploadedFile?.url) {
+      console.error("upload file err : Fail to pin to IPFS");
+      setToastError({
+        title: "File upload failed",
+        message: "Fail to pin to IPFS, please try to Publish again",
       });
-      setAlbumInfo({ ...albumInfo, image: pinataRes.IpfsHash });
-      setIsUploading(false);
+      return;
     }
+    // For each tracks of this album, the track image will be the album image
+    const audios = albumInfo.audios.map((a) => {
+      return {
+        ...a,
+        imageUrl: uploadedFile.url,
+      };
+    });
+    setAlbumInfo({ ...albumInfo, image: uploadedFile.url, audios });
+    setIsUploading(false);
   };
-  const onInputMusicFileChange: React.ChangeEventHandler<
-    HTMLInputElement
-  > = async (e) => {
+
+  const onUploadAudioFiles = async (files: LocalFileData[]) => {
     setIsUploading(true);
-    const file = e.target?.files![0];
-    const url = URL.createObjectURL(file);
-    const audio = new Audio(url);
     const pinataJWTKey =
       userIPFSKey || (await generateIpfsKey(selectedNetworkId, userId));
-    audio.addEventListener("loadedmetadata", async () => {
-      window.URL.revokeObjectURL(url);
-      if (!pinataJWTKey) {
-        setIsUploading(false);
-        return;
-      }
-      const local_file_data = {
-        file,
-        fileName: file.name,
-        mimeType: "",
-        size: 0,
-        url: "",
-        fileType: "audio",
-      } as LocalFileData;
-
-      const pinataRes = await pinataPinFileToIPFS({
-        file: local_file_data,
-        pinataJWTKey,
+    if (!pinataJWTKey) {
+      console.error("upload file err : No Pinata JWT");
+      setToastError({
+        title: "File upload failed",
+        message: "No Pinata JWT",
       });
-      if (pinataRes.IpfsHash !== "") {
-        setUploadFiles([
-          ...uploadFiles,
-          {
-            file,
-            fileName: file.name,
-            mimeType: file.type,
-            size: file.size,
-            url: pinataRes.IpfsHash,
-            fileType: "audio",
-          },
-        ]);
-      }
-      setIsUploading(false);
+      return;
+    }
+    const uploadedFiles = await uploadFilesToPinata({
+      files,
+      pinataJWTKey,
     });
+    if (!uploadedFiles.find((file) => file.url)) {
+      console.error("upload file err : Fail to pin to IPFS");
+      setToastError({
+        title: "File upload failed",
+        message: "Fail to pin to IPFS, please try to Publish again",
+      });
+      return;
+    }
+    const addedAudios = uploadedFiles.map((remoteFileData) => {
+      return {
+        duration: remoteFileData.audioMetadata?.duration, //ms,
+        imageUrl: albumInfo.image,
+        name: remoteFileData.fileName,
+        fileUrl: remoteFileData.url,
+        createdBy: albumInfo.createdBy,
+        albumId: albumInfo.id,
+      };
+    });
+    setAlbumInfo({
+      ...albumInfo,
+      audios: [...albumInfo.audios, ...addedAudios],
+    });
+    setIsUploading(false);
   };
 
   const handleAlbumNameTextChange = (text: string) => {
@@ -153,23 +145,23 @@ export const Step2Component: React.FC<{
     setAlbumInfo({ ...albumInfo, description: text.trim() });
   };
 
+  // Sync the files got at step 1
+  useEffect(() => {
+    const audios = uploadedAudioFilesStep1.map((remoteFileData) => {
+      return {
+        duration: remoteFileData.audioMetadata?.duration, //ms,
+        imageUrl: albumInfo.image,
+        name: remoteFileData.fileName,
+        fileUrl: remoteFileData.url,
+        createdBy: albumInfo.createdBy,
+        albumId: albumInfo.id,
+      };
+    });
+    setAlbumInfo({ ...albumInfo, audios });
+  }, [uploadedAudioFilesStep1, albumInfo]);
+
   return (
     <>
-      {/*TODO: FileUploader instead of input (Just wrap the buttons with FileUploader)*/}
-      <input
-        type="file"
-        style={{ display: "none" }}
-        accept="image/*"
-        onChange={onInputImageFileChange}
-        ref={inputImageFileRef}
-      />
-      <input
-        type="file"
-        style={{ display: "none" }}
-        accept="audio/mp3"
-        onChange={onInputMusicFileChange}
-        ref={inputMusicFileRef}
-      />
       <View style={styles.inputBox}>
         <View style={styles.imgBox}>
           <Image
@@ -181,17 +173,23 @@ export const Step2Component: React.FC<{
             style={styles.img}
           />
           <View style={styles.uploadImg}>
-            <TouchableOpacity
+            <FileUploader
+              onUpload={onUploadAlbumImage}
               style={styles.uploadButton}
-              onPress={clickUploadAlbumImage}
+              mimeTypes={IMAGE_MIME_TYPES}
+              maxUpload={1}
             >
-              <SVG
-                source={Img}
-                width={layout.padding_x2}
-                height={layout.padding_x2}
-              />
-              <BrandText style={fontSemibold14}>upload image</BrandText>
-            </TouchableOpacity>
+              {({ onPress }) => (
+                <TouchableOpacity style={styles.uploadButton} onPress={onPress}>
+                  <SVG
+                    source={Img}
+                    width={layout.padding_x2}
+                    height={layout.padding_x2}
+                  />
+                  <BrandText style={fontSemibold14}>upload image</BrandText>
+                </TouchableOpacity>
+              )}
+            </FileUploader>
           </View>
         </View>
         <View style={styles.textBox}>
@@ -214,7 +212,8 @@ export const Step2Component: React.FC<{
         </View>
       </View>
       <View style={styles.songGroup}>
-        {uploadFiles.map((item, index) => (
+        {albumInfo.audios.map((audio, index) => (
+          // TODO: Able to grab and replace track
           <View key={index} style={styles.unitBox}>
             <View style={styles.oneLine}>
               <TouchableOpacity>
@@ -224,10 +223,10 @@ export const Step2Component: React.FC<{
                   height={layout.padding_x2}
                 />
               </TouchableOpacity>
-              <BrandText style={fontSemibold14}>{item.fileName}</BrandText>
+              <BrandText style={fontSemibold14}>{audio.name}</BrandText>
             </View>
             <View style={styles.oneLine}>
-              <TouchableOpacity onPress={() => removeSong(index)}>
+              <TouchableOpacity onPress={() => removeTrack(index)}>
                 <SVG
                   source={Remove}
                   width={layout.padding_x3}
@@ -238,17 +237,22 @@ export const Step2Component: React.FC<{
           </View>
         ))}
       </View>
-      <TouchableOpacity
-        style={styles.buttonContainer}
-        onPress={() => clickUploadMusicFile()}
+      <FileUploader
+        onUpload={onUploadAudioFiles}
+        style={styles.uploadButton}
+        mimeTypes={AUDIO_MIME_TYPES}
       >
-        <SVG
-          source={Add}
-          width={layout.padding_x2_5}
-          height={layout.padding_x2_5}
-        />
-        <BrandText style={styles.buttonText}>Add more</BrandText>
-      </TouchableOpacity>
+        {({ onPress }) => (
+          <TouchableOpacity style={styles.buttonContainer} onPress={onPress}>
+            <SVG
+              source={Add}
+              width={layout.padding_x2_5}
+              height={layout.padding_x2_5}
+            />
+            <BrandText style={styles.buttonText}>Add more</BrandText>
+          </TouchableOpacity>
+        )}
+      </FileUploader>
 
       <View style={styles.divideLine} />
 
@@ -259,10 +263,17 @@ export const Step2Component: React.FC<{
         </BrandText>
         <PrimaryButton
           text="Upload"
-          disabled={albumInfo.name === "" || albumInfo.description === ""}
+          disabled={
+            albumInfo.name === "" ||
+            albumInfo.description === "" ||
+            !albumInfo.image ||
+            !albumInfo.audios.length ||
+            isUploading ||
+            isLoading
+          }
           size="SM"
-          onPress={uploadAlbum}
-          isLoading={isUploading}
+          onPress={() => uploadAlbum(albumInfo)}
+          isLoading={isUploading || isLoading}
         />
       </View>
     </>

@@ -7,6 +7,7 @@ import { neutralA3, neutral33, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold13 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
+import { CopyToClipboard, useCopyToClipboard } from "../CopyToClipboard";
 import { SVG } from "../SVG";
 
 interface DetailAlbumMenuProps {
@@ -16,28 +17,32 @@ const shareMenuWidth = 188;
 const lineHeight = 18;
 const buttonHeight = 36;
 export const DetailAlbumMenu: React.FC<DetailAlbumMenuProps> = ({ id }) => {
-  const handleCopyLinkTrack = () => {
-    window.navigator.clipboard.writeText(
-      `${window.location.origin}/music-player/album/${id}`
-    );
-  };
+  const { copyToClipboard } = useCopyToClipboard();
 
   return (
     <View style={styles.menuContainer}>
-      <HoverView
-        normalStyle={styles.unitBoxNormal}
-        hoverStyle={styles.unitBoxHovered}
-        onPress={() => handleCopyLinkTrack()}
+      <CopyToClipboard
+        text={`${window.location.origin}/music-player/album/${id}`}
       >
-        <View style={styles.oneLine}>
-          <SVG
-            source={Link}
-            width={layout.padding_x2}
-            height={layout.padding_x2}
-          />
-          <BrandText style={styles.text}>Copy link to the track</BrandText>
-        </View>
-      </HoverView>
+        <HoverView
+          normalStyle={styles.unitBoxNormal}
+          hoverStyle={styles.unitBoxHovered}
+          onPress={() =>
+            copyToClipboard(
+              `${window.location.origin}/music-player/album/${id}`
+            )
+          }
+        >
+          <View style={styles.oneLine}>
+            <SVG
+              source={Link}
+              width={layout.padding_x2}
+              height={layout.padding_x2}
+            />
+            <BrandText style={styles.text}>Copy link to the track</BrandText>
+          </View>
+        </HoverView>
+      </CopyToClipboard>
 
       {/* {!mine && (
         <HoverView

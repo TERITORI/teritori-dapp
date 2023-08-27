@@ -137,9 +137,7 @@ export const MyAlbumMenu: React.FC<MyAlbumMenuProps> = ({ album }) => {
       <HoverView
         normalStyle={styles.unitBoxNormal}
         hoverStyle={styles.unitBoxHovered}
-        onPress={() => {
-          deleteMusicAlbum();
-        }}
+        onPress={deleteMusicAlbum}
       >
         <View style={styles.oneLine}>
           <SVG
@@ -155,9 +153,7 @@ export const MyAlbumMenu: React.FC<MyAlbumMenuProps> = ({ album }) => {
       <HoverView
         normalStyle={styles.unitBoxNormal}
         hoverStyle={styles.unitBoxHovered}
-        onPress={() => {
-          copyLinkTrack();
-        }}
+        onPress={copyLinkTrack}
       >
         <View style={styles.oneLine}>
           <SVG

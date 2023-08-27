@@ -18,43 +18,57 @@ export const MediaNameImage: FC = () => {
   const [, userAddress] = parseUserId(media?.createdBy);
   const username = authorNSInfo?.metadata?.tokenId
     ? authorNSInfo?.metadata?.tokenId
-    : tinyAddress(userAddress);
+    : tinyAddress(userAddress, 20);
 
   //TODO: Video in MediaPlayer
   const isVideo = false;
 
   if (!media) return null;
   return (
-    <View
-      style={{
-        flexDirection: "row",
-        alignItems: "center",
-      }}
+    <OmniLink
+      to={
+        media?.albumId
+          ? {
+              screen: "MusicPlayerAlbum",
+              params: { id: media?.albumId },
+            }
+          : {
+              screen: "FeedPostView",
+              params: { id: media?.postId || "" },
+            }
+      }
     >
-      <Image
-        source={{ uri: ipfsURLToHTTPURL(media.imageUrl) }}
-        style={{ height: 32, width: isVideo ? 57 : 32 }}
-      />
-      <SpacerRow size={1.5} />
       <View
         style={{
-          justifyContent: "space-between",
+          flexDirection: "row",
+          alignItems: "center",
         }}
       >
-        <BrandText style={fontSemibold12}>{media.name}</BrandText>
-        {media?.createdBy && (
-          <OmniLink
-            to={{
-              screen: "UserPublicProfile",
-              params: { id: media?.createdBy || "" },
-            }}
-          >
+        <Image
+          source={{ uri: ipfsURLToHTTPURL(media.imageUrl) }}
+          style={{ height: 32, width: isVideo ? 57 : 32 }}
+        />
+        <SpacerRow size={1.5} />
+        <View
+          style={{
+            justifyContent: "space-between",
+          }}
+        >
+          <BrandText style={fontSemibold12}>{media.name}</BrandText>
+          {media?.createdBy && (
+            // <OmniLink
+            //   to={{
+            //     screen: "UserPublicProfile",
+            //     params: { id: media?.createdBy || "" },
+            //   }}
+            // >
             <BrandText style={[fontSemibold12, { color: neutral77 }]}>
               {"@" + username}
             </BrandText>
-          </OmniLink>
-        )}
+            // </OmniLink>
+          )}
+        </View>
       </View>
-    </View>
+    </OmniLink>
   );
 };

@@ -9,6 +9,13 @@ interface UploadPostFilesToPinataParams {
   pinataJWTKey: string;
 }
 
+interface UploadPostFileToIPFS {
+  file: LocalFileData;
+  networkId: string;
+  userId: string;
+  userKey?: string;
+}
+
 export const uploadFilesToPinata = async ({
   files,
   pinataJWTKey,
@@ -61,12 +68,12 @@ export const generateIpfsKey = async (networkId: string, userId: string) => {
 
 // Get IPFS Key and upload files.
 // But you can do separately generateIpfsKey then uploadFilesToPinata (Ex in NewsFeedInput.tsx)
-export const uploadFileToIPFS = async (
-  file: LocalFileData,
-  networkId: string,
-  userId: string,
-  userKey?: string
-) => {
+export const uploadFileToIPFS = async ({
+  file,
+  networkId,
+  userId,
+  userKey,
+}: UploadPostFileToIPFS): Promise<RemoteFileData | undefined> => {
   let uploadedFiles: RemoteFileData[] = [];
   const pinataJWTKey = userKey || (await generateIpfsKey(networkId, userId));
 

@@ -3,12 +3,12 @@ import { StyleSheet, View } from "react-native";
 import { useSelector } from "react-redux";
 
 import { UPLOAD_ALBUM_MODAL_WIDTH } from "./index";
-import { pinataPinFileToIPFS } from "../../../candymachine/pinata-upload";
+import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { getUserId } from "../../../networks";
 import { selectNFTStorageAPI } from "../../../store/slices/settings";
-import { generateIpfsKey } from "../../../utils/ipfs";
+import { generateIpfsKey, uploadFilesToPinata } from "../../../utils/ipfs";
 import { AUDIO_MIME_TYPES } from "../../../utils/mime";
 import {
   neutral33,
@@ -17,49 +17,59 @@ import {
 } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { LocalFileData } from "../../../utils/types/files";
+import { LocalFileData, RemoteFileData } from "../../../utils/types/files";
 import { BrandText } from "../../BrandText";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { FileUploader } from "../../fileUploader";
 
 export const Step1Component: React.FC<{
   setStep: Dispatch<SetStateAction<number>>;
-  setUploadFiles: Dispatch<SetStateAction<LocalFileData[]>>;
-}> = ({ setStep, setUploadFiles }) => {
-  const [uploadFiles1, setUploadFiles1] = useState<LocalFileData[]>([]);
+  setUploadedAudioFilesStep1: Dispatch<SetStateAction<RemoteFileData[]>>;
+  isLoading: boolean;
+}> = ({ setStep, setUploadedAudioFilesStep1, isLoading }) => {
+  const [uploadedFiles1, setUploadedFiles1] = useState<RemoteFileData[]>([]);
   const [canContinue, setCanContinue] = useState<boolean>(false);
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const selectedNetworkId = useSelectedNetworkId();
   const selectedWallet = useSelectedWallet();
   const userId = getUserId(selectedNetworkId, selectedWallet?.address);
   const userIPFSKey = useSelector(selectNFTStorageAPI);
+  const { setToastError } = useFeedbacks();
 
   useEffect(() => {
-    setCanContinue(uploadFiles1.length > 0);
-  }, [uploadFiles1]);
+    setCanContinue(uploadedFiles1.length > 0);
+  }, [uploadedFiles1]);
 
   const uploadMusicFiles = async (files: LocalFileData[]) => {
+    setIsUploading(true);
+
     const pinataJWTKey =
       userIPFSKey || (await generateIpfsKey(selectedNetworkId, userId));
-    files.map((file) => {
-      const url = URL.createObjectURL(file.file);
-      const audio = new Audio(url);
-      audio.addEventListener("loadedmetadata", async () => {
-        window.URL.revokeObjectURL(url);
-        if (!pinataJWTKey) {
-          return;
-        }
-        setIsUploading(true);
-        const pinataRes = await pinataPinFileToIPFS({
-          file,
-          pinataJWTKey,
-        });
-        if (pinataRes.IpfsHash !== "") {
-          setUploadFiles1((uploadFiles1) => [...uploadFiles1, file]);
-        }
-        setIsUploading(false);
+
+    if (!pinataJWTKey) {
+      console.error("upload file err : No Pinata JWT");
+      setToastError({
+        title: "File upload failed",
+        message: "No Pinata JWT",
       });
+      return;
+    }
+
+    const uploadedFiles = await uploadFilesToPinata({
+      files,
+      pinataJWTKey,
     });
+
+    if (!uploadedFiles.find((file) => file.url)) {
+      console.error("upload file err : Fail to pin to IPFS");
+      setToastError({
+        title: "File upload failed",
+        message: "Fail to pin to IPFS, please try to Publish again",
+      });
+      return;
+    }
+    setUploadedFiles1(uploadedFiles);
+    setIsUploading(false);
   };
 
   return (
@@ -83,10 +93,10 @@ export const Step1Component: React.FC<{
         <PrimaryButton
           text="Continue"
           size="SM"
-          disabled={!canContinue}
-          isLoading={isUploading}
+          disabled={!canContinue || isUploading || isLoading}
+          isLoading={isUploading || isLoading}
           onPress={() => {
-            setUploadFiles([...uploadFiles1]);
+            setUploadedAudioFilesStep1(uploadedFiles1);
             setStep(1);
           }}
         />

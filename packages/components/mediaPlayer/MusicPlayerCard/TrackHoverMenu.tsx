@@ -16,6 +16,7 @@ import { fontSemibold13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { AlbumInfo } from "../../../utils/types/mediaPlayer";
 import { BrandText } from "../../BrandText";
+import { useCopyToClipboard } from "../../CopyToClipboard";
 import { SVG } from "../../SVG";
 import { TipModal } from "../../socialFeed/SocialActions/TipModal";
 import { HoverView } from "../HoverView";
@@ -25,6 +26,8 @@ interface TrackHoverMenuProps {
   hasLibrary: boolean;
   owner: string;
 }
+const shareMenuWidth = 188;
+const lineHeight = 18;
 export const TrackHoverMenu: React.FC<TrackHoverMenuProps> = ({
   album,
   hasLibrary,
@@ -34,9 +37,7 @@ export const TrackHoverMenu: React.FC<TrackHoverMenuProps> = ({
   const wallet = useSelectedWallet();
   const [tipModalVisible, setTipModalVisible] = useState<boolean>(false);
   const { setToastError, setToastSuccess } = useFeedbacks();
-
-  const shareMenuWidth = 188;
-  const lineHeight = 18;
+  const { copyToClipboard } = useCopyToClipboard();
 
   const addToLibrary = async () => {
     if (!wallet?.connected || !wallet.address || !album.id) {
@@ -86,87 +87,9 @@ export const TrackHoverMenu: React.FC<TrackHoverMenuProps> = ({
     }
   };
 
-  const copyLinkTrack = () => {
-    window.navigator.clipboard.writeText(
-      `${window.location.origin}/music-player/album/${album.id}`
-    );
-  };
   const handleTip = () => {
     setTipModalVisible(true);
   };
-
-  const styles = StyleSheet.create({
-    hoverBox: {
-      position: "absolute",
-      width: "100%",
-      height: "100%",
-      left: 0,
-      top: 0,
-      backgroundColor: "rgba(0,0,0,0.5)",
-      padding: layout.padding_x1_5,
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "flex-end",
-      zIndex: 999,
-    },
-    menuContainer: {
-      borderRadius: layout.padding_x1_5,
-      position: "absolute",
-      right: layout.padding_x1_5,
-      bottom: 44,
-      backgroundColor: "rgba(41, 41, 41, 1)",
-      padding: layout.padding_x1_5,
-      flexDirection: "column",
-      gap: layout.padding_x0_75,
-    },
-    unitBoxNormal: {
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
-      padding: layout.padding_x0_75,
-      borderRadius: layout.padding_x0_75,
-    },
-    unitBoxHovered: {
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
-      padding: layout.padding_x0_75,
-      backgroundColor: neutral33,
-      borderRadius: layout.padding_x0_75,
-    },
-    oneLine: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: layout.padding_x1,
-    },
-    text: StyleSheet.flatten([
-      fontSemibold13,
-      {
-        color: neutralA3,
-      },
-    ]),
-    divideLine: {
-      height: 1,
-      opacity: 0.12,
-      backgroundColor: secondaryColor,
-    },
-    shareMenuContainer: {
-      borderRadius: layout.padding_x1_5,
-      position: "absolute",
-      left: -(layout.padding_x1_5 + shareMenuWidth),
-      bottom: -(
-        layout.padding_x1_5 +
-        lineHeight +
-        layout.padding_x1_5 +
-        2 * layout.padding_x0_75
-      ),
-      backgroundColor: "rgba(41, 41, 41, 1)",
-      padding: layout.padding_x1_5,
-      flexDirection: "column",
-      gap: layout.padding_x0_75,
-      width: shareMenuWidth,
-    },
-  });
 
   return (
     <View style={styles.menuContainer}>
@@ -174,9 +97,7 @@ export const TrackHoverMenu: React.FC<TrackHoverMenuProps> = ({
         <HoverView
           normalStyle={styles.unitBoxNormal}
           hoverStyle={styles.unitBoxHovered}
-          onPress={() => {
-            addToLibrary();
-          }}
+          onPress={addToLibrary}
         >
           <View style={styles.oneLine}>
             <SVG
@@ -192,9 +113,7 @@ export const TrackHoverMenu: React.FC<TrackHoverMenuProps> = ({
         <HoverView
           normalStyle={styles.unitBoxNormal}
           hoverStyle={styles.unitBoxHovered}
-          onPress={() => {
-            removeFromLibrary();
-          }}
+          onPress={removeFromLibrary}
         >
           <View style={styles.oneLine}>
             <SVG
@@ -210,9 +129,7 @@ export const TrackHoverMenu: React.FC<TrackHoverMenuProps> = ({
       <HoverView
         normalStyle={styles.unitBoxNormal}
         hoverStyle={styles.unitBoxHovered}
-        onPress={() => {
-          handleTip();
-        }}
+        onPress={handleTip}
       >
         <View style={styles.oneLine}>
           <SVG
@@ -228,7 +145,9 @@ export const TrackHoverMenu: React.FC<TrackHoverMenuProps> = ({
         normalStyle={styles.unitBoxNormal}
         hoverStyle={styles.unitBoxHovered}
         onPress={() => {
-          copyLinkTrack();
+          copyToClipboard(
+            `${window.location.origin}/music-player/album/${album.id}`
+          );
         }}
       >
         <View style={styles.oneLine}>
@@ -249,3 +168,76 @@ export const TrackHoverMenu: React.FC<TrackHoverMenuProps> = ({
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  hoverBox: {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+    left: 0,
+    top: 0,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    padding: layout.padding_x1_5,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-end",
+    zIndex: 999,
+  },
+  menuContainer: {
+    borderRadius: layout.padding_x1_5,
+    position: "absolute",
+    right: layout.padding_x1_5,
+    bottom: 44,
+    backgroundColor: "rgba(41, 41, 41, 1)",
+    padding: layout.padding_x1_5,
+    flexDirection: "column",
+    gap: layout.padding_x0_75,
+  },
+  unitBoxNormal: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: layout.padding_x0_75,
+    borderRadius: layout.padding_x0_75,
+  },
+  unitBoxHovered: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: layout.padding_x0_75,
+    backgroundColor: neutral33,
+    borderRadius: layout.padding_x0_75,
+  },
+  oneLine: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: layout.padding_x1,
+  },
+  text: StyleSheet.flatten([
+    fontSemibold13,
+    {
+      color: neutralA3,
+    },
+  ]),
+  divideLine: {
+    height: 1,
+    opacity: 0.12,
+    backgroundColor: secondaryColor,
+  },
+  shareMenuContainer: {
+    borderRadius: layout.padding_x1_5,
+    position: "absolute",
+    left: -(layout.padding_x1_5 + shareMenuWidth),
+    bottom: -(
+      layout.padding_x1_5 +
+      lineHeight +
+      layout.padding_x1_5 +
+      2 * layout.padding_x0_75
+    ),
+    backgroundColor: "rgba(41, 41, 41, 1)",
+    padding: layout.padding_x1_5,
+    flexDirection: "column",
+    gap: layout.padding_x0_75,
+    width: shareMenuWidth,
+  },
+});

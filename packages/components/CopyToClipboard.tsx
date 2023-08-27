@@ -5,6 +5,7 @@ import { TouchableOpacity } from "react-native";
 import { BrandText } from "./BrandText";
 import { SVG } from "./SVG";
 import { TertiaryBox } from "./boxes/TertiaryBox";
+import { CustomPressable } from "./buttons/CustomPressable";
 import copySVG from "../../assets/icons/copy.svg";
 import { useFeedbacks } from "../context/FeedbacksProvider";
 import { neutral22 } from "../utils/style/colors";
@@ -26,9 +27,20 @@ export const useCopyToClipboard = () => {
 export const CopyToClipboard: React.FC<{
   text: string;
   squaresBackgroundColor?: string;
-}> = ({ text, squaresBackgroundColor }) => {
+  children?: JSX.Element;
+}> = ({ text, squaresBackgroundColor, children }) => {
   const { copyToClipboard } = useCopyToClipboard();
 
+  if (children)
+    return (
+      <CustomPressable
+        onPress={() => {
+          copyToClipboard(text);
+        }}
+      >
+        {children}
+      </CustomPressable>
+    );
   return (
     <TouchableOpacity onPress={() => copyToClipboard(text)}>
       <TertiaryBox
