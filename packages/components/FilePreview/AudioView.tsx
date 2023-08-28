@@ -34,7 +34,7 @@ export const AudioView: React.FC<{
     isPlaying,
     didJustFinish,
     handlePlayPause,
-    loadAndPlayAudio,
+    loadAndPlayQueue,
     lastTimePosition,
   } = useMediaPlayer();
   const isInMediaPlayer = useMemo(
@@ -59,7 +59,7 @@ export const AudioView: React.FC<{
         // postId is used to difference audios from Social Feed (News feed  or Article consultation)
         postId: postId || Math.floor(Math.random() * 200000).toString(),
       };
-      await loadAndPlayAudio(songToPlay);
+      await loadAndPlayQueue([songToPlay]);
     }
   };
 

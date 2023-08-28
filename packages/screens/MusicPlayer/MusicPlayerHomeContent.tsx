@@ -9,8 +9,9 @@ import Logo from "../../../assets/logos/logo.svg";
 import { GetAllAlbumListRequest } from "../../api/musicplayer/v1/musicplayer";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
-import { MusicPlayerCard } from "../../components/mediaPlayer/MusicPlayerCard";
+import { AlbumCard } from "../../components/mediaPlayer/AlbumCard";
 import { UploadAlbumModal } from "../../components/mediaPlayer/UploadAlbumModal";
+import { SpacerColumn, SpacerRow } from "../../components/spacer";
 import {
   combineFetchAlbumPages,
   useFetchAlbums,
@@ -22,7 +23,7 @@ interface MusicPlayerProps {
   req: GetAllAlbumListRequest;
   idList: string[];
 }
-
+const numColumns = 5;
 export const MusicPlayerHomeContent: React.FC<MusicPlayerProps> = ({
   req,
   idList,
@@ -95,20 +96,22 @@ export const MusicPlayerHomeContent: React.FC<MusicPlayerProps> = ({
         <Animated.FlatList
           scrollEventThrottle={0.1}
           data={albums}
-          numColumns={4}
-          renderItem={({ item: albumInfo }) => (
-            <View style={styles.albumGrid}>
-              <MusicPlayerCard
+          numColumns={numColumns}
+          renderItem={({ item: albumInfo, index }) => (
+            <>
+              <AlbumCard
                 album={albumInfo}
                 hasLibrary={
                   idList.findIndex((item) => item === albumInfo.id) !== -1
                 }
               />
-            </View>
+              {index !== numColumns - 1 && <SpacerRow size={2.5} />}
+            </>
           )}
           onScroll={scrollHandler}
           onEndReachedThreshold={1}
           onEndReached={onEndReached}
+          ItemSeparatorComponent={() => <SpacerColumn size={2.5} />}
         />
       </View>
       <UploadAlbumModal
@@ -158,7 +161,4 @@ const styles = StyleSheet.create({
       color: primaryColor,
     },
   ]),
-  albumGrid: {
-    margin: layout.padding_x3,
-  },
 });

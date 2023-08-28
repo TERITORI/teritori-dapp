@@ -54,6 +54,7 @@ export const Step2Component: React.FC<{
   const userId = getUserId(selectedNetworkId, selectedWallet?.address);
   const userIPFSKey = useSelector(selectNFTStorageAPI);
   const [albumInfo, setAlbumInfo] = useState<AlbumInfo>({
+    id: "",
     name: "",
     description: "",
     image: "",

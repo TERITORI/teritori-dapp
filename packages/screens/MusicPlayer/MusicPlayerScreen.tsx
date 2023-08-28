@@ -27,9 +27,10 @@ export const MusicPlayerScreen: ScreenFC<"MusicPlayer"> = () => {
   return (
     <ScreenContainer
       headerChildren={<BrandText>Music Player</BrandText>}
-      fullWidth
+      isLarge
+      responsive
     >
-      <View style={styles.pageConatiner}>
+      <View style={styles.pageContainer}>
         <MusicPlayerTab tab={tab} setTab={setTab} />
 
         {tab === tabData[0] && (
@@ -44,9 +45,8 @@ export const MusicPlayerScreen: ScreenFC<"MusicPlayer"> = () => {
 };
 
 const styles = StyleSheet.create({
-  pageConatiner: {
+  pageContainer: {
     width: "100%",
-    paddingHorizontal: 80,
   },
   tabContainer: {
     width: "100%",

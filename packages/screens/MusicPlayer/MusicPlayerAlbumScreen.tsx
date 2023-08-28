@@ -2,7 +2,7 @@ import React, { useState, useEffect, FC } from "react";
 import { View, StyleSheet, Image, TouchableOpacity } from "react-native";
 
 import Add from "../../../assets/music-player/add.svg";
-import MorePrimary from "../../../assets/music-player/more-primary.svg";
+import More from "../../../assets/music-player/more.svg";
 import PlayOther from "../../../assets/music-player/play-other.svg";
 import PlaySecondary from "../../../assets/music-player/play-secondary.svg";
 import Time from "../../../assets/music-player/time.svg";
@@ -28,7 +28,13 @@ import { getUserId, parseUserId } from "../../networks";
 import { getAudioDuration } from "../../utils/audio";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
-import { neutral77, neutral17, primaryColor } from "../../utils/style/colors";
+import {
+  neutral77,
+  neutral17,
+  primaryColor,
+  neutral00,
+  secondaryColor,
+} from "../../utils/style/colors";
 import {
   fontSemibold14,
   fontMedium14,
@@ -139,7 +145,9 @@ export const MusicPlayerAlbumScreen: ScreenFC<"MusicPlayerAlbum"> = ({
   return (
     <ScreenContainer
       headerChildren={<BrandText>{albumInfo.name}</BrandText>}
-      fullWidth
+      onBackPress={() => navigation.navigate("MusicPlayer")}
+      isLarge
+      responsive
     >
       <View style={styles.pageConatiner}>
         <MusicPlayerTab
@@ -182,12 +190,7 @@ export const MusicPlayerAlbumScreen: ScreenFC<"MusicPlayerAlbum"> = ({
                   <BrandText style={styles.playButtonText}>Play</BrandText>
                 </TouchableOpacity>
 
-                <TouchableOpacity
-                  style={styles.tipButton}
-                  onPress={() => {
-                    handleTip();
-                  }}
-                >
+                <TouchableOpacity style={styles.tipButton} onPress={handleTip}>
                   <SVG
                     source={Tip}
                     width={layout.padding_x2_5}
@@ -207,9 +210,7 @@ export const MusicPlayerAlbumScreen: ScreenFC<"MusicPlayerAlbum"> = ({
               idForLibraryList.findIndex((item) => item === id) !== -1 && (
                 <TouchableOpacity
                   style={styles.addButton}
-                  onPress={() => {
-                    removeFromLibrary();
-                  }}
+                  onPress={removeFromLibrary}
                 >
                   <SVG
                     height={layout.padding_x2_5}
@@ -225,14 +226,14 @@ export const MusicPlayerAlbumScreen: ScreenFC<"MusicPlayerAlbum"> = ({
               userId !== albumInfo.createdBy &&
               idForLibraryList &&
               idForLibraryList.findIndex((item) => item === id) === -1 && (
-                <TouchableOpacity style={styles.addButton}>
+                <TouchableOpacity
+                  style={styles.addButton}
+                  onPress={addToLibrary}
+                >
                   <SVG
                     height={layout.padding_x2_5}
                     width={layout.padding_x2_5}
                     source={Add}
-                    onPress={() => {
-                      addToLibrary();
-                    }}
                   />
                   <BrandText style={styles.addButtonText}>
                     Add to library
@@ -248,7 +249,8 @@ export const MusicPlayerAlbumScreen: ScreenFC<"MusicPlayerAlbum"> = ({
               <SVG
                 height={layout.padding_x2_5}
                 width={layout.padding_x2_5}
-                source={MorePrimary}
+                color={primaryColor}
+                source={More}
               />
             </TouchableOpacity>
             {openDetailAlbumMenu && <DetailAlbumMenu id={albumInfo.id || ""} />}
@@ -302,7 +304,11 @@ const Track: FC<{
       onPress={() => onPressTrack(mediaToPlay)}
       onHoverIn={() => setIsHovered(true)}
       onHoverOut={() => setIsHovered(false)}
-      style={[styles.track, isHovered && { opacity: 0.5 }]}
+      style={[
+        styles.track,
+        isHovered && { opacity: 0.5 },
+        { backgroundColor: trackNumber % 2 ? neutral17 : neutral00 },
+      ]}
     >
       <View style={styles.leftBox}>
         <BrandText style={[styles.menuText, styles.index]}>
@@ -323,6 +329,10 @@ const Track: FC<{
         <BrandText style={[fontSemibold14]}>
           {getAudioDuration(mediaToPlay.duration || 0)}
         </BrandText>
+        <SpacerRow size={2.5} />
+        <TouchableOpacity>
+          <SVG source={More} color={secondaryColor} width={20} height={20} />
+        </TouchableOpacity>
       </View>
     </CustomPressable>
   );
@@ -331,21 +341,21 @@ const Track: FC<{
 const styles = StyleSheet.create({
   pageConatiner: {
     width: "100%",
-    paddingHorizontal: 80,
   },
   menuBox: {
     marginTop: layout.padding_x2_5,
-    marginBottom: layout.padding_x1,
+    marginBottom: layout.padding_x1_5,
     width: "100%",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: layout.padding_x3,
+    paddingLeft: layout.padding_x2_5,
+    paddingRight: layout.padding_x1_5 + 20 + 20,
   },
   contentGroup: {
     flexDirection: "column",
     justifyContent: "space-between",
-    gap: layout.padding_x1,
+    gap: layout.padding_x0_5,
     zIndex: 999,
   },
   track: {
@@ -353,10 +363,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: layout.padding_x3,
+    paddingLeft: layout.padding_x2_5,
+    paddingRight: layout.padding_x1_5,
     paddingVertical: layout.padding_x0_5,
     borderRadius: layout.padding_x1,
-    backgroundColor: neutral17,
     height: 48,
   },
   menuText: StyleSheet.flatten([
@@ -389,7 +399,6 @@ const styles = StyleSheet.create({
   rightBox: {
     flexDirection: "row",
     alignItems: "center",
-    gap: layout.padding_x2_5,
   },
   albumBox: {
     marginTop: layout.padding_x2_5,
@@ -404,8 +413,9 @@ const styles = StyleSheet.create({
     gap: layout.padding_x4,
   },
   albumImg: {
-    width: 216,
-    height: 216,
+    width: 218,
+    height: 218,
+    borderRadius: 8,
   },
   artistText: StyleSheet.flatten([
     fontSemibold20,

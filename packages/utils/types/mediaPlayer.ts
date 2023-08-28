@@ -14,7 +14,7 @@ export interface MetadataAudio {
 }
 
 export interface AlbumInfo {
-  id?: string;
+  id: string;
   name: string;
   description: string;
   image: string;

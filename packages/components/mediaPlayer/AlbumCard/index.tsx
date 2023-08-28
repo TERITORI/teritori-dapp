@@ -16,7 +16,7 @@ import {
   neutral77,
   primaryColor,
 } from "../../../utils/style/colors";
-import { fontSemibold14, fontMedium14 } from "../../../utils/style/fonts";
+import { fontSemibold14, fontMedium13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { tinyAddress } from "../../../utils/text";
 import { AlbumInfo } from "../../../utils/types/mediaPlayer";
@@ -24,9 +24,13 @@ import { BrandText } from "../../BrandText";
 import { OmniLink } from "../../OmniLink";
 import { SVG } from "../../SVG";
 import { CustomPressable } from "../../buttons/CustomPressable";
+import { SpacerColumn } from "../../spacer";
 import { MyAlbumMenu } from "../MyAlbumMenu";
 
-export const MusicPlayerCard: React.FC<{
+const imageHeight = 218;
+const buttonsHeight = 28;
+export const musicPlayerCardWidth = 242;
+export const AlbumCard: React.FC<{
   album: AlbumInfo;
   hasLibrary: boolean;
 }> = ({ album, hasLibrary }) => {
@@ -41,7 +45,7 @@ export const MusicPlayerCard: React.FC<{
   const { loadAndPlayQueue } = useMediaPlayer();
   const username = authorNSInfo?.metadata?.tokenId
     ? authorNSInfo?.metadata?.tokenId
-    : tinyAddress(userAddress);
+    : tinyAddress(userAddress, 16);
 
   const onPressPlayAlbum = async () => {
     await loadAndPlayQueue(album.audios);
@@ -49,46 +53,58 @@ export const MusicPlayerCard: React.FC<{
 
   return (
     <View style={styles.unitCard}>
-      <CustomPressable
-        onHoverIn={() => setIsHovered(true)}
-        onHoverOut={() => setIsHovered(false)}
-        style={styles.imgBox}
-        onPress={() => {
-          navigation.navigate("MusicPlayerAlbum", { id: album.id || "" });
-        }}
-      >
-        <Image
-          source={{ uri: ipfsURLToHTTPURL(album.image) }}
-          style={[isHovered && { opacity: 0.5 }, styles.contentImg]}
-        />
+      <View>
+        <CustomPressable
+          onHoverIn={() => setIsHovered(true)}
+          onHoverOut={() => setIsHovered(false)}
+          style={styles.imgBox}
+          onPress={() => {
+            navigation.navigate("MusicPlayerAlbum", { id: album.id });
+          }}
+        >
+          <Image
+            source={{ uri: ipfsURLToHTTPURL(album.image) }}
+            style={[isHovered && { opacity: 0.5 }, styles.contentImg]}
+          />
+          <SpacerColumn size={1.5} />
 
-        <View style={styles.imgButtonsBox}>
-          <TouchableOpacity onPress={onPressPlayAlbum}>
-            <SVG source={NormalPlay} width={28} height={28} />
-          </TouchableOpacity>
+          <View style={styles.imgButtonsBox}>
+            <TouchableOpacity onPress={onPressPlayAlbum}>
+              <SVG
+                source={NormalPlay}
+                width={buttonsHeight}
+                height={buttonsHeight}
+              />
+            </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={() => setOpenMenu((value: boolean) => !value)}
-          >
-            <SVG source={HoveredMenu} width={28} height={28} />
-          </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => setOpenMenu((value: boolean) => !value)}
+            >
+              <SVG
+                source={HoveredMenu}
+                width={buttonsHeight}
+                height={buttonsHeight}
+              />
+            </TouchableOpacity>
 
-          {openMenu && userId !== album.createdBy && (
-            <TrackHoverMenu
-              album={album}
-              hasLibrary={hasLibrary}
-              owner={username}
-            />
-          )}
-          {openMenu && userId === album.createdBy && (
-            <MyAlbumMenu album={album} />
-          )}
-        </View>
-      </CustomPressable>
-      <BrandText style={styles.contentTitle}>{album.name}</BrandText>
-      <BrandText style={styles.contentDescription}>
-        {album.description}
-      </BrandText>
+            {openMenu && userId !== album.createdBy && (
+              <TrackHoverMenu
+                album={album}
+                hasLibrary={hasLibrary}
+                owner={username}
+              />
+            )}
+            {openMenu && userId === album.createdBy && (
+              <MyAlbumMenu album={album} />
+            )}
+          </View>
+        </CustomPressable>
+        <BrandText style={styles.contentTitle}>{album.name}</BrandText>
+        <SpacerColumn size={0.5} />
+        <BrandText style={styles.contentDescription} numberOfLines={2}>
+          {album.description}
+        </BrandText>
+      </View>
       <OmniLink
         to={{ screen: "UserPublicProfile", params: { id: album.createdBy } }}
       >
@@ -100,10 +116,12 @@ export const MusicPlayerCard: React.FC<{
 
 const styles = StyleSheet.create({
   unitCard: {
-    width: 240,
+    width: musicPlayerCardWidth,
+    height: 338,
     padding: layout.padding_x1_5,
     backgroundColor: neutral17,
-    borderRadius: layout.padding_x1_5,
+    borderRadius: 12,
+    justifyContent: "space-between",
   },
   imgBox: {
     position: "relative",
@@ -111,35 +129,29 @@ const styles = StyleSheet.create({
   imgButtonsBox: {
     position: "absolute",
     paddingHorizontal: layout.padding_x1_5,
-    paddingBottom: layout.padding_x1_5,
     flexDirection: "row",
     width: "100%",
-    bottom: 0,
+    top: imageHeight - buttonsHeight - layout.padding_x1_5,
     right: 0,
     justifyContent: "space-between",
   },
-  contentTitle: StyleSheet.flatten([
-    fontSemibold14,
-    {
-      marginVertical: layout.padding_x1_5,
-    },
-  ]),
+  contentTitle: StyleSheet.flatten([fontSemibold14]),
   contentDescription: StyleSheet.flatten([
-    fontMedium14,
+    fontMedium13,
     {
       color: neutral77,
     },
   ]),
   contentImg: {
     width: "100%",
-    borderRadius: layout.padding_x1,
+    borderRadius: 8,
     aspectRatio: 1,
+    height: imageHeight,
   },
   contentName: StyleSheet.flatten([
     fontSemibold14,
     {
       color: primaryColor,
-      marginTop: layout.padding_x1,
     },
   ]),
 });

@@ -42,9 +42,9 @@ export const EditableAudioPreview: React.FC<AudioPreviewProps> = ({
     isPlaying,
     didJustFinish,
     handlePlayPause,
-    loadAndPlayAudio,
+    loadAndPlayQueue,
     lastTimePosition,
-    unloadAudio,
+    removeSound,
   } = useMediaPlayer();
   const selectedWallet = useSelectedWallet();
   const selectedNetworkId = useSelectedNetworkId();
@@ -66,7 +66,7 @@ export const EditableAudioPreview: React.FC<AudioPreviewProps> = ({
         fileUrl: file.url,
         duration: file.audioMetadata?.duration,
       };
-      await loadAndPlayAudio(songToAdd);
+      await loadAndPlayQueue([songToAdd]);
     }
   };
   useEffect(() => {
@@ -96,7 +96,7 @@ export const EditableAudioPreview: React.FC<AudioPreviewProps> = ({
       <DeleteButton
         onPress={async () => {
           if (isInMediaPlayer) {
-            await unloadAudio();
+            await removeSound();
           }
           onDelete(file);
         }}

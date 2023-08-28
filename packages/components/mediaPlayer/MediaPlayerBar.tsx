@@ -12,7 +12,6 @@ import PlayIcon from "../../../assets/icons/media-player/play.svg";
 import PreviousIcon from "../../../assets/icons/media-player/previous.svg";
 import RandomIcon from "../../../assets/icons/media-player/random.svg";
 import { useMediaPlayer } from "../../context/MediaPlayerProvider";
-import { nextItemInArray, previousItemInArray } from "../../utils/arrays";
 import {
   neutral17,
   neutral22,
@@ -39,20 +38,11 @@ export const MediaPlayerBar: FC<{
     setIsRandom,
     didJustFinish,
     isMediaPlayerOpen,
-    queue,
-    loadAndPlayQueue,
+    canPrev,
+    canNext,
+    nextMedia,
+    prevMedia,
   } = useMediaPlayer();
-
-  const onPressPrevious = async () => {
-    if (!media) return;
-    const currentIndex = queue.indexOf(media);
-    await loadAndPlayQueue(queue, nextItemInArray(queue, currentIndex));
-  };
-  const onPressNext = async () => {
-    if (!media) return;
-    const currentIndex = queue.indexOf(media);
-    await loadAndPlayQueue(queue, previousItemInArray(queue, currentIndex));
-  };
 
   if (!isMediaPlayerOpen) return null;
   return (
@@ -68,15 +58,12 @@ export const MediaPlayerBar: FC<{
         </CustomPressable>
         <SpacerRow size={2.5} />
 
-        <CustomPressable
-          onPress={onPressPrevious}
-          disabled={queue.length <= 2 || !media}
-        >
+        <CustomPressable onPress={prevMedia} disabled={!canPrev}>
           <SVG
             source={PreviousIcon}
             height={20}
             width={20}
-            color={queue.length <= 2 ? neutralA3 : secondaryColor}
+            color={canPrev ? secondaryColor : neutralA3}
           />
         </CustomPressable>
         <SpacerRow size={2.5} />
@@ -91,15 +78,12 @@ export const MediaPlayerBar: FC<{
         </CustomPressable>
         <SpacerRow size={2.5} />
 
-        <CustomPressable
-          onPress={onPressNext}
-          disabled={queue.length <= 2 || !media}
-        >
+        <CustomPressable onPress={nextMedia} disabled={!canNext}>
           <SVG
             source={NextIcon}
             height={20}
             width={20}
-            color={queue.length <= 2 ? neutralA3 : secondaryColor}
+            color={canNext ? secondaryColor : neutralA3}
           />
         </CustomPressable>
         <SpacerRow size={2.5} />

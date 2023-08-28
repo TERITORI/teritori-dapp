@@ -1,4 +1,4 @@
-import { Audio, AVPlaybackStatus, AVPlaybackStatusSuccess } from "expo-av";
+import { Audio, AVPlaybackStatusSuccess } from "expo-av";
 import React, {
   createContext,
   useContext,
@@ -10,17 +10,11 @@ import React, {
   useCallback,
 } from "react";
 
-import { nextItemInArray } from "../utils/arrays";
+import { useFeedbacks } from "./FeedbacksProvider";
 import { ipfsURLToHTTPURL } from "../utils/ipfs";
 import { Media } from "../utils/types/mediaPlayer";
 
 interface DefaultValue {
-  loadAudio: (
-    media: Media
-  ) => Promise<
-    | { createdSound: Audio.Sound; createdStatus: AVPlaybackStatus | undefined }
-    | undefined
-  >;
   handlePlayPause: () => Promise<void>;
   isPlaying: boolean;
   media?: Media;
@@ -35,14 +29,15 @@ interface DefaultValue {
   didJustFinish: boolean;
   isMediaPlayerOpen: boolean;
   setIsMediaPlayerOpen: Dispatch<SetStateAction<boolean>>;
-  queue: Media[];
   loadAndPlayQueue: (queue: Media[], mediaToStart?: Media) => Promise<void>;
-  loadAndPlayAudio: (media: Media) => Promise<void>;
-  unloadAudio: () => Promise<void>;
+  removeSound: () => Promise<void>;
+  canNext: boolean;
+  canPrev: boolean;
+  nextMedia: () => Promise<void>;
+  prevMedia: () => Promise<void>;
 }
 
 const defaultValue: DefaultValue = {
-  loadAudio: async () => undefined,
   handlePlayPause: async () => {},
   isPlaying: false,
   media: undefined,
@@ -57,20 +52,23 @@ const defaultValue: DefaultValue = {
   didJustFinish: false,
   isMediaPlayerOpen: false,
   setIsMediaPlayerOpen: () => {},
-  queue: [],
   loadAndPlayQueue: async () => {},
-  loadAndPlayAudio: async () => {},
-  unloadAudio: async () => {},
+  removeSound: async () => {},
+  canNext: false,
+  canPrev: false,
+  nextMedia: async () => {},
+  prevMedia: async () => {},
 };
 
 const MediaPlayerContext = createContext(defaultValue);
 
 export const MediaPlayerContextProvider: React.FC = ({ children }) => {
+  const { setToastError } = useFeedbacks();
   const [isMediaPlayerOpen, setIsMediaPlayerOpen] = useState(
     defaultValue.isMediaPlayerOpen
   );
   // Queue
-  const [queue, setQueue] = useState(defaultValue.queue);
+  const [queue, setQueue] = useState<Media[]>([]);
   const [isPlaying, setIsPlaying] = useState(defaultValue.isPlaying);
   // Current media in MediaPlayerBar (Used to store UI data)
   const [media, setMedia] = useState(defaultValue.media);
@@ -90,22 +88,6 @@ export const MediaPlayerContextProvider: React.FC = ({ children }) => {
   );
   const [playbackStatus, setPlaybackStatus] =
     useState<AVPlaybackStatusSuccess>();
-  const nextMediaInQueue = useMemo(() => {
-    let nextMedia: Media | undefined;
-    queue.forEach((m, index) => {
-      console.log(" ))))) m.fileUrl", m.fileUrl);
-      console.log(" ))))) media?.fileUrl", media?.fileUrl);
-      console.log(" ))))) queue", queue);
-      console.log(" ))))) indexindex", index);
-      console.log(
-        " ))))) nextItemInArray(queue, index)",
-        nextItemInArray(queue, index)
-      );
-      if (m.fileUrl !== media?.fileUrl || queue.length <= 1) return;
-      nextMedia = nextItemInArray(queue, index);
-    });
-    return nextMedia;
-  }, [queue, media?.fileUrl]);
 
   // Only used in UI imo
   const handlePlayPause = async () => {
@@ -121,84 +103,113 @@ export const MediaPlayerContextProvider: React.FC = ({ children }) => {
     }
   };
 
-  // When clicking on a Song, or queue automatic play
-  const loadAudio = useCallback(
+  const loadSound = useCallback(
     async (media: Media) => {
-      // Remove existing sound
-      console.log("================= soundsound", sound);
-      console.log("================= playbackStatus", playbackStatus);
-      if (sound && playbackStatus?.isLoaded) {
-        //FIXME : Error: Cannot complete operation because sound is not loaded.
-        //     at Sound._performOperationAndHandleStatusAsync$ (Sound.ts:105:1)
-        // ==> But sound._isLoaded = true and unloadAsync() works.... WTF
-        await sound.unloadAsync();
-
-        setPlaybackStatus(undefined);
-      }
       setTimePosition(0);
       setLastTimePosition(defaultValue.lastTimePosition);
-      // Init new sound
-      const { sound: createdSound, status: createdStatus } =
-        await Audio.Sound.createAsync(
-          { uri: ipfsURLToHTTPURL(media.fileUrl) },
-          { progressUpdateIntervalMillis: 1000 },
-          (status) => {
-            if ("uri" in status) {
-              setPlaybackStatus(status);
-            }
-            //else TODO: handle error here
-          }
-        );
-      setSound(createdSound);
       setMedia(media);
-      return { createdSound, createdStatus };
+      setIsPlaying(false);
+
+      try {
+        // Force unload existing sound (No need if didJustFinish, because the sound is unloaded when playback is done)
+        if (playbackStatus?.isLoaded && sound && !didJustFinish) {
+          await sound?.unloadAsync();
+        }
+
+        const { sound: createdSound, status: createdStatus } =
+          await Audio.Sound.createAsync(
+            { uri: ipfsURLToHTTPURL(media.fileUrl) },
+            undefined,
+            (status) => {
+              if ("uri" in status && status.isLoaded) {
+                setPlaybackStatus(status);
+                setLastTimePosition(status.positionMillis);
+                setDidJustFinish(status.didJustFinish);
+              }
+              if ("error" in status) {
+                console.error(
+                  "Error while playbackStatus update: ",
+                  status.error
+                );
+                setToastError({
+                  title: "Error while playbackStatus update",
+                  message: status.error || "",
+                });
+              }
+            }
+          );
+        setSound(createdSound);
+        return { sound: createdSound, status: createdStatus };
+      } catch (e) {
+        setToastError({
+          title: "Error loading sound",
+          message: e.message,
+        });
+        return { sound: undefined, status: undefined };
+      }
     },
-    [sound, playbackStatus]
+    [sound, setToastError, didJustFinish, playbackStatus?.isLoaded]
   );
 
-  const loadAndPlayQueue = async (queue: Media[], mediaStoStart?: Media) => {
-    if (!queue.length) return;
-    setQueue(queue);
-    await loadAndPlayAudio(mediaStoStart || queue[0]);
-  };
-
-  const loadAndPlayAudio = useCallback(
+  // When clicking on a Song, or queue automatic play
+  const loadAndPlaySound = useCallback(
     async (media: Media) => {
-      const { createdSound, createdStatus } = await loadAudio(media);
-      if (!createdSound || !createdStatus?.isLoaded) return;
-
-      console.log("createdSoundcreatedSoundcreatedSound", createdSound);
-      console.log("createdStatuscreatedStatuscreatedStatus", createdStatus);
-
-      console.log(
-        "111 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX "
-      );
+      const { sound: createdSound, status } = await loadSound(media);
+      if (!createdSound || !status?.isLoaded) return;
       await createdSound.playAsync();
-      console.log(
-        "222 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX "
-      );
-
       setIsPlaying(true);
       setIsMediaPlayerOpen(true);
     },
-    [loadAudio]
+    [loadSound]
   );
 
-  const unloadAudio = async () => {
+  // We consider playing songs from UI is loadAndPlayQueue([...songs), even for one song
+  const loadAndPlayQueue = async (queue: Media[], mediaStoStart?: Media) => {
+    if (!queue.length) return;
+    setQueue(queue);
+    await loadAndPlaySound(mediaStoStart || queue[0]);
+  };
+
+  const canNext = useMemo(() => {
+    if (!media || queue.length < 2) return false;
+    const currentIndex = queue.indexOf(media);
+    return currentIndex !== queue.length - 1;
+  }, [media, queue]);
+
+  const canPrev = useMemo(() => {
+    if (!media || queue.length < 2) return false;
+    const currentIndex = queue.indexOf(media);
+    return currentIndex !== 0;
+  }, [media, queue]);
+
+  const nextMedia = useCallback(async () => {
+    if (!canNext || !media) return;
+    const currentIndex = queue.indexOf(media);
+    await loadAndPlaySound(queue[currentIndex + 1]);
+  }, [canNext, media, queue, loadAndPlaySound]);
+
+  const prevMedia = async () => {
+    if (!canPrev || !media) return;
+    const currentIndex = queue.indexOf(media);
+    await loadAndPlaySound(queue[currentIndex - 1]);
+  };
+
+  // Force reset MediaPlayer
+  const removeSound = async () => {
     if (!sound) return;
     setIsPlaying(false);
     setMedia(undefined);
-    await sound?.unloadAsync();
+    await sound.unloadAsync();
   };
 
   // Autoplay queue
   useEffect(() => {
     const effect = async () => {
-      if (!nextMediaInQueue || isLoop || !didJustFinish) return;
-      await loadAndPlayAudio(nextMediaInQueue);
+      if (isLoop || !didJustFinish) return;
+      await nextMedia();
     };
     effect();
-  }, [didJustFinish, nextMediaInQueue, isLoop, loadAndPlayAudio]);
+  }, [didJustFinish, isLoop, nextMedia]);
 
   // Sync isLoop from UI
   useEffect(() => {
@@ -229,22 +240,9 @@ export const MediaPlayerContextProvider: React.FC = ({ children }) => {
     effect();
   }, [timePosition, sound]);
 
-  // Sync playbackStatus.positionMillis
-  useEffect(() => {
-    if (!playbackStatus?.isLoaded) return;
-    setLastTimePosition(playbackStatus.positionMillis);
-  }, [playbackStatus]);
-
-  // Sync playbackStatus.didJustFinish
-  useEffect(() => {
-    if (!playbackStatus?.isLoaded) return;
-    setDidJustFinish(playbackStatus.didJustFinish);
-  }, [playbackStatus]);
-
   return (
     <MediaPlayerContext.Provider
       value={{
-        loadAudio,
         handlePlayPause,
         isPlaying,
         media,
@@ -259,10 +257,12 @@ export const MediaPlayerContextProvider: React.FC = ({ children }) => {
         didJustFinish,
         isMediaPlayerOpen,
         setIsMediaPlayerOpen,
-        queue,
         loadAndPlayQueue,
-        loadAndPlayAudio,
-        unloadAudio,
+        removeSound,
+        canNext,
+        canPrev,
+        nextMedia,
+        prevMedia,
       }}
     >
       {children}

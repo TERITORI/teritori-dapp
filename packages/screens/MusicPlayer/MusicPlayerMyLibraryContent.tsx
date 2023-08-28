@@ -8,8 +8,9 @@ import Animated, {
 import Logo from "../../../assets/logos/logo.svg";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
-import { MusicPlayerCard } from "../../components/mediaPlayer/MusicPlayerCard";
+import { AlbumCard } from "../../components/mediaPlayer/AlbumCard";
 import { UploadAlbumModal } from "../../components/mediaPlayer/UploadAlbumModal";
+import { SpacerColumn, SpacerRow } from "../../components/spacer";
 import {
   combineFetchAlbumPages as combineFetchAlbumPagesOther,
   useOtherFetchAlbum,
@@ -29,6 +30,7 @@ import {
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 
+const numColumns = 5;
 export const MusicPlayerMyLibraryContent: React.FC<{ idList: string[] }> = ({
   idList,
 }) => {
@@ -155,15 +157,17 @@ export const MusicPlayerMyLibraryContent: React.FC<{ idList: string[] }> = ({
         <Animated.FlatList
           scrollEventThrottle={0.1}
           data={albums}
-          numColumns={4}
-          renderItem={({ item: albumInfo }) => (
-            <View style={styles.albumGrid}>
-              <MusicPlayerCard album={albumInfo} hasLibrary />
-            </View>
+          numColumns={numColumns}
+          renderItem={({ item: albumInfo, index }) => (
+            <>
+              <AlbumCard album={albumInfo} hasLibrary />
+              {index !== numColumns - 1 && <SpacerRow size={2.5} />}
+            </>
           )}
           onScroll={scrollHandler}
           onEndReachedThreshold={1}
           onEndReached={onEndReached}
+          ItemSeparatorComponent={() => <SpacerColumn size={2.5} />}
         />
       </View>
 
@@ -174,15 +178,17 @@ export const MusicPlayerMyLibraryContent: React.FC<{ idList: string[] }> = ({
         <Animated.FlatList
           scrollEventThrottle={0.1}
           data={otherAlbums}
-          numColumns={4}
-          renderItem={({ item: albumInfo }) => (
-            <View style={styles.albumGrid}>
-              <MusicPlayerCard album={albumInfo} hasLibrary />
-            </View>
+          numColumns={numColumns}
+          renderItem={({ item: albumInfo, index }) => (
+            <>
+              <AlbumCard album={albumInfo} hasLibrary />
+              {index !== numColumns - 1 && <SpacerRow size={2.5} />}
+            </>
           )}
           onScroll={scrollHandlerOther}
           onEndReachedThreshold={1}
           onEndReached={onEndReachedOther}
+          ItemSeparatorComponent={() => <SpacerColumn size={2.5} />}
         />
       </View>
       <UploadAlbumModal
@@ -250,7 +256,4 @@ const styles = StyleSheet.create({
       color: primaryColor,
     },
   ]),
-  albumGrid: {
-    margin: layout.padding_x3,
-  },
 });

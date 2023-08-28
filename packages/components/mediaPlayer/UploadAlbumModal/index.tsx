@@ -54,8 +54,6 @@ export const UploadAlbumModal: React.FC<UploadAlbumModalProps> = ({
       }),
     };
 
-    console.log("metadatametadatametadatametadatametadatametadata", metadata);
-
     try {
       const res = await client.createMusicAlbum(
         {
@@ -65,8 +63,6 @@ export const UploadAlbumModal: React.FC<UploadAlbumModalProps> = ({
         defaultSocialFeedFee,
         ""
       );
-
-      console.log("===== res");
 
       if (res.transactionHash) {
         setToastSuccess({
