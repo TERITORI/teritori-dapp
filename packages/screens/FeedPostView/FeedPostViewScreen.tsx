@@ -231,6 +231,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
                   style={{ width: "100%" }}
                 >
                   <SocialThreadCard
+                    refetchFeed={refetch}
                     style={
                       windowWidth < RESPONSIVE_BREAKPOINT_S && {
                         borderRadius: 0,

@@ -1,6 +1,7 @@
-import { ComponentType, FC } from "react";
-import { EditorState } from "draft-js";
 import { DraftJsButtonTheme } from "@draft-js-plugins/buttons";
+import { EditorState } from "draft-js";
+import { ComponentType, FC } from "react";
+
 import { InlineToolbarPluginStore } from "../..";
 import { InlineToolbarPluginTheme } from "../../theme";
 export interface ToolbarChildrenProps {
