@@ -13,7 +13,12 @@ import { useGetBanPostProposals } from "../../../hooks/feed/useBanPostProposals"
 import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
 import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { mustGetGnoNetwork, NetworkKind, parseUserId } from "../../../networks";
+import {
+  getNetworkObjectId,
+  mustGetGnoNetwork,
+  NetworkKind,
+  parseUserId,
+} from "../../../networks";
 import { OnPressReplyType } from "../../../screens/FeedPostView/FeedPostViewScreen";
 import { toRawURLBase64String } from "../../../utils/buffer";
 import { adenaDoContract, adenaVMCall } from "../../../utils/gno";
@@ -369,7 +374,9 @@ export const SocialThreadCard: React.FC<{
         onLayout={(e) => setViewWidth(e.nativeEvent.layout.width)}
         disabled={isPostConsultation}
         onPress={() =>
-          navigation.navigate("FeedPostView", { id: localPost.identifier })
+          navigation.navigate("FeedPostView", {
+            id: getNetworkObjectId(selectedNetworkId, localPost.identifier),
+          })
         }
       >
         <AnimationFadeIn
@@ -434,8 +441,10 @@ export const SocialThreadCard: React.FC<{
                 <BrandText
                   onPress={() => {
                     navigation.navigate("FeedPostView", {
-                      id:
-                        localPost.parentPostIdentifier || localPost.identifier,
+                      id: getNetworkObjectId(
+                        selectedNetworkId,
+                        localPost.parentPostIdentifier || localPost.identifier
+                      ),
                     });
                   }}
                   style={fontSemibold13}
