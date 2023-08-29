@@ -1,4 +1,3 @@
-// libraries
 import { Decimal } from "@cosmjs/math";
 import { isDeliverTxFailure } from "@cosmjs/stargate";
 import { bech32 } from "bech32";

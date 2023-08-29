@@ -1,4 +1,3 @@
-// libraries
 import React, { useRef } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 

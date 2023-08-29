@@ -1,4 +1,3 @@
-// libraries
 import React, { useRef } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 
