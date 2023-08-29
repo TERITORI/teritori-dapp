@@ -10,7 +10,6 @@ type Video struct {
 	CreatedBy  networks.UserID `gorm:"index"`
 	CreatedAt  int64
 	LastView   int64
-	IsDeleted  bool
 	ViewCount  int64 `gorm:"default:0"`
 	Like       int64 `gorm:"default:0"`
 	Dislike    int64 `gorm:"default:0"`
