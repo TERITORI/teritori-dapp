@@ -29,8 +29,8 @@ interface SimpleButtonProps {
 export const SimpleButton: React.FC<SimpleButtonProps> = ({
   text,
   size = "M",
-  color = primaryTextColor,
-  bgColor = yellowDefault,
+  color,
+  bgColor,
   onPress,
   loading,
   disabled,
@@ -73,9 +73,11 @@ export const SimpleButton: React.FC<SimpleButtonProps> = ({
           styles.btnStyle,
           {
             display: "flex",
-            color: outline ? yellowDefault : color,
-            backgroundColor: outline ? neutral00 : bgColor,
-            borderColor: outline ? yellowDefault : bgColor,
+            color: outline ? color || yellowDefault : color || primaryTextColor,
+            backgroundColor: outline ? neutral00 : bgColor || yellowDefault,
+            borderColor: outline
+              ? color || yellowDefault
+              : bgColor || yellowDefault,
             borderWidth: 1,
             paddingHorizontal: padH,
             paddingVertical: padV,
