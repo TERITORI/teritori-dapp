@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { TextStyle, ViewStyle } from "react-native";
 
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
@@ -17,10 +17,10 @@ export const TopMenuAccount: React.FC = () => {
   const selectedWallet = useSelectedWallet();
 
   return (
-    <FlexCol style={styles.container}>
+    <FlexCol style={containerStyle}>
       <UserNameInline
         userId={selectedWallet?.userId || ""}
-        style={styles.userImageLine}
+        style={userImageLineStyle}
       />
 
       <FlexRow alignItems="center" justifyContent="space-between">
@@ -28,7 +28,7 @@ export const TopMenuAccount: React.FC = () => {
         <CustomPressable>
           {({ hovered }) => (
             <FlexRow alignItems="center">
-              <BrandText style={styles.switchAccount}>
+              <BrandText style={switchAccountStyle}>
                 {hovered ? "Coming Soon" : "Switch Account"}
               </BrandText>
               <SVG source={chevronRightSVG} width={16} height={16} />
@@ -42,27 +42,25 @@ export const TopMenuAccount: React.FC = () => {
             params: { id: selectedWallet?.userId || "" },
           }}
         >
-          <BrandText style={styles.manageProfile}>Manage Profile</BrandText>
+          <BrandText style={manageProfileStyle}>Manage Profile</BrandText>
         </OmniLink>
       </FlexRow>
     </FlexCol>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    padding: layout.padding_x2,
-  },
-  userImageLine: {
-    width: "100%",
-    marginBottom: layout.padding_x1_5,
-  },
-  switchAccount: {
-    ...(fontSemibold14 as object),
-    marginRight: layout.padding_x0_5,
-  },
-  manageProfile: {
-    ...(fontSemibold14 as object),
-    color: purpleLight,
-  },
-});
+const containerStyle: ViewStyle = {
+  padding: layout.padding_x2,
+};
+const userImageLineStyle: ViewStyle = {
+  width: "100%",
+  marginBottom: layout.padding_x1_5,
+};
+const switchAccountStyle: TextStyle = {
+  ...fontSemibold14,
+  marginRight: layout.padding_x0_5,
+};
+const manageProfileStyle: TextStyle = {
+  ...fontSemibold14,
+  color: purpleLight,
+};

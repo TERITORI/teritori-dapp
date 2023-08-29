@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
-import { StyleSheet } from "react-native";
+import { ViewStyle } from "react-native";
 
 import { FightBossSection } from "./FightBossSection";
 import { FightCountdownSection } from "./FightCountdownSection";
@@ -14,7 +14,6 @@ import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { mustGetNonSigningCosmWasmClient } from "../../../networks";
 import { squadWithdraw } from "../../../utils/game";
 import { ipfsURLToHTTPURL } from "../../../utils/ipfs";
-import { fontMedium48 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { RipperLightInfo } from "../types";
 
@@ -95,7 +94,7 @@ export const FightSection: React.FC<FightSectionProps> = ({
   return (
     <FlexRow
       justifyContent="space-between"
-      style={styles.section}
+      style={sectionStyle}
       breakpoint={1200}
     >
       <FightBossSection />
@@ -119,12 +118,6 @@ export const FightSection: React.FC<FightSectionProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  pageTitle: {
-    alignSelf: "center",
-    ...(fontMedium48 as object),
-  },
-  section: {
-    paddingHorizontal: layout.padding_x4 * 2,
-  },
-});
+const sectionStyle: ViewStyle = {
+  paddingHorizontal: layout.padding_x4 * 2,
+};

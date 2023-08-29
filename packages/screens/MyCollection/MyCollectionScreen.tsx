@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { StyleSheet, View } from "react-native";
+import { View, ViewStyle } from "react-native";
 
 import logoSVG from "../../../assets/logos/logo.svg";
 import { BrandText } from "../../components/BrandText";
@@ -19,7 +19,7 @@ export const MyCollectionScreen: ScreenFC<"MyCollection"> = () => {
 
   const EmptyListComponent = useCallback(
     () => (
-      <View style={styles.emptyContainer}>
+      <View style={emptyContainerStyle}>
         <SVG source={logoSVG} width={200} height={200} />
         <BrandText>My Collection</BrandText>
       </View>
@@ -38,10 +38,8 @@ export const MyCollectionScreen: ScreenFC<"MyCollection"> = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  emptyContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});
+const emptyContainerStyle: ViewStyle = {
+  flex: 1,
+  justifyContent: "center",
+  alignItems: "center",
+};

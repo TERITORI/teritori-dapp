@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet } from "react-native";
+import { ImageStyle, TextStyle, ViewStyle } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 import addSVG from "../../../../assets/icons/add.svg";
@@ -51,7 +51,7 @@ export const BreedingSlot: React.FC<BreedingSlotProps> = ({
       >
         {ripper ? (
           <>
-            <FlexRow style={styles.breedingsLeftTxt}>
+            <FlexRow style={breedingsLeftTxtStyle}>
               <SVG
                 source={gameBoxSVG}
                 width={16}
@@ -69,15 +69,13 @@ export const BreedingSlot: React.FC<BreedingSlotProps> = ({
             </FlexRow>
 
             <OptimizedImage
-              style={[styles.ripperImage, isStaked && { opacity: 0.4 }]}
+              style={[ripperImageStyle, isStaked && { opacity: 0.4 }]}
               sourceURI={ripper.imageUri}
               width={imageSize}
               height={imageSize}
             />
 
-            {isStaked && (
-              <BrandText style={styles.stakedTitle}>Staked</BrandText>
-            )}
+            {isStaked && <BrandText style={stakedTitleStyle}>Staked</BrandText>}
           </>
         ) : (
           <SVG
@@ -93,27 +91,25 @@ export const BreedingSlot: React.FC<BreedingSlotProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  stakedTitle: {
-    position: "absolute",
-    top: 2 * layout.padding_x4,
-    color: redDefault,
-    backgroundColor: withAlpha(redDefault, 0.3),
-    paddingVertical: layout.padding_x0_5,
-    paddingHorizontal: layout.padding_x1_5,
-    borderRadius: 100,
-    ...(fontSemibold12 as object),
-  },
-  breedingsLeftTxt: {
-    position: "absolute",
-    zIndex: 1,
-    top: 10,
-    left: 10,
-    width: "auto",
-    alignItems: "center",
-  },
-  ripperImage: {
-    width: 180,
-    height: 180,
-  },
-});
+const stakedTitleStyle: TextStyle = {
+  ...fontSemibold12,
+  position: "absolute",
+  top: 2 * layout.padding_x4,
+  color: redDefault,
+  backgroundColor: withAlpha(redDefault, 0.3),
+  paddingVertical: layout.padding_x0_5,
+  paddingHorizontal: layout.padding_x1_5,
+  borderRadius: 100,
+};
+const breedingsLeftTxtStyle: ViewStyle = {
+  position: "absolute",
+  zIndex: 1,
+  top: 10,
+  left: 10,
+  width: "auto",
+  alignItems: "center",
+};
+const ripperImageStyle: ImageStyle = {
+  width: 180,
+  height: 180,
+};

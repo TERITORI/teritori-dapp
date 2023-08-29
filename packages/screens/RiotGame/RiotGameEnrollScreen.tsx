@@ -3,7 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { ResizeMode, Video } from "expo-av";
 import moment from "moment";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { FlatList, Pressable, StyleSheet, View } from "react-native";
+import { FlatList, Pressable, TextStyle, View, ViewStyle } from "react-native";
 import { useSelector } from "react-redux";
 
 import { EnrollSlot } from "./component/EnrollSlot";
@@ -265,11 +265,11 @@ export const RiotGameEnrollScreen = () => {
   return (
     <GameContentView>
       <View>
-        <BrandText style={styles.pageTitle}>Send to fight</BrandText>
+        <BrandText style={pageTitleStyle}>Send to fight</BrandText>
       </View>
 
-      <View style={styles.enrollContainer}>
-        <View style={[styles.col, { maxWidth: 575 }]}>
+      <View style={enrollContainerStyle}>
+        <View style={[colStyle, { maxWidth: 575 }]}>
           <View
             style={{
               marginTop: layout.padding_x1,
@@ -322,10 +322,10 @@ export const RiotGameEnrollScreen = () => {
               ) : null
             }
             renderItem={({ item: slotId }) => (
-              <View style={styles.ripperSlot}>
+              <View style={ripperSlotStyle}>
                 {selectedRippers[slotId] && (
                   <Pressable
-                    style={styles.clearIcon}
+                    style={clearIconStyle}
                     onPress={() => clearSlot(slotId)}
                   >
                     <SVG width={20} height={20} source={closeSVG} />
@@ -342,7 +342,7 @@ export const RiotGameEnrollScreen = () => {
           />
         </View>
 
-        <View style={[styles.col, { maxWidth: 540 }]}>
+        <View style={[colStyle, { maxWidth: 540 }]}>
           <View style={{ marginTop: layout.padding_x1, width: "100%" }}>
             <BrandText style={fontMedium32}>Staking duration</BrandText>
           </View>
@@ -363,7 +363,7 @@ export const RiotGameEnrollScreen = () => {
             </BrandText>
           </TertiaryBox>
 
-          <View style={styles.videoContainer}>
+          <View style={videoContainerStyle}>
             <Video
               ref={videoRef}
               style={{ borderRadius: 25 }}
@@ -424,36 +424,34 @@ export const RiotGameEnrollScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  pageTitle: {
-    alignSelf: "center",
-    ...(fontMedium48 as object),
-  },
-  enrollContainer: {
-    justifyContent: "space-around",
-    marginTop: layout.padding_x1,
-    flexDirection: "row",
-    flexWrap: "wrap",
-  },
-  col: {
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
-  },
-  ripperSlot: {
-    marginRight: layout.padding_x2_5,
-    marginTop: layout.padding_x2_5,
-  },
-  videoContainer: {
-    marginTop: layout.padding_x2_5,
-    alignSelf: "center",
-    width: embeddedVideoWidth,
-    height: embeddedVideoHeight,
-  },
-  clearIcon: {
-    position: "absolute",
-    right: layout.padding_x1,
-    top: layout.padding_x1,
-    zIndex: 1,
-  },
-});
+const pageTitleStyle: TextStyle = {
+  ...fontMedium48,
+  alignSelf: "center",
+};
+const enrollContainerStyle: ViewStyle = {
+  justifyContent: "space-around",
+  marginTop: layout.padding_x1,
+  flexDirection: "row",
+  flexWrap: "wrap",
+};
+const colStyle: ViewStyle = {
+  justifyContent: "center",
+  alignItems: "center",
+  width: "100%",
+};
+const ripperSlotStyle: ViewStyle = {
+  marginRight: layout.padding_x2_5,
+  marginTop: layout.padding_x2_5,
+};
+const videoContainerStyle: ViewStyle = {
+  marginTop: layout.padding_x2_5,
+  alignSelf: "center",
+  width: embeddedVideoWidth,
+  height: embeddedVideoHeight,
+};
+const clearIconStyle: ViewStyle = {
+  position: "absolute",
+  right: layout.padding_x1,
+  top: layout.padding_x1,
+  zIndex: 1,
+};

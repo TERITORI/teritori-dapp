@@ -1,5 +1,5 @@
 import React from "react";
-import { Image, StyleSheet, View } from "react-native";
+import { Image, ImageStyle, TextStyle, View, ViewStyle } from "react-native";
 
 import dorgSVG from "../../../../assets/icons/dorg-icon.svg";
 import { BrandText } from "../../../components/BrandText";
@@ -20,47 +20,46 @@ export const ImagePreviewer: React.FC<ImagePreviewerProps> = ({
 }) => {
   return (
     <View>
-      <View style={styles.imagePreviewer}>
+      <View style={imagePreviewerStyle}>
         {uri ? (
           <Image
             source={{ uri: ipfsURLToHTTPURL(uri) }}
-            style={styles.image}
+            style={imageStyle}
             onError={onError}
           />
         ) : (
           <SVG
             source={dorgSVG}
-            height={styles.image.height}
-            width={styles.image.width}
+            height={imageStyle.height}
+            width={imageStyle.width}
           />
         )}
       </View>
 
-      <BrandText style={styles.text}>Preview</BrandText>
+      <BrandText style={textStyle}>Preview</BrandText>
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  imagePreviewer: {
-    height: 140,
-    width: 140,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: neutral33,
-    backgroundColor: neutral22,
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: layout.padding_x1_5,
-    overflow: "hidden",
-  },
-  image: {
-    height: 140,
-    width: 140,
-    borderRadius: 12,
-  },
-  text: StyleSheet.flatten([
-    fontSemibold14,
-    { color: neutralA3, textAlign: "center" },
-  ]),
-});
+const imagePreviewerStyle: ViewStyle = {
+  height: 140,
+  width: 140,
+  borderRadius: 12,
+  borderWidth: 1,
+  borderColor: neutral33,
+  backgroundColor: neutral22,
+  justifyContent: "center",
+  alignItems: "center",
+  marginBottom: layout.padding_x1_5,
+  overflow: "hidden",
+};
+const imageStyle: ImageStyle = {
+  height: 140,
+  width: 140,
+  borderRadius: 12,
+};
+const textStyle: TextStyle = {
+  ...fontSemibold14,
+  color: neutralA3,
+  textAlign: "center",
+};

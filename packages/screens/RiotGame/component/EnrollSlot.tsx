@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet } from "react-native";
+import { ImageStyle, TextStyle } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 import addSVG from "../../../../assets/icons/add.svg";
@@ -49,15 +49,13 @@ export const EnrollSlot: React.FC<EnrollSlotProps> = ({
         {ripper ? (
           <>
             <OptimizedImage
-              style={[styles.ripperImage, isStaked && { opacity: 0.4 }]}
+              style={[ripperImageStyle, isStaked && { opacity: 0.4 }]}
               sourceURI={ripper.imageUri}
               width={imageSize}
               height={imageSize}
             />
 
-            {isStaked && (
-              <BrandText style={styles.stakedTitle}>Staked</BrandText>
-            )}
+            {isStaked && <BrandText style={stakedTitleStyle}>Staked</BrandText>}
           </>
         ) : (
           <SVG
@@ -69,37 +67,35 @@ export const EnrollSlot: React.FC<EnrollSlotProps> = ({
           />
         )}
         {isLeader && (
-          <BrandText style={styles.leaderTitle}>Squad Leader</BrandText>
+          <BrandText style={leaderTitleStyle}>Squad Leader</BrandText>
         )}
       </TertiaryBox>
     </TouchableOpacity>
   );
 };
 
-const styles = StyleSheet.create({
-  stakedTitle: {
-    position: "absolute",
-    top: 20,
-    color: redDefault,
-    backgroundColor: withAlpha(redDefault, 0.3),
-    paddingVertical: layout.padding_x0_5,
-    paddingHorizontal: layout.padding_x1_5,
-    borderRadius: 100,
-    ...(fontSemibold12 as object),
-  },
+const stakedTitleStyle: TextStyle = {
+  ...fontSemibold12,
+  position: "absolute",
+  top: 20,
+  color: redDefault,
+  backgroundColor: withAlpha(redDefault, 0.3),
+  paddingVertical: layout.padding_x0_5,
+  paddingHorizontal: layout.padding_x1_5,
+  borderRadius: 100,
+};
 
-  leaderTitle: {
-    position: "absolute",
-    bottom: 20,
-    color: yellowDefault,
-    backgroundColor: withAlpha(orangeLight, 0.3),
-    paddingVertical: layout.padding_x0_5,
-    paddingHorizontal: layout.padding_x1_5,
-    borderRadius: 100,
-    ...(fontSemibold12 as object),
-  },
-  ripperImage: {
-    width: 120,
-    height: 120,
-  },
-});
+const leaderTitleStyle: TextStyle = {
+  ...fontSemibold12,
+  position: "absolute",
+  bottom: 20,
+  color: yellowDefault,
+  backgroundColor: withAlpha(orangeLight, 0.3),
+  paddingVertical: layout.padding_x0_5,
+  paddingHorizontal: layout.padding_x1_5,
+  borderRadius: 100,
+};
+const ripperImageStyle: ImageStyle = {
+  width: 120,
+  height: 120,
+};

@@ -1,6 +1,5 @@
-// libraries
 import React, { useEffect, useRef, useState } from "react";
-import { StyleSheet, TextProps, View, ViewStyle } from "react-native";
+import { TextProps, TextStyle, View, ViewStyle } from "react-native";
 import Animated, {
   useAnimatedRef,
   useAnimatedStyle,
@@ -57,7 +56,7 @@ export const ErrorText: React.FC<ErrorTextProps> = ({
           },
         }) => (heightRef.current = h)}
       >
-        <BrandText style={[styles.text, style]} {...restProps}>
+        <BrandText style={[textStyle, style]} {...restProps}>
           {children}
         </BrandText>
       </View>
@@ -65,12 +64,8 @@ export const ErrorText: React.FC<ErrorTextProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  text: StyleSheet.flatten([
-    fontSemibold14,
-    {
-      marginTop: 6,
-      color: errorColor,
-    },
-  ]),
-});
+const textStyle: TextStyle = {
+  ...fontSemibold14,
+  marginTop: 6,
+  color: errorColor,
+};

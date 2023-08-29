@@ -1,6 +1,6 @@
 // libraries
 import React, { useRef } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Pressable, View, ViewStyle } from "react-native";
 
 import chevronDownSVG from "../../../../assets/icons/chevron-down.svg";
 import infoSVG from "../../../../assets/icons/info.svg";
@@ -49,9 +49,9 @@ export const AccountListDropdown: React.FC<AccountListDropdownProps> = ({
 
   // returns
   return (
-    <View ref={dropdownRef} style={styles.container}>
+    <View ref={dropdownRef} style={containerStyle}>
       <Pressable
-        style={styles.button}
+        style={buttonStyle}
         onPress={() => onPressDropdownButton(dropdownRef)}
       >
         <SVG
@@ -64,15 +64,15 @@ export const AccountListDropdown: React.FC<AccountListDropdownProps> = ({
       {isDropdownOpen(dropdownRef) && (
         <View
           style={[
-            styles.networkContainer,
+            networkContainerStyle,
             variation === "left" && { left: 0, right: undefined },
           ]}
         >
-          <View style={styles.rowCenter}>
+          <View style={rowCenterStyle}>
             <BrandText style={fontSemibold16}>Choose Network</BrandText>
           </View>
           <SpacerColumn size={1} />
-          <View style={styles.rowCenter}>
+          <View style={rowCenterStyle}>
             <BrandText style={[fontSemibold14, { color: neutral77 }]}>
               IBC Transfers
             </BrandText>
@@ -84,11 +84,11 @@ export const AccountListDropdown: React.FC<AccountListDropdownProps> = ({
           {accounts.map((acc, index) => (
             <View key={acc.account} style={{ width: "100%" }}>
               <Pressable onPress={() => onPress(acc)}>
-                <View style={styles.rowCenter}>
+                <View style={rowCenterStyle}>
                   <SVG source={acc.icon} width={48} height={48} />
                   <SpacerRow size={1.5} />
                   <View>
-                    <View style={styles.rowCenter}>
+                    <View style={rowCenterStyle}>
                       <BrandText style={fontSemibold20}>{acc.name}</BrandText>
                       <SpacerRow size={1.5} />
                     </View>
@@ -107,41 +107,33 @@ export const AccountListDropdown: React.FC<AccountListDropdownProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    position: "relative",
-    zIndex: 2,
-  },
-  rowCenter: {
-    flexDirection: "row",
-    alignItems: "center",
-    width: "100%",
-  },
-  button: {
-    backgroundColor: neutral22,
-    borderWidth: 1,
-    borderColor: neutral33,
-    borderRadius: layout.iconButton / 2,
-    justifyContent: "center",
-    alignItems: "center",
-    height: layout.iconButton,
-    width: layout.iconButton,
-  },
-  infoText: StyleSheet.flatten([
-    fontSemibold14,
-    {
-      color: neutral77,
-    },
-  ]),
-  networkContainer: {
-    position: "absolute",
-    zIndex: 2,
-    top: layout.iconButton + layout.padding_x0_5,
-    backgroundColor: neutral00,
-    padding: layout.padding_x2_5,
-    borderColor: neutral33,
-    borderWidth: 1,
-    borderRadius: 12,
-    right: 0,
-  },
-});
+const containerStyle: ViewStyle = {
+  position: "relative",
+  zIndex: 2,
+};
+const rowCenterStyle: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  width: "100%",
+};
+const buttonStyle: ViewStyle = {
+  backgroundColor: neutral22,
+  borderWidth: 1,
+  borderColor: neutral33,
+  borderRadius: layout.iconButton / 2,
+  justifyContent: "center",
+  alignItems: "center",
+  height: layout.iconButton,
+  width: layout.iconButton,
+};
+const networkContainerStyle: ViewStyle = {
+  position: "absolute",
+  zIndex: 2,
+  top: layout.iconButton + layout.padding_x0_5,
+  backgroundColor: neutral00,
+  padding: layout.padding_x2_5,
+  borderColor: neutral33,
+  borderWidth: 1,
+  borderRadius: 12,
+  right: 0,
+};

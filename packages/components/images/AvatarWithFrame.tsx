@@ -53,14 +53,14 @@ export const AvatarWithFrame: React.FC<{
     [size]
   );
   return (
-    <View style={[styles.container, style]}>
+    <View style={[containerStyle, style]}>
       <SVG
         source={emptyCircleFrameSVG}
         width={sizedStyles.frame.width}
         height={sizedStyles.frame.height}
       />
 
-      <AnimationFadeIn style={styles.absolute}>
+      <AnimationFadeIn style={absoluteStyle}>
         <OptimizedImage
           width={sizedStyles.image.width}
           height={sizedStyles.image.height}
@@ -87,16 +87,14 @@ export const AvatarWithFrame: React.FC<{
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  absolute: {
-    position: "absolute",
-    zIndex: 2,
-  },
-});
+const containerStyle: ViewStyle = {
+  alignItems: "center",
+  justifyContent: "center",
+};
+const absoluteStyle: ViewStyle = {
+  position: "absolute",
+  zIndex: 2,
+};
 
 const flatStyles = {
   XL: {

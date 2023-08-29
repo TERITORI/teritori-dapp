@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, TextInput, View } from "react-native";
+import { TextInput, TextStyle, View, ViewStyle } from "react-native";
 import Slider from "react-native-smooth-slider";
 
 import { BrandText } from "./BrandText";
@@ -29,7 +29,7 @@ export const RangeSlider: React.FC<RangeSliderProps> = ({
       <BrandText style={[fontSemibold14, { color: neutralA3 }]}>
         {label}
       </BrandText>
-      <View style={styles.row}>
+      <View style={rowStyle}>
         <Slider
           value={value}
           onValueChange={(val: number) => onValueChange(Math.round(val))}
@@ -42,26 +42,22 @@ export const RangeSlider: React.FC<RangeSliderProps> = ({
             width: 464,
           }}
         />
-        <TextInput value={`${value} %`} style={styles.input} />
+        <TextInput value={`${value} %`} style={inputStyle} />
       </View>
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  row: { flexDirection: "row", alignItems: "center" },
-  input: StyleSheet.flatten([
-    fontSemibold14,
-    {
-      color: secondaryColor,
-      borderWidth: 1,
-      padding: layout.padding_x2,
-      marginLeft: layout.padding_x2,
-      borderColor: neutral33,
-      borderRadius: 12,
-      width: 70,
-      justifyContent: "center",
-      textAlign: "center",
-    },
-  ]),
-});
+const rowStyle: ViewStyle = { flexDirection: "row", alignItems: "center" };
+const inputStyle: TextStyle = {
+  ...fontSemibold14,
+  color: secondaryColor,
+  borderWidth: 1,
+  padding: layout.padding_x2,
+  marginLeft: layout.padding_x2,
+  borderColor: neutral33,
+  borderRadius: 12,
+  width: 70,
+  justifyContent: "center",
+  textAlign: "center",
+};

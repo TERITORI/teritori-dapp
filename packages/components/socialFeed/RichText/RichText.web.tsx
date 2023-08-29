@@ -38,12 +38,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import {
-  ScrollView,
-  StyleSheet,
-  useWindowDimensions,
-  View,
-} from "react-native";
+import { ScrollView, useWindowDimensions, View, ViewStyle } from "react-native";
 
 import { RichHashtagRenderer } from "./RichRenderer/RichHashtagRenderer";
 import { RichHashtagRendererConsultation } from "./RichRenderer/RichHashtagRendererConsultation";
@@ -323,17 +318,17 @@ export const RichText: React.FC<RichTextProps> = ({
 
   /////////////// TOOLBAR BUTTONS ////////////////
   const Buttons: React.FC<{ externalProps: any }> = ({ externalProps }) => (
-    <View style={styles.toolbarButtonsWrapper}>
+    <View style={toolbarButtonsWrapperStyle}>
       <EmojiSelector
         onEmojiSelected={(emoji) => addEmoji(emoji)}
-        buttonStyle={styles.toolbarCustomButton}
-        iconStyle={styles.toolbarCustomButtonIcon}
+        buttonStyle={toolbarCustomButtonStyle}
+        iconStyle={toolbarCustomButtonIconStyle}
       />
 
       <GIFSelector
         onGIFSelected={(url) => (url ? addGIF(url) : undefined)}
-        buttonStyle={styles.toolbarCustomButton}
-        iconStyle={styles.toolbarCustomButtonIcon}
+        buttonStyle={toolbarCustomButtonStyle}
+        iconStyle={toolbarCustomButtonIconStyle}
         disabled={isGIFSelectorDisabled}
       />
 
@@ -345,7 +340,7 @@ export const RichText: React.FC<RichTextProps> = ({
           <IconBox
             icon={audioSVG}
             onPress={onPress}
-            style={[styles.toolbarCustomButtonIcon, styles.toolbarCustomButton]}
+            style={[toolbarCustomButtonIconStyle, toolbarCustomButtonStyle]}
             disabled={isAudioUploadDisabled}
           />
         )}
@@ -359,7 +354,7 @@ export const RichText: React.FC<RichTextProps> = ({
           <IconBox
             icon={videoSVG}
             onPress={onPress}
-            style={[styles.toolbarCustomButtonIcon, styles.toolbarCustomButton]}
+            style={[toolbarCustomButtonIconStyle, toolbarCustomButtonStyle]}
             disabled={isVideoUploadDisabled}
           />
         )}
@@ -373,7 +368,7 @@ export const RichText: React.FC<RichTextProps> = ({
           <IconBox
             icon={cameraSVG}
             onPress={onPress}
-            style={[styles.toolbarCustomButtonIcon, styles.toolbarCustomButton]}
+            style={[toolbarCustomButtonIconStyle, toolbarCustomButtonStyle]}
             iconProps={{
               width: 18,
               height: 18,
@@ -386,7 +381,7 @@ export const RichText: React.FC<RichTextProps> = ({
       {/*<IconBox*/}
       {/*  icon={embedSVG}*/}
       {/*  onPress={() => addEmbedded("https://www.youtube.com/watch?v=jNQXAC9IVRw")}*/}
-      {/*  style={styles.toolbarCustomButton}*/}
+      {/*  style={toolbarCustomButtonStyle}*/}
       {/*  iconProps={{*/}
       {/*    width: 18,*/}
       {/*    height: 18,*/}
@@ -497,23 +492,21 @@ export const RichText: React.FC<RichTextProps> = ({
 };
 
 /////////////// STYLES ////////////////
-const styles = StyleSheet.create({
-  toolbarCustomButton: {
-    margin: layout.padding_x0_5,
-  },
-  toolbarCustomButtonIcon: {
-    borderRadius: 4,
-    height: 30,
-    width: 30,
-  },
-  toolbarButtonsWrapper: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
-    flexWrap: "wrap",
-  },
-});
+const toolbarCustomButtonStyle: ViewStyle = {
+  margin: layout.padding_x0_5,
+};
+const toolbarCustomButtonIconStyle: ViewStyle = {
+  borderRadius: 4,
+  height: 30,
+  width: 30,
+};
+const toolbarButtonsWrapperStyle: ViewStyle = {
+  flexDirection: "row",
+  justifyContent: "center",
+  alignItems: "center",
+  width: "100%",
+  flexWrap: "wrap",
+};
 
 /////////////// SOME FUNCTIONS ////////////////
 const createStateFromHTML = (html: string) => {

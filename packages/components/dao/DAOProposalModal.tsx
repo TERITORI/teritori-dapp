@@ -1,13 +1,13 @@
 import { cloneDeep } from "lodash";
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { TextStyle, View, ViewStyle } from "react-native";
 
 import { ProposalActions } from "./ProposalActions";
 import { CosmosMsgForEmpty } from "../../contracts-clients/dao-proposal-single/DaoProposalSingle.types";
 import { AppProposalResponse } from "../../hooks/dao/useDAOProposals";
 import { useNSPrimaryAlias } from "../../hooks/useNSPrimaryAlias";
 import { getCosmosNetwork, getUserId, parseUserId } from "../../networks";
-import { neutral33, neutral77, secondaryColor } from "../../utils/style/colors";
+import { neutral77, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { modalMarginPadding } from "../../utils/style/modals";
 import { BrandText } from "../BrandText";
@@ -36,8 +36,8 @@ export const DAOProposalModal: React.FC<{
       scrollable
       width={800}
     >
-      <View style={styles.container}>
-        <View style={styles.body}>
+      <View style={containerStyle}>
+        <View style={bodyStyle}>
           {proposalInfo.proposal.title && (
             <>
               <BrandText style={fontSemibold14}>
@@ -46,9 +46,9 @@ export const DAOProposalModal: React.FC<{
               <SpacerColumn size={2.5} />
             </>
           )}
-          <View style={styles.row}>
+          <View style={rowStyle}>
             <BrandText style={fontSemibold14}>Creator: </BrandText>
-            <BrandText style={styles.textGray}>
+            <BrandText style={textGrayStyle}>
               {primaryAlias
                 ? `@${primaryAlias}`
                 : proposalInfo.proposal.proposer}
@@ -153,36 +153,27 @@ const MessagePreview: React.FC<{
     }
   }
   return (
-    <BrandText style={styles.textGray}>
+    <BrandText style={textGrayStyle}>
       {typeof message === "string" ? message : JSON.stringify(m, null, 4)}
     </BrandText>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    marginTop: 10,
-    flexDirection: "column",
-  },
-  body: {
-    flexDirection: "column",
-    marginBottom: 10,
-  },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
+const containerStyle: ViewStyle = {
+  marginTop: 10,
+  flexDirection: "column",
+};
+const bodyStyle: ViewStyle = {
+  flexDirection: "column",
+  marginBottom: 10,
+};
+const rowStyle: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+};
 
-  textGray: StyleSheet.flatten([
-    fontSemibold14,
-    {
-      color: secondaryColor,
-      opacity: 0.5,
-    },
-  ]),
-  footer: {
-    borderColor: neutral33,
-    borderTopWidth: 1,
-    paddingVertical: 10,
-  },
-});
+const textGrayStyle: TextStyle = {
+  ...fontSemibold14,
+  color: secondaryColor,
+  opacity: 0.5,
+};

@@ -15,6 +15,7 @@ import {
   View,
   Animated,
   LayoutChangeEvent,
+  ViewStyle,
 } from "react-native";
 
 import { CurrencyAmount } from "./CurrencyAmount";
@@ -53,7 +54,6 @@ import {
 } from "../../../../networks";
 import { Balance } from "../../../../utils/coins";
 import {
-  neutral00,
   neutral77,
   neutralA3,
   primaryColor,
@@ -71,10 +71,10 @@ export const SwapHeader: React.FC<{
   networkDisplayName?: string;
 }> = ({ setSettingsOpened, networkDisplayName }) => {
   return (
-    <View style={styles.headerContainer}>
-      <View style={styles.headerLogoTitle}>
+    <View style={headerContainerStyle}>
+      <View style={headerLogoTitleStyle}>
         <SVG source={osmosisLogo} height={32} width={32} />
-        <BrandText style={styles.headerTitle}>
+        <BrandText style={headerTitleStyle}>
           Swap on {networkDisplayName || "Osmosis"}
         </BrandText>
       </View>
@@ -371,16 +371,16 @@ export const SwapView: React.FC = () => {
 
         <View style={{ width: "100%", paddingHorizontal: layout.padding_x2_5 }}>
           <SeparatorGradient style={{ marginBottom: layout.padding_x2_5 }} />
-          <View style={styles.childrenContainer}>
-            <View style={styles.currencies}>
+          <View style={childrenContainerStyle}>
+            <View style={currenciesStyle}>
               {/*======= First currency */}
               <TertiaryBox
                 fullWidth
-                mainContainerStyle={styles.currencyBoxMainContainer}
+                mainContainerStyle={currencyBoxMainContainerStyle}
               >
                 {/*----- Selected currencyIn available amount */}
-                <View style={styles.counts}>
-                  <BrandText style={styles.availableAmount}>
+                <View style={countsStyle}>
+                  <BrandText style={availableAmountStyle}>
                     Available{" "}
                     <BrandText style={{ color: primaryColor }}>
                       {currencyInAmount}
@@ -409,7 +409,7 @@ export const SwapView: React.FC = () => {
                     transform: [{ translateY: translateRangeToBottom }],
                   }}
                 >
-                  <View style={styles.currency}>
+                  <View style={currencyStyle}>
                     <SelectedCurrency
                       currency={currencyInNative}
                       selectedNetworkId={selectedNetworkId}
@@ -418,13 +418,13 @@ export const SwapView: React.FC = () => {
                     {/*----- Desired amount for swap */}
                     <View>
                       <TextInput
-                        style={styles.inputAmount}
+                        style={inputAmountStyle}
                         value={amountIn}
                         placeholder="0"
                         placeholderTextColor={neutralA3}
                         onChangeText={onChangeAmountIn}
                       />
-                      <BrandText style={styles.amountUsd}>
+                      <BrandText style={amountUsdStyle}>
                         ≈ ${parseFloat(amountInUsd.toFixed(2).toString())}
                       </BrandText>
                     </View>
@@ -436,13 +436,13 @@ export const SwapView: React.FC = () => {
               <SpacerColumn size={1.5} />
               <TertiaryBox
                 fullWidth
-                mainContainerStyle={styles.currencyBoxMainContainer}
+                mainContainerStyle={currencyBoxMainContainerStyle}
               >
                 <>
                   {/*----- Invert button */}
                   <CustomPressable
                     onPress={onPressInvert}
-                    style={styles.invertButton}
+                    style={invertButtonStyle}
                   >
                     {({ hovered }) => (
                       <SVG
@@ -461,7 +461,7 @@ export const SwapView: React.FC = () => {
                       transform: [{ translateY: translateRangeToTop }],
                     }}
                   >
-                    <View style={styles.currency}>
+                    <View style={currencyStyle}>
                       <SelectedCurrency
                         currency={currencyOutNative}
                         selectedNetworkId={selectedNetworkId}
@@ -542,91 +542,65 @@ export const SwapView: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  loaderContainer: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    width: "100%",
-    height: "100%",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  loaderBackground: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    backgroundColor: neutral00,
-    opacity: 0.6,
-    width: "100%",
-    height: "100%",
-  },
-  loader: {
-    position: "absolute",
-  },
+const headerContainerStyle: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between",
+  flex: 1,
+};
+const headerLogoTitleStyle: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+};
+const headerTitleStyle: ViewStyle = {
+  marginLeft: layout.padding_x2,
+};
 
-  headerContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    flex: 1,
-  },
-  headerLogoTitle: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  headerTitle: {
-    marginLeft: layout.padding_x2,
-  },
+const childrenContainerStyle: ViewStyle = {
+  alignItems: "center",
+  paddingBottom: layout.padding_x2_5,
+};
+const currencyBoxMainContainerStyle: ViewStyle = {
+  padding: layout.padding_x2,
+};
 
-  childrenContainer: {
-    alignItems: "center",
-    paddingBottom: layout.padding_x2_5,
-  },
-  currencyBoxMainContainer: {
-    padding: layout.padding_x2,
-  },
+const countsStyle: ViewStyle = {
+  flexDirection: "row",
+  justifyContent: "space-between",
+  alignItems: "center",
+  width: "100%",
+  marginBottom: layout.padding_x2,
+};
+const currenciesStyle: ViewStyle = {
+  width: "100%",
+};
 
-  counts: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    width: "100%",
-    marginBottom: layout.padding_x2,
-  },
-  currencies: {
-    width: "100%",
-  },
-
-  currency: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    width: "100%",
-  },
-  invertButton: {
-    position: "absolute",
-    zIndex: 20,
-    top: -24,
-  },
-  availableAmount: {
-    color: neutral77,
-    ...StyleSheet.flatten(fontSemibold14),
-  },
-  inputAmount: {
-    height: "100%",
-    outlineStyle: "none",
-    color: secondaryColor,
-    maxWidth: 200,
-    textAlign: "right",
-    ...StyleSheet.flatten(fontSemibold20),
-  },
-  amount: {
-    textAlign: "right",
-  },
-  amountUsd: {
-    color: neutralA3,
-    textAlign: "right",
-    ...StyleSheet.flatten(fontSemibold14),
-  },
-});
+const currencyStyle: ViewStyle = {
+  flexDirection: "row",
+  justifyContent: "space-between",
+  alignItems: "center",
+  width: "100%",
+};
+const invertButtonStyle: ViewStyle = {
+  position: "absolute",
+  zIndex: 20,
+  top: -24,
+};
+const availableAmountStyle: ViewStyle = {
+  color: neutral77,
+  ...StyleSheet.flatten(fontSemibold14),
+};
+const inputAmountStyle: ViewStyle = {
+  height: "100%",
+  // @ts-expect-error
+  outlineStyle: "none",
+  color: secondaryColor,
+  maxWidth: 200,
+  textAlign: "right",
+  ...StyleSheet.flatten(fontSemibold20),
+};
+const amountUsdStyle: ViewStyle = {
+  color: neutralA3,
+  textAlign: "right",
+  ...StyleSheet.flatten(fontSemibold14),
+};

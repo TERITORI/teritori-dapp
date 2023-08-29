@@ -1,6 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, TextStyle, View, ViewStyle } from "react-native";
 
 import { ImagePreviewer } from "./ImagePreviewer";
 import { RadioDescriptionSelector } from "./RadioDescriptionSelector";
@@ -52,20 +52,20 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
 
   // returns
   return (
-    <View style={styles.fill}>
-      <ScrollView contentContainerStyle={styles.container}>
+    <View style={fillStyle}>
+      <ScrollView contentContainerStyle={containerStyle}>
         <BrandText style={fontSemibold28}>
           Create a Teritori Organization
         </BrandText>
         <SpacerColumn size={2} />
-        <BrandText style={styles.sectionTitle}>Claim a name</BrandText>
+        <BrandText style={sectionTitleStyle}>Claim a name</BrandText>
         <SpacerColumn size={2.5} />
-        <View style={styles.section}>
+        <View style={sectionStyle}>
           <ImagePreviewer uri={uri} onError={onErrorImageLoading} />
           <SpacerRow size={2.5} />
-          <View style={styles.fill}>
-            <View style={styles.row}>
-              <View style={styles.fill}>
+          <View style={fillStyle}>
+            <View style={rowStyle}>
+              <View style={fillStyle}>
                 <TextInputCustom<CreateDaoFormType>
                   noBrokenCorners
                   variant="labelOutside"
@@ -77,7 +77,7 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
                 />
               </View>
               <SpacerRow size={2.5} />
-              <View style={styles.fill}>
+              <View style={fillStyle}>
                 <TextInputCustom<CreateDaoFormType>
                   noBrokenCorners
                   variant="labelOutside"
@@ -128,10 +128,10 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
           </View>
         </View>
 
-        <BrandText style={styles.sectionTitle}>Choose a structure</BrandText>
+        <BrandText style={sectionTitleStyle}>Choose a structure</BrandText>
         <SpacerColumn size={2} />
-        <View style={styles.row}>
-          <View style={styles.fill}>
+        <View style={rowStyle}>
+          <View style={fillStyle}>
             <RadioDescriptionSelector
               selected={selectedRadioStructure === DaoType.MEMBER_BASED}
               onPress={() => setValue("structure", DaoType.MEMBER_BASED)}
@@ -140,7 +140,7 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
             />
           </View>
           <SpacerRow size={2} />
-          <View style={styles.fill}>
+          <View style={fillStyle}>
             <RadioDescriptionSelector
               disabled
               selected={selectedRadioStructure === DaoType.TOKEN_BASED}
@@ -153,7 +153,7 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
         <SpacerColumn size={2} />
       </ScrollView>
 
-      <View style={styles.footer}>
+      <View style={footerStyle}>
         <PrimaryButton
           size="M"
           text={`Next: ${ORGANIZATION_DEPLOYER_STEPS[1]}`}
@@ -165,30 +165,31 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    padding: layout.contentPadding,
-    paddingRight: layout.padding_x2_5,
-    paddingTop: layout.topContentPaddingWithHeading,
-  },
-  sectionTitle: StyleSheet.flatten([fontSemibold20, { color: neutral77 }]),
-  section: {
-    borderRadius: 12,
-    borderColor: neutral33,
-    borderWidth: 1,
-    padding: layout.padding_x2_5,
-    flexDirection: "row",
-    marginBottom: layout.padding_x4,
-  },
-  row: { flexDirection: "row" },
-  fill: { flex: 1 },
+const containerStyle: ViewStyle = {
+  padding: layout.contentPadding,
+  paddingRight: layout.padding_x2_5,
+  paddingTop: layout.topContentPaddingWithHeading,
+};
+const sectionTitleStyle: TextStyle = {
+  ...fontSemibold20,
+  color: neutral77,
+};
+const sectionStyle: ViewStyle = {
+  borderRadius: 12,
+  borderColor: neutral33,
+  borderWidth: 1,
+  padding: layout.padding_x2_5,
+  flexDirection: "row",
+  marginBottom: layout.padding_x4,
+};
+const rowStyle: ViewStyle = { flexDirection: "row" };
+const fillStyle: ViewStyle = { flex: 1 };
 
-  footer: {
-    justifyContent: "flex-end",
-    alignItems: "flex-end",
-    paddingVertical: layout.padding_x1_5,
-    paddingHorizontal: layout.padding_x2_5,
-    borderTopWidth: 1,
-    borderColor: neutral33,
-  },
-});
+const footerStyle: ViewStyle = {
+  justifyContent: "flex-end",
+  alignItems: "flex-end",
+  paddingVertical: layout.padding_x1_5,
+  paddingHorizontal: layout.padding_x2_5,
+  borderTopWidth: 1,
+  borderColor: neutral33,
+};

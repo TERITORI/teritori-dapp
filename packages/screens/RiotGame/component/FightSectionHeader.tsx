@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { TextStyle, View, ViewStyle } from "react-native";
 
 import { SimpleButton } from "./SimpleButton";
 import addCircleSVG from "../../../../assets/icons/add-circle.svg";
@@ -28,11 +28,11 @@ export const FightSectionHeader: React.FC<FightSectionHeaderProps> = ({
   };
 
   return (
-    <FlexRow style={styles.section} breakpoint={992}>
+    <FlexRow style={sectionStyle} breakpoint={992}>
       <View style={{ flex: 1 }} />
       <View style={{ flexDirection: "row" }}>
-        <BrandText style={styles.pageTitle}>{title}</BrandText>
-        <View style={styles.totalContainer}>
+        <BrandText style={pageTitleStyle}>{title}</BrandText>
+        <View style={totalContainerStyle}>
           <BrandText style={[fontSemibold28, { color: yellowDefault }]}>
             {total}
           </BrandText>
@@ -42,7 +42,7 @@ export const FightSectionHeader: React.FC<FightSectionHeaderProps> = ({
       <View style={{ flex: 1 }}>
         {hasStakeButton && (
           <SimpleButton
-            containerStyle={styles.btnStake}
+            containerStyle={btnStakeStyle}
             size="XL"
             text="Stake another squad"
             iconSVG={addCircleSVG}
@@ -54,28 +54,23 @@ export const FightSectionHeader: React.FC<FightSectionHeaderProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  pageTitle: {
-    alignSelf: "center",
-    ...(fontMedium48 as object),
-  },
-  section: {
-    paddingHorizontal: layout.padding_x4 * 2,
-  },
-  col: {
-    marginTop: layout.padding_x4,
-  },
-  totalContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: neutral17,
-    width: layout.padding_x4 * 2,
-    height: layout.padding_x4 * 2,
-    borderRadius: layout.padding_x4,
-    marginLeft: layout.padding_x2,
-  },
-  btnStake: {
-    alignSelf: "flex-end",
-  },
-});
+const pageTitleStyle: TextStyle = {
+  ...fontMedium48,
+  alignSelf: "center",
+};
+const sectionStyle: ViewStyle = {
+  paddingHorizontal: layout.padding_x4 * 2,
+};
+const totalContainerStyle: ViewStyle = {
+  flex: 1,
+  justifyContent: "center",
+  alignItems: "center",
+  backgroundColor: neutral17,
+  width: layout.padding_x4 * 2,
+  height: layout.padding_x4 * 2,
+  borderRadius: layout.padding_x4,
+  marginLeft: layout.padding_x2,
+};
+const btnStakeStyle: ViewStyle = {
+  alignSelf: "flex-end",
+};

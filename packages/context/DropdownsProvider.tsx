@@ -5,7 +5,7 @@ import React, {
   useContext,
   useState,
 } from "react";
-import { GestureResponderEvent, Pressable, StyleSheet } from "react-native";
+import { GestureResponderEvent, Pressable, ViewStyle } from "react-native";
 
 interface DefaultValue {
   onPressDropdownButton: (dropdownRef: RefObject<any>) => void;
@@ -74,15 +74,18 @@ export const DropdownsContextProvider: React.FC = ({ children }) => {
         openDropdown,
       }}
     >
-      <Pressable onPressOut={handlePressOut} style={styles.pressable}>
+      <Pressable onPressOut={handlePressOut} style={pressableStyle}>
         {children}
       </Pressable>
     </DropdownsContext.Provider>
   );
 };
 
-const styles = StyleSheet.create({
-  pressable: { height: "100%", width: "100%", cursor: "unset" },
-});
+const pressableStyle: ViewStyle = {
+  height: "100%",
+  width: "100%",
+  // @ts-expect-error
+  cursor: "unset",
+};
 
 export const useDropdowns = () => useContext(DropdownsContext);

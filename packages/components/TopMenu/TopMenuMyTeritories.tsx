@@ -1,5 +1,12 @@
 import React from "react";
-import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
+import {
+  Image,
+  ImageStyle,
+  TextStyle,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+} from "react-native";
 
 import { TopMenuSection } from "./TopMenuSection";
 import orgGnoPunksPNG from "../../../assets/default-images/orgGnopunks.png";
@@ -45,23 +52,21 @@ const OrgCard: React.FC<{ organization: FakeOrg }> = ({ organization }) => {
       <TertiaryBox
         height={48}
         width={ORG_CARD_WIDTH}
-        mainContainerStyle={styles.orgCardBoxMainContainer}
+        mainContainerStyle={orgCardBoxMainContainerStyle}
       >
         <FlexRow alignItems="center">
           <Image
             source={{ uri: organization.image }}
-            style={styles.orgCardImage}
+            style={orgCardImageStyle}
           />
           <FlexCol
             justifyContent="space-between"
             width="auto"
             alignItems="flex-start"
           >
-            <BrandText style={styles.orgCardName}>
-              {organization.name}
-            </BrandText>
+            <BrandText style={orgCardNameStyle}>{organization.name}</BrandText>
             <BrandText
-              style={styles.orgCardTag}
+              style={orgCardTagStyle}
               ellipsizeMode="tail"
               numberOfLines={1}
             >
@@ -76,9 +81,9 @@ const OrgCard: React.FC<{ organization: FakeOrg }> = ({ organization }) => {
 
 const OrgsComingSoon: React.FC = () => (
   <>
-    <FlexCol style={styles.comingSoonBackground} />
-    <FlexCol style={styles.comingSoonContainer}>
-      <BrandText style={styles.comingSoonText}>Coming Soon</BrandText>
+    <FlexCol style={comingSoonBackgroundStyle} />
+    <FlexCol style={comingSoonContainerStyle}>
+      <BrandText style={comingSoonTextStyle}>Coming Soon</BrandText>
     </FlexCol>
   </>
 );
@@ -113,47 +118,45 @@ export const TopMenuMyTeritories: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  comingSoonContainer: {
-    zIndex: 21,
-    height: "100%",
-    justifyContent: "center",
-    position: "absolute",
-    top: 0,
-    left: 0,
-  },
-  comingSoonBackground: {
-    zIndex: 20,
-    backgroundColor: neutral00,
-    height: "100%",
-    position: "absolute",
-    top: 0,
-    left: 0,
-    opacity: 0.7,
-  },
-  comingSoonText: {
-    ...(fontSemibold14 as object),
-  },
+const comingSoonContainerStyle: ViewStyle = {
+  zIndex: 21,
+  height: "100%",
+  justifyContent: "center",
+  position: "absolute",
+  top: 0,
+  left: 0,
+};
+const comingSoonBackgroundStyle: ViewStyle = {
+  zIndex: 20,
+  backgroundColor: neutral00,
+  height: "100%",
+  position: "absolute",
+  top: 0,
+  left: 0,
+  opacity: 0.7,
+};
+const comingSoonTextStyle: TextStyle = {
+  ...fontSemibold14,
+};
 
-  orgCardBoxMainContainer: {
-    paddingVertical: layout.padding_x1,
-    paddingLeft: layout.padding_x1,
-    paddingRight: layout.padding_x1_5,
-  },
-  orgCardImage: {
-    borderRadius: 999,
-    marginRight: layout.padding_x1,
-    minHeight: 32,
-    minWidth: 32,
-    width: 32,
-    height: 32,
-  },
-  orgCardName: {
-    ...(fontBold11 as object),
-  },
-  orgCardTag: {
-    ...(fontMedium10 as object),
-    color: neutral77,
-    width: ORG_CARD_TAG_WIDTH,
-  },
-});
+const orgCardBoxMainContainerStyle: ViewStyle = {
+  paddingVertical: layout.padding_x1,
+  paddingLeft: layout.padding_x1,
+  paddingRight: layout.padding_x1_5,
+};
+const orgCardImageStyle: ImageStyle = {
+  borderRadius: 999,
+  marginRight: layout.padding_x1,
+  minHeight: 32,
+  minWidth: 32,
+  width: 32,
+  height: 32,
+};
+const orgCardNameStyle: TextStyle = {
+  ...fontBold11,
+};
+const orgCardTagStyle: TextStyle = {
+  ...fontMedium10,
+  color: neutral77,
+  width: ORG_CARD_TAG_WIDTH,
+};

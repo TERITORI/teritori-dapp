@@ -4,7 +4,6 @@ import React from "react";
 import {
   ScrollView,
   StyleProp,
-  StyleSheet,
   TextStyle,
   TouchableOpacity,
   View,
@@ -169,7 +168,7 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
                         start={{ x: 0, y: 0.5 }}
                         end={{ x: 1, y: 0.5 }}
                         style={[
-                          styles.selectedBorder,
+                          selectedBorderStyle,
                           { height: 2, width: "100%" },
                         ]}
                         colors={[
@@ -181,7 +180,7 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
                     ) : (
                       <View
                         style={[
-                          styles.selectedBorder,
+                          selectedBorderStyle,
                           { backgroundColor: borderColorTabSelected },
                         ]}
                       />
@@ -197,11 +196,9 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
   );
 };
 
-const styles = StyleSheet.create({
-  selectedBorder: {
-    height: 2,
-    width: "100%",
-    position: "absolute",
-    bottom: -1,
-  },
-});
+const selectedBorderStyle: ViewStyle = {
+  height: 2,
+  width: "100%",
+  position: "absolute",
+  bottom: -1,
+};

@@ -2,7 +2,7 @@ import { Decimal } from "@cosmjs/math";
 import { isDeliverTxFailure } from "@cosmjs/stargate";
 import React, { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, TextStyle, View, ViewStyle } from "react-native";
 
 import { WarningBox } from "./WarningBox";
 import { BrandText } from "../../../components/BrandText";
@@ -142,7 +142,7 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
       <View>
         <BrandText style={fontSemibold20}>Stake Tokens</BrandText>
         <SpacerColumn size={0.5} />
-        <BrandText style={[styles.alternateText, fontSemibold16]}>
+        <BrandText style={[alternateTextStyle, fontSemibold16]}>
           Select a validator and amount of {stakingCurrency?.displayName} to
           stake.
         </BrandText>
@@ -155,7 +155,7 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
     () => (
       <>
         <Separator />
-        <View style={styles.footerRow}>
+        <View style={footerRowStyle}>
           <SecondaryButton
             size="XS"
             text="Cancel"
@@ -184,7 +184,7 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
       childrenBottom={Footer()}
       hideMainSeparator
     >
-      <View style={styles.container}>
+      <View style={containerStyle}>
         <Separator />
         <SpacerColumn size={2.5} />
         <WarningBox
@@ -235,20 +235,18 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    width: 446,
-  },
-  footerRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    width: "100%",
-    padding: layout.padding_x2_5,
-  },
-  alternateText: {
-    ...StyleSheet.flatten(fontSemibold12),
-    color: neutral77,
-    flexShrink: 1,
-  },
-});
+const containerStyle: ViewStyle = {
+  width: 446,
+};
+const footerRowStyle: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between",
+  width: "100%",
+  padding: layout.padding_x2_5,
+};
+const alternateTextStyle: TextStyle = {
+  ...StyleSheet.flatten(fontSemibold12),
+  color: neutral77,
+  flexShrink: 1,
+};

@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, TextProps, StyleSheet } from "react-native";
+import { Text, TextProps, TextStyle } from "react-native";
 import TextTicker from "react-native-text-ticker";
 
 export const BrandTextBase: React.FC<TextProps & { isTicker?: boolean }> = (
@@ -10,7 +10,7 @@ export const BrandTextBase: React.FC<TextProps & { isTicker?: boolean }> = (
   if (isTicker)
     return (
       <TextTicker
-        style={[styles.base, style]}
+        style={[baseStyle, style]}
         duration={4000}
         loop
         repeatSpacer={16}
@@ -20,16 +20,14 @@ export const BrandTextBase: React.FC<TextProps & { isTicker?: boolean }> = (
     );
   else
     return (
-      <Text style={[styles.base, style]} {...otherProps}>
+      <Text style={[baseStyle, style]} {...otherProps}>
         {props.children}
       </Text>
     );
 };
 
-const styles = StyleSheet.create({
-  base: {
-    color: "white",
-    fontSize: 20,
-    fontWeight: "600",
-  },
-});
+const baseStyle: TextStyle = {
+  color: "white",
+  fontSize: 20,
+  fontWeight: "600",
+};

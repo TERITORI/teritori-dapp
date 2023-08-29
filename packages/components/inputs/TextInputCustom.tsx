@@ -19,7 +19,6 @@ import {
 import {
   ActivityIndicator,
   StyleProp,
-  StyleSheet,
   TextInput,
   TextInputProps,
   TextStyle,
@@ -94,7 +93,7 @@ export const Label: React.FC<{
   >
     <BrandText
       style={[
-        styles.labelText,
+        labelTextStyle,
         fontSemibold14,
         style,
         hovered && { color: secondaryColor },
@@ -105,7 +104,7 @@ export const Label: React.FC<{
     {!!isRequired && children && (
       <BrandText
         style={[
-          styles.labelText,
+          labelTextStyle,
           fontSemibold14,
           { color: additionalRed, marginLeft: layout.padding_x0_5 },
         ]}
@@ -122,7 +121,7 @@ export const TextInputCustom = <T extends FieldValues>({
   placeHolder,
   onPressEnter,
   style,
-  textInputStyle,
+  textInputStyle: dynamicTextInputStyle,
   regexp,
   children,
   currency,
@@ -220,7 +219,7 @@ export const TextInputCustom = <T extends FieldValues>({
         onKeyPress={(event) => handleKeyPress({ event, onPressEnter })}
         placeholderTextColor={neutralA3}
         value={field.value}
-        style={[styles.textInput, textInputStyle]}
+        style={[textInputStyle, dynamicTextInputStyle]}
         {...restProps}
       />
     );
@@ -235,7 +234,7 @@ export const TextInputCustom = <T extends FieldValues>({
     >
       {variant === "labelOutside" && !hideLabel && (
         <>
-          <View style={styles.rowEnd}>
+          <View style={rowEndStyle}>
             <Label
               hovered={hovered}
               style={labelStyle}
@@ -252,8 +251,8 @@ export const TextInputCustom = <T extends FieldValues>({
         squaresBackgroundColor={squaresBackgroundColor}
         style={style}
         mainContainerStyle={[
-          styles.mainContainer,
-          noBrokenCorners && styles.noCropBorderBg,
+          mainContainerStyle,
+          noBrokenCorners && noCropBorderBgStyle,
           hovered && { borderColor: secondaryColor },
         ]}
         width={width}
@@ -261,7 +260,7 @@ export const TextInputCustom = <T extends FieldValues>({
         height={height}
         noBrokenCorners={noBrokenCorners}
       >
-        <View style={styles.innerContainer}>
+        <View style={innerContainerStyle}>
           {iconSVG && (
             <>
               <SVG source={iconSVG} width={16} height={16} />
@@ -272,9 +271,7 @@ export const TextInputCustom = <T extends FieldValues>({
             {!variant ||
               (variant !== "labelOutside" && !hideLabel && (
                 <>
-                  <BrandText
-                    style={[styles.labelText, fontMedium10, labelStyle]}
-                  >
+                  <BrandText style={[labelTextStyle, fontMedium10, labelStyle]}>
                     {label}
                   </BrandText>
                   <SpacerColumn size={0.5} />
@@ -288,7 +285,7 @@ export const TextInputCustom = <T extends FieldValues>({
               onKeyPress={(event) => handleKeyPress({ event, onPressEnter })}
               placeholderTextColor={neutral77}
               value={field.value}
-              style={[styles.textInput, textInputStyle]}
+              style={[textInputStyle, dynamicTextInputStyle]}
               {...restProps}
             />
           </View>
@@ -305,37 +302,36 @@ export const TextInputCustom = <T extends FieldValues>({
   );
 };
 
-const styles = StyleSheet.create({
-  mainContainer: {
-    alignItems: "flex-start",
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    backgroundColor: neutral22,
-  },
-  noCropBorderBg: {
-    backgroundColor: neutral00,
-    borderWidth: 1,
-    borderColor: neutral33,
-    borderRadius: 12,
-    paddingVertical: layout.padding_x1_5,
-  },
-  labelText: {
-    color: neutralA3,
-  },
-  textInput: {
-    fontSize: 14,
-    color: secondaryColor,
-    fontFamily: "Exo_600SemiBold",
-    outlineStyle: "none",
-  },
-  innerContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    width: "100%",
-  },
-  rowEnd: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-end",
-  },
-});
+const mainContainerStyle: ViewStyle = {
+  alignItems: "flex-start",
+  paddingHorizontal: 12,
+  paddingVertical: 10,
+  backgroundColor: neutral22,
+};
+const noCropBorderBgStyle: ViewStyle = {
+  backgroundColor: neutral00,
+  borderWidth: 1,
+  borderColor: neutral33,
+  borderRadius: 12,
+  paddingVertical: layout.padding_x1_5,
+};
+const labelTextStyle: TextStyle = {
+  color: neutralA3,
+};
+const textInputStyle: TextStyle = {
+  fontSize: 14,
+  color: secondaryColor,
+  fontFamily: "Exo_600SemiBold",
+  // @ts-expect-error
+  outlineStyle: "none",
+};
+const innerContainerStyle: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  width: "100%",
+};
+const rowEndStyle: ViewStyle = {
+  flexDirection: "row",
+  justifyContent: "space-between",
+  alignItems: "flex-end",
+};

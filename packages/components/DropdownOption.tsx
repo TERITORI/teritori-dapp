@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet } from "react-native";
+import { ViewStyle } from "react-native";
 import { SvgProps } from "react-native-svg";
 
 import { BrandText } from "./BrandText";
@@ -25,7 +25,7 @@ export const DropdownOption: React.FC<DropdownOptionProps> = ({
 }) => {
   return (
     <CustomPressable
-      style={[styles.option, isComingSoon && styles.comingSoon]}
+      style={[optionStyle, isComingSoon && comingSoonStyle]}
       onPress={onPress}
     >
       {({ hovered }) => (
@@ -41,12 +41,10 @@ export const DropdownOption: React.FC<DropdownOptionProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  option: {
-    flexDirection: "row",
-    alignItems: "center",
-    flex: 1,
-    padding: layout.padding_x1,
-  },
-  comingSoon: { opacity: 0.5 },
-});
+const optionStyle: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  flex: 1,
+  padding: layout.padding_x1,
+};
+const comingSoonStyle: ViewStyle = { opacity: 0.5 };

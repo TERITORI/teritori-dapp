@@ -1,7 +1,7 @@
 import React from "react";
-import { Pressable, StyleSheet, TextStyle, View } from "react-native";
+import { Pressable, TextStyle, View, ViewStyle } from "react-native";
 
-import { mineShaftColor, secondaryColor } from "../../utils/style/colors";
+import { mineShaftColor } from "../../utils/style/colors";
 import { fontSemibold13 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
@@ -27,7 +27,7 @@ export const TableRowData: React.FC<TableRowDataProps> = ({
   labelStyle,
 }) => {
   return (
-    <Pressable style={styles.row} onPress={onPress}>
+    <Pressable style={rowStyle} onPress={onPress}>
       {data.map(({ value, flex, keyId, uid }, index) => (
         <View
           key={value}
@@ -37,9 +37,7 @@ export const TableRowData: React.FC<TableRowDataProps> = ({
           }}
         >
           {(specialRender && specialRender({ value, flex, keyId, uid })) || (
-            <BrandText style={[styles.labelText, labelStyle]}>
-              {value}
-            </BrandText>
+            <BrandText style={[labelTextStyle, labelStyle]}>{value}</BrandText>
           )}
         </View>
       ))}
@@ -47,24 +45,17 @@ export const TableRowData: React.FC<TableRowDataProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    width: "100%",
-    borderColor: mineShaftColor,
-    borderTopWidth: 1,
-    paddingVertical: layout.padding_x2,
-    paddingHorizontal: layout.padding_x2_5,
-  },
-  labelText: {
-    ...StyleSheet.flatten(fontSemibold13),
-    textTransform: "uppercase",
-  },
-  valueText: {
-    ...StyleSheet.flatten(fontSemibold13),
-    color: secondaryColor,
-    textTransform: "uppercase",
-  },
-});
+const rowStyle: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between",
+  width: "100%",
+  borderColor: mineShaftColor,
+  borderTopWidth: 1,
+  paddingVertical: layout.padding_x2,
+  paddingHorizontal: layout.padding_x2_5,
+};
+const labelTextStyle: TextStyle = {
+  ...fontSemibold13,
+  textTransform: "uppercase",
+};

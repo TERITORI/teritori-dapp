@@ -1,6 +1,6 @@
 // libraries
 import React, { useEffect, useRef, useState } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Pressable, View, ViewStyle } from "react-native";
 import Animated, {
   Extrapolate,
   interpolate,
@@ -71,15 +71,15 @@ export const ReviewCollapsable: React.FC<ReviewCollapsableProps> = ({
 
   // returns
   return (
-    <View style={styles.container}>
-      <Pressable onPress={toggleExpansion} style={styles.header}>
-        <View style={styles.rowWithCenter}>
+    <View style={containerStyle}>
+      <Pressable onPress={toggleExpansion} style={headerStyle}>
+        <View style={rowWithCenterStyle}>
           <BrandText style={[fontSemibold14, { lineHeight: 14 }]}>
             {title}
           </BrandText>
         </View>
 
-        <Animated.View style={[styles.chevronContainer, rotateStyle]}>
+        <Animated.View style={[chevronContainerStyle, rotateStyle]}>
           <SVG
             source={chevronDownSVG}
             width={16}
@@ -88,7 +88,7 @@ export const ReviewCollapsable: React.FC<ReviewCollapsableProps> = ({
           />
         </Animated.View>
       </Pressable>
-      <Animated.View style={[styles.childrenContainer, style]}>
+      <Animated.View style={[childrenContainerStyle, style]}>
         <View
           ref={aref}
           onLayout={({
@@ -96,7 +96,7 @@ export const ReviewCollapsable: React.FC<ReviewCollapsableProps> = ({
               layout: { height: h },
             },
           }) => (heightRef.current = h)}
-          style={[styles.childrenContainer, styles.childInsideContainer]}
+          style={[childrenContainerStyle, childInsideContainerStyle]}
         >
           {children}
         </View>
@@ -105,30 +105,32 @@ export const ReviewCollapsable: React.FC<ReviewCollapsableProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: { borderRadius: 12, borderWidth: 1, borderColor: neutral33 },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    width: "100%",
-    padding: layout.padding_x2,
-  },
-  rowWithCenter: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  chevronContainer: {
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  childrenContainer: {
-    width: "100%",
-  },
-  childInsideContainer: {
-    padding: layout.padding_x1,
-    borderTopWidth: 1,
-    borderColor: neutral33,
-  },
-});
+const containerStyle: ViewStyle = {
+  borderRadius: 12,
+  borderWidth: 1,
+  borderColor: neutral33,
+};
+const headerStyle: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between",
+  width: "100%",
+  padding: layout.padding_x2,
+};
+const rowWithCenterStyle: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "center",
+};
+const chevronContainerStyle: ViewStyle = {
+  alignItems: "center",
+  justifyContent: "center",
+};
+const childrenContainerStyle: ViewStyle = {
+  width: "100%",
+};
+const childInsideContainerStyle: ViewStyle = {
+  padding: layout.padding_x1,
+  borderTopWidth: 1,
+  borderColor: neutral33,
+};

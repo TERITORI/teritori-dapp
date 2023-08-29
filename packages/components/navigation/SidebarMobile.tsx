@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { StyleSheet, FlatList, useWindowDimensions } from "react-native";
+import { FlatList, useWindowDimensions, ViewStyle } from "react-native";
 import Animated, {
   useAnimatedStyle,
   withSpring,
@@ -13,9 +13,8 @@ import { useSidebar } from "../../context/SidebarProvider";
 import { useSelectedNetworkKind } from "../../hooks/useSelectedNetwork";
 import { NetworkKind } from "../../networks";
 import { RouteName, useAppNavigation } from "../../utils/navigation";
-import { neutral00, neutral17, neutral33 } from "../../utils/style/colors";
+import { neutral00, neutral33 } from "../../utils/style/colors";
 import {
-  layout,
   MOBILE_HEADER_HEIGHT,
   MOBILE_SIDEBAR_MAX_WIDTH,
 } from "../../utils/style/layout";
@@ -55,7 +54,7 @@ export const SidebarMobile: FC = () => {
   return (
     <Animated.View
       style={[
-        styles.container,
+        containerStyle,
         layoutStyle,
         { height: windowHeight - MOBILE_HEADER_HEIGHT },
         !isSidebarExpanded && { borderRightWidth: 0 },
@@ -107,37 +106,11 @@ export const SidebarMobile: FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    borderRightWidth: 1,
-    borderColor: neutral33,
-    backgroundColor: neutral00,
-    position: "absolute",
-    top: MOBILE_HEADER_HEIGHT,
-    zIndex: 9999,
-  },
-  toggleButtonContainer: {
-    position: "absolute",
-    flex: 1,
-    flexDirection: "row",
-    right: -20,
-    top: 0,
-    bottom: 0,
-  },
-  toggleButton: {
-    borderColor: neutral33,
-    borderWidth: 1,
-    backgroundColor: neutral17,
-    alignSelf: "center",
-    height: 28,
-    width: 20,
-    alignItems: "center",
-    justifyContent: "center",
-    borderTopRightRadius: 6,
-    borderBottomRightRadius: 6,
-  },
-  bottomSeperatorContainer: {
-    width: 40,
-    marginLeft: layout.padding_x2,
-  },
-});
+const containerStyle: ViewStyle = {
+  borderRightWidth: 1,
+  borderColor: neutral33,
+  backgroundColor: neutral00,
+  position: "absolute",
+  top: MOBILE_HEADER_HEIGHT,
+  zIndex: 9999,
+};

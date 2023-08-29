@@ -2,9 +2,10 @@ import React, { useState } from "react";
 import {
   View,
   Modal,
-  StyleSheet,
   useWindowDimensions,
   Pressable,
+  ViewStyle,
+  TextStyle,
 } from "react-native";
 import { DragSortableView } from "react-native-drag-sort";
 import Hoverable from "react-native-hoverable";
@@ -19,7 +20,6 @@ import {
   neutralA3,
   neutral33,
   neutral00,
-  neutral17,
   neutral55,
 } from "../../../utils/style/colors";
 import {
@@ -83,112 +83,100 @@ export const UserProfileModal: React.FC<toggleUserProfileProps> = ({
   const [confirmedData, setConfirmedData] = useState<string[]>([]);
   const [hoveredIndex, setHoveredIndex] = useState<number>(0);
 
-  const styles = StyleSheet.create({
-    modalContainer: {
-      width,
-      height,
-      backgroundColor: "rgba(0, 0, 0, 0.9)",
-      textAlign: "center",
-    },
-    modalTitle: StyleSheet.flatten([
-      fontSemibold28,
-      {
-        marginTop:
-          width < MOBILE_WIDTH
-            ? width < RESPONSIVE_BREAKPOINT_S
-              ? 5 * layout.padding_x1
-              : 15 * layout.padding_x1
-            : 25 * layout.padding_x1,
-      },
-    ]),
-    modalText: StyleSheet.flatten([
-      fontMedium14,
-      {
-        marginHorizontal: "auto",
-        color: neutralA3,
-        marginTop: layout.padding_x1,
-        width:
-          width < RESPONSIVE_BREAKPOINT_S
-            ? 0.9 * width
-            : 15 * layout.padding_x4,
-      },
-    ]),
-    cardContainer: {
-      display: "flex",
-      flexDirection: "row",
-      width: "100%",
-      marginHorizontal: "auto",
-      justifyContent: "center",
-      alignItems: "center",
-      gap: layout.padding_x1_5,
-      marginTop:
-        width < MOBILE_WIDTH
-          ? width < RESPONSIVE_BREAKPOINT_S
-            ? 5 * layout.padding_x0_5
-            : 30 * layout.padding_x0_5
-          : 45 * layout.padding_x0_5,
-    },
-    cardBox: {
-      display: "flex",
-      flexDirection: "row",
-      justifyContent: "center",
-      alignItems: "center",
-      width: childrenWidth,
-      paddingVertical: layout.padding_x1_5,
-      borderColor: neutral33,
-      borderWidth: 1,
-      borderRadius: layout.padding_x1,
-      position: "relative",
-    },
+  const modalContainerStyle: TextStyle = {
+    width,
+    height,
+    backgroundColor: "rgba(0, 0, 0, 0.9)",
+    textAlign: "center",
+  };
+  const modalTitleStyle: TextStyle = {
+    ...fontSemibold28,
+    marginTop:
+      width < MOBILE_WIDTH
+        ? width < RESPONSIVE_BREAKPOINT_S
+          ? 5 * layout.padding_x1
+          : 15 * layout.padding_x1
+        : 25 * layout.padding_x1,
+  };
+  const modalTextStyle: TextStyle = {
+    ...fontMedium14,
+    marginHorizontal: "auto",
+    color: neutralA3,
+    marginTop: layout.padding_x1,
+    width:
+      width < RESPONSIVE_BREAKPOINT_S ? 0.9 * width : 15 * layout.padding_x4,
+  };
+  const cardContainerStyle: ViewStyle = {
+    display: "flex",
+    flexDirection: "row",
+    width: "100%",
+    marginHorizontal: "auto",
+    justifyContent: "center",
+    alignItems: "center",
+    // @ts-expect-error
+    gap: layout.padding_x1_5,
+    marginTop:
+      width < MOBILE_WIDTH
+        ? width < RESPONSIVE_BREAKPOINT_S
+          ? 5 * layout.padding_x0_5
+          : 30 * layout.padding_x0_5
+        : 45 * layout.padding_x0_5,
+  };
+  const cardBoxStyle: ViewStyle = {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    width: childrenWidth,
+    paddingVertical: layout.padding_x1_5,
+    borderColor: neutral33,
+    borderWidth: 1,
+    borderRadius: layout.padding_x1,
+    position: "relative",
+  };
 
-    unselectedCardBoxBackroundColor: {
-      backgroundColor: neutral00,
-    },
+  const unselectedCardBoxBackroundColorStyle: ViewStyle = {
+    backgroundColor: neutral00,
+  };
 
-    selectedCardBoxBackgroundColor: {
-      backgroundColor: neutral17,
-    },
-    confirmedCardBox: {
-      display: "flex",
-      flexDirection: "row",
-      justifyContent: "center",
-      alignItems: "center",
-      width: childrenWidth,
-      paddingVertical: layout.padding_x1_5,
-      borderColor: "rgba(0, 0, 0, 0.9)",
-      borderWidth: 1,
-      backgroundColor: "rgba(0, 0, 0, 0.9)",
-      borderRadius: layout.padding_x1,
-      position: "relative",
-    },
-    unconfirmedCardContent: StyleSheet.flatten([fontSemibold14]),
-    confirmedCardContent: StyleSheet.flatten([
-      fontMedium14,
-      {
-        color: neutral55,
-      },
-    ]),
-    confirmButton: {
-      position: "absolute",
-      top: -50,
-      left: childrenWidth / 2 - 20,
-      width: 60,
-      height: 60,
-      zIndex: 999,
-    },
-    buttonGroup: {
-      display: "flex",
-      justifyContent: "center",
-      flexDirection: "row",
-      gap: layout.padding_x3,
-      marginTop:
-        width < MOBILE_WIDTH
-          ? width < RESPONSIVE_BREAKPOINT_S
-            ? 5 * layout.padding_x0_5
-            : 30 * layout.padding_x0_5
-          : 45 * layout.padding_x0_5,
-    },
-  });
+  const confirmedCardBoxStyle: ViewStyle = {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    width: childrenWidth,
+    paddingVertical: layout.padding_x1_5,
+    borderColor: "rgba(0, 0, 0, 0.9)",
+    borderWidth: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.9)",
+    borderRadius: layout.padding_x1,
+    position: "relative",
+  };
+  const confirmedCardContentStyle: TextStyle = {
+    ...fontMedium14,
+    color: neutral55,
+  };
+  const confirmButtonStyle: ViewStyle = {
+    position: "absolute",
+    top: -50,
+    left: childrenWidth / 2 - 20,
+    width: 60,
+    height: 60,
+    zIndex: 999,
+  };
+  const buttonGroupStyle: ViewStyle = {
+    display: "flex",
+    justifyContent: "center",
+    flexDirection: "row",
+    // @ts-expect-error
+    gap: layout.padding_x3,
+    marginTop:
+      width < MOBILE_WIDTH
+        ? width < RESPONSIVE_BREAKPOINT_S
+          ? 5 * layout.padding_x0_5
+          : 30 * layout.padding_x0_5
+        : 45 * layout.padding_x0_5,
+  };
 
   const updateConfirmedData = (item: ProfileDataType) => {
     if (!confirmedData.includes(item.content))
@@ -206,23 +194,23 @@ export const UserProfileModal: React.FC<toggleUserProfileProps> = ({
       <Hoverable
         style={
           confirmedData.includes(item.content)
-            ? styles.confirmedCardBox
-            : [styles.cardBox, styles.unselectedCardBoxBackroundColor]
+            ? confirmedCardBoxStyle
+            : [cardBoxStyle, unselectedCardBoxBackroundColorStyle]
         }
         onMouseEnter={() => setHoveredIndex(index + 1)}
       >
         <BrandText
           style={
             confirmedData.includes(item.content)
-              ? styles.confirmedCardContent
-              : styles.unconfirmedCardContent
+              ? confirmedCardContentStyle
+              : fontSemibold14
           }
         >
           {item.content}
         </BrandText>
         {hoveredIndex === index + 1 && (
           <Pressable
-            style={styles.confirmButton}
+            style={confirmButtonStyle}
             onPress={() => updateConfirmedData(item)}
           >
             <SVG source={confirmSVG} height={60} width={60} />
@@ -240,13 +228,13 @@ export const UserProfileModal: React.FC<toggleUserProfileProps> = ({
       visible={visible}
       transparent
     >
-      <View style={styles.modalContainer}>
-        <BrandText style={styles.modalTitle}>User Profile</BrandText>
-        <BrandText style={styles.modalText}>
+      <View style={modalContainerStyle}>
+        <BrandText style={modalTitleStyle}>User Profile</BrandText>
+        <BrandText style={modalTextStyle}>
           Choose the order in which sections will be displayed on your personal
           page by using drag & drop feature and hide useless for you features
         </BrandText>
-        <View style={styles.cardContainer}>
+        <View style={cardContainerStyle}>
           <DragSortableView
             dataSource={profileData}
             keyExtractor={(item) => item.content}
@@ -265,7 +253,7 @@ export const UserProfileModal: React.FC<toggleUserProfileProps> = ({
           />
         </View>
 
-        <View style={styles.buttonGroup}>
+        <View style={buttonGroupStyle}>
           <TertiaryButton size="M" text="Cancel" onPress={onClose} />
           {confirmedData.length === 0 && (
             <TertiaryButton size="M" text="Save" onPress={onClose} />

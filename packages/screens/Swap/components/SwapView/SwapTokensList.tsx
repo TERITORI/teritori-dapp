@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, ViewStyle } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 import { SelectableCurrency } from "./SelectableCurrency";
@@ -26,7 +26,7 @@ export const SwapTokensList: React.FC<{
 }) => {
   if (isOpened)
     return (
-      <View style={styles.modalContainer}>
+      <View style={modalContainerStyle}>
         <FadeInView style={{ position: "absolute", left: 20, top: 50 }}>
           <TertiaryBox
             mainContainerStyle={{
@@ -76,16 +76,14 @@ export const SwapTokensList: React.FC<{
   return <></>;
 };
 
-const styles = StyleSheet.create({
-  modalContainer: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    width: "100%",
-    height: "100%",
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, .8)",
-    borderRadius: 20,
-  },
-});
+const modalContainerStyle: ViewStyle = {
+  position: "absolute",
+  top: 0,
+  left: 0,
+  width: "100%",
+  height: "100%",
+  justifyContent: "center",
+  alignItems: "center",
+  backgroundColor: "rgba(0, 0, 0, .8)",
+  borderRadius: 20,
+};

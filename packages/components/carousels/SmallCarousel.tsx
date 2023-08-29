@@ -33,12 +33,12 @@ const PrevButton: React.FC<ButtonProps> = ({
     <TouchableOpacity
       activeOpacity={1}
       onPress={onPress}
-      style={[styles.buttonContainer, { left: 0 }, style]}
+      style={[buttonContainerStyle, { left: 0 }, style]}
     >
       <InnerSideBlackShadow
         side="left"
         height={shadowHeight}
-        style={styles.buttonShadow}
+        style={buttonShadowStyle}
       >
         <SVG width={chevronSize} height={chevronSize} source={chevronLeftSVG} />
       </InnerSideBlackShadow>
@@ -54,12 +54,12 @@ const NextButton: React.FC<ButtonProps> = ({
   <TouchableOpacity
     activeOpacity={1}
     onPress={onPress}
-    style={[styles.buttonContainer, { right: 0 }, style]}
+    style={[buttonContainerStyle, { right: 0 }, style]}
   >
     <InnerSideBlackShadow
       side="right"
       height={shadowHeight}
-      style={styles.buttonShadow}
+      style={buttonShadowStyle}
     >
       <SVG width={chevronSize} height={chevronSize} source={chevronRightSVG} />
     </InnerSideBlackShadow>
@@ -157,14 +157,12 @@ export const SmallCarousel: React.FC<TCarouselProps & { height: number }> = (
   );
 };
 
-const styles = StyleSheet.create({
-  buttonContainer: {
-    top: 0,
-    zIndex: 10,
-    position: "absolute",
-  },
-  buttonShadow: {
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});
+const buttonContainerStyle: ViewStyle = {
+  top: 0,
+  zIndex: 10,
+  position: "absolute",
+};
+const buttonShadowStyle: ViewStyle = {
+  justifyContent: "center",
+  alignItems: "center",
+};

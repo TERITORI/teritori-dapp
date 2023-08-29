@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, useWindowDimensions, View } from "react-native";
+import { useWindowDimensions, View, ViewStyle } from "react-native";
 
 import { PostResult } from "../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
 import { useIsMobile } from "../../hooks/useIsMobile";
@@ -34,11 +34,11 @@ export const CommentsContainer: React.FC<CommentsContainerProps> = ({
   return (
     <View
       style={[
-        styles.container,
+        containerStyle,
         { marginLeft: isMobile ? 0 : LINES_HORIZONTAL_SPACE },
       ]}
     >
-      {!isMobile ? <View style={styles.conversationLine} /> : null}
+      {!isMobile ? <View style={conversationLineStyle} /> : null}
 
       <View style={{ flex: 1, width: "100%" }}>
         {comments.map((comment, index) => (
@@ -65,15 +65,13 @@ export const CommentsContainer: React.FC<CommentsContainerProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    width: "100%",
-    flex: 1,
-    flexDirection: "row",
-  },
-  conversationLine: {
-    height: "100%",
-    width: 1,
-    backgroundColor: neutral22,
-  },
-});
+const containerStyle: ViewStyle = {
+  width: "100%",
+  flex: 1,
+  flexDirection: "row",
+};
+const conversationLineStyle: ViewStyle = {
+  height: "100%",
+  width: 1,
+  backgroundColor: neutral22,
+};

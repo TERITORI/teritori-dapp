@@ -1,5 +1,5 @@
 import React from "react";
-import { Image, StyleSheet, View } from "react-native";
+import { Image, View, ViewStyle } from "react-native";
 
 import LaunchpadBannerImage from "../../../../assets/banners/launchpad.jpg";
 import LogoSimpleSvg from "../../../../assets/icons/logo-simple.svg";
@@ -20,12 +20,12 @@ export const LaunchpadBanner: React.FC = () => {
 
   // returns
   return (
-    <View style={styles.container}>
+    <View style={containerStyle}>
       <Image
         source={LaunchpadBannerImage}
         style={{ width, height, resizeMode: "contain" }}
       />
-      <View style={styles.detailContainer}>
+      <View style={detailContainerStyle}>
         <SVG source={LogoSimpleSvg} width={88} height={88} />
         <SpacerColumn size={1} />
         <BrandText style={fontSemibold28}>Launchpad Submission Form</BrandText>
@@ -34,15 +34,13 @@ export const LaunchpadBanner: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    position: "relative",
-  },
-  detailContainer: {
-    position: "absolute",
-    height: "100%",
-    width: "100%",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});
+const containerStyle: ViewStyle = {
+  position: "relative",
+};
+const detailContainerStyle: ViewStyle = {
+  position: "absolute",
+  height: "100%",
+  width: "100%",
+  justifyContent: "center",
+  alignItems: "center",
+};

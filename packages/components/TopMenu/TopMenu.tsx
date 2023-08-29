@@ -1,5 +1,5 @@
 import { FC, useRef } from "react";
-import { View, TouchableOpacity, StyleSheet } from "react-native";
+import { View, TouchableOpacity, ViewStyle } from "react-native";
 
 import { TopMenuBox } from "./TopMenuBox";
 import { WalletView } from "./WalletView";
@@ -7,13 +7,7 @@ import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../assets/icons/chevron-up.svg";
 import { useDropdowns } from "../../context/DropdownsProvider";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import {
-  neutral00,
-  neutral33,
-  purpleLight,
-  secondaryColor,
-} from "../../utils/style/colors";
-import { fontSemibold14 } from "../../utils/style/fonts";
+import { neutral00, neutral33, secondaryColor } from "../../utils/style/colors";
 import { SVG } from "../SVG";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 
@@ -30,7 +24,7 @@ export const TopMenu: FC = () => {
         <TertiaryBox
           width={220}
           mainContainerStyle={[
-            styles.buttonBoxMainContainer,
+            buttonBoxMainContainerStyle,
             {
               backgroundColor: isDropdownOpen(dropdownRef)
                 ? neutral33
@@ -39,7 +33,7 @@ export const TopMenu: FC = () => {
           ]}
           height={TOP_MENU_BUTTON_HEIGHT}
         >
-          <WalletView wallet={selectedWallet} style={styles.walletView} />
+          <WalletView wallet={selectedWallet} style={walletViewStyle} />
           <SVG
             source={isDropdownOpen(dropdownRef) ? chevronUpSVG : chevronDownSVG}
             width={16}
@@ -51,7 +45,7 @@ export const TopMenu: FC = () => {
 
       <TopMenuBox
         style={[
-          styles.menuBox,
+          menuBoxStyle,
           !isDropdownOpen(dropdownRef) && { display: "none" },
         ]}
       />
@@ -59,23 +53,17 @@ export const TopMenu: FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  buttonBoxMainContainer: {
-    justifyContent: "space-between",
-    flexDirection: "row",
-    paddingHorizontal: 12,
-  },
-  walletView: {
-    flex: 1,
-    marginRight: 12,
-  },
-  menuBox: {
-    position: "absolute",
-    top: 46,
-    right: 0,
-  },
-  settingsText: {
-    ...(fontSemibold14 as object),
-    color: purpleLight,
-  },
-});
+const buttonBoxMainContainerStyle: ViewStyle = {
+  justifyContent: "space-between",
+  flexDirection: "row",
+  paddingHorizontal: 12,
+};
+const walletViewStyle: ViewStyle = {
+  flex: 1,
+  marginRight: 12,
+};
+const menuBoxStyle: ViewStyle = {
+  position: "absolute",
+  top: 46,
+  right: 0,
+};

@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { TextStyle, View, ViewStyle } from "react-native";
 
 import { PrettyPrint } from "../../screens/Marketplace/types";
 import { neutral22, neutralA3 } from "../../utils/style/colors";
@@ -23,16 +23,12 @@ export const CollectionStat = ({
   currencyIcon,
 }: CollectionStatProps) => {
   return (
-    <View style={styles.container}>
-      <BrandText
-        numberOfLines={1}
-        ellipsizeMode="tail"
-        style={styles.labelText}
-      >
+    <View style={containerStyle}>
+      <BrandText numberOfLines={1} ellipsizeMode="tail" style={labelTextStyle}>
         {label}
       </BrandText>
       <SpacerColumn size={0.75} />
-      <View style={styles.rowCenter}>
+      <View style={rowCenterStyle}>
         <BrandText
           style={[
             fontSemibold14,
@@ -56,27 +52,23 @@ export const CollectionStat = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    width: 176,
-    height: 64,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: neutral22,
-  },
-  labelText: StyleSheet.flatten([
-    fontSemibold12,
-    {
-      color: neutralA3,
-    },
-  ]),
-  rowCenter: {
-    flexDirection: "row",
-    justifyContent: "center",
-    flexWrap: "nowrap",
-    alignItems: "center",
-  },
-});
+const containerStyle: ViewStyle = {
+  flex: 1,
+  width: 176,
+  height: 64,
+  justifyContent: "center",
+  alignItems: "center",
+  borderRadius: 8,
+  borderWidth: 1,
+  borderColor: neutral22,
+};
+const labelTextStyle: TextStyle = {
+  ...fontSemibold12,
+  color: neutralA3,
+};
+const rowCenterStyle: ViewStyle = {
+  flexDirection: "row",
+  justifyContent: "center",
+  flexWrap: "nowrap",
+  alignItems: "center",
+};

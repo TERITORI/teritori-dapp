@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import {
+  Pressable,
+  StyleSheet,
+  TextStyle,
+  View,
+  ViewStyle,
+} from "react-native";
 
 import chevronDownSVG from "../../../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../../../assets/icons/chevron-up.svg";
@@ -50,7 +56,7 @@ export const SwapDetail: React.FC<{
         fullWidth
         mainContainerStyle={{ padding: layout.padding_x2 }}
       >
-        <View style={styles.row}>
+        <View style={rowStyle}>
           <BrandText
             style={[fontSemibold14, !amountIn && { color: neutralA3 }]}
           >
@@ -76,18 +82,18 @@ export const SwapDetail: React.FC<{
             <SpacerColumn size={2.5} />
 
             {/*TODO: Handle Price impact*/}
-            {/*<View style={styles.row}>*/}
-            {/*  <BrandText style={styles.rowLabel}>Price Impact</BrandText>*/}
-            {/*  <BrandText style={styles.rowValue}>-???%</BrandText>*/}
+            {/*<View style={rowStyle}>*/}
+            {/*  <BrandText style={rowLabelStyle}>Price Impact</BrandText>*/}
+            {/*  <BrandText style={rowValueStyle}>-???%</BrandText>*/}
             {/*</View>*/}
 
             <SpacerColumn size={1} />
 
-            <View style={styles.row}>
-              <BrandText style={styles.rowLabel}>
+            <View style={rowStyle}>
+              <BrandText style={rowLabelStyle}>
                 Swap Fee ({(fee * 100).toFixed(2)}%)
               </BrandText>
-              <BrandText style={styles.rowValue}>
+              <BrandText style={rowValueStyle}>
                 ≈{" "}
                 {feeAmountOutUsd < 0.01
                   ? "< $0.01"
@@ -99,20 +105,20 @@ export const SwapDetail: React.FC<{
             <Separator />
             <SpacerColumn size={2} />
 
-            <View style={styles.row}>
-              <BrandText style={styles.rowLabel}>Expected Output</BrandText>
-              <BrandText style={styles.rowValue}>
+            <View style={rowStyle}>
+              <BrandText style={rowLabelStyle}>Expected Output</BrandText>
+              <BrandText style={rowValueStyle}>
                 ≈ {`${expectedAmountOut.toFixed(6)} ${tokenNameOut}`}
               </BrandText>
             </View>
 
             <SpacerColumn size={1} />
 
-            <View style={styles.row}>
-              <BrandText style={styles.rowLabel}>
+            <View style={rowStyle}>
+              <BrandText style={rowLabelStyle}>
                 Min received after slippage ({slippage}%)
               </BrandText>
-              <BrandText style={styles.rowValue}>
+              <BrandText style={rowValueStyle}>
                 ≈{" "}
                 {`${(
                   expectedAmountOut -
@@ -127,18 +133,16 @@ export const SwapDetail: React.FC<{
   );
 };
 
-const styles = StyleSheet.create({
-  row: {
-    width: "100%",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  rowLabel: {
-    ...StyleSheet.flatten(fontSemibold14),
-    color: neutral77,
-  },
-  rowValue: {
-    ...StyleSheet.flatten(fontSemibold14),
-  },
-});
+const rowStyle: ViewStyle = {
+  width: "100%",
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between",
+};
+const rowLabelStyle: TextStyle = {
+  ...StyleSheet.flatten(fontSemibold14),
+  color: neutral77,
+};
+const rowValueStyle: ViewStyle = {
+  ...StyleSheet.flatten(fontSemibold14),
+};

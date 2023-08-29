@@ -1,4 +1,4 @@
-import { StyleSheet, TextStyle, View } from "react-native";
+import { TextStyle, View, ViewStyle } from "react-native";
 
 import asteriskSignSVG from "../../../assets/icons/asterisk-sign.svg";
 import { neutral77 } from "../../utils/style/colors";
@@ -21,9 +21,9 @@ export const TextInputOutsideLabel: React.FC<TextInputLabelProps> = ({
   label,
 }) => (
   <>
-    <View style={styles.rowEnd}>
-      <View style={styles.row}>
-        <BrandText style={[styles.labelText, fontSemibold14, labelStyle]}>
+    <View style={rowEndStyle}>
+      <View style={rowStyle}>
+        <BrandText style={[labelTextStyle, fontSemibold14, labelStyle]}>
           {label}
         </BrandText>
         {isAsterickSign && (
@@ -39,14 +39,12 @@ export const TextInputOutsideLabel: React.FC<TextInputLabelProps> = ({
   </>
 );
 
-const styles = StyleSheet.create({
-  rowEnd: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-end",
-  },
-  row: { flexDirection: "row" },
-  labelText: {
-    color: neutral77,
-  },
-});
+const rowEndStyle: ViewStyle = {
+  flexDirection: "row",
+  justifyContent: "space-between",
+  alignItems: "flex-end",
+};
+const rowStyle: ViewStyle = { flexDirection: "row" };
+const labelTextStyle: TextStyle = {
+  color: neutral77,
+};

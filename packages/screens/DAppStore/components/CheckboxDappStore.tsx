@@ -1,4 +1,4 @@
-import { StyleProp, ViewStyle, StyleSheet, View } from "react-native";
+import { StyleProp, ViewStyle, View } from "react-native";
 
 import checkSVG from "../../../../assets/icons/check.svg";
 import { SVG } from "../../../components/SVG";
@@ -16,7 +16,7 @@ export const CheckboxDappStore: React.FC<{
   return (
     <View
       style={[
-        styles.container,
+        containerStyle,
         isChecked && {
           backgroundColor: primaryColor,
           borderColor: primaryColor,
@@ -31,15 +31,13 @@ export const CheckboxDappStore: React.FC<{
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    width: 20,
-    height: 20,
-    borderRadius: 5,
-    borderWidth: 1,
-    borderColor: neutralA3,
-    backgroundColor: neutral17,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});
+const containerStyle: ViewStyle = {
+  width: 20,
+  height: 20,
+  borderRadius: 5,
+  borderWidth: 1,
+  borderColor: neutralA3,
+  backgroundColor: neutral17,
+  justifyContent: "center",
+  alignItems: "center",
+};

@@ -1,5 +1,11 @@
 import { FC, useRef } from "react";
-import { View, TouchableOpacity, StyleSheet, Image } from "react-native";
+import {
+  View,
+  TouchableOpacity,
+  Image,
+  ViewStyle,
+  ImageStyle,
+} from "react-native";
 
 import { TopMenuBox } from "./TopMenuBox";
 import { useDropdowns } from "../../context/DropdownsProvider";
@@ -22,7 +28,7 @@ export const TopMenuMobile: FC = () => {
     <View ref={dropdownRef}>
       <TouchableOpacity onPress={() => onPressDropdownButton(dropdownRef)}>
         <Image
-          style={styles.userImage}
+          style={userImageStyle}
           source={{
             uri: ipfsURLToHTTPURL(
               userInfo?.metadata?.image ||
@@ -35,7 +41,7 @@ export const TopMenuMobile: FC = () => {
 
       <TopMenuBox
         style={[
-          styles.menuBox,
+          menuBoxStyle,
           !isDropdownOpen(dropdownRef) && { display: "none" },
         ]}
         mainContainerStyle={{
@@ -49,25 +55,14 @@ export const TopMenuMobile: FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  buttonBoxMainContainer: {
-    justifyContent: "space-between",
-    flexDirection: "row",
-    paddingHorizontal: 12,
-  },
-  walletView: {
-    flex: 1,
-    marginRight: 12,
-  },
-  menuBox: {
-    backgroundColor: neutral00,
-    position: "absolute",
-    top: 48,
-    right: -60,
-  },
-  userImage: {
-    borderRadius: 999,
-    width: 32,
-    height: 32,
-  },
-});
+const menuBoxStyle: ViewStyle = {
+  backgroundColor: neutral00,
+  position: "absolute",
+  top: 48,
+  right: -60,
+};
+const userImageStyle: ImageStyle = {
+  borderRadius: 999,
+  width: 32,
+  height: 32,
+};

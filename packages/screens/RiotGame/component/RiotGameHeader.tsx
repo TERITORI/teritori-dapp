@@ -1,6 +1,6 @@
 import { useRoute } from "@react-navigation/native";
 import React from "react";
-import { Linking, StyleSheet, TouchableOpacity, View } from "react-native";
+import { Linking, TouchableOpacity, View, ViewStyle } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { SvgProps } from "react-native-svg";
 
@@ -110,8 +110,8 @@ export const RiotGameHeader: React.FC<RiotGameHeaderProps> = ({
   };
 
   return (
-    <View style={styles.outerContainer}>
-      <View style={styles.innerContainer}>
+    <View style={outerContainerStyle}>
+      <View style={innerContainerStyle}>
         <View>
           <TopLogo />
         </View>
@@ -119,7 +119,7 @@ export const RiotGameHeader: React.FC<RiotGameHeaderProps> = ({
         <ScrollView
           showsHorizontalScrollIndicator={false}
           horizontal
-          style={styles.menu}
+          style={menuStyle}
         >
           {!hideMenu && (
             <FlexRow>
@@ -157,7 +157,7 @@ export const RiotGameHeader: React.FC<RiotGameHeaderProps> = ({
           )}
         </ScrollView>
 
-        <View style={styles.section}>
+        <View style={sectionStyle}>
           <SpacerRow size={1.5} />
           <Separator horizontal color={neutral33} />
           <SpacerRow size={1.5} />
@@ -172,25 +172,23 @@ export const RiotGameHeader: React.FC<RiotGameHeaderProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  outerContainer: {
-    height: headerHeight,
-    width: "100%",
-    zIndex: 1000,
-  },
-  innerContainer: {
-    flex: 1,
-    borderBottomWidth: 1,
-    borderColor: neutral33,
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  menu: {
-    paddingHorizontal: layout.padding_x4,
-  },
-  section: {
-    flexDirection: "row",
-    height: "100%",
-    alignItems: "center",
-  },
-});
+const outerContainerStyle: ViewStyle = {
+  height: headerHeight,
+  width: "100%",
+  zIndex: 1000,
+};
+const innerContainerStyle: ViewStyle = {
+  flex: 1,
+  borderBottomWidth: 1,
+  borderColor: neutral33,
+  flexDirection: "row",
+  alignItems: "center",
+};
+const menuStyle: ViewStyle = {
+  paddingHorizontal: layout.padding_x4,
+};
+const sectionStyle: ViewStyle = {
+  flexDirection: "row",
+  height: "100%",
+  alignItems: "center",
+};

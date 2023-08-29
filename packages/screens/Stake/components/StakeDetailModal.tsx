@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { StyleSheet, View } from "react-native";
+import { TextStyle, View, ViewStyle } from "react-native";
 
 import validatorIconSVG from "../../../../assets/default-images/validator-icon.svg";
 import { Avatar } from "../../../components/Avatar";
@@ -43,14 +43,14 @@ export const StakeDetailModal: React.FC<StakeDetailModalProps> = ({
   const Header = useCallback(
     () => (
       <>
-        <View style={styles.rowWithCenter}>
+        <View style={rowWithCenterStyle}>
           <Avatar size="medium" uri={imageURL} defaultIcon={validatorIconSVG} />
           <SpacerRow size={2} />
           <View>
             <BrandText style={fontSemibold20}>{data?.moniker}</BrandText>
             <SpacerColumn size={0.5} />
-            <View style={styles.rowWithCenter}>
-              <BrandText style={[styles.alternateText, fontSemibold16]}>
+            <View style={rowWithCenterStyle}>
+              <BrandText style={[alternateTextStyle, fontSemibold16]}>
                 Commission
               </BrandText>
               <SpacerRow size={1} />
@@ -69,7 +69,7 @@ export const StakeDetailModal: React.FC<StakeDetailModalProps> = ({
     () => (
       <>
         <Separator />
-        <View style={styles.footerRow}>
+        <View style={footerRowStyle}>
           <PrimaryButton size="SM" text="Close" onPress={onClose} />
           <SpacerRow size={2} />
           <SecondaryButton
@@ -104,12 +104,12 @@ export const StakeDetailModal: React.FC<StakeDetailModalProps> = ({
       childrenBottom={Footer()}
       hideMainSeparator
     >
-      <View style={styles.container}>
+      <View style={containerStyle}>
         <Separator />
         <SpacerColumn size={2.5} />
         {!!data?.website && (
           <>
-            <BrandText style={[styles.alternateText, fontSemibold14]}>
+            <BrandText style={[alternateTextStyle, fontSemibold14]}>
               Website
             </BrandText>
             <SpacerColumn size={0.5} />
@@ -119,7 +119,7 @@ export const StakeDetailModal: React.FC<StakeDetailModalProps> = ({
             <SpacerColumn size={2.5} />
           </>
         )}
-        <BrandText style={[styles.alternateText, fontSemibold14]}>
+        <BrandText style={[alternateTextStyle, fontSemibold14]}>
           Description
         </BrandText>
         <SpacerColumn size={0.5} />
@@ -130,19 +130,17 @@ export const StakeDetailModal: React.FC<StakeDetailModalProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  footerRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: layout.padding_x2_5,
-  },
-  container: {
-    width: 446,
-  },
-  alternateText: { color: neutral77, flexShrink: 1 },
-  rowWithCenter: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-});
+const footerRowStyle: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between",
+  padding: layout.padding_x2_5,
+};
+const containerStyle: ViewStyle = {
+  width: 446,
+};
+const alternateTextStyle: TextStyle = { color: neutral77, flexShrink: 1 };
+const rowWithCenterStyle: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+};

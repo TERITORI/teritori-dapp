@@ -1,7 +1,7 @@
 import { bech32 } from "bech32";
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { Image, StyleSheet, View } from "react-native";
+import { Image, ImageStyle, TextStyle, View, ViewStyle } from "react-native";
 
 import { NFTTransferForm } from "./types";
 import { NFT } from "../../api/marketplace/v1/marketplace";
@@ -179,12 +179,12 @@ export const NFTTransferModal: React.FC<NFTTransferModalProps> = ({
       visible={isVisible}
       onClose={onClose}
     >
-      <View style={styles.detailContainer}>
-        <Image source={{ uri: nft?.imageUri }} style={styles.image} />
+      <View style={detailContainerStyle}>
+        <Image source={{ uri: nft?.imageUri }} style={imageStyle} />
         <SpacerColumn size={2} />
         <BrandText style={fontSemibold14}>{nft?.name}</BrandText>
         <SpacerColumn size={1.5} />
-        <View style={styles.rowCenter}>
+        <View style={rowCenterStyle}>
           <BrandText style={[fontSemibold12, { color: neutral77 }]}>
             {nft?.collectionName}
           </BrandText>
@@ -200,7 +200,7 @@ export const NFTTransferModal: React.FC<NFTTransferModalProps> = ({
         labelStyle={{ color: secondaryColor }}
       />
       <SpacerColumn size={2} />
-      <BrandText style={styles.estimatedText}>
+      <BrandText style={estimatedTextStyle}>
         Estimated Time: 6 Seconds
       </BrandText>
       <SpacerColumn size={1} />
@@ -216,22 +216,18 @@ export const NFTTransferModal: React.FC<NFTTransferModalProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  image: { height: 223, width: 223, borderRadius: 12 },
-  detailContainer: {
-    justifyContent: "center",
-    alignItems: "center",
-    paddingBottom: layout.padding_x4,
-  },
-  rowCenter: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  estimatedText: StyleSheet.flatten([
-    fontSemibold14,
-    {
-      color: neutral77,
-    },
-  ]),
-});
+const imageStyle: ImageStyle = { height: 223, width: 223, borderRadius: 12 };
+const detailContainerStyle: ViewStyle = {
+  justifyContent: "center",
+  alignItems: "center",
+  paddingBottom: layout.padding_x4,
+};
+const rowCenterStyle: ViewStyle = {
+  flexDirection: "row",
+  justifyContent: "center",
+  alignItems: "center",
+};
+const estimatedTextStyle: TextStyle = {
+  ...fontSemibold14,
+  color: neutral77,
+};

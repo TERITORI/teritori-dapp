@@ -1,6 +1,6 @@
 // libraries
 import React from "react";
-import { Pressable, StyleSheet } from "react-native";
+import { Pressable, TextStyle } from "react-native";
 
 import { neutral22, primaryColor } from "../../utils/style/colors";
 import { fontSemibold12 } from "../../utils/style/fonts";
@@ -15,17 +15,15 @@ export const MaxButton = ({ onPress }: MaxButtonProps) => {
   // returns
   return (
     <Pressable onPress={onPress}>
-      <BrandText style={styles.maxText}>max</BrandText>
+      <BrandText style={maxTextStyle}>max</BrandText>
     </Pressable>
   );
 };
 
-const styles = StyleSheet.create({
-  maxText: {
-    ...StyleSheet.flatten(fontSemibold12),
-    backgroundColor: primaryColor,
-    color: neutral22,
-    borderRadius: layout.borderRadius,
-    paddingHorizontal: layout.padding_x0_5,
-  },
-});
+const maxTextStyle: TextStyle = {
+  ...fontSemibold12,
+  backgroundColor: primaryColor,
+  color: neutral22,
+  borderRadius: layout.borderRadius,
+  paddingHorizontal: layout.padding_x0_5,
+};

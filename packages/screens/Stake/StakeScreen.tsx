@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { View, ViewStyle } from "react-native";
 
 import { DelegateModal } from "./components/DelegateModal";
 import { RedelegateModal } from "./components/RedelegateModal";
@@ -71,7 +71,7 @@ export const StakeScreen: React.FC = () => {
   // returns
   return (
     <ScreenContainer forceNetworkKind={NetworkKind.Cosmos}>
-      <View style={styles.rowHeader}>
+      <View style={rowHeaderStyle}>
         <BrandText style={fontSemibold28}>Stake</BrandText>
         <Tabs
           items={tabs}
@@ -117,12 +117,10 @@ export const StakeScreen: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  rowHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingTop: layout.contentPadding,
-    marginBottom: layout.padding_x2_5,
-  },
-});
+const rowHeaderStyle: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between",
+  paddingTop: layout.contentPadding,
+  marginBottom: layout.padding_x2_5,
+};

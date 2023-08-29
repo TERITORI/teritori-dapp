@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { TextStyle, View, ViewStyle } from "react-native";
 import { SvgProps } from "react-native-svg";
 
 import { neutral17, neutral77 } from "../../../utils/style/colors";
@@ -35,8 +35,8 @@ export const ConnectWalletButton: React.FC<ConnectWalletButtonProps> = ({
       RightComponent={
         isComingSoon
           ? () => (
-              <View style={styles.comingsoonContainer}>
-                <BrandText style={styles.soonText}>COMING SOON</BrandText>
+              <View style={comingsoonContainerStyle}>
+                <BrandText style={soonTextStyle}>COMING SOON</BrandText>
               </View>
             )
           : undefined
@@ -45,17 +45,13 @@ export const ConnectWalletButton: React.FC<ConnectWalletButtonProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  comingsoonContainer: {
-    padding: layout.padding_x0_5,
-    borderRadius: 5,
-    backgroundColor: neutral17,
-    flex: 1,
-  },
-  soonText: StyleSheet.flatten([
-    fontSemibold9,
-    {
-      color: neutral77,
-    },
-  ]),
-});
+const comingsoonContainerStyle: ViewStyle = {
+  padding: layout.padding_x0_5,
+  borderRadius: 5,
+  backgroundColor: neutral17,
+  flex: 1,
+};
+const soonTextStyle: TextStyle = {
+  ...fontSemibold9,
+  color: neutral77,
+};

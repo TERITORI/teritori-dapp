@@ -1,6 +1,6 @@
 // libraries
 import React, { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { TextStyle, View, ViewStyle } from "react-native";
 
 import { ConnectAdenaButton } from "./ConnectAdenaButton";
 import { ConnectKeplrButton } from "./ConnectKeplrButton";
@@ -54,13 +54,13 @@ export const ConnectWalletModal: React.FC<ConnectWalletProps> = ({
         isComingSoon
         icon={walletConnectSVG}
       />
-      <View style={styles.footer}>
+      <View style={footerStyle}>
         <SeparatorGradient />
         <SpacerColumn size={4} />
-        <BrandText style={styles.footerText}>
+        <BrandText style={footerTextStyle}>
           By connecting a wallet, you acknowledge that you have read and
           understand the{" "}
-          <BrandText style={styles.footerTextHighlight}>
+          <BrandText style={footerTextHighlightStyle}>
             Teritori Protocol Disclaimer.
           </BrandText>
         </BrandText>
@@ -81,19 +81,16 @@ export const ConnectWalletModal: React.FC<ConnectWalletProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  footer: { padding: layout.padding_x4, paddingBottom: layout.padding_x2_5 },
-  footerText: StyleSheet.flatten([
-    fontSemibold14,
-    {
-      color: neutral77,
-      lineHeight: 20,
-    },
-  ]),
-  footerTextHighlight: StyleSheet.flatten([
-    fontSemibold14,
-    {
-      color: secondaryColor,
-    },
-  ]),
-});
+const footerStyle: ViewStyle = {
+  padding: layout.padding_x4,
+  paddingBottom: layout.padding_x2_5,
+};
+const footerTextStyle: TextStyle = {
+  ...fontSemibold14,
+  color: neutral77,
+  lineHeight: 20,
+};
+const footerTextHighlightStyle: TextStyle = {
+  ...fontSemibold14,
+  color: secondaryColor,
+};

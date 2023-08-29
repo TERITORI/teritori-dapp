@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import {
   ScrollView,
   StyleProp,
-  StyleSheet,
+  TextStyle,
   View,
   ViewStyle,
 } from "react-native";
@@ -49,9 +49,9 @@ export const ConfigureVotingSection: React.FC<ConfigureVotingSectionProps> = ({
 
   // returns
   return (
-    <View style={styles.fill}>
+    <View style={fillStyle}>
       <ScrollView
-        contentContainerStyle={[styles.container, contentContainerStyle]}
+        contentContainerStyle={[containerStyle, contentContainerStyle]}
       >
         <BrandText style={fontSemibold28}>
           Choose your voting settings below
@@ -71,9 +71,9 @@ export const ConfigureVotingSection: React.FC<ConfigureVotingSectionProps> = ({
         {!noDuration && (
           <>
             <SpacerColumn size={2.5} />
-            <BrandText style={styles.voteText}>Vote Duration</BrandText>
-            <View style={styles.voteInputContainer}>
-              <View style={styles.fill}>
+            <BrandText style={voteTextStyle}>Vote Duration</BrandText>
+            <View style={voteInputContainerStyle}>
+              <View style={fillStyle}>
                 <TextInputCustom<ConfigureVotingFormType>
                   name="days"
                   noBrokenCorners
@@ -82,11 +82,11 @@ export const ConfigureVotingSection: React.FC<ConfigureVotingSectionProps> = ({
                   label=""
                   rules={{ required: true, pattern: patternOnlyNumbers }}
                 >
-                  <BrandText style={styles.durationLabel}>Days</BrandText>
+                  <BrandText style={durationLabelStyle}>Days</BrandText>
                 </TextInputCustom>
               </View>
               <SpacerRow size={1.5} />
-              <View style={styles.fill}>
+              <View style={fillStyle}>
                 <TextInputCustom<ConfigureVotingFormType>
                   name="hours"
                   noBrokenCorners
@@ -95,12 +95,12 @@ export const ConfigureVotingSection: React.FC<ConfigureVotingSectionProps> = ({
                   label=""
                   rules={{ required: true, pattern: patternOnlyNumbers }}
                 >
-                  <BrandText style={styles.durationLabel}>Hours</BrandText>
+                  <BrandText style={durationLabelStyle}>Hours</BrandText>
                 </TextInputCustom>
               </View>
 
               <SpacerRow size={1.5} />
-              <View style={styles.fill}>
+              <View style={fillStyle}>
                 <TextInputCustom<ConfigureVotingFormType>
                   name="minutes"
                   noBrokenCorners
@@ -109,7 +109,7 @@ export const ConfigureVotingSection: React.FC<ConfigureVotingSectionProps> = ({
                   label=""
                   rules={{ required: true, pattern: patternOnlyNumbers }}
                 >
-                  <BrandText style={styles.durationLabel}>Minutes</BrandText>
+                  <BrandText style={durationLabelStyle}>Minutes</BrandText>
                 </TextInputCustom>
               </View>
             </View>
@@ -117,7 +117,7 @@ export const ConfigureVotingSection: React.FC<ConfigureVotingSectionProps> = ({
         )}
       </ScrollView>
 
-      <View style={styles.footer}>
+      <View style={footerStyle}>
         <PrimaryButton
           size="M"
           text={submitLabel || `Next: ${ORGANIZATION_DEPLOYER_STEPS[2]}`}
@@ -129,45 +129,30 @@ export const ConfigureVotingSection: React.FC<ConfigureVotingSectionProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    padding: layout.contentPadding,
-    paddingRight: layout.padding_x2_5,
-    paddingTop: layout.topContentPaddingWithHeading,
-  },
-  voteText: StyleSheet.flatten([
-    fontSemibold14,
-    {
-      color: neutralA3,
-    },
-  ]),
-  voteInputContainer: {
-    flexDirection: "row",
-    width: 550,
-    marginTop: layout.padding_x1_5,
-  },
-  durationInputContainer: {
-    padding: layout.padding_x2,
-    borderWidth: 1,
-    borderColor: neutral33,
-    borderRadius: 12,
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  durationLabel: StyleSheet.flatten([
-    fontSemibold14,
-    {
-      color: neutral77,
-    },
-  ]),
-  fill: { flex: 1 },
-  footer: {
-    justifyContent: "flex-end",
-    alignItems: "flex-end",
-    paddingVertical: layout.padding_x1_5,
-    paddingHorizontal: layout.padding_x2_5,
-    borderTopWidth: 1,
-    borderColor: neutral33,
-  },
-});
+const containerStyle: ViewStyle = {
+  padding: layout.contentPadding,
+  paddingRight: layout.padding_x2_5,
+  paddingTop: layout.topContentPaddingWithHeading,
+};
+const voteTextStyle: TextStyle = {
+  ...fontSemibold14,
+  color: neutralA3,
+};
+const voteInputContainerStyle: ViewStyle = {
+  flexDirection: "row",
+  width: 550,
+  marginTop: layout.padding_x1_5,
+};
+const durationLabelStyle: TextStyle = {
+  ...fontSemibold14,
+  color: neutral77,
+};
+const fillStyle: ViewStyle = { flex: 1 };
+const footerStyle: ViewStyle = {
+  justifyContent: "flex-end",
+  alignItems: "flex-end",
+  paddingVertical: layout.padding_x1_5,
+  paddingHorizontal: layout.padding_x2_5,
+  borderTopWidth: 1,
+  borderColor: neutral33,
+};

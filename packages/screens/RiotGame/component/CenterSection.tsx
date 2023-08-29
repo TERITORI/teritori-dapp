@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { Animated, StyleSheet, View } from "react-native";
+import { Animated, TextStyle, View, ViewStyle } from "react-native";
 
 import startButtonSVG from "../../../../assets/game/start-button.svg";
 import { BrandText } from "../../../components/BrandText";
@@ -49,7 +49,7 @@ export const CenterSection: React.FC<CenterSectionProps> = ({
     <>
       <View
         style={[
-          styles.section,
+          sectionStyle,
           {
             width: cardWidth * 2,
             height: cardHeight,
@@ -59,7 +59,7 @@ export const CenterSection: React.FC<CenterSectionProps> = ({
       >
         <View
           style={[
-            styles.buttonContainer,
+            buttonContainerStyle,
             {
               width: cardWidth * 2 - layout.padding_x2_5 * 2,
               height: cardHeight * 0.37,
@@ -84,7 +84,7 @@ export const CenterSection: React.FC<CenterSectionProps> = ({
               width={cardWidth * 2 - layout.padding_x2_5 * 2}
               height={cardHeight * 0.37}
             />
-            <BrandText onPress={onPress} style={styles.startGameText}>
+            <BrandText onPress={onPress} style={startGameTextStyle}>
               Start the Game
             </BrandText>
           </Animated.View>
@@ -97,34 +97,27 @@ export const CenterSection: React.FC<CenterSectionProps> = ({
     </>
   );
 };
-const styles = StyleSheet.create({
-  section: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
-    margin: "auto",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  buttonContainer: {
-    position: "relative",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  positionAbsolute: {
-    position: "absolute",
-  },
-  startGameText: StyleSheet.flatten([
-    fontBold16,
-    {
-      position: "absolute",
-      marginLeft: "auto",
-      marginRight: "auto",
-      left: 0,
-      right: 0,
-      textAlign: "center",
-    },
-  ]),
-});
+const sectionStyle: ViewStyle = {
+  position: "absolute",
+  left: 0,
+  right: 0,
+  top: 0,
+  bottom: 0,
+  margin: "auto",
+  justifyContent: "center",
+  alignItems: "center",
+};
+const buttonContainerStyle: ViewStyle = {
+  position: "relative",
+  justifyContent: "center",
+  alignItems: "center",
+};
+const startGameTextStyle: TextStyle = {
+  ...fontBold16,
+  position: "absolute",
+  marginLeft: "auto",
+  marginRight: "auto",
+  left: 0,
+  right: 0,
+  textAlign: "center",
+};

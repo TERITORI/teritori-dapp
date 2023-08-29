@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { View } from "react-native";
@@ -276,10 +277,6 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
           <SpacerColumn size={1} />
           <Controller
             name="message"
-            control={control}
-            rules={{
-              required: true,
-            }}
             render={({ field: { onChange, onBlur } }) => (
               <RichText
                 onChange={onChange}

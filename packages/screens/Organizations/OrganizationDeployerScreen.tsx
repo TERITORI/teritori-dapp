@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { View, ViewStyle } from "react-native";
 
 import { ConfigureVotingSection } from "./components/ConfigureVotingSection";
 import { CreateDAOSection } from "./components/CreateDAOSection";
@@ -265,13 +265,13 @@ export const OrganizationDeployerScreen = () => {
       fullWidth
       noScroll
     >
-      <View style={styles.row}>
-        <View style={styles.fill}>
-          <View style={currentStep === 0 ? styles.show : styles.hidden}>
+      <View style={rowStyle}>
+        <View style={fillStyle}>
+          <View style={currentStep === 0 ? showStyle : hiddenStyle}>
             <CreateDAOSection onSubmit={onSubmitDAO} />
           </View>
 
-          <View style={currentStep === 1 ? styles.show : styles.hidden}>
+          <View style={currentStep === 1 ? showStyle : hiddenStyle}>
             <ConfigureVotingSection onSubmit={onSubmitConfigureVoting} />
           </View>
 
@@ -280,8 +280,8 @@ export const OrganizationDeployerScreen = () => {
               currentStep === 2 &&
               step1DaoInfoFormData &&
               step1DaoInfoFormData.structure === DaoType.TOKEN_BASED
-                ? styles.show
-                : styles.hidden
+                ? showStyle
+                : hiddenStyle
             }
           >
             <TokenSettingsSection onSubmit={onSubmitTokenSettings} />
@@ -291,14 +291,14 @@ export const OrganizationDeployerScreen = () => {
               currentStep === 2 &&
               step1DaoInfoFormData &&
               step1DaoInfoFormData.structure === DaoType.MEMBER_BASED
-                ? styles.show
-                : styles.hidden
+                ? showStyle
+                : hiddenStyle
             }
           >
             <MemberSettingsSection onSubmit={onSubmitMemberSettings} />
           </View>
 
-          <View style={currentStep === 3 ? styles.show : styles.hidden}>
+          <View style={currentStep === 3 ? showStyle : hiddenStyle}>
             <ReviewInformationSection
               organizationData={step1DaoInfoFormData}
               votingSettingData={step2ConfigureVotingFormData}
@@ -308,7 +308,7 @@ export const OrganizationDeployerScreen = () => {
             />
           </View>
 
-          <View style={currentStep === 4 ? styles.show : styles.hidden}>
+          <View style={currentStep === 4 ? showStyle : hiddenStyle}>
             <LaunchingOrganizationSection
               id={getUserId(selectedWallet?.networkId, daoAddress)}
               isLaunched={launchingStep === LAUNCHING_PROCESS_STEPS.length}
@@ -328,9 +328,7 @@ export const OrganizationDeployerScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  row: { flexDirection: "row", flex: 1 },
-  fill: { flex: 1 },
-  hidden: { display: "none" },
-  show: { display: "flex", flex: 1 },
-});
+const rowStyle: ViewStyle = { flexDirection: "row", flex: 1 };
+const fillStyle: ViewStyle = { flex: 1 };
+const hiddenStyle: ViewStyle = { display: "none" };
+const showStyle: ViewStyle = { display: "flex", flex: 1 };

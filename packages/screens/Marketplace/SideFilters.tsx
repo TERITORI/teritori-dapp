@@ -7,9 +7,9 @@ import {
   StyleProp,
   View,
   ViewStyle,
-  StyleSheet,
   Pressable,
   TextInput,
+  TextStyle,
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { ChevronDownIcon } from "react-native-heroicons/outline";
@@ -141,10 +141,10 @@ const AccordionItem: React.FC<{
   };
 
   return (
-    <View style={styles.subContainer}>
+    <View style={subContainerStyle}>
       <TouchableOpacity
         activeOpacity={0.7}
-        style={styles.btnStyle}
+        style={btnStyleStyle}
         onPress={toggleButton}
       >
         <BrandText style={fontSemibold14}>{attributes[0].traitType}</BrandText>
@@ -153,9 +153,9 @@ const AccordionItem: React.FC<{
         </Animated.View>
       </TouchableOpacity>
 
-      <Animated.View style={[styles.descStyle, bodyHeight]}>
+      <Animated.View style={[descStyleStyle, bodyHeight]}>
         <View
-          style={styles.bodyContainer}
+          style={bodyContainerStyle}
           onLayout={(event) => {
             setBodySectionHeight(event.nativeEvent.layout.height);
           }}
@@ -183,42 +183,28 @@ const AccordionItem: React.FC<{
   );
 };
 
-const styles = StyleSheet.create({
-  containerStyle: {
-    flex: 1,
-    paddingTop: 20,
-    paddingHorizontal: 24,
-  },
-  btnStyle: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingVertical: 10,
-  },
-  subContainer: {
-    paddingHorizontal: 8,
-    marginBottom: 6,
-    flex: 1,
-    borderRadius: 10,
-  },
-  svgStyle: {
-    width: 20,
-    height: 20,
-  },
-  descStyle: {
-    overflow: "hidden",
-  },
-  title: {
-    fontWeight: "600",
-  },
-  bodyContainer: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    width: "100%",
-    paddingBottom: 20,
-  },
-});
+const btnStyleStyle: ViewStyle = {
+  flexDirection: "row",
+  justifyContent: "space-between",
+  alignItems: "center",
+  paddingVertical: 10,
+};
+const subContainerStyle: ViewStyle = {
+  paddingHorizontal: 8,
+  marginBottom: 6,
+  flex: 1,
+  borderRadius: 10,
+};
+const descStyleStyle: ViewStyle = {
+  overflow: "hidden",
+};
+const bodyContainerStyle: ViewStyle = {
+  position: "absolute",
+  bottom: 0,
+  left: 0,
+  width: "100%",
+  paddingBottom: 20,
+};
 
 const FilterItems: React.FC<{
   attribute: AttributeRarityFloor;
@@ -424,20 +410,18 @@ const FilterContainer: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
 const PriceFilter: React.FC<{ currency: NativeCurrencyInfo }> = ({
   currency,
 }) => {
-  const styles = StyleSheet.create({
-    textInput: {
-      color: "#FFFFFF",
-      backgroundColor: neutral00,
-      borderRadius: layout.padding_x1,
-      borderColor: neutral33,
-      borderStyle: "solid",
-      width: 85,
-      height: 40,
-      borderWidth: 1,
-      padding: layout.padding_x1,
-    },
-  });
-  const textInputStyle = StyleSheet.flatten([styles.textInput, fontMedium14]);
+  const textInputStyle: TextStyle = {
+    ...fontMedium14,
+    color: "#FFFFFF",
+    backgroundColor: neutral00,
+    borderRadius: layout.padding_x1,
+    borderColor: neutral33,
+    borderStyle: "solid",
+    width: 85,
+    height: 40,
+    borderWidth: 1,
+    padding: layout.padding_x1,
+  };
   const priceRange = useSelector(selectPriceRange);
   const [min, setMin] = useState<string>(priceRange?.min || "");
   const [max, setMax] = useState<string>(priceRange?.max || "");

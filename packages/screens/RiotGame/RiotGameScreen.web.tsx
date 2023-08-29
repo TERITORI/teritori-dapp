@@ -1,5 +1,5 @@
 import React from "react";
-import { FlatList, StyleSheet, useWindowDimensions, View } from "react-native";
+import { FlatList, useWindowDimensions, View, ViewStyle } from "react-native";
 
 import { CenterSection } from "./component/CenterSection";
 import { GameBgCard } from "./component/GameBgCard";
@@ -26,10 +26,10 @@ export const RiotGameScreen = () => {
 
   // returns
   return (
-    <View style={styles.container}>
+    <View style={containerStyle}>
       <RiotGameHeader hideMenu />
 
-      <View style={styles.positionRelative}>
+      <View style={positionRelativeStyle}>
         <FlatList
           data={gameBgData}
           numColumns={10}
@@ -58,13 +58,11 @@ export const RiotGameScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: neutral00,
-  },
-  positionRelative: {
-    flex: 1,
-    position: "relative",
-  },
-});
+const containerStyle: ViewStyle = {
+  flex: 1,
+  backgroundColor: neutral00,
+};
+const positionRelativeStyle: ViewStyle = {
+  flex: 1,
+  position: "relative",
+};

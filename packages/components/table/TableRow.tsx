@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View, TextStyle } from "react-native";
+import { View, TextStyle, ViewStyle } from "react-native";
 
 import { codGrayColor, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold12 } from "../../utils/style/fonts";
@@ -15,12 +15,12 @@ interface TableRowProps {
 
 export const TableRow: React.FC<TableRowProps> = ({ headings, labelStyle }) => {
   return (
-    <View style={styles.row}>
+    <View style={rowStyle}>
       {headings.map(({ label, flex }, index) => (
         <BrandText
           key={label}
           style={[
-            styles.labelText,
+            labelTextStyle,
             {
               flex,
               paddingRight:
@@ -36,23 +36,19 @@ export const TableRow: React.FC<TableRowProps> = ({ headings, labelStyle }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    width: "100%",
-    backgroundColor: codGrayColor,
-    minHeight: layout.contentPadding,
-    paddingHorizontal: layout.padding_x2_5,
-    borderTopLeftRadius: layout.borderRadius,
-    borderTopRightRadius: layout.borderRadius,
-  },
-  labelText: StyleSheet.flatten([
-    fontSemibold12,
-    {
-      color: secondaryColor,
-      opacity: 0.4,
-    },
-  ]),
-});
+const rowStyle: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between",
+  width: "100%",
+  backgroundColor: codGrayColor,
+  minHeight: layout.contentPadding,
+  paddingHorizontal: layout.padding_x2_5,
+  borderTopLeftRadius: layout.borderRadius,
+  borderTopRightRadius: layout.borderRadius,
+};
+const labelTextStyle: TextStyle = {
+  ...fontSemibold12,
+  color: secondaryColor,
+  opacity: 0.4,
+};

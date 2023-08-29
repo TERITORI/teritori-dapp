@@ -1,6 +1,6 @@
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useMemo, useState } from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { TextStyle, TouchableOpacity, View, ViewStyle } from "react-native";
 
 import { TopMenuSection } from "./TopMenuSection";
 import walletsSVG from "../../../assets/icons/wallets.svg";
@@ -202,7 +202,7 @@ export const TopMenuMyWallets: React.FC = () => {
         <FlexRow
           alignItems="center"
           justifyContent="space-between"
-          style={styles.buttonsContainer}
+          style={buttonsContainerStyle}
         >
           <SecondaryButton
             disabled={selectedNetworkInfo?.kind !== NetworkKind.Cosmos}
@@ -241,10 +241,10 @@ export const TopMenuMyWallets: React.FC = () => {
 
         <FlexRow justifyContent="center">
           <TouchableOpacity
-            style={styles.manageWalletsContainer}
+            style={manageWalletsContainerStyle}
             onPress={() => navigation.navigate("WalletManagerWallets")}
           >
-            <BrandText style={styles.manageWallets}>Manage wallets</BrandText>
+            <BrandText style={manageWalletsStyle}>Manage wallets</BrandText>
             <SVG source={walletsSVG} width={24} height={24} />
           </TouchableOpacity>
         </FlexRow>
@@ -271,16 +271,14 @@ export const TopMenuMyWallets: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  buttonsContainer: {
-    marginVertical: layout.padding_x1_5,
-  },
-  manageWalletsContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  manageWallets: {
-    ...(fontSemibold14 as object),
-    marginRight: layout.padding_x1,
-  },
-});
+const buttonsContainerStyle: ViewStyle = {
+  marginVertical: layout.padding_x1_5,
+};
+const manageWalletsContainerStyle: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+};
+const manageWalletsStyle: TextStyle = {
+  ...fontSemibold14,
+  marginRight: layout.padding_x1,
+};

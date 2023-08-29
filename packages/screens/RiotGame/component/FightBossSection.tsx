@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Image, ImageBackground, StyleSheet } from "react-native";
+import { Image, ImageBackground, ImageStyle } from "react-native";
 
 import { FightProgressBar } from "./FightProgressBar";
 import brokenBoxPNG from "../../../../assets/game/broken-box.png";
@@ -56,7 +56,7 @@ export const FightBossSection: React.FC = () => {
       }}
     >
       <Image
-        style={styles.enemyThumb}
+        style={enemyThumbStyle}
         source={{ uri: currentSeason?.bossImage }}
       />
 
@@ -76,9 +76,7 @@ export const FightBossSection: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  enemyThumb: {
-    width: 150,
-    height: 150,
-  },
-});
+const enemyThumbStyle: ImageStyle = {
+  width: 150,
+  height: 150,
+};

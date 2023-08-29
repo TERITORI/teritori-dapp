@@ -1,7 +1,7 @@
 import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import { cloneDeep } from "lodash";
 import React, { useEffect, useMemo, useState } from "react";
-import { StyleSheet } from "react-native";
+import { ViewStyle } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
 import { PostCategory } from "../../../components/socialFeed/NewsFeed/NewsFeed.type";
@@ -102,7 +102,7 @@ export const FeedHeader: React.FC<FeedHeaderProps> = ({
         items={adjustedTabItems}
         selected={selectedTab}
         onSelect={onTabChange}
-        style={[styles.header, { width }]}
+        style={[headerStyle, { width }]}
         borderColorTabSelected={primaryColor}
         gradientText
         tabTextStyle={fontSemibold16}
@@ -122,11 +122,9 @@ export const FeedHeader: React.FC<FeedHeaderProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  header: {
-    alignSelf: "center",
-    height: 64,
-    zIndex: 9,
-    elevation: 9,
-  },
-});
+const headerStyle: ViewStyle = {
+  alignSelf: "center",
+  height: 64,
+  zIndex: 9,
+  elevation: 9,
+};

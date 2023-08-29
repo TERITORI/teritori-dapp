@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View, ViewStyle } from "react-native";
+import { TextStyle, View, ViewStyle } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
 import {
@@ -45,49 +45,43 @@ export const RipperStat: React.FC<RipperStatProps> = ({
   }
 
   return (
-    <View style={[styles.container, containerStyle]}>
-      <BrandText style={[valueFont, styles.leftCol]}>{value}</BrandText>
+    <View style={[containerStyle, containerStyle]}>
+      <BrandText style={[valueFont, leftColStyle]}>{value}</BrandText>
 
-      <View style={styles.rightCol}>
+      <View style={rightColStyle}>
         {showProgress && (
-          <View style={styles.progressBarOuter}>
-            <View style={[styles.processBarInner, { width: `${value}%` }]} />
+          <View style={progressBarOuterStyle}>
+            <View style={[processBarInnerStyle, { width: `${value}%` }]} />
           </View>
         )}
 
-        <BrandText style={[subTextFont, styles.subText]}>{name}</BrandText>
+        <BrandText style={[subTextFont, subTextStyle]}>{name}</BrandText>
       </View>
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  leftCol: {
-    minWidth: 80,
-  },
-  rightCol: {
-    marginLeft: layout.padding_x4,
-  },
-  progressBarOuter: {
-    borderRadius: 100,
-    height: 8,
-    backgroundColor: neutral33,
-    width: 164,
-  },
-  processBarInner: {
-    borderRadius: 100,
-    height: 8,
-    backgroundColor: yellowDefault,
-    position: "absolute",
-    top: 0,
-    left: 0,
-  },
-  subText: {
-    color: neutralA3,
-    marginTop: layout.padding_x1,
-  },
-});
+const leftColStyle: ViewStyle = {
+  minWidth: 80,
+};
+const rightColStyle: ViewStyle = {
+  marginLeft: layout.padding_x4,
+};
+const progressBarOuterStyle: ViewStyle = {
+  borderRadius: 100,
+  height: 8,
+  backgroundColor: neutral33,
+  width: 164,
+};
+const processBarInnerStyle: ViewStyle = {
+  borderRadius: 100,
+  height: 8,
+  backgroundColor: yellowDefault,
+  position: "absolute",
+  top: 0,
+  left: 0,
+};
+const subTextStyle: TextStyle = {
+  color: neutralA3,
+  marginTop: layout.padding_x1,
+};

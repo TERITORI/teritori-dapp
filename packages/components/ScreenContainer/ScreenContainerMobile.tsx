@@ -2,9 +2,9 @@ import React, { FC } from "react";
 import {
   SafeAreaView,
   ScrollView,
-  StyleSheet,
   useWindowDimensions,
   View,
+  ViewStyle,
 } from "react-native";
 
 import { HeaderMobile } from "./HeaderMobile";
@@ -64,7 +64,7 @@ export const ScreenContainerMobile: FC<{
   const { isSearchModalMobileOpen, setSearchModalMobileOpen } = useSearchBar();
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={containerStyle}>
       <DAppStoreData />
       <SearchModalMobile
         onClose={() => setSearchModalMobileOpen(false)}
@@ -90,14 +90,14 @@ export const ScreenContainerMobile: FC<{
               ]}
             >
               {mobileTitle ? <MobileTitle title={mobileTitle} /> : null}
-              <View style={[styles.childrenContainer, { flex: 1, width }]}>
+              <View style={[childrenContainerStyle, { flex: 1, width }]}>
                 {children}
               </View>
               {/*TODO: Put here Riotters Footer ?*/}
             </ScrollView>
           ) : (
             <>
-              <View style={[styles.childrenContainer, { flex: 1 }]}>
+              <View style={[childrenContainerStyle, { flex: 1 }]}>
                 {children}
               </View>
             </>
@@ -109,15 +109,13 @@ export const ScreenContainerMobile: FC<{
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    width: "100%",
-    backgroundColor: "#000000",
-    paddingTop: MOBILE_HEADER_HEIGHT,
-  },
-  childrenContainer: {
-    height: "100%",
-    alignSelf: "center",
-  },
-});
+const containerStyle: ViewStyle = {
+  flex: 1,
+  width: "100%",
+  backgroundColor: "#000000",
+  paddingTop: MOBILE_HEADER_HEIGHT,
+};
+const childrenContainerStyle: ViewStyle = {
+  height: "100%",
+  alignSelf: "center",
+};

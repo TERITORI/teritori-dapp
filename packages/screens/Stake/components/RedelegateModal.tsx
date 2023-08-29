@@ -3,7 +3,13 @@ import { isDeliverTxFailure } from "@cosmjs/stargate";
 import { MsgBeginRedelegate } from "osmojs/types/codegen/cosmos/staking/v1beta1/tx";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Pressable, StyleSheet, View } from "react-native";
+import {
+  Pressable,
+  StyleSheet,
+  TextStyle,
+  View,
+  ViewStyle,
+} from "react-native";
 
 import { ValidatorsTable } from "./ValidatorsList";
 import checkSVG from "../../../../assets/icons/check.svg";
@@ -189,7 +195,7 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
       <View>
         <BrandText style={fontSemibold20}>Redelegate Tokens</BrandText>
         <SpacerColumn size={0.5} />
-        <BrandText style={[styles.alternateText, fontSemibold16]}>
+        <BrandText style={[alternateTextStyle, fontSemibold16]}>
           Select an amount of {stakingCurrency?.displayName} to redelegate
         </BrandText>
       </View>
@@ -201,7 +207,7 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
     () => (
       <>
         <Separator />
-        <View style={styles.footerRow}>
+        <View style={footerRowStyle}>
           <SecondaryButton
             size="XS"
             text="Cancel"
@@ -230,7 +236,7 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
       childrenBottom={Footer()}
       hideMainSeparator
     >
-      <View style={styles.container}>
+      <View style={containerStyle}>
         <Separator />
         <SpacerColumn size={2.5} />
         <TextInputCustom<StakeFormValuesType>
@@ -289,7 +295,7 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
               })
             }
           >
-            <BrandText style={styles.maxText}>max</BrandText>
+            <BrandText style={maxTextStyle}>max</BrandText>
           </Pressable>
         </TextInputCustom>
         <SpacerColumn size={1} />
@@ -308,26 +314,24 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    width: 700,
-  },
-  footerRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    width: "100%",
-    padding: layout.padding_x2_5,
-  },
-  alternateText: {
-    ...StyleSheet.flatten(fontSemibold12),
-    color: neutral77,
-  },
-  maxText: {
-    ...StyleSheet.flatten(fontSemibold12),
-    backgroundColor: primaryColor,
-    color: neutral22,
-    borderRadius: layout.borderRadius,
-    paddingHorizontal: layout.padding_x0_5,
-  },
-});
+const containerStyle: ViewStyle = {
+  width: 700,
+};
+const footerRowStyle: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between",
+  width: "100%",
+  padding: layout.padding_x2_5,
+};
+const alternateTextStyle: TextStyle = {
+  ...StyleSheet.flatten(fontSemibold12),
+  color: neutral77,
+};
+const maxTextStyle: TextStyle = {
+  ...StyleSheet.flatten(fontSemibold12),
+  backgroundColor: primaryColor,
+  color: neutral22,
+  borderRadius: layout.borderRadius,
+  paddingHorizontal: layout.padding_x0_5,
+};

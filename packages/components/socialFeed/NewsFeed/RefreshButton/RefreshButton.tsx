@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, TouchableOpacity } from "react-native";
+import { TouchableOpacity, ViewStyle } from "react-native";
 import Animated, {
   Easing,
   SharedValue,
@@ -79,12 +79,12 @@ export const RefreshButton: React.FC<RefreshButtonProps> = ({
 
   // returns
   return (
-    <Animated.View style={[styles.selfCenter, animStyle]}>
-      <TouchableOpacity style={styles.container} onPress={onPress}>
+    <Animated.View style={[selfCenterStyle, animStyle]}>
+      <TouchableOpacity style={containerStyle} onPress={onPress}>
         <Animated.View style={animatedStyles}>
           <SVG source={refreshSVG} width={SVG_SIZE} height={SVG_SIZE} />
         </Animated.View>
-        <Animated.View style={[styles.textContainer, opacityStyle]}>
+        <Animated.View style={[textContainerStyle, opacityStyle]}>
           <BrandText style={fontSemibold14}>Refresh feed</BrandText>
         </Animated.View>
       </TouchableOpacity>
@@ -92,21 +92,19 @@ export const RefreshButton: React.FC<RefreshButtonProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  selfCenter: {
-    alignSelf: "center",
-  },
-  container: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: neutral17,
-    borderWidth: 1,
-    borderColor: neutral33,
-    borderRadius: 999,
-    paddingHorizontal: layout.padding_x1_5,
-    height: 42,
-  },
-  textContainer: {
-    marginLeft: layout.padding_x1_5,
-  },
-});
+const selfCenterStyle: ViewStyle = {
+  alignSelf: "center",
+};
+const containerStyle: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  backgroundColor: neutral17,
+  borderWidth: 1,
+  borderColor: neutral33,
+  borderRadius: 999,
+  paddingHorizontal: layout.padding_x1_5,
+  height: 42,
+};
+const textContainerStyle: ViewStyle = {
+  marginLeft: layout.padding_x1_5,
+};

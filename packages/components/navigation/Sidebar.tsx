@@ -1,6 +1,6 @@
 import { useRoute } from "@react-navigation/native";
 import React from "react";
-import { FlatList, Pressable, StyleSheet, View } from "react-native";
+import { FlatList, Pressable, View, ViewStyle } from "react-native";
 import Animated, {
   useAnimatedStyle,
   withSpring,
@@ -71,7 +71,7 @@ export const Sidebar: React.FC = () => {
     [isSidebarExpanded]
   );
 
-  const toggleButtonStyle = useAnimatedStyle(
+  const animatedToggleButtonStyle = useAnimatedStyle(
     () => ({
       transform: isSidebarExpanded
         ? [
@@ -92,15 +92,15 @@ export const Sidebar: React.FC = () => {
   };
 
   return (
-    <Animated.View style={[styles.container, layoutStyle]}>
-      <View style={styles.headerContainer}>
+    <Animated.View style={[containerStyle, layoutStyle]}>
+      <View style={headerContainerStyle}>
         {currentRouteName === "Home" && <SideNotch />}
 
         <TopLogo />
         <Animated.View
-          style={[styles.toggleButtonContainer, toggleButtonStyle]}
+          style={[toggleButtonContainerStyle, animatedToggleButtonStyle]}
         >
-          <Pressable style={styles.toggleButton} onPress={toggleSidebar}>
+          <Pressable style={toggleButtonStyle} onPress={toggleSidebar}>
             <SVG source={chevronRightSVG} />
           </Pressable>
         </Animated.View>
@@ -167,37 +167,31 @@ export const Sidebar: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    borderRightWidth: 1,
-    borderColor: neutral33,
-    zIndex: 100,
-  },
-  headerContainer: {
-    height: headerHeight,
-  },
-  toggleButtonContainer: {
-    position: "absolute",
-    flex: 1,
-    flexDirection: "row",
-    right: -20,
-    top: 0,
-    bottom: 0,
-  },
-  toggleButton: {
-    borderColor: neutral33,
-    borderWidth: 1,
-    backgroundColor: neutral17,
-    alignSelf: "center",
-    height: 28,
-    width: 20,
-    alignItems: "center",
-    justifyContent: "center",
-    borderTopRightRadius: 6,
-    borderBottomRightRadius: 6,
-  },
-  bottomSeperatorContainer: {
-    width: 40,
-    marginLeft: layout.padding_x2,
-  },
-});
+const containerStyle: ViewStyle = {
+  borderRightWidth: 1,
+  borderColor: neutral33,
+  zIndex: 100,
+};
+const headerContainerStyle: ViewStyle = {
+  height: headerHeight,
+};
+const toggleButtonContainerStyle: ViewStyle = {
+  position: "absolute",
+  flex: 1,
+  flexDirection: "row",
+  right: -20,
+  top: 0,
+  bottom: 0,
+};
+const toggleButtonStyle: ViewStyle = {
+  borderColor: neutral33,
+  borderWidth: 1,
+  backgroundColor: neutral17,
+  alignSelf: "center",
+  height: 28,
+  width: 20,
+  alignItems: "center",
+  justifyContent: "center",
+  borderTopRightRadius: 6,
+  borderBottomRightRadius: 6,
+};

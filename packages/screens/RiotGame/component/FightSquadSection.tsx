@@ -1,5 +1,5 @@
 import React from "react";
-import { FlatList, ImageBackground, StyleSheet, View } from "react-native";
+import { FlatList, ImageBackground, View, ViewStyle } from "react-native";
 
 import { RipperAvatar } from "./RipperAvatar";
 import brokenBoxPNG from "../../../../assets/game/broken-box.png";
@@ -47,7 +47,7 @@ export const FightSquadSection: React.FC<FightSquadSectionProps> = ({
           return (
             <View
               style={[
-                styles.ripperInfo,
+                ripperInfoStyle,
                 isCenter && { marginTop: RIPPER_AVATAR_SIZE / 3 },
               ]}
             >
@@ -68,10 +68,8 @@ export const FightSquadSection: React.FC<FightSquadSectionProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  ripperInfo: {
-    flexDirection: "column",
-    alignItems: "center",
-    marginHorizontal: layout.padding_x1_5,
-  },
-});
+const ripperInfoStyle: ViewStyle = {
+  flexDirection: "column",
+  alignItems: "center",
+  marginHorizontal: layout.padding_x1_5,
+};

@@ -1,5 +1,5 @@
 import React, { Suspense } from "react";
-import { StyleSheet, View, Image } from "react-native";
+import { StyleSheet, View, Image, ViewStyle } from "react-native";
 import { useSelector } from "react-redux";
 
 import osmosisIllustration from "../../../../assets/osmosis-illustration.png";
@@ -45,7 +45,7 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
       )}
       width={456}
     >
-      <View style={styles.modalChildren}>
+      <View style={modalChildrenStyle}>
         <Image
           source={osmosisIllustration}
           style={{
@@ -54,10 +54,10 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
           }}
         />
 
-        <BrandText style={styles.text}>
+        <BrandText style={textStyle}>
           This SWAP Feature is developed by OSMOSIS core team. By using this
           Decentralized Protocol, you accept all risks & rules associated to the
-          <BrandText style={styles.textWhite}>
+          <BrandText style={textWhiteStyle}>
             {" "}
             OSMOSIS Protocol Disclaimer.
           </BrandText>
@@ -89,27 +89,18 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  modalHeaderContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  modalHeaderTitle: {
-    marginLeft: layout.padding_x2,
-  },
-  modalChildren: {
-    alignItems: "center",
-    paddingBottom: layout.padding_x2_5,
-  },
-  text: {
-    color: neutral77,
-    maxWidth: 371,
-    marginBottom: layout.padding_x2_5,
-    marginTop: layout.padding_x4,
-    ...StyleSheet.flatten(fontSemibold14),
-  },
-  textWhite: {
-    color: secondaryColor,
-    ...StyleSheet.flatten(fontSemibold14),
-  },
-});
+const modalChildrenStyle: ViewStyle = {
+  alignItems: "center",
+  paddingBottom: layout.padding_x2_5,
+};
+const textStyle: ViewStyle = {
+  color: neutral77,
+  maxWidth: 371,
+  marginBottom: layout.padding_x2_5,
+  marginTop: layout.padding_x4,
+  ...StyleSheet.flatten(fontSemibold14),
+};
+const textWhiteStyle: ViewStyle = {
+  color: secondaryColor,
+  ...StyleSheet.flatten(fontSemibold14),
+};

@@ -4,9 +4,10 @@ import React, { useEffect, useRef, useState } from "react";
 import {
   FlatList,
   Image,
-  StyleSheet,
+  ImageStyle,
   useWindowDimensions,
   View,
+  ViewStyle,
 } from "react-native";
 
 import { GameContentView } from "./component/GameContentView";
@@ -68,9 +69,9 @@ export const RiotGameMemoriesScreen = () => {
 
   return (
     <GameContentView>
-      <View style={styles.contentContainer} onLayout={() => setDisplayYT(true)}>
+      <View style={contentContainerStyle} onLayout={() => setDisplayYT(true)}>
         {/* Current season */}
-        <BrandText style={[fontMedium32, styles.title]}>
+        <BrandText style={[fontMedium32, titleStyle]}>
           The R!ot Season I
         </BrandText>
         <TertiaryBox height={seasonVideoHeight} width={seasonVideoWidth}>
@@ -86,7 +87,7 @@ export const RiotGameMemoriesScreen = () => {
         <SpacerColumn size={8} />
 
         {/* Season list */}
-        <BrandText style={[fontMedium32, styles.title]}>
+        <BrandText style={[fontMedium32, titleStyle]}>
           Operation Philipp Rustov
         </BrandText>
         <FlatList
@@ -98,7 +99,7 @@ export const RiotGameMemoriesScreen = () => {
               key={index}
               height={episodeVideoSmHeight - 2}
               width={episodeVideoSmWidth}
-              style={styles.videoSmBox}
+              style={videoSmBoxStyle}
             >
               {item.videoUri ? (
                 <Video
@@ -116,7 +117,7 @@ export const RiotGameMemoriesScreen = () => {
                 />
               ) : (
                 <Image
-                  style={styles.videoSmImageFallback}
+                  style={videoSmImageFallbackStyle}
                   source={defaultSendToFightPNG}
                 />
               )}
@@ -128,20 +129,18 @@ export const RiotGameMemoriesScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  contentContainer: {
-    padding: layout.padding_x4,
-  },
-  videoSmBox: {
-    marginRight: layout.padding_x2_5,
-    marginBottom: layout.padding_x2_5,
-  },
-  videoSmImageFallback: {
-    height: "100%",
-    width: "100%",
-    borderRadius: 7,
-  },
-  title: {
-    marginBottom: layout.padding_x2,
-  },
-});
+const contentContainerStyle: ViewStyle = {
+  padding: layout.padding_x4,
+};
+const videoSmBoxStyle: ViewStyle = {
+  marginRight: layout.padding_x2_5,
+  marginBottom: layout.padding_x2_5,
+};
+const videoSmImageFallbackStyle: ImageStyle = {
+  height: "100%",
+  width: "100%",
+  borderRadius: 7,
+};
+const titleStyle: ViewStyle = {
+  marginBottom: layout.padding_x2,
+};

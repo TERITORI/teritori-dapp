@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { View, ViewStyle } from "react-native";
 
 import { Assets } from "./Assets";
 import { MyNFTs } from "./MyNFTs";
@@ -23,7 +23,7 @@ export const WalletManagerScreen: ScreenFC<"WalletManager"> = () => {
   return (
     <ScreenContainer headerChildren={<WalletHeader />}>
       {areThereWallets ? (
-        <View style={styles.container}>
+        <View style={containerStyle}>
           <WalletDashboardHeader />
           <Assets
             userId={selectedWallet?.userId}
@@ -52,9 +52,7 @@ export const WalletManagerScreen: ScreenFC<"WalletManager"> = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingBottom: layout.contentPadding,
-  },
-});
+const containerStyle: ViewStyle = {
+  flex: 1,
+  paddingBottom: layout.contentPadding,
+};

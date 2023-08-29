@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { Image, ScrollView, StyleSheet, View } from "react-native";
+import { Image, ImageStyle, ScrollView, View, ViewStyle } from "react-native";
 
 import { ReviewCollapsable } from "./ReviewCollapsable";
 import { ReviewCollapsableItem } from "./ReviewCollapsableItem";
@@ -39,8 +39,8 @@ export const ReviewInformationSection: React.FC<
   // returns
   const AddressBalanceValue = useCallback(
     ({ address, balance }: { address: string; balance: string }) => (
-      <View style={styles.row}>
-        <BrandText style={styles.addressText}>
+      <View style={rowStyle}>
+        <BrandText style={addressTextStyle}>
           {tinyAddress(address, 16)}
         </BrandText>
         <SpacerRow size={1.5} />
@@ -52,8 +52,8 @@ export const ReviewInformationSection: React.FC<
 
   const AddressWeightValue = useCallback(
     ({ address, weight }: { address: string; weight: string }) => (
-      <View style={styles.row}>
-        <BrandText style={styles.addressText}>
+      <View style={rowStyle}>
+        <BrandText style={addressTextStyle}>
           {tinyAddress(address, 16)}
         </BrandText>
         <SpacerRow size={1.5} />
@@ -71,7 +71,7 @@ export const ReviewInformationSection: React.FC<
     : associateName + ".tori";
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView contentContainerStyle={containerStyle}>
       <BrandText style={fontSemibold28}>Review information</BrandText>
       <SpacerColumn size={3} />
 
@@ -81,7 +81,7 @@ export const ReviewInformationSection: React.FC<
           value={() => (
             <Image
               source={{ uri: organizationData?.imageUrl }}
-              style={styles.image}
+              style={imageStyle}
             />
           )}
         />
@@ -145,7 +145,7 @@ export const ReviewInformationSection: React.FC<
             />
             <SpacerColumn size={1} />
             {tokenSettingData?.tokenHolders.map((holder, index) => (
-              <View key={holder.address} style={styles.fill}>
+              <View key={holder.address} style={fillStyle}>
                 <ReviewCollapsableItem
                   title={`TOKENHOLDER #${index + 1}`}
                   value={() => (
@@ -166,7 +166,7 @@ export const ReviewInformationSection: React.FC<
         organizationData.structure === DaoType.MEMBER_BASED && (
           <ReviewCollapsable title="Member settings">
             {memberSettingData?.members.map((member, index) => (
-              <View key={member.addr} style={styles.fill}>
+              <View key={member.addr} style={fillStyle}>
                 <ReviewCollapsableItem
                   title={`MEMBER #${index + 1}`}
                   value={() => (
@@ -186,8 +186,8 @@ export const ReviewInformationSection: React.FC<
 
       <SpacerColumn size={4} />
 
-      <View style={styles.rowSB}>
-        <View style={styles.footerRowInside}>
+      <View style={rowSBStyle}>
+        <View style={footerRowInsideStyle}>
           <BrandText style={fontSemibold14}>Associated TNS:</BrandText>
           <SpacerRow size={1} />
           <BrandText style={[fontSemibold14, { color: primaryColor }]}>
@@ -217,33 +217,37 @@ export const ReviewInformationSection: React.FC<
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    padding: layout.contentPadding,
-    paddingRight: layout.padding_x2_5,
-    paddingTop: layout.topContentPaddingWithHeading,
-  },
-  row: { flexDirection: "row", alignItems: "center", flexWrap: "wrap" },
-  rowSB: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    flexWrap: "wrap",
-  },
-  image: {
-    width: 140,
-    height: 140,
-    borderRadius: 12,
-  },
-  footerRowInside: {
-    flexDirection: "row",
-    alignItems: "center",
-    height: 24,
-    flexWrap: "wrap",
-  },
-  addressText: StyleSheet.flatten([
-    fontSemibold14,
-    { padding: layout.padding_x1, backgroundColor: neutral00, borderRadius: 8 },
-  ]),
-  fill: { flex: 1 },
-});
+const containerStyle: ViewStyle = {
+  padding: layout.contentPadding,
+  paddingRight: layout.padding_x2_5,
+  paddingTop: layout.topContentPaddingWithHeading,
+};
+const rowStyle: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  flexWrap: "wrap",
+};
+const rowSBStyle: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between",
+  flexWrap: "wrap",
+};
+const imageStyle: ImageStyle = {
+  width: 140,
+  height: 140,
+  borderRadius: 12,
+};
+const footerRowInsideStyle: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  height: 24,
+  flexWrap: "wrap",
+};
+const addressTextStyle: ViewStyle = {
+  ...fontSemibold14,
+  padding: layout.padding_x1,
+  backgroundColor: neutral00,
+  borderRadius: 8,
+};
+const fillStyle: ViewStyle = { flex: 1 };

@@ -2,9 +2,9 @@ import React, { ReactElement, useState } from "react";
 import {
   View,
   ScrollView,
-  StyleSheet,
   StyleProp,
   ViewStyle,
+  TextStyle,
 } from "react-native";
 
 import { Label } from "./TextInputCustom";
@@ -62,9 +62,9 @@ export const SelectInput: React.FC<Props> = ({
 
   const getScrollViewStyle = () => {
     if (data.length > 5) {
-      return [styles.dropdownMenu, { height: 200 }];
+      return [dropdownMenuStyle, { height: 200 }];
     }
-    return styles.dropdownMenu;
+    return dropdownMenuStyle;
   };
 
   return (
@@ -92,12 +92,12 @@ export const SelectInput: React.FC<Props> = ({
       <View>
         <View
           style={[
-            styles.selectInput,
+            selectInputStyle,
             hovered && { borderColor: secondaryColor },
             boxStyle,
           ]}
         >
-          <View style={styles.iconLabel}>
+          <View style={iconLabelStyle}>
             {selectedData.iconComponent && (
               <>
                 {selectedData.iconComponent}
@@ -147,11 +147,11 @@ export const SelectInput: React.FC<Props> = ({
                   setOpenMenu(false);
                 }}
                 key={index}
-                style={styles.dropdownMenuRow}
+                style={dropdownMenuRowStyle}
               >
                 <View
                   style={[
-                    styles.iconLabel,
+                    iconLabelStyle,
                     hoveredIndex === index + 1 && { opacity: 0.5 },
                   ]}
                 >
@@ -162,9 +162,7 @@ export const SelectInput: React.FC<Props> = ({
                     </>
                   )}
 
-                  <BrandText style={styles.dropdownMenuText}>
-                    {item.label}
-                  </BrandText>
+                  <BrandText style={fontMedium13}>{item.label}</BrandText>
                 </View>
               </CustomPressable>
             ))}
@@ -175,58 +173,36 @@ export const SelectInput: React.FC<Props> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  selectInputLabel: StyleSheet.flatten([fontSemibold14, { color: neutralA3 }]),
-  selectInput: {
-    backgroundColor: neutral00,
-    fontSize: 14,
-    fontWeight: 600,
-    color: secondaryColor,
-    borderColor: neutral33,
-    borderWidth: 1,
-    borderRadius: 12,
-    padding: layout.padding_x1_5,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  inputContainer: {
-    backgroundColor: neutral00,
-    borderWidth: 1,
-    borderColor: neutral33,
-    borderRadius: 12,
-    paddingHorizontal: layout.padding_x1_5,
-  },
-  inputItemStyle: {
-    backgroundColor: "#292929",
-    color: neutralA3,
-    paddingVertical: layout.padding_x1_5,
-    paddingHorizontal: layout.padding_x1,
-  },
-  iconLabel: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
+const selectInputStyle: TextStyle = {
+  backgroundColor: neutral00,
+  fontSize: 14,
+  fontWeight: "600",
+  color: secondaryColor,
+  borderColor: neutral33,
+  borderWidth: 1,
+  borderRadius: 12,
+  padding: layout.padding_x1_5,
+  flexDirection: "row",
+  justifyContent: "space-between",
+  alignItems: "center",
+};
+const iconLabelStyle: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+};
 
-  dropdownMenu: {
-    backgroundColor: "#292929",
-    borderWidth: 1,
-    borderColor: neutral33,
-    borderRadius: 12,
-    padding: layout.padding_x1,
-    position: "absolute",
-    top: 52,
-    width: "100%",
-    zIndex: 10,
-  },
-  dropdownMenuText: StyleSheet.flatten([fontMedium13]),
-  dropdownMenuRow: {
-    borderRadius: 6,
-    padding: layout.padding_x1,
-  },
-  // dropdownMenuRow: {
-  //   backgroundColor: neutral00,
-  //   borderRadius: 6,
-  //   padding: layout.padding_x1,
-  // },
-});
+const dropdownMenuStyle: ViewStyle = {
+  backgroundColor: "#292929",
+  borderWidth: 1,
+  borderColor: neutral33,
+  borderRadius: 12,
+  padding: layout.padding_x1,
+  position: "absolute",
+  top: 52,
+  width: "100%",
+  zIndex: 10,
+};
+const dropdownMenuRowStyle: ViewStyle = {
+  borderRadius: 6,
+  padding: layout.padding_x1,
+};

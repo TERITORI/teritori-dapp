@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { TextStyle, View, ViewStyle } from "react-native";
 
 import { LaunchpadBanner } from "./components/LaunchpadBanner";
 import {
@@ -39,17 +39,17 @@ export const LaunchpadApplyScreen: ScreenFC<"LaunchpadApply"> = () => {
       <SpacerColumn size={2} />
       <BrandText style={fontSemibold28}>Welcome</BrandText>
       <SpacerColumn size={2} />
-      <BrandText style={styles.descriptionText}>
+      <BrandText style={descriptionTextStyle}>
         Looking for a fast and efficient way to build an NFT collection?
       </BrandText>
       <SpacerColumn size={2} />
-      <BrandText style={styles.descriptionText}>
+      <BrandText style={descriptionTextStyle}>
         Teritori is the solution. Teritori is built to provide useful smart
         contract interfaces that helps you build and deploy your own NFT
         collections in no time.
       </BrandText>
       <SpacerColumn size={4} />
-      <View style={styles.buttonsContainer}>
+      <View style={buttonsContainerStyle}>
         <LaunchpadButton
           {...BUTTONS[0]}
           url="https://airtable.com/shr1kU7kXW0267gNV"
@@ -63,15 +63,11 @@ export const LaunchpadApplyScreen: ScreenFC<"LaunchpadApply"> = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  descriptionText: StyleSheet.flatten([
-    fontSemibold14,
-    {
-      color: neutral77,
-    },
-  ]),
-  buttonsContainer: {
-    flexDirection: "row",
-    flex: 1,
-  },
-});
+const descriptionTextStyle: TextStyle = {
+  ...fontSemibold14,
+  color: neutral77,
+};
+const buttonsContainerStyle: ViewStyle = {
+  flexDirection: "row",
+  flex: 1,
+};

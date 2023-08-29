@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { StyleSheet, View, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity, ViewStyle } from "react-native";
 
 import logoTopVersionMobileSVG from "../../../../assets/logos/logo-version-alpha-small.svg";
 import { useAppNavigation } from "../../../utils/navigation";
@@ -9,7 +9,7 @@ export const TopLogoMobile: FC = () => {
   const navigation = useAppNavigation();
 
   return (
-    <View style={styles.topDetailContainer}>
+    <View style={topDetailContainerStyle}>
       <TouchableOpacity onPress={() => navigation.navigate("Home")}>
         <SVG width={48} height={48} source={logoTopVersionMobileSVG} />
       </TouchableOpacity>
@@ -17,9 +17,7 @@ export const TopLogoMobile: FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  topDetailContainer: {
-    flex: 1,
-    justifyContent: "center",
-  },
-});
+const topDetailContainerStyle: ViewStyle = {
+  flex: 1,
+  justifyContent: "center",
+};

@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   LayoutChangeEvent,
-  StyleSheet,
   View,
+  ViewStyle,
   useWindowDimensions,
 } from "react-native";
 import Animated, {
@@ -160,20 +160,18 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
     ]
   );
 
-  const styles = StyleSheet.create({
-    content: {
-      alignItems: "center",
-      alignSelf: "center",
-      width: "100%",
-    },
-    floatingActions: {
-      position: "absolute",
-      justifyContent: "center",
-      alignItems: "center",
-      right: 24,
-      bottom: 32,
-    },
-  });
+  const contentStyle: ViewStyle = {
+    alignItems: "center",
+    alignSelf: "center",
+    width: "100%",
+  };
+  const floatingActionsStyle: ViewStyle = {
+    position: "absolute",
+    justifyContent: "center",
+    alignItems: "center",
+    right: 24,
+    bottom: 32,
+  };
 
   return (
     <>
@@ -212,13 +210,13 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
         ListHeaderComponent={ListHeaderComponent}
         keyExtractor={(post: Post) => post.identifier}
         onScroll={scrollHandler}
-        contentContainerStyle={styles.content}
+        contentContainerStyle={contentStyle}
         onEndReachedThreshold={1}
         onEndReached={onEndReached}
       />
 
       {flatListContentOffsetY >= OFFSET_Y_LIMIT_FLOATING + headerHeight && (
-        <View style={styles.floatingActions}>
+        <View style={floatingActionsStyle}>
           <CreateShortPostButtonRound
             onPress={() => setCreateModalVisible(true)}
             style={{ marginBottom: layout.padding_x1_5 }}

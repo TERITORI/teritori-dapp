@@ -2,13 +2,13 @@ import { useEffect, useMemo, useState } from "react";
 import {
   Modal,
   ModalProps,
-  StyleSheet,
   View,
   ImageBackground,
   ScrollView,
   Pressable,
   useWindowDimensions,
   FlatList,
+  ViewStyle,
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
@@ -98,8 +98,8 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
       visible={visible}
       {...props}
     >
-      <View style={styles.container}>
-        <Pressable style={styles.closeIcon} onPress={onClose}>
+      <View style={containerStyle}>
+        <Pressable style={closeIconStyle} onPress={onClose}>
           <SVG width={40} height={40} source={closeSVG} />
         </Pressable>
 
@@ -121,7 +121,7 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
               }}
             >
               <View style={{ position: "relative" }}>
-                <View style={styles.selectListContainer}>
+                <View style={selectListContainerStyle}>
                   <FlatList
                     data={availableRippers}
                     numColumns={1}
@@ -142,7 +142,7 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
                           <TertiaryBox
                             noBrokenCorners
                             mainContainerStyle={[
-                              styles.ripperThumb,
+                              ripperThumbStyle,
                               isSelected && {
                                 borderColor: secondaryColor,
                                 borderWidth: 1,
@@ -165,7 +165,7 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
                               isStaked={isNFTStaked(item)}
                             />
 
-                            {isSelected && <View style={styles.arrowRight} />}
+                            {isSelected && <View style={arrowRightStyle} />}
                           </TertiaryBox>
                         </TouchableOpacity>
                       );
@@ -174,14 +174,14 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
                 </View>
 
                 <ImageBackground
-                  style={styles.dashedBorder}
+                  style={dashedBorderStyle}
                   source={dashedBorderPNG}
                 >
                   <RipperAvatar
                     source={selectedRipper?.imageUri || ""}
                     size={RIPPER_IMAGE_SIZE}
                     rounded
-                    containerStyle={styles.roundedContainer}
+                    containerStyle={roundedContainerStyle}
                     isStaked={isNFTStaked(selectedRipper)}
                   />
                 </ImageBackground>
@@ -199,7 +199,7 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
 
               <RipperStatsSection ripper={selectedRipper} size="LG" />
 
-              <View style={styles.btnGroup}>
+              <View style={btnGroupStyle}>
                 <SVG color={yellowDefault} source={controllerSVG} />
                 <SpacerRow size={2} />
                 <SimpleButton
@@ -217,60 +217,58 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    backgroundColor: withAlpha(neutral00, 0.95),
-    paddingTop: headerHeight,
-    borderWidth: 1,
-    position: "relative",
-  },
-  dashedBorder: {
-    width: RIPPER_IMAGE_SIZE,
-    height: RIPPER_IMAGE_SIZE,
-    marginTop: layout.padding_x2_5,
-  },
-  roundedContainer: {
-    width: RIPPER_IMAGE_SIZE - 4,
-    height: RIPPER_IMAGE_SIZE - 4,
-    position: "absolute",
-    left: 2,
-    top: 2,
-    borderRadius: 999,
-    overflow: "hidden",
-  },
-  selectListContainer: {
-    position: "absolute",
-    zIndex: 2,
-    left: -60,
-  },
-  ripperThumb: {
-    alignItems: "center",
-    width: THUMB_CONTAINER_SIZE,
-    borderWidth: 0,
-    margin: layout.padding_x1,
-    marginRight: layout.padding_x3,
-  },
-  arrowRight: {
-    position: "absolute",
-    borderWidth: 10,
-    borderRightWidth: 0,
-    borderStyle: "solid",
-    borderColor: "transparent",
-    borderLeftColor: secondaryColor,
-    right: -16,
-  },
-  btnGroup: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginTop: 2 * layout.padding_x4,
-    marginLeft: layout.padding_x4,
-  },
-  closeIcon: {
-    position: "absolute",
-    right: layout.padding_x1_5,
-    top: layout.padding_x1_5,
-    zIndex: 1,
-  },
-});
+const containerStyle: ViewStyle = {
+  flex: 1,
+  alignItems: "center",
+  backgroundColor: withAlpha(neutral00, 0.95),
+  paddingTop: headerHeight,
+  borderWidth: 1,
+  position: "relative",
+};
+const dashedBorderStyle: ViewStyle = {
+  width: RIPPER_IMAGE_SIZE,
+  height: RIPPER_IMAGE_SIZE,
+  marginTop: layout.padding_x2_5,
+};
+const roundedContainerStyle: ViewStyle = {
+  width: RIPPER_IMAGE_SIZE - 4,
+  height: RIPPER_IMAGE_SIZE - 4,
+  position: "absolute",
+  left: 2,
+  top: 2,
+  borderRadius: 999,
+  overflow: "hidden",
+};
+const selectListContainerStyle: ViewStyle = {
+  position: "absolute",
+  zIndex: 2,
+  left: -60,
+};
+const ripperThumbStyle: ViewStyle = {
+  alignItems: "center",
+  width: THUMB_CONTAINER_SIZE,
+  borderWidth: 0,
+  margin: layout.padding_x1,
+  marginRight: layout.padding_x3,
+};
+const arrowRightStyle: ViewStyle = {
+  position: "absolute",
+  borderWidth: 10,
+  borderRightWidth: 0,
+  borderStyle: "solid",
+  borderColor: "transparent",
+  borderLeftColor: secondaryColor,
+  right: -16,
+};
+const btnGroupStyle: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  marginTop: 2 * layout.padding_x4,
+  marginLeft: layout.padding_x4,
+};
+const closeIconStyle: ViewStyle = {
+  position: "absolute",
+  right: layout.padding_x1_5,
+  top: layout.padding_x1_5,
+  zIndex: 1,
+};

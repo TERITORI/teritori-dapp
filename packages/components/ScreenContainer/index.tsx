@@ -3,8 +3,8 @@ import {
   SafeAreaView,
   ScrollView,
   View,
-  StyleSheet,
   useWindowDimensions,
+  ViewStyle,
 } from "react-native";
 
 import { Header } from "./Header";
@@ -120,7 +120,7 @@ export const ScreenContainer: React.FC<{
       <DAppStoreData />
       {/*FIXME: Too many containers levels*/}
 
-      <View style={styles.container}>
+      <View style={containerStyle}>
         {!hideSidebar ? <Sidebar /> : null}
 
         <View style={{ width: "100%", flex: 1 }}>
@@ -144,7 +144,7 @@ export const ScreenContainer: React.FC<{
                   >
                     <View
                       style={[
-                        styles.childrenContainer,
+                        childrenContainerStyle,
                         marginStyle,
                         { width, flex: 1 },
                       ]}
@@ -155,7 +155,7 @@ export const ScreenContainer: React.FC<{
                   </ScrollView>
                 ) : (
                   <View
-                    style={[styles.childrenContainer, marginStyle, { width }]}
+                    style={[childrenContainerStyle, marginStyle, { width }]}
                   >
                     {children}
                     {footerChildren ? footerChildren : <Footer />}
@@ -205,14 +205,12 @@ export const ScreenContainer: React.FC<{
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#000000",
-    flexDirection: "row",
-  },
-  childrenContainer: {
-    height: "100%",
-    alignSelf: "center",
-  },
-});
+const containerStyle: ViewStyle = {
+  flex: 1,
+  backgroundColor: "#000000",
+  flexDirection: "row",
+};
+const childrenContainerStyle: ViewStyle = {
+  height: "100%",
+  alignSelf: "center",
+};

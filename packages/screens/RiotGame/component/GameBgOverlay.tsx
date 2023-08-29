@@ -1,6 +1,6 @@
 // libraries
 import React, { useMemo } from "react";
-import { StyleSheet, useWindowDimensions, View } from "react-native";
+import { useWindowDimensions, View, ViewStyle } from "react-native";
 
 import gameBgShadowVerticalSVG from "../../../../assets/game-bg-shadow-vertical.svg";
 import gameBgShadowSVG from "../../../../assets/game-bg-shadow.svg";
@@ -65,22 +65,28 @@ export const GameBgOverlay: React.FC<GameBgOverlayProps> = ({ type }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  absolute: { position: "absolute" },
-  top: {
-    top: 0,
-  },
-  bottom: {
-    bottom: 0,
-    transform: [{ rotate: "180deg" }],
-  },
-  left: {
-    left: 0,
-    top: 0,
-  },
-  right: {
-    right: 0,
-    top: 0,
-    transform: [{ rotate: "180deg" }],
-  },
-});
+const absolute: ViewStyle = { position: "absolute" };
+const top: ViewStyle = {
+  top: 0,
+};
+const bottom: ViewStyle = {
+  bottom: 0,
+  transform: [{ rotate: "180deg" }],
+};
+const left: ViewStyle = {
+  left: 0,
+  top: 0,
+};
+const right: ViewStyle = {
+  right: 0,
+  top: 0,
+  transform: [{ rotate: "180deg" }],
+};
+
+const styles = {
+  absolute,
+  top,
+  bottom,
+  left,
+  right,
+};

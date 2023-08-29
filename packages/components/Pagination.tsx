@@ -1,6 +1,5 @@
-// libraries
 import React, { useRef } from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { TextStyle, TouchableOpacity, View, ViewStyle } from "react-native";
 
 import { BrandText } from "./BrandText";
 import { SVG } from "./SVG";
@@ -56,14 +55,14 @@ export const Pagination = ({
 
   // returns
   return (
-    <View style={styles.container}>
-      <View style={[styles.section, { justifyContent: "flex-start" }]}>
-        <BrandText style={styles.grayText}>
+    <View style={containerStyle}>
+      <View style={[sectionStyle, { justifyContent: "flex-start" }]}>
+        <BrandText style={grayTextStyle}>
           Page {currentPage + 1} of {maxPage}
         </BrandText>
       </View>
 
-      <View style={styles.section}>
+      <View style={sectionStyle}>
         <TouchableOpacity onPress={() => handleChangePage(0)}>
           <TertiaryBox height={42} width={56}>
             <SVG source={chevronLeftDoubleSVG} height={16} width={16} />
@@ -89,7 +88,7 @@ export const Pagination = ({
         </TouchableOpacity>
       </View>
 
-      <View style={[styles.section, { justifyContent: "flex-end" }]}>
+      <View style={[sectionStyle, { justifyContent: "flex-end" }]}>
         <TertiaryBox height={42} width={80}>
           <TouchableOpacity
             style={{
@@ -156,22 +155,20 @@ export const Pagination = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: layout.padding_x2,
-  },
-  section: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  grayText: {
-    ...fontSemibold14,
-    color: neutral77,
-    paddingRight: layout.padding_x1,
-    lineHeight: 14,
-  },
-});
+const containerStyle: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between",
+  paddingHorizontal: layout.padding_x2,
+};
+const sectionStyle: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "center",
+};
+const grayTextStyle: TextStyle = {
+  ...fontSemibold14,
+  color: neutral77,
+  paddingRight: layout.padding_x1,
+  lineHeight: 14,
+};

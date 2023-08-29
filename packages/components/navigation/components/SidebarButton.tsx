@@ -1,6 +1,6 @@
 import { useIsFocused } from "@react-navigation/native";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Pressable, View, ViewStyle } from "react-native";
 import Animated, {
   // Extrapolate,
   // interpolate,
@@ -131,15 +131,15 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
     <CustomPressable
       onPress={isComingSoon ? () => {} : onPress && (() => onPress(route))}
       disabled={isSelected}
-      style={styles.container}
+      style={containerStyle}
     >
       {({ hovered }) => (
         <View>
-          <View style={styles.titleContainer}>
+          <View style={titleContainerStyle}>
             {isSelected && <SideNotch style={{ left: -layout.padding_x2 }} />}
             <View
               style={[
-                styles.svgContainer,
+                svgContainerStyle,
                 isSelected && { borderColor: primaryColor },
                 isComingSoon && { opacity: 0.5 },
               ]}
@@ -147,7 +147,7 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
               <SVGorImageIcon icon={icon} iconSize={iconSize} />
             </View>
             <SpacerRow size={2} />
-            <Animated.View style={[styles.rowCenter, opacityStyle]}>
+            <Animated.View style={[rowCenterStyle, opacityStyle]}>
               <BrandText
                 style={[
                   fontSemibold12,
@@ -159,10 +159,7 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
               {nested && (
                 // <Animated.View style={rotateStyle}>
                 <Animated.View>
-                  <Pressable
-                    style={styles.chevron}
-                    onPress={toggleNestedSidebar}
-                  >
+                  <Pressable style={chevronStyle} onPress={toggleNestedSidebar}>
                     <SVG
                       source={
                         isNestedBarExpanded ? chevronUpSVG : chevronDownSVG
@@ -180,7 +177,7 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
           {nested && isNestedBarExpanded && (
             // <Animated.View style={nestedBarStyle}>
             <Animated.View>
-              <View style={styles.nestedContainer}>
+              <View style={nestedContainerStyle}>
                 {Object.values(nested).map((n) => (
                   <SidebarNestedButton
                     key={n.title}
@@ -201,44 +198,42 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    width: "100%",
-    paddingHorizontal: layout.padding_x2,
-  },
-  titleContainer: {
-    paddingVertical: layout.padding_x1,
-    alignItems: "center",
-    flexDirection: "row",
-  },
-  rowCenter: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    flex: 1,
-    maxWidth: 120,
-  },
-  svgContainer: {
-    borderWidth: 2,
-    height: 40,
-    width: 40,
-    justifyContent: "center",
-    alignItems: "center",
-    borderColor: neutral33,
-    borderRadius: 20,
-  },
-  chevron: {
-    height: 20,
-    width: 20,
-    borderRadius: 10,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: neutral17,
-  },
-  nestedContainer: {
-    flex: 1,
-    paddingVertical: layout.padding_x0_5,
-    backgroundColor: neutral17,
-    borderRadius: 8,
-  },
-});
+const containerStyle: ViewStyle = {
+  width: "100%",
+  paddingHorizontal: layout.padding_x2,
+};
+const titleContainerStyle: ViewStyle = {
+  paddingVertical: layout.padding_x1,
+  alignItems: "center",
+  flexDirection: "row",
+};
+const rowCenterStyle: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between",
+  flex: 1,
+  maxWidth: 120,
+};
+const svgContainerStyle: ViewStyle = {
+  borderWidth: 2,
+  height: 40,
+  width: 40,
+  justifyContent: "center",
+  alignItems: "center",
+  borderColor: neutral33,
+  borderRadius: 20,
+};
+const chevronStyle: ViewStyle = {
+  height: 20,
+  width: 20,
+  borderRadius: 10,
+  justifyContent: "center",
+  alignItems: "center",
+  backgroundColor: neutral17,
+};
+const nestedContainerStyle: ViewStyle = {
+  flex: 1,
+  paddingVertical: layout.padding_x0_5,
+  backgroundColor: neutral17,
+  borderRadius: 8,
+};

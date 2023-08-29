@@ -1,5 +1,5 @@
 import { useRoute } from "@react-navigation/native";
-import { StyleSheet, View } from "react-native";
+import { View, ViewStyle } from "react-native";
 import Animated, {
   useAnimatedStyle,
   withSpring,
@@ -44,7 +44,7 @@ export const SidebarNestedButton: React.FC<SidebarNestedButtonProps> = ({
     <CustomPressable
       onPress={isComingSoon ? () => {} : onPress && (() => onPress(route))}
       disabled={isSelected}
-      style={styles.container}
+      style={containerStyle}
     >
       {({ hovered }): React.ReactElement => (
         <>
@@ -74,13 +74,11 @@ export const SidebarNestedButton: React.FC<SidebarNestedButtonProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    paddingHorizontal: layout.padding_x1_5,
-    alignItems: "center",
-    flexDirection: "row",
-    height: 32,
-    width: "100%",
-    position: "relative",
-  },
-});
+const containerStyle: ViewStyle = {
+  paddingHorizontal: layout.padding_x1_5,
+  alignItems: "center",
+  flexDirection: "row",
+  height: 32,
+  width: "100%",
+  position: "relative",
+};

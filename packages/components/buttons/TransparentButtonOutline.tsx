@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  StyleProp,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-  ViewStyle,
-} from "react-native";
+import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
 import { SvgProps } from "react-native-svg";
 
 import {
@@ -97,7 +91,7 @@ export const TransparentButtonOutline: React.FC<{
           {text}
         </BrandText>
         {RightComponent && (
-          <View style={styles.rightComponent}>
+          <View style={rightComponentStyle}>
             <RightComponent />
           </View>
         )}
@@ -106,9 +100,7 @@ export const TransparentButtonOutline: React.FC<{
   );
 };
 
-const styles = StyleSheet.create({
-  rightComponent: {
-    flex: 1,
-    alignItems: "flex-end",
-  },
-});
+const rightComponentStyle: ViewStyle = {
+  flex: 1,
+  alignItems: "flex-end",
+};

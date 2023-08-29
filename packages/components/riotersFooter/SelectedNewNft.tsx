@@ -1,5 +1,5 @@
 import React, { memo, useCallback } from "react";
-import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
+import { Image, TouchableOpacity, View, ViewStyle } from "react-native";
 import { DraxList, DraxView } from "react-native-drax";
 
 import shapeSvg from "../../../assets/icons/shape.svg";
@@ -94,7 +94,7 @@ const SelectNewNft: React.FC<{
             name={currentCollection.collectionName}
             id={currentCollection.id}
           />
-          <View style={styles.separator} />
+          <View style={separatorStyle} />
         </View>
         <DraxList
           data={nfts}
@@ -154,10 +154,8 @@ const SelectNewNft: React.FC<{
 
 export default SelectNewNft;
 
-const styles = StyleSheet.create({
-  separator: {
-    height: 1,
-    backgroundColor: neutral33,
-    marginTop: 20,
-  },
-});
+const separatorStyle: ViewStyle = {
+  height: 1,
+  backgroundColor: neutral33,
+  marginTop: 20,
+};

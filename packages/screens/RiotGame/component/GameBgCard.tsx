@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { Image, StyleSheet, View } from "react-native";
+import { Image, TextStyle, View, ViewStyle } from "react-native";
 
 import addSVG from "../../../../assets/icons/add.svg";
 import { BrandText } from "../../../components/BrandText";
@@ -28,8 +28,8 @@ export const GameBgCard: React.FC<GameBgCardProps> = ({
     switch (item.type) {
       case "POINTS":
         return (
-          <View style={styles.insideCard}>
-            <BrandText style={styles.pointLabel}>{item.data.label}</BrandText>
+          <View style={insideCardStyle}>
+            <BrandText style={pointLabelStyle}>{item.data.label}</BrandText>
             <BrandText style={fontSemibold28}>{item.data.value}</BrandText>
           </View>
         );
@@ -45,10 +45,10 @@ export const GameBgCard: React.FC<GameBgCardProps> = ({
   }, [item.type, item.data, width, height]);
 
   return (
-    <View style={[styles.card, { width, height }]}>
+    <View style={[cardStyle, { width, height }]}>
       {renderCard()}
       {!hidePlus && (
-        <View style={styles.add}>
+        <View style={addStyle}>
           <SVG source={addSVG} color={neutral77} width={11} height={11} />
         </View>
       )}
@@ -56,24 +56,27 @@ export const GameBgCard: React.FC<GameBgCardProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  card: {
-    borderRightWidth: 1,
-    borderBottomWidth: 1,
-    borderColor: neutral22,
-    justifyContent: "center",
-    alignItems: "center",
-    position: "relative",
-  },
-  add: {
-    position: "absolute",
-    left: -5.5,
-    top: -5.5,
-    zIndex: 1000,
-  },
-  insideCard: { flex: 1, justifyContent: "center", alignItems: "center" },
-  pointLabel: StyleSheet.flatten([
-    fontBold12,
-    { color: neutralA3, textTransform: "uppercase" },
-  ]),
-});
+const cardStyle: ViewStyle = {
+  borderRightWidth: 1,
+  borderBottomWidth: 1,
+  borderColor: neutral22,
+  justifyContent: "center",
+  alignItems: "center",
+  position: "relative",
+};
+const addStyle: ViewStyle = {
+  position: "absolute",
+  left: -5.5,
+  top: -5.5,
+  zIndex: 1000,
+};
+const insideCardStyle: ViewStyle = {
+  flex: 1,
+  justifyContent: "center",
+  alignItems: "center",
+};
+const pointLabelStyle: TextStyle = {
+  ...fontBold12,
+  color: neutralA3,
+  textTransform: "uppercase",
+};

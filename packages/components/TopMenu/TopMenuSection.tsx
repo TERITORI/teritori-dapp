@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleProp, StyleSheet, ViewStyle } from "react-native";
+import { StyleProp, TextStyle, ViewStyle } from "react-native";
 
 import { neutral77 } from "../../utils/style/colors";
 import { fontSemibold12 } from "../../utils/style/fonts";
@@ -18,16 +18,12 @@ export const TopMenuSection: React.FC<{
     <>
       <Separator />
       <FlexCol
-        style={[
-          styles.container,
-          style,
-          isCarousel && { paddingHorizontal: 0 },
-        ]}
+        style={[containerStyle, style, isCarousel && { paddingHorizontal: 0 }]}
       >
         <FlexRow alignItems="center">
           <BrandText
             style={[
-              styles.title,
+              titleStyle,
               isCarousel && { marginLeft: layout.padding_x2 },
             ]}
           >
@@ -40,14 +36,12 @@ export const TopMenuSection: React.FC<{
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    paddingVertical: layout.padding_x1_5,
-    paddingHorizontal: layout.padding_x2,
-  },
-  title: {
-    ...(fontSemibold12 as object),
-    color: neutral77,
-    marginBottom: layout.padding_x1,
-  },
-});
+const containerStyle: ViewStyle = {
+  paddingVertical: layout.padding_x1_5,
+  paddingHorizontal: layout.padding_x2,
+};
+const titleStyle: TextStyle = {
+  ...fontSemibold12,
+  color: neutral77,
+  marginBottom: layout.padding_x1,
+};

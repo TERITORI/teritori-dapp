@@ -1,9 +1,5 @@
 import React from "react";
-import {
-  StyleSheet,
-  TouchableOpacity,
-  useWindowDimensions,
-} from "react-native";
+import { TouchableOpacity, ViewStyle, useWindowDimensions } from "react-native";
 import Animated, {
   Easing,
   SharedValue,
@@ -66,38 +62,33 @@ export const RefreshButtonRound: React.FC<RefreshButtonProps> = ({
     };
   }, [rotateValue.value]);
 
-  const styles = StyleSheet.create({
-    selfCenter: {
-      alignSelf: "center",
-    },
-    container: {
-      flexDirection: "row",
-      alignItems: "center",
-      backgroundColor: neutral17,
-      borderWidth: 1,
-      borderColor: neutral33,
-      borderRadius: 999,
-      padding: layout.padding_x1_5,
+  const selfCenterStyle: ViewStyle = {
+    alignSelf: "center",
+  };
+  const containerStyle: ViewStyle = {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: neutral17,
+    borderWidth: 1,
+    borderColor: neutral33,
+    borderRadius: 999,
+    padding: layout.padding_x1_5,
 
-      justifyContent: "center",
-      width:
-        width < RESPONSIVE_BREAKPOINT_S
-          ? ROUND_BUTTON_WIDTH_S
-          : ROUND_BUTTON_WIDTH_L,
-      height:
-        width < RESPONSIVE_BREAKPOINT_S
-          ? ROUND_BUTTON_WIDTH_S
-          : ROUND_BUTTON_WIDTH_L,
-    },
-    textContainer: {
-      marginLeft: layout.padding_x1_5,
-    },
-  });
+    justifyContent: "center",
+    width:
+      width < RESPONSIVE_BREAKPOINT_S
+        ? ROUND_BUTTON_WIDTH_S
+        : ROUND_BUTTON_WIDTH_L,
+    height:
+      width < RESPONSIVE_BREAKPOINT_S
+        ? ROUND_BUTTON_WIDTH_S
+        : ROUND_BUTTON_WIDTH_L,
+  };
 
   // returns
   return (
-    <Animated.View style={[styles.selfCenter]}>
-      <TouchableOpacity style={styles.container} onPress={onPress}>
+    <Animated.View style={[selfCenterStyle]}>
+      <TouchableOpacity style={containerStyle} onPress={onPress}>
         <Animated.View style={animatedStyles}>
           <SVG source={refreshSVG} width={SVG_SIZE} height={SVG_SIZE} />
         </Animated.View>

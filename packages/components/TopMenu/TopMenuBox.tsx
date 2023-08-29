@@ -2,7 +2,7 @@ import { FC } from "react";
 import {
   ScrollView,
   StyleProp,
-  StyleSheet,
+  TextStyle,
   useWindowDimensions,
   ViewStyle,
 } from "react-native";
@@ -38,7 +38,7 @@ export const TopMenuBox: FC<{
       <ScrollView
         showsVerticalScrollIndicator={false}
         style={[
-          styles.scrollView,
+          scrollViewStyle,
           {
             maxHeight: windowHeight - headerHeight / 2 - TOP_MENU_BUTTON_HEIGHT,
           },
@@ -53,7 +53,7 @@ export const TopMenuBox: FC<{
         <Separator />
         <OmniLink to={{ screen: "Settings" }}>
           <FlexCol style={{ paddingVertical: layout.padding_x1_5 }}>
-            <BrandText style={styles.settingsText}>Settings</BrandText>
+            <BrandText style={settingsTextStyle}>Settings</BrandText>
           </FlexCol>
         </OmniLink>
       </ScrollView>
@@ -61,13 +61,11 @@ export const TopMenuBox: FC<{
   );
 };
 
-const styles = StyleSheet.create({
-  scrollView: {
-    height: "100%",
-    width: topMenuWidth - 2,
-  },
-  settingsText: {
-    ...(fontSemibold14 as object),
-    color: purpleLight,
-  },
-});
+const scrollViewStyle: ViewStyle = {
+  height: "100%",
+  width: topMenuWidth - 2,
+};
+const settingsTextStyle: TextStyle = {
+  ...fontSemibold14,
+  color: purpleLight,
+};

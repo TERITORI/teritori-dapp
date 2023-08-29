@@ -1,10 +1,11 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Pressable,
-  StyleSheet,
   View,
   ActivityIndicator,
   Animated,
+  ViewStyle,
+  TextStyle,
 } from "react-native";
 
 import checkCircleSVG from "../../../../assets/icons/check-circle.svg";
@@ -73,7 +74,7 @@ export const RightSection: React.FC<RightSectionProps> = ({
   // returns
   const SignatureProcess = useCallback(
     ({ title, completeText, isComplete }: LaunchingProcessStepType) => (
-      <View style={styles.signatureProcess}>
+      <View style={signatureProcessStyle}>
         {isComplete ? (
           <SVG source={checkCircleSVG} width={48} height={48} />
         ) : (
@@ -111,22 +112,22 @@ export const RightSection: React.FC<RightSectionProps> = ({
   );
 
   return (
-    <View style={styles.container}>
-      <View style={styles.topSection}>
-        <View style={styles.topRow}>
+    <View style={containerStyle}>
+      <View style={topSectionStyle}>
+        <View style={topRowStyle}>
           <BrandText style={fontSemibold14}>
             {isLaunching ? "Launching your organization" : percentageText}
           </BrandText>
           {!isLaunching && (
-            <BrandText style={styles.progressText}>
+            <BrandText style={progressTextStyle}>
               {`${currentStep + 1}/${steps.length}`}
             </BrandText>
           )}
         </View>
-        <Animated.View style={[styles.progressBar, { width: loadingWidth }]} />
+        <Animated.View style={[progressBarStyle, { width: loadingWidth }]} />
       </View>
-      <View style={styles.section}>
-        <BrandText style={styles.stepsText}>
+      <View style={sectionStyle}>
+        <BrandText style={stepsTextStyle}>
           {isLaunching ? "Signature process" : `STEPS`}
         </BrandText>
         {isLaunching && launchingCompleteStep !== undefined
@@ -142,7 +143,7 @@ export const RightSection: React.FC<RightSectionProps> = ({
           : steps.map((step, index) => (
               <Pressable
                 key={step}
-                style={styles.step}
+                style={stepStyle}
                 disabled={index === steps.length - 1}
                 onPress={
                   unlockedSteps.includes(index)
@@ -152,7 +153,7 @@ export const RightSection: React.FC<RightSectionProps> = ({
               >
                 <BrandText
                   style={[
-                    styles.stepText,
+                    stepTextStyle,
                     unlockedSteps.includes(index) && { color: secondaryColor },
                     currentStep === index && { color: primaryColor },
                   ]}
@@ -166,51 +167,48 @@ export const RightSection: React.FC<RightSectionProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    width: 300,
-    height: "100%",
-    borderLeftWidth: 1,
-    borderColor: neutral33,
-  },
-  topSection: {
-    height: 64,
-    position: "relative",
-    borderBottomWidth: 1,
-    borderColor: neutral33,
-    justifyContent: "center",
-  },
-  topRow: {
-    justifyContent: "space-between",
-    flexDirection: "row",
-    paddingHorizontal: layout.padding_x2,
-  },
-  signatureProcess: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: layout.padding_x1_5,
-  },
-  progressText: StyleSheet.flatten([fontSemibold12, { color: neutral77 }]),
-  stepsText: StyleSheet.flatten([
-    fontSemibold14,
-    {
-      color: neutral77,
-      marginBottom: layout.padding_x2_5,
-      textTransform: "uppercase",
-    },
-  ]),
-  progressBar: {
-    position: "absolute",
-    bottom: 0,
-    backgroundColor: primaryColor,
-    height: 2,
-  },
-  step: { marginBottom: layout.padding_x2_5 },
-  stepText: StyleSheet.flatten([
-    fontSemibold14,
-    {
-      color: neutralA3,
-    },
-  ]),
-  section: { padding: layout.padding_x2 },
-});
+const containerStyle: ViewStyle = {
+  width: 300,
+  height: "100%",
+  borderLeftWidth: 1,
+  borderColor: neutral33,
+};
+const topSectionStyle: ViewStyle = {
+  height: 64,
+  position: "relative",
+  borderBottomWidth: 1,
+  borderColor: neutral33,
+  justifyContent: "center",
+};
+const topRowStyle: ViewStyle = {
+  justifyContent: "space-between",
+  flexDirection: "row",
+  paddingHorizontal: layout.padding_x2,
+};
+const signatureProcessStyle: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  marginBottom: layout.padding_x1_5,
+};
+const progressTextStyle: TextStyle = {
+  ...fontSemibold12,
+  color: neutral77,
+};
+const stepsTextStyle: TextStyle = {
+  ...fontSemibold14,
+  color: neutral77,
+  marginBottom: layout.padding_x2_5,
+  textTransform: "uppercase",
+};
+const progressBarStyle: ViewStyle = {
+  position: "absolute",
+  bottom: 0,
+  backgroundColor: primaryColor,
+  height: 2,
+};
+const stepStyle: ViewStyle = { marginBottom: layout.padding_x2_5 };
+const stepTextStyle: TextStyle = {
+  ...fontSemibold14,
+  color: neutralA3,
+};
+const sectionStyle: ViewStyle = { padding: layout.padding_x2 };

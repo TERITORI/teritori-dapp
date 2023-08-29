@@ -1,4 +1,4 @@
-import { StyleSheet, View, ViewStyle } from "react-native";
+import { View, ViewStyle } from "react-native";
 
 import { InfoBox } from "./InfoBox";
 import { PrimaryButtonOutline } from "../../../components/buttons/PrimaryButtonOutline";
@@ -21,7 +21,7 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
   const { isClaiming, claimableAmount, claimRewards } = useGameRewards();
 
   return (
-    <View style={[containerStyle, styles.container]}>
+    <View style={[containerStyle, containerStyle]}>
       <InfoBox
         size="SM"
         title="Number of Fighters"
@@ -60,11 +60,3 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: "row",
-    margin: layout.padding_x1_5,
-    alignItems: "center",
-  },
-});

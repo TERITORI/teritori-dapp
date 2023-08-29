@@ -73,6 +73,7 @@ export const Button: React.FC<ButtonType> = ({
 const useStyles = (size: ButtonType["size"]) => {
   const contentContext = useContentContext();
   // no StyleSheet.create :)
+  // norman: thank you my dude :D
   switch (size) {
     case "L":
       return {

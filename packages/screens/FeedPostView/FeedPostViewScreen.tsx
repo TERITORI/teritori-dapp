@@ -1,9 +1,9 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
-  StyleSheet,
   useWindowDimensions,
   View,
+  ViewStyle,
 } from "react-native";
 import Animated, {
   useAnimatedRef,
@@ -210,7 +210,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
         <>
           <Animated.ScrollView
             ref={aref}
-            contentContainerStyle={styles.contentContainer}
+            contentContainerStyle={contentContainerStyle}
             onScroll={scrollHandler}
             scrollEventThrottle={1}
           >
@@ -295,7 +295,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
           </Animated.ScrollView>
 
           {flatListContentOffsetY >= threadCardOffsetY + 66 && !isMobile && (
-            <View style={styles.floatingActions}>
+            <View style={floatingActionsStyle}>
               <RefreshButtonRound
                 isRefreshing={isLoadingSharedValue}
                 onPress={refetch}
@@ -357,20 +357,14 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  contentContainer: {
-    alignItems: "center",
-    alignSelf: "center",
-  },
-  indicator: {
-    marginBottom: 56,
-    marginLeft: 56,
-  },
-  floatingActions: {
-    position: "absolute",
-    justifyContent: "center",
-    alignItems: "center",
-    right: 68,
-    bottom: 230,
-  },
-});
+const contentContainerStyle: ViewStyle = {
+  alignItems: "center",
+  alignSelf: "center",
+};
+const floatingActionsStyle: ViewStyle = {
+  position: "absolute",
+  justifyContent: "center",
+  alignItems: "center",
+  right: 68,
+  bottom: 230,
+};

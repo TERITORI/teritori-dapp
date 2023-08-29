@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import {
   Modal,
   ModalProps,
-  StyleSheet,
   View,
   ImageBackground,
   ScrollView,
   Pressable,
+  ViewStyle,
 } from "react-native";
 
 import { AvailableRippersGrid } from "./AvailableRippersGrid";
@@ -94,8 +94,8 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
       visible={visible}
       {...props}
     >
-      <View style={styles.container}>
-        <Pressable style={styles.closeIcon} onPress={onClose}>
+      <View style={containerStyle}>
+        <Pressable style={closeIconStyle} onPress={onClose}>
           <SVG width={40} height={40} source={closeSVG} />
         </Pressable>
 
@@ -120,7 +120,7 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
                 />
               </View>
 
-              <View style={styles.btnGroup}>
+              <View style={btnGroupStyle}>
                 <SVG color={yellowDefault} source={controllerSVG} />
                 <SpacerRow size={2} />
                 <SimpleButton
@@ -134,14 +134,14 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
 
             <View>
               <ImageBackground
-                style={styles.dashedBorder}
+                style={dashedBorderStyle}
                 source={dashedBorderPNG}
               >
                 <RipperAvatar
                   source={selectedRipper?.imageUri || ""}
                   size={RIPPER_IMAGE_SIZE}
                   rounded
-                  containerStyle={styles.roundedContainer}
+                  containerStyle={roundedContainerStyle}
                   isStaked={isNFTStaked(selectedRipper)}
                 />
               </ImageBackground>
@@ -172,36 +172,34 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: withAlpha(neutral00, 0.95),
-    paddingTop: headerHeight,
-    borderWidth: 1,
-  },
-  dashedBorder: {
-    width: RIPPER_IMAGE_SIZE,
-    height: RIPPER_IMAGE_SIZE,
-    marginTop: layout.padding_x2_5,
-  },
-  roundedContainer: {
-    width: RIPPER_IMAGE_SIZE - 4,
-    height: RIPPER_IMAGE_SIZE - 4,
-    position: "absolute",
-    left: 2,
-    top: 2,
-    borderRadius: 999,
-    overflow: "hidden",
-  },
-  btnGroup: {
-    marginTop: layout.padding_x2_5,
-    flexDirection: "row",
-    alignSelf: "center",
-  },
-  closeIcon: {
-    position: "absolute",
-    right: 10,
-    top: 10,
-    zIndex: 1,
-  },
-});
+const containerStyle: ViewStyle = {
+  flex: 1,
+  backgroundColor: withAlpha(neutral00, 0.95),
+  paddingTop: headerHeight,
+  borderWidth: 1,
+};
+const dashedBorderStyle: ViewStyle = {
+  width: RIPPER_IMAGE_SIZE,
+  height: RIPPER_IMAGE_SIZE,
+  marginTop: layout.padding_x2_5,
+};
+const roundedContainerStyle: ViewStyle = {
+  width: RIPPER_IMAGE_SIZE - 4,
+  height: RIPPER_IMAGE_SIZE - 4,
+  position: "absolute",
+  left: 2,
+  top: 2,
+  borderRadius: 999,
+  overflow: "hidden",
+};
+const btnGroupStyle: ViewStyle = {
+  marginTop: layout.padding_x2_5,
+  flexDirection: "row",
+  alignSelf: "center",
+};
+const closeIconStyle: ViewStyle = {
+  position: "absolute",
+  right: 10,
+  top: 10,
+  zIndex: 1,
+};

@@ -4,7 +4,6 @@ import {
   ActivityIndicator,
   LayoutRectangle,
   StyleProp,
-  StyleSheet,
   View,
   ViewStyle,
 } from "react-native";
@@ -262,24 +261,24 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
           })
         }
       >
-        <View style={styles.container}>
+        <View style={containerStyle}>
           {!isMobile ? (
             <View
-              style={[styles.curvedLine, { width: LINES_HORIZONTAL_SPACE }]}
+              style={[curvedLineStyle, { width: LINES_HORIZONTAL_SPACE }]}
             />
           ) : null}
-          {isLast && !isMobile ? <View style={styles.extraLineHider} /> : null}
+          {isLast && !isMobile ? <View style={extraLineHiderStyle} /> : null}
 
           {/*========== Card */}
-          <View style={[styles.commentContainer, style]}>
+          <View style={[commentContainerStyle, style]}>
             <AnimationFadeInOut
               visible={!!localComment.isInLocal}
-              style={styles.loadingOverlay}
+              style={loadingOverlayStyle}
             >
               <ActivityIndicator color={primaryColor} />
             </AnimationFadeInOut>
 
-            <View style={styles.commentContainerInside}>
+            <View style={commentContainerInsideStyle}>
               {/*====== Card Header */}
               <SocialCardHeader
                 authorAddress={authorAddress}
@@ -372,7 +371,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
             }
           >
             {isLast && !isMobile ? (
-              <View style={[styles.extraLineHider, { left: -61 }]} />
+              <View style={[extraLineHiderStyle, { left: -61 }]} />
             ) : null}
             <CommentsContainer
               cardWidth={
@@ -391,7 +390,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
 
       {isLast && overrideParentId ? null : (
         <AnimationFadeIn
-          style={styles.repliesButtonContainer}
+          style={repliesButtonContainerStyle}
           onLayout={(e) =>
             setReplyListYOffset((prev) => {
               prev[1] = e.nativeEvent.layout.y;
@@ -414,73 +413,58 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    width: "100%",
-    flexDirection: "row",
-    alignItems: "flex-start",
-    zIndex: 1,
-    position: "relative",
-    marginLeft: -1,
-  },
-  curvedLine: {
-    height: 10,
-    marginTop: 70,
-    borderLeftWidth: 1,
-    borderBottomWidth: 1,
-    borderBottomLeftRadius: 30,
-    borderColor: neutral22,
-  },
-  commentContainer: {
-    overflow: "hidden",
-    borderRadius: 12,
-    marginVertical: 0.5,
-    borderColor: neutral33,
-    borderWidth: 1,
-    flex: 1,
-  },
-  commentContainerInside: {
-    paddingVertical: layout.padding_x2,
-    paddingHorizontal: layout.padding_x2_5,
-  },
-  content: { flex: 1 },
-  rowCenter: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  repliesButtonContainer: {
-    zIndex: 10,
-    position: "absolute",
-    bottom: -21,
-    right: 0,
-    left: 0,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  actionContainer: {
-    borderTopWidth: 1,
-    marginTop: layout.padding_x1_5,
-    paddingTop: layout.padding_x1_5,
-    borderColor: neutral22,
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  extraLineHider: {
-    marginTop: 73,
-    width: 1,
-    height: "100%",
-    backgroundColor: neutral00,
-    zIndex: 1000,
-    position: "absolute",
-    left: 0,
-  },
-  loadingOverlay: {
-    backgroundColor: withAlpha(secondaryColor, 0.2),
-    position: "absolute",
-    width: "100%",
-    height: "100%",
-    justifyContent: "center",
-    alignItems: "center",
-    zIndex: 1000,
-  },
-});
+const containerStyle: ViewStyle = {
+  width: "100%",
+  flexDirection: "row",
+  alignItems: "flex-start",
+  zIndex: 1,
+  position: "relative",
+  marginLeft: -1,
+};
+const curvedLineStyle: ViewStyle = {
+  height: 10,
+  marginTop: 70,
+  borderLeftWidth: 1,
+  borderBottomWidth: 1,
+  borderBottomLeftRadius: 30,
+  borderColor: neutral22,
+};
+const commentContainerStyle: ViewStyle = {
+  overflow: "hidden",
+  borderRadius: 12,
+  marginVertical: 0.5,
+  borderColor: neutral33,
+  borderWidth: 1,
+  flex: 1,
+};
+const commentContainerInsideStyle: ViewStyle = {
+  paddingVertical: layout.padding_x2,
+  paddingHorizontal: layout.padding_x2_5,
+};
+const repliesButtonContainerStyle: ViewStyle = {
+  zIndex: 10,
+  position: "absolute",
+  bottom: -21,
+  right: 0,
+  left: 0,
+  alignItems: "center",
+  justifyContent: "center",
+};
+const extraLineHiderStyle: ViewStyle = {
+  marginTop: 73,
+  width: 1,
+  height: "100%",
+  backgroundColor: neutral00,
+  zIndex: 1000,
+  position: "absolute",
+  left: 0,
+};
+const loadingOverlayStyle: ViewStyle = {
+  backgroundColor: withAlpha(secondaryColor, 0.2),
+  position: "absolute",
+  width: "100%",
+  height: "100%",
+  justifyContent: "center",
+  alignItems: "center",
+  zIndex: 1000,
+};

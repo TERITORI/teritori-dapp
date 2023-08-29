@@ -1,9 +1,8 @@
-// libraries
 import { useQuery } from "@tanstack/react-query";
 import { BigNumber, ethers } from "ethers";
 import moment from "moment";
 import React, { useMemo } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, TextStyle, View, ViewStyle } from "react-native";
 import {
   VictoryLine,
   VictoryChart,
@@ -64,11 +63,9 @@ export const CollapsablePriceHistory: React.FC<{ nftId: string }> = ({
       title="Price history"
       isExpandedByDefault
     >
-      <View style={styles.container}>
-        <View style={styles.priceLabelTextContainer}>
-          <BrandText style={styles.priceLabelText}>
-            Price ({currency})
-          </BrandText>
+      <View style={containerStyle}>
+        <View style={priceLabelTextContainerStyle}>
+          <BrandText style={priceLabelTextStyle}>Price ({currency})</BrandText>
         </View>
         <VictoryChart
           minDomain={{ y: 0 }}
@@ -130,29 +127,25 @@ const useNFTPriceHistory = (nftId: string) => {
   return data;
 };
 
-const styles = StyleSheet.create({
-  container: {
-    margin: layout.padding_x2,
-    marginTop: 0,
-    borderRadius: layout.borderRadius * 0.67,
-    borderColor: neutral33,
-    borderWidth: 1,
-    flex: 1,
-    paddingTop: layout.padding_x2,
-  },
-  priceLabelTextContainer: {
-    flex: 1,
-    position: "relative",
-  },
-  priceLabelText: StyleSheet.flatten([
-    fontMedium10,
-    {
-      transform: [{ rotate: "-90deg" }],
-      position: "absolute",
-      left: -10,
-      top: 50,
-      bottom: 0,
-      color: neutral77,
-    },
-  ]),
-});
+const containerStyle: ViewStyle = {
+  margin: layout.padding_x2,
+  marginTop: 0,
+  borderRadius: layout.borderRadius * 0.67,
+  borderColor: neutral33,
+  borderWidth: 1,
+  flex: 1,
+  paddingTop: layout.padding_x2,
+};
+const priceLabelTextContainerStyle: ViewStyle = {
+  flex: 1,
+  position: "relative",
+};
+const priceLabelTextStyle: TextStyle = {
+  ...fontMedium10,
+  transform: [{ rotate: "-90deg" }],
+  position: "absolute",
+  left: -10,
+  top: 50,
+  bottom: 0,
+  color: neutral77,
+};

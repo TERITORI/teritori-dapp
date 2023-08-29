@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { View, StyleSheet, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity, ViewStyle } from "react-native";
 import { useSelector } from "react-redux";
 
 import hamburgerCrossSVG from "../../../assets/icons/hamburger-button-cross.svg";
@@ -33,9 +33,9 @@ export const HeaderMobile: FC<{
   const selectedNFTDataInCart = useSelector(selectAllSelectedNFTData);
 
   return (
-    <View style={styles.container}>
+    <View style={containerStyle}>
       <TopLogoMobile />
-      <View style={styles.rightContainer}>
+      <View style={rightContainerStyle}>
         <SpacerRow size={1} />
         {onBackPress && <BackButton onPress={onBackPress} />}
         <SpacerRow size={1} />
@@ -69,26 +69,24 @@ export const HeaderMobile: FC<{
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    height: MOBILE_HEADER_HEIGHT,
-    maxHeight: MOBILE_HEADER_HEIGHT,
-    width: "100%",
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    borderBottomColor: neutral33,
-    borderBottomWidth: 1,
-    paddingHorizontal: layout.padding_x1_5,
-    position: "absolute",
-    top: 0,
-    zIndex: 99999,
-    backgroundColor: neutral00,
-  },
-  rightContainer: {
-    height: MOBILE_HEADER_HEIGHT,
-    flexDirection: "row",
-    alignItems: "center",
-  },
-});
+const containerStyle: ViewStyle = {
+  height: MOBILE_HEADER_HEIGHT,
+  maxHeight: MOBILE_HEADER_HEIGHT,
+  width: "100%",
+  flex: 1,
+  flexDirection: "row",
+  justifyContent: "space-between",
+  alignItems: "center",
+  borderBottomColor: neutral33,
+  borderBottomWidth: 1,
+  paddingHorizontal: layout.padding_x1_5,
+  position: "absolute",
+  top: 0,
+  zIndex: 99999,
+  backgroundColor: neutral00,
+};
+const rightContainerStyle: ViewStyle = {
+  height: MOBILE_HEADER_HEIGHT,
+  flexDirection: "row",
+  alignItems: "center",
+};

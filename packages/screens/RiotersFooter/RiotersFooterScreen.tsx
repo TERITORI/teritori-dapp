@@ -2,9 +2,10 @@ import React, { useCallback, useEffect, useState } from "react";
 import {
   View,
   ScrollView,
-  StyleSheet,
   NativeScrollEvent,
   Image,
+  ViewStyle,
+  ImageStyle,
 } from "react-native";
 import { DraxProvider, DraxView } from "react-native-drax";
 
@@ -324,8 +325,8 @@ export const RiotersFooterScreen: React.FC = () => {
     <ScreenContainer hideSidebar={isPreview}>
       {!isPreview ? (
         <DraxProvider>
-          <View style={styles.container}>
-            <View style={styles.menu}>
+          <View style={containerStyle}>
+            <View style={menuStyle}>
               {!nftCollectionId ? (
                 <>
                   <View style={{ width: 220 }}>
@@ -333,7 +334,7 @@ export const RiotersFooterScreen: React.FC = () => {
                       NFT type for the Rioters’ Footer
                     </BrandText>
                     <NftTypeTab tabName={tabName} setTabName={setTabName} />
-                    <View style={styles.separator} />
+                    <View style={separatorStyle} />
                   </View>
                   <ScrollView
                     onScroll={({ nativeEvent }) => {
@@ -373,7 +374,7 @@ export const RiotersFooterScreen: React.FC = () => {
               )}
             </View>
             <View style={{ width: "100%" }}>
-              <View style={styles.headerChosePosition}>
+              <View style={headerChosePositionStyle}>
                 <BrandText
                   style={{ color: "white", fontSize: 28, marginLeft: 20 }}
                 >
@@ -392,7 +393,7 @@ export const RiotersFooterScreen: React.FC = () => {
               </View>
               <DraxView
                 style={[
-                  styles.chosePositionContainer,
+                  chosePositionContainerStyle,
                   {
                     height: parseInt(mapSize.height, 10),
                     width: parseInt(mapSize.width, 10),
@@ -418,7 +419,7 @@ export const RiotersFooterScreen: React.FC = () => {
           </View>
           <View
             style={[
-              styles.chosePositionContainer,
+              chosePositionContainerStyle,
               {
                 height: parseInt(mapSize.height, 10),
                 width: parseInt(mapSize.width, 10),
@@ -442,7 +443,7 @@ export const RiotersFooterScreen: React.FC = () => {
                   key={nft.token_id}
                   source={{ uri: nft.imageUri }}
                   style={[
-                    styles.oldNftPositions,
+                    oldNftPositionsStyle,
                     {
                       width: parseInt(nft.position.width, 10),
                       height: parseInt(nft.position.height, 10),
@@ -536,39 +537,41 @@ export const RiotersFooterScreen: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: "row",
-    marginLeft: -110,
-    width: "100%",
-  },
-  menu: {
-    width: 240,
-    paddingTop: 24,
-    borderRightWidth: 1,
-    borderColor: neutral33,
-  },
-  separator: { height: 1, backgroundColor: neutral33, marginTop: 16 },
-  headerChosePosition: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginTop: 24,
-    marginBottom: 16,
-    width: "100%",
-  },
-  chosePositionContainer: {
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: neutral33,
-    backgroundColor: "black",
-    alignSelf: "center",
-    overflow: "hidden",
-  },
-  oldNftPositions: {
-    position: "absolute",
-    borderWidth: 0,
-    padding: 4,
-  },
-});
+const containerStyle: ViewStyle = {
+  flex: 1,
+  flexDirection: "row",
+  marginLeft: -110,
+  width: "100%",
+};
+const menuStyle: ViewStyle = {
+  width: 240,
+  paddingTop: 24,
+  borderRightWidth: 1,
+  borderColor: neutral33,
+};
+const separatorStyle: ViewStyle = {
+  height: 1,
+  backgroundColor: neutral33,
+  marginTop: 16,
+};
+const headerChosePositionStyle: ViewStyle = {
+  flexDirection: "row",
+  justifyContent: "space-between",
+  alignItems: "center",
+  marginTop: 24,
+  marginBottom: 16,
+  width: "100%",
+};
+const chosePositionContainerStyle: ViewStyle = {
+  borderRadius: 12,
+  borderWidth: 1,
+  borderColor: neutral33,
+  backgroundColor: "black",
+  alignSelf: "center",
+  overflow: "hidden",
+};
+const oldNftPositionsStyle: ImageStyle = {
+  position: "absolute",
+  borderWidth: 0,
+  padding: 4,
+};

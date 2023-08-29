@@ -4,7 +4,8 @@ import {
   Easing,
   TouchableOpacity,
   View,
-  StyleSheet,
+  TextStyle,
+  ViewStyle,
 } from "react-native";
 
 import { BrandText } from "./BrandText";
@@ -62,7 +63,7 @@ export const CustomMultipleSwitch: FC<Props> = ({ items, value, onChange }) => {
 
   const getSliderStyle = () => {
     return [
-      styles.slider,
+      sliderStyle,
       { width: sliderWidth },
       { transform: [{ translateX: animatedValue }] },
       { opacity: 1 },
@@ -70,13 +71,13 @@ export const CustomMultipleSwitch: FC<Props> = ({ items, value, onChange }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={containerStyle}>
       <Animated.View style={[getSliderStyle()]} />
       {items.map((item: string) => {
         return (
           <TouchableOpacity
             activeOpacity={0.7}
-            style={styles.item}
+            style={itemStyle}
             onPress={() => onChange(item)}
             key={item}
             onLayout={(e) => {
@@ -89,7 +90,7 @@ export const CustomMultipleSwitch: FC<Props> = ({ items, value, onChange }) => {
             }}
           >
             <BrandText
-              style={[styles.itemText, value === item && styles.activeText]}
+              style={[itemTextStyle, value === item && activeTextStyle]}
               numberOfLines={1}
             >
               {capitalize(item)}
@@ -101,44 +102,38 @@ export const CustomMultipleSwitch: FC<Props> = ({ items, value, onChange }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    width: "100%",
-    borderRadius: 10,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    height: 48,
-    backgroundColor: neutral00,
-    borderWidth: 1,
-    borderColor: neutral33,
-    position: "relative",
-    padding: layout.padding_x0_5,
-  },
-  slider: {
-    position: "absolute",
-    height: 40,
-    borderRadius: 7,
-    backgroundColor: primaryColor,
-  },
-  item: {
-    height: "100%",
-    justifyContent: "center",
-    alignItems: "center",
-    flex: 1,
-  },
-  itemText: StyleSheet.flatten([
-    fontSemibold14,
-    {
-      textAlign: "center",
-    },
-  ]),
+const containerStyle: ViewStyle = {
+  width: "100%",
+  borderRadius: 10,
+  flexDirection: "row",
+  justifyContent: "space-between",
+  alignItems: "center",
+  height: 48,
+  backgroundColor: neutral00,
+  borderWidth: 1,
+  borderColor: neutral33,
+  position: "relative",
+  padding: layout.padding_x0_5,
+};
+const sliderStyle: ViewStyle = {
+  position: "absolute",
+  height: 40,
+  borderRadius: 7,
+  backgroundColor: primaryColor,
+};
+const itemStyle: ViewStyle = {
+  height: "100%",
+  justifyContent: "center",
+  alignItems: "center",
+  flex: 1,
+};
+const itemTextStyle: TextStyle = {
+  ...fontSemibold14,
+  textAlign: "center",
+};
 
-  activeText: StyleSheet.flatten([
-    fontSemibold14,
-    {
-      textAlign: "center",
-      color: primaryTextColor,
-    },
-  ]),
-});
+const activeTextStyle: TextStyle = {
+  ...fontSemibold14,
+  textAlign: "center",
+  color: primaryTextColor,
+};

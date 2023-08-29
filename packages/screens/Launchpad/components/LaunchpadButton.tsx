@@ -1,5 +1,5 @@
 import React from "react";
-import { Linking, Pressable, StyleSheet, View } from "react-native";
+import { Linking, Pressable, TextStyle, View, ViewStyle } from "react-native";
 
 import ChevronRightSvg from "../../../../assets/icons/chevron-right.svg";
 import { BrandText } from "../../../components/BrandText";
@@ -32,22 +32,22 @@ export const LaunchpadButton: React.FC<LaunchpadButtonProps> = ({
   return (
     <Pressable
       onPress={url ? () => Linking.openURL(url) : undefined}
-      style={styles.fill}
+      style={fillStyle}
     >
       <TertiaryBox
-        style={styles.fill}
+        style={fillStyle}
         fullWidth
-        mainContainerStyle={styles.container}
+        mainContainerStyle={containerStyle}
       >
-        <View style={styles.detailContainer}>
+        <View style={detailContainerStyle}>
           <BrandText>{title}</BrandText>
           <SpacerColumn size={3} />
-          <BrandText style={styles.descriptionText}>{description}</BrandText>
+          <BrandText style={descriptionTextStyle}>{description}</BrandText>
         </View>
-        <View style={styles.buttonIconTextContainer}>
-          <BrandText style={styles.buttonTitleText}>{buttonTitle}</BrandText>
+        <View style={buttonIconTextContainerStyle}>
+          <BrandText style={buttonTitleTextStyle}>{buttonTitle}</BrandText>
           <SpacerRow size={2.5} />
-          <View style={styles.iconContainer}>
+          <View style={iconContainerStyle}>
             <SVG source={ChevronRightSvg} />
           </View>
         </View>
@@ -56,50 +56,44 @@ export const LaunchpadButton: React.FC<LaunchpadButtonProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  fill: {
-    flex: 1,
-  },
-  container: {
-    width: "100%",
-    minHeight: 156,
-    flexDirection: "row",
-    padding: layout.padding_x2,
-    alignItems: "flex-start",
-    backgroundColor: neutral17,
-  },
-  detailContainer: {
-    flex: 1,
-    alignItems: "flex-start",
-    flexWrap: "wrap",
-  },
-  buttonIconTextContainer: {
-    flex: 1,
-    alignSelf: "flex-end",
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    alignItems: "center",
-  },
-  buttonTitleText: StyleSheet.flatten([
-    fontSemibold14,
-    {
-      color: primaryColor,
-    },
-  ]),
-  descriptionText: StyleSheet.flatten([
-    fontSemibold12,
-    {
-      color: neutral77,
-      width: 200,
-      flexWrap: "wrap",
-    },
-  ]),
-  iconContainer: {
-    width: layout.iconButton,
-    height: layout.iconButton,
-    borderRadius: layout.iconButton / 2,
-    backgroundColor: neutral22,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
+const fillStyle: ViewStyle = {
+  flex: 1,
+};
+const containerStyle: ViewStyle = {
+  width: "100%",
+  minHeight: 156,
+  flexDirection: "row",
+  padding: layout.padding_x2,
+  alignItems: "flex-start",
+  backgroundColor: neutral17,
+};
+const detailContainerStyle: ViewStyle = {
+  flex: 1,
+  alignItems: "flex-start",
+  flexWrap: "wrap",
+};
+const buttonIconTextContainerStyle: ViewStyle = {
+  flex: 1,
+  alignSelf: "flex-end",
+  flexDirection: "row",
+  justifyContent: "flex-end",
+  alignItems: "center",
+};
+const buttonTitleTextStyle: TextStyle = {
+  ...fontSemibold14,
+  color: primaryColor,
+};
+const descriptionTextStyle: TextStyle = {
+  ...fontSemibold12,
+  color: neutral77,
+  width: 200,
+  flexWrap: "wrap",
+};
+const iconContainerStyle: ViewStyle = {
+  width: layout.iconButton,
+  height: layout.iconButton,
+  borderRadius: layout.iconButton / 2,
+  backgroundColor: neutral22,
+  alignItems: "center",
+  justifyContent: "center",
+};

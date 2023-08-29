@@ -1,4 +1,4 @@
-import { View, ViewStyle, StyleSheet } from "react-native";
+import { View, ViewStyle, TextStyle } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
 import { OptimizedImage } from "../../../components/OptimizedImage";
@@ -67,14 +67,14 @@ export const RipperAvatar: React.FC<RipperAvatarProps> = ({
       />
 
       {isStaked && (
-        <View style={[styles.labelContainer, { top: layout.padding_x1 }]}>
-          <BrandText style={[styles.label, styles.labelRed]}>Staked</BrandText>
+        <View style={[labelContainerStyle, { top: layout.padding_x1 }]}>
+          <BrandText style={[labelStyle, labelRedStyle]}>Staked</BrandText>
         </View>
       )}
 
       {rarity && (
-        <View style={[styles.labelContainer, { bottom: 0 }]}>
-          <BrandText style={[styles.label, { color: rarityColor }]}>
+        <View style={[labelContainerStyle, { bottom: 0 }]}>
+          <BrandText style={[labelStyle, { color: rarityColor }]}>
             {rarity}
           </BrandText>
         </View>
@@ -83,23 +83,21 @@ export const RipperAvatar: React.FC<RipperAvatarProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  labelContainer: {
-    position: "absolute",
-    alignItems: "center",
-    width: "100%",
-  },
+const labelContainerStyle: ViewStyle = {
+  position: "absolute",
+  alignItems: "center",
+  width: "100%",
+};
 
-  label: {
-    paddingVertical: layout.padding_x0_5,
-    paddingHorizontal: layout.padding_x0_5,
-    borderRadius: 10,
-    backgroundColor: withAlpha(orangeDefault, 0.3),
-    ...(fontSemibold9 as object),
-  },
+const labelStyle: TextStyle = {
+  ...fontSemibold9,
+  paddingVertical: layout.padding_x0_5,
+  paddingHorizontal: layout.padding_x0_5,
+  borderRadius: 10,
+  backgroundColor: withAlpha(orangeDefault, 0.3),
+};
 
-  labelRed: {
-    color: redDefault,
-    backgroundColor: withAlpha(redDefault, 0.3),
-  },
-});
+const labelRedStyle: TextStyle = {
+  color: redDefault,
+  backgroundColor: withAlpha(redDefault, 0.3),
+};

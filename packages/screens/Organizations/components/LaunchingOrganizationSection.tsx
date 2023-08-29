@@ -1,6 +1,6 @@
 import Lottie, { LottieRefCurrentProps } from "lottie-react";
 import React, { useRef, useEffect } from "react";
-import { StyleSheet, View, Animated } from "react-native";
+import { View, Animated, ViewStyle } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
@@ -37,7 +37,7 @@ export const LaunchingOrganizationSection: React.FC<{
 
   // returns
   return (
-    <View style={styles.container}>
+    <View style={containerStyle}>
       <BrandText style={fontSemibold28}>
         {isLaunched ? "All done" : "Launch organization"}
       </BrandText>
@@ -48,7 +48,7 @@ export const LaunchingOrganizationSection: React.FC<{
             Your organization is ready!
           </BrandText>
           <SpacerColumn size={3} />
-          <View style={styles.row}>
+          <View style={rowStyle}>
             <PrimaryButton
               text="Get Started"
               onPress={() => navigate("UserPublicProfile", { id })}
@@ -58,7 +58,7 @@ export const LaunchingOrganizationSection: React.FC<{
       )}
 
       <Animated.View
-        style={[styles.lottieAnim, { opacity: successAnimateValue }]}
+        style={[lottieAnimStyle, { opacity: successAnimateValue }]}
       >
         <Lottie
           lottieRef={lottieRef}
@@ -72,7 +72,7 @@ export const LaunchingOrganizationSection: React.FC<{
         />
       </Animated.View>
 
-      <Animated.View style={[styles.lottieAnim, { opacity: fadeOutAnim }]}>
+      <Animated.View style={[lottieAnimStyle, { opacity: fadeOutAnim }]}>
         <Lottie
           style={{
             width: 200,
@@ -86,24 +86,22 @@ export const LaunchingOrganizationSection: React.FC<{
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    padding: layout.contentPadding,
-    paddingRight: layout.padding_x2_5,
-    position: "relative",
-    flex: 1,
-    paddingTop: layout.topContentPaddingWithHeading,
-  },
-  lottieAnim: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
-    margin: "auto",
+const containerStyle: ViewStyle = {
+  padding: layout.contentPadding,
+  paddingRight: layout.padding_x2_5,
+  position: "relative",
+  flex: 1,
+  paddingTop: layout.topContentPaddingWithHeading,
+};
+const lottieAnimStyle: ViewStyle = {
+  position: "absolute",
+  left: 0,
+  right: 0,
+  top: 0,
+  bottom: 0,
+  margin: "auto",
 
-    width: 200,
-    height: 200,
-  },
-  row: { flexDirection: "row" },
-});
+  width: 200,
+  height: 200,
+};
+const rowStyle: ViewStyle = { flexDirection: "row" };

@@ -1,6 +1,6 @@
 // libraries
 import React from "react";
-import { StyleSheet, View, ViewStyle } from "react-native";
+import { View, ViewStyle } from "react-native";
 
 import { neutral44 } from "../utils/style/colors";
 
@@ -19,7 +19,7 @@ export const Separator: React.FC<SeparatorProps> = ({
   return (
     <View
       style={[
-        styles.container,
+        containerStyle,
         {
           backgroundColor: color,
           ...(horizontal ? { width: 1, height: "100%" } : {}),
@@ -30,9 +30,7 @@ export const Separator: React.FC<SeparatorProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    width: "100%",
-    height: 1,
-  },
-});
+const containerStyle: ViewStyle = {
+  width: "100%",
+  height: 1,
+};

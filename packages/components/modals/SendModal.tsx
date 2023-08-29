@@ -2,7 +2,7 @@ import { Decimal } from "@cosmjs/math";
 import { isDeliverTxFailure } from "@cosmjs/stargate";
 import React, { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
-import { StyleSheet, TouchableOpacity } from "react-native";
+import { TouchableOpacity, ViewStyle } from "react-native";
 
 import ModalBase from "./ModalBase";
 import contactsSVG from "../../../assets/icons/contacts.svg";
@@ -51,7 +51,7 @@ type SendModalProps = {
 const ContactButton: React.FC<{ onPress?: () => void }> = ({ onPress }) => {
   //TODO: Remove disabled when contacts are handled
   return (
-    <TouchableOpacity style={styles.contactsButton} onPress={onPress} disabled>
+    <TouchableOpacity style={contactsButtonStyle} onPress={onPress} disabled>
       <SVG source={contactsSVG} width={16} height={16} />
     </TouchableOpacity>
   );
@@ -278,18 +278,16 @@ export const SendModal: React.FC<SendModalProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  contactsButton: {
-    width: 48,
-    height: 48,
-    borderRadius: 999,
-    borderWidth: 1,
-    borderColor: neutral33,
-    backgroundColor: neutral22,
-    justifyContent: "center",
-    alignItems: "center",
-    marginLeft: layout.padding_x1_5,
-    //TODO: Remove that when contacts are handled
-    opacity: 0.5,
-  },
-});
+const contactsButtonStyle: ViewStyle = {
+  width: 48,
+  height: 48,
+  borderRadius: 999,
+  borderWidth: 1,
+  borderColor: neutral33,
+  backgroundColor: neutral22,
+  justifyContent: "center",
+  alignItems: "center",
+  marginLeft: layout.padding_x1_5,
+  //TODO: Remove that when contacts are handled
+  opacity: 0.5,
+};

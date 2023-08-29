@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleProp, StyleSheet, TextInput, ViewStyle } from "react-native";
+import { StyleProp, TextInput, TextStyle, ViewStyle } from "react-native";
 
 import searchSVG from "../../../assets/icons/search.svg";
 import { fontMedium14 } from "../../utils/style/fonts";
@@ -38,11 +38,10 @@ export const SearchInput: React.FC<{
   );
 };
 
-const styles = StyleSheet.create({
-  textInput: {
-    color: "#FFFFFF",
-    width: "100%",
-    outlineStyle: "none",
-  },
-});
-const textInputStyle = StyleSheet.flatten([styles.textInput, fontMedium14]);
+const textInputStyle: TextStyle = {
+  ...fontMedium14,
+  color: "#FFFFFF",
+  width: "100%",
+  // @ts-expect-error
+  outlineStyle: "none",
+};

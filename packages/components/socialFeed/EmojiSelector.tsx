@@ -53,7 +53,7 @@ export const EmojiSelector: React.FC<EmojiSelectorProps> = ({
 
       <MenuOptions
         customStyles={{
-          optionsContainer: StyleSheet.flatten([styles.optionsContainer]),
+          optionsContainer: StyleSheet.flatten([optionsContainerStyle]),
         }}
       >
         <EmojiModal
@@ -63,7 +63,7 @@ export const EmojiSelector: React.FC<EmojiSelectorProps> = ({
             }
             toggleEmojiModal();
           }}
-          containerStyle={styles.modalContainer}
+          containerStyle={modalContainerStyle}
           searchStyle={{
             backgroundColor: neutral33,
             // @ts-ignore
@@ -79,20 +79,18 @@ export const EmojiSelector: React.FC<EmojiSelectorProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  modalContainer: {
-    paddingHorizontal: layout.padding_x1,
-    paddingVertical: layout.padding_x1_5,
-    backgroundColor: neutral67,
-    borderWidth: 1,
-    borderColor: neutral33,
-    width: WIDTH,
-    height: HEIGHT,
-  },
-  optionsContainer: {
-    width: WIDTH,
-    height: HEIGHT,
-    left: 0,
-    backgroundColor: "transparent",
-  },
-});
+const modalContainerStyle: ViewStyle = {
+  paddingHorizontal: layout.padding_x1,
+  paddingVertical: layout.padding_x1_5,
+  backgroundColor: neutral67,
+  borderWidth: 1,
+  borderColor: neutral33,
+  width: WIDTH,
+  height: HEIGHT,
+};
+const optionsContainerStyle: ViewStyle = {
+  width: WIDTH,
+  height: HEIGHT,
+  left: 0,
+  backgroundColor: "transparent",
+};

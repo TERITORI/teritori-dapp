@@ -1,10 +1,11 @@
 import React, { useCallback, useEffect, useState } from "react";
 import {
-  StyleSheet,
   ImageBackground,
   FlatList,
   View,
   TouchableOpacity,
+  TextStyle,
+  ViewStyle,
 } from "react-native";
 
 import { GameContentView } from "./component/GameContentView";
@@ -85,7 +86,7 @@ const PlayerName: React.FC<PlayerNameProps> = ({ userId }) => {
         />
 
         <BrandText
-          style={[styles.colData, { marginLeft: layout.padding_x1 }]}
+          style={[colDataStyle, { marginLeft: layout.padding_x1 }]}
           numberOfLines={1}
         >
           {name}
@@ -105,7 +106,7 @@ const PlayerName: React.FC<PlayerNameProps> = ({ userId }) => {
 const Rank: React.FC<RankProps> = ({ changes }) => {
   if (changes === 0) {
     return (
-      <BrandText style={[styles.colData, { marginLeft: layout.padding_x3 }]}>
+      <BrandText style={[colDataStyle, { marginLeft: layout.padding_x3 }]}>
         0
       </BrandText>
     );
@@ -119,7 +120,7 @@ const Rank: React.FC<RankProps> = ({ changes }) => {
       <SVG source={changes < 0 ? volUpSVG : volDownSVG} />
       <BrandText
         style={[
-          styles.colData,
+          colDataStyle,
           { color: rankColor, marginLeft: layout.padding_x1 },
         ]}
       >
@@ -159,8 +160,8 @@ export const RiotGameLeaderboardScreen = () => {
   }, [fetchLeaderboard]);
 
   return (
-    <GameContentView hideStats contentStyle={styles.contentContainer}>
-      <ImageBackground style={styles.jumbotron} source={jumbotronPNG}>
+    <GameContentView hideStats contentStyle={contentContainerStyle}>
+      <ImageBackground style={jumbotronStyle} source={jumbotronPNG}>
         <SVG style={{ width: 66, height: 72 }} source={logoSVG} />
 
         <SpacerColumn size={2} />
@@ -176,26 +177,24 @@ export const RiotGameLeaderboardScreen = () => {
         <FlexRow>
           <View style={{ flex: 1 }}>
             <BrandText
-              style={[styles.colHeaderTitle, { marginLeft: layout.padding_x2 }]}
+              style={[colHeaderTitleStyle, { marginLeft: layout.padding_x2 }]}
             >
               Rank
             </BrandText>
           </View>
           <View style={{ flex: 5 }}>
-            <BrandText style={styles.colHeaderTitle}>Player</BrandText>
+            <BrandText style={colHeaderTitleStyle}>Player</BrandText>
           </View>
           <View style={{ flex: 2 }}>
-            <BrandText style={styles.colHeaderTitle}>
-              Current Fight XP
-            </BrandText>
+            <BrandText style={colHeaderTitleStyle}>Current Fight XP</BrandText>
           </View>
           <View style={{ flex: 2 }}>
-            <BrandText style={styles.colHeaderTitle}>
+            <BrandText style={colHeaderTitleStyle}>
               Time spent in Fight
             </BrandText>
           </View>
           <View style={{ flex: 1 }}>
-            <BrandText style={styles.colHeaderTitle}>24 hours Change</BrandText>
+            <BrandText style={colHeaderTitleStyle}>24 hours Change</BrandText>
           </View>
         </FlexRow>
       </TertiaryBox>
@@ -207,10 +206,10 @@ export const RiotGameLeaderboardScreen = () => {
           const { xp, hours, rankChanges } = parseUserScoreInfo(userScore);
 
           return (
-            <FlexRow style={styles.rowItem}>
+            <FlexRow style={rowItemStyle}>
               <View style={{ flex: 1 }}>
                 <BrandText
-                  style={[styles.colData, { marginLeft: layout.padding_x3 }]}
+                  style={[colDataStyle, { marginLeft: layout.padding_x3 }]}
                 >
                   {userScore.rank}
                 </BrandText>
@@ -225,7 +224,7 @@ export const RiotGameLeaderboardScreen = () => {
 
                 <SpacerRow size={1} />
 
-                <BrandText style={styles.colData}>{xp}</BrandText>
+                <BrandText style={colDataStyle}>{xp}</BrandText>
               </View>
               <View
                 style={{ flex: 2, flexDirection: "row", alignItems: "center" }}
@@ -234,7 +233,7 @@ export const RiotGameLeaderboardScreen = () => {
 
                 <SpacerRow size={1} />
 
-                <BrandText style={styles.colData}>{hours} hours</BrandText>
+                <BrandText style={colDataStyle}>{hours} hours</BrandText>
               </View>
               <View style={{ flex: 1 }}>
                 <Rank changes={rankChanges} />
@@ -247,28 +246,26 @@ export const RiotGameLeaderboardScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  contentContainer: {
-    paddingHorizontal: layout.padding_x2_5,
-  },
+const contentContainerStyle: ViewStyle = {
+  paddingHorizontal: layout.padding_x2_5,
+};
 
-  jumbotron: {
-    width: "100%",
-    height: 400,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  colHeaderTitle: {
-    color: neutral77,
-    ...(fontSemibold12 as object),
-    marginVertical: layout.padding_x2,
-  },
-  colData: {
-    marginVertical: layout.padding_x2_5,
-    ...(fontSemibold12 as object),
-  },
-  rowItem: {
-    borderBottomWidth: 1,
-    borderBottomColor: neutral33,
-  },
-});
+const jumbotronStyle: ViewStyle = {
+  width: "100%",
+  height: 400,
+  justifyContent: "center",
+  alignItems: "center",
+};
+const colHeaderTitleStyle: TextStyle = {
+  ...fontSemibold12,
+  color: neutral77,
+  marginVertical: layout.padding_x2,
+};
+const colDataStyle: TextStyle = {
+  ...fontSemibold12,
+  marginVertical: layout.padding_x2_5,
+};
+const rowItemStyle: ViewStyle = {
+  borderBottomWidth: 1,
+  borderBottomColor: neutral33,
+};

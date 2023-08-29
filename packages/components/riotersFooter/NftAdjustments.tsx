@@ -1,5 +1,5 @@
 import React, { memo, SetStateAction, useEffect, useState } from "react";
-import { Image, ScrollView, StyleSheet, View } from "react-native";
+import { Image, ScrollView, TextStyle, View, ViewStyle } from "react-native";
 
 import TrashSVG from "../../../assets/icons/trash.svg";
 import { Collection, NFT } from "../../api/marketplace/v1/marketplace";
@@ -60,11 +60,11 @@ const NftAdjustments: React.FC<{
     }, [sliderValue]);
 
     return (
-      <ScrollView contentContainerStyle={styles.container}>
-        <BrandText style={styles.textTitle}>NFT info & adjustments</BrandText>
-        <View style={styles.separator} />
+      <ScrollView contentContainerStyle={containerStyle}>
+        <BrandText style={textTitleStyle}>NFT info & adjustments</BrandText>
+        <View style={separatorStyle} />
         <View>
-          <BrandText style={styles.textTitle}>Collection</BrandText>
+          <BrandText style={textTitleStyle}>Collection</BrandText>
           <View style={{ marginTop: 12 }} />
           <CollectionInfoInline
             name={currentCollection.collectionName}
@@ -72,8 +72,8 @@ const NftAdjustments: React.FC<{
             id={currentCollection.id}
           />
         </View>
-        <View style={styles.separator} />
-        <BrandText style={styles.textTitle}>NFT artwork</BrandText>
+        <View style={separatorStyle} />
+        <BrandText style={textTitleStyle}>NFT artwork</BrandText>
         <Image
           source={{ uri: nftDroped.imageUri }}
           style={{
@@ -85,9 +85,9 @@ const NftAdjustments: React.FC<{
           resizeMode="contain"
         />
         <BrandText style={{ fontSize: 13 }}>{nftDroped.name}</BrandText>
-        <View style={styles.separator} />
-        <View style={styles.rowCenter}>
-          <BrandText style={styles.textTitle}>Corner radius</BrandText>
+        <View style={separatorStyle} />
+        <View style={rowCenterStyle}>
+          <BrandText style={textTitleStyle}>Corner radius</BrandText>
           <BrandText style={{ fontSize: 14, color: primaryColor }}>
             {percentage}%
           </BrandText>
@@ -111,8 +111,8 @@ const NftAdjustments: React.FC<{
           }}
           value={sliderValue}
         />
-        <View style={styles.separator} />
-        <View style={styles.rowCenter}>
+        <View style={separatorStyle} />
+        <View style={rowCenterStyle}>
           <BrandText style={{ fontSize: 16 }}>Final Price</BrandText>
           <BrandText
             style={{ fontSize: 16, color: primaryColor, fontWeight: "700" }}
@@ -165,23 +165,21 @@ const NftAdjustments: React.FC<{
 
 export default NftAdjustments;
 
-const styles = StyleSheet.create({
-  container: {
-    width: 220,
-    flex: 1,
-  },
-  textTitle: {
-    fontSize: 14,
-    color: neutral77,
-  },
-  separator: {
-    height: 1,
-    backgroundColor: neutral33,
-    marginVertical: 20,
-  },
-  rowCenter: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-});
+const containerStyle: ViewStyle = {
+  width: 220,
+  flex: 1,
+};
+const textTitleStyle: TextStyle = {
+  fontSize: 14,
+  color: neutral77,
+};
+const separatorStyle: ViewStyle = {
+  height: 1,
+  backgroundColor: neutral33,
+  marginVertical: 20,
+};
+const rowCenterStyle: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between",
+};

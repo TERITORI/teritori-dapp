@@ -1,6 +1,6 @@
 // libraries
 import React from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Pressable, View, ViewStyle } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
 import { RadioButton } from "../../../components/RadioButton";
@@ -18,11 +18,11 @@ export const RadioDescriptionSelector: React.FC<{
 }> = ({ selected, disabled, onPress, title, description }) => {
   return (
     <Pressable
-      style={[styles.container, { opacity: disabled ? 0.5 : undefined }]}
+      style={[containerStyle, { opacity: disabled ? 0.5 : undefined }]}
       onPress={onPress}
       disabled={disabled}
     >
-      <View style={styles.row}>
+      <View style={rowStyle}>
         <RadioButton selected={selected} />
         <SpacerRow size={2.5} />
         <BrandText style={fontSemibold16}>{title}</BrandText>
@@ -35,12 +35,10 @@ export const RadioDescriptionSelector: React.FC<{
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    borderRadius: 12,
-    borderColor: neutral33,
-    borderWidth: 1,
-    padding: layout.padding_x2_5,
-  },
-  row: { flexDirection: "row", alignItems: "center" },
-});
+const containerStyle: ViewStyle = {
+  borderRadius: 12,
+  borderColor: neutral33,
+  borderWidth: 1,
+  padding: layout.padding_x2_5,
+};
+const rowStyle: ViewStyle = { flexDirection: "row", alignItems: "center" };

@@ -3,9 +3,9 @@ import React, { useMemo } from "react";
 import {
   Image,
   ImageBackground,
-  StyleSheet,
   TouchableOpacity,
   View,
+  ViewStyle,
 } from "react-native";
 
 import brokenBoxPNG from "../../../../assets/game/broken-box.png";
@@ -133,12 +133,12 @@ export const FightCountdownSection: React.FC<FightCountdownSectionProps> = ({
         <Image style={{ width: 240, height: 140 }} source={countDownPNG} />
 
         <TouchableOpacity
-          style={styles.actionsSection}
+          style={actionsSectionStyle}
           disabled={isUnstaking || stakingState !== StakingState.COMPLETED}
           onPress={unstake}
         >
           <SVG color={actionIconColor} source={unstakeSVG} />
-          <BrandText style={[styles.actionLabel, { color: actionLabelColor }]}>
+          <BrandText style={[actionLabelStyle, { color: actionLabelColor }]}>
             {isUnstaking ? "Unstaking..." : "Unstake"}
           </BrandText>
         </TouchableOpacity>
@@ -147,13 +147,11 @@ export const FightCountdownSection: React.FC<FightCountdownSectionProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  actionsSection: {
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  actionLabel: {
-    marginLeft: layout.padding_x0_5,
-    ...(fontSemibold14 as object),
-  },
-});
+const actionsSectionStyle: ViewStyle = {
+  justifyContent: "center",
+  alignItems: "center",
+};
+const actionLabelStyle: ViewStyle = {
+  ...fontSemibold14,
+  marginLeft: layout.padding_x0_5,
+};

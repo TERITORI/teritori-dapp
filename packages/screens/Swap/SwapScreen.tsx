@@ -1,6 +1,6 @@
 import { useIsFocused } from "@react-navigation/native";
 import React, { Suspense, useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { View, ViewStyle } from "react-native";
 
 import { ConnectModal } from "./components/ConnectModal";
 import { BrandText } from "../../components/BrandText";
@@ -48,7 +48,7 @@ export const SwapScreen: ScreenFC<"Swap"> = () => {
 
   return (
     <ScreenContainer headerChildren={<BrandText>Swap</BrandText>}>
-      <View style={styles.mainContainer}>
+      <View style={mainContainerStyle}>
         {!selectedWallet?.address ? (
           <MainConnectWalletButton style={{ alignSelf: "center" }} />
         ) : swapNetworkConnected && isScreenFocused ? (
@@ -56,14 +56,14 @@ export const SwapScreen: ScreenFC<"Swap"> = () => {
             <Suspense fallback={<BrandText>Loading...</BrandText>}>
               <SwapView />
             </Suspense>
-            <Assets userId={selectedWallet.userId} style={styles.assets} />
+            <Assets userId={selectedWallet.userId} style={assetsStyle} />
           </>
         ) : (
           <PrimaryButton
             size="XL"
             text="Connect to OSMOSIS"
             onPress={() => setConnectModalVisible(true)}
-            touchableStyle={styles.primaryButton}
+            touchableStyle={primaryButtonStyle}
           />
         )}
       </View>
@@ -77,15 +77,13 @@ export const SwapScreen: ScreenFC<"Swap"> = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  mainContainer: {
-    paddingTop: 80,
-  },
-  primaryButton: {
-    alignSelf: "center",
-  },
-  assets: {
-    marginTop: 40,
-    paddingTop: 40,
-  },
-});
+const mainContainerStyle: ViewStyle = {
+  paddingTop: 80,
+};
+const primaryButtonStyle: ViewStyle = {
+  alignSelf: "center",
+};
+const assetsStyle: ViewStyle = {
+  marginTop: 40,
+  paddingTop: 40,
+};

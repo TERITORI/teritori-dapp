@@ -1,5 +1,5 @@
 import React, { memo, SetStateAction, useCallback } from "react";
-import { StyleSheet, View, Image } from "react-native";
+import { View, Image, ImageStyle } from "react-native";
 
 import DragAndDropNftInReceiverView from "./DragAndDropNftInReceiverView";
 import NftDragResizerCorner from "./NftDragResizerCorner";
@@ -60,7 +60,7 @@ const DraxViewReceiverContent: React.FC<{
                 key={nft.token_id}
                 source={{ uri: nft.imageUri }}
                 style={[
-                  styles.oldNftPositions,
+                  oldNftPositionsStyle,
                   {
                     width: parseInt(nft.position.width, 10),
                     height: parseInt(nft.position.height, 10),
@@ -133,11 +133,9 @@ const DraxViewReceiverContent: React.FC<{
 
 export default DraxViewReceiverContent;
 
-const styles = StyleSheet.create({
-  oldNftPositions: {
-    position: "absolute",
-    borderColor: neutral33,
-    borderWidth: 1,
-    padding: 4,
-  },
-});
+const oldNftPositionsStyle: ImageStyle = {
+  position: "absolute",
+  borderColor: neutral33,
+  borderWidth: 1,
+  padding: 4,
+};

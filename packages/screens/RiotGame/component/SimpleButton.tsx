@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, TouchableOpacity, ViewStyle } from "react-native";
+import { TextStyle, TouchableOpacity, ViewStyle } from "react-native";
 import { SvgProps } from "react-native-svg";
 
 import { BrandText } from "../../../components/BrandText";
@@ -70,7 +70,7 @@ export const SimpleButton: React.FC<SimpleButtonProps> = ({
     >
       <BrandText
         style={[
-          styles.btnStyle,
+          btnStyle,
           {
             display: "flex",
             color: outline ? yellowDefault : color,
@@ -96,10 +96,8 @@ export const SimpleButton: React.FC<SimpleButtonProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  btnStyle: {
-    alignSelf: "center",
-    borderRadius: layout.padding_x1_5,
-    ...(fontSemibold14 as object),
-  },
-});
+const btnStyle: TextStyle = {
+  alignSelf: "center",
+  borderRadius: layout.padding_x1_5,
+  ...fontSemibold14,
+};

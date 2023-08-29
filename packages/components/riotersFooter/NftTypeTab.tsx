@@ -1,5 +1,5 @@
 import React, { memo } from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { TextStyle, TouchableOpacity, View, ViewStyle } from "react-native";
 
 import { BrandText } from "../../components/BrandText";
 import { neutral33, primaryColor } from "../../utils/style/colors";
@@ -9,12 +9,12 @@ const NftTypeTab: React.FC<{
   setTabName: (text: string) => void;
 }> = memo(({ tabName, setTabName }) => {
   return (
-    <View style={styles.container}>
+    <View style={containerStyle}>
       <View style={{ flexDirection: "row", height: "100%" }}>
-        <TouchableOpacity style={styles.tab} onPress={() => setTabName("New")}>
+        <TouchableOpacity style={tabStyle} onPress={() => setTabName("New")}>
           <View
             style={[
-              styles.tabButton,
+              tabButtonStyle,
               tabName === "New" && {
                 backgroundColor: primaryColor,
                 borderRadius: 7,
@@ -22,19 +22,19 @@ const NftTypeTab: React.FC<{
             ]}
           >
             <BrandText
-              style={[styles.tabText, tabName === "New" && { color: "black" }]}
+              style={[tabTextStyle, tabName === "New" && { color: "black" }]}
             >
               New
             </BrandText>
           </View>
         </TouchableOpacity>
         <TouchableOpacity
-          style={styles.tab}
+          style={tabStyle}
           onPress={() => setTabName("Existing")}
         >
           <View
             style={[
-              styles.tabButton,
+              tabButtonStyle,
               tabName === "Existing" && {
                 backgroundColor: primaryColor,
                 borderRadius: 7,
@@ -43,7 +43,7 @@ const NftTypeTab: React.FC<{
           >
             <BrandText
               style={[
-                styles.tabText,
+                tabTextStyle,
                 tabName === "Existing" && { color: "black" },
               ]}
             >
@@ -58,26 +58,24 @@ const NftTypeTab: React.FC<{
 
 export default NftTypeTab;
 
-const styles = StyleSheet.create({
-  container: {
-    marginTop: 12,
-    height: 40,
-    borderRadius: 10,
-    borderColor: neutral33,
-    borderWidth: 1,
-  },
-  tab: {
-    width: "50%",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  tabText: {
-    textAlign: "center",
-    fontSize: 14,
-  },
-  tabButton: {
-    width: "96%",
-    height: "90%",
-    justifyContent: "center",
-  },
-});
+const containerStyle: ViewStyle = {
+  marginTop: 12,
+  height: 40,
+  borderRadius: 10,
+  borderColor: neutral33,
+  borderWidth: 1,
+};
+const tabStyle: ViewStyle = {
+  width: "50%",
+  justifyContent: "center",
+  alignItems: "center",
+};
+const tabTextStyle: TextStyle = {
+  textAlign: "center",
+  fontSize: 14,
+};
+const tabButtonStyle: ViewStyle = {
+  width: "96%",
+  height: "90%",
+  justifyContent: "center",
+};

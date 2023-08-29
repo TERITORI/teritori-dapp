@@ -4,7 +4,7 @@ import { isDeliverTxFailure } from "@cosmjs/stargate";
 import { bech32 } from "bech32";
 import React, { useCallback } from "react";
 import { useForm } from "react-hook-form";
-import { StyleSheet, View } from "react-native";
+import { StyleProp, View, ViewStyle } from "react-native";
 
 import arrowDivideSVG from "../../../../assets/icons/arrow-divide.svg";
 import { BrandText } from "../../../components/BrandText";
@@ -82,7 +82,7 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
   // returns
   const ModalHeader = useCallback(
     () => (
-      <View style={styles.rowCenter}>
+      <View style={rowCenterStyle}>
         <NetworkIcon networkId={networkId} size={32} />
         <SpacerRow size={3} />
         <BrandText>
@@ -111,14 +111,14 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
       Header={ModalHeader}
       width={460}
     >
-      <View style={styles.container}>
-        <BrandText style={[fontSemibold14, styles.selfCenter]}>
+      <View style={containerStyle}>
+        <BrandText style={[fontSemibold14, selfCenterStyle]}>
           {capitalize(variation)} {nativeTargetCurrency?.displayName}
         </BrandText>
         <SpacerColumn size={1.5} />
-        <View style={[styles.rowCenter, styles.w100, { zIndex: 2 }]}>
-          <View style={[styles.jcCenter, { zIndex: 2, flex: 1 }]}>
-            <View style={[styles.rowAllCenter, { zIndex: 2 }]}>
+        <View style={[rowCenterStyle, w100Style, { zIndex: 2 }]}>
+          <View style={[jcCenterStyle, { zIndex: 2, flex: 1 }]}>
+            <View style={[rowAllCenterStyle, { zIndex: 2 }]}>
               <NetworkIcon size={64} networkId={sourceNetworkId || "unknown"} />
             </View>
             <SpacerColumn size={1.5} />
@@ -138,13 +138,13 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
           </View>
 
           <SpacerRow size={1} />
-          <View style={styles.arrow}>
+          <View style={arrowStyle}>
             <SVG source={arrowDivideSVG} width={36} height={6} />
           </View>
           <SpacerRow size={1} />
 
-          <View style={[styles.jcCenter, { flex: 1 }]}>
-            <View style={[styles.rowAllCenter, { zIndex: 2 }]}>
+          <View style={[jcCenterStyle, { flex: 1 }]}>
+            <View style={[rowAllCenterStyle, { zIndex: 2 }]}>
               <NetworkIcon
                 size={64}
                 networkId={destinationNetworkId || "unknown"}
@@ -189,7 +189,7 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
           </TextInputCustom>
         )}
         <SpacerColumn size={4} />
-        <BrandText style={styles.estimatedText}>
+        <BrandText style={estimatedTextStyle}>
           Estimated Time: 20 Seconds
         </BrandText>
         <SpacerColumn size={1} />
@@ -296,47 +296,37 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  selfCenter: {
-    alignSelf: "center",
+const selfCenterStyle: ViewStyle = {
+  alignSelf: "center",
+};
+const w100Style: ViewStyle = { width: "100%" };
+const rowCenterStyle: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+};
+const jcCenterStyle: ViewStyle = {
+  justifyContent: "center",
+  alignItems: "center",
+};
+const rowAllCenterStyle: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "center",
+  flex: 1,
+};
+const arrowStyle: ViewStyle = {
+  alignSelf: "flex-start",
+  marginTop: 64 / 2,
+};
+const containerStyle: ViewStyle = {
+  paddingBottom: layout.padding_x3,
+};
+const estimatedTextStyle: StyleProp<ViewStyle> = [
+  fontSemibold14,
+  {
+    color: neutral77,
   },
-  w100: { width: "100%" },
-  rowCenter: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  leftChevron: {
-    position: "absolute",
-    left: -(layout.padding_x3 * 2),
-  },
-  rightChevron: {
-    position: "absolute",
-    right: -(layout.padding_x3 * 2),
-  },
-  jcCenter: {
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  rowAllCenter: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    flex: 1,
-  },
-  arrow: {
-    alignSelf: "flex-start",
-    marginTop: 64 / 2,
-  },
-  container: {
-    paddingBottom: layout.padding_x3,
-  },
-  estimatedText: StyleSheet.flatten([
-    fontSemibold14,
-    {
-      color: neutral77,
-    },
-  ]),
-});
+];
 
 const convertCosmosAddress = (
   sourceAddress: string | undefined,

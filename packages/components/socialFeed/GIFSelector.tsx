@@ -3,9 +3,11 @@ import {
   ActivityIndicator,
   FlatList,
   Image,
+  ImageStyle,
   StyleProp,
   StyleSheet,
   TextInput,
+  TextStyle,
   View,
   ViewStyle,
 } from "react-native";
@@ -113,14 +115,11 @@ export const GIFSelector: React.FC<GIFSelectorProps> = ({
 
       <MenuOptions
         customStyles={{
-          optionsContainer: StyleSheet.flatten([styles.optionsContainer]),
+          optionsContainer: StyleSheet.flatten([optionsContainerStyle]),
         }}
       >
-        <View style={styles.modalContainer}>
-          <TextInput
-            style={styles.input}
-            onChangeText={handleSearchTextChange}
-          />
+        <View style={modalContainerStyle}>
+          <TextInput style={inputStyle} onChangeText={handleSearchTextChange} />
 
           <FlatList
             data={gifs}
@@ -142,7 +141,7 @@ export const GIFSelector: React.FC<GIFSelectorProps> = ({
               <CustomPressable onPress={() => onPressItem(item)}>
                 <Image
                   source={{ uri: item.media_formats["gif"].url }}
-                  style={styles.gif}
+                  style={gifStyle}
                 />
               </CustomPressable>
             )}
@@ -160,34 +159,32 @@ export const GIFSelector: React.FC<GIFSelectorProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  modalContainer: {
-    backgroundColor: neutral67,
-    borderWidth: 1,
-    borderColor: neutral33,
-    paddingHorizontal: layout.padding_x1,
-    paddingVertical: layout.padding_x1_5,
-    width: WIDTH,
-    height: HEIGHT,
-    borderRadius: 10,
-  },
-  optionsContainer: {
-    width: WIDTH,
-    height: HEIGHT,
-    left: 0,
-    backgroundColor: "transparent",
-  },
-  input: {
-    backgroundColor: neutral33,
-    width: "100%",
-    paddingVertical: layout.padding_x0_5,
-    paddingLeft: layout.padding_x1_5,
-    color: secondaryColor,
-    borderRadius: 3,
-  },
-  gif: {
-    width: 65,
-    height: 65,
-    margin: layout.padding_x0_5,
-  },
-});
+const modalContainerStyle: ViewStyle = {
+  backgroundColor: neutral67,
+  borderWidth: 1,
+  borderColor: neutral33,
+  paddingHorizontal: layout.padding_x1,
+  paddingVertical: layout.padding_x1_5,
+  width: WIDTH,
+  height: HEIGHT,
+  borderRadius: 10,
+};
+const optionsContainerStyle: ViewStyle = {
+  width: WIDTH,
+  height: HEIGHT,
+  left: 0,
+  backgroundColor: "transparent",
+};
+const inputStyle: TextStyle = {
+  backgroundColor: neutral33,
+  width: "100%",
+  paddingVertical: layout.padding_x0_5,
+  paddingLeft: layout.padding_x1_5,
+  color: secondaryColor,
+  borderRadius: 3,
+};
+const gifStyle: ImageStyle = {
+  width: 65,
+  height: 65,
+  margin: layout.padding_x0_5,
+};

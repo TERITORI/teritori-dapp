@@ -1,5 +1,5 @@
 import React from "react";
-import { Image, Linking, StyleSheet, View } from "react-native";
+import { Image, Linking, View, ViewStyle } from "react-native";
 
 import firePNG from "../../../../assets/game/fire.png";
 import trophiesSVG from "../../../../assets/icons/trophies.svg";
@@ -75,7 +75,7 @@ export const UnstakeModal: React.FC<UnstakeModalProps> = ({
       width={372}
       onClose={onClose}
       childrenBottom={
-        <View style={styles.footer}>
+        <View style={footerStyle}>
           <BrandText style={[fontSemibold16, { color: neutral77 }]}>
             Share with friends via
           </BrandText>
@@ -125,12 +125,10 @@ export const UnstakeModal: React.FC<UnstakeModalProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  footer: {
-    borderTopWidth: 1,
-    borderTopColor: mineShaftColor,
-    width: "100%",
-    alignItems: "center",
-    padding: layout.padding_x2_5,
-  },
-});
+const footerStyle: ViewStyle = {
+  borderTopWidth: 1,
+  borderTopColor: mineShaftColor,
+  width: "100%",
+  alignItems: "center",
+  padding: layout.padding_x2_5,
+};
