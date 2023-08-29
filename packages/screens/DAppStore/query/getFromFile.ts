@@ -12,6 +12,7 @@ import teritoriSVG from "../../../../assets/icons/networks/teritori.svg";
 import pathwar from "../../../../assets/icons/pathwar.svg";
 import otherAppsIcon from "../../../../assets/icons/random-goods-icon.svg";
 import riot from "../../../../assets/icons/rioters-game.svg";
+import grantsProgramSVG from "../../../../assets/icons/grants-program.svg";
 import staking from "../../../../assets/icons/staking.svg";
 import tnsService from "../../../../assets/icons/tns-service.svg";
 import wallet from "../../../../assets/icons/wallet.svg";
@@ -107,6 +108,16 @@ export function getAvailableApps(): dAppGroup {
           route: "Organizations",
           groupKey: "teritori-core-apps",
           selectedByDefault: false,
+          alwaysOn: false,
+        },
+        grantsProgram: {
+          id: "grantsProgram",
+          title: "Grants Program",
+          description: "Grants Program",
+          icon: grantsProgramSVG,
+          route: "GrantsProgram",
+          groupKey: "teritori-core-apps",
+          selectedByDefault: true,
           alwaysOn: false,
         },
       },

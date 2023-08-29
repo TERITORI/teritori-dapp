@@ -9,7 +9,7 @@ import { FeedScreen } from "../../screens/Feed/FeedScreen";
 import { FeedNewArticleScreen } from "../../screens/FeedNewArticle/FeedNewArticleScreen";
 import { FeedPostViewScreen } from "../../screens/FeedPostView/FeedPostViewScreen";
 import { GovernanceScreen } from "../../screens/Governance/GovernanceScreen";
-import { GuardiansScreen } from "../../screens/Guardians/GuardiansScreen";
+import { GrantsProgramScreen } from "../../screens/GrantsProgram/GrantsProgramScreen";
 import { HashtagFeedScreen } from "../../screens/HashtagFeed/HashtagFeedScreen";
 import { HomeScreen } from "../../screens/Home/HomeScreen";
 import { LaunchpadApplyScreen } from "../../screens/Launchpad/LaunchpadApplyScreen";
@@ -55,11 +55,6 @@ export const Navigator: React.FC = () => {
         name="MyCollection"
         component={MyCollectionScreen}
         options={{ header: () => null, title: screenTitle("My Collection") }}
-      />
-      <Stack.Screen
-        name="Guardians"
-        component={GuardiansScreen}
-        options={{ header: () => null, title: screenTitle("Guardians") }}
       />
       <Stack.Screen
         name="RiotGame"
@@ -206,6 +201,13 @@ export const Navigator: React.FC = () => {
           header: () => null,
           title: screenTitle("Organizations"),
         }}
+      />
+
+      {/* ==== Grants program */}
+      <Stack.Screen
+        name="GrantsProgram"
+        component={GrantsProgramScreen}
+        options={{ header: () => null, title: screenTitle("Grants Program") }}
       />
 
       {/* ==== Teritori Name Service*/}
