@@ -28,48 +28,46 @@ export const PrimaryBox: React.FC<{
   noBrokenCorners,
   noRightBrokenBorder,
 }) => {
-    const flatMainContainerStyle = mainContainerStyle
-      ? StyleSheet.flatten(mainContainerStyle)
-      : {};
-    const borderRadius = flatMainContainerStyle.borderRadius || 8;
-    const backgroundColor = disabled
-      ? neutral11
-      : flatMainContainerStyle.backgroundColor || "#000000";
+  const flatMainContainerStyle = mainContainerStyle
+    ? StyleSheet.flatten(mainContainerStyle)
+    : {};
+  const borderRadius = flatMainContainerStyle.borderRadius || 8;
+  const backgroundColor = disabled
+    ? neutral11
+    : flatMainContainerStyle.backgroundColor || "#000000";
 
-    return (
-      <View style={[styles.mainContainer, fullWidth && styles.fullWidth, style]}>
-        <View style={fullWidth && styles.fullWidthSubContainer}>
-          <View style={styles.fullWidth}>
-            <LinearGradient
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              locations={[0.7, 0.8]}
+  return (
+    <View style={[styles.mainContainer, fullWidth && styles.fullWidth, style]}>
+      <View style={fullWidth && styles.fullWidthSubContainer}>
+        <View style={styles.fullWidth}>
+          <LinearGradient
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            locations={[0.7, 0.8]}
+            style={[styles.gradient]}
+            colors={
+              disabled
+                ? [neutral67, "#B7B7B7"]
+                : colors
+                ? colors
+                : ["#01B7C5", "#782C96"]
+            }
+          >
+            <View
               style={[
-                styles.gradient,
+                styles.contentContainer,
+                { backgroundColor, borderRadius },
+                mainContainerStyle,
               ]}
-              colors={
-                disabled
-                  ? [neutral67, "#B7B7B7"]
-                  : colors
-                    ? colors
-                    : ["#01B7C5", "#782C96"]
-              }
             >
-              <View
-                style={[
-                  styles.contentContainer,
-                  { backgroundColor, borderRadius },
-                  mainContainerStyle,
-                ]}
-              >
-                {children}
-              </View>
-            </LinearGradient>
-          </View>
+              {children}
+            </View>
+          </LinearGradient>
         </View>
       </View>
-    );
-  };
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   mainContainer: {
@@ -85,7 +83,7 @@ const styles = StyleSheet.create({
     "--edge-size": "0.8em",
     padding: 1,
     clipPath:
-    "polygon( var(--edge-size) 0%, 100% 0, 100% calc(100% - var(--edge-size)), calc(100% - var(--edge-size)) 100%, 0 100%, 0% var(--edge-size)\n  )",
+      "polygon( var(--edge-size) 0%, 100% 0, 100% calc(100% - var(--edge-size)), calc(100% - var(--edge-size)) 100%, 0 100%, 0% var(--edge-size)\n  )",
     borderRadius: 8,
   },
   contentContainer: {
@@ -94,7 +92,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     clipPath:
-    "polygon( var(--edge-size) 0%, 100% 0, 100% calc(100% - var(--edge-size)), calc(100% - var(--edge-size)) 100%, 0 100%, 0% var(--edge-size)\n  )",
+      "polygon( var(--edge-size) 0%, 100% 0, 100% calc(100% - var(--edge-size)), calc(100% - var(--edge-size)) 100%, 0 100%, 0% var(--edge-size)\n  )",
     borderRadius: 8,
   },
 });
