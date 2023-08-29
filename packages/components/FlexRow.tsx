@@ -26,7 +26,7 @@ type Direction =
   | "column-reverse"
   | undefined;
 
-const FlexRow: React.FC<FlexRowProps> = ({
+export const FlexRow: React.FC<FlexRowProps> = ({
   breakpoint,
   width = "100%",
   alignItems = "center",

@@ -49,7 +49,7 @@ export const SimpleButton: React.FC<SimpleButtonProps> = ({
       break;
     case "SM":
       padH = layout.padding_x2;
-      padV = layout.padding_x1_5;
+      padV = layout.padding_x1;
       break;
     case "XS":
       padH = layout.padding_x1_5;

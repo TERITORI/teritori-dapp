@@ -31,8 +31,9 @@ export const SearchBarInput: React.FC<{
   text: string;
   onChangeText: (text: string) => void;
   onInteraction?: () => void;
+  placeholder?: string;
   style?: StyleProp<ViewStyle>;
-}> = ({ onInteraction, text, onChangeText, style }) => {
+}> = ({ onInteraction, text, onChangeText, style, placeholder }) => {
   const ref = useRef<TextInput>(null);
   const fullWidth = StyleSheet.flatten(style)?.width === "100%";
   return (
@@ -49,6 +50,7 @@ export const SearchBarInput: React.FC<{
     >
       <SVG source={searchSVG} width={16} height={16} />
       <TextInput
+        placeholder={placeholder}
         value={text}
         ref={ref}
         style={[
