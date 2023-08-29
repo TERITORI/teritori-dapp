@@ -5,6 +5,10 @@
 /node_modules
 /go
 /web-build
+/.github
+/.yarn
+/.expo-shared
+/cache
 
 # generated packages
 /packages/contracts-clients
