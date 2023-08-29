@@ -1,8 +1,6 @@
-import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import { useScrollTo } from "@nandorojo/anchor";
 import { LinearGradient } from "expo-linear-gradient";
-import { cloneDeep } from "lodash";
-import React, { useEffect, useMemo, useState } from "react";
+import React from "react";
 import {
   ScrollView,
   StyleProp,
@@ -13,11 +11,6 @@ import {
   ViewStyle,
 } from "react-native";
 
-import { useFetchFeed } from "../../hooks/feed/useFetchFeed";
-import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
-import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { NetworkKind } from "../../networks";
-import { extractGnoNumber } from "../../utils/gno";
 import {
   gradientColorBlue,
   gradientColorDarkerBlue,
@@ -28,13 +21,13 @@ import {
 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
+import { objectKeys } from "../../utils/typescript";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { PrimaryBadge } from "../badges/PrimaryBadge";
 import { TertiaryBadge } from "../badges/TertiaryBadge";
 import { GradientText } from "../gradientText";
-import { PostCategory } from "../socialFeed/NewsFeed/NewsFeed.type";
-import { SpacerColumn, SpacerRow } from "../spacer";
+import { SpacerRow } from "../spacer";
 
 export interface TabDefinition {
   name: string;
@@ -72,76 +65,7 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
 }) => {
   const { scrollTo } = useScrollTo();
 
-  const selectedNetworkInfo = useSelectedNetworkInfo();
-  const selectedNetworkKind = selectedNetworkInfo?.kind;
-  const selectedWallet = useSelectedWallet();
-  const [isDAOMember, setIsDAOMember] = useState(false);
-
-  const req = {
-    filter: {
-      categories: [PostCategory.Flagged],
-      user: "",
-      mentions: [],
-      hashtags: [],
-    },
-    limit: 1,
-    offset: 0,
-  };
-  const { data } = useFetchFeed(req);
-
-  const hasFlaggedPosts = useMemo(() => {
-    return (data?.pages?.[0]?.totalCount || 0) > 0;
-  }, [data]);
-
-  const adjustedTabItems = useMemo(() => {
-    const res = cloneDeep(items);
-
-    if (
-      selectedNetworkKind === NetworkKind.Gno &&
-      res.moderationDAO &&
-      !hasFlaggedPosts
-    ) {
-      res.moderationDAO.iconSVG = null;
-    }
-
-    return res;
-  }, [selectedNetworkKind, hasFlaggedPosts, items]);
-
-  const itemsArray = useMemo(() => {
-    return Object.entries(adjustedTabItems).filter((item) => {
-      if (selectedNetworkKind === NetworkKind.Gno && isDAOMember) return true;
-      return item[0] !== "moderationDAO";
-    });
-  }, [selectedNetworkKind, adjustedTabItems, isDAOMember]);
-
-  useEffect(() => {
-    if (selectedNetworkInfo?.kind !== NetworkKind.Gno) {
-      return;
-    }
-
-    if (!selectedWallet?.address) {
-      return;
-    }
-
-    if (!selectedNetworkInfo.groupsPkgPath) {
-      console.error("groupsPkgPath is not provided");
-      return;
-    }
-
-    const client = new GnoJSONRPCProvider(selectedNetworkInfo?.endpoint);
-    const socialFeedsDAOGGroupId = "1"; // 0000000001
-
-    client
-      .evaluateExpression(
-        selectedNetworkInfo.groupsPkgPath,
-        `GetMemberWeightByAddress(${socialFeedsDAOGGroupId}, "${selectedWallet.address}")`
-      )
-      .then((result) => {
-        const value = extractGnoNumber(result);
-        setIsDAOMember(value > 0);
-      })
-      .catch((e) => console.error(e));
-  }, [selectedNetworkInfo, selectedWallet?.address]);
+  const itemsKeys = objectKeys(items);
 
   return (
     // styles are applied weirdly to scrollview so it's better to apply them to a constraining view
@@ -162,7 +86,8 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
             alignItems: "center",
           }}
         >
-          {itemsArray.map(([key, item], index) => {
+          {itemsKeys.map((key, index) => {
+            const item = items[key];
             const isSelected = selected === key;
             return (
               <TouchableOpacity
@@ -178,7 +103,7 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
                     height: "100%",
                     justifyContent: "center",
                     marginRight:
-                      index !== itemsArray.length - 1 ? layout.padding_x3 : 0,
+                      index !== itemsKeys.length - 1 ? layout.padding_x3 : 0,
                   },
                   tabContainerStyle,
                 ]}
@@ -268,16 +193,6 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
           })}
         </ScrollView>
       </View>
-
-      <SpacerColumn size={1.5} />
-
-      {selected === "moderationDAO" && (
-        <BrandText style={{ alignSelf: "flex-start" }}>
-          {hasFlaggedPosts
-            ? "Please review all applications carefully and give your verdict."
-            : "There are no items to moderate yet."}
-        </BrandText>
-      )}
     </>
   );
 };
