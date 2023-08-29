@@ -4,14 +4,20 @@ import { ActivityIndicator, Pressable, StyleSheet, View } from "react-native";
 
 import { ProposalTransactionModal } from "./ProposalTransactionModal";
 import { TransactionItemButtons } from "./TransactionItemButtons";
+import feedWhiteSVG from "../../../assets/icons/feed_white.svg";
 import multisigWhiteSVG from "../../../assets/icons/multisig_white.svg";
+import stakingWhiteSVG from "../../../assets/icons/staking_white.svg";
+import tnsWhiteSVG from "../../../assets/icons/tns-service_white.svg";
+import walletWhiteSVG from "../../../assets/icons/wallet_white.svg";
 import { ParsedTransaction } from "../../hooks/multisig/useMultisigTransactions";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import {
-  NetworkInfo,
   getCosmosNetworkByChainId,
   getUserId,
+  NetworkInfo,
+  NetworkKind,
 } from "../../networks";
+import { MultisigTransactionType } from "../../screens/Multisig/types";
 import { prettyPrice } from "../../utils/coins";
 import { AppNavigationProp, useAppNavigation } from "../../utils/navigation";
 import {
@@ -40,21 +46,21 @@ export interface ProposalTransactionItemProps extends ParsedTransaction {
 
 // FIXME: handle case where there is bad json in the db
 
-const getTxInfo = (
+export const getTxInfo = (
   msgs: any[],
   navigation: AppNavigationProp,
   network: NetworkInfo | undefined
-): [string, React.ReactElement, React.ReactElement] => {
+): [MultisigTransactionType, React.ReactElement, React.ReactElement] => {
   if (msgs.length === 0) {
     return [
-      "Empty",
+      MultisigTransactionType.EMPTY,
       <BrandText style={styles.normal77}> </BrandText>,
       <BrandText style={styles.normal77}> </BrandText>,
     ];
   }
   if (msgs.length > 1) {
     return [
-      "Complex",
+      MultisigTransactionType.COMPLEX,
       <BrandText style={styles.normal77}>{msgs.length} messages</BrandText>,
       <BrandText style={styles.normal77}> </BrandText>,
     ];
@@ -66,7 +72,7 @@ const getTxInfo = (
       const amount = msg.value.amount?.[0]?.amount;
       const denom = msg.value.amount?.[0]?.denom;
       return [
-        "Send",
+        MultisigTransactionType.SEND,
         <View style={styles.rowCenter}>
           <BrandText style={styles.normal77}>Sending to: </BrandText>
           <Pressable
@@ -94,7 +100,7 @@ const getTxInfo = (
       const amount = msg.value.amount?.amount;
       const denom = msg.value.amount?.denom;
       return [
-        "Delegate",
+        MultisigTransactionType.DELEGATE,
         <View style={styles.rowCenter}>
           <BrandText style={styles.normal77}>Delegating to: </BrandText>
           <Pressable
@@ -122,7 +128,7 @@ const getTxInfo = (
       const amount = msg.value.amount?.amount;
       const denom = msg.value.amount?.denom;
       return [
-        "Undelegate",
+        MultisigTransactionType.UNDELEGATE,
         <View style={styles.rowCenter}>
           <BrandText style={styles.normal77}>Undelegating from: </BrandText>
           <Pressable
@@ -151,7 +157,7 @@ const getTxInfo = (
       const amount = msg.value.amount?.amount;
       const denom = msg.value.amount?.denom;
       return [
-        "Redelegate",
+        MultisigTransactionType.REDELEGATE,
         <View style={styles.rowCenter}>
           <BrandText style={styles.normal77}>From: </BrandText>
           <Pressable
@@ -189,6 +195,7 @@ const getTxInfo = (
     case "/cosmwasm.wasm.v1.MsgExecuteContract": {
       const contractAddress = msg.value.contract;
       let method;
+      let txType = MultisigTransactionType.EXECUTE;
       try {
         // TODO: prettify method name
         method = Object.keys(
@@ -202,9 +209,18 @@ const getTxInfo = (
         console.error("failed to find method name", err);
         method = "Unknown";
       }
-
+      if (
+        network?.kind === NetworkKind.Cosmos &&
+        contractAddress === network.nameServiceContractAddress &&
+        method === "mint"
+      ) {
+        txType = MultisigTransactionType.MINT_NAME;
+      }
+      // if(network?.kind === NetworkKind.Cosmos && contractAddress === network.socialFeedContractAddress && method === "post") {
+      //   txType = MultisigTransactionType.CREATE_NEW_POST
+      // }
       return [
-        "Execute",
+        txType,
         <View style={styles.rowCenter}>
           <BrandText style={styles.normal77}>Contract: </BrandText>
           <Pressable
@@ -228,7 +244,7 @@ const getTxInfo = (
     case "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward": {
       const validatorAddress = msg.value.validatorAddress;
       return [
-        "Claim Reward",
+        MultisigTransactionType.CLAIM_REWARD,
         <View style={styles.rowCenter}>
           <BrandText style={styles.normal77}>Validator: </BrandText>
           <Pressable
@@ -248,7 +264,7 @@ const getTxInfo = (
     }
   }
   return [
-    "Unknown",
+    MultisigTransactionType.UNKNOWN,
     <BrandText style={styles.normal77}>{msg.typeUrl}</BrandText>,
     <BrandText style={styles.normal77}> </BrandText>,
   ];
@@ -286,8 +302,28 @@ export const ProposalTransactionItem: React.FC<ProposalTransactionItemProps> = (
   const getIcon = useMemo(() => {
     //TODO: Add white icons and use them for each TX type
     switch (txName) {
-      // case MultisigTransactionType.STAKE:
-      //   return stakingWhiteSVG;
+      case MultisigTransactionType.SEND:
+        return walletWhiteSVG;
+      case MultisigTransactionType.CREATE_NEW_POST:
+        return feedWhiteSVG;
+      case MultisigTransactionType.MANAGE_PUBLIC_PROFILE:
+        return tnsWhiteSVG;
+      case MultisigTransactionType.MINT_NAME:
+        return tnsWhiteSVG;
+      case MultisigTransactionType.STAKE:
+        return stakingWhiteSVG;
+      case MultisigTransactionType.REDELEGATE:
+        return stakingWhiteSVG;
+      case MultisigTransactionType.EXECUTE:
+        return multisigWhiteSVG;
+      case MultisigTransactionType.CLAIM_REWARD:
+        return stakingWhiteSVG;
+      case MultisigTransactionType.DELEGATE:
+        return stakingWhiteSVG;
+      case MultisigTransactionType.UNDELEGATE:
+        return stakingWhiteSVG;
+      case MultisigTransactionType.UNKNOWN:
+        return multisigWhiteSVG;
       default:
         return multisigWhiteSVG;
     }

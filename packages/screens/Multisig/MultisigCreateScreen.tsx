@@ -29,7 +29,6 @@ import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
   NetworkKind,
-  allNetworks,
   getUserId,
   selectableCosmosNetworks,
 } from "../../networks";

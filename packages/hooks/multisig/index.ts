@@ -1,4 +1,3 @@
-export * from "./useCreateMultisigDelegate";
 export * from "./useMultisigProposeSend";
 export * from "./useUserMultisigs";
 export * from "./useMultisigTransactions";
