@@ -45,6 +45,8 @@ export const ConnectWalletButton: React.FC<ConnectWalletButtonProps> = ({
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   comingsoonContainer: {
     padding: layout.padding_x0_5,

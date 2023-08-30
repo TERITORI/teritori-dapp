@@ -12,6 +12,8 @@ export const SideNotch: React.FC<{ style?: ViewStyle }> = ({ style }) => {
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   container: {
     position: "absolute",

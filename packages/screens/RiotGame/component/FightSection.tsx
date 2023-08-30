@@ -119,6 +119,8 @@ export const FightSection: React.FC<FightSectionProps> = ({
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   pageTitle: {
     alignSelf: "center",

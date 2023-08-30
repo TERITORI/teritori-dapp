@@ -20,6 +20,8 @@ export const MaxButton = ({ onPress }: MaxButtonProps) => {
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   maxText: {
     ...StyleSheet.flatten(fontSemibold12),

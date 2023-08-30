@@ -26,6 +26,8 @@ export const BrandTextBase: React.FC<TextProps & { isTicker?: boolean }> = (
     );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   base: {
     color: "white",

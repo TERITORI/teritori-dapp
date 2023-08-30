@@ -89,6 +89,8 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   modalHeaderContainer: {
     flexDirection: "row",

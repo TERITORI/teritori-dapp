@@ -128,6 +128,8 @@ export const RiotGameMemoriesScreen = () => {
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   contentContainer: {
     padding: layout.padding_x4,

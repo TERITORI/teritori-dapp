@@ -7,10 +7,14 @@ import { decodeGnoPost } from "../../components/socialFeed/utils";
 import { NetworkKind, getNetwork, getUserId } from "../../networks";
 import { extractGnoString } from "../../utils/gno";
 
-export const usePost = (id: string, networkId: string) => {
+export const usePost = (id: string, networkId: string | undefined) => {
   const { data, ...other } = useQuery<Post>(
     ["social-post", id, networkId],
     async () => {
+      if (!networkId) {
+        throw new Error("networkId is required");
+      }
+
       const network = getNetwork(networkId);
       if (network?.kind === NetworkKind.Gno) {
         const provider = new GnoJSONRPCProvider(network.endpoint);
@@ -41,7 +45,8 @@ export const usePost = (id: string, networkId: string) => {
         };
         return post;
       }
-    }
+    },
+    { enabled: !!networkId }
   );
   return { post: data, ...other };
 };

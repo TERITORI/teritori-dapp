@@ -76,6 +76,8 @@ export const SwapTokensList: React.FC<{
   return <></>;
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   modalContainer: {
     position: "absolute",

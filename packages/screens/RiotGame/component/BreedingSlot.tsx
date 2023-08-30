@@ -93,6 +93,8 @@ export const BreedingSlot: React.FC<BreedingSlotProps> = ({
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   stakedTitle: {
     position: "absolute",

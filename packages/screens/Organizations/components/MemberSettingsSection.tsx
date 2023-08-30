@@ -99,6 +99,8 @@ export const MemberSettingsSection: React.FC<MemberSettingsSectionProps> = ({
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   container: {
     padding: layout.contentPadding,

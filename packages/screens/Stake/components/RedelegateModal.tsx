@@ -308,6 +308,8 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   container: {
     width: 700,

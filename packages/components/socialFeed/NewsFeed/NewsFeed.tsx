@@ -160,6 +160,8 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
     ]
   );
 
+  // FIXME: remove StyleSheet.create
+  // eslint-disable-next-line no-restricted-syntax
   const styles = StyleSheet.create({
     content: {
       alignItems: "center",
