@@ -247,6 +247,8 @@ export const RiotGameLeaderboardScreen = () => {
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   contentContainer: {
     paddingHorizontal: layout.padding_x2_5,

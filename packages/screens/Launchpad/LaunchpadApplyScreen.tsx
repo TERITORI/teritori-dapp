@@ -63,6 +63,8 @@ export const LaunchpadApplyScreen: ScreenFC<"LaunchpadApply"> = () => {
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   descriptionText: StyleSheet.flatten([
     fontSemibold14,

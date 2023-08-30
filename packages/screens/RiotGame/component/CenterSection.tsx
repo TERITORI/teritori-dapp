@@ -97,6 +97,8 @@ export const CenterSection: React.FC<CenterSectionProps> = ({
     </>
   );
 };
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   section: {
     position: "absolute",

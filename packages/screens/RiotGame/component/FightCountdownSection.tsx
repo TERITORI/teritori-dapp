@@ -147,6 +147,8 @@ export const FightCountdownSection: React.FC<FightCountdownSectionProps> = ({
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   actionsSection: {
     justifyContent: "center",

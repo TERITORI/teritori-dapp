@@ -41,6 +41,8 @@ export const DropdownOption: React.FC<DropdownOptionProps> = ({
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   option: {
     flexDirection: "row",

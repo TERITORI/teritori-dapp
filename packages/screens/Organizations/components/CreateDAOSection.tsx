@@ -165,6 +165,8 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   container: {
     padding: layout.contentPadding,

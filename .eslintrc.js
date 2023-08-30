@@ -8,6 +8,15 @@ module.exports = {
     "react-hooks/exhaustive-deps": "error", // Checks effect dependencies
     "prettier/prettier": "error",
     "import/order": "error",
+    "no-restricted-syntax": [
+      "error",
+      {
+        message:
+          "Do not use StyleSheet.create, it breaks type safety and allows for dead code.\nNo it's not faster, see https://stackoverflow.com/a/56219676\nIf you want to declare constant styles for memoized components, use something like `const myStyle: ViewStyle = { ... }`",
+        selector:
+          "MemberExpression[object.name='StyleSheet'][property.name='create']",
+      },
+    ],
   },
   overrides: [
     {

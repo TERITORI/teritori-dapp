@@ -9,6 +9,8 @@ import { fontSemibold14, fontSemibold20 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { SettingItemGroupType, SettingItemType } from "../types";
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   bigTitle: StyleSheet.flatten([
     fontSemibold20,

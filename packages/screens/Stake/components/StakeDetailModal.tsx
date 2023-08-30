@@ -130,6 +130,8 @@ export const StakeDetailModal: React.FC<StakeDetailModalProps> = ({
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   footerRow: {
     flexDirection: "row",

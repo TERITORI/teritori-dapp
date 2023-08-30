@@ -105,6 +105,8 @@ export const ReviewCollapsable: React.FC<ReviewCollapsableProps> = ({
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   container: { borderRadius: 12, borderWidth: 1, borderColor: neutral33 },
   header: {

@@ -154,6 +154,8 @@ const SelectNewNft: React.FC<{
 
 export default SelectNewNft;
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   separator: {
     height: 1,
