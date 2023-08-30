@@ -52,7 +52,8 @@ export const ProposalItemWIP: React.FC<ProposalItemProps> = ({
     </Pressable>
   );
 };
-
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   container: {
     backgroundColor: neutral17,

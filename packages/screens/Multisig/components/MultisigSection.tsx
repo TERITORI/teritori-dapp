@@ -101,7 +101,8 @@ export const MultisigSection: React.FC<MultisigSectionProps> = ({
     </View>
   );
 };
-
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   container: {
     borderColor: neutral33,

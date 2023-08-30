@@ -93,7 +93,8 @@ export const CheckLoadingModal: React.FC<CheckLoadingModalProps> = ({
     </Modal>
   );
 };
-
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   container: { backgroundColor: neutral00 + "CC" },
   lottieAnim: {

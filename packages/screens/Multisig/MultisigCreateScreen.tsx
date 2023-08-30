@@ -1,7 +1,7 @@
 import { createMultisigThresholdPubkey } from "@cosmjs/amino";
 import React, { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Pressable, ScrollView, StyleSheet, View } from "react-native";
+import { Pressable, ScrollView, View } from "react-native";
 import { useSelector } from "react-redux";
 
 import { MultisigSection } from "./components/MultisigSection";
@@ -191,13 +191,25 @@ export const MultisigCreateScreen = () => {
       noScroll
       forceNetworkKind={NetworkKind.Cosmos}
     >
-      <ScrollView contentContainerStyle={styles.container}>
-        <View style={styles.formContainer}>
+      <ScrollView
+        contentContainerStyle={{
+          padding: layout.contentPadding,
+          paddingTop: layout.topContentPaddingWithHeading,
+        }}
+      >
+        <View
+          style={{
+            height: "100%",
+            maxWidth: 793,
+          }}
+        >
           <BrandText style={fontSemibold28}>Create a Legacy Multisig</BrandText>
           <SpacerColumn size={2.5} />
           <MultisigSection
             title="What is a Multisignature Wallet?"
-            containerStyle={styles.descriptionContainer}
+            containerStyle={{
+              maxWidth: 487,
+            }}
           >
             <BrandText style={[fontSemibold13, { color: neutralA3 }]}>
               This wallet adress is owned managed by at least 2 different
@@ -260,7 +272,16 @@ export const MultisigCreateScreen = () => {
                   >
                     {addressIndexes.length > 2 && (
                       <Pressable
-                        style={styles.trashContainer}
+                        style={{
+                          height: 32,
+                          width: 32,
+                          justifyContent: "center",
+                          alignItems: "center",
+                          borderRadius: 10,
+                          backgroundColor: trashBackground,
+                          position: "absolute",
+                          right: 0,
+                        }}
                         onPress={() => removeAddressField(index)}
                       >
                         <SVG source={trashSVG} width={12} height={12} />
@@ -272,7 +293,7 @@ export const MultisigCreateScreen = () => {
               <SpacerColumn size={2.5} />
             </>
           ))}
-          <View style={styles.row}>
+          <View style={{ flexDirection: "row" }}>
             <SecondaryButton
               size="M"
               text="Add another address"
@@ -280,12 +301,27 @@ export const MultisigCreateScreen = () => {
             />
           </View>
           <SpacerColumn size={2.5} />
-          <View style={styles.signatureContainer}>
+          <View
+            style={{
+              paddingVertical: layout.padding_x2_5,
+              borderTopWidth: 1,
+              borderColor: neutral33,
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              maxWidth: 793,
+            }}
+          >
             <TextInputOutsideLabel
               label="Number of Signatures required"
               isAsterickSign
             />
-            <View style={styles.rowCenter}>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
               <TextInputCustom<CreateMultisigWalletFormType>
                 defaultValue={defaultNbSignaturesRequired}
                 control={control}
@@ -339,7 +375,7 @@ export const MultisigCreateScreen = () => {
 
           <SpacerColumn size={3} />
 
-          <View style={styles.row}>
+          <View style={{ flexDirection: "row" }}>
             <PrimaryButton
               size="XL"
               text="Create Multisig"
@@ -354,52 +390,3 @@ export const MultisigCreateScreen = () => {
     </ScreenContainer>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    padding: layout.contentPadding,
-    paddingTop: layout.topContentPaddingWithHeading,
-  },
-  rowSB: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  formContainer: {
-    height: "100%",
-    maxWidth: 793,
-  },
-  rowCenter: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  signatureContainer: {
-    paddingVertical: layout.padding_x2_5,
-    borderTopWidth: 1,
-    borderColor: neutral33,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    maxWidth: 793,
-  },
-  trashContainer: {
-    height: 32,
-    width: 32,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 10,
-    backgroundColor: trashBackground,
-    position: "absolute",
-    right: 0,
-  },
-  smallInputContainerStyle: {
-    height: 48,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  textCenter: { textAlign: "center" },
-  row: { flexDirection: "row" },
-  descriptionContainer: {
-    maxWidth: 487,
-  },
-});

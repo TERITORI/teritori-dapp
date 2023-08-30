@@ -1,5 +1,4 @@
 import React from "react";
-import { StyleSheet } from "react-native";
 
 import { BrandText } from "./BrandText";
 import { SVG } from "./SVG";
@@ -15,19 +14,18 @@ interface EmptyListProps {
 
 export const EmptyList: React.FC<EmptyListProps> = ({ text }) => {
   return (
-    <AnimationFadeIn style={styles.container}>
+    <AnimationFadeIn
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
       <SVG source={emptyListSVG} width={250} height={250} />
       <SpacerColumn size={2} />
-      <BrandText style={styles.text}>{text}</BrandText>
+      <BrandText style={[fontSemibold16, { color: neutral77 }]}>
+        {text}
+      </BrandText>
     </AnimationFadeIn>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  text: StyleSheet.flatten([fontSemibold16, { color: neutral77 }]),
-});

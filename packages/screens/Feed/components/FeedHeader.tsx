@@ -30,7 +30,7 @@ export const FeedHeader: React.FC<FeedHeaderProps> = ({
 
   const selectedNetworkInfo = useSelectedNetworkInfo();
   const selectedNetworkKind = selectedNetworkInfo?.kind;
-  const selectedWallet = useSelectedWallet();
+  const { selectedWallet } = useSelectedWallet();
   const [isDAOMember, setIsDAOMember] = useState(false);
 
   const req = {

@@ -47,6 +47,8 @@ enum SelectModalKind {
 export const MultisigScreen: ScreenFC<"Multisig"> = () => {
   const navigation = useAppNavigation();
   const { selectedWallet } = useSelectedWallet();
+  // FIXME: remove StyleSheet.create
+  // eslint-disable-next-line no-restricted-syntax
   const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -360,7 +362,8 @@ export const MultisigWalletSelectModal: React.FC<
 > = ({ onClose, visible, data, callback }) => {
   const modalWidth = 448;
   const paddingWidth = layout.padding_x2_5;
-
+  // FIXME: remove StyleSheet.create
+  // eslint-disable-next-line no-restricted-syntax
   const styles = StyleSheet.create({
     itemBox: {
       flexDirection: "row",

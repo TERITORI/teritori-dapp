@@ -1,6 +1,12 @@
 import moment from "moment";
 import React, { useMemo, useState } from "react";
-import { ActivityIndicator, Pressable, StyleSheet, View } from "react-native";
+import {
+  ActivityIndicator,
+  Pressable,
+  StyleSheet,
+  View,
+  ViewStyle,
+} from "react-native";
 
 import { ProposalTransactionModal } from "./ProposalTransactionModal";
 import { TransactionItemButtons } from "./TransactionItemButtons";
@@ -54,15 +60,17 @@ export const getTxInfo = (
   if (msgs.length === 0) {
     return [
       MultisigTransactionType.EMPTY,
-      <BrandText style={styles.normal77}> </BrandText>,
-      <BrandText style={styles.normal77}> </BrandText>,
+      <BrandText style={brandTextNormalStyles}> </BrandText>,
+      <BrandText style={brandTextNormalStyles}> </BrandText>,
     ];
   }
   if (msgs.length > 1) {
     return [
       MultisigTransactionType.COMPLEX,
-      <BrandText style={styles.normal77}>{msgs.length} messages</BrandText>,
-      <BrandText style={styles.normal77}> </BrandText>,
+      <BrandText style={brandTextNormalStyles}>
+        {msgs.length} messages
+      </BrandText>,
+      <BrandText style={brandTextNormalStyles}> </BrandText>,
     ];
   }
   const msg = msgs[0];
@@ -73,8 +81,8 @@ export const getTxInfo = (
       const denom = msg.value.amount?.[0]?.denom;
       return [
         MultisigTransactionType.SEND,
-        <View style={styles.rowCenter}>
-          <BrandText style={styles.normal77}>Sending to: </BrandText>
+        <View style={rowCenterStyles}>
+          <BrandText style={brandTextNormalStyles}>Sending to: </BrandText>
           <Pressable
             onPress={() => {
               // TODO: show tns info using reusable component
@@ -82,14 +90,14 @@ export const getTxInfo = (
               navigation.navigate("UserPublicProfile", { id });
             }}
           >
-            <BrandText style={styles.normal}>
+            <BrandText style={StyleSheet.flatten(fontSemibold14)}>
               {tinyAddress(recipientAddress, 14)}
             </BrandText>
           </Pressable>
         </View>,
-        <View style={styles.rowCenter}>
-          <BrandText style={styles.normal77}>Will receive: </BrandText>
-          <BrandText style={styles.normal}>
+        <View style={rowCenterStyles}>
+          <BrandText style={brandTextNormalStyles}>Will receive: </BrandText>
+          <BrandText style={StyleSheet.flatten(fontSemibold14)}>
             {prettyPrice(network?.id, amount, denom)}
           </BrandText>
         </View>,
@@ -101,8 +109,8 @@ export const getTxInfo = (
       const denom = msg.value.amount?.denom;
       return [
         MultisigTransactionType.DELEGATE,
-        <View style={styles.rowCenter}>
-          <BrandText style={styles.normal77}>Delegating to: </BrandText>
+        <View style={rowCenterStyles}>
+          <BrandText style={brandTextNormalStyles}>Delegating to: </BrandText>
           <Pressable
             onPress={() => {
               // TODO: show tns info using reusable component
@@ -110,14 +118,14 @@ export const getTxInfo = (
               navigation.navigate("UserPublicProfile", { id });
             }}
           >
-            <BrandText style={styles.normal}>
+            <BrandText style={StyleSheet.flatten(fontSemibold14)}>
               {tinyAddress(validatorAddress, 20)}
             </BrandText>
           </Pressable>
         </View>,
-        <View style={styles.rowCenter}>
-          <BrandText style={styles.normal77}>Will delegate: </BrandText>
-          <BrandText style={styles.normal}>
+        <View style={rowCenterStyles}>
+          <BrandText style={brandTextNormalStyles}>Will delegate: </BrandText>
+          <BrandText style={StyleSheet.flatten(fontSemibold14)}>
             {prettyPrice(network?.id, amount, denom)}
           </BrandText>
         </View>,
@@ -129,8 +137,10 @@ export const getTxInfo = (
       const denom = msg.value.amount?.denom;
       return [
         MultisigTransactionType.UNDELEGATE,
-        <View style={styles.rowCenter}>
-          <BrandText style={styles.normal77}>Undelegating from: </BrandText>
+        <View style={rowCenterStyles}>
+          <BrandText style={brandTextNormalStyles}>
+            Undelegating from:{" "}
+          </BrandText>
           <Pressable
             onPress={() => {
               // TODO: show tns info using reusable component
@@ -138,14 +148,14 @@ export const getTxInfo = (
               navigation.navigate("UserPublicProfile", { id });
             }}
           >
-            <BrandText style={styles.normal}>
+            <BrandText style={StyleSheet.flatten(fontSemibold14)}>
               {tinyAddress(validatorAddress, 20)}
             </BrandText>
           </Pressable>
         </View>,
-        <View style={styles.rowCenter}>
-          <BrandText style={styles.normal77}>Will undelegate: </BrandText>
-          <BrandText style={styles.normal}>
+        <View style={rowCenterStyles}>
+          <BrandText style={brandTextNormalStyles}>Will undelegate: </BrandText>
+          <BrandText style={StyleSheet.flatten(fontSemibold14)}>
             {prettyPrice(network?.id, amount, denom)}
           </BrandText>
         </View>,
@@ -158,8 +168,8 @@ export const getTxInfo = (
       const denom = msg.value.amount?.denom;
       return [
         MultisigTransactionType.REDELEGATE,
-        <View style={styles.rowCenter}>
-          <BrandText style={styles.normal77}>From: </BrandText>
+        <View style={rowCenterStyles}>
+          <BrandText style={brandTextNormalStyles}>From: </BrandText>
           <Pressable
             onPress={() => {
               // TODO: show tns info using reusable component
@@ -167,11 +177,11 @@ export const getTxInfo = (
               navigation.navigate("UserPublicProfile", { id });
             }}
           >
-            <BrandText style={styles.normal}>
+            <BrandText style={StyleSheet.flatten(fontSemibold14)}>
               {tinyAddress(sourceValidatorAddress, 10)}
             </BrandText>
           </Pressable>
-          <BrandText style={styles.normal77}>, To: </BrandText>
+          <BrandText style={brandTextNormalStyles}>, To: </BrandText>
           <Pressable
             onPress={() => {
               // TODO: show tns info using reusable component
@@ -179,14 +189,14 @@ export const getTxInfo = (
               navigation.navigate("UserPublicProfile", { id });
             }}
           >
-            <BrandText style={styles.normal}>
+            <BrandText style={StyleSheet.flatten(fontSemibold14)}>
               {tinyAddress(destinationValidatorAddress, 10)}
             </BrandText>
           </Pressable>
         </View>,
-        <View style={styles.rowCenter}>
-          <BrandText style={styles.normal77}>Will redelegate: </BrandText>
-          <BrandText style={styles.normal}>
+        <View style={rowCenterStyles}>
+          <BrandText style={brandTextNormalStyles}>Will redelegate: </BrandText>
+          <BrandText style={StyleSheet.flatten(fontSemibold14)}>
             {prettyPrice(network?.id, amount, denom)}
           </BrandText>
         </View>,
@@ -221,8 +231,8 @@ export const getTxInfo = (
       // }
       return [
         txType,
-        <View style={styles.rowCenter}>
-          <BrandText style={styles.normal77}>Contract: </BrandText>
+        <View style={rowCenterStyles}>
+          <BrandText style={brandTextNormalStyles}>Contract: </BrandText>
           <Pressable
             onPress={() => {
               // TODO: show tns info using reusable component
@@ -230,14 +240,16 @@ export const getTxInfo = (
               navigation.navigate("UserPublicProfile", { id });
             }}
           >
-            <BrandText style={styles.normal}>
+            <BrandText style={StyleSheet.flatten(fontSemibold14)}>
               {tinyAddress(contractAddress, 10)}
             </BrandText>
           </Pressable>
         </View>,
-        <View style={styles.rowCenter}>
-          <BrandText style={styles.normal77}>Method: </BrandText>
-          <BrandText style={styles.normal}>{method}</BrandText>
+        <View style={rowCenterStyles}>
+          <BrandText style={brandTextNormalStyles}>Method: </BrandText>
+          <BrandText style={StyleSheet.flatten(fontSemibold14)}>
+            {method}
+          </BrandText>
         </View>,
       ];
     }
@@ -245,8 +257,8 @@ export const getTxInfo = (
       const validatorAddress = msg.value.validatorAddress;
       return [
         MultisigTransactionType.CLAIM_REWARD,
-        <View style={styles.rowCenter}>
-          <BrandText style={styles.normal77}>Validator: </BrandText>
+        <View style={rowCenterStyles}>
+          <BrandText style={brandTextNormalStyles}>Validator: </BrandText>
           <Pressable
             onPress={() => {
               // TODO: show tns info using reusable component
@@ -254,19 +266,19 @@ export const getTxInfo = (
               navigation.navigate("UserPublicProfile", { id });
             }}
           >
-            <BrandText style={styles.normal}>
+            <BrandText style={StyleSheet.flatten(fontSemibold14)}>
               {tinyAddress(validatorAddress, 20)}
             </BrandText>
           </Pressable>
         </View>,
-        <BrandText style={styles.normal77}> </BrandText>,
+        <BrandText style={brandTextNormalStyles}> </BrandText>,
       ];
     }
   }
   return [
     MultisigTransactionType.UNKNOWN,
-    <BrandText style={styles.normal77}>{msg.typeUrl}</BrandText>,
-    <BrandText style={styles.normal77}> </BrandText>,
+    <BrandText style={brandTextNormalStyles}>{msg.typeUrl}</BrandText>,
+    <BrandText style={brandTextNormalStyles}> </BrandText>,
   ];
 };
 
@@ -357,35 +369,48 @@ export const ProposalTransactionItem: React.FC<ProposalTransactionItemProps> = (
     <>
       <CustomPressable
         onPress={() => setProposalModalVisible(true)}
-        style={[styles.container, isHovered && { backgroundColor: neutral17 }]}
+        style={[
+          {
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            flexWrap: "wrap",
+            borderBottomWidth: 1,
+            borderColor: neutral33,
+            flex: 1,
+          },
+          isHovered && { backgroundColor: neutral17 },
+        ]}
         onHoverIn={() => setHovered(true)}
         onHoverOut={() => setHovered(false)}
       >
-        <View style={styles.svgContainer}>
+        <View style={{ padding: layout.padding_x2 }}>
           <SVG source={getIcon} width={32} height={32} />
         </View>
 
-        <View style={[styles.section, { flex: 0.75 }]}>
-          <BrandText style={styles.normal}>{txName}</BrandText>
+        <View style={[sectionStyles, { flex: 0.75 }]}>
+          <BrandText style={StyleSheet.flatten(fontSemibold14)}>
+            {txName}
+          </BrandText>
           <SpacerColumn size={0.75} />
-          <View style={styles.rowCenter}>
-            <BrandText style={styles.small77}>
+          <View style={rowCenterStyles}>
+            <BrandText style={brandTextSmallStyles}>
               {moment(createdAt).format("DD/MM/yyyy")}
             </BrandText>
             <SpacerRow size={0.5} />
             <Separator horizontal />
             <SpacerRow size={0.5} />
-            <BrandText style={styles.small77}>
+            <BrandText style={brandTextSmallStyles}>
               {moment(createdAt).format("h:mm")}
             </BrandText>
           </View>
         </View>
 
-        <View style={styles.section}>
+        <View style={sectionStyles}>
           {txInfo}
           <SpacerColumn size={0.75} />
-          <View style={styles.rowCenter}>
-            <BrandText style={styles.normal77}>Created by:</BrandText>
+          <View style={rowCenterStyles}>
+            <BrandText style={brandTextNormalStyles}>Created by:</BrandText>
             <SpacerRow size={0.5} />
             {tnsMetadata.loading ? (
               <ActivityIndicator size="small" />
@@ -396,7 +421,12 @@ export const ProposalTransactionItem: React.FC<ProposalTransactionItemProps> = (
                     navigation.navigate("UserPublicProfile", { id: creatorId })
                   }
                 >
-                  <BrandText style={styles.smallPrimary}>
+                  <BrandText
+                    style={StyleSheet.flatten([
+                      fontSemibold13,
+                      { color: primaryColor },
+                    ])}
+                  >
                     {tnsMetadata?.metadata?.tokenId
                       ? `@${tnsMetadata?.metadata?.tokenId}`
                       : tinyAddress(creatorAddress, 14)}
@@ -407,13 +437,13 @@ export const ProposalTransactionItem: React.FC<ProposalTransactionItemProps> = (
           </View>
         </View>
 
-        <View style={styles.section}>
+        <View style={sectionStyles}>
           {txInfo2}
           <SpacerColumn size={0.75} />
-          <View style={styles.rowCenter}>
-            <BrandText style={styles.normal77}>Network fee:</BrandText>
+          <View style={rowCenterStyles}>
+            <BrandText style={brandTextNormalStyles}>Network fee:</BrandText>
             <SpacerRow size={0.5} />
-            <BrandText style={styles.small77}>
+            <BrandText style={brandTextSmallStyles}>
               {prettyPrice(
                 network?.id,
                 fee.amount[0]?.amount,
@@ -423,29 +453,38 @@ export const ProposalTransactionItem: React.FC<ProposalTransactionItemProps> = (
           </View>
         </View>
 
-        <View style={[styles.section, { flex: 1.5 }]}>
-          <View style={styles.rowCenter}>
-            <BrandText style={styles.normal77}>Approved by:</BrandText>
+        <View style={[sectionStyles, { flex: 1.5 }]}>
+          <View style={rowCenterStyles}>
+            <BrandText style={brandTextNormalStyles}>Approved by:</BrandText>
             <SpacerRow size={0.5} />
-            <BrandText style={styles.normal}>{approvedByCount}</BrandText>
+            <BrandText style={StyleSheet.flatten(fontSemibold14)}>
+              {approvedByCount}
+            </BrandText>
             <SpacerRow size={0.5} />
-            <BrandText style={styles.normal77}>of</BrandText>
+            <BrandText style={brandTextNormalStyles}>of</BrandText>
             <SpacerRow size={0.5} />
-            <BrandText style={styles.normal}>{threshold}</BrandText>
+            <BrandText style={StyleSheet.flatten(fontSemibold14)}>
+              {threshold}
+            </BrandText>
             <SpacerRow size={0.5} />
-            <BrandText style={styles.normal77}>
+            <BrandText style={brandTextNormalStyles}>
               ({threshold - approvedByCount} required)
             </BrandText>
           </View>
           <SpacerColumn size={1.5} />
-          <View style={styles.loadingOutside}>
+          <View
+            style={{
+              height: 6,
+              width: 207,
+              backgroundColor: neutral55,
+            }}
+          >
             <View
-              style={[
-                styles.loadingInside,
-                {
-                  width: `${completedPercent}%`,
-                },
-              ]}
+              style={{
+                height: 6,
+                backgroundColor: secondaryColor,
+                width: `${completedPercent}%`,
+              }}
             />
           </View>
         </View>
@@ -471,34 +510,16 @@ export const ProposalTransactionItem: React.FC<ProposalTransactionItemProps> = (
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    flexWrap: "wrap",
-    borderBottomWidth: 1,
-    borderColor: neutral33,
-    flex: 1,
-  },
-  section: { flex: 1, paddingRight: layout.padding_x1_5 },
-  svgContainer: { padding: layout.padding_x2 },
-  rowCenter: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  normal77: StyleSheet.flatten([fontSemibold14, { color: neutral77 }]),
-  small77: StyleSheet.flatten([fontSemibold13, { color: neutral77 }]),
-  smallPrimary: StyleSheet.flatten([fontSemibold13, { color: primaryColor }]),
-  normal: StyleSheet.flatten(fontSemibold14),
-  small: StyleSheet.flatten(fontSemibold13),
-  loadingOutside: {
-    height: 6,
-    width: 207,
-    backgroundColor: neutral55,
-  },
-  loadingInside: {
-    height: 6,
-    backgroundColor: secondaryColor,
-  },
-});
+const sectionStyles: ViewStyle = { flex: 1, paddingRight: layout.padding_x1_5 };
+const rowCenterStyles: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+};
+const brandTextNormalStyles: ViewStyle = StyleSheet.flatten([
+  fontSemibold14,
+  { color: neutral77 },
+]);
+const brandTextSmallStyles: ViewStyle = StyleSheet.flatten([
+  fontSemibold13,
+  { color: neutral77 },
+]);

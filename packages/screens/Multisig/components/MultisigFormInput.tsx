@@ -1,6 +1,6 @@
 import React from "react";
 import { FieldValues, useWatch } from "react-hook-form";
-import { Pressable, StyleSheet } from "react-native";
+import { Pressable } from "react-native";
 
 import copySVG from "../../../../assets/icons/copy.svg";
 import { BrandText } from "../../../components/BrandText";
@@ -12,14 +12,8 @@ import {
   TextInputCustomProps,
 } from "../../../components/inputs/TextInputCustom";
 import { SpacerRow } from "../../../components/spacer";
-import {
-  neutral55,
-  neutral77,
-  neutralA3,
-  primaryColor,
-} from "../../../utils/style/colors";
+import { neutral55, neutral77, neutralA3 } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
 
 interface MultisigFormInputProps<T> extends TextInputCustomProps<T> {
   isCopiable?: boolean;
@@ -60,7 +54,13 @@ export const MultisigFormInput = <T extends FieldValues>({
       {isCopiable && (
         <>
           <SpacerRow size={3} />
-          <Pressable onPress={onPressCopy} style={styles.absoluteRight}>
+          <Pressable
+            onPress={onPressCopy}
+            style={{
+              position: "absolute",
+              right: 0,
+            }}
+          >
             <SVG source={copySVG} width={24} height={24} />
           </Pressable>
         </>
@@ -82,16 +82,3 @@ export const MultisigFormInput = <T extends FieldValues>({
     </TextInputCustom>
   );
 };
-
-const styles = StyleSheet.create({
-  borderStyle: {
-    borderWidth: 1.5,
-    borderColor: primaryColor,
-    borderRadius: 12,
-    marginTop: layout.padding_x0_5,
-  },
-  absoluteRight: {
-    position: "absolute",
-    right: 0,
-  },
-});

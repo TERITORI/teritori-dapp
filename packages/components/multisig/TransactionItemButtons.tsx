@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useMemo } from "react";
-import { Linking, Pressable, StyleSheet, View } from "react-native";
+import { Linking, Pressable, StyleSheet, View, ViewStyle } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 
 import { ProposalTransactionItemProps } from "./ProposalTransactionItem";
@@ -132,7 +132,7 @@ export const TransactionItemButtons: React.FC<TransactionItemButtonsProps> = ({
 
   if (isUserMultisig === undefined) {
     return (
-      <AnimationFadeIn style={styles.container}>
+      <AnimationFadeIn style={containerStyles}>
         <ActivityIndicator color={secondaryColor} />
       </AnimationFadeIn>
     );
@@ -157,15 +157,26 @@ export const TransactionItemButtons: React.FC<TransactionItemButtonsProps> = ({
     })();
 
     const Result: FC = () => (
-      <View style={styles.resultContainer}>
-        <BrandText style={[styles.resultText, { color }]}>
+      <View
+        style={{
+          width: 200,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <BrandText
+          style={[
+            StyleSheet.flatten([fontMedium14, { textTransform: "uppercase" }]),
+            { color },
+          ]}
+        >
           {resultText}
         </BrandText>
       </View>
     );
 
     return (
-      <AnimationFadeIn style={styles.container}>
+      <AnimationFadeIn style={containerStyles}>
         {txHash || resTxHash ? (
           <Pressable
             onPress={() =>
@@ -175,7 +186,18 @@ export const TransactionItemButtons: React.FC<TransactionItemButtonsProps> = ({
             }
           >
             <Result />
-            <BrandText style={styles.txHashText}>
+            <BrandText
+              style={StyleSheet.flatten([
+                fontSemibold9,
+                {
+                  marginTop: layout.padding_x0_25,
+                  color: neutral77,
+                  flexWrap: "wrap",
+                  width: "100%",
+                  textAlign: "center",
+                },
+              ])}
+            >
               {tinyAddress(txHash || resTxHash, 14)}
             </BrandText>
           </Pressable>
@@ -188,7 +210,7 @@ export const TransactionItemButtons: React.FC<TransactionItemButtonsProps> = ({
 
   if (isCompletedSignature) {
     return (
-      <AnimationFadeIn style={styles.container}>
+      <AnimationFadeIn style={containerStyles}>
         <SecondaryButtonOutline
           text="Broadcast"
           size="M"
@@ -203,7 +225,7 @@ export const TransactionItemButtons: React.FC<TransactionItemButtonsProps> = ({
   }
 
   return (
-    <AnimationFadeIn style={styles.container}>
+    <AnimationFadeIn style={containerStyles}>
       <SecondaryButton
         text="Approve"
         size="M"
@@ -227,30 +249,9 @@ export const TransactionItemButtons: React.FC<TransactionItemButtonsProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    width: 200,
-    justifyContent: "center",
-    alignItems: "center",
-    flexDirection: "row",
-  },
-  resultContainer: {
-    width: 200,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  resultText: StyleSheet.flatten([
-    fontMedium14,
-    { textTransform: "uppercase" },
-  ]),
-  txHashText: StyleSheet.flatten([
-    fontSemibold9,
-    {
-      marginTop: layout.padding_x0_25,
-      color: neutral77,
-      flexWrap: "wrap",
-      width: "100%",
-      textAlign: "center",
-    },
-  ]),
-});
+const containerStyles: ViewStyle = {
+  width: 200,
+  justifyContent: "center",
+  alignItems: "center",
+  flexDirection: "row",
+};

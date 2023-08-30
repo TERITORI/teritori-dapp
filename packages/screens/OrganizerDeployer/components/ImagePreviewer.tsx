@@ -31,7 +31,8 @@ export const ImagePreviewer: React.FC<ImagePreviewerProps> = ({
     </View>
   );
 };
-
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   imagePreviewer: {
     height: 140,

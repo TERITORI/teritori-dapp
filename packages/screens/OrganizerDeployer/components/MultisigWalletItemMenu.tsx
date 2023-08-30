@@ -124,6 +124,8 @@ export const MultisigWalletItemMenu: React.FC<MultisigWalletItemMenuProps> = ({
     </Menu>
   );
 };
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   dotCircle: { width: 34, height: 34, borderRadius: 34 / 2, borderWidth: 1.5 },
   menu: {

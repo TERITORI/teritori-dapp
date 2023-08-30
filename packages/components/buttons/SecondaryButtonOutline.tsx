@@ -1,11 +1,5 @@
 import React, { useCallback, useState } from "react";
-import {
-  StyleProp,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-  ViewStyle,
-} from "react-native";
+import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 import { SvgProps } from "react-native-svg";
 
@@ -113,7 +107,17 @@ export const SecondaryButtonOutline: React.FC<{
 
         {(autoLoader && isAutoLoading) ||
           (isLoading && (
-            <View style={[styles.loader, { backgroundColor }]}>
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+                position: "absolute",
+                width: "100%",
+                height: "100%",
+                backgroundColor,
+              }}
+            >
               <ActivityIndicator color={color} size="small" />
             </View>
           ))}
@@ -121,14 +125,3 @@ export const SecondaryButtonOutline: React.FC<{
     </TouchableOpacity>
   );
 };
-
-const styles = StyleSheet.create({
-  loader: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    position: "absolute",
-    width: "100%",
-    height: "100%",
-  },
-});

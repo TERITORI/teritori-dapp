@@ -1,5 +1,5 @@
 import React from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, View } from "react-native";
 
 import { GetStartedOption } from "./components/GetStartedOption";
 import chatSVG from "../../../assets/icons/organization/chat.svg";
@@ -36,10 +36,23 @@ export const OrganizationGetStartedScreen = () => {
       isHeaderSmallMargin
     >
       <ScrollView>
-        <View style={styles.container}>
+        <View
+          style={{
+            padding: layout.contentPadding,
+            paddingTop: layout.topContentPaddingWithHeading,
+          }}
+        >
           <BrandText style={fontSemibold28}>What do you want to do?</BrandText>
           <SpacerColumn size={3} />
-          <View style={styles.row}>
+          <View
+            style={{
+              flex: 1,
+              flexDirection: "row",
+              flexWrap: "wrap",
+              marginHorizontal: -layout.padding_x2,
+              marginVertical: -layout.padding_x2,
+            }}
+          >
             <GetStartedOption
               title="Manage Public Profile"
               icon={profileSVG}
@@ -80,17 +93,3 @@ export const OrganizationGetStartedScreen = () => {
     </ScreenContainer>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    padding: layout.contentPadding,
-    paddingTop: layout.topContentPaddingWithHeading,
-  },
-  row: {
-    flex: 1,
-    flexDirection: "row",
-    flexWrap: "wrap",
-    marginHorizontal: -layout.padding_x2,
-    marginVertical: -layout.padding_x2,
-  },
-});

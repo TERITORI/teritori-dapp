@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { StyleProp, StyleSheet, View, ViewStyle } from "react-native";
+import { StyleProp, View, ViewStyle } from "react-native";
 import { useSelector } from "react-redux";
 
 import { MultisigFormInput } from "./components/MultisigFormInput";
@@ -56,7 +56,16 @@ export const MultisigWalletDashboardScreen: ScreenFC<
       isHeaderSmallMargin
       forceNetworkId={network?.id}
     >
-      <View style={styles.row} key={id}>
+      <View
+        style={{
+          flexDirection: "row",
+          flex: 1,
+          borderBottomWidth: 1,
+          borderColor: neutral33,
+          minHeight: 490,
+        }}
+        key={id}
+      >
         <View
           style={{
             flex: 1,
@@ -115,16 +124,6 @@ export const MultisigWalletDashboardScreen: ScreenFC<
     </ScreenContainer>
   );
 };
-
-const styles = StyleSheet.create({
-  row: {
-    flexDirection: "row",
-    flex: 1,
-    borderBottomWidth: 1,
-    borderColor: neutral33,
-    minHeight: 490,
-  },
-});
 
 const MultisigMembers: React.FC<{
   multisigId: string | undefined;

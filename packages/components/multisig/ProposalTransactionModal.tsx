@@ -1,13 +1,12 @@
 import React, { FC, Fragment } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, ViewStyle } from "react-native";
 
 import { ProposalTransactionItemProps } from "./ProposalTransactionItem";
 import { Coin } from "../../contracts-clients/dao-pre-propose-single/DaoPreProposeSingle.types";
 import { useNSPrimaryAlias } from "../../hooks/useNSPrimaryAlias";
 import { getCosmosNetworkByChainId, getUserId } from "../../networks";
-import { neutral33, neutral77, secondaryColor } from "../../utils/style/colors";
+import { secondaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
 import { tinyAddress } from "../../utils/text";
 import { BrandText } from "../BrandText";
 import ModalBase from "../modals/ModalBase";
@@ -29,16 +28,26 @@ export const ProposalTransactionModal: FC<{
       visible={visible}
       width={800}
     >
-      <View style={styles.container}>
-        <View style={styles.body}>
+      <View
+        style={{
+          marginTop: 10,
+          flexDirection: "column",
+        }}
+      >
+        <View
+          style={{
+            flexDirection: "column",
+            marginBottom: 10,
+          }}
+        >
           <BrandText style={fontSemibold14}>
             {/*transaction.type*/ "TODO"}
           </BrandText>
           <SpacerColumn size={2.5} />
 
-          <View style={styles.row}>
+          <View style={rowStyles}>
             <BrandText style={fontSemibold14}>Creator: </BrandText>
-            <BrandText style={styles.textGray}>
+            <BrandText style={textGrayStyles}>
               {primaryAlias
                 ? `@${primaryAlias}`
                 : tinyAddress(transaction.creatorAddress, 24)}
@@ -49,17 +58,17 @@ export const ProposalTransactionModal: FC<{
 
           {transaction.msgs.map((msg, index) => (
             <Fragment key={index}>
-              <View style={styles.row}>
+              <View style={rowStyles}>
                 <BrandText style={fontSemibold14}>Type URL: </BrandText>
-                <BrandText style={styles.textGray}>{msg.typeUrl}</BrandText>
+                <BrandText style={textGrayStyles}>{msg.typeUrl}</BrandText>
               </View>
               <SpacerColumn size={2.5} />
 
               {msg.value.contract && (
                 <>
-                  <View style={styles.row}>
+                  <View style={rowStyles}>
                     <BrandText style={fontSemibold14}>Contract: </BrandText>
-                    <BrandText style={styles.textGray}>
+                    <BrandText style={textGrayStyles}>
                       {msg.value.contract}
                     </BrandText>
                   </View>
@@ -72,8 +81,8 @@ export const ProposalTransactionModal: FC<{
                   <BrandText style={fontSemibold14}>Funds:</BrandText>
                   {msg.value.funds.map((fund: Coin, index: number) => (
                     <>
-                      <View style={styles.row} key={index}>
-                        <BrandText style={styles.textGray}>
+                      <View style={rowStyles} key={index}>
+                        <BrandText style={textGrayStyles}>
                           {fund.amount} {fund.denom}
                         </BrandText>
                       </View>
@@ -87,8 +96,14 @@ export const ProposalTransactionModal: FC<{
                 <>
                   <BrandText style={fontSemibold14}>Message:</BrandText>
                   <SpacerColumn size={1} />
-                  <View style={styles.msgContainer}>
-                    <BrandText style={styles.textGray}>
+                  <View style={{
+                      borderWidth: 1,
+                      borderColor: neutral77,
+                      borderRadius: 8,
+                      padding: layout.padding_x1,
+                    }
+                  }>
+                    <BrandText style={textGrayStyles}>
                       {msg?.value?.msg &&
                         JSON.stringify(JSON.parse(msg.value.msg), null, 4)}
                     </BrandText>
@@ -104,36 +119,15 @@ export const ProposalTransactionModal: FC<{
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    marginTop: 10,
-    flexDirection: "column",
-  },
-  body: {
-    flexDirection: "column",
-    marginBottom: 10,
-  },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
+const rowStyles: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+};
 
-  textGray: StyleSheet.flatten([
-    fontSemibold14,
-    {
-      color: secondaryColor,
-      opacity: 0.5,
-    },
-  ]),
-  msgContainer: {
-    borderWidth: 1,
-    borderColor: neutral77,
-    borderRadius: 8,
-    padding: layout.padding_x1,
+const textGrayStyles: ViewStyle = StyleSheet.flatten([
+  fontSemibold14,
+  {
+    color: secondaryColor,
+    opacity: 0.5,
   },
-  footer: {
-    borderColor: neutral33,
-    borderTopWidth: 1,
-    paddingVertical: 10,
-  },
-});
+]);

@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
 import { NetworkIcon } from "../../../components/NetworkIcon";
@@ -29,7 +29,12 @@ export const InputMultisigAddressModal: React.FC<
 
   const ModalHeader = useCallback(
     () => (
-      <View style={styles.rowCenter}>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+        }}
+      >
         <NetworkIcon networkId={networkId} size={32} />
         <SpacerRow size={3} />
         <BrandText>Input Multisig Address</BrandText>
@@ -45,7 +50,11 @@ export const InputMultisigAddressModal: React.FC<
       Header={ModalHeader}
       width={460}
     >
-      <View style={styles.container}>
+      <View
+        style={{
+          paddingBottom: layout.padding_x3,
+        }}
+      >
         <TextInputCustom<AddressFormType>
           variant="labelOutside"
           label="Wallet Name"
@@ -75,13 +84,3 @@ export const InputMultisigAddressModal: React.FC<
     </ModalBase>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    paddingBottom: layout.padding_x3,
-  },
-  rowCenter: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-});

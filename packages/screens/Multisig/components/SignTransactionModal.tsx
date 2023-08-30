@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
 import { Separator } from "../../../components/Separator";
@@ -42,7 +42,13 @@ export const SignTransactionModal: React.FC<SignTransactionModalProps> = ({
       <WalletStatusCard walletAddress={address} />
       <SpacerColumn size={2.5} />
 
-      <View style={styles.row}>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
         <BrandText style={[fontSemibold14, { color: neutral77 }]}>
           Amount of the transaction
         </BrandText>
@@ -67,11 +73,3 @@ export const SignTransactionModal: React.FC<SignTransactionModalProps> = ({
     </ModalBase>
   );
 };
-
-const styles = StyleSheet.create({
-  row: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-});

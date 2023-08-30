@@ -2,7 +2,6 @@ import React, { FC, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
-  StyleSheet,
   View,
   useWindowDimensions,
 } from "react-native";
@@ -154,7 +153,10 @@ export const Transactions: FC<{
         keyExtractor={(item) => item.id.toString()}
         onEndReached={() => fetchNextTransactionsPage()}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.container}
+        contentContainerStyle={{
+          paddingBottom: layout.contentPadding,
+          flex: 1,
+        }}
         ListEmptyComponent={
           txLoading ? null : <EmptyList text="No proposals" />
         }
@@ -164,13 +166,6 @@ export const Transactions: FC<{
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    paddingBottom: layout.contentPadding,
-    flex: 1,
-  },
-});
 
 const filteredTabValues = (
   counts: TransactionsCount[],

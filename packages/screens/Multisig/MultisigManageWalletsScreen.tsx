@@ -1,6 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, View, ViewStyle } from "react-native";
 
 import { CheckLoadingModal } from "./components/CheckLoadingModal";
 import { InputMultisigAddressModal } from "./components/InputMultisigAddressModal";
@@ -46,6 +46,10 @@ export const MULTISIG_WALLET_HEADING: { [key in string]: TableRowHeading } = {
     label: "",
     flex: 2,
   },
+};
+
+const setToastError = (arg0: { title: string; message: string }) => {
+  throw new Error("Function not implemented.");
 };
 
 export const MultisigManageWalletsScreen: ScreenFC<
@@ -124,16 +128,32 @@ export const MultisigManageWalletsScreen: ScreenFC<
       noScroll
       forceNetworkKind={NetworkKind.Cosmos}
     >
-      <ScrollView contentContainerStyle={styles.container}>
-        <View style={styles.headerRow}>
-          <View style={styles.rowSB}>
+      <ScrollView
+        contentContainerStyle={{
+          flex: 1,
+          padding: layout.contentPadding,
+          paddingTop: 0,
+        }}
+      >
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            paddingVertical: layout.padding_x1,
+            borderColor: neutral33,
+            borderBottomWidth: 1,
+            width: "100%",
+          }}
+        >
+          <View style={rowSBStyle}>
             <BrandText style={fontSemibold20}>Wallets</BrandText>
             <SpacerRow size={1} />
             <BrandText style={[fontSemibold20, { color: neutral77 }]}>
               {multisigList.length}
             </BrandText>
           </View>
-          <View style={styles.rowSB}>
+          <View style={rowSBStyle}>
             <SecondaryButton
               text="Add existing Wallet"
               size="M"
@@ -151,7 +171,10 @@ export const MultisigManageWalletsScreen: ScreenFC<
         <TableRow
           headings={Object.values(MULTISIG_WALLET_HEADING)}
           showBrokenCorner
-          style={styles.tableRow}
+          style={{
+            backgroundColor: neutral00,
+            minHeight: 44,
+          }}
         />
         {multisigList.map((wallet, index) => (
           <MultisigWalletItem
@@ -225,31 +248,8 @@ export const MultisigManageWalletsScreen: ScreenFC<
   );
 };
 
-const styles = StyleSheet.create({
-  container: { flex: 1, padding: layout.contentPadding, paddingTop: 0 },
-  headerRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingVertical: layout.padding_x1,
-    borderColor: neutral33,
-    borderBottomWidth: 1,
-    width: "100%",
-  },
-  rowSB: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  tableRow: {
-    backgroundColor: neutral00,
-    minHeight: 44,
-  },
-  rowCenter: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-});
-function setToastError(arg0: { title: string; message: string }) {
-  throw new Error("Function not implemented.");
-}
+const rowSBStyle: ViewStyle = {
+  flexDirection: "row",
+  justifyContent: "space-between",
+  alignItems: "center",
+};
