@@ -9,12 +9,13 @@ import { SVG } from "../SVG";
 import { SecondaryBox } from "../boxes/SecondaryBox";
 
 export const SocialButton: React.FC<{
-  text: string;
+  text?: string;
   iconSvg: React.FC<SvgProps>;
+  iconColor?: string;
   onPress?: () => void;
   style?: StyleProp<ViewStyle>;
   noBrokenCorners?: boolean;
-}> = ({ text, onPress, iconSvg, style, noBrokenCorners = true }) => {
+}> = ({ text, onPress, iconSvg, iconColor, style, noBrokenCorners = true }) => {
   return (
     <TouchableOpacity onPress={onPress} style={style}>
       <SecondaryBox
@@ -33,9 +34,15 @@ export const SocialButton: React.FC<{
             squaresBackgroundColor={withAlpha(neutral22, 0.64)}
             cornerWidth={5.5}
           >
-            <SVG source={iconSvg} height={20} width={20} />
+            <SVG source={iconSvg} height={20} width={20} color={iconColor} />
           </SecondaryBox>
-          <BrandText style={[fontMedium14, { marginLeft: 8, marginRight: 16 }]}>
+
+          <BrandText
+            style={[
+              fontMedium14,
+              { marginLeft: 8, marginRight: text ? 16 : 0 },
+            ]}
+          >
             {text}
           </BrandText>
         </View>

@@ -9,7 +9,7 @@ import { useSelector } from "react-redux";
 import { EnrollSlot } from "./component/EnrollSlot";
 import { GameContentView } from "./component/GameContentView";
 import { RipperSelectorModal } from "./component/RipperGridSelectorModal";
-import { SimpleButton } from "./component/SimpleButton";
+import { SimpleButton } from "../../components/buttons/SimpleButton";
 import controllerSVG from "../../../assets/game/controller-yellow.svg";
 import closeSVG from "../../../assets/icons/close.svg";
 import { NFT } from "../../api/marketplace/v1/marketplace";

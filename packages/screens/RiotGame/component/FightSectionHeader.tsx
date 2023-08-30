@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 
-import { SimpleButton } from "./SimpleButton";
+import { SimpleButton } from "../../../components/buttons/SimpleButton";
 import addCircleSVG from "../../../../assets/icons/add-circle.svg";
 import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";

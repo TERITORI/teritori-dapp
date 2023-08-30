@@ -14,7 +14,6 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 
 import { RipperAvatar } from "./RipperAvatar";
 import { RipperStatsSection } from "./RipperStatsSection";
-import { SimpleButton } from "./SimpleButton";
 import controllerSVG from "../../../../assets/game/controller.svg";
 import dashedBorderPNG from "../../../../assets/game/dashed-border.png";
 import closeSVG from "../../../../assets/icons/close.svg";
@@ -23,6 +22,7 @@ import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
+import { SimpleButton } from "../../../components/buttons/SimpleButton";
 import { SpacerRow } from "../../../components/spacer";
 import { getRipperRarity, isNFTStaked } from "../../../utils/game";
 import {

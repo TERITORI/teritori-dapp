@@ -2,15 +2,15 @@ import React from "react";
 import { StyleSheet, TouchableOpacity, ViewStyle } from "react-native";
 import { SvgProps } from "react-native-svg";
 
-import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
 import {
   neutral00,
   primaryTextColor,
   yellowDefault,
-} from "../../../utils/style/colors";
-import { fontSemibold14 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+} from "../../utils/style/colors";
+import { fontSemibold14 } from "../../utils/style/fonts";
+import { layout } from "../../utils/style/layout";
+import { BrandText } from "../BrandText";
+import { SVG } from "../SVG";
 
 interface SimpleButtonProps {
   text: string;

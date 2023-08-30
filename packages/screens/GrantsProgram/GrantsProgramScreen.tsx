@@ -1,17 +1,16 @@
 import React, { useState } from "react";
+import { View } from "react-native";
 
+import { GrantBox } from "./components/GrantBox";
 import filterSVG from "../../../assets/icons/filter.svg";
 import { BrandText } from "../../components/BrandText";
 import { FlexRow } from "../../components/FlexRow";
 import { ScreenContainer } from "../../components/ScreenContainer";
-import { SearchBar } from "../../components/Search/SearchBar";
-import {
-  SearchBarInputGlobal,
-  SearchBarInput,
-} from "../../components/Search/SearchBarInput";
+import { SearchBarInput } from "../../components/Search/SearchBarInput";
 import { Separator } from "../../components/Separator";
 import { IconButton } from "../../components/buttons/IconButton";
-import { SpacerRow } from "../../components/spacer";
+import { SimpleButton } from "../../components/buttons/SimpleButton";
+import { SpacerColumn, SpacerRow } from "../../components/spacer";
 import { ScreenFC } from "../../utils/navigation";
 import {
   neutral00,
@@ -19,15 +18,20 @@ import {
   primaryColor,
   secondaryColor,
 } from "../../utils/style/colors";
-import { fontSemibold28 } from "../../utils/style/fonts";
+import { fontSemibold20, fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { SimpleButton } from "../RiotGame/component/SimpleButton";
 
 export const GrantsProgramScreen: ScreenFC<"GrantsProgram"> = () => {
   const [searchText, setSearchText] = useState("");
 
   return (
-    <ScreenContainer mobileTitle="Grants Program">
+    <ScreenContainer
+      isLarge
+      responsive
+      headerChildren={
+        <BrandText style={fontSemibold20}>Grants Program</BrandText>
+      }
+    >
       <FlexRow
         style={{
           marginTop: layout.padding_x4,
@@ -44,10 +48,10 @@ export const GrantsProgramScreen: ScreenFC<"GrantsProgram"> = () => {
         />
       </FlexRow>
 
-      <Separator style={{ marginVertical: layout.padding_x2 }} />
+      <Separator style={{ marginTop: layout.padding_x2 }} />
 
-      <FlexRow style={{ justifyContent: "space-between" }}>
-        <FlexRow style={{ width: "auto" }}>
+      <FlexRow style={{ justifyContent: "space-between", flexWrap: "wrap" }}>
+        <FlexRow style={{ width: "auto", marginTop: layout.padding_x2 }}>
           <SimpleButton
             text="All"
             color={neutral00}
@@ -81,7 +85,7 @@ export const GrantsProgramScreen: ScreenFC<"GrantsProgram"> = () => {
           />
         </FlexRow>
 
-        <FlexRow style={{ width: "auto" }}>
+        <FlexRow style={{ width: "auto", marginTop: layout.padding_x2 }}>
           <SearchBarInput
             placeholder="Search for grant..."
             text={searchText}
@@ -95,6 +99,25 @@ export const GrantsProgramScreen: ScreenFC<"GrantsProgram"> = () => {
             backgroundColor={neutral33}
           />
         </FlexRow>
+      </FlexRow>
+
+      <FlexRow
+        style={{
+          width: "100%",
+          flexWrap: "wrap",
+          justifyContent: "center",
+        }}
+      >
+        {[1, 2, 3, 4, 5, 6, 7].map(() => {
+          return (
+            <GrantBox
+              containerStyle={{
+                marginTop: layout.padding_x2,
+                marginRight: layout.padding_x2,
+              }}
+            />
+          );
+        })}
       </FlexRow>
     </ScreenContainer>
   );

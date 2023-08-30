@@ -4,12 +4,14 @@ import { View, ViewStyle, StyleProp } from "react-native";
 
 import { OptimizedImage } from "../OptimizedImage";
 
-type RoundedGradientImageSize = "M" | "XS" | "XXS";
+type RoundedGradientImageSize = "M" | "XS" | "XXS" | "S";
 
 const dimension = (size: RoundedGradientImageSize) => {
   switch (size) {
     case "M":
       return 140;
+    case "S":
+      return 56;
     case "XS":
       return 32;
     case "XXS":
@@ -20,6 +22,8 @@ const imageDimension = (size: RoundedGradientImageSize) => {
   switch (size) {
     case "M":
       return dimension(size) - 4;
+    case "S":
+      return dimension(size) - 2;
     case "XS":
       return dimension(size) - 2;
     case "XXS":
@@ -32,7 +36,8 @@ export const RoundedGradientImage: React.FC<{
   fallbackURI?: string | null | undefined;
   size?: RoundedGradientImageSize;
   style?: StyleProp<ViewStyle>;
-}> = ({ sourceURI, fallbackURI, size = "M", style }) => {
+  square?: boolean;
+}> = ({ sourceURI, fallbackURI, size = "M", style, square = false }) => {
   return (
     <View
       style={[
@@ -50,7 +55,7 @@ export const RoundedGradientImage: React.FC<{
           width: imageDimension(size),
           height: imageDimension(size),
           backgroundColor: "#000000",
-          borderRadius: 999,
+          borderRadius: square ? 12 : 999,
           zIndex: 1,
           alignItems: "center",
           justifyContent: "center",
@@ -61,7 +66,11 @@ export const RoundedGradientImage: React.FC<{
           height={imageDimension(size)}
           sourceURI={sourceURI}
           fallbackURI={fallbackURI}
-          style={{ borderRadius: 999, height: "100%", width: "100%" }}
+          style={{
+            borderRadius: square ? 12 : 999,
+            height: "100%",
+            width: "100%",
+          }}
         />
       </View>
 
@@ -75,7 +84,7 @@ export const RoundedGradientImage: React.FC<{
           position: "absolute",
           width: dimension(size),
           height: dimension(size),
-          borderRadius: 999,
+          borderRadius: square ? 12 : 999,
         }}
         colors={["#01B7C5", "#782C96"]}
       />
