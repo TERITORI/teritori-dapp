@@ -215,7 +215,7 @@ const CollectionTable: React.FC<{
         headings={
           !isMobile
             ? Object.values(TABLE_ROWS)
-            : Object.values(TABLE_ROWS).slice(0, -4)
+            : Object.values(TABLE_ROWS).slice(0, -5)
         }
       />
       <FlatList
@@ -333,18 +333,19 @@ const CollectionRow: React.FC<{ collection: Collection; rank: number }> = ({
         data={rowData["TimePeriodVolume"]}
         style={{ flex: TABLE_ROWS.TimePeriodVolume.flex }}
       />
-      <InnerCell
-        style={{ flex: TABLE_ROWS.TimePeriodPercentualVolume.flex }}
-        textStyle={{
-          color: rowData["TimePeriodPercentualVolume"].includes("+")
-            ? successColor
-            : errorColor,
-        }}
-      >
-        {rowData["TimePeriodPercentualVolume"]}
-      </InnerCell>
       {!isMobile && (
         <>
+          <InnerCell
+            style={{ flex: TABLE_ROWS.TimePeriodPercentualVolume.flex }}
+            textStyle={{
+              color: rowData["TimePeriodPercentualVolume"].includes("+")
+                ? successColor
+                : errorColor,
+            }}
+          >
+            {rowData["TimePeriodPercentualVolume"]}
+          </InnerCell>
+
           <InnerCell style={{ flex: TABLE_ROWS.sales.flex }}>
             {rowData.sales}
           </InnerCell>
