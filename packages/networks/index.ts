@@ -260,6 +260,17 @@ export const parseActivityId = (
   return [network, parts[0], subId.substring(parts[0].length + 1)];
 };
 
+export const getNetworkObjectId = (
+  networkId: string | null | undefined,
+  subId: string | null | undefined
+) => {
+  if (!networkId || !subId) {
+    return "";
+  }
+  const network = getNetwork(networkId);
+  return `${network?.idPrefix}-${subId}`;
+};
+
 export const getUserId = (
   networkId: string | null | undefined,
   address: string | null | undefined

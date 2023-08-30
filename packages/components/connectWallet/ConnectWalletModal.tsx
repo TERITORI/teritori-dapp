@@ -79,6 +79,8 @@ export const ConnectWalletModal: React.FC<ConnectWalletProps> = ({
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   footer: { padding: layout.padding_x4, paddingBottom: layout.padding_x2_5 },
   footerText: StyleSheet.flatten([

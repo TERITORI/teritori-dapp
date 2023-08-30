@@ -263,6 +263,8 @@ export const SendModal: React.FC<SendModalProps> = ({
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   contactsButton: {
     width: 48,

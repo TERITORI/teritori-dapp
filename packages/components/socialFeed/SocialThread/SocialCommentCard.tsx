@@ -23,7 +23,12 @@ import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
 import { usePrevious } from "../../../hooks/usePrevious";
 import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { NetworkKind, parseUserId } from "../../../networks";
+import {
+  getNetworkObjectId,
+  mustGetGnoNetwork,
+  NetworkKind,
+  parseUserId,
+} from "../../../networks";
 import { OnPressReplyType } from "../../../screens/FeedPostView/FeedPostViewScreen";
 import { adenaDoContract } from "../../../utils/gno";
 import { useAppNavigation } from "../../../utils/navigation";
@@ -54,11 +59,12 @@ import { SpacerColumn, SpacerRow } from "../../spacer";
 import { EmojiSelector } from "../EmojiSelector";
 import { PostExtra } from "../NewsFeed/NewsFeed.type";
 import { CommentsCount } from "../SocialActions/CommentsCount";
+import { FlagButton } from "../SocialActions/FlagButton";
 import { nbReactionsShown, Reactions } from "../SocialActions/Reactions";
 import { ReplyButton } from "../SocialActions/ReplyButton";
 import { ShareButton } from "../SocialActions/ShareButton";
 import { TipButton } from "../SocialActions/TipButton";
-import { GNO_SOCIAL_FEEDS_PKG_PATH, TERITORI_FEED_ID } from "../const";
+import { TERITORI_FEED_ID } from "../const";
 
 const BREAKPOINT_S = 480;
 
@@ -73,6 +79,7 @@ export interface SocialCommentCardProps {
   overrideParentId?: string;
   onScrollTo?: (y: number) => void;
   parentOffsetValue?: number;
+  refetchFeed?: () => Promise<any>;
 }
 
 export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
@@ -84,6 +91,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
   onScrollTo,
   parentOffsetValue = 0,
   cardWidth,
+  refetchFeed,
 }) => {
   const [localComment, setLocalComment] = useState<PostExtra>({ ...comment });
   const [viewWidth, setViewWidth] = useState(0);
@@ -96,6 +104,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
   const selectedNetwork = useSelectedNetworkInfo();
   const selectedNetworkId = selectedNetwork?.id || "";
   const [, authorAddress] = parseUserId(localComment.authorId);
+
   const { data, refetch, fetchNextPage, hasNextPage, isFetching } =
     useFetchComments({
       parentId: localComment.identifier,
@@ -184,10 +193,12 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
   };
 
   const gnoReaction = async (icon: string, rpcEndpoint: string) => {
+    const gnoNetwork = mustGetGnoNetwork(selectedNetworkId);
+
     const vmCall = {
       caller: wallet?.address || "",
       send: "",
-      pkg_path: GNO_SOCIAL_FEEDS_PKG_PATH,
+      pkg_path: gnoNetwork.socialFeedsPkgPath,
       func: "ReactPost",
       args: [TERITORI_FEED_ID, localComment.identifier, icon, "true"],
     };
@@ -237,7 +248,9 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
       onLayout={(e) => setViewWidth(e.nativeEvent.layout.width)}
       disabled={!!localComment.isInLocal}
       onPress={() =>
-        navigation.navigate("FeedPostView", { id: localComment.identifier })
+        navigation.navigate("FeedPostView", {
+          id: getNetworkObjectId(selectedNetworkId, localComment.identifier),
+        })
       }
       style={{ width: cardWidth }}
     >
@@ -330,6 +343,16 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
                   />
 
                   <SpacerRow size={2.5} />
+
+                  {selectedNetwork?.kind === NetworkKind.Gno && (
+                    <FlagButton
+                      refetchFeed={refetchFeed}
+                      postId={localComment.identifier}
+                    />
+                  )}
+
+                  <SpacerRow size={2.5} />
+
                   <ShareButton postId={localComment.identifier} />
                 </View>
               </FlexRow>
@@ -357,6 +380,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
                   ? cardWidth
                   : cardWidth - LINES_HORIZONTAL_SPACE * 2 - 1 // If not -1, the borderRight is hidden on small screens
               }
+              refetchFeed={refetchFeed}
               comments={comments}
               onPressReply={onPressReply}
               overrideParentId={localComment.identifier}
@@ -390,6 +414,8 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   container: {
     width: "100%",

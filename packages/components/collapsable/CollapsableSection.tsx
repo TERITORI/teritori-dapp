@@ -111,6 +111,8 @@ export const CollapsableSection: React.FC<CollapsableSectionProps> = ({
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   header: {
     flexDirection: "row",

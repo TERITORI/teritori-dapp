@@ -64,6 +64,11 @@ export const decodeGnoPost = (networkId: string, postData: string): Post => {
   }
   offset += subpostsStrLen;
 
+  // HACK: we don't have readBigUint64BE so we shift 4 position to read readUInt32BE
+  offset += 4;
+  const tipAmount = buf.readUInt32BE(offset);
+  offset += 4;
+
   const post: Post = {
     category,
     isDeleted: false,
@@ -73,7 +78,7 @@ export const decodeGnoPost = (networkId: string, postData: string): Post => {
     subPostLength: subpostIDs.length,
     authorId: getUserId(networkId, authorAddress),
     createdAt: +createdAt * 1000,
-    tipAmount: 0,
+    tipAmount,
     reactions,
   };
 

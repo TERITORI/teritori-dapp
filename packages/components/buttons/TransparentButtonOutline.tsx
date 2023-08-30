@@ -106,6 +106,8 @@ export const TransparentButtonOutline: React.FC<{
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   rightComponent: {
     flex: 1,

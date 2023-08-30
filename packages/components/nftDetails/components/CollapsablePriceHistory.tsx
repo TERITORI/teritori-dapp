@@ -129,6 +129,8 @@ const useNFTPriceHistory = (nftId: string) => {
   return data;
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   container: {
     margin: layout.padding_x2,

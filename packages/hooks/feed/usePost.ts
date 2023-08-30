@@ -3,20 +3,23 @@ import { useQuery } from "@tanstack/react-query";
 
 import { Post } from "../../api/feed/v1/feed";
 import { nonSigningSocialFeedClient } from "../../client-creators/socialFeedClient";
-import { GNO_SOCIAL_FEEDS_PKG_PATH } from "../../components/socialFeed/const";
 import { decodeGnoPost } from "../../components/socialFeed/utils";
 import { NetworkKind, getNetwork, getUserId } from "../../networks";
 import { extractGnoString } from "../../utils/gno";
 
-export const usePost = (id: string, networkId: string) => {
+export const usePost = (id: string, networkId: string | undefined) => {
   const { data, ...other } = useQuery<Post>(
     ["social-post", id, networkId],
     async () => {
+      if (!networkId) {
+        throw new Error("networkId is required");
+      }
+
       const network = getNetwork(networkId);
       if (network?.kind === NetworkKind.Gno) {
         const provider = new GnoJSONRPCProvider(network.endpoint);
         const output = await provider.evaluateExpression(
-          GNO_SOCIAL_FEEDS_PKG_PATH,
+          network.socialFeedsPkgPath || "",
           `GetPost(1, ${id})`
         );
 
@@ -42,7 +45,8 @@ export const usePost = (id: string, networkId: string) => {
         };
         return post;
       }
-    }
+    },
+    { enabled: !!networkId }
   );
   return { post: data, ...other };
 };

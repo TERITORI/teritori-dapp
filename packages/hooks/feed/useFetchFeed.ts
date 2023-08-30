@@ -3,12 +3,14 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 
 import { Post, PostsRequest } from "../../api/feed/v1/feed";
 import { nonSigningSocialFeedClient } from "../../client-creators/socialFeedClient";
-import {
-  GNO_SOCIAL_FEEDS_PKG_PATH,
-  TERITORI_FEED_ID,
-} from "../../components/socialFeed/const";
+import { TERITORI_FEED_ID } from "../../components/socialFeed/const";
 import { decodeGnoPost } from "../../components/socialFeed/utils";
-import { GnoNetworkInfo, NetworkInfo, NetworkKind } from "../../networks";
+import {
+  GnoNetworkInfo,
+  NetworkInfo,
+  NetworkKind,
+  parseUserId,
+} from "../../networks";
 import { mustGetFeedClient } from "../../utils/backend";
 import { extractGnoString } from "../../utils/gno";
 import { useSelectedNetworkInfo } from "../useSelectedNetwork";
@@ -47,9 +49,17 @@ const fetchTeritoriFeed = async (
 
 const fetchGnoFeed = async (
   selectedNetwork: GnoNetworkInfo,
+  callerAddress: string | undefined,
   req: PostsRequest,
   pageParam: number
 ) => {
+  if (!selectedNetwork.socialFeedsPkgPath) return { list: [], totalCount: 0 };
+
+  callerAddress = callerAddress || "";
+  const userId = req.filter?.user || "";
+
+  const [, userAddress] = parseUserId(userId);
+
   try {
     const offset = pageParam || 0;
     const limit = 10;
@@ -58,8 +68,8 @@ const fetchGnoFeed = async (
 
     const provider = new GnoJSONRPCProvider(selectedNetwork.endpoint);
     const output = await provider.evaluateExpression(
-      GNO_SOCIAL_FEEDS_PKG_PATH,
-      `GetPosts(${TERITORI_FEED_ID}, ${categoriesStr}, ${offset}, ${limit})`
+      selectedNetwork.socialFeedsPkgPath,
+      `GetPostsWithCaller(${TERITORI_FEED_ID}, "${callerAddress}", "${userAddress}", ${categoriesStr}, ${offset}, ${limit})`
     );
 
     const posts: Post[] = [];
@@ -91,7 +101,7 @@ export const useFetchFeed = (req: PostsRequest) => {
         if (selectedNetwork?.kind === NetworkKind.Cosmos) {
           return fetchTeritoriFeed(selectedNetwork, req, pageParam);
         } else if (selectedNetwork?.kind === NetworkKind.Gno) {
-          return fetchGnoFeed(selectedNetwork, req, pageParam);
+          return fetchGnoFeed(selectedNetwork, wallet?.address, req, pageParam);
         }
 
         throw Error(`Network ${selectedNetwork?.id} is not supported`);

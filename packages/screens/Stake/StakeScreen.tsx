@@ -141,6 +141,8 @@ export const StakeScreen: ScreenFC<"Staking"> = ({ route: { params } }) => {
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   rowHeader: {
     flexDirection: "row",

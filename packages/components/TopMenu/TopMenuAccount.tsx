@@ -172,34 +172,36 @@ export const TopMenuAccount: React.FC = () => {
 };
 
 const WalletRow: FC<{ address: string; userId: string }> = ({
-  address,
-  userId,
-}) => {
-  const selectedNetworkId = useSelectedNetworkId();
-  const network = getCosmosNetwork(selectedNetworkId);
-  const userInfo = useNSUserInfo(userId);
-  const userName =
-    userInfo?.metadata?.tokenId ||
-    tinyAddress(address, TINY_ADDRESSES_COUNT) ||
-    "";
-  return (
-    <>
-      <RoundedGradientImage
-        size="XXS"
-        sourceURI={userInfo?.metadata?.image}
-        fallbackURI={network?.nameServiceDefaultImage}
-      />
-      <BrandText
-        style={styles.itemText}
-        ellipsizeMode="middle"
-        numberOfLines={1}
-      >
-        {userName}
-      </BrandText>
-    </>
-  );
+                                                                address,
+                                                                userId,
+                                                            }) => {
+    const selectedNetworkId = useSelectedNetworkId();
+    const network = getCosmosNetwork(selectedNetworkId);
+    const userInfo = useNSUserInfo(userId);
+    const userName =
+        userInfo?.metadata?.tokenId ||
+        tinyAddress(address, TINY_ADDRESSES_COUNT) ||
+        "";
+    return (
+        <>
+            <RoundedGradientImage
+                size="XXS"
+                sourceURI={userInfo?.metadata?.image}
+                fallbackURI={network?.nameServiceDefaultImage}
+            />
+            <BrandText
+                style={styles.itemText}
+                ellipsizeMode="middle"
+                numberOfLines={1}
+            >
+                {userName}
+            </BrandText>
+        </>
+    );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   userImageLine: {
     width: "100%",

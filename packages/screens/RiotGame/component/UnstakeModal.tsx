@@ -125,6 +125,8 @@ export const UnstakeModal: React.FC<UnstakeModalProps> = ({
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   footer: {
     borderTopWidth: 1,

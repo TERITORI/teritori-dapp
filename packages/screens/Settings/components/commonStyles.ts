@@ -19,6 +19,8 @@ const padWidth = 1024;
 export const useCommonStyles = () => {
   const { width } = useWindowDimensions();
 
+  // FIXME: remove StyleSheet.create
+  // eslint-disable-next-line no-restricted-syntax
   return StyleSheet.create({
     switchBox: {
       display: "flex",

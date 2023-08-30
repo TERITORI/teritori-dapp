@@ -3,8 +3,9 @@ import { bech32 } from "bech32";
 
 import { ContractVersion } from "../../contracts-clients/dao-core/DaoCore.types";
 import {
-  NetworkKind,
+  getNetwork,
   mustGetNonSigningCosmWasmClient,
+  NetworkKind,
   parseUserId,
 } from "../../networks";
 
@@ -54,6 +55,12 @@ export const useCosmWasmContractVersion = (
       if (!networkId || !address) {
         return null;
       }
+
+      const network = getNetwork(networkId);
+      if (network?.kind !== NetworkKind.Cosmos) {
+        return null;
+      }
+
       const client = await mustGetNonSigningCosmWasmClient(networkId);
       const { info } = await client.queryContractSmart(address, { info: {} });
       return info as ContractVersion;

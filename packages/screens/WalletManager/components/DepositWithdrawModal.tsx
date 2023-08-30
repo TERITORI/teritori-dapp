@@ -294,6 +294,8 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   selfCenter: {
     alignSelf: "center",

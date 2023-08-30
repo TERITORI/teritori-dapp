@@ -44,6 +44,7 @@ interface NewsFeedProps {
   additionalMention?: string;
   daoId?: string;
   disablePosting?: boolean;
+  isFlagged?: boolean;
 }
 
 export const NewsFeed: React.FC<NewsFeedProps> = ({
@@ -53,6 +54,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
   additionalMention,
   daoId,
   disablePosting,
+  isFlagged,
 }) => {
   const isMobile = useIsMobile();
   const { width: windowWidth } = useWindowDimensions();
@@ -158,6 +160,8 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
     ]
   );
 
+  // FIXME: remove StyleSheet.create
+  // eslint-disable-next-line no-restricted-syntax
   const styles = StyleSheet.create({
     content: {
       alignItems: "center",
@@ -188,7 +192,9 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
           >
             <SocialThreadCard
               post={post}
+              refetchFeed={refetch}
               isPreview
+              isFlagged={isFlagged}
               style={
                 windowWidth < RESPONSIVE_BREAKPOINT_S && {
                   borderRadius: 0,

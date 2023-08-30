@@ -2,10 +2,7 @@ import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
 import { nonSigningSocialFeedClient } from "../../client-creators/socialFeedClient";
-import {
-  GNO_SOCIAL_FEEDS_PKG_PATH,
-  TERITORI_FEED_ID,
-} from "../../components/socialFeed/const";
+import { TERITORI_FEED_ID } from "../../components/socialFeed/const";
 import { decodeGnoPost } from "../../components/socialFeed/utils";
 import {
   PostResult,
@@ -64,7 +61,7 @@ const fetchGnoComments = async (
 ): Promise<FetchCommentResponse> => {
   const provider = new GnoJSONRPCProvider(selectedNetwork.endpoint);
   const output = await provider.evaluateExpression(
-    GNO_SOCIAL_FEEDS_PKG_PATH,
+    selectedNetwork.socialFeedsPkgPath || "",
     `GetComments(${TERITORI_FEED_ID}, ${parentId})`
   );
 

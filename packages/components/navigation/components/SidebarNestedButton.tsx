@@ -73,6 +73,8 @@ export const SidebarNestedButton: React.FC<SidebarNestedButtonProps> = ({
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: layout.padding_x1_5,

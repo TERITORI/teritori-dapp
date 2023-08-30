@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { memo, useRef, useState } from "react";
 import {
   ViewStyle,
   View,
@@ -54,7 +54,7 @@ import { SpacerColumn, SpacerRow } from "../spacer";
 export const NFTView: React.FC<{
   data: NFT;
   style?: StyleProp<ViewStyle>;
-}> = ({ data: nft, style }) => {
+}> = memo(({ data: nft, style }) => {
   const isMobile = useIsMobile();
   const cardWidth = isMobile ? 220 : 250;
   const { width: maxWidth } = useMaxResolution({ isLarge: true });
@@ -395,8 +395,10 @@ export const NFTView: React.FC<{
       />
     </>
   );
-};
+});
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   optionContainer: {
     position: "absolute",

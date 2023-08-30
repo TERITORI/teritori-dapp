@@ -56,6 +56,8 @@ export const LaunchpadButton: React.FC<LaunchpadButtonProps> = ({
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   fill: {
     flex: 1,

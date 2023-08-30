@@ -96,6 +96,8 @@ export const SimpleButton: React.FC<SimpleButtonProps> = ({
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   btnStyle: {
     alignSelf: "center",

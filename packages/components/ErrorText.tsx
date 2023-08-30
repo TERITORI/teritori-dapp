@@ -63,6 +63,8 @@ export const ErrorText: React.FC<ErrorTextProps> = ({
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   text: StyleSheet.flatten([
     fontSemibold14,

@@ -183,6 +183,8 @@ const AccordionItem: React.FC<{
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   containerStyle: {
     flex: 1,
@@ -424,6 +426,8 @@ const FilterContainer: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
 const PriceFilter: React.FC<{ currency: NativeCurrencyInfo }> = ({
   currency,
 }) => {
+  // FIXME: remove StyleSheet.create
+  // eslint-disable-next-line no-restricted-syntax
   const styles = StyleSheet.create({
     textInput: {
       color: "#FFFFFF",

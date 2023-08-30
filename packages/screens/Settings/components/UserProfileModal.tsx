@@ -83,6 +83,8 @@ export const UserProfileModal: React.FC<toggleUserProfileProps> = ({
   const [confirmedData, setConfirmedData] = useState<string[]>([]);
   const [hoveredIndex, setHoveredIndex] = useState<number>(0);
 
+  // FIXME: remove StyleSheet.create
+  // eslint-disable-next-line no-restricted-syntax
   const styles = StyleSheet.create({
     modalContainer: {
       width,

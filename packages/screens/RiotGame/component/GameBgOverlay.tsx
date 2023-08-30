@@ -63,6 +63,8 @@ export const GameBgOverlay: React.FC<GameBgOverlayProps> = ({ type }) => {
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   absolute: { position: "absolute" },
   top: {

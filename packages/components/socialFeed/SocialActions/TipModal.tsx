@@ -8,14 +8,16 @@ import { signingSocialFeedClient } from "../../../client-creators/socialFeedClie
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useTeritoriSocialFeedTipPostMutation } from "../../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.react-query";
 import { useBalances } from "../../../hooks/useBalances";
-import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
+import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import {
+  NetworkKind,
   getStakingCurrency,
   keplrCurrencyFromNativeCurrencyInfo,
 } from "../../../networks";
 import { prettyPrice } from "../../../utils/coins";
 import { defaultSocialFeedFee } from "../../../utils/fee";
+import { adenaDoContract } from "../../../utils/gno";
 import { neutral77, primaryColor } from "../../../utils/style/colors";
 import { fontSemibold13, fontSemibold14 } from "../../../utils/style/fonts";
 import { BrandText } from "../../BrandText";
@@ -24,6 +26,7 @@ import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { TextInputCustom } from "../../inputs/TextInputCustom";
 import ModalBase from "../../modals/ModalBase";
 import { SpacerColumn } from "../../spacer";
+import { TERITORI_FEED_ID } from "../const";
 
 type TipFormType = {
   amount: string;
@@ -32,7 +35,7 @@ type TipFormType = {
 export const TipModal: React.FC<{
   author: string;
   postId: string;
-  onClose: () => void;
+  onClose: (newTipAmount?: number) => void;
   isVisible: boolean;
 }> = ({ author, postId, onClose, isVisible }) => {
   const {
@@ -53,7 +56,8 @@ export const TipModal: React.FC<{
       },
     });
   const { selectedWallet } = useSelectedWallet();
-  const selectedNetworkId = useSelectedNetworkId();
+  const selectedNetworkInfo = useSelectedNetworkInfo();
+  const selectedNetworkId = selectedNetworkInfo?.id || "";
   const nativeCurrency = getStakingCurrency(selectedNetworkId);
   const { setToastError, setToastSuccess } = useFeedbacks();
   const balances = useBalances(selectedNetworkId, selectedWallet?.address);
@@ -70,25 +74,55 @@ export const TipModal: React.FC<{
     ) {
       return;
     }
-    const client = await signingSocialFeedClient({
-      networkId: selectedNetworkId,
-      walletAddress: selectedWallet.address,
-    });
+
     const amount = Decimal.fromUserInput(
       fieldValues.amount,
       nativeCurrency.decimals
     ).atomics;
-    postMutate({
-      client,
-      msg: {
-        identifier: postId,
-      },
-      args: {
-        fee: defaultSocialFeedFee,
-        memo: "",
-        funds: [coin(amount, nativeCurrency.denom)],
-      },
-    });
+
+    if (selectedNetworkInfo?.kind === NetworkKind.Gno) {
+      // We use Tip function from Social_feed contract to keep track of tip amount
+      const vmCall = {
+        caller: selectedWallet.address,
+        send: `${amount}ugnot`,
+        pkg_path: selectedNetworkInfo.socialFeedsPkgPath,
+        func: "TipPost",
+        args: [TERITORI_FEED_ID, postId],
+      };
+
+      try {
+        await adenaDoContract(
+          selectedNetworkId || "",
+          [{ type: "/vm.m_call", value: vmCall }],
+          {
+            gasWanted: 1_000_000,
+          }
+        );
+
+        onClose(+amount);
+        setToastSuccess({ title: "Tip success", message: "" });
+      } catch (err: any) {
+        console.error(err);
+        setToastError({ title: "Tip failed", message: err.message });
+      }
+    } else {
+      const client = await signingSocialFeedClient({
+        networkId: selectedNetworkId,
+        walletAddress: selectedWallet.address,
+      });
+
+      postMutate({
+        client,
+        msg: {
+          identifier: postId,
+        },
+        args: {
+          fee: defaultSocialFeedFee,
+          memo: "",
+          funds: [coin(amount, nativeCurrency.denom)],
+        },
+      });
+    }
   };
 
   const maxAtomics =

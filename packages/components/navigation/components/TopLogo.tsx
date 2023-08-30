@@ -22,6 +22,8 @@ export const TopLogo = () => {
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   topDetailContainer: {
     flex: 1,

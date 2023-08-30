@@ -46,11 +46,7 @@ const SelectedTabContent: React.FC<{
   const userInfo = useNSUserInfo(userId);
   const [network, userAddress] = parseUserId(userId);
   const { isDAO } = useIsDAO(userId);
-  const { isDAOMember } = useIsDAOMember(
-    userId,
-    selectedWallet?.userId,
-    !!isDAO
-  );
+  const { isDAOMember } = useIsDAOMember(userId, selectedWallet?.userId, isDAO);
 
   const feedRequestUser: PostsRequest = useMemo(() => {
     return {
@@ -164,6 +160,7 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
 }) => {
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof screenTabItems>(initialTab);
+
   const prevId = usePrevious(id);
   useEffect(() => {
     if (prevId && id !== prevId) {

@@ -160,6 +160,8 @@ export const GIFSelector: React.FC<GIFSelectorProps> = ({
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   modalContainer: {
     backgroundColor: neutral67,
