@@ -1,6 +1,7 @@
 import React from "react";
 import { View, ViewStyle } from "react-native";
 
+import { GrantTag } from "./GrantTag";
 import discordSVG from "../../../../assets/icons/discord.svg";
 import githubSVG from "../../../../assets/icons/github.svg";
 import gnoSVG from "../../../../assets/icons/networks/gno.svg";
@@ -38,6 +39,20 @@ export const GrantBox: React.FC<{
             <BrandText style={fontSemibold20}>
               Create a web Game using Gnolang
             </BrandText>
+            <FlexRow style={{ marginTop: layout.padding_x0_75 }}>
+              <GrantTag
+                text="2005.12.4"
+                containerStyle={{ marginRight: layout.padding_x1 }}
+              />
+              <GrantTag
+                text="dapp"
+                containerStyle={{ marginRight: layout.padding_x1 }}
+              />
+              <GrantTag
+                text="Structure"
+                containerStyle={{ marginRight: layout.padding_x1 }}
+              />
+            </FlexRow>
           </View>
         </FlexRow>
 
