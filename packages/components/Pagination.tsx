@@ -1,4 +1,3 @@
-// libraries
 import React, { useRef } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 
@@ -54,7 +53,6 @@ export const Pagination = ({
   const { onPressDropdownButton, isDropdownOpen, closeOpenedDropdown } =
     useDropdowns();
 
-  // returns
   return (
     <View style={styles.container}>
       <View style={[styles.section, { justifyContent: "flex-start" }]}>

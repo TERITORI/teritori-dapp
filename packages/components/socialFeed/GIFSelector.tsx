@@ -95,7 +95,6 @@ export const GIFSelector: React.FC<GIFSelectorProps> = ({
     onGIFSelected && onGIFSelected(item.media_formats["gif"].url);
   };
 
-  // returns
   return (
     <Menu
       opened={isGIFModalVisible}

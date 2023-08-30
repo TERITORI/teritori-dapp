@@ -108,7 +108,6 @@ export const NFTView: React.FC<{
   const widthNumber =
     typeof width === "number" ? width : parseInt(width || "0", 10) || cardWidth;
 
-  // returns
   return (
     <>
       <View

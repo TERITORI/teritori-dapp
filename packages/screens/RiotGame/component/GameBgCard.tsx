@@ -21,8 +21,6 @@ export const GameBgCard: React.FC<GameBgCardProps> = ({
   hidePlus,
   item,
 }) => {
-  // variables
-
   //  returns
   const renderCard = useCallback(() => {
     switch (item.type) {

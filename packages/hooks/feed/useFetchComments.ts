@@ -97,7 +97,6 @@ export const useFetchComments = ({
   totalCount,
   enabled,
 }: ConfigType) => {
-  // variable
   const selectedNetwork = useSelectedNetworkInfo();
 
   // request

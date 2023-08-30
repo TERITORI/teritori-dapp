@@ -44,7 +44,6 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
   visible,
   validator,
 }) => {
-  // variables
   const wallet = useSelectedWallet();
   const { setToastError, setToastSuccess } = useFeedbacks();
   const { triggerError } = useErrorHandler();
@@ -136,7 +135,6 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
     ]
   );
 
-  // returns
   const Header = useCallback(
     () => (
       <View>

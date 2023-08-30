@@ -35,7 +35,6 @@ export const LaunchingOrganizationSection: React.FC<{
     outputRange: [1, 0],
   });
 
-  // returns
   return (
     <View style={styles.container}>
       <BrandText style={fontSemibold28}>

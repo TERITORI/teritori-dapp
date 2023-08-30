@@ -39,7 +39,6 @@ export const StakeDetailModal: React.FC<StakeDetailModalProps> = ({
   onPressRedelegate,
 }) => {
   const imageURL = useKeybaseAvatarURL(data?.identity || "");
-  // returns
   const Header = useCallback(
     () => (
       <>

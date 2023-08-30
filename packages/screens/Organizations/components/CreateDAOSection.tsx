@@ -25,7 +25,6 @@ interface CreateDAOSectionProps {
 export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
   onSubmit,
 }) => {
-  // variables
   const {
     control,
     handleSubmit,
@@ -50,7 +49,6 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
       message: "This image is invalid",
     });
 
-  // returns
   return (
     <View style={styles.fill}>
       <ScrollView contentContainerStyle={styles.container}>

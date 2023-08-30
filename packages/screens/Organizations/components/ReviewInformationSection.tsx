@@ -36,7 +36,6 @@ export const ReviewInformationSection: React.FC<
   memberSettingData,
   onSubmit,
 }) => {
-  // returns
   const AddressBalanceValue = useCallback(
     ({ address, balance }: { address: string; balance: string }) => (
       <View style={styles.row}>

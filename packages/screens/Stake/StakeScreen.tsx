@@ -68,7 +68,6 @@ export const StakeScreen: React.FC = () => {
     setStakeDetailModalVisible(false);
   };
 
-  // returns
   return (
     <ScreenContainer forceNetworkKind={NetworkKind.Cosmos}>
       <View style={styles.rowHeader}>

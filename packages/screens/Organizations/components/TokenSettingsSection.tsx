@@ -28,7 +28,6 @@ interface TokenSettingsSectionProps {
 export const TokenSettingsSection: React.FC<TokenSettingsSectionProps> = ({
   onSubmit,
 }) => {
-  // variables
   const { handleSubmit, control } = useForm<TokenSettingFormType>();
   const [addressIndexes, setAddressIndexes] = useState<number[]>([0]);
 
@@ -44,7 +43,6 @@ export const TokenSettingsSection: React.FC<TokenSettingsSectionProps> = ({
     setAddressIndexes([...addressIndexes, Math.floor(Math.random() * 200000)]);
   };
 
-  // returns
   return (
     <View style={styles.fill}>
       <ScrollView contentContainerStyle={styles.container}>

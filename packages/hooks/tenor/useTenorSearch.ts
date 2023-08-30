@@ -43,6 +43,5 @@ export const useTenorSearch = ({
     }
   );
 
-  // returns
   return request;
 };

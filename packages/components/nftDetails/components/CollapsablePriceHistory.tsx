@@ -1,4 +1,3 @@
-// libraries
 import { useQuery } from "@tanstack/react-query";
 import { BigNumber, ethers } from "ethers";
 import moment from "moment";

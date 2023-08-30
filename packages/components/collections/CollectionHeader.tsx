@@ -44,7 +44,6 @@ export const CollectionHeader: React.FC<{
 }) => {
   const isMobile = useIsMobile();
   const wallet = useSelectedWallet();
-  // variables
   const stats = useCollectionStats(collectionId, wallet?.userId);
   const [network, collectionMintAddress] = parseCollectionId(collectionId);
   const { setToastSuccess } = useFeedbacks();
@@ -89,7 +88,6 @@ export const CollectionHeader: React.FC<{
     }
   };
 
-  // returns
   return (
     <View
       style={{
