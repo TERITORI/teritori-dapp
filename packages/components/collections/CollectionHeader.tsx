@@ -232,7 +232,7 @@ export const CollectionHeader: React.FC<{
               flexDirection: "row",
               flexWrap: "wrap",
               justifyContent: isMobile ? "center" : "flex-start",
-              marginTop: layout.padding_x2_5,
+              margin: layout.padding_x2_5,
               alignItems: "center",
               flex: 1,
             }}
