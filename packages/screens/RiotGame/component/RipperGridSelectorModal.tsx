@@ -217,6 +217,8 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   container: {
     flex: 1,

@@ -197,6 +197,8 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   selectedBorder: {
     height: 2,

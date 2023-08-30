@@ -122,6 +122,8 @@ export const FeedHeader: React.FC<FeedHeaderProps> = ({
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   header: {
     alignSelf: "center",

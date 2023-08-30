@@ -172,6 +172,8 @@ export const RiotGameHeader: React.FC<RiotGameHeaderProps> = ({
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   outerContainer: {
     height: headerHeight,

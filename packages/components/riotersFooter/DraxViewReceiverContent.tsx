@@ -133,6 +133,8 @@ const DraxViewReceiverContent: React.FC<{
 
 export default DraxViewReceiverContent;
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   oldNftPositions: {
     position: "absolute",

@@ -357,6 +357,8 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   contentContainer: {
     alignItems: "center",

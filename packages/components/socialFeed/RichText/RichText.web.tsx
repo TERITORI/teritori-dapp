@@ -497,6 +497,8 @@ export const RichText: React.FC<RichTextProps> = ({
 };
 
 /////////////// STYLES ////////////////
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   toolbarCustomButton: {
     margin: layout.padding_x0_5,

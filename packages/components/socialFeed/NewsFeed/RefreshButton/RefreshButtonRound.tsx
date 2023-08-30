@@ -66,6 +66,8 @@ export const RefreshButtonRound: React.FC<RefreshButtonProps> = ({
     };
   }, [rotateValue.value]);
 
+  // FIXME: remove StyleSheet.create
+  // eslint-disable-next-line no-restricted-syntax
   const styles = StyleSheet.create({
     selfCenter: {
       alignSelf: "center",

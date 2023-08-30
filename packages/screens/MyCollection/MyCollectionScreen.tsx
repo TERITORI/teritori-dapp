@@ -38,6 +38,8 @@ export const MyCollectionScreen: ScreenFC<"MyCollection"> = () => {
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   emptyContainer: {
     flex: 1,

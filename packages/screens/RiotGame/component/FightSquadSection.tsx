@@ -68,6 +68,8 @@ export const FightSquadSection: React.FC<FightSquadSectionProps> = ({
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   ripperInfo: {
     flexDirection: "column",

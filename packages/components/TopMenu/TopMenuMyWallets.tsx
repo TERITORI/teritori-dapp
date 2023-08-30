@@ -271,6 +271,8 @@ export const TopMenuMyWallets: React.FC = () => {
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   buttonsContainer: {
     marginVertical: layout.padding_x1_5,

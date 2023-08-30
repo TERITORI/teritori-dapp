@@ -107,6 +107,8 @@ export const AccountListDropdown: React.FC<AccountListDropdownProps> = ({
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   container: {
     position: "relative",

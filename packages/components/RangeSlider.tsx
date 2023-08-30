@@ -48,6 +48,8 @@ export const RangeSlider: React.FC<RangeSliderProps> = ({
   );
 };
 
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   row: { flexDirection: "row", alignItems: "center" },
   input: StyleSheet.flatten([
