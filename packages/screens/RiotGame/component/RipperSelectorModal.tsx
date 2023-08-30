@@ -2,17 +2,16 @@ import { useEffect, useState } from "react";
 import {
   Modal,
   ModalProps,
-  StyleSheet,
   View,
   ImageBackground,
   ScrollView,
   Pressable,
+  ViewStyle,
 } from "react-native";
 
 import { AvailableRippersGrid } from "./AvailableRippersGrid";
 import { RipperAvatar } from "./RipperAvatar";
 import { RipperStatsSection } from "./RipperStatsSection";
-import { SimpleButton } from "../../../components/buttons/SimpleButton";
 import controllerSVG from "../../../../assets/game/controller.svg";
 import dashedBorderPNG from "../../../../assets/game/dashed-border.png";
 import closeSVG from "../../../../assets/icons/close.svg";
@@ -20,6 +19,7 @@ import { NFT } from "../../../api/marketplace/v1/marketplace";
 import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
+import { SimpleButton } from "../../../components/buttons/SimpleButton";
 import { SpacerRow } from "../../../components/spacer";
 import { useBreeding } from "../../../hooks/riotGame/useBreeding";
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
@@ -94,8 +94,8 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
       visible={visible}
       {...props}
     >
-      <View style={styles.container}>
-        <Pressable style={styles.closeIcon} onPress={onClose}>
+      <View style={styleContainer}>
+        <Pressable style={styleCloseIcon} onPress={onClose}>
           <SVG width={40} height={40} source={closeSVG} />
         </Pressable>
 
@@ -120,7 +120,7 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
                 />
               </View>
 
-              <View style={styles.btnGroup}>
+              <View style={styleBtnGroup}>
                 <SVG color={yellowDefault} source={controllerSVG} />
                 <SpacerRow size={2} />
                 <SimpleButton
@@ -134,14 +134,14 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
 
             <View>
               <ImageBackground
-                style={styles.dashedBorder}
+                style={styleDashedBorder}
                 source={dashedBorderPNG}
               >
                 <RipperAvatar
                   source={selectedRipper?.imageUri || ""}
                   size={RIPPER_IMAGE_SIZE}
                   rounded
-                  containerStyle={styles.roundedContainer}
+                  containerStyle={styleRoundedContainer}
                   isStaked={isNFTStaked(selectedRipper)}
                 />
               </ImageBackground>
@@ -172,38 +172,38 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
   );
 };
 
-// FIXME: remove StyleSheet.create
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: withAlpha(neutral00, 0.95),
-    paddingTop: headerHeight,
-    borderWidth: 1,
-  },
-  dashedBorder: {
-    width: RIPPER_IMAGE_SIZE,
-    height: RIPPER_IMAGE_SIZE,
-    marginTop: layout.padding_x2_5,
-  },
-  roundedContainer: {
-    width: RIPPER_IMAGE_SIZE - 4,
-    height: RIPPER_IMAGE_SIZE - 4,
-    position: "absolute",
-    left: 2,
-    top: 2,
-    borderRadius: 999,
-    overflow: "hidden",
-  },
-  btnGroup: {
-    marginTop: layout.padding_x2_5,
-    flexDirection: "row",
-    alignSelf: "center",
-  },
-  closeIcon: {
-    position: "absolute",
-    right: 10,
-    top: 10,
-    zIndex: 1,
-  },
-});
+const styleContainer: ViewStyle = {
+  flex: 1,
+  backgroundColor: withAlpha(neutral00, 0.95),
+  paddingTop: headerHeight,
+  borderWidth: 1,
+};
+
+const styleDashedBorder: ViewStyle = {
+  width: RIPPER_IMAGE_SIZE,
+  height: RIPPER_IMAGE_SIZE,
+  marginTop: layout.padding_x2_5,
+};
+
+const styleRoundedContainer: ViewStyle = {
+  width: RIPPER_IMAGE_SIZE - 4,
+  height: RIPPER_IMAGE_SIZE - 4,
+  position: "absolute",
+  left: 2,
+  top: 2,
+  borderRadius: 999,
+  overflow: "hidden",
+};
+
+const styleBtnGroup: ViewStyle = {
+  marginTop: layout.padding_x2_5,
+  flexDirection: "row",
+  alignSelf: "center",
+};
+
+const styleCloseIcon: ViewStyle = {
+  position: "absolute",
+  right: 10,
+  top: 10,
+  zIndex: 1,
+};
