@@ -1,7 +1,7 @@
 import { Target } from "@nandorojo/anchor";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import React, { Suspense, useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { View, ViewStyle } from "react-native";
 
 import { NFTAttributes } from "./NFTAttributes";
 import starSVG from "../../../assets/icons/star.svg";
@@ -105,7 +105,7 @@ export const NFTMainInfo: React.FC<{
     switch (selectedTab) {
       case "about":
         return (
-          <View style={styles.sectionContainer}>
+          <View style={sectionContainerStyles}>
             <BrandText
               style={[fontSemibold14, { marginBottom: 24, width: "100%" }]}
             >
@@ -115,7 +115,7 @@ export const NFTMainInfo: React.FC<{
         );
       case "attributes":
         return (
-          <View style={styles.sectionContainer}>
+          <View style={sectionContainerStyles}>
             {nftInfo && (
               <NFTAttributes nftAttributes={attributes} nftInfo={nftInfo} />
             )}
@@ -123,7 +123,7 @@ export const NFTMainInfo: React.FC<{
         );
       case "details":
         return (
-          <View style={styles.sectionContainer}>
+          <View style={sectionContainerStyles}>
             <View
               style={{
                 flexDirection: "row",
@@ -284,13 +284,13 @@ export const NFTMainInfo: React.FC<{
       </View>
 
       {showMarketplace && (
-        <Target style={styles.collapsableContainer} name="price-history">
+        <Target style={collapsableContainerStyles} name="price-history">
           <Suspense fallback={<></>}>
             <CollapsablePriceHistory nftId={nftId} />
           </Suspense>
         </Target>
       )}
-      <Target name="activity" style={styles.collapsableContainer}>
+      <Target name="activity" style={collapsableContainerStyles}>
         <CollapsableSection icon={starSVG} title="Activity" isExpandedByDefault>
           <ActivityTable nftId={nftId} />
         </CollapsableSection>
@@ -331,16 +331,12 @@ export const NFTMainInfo: React.FC<{
   );
 };
 
-// FIXME: remove StyleSheet.create
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  sectionContainer: {
-    width: 600,
-    paddingVertical: layout.padding_x3,
-  },
-  collapsableContainer: {
-    width: "100%",
-    maxWidth: screenContentMaxWidth,
-    marginBottom: layout.padding_x2,
-  },
-});
+const sectionContainerStyles: ViewStyle = {
+  width: 600,
+  paddingVertical: layout.padding_x3,
+};
+const collapsableContainerStyles: ViewStyle = {
+  width: "100%",
+  maxWidth: screenContentMaxWidth,
+  marginBottom: layout.padding_x2,
+};
