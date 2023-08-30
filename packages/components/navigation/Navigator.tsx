@@ -9,6 +9,7 @@ import { FeedScreen } from "../../screens/Feed/FeedScreen";
 import { FeedNewArticleScreen } from "../../screens/FeedNewArticle/FeedNewArticleScreen";
 import { FeedPostViewScreen } from "../../screens/FeedPostView/FeedPostViewScreen";
 import { GovernanceScreen } from "../../screens/Governance/GovernanceScreen";
+import { GrantsProgramDetailScreen } from "../../screens/GrantsProgram/GrantsProgramDetailScreen";
 import { GrantsProgramScreen } from "../../screens/GrantsProgram/GrantsProgramScreen";
 import { HashtagFeedScreen } from "../../screens/HashtagFeed/HashtagFeedScreen";
 import { HomeScreen } from "../../screens/Home/HomeScreen";
@@ -208,6 +209,15 @@ export const Navigator: React.FC = () => {
         name="GrantsProgram"
         component={GrantsProgramScreen}
         options={{ header: () => null, title: screenTitle("Grants Program") }}
+      />
+
+      <Stack.Screen
+        name="GrantsProgramDetail"
+        component={GrantsProgramDetailScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Grants Program Detail"),
+        }}
       />
 
       {/* ==== Teritori Name Service*/}

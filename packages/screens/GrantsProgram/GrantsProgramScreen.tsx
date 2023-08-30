@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { View } from "react-native";
 
 import { GrantBox } from "./components/GrantBox";
 import filterSVG from "../../../assets/icons/filter.svg";
@@ -10,8 +9,8 @@ import { SearchBarInput } from "../../components/Search/SearchBarInput";
 import { Separator } from "../../components/Separator";
 import { IconButton } from "../../components/buttons/IconButton";
 import { SimpleButton } from "../../components/buttons/SimpleButton";
-import { SpacerColumn, SpacerRow } from "../../components/spacer";
-import { ScreenFC } from "../../utils/navigation";
+import { SpacerRow } from "../../components/spacer";
+import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import {
   neutral00,
   neutral33,
@@ -23,6 +22,12 @@ import { layout } from "../../utils/style/layout";
 
 export const GrantsProgramScreen: ScreenFC<"GrantsProgram"> = () => {
   const [searchText, setSearchText] = useState("");
+
+  const navigation = useAppNavigation();
+
+  const gotoGrantsProgramDetail = (id: string) => {
+    navigation.navigate("GrantsProgramDetail", { id });
+  };
 
   return (
     <ScreenContainer
@@ -108,9 +113,10 @@ export const GrantsProgramScreen: ScreenFC<"GrantsProgram"> = () => {
           justifyContent: "center",
         }}
       >
-        {[1, 2, 3, 4, 5, 6, 7].map(() => {
+        {[1, 2, 3, 4, 5, 6, 7].map((id) => {
           return (
             <GrantBox
+              onPress={() => gotoGrantsProgramDetail(String(id))}
               containerStyle={{
                 marginTop: layout.padding_x2,
                 marginRight: layout.padding_x2,

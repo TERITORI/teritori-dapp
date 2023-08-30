@@ -1,5 +1,5 @@
 import React from "react";
-import { View, ViewStyle } from "react-native";
+import { TouchableOpacity, View, ViewStyle } from "react-native";
 
 import { GrantTag } from "./GrantTag";
 import discordSVG from "../../../../assets/icons/discord.svg";
@@ -26,30 +26,38 @@ import { fontSemibold13, fontSemibold20 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 
 export const GrantBox: React.FC<{
+  onPress?: () => void;
   containerStyle?: ViewStyle;
-}> = ({ containerStyle }) => {
+}> = ({ containerStyle, onPress }) => {
   return (
     <TertiaryBox width={400} noBrokenCorners style={containerStyle}>
       {/* Body ============================================================== */}
       <View style={{ margin: layout.padding_x2 }}>
         <FlexRow>
-          <RoundedGradientImage size="S" square sourceURI="" />
+          <TouchableOpacity onPress={onPress}>
+            <RoundedGradientImage size="S" square sourceURI="" />
+          </TouchableOpacity>
 
           <View style={{ marginLeft: layout.padding_x2 }}>
-            <BrandText style={fontSemibold20}>
-              Create a web Game using Gnolang
-            </BrandText>
+            <TouchableOpacity onPress={onPress}>
+              <BrandText style={fontSemibold20}>
+                Create a web Game using Gnolang
+              </BrandText>
+            </TouchableOpacity>
             <FlexRow style={{ marginTop: layout.padding_x0_75 }}>
               <GrantTag
                 text="2005.12.4"
+                size="SM"
                 containerStyle={{ marginRight: layout.padding_x1 }}
               />
               <GrantTag
                 text="dapp"
+                size="SM"
                 containerStyle={{ marginRight: layout.padding_x1 }}
               />
               <GrantTag
                 text="Structure"
+                size="SM"
                 containerStyle={{ marginRight: layout.padding_x1 }}
               />
             </FlexRow>

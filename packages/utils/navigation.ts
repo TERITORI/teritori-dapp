@@ -54,6 +54,7 @@ export type RootStackParamList = {
   Settings: undefined;
 
   GrantsProgram: undefined;
+  GrantsProgramDetail: { id: string };
 
   OrganizationDeployer: undefined;
   Organizations?: { network?: string };
@@ -122,7 +123,9 @@ const navConfig: {
     Organizations: "orgs",
     CoreDAO: "core-dao",
 
+    // === Grants Program
     GrantsProgram: "grants-program",
+    GrantsProgramDetail: "grants-program/:id",
 
     // ==== Swap
     Swap: "swap",
