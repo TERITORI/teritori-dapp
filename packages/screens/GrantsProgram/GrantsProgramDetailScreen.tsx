@@ -134,7 +134,7 @@ export const GrantsProgramDetailScreen: ScreenFC<
       isLarge
       responsive
       headerChildren={
-        <BrandText style={fontSemibold20}>Grants Program Detail</BrandText>
+        <BrandText style={fontSemibold20}>Grants Program</BrandText>
       }
     >
       <FlexRow>

@@ -29,6 +29,10 @@ export const GrantsProgramScreen: ScreenFC<"GrantsProgram"> = () => {
     navigation.navigate("GrantsProgramDetail", { id });
   };
 
+  const gotoGrantsProgramManager = () => {
+    navigation.navigate("GrantsProgramManager");
+  };
+
   return (
     <ScreenContainer
       isLarge
@@ -37,14 +41,19 @@ export const GrantsProgramScreen: ScreenFC<"GrantsProgram"> = () => {
         <BrandText style={fontSemibold20}>Grants Program</BrandText>
       }
     >
-      <FlexRow
-        style={{
-          marginTop: layout.padding_x4,
-          justifyContent: "space-between",
-        }}
-      >
-        <BrandText style={fontSemibold28}>Grants Program</BrandText>
+      <FlexRow style={{ marginTop: layout.padding_x4 }}>
+        <BrandText style={[fontSemibold28, { flexGrow: 1 }]}>
+          Grants Program
+        </BrandText>
 
+        <SimpleButton
+          outline
+          text="Grant Manager"
+          color={secondaryColor}
+          size="SM"
+          onPress={gotoGrantsProgramManager}
+        />
+        <SpacerRow size={2} />
         <SimpleButton
           outline
           text="Create a Grant"
