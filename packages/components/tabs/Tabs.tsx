@@ -45,7 +45,6 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
   style,
   selected,
   hideSelector,
-  tabStyle,
   gradientText,
   tabTextStyle,
   tabContainerStyle,
@@ -57,7 +56,6 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
   borderColorTabSelected?: string;
   style?: StyleProp<ViewStyle>;
   hideSelector?: boolean;
-  tabStyle?: ViewStyle;
   gradientText?: boolean;
   tabTextStyle?: StyleProp<TextStyle>;
   tabContainerStyle?: StyleProp<ViewStyle>;
