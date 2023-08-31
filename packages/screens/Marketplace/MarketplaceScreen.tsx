@@ -253,6 +253,8 @@ const PrettyPriceWithCurrency: React.FC<{
   data: PrettyPrint;
   style?: StyleProp<ViewStyle>;
 }> = ({ data, style }) => {
+  const isMobile = useIsMobile();
+
   return (
     <View
       style={[
@@ -266,7 +268,7 @@ const PrettyPriceWithCurrency: React.FC<{
     >
       <BrandText
         style={[
-          fontSemibold13,
+          isMobile ? fontSemibold11 : fontSemibold13,
           {
             marginRight: layout.padding_x0_5,
           },
@@ -370,6 +372,7 @@ const InnerCell: React.FC<{
   style?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
 }> = ({ children, style, textStyle }) => {
+  const isMobile = useIsMobile();
   return (
     <View
       style={[
@@ -379,7 +382,10 @@ const InnerCell: React.FC<{
         style,
       ]}
     >
-      <BrandText style={[fontSemibold13, textStyle]} numberOfLines={1}>
+      <BrandText
+        style={[isMobile ? fontSemibold11 : fontSemibold13, , textStyle]}
+        numberOfLines={1}
+      >
         {children}
       </BrandText>
     </View>
