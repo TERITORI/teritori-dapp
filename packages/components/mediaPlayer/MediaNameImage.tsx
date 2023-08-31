@@ -56,16 +56,9 @@ export const MediaNameImage: FC = () => {
         >
           <BrandText style={fontSemibold12}>{media.name}</BrandText>
           {media?.createdBy && (
-            // <OmniLink
-            //   to={{
-            //     screen: "UserPublicProfile",
-            //     params: { id: media?.createdBy || "" },
-            //   }}
-            // >
             <BrandText style={[fontSemibold12, { color: neutral77 }]}>
               {"@" + username}
             </BrandText>
-            // </OmniLink>
           )}
         </View>
       </View>

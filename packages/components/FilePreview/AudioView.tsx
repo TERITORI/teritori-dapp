@@ -32,9 +32,8 @@ export const AudioView: React.FC<{
   const {
     media,
     isPlaying,
-    didJustFinish,
     handlePlayPause,
-    loadAndPlayQueue,
+    loadAndPlaySound,
     lastTimePosition,
   } = useMediaPlayer();
   const isInMediaPlayer = useMemo(
@@ -59,7 +58,7 @@ export const AudioView: React.FC<{
         // postId is used to difference audios from Social Feed (News feed  or Article consultation)
         postId: postId || Math.floor(Math.random() * 200000).toString(),
       };
-      await loadAndPlayQueue([songToPlay]);
+      await loadAndPlaySound(songToPlay);
     }
   };
 
@@ -102,9 +101,7 @@ export const AudioView: React.FC<{
         activeOpacity={0.9}
         style={{
           backgroundColor:
-            isInMediaPlayer && isPlaying && !didJustFinish
-              ? secondaryColor
-              : neutral00,
+            isInMediaPlayer && isPlaying ? secondaryColor : neutral00,
           height: 40,
           width: 40,
           borderRadius: 30,
@@ -113,16 +110,10 @@ export const AudioView: React.FC<{
         }}
       >
         <SVG
-          source={
-            isInMediaPlayer && isPlaying && !didJustFinish ? pauseSVG : playSVG
-          }
+          source={isInMediaPlayer && isPlaying ? pauseSVG : playSVG}
           width={24}
           height={24}
-          color={
-            isInMediaPlayer && isPlaying && !didJustFinish
-              ? neutral00
-              : secondaryColor
-          }
+          color={isInMediaPlayer && isPlaying ? neutral00 : secondaryColor}
         />
       </TouchableOpacity>
 

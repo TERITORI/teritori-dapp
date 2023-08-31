@@ -2,18 +2,22 @@ import React from "react";
 import { View, StyleSheet } from "react-native";
 
 import { HoverView } from "./HoverView";
-import Delete from "../../../assets/music-player/delete.svg";
-import Link from "../../../assets/music-player/link.svg";
-import { signingMusicPlayerClient } from "../../client-creators/musicplayerClient";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { neutralA3, neutral33, secondaryColor } from "../../utils/style/colors";
-import { fontSemibold13 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
-import { AlbumInfo } from "../../utils/types/mediaPlayer";
-import { BrandText } from "../BrandText";
-import { SVG } from "../SVG";
+import Delete from "../../../../assets/music-player/delete.svg";
+import Link from "../../../../assets/music-player/link.svg";
+import { signingMusicPlayerClient } from "../../../client-creators/musicplayerClient";
+import { BrandText } from "../../../components/BrandText";
+import { SVG } from "../../../components/SVG";
+import { useFeedbacks } from "../../../context/FeedbacksProvider";
+import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
+import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import {
+  neutralA3,
+  neutral33,
+  secondaryColor,
+} from "../../../utils/style/colors";
+import { fontSemibold13 } from "../../../utils/style/fonts";
+import { layout } from "../../../utils/style/layout";
+import { AlbumInfo } from "../../../utils/types/mediaPlayer";
 
 interface MyAlbumMenuProps {
   album: AlbumInfo;

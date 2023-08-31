@@ -10,7 +10,7 @@ import { BrandText } from "../BrandText";
 import { SpacerRow } from "../spacer";
 
 export const TimerSlider: FC = () => {
-  const { media, setTimePosition, lastTimePosition } = useMediaPlayer();
+  const { media, lastTimePosition, onChangeTimerPosition } = useMediaPlayer();
 
   return (
     <View style={styles.container}>
@@ -24,7 +24,7 @@ export const TimerSlider: FC = () => {
       <SpacerRow size={1} />
       <Slider
         value={lastTimePosition}
-        onValueChange={(value: number) => setTimePosition(value)}
+        onValueChange={onChangeTimerPosition}
         useNativeDriver
         thumbStyle={{ width: 0, height: 0 }}
         thumbTouchSize={{ width: 24, height: 24 }}

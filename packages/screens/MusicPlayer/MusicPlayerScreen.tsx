@@ -3,10 +3,10 @@ import { View, StyleSheet } from "react-native";
 
 import { MusicPlayerHomeContent } from "./MusicPlayerHomeContent";
 import { MusicPlayerMyLibraryContent } from "./MusicPlayerMyLibraryContent";
+import { MusicPlayerTab } from "./components/MusicPlayerTab";
 import { GetAllAlbumListRequest } from "../../api/musicplayer/v1/musicplayer";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
-import { MusicPlayerTab } from "../../components/mediaPlayer/MusicPlayerTab";
 import { useFetchLibraryIds } from "../../hooks/musicplayer/useFetchLibraryIds";
 import { ScreenFC } from "../../utils/navigation";
 import { neutralA3, secondaryColor } from "../../utils/style/colors";

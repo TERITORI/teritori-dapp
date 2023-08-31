@@ -2,13 +2,20 @@ import React from "react";
 import { View, StyleSheet } from "react-native";
 
 import { HoverView } from "./HoverView";
-import Link from "../../../assets/music-player/link.svg";
-import { neutralA3, neutral33, secondaryColor } from "../../utils/style/colors";
-import { fontSemibold13 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
-import { BrandText } from "../BrandText";
-import { CopyToClipboard, useCopyToClipboard } from "../CopyToClipboard";
-import { SVG } from "../SVG";
+import Link from "../../../../assets/music-player/link.svg";
+import { BrandText } from "../../../components/BrandText";
+import {
+  CopyToClipboard,
+  useCopyToClipboard,
+} from "../../../components/CopyToClipboard";
+import { SVG } from "../../../components/SVG";
+import {
+  neutralA3,
+  neutral33,
+  secondaryColor,
+} from "../../../utils/style/colors";
+import { fontSemibold13 } from "../../../utils/style/fonts";
+import { layout } from "../../../utils/style/layout";
 
 interface DetailAlbumMenuProps {
   id: string;

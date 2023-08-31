@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import { View } from "react-native";
 
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import { AlbumCard } from "../../screens/MusicPlayer/components/AlbumCard";
 import { mustGetMusicplayerClient } from "../../utils/backend";
 import { AlbumInfo, AlbumMetadataInfo } from "../../utils/types/mediaPlayer";
-import { AlbumCard } from "../mediaPlayer/AlbumCard";
 
 export const UPPAlbums: React.FC<{ userId: string }> = ({ userId }) => {
   const selectedNetworkId = useSelectedNetworkId();

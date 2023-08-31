@@ -15,13 +15,17 @@ import { CustomPressable } from "../buttons/CustomPressable";
 import { SpacerRow } from "../spacer";
 
 export const VolumeSlider: FC = () => {
-  const { volume, setVolume } = useMediaPlayer();
-  const [lastVolume, setLastVolume] = useState(volume);
-  // We store a lastVolume to handle mute/unmute by clicking on the volume icon
+  const { onChangeVolume } = useMediaPlayer();
+  const [volume, setVolume] = useState(0.5);
+  const [lastVolume, setLastVolume] = useState(0.5);
+
+  // We store a lastVolume to handle mute/unmute by clicking on the volume icon, with retrieving the precedent volume
   const onPressVolumeIcon = () => {
     if (volume) {
+      onChangeVolume(0);
       setVolume(0);
     } else {
+      onChangeVolume(lastVolume);
       setVolume(lastVolume);
     }
   };
@@ -40,6 +44,7 @@ export const VolumeSlider: FC = () => {
       <Slider
         value={lastVolume}
         onValueChange={(value: number) => {
+          onChangeVolume(value);
           setVolume(value);
           setLastVolume(value);
         }}

@@ -40,9 +40,8 @@ export const EditableAudioPreview: React.FC<AudioPreviewProps> = ({
   const {
     media,
     isPlaying,
-    didJustFinish,
     handlePlayPause,
-    loadAndPlayQueue,
+    loadAndPlaySound,
     lastTimePosition,
     removeSound,
   } = useMediaPlayer();
@@ -66,7 +65,7 @@ export const EditableAudioPreview: React.FC<AudioPreviewProps> = ({
         fileUrl: file.url,
         duration: file.audioMetadata?.duration,
       };
-      await loadAndPlayQueue([songToAdd]);
+      await loadAndPlaySound(songToAdd);
     }
   };
   useEffect(() => {
@@ -115,9 +114,7 @@ export const EditableAudioPreview: React.FC<AudioPreviewProps> = ({
           activeOpacity={0.9}
           style={{
             backgroundColor:
-              isInMediaPlayer && isPlaying && !didJustFinish
-                ? secondaryColor
-                : neutral00,
+              isInMediaPlayer && isPlaying ? secondaryColor : neutral00,
             height: 48,
             width: 48,
             borderRadius: 30,
@@ -128,18 +125,10 @@ export const EditableAudioPreview: React.FC<AudioPreviewProps> = ({
           }}
         >
           <SVG
-            source={
-              isInMediaPlayer && isPlaying && !didJustFinish
-                ? pauseSVG
-                : playSVG
-            }
+            source={isInMediaPlayer && isPlaying ? pauseSVG : playSVG}
             width={24}
             height={24}
-            color={
-              isInMediaPlayer && isPlaying && !didJustFinish
-                ? neutral00
-                : secondaryColor
-            }
+            color={isInMediaPlayer && isPlaying ? neutral00 : secondaryColor}
           />
         </TouchableOpacity>
         {!!file.audioMetadata && (

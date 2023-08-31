@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { ViewStyle } from "react-native";
 
-import { CustomPressable } from "../buttons/CustomPressable";
+import { CustomPressable } from "../../../components/buttons/CustomPressable";
 
 interface HoverViewProps {
   normalStyle: ViewStyle;

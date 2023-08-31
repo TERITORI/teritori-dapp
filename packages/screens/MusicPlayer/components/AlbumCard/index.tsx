@@ -2,29 +2,29 @@ import React, { useState } from "react";
 import { View, StyleSheet, Image, TouchableOpacity } from "react-native";
 
 import { TrackHoverMenu } from "./TrackHoverMenu";
-import HoveredMenu from "../../../../assets/music-player/hovered-menu.svg";
-import NormalPlay from "../../../../assets/music-player/normal-play.svg";
-import { useMediaPlayer } from "../../../context/MediaPlayerProvider";
-import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
-import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
-import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { getUserId, parseUserId } from "../../../networks";
-import { ipfsURLToHTTPURL } from "../../../utils/ipfs";
-import { useAppNavigation } from "../../../utils/navigation";
+import HoveredMenu from "../../../../../assets/music-player/hovered-menu.svg";
+import NormalPlay from "../../../../../assets/music-player/normal-play.svg";
+import { BrandText } from "../../../../components/BrandText";
+import { OmniLink } from "../../../../components/OmniLink";
+import { SVG } from "../../../../components/SVG";
+import { CustomPressable } from "../../../../components/buttons/CustomPressable";
+import { SpacerColumn } from "../../../../components/spacer";
+import { useMediaPlayer } from "../../../../context/MediaPlayerProvider";
+import { useNSUserInfo } from "../../../../hooks/useNSUserInfo";
+import { useSelectedNetworkId } from "../../../../hooks/useSelectedNetwork";
+import useSelectedWallet from "../../../../hooks/useSelectedWallet";
+import { getUserId, parseUserId } from "../../../../networks";
+import { ipfsURLToHTTPURL } from "../../../../utils/ipfs";
+import { useAppNavigation } from "../../../../utils/navigation";
 import {
   neutral17,
   neutral77,
   primaryColor,
-} from "../../../utils/style/colors";
-import { fontSemibold14, fontMedium13 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { tinyAddress } from "../../../utils/text";
-import { AlbumInfo } from "../../../utils/types/mediaPlayer";
-import { BrandText } from "../../BrandText";
-import { OmniLink } from "../../OmniLink";
-import { SVG } from "../../SVG";
-import { CustomPressable } from "../../buttons/CustomPressable";
-import { SpacerColumn } from "../../spacer";
+} from "../../../../utils/style/colors";
+import { fontSemibold14, fontMedium13 } from "../../../../utils/style/fonts";
+import { layout } from "../../../../utils/style/layout";
+import { tinyAddress } from "../../../../utils/text";
+import { AlbumInfo } from "../../../../utils/types/mediaPlayer";
 import { MyAlbumMenu } from "../MyAlbumMenu";
 
 const imageHeight = 218;

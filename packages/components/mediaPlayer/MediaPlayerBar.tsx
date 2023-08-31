@@ -32,16 +32,15 @@ export const MediaPlayerBar: FC<{
     isPlaying,
     handlePlayPause,
     media,
-    isLoop,
     isRandom,
-    setIsLoop,
     setIsRandom,
-    didJustFinish,
     isMediaPlayerOpen,
     canPrev,
     canNext,
     nextMedia,
     prevMedia,
+    onToggleLoop,
+    playbackStatus,
   } = useMediaPlayer();
 
   if (!isMediaPlayerOpen) return null;
@@ -70,7 +69,9 @@ export const MediaPlayerBar: FC<{
 
         <CustomPressable onPress={handlePlayPause} disabled={!media}>
           <SVG
-            source={isPlaying && !didJustFinish ? PauseIcon : PlayIcon}
+            source={
+              isPlaying && !playbackStatus?.didJustFinish ? PauseIcon : PlayIcon
+            }
             height={28}
             width={28}
             color={media ? secondaryColor : neutralA3}
@@ -88,12 +89,12 @@ export const MediaPlayerBar: FC<{
         </CustomPressable>
         <SpacerRow size={2.5} />
 
-        <CustomPressable onPress={() => setIsLoop((isLoop) => !isLoop)}>
+        <CustomPressable onPress={onToggleLoop}>
           <SVG
             source={LoopIcon}
             height={20}
             width={20}
-            color={isLoop ? secondaryColor : neutralA3}
+            color={playbackStatus?.isLooping ? secondaryColor : neutralA3}
           />
         </CustomPressable>
         <SpacerRow size={4} />

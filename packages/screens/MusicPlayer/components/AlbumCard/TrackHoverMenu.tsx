@@ -1,24 +1,24 @@
 import React, { useState } from "react";
 import { View, StyleSheet } from "react-native";
 
-import AddLibrary from "../../../../assets/music-player/add-library.svg";
-import Tip from "../../../../assets/music-player/tip-other.svg";
-import { signingMusicPlayerClient } from "../../../client-creators/musicplayerClient";
-import { useFeedbacks } from "../../../context/FeedbacksProvider";
-import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
-import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import AddLibrary from "../../../../../assets/music-player/add-library.svg";
+import Tip from "../../../../../assets/music-player/tip-other.svg";
+import { signingMusicPlayerClient } from "../../../../client-creators/musicplayerClient";
+import { BrandText } from "../../../../components/BrandText";
+import { useCopyToClipboard } from "../../../../components/CopyToClipboard";
+import { SVG } from "../../../../components/SVG";
+import { TipModal } from "../../../../components/socialFeed/SocialActions/TipModal";
+import { useFeedbacks } from "../../../../context/FeedbacksProvider";
+import { useSelectedNetworkId } from "../../../../hooks/useSelectedNetwork";
+import useSelectedWallet from "../../../../hooks/useSelectedWallet";
 import {
   neutralA3,
   neutral33,
   secondaryColor,
-} from "../../../utils/style/colors";
-import { fontSemibold13 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { AlbumInfo } from "../../../utils/types/mediaPlayer";
-import { BrandText } from "../../BrandText";
-import { useCopyToClipboard } from "../../CopyToClipboard";
-import { SVG } from "../../SVG";
-import { TipModal } from "../../socialFeed/SocialActions/TipModal";
+} from "../../../../utils/style/colors";
+import { fontSemibold13 } from "../../../../utils/style/fonts";
+import { layout } from "../../../../utils/style/layout";
+import { AlbumInfo } from "../../../../utils/types/mediaPlayer";
 import { HoverView } from "../HoverView";
 
 interface TrackHoverMenuProps {

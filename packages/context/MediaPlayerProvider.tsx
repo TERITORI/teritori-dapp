@@ -1,9 +1,8 @@
-import { Audio, AVPlaybackStatusSuccess } from "expo-av";
+import { Audio, AVPlaybackStatus, AVPlaybackStatusSuccess } from "expo-av";
 import React, {
   createContext,
   useContext,
   useState,
-  useEffect,
   Dispatch,
   SetStateAction,
   useMemo,
@@ -18,78 +17,128 @@ interface DefaultValue {
   handlePlayPause: () => Promise<void>;
   isPlaying: boolean;
   media?: Media;
-  isLoop: boolean;
   isRandom: boolean;
-  setIsLoop: Dispatch<SetStateAction<boolean>>;
   setIsRandom: Dispatch<SetStateAction<boolean>>;
-  volume: number;
-  setVolume: Dispatch<SetStateAction<number>>;
   lastTimePosition: number; // ms
-  setTimePosition: Dispatch<SetStateAction<number>>;
-  didJustFinish: boolean;
   isMediaPlayerOpen: boolean;
   setIsMediaPlayerOpen: Dispatch<SetStateAction<boolean>>;
   loadAndPlayQueue: (queue: Media[], mediaToStart?: Media) => Promise<void>;
+  loadAndPlaySound: (media: Media, queue?: Media[]) => Promise<void>;
   removeSound: () => Promise<void>;
   canNext: boolean;
   canPrev: boolean;
   nextMedia: () => Promise<void>;
   prevMedia: () => Promise<void>;
+  onChangeTimerPosition: (value: number) => void;
+  onChangeVolume: (value: number) => void;
+  onToggleLoop: () => void;
+  playbackStatus?: AVPlaybackStatusSuccess;
 }
 
 const defaultValue: DefaultValue = {
   handlePlayPause: async () => {},
   isPlaying: false,
   media: undefined,
-  isLoop: false,
   isRandom: false,
-  setIsLoop: () => {},
   setIsRandom: () => {},
-  volume: 0.5,
-  setVolume: () => {},
   lastTimePosition: 0,
-  setTimePosition: () => {},
-  didJustFinish: false,
   isMediaPlayerOpen: false,
   setIsMediaPlayerOpen: () => {},
   loadAndPlayQueue: async () => {},
+  loadAndPlaySound: async () => {},
   removeSound: async () => {},
   canNext: false,
   canPrev: false,
   nextMedia: async () => {},
   prevMedia: async () => {},
+  onChangeTimerPosition: () => {},
+  onChangeVolume: () => {},
+  onToggleLoop: () => {},
+  playbackStatus: undefined,
 };
 
 const MediaPlayerContext = createContext(defaultValue);
 
 export const MediaPlayerContextProvider: React.FC = ({ children }) => {
-  const { setToastError } = useFeedbacks();
+  // ------- Only used in UI
   const [isMediaPlayerOpen, setIsMediaPlayerOpen] = useState(
     defaultValue.isMediaPlayerOpen
   );
-  // Queue
   const [queue, setQueue] = useState<Media[]>([]);
   const [isPlaying, setIsPlaying] = useState(defaultValue.isPlaying);
-  // Current media in MediaPlayerBar (Used to store UI data)
   const [media, setMedia] = useState(defaultValue.media);
-  const [isLoop, setIsLoop] = useState(defaultValue.isLoop);
-  //TODO: Handle random
-  const [isRandom, setIsRandom] = useState(defaultValue.isRandom);
-  const [volume, setVolume] = useState(defaultValue.volume);
-  const [timePosition, setTimePosition] = useState<number>(0);
-  // Prevents useEffect infinite loop, used in TimerSlider
   const [lastTimePosition, setLastTimePosition] = useState(
     defaultValue.lastTimePosition
   );
-  // Current sound
+  // ------
+  const { setToastError } = useFeedbacks();
+  const [isRandom, setIsRandom] = useState(defaultValue.isRandom);
   const [sound, setSound] = useState<Audio.Sound>();
-  const [didJustFinish, setDidJustFinish] = useState(
-    defaultValue.didJustFinish
-  );
   const [playbackStatus, setPlaybackStatus] =
     useState<AVPlaybackStatusSuccess>();
 
-  // Only used in UI imo
+  const loadAndPlaySound = useCallback(
+    async (media: Media, queue?: Media[]) => {
+      setMedia(media);
+      try {
+        const { sound: createdSound } = await Audio.Sound.createAsync(
+          { uri: ipfsURLToHTTPURL(media.fileUrl) },
+          undefined,
+          async (status: AVPlaybackStatus) => {
+            if ("uri" in status && status.isLoaded) {
+              setPlaybackStatus(status);
+              setLastTimePosition(status.positionMillis);
+
+              if (status.didJustFinish && !status?.isLooping) {
+                setIsPlaying(false);
+                // ------- Autoplay queue
+                if (!queue) return;
+                const queueCurrentIndex = media ? queue.indexOf(media) : -1;
+                if (
+                  queueCurrentIndex === -1 ||
+                  queue.length < 2 ||
+                  queueCurrentIndex === queue.length - 1
+                )
+                  return;
+                let nextIndex = queueCurrentIndex + 1;
+                if (isRandom) {
+                  nextIndex = Math.floor(Math.random() * queue.length);
+                }
+                await loadAndPlaySound(queue[nextIndex], queue);
+                // -------
+              }
+            }
+            if ("error" in status) {
+              console.error(
+                "Error while playbackStatus update: ",
+                status.error
+              );
+              setToastError({
+                title: "Error while playbackStatus update",
+                message: status.error || "",
+              });
+            }
+          }
+        );
+        setSound(createdSound);
+
+        // ------- Autoplay createdSound
+        await sound?.unloadAsync();
+        await createdSound?.playAsync();
+        setIsPlaying(true);
+        setIsMediaPlayerOpen(true);
+        // -------
+      } catch (e) {
+        setToastError({
+          title: "Error loading sound",
+          message: e.message,
+        });
+      }
+    },
+    [setToastError, isRandom, sound]
+  );
+
+  // ------- Only used in UI
   const handlePlayPause = async () => {
     if (!sound || !playbackStatus?.isLoaded) {
       return;
@@ -103,95 +152,37 @@ export const MediaPlayerContextProvider: React.FC = ({ children }) => {
     }
   };
 
-  const loadSound = useCallback(
-    async (media: Media) => {
-      setTimePosition(0);
-      setLastTimePosition(defaultValue.lastTimePosition);
-      setMedia(media);
-      setIsPlaying(false);
-
-      try {
-        // Force unload existing sound (No need if didJustFinish, because the sound is unloaded when playback is done)
-        if (playbackStatus?.isLoaded && sound && !didJustFinish) {
-          await sound?.unloadAsync();
-        }
-
-        const { sound: createdSound, status: createdStatus } =
-          await Audio.Sound.createAsync(
-            { uri: ipfsURLToHTTPURL(media.fileUrl) },
-            undefined,
-            (status) => {
-              if ("uri" in status && status.isLoaded) {
-                setPlaybackStatus(status);
-                setLastTimePosition(status.positionMillis);
-                setDidJustFinish(status.didJustFinish);
-              }
-              if ("error" in status) {
-                console.error(
-                  "Error while playbackStatus update: ",
-                  status.error
-                );
-                setToastError({
-                  title: "Error while playbackStatus update",
-                  message: status.error || "",
-                });
-              }
-            }
-          );
-        setSound(createdSound);
-        return { sound: createdSound, status: createdStatus };
-      } catch (e) {
-        setToastError({
-          title: "Error loading sound",
-          message: e.message,
-        });
-        return { sound: undefined, status: undefined };
-      }
-    },
-    [sound, setToastError, didJustFinish, playbackStatus?.isLoaded]
-  );
-
-  // When clicking on a Song, or queue automatic play
-  const loadAndPlaySound = useCallback(
-    async (media: Media) => {
-      const { sound: createdSound, status } = await loadSound(media);
-      if (!createdSound || !status?.isLoaded) return;
-      await createdSound.playAsync();
-      setIsPlaying(true);
-      setIsMediaPlayerOpen(true);
-    },
-    [loadSound]
-  );
-
-  // We consider playing songs from UI is loadAndPlayQueue([...songs), even for one song
-  const loadAndPlayQueue = async (queue: Media[], mediaStoStart?: Media) => {
-    if (!queue.length) return;
-    setQueue(queue);
-    await loadAndPlaySound(mediaStoStart || queue[0]);
+  const loadAndPlayQueue = async (_queue: Media[], mediaStoStart?: Media) => {
+    setQueue(_queue);
+    if (isRandom) {
+      mediaStoStart = _queue[Math.floor(Math.random() * _queue.length)];
+    }
+    await loadAndPlaySound(mediaStoStart || _queue[0], _queue);
   };
 
+  const queueCurrentIndex = media ? queue.indexOf(media) : -1;
   const canNext = useMemo(() => {
-    if (!media || queue.length < 2) return false;
-    const currentIndex = queue.indexOf(media);
-    return currentIndex !== queue.length - 1;
-  }, [media, queue]);
-
+    if (queueCurrentIndex === -1 || queue.length < 2) return false;
+    return queueCurrentIndex !== queue.length - 1;
+  }, [queue, queueCurrentIndex]);
   const canPrev = useMemo(() => {
-    if (!media || queue.length < 2) return false;
-    const currentIndex = queue.indexOf(media);
-    return currentIndex !== 0;
-  }, [media, queue]);
+    if (queueCurrentIndex === -1 || queue.length < 2) return false;
+    return queueCurrentIndex !== 0;
+  }, [queue, queueCurrentIndex]);
 
-  const nextMedia = useCallback(async () => {
-    if (!canNext || !media) return;
-    const currentIndex = queue.indexOf(media);
-    await loadAndPlaySound(queue[currentIndex + 1]);
-  }, [canNext, media, queue, loadAndPlaySound]);
-
+  const nextMedia = async () => {
+    if (!canNext || queueCurrentIndex === -1) return;
+    let nextIndex = queueCurrentIndex + 1;
+    //TODO: Better isRandom handling: Do nextMedia even if the last song of the list is played -> count played songs.
+    if (isRandom) {
+      nextIndex = Math.floor(Math.random() * queue.length);
+    }
+    await loadAndPlaySound(queue[nextIndex], queue);
+  };
   const prevMedia = async () => {
-    if (!canPrev || !media) return;
-    const currentIndex = queue.indexOf(media);
-    await loadAndPlaySound(queue[currentIndex - 1]);
+    if (!canPrev || queueCurrentIndex === -1) return;
+    const prevIndex = queueCurrentIndex - 1;
+    await loadAndPlaySound(queue[prevIndex], queue);
   };
 
   // Force reset MediaPlayer
@@ -202,43 +193,15 @@ export const MediaPlayerContextProvider: React.FC = ({ children }) => {
     await sound.unloadAsync();
   };
 
-  // Autoplay queue
-  useEffect(() => {
-    const effect = async () => {
-      if (isLoop || !didJustFinish) return;
-      await nextMedia();
-    };
-    effect();
-  }, [didJustFinish, isLoop, nextMedia]);
+  const onChangeTimerPosition = (value: number) =>
+    sound?.setPositionAsync(value);
 
-  // Sync isLoop from UI
-  useEffect(() => {
-    if (didJustFinish || !sound) return;
-    const effect = async () => {
-      await sound.setIsLoopingAsync(isLoop);
-    };
-    effect();
-  }, [didJustFinish, isLoop, sound]);
+  const onChangeVolume = async (value: number) =>
+    await sound?.setVolumeAsync(value);
 
-  // TODO: Sync isRandom
-
-  // Sync volume from UI
-  useEffect(() => {
-    const effect = async () => {
-      if (!sound) return;
-      await sound.setVolumeAsync(volume);
-    };
-    effect();
-  }, [volume, sound]);
-
-  // Sync timePosition from UI
-  useEffect(() => {
-    const effect = async () => {
-      if (!sound) return;
-      await sound.setPositionAsync(timePosition);
-    };
-    effect();
-  }, [timePosition, sound]);
+  const onToggleLoop = () => {
+    sound?.setIsLoopingAsync(!playbackStatus?.isLooping);
+  };
 
   return (
     <MediaPlayerContext.Provider
@@ -246,23 +209,22 @@ export const MediaPlayerContextProvider: React.FC = ({ children }) => {
         handlePlayPause,
         isPlaying,
         media,
-        isLoop,
         isRandom,
-        setIsLoop,
         setIsRandom,
-        volume,
-        setVolume,
         lastTimePosition,
-        setTimePosition,
-        didJustFinish,
         isMediaPlayerOpen,
         setIsMediaPlayerOpen,
         loadAndPlayQueue,
+        loadAndPlaySound,
         removeSound,
         canNext,
         canPrev,
         nextMedia,
         prevMedia,
+        onChangeTimerPosition,
+        onChangeVolume,
+        onToggleLoop,
+        playbackStatus,
       }}
     >
       {children}

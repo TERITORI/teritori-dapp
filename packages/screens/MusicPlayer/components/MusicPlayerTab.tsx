@@ -1,15 +1,19 @@
 import React from "react";
 import { View, StyleSheet, TouchableOpacity } from "react-native";
 
-import HomeSelected from "../../../assets/music-player/home-selected.svg";
-import HomeUnselected from "../../../assets/music-player/home-unselected.svg";
-import MusicSelected from "../../../assets/music-player/music-selected.svg";
-import MusicUnselected from "../../../assets/music-player/music-unselected.svg";
-import { neutral33, neutralA3, secondaryColor } from "../../utils/style/colors";
-import { fontSemibold14 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
-import { BrandText } from "../BrandText/BrandText.electron";
-import { SVG } from "../SVG";
+import HomeSelected from "../../../../assets/music-player/home-selected.svg";
+import HomeUnselected from "../../../../assets/music-player/home-unselected.svg";
+import MusicSelected from "../../../../assets/music-player/music-selected.svg";
+import MusicUnselected from "../../../../assets/music-player/music-unselected.svg";
+import { BrandText } from "../../../components/BrandText/BrandText.electron";
+import { SVG } from "../../../components/SVG";
+import {
+  neutral33,
+  neutralA3,
+  secondaryColor,
+} from "../../../utils/style/colors";
+import { fontSemibold14 } from "../../../utils/style/fonts";
+import { layout } from "../../../utils/style/layout";
 
 // TODO: Use Tabs + add optional SVG icon in Tabs
 

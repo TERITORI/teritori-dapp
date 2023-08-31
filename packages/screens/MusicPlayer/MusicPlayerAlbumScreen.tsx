@@ -1,6 +1,8 @@
 import React, { useState, useEffect, FC } from "react";
 import { View, StyleSheet, Image, TouchableOpacity } from "react-native";
 
+import { DetailAlbumMenu } from "./components/DetailAlbumMenu";
+import { MusicPlayerTab } from "./components/MusicPlayerTab";
 import Add from "../../../assets/music-player/add.svg";
 import More from "../../../assets/music-player/more.svg";
 import PlayOther from "../../../assets/music-player/play-other.svg";
@@ -13,8 +15,6 @@ import { OmniLink } from "../../components/OmniLink";
 import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { CustomPressable } from "../../components/buttons/CustomPressable";
-import { DetailAlbumMenu } from "../../components/mediaPlayer/DetailAlbumMenu";
-import { MusicPlayerTab } from "../../components/mediaPlayer/MusicPlayerTab";
 import { TipModal } from "../../components/socialFeed/SocialActions/TipModal";
 import { SpacerRow } from "../../components/spacer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
@@ -134,6 +134,7 @@ export const MusicPlayerAlbumScreen: ScreenFC<"MusicPlayerAlbum"> = ({
   };
   const onPressPlayAlbum = async () => {
     if (!albumInfo.audios.length) return;
+    console.log("albumInfoalbumInfoalbumInfoalbumInfo", albumInfo);
     await loadAndPlayQueue(albumInfo.audios);
   };
 

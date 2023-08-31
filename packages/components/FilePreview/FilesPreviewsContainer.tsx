@@ -1,10 +1,11 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { View } from "react-native";
 import { v4 as uuidv4 } from "uuid";
 
 import { EditableAudioPreview } from "./EditableAudioPreview";
 import { ImagesViews } from "./ImagesViews";
 import { VideoView } from "./VideoView";
+import { useMediaPlayer } from "../../context/MediaPlayerProvider";
 import { GIF_MIME_TYPE } from "../../utils/mime";
 import { convertGIFToLocalFileType } from "../../utils/social-feed";
 import { layout } from "../../utils/style/layout";
@@ -41,6 +42,11 @@ export const FilesPreviewsContainer: React.FC<FilePreviewContainerProps> = ({
     const fileName = "GIF-" + uuidv4();
     return gifs?.map((gif) => convertGIFToLocalFileType(gif, fileName));
   }, [gifs]);
+
+  const { setIsMediaPlayerOpen } = useMediaPlayer();
+  useEffect(() => {
+    if (!audioFiles?.length) setIsMediaPlayerOpen(false);
+  }, [audioFiles, setIsMediaPlayerOpen]);
 
   if (!files?.length && !gifs?.length) {
     return null;

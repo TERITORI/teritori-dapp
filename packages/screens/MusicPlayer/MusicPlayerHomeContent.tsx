@@ -5,12 +5,12 @@ import Animated, {
   useSharedValue,
 } from "react-native-reanimated";
 
+import { AlbumCard } from "./components/AlbumCard";
+import { UploadAlbumModal } from "./components/UploadAlbumModal";
 import Logo from "../../../assets/logos/logo.svg";
 import { GetAllAlbumListRequest } from "../../api/musicplayer/v1/musicplayer";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
-import { AlbumCard } from "../../components/mediaPlayer/AlbumCard";
-import { UploadAlbumModal } from "../../components/mediaPlayer/UploadAlbumModal";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
 import {
   combineFetchAlbumPages,

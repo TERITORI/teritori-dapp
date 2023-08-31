@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Image,
   StyleSheet,
@@ -7,18 +7,26 @@ import {
   View,
 } from "react-native";
 import { useSelector } from "react-redux";
+import { v4 as uuidv4 } from "uuid";
 
-import { UPLOAD_ALBUM_MODAL_WIDTH } from "./index";
 import Add from "../../../../assets/music-player/add-primary.svg";
 import DefaultAlbumImage from "../../../../assets/music-player/album.png";
 import Img from "../../../../assets/music-player/img.svg";
 import List from "../../../../assets/music-player/list.svg";
 import Remove from "../../../../assets/music-player/remove.svg";
+import { signingMusicPlayerClient } from "../../../client-creators/musicplayerClient";
+import { BrandText } from "../../../components/BrandText";
+import { SVG } from "../../../components/SVG";
+import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
+import { FileUploader } from "../../../components/fileUploader";
+import ModalBase from "../../../components/modals/ModalBase";
+import { SpacerColumn } from "../../../components/spacer";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { getUserId } from "../../../networks";
 import { selectNFTStorageAPI } from "../../../store/slices/settings";
+import { defaultSocialFeedFee } from "../../../utils/fee";
 import {
   generateIpfsKey,
   ipfsURLToHTTPURL,
@@ -36,20 +44,29 @@ import {
 } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { LocalFileData, RemoteFileData } from "../../../utils/types/files";
-import { AlbumInfo } from "../../../utils/types/mediaPlayer";
-import { BrandText } from "../../BrandText";
-import { SVG } from "../../SVG";
-import { PrimaryButton } from "../../buttons/PrimaryButton";
-import { FileUploader } from "../../fileUploader";
+import { LocalFileData } from "../../../utils/types/files";
+import {
+  AlbumInfo,
+  AlbumMetadataInfo,
+  Media,
+} from "../../../utils/types/mediaPlayer";
 
-export const Step2Component: React.FC<{
-  uploadedAudioFilesStep1: RemoteFileData[];
-  uploadAlbum: (albumInfo: AlbumInfo) => void;
-  isLoading: boolean;
-}> = ({ uploadedAudioFilesStep1, uploadAlbum, isLoading }) => {
-  const [isUploading, setIsUploading] = useState(false);
+interface UploadAlbumModalProps {
+  onClose: () => void;
+  isVisible: boolean;
+}
+export const UPLOAD_ALBUM_MODAL_WIDTH = 564;
+
+export const UploadAlbumModal: React.FC<UploadAlbumModalProps> = ({
+  onClose,
+  isVisible,
+}) => {
+  const { setToastError, setToastSuccess } = useFeedbacks();
   const selectedNetworkId = useSelectedNetworkId();
+  const wallet = useSelectedWallet();
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const selectedWallet = useSelectedWallet();
   const userId = getUserId(selectedNetworkId, selectedWallet?.address);
   const userIPFSKey = useSelector(selectNFTStorageAPI);
@@ -61,11 +78,10 @@ export const Step2Component: React.FC<{
     createdBy: "",
     audios: [],
   });
-  const { setToastError } = useFeedbacks();
+  const [audios, setAudios] = useState<Media[]>([]);
 
   const removeTrack = (index: number) => {
-    const audios = albumInfo.audios.splice(index, 1);
-    setAlbumInfo({ ...albumInfo, audios });
+    setAudios(audios.splice(index, 1));
   };
 
   const onUploadAlbumImage = async (files: LocalFileData[]) => {
@@ -86,14 +102,7 @@ export const Step2Component: React.FC<{
       });
       return;
     }
-    // For each tracks of this album, the track image will be the album image
-    const audios = albumInfo.audios.map((a) => {
-      return {
-        ...a,
-        imageUrl: uploadedFile.url,
-      };
-    });
-    setAlbumInfo({ ...albumInfo, image: uploadedFile.url, audios });
+    setAlbumInfo({ ...albumInfo, image: uploadedFile.url });
     setIsUploading(false);
   };
 
@@ -122,6 +131,7 @@ export const Step2Component: React.FC<{
       return;
     }
     const addedAudios = uploadedFiles.map((remoteFileData) => {
+      // For each tracks of this album, some Media props depends on this AlbumInfo props
       return {
         duration: remoteFileData.audioMetadata?.duration, //ms,
         imageUrl: albumInfo.image,
@@ -131,10 +141,7 @@ export const Step2Component: React.FC<{
         albumId: albumInfo.id,
       };
     });
-    setAlbumInfo({
-      ...albumInfo,
-      audios: [...albumInfo.audios, ...addedAudios],
-    });
+    setAudios(addedAudios);
     setIsUploading(false);
   };
 
@@ -146,23 +153,62 @@ export const Step2Component: React.FC<{
     setAlbumInfo({ ...albumInfo, description: text.trim() });
   };
 
-  // Sync the files got at step 1
-  useEffect(() => {
-    const audios = uploadedAudioFilesStep1.map((remoteFileData) => {
-      return {
-        duration: remoteFileData.audioMetadata?.duration, //ms,
-        imageUrl: albumInfo.image,
-        name: remoteFileData.fileName,
-        fileUrl: remoteFileData.url,
-        createdBy: albumInfo.createdBy,
-        albumId: albumInfo.id,
-      };
+  const onPressUpload = async () => {
+    setIsLoading(true);
+
+    if (!wallet?.connected || !wallet.address) {
+      return;
+    }
+    const client = await signingMusicPlayerClient({
+      networkId: selectedNetworkId,
+      walletAddress: wallet.address,
     });
-    setAlbumInfo({ ...albumInfo, audios });
-  }, [uploadedAudioFilesStep1, albumInfo]);
+    const metadata: AlbumMetadataInfo = {
+      title: albumInfo.name,
+      description: albumInfo.description,
+      image: albumInfo.image,
+      audios: audios.map((a) => {
+        return {
+          duration: a?.duration || 0,
+          ipfs: a.fileUrl,
+          name: a.name,
+        };
+      }),
+    };
+
+    try {
+      const res = await client.createMusicAlbum(
+        {
+          metadata: JSON.stringify(metadata),
+          identifier: uuidv4(),
+        },
+        defaultSocialFeedFee,
+        ""
+      );
+
+      if (res.transactionHash) {
+        setToastSuccess({
+          title: "Uploaded album successfully",
+          message: `tx_hash: ${res.transactionHash}`,
+        });
+      }
+    } catch (err) {
+      setToastError({
+        title: "Failed to upload album",
+        message: `Error: ${err}`,
+      });
+    }
+    setIsLoading(false);
+    onClose();
+  };
 
   return (
-    <>
+    <ModalBase
+      label="Upload album"
+      visible={isVisible}
+      onClose={onClose}
+      width={UPLOAD_ALBUM_MODAL_WIDTH}
+    >
       <View style={styles.inputBox}>
         <View style={styles.imgBox}>
           <Image
@@ -213,8 +259,8 @@ export const Step2Component: React.FC<{
         </View>
       </View>
       <View style={styles.songGroup}>
-        {albumInfo.audios.map((audio, index) => (
-          // TODO: Able to grab and replace track
+        {audios.map((audio, index) => (
+          // TODO: Able to grab and place track
           <View key={index} style={styles.unitBox}>
             <View style={styles.oneLine}>
               <TouchableOpacity>
@@ -239,6 +285,7 @@ export const Step2Component: React.FC<{
         ))}
       </View>
       <FileUploader
+        multiple
         onUpload={onUploadAudioFiles}
         style={styles.uploadButton}
         mimeTypes={AUDIO_MIME_TYPES}
@@ -250,10 +297,22 @@ export const Step2Component: React.FC<{
               width={layout.padding_x2_5}
               height={layout.padding_x2_5}
             />
-            <BrandText style={styles.buttonText}>Add more</BrandText>
+            <BrandText style={styles.buttonText}>Add songs</BrandText>
           </TouchableOpacity>
         )}
       </FileUploader>
+
+      <BrandText
+        style={[
+          fontSemibold14,
+          {
+            color: neutral77,
+          },
+        ]}
+      >
+        Provide FLAC, WAV or AIFF for highest audio quality.
+      </BrandText>
+      <SpacerColumn size={2.5} />
 
       <View style={styles.divideLine} />
 
@@ -268,16 +327,16 @@ export const Step2Component: React.FC<{
             albumInfo.name === "" ||
             albumInfo.description === "" ||
             !albumInfo.image ||
-            !albumInfo.audios.length ||
+            !audios.length ||
             isUploading ||
             isLoading
           }
           size="SM"
-          onPress={() => uploadAlbum(albumInfo)}
+          onPress={onPressUpload}
           isLoading={isUploading || isLoading}
         />
       </View>
-    </>
+    </ModalBase>
   );
 };
 
@@ -291,7 +350,7 @@ const styles = StyleSheet.create({
     borderRadius: layout.padding_x1,
     backgroundColor: "#2B2B33",
     gap: layout.padding_x1,
-    marginBottom: layout.padding_x2_5,
+    marginBottom: layout.padding_x2,
   },
   buttonText: StyleSheet.flatten([
     fontSemibold14,
