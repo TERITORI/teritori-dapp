@@ -5,6 +5,7 @@ import { FlatList, TextStyle, View } from "react-native";
 
 import { Activity } from "../../api/marketplace/v1/marketplace";
 import { useActivity } from "../../hooks/useActivity";
+import { useIsMobile } from "../../hooks/useIsMobile";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { parseActivityId, parseUserId, txExplorerLink } from "../../networks";
 import { prettyPrice } from "../../utils/coins";
@@ -53,6 +54,7 @@ export const ActivityTable: React.FC<{
   nftId?: string;
   collectionId?: string;
 }> = ({ nftId, collectionId }) => {
+  const isMobile = useIsMobile();
   const [itemsPerPage, setItemsPerPage] = useState(50);
   const [pageIndex, setPageIndex] = useState(0);
   const { total, activities } = useActivity({
@@ -61,6 +63,9 @@ export const ActivityTable: React.FC<{
     offset: pageIndex * itemsPerPage,
     limit: itemsPerPage,
   });
+  if (isMobile) {
+    return null;
+  }
   const maxPage = Math.max(Math.ceil(total / itemsPerPage), 1);
   return (
     <View
