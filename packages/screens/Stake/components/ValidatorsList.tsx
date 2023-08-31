@@ -1,21 +1,21 @@
 import React from "react";
 import { FlatList, StyleProp, View, ViewStyle } from "react-native";
 
-import validatorIconSVG from "../../../../assets/default-images/validator-icon.svg";
-import { Avatar } from "../../../components/Avatar";
 import { BrandText } from "../../../components/BrandText";
 import { PrimaryButtonOutline } from "../../../components/buttons/PrimaryButtonOutline";
 import { SecondaryButtonOutline } from "../../../components/buttons/SecondaryButtonOutline";
+import { RoundedGradientImage } from "../../../components/images/RoundedGradientImage";
 import { SpacerRow } from "../../../components/spacer";
 import { TableRow, TableRowHeading } from "../../../components/table";
+import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useKeybaseAvatarURL } from "../../../hooks/useKeybaseAvatarURL";
 import { Reward, rewardsPrice, useRewards } from "../../../hooks/useRewards";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { removeObjectKey } from "../../../utils/object";
 import { mineShaftColor } from "../../../utils/style/colors";
-import { fontSemibold13 } from "../../../utils/style/fonts";
+import { fontSemibold11, fontSemibold13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { thousandSeparator } from "../../../utils/text";
+import { numFormatter } from "../../../utils/text";
 import { ValidatorInfo } from "../types";
 
 const TABLE_ROWS: { [key in string]: TableRowHeading } = {
@@ -88,6 +88,7 @@ const ValidatorRow: React.FC<{
   claimReward: (validatorAddress: string) => Promise<void>;
   actions?: (validator: ValidatorInfo) => ValidatorsListAction[];
 }> = ({ validator, claimReward, pendingRewards, actions }) => {
+  const isMobile = useIsMobile();
   const imageURL = useKeybaseAvatarURL(validator.identity);
 
   const selectedWallet = useSelectedWallet();
@@ -110,7 +111,7 @@ const ValidatorRow: React.FC<{
     >
       <BrandText
         style={[
-          fontSemibold13,
+          isMobile ? fontSemibold11 : fontSemibold13,
           { flex: TABLE_ROWS.rank.flex, paddingRight: layout.padding_x1 },
         ]}
       >
@@ -124,20 +125,31 @@ const ValidatorRow: React.FC<{
           paddingRight: layout.padding_x1,
         }}
       >
-        <Avatar uri={imageURL} defaultIcon={validatorIconSVG} />
+        <RoundedGradientImage
+          size="XS"
+          sourceURI={imageURL}
+          style={{ marginRight: isMobile ? 8 : 30 }}
+        />
+
         <SpacerRow size={1} />
-        <BrandText style={fontSemibold13}>{validator.moniker || ""}</BrandText>
+        <BrandText
+          style={[isMobile ? fontSemibold11 : fontSemibold13]}
+          numberOfLines={1}
+          ellipsizeMode="clip"
+        >
+          {validator.moniker || ""}
+        </BrandText>
       </View>
       <BrandText
         style={[
-          fontSemibold13,
+          isMobile ? fontSemibold11 : fontSemibold13,
           {
             flex: TABLE_ROWS.votingPower.flex,
             paddingRight: layout.padding_x1,
           },
         ]}
       >
-        {thousandSeparator(validator.votingPower, " ")}
+        {numFormatter(validator.votingPower, 2)}
       </BrandText>
       <BrandText
         style={[
@@ -160,7 +172,7 @@ const ValidatorRow: React.FC<{
         }}
       >
         {claimablePrice && (
-          <BrandText style={[fontSemibold13]}>
+          <BrandText style={[isMobile ? fontSemibold11 : fontSemibold13]}>
             {`$${claimablePrice.toFixed(2)}`}
           </BrandText>
         )}
