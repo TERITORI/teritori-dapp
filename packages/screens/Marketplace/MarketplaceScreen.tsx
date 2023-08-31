@@ -383,7 +383,7 @@ const InnerCell: React.FC<{
       ]}
     >
       <BrandText
-        style={[isMobile ? fontSemibold11 : fontSemibold13, , textStyle]}
+        style={[isMobile ? fontSemibold11 : fontSemibold13, textStyle]}
         numberOfLines={1}
       >
         {children}
