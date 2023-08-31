@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 
 import { DelegateModal } from "./components/DelegateModal";
 import { RedelegateModal } from "./components/RedelegateModal";
@@ -11,6 +11,7 @@ import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { Tabs } from "../../components/tabs/Tabs";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
+import { useIsMobile } from "../../hooks/useIsMobile";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { useValidators } from "../../hooks/useValidators";
 import { NetworkKind } from "../../networks";
@@ -18,7 +19,7 @@ import { fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 
 export const StakeScreen: React.FC = () => {
-  //   variables
+  const isMobile = useIsMobile();
   const selectedNetworkId = useSelectedNetworkId();
   const [stakeDetailModalVisible, setStakeDetailModalVisible] = useState(false);
   const [isStakeFormVisible, setIsStakeFormVisible] = useState(false);
@@ -69,8 +70,16 @@ export const StakeScreen: React.FC = () => {
   };
 
   return (
-    <ScreenContainer forceNetworkKind={NetworkKind.Cosmos}>
-      <View style={styles.rowHeader}>
+    <ScreenContainer fullWidth forceNetworkKind={NetworkKind.Cosmos}>
+      <View
+        style={{
+          flexDirection: isMobile ? "column" : "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          paddingTop: layout.contentPadding,
+          marginBottom: layout.padding_x2_5,
+        }}
+      >
         <BrandText style={fontSemibold28}>Stake</BrandText>
         <Tabs
           items={tabs}
@@ -115,15 +124,3 @@ export const StakeScreen: React.FC = () => {
     </ScreenContainer>
   );
 };
-
-// FIXME: remove StyleSheet.create
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  rowHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingTop: layout.contentPadding,
-    marginBottom: layout.padding_x2_5,
-  },
-});
