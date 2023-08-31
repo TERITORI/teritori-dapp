@@ -10,6 +10,7 @@ import {
   NFTCollectionAttributesRequest,
 } from "../../api/marketplace/v1/marketplace";
 import { useTransactionModals } from "../../context/TransactionModalsProvider";
+import { useIsMobile } from "../../hooks/useIsMobile";
 import { parseNetworkObjectId } from "../../networks";
 import { mustGetMarketplaceClient } from "../../utils/backend";
 import { RootStackParamList } from "../../utils/navigation";
@@ -35,7 +36,17 @@ import { TransactionModals } from "../modals/transaction/TransactionModals";
 import { SpacerColumn } from "../spacer";
 import { Tabs } from "../tabs/Tabs";
 
-const mainInfoTabItems = {
+const mainInfoTabItems: {
+  about: {
+    name: string;
+  };
+  attributes: {
+    name: string;
+  };
+  details?: {
+    name: string;
+  };
+} = {
   about: {
     name: "About",
   },
@@ -59,6 +70,10 @@ export const NFTMainInfo: React.FC<{
   ) => Promise<string | undefined>;
   cancelListing: () => Promise<string | undefined>;
 }> = ({ nftId, nftInfo, buy, sell, cancelListing, showMarketplace }) => {
+  const isMobile = useIsMobile();
+  if (isMobile) {
+    delete mainInfoTabItems["details"];
+  }
   const { openTransactionModals } = useTransactionModals();
   const { params } = useRoute<RouteProp<RootStackParamList, "NFTDetail">>();
 
@@ -210,19 +225,19 @@ export const NFTMainInfo: React.FC<{
       >
         {/*---- Image NFT */}
         <TertiaryBox
-          width={464}
-          height={464}
+          width={isMobile ? 360 : 464}
+          height={isMobile ? 360 : 464}
           style={{ marginRight: 28, marginBottom: 40 }}
         >
           <ImageWithTextInsert
             imageURL={nftInfo?.imageURL}
             textInsert={nftInfo?.textInsert}
-            size={462}
+            size={isMobile ? 358 : 462}
             style={{ borderRadius: 8 }}
           />
         </TertiaryBox>
         {/*---- Info NFT */}
-        <View style={{ maxWidth: 600 }}>
+        <View style={{ maxWidth: isMobile ? 380 : 600 }}>
           <BrandText style={[fontSemibold28, { marginBottom: 12 }]}>
             {nftInfo?.name}
           </BrandText>
@@ -283,19 +298,26 @@ export const NFTMainInfo: React.FC<{
         </View>
       </View>
 
-      {showMarketplace && (
-        <Target style={collapsableContainerStyles} name="price-history">
-          <Suspense fallback={<></>}>
-            <CollapsablePriceHistory nftId={nftId} />
-          </Suspense>
-        </Target>
+      {!isMobile && (
+        <>
+          {showMarketplace && (
+            <Target style={collapsableContainerStyles} name="price-history">
+              <Suspense fallback={<></>}>
+                <CollapsablePriceHistory nftId={nftId} />
+              </Suspense>
+            </Target>
+          )}
+          <Target name="activity" style={collapsableContainerStyles}>
+            <CollapsableSection
+              icon={starSVG}
+              title="Activity"
+              isExpandedByDefault
+            >
+              <ActivityTable nftId={nftId} />
+            </CollapsableSection>
+          </Target>
+        </>
       )}
-      <Target name="activity" style={collapsableContainerStyles}>
-        <CollapsableSection icon={starSVG} title="Activity" isExpandedByDefault>
-          <ActivityTable nftId={nftId} />
-        </CollapsableSection>
-      </Target>
-
       {/* ====== "Buy this NFT" three modals*/}
       <TransactionModals
         startTransaction={buy}

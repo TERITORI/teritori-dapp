@@ -2,6 +2,7 @@ import React from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 
 import { AttributeRarityFloor } from "../../api/marketplace/v1/marketplace";
+import { useIsMobile } from "../../hooks/useIsMobile";
 import { resolveColor } from "../../screens/Marketplace/utils";
 import { prettyPrice } from "../../utils/coins";
 import {
@@ -21,12 +22,14 @@ export const NFTAttributeCard: React.FC<{
   nftInfo: NFTInfo;
   style?: StyleProp<ViewStyle>;
 }> = ({ nftAttribute, nftInfo, style }) => {
+  const isMobile = useIsMobile();
+
   return (
     nftAttribute &&
     nftInfo && (
       <TertiaryBox
         height={92}
-        width={192}
+        width={isMobile ? 170 : 192}
         style={style}
         mainContainerStyle={{
           padding: 12,
