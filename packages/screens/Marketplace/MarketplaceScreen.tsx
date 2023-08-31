@@ -32,6 +32,7 @@ import {
   successColor,
 } from "../../utils/style/colors";
 import {
+  fontSemibold11,
   fontSemibold13,
   fontSemibold20,
   fontSemibold28,
@@ -321,7 +322,7 @@ const CollectionRow: React.FC<{ collection: Collection; rank: number }> = ({
           sourceURI={rowData.collectionNameData.image}
           style={{ marginRight: isMobile ? 8 : 30 }}
         />
-        <BrandText style={fontSemibold13}>
+        <BrandText style={isMobile ? fontSemibold11 : fontSemibold13}>
           {rowData.collectionNameData.collectionName}
         </BrandText>
       </View>
