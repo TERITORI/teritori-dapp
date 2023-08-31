@@ -33,18 +33,32 @@ export const SearchBarInput: React.FC<{
   onInteraction?: () => void;
   placeholder?: string;
   style?: StyleProp<ViewStyle>;
-}> = ({ onInteraction, text, onChangeText, style, placeholder }) => {
+  inputStyle?: StyleProp<ViewStyle>;
+  noBrokenCorners?: boolean;
+}> = ({
+  onInteraction,
+  text,
+  onChangeText,
+  style,
+  placeholder,
+  inputStyle,
+  noBrokenCorners = false,
+}) => {
   const ref = useRef<TextInput>(null);
   const fullWidth = StyleSheet.flatten(style)?.width === "100%";
   return (
     <TertiaryBox
       style={style}
-      mainContainerStyle={{
-        flexDirection: "row",
-        paddingHorizontal: 12,
-        backgroundColor: neutral17,
-        width: fullWidth ? undefined : 250,
-      }}
+      noBrokenCorners={noBrokenCorners}
+      mainContainerStyle={[
+        {
+          flexDirection: "row",
+          paddingHorizontal: 12,
+          backgroundColor: neutral17,
+          width: fullWidth ? undefined : 250,
+        },
+        inputStyle,
+      ]}
       fullWidth={fullWidth}
       height={SEARCH_BAR_INPUT_HEIGHT}
     >
