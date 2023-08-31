@@ -4,6 +4,8 @@ export const primaryTextColor = "#2B0945";
 export const secondaryColor = "#FFFFFF";
 export const successColor = "#C8FFAE";
 export const errorColor = "#F46F76";
+export const availableSoonColor = "#EAA54B";
+export const hardColor = "#FF5C00";
 
 export const yellowDefault = "#FFE768";
 export const pinkDefault = "#F46FBF";

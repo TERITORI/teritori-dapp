@@ -107,7 +107,7 @@ export const SIDEBAR_LIST: SidebarRecordType = {
   pathwar: {
     title: "Pathwar",
     id: "Pathwar",
-    route: "ComingSoon",
+    route: "Pathwar",
     icon: pathwarSVG,
   },
   riotersGame: {

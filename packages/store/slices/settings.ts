@@ -11,6 +11,7 @@ interface Settings {
   alreadyVisited: boolean;
   areTestnetsEnabled: boolean;
   sideBarExpanded: boolean;
+  PathwarToken: string;
 }
 
 const initialState: Settings = {
@@ -21,6 +22,7 @@ const initialState: Settings = {
   isAdenaConnected: false,
   alreadyVisited: false,
   areTestnetsEnabled: false,
+  PathwarToken: "",
   sideBarExpanded: true,
 };
 
@@ -44,6 +46,9 @@ export const selectSidebarExpanded = (state: RootState) =>
 
 export const selectNFTStorageAPI = (state: RootState) =>
   state.settings.NFTStorageAPI;
+
+export const selectPathwarToken = (state: RootState) =>
+  state.settings.PathwarToken;
 
 const settingsSlice = createSlice({
   name: "settings",
@@ -70,6 +75,9 @@ const settingsSlice = createSlice({
     setNFTStorageAPI: (state, action: PayloadAction<string>) => {
       state.NFTStorageAPI = action.payload;
     },
+    setPathwarToken: (state, action: PayloadAction<string>) => {
+      state.PathwarToken = action.payload;
+    },
   },
 });
 
@@ -81,6 +89,7 @@ export const {
   setAreTestnetsEnabled,
   setSidebarExpanded,
   setNFTStorageAPI,
+  setPathwarToken,
 } = settingsSlice.actions;
 
 export const settingsReducer = settingsSlice.reducer;

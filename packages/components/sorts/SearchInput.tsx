@@ -10,12 +10,13 @@ import { TertiaryBox } from "../boxes/TertiaryBox";
 export const SearchInput: React.FC<{
   style?: StyleProp<ViewStyle>;
   borderRadius?: number;
+  height?: number;
   handleChangeText?: (e: string) => void;
-}> = ({ handleChangeText, borderRadius, style }) => {
+}> = ({ handleChangeText, borderRadius, style, height = 40 }) => {
   return (
     <TertiaryBox
       style={style}
-      height={40}
+      height={height}
       mainContainerStyle={{
         padding: 12,
         flexDirection: "row",

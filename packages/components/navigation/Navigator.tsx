@@ -22,6 +22,10 @@ import { NFTDetailScreen } from "../../screens/Marketplace/NFTDetailScreen";
 import { MyCollectionScreen } from "../../screens/MyCollection/MyCollectionScreen";
 import { OrganizationDeployerScreen } from "../../screens/Organizations/OrganizationDeployerScreen";
 import { OrganizationsScreen } from "../../screens/Organizations/OrganizationsScreen";
+import { PathwarScreen } from "../../screens/Pathwar/PathwarScreen";
+import { ResourceScreen } from "../../screens/Pathwar/Resources/ResourceScreen";
+import { StatisticScreen } from "../../screens/Pathwar/Statistics/StatisticScreen";
+import { TournamentScreen } from "../../screens/Pathwar/Tournaments/TournamentScreen";
 import { RiotGameBreedingScreen } from "../../screens/RiotGame/RiotGameBreedingScreen";
 import { RiotGameEnrollScreen } from "../../screens/RiotGame/RiotGameEnrollScreen";
 import { RiotGameFightScreen } from "../../screens/RiotGame/RiotGameFightScreen";
@@ -167,6 +171,32 @@ export const Navigator: React.FC = () => {
           header: () => null,
           title: screenTitle("Wallet Manager (Chains)"),
         }}
+      />
+
+      {/* Pathwar */}
+
+      <Stack.Screen
+        name="Pathwar"
+        component={PathwarScreen}
+        options={{ header: () => null }}
+      />
+
+      <Stack.Screen
+        name="Resources"
+        component={ResourceScreen}
+        options={{ header: () => null }}
+      />
+
+      <Stack.Screen
+        name="Tournaments"
+        component={TournamentScreen}
+        options={{ header: () => null }}
+      />
+
+      <Stack.Screen
+        name="Statistics"
+        component={StatisticScreen}
+        options={{ header: () => null }}
       />
 
       {/* ==== Launchpad */}

@@ -17,6 +17,10 @@ export type RootStackParamList = {
   Governance: undefined;
   UserPublicProfile: { id: string };
   RiotersFooter: undefined;
+  Pathwar: undefined;
+  Resources: undefined;
+  Tournaments: undefined;
+  Statistics: undefined;
 
   Launchpad: undefined;
   LaunchpadApply: undefined;
@@ -94,6 +98,11 @@ const navConfig: {
     RiotGameLeaderboard: "riot-game/leaderboard",
     RiotGameInventory: "riot-game/inventory",
 
+    // === Pathwar
+    Pathwar: "pathwar",
+    Resources: "pathwar/resources",
+    Tournaments: "pathwar/tournaments",
+    Statistics: "pathwar/statistics",
     // ==== Launchpad
     Launchpad: "launchpad",
     LaunchpadApply: "launchpad/apply",

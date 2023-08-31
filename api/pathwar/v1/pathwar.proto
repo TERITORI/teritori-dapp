@@ -1,0 +1,185 @@
+syntax = "proto3";
+
+package pathwar.v1;
+option go_package = "./pathwarpb";
+
+service PathwarService {
+//  rpc RegisterUser(RegisterUserRequest) returns (stream RegisterUserResponse);
+//  rpc Leaderboard(LeaderboardRequest) returns (stream LeaderboardResponse);
+//  rpc Resources(ResourcesRequest) returns (stream ResourcesResponse);
+//  rpc Tournaments(TournamentsRequest) returns (stream TournamentsResponse);
+//  rpc Challenge(ChallengeRequest) returns (stream ChallengeResponse);
+//  rpc ChallengeListing(ChallengeListingRequest) returns (stream ChallengeListingResponse);
+  rpc ChallengeValidate(ChallengeValidateRequest) returns (ChallengeValidateResponse);
+}
+// common
+
+message Category {
+  int32 id = 1;
+  string text = 2;
+}
+
+message Tag {
+  int32 id = 1;
+  string text = 2;
+}
+
+message Money {
+  string denom = 1;
+  string amount = 2;
+}
+
+message PublicUser {
+  string address = 1;
+}
+
+// user
+message RegisterUserRequest {
+  string address = 1;
+}
+
+message RegisterUserResponse {
+  string status = 1;
+}
+
+// stats page
+message LeaderboardRequest {
+  string season_id = 1;
+  int32 limit = 2;
+  int32 offset = 3;
+}
+
+message PathwarLeaderboardItem {
+  int32 rank = 1;
+  string address = 2;
+  string team = 3;
+  string last_tournament = 4;
+  int32 score = 5;
+  Money balance = 6;
+}
+
+message LeaderboardResponse {
+ repeated PathwarLeaderboardItem statistics = 1;
+}
+
+// resources page
+
+message ResourcesRequest {
+  int32 type = 1;
+  int32 limit = 2;
+  int32 offset = 3;
+}
+
+message Resources {
+  int32 id = 1;
+  int32 type = 2; // video, article, etc
+  repeated Category category = 3; // cosmos, gno, web, etc
+  repeated Tag tags = 4;
+  string thumbnail = 5;
+  string url = 6;
+  string title = 7;
+  bool liked = 8;
+  string description = 9;
+}
+
+message ResourcesResponse {
+  repeated Resources resources = 1;
+}
+
+// Tournaments
+
+message TournamentsRequest {
+  int32 limit = 1;
+  int32 offset = 2;
+  string user_address = 3; // needed for is bought ...
+}
+
+message Tournament {
+  int32 id = 1;
+  Money price = 2;
+  string thumbnail = 3;
+  string title = 4;
+  string tagline = 5;
+  string description = 6;
+  string difficulty = 7;
+  Status status = 8; // open, soon, closed
+  string duration = 9;
+  int32 num_users_joined = 10;
+  repeated Money rewards = 11;
+  bool bought = 12;
+}
+
+message TournamentsResponse {
+  repeated Tournament tournaments = 1;
+}
+
+// challenge
+
+enum Status {
+  STATUS_OPEN_UNSPECIFIED = 0;
+  STATUS_CLOSE_UNSPECIFIED = 1;
+}
+
+message Endpoint {
+  string url = 1;
+  string status = 2;
+}
+
+message Challenge {
+  int32 id = 1;
+  Money price = 2;
+  string thumbnail = 3;
+  string title = 4;
+  string tagline = 5;
+  string description = 6;
+  string difficulty = 7;
+  Status status = 8; // open, soon, closed
+  string duration = 9;
+  int32 num_users_joined = 10;
+  repeated Money rewards = 11;
+  bool bought = 12;
+  repeated Tag tags = 13;
+  PublicUser star_user = 14;
+  repeated PublicUser top_users = 15;
+  bool solved = 16;
+  int32 solved_count = 17;
+  repeated Endpoint endpoints = 18;
+}
+
+message ChallengeRequest {
+  int32 id = 1;
+}
+
+message ChallengeResponse {
+  Challenge challenge = 1;
+}
+
+// challenge validate
+
+message ChallengeValidateRequest {
+  int32 id = 1;
+  string passphrase = 2;
+  string comment = 3;
+  string network_id = 4;
+}
+
+message ChallengeValidateResponse {
+  string msg = 1;
+  string sig = 2;
+  string key = 3;
+  string network_id = 4; // not really sure if useful, just to confirm which network is this proof valid in
+}
+
+// challenge listing
+
+message ChallengeListingRequest {
+  int32 limit = 1;
+  int32 offset = 2;
+  string user_address = 3; // needed for is bought ...
+}
+
+message ChallengeListingResponse {
+  repeated Challenge challenges = 1;
+}
+
+
