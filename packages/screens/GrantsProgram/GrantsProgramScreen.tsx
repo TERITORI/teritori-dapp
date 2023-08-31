@@ -110,7 +110,7 @@ export const GrantsProgramScreen: ScreenFC<"GrantsProgram"> = () => {
         style={{
           width: "100%",
           flexWrap: "wrap",
-          justifyContent: "center",
+          justifyContent: "space-between",
         }}
       >
         {[1, 2, 3, 4, 5, 6, 7].map((id) => {

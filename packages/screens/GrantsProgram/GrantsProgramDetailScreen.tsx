@@ -1,9 +1,15 @@
 import React from "react";
-import { View } from "react-native";
+import { View, useWindowDimensions } from "react-native";
 
 import { GrantTag } from "./components/GrantTag";
+import { TaskItem } from "./components/TaskItem";
+import { TaskList } from "./components/TaskList";
 import discordSVG from "../../../assets/icons/discord.svg";
 import githubSVG from "../../../assets/icons/github.svg";
+import grantsCompletedSVG from "../../../assets/icons/grants-completed.svg";
+import grantsInProgressSVG from "../../../assets/icons/grants-inProgress.svg";
+import grantsOpenSVG from "../../../assets/icons/grants-open.svg";
+import grantsReviewSVG from "../../../assets/icons/grants-review.svg";
 import gnoSVG from "../../../assets/icons/networks/gno.svg";
 import shareSVG from "../../../assets/icons/share.svg";
 import twitterSVG from "../../../assets/icons/twitter.svg";
@@ -195,17 +201,64 @@ export const GrantsProgramDetailScreen: ScreenFC<
       <SpacerColumn size={2} />
 
       {/* Tasks block ======================================================= */}
-      <FlexRow style={{ backgroundColor: neutral17 }}>
-        <FlexRow style={{ marginVertical: layout.padding_x2 }}>
+      <View
+        style={{
+          // NOTE: trick to get will width background on responsible/large ScreenContainer
+          marginHorizontal: -140,
+          paddingHorizontal: 140,
+          backgroundColor: neutral17,
+          paddingVertical: layout.padding_x3,
+        }}
+      >
+        <FlexRow>
           <BrandText style={fontSemibold20}>All Tasks:</BrandText>
           <SpacerRow size={1} />
           <BrandText style={[fontSemibold20, { color: neutral77 }]}>
             7
           </BrandText>
         </FlexRow>
-      </FlexRow>
 
-      <Separator color={neutral33} />
+        <Separator
+          color={neutral33}
+          style={{
+            marginBottom: layout.padding_x2,
+            marginTop: layout.padding_x3,
+          }}
+        />
+
+        <FlexRow
+          style={{
+            alignItems: "flex-start",
+            justifyContent: "space-between",
+            flexWrap: "wrap",
+          }}
+        >
+          <TaskList text="Open (Backlog)" count={4} iconSVG={grantsOpenSVG}>
+            <TaskItem text="Community Docs Platform" priority="hight" />
+          </TaskList>
+
+          <SpacerRow size={3} />
+
+          <TaskList text="In Progress" count={4} iconSVG={grantsInProgressSVG}>
+            <TaskItem text="Community Docs Platform 1" priority="hight" />
+            <TaskItem text="Community Docs Platform 2" priority="hight" />
+            <TaskItem text="Community Docs Platform 3" priority="hight" />
+          </TaskList>
+
+          <SpacerRow size={3} />
+
+          <TaskList text="Review" count={4} iconSVG={grantsReviewSVG}>
+            <TaskItem
+              text="Margin trading using the Platform Aggregation API"
+              priority="medium"
+            />
+          </TaskList>
+
+          <SpacerRow size={3} />
+
+          <TaskList text="Completed" count={4} iconSVG={grantsCompletedSVG} />
+        </FlexRow>
+      </View>
     </ScreenContainer>
   );
 };
