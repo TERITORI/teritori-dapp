@@ -254,20 +254,3 @@ export const SendModal: React.FC<SendModalProps> = ({
   );
 };
 
-// FIXME: remove StyleSheet.create
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  contactsButton: {
-    width: 48,
-    height: 48,
-    borderRadius: 999,
-    borderWidth: 1,
-    borderColor: neutral33,
-    backgroundColor: neutral22,
-    justifyContent: "center",
-    alignItems: "center",
-    marginLeft: layout.spacing_x1_5,
-    //TODO: Remove that when contacts are handled
-    opacity: 0.5,
-  },
-});
