@@ -11,6 +11,7 @@ import {
 } from "../../api/marketplace/v1/marketplace";
 import { useTransactionModals } from "../../context/TransactionModalsProvider";
 import { useIsMobile } from "../../hooks/useIsMobile";
+import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { parseNetworkObjectId } from "../../networks";
 import { mustGetMarketplaceClient } from "../../utils/backend";
 import { RootStackParamList } from "../../utils/navigation";
@@ -71,8 +72,10 @@ export const NFTMainInfo: React.FC<{
   cancelListing: () => Promise<string | undefined>;
 }> = ({ nftId, nftInfo, buy, sell, cancelListing, showMarketplace }) => {
   const isMobile = useIsMobile();
+  const { width } = useMaxResolution({ responsive: true, noMargin: true });
   if (isMobile) {
     delete mainInfoTabItems["details"];
+    sectionContainerStyles.width = width < 600 ? width : 600;
   }
   const { openTransactionModals } = useTransactionModals();
   const { params } = useRoute<RouteProp<RootStackParamList, "NFTDetail">>();
@@ -218,26 +221,29 @@ export const NFTMainInfo: React.FC<{
       <View
         style={{
           flexDirection: "row",
-          width: "100%",
+          width: isMobile && width < 600 ? width : "100%",
           flexWrap: "wrap",
           justifyContent: "center",
         }}
       >
         {/*---- Image NFT */}
         <TertiaryBox
-          width={isMobile ? 360 : 464}
-          height={isMobile ? 360 : 464}
-          style={{ marginRight: 28, marginBottom: 40 }}
+          width={isMobile && width < 464 ? width : 464}
+          height={isMobile && width < 464 ? width : 464}
+          style={{
+            marginRight: isMobile && width < 464 ? 0 : 28,
+            marginBottom: 40,
+          }}
         >
           <ImageWithTextInsert
             imageURL={nftInfo?.imageURL}
             textInsert={nftInfo?.textInsert}
-            size={isMobile ? 358 : 462}
+            size={isMobile && width < 464 ? width : 462}
             style={{ borderRadius: 8 }}
           />
         </TertiaryBox>
         {/*---- Info NFT */}
-        <View style={{ maxWidth: isMobile ? 380 : 600 }}>
+        <View style={{ maxWidth: isMobile && width < 600 ? width : 600 }}>
           <BrandText style={[fontSemibold28, { marginBottom: 12 }]}>
             {nftInfo?.name}
           </BrandText>

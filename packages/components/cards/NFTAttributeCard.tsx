@@ -3,6 +3,7 @@ import { StyleProp, View, ViewStyle } from "react-native";
 
 import { AttributeRarityFloor } from "../../api/marketplace/v1/marketplace";
 import { useIsMobile } from "../../hooks/useIsMobile";
+import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { resolveColor } from "../../screens/Marketplace/utils";
 import { prettyPrice } from "../../utils/coins";
 import {
@@ -23,13 +24,14 @@ export const NFTAttributeCard: React.FC<{
   style?: StyleProp<ViewStyle>;
 }> = ({ nftAttribute, nftInfo, style }) => {
   const isMobile = useIsMobile();
+  const { width } = useMaxResolution({ responsive: true, noMargin: true });
 
   return (
     nftAttribute &&
     nftInfo && (
       <TertiaryBox
         height={92}
-        width={isMobile ? 170 : 192}
+        width={isMobile && width < 380 ? 158 : 192}
         style={style}
         mainContainerStyle={{
           padding: 12,

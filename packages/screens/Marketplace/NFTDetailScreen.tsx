@@ -42,10 +42,8 @@ const Content: React.FC<{
   const isMobile = useIsMobile();
   const wallet = useSelectedWallet();
   const { info, refresh, notFound } = useNFTInfo(id, wallet?.userId);
-  const { width } = useMaxResolution({ noMargin: true });
-
+  const { width } = useMaxResolution({ responsive: true, noMargin: true });
   const [network, collectionAddress] = parseNftId(id);
-
   const collectionId = getCollectionId(network?.id, collectionAddress);
   const mintEnded = useMintEnded(collectionId);
   const showMarketplace =
@@ -227,8 +225,9 @@ export const NFTDetailScreen: ScreenFC<"NFTDetail"> = ({
   return (
     <ScreenContainer
       forceNetworkId={network?.id}
-      fullWidth
       footerChildren={<></>}
+      responsive
+      fullWidth
       noScroll
       noMargin
       onBackPress={() =>
