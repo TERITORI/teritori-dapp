@@ -501,7 +501,7 @@ export const RichText: React.FC<RichTextProps> = ({
 // eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   toolbarCustomButton: {
-    margin: layout.padding_x0_5,
+    margin: layout.spacing_x0_5,
   },
   toolbarCustomButtonIcon: {
     borderRadius: 4,

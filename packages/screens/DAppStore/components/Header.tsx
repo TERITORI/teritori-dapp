@@ -34,8 +34,8 @@ export function Header({
       <SearchInput
         style={{
           width: isMobile ? "100%" : 432,
-          marginTop: layout.padding_x3,
-          marginBottom: layout.padding_x1,
+          marginTop: layout.spacing_x3,
+          marginBottom: layout.spacing_x1,
           height: 40,
         }}
         borderRadius={12}

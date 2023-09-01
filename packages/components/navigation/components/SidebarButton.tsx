@@ -105,7 +105,7 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
   //   () => ({
   //     height: isNestedBarExpanded
   //       ? withSpring(
-  //           32 * (allNestedRoutes?.length || 1) + layout.padding_x0_5 * 2
+  //           32 * (allNestedRoutes?.length || 1) + layout.spacing_x0_5 * 2
   //         )
   //       : withTiming(0),
   //     opacity: isNestedBarExpanded ? withSpring(1) : withTiming(0),
@@ -136,7 +136,7 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
       {({ hovered }) => (
         <View>
           <View style={styles.titleContainer}>
-            {isSelected && <SideNotch style={{ left: -layout.padding_x2 }} />}
+            {isSelected && <SideNotch style={{ left: -layout.spacing_x2 }} />}
             <View
               style={[
                 styles.svgContainer,
@@ -206,10 +206,10 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    paddingHorizontal: layout.padding_x2,
+    paddingHorizontal: layout.spacing_x2,
   },
   titleContainer: {
-    paddingVertical: layout.padding_x1,
+    paddingVertical: layout.spacing_x1,
     alignItems: "center",
     flexDirection: "row",
   },
@@ -239,7 +239,7 @@ const styles = StyleSheet.create({
   },
   nestedContainer: {
     flex: 1,
-    paddingVertical: layout.padding_x0_5,
+    paddingVertical: layout.spacing_x0_5,
     backgroundColor: neutral17,
     borderRadius: 8,
   },

@@ -238,7 +238,7 @@ export const SendModal: React.FC<SendModalProps> = ({
         value={selectedDAOId}
         onSelect={setSelectedDAOId}
         userId={selectedWallet?.userId}
-        style={{ marginBottom: layout.padding_x2_5 }}
+        style={{ marginBottom: layout.spacing_x2_5 }}
       />
 
       <TextInputCustom<TransactionForm>
@@ -290,7 +290,7 @@ const styles = StyleSheet.create({
     backgroundColor: neutral22,
     justifyContent: "center",
     alignItems: "center",
-    marginLeft: layout.padding_x1_5,
+    marginLeft: layout.spacing_x1_5,
     //TODO: Remove that when contacts are handled
     opacity: 0.5,
   },

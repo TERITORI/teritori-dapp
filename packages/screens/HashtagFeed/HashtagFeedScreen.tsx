@@ -19,7 +19,7 @@ const Header = ({ hashtag }: { hashtag: string }) => {
   return (
     <View
       style={{
-        marginTop: layout.padding_x2,
+        marginTop: layout.spacing_x2,
         alignSelf: "center",
         alignItems: "center",
         flexDirection: "row",
@@ -32,7 +32,7 @@ const Header = ({ hashtag }: { hashtag: string }) => {
           height: 60,
           width: 60,
           borderRadius: 30,
-          marginRight: layout.padding_x2,
+          marginRight: layout.spacing_x2,
           backgroundColor: neutral22,
           alignItems: "center",
           justifyContent: "center",

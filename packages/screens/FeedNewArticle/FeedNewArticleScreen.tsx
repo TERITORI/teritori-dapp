@@ -196,7 +196,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
 
       <View
         style={{
-          marginTop: isMobile ? layout.padding_x2 : layout.contentPadding,
+          marginTop: isMobile ? layout.spacing_x2 : layout.contentSpacing,
         }}
       >
         <WalletStatusBox />
@@ -205,8 +205,8 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
         <TertiaryBox
           fullWidth
           mainContainerStyle={{
-            paddingVertical: layout.padding_x1,
-            paddingHorizontal: layout.padding_x1_5,
+            paddingVertical: layout.spacing_x1,
+            paddingHorizontal: layout.spacing_x1_5,
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "flex-start",
@@ -223,7 +223,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
           <BrandText
             style={[
               fontSemibold13,
-              { color: neutral77, marginLeft: layout.padding_x1 },
+              { color: neutral77, marginLeft: layout.spacing_x1 },
             ]}
           >
             {freePostCount
@@ -244,7 +244,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
           fileHeight={ARTICLE_COVER_IMAGE_HEIGHT}
           isImageCover
           style={{
-            marginTop: layout.padding_x3,
+            marginTop: layout.spacing_x3,
             width: "100%",
           }}
           onUpload={(files) =>
@@ -265,7 +265,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
           name="title"
           control={control}
           variant="labelOutside"
-          containerStyle={{ marginVertical: layout.padding_x3 }}
+          containerStyle={{ marginVertical: layout.spacing_x3 }}
           boxMainContainerStyle={{
             backgroundColor: neutral00,
             borderRadius: 12,

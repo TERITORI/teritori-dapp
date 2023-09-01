@@ -37,7 +37,7 @@ export const TopMenuLiveMint: React.FC = () => {
     <TopMenuSection title="Live Mint" isCarousel>
       <SmallCarousel
         style={{ width: topMenuWidth - 2 }}
-        width={COLLECTION_VIEW_SM_WIDTH + layout.padding_x1_5}
+        width={COLLECTION_VIEW_SM_WIDTH + layout.spacing_x1_5}
         data={collections}
         height={COLLECTION_VIEW_SM_HEIGHT}
         loop={false}

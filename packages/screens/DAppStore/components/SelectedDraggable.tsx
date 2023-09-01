@@ -47,7 +47,7 @@ export const SelectedDraggable: React.FC<{
         display: "flex",
         flexDirection: "row",
         alignItems: "center",
-        marginBottom: layout.padding_x1,
+        marginBottom: layout.spacing_x1,
       }}
     >
       <Hoverable
@@ -87,7 +87,7 @@ export const SelectedDraggable: React.FC<{
         width={256}
         noBrokenCorners
         style={{
-          marginLeft: layout.padding_x1,
+          marginLeft: layout.spacing_x1,
           ...Platform.select({
             web: {
               cursor: "grab",
@@ -98,16 +98,16 @@ export const SelectedDraggable: React.FC<{
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "space-between",
-          paddingVertical: layout.padding_x1_5,
-          paddingLeft: layout.padding_x1_5,
-          paddingRight: layout.padding_x2,
+          paddingVertical: layout.spacing_x1_5,
+          paddingLeft: layout.spacing_x1_5,
+          paddingRight: layout.spacing_x2,
         }}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           {!!icon && <SVGorImageIcon icon={icon} iconSize={24} />}
 
           <BrandText
-            style={[fontBold12, { marginLeft: layout.padding_x1_5 }]}
+            style={[fontBold12, { marginLeft: layout.spacing_x1_5 }]}
             numberOfLines={1}
           >
             {title}

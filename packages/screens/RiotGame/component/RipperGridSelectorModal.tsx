@@ -127,7 +127,7 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
                     numColumns={1}
                     style={{
                       height:
-                        (THUMB_CONTAINER_SIZE + layout.padding_x1_5) *
+                        (THUMB_CONTAINER_SIZE + layout.spacing_x1_5) *
                         TOTAL_VISIBLE,
                     }}
                     keyExtractor={(item) => item.id}
@@ -152,7 +152,7 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
                             <BrandText
                               style={[
                                 fontSemibold11,
-                                { marginVertical: layout.padding_x1 },
+                                { marginVertical: layout.spacing_x1 },
                               ]}
                             >
                               {item.name}
@@ -191,8 +191,8 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
             <View
               style={{
                 flex: 1,
-                marginLeft: layout.padding_x4,
-                marginTop: 2 * layout.padding_x4,
+                marginLeft: layout.spacing_x4,
+                marginTop: 2 * layout.spacing_x4,
               }}
             >
               <BrandText style={fontMedium32}>Stats</BrandText>
@@ -231,7 +231,7 @@ const styles = StyleSheet.create({
   dashedBorder: {
     width: RIPPER_IMAGE_SIZE,
     height: RIPPER_IMAGE_SIZE,
-    marginTop: layout.padding_x2_5,
+    marginTop: layout.spacing_x2_5,
   },
   roundedContainer: {
     width: RIPPER_IMAGE_SIZE - 4,
@@ -251,8 +251,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: THUMB_CONTAINER_SIZE,
     borderWidth: 0,
-    margin: layout.padding_x1,
-    marginRight: layout.padding_x3,
+    margin: layout.spacing_x1,
+    marginRight: layout.spacing_x3,
   },
   arrowRight: {
     position: "absolute",
@@ -266,13 +266,13 @@ const styles = StyleSheet.create({
   btnGroup: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 2 * layout.padding_x4,
-    marginLeft: layout.padding_x4,
+    marginTop: 2 * layout.spacing_x4,
+    marginLeft: layout.spacing_x4,
   },
   closeIcon: {
     position: "absolute",
-    right: layout.padding_x1_5,
-    top: layout.padding_x1_5,
+    right: layout.spacing_x1_5,
+    top: layout.spacing_x1_5,
     zIndex: 1,
   },
 });

@@ -131,7 +131,7 @@ export const AudioView: React.FC<{
 
       <View
         style={{
-          marginLeft: layout.padding_x1_5,
+          marginLeft: layout.spacing_x1_5,
           flex: 1,
         }}
       >
@@ -149,7 +149,7 @@ export const AudioView: React.FC<{
                 justifyContent: "space-between",
                 alignItems: "center",
                 marginBottom: 8,
-                marginLeft: layout.padding_x1_5,
+                marginLeft: layout.spacing_x1_5,
               }}
             >
               <BrandText style={[fontSemibold14]}>
@@ -194,7 +194,7 @@ export const AudioView: React.FC<{
               style={{
                 height: THUMBNAIL_WIDTH,
                 width: THUMBNAIL_WIDTH,
-                marginLeft: layout.padding_x1,
+                marginLeft: layout.spacing_x1,
                 borderRadius: 4,
               }}
             />

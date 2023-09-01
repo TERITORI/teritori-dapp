@@ -57,6 +57,6 @@ export const WalletManagerScreen: ScreenFC<"WalletManager"> = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingBottom: layout.contentPadding,
+    paddingBottom: layout.contentSpacing,
   },
 });

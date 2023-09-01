@@ -19,8 +19,8 @@ export const RightRail = ({ searchInput }: { searchInput: string }) => {
         flex: 1,
         minHeight: 250,
         maxWidth: isMobile ? "100%" : 1024,
-        paddingLeft: isMobile ? 0 : layout.padding_x3,
-        paddingTop: layout.padding_x4,
+        paddingLeft: isMobile ? 0 : layout.spacing_x3,
+        paddingTop: layout.spacing_x4,
         justifyContent: isMobile ? "flex-end" : "flex-start",
       }}
     >
@@ -32,15 +32,15 @@ export const RightRail = ({ searchInput }: { searchInput: string }) => {
                   style={{
                     flexDirection: "row",
                     alignItems: "center",
-                    marginLeft: isMobile ? layout.padding_x1_5 : 0,
-                    marginBottom: layout.padding_x2_5,
+                    marginLeft: isMobile ? layout.spacing_x1_5 : 0,
+                    marginBottom: layout.spacing_x2_5,
                   }}
                 >
                   <SVGorImageIcon
                     icon={element.icon}
                     iconSize={24}
                     style={{
-                      marginRight: layout.padding_x1_5,
+                      marginRight: layout.spacing_x1_5,
                     }}
                   />
                   <BrandText>{element.groupName}</BrandText>
@@ -48,7 +48,7 @@ export const RightRail = ({ searchInput }: { searchInput: string }) => {
                 <View
                   style={{
                     flex: 1,
-                    marginBottom: layout.padding_x2_5,
+                    marginBottom: layout.spacing_x2_5,
                     flexDirection: "row",
                     flexWrap: "wrap",
                     justifyContent: isMobile ? "center" : "flex-start",
@@ -66,8 +66,8 @@ export const RightRail = ({ searchInput }: { searchInput: string }) => {
                           key={index}
                           option={option}
                           style={{
-                            marginRight: layout.padding_x2_5,
-                            marginBottom: layout.padding_x2_5,
+                            marginRight: layout.spacing_x2_5,
+                            marginBottom: layout.spacing_x2_5,
                           }}
                         />
                       );

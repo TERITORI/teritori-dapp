@@ -53,15 +53,15 @@ export const TopMenuAccount: React.FC = () => {
 // eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   container: {
-    padding: layout.padding_x2,
+    padding: layout.spacing_x2,
   },
   userImageLine: {
     width: "100%",
-    marginBottom: layout.padding_x1_5,
+    marginBottom: layout.spacing_x1_5,
   },
   switchAccount: {
     ...(fontSemibold14 as object),
-    marginRight: layout.padding_x0_5,
+    marginRight: layout.spacing_x0_5,
   },
   manageProfile: {
     ...(fontSemibold14 as object),

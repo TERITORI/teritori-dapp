@@ -7,7 +7,7 @@ import { layout } from "../../utils/style/layout";
 export const SpacerRow: React.FC<SpacerProps> = ({ size }) => (
   <View
     style={{
-      width: layout.padding_x1 * size,
+      width: layout.spacing_x1 * size,
     }}
   />
 );

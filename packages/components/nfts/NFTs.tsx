@@ -17,7 +17,7 @@ import { SpacerColumn } from "../spacer";
 
 const keyExtractor = (item: NFT) => item.id;
 
-const halfGap = layout.padding_x1;
+const halfGap = layout.spacing_x1;
 
 export const minNFTWidth = 250;
 
@@ -88,13 +88,13 @@ export const NFTs: React.FC<{
               flexDirection: "column",
               width: 245,
               backgroundColor: neutral00,
-              borderRadius: layout.padding_x2,
+              borderRadius: layout.spacing_x2,
               borderColor: neutral33,
               borderWidth: 1,
               height,
-              padding: layout.padding_x2,
+              padding: layout.spacing_x2,
               borderStyle: "solid",
-              marginRight: layout.padding_x1_5,
+              marginRight: layout.spacing_x1_5,
             }}
           />
         )}

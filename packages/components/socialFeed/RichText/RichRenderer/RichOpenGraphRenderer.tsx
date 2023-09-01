@@ -56,9 +56,9 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     flexDirection: "row",
     backgroundColor: transparentColor,
-    marginVertical: layout.padding_x2,
+    marginVertical: layout.spacing_x2,
     maxWidth: 850,
   },
   image: { height: 106, width: 106 },
-  content: { padding: layout.padding_x2, flex: 1, flexWrap: "wrap" },
+  content: { padding: layout.spacing_x2, flex: 1, flexWrap: "wrap" },
 });

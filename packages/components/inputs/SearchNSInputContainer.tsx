@@ -29,7 +29,7 @@ export const SearchNSInputContainer: FC<{
             {
               flexDirection: "row",
               flexWrap: "wrap",
-              marginTop: layout.padding_x1_5,
+              marginTop: layout.spacing_x1_5,
             },
             style,
           ]}
@@ -40,7 +40,7 @@ export const SearchNSInputContainer: FC<{
               networkId={selectedNetworkId}
               name={n}
               onPress={(userId) => onPressName(userId)}
-              style={{ marginRight: layout.padding_x1 }}
+              style={{ marginRight: layout.spacing_x1 }}
             />
           ))}
         </View>

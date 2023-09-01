@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderBottomColor: neutral33,
     borderBottomWidth: 1,
-    paddingHorizontal: layout.padding_x1_5,
+    paddingHorizontal: layout.spacing_x1_5,
     position: "absolute",
     top: 0,
     zIndex: 99999,

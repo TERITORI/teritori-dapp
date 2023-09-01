@@ -25,14 +25,14 @@ export const LeftRail = () => {
     <View
       style={{
         flex: 1,
-        marginLeft: layout.padding_x3,
-        marginRight: layout.padding_x2,
-        paddingTop: layout.padding_x4,
+        marginLeft: layout.spacing_x3,
+        marginRight: layout.spacing_x2,
+        paddingTop: layout.spacing_x4,
         maxWidth: 300,
         height: "100%",
       }}
     >
-      <BrandText style={{ marginBottom: layout.padding_x2_5 }}>
+      <BrandText style={{ marginBottom: layout.spacing_x2_5 }}>
         dApps in Sidebar
       </BrandText>
       {selectedApps.length > 0 && Object.keys(availableApps).length > 0 ? (
@@ -74,7 +74,7 @@ export const LeftRail = () => {
           style={{
             fontSize: 13,
             color: neutral67,
-            marginTop: layout.padding_x1_5,
+            marginTop: layout.spacing_x1_5,
             display: "flex",
           }}
         >

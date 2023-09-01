@@ -30,7 +30,7 @@ export const RiotGameInventoryScreen = () => {
   return (
     <GameContentView>
       <FlexRow breakpoint={1200} justifyContent="space-around">
-        <View style={{ opacity: 0.6, marginTop: layout.padding_x4 }}>
+        <View style={{ opacity: 0.6, marginTop: layout.spacing_x4 }}>
           <FlexRow justifyContent="space-between" alignItems="center">
             <BrandText style={fontMedium32}>Available Items</BrandText>
 
@@ -55,7 +55,7 @@ export const RiotGameInventoryScreen = () => {
             renderItem={() => {
               return (
                 <TertiaryBox
-                  style={{ margin: layout.padding_x1 }}
+                  style={{ margin: layout.spacing_x1 }}
                   width={150}
                   height={150}
                 >
@@ -69,7 +69,7 @@ export const RiotGameInventoryScreen = () => {
           />
         </View>
 
-        <View style={{ minWidth: "500px", marginTop: layout.padding_x4 }}>
+        <View style={{ minWidth: "500px", marginTop: layout.spacing_x4 }}>
           <FlexRow
             style={{ justifyContent: "space-between", alignItems: "center" }}
           >
@@ -92,7 +92,7 @@ export const RiotGameInventoryScreen = () => {
             renderItem={({ item: ripper }) => {
               return (
                 <TertiaryBox
-                  style={{ margin: layout.padding_x1 }}
+                  style={{ margin: layout.spacing_x1 }}
                   width={150}
                   height={150}
                 >

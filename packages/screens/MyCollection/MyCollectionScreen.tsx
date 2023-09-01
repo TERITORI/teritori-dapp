@@ -31,7 +31,7 @@ export const MyCollectionScreen: ScreenFC<"MyCollection"> = () => {
     <ScreenContainer>
       <OwnedNFTs
         ownerId={selectedWallet?.userId || ""}
-        style={{ marginHorizontal: layout.padding_x3 }}
+        style={{ marginHorizontal: layout.spacing_x3 }}
         EmptyListComponent={EmptyListComponent}
       />
     </ScreenContainer>
