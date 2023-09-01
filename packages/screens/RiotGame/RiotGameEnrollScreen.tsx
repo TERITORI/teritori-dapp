@@ -272,7 +272,7 @@ export const RiotGameEnrollScreen = () => {
         <View style={[styles.col, { maxWidth: 575 }]}>
           <View
             style={{
-              marginTop: layout.padding_x1,
+              marginTop: layout.spacing_x1,
               width: "100%",
               flexDirection: "row",
               justifyContent: "space-between",
@@ -284,7 +284,7 @@ export const RiotGameEnrollScreen = () => {
               style={{
                 flexDirection: "row",
                 alignItems: "center",
-                marginRight: layout.padding_x2_5,
+                marginRight: layout.spacing_x2_5,
               }}
             >
               <SimpleButton
@@ -314,7 +314,7 @@ export const RiotGameEnrollScreen = () => {
             ListFooterComponent={
               activeSquadId ? (
                 <TertiaryButton
-                  style={{ marginTop: layout.padding_x2_5 }}
+                  style={{ marginTop: layout.spacing_x2_5 }}
                   text={`Save as Squad ${activeSquadId}`}
                   size="XS"
                   onPress={() => saveSquadPreset(activeSquadId)}
@@ -343,16 +343,16 @@ export const RiotGameEnrollScreen = () => {
         </View>
 
         <View style={[styles.col, { maxWidth: 540 }]}>
-          <View style={{ marginTop: layout.padding_x1, width: "100%" }}>
+          <View style={{ marginTop: layout.spacing_x1, width: "100%" }}>
             <BrandText style={fontMedium32}>Staking duration</BrandText>
           </View>
 
           <TertiaryBox
             mainContainerStyle={{
-              padding: layout.padding_x4,
+              padding: layout.spacing_x4,
               alignItems: "flex-start",
             }}
-            style={{ marginTop: layout.padding_x2 }}
+            style={{ marginTop: layout.spacing_x2 }}
             fullWidth
             height={148}
           >
@@ -382,8 +382,8 @@ export const RiotGameEnrollScreen = () => {
           <SimpleButton
             onPress={gotoCurrentFight}
             containerStyle={{
-              marginVertical: layout.padding_x4,
-              marginRight: layout.padding_x2,
+              marginVertical: layout.spacing_x4,
+              marginRight: layout.spacing_x2,
             }}
             text="Go to current Fight"
             loading={isJoiningFight}
@@ -395,7 +395,7 @@ export const RiotGameEnrollScreen = () => {
         <SimpleButton
           disabled={selectedRippers.length === 0}
           onPress={joinTheFight}
-          containerStyle={{ marginVertical: layout.padding_x4 }}
+          containerStyle={{ marginVertical: layout.spacing_x4 }}
           text="Join the Fight"
           loading={isJoiningFight}
         />
@@ -405,7 +405,7 @@ export const RiotGameEnrollScreen = () => {
         <SimpleButton
           disabled={isUnstaking}
           onPress={unstakeSeason1}
-          containerStyle={{ marginVertical: layout.padding_x2 }}
+          containerStyle={{ marginVertical: layout.spacing_x2 }}
           text="Retrieve Season 1 Squad"
           loading={isUnstaking}
           outline
@@ -433,7 +433,7 @@ const styles = StyleSheet.create({
   },
   enrollContainer: {
     justifyContent: "space-around",
-    marginTop: layout.padding_x1,
+    marginTop: layout.spacing_x1,
     flexDirection: "row",
     flexWrap: "wrap",
   },
@@ -443,19 +443,19 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   ripperSlot: {
-    marginRight: layout.padding_x2_5,
-    marginTop: layout.padding_x2_5,
+    marginRight: layout.spacing_x2_5,
+    marginTop: layout.spacing_x2_5,
   },
   videoContainer: {
-    marginTop: layout.padding_x2_5,
+    marginTop: layout.spacing_x2_5,
     alignSelf: "center",
     width: embeddedVideoWidth,
     height: embeddedVideoHeight,
   },
   clearIcon: {
     position: "absolute",
-    right: layout.padding_x1,
-    top: layout.padding_x1,
+    right: layout.spacing_x1,
+    top: layout.spacing_x1,
     zIndex: 1,
   },
 });

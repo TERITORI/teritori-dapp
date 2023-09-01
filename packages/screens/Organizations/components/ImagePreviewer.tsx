@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     backgroundColor: neutral22,
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: layout.padding_x1_5,
+    marginBottom: layout.spacing_x1_5,
     overflow: "hidden",
   },
   image: {

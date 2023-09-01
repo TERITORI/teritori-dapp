@@ -57,8 +57,8 @@ const styles = StyleSheet.create({
     {
       color: secondaryColor,
       borderWidth: 1,
-      padding: layout.padding_x2,
-      marginLeft: layout.padding_x2,
+      padding: layout.spacing_x2,
+      marginLeft: layout.spacing_x2,
       borderColor: neutral33,
       borderRadius: 12,
       width: 70,

@@ -44,21 +44,21 @@ export const SimpleButton: React.FC<SimpleButtonProps> = ({
 
   switch (size) {
     case "XL":
-      padH = layout.padding_x3;
-      padV = layout.padding_x2_5;
+      padH = layout.spacing_x3;
+      padV = layout.spacing_x2_5;
       break;
     case "SM":
-      padH = layout.padding_x2;
-      padV = layout.padding_x1_5;
+      padH = layout.spacing_x2;
+      padV = layout.spacing_x1_5;
       break;
     case "XS":
-      padH = layout.padding_x1_5;
-      padV = layout.padding_x0_5;
+      padH = layout.spacing_x1_5;
+      padV = layout.spacing_x0_5;
       break;
     case "M":
     default:
-      padH = layout.padding_x2_5;
-      padV = layout.padding_x2;
+      padH = layout.spacing_x2_5;
+      padV = layout.spacing_x2;
       break;
   }
 
@@ -85,8 +85,8 @@ export const SimpleButton: React.FC<SimpleButtonProps> = ({
       >
         {iconSVG && (
           <SVG
-            style={{ marginRight: layout.padding_x1 }}
-            height={layout.padding_x2}
+            style={{ marginRight: layout.spacing_x1 }}
+            height={layout.spacing_x2}
             source={iconSVG}
           />
         )}
@@ -101,7 +101,7 @@ export const SimpleButton: React.FC<SimpleButtonProps> = ({
 const styles = StyleSheet.create({
   btnStyle: {
     alignSelf: "center",
-    borderRadius: layout.padding_x1_5,
+    borderRadius: layout.spacing_x1_5,
     ...(fontSemibold14 as object),
   },
 });

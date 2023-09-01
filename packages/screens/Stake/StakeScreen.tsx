@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingTop: layout.contentPadding,
-    marginBottom: layout.padding_x2_5,
+    paddingTop: layout.contentSpacing,
+    marginBottom: layout.spacing_x2_5,
   },
 });

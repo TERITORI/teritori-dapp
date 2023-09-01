@@ -50,7 +50,7 @@ export const UserProfileModal: React.FC<toggleUserProfileProps> = ({
   const calculateChildrenWidth = (): number => {
     let targetWidth = 0;
 
-    const gapWidth = layout.padding_x1;
+    const gapWidth = layout.spacing_x1;
     const miniumWidth = 240;
 
     if (width < (miniumWidth + gapWidth * 2) * 8)
@@ -74,9 +74,9 @@ export const UserProfileModal: React.FC<toggleUserProfileProps> = ({
   const childrenHeight = 42;
   const childrenWidth = calculateChildrenWidth();
   const parentWidth = width;
-  const marginChildrenVertical = layout.padding_x1;
+  const marginChildrenVertical = layout.spacing_x1;
   const marginChildrenTop =
-    width < RESPONSIVE_BREAKPOINT_S ? layout.padding_x1 : layout.padding_x2;
+    width < RESPONSIVE_BREAKPOINT_S ? layout.spacing_x1 : layout.spacing_x2;
 
   const [profileData, setProfileData] =
     useState<ProfileDataType[]>(INIT_PROFILE_DATA);
@@ -98,9 +98,9 @@ export const UserProfileModal: React.FC<toggleUserProfileProps> = ({
         marginTop:
           width < MOBILE_WIDTH
             ? width < RESPONSIVE_BREAKPOINT_S
-              ? 5 * layout.padding_x1
-              : 15 * layout.padding_x1
-            : 25 * layout.padding_x1,
+              ? 5 * layout.spacing_x1
+              : 15 * layout.spacing_x1
+            : 25 * layout.spacing_x1,
       },
     ]),
     modalText: StyleSheet.flatten([
@@ -108,11 +108,11 @@ export const UserProfileModal: React.FC<toggleUserProfileProps> = ({
       {
         marginHorizontal: "auto",
         color: neutralA3,
-        marginTop: layout.padding_x1,
+        marginTop: layout.spacing_x1,
         width:
           width < RESPONSIVE_BREAKPOINT_S
             ? 0.9 * width
-            : 15 * layout.padding_x4,
+            : 15 * layout.spacing_x4,
       },
     ]),
     cardContainer: {
@@ -122,13 +122,13 @@ export const UserProfileModal: React.FC<toggleUserProfileProps> = ({
       marginHorizontal: "auto",
       justifyContent: "center",
       alignItems: "center",
-      gap: layout.padding_x1_5,
+      gap: layout.spacing_x1_5,
       marginTop:
         width < MOBILE_WIDTH
           ? width < RESPONSIVE_BREAKPOINT_S
-            ? 5 * layout.padding_x0_5
-            : 30 * layout.padding_x0_5
-          : 45 * layout.padding_x0_5,
+            ? 5 * layout.spacing_x0_5
+            : 30 * layout.spacing_x0_5
+          : 45 * layout.spacing_x0_5,
     },
     cardBox: {
       display: "flex",
@@ -136,10 +136,10 @@ export const UserProfileModal: React.FC<toggleUserProfileProps> = ({
       justifyContent: "center",
       alignItems: "center",
       width: childrenWidth,
-      paddingVertical: layout.padding_x1_5,
+      paddingVertical: layout.spacing_x1_5,
       borderColor: neutral33,
       borderWidth: 1,
-      borderRadius: layout.padding_x1,
+      borderRadius: layout.spacing_x1,
       position: "relative",
     },
 
@@ -156,11 +156,11 @@ export const UserProfileModal: React.FC<toggleUserProfileProps> = ({
       justifyContent: "center",
       alignItems: "center",
       width: childrenWidth,
-      paddingVertical: layout.padding_x1_5,
+      paddingVertical: layout.spacing_x1_5,
       borderColor: "rgba(0, 0, 0, 0.9)",
       borderWidth: 1,
       backgroundColor: "rgba(0, 0, 0, 0.9)",
-      borderRadius: layout.padding_x1,
+      borderRadius: layout.spacing_x1,
       position: "relative",
     },
     unconfirmedCardContent: StyleSheet.flatten([fontSemibold14]),
@@ -182,13 +182,13 @@ export const UserProfileModal: React.FC<toggleUserProfileProps> = ({
       display: "flex",
       justifyContent: "center",
       flexDirection: "row",
-      gap: layout.padding_x3,
+      gap: layout.spacing_x3,
       marginTop:
         width < MOBILE_WIDTH
           ? width < RESPONSIVE_BREAKPOINT_S
-            ? 5 * layout.padding_x0_5
-            : 30 * layout.padding_x0_5
-          : 45 * layout.padding_x0_5,
+            ? 5 * layout.spacing_x0_5
+            : 30 * layout.spacing_x0_5
+          : 45 * layout.spacing_x0_5,
     },
   });
 

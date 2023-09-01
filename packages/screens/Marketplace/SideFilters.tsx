@@ -87,8 +87,8 @@ const Header: React.FC = () => {
         borderStyle: "solid",
         borderBottomColor: neutral44,
         borderWidth: 1,
-        paddingBottom: layout.padding_x1,
-        marginBottom: layout.padding_x1,
+        paddingBottom: layout.spacing_x1,
+        marginBottom: layout.spacing_x1,
       }}
     >
       <BrandText style={fontSemibold14}>Filters</BrandText>
@@ -162,7 +162,7 @@ const AccordionItem: React.FC<{
         >
           <SearchInput
             style={{
-              paddingVertical: layout.padding_x1,
+              paddingVertical: layout.spacing_x1,
             }}
             handleChangeText={(text) => setSearchValue(text)}
           />
@@ -249,8 +249,8 @@ const FilterItems: React.FC<{
         style={{
           backgroundColor: codGrayColor,
           borderRadius: 8,
-          padding: layout.padding_x1,
-          marginBottom: layout.padding_x1,
+          padding: layout.spacing_x1,
+          marginBottom: layout.spacing_x1,
           borderColor: isSelected ? primaryColor : codGrayColor,
           borderWidth: 1,
         }}
@@ -262,7 +262,7 @@ const FilterItems: React.FC<{
             flexDirection: "row",
             flexWrap: "nowrap",
             alignItems: "center",
-            marginBottom: layout.padding_x0_5,
+            marginBottom: layout.spacing_x0_5,
           }}
         >
           <BrandText style={[fontSemibold12, { color: primaryColor }]}>
@@ -287,7 +287,7 @@ const FilterItems: React.FC<{
             flexDirection: "row",
             flexWrap: "nowrap",
             alignItems: "center",
-            marginTop: layout.padding_x0_5,
+            marginTop: layout.spacing_x0_5,
           }}
         >
           <View
@@ -362,19 +362,19 @@ export const AppliedFilters: React.FC<{ collectionId: string }> = ({
   const commonStyles: StyleProp<ViewStyle> = {
     flexDirection: "row",
     flexWrap: "nowrap",
-    minWidth: layout.padding_x2_5,
+    minWidth: layout.spacing_x2_5,
     borderRadius: 8,
     backgroundColor: codGrayColor,
-    marginLeft: layout.padding_x1,
+    marginLeft: layout.spacing_x1,
     alignItems: "center",
-    padding: layout.padding_x1,
+    padding: layout.spacing_x1,
   };
 
   return selected.length > 0 ? (
     <View
       style={{
         flexDirection: "row",
-        marginBottom: layout.padding_x1,
+        marginBottom: layout.spacing_x1,
         alignSelf: "flex-start",
         marginLeft: filterIsShown ? 281 : 0,
       }}
@@ -387,7 +387,7 @@ export const AppliedFilters: React.FC<{ collectionId: string }> = ({
           <BrandText
             style={[
               fontSemibold12,
-              { textTransform: "capitalize", marginRight: layout.padding_x1 },
+              { textTransform: "capitalize", marginRight: layout.spacing_x1 },
             ]}
           >
             {attribute.traitType}: {attribute.value}
@@ -413,8 +413,8 @@ const FilterContainer: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
         borderStyle: "solid",
         borderBottomColor: neutral44,
         borderWidth: 1,
-        paddingBottom: layout.padding_x1,
-        marginBottom: layout.padding_x1,
+        paddingBottom: layout.spacing_x1,
+        marginBottom: layout.spacing_x1,
       },
       style,
     ]}
@@ -432,13 +432,13 @@ const PriceFilter: React.FC<{ currency: NativeCurrencyInfo }> = ({
     textInput: {
       color: "#FFFFFF",
       backgroundColor: neutral00,
-      borderRadius: layout.padding_x1,
+      borderRadius: layout.spacing_x1,
       borderColor: neutral33,
       borderStyle: "solid",
       width: 85,
       height: 40,
       borderWidth: 1,
-      padding: layout.padding_x1,
+      padding: layout.spacing_x1,
     },
   });
   const textInputStyle = StyleSheet.flatten([styles.textInput, fontMedium14]);
@@ -464,7 +464,7 @@ const PriceFilter: React.FC<{ currency: NativeCurrencyInfo }> = ({
           flexWrap: "nowrap",
           alignItems: "center",
           width: "100%",
-          paddingVertical: layout.padding_x1,
+          paddingVertical: layout.spacing_x1,
           justifyContent: "space-between",
         }}
       >

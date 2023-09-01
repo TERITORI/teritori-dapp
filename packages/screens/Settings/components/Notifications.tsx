@@ -15,16 +15,16 @@ const styles = StyleSheet.create({
   bigTitle: StyleSheet.flatten([
     fontSemibold20,
     {
-      paddingTop: layout.padding_x4,
-      paddingLeft: layout.padding_x2,
+      paddingTop: layout.spacing_x4,
+      paddingLeft: layout.spacing_x2,
     },
   ]),
   bigText: StyleSheet.flatten([
     fontSemibold14,
     {
       color: neutralA3,
-      paddingLeft: layout.padding_x2,
-      paddingTop: layout.padding_x1,
+      paddingLeft: layout.spacing_x2,
+      paddingTop: layout.spacing_x1,
     },
   ]),
 });
@@ -75,9 +75,9 @@ export const Notifications: React.FC = () => {
       <div // change into View
         style={{
           width: "100%",
-          borderRadius: layout.padding_x1_5,
+          borderRadius: layout.spacing_x1_5,
           backgroundColor: neutral17,
-          padding: layout.padding_x1_5,
+          padding: layout.spacing_x1_5,
           opacity: 0.5, //  delete when ready
           pointerEvents: "none", //  delete when ready
         }}

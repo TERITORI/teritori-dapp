@@ -68,7 +68,7 @@ export const Reactions: React.FC<{
           {/* <AnimationFadeInOut*/}
           {/*visible={!isLoading}*/}
           {/*  style={{*/}
-          {/*    paddingHorizontal: layout.padding_x0_5,*/}
+          {/*    paddingHorizontal: layout.spacing_x0_5,*/}
           {/*    flexDirection: "row",*/}
           {/*    alignItems: "center",*/}
           {/* }}*/}
@@ -92,7 +92,7 @@ export const Reactions: React.FC<{
                 label={String(reaction.count)}
                 emoji={reaction.icon}
                 onPress={() => onPressReaction(reaction.icon)}
-                style={{ marginHorizontal: layout.padding_x0_25 }}
+                style={{ marginHorizontal: layout.spacing_x0_25 }}
               />
             )}
             keyExtractor={(reaction: Reaction) => reaction.icon}
@@ -101,7 +101,7 @@ export const Reactions: React.FC<{
           {!!hiddenReactions.length && (
             <MoreReactionsButton
               label={moreReactionsButtonLabel}
-              style={{ marginHorizontal: layout.padding_x0_25 }}
+              style={{ marginHorizontal: layout.spacing_x0_25 }}
               onPress={() => setMoreReactionsShown((shown) => !shown)}
             />
           )}

@@ -119,16 +119,16 @@ export const WalletDashboardHeader: React.FC = () => {
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
-        paddingTop: layout.contentPadding,
+        paddingTop: layout.contentSpacing,
         flex: 1,
         flexWrap: "wrap",
-        marginTop: -layout.padding_x3,
+        marginTop: -layout.spacing_x3,
       }}
     >
       <View
         style={{
           flexDirection: "row",
-          marginTop: layout.padding_x3,
+          marginTop: layout.spacing_x3,
         }}
       >
         <TouchableOpacity
@@ -172,7 +172,7 @@ export const WalletDashboardHeader: React.FC = () => {
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "space-between",
-          marginTop: layout.padding_x3,
+          marginTop: layout.spacing_x3,
         }}
       >
         <WalletDashboardHeaderCard

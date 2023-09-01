@@ -79,8 +79,8 @@ export const NetworkSelectorMenu: FC<{
       noBrokenCorners
       style={style}
       mainContainerStyle={{
-        paddingHorizontal: layout.padding_x2,
-        paddingTop: layout.padding_x2,
+        paddingHorizontal: layout.spacing_x2,
+        paddingTop: layout.spacing_x2,
         backgroundColor: neutral17,
         alignItems: "flex-start",
         borderTopWidth: 0,
@@ -112,7 +112,7 @@ export const NetworkSelectorMenu: FC<{
             <TouchableOpacity
               disabled={!selectable}
               style={{
-                marginBottom: layout.padding_x2,
+                marginBottom: layout.spacing_x2,
                 opacity: selectable ? 1 : 0.5,
               }}
               key={index}
@@ -121,7 +121,7 @@ export const NetworkSelectorMenu: FC<{
               <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <NetworkIcon networkId={network.id} size={16} />
                 <BrandText
-                  style={[fontSemibold12, { marginLeft: layout.padding_x1_5 }]}
+                  style={[fontSemibold12, { marginLeft: layout.spacing_x1_5 }]}
                 >
                   {network?.displayName || "Unknown"}
                 </BrandText>

@@ -15,7 +15,7 @@ export const BuyTokens: React.FC<{
       style={{
         justifyContent: "center",
         alignItems: "center",
-        marginBottom: layout.padding_x1,
+        marginBottom: layout.spacing_x1,
         flexDirection,
       }}
       onPress={() => {
@@ -24,7 +24,7 @@ export const BuyTokens: React.FC<{
     >
       <CreditCardIcon
         color={primaryColor}
-        style={{ marginRight: flexDirection === "row" ? layout.padding_x1 : 0 }}
+        style={{ marginRight: flexDirection === "row" ? layout.spacing_x1 : 0 }}
       />
       <BrandText style={textStyle}>Buy Tokens</BrandText>
     </TouchableOpacity>

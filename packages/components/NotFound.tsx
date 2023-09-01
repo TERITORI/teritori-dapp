@@ -10,7 +10,7 @@ export const NotFound: React.FC<{ label: string }> = ({ label }) => {
       style={{
         alignItems: "center",
         width: "100%",
-        marginTop: layout.padding_x4,
+        marginTop: layout.spacing_x4,
       }}
     >
       <BrandText>{label} not found</BrandText>

@@ -27,13 +27,13 @@ export const useCommonStyles = () => {
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
-      margin: layout.padding_x1,
+      margin: layout.spacing_x1,
     },
     bigTitle: StyleSheet.flatten([
       fontSemibold20,
       {
-        paddingTop: layout.padding_x4,
-        paddingLeft: layout.padding_x2,
+        paddingTop: layout.spacing_x4,
+        paddingLeft: layout.spacing_x2,
       },
     ]),
     cardSubtitle: StyleSheet.flatten([
@@ -48,16 +48,16 @@ export const useCommonStyles = () => {
         color: neutralA3,
         width:
           width < MOBILE_WIDTH
-            ? (width - 75) * 0.9 - 2 * layout.padding_x2 - 50
+            ? (width - 75) * 0.9 - 2 * layout.spacing_x2 - 50
             : undefined,
-        marginTop: layout.padding_x0_5,
+        marginTop: layout.spacing_x0_5,
       },
     ]),
     cardContainer: {
       width: "100%",
-      borderRadius: layout.padding_x1_5,
+      borderRadius: layout.spacing_x1_5,
       backgroundColor: neutral17,
-      padding: layout.padding_x2,
+      padding: layout.spacing_x2,
     },
     cardTitle: StyleSheet.flatten([fontSemibold14]),
 
@@ -69,17 +69,17 @@ export const useCommonStyles = () => {
             : (width - 209) * 0.9
           : 676,
       margin: "auto",
-      paddingTop: layout.contentPadding,
+      paddingTop: layout.contentSpacing,
     },
     apiInput: {
       fontSize: 14,
       color: "white",
       fontFamily: "Exo_600SemiBold",
-      padding: layout.padding_x2,
+      padding: layout.spacing_x2,
       borderColor: neutral33,
       borderWidth: 1,
       backgroundColor: neutral00,
-      borderRadius: layout.padding_x1_5,
+      borderRadius: layout.spacing_x1_5,
     },
   });
 };

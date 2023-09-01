@@ -219,7 +219,7 @@ export const RiotGameBreedingScreen = () => {
 
       <View
         style={{
-          marginTop: layout.padding_x4,
+          marginTop: layout.spacing_x4,
           alignItems: "center",
           alignSelf: "center",
         }}
@@ -227,7 +227,7 @@ export const RiotGameBreedingScreen = () => {
         <BrandText style={[fontMedium48]}>Breeding</BrandText>
 
         <FlexRow
-          style={{ justifyContent: "center", marginTop: layout.padding_x4 }}
+          style={{ justifyContent: "center", marginTop: layout.spacing_x4 }}
         >
           <BreedingSlot
             ripper={selectedRippers[0]?.ripper}
@@ -242,7 +242,7 @@ export const RiotGameBreedingScreen = () => {
           />
         </FlexRow>
 
-        <FlexRow style={{ marginTop: layout.padding_x4 }}>
+        <FlexRow style={{ marginTop: layout.spacing_x4 }}>
           <InfoBox
             size="LG"
             title="Price"
@@ -263,7 +263,7 @@ export const RiotGameBreedingScreen = () => {
           <InfoBox size="LG" title="Bonus" content="Coming soon" width={180} />
         </FlexRow>
 
-        <View style={{ marginTop: layout.padding_x2 }}>
+        <View style={{ marginTop: layout.spacing_x2 }}>
           <SVG source={chevronDownLineSVG} color={neutral33} />
         </View>
 
@@ -274,13 +274,13 @@ export const RiotGameBreedingScreen = () => {
           size="M"
           text={isBreeding ? "Breeding..." : "Breed my Rippers"}
           iconSVG={breedSVG}
-          touchableStyle={{ marginTop: layout.padding_x2 }}
+          touchableStyle={{ marginTop: layout.spacing_x2 }}
         />
 
         <FlexRow
           width="auto"
           alignItems="center"
-          style={{ marginTop: layout.padding_x2 }}
+          style={{ marginTop: layout.spacing_x2 }}
         >
           <BrandText style={[fontMedium14, { color: neutralA3 }]}>
             By clicking "Breed my Rippers" you agree to this

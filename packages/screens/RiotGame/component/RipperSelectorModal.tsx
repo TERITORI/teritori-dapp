@@ -104,7 +104,7 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
           contentContainerStyle={{ alignItems: "center" }}
           showsVerticalScrollIndicator={false}
         >
-          <BrandText style={[fontMedium48, { marginTop: layout.padding_x2 }]}>
+          <BrandText style={[fontMedium48, { marginTop: layout.spacing_x2 }]}>
             {selectedRipper?.name || "Please select a Ripper"}
           </BrandText>
 
@@ -152,7 +152,7 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
                   {
                     alignItems: "center",
                     alignSelf: "center",
-                    marginTop: layout.padding_x2,
+                    marginTop: layout.spacing_x2,
                   },
                 ]}
               >
@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
   dashedBorder: {
     width: RIPPER_IMAGE_SIZE,
     height: RIPPER_IMAGE_SIZE,
-    marginTop: layout.padding_x2_5,
+    marginTop: layout.spacing_x2_5,
   },
   roundedContainer: {
     width: RIPPER_IMAGE_SIZE - 4,
@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   btnGroup: {
-    marginTop: layout.padding_x2_5,
+    marginTop: layout.spacing_x2_5,
     flexDirection: "row",
     alignSelf: "center",
   },

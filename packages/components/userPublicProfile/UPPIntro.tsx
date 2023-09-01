@@ -35,7 +35,7 @@ export const UPPIntro: React.FC<{
 }> = ({ userId, isUserOwner }) => {
   const { metadata } = useNSUserInfo(userId);
   const { copyToClipboard } = useCopyToClipboard();
-  const socialButtonStyle = { margin: layout.padding_x0_75 };
+  const socialButtonStyle = { margin: layout.spacing_x0_75 };
   const [network, userAddress] = parseUserId(userId);
   const { width } = useMaxResolution();
   const { width: windowWidth } = useWindowDimensions();
@@ -140,7 +140,7 @@ export const UPPIntro: React.FC<{
           marginTop: 100,
         }}
       >
-        <View style={{ marginBottom: layout.padding_x1 }}>
+        <View style={{ marginBottom: layout.spacing_x1 }}>
           {/* Pseudo and bio */}
           {metadata?.tokenId ? (
             <>
@@ -166,7 +166,7 @@ export const UPPIntro: React.FC<{
           <BrandText
             style={[
               fontMedium14,
-              { maxWidth: 735, marginTop: layout.padding_x1 },
+              { maxWidth: 735, marginTop: layout.spacing_x1 },
             ]}
           >
             {metadata?.public_bio}

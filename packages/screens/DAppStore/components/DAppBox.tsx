@@ -62,9 +62,9 @@ export const DAppBox: React.FC<{
           justifyContent: "space-between",
           flex: 1,
           flexDirection: "row",
-          paddingVertical: layout.padding_x1_5,
-          paddingLeft: layout.padding_x1_5,
-          paddingRight: layout.padding_x2_5,
+          paddingVertical: layout.spacing_x1_5,
+          paddingLeft: layout.spacing_x1_5,
+          paddingRight: layout.spacing_x2_5,
           borderRadius: 20,
           backgroundColor: isChecked ? neutral17 : neutral00,
         }}
@@ -75,7 +75,7 @@ export const DAppBox: React.FC<{
             mainContainerStyle={{
               backgroundColor: neutral17,
               borderRadius: 12,
-              padding: layout.padding_x1,
+              padding: layout.spacing_x1,
             }}
             width={64}
             height={64}
@@ -84,7 +84,7 @@ export const DAppBox: React.FC<{
           </SecondaryBox>
           <View
             style={{
-              marginHorizontal: layout.padding_x2,
+              marginHorizontal: layout.spacing_x2,
               maxWidth: 158,
               width: "100%",
             }}
@@ -96,7 +96,7 @@ export const DAppBox: React.FC<{
               isTicker
               style={[
                 fontSemibold13,
-                { color: neutral77, marginTop: layout.padding_x0_5 },
+                { color: neutral77, marginTop: layout.spacing_x0_5 },
               ]}
             >
               {description}

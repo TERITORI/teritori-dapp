@@ -442,8 +442,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   commentContainerInside: {
-    paddingVertical: layout.padding_x2,
-    paddingHorizontal: layout.padding_x2_5,
+    paddingVertical: layout.spacing_x2,
+    paddingHorizontal: layout.spacing_x2_5,
   },
   content: { flex: 1 },
   rowCenter: {
@@ -461,8 +461,8 @@ const styles = StyleSheet.create({
   },
   actionContainer: {
     borderTopWidth: 1,
-    marginTop: layout.padding_x1_5,
-    paddingTop: layout.padding_x1_5,
+    marginTop: layout.spacing_x1_5,
+    paddingTop: layout.spacing_x1_5,
     borderColor: neutral22,
     flexDirection: "row",
     justifyContent: "space-between",

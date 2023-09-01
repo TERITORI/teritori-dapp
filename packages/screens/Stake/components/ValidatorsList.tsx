@@ -103,17 +103,17 @@ const ValidatorRow: React.FC<{
         alignItems: "center",
         justifyContent: "space-between",
         width: "100%",
-        minHeight: layout.contentPadding,
-        paddingHorizontal: layout.padding_x2_5,
+        minHeight: layout.contentSpacing,
+        paddingHorizontal: layout.spacing_x2_5,
         borderColor: mineShaftColor,
         borderTopWidth: 1,
-        paddingVertical: layout.padding_x2,
+        paddingVertical: layout.spacing_x2,
       }}
     >
       <BrandText
         style={[
           fontSemibold13,
-          { flex: TABLE_ROWS.rank.flex, paddingRight: layout.padding_x1 },
+          { flex: TABLE_ROWS.rank.flex, paddingRight: layout.spacing_x1 },
         ]}
       >
         {validator.rank}
@@ -123,7 +123,7 @@ const ValidatorRow: React.FC<{
           flexDirection: "row",
           alignItems: "center",
           flex: TABLE_ROWS.name.flex,
-          paddingRight: layout.padding_x1,
+          paddingRight: layout.spacing_x1,
         }}
       >
         <Avatar uri={imageURL} defaultIcon={validatorIconSVG} />
@@ -135,7 +135,7 @@ const ValidatorRow: React.FC<{
           fontSemibold13,
           {
             flex: TABLE_ROWS.votingPower.flex,
-            paddingRight: layout.padding_x1,
+            paddingRight: layout.spacing_x1,
           },
         ]}
       >
@@ -146,7 +146,7 @@ const ValidatorRow: React.FC<{
           fontSemibold13,
           {
             flex: TABLE_ROWS.commission.flex,
-            paddingRight: layout.padding_x1,
+            paddingRight: layout.spacing_x1,
           },
         ]}
       >
@@ -156,7 +156,7 @@ const ValidatorRow: React.FC<{
       <View
         style={{
           flex: TABLE_ROWS.claimable.flex,
-          paddingRight: actions ? layout.padding_x1 : 0,
+          paddingRight: actions ? layout.spacing_x1 : 0,
           flexDirection: "row",
           alignItems: "center",
         }}
@@ -169,7 +169,7 @@ const ValidatorRow: React.FC<{
         {pendingRewards.length && (
           <PrimaryButtonOutline
             size="XS"
-            style={{ paddingLeft: layout.padding_x2 }}
+            style={{ paddingLeft: layout.spacing_x2 }}
             text="Claim"
             disabled={!selectedWallet?.address}
             onPress={() => {
