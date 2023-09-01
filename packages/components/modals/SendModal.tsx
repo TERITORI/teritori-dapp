@@ -253,4 +253,3 @@ export const SendModal: React.FC<SendModalProps> = ({
     </ModalBase>
   );
 };
-

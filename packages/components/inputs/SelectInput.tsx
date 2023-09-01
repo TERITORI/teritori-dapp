@@ -200,7 +200,7 @@ export const SelectInput: React.FC<Props> = ({
           {isLoading ? (
             <ActivityIndicator
               color={secondaryColor}
-              style={{ marginLeft: layout.padding_x1_5 }}
+              style={{ marginLeft: layout.spacing_x1_5 }}
             />
           ) : (
             <SVG
@@ -214,7 +214,7 @@ export const SelectInput: React.FC<Props> = ({
               width={16}
               height={16}
               color={secondaryColor}
-              style={{ marginLeft: layout.padding_x1_5 }}
+              style={{ marginLeft: layout.spacing_x1_5 }}
             />
           )}
         </View>
@@ -273,11 +273,10 @@ export const SelectInputItem: FC<{
 
 const selectInputStyle: ViewStyle = {
   backgroundColor: neutral00,
-  // color: secondaryColor,
   borderColor: neutral33,
   borderWidth: 1,
   borderRadius: 12,
-  padding: layout.padding_x1_5,
+  padding: layout.spacing_x1_5,
   flexDirection: "row",
   justifyContent: "space-between",
   alignItems: "center",
@@ -292,7 +291,7 @@ const dropdownMenuStyle: ViewStyle = {
   borderWidth: 1,
   borderColor: neutral33,
   borderRadius: 12,
-  padding: layout.padding_x1,
+  padding: layout.spacing_x1,
   position: "absolute",
   top: 52,
   width: "100%",
@@ -302,7 +301,7 @@ const dropdownMenuStyle: ViewStyle = {
 const dropdownMenuTextStyle: TextStyle = fontMedium13;
 const dropdownMenuRowStyle: ViewStyle = {
   borderRadius: 6,
-  padding: layout.padding_x1,
+  padding: layout.spacing_x1,
   flexDirection: "row",
   justifyContent: "space-between",
 };
