@@ -77,13 +77,6 @@ export const HubLanding: React.FC = () => {
               iconSVG={stakingSVG}
             />
             <DAppCard
-              label="Airdrop"
-              description="Get $TORI Join Teritori Community "
-              info="Let's Go!"
-              iconSVG={airdropSVG}
-              onPress={() => Linking.openURL("https://teritori.com/airdrop")}
-            />
-            <DAppCard
               label="Marketplace"
               description="Trade your NFTs & TNS and rank up on your profile by contributing to expansion"
               info="Explore Collections"
