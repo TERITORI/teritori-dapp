@@ -1,11 +1,11 @@
-import React, { ReactElement, useEffect, useMemo, useState } from "react";
+import React, { FC, ReactElement, useEffect, useMemo, useState } from "react";
 import {
   View,
   ScrollView,
-  StyleSheet,
   StyleProp,
   ViewStyle,
   ActivityIndicator,
+  TextStyle,
 } from "react-native";
 
 import { Label, TextInputCustom } from "./TextInputCustom";
@@ -35,7 +35,7 @@ export type SelectInputData = {
 };
 
 type Props = {
-  data: SelectInputData[];
+  data?: SelectInputData[];
   placeHolder?: string;
   selectedData: SelectInputData;
   selectData: (data: SelectInputData) => void;
@@ -47,6 +47,17 @@ type Props = {
   allowSearchValue?: boolean;
   name?: string;
   isLoading?: boolean;
+  // If provided, the item selection is handled from parent, instead of considering data
+  children?: (({
+    onPressItem,
+  }: {
+    onPressItem: (item: SelectInputData) => void;
+  }) => JSX.Element)[];
+  defaultItem?: ({
+    onPressItem,
+  }: {
+    onPressItem: (item: SelectInputData) => void;
+  }) => JSX.Element;
 };
 
 export const SelectInput: React.FC<Props> = ({
@@ -62,14 +73,17 @@ export const SelectInput: React.FC<Props> = ({
   allowSearchValue,
   name,
   isLoading,
+  children,
+  defaultItem,
 }) => {
   const [openMenu, setOpenMenu] = useState<boolean>(false);
-  const [hoveredIndex, setHoveredIndex] = useState<number>(0);
   const [hovered, setHovered] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const selectableData = useMemo(
     () =>
-      allowSearchValue && searchValue
+      !data
+        ? undefined
+        : allowSearchValue && searchValue
         ? // selectableData depends on searchValue
           data.filter((d) =>
             d.label.toLowerCase().includes(searchValue.toLowerCase())
@@ -92,16 +106,25 @@ export const SelectInput: React.FC<Props> = ({
   }, [allowSearchValue, searchValue, selectData, selectedData]);
 
   useEffect(() => {
-    if (!selectableData.length) {
+    if (!children?.length && !selectableData?.length) {
       setOpenMenu(false);
     }
-  }, [selectableData]);
+  }, [selectableData, children?.length]);
 
   const getScrollViewStyle = () => {
-    if (selectableData.length > 5) {
-      return [styles.dropdownMenu, { height: 200 }];
+    if (
+      (children && children.length > 5) ||
+      (selectableData && selectableData.length > 5)
+    ) {
+      return [dropdownMenuStyle, { height: 200 }];
     }
-    return styles.dropdownMenu;
+    return dropdownMenuStyle;
+  };
+
+  const onPressItem = (item: SelectInputData) => {
+    selectData(item);
+    setSearchValue(item.label);
+    setOpenMenu(false);
   };
 
   return (
@@ -110,9 +133,10 @@ export const SelectInput: React.FC<Props> = ({
       onHoverIn={() => setHovered(true)}
       onHoverOut={() => setHovered(false)}
       onPress={() => {
-        if (!disabled || selectableData.length) setOpenMenu((value) => !value);
+        if (!disabled || selectableData?.length || children?.length)
+          setOpenMenu((value) => !value);
       }}
-      disabled={disabled || !selectableData.length}
+      disabled={disabled || (!selectableData?.length && !children?.length)}
     >
       {label && (
         <>
@@ -129,12 +153,12 @@ export const SelectInput: React.FC<Props> = ({
       <View>
         <View
           style={[
-            styles.selectInput,
+            selectInputStyle,
             hovered && { borderColor: secondaryColor },
             boxStyle,
           ]}
         >
-          <View style={styles.iconLabel}>
+          <View style={iconLabelStyle}>
             {selectedData.iconComponent && (
               <>
                 {selectedData.iconComponent}
@@ -152,7 +176,7 @@ export const SelectInput: React.FC<Props> = ({
                 value={searchValue}
                 onChangeText={(text) => {
                   setSearchValue(text);
-                  setOpenMenu(!!selectableData.length);
+                  setOpenMenu(!!selectableData?.length || !!children?.length);
                 }}
                 rules={{ required: isRequired }}
                 style={{ flex: 1 }}
@@ -181,7 +205,7 @@ export const SelectInput: React.FC<Props> = ({
           ) : (
             <SVG
               source={
-                !selectableData.length || disabled
+                (!selectableData?.length && !children?.length) || disabled
                   ? lockSVG
                   : openMenu
                   ? chevronUpSVG
@@ -198,43 +222,16 @@ export const SelectInput: React.FC<Props> = ({
         {/*TODO: If the opened menu appears under other elements, you'll may need to set zIndex:-1 or something to these elements*/}
         {openMenu && (
           <ScrollView style={getScrollViewStyle()}>
-            {selectableData.map((item, index) => (
-              <CustomPressable
-                onHoverIn={() => {
-                  setHoveredIndex(index + 1);
-                  setHovered(true);
-                }}
-                onHoverOut={() => {
-                  setHoveredIndex(0);
-                  setHovered(false);
-                }}
-                onPress={() => {
-                  selectData(item);
-                  setSearchValue(item.label);
-                  setOpenMenu(false);
-                }}
-                key={index}
-                style={styles.dropdownMenuRow}
-              >
-                <View
-                  style={[
-                    styles.iconLabel,
-                    hoveredIndex === index + 1 && { opacity: 0.5 },
-                  ]}
-                >
-                  {item.iconComponent && (
-                    <>
-                      {item.iconComponent}
-                      <SpacerRow size={1.5} />
-                    </>
-                  )}
-
-                  <BrandText style={styles.dropdownMenuText}>
-                    {item.label}
-                  </BrandText>
-                </View>
-              </CustomPressable>
-            ))}
+            {defaultItem && defaultItem({ onPressItem })}
+            {children
+              ? children?.map((child) => child({ onPressItem }))
+              : selectableData?.map((item, index) => (
+                  <SelectInputItem
+                    item={item}
+                    onPress={onPressItem}
+                    key={index}
+                  />
+                ))}
           </ScrollView>
         )}
       </View>
@@ -242,59 +239,70 @@ export const SelectInput: React.FC<Props> = ({
   );
 };
 
-// FIXME: remove StyleSheet.create
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  selectInputLabel: StyleSheet.flatten([fontSemibold14, { color: neutralA3 }]),
-  selectInput: {
-    backgroundColor: neutral00,
-    color: secondaryColor,
-    borderColor: neutral33,
-    borderWidth: 1,
-    borderRadius: 12,
-    padding: layout.spacing_x1_5,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  inputContainer: {
-    backgroundColor: neutral00,
-    borderWidth: 1,
-    borderColor: neutral33,
-    borderRadius: 12,
-    paddingHorizontal: layout.spacing_x1_5,
-  },
-  inputItemStyle: {
-    backgroundColor: "#292929",
-    color: neutralA3,
-    paddingVertical: layout.spacing_x1_5,
-    paddingHorizontal: layout.spacing_x1,
-  },
-  iconLabel: {
-    flexDirection: "row",
-    alignItems: "center",
-    flex: 1,
-  },
+export const SelectInputItem: FC<{
+  onPress: (item: SelectInputData) => void;
+  item: SelectInputData;
+  isLoading?: boolean;
+}> = ({ onPress, item, isLoading }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  return (
+    <CustomPressable
+      onHoverIn={() => setIsHovered(true)}
+      onHoverOut={() => setIsHovered(false)}
+      onPress={() => onPress(item)}
+      style={dropdownMenuRowStyle}
+      disabled={isLoading}
+    >
+      <View
+        style={[iconLabelStyle, (isHovered || isLoading) && { opacity: 0.5 }]}
+      >
+        {item.iconComponent && (
+          <>
+            {item.iconComponent}
+            <SpacerRow size={1.5} />
+          </>
+        )}
 
-  dropdownMenu: {
-    backgroundColor: "#292929",
-    borderWidth: 1,
-    borderColor: neutral33,
-    borderRadius: 12,
-    padding: layout.spacing_x1,
-    position: "absolute",
-    top: 52,
-    width: "100%",
-    zIndex: 10,
-  },
-  dropdownMenuText: StyleSheet.flatten([fontMedium13]),
-  dropdownMenuRow: {
-    borderRadius: 6,
-    padding: layout.spacing_x1,
-  },
-  // dropdownMenuRow: {
-  //   backgroundColor: neutral00,
-  //   borderRadius: 6,
-  //   padding: layout.spacing_x1,
-  // },
-});
+        <BrandText style={dropdownMenuTextStyle}>{item.label}</BrandText>
+      </View>
+
+      {isLoading && <ActivityIndicator color={secondaryColor} />}
+    </CustomPressable>
+  );
+};
+
+const selectInputStyle: ViewStyle = {
+  backgroundColor: neutral00,
+  // color: secondaryColor,
+  borderColor: neutral33,
+  borderWidth: 1,
+  borderRadius: 12,
+  padding: layout.padding_x1_5,
+  flexDirection: "row",
+  justifyContent: "space-between",
+  alignItems: "center",
+};
+const iconLabelStyle: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  flex: 1,
+};
+const dropdownMenuStyle: ViewStyle = {
+  backgroundColor: "#292929",
+  borderWidth: 1,
+  borderColor: neutral33,
+  borderRadius: 12,
+  padding: layout.padding_x1,
+  position: "absolute",
+  top: 52,
+  width: "100%",
+  maxHeight: 330,
+  zIndex: 10,
+};
+const dropdownMenuTextStyle: TextStyle = fontMedium13;
+const dropdownMenuRowStyle: ViewStyle = {
+  borderRadius: 6,
+  padding: layout.padding_x1,
+  flexDirection: "row",
+  justifyContent: "space-between",
+};

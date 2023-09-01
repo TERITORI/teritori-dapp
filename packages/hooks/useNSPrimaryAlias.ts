@@ -69,66 +69,24 @@ const gnoGetUsernameByAddress = async (
 export const useNSPrimaryAlias = (userId: string | undefined) => {
   const { data, ...other } = useQuery(
     nsPrimaryAliasQueryKey(userId),
-    async () => {
-      if (!userId) {
-        return null;
-      }
-
-      const [network, userAddress] = parseUserId(userId);
-      if (!network) {
-        return null;
-      }
-
-      switch (network.kind) {
-        case NetworkKind.Cosmos:
-          return cosmosGetUsernameByAddress(network, userAddress);
-        case NetworkKind.Gno:
-          return gnoGetUsernameByAddress(network, userAddress);
-        default:
-          return null;
-      }
-    },
+    () => getPrimaryAlias(userId),
     { staleTime: Infinity }
   );
   return { primaryAlias: data, ...other };
 };
 
-export const useNSPrimaryAliases = (userIds: string[] | undefined) => {
-  const { data, ...other } = useQuery(
-    nsPrimaryAliasQueryKey(userIds?.map((id) => id.slice(-3)).toString()),
-    async () => {
-      if (!userIds) return null;
-      const aliases: AliasUserId[] = [];
+const getPrimaryAlias = (userId?: string) => {
+  const [network, userAddress] = parseUserId(userId);
+  if (!network || !userId) {
+    return null;
+  }
 
-      for (const userId of userIds) {
-        if (!userId) {
-          return null;
-        }
-        const [network, userAddress] = parseUserId(userId);
-        if (!network) {
-          return null;
-        }
-        let username: string | null = "";
-
-        switch (network.kind) {
-          case NetworkKind.Cosmos:
-            username = await cosmosGetUsernameByAddress(network, userAddress);
-            break;
-          case NetworkKind.Gno:
-            username = await gnoGetUsernameByAddress(network, userAddress);
-            break;
-          default:
-            return null;
-        }
-
-        aliases.push({
-          alias: username,
-          userId,
-        });
-      }
-      return aliases;
-    },
-    { staleTime: Infinity }
-  );
-  return { primaryAliases: data, ...other };
+  switch (network.kind) {
+    case NetworkKind.Cosmos:
+      return cosmosGetUsernameByAddress(network, userAddress);
+    case NetworkKind.Gno:
+      return gnoGetUsernameByAddress(network, userAddress);
+    default:
+      return null;
+  }
 };
