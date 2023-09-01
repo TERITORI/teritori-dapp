@@ -36,7 +36,7 @@ export const getMobileScreenContainerMarginHorizontal = (width: number) => {
   }
 };
 
-export const layout = {
+export const layout = Object.freeze({
   base: 8,
   // 2
   get spacing_x0_25() {
@@ -82,4 +82,4 @@ export const layout = {
   contentSpacing: 48,
   topContentSpacingWithHeading: 42,
   iconButton: 32,
-};
+});
