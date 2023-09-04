@@ -276,12 +276,10 @@ const subTitleStyle: ViewStyle = StyleSheet.flatten([
 const rightBoxStyle: ViewStyle = {
   width: rightBoxWidth,
   flexDirection: "column",
-  gap: layout.spacing_x2_5,
 };
 const selectBoxStyle: ViewStyle = {
   width: "100%",
   flexDirection: "row",
-  gap: layout.spacing_x2_5,
   zIndex: 1,
 };
 const fullTextInputStyle: ViewStyle = StyleSheet.flatten([
@@ -351,7 +349,6 @@ const singleCheckBoxStyle: ViewStyle = {
   flexDirection: "row",
   alignItems: "center",
   width: `${100 / 3}%`,
-  gap: layout.spacing_x1,
 };
 const checkedTextStyle: ViewStyle = StyleSheet.flatten([
   fontMedium13,
@@ -363,7 +360,6 @@ const tagGroupStyle: ViewStyle = {
   flexDirection: "row",
   width: rightBoxWidth,
   alignItems: "flex-start",
-  gap: layout.spacing_x1_5,
 };
 const tagCardStyle: ViewStyle = {
   padding: layout.spacing_x2,
@@ -371,7 +367,6 @@ const tagCardStyle: ViewStyle = {
   borderRadius: layout.spacing_x1_5,
   flexDirection: "row",
   alignItems: "center",
-  gap: layout.spacing_x1,
 };
 const textInputStyle: ViewStyle = StyleSheet.flatten([
   fontSemibold14,

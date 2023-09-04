@@ -241,13 +241,11 @@ const tipTextStyle: ViewStyle = StyleSheet.flatten([
 ]);
 const policyBoxStyle: ViewStyle = {
   flexDirection: "row",
-  gap: layout.spacing_x1_5,
   alignItems: "center",
   marginTop: layout.spacing_x4,
 };
 const warningBoxStyle: ViewStyle = {
   flexDirection: "row",
   alignItems: "center",
-  gap: layout.spacing_x1_5,
   marginTop: layout.spacing_x2,
 };
