@@ -1,12 +1,14 @@
 import React from "react";
 import { useWindowDimensions, View } from "react-native";
 
-import maincat from "../../../screens/FreelanceServices/basedata/maincat.json";
+import { Category } from "../../../screens/FreelanceServices/query/data";
 import { layout, leftMarginMainContent } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import { FreelanceServicesCards } from "../Cards/FreelanceServicesCards";
 
-export const ExplorerMarketPlace: React.FC = () => {
+export const ExplorerMarketPlace: React.FC<{ category: Category }> = ({
+  category,
+}) => {
   const { width } = useWindowDimensions();
   return (
     <View
@@ -31,7 +33,7 @@ export const ExplorerMarketPlace: React.FC = () => {
           marginTop: layout.spacing_x2_5,
         }}
       >
-        {maincat["explore_marketplace"].map((item, index) => (
+        {Object.values(category).map((item, index) => (
           <FreelanceServicesCards
             iconSVG={item.icon}
             text={item.title}

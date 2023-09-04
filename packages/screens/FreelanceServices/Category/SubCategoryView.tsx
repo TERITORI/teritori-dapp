@@ -3,8 +3,8 @@ import React from "react";
 import { ListGigs } from "../../../components/freelanceServices/Category/ListGigs";
 import { SubCategoryHeader } from "../../../components/freelanceServices/Category/SubCategoryHeader";
 import { SubCategoryMenu } from "../../../components/freelanceServices/Category/SubCategoryMenu";
-import maincat from "../basedata/maincat.json";
 import subcat from "../basedata/subcat.json";
+import { getCategories } from "../query/data";
 
 type SubCategoryViewProps = {
   category: string;
@@ -14,7 +14,7 @@ export const SubCategoryView: React.FC<SubCategoryViewProps> = ({
   category,
   subcategory,
 }) => {
-  const main_cat = maincat["explore_marketplace"].find(
+  const main_cat = getCategories()["explore_marketplace"].find(
     (item) => item.name === category
   );
   //@ts-ignore

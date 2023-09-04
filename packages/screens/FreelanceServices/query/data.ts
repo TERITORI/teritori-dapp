@@ -477,3 +477,102 @@ const maxiumRevisions = (contentInfos: ContentInfo[]): string => {
 
   return maxRevisions.toString(10);
 };
+
+export interface Category {
+  name: string;
+  title: string;
+  icon: string;
+  sub_category?: string;
+}
+export interface Categories {
+  [key: string]: Category[];
+}
+export const getCategories = (): Categories => {
+  return {
+    explore_marketplace: [
+      {
+        name: "graphics_design",
+        title: "Graphics & design",
+        icon: "Feather.svg",
+      },
+      {
+        name: "digital_marketing",
+        title: "Digital Marketing",
+        icon: "Computer.svg",
+      },
+      {
+        name: "writing_translation",
+        title: "Writing & Translation",
+        icon: "Pen.svg",
+      },
+      {
+        name: "video_animation",
+        title: "Video & Animation",
+        icon: "BallBounce.svg",
+      },
+      {
+        name: "music_audio",
+        title: "Music & Audio",
+        icon: "Music.svg",
+      },
+      {
+        name: "programming_tech",
+        title: "Programming & Tech",
+        icon: "Code.svg",
+      },
+    ],
+    popular_professional_services: [
+      {
+        title: "Logo Design",
+        name: "graphics_design",
+        sub_category: "logo_design",
+        icon: "logo-design.png",
+      },
+      {
+        title: "WebApp Design",
+        name: "graphics_design",
+        sub_category: "webapp_design",
+        icon: "illustration.png",
+      },
+      {
+        title: "Programming & Tech",
+        name: "programming_tech",
+        sub_category: "website_development",
+        icon: "wordPress.png",
+      },
+    ],
+    freelance_community: [
+      {
+        name: "designer",
+        title: "I am a Designer",
+        icon: "Feather.svg",
+      },
+      {
+        name: "",
+        title: "I am a Marketer",
+        icon: "Computer.svg",
+      },
+      {
+        name: "",
+        title: "I am a Writer",
+        icon: "Pen.svg",
+      },
+      {
+        name: "",
+        title: "I am a Video Editor",
+        icon: "BallBounce.svg",
+      },
+      { name: "", title: "I am a Musician", icon: "Music.svg" },
+      {
+        name: "",
+        title: "I am a developer",
+        icon: "Code.svg",
+      },
+      {
+        name: "",
+        title: "I am  a Entrepreneur",
+        icon: "Suitcase.svg",
+      },
+    ],
+  };
+};
