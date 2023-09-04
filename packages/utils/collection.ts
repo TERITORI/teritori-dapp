@@ -3,6 +3,7 @@ import Long from "long";
 
 import { prettyPrice } from "./coins";
 import { ipfsURLToHTTPURL } from "./ipfs";
+import { nameServiceDefaultImage } from "./tns";
 import { ConfigResponse } from "../contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.types";
 import {
   CosmosNetworkInfo,
@@ -111,7 +112,7 @@ export const getTnsCollectionInfo = (
 ): CollectionInfo => {
   return {
     name: `${network.displayName} Name Service`, // FIXME: should fetch from contract or be in env
-    image: ipfsURLToHTTPURL(network?.nameServiceDefaultImage || ""),
+    image: ipfsURLToHTTPURL(nameServiceDefaultImage(false, network)),
     mintPhases: [],
   };
 };

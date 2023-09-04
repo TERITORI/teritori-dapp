@@ -14,7 +14,7 @@ import {
   errorColor,
 } from "../../utils/style/colors";
 import { NFTDropedAdjustmentType } from "../../utils/types/nft";
-import Slider from "../Slider";
+import CustomSlider from "../CustomSlider";
 import { IconButton } from "../buttons/IconButton";
 import { PrimaryButton } from "../buttons/PrimaryButton";
 import { CollectionInfoInline } from "../collections/CollectionInfoInline";
@@ -92,7 +92,7 @@ const NftAdjustments: React.FC<{
             {percentage}%
           </BrandText>
         </View>
-        <Slider
+        <CustomSlider
           style={{ marginTop: 18 }}
           thumbStyle={{
             backgroundColor: "black",

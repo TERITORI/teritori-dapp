@@ -16,6 +16,7 @@ import { DAOProposals } from "../../components/dao/DAOProposals";
 import { DAOsList } from "../../components/dao/DAOsList";
 import { GnoDemo } from "../../components/dao/GnoDemo";
 import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
+import { UPPAlbums } from "../../components/userPublicProfile/UPPAlbums";
 import { UPPNFTs } from "../../components/userPublicProfile/UPPNFTs";
 import { useIsDAO } from "../../hooks/cosmwasm/useCosmWasmContractInfo";
 import { useIsDAOMember } from "../../hooks/dao/useDAOMember";
@@ -144,6 +145,8 @@ const SelectedTabContent: React.FC<{
           req={{ networkId: network?.id, memberAddress: userAddress }}
         />
       );
+    case "musicAlbums":
+      return <UPPAlbums userId={userId} />;
     case "gnoDemo":
       return <GnoDemo daoId={userId} />;
     default:

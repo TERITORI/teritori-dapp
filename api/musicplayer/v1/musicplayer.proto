@@ -1,0 +1,67 @@
+syntax = "proto3";
+
+package musicplayer.v1;
+option go_package = "./musicplayerpb";
+
+service MusicplayerService {
+	rpc GetAllAlbumList(GetAllAlbumListRequest) returns (GetAllAlbumListResponse);
+	rpc GetUserAlbumList(GetUserAlbumListRequest) returns (GetUserAlbumListResponse);
+	rpc GetAlbum(GetAlbumRequest) returns (GetAlbumResponse);
+	rpc GetAlbumIdListForLibrary(GetAlbumIdListForLibraryRequest) returns (GetAlbumIdListForLibraryResponse);
+	rpc GetOtherAlbumList(GetOtherAlbumListRequest) returns (GetOtherAlbumListResponse);
+}
+
+message GetAllAlbumListRequest {
+	uint32 limit = 2;
+	uint32 offset = 3;
+}
+
+message GetUserAlbumListRequest {
+	string created_by = 1;
+	uint32 limit = 2;
+	uint32 offset = 3;
+}
+
+message GetAlbumIdListForLibraryRequest {
+	string user = 1;
+}
+
+message GetOtherAlbumListRequest{
+	repeated string id_list = 1;
+	uint32 limit = 2;
+	uint32 offset = 3;
+}
+
+message MusicAlbumInfo {
+	string identifier = 1;
+	string metadata = 2;
+	string created_by = 3;
+}
+
+message AlbumLibraryInfo {
+	string identifier = 1;
+}
+
+message GetAllAlbumListResponse {
+	repeated MusicAlbumInfo music_albums = 1;
+}
+
+message GetUserAlbumListResponse {
+	repeated MusicAlbumInfo music_albums = 1;
+}
+
+message GetOtherAlbumListResponse {
+	repeated MusicAlbumInfo music_albums = 1;
+}
+
+message GetAlbumRequest {
+	string identifier = 1;
+}
+
+message GetAlbumResponse {
+	MusicAlbumInfo music_album = 1;
+}
+
+message GetAlbumIdListForLibraryResponse {
+	repeated AlbumLibraryInfo album_libraries = 1;
+}

@@ -33,6 +33,7 @@ import {
 import htmlToDraft from "html-to-draftjs";
 import React, {
   KeyboardEvent,
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -63,6 +64,7 @@ import createInlineToolbarPlugin from "./inline-toolbar";
 import audioSVG from "../../../../assets/icons/audio.svg";
 import cameraSVG from "../../../../assets/icons/camera.svg";
 import videoSVG from "../../../../assets/icons/video.svg";
+import { useMediaPlayer } from "../../../context/MediaPlayerProvider";
 import {
   AUDIO_MIME_TYPES,
   IMAGE_MIME_TYPES,
@@ -134,6 +136,8 @@ export const RichText: React.FC<RichTextProps> = ({
   onPublish,
   loading,
   publishDisabled,
+  authorId,
+  postId,
 }) => {
   const compositeDecorator = {
     decorators: [
@@ -171,7 +175,7 @@ export const RichText: React.FC<RichTextProps> = ({
   const [editorState, setEditorState] = useState(
     createStateFromHTML(initialValue)
   );
-  // const { mutate: openGraphMutate, data: openGraphData } = useOpenGraph();
+  const { setIsMediaPlayerOpen, isPlaying } = useMediaPlayer();
   const [uploadedAudios, setUploadedAudios] = useState<LocalFileData[]>([]);
   const [uploadedImages, setUploadedImages] = useState<LocalFileData[]>([]);
   const [uploadedGIFs, setUploadedGIFs] = useState<string[]>([]);
@@ -182,8 +186,9 @@ export const RichText: React.FC<RichTextProps> = ({
     [uploadedGIFs.length, uploadedImages.length]
   );
   const isAudioUploadDisabled = useMemo(
-    () => uploadedAudios.length >= MAX_AUDIOS,
-    [uploadedAudios.length]
+    // FIXME: Audio upload doesn't work during audio playing, so we disable Audio Upload button when isPlaying
+    () => isPlaying || uploadedAudios.length >= MAX_AUDIOS,
+    [uploadedAudios.length, isPlaying]
   );
   const isVideoUploadDisabled = useMemo(
     () => uploadedVideos.length >= MAX_VIDEOS,
@@ -243,9 +248,13 @@ export const RichText: React.FC<RichTextProps> = ({
       return;
     setUploadedAudios((audios) => [...audios, file]);
   };
-  const removeAudio = (file: LocalFileData) => {
-    setUploadedAudios((audios) => removeFileFromArray(audios, file));
-  };
+  const removeAudio = useCallback(
+    (file: LocalFileData) => {
+      if (!uploadedAudios.length) setIsMediaPlayerOpen(false);
+      setUploadedAudios((audios) => removeFileFromArray(audios, file));
+    },
+    [uploadedAudios.length, setIsMediaPlayerOpen]
+  );
   // Updating an audio (And the whole array) when changing its thumbnail image
   const addThumbnailToAddedAudio = (newAudioFile: LocalFileData) => {
     const newAudios = replaceFileInArray(uploadedAudios, newAudioFile);
@@ -254,6 +263,7 @@ export const RichText: React.FC<RichTextProps> = ({
   };
 
   //TODO: Works only with spans..... Make it works ?
+  //
   // const addEmbedded = (url: string) => {
   //   const contentState = editorState.getCurrentContent();
   //   const blocks = contentState.getBlocksAsArray();
@@ -448,7 +458,7 @@ export const RichText: React.FC<RichTextProps> = ({
         audioFiles.map((file, index) => (
           <View key={index}>
             <SpacerColumn size={2} />
-            <AudioView file={file} />
+            <AudioView file={file} postId={postId} authorId={authorId} />
             <SpacerColumn size={2} />
           </View>
         ))}

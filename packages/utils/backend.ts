@@ -14,6 +14,11 @@ import {
   MarketplaceService,
 } from "../api/marketplace/v1/marketplace";
 import {
+  MusicplayerService,
+  MusicplayerServiceClientImpl,
+  GrpcWebImpl as MusicplayerGrpcWebImpl,
+} from "../api/musicplayer/v1/musicplayer";
+import {
   P2eServiceClientImpl,
   GrpcWebImpl as P2eGrpcWebImpl,
   P2eService,
@@ -104,6 +109,32 @@ export const mustGetFeedClient = (networkId: string | undefined) => {
   const client = getFeedClient(networkId);
   if (!client) {
     throw new Error(`failed to get feed client for network '${networkId}'`);
+  }
+  return client;
+};
+
+const musicplayerClients: { [key: string]: MusicplayerService } = {};
+export const getMusicplayerClient = (networkId: string | undefined) => {
+  const network = getNetwork(networkId);
+  if (!network) {
+    return undefined;
+  }
+  if (!musicplayerClients[network.id]) {
+    const backendEndpoint = network.backendEndpoint;
+    const rpc = new MusicplayerGrpcWebImpl(backendEndpoint, {
+      debug: false,
+    });
+    musicplayerClients[network.id] = new MusicplayerServiceClientImpl(rpc);
+  }
+  return musicplayerClients[network.id];
+};
+
+export const mustGetMusicplayerClient = (networkId: string | undefined) => {
+  const client = getMusicplayerClient(networkId);
+  if (!client) {
+    throw new Error(
+      `failed to get musicplayer client for network '${networkId}'`
+    );
   }
   return client;
 };

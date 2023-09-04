@@ -4,7 +4,6 @@ import { Tabs } from "../../components/tabs/Tabs";
 import { UPPIntro } from "../../components/userPublicProfile/UPPIntro";
 import { useIsDAO } from "../../hooks/cosmwasm/useCosmWasmContractInfo";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
-import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkKind, parseUserId } from "../../networks";
 import { primaryColor } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
@@ -42,6 +41,9 @@ export const screenTabItems = {
   gnoDemo: {
     name: "POCs",
   },
+  musicAlbums: {
+    name: "Albums",
+  },
   // pathwar: {
   //   name: "Pathwar Challenges",
   //   disabled: true,
@@ -75,7 +77,6 @@ export const UserPublicProfileScreenHeader = ({
   selectedTab,
   setSelectedTab,
 }: UserPublicProfileScreenHeaderProps) => {
-  const selectedWallet = useSelectedWallet();
   const { width } = useMaxResolution();
   const { isDAO } = useIsDAO(userId);
   const [network] = parseUserId(userId);
@@ -115,10 +116,7 @@ export const UserPublicProfileScreenHeader = ({
 
   return (
     <>
-      <UPPIntro
-        userId={userId}
-        isUserOwner={selectedWallet?.userId === userId}
-      />
+      <UPPIntro userId={userId} />
       <Tabs
         items={items}
         selected={selectedTab}
