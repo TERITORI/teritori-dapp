@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, useWindowDimensions, View } from "react-native";
+import { useWindowDimensions, View, ViewStyle } from "react-native";
 
 import CreateGigSvg from "../../../../assets/icons/freelance-service/CreateGig.svg";
 import DeliverSvg from "../../../../assets/icons/freelance-service/Deliver.svg";
@@ -112,7 +112,7 @@ export const FreelanceCommunity: React.FC = () => {
         <View style={{ flex: 3, flexDirection: "row" }}>
           <View style={{ flex: 1 }}>
             <View style={{ flexDirection: "row" }}>
-              <View style={styles.svg}>
+              <View style={svgStyles}>
                 <SVG source={CreateGigSvg} />
               </View>
               <Separator
@@ -134,7 +134,7 @@ export const FreelanceCommunity: React.FC = () => {
           </View>
           <View style={{ flex: 1 }}>
             <View style={{ flexDirection: "row" }}>
-              <View style={styles.svg}>
+              <View style={svgStyles}>
                 <SVG source={DeliverSvg} />
               </View>
               <Separator
@@ -159,7 +159,7 @@ export const FreelanceCommunity: React.FC = () => {
           </View>
           <View style={{ flex: 1 }}>
             <View style={{ flexDirection: "row" }}>
-              <View style={styles.svg}>
+              <View style={svgStyles}>
                 <SVG source={GetPaidSvg} />
               </View>
             </View>
@@ -182,15 +182,13 @@ export const FreelanceCommunity: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  svg: {
-    width: 56,
-    height: 56,
-    borderRadius: 100,
-    backgroundColor: neutral17,
-    alignItems: "center",
-    justifyContent: "center",
-    borderWidth: 1,
-    borderColor: neutral33,
-  },
-});
+const svgStyles: ViewStyle = {
+  width: 56,
+  height: 56,
+  borderRadius: 100,
+  backgroundColor: neutral17,
+  alignItems: "center",
+  justifyContent: "center",
+  borderWidth: 1,
+  borderColor: neutral33,
+};
