@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { View, ViewStyle } from "react-native";
 
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { layout } from "../../../utils/style/layout";
@@ -23,8 +23,8 @@ export const GigList: React.FC<{
   return (
     <>
       {wallet && wallet.address === gigAddress && (
-        <View style={styles.rowHeader}>
-          <View style={styles.rowWithCenter}>
+        <View style={rowHeader}>
+          <View style={rowWithCenter}>
             <Tabs
               items={tabs}
               onSelect={setSelectedTab}
@@ -35,7 +35,7 @@ export const GigList: React.FC<{
         </View>
       )}
       {!(wallet && wallet.address === gigAddress) && (
-        <View style={[styles.rowWithCenter, { marginVertical: 24 }]}>
+        <View style={[rowWithCenter, { marginVertical: 24 }]}>
           <BrandText>Gigs</BrandText>
         </View>
       )}
@@ -44,23 +44,14 @@ export const GigList: React.FC<{
   );
 };
 
-const styles = StyleSheet.create({
-  nameContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  rowHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingTop: layout.contentPadding,
-    marginBottom: layout.spacing_x2_5,
-  },
-  rowWithCenter: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  upperCase: {
-    textTransform: "uppercase",
-  },
-});
+const rowHeader: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between",
+  paddingTop: layout.contentSpacing,
+  marginBottom: layout.spacing_x2_5,
+};
+const rowWithCenter: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+};
