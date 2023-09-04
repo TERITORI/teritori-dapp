@@ -215,7 +215,7 @@ const EscrowRow: React.FC<{
         alignItems: "center",
         justifyContent: "space-between",
         width: "100%",
-        minHeight: layout.contentPadding,
+        minHeight: layout.contentSpacing,
         paddingHorizontal: layout.spacing_x2_5,
         borderColor: mineShaftColor,
         borderTopWidth: 1,
