@@ -15,14 +15,14 @@ export const GrantTag: React.FC<{
   let marginVertical, marginHorizontal, font;
   switch (size) {
     case "SM":
-      marginHorizontal = layout.padding_x1;
-      marginVertical = layout.padding_x0_5;
+      marginHorizontal = layout.spacing_x1;
+      marginVertical = layout.spacing_x0_5;
       font = fontMedium10;
       break;
     case "M":
     default:
-      marginHorizontal = layout.padding_x2;
-      marginVertical = layout.padding_x1;
+      marginHorizontal = layout.spacing_x2;
+      marginVertical = layout.spacing_x1;
       font = fontMedium13;
       break;
   }

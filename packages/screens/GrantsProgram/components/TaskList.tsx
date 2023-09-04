@@ -16,10 +16,10 @@ export const TaskList: React.FC<{
 }> = ({ iconSVG, text, count, children }) => {
   return (
     <View style={{ maxWidth: 320, minWidth: 280 }}>
-      <FlexRow style={{ flex: 1, marginBottom: layout.padding_x2 }}>
+      <FlexRow style={{ flex: 1, marginBottom: layout.spacing_x2 }}>
         <SVG source={iconSVG} width={26} height={26} />
         <BrandText
-          style={[fontSemibold13, { marginHorizontal: layout.padding_x2 }]}
+          style={[fontSemibold13, { marginHorizontal: layout.spacing_x2 }]}
         >
           {text}
         </BrandText>

@@ -45,7 +45,7 @@ export const GrantsProgramManagerScreen: ScreenFC<
     >
       <FlexRow
         style={{
-          marginTop: layout.padding_x4,
+          marginTop: layout.spacing_x4,
           justifyContent: "space-between",
         }}
       >
@@ -87,8 +87,8 @@ export const GrantsProgramManagerScreen: ScreenFC<
           return (
             <GrantBox
               containerStyle={{
-                marginTop: layout.padding_x2,
-                marginRight: layout.padding_x2,
+                marginTop: layout.spacing_x2,
+                marginRight: layout.spacing_x2,
               }}
             />
           );

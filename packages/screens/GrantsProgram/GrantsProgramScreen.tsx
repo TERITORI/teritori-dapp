@@ -41,7 +41,7 @@ export const GrantsProgramScreen: ScreenFC<"GrantsProgram"> = () => {
         <BrandText style={fontSemibold20}>Grants Program</BrandText>
       }
     >
-      <FlexRow style={{ marginTop: layout.padding_x4 }}>
+      <FlexRow style={{ marginTop: layout.spacing_x4 }}>
         <BrandText style={[fontSemibold28, { flexGrow: 1 }]}>
           Grants Program
         </BrandText>
@@ -62,10 +62,10 @@ export const GrantsProgramScreen: ScreenFC<"GrantsProgram"> = () => {
         />
       </FlexRow>
 
-      <Separator style={{ marginTop: layout.padding_x2 }} />
+      <Separator style={{ marginTop: layout.spacing_x2 }} />
 
       <FlexRow style={{ justifyContent: "space-between", flexWrap: "wrap" }}>
-        <FlexRow style={{ width: "auto", marginTop: layout.padding_x2 }}>
+        <FlexRow style={{ width: "auto", marginTop: layout.spacing_x2 }}>
           <SimpleButton
             text="All"
             color={neutral00}
@@ -99,7 +99,7 @@ export const GrantsProgramScreen: ScreenFC<"GrantsProgram"> = () => {
           />
         </FlexRow>
 
-        <FlexRow style={{ width: "auto", marginTop: layout.padding_x2 }}>
+        <FlexRow style={{ width: "auto", marginTop: layout.spacing_x2 }}>
           <SearchBarInput
             placeholder="Search for grant..."
             text={searchText}
@@ -127,8 +127,8 @@ export const GrantsProgramScreen: ScreenFC<"GrantsProgram"> = () => {
             <GrantBox
               onPress={() => gotoGrantsProgramDetail(String(id))}
               containerStyle={{
-                marginTop: layout.padding_x2,
-                marginRight: layout.padding_x2,
+                marginTop: layout.spacing_x2,
+                marginRight: layout.spacing_x2,
               }}
             />
           );

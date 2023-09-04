@@ -23,8 +23,8 @@ export const TaskItem: React.FC<{
         noBrokenCorners
         mainContainerStyle={{
           backgroundColor: neutral22,
-          padding: layout.padding_x2,
-          marginBottom: layout.padding_x2,
+          padding: layout.spacing_x2,
+          marginBottom: layout.spacing_x2,
         }}
       >
         <BrandText
@@ -38,7 +38,7 @@ export const TaskItem: React.FC<{
 
         <FlexRow
           style={{
-            marginTop: layout.padding_x2,
+            marginTop: layout.spacing_x2,
             justifyContent: "space-between",
           }}
         >

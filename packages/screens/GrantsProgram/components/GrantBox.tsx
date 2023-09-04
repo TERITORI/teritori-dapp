@@ -32,33 +32,33 @@ export const GrantBox: React.FC<{
   return (
     <TertiaryBox width={400} noBrokenCorners style={containerStyle}>
       {/* Body ============================================================== */}
-      <View style={{ margin: layout.padding_x2 }}>
+      <View style={{ margin: layout.spacing_x2 }}>
         <FlexRow>
           <TouchableOpacity onPress={onPress}>
             <RoundedGradientImage size="S" square sourceURI="" />
           </TouchableOpacity>
 
-          <View style={{ marginLeft: layout.padding_x2 }}>
+          <View style={{ marginLeft: layout.spacing_x2 }}>
             <TouchableOpacity onPress={onPress}>
               <BrandText style={fontSemibold20}>
                 Create a web Game using Gnolang
               </BrandText>
             </TouchableOpacity>
-            <FlexRow style={{ marginTop: layout.padding_x0_75 }}>
+            <FlexRow style={{ marginTop: layout.spacing_x0_75 }}>
               <GrantTag
                 text="2005.12.4"
                 size="SM"
-                containerStyle={{ marginRight: layout.padding_x1 }}
+                containerStyle={{ marginRight: layout.spacing_x1 }}
               />
               <GrantTag
                 text="dapp"
                 size="SM"
-                containerStyle={{ marginRight: layout.padding_x1 }}
+                containerStyle={{ marginRight: layout.spacing_x1 }}
               />
               <GrantTag
                 text="Structure"
                 size="SM"
-                containerStyle={{ marginRight: layout.padding_x1 }}
+                containerStyle={{ marginRight: layout.spacing_x1 }}
               />
             </FlexRow>
           </View>
@@ -67,7 +67,7 @@ export const GrantBox: React.FC<{
         <BrandText
           style={[
             fontSemibold13,
-            { color: neutral77, marginTop: layout.padding_x2 },
+            { color: neutral77, marginTop: layout.spacing_x2 },
           ]}
         >
           Build a simple but creative browser based game using Gnolang,
@@ -81,7 +81,7 @@ export const GrantBox: React.FC<{
         style={{
           width: "100%",
           backgroundColor: neutral17,
-          padding: layout.padding_x2,
+          padding: layout.spacing_x2,
         }}
       >
         <FlexRow style={{ justifyContent: "space-between" }}>
@@ -90,7 +90,7 @@ export const GrantBox: React.FC<{
           <BrandText
             style={[
               fontSemibold13,
-              { flexGrow: 1, marginLeft: layout.padding_x2 },
+              { flexGrow: 1, marginLeft: layout.spacing_x2 },
             ]}
           >
             @Community-Grants-DAO.gno
@@ -104,7 +104,7 @@ export const GrantBox: React.FC<{
           </FlexRow>
         </FlexRow>
 
-        <Separator style={{ marginVertical: layout.padding_x2 }} />
+        <Separator style={{ marginVertical: layout.spacing_x2 }} />
 
         <FlexRow>
           <FlexRow style={{ flexGrow: 1, width: "auto" }}>

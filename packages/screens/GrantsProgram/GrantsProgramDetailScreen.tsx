@@ -143,7 +143,7 @@ export const GrantsProgramDetailScreen: ScreenFC<
             <>
               <FlexRow
                 style={{
-                  marginTop: layout.padding_x4,
+                  marginTop: layout.spacing_x4,
                   justifyContent: "space-between",
                 }}
               >
@@ -153,7 +153,7 @@ export const GrantsProgramDetailScreen: ScreenFC<
                     <RoundedGradientImage size="L" square sourceURI="" />
 
                     <View
-                      style={{ marginHorizontal: layout.padding_x2, flex: 1 }}
+                      style={{ marginHorizontal: layout.spacing_x2, flex: 1 }}
                     >
                       <BrandText style={fontSemibold20}>
                         Create a web Game using Gnolang
@@ -164,7 +164,7 @@ export const GrantsProgramDetailScreen: ScreenFC<
                           fontSemibold13,
                           {
                             color: neutralA3,
-                            marginTop: layout.padding_x2,
+                            marginTop: layout.spacing_x2,
                           },
                         ]}
                       >
@@ -185,7 +185,7 @@ export const GrantsProgramDetailScreen: ScreenFC<
                         mainContainerStyle={{
                           backgroundColor: neutral22,
                           borderWidth: 0,
-                          padding: layout.padding_x1_5,
+                          padding: layout.spacing_x1_5,
                         }}
                       >
                         <FlexRow
@@ -195,7 +195,7 @@ export const GrantsProgramDetailScreen: ScreenFC<
                           <BrandText
                             style={[
                               fontSemibold13,
-                              { marginLeft: layout.padding_x1_5 },
+                              { marginLeft: layout.spacing_x1_5 },
                             ]}
                           >
                             @0x17dfsdvgsd98fsbsd9b8sd
@@ -221,17 +221,17 @@ export const GrantsProgramDetailScreen: ScreenFC<
                     <GrantTag
                       text="2005.12.4"
                       size="M"
-                      containerStyle={{ marginRight: layout.padding_x2 }}
+                      containerStyle={{ marginRight: layout.spacing_x2 }}
                     />
                     <GrantTag
                       text="dapp"
                       size="M"
-                      containerStyle={{ marginRight: layout.padding_x2 }}
+                      containerStyle={{ marginRight: layout.spacing_x2 }}
                     />
                     <GrantTag
                       text="Structure"
                       size="M"
-                      containerStyle={{ marginRight: layout.padding_x2 }}
+                      containerStyle={{ marginRight: layout.spacing_x2 }}
                     />
                   </FlexRow>
                 </View>
@@ -310,7 +310,7 @@ export const GrantsProgramDetailScreen: ScreenFC<
               marginHorizontal: -140,
               paddingHorizontal: 140,
               backgroundColor: neutral17,
-              paddingVertical: layout.padding_x3,
+              paddingVertical: layout.spacing_x3,
             }}
           >
             <FlexRow>
@@ -339,8 +339,8 @@ export const GrantsProgramDetailScreen: ScreenFC<
             <Separator
               color={neutral33}
               style={{
-                marginBottom: layout.padding_x2,
-                marginTop: layout.padding_x3,
+                marginBottom: layout.spacing_x2,
+                marginTop: layout.spacing_x3,
               }}
             />
 
@@ -385,10 +385,10 @@ export const GrantsProgramDetailScreen: ScreenFC<
               borderLeftColor: neutral33,
               backgroundColor: neutral00,
               height: "100%",
-              marginLeft: layout.padding_x2,
-              marginRight: -layout.padding_x3 * 2,
-              paddingHorizontal: layout.padding_x2,
-              paddingVertical: layout.padding_x4,
+              marginLeft: layout.spacing_x2,
+              marginRight: -layout.spacing_x3 * 2,
+              paddingHorizontal: layout.spacing_x2,
+              paddingVertical: layout.spacing_x4,
             }}
           >
             <BrandText style={fontSemibold20}>
@@ -435,7 +435,7 @@ export const GrantsProgramDetailScreen: ScreenFC<
               />
             </FlexRow>
 
-            <Separator style={{ marginVertical: layout.padding_x2 }} />
+            <Separator style={{ marginVertical: layout.spacing_x2 }} />
 
             <BrandText style={fontSemibold14}>Description</BrandText>
 
@@ -449,14 +449,14 @@ export const GrantsProgramDetailScreen: ScreenFC<
               University outreach programs.
             </BrandText>
 
-            <Separator style={{ marginVertical: layout.padding_x2 }} />
+            <Separator style={{ marginVertical: layout.spacing_x2 }} />
 
             <TertiaryBox
               fullWidth
               noBrokenCorners
               mainContainerStyle={{
                 backgroundColor: neutral22,
-                padding: layout.padding_x1_5,
+                padding: layout.spacing_x1_5,
                 display: "flex",
                 flexDirection: "row",
               }}
@@ -465,7 +465,7 @@ export const GrantsProgramDetailScreen: ScreenFC<
               <BrandText
                 style={[
                   fontSemibold13,
-                  { flexGrow: 1, marginLeft: layout.padding_x0_5 },
+                  { flexGrow: 1, marginLeft: layout.spacing_x0_5 },
                 ]}
               >
                 Github task link
