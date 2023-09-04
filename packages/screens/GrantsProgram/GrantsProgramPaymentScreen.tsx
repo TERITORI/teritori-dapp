@@ -23,6 +23,7 @@ import { ScreenContainer } from "../../components/ScreenContainer";
 import { SearchBarInput } from "../../components/Search/SearchBarInput";
 import { Separator } from "../../components/Separator";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
+import { SimpleButton } from "../../components/buttons/SimpleButton";
 import { SocialButton } from "../../components/buttons/SocialButton";
 import { RoundedGradientImage } from "../../components/images/RoundedGradientImage";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
@@ -207,31 +208,28 @@ export const GrantsProgramDetailScreen: ScreenFC<
                   <SpacerColumn size={2} />
 
                   <FlexRow>
-                    <Tag text="Open" color="#C8FFAE" bgColor="#C8FFAE1A" />
+                    <SimpleButton
+                      text="Open"
+                      size="SM"
+                      bgColor="#C8FFAE1A"
+                      color="#C8FFAE"
+                      style={{ borderWidth: 0 }}
+                    />
 
                     <SpacerRow size={2} />
 
                     <Tag
                       text="2005.12.4"
-                      color={neutral77}
-                      borderColor={neutral33}
-                      bgColor={neutral00}
                       containerStyle={{ marginRight: layout.spacing_x2 }}
                     />
-
                     <Tag
                       text="dapp"
-                      color={neutral77}
-                      borderColor={neutral33}
-                      bgColor={neutral00}
+                      size="M"
                       containerStyle={{ marginRight: layout.spacing_x2 }}
                     />
-
                     <Tag
                       text="Structure"
-                      color={neutral77}
-                      borderColor={neutral33}
-                      bgColor={neutral00}
+                      size="M"
                       containerStyle={{ marginRight: layout.spacing_x2 }}
                     />
                   </FlexRow>
@@ -403,7 +401,17 @@ export const GrantsProgramDetailScreen: ScreenFC<
                 Status
               </BrandText>
 
-              <Tag bgColor="#2F4469" color="#ffffff" text="Open" />
+              <SimpleButton
+                text="Open"
+                size="XS"
+                bgColor="#2F4469"
+                color="#FFFFFF"
+                style={{
+                  paddingVertical: 2,
+                  paddingHorizontal: 7,
+                  borderRadius: 4,
+                }}
+              />
             </FlexRow>
 
             <SpacerColumn size={2} />
@@ -413,7 +421,17 @@ export const GrantsProgramDetailScreen: ScreenFC<
                 Priority
               </BrandText>
 
-              <Tag bgColor="#673932" color="#ffffff" text="High 🔥" />
+              <SimpleButton
+                bgColor="#673932"
+                color="#ffffff"
+                text="High 🔥"
+                size="XS"
+                style={{
+                  paddingVertical: 2,
+                  paddingHorizontal: 7,
+                  borderRadius: 4,
+                }}
+              />
             </FlexRow>
 
             <Separator style={{ marginVertical: layout.spacing_x2 }} />

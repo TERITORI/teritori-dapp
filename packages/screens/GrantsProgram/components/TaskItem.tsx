@@ -1,14 +1,14 @@
 import React from "react";
 import { TouchableOpacity } from "react-native";
 
+import { Tag } from "./Tag";
 import githubSVG from "../../../../assets/icons/github.svg";
 import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
-import { SVG } from "../../../components/SVG";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
-import { SimpleButton } from "../../../components/buttons/SimpleButton";
+import { SocialButton } from "../../../components/buttons/SocialButton";
 import { neutral22 } from "../../../utils/style/colors";
-import { fontSemibold12, fontSemibold13 } from "../../../utils/style/fonts";
+import { fontSemibold13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 
 export const TaskItem: React.FC<{
@@ -43,26 +43,14 @@ export const TaskItem: React.FC<{
           }}
         >
           {priority === "hight" && (
-            <SimpleButton
-              bgColor="#673932"
-              color="#ffffff"
-              text="High 🔥"
-              size="XS"
-              style={fontSemibold12}
-            />
+            <Tag bgColor="#673932" color="#ffffff" text="High 🔥" />
           )}
 
           {priority === "medium" && (
-            <SimpleButton
-              bgColor="#705B38"
-              color="#ffffff"
-              text="Medium"
-              size="XS"
-              style={fontSemibold12}
-            />
+            <Tag bgColor="#705B38" color="#ffffff" text="Medium" />
           )}
 
-          <SVG source={githubSVG} width={24} height={24} />
+          <SocialButton iconSvg={githubSVG} height={32} />
         </FlexRow>
       </TertiaryBox>
     </TouchableOpacity>

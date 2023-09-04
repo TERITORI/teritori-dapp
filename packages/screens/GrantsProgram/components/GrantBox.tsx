@@ -1,7 +1,7 @@
 import React from "react";
 import { TouchableOpacity, View, ViewStyle } from "react-native";
 
-import { GrantTag } from "./GrantTag";
+import { Tag } from "./Tag";
 import discordSVG from "../../../../assets/icons/discord.svg";
 import githubSVG from "../../../../assets/icons/github.svg";
 import gnoSVG from "../../../../assets/icons/networks/gno.svg";
@@ -45,19 +45,16 @@ export const GrantBox: React.FC<{
               </BrandText>
             </TouchableOpacity>
             <FlexRow style={{ marginTop: layout.spacing_x0_75 }}>
-              <GrantTag
+              <Tag
                 text="2005.12.4"
-                size="SM"
                 containerStyle={{ marginRight: layout.spacing_x1 }}
               />
-              <GrantTag
+              <Tag
                 text="dapp"
-                size="SM"
                 containerStyle={{ marginRight: layout.spacing_x1 }}
               />
-              <GrantTag
+              <Tag
                 text="Structure"
-                size="SM"
                 containerStyle={{ marginRight: layout.spacing_x1 }}
               />
             </FlexRow>

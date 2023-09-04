@@ -21,12 +21,14 @@ export const SocialButton: React.FC<{
   onPress?: () => void;
   style?: StyleProp<ViewStyle>;
   noBrokenCorners?: boolean;
+  height?: number;
 }> = ({
   text,
   onPress,
   iconSvg,
   iconColor,
   style,
+  height,
   noBrokenCorners = true,
   textColor = secondaryColor,
 }) => {
@@ -36,7 +38,7 @@ export const SocialButton: React.FC<{
         // We don't handle broken corners for now, because this button can be used on an image
         noBrokenCorners={noBrokenCorners}
         mainContainerStyle={{ backgroundColor: withAlpha(neutral22, 0.64) }}
-        height={44}
+        height={height === undefined ? 44 : height}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <SecondaryBox
@@ -51,14 +53,16 @@ export const SocialButton: React.FC<{
             <SVG source={iconSvg} height={20} width={20} color={iconColor} />
           </SecondaryBox>
 
-          <BrandText
-            style={[
-              fontMedium14,
-              { marginLeft: 8, marginRight: text ? 16 : 0, color: textColor },
-            ]}
-          >
-            {text}
-          </BrandText>
+          {text && (
+            <BrandText
+              style={[
+                fontMedium14,
+                { marginLeft: 8, marginRight: 16, color: textColor },
+              ]}
+            >
+              {text}
+            </BrandText>
+          )}
         </View>
       </SecondaryBox>
     </TouchableOpacity>

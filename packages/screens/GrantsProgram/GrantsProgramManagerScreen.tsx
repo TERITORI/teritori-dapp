@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 
-import { GrantBox } from "./components/GrantBox";
+import { ManagerAllGrants } from "./components/ManagerAllGrants";
+import { ManagerRequests } from "./components/ManagerRequests";
 import filterSVG from "../../../assets/icons/filter.svg";
 import { BrandText } from "../../components/BrandText";
 import { FlexRow } from "../../components/FlexRow";
@@ -76,24 +77,8 @@ export const GrantsProgramManagerScreen: ScreenFC<
         </FlexRow>
       </FlexRow>
 
-      <FlexRow
-        style={{
-          width: "100%",
-          flexWrap: "wrap",
-          justifyContent: "space-between",
-        }}
-      >
-        {[1, 2, 3, 4, 5, 6, 7].map((id) => {
-          return (
-            <GrantBox
-              containerStyle={{
-                marginTop: layout.spacing_x2,
-                marginRight: layout.spacing_x2,
-              }}
-            />
-          );
-        })}
-      </FlexRow>
+      {selectedTab === "allGrants" && <ManagerAllGrants />}
+      {selectedTab === "requestsByBuilders" && <ManagerRequests />}
     </ScreenContainer>
   );
 };
