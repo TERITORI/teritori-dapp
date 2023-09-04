@@ -30,7 +30,7 @@ export const MoreVideoPlayerCard: React.FC<{
     contentTitle: StyleSheet.flatten([
       fontSemibold14,
       {
-        marginVertical: layout.padding_x0_5,
+        marginVertical: layout.spacing_x0_5,
       },
     ]),
     contentDescription: StyleSheet.flatten([
@@ -55,12 +55,12 @@ export const MoreVideoPlayerCard: React.FC<{
       top: 10,
       backgroundColor: "gray",
       color: "white",
-      borderRadius: layout.padding_x1,
+      borderRadius: layout.spacing_x1,
     },
     contentDuration: StyleSheet.flatten([
       fontSemibold14,
       {
-        padding: layout.padding_x0_5,
+        padding: layout.spacing_x0_5,
       },
     ]),
     contentName: StyleSheet.flatten([
@@ -71,7 +71,7 @@ export const MoreVideoPlayerCard: React.FC<{
     ]),
     contentImg: {
       width: "100%",
-      borderRadius: layout.padding_x1,
+      borderRadius: layout.spacing_x1,
       aspectRatio: 1.7,
     },
     titleRow: {
@@ -116,7 +116,7 @@ export const MoreVideoPlayerCard: React.FC<{
             height: 2,
             width: 2,
             borderRadius: 999,
-            marginHorizontal: layout.padding_x0_75,
+            marginHorizontal: layout.spacing_x0_75,
           }}
         />
         {/*---- Date */}

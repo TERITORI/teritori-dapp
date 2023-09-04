@@ -127,26 +127,26 @@ const Step1Component: React.FC<{
   const [canContinue, setCanContinue] = useState<boolean>(false);
   const [isUploading, setIsUploading] = useState<boolean>(false);
 
-  const paddingHorizontal = layout.padding_x2_5;
+  const paddingHorizontal = layout.spacing_x2_5;
   const styles = StyleSheet.create({
     contentContainer: {
-      paddingBottom: layout.padding_x2_5,
+      paddingBottom: layout.spacing_x2_5,
     },
     uploadBox: {
       width: "100%",
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "center",
-      gap: layout.padding_x1,
+      gap: layout.spacing_x1,
       borderStyle: "dotted",
       borderWidth: 1,
       backgroundColor: "rgba(22, 187, 255, 0.1)",
-      paddingVertical: layout.padding_x4,
+      paddingVertical: layout.spacing_x4,
       borderColor: "#16BBFF",
-      borderRadius: layout.padding_x1_5,
+      borderRadius: layout.spacing_x1_5,
     },
     buttonContainer: {
-      marginTop: layout.padding_x2,
+      marginTop: layout.spacing_x2,
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "center",
@@ -155,10 +155,10 @@ const Step1Component: React.FC<{
       fontSemibold14,
       {
         color: primaryColor,
-        paddingHorizontal: layout.padding_x1_5,
-        paddingVertical: layout.padding_x1,
-        marginBottom: layout.padding_x2_5,
-        borderRadius: layout.padding_x1,
+        paddingHorizontal: layout.spacing_x1_5,
+        paddingVertical: layout.spacing_x1,
+        marginBottom: layout.spacing_x2_5,
+        borderRadius: layout.spacing_x1,
         backgroundColor: "#2B2B33",
       },
     ]),
@@ -172,8 +172,8 @@ const Step1Component: React.FC<{
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "space-between",
-      paddingHorizontal: layout.padding_x2_5,
-      paddingVertical: layout.padding_x2,
+      paddingHorizontal: layout.spacing_x2_5,
+      paddingVertical: layout.spacing_x2,
     },
     footerText: StyleSheet.flatten([
       fontSemibold14,
@@ -227,7 +227,7 @@ const Step1Component: React.FC<{
           onUpload={uploadVideoFile}
           mimeTypes={VIDEO_MIME_TYPES}
           style={{
-            marginTop: layout.padding_x3,
+            marginTop: layout.spacing_x3,
             width: "100%",
           }}
         />
@@ -264,19 +264,19 @@ const Step2Component: React.FC<{
   const userIPFSKey = useSelector(selectNFTStorageAPI);
   const [isUploading, setIsUploading] = useState<boolean>(false);
 
-  const paddingHorizontal = layout.padding_x2_5;
+  const paddingHorizontal = layout.spacing_x2_5;
   const imgSize = 172;
   const styles = StyleSheet.create({
     buttonContainer: {
-      marginTop: layout.padding_x2,
+      marginTop: layout.spacing_x2,
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "center",
       height: 40,
-      borderRadius: layout.padding_x1,
+      borderRadius: layout.spacing_x1,
       backgroundColor: "#2B2B33",
-      gap: layout.padding_x1,
-      marginBottom: layout.padding_x2_5,
+      gap: layout.spacing_x1,
+      marginBottom: layout.spacing_x2_5,
     },
     buttonText: StyleSheet.flatten([
       fontSemibold14,
@@ -294,8 +294,8 @@ const Step2Component: React.FC<{
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "space-between",
-      paddingHorizontal: layout.padding_x2_5,
-      paddingVertical: layout.padding_x2,
+      paddingHorizontal: layout.spacing_x2_5,
+      paddingVertical: layout.spacing_x2,
     },
     footerText: StyleSheet.flatten([
       fontSemibold14,
@@ -306,21 +306,21 @@ const Step2Component: React.FC<{
     ]),
     songGroup: {
       flexDirection: "column",
-      gap: layout.padding_x1,
+      gap: layout.spacing_x1,
     },
     unitBox: {
       backgroundColor: neutral17,
-      paddingHorizontal: layout.padding_x1_5,
+      paddingHorizontal: layout.spacing_x1_5,
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "space-between",
-      borderRadius: layout.padding_x1,
+      borderRadius: layout.spacing_x1,
       height: 40,
     },
     oneLine: {
       flexDirection: "row",
       alignItems: "center",
-      gap: layout.padding_x1_5,
+      gap: layout.spacing_x1_5,
     },
     inputBox: {
       flexDirection: "row",
@@ -333,7 +333,7 @@ const Step2Component: React.FC<{
     img: {
       width: imgSize,
       height: imgSize,
-      borderRadius: layout.padding_x1,
+      borderRadius: layout.spacing_x1,
     },
     textBox: {
       width: 332,
@@ -342,24 +342,24 @@ const Step2Component: React.FC<{
       fontSemibold14,
       {
         color: neutralA3,
-        marginBottom: layout.padding_x1_5,
+        marginBottom: layout.spacing_x1_5,
       },
     ]),
     required: StyleSheet.flatten([
       fontSemibold14,
       {
         color: "#FFAEAE",
-        paddingLeft: layout.padding_x0_5,
+        paddingLeft: layout.spacing_x0_5,
       },
     ]),
     input: StyleSheet.flatten([
       fontSemibold14,
       {
         color: secondaryColor,
-        padding: layout.padding_x2,
+        padding: layout.spacing_x2,
         borderWidth: 1,
         borderColor: neutral33,
-        marginBottom: layout.padding_x2_5,
+        marginBottom: layout.spacing_x2_5,
         borderRadius: 10,
         outlineStyle: "none",
       },
@@ -368,7 +368,7 @@ const Step2Component: React.FC<{
       width: "100%",
       position: "absolute",
       left: 0,
-      bottom: layout.padding_x1,
+      bottom: layout.spacing_x1,
       flexDirection: "column",
       alignItems: "center",
       justifyContent: "center",
@@ -377,11 +377,11 @@ const Step2Component: React.FC<{
       flexDirection: "row",
       alignItems: "center",
       backgroundColor: "#2B2B33",
-      borderRadius: layout.padding_x4,
-      gap: layout.padding_x1,
-      paddingLeft: layout.padding_x1,
-      paddingRight: layout.padding_x1_5,
-      paddingVertical: layout.padding_x1,
+      borderRadius: layout.spacing_x4,
+      gap: layout.spacing_x1,
+      paddingLeft: layout.spacing_x1,
+      paddingRight: layout.spacing_x1_5,
+      paddingVertical: layout.spacing_x1,
     },
   });
 
@@ -448,8 +448,8 @@ const Step2Component: React.FC<{
             <Pressable style={styles.uploadButton} onPress={clickUploadImage}>
               <SVG
                 source={Img}
-                width={layout.padding_x2}
-                height={layout.padding_x2}
+                width={layout.spacing_x2}
+                height={layout.spacing_x2}
               />
               <BrandText style={fontSemibold14}>upload image</BrandText>
             </Pressable>

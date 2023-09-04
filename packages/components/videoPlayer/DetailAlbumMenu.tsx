@@ -26,35 +26,35 @@ export const DetailAlbumMenu: React.FC<DetailAlbumMenuProps> = ({ id }) => {
 
   const styles = StyleSheet.create({
     menuContainer: {
-      borderRadius: layout.padding_x1_5,
+      borderRadius: layout.spacing_x1_5,
       position: "absolute",
       right: 0,
-      bottom: buttonHeight + layout.padding_x0_5,
+      bottom: buttonHeight + layout.spacing_x0_5,
       backgroundColor: "rgba(41, 41, 41, 1)",
-      padding: layout.padding_x1_5,
+      padding: layout.spacing_x1_5,
       flexDirection: "column",
-      gap: layout.padding_x0_75,
+      gap: layout.spacing_x0_75,
       zIndex: 999,
     },
     unitBoxNormal: {
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "space-between",
-      padding: layout.padding_x0_75,
-      borderRadius: layout.padding_x0_75,
+      padding: layout.spacing_x0_75,
+      borderRadius: layout.spacing_x0_75,
     },
     unitBoxHovered: {
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "space-between",
-      padding: layout.padding_x0_75,
+      padding: layout.spacing_x0_75,
       backgroundColor: neutral33,
-      borderRadius: layout.padding_x0_75,
+      borderRadius: layout.spacing_x0_75,
     },
     oneLine: {
       flexDirection: "row",
       alignItems: "center",
-      gap: layout.padding_x1,
+      gap: layout.spacing_x1,
     },
     text: StyleSheet.flatten([
       fontSemibold13,
@@ -68,19 +68,19 @@ export const DetailAlbumMenu: React.FC<DetailAlbumMenuProps> = ({ id }) => {
       backgroundColor: secondaryColor,
     },
     shareMenuContainer: {
-      borderRadius: layout.padding_x1_5,
+      borderRadius: layout.spacing_x1_5,
       position: "absolute",
-      left: -(layout.padding_x1_5 + shareMenuWidth),
+      left: -(layout.spacing_x1_5 + shareMenuWidth),
       bottom: -(
-        layout.padding_x1_5 +
+        layout.spacing_x1_5 +
         lineHeight +
-        layout.padding_x1_5 +
-        1 * layout.padding_x0_75
+        layout.spacing_x1_5 +
+        1 * layout.spacing_x0_75
       ),
       backgroundColor: "rgba(41, 41, 41, 1)",
-      padding: layout.padding_x1_5,
+      padding: layout.spacing_x1_5,
       flexDirection: "column",
-      gap: layout.padding_x0_75,
+      gap: layout.spacing_x0_75,
       width: shareMenuWidth,
     },
   });
@@ -95,8 +95,8 @@ export const DetailAlbumMenu: React.FC<DetailAlbumMenuProps> = ({ id }) => {
         <View style={styles.oneLine}>
           <SVG
             source={Link}
-            width={layout.padding_x2}
-            height={layout.padding_x2}
+            width={layout.spacing_x2}
+            height={layout.spacing_x2}
           />
           <BrandText style={styles.text}>Copy link to the track</BrandText>
         </View>
