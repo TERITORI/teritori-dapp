@@ -109,6 +109,16 @@ export function getAvailableApps(): dAppGroup {
           selectedByDefault: false,
           alwaysOn: false,
         },
+        musicPlayer: {
+          id: "musicPlayer",
+          title: "Music Player",
+          description: "Play your favorite music",
+          icon: musicplayer,
+          route: "MusicPlayer",
+          groupKey: "teritori-core-apps",
+          selectedByDefault: false,
+          alwaysOn: false,
+        },
       },
     },
     "top-apps": {
@@ -337,16 +347,6 @@ export function getAvailableApps(): dAppGroup {
           groupKey: "coming-soon",
           selectedByDefault: false,
           alwaysOn: false,
-        },
-        musicPlayer: {
-          id: "musicPlayer",
-          title: "Music Player",
-          description: "Play your favorite music",
-          icon: musicplayer,
-          route: "MusicPlayer",
-          groupKey: "coming-soon",
-          selectedByDefault: false,
-          alwaysOn: true,
         },
         messages: {
           id: "messages",
