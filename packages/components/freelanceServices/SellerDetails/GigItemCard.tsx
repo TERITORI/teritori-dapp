@@ -101,7 +101,20 @@ export const GigItemCard: React.FC<{
           </View>
         </View>
         {openMenu && (
-          <View style={styles.dropdownMenu}>
+          <View
+            style={{
+              backgroundColor: "#292929",
+              borderWidth: 1,
+              borderColor: neutral33,
+              borderRadius: layout.spacing_x1_5,
+              paddingVertical: layout.spacing_x2,
+              paddingHorizontal: layout.spacing_x1,
+              position: "absolute",
+              bottom: 50,
+              width: "100%",
+              zIndex: 10,
+            }}
+          >
             {manageList.map((item: string, index: number) => (
               <Pressable
                 // @ts-ignore
@@ -120,8 +133,21 @@ export const GigItemCard: React.FC<{
                 <BrandText
                   style={
                     hoveredIndex === index + 1
-                      ? styles.hoveredDropdownMenuText
-                      : styles.normalDropdownMenuText
+                      ? StyleSheet.flatten([
+                          fontMedium13,
+                          {
+                            backgroundColor: neutral33,
+                            borderRadius: 6,
+                            padding: layout.spacing_x1,
+                          },
+                        ])
+                      : StyleSheet.flatten([
+                          fontMedium13,
+                          {
+                            color: neutralA3,
+                            padding: layout.spacing_x1,
+                          },
+                        ])
                   }
                 >
                   {item}
@@ -134,33 +160,3 @@ export const GigItemCard: React.FC<{
     )
   );
 };
-
-const styles = StyleSheet.create({
-  dropdownMenu: {
-    backgroundColor: "#292929",
-    borderWidth: 1,
-    borderColor: neutral33,
-    borderRadius: layout.spacing_x1_5,
-    paddingVertical: layout.spacing_x2,
-    paddingHorizontal: layout.spacing_x1,
-    position: "absolute",
-    bottom: 50,
-    width: "100%",
-    zIndex: 10,
-  },
-  normalDropdownMenuText: StyleSheet.flatten([
-    fontMedium13,
-    {
-      color: neutralA3,
-      padding: layout.spacing_x1,
-    },
-  ]),
-  hoveredDropdownMenuText: StyleSheet.flatten([
-    fontMedium13,
-    {
-      backgroundColor: neutral33,
-      borderRadius: 6,
-      padding: layout.spacing_x1,
-    },
-  ]),
-});
