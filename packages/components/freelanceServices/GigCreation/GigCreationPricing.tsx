@@ -429,7 +429,8 @@ export const GigCreationPricing: React.FC<{
     </View>
   );
 };
-
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   pageContent: {
     flexDirection: "column",
