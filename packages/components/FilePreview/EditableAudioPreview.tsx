@@ -1,12 +1,16 @@
-import { Audio, AVPlaybackStatus } from "expo-av";
-import React, { useEffect, useState } from "react";
-import { Image, View, TouchableOpacity, ActivityIndicator } from "react-native";
+import React, { useEffect, useMemo, useState } from "react";
+import { Image, View, TouchableOpacity } from "react-native";
 
 import { AudioWaveform } from "./AudioWaveform";
 import { AUDIO_WAVEFORM_MAX_WIDTH } from "./AudioWaveform/AudioWaveform.web";
 import { DeleteButton } from "./DeleteButton";
 import pauseSVG from "../../../assets/icons/pause.svg";
 import playSVG from "../../../assets/icons/play.svg";
+import { useMediaPlayer } from "../../context/MediaPlayerProvider";
+import { useNSUserInfo } from "../../hooks/useNSUserInfo";
+import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { getUserId } from "../../networks";
 import { IMAGE_MIME_TYPES } from "../../utils/mime";
 import {
   neutral00,
@@ -17,6 +21,7 @@ import {
 import { fontMedium32, fontSemibold12 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { LocalFileData } from "../../utils/types/files";
+import { Media } from "../../utils/types/mediaPlayer";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { FileUploader } from "../fileUploader";
@@ -32,42 +37,48 @@ export const EditableAudioPreview: React.FC<AudioPreviewProps> = ({
   onDelete,
   onUploadThumbnail,
 }) => {
-  const [sound, setSound] = useState<Audio.Sound>();
-  const [playbackStatus, setPlaybackStatus] = useState<AVPlaybackStatus>();
   const [thumbnailFile, setThumbnailFile] = useState<LocalFileData>();
+  const {
+    media,
+    isPlaying,
+    handlePlayPause,
+    loadAndPlaySound,
+    lastTimePosition,
+    removeSound,
+  } = useMediaPlayer();
+  const selectedWallet = useSelectedWallet();
+  const selectedNetworkId = useSelectedNetworkId();
+  const userId = getUserId(selectedNetworkId, selectedWallet?.address);
+  const userInfo = useNSUserInfo(userId);
+  const isInMediaPlayer = useMemo(
+    () => media?.fileUrl === file.url,
+    [media?.fileUrl, file.url]
+  );
 
-  useEffect(() => {
-    return sound
-      ? () => {
-          sound.unloadAsync();
-        }
-      : undefined;
-  }, [sound]);
-
-  useEffect(() => {
-    const loadSound = async () => {
-      const { sound } = await Audio.Sound.createAsync(
-        { uri: file.url },
-        { progressUpdateIntervalMillis: 400 },
-        (status) => setPlaybackStatus(status)
-      );
-      setSound(sound);
-      setThumbnailFile(file.thumbnailFileData);
-    };
-    loadSound();
-  }, [file]);
-
-  const handlePlayPause = async () => {
-    if (playbackStatus?.isLoaded && playbackStatus?.isPlaying) {
-      await sound?.pauseAsync();
+  const onPressPlayPause = async () => {
+    if (isInMediaPlayer) {
+      await handlePlayPause();
     } else {
-      await sound?.playAsync();
+      const songToAdd: Media = {
+        imageUrl: userInfo.metadata.image || undefined,
+        name: file.fileName,
+        createdBy: userId,
+        fileUrl: file.url,
+        duration: file.audioMetadata?.duration,
+      };
+      await loadAndPlaySound(songToAdd);
     }
   };
+  useEffect(() => {
+    setThumbnailFile(file.thumbnailFileData);
+  }, [file]);
 
-  const positionPercent =
-    ((playbackStatus?.isLoaded && playbackStatus?.positionMillis) || 0) /
-    ((playbackStatus?.isLoaded && playbackStatus?.durationMillis) || 1);
+  const positionPercent = useMemo(
+    () =>
+      (isInMediaPlayer ? lastTimePosition : 0) /
+      (file.audioMetadata?.duration || 1),
+    [file.audioMetadata?.duration, lastTimePosition, isInMediaPlayer]
+  );
 
   return (
     <View
@@ -82,7 +93,14 @@ export const EditableAudioPreview: React.FC<AudioPreviewProps> = ({
         position: "relative",
       }}
     >
-      <DeleteButton onPress={() => onDelete(file)} />
+      <DeleteButton
+        onPress={async () => {
+          if (isInMediaPlayer) {
+            await removeSound();
+          }
+          onDelete(file);
+        }}
+      />
 
       <View
         style={{
@@ -94,13 +112,11 @@ export const EditableAudioPreview: React.FC<AudioPreviewProps> = ({
         }}
       >
         <TouchableOpacity
-          onPress={handlePlayPause}
+          onPress={onPressPlayPause}
           activeOpacity={0.9}
           style={{
             backgroundColor:
-              playbackStatus?.isLoaded && playbackStatus?.isPlaying
-                ? secondaryColor
-                : neutral00,
+              isInMediaPlayer && isPlaying ? secondaryColor : neutral00,
             height: 48,
             width: 48,
             borderRadius: 30,
@@ -110,24 +126,12 @@ export const EditableAudioPreview: React.FC<AudioPreviewProps> = ({
             marginLeft: layout.spacing_x1,
           }}
         >
-          {playbackStatus?.isLoaded && playbackStatus?.isBuffering ? (
-            <ActivityIndicator size={12} color={secondaryColor} />
-          ) : (
-            <SVG
-              source={
-                playbackStatus?.isLoaded && playbackStatus?.isPlaying
-                  ? pauseSVG
-                  : playSVG
-              }
-              width={24}
-              height={24}
-              color={
-                playbackStatus?.isLoaded && playbackStatus?.isPlaying
-                  ? neutral00
-                  : secondaryColor
-              }
-            />
-          )}
+          <SVG
+            source={isInMediaPlayer && isPlaying ? pauseSVG : playSVG}
+            width={24}
+            height={24}
+            color={isInMediaPlayer && isPlaying ? neutral00 : secondaryColor}
+          />
         </TouchableOpacity>
         {!!file.audioMetadata && (
           <View
@@ -139,13 +143,9 @@ export const EditableAudioPreview: React.FC<AudioPreviewProps> = ({
             }}
           >
             <AudioWaveform
-              waveform={file.audioMetadata?.waveform}
+              waveform={file.audioMetadata?.waveform || []}
               positionPercent={positionPercent}
-              duration={
-                playbackStatus?.isLoaded
-                  ? playbackStatus?.durationMillis || 0
-                  : 1
-              }
+              duration={file.audioMetadata?.duration || 1}
             />
           </View>
         )}

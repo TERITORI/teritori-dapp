@@ -289,8 +289,32 @@ func (h *Handler) handleExecute(e *Message) error {
 		if err := h.handleExecuteDAOExecute(e, &executeMsg); err != nil {
 			return errors.Wrap(err, "failed to handle dao execute")
 		}
+	//Musicplayer actions
+	case "create_music_album":
+		if executeMsg.Contract == h.config.Network.MusicplayerContractAddress {
+			if err := h.handleExecuteCreateAlbum(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle create album")
+			}
+		}
+	case "delete_music_album":
+		if executeMsg.Contract == h.config.Network.MusicplayerContractAddress {
+			if err := h.handleExecuteDeleteMusicAlbum(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle create album")
+			}
+		}
+	case "add_to_library": //Add user's album to my library
+		if executeMsg.Contract == h.config.Network.MusicplayerContractAddress {
+			if err := h.handleExecuteAddToLibrary(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle add to library")
+			}
+		}
+	case "remove_from_library":
+		if executeMsg.Contract == h.config.Network.MusicplayerContractAddress {
+			if err := h.handleExecuteRemoveFromLibrary(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle remove from library")
+			}
+		}
 	}
-
 	return nil
 }
 

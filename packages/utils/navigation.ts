@@ -58,6 +58,10 @@ export type RootStackParamList = {
   CoreDAO: undefined;
 
   DAppStore: undefined;
+
+  MusicPlayer: undefined;
+  MusicPlayerAlbum: { id: string };
+
   ToriPunks: { route: string };
 };
 
@@ -129,6 +133,9 @@ const navConfig: {
     DAppStore: "dapp-store",
     // === DApps
     ToriPunks: "dapp/tori-punks/:route?",
+    // ==== mediaPlayer
+    MusicPlayer: "music-player/home",
+    MusicPlayerAlbum: "music-player/album/:id",
   },
 };
 

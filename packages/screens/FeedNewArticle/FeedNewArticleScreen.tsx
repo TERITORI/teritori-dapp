@@ -293,6 +293,8 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
                   !wallet
                 }
                 onPublish={onPublish}
+                authorId={userId}
+                postId=""
               />
             )}
           />

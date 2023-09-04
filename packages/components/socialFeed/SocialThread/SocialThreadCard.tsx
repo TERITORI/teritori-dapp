@@ -405,13 +405,15 @@ export const SocialThreadCard: React.FC<{
 
           <SpacerColumn size={2} />
 
-          {/*====== Card Content */}
-          <SocialMessageContent
-            metadata={metadata}
-            postCategory={localPost.category}
-            isPreview={isPreview}
-          />
-          <SpacerColumn size={2} />
+        {/*====== Card Content */}
+        <SocialMessageContent
+          authorId={localPost.authorId}
+          postId={localPost.identifier}
+          metadata={metadata}
+          postCategory={localPost.category}
+          isPreview={isPreview}
+        />
+        <SpacerColumn size={2} />
 
           {/*====== Card Actions */}
           {isGovernance ? (

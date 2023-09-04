@@ -294,6 +294,8 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
               <SocialMessageContent
                 metadata={metadata}
                 postCategory={localComment.category}
+                authorId={localComment.authorId}
+                postId={localComment.identifier}
               />
 
               <SpacerColumn size={2} />

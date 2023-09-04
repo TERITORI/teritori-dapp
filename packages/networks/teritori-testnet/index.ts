@@ -81,4 +81,6 @@ export const teritoriTestnetNetwork: NetworkInfo = {
     "tori1r29chp8ufwgx9u3wr4sfk050aardhkzwve7nht6y06gvlaqutr3qt83z6r",
   coreDAOAddress:
     "tori1dy5h9q9zue4swxe9mzracm8gudp0fcf2ncllch6pfq9d0fq0ftgq546063",
+  musicplayerContractAddress:
+    "tori1z0089a6r77fgys558pcj9m8azwalg8g9hqc8cest4a4a9m9vgz3qhu2evr",
 };

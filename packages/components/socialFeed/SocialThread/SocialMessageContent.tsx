@@ -18,12 +18,16 @@ interface Props {
   metadata: SocialFeedMetadata;
   postCategory: PostCategory;
   isPreview?: boolean;
+  authorId?: string;
+  postId?: string;
 }
 
 export const SocialMessageContent: React.FC<Props> = ({
   metadata,
   postCategory,
   isPreview,
+  authorId,
+  postId,
 }) => {
   const audioFiles = useMemo(
     () => metadata.files?.filter((file) => file.fileType === "audio"),
@@ -57,6 +61,8 @@ export const SocialMessageContent: React.FC<Props> = ({
           metadata={metadata}
           audioFiles={audioFiles}
           isPreview={isPreview}
+          postId={postId || ""}
+          authorId={authorId || ""}
         />
       </View>
     );
@@ -79,7 +85,11 @@ export const SocialMessageContent: React.FC<Props> = ({
         {audioFiles?.map((file, index) => (
           <Fragment key={index}>
             {metadata.message && <SpacerColumn size={2} />}
-            <AudioView file={file} />
+            <AudioView
+              file={file}
+              authorId={authorId || ""}
+              postId={postId || ""}
+            />
           </Fragment>
         ))}
       </>
