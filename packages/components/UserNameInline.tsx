@@ -5,11 +5,13 @@ import { BrandText } from "./BrandText";
 import FlexRow from "./FlexRow";
 import { OmniLink } from "./OmniLink";
 import { RoundedGradientImage } from "./images/RoundedGradientImage";
+import { useIsDAO } from "../hooks/cosmwasm/useCosmWasmContractInfo";
 import { useNSUserInfo } from "../hooks/useNSUserInfo";
 import { getCosmosNetwork, parseUserId } from "../networks";
 import { fontSemibold14 } from "../utils/style/fonts";
 import { layout } from "../utils/style/layout";
 import { tinyAddress } from "../utils/text";
+import { nameServiceDefaultImage } from "../utils/tns";
 
 type PlayerNameProps = {
   userId: string | undefined;
@@ -23,6 +25,7 @@ export const UserNameInline: React.FC<PlayerNameProps> = ({
 }) => {
   const [userNetwork, userAddress] = parseUserId(userId);
   const userInfo = useNSUserInfo(userId);
+  const { isDAO } = useIsDAO(userId);
   const networkId = userNetwork?.id;
   const network = getCosmosNetwork(networkId);
   const name =
@@ -37,7 +40,7 @@ export const UserNameInline: React.FC<PlayerNameProps> = ({
         <RoundedGradientImage
           size="XXS"
           sourceURI={userInfo?.metadata?.image}
-          fallbackURI={network?.nameServiceDefaultImage}
+          fallbackURI={nameServiceDefaultImage(isDAO, network)}
         />
         <BrandText
           style={[{ marginLeft: layout.spacing_x1_5 }, fontSemibold14]}

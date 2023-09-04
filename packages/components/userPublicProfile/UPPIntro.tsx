@@ -8,6 +8,7 @@ import twitterSVG from "../../../assets/icons/twitter.svg";
 import websiteSVG from "../../../assets/icons/website.svg";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { parseUserId } from "../../networks";
 import { DEFAULT_NAME } from "../../utils/social-feed";
 import { neutral00, neutral55, neutral77 } from "../../utils/style/colors";
@@ -31,8 +32,8 @@ import { UserAvatarWithFrame } from "../images/AvatarWithFrame";
 
 export const UPPIntro: React.FC<{
   userId: string;
-  isUserOwner?: boolean;
-}> = ({ userId, isUserOwner }) => {
+}> = ({ userId }) => {
+  const selectedWallet = useSelectedWallet();
   const { metadata } = useNSUserInfo(userId);
   const { copyToClipboard } = useCopyToClipboard();
   const socialButtonStyle = { margin: layout.spacing_x0_75 };
@@ -106,7 +107,7 @@ export const UPPIntro: React.FC<{
             onPress={() => copyToClipboard(window.location.href, "URL copied")}
           />
         </View>
-        {isUserOwner ? (
+        {selectedWallet?.userId === userId ? (
           <ProfileButton
             style={{ position: "absolute", right: 0, bottom: -80 }}
             isEdit

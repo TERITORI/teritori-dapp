@@ -1,3 +1,5 @@
+TERITORI_CONTRACTS_REPO=teritori-contracts
+
 CANDYMACHINE_REPO=teritori-nfts
 BUNKER_MINTER_PACKAGE=teritori-bunker-minter
 
@@ -15,6 +17,8 @@ RIOTER_FOOTER_PACKAGE=rioter-footer-nft
 
 VAULT_REPO=teritori-vault
 VAULT_PACKAGE=teritori-nft-vault
+
+MUSIC_PLAYER_PACKAGE=teritori-music-player
 
 CONTRACTS_CLIENTS_DIR=packages/contracts-clients
 
@@ -70,7 +74,7 @@ docker.backend:
 	docker build . -f go/cmd/teritori-dapp-backend/Dockerfile -t teritori/teritori-dapp-backend:$(shell git rev-parse --short HEAD)
 
 .PHONY: generate.contracts-clients
-generate.contracts-clients: $(CONTRACTS_CLIENTS_DIR)/$(BUNKER_MINTER_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(NAME_SERVICE_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(RIOTER_FOOTER_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(TOKEN_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(VAULT_PACKAGE)
+generate.contracts-clients: $(CONTRACTS_CLIENTS_DIR)/$(BUNKER_MINTER_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(NAME_SERVICE_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(RIOTER_FOOTER_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(TOKEN_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(VAULT_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(MUSIC_PLAYER_PACKAGE)
 
 .PHONY: generate.go-networks
 generate.go-networks: node_modules validate-networks
@@ -199,6 +203,20 @@ $(CONTRACTS_CLIENTS_DIR)/$(VAULT_PACKAGE): node_modules
 	go run github.com/a-h/generate/cmd/schema-generate@v0.0.0-20220105161013-96c14dfdfb60 -i $(VAULT_REPO)/contracts/nft-vault/schema/execute_msg.json -o go/pkg/contracts/vault_types/execute_msg.go -p vault_types
 	go fmt ./go/pkg/contracts/vault_types
 	rm -fr $(VAULT_REPO)
+
+.PHONY: $(CONTRACTS_CLIENTS_DIR)/$(MUSIC_PLAYER_PACKAGE)
+$(CONTRACTS_CLIENTS_DIR)/$(MUSIC_PLAYER_PACKAGE): node_modules
+	rm -fr $(TERITORI_CONTRACTS_REPO)
+	git clone git@github.com:TERITORI/$(TERITORI_CONTRACTS_REPO).git
+	cd $(TERITORI_CONTRACTS_REPO) && git checkout feat/music-player
+	rm -fr $@
+	npx cosmwasm-ts-codegen generate \
+		--plugin client \
+		--schema $(TERITORI_CONTRACTS_REPO)/contracts/music-player/schema \
+		--out $@ \
+		--name $(MUSIC_PLAYER_PACKAGE) \
+		--no-bundle
+	rm -fr $(TERITORI_CONTRACTS_REPO)
 
 .PHONY: publish.backend
 publish.backend:

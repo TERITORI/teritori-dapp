@@ -4,7 +4,7 @@ import { PanGestureHandler } from "react-native-gesture-handler";
 import { useAnimatedGestureHandler } from "react-native-reanimated";
 import { clamp } from "react-native-redash";
 
-const Slider: React.FC<{
+const CustomSlider: React.FC<{
   style: ViewStyle;
   thumbStyle: ViewStyle;
   width: number;
@@ -74,4 +74,4 @@ const Slider: React.FC<{
   );
 };
 
-export default Slider;
+export default CustomSlider;

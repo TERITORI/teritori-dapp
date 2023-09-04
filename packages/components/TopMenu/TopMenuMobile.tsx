@@ -3,18 +3,21 @@ import { View, TouchableOpacity, StyleSheet, Image } from "react-native";
 
 import { TopMenuBox } from "./TopMenuBox";
 import { useDropdowns } from "../../context/DropdownsProvider";
+import { useIsDAO } from "../../hooks/cosmwasm/useCosmWasmContractInfo";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getCosmosNetwork } from "../../networks";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { neutral00 } from "../../utils/style/colors";
+import { nameServiceDefaultImage } from "../../utils/tns";
 
 export const TopMenuMobile: FC = () => {
   const { onPressDropdownButton, isDropdownOpen } = useDropdowns();
   const dropdownRef = useRef<View>(null);
   const selectedWallet = useSelectedWallet();
   const userInfo = useNSUserInfo(selectedWallet?.userId);
+  const { isDAO } = useIsDAO(selectedWallet?.userId);
   const selectedNetworkId = useSelectedNetworkId();
   const network = getCosmosNetwork(selectedNetworkId);
 
@@ -26,8 +29,7 @@ export const TopMenuMobile: FC = () => {
           source={{
             uri: ipfsURLToHTTPURL(
               userInfo?.metadata?.image ||
-                network?.nameServiceDefaultImage ||
-                ""
+                nameServiceDefaultImage(isDAO, network)
             ),
           }}
         />

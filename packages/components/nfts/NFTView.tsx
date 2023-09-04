@@ -19,11 +19,12 @@ import raffleSVG from "../../../assets/icons/raffle.svg";
 import sendSVG from "../../../assets/icons/send.svg";
 import { NFT } from "../../api/marketplace/v1/marketplace";
 import { useDropdowns } from "../../context/DropdownsProvider";
+import { useIsDAO } from "../../hooks/cosmwasm/useCosmWasmContractInfo";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getCosmosNetwork, parseUserId } from "../../networks";
+import { getNetwork, parseUserId } from "../../networks";
 import {
   addSelected,
   removeSelected,
@@ -39,6 +40,7 @@ import {
   neutral77,
 } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
+import { nameServiceDefaultImage } from "../../utils/tns";
 import { BrandText } from "../BrandText";
 import { CurrencyIcon } from "../CurrencyIcon";
 import { DropdownOption } from "../DropdownOption";
@@ -62,7 +64,8 @@ export const NFTView: React.FC<{
   const flatStyle = StyleSheet.flatten(style);
   const selectedWallet = useSelectedWallet();
   const userInfo = useNSUserInfo(nft.ownerId);
-  const cosmosNetwork = getCosmosNetwork(nft.networkId);
+  const { isDAO } = useIsDAO(nft.ownerId);
+  const network = getNetwork(nft.networkId);
   const { onPressDropdownButton, isDropdownOpen, closeOpenedDropdown } =
     useDropdowns();
   const [isTransferNFTVisible, setIsTransferNFTVisible] =
@@ -160,7 +163,7 @@ export const NFTView: React.FC<{
                 >
                   <OptimizedImage
                     sourceURI={userInfo.metadata.image}
-                    fallbackURI={cosmosNetwork?.nameServiceDefaultImage}
+                    fallbackURI={nameServiceDefaultImage(isDAO, network)}
                     width={32}
                     height={32}
                     style={{
