@@ -1,15 +1,15 @@
 import React from "react";
-import { View, StyleSheet, Pressable } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 
 import FaceBookIcon from "../../../../assets/icons/gig-creation/facebook.svg";
 import GoogleIcon from "../../../../assets/icons/gig-creation/google.svg";
 import ShareIcon from "../../../../assets/icons/gig-creation/share.svg";
 import TwitterIcon from "../../../../assets/icons/gig-creation/twitter.svg";
 import {
+  neutral00,
+  neutral33,
   neutralA3,
   primaryColor,
-  neutral33,
-  neutral00,
 } from "../../../utils/style/colors";
 import { fontSemibold14, fontSemibold16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
@@ -37,41 +37,41 @@ export const GigCreationPublish: React.FC<{
     oneLine: {
       flexDirection: "row",
       alignItems: "center",
-      gap: layout.padding_x2,
+      gap: layout.spacing_x2,
     },
     selectedButton: {
       borderWidth: 1,
-      paddingLeft: layout.padding_x1_5,
-      paddingRight: layout.padding_x2,
-      paddingVertical: layout.padding_x1,
+      paddingLeft: layout.spacing_x1_5,
+      paddingRight: layout.spacing_x2,
+      paddingVertical: layout.spacing_x1,
       borderColor: primaryColor,
       backgroundColor: neutral00,
-      borderRadius: layout.padding_x4,
+      borderRadius: layout.spacing_x4,
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "center",
-      gap: layout.padding_x1_5,
-      marginTop: layout.padding_x4,
+      gap: layout.spacing_x1_5,
+      marginTop: layout.spacing_x4,
     },
     normalButton: {
       borderWidth: 1,
-      paddingLeft: layout.padding_x1_5,
-      paddingRight: layout.padding_x2,
-      paddingVertical: layout.padding_x1,
+      paddingLeft: layout.spacing_x1_5,
+      paddingRight: layout.spacing_x2,
+      paddingVertical: layout.spacing_x1,
       borderColor: neutral33,
-      borderRadius: layout.padding_x4,
+      borderRadius: layout.spacing_x4,
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "center",
-      gap: layout.padding_x1_5,
-      marginTop: layout.padding_x4,
+      gap: layout.spacing_x1_5,
+      marginTop: layout.spacing_x4,
     },
   });
 
   return (
     <View style={styles.pageContent}>
       <BrandText>Your Gig is open for business!</BrandText>
-      <BrandText style={[styles.text, { marginTop: layout.padding_x2 }]}>
+      <BrandText style={[styles.text, { marginTop: layout.spacing_x2 }]}>
         Spread the word to boost your sales.
       </BrandText>
       <View style={styles.oneLine}>

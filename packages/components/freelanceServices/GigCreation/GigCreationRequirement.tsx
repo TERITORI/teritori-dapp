@@ -1,15 +1,15 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Pressable, TextInput } from "react-native";
+import { Pressable, StyleSheet, TextInput, View } from "react-native";
 
 import { requirementFormData } from "./GigBasedata";
 import DeleteIcon from "../../../../assets/icons/delete.svg";
 import {
+  neutral00,
+  neutral33,
   neutral77,
   neutralA3,
   primaryColor,
-  neutral33,
   secondaryColor,
-  neutral00,
 } from "../../../utils/style/colors";
 import { fontMedium13, fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
@@ -60,7 +60,7 @@ export const GigCreationRequirement: React.FC<{
       <BrandText>
         Get all the information you need from buyers to get started
       </BrandText>
-      <BrandText style={[styles.text, { marginTop: layout.padding_x2 }]}>
+      <BrandText style={[styles.text, { marginTop: layout.spacing_x2 }]}>
         Add questions to help buyers provide you with exactly what you need to
         start working on their order.
       </BrandText>
@@ -75,14 +75,14 @@ export const GigCreationRequirement: React.FC<{
                 <SVG source={DeleteIcon} width={16} height={16} />
               </Pressable>
             </View>
-            <View style={[styles.oneLine, { marginTop: layout.padding_x2 }]}>
+            <View style={[styles.oneLine, { marginTop: layout.spacing_x2 }]}>
               <BrandText style={styles.question}>{item.question}</BrandText>
             </View>
           </View>
         ))}
       {enableAdd && (
         <View>
-          <View style={[styles.oneLine, { marginTop: layout.padding_x4 }]}>
+          <View style={[styles.oneLine, { marginTop: layout.spacing_x4 }]}>
             <BrandText style={styles.subTitle}>Add a question</BrandText>
             <View style={styles.oneLine}>
               <CheckBox
@@ -97,7 +97,7 @@ export const GigCreationRequirement: React.FC<{
               <BrandText
                 style={[
                   fontMedium13,
-                  { color: neutralA3, marginLeft: layout.padding_x1 },
+                  { color: neutralA3, marginLeft: layout.spacing_x1 },
                 ]}
               >
                 Required
@@ -131,7 +131,7 @@ export const GigCreationRequirement: React.FC<{
               <TertiaryButton
                 size="XS"
                 text="Cancel"
-                style={{ marginRight: layout.padding_x2 }}
+                style={{ marginRight: layout.spacing_x2 }}
                 onPress={() => {
                   setInputQuestion({
                     question: "",
@@ -147,7 +147,7 @@ export const GigCreationRequirement: React.FC<{
         </View>
       )}
       <View
-        style={[styles.divideLine, { marginVertical: layout.padding_x3 }]}
+        style={[styles.divideLine, { marginVertical: layout.spacing_x3 }]}
       />
       {!enableAdd && (
         <Pressable
@@ -170,10 +170,10 @@ const styles = StyleSheet.create({
     width: pageContentWidth,
   },
   questionCard: {
-    marginTop: layout.padding_x2,
-    borderRadius: layout.padding_x1_5,
-    paddingVertical: layout.padding_x2,
-    paddingHorizontal: layout.padding_x1_5,
+    marginTop: layout.spacing_x2,
+    borderRadius: layout.spacing_x1_5,
+    paddingVertical: layout.spacing_x2,
+    paddingHorizontal: layout.spacing_x1_5,
     borderWidth: 1,
     borderColor: neutral33,
     backgroundColor: neutral00,
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
   subTitle: StyleSheet.flatten([
     fontSemibold14,
     {
-      marginBottom: layout.padding_x1_5,
+      marginBottom: layout.spacing_x1_5,
     },
   ]),
   oneLine: {
@@ -205,12 +205,12 @@ const styles = StyleSheet.create({
   questionInput: StyleSheet.flatten([
     fontSemibold14,
     {
-      padding: layout.padding_x2,
+      padding: layout.spacing_x2,
       borderWidth: 1,
       borderColor: neutral33,
-      borderRadius: layout.padding_x1_5,
+      borderRadius: layout.spacing_x1_5,
       color: secondaryColor,
-      marginBottom: layout.padding_x2,
+      marginBottom: layout.spacing_x2,
     },
   ]),
   divideLine: {

@@ -1,7 +1,7 @@
 import React from "react";
 import { View } from "react-native";
 
-import { neutral44, neutral17 } from "../../../utils/style/colors";
+import { neutral17, neutral44 } from "../../../utils/style/colors";
 import { fontMedium14, fontSemibold20 } from "../../../utils/style/fonts";
 import { BrandText } from "../../BrandText";
 

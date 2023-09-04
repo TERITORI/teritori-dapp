@@ -1,15 +1,15 @@
 import React from "react";
-import { View, StyleSheet, TextInput, TextProps } from "react-native";
+import { StyleSheet, TextInput, TextProps, View } from "react-native";
 
 import { deliveryTimeData } from "./GigBasedata";
 import { GigPriceContentData } from "./GigPriceContentData";
 import {
-  neutral77,
-  neutral33,
-  secondaryColor,
   neutral00,
   neutral17,
+  neutral33,
   neutral55,
+  neutral77,
+  secondaryColor,
 } from "../../../utils/style/colors";
 import {
   fontMedium13,
@@ -346,7 +346,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     width: tableWidth,
-    marginTop: layout.padding_x2,
+    marginTop: layout.spacing_x2,
     borderColor: neutral33,
     backgroundColor: neutral33,
     borderWidth: 1,
@@ -368,12 +368,12 @@ const styles = StyleSheet.create({
   textInput: StyleSheet.flatten([
     fontSemibold14,
     {
-      padding: layout.padding_x2,
+      padding: layout.spacing_x2,
       borderWidth: 1,
       borderColor: neutral33,
       color: secondaryColor,
-      borderTopLeftRadius: layout.padding_x1_5,
-      borderTopRightRadius: layout.padding_x1_5,
+      borderTopLeftRadius: layout.spacing_x1_5,
+      borderTopRightRadius: layout.spacing_x1_5,
       borderBottomWidth: 0,
       outlineStyle: "none",
     },

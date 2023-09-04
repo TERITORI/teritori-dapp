@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { View } from "react-native";
 
 import {
-  primaryColor,
-  secondaryColor,
   neutral00,
   neutralA3,
+  primaryColor,
+  secondaryColor,
 } from "../../../../utils/style/colors";
 import { fontSemibold14 } from "../../../../utils/style/fonts";
 import { BrandText } from "../../../BrandText/BrandText";

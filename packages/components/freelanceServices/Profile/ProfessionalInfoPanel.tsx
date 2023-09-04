@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import {
-  View,
-  StyleSheet,
   Pressable,
+  StyleSheet,
   TextInput,
-  useWindowDimensions,
   TouchableOpacity,
+  useWindowDimensions,
+  View,
 } from "react-native";
 
 import trashSVG from "../../../../assets/icons/trash.svg";
@@ -161,10 +161,10 @@ export const ProfessionalInfoPanel: React.FC<{
       },
     ]),
     selectYearContainer: {
-      marginLeft: layout.padding_x2_5,
+      marginLeft: layout.spacing_x2_5,
       flexDirection: "row",
       alignItems: "center",
-      gap: layout.padding_x2_5,
+      gap: layout.spacing_x2_5,
     },
     detailContentContainer: {
       flexDirection: "column",
@@ -173,7 +173,7 @@ export const ProfessionalInfoPanel: React.FC<{
     detailTitle: StyleSheet.flatten([
       fontMedium13,
       {
-        marginTop: layout.padding_x2,
+        marginTop: layout.spacing_x2,
       },
     ]),
     divideLine: {
@@ -194,20 +194,20 @@ export const ProfessionalInfoPanel: React.FC<{
       marginVertical: 6,
     },
     tickedCheckBox: {
-      width: layout.padding_x2,
-      height: layout.padding_x2,
+      width: layout.spacing_x2,
+      height: layout.spacing_x2,
     },
     checkedText: StyleSheet.flatten([
       fontMedium13,
       {
         color: secondaryColor,
-        marginLeft: layout.padding_x1,
+        marginLeft: layout.spacing_x1,
       },
     ]),
     twoInputBox: {
       flexDirection: "row",
       alignItems: "center",
-      gap: layout.padding_x2_5,
+      gap: layout.spacing_x2_5,
     },
     notCheckedText: StyleSheet.flatten([
       fontMedium13,
@@ -220,8 +220,8 @@ export const ProfessionalInfoPanel: React.FC<{
       {
         backgroundColor: neutral00,
         borderColor: neutral33,
-        borderRadius: layout.padding_x1_5,
-        padding: layout.padding_x2,
+        borderRadius: layout.spacing_x1_5,
+        padding: layout.spacing_x2,
         borderWidth: 1,
         color: secondaryColor,
         width: fullWidth,
@@ -229,7 +229,7 @@ export const ProfessionalInfoPanel: React.FC<{
     ]),
     itemContainer: {
       flexDirection: "row",
-      marginTop: layout.padding_x4,
+      marginTop: layout.spacing_x4,
     },
     selectPart: {
       flexDirection: "row",
@@ -372,7 +372,7 @@ export const ProfessionalInfoPanel: React.FC<{
             </View>
             {seller.occupations.map((item: Occupation, bigIndex: number) => (
               <View
-                style={{ width: "100%", marginTop: layout.padding_x2_5 }}
+                style={{ width: "100%", marginTop: layout.spacing_x2_5 }}
                 key={bigIndex}
               >
                 <View style={styles.selectPart}>
@@ -462,7 +462,7 @@ export const ProfessionalInfoPanel: React.FC<{
                 initValue="Language"
                 value={language}
                 setValue={setLanguage}
-                style={{ marginRight: layout.padding_x2_5 }}
+                style={{ marginRight: layout.spacing_x2_5 }}
               />
               <GeneralSelect
                 width={halfWidth}
@@ -470,7 +470,7 @@ export const ProfessionalInfoPanel: React.FC<{
                 initValue="Language Level"
                 value={languageLevel}
                 setValue={setLanguageLevel}
-                style={{ marginRight: layout.padding_x2_5 }}
+                style={{ marginRight: layout.spacing_x2_5 }}
               />
               <TertiaryButton
                 size="M"
@@ -541,7 +541,7 @@ export const ProfessionalInfoPanel: React.FC<{
                 initValue="Add skill(e.g. Voice Talent)"
                 value={skill}
                 setValue={setSkill}
-                style={{ marginRight: layout.padding_x2_5 }}
+                style={{ marginRight: layout.spacing_x2_5 }}
               />
               <GeneralSelect
                 width={halfWidth}
@@ -549,7 +549,7 @@ export const ProfessionalInfoPanel: React.FC<{
                 initValue="Skill Level"
                 value={skillLevel}
                 setValue={setSkillLevel}
-                style={{ marginRight: layout.padding_x2_5 }}
+                style={{ marginRight: layout.spacing_x2_5 }}
               />
               <TertiaryButton
                 size="M"
@@ -620,7 +620,7 @@ export const ProfessionalInfoPanel: React.FC<{
                 initValue="Country of College/University"
                 value={country}
                 setValue={setCountry}
-                style={{ marginRight: layout.padding_x2_5 }}
+                style={{ marginRight: layout.spacing_x2_5 }}
               />
               <GeneralSelect
                 width={halfWidth}
@@ -633,7 +633,7 @@ export const ProfessionalInfoPanel: React.FC<{
             <View
               style={{
                 flexDirection: "row",
-                marginTop: layout.padding_x2_5,
+                marginTop: layout.spacing_x2_5,
                 zIndex: 1,
               }}
             >
@@ -643,7 +643,7 @@ export const ProfessionalInfoPanel: React.FC<{
                 initValue="Title"
                 value={title}
                 setValue={setTitle}
-                style={{ marginRight: layout.padding_x2_5 }}
+                style={{ marginRight: layout.spacing_x2_5 }}
               />
               <GeneralSelect
                 width={halfWidth}
@@ -651,7 +651,7 @@ export const ProfessionalInfoPanel: React.FC<{
                 initValue="Major"
                 value={major}
                 setValue={setMajor}
-                style={{ marginRight: layout.padding_x2_5 }}
+                style={{ marginRight: layout.spacing_x2_5 }}
               />
               <GeneralSelect
                 width={quaterWidth}
@@ -659,7 +659,7 @@ export const ProfessionalInfoPanel: React.FC<{
                 initValue="Year"
                 value={educationYear}
                 setValue={setEducationYear}
-                style={{ marginRight: layout.padding_x2_5 }}
+                style={{ marginRight: layout.spacing_x2_5 }}
               />
               <TertiaryButton
                 size="M"
@@ -747,7 +747,7 @@ export const ProfessionalInfoPanel: React.FC<{
                 initValue="Certificate or Award"
                 value={certification}
                 setValue={setCertification}
-                style={{ marginRight: layout.padding_x2_5 }}
+                style={{ marginRight: layout.spacing_x2_5 }}
               />
               <GeneralSelect
                 width={mediumWidth}
@@ -755,7 +755,7 @@ export const ProfessionalInfoPanel: React.FC<{
                 initValue="Certified From (Adobe)"
                 value={certificationFrom}
                 setValue={setCertificationFrom}
-                style={{ marginRight: layout.padding_x2_5 }}
+                style={{ marginRight: layout.spacing_x2_5 }}
               />
               <GeneralSelect
                 width={quaterWidth}
@@ -763,7 +763,7 @@ export const ProfessionalInfoPanel: React.FC<{
                 initValue="Year"
                 value={certificationYear}
                 setValue={setCertificationYear}
-                style={{ marginRight: layout.padding_x2_5 }}
+                style={{ marginRight: layout.spacing_x2_5 }}
               />
               <TertiaryButton
                 size="M"

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 import { VerifyPhoneModal } from "./VerifyPhoneModal";
 import EmailIcon from "../../../../assets/icons/account/email-icon.svg";
@@ -45,7 +45,7 @@ export const AccountSecurityPanel: React.FC<{
       alignItems: "center",
       justifyContent: "space-between",
       width: 588,
-      marginBottom: layout.padding_x4,
+      marginBottom: layout.spacing_x4,
     },
     iconBox: {
       flexDirection: "row",
@@ -72,7 +72,7 @@ export const AccountSecurityPanel: React.FC<{
               source={EmailIcon}
               width={24}
               height={24}
-              style={{ marginRight: layout.padding_x2 }}
+              style={{ marginRight: layout.spacing_x2 }}
             />
             <BrandText>Email</BrandText>
           </View>
@@ -84,7 +84,7 @@ export const AccountSecurityPanel: React.FC<{
               source={PhoneIcon}
               width={24}
               height={24}
-              style={{ marginRight: layout.padding_x2 }}
+              style={{ marginRight: layout.spacing_x2 }}
             />
             <BrandText>Phone Number</BrandText>
           </View>

@@ -14,6 +14,7 @@ import { fontSemibold14 } from "../../../utils/style/fonts";
 import { ProfileStep } from "../../../utils/types/freelance";
 import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
+
 const CompletionRate = ["0%", "25%", "50%", "75%"];
 
 export const ProfileHeader: React.FC<{

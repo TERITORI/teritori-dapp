@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { View, StyleSheet, TextInput } from "react-native";
+import { StyleSheet, TextInput, View } from "react-native";
 
 import {
   additionalRed,
@@ -32,14 +32,14 @@ export const VerifyPhoneModal: React.FC<VerifyPhoneModalProps> = ({
   const styles = StyleSheet.create({
     footerContainer: {
       width: modalWidth,
-      paddingBottom: layout.padding_x2_5,
+      paddingBottom: layout.spacing_x2_5,
     },
     footerContent: {
       width: "100%",
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "space-between",
-      paddingHorizontal: layout.padding_x2_5,
+      paddingHorizontal: layout.spacing_x2_5,
     },
     contentContainer: {
       flexDirection: "column",
@@ -68,10 +68,10 @@ export const VerifyPhoneModal: React.FC<VerifyPhoneModalProps> = ({
         backgroundColor: neutral00,
         borderWidth: 1,
         borderColor: neutral33,
-        borderRadius: layout.padding_x1_5,
-        padding: layout.padding_x2,
-        marginTop: layout.padding_x1_5,
-        marginBottom: layout.padding_x2_5,
+        borderRadius: layout.spacing_x1_5,
+        padding: layout.spacing_x2,
+        marginTop: layout.spacing_x1_5,
+        marginBottom: layout.spacing_x2_5,
         color: secondaryColor,
       },
     ]),
@@ -79,7 +79,7 @@ export const VerifyPhoneModal: React.FC<VerifyPhoneModalProps> = ({
       width: "100%",
       height: 1,
       backgroundColor: neutral33,
-      marginBottom: layout.padding_x2_5,
+      marginBottom: layout.spacing_x2_5,
     },
   });
 

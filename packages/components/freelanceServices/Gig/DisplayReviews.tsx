@@ -1,16 +1,16 @@
 import React from "react";
-import { View, Image, useWindowDimensions } from "react-native";
+import { Image, useWindowDimensions, View } from "react-native";
 
 import {
-  yellowDefault,
-  neutral77,
   neutral33,
+  neutral77,
   primaryColor,
+  yellowDefault,
 } from "../../../utils/style/colors";
 import {
   fontMedium14,
-  fontSemibold16,
   fontSemibold14,
+  fontSemibold16,
 } from "../../../utils/style/fonts";
 import { BrandText } from "../../BrandText";
 import { TertiaryBox } from "../../boxes/TertiaryBox";

@@ -18,7 +18,7 @@ export const FreelanceServicesHeader: React.FC = () => {
     <FlexRow justifyContent="space-between">
       <BuyerSellerToggle
         isBuyer
-        style={{ flex: 1, marginLeft: layout.padding_x4 }}
+        style={{ flex: 1, marginLeft: layout.spacing_x4 }}
       />
 
       <View style={{ alignItems: "center" }}>
@@ -30,7 +30,7 @@ export const FreelanceServicesHeader: React.FC = () => {
           name="Search"
           width={width > 1024 ? 480 : 300}
           placeHolder="Search..."
-          style={{ alignSelf: "center", marginTop: layout.padding_x3_5 }}
+          style={{ alignSelf: "center", marginTop: layout.spacing_x3_5 }}
         >
           <SVG
             source={searchSVG}

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, TouchableOpacity, useWindowDimensions } from "react-native";
+import { TouchableOpacity, useWindowDimensions, View } from "react-native";
 
 import { ReportPopUp } from "./PopUp/ReportPopUp";
 import { SharePopup } from "./PopUp/SharePopup";
@@ -7,11 +7,11 @@ import heartIcon from "../../../../assets/icons/heart.svg";
 import reportIcon from "../../../../assets/icons/report.svg";
 import shareIcon from "../../../../assets/icons/share-white.svg";
 import {
-  neutral44,
-  secondaryColor,
   neutral00,
-  neutralA3,
   neutral33,
+  neutral44,
+  neutralA3,
+  secondaryColor,
 } from "../../../utils/style/colors";
 import { fontMedium14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
@@ -103,7 +103,7 @@ export const GigDetailHeader: React.FC<{
           flexDirection: "row",
           alignItems: "flex-start",
           height: "100%",
-          marginBottom: width > 1024 ? 2 : layout.padding_x1,
+          marginBottom: width > 1024 ? 2 : layout.spacing_x1,
         }}
       >
         <View style={{ alignItems: "center", flexDirection: "row" }}>

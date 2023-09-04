@@ -2,6 +2,7 @@ import { SvgProps } from "react-native-svg";
 
 import { useDynamicSvgImport } from "../../../hooks/freelance/useDynamicSvgImport";
 import { BrandText } from "../../BrandText";
+
 type SvgIconProps = {
   source: string;
 };

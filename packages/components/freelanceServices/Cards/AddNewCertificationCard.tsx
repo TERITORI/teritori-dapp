@@ -3,9 +3,9 @@ import { View } from "react-native";
 
 import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
 import {
-  secondaryColor,
-  neutral33,
   neutral00,
+  neutral33,
+  secondaryColor,
 } from "../../../utils/style/colors";
 import { TertiaryBox } from "../../boxes/TertiaryBox";
 import { TextInputCustom } from "../../inputs/TextInputCustom";

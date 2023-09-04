@@ -74,14 +74,14 @@ export const TableSelect: React.FC<TableSelectProps> = ({
       fontMedium13,
       {
         color: neutralA3,
-        padding: layout.padding_x1,
+        padding: layout.spacing_x1,
       },
     ]),
     hoveredDropdownMenuText: StyleSheet.flatten([
       fontMedium13,
       {
         backgroundColor: neutral33,
-        padding: layout.padding_x1,
+        padding: layout.spacing_x1,
       },
     ]),
   });

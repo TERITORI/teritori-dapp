@@ -41,9 +41,9 @@ export const GigsTable: React.FC<{
           height={200}
           data={item}
           boxStyle={{
-            marginBottom: layout.padding_x2_5,
-            marginRight: layout.padding_x1,
-            marginLeft: layout.padding_x1,
+            marginBottom: layout.spacing_x2_5,
+            marginRight: layout.spacing_x1,
+            marginLeft: layout.spacing_x1,
           }}
           isEditable={!!(wallet && wallet.address === gigAddress)}
         />
@@ -53,9 +53,9 @@ export const GigsTable: React.FC<{
           width={200}
           height={200}
           boxStyle={{
-            marginBottom: layout.padding_x2_5,
-            marginRight: layout.padding_x1,
-            marginLeft: layout.padding_x1,
+            marginBottom: layout.spacing_x2_5,
+            marginRight: layout.spacing_x1,
+            marginLeft: layout.spacing_x1,
           }}
         />
       )}

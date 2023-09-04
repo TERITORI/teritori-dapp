@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { FlatList, StyleProp, View, ViewStyle } from "react-native";
 
 import { EscrowInfo } from "../../../api/freelance/v1/freelance";
@@ -6,8 +6,8 @@ import { TeritoriEscrowClient } from "../../../contracts-clients/teritori-freela
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import {
-  mustGetCosmosNetwork,
   getKeplrSigningCosmWasmClient,
+  mustGetCosmosNetwork,
 } from "../../../networks";
 import { useAppNavigation } from "../../../utils/navigation";
 import { mineShaftColor } from "../../../utils/style/colors";
@@ -216,16 +216,16 @@ const EscrowRow: React.FC<{
         justifyContent: "space-between",
         width: "100%",
         minHeight: layout.contentPadding,
-        paddingHorizontal: layout.padding_x2_5,
+        paddingHorizontal: layout.spacing_x2_5,
         borderColor: mineShaftColor,
         borderTopWidth: 1,
-        paddingVertical: layout.padding_x2,
+        paddingVertical: layout.spacing_x2,
       }}
     >
       <BrandText
         style={[
           fontSemibold13,
-          { flex: TABLE_ROWS.sender.flex, paddingRight: layout.padding_x1 },
+          { flex: TABLE_ROWS.sender.flex, paddingRight: layout.spacing_x1 },
         ]}
       >
         {tinyAddress(escrow.sender, 20)}
@@ -235,7 +235,7 @@ const EscrowRow: React.FC<{
           flexDirection: "row",
           alignItems: "center",
           flex: TABLE_ROWS.receiver.flex,
-          paddingRight: layout.padding_x1,
+          paddingRight: layout.spacing_x1,
         }}
       >
         <SpacerRow size={1} />
@@ -248,7 +248,7 @@ const EscrowRow: React.FC<{
           fontSemibold13,
           {
             flex: TABLE_ROWS.amount.flex,
-            paddingRight: layout.padding_x1,
+            paddingRight: layout.spacing_x1,
           },
         ]}
       >
@@ -259,7 +259,7 @@ const EscrowRow: React.FC<{
           fontSemibold13,
           {
             flex: TABLE_ROWS.expireAt.flex,
-            paddingRight: layout.padding_x1,
+            paddingRight: layout.spacing_x1,
           },
         ]}
       >
@@ -270,7 +270,7 @@ const EscrowRow: React.FC<{
           fontSemibold13,
           {
             flex: TABLE_ROWS.status.flex,
-            paddingRight: layout.padding_x1,
+            paddingRight: layout.spacing_x1,
           },
         ]}
       >

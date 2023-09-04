@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingTop: layout.contentPadding,
-    marginBottom: layout.padding_x2_5,
+    marginBottom: layout.spacing_x2_5,
   },
   rowWithCenter: {
     flexDirection: "row",

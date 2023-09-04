@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleProp, ViewStyle, TouchableOpacity } from "react-native";
+import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
 
 import ChangePageSvg from "../../../../assets/icons/freelance-service/ChangePage.svg";
 import { useAppNavigation } from "../../../utils/navigation";
@@ -9,6 +9,7 @@ import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
 import { TertiaryBox } from "../../boxes/TertiaryBox";
 import { SvgIcon } from "../common/SvgIcon";
+
 export const FreelanceServicesCards: React.FC<{
   width: number;
   height: number;

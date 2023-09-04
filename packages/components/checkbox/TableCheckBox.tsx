@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet, Pressable } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 
 import Tick from "../../../assets/icons/tick.svg";
 import {
@@ -34,8 +34,8 @@ export const TableCheckBox: React.FC<TableCheckBoxProps> = ({
       backgroundColor: neutral00,
     },
     checked: {
-      width: zoom * layout.padding_x2_5,
-      height: zoom * layout.padding_x2_5,
+      width: zoom * layout.spacing_x2_5,
+      height: zoom * layout.spacing_x2_5,
       flexDirection: "row",
       justifyContent: "center",
       alignItems: "center",
@@ -43,8 +43,8 @@ export const TableCheckBox: React.FC<TableCheckBoxProps> = ({
       borderRadius: 5,
     },
     unchecked: {
-      width: zoom * layout.padding_x2_5,
-      height: zoom * layout.padding_x2_5,
+      width: zoom * layout.spacing_x2_5,
+      height: zoom * layout.spacing_x2_5,
       borderWidth: 1,
       borderColor: neutralA3,
       borderRadius: 5,

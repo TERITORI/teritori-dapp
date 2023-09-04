@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import {
+  Image,
+  Pressable,
   StyleProp,
+  StyleSheet,
   TouchableOpacity,
   View,
   ViewStyle,
-  Image,
-  Pressable,
-  StyleSheet,
 } from "react-native";
 
 import dotsCircle from "../../../../assets/icons/dots-circle.svg";
@@ -140,9 +140,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#292929",
     borderWidth: 1,
     borderColor: neutral33,
-    borderRadius: layout.padding_x1_5,
-    paddingVertical: layout.padding_x2,
-    paddingHorizontal: layout.padding_x1,
+    borderRadius: layout.spacing_x1_5,
+    paddingVertical: layout.spacing_x2,
+    paddingHorizontal: layout.spacing_x1,
     position: "absolute",
     bottom: 50,
     width: "100%",
@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
     fontMedium13,
     {
       color: neutralA3,
-      padding: layout.padding_x1,
+      padding: layout.spacing_x1,
     },
   ]),
   hoveredDropdownMenuText: StyleSheet.flatten([
@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
     {
       backgroundColor: neutral33,
       borderRadius: 6,
-      padding: layout.padding_x1,
+      padding: layout.spacing_x1,
     },
   ]),
 });

@@ -1,12 +1,12 @@
 import React from "react";
-import { useWindowDimensions, View, StyleSheet } from "react-native";
+import { StyleSheet, useWindowDimensions, View } from "react-native";
 
 import CreateGigSvg from "../../../../assets/icons/freelance-service/CreateGig.svg";
 import DeliverSvg from "../../../../assets/icons/freelance-service/Deliver.svg";
 import GetPaidSvg from "../../../../assets/icons/freelance-service/GetPaid.svg";
 import maincat from "../../../screens/FreelanceServices/basedata/maincat.json";
 // import { FreelancerServiceRouteTypes } from "../../../screens/FreelanceServices/types/routes";
-import { neutral33, neutral17, neutral77 } from "../../../utils/style/colors";
+import { neutral17, neutral33, neutral77 } from "../../../utils/style/colors";
 import { fontMedium14, fontSemibold14 } from "../../../utils/style/fonts";
 import { layout, leftMarginMainContent } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
@@ -86,7 +86,7 @@ export const FreelanceCommunity: React.FC = () => {
           justifyContent: width > 1280 ? "flex-start" : "center",
           alignSelf: "center",
           width: "100%",
-          marginTop: layout.padding_x2_5,
+          marginTop: layout.spacing_x2_5,
         }}
       >
         {maincat["freelance_community"].map((item, index) => (
@@ -97,8 +97,8 @@ export const FreelanceCommunity: React.FC = () => {
             height={156}
             boxStyle={{
               justifyContent: width > 1280 ? "flex-start" : "center",
-              marginRight: layout.padding_x2,
-              marginTop: layout.padding_x2,
+              marginRight: layout.spacing_x2,
+              marginTop: layout.spacing_x2,
             }}
             key={index}
             category={item.name}

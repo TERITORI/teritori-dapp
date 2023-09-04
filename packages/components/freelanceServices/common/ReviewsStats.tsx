@@ -1,23 +1,23 @@
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useState } from "react";
-import { View, TouchableOpacity } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 
 import { StarRating } from "./StarRating";
 import chevronUp from "../../../../assets/icons/chevron-up.svg";
 import chevronDown from "../../../../assets/icons/freelance-service/chevron-down.svg";
 import star from "../../../../assets/icons/yellow-star.svg";
 import {
+  neutral33,
+  neutral77,
+  neutralA3,
   secondaryColor,
   yellowDefault,
-  neutral77,
-  neutral33,
-  neutralA3,
 } from "../../../utils/style/colors";
 import {
   fontMedium14,
-  fontSemibold20,
-  fontSemibold16,
   fontSemibold14,
+  fontSemibold16,
+  fontSemibold20,
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
@@ -164,7 +164,7 @@ export const ReviewsStats: React.FC<{ reviews: ReviewFields }> = ({
           <BrandText
             style={[
               fontSemibold16,
-              { color: neutral77, marginBottom: layout.padding_x1 },
+              { color: neutral77, marginBottom: layout.spacing_x1 },
             ]}
           >
             Rating Breakdown

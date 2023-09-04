@@ -3,9 +3,9 @@ import { View } from "react-native";
 import { RadioButton } from "react-native-paper";
 
 import {
+  neutral00,
   primaryColor,
   secondaryColor,
-  neutral00,
 } from "../../../../utils/style/colors";
 import { fontSemibold14 } from "../../../../utils/style/fonts";
 import { BrandText } from "../../../BrandText/BrandText";

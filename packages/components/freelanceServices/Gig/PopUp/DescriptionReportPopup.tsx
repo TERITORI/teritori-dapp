@@ -6,16 +6,16 @@ import { TeritoriReportClient } from "../../../../contracts-clients/teritori-fre
 import { useSelectedNetworkId } from "../../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../../hooks/useSelectedWallet";
 import {
-  mustGetCosmosNetwork,
   getKeplrSigningCosmWasmClient,
+  mustGetCosmosNetwork,
 } from "../../../../networks";
 import {
   neutral00,
   neutral33,
-  primaryColor,
   neutral77,
+  primaryColor,
 } from "../../../../utils/style/colors";
-import { fontSemibold14, fontSemibold12 } from "../../../../utils/style/fonts";
+import { fontSemibold12, fontSemibold14 } from "../../../../utils/style/fonts";
 import { BrandText } from "../../../BrandText/BrandText";
 import { Separator } from "../../../Separator";
 import { SecondaryButton } from "../../../buttons/SecondaryButton";

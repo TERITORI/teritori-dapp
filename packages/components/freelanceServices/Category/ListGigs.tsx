@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 
 import chevronLeftDouble from "../../../../assets/icons/chevron-left-double.svg";
@@ -12,7 +12,6 @@ import { usePagination } from "../../../hooks/freelance/usePagination";
 import { getGigData } from "../../../screens/FreelanceServices/query/data";
 import { useAppNavigation } from "../../../utils/navigation";
 import {
-  // neutral17,
   neutral22,
   neutral77,
   primaryColor,
@@ -143,9 +142,9 @@ export const ListGigs: React.FC<ListGigsProps> = ({
               height={336}
               gigData={item}
               boxStyle={{
-                marginBottom: layout.padding_x2_5,
-                marginRight: layout.padding_x1,
-                marginLeft: layout.padding_x1,
+                marginBottom: layout.spacing_x2_5,
+                marginRight: layout.spacing_x1,
+                marginLeft: layout.spacing_x1,
               }}
             />
           </TouchableOpacity>
@@ -323,10 +322,10 @@ export const ListGigs: React.FC<ListGigsProps> = ({
               style={[
                 fontMedium14,
                 {
-                  paddingBottom: layout.padding_x1_5,
-                  paddingTop: layout.padding_x1_5,
-                  paddingLeft: layout.padding_x2,
-                  paddingRight: layout.padding_x2,
+                  paddingBottom: layout.spacing_x1_5,
+                  paddingTop: layout.spacing_x1_5,
+                  paddingLeft: layout.spacing_x2,
+                  paddingRight: layout.spacing_x2,
                 },
               ]}
               key={index}

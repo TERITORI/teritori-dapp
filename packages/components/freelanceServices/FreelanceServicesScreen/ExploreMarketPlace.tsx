@@ -28,7 +28,7 @@ export const ExplorerMarketPlace: React.FC = () => {
           justifyContent: width > 1280 ? "flex-start" : "center",
           alignSelf: "center",
           width: "100%",
-          marginTop: layout.padding_x2_5,
+          marginTop: layout.spacing_x2_5,
         }}
       >
         {maincat["explore_marketplace"].map((item, index) => (
@@ -39,8 +39,8 @@ export const ExplorerMarketPlace: React.FC = () => {
             height={156}
             boxStyle={{
               justifyContent: width > 1280 ? "flex-start" : "center",
-              marginRight: layout.padding_x2,
-              marginTop: layout.padding_x2,
+              marginRight: layout.spacing_x2,
+              marginTop: layout.spacing_x2,
             }}
             key={index}
             category={item.name}

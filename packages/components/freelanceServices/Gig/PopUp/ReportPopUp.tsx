@@ -5,14 +5,15 @@ import { RadioButton } from "react-native-paper";
 import { DescriptionReportPopup } from "./DescriptionReportPopup";
 import {
   neutral00,
-  primaryColor,
   neutral77,
+  primaryColor,
 } from "../../../../utils/style/colors";
 import { fontSemibold14, fontSemibold16 } from "../../../../utils/style/fonts";
 import { BrandText } from "../../../BrandText/BrandText";
 import { Separator } from "../../../Separator";
 import { SecondaryButton } from "../../../buttons/SecondaryButton";
 import { ModalBase } from "../../../modals/ModalBase";
+
 const options = [
   "Non Original Content",
   "Inappropriate Gig",

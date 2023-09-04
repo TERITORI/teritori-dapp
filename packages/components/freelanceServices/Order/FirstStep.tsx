@@ -31,7 +31,7 @@ function SelectedExtra(props: { item: any }) {
         display: "flex",
         flexDirection: "row",
         width: 220,
-        marginBottom: layout.padding_x1,
+        marginBottom: layout.spacing_x1,
       }}
     >
       <SVG

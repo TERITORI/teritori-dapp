@@ -249,7 +249,7 @@ export const FreelanceSellerDetailsScreen: ScreenFC<
       <ScreenContainer fullWidth noMargin>
         <FlexRow justifyContent="space-between">
           <ManageEscrowButton
-            style={{ flex: 1, marginLeft: layout.padding_x4 }}
+            style={{ flex: 1, marginLeft: layout.spacing_x4 }}
           />
 
           <View

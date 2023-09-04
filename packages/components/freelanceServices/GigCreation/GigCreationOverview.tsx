@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Pressable, TextInput } from "react-native";
+import { Pressable, StyleSheet, TextInput, View } from "react-native";
 
 import {
   categoryData,
-  detailDataWebsiteType,
   detailDataPlatformTool,
+  detailDataWebsiteType,
   subcategoryData,
 } from "./GigBasedata";
 import RemoveIcon from "../../../../assets/icons/remove.svg";
@@ -219,8 +219,8 @@ export const GigCreationOverview: React.FC<{
               <Pressable onPress={() => removeTag(index)}>
                 <SVG
                   source={RemoveIcon}
-                  width={layout.padding_x2}
-                  height={layout.padding_x2}
+                  width={layout.spacing_x2}
+                  height={layout.spacing_x2}
                 />
               </Pressable>
             </View>
@@ -251,13 +251,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     width: pageContentWidth,
-    marginBottom: layout.padding_x4,
+    marginBottom: layout.spacing_x4,
   },
   oneLineSmall: {
     flexDirection: "row",
     justifyContent: "space-between",
     width: "100%",
-    marginVertical: layout.padding_x1_5,
+    marginVertical: layout.spacing_x1_5,
   },
   leftBox: {
     width: leftBoxWidth,
@@ -266,18 +266,18 @@ const styles = StyleSheet.create({
     fontSemibold14,
     {
       color: neutral77,
-      marginTop: layout.padding_x1_5,
+      marginTop: layout.spacing_x1_5,
     },
   ]),
   rightBox: {
     width: rightBoxWidth,
     flexDirection: "column",
-    gap: layout.padding_x2_5,
+    gap: layout.spacing_x2_5,
   },
   selectBox: {
     width: "100%",
     flexDirection: "row",
-    gap: layout.padding_x2_5,
+    gap: layout.spacing_x2_5,
     zIndex: 1,
   },
   fullTextInput: StyleSheet.flatten([
@@ -289,8 +289,8 @@ const styles = StyleSheet.create({
       backgroundColor: neutral00,
       borderWidth: 1,
       borderColor: neutral33,
-      padding: layout.padding_x2,
-      borderRadius: layout.padding_x1_5,
+      padding: layout.spacing_x2,
+      borderRadius: layout.spacing_x1_5,
     },
   ]),
   detailInfo: {
@@ -307,25 +307,25 @@ const styles = StyleSheet.create({
     backgroundColor: primaryColor,
     borderWidth: 1,
     borderColor: primaryColor,
-    paddingVertical: layout.padding_x0_5,
+    paddingVertical: layout.spacing_x0_5,
   },
   unselectedTabBox: {
     backgroundColor: neutral00,
     borderWidth: 1,
     borderColor: neutral33,
-    paddingVertical: layout.padding_x0_5,
+    paddingVertical: layout.spacing_x0_5,
   },
   leftTab: {
-    paddingLeft: layout.padding_x2,
-    paddingRight: layout.padding_x1_5,
-    borderTopLeftRadius: layout.padding_x1_5,
-    borderBottomLeftRadius: layout.padding_x1_5,
+    paddingLeft: layout.spacing_x2,
+    paddingRight: layout.spacing_x1_5,
+    borderTopLeftRadius: layout.spacing_x1_5,
+    borderBottomLeftRadius: layout.spacing_x1_5,
   },
   rightTab: {
-    paddingRight: layout.padding_x2,
-    paddingLeft: layout.padding_x1_5,
-    borderTopEndRadius: layout.padding_x1_5,
-    borderBottomEndRadius: layout.padding_x1_5,
+    paddingRight: layout.spacing_x2,
+    paddingLeft: layout.spacing_x1_5,
+    borderTopEndRadius: layout.spacing_x1_5,
+    borderBottomEndRadius: layout.spacing_x1_5,
   },
   unselectedTabTitle: StyleSheet.flatten([
     fontSemibold14,
@@ -340,14 +340,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderTopColor: neutral22,
     borderBottomColor: neutral22,
-    paddingTop: layout.padding_x1_5,
+    paddingTop: layout.spacing_x1_5,
   },
   singleCheckBox: {
-    marginBottom: layout.padding_x1_5,
+    marginBottom: layout.spacing_x1_5,
     flexDirection: "row",
     alignItems: "center",
     width: `${100 / 3}%`,
-    gap: layout.padding_x1,
+    gap: layout.spacing_x1,
   },
   checkedText: StyleSheet.flatten([
     fontMedium13,
@@ -365,21 +365,21 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     width: rightBoxWidth,
     alignItems: "flex-start",
-    gap: layout.padding_x1_5,
+    gap: layout.spacing_x1_5,
   },
   tagCard: {
-    padding: layout.padding_x2,
+    padding: layout.spacing_x2,
     backgroundColor: neutral33,
-    borderRadius: layout.padding_x1_5,
+    borderRadius: layout.spacing_x1_5,
     flexDirection: "row",
     alignItems: "center",
-    gap: layout.padding_x1,
+    gap: layout.spacing_x1,
   },
   addTag: {
-    padding: layout.padding_x2,
+    padding: layout.spacing_x2,
     borderColor: neutral33,
     borderWidth: 1,
-    borderRadius: layout.padding_x1_5,
+    borderRadius: layout.spacing_x1_5,
   },
   textInput: StyleSheet.flatten([
     fontSemibold14,
@@ -387,10 +387,10 @@ const styles = StyleSheet.create({
       color: secondaryColor,
       backgroundColor: neutral00,
       borderColor: neutral33,
-      padding: layout.padding_x2,
+      padding: layout.spacing_x2,
       width: 123,
       borderWidth: 1,
-      borderRadius: layout.padding_x1_5,
+      borderRadius: layout.spacing_x1_5,
     },
   ]),
 });

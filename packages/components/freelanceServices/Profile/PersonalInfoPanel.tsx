@@ -1,10 +1,10 @@
 import React from "react";
 import {
+  Image,
   StyleSheet,
   TextInput,
-  View,
   TouchableOpacity,
-  Image,
+  View,
 } from "react-native";
 
 import emptySVG from "../../../../assets/icons/empty-list.svg";

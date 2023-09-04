@@ -5,6 +5,7 @@ import { fontSemibold28 } from "../../../utils/style/fonts";
 import { BrandText } from "../../BrandText/BrandText";
 import { Separator } from "../../Separator";
 import { SvgIcon } from "../common/SvgIcon";
+
 type CategoryHeaderProps = {
   title: string;
   iconSvg: string;

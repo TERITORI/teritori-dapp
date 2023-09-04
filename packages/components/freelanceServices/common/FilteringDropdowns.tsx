@@ -48,7 +48,7 @@ export const FilteringDropdowns = () => {
       style={{
         flexDirection: "row",
         zIndex: 1,
-        marginBottom: layout.padding_x2,
+        marginBottom: layout.spacing_x2,
         justifyContent: "center",
       }}
     >

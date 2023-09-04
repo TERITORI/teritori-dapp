@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, TouchableOpacity } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 
 import checkIcon from "../../../../assets/icons/blue-check.svg";
 import chevronUp from "../../../../assets/icons/chevron-up.svg";
@@ -8,18 +8,18 @@ import clockIcon from "../../../../assets/icons/grey-clock.svg";
 import refreshIcon from "../../../../assets/icons/refresh-grey.svg";
 import { useAppNavigation } from "../../../utils/navigation";
 import {
+  neutral00,
+  neutral33,
   neutral44,
+  neutral77,
   primaryColor,
   secondaryColor,
-  neutral00,
-  neutral77,
-  neutral33,
 } from "../../../utils/style/colors";
 import {
   fontMedium14,
-  fontSemibold28,
   fontSemibold14,
   fontSemibold16,
+  fontSemibold28,
 } from "../../../utils/style/fonts";
 import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";

@@ -1,5 +1,5 @@
 import React from "react";
-import { View, ImageBackground, StyleProp, ViewStyle } from "react-native";
+import { ImageBackground, StyleProp, View, ViewStyle } from "react-native";
 
 import { useDynamicPngImport } from "../../../hooks/freelance/useDynamicPngImport";
 import { neutral17 } from "../../../utils/style/colors";
@@ -7,6 +7,7 @@ import { fontSemibold16 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import { TertiaryBox } from "../../boxes/TertiaryBox";
+
 type CutOffCardProps = {
   title?: string;
   subtitle?: string;
@@ -61,12 +62,12 @@ export const CutOffCard: React.FC<CutOffCardProps> = ({
                   alignContent: "center",
                   justifyContent: "flex-start",
                   width: width - 30,
-                  marginTop: layout.padding_x2,
-                  marginLeft: layout.padding_x2,
+                  marginTop: layout.spacing_x2,
+                  marginLeft: layout.spacing_x2,
                 }}
               >
                 <BrandText
-                  style={[fontSemibold16, { marginTop: layout.padding_x0_5 }]}
+                  style={[fontSemibold16, { marginTop: layout.spacing_x0_5 }]}
                 >
                   {title}
                 </BrandText>

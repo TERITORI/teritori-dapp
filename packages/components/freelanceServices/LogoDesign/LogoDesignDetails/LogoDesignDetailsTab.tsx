@@ -5,10 +5,10 @@ import { RadioButton } from "react-native-paper";
 import xIcon from "../../../../../assets/icons/Xicon.svg";
 import checkIcon from "../../../../../assets/icons/blue-check.svg";
 import {
-  secondaryColor,
   neutral00,
-  neutralA3,
   neutral33,
+  neutralA3,
+  secondaryColor,
 } from "../../../../utils/style/colors";
 import { fontMedium14, fontSemibold16 } from "../../../../utils/style/fonts";
 import { BrandText } from "../../../BrandText";

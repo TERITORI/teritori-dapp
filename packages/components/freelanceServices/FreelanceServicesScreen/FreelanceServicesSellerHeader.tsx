@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 
 import { TeritoriSellerQueryClient } from "../../../contracts-clients/teritori-freelance/TeritoriSeller.client";
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import {
-  mustGetNonSigningCosmWasmClient,
   mustGetCosmosNetwork,
+  mustGetNonSigningCosmWasmClient,
 } from "../../../networks";
 import { useAppNavigation } from "../../../utils/navigation";
 import { fontSemibold28 } from "../../../utils/style/fonts";
@@ -48,7 +48,7 @@ export const FreelanceServicesSellerHeader: React.FC = () => {
     <FlexRow justifyContent="space-between">
       <BuyerSellerToggle
         isBuyer={false}
-        style={{ flex: 1, marginLeft: layout.padding_x4 }}
+        style={{ flex: 1, marginLeft: layout.spacing_x4 }}
       />
 
       <View style={{ alignItems: "center" }}>
@@ -57,7 +57,7 @@ export const FreelanceServicesSellerHeader: React.FC = () => {
         </BrandText>
         {!isSeller && (
           <SecondaryButton
-            style={{ marginTop: layout.padding_x4 }}
+            style={{ marginTop: layout.spacing_x4 }}
             size="SM"
             text="Become a Seller"
             onPress={() => {

@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet, Pressable } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 
 import FacebookIcon from "../../../../assets/icons/account/facebook-icon.svg";
 import GoogleIcon from "../../../../assets/icons/account/google-icon.svg";
@@ -43,7 +43,7 @@ export const LinkedAccountsPanel: React.FC<{
       alignItems: "center",
       justifyContent: "space-between",
       width: 588,
-      marginBottom: layout.padding_x4,
+      marginBottom: layout.spacing_x4,
     },
     iconBox: {
       flexDirection: "row",
@@ -53,8 +53,8 @@ export const LinkedAccountsPanel: React.FC<{
     addLInk: {
       flexDirection: "row",
       alignItems: "center",
-      gap: layout.padding_x2,
-      marginTop: layout.padding_x4,
+      gap: layout.spacing_x2,
+      marginTop: layout.spacing_x4,
     },
   });
 
@@ -77,7 +77,7 @@ export const LinkedAccountsPanel: React.FC<{
               source={GoogleIcon}
               width={24}
               height={24}
-              style={{ marginRight: layout.padding_x2 }}
+              style={{ marginRight: layout.spacing_x2 }}
             />
             <BrandText>Google</BrandText>
           </View>
@@ -89,7 +89,7 @@ export const LinkedAccountsPanel: React.FC<{
               source={FacebookIcon}
               width={24}
               height={24}
-              style={{ marginRight: layout.padding_x2 }}
+              style={{ marginRight: layout.spacing_x2 }}
             />
             <BrandText>Facebook</BrandText>
           </View>
@@ -101,7 +101,7 @@ export const LinkedAccountsPanel: React.FC<{
               source={TwitterIcon}
               width={24}
               height={24}
-              style={{ marginRight: layout.padding_x2 }}
+              style={{ marginRight: layout.spacing_x2 }}
             />
             <BrandText>Twitter</BrandText>
           </View>

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Pressable, TextInput } from "react-native";
+import { Pressable, StyleSheet, TextInput, View } from "react-native";
 
 import DeleteIcon from "../../../../assets/icons/delete.svg";
 import DropIcon from "../../../../assets/icons/drop.svg";
@@ -65,7 +65,7 @@ export const GigCreationDescription: React.FC<{
   return (
     <View style={styles.pageContent}>
       <BrandText>Description</BrandText>
-      <BrandText style={[styles.text, { marginTop: layout.padding_x2 }]}>
+      <BrandText style={[styles.text, { marginTop: layout.spacing_x2 }]}>
         Briefly Describe Your Gig
       </BrandText>
       <TextInput
@@ -84,7 +84,7 @@ export const GigCreationDescription: React.FC<{
       </BrandText>
 
       {gigInfo.faq.length === 0 && (
-        <View style={{ flexDirection: "column", marginTop: layout.padding_x2 }}>
+        <View style={{ flexDirection: "column", marginTop: layout.spacing_x2 }}>
           <TextInput
             placeholder="Type question"
             placeholderTextColor={neutral77}
@@ -123,7 +123,7 @@ export const GigCreationDescription: React.FC<{
                 <SVG source={DropIcon} width={16} height={16} />
               </Pressable>
               <BrandText
-                style={[fontSemibold14, { marginLeft: layout.padding_x1 }]}
+                style={[fontSemibold14, { marginLeft: layout.spacing_x1 }]}
               >
                 Question {index + 1}
               </BrandText>
@@ -147,7 +147,7 @@ export const GigCreationDescription: React.FC<{
       ))}
 
       <View
-        style={[styles.divideLine, { marginVertical: layout.padding_x2 }]}
+        style={[styles.divideLine, { marginVertical: layout.spacing_x2 }]}
       />
       <Pressable onPress={() => addFAQInput()}>
         <BrandText style={[fontSemibold14, { color: primaryColor }]}>
@@ -156,7 +156,7 @@ export const GigCreationDescription: React.FC<{
       </Pressable>
 
       {gigInfo.faq.length > 0 && enableAdd && (
-        <View style={{ flexDirection: "column", marginTop: layout.padding_x2 }}>
+        <View style={{ flexDirection: "column", marginTop: layout.spacing_x2 }}>
           <TextInput
             placeholder="Type question"
             placeholderTextColor={neutral77}
@@ -204,30 +204,30 @@ const styles = StyleSheet.create({
   subTitle: StyleSheet.flatten([
     fontSemibold14,
     {
-      marginTop: layout.padding_x3,
+      marginTop: layout.spacing_x3,
     },
   ]),
   descriptionInput: StyleSheet.flatten([
     fontSemibold14,
     {
-      padding: layout.padding_x2,
+      padding: layout.spacing_x2,
       borderWidth: 1,
       borderColor: neutral33,
-      borderRadius: layout.padding_x1_5,
+      borderRadius: layout.spacing_x1_5,
       color: secondaryColor,
-      marginTop: layout.padding_x1_5,
-      marginBottom: layout.padding_x4,
+      marginTop: layout.spacing_x1_5,
+      marginBottom: layout.spacing_x4,
     },
   ]),
   questionInput: StyleSheet.flatten([
     fontSemibold14,
     {
-      padding: layout.padding_x2,
+      padding: layout.spacing_x2,
       borderWidth: 1,
       borderColor: neutral33,
       color: secondaryColor,
-      borderTopLeftRadius: layout.padding_x1_5,
-      borderTopRightRadius: layout.padding_x1_5,
+      borderTopLeftRadius: layout.spacing_x1_5,
+      borderTopRightRadius: layout.spacing_x1_5,
       borderBottomWidth: 0,
     },
   ]),
@@ -239,26 +239,26 @@ const styles = StyleSheet.create({
   answerInput: StyleSheet.flatten([
     fontSemibold14,
     {
-      padding: layout.padding_x2,
+      padding: layout.spacing_x2,
       borderWidth: 1,
       borderColor: neutral33,
       color: secondaryColor,
-      borderBottomLeftRadius: layout.padding_x1_5,
-      borderBottomRightRadius: layout.padding_x1_5,
+      borderBottomLeftRadius: layout.spacing_x1_5,
+      borderBottomRightRadius: layout.spacing_x1_5,
       borderTopWidth: 0,
     },
   ]),
   addFAQButtonGroup: {
     flexDirection: "row",
     justifyContent: "flex-end",
-    gap: layout.padding_x2,
-    marginTop: layout.padding_x1_5,
+    gap: layout.spacing_x2,
+    marginTop: layout.spacing_x1_5,
   },
   faqCard: {
-    marginTop: layout.padding_x2,
-    borderRadius: layout.padding_x1_5,
-    paddingVertical: layout.padding_x2,
-    paddingHorizontal: layout.padding_x1_5,
+    marginTop: layout.spacing_x2,
+    borderRadius: layout.spacing_x1_5,
+    paddingVertical: layout.spacing_x2,
+    paddingHorizontal: layout.spacing_x1_5,
     borderWidth: 1,
     borderColor: neutral33,
     backgroundColor: neutral00,
@@ -270,9 +270,9 @@ const styles = StyleSheet.create({
   },
   faqDetailContainer: {
     flexDirection: "column",
-    gap: layout.padding_x0_5,
+    gap: layout.spacing_x0_5,
     width: "100%",
-    marginTop: layout.padding_x2,
+    marginTop: layout.spacing_x2,
   },
   faqDetailText: StyleSheet.flatten([fontMedium13]),
 });

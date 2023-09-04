@@ -27,7 +27,7 @@ export const GigCreationHeader: React.FC<GigCreationHeaderProps> = ({
   step,
   setCurrentStep,
 }) => {
-  const stepCircleSize = layout.padding_x4;
+  const stepCircleSize = layout.spacing_x4;
 
   const generalStyles = StyleSheet.create({
     headerContainer: {
@@ -46,8 +46,8 @@ export const GigCreationHeader: React.FC<GigCreationHeaderProps> = ({
       height: 1,
       width: "100%",
       backgroundColor: neutral33,
-      marginTop: layout.padding_x2,
-      marginBottom: layout.padding_x3,
+      marginTop: layout.spacing_x2,
+      marginBottom: layout.spacing_x3,
     },
   });
 

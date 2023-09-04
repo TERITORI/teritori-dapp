@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 import PdfIcon from "../../../../assets/icons/pdf.svg";
 import PicIcon from "../../../../assets/icons/pic.svg";
@@ -11,10 +11,10 @@ import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { getUserId } from "../../../networks";
 import { ipfsURLToHTTPURL, uploadFileToIPFS } from "../../../utils/ipfs";
 import {
-  neutralA3,
-  neutral33,
-  secondaryColor,
   neutral00,
+  neutral33,
+  neutralA3,
+  secondaryColor,
 } from "../../../utils/style/colors";
 import {
   fontMedium10,
@@ -89,7 +89,7 @@ export const GigCreationGallery: React.FC<{
       <BrandText>
         Get all the information you need from buyers to get started
       </BrandText>
-      <BrandText style={[styles.text, { marginTop: layout.padding_x2 }]}>
+      <BrandText style={[styles.text, { marginTop: layout.spacing_x2 }]}>
         Add questions to help buyers provide you with exactly what you need to
         start working on their order.
       </BrandText>
@@ -224,8 +224,8 @@ const styles = StyleSheet.create({
   subTitle: StyleSheet.flatten([
     fontSemibold14,
     {
-      marginBottom: layout.padding_x1_5,
-      marginTop: layout.padding_x4,
+      marginBottom: layout.spacing_x1_5,
+      marginTop: layout.spacing_x4,
     },
   ]),
   oneLine: {
@@ -236,12 +236,12 @@ const styles = StyleSheet.create({
   questionInput: StyleSheet.flatten([
     fontSemibold14,
     {
-      padding: layout.padding_x2,
+      padding: layout.spacing_x2,
       borderWidth: 1,
       borderColor: neutral33,
-      borderRadius: layout.padding_x1_5,
+      borderRadius: layout.spacing_x1_5,
       color: secondaryColor,
-      marginBottom: layout.padding_x2,
+      marginBottom: layout.spacing_x2,
     },
   ]),
   divideLine: {
@@ -256,18 +256,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderColor: neutral33,
-    borderRadius: layout.padding_x1_5,
+    borderRadius: layout.spacing_x1_5,
     backgroundColor: neutral00,
     borderWidth: 1,
-    marginTop: layout.padding_x1_5,
+    marginTop: layout.spacing_x1_5,
     position: "relative",
   },
   cardText: StyleSheet.flatten([
     fontMedium16,
     {
       color: neutralA3,
-      marginTop: layout.padding_x1_5,
-      marginBottom: layout.padding_x1,
+      marginTop: layout.spacing_x1_5,
+      marginBottom: layout.spacing_x1,
     },
   ]),
   tipText: StyleSheet.flatten([
@@ -278,14 +278,14 @@ const styles = StyleSheet.create({
   ]),
   policyBox: {
     flexDirection: "row",
-    gap: layout.padding_x1_5,
+    gap: layout.spacing_x1_5,
     alignItems: "center",
-    marginTop: layout.padding_x4,
+    marginTop: layout.spacing_x4,
   },
   warningBox: {
     flexDirection: "row",
     alignItems: "center",
-    gap: layout.padding_x1_5,
-    marginTop: layout.padding_x2,
+    gap: layout.spacing_x1_5,
+    marginTop: layout.spacing_x2,
   },
 });

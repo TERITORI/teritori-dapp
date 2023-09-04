@@ -1,15 +1,15 @@
 import React, { useState } from "react";
-import { View, StyleSheet, TextInput } from "react-native";
+import { StyleSheet, TextInput, View } from "react-native";
 
 import { listExtraDeliveryTime } from "./GigBasedata";
 import { GigCreationPricingTable } from "./GigCreationPricingTable";
 import {
-  neutral77,
-  neutralA3,
-  neutral33,
-  secondaryColor,
   neutral00,
   neutral22,
+  neutral33,
+  neutral77,
+  neutralA3,
+  secondaryColor,
 } from "../../../utils/style/colors";
 import { fontSemibold13, fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
@@ -53,7 +53,7 @@ export const GigCreationPricing: React.FC<{
     <View style={styles.pageContent}>
       <BrandText>Packages</BrandText>
       <GigCreationPricingTable gigInfo={gigInfo} setGig={setGig} />
-      <BrandText style={{ marginVertical: layout.padding_x4 }}>
+      <BrandText style={{ marginVertical: layout.spacing_x4 }}>
         Add extra services
       </BrandText>
       <View style={styles.oneLine}>
@@ -443,31 +443,31 @@ const styles = StyleSheet.create({
   ]),
   rowContainer: {
     flexDirection: "row",
-    gap: layout.padding_x1_5,
+    gap: layout.spacing_x1_5,
     alignItems: "center",
   },
   oneLine: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginVertical: layout.padding_x1_5,
+    marginVertical: layout.spacing_x1_5,
     height: 48,
   },
   divideLine: {
     width: "100%",
     height: 1,
     backgroundColor: neutral22,
-    marginVertical: layout.padding_x1_5,
+    marginVertical: layout.spacing_x1_5,
   },
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
-    gap: layout.padding_x1,
+    gap: layout.spacing_x1,
     backgroundColor: neutral00,
     borderWidth: 1,
     borderColor: neutral33,
-    padding: layout.padding_x2,
-    borderRadius: layout.padding_x1_5,
+    padding: layout.spacing_x2,
+    borderRadius: layout.spacing_x1_5,
   },
   inputBox: StyleSheet.flatten([
     fontSemibold14,
