@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, ViewStyle } from "react-native";
 
 import PdfIcon from "../../../../assets/icons/pdf.svg";
 import PicIcon from "../../../../assets/icons/pic.svg";
@@ -10,12 +10,7 @@ import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { getUserId } from "../../../networks";
 import { ipfsURLToHTTPURL, uploadFileToIPFS } from "../../../utils/ipfs";
-import {
-  neutral00,
-  neutral33,
-  neutralA3,
-  secondaryColor,
-} from "../../../utils/style/colors";
+import { neutralA3 } from "../../../utils/style/colors";
 import {
   fontMedium10,
   fontMedium13,
@@ -32,8 +27,6 @@ import { DragDropFile, GigUploadFileType } from "../../inputs/DragDropFile";
 import { GigInfo } from "../types/fields";
 
 const pageContentWidth = 760;
-const cardWidth = 240;
-const cardHeight = 180;
 
 export const GigCreationGallery: React.FC<{
   gigInfo: GigInfo;
@@ -85,20 +78,20 @@ export const GigCreationGallery: React.FC<{
   };
 
   return (
-    <View style={styles.pageContent}>
+    <View style={pageContentStyle}>
       <BrandText>
         Get all the information you need from buyers to get started
       </BrandText>
-      <BrandText style={[styles.text, { marginTop: layout.spacing_x2 }]}>
+      <BrandText style={[textStyle, { marginTop: layout.spacing_x2 }]}>
         Add questions to help buyers provide you with exactly what you need to
         start working on their order.
       </BrandText>
 
-      <BrandText style={styles.subTitle}>Images (up to 3)</BrandText>
-      <BrandText style={styles.text}>
+      <BrandText style={subTitleStyle}>Images (up to 3)</BrandText>
+      <BrandText style={textStyle}>
         Get noticed by the buyers with visual examples of your services.
       </BrandText>
-      <View style={styles.oneLine}>
+      <View style={oneLineStyle}>
         <DragDropFile
           setFile={uploadImageFile}
           url={
@@ -108,7 +101,7 @@ export const GigCreationGallery: React.FC<{
           }
         >
           <SVG source={PicIcon} width={32} height={32} />
-          <BrandText style={styles.cardText}>Drag & drop a Photo or</BrandText>
+          <BrandText style={cardTextStyle}>Drag & drop a Photo or</BrandText>
         </DragDropFile>
         <DragDropFile
           setFile={uploadImageFile}
@@ -119,7 +112,7 @@ export const GigCreationGallery: React.FC<{
           }
         >
           <SVG source={PicIcon} width={32} height={32} />
-          <BrandText style={styles.cardText}>Drag & drop a Photo or</BrandText>
+          <BrandText style={cardTextStyle}>Drag & drop a Photo or</BrandText>
         </DragDropFile>
         <DragDropFile
           setFile={uploadImageFile}
@@ -130,15 +123,15 @@ export const GigCreationGallery: React.FC<{
           }
         >
           <SVG source={PicIcon} width={32} height={32} />
-          <BrandText style={styles.cardText}>Drag & drop a Photo or</BrandText>
+          <BrandText style={cardTextStyle}>Drag & drop a Photo or</BrandText>
         </DragDropFile>
       </View>
 
-      <BrandText style={styles.subTitle}>Video (only one)</BrandText>
-      <BrandText style={styles.text}>
+      <BrandText style={subTitleStyle}>Video (only one)</BrandText>
+      <BrandText style={textStyle}>
         Capture buyers' attention with a video that showcases your service.
       </BrandText>
-      <BrandText style={styles.tipText}>
+      <BrandText style={tipTextStyle}>
         Please choose a video shorter than 75 seconds and smaller than 50MB
       </BrandText>
       <DragDropFile
@@ -152,10 +145,10 @@ export const GigCreationGallery: React.FC<{
         fileType={GigUploadFileType.PDF}
       >
         <SVG source={VideoIcon} width={32} height={32} />
-        <BrandText style={styles.cardText}>Drag & drop a Video or</BrandText>
+        <BrandText style={cardTextStyle}>Drag & drop a Video or</BrandText>
       </DragDropFile>
-      <BrandText style={styles.subTitle}>Documents (up to 2)</BrandText>
-      <BrandText style={styles.text}>
+      <BrandText style={subTitleStyle}>Documents (up to 2)</BrandText>
+      <BrandText style={textStyle}>
         Show some of the best work you created in a document (PDFs only).
       </BrandText>
       <View style={{ flexDirection: "row" }}>
@@ -170,7 +163,7 @@ export const GigCreationGallery: React.FC<{
           fileType={GigUploadFileType.PDF}
         >
           <SVG source={PdfIcon} width={32} height={32} />
-          <BrandText style={styles.cardText}>Drag & drop a PDF or</BrandText>
+          <BrandText style={cardTextStyle}>Drag & drop a PDF or</BrandText>
         </DragDropFile>
         <DragDropFile
           setFile={uploadPdfFile}
@@ -183,10 +176,10 @@ export const GigCreationGallery: React.FC<{
           fileType={GigUploadFileType.PDF}
         >
           <SVG source={PdfIcon} width={32} height={32} />
-          <BrandText style={styles.cardText}>Drag & drop a PDF or</BrandText>
+          <BrandText style={cardTextStyle}>Drag & drop a PDF or</BrandText>
         </DragDropFile>
       </View>
-      <View style={styles.policyBox}>
+      <View style={policyBoxStyle}>
         <CheckBox
           value={gigInfo.approveLicense}
           onValueChange={() => {
@@ -200,7 +193,7 @@ export const GigCreationGallery: React.FC<{
           result blocking my account.*
         </BrandText>
       </View>
-      <View style={styles.warningBox}>
+      <View style={warningBoxStyle}>
         <SVG source={WarningIcon} width={16} height={16} />
         <BrandText style={[fontMedium13, { color: neutralA3 }]}>
           Please confirm that you’ve read and agreed to our Terms of Service
@@ -210,82 +203,51 @@ export const GigCreationGallery: React.FC<{
   );
 };
 
-const styles = StyleSheet.create({
-  pageContent: {
-    flexDirection: "column",
-    width: pageContentWidth,
+const pageContentStyle: ViewStyle = {
+  flexDirection: "column",
+  width: pageContentWidth,
+};
+const textStyle: ViewStyle = StyleSheet.flatten([
+  fontSemibold14,
+  {
+    color: neutralA3,
   },
-  text: StyleSheet.flatten([
-    fontSemibold14,
-    {
-      color: neutralA3,
-    },
-  ]),
-  subTitle: StyleSheet.flatten([
-    fontSemibold14,
-    {
-      marginBottom: layout.spacing_x1_5,
-      marginTop: layout.spacing_x4,
-    },
-  ]),
-  oneLine: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  questionInput: StyleSheet.flatten([
-    fontSemibold14,
-    {
-      padding: layout.spacing_x2,
-      borderWidth: 1,
-      borderColor: neutral33,
-      borderRadius: layout.spacing_x1_5,
-      color: secondaryColor,
-      marginBottom: layout.spacing_x2,
-    },
-  ]),
-  divideLine: {
-    height: 1,
-    width: "100%",
-    backgroundColor: neutral33,
-  },
-  mediaCard: {
-    width: cardWidth,
-    height: cardHeight,
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    borderColor: neutral33,
-    borderRadius: layout.spacing_x1_5,
-    backgroundColor: neutral00,
-    borderWidth: 1,
-    marginTop: layout.spacing_x1_5,
-    position: "relative",
-  },
-  cardText: StyleSheet.flatten([
-    fontMedium16,
-    {
-      color: neutralA3,
-      marginTop: layout.spacing_x1_5,
-      marginBottom: layout.spacing_x1,
-    },
-  ]),
-  tipText: StyleSheet.flatten([
-    fontMedium10,
-    {
-      color: neutralA3,
-    },
-  ]),
-  policyBox: {
-    flexDirection: "row",
-    gap: layout.spacing_x1_5,
-    alignItems: "center",
+]);
+const subTitleStyle: ViewStyle = StyleSheet.flatten([
+  fontSemibold14,
+  {
+    marginBottom: layout.spacing_x1_5,
     marginTop: layout.spacing_x4,
   },
-  warningBox: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: layout.spacing_x1_5,
-    marginTop: layout.spacing_x2,
+]);
+const oneLineStyle: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between",
+};
+const cardTextStyle: ViewStyle = StyleSheet.flatten([
+  fontMedium16,
+  {
+    color: neutralA3,
+    marginTop: layout.spacing_x1_5,
+    marginBottom: layout.spacing_x1,
   },
-});
+]);
+const tipTextStyle: ViewStyle = StyleSheet.flatten([
+  fontMedium10,
+  {
+    color: neutralA3,
+  },
+]);
+const policyBoxStyle: ViewStyle = {
+  flexDirection: "row",
+  gap: layout.spacing_x1_5,
+  alignItems: "center",
+  marginTop: layout.spacing_x4,
+};
+const warningBoxStyle: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  gap: layout.spacing_x1_5,
+  marginTop: layout.spacing_x2,
+};
