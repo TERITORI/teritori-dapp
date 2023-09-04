@@ -230,8 +230,8 @@ export const UploadAlbumModal: React.FC<UploadAlbumModalProps> = ({
                 <TouchableOpacity style={styles.uploadButton} onPress={onPress}>
                   <SVG
                     source={Img}
-                    width={layout.padding_x2}
-                    height={layout.padding_x2}
+                    width={layout.spacing_x2}
+                    height={layout.spacing_x2}
                   />
                   <BrandText style={fontSemibold14}>upload image</BrandText>
                 </TouchableOpacity>
@@ -266,8 +266,8 @@ export const UploadAlbumModal: React.FC<UploadAlbumModalProps> = ({
               <TouchableOpacity>
                 <SVG
                   source={List}
-                  width={layout.padding_x2}
-                  height={layout.padding_x2}
+                  width={layout.spacing_x2}
+                  height={layout.spacing_x2}
                 />
               </TouchableOpacity>
               <BrandText style={fontSemibold14}>{audio.name}</BrandText>
@@ -276,8 +276,8 @@ export const UploadAlbumModal: React.FC<UploadAlbumModalProps> = ({
               <TouchableOpacity onPress={() => removeTrack(index)}>
                 <SVG
                   source={Remove}
-                  width={layout.padding_x3}
-                  height={layout.padding_x3}
+                  width={layout.spacing_x3}
+                  height={layout.spacing_x3}
                 />
               </TouchableOpacity>
             </View>
@@ -294,8 +294,8 @@ export const UploadAlbumModal: React.FC<UploadAlbumModalProps> = ({
           <TouchableOpacity style={styles.buttonContainer} onPress={onPress}>
             <SVG
               source={Add}
-              width={layout.padding_x2_5}
-              height={layout.padding_x2_5}
+              width={layout.spacing_x2_5}
+              height={layout.spacing_x2_5}
             />
             <BrandText style={styles.buttonText}>Add songs</BrandText>
           </TouchableOpacity>
@@ -342,15 +342,15 @@ export const UploadAlbumModal: React.FC<UploadAlbumModalProps> = ({
 
 const styles = StyleSheet.create({
   buttonContainer: {
-    marginTop: layout.padding_x2,
+    marginTop: layout.spacing_x2,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     height: 40,
-    borderRadius: layout.padding_x1,
+    borderRadius: layout.spacing_x1,
     backgroundColor: "#2B2B33",
-    gap: layout.padding_x1,
-    marginBottom: layout.padding_x2,
+    gap: layout.spacing_x1,
+    marginBottom: layout.spacing_x2,
   },
   buttonText: StyleSheet.flatten([
     fontSemibold14,
@@ -361,15 +361,15 @@ const styles = StyleSheet.create({
   divideLine: {
     height: 1,
     width: UPLOAD_ALBUM_MODAL_WIDTH - 2,
-    marginLeft: -layout.padding_x2_5,
+    marginLeft: -layout.spacing_x2_5,
     backgroundColor: neutral33,
   },
   footer: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: layout.padding_x2_5,
-    paddingVertical: layout.padding_x2,
+    paddingHorizontal: layout.spacing_x2_5,
+    paddingVertical: layout.spacing_x2,
   },
   footerText: StyleSheet.flatten([
     fontSemibold14,
@@ -380,21 +380,21 @@ const styles = StyleSheet.create({
   ]),
   songGroup: {
     flexDirection: "column",
-    gap: layout.padding_x1,
+    gap: layout.spacing_x1,
   },
   unitBox: {
     backgroundColor: neutral17,
-    paddingHorizontal: layout.padding_x1_5,
+    paddingHorizontal: layout.spacing_x1_5,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    borderRadius: layout.padding_x1,
+    borderRadius: layout.spacing_x1,
     height: 40,
   },
   oneLine: {
     flexDirection: "row",
     alignItems: "center",
-    gap: layout.padding_x1_5,
+    gap: layout.spacing_x1_5,
   },
   inputBox: {
     flexDirection: "row",
@@ -407,7 +407,7 @@ const styles = StyleSheet.create({
   img: {
     width: 172,
     height: 172,
-    borderRadius: layout.padding_x1,
+    borderRadius: layout.spacing_x1,
   },
   textBox: {
     width: 332,
@@ -416,24 +416,24 @@ const styles = StyleSheet.create({
     fontSemibold14,
     {
       color: neutralA3,
-      marginBottom: layout.padding_x1_5,
+      marginBottom: layout.spacing_x1_5,
     },
   ]),
   required: StyleSheet.flatten([
     fontSemibold14,
     {
       color: "#FFAEAE",
-      paddingLeft: layout.padding_x0_5,
+      paddingLeft: layout.spacing_x0_5,
     },
   ]),
   input: StyleSheet.flatten([
     fontSemibold14,
     {
       color: secondaryColor,
-      padding: layout.padding_x2,
+      padding: layout.spacing_x2,
       borderWidth: 1,
       borderColor: neutral33,
-      marginBottom: layout.padding_x2_5,
+      marginBottom: layout.spacing_x2_5,
       borderRadius: 10,
       outlineStyle: "none",
     },
@@ -442,7 +442,7 @@ const styles = StyleSheet.create({
     width: "100%",
     position: "absolute",
     left: 0,
-    bottom: layout.padding_x1,
+    bottom: layout.spacing_x1,
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
@@ -451,10 +451,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#2B2B33",
-    borderRadius: layout.padding_x4,
-    gap: layout.padding_x1,
-    paddingLeft: layout.padding_x1,
-    paddingRight: layout.padding_x1_5,
-    paddingVertical: layout.padding_x1,
+    borderRadius: layout.spacing_x4,
+    gap: layout.spacing_x1,
+    paddingLeft: layout.spacing_x1,
+    paddingRight: layout.spacing_x1_5,
+    paddingVertical: layout.spacing_x1,
   },
 });

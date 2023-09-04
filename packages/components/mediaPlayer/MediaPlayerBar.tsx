@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: layout.padding_x3,
+    paddingHorizontal: layout.spacing_x3,
     height: 48,
     backgroundColor: neutral17,
     borderTopWidth: 1,

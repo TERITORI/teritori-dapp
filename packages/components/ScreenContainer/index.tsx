@@ -184,19 +184,19 @@ export const ScreenContainer: React.FC<{
             <TogglePlayerButton />
             <Separator
               horizontal
-              style={{ height: "100%", marginHorizontal: layout.padding_x2 }}
+              style={{ height: "100%", marginHorizontal: layout.spacing_x2 }}
             />
             <SearchBar />
             <Separator
               horizontal
-              style={{ height: "100%", marginHorizontal: layout.padding_x2 }}
+              style={{ height: "100%", marginHorizontal: layout.spacing_x2 }}
             />
-            <CartIconButtonBadge style={{ marginRight: layout.padding_x1_5 }} />
+            <CartIconButtonBadge style={{ marginRight: layout.spacing_x1_5 }} />
             <NetworkSelector
               forceNetworkId={forceNetworkId}
               forceNetworkKind={forceNetworkKind}
               forceNetworkFeatures={forceNetworkFeatures}
-              style={{ marginRight: layout.padding_x1_5 }}
+              style={{ marginRight: layout.spacing_x1_5 }}
             />
             <ConnectWalletButton
               style={{ marginRight: headerMarginHorizontal }}

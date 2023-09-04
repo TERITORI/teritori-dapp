@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
   unitCard: {
     width: musicPlayerCardWidth,
     height: 338,
-    padding: layout.padding_x1_5,
+    padding: layout.spacing_x1_5,
     backgroundColor: neutral17,
     borderRadius: 12,
     justifyContent: "space-between",
@@ -128,10 +128,10 @@ const styles = StyleSheet.create({
   },
   imgButtonsBox: {
     position: "absolute",
-    paddingHorizontal: layout.padding_x1_5,
+    paddingHorizontal: layout.spacing_x1_5,
     flexDirection: "row",
     width: "100%",
-    top: imageHeight - buttonsHeight - layout.padding_x1_5,
+    top: imageHeight - buttonsHeight - layout.spacing_x1_5,
     right: 0,
     justifyContent: "space-between",
   },

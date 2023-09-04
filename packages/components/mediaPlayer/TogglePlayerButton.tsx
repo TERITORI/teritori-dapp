@@ -22,7 +22,7 @@ export const TogglePlayerButton: FC = () => {
         noBrokenCorners
         mainContainerStyle={{
           flexDirection: "row",
-          paddingHorizontal: layout.padding_x1,
+          paddingHorizontal: layout.spacing_x1,
         }}
         height={isMobile ? 32 : 40}
         width={isMobile ? 32 : 40}

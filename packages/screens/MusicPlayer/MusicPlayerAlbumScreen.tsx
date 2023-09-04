@@ -185,8 +185,8 @@ export const MusicPlayerAlbumScreen: ScreenFC<"MusicPlayerAlbum"> = ({
                 >
                   <SVG
                     source={PlayOther}
-                    width={layout.padding_x2_5}
-                    height={layout.padding_x2_5}
+                    width={layout.spacing_x2_5}
+                    height={layout.spacing_x2_5}
                   />
                   <BrandText style={styles.playButtonText}>Play</BrandText>
                 </TouchableOpacity>
@@ -194,8 +194,8 @@ export const MusicPlayerAlbumScreen: ScreenFC<"MusicPlayerAlbum"> = ({
                 <TouchableOpacity style={styles.tipButton} onPress={handleTip}>
                   <SVG
                     source={Tip}
-                    width={layout.padding_x2_5}
-                    height={layout.padding_x2_5}
+                    width={layout.spacing_x2_5}
+                    height={layout.spacing_x2_5}
                   />
                   <BrandText style={styles.tipButtonText}>
                     Tip this album
@@ -214,8 +214,8 @@ export const MusicPlayerAlbumScreen: ScreenFC<"MusicPlayerAlbum"> = ({
                   onPress={removeFromLibrary}
                 >
                   <SVG
-                    height={layout.padding_x2_5}
-                    width={layout.padding_x2_5}
+                    height={layout.spacing_x2_5}
+                    width={layout.spacing_x2_5}
                     source={Add}
                   />
                   <BrandText style={styles.addButtonText}>
@@ -232,8 +232,8 @@ export const MusicPlayerAlbumScreen: ScreenFC<"MusicPlayerAlbum"> = ({
                   onPress={addToLibrary}
                 >
                   <SVG
-                    height={layout.padding_x2_5}
-                    width={layout.padding_x2_5}
+                    height={layout.spacing_x2_5}
+                    width={layout.spacing_x2_5}
                     source={Add}
                   />
                   <BrandText style={styles.addButtonText}>
@@ -248,8 +248,8 @@ export const MusicPlayerAlbumScreen: ScreenFC<"MusicPlayerAlbum"> = ({
               }}
             >
               <SVG
-                height={layout.padding_x2_5}
-                width={layout.padding_x2_5}
+                height={layout.spacing_x2_5}
+                width={layout.spacing_x2_5}
                 color={primaryColor}
                 source={More}
               />
@@ -266,8 +266,8 @@ export const MusicPlayerAlbumScreen: ScreenFC<"MusicPlayerAlbum"> = ({
           </View>
           <SVG
             source={Time}
-            width={layout.padding_x2}
-            height={layout.padding_x2}
+            width={layout.spacing_x2}
+            height={layout.spacing_x2}
           />
         </View>
 
@@ -344,19 +344,19 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   menuBox: {
-    marginTop: layout.padding_x2_5,
-    marginBottom: layout.padding_x1_5,
+    marginTop: layout.spacing_x2_5,
+    marginBottom: layout.spacing_x1_5,
     width: "100%",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingLeft: layout.padding_x2_5,
-    paddingRight: layout.padding_x1_5 + 20 + 20,
+    paddingLeft: layout.spacing_x2_5,
+    paddingRight: layout.spacing_x1_5 + 20 + 20,
   },
   contentGroup: {
     flexDirection: "column",
     justifyContent: "space-between",
-    gap: layout.padding_x0_5,
+    gap: layout.spacing_x0_5,
     zIndex: 999,
   },
   track: {
@@ -364,10 +364,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingLeft: layout.padding_x2_5,
-    paddingRight: layout.padding_x1_5,
-    paddingVertical: layout.padding_x0_5,
-    borderRadius: layout.padding_x1,
+    paddingLeft: layout.spacing_x2_5,
+    paddingRight: layout.spacing_x1_5,
+    paddingVertical: layout.spacing_x0_5,
+    borderRadius: layout.spacing_x1,
     height: 48,
   },
   menuText: StyleSheet.flatten([
@@ -377,20 +377,20 @@ const styles = StyleSheet.create({
     },
   ]),
   index: {
-    width: layout.padding_x2_5,
+    width: layout.spacing_x2_5,
     textAlign: "center",
   },
   text: StyleSheet.flatten([
     fontMedium14,
     {
       color: neutral77,
-      marginTop: layout.padding_x0_5,
+      marginTop: layout.spacing_x0_5,
     },
   ]),
   leftBox: {
     flexDirection: "row",
     alignItems: "center",
-    gap: layout.padding_x1_5,
+    gap: layout.spacing_x1_5,
   },
   textBox: {
     flexDirection: "column",
@@ -402,7 +402,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   albumBox: {
-    marginTop: layout.padding_x2_5,
+    marginTop: layout.spacing_x2_5,
     flexDirection: "row",
     alignItems: "flex-end",
     justifyContent: "space-between",
@@ -411,7 +411,7 @@ const styles = StyleSheet.create({
   infoBox: {
     flexDirection: "row",
     alignItems: "flex-end",
-    gap: layout.padding_x4,
+    gap: layout.spacing_x4,
   },
   albumImg: {
     width: 218,
@@ -422,14 +422,14 @@ const styles = StyleSheet.create({
     fontSemibold20,
     {
       color: primaryColor,
-      marginTop: layout.padding_x0_5,
+      marginTop: layout.spacing_x0_5,
     },
   ]),
   infoText: StyleSheet.flatten([
     fontSemibold13,
     {
-      marginTop: layout.padding_x1,
-      marginBottom: layout.padding_x0_5,
+      marginTop: layout.spacing_x1,
+      marginBottom: layout.spacing_x0_5,
     },
   ]),
   tagText: StyleSheet.flatten([
@@ -446,25 +446,25 @@ const styles = StyleSheet.create({
   oneLine: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: layout.padding_x2_5,
-    gap: layout.padding_x2,
+    marginTop: layout.spacing_x2_5,
+    gap: layout.spacing_x2,
   },
   playButton: {
-    padding: layout.padding_x1,
-    paddingRight: layout.padding_x1_5,
+    padding: layout.spacing_x1,
+    paddingRight: layout.spacing_x1_5,
     flexDirection: "row",
     alignItems: "center",
-    gap: layout.padding_x1,
-    borderRadius: layout.padding_x1,
+    gap: layout.spacing_x1,
+    borderRadius: layout.spacing_x1,
     backgroundColor: primaryColor,
   },
   tipButton: {
-    padding: layout.padding_x1,
-    paddingRight: layout.padding_x1_5,
+    padding: layout.spacing_x1,
+    paddingRight: layout.spacing_x1_5,
     flexDirection: "row",
     alignItems: "center",
-    gap: layout.padding_x1,
-    borderRadius: layout.padding_x1,
+    gap: layout.spacing_x1,
+    borderRadius: layout.spacing_x1,
     backgroundColor: "#2B2B33",
   },
   playButtonText: StyleSheet.flatten([
@@ -481,15 +481,15 @@ const styles = StyleSheet.create({
   ]),
   actionBox: {
     flexDirection: "row",
-    gap: layout.padding_x2,
+    gap: layout.spacing_x2,
   },
   addButton: {
-    padding: layout.padding_x1,
-    paddingRight: layout.padding_x1_5,
+    padding: layout.spacing_x1,
+    paddingRight: layout.spacing_x1_5,
     flexDirection: "row",
     alignItems: "center",
-    gap: layout.padding_x1,
-    borderRadius: layout.padding_x1,
+    gap: layout.spacing_x1,
+    borderRadius: layout.spacing_x1,
     backgroundColor: "#2B2B33",
   },
   addButtonText: StyleSheet.flatten([
