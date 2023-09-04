@@ -46,7 +46,8 @@ export const TableSelect: React.FC<TableSelectProps> = ({
   style,
 }) => {
   const unitHorizontalPadding = 10;
-
+  // FIXME: remove StyleSheet.create
+  // eslint-disable-next-line no-restricted-syntax
   const styles = StyleSheet.create({
     selectInput: {
       backgroundColor: neutral00,

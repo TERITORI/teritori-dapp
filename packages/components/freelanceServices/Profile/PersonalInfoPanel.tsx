@@ -197,7 +197,8 @@ export const PersonalInfoPanel: React.FC<{
     </View>
   );
 };
-
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   horizontalLine: {
     width: "100%",

@@ -217,7 +217,8 @@ export const ProfileHeader: React.FC<{
     </View>
   );
 };
-
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const currentStyle = StyleSheet.create({
   circle: {
     width: 40,
@@ -232,7 +233,8 @@ const currentStyle = StyleSheet.create({
   },
   text: { color: primaryColor },
 });
-
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const nextStyle = StyleSheet.create({
   circle: {
     width: 40,

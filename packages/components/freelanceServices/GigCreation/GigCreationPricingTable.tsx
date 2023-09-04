@@ -239,7 +239,8 @@ const NormalUnit: React.FC<NormalUnitProps> = ({
   const unitHorizontalPadding = 10;
   const borderWidth = 1;
   const firstRowTitleHeight = 5 * unitHeight + 4 * borderWidth + lineHeight;
-
+  // FIXME: remove StyleSheet.create
+  // eslint-disable-next-line no-restricted-syntax
   const styles = StyleSheet.create({
     alignLeftContainer: {
       flexDirection: "row",
@@ -294,7 +295,8 @@ const TableTextInput: React.FC<TableTextInputProps> = ({
 }) => {
   const unitHeight = 38;
   const lineHeight = 18;
-
+  // FIXME: remove StyleSheet.create
+  // eslint-disable-next-line no-restricted-syntax
   const styles = StyleSheet.create({
     inputContainer: {
       width: "100%",
@@ -340,7 +342,8 @@ const TableTextInput: React.FC<TableTextInputProps> = ({
     </View>
   );
 };
-
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   tableContainer: {
     flexDirection: "row",

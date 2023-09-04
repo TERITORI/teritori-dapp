@@ -134,7 +134,8 @@ export const ProfessionalInfoPanel: React.FC<{
   const [major, setMajor] = useState<string>("");
   const [certification, setCertification] = useState<string>("");
   const [certificationFrom, setCertificationFrom] = useState<string>("");
-
+  // FIXME: remove StyleSheet.create
+  // eslint-disable-next-line no-restricted-syntax
   const styles = StyleSheet.create({
     contentContainer: {
       flexDirection: "column",

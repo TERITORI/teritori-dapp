@@ -22,7 +22,8 @@ export const AccountSecurityPanel: React.FC<{
 }> = ({ seller, setSeller }) => {
   const [openVerifyPhoneModal, setOpenVerifyPhoneModal] =
     useState<boolean>(true);
-
+  // FIXME: remove StyleSheet.create
+  // eslint-disable-next-line no-restricted-syntax
   const styles = StyleSheet.create({
     divideLine: {
       width: "100%",

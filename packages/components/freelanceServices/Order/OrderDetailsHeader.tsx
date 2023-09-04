@@ -25,6 +25,8 @@ export const OrderDetailsHeader: React.FC<OrderDetailsHeaderProps> = ({
   step,
   setCurrentStep,
 }) => {
+  // FIXME: remove StyleSheet.create
+  // eslint-disable-next-line no-restricted-syntax
   const stepStyles = StyleSheet.create({
     currentCircle: {
       width: 40,

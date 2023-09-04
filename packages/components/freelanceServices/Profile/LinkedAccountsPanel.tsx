@@ -21,6 +21,8 @@ export const LinkedAccountsPanel: React.FC<{
   seller: SellerInfo;
   setSeller: React.Dispatch<React.SetStateAction<SellerInfo>>;
 }> = ({ seller, setSeller }) => {
+  // FIXME: remove StyleSheet.create
+  // eslint-disable-next-line no-restricted-syntax
   const styles = StyleSheet.create({
     divideLine: {
       width: "100%",
