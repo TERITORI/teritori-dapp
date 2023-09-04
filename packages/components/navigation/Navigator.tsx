@@ -11,6 +11,7 @@ import { FeedPostViewScreen } from "../../screens/FeedPostView/FeedPostViewScree
 import { GovernanceScreen } from "../../screens/Governance/GovernanceScreen";
 import { GrantsProgramDetailScreen } from "../../screens/GrantsProgram/GrantsProgramDetailScreen";
 import { GrantsProgramManagerScreen } from "../../screens/GrantsProgram/GrantsProgramManagerScreen";
+import { GrantsProgramPaymentScreen } from "../../screens/GrantsProgram/GrantsProgramPaymentScreen";
 import { GrantsProgramScreen } from "../../screens/GrantsProgram/GrantsProgramScreen";
 import { HashtagFeedScreen } from "../../screens/HashtagFeed/HashtagFeedScreen";
 import { HomeScreen } from "../../screens/Home/HomeScreen";
@@ -227,6 +228,15 @@ export const Navigator: React.FC = () => {
         options={{
           header: () => null,
           title: screenTitle("Grants Program Manager"),
+        }}
+      />
+
+      <Stack.Screen
+        name="GrantsProgramPayment"
+        component={GrantsProgramPaymentScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Grants Program Payment"),
         }}
       />
 

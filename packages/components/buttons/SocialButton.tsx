@@ -22,6 +22,7 @@ export const SocialButton: React.FC<{
   style?: StyleProp<ViewStyle>;
   noBrokenCorners?: boolean;
   height?: number;
+  bgColor?: string;
 }> = ({
   text,
   onPress,
@@ -31,13 +32,16 @@ export const SocialButton: React.FC<{
   height,
   noBrokenCorners = true,
   textColor = secondaryColor,
+  bgColor,
 }) => {
   return (
     <TouchableOpacity onPress={onPress} style={style}>
       <SecondaryBox
         // We don't handle broken corners for now, because this button can be used on an image
         noBrokenCorners={noBrokenCorners}
-        mainContainerStyle={{ backgroundColor: withAlpha(neutral22, 0.64) }}
+        mainContainerStyle={{
+          backgroundColor: bgColor ? bgColor : withAlpha(neutral22, 0.64),
+        }}
         height={height === undefined ? 44 : height}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>

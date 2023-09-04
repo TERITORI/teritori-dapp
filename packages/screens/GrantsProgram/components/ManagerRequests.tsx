@@ -1,4 +1,5 @@
 import React from "react";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 import { Tag } from "./Tag";
 import githubSVG from "../../../../assets/icons/github.svg";
@@ -6,8 +7,8 @@ import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
 import { Separator } from "../../../components/Separator";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
-import { SimpleButton } from "../../../components/buttons/SimpleButton";
 import { SocialButton } from "../../../components/buttons/SocialButton";
+import { useAppNavigation } from "../../../utils/navigation";
 import {
   neutral00,
   neutral17,
@@ -23,6 +24,8 @@ import {
 import { layout } from "../../../utils/style/layout";
 
 export const ManagerRequests: React.FC = () => {
+  const navigation = useAppNavigation();
+
   return (
     <>
       {[1, 2, 3, 4, 5, 6, 7].map((id) => {
@@ -99,15 +102,30 @@ export const ManagerRequests: React.FC = () => {
 
               <SocialButton
                 iconSvg={githubSVG}
-                style={{ marginRight: layout.spacing_x2 }}
+                style={{
+                  marginRight: layout.spacing_x2,
+                }}
+                bgColor={neutral17}
               />
 
-              <SimpleButton
-                size="SM"
-                text="Approve"
-                color={neutral00}
-                bgColor={neutralFF}
-              />
+              <TouchableOpacity
+                onPress={() => navigation.navigate("GrantsProgramPayment")}
+              >
+                <BrandText
+                  style={[
+                    fontSemibold14,
+                    {
+                      color: neutral00,
+                      backgroundColor: neutralFF,
+                      paddingVertical: 10,
+                      paddingHorizontal: 16,
+                      borderRadius: 4,
+                    },
+                  ]}
+                >
+                  Approve
+                </BrandText>
+              </TouchableOpacity>
             </FlexRow>
           </TertiaryBox>
         );
