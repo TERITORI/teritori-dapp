@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 
 import { EscrowInfo } from "../../api/freelance/v1/freelance";
 import { BrandText } from "../../components/BrandText";
@@ -39,8 +39,25 @@ export const FreelanceServicesEscrowScreen: ScreenFC<
 
   return (
     <ScreenContainer fullWidth noMargin>
-      <View style={[styles.container, marginStyle]}>
-        <View style={styles.rowHeader}>
+      <View
+        style={[
+          {
+            flex: 1,
+            backgroundColor: "#000000",
+            flexDirection: "column",
+          },
+          marginStyle,
+        ]}
+      >
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            paddingTop: layout.contentSpacing,
+            marginBottom: layout.spacing_x2_5,
+          }}
+        >
           <BrandText style={fontSemibold28}>Manage Escrow</BrandText>
         </View>
         <EscrowTable escrows={escrows} />
@@ -48,25 +65,3 @@ export const FreelanceServicesEscrowScreen: ScreenFC<
     </ScreenContainer>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#000000",
-    flexDirection: "column",
-  },
-  rowHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingTop: layout.contentPadding,
-    marginBottom: layout.spacing_x2_5,
-  },
-  rowWithCenter: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  upperCase: {
-    textTransform: "uppercase",
-  },
-});
