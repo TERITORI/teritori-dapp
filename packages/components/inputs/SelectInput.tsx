@@ -1,4 +1,11 @@
-import React, { FC, ReactElement, useEffect, useMemo, useState } from "react";
+import React, {
+  FC,
+  Fragment,
+  ReactElement,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import {
   View,
   ScrollView,
@@ -35,7 +42,7 @@ export type SelectInputData = {
 };
 
 type Props = {
-  data?: SelectInputData[];
+  data: SelectInputData[];
   placeHolder?: string;
   selectedData: SelectInputData;
   selectData: (data: SelectInputData) => void;
@@ -47,16 +54,13 @@ type Props = {
   allowSearchValue?: boolean;
   name?: string;
   isLoading?: boolean;
-  // If provided, the item selection is handled from parent, instead of considering data
-  children?: (({
+  // Overrides the default item component
+  renderItem?: ({
     onPressItem,
+    item,
   }: {
     onPressItem: (item: SelectInputData) => void;
-  }) => JSX.Element)[];
-  defaultItem?: ({
-    onPressItem,
-  }: {
-    onPressItem: (item: SelectInputData) => void;
+    item: SelectInputData;
   }) => JSX.Element;
 };
 
@@ -73,17 +77,14 @@ export const SelectInput: React.FC<Props> = ({
   allowSearchValue,
   name,
   isLoading,
-  children,
-  defaultItem,
+  renderItem,
 }) => {
   const [openMenu, setOpenMenu] = useState<boolean>(false);
   const [hovered, setHovered] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const selectableData = useMemo(
     () =>
-      !data
-        ? undefined
-        : allowSearchValue && searchValue
+      allowSearchValue && searchValue
         ? // selectableData depends on searchValue
           data.filter((d) =>
             d.label.toLowerCase().includes(searchValue.toLowerCase())
@@ -106,16 +107,13 @@ export const SelectInput: React.FC<Props> = ({
   }, [allowSearchValue, searchValue, selectData, selectedData]);
 
   useEffect(() => {
-    if (!children?.length && !selectableData?.length) {
+    if (!selectableData.length) {
       setOpenMenu(false);
     }
-  }, [selectableData, children?.length]);
+  }, [selectableData]);
 
   const getScrollViewStyle = () => {
-    if (
-      (children && children.length > 5) ||
-      (selectableData && selectableData.length > 5)
-    ) {
+    if (selectableData.length > 5) {
       return [dropdownMenuStyle, { height: 200 }];
     }
     return dropdownMenuStyle;
@@ -133,10 +131,9 @@ export const SelectInput: React.FC<Props> = ({
       onHoverIn={() => setHovered(true)}
       onHoverOut={() => setHovered(false)}
       onPress={() => {
-        if (!disabled || selectableData?.length || children?.length)
-          setOpenMenu((value) => !value);
+        if (!disabled || selectableData.length) setOpenMenu((value) => !value);
       }}
-      disabled={disabled || (!selectableData?.length && !children?.length)}
+      disabled={disabled || !selectableData.length}
     >
       {label && (
         <>
@@ -176,7 +173,7 @@ export const SelectInput: React.FC<Props> = ({
                 value={searchValue}
                 onChangeText={(text) => {
                   setSearchValue(text);
-                  setOpenMenu(!!selectableData?.length || !!children?.length);
+                  setOpenMenu(!!selectableData.length);
                 }}
                 rules={{ required: isRequired }}
                 style={{ flex: 1 }}
@@ -205,7 +202,7 @@ export const SelectInput: React.FC<Props> = ({
           ) : (
             <SVG
               source={
-                (!selectableData?.length && !children?.length) || disabled
+                !selectableData.length || disabled
                   ? lockSVG
                   : openMenu
                   ? chevronUpSVG
@@ -222,16 +219,15 @@ export const SelectInput: React.FC<Props> = ({
         {/*TODO: If the opened menu appears under other elements, you'll may need to set zIndex:-1 or something to these elements*/}
         {openMenu && (
           <ScrollView style={getScrollViewStyle()}>
-            {defaultItem && defaultItem({ onPressItem })}
-            {children
-              ? children?.map((child) => child({ onPressItem }))
-              : selectableData?.map((item, index) => (
-                  <SelectInputItem
-                    item={item}
-                    onPress={onPressItem}
-                    key={index}
-                  />
-                ))}
+            {data?.map((item, index) => (
+              <Fragment key={index}>
+                {renderItem ? (
+                  renderItem({ onPressItem, item })
+                ) : (
+                  <SelectInputItem item={item} onPress={onPressItem} />
+                )}
+              </Fragment>
+            ))}
           </ScrollView>
         )}
       </View>
@@ -262,7 +258,6 @@ export const SelectInputItem: FC<{
             <SpacerRow size={1.5} />
           </>
         )}
-
         <BrandText style={dropdownMenuTextStyle}>{item.label}</BrandText>
       </View>
 

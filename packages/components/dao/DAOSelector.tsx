@@ -22,6 +22,7 @@ const DAOSelectorItem: FC<{
 }> = ({ daoId, onPress }) => {
   const { primaryAlias, isLoading } = useNSPrimaryAlias(daoId);
   const [, daoAddress] = parseUserId(daoId);
+
   const item: SelectInputData = useMemo(() => {
     return {
       label: `Use ${
@@ -52,6 +53,16 @@ export const DAOSelector: React.FC<{
     networkId: network?.id,
     memberAddress: userAddress,
   });
+  const selectableData: SelectInputData[] = useMemo(() => {
+    if (!daos?.length) return [];
+    const res: SelectInputData[] = daos?.map((d) => {
+      return {
+        label: `Use ${tinyAddress(d.contractAddress, 40)}`,
+        value: d.id,
+      };
+    });
+    return [ownWalletToSelect, ...res];
+  }, [daos]);
 
   return (
     <SelectInput
@@ -61,15 +72,19 @@ export const DAOSelector: React.FC<{
         setSelectedData(data);
         onSelect(data.value.toString());
       }}
+      data={selectableData}
       name="daoSelector"
       placeHolder="Select a DAO to use"
-      defaultItem={({ onPressItem }) => (
-        <SelectInputItem item={ownWalletToSelect} onPress={onPressItem} />
-      )}
-    >
-      {daos?.map((dao, index) => ({ onPressItem }) => (
-        <DAOSelectorItem key={index} daoId={dao.id} onPress={onPressItem} />
-      ))}
-    </SelectInput>
+      renderItem={({ onPressItem, item }) =>
+        item.value ? (
+          <DAOSelectorItem
+            daoId={item.value.toString()}
+            onPress={onPressItem}
+          />
+        ) : (
+          <SelectInputItem item={ownWalletToSelect} onPress={onPressItem} />
+        )
+      }
+    />
   );
 };
