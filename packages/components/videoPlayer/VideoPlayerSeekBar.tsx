@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     borderWidth: 1,
     borderColor: neutral22,
-    paddingHorizontal: layout.padding_x3,
+    paddingHorizontal: layout.spacing_x3,
   },
   volumeBox: {
     flexDirection: "row",
@@ -44,10 +44,10 @@ const styles = StyleSheet.create({
   playHandleBox: {
     flexDirection: "row",
     alignItems: "center",
-    gap: layout.padding_x3,
+    gap: layout.spacing_x3,
   },
   verticalLine: {
-    height: layout.padding_x2_5,
+    height: layout.spacing_x2_5,
     width: 1,
     backgroundColor: neutral33,
   },
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
   },
   infoBox: {
     flexDirection: "column",
-    gap: layout.padding_x0_5,
+    gap: layout.spacing_x0_5,
     justifyContent: "center",
   },
   audioBox: {
@@ -159,7 +159,7 @@ const VideoPlayerSeekBar: React.FC = () => {
         <View style={styles.avatarBox}>
           <UserAvatarWithFrame
             style={{
-              marginRight: layout.padding_x2,
+              marginRight: layout.spacing_x2,
             }}
             userId={videoMeta.createdBy}
             size="S"
@@ -194,8 +194,8 @@ const VideoPlayerSeekBar: React.FC = () => {
 //   return (
 //     <SVG
 //       source={source}
-//       width={layout.padding_x2_5}
-//       height={layout.padding_x2_5}
+//       width={layout.spacing_x2_5}
+//       height={layout.spacing_x2_5}
 //     />
 //   );
 // };

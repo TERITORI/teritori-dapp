@@ -28,13 +28,13 @@ export const VideoPlayerTab: React.FC<VideoPlayerTabProps> = ({
       flexDirection: "row",
       alignItems: "center",
       position: "relative",
-      gap: layout.padding_x3,
+      gap: layout.spacing_x3,
     },
     selectedUnitBox: {
       flexDirection: "row",
       alignItems: "center",
-      gap: layout.padding_x1_5,
-      paddingVertical: layout.padding_x2_5,
+      gap: layout.spacing_x1_5,
+      paddingVertical: layout.spacing_x2_5,
       borderBottomColor: secondaryColor,
       borderBottomWidth: 2,
       paddingRight: 6,
@@ -42,8 +42,8 @@ export const VideoPlayerTab: React.FC<VideoPlayerTabProps> = ({
     unselectedUnitBox: {
       flexDirection: "row",
       alignItems: "center",
-      gap: layout.padding_x1_5,
-      paddingVertical: layout.padding_x2_5,
+      gap: layout.spacing_x1_5,
+      paddingVertical: layout.spacing_x2_5,
       borderBottomColor: secondaryColor,
       borderBottomWidth: 0,
       paddingRight: 6,
@@ -75,8 +75,8 @@ export const VideoPlayerTab: React.FC<VideoPlayerTabProps> = ({
       >
         <SVG
           source={tab === tabData[0] ? HomeSelected : HomeUnselected}
-          width={layout.padding_x3}
-          height={layout.padding_x3}
+          width={layout.spacing_x3}
+          height={layout.spacing_x3}
         />
         <BrandText
           style={
@@ -94,8 +94,8 @@ export const VideoPlayerTab: React.FC<VideoPlayerTabProps> = ({
       >
         <SVG
           source={tab === tabData[1] ? MusicSelected : MusicUnselected}
-          width={layout.padding_x3}
-          height={layout.padding_x3}
+          width={layout.spacing_x3}
+          height={layout.spacing_x3}
         />
         <BrandText
           style={

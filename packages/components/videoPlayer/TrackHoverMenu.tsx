@@ -104,41 +104,41 @@ export const TrackHoverMenu: React.FC<TrackHoverMenuProps> = ({
       left: 0,
       top: 0,
       backgroundColor: "rgba(0,0,0,0.5)",
-      padding: layout.padding_x1_5,
+      padding: layout.spacing_x1_5,
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "flex-end",
       zIndex: 999,
     },
     menuContainer: {
-      borderRadius: layout.padding_x1_5,
+      borderRadius: layout.spacing_x1_5,
       position: "absolute",
-      right: layout.padding_x1_5,
+      right: layout.spacing_x1_5,
       bottom: 44,
       backgroundColor: "rgba(41, 41, 41, 1)",
-      padding: layout.padding_x1_5,
+      padding: layout.spacing_x1_5,
       flexDirection: "column",
-      gap: layout.padding_x0_75,
+      gap: layout.spacing_x0_75,
     },
     unitBoxNormal: {
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "space-between",
-      padding: layout.padding_x0_75,
-      borderRadius: layout.padding_x0_75,
+      padding: layout.spacing_x0_75,
+      borderRadius: layout.spacing_x0_75,
     },
     unitBoxHovered: {
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "space-between",
-      padding: layout.padding_x0_75,
+      padding: layout.spacing_x0_75,
       backgroundColor: neutral33,
-      borderRadius: layout.padding_x0_75,
+      borderRadius: layout.spacing_x0_75,
     },
     oneLine: {
       flexDirection: "row",
       alignItems: "center",
-      gap: layout.padding_x1,
+      gap: layout.spacing_x1,
     },
     text: StyleSheet.flatten([
       fontSemibold13,
@@ -152,19 +152,19 @@ export const TrackHoverMenu: React.FC<TrackHoverMenuProps> = ({
       backgroundColor: secondaryColor,
     },
     shareMenuContainer: {
-      borderRadius: layout.padding_x1_5,
+      borderRadius: layout.spacing_x1_5,
       position: "absolute",
-      left: -(layout.padding_x1_5 + shareMenuWidth),
+      left: -(layout.spacing_x1_5 + shareMenuWidth),
       bottom: -(
-        layout.padding_x1_5 +
+        layout.spacing_x1_5 +
         lineHeight +
-        layout.padding_x1_5 +
-        2 * layout.padding_x0_75
+        layout.spacing_x1_5 +
+        2 * layout.spacing_x0_75
       ),
       backgroundColor: "rgba(41, 41, 41, 1)",
-      padding: layout.padding_x1_5,
+      padding: layout.spacing_x1_5,
       flexDirection: "column",
-      gap: layout.padding_x0_75,
+      gap: layout.spacing_x0_75,
       width: shareMenuWidth,
     },
   });
@@ -182,8 +182,8 @@ export const TrackHoverMenu: React.FC<TrackHoverMenuProps> = ({
           <View style={styles.oneLine}>
             <SVG
               source={AddLibrary}
-              width={layout.padding_x2}
-              height={layout.padding_x2}
+              width={layout.spacing_x2}
+              height={layout.spacing_x2}
             />
             <BrandText style={styles.text}>Add to library</BrandText>
           </View>
@@ -200,8 +200,8 @@ export const TrackHoverMenu: React.FC<TrackHoverMenuProps> = ({
           <View style={styles.oneLine}>
             <SVG
               source={AddLibrary}
-              width={layout.padding_x2}
-              height={layout.padding_x2}
+              width={layout.spacing_x2}
+              height={layout.spacing_x2}
             />
             <BrandText style={styles.text}>Remove From library</BrandText>
           </View>
@@ -220,8 +220,8 @@ export const TrackHoverMenu: React.FC<TrackHoverMenuProps> = ({
         <View style={styles.oneLine}>
           <SVG
             source={Tip}
-            width={layout.padding_x2}
-            height={layout.padding_x2}
+            width={layout.spacing_x2}
+            height={layout.spacing_x2}
           />
           <BrandText style={styles.text}>Tip this track</BrandText>
         </View>
@@ -237,8 +237,8 @@ export const TrackHoverMenu: React.FC<TrackHoverMenuProps> = ({
         <View style={styles.oneLine}>
           <SVG
             source={Tip}
-            width={layout.padding_x2}
-            height={layout.padding_x2}
+            width={layout.spacing_x2}
+            height={layout.spacing_x2}
           />
           <BrandText style={styles.text}>Copy link to the track</BrandText>
         </View>

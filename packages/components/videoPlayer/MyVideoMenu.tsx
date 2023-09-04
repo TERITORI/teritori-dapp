@@ -62,41 +62,41 @@ export const MyVideoMenu: React.FC<MyVideoMenuProps> = ({ videoInfo }) => {
       left: 0,
       top: 0,
       backgroundColor: "rgba(0,0,0,0.5)",
-      padding: layout.padding_x1_5,
+      padding: layout.spacing_x1_5,
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "flex-end",
       zIndex: 999,
     },
     menuContainer: {
-      borderRadius: layout.padding_x1_5,
+      borderRadius: layout.spacing_x1_5,
       position: "absolute",
-      right: layout.padding_x1_5,
+      right: layout.spacing_x1_5,
       bottom: 44,
       backgroundColor: "rgba(41, 41, 41, 1)",
-      padding: layout.padding_x1_5,
+      padding: layout.spacing_x1_5,
       flexDirection: "column",
-      gap: layout.padding_x0_75,
+      gap: layout.spacing_x0_75,
     },
     unitBoxNormal: {
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "space-between",
-      padding: layout.padding_x0_75,
-      borderRadius: layout.padding_x0_75,
+      padding: layout.spacing_x0_75,
+      borderRadius: layout.spacing_x0_75,
     },
     unitBoxHovered: {
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "space-between",
-      padding: layout.padding_x0_75,
+      padding: layout.spacing_x0_75,
       backgroundColor: neutral33,
-      borderRadius: layout.padding_x0_75,
+      borderRadius: layout.spacing_x0_75,
     },
     oneLine: {
       flexDirection: "row",
       alignItems: "center",
-      gap: layout.padding_x1,
+      gap: layout.spacing_x1,
     },
     normalText: StyleSheet.flatten([
       fontSemibold13,
@@ -116,19 +116,19 @@ export const MyVideoMenu: React.FC<MyVideoMenuProps> = ({ videoInfo }) => {
       backgroundColor: secondaryColor,
     },
     shareMenuContainer: {
-      borderRadius: layout.padding_x1_5,
+      borderRadius: layout.spacing_x1_5,
       position: "absolute",
-      left: -(layout.padding_x1_5 + shareMenuWidth),
+      left: -(layout.spacing_x1_5 + shareMenuWidth),
       bottom: -(
-        layout.padding_x1_5 +
+        layout.spacing_x1_5 +
         lineHeight +
-        layout.padding_x1_5 +
-        2 * layout.padding_x0_75
+        layout.spacing_x1_5 +
+        2 * layout.spacing_x0_75
       ),
       backgroundColor: "rgba(41, 41, 41, 1)",
-      padding: layout.padding_x1_5,
+      padding: layout.spacing_x1_5,
       flexDirection: "column",
-      gap: layout.padding_x0_75,
+      gap: layout.spacing_x0_75,
       width: shareMenuWidth,
     },
   });
@@ -145,8 +145,8 @@ export const MyVideoMenu: React.FC<MyVideoMenuProps> = ({ videoInfo }) => {
         <View style={styles.oneLine}>
           <SVG
             source={Delete}
-            width={layout.padding_x2}
-            height={layout.padding_x2}
+            width={layout.spacing_x2}
+            height={layout.spacing_x2}
           />
           <BrandText style={styles.deleteText}>Delete album</BrandText>
         </View>
@@ -162,15 +162,15 @@ export const MyVideoMenu: React.FC<MyVideoMenuProps> = ({ videoInfo }) => {
         <View style={styles.oneLine}>
           <SVG
             source={Share}
-            width={layout.padding_x2}
-            height={layout.padding_x2}
+            width={layout.spacing_x2}
+            height={layout.spacing_x2}
           />
           <BrandText style={styles.normalText}>Share</BrandText>
         </View>
         <SVG
           source={Enter}
-          width={layout.padding_x2}
-          height={layout.padding_x2}
+          width={layout.spacing_x2}
+          height={layout.spacing_x2}
         />
 
         {openShareMenu && (
@@ -182,8 +182,8 @@ export const MyVideoMenu: React.FC<MyVideoMenuProps> = ({ videoInfo }) => {
               <View style={styles.oneLine}>
                 <SVG
                   source={Link}
-                  width={layout.padding_x2}
-                  height={layout.padding_x2}
+                  width={layout.spacing_x2}
+                  height={layout.spacing_x2}
                 />
                 <BrandText style={styles.normalText}>
                   Copy link to the track
@@ -197,8 +197,8 @@ export const MyVideoMenu: React.FC<MyVideoMenuProps> = ({ videoInfo }) => {
               <View style={styles.oneLine}>
                 <SVG
                   source={Code}
-                  width={layout.padding_x2}
-                  height={layout.padding_x2}
+                  width={layout.spacing_x2}
+                  height={layout.spacing_x2}
                 />
                 <BrandText style={styles.normalText}>
                   Copy widget code
