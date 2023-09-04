@@ -34,7 +34,7 @@ export const VideoPlayerCard: React.FC<{
     contentTitle: StyleSheet.flatten([
       fontSemibold14,
       {
-        marginVertical: layout.padding_x0_5,
+        marginVertical: layout.spacing_x0_5,
       },
     ]),
     contentDescription: StyleSheet.flatten([
@@ -61,7 +61,7 @@ export const VideoPlayerCard: React.FC<{
     ]),
     contentImg: {
       width: "100%",
-      borderRadius: layout.padding_x1,
+      borderRadius: layout.spacing_x1,
       aspectRatio: 1.7,
     },
   });
@@ -106,7 +106,7 @@ export const VideoPlayerCard: React.FC<{
           {/*---- User image */}
           <UserAvatarWithFrame
             style={{
-              marginRight: layout.padding_x2,
+              marginRight: layout.spacing_x2,
             }}
             userId={item.createdBy}
             size="S"

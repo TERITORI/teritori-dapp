@@ -36,7 +36,7 @@ export const TrackImageHover: React.FC<{
       left: 0,
       top: 0,
       backgroundColor: "rgba(0,0,0,0.5)",
-      padding: layout.padding_x1_5,
+      padding: layout.spacing_x1_5,
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "flex-end",

@@ -30,15 +30,15 @@ export const VideoPlayer: React.FC = () => {
       justifyContent: "space-between",
       borderWidth: 1,
       borderColor: neutral22,
-      paddingHorizontal: layout.padding_x3,
+      paddingHorizontal: layout.spacing_x3,
     },
     playHandleBox: {
       flexDirection: "row",
       alignItems: "center",
-      gap: layout.padding_x3,
+      gap: layout.spacing_x3,
     },
     verticalLine: {
-      height: layout.padding_x2_5,
+      height: layout.spacing_x2_5,
       width: 1,
       backgroundColor: neutral33,
     },
@@ -49,7 +49,7 @@ export const VideoPlayer: React.FC = () => {
     },
     infoBox: {
       flexDirection: "column",
-      gap: layout.padding_x0_5,
+      gap: layout.spacing_x0_5,
       justifyContent: "center",
     },
     videoBox: {},
@@ -69,8 +69,8 @@ export const VideoPlayer: React.FC = () => {
       <View style={styles.durationBox}>
         <SVG
           source={Avatar}
-          height={layout.padding_x4}
-          width={layout.padding_x4}
+          height={layout.spacing_x4}
+          width={layout.spacing_x4}
         />
         <View style={styles.infoBox}>
           <BrandText style={fontSemibold14}>Song Name</BrandText>
@@ -88,8 +88,8 @@ const StandardIcon: React.FC<{ source: any }> = ({ source }) => {
     <Pressable>
       <SVG
         source={source}
-        width={layout.padding_x2_5}
-        height={layout.padding_x2_5}
+        width={layout.spacing_x2_5}
+        height={layout.spacing_x2_5}
       />
     </Pressable>
   );

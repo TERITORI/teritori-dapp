@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
     aspectRatio: 1,
     width: "32px",
     borderRadius: 1000,
-    marginRight: layout.padding_x1,
+    marginRight: layout.spacing_x1,
   },
   avatarDetail: {
     display: "flex",
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
-    paddingBottom: layout.padding_x1_5,
+    paddingBottom: layout.spacing_x1_5,
   },
   btnGroup: {
     marginLeft: "auto",
@@ -116,24 +116,24 @@ const styles = StyleSheet.create({
     marginLeft: "0.5em",
     flexDirection: "row",
     alignItems: "center",
-    paddingLeft: layout.padding_x1,
-    paddingRight: layout.padding_x1_5,
-    paddingVertical: layout.padding_x1,
+    paddingLeft: layout.spacing_x1,
+    paddingRight: layout.spacing_x1_5,
+    paddingVertical: layout.spacing_x1,
     backgroundColor: "transparent",
-    borderRadius: layout.padding_x4,
-    gap: layout.padding_x1_5,
+    borderRadius: layout.spacing_x4,
+    gap: layout.spacing_x1_5,
     border: "1px solid #2B2B33",
   },
   buttonContainer: {
     marginLeft: "0.5em",
     flexDirection: "row",
     alignItems: "center",
-    paddingLeft: layout.padding_x1,
-    paddingRight: layout.padding_x1_5,
-    paddingVertical: layout.padding_x1,
+    paddingLeft: layout.spacing_x1,
+    paddingRight: layout.spacing_x1_5,
+    paddingVertical: layout.spacing_x1,
     backgroundColor: "#2B2B33",
-    borderRadius: layout.padding_x4,
-    gap: layout.padding_x1_5,
+    borderRadius: layout.spacing_x4,
+    gap: layout.spacing_x1_5,
   },
   pageConatiner: {
     width: "100%",
@@ -143,18 +143,18 @@ const styles = StyleSheet.create({
     color: "white",
   },
   menuBox: {
-    marginTop: layout.padding_x2_5,
-    marginBottom: layout.padding_x1,
+    marginTop: layout.spacing_x2_5,
+    marginBottom: layout.spacing_x1,
     width: "100%",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: layout.padding_x3,
+    paddingHorizontal: layout.spacing_x3,
   },
   contentGroup: {
     flexDirection: "column",
     justifyContent: "space-between",
-    gap: layout.padding_x1,
+    gap: layout.spacing_x1,
     zIndex: 999,
   },
   unitBoxEven: {
@@ -162,10 +162,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: layout.padding_x3,
-    paddingVertical: layout.padding_x0_5,
+    paddingHorizontal: layout.spacing_x3,
+    paddingVertical: layout.spacing_x0_5,
     backgroundColor: neutral17,
-    borderRadius: layout.padding_x1,
+    borderRadius: layout.spacing_x1,
     height: 48,
   },
   uniBoxOdd: {
@@ -173,9 +173,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: layout.padding_x3,
-    paddingVertical: layout.padding_x0_5,
-    borderRadius: layout.padding_x1,
+    paddingHorizontal: layout.spacing_x3,
+    paddingVertical: layout.spacing_x0_5,
+    borderRadius: layout.spacing_x1,
     height: 48,
   },
   menuText: StyleSheet.flatten([
@@ -185,20 +185,20 @@ const styles = StyleSheet.create({
     },
   ]),
   index: {
-    width: layout.padding_x2_5,
+    width: layout.spacing_x2_5,
     textAlign: "center",
   },
   text: StyleSheet.flatten([
     fontMedium14,
     {
       color: neutral77,
-      marginTop: layout.padding_x0_5,
+      marginTop: layout.spacing_x0_5,
     },
   ]),
   leftBox: {
     flexDirection: "row",
     alignItems: "center",
-    gap: layout.padding_x1_5,
+    gap: layout.spacing_x1_5,
   },
   textBox: {
     flexDirection: "column",
@@ -208,10 +208,10 @@ const styles = StyleSheet.create({
   rightBox: {
     flexDirection: "row",
     alignItems: "center",
-    gap: layout.padding_x2_5,
+    gap: layout.spacing_x2_5,
   },
   albumBox: {
-    marginTop: layout.padding_x2_5,
+    marginTop: layout.spacing_x2_5,
     flexDirection: "row",
     alignItems: "flex-end",
     justifyContent: "space-between",
@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
   infoBox: {
     flexDirection: "row",
     alignItems: "flex-end",
-    gap: layout.padding_x4,
+    gap: layout.spacing_x4,
   },
   albumImg: {
     width: 216,
@@ -230,14 +230,14 @@ const styles = StyleSheet.create({
     fontSemibold20,
     {
       color: primaryColor,
-      marginTop: layout.padding_x0_5,
+      marginTop: layout.spacing_x0_5,
     },
   ]),
   infoText: StyleSheet.flatten([
     fontSemibold13,
     {
-      marginTop: layout.padding_x1,
-      marginBottom: layout.padding_x0_5,
+      marginTop: layout.spacing_x1,
+      marginBottom: layout.spacing_x0_5,
     },
   ]),
   tagText: StyleSheet.flatten([
@@ -254,25 +254,25 @@ const styles = StyleSheet.create({
   oneLine: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: layout.padding_x2_5,
-    gap: layout.padding_x2,
+    marginTop: layout.spacing_x2_5,
+    gap: layout.spacing_x2,
   },
   playButton: {
-    padding: layout.padding_x1,
-    paddingRight: layout.padding_x1_5,
+    padding: layout.spacing_x1,
+    paddingRight: layout.spacing_x1_5,
     flexDirection: "row",
     alignItems: "center",
-    gap: layout.padding_x1,
-    borderRadius: layout.padding_x1,
+    gap: layout.spacing_x1,
+    borderRadius: layout.spacing_x1,
     backgroundColor: primaryColor,
   },
   tipButton: {
-    padding: layout.padding_x1,
-    paddingRight: layout.padding_x1_5,
+    padding: layout.spacing_x1,
+    paddingRight: layout.spacing_x1_5,
     flexDirection: "row",
     alignItems: "center",
-    gap: layout.padding_x1,
-    borderRadius: layout.padding_x1,
+    gap: layout.spacing_x1,
+    borderRadius: layout.spacing_x1,
     backgroundColor: "#2B2B33",
   },
   playButtonText: StyleSheet.flatten([
@@ -289,15 +289,15 @@ const styles = StyleSheet.create({
   ]),
   actionBox: {
     flexDirection: "row",
-    gap: layout.padding_x2,
+    gap: layout.spacing_x2,
   },
   addButton: {
-    padding: layout.padding_x1,
-    paddingRight: layout.padding_x1_5,
+    padding: layout.spacing_x1,
+    paddingRight: layout.spacing_x1_5,
     flexDirection: "row",
     alignItems: "center",
-    gap: layout.padding_x1,
-    borderRadius: layout.padding_x1,
+    gap: layout.spacing_x1,
+    borderRadius: layout.spacing_x1,
     backgroundColor: "#2B2B33",
   },
   addButtonText: StyleSheet.flatten([
@@ -316,7 +316,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#2B2B33",
   },
   pagePanel: {
-    paddingTop: layout.padding_x1_5,
+    paddingTop: layout.spacing_x1_5,
     width: "100%",
     display: "flex",
     flexDirection: "row",
@@ -325,19 +325,19 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   pageRightPanel: {
-    paddingLeft: layout.padding_x1_5,
-    paddingRight: layout.padding_x1_5,
+    paddingLeft: layout.spacing_x1_5,
+    paddingRight: layout.spacing_x1_5,
   },
   rightTitle: {
     fontFamily: "Exo_500Medium",
 
-    paddingBottom: layout.padding_x1_5,
+    paddingBottom: layout.spacing_x1_5,
   },
   leftVideoName: {
     fontFamily: "Exo_500Medium",
     fontSize: "1.5em",
 
-    paddingBottom: layout.padding_x1_5,
+    paddingBottom: layout.spacing_x1_5,
   },
   contentName: StyleSheet.flatten([fontSemibold14]),
   contentDescription: StyleSheet.flatten([
@@ -368,7 +368,7 @@ const styles = StyleSheet.create({
     },
   ]),
   moreVideoGrid: {
-    margin: layout.padding_x3,
+    margin: layout.spacing_x3,
   },
 });
 
@@ -548,7 +548,7 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
                 ref={videoRef}
                 style={{
                   borderRadius: 10,
-                  paddingBottom: layout.padding_x1_5,
+                  paddingBottom: layout.spacing_x1_5,
                 }}
               />
             )}
@@ -582,7 +582,7 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
                     height: 2,
                     width: 2,
                     borderRadius: 999,
-                    marginHorizontal: layout.padding_x0_75,
+                    marginHorizontal: layout.spacing_x0_75,
                   }}
                 />
                 {/*---- Date */}
@@ -619,7 +619,7 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
             <View style={styles.flexRowItemCenter}>
               <UserAvatarWithFrame
                 style={{
-                  marginRight: layout.padding_x2,
+                  marginRight: layout.spacing_x2,
                 }}
                 userId={userId}
                 size="S"
@@ -659,7 +659,7 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
                 >
                   <UserAvatarWithFrame
                     style={{
-                      marginRight: layout.padding_x2,
+                      marginRight: layout.spacing_x2,
                     }}
                     userId={comment.createdBy}
                     size="S"

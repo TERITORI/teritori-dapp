@@ -97,7 +97,7 @@ export const VideoPlayerMyLibraryContent: React.FC<{
 
   const styles = StyleSheet.create({
     container: {
-      marginTop: layout.padding_x3,
+      marginTop: layout.spacing_x3,
       width: "100%",
     },
     oneLine: {
@@ -109,42 +109,42 @@ export const VideoPlayerMyLibraryContent: React.FC<{
       flexDirection: "row",
       flexWrap: "wrap",
       justifyContent: "center",
-      marginTop: layout.padding_x3,
-      gap: layout.padding_x2_5,
+      marginTop: layout.spacing_x3,
+      gap: layout.spacing_x2_5,
       marginBottom: 40,
     },
     trackItem: {
       width: unitWidth,
       flexDirection: "row",
       alignItems: "center",
-      gap: layout.padding_x1_5,
+      gap: layout.spacing_x1_5,
     },
     itemImg: {
       width: 40,
       height: 40,
-      borderRadius: layout.padding_x0_5,
+      borderRadius: layout.spacing_x0_5,
     },
     itemText: StyleSheet.flatten([
       fontMedium14,
       {
         color: neutral77,
-        marginTop: layout.padding_x0_5,
+        marginTop: layout.spacing_x0_5,
       },
     ]),
     buttonGroup: {
       flexDirection: "row",
       alignItems: "center",
-      gap: layout.padding_x2,
+      gap: layout.spacing_x2,
     },
     buttonContainer: {
       flexDirection: "row",
       alignItems: "center",
-      paddingLeft: layout.padding_x1,
-      paddingRight: layout.padding_x1_5,
-      paddingVertical: layout.padding_x1,
+      paddingLeft: layout.spacing_x1,
+      paddingRight: layout.spacing_x1_5,
+      paddingVertical: layout.spacing_x1,
       backgroundColor: "#2B2B33",
-      borderRadius: layout.padding_x4,
-      gap: layout.padding_x1_5,
+      borderRadius: layout.spacing_x4,
+      gap: layout.spacing_x1_5,
     },
     buttonText: StyleSheet.flatten([
       fontSemibold14,
@@ -153,7 +153,7 @@ export const VideoPlayerMyLibraryContent: React.FC<{
       },
     ]),
     albumGrid: {
-      margin: layout.padding_x3,
+      margin: layout.spacing_x3,
     },
   });
 
@@ -168,8 +168,8 @@ export const VideoPlayerMyLibraryContent: React.FC<{
           >
             <SVG
               source={Logo}
-              width={layout.padding_x2}
-              height={layout.padding_x2}
+              width={layout.spacing_x2}
+              height={layout.spacing_x2}
             />
             <BrandText style={styles.buttonText}>Upload video</BrandText>
           </Pressable>
