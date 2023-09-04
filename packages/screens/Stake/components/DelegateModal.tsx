@@ -246,7 +246,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     width: "100%",
-    padding: layout.padding_x2_5,
+    padding: layout.spacing_x2_5,
   },
   alternateText: {
     ...StyleSheet.flatten(fontSemibold12),

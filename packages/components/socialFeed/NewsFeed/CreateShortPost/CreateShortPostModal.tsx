@@ -36,7 +36,7 @@ export const CreateShortPostModal: React.FC<{
           type="post"
           onSubmitSuccess={onSubmitSuccess}
           style={{
-            marginBottom: layout.padding_x2_5,
+            marginBottom: layout.spacing_x2_5,
             paddingVertical: 70,
             width: "100%",
           }}

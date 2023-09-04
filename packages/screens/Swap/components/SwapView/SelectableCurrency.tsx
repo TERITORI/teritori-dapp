@@ -77,7 +77,7 @@ export const SelectableCurrency: React.FC<{
             denom={currency.denom}
             networkId={networkId}
           />
-          <View style={{ marginLeft: layout.padding_x1_5 }}>
+          <View style={{ marginLeft: layout.spacing_x1_5 }}>
             <BrandText>{currencyNative?.displayName}</BrandText>
             <BrandText style={[fontSemibold13, { color: neutralA3 }]}>
               {currencyNetwork?.displayName}

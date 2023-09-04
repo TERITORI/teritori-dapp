@@ -40,7 +40,7 @@ export const OwnedNFTs: React.FC<{
   }
 
   return (
-    <View style={[style, { paddingBottom: layout.contentPadding }]}>
+    <View style={[style, { paddingBottom: layout.contentSpacing }]}>
       {!Object.keys(collections).length && (
         <ActivityIndicator size="large" style={{ marginBottom: 72 }} />
       )}

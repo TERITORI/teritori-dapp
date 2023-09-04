@@ -37,7 +37,7 @@ const ConnectedIntro: React.FC = () => {
     <View
       style={{
         alignItems: "center",
-        marginTop: layout.contentPadding,
+        marginTop: layout.contentSpacing,
         width: "100%",
       }}
     >
@@ -74,7 +74,7 @@ const DisconnectedIntro: React.FC = () => {
       style={{
         alignItems: "center",
         marginBottom: 72,
-        marginTop: layout.contentPadding,
+        marginTop: layout.contentSpacing,
       }}
     >
       <SVG width={200} height={200} source={logoSVG} />

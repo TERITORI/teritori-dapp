@@ -37,8 +37,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: errorColor,
     borderRadius: layout.borderRadius * 0.65,
-    paddingVertical: layout.padding_x1_5,
-    paddingHorizontal: layout.padding_x3,
+    paddingVertical: layout.spacing_x1_5,
+    paddingHorizontal: layout.spacing_x3,
   },
   alternateText: {
     ...StyleSheet.flatten(fontSemibold12),

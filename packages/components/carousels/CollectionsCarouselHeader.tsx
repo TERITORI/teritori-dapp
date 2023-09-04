@@ -62,7 +62,7 @@ const CarouselCollectionItem: React.FC<{
           justifyContent: "flex-start",
         }}
       >
-        <BrandText style={{ marginBottom: layout.padding_x1_5 }}>
+        <BrandText style={{ marginBottom: layout.spacing_x1_5 }}>
           {collection.collectionName}
         </BrandText>
 
@@ -71,8 +71,8 @@ const CarouselCollectionItem: React.FC<{
           style={[
             fontSemibold14,
             {
-              marginBottom: layout.padding_x3,
-              marginRight: layout.padding_x3,
+              marginBottom: layout.spacing_x3,
+              marginRight: layout.spacing_x3,
             },
           ]}
         >

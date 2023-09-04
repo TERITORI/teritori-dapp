@@ -10,7 +10,7 @@ export type SpacerProps = {
 export const SpacerColumn: React.FC<SpacerProps> = ({ size }) => (
   <View
     style={{
-      height: layout.padding_x1 * size,
+      height: layout.spacing_x1 * size,
     }}
   />
 );

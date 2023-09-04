@@ -31,6 +31,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   topIconContainer: {
-    paddingLeft: layout.padding_x0_5,
+    paddingLeft: layout.spacing_x0_5,
   },
 });

@@ -132,11 +132,11 @@ export const RiotGameMemoriesScreen = () => {
 // eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   contentContainer: {
-    padding: layout.padding_x4,
+    padding: layout.spacing_x4,
   },
   videoSmBox: {
-    marginRight: layout.padding_x2_5,
-    marginBottom: layout.padding_x2_5,
+    marginRight: layout.spacing_x2_5,
+    marginBottom: layout.spacing_x2_5,
   },
   videoSmImageFallback: {
     height: "100%",
@@ -144,6 +144,6 @@ const styles = StyleSheet.create({
     borderRadius: 7,
   },
   title: {
-    marginBottom: layout.padding_x2,
+    marginBottom: layout.spacing_x2,
   },
 });

@@ -21,11 +21,11 @@ export const RipperStatsSection: React.FC<RipperStatsSectionProps> = ({
     let _marginTop;
     switch (size) {
       case "LG":
-        _marginTop = layout.padding_x4;
+        _marginTop = layout.spacing_x4;
         break;
       case "MD":
       default:
-        _marginTop = layout.padding_x3;
+        _marginTop = layout.spacing_x3;
     }
     return _marginTop;
   }, [size]);

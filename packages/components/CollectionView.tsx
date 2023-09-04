@@ -103,7 +103,7 @@ export const CollectionView: React.FC<{
               flexDirection: "row",
               justifyContent: "space-between",
               flexWrap: "nowrap",
-              marginTop: layout.padding_x1,
+              marginTop: layout.spacing_x1,
             }}
           >
             {info &&
@@ -151,8 +151,8 @@ const styles = {
       height: COLLECTION_VIEW_XL_HEIGHT,
     },
     boxMainContainer: {
-      paddingTop: layout.padding_x1_5,
-      paddingBottom: layout.padding_x2_5,
+      paddingTop: layout.spacing_x1_5,
+      paddingBottom: layout.spacing_x2_5,
     },
     image: {
       width: COLLECTION_VIEW_XL_WIDTH - 24,
@@ -160,8 +160,8 @@ const styles = {
       borderRadius: 12,
     },
     textsContainer: {
-      marginHorizontal: layout.padding_x1_5,
-      marginTop: layout.padding_x2,
+      marginHorizontal: layout.spacing_x1_5,
+      marginTop: layout.spacing_x2,
     },
     collectionName: {
       ...fontSemibold14,
@@ -180,8 +180,8 @@ const styles = {
       height: COLLECTION_VIEW_SM_HEIGHT,
     },
     boxMainContainer: {
-      paddingTop: layout.padding_x1,
-      paddingBottom: layout.padding_x1,
+      paddingTop: layout.spacing_x1,
+      paddingBottom: layout.spacing_x1,
     },
     image: {
       width: 108,
@@ -189,8 +189,8 @@ const styles = {
       borderRadius: 4,
     },
     textsContainer: {
-      marginHorizontal: layout.padding_x1,
-      marginTop: layout.padding_x1,
+      marginHorizontal: layout.spacing_x1,
+      marginTop: layout.spacing_x1,
     },
     collectionName: {
       ...fontBold11,

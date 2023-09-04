@@ -38,7 +38,7 @@ export const CollectionStat = ({
             fontSemibold14,
             {
               lineHeight: 19,
-              marginRight: layout.padding_x0_5,
+              marginRight: layout.spacing_x0_5,
             },
           ]}
         >

@@ -29,7 +29,7 @@ export const CollectionThumb: React.FC<CollectionThumbProps> = ({
           paddingTop: 12,
           paddingBottom: 20,
         }}
-        style={{ marginTop: layout.padding_x4 }}
+        style={{ marginTop: layout.spacing_x4 }}
         width={196}
         height={266}
       >

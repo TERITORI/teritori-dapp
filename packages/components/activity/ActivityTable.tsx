@@ -110,14 +110,14 @@ const ActivityRow: React.FC<{ activity: Activity }> = ({ activity }) => {
         width: "100%",
         borderColor: mineShaftColor,
         borderBottomWidth: 1,
-        paddingVertical: layout.padding_x2,
-        paddingHorizontal: layout.padding_x2_5,
+        paddingVertical: layout.spacing_x2,
+        paddingHorizontal: layout.spacing_x2_5,
       }}
     >
       <View
         style={{
           flex: TABLE_ROWS.transactionId.flex,
-          paddingRight: layout.padding_x1,
+          paddingRight: layout.spacing_x1,
         }}
       >
         <ExternalLink
@@ -134,7 +134,7 @@ const ActivityRow: React.FC<{ activity: Activity }> = ({ activity }) => {
           fontMedium14,
           {
             flex: TABLE_ROWS.transactionType.flex,
-            paddingRight: layout.padding_x1,
+            paddingRight: layout.spacing_x1,
           },
           activityNameStyle(activity.transactionKind),
         ]}
@@ -144,7 +144,7 @@ const ActivityRow: React.FC<{ activity: Activity }> = ({ activity }) => {
       <BrandText
         style={[
           fontMedium14,
-          { flex: TABLE_ROWS.time.flex, paddingRight: layout.padding_x1 },
+          { flex: TABLE_ROWS.time.flex, paddingRight: layout.spacing_x1 },
         ]}
       >
         {moment(activity.time).fromNow()}
@@ -154,7 +154,7 @@ const ActivityRow: React.FC<{ activity: Activity }> = ({ activity }) => {
           fontMedium14,
           {
             flex: TABLE_ROWS.totalAmount.flex,
-            paddingRight: layout.padding_x1,
+            paddingRight: layout.spacing_x1,
           },
         ]}
       >
@@ -162,7 +162,7 @@ const ActivityRow: React.FC<{ activity: Activity }> = ({ activity }) => {
           prettyPrice(network?.id || "", activity.amount, activity.denom)}
       </BrandText>
       <View
-        style={{ flex: TABLE_ROWS.buyer.flex, paddingRight: layout.padding_x1 }}
+        style={{ flex: TABLE_ROWS.buyer.flex, paddingRight: layout.spacing_x1 }}
       >
         <Link
           to={`/user/${activity.buyerId}`}

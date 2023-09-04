@@ -41,7 +41,7 @@ export const AvailableRippersGrid: React.FC<AvailableRippersGridProps> = ({
             onPress={() => selectRipper && selectRipper(ripper)}
           >
             <TertiaryBox
-              style={{ margin: layout.padding_x1 }}
+              style={{ margin: layout.spacing_x1 }}
               width={THUMB_CONTAINER_WIDTH}
               height={THUMB_CONTAINER_HEIGHT}
               mainContainerStyle={[

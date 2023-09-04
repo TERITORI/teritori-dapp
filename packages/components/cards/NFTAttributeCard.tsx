@@ -49,7 +49,7 @@ export const NFTAttributeCard: React.FC<{
           style={[
             fontMedium14,
             {
-              marginTop: layout.padding_x0_5,
+              marginTop: layout.spacing_x0_5,
               color: resolveColor("color", nftAttribute.rareRatio),
             },
           ]}
@@ -60,7 +60,7 @@ export const NFTAttributeCard: React.FC<{
         <View
           style={{
             flexDirection: "row",
-            marginTop: layout.padding_x0_5,
+            marginTop: layout.spacing_x0_5,
           }}
         >
           <BrandText
@@ -68,7 +68,7 @@ export const NFTAttributeCard: React.FC<{
               fontSemibold12,
               {
                 color: resolveColor("color", nftAttribute.rareRatio),
-                marginRight: layout.padding_x0_5,
+                marginRight: layout.spacing_x0_5,
               },
             ]}
           >
@@ -90,7 +90,7 @@ export const NFTAttributeCard: React.FC<{
         <BrandText
           style={[
             {
-              marginTop: layout.padding_x0_5,
+              marginTop: layout.spacing_x0_5,
               color: resolveColor("color", nftAttribute.rareRatio),
             },
             fontBold11,

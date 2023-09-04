@@ -18,7 +18,7 @@ export const DotBadge: React.FC<{
           flexDirection: "row",
           alignItems: "center",
           height: 26,
-          paddingHorizontal: layout.padding_x1_5,
+          paddingHorizontal: layout.spacing_x1_5,
           backgroundColor: neutral00,
           borderRadius: 999,
         },
@@ -29,7 +29,7 @@ export const DotBadge: React.FC<{
         style={{
           backgroundColor: dotColor,
           borderRadius: 999,
-          marginRight: layout.padding_x1_5 / 2,
+          marginRight: layout.spacing_x1_5 / 2,
           width: 6,
           height: 6,
         }}

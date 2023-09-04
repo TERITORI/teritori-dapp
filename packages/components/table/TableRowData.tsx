@@ -33,7 +33,7 @@ export const TableRowData: React.FC<TableRowDataProps> = ({
           key={value}
           style={{
             flex,
-            paddingRight: data.length - 1 === index ? 0 : layout.padding_x1,
+            paddingRight: data.length - 1 === index ? 0 : layout.spacing_x1,
           }}
         >
           {(specialRender && specialRender({ value, flex, keyId, uid })) || (
@@ -57,8 +57,8 @@ const styles = StyleSheet.create({
     width: "100%",
     borderColor: mineShaftColor,
     borderTopWidth: 1,
-    paddingVertical: layout.padding_x2,
-    paddingHorizontal: layout.padding_x2_5,
+    paddingVertical: layout.spacing_x2,
+    paddingHorizontal: layout.spacing_x2_5,
   },
   labelText: {
     ...StyleSheet.flatten(fontSemibold13),

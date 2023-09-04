@@ -132,7 +132,7 @@ export const ModalBase: React.FC<ModalBaseProps> = ({
               justifyContent: "space-between",
               width: "100%",
               paddingHorizontal: modalMarginPadding,
-              paddingVertical: layout.padding_x2,
+              paddingVertical: layout.spacing_x2,
             }}
           >
             {(label || labelComponent || description) && (
