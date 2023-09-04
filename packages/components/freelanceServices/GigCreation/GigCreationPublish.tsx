@@ -22,7 +22,8 @@ export const GigCreationPublish: React.FC<{
   setGig: React.Dispatch<React.SetStateAction<GigInfo>>;
 }> = ({ gigInfo, setGig }) => {
   const pageContentWidth = 760;
-
+  // FIXME: remove StyleSheet.create
+  // eslint-disable-next-line no-restricted-syntax
   const styles = StyleSheet.create({
     pageContent: {
       flexDirection: "column",

@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { Pressable, StyleSheet, TextInput, View } from "react-native";
+import {
+  Pressable,
+  StyleSheet,
+  TextInput,
+  View,
+  ViewStyle,
+} from "react-native";
 
 import {
   categoryData,
@@ -14,7 +20,6 @@ import {
   neutral33,
   neutral55,
   neutral77,
-  neutralA3,
   primaryColor,
   secondaryColor,
 } from "../../../utils/style/colors";
@@ -80,17 +85,17 @@ export const GigCreationOverview: React.FC<{
 
   return (
     <View style={{ flexDirection: "column" }}>
-      <View style={styles.oneLineBig}>
-        <View style={styles.leftBox}>
+      <View style={oneLineBigStyle}>
+        <View style={leftBoxStyle}>
           <BrandText>Gig title</BrandText>
-          <BrandText style={styles.subTitle}>
+          <BrandText style={subTitleStyle}>
             As your Gig storefront, your title is the most important place to
             include keywords that buyers would likely use to search for a
             service like yours.
           </BrandText>
         </View>
         <TextInput
-          style={[styles.fullTextInput, { outlineStyle: "none" } as any]}
+          style={[fullTextInputStyle, { outlineStyle: "none" } as any]}
           multiline
           placeholder="I will do something I’m really good at"
           placeholderTextColor={neutral55}
@@ -100,15 +105,15 @@ export const GigCreationOverview: React.FC<{
           }}
         />
       </View>
-      <View style={styles.oneLineBig}>
-        <View style={styles.leftBox}>
+      <View style={oneLineBigStyle}>
+        <View style={leftBoxStyle}>
           <BrandText>Category</BrandText>
-          <BrandText style={styles.subTitle}>
+          <BrandText style={subTitleStyle}>
             Choose the category and sub-category most suitable for your Gig.
           </BrandText>
         </View>
-        <View style={styles.rightBox}>
-          <View style={styles.selectBox}>
+        <View style={rightBoxStyle}>
+          <View style={selectBoxStyle}>
             <GeneralSelect
               width={(rightBoxWidth - gapWidth) / 2}
               data={categoryData}
@@ -128,8 +133,8 @@ export const GigCreationOverview: React.FC<{
               initValue="select a subcategory"
             />
           </View>
-          <View style={styles.detailInfo}>
-            <View style={styles.oneLineSmall}>
+          <View style={detailInfoStyle}>
+            <View style={oneLineSmallStyle}>
               <View style={{ flexDirection: "row" }}>
                 <BrandText style={[fontSemibold14]} />
                 <BrandText style={[fontSemibold14, { color: neutral77 }]}>
@@ -141,16 +146,16 @@ export const GigCreationOverview: React.FC<{
                   <View
                     style={[
                       tab === "left"
-                        ? styles.selectedTabBox
-                        : styles.unselectedTabBox,
-                      styles.leftTab,
+                        ? selectedTabBoxStyle
+                        : unselectedTabBoxStyle,
+                      leftTabStyle,
                     ]}
                   >
                     <BrandText
                       style={
                         tab === "left"
-                          ? styles.selectedTabTitle
-                          : styles.unselectedTabTitle
+                          ? selectedTabTitleStyle
+                          : unselectedTabTitleStyle
                       }
                     >
                       Website type
@@ -161,16 +166,16 @@ export const GigCreationOverview: React.FC<{
                   <View
                     style={[
                       tab === "right"
-                        ? styles.selectedTabBox
-                        : styles.unselectedTabBox,
-                      styles.rightTab,
+                        ? selectedTabBoxStyle
+                        : unselectedTabBoxStyle,
+                      rightTabStyle,
                     ]}
                   >
                     <BrandText
                       style={
                         tab === "right"
-                          ? styles.selectedTabTitle
-                          : styles.unselectedTabTitle
+                          ? selectedTabTitleStyle
+                          : unselectedTabTitleStyle
                       }
                     >
                       Platform & Tool
@@ -179,42 +184,42 @@ export const GigCreationOverview: React.FC<{
                 </Pressable>
               </View>
             </View>
-            <View style={styles.checkBoxGroup}>
+            <View style={checkBoxGroupStyle}>
               {tab === "left" &&
                 detailDataWebsiteType.map((item: string, index: number) => (
-                  <View style={styles.singleCheckBox} key={index}>
+                  <View style={singleCheckBoxStyle} key={index}>
                     <CheckBox
                       value={gigInfo.websiteType.includes(item)}
                       onValueChange={() => updateWebsiteTypeCheckData(item)}
                     />
-                    <BrandText style={styles.checkedText}>{item}</BrandText>
+                    <BrandText style={checkedTextStyle}>{item}</BrandText>
                   </View>
                 ))}
               {tab === "right" &&
                 detailDataPlatformTool.map((item: string, index: number) => (
-                  <View style={styles.singleCheckBox} key={index}>
+                  <View style={singleCheckBoxStyle} key={index}>
                     <CheckBox
                       value={gigInfo.platformToolType.includes(item)}
                       onValueChange={() => updatePlatformToolCheckData(item)}
                     />
-                    <BrandText style={styles.checkedText}>{item}</BrandText>
+                    <BrandText style={checkedTextStyle}>{item}</BrandText>
                   </View>
                 ))}
             </View>
           </View>
         </View>
       </View>
-      <View style={styles.oneLineBig}>
-        <View style={styles.leftBox}>
+      <View style={oneLineBigStyle}>
+        <View style={leftBoxStyle}>
           <BrandText>Positive keywords</BrandText>
-          <BrandText style={styles.subTitle}>
+          <BrandText style={subTitleStyle}>
             Enter search terms your feel your buyers will use when looking for
             your service. 5 tags maximum.
           </BrandText>
         </View>
-        <View style={styles.tagGroup}>
+        <View style={tagGroupStyle}>
           {gigInfo.positiveKeywords.map((item: string, index: number) => (
-            <View style={styles.tagCard} key={index}>
+            <View style={tagCardStyle} key={index}>
               <BrandText style={[fontSemibold14]}>{item}</BrandText>
               <Pressable onPress={() => removeTag(index)}>
                 <SVG
@@ -227,7 +232,7 @@ export const GigCreationOverview: React.FC<{
           ))}
 
           <TextInput
-            style={[styles.textInput, { outlineStyle: "none" } as any]}
+            style={[textInputStyle, { outlineStyle: "none" } as any]}
             placeholder="Type tag here"
             placeholderTextColor={neutral77}
             value={addTag}
@@ -246,151 +251,137 @@ export const GigCreationOverview: React.FC<{
   );
 };
 
-const styles = StyleSheet.create({
-  oneLineBig: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: pageContentWidth,
-    marginBottom: layout.spacing_x4,
+const oneLineBigStyle: ViewStyle = {
+  flexDirection: "row",
+  justifyContent: "space-between",
+  width: pageContentWidth,
+  marginBottom: layout.spacing_x4,
+};
+const oneLineSmallStyle: ViewStyle = {
+  flexDirection: "row",
+  justifyContent: "space-between",
+  width: "100%",
+  marginVertical: layout.spacing_x1_5,
+};
+const leftBoxStyle: ViewStyle = {
+  width: leftBoxWidth,
+};
+const subTitleStyle: ViewStyle = StyleSheet.flatten([
+  fontSemibold14,
+  {
+    color: neutral77,
+    marginTop: layout.spacing_x1_5,
   },
-  oneLineSmall: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "100%",
-    marginVertical: layout.spacing_x1_5,
-  },
-  leftBox: {
-    width: leftBoxWidth,
-  },
-  subTitle: StyleSheet.flatten([
-    fontSemibold14,
-    {
-      color: neutral77,
-      marginTop: layout.spacing_x1_5,
-    },
-  ]),
-  rightBox: {
+]);
+const rightBoxStyle: ViewStyle = {
+  width: rightBoxWidth,
+  flexDirection: "column",
+  gap: layout.spacing_x2_5,
+};
+const selectBoxStyle: ViewStyle = {
+  width: "100%",
+  flexDirection: "row",
+  gap: layout.spacing_x2_5,
+  zIndex: 1,
+};
+const fullTextInputStyle: ViewStyle = StyleSheet.flatten([
+  fontSemibold14,
+  {
+    height: 66,
+    color: secondaryColor,
     width: rightBoxWidth,
-    flexDirection: "column",
-    gap: layout.spacing_x2_5,
-  },
-  selectBox: {
-    width: "100%",
-    flexDirection: "row",
-    gap: layout.spacing_x2_5,
-    zIndex: 1,
-  },
-  fullTextInput: StyleSheet.flatten([
-    fontSemibold14,
-    {
-      height: 66,
-      color: secondaryColor,
-      width: rightBoxWidth,
-      backgroundColor: neutral00,
-      borderWidth: 1,
-      borderColor: neutral33,
-      padding: layout.spacing_x2,
-      borderRadius: layout.spacing_x1_5,
-    },
-  ]),
-  detailInfo: {
-    width: "100%",
-    flexDirection: "column",
-  },
-  selectedTabTitle: StyleSheet.flatten([
-    fontSemibold14,
-    {
-      color: neutral00,
-    },
-  ]),
-  selectedTabBox: {
-    backgroundColor: primaryColor,
-    borderWidth: 1,
-    borderColor: primaryColor,
-    paddingVertical: layout.spacing_x0_5,
-  },
-  unselectedTabBox: {
     backgroundColor: neutral00,
     borderWidth: 1,
     borderColor: neutral33,
-    paddingVertical: layout.spacing_x0_5,
-  },
-  leftTab: {
-    paddingLeft: layout.spacing_x2,
-    paddingRight: layout.spacing_x1_5,
-    borderTopLeftRadius: layout.spacing_x1_5,
-    borderBottomLeftRadius: layout.spacing_x1_5,
-  },
-  rightTab: {
-    paddingRight: layout.spacing_x2,
-    paddingLeft: layout.spacing_x1_5,
-    borderTopEndRadius: layout.spacing_x1_5,
-    borderBottomEndRadius: layout.spacing_x1_5,
-  },
-  unselectedTabTitle: StyleSheet.flatten([
-    fontSemibold14,
-    {
-      color: secondaryColor,
-    },
-  ]),
-  checkBoxGroup: {
-    flexDirection: "row",
-    alignItems: "center",
-    flexWrap: "wrap",
-    borderWidth: 1,
-    borderTopColor: neutral22,
-    borderBottomColor: neutral22,
-    paddingTop: layout.spacing_x1_5,
-  },
-  singleCheckBox: {
-    marginBottom: layout.spacing_x1_5,
-    flexDirection: "row",
-    alignItems: "center",
-    width: `${100 / 3}%`,
-    gap: layout.spacing_x1,
-  },
-  checkedText: StyleSheet.flatten([
-    fontMedium13,
-    {
-      color: secondaryColor,
-    },
-  ]),
-  uncheckedText: StyleSheet.flatten([
-    fontMedium13,
-    {
-      color: neutralA3,
-    },
-  ]),
-  tagGroup: {
-    flexDirection: "row",
-    width: rightBoxWidth,
-    alignItems: "flex-start",
-    gap: layout.spacing_x1_5,
-  },
-  tagCard: {
     padding: layout.spacing_x2,
-    backgroundColor: neutral33,
     borderRadius: layout.spacing_x1_5,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: layout.spacing_x1,
   },
-  addTag: {
-    padding: layout.spacing_x2,
+]);
+const detailInfoStyle: ViewStyle = {
+  width: "100%",
+  flexDirection: "column",
+};
+const selectedTabTitleStyle: ViewStyle = StyleSheet.flatten([
+  fontSemibold14,
+  {
+    color: neutral00,
+  },
+]);
+const selectedTabBoxStyle: ViewStyle = {
+  backgroundColor: primaryColor,
+  borderWidth: 1,
+  borderColor: primaryColor,
+  paddingVertical: layout.spacing_x0_5,
+};
+const unselectedTabBoxStyle: ViewStyle = {
+  backgroundColor: neutral00,
+  borderWidth: 1,
+  borderColor: neutral33,
+  paddingVertical: layout.spacing_x0_5,
+};
+const leftTabStyle: ViewStyle = {
+  paddingLeft: layout.spacing_x2,
+  paddingRight: layout.spacing_x1_5,
+  borderTopLeftRadius: layout.spacing_x1_5,
+  borderBottomLeftRadius: layout.spacing_x1_5,
+};
+const rightTabStyle: ViewStyle = {
+  paddingRight: layout.spacing_x2,
+  paddingLeft: layout.spacing_x1_5,
+  borderTopEndRadius: layout.spacing_x1_5,
+  borderBottomEndRadius: layout.spacing_x1_5,
+};
+const unselectedTabTitleStyle: ViewStyle = StyleSheet.flatten([
+  fontSemibold14,
+  {
+    color: secondaryColor,
+  },
+]);
+const checkBoxGroupStyle: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  flexWrap: "wrap",
+  borderWidth: 1,
+  borderTopColor: neutral22,
+  borderBottomColor: neutral22,
+  paddingTop: layout.spacing_x1_5,
+};
+const singleCheckBoxStyle: ViewStyle = {
+  marginBottom: layout.spacing_x1_5,
+  flexDirection: "row",
+  alignItems: "center",
+  width: `${100 / 3}%`,
+  gap: layout.spacing_x1,
+};
+const checkedTextStyle: ViewStyle = StyleSheet.flatten([
+  fontMedium13,
+  {
+    color: secondaryColor,
+  },
+]);
+const tagGroupStyle: ViewStyle = {
+  flexDirection: "row",
+  width: rightBoxWidth,
+  alignItems: "flex-start",
+  gap: layout.spacing_x1_5,
+};
+const tagCardStyle: ViewStyle = {
+  padding: layout.spacing_x2,
+  backgroundColor: neutral33,
+  borderRadius: layout.spacing_x1_5,
+  flexDirection: "row",
+  alignItems: "center",
+  gap: layout.spacing_x1,
+};
+const textInputStyle: ViewStyle = StyleSheet.flatten([
+  fontSemibold14,
+  {
+    color: secondaryColor,
+    backgroundColor: neutral00,
     borderColor: neutral33,
+    padding: layout.spacing_x2,
+    width: 123,
     borderWidth: 1,
     borderRadius: layout.spacing_x1_5,
   },
-  textInput: StyleSheet.flatten([
-    fontSemibold14,
-    {
-      color: secondaryColor,
-      backgroundColor: neutral00,
-      borderColor: neutral33,
-      padding: layout.spacing_x2,
-      width: 123,
-      borderWidth: 1,
-      borderRadius: layout.spacing_x1_5,
-    },
-  ]),
-});
+]);
