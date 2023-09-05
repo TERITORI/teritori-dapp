@@ -126,7 +126,7 @@ export const UserPublicProfileScreenHeader = ({
         style={{
           width,
           marginTop: 32,
-          marginBottom: layout.padding_x4,
+          marginBottom: layout.spacing_x4,
           height: 45,
         }}
         borderColorTabSelected={primaryColor}

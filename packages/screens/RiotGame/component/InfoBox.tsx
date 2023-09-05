@@ -54,7 +54,7 @@ export const InfoBox: React.FC<InfoBoxProps> = ({
       style={styles.container}
       noBrokenCorners
       mainContainerStyle={{
-        padding: layout.padding_x1_5,
+        padding: layout.spacing_x1_5,
         alignItems: "flex-start",
       }}
     >
@@ -69,14 +69,14 @@ export const InfoBox: React.FC<InfoBoxProps> = ({
 const styles = StyleSheet.create({
   container: {
     borderRadius: 5,
-    marginHorizontal: layout.padding_x1,
+    marginHorizontal: layout.spacing_x1,
   },
   title: {
     color: neutralA3,
     ...(fontMedium14 as object),
   },
   content: {
-    marginTop: layout.padding_x0_5,
+    marginTop: layout.spacing_x0_5,
     ...(fontSemibold20 as object),
   },
 });

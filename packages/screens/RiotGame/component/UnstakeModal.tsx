@@ -66,7 +66,7 @@ export const UnstakeModal: React.FC<UnstakeModalProps> = ({
         <FlexRow>
           <BrandText style={fontSemibold20}>Success Fight !</BrandText>
           <Image
-            style={{ width: 24, height: 24, marginLeft: layout.padding_x0_5 }}
+            style={{ width: 24, height: 24, marginLeft: layout.spacing_x0_5 }}
             source={firePNG}
           />
         </FlexRow>
@@ -133,6 +133,6 @@ const styles = StyleSheet.create({
     borderTopColor: mineShaftColor,
     width: "100%",
     alignItems: "center",
-    padding: layout.padding_x2_5,
+    padding: layout.spacing_x2_5,
   },
 });

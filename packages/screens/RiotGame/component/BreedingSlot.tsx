@@ -35,7 +35,7 @@ export const BreedingSlot: React.FC<BreedingSlotProps> = ({
   active,
 }) => {
   const isStaked = isNFTStaked(ripper);
-  const imageSize = 200 - layout.padding_x2 * 2;
+  const imageSize = 200 - layout.spacing_x2 * 2;
 
   return (
     <TouchableOpacity activeOpacity={0.6} onPress={onPress}>
@@ -43,7 +43,7 @@ export const BreedingSlot: React.FC<BreedingSlotProps> = ({
         width={200}
         height={200}
         mainContainerStyle={{
-          padding: layout.padding_x2,
+          padding: layout.spacing_x2,
           borderRadius: 8,
           borderColor: neutral33,
           borderWidth: active ? 1.2 : 1,
@@ -60,7 +60,7 @@ export const BreedingSlot: React.FC<BreedingSlotProps> = ({
               />
               <BrandText
                 style={[
-                  { color: neutralA3, marginLeft: layout.padding_x1 },
+                  { color: neutralA3, marginLeft: layout.spacing_x1 },
                   fontMedium14,
                 ]}
               >
@@ -98,11 +98,11 @@ export const BreedingSlot: React.FC<BreedingSlotProps> = ({
 const styles = StyleSheet.create({
   stakedTitle: {
     position: "absolute",
-    top: 2 * layout.padding_x4,
+    top: 2 * layout.spacing_x4,
     color: redDefault,
     backgroundColor: withAlpha(redDefault, 0.3),
-    paddingVertical: layout.padding_x0_5,
-    paddingHorizontal: layout.padding_x1_5,
+    paddingVertical: layout.spacing_x0_5,
+    paddingHorizontal: layout.spacing_x1_5,
     borderRadius: 100,
     ...(fontSemibold12 as object),
   },

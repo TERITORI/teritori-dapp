@@ -107,7 +107,7 @@ export const Label: React.FC<{
         style={[
           styles.labelText,
           fontSemibold14,
-          { color: additionalRed, marginLeft: layout.padding_x0_5 },
+          { color: additionalRed, marginLeft: layout.spacing_x0_5 },
         ]}
       >
         *
@@ -319,7 +319,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: neutral33,
     borderRadius: 12,
-    paddingVertical: layout.padding_x1_5,
+    paddingVertical: layout.spacing_x1_5,
   },
   labelText: {
     color: neutralA3,

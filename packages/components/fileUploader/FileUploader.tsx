@@ -77,7 +77,7 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
               mainContainerStyle={{
                 height: files?.length ? fileHeight : 80,
                 alignItems: "center",
-                padding: layout.padding_x2_5,
+                padding: layout.spacing_x2_5,
                 borderRadius: 12,
               }}
             >

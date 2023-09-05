@@ -150,7 +150,7 @@ export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
     >
       <View
         style={{
-          marginTop: layout.padding_x4,
+          marginTop: layout.spacing_x4,
         }}
       >
         <View
@@ -175,8 +175,8 @@ export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
             flex: 12,
             flexWrap: "nowrap",
             justifyContent: "space-between",
-            marginTop: layout.padding_x4,
-            marginBottom: layout.padding_x4,
+            marginTop: layout.spacing_x4,
+            marginBottom: layout.spacing_x4,
           }}
         >
           <SearchInput
@@ -260,7 +260,7 @@ const PrettyPriceWithCurrency: React.FC<{
     <View
       style={[
         {
-          paddingRight: layout.padding_x1,
+          paddingRight: layout.spacing_x1,
           flexDirection: "row",
           alignItems: "center",
         },
@@ -271,7 +271,7 @@ const PrettyPriceWithCurrency: React.FC<{
         style={[
           isMobile ? fontSemibold11 : fontSemibold13,
           {
-            marginRight: layout.padding_x0_5,
+            marginRight: layout.spacing_x0_5,
           },
         ]}
         numberOfLines={1}
@@ -299,8 +299,8 @@ const CollectionRow: React.FC<{ collection: Collection; rank: number }> = ({
         width: "100%",
         borderColor: mineShaftColor,
         borderBottomWidth: 1,
-        paddingVertical: layout.padding_x2,
-        paddingHorizontal: layout.padding_x2_5,
+        paddingVertical: layout.spacing_x2,
+        paddingHorizontal: layout.spacing_x2_5,
       }}
       to={{
         screen: collection.floorPrice !== 0 ? "Collection" : "MintCollection",
@@ -317,7 +317,7 @@ const CollectionRow: React.FC<{ collection: Collection; rank: number }> = ({
           flexDirection: "row",
           flexWrap: "nowrap",
           alignItems: "center",
-          paddingRight: layout.padding_x1,
+          paddingRight: layout.spacing_x1,
         }}
       >
         <RoundedGradientImage
@@ -378,7 +378,7 @@ const InnerCell: React.FC<{
     <View
       style={[
         {
-          paddingRight: layout.padding_x1,
+          paddingRight: layout.spacing_x1,
         },
         style,
       ]}

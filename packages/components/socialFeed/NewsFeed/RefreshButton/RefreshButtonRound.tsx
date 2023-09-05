@@ -78,7 +78,7 @@ export const RefreshButtonRound: React.FC<RefreshButtonProps> = ({
       borderWidth: 1,
       borderColor: neutral33,
       borderRadius: 999,
-      padding: layout.padding_x1_5,
+      padding: layout.spacing_x1_5,
 
       justifyContent: "center",
       width:
@@ -91,7 +91,7 @@ export const RefreshButtonRound: React.FC<RefreshButtonProps> = ({
           : ROUND_BUTTON_WIDTH_L,
     },
     textContainer: {
-      marginLeft: layout.padding_x1_5,
+      marginLeft: layout.spacing_x1_5,
     },
   });
 

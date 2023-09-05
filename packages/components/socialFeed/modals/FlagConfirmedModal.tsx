@@ -41,7 +41,7 @@ export const FlagConfirmedModal: React.FC<FlagConfirmedModalProps> = ({
           style={{
             width: 200,
             height: 200,
-            marginVertical: layout.padding_x2,
+            marginVertical: layout.spacing_x2,
           }}
         />
 

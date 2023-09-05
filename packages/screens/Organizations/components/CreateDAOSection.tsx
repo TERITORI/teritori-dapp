@@ -167,18 +167,18 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
 // eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   container: {
-    padding: layout.contentPadding,
-    paddingRight: layout.padding_x2_5,
-    paddingTop: layout.topContentPaddingWithHeading,
+    padding: layout.contentSpacing,
+    paddingRight: layout.spacing_x2_5,
+    paddingTop: layout.topContentSpacingWithHeading,
   },
   sectionTitle: StyleSheet.flatten([fontSemibold20, { color: neutral77 }]),
   section: {
     borderRadius: 12,
     borderColor: neutral33,
     borderWidth: 1,
-    padding: layout.padding_x2_5,
+    padding: layout.spacing_x2_5,
     flexDirection: "row",
-    marginBottom: layout.padding_x4,
+    marginBottom: layout.spacing_x4,
   },
   row: { flexDirection: "row" },
   fill: { flex: 1 },
@@ -186,8 +186,8 @@ const styles = StyleSheet.create({
   footer: {
     justifyContent: "flex-end",
     alignItems: "flex-end",
-    paddingVertical: layout.padding_x1_5,
-    paddingHorizontal: layout.padding_x2_5,
+    paddingVertical: layout.spacing_x1_5,
+    paddingHorizontal: layout.spacing_x2_5,
     borderTopWidth: 1,
     borderColor: neutral33,
   },

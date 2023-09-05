@@ -156,7 +156,7 @@ export const TNSSendFundsModal: React.FC<{
           control={control}
           defaultValue="Sent from Teritori"
           placeHolder="Type your comment here"
-          containerStyle={{ marginBottom: layout.padding_x1_5, width: "100%" }}
+          containerStyle={{ marginBottom: layout.spacing_x1_5, width: "100%" }}
         />
 
         <TextInputCustom<TNSSendFundsFormType>

@@ -18,8 +18,8 @@ export const MoreReactionsButton: React.FC<{
         {
           height: 28,
           width: 43,
-          paddingRight: layout.padding_x1,
-          paddingLeft: layout.padding_x0_75,
+          paddingRight: layout.spacing_x1,
+          paddingLeft: layout.spacing_x0_75,
           backgroundColor: neutral11,
           borderColor: neutral22,
           borderWidth: 1,

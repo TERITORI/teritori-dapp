@@ -361,10 +361,10 @@ export const NFTMainInfo: React.FC<{
 
 const sectionContainerStyles: ViewStyle = {
   width: 600,
-  paddingVertical: layout.padding_x3,
+  paddingVertical: layout.spacing_x3,
 };
 const collapsableContainerStyles: ViewStyle = {
   width: "100%",
   maxWidth: screenContentMaxWidth,
-  marginBottom: layout.padding_x2,
+  marginBottom: layout.spacing_x2,
 };

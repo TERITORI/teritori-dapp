@@ -45,8 +45,8 @@ export const CartIconButtonBadge: React.FC<{
           mainContainerStyle={{
             flexDirection: "row",
             paddingHorizontal: isMobile
-              ? layout.padding_x1
-              : layout.padding_x1_5,
+              ? layout.spacing_x1
+              : layout.spacing_x1_5,
             backgroundColor: isMobile ? neutral00 : neutral17,
           }}
           height={isMobile ? 32 : 40}

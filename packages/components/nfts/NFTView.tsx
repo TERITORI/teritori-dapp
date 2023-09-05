@@ -58,7 +58,7 @@ export const NFTView: React.FC<{
   const isMobile = useIsMobile();
   const cardWidth = isMobile ? 220 : 250;
   const { width: maxWidth } = useMaxResolution({ isLarge: true });
-  const insideMargin = layout.padding_x2;
+  const insideMargin = layout.spacing_x2;
   const flatStyle = StyleSheet.flatten(style);
   const selectedWallet = useSelectedWallet();
   const userInfo = useNSUserInfo(nft.ownerId);
@@ -315,7 +315,7 @@ export const NFTView: React.FC<{
                       numberOfLines={1}
                       style={{
                         fontSize: 12,
-                        marginLeft: layout.padding_x1,
+                        marginLeft: layout.spacing_x1,
                       }}
                     >
                       {nft.collectionName}

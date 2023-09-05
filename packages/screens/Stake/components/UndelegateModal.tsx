@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     width: "100%",
-    padding: layout.padding_x2_5,
+    padding: layout.spacing_x2_5,
   },
   alternateText: {
     ...StyleSheet.flatten(fontSemibold12),
@@ -261,6 +261,6 @@ const styles = StyleSheet.create({
     backgroundColor: primaryColor,
     color: neutral22,
     borderRadius: layout.borderRadius,
-    paddingHorizontal: layout.padding_x0_5,
+    paddingHorizontal: layout.spacing_x0_5,
   },
 });

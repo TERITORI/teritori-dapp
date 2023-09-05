@@ -98,7 +98,7 @@ export const ImagesViews: React.FC<ImagePreviewProps> = ({
             key={file.url}
             //@ts-expect-error
             style={{
-              padding: layout.padding_x1,
+              padding: layout.spacing_x1,
               ...getDimension(index, files.length),
             }}
           >

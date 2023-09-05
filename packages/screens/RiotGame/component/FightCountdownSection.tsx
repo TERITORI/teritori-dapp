@@ -84,10 +84,10 @@ export const FightCountdownSection: React.FC<FightCountdownSectionProps> = ({
       style={{
         width: 480,
         height: 300,
-        padding: layout.padding_x3,
+        padding: layout.spacing_x3,
         justifyContent: "space-between",
         alignItems: "center",
-        marginTop: layout.padding_x4,
+        marginTop: layout.spacing_x4,
       }}
     >
       <View
@@ -99,8 +99,8 @@ export const FightCountdownSection: React.FC<FightCountdownSectionProps> = ({
       >
         <SVG
           style={{
-            marginRight: layout.padding_x4,
-            marginLeft: layout.padding_x2,
+            marginRight: layout.spacing_x4,
+            marginLeft: layout.spacing_x2,
           }}
           color={countdownColor}
           source={clockSVG}
@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   actionLabel: {
-    marginLeft: layout.padding_x0_5,
+    marginLeft: layout.spacing_x0_5,
     ...(fontSemibold14 as object),
   },
 });

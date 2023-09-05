@@ -13,9 +13,9 @@ import { BrandText } from "../BrandText";
 import { CollectionView } from "../CollectionView";
 import { AvatarWithName } from "../user/AvatarWithName";
 
-const SEARCH_RESULTS_NAMES_MARGIN = layout.padding_x1;
-export const SEARCH_RESULTS_MARGIN = layout.padding_x2;
-export const SEARCH_RESULTS_COLLECTIONS_MARGIN = layout.padding_x0_5;
+const SEARCH_RESULTS_NAMES_MARGIN = layout.spacing_x1;
+export const SEARCH_RESULTS_MARGIN = layout.spacing_x2;
+export const SEARCH_RESULTS_COLLECTIONS_MARGIN = layout.spacing_x0_5;
 
 export const SearchBarResults: FC = () => {
   const selectedNetworkId = useSelectedNetworkId();

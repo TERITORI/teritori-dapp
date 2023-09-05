@@ -140,6 +140,6 @@ const styles = StyleSheet.create({
   },
   bottomSeperatorContainer: {
     width: 40,
-    marginLeft: layout.padding_x2,
+    marginLeft: layout.spacing_x2,
   },
 });

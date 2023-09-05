@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     minWidth: 80,
   },
   rightCol: {
-    marginLeft: layout.padding_x4,
+    marginLeft: layout.spacing_x4,
   },
   progressBarOuter: {
     borderRadius: 100,
@@ -90,6 +90,6 @@ const styles = StyleSheet.create({
   },
   subText: {
     color: neutralA3,
-    marginTop: layout.padding_x1,
+    marginTop: layout.spacing_x1,
   },
 });

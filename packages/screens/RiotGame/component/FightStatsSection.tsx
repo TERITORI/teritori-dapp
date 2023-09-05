@@ -52,7 +52,7 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
                   "utori" // FIXME: don't hardcode denom and use prettyPrice
                 )} TORI`
           }
-          touchableStyle={{ marginLeft: layout.padding_x1 }}
+          touchableStyle={{ marginLeft: layout.spacing_x1 }}
           onPress={claimRewards}
           noBrokenCorners
         />
@@ -66,7 +66,7 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    margin: layout.padding_x1_5,
+    margin: layout.spacing_x1_5,
     alignItems: "center",
   },
 });

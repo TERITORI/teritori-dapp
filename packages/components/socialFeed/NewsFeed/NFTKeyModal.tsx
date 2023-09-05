@@ -32,12 +32,12 @@ export const NFTKeyModal: React.FC<NFTKeyModalProps> = ({ onClose }) => {
         <BrandText style={fontSemibold12}>
           Please enter NFT.STORAGE API key
         </BrandText>
-        <BrandText style={[fontSemibold12, { marginTop: layout.padding_x1 }]}>
+        <BrandText style={[fontSemibold12, { marginTop: layout.spacing_x1 }]}>
           To upload files you have to provide API KEY, we will use your key to
           upload the files, the API KEY will be used one time only; and will not
           be saved in our system.
         </BrandText>
-        <BrandText style={[fontSemibold12, { marginTop: layout.padding_x1 }]}>
+        <BrandText style={[fontSemibold12, { marginTop: layout.spacing_x1 }]}>
           To create API key check this site{" "}
           <TouchableOpacity
             onPress={() => Linking.openURL("https://nft.storage/manage/")}
@@ -86,7 +86,7 @@ export const NFTKeyModal: React.FC<NFTKeyModalProps> = ({ onClose }) => {
             disabled={!apiKey.trim().length}
             size="M"
             style={{
-              marginLeft: layout.padding_x2,
+              marginLeft: layout.spacing_x2,
             }}
             onPress={() => onClose(apiKey.trim())}
           />

@@ -23,7 +23,7 @@ interface RefreshButtonProps {
 
 const SVG_SIZE = 16;
 const WIDTH = 140;
-const LOADING_WIDTH = SVG_SIZE + layout.padding_x1_5 * 2;
+const LOADING_WIDTH = SVG_SIZE + layout.spacing_x1_5 * 2;
 
 export const RefreshButton: React.FC<RefreshButtonProps> = ({
   isRefreshing,
@@ -103,10 +103,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: neutral33,
     borderRadius: 999,
-    paddingHorizontal: layout.padding_x1_5,
+    paddingHorizontal: layout.spacing_x1_5,
     height: 42,
   },
   textContainer: {
-    marginLeft: layout.padding_x1_5,
+    marginLeft: layout.spacing_x1_5,
   },
 });

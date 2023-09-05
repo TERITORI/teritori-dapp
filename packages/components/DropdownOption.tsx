@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     flex: 1,
-    padding: layout.padding_x1,
+    padding: layout.spacing_x1,
   },
   comingSoon: { opacity: 0.5 },
 });

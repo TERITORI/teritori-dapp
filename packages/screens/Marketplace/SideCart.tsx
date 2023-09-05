@@ -143,8 +143,8 @@ const CartItems: React.FC<{ id: EntityId }> = ({ id }) => {
         style={{
           backgroundColor: codGrayColor,
           borderRadius: 8,
-          padding: layout.padding_x1,
-          marginBottom: layout.padding_x1,
+          padding: layout.spacing_x1,
+          marginBottom: layout.spacing_x1,
         }}
       >
         <View
@@ -153,7 +153,7 @@ const CartItems: React.FC<{ id: EntityId }> = ({ id }) => {
             flexDirection: "row",
             flexWrap: "nowrap",
             alignItems: "center",
-            marginBottom: layout.padding_x0_5,
+            marginBottom: layout.spacing_x0_5,
           }}
         >
           <OptimizedImage
@@ -183,7 +183,7 @@ const CartItems: React.FC<{ id: EntityId }> = ({ id }) => {
             flexDirection: "row",
             flexWrap: "nowrap",
             alignItems: "center",
-            marginTop: layout.padding_x1,
+            marginTop: layout.spacing_x1,
           }}
         >
           <BrandText style={[fontSemibold12, { color: primaryColor }]}>
@@ -199,7 +199,7 @@ const CartItems: React.FC<{ id: EntityId }> = ({ id }) => {
               style={[
                 fontSemibold12,
                 {
-                  marginRight: layout.padding_x0_5,
+                  marginRight: layout.spacing_x0_5,
                 },
               ]}
             >
@@ -230,8 +230,8 @@ const ItemTotal: React.FC<{
         flexDirection: "row",
         flexWrap: "nowrap",
         justifyContent: "space-between",
-        marginBottom: layout.padding_x1,
-        marginTop: layout.padding_x1,
+        marginBottom: layout.spacing_x1,
+        marginTop: layout.spacing_x1,
       }}
     >
       <BrandText style={[fontSemibold12, { color: neutralA3 }]}>
@@ -245,7 +245,7 @@ const ItemTotal: React.FC<{
         }}
       >
         <BrandText
-          style={[fontSemibold12, { marginRight: layout.padding_x0_5 }]}
+          style={[fontSemibold12, { marginRight: layout.spacing_x0_5 }]}
         >
           {typeof textRight === "number" ? textRight.toFixed(2) : textRight}
         </BrandText>
@@ -393,7 +393,7 @@ const Footer: React.FC<{ items: any[] }> = ({ items }) => {
 
       <View
         style={{
-          marginTop: layout.padding_x1,
+          marginTop: layout.spacing_x1,
         }}
       >
         <PrimaryButton

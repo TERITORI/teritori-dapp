@@ -42,7 +42,7 @@ export const TertiaryBadge: React.FC<{
           source={iconSVG}
           width={16}
           height={16}
-          style={{ marginLeft: layout.padding_x1 }}
+          style={{ marginLeft: layout.spacing_x1 }}
         />
       )}
     </View>

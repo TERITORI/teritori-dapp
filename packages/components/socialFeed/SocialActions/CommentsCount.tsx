@@ -15,7 +15,7 @@ export const CommentsCount: React.FC<{
         source={chatSVG}
         height={20}
         width={20}
-        style={{ marginRight: layout.padding_x1_5 }}
+        style={{ marginRight: layout.spacing_x1_5 }}
       />
       <BrandText style={fontSemibold14}>{count}</BrandText>
     </View>

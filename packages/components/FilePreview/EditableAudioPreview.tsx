@@ -85,8 +85,8 @@ export const EditableAudioPreview: React.FC<AudioPreviewProps> = ({
 
       <View
         style={{
-          paddingVertical: layout.padding_x0_75,
-          paddingHorizontal: layout.padding_x1,
+          paddingVertical: layout.spacing_x0_75,
+          paddingHorizontal: layout.spacing_x1,
           flexDirection: "row",
           alignItems: "center",
         }}
@@ -105,7 +105,7 @@ export const EditableAudioPreview: React.FC<AudioPreviewProps> = ({
             alignItems: "center",
             justifyContent: "center",
             padding: 0,
-            marginLeft: layout.padding_x1,
+            marginLeft: layout.spacing_x1,
           }}
         >
           {playbackStatus?.isLoaded && playbackStatus?.isBuffering ? (
@@ -130,7 +130,7 @@ export const EditableAudioPreview: React.FC<AudioPreviewProps> = ({
         {!!file.audioMetadata && (
           <View
             style={{
-              marginHorizontal: layout.padding_x2,
+              marginHorizontal: layout.spacing_x2,
               maxWidth: 530,
               overflow: "hidden",
             }}

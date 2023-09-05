@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
   detailContainer: {
     justifyContent: "center",
     alignItems: "center",
-    paddingBottom: layout.padding_x4,
+    paddingBottom: layout.spacing_x4,
   },
   rowCenter: {
     flexDirection: "row",

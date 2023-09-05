@@ -52,7 +52,7 @@ export const FightBossSection: React.FC = () => {
         height: 300,
         justifyContent: "center",
         alignItems: "center",
-        marginTop: layout.padding_x4,
+        marginTop: layout.spacing_x4,
       }}
     >
       <Image
@@ -63,7 +63,7 @@ export const FightBossSection: React.FC = () => {
       <BrandText style={fontMedium24}>{currentSeason?.bossName}</BrandText>
 
       <FightProgressBar
-        containerStyle={{ marginVertical: layout.padding_x1_5 }}
+        containerStyle={{ marginVertical: layout.spacing_x1_5 }}
         width={170}
         height={10}
         value={remainingPercentage}

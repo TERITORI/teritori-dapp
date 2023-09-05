@@ -22,7 +22,7 @@ export const ToolbarContainer: FC = ({ children }) => {
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "center",
-        padding: layout.padding_x0_5,
+        padding: layout.spacing_x0_5,
       }}
     >
       {children}

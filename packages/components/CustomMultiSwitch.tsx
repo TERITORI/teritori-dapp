@@ -83,7 +83,7 @@ export const CustomMultipleSwitch: FC<Props> = ({ items, value, onChange }) => {
               const { width, x } = e.nativeEvent.layout;
               setElements((prevElements) => [
                 ...prevElements,
-                { id: item, value: x - layout.padding_x0_5 },
+                { id: item, value: x - layout.spacing_x0_5 },
               ]);
               setSliderWidth(width);
             }}
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: neutral33,
     position: "relative",
-    padding: layout.padding_x0_5,
+    padding: layout.spacing_x0_5,
   },
   slider: {
     position: "absolute",

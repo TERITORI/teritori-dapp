@@ -23,8 +23,8 @@ export const SidebarProfileButton: React.FC<{
       <View
         style={[
           {
-            marginVertical: layout.padding_x1,
-            marginLeft: layout.padding_x0_25,
+            marginVertical: layout.spacing_x1,
+            marginLeft: layout.spacing_x0_25,
           },
           isExpanded && { flexDirection: "row", alignItems: "center" },
         ]}
@@ -33,19 +33,19 @@ export const SidebarProfileButton: React.FC<{
 
         <View
           style={[
-            { marginLeft: layout.padding_x0_5 },
+            { marginLeft: layout.spacing_x0_5 },
             !isExpanded && {
-              maxWidth: imageWidth - layout.padding_x0_5,
+              maxWidth: imageWidth - layout.spacing_x0_5,
               alignItems: "center",
-              marginTop: layout.padding_x0_5,
+              marginTop: layout.spacing_x0_5,
             },
             isExpanded && {
-              marginLeft: layout.padding_x0_5,
+              marginLeft: layout.spacing_x0_5,
               maxWidth:
                 fullSidebarWidth -
                 imageWidth -
-                layout.padding_x0_5 * 2 -
-                layout.padding_x2,
+                layout.spacing_x0_5 * 2 -
+                layout.spacing_x2,
             },
           ]}
         >

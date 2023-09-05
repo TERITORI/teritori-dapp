@@ -19,8 +19,8 @@ export const SocialStat: React.FC<{
       activeOpacity={0.5}
       style={[
         {
-          paddingRight: layout.padding_x1,
-          paddingLeft: layout.padding_x0_5,
+          paddingRight: layout.spacing_x1,
+          paddingLeft: layout.spacing_x0_5,
           height: socialStatHeight,
           backgroundColor: neutral22,
           borderRadius: 6,
@@ -33,7 +33,7 @@ export const SocialStat: React.FC<{
       {emoji && (
         <View
           style={{
-            marginRight: layout.padding_x0_5,
+            marginRight: layout.spacing_x0_5,
             width: 20,
             height: 20,
             justifyContent: "center",

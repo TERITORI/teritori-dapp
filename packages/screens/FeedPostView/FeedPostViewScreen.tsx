@@ -202,7 +202,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
         <ActivityIndicator
           color={primaryColor}
           size="large"
-          style={{ marginTop: layout.padding_x4 }}
+          style={{ marginTop: layout.spacing_x4 }}
         />
       ) : !postResult ? (
         <NotFound label="Post" />
@@ -222,7 +222,7 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
                   windowWidth < RESPONSIVE_BREAKPOINT_S ? windowWidth : width,
                 maxWidth: screenContentMaxWidth,
                 alignItems: "center",
-                paddingVertical: layout.padding_x2,
+                paddingVertical: layout.spacing_x2,
               }}
             >
               {!!postResult && (
