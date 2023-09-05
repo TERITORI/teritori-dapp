@@ -1,4 +1,3 @@
-// libraries
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import { View, ViewStyle } from "react-native";
@@ -12,7 +11,6 @@ type SeparatorGradientProps = {
 export const SeparatorGradient: React.FC<SeparatorGradientProps> = ({
   style,
 }) => {
-  // returns
   return (
     <View style={[{ height: 1, width: "100%" }, style]}>
       {/* Background gradient */}

@@ -45,7 +45,6 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
   iconSize = 28,
   nested,
 }) => {
-  // variables
   const { isSidebarExpanded } = useSidebar();
   const { name: currentRouteName } = useAppRoute();
   const allNestedRoutes = useMemo(
@@ -126,7 +125,6 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
   //   };
   // }, [isNestedBarExpanded]);
 
-  // returns
   return (
     <CustomPressable
       onPress={isComingSoon ? () => {} : onPress && (() => onPress(route))}

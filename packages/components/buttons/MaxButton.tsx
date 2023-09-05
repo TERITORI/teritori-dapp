@@ -1,4 +1,3 @@
-// libraries
 import React from "react";
 import { Pressable, StyleSheet } from "react-native";
 
@@ -12,7 +11,6 @@ type MaxButtonProps = {
 };
 
 export const MaxButton = ({ onPress }: MaxButtonProps) => {
-  // returns
   return (
     <Pressable onPress={onPress}>
       <BrandText style={styles.maxText}>max</BrandText>

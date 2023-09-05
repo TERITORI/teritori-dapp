@@ -33,7 +33,6 @@ export const ConfigureVotingSection: React.FC<ConfigureVotingSectionProps> = ({
   submitLabel,
   contentContainerStyle,
 }) => {
-  // variables
   const { handleSubmit, control, watch, setValue } =
     useForm<ConfigureVotingFormType>({
       defaultValues: {
@@ -47,7 +46,6 @@ export const ConfigureVotingSection: React.FC<ConfigureVotingSectionProps> = ({
   const supportValue = watch("supportPercent");
   const minApprovalValue = watch("minimumApprovalPercent");
 
-  // returns
   return (
     <View style={styles.fill}>
       <ScrollView

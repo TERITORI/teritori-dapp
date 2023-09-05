@@ -28,7 +28,6 @@ export const LaunchpadButton: React.FC<LaunchpadButtonProps> = ({
   buttonTitle,
   url,
 }) => {
-  // returns
   return (
     <Pressable
       onPress={url ? () => Linking.openURL(url) : undefined}
