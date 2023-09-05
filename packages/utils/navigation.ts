@@ -56,6 +56,7 @@ export type RootStackParamList = {
   GrantsProgram: undefined;
   GrantsProgramManager: undefined;
   GrantsProgramPayment: undefined;
+  GrantsProgramMakeRequest: undefined;
   GrantsProgramDetail: { id: string };
 
   OrganizationDeployer: undefined;
@@ -129,6 +130,7 @@ const navConfig: {
     GrantsProgram: "grants-program",
     GrantsProgramPayment: "grants-program/payment",
     GrantsProgramManager: "grants-program/manager",
+    GrantsProgramMakeRequest: "grants-program/make-request",
     GrantsProgramDetail: "grants-program/:id",
 
     // ==== Swap

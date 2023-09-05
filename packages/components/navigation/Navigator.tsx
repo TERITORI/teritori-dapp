@@ -10,6 +10,7 @@ import { FeedNewArticleScreen } from "../../screens/FeedNewArticle/FeedNewArticl
 import { FeedPostViewScreen } from "../../screens/FeedPostView/FeedPostViewScreen";
 import { GovernanceScreen } from "../../screens/Governance/GovernanceScreen";
 import { GrantsProgramDetailScreen } from "../../screens/GrantsProgram/GrantsProgramDetailScreen";
+import { GrantsProgramMakeRequestScreen } from "../../screens/GrantsProgram/GrantsProgramMakeRequestScreen";
 import { GrantsProgramManagerScreen } from "../../screens/GrantsProgram/GrantsProgramManagerScreen";
 import { GrantsProgramPaymentScreen } from "../../screens/GrantsProgram/GrantsProgramPaymentScreen";
 import { GrantsProgramScreen } from "../../screens/GrantsProgram/GrantsProgramScreen";
@@ -237,6 +238,15 @@ export const Navigator: React.FC = () => {
         options={{
           header: () => null,
           title: screenTitle("Grants Program Payment"),
+        }}
+      />
+
+      <Stack.Screen
+        name="GrantsProgramMakeRequest"
+        component={GrantsProgramMakeRequestScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Grants Program Make Request"),
         }}
       />
 

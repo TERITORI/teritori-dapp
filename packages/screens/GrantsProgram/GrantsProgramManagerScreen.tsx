@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 
+import { HeaderBackButton } from "./components/HeaderBackButton";
 import { ManagerAllGrants } from "./components/ManagerAllGrants";
 import { ManagerRequests } from "./components/ManagerRequests";
 import filterSVG from "../../../assets/icons/filter.svg";
@@ -12,11 +13,7 @@ import { SpacerRow } from "../../components/spacer";
 import { Tabs } from "../../components/tabs/Tabs";
 import { ScreenFC } from "../../utils/navigation";
 import { neutral33 } from "../../utils/style/colors";
-import {
-  fontSemibold14,
-  fontSemibold20,
-  fontSemibold28,
-} from "../../utils/style/fonts";
+import { fontSemibold14, fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 
 type Tab = "allGrants" | "requestsByBuilders";
@@ -37,13 +34,7 @@ export const GrantsProgramManagerScreen: ScreenFC<
   const [selectedTab, setSelectedTab] = useState<Tab>("allGrants");
 
   return (
-    <ScreenContainer
-      isLarge
-      responsive
-      headerChildren={
-        <BrandText style={fontSemibold20}>Grants Program</BrandText>
-      }
-    >
+    <ScreenContainer isLarge responsive headerChildren={<HeaderBackButton />}>
       <FlexRow
         style={{
           marginTop: layout.spacing_x4,

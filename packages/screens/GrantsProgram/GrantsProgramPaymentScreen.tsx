@@ -1,17 +1,15 @@
 import React from "react";
 import { View } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import { SvgProps } from "react-native-svg";
 
+import { HeaderBackButton } from "./components/HeaderBackButton";
 import { Tag } from "./components/Tag";
-import chevronLeftSVG from "../../../assets/icons/chevron-left.svg";
 import discordSVG from "../../../assets/icons/discord.svg";
 import githubSVG from "../../../assets/icons/github.svg";
 import twitterSVG from "../../../assets/icons/twitter.svg";
 import websiteSVG from "../../../assets/icons/website.svg";
 import { BrandText } from "../../components/BrandText";
 import FlexRow from "../../components/FlexRow";
-import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { Separator } from "../../components/Separator";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
@@ -20,7 +18,7 @@ import { SocialButton } from "../../components/buttons/SocialButton";
 import { RoundedGradientImage } from "../../components/images/RoundedGradientImage";
 import { TextInputCustom } from "../../components/inputs/TextInputCustom";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
-import { ScreenFC, useAppNavigation } from "../../utils/navigation";
+import { ScreenFC } from "../../utils/navigation";
 import {
   neutral17,
   neutral77,
@@ -54,22 +52,8 @@ const CustomSocialButton: React.FC<{
 export const GrantsProgramPaymentScreen: ScreenFC<
   "GrantsProgramPayment"
 > = () => {
-  const navigation = useAppNavigation();
-
   return (
-    <ScreenContainer
-      isLarge
-      responsive
-      headerChildren={
-        <TouchableOpacity onPress={() => navigation.navigate("GrantsProgram")}>
-          <FlexRow>
-            <SVG source={chevronLeftSVG} width={24} height={24} />
-            <SpacerRow size={2} />
-            <BrandText style={fontSemibold20}>Grants Program</BrandText>
-          </FlexRow>
-        </TouchableOpacity>
-      }
-    >
+    <ScreenContainer isLarge responsive headerChildren={<HeaderBackButton />}>
       <FlexRow style={{ marginTop: layout.spacing_x4 }}>
         <RoundedGradientImage size="S" square sourceURI="" />
         <SpacerRow size={2} />

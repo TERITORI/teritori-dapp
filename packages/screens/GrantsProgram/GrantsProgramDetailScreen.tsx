@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { View } from "react-native";
 import { SvgProps } from "react-native-svg";
 
+import { HeaderBackButton } from "./components/HeaderBackButton";
 import { Tag } from "./components/Tag";
 import { TaskItem } from "./components/TaskItem";
 import { TaskList } from "./components/TaskList";
@@ -129,13 +130,7 @@ export const GrantsProgramDetailScreen: ScreenFC<
   };
 
   return (
-    <ScreenContainer
-      isLarge
-      responsive
-      headerChildren={
-        <BrandText style={fontSemibold20}>Grants Program</BrandText>
-      }
-    >
+    <ScreenContainer isLarge responsive headerChildren={<HeaderBackButton />}>
       <FlexRow>
         <View style={{ flex: 1 }}>
           {!isHideInfo && (
