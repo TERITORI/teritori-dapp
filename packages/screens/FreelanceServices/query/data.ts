@@ -478,17 +478,14 @@ const maxiumRevisions = (contentInfos: ContentInfo[]): string => {
   return maxRevisions.toString(10);
 };
 
-export interface Category {
+export interface Card {
   name: string;
   title: string;
   icon: string;
   sub_category?: string;
 }
-export interface Categories {
-  [key: string]: Category[];
-}
-export const getCategories = (): Categories => {
-  return {
+export const getCards = (id: string): Card[] => {
+  const values = {
     explore_marketplace: [
       {
         name: "graphics_design",
@@ -575,4 +572,149 @@ export const getCategories = (): Categories => {
       },
     ],
   };
+  // @ts-ignore
+
+  console.log(values[id], id);
+  // @ts-ignore
+
+  return Object.values(values[id]);
+};
+
+export const getSubCategoryCards = (id: string): Card[] => {
+  const values = {
+    graphics_design: [
+      {
+        name: "logo_design",
+        title: "Logo Design",
+        icon: "diamond.svg",
+      },
+      {
+        name: "webapp_design",
+        title: "WebApp Design",
+        icon: "glasses.svg",
+      },
+      {
+        name: "art_illustration",
+        title: "Art & Illustration",
+        icon: "image-editing.svg",
+      },
+      {
+        name: "architecture_building_design",
+        title: "Architecture & Building Design",
+        icon: "house.svg",
+      },
+    ],
+    digital_marketing: [
+      {
+        name: "seo",
+        title: "SEO",
+        icon: "",
+      },
+      {
+        name: "social",
+        title: "Social",
+        icon: "",
+      },
+      {
+        name: "method_techniques",
+        title: "Method & Techniques",
+        icon: "",
+      },
+      {
+        name: "analytics_strategy",
+        title: "Analytics & Strategy",
+        icon: "",
+      },
+    ],
+    writing_translation: [
+      {
+        name: "content_writing",
+        title: "Content Writing",
+        icon: "",
+      },
+      {
+        name: "editing_critique",
+        title: "Editing & Critique",
+        icon: "",
+      },
+      {
+        name: "translation_transcription",
+        title: "Translation & Transcription",
+        icon: "",
+      },
+      {
+        name: "business_marketing_copy",
+        title: "Business & Marketing Copy",
+        icon: "",
+      },
+    ],
+    video_animation: [
+      {
+        name: "editing_post_production",
+        title: "Editing & Post-Production",
+        icon: "",
+      },
+      {
+        name: "animation",
+        title: "Animation",
+        icon: "",
+      },
+      {
+        name: "social_marketing_videos",
+        title: "Social & Marketing Videos",
+        icon: "",
+      },
+      {
+        name: "product_explainer_videos",
+        title: "Product & Explainer Videos",
+        icon: "",
+      },
+    ],
+    music_audio: [
+      {
+        name: "music_production_writing",
+        title: "Music Production & Writing",
+        icon: "",
+      },
+      {
+        name: "audio_engineering_post_production",
+        title: "Audio Engineering & Post Production",
+        icon: "",
+      },
+      {
+        name: "voice_over_streaming",
+        title: "Voice Over & Streaming",
+        icon: "",
+      },
+      {
+        name: "lessons_transcription",
+        title: "Lessons & Transcription",
+        icon: "",
+      },
+    ],
+    programming_tech: [
+      {
+        name: "website_development",
+        title: "Website Development",
+        icon: "",
+      },
+      {
+        name: "software_development",
+        title: "Software Development",
+        icon: "",
+      },
+      {
+        name: "mobile_app_development",
+        title: "Mobile App Development",
+        icon: "",
+      },
+    ],
+  };
+
+  // @ts-ignore
+
+  console.log(values[id], id);
+  // @ts-ignore
+
+  return Object.values(values[id]);
 };

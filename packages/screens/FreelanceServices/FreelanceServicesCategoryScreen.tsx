@@ -2,7 +2,7 @@ import React from "react";
 
 // import { GraphicsAndDesign } from "./Category/GraphicsAndDesign";
 import { CategoryView } from "./Category/CategoryView";
-import { ScreenContainer } from "../../components/ScreenContainer";
+import { FreelanceScreenBase } from "./FreelanceScreenBase";
 import { ScreenFC } from "../../utils/navigation";
 export const FreelanceServicesCategoryScreen: ScreenFC<
   "FreelanceServicesCategory"
@@ -12,9 +12,9 @@ export const FreelanceServicesCategoryScreen: ScreenFC<
   },
 }) => {
   return (
-    <ScreenContainer fullWidth noMargin>
+    <FreelanceScreenBase>
       <CategoryView category={category} />
       {/* {category === "GraphicsAndDesign" && <GraphicsAndDesign />} */}
-    </ScreenContainer>
+    </FreelanceScreenBase>
   );
 };

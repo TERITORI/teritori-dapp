@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { View } from "react-native";
 import { v4 as uuidv4 } from "uuid";
 
-import { ScreenContainer } from "../../components/ScreenContainer";
+import { FreelanceScreenBase } from "./FreelanceScreenBase";
 import { GigCreationBody } from "../../components/freelanceServices/GigCreation/GigCreationBody";
 import { GigCreationFooter } from "../../components/freelanceServices/GigCreation/GigCreationFooter";
 import { GigCreationHeader } from "../../components/freelanceServices/GigCreation/GigCreationHeader";
@@ -161,7 +161,7 @@ export const FreelanceServicesGigCreationScreen: ScreenFC<
     setCurrentStep(currentStep + 1);
   };
   return (
-    <ScreenContainer fullWidth noMargin>
+    <FreelanceScreenBase>
       <View style={{ marginLeft: 35, zIndex: 1 }}>
         <GigCreationHeader
           currentStep={currentStep}
@@ -175,6 +175,6 @@ export const FreelanceServicesGigCreationScreen: ScreenFC<
         />
       </View>
       <GigCreationFooter nextStep={nextStep} step={currentStep} />
-    </ScreenContainer>
+    </FreelanceScreenBase>
   );
 };

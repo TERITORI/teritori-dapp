@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { TouchableOpacity, useWindowDimensions, View } from "react-native";
 
+import { FreelanceScreenBase } from "./FreelanceScreenBase";
 import { getSellerUser } from "./query/data";
 import heart from "../../../assets/icons/heart.svg";
 import penSVG from "../../../assets/icons/manage.svg";
@@ -15,7 +16,6 @@ import trashSVG from "../../../assets/icons/trash.svg";
 import { BrandText } from "../../components/BrandText";
 import FlexRow from "../../components/FlexRow";
 import { SVG } from "../../components/SVG";
-import { ScreenContainer } from "../../components/ScreenContainer";
 import { Separator } from "../../components/Separator";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { SecondaryButton } from "../../components/buttons/SecondaryButton";
@@ -246,7 +246,7 @@ export const FreelanceSellerDetailsScreen: ScreenFC<
 
   return (
     sellerUser && (
-      <ScreenContainer fullWidth noMargin>
+      <FreelanceScreenBase>
         <FlexRow justifyContent="space-between">
           <ManageEscrowButton
             style={{ flex: 1, marginLeft: layout.spacing_x4 }}
@@ -1242,7 +1242,7 @@ export const FreelanceSellerDetailsScreen: ScreenFC<
 
           <View style={{ flex: 1 }} />
         </FlexRow>
-      </ScreenContainer>
+      </FreelanceScreenBase>
     )
   );
 };

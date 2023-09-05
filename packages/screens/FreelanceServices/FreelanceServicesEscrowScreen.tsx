@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 
+import { FreelanceScreenBase } from "./FreelanceScreenBase";
 import { EscrowInfo } from "../../api/freelance/v1/freelance";
 import { BrandText } from "../../components/BrandText";
-import { ScreenContainer } from "../../components/ScreenContainer";
 import { EscrowTable } from "../../components/freelanceServices/Escrow/EscrowList";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
@@ -38,7 +38,7 @@ export const FreelanceServicesEscrowScreen: ScreenFC<
   }, [selectedWallet, networkId]);
 
   return (
-    <ScreenContainer fullWidth noMargin>
+    <FreelanceScreenBase>
       <View
         style={[
           {
@@ -62,6 +62,6 @@ export const FreelanceServicesEscrowScreen: ScreenFC<
         </View>
         <EscrowTable escrows={escrows} />
       </View>
-    </ScreenContainer>
+    </FreelanceScreenBase>
   );
 };

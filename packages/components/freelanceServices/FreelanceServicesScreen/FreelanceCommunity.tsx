@@ -4,9 +4,8 @@ import { useWindowDimensions, View, ViewStyle } from "react-native";
 import CreateGigSvg from "../../../../assets/icons/freelance-service/CreateGig.svg";
 import DeliverSvg from "../../../../assets/icons/freelance-service/Deliver.svg";
 import GetPaidSvg from "../../../../assets/icons/freelance-service/GetPaid.svg";
-
 // import { FreelancerServiceRouteTypes } from "../../../screens/FreelanceServices/types/routes";
-import { getCategories } from "../../../screens/FreelanceServices/query/data";
+import { getCards } from "../../../screens/FreelanceServices/query/data";
 import { neutral17, neutral33, neutral77 } from "../../../utils/style/colors";
 import { fontMedium14, fontSemibold14 } from "../../../utils/style/fonts";
 import { layout, leftMarginMainContent } from "../../../utils/style/layout";
@@ -90,7 +89,7 @@ export const FreelanceCommunity: React.FC = () => {
           marginTop: layout.spacing_x2_5,
         }}
       >
-        {getCategories()["freelance_community"].map((item, index) => (
+        {getCards("freelance_community").map((item, index) => (
           <FreelanceServicesCards
             iconSVG={item.icon}
             text={item.title}
@@ -171,7 +170,7 @@ export const FreelanceCommunity: React.FC = () => {
                   style={[fontMedium14, { flex: 3, color: neutral77 }]}
                 >
                   Get paid punctually and consistently. Once the payment is
-                  cleared, it becoms available for withdrawal.
+                  cleared, it becomes available for withdrawal.
                 </BrandText>
                 <View style={{ flex: 1 }} />
               </View>

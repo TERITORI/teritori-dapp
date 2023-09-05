@@ -7,13 +7,13 @@ import {
   View,
 } from "react-native";
 
+import { FreelanceScreenBase } from "./FreelanceScreenBase";
 import { getGigData } from "./query/data";
 import backgroundPic from "../../../assets/banners/freelance-service/background-pic.png";
 import chevronUp from "../../../assets/icons/chevron-up.svg";
 import chevronDown from "../../../assets/icons/freelance-service/chevron-down.svg";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
-import { ScreenContainer } from "../../components/ScreenContainer";
 import { Separator } from "../../components/Separator";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { SecondaryButton } from "../../components/buttons/SecondaryButton";
@@ -84,7 +84,7 @@ export const FreelanceGigDetailScreen: ScreenFC<
 
   return (
     gigData && (
-      <ScreenContainer fullWidth noMargin>
+      <FreelanceScreenBase>
         <View
           style={{
             flexDirection: "column",
@@ -532,7 +532,7 @@ export const FreelanceGigDetailScreen: ScreenFC<
             ) : null}
           </View>
         </View>
-      </ScreenContainer>
+      </FreelanceScreenBase>
     )
   );
 };

@@ -1,16 +1,14 @@
 import React from "react";
 
 import { CategoryHeader } from "../../../components/freelanceServices/Category/CategoryHeader";
-import { PopularCategoryExplorer } from "../../../components/freelanceServices/Category/PopularCategoryExplorer";
-import { ExplorerMarketPlace } from "../../../components/freelanceServices/FreelanceServicesScreen/ExploreMarketPlace";
-import { getCategories } from "../query/data";
+import { CardsSection } from "../../../components/freelanceServices/FreelanceServicesScreen/ExploreMarketPlace";
+import { getCards, getSubCategoryCards } from "../query/data";
 
 type CategoryViewProps = {
   category: string;
 };
 export const CategoryView: React.FC<CategoryViewProps> = ({ category }) => {
-  // const gallery = getGallery("graphic-and-design-page");
-  const main_cat = getCategories()["explore_marketplace"].find(
+  const main_cat = getCards("explore_marketplace").find(
     (item) => item.name === category
   );
   return (
@@ -18,8 +16,14 @@ export const CategoryView: React.FC<CategoryViewProps> = ({ category }) => {
       {main_cat && (
         <>
           <CategoryHeader title={main_cat.title} iconSvg={main_cat.icon} />
-          <ExplorerMarketPlace category={main_cat} />
-          <PopularCategoryExplorer category={main_cat.name} />
+          <CardsSection
+            title={category}
+            cards={getSubCategoryCards(category)}
+          />
+          <CardsSection
+            title="Most Popular in Graphics & Design"
+            cards={getSubCategoryCards(category)}
+          />
         </>
       )}
     </>

@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { View } from "react-native";
 
-import { ScreenContainer } from "../../components/ScreenContainer";
+import { FreelanceScreenBase } from "./FreelanceScreenBase";
 import { ProfileBody } from "../../components/freelanceServices/Profile/ProfileBody";
 import { ProfileFooter } from "../../components/freelanceServices/Profile/ProfileFooter";
 import { ProfileHeader } from "../../components/freelanceServices/Profile/ProfileHeader";
@@ -137,7 +137,7 @@ export const FreelanceServicesProfileSellerScreen: ScreenFC<
   };
 
   return (
-    <ScreenContainer fullWidth noMargin>
+    <FreelanceScreenBase>
       <View style={{ marginLeft: 35, zIndex: 1 }}>
         <ProfileHeader
           currentStep={currentStep}
@@ -151,6 +151,6 @@ export const FreelanceServicesProfileSellerScreen: ScreenFC<
         />
       </View>
       <ProfileFooter step={currentStep} nextStep={nextStep} />
-    </ScreenContainer>
+    </FreelanceScreenBase>
   );
 };

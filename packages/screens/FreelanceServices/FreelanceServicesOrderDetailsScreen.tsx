@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 import { RadioButton } from "react-native-paper";
 
+import { FreelanceScreenBase } from "./FreelanceScreenBase";
 import { getGigData } from "./query/data";
 import { BrandText } from "../../components/BrandText";
-import { ScreenContainer } from "../../components/ScreenContainer";
 import { SecondaryButton } from "../../components/buttons/SecondaryButton";
 import { FirstRightCard } from "../../components/freelanceServices/Order/FirstRightCard";
 import { FirstStep } from "../../components/freelanceServices/Order/FirstStep";
@@ -251,7 +251,7 @@ export const FreelanceServicesOrderDetailsScreen: ScreenFC<
 
   return (
     gigData && (
-      <ScreenContainer fullWidth noMargin>
+      <FreelanceScreenBase>
         <View
           style={{
             marginTop: 24,
@@ -321,7 +321,7 @@ export const FreelanceServicesOrderDetailsScreen: ScreenFC<
             />
           )}
         </View>
-      </ScreenContainer>
+      </FreelanceScreenBase>
     )
   );
 };

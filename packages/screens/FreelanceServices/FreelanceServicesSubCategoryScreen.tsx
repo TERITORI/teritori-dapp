@@ -1,8 +1,7 @@
 import React from "react";
 
-// import { LogoDesign } from "./Category/Subcategory/LogoDesign";
 import { SubCategoryView } from "./Category/SubCategoryView";
-import { ScreenContainer } from "../../components/ScreenContainer";
+import { FreelanceScreenBase } from "./FreelanceScreenBase";
 import { ScreenFC } from "../../utils/navigation";
 export const FreelanceServicesSubCategoryScreen: ScreenFC<
   "FreelanceServicesSubCategory"
@@ -12,8 +11,8 @@ export const FreelanceServicesSubCategoryScreen: ScreenFC<
   },
 }) => {
   return (
-    <ScreenContainer fullWidth noMargin>
+    <FreelanceScreenBase>
       <SubCategoryView category={category} subcategory={subcategory} />
-    </ScreenContainer>
+    </FreelanceScreenBase>
   );
 };
