@@ -26,7 +26,7 @@ export const WalletManagerScreen: ScreenFC<"WalletManager"> = () => {
         <View
           style={{
             flex: 1,
-            paddingBottom: layout.contentPadding,
+            paddingBottom: layout.contentSpacing,
           }}
         >
           <WalletDashboardHeader />
