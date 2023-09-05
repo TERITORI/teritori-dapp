@@ -53,7 +53,6 @@ export const Pagination = ({
   const { onPressDropdownButton, isDropdownOpen, closeOpenedDropdown } =
     useDropdowns();
 
-  // returns
   return (
     <View style={styles.container}>
       <View style={[styles.section, { justifyContent: "flex-start" }]}>

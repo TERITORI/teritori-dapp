@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 
+import { useIsMobile } from "../../hooks/useIsMobile";
 import { prettyPrice } from "../../utils/coins";
 import { fontSemibold12, fontSemibold28 } from "../../utils/style/fonts";
 import { NFTInfo } from "../../utils/types/nft";
@@ -17,6 +18,8 @@ export const NFTPriceBuyCard: React.FC<{
   onPressBuy: () => void;
   style?: StyleProp<ViewStyle>;
 }> = ({ nftInfo, onPressBuy, style }) => {
+  const isMobile = useIsMobile();
+
   return (
     <TertiaryBox
       fullWidth
@@ -46,7 +49,11 @@ export const NFTPriceBuyCard: React.FC<{
           />
         </View>
       </View>
-      <PrimaryButton size="XL" text="Buy this NFT" onPress={onPressBuy} />
+      <PrimaryButton
+        size={isMobile ? "M" : "XL"}
+        text="Buy this NFT"
+        onPress={onPressBuy}
+      />
     </TertiaryBox>
   );
 };

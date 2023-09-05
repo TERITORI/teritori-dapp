@@ -28,7 +28,6 @@ export const Avatar: React.FC<AvatarProps> = ({
     }
   };
 
-  // variables
   const avatarSize = getSize();
 
   // renders

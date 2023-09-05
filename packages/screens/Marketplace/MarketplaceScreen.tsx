@@ -32,11 +32,13 @@ import {
   successColor,
 } from "../../utils/style/colors";
 import {
+  fontSemibold11,
   fontSemibold13,
   fontSemibold20,
   fontSemibold28,
 } from "../../utils/style/fonts";
 import { layout, screenContentMaxWidthLarge } from "../../utils/style/layout";
+import { numFormatter } from "../../utils/text";
 import { arrayIncludes } from "../../utils/typescript";
 
 const TABLE_ROWS = {
@@ -215,7 +217,7 @@ const CollectionTable: React.FC<{
         headings={
           !isMobile
             ? Object.values(TABLE_ROWS)
-            : Object.values(TABLE_ROWS).slice(0, -4)
+            : Object.values(TABLE_ROWS).slice(0, -5)
         }
       />
       <FlatList
@@ -252,6 +254,8 @@ const PrettyPriceWithCurrency: React.FC<{
   data: PrettyPrint;
   style?: StyleProp<ViewStyle>;
 }> = ({ data, style }) => {
+  const isMobile = useIsMobile();
+
   return (
     <View
       style={[
@@ -265,7 +269,7 @@ const PrettyPriceWithCurrency: React.FC<{
     >
       <BrandText
         style={[
-          fontSemibold13,
+          isMobile ? fontSemibold11 : fontSemibold13,
           {
             marginRight: layout.spacing_x0_5,
           },
@@ -321,7 +325,7 @@ const CollectionRow: React.FC<{ collection: Collection; rank: number }> = ({
           sourceURI={rowData.collectionNameData.image}
           style={{ marginRight: isMobile ? 8 : 30 }}
         />
-        <BrandText style={fontSemibold13}>
+        <BrandText style={isMobile ? fontSemibold11 : fontSemibold13}>
           {rowData.collectionNameData.collectionName}
         </BrandText>
       </View>
@@ -333,18 +337,19 @@ const CollectionRow: React.FC<{ collection: Collection; rank: number }> = ({
         data={rowData["TimePeriodVolume"]}
         style={{ flex: TABLE_ROWS.TimePeriodVolume.flex }}
       />
-      <InnerCell
-        style={{ flex: TABLE_ROWS.TimePeriodPercentualVolume.flex }}
-        textStyle={{
-          color: rowData["TimePeriodPercentualVolume"].includes("+")
-            ? successColor
-            : errorColor,
-        }}
-      >
-        {rowData["TimePeriodPercentualVolume"]}
-      </InnerCell>
       {!isMobile && (
         <>
+          <InnerCell
+            style={{ flex: TABLE_ROWS.TimePeriodPercentualVolume.flex }}
+            textStyle={{
+              color: rowData["TimePeriodPercentualVolume"].includes("+")
+                ? successColor
+                : errorColor,
+            }}
+          >
+            {rowData["TimePeriodPercentualVolume"]}
+          </InnerCell>
+
           <InnerCell style={{ flex: TABLE_ROWS.sales.flex }}>
             {rowData.sales}
           </InnerCell>
@@ -368,6 +373,7 @@ const InnerCell: React.FC<{
   style?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
 }> = ({ children, style, textStyle }) => {
+  const isMobile = useIsMobile();
   return (
     <View
       style={[
@@ -377,40 +383,15 @@ const InnerCell: React.FC<{
         style,
       ]}
     >
-      <BrandText style={[fontSemibold13, textStyle]} numberOfLines={1}>
+      <BrandText
+        style={[isMobile ? fontSemibold11 : fontSemibold13, textStyle]}
+        numberOfLines={1}
+      >
         {children}
       </BrandText>
     </View>
   );
 };
-
-function nFormatter(
-  num: number | undefined | string,
-  digits: number | undefined
-) {
-  const lookup = [
-    { value: 1, symbol: "" },
-    { value: 1e3, symbol: "K" },
-    { value: 1e6, symbol: "M" },
-    { value: 1e9, symbol: "G" },
-    { value: 1e12, symbol: "T" },
-    { value: 1e15, symbol: "P" },
-    { value: 1e18, symbol: "E" },
-  ];
-  const rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
-  const item = lookup
-    .slice()
-    .reverse()
-    .find(function (item) {
-      // @ts-expect-error
-      return num >= item.value;
-    });
-
-  return item
-    ? // @ts-expect-error
-      (num / item.value).toFixed(digits).replace(rx, "$1") + item.symbol
-    : "0";
-}
 
 interface RowData {
   id: string;
@@ -449,17 +430,17 @@ const useRowData = (collection: Collection, rank: number): RowData => {
       denom: collection.denom,
     },
     TimePeriodPercentualVolume: getDelta(collection),
-    sales: nFormatter(collection.numTrades, 0),
+    sales: numFormatter(collection.numTrades, 0),
     floorPrice: {
       networkId: collection.networkId,
       value: collection.floorPrice,
       denom: collection.denom,
     },
-    owners: nFormatter(
+    owners: numFormatter(
       collection.numOwners,
       collection.numOwners.toString().length
     ),
-    supply: nFormatter(
+    supply: numFormatter(
       collection.maxSupply,
       collection.maxSupply.toString().length
     ),

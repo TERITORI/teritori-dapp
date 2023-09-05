@@ -11,7 +11,6 @@ type MaxButtonProps = {
 };
 
 export const MaxButton = ({ onPress }: MaxButtonProps) => {
-  // returns
   return (
     <Pressable onPress={onPress}>
       <BrandText style={styles.maxText}>max</BrandText>

@@ -108,7 +108,6 @@ export const NFTView: React.FC<{
   const widthNumber =
     typeof width === "number" ? width : parseInt(width || "0", 10) || cardWidth;
 
-  // returns
   return (
     <>
       <View
@@ -209,7 +208,20 @@ export const NFTView: React.FC<{
                       <SVG source={dotsCircleSVG} height={32} width={32} />
                     </Pressable>
                     {isDropdownOpen(dropdownRef) && (
-                      <View style={styles.optionContainer}>
+                      <View
+                        style={{
+                          position: "absolute",
+                          zIndex: 2,
+                          top: layout.iconButton + layout.spacing_x0_5,
+                          backgroundColor: neutral00,
+                          padding: layout.spacing_x0_5,
+                          borderColor: neutral33,
+                          borderWidth: 1,
+                          borderRadius: 8,
+                          right: -layout.spacing_x1_5,
+                          minWidth: 250,
+                        }}
+                      >
                         <DropdownOption
                           onPress={closeOpenedDropdown}
                           icon={octagonSVG}
@@ -395,23 +407,6 @@ export const NFTView: React.FC<{
       />
     </>
   );
-});
-
-// FIXME: remove StyleSheet.create
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  optionContainer: {
-    position: "absolute",
-    zIndex: 2,
-    top: layout.iconButton + layout.spacing_x0_5,
-    backgroundColor: neutral00,
-    padding: layout.spacing_x0_5,
-    borderColor: neutral33,
-    borderWidth: 1,
-    borderRadius: 8,
-    right: -layout.spacing_x1_5,
-    minWidth: 250,
-  },
 });
 
 // using this because ellipizeMode seems broken

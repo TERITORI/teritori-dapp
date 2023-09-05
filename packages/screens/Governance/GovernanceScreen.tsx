@@ -40,22 +40,9 @@ export const GovernanceScreen: React.FC = () => {
 
   return (
     <ScreenContainer forceNetworkKind={NetworkKind.Cosmos}>
-      <View
-        style={{
-          flexDirection: "row",
-          display: "flex",
-          width: 1240,
-          right: 75,
-          justifyContent: "space-between",
-          top: 55,
-        }}
-      >
-        <BrandText style={{ fontSize: 28 }}>Decentralized Governance</BrandText>
+      <BrandText style={{ fontSize: 28 }}>Decentralized Governance</BrandText>
 
-        <View style={{ bottom: 10, right: 100 }}>
-          <NavBarGovernance onChange={setFilter} />
-        </View>
-      </View>
+      <NavBarGovernance onChange={setFilter} />
 
       <View
         style={{

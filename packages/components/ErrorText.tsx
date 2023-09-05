@@ -21,7 +21,6 @@ export const ErrorText: React.FC<ErrorTextProps> = ({
   style,
   ...restProps
 }) => {
-  // variables
   const aref = useAnimatedRef<View>();
   const heightRef = useRef<number>(0);
   const [isExpandable, setIsExpandable] = useState(false);
@@ -45,7 +44,6 @@ export const ErrorText: React.FC<ErrorTextProps> = ({
     }
   }, [children]);
 
-  // returns
   return (
     <Animated.View style={animStyle}>
       <View

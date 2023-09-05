@@ -36,7 +36,6 @@ export const CollapsableSection: React.FC<CollapsableSectionProps> = ({
   children,
   isExpandedByDefault = false,
 }) => {
-  // variables
   const [isExpanded, setIsExpanded] = useState(false);
   const aref = useAnimatedRef<View>();
   const heightRef = useRef<number>(0);
@@ -74,7 +73,6 @@ export const CollapsableSection: React.FC<CollapsableSectionProps> = ({
     setIsExpanded(!isExpanded);
   };
 
-  // returns
   return (
     <TertiaryBox fullWidth>
       <Pressable onPress={toggleExpansion} style={styles.header}>

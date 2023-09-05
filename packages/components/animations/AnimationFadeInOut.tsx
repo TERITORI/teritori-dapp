@@ -21,7 +21,6 @@ export const AnimationFadeInOut: React.FC<AnimationFadeInOutProps> = ({
   duration = 500,
   onLayout,
 }) => {
-  // variables
   const opacity = useSharedValue(0);
   const zIndex = useDerivedValue(
     () => (opacity.value === 0 ? -1000 : 1000),

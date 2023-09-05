@@ -63,12 +63,12 @@ export const GovernanceBox: React.FC<{
     .toFixed(2)
     .toString();
 
-  let toppercentage;
+  let topPercentage;
   if (percentageYesValue > percentageNoValue) {
-    toppercentage = percentageYes;
+    topPercentage = percentageYes;
     colorMostVoted = "#16BBFF";
   } else {
-    toppercentage = percentageNo;
+    topPercentage = percentageNo;
     colorMostVoted = tulipTree;
   }
 
@@ -79,7 +79,7 @@ export const GovernanceBox: React.FC<{
   }
 
   function activeGovernanceDetailsPopup() {
-    if (displayGovernanceDetails === true) {
+    if (displayGovernanceDetails) {
       const GovernanceDetails = React.lazy(() =>
         import("../../screens/Governance/GovernanceDetails").then((module) => ({
           default: module.GovernanceDetails,
@@ -385,7 +385,7 @@ export const GovernanceBox: React.FC<{
                       paddingLeft: 5,
                     }}
                   >
-                    {toppercentage}
+                    {topPercentage}
                   </BrandText>
                 </View>
               </View>

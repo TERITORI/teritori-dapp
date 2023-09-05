@@ -75,10 +75,8 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
 
   const balances = useBalances(sourceNetworkId, fromAccount);
 
-  // variables
   const { control, setValue, handleSubmit } = useForm<TransactionForm>();
 
-  // returns
   const ModalHeader = useCallback(
     () => (
       <View style={styles.rowCenter}>

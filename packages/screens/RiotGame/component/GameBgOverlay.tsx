@@ -15,7 +15,6 @@ type GameBgOverlayProps = {
 const DEFAULT_SIZE = 190;
 
 export const GameBgOverlay: React.FC<GameBgOverlayProps> = ({ type }) => {
-  // variables
   const { width, height } = useWindowDimensions();
 
   const shadowHeight = useMemo(() => {
@@ -48,7 +47,6 @@ export const GameBgOverlay: React.FC<GameBgOverlayProps> = ({ type }) => {
     }
   }, [type, width]);
 
-  // returns
   return (
     <View style={[styles.absolute, styles[type]]}>
       <SVG
