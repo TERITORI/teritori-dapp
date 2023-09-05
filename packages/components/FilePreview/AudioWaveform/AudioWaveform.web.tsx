@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Animated, {
   useAnimatedStyle,
   withSpring,
@@ -8,13 +9,14 @@ import { neutral55, secondaryColor } from "../../../utils/style/colors";
 import { BAR_LENGTH, generateBars } from "../../../utils/waveform";
 
 const BAR_WIDTH = 3;
+export const AUDIO_WAVEFORM_MAX_WIDTH = 600;
 
 export const AudioWaveform = ({
   waveform,
   positionPercent = 0,
   style,
-  waveFormContainerWidth: width,
 }: AudioWaveformProps) => {
+  const [width, setWidth] = useState(0);
   const animatedStyles = useAnimatedStyle(() => {
     const currentIndex = Math.round(positionPercent * BAR_LENGTH);
     const totalVisibleBars = Math.round(width / BAR_WIDTH);
@@ -37,16 +39,18 @@ export const AudioWaveform = ({
         },
       ],
     };
-  }, [positionPercent]);
+  }, [positionPercent, width]);
 
   return (
     <Animated.View
+      onLayout={(e) => setWidth(e.nativeEvent.layout.width)}
       style={[
         animatedStyles,
         {
           flexDirection: "row",
           alignItems: "flex-end",
-          width,
+          width: "100%",
+          maxWidth: AUDIO_WAVEFORM_MAX_WIDTH,
         },
         style,
       ]}
@@ -56,7 +60,8 @@ export const AudioWaveform = ({
           key={index}
           style={{
             width: BAR_WIDTH - 1,
-            height: item,
+            // Avoid empty space by setting a minimal bars height if no sound
+            height: item < 1 ? 1 : item,
             marginRight: 1,
             backgroundColor:
               index < Math.round(positionPercent * BAR_LENGTH)
