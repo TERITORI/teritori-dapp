@@ -144,9 +144,6 @@ export const EditableAudioPreview: React.FC<AudioPreviewProps> = ({
                   ? playbackStatus?.durationMillis || 0
                   : 1
               }
-              currentDuration={
-                playbackStatus?.isLoaded ? playbackStatus?.positionMillis : 0
-              }
             />
           </View>
         )}

@@ -20,7 +20,6 @@ import { layout, screenContentMaxWidth } from "../../utils/style/layout";
 import { RemoteFileData } from "../../utils/types/files";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
-import { THUMBNAIL_WIDTH } from "../socialFeed/SocialThread/SocialMessageContent";
 
 export const AudioView: React.FC<{
   file: RemoteFileData;
@@ -68,11 +67,11 @@ export const AudioView: React.FC<{
 
   const audioWaveWidth = useMemo(() => {
     if (width > screenContentMaxWidth) {
-      return screenContentMaxWidth - 212 - (hasThumbnail ? THUMBNAIL_WIDTH : 0);
+      return screenContentMaxWidth - 540;
     } else {
-      return width - 212 - (hasThumbnail ? THUMBNAIL_WIDTH : 0);
+      return width - 540;
     }
-  }, [width, hasThumbnail]);
+  }, [width]);
 
   const positionPercent = useMemo(
     () =>
@@ -178,9 +177,6 @@ export const AudioView: React.FC<{
                     ? playbackStatus?.durationMillis || 0
                     : 1
                 }
-                currentDuration={
-                  playbackStatus?.isLoaded ? playbackStatus?.positionMillis : 0
-                }
               />
             </View>
           </View>
@@ -192,8 +188,8 @@ export const AudioView: React.FC<{
               }}
               resizeMode="cover"
               style={{
-                height: THUMBNAIL_WIDTH,
-                width: THUMBNAIL_WIDTH,
+                height: 140,
+                width: 140,
                 marginLeft: layout.spacing_x1,
                 borderRadius: 4,
               }}
