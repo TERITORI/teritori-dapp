@@ -7,6 +7,7 @@ interface Settings {
   selectedWalletId: string | undefined;
   NFTStorageAPI: string;
   isKeplrConnected: boolean;
+  isLeapConnected: boolean;
   isAdenaConnected: boolean;
   alreadyVisited: boolean;
   areTestnetsEnabled: boolean;
@@ -18,6 +19,7 @@ const initialState: Settings = {
   selectedNetworkId: "",
   NFTStorageAPI: process.env.NFT_STORAGE_API || "",
   isKeplrConnected: false,
+  isLeapConnected: false,
   isAdenaConnected: false,
   alreadyVisited: false,
   areTestnetsEnabled: false,
@@ -32,6 +34,9 @@ export const selectSelectedWalletId = (state: RootState) =>
 
 export const selectIsKeplrConnected = (state: RootState) =>
   state.settings.isKeplrConnected;
+
+export const selectIsLeapConnected = (state: RootState) =>
+  state.settings.isLeapConnected;
 
 export const selectIsAdenaConnected = (state: RootState) =>
   state.settings.isAdenaConnected;
@@ -58,6 +63,9 @@ const settingsSlice = createSlice({
     setIsKeplrConnected: (state, action: PayloadAction<boolean>) => {
       state.isKeplrConnected = action.payload;
     },
+    setIsLeapConnected: (state, action: PayloadAction<boolean>) => {
+      state.isLeapConnected = action.payload;
+    },
     setIsAdenaConnected: (state, action: PayloadAction<boolean>) => {
       state.isAdenaConnected = action.payload;
     },
@@ -77,6 +85,7 @@ export const {
   setSelectedNetworkId,
   setSelectedWalletId,
   setIsKeplrConnected,
+  setIsLeapConnected,
   setIsAdenaConnected,
   setAreTestnetsEnabled,
   setSidebarExpanded,

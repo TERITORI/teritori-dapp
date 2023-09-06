@@ -16,6 +16,7 @@ import { useTNS } from "../../context/TNSProvider";
 import { TeritoriNameServiceClient } from "../../contracts-clients/teritori-name-service/TeritoriNameService.client";
 import { useDAOs } from "../../hooks/dao/useDAOs";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
+import { useIsLeapConnected } from "../../hooks/useIsLeapConnected";
 import { useNSNameInfo } from "../../hooks/useNSNameInfo";
 import { useNSNameOwner } from "../../hooks/useNSNameOwner";
 import {
@@ -41,6 +42,8 @@ const NotOwnerActions: React.FC<{
 }> = ({ isPrimary, ownerId, onClose }) => {
   const [sendFundsModalVisible, setSendFundsModalVisible] = useState(false);
   const isKeplrConnected = useIsKeplrConnected();
+  const isLeapConnected = useIsLeapConnected();
+
   const navigation = useAppNavigation();
   return (
     <View
@@ -65,7 +68,7 @@ const NotOwnerActions: React.FC<{
       )}
       <PrimaryButton
         size="XL"
-        disabled={!isKeplrConnected}
+        disabled={!isKeplrConnected || !isLeapConnected}
         text="Send funds"
         // TODO: if no signed, connectKeplr, then, open modal
         onPress={() => setSendFundsModalVisible(true)}
