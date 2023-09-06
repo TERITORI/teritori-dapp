@@ -1,8 +1,9 @@
 import React, { FC, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 import Slider from "react-native-smooth-slider";
 
 import VolumeIcon from "../../../assets/icons/media-player/volume.svg";
+import VolumeOffIcon from "../../../assets/icons/media-player/volume_off.svg";
 import { useMediaPlayer } from "../../context/MediaPlayerProvider";
 import {
   neutral55,
@@ -10,14 +11,15 @@ import {
   primaryColor,
   secondaryColor,
 } from "../../utils/style/colors";
+import { layout } from "../../utils/style/layout";
 import { SVG } from "../SVG";
 import { CustomPressable } from "../buttons/CustomPressable";
-import { SpacerRow } from "../spacer";
 
 export const VolumeSlider: FC = () => {
   const { onChangeVolume } = useMediaPlayer();
   const [volume, setVolume] = useState(0.5);
   const [lastVolume, setLastVolume] = useState(0.5);
+  const [isHovered, setIsHovered] = useState(false);
 
   // We store a lastVolume to handle mute/unmute by clicking on the volume icon, with retrieving the precedent volume
   const onPressVolumeIcon = () => {
@@ -31,40 +33,46 @@ export const VolumeSlider: FC = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <CustomPressable onPress={onPressVolumeIcon}>
+    <View
+      style={{
+        flexDirection: "row",
+        alignItems: "center",
+      }}
+    >
+      <CustomPressable
+        onPress={onPressVolumeIcon}
+        style={{ padding: layout.spacing_x1 }}
+        onHoverIn={() => setIsHovered(true)}
+        onHoverOut={() => setIsHovered(false)}
+      >
         <SVG
-          source={VolumeIcon}
+          source={volume ? VolumeIcon : VolumeOffIcon}
           height={20}
           width={20}
-          color={volume ? secondaryColor : neutralA3}
+          color={isHovered ? secondaryColor : neutralA3}
         />
       </CustomPressable>
-      <SpacerRow size={1} />
-      <Slider
-        value={lastVolume}
-        onValueChange={(value: number) => {
-          onChangeVolume(value);
-          setVolume(value);
-          setLastVolume(value);
-        }}
-        useNativeDriver
-        thumbStyle={{ width: 12, height: 12 }}
-        thumbTouchSize={{ width: 24, height: 24 }}
-        thumbTintColor={secondaryColor}
-        thum
-        maximumValue={1}
-        minimumTrackTintColor={volume ? primaryColor : neutralA3}
-        maximumTrackTintColor={neutral55}
-        style={{ width: 100, height: 4 }}
-      />
+
+      <CustomPressable
+        onHoverIn={() => setIsHovered(true)}
+        onHoverOut={() => setIsHovered(false)}
+      >
+        <Slider
+          value={volume}
+          onValueChange={(value: number) => {
+            onChangeVolume(value);
+            setVolume(value);
+            setLastVolume(value);
+          }}
+          useNativeDriver
+          thumbStyle={{ width: isHovered ? 12 : 0, height: isHovered ? 12 : 0 }}
+          thumbTintColor={secondaryColor}
+          maximumValue={1}
+          minimumTrackTintColor={isHovered ? primaryColor : secondaryColor}
+          maximumTrackTintColor={neutral55}
+          style={{ width: 100, height: 4 }}
+        />
+      </CustomPressable>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-});

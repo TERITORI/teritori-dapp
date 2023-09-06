@@ -87,7 +87,6 @@ export const AudioView: React.FC<{
       style={{
         flexDirection: "row",
         alignItems: "center",
-        height: 140,
       }}
     >
       <TouchableOpacity

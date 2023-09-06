@@ -19,8 +19,8 @@ import { CollectionScreen } from "../../screens/Marketplace/CollectionScreen";
 import { CollectionToolsScreen } from "../../screens/Marketplace/CollectionToolsScreen";
 import { MarketplaceScreen } from "../../screens/Marketplace/MarketplaceScreen";
 import { NFTDetailScreen } from "../../screens/Marketplace/NFTDetailScreen";
-import { MusicPlayerAlbumScreen } from "../../screens/MusicPlayer/MusicPlayerAlbumScreen";
-import { MusicPlayerScreen } from "../../screens/MusicPlayer/MusicPlayerScreen";
+import { MusicScreen } from "../../screens/Music/MusicScreen";
+import { MusicAlbumScreen } from "../../screens/MusicAlbum/MusicAlbumScreen";
 import { MyCollectionScreen } from "../../screens/MyCollection/MyCollectionScreen";
 import { OrganizationDeployerScreen } from "../../screens/Organizations/OrganizationDeployerScreen";
 import { OrganizationsScreen } from "../../screens/Organizations/OrganizationsScreen";
@@ -294,15 +294,15 @@ export const Navigator: React.FC = () => {
           component={CoreDAOScreen}
           options={{ header: () => null, title: screenTitle("Core DAO") }}
         />
-        {/* ==== Music Player */}
+        {/* ==== Music */}
         <Stack.Screen
-          name="MusicPlayer"
-          component={MusicPlayerScreen}
-          options={{ header: () => null, title: screenTitle("Music Player") }}
+          name="Music"
+          component={MusicScreen}
+          options={{ header: () => null, title: screenTitle("Music") }}
         />
         <Stack.Screen
-          name="MusicPlayerAlbum"
-          component={MusicPlayerAlbumScreen}
+          name="MusicAlbum"
+          component={MusicAlbumScreen}
           options={{ header: () => null, title: screenTitle("Album Name") }}
         />
       </Stack.Navigator>

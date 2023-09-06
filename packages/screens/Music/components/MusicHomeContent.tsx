@@ -1,30 +1,30 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { View, StyleSheet, Pressable } from "react-native";
+import { View, Pressable, TextStyle, ViewStyle } from "react-native";
 import Animated, {
   useAnimatedScrollHandler,
   useSharedValue,
 } from "react-native-reanimated";
 
-import { AlbumCard } from "./components/AlbumCard";
-import { UploadAlbumModal } from "./components/UploadAlbumModal";
-import Logo from "../../../assets/logos/logo.svg";
-import { GetAllAlbumListRequest } from "../../api/musicplayer/v1/musicplayer";
-import { BrandText } from "../../components/BrandText";
-import { SVG } from "../../components/SVG";
-import { SpacerColumn, SpacerRow } from "../../components/spacer";
+import Logo from "../../../../assets/logos/logo.svg";
+import { GetAllAlbumListRequest } from "../../../api/musicplayer/v1/musicplayer";
+import { BrandText } from "../../../components/BrandText";
+import { SVG } from "../../../components/SVG";
+import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import {
   combineFetchAlbumPages,
   useFetchAlbums,
-} from "../../hooks/musicplayer/useFetchAlbums";
-import { primaryColor } from "../../utils/style/colors";
-import { fontSemibold14, fontSemibold20 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
+} from "../../../hooks/musicplayer/useFetchAlbums";
+import { neutral30, primaryColor } from "../../../utils/style/colors";
+import { fontSemibold14, fontSemibold20 } from "../../../utils/style/fonts";
+import { layout } from "../../../utils/style/layout";
+import { AlbumCard } from "../../MusicAlbum/components/AlbumCard";
+import { UploadAlbumModal } from "../../MusicAlbum/components/UploadAlbumModal";
 interface MusicPlayerProps {
   req: GetAllAlbumListRequest;
   idList: string[];
 }
 const numColumns = 5;
-export const MusicPlayerHomeContent: React.FC<MusicPlayerProps> = ({
+export const MusicHomeContent: React.FC<MusicPlayerProps> = ({
   req,
   idList,
 }) => {
@@ -67,12 +67,12 @@ export const MusicPlayerHomeContent: React.FC<MusicPlayerProps> = ({
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.oneLine}>
+    <View style={containerStyle}>
+      <View style={oneLineStyle}>
         <BrandText style={fontSemibold20}>All Albums</BrandText>
-        <View style={styles.buttonGroup}>
+        <View style={buttonGroupStyle}>
           <Pressable
-            style={styles.buttonContainer}
+            style={buttonContainerStyle}
             onPress={() => setOpenUploadModal(true)}
           >
             <SVG
@@ -80,19 +80,12 @@ export const MusicPlayerHomeContent: React.FC<MusicPlayerProps> = ({
               width={layout.spacing_x2}
               height={layout.spacing_x2}
             />
-            <BrandText style={styles.buttonText}>Upload album</BrandText>
+            <SpacerRow size={1.5} />
+            <BrandText style={buttonTextStyle}>Upload album</BrandText>
           </Pressable>
-          {/* <Pressable style={styles.buttonContainer}>
-            <SVG
-              source={Logo}
-              width={layout.spacing_x2}
-              height={layout.spacing_x2}
-            />
-            <BrandText style={styles.buttonText}>Create funding</BrandText>
-          </Pressable> */}
         </View>
       </View>
-      <View style={styles.contentGroup}>
+      <View style={contentGroupStyle}>
         <Animated.FlatList
           scrollEventThrottle={0.1}
           data={albums}
@@ -122,43 +115,37 @@ export const MusicPlayerHomeContent: React.FC<MusicPlayerProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    marginTop: layout.spacing_x3,
-    width: "100%",
-  },
-  oneLine: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  contentGroup: {
-    flexDirection: "row",
-    justifyContent: "center",
-    flexWrap: "wrap",
-    marginTop: layout.spacing_x3,
-    gap: layout.spacing_x2_5,
-    marginBottom: 40,
-  },
-  buttonGroup: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: layout.spacing_x2,
-  },
-  buttonContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingLeft: layout.spacing_x1,
-    paddingRight: layout.spacing_x1_5,
-    paddingVertical: layout.spacing_x1,
-    backgroundColor: "#2B2B33",
-    borderRadius: layout.spacing_x4,
-    gap: layout.spacing_x1_5,
-  },
-  buttonText: StyleSheet.flatten([
-    fontSemibold14,
-    {
-      color: primaryColor,
-    },
-  ]),
-});
+const containerStyle: ViewStyle = {
+  marginTop: layout.spacing_x3,
+  width: "100%",
+};
+const oneLineStyle: ViewStyle = {
+  flexDirection: "row",
+  justifyContent: "space-between",
+  alignItems: "center",
+};
+const contentGroupStyle: ViewStyle = {
+  flexDirection: "row",
+  justifyContent: "center",
+  flexWrap: "wrap",
+  marginTop: layout.spacing_x3,
+  marginBottom: 40,
+};
+const buttonGroupStyle: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+};
+const buttonContainerStyle: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  paddingLeft: layout.spacing_x1,
+  paddingRight: layout.spacing_x1_5,
+  paddingVertical: layout.spacing_x1,
+  backgroundColor: neutral30,
+  borderRadius: layout.spacing_x4,
+};
+const buttonTextStyle: TextStyle = {
+  ...fontSemibold14,
+
+  color: primaryColor,
+};

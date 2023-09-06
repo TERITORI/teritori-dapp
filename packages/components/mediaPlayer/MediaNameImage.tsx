@@ -23,13 +23,13 @@ export const MediaNameImage: FC = () => {
   //TODO: Video in MediaPlayer
   const isVideo = false;
 
-  if (!media) return null;
+  if (!media) return <View />;
   return (
     <OmniLink
       to={
         media?.albumId
           ? {
-              screen: "MusicPlayerAlbum",
+              screen: "MusicAlbum",
               params: { id: media?.albumId },
             }
           : {

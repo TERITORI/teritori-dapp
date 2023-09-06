@@ -1,13 +1,15 @@
 import React, { useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, ViewStyle, TextStyle } from "react-native";
 
 import AddLibrary from "../../../../../assets/music-player/add-library.svg";
+import RemoveLibrary from "../../../../../assets/music-player/remove-library.svg";
 import Tip from "../../../../../assets/music-player/tip-other.svg";
 import { signingMusicPlayerClient } from "../../../../client-creators/musicplayerClient";
 import { BrandText } from "../../../../components/BrandText";
 import { useCopyToClipboard } from "../../../../components/CopyToClipboard";
 import { SVG } from "../../../../components/SVG";
 import { TipModal } from "../../../../components/socialFeed/SocialActions/TipModal";
+import { SpacerColumn, SpacerRow } from "../../../../components/spacer";
 import { useFeedbacks } from "../../../../context/FeedbacksProvider";
 import { useSelectedNetworkId } from "../../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../../hooks/useSelectedWallet";
@@ -15,6 +17,7 @@ import {
   neutralA3,
   neutral33,
   secondaryColor,
+  neutral22,
 } from "../../../../utils/style/colors";
 import { fontSemibold13 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
@@ -26,8 +29,7 @@ interface TrackHoverMenuProps {
   hasLibrary: boolean;
   owner: string;
 }
-const shareMenuWidth = 188;
-const lineHeight = 18;
+
 export const TrackHoverMenu: React.FC<TrackHoverMenuProps> = ({
   album,
   hasLibrary,
@@ -92,71 +94,73 @@ export const TrackHoverMenu: React.FC<TrackHoverMenuProps> = ({
   };
 
   return (
-    <View style={styles.menuContainer}>
+    <View style={menuContainerStyle}>
       {wallet && wallet.address !== album.createdBy && !hasLibrary && (
-        <HoverView
-          normalStyle={styles.unitBoxNormal}
-          hoverStyle={styles.unitBoxHovered}
-          onPress={addToLibrary}
-        >
-          <View style={styles.oneLine}>
-            <SVG
-              source={AddLibrary}
-              width={layout.spacing_x2}
-              height={layout.spacing_x2}
-            />
-            <BrandText style={styles.text}>Add to library</BrandText>
-          </View>
-        </HoverView>
+        <>
+          <HoverView
+            normalStyle={unitBoxNormalStyle}
+            hoverStyle={unitBoxHoveredStyle}
+            onPress={addToLibrary}
+          >
+            <View style={oneLineStyle}>
+              <SVG source={AddLibrary} width={16} height={16} />
+              <SpacerRow size={1} />
+              <BrandText style={text}>Add to library</BrandText>
+            </View>
+          </HoverView>
+          <SpacerColumn size={0.75} />
+        </>
       )}
       {wallet && wallet.address !== album.createdBy && hasLibrary && (
-        <HoverView
-          normalStyle={styles.unitBoxNormal}
-          hoverStyle={styles.unitBoxHovered}
-          onPress={removeFromLibrary}
-        >
-          <View style={styles.oneLine}>
-            <SVG
-              source={AddLibrary}
-              width={layout.spacing_x2}
-              height={layout.spacing_x2}
-            />
-            <BrandText style={styles.text}>Remove From library</BrandText>
-          </View>
-        </HoverView>
+        <>
+          <HoverView
+            normalStyle={unitBoxNormalStyle}
+            hoverStyle={unitBoxHoveredStyle}
+            onPress={removeFromLibrary}
+          >
+            <View style={oneLineStyle}>
+              <SVG source={RemoveLibrary} width={16} height={16} />
+              <BrandText style={text}>Remove from library</BrandText>
+            </View>
+          </HoverView>
+          <SpacerColumn size={0.75} />
+        </>
       )}
-      <View style={styles.divideLine} />
+      <View style={divideLineStyle} />
+      <SpacerColumn size={0.75} />
       <HoverView
-        normalStyle={styles.unitBoxNormal}
-        hoverStyle={styles.unitBoxHovered}
+        normalStyle={unitBoxNormalStyle}
+        hoverStyle={unitBoxHoveredStyle}
         onPress={handleTip}
       >
-        <View style={styles.oneLine}>
+        <View style={oneLineStyle}>
           <SVG
             source={Tip}
             width={layout.spacing_x2}
             height={layout.spacing_x2}
           />
-          <BrandText style={styles.text}>Tip this track</BrandText>
+          <BrandText style={text}>Tip this track</BrandText>
         </View>
       </HoverView>
-      <View style={styles.divideLine} />
+      <SpacerColumn size={0.75} />
+      <View style={divideLineStyle} />
+      <SpacerColumn size={0.75} />
       <HoverView
-        normalStyle={styles.unitBoxNormal}
-        hoverStyle={styles.unitBoxHovered}
+        normalStyle={unitBoxNormalStyle}
+        hoverStyle={unitBoxHoveredStyle}
         onPress={() => {
           copyToClipboard(
             `${window.location.origin}/music-player/album/${album.id}`
           );
         }}
       >
-        <View style={styles.oneLine}>
+        <View style={oneLineStyle}>
           <SVG
             source={Tip}
             width={layout.spacing_x2}
             height={layout.spacing_x2}
           />
-          <BrandText style={styles.text}>Copy link to the track</BrandText>
+          <BrandText style={text}>Copy track's URL</BrandText>
         </View>
       </HoverView>
       <TipModal
@@ -169,75 +173,40 @@ export const TrackHoverMenu: React.FC<TrackHoverMenuProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  hoverBox: {
-    position: "absolute",
-    width: "100%",
-    height: "100%",
-    left: 0,
-    top: 0,
-    backgroundColor: "rgba(0,0,0,0.5)",
-    padding: layout.spacing_x1_5,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-end",
-    zIndex: 999,
-  },
-  menuContainer: {
-    borderRadius: layout.spacing_x1_5,
-    position: "absolute",
-    right: layout.spacing_x1_5,
-    bottom: 44,
-    backgroundColor: "rgba(41, 41, 41, 1)",
-    padding: layout.spacing_x1_5,
-    flexDirection: "column",
-    gap: layout.spacing_x0_75,
-  },
-  unitBoxNormal: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: layout.spacing_x0_75,
-    borderRadius: layout.spacing_x0_75,
-  },
-  unitBoxHovered: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: layout.spacing_x0_75,
-    backgroundColor: neutral33,
-    borderRadius: layout.spacing_x0_75,
-  },
-  oneLine: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: layout.spacing_x1,
-  },
-  text: StyleSheet.flatten([
-    fontSemibold13,
-    {
-      color: neutralA3,
-    },
-  ]),
-  divideLine: {
-    height: 1,
-    opacity: 0.12,
-    backgroundColor: secondaryColor,
-  },
-  shareMenuContainer: {
-    borderRadius: layout.spacing_x1_5,
-    position: "absolute",
-    left: -(layout.spacing_x1_5 + shareMenuWidth),
-    bottom: -(
-      layout.spacing_x1_5 +
-      lineHeight +
-      layout.spacing_x1_5 +
-      2 * layout.spacing_x0_75
-    ),
-    backgroundColor: "rgba(41, 41, 41, 1)",
-    padding: layout.spacing_x1_5,
-    flexDirection: "column",
-    gap: layout.spacing_x0_75,
-    width: shareMenuWidth,
-  },
-});
+const menuContainerStyle: ViewStyle = {
+  borderRadius: layout.spacing_x1_5,
+  position: "absolute",
+  right: layout.spacing_x1_5,
+  bottom: 44,
+  backgroundColor: neutral22,
+  padding: layout.spacing_x1_5,
+};
+const unitBoxNormalStyle: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between",
+  padding: layout.spacing_x0_75,
+  borderRadius: layout.spacing_x0_75,
+};
+const unitBoxHoveredStyle: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between",
+  padding: layout.spacing_x0_75,
+  backgroundColor: neutral33,
+  borderRadius: layout.spacing_x0_75,
+};
+const oneLineStyle: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+};
+const text: TextStyle = {
+  ...fontSemibold13,
+
+  color: neutralA3,
+};
+const divideLineStyle: ViewStyle = {
+  height: 1,
+  opacity: 0.12,
+  backgroundColor: secondaryColor,
+};

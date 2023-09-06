@@ -109,12 +109,12 @@ export function getAvailableApps(): dAppGroup {
           selectedByDefault: false,
           alwaysOn: false,
         },
-        musicPlayer: {
-          id: "musicPlayer",
-          title: "Music Player",
-          description: "Play your favorite music",
+        music: {
+          id: "music",
+          title: "Music",
+          description: "Listen your favorite music",
           icon: musicplayer,
-          route: "MusicPlayer",
+          route: "Music",
           groupKey: "teritori-core-apps",
           selectedByDefault: false,
           alwaysOn: false,

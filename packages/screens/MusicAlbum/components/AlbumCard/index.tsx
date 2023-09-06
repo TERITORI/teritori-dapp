@@ -1,9 +1,16 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Image, TouchableOpacity } from "react-native";
+import {
+  View,
+  Image,
+  TouchableOpacity,
+  ViewStyle,
+  TextStyle,
+  ImageStyle,
+} from "react-native";
 
 import { TrackHoverMenu } from "./TrackHoverMenu";
-import HoveredMenu from "../../../../../assets/music-player/hovered-menu.svg";
 import NormalPlay from "../../../../../assets/music-player/normal-play.svg";
+import ThreeDotsCircleWhite from "../../../../../assets/music-player/three-dot-circle-white.svg";
 import { BrandText } from "../../../../components/BrandText";
 import { OmniLink } from "../../../../components/OmniLink";
 import { SVG } from "../../../../components/SVG";
@@ -52,23 +59,23 @@ export const AlbumCard: React.FC<{
   };
 
   return (
-    <View style={styles.unitCard}>
+    <View style={unitCardStyle}>
       <View>
         <CustomPressable
           onHoverIn={() => setIsHovered(true)}
           onHoverOut={() => setIsHovered(false)}
-          style={styles.imgBox}
+          style={imgBoxStyle}
           onPress={() => {
-            navigation.navigate("MusicPlayerAlbum", { id: album.id });
+            navigation.navigate("MusicAlbum", { id: album.id });
           }}
         >
           <Image
             source={{ uri: ipfsURLToHTTPURL(album.image) }}
-            style={[isHovered && { opacity: 0.5 }, styles.contentImg]}
+            style={[isHovered && { opacity: 0.5 }, contentImgStyle]}
           />
           <SpacerColumn size={1.5} />
 
-          <View style={styles.imgButtonsBox}>
+          <View style={imgButtonsBoxStyle}>
             <TouchableOpacity onPress={onPressPlayAlbum}>
               <SVG
                 source={NormalPlay}
@@ -81,7 +88,7 @@ export const AlbumCard: React.FC<{
               onPress={() => setOpenMenu((value: boolean) => !value)}
             >
               <SVG
-                source={HoveredMenu}
+                source={ThreeDotsCircleWhite}
                 width={buttonsHeight}
                 height={buttonsHeight}
               />
@@ -99,59 +106,55 @@ export const AlbumCard: React.FC<{
             )}
           </View>
         </CustomPressable>
-        <BrandText style={styles.contentTitle}>{album.name}</BrandText>
+        <BrandText style={contentTitleStyle}>{album.name}</BrandText>
         <SpacerColumn size={0.5} />
-        <BrandText style={styles.contentDescription} numberOfLines={2}>
+        <BrandText style={contentDescriptionStyle} numberOfLines={2}>
           {album.description}
         </BrandText>
       </View>
       <OmniLink
         to={{ screen: "UserPublicProfile", params: { id: album.createdBy } }}
       >
-        <BrandText style={styles.contentName}>@{username}</BrandText>
+        <BrandText style={contentNameStyle}>@{username}</BrandText>
       </OmniLink>
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  unitCard: {
-    width: musicPlayerCardWidth,
-    height: 338,
-    padding: layout.spacing_x1_5,
-    backgroundColor: neutral17,
-    borderRadius: 12,
-    justifyContent: "space-between",
-  },
-  imgBox: {
-    position: "relative",
-  },
-  imgButtonsBox: {
-    position: "absolute",
-    paddingHorizontal: layout.spacing_x1_5,
-    flexDirection: "row",
-    width: "100%",
-    top: imageHeight - buttonsHeight - layout.spacing_x1_5,
-    right: 0,
-    justifyContent: "space-between",
-  },
-  contentTitle: StyleSheet.flatten([fontSemibold14]),
-  contentDescription: StyleSheet.flatten([
-    fontMedium13,
-    {
-      color: neutral77,
-    },
-  ]),
-  contentImg: {
-    width: "100%",
-    borderRadius: 8,
-    aspectRatio: 1,
-    height: imageHeight,
-  },
-  contentName: StyleSheet.flatten([
-    fontSemibold14,
-    {
-      color: primaryColor,
-    },
-  ]),
-});
+const unitCardStyle: ViewStyle = {
+  width: musicPlayerCardWidth,
+  height: 338,
+  padding: layout.spacing_x1_5,
+  backgroundColor: neutral17,
+  borderRadius: 12,
+  justifyContent: "space-between",
+};
+const imgBoxStyle: ViewStyle = {
+  position: "relative",
+};
+const imgButtonsBoxStyle: ViewStyle = {
+  position: "absolute",
+  paddingHorizontal: layout.spacing_x1_5,
+  flexDirection: "row",
+  width: "100%",
+  top: imageHeight - buttonsHeight - layout.spacing_x1_5,
+  right: 0,
+  justifyContent: "space-between",
+};
+const contentTitleStyle: TextStyle = { ...fontSemibold14 };
+const contentDescriptionStyle: TextStyle = {
+  ...fontMedium13,
+
+  color: neutral77,
+};
+const contentImgStyle: ImageStyle = {
+  width: "100%",
+  borderRadius: 8,
+  aspectRatio: 1,
+  height: imageHeight,
+};
+const contentNameStyle: TextStyle = {
+  ...fontSemibold14,
+
+  color: primaryColor,
+};

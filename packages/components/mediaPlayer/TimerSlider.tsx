@@ -1,44 +1,66 @@
-import React, { FC } from "react";
-import { StyleSheet, View } from "react-native";
+import React, { FC, useState } from "react";
+import { TextStyle, View } from "react-native";
 import Slider from "react-native-smooth-slider";
 
 import { useMediaPlayer } from "../../context/MediaPlayerProvider";
 import { getAudioDuration } from "../../utils/audio";
-import { neutral55, neutral77, secondaryColor } from "../../utils/style/colors";
+import {
+  neutral55,
+  neutral77,
+  primaryColor,
+  secondaryColor,
+} from "../../utils/style/colors";
 import { fontSemibold12 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
+import { CustomPressable } from "../buttons/CustomPressable";
 import { SpacerRow } from "../spacer";
 
 export const TimerSlider: FC = () => {
   const { media, lastTimePosition, onChangeTimerPosition } = useMediaPlayer();
+  const [isSliderHovered, setIsSliderHovered] = useState(false);
 
   return (
-    <View style={styles.container}>
+    <View
+      style={{
+        flexDirection: "row",
+        alignItems: "center",
+      }}
+    >
       <View style={{ width: 46, alignItems: "flex-end" }}>
-        {!!media?.duration && (
-          <BrandText style={styles.timeText}>
+        {media && (
+          <BrandText style={timeTextStyle}>
             {getAudioDuration(lastTimePosition)}
           </BrandText>
         )}
       </View>
       <SpacerRow size={1} />
-      <Slider
-        value={lastTimePosition}
-        onValueChange={onChangeTimerPosition}
-        useNativeDriver
-        thumbStyle={{ width: 0, height: 0 }}
-        thumbTouchSize={{ width: 24, height: 24 }}
-        maximumValue={media?.duration}
-        minimumTrackTintColor={secondaryColor}
-        maximumTrackTintColor={neutral55}
-        style={{ width: 324, height: 4 }}
-        disabled={!media?.duration}
-      />
+      <CustomPressable
+        onHoverIn={() => setIsSliderHovered(true)}
+        onHoverOut={() => setIsSliderHovered(false)}
+      >
+        <Slider
+          value={lastTimePosition}
+          onValueChange={onChangeTimerPosition}
+          useNativeDriver
+          thumbStyle={{
+            width: isSliderHovered && media ? 12 : 0,
+            height: isSliderHovered && media ? 12 : 0,
+          }}
+          thumbTintColor={secondaryColor}
+          maximumValue={media?.duration}
+          minimumTrackTintColor={
+            isSliderHovered && media ? primaryColor : secondaryColor
+          }
+          maximumTrackTintColor={neutral55}
+          style={{ width: 324, height: 4 }}
+          disabled={!media}
+        />
+      </CustomPressable>
       <SpacerRow size={1} />
       <View style={{ width: 40 }}>
         {!!media?.duration && (
-          <BrandText style={styles.timeText}>
-            {getAudioDuration(media?.duration)}
+          <BrandText style={timeTextStyle}>
+            {getAudioDuration(media.duration)}
           </BrandText>
         )}
       </View>
@@ -46,15 +68,7 @@ export const TimerSlider: FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  timeText: StyleSheet.flatten([
-    fontSemibold12,
-    {
-      color: neutral77,
-    },
-  ]),
-});
+const timeTextStyle: TextStyle = {
+  ...fontSemibold12,
+  color: neutral77,
+};

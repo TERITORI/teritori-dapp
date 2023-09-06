@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { View } from "react-native";
 
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import { AlbumCard } from "../../screens/MusicPlayer/components/AlbumCard";
+import { AlbumCard } from "../../screens/MusicAlbum/components/AlbumCard";
 import { mustGetMusicplayerClient } from "../../utils/backend";
 import { AlbumInfo, AlbumMetadataInfo } from "../../utils/types/mediaPlayer";
 
