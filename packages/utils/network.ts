@@ -9,6 +9,8 @@ export const walletProviderToNetworkKind = (
       return NetworkKind.Ethereum;
     case WalletProvider.Keplr:
       return NetworkKind.Cosmos;
+    case WalletProvider.Leap:
+      return NetworkKind.Cosmos;
     case WalletProvider.Adena:
       return NetworkKind.Gno;
     default:

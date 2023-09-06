@@ -18,6 +18,7 @@ import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { rewardsPrice, TotalRewards, useRewards } from "../../hooks/useRewards";
 import { accountExplorerLink, getUserId } from "../../networks";
 import { neutral33, neutral77 } from "../../utils/style/colors";
+import { WalletProvider } from "../../utils/walletProvider";
 
 export interface WalletItemProps {
   index: number;
@@ -26,6 +27,7 @@ export interface WalletItemProps {
     id: number;
     title: string;
     address: string;
+    provider: WalletProvider;
     pendingRewards: TotalRewards[];
     staked: number;
     networkId: string;

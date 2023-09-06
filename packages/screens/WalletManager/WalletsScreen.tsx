@@ -6,9 +6,9 @@ import { WalletItem, WalletItemProps } from "./WalletItem";
 import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../assets/icons/chevron-up.svg";
 import { BrandText } from "../../components/BrandText";
-import { NetworkIcon } from "../../components/NetworkIcon";
 import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
+import { WalletProviderIcon } from "../../components/WalletProviderIcon";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { ConnectWalletModal } from "../../components/connectWallet/ConnectWalletModal";
@@ -61,7 +61,10 @@ const Wallet: React.FC<WalletProps> = ({ item, index, itemsCount }) => {
               alignItems: "center",
             }}
           >
-            <NetworkIcon networkId={item.data[0].networkId} size={32} />
+            <WalletProviderIcon
+              walletProvider={item.data[0].provider}
+              size={32}
+            />
             <BrandText
               style={{
                 marginLeft: 12,
@@ -125,6 +128,7 @@ export const WalletManagerWalletsScreen: ScreenFC<
               title,
               address: selectedWallet.address,
               networkId: selectedWallet.networkId,
+              provider: selectedWallet?.provider,
               pendingRewards: totalsRewards,
               claimReward,
               staked: 42,
