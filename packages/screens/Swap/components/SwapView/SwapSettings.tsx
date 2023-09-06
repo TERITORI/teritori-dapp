@@ -39,7 +39,7 @@ const SelectableItem: React.FC<{
     <Pressable
       style={[
         {
-          padding: layout.padding_x1,
+          padding: layout.spacing_x1,
           flexDirection: "row",
           borderRadius: 7,
           height: 32,
@@ -130,7 +130,7 @@ export const SwapSettings: React.FC<{
       <FadeInView style={{ position: "absolute", right: 20, top: 55 }}>
         <TertiaryBox
           mainContainerStyle={{
-            padding: layout.padding_x2_5,
+            padding: layout.spacing_x2_5,
             alignItems: "flex-start",
           }}
           width={306}
@@ -142,13 +142,13 @@ export const SwapSettings: React.FC<{
             style={{
               flexDirection: "row",
               alignItems: "center",
-              marginTop: layout.padding_x1,
-              marginBottom: layout.padding_x2,
+              marginTop: layout.spacing_x1,
+              marginBottom: layout.spacing_x2,
             }}
           >
             <BrandText
               style={[
-                { marginRight: layout.padding_x1, color: neutral77 },
+                { marginRight: layout.spacing_x1, color: neutral77 },
                 fontSemibold14,
               ]}
             >
@@ -164,7 +164,7 @@ export const SwapSettings: React.FC<{
 
           <TertiaryBox
             mainContainerStyle={{
-              padding: layout.padding_x0_5,
+              padding: layout.spacing_x0_5,
               flexDirection: "row",
             }}
             fullWidth
@@ -233,7 +233,7 @@ export const SwapSettings: React.FC<{
           {/*====== Info box */}
           {infoVisible && (
             <TertiaryBox
-              mainContainerStyle={{ padding: layout.padding_x2 }}
+              mainContainerStyle={{ padding: layout.spacing_x2 }}
               style={{ position: "absolute", left: -36, top: -26 }}
               noBrokenCorners
             >

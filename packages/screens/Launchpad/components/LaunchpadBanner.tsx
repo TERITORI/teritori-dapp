@@ -17,7 +17,6 @@ export const LaunchpadBanner: React.FC = () => {
     maxSize: { width: maxWidth },
   });
 
-  // returns
   return (
     <View style={styles.container}>
       <Image

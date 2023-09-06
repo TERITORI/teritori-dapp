@@ -47,7 +47,6 @@ export const GameBgOverlay: React.FC<GameBgOverlayProps> = ({ type }) => {
     }
   }, [type, width]);
 
-  // returns
   return (
     <View style={[styles.absolute, styles[type]]}>
       <SVG

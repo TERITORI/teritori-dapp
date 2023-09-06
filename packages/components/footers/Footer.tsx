@@ -22,18 +22,18 @@ import { TertiaryBox } from "../boxes/TertiaryBox";
 const FooterSocialNetworks: React.FC = () => {
   return (
     <TertiaryBox
-      mainContainerStyle={{ padding: layout.padding_x1, flexDirection: "row" }}
-      style={{ marginBottom: layout.contentPadding }}
+      mainContainerStyle={{ padding: layout.spacing_x1, flexDirection: "row" }}
+      style={{ marginBottom: layout.contentSpacing }}
     >
       <TouchableOpacity
-        style={{ marginRight: layout.padding_x1 }}
+        style={{ marginRight: layout.spacing_x1 }}
         onPress={() => Linking.openURL("https://medium.com/teritori/")}
       >
         <TertiaryBox
           mainContainerStyle={{
             borderColor: secondaryColor,
             borderRadius: 12,
-            padding: layout.padding_x1_5,
+            padding: layout.spacing_x1_5,
           }}
         >
           <SVG source={mediumSVG} width={20} height={20} />
@@ -41,14 +41,14 @@ const FooterSocialNetworks: React.FC = () => {
       </TouchableOpacity>
 
       <TouchableOpacity
-        style={{ marginRight: layout.padding_x1 }}
+        style={{ marginRight: layout.spacing_x1 }}
         onPress={() => Linking.openURL("https://twitter.com/TeritoriNetwork")}
       >
         <TertiaryBox
           mainContainerStyle={{
             borderColor: secondaryColor,
             borderRadius: 12,
-            padding: layout.padding_x1_5,
+            padding: layout.spacing_x1_5,
           }}
         >
           <SVG source={twitterSVG} width={20} height={20} />
@@ -62,7 +62,7 @@ const FooterSocialNetworks: React.FC = () => {
           mainContainerStyle={{
             borderColor: secondaryColor,
             borderRadius: 12,
-            padding: layout.padding_x1_5,
+            padding: layout.spacing_x1_5,
           }}
         >
           <SVG source={discordSVG} width={20} height={20} />
@@ -80,7 +80,7 @@ const FooterGetUp: React.FC = () => {
         width: "100%",
         maxWidth: screenContentMaxWidthLarge,
         justifyContent: "space-between",
-        marginBottom: layout.contentPadding,
+        marginBottom: layout.contentSpacing,
       }}
     >
       <Image
@@ -110,7 +110,7 @@ const FooterGetUp: React.FC = () => {
 
 const FooterLogo: React.FC = () => {
   return (
-    <View style={{ marginBottom: layout.padding_x4 }}>
+    <View style={{ marginBottom: layout.spacing_x4 }}>
       <SVG source={logoSVG} width={88} height={88} />
     </View>
   );

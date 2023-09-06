@@ -39,7 +39,6 @@ export const StakeDetailModal: React.FC<StakeDetailModalProps> = ({
   onPressRedelegate,
 }) => {
   const imageURL = useKeybaseAvatarURL(data?.identity || "");
-  // returns
   const Header = useCallback(
     () => (
       <>
@@ -137,7 +136,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    padding: layout.padding_x2_5,
+    padding: layout.spacing_x2_5,
   },
   container: {
     width: 446,

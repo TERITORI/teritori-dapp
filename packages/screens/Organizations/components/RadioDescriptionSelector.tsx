@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderColor: neutral33,
     borderWidth: 1,
-    padding: layout.padding_x2_5,
+    padding: layout.spacing_x2_5,
   },
   row: { flexDirection: "row", alignItems: "center" },
 });

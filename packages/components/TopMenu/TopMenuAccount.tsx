@@ -203,15 +203,16 @@ const WalletRow: FC<{ address: string; userId: string }> = ({
 // FIXME: remove StyleSheet.create
 // eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
+  container: {
+    padding: layout.spacing_x2,
+  },
   userImageLine: {
     width: "100%",
-    marginBottom: layout.padding_x1_5,
-    marginTop: layout.padding_x2,
-    paddingHorizontal: layout.padding_x2,
+    marginBottom: layout.spacing_x1_5,
   },
   switchAccount: {
     ...(fontSemibold14 as object),
-    marginRight: layout.padding_x0_5,
+    marginRight: layout.spacing_x0_5,
   },
   manageProfile: {
     ...(fontSemibold14 as object),

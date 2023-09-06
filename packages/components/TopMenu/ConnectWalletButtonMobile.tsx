@@ -18,7 +18,6 @@ export const ConnectWalletButtonMobile: FC<{
   const toggleConnectWallet = () =>
     setIsConnectWalletVisible(!isConnectWalletVisible);
 
-  // returns
   return (
     <>
       <View style={style}>

@@ -1,7 +1,7 @@
 import { Target } from "@nandorojo/anchor";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import React, { Suspense, useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { View, ViewStyle } from "react-native";
 
 import { NFTAttributes } from "./NFTAttributes";
 import starSVG from "../../../assets/icons/star.svg";
@@ -10,6 +10,8 @@ import {
   NFTCollectionAttributesRequest,
 } from "../../api/marketplace/v1/marketplace";
 import { useTransactionModals } from "../../context/TransactionModalsProvider";
+import { useIsMobile } from "../../hooks/useIsMobile";
+import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { parseNetworkObjectId } from "../../networks";
 import { mustGetMarketplaceClient } from "../../utils/backend";
 import { RootStackParamList } from "../../utils/navigation";
@@ -35,7 +37,17 @@ import { TransactionModals } from "../modals/transaction/TransactionModals";
 import { SpacerColumn } from "../spacer";
 import { Tabs } from "../tabs/Tabs";
 
-const mainInfoTabItems = {
+const mainInfoTabItems: {
+  about: {
+    name: string;
+  };
+  attributes: {
+    name: string;
+  };
+  details?: {
+    name: string;
+  };
+} = {
   about: {
     name: "About",
   },
@@ -59,6 +71,12 @@ export const NFTMainInfo: React.FC<{
   ) => Promise<string | undefined>;
   cancelListing: () => Promise<string | undefined>;
 }> = ({ nftId, nftInfo, buy, sell, cancelListing, showMarketplace }) => {
+  const isMobile = useIsMobile();
+  const { width } = useMaxResolution({ responsive: true, noMargin: true });
+  if (isMobile) {
+    delete mainInfoTabItems["details"];
+    sectionContainerStyles.width = width < 600 ? width : 600;
+  }
   const { openTransactionModals } = useTransactionModals();
   const { params } = useRoute<RouteProp<RootStackParamList, "NFTDetail">>();
 
@@ -105,7 +123,7 @@ export const NFTMainInfo: React.FC<{
     switch (selectedTab) {
       case "about":
         return (
-          <View style={styles.sectionContainer}>
+          <View style={sectionContainerStyles}>
             <BrandText
               style={[fontSemibold14, { marginBottom: 24, width: "100%" }]}
             >
@@ -115,7 +133,7 @@ export const NFTMainInfo: React.FC<{
         );
       case "attributes":
         return (
-          <View style={styles.sectionContainer}>
+          <View style={sectionContainerStyles}>
             {nftInfo && (
               <NFTAttributes nftAttributes={attributes} nftInfo={nftInfo} />
             )}
@@ -123,7 +141,7 @@ export const NFTMainInfo: React.FC<{
         );
       case "details":
         return (
-          <View style={styles.sectionContainer}>
+          <View style={sectionContainerStyles}>
             <View
               style={{
                 flexDirection: "row",
@@ -203,26 +221,29 @@ export const NFTMainInfo: React.FC<{
       <View
         style={{
           flexDirection: "row",
-          width: "100%",
+          width: isMobile && width < 600 ? width : "100%",
           flexWrap: "wrap",
           justifyContent: "center",
         }}
       >
         {/*---- Image NFT */}
         <TertiaryBox
-          width={464}
-          height={464}
-          style={{ marginRight: 28, marginBottom: 40 }}
+          width={isMobile && width < 464 ? width : 464}
+          height={isMobile && width < 464 ? width : 464}
+          style={{
+            marginRight: isMobile && width < 464 ? 0 : 28,
+            marginBottom: 40,
+          }}
         >
           <ImageWithTextInsert
             imageURL={nftInfo?.imageURL}
             textInsert={nftInfo?.textInsert}
-            size={462}
+            size={isMobile && width < 464 ? width : 462}
             style={{ borderRadius: 8 }}
           />
         </TertiaryBox>
         {/*---- Info NFT */}
-        <View style={{ maxWidth: 600 }}>
+        <View style={{ maxWidth: isMobile && width < 600 ? width : 600 }}>
           <BrandText style={[fontSemibold28, { marginBottom: 12 }]}>
             {nftInfo?.name}
           </BrandText>
@@ -283,19 +304,26 @@ export const NFTMainInfo: React.FC<{
         </View>
       </View>
 
-      {showMarketplace && (
-        <Target style={styles.collapsableContainer} name="price-history">
-          <Suspense fallback={<></>}>
-            <CollapsablePriceHistory nftId={nftId} />
-          </Suspense>
-        </Target>
+      {!isMobile && (
+        <>
+          {showMarketplace && (
+            <Target style={collapsableContainerStyles} name="price-history">
+              <Suspense fallback={<></>}>
+                <CollapsablePriceHistory nftId={nftId} />
+              </Suspense>
+            </Target>
+          )}
+          <Target name="activity" style={collapsableContainerStyles}>
+            <CollapsableSection
+              icon={starSVG}
+              title="Activity"
+              isExpandedByDefault
+            >
+              <ActivityTable nftId={nftId} />
+            </CollapsableSection>
+          </Target>
+        </>
       )}
-      <Target name="activity" style={styles.collapsableContainer}>
-        <CollapsableSection icon={starSVG} title="Activity" isExpandedByDefault>
-          <ActivityTable nftId={nftId} />
-        </CollapsableSection>
-      </Target>
-
       {/* ====== "Buy this NFT" three modals*/}
       <TransactionModals
         startTransaction={buy}
@@ -331,16 +359,12 @@ export const NFTMainInfo: React.FC<{
   );
 };
 
-// FIXME: remove StyleSheet.create
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  sectionContainer: {
-    width: 600,
-    paddingVertical: layout.padding_x3,
-  },
-  collapsableContainer: {
-    width: "100%",
-    maxWidth: screenContentMaxWidth,
-    marginBottom: layout.padding_x2,
-  },
-});
+const sectionContainerStyles: ViewStyle = {
+  width: 600,
+  paddingVertical: layout.spacing_x3,
+};
+const collapsableContainerStyles: ViewStyle = {
+  width: "100%",
+  maxWidth: screenContentMaxWidth,
+  marginBottom: layout.spacing_x2,
+};

@@ -223,7 +223,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
         <View style={styles.floatingActions}>
           <CreateShortPostButtonRound
             onPress={() => setCreateModalVisible(true)}
-            style={{ marginBottom: layout.padding_x1_5 }}
+            style={{ marginBottom: layout.spacing_x1_5 }}
           />
 
           <RefreshButtonRound isRefreshing={isLoadingValue} onPress={refetch} />

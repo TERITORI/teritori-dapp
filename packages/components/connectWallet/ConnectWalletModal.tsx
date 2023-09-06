@@ -3,6 +3,7 @@ import { StyleSheet, View } from "react-native";
 
 import { ConnectAdenaButton } from "./ConnectAdenaButton";
 import { ConnectKeplrButton } from "./ConnectKeplrButton";
+import { ConnectLeapButton } from "./ConnectLeapButton";
 import { ConnectMetamaskButton } from "./ConnectMetamaskButton";
 import { ConnectWalletButton } from "./components/ConnectWalletButton";
 import walletConnectSVG from "../../../assets/icons/wallet-connect.svg";
@@ -30,7 +31,6 @@ export const ConnectWalletModal: React.FC<ConnectWalletProps> = ({
   // functions
   const toggleDisclaimer = () => setIsDisclaimerVisible(!isDisclaimerVisible);
 
-  // returns
   return (
     <ModalBase
       label="Connect Wallet"
@@ -41,9 +41,11 @@ export const ConnectWalletModal: React.FC<ConnectWalletProps> = ({
       width={457}
       noBrokenCorners
     >
-      <ConnectMetamaskButton onDone={onClose} />
-      <SpacerColumn size={1.5} />
       <ConnectKeplrButton onDone={onClose} />
+      <SpacerColumn size={1.5} />
+      <ConnectLeapButton onDone={onClose} />
+      <SpacerColumn size={1.5} />
+      <ConnectMetamaskButton onDone={onClose} />
       <SpacerColumn size={1.5} />
       <ConnectAdenaButton onDone={onClose} />
       <SpacerColumn size={1.5} />
@@ -82,7 +84,7 @@ export const ConnectWalletModal: React.FC<ConnectWalletProps> = ({
 // FIXME: remove StyleSheet.create
 // eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
-  footer: { padding: layout.padding_x4, paddingBottom: layout.padding_x2_5 },
+  footer: { padding: layout.spacing_x4, paddingBottom: layout.spacing_x2_5 },
   footerText: StyleSheet.flatten([
     fontSemibold14,
     {

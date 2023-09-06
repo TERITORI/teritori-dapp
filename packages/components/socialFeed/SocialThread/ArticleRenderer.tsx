@@ -25,7 +25,7 @@ export const ArticleRenderer: React.FC<Props> = ({
   return (
     <>
       {!!metadata?.title && (
-        <BrandText style={{ marginBottom: layout.padding_x1 }}>
+        <BrandText style={{ marginBottom: layout.spacing_x1 }}>
           {metadata.title}
         </BrandText>
       )}
@@ -36,7 +36,7 @@ export const ArticleRenderer: React.FC<Props> = ({
           style={{
             width: "100%",
             height: ARTICLE_COVER_IMAGE_HEIGHT,
-            marginBottom: layout.padding_x1_5,
+            marginBottom: layout.spacing_x1_5,
           }}
         />
       )}

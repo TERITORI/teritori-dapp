@@ -77,7 +77,6 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
 
   const { control, setValue, handleSubmit } = useForm<TransactionForm>();
 
-  // returns
   const ModalHeader = useCallback(
     () => (
       <View style={styles.rowCenter}>
@@ -307,11 +306,11 @@ const styles = StyleSheet.create({
   },
   leftChevron: {
     position: "absolute",
-    left: -(layout.padding_x3 * 2),
+    left: -(layout.spacing_x3 * 2),
   },
   rightChevron: {
     position: "absolute",
-    right: -(layout.padding_x3 * 2),
+    right: -(layout.spacing_x3 * 2),
   },
   jcCenter: {
     justifyContent: "center",
@@ -328,7 +327,7 @@ const styles = StyleSheet.create({
     marginTop: 64 / 2,
   },
   container: {
-    paddingBottom: layout.padding_x3,
+    paddingBottom: layout.spacing_x3,
   },
   estimatedText: StyleSheet.flatten([
     fontSemibold14,

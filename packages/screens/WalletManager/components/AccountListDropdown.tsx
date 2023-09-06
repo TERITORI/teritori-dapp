@@ -45,7 +45,6 @@ export const AccountListDropdown: React.FC<AccountListDropdownProps> = ({
     onSelect(selectedAccount);
   };
 
-  // returns
   return (
     <View ref={dropdownRef} style={styles.container}>
       <Pressable
@@ -136,9 +135,9 @@ const styles = StyleSheet.create({
   networkContainer: {
     position: "absolute",
     zIndex: 2,
-    top: layout.iconButton + layout.padding_x0_5,
+    top: layout.iconButton + layout.spacing_x0_5,
     backgroundColor: neutral00,
-    padding: layout.padding_x2_5,
+    padding: layout.spacing_x2_5,
     borderColor: neutral33,
     borderWidth: 1,
     borderRadius: 12,

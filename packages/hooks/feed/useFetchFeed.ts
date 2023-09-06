@@ -62,7 +62,9 @@ const fetchGnoFeed = async (
 
   try {
     const offset = pageParam || 0;
-    const limit = 10;
+    // FIXME: Hard code to 100 for testing right now, the pagination should be fixed properly on contracts side
+    // it takes a little bit of time to profit it to integration the migration using json so for now we patch the bug
+    const limit = 100;
     const categories = req.filter?.categories || []; // Default = all
     const categoriesStr = `[]uint64{${categories.join(",")}}`;
 
@@ -96,7 +98,6 @@ export const useFetchFeed = (req: PostsRequest) => {
   const { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading } =
     useInfiniteQuery(
       ["posts", selectedNetwork?.id, wallet?.address, { ...req }],
-
       async ({ pageParam = req.offset }) => {
         if (selectedNetwork?.kind === NetworkKind.Cosmos) {
           return fetchTeritoriFeed(selectedNetwork, req, pageParam);

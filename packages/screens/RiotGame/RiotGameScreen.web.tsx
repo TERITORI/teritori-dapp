@@ -23,7 +23,6 @@ export const RiotGameScreen = () => {
     navigation.navigate("RiotGameEnroll");
   };
 
-  // returns
   return (
     <View style={styles.container}>
       <RiotGameHeader hideMenu />

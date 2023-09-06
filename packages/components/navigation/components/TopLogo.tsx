@@ -9,7 +9,6 @@ import { SVG } from "../../SVG";
 export const TopLogo = () => {
   const navigation = useAppNavigation();
 
-  // returns
   return (
     <View style={styles.topDetailContainer}>
       <TouchableOpacity
@@ -30,6 +29,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   topIconContainer: {
-    paddingLeft: layout.padding_x0_5,
+    paddingLeft: layout.spacing_x0_5,
   },
 });

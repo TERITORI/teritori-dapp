@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
     borderColor: neutral33,
     borderWidth: 1,
     borderRadius: 12,
-    padding: layout.padding_x1_5,
+    padding: layout.spacing_x1_5,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -197,13 +197,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: neutral33,
     borderRadius: 12,
-    paddingHorizontal: layout.padding_x1_5,
+    paddingHorizontal: layout.spacing_x1_5,
   },
   inputItemStyle: {
     backgroundColor: "#292929",
     color: neutralA3,
-    paddingVertical: layout.padding_x1_5,
-    paddingHorizontal: layout.padding_x1,
+    paddingVertical: layout.spacing_x1_5,
+    paddingHorizontal: layout.spacing_x1,
   },
   iconLabel: {
     flexDirection: "row",
@@ -215,7 +215,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: neutral33,
     borderRadius: 12,
-    padding: layout.padding_x1,
+    padding: layout.spacing_x1,
     position: "absolute",
     top: 52,
     width: "100%",
@@ -224,11 +224,11 @@ const styles = StyleSheet.create({
   dropdownMenuText: StyleSheet.flatten([fontMedium13]),
   dropdownMenuRow: {
     borderRadius: 6,
-    padding: layout.padding_x1,
+    padding: layout.spacing_x1,
   },
   // dropdownMenuRow: {
   //   backgroundColor: neutral00,
   //   borderRadius: 6,
-  //   padding: layout.padding_x1,
+  //   padding: layout.spacing_x1,
   // },
 });

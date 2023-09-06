@@ -11,7 +11,6 @@ type SeparatorGradientProps = {
 export const SeparatorGradient: React.FC<SeparatorGradientProps> = ({
   style,
 }) => {
-  // returns
   return (
     <View style={[{ height: 1, width: "100%" }, style]}>
       {/* Background gradient */}

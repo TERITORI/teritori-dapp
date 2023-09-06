@@ -44,7 +44,6 @@ export const CollectionHeader: React.FC<{
 }) => {
   const isMobile = useIsMobile();
   const { selectedWallet: wallet } = useSelectedWallet();
-
   const stats = useCollectionStats(collectionId, wallet?.userId);
   const [network, collectionMintAddress] = parseCollectionId(collectionId);
   const { setToastSuccess } = useFeedbacks();
@@ -89,13 +88,12 @@ export const CollectionHeader: React.FC<{
     }
   };
 
-  // returns
   return (
     <View
       style={{
         width: "100%",
         alignSelf: "center",
-        marginTop: layout.padding_x4,
+        marginTop: layout.spacing_x4,
       }}
     >
       <View
@@ -103,11 +101,11 @@ export const CollectionHeader: React.FC<{
           flexDirection: isMobile ? "column" : "row",
           alignItems: "center",
           width: "100%",
-          marginBottom: layout.padding_x4,
-          borderRadius: layout.padding_x2,
+          marginBottom: layout.spacing_x4,
+          borderRadius: layout.spacing_x2,
           borderColor: neutral33,
           borderWidth: 1,
-          padding: layout.padding_x4,
+          padding: layout.spacing_x4,
           borderStyle: "solid",
         }}
       >
@@ -121,7 +119,7 @@ export const CollectionHeader: React.FC<{
               fontSemibold28,
               isMobile
                 ? {
-                    marginTop: layout.padding_x1,
+                    marginTop: layout.spacing_x1,
                     textAlign: "center",
                   }
                 : {},
@@ -134,7 +132,7 @@ export const CollectionHeader: React.FC<{
               flexDirection: "row",
               flexWrap: "wrap",
               justifyContent: isMobile ? "center" : "flex-start",
-              marginTop: layout.padding_x2_5,
+              marginTop: layout.spacing_x2_5,
               alignItems: "center",
               flex: 1,
             }}
@@ -234,7 +232,7 @@ export const CollectionHeader: React.FC<{
               flexDirection: "row",
               flexWrap: "wrap",
               justifyContent: isMobile ? "center" : "flex-start",
-              marginTop: layout.padding_x2_5,
+              margin: layout.spacing_x2_5,
               alignItems: "center",
               flex: 1,
             }}
@@ -242,7 +240,7 @@ export const CollectionHeader: React.FC<{
             <CollectionSocialButtons collectionInfo={collectionInfo} />
             <View
               style={{
-                marginTop: isMobile ? layout.padding_x1 : 0,
+                marginTop: isMobile ? layout.spacing_x1 : 0,
                 flexWrap: "nowrap",
                 flexDirection: "row",
               }}
@@ -272,7 +270,7 @@ export const CollectionHeader: React.FC<{
         style={{
           flexDirection: "row",
           justifyContent: "space-between",
-          marginBottom: layout.padding_x2_5,
+          marginBottom: layout.spacing_x2_5,
           flex: 10,
         }}
       >
@@ -289,7 +287,7 @@ export const CollectionHeader: React.FC<{
           style={{
             flex: 8,
             height: 48,
-            paddingLeft: layout.padding_x2,
+            paddingLeft: layout.spacing_x2,
             borderRadius: 8,
             backgroundColor: codGrayColor,
           }}

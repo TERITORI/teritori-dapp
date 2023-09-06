@@ -8,6 +8,5 @@ export function usePrevious<T>(value: T): T | null {
     ref.current = value;
   }, [value]);
 
-  // returns
   return ref.current;
 }

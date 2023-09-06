@@ -67,7 +67,7 @@ export const RipperAvatar: React.FC<RipperAvatarProps> = ({
       />
 
       {isStaked && (
-        <View style={[styles.labelContainer, { top: layout.padding_x1 }]}>
+        <View style={[styles.labelContainer, { top: layout.spacing_x1 }]}>
           <BrandText style={[styles.label, styles.labelRed]}>Staked</BrandText>
         </View>
       )}
@@ -93,8 +93,8 @@ const styles = StyleSheet.create({
   },
 
   label: {
-    paddingVertical: layout.padding_x0_5,
-    paddingHorizontal: layout.padding_x0_5,
+    paddingVertical: layout.spacing_x0_5,
+    paddingHorizontal: layout.spacing_x0_5,
     borderRadius: 10,
     backgroundColor: withAlpha(orangeDefault, 0.3),
     ...(fontSemibold9 as object),

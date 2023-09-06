@@ -43,7 +43,6 @@ export const CenterSection: React.FC<CenterSectionProps> = ({
     ).start();
   }, []);
 
-  // returns
   return (
     <>
       <View
@@ -52,7 +51,7 @@ export const CenterSection: React.FC<CenterSectionProps> = ({
           {
             width: cardWidth * 2,
             height: cardHeight,
-            paddingHorizontal: layout.padding_x2_5,
+            paddingHorizontal: layout.spacing_x2_5,
           },
         ]}
       >
@@ -60,7 +59,7 @@ export const CenterSection: React.FC<CenterSectionProps> = ({
           style={[
             styles.buttonContainer,
             {
-              width: cardWidth * 2 - layout.padding_x2_5 * 2,
+              width: cardWidth * 2 - layout.spacing_x2_5 * 2,
               height: cardHeight * 0.37,
             },
           ]}
@@ -71,7 +70,7 @@ export const CenterSection: React.FC<CenterSectionProps> = ({
                 opacity: pulseOpacityRef.current,
                 backgroundColor: neutral00,
                 position: "relative",
-                width: cardWidth * 2 - layout.padding_x2_5 * 2,
+                width: cardWidth * 2 - layout.spacing_x2_5 * 2,
                 height: cardHeight * 0.37,
                 justifyContent: "center",
                 alignItems: "center",
@@ -80,7 +79,7 @@ export const CenterSection: React.FC<CenterSectionProps> = ({
           >
             <SVG
               source={startButtonSVG}
-              width={cardWidth * 2 - layout.padding_x2_5 * 2}
+              width={cardWidth * 2 - layout.spacing_x2_5 * 2}
               height={cardHeight * 0.37}
             />
             <BrandText onPress={onPress} style={styles.startGameText}>

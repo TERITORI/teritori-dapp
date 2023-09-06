@@ -43,7 +43,7 @@ export const FilterButton: React.FC<{
         <SVG source={filterSVG} width={20} height={20} />
         {showChevron && (
           <SVG
-            style={{ marginLeft: layout.padding_x0_5 }}
+            style={{ marginLeft: layout.spacing_x0_5 }}
             source={isExpanded ? chevronUpSVG : chevronDownSVG}
             width={16}
             height={16}

@@ -28,7 +28,6 @@ export const LaunchpadButton: React.FC<LaunchpadButtonProps> = ({
   buttonTitle,
   url,
 }) => {
-  // returns
   return (
     <Pressable
       onPress={url ? () => Linking.openURL(url) : undefined}
@@ -66,7 +65,7 @@ const styles = StyleSheet.create({
     width: "100%",
     minHeight: 156,
     flexDirection: "row",
-    padding: layout.padding_x2,
+    padding: layout.spacing_x2,
     alignItems: "flex-start",
     backgroundColor: neutral17,
   },

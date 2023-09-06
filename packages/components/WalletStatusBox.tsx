@@ -25,8 +25,8 @@ export const WalletStatusBox: React.FC = () => {
     <TertiaryBox
       fullWidth
       mainContainerStyle={{
-        paddingVertical: layout.padding_x1,
-        paddingHorizontal: layout.padding_x1_5,
+        paddingVertical: layout.spacing_x1,
+        paddingHorizontal: layout.spacing_x1_5,
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
@@ -43,7 +43,7 @@ export const WalletStatusBox: React.FC = () => {
             }}
           >
             <NetworkIcon networkId={selectedNetworkInfo?.id || ""} size={24} />
-            <View style={{ marginLeft: layout.padding_x1 }}>
+            <View style={{ marginLeft: layout.spacing_x1 }}>
               <BrandText style={[fontSemibold12, { color: neutral77 }]}>
                 {selectedNetworkInfo?.displayName}
               </BrandText>

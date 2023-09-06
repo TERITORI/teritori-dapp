@@ -52,7 +52,7 @@ export const TopMenuBox: FC<{
 
         <Separator />
         <OmniLink to={{ screen: "Settings" }}>
-          <FlexCol style={{ paddingVertical: layout.padding_x1_5 }}>
+          <FlexCol style={{ paddingVertical: layout.spacing_x1_5 }}>
             <BrandText style={styles.settingsText}>Settings</BrandText>
           </FlexCol>
         </OmniLink>

@@ -35,7 +35,6 @@ export const LaunchingOrganizationSection: React.FC<{
     outputRange: [1, 0],
   });
 
-  // returns
   return (
     <View style={styles.container}>
       <BrandText style={fontSemibold28}>
@@ -90,11 +89,11 @@ export const LaunchingOrganizationSection: React.FC<{
 // eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   container: {
-    padding: layout.contentPadding,
-    paddingRight: layout.padding_x2_5,
+    padding: layout.contentSpacing,
+    paddingRight: layout.spacing_x2_5,
     position: "relative",
     flex: 1,
-    paddingTop: layout.topContentPaddingWithHeading,
+    paddingTop: layout.topContentSpacingWithHeading,
   },
   lottieAnim: {
     position: "absolute",

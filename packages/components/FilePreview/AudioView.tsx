@@ -4,9 +4,9 @@ import { View, Image, TouchableOpacity } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 
 import { AudioWaveform } from "./AudioWaveform";
+import { AUDIO_WAVEFORM_MAX_WIDTH } from "./AudioWaveform/AudioWaveform.web";
 import pauseSVG from "../../../assets/icons/pause.svg";
 import playSVG from "../../../assets/icons/play.svg";
-import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { getAudioDuration } from "../../utils/audio";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import {
@@ -16,16 +16,16 @@ import {
   secondaryColor,
 } from "../../utils/style/colors";
 import { fontSemibold13, fontSemibold14 } from "../../utils/style/fonts";
-import { layout, screenContentMaxWidth } from "../../utils/style/layout";
+import { layout } from "../../utils/style/layout";
 import { RemoteFileData } from "../../utils/types/files";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
-import { THUMBNAIL_WIDTH } from "../socialFeed/SocialThread/SocialMessageContent";
+
+const THUMBNAIL_SIZE = 140;
 
 export const AudioView: React.FC<{
   file: RemoteFileData;
 }> = ({ file }) => {
-  const { width } = useMaxResolution();
   const [sound, setSound] = useState<Audio.Sound>();
   const [playbackStatus, setPlaybackStatus] = useState<AVPlaybackStatus>();
   const duration = useMemo(
@@ -65,14 +65,6 @@ export const AudioView: React.FC<{
     () => typeof file?.thumbnailFileData?.url === "string",
     [file?.thumbnailFileData?.url]
   );
-
-  const audioWaveWidth = useMemo(() => {
-    if (width > screenContentMaxWidth) {
-      return screenContentMaxWidth - 212 - (hasThumbnail ? THUMBNAIL_WIDTH : 0);
-    } else {
-      return width - 212 - (hasThumbnail ? THUMBNAIL_WIDTH : 0);
-    }
-  }, [width, hasThumbnail]);
 
   const positionPercent = useMemo(
     () =>
@@ -131,7 +123,7 @@ export const AudioView: React.FC<{
 
       <View
         style={{
-          marginLeft: layout.padding_x1_5,
+          marginLeft: layout.spacing_x1_5,
           flex: 1,
         }}
       >
@@ -142,14 +134,13 @@ export const AudioView: React.FC<{
             justifyContent: "space-between",
           }}
         >
-          <View>
+          <View style={{ maxWidth: AUDIO_WAVEFORM_MAX_WIDTH, flex: 1 }}>
             <View
               style={{
                 flexDirection: "row",
                 justifyContent: "space-between",
                 alignItems: "center",
                 marginBottom: 8,
-                marginLeft: layout.padding_x1_5,
               }}
             >
               <BrandText style={[fontSemibold14]}>
@@ -166,20 +157,15 @@ export const AudioView: React.FC<{
             <View
               style={{
                 overflow: "hidden",
-                width: audioWaveWidth,
               }}
             >
               <AudioWaveform
-                waveFormContainerWidth={audioWaveWidth}
                 waveform={file.audioMetadata?.waveform || []}
                 positionPercent={positionPercent}
                 duration={
                   playbackStatus?.isLoaded
                     ? playbackStatus?.durationMillis || 0
                     : 1
-                }
-                currentDuration={
-                  playbackStatus?.isLoaded ? playbackStatus?.positionMillis : 0
                 }
               />
             </View>
@@ -192,9 +178,9 @@ export const AudioView: React.FC<{
               }}
               resizeMode="cover"
               style={{
-                height: THUMBNAIL_WIDTH,
-                width: THUMBNAIL_WIDTH,
-                marginLeft: layout.padding_x1,
+                height: THUMBNAIL_SIZE,
+                width: THUMBNAIL_SIZE,
+                marginLeft: layout.spacing_x1,
                 borderRadius: 4,
               }}
             />

@@ -256,7 +256,6 @@ export const OrganizationDeployerScreen = () => {
     }
   };
 
-  // returns
   return (
     <ScreenContainer
       headerChildren={<BrandText>Organization Deployer</BrandText>}

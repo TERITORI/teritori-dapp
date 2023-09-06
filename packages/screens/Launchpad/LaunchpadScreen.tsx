@@ -22,7 +22,7 @@ export const LaunchpadScreen: ScreenFC<"Launchpad"> = () => {
     <ScreenContainer>
       <View
         style={{
-          paddingBottom: layout.contentPadding,
+          paddingBottom: layout.contentSpacing,
         }}
       >
         <CollectionsCarouselHeader

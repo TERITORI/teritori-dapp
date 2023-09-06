@@ -135,7 +135,7 @@ export const RiotGameHeader: React.FC<RiotGameHeaderProps> = ({
                 return (
                   <TouchableOpacity
                     onPress={() => onMenuItemClick(menuItem)}
-                    style={{ marginRight: layout.padding_x4 }}
+                    style={{ marginRight: layout.spacing_x4 }}
                     key={menuItem.id}
                   >
                     <FlexRow style={{ alignItems: "center" }}>
@@ -144,7 +144,7 @@ export const RiotGameHeader: React.FC<RiotGameHeaderProps> = ({
                         height={16}
                         color={color}
                         source={menuItem.iconSVG}
-                        style={{ marginRight: layout.padding_x1 }}
+                        style={{ marginRight: layout.spacing_x1 }}
                       />
                       <BrandText style={[fontMedium16, { color }]}>
                         {menuItem.name}
@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   menu: {
-    paddingHorizontal: layout.padding_x4,
+    paddingHorizontal: layout.spacing_x4,
   },
   section: {
     flexDirection: "row",

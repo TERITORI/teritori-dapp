@@ -50,7 +50,6 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
   userId,
 }) => {
   const runOrProposeTransaction = useRunOrProposeTransaction(userId, userKind);
-
   const { setToastError, setToastSuccess } = useFeedbacks();
   const { triggerError } = useErrorHandler();
   const [network, userAddress] = parseUserId(userId);
@@ -128,7 +127,6 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
     ]
   );
 
-  // returns
   const Header = useCallback(
     () => (
       <View>
@@ -241,7 +239,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     width: "100%",
-    padding: layout.padding_x2_5,
+    padding: layout.spacing_x2_5,
   },
   alternateText: {
     ...StyleSheet.flatten(fontSemibold12),

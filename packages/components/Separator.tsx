@@ -14,7 +14,6 @@ export const Separator: React.FC<SeparatorProps> = ({
   color = neutral44,
   horizontal,
 }: SeparatorProps) => {
-  // returns
   return (
     <View
       style={[

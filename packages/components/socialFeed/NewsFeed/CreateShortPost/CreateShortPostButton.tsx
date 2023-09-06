@@ -40,11 +40,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: neutral33,
     borderRadius: 999,
-    paddingLeft: layout.padding_x1_5,
-    paddingRight: layout.padding_x2,
+    paddingLeft: layout.spacing_x1_5,
+    paddingRight: layout.spacing_x2,
     height: 42,
   },
   textContainer: {
-    marginLeft: layout.padding_x1,
+    marginLeft: layout.spacing_x1,
   },
 });

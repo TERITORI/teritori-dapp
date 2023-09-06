@@ -67,7 +67,6 @@ export const ReviewCollapsable: React.FC<ReviewCollapsableProps> = ({
     setIsExpanded(!isExpanded);
   };
 
-  // returns
   return (
     <View style={styles.container}>
       <Pressable onPress={toggleExpansion} style={styles.header}>
@@ -112,7 +111,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     width: "100%",
-    padding: layout.padding_x2,
+    padding: layout.spacing_x2,
   },
   rowWithCenter: {
     flexDirection: "row",
@@ -127,7 +126,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   childInsideContainer: {
-    padding: layout.padding_x1,
+    padding: layout.spacing_x1,
     borderTopWidth: 1,
     borderColor: neutral33,
   },

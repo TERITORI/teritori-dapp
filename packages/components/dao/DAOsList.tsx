@@ -9,7 +9,7 @@ import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { getUserId } from "../../networks";
 import { layout } from "../../utils/style/layout";
 
-const halfGap = layout.padding_x1;
+const halfGap = layout.spacing_x1;
 
 const maxElemWidth = 250;
 

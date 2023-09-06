@@ -127,6 +127,6 @@ const styles = StyleSheet.create({
     ...(fontMedium48 as object),
   },
   section: {
-    paddingHorizontal: layout.padding_x4 * 2,
+    paddingHorizontal: layout.spacing_x4 * 2,
   },
 });

@@ -342,8 +342,8 @@ export const SocialThreadCard: React.FC<{
       {isFlagged && (
         <FlexRow
           style={{
-            marginTop: layout.padding_x2,
-            marginBottom: layout.padding_x1,
+            marginTop: layout.spacing_x2,
+            marginBottom: layout.spacing_x1,
           }}
         >
           <BrandText style={[fontSemibold14, { color: neutral77 }]}>
@@ -388,8 +388,8 @@ export const SocialThreadCard: React.FC<{
                 ? withAlpha(neutral33, 0.5)
                 : neutral33,
               borderRadius: 12,
-              paddingVertical: layout.padding_x2,
-              paddingHorizontal: layout.padding_x2_5,
+              paddingVertical: layout.spacing_x2,
+              paddingHorizontal: layout.spacing_x2_5,
               backgroundColor: neutral00,
             },
             style,
@@ -429,7 +429,7 @@ export const SocialThreadCard: React.FC<{
                 borderTopWidth: 0.5,
                 borderTopColor: neutral22,
                 justifyContent: "space-between",
-                paddingTop: layout.padding_x1,
+                paddingTop: layout.spacing_x1,
               }}
             >
               <BrandText style={[fontSemibold13, { color: neutral77 }]}>

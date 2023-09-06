@@ -24,6 +24,7 @@ import {
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
 import { useBalances } from "../../hooks/useBalances";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
+import { useIsLeapConnected } from "../../hooks/useIsLeapConnected";
 import { nsNameInfoQueryKey } from "../../hooks/useNSNameInfo";
 import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
 import { useRunOrProposeTransaction } from "../../hooks/useRunOrProposeTransaction";
@@ -102,6 +103,8 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
   const { name } = useTNS();
   const { tokens } = useNSTokensByOwner(selectedWallet?.userId);
   const isKeplrConnected = useIsKeplrConnected();
+  const isLeapConnected = useIsLeapConnected();
+
   const userHasCoWallet = useAreThereWallets();
   const navigation = useAppNavigation();
   const networkId = useSelectedNetworkId();
@@ -143,7 +146,8 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
   // ==== Init
   useFocusEffect(() => {
     // ===== Controls many things, be careful
-    if (!userHasCoWallet || !isKeplrConnected) navigation.navigate("TNSHome");
+    if (!userHasCoWallet || !isKeplrConnected || !isLeapConnected)
+      navigation.navigate("TNSHome");
     if (name && userHasCoWallet && tokens.includes(normalizedTokenId))
       onClose();
 
@@ -186,7 +190,13 @@ export const TNSMintNameModal: React.FC<
   const runOrProposeTransaction = useRunOrProposeTransaction(userId, userKind);
   const queryClient = useQueryClient();
 
+
+
   const handleSubmit = async (data: Metadata) => {
+    if (!isKeplrConnected || !isLeapConnected || !price) {
+      return;
+    }
+
     try {
       if (!cosmosNetwork?.nameServiceContractAddress) {
         throw new Error("Invalid network");

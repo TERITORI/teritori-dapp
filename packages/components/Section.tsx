@@ -19,7 +19,7 @@ export const Section: React.FC<{
   return (
     <View
       style={{
-        marginTop: layout.contentPadding,
+        marginTop: layout.contentSpacing,
         overflow: "hidden",
         width: "100%",
         maxWidth: width,

@@ -55,7 +55,6 @@ export const Pagination = ({
   const { onPressDropdownButton, isDropdownOpen, closeOpenedDropdown } =
     useDropdowns();
 
-  // returns
   return (
     <View style={styles.container}>
       <View style={[styles.section, { justifyContent: "flex-start" }]}>
@@ -103,7 +102,7 @@ export const Pagination = ({
             onPress={() => onPressDropdownButton(dropdownRef)}
           >
             <BrandText
-              style={[fontSemibold14, { marginRight: layout.padding_x1 }]}
+              style={[fontSemibold14, { marginRight: layout.spacing_x1 }]}
             >
               {itemsPerPage}
             </BrandText>
@@ -124,8 +123,8 @@ export const Pagination = ({
             width={80}
             style={{ position: "absolute", top: 46, right: 0 }}
             mainContainerStyle={{
-              paddingHorizontal: layout.padding_x1_5,
-              paddingTop: layout.padding_x1_5,
+              paddingHorizontal: layout.spacing_x1_5,
+              paddingTop: layout.spacing_x1_5,
               backgroundColor: neutral33,
               alignItems: "flex-start",
             }}
@@ -141,7 +140,7 @@ export const Pagination = ({
                   {
                     flexDirection: "row",
                     alignItems: "center",
-                    marginBottom: layout.padding_x1_5,
+                    marginBottom: layout.spacing_x1_5,
                   },
                 ]}
               >
@@ -166,7 +165,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: layout.padding_x2,
+    paddingHorizontal: layout.spacing_x2,
   },
   section: {
     flexDirection: "row",
@@ -176,7 +175,7 @@ const styles = StyleSheet.create({
   grayText: {
     ...fontSemibold14,
     color: neutral77,
-    paddingRight: layout.padding_x1,
+    paddingRight: layout.spacing_x1,
     lineHeight: 14,
   },
 });

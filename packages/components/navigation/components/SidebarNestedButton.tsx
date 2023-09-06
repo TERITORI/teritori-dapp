@@ -38,7 +38,6 @@ export const SidebarNestedButton: React.FC<SidebarNestedButtonProps> = ({
     [isSidebarExpanded]
   );
 
-  // returns
   return (
     <CustomPressable
       onPress={isComingSoon ? () => {} : onPress && (() => onPress(route))}
@@ -77,7 +76,7 @@ export const SidebarNestedButton: React.FC<SidebarNestedButtonProps> = ({
 // eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: layout.padding_x1_5,
+    paddingHorizontal: layout.spacing_x1_5,
     alignItems: "center",
     flexDirection: "row",
     height: 32,

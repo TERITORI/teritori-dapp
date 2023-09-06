@@ -39,7 +39,7 @@ export const Header: React.FC<{
           flexDirection: "row",
           alignItems: "center",
           marginLeft: isHeaderSmallMargin
-            ? layout.contentPadding
+            ? layout.contentSpacing
             : screenContainerContentMarginHorizontal,
         }}
       >

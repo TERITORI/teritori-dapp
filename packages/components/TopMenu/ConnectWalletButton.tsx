@@ -25,7 +25,6 @@ export const ConnectWalletButton: FC<{ style?: StyleProp<ViewStyle> }> = ({
   const toggleConnectWallet = () =>
     setIsConnectWalletVisible(!isConnectWalletVisible);
 
-  // returns
   return (
     <>
       <View style={style}>

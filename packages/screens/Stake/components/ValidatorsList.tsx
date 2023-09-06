@@ -1,21 +1,21 @@
 import React from "react";
 import { FlatList, StyleProp, View, ViewStyle } from "react-native";
 
-import validatorIconSVG from "../../../../assets/default-images/validator-icon.svg";
-import { Avatar } from "../../../components/Avatar";
 import { BrandText } from "../../../components/BrandText";
 import { PrimaryButtonOutline } from "../../../components/buttons/PrimaryButtonOutline";
 import { SecondaryButtonOutline } from "../../../components/buttons/SecondaryButtonOutline";
+import { RoundedGradientImage } from "../../../components/images/RoundedGradientImage";
 import { SpacerRow } from "../../../components/spacer";
 import { TableRow, TableRowHeading } from "../../../components/table";
+import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useKeybaseAvatarURL } from "../../../hooks/useKeybaseAvatarURL";
 import { Reward, rewardsPrice, useRewards } from "../../../hooks/useRewards";
 import { UserKind, parseUserId } from "../../../networks";
 import { removeObjectKey } from "../../../utils/object";
 import { mineShaftColor } from "../../../utils/style/colors";
-import { fontSemibold13 } from "../../../utils/style/fonts";
+import { fontSemibold11, fontSemibold13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { thousandSeparator } from "../../../utils/text";
+import { numFormatter } from "../../../utils/text";
 import { ValidatorInfo } from "../types";
 
 const TABLE_ROWS: { [key in string]: TableRowHeading } = {
@@ -61,7 +61,6 @@ export const ValidatorsTable: React.FC<{
   const ROWS = actions ? TABLE_ROWS : removeObjectKey(TABLE_ROWS, "actions");
   const { rewards, claimReward } = useRewards(userId, userKind);
 
-  // returns
   return (
     <>
       <TableRow headings={Object.values(ROWS)} />
@@ -92,6 +91,7 @@ const ValidatorRow: React.FC<{
   actions?: (validator: ValidatorInfo) => ValidatorsListAction[];
   userId: string | undefined;
 }> = ({ validator, claimReward, pendingRewards, actions, userId }) => {
+    const isMobile = useIsMobile();
   const imageURL = useKeybaseAvatarURL(validator.identity);
   const [, userAddress] = parseUserId(userId);
   // Rewards price with all denoms
@@ -104,17 +104,17 @@ const ValidatorRow: React.FC<{
         alignItems: "center",
         justifyContent: "space-between",
         width: "100%",
-        minHeight: layout.contentPadding,
-        paddingHorizontal: layout.padding_x2_5,
+        minHeight: layout.contentSpacing,
+        paddingHorizontal: layout.spacing_x2_5,
         borderColor: mineShaftColor,
         borderTopWidth: 1,
-        paddingVertical: layout.padding_x2,
+        paddingVertical: layout.spacing_x2,
       }}
     >
       <BrandText
         style={[
-          fontSemibold13,
-          { flex: TABLE_ROWS.rank.flex, paddingRight: layout.padding_x1 },
+          isMobile ? fontSemibold11 : fontSemibold13,
+          { flex: TABLE_ROWS.rank.flex, paddingRight: layout.spacing_x1 },
         ]}
       >
         {validator.rank}
@@ -124,30 +124,41 @@ const ValidatorRow: React.FC<{
           flexDirection: "row",
           alignItems: "center",
           flex: TABLE_ROWS.name.flex,
-          paddingRight: layout.padding_x1,
+          paddingRight: layout.spacing_x1,
         }}
       >
-        <Avatar uri={imageURL} defaultIcon={validatorIconSVG} />
+        <RoundedGradientImage
+          size="XS"
+          sourceURI={imageURL}
+          style={{ marginRight: isMobile ? 8 : 30 }}
+        />
+
         <SpacerRow size={1} />
-        <BrandText style={fontSemibold13}>{validator.moniker || ""}</BrandText>
+        <BrandText
+          style={[isMobile ? fontSemibold11 : fontSemibold13]}
+          numberOfLines={1}
+          ellipsizeMode="clip"
+        >
+          {validator.moniker || ""}
+        </BrandText>
       </View>
       <BrandText
         style={[
-          fontSemibold13,
+          isMobile ? fontSemibold11 : fontSemibold13,
           {
             flex: TABLE_ROWS.votingPower.flex,
-            paddingRight: layout.padding_x1,
+            paddingRight: layout.spacing_x1,
           },
         ]}
       >
-        {thousandSeparator(validator.votingPower, " ")}
+        {numFormatter(validator.votingPower, 2)}
       </BrandText>
       <BrandText
         style={[
           fontSemibold13,
           {
             flex: TABLE_ROWS.commission.flex,
-            paddingRight: layout.padding_x1,
+            paddingRight: layout.spacing_x1,
           },
         ]}
       >
@@ -157,20 +168,20 @@ const ValidatorRow: React.FC<{
       <View
         style={{
           flex: TABLE_ROWS.claimable.flex,
-          paddingRight: actions ? layout.padding_x1 : 0,
+          paddingRight: actions ? layout.spacing_x1 : 0,
           flexDirection: "row",
           alignItems: "center",
         }}
       >
         {claimablePrice && (
-          <BrandText style={[fontSemibold13]}>
+          <BrandText style={[isMobile ? fontSemibold11 : fontSemibold13]}>
             {`$${claimablePrice.toFixed(2)}`}
           </BrandText>
         )}
         {pendingRewards.length && (
           <PrimaryButtonOutline
             size="XS"
-            style={{ paddingLeft: layout.padding_x2 }}
+            style={{ paddingLeft: layout.spacing_x2 }}
             text="Claim"
             disabled={!userAddress}
             onPress={() => {

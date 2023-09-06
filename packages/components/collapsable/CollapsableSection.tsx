@@ -73,7 +73,6 @@ export const CollapsableSection: React.FC<CollapsableSectionProps> = ({
     setIsExpanded(!isExpanded);
   };
 
-  // returns
   return (
     <TertiaryBox fullWidth>
       <Pressable onPress={toggleExpansion} style={styles.header}>
@@ -119,7 +118,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     width: "100%",
-    padding: layout.padding_x2,
+    padding: layout.spacing_x2,
   },
   rowWithCenter: {
     flexDirection: "row",

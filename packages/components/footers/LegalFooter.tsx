@@ -27,14 +27,14 @@ export const LegalFooter: React.FC = ({ children }) => {
         style={{
           flexDirection: "row",
           alignItems: "center",
-          marginLeft: layout.padding_x4,
+          marginLeft: layout.spacing_x4,
         }}
       >
         <SVG source={logoSVG} width={32} height={32} />
         <BrandText
           style={[
             fontSemibold14,
-            { color: neutral77, marginLeft: layout.padding_x1_5 },
+            { color: neutral77, marginLeft: layout.spacing_x1_5 },
           ]}
         >
           2023 Teritori
@@ -58,7 +58,7 @@ export const LegalFooter: React.FC = ({ children }) => {
           style={[
             fontSemibold14,
             {
-              marginRight: layout.padding_x1,
+              marginRight: layout.spacing_x1,
             },
           ]}
           numberOfLines={1}
@@ -72,7 +72,7 @@ export const LegalFooter: React.FC = ({ children }) => {
           style={[
             fontSemibold14,
             {
-              marginRight: layout.padding_x1,
+              marginRight: layout.spacing_x1,
             },
           ]}
           numberOfLines={1}

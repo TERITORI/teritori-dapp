@@ -44,7 +44,6 @@ export const ErrorText: React.FC<ErrorTextProps> = ({
     }
   }, [children]);
 
-  // returns
   return (
     <Animated.View style={animStyle}>
       <View

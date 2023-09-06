@@ -101,7 +101,7 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
                     height: "100%",
                     justifyContent: "center",
                     marginRight:
-                      index !== itemsKeys.length - 1 ? layout.padding_x3 : 0,
+                      index !== itemsKeys.length - 1 ? layout.spacing_x3 : 0,
                   },
                   tabContainerStyle,
                 ]}

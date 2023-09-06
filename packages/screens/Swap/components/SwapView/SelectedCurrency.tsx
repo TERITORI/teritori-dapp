@@ -62,14 +62,14 @@ export const SelectedCurrency: React.FC<{
           denom={currency?.denom || ""}
           networkId={selectedNetworkId}
         />
-        <View style={{ marginLeft: layout.padding_x1_5 }}>
+        <View style={{ marginLeft: layout.spacing_x1_5 }}>
           <View
             style={{
               flexDirection: "row",
               alignItems: "center",
             }}
           >
-            <BrandText style={{ marginRight: layout.padding_x1 }}>
+            <BrandText style={{ marginRight: layout.spacing_x1 }}>
               {currency?.displayName}
             </BrandText>
             <SVG

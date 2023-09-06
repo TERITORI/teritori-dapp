@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
     borderTopColor: mineShaftColor,
     width: "100%",
     alignItems: "center",
-    paddingVertical: layout.padding_x2_5,
-    paddingHorizontal: layout.padding_x1_5,
+    paddingVertical: layout.spacing_x2_5,
+    paddingHorizontal: layout.spacing_x1_5,
   },
 });

@@ -411,13 +411,13 @@ const CardActions: React.FC<{
           style={{
             position: "absolute",
             zIndex: 2,
-            top: layout.iconButton + layout.padding_x0_5,
+            top: layout.iconButton + layout.spacing_x0_5,
             backgroundColor: neutral00,
-            padding: layout.padding_x0_5,
+            padding: layout.spacing_x0_5,
             borderColor: neutral33,
             borderWidth: 1,
             borderRadius: 8,
-            right: -layout.padding_x1_5,
+            right: -layout.spacing_x1_5,
             minWidth: 250,
           }}
         >

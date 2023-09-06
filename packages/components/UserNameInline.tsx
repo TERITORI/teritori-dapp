@@ -53,7 +53,7 @@ export const UserNameInline: React.FC<PlayerNameProps> = ({
           fallbackURI={network?.nameServiceDefaultImage}
         />
         <BrandText
-          style={[{ marginLeft: layout.padding_x1_5 }, fontSemibold14]}
+          style={[{ marginLeft: layout.spacing_x1_5 }, fontSemibold14]}
           ellipsizeMode="middle"
           numberOfLines={1}
         >

@@ -275,7 +275,7 @@ const styles = StyleSheet.create({
     backgroundColor: neutral22,
     justifyContent: "center",
     alignItems: "center",
-    marginLeft: layout.padding_x1_5,
+    marginLeft: layout.spacing_x1_5,
     //TODO: Remove that when contacts are handled
     opacity: 0.5,
   },
