@@ -76,7 +76,7 @@ export const ReviewCollapsable: React.FC<ReviewCollapsableProps> = ({
           alignItems: "center",
           justifyContent: "space-between",
           width: "100%",
-          padding: layout.padding_x2,
+          padding: layout.spacing_x2,
         }}
       >
         <View
@@ -125,7 +125,7 @@ export const ReviewCollapsable: React.FC<ReviewCollapsableProps> = ({
           }) => (heightRef.current = h)}
           style={{
             width: "100%",
-            padding: layout.padding_x1,
+            padding: layout.spacing_x1,
             borderTopWidth: 1,
             borderColor: neutral33,
           }}

@@ -21,18 +21,17 @@ import { fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 
 export const StakeScreen: ScreenFC<"Staking"> = ({ route: { params } }) => {
-    const { selectedWallet } = useSelectedWallet();
-    const isMobile = useIsMobile();
-    let selectedNetworkId: string | undefined = useSelectedNetworkId();
-    let userId = selectedWallet?.userId;
-    const multisigId = params?.multisigId;
-    const userKind = multisigId ? UserKind.Multisig : UserKind.Single;
-    if (multisigId) {
-        const [network] = parseUserId(multisigId);
-        selectedNetworkId = network?.id;
-        userId = multisigId;
-    }
-
+  const { selectedWallet } = useSelectedWallet();
+  const isMobile = useIsMobile();
+  let selectedNetworkId: string | undefined = useSelectedNetworkId();
+  let userId = selectedWallet?.userId;
+  const multisigId = params?.multisigId;
+  const userKind = multisigId ? UserKind.Multisig : UserKind.Single;
+  if (multisigId) {
+    const [network] = parseUserId(multisigId);
+    selectedNetworkId = network?.id;
+    userId = multisigId;
+  }
 
   const [stakeDetailModalVisible, setStakeDetailModalVisible] = useState(false);
   const [isStakeFormVisible, setIsStakeFormVisible] = useState(false);
@@ -84,18 +83,18 @@ export const StakeScreen: ScreenFC<"Staking"> = ({ route: { params } }) => {
 
   return (
     <ScreenContainer
-        fullWidth
+      fullWidth
       forceNetworkKind={NetworkKind.Cosmos}
       forceNetworkId={multisigId && selectedNetworkId}
     >
       <View
-          style={{
-              flexDirection: isMobile ? "column" : "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-              paddingTop: layout.contentSpacing,
-              marginBottom: layout.spacing_x2_5,
-          }}
+        style={{
+          flexDirection: isMobile ? "column" : "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          paddingTop: layout.contentSpacing,
+          marginBottom: layout.spacing_x2_5,
+        }}
       >
         <BrandText style={fontSemibold28}>
           Stake{multisigId && " with Multisig"}

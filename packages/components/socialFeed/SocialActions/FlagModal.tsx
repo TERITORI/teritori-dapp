@@ -35,7 +35,7 @@ export const FlagModal: React.FC<FlagModalProps> = ({
   const [flagType, setFlagType] = useState<FlagType>("hideForMe");
   const selectedNetworkInfo = useSelectedNetworkInfo();
   const selectedNetworkId = selectedNetworkInfo?.id;
-  const selectedWallet = useSelectedWallet();
+  const { selectedWallet } = useSelectedWallet();
   const { setToastError, setToastSuccess } = useFeedbacks();
 
   const doAction = async () => {

@@ -33,7 +33,7 @@ export const ReviewCollapsableItem: React.FC<ReviewCollapsableItemProps> = ({
 const styles = StyleSheet.create({
   container: {
     backgroundColor: neutral17,
-    padding: layout.padding_x1_5,
+    padding: layout.spacing_x1_5,
   },
   title: StyleSheet.flatten([fontSemibold12, { color: neutralA3 }]),
   value: StyleSheet.flatten([fontSemibold14]),

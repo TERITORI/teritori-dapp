@@ -154,7 +154,7 @@ export const Transactions: FC<{
         onEndReached={() => fetchNextTransactionsPage()}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
-          paddingBottom: layout.contentPadding,
+          paddingBottom: layout.contentSpacing,
           flex: 1,
         }}
         ListEmptyComponent={

@@ -91,7 +91,7 @@ const ValidatorRow: React.FC<{
   actions?: (validator: ValidatorInfo) => ValidatorsListAction[];
   userId: string | undefined;
 }> = ({ validator, claimReward, pendingRewards, actions, userId }) => {
-    const isMobile = useIsMobile();
+  const isMobile = useIsMobile();
   const imageURL = useKeybaseAvatarURL(validator.identity);
   const [, userAddress] = parseUserId(userId);
   // Rewards price with all denoms

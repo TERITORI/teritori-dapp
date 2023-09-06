@@ -61,6 +61,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
   },
-  svgContainer: { padding: layout.padding_x2 },
+  svgContainer: { padding: layout.spacing_x2 },
   rowCenter: { flexDirection: "row", alignItems: "center" },
 });

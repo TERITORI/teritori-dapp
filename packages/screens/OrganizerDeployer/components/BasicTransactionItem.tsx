@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: neutral33,
   },
-  svgContainer: { padding: layout.padding_x2 },
+  svgContainer: { padding: layout.spacing_x2 },
   rowCenter: { flexDirection: "row", alignItems: "center" },
   end: {
     alignItems: "flex-end",

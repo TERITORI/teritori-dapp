@@ -69,8 +69,8 @@ export const MultisigWalletDashboardScreen: ScreenFC<
         <View
           style={{
             flex: 1,
-            padding: layout.contentPadding,
-            paddingTop: layout.topContentPaddingWithHeading,
+            padding: layout.contentSpacing,
+            paddingTop: layout.topContentSpacingWithHeading,
           }}
         >
           <BrandText style={fontSemibold28}>General information</BrandText>
@@ -110,8 +110,8 @@ export const MultisigWalletDashboardScreen: ScreenFC<
 
       <View
         style={{
-          marginHorizontal: layout.contentPadding,
-          marginTop: layout.topContentPaddingWithHeading,
+          marginHorizontal: layout.contentSpacing,
+          marginTop: layout.topContentSpacingWithHeading,
         }}
       >
         <Transactions

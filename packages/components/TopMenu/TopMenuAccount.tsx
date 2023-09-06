@@ -62,8 +62,8 @@ export const TopMenuAccount: React.FC = () => {
         alignItems="center"
         justifyContent="space-between"
         style={[
-          { paddingHorizontal: layout.padding_x2 },
-          !isAccountsListShown && { marginBottom: layout.padding_x1_5 },
+          { paddingHorizontal: layout.spacing_x2 },
+          !isAccountsListShown && { marginBottom: layout.spacing_x1_5 },
         ]}
       >
         <TouchableOpacity
@@ -222,30 +222,30 @@ const styles = StyleSheet.create({
   accountsListContainer: {
     backgroundColor: neutral00,
     width: "100%",
-    marginVertical: layout.padding_x0_75,
+    marginVertical: layout.spacing_x0_75,
   },
   itemText: StyleSheet.flatten([
     fontSemibold12,
     {
-      marginLeft: layout.padding_x1_5,
+      marginLeft: layout.spacing_x1_5,
     },
   ]),
   menuSectionTitleContainer: {
     backgroundColor: neutral22,
-    paddingVertical: layout.padding_x0_5,
-    marginVertical: layout.padding_x0_75,
+    paddingVertical: layout.spacing_x0_5,
+    marginVertical: layout.spacing_x0_75,
   },
   menuSectionTitle: StyleSheet.flatten([
     fontSemibold12,
     {
       color: neutralA3,
-      marginLeft: layout.padding_x2,
+      marginLeft: layout.spacing_x2,
     },
   ]),
   walletLine: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: layout.padding_x1_5,
-    paddingVertical: layout.padding_x0_75,
+    paddingHorizontal: layout.spacing_x1_5,
+    paddingVertical: layout.spacing_x0_75,
   },
 });

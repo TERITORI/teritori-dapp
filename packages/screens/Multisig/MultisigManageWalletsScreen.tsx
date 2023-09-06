@@ -131,7 +131,7 @@ export const MultisigManageWalletsScreen: ScreenFC<
       <ScrollView
         contentContainerStyle={{
           flex: 1,
-          padding: layout.contentPadding,
+          padding: layout.contentSpacing,
           paddingTop: 0,
         }}
       >
@@ -140,7 +140,7 @@ export const MultisigManageWalletsScreen: ScreenFC<
             flexDirection: "row",
             justifyContent: "space-between",
             alignItems: "center",
-            paddingVertical: layout.padding_x1,
+            paddingVertical: layout.spacing_x1,
             borderColor: neutral33,
             borderBottomWidth: 1,
             width: "100%",

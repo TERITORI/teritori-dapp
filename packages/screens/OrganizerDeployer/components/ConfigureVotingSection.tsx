@@ -111,9 +111,9 @@ export const ConfigureVotingSection: React.FC<ConfigureVotingSectionProps> = ({
 // eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   container: {
-    padding: layout.contentPadding,
-    paddingRight: layout.padding_x2_5,
-    paddingTop: layout.topContentPaddingWithHeading,
+    padding: layout.contentSpacing,
+    paddingRight: layout.spacing_x2_5,
+    paddingTop: layout.topContentSpacingWithHeading,
   },
   voteText: StyleSheet.flatten([
     fontSemibold14,
@@ -124,10 +124,10 @@ const styles = StyleSheet.create({
   voteInputContainer: {
     flexDirection: "row",
     width: 550,
-    marginTop: layout.padding_x1_5,
+    marginTop: layout.spacing_x1_5,
   },
   durationInputContainer: {
-    padding: layout.padding_x2,
+    padding: layout.spacing_x2,
     borderWidth: 1,
     borderColor: neutral33,
     borderRadius: 12,
@@ -145,8 +145,8 @@ const styles = StyleSheet.create({
   footer: {
     justifyContent: "flex-end",
     alignItems: "flex-end",
-    paddingVertical: layout.padding_x1_5,
-    paddingHorizontal: layout.padding_x2_5,
+    paddingVertical: layout.spacing_x1_5,
+    paddingHorizontal: layout.spacing_x2_5,
     borderTopWidth: 1,
     borderColor: neutral33,
   },

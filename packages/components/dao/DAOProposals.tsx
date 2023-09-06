@@ -139,8 +139,8 @@ const ProposalRow: React.FC<{
                 width={32}
                 height={32}
                 style={{
-                  marginRight: layout.padding_x2,
-                  marginLeft: layout.padding_x2,
+                  marginRight: layout.spacing_x2,
+                  marginLeft: layout.spacing_x2,
                 }}
               />
               <View
@@ -153,7 +153,7 @@ const ProposalRow: React.FC<{
                 <BrandText
                   style={[
                     fontSemibold14,
-                    { marginBottom: layout.padding_x0_75 },
+                    { marginBottom: layout.spacing_x0_75 },
                   ]}
                   numberOfLines={1}
                 >

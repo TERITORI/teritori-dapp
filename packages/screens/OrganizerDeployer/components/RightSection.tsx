@@ -181,19 +181,19 @@ const styles = StyleSheet.create({
   topRow: {
     justifyContent: "space-between",
     flexDirection: "row",
-    paddingHorizontal: layout.padding_x2,
+    paddingHorizontal: layout.spacing_x2,
   },
   signatureProcess: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: layout.padding_x1_5,
+    marginBottom: layout.spacing_x1_5,
   },
   progressText: StyleSheet.flatten([fontSemibold12, { color: neutral77 }]),
   stepsText: StyleSheet.flatten([
     fontSemibold14,
     {
       color: neutral77,
-      marginBottom: layout.padding_x2_5,
+      marginBottom: layout.spacing_x2_5,
       textTransform: "uppercase",
     },
   ]),
@@ -203,12 +203,12 @@ const styles = StyleSheet.create({
     backgroundColor: primaryColor,
     height: 2,
   },
-  step: { marginBottom: layout.padding_x2_5 },
+  step: { marginBottom: layout.spacing_x2_5 },
   stepText: StyleSheet.flatten([
     fontSemibold14,
     {
       color: neutralA3,
     },
   ]),
-  section: { padding: layout.padding_x2 },
+  section: { padding: layout.spacing_x2 },
 });

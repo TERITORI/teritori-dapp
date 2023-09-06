@@ -38,8 +38,8 @@ export const OrganizationGetStartedScreen = () => {
       <ScrollView>
         <View
           style={{
-            padding: layout.contentPadding,
-            paddingTop: layout.topContentPaddingWithHeading,
+            padding: layout.contentSpacing,
+            paddingTop: layout.topContentSpacingWithHeading,
           }}
         >
           <BrandText style={fontSemibold28}>What do you want to do?</BrandText>
@@ -49,8 +49,8 @@ export const OrganizationGetStartedScreen = () => {
               flex: 1,
               flexDirection: "row",
               flexWrap: "wrap",
-              marginHorizontal: -layout.padding_x2,
-              marginVertical: -layout.padding_x2,
+              marginHorizontal: -layout.spacing_x2,
+              marginVertical: -layout.spacing_x2,
             }}
           >
             <GetStartedOption

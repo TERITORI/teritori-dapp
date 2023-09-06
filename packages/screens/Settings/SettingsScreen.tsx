@@ -195,7 +195,7 @@ const NetworkSettings: React.FC<{ networkId: string }> = ({ networkId }) => {
   const n = getNetwork(networkId);
   if (!n) return null;
   return (
-    <TertiaryBox fullWidth mainContainerStyle={{ padding: layout.padding_x1 }}>
+    <TertiaryBox fullWidth mainContainerStyle={{ padding: layout.spacing_x1 }}>
       <TouchableOpacity
         onPress={() => {
           dispatch(toggleNetwork({ networkId }));

@@ -52,20 +52,20 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      paddingTop: layout.topContentPaddingWithHeading,
+      paddingTop: layout.topContentSpacingWithHeading,
     },
     horizontalContentPadding: {
-      paddingHorizontal: layout.contentPadding,
+      paddingHorizontal: layout.contentSpacing,
     },
     optionsScrollContent: {
-      paddingHorizontal: layout.contentPadding - layout.padding_x2,
+      paddingHorizontal: layout.contentSpacing - layout.spacing_x2,
     },
     row: {
       flex: 1,
       flexDirection: "row",
       flexWrap: "wrap",
-      marginHorizontal: -layout.padding_x2,
-      marginVertical: -layout.padding_x2,
+      marginHorizontal: -layout.spacing_x2,
+      marginVertical: -layout.spacing_x2,
     },
     contentCenter: {
       flex: 1,
@@ -74,7 +74,7 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
       width: 135,
     },
     transactionListContent: {
-      marginTop: layout.padding_x2_5,
+      marginTop: layout.spacing_x2_5,
     },
   });
   const authToken = useSelector((state: RootState) =>
@@ -361,7 +361,7 @@ export const MultisigWalletSelectModal: React.FC<
   MultisigWalletSelectModalProps
 > = ({ onClose, visible, data, callback }) => {
   const modalWidth = 448;
-  const paddingWidth = layout.padding_x2_5;
+  const paddingWidth = layout.spacing_x2_5;
   // FIXME: remove StyleSheet.create
   // eslint-disable-next-line no-restricted-syntax
   const styles = StyleSheet.create({
@@ -369,7 +369,7 @@ export const MultisigWalletSelectModal: React.FC<
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "space-between",
-      padding: layout.padding_x2,
+      padding: layout.spacing_x2,
       marginHorizontal: "auto",
     },
     walletName: StyleSheet.flatten([fontSemibold14, {}]),
@@ -378,7 +378,7 @@ export const MultisigWalletSelectModal: React.FC<
       height: 20,
     },
     walletPress: {
-      paddingTop: layout.padding_x2,
+      paddingTop: layout.spacing_x2,
     },
   });
 
@@ -396,7 +396,7 @@ export const MultisigWalletSelectModal: React.FC<
           key={`pressable-${index}`}
           style={[
             styles.walletPress,
-            { paddingTop: index === 0 ? 0 : layout.padding_x2 },
+            { paddingTop: index === 0 ? 0 : layout.spacing_x2 },
           ]}
           onPress={() => {
             callback(item.address);

@@ -108,11 +108,11 @@ const styles = StyleSheet.create({
     borderColor: neutral33,
     borderWidth: 1,
     borderRadius: 12,
-    marginBottom: layout.padding_x3,
+    marginBottom: layout.spacing_x3,
   },
   header: {
-    margin: layout.padding_x2,
-    marginTop: layout.padding_x1_5,
+    margin: layout.spacing_x2,
+    marginTop: layout.spacing_x1_5,
     position: "relative",
     flexDirection: "row",
     alignItems: "center",
@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
   },
   childrenContainer: {
-    padding: layout.padding_x2_5,
+    padding: layout.spacing_x2_5,
     paddingTop: 0,
   },
   rowCenter: {
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   badge: {
-    padding: layout.padding_x1,
+    padding: layout.spacing_x1,
     borderWidth: 1,
     borderColor: neutral33,
     borderRadius: 10,

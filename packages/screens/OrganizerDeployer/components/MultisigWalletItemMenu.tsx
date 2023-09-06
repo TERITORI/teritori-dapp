@@ -57,7 +57,7 @@ export const MultisigWalletItemMenu: React.FC<MultisigWalletItemMenuProps> = ({
         customStyles={{
           optionWrapper: {
             paddingVertical: 0,
-            paddingTop: layout.padding_x1_5,
+            paddingTop: layout.spacing_x1_5,
           },
           optionsContainer: {
             marginTop: 44,
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
   menu: {
     backgroundColor: "rgba(41, 41, 41, 0.8)",
     borderRadius: 12,
-    padding: layout.padding_x1_5,
+    padding: layout.spacing_x1_5,
     paddingTop: 0,
     top: 0,
   },
@@ -151,6 +151,6 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     backgroundColor: secondaryColor,
     opacity: 0.12,
-    marginTop: layout.padding_x1_5,
+    marginTop: layout.spacing_x1_5,
   },
 });

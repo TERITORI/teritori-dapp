@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
     height: "100%",
     borderLeftWidth: 1,
     borderColor: neutral33,
-    padding: layout.padding_x2_5,
+    padding: layout.spacing_x2_5,
   },
 });
 

@@ -52,7 +52,7 @@ export const InputMultisigAddressModal: React.FC<
     >
       <View
         style={{
-          paddingBottom: layout.padding_x3,
+          paddingBottom: layout.spacing_x3,
         }}
       >
         <TextInputCustom<AddressFormType>

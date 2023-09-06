@@ -100,7 +100,7 @@ export const ProposalTransactionModal: FC<{
                       borderWidth: 1,
                       borderColor: neutral77,
                       borderRadius: 8,
-                      padding: layout.padding_x1,
+                      padding: layout.spacing_x1,
                     }
                   }>
                     <BrandText style={textGrayStyles}>

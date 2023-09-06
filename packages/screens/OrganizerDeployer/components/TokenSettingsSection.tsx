@@ -140,9 +140,9 @@ export const TokenSettingsSection: React.FC<TokenSettingsSectionProps> = ({
 // eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   container: {
-    padding: layout.contentPadding,
-    paddingRight: layout.padding_x2_5,
-    paddingTop: layout.topContentPaddingWithHeading,
+    padding: layout.contentSpacing,
+    paddingRight: layout.spacing_x2_5,
+    paddingTop: layout.topContentSpacingWithHeading,
   },
   voteText: StyleSheet.flatten([
     fontSemibold14,
@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
   rightInput: { flex: 1 },
   inputContainer: {
     flexDirection: "row",
-    marginBottom: layout.padding_x2,
+    marginBottom: layout.spacing_x2,
   },
   trashContainer: {
     height: 32,
@@ -170,8 +170,8 @@ const styles = StyleSheet.create({
   footer: {
     justifyContent: "flex-end",
     alignItems: "flex-end",
-    paddingVertical: layout.padding_x1_5,
-    paddingHorizontal: layout.padding_x2_5,
+    paddingVertical: layout.spacing_x1_5,
+    paddingHorizontal: layout.spacing_x2_5,
     borderTopWidth: 1,
     borderColor: neutral33,
   },

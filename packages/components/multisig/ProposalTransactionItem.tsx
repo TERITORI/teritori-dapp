@@ -384,7 +384,7 @@ export const ProposalTransactionItem: React.FC<ProposalTransactionItemProps> = (
         onHoverIn={() => setHovered(true)}
         onHoverOut={() => setHovered(false)}
       >
-        <View style={{ padding: layout.padding_x2 }}>
+        <View style={{ padding: layout.spacing_x2 }}>
           <SVG source={getIcon} width={32} height={32} />
         </View>
 
@@ -510,7 +510,7 @@ export const ProposalTransactionItem: React.FC<ProposalTransactionItemProps> = (
   );
 };
 
-const sectionStyles: ViewStyle = { flex: 1, paddingRight: layout.padding_x1_5 };
+const sectionStyles: ViewStyle = { flex: 1, paddingRight: layout.spacing_x1_5 };
 const rowCenterStyles: ViewStyle = {
   flexDirection: "row",
   alignItems: "center",

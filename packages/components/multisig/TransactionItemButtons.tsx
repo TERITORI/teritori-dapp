@@ -190,7 +190,7 @@ export const TransactionItemButtons: React.FC<TransactionItemButtonsProps> = ({
               style={StyleSheet.flatten([
                 fontSemibold9,
                 {
-                  marginTop: layout.padding_x0_25,
+                  marginTop: layout.spacing_x0_25,
                   color: neutral77,
                   flexWrap: "wrap",
                   width: "100%",

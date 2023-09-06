@@ -193,8 +193,8 @@ export const MultisigCreateScreen = () => {
     >
       <ScrollView
         contentContainerStyle={{
-          padding: layout.contentPadding,
-          paddingTop: layout.topContentPaddingWithHeading,
+          padding: layout.contentSpacing,
+          paddingTop: layout.topContentSpacingWithHeading,
         }}
       >
         <View
@@ -303,7 +303,7 @@ export const MultisigCreateScreen = () => {
           <SpacerColumn size={2.5} />
           <View
             style={{
-              paddingVertical: layout.padding_x2_5,
+              paddingVertical: layout.spacing_x2_5,
               borderTopWidth: 1,
               borderColor: neutral33,
               flexDirection: "row",
@@ -336,7 +336,7 @@ export const MultisigCreateScreen = () => {
                   validate: (value) =>
                     validateMaxNumber(value, addressIndexes.length),
                 }}
-                errorStyle={{ paddingLeft: layout.padding_x1_5 }}
+                errorStyle={{ paddingLeft: layout.spacing_x1_5 }}
               />
               <SpacerRow size={2} />
               <BrandText style={[fontSemibold14, { color: neutral77 }]}>
@@ -368,7 +368,7 @@ export const MultisigCreateScreen = () => {
             style={{
               borderTopWidth: 1,
               borderColor: neutral33,
-              paddingTop: layout.padding_x2_5,
+              paddingTop: layout.spacing_x2_5,
               zIndex: 1,
             }}
           />

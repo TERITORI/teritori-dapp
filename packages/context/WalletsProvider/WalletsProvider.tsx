@@ -127,13 +127,13 @@ export const WalletsProvider: React.FC = React.memo(({ children }) => {
       multisignWallet,
       walletProviders,
       ready: keplrIsReady && metamaskIsReady && adenaIsReady && leapIsReady,
-        setMultisignWallet,
+      setMultisignWallet,
     };
   }, [
     hasKeplr,
     hasLeap,
     hasMetamask,
-      multisignWallet,
+    multisignWallet,
     hasAdena,
     keplrIsReady,
     metamaskIsReady,
