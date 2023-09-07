@@ -33,19 +33,17 @@ import { SVG } from "../SVG";
 import { CustomPressable } from "../buttons/CustomPressable";
 import { SpacerColumn, SpacerRow } from "../spacer";
 
-export type SelectInputDataValue = string | number;
-
-export type SelectInputData = {
+export type SelectInputItem = {
   label: string;
-  value: SelectInputDataValue;
+  value: string;
   iconComponent?: ReactElement;
 };
 
 type Props = {
-  data: SelectInputData[];
+  data: SelectInputItem[];
   placeHolder?: string;
-  selectedData: SelectInputData;
-  selectData: (data: SelectInputData) => void;
+  selectedItem: SelectInputItem;
+  selectItem: (item: SelectInputItem) => void;
   disabled?: boolean;
   style?: StyleProp<ViewStyle>;
   boxStyle?: StyleProp<ViewStyle>;
@@ -54,21 +52,20 @@ type Props = {
   allowSearchValue?: boolean;
   name?: string;
   isLoading?: boolean;
-  // Overrides the default item component
   renderItem?: ({
     onPressItem,
     item,
   }: {
-    onPressItem: (item: SelectInputData) => void;
-    item: SelectInputData;
+    onPressItem: (item: SelectInputItem) => void;
+    item: SelectInputItem;
   }) => JSX.Element;
 };
 
 export const SelectInput: React.FC<Props> = ({
   data,
   placeHolder,
-  selectedData,
-  selectData,
+  selectedItem,
+  selectItem,
   disabled,
   style,
   boxStyle,
@@ -94,17 +91,17 @@ export const SelectInput: React.FC<Props> = ({
     [allowSearchValue, data, searchValue]
   );
 
-  // It obliges the user to select a value from the list to trigger a valid selectData. The searchValue will not be used as selectedData.
+  // It obliges the user to select a value from the list to trigger a valid selectItem. The searchValue will not be used as selectedItem.
   // Also, after the user selected a value, if he modifies the searchValue, he will have to re-select a value from the list.
   useEffect(() => {
     if (
       allowSearchValue &&
-      selectedData.label &&
-      searchValue !== selectedData.label
+      selectedItem.label &&
+      searchValue !== selectedItem.label
     ) {
-      selectData({ label: "", value: "" });
+      selectItem({ label: "", value: "" });
     }
-  }, [allowSearchValue, searchValue, selectData, selectedData]);
+  }, [allowSearchValue, searchValue, selectItem, selectedItem]);
 
   useEffect(() => {
     if (!selectableData.length) {
@@ -119,8 +116,8 @@ export const SelectInput: React.FC<Props> = ({
     return dropdownMenuStyle;
   };
 
-  const onPressItem = (item: SelectInputData) => {
-    selectData(item);
+  const onPressItem = (item: SelectInputItem) => {
+    selectItem(item);
     setSearchValue(item.label);
     setOpenMenu(false);
   };
@@ -156,9 +153,9 @@ export const SelectInput: React.FC<Props> = ({
           ]}
         >
           <View style={iconLabelStyle}>
-            {selectedData.iconComponent && (
+            {selectedItem.iconComponent && (
               <>
-                {selectedData.iconComponent}
+                {selectedItem.iconComponent}
                 <SpacerRow size={1} />
               </>
             )}
@@ -186,10 +183,10 @@ export const SelectInput: React.FC<Props> = ({
               <BrandText
                 style={[
                   fontSemibold14,
-                  { color: selectedData ? secondaryColor : neutral77 },
+                  { color: selectedItem ? secondaryColor : neutral77 },
                 ]}
               >
-                {selectedData?.label ? selectedData.label : placeHolder}
+                {selectedItem?.label ? selectedItem.label : placeHolder}
               </BrandText>
             )}
           </View>
@@ -224,7 +221,7 @@ export const SelectInput: React.FC<Props> = ({
                 {renderItem ? (
                   renderItem({ onPressItem, item })
                 ) : (
-                  <SelectInputItem item={item} onPress={onPressItem} />
+                  <SelectInputItemComponent item={item} onPress={onPressItem} />
                 )}
               </Fragment>
             ))}
@@ -235,9 +232,9 @@ export const SelectInput: React.FC<Props> = ({
   );
 };
 
-export const SelectInputItem: FC<{
-  onPress: (item: SelectInputData) => void;
-  item: SelectInputData;
+export const SelectInputItemComponent: FC<{
+  onPress: (item: SelectInputItem) => void;
+  item: SelectInputItem;
   isLoading?: boolean;
 }> = ({ onPress, item, isLoading }) => {
   const [isHovered, setIsHovered] = useState(false);

@@ -7,23 +7,23 @@ import { parseUserId } from "../../networks";
 import { tinyAddress } from "../../utils/text";
 import {
   SelectInput,
-  SelectInputData,
   SelectInputItem,
+  SelectInputItemComponent,
 } from "../inputs/SelectInput";
 
-const ownWalletToSelect: SelectInputData = {
+const ownWalletToSelect: SelectInputItem = {
   label: "Use my wallet",
   value: "",
 };
 
 const DAOSelectorItem: FC<{
   daoId: string;
-  onPress: (item: SelectInputData) => void;
+  onPress: (item: SelectInputItem) => void;
 }> = ({ daoId, onPress }) => {
   const { primaryAlias, isLoading } = useNSPrimaryAlias(daoId);
   const [, daoAddress] = parseUserId(daoId);
 
-  const item: SelectInputData = useMemo(() => {
+  const item: SelectInputItem = useMemo(() => {
     return {
       label: `Use ${
         primaryAlias ? "@" + primaryAlias : tinyAddress(daoAddress, 40)
@@ -33,7 +33,7 @@ const DAOSelectorItem: FC<{
   }, [primaryAlias, daoAddress, daoId]);
 
   return (
-    <SelectInputItem
+    <SelectInputItemComponent
       item={item}
       onPress={() => onPress(item)}
       isLoading={isLoading}
@@ -47,15 +47,15 @@ export const DAOSelector: React.FC<{
   style?: StyleProp<ViewStyle>;
 }> = ({ userId, onSelect, style }) => {
   const [network, userAddress] = parseUserId(userId);
-  const [selectedData, setSelectedData] =
-    useState<SelectInputData>(ownWalletToSelect);
+  const [selectedItem, setSelectedData] =
+    useState<SelectInputItem>(ownWalletToSelect);
   const { daos } = useDAOs({
     networkId: network?.id,
     memberAddress: userAddress,
   });
-  const selectableData: SelectInputData[] = useMemo(() => {
+  const selectableData: SelectInputItem[] = useMemo(() => {
     if (!daos?.length) return [];
-    const res: SelectInputData[] = daos?.map((d) => {
+    const res: SelectInputItem[] = daos?.map((d) => {
       return {
         label: `Use ${tinyAddress(d.contractAddress, 40)}`,
         value: d.id,
@@ -67,8 +67,8 @@ export const DAOSelector: React.FC<{
   return (
     <SelectInput
       style={style}
-      selectedData={selectedData}
-      selectData={(data) => {
+      selectedItem={selectedItem}
+      selectItem={(data) => {
         setSelectedData(data);
         onSelect(data.value.toString());
       }}
@@ -82,7 +82,10 @@ export const DAOSelector: React.FC<{
             onPress={onPressItem}
           />
         ) : (
-          <SelectInputItem item={ownWalletToSelect} onPress={onPressItem} />
+          <SelectInputItemComponent
+            item={ownWalletToSelect}
+            onPress={onPressItem}
+          />
         )
       }
     />
