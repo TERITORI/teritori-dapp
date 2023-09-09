@@ -5,7 +5,7 @@ import { Post } from "../../api/feed/v1/feed";
 import { nonSigningSocialFeedClient } from "../../client-creators/socialFeedClient";
 import { decodeGnoPost } from "../../components/socialFeed/utils";
 import { NetworkKind, getNetwork, getUserId } from "../../networks";
-import { extractGnoString } from "../../utils/gno";
+import { extractGnoJSONString } from "../../utils/gno";
 
 export const usePost = (id: string, networkId: string | undefined) => {
   const { data, ...other } = useQuery<Post>(
@@ -23,8 +23,8 @@ export const usePost = (id: string, networkId: string | undefined) => {
           `GetPost(1, ${id})`
         );
 
-        const postData = extractGnoString(output);
-        return decodeGnoPost(networkId, postData);
+        const gnoPost = extractGnoJSONString(output);
+        return decodeGnoPost(networkId, gnoPost);
       } else {
         const client = await nonSigningSocialFeedClient({
           networkId,
