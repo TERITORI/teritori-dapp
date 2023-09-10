@@ -1,8 +1,11 @@
 import { omit } from "lodash";
 
 import { mustGetFeedClient } from "./backend";
-import { pinataPinFileToIPFS } from "../candymachine/pinata-upload";
-import { pinataPinJSONToIPFS } from "../candymachine/pinata-upload";
+import { LocalFileData, RemoteFileData } from "./types/files";
+import {
+  pinataPinFileToIPFS,
+  pinataPinJSONToIPFS,
+} from "../candymachine/pinata-upload";
 
 interface UploadPostFilesToPinataParams {
   files: LocalFileData[];
@@ -112,8 +115,6 @@ export const uploadJSONToIPFS = async ({
     console.error("upload file err : Fail to pin to IPFS");
   } else return uploadedFile;
 };
-
-
 
 // Used to get a correct image URL for displaying or storing
 export const ipfsURLToHTTPURL = (ipfsURL: string | undefined) => {
