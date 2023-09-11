@@ -26,7 +26,7 @@ export const FeedScreen: ScreenFC<"Feed"> = ({ route: { params } }) => {
         mentions: [],
         hashtags: [],
       },
-      limit: 2,
+      limit: 10,
       offset: 0,
     };
   }, [selectedTab]);
