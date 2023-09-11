@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import { View, TouchableOpacity } from "react-native";
 
-import { MenuProps } from "./Menu";
+import { useDropdowns } from "../../context/DropdownsProvider";
 import { neutral33 } from "../../utils/style/colors";
 import { BrandText } from "../BrandText";
 import { PrimaryBox } from "../boxes/PrimaryBox";
+import { MenuProps } from "./Menu";
 
 const DEFAULT_WIDTH = 164;
 
@@ -13,34 +14,21 @@ export const Menu: React.FC<MenuProps> = ({
   component,
   width = DEFAULT_WIDTH,
 }) => {
-  const [isMenuVisible, setMenuVisibility] = useState(false);
-
-  const menuRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    function handleClick(e: any) {
-      if (menuRef && menuRef.current) {
-        const ref: any = menuRef.current;
-        if (!ref.contains(e.target)) {
-          setMenuVisibility(false);
-        }
-      }
-    }
-    document.addEventListener("click", handleClick);
-    return () => document.removeEventListener("click", handleClick);
-  }, []);
+  const { onPressDropdownButton, isDropdownOpen, closeOpenedDropdown } =
+    useDropdowns();
+  const dropdownRef = useRef<View>(null);
 
   return (
     <View style={{ position: "relative", zIndex: 9999 }}>
       <TouchableOpacity
-        onPress={() => setMenuVisibility((prev) => !prev)}
+        onPress={() => onPressDropdownButton(dropdownRef)}
         activeOpacity={0.7}
       >
         {component}
       </TouchableOpacity>
-      {isMenuVisible && (
-        <div
-          ref={menuRef}
+      {isDropdownOpen(dropdownRef) && (
+        <View
+          ref={dropdownRef}
           style={{
             zIndex: 99999,
             position: "absolute",
@@ -59,7 +47,7 @@ export const Menu: React.FC<MenuProps> = ({
               <TouchableOpacity
                 key={item.label}
                 onPress={() => {
-                  setMenuVisibility(false);
+                  closeOpenedDropdown();
                   item.onPress();
                 }}
                 activeOpacity={0.7}
@@ -84,7 +72,7 @@ export const Menu: React.FC<MenuProps> = ({
               </TouchableOpacity>
             ))}
           </PrimaryBox>
-        </div>
+        </View>
       )}
     </View>
   );
