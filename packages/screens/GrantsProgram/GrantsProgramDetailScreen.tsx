@@ -1,18 +1,12 @@
 import React, { useState } from "react";
 import { View } from "react-native";
-import { SvgProps } from "react-native-svg";
 
 import { HeaderBackButton } from "./components/HeaderBackButton";
 import { Tag } from "./components/Tag";
-import { TaskItem } from "./components/TaskItem";
-import { TaskList } from "./components/TaskList";
+import { TaskBoard } from "./components/TaskBoard";
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
 import discordSVG from "../../../assets/icons/discord.svg";
 import githubSVG from "../../../assets/icons/github.svg";
-import grantsCompletedSVG from "../../../assets/icons/grants-completed.svg";
-import grantsInProgressSVG from "../../../assets/icons/grants-inProgress.svg";
-import grantsOpenSVG from "../../../assets/icons/grants-open.svg";
-import grantsReviewSVG from "../../../assets/icons/grants-review.svg";
 import gnoSVG from "../../../assets/icons/networks/gno.svg";
 import shareSVG from "../../../assets/icons/share.svg";
 import twitterSVG from "../../../assets/icons/twitter.svg";
@@ -44,79 +38,6 @@ import {
   fontSemibold20,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-
-type StatusId = "open" | "inProgress" | "review" | "completed";
-
-type Task = {
-  id: string;
-  text: string;
-  statusId: StatusId;
-  priority: "medium" | "hight";
-};
-
-type Status = {
-  id: string;
-  text: string;
-  iconSVG: React.FC<SvgProps>;
-  count: number;
-};
-
-const STATUSES: Status[] = [
-  { id: "open", text: "Open (Backlog)", count: 4, iconSVG: grantsOpenSVG },
-  {
-    id: "inProgress",
-    text: "In Progress",
-    count: 4,
-    iconSVG: grantsInProgressSVG,
-  },
-  { id: "review", text: "Review", count: 4, iconSVG: grantsReviewSVG },
-  { id: "completed", text: "Completed", count: 4, iconSVG: grantsCompletedSVG },
-];
-
-const TASKS: Task[] = [
-  {
-    id: "1",
-    text: "Community Docs Platform 1",
-    statusId: "open",
-    priority: "hight",
-  },
-  {
-    id: "2",
-    text: "Community Docs Platform 2",
-    statusId: "inProgress",
-    priority: "hight",
-  },
-  {
-    id: "3",
-    text: "Community Docs Platform 3",
-    statusId: "review",
-    priority: "medium",
-  },
-  {
-    id: "4",
-    text: "Community Docs Platform 4",
-    statusId: "review",
-    priority: "hight",
-  },
-  {
-    id: "5",
-    text: "Community Docs Platform 5",
-    statusId: "completed",
-    priority: "medium",
-  },
-  {
-    id: "6",
-    text: "Community Docs Platform 6",
-    statusId: "open",
-    priority: "hight",
-  },
-  {
-    id: "7",
-    text: "Community Docs Platform 7",
-    statusId: "review",
-    priority: "medium",
-  },
-];
 
 export const GrantsProgramDetailScreen: ScreenFC<
   "GrantsProgramDetail"
@@ -340,34 +261,7 @@ export const GrantsProgramDetailScreen: ScreenFC<
               }}
             />
 
-            <FlexRow
-              style={{
-                alignItems: "flex-start",
-                justifyContent: "space-between",
-                flexWrap: "wrap",
-              }}
-            >
-              {STATUSES.map((step) => (
-                <TaskList
-                  text={step.text}
-                  count={step.count}
-                  iconSVG={step.iconSVG}
-                >
-                  {TASKS.filter((task) => task.statusId === step.id).map(
-                    (task) => (
-                      <>
-                        <TaskItem
-                          onPress={() => selectTask(task.id)}
-                          text={task.text}
-                          priority={task.priority}
-                        />
-                        <SpacerRow size={3} />
-                      </>
-                    )
-                  )}
-                </TaskList>
-              ))}
-            </FlexRow>
+            <TaskBoard selectTask={selectTask} />
           </View>
         </View>
 

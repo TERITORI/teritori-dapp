@@ -56,7 +56,7 @@ export type RootStackParamList = {
   GrantsProgram: undefined;
   GrantsProgramManager: undefined;
   GrantsProgramPayment: undefined;
-  GrantsProgramMakeRequest: undefined;
+  GrantsProgramMakeRequest: { step?: number };
   GrantsProgramDetail: { id: string };
 
   OrganizationDeployer: undefined;

@@ -4,6 +4,7 @@ import { StyleProp, ViewStyle } from "react-native";
 import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
+import { useAppNavigation } from "../../../utils/navigation";
 import {
   neutral00,
   neutral17,
@@ -20,10 +21,12 @@ const Step: React.FC<{
   text: string;
   active?: boolean;
   disabled?: boolean;
-}> = ({ indice, text, active, disabled }) => {
+  onPress: (step: number) => void;
+}> = ({ indice, text, active, disabled, onPress }) => {
   return (
     <FlexRow style={{ width: "auto" }}>
       <BrandText
+        onPress={() => onPress(indice)}
         style={[
           fontSemibold14,
           {
@@ -74,10 +77,24 @@ const Seperator = () => {
   );
 };
 
+const STEPS = [
+  "Short presentation",
+  "Team and links",
+  "Milestones",
+  "Preview",
+  "Confirm and Sign",
+];
+
 export const Breadcrumb: React.FC<{
   stepIndice?: number;
   containerStyle?: StyleProp<ViewStyle>;
 }> = ({ stepIndice = 1, containerStyle }) => {
+  const navigation = useAppNavigation();
+
+  const selectStep = (stepIndice: number) => {
+    navigation.navigate("GrantsProgramMakeRequest", { step: 2 });
+  };
+
   return (
     <TertiaryBox
       noBrokenCorners
@@ -92,40 +109,20 @@ export const Breadcrumb: React.FC<{
       ]}
     >
       <FlexRow style={{ width: "auto" }}>
-        <Step
-          indice={1}
-          text="Short presentation"
-          active={stepIndice === 1}
-          disabled={stepIndice < 1}
-        />
-        <Seperator />
-        <Step
-          indice={2}
-          text="Team and links"
-          active={stepIndice === 2}
-          disabled={stepIndice < 2}
-        />
-        <Seperator />
-        <Step
-          indice={3}
-          text="Milestones"
-          active={stepIndice === 3}
-          disabled={stepIndice < 3}
-        />
-        <Seperator />
-        <Step
-          indice={4}
-          text="Preview"
-          active={stepIndice === 4}
-          disabled={stepIndice < 4}
-        />
-        <Seperator />
-        <Step
-          indice={5}
-          text="Confirm and Sign"
-          active={stepIndice === 5}
-          disabled={stepIndice < 5}
-        />
+        {STEPS.map((step, idx) => {
+          return (
+            <>
+              <Step
+                onPress={selectStep}
+                indice={idx + 1}
+                text={step}
+                active={stepIndice === idx + 1}
+                disabled={stepIndice < idx + 1}
+              />
+              {idx + 1 < STEPS.length && <Seperator />}
+            </>
+          );
+        })}
       </FlexRow>
     </TertiaryBox>
   );

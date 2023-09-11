@@ -15,7 +15,7 @@ export const TaskList: React.FC<{
   count: number;
 }> = ({ iconSVG, text, count, children }) => {
   return (
-    <View style={{ maxWidth: 320, minWidth: 280 }}>
+    <View style={{ maxWidth: 320, minWidth: 240 }}>
       <FlexRow style={{ flex: 1, marginBottom: layout.spacing_x2 }}>
         <SVG source={iconSVG} width={26} height={26} />
         <BrandText

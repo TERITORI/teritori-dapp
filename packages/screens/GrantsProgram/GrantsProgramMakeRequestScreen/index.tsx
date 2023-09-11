@@ -1,14 +1,17 @@
 import { useRoute } from "@react-navigation/native";
 import React, { useMemo } from "react";
-import { useWindowDimensions } from "react-native";
+import { View, useWindowDimensions } from "react-native";
 
-import { BrandText } from "../../../components/BrandText";
+import { Milestones } from "./Milestones";
+import { ShortPresentation } from "./ShortPresentation";
+import { TeamAndLinks } from "./TeamAndLinks";
 import FlexRow from "../../../components/FlexRow";
 import { ScreenContainer } from "../../../components/ScreenContainer";
 import { Separator } from "../../../components/Separator";
 import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
 import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
-import { ScreenFC } from "../../../utils/navigation";
+import { SpacerColumn } from "../../../components/spacer";
+import { ScreenFC, useAppNavigation } from "../../../utils/navigation";
 import { layout } from "../../../utils/style/layout";
 import { Breadcrumb } from "../components/Breadcrumb";
 import { HeaderBackButton } from "../components/HeaderBackButton";
@@ -16,9 +19,10 @@ import { HeaderBackButton } from "../components/HeaderBackButton";
 export const GrantsProgramMakeRequestScreen: ScreenFC<
   "GrantsProgramMakeRequest"
 > = () => {
+  const navigation = useAppNavigation();
   const { width } = useWindowDimensions();
   const route = useRoute();
-  const { step } = route.params as any;
+  const step = !route.params ? 1 : (route.params as any).step;
   const stepIndice = useMemo(() => {
     let res = step ? parseInt(step, 10) : 1;
     res = Number.isInteger(res) ? res : 1;
@@ -33,7 +37,14 @@ export const GrantsProgramMakeRequestScreen: ScreenFC<
         containerStyle={{ marginTop: layout.spacing_x2 }}
       />
 
-      <BrandText>Test</BrandText>
+      <SpacerColumn size={4} />
+
+      {/* Main view============================================================ */}
+      <View style={{ width: "100%" }}>
+        {stepIndice === 1 && <ShortPresentation />}
+        {stepIndice === 2 && <TeamAndLinks />}
+        {stepIndice === 3 && <Milestones />}
+      </View>
 
       <Separator
         style={{
@@ -45,8 +56,26 @@ export const GrantsProgramMakeRequestScreen: ScreenFC<
       />
 
       <FlexRow style={{ justifyContent: "space-between" }}>
-        <SecondaryButton text="Back" size="SM" width={120} />
-        <PrimaryButton text="Next" size="SM" width={120} />
+        <SecondaryButton
+          onPress={() =>
+            navigation.navigate("GrantsProgramMakeRequest", {
+              step: Math.max(stepIndice - 1, 1),
+            })
+          }
+          text="Back"
+          size="SM"
+          width={120}
+        />
+        <PrimaryButton
+          onPress={() =>
+            navigation.navigate("GrantsProgramMakeRequest", {
+              step: Math.min(stepIndice + 1, 5),
+            })
+          }
+          text="Next"
+          size="SM"
+          width={120}
+        />
       </FlexRow>
     </ScreenContainer>
   );
