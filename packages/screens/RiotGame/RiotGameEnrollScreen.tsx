@@ -25,6 +25,7 @@ import {
   useSquadStakingSquadsV1,
 } from "../../hooks/riotGame/useSquadStakingSquadsV1";
 import { useSquadStakingSquadsV2 } from "../../hooks/riotGame/useSquadStakingSquadsV2";
+import { useIsMobile } from "../../hooks/useIsMobile";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
@@ -47,8 +48,10 @@ import {
   yellowDefault,
 } from "../../utils/style/colors";
 import {
+  fontMedium24,
   fontMedium32,
   fontMedium48,
+  fontSemibold20,
   fontSemibold28,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
@@ -59,7 +62,8 @@ const EMBEDDED_VIDEO_URI =
 const embeddedVideoHeight = 267;
 const embeddedVideoWidth = 468;
 
-export const RiotGameEnrollScreen = () => {
+export const RiotGameEnrollScreen: React.FC = () => {
+  const isMobile = useIsMobile();
   const navigation = useAppNavigation();
   const { setToastError, setToastSuccess } = useFeedbacks();
   const [activeSquadId, setActiveSquadId] = useState<number>(1);
@@ -266,10 +270,12 @@ export const RiotGameEnrollScreen = () => {
     <GameContentView>
       <View>
         <BrandText
-          style={{
-            alignSelf: "center",
-            ...(fontMedium48 as object),
-          }}
+          style={[
+            {
+              alignSelf: "center",
+            },
+            isMobile ? fontSemibold28 : fontMedium48,
+          ]}
         >
           Send to fight
         </BrandText>
@@ -292,7 +298,9 @@ export const RiotGameEnrollScreen = () => {
               justifyContent: "space-between",
             }}
           >
-            <BrandText style={fontMedium32}>Enroll your Ripper(s)</BrandText>
+            <BrandText style={isMobile ? fontMedium24 : fontMedium32}>
+              Enroll your Ripper(s)
+            </BrandText>
 
             <View
               style={{
@@ -323,7 +331,7 @@ export const RiotGameEnrollScreen = () => {
           <FlatList
             scrollEnabled={false}
             data={RIPPER_SLOTS}
-            numColumns={3}
+            numColumns={isMobile ? 2 : 3}
             keyExtractor={(item, index) => "" + index}
             ListFooterComponent={
               activeSquadId ? (
@@ -368,7 +376,9 @@ export const RiotGameEnrollScreen = () => {
 
         <View style={[colStyles, { maxWidth: 540 }]}>
           <View style={{ marginTop: layout.spacing_x1, width: "100%" }}>
-            <BrandText style={fontMedium32}>Staking duration</BrandText>
+            <BrandText style={isMobile ? fontMedium24 : fontMedium32}>
+              Staking duration
+            </BrandText>
           </View>
 
           <TertiaryBox
@@ -380,7 +390,7 @@ export const RiotGameEnrollScreen = () => {
             fullWidth
             height={148}
           >
-            <BrandText style={fontSemibold28}>
+            <BrandText style={isMobile ? fontSemibold20 : fontSemibold28}>
               {moment
                 .utc(stakingDuration)
                 .format("HH [hours] mm [minutes] ss [seconds]")}
