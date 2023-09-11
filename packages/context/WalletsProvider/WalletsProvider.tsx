@@ -2,6 +2,7 @@ import React, { createContext, useContext, useMemo } from "react";
 
 import { useAdena } from "./adena";
 import { useKeplr } from "./keplr";
+import { useLeap } from "./leap";
 import { useMetamask } from "./metamask";
 import { Wallet } from "./wallet";
 import { WalletProvider } from "../../utils/walletProvider";
@@ -26,6 +27,7 @@ export const useWallets = () => useContext(WalletsContext);
 export const WalletsProvider: React.FC = React.memo(({ children }) => {
   // const [hasPhantom, phantomIsReady, phantomWallet] = usePhantom();
   const [hasKeplr, keplrIsReady, keplrWallets] = useKeplr();
+  const [hasLeap, leapIsReady, leapWallets] = useLeap();
   const [hasMetamask, metamaskIsReady, metamaskWallets] = useMetamask();
   const [hasAdena, adenaIsReady, adenaWallets] = useAdena();
 
@@ -92,6 +94,14 @@ export const WalletsProvider: React.FC = React.memo(({ children }) => {
       }
     }
 
+    if (hasLeap) {
+      walletProviders.push(WalletProvider.Leap);
+
+      if (leapWallets?.[0]?.connected) {
+        wallets.push(leapWallets[0]);
+      }
+    }
+
     if (hasMetamask) {
       walletProviders.push(WalletProvider.Metamask);
 
@@ -110,22 +120,21 @@ export const WalletsProvider: React.FC = React.memo(({ children }) => {
     return {
       wallets,
       walletProviders,
-      ready: keplrIsReady && metamaskIsReady && adenaIsReady,
+      ready: keplrIsReady && metamaskIsReady && adenaIsReady && leapIsReady,
     };
   }, [
-    // hasPhantom,
-    // phantomIsReady,
-    // phantomWallet,
     hasKeplr,
-    keplrIsReady,
-    keplrWallets,
+    hasLeap,
     hasMetamask,
-    metamaskIsReady,
-    metamaskWallets,
     hasAdena,
+    keplrIsReady,
+    metamaskIsReady,
     adenaIsReady,
+    leapIsReady,
+    keplrWallets,
+    leapWallets,
+    metamaskWallets,
     adenaWallets,
-    // storeWallets,
   ]);
 
   return (

@@ -48,6 +48,5 @@ export const useTenorFetchFeatured = () => {
     }
   );
 
-  // returns
   return request;
 };

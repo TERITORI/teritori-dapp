@@ -1,9 +1,9 @@
-// libraries
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 
 import { ConnectAdenaButton } from "./ConnectAdenaButton";
 import { ConnectKeplrButton } from "./ConnectKeplrButton";
+import { ConnectLeapButton } from "./ConnectLeapButton";
 import { ConnectMetamaskButton } from "./ConnectMetamaskButton";
 import { ConnectWalletButton } from "./components/ConnectWalletButton";
 import walletConnectSVG from "../../../assets/icons/wallet-connect.svg";
@@ -26,13 +26,11 @@ export const ConnectWalletModal: React.FC<ConnectWalletProps> = ({
   onClose,
   visible,
 }) => {
-  // variables
   const [isDisclaimerVisible, setIsDisclaimerVisible] = useState(false);
 
   // functions
   const toggleDisclaimer = () => setIsDisclaimerVisible(!isDisclaimerVisible);
 
-  // returns
   return (
     <ModalBase
       label="Connect Wallet"
@@ -43,9 +41,11 @@ export const ConnectWalletModal: React.FC<ConnectWalletProps> = ({
       width={457}
       noBrokenCorners
     >
-      <ConnectMetamaskButton onDone={onClose} />
-      <SpacerColumn size={1.5} />
       <ConnectKeplrButton onDone={onClose} />
+      <SpacerColumn size={1.5} />
+      <ConnectLeapButton onDone={onClose} />
+      <SpacerColumn size={1.5} />
+      <ConnectMetamaskButton onDone={onClose} />
       <SpacerColumn size={1.5} />
       <ConnectAdenaButton onDone={onClose} />
       <SpacerColumn size={1.5} />

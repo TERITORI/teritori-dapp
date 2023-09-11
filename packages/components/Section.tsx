@@ -12,7 +12,6 @@ export const Section: React.FC<{
   subtitle?: string;
   topRightChild?: React.ReactNode;
 }> = ({ children, title, subtitle, topRightChild }) => {
-  // variables
   const fontSize = 20;
   const { width } = useMaxResolution();
 

@@ -9,6 +9,7 @@ import { CurrencyIcon } from "../../components/CurrencyIcon";
 import { SVG } from "../../components/SVG";
 import { SecondaryButton } from "../../components/buttons/SecondaryButton";
 import { useBalances } from "../../hooks/useBalances";
+import { useIsMobile } from "../../hooks/useIsMobile";
 import { parseUserId } from "../../networks";
 import { prettyPrice } from "../../utils/coins";
 import { neutral22, neutral33 } from "../../utils/style/colors";
@@ -20,6 +21,7 @@ export const Assets: React.FC<{
   style?: StyleProp<ViewStyle>;
   readOnly?: boolean;
 }> = ({ userId, style, readOnly }) => {
+  const isMobile = useIsMobile();
   const [isDepositVisible, setDepositVisible] = useState(false);
   const [isWithdrawVisible, setWithdrawVisible] = useState(false);
   const [targetCurrency, setTargetCurrency] = useState<string>();
@@ -142,7 +144,7 @@ export const Assets: React.FC<{
               }}
             >
               <CurrencyIcon
-                size={64}
+                size={isMobile ? 32 : 64}
                 networkId={network.id}
                 denom={currency.denom}
               />
@@ -185,13 +187,13 @@ export const Assets: React.FC<{
                     <SecondaryButton
                       style={{ marginRight: 16 }}
                       text="Deposit"
-                      size="M"
+                      size={isMobile ? "XS" : "M"}
                       onPress={() => deposit(currency.denom)}
                     />
                   )}
                   <SecondaryButton
                     text="Withdraw"
-                    size="M"
+                    size={isMobile ? "XS" : "M"}
                     onPress={() => withdraw(currency.denom)}
                   />
                 </>

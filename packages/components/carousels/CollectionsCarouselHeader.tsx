@@ -60,6 +60,7 @@ const CarouselCollectionItem: React.FC<{
       <View
         style={{
           justifyContent: "flex-start",
+          padding: layout.spacing_x2,
         }}
       >
         <BrandText style={{ marginBottom: layout.spacing_x1_5 }}>

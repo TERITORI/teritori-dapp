@@ -24,7 +24,6 @@ interface MemberSettingsSectionProps {
 export const MemberSettingsSection: React.FC<MemberSettingsSectionProps> = ({
   onSubmit,
 }) => {
-  // variables
   // const { handleSubmit, control, unregister } = useForm<MemberSettingFormType>();
   const { handleSubmit, control } = useForm<MemberSettingFormType>();
   const [addressIndexes, setAddressIndexes] = useState<number[]>([0]);
@@ -42,7 +41,6 @@ export const MemberSettingsSection: React.FC<MemberSettingsSectionProps> = ({
     setAddressIndexes([...addressIndexes, Math.floor(Math.random() * 200000)]);
   };
 
-  // returns
   return (
     <View style={styles.fill}>
       <ScrollView contentContainerStyle={styles.container}>

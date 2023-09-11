@@ -63,7 +63,6 @@ export const ScreenContainer: React.FC<{
   forceNetworkKind,
   forceNetworkFeatures,
 }) => {
-  // variables
   const { height } = useWindowDimensions();
   const hasMargin = !noMargin;
   const hasScroll = !noScroll;

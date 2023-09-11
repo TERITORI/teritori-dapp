@@ -29,7 +29,6 @@ export const RefreshButton: React.FC<RefreshButtonProps> = ({
   isRefreshing,
   onPress,
 }) => {
-  // variables
   const isRefreshingAnim = useDerivedValue(() => {
     return isRefreshing.value;
   }, [isRefreshing.value]);
@@ -77,7 +76,6 @@ export const RefreshButton: React.FC<RefreshButtonProps> = ({
     [isRefreshingAnim.value]
   );
 
-  // returns
   return (
     <Animated.View style={[styles.selfCenter, animStyle]}>
       <TouchableOpacity style={styles.container} onPress={onPress}>

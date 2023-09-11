@@ -171,7 +171,6 @@ export const NFTTransferModal: React.FC<NFTTransferModalProps> = ({
     onClose();
   };
 
-  // returns
   return (
     <ModalBase
       width={456}

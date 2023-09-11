@@ -11,14 +11,12 @@ import { useMaxResolution } from "../../../hooks/useMaxResolution";
 import { fontSemibold28 } from "../../../utils/style/fonts";
 
 export const LaunchpadBanner: React.FC = () => {
-  // variables
   const { width: maxWidth } = useMaxResolution();
   const { height, width } = useImageResizer({
     image: LaunchpadBannerImage,
     maxSize: { width: maxWidth },
   });
 
-  // returns
   return (
     <View style={styles.container}>
       <Image

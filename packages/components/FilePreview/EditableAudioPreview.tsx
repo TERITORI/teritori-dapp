@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Image, View, TouchableOpacity, ActivityIndicator } from "react-native";
 
 import { AudioWaveform } from "./AudioWaveform";
+import { AUDIO_WAVEFORM_MAX_WIDTH } from "./AudioWaveform/AudioWaveform.web";
 import { DeleteButton } from "./DeleteButton";
 import pauseSVG from "../../../assets/icons/pause.svg";
 import playSVG from "../../../assets/icons/play.svg";
@@ -89,6 +90,7 @@ export const EditableAudioPreview: React.FC<AudioPreviewProps> = ({
           paddingHorizontal: layout.spacing_x1,
           flexDirection: "row",
           alignItems: "center",
+          flex: 1,
         }}
       >
         <TouchableOpacity
@@ -131,21 +133,18 @@ export const EditableAudioPreview: React.FC<AudioPreviewProps> = ({
           <View
             style={{
               marginHorizontal: layout.spacing_x2,
-              maxWidth: 530,
+              maxWidth: AUDIO_WAVEFORM_MAX_WIDTH,
+              flex: 1,
               overflow: "hidden",
             }}
           >
             <AudioWaveform
-              waveFormContainerWidth={840}
               waveform={file.audioMetadata?.waveform}
               positionPercent={positionPercent}
               duration={
                 playbackStatus?.isLoaded
                   ? playbackStatus?.durationMillis || 0
                   : 1
-              }
-              currentDuration={
-                playbackStatus?.isLoaded ? playbackStatus?.positionMillis : 0
               }
             />
           </View>

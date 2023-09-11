@@ -71,7 +71,6 @@ export const TNSManageScreen: React.FC<TNSManageScreenProps> = ({
             </BrandText>
 
             <DAOSelector
-              value={selectedDAOId}
               onSelect={setSelectedDAOId}
               userId={selectedWallet?.userId}
               style={{ width: "100%", marginBottom: 20 }}

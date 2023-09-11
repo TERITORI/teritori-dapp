@@ -15,6 +15,7 @@ import { Wallet } from "../../context/WalletsProvider";
 import { TeritoriNftVaultClient } from "../../contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
 import { NFTVault__factory } from "../../evm-contracts-clients/teritori-nft-vault/NFTVault__factory";
 import { useCancelNFTListing } from "../../hooks/useCancelNFTListing";
+import { useIsMobile } from "../../hooks/useIsMobile";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useMintEnded } from "../../hooks/useMintEnded";
 import { useNFTInfo } from "../../hooks/useNFTInfo";
@@ -38,12 +39,11 @@ const Content: React.FC<{
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof screenTabItems>("main");
   const { setToastError } = useFeedbacks();
+  const isMobile = useIsMobile();
   const wallet = useSelectedWallet();
   const { info, refresh, notFound } = useNFTInfo(id, wallet?.userId);
-  const { width } = useMaxResolution({ noMargin: true });
-
+  const { width } = useMaxResolution({ responsive: true, noMargin: true });
   const [network, collectionAddress] = parseNftId(id);
-
   const collectionId = getCollectionId(network?.id, collectionAddress);
   const mintEnded = useMintEnded(collectionId);
   const showMarketplace =
@@ -171,17 +171,19 @@ const Content: React.FC<{
             alignItems: "center",
           }}
         >
-          <Tabs
-            items={screenTabItems}
-            selected={selectedTab}
-            style={{
-              height: 60,
-              width,
-              alignItems: "flex-end",
-              backgroundColor: "black",
-            }}
-            onSelect={setSelectedTab}
-          />
+          {!isMobile && (
+            <Tabs
+              items={screenTabItems}
+              selected={selectedTab}
+              style={{
+                height: 60,
+                width,
+                alignItems: "flex-end",
+                backgroundColor: "black",
+              }}
+              onSelect={setSelectedTab}
+            />
+          )}
 
           <Target name="main-info">
             <SpacerColumn size={6} />
@@ -223,8 +225,9 @@ export const NFTDetailScreen: ScreenFC<"NFTDetail"> = ({
   return (
     <ScreenContainer
       forceNetworkId={network?.id}
-      fullWidth
       footerChildren={<></>}
+      responsive
+      fullWidth
       noScroll
       noMargin
       onBackPress={() =>

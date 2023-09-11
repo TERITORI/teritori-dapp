@@ -41,7 +41,6 @@ export const NewsCarouselSection: React.FC = () => {
     carouselRef.current?.next();
   }, [width]);
 
-  // returns
   return (
     <Section title="Highlighted News" topRightChild={topRightChild}>
       <FullWidthSeparator />

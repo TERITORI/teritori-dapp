@@ -46,6 +46,8 @@ import {
   parseNetworkObjectId,
   parseUserId,
 } from "../../networks";
+import { gnoTeritoriNetwork } from "../../networks/gno-teritori";
+import { teritoriNetwork } from "../../networks/teritori";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { DEFAULT_USERNAME } from "../../utils/social-feed";
 import { primaryColor } from "../../utils/style/colors";
@@ -64,11 +66,25 @@ export const FeedPostViewScreen: ScreenFC<"FeedPostView"> = ({
   },
 }) => {
   const navigation = useAppNavigation();
-  const [network, postId] = parseNetworkObjectId(id);
+
+  let [network, postId] = parseNetworkObjectId(id);
+  if (!network) {
+    // fallback to teritori or gno network if there is no network prefix in the id
+    if (id.includes("-")) {
+      // teritori ids are uuids
+      network = teritoriNetwork;
+      postId = id;
+    } else {
+      // gno ids are integers
+      network = gnoTeritoriNetwork;
+      postId = id;
+    }
+  }
+  const networkId = network?.id;
+
   const { width: windowWidth } = useWindowDimensions();
   const { width } = useMaxResolution();
   const isMobile = useIsMobile();
-  const networkId = network?.id;
   const [parentOffsetValue, setParentOffsetValue] = useState(0);
   const { post: postResult, isLoading: isLoadingPostResult } = usePost(
     postId,
