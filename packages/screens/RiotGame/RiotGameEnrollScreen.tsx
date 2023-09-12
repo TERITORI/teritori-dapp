@@ -284,7 +284,7 @@ export const RiotGameEnrollScreen: React.FC = () => {
       <View
         style={{
           justifyContent: "space-around",
-          marginTop: layout.spacing_x1,
+          margin: layout.spacing_x1_5,
           flexDirection: "row",
           flexWrap: "wrap",
         }}
@@ -331,6 +331,7 @@ export const RiotGameEnrollScreen: React.FC = () => {
           <FlatList
             scrollEnabled={false}
             data={RIPPER_SLOTS}
+            key={`squad-selector-col-buster-${isMobile}`}
             numColumns={isMobile ? 2 : 3}
             keyExtractor={(item, index) => "" + index}
             ListFooterComponent={
