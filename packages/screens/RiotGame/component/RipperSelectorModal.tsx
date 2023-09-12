@@ -34,7 +34,11 @@ import {
   fontMedium32,
   fontMedium48,
 } from "../../../utils/style/fonts";
-import { headerHeight, layout } from "../../../utils/style/layout";
+import {
+  headerHeight,
+  layout,
+  MOBILE_MAX_WIDTH,
+} from "../../../utils/style/layout";
 
 type RipperSelectorModalProps = ModalProps & {
   slotId: number | undefined;
@@ -108,7 +112,7 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
             {selectedRipper?.name || "Please select a Ripper"}
           </BrandText>
 
-          <FlexRow breakpoint={992} justifyContent="space-around">
+          <FlexRow breakpoint={MOBILE_MAX_WIDTH} justifyContent="space-around">
             <View style={{ justifyContent: "space-around" }}>
               <View>
                 <BrandText style={[fontMedium32]}>Available Rippers</BrandText>
