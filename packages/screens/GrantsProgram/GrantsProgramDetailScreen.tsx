@@ -44,9 +44,9 @@ export const GrantsProgramDetailScreen: ScreenFC<
 > = () => {
   const [searchText, setSearchText] = useState("");
   const [isHideInfo, setIsHideInfo] = useState(false);
-  const [selectedTask, setSelectedTask] = useState<string>();
+  const [selectedTask, setSelectedTask] = useState<number>();
 
-  const selectTask = (taskId: string) => {
+  const selectTask = (taskId: number) => {
     setSelectedTask(taskId === selectedTask ? undefined : taskId);
   };
 

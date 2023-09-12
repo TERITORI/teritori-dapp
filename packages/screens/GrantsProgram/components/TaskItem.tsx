@@ -1,5 +1,5 @@
 import React from "react";
-import { TouchableOpacity, View } from "react-native";
+import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
 
 import { Tag } from "./Tag";
 import githubSVG from "../../../../assets/icons/github.svg";
@@ -23,18 +23,22 @@ export const TaskItem: React.FC<{
   showDelete?: boolean;
   priority: "medium" | "hight";
   onPress?: () => void;
-}> = ({ text, priority, onPress, showDelete }) => {
+  containerStyle?: StyleProp<ViewStyle>;
+}> = ({ text, priority, onPress, showDelete, containerStyle }) => {
   return (
     <View>
       <TouchableOpacity onPress={onPress}>
         <TertiaryBox
           fullWidth
           noBrokenCorners
-          mainContainerStyle={{
-            backgroundColor: neutral22,
-            padding: layout.spacing_x2,
-            marginBottom: layout.spacing_x2,
-          }}
+          mainContainerStyle={[
+            {
+              backgroundColor: neutral22,
+              padding: layout.spacing_x2,
+              marginBottom: layout.spacing_x2,
+            },
+            containerStyle,
+          ]}
         >
           <BrandText
             style={[

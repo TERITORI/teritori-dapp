@@ -3,6 +3,7 @@ import React, { useMemo } from "react";
 import { View, useWindowDimensions } from "react-native";
 
 import { Milestones } from "./Milestones";
+import { Preview } from "./Preview";
 import { ShortPresentation } from "./ShortPresentation";
 import { TeamAndLinks } from "./TeamAndLinks";
 import FlexRow from "../../../components/FlexRow";
@@ -44,6 +45,7 @@ export const GrantsProgramMakeRequestScreen: ScreenFC<
         {stepIndice === 1 && <ShortPresentation />}
         {stepIndice === 2 && <TeamAndLinks />}
         {stepIndice === 3 && <Milestones />}
+        {stepIndice === 4 && <Preview />}
       </View>
 
       <Separator
