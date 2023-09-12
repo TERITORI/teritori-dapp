@@ -242,3 +242,7 @@ validate-networks: node_modules
 .PHONY: networks.json
 networks.json: node_modules validate-networks
 	npx ts-node packages/scripts/generateJSONNetworks.ts > $@
+
+.PHONY: unused-exports
+unused-exports: node_modules
+	npx ts-unused-exports ./tsconfig.json 
