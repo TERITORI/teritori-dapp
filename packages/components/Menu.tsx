@@ -1,14 +1,16 @@
 import React, { useRef } from "react";
 import { View, TouchableOpacity } from "react-native";
 
-import { useDropdowns } from "../../context/DropdownsProvider";
-import { neutral33 } from "../../utils/style/colors";
-import { BrandText } from "../BrandText";
-import { PrimaryBox } from "../boxes/PrimaryBox";
+import { BrandText } from "./BrandText";
+import { PrimaryBox } from "./boxes/PrimaryBox";
+import { useDropdowns } from "../context/DropdownsProvider";
+import { neutral33 } from "../utils/style/colors";
+import { fontSemibold13 } from "../utils/style/fonts";
+import { layout } from "../utils/style/layout";
 
 const DEFAULT_WIDTH = 164;
 
-export interface MenuProps {
+interface MenuProps {
   component: React.ReactNode;
   items: {
     label: string;
@@ -39,7 +41,7 @@ export const Menu: React.FC<MenuProps> = ({
             style={{ position: "absolute", right: 0, bottom: -20 }}
             mainContainerStyle={{
               position: "absolute",
-              paddingHorizontal: 12,
+              paddingHorizontal: layout.spacing_x1_5,
             }}
           >
             {items.map((item, index) => (
@@ -52,7 +54,7 @@ export const Menu: React.FC<MenuProps> = ({
                 }}
                 activeOpacity={0.7}
                 style={[
-                  { paddingVertical: 12, width: "100%" },
+                  { paddingVertical: layout.spacing_x1_5, width: "100%" },
                   index !== items.length - 1 && {
                     borderBottomWidth: 1,
                     borderColor: neutral33,
@@ -60,12 +62,7 @@ export const Menu: React.FC<MenuProps> = ({
                 ]}
               >
                 <BrandText
-                  style={[
-                    {
-                      fontSize: 13,
-                    },
-                    item.disabled && { opacity: 0.5 },
-                  ]}
+                  style={[fontSemibold13, item.disabled && { opacity: 0.5 }]}
                 >
                   {item.label}
                 </BrandText>
