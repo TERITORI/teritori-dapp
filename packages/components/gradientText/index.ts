@@ -1,1 +1,1 @@
-export * from "./GradientText";
+export { GradientText, GradientType } from "./GradientText";

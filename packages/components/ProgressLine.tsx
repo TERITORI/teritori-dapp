@@ -6,7 +6,7 @@ import { neutral33 } from "../utils/style/colors";
 
 const DEFAULT_WIDTH = 200;
 
-export interface ProgressLineProps {
+interface ProgressLineProps {
   percent: number;
   width?: number;
   style?: ViewStyle;

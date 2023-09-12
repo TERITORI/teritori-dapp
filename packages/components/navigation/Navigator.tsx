@@ -41,7 +41,7 @@ import { WalletManagerWalletsScreen } from "../../screens/WalletManager/WalletsS
 import { RootStackParamList } from "../../utils/navigation";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
-export const screenTitle = (title: string) => "Teritori - " + title;
+const screenTitle = (title: string) => "Teritori - " + title;
 
 export const Navigator: React.FC = () => {
   return (
