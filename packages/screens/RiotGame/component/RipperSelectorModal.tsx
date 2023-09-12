@@ -22,6 +22,7 @@ import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
 import { SpacerRow } from "../../../components/spacer";
 import { useBreeding } from "../../../hooks/riotGame/useBreeding";
+import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import { getRipperTokenId, isNFTStaked } from "../../../utils/game";
 import {
@@ -59,6 +60,7 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
   confirmButton,
   ...props
 }) => {
+  const isMobile = useIsMobile();
   const [selectedRipper, setSelectedRipper] = useState<NFT | undefined>();
   const [breedingsLeft, setBreedingsLeft] = useState<number>(0);
   const networkId = useSelectedNetworkId();
@@ -108,7 +110,12 @@ export const RipperSelectorModal: React.FC<RipperSelectorModalProps> = ({
           contentContainerStyle={{ alignItems: "center" }}
           showsVerticalScrollIndicator={false}
         >
-          <BrandText style={[fontMedium48, { marginTop: layout.spacing_x2 }]}>
+          <BrandText
+            style={[
+              isMobile ? fontMedium32 : fontMedium48,
+              { marginTop: layout.spacing_x2 },
+            ]}
+          >
             {selectedRipper?.name || "Please select a Ripper"}
           </BrandText>
 
