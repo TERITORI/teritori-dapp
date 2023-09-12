@@ -1,5 +1,4 @@
 import React from "react";
-import { StyleSheet } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
@@ -51,7 +50,10 @@ export const InfoBox: React.FC<InfoBoxProps> = ({
     <TertiaryBox
       width={width}
       height={height}
-      style={styles.container}
+      style={{
+        borderRadius: 5,
+        marginHorizontal: layout.spacing_x1,
+      }}
       noBrokenCorners
       mainContainerStyle={{
         padding: layout.spacing_x1_5,
@@ -63,20 +65,3 @@ export const InfoBox: React.FC<InfoBoxProps> = ({
     </TertiaryBox>
   );
 };
-
-// FIXME: remove StyleSheet.create
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  container: {
-    borderRadius: 5,
-    marginHorizontal: layout.spacing_x1,
-  },
-  title: {
-    color: neutralA3,
-    ...(fontMedium14 as object),
-  },
-  content: {
-    marginTop: layout.spacing_x0_5,
-    ...(fontSemibold20 as object),
-  },
-});
