@@ -12,14 +12,16 @@ import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { CustomPressable } from "../../components/buttons/CustomPressable";
 import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
 import { useRippers } from "../../hooks/riotGame/useRippers";
+import { useIsMobile } from "../../hooks/useIsMobile";
 import { isNFTStaked } from "../../utils/game";
 import { useAppNavigation } from "../../utils/navigation";
 import { yellowDefault } from "../../utils/style/colors";
 import { fontMedium32 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
+import { layout, MOBILE_MAX_WIDTH } from "../../utils/style/layout";
 
 export const RiotGameInventoryScreen = () => {
   const navigation = useAppNavigation();
+  const isMobile = useIsMobile();
 
   const { myAvailableRippers } = useRippers();
 
@@ -29,9 +31,13 @@ export const RiotGameInventoryScreen = () => {
 
   return (
     <GameContentView>
-      <FlexRow breakpoint={1200} justifyContent="space-around">
+      <FlexRow breakpoint={MOBILE_MAX_WIDTH} justifyContent="space-around">
         <View style={{ opacity: 0.6, marginTop: layout.spacing_x4 }}>
-          <FlexRow justifyContent="space-between" alignItems="center">
+          <FlexRow
+            breakpoint={MOBILE_MAX_WIDTH}
+            justifyContent="space-between"
+            alignItems="center"
+          >
             <BrandText style={fontMedium32}>Available Items</BrandText>
 
             <CustomPressable>
@@ -49,7 +55,8 @@ export const RiotGameInventoryScreen = () => {
 
           <FlatList
             data={Array(9).fill(0)}
-            numColumns={3}
+            key={`items-selector-col-buster-${isMobile}`}
+            numColumns={isMobile ? 2 : 3}
             showsVerticalScrollIndicator={false}
             keyExtractor={(item, index) => "" + index}
             renderItem={() => {
@@ -71,6 +78,7 @@ export const RiotGameInventoryScreen = () => {
 
         <View style={{ minWidth: "500px", marginTop: layout.spacing_x4 }}>
           <FlexRow
+            breakpoint={MOBILE_MAX_WIDTH}
             style={{ justifyContent: "space-between", alignItems: "center" }}
           >
             <BrandText style={fontMedium32}>Available Rippers</BrandText>
@@ -85,7 +93,8 @@ export const RiotGameInventoryScreen = () => {
 
           <FlatList
             data={myAvailableRippers}
-            numColumns={3}
+            key={`rippers-selector-col-buster-${isMobile}`}
+            numColumns={isMobile ? 2 : 3}
             style={{ height: 360 }}
             showsVerticalScrollIndicator={false}
             keyExtractor={(ripper) => ripper.id}
