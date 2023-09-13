@@ -1,24 +1,24 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Image } from "react-native";
+import { View, Image, ViewStyle, TextStyle, ImageStyle } from "react-native";
 import { Pressable } from "react-native-hoverable";
 
 import { TrackImageHover } from "./TrackImageHover";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { parseUserId } from "../../networks";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
-import { neutral77, primaryColor } from "../../utils/style/colors";
-import { fontSemibold14, fontMedium14 } from "../../utils/style/fonts";
+import { primaryColor } from "../../utils/style/colors";
+import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { VideoInfoWithMeta } from "../../utils/types/video";
 import { BrandText } from "../BrandText";
 import { OmniLink } from "../OmniLink";
 import { UserAvatarWithFrame } from "../images/AvatarWithFrame";
 
+const unitWidth = 300;
 export const VideoPlayerCard: React.FC<{
   item: VideoInfoWithMeta;
   hasLibrary: boolean;
 }> = ({ item, hasLibrary }) => {
-  const unitWidth = 300;
   const authorNSInfo = useNSUserInfo(item.createdBy);
   const [, userAddress] = parseUserId(item.createdBy);
   const [selectedIndex, setSelectedIndex] = useState<string>(item.identifier);
@@ -27,49 +27,10 @@ export const VideoPlayerCard: React.FC<{
     ? authorNSInfo?.metadata?.tokenId
     : userAddress;
 
-  const styles = StyleSheet.create({
-    unitCard: {
-      width: unitWidth,
-    },
-    contentTitle: StyleSheet.flatten([
-      fontSemibold14,
-      {
-        marginVertical: layout.spacing_x0_5,
-      },
-    ]),
-    contentDescription: StyleSheet.flatten([
-      fontMedium14,
-      {
-        color: neutral77,
-      },
-    ]),
-    contentDate: StyleSheet.flatten([
-      fontMedium14,
-      {
-        color: neutral77,
-        marginLeft: "1em",
-      },
-    ]),
-    imgBox: {
-      position: "relative",
-    },
-    contentName: StyleSheet.flatten([
-      fontSemibold14,
-      {
-        color: primaryColor,
-      },
-    ]),
-    contentImg: {
-      width: "100%",
-      borderRadius: layout.spacing_x1,
-      aspectRatio: 1.7,
-    },
-  });
-
   return (
-    <View style={styles.unitCard}>
+    <View style={unitCardStyle}>
       <View
-        style={styles.imgBox}
+        style={imgBoxStyle}
         // @ts-ignore
         onMouseEnter={() => setSelectedIndex(item.id)}
         onMouseLeave={() => setSelectedIndex("")}
@@ -77,7 +38,7 @@ export const VideoPlayerCard: React.FC<{
         <Image
           // @ts-ignore
           source={ipfsURLToHTTPURL(item.videoMetaInfo.coverImage)}
-          style={styles.contentImg}
+          style={contentImgStyle}
         />
         {selectedIndex === item.identifier && (
           <TrackImageHover
@@ -87,7 +48,7 @@ export const VideoPlayerCard: React.FC<{
           />
         )}
       </View>
-      <BrandText style={styles.contentTitle}>
+      <BrandText style={contentTitleStyle}>
         {item.videoMetaInfo.title}
       </BrandText>
       <View
@@ -113,9 +74,29 @@ export const VideoPlayerCard: React.FC<{
           />
         </OmniLink>
         <Pressable>
-          <BrandText style={styles.contentName}>@{username}</BrandText>
+          <BrandText style={contentNameStyle}>@{username}</BrandText>
         </Pressable>
       </View>
     </View>
   );
+};
+
+const unitCardStyle: ViewStyle = {
+  width: unitWidth,
+};
+const contentTitleStyle: TextStyle = {
+  ...fontSemibold14,
+  marginVertical: layout.spacing_x0_5,
+};
+const imgBoxStyle: ViewStyle = {
+  position: "relative",
+};
+const contentNameStyle: TextStyle = {
+  ...fontSemibold14,
+  color: primaryColor,
+};
+const contentImgStyle: ImageStyle = {
+  width: "100%",
+  borderRadius: layout.spacing_x1,
+  aspectRatio: 1.7,
 };

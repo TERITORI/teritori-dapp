@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, ViewStyle, TextStyle } from "react-native";
 
 import { HoverView } from "./HoverView";
 import AddLibrary from "../../../assets/icons/player/add-library.svg";
@@ -15,6 +15,7 @@ import { VideoInfoWithMeta } from "../../utils/types/video";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { TipModal } from "../socialFeed/SocialActions/TipModal";
+import { SpacerColumn, SpacerRow } from "../spacer";
 
 interface TrackHoverMenuProps {
   videoInfo: VideoInfoWithMeta;
@@ -28,9 +29,6 @@ export const TrackHoverMenu: React.FC<TrackHoverMenuProps> = ({
 }) => {
   const selectedNetworkId = useSelectedNetworkId();
   const wallet = useSelectedWallet();
-
-  const shareMenuWidth = 188;
-  const lineHeight = 18;
 
   const [tipModalVisible, setTipModalVisible] = useState<boolean>(false);
   const { setToastError, setToastSuccess } = useFeedbacks();
@@ -96,151 +94,84 @@ export const TrackHoverMenu: React.FC<TrackHoverMenuProps> = ({
     setTipModalVisible(true);
   };
 
-  const styles = StyleSheet.create({
-    hoverBox: {
-      position: "absolute",
-      width: "100%",
-      height: "100%",
-      left: 0,
-      top: 0,
-      backgroundColor: "rgba(0,0,0,0.5)",
-      padding: layout.spacing_x1_5,
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "flex-end",
-      zIndex: 999,
-    },
-    menuContainer: {
-      borderRadius: layout.spacing_x1_5,
-      position: "absolute",
-      right: layout.spacing_x1_5,
-      bottom: 44,
-      backgroundColor: "rgba(41, 41, 41, 1)",
-      padding: layout.spacing_x1_5,
-      flexDirection: "column",
-      gap: layout.spacing_x0_75,
-    },
-    unitBoxNormal: {
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
-      padding: layout.spacing_x0_75,
-      borderRadius: layout.spacing_x0_75,
-    },
-    unitBoxHovered: {
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
-      padding: layout.spacing_x0_75,
-      backgroundColor: neutral33,
-      borderRadius: layout.spacing_x0_75,
-    },
-    oneLine: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: layout.spacing_x1,
-    },
-    text: StyleSheet.flatten([
-      fontSemibold13,
-      {
-        color: neutralA3,
-      },
-    ]),
-    divideLine: {
-      height: 1,
-      opacity: 0.12,
-      backgroundColor: secondaryColor,
-    },
-    shareMenuContainer: {
-      borderRadius: layout.spacing_x1_5,
-      position: "absolute",
-      left: -(layout.spacing_x1_5 + shareMenuWidth),
-      bottom: -(
-        layout.spacing_x1_5 +
-        lineHeight +
-        layout.spacing_x1_5 +
-        2 * layout.spacing_x0_75
-      ),
-      backgroundColor: "rgba(41, 41, 41, 1)",
-      padding: layout.spacing_x1_5,
-      flexDirection: "column",
-      gap: layout.spacing_x0_75,
-      width: shareMenuWidth,
-    },
-  });
-
   return (
-    <View style={styles.menuContainer}>
+    <View style={menuContainerStyle}>
       {wallet && wallet.address !== videoInfo.createdBy && !hasLibrary && (
         <HoverView
-          normalStyle={styles.unitBoxNormal}
-          hoverStyle={styles.unitBoxHovered}
+          normalStyle={unitBoxNormalStyle}
+          hoverStyle={unitBoxHoveredStyle}
           onPress={() => {
             addToLibrary();
           }}
         >
-          <View style={styles.oneLine}>
+          <View style={oneLineStyle}>
             <SVG
               source={AddLibrary}
               width={layout.spacing_x2}
               height={layout.spacing_x2}
             />
-            <BrandText style={styles.text}>Add to library</BrandText>
+            <SpacerRow size={1} />
+            <BrandText style={textStyle}>Add to library</BrandText>
           </View>
         </HoverView>
       )}
       {wallet && wallet.address !== videoInfo.createdBy && hasLibrary && (
         <HoverView
-          normalStyle={styles.unitBoxNormal}
-          hoverStyle={styles.unitBoxHovered}
+          normalStyle={unitBoxNormalStyle}
+          hoverStyle={unitBoxHoveredStyle}
           onPress={() => {
             removeFromLibrary();
           }}
         >
-          <View style={styles.oneLine}>
+          <View style={oneLineStyle}>
             <SVG
               source={AddLibrary}
               width={layout.spacing_x2}
               height={layout.spacing_x2}
             />
-            <BrandText style={styles.text}>Remove From library</BrandText>
+            <SpacerRow size={1} />
+            <BrandText style={textStyle}>Remove From library</BrandText>
           </View>
         </HoverView>
       )}
-
-      <View style={styles.divideLine} />
-
+      <SpacerColumn size={0.75} />
+      <View style={divideLineStyle} />
+      <SpacerColumn size={0.75} />
       <HoverView
-        normalStyle={styles.unitBoxNormal}
-        hoverStyle={styles.unitBoxHovered}
+        normalStyle={unitBoxNormalStyle}
+        hoverStyle={unitBoxHoveredStyle}
         onPress={() => {
           handleTip();
         }}
       >
-        <View style={styles.oneLine}>
+        <View style={oneLineStyle}>
           <SVG
             source={Tip}
             width={layout.spacing_x2}
             height={layout.spacing_x2}
           />
-          <BrandText style={styles.text}>Tip this track</BrandText>
+          <SpacerRow size={1} />
+          <BrandText style={textStyle}>Tip this track</BrandText>
         </View>
       </HoverView>
-      <View style={styles.divideLine} />
+      <SpacerColumn size={0.75} />
+      <View style={divideLineStyle} />
+      <SpacerColumn size={0.75} />
       <HoverView
-        normalStyle={styles.unitBoxNormal}
-        hoverStyle={styles.unitBoxHovered}
+        normalStyle={unitBoxNormalStyle}
+        hoverStyle={unitBoxHoveredStyle}
         onPress={() => {
           copyLinkTrack();
         }}
       >
-        <View style={styles.oneLine}>
+        <View style={oneLineStyle}>
           <SVG
             source={Tip}
             width={layout.spacing_x2}
             height={layout.spacing_x2}
           />
-          <BrandText style={styles.text}>Copy link to the track</BrandText>
+          <SpacerRow size={1} />
+          <BrandText style={textStyle}>Copy link to the track</BrandText>
         </View>
       </HoverView>
       <TipModal
@@ -251,4 +182,41 @@ export const TrackHoverMenu: React.FC<TrackHoverMenuProps> = ({
       />
     </View>
   );
+};
+
+const menuContainerStyle: ViewStyle = {
+  borderRadius: layout.spacing_x1_5,
+  position: "absolute",
+  right: layout.spacing_x1_5,
+  bottom: 44,
+  backgroundColor: "rgba(41, 41, 41, 1)",
+  padding: layout.spacing_x1_5,
+};
+const unitBoxNormalStyle: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between",
+  padding: layout.spacing_x0_75,
+  borderRadius: layout.spacing_x0_75,
+};
+const unitBoxHoveredStyle: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between",
+  padding: layout.spacing_x0_75,
+  backgroundColor: neutral33,
+  borderRadius: layout.spacing_x0_75,
+};
+const oneLineStyle: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+};
+const textStyle: TextStyle = {
+  ...fontSemibold13,
+  color: neutralA3,
+};
+const divideLineStyle: ViewStyle = {
+  height: 1,
+  opacity: 0.12,
+  backgroundColor: secondaryColor,
 };

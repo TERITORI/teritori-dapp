@@ -1,5 +1,13 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
-import { View, StyleSheet, Pressable, TextInput, Image } from "react-native";
+import {
+  View,
+  Pressable,
+  TextInput,
+  Image,
+  ViewStyle,
+  TextStyle,
+  ImageStyle,
+} from "react-native";
 import Animated from "react-native-reanimated";
 import { v4 as uuidv4 } from "uuid";
 
@@ -23,6 +31,7 @@ import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { UserAvatarWithFrame } from "../../components/images/AvatarWithFrame";
 import { TipModal } from "../../components/socialFeed/SocialActions/TipModal";
 import { DateTime } from "../../components/socialFeed/SocialThread/DateTime";
+import { SpacerRow } from "../../components/spacer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useVideoPlayer } from "../../context/VideoPlayerContext";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
@@ -44,333 +53,15 @@ import { defaultSocialFeedFee } from "../../utils/fee";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT } from "../../utils/social-feed";
-import {
-  neutral77,
-  neutral17,
-  primaryColor,
-  secondaryColor,
-} from "../../utils/style/colors";
+import { neutral77, secondaryColor } from "../../utils/style/colors";
 import {
   fontSemibold14,
   fontMedium14,
   fontSemibold13,
-  fontSemibold20,
-  fontMedium16,
   fontSemibold16,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { tinyAddress } from "../../utils/text";
-
-const styles = StyleSheet.create({
-  commentContent: {
-    marginTop: "0.5em",
-    display: "flex",
-    flexDirection: "row",
-    marginLeft: "40px",
-    fontSize: 13,
-    gap: "0.6em",
-  },
-  blueContents: StyleSheet.flatten([
-    fontSemibold13,
-    {
-      color: "#16BBFF",
-    },
-  ]),
-  flexRowItemCenter: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  flexColumnItem: {
-    display: "flex",
-    flexDirection: "column",
-  },
-  avatar: {
-    aspectRatio: 1,
-    width: "32px",
-    borderRadius: 1000,
-    marginRight: layout.spacing_x1,
-  },
-  avatarDetail: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  videoInfo: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    paddingBottom: layout.spacing_x1_5,
-  },
-  btnGroup: {
-    marginLeft: "auto",
-    display: "flex",
-    flexDirection: "row",
-  },
-  comments: {
-    fontSize: 16,
-    marginTop: "1.5em",
-    marginBottom: "0.875em",
-  },
-  outlineButtonContainer: {
-    marginLeft: "0.5em",
-    flexDirection: "row",
-    alignItems: "center",
-    paddingLeft: layout.spacing_x1,
-    paddingRight: layout.spacing_x1_5,
-    paddingVertical: layout.spacing_x1,
-    backgroundColor: "transparent",
-    borderRadius: layout.spacing_x4,
-    gap: layout.spacing_x1_5,
-    border: "1px solid #2B2B33",
-  },
-  buttonContainer: {
-    marginLeft: "0.5em",
-    flexDirection: "row",
-    alignItems: "center",
-    paddingLeft: layout.spacing_x1,
-    paddingRight: layout.spacing_x1_5,
-    paddingVertical: layout.spacing_x1,
-    backgroundColor: "#2B2B33",
-    borderRadius: layout.spacing_x4,
-    gap: layout.spacing_x1_5,
-  },
-  pageConatiner: {
-    width: "100%",
-    paddingHorizontal: 80,
-    paddingBottom: 80,
-    fontFamily: "Exo_500Medium",
-    color: "white",
-  },
-  menuBox: {
-    marginTop: layout.spacing_x2_5,
-    marginBottom: layout.spacing_x1,
-    width: "100%",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: layout.spacing_x3,
-  },
-  contentGroup: {
-    flexDirection: "column",
-    justifyContent: "space-between",
-    gap: layout.spacing_x1,
-    zIndex: 999,
-  },
-  unitBoxEven: {
-    width: "100%",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: layout.spacing_x3,
-    paddingVertical: layout.spacing_x0_5,
-    backgroundColor: neutral17,
-    borderRadius: layout.spacing_x1,
-    height: 48,
-  },
-  uniBoxOdd: {
-    width: "100%",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: layout.spacing_x3,
-    paddingVertical: layout.spacing_x0_5,
-    borderRadius: layout.spacing_x1,
-    height: 48,
-  },
-  menuText: StyleSheet.flatten([
-    fontSemibold13,
-    {
-      color: neutral77,
-    },
-  ]),
-  index: {
-    width: layout.spacing_x2_5,
-    textAlign: "center",
-  },
-  text: StyleSheet.flatten([
-    fontMedium14,
-    {
-      color: neutral77,
-      marginTop: layout.spacing_x0_5,
-    },
-  ]),
-  leftBox: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: layout.spacing_x1_5,
-  },
-  textBox: {
-    flexDirection: "column",
-    justifyContent: "space-between",
-    height: 40,
-  },
-  rightBox: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: layout.spacing_x2_5,
-  },
-  albumBox: {
-    marginTop: layout.spacing_x2_5,
-    flexDirection: "row",
-    alignItems: "flex-end",
-    justifyContent: "space-between",
-    zIndex: 999,
-  },
-  infoBox: {
-    flexDirection: "row",
-    alignItems: "flex-end",
-    gap: layout.spacing_x4,
-  },
-  albumImg: {
-    width: 216,
-    height: 216,
-  },
-  artistText: StyleSheet.flatten([
-    fontSemibold20,
-    {
-      color: primaryColor,
-      marginTop: layout.spacing_x0_5,
-    },
-  ]),
-  infoText: StyleSheet.flatten([
-    fontSemibold13,
-    {
-      marginTop: layout.spacing_x1,
-      marginBottom: layout.spacing_x0_5,
-    },
-  ]),
-  tagText: StyleSheet.flatten([
-    fontSemibold13,
-    {
-      color: primaryColor,
-    },
-  ]),
-  verticalBox: {
-    flexDirection: "column",
-    alignItems: "flex-start",
-    width: 420,
-  },
-  oneLine: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginTop: layout.spacing_x2_5,
-    gap: layout.spacing_x2,
-  },
-  playButton: {
-    padding: layout.spacing_x1,
-    paddingRight: layout.spacing_x1_5,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: layout.spacing_x1,
-    borderRadius: layout.spacing_x1,
-    backgroundColor: primaryColor,
-  },
-  tipButton: {
-    padding: layout.spacing_x1,
-    paddingRight: layout.spacing_x1_5,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: layout.spacing_x1,
-    borderRadius: layout.spacing_x1,
-    backgroundColor: "#2B2B33",
-  },
-  playButtonText: StyleSheet.flatten([
-    fontSemibold14,
-    {
-      color: "#2B0945",
-    },
-  ]),
-  tipButtonText: StyleSheet.flatten([
-    fontSemibold14,
-    {
-      color: primaryColor,
-    },
-  ]),
-  actionBox: {
-    flexDirection: "row",
-    gap: layout.spacing_x2,
-  },
-  addButton: {
-    padding: layout.spacing_x1,
-    paddingRight: layout.spacing_x1_5,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: layout.spacing_x1,
-    borderRadius: layout.spacing_x1,
-    backgroundColor: "#2B2B33",
-  },
-  addButtonText: StyleSheet.flatten([
-    fontSemibold14,
-    {
-      color: primaryColor,
-    },
-  ]),
-  moreButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#2B2B33",
-  },
-  pagePanel: {
-    paddingTop: layout.spacing_x1_5,
-    width: "100%",
-    display: "flex",
-    flexDirection: "row",
-  },
-  pageLeftPanel: {
-    flex: 1,
-  },
-  pageRightPanel: {
-    paddingLeft: layout.spacing_x1_5,
-    paddingRight: layout.spacing_x1_5,
-  },
-  rightTitle: {
-    fontFamily: "Exo_500Medium",
-
-    paddingBottom: layout.spacing_x1_5,
-  },
-  leftVideoName: {
-    fontFamily: "Exo_500Medium",
-    fontSize: "1.5em",
-
-    paddingBottom: layout.spacing_x1_5,
-  },
-  contentName: StyleSheet.flatten([fontSemibold14]),
-  contentDescription: StyleSheet.flatten([
-    fontMedium14,
-    {
-      color: neutral77,
-    },
-  ]),
-  contentDate: StyleSheet.flatten([
-    fontMedium14,
-    {
-      color: neutral77,
-      marginLeft: "0.5em",
-    },
-  ]),
-  tipContent: StyleSheet.flatten([fontMedium14]),
-  commentTip: StyleSheet.flatten([
-    fontMedium14,
-    {
-      color: neutral77,
-      marginLeft: "0.5em",
-    },
-  ]),
-  commentReply: StyleSheet.flatten([
-    fontMedium16,
-    {
-      marginLeft: "0.5em",
-    },
-  ]),
-  moreVideoGrid: {
-    margin: layout.spacing_x3,
-  },
-});
 
 export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
   route: {
@@ -512,13 +203,13 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
 
       if (res.transactionHash) {
         setToastSuccess({
-          title: "Uploaded video successfully",
+          title: "Comment created successfully",
           message: `tx_hash: ${res.transactionHash}`,
         });
       }
     } catch (err) {
       setToastError({
-        title: "Failed to upload video",
+        title: "Failed to create comment",
         message: `Error: ${err}`,
       });
     }
@@ -532,15 +223,15 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
       headerChildren={<BrandText>{data.videoMetaInfo.title}</BrandText>}
       fullWidth
     >
-      <View style={styles.pageConatiner}>
+      <View style={pageContainerStyle}>
         <VideoPlayerTab
           setTab={() => {
             navigation.navigate("VideoPlayer");
           }}
         />
 
-        <View style={styles.pagePanel}>
-          <View style={styles.pageLeftPanel}>
+        <View style={pagePanelStyle}>
+          <View style={pageLeftPanelStyle}>
             {data && (
               <video
                 src={ipfsURLToHTTPURL(data.videoMetaInfo.url)}
@@ -552,17 +243,17 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
                 }}
               />
             )}
-            <View style={styles.leftVideoName}>
-              <BrandText>{data?.videoMetaInfo.title}</BrandText>
-            </View>
-            <View style={styles.videoInfo}>
-              <View style={styles.avatarDetail}>
+            <BrandText style={leftVideoNameStyle}>
+              {data?.videoMetaInfo.title}
+            </BrandText>
+            <View style={videoInfoStyle}>
+              <View style={avatarDetailStyle}>
                 <Image
                   source={require("../../../assets/icon.png")}
-                  style={styles.avatar}
+                  style={avatarStyle}
                 />
                 <Pressable>
-                  <BrandText style={styles.contentName}>@{username}</BrandText>
+                  <BrandText style={contentNameStyle}>@{username}</BrandText>
                 </Pressable>
               </View>
               <View
@@ -572,7 +263,7 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
                   flexDirection: "row",
                 }}
               >
-                <BrandText style={styles.contentDescription}>
+                <BrandText style={contentDescriptionStyle}>
                   {data?.viewCount} views
                 </BrandText>
                 {/* A dot separator */}
@@ -591,32 +282,32 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
                   textStyle={{ color: neutral77 }}
                 />
               </View>
-              <View style={styles.btnGroup}>
-                <Pressable onPress={videoLike} style={styles.buttonContainer}>
+              <View style={btnGroupStyle}>
+                <Pressable onPress={videoLike} style={buttonContainerStyle}>
                   <SVG source={Like} />
-                  <BrandText style={styles.tipContent}>{likeNum}</BrandText>
+                  <SpacerRow size={1.5} />
+                  <BrandText style={tipContentStyle}>{likeNum}</BrandText>
                 </Pressable>
-                <Pressable
-                  onPress={videoDislike}
-                  style={styles.buttonContainer}
-                >
+                <Pressable onPress={videoDislike} style={buttonContainerStyle}>
                   <SVG source={Dislike} />
-                  <BrandText style={styles.tipContent}>{dislikeNum}</BrandText>
+                  <SpacerRow size={1.5} />
+                  <BrandText style={tipContentStyle}>{dislikeNum}</BrandText>
                 </Pressable>
-                <Pressable onPress={tipVideo} style={styles.buttonContainer}>
+                <Pressable onPress={tipVideo} style={buttonContainerStyle}>
                   <SVG source={TipIcon} />
-                  <BrandText style={styles.tipContent}>Tip</BrandText>
+                  <SpacerRow size={1.5} />
+                  <BrandText style={tipContentStyle}>Tip</BrandText>
                 </Pressable>
               </View>
             </View>
-            <View style={styles.blueContents} />
-            <BrandText style={styles.contentName}>
+            <View style={blueContentsStyle} />
+            <BrandText style={contentNameStyle}>
               {data?.videoMetaInfo.description}
             </BrandText>
-            <BrandText style={styles.comments}>
+            <BrandText style={commentsStyle}>
               {commentList.length} comments
             </BrandText>
-            <View style={styles.flexRowItemCenter}>
+            <View style={flexRowItemCenterStyle}>
               <UserAvatarWithFrame
                 style={{
                   marginRight: layout.spacing_x2,
@@ -664,25 +355,27 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
                     userId={comment.createdBy}
                     size="S"
                   />
-                  <BrandText style={styles.blueContents}>
+                  <BrandText style={blueContentsStyle}>
                     <CreatedByView user={comment.createdBy} />
                   </BrandText>
-                  <BrandText style={styles.contentDate}>
+                  <BrandText style={contentDateStyle}>
                     <DateTime
                       date={new Date(comment.createdAt * 1000).toISOString()}
                       textStyle={{ color: neutral77 }}
                     />
                   </BrandText>
                 </View>
-                <View style={styles.commentContent}>{comment.comment}</View>
+                <BrandText style={commentContentStyle}>
+                  {comment.comment}
+                </BrandText>
               </View>
             ))}
           </View>
-          <View style={styles.pageRightPanel}>
-            <BrandText style={styles.rightTitle}>
+          <View style={pageRightPanelStyle}>
+            <BrandText style={rightTitleStyle}>
               More videos from @nickname
             </BrandText>
-            <View style={styles.flexColumnItem}>
+            <View style={flexColumnItemStyle}>
               <Animated.FlatList
                 scrollEventThrottle={0.1}
                 data={videos}
@@ -690,7 +383,7 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
                 renderItem={({ item: videoInfo }) => {
                   if (videoInfo.identifier === data.identifier) return <></>;
                   return (
-                    <View style={styles.moreVideoGrid}>
+                    <View style={moreVideoGridStyle}>
                       <MoreVideoPlayerCard item={videoInfo} />
                     </View>
                   );
@@ -709,4 +402,110 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
       <VideoPlayerSeekBar />
     </ScreenContainer>
   );
+};
+
+//TODO: Fix these styles
+
+const commentContentStyle: TextStyle = {
+  marginTop: "0.5em",
+  display: "flex",
+  flexDirection: "row",
+  marginLeft: "40px",
+  fontSize: 13,
+  // gap: "0.6em",
+};
+const blueContentsStyle: TextStyle = {
+  ...fontSemibold13,
+  color: "#16BBFF",
+};
+const flexRowItemCenterStyle: ViewStyle = {
+  display: "flex",
+  flexDirection: "row",
+  alignItems: "center",
+};
+const flexColumnItemStyle: ViewStyle = {
+  display: "flex",
+  flexDirection: "column",
+};
+const avatarStyle: ImageStyle = {
+  aspectRatio: 1,
+  width: "32px",
+  borderRadius: 1000,
+  marginRight: layout.spacing_x1,
+};
+const avatarDetailStyle: ViewStyle = {
+  display: "flex",
+  flexDirection: "row",
+  alignItems: "center",
+};
+const videoInfoStyle: ViewStyle = {
+  display: "flex",
+  flexDirection: "row",
+  alignItems: "center",
+  paddingBottom: layout.spacing_x1_5,
+};
+const btnGroupStyle: ViewStyle = {
+  marginLeft: "auto",
+  display: "flex",
+  flexDirection: "row",
+};
+const commentsStyle: TextStyle = {
+  fontSize: 16,
+  marginTop: "1.5em",
+  marginBottom: "0.875em",
+};
+
+const buttonContainerStyle: ViewStyle = {
+  marginLeft: "0.5em",
+  flexDirection: "row",
+  alignItems: "center",
+  paddingLeft: layout.spacing_x1,
+  paddingRight: layout.spacing_x1_5,
+  paddingVertical: layout.spacing_x1,
+  backgroundColor: "#2B2B33",
+  borderRadius: layout.spacing_x4,
+};
+const pageContainerStyle: TextStyle = {
+  width: "100%",
+  paddingHorizontal: 80,
+  paddingBottom: 80,
+  fontFamily: "Exo_500Medium",
+  color: "white",
+};
+const pagePanelStyle: ViewStyle = {
+  paddingTop: layout.spacing_x1_5,
+  width: "100%",
+  display: "flex",
+  flexDirection: "row",
+};
+const pageLeftPanelStyle: ViewStyle = {
+  flex: 1,
+};
+const pageRightPanelStyle: ViewStyle = {
+  paddingLeft: layout.spacing_x1_5,
+  paddingRight: layout.spacing_x1_5,
+};
+const rightTitleStyle: TextStyle = {
+  fontFamily: "Exo_500Medium",
+  paddingBottom: layout.spacing_x1_5,
+};
+const leftVideoNameStyle: TextStyle = {
+  fontFamily: "Exo_500Medium",
+  // fontSize: "1.5em",
+  paddingBottom: layout.spacing_x1_5,
+};
+const contentNameStyle: TextStyle = { ...fontSemibold14 };
+const contentDescriptionStyle: TextStyle = {
+  ...fontMedium14,
+  color: neutral77,
+};
+const contentDateStyle: TextStyle = {
+  ...fontMedium14,
+
+  color: neutral77,
+  marginLeft: "0.5em",
+};
+const tipContentStyle: TextStyle = { ...fontMedium14 };
+const moreVideoGridStyle: ViewStyle = {
+  margin: layout.spacing_x3,
 };
