@@ -1,5 +1,5 @@
 import React from "react";
-import { Pressable, Text, TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import { useSelector } from "react-redux";
 
@@ -11,6 +11,7 @@ import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
+import { CustomPressable } from "../../components/buttons/CustomPressable";
 import { SpacerColumn } from "../../components/spacer";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
 import {
@@ -42,16 +43,16 @@ const NFTAPIKeyInput: React.FC = () => {
         >
           app.pinata.cloud JWT key (For file upload)
         </BrandText>
-        <Pressable
+        <CustomPressable
           onPress={() =>
             // We ask key at each upload for now (Don't have Teritori's key for now)
             dispatch(setNFTStorageAPI(""))
           }
         >
-          <Text style={[fontSemibold14, { color: primaryColor }]}>
+          <BrandText style={[fontSemibold14, { color: primaryColor }]}>
             Reset to Teritoris' API key
-          </Text>
-        </Pressable>
+          </BrandText>
+        </CustomPressable>
       </View>
       <SpacerColumn size={1.5} />
       <TextInput
@@ -71,7 +72,7 @@ export const SettingsScreen: ScreenFC<"Settings"> = () => {
   const dispatch = useAppDispatch();
 
   return (
-    <ScreenContainer noMargin fullWidth>
+    <ScreenContainer>
       <View style={commonStyles.pageContainer}>
         <View style={commonStyles.cardContainer}>
           <SettingItem

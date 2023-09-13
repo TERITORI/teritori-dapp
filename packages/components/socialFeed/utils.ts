@@ -30,7 +30,7 @@ export const decodeGnoPost = (networkId: string, gnoPost: GnoPost): Post => {
     category: gnoPost.category,
     isDeleted: gnoPost.deleted,
     identifier: gnoPost.id ? "" + gnoPost.id : "",
-    metadata: gnoPost.metadata.replaceAll(`"`, ``).replaceAll(`||`, `"`),
+    metadata: gnoPost.metadata,
     parentPostIdentifier: gnoPost.parentID ? "" + gnoPost.parentID : "",
     subPostLength: gnoPost.commentsCount,
     authorId: getUserId(networkId, gnoPost.creator),

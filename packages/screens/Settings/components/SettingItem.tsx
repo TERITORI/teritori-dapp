@@ -15,11 +15,12 @@ import { SettingItemType } from "../types";
 export const SettingItem: React.FC<{
   item: SettingItemType;
   onPress: (item: SettingItemType) => void;
-}> = ({ item, onPress }) => {
+  disabled?: boolean;
+}> = ({ item, onPress, disabled }) => {
   const commonStyles = useCommonStyles();
 
   return (
-    <TouchableOpacity onPress={() => onPress(item)}>
+    <TouchableOpacity onPress={() => onPress(item)} disabled={disabled}>
       <View style={commonStyles.switchBox}>
         <View>
           <BrandText style={[fontSemibold14]}>{item.title}</BrandText>

@@ -19931,6 +19931,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"json5@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "json5@npm:1.0.2"
+  dependencies:
+    minimist: ^1.2.0
+  bin:
+    json5: lib/cli.js
+  checksum: 866458a8c58a95a49bef3adba929c625e82532bcff1fe93f01d29cb02cac7c3fe1f4b79951b7792c2da9de0b32871a8401a6e3c5b36778ad852bf5b8a61165d7
+  languageName: node
+  linkType: hard
+
 "json5@npm:^2.1.0, json5@npm:^2.2.2":
   version: 2.2.3
   resolution: "json5@npm:2.2.3"
@@ -27762,6 +27773,7 @@ __metadata:
     redux-persist: ^6.0.0
     ts-node: ^10.9.1
     ts-proto: ^1.120.0
+    ts-unused-exports: ^10.0.1
     typescript: ~4.3.5
     uuid: ^9.0.0
     victory-native: ^36.6.8
@@ -28244,6 +28256,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ts-unused-exports@npm:^10.0.1":
+  version: 10.0.1
+  resolution: "ts-unused-exports@npm:10.0.1"
+  dependencies:
+    chalk: ^4.0.0
+    tsconfig-paths: ^3.9.0
+  peerDependencies:
+    typescript: ">=3.8.3"
+  peerDependenciesMeta:
+    typescript:
+      optional: false
+  bin:
+    ts-unused-exports: bin/ts-unused-exports
+  checksum: d5248b4c1c3b970b594db4955582dbdc1c56852a61f69fd18e680e87bad4df879a052c84c0ca6e1d1ea4f63eab39c1a9beff23e8e38e4fcdefc5c03e83487256
+  languageName: node
+  linkType: hard
+
 "tsconfig-paths@npm:^3.14.1":
   version: 3.14.1
   resolution: "tsconfig-paths@npm:3.14.1"
@@ -28253,6 +28282,18 @@ __metadata:
     minimist: ^1.2.6
     strip-bom: ^3.0.0
   checksum: 8afa01c673ebb4782ba53d3a12df97fa837ce524f8ad38ee4e2b2fd57f5ac79abc21c574e9e9eb014d93efe7fe8214001b96233b5c6ea75bd1ea82afe17a4c6d
+  languageName: node
+  linkType: hard
+
+"tsconfig-paths@npm:^3.9.0":
+  version: 3.14.2
+  resolution: "tsconfig-paths@npm:3.14.2"
+  dependencies:
+    "@types/json5": ^0.0.29
+    json5: ^1.0.2
+    minimist: ^1.2.6
+    strip-bom: ^3.0.0
+  checksum: a6162eaa1aed680537f93621b82399c7856afd10ec299867b13a0675e981acac4e0ec00896860480efc59fc10fd0b16fdc928c0b885865b52be62cadac692447
   languageName: node
   linkType: hard
 

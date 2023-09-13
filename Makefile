@@ -242,3 +242,8 @@ validate-networks: node_modules
 .PHONY: networks.json
 networks.json: node_modules validate-networks
 	npx ts-node packages/scripts/generateJSONNetworks.ts > $@
+
+.PHONY: unused-exports
+unused-exports: node_modules
+	## TODO unexclude all paths except packages/api;packages/contracts-clients;packages/evm-contracts-clients
+	npx ts-unused-exports ./tsconfig.json --excludePathsFromReport="packages/api;packages/contracts-clients;packages/evm-contracts-clients;packages/components;packages/hooks;packages/context;packages/screens;packages/utils;packages/store;packages/networks;./App.tsx" --ignoreTestFiles
