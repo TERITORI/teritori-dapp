@@ -31,3 +31,6 @@ jobs:
 
       - name: Check that there is no diff
         run: git diff --exit-code
+
+      - name: Check typescript unused exports
+        run: make unused-exports
