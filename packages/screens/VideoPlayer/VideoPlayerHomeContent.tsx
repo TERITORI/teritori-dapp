@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { View, StyleSheet, Pressable } from "react-native";
+import { View, Pressable, ViewStyle, TextStyle } from "react-native";
 import Animated, {
   useAnimatedScrollHandler,
   useSharedValue,
@@ -10,8 +10,9 @@ import Logo from "../../../assets/logos/logo.svg";
 import { GetVideoListRequest } from "../../api/video/v1/video";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
-import { UploadVideoModal } from "../../components/VideoPlayer/UploadVideoModal";
 import { VideoPlayerCard } from "../../components/VideoPlayer/VideoPlayerCard";
+import { SpacerRow } from "../../components/spacer";
+import { UploadVideoModal } from "../../components/videoPlayer/UploadVideoModal";
 import {
   combineFetchVideoPages,
   useFetchVideos,
@@ -68,65 +69,23 @@ export const VideoPlayerHomeContent: React.FC<VideoPlayerProps> = ({
     }
   };
 
-  const styles = StyleSheet.create({
-    container: {
-      marginTop: layout.spacing_x3,
-      width: "100%",
-    },
-    oneLine: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-    },
-    contentGroup: {
-      flexDirection: "row",
-      justifyContent: "center",
-      flexWrap: "wrap",
-      marginTop: layout.spacing_x3,
-      gap: layout.spacing_x2_5,
-      marginBottom: 40,
-    },
-    buttonGroup: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: layout.spacing_x2,
-    },
-    buttonContainer: {
-      flexDirection: "row",
-      alignItems: "center",
-      paddingLeft: layout.spacing_x1,
-      paddingRight: layout.spacing_x1_5,
-      paddingVertical: layout.spacing_x1,
-      backgroundColor: "#2B2B33",
-      borderRadius: layout.spacing_x4,
-      gap: layout.spacing_x1_5,
-    },
-    buttonText: StyleSheet.flatten([
-      fontSemibold14,
-      {
-        color: primaryColor,
-      },
-    ]),
-    albumGrid: {
-      margin: layout.spacing_x3,
-    },
-  });
-
   return (
-    <View style={styles.container}>
-      <View style={styles.oneLine}>
+    <View style={containerStyle}>
+      <View style={oneLineStyle}>
         <BrandText style={fontSemibold20}>All Videos</BrandText>
-        <View style={styles.buttonGroup}>
-          <Pressable style={styles.buttonContainer}>
+        <View style={buttonGroupStyle}>
+          <Pressable style={buttonContainerStyle}>
             <SVG
               source={Logo}
               width={layout.spacing_x2}
               height={layout.spacing_x2}
             />
-            <BrandText style={styles.buttonText}>Create funding</BrandText>
+            <SpacerRow size={1.5} />
+            <BrandText style={buttonTextStyle}>Create funding</BrandText>
           </Pressable>
+          <SpacerRow size={2} />
           <Pressable
-            style={styles.buttonContainer}
+            style={buttonContainerStyle}
             onPress={() => setOpenUploadModal(true)}
           >
             <SVG
@@ -134,17 +93,18 @@ export const VideoPlayerHomeContent: React.FC<VideoPlayerProps> = ({
               width={layout.spacing_x2}
               height={layout.spacing_x2}
             />
-            <BrandText style={styles.buttonText}>Upload video</BrandText>
+            <SpacerRow size={1.5} />
+            <BrandText style={buttonTextStyle}>Upload video</BrandText>
           </Pressable>
         </View>
       </View>
-      <View style={styles.contentGroup}>
+      <View style={contentGroupStyle}>
         <Animated.FlatList
           scrollEventThrottle={0.1}
           data={videos}
           numColumns={4}
           renderItem={({ item: videoInfo }) => (
-            <View style={styles.albumGrid}>
+            <View style={albumGridStyle}>
               <VideoPlayerCard
                 item={videoInfo}
                 hasLibrary={
@@ -166,4 +126,41 @@ export const VideoPlayerHomeContent: React.FC<VideoPlayerProps> = ({
       />
     </View>
   );
+};
+
+const containerStyle: ViewStyle = {
+  marginTop: layout.spacing_x3,
+  width: "100%",
+};
+const oneLineStyle: ViewStyle = {
+  flexDirection: "row",
+  justifyContent: "space-between",
+  alignItems: "center",
+};
+const contentGroupStyle: ViewStyle = {
+  flexDirection: "row",
+  justifyContent: "center",
+  flexWrap: "wrap",
+  marginTop: layout.spacing_x3,
+  marginBottom: 40,
+};
+const buttonGroupStyle: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+};
+const buttonContainerStyle: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  paddingLeft: layout.spacing_x1,
+  paddingRight: layout.spacing_x1_5,
+  paddingVertical: layout.spacing_x1,
+  backgroundColor: "#2B2B33",
+  borderRadius: layout.spacing_x4,
+};
+const buttonTextStyle: TextStyle = {
+  ...fontSemibold14,
+  color: primaryColor,
+};
+const albumGridStyle: ViewStyle = {
+  margin: layout.spacing_x3,
 };
