@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, Pressable } from "react-native";
+import { Pressable, ViewStyle } from "react-native";
 
 import { MyVideoMenu } from "./MyVideoMenu";
 import { TrackHoverMenu } from "./TrackHoverMenu";
@@ -28,25 +28,9 @@ export const TrackImageHover: React.FC<{
   const [openMenu, setOpenMenu] = useState<boolean>(false);
   const userId = getUserId(selectedNetworkId, wallet?.address);
 
-  const styles = StyleSheet.create({
-    hoverBox: {
-      position: "absolute",
-      width: "100%",
-      height: "100%",
-      left: 0,
-      top: 0,
-      backgroundColor: "rgba(0,0,0,0.5)",
-      padding: layout.spacing_x1_5,
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "flex-end",
-      borderRadius: 10,
-    },
-  });
-
   return (
     <Pressable
-      style={styles.hoverBox}
+      style={hoverBoxStyle}
       onPress={() => {
         navigation.navigate("VideoShow", { id: videoInfo.identifier });
       }}
@@ -105,4 +89,18 @@ export const TrackImageHover: React.FC<{
       )}
     </Pressable>
   );
+};
+
+const hoverBoxStyle: ViewStyle = {
+  position: "absolute",
+  width: "100%",
+  height: "100%",
+  left: 0,
+  top: 0,
+  backgroundColor: "rgba(0,0,0,0.5)",
+  padding: layout.spacing_x1_5,
+  flexDirection: "row",
+  justifyContent: "space-between",
+  alignItems: "flex-end",
+  borderRadius: 10,
 };

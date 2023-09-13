@@ -18,7 +18,6 @@ export const formatFile = async (file: File): Promise<LocalFileData> => {
   } else if (IMAGE_MIME_TYPES.includes(file.type)) {
     fileType = "image";
   }
-  console.log(file.path, URL.createObjectURL(file));
   return {
     file,
     fileName: file.name,
