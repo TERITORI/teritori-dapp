@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { View, StyleSheet, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity, ViewStyle } from "react-native";
 import { useSelector } from "react-redux";
 
 import hamburgerCrossSVG from "../../../assets/icons/hamburger-button-cross.svg";
@@ -33,11 +33,15 @@ export const HeaderMobile: FC<{
   const selectedNFTDataInCart = useSelector(selectAllSelectedNFTData);
 
   return (
-    <View style={styles.container}>
+    <View style={containerCStyle}>
       <TopLogoMobile />
-      <View style={styles.rightContainer}>
-        <SpacerRow size={1} />
-        {onBackPress && <BackButton onPress={onBackPress} />}
+      <View style={rightContainerCStyle}>
+        {onBackPress && (
+          <>
+            <SpacerRow size={1} />
+            <BackButton onPress={onBackPress} />
+          </>
+        )}
         <SpacerRow size={1} />
         <SearchButtonMobile />
 
@@ -69,28 +73,24 @@ export const HeaderMobile: FC<{
   );
 };
 
-// FIXME: remove StyleSheet.create
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  container: {
-    height: MOBILE_HEADER_HEIGHT,
-    maxHeight: MOBILE_HEADER_HEIGHT,
-    width: "100%",
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    borderBottomColor: neutral33,
-    borderBottomWidth: 1,
-    paddingHorizontal: layout.spacing_x1_5,
-    position: "absolute",
-    top: 0,
-    zIndex: 99999,
-    backgroundColor: neutral00,
-  },
-  rightContainer: {
-    height: MOBILE_HEADER_HEIGHT,
-    flexDirection: "row",
-    alignItems: "center",
-  },
-});
+const containerCStyle: ViewStyle = {
+  height: MOBILE_HEADER_HEIGHT,
+  maxHeight: MOBILE_HEADER_HEIGHT,
+  width: "100%",
+  flex: 1,
+  flexDirection: "row",
+  justifyContent: "space-between",
+  alignItems: "center",
+  borderBottomColor: neutral33,
+  borderBottomWidth: 1,
+  paddingHorizontal: layout.spacing_x1_5,
+  position: "absolute",
+  top: 0,
+  zIndex: 99999,
+  backgroundColor: neutral00,
+};
+const rightContainerCStyle: ViewStyle = {
+  height: MOBILE_HEADER_HEIGHT,
+  flexDirection: "row",
+  alignItems: "center",
+};

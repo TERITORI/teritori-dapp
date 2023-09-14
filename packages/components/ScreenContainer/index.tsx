@@ -3,8 +3,8 @@ import {
   SafeAreaView,
   ScrollView,
   View,
-  StyleSheet,
   useWindowDimensions,
+  ViewStyle,
 } from "react-native";
 
 import { Header } from "./Header";
@@ -16,16 +16,17 @@ import { useIsMobile } from "../../hooks/useIsMobile";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { NetworkFeature, NetworkInfo, NetworkKind } from "../../networks";
 import { DAppStoreData } from "../../screens/DAppStore/components/DAppStoreData";
-import { neutral33 } from "../../utils/style/colors";
 import {
   getResponsiveScreenContainerMarginHorizontal,
   headerHeight,
   headerMarginHorizontal,
+  layout,
   screenContainerContentMarginHorizontal,
 } from "../../utils/style/layout";
 import { NetworkSelector } from "../NetworkSelector/NetworkSelector";
 import { SearchBar } from "../Search/SearchBar";
 import { SelectedNetworkGate } from "../SelectedNetworkGate";
+import { Separator } from "../Separator";
 import { ConnectWalletButton } from "../TopMenu/ConnectWalletButton";
 import { Footer } from "../footers/Footer";
 import { Sidebar } from "../navigation/Sidebar";
@@ -119,7 +120,7 @@ export const ScreenContainer: React.FC<{
       <DAppStoreData />
       {/*FIXME: Too many containers levels*/}
 
-      <View style={styles.container}>
+      <View style={containerCStyle}>
         {!hideSidebar ? <Sidebar /> : null}
 
         <View style={{ width: "100%", flex: 1 }}>
@@ -143,7 +144,7 @@ export const ScreenContainer: React.FC<{
                   >
                     <View
                       style={[
-                        styles.childrenContainer,
+                        childrenContainerCStyle,
                         marginStyle,
                         { width, flex: 1 },
                       ]}
@@ -154,7 +155,7 @@ export const ScreenContainer: React.FC<{
                   </ScrollView>
                 ) : (
                   <View
-                    style={[styles.childrenContainer, marginStyle, { width }]}
+                    style={[childrenContainerCStyle, marginStyle, { width }]}
                   >
                     {children}
                     {footerChildren ? footerChildren : <Footer />}
@@ -163,7 +164,7 @@ export const ScreenContainer: React.FC<{
               </SelectedNetworkGate>
             </View>
           </View>
-          {/*
+          {/*-----
             We render the wallet selector here with absolute position to make sure
             the popup is on top of everything else, otherwise it's unusable
             TODO: Fix that and put this in Header.tsx
@@ -179,41 +180,35 @@ export const ScreenContainer: React.FC<{
             }}
           >
             <SearchBar />
-            <View
-              style={{
-                height: "100%",
-                backgroundColor: neutral33,
-                marginHorizontal: 16,
-                width: 1,
-              }}
+            <Separator
+              horizontal
+              style={{ height: "100%", marginHorizontal: layout.spacing_x2 }}
             />
-            <CartIconButtonBadge style={{ marginRight: 12 }} />
+            <CartIconButtonBadge style={{ marginRight: layout.spacing_x1_5 }} />
             <NetworkSelector
               forceNetworkId={forceNetworkId}
               forceNetworkKind={forceNetworkKind}
               forceNetworkFeatures={forceNetworkFeatures}
-              style={{ marginRight: 12 }}
+              style={{ marginRight: layout.spacing_x1_5 }}
             />
             <ConnectWalletButton
               style={{ marginRight: headerMarginHorizontal }}
             />
           </View>
         </View>
+        {/*-----END TODO*/}
       </View>
     </SafeAreaView>
   );
 };
 
-// FIXME: remove StyleSheet.create
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#000000",
-    flexDirection: "row",
-  },
-  childrenContainer: {
-    height: "100%",
-    alignSelf: "center",
-  },
-});
+const containerCStyle: ViewStyle = {
+  flex: 1,
+  backgroundColor: "#000000",
+  flexDirection: "row",
+  zIndex: 999,
+};
+const childrenContainerCStyle: ViewStyle = {
+  height: "100%",
+  alignSelf: "center",
+};

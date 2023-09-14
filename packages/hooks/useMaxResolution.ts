@@ -22,6 +22,11 @@ export const useMaxResolution = ({
   const { width: windowWidth, height: windowHeight } = useWindowDimensions();
   const { isSidebarExpanded } = useSidebar();
   const isMobile = useIsMobile();
+  const contentWidth = useMemo(
+    () =>
+      windowWidth - (isSidebarExpanded ? fullSidebarWidth : smallSidebarWidth),
+    [windowWidth, isSidebarExpanded]
+  );
 
   const width = useMemo(() => {
     if (isMobile) {
@@ -29,17 +34,14 @@ export const useMaxResolution = ({
         getMobileScreenContainerMarginHorizontal(windowWidth);
       return windowWidth - mobileMargin * 2;
     }
-
-    const containerWidth =
-      windowWidth - (isSidebarExpanded ? fullSidebarWidth : smallSidebarWidth);
     const responsiveMargin =
-      getResponsiveScreenContainerMarginHorizontal(containerWidth);
+      getResponsiveScreenContainerMarginHorizontal(contentWidth);
     const defaultMargin = responsive
       ? responsiveMargin
       : screenContainerContentMarginHorizontal * 2;
 
-    return containerWidth - (noMargin ? 0 : defaultMargin);
-  }, [windowWidth, isSidebarExpanded, noMargin, responsive, isMobile]);
+    return contentWidth - (noMargin ? 0 : defaultMargin);
+  }, [windowWidth, noMargin, responsive, isMobile, contentWidth]);
 
   return {
     width: isLarge
@@ -50,5 +52,6 @@ export const useMaxResolution = ({
       ? screenContentMaxWidth
       : width,
     height: windowHeight - headerHeight,
+    contentWidth,
   };
 };
