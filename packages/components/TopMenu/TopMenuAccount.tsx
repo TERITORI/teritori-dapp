@@ -41,7 +41,7 @@ export const TopMenuAccount: React.FC = () => {
                   },
                 ]}
               >
-                {hovered ? "Coming Soon" : "Switch Account"}
+                {hovered ? "Coming Soon" : "Multisig mode"}
               </BrandText>
               <SVG source={chevronRightSVG} width={16} height={16} />
             </FlexRow>
