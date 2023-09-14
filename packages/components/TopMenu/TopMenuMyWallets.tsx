@@ -229,13 +229,11 @@ export const TopMenuMyWallets: React.FC = () => {
             size="XS"
             onPress={() => setSendVisible(true)}
           />
-          {/*TODO: Handle this when the Swap feature is available*/}
           <SecondaryButton
             paddingHorizontal={layout.spacing_x2}
             text="Swap"
             size="XS"
-            disabled
-            // onPress={() => setSwapVisible(true)}
+            onPress={() => navigation.navigate("Swap")}
           />
         </FlexRow>
 
