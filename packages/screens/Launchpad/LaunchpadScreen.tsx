@@ -13,19 +13,17 @@ import { CollectionsCarouselHeader } from "../../components/carousels/Collection
 import { CollectionGallery } from "../../components/collections/CollectionGallery";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { getNetwork } from "../../networks";
-import { ScreenFC, useAppNavigation } from "../../utils/navigation";
+import { ScreenFC } from "../../utils/navigation";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 
 export const LaunchpadScreen: ScreenFC<"Launchpad"> = () => {
   const selectedNetworkId = useSelectedNetworkId();
-  const navigation = useAppNavigation();
 
   return (
     <ScreenContainer
       headerChildren={<BrandText style={fontSemibold20}>Launchpad</BrandText>}
       responsive
-      onBackPress={() => navigation.navigate("Launchpad")}
     >
       <View
         style={{

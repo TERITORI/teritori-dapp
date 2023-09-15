@@ -146,7 +146,6 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
         <BrandText style={fontSemibold20}>Name Service</BrandText>
       }
       responsive
-      onBackPress={() => navigation.navigate("TNSHome")}
       forceNetworkKind={NetworkKind.Cosmos}
     >
       <View

@@ -25,7 +25,7 @@ import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { NetworkFeature, selectableNetworks } from "../../networks";
 import { selectAreTestnetsEnabled } from "../../store/slices/settings";
 import { prettyPrice } from "../../utils/coins";
-import { ScreenFC, useAppNavigation } from "../../utils/navigation";
+import { ScreenFC } from "../../utils/navigation";
 import {
   errorColor,
   mineShaftColor,
@@ -81,7 +81,6 @@ const TABLE_ROWS = {
 };
 
 export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
-  const navigation = useAppNavigation();
   const selectedNetworkId = useSelectedNetworkId();
   const areTestnetsEnabled = useSelector(selectAreTestnetsEnabled);
 
@@ -146,7 +145,6 @@ export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
         <BrandText style={fontSemibold20}>NFT Marketplace</BrandText>
       }
       responsive
-      onBackPress={() => navigation.navigate("Marketplace")}
     >
       <View
         style={{
