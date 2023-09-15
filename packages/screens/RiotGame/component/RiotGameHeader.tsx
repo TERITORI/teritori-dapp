@@ -17,6 +17,7 @@ import { NetworkSelector } from "../../../components/NetworkSelector/NetworkSele
 import { SVG } from "../../../components/SVG";
 import { Separator } from "../../../components/Separator";
 import { ConnectWalletButton } from "../../../components/TopMenu/ConnectWalletButton";
+import { BackButton } from "../../../components/navigation/components/BackButton";
 import { TopLogo } from "../../../components/navigation/components/TopLogo";
 import { SpacerRow } from "../../../components/spacer";
 import { useForceNetworkKind } from "../../../hooks/useForceNetworkKind";
@@ -112,8 +113,9 @@ export const RiotGameHeader: React.FC<RiotGameHeaderProps> = ({
   return (
     <View style={styles.outerContainer}>
       <View style={styles.innerContainer}>
-        <View>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
           <TopLogo />
+          <BackButton onPress={() => navigation.navigate("Home")} />
         </View>
 
         <ScrollView

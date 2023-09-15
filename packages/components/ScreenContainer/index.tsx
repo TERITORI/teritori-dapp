@@ -16,6 +16,7 @@ import { useIsMobile } from "../../hooks/useIsMobile";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { NetworkFeature, NetworkInfo, NetworkKind } from "../../networks";
 import { DAppStoreData } from "../../screens/DAppStore/components/DAppStoreData";
+import { useAppNavigation } from "../../utils/navigation";
 import { neutral33 } from "../../utils/style/colors";
 import {
   getResponsiveScreenContainerMarginHorizontal,
@@ -64,6 +65,16 @@ export const ScreenContainer: React.FC<{
   forceNetworkFeatures,
 }) => {
   const { height } = useWindowDimensions();
+  const navigation = useAppNavigation();
+
+  if (!onBackPress) {
+    onBackPress = navigation.canGoBack()
+      ? () => {
+          navigation.goBack();
+        }
+      : undefined;
+  }
+
   const hasMargin = !noMargin;
   const hasScroll = !noScroll;
   const { width: screenWidth } = useMaxResolution({
@@ -124,7 +135,9 @@ export const ScreenContainer: React.FC<{
 
         <View style={{ width: "100%", flex: 1 }}>
           {/*==== Header*/}
-          <Header onBackPress={onBackPress}>{headerChildren}</Header>
+          {headerChildren && (
+            <Header onBackPress={onBackPress}>{headerChildren}</Header>
+          )}
 
           <View
             style={{ width: "100%", flexDirection: "row", flex: 1, height }}
