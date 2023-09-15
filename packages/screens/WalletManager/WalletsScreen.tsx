@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { View, TouchableOpacity } from "react-native";
 
-import { WalletHeader } from "./WalletHeader";
 import { WalletItem, WalletItemProps } from "./WalletItem";
 import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../assets/icons/chevron-up.svg";
@@ -14,9 +13,10 @@ import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { ConnectWalletModal } from "../../components/connectWallet/ConnectWalletModal";
 import { useRewards } from "../../hooks/useRewards";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { ScreenFC } from "../../utils/navigation";
+import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { walletProviderToNetworkKind } from "../../utils/network";
 import { neutral33, neutralA3, secondaryColor } from "../../utils/style/colors";
+import { fontSemibold20 } from "../../utils/style/fonts";
 
 interface WalletProps {
   index: number;
@@ -107,6 +107,7 @@ export const WalletManagerWalletsScreen: ScreenFC<
 > = () => {
   const [showConnectModal, setShowConnectModal] = useState(false);
   const selectedWallet = useSelectedWallet();
+  const navigation = useAppNavigation();
 
   // TODO: Handle multiple wallets addresses
   const { totalsRewards, claimReward } = useRewards(selectedWallet?.userId);
@@ -135,7 +136,13 @@ export const WalletManagerWalletsScreen: ScreenFC<
     : [];
 
   return (
-    <ScreenContainer headerChildren={<WalletHeader />}>
+    <ScreenContainer
+      headerChildren={
+        <BrandText style={fontSemibold20}>Wallet Manager</BrandText>
+      }
+      responsive
+      onBackPress={() => navigation.navigate("WalletManager")}
+    >
       <View
         style={{
           paddingVertical: 48,
