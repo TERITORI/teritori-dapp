@@ -26,6 +26,7 @@ import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkKind, getCollectionId, getCosmosNetwork } from "../../networks";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
+import { fontSemibold20 } from "../../utils/style/fonts";
 
 export type TNSItems = "TNSManage" | "TNSRegister" | "TNSExplore";
 export type TNSModals =
@@ -141,7 +142,11 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
   return (
     <ScreenContainer
       noMargin={width <= 1600}
-      headerChildren={<BrandText>Name Service</BrandText>}
+      headerChildren={
+        <BrandText style={fontSemibold20}>Name Service</BrandText>
+      }
+      responsive
+      onBackPress={() => navigation.navigate("TNSHome")}
       forceNetworkKind={NetworkKind.Cosmos}
     >
       <View
