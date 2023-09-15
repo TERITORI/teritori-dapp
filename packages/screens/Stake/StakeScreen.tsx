@@ -15,10 +15,13 @@ import { useIsMobile } from "../../hooks/useIsMobile";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { useValidators } from "../../hooks/useValidators";
 import { NetworkKind } from "../../networks";
-import { fontSemibold28 } from "../../utils/style/fonts";
+import { useAppNavigation } from "../../utils/navigation";
+import { fontSemibold20, fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 
 export const StakeScreen: React.FC = () => {
+  const navigation = useAppNavigation();
+
   const isMobile = useIsMobile();
   const selectedNetworkId = useSelectedNetworkId();
   const [stakeDetailModalVisible, setStakeDetailModalVisible] = useState(false);
@@ -48,7 +51,6 @@ export const StakeScreen: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState<keyof typeof tabs>("active");
   const areThereWallets = useAreThereWallets();
 
-  // functions
   const toggleDetailModal = (stakeData?: ValidatorInfo) => {
     setStakeDetailModalVisible(!stakeDetailModalVisible);
     setSelectedStake(stakeData);
@@ -70,7 +72,12 @@ export const StakeScreen: React.FC = () => {
   };
 
   return (
-    <ScreenContainer fullWidth forceNetworkKind={NetworkKind.Cosmos}>
+    <ScreenContainer
+      forceNetworkKind={NetworkKind.Cosmos}
+      headerChildren={<BrandText style={fontSemibold20}>Stake</BrandText>}
+      responsive
+      onBackPress={() => navigation.goBack()}
+    >
       <View
         style={{
           flexDirection: isMobile ? "column" : "row",
