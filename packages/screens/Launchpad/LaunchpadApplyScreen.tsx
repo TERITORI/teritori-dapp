@@ -9,7 +9,7 @@ import {
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
-import { ScreenFC } from "../../utils/navigation";
+import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { neutral77 } from "../../utils/style/colors";
 import {
   fontSemibold14,
