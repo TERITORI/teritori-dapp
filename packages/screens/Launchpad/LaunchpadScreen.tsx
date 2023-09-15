@@ -7,19 +7,26 @@ import {
   Sort,
   SortDirection,
 } from "../../api/marketplace/v1/marketplace";
+import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { CollectionsCarouselHeader } from "../../components/carousels/CollectionsCarouselHeader";
 import { CollectionGallery } from "../../components/collections/CollectionGallery";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { getNetwork } from "../../networks";
-import { ScreenFC } from "../../utils/navigation";
+import { ScreenFC, useAppNavigation } from "../../utils/navigation";
+import { fontSemibold20 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 
 export const LaunchpadScreen: ScreenFC<"Launchpad"> = () => {
   const selectedNetworkId = useSelectedNetworkId();
+  const navigation = useAppNavigation();
 
   return (
-    <ScreenContainer>
+    <ScreenContainer
+      headerChildren={<BrandText style={fontSemibold20}>Launchpad</BrandText>}
+      responsive
+      onBackPress={() => navigation.navigate("Launchpad")}
+    >
       <View
         style={{
           paddingBottom: layout.contentSpacing,
