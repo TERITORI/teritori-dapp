@@ -4,24 +4,32 @@ import { View } from "react-native";
 import { Assets } from "./Assets";
 import { MyNFTs } from "./MyNFTs";
 import { WalletDashboardHeader } from "./WalletDashboardHeader";
-import { WalletHeader } from "./WalletHeader";
 import { Wallets } from "./Wallets";
+import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { MainConnectWalletButton } from "../../components/connectWallet/MainConnectWalletButton";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { ScreenFC } from "../../utils/navigation";
+import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { neutral33 } from "../../utils/style/colors";
+import { fontSemibold20 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 
 export const WalletManagerScreen: ScreenFC<"WalletManager"> = () => {
   const selectedWallet = useSelectedWallet();
   const areThereWallets = useAreThereWallets();
   const { height } = useMaxResolution();
+  const navigation = useAppNavigation();
 
   return (
-    <ScreenContainer headerChildren={<WalletHeader />}>
+    <ScreenContainer
+      headerChildren={
+        <BrandText style={fontSemibold20}>Wallet Manager</BrandText>
+      }
+      responsive
+      onBackPress={() => navigation.navigate("WalletManager")}
+    >
       {areThereWallets ? (
         <View
           style={{
