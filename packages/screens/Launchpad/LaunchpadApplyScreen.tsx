@@ -9,7 +9,7 @@ import {
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
-import { ScreenFC, useAppNavigation } from "../../utils/navigation";
+import { ScreenFC } from "../../utils/navigation";
 import { neutral77 } from "../../utils/style/colors";
 import {
   fontSemibold14,
@@ -37,12 +37,10 @@ const BUTTONS: LaunchpadButtonProps[] = [
 ];
 
 export const LaunchpadApplyScreen: ScreenFC<"LaunchpadApply"> = () => {
-  const navigation = useAppNavigation();
   return (
     <ScreenContainer
       headerChildren={<BrandText style={fontSemibold20}>Launchpad</BrandText>}
       responsive
-      onBackPress={() => navigation.navigate("Launchpad")}
     >
       <LaunchpadBanner />
       <SpacerColumn size={2} />
