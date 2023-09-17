@@ -15,6 +15,7 @@ import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import ModalBase from "../../../components/modals/ModalBase";
 import { QRCodeScannerModal } from "../../../components/modals/QRCodeScannerModal";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
+import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useIsMobile } from "../../../hooks/useIsMobile";
 import {
   MessageState,
@@ -32,6 +33,7 @@ interface CreateConversationProps {
 
 export const CreateConversation = ({ onClose }: CreateConversationProps) => {
   const contactInfo = useSelector(selectContactInfo);
+  const { setToastSuccess, setToastError } = useFeedbacks();
   const [contactLink, setContactLink] = useState("");
   const [addContactLoading, setAddContactLoading] = useState(false);
   const [error, setError] = useState("");
@@ -46,9 +48,17 @@ export const CreateConversation = ({ onClose }: CreateConversationProps) => {
 
     try {
       await weshServices.addContact(link, contactInfo);
+      setToastSuccess({
+        title: "Request sent",
+        message: "Contact Request sent successfully",
+      });
       onClose();
     } catch (err: any) {
       setError(err?.message);
+      setToastSuccess({
+        title: "Request sent error",
+        message: err?.message,
+      });
     }
 
     setAddContactLoading(false);
@@ -115,11 +125,13 @@ export const CreateConversation = ({ onClose }: CreateConversationProps) => {
           )}
         </View>
         <SpacerColumn size={2} />
-        <SecondaryButton
-          text="Scan QR"
-          size="M"
-          onPress={() => setIsScan(true)}
-        />
+        {Platform.OS !== "web" && (
+          <SecondaryButton
+            text="Scan QR"
+            size="M"
+            onPress={() => setIsScan(true)}
+          />
+        )}
         <SpacerColumn size={2} />
         <BrandText
           style={[fontSemibold16, { marginBottom: layout.padding_x1 }]}

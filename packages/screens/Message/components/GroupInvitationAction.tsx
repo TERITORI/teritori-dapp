@@ -29,7 +29,7 @@ export const GroupInvitationAction = ({
   const { setToastError } = useFeedbacks();
 
   const contactInfo = useSelector(selectContactInfo);
-  const conversations = useSelector(selectConversationList);
+  const conversations = useSelector(selectConversationList());
 
   const [isAccepted, setIsAccepted] = useState(false);
 

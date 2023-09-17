@@ -70,45 +70,44 @@ const RequestList = ({ isOnline, data }: Props) => {
 
   return (
     <View>
-      <FlexRow justifyContent="space-between">
-        <View>
-          <FlexRow>
-            <Avatar.Image size={40} source={{ uri: data.avatar }} />
-            <Badge
-              style={{
-                position: "absolute",
-                top: 30,
-                left: 30,
+      <FlexRow justifyContent="space-between" style={{ flex: 1 }}>
+        <FlexRow style={{ flex: 1 }}>
+          <Avatar.Image size={40} source={{ uri: data.avatar }} />
+          <Badge
+            style={{
+              position: "absolute",
+              top: 30,
+              left: 30,
 
-                backgroundColor: onlineStatusBadgeColor,
-              }}
-              size={12}
-            />
-            <SpacerRow size={1.5} />
-            <View>
-              <BrandText style={[fontSemibold13, { color: secondaryColor }]}>
-                {data?.name || "Anon"}
-              </BrandText>
-            </View>
-          </FlexRow>
-        </View>
-        <View>
-          <FlexRow>
-            <PrimaryButton
-              onPress={handleAddFriend}
-              isLoading={addLoading}
-              text="Add"
-              size="SM"
-            />
-            <SpacerRow size={1.5} />
-            <SecondaryButton
-              onPress={handleCancelFriend}
-              loader
-              text="Reject"
-              size="SM"
-            />
-          </FlexRow>
-        </View>
+              backgroundColor: onlineStatusBadgeColor,
+            }}
+            size={12}
+          />
+          <SpacerRow size={1.5} />
+          <View>
+            <BrandText style={[fontSemibold13, { color: secondaryColor }]}>
+              {data?.name || "Anon"}
+            </BrandText>
+          </View>
+        </FlexRow>
+
+        <FlexRow justifyContent="flex-end" style={{ flex: 1 }}>
+          <PrimaryButton
+            onPress={handleAddFriend}
+            isLoading={addLoading}
+            text="Add"
+            size="SM"
+          />
+          <SpacerRow size={1.5} />
+
+          <SecondaryButton
+            width={100}
+            onPress={handleCancelFriend}
+            loader
+            text="Reject"
+            size="SM"
+          />
+        </FlexRow>
       </FlexRow>
       <SpacerColumn size={1.3} />
       <Separator color={neutral22} />

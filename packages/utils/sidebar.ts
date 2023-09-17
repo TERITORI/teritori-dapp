@@ -17,7 +17,6 @@ import walletRegSVG from "../../assets/icons/wallet-regular.svg";
 import walletSVG from "../../assets/icons/wallet-sidebar.svg";
 import { SidebarRecordType } from "../components/navigation/types";
 import { NetworkKind } from "../networks";
-
 export const SIDEBAR_LIST: SidebarRecordType = {
   feed: {
     title: "Social Feed",

@@ -203,22 +203,39 @@ export const ReplicatedGroup = {
 
   toJSON(message: ReplicatedGroup): unknown {
     const obj: any = {};
-    message.publicKey !== undefined && (obj.publicKey = message.publicKey);
-    message.signPub !== undefined && (obj.signPub = message.signPub);
-    message.linkKey !== undefined && (obj.linkKey = message.linkKey);
-    message.createdAt !== undefined && (obj.createdAt = Math.round(message.createdAt));
-    message.updatedAt !== undefined && (obj.updatedAt = Math.round(message.updatedAt));
-    message.metadataEntriesCount !== undefined && (obj.metadataEntriesCount = Math.round(message.metadataEntriesCount));
-    message.metadataLatestHead !== undefined && (obj.metadataLatestHead = message.metadataLatestHead);
-    message.messageEntriesCount !== undefined && (obj.messageEntriesCount = Math.round(message.messageEntriesCount));
-    message.messageLatestHead !== undefined && (obj.messageLatestHead = message.messageLatestHead);
+    if (message.publicKey !== "") {
+      obj.publicKey = message.publicKey;
+    }
+    if (message.signPub !== "") {
+      obj.signPub = message.signPub;
+    }
+    if (message.linkKey !== "") {
+      obj.linkKey = message.linkKey;
+    }
+    if (message.createdAt !== 0) {
+      obj.createdAt = Math.round(message.createdAt);
+    }
+    if (message.updatedAt !== 0) {
+      obj.updatedAt = Math.round(message.updatedAt);
+    }
+    if (message.metadataEntriesCount !== 0) {
+      obj.metadataEntriesCount = Math.round(message.metadataEntriesCount);
+    }
+    if (message.metadataLatestHead !== "") {
+      obj.metadataLatestHead = message.metadataLatestHead;
+    }
+    if (message.messageEntriesCount !== 0) {
+      obj.messageEntriesCount = Math.round(message.messageEntriesCount);
+    }
+    if (message.messageLatestHead !== "") {
+      obj.messageLatestHead = message.messageLatestHead;
+    }
     return obj;
   },
 
   create<I extends Exact<DeepPartial<ReplicatedGroup>, I>>(base?: I): ReplicatedGroup {
-    return ReplicatedGroup.fromPartial(base ?? {});
+    return ReplicatedGroup.fromPartial(base ?? ({} as any));
   },
-
   fromPartial<I extends Exact<DeepPartial<ReplicatedGroup>, I>>(object: I): ReplicatedGroup {
     const message = createBaseReplicatedGroup();
     message.publicKey = object.publicKey ?? "";
@@ -321,19 +338,27 @@ export const ReplicatedGroupToken = {
 
   toJSON(message: ReplicatedGroupToken): unknown {
     const obj: any = {};
-    message.replicatedGroupPublicKey !== undefined && (obj.replicatedGroupPublicKey = message.replicatedGroupPublicKey);
-    message.replicatedGroup !== undefined &&
-      (obj.replicatedGroup = message.replicatedGroup ? ReplicatedGroup.toJSON(message.replicatedGroup) : undefined);
-    message.tokenIssuer !== undefined && (obj.tokenIssuer = message.tokenIssuer);
-    message.tokenId !== undefined && (obj.tokenId = message.tokenId);
-    message.createdAt !== undefined && (obj.createdAt = Math.round(message.createdAt));
+    if (message.replicatedGroupPublicKey !== "") {
+      obj.replicatedGroupPublicKey = message.replicatedGroupPublicKey;
+    }
+    if (message.replicatedGroup !== undefined) {
+      obj.replicatedGroup = ReplicatedGroup.toJSON(message.replicatedGroup);
+    }
+    if (message.tokenIssuer !== "") {
+      obj.tokenIssuer = message.tokenIssuer;
+    }
+    if (message.tokenId !== "") {
+      obj.tokenId = message.tokenId;
+    }
+    if (message.createdAt !== 0) {
+      obj.createdAt = Math.round(message.createdAt);
+    }
     return obj;
   },
 
   create<I extends Exact<DeepPartial<ReplicatedGroupToken>, I>>(base?: I): ReplicatedGroupToken {
-    return ReplicatedGroupToken.fromPartial(base ?? {});
+    return ReplicatedGroupToken.fromPartial(base ?? ({} as any));
   },
-
   fromPartial<I extends Exact<DeepPartial<ReplicatedGroupToken>, I>>(object: I): ReplicatedGroupToken {
     const message = createBaseReplicatedGroupToken();
     message.replicatedGroupPublicKey = object.replicatedGroupPublicKey ?? "";
@@ -384,9 +409,8 @@ export const ReplicationServiceReplicateGroup = {
   create<I extends Exact<DeepPartial<ReplicationServiceReplicateGroup>, I>>(
     base?: I,
   ): ReplicationServiceReplicateGroup {
-    return ReplicationServiceReplicateGroup.fromPartial(base ?? {});
+    return ReplicationServiceReplicateGroup.fromPartial(base ?? ({} as any));
   },
-
   fromPartial<I extends Exact<DeepPartial<ReplicationServiceReplicateGroup>, I>>(
     _: I,
   ): ReplicationServiceReplicateGroup {
@@ -436,16 +460,17 @@ export const ReplicationServiceReplicateGroup_Request = {
 
   toJSON(message: ReplicationServiceReplicateGroup_Request): unknown {
     const obj: any = {};
-    message.group !== undefined && (obj.group = message.group ? Group.toJSON(message.group) : undefined);
+    if (message.group !== undefined) {
+      obj.group = Group.toJSON(message.group);
+    }
     return obj;
   },
 
   create<I extends Exact<DeepPartial<ReplicationServiceReplicateGroup_Request>, I>>(
     base?: I,
   ): ReplicationServiceReplicateGroup_Request {
-    return ReplicationServiceReplicateGroup_Request.fromPartial(base ?? {});
+    return ReplicationServiceReplicateGroup_Request.fromPartial(base ?? ({} as any));
   },
-
   fromPartial<I extends Exact<DeepPartial<ReplicationServiceReplicateGroup_Request>, I>>(
     object: I,
   ): ReplicationServiceReplicateGroup_Request {
@@ -496,16 +521,17 @@ export const ReplicationServiceReplicateGroup_Reply = {
 
   toJSON(message: ReplicationServiceReplicateGroup_Reply): unknown {
     const obj: any = {};
-    message.ok !== undefined && (obj.ok = message.ok);
+    if (message.ok === true) {
+      obj.ok = message.ok;
+    }
     return obj;
   },
 
   create<I extends Exact<DeepPartial<ReplicationServiceReplicateGroup_Reply>, I>>(
     base?: I,
   ): ReplicationServiceReplicateGroup_Reply {
-    return ReplicationServiceReplicateGroup_Reply.fromPartial(base ?? {});
+    return ReplicationServiceReplicateGroup_Reply.fromPartial(base ?? ({} as any));
   },
-
   fromPartial<I extends Exact<DeepPartial<ReplicationServiceReplicateGroup_Reply>, I>>(
     object: I,
   ): ReplicationServiceReplicateGroup_Reply {
@@ -550,9 +576,8 @@ export const ReplicateGlobalStats = {
   },
 
   create<I extends Exact<DeepPartial<ReplicateGlobalStats>, I>>(base?: I): ReplicateGlobalStats {
-    return ReplicateGlobalStats.fromPartial(base ?? {});
+    return ReplicateGlobalStats.fromPartial(base ?? ({} as any));
   },
-
   fromPartial<I extends Exact<DeepPartial<ReplicateGlobalStats>, I>>(_: I): ReplicateGlobalStats {
     const message = createBaseReplicateGlobalStats();
     return message;
@@ -594,9 +619,8 @@ export const ReplicateGlobalStats_Request = {
   },
 
   create<I extends Exact<DeepPartial<ReplicateGlobalStats_Request>, I>>(base?: I): ReplicateGlobalStats_Request {
-    return ReplicateGlobalStats_Request.fromPartial(base ?? {});
+    return ReplicateGlobalStats_Request.fromPartial(base ?? ({} as any));
   },
-
   fromPartial<I extends Exact<DeepPartial<ReplicateGlobalStats_Request>, I>>(_: I): ReplicateGlobalStats_Request {
     const message = createBaseReplicateGlobalStats_Request();
     return message;
@@ -679,17 +703,24 @@ export const ReplicateGlobalStats_Reply = {
 
   toJSON(message: ReplicateGlobalStats_Reply): unknown {
     const obj: any = {};
-    message.startedAt !== undefined && (obj.startedAt = Math.round(message.startedAt));
-    message.replicatedGroups !== undefined && (obj.replicatedGroups = Math.round(message.replicatedGroups));
-    message.totalMetadataEntries !== undefined && (obj.totalMetadataEntries = Math.round(message.totalMetadataEntries));
-    message.totalMessageEntries !== undefined && (obj.totalMessageEntries = Math.round(message.totalMessageEntries));
+    if (message.startedAt !== 0) {
+      obj.startedAt = Math.round(message.startedAt);
+    }
+    if (message.replicatedGroups !== 0) {
+      obj.replicatedGroups = Math.round(message.replicatedGroups);
+    }
+    if (message.totalMetadataEntries !== 0) {
+      obj.totalMetadataEntries = Math.round(message.totalMetadataEntries);
+    }
+    if (message.totalMessageEntries !== 0) {
+      obj.totalMessageEntries = Math.round(message.totalMessageEntries);
+    }
     return obj;
   },
 
   create<I extends Exact<DeepPartial<ReplicateGlobalStats_Reply>, I>>(base?: I): ReplicateGlobalStats_Reply {
-    return ReplicateGlobalStats_Reply.fromPartial(base ?? {});
+    return ReplicateGlobalStats_Reply.fromPartial(base ?? ({} as any));
   },
-
   fromPartial<I extends Exact<DeepPartial<ReplicateGlobalStats_Reply>, I>>(object: I): ReplicateGlobalStats_Reply {
     const message = createBaseReplicateGlobalStats_Reply();
     message.startedAt = object.startedAt ?? 0;
@@ -735,9 +766,8 @@ export const ReplicateGroupStats = {
   },
 
   create<I extends Exact<DeepPartial<ReplicateGroupStats>, I>>(base?: I): ReplicateGroupStats {
-    return ReplicateGroupStats.fromPartial(base ?? {});
+    return ReplicateGroupStats.fromPartial(base ?? ({} as any));
   },
-
   fromPartial<I extends Exact<DeepPartial<ReplicateGroupStats>, I>>(_: I): ReplicateGroupStats {
     const message = createBaseReplicateGroupStats();
     return message;
@@ -785,14 +815,15 @@ export const ReplicateGroupStats_Request = {
 
   toJSON(message: ReplicateGroupStats_Request): unknown {
     const obj: any = {};
-    message.groupPublicKey !== undefined && (obj.groupPublicKey = message.groupPublicKey);
+    if (message.groupPublicKey !== "") {
+      obj.groupPublicKey = message.groupPublicKey;
+    }
     return obj;
   },
 
   create<I extends Exact<DeepPartial<ReplicateGroupStats_Request>, I>>(base?: I): ReplicateGroupStats_Request {
-    return ReplicateGroupStats_Request.fromPartial(base ?? {});
+    return ReplicateGroupStats_Request.fromPartial(base ?? ({} as any));
   },
-
   fromPartial<I extends Exact<DeepPartial<ReplicateGroupStats_Request>, I>>(object: I): ReplicateGroupStats_Request {
     const message = createBaseReplicateGroupStats_Request();
     message.groupPublicKey = object.groupPublicKey ?? "";
@@ -841,14 +872,15 @@ export const ReplicateGroupStats_Reply = {
 
   toJSON(message: ReplicateGroupStats_Reply): unknown {
     const obj: any = {};
-    message.group !== undefined && (obj.group = message.group ? ReplicatedGroup.toJSON(message.group) : undefined);
+    if (message.group !== undefined) {
+      obj.group = ReplicatedGroup.toJSON(message.group);
+    }
     return obj;
   },
 
   create<I extends Exact<DeepPartial<ReplicateGroupStats_Reply>, I>>(base?: I): ReplicateGroupStats_Reply {
-    return ReplicateGroupStats_Reply.fromPartial(base ?? {});
+    return ReplicateGroupStats_Reply.fromPartial(base ?? ({} as any));
   },
-
   fromPartial<I extends Exact<DeepPartial<ReplicateGroupStats_Reply>, I>>(object: I): ReplicateGroupStats_Reply {
     const message = createBaseReplicateGroupStats_Reply();
     message.group = (object.group !== undefined && object.group !== null)
@@ -1037,14 +1069,14 @@ export class GrpcWebImpl {
     const request = { ..._request, ...methodDesc.requestType };
     const maybeCombinedMetadata = metadata && this.options.metadata
       ? new BrowserHeaders({ ...this.options?.metadata.headersMap, ...metadata?.headersMap })
-      : metadata || this.options.metadata;
+      : metadata ?? this.options.metadata;
     return new Promise((resolve, reject) => {
       grpc.unary(methodDesc, {
         request,
         host: this.host,
-        metadata: maybeCombinedMetadata,
-        transport: this.options.transport,
-        debug: this.options.debug,
+        metadata: maybeCombinedMetadata ?? {},
+        ...(this.options.transport !== undefined ? { transport: this.options.transport } : {}),
+        debug: this.options.debug ?? false,
         onEnd: function (response) {
           if (response.status === grpc.Code.OK) {
             resolve(response.message!.toObject());
@@ -1058,10 +1090,10 @@ export class GrpcWebImpl {
   }
 }
 
-declare var self: any | undefined;
-declare var window: any | undefined;
-declare var global: any | undefined;
-var tsProtoGlobalThis: any = (() => {
+declare const self: any | undefined;
+declare const window: any | undefined;
+declare const global: any | undefined;
+const tsProtoGlobalThis: any = (() => {
   if (typeof globalThis !== "undefined") {
     return globalThis;
   }

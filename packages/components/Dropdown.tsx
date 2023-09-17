@@ -37,24 +37,28 @@ export const Dropdown = ({
   } = useDropdowns();
   const dropdownRef = useRef<View>(null);
 
-  const [copyDropdownOpen, setCopyDropdownOpen] = useState(false);
+  const [isOpened, setIsOpened] = useState(false);
 
   useEffect(() => {
-    if (copyDropdownOpen && !isDropdownOpen(dropdownRef)) {
+    if (isOpened && !isDropdownOpen(dropdownRef)) {
       onDropdownClosed?.();
     }
-    if (!copyDropdownOpen && isDropdownOpen(dropdownRef)) {
-      setCopyDropdownOpen(true);
-    }
-  }, [copyDropdownOpen, isDropdownOpen, onDropdownClosed, openedDropdownRef]);
+  }, [isDropdownOpen(dropdownRef)]);
 
   const handleLayout = ({ nativeEvent: { layout } }: LayoutChangeEvent) => {
     setLayout(layout);
   };
 
+  const handleOpen = () => {
+    setIsOpened(true);
+    onPressDropdownButton(dropdownRef);
+  };
+
   useEffect(() => {
-    !triggerComponent && onPressDropdownButton(dropdownRef);
-  }, [onPressDropdownButton, triggerComponent]);
+    if (!triggerComponent) {
+      handleOpen();
+    }
+  }, [triggerComponent]);
 
   return (
     <View
@@ -62,9 +66,11 @@ export const Dropdown = ({
       ref={dropdownRef}
       onLayout={handleLayout}
     >
-      <TouchableOpacity onPress={() => onPressDropdownButton(dropdownRef)}>
-        {triggerComponent}
-      </TouchableOpacity>
+      {!!triggerComponent && (
+        <TouchableOpacity onPress={handleOpen}>
+          {triggerComponent}
+        </TouchableOpacity>
+      )}
       {isDropdownOpen(dropdownRef) && (
         <View
           style={[

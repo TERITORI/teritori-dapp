@@ -33,6 +33,7 @@ import theGraph from "../../../../assets/logos/theGraph.png";
 import toripunks from "../../../../assets/logos/toniPunks.png";
 import uniswap from "../../../../assets/logos/uniswap.png";
 import { dAppGroup } from "../types";
+
 export function getAvailableApps(): dAppGroup {
   return {
     "teritori-core-apps": {

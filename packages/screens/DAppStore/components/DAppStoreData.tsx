@@ -82,7 +82,7 @@ export const DAppStoreData: React.FC = memo(() => {
     });
 
     const dAppStoreValues = getAvailableApps();
-    const merged = merge(dAppStoreValues, formatted);
+    const merged = merge(formatted, dAppStoreValues);
     merged["coming-soon"] = dAppStoreValues["coming-soon"];
     dispatch(setAvailableApps(merged));
   }, [dApps, dAppsGroups, dispatch]);

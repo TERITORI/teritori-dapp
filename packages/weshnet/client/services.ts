@@ -7,10 +7,17 @@ import { store } from "../../store/store";
 import { Message } from "../../utils/types/message";
 import { GroupInfo_Request } from "../protocoltypes";
 
+export const getAndUpdatePeerList = async () => {
+  const peerList = await weshClient.client.PeerList({});
+
+  console.log("peer List", peerList);
+};
+
 export const bootWeshnet = async () => {
   try {
     await weshClient.client.ContactRequestEnable({});
     const contactRef = await weshClient.client.ContactRequestReference({});
+    await getAndUpdatePeerList();
 
     if (contactRef.publicRendezvousSeed.length === 0) {
       const resetRef = await weshClient.client.ContactRequestResetReference({});

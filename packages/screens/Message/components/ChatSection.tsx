@@ -42,6 +42,7 @@ import {
   neutral00,
   neutral33,
   neutral77,
+  neutralA3,
   redDefault,
 } from "../../../utils/style/colors";
 import {
@@ -162,7 +163,7 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
   const { height } = useWindowDimensions();
 
   return (
-    <KeyboardAvoidingView extraVerticalOffset={20}>
+    <KeyboardAvoidingView extraVerticalOffset={32}>
       <View
         style={[
           {
@@ -286,6 +287,7 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
               if (item.type === "group-join") {
                 return null;
               }
+
               return (
                 <>
                   <Conversation
@@ -297,6 +299,13 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
                     isNextMine={nextMessage?.senderId === item.senderId}
                     parentMessage={parentMessage}
                   />
+                  {item.type === "accept-contact" && (
+                    <View style={{ alignItems: "center" }}>
+                      <BrandText style={[fontSemibold10, { color: neutralA3 }]}>
+                        Contact accepted
+                      </BrandText>
+                    </View>
+                  )}
                   {(!!isNewSeparator || !!separatorDate) && (
                     <View
                       style={{
@@ -394,9 +403,7 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
               <TextInputCustom
                 fullWidth
                 setRef={setInputRef}
-                containerStyle={{
-                  marginHorizontal: layout.padding_x0_5,
-                }}
+                containerStyle={{}}
                 autoFocus={Platform.OS === "web"}
                 height={Math.max(50, inputHeight)}
                 name="message"
@@ -407,10 +414,13 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
                 value={message}
                 onChangeText={setMessage}
                 label=""
+                hideLabel
                 blurOnSubmit={false}
-                textInputStyle={{
-                  height: Math.max(30, inputHeight - 30),
-                }}
+                textInputStyle={
+                  {
+                    // height: Math.max(30, inputHeight - 30),
+                  }
+                }
                 returnKeyType="send"
                 onSubmitEditing={() => {
                   if (message.length) {

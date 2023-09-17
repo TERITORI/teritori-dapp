@@ -22,7 +22,39 @@ import {
   GroupMetadataList_Request,
 } from "../protocoltypes";
 
+const subscribedGroup: string[] = [];
+
+export const subscribeDeviceStatus = async (groupPk: string) => {
+  if (subscribedGroup.includes(groupPk)) {
+    return;
+  } else {
+    subscribedGroup.push(groupPk);
+  }
+  try {
+    const groupDeviceStatus = await weshClient.client.GroupDeviceStatus({
+      groupPk: bytesFromString(groupPk),
+    });
+
+    const observer = {
+      next: (data) => {
+        console.log("next device status", data);
+      },
+      error: (e: any) => {
+        console.log("get message error...", e);
+      },
+      complete: async () => {
+        console.log("get message complete");
+      },
+    };
+    console.log("subscribing");
+    return groupDeviceStatus.subscribe(observer);
+  } catch (err) {
+    console.log("get device status err", err);
+  }
+};
+
 export const subscribeMessages = async (groupPk: string) => {
+  subscribeDeviceStatus(groupPk);
   const lastId = selectLastIdByKey(groupPk)(store.getState());
 
   const config: Partial<GroupMessageList_Request> = {
@@ -181,7 +213,7 @@ export const subscribeMetadata = async (groupPk: Uint8Array) => {
 
     const myObserver = {
       next: (data: GroupMetadataEvent) => {
-        console.log("incoming metadata");
+        console.log("incoming metadata", data);
         handleMetadata(data);
       },
       error(e: any) {

@@ -1,5 +1,6 @@
 import React from "react";
 import { Dimensions, TouchableOpacity, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { neutral11, neutral77, successColor } from "../../utils/style/colors";
 import { BrandText } from "../BrandText";
@@ -11,6 +12,7 @@ export const ToastSuccess: React.FC<{
 }> = ({ title, message, onPress }) => {
   const width = 300;
   const marginHorizontal = 24;
+  const insets = useSafeAreaInsets();
 
   return (
     <TouchableOpacity
@@ -27,9 +29,9 @@ export const ToastSuccess: React.FC<{
         maxWidth: width,
         height: "auto",
         position: "absolute",
-        top: 24,
+        top: insets.top + 24,
         left: Dimensions.get("window").width / 2 - width / 2,
-        zIndex: 999,
+        zIndex: 99999999,
       }}
     >
       <View

@@ -20,6 +20,7 @@ import { Provider as ReduxProvider } from "react-redux";
 import { Navigator } from "./packages/components/navigation/Navigator";
 import { DropdownsContextProvider } from "./packages/context/DropdownsProvider";
 import { FeedbacksContextProvider } from "./packages/context/FeedbacksProvider";
+import { MessageContextProvider } from "./packages/context/MessageProvider";
 import { SearchBarContextProvider } from "./packages/context/SearchBarProvider";
 import { TNSMetaDataListContextProvider } from "./packages/context/TNSMetaDataListProvider";
 import { TNSContextProvider } from "./packages/context/TNSProvider";
@@ -88,10 +89,12 @@ export default function App() {
                           <TransactionModalsProvider>
                             <TNSContextProvider>
                               <TNSMetaDataListContextProvider>
-                                <MenuProvider>
-                                  <StatusBar style="inverted" />
-                                  <Navigator />
-                                </MenuProvider>
+                                <MessageContextProvider>
+                                  <MenuProvider>
+                                    <StatusBar style="inverted" />
+                                    <Navigator />
+                                  </MenuProvider>
+                                </MessageContextProvider>
                               </TNSMetaDataListContextProvider>
                             </TNSContextProvider>
                           </TransactionModalsProvider>

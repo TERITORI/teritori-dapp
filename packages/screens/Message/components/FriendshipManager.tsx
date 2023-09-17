@@ -27,7 +27,7 @@ export const FriendshipManager = ({
   setActiveConversation,
   activeTab = "friends",
 }: FriendshipManagerProps) => {
-  const conversations = useSelector(selectConversationList);
+  const conversations = useSelector(selectConversationList());
   const contactRequests = useSelector(selectContactRequestList);
   const { navigate } = useAppNavigation();
 
