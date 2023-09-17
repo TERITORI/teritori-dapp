@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet, TouchableOpacity } from "react-native";
+import { View, StyleSheet, TouchableOpacity, Platform } from "react-native";
 import { useSelector } from "react-redux";
 
 import forwardSVG from "../../../../assets/icons/forward.svg";
@@ -23,7 +23,7 @@ import { fontSemibold13 } from "../../../utils/style/fonts";
 
 export const FriendsBar = () => {
   const contactRequests = useSelector(selectContactRequestList);
-  const conversations = useSelector(selectConversationList);
+  const conversations = useSelector(selectConversationList());
   const { navigate } = useAppNavigation();
   return (
     <View style={styles.friendBox}>
@@ -43,9 +43,13 @@ export const FriendsBar = () => {
           <FlexRow>
             {!!contactRequests?.length && (
               <TouchableOpacity
-                onPress={() =>
-                  navigate("FriendshipManager", { tab: "request" })
-                }
+                onPress={() => {
+                  if (Platform.OS === "web") {
+                    navigate("Message", { view: "AddFriend", tab: "request" });
+                  } else {
+                    navigate("FriendshipManager", { tab: "request" });
+                  }
+                }}
               >
                 <TertiaryBadge
                   label={`${contactRequests.length} new`}
@@ -59,7 +63,13 @@ export const FriendsBar = () => {
                 flexDirection: "row",
                 alignItems: "center",
               }}
-              onPress={() => navigate("FriendshipManager", { tab: "friends" })}
+              onPress={() => {
+                if (Platform.OS === "web") {
+                  navigate("Message", { view: "AddFriend", tab: "friends" });
+                } else {
+                  navigate("FriendshipManager", { tab: "friends" });
+                }
+              }}
             >
               <BrandText style={[fontSemibold13, { color: secondaryColor }]}>
                 {conversations?.filter((conv) => conv.type === "contact")

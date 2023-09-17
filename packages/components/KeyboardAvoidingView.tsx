@@ -26,13 +26,7 @@ export const KeyboardAvoidingView = ({
     <KeyboardAvoiding
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={{ flex: 1 }}
-      keyboardVerticalOffset={
-        insets.top +
-        insets.bottom +
-        MOBILE_HEADER_HEIGHT -
-        20 +
-        extraVerticalOffset
-      }
+      keyboardVerticalOffset={insets.top + insets.bottom + extraVerticalOffset}
     >
       {children}
     </KeyboardAvoiding>

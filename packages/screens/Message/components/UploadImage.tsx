@@ -1,3 +1,4 @@
+import * as DocumentPicker from "expo-document-picker";
 import * as ImagePicker from "expo-image-picker";
 import { omit } from "lodash";
 import React, { useEffect, useState } from "react";
@@ -28,17 +29,6 @@ interface UploadImageProps {
   onClose?: () => void;
   setFile: (file: MessageFileData) => void;
 }
-
-const LIST = [
-  {
-    title: " Attach file",
-    mimeTypes: [...AUDIO_MIME_TYPES],
-  },
-  {
-    title: "Attach image/video",
-    mimeTypes: [...IMAGE_MIME_TYPES, ...VIDEO_MIME_TYPES],
-  },
-];
 
 export const UploadImage = ({ onClose, setFile }: UploadImageProps) => {
   const [hasFile, setHasFile] = useState(false);
@@ -76,8 +66,42 @@ export const UploadImage = ({ onClose, setFile }: UploadImageProps) => {
   };
 
   useEffect(() => {
-    permissions();
+    // permissions();
   }, []);
+
+  const LIST = [
+    {
+      title: "Attach image/video",
+      mimeTypes: [...IMAGE_MIME_TYPES, ...VIDEO_MIME_TYPES],
+      onPress: async () => {
+        try {
+          console.log("trying");
+          // const permission = await requestPermission();
+          // console.log("media per", permission);
+          const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            allowsEditing: true,
+            // aspect: [4, 3],
+            quality: 1,
+          });
+          console.log("result");
+
+          // if (!result.canceled) {
+          //   setFile(imagePickerAssetToLocalFile(result.assets[0]));
+          // }
+        } catch (err) {
+          console.log("perm er", err);
+        }
+      },
+    },
+    {
+      title: " Attach file",
+      mimeTypes: [...AUDIO_MIME_TYPES],
+      onPress: async () => {
+        await DocumentPicker.getDocumentAsync();
+      },
+    },
+  ];
 
   return (
     <View
@@ -101,18 +125,7 @@ export const UploadImage = ({ onClose, setFile }: UploadImageProps) => {
             borderBottomColor: neutral22,
             borderBottomWidth: index === LIST.length - 1 ? 0 : 1,
           }}
-          onPress={async () => {
-            const result = await ImagePicker.launchImageLibraryAsync({
-              mediaTypes: ImagePicker.MediaTypeOptions.All,
-              allowsEditing: true,
-              // aspect: [4, 3],
-              quality: 1,
-            });
-
-            if (!result.canceled) {
-              setFile(imagePickerAssetToLocalFile(result.assets[0]));
-            }
-          }}
+          onPress={item.onPress}
         >
           <BrandText style={[fontSemibold13, { color: neutralA3 }]}>
             {item.title}

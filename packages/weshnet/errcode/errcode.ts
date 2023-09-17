@@ -89,16 +89,6 @@ export enum ErrCode {
   ErrGroupOpen = 1311,
   ErrMessageKeyPersistencePut = 1500,
   ErrMessageKeyPersistenceGet = 1501,
-  ErrServicesAuth = 4000,
-  ErrServicesAuthNotInitialized = 4001,
-  ErrServicesAuthWrongState = 4002,
-  ErrServicesAuthInvalidResponse = 4003,
-  ErrServicesAuthServer = 4004,
-  ErrServicesAuthCodeChallenge = 4005,
-  ErrServicesAuthServiceInvalidToken = 4006,
-  ErrServicesAuthServiceNotSupported = 4007,
-  ErrServicesAuthUnknownToken = 4008,
-  ErrServicesAuthInvalidURL = 4009,
   ErrServiceReplication = 4100,
   ErrServiceReplicationServer = 4101,
   ErrServiceReplicationMissingEndpoint = 4102,
@@ -110,17 +100,6 @@ export enum ErrCode {
   ErrServicesDirectoryInvalidVerifiedCredential = 4205,
   ErrServicesDirectoryExpiredVerifiedCredential = 4206,
   ErrServicesDirectoryInvalidVerifiedCredentialID = 4207,
-  ErrPush = 6000,
-  ErrPushWrongAccount = 6001,
-  ErrPushUnableToDecrypt = 6002,
-  ErrPushInvalidPayload = 6003,
-  ErrPushInvalidServerConfig = 6004,
-  ErrPushMissingBundleID = 6005,
-  ErrPushUnknownDestination = 6006,
-  ErrPushProvider = 6007,
-  ErrPushUnknownProvider = 6008,
-  ErrNoProvidersConfigured = 6009,
-  ErrInvalidPrivateKey = 6010,
   UNRECOGNIZED = -1,
 }
 
@@ -351,36 +330,6 @@ export function errCodeFromJSON(object: any): ErrCode {
     case 1501:
     case "ErrMessageKeyPersistenceGet":
       return ErrCode.ErrMessageKeyPersistenceGet;
-    case 4000:
-    case "ErrServicesAuth":
-      return ErrCode.ErrServicesAuth;
-    case 4001:
-    case "ErrServicesAuthNotInitialized":
-      return ErrCode.ErrServicesAuthNotInitialized;
-    case 4002:
-    case "ErrServicesAuthWrongState":
-      return ErrCode.ErrServicesAuthWrongState;
-    case 4003:
-    case "ErrServicesAuthInvalidResponse":
-      return ErrCode.ErrServicesAuthInvalidResponse;
-    case 4004:
-    case "ErrServicesAuthServer":
-      return ErrCode.ErrServicesAuthServer;
-    case 4005:
-    case "ErrServicesAuthCodeChallenge":
-      return ErrCode.ErrServicesAuthCodeChallenge;
-    case 4006:
-    case "ErrServicesAuthServiceInvalidToken":
-      return ErrCode.ErrServicesAuthServiceInvalidToken;
-    case 4007:
-    case "ErrServicesAuthServiceNotSupported":
-      return ErrCode.ErrServicesAuthServiceNotSupported;
-    case 4008:
-    case "ErrServicesAuthUnknownToken":
-      return ErrCode.ErrServicesAuthUnknownToken;
-    case 4009:
-    case "ErrServicesAuthInvalidURL":
-      return ErrCode.ErrServicesAuthInvalidURL;
     case 4100:
     case "ErrServiceReplication":
       return ErrCode.ErrServiceReplication;
@@ -414,39 +363,6 @@ export function errCodeFromJSON(object: any): ErrCode {
     case 4207:
     case "ErrServicesDirectoryInvalidVerifiedCredentialID":
       return ErrCode.ErrServicesDirectoryInvalidVerifiedCredentialID;
-    case 6000:
-    case "ErrPush":
-      return ErrCode.ErrPush;
-    case 6001:
-    case "ErrPushWrongAccount":
-      return ErrCode.ErrPushWrongAccount;
-    case 6002:
-    case "ErrPushUnableToDecrypt":
-      return ErrCode.ErrPushUnableToDecrypt;
-    case 6003:
-    case "ErrPushInvalidPayload":
-      return ErrCode.ErrPushInvalidPayload;
-    case 6004:
-    case "ErrPushInvalidServerConfig":
-      return ErrCode.ErrPushInvalidServerConfig;
-    case 6005:
-    case "ErrPushMissingBundleID":
-      return ErrCode.ErrPushMissingBundleID;
-    case 6006:
-    case "ErrPushUnknownDestination":
-      return ErrCode.ErrPushUnknownDestination;
-    case 6007:
-    case "ErrPushProvider":
-      return ErrCode.ErrPushProvider;
-    case 6008:
-    case "ErrPushUnknownProvider":
-      return ErrCode.ErrPushUnknownProvider;
-    case 6009:
-    case "ErrNoProvidersConfigured":
-      return ErrCode.ErrNoProvidersConfigured;
-    case 6010:
-    case "ErrInvalidPrivateKey":
-      return ErrCode.ErrInvalidPrivateKey;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -606,26 +522,6 @@ export function errCodeToJSON(object: ErrCode): string {
       return "ErrMessageKeyPersistencePut";
     case ErrCode.ErrMessageKeyPersistenceGet:
       return "ErrMessageKeyPersistenceGet";
-    case ErrCode.ErrServicesAuth:
-      return "ErrServicesAuth";
-    case ErrCode.ErrServicesAuthNotInitialized:
-      return "ErrServicesAuthNotInitialized";
-    case ErrCode.ErrServicesAuthWrongState:
-      return "ErrServicesAuthWrongState";
-    case ErrCode.ErrServicesAuthInvalidResponse:
-      return "ErrServicesAuthInvalidResponse";
-    case ErrCode.ErrServicesAuthServer:
-      return "ErrServicesAuthServer";
-    case ErrCode.ErrServicesAuthCodeChallenge:
-      return "ErrServicesAuthCodeChallenge";
-    case ErrCode.ErrServicesAuthServiceInvalidToken:
-      return "ErrServicesAuthServiceInvalidToken";
-    case ErrCode.ErrServicesAuthServiceNotSupported:
-      return "ErrServicesAuthServiceNotSupported";
-    case ErrCode.ErrServicesAuthUnknownToken:
-      return "ErrServicesAuthUnknownToken";
-    case ErrCode.ErrServicesAuthInvalidURL:
-      return "ErrServicesAuthInvalidURL";
     case ErrCode.ErrServiceReplication:
       return "ErrServiceReplication";
     case ErrCode.ErrServiceReplicationServer:
@@ -648,28 +544,6 @@ export function errCodeToJSON(object: ErrCode): string {
       return "ErrServicesDirectoryExpiredVerifiedCredential";
     case ErrCode.ErrServicesDirectoryInvalidVerifiedCredentialID:
       return "ErrServicesDirectoryInvalidVerifiedCredentialID";
-    case ErrCode.ErrPush:
-      return "ErrPush";
-    case ErrCode.ErrPushWrongAccount:
-      return "ErrPushWrongAccount";
-    case ErrCode.ErrPushUnableToDecrypt:
-      return "ErrPushUnableToDecrypt";
-    case ErrCode.ErrPushInvalidPayload:
-      return "ErrPushInvalidPayload";
-    case ErrCode.ErrPushInvalidServerConfig:
-      return "ErrPushInvalidServerConfig";
-    case ErrCode.ErrPushMissingBundleID:
-      return "ErrPushMissingBundleID";
-    case ErrCode.ErrPushUnknownDestination:
-      return "ErrPushUnknownDestination";
-    case ErrCode.ErrPushProvider:
-      return "ErrPushProvider";
-    case ErrCode.ErrPushUnknownProvider:
-      return "ErrPushUnknownProvider";
-    case ErrCode.ErrNoProvidersConfigured:
-      return "ErrNoProvidersConfigured";
-    case ErrCode.ErrInvalidPrivateKey:
-      return "ErrInvalidPrivateKey";
     case ErrCode.UNRECOGNIZED:
     default:
       return "UNRECOGNIZED";
@@ -733,18 +607,15 @@ export const ErrDetails = {
 
   toJSON(message: ErrDetails): unknown {
     const obj: any = {};
-    if (message.codes) {
+    if (message.codes?.length) {
       obj.codes = message.codes.map((e) => errCodeToJSON(e));
-    } else {
-      obj.codes = [];
     }
     return obj;
   },
 
   create<I extends Exact<DeepPartial<ErrDetails>, I>>(base?: I): ErrDetails {
-    return ErrDetails.fromPartial(base ?? {});
+    return ErrDetails.fromPartial(base ?? ({} as any));
   },
-
   fromPartial<I extends Exact<DeepPartial<ErrDetails>, I>>(object: I): ErrDetails {
     const message = createBaseErrDetails();
     message.codes = object.codes?.map((e) => e) || [];

@@ -9,7 +9,8 @@ export type MessageType =
   | "group-leave"
   | "group-create"
   | "reaction"
-  | "contact-request";
+  | "contact-request"
+  | "read";
 
 export type ConversationType = "contact" | "group";
 
@@ -24,6 +25,7 @@ interface MessagePayload {
     groupName?: string;
     group?: any;
     contact?: Contact;
+    lastReadId?: string;
   };
 }
 
@@ -53,6 +55,7 @@ export interface Conversation {
   type: ConversationType;
   members: Contact[];
   name: string;
+  status: "active" | "archived" | "deleted" | "blocked";
 }
 
 export interface MessageList {
@@ -74,4 +77,10 @@ export interface ContactRequest {
 export interface ReplyTo {
   id: string;
   message: string;
+}
+
+export enum CONVERSATION_TYPES {
+  ACTIVE = "Active Conversations",
+  ALL = "All Conversations",
+  ARCHIVED = "Archived Conversations",
 }

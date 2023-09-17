@@ -25,17 +25,18 @@ import FlexRow from "../../components/FlexRow";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { Separator } from "../../components/Separator";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
+import { useMessage } from "../../context/MessageProvider";
 import { selectContactInfo } from "../../store/slices/message";
 import { useAppNavigation, ScreenFC } from "../../utils/navigation";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { Conversation } from "../../utils/types/message";
 
 export const MessageScreen: ScreenFC<"Message"> = ({ route }) => {
   const activeView = route?.params?.view;
   const activeTab = route?.params?.tab;
 
-  const [activeConversation, setActiveConversation] = useState<Conversation>();
+  const { activeConversation, setActiveConversation } = useMessage();
+
   const navigation = useAppNavigation();
   const contactInfo = useSelector(selectContactInfo);
 
@@ -160,13 +161,7 @@ export const MessageScreen: ScreenFC<"Message"> = ({ route }) => {
               flexDirection: "row",
             }}
           >
-            <SideBarChats
-              setActiveConversation={(conv) => {
-                setActiveConversation(conv);
-                navigation.navigate("Message");
-              }}
-              activeConversation={activeConversation}
-            />
+            <SideBarChats />
             <Separator horizontal />
 
             <View style={{ flex: 1 }}>

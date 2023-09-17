@@ -97,16 +97,6 @@ export const Conversation = ({
 
   const receiverName = "Anon";
 
-  if (message.type === "accept-contact") {
-    return (
-      <View style={{ alignItems: "center" }}>
-        <BrandText style={[fontSemibold10, { color: neutralA3 }]}>
-          Contact accepted
-        </BrandText>
-      </View>
-    );
-  }
-
   return (
     <FlexRow
       alignItems="flex-start"
@@ -168,7 +158,7 @@ export const Conversation = ({
             </BrandText>
           </FlexRow>
         )}
-        <View
+        <TouchableOpacity
           style={{
             backgroundColor: isSender ? neutral17 : purpleDark,
             paddingVertical: 8,
@@ -177,6 +167,9 @@ export const Conversation = ({
             borderBottomRightRadius: layout.padding_x0_75,
             borderTopRightRadius: layout.padding_x0_75,
           }}
+          onPress={() => setShowPopup(true)}
+          activeOpacity={0.9}
+          disabled={isSender}
         >
           {!!parentMessage?.id && (
             <FlexRow>
@@ -194,24 +187,21 @@ export const Conversation = ({
               </BrandText>
             </FlexRow>
           )}
-          <TouchableOpacity onPress={() => setShowPopup(true)}>
-            {["message", "group-invite"].includes(message.type) ? (
-              <>
-                <BrandText style={[fontSemibold11, { color: secondaryColor }]}>
-                  {message?.payload?.message}
-                </BrandText>
-                {!!message?.payload?.files?.length && (
-                  <FileRenderer
-                    files={message?.payload?.files || []}
-                    maxWidth={400}
-                    waveFormMaxWidth={340}
-                  />
-                )}
-              </>
-            ) : (
-              <></>
-            )}
-          </TouchableOpacity>
+
+          {["message", "group-invite"].includes(message.type) && (
+            <>
+              <BrandText style={[fontSemibold11, { color: secondaryColor }]}>
+                {message?.payload?.message}
+              </BrandText>
+              {!!message?.payload?.files?.length && (
+                <FileRenderer
+                  files={message?.payload?.files || []}
+                  maxWidth={400}
+                  waveFormMaxWidth={340}
+                />
+              )}
+            </>
+          )}
 
           {message?.type === "group-invite" && !isSender && (
             <GroupInvitationAction message={message} />
@@ -269,7 +259,7 @@ export const Conversation = ({
               )}
             </>
           )}
-        </View>
+        </TouchableOpacity>
         <View
           style={{
             position: "absolute",

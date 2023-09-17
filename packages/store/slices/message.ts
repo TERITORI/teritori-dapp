@@ -7,6 +7,8 @@ import {
   Conversation,
   MessageList,
   Message,
+  ConversationType,
+  CONVERSATION_TYPES,
 } from "./../../utils/types/message";
 import { RootState } from "../store";
 
@@ -63,8 +65,25 @@ export const selectLastMessageByGroupPk =
 
 export const selectContactRequestList = (state: RootState) =>
   state.message.contactRequestList;
-export const selectConversationList = (state: RootState) =>
-  Object.values(state.message.conversationList);
+export const selectConversationList =
+  (conversationType: CONVERSATION_TYPES = CONVERSATION_TYPES.ACTIVE) =>
+  (state: RootState) => {
+    switch (conversationType) {
+      case CONVERSATION_TYPES.ALL: {
+        return Object.values(state.message.conversationList);
+      }
+      case CONVERSATION_TYPES.ARCHIVED: {
+        return Object.values(state.message.conversationList).filter(
+          (conv) => conv.status === "archived"
+        );
+      }
+      case CONVERSATION_TYPES.ACTIVE:
+      default:
+        return Object.values(state.message.conversationList).filter(
+          (conv) => conv.status === "active"
+        );
+    }
+  };
 
 export const selectConversationById = (id: string) => (state: RootState) =>
   state.message.conversationList[id];

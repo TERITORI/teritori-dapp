@@ -23,6 +23,7 @@ import {
   neutral33,
   secondaryColor,
 } from "../../../utils/style/colors";
+import { CONVERSATION_TYPES } from "../../../utils/types/message";
 import { GroupInfo_Reply } from "../../../weshnet";
 import { weshClient } from "../../../weshnet/client";
 import {
@@ -42,7 +43,7 @@ export const CreateGroup = ({ onClose }: CreateGroupProps) => {
   const contactInfo = useSelector(selectContactInfo);
   const { setToastError } = useFeedbacks();
   const [loading, setLoading] = useState(false);
-  const conversations = useSelector(selectConversationList);
+  const conversations = useSelector(selectConversationList());
   const handleChange = (items: CheckboxItem[]) => {
     setCheckedContacts(
       items.filter((item) => item.checked).map((item) => item.id)

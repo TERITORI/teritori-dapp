@@ -2,13 +2,14 @@ import { Platform } from "react-native";
 
 import { weshConfig } from "./config";
 import { bootWeshnet } from "./services";
-import { createWeshClient } from "../index";
+import { ProtocolServiceClientImpl, createWeshClient } from "../index";
 
 let urlDefinedPort = 0;
 
 if (Platform.OS === "web") {
-  const params = new URL(window?.location?.href || "");
-  urlDefinedPort = Number(params?.searchParams?.get("weshPort") || 0);
+  // const params = new URL(window?.location?.href || "");
+  // urlDefinedPort = Number(params?.searchParams?.get("weshPort") || 0);
+  urlDefinedPort = 4242;
 }
 
 const getAddress = (port) => {
@@ -23,7 +24,7 @@ const getAddress = (port) => {
 };
 
 class WeshClient {
-  private _client;
+  private _client: ProtocolServiceClientImpl;
 
   get client() {
     return this._client;

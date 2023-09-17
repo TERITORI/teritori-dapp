@@ -22,6 +22,7 @@ import { MultisigDeauth } from "./packages/components/multisig/MultisigDeauth";
 import { Navigator } from "./packages/components/navigation/Navigator";
 import { DropdownsContextProvider } from "./packages/context/DropdownsProvider";
 import { FeedbacksContextProvider } from "./packages/context/FeedbacksProvider";
+import { MessageContextProvider } from "./packages/context/MessageProvider";
 import { SearchBarContextProvider } from "./packages/context/SearchBarProvider";
 import { TNSMetaDataListContextProvider } from "./packages/context/TNSMetaDataListProvider";
 import { TNSContextProvider } from "./packages/context/TNSProvider";
@@ -112,8 +113,10 @@ export default function App() {
                                 <TNSContextProvider>
                                   <TNSMetaDataListContextProvider>
                                     <MenuProvider>
-                                      <StatusBar style="inverted" />
-                                      <Navigator />
+                                      <MessageContextProvider>
+                                        <StatusBar style="inverted" />
+                                        <Navigator />
+                                      </MessageContextProvider>
                                     </MenuProvider>
                                   </TNSMetaDataListContextProvider>
                                 </TNSContextProvider>

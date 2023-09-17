@@ -210,20 +210,27 @@ export const StateChallenge = {
 
   toJSON(message: StateChallenge): unknown {
     const obj: any = {};
-    message.timestamp !== undefined &&
-      (obj.timestamp = base64FromBytes(message.timestamp !== undefined ? message.timestamp : new Uint8Array(0)));
-    message.nonce !== undefined &&
-      (obj.nonce = base64FromBytes(message.nonce !== undefined ? message.nonce : new Uint8Array(0)));
-    message.bertyLink !== undefined && (obj.bertyLink = message.bertyLink);
-    message.redirectUri !== undefined && (obj.redirectUri = message.redirectUri);
-    message.state !== undefined && (obj.state = message.state);
+    if (message.timestamp.length !== 0) {
+      obj.timestamp = base64FromBytes(message.timestamp);
+    }
+    if (message.nonce.length !== 0) {
+      obj.nonce = base64FromBytes(message.nonce);
+    }
+    if (message.bertyLink !== "") {
+      obj.bertyLink = message.bertyLink;
+    }
+    if (message.redirectUri !== "") {
+      obj.redirectUri = message.redirectUri;
+    }
+    if (message.state !== "") {
+      obj.state = message.state;
+    }
     return obj;
   },
 
   create<I extends Exact<DeepPartial<StateChallenge>, I>>(base?: I): StateChallenge {
-    return StateChallenge.fromPartial(base ?? {});
+    return StateChallenge.fromPartial(base ?? ({} as any));
   },
-
   fromPartial<I extends Exact<DeepPartial<StateChallenge>, I>>(object: I): StateChallenge {
     const message = createBaseStateChallenge();
     message.timestamp = object.timestamp ?? new Uint8Array(0);
@@ -352,21 +359,33 @@ export const StateCode = {
 
   toJSON(message: StateCode): unknown {
     const obj: any = {};
-    message.timestamp !== undefined &&
-      (obj.timestamp = base64FromBytes(message.timestamp !== undefined ? message.timestamp : new Uint8Array(0)));
-    message.bertyLink !== undefined && (obj.bertyLink = message.bertyLink);
-    message.codeStrategy !== undefined && (obj.codeStrategy = codeStrategyToJSON(message.codeStrategy));
-    message.identifier !== undefined && (obj.identifier = message.identifier);
-    message.code !== undefined && (obj.code = message.code);
-    message.redirectUri !== undefined && (obj.redirectUri = message.redirectUri);
-    message.state !== undefined && (obj.state = message.state);
+    if (message.timestamp.length !== 0) {
+      obj.timestamp = base64FromBytes(message.timestamp);
+    }
+    if (message.bertyLink !== "") {
+      obj.bertyLink = message.bertyLink;
+    }
+    if (message.codeStrategy !== 0) {
+      obj.codeStrategy = codeStrategyToJSON(message.codeStrategy);
+    }
+    if (message.identifier !== "") {
+      obj.identifier = message.identifier;
+    }
+    if (message.code !== "") {
+      obj.code = message.code;
+    }
+    if (message.redirectUri !== "") {
+      obj.redirectUri = message.redirectUri;
+    }
+    if (message.state !== "") {
+      obj.state = message.state;
+    }
     return obj;
   },
 
   create<I extends Exact<DeepPartial<StateCode>, I>>(base?: I): StateCode {
-    return StateCode.fromPartial(base ?? {});
+    return StateCode.fromPartial(base ?? ({} as any));
   },
-
   fromPartial<I extends Exact<DeepPartial<StateCode>, I>>(object: I): StateCode {
     const message = createBaseStateCode();
     message.timestamp = object.timestamp ?? new Uint8Array(0);
@@ -421,14 +440,15 @@ export const AccountCryptoChallenge = {
 
   toJSON(message: AccountCryptoChallenge): unknown {
     const obj: any = {};
-    message.challenge !== undefined && (obj.challenge = message.challenge);
+    if (message.challenge !== "") {
+      obj.challenge = message.challenge;
+    }
     return obj;
   },
 
   create<I extends Exact<DeepPartial<AccountCryptoChallenge>, I>>(base?: I): AccountCryptoChallenge {
-    return AccountCryptoChallenge.fromPartial(base ?? {});
+    return AccountCryptoChallenge.fromPartial(base ?? ({} as any));
   },
-
   fromPartial<I extends Exact<DeepPartial<AccountCryptoChallenge>, I>>(object: I): AccountCryptoChallenge {
     const message = createBaseAccountCryptoChallenge();
     message.challenge = object.challenge ?? "";
@@ -436,10 +456,10 @@ export const AccountCryptoChallenge = {
   },
 };
 
-declare var self: any | undefined;
-declare var window: any | undefined;
-declare var global: any | undefined;
-var tsProtoGlobalThis: any = (() => {
+declare const self: any | undefined;
+declare const window: any | undefined;
+declare const global: any | undefined;
+const tsProtoGlobalThis: any = (() => {
   if (typeof globalThis !== "undefined") {
     return globalThis;
   }

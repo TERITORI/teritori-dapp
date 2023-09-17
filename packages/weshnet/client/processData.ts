@@ -73,6 +73,7 @@ export const handleMetadata = async (data: GroupMetadataEvent) => {
                     avatar: parsedData.payload.ownMetadata.contact.avatar,
                   },
                 ],
+                status: "active",
               })
             );
             subscribeMessages(stringFromBytes(groupInfo.group?.publicKey));
@@ -183,6 +184,7 @@ export const handleMetadata = async (data: GroupMetadataEvent) => {
                 },
               ],
               name: "",
+              status: "active",
             })
           );
 
@@ -202,6 +204,7 @@ export const handleMetadata = async (data: GroupMetadataEvent) => {
             type: "group",
             members: [],
             name: "Group",
+            status: "active",
           })
         );
         subscribeMessages(stringFromBytes(parsedData.payload.group.publicKey));

@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { View, StyleSheet, TouchableOpacity, TextInput } from "react-native";
+import { useDispatch } from "react-redux";
 
 import { AudioCall } from "./AudioCall";
 import { Calendar } from "./Calendar";
@@ -12,7 +13,10 @@ import searchSVG from "../../../../assets/icons/search.svg";
 import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
+import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { SpacerRow } from "../../../components/spacer";
+import { useDropdowns } from "../../../context/DropdownsProvider";
+import { updateConversationById } from "../../../store/slices/message";
 import {
   neutral17,
   neutral33,
@@ -20,19 +24,39 @@ import {
   neutral55,
   successColor,
 } from "../../../utils/style/colors";
-import { fontSemibold13, fontMedium14 } from "../../../utils/style/fonts";
+import {
+  fontSemibold13,
+  fontMedium14,
+  fontSemibold12,
+} from "../../../utils/style/fonts";
+import { layout } from "../../../utils/style/layout";
+import { Conversation } from "../../../utils/types/message";
+import { weshClient } from "../../../weshnet/client";
 import { getConversationName } from "../../../weshnet/client/messageHelpers";
+import { bytesFromString } from "../../../weshnet/client/utils";
+
+interface ChatHeaderProps {
+  searchInput: string;
+  setSearchInput: (input: string) => void;
+
+  conversation: Conversation;
+}
+
 export const ChatHeader = ({
   searchInput,
   setSearchInput,
-  name,
   conversation,
-}: any) => {
+}: ChatHeaderProps) => {
+  const dispatch = useDispatch();
+
   const [showTextInput, setShowTextInput] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
   const [audioCall, setAudioCall] = useState(false);
   const [videoCall, setVideoCall] = useState(false);
 
+  const { onPressDropdownButton, isDropdownOpen, closeOpenedDropdown } =
+    useDropdowns();
+  const dropdownRef = useRef<View>(null);
   const handleSearchIconPress = () => {
     setShowTextInput(true);
     setShowCalendar(false);
@@ -54,9 +78,58 @@ export const ChatHeader = ({
   //   setVideoCall(true);
   //   setAudioCall(false);
   // };
+
+  const LIST_ITEMS = [
+    conversation.type === "contact" && {
+      label: "Block Contact",
+      onPress: () => {
+        closeOpenedDropdown();
+        dispatch(
+          updateConversationById({
+            id: conversation.id,
+            status: "blocked",
+          })
+        );
+      },
+    },
+    conversation.type === "group" && {
+      label: "Leave Group",
+      onPress: async () => {
+        await weshClient.client.MultiMemberGroupLeave({
+          groupPk: bytesFromString(conversation.id),
+        });
+        closeOpenedDropdown();
+      },
+    },
+    conversation.status === "active" && {
+      label: "Archive Chat",
+      onPress: () => {
+        dispatch(
+          updateConversationById({
+            id: conversation.id,
+            status: "archived",
+          })
+        );
+        closeOpenedDropdown();
+      },
+    },
+    conversation.status === "archived" && {
+      label: "Unarchive Chat",
+      onPress: () => {
+        dispatch(
+          updateConversationById({
+            id: conversation.id,
+            status: "active",
+          })
+        );
+        closeOpenedDropdown();
+      },
+    },
+  ].filter(Boolean);
+
   return (
     <>
-      <View style={styles.container}>
+      <View style={styles.container} ref={dropdownRef}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <ConversationAvatar conversation={conversation} size={20} />
           <SpacerRow size={1} />
@@ -111,7 +184,12 @@ export const ChatHeader = ({
             <View>
               <FlexRow>
                 <SpacerRow size={4} />
-                <TouchableOpacity onPress={handleSearchIconPress}>
+                <TouchableOpacity
+                  onPress={handleSearchIconPress}
+                  style={{
+                    padding: layout.padding_x0_75,
+                  }}
+                >
                   <SVG
                     source={searchSVG}
                     style={{
@@ -121,9 +199,57 @@ export const ChatHeader = ({
                   />
                 </TouchableOpacity>
                 <SpacerRow size={1} />
-                <TouchableOpacity>
+                <TouchableOpacity
+                  style={{
+                    padding: layout.padding_x0_75,
+                  }}
+                  onPress={() => onPressDropdownButton(dropdownRef)}
+                >
                   <SVG source={dots} />
                 </TouchableOpacity>
+                {isDropdownOpen(dropdownRef) && (
+                  <TertiaryBox
+                    width={140}
+                    style={{ position: "absolute", top: 30, right: 10 }}
+                    mainContainerStyle={{
+                      paddingHorizontal: layout.padding_x2,
+                      paddingTop: layout.padding_x2,
+                      backgroundColor: neutral17,
+                      alignItems: "flex-start",
+                    }}
+                    squaresBackgroundColor={neutral17}
+                    noRightBrokenBorder
+                  >
+                    {LIST_ITEMS.map((item) => {
+                      return (
+                        <TouchableOpacity
+                          style={{
+                            marginBottom: layout.padding_x2,
+                          }}
+                          key={item.label}
+                          onPress={item.onPress}
+                        >
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              alignItems: "center",
+                            }}
+                          >
+                            <BrandText
+                              style={[
+                                fontSemibold12,
+                                { marginLeft: layout.padding_x1_5 },
+                              ]}
+                            >
+                              {item.label}
+                            </BrandText>
+                          </View>
+                        </TouchableOpacity>
+                      );
+                    })}
+                  </TertiaryBox>
+                )}
+
                 <SpacerRow size={1} />
               </FlexRow>
             </View>
@@ -184,6 +310,7 @@ const styles = StyleSheet.create({
     padding: 6,
     justifyContent: "space-between",
     alignItems: "center",
+    height: 46,
   },
   badge: {
     backgroundColor: successColor,

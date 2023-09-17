@@ -14716,6 +14716,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"expo-document-picker@npm:~11.5.4":
+  version: 11.5.4
+  resolution: "expo-document-picker@npm:11.5.4"
+  peerDependencies:
+    expo: "*"
+  checksum: a59571a356830b698ebeeb29cf1b33e42dcd05b348fe1125c5c52f0ef0bae410d9e6e57d62b7f9e9a699b38d824e90f787282d80b3feeddb35dcc319a389e546
+  languageName: node
+  linkType: hard
+
 "expo-eas-client@npm:~0.6.0":
   version: 0.6.0
   resolution: "expo-eas-client@npm:0.6.0"
@@ -14796,6 +14805,15 @@ __metadata:
   dependencies:
     expo-json-utils: ~0.7.0
   checksum: 2d9a5ead5a2aab76a995a303e4ea9d2e787723e2c48055ea2f70299c8e18b10b404348e1be71b0ad45f11cfa46689f4c3f18f6ea58ed6524f1b1525e9c043b10
+  languageName: node
+  linkType: hard
+
+"expo-media-library@npm:~15.4.1":
+  version: 15.4.1
+  resolution: "expo-media-library@npm:15.4.1"
+  peerDependencies:
+    expo: "*"
+  checksum: 0030578c13ecac659ddfdb202223a9c30c0598f151b6df1e2a753698cd5d1c62b1386eb63ade44dde692847d7c3ca81a886477a7f799d3693049063b15b06517
   languageName: node
   linkType: hard
 
@@ -23385,14 +23403,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-get-random-values@npm:~1.8.0":
-  version: 1.8.0
-  resolution: "react-native-get-random-values@npm:1.8.0"
+"react-native-get-random-values@npm:~1.9.0":
+  version: 1.9.0
+  resolution: "react-native-get-random-values@npm:1.9.0"
   dependencies:
     fast-base64-decode: ^1.0.0
   peerDependencies:
     react-native: ">=0.56"
-  checksum: 9163368ebd935d897f6ea0f9e95c476aa7608080e3848bb6c6f85db01b9de3498d857795c84df5492d6511a55aebf89492860ac886b652a9a7a3efdb19913f87
+  checksum: 4c7fb4fa674c6e76e6fcbe29366aa2f0bae194a2ae3fc4ea0d5e31534553b03d5d77b3217773b6ef2336feedd3cc076fd70af55f6b577daa2d0f133c005aaf2a
   languageName: node
   linkType: hard
 
@@ -26398,9 +26416,11 @@ __metadata:
     expo-barcode-scanner: ~12.5.3
     expo-checkbox: ~2.4.0
     expo-dev-client: ~2.4.6
+    expo-document-picker: ~11.5.4
     expo-font: ~11.4.0
     expo-image-picker: ~14.3.2
     expo-linear-gradient: ~12.3.0
+    expo-media-library: ~15.4.1
     expo-optimize: ^0.2.19
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -26472,7 +26492,7 @@ __metadata:
     react-native-drag-sort: ^2.4.4
     react-native-drax: ^0.10.2
     react-native-gesture-handler: ~2.12.0
-    react-native-get-random-values: ~1.8.0
+    react-native-get-random-values: ~1.9.0
     react-native-heroicons: ^3.2.0
     react-native-hoverable: ^0.2.0
     react-native-image-picker: ^5.3.1
