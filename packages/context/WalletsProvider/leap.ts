@@ -36,8 +36,8 @@ export const useLeap: () => UseLeapResult = () => {
         setReady(true);
       }
     };
-    window.addEventListener("load", handleLoad);
-    return () => window.removeEventListener("load", handleLoad);
+    window?.addEventListener?.("load", handleLoad);
+    return () => window?.removeEventListener?.("load", handleLoad);
   }, []);
 
   useEffect(() => {
@@ -62,9 +62,9 @@ export const useLeap: () => UseLeapResult = () => {
         accounts.map((account: { address: any }) => account.address)
       );
     };
-    window.addEventListener("leap_keystorechange", handleKeyChange);
+    window?.addEventListener("leap_keystorechange", handleKeyChange);
     return () =>
-      window.removeEventListener("leap_keystorechange", handleKeyChange);
+      window?.removeEventListener("leap_keystorechange", handleKeyChange);
   }, [hasLeap, selectedNetworkInfo]);
 
   useEffect(() => {

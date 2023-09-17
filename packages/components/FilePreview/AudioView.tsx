@@ -7,6 +7,7 @@ import { AudioWaveform } from "./AudioWaveform";
 import { AUDIO_WAVEFORM_MAX_WIDTH } from "./AudioWaveform/AudioWaveform.web";
 import pauseSVG from "../../../assets/icons/pause.svg";
 import playSVG from "../../../assets/icons/play.svg";
+import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { getAudioDuration } from "../../utils/audio";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import {

@@ -11,7 +11,7 @@ import { StatusBar } from "expo-status-bar";
 import { MetaMaskProvider } from "metamask-react";
 import React, { memo, useEffect, useCallback } from "react";
 import { useForm, FormProvider } from "react-hook-form";
-import { Platform, View } from "react-native";
+import { Platform, SafeAreaView, ScrollView, View } from "react-native";
 import { MenuProvider } from "react-native-popup-menu";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider as ReduxProvider } from "react-redux";
@@ -166,13 +166,15 @@ class ErrorBoundary extends React.Component {
       console.log("rendering error boundary");
       // You can render any custom fallback UI
       return (
-        <View style={{ backgroundColor: "black", height: "100%" }}>
-          <BrandText>{`${this.state.error}`}</BrandText>
-          {this.state.error !== this.state.catchError && (
-            <BrandText>{`${this.state.catchError}`}</BrandText>
-          )}
-          <BrandText>{this.state.catchInfo?.componentStack}</BrandText>
-        </View>
+        <SafeAreaView style={{ backgroundColor: "black", height: "100%" }}>
+          <ScrollView>
+            <BrandText>{`${this.state.error}`}</BrandText>
+            {this.state.error !== this.state.catchError && (
+              <BrandText>{`${this.state.catchError}`}</BrandText>
+            )}
+            <BrandText>{this.state.catchInfo?.componentStack}</BrandText>
+          </ScrollView>
+        </SafeAreaView>
       );
     }
 
