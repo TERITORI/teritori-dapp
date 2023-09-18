@@ -8,7 +8,8 @@ Pod::Spec.new do |s|
     s.platform       = :ios, '13.0'
     s.source         = { path: './WeshFramework.xcframework' }
     s.static_framework = true
-  
+    s.libraries = 'resolv'
+    s.frameworks = 'CoreBluetooth', 'MultipeerConnectivity'
     s.vendored_frameworks = 'WeshFramework.xcframework'
 
     # Swift/Objective-C compatibility
