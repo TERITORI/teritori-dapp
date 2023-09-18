@@ -1,20 +1,28 @@
 import React from "react";
-import { TouchableOpacity, View, Dimensions } from "react-native";
+import { TouchableOpacity, View, useWindowDimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import warningSVG from "../../../assets/icons/warning.svg";
-import { errorColor, neutral11, neutral77 } from "../../utils/style/colors";
+import {
+  errorColor,
+  neutral11,
+  neutral77,
+  successColor,
+} from "../../utils/style/colors";
+import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { SpacerRow } from "../spacer";
 
-export const ToastError: React.FC<{
+export const Toast: React.FC<{
   title: string;
   message?: string;
   onPress: () => void;
-}> = ({ title, message, onPress }) => {
+  type: "success" | "error";
+}> = ({ title, message, onPress, type }) => {
   const insets = useSafeAreaInsets();
-  const width = 432;
+
+  const { width } = useWindowDimensions();
 
   return (
     <TouchableOpacity
@@ -23,21 +31,25 @@ export const ToastError: React.FC<{
         flexDirection: "row",
         alignItems: "center",
         backgroundColor: neutral11,
-        borderColor: errorColor,
+        borderColor: type === "success" ? successColor : errorColor,
         borderRadius: 8,
         borderWidth: 1,
         borderStyle: "solid",
-        maxWidth: width,
-        width,
+        maxWidth: width - layout.spacing_x1,
+        width: 432,
         height: "auto",
         position: "absolute",
         top: insets.top + 24,
-        left: Dimensions.get("window").width / 2 - width / 2,
         zIndex: 99999999,
+        alignSelf: "center",
       }}
     >
-      <SpacerRow size={3} />
-      <SVG width={24} height={24} source={warningSVG} />
+      {type === "error" && (
+        <>
+          <SpacerRow size={3} />
+          <SVG width={24} height={24} source={warningSVG} />
+        </>
+      )}
       <SpacerRow size={3} />
       <View style={{ maxWidth: 287, marginVertical: 12 }}>
         <BrandText style={{ fontSize: 13, lineHeight: 20 }}>{title}</BrandText>

@@ -37,10 +37,6 @@ export const SideBarChats = () => {
   const { width: windowWidth } = useWindowDimensions();
 
   useEffect(() => {
-    console.log(
-      "test conv",
-      conversationList.find((conv) => conv.id === activeConversation?.id)
-    );
     if (
       (!activeConversation && conversationList.length) ||
       !conversationList.find((conv) => conv.id === activeConversation?.id)
@@ -64,17 +60,7 @@ export const SideBarChats = () => {
         <FlexRow justifyContent="space-between" style={{ zIndex: 9 }}>
           <View>
             <FlexRow>
-              {/* <BrandText style={[fontSemibold14, { color: secondaryColor }]}>
-                All conversation
-              </BrandText> */}
               <ConversationSelector />
-              {/* <SpacerRow size={0.8} />
-              <SVG
-                source={chevronDownSVG}
-                height={20}
-                width={20}
-                color={secondaryColor}
-              /> */}
             </FlexRow>
           </View>
           <View>
@@ -113,6 +99,7 @@ export const SideBarChats = () => {
             onPress={() => {
               if (Platform.OS === "web") {
                 setActiveConversation?.(item);
+                navigate("Message");
               } else {
                 navigate("ChatSection", item);
               }

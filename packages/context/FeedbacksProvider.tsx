@@ -7,8 +7,7 @@ import React, {
 } from "react";
 
 import { LoaderFullScreen } from "../components/loaders/LoaderFullScreen";
-import { ToastError } from "../components/toasts/ToastError";
-import { ToastSuccess } from "../components/toasts/ToastSuccess";
+import { Toast } from "../components/toasts/Toast";
 
 interface ToastMessage {
   title: string;
@@ -106,15 +105,16 @@ export const FeedbacksContextProvider: React.FC = ({ children }) => {
       {/*==== Loader full screen*/}
       <LoaderFullScreen visible={loadingFullScreen} />
       {/*==== Toasts*/}
-      {toastError && toastError.title ? (
-        <ToastError
+      {!!toastError?.title && (
+        <Toast
           onPress={() => setToastError(initialToastError)}
           title={toastError.title}
           message={toastError.message}
+          type="error"
         />
-      ) : null}
-      {toastSuccess && toastSuccess.title ? (
-        <ToastSuccess
+      )}
+      {!!toastSuccess?.title && (
+        <Toast
           onPress={() => {
             return toastSuccess.onPress
               ? toastSuccess.onPress()
@@ -122,8 +122,9 @@ export const FeedbacksContextProvider: React.FC = ({ children }) => {
           }}
           title={toastSuccess.title}
           message={toastSuccess.message}
+          type="success"
         />
-      ) : null}
+      )}
       {/*==== Page content*/}
       {children}
     </FeedbacksContext.Provider>

@@ -33,7 +33,7 @@ interface CreateConversationProps {
 
 export const CreateConversation = ({ onClose }: CreateConversationProps) => {
   const contactInfo = useSelector(selectContactInfo);
-  const { setToastSuccess } = useFeedbacks();
+  const { setToastSuccess, setToastError } = useFeedbacks();
   const [contactLink, setContactLink] = useState("");
   const [addContactLoading, setAddContactLoading] = useState(false);
   const [error, setError] = useState("");
@@ -55,7 +55,7 @@ export const CreateConversation = ({ onClose }: CreateConversationProps) => {
       onClose();
     } catch (err: any) {
       setError(err?.message);
-      setToastSuccess({
+      setToastError({
         title: "Request sent error",
         message: err?.message,
       });

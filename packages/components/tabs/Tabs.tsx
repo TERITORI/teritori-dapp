@@ -126,7 +126,7 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
                     height: 24,
                   }}
                 >
-                  {isSelected && gradientText ? (
+                  {isSelected && !!gradientText ? (
                     <GradientText
                       gradientType="blueExtended"
                       style={[fontSemibold14, tabTextStyle]}
@@ -146,7 +146,7 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
                     </BrandText>
                   )}
 
-                  {item.badgeCount && <SpacerRow size={1} />}
+                  {!!item.badgeCount && <SpacerRow size={1} />}
                   {item.badgeCount ? (
                     isSelected ? (
                       <PrimaryBadge
@@ -159,7 +159,7 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
                     )
                   ) : null}
 
-                  {item.iconSVG && (
+                  {!!item.iconSVG && (
                     <View style={{ position: "relative" }}>
                       <SVG
                         source={item.iconSVG}

@@ -13,7 +13,7 @@ import {
 import { purpleDark, successColor } from "../../../utils/style/colors";
 import { fontMedium10 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { Message } from "../../../utils/types/message";
+import { CONVERSATION_TYPES, Message } from "../../../utils/types/message";
 import { GroupInfo_Reply } from "../../../weshnet";
 import { weshClient, weshConfig } from "../../../weshnet/client";
 import { sendMessage } from "../../../weshnet/client/services";
@@ -29,13 +29,14 @@ export const GroupInvitationAction = ({
   const { setToastError } = useFeedbacks();
 
   const contactInfo = useSelector(selectContactInfo);
-  const conversations = useSelector(selectConversationList());
+  const conversations = useSelector(
+    selectConversationList(CONVERSATION_TYPES.ALL)
+  );
 
   const [isAccepted, setIsAccepted] = useState(false);
 
-  console.log("invite msg", message);
   useEffect(() => {
-    if (message.payload?.metadata?.group) {
+    if (!isAccepted && message.payload?.metadata?.group) {
       const group = message.payload?.metadata?.group;
       const groupInfo = GroupInfo_Reply.fromJSON({ group });
 
@@ -46,7 +47,7 @@ export const GroupInvitationAction = ({
         setIsAccepted(true);
       }
     }
-  }, [conversations, message.payload?.metadata?.group]);
+  }, [conversations, isAccepted, message.payload?.metadata?.group]);
 
   const handleAcceptGroup = async () => {
     try {
