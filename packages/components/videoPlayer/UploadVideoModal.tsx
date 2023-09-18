@@ -1,4 +1,4 @@
-import { ResizeMode, Video } from "expo-av";
+import { ResizeMode } from "expo-av";
 import React, { useState } from "react";
 import {
   Image,
@@ -17,6 +17,7 @@ import Img from "../../../assets/icons/player/img.svg";
 import { signingVideoPlayerClient } from "../../client-creators/videoplayerClient";
 import ModalBase from "../../components/modals/ModalBase";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { MediaPlayerVideo } from "../../context/MediaPlayerProvider";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getUserId } from "../../networks";
@@ -260,7 +261,6 @@ export const UploadVideoModal: React.FC<UploadAlbumModalProps> = ({
             label="Video description"
             name="videoDescription"
           />
-          <SpacerColumn size={2.5} />
         </View>
       </View>
 
@@ -272,12 +272,10 @@ export const UploadVideoModal: React.FC<UploadAlbumModalProps> = ({
             style={{ top: 12, right: 12 }}
           />
 
-          <Video
-            source={{
-              uri: ipfsURLToHTTPURL(videoInfo.videoMetaInfo.url),
-            }}
-            useNativeControls
+          <MediaPlayerVideo
+            videoUrl={videoInfo.videoMetaInfo.url}
             resizeMode={ResizeMode.CONTAIN}
+            authorId={userId}
           />
         </View>
       ) : (
@@ -296,7 +294,7 @@ export const UploadVideoModal: React.FC<UploadAlbumModalProps> = ({
           )}
         </FileUploader>
       )}
-      <SpacerColumn size={2} />
+      <SpacerColumn size={2.5} />
 
       <BrandText
         style={[

@@ -4,14 +4,9 @@ import { StyleProp, View, ViewStyle } from "react-native";
 import emptyCircleFrameSVG from "../../../assets/empty-circle-frame.svg";
 import { useIsDAO } from "../../hooks/cosmwasm/useCosmWasmContractInfo";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
-import {
-  CosmosNetworkInfo,
-  GnoNetworkInfo,
-  NetworkKind,
-  getNetwork,
-  parseUserId,
-} from "../../networks";
+import { getNetwork, parseUserId } from "../../networks";
 import { primaryColor } from "../../utils/style/colors";
+import { nameServiceDefaultImage } from "../../utils/tns";
 import { OptimizedImage } from "../OptimizedImage";
 import { SVG } from "../SVG";
 import { AnimationFadeIn } from "../animations/AnimationFadeIn";
@@ -52,13 +47,6 @@ export const AvatarWithFrame: React.FC<{
   const network = getNetwork(networkId);
   const frameSize = getSize(size);
   const imageSize = frameSize * frameToAvatarRatio;
-  const fallbackURI = isDAO
-    ? daoIconDataURI
-    : [NetworkKind.Cosmos, NetworkKind.Gno].includes(
-        network?.kind || NetworkKind.Unknown
-      )
-    ? (network as CosmosNetworkInfo | GnoNetworkInfo).nameServiceDefaultImage
-    : undefined;
   return (
     <View
       style={[
@@ -86,7 +74,7 @@ export const AvatarWithFrame: React.FC<{
           width={imageSize}
           height={imageSize}
           sourceURI={image}
-          fallbackURI={fallbackURI}
+          fallbackURI={nameServiceDefaultImage(network)}
           style={[
             { width: imageSize, height: imageSize },
             isDAO
