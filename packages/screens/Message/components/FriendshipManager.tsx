@@ -16,11 +16,14 @@ import {
 } from "../../../store/slices/message";
 import { ScreenFC, useAppNavigation } from "../../../utils/navigation";
 import { layout } from "../../../utils/style/layout";
-import { Conversation } from "../../../utils/types/message";
+import {
+  Conversation,
+  MessageFriendsTabItem,
+} from "../../../utils/types/message";
 
 interface FriendshipManagerProps {
   setActiveConversation?: (item: Conversation) => void;
-  activeTab: string;
+  activeTab: MessageFriendsTabItem;
 }
 
 export const FriendshipManager = ({
@@ -59,13 +62,15 @@ export const FriendshipManager = ({
       <Tabs
         items={tabs}
         onSelect={(tab) => {
-          Platform.OS === "web"
-            ? navigate("Message", { view: "AddFriend", tab })
-            : navigate("FriendshipManager", { tab });
+          if (Platform.OS === "web") {
+            navigate("Message", { view: "AddFriend", tab });
+          } else {
+            navigate("FriendshipManager", { tab });
+          }
         }}
         selected={activeTab}
         tabContainerStyle={{
-          paddingBottom: layout.padding_x1_5,
+          paddingBottom: layout.spacing_x1_5,
         }}
         style={{
           height: 40,
@@ -85,14 +90,14 @@ export const FriendshipManager = ({
   );
   if (Platform.OS === "web") {
     return (
-      <View style={{ paddingHorizontal: layout.padding_x2 }}>
+      <View style={{ paddingHorizontal: layout.spacing_x2 }}>
         {renderContentWeb()}
       </View>
     );
   }
   return (
     <ScreenContainer onBackPress={() => navigate("Message")}>
-      <View style={{ paddingHorizontal: layout.padding_x0_5 }}>
+      <View style={{ paddingHorizontal: layout.spacing_x0_5 }}>
         {renderContentWeb()}
       </View>
     </ScreenContainer>
@@ -102,7 +107,7 @@ export const FriendshipManager = ({
 export const FriendshipManagerScreen: ScreenFC<"FriendshipManager"> = ({
   route,
 }) => {
-  const activeTab = route?.params?.tab;
+  const activeTab = route?.params?.tab || "friends";
 
   return <FriendshipManager activeTab={activeTab} />;
 };

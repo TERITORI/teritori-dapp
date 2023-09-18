@@ -1,28 +1,17 @@
 import * as DocumentPicker from "expo-document-picker";
 import * as ImagePicker from "expo-image-picker";
-import { omit } from "lodash";
-import React, { useEffect, useState } from "react";
-import { View, TouchableOpacity, Platform } from "react-native";
+import React, { useEffect } from "react";
+import { View, TouchableOpacity } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
-import { FileUploader } from "../../../components/fileUploader";
-import {
-  convertFileToBase64,
-  imagePickerAssetToLocalFile,
-} from "../../../utils/file";
+import { imagePickerAssetToLocalFile } from "../../../utils/file";
 import {
   AUDIO_MIME_TYPES,
   IMAGE_MIME_TYPES,
   VIDEO_MIME_TYPES,
 } from "../../../utils/mime";
-import {
-  neutral11,
-  neutral15,
-  neutral22,
-  neutralA3,
-} from "../../../utils/style/colors";
+import { neutral15, neutral22, neutralA3 } from "../../../utils/style/colors";
 import { fontSemibold13 } from "../../../utils/style/fonts";
-import { LocalFileData } from "../../../utils/types/feed";
 import { MessageFileData } from "../../../utils/types/message";
 
 interface UploadImageProps {
@@ -31,32 +20,27 @@ interface UploadImageProps {
 }
 
 export const UploadImage = ({ onClose, setFile }: UploadImageProps) => {
-  const [hasFile, setHasFile] = useState(false);
-  const [status, requestPermission] = ImagePicker.useMediaLibraryPermissions();
+  // const [hasFile, setHasFile] = useState(false);
+  // const [status, requestPermission] = ImagePicker.useMediaLibraryPermissions();
 
-  const checkUploadCancel = () => {
-    if (Platform.OS === "web") {
-      window.onfocus = () => {
-        setTimeout(() => {
-          if (!hasFile) {
-            onClose?.();
-          }
-        }, 1000);
-      };
-    }
-  };
-
-  const handleUpload = async (file: LocalFileData) => {
-    setHasFile(true);
-    if (file) {
-      const base64: string = await convertFileToBase64(file.file);
-
-      setFile({
-        ...omit(file, "file"),
-        url: base64,
-        type: "image",
+  const handleUpload = async () => {
+    try {
+      console.log("trying");
+      // const permission = await requestPermission();
+      // console.log("media per", permission);
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        // aspect: [4, 3],
+        quality: 1,
       });
-      onClose?.();
+      console.log("result", result);
+
+      if (!result.canceled) {
+        setFile(imagePickerAssetToLocalFile(result.assets[0]));
+      }
+    } catch (err) {
+      console.log("perm er", err);
     }
   };
 
@@ -66,7 +50,7 @@ export const UploadImage = ({ onClose, setFile }: UploadImageProps) => {
   };
 
   useEffect(() => {
-    // permissions();
+    permissions();
   }, []);
 
   const LIST = [
@@ -74,24 +58,7 @@ export const UploadImage = ({ onClose, setFile }: UploadImageProps) => {
       title: "Attach image/video",
       mimeTypes: [...IMAGE_MIME_TYPES, ...VIDEO_MIME_TYPES],
       onPress: async () => {
-        try {
-          console.log("trying");
-          // const permission = await requestPermission();
-          // console.log("media per", permission);
-          const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.All,
-            allowsEditing: true,
-            // aspect: [4, 3],
-            quality: 1,
-          });
-          console.log("result");
-
-          // if (!result.canceled) {
-          //   setFile(imagePickerAssetToLocalFile(result.assets[0]));
-          // }
-        } catch (err) {
-          console.log("perm er", err);
-        }
+        handleUpload();
       },
     },
     {

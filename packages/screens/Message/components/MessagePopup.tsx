@@ -1,12 +1,6 @@
 import Clipboard from "@react-native-clipboard/clipboard";
 import React, { Dispatch, SetStateAction, useState } from "react";
-import {
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  TextInput,
-  ScrollView,
-} from "react-native";
+import { View, TouchableOpacity, TextInput, ScrollView } from "react-native";
 
 import avatar from "../../../../assets/icons/avatar.svg";
 import copy from "../../../../assets/icons/copy.svg";
@@ -164,7 +158,20 @@ export const MessagePopup = ({
         </FlexRow>
       </TouchableOpacity> */}
       {isForwarding && (
-        <View style={[styles.forwardContainer, { maxHeight: 5 * ITEM_HEIGHT }]}>
+        <View
+          style={[
+            {
+              backgroundColor: "rgba(41, 41, 41, 0.8)",
+              padding: 20,
+              borderRadius: 16,
+              width: 170,
+              zIndex: 11111,
+              position: "absolute",
+              right: -170,
+              maxHeight: 5 * ITEM_HEIGHT,
+            },
+          ]}
+        >
           <View
             style={{
               flexDirection: "row",
@@ -218,25 +225,3 @@ export const MessagePopup = ({
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  forwardContainer: {
-    backgroundColor: "rgba(41, 41, 41, 0.8)",
-
-    padding: 20,
-
-    borderRadius: 16,
-    width: 170,
-    zIndex: 11111,
-    position: "absolute",
-    right: -170,
-  },
-  forwardText: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginBottom: 5,
-  },
-  receiverText: {
-    fontSize: 14,
-  },
-});

@@ -1,5 +1,5 @@
 import React from "react";
-import { View, TouchableOpacity, StyleSheet } from "react-native";
+import { View, TouchableOpacity } from "react-native";
 
 import audio from "../../../../assets/chat/audiocall.svg";
 import callend from "../../../../assets/chat/callend.svg";
@@ -13,11 +13,7 @@ import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
 import { IconButton } from "../../../components/buttons/IconButton";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
-import {
-  neutral00,
-  secondaryColor,
-  successColor,
-} from "../../../utils/style/colors";
+import { neutral00, secondaryColor } from "../../../utils/style/colors";
 import { fontSemibold11 } from "../../../utils/style/fonts";
 
 interface VideoCallScreenProps {
@@ -26,9 +22,9 @@ interface VideoCallScreenProps {
 }
 const VideoCallScreen: React.FC<VideoCallScreenProps> = ({ setVideoCall }) => {
   return (
-    <View style={styles.container}>
+    <View style={{ justifyContent: "center", alignItems: "center" }}>
       <View>
-        <FlexRow style={styles.iconRow}>
+        <FlexRow style={{ alignSelf: "center" }}>
           <View>
             <SVG source={videoimage} />
             <View
@@ -105,7 +101,7 @@ const VideoCallScreen: React.FC<VideoCallScreenProps> = ({ setVideoCall }) => {
           </View>
         </FlexRow>
         <SpacerColumn size={1} />
-        <View style={styles.iconRow}>
+        <View style={{ alignSelf: "center" }}>
           <FlexRow>
             <TouchableOpacity>
               <SVG source={videocall} />
@@ -127,19 +123,3 @@ const VideoCallScreen: React.FC<VideoCallScreenProps> = ({ setVideoCall }) => {
 };
 
 export default VideoCallScreen;
-const styles = StyleSheet.create({
-  container: {
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  iconRow: {
-    alignSelf: "center",
-  },
-  badge: {
-    backgroundColor: successColor,
-    paddingHorizontal: 4,
-    paddingVertical: 4,
-    borderRadius: 12,
-    width: 2,
-  },
-});

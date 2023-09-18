@@ -220,7 +220,8 @@ export const subscribeMetadata = async (groupPk: Uint8Array) => {
         console.log("get metadata err", e);
       },
       complete: () => {
-        subscribeMetadata(groupPk);
+        console.log("metadata subscrbe complete");
+        // subscribeMetadata(groupPk);
       },
     };
     metadata.subscribe(myObserver);

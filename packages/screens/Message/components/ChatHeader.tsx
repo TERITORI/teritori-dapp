@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { View, StyleSheet, TouchableOpacity, TextInput } from "react-native";
+import { View, TouchableOpacity, TextInput } from "react-native";
 import { useDispatch } from "react-redux";
 
 import { AudioCall } from "./AudioCall";
@@ -21,8 +21,6 @@ import {
   neutral17,
   neutral33,
   secondaryColor,
-  neutral55,
-  successColor,
 } from "../../../utils/style/colors";
 import {
   fontSemibold13,
@@ -129,7 +127,17 @@ export const ChatHeader = ({
 
   return (
     <>
-      <View style={styles.container} ref={dropdownRef}>
+      <View
+        style={{
+          backgroundColor: neutral17,
+          flexDirection: "row",
+          padding: 6,
+          justifyContent: "space-between",
+          alignItems: "center",
+          height: 46,
+        }}
+        ref={dropdownRef}
+      >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <ConversationAvatar conversation={conversation} size={20} />
           <SpacerRow size={1} />
@@ -187,7 +195,7 @@ export const ChatHeader = ({
                 <TouchableOpacity
                   onPress={handleSearchIconPress}
                   style={{
-                    padding: layout.padding_x0_75,
+                    padding: layout.spacing_x0_75,
                   }}
                 >
                   <SVG
@@ -201,7 +209,7 @@ export const ChatHeader = ({
                 <SpacerRow size={1} />
                 <TouchableOpacity
                   style={{
-                    padding: layout.padding_x0_75,
+                    padding: layout.spacing_x0_75,
                   }}
                   onPress={() => onPressDropdownButton(dropdownRef)}
                 >
@@ -212,8 +220,8 @@ export const ChatHeader = ({
                     width={140}
                     style={{ position: "absolute", top: 30, right: 10 }}
                     mainContainerStyle={{
-                      paddingHorizontal: layout.padding_x2,
-                      paddingTop: layout.padding_x2,
+                      paddingHorizontal: layout.spacing_x2,
+                      paddingTop: layout.spacing_x2,
                       backgroundColor: neutral17,
                       alignItems: "flex-start",
                     }}
@@ -224,7 +232,7 @@ export const ChatHeader = ({
                       return (
                         <TouchableOpacity
                           style={{
-                            marginBottom: layout.padding_x2,
+                            marginBottom: layout.spacing_x2,
                           }}
                           key={item.label}
                           onPress={item.onPress}
@@ -238,7 +246,7 @@ export const ChatHeader = ({
                             <BrandText
                               style={[
                                 fontSemibold12,
-                                { marginLeft: layout.padding_x1_5 },
+                                { marginLeft: layout.spacing_x1_5 },
                               ]}
                             >
                               {item.label}
@@ -302,42 +310,3 @@ export const ChatHeader = ({
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: neutral17,
-    flexDirection: "row",
-    padding: 6,
-    justifyContent: "space-between",
-    alignItems: "center",
-    height: 46,
-  },
-  badge: {
-    backgroundColor: successColor,
-    paddingHorizontal: 4,
-    paddingVertical: 4,
-    borderRadius: 12,
-    width: 2,
-  },
-  offlinebadge: {
-    backgroundColor: neutral55,
-    paddingHorizontal: 4,
-    paddingVertical: 4,
-    borderRadius: 12,
-    width: 2,
-  },
-
-  filterMessageWrapper: {
-    backgroundColor: neutral17,
-    position: "absolute",
-    right: 0,
-    top: 46.8,
-    zIndex: 11,
-    borderBottomLeftRadius: 10,
-    borderBottomRightRadius: 10,
-    borderLeftWidth: 1,
-    borderBottomWidth: 1,
-    borderRightWidth: 1,
-    borderColor: neutral33,
-  },
-});

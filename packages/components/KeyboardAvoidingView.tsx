@@ -5,8 +5,6 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { MOBILE_HEADER_HEIGHT } from "../utils/style/layout";
-
 interface KeyboardAvoidingViewProps {
   extraVerticalOffset?: number;
   children: React.ReactNode;

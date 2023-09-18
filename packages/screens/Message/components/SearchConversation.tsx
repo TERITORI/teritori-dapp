@@ -45,16 +45,16 @@ export const SearchConversation = ({
         justifyContent="flex-start"
         style={{
           backgroundColor: neutral30,
-          margin: layout.padding_x0_5,
+          margin: layout.spacing_x0_5,
           width: "100%",
-          padding: layout.padding_x1,
-          borderRadius: layout.padding_x0_25,
+          padding: layout.spacing_x1,
+          borderRadius: layout.spacing_x0_25,
         }}
       >
         <View
           style={{
             width: 30,
-            marginRight: layout.padding_x1,
+            marginRight: layout.spacing_x1,
           }}
         >
           <Avatar.Image
@@ -66,7 +66,7 @@ export const SearchConversation = ({
         <FlexCol style={{}} alignItems="flex-start">
           <FlexRow
             style={{
-              marginBottom: layout.padding_x0_25,
+              marginBottom: layout.spacing_x0_25,
             }}
           >
             <BrandText
@@ -82,7 +82,7 @@ export const SearchConversation = ({
             <BrandText
               style={[
                 fontMedium10,
-                { color: neutral77, marginLeft: layout.padding_x1 },
+                { color: neutral77, marginLeft: layout.spacing_x1 },
               ]}
             >
               {moment(message.timestamp).local().format("MM/DD/YYYY hh:mm a")}
@@ -91,7 +91,7 @@ export const SearchConversation = ({
 
           <View
             style={{
-              paddingTop: layout.padding_x0_5,
+              paddingTop: layout.spacing_x0_5,
             }}
           >
             {!!parentMessage?.id && (
@@ -101,8 +101,8 @@ export const SearchConversation = ({
                     height: "100%",
                     width: 1,
                     backgroundColor: neutralA3,
-                    paddingVertical: layout.padding_x1_5,
-                    marginRight: layout.padding_x0_5,
+                    paddingVertical: layout.spacing_x1_5,
+                    marginRight: layout.spacing_x0_5,
                   }}
                 />
                 <BrandText style={[fontSemibold11, { color: neutral77 }]}>

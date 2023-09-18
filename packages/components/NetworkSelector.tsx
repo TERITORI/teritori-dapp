@@ -129,8 +129,8 @@ export const NetworkSelector: React.FC<{
           width={172}
           style={{ position: "absolute", top: 44 }}
           mainContainerStyle={{
-            paddingHorizontal: layout.padding_x2,
-            paddingTop: layout.padding_x2,
+            paddingHorizontal: layout.spacing_x2,
+            paddingTop: layout.spacing_x2,
             backgroundColor: neutral17,
             alignItems: "flex-start",
           }}
@@ -154,7 +154,7 @@ export const NetworkSelector: React.FC<{
                 <TouchableOpacity
                   disabled={!selectable}
                   style={{
-                    marginBottom: layout.padding_x2,
+                    marginBottom: layout.spacing_x2,
                     opacity: selectable ? 1 : 0.5,
                   }}
                   key={index}
@@ -172,7 +172,7 @@ export const NetworkSelector: React.FC<{
                     <BrandText
                       style={[
                         fontSemibold12,
-                        { marginLeft: layout.padding_x1_5 },
+                        { marginLeft: layout.spacing_x1_5 },
                       ]}
                     >
                       {hideDropdown ? (

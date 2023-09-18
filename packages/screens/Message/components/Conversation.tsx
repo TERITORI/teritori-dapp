@@ -1,7 +1,7 @@
 import { chain } from "lodash";
 import moment from "moment";
 import React, { useMemo, useState } from "react";
-import { View, StyleSheet, TouchableOpacity, Image } from "react-native";
+import { View, TouchableOpacity, Image } from "react-native";
 import { Avatar } from "react-native-paper";
 
 import { FileRenderer } from "./FileRenderer";
@@ -26,7 +26,6 @@ import {
 import {
   fontBold10,
   fontMedium10,
-  fontSemibold10,
   fontSemibold11,
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
@@ -102,19 +101,19 @@ export const Conversation = ({
       alignItems="flex-start"
       justifyContent={isSender ? "flex-end" : "flex-start"}
       style={{
-        paddingHorizontal: layout.padding_x1,
+        paddingHorizontal: layout.spacing_x1,
         marginBottom:
           reactions.length && isNextMine
-            ? layout.padding_x3_5
-            : layout.padding_x0_25,
+            ? layout.spacing_x3_5
+            : layout.spacing_x0_25,
       }}
     >
       {!isSender && (
         <View
           style={{
             width: 30,
-            marginRight: layout.padding_x1_5,
-            marginTop: layout.padding_x1,
+            marginRight: layout.spacing_x1_5,
+            marginTop: layout.spacing_x1,
           }}
         >
           {!isMessageChain && (
@@ -135,7 +134,7 @@ export const Conversation = ({
         {!isMessageChain && (
           <FlexRow
             style={{
-              marginBottom: layout.padding_x0_25,
+              marginBottom: layout.spacing_x0_25,
             }}
           >
             <BrandText
@@ -151,7 +150,7 @@ export const Conversation = ({
             <BrandText
               style={[
                 fontMedium10,
-                { color: neutral77, marginLeft: layout.padding_x0_5 },
+                { color: neutral77, marginLeft: layout.spacing_x0_5 },
               ]}
             >
               {moment(message.timestamp).local().format("HH:mm")}
@@ -163,9 +162,9 @@ export const Conversation = ({
             backgroundColor: isSender ? neutral17 : purpleDark,
             paddingVertical: 8,
             paddingHorizontal: 16,
-            borderBottomLeftRadius: layout.padding_x0_75,
-            borderBottomRightRadius: layout.padding_x0_75,
-            borderTopRightRadius: layout.padding_x0_75,
+            borderBottomLeftRadius: layout.spacing_x0_75,
+            borderBottomRightRadius: layout.spacing_x0_75,
+            borderTopRightRadius: layout.spacing_x0_75,
           }}
           onPress={() => setShowPopup(true)}
           activeOpacity={0.9}
@@ -178,8 +177,8 @@ export const Conversation = ({
                   height: "100%",
                   width: 1,
                   backgroundColor: neutralA3,
-                  paddingVertical: layout.padding_x1_5,
-                  marginRight: layout.padding_x0_5,
+                  paddingVertical: layout.spacing_x1_5,
+                  marginRight: layout.spacing_x0_5,
                 }}
               />
               <BrandText style={[fontSemibold11, { color: neutral77 }]}>
@@ -223,7 +222,15 @@ export const Conversation = ({
                     right: -100,
                   }}
                 >
-                  <View style={styles.popupContainerIconAndReply}>
+                  <View
+                    style={{
+                      backgroundColor: "rgba(41, 41, 41, 0.8)",
+                      paddingVertical: 6,
+                      paddingHorizontal: 10,
+                      borderRadius: 6,
+                      width: "auto",
+                    }}
+                  >
                     <FlexRow>
                       <EmojiSelector onEmojiSelected={onEmojiSelected} />
                       <SpacerRow size={1} />
@@ -241,7 +248,15 @@ export const Conversation = ({
               )}
               {showMenu && (
                 <Dropdown onDropdownClosed={() => setShowMenu(false)}>
-                  <View style={styles.popupContainer}>
+                  <View
+                    style={{
+                      backgroundColor: "rgba(41, 41, 41, 0.8)",
+                      paddingVertical: 8,
+                      paddingHorizontal: 16,
+                      borderRadius: 16,
+                      width: "auto",
+                    }}
+                  >
                     <MessagePopup
                       onClose={() => setShowMenu(false)}
                       message={message?.payload?.message || ""}
@@ -273,20 +288,3 @@ export const Conversation = ({
     </FlexRow>
   );
 };
-
-const styles = StyleSheet.create({
-  popupContainer: {
-    backgroundColor: "rgba(41, 41, 41, 0.8)",
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 16,
-    width: "auto",
-  },
-  popupContainerIconAndReply: {
-    backgroundColor: "rgba(41, 41, 41, 0.8)",
-    paddingVertical: 6,
-    paddingHorizontal: 10,
-    borderRadius: 6,
-    width: "auto",
-  },
-});

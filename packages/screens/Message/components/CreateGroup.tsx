@@ -23,7 +23,6 @@ import {
   neutral33,
   secondaryColor,
 } from "../../../utils/style/colors";
-import { CONVERSATION_TYPES } from "../../../utils/types/message";
 import { GroupInfo_Reply } from "../../../weshnet";
 import { weshClient } from "../../../weshnet/client";
 import {

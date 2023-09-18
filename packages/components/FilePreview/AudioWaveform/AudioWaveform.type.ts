@@ -5,4 +5,5 @@ export interface AudioWaveformProps {
   positionPercent: number;
   style?: ViewStyle;
   duration: number;
+  waveFormContainerWidth: number;
 }

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, TouchableOpacity, StyleSheet, Modal } from "react-native";
+import { View, TouchableOpacity, Modal } from "react-native";
 
 import ShareScreen from "./ShareScreen";
 import audio from "../../../../assets/chat/audiocall.svg";
@@ -42,7 +42,15 @@ export const AudioCall: React.FC<AudioCallProps> = ({ setAudioCall }) => {
               <FlexRow>
                 <View>
                   <FlexRow>
-                    <View style={styles.badge} />
+                    <View
+                      style={{
+                        backgroundColor: successColor,
+                        paddingHorizontal: 4,
+                        paddingVertical: 4,
+                        borderRadius: 12,
+                        width: 2,
+                      }}
+                    />
                     <SpacerRow size={1} />
                     <BrandText style={[fontSemibold11, { color: neutralA3 }]}>
                       Online
@@ -75,9 +83,9 @@ export const AudioCall: React.FC<AudioCallProps> = ({ setAudioCall }) => {
 
       <SpacerColumn size={1} />
 
-      <View style={styles.container}>
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <View>
-          <View style={styles.iconRow}>
+          <View style={{ alignSelf: "center" }}>
             <FlexRow>
               <SVG source={audioperson} />
               <SpacerRow size={2} />
@@ -85,7 +93,7 @@ export const AudioCall: React.FC<AudioCallProps> = ({ setAudioCall }) => {
             </FlexRow>
           </View>
           <SpacerColumn size={1} />
-          <FlexRow style={styles.iconRow}>
+          <FlexRow style={{ alignSelf: "center" }}>
             <TouchableOpacity>
               <SVG source={videocall} />
             </TouchableOpacity>
@@ -119,21 +127,3 @@ export const AudioCall: React.FC<AudioCallProps> = ({ setAudioCall }) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  iconRow: {
-    alignSelf: "center",
-  },
-  badge: {
-    backgroundColor: successColor,
-    paddingHorizontal: 4,
-    paddingVertical: 4,
-    borderRadius: 12,
-    width: 2,
-  },
-});

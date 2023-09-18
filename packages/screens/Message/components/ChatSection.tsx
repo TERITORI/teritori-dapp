@@ -251,7 +251,7 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
             <View
               style={{
                 alignItems: "center",
-                marginTop: layout.padding_x2,
+                marginTop: layout.spacing_x2,
               }}
             >
               <BrandText style={[fontSemibold12]}>
@@ -265,7 +265,7 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
             inverted
             data={messages}
             style={{
-              paddingVertical: layout.padding_x1_5,
+              paddingVertical: layout.spacing_x1_5,
             }}
             contentContainerStyle={{ flexGrow: 1 }}
             renderItem={({ item, index }) => {
@@ -313,7 +313,7 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
                         position: "relative",
                         alignItems: "center",
                         justifyContent: "center",
-                        marginVertical: layout.padding_x2,
+                        marginVertical: layout.spacing_x2,
                         width: "80%",
                         alignSelf: "center",
                       }}
@@ -324,7 +324,7 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
                             fontSemibold10,
                             {
                               backgroundColor: neutral00,
-                              paddingHorizontal: layout.padding_x2,
+                              paddingHorizontal: layout.spacing_x2,
                               zIndex: 9,
                             },
                           ]}
@@ -337,8 +337,8 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
                         <View
                           style={{
                             backgroundColor: redDefault,
-                            paddingVertical: layout.padding_x0_25,
-                            paddingHorizontal: layout.padding_x0_5,
+                            paddingVertical: layout.spacing_x0_25,
+                            paddingHorizontal: layout.spacing_x0_5,
                             borderRadius: 2,
                             zIndex: 9,
                             position: "absolute",
@@ -373,7 +373,7 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
           <View
             style={{
               flexDirection: "row",
-              padding: layout.padding_x1,
+              padding: layout.spacing_x1,
               alignItems: "center",
             }}
           >
@@ -389,8 +389,8 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
                 <View
                   style={{
                     backgroundColor: neutral33,
-                    padding: layout.padding_x1,
-                    marginLeft: layout.padding_x3,
+                    padding: layout.spacing_x1,
+                    marginLeft: layout.spacing_x3,
                     borderRadius: 10,
                     maxWidth: 400,
                   }}

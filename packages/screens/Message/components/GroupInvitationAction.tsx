@@ -95,7 +95,7 @@ export const GroupInvitationAction = ({
         style={[
           fontMedium10,
           {
-            marginTop: layout.padding_x0_5,
+            marginTop: layout.spacing_x0_5,
             color: successColor,
           },
         ]}

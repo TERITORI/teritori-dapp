@@ -33,7 +33,7 @@ interface CreateConversationProps {
 
 export const CreateConversation = ({ onClose }: CreateConversationProps) => {
   const contactInfo = useSelector(selectContactInfo);
-  const { setToastSuccess, setToastError } = useFeedbacks();
+  const { setToastSuccess } = useFeedbacks();
   const [contactLink, setContactLink] = useState("");
   const [addContactLoading, setAddContactLoading] = useState(false);
   const [error, setError] = useState("");
@@ -106,7 +106,8 @@ export const CreateConversation = ({ onClose }: CreateConversationProps) => {
       label="Create conversation"
       onClose={onClose}
       visible
-      width={580}
+      width={590}
+      scrollable
     >
       <KeyboardAwareScrollView>
         <View
@@ -117,7 +118,7 @@ export const CreateConversation = ({ onClose }: CreateConversationProps) => {
           <SpacerColumn size={2} />
           {!!contactInfo.shareLink && (
             <QRCode
-              size={Platform.OS === "web" ? 200 : 180}
+              size={Platform.OS === "web" ? 180 : 140}
               value={contactInfo.shareLink}
               logo={logoHexagonPNG}
               logoSize={40}
@@ -134,7 +135,7 @@ export const CreateConversation = ({ onClose }: CreateConversationProps) => {
         )}
         <SpacerColumn size={2} />
         <BrandText
-          style={[fontSemibold16, { marginBottom: layout.padding_x1 }]}
+          style={[fontSemibold16, { marginBottom: layout.spacing_x1 }]}
         >
           Name
         </BrandText>
@@ -156,7 +157,7 @@ export const CreateConversation = ({ onClose }: CreateConversationProps) => {
         </View>
         <SpacerColumn size={2} />
         <BrandText
-          style={[fontSemibold16, { marginBottom: layout.padding_x1 }]}
+          style={[fontSemibold16, { marginBottom: layout.spacing_x1 }]}
         >
           Avatar
         </BrandText>
@@ -180,7 +181,7 @@ export const CreateConversation = ({ onClose }: CreateConversationProps) => {
         <SpacerColumn size={2} />
         <View>
           <BrandText
-            style={[fontSemibold16, { marginBottom: layout.padding_x1 }]}
+            style={[fontSemibold16, { marginBottom: layout.spacing_x1 }]}
           >
             Share my contact
           </BrandText>
@@ -197,7 +198,7 @@ export const CreateConversation = ({ onClose }: CreateConversationProps) => {
         <SpacerColumn size={3} />
         <View>
           <BrandText
-            style={[fontSemibold16, { marginBottom: layout.padding_x1 }]}
+            style={[fontSemibold16, { marginBottom: layout.spacing_x1 }]}
           >
             Add contact
           </BrandText>

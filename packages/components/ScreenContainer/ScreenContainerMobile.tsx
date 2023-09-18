@@ -10,6 +10,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { HeaderMobile } from "./HeaderMobile";
 import { useSearchBar } from "../../context/SearchBarProvider";
+import { useIsMobile } from "../../hooks/useIsMobile";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { NetworkFeature, NetworkInfo, NetworkKind } from "../../networks";
 import { DAppStoreData } from "../../screens/DAppStore/components/DAppStoreData";
@@ -70,12 +71,18 @@ export const ScreenContainerMobile: FC<{
   const { isSearchModalMobileOpen, setSearchModalMobileOpen } = useSearchBar();
   const { height: windowHeight, width: windowWidth } = useWindowDimensions();
   const insets = useSafeAreaInsets();
+  const isMobile = useIsMobile();
 
   return (
     <View style={[styles.container]}>
       <View
         style={[
-          { marginTop: insets.top, marginBottom: insets.bottom, flex: 1 },
+          {
+            marginTop: insets.top,
+            marginBottom: insets.bottom,
+            flex: 1,
+            paddingTop: isMobile ? MOBILE_HEADER_HEIGHT : 0,
+          },
         ]}
       >
         <DAppStoreData />

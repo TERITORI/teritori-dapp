@@ -17,7 +17,7 @@ import {
   secondaryColor,
 } from "../../utils/style/colors";
 import { fontSemibold13, fontSemibold14 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
+import { layout, screenContentMaxWidth } from "../../utils/style/layout";
 import { RemoteFileData } from "../../utils/types/files";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
@@ -68,6 +68,14 @@ export const AudioView: React.FC<{
     () => typeof file?.thumbnailFileData?.url === "string",
     [file?.thumbnailFileData?.url]
   );
+
+  const audioWaveWidth = useMemo(() => {
+    if (width > screenContentMaxWidth) {
+      return screenContentMaxWidth - 212 - (hasThumbnail ? THUMBNAIL_SIZE : 0);
+    } else {
+      return width - 212 - (hasThumbnail ? THUMBNAIL_SIZE : 0);
+    }
+  }, [width, hasThumbnail]);
 
   const positionPercent = useMemo(
     () =>

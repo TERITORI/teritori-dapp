@@ -1,5 +1,4 @@
 import React, { FC } from "react";
-import { StyleSheet } from "react-native";
 import { SvgProps } from "react-native-svg";
 
 import { BrandText } from "../../../components/BrandText";
@@ -22,7 +21,16 @@ interface CardProps {
 
 const MessageCard: FC<CardProps> = ({ icon, text, subtext }) => {
   return (
-    <FlexRow style={styles.container}>
+    <FlexRow
+      style={{
+        paddingHorizontal: layout.spacing_x1,
+        borderRadius: 12,
+        backgroundColor: neutral00,
+        borderColor: neutral33,
+        borderWidth: 1,
+        height: 56,
+      }}
+    >
       <SVG source={icon} />
 
       <BrandText style={[fontSemibold14, { color: neutral55 }]}>
@@ -35,18 +43,5 @@ const MessageCard: FC<CardProps> = ({ icon, text, subtext }) => {
     </FlexRow>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    paddingHorizontal: layout.padding_x1,
-
-    borderRadius: 12,
-    backgroundColor: neutral00,
-    borderColor: neutral33,
-    borderWidth: 1,
-
-    height: 56,
-  },
-});
 
 export default MessageCard;

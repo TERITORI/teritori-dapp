@@ -2,7 +2,7 @@ import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React from "react";
 
-import { Conversation } from "./types/message";
+import { Conversation, MessageFriendsTabItem } from "./types/message";
 import { NewPostFormValues } from "../components/socialFeed/NewsFeed/NewsFeed.type";
 
 export type RouteName = keyof RootStackParamList;
@@ -69,7 +69,7 @@ export type RootStackParamList = {
 
   Message: { view: string; tab?: string } | undefined;
   ChatSection: Conversation;
-  FriendshipManager: { tab?: string } | undefined;
+  FriendshipManager: { tab?: MessageFriendsTabItem } | undefined;
   AddFriend: undefined;
 };
 

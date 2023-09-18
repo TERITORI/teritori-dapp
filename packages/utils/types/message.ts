@@ -12,6 +12,8 @@ export type MessageType =
   | "contact-request"
   | "read";
 
+export type MessageFriendsTabItem = "friends" | "request" | "addFriend";
+
 export type ConversationType = "contact" | "group";
 
 export interface MessageFileData extends RemoteFileData {

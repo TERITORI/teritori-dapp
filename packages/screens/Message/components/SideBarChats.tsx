@@ -52,7 +52,7 @@ export const SideBarChats = () => {
   return (
     <View
       style={{
-        paddingHorizontal: layout.padding_x1_5,
+        paddingHorizontal: layout.spacing_x1_5,
         width: "100%",
         maxWidth: Platform.OS === "web" ? 300 : windowWidth,
       }}
@@ -82,7 +82,7 @@ export const SideBarChats = () => {
               <TouchableOpacity
                 activeOpacity={0.9}
                 style={{
-                  padding: layout.padding_x0_25,
+                  padding: layout.spacing_x0_25,
                 }}
                 onPress={() =>
                   navigate("Message", { view: "CreateConversation" })

@@ -48,10 +48,9 @@ export const HeaderMobile: FC<{
           <>
             <SpacerRow size={1} />
             <CartIconButtonBadge isMobile />
-            <SpacerRow size={1} />
           </>
         )}
-
+        <SpacerRow size={1} />
         <NetworkSelectorMobile
           forceNetworkId={forceNetworkId}
           forceNetworkKind={forceNetworkKind}

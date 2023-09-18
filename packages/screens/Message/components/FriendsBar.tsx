@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet, TouchableOpacity, Platform } from "react-native";
+import { View, TouchableOpacity, Platform } from "react-native";
 import { useSelector } from "react-redux";
 
 import forwardSVG from "../../../../assets/icons/forward.svg";
@@ -26,7 +26,14 @@ export const FriendsBar = () => {
   const conversations = useSelector(selectConversationList());
   const { navigate } = useAppNavigation();
   return (
-    <View style={styles.friendBox}>
+    <View
+      style={{
+        backgroundColor: neutral22,
+        height: 40,
+        borderRadius: 6,
+        flexDirection: "row",
+      }}
+    >
       <FlexRow justifyContent="space-between">
         <View>
           <FlexRow>
@@ -85,12 +92,3 @@ export const FriendsBar = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  friendBox: {
-    backgroundColor: neutral22,
-    height: 40,
-    borderRadius: 6,
-    flexDirection: "row",
-  },
-});

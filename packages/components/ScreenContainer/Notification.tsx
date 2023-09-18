@@ -41,15 +41,15 @@ export const Notification: React.FC<{
           width={172}
           style={{ position: "absolute", top: 44 }}
           mainContainerStyle={{
-            paddingHorizontal: layout.padding_x2,
-            paddingVertical: layout.padding_x2,
+            paddingHorizontal: layout.spacing_x2,
+            paddingVertical: layout.spacing_x2,
             backgroundColor: neutral17,
             alignItems: "flex-start",
           }}
         >
           {!notifications.length && (
             <BrandText
-              style={[fontSemibold12, { marginLeft: layout.padding_x1_5 }]}
+              style={[fontSemibold12, { marginLeft: layout.spacing_x1_5 }]}
             >
               All caught up.
             </BrandText>
@@ -58,7 +58,7 @@ export const Notification: React.FC<{
             return (
               <TouchableOpacity
                 style={{
-                  marginBottom: layout.padding_x2,
+                  marginBottom: layout.spacing_x2,
                 }}
                 key={index}
                 onPress={() => {}}
@@ -67,7 +67,7 @@ export const Notification: React.FC<{
                   <BrandText
                     style={[
                       fontSemibold12,
-                      { marginLeft: layout.padding_x1_5 },
+                      { marginLeft: layout.spacing_x1_5 },
                     ]}
                   >
                     {notification.title}

@@ -7,7 +7,6 @@ import {
   Conversation,
   MessageList,
   Message,
-  ConversationType,
   CONVERSATION_TYPES,
 } from "./../../utils/types/message";
 import { RootState } from "../store";

@@ -55,7 +55,7 @@ export const ImageView: React.FC<ImagePreviewProps> = ({
             }}
             key={file.fileName}
             style={{
-              padding: layout.padding_x1,
+              padding: layout.spacing_x1,
             }}
           >
             <Image

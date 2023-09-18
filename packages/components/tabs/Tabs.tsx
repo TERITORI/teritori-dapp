@@ -24,6 +24,7 @@ import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { objectKeys } from "../../utils/typescript";
 import { BrandText } from "../BrandText";
+import { SVG } from "../SVG";
 import { PrimaryBadge } from "../badges/PrimaryBadge";
 import { TertiaryBadge } from "../badges/TertiaryBadge";
 import { GradientText } from "../gradientText";

@@ -63,8 +63,8 @@ export const ConversationSelector: React.FC<{
           width={172}
           style={{ position: "absolute", top: 30 }}
           mainContainerStyle={{
-            paddingHorizontal: layout.padding_x2,
-            paddingTop: layout.padding_x2,
+            paddingHorizontal: layout.spacing_x2,
+            paddingTop: layout.spacing_x2,
             backgroundColor: neutral17,
             alignItems: "flex-start",
           }}
@@ -74,7 +74,7 @@ export const ConversationSelector: React.FC<{
             return (
               <TouchableOpacity
                 style={{
-                  marginBottom: layout.padding_x2,
+                  marginBottom: layout.spacing_x2,
                 }}
                 key={type}
                 onPress={() => onPressItem(type)}
@@ -83,7 +83,7 @@ export const ConversationSelector: React.FC<{
                   <BrandText
                     style={[
                       fontSemibold12,
-                      { marginLeft: layout.padding_x1_5 },
+                      { marginLeft: layout.spacing_x1_5 },
                     ]}
                   >
                     {type}

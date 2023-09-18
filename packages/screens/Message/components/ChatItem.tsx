@@ -45,7 +45,7 @@ export const ChatItem = ({
       activeOpacity={0.9}
       style={{
         backgroundColor: isActive ? neutral22 : neutral00,
-        padding: layout.padding_x1,
+        padding: layout.spacing_x1,
         borderRadius: 4,
         borderBottomWidth:
           ["android", "ios"].includes(Platform.OS) && !isLastItem ? 1 : 0,

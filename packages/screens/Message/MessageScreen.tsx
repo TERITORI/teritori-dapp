@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   View,
   TouchableOpacity,
@@ -92,14 +92,14 @@ export const MessageScreen: ScreenFC<"Message"> = ({ route }) => {
             flex: 1,
             justifyContent: "center",
             alignItems: "center",
-            padding: layout.padding_x1,
+            padding: layout.spacing_x1,
           }}
         >
           <ActivityIndicator size="large" />
           <BrandText
             style={[
               fontSemibold14,
-              { textAlign: "center", marginTop: layout.padding_x1_5 },
+              { textAlign: "center", marginTop: layout.spacing_x1_5 },
             ]}
           >
             We are currently in the process of setting up Weshnet, and it will
@@ -131,8 +131,8 @@ export const MessageScreen: ScreenFC<"Message"> = ({ route }) => {
             style={{
               paddingHorizontal:
                 Platform.OS === "web"
-                  ? layout.padding_x1_5
-                  : layout.padding_x0_5,
+                  ? layout.spacing_x1_5
+                  : layout.spacing_x0_5,
             }}
           >
             {HEADER_CONFIG.map((item) => (
