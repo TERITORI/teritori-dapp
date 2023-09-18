@@ -30,6 +30,11 @@ import { PrimaryButtonOutline } from "../buttons/PrimaryButtonOutline";
 import { SecondaryButton } from "../buttons/SecondaryButton";
 import { TertiaryButton } from "../buttons/TertiaryButton";
 
+interface GnoDAOVoteRequest {
+  vote: number;
+  rationale: string;
+}
+
 export const ProposalActions: React.FC<{
   daoId: string | undefined;
   proposal: ProposalResponse;
@@ -85,26 +90,30 @@ export const ProposalActions: React.FC<{
           let gnoVote;
           switch (v) {
             case "yes": {
-              gnoVote = "0";
+              gnoVote = 0;
               break;
             }
             case "no": {
-              gnoVote = "1";
+              gnoVote = 1;
               break;
             }
             case "abstain": {
-              gnoVote = "2";
+              gnoVote = 2;
               break;
             }
             default:
               throw new Error("invalid vote");
           }
+          const msg: GnoDAOVoteRequest = {
+            vote: gnoVote,
+            rationale: "Me like it",
+          };
           await adenaVMCall(networkId, {
             caller: walletAddress,
             send: "",
             pkg_path: pkgPath,
-            func: "Vote",
-            args: ["0", proposal.id.toString(), gnoVote, "Me like it"],
+            func: "VoteJSON",
+            args: ["0", proposal.id.toString(), JSON.stringify(msg)],
           });
           break;
         }

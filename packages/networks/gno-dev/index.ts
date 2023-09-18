@@ -22,10 +22,12 @@ export const gnoDevNetwork: GnoNetworkInfo = {
   testnet: true,
   backendEndpoint: "http://localhost:9090",
   vaultContractAddress: "",
+  daoRegistryPkgPath: "gno.land/r/demo/dao_registry",
   socialFeedsPkgPath: "gno.land/r/demo/social_feeds_v8",
   socialFeedsDAOPkgPath: "gno.land/r/demo/social_feeds_dao_v2",
   nameServiceContractAddress: "gno.land/r/demo/users",
-  groupsPkgPath: "gno.land/r/demo/groups_v9",
+  modboardsPkgPath: "gno.land/r/demo/modboards",
+  groupsPkgPath: "gno.land/r/demo/groups",
   nameServiceDefaultImage:
     "ipfs://bafkreignptjimiu7wuux6mk6uh4hb4odb6ff62ny4bvdokrhes7g67huse",
   gnowebURL: "http://127.0.0.1:8888",

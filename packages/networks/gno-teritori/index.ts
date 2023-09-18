@@ -25,9 +25,9 @@ export const gnoTeritoriNetwork: GnoNetworkInfo = {
   nameServiceContractAddress: "gno.land/r/demo/users",
   nameServiceDefaultImage:
     "ipfs://bafkreignptjimiu7wuux6mk6uh4hb4odb6ff62ny4bvdokrhes7g67huse",
-  daoRegistryPkgPath: "gno.land/r/demo/dao_registry_v5",
-  modboardsPkgPath: "gno.land/r/demo/modboards_v3",
-  groupsPkgPath: "gno.land/r/demo/groups_v9",
+  daoRegistryPkgPath: "gno.land/r/demo/dao_registry_v8",
+  modboardsPkgPath: "gno.land/r/demo/modboards_v9",
+  groupsPkgPath: "gno.land/r/demo/groups_v22",
   socialFeedsPkgPath: "gno.land/r/demo/social_feeds_v9",
   socialFeedsDAOPkgPath: "gno.land/r/demo/social_feeds_dao_v3",
   gnowebURL: "https://testnet.gno.teritori.com",
