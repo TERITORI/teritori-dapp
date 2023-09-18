@@ -22,6 +22,7 @@ import {
   parseUserId,
 } from "../../networks";
 import { adenaVMCall } from "../../utils/gno";
+import { GnoDAOVoteRequest } from "../../utils/gnodao/messages";
 import { neutral77, primaryColor, errorColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
@@ -29,11 +30,6 @@ import { PrimaryButton } from "../buttons/PrimaryButton";
 import { PrimaryButtonOutline } from "../buttons/PrimaryButtonOutline";
 import { SecondaryButton } from "../buttons/SecondaryButton";
 import { TertiaryButton } from "../buttons/TertiaryButton";
-
-interface GnoDAOVoteRequest {
-  vote: number;
-  rationale: string;
-}
 
 export const ProposalActions: React.FC<{
   daoId: string | undefined;

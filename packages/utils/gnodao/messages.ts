@@ -6,6 +6,11 @@ export interface GnoSingleChoiceProposal {
   messages: GnoExecutableMessage[];
 }
 
+export interface GnoDAOVoteRequest {
+  vote: number;
+  rationale: string;
+}
+
 export interface GnoDAOUpdateSettings {
   type: "gno.land/p/demo/daodao/proposal_single.UpdateSettings";
   payload: {
@@ -44,5 +49,14 @@ export interface GnoModboardsCreateMessage {
   type: "gno.land/r/demo/modboards.CreateBoard";
   payload: {
     name: string;
+  };
+}
+
+export interface GnoBanPostMessage {
+  type: "gno.land/r/demo/social_feeds.BanPost";
+  payload: {
+    feedId: number;
+    postId: number;
+    reason: string;
   };
 }
