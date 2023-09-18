@@ -1,9 +1,9 @@
-import { Video, ResizeMode } from "expo-av";
+import { ResizeMode } from "expo-av";
 import React from "react";
 import { View } from "react-native";
 
 import { DeleteButton } from "./DeleteButton";
-import { ipfsURLToHTTPURL } from "../../utils/ipfs";
+import { MediaPlayerVideo } from "../../context/MediaPlayerProvider";
 import { errorColor } from "../../utils/style/colors";
 import { fontSemibold13 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
@@ -14,11 +14,15 @@ interface VideoPreviewProps {
   file: LocalFileData | RemoteFileData;
   onDelete?: (file: LocalFileData | RemoteFileData) => void;
   isEditable?: boolean;
+  postId?: string;
+  authorId: string;
 }
 
 export const VideoView: React.FC<VideoPreviewProps> = ({
   file,
   onDelete,
+  authorId,
+  postId,
   isEditable = false,
 }) => {
   if (!file?.url)
@@ -37,17 +41,17 @@ export const VideoView: React.FC<VideoPreviewProps> = ({
       {isEditable && onDelete && (
         <DeleteButton onPress={() => onDelete(file)} />
       )}
-      <Video
+      <MediaPlayerVideo
+        videoUrl={file.url}
+        thumbnailUrl={file.thumbnailFileData?.url}
         style={{
           height: 400,
           marginTop: layout.spacing_x2,
           marginBottom: layout.spacing_x2,
         }}
-        source={{
-          uri: ipfsURLToHTTPURL(file.url),
-        }}
-        useNativeControls
         resizeMode={ResizeMode.CONTAIN}
+        authorId={authorId}
+        postId={postId}
       />
     </View>
   );

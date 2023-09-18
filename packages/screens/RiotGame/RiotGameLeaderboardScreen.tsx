@@ -29,7 +29,7 @@ import { SpacerColumn, SpacerRow } from "../../components/spacer";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
-import { getCosmosNetwork, parseUserId } from "../../networks";
+import { parseUserId } from "../../networks";
 import { mustGetP2eClient } from "../../utils/backend";
 import { parseUserScoreInfo } from "../../utils/game";
 import { useAppNavigation } from "../../utils/navigation";
@@ -46,6 +46,7 @@ import {
   fontSemibold28,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
+import { nameServiceDefaultImage } from "../../utils/tns";
 
 type RankProps = {
   changes: number;
@@ -57,7 +58,6 @@ type PlayerNameProps = {
 const PlayerName: React.FC<PlayerNameProps> = ({ userId }) => {
   const navigation = useAppNavigation();
   const [network, address] = parseUserId(userId);
-  const cosmosNetwork = getCosmosNetwork(network?.id);
   const userInfo = useNSUserInfo(userId);
 
   const name = userInfo.metadata?.tokenId || address || "";
@@ -74,7 +74,7 @@ const PlayerName: React.FC<PlayerNameProps> = ({ userId }) => {
       >
         <OptimizedImage
           sourceURI={userInfo.metadata?.image}
-          fallbackURI={cosmosNetwork?.nameServiceDefaultImage}
+          fallbackURI={nameServiceDefaultImage(network)}
           width={32}
           height={32}
           style={{
