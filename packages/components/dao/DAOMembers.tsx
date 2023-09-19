@@ -24,8 +24,12 @@ import { useNameSearch } from "../../hooks/search/useNameSearch";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkKind, getUserId, parseUserId } from "../../networks";
-import { toRawURLBase64String } from "../../utils/buffer";
-import { adenaVMCall, extractGnoNumber } from "../../utils/gno";
+import { adenaVMCall, extractGnoJSONString } from "../../utils/gno";
+import { VotingGroupConfig } from "../../utils/gnodao/configs";
+import {
+  GnoAddMemberMessage,
+  GnoSingleChoiceProposal,
+} from "../../utils/gnodao/messages";
 import {
   neutral00,
   neutral33,
@@ -552,33 +556,39 @@ const useProposeToAddMembers = (daoId: string | undefined) => {
         case NetworkKind.Gno: {
           const client = new GnoJSONRPCProvider(network.endpoint);
 
-          const groupId = extractGnoNumber(
-            await client.evaluateExpression(daoAddress, "GetGroupID()")
+          const moduleConfig: VotingGroupConfig = extractGnoJSONString(
+            await client.evaluateExpression(
+              daoAddress,
+              "daoCore.VotingModule().ConfigJSON()"
+            )
           );
+          const { groupId } = moduleConfig;
 
-          console.log("groupId", groupId);
-
-          const b64Messages: string[] = [];
+          const msgs: GnoAddMemberMessage[] = [];
           for (const member of membersToAdd) {
-            b64Messages.push(
-              toRawURLBase64String(
-                encodeAddMember({
-                  groupId,
-                  addr: member,
-                  weight,
-                  metadata: "",
-                })
-              )
-            );
+            msgs.push({
+              type: "gno.land/r/demo/teritori/groups.AddMember",
+              payload: {
+                groupId,
+                address: member,
+                weight,
+                metadata: "",
+              },
+            });
           }
+          const propReq: GnoSingleChoiceProposal = {
+            title: `Add ${membersToAdd.length} member(s) with weight ${weight}`,
+            description: "",
+            messages: msgs,
+          };
           await adenaVMCall(
             network.id,
             {
               caller: senderAddress,
               send: "",
               pkg_path: daoAddress,
-              func: "Propose",
-              args: ["0", "Add members", "", b64Messages.join(",")],
+              func: "ProposeJSON",
+              args: ["0", JSON.stringify(propReq)],
             },
             { gasWanted: 2000000 }
           );
@@ -589,43 +599,4 @@ const useProposeToAddMembers = (daoId: string | undefined) => {
     },
     [daoId, groupAddress, invalidateDAOProposals, makeProposal]
   );
-};
-
-interface GnoMember {
-  groupId: number;
-  addr: string;
-  weight: number;
-  metadata: string;
-}
-
-const encodeAddMember = (member: GnoMember) => {
-  const b = Buffer.alloc(16000); // TODO: compute size or concat
-
-  let offset = 0;
-
-  const type = "AddMember";
-  b.writeUInt16BE(type.length, offset);
-  offset += 2;
-  b.write(type, offset);
-  offset += type.length;
-
-  b.writeUInt32BE(0, offset);
-  offset += 4;
-  b.writeUInt32BE(member.groupId, offset);
-  offset += 4;
-
-  b.writeUInt16BE(member.addr.length, offset);
-  offset += 2;
-  b.write(member.addr, offset);
-  offset += member.addr.length;
-
-  b.writeUInt32BE(member.weight, offset);
-  offset += 4;
-
-  b.writeUInt16BE(member.metadata.length, offset);
-  offset += 2;
-  b.write(member.metadata, offset);
-  offset += member.metadata.length;
-
-  return Buffer.from(b.subarray(0, offset));
 };

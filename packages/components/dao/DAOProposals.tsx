@@ -14,7 +14,6 @@ import {
   AppProposalResponse,
   useDAOProposals,
 } from "../../hooks/dao/useDAOProposals";
-import { useDAOTotalVotingPower } from "../../hooks/dao/useDAOTotalVotingPower";
 import { useNSPrimaryAlias } from "../../hooks/useNSPrimaryAlias";
 import { getUserId, parseUserId } from "../../networks";
 import {
@@ -52,7 +51,6 @@ const ProposalRow: React.FC<{
   proposal: AppProposalResponse;
 }> = ({ daoId, proposal }) => {
   const [network] = parseUserId(daoId);
-  const { daoTotalVotingPower } = useDAOTotalVotingPower(daoId);
 
   const halfGap = 24;
   const elemStyle: ViewStyle = {
@@ -70,7 +68,7 @@ const ProposalRow: React.FC<{
   };
   weights.voted = weights.approved + weights.declined + weights.abstained;
 
-  const totalWeight = parseFloat(daoTotalVotingPower?.power || "0");
+  const totalWeight = parseFloat(proposal.proposal.total_power);
 
   let thresholdGain = 0;
   let quorumGain = 0;
@@ -88,10 +86,7 @@ const ProposalRow: React.FC<{
     }
   }
 
-  const quorumWeight =
-    proposal.proposal.status === "open"
-      ? quorumGain * totalWeight
-      : quorumGain * weights.voted;
+  const quorumWeight = quorumGain * totalWeight;
   const targetWeight = Math.max(weights.voted, quorumWeight);
   const thresholdWeight = thresholdGain * targetWeight;
 
@@ -182,36 +177,27 @@ const ProposalRow: React.FC<{
               justifyContent: "space-between",
             }}
           >
-            {proposal.proposal.status === "open" && (
-              <>
-                <BrandText
-                  style={[fontSemibold14, { lineHeight: 14, color: neutral77 }]}
-                  numberOfLines={1}
-                >
-                  Voted:{" "}
-                  <Text style={{ color: "white" }}>
-                    {Math.ceil(weights.voted)}
-                  </Text>
-                  /
-                  <Text style={{ color: "white" }}>
-                    {Math.ceil(quorumWeight)}
-                  </Text>
-                </BrandText>
-                <BrandText
-                  style={[fontSemibold14, { lineHeight: 14, color: neutral77 }]}
-                  numberOfLines={1}
-                >
-                  Yes:{" "}
-                  <Text style={{ color: "white" }}>
-                    {Math.ceil(weights.approved)}
-                  </Text>
-                  /
-                  <Text style={{ color: "white" }}>
-                    {Math.ceil(thresholdWeight)}
-                  </Text>
-                </BrandText>
-              </>
-            )}
+            <BrandText
+              style={[fontSemibold14, { lineHeight: 14, color: neutral77 }]}
+              numberOfLines={1}
+            >
+              Voted:{" "}
+              <Text style={{ color: "white" }}>{Math.ceil(weights.voted)}</Text>
+              /<Text style={{ color: "white" }}>{Math.ceil(quorumWeight)}</Text>
+            </BrandText>
+            <BrandText
+              style={[fontSemibold14, { lineHeight: 14, color: neutral77 }]}
+              numberOfLines={1}
+            >
+              Yes:{" "}
+              <Text style={{ color: "white" }}>
+                {Math.ceil(weights.approved)}
+              </Text>
+              /
+              <Text style={{ color: "white" }}>
+                {Math.ceil(thresholdWeight)}
+              </Text>
+            </BrandText>
           </View>
           <View
             style={{
