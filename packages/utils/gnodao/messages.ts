@@ -12,7 +12,7 @@ export interface GnoDAOVoteRequest {
 }
 
 export interface GnoDAOUpdateSettings {
-  type: "gno.land/p/demo/teritori/proposal_single.UpdateSettings";
+  type: "gno.land/p/demo/teritori/dao_proposal_single.UpdateSettings";
   payload: {
     threshold: {
       thresholdQuorum: {
