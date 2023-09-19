@@ -3,19 +3,19 @@ import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import { Status } from "../contracts-clients/dao-proposal-single/DaoProposalSingle.types";
 import { mustGetGnoNetwork } from "../networks";
 
-export interface AdenaDoContractMessage {
+interface AdenaDoContractMessage {
   type: string;
   value: { [key in string]: any };
 }
 
-export interface RequestDocontractMessage {
+interface RequestDocontractMessage {
   messages: AdenaDoContractMessage[];
   gasFee: number;
   gasWanted: number;
   memo?: string;
 }
 
-export interface AdenaDoContractOpts {
+interface AdenaDoContractOpts {
   gasFee?: number;
   gasWanted?: number;
   memo?: string;
@@ -77,18 +77,18 @@ export const adenaVMCall = async (
   );
 };
 
-export interface Package {
+interface Package {
   Name: string;
   Path: string;
   Files: PackageFile[];
 }
 
-export interface PackageFile {
+interface PackageFile {
   Name: string;
   Body: string;
 }
 
-export interface VmAddPackage {
+interface VmAddPackage {
   creator: string;
   package?: Package;
   deposit: string;
@@ -120,15 +120,4 @@ export const extractGnoString = (str: string) => {
 };
 export const extractGnoJSONString = (str: string) => {
   return JSON.parse(extractGnoString(str));
-};
-export const proposalStatusFromNumber = (status: number): Status => {
-  switch (status) {
-    case 0:
-      return "open";
-    case 1:
-      return "passed";
-    case 2:
-      return "executed";
-  }
-  return "open";
 };

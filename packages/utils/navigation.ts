@@ -61,7 +61,7 @@ export type RootStackParamList = {
   ToriPunks: { route: string };
 };
 
-export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
+type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 export type ScreenFC<T extends keyof RootStackParamList> = React.FC<{
   navigation: NativeStackNavigationProp<RootStackParamList, T>;

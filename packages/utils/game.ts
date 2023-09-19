@@ -178,7 +178,7 @@ export const buildBreedingMsg = (
   };
 };
 
-export const buildStakingMsg = (
+const buildStakingMsg = (
   sender: string,
   nfts: SquadStakeNFT[],
   contractAddress: string
@@ -383,8 +383,8 @@ export const isNFTStaked = (ripper: NFT | undefined) => {
   return ids.includes(ripper.lockedOn);
 };
 
-export const SQUAD_STAKE_COEF = 0.125; // Duration (in hours) = 0.125 * stamin
-export const DURATION_TO_XP_COEF = 100; // XP = 100 * duration (in hours)
+const SQUAD_STAKE_COEF = 0.125; // Duration (in hours) = 0.125 * stamin
+const DURATION_TO_XP_COEF = 100; // XP = 100 * duration (in hours)
 
 export const squadWithdrawSeason1 = async (userId: string | undefined) => {
   const [network, userAddress] = parseUserId(userId);
