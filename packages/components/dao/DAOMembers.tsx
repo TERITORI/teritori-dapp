@@ -25,7 +25,8 @@ import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkKind, getUserId, parseUserId } from "../../networks";
 import { toRawURLBase64String } from "../../utils/buffer";
-import { adenaVMCall, extractGnoNumber } from "../../utils/gno";
+import { adenaVMCall, extractGnoJSONString } from "../../utils/gno";
+import { VotingGroupConfig } from "../../utils/gnodao/configs";
 import {
   neutral00,
   neutral33,
@@ -552,9 +553,13 @@ const useProposeToAddMembers = (daoId: string | undefined) => {
         case NetworkKind.Gno: {
           const client = new GnoJSONRPCProvider(network.endpoint);
 
-          const groupId = extractGnoNumber(
-            await client.evaluateExpression(daoAddress, "GetGroupID()")
+          const moduleConfig: VotingGroupConfig = extractGnoJSONString(
+            await client.evaluateExpression(
+              daoAddress,
+              "daoCore.GetVotingModule().ConfigJSON()"
+            )
           );
+          const { groupId } = moduleConfig;
 
           console.log("groupId", groupId);
 
