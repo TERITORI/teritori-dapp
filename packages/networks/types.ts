@@ -6,7 +6,7 @@ export enum NetworkKind {
   Gno = "Gno",
 }
 
-export interface NetworkInfoBase {
+interface NetworkInfoBase {
   id: string;
   displayName: string;
   kind: NetworkKind;
@@ -71,7 +71,7 @@ export type EthereumNetworkInfo = NetworkInfoBase & {
   riotContractAddress: string;
 };
 
-export type SolanaNetworkInfo = NetworkInfoBase & {
+type SolanaNetworkInfo = NetworkInfoBase & {
   kind: NetworkKind.Solana;
   holaplexGraphqlEndpoint: string;
   vaultContractAddress: string;
@@ -99,8 +99,6 @@ export type NetworkInfo =
   | SolanaNetworkInfo
   | GnoNetworkInfo;
 
-export type CurrencyKind = "native" | "ibc";
-
 export type NativeCurrencyInfo = {
   kind: "native";
   denom: string;
@@ -111,7 +109,7 @@ export type NativeCurrencyInfo = {
   color: string;
 };
 
-export type IBCCurrencyInfo = {
+type IBCCurrencyInfo = {
   kind: "ibc";
   denom: string;
   sourceNetwork: string;

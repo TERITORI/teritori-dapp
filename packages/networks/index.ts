@@ -71,21 +71,6 @@ export const getCurrency = (
   return getNetwork(networkId)?.currencies.find((c) => c.denom === denom);
 };
 
-export const getToriNativeCurrency = (networkId: string) => {
-  const network = getNetwork(networkId);
-  if (network?.kind === NetworkKind.Cosmos)
-    return network?.currencies.find(
-      (currencyInfo: CurrencyInfo) => currencyInfo.kind === "native"
-    ) as NativeCurrencyInfo;
-  else {
-    const toriIbcCurrency = network?.currencies.find(
-      (currencyInfo: CurrencyInfo) =>
-        currencyInfo.kind === "ibc" && currencyInfo.sourceDenom === "utori"
-    );
-    return getNativeCurrency(networkId, toriIbcCurrency?.denom);
-  }
-};
-
 export const getIBCCurrency = (
   networkId: string | undefined,
   denom: string | undefined
@@ -423,12 +408,6 @@ export const getKeplrSigningStargateClient = async (
       registry: pbTypesRegistry,
     }
   );
-};
-
-export const getNonSigningStargateClient = async (networkId: string) => {
-  const network = mustGetCosmosNetwork(networkId);
-
-  return await StargateClient.connect(network.rpcEndpoint);
 };
 
 export const getKeplrSigningCosmWasmClient = async (
