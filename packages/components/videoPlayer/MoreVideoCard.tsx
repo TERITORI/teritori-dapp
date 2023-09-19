@@ -3,12 +3,12 @@ import { View, Image, ViewStyle, TextStyle, ImageStyle } from "react-native";
 import { Pressable } from "react-native-hoverable";
 
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
+import { getMediaDuration } from "../../utils/mediaPlayer";
 import { useAppNavigation } from "../../utils/navigation";
 import { neutral77 } from "../../utils/style/colors";
 import { fontSemibold14, fontMedium14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { VideoInfoWithMeta } from "../../utils/types/video";
-import { durationToString } from "../../utils/videoPlayer";
 import { BrandText } from "../BrandText";
 import { DateTime } from "../socialFeed/SocialThread/DateTime";
 
@@ -33,7 +33,7 @@ export const MoreVideoPlayerCard: React.FC<{
           />
           <View style={videoDurationStyle}>
             <BrandText style={contentDurationStyle}>
-              {durationToString(item.videoMetaInfo.duration)}
+              {getMediaDuration(item.videoMetaInfo.duration)}
             </BrandText>
           </View>
         </Pressable>
