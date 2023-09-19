@@ -3,10 +3,10 @@ import { View, ViewStyle, TextStyle } from "react-native";
 
 import { HoverView } from "./HoverView";
 import Code from "../../../assets/icons/player/code.svg";
-import Delete from "../../../assets/icons/player/delete.svg";
 import Enter from "../../../assets/icons/player/enter.svg";
 import Link from "../../../assets/icons/player/link.svg";
 import Share from "../../../assets/icons/player/share.svg";
+import trashSVG from "../../../assets/icons/trash.svg";
 import { signingVideoPlayerClient } from "../../client-creators/videoplayerClient";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
@@ -66,11 +66,7 @@ export const MyVideoMenu: React.FC<MyVideoMenuProps> = ({ videoInfo }) => {
         }}
       >
         <View style={oneLineStyle}>
-          <SVG
-            source={Delete}
-            width={layout.spacing_x2}
-            height={layout.spacing_x2}
-          />
+          <SVG source={trashSVG} width={16} height={16} />
           <SpacerRow size={1} />
           <BrandText style={deleteTextStyle}>Delete album</BrandText>
         </View>

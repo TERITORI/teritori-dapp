@@ -29,7 +29,11 @@ func NewVideoService(ctx context.Context, conf *Config) videopb.VideoServiceServ
 }
 
 func (s *VideoService) GetVideoList(ctx context.Context, req *videopb.GetVideoListRequest) (*videopb.GetVideoListResponse, error) {
+	const maxLimit = 40
 	limit := req.GetLimit()
+  if limit > maxLimit {
+    limit = maxLimit
+  }
 	if limit <= 0 {
 		limit = 10
 	}
@@ -64,7 +68,11 @@ func (s *VideoService) GetVideoListForLibrary(ctx context.Context, req *videopb.
 }
 
 func (s *VideoService) GetUserVideoList(ctx context.Context, req *videopb.GetUserVideoListRequest) (*videopb.GetUserVideoListResponse, error) {
+	const maxLimit = 40
 	limit := req.GetLimit()
+  if limit > maxLimit {
+    limit = maxLimit
+  }
 	if limit <= 0 {
 		limit = 10
 	}
@@ -114,6 +122,9 @@ func (s *VideoService) IncreaseViewCount(ctx context.Context, req *videopb.Incre
 		return &videopb.IncreaseViewCountResponse{Res: 0}, nil
 	}
 	var video indexerdb.Video
+  if err := s.conf.IndexerDB.Save(&video).Error; err != nil {
+    return &videopb.IncreaseViewCountResponse{Res: 0}, nil
+  }
 	s.conf.IndexerDB.Model(&indexerdb.Video{}).
 		Where("identifier = ?", id).Find(&video)
 	video.ViewCount += 1
@@ -143,6 +154,9 @@ func (s *VideoService) Like(ctx context.Context, req *videopb.LikeRequest) (*vid
 		return &videopb.LikeResponse{Res: 1}, nil
 	}
 	var video indexerdb.Video
+  if err := s.conf.IndexerDB.Save(&video).Error; err != nil {
+    return &videopb.LikeResponse{Res: 1}, nil
+  }
 	s.conf.IndexerDB.Model(&indexerdb.Video{}).
 		Where("identifier = ?", id).Find(&video)
 	video.Like += 1
@@ -171,6 +185,9 @@ func (s *VideoService) Dislike(ctx context.Context, req *videopb.DislikeRequest)
 		return &videopb.DislikeResponse{Res: 1}, nil
 	}
 	var video indexerdb.Video
+	if err := s.conf.IndexerDB.Save(&video).Error; err != nil {
+    return &videopb.DislikeResponse{Res: 1}, nil
+  }
 	s.conf.IndexerDB.Model(&indexerdb.Video{}).
 		Where("identifier = ?", id).Find(&video)
 	video.Dislike += 1

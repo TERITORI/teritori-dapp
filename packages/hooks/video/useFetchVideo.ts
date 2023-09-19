@@ -28,6 +28,7 @@ export const useFetchVideo = (req: GetVideoRequest) => {
           viewLastTimestamp: videoInfo.lastView,
         } as VideoInfoWithMeta;
       } catch {
+        //TODO: error handling/feedback
         return null;
       }
     }
