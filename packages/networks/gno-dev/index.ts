@@ -28,6 +28,10 @@ export const gnoDevNetwork: GnoNetworkInfo = {
   nameServiceContractAddress: "gno.land/r/demo/users",
   modboardsPkgPath: "gno.land/r/demo/teritori/modboards",
   groupsPkgPath: "gno.land/r/demo/teritori/groups",
+  votingGroupPkgPath: "gno.land/p/demo/teritori/dao_voting_group",
+  daoProposalSinglePkgPath: "gno.land/p/demo/teritori/dao_proposal_single",
+  daoInterfacesPkgPath: "gno.land/p/demo/teritori/dao_interfaces",
+  daoCorePkgPath: "gno.land/p/demo/teritori/dao_core",
   nameServiceDefaultImage:
     "ipfs://bafkreignptjimiu7wuux6mk6uh4hb4odb6ff62ny4bvdokrhes7g67huse",
   gnowebURL: "http://127.0.0.1:8888",

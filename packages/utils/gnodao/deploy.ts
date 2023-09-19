@@ -25,17 +25,13 @@ export const generateDAORealmSource = (
   return `package ${conf.name}
 
   import (
-    "encoding/base64"
-    "std"
-    "strings"
     "time"
 
-    dao_core "gno.land/p/demo/daodao/core_v16"
-    dao_interfaces "gno.land/p/demo/daodao/interfaces_v16"
-    proposal_single "gno.land/p/demo/daodao/proposal_single_v16"
-    voting_group "gno.land/p/demo/daodao/voting_group_v17"
-    "gno.land/p/demo/ujson_v5"
-    "gno.land/r/demo/groups_v22"
+    dao_core "${network.daoCorePkgPath}"
+    dao_interfaces "${network.daoInterfacesPkgPath}"
+    proposal_single "${network.daoProposalSinglePkgPath}"
+    voting_group "${network.votingGroupPkgPath}"
+    "${network.groupsPkgPath}"
     modboards "${network.modboardsPkgPath}"
     "${network.daoRegistryPkgPath}"
   )
@@ -65,18 +61,18 @@ export const generateDAORealmSource = (
   
     proposalModulesFactories := []dao_interfaces.ProposalModuleFactory{
       func(core dao_interfaces.IDAOCore) dao_interfaces.IProposalModule {
-        tt := proposal_single.Percent(${Math.ceil(
+        tt := proposal_single.PercentageThresholdPercent(${Math.ceil(
           conf.thresholdPercent * 100
         )}) // ${Math.ceil(conf.thresholdPercent * 100) / 100}%
-        tq := proposal_single.Percent(${Math.ceil(
+        tq := proposal_single.PercentageThresholdPercent(${Math.ceil(
           conf.quorumPercent * 100
         )}) // ${Math.ceil(conf.quorumPercent * 100) / 100}%
         return proposal_single.NewDAOProposalSingle(core, &proposal_single.DAOProposalSingleOpts{
           MaxVotingPeriod: time.Second * ${conf.maxVotingPeriodSeconds},
-          Threshold: proposal_single.Threshold{ThresholdQuorum: &proposal_single.ThresholdQuorum{
-            Threshold: proposal_single.PercentageThreshold{Percent: &tt},
-            Quorum:    proposal_single.PercentageThreshold{Percent: &tq},
-          }},
+          Threshold: &proposal_single.ThresholdThresholdQuorum{
+            Threshold: &tt,
+            Quorum:    &tq,
+          },
         })
       },
     }
