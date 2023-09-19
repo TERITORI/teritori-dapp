@@ -54,7 +54,7 @@ export const subscribeDeviceStatus = async (groupPk: string) => {
 };
 
 export const subscribeMessages = async (groupPk: string) => {
-  subscribeDeviceStatus(groupPk);
+  // subscribeDeviceStatus(groupPk);
   const lastId = selectLastIdByKey(groupPk)(store.getState());
 
   const config: Partial<GroupMessageList_Request> = {

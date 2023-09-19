@@ -19,6 +19,7 @@ import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { neutralA3 } from "../../../utils/style/colors";
 import { fontSemibold13 } from "../../../utils/style/fonts";
+import { layout } from "../../../utils/style/layout";
 
 const data = [
   {
@@ -78,7 +79,15 @@ export const MessagePopup = ({
   );
 
   return (
-    <View>
+    <View
+      style={{
+        backgroundColor: "rgba(41, 41, 41, 0.8)",
+        paddingVertical: layout.spacing_x1,
+        paddingHorizontal: layout.spacing_x2,
+        borderRadius: layout.spacing_x2,
+        width: 220,
+      }}
+    >
       <TouchableOpacity
         onPress={() => {
           onReply();

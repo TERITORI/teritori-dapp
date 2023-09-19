@@ -33,32 +33,37 @@ export const Dropdown = ({
     useDropdowns();
   const dropdownRef = useRef<View>(null);
 
+  const isDropdownOpened = isDropdownOpen(dropdownRef);
+
   const [isOpened, setIsOpened] = useState(false);
 
   useEffect(() => {
-    if (isOpened && !isDropdownOpen(dropdownRef)) {
+    if (isOpened && !isDropdownOpened) {
       onDropdownClosed?.();
     }
-  }, [isDropdownOpen, isOpened, onDropdownClosed]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isDropdownOpened, isOpened]);
 
   const handleLayout = ({ nativeEvent: { layout } }: LayoutChangeEvent) => {
     setLayout(layout);
   };
 
-  const handleOpen = useCallback(() => {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const handleOpen = () => {
     setIsOpened(true);
     onPressDropdownButton(dropdownRef);
-  }, [onPressDropdownButton]);
+  };
 
   useEffect(() => {
     if (!triggerComponent) {
       handleOpen();
     }
-  }, [handleOpen, triggerComponent]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [triggerComponent]);
 
   return (
     <View
-      style={[{ position: "relative" }, style]}
+      style={[{ position: "relative", zIndex: 99999999 }, style]}
       ref={dropdownRef}
       onLayout={handleLayout}
     >
@@ -67,14 +72,14 @@ export const Dropdown = ({
           {triggerComponent}
         </TouchableOpacity>
       )}
-      {isDropdownOpen(dropdownRef) && (
+      {isDropdownOpened && (
         <View
           style={[
             {
               position: "absolute",
               width: "auto",
               flex: 1,
-              zIndex: 999,
+              zIndex: 9999999999,
             },
             positionStyle,
           ]}

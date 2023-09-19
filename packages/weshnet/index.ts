@@ -6,7 +6,7 @@ export * from "./protocoltypes";
 
 export const createWeshClient = (url: string) => {
   const rpc = new GrpcWebImpl(url, {
-    debug: true,
+    debug: false,
     transport:
       Platform.OS === "web"
         ? grpc.CrossBrowserHttpTransport({ withCredentials: false })

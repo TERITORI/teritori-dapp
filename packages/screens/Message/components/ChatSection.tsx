@@ -22,6 +22,7 @@ import { SearchConversation } from "./SearchConversation";
 import { UploadImage } from "./UploadImage";
 import { UploadedPreview } from "./UploadedPreview";
 import plus from "../../../../assets/icons/chatplus.svg";
+import closeSVG from "../../../../assets/icons/close.svg";
 import sent from "../../../../assets/icons/sent.svg";
 import { BrandText } from "../../../components/BrandText";
 import { Dropdown } from "../../../components/Dropdown";
@@ -79,6 +80,8 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
   const [replyTo, setReplyTo] = useState<ReplyTo>();
   const [inputRef, setInputRef] = useState<RefObject<any> | null>(null);
   const [file, setFile] = useState<MessageFileData>();
+
+  const { width: windowWidth } = useWindowDimensions();
 
   const [searchInput, setSearchInput] = useState("");
 
@@ -393,11 +396,24 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
                     marginLeft: layout.spacing_x3,
                     borderRadius: 10,
                     maxWidth: 400,
+                    flexDirection: "row",
+                    justifyContent: "space-between",
                   }}
                 >
-                  <BrandText style={[fontSemibold12, { color: "white" }]}>
+                  <BrandText
+                    style={[fontSemibold12, { color: "white", maxWidth: 300 }]}
+                    numberOfLines={1}
+                  >
                     Reply to: {replyTo?.message}
                   </BrandText>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setReplyTo(undefined);
+                    }}
+                    activeOpacity={0.9}
+                  >
+                    <SVG source={closeSVG} />
+                  </TouchableOpacity>
                 </View>
               )}
               <TextInputCustom

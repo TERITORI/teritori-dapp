@@ -218,7 +218,7 @@ export const Conversation = ({
                 <Dropdown
                   onDropdownClosed={() => setShowPopup(false)}
                   positionStyle={{
-                    top: -40,
+                    bottom: -10,
                     right: -100,
                   }}
                 >
@@ -232,7 +232,12 @@ export const Conversation = ({
                     }}
                   >
                     <FlexRow>
-                      <EmojiSelector onEmojiSelected={onEmojiSelected} />
+                      <EmojiSelector
+                        onEmojiSelected={(emoji) => {
+                          onEmojiSelected(emoji);
+                          setShowPopup(false);
+                        }}
+                      />
                       <SpacerRow size={1} />
                       <TouchableOpacity onPress={() => setShowMenu(true)}>
                         <SVG
@@ -247,29 +252,26 @@ export const Conversation = ({
                 </Dropdown>
               )}
               {showMenu && (
-                <Dropdown onDropdownClosed={() => setShowMenu(false)}>
-                  <View
-                    style={{
-                      backgroundColor: "rgba(41, 41, 41, 0.8)",
-                      paddingVertical: 8,
-                      paddingHorizontal: 16,
-                      borderRadius: 16,
-                      width: "auto",
+                <Dropdown
+                  onDropdownClosed={() => setShowMenu(false)}
+                  positionStyle={{
+                    bottom: -10,
+                    right: -240,
+                  }}
+                >
+                  <MessagePopup
+                    onClose={() => setShowMenu(false)}
+                    message={message?.payload?.message || ""}
+                    onReply={() => {
+                      console.log("on reply");
+                      onReply({
+                        id: message.id,
+                        message: message?.payload?.message || "",
+                      });
                     }}
-                  >
-                    <MessagePopup
-                      onClose={() => setShowMenu(false)}
-                      message={message?.payload?.message || ""}
-                      onReply={() =>
-                        onReply({
-                          id: message.id,
-                          message: message?.payload?.message || "",
-                        })
-                      }
-                      isForwarding={isForwarding}
-                      setIsForwarding={setIsForwarding}
-                    />
-                  </View>
+                    isForwarding={isForwarding}
+                    setIsForwarding={setIsForwarding}
+                  />
                 </Dropdown>
               )}
             </>
