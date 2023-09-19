@@ -52,15 +52,6 @@ export const useDAOProposals = (daoId: string | undefined) => {
   const { data: gnoDAOProposals, ...gnoOther } = useQuery(
     [daoProposalsQueryKey(daoId), NetworkKind.Gno],
     async () => {
-      console.log(
-        "fetching gnoProposals",
-        daoId,
-        daoAddress,
-        "network",
-        network?.id,
-        "endpoint"
-      );
-
       if (network?.kind !== NetworkKind.Gno) return [];
       const provider = new GnoJSONRPCProvider(network.endpoint);
 
@@ -70,8 +61,6 @@ export const useDAOProposals = (daoId: string | undefined) => {
           `getProposalsJSON(0, 0, "", false)`
         )
       );
-
-      console.log("gnoProposals", gnoProposals);
 
       const proposals: AppProposalResponse[] = [];
 

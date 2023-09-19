@@ -42,7 +42,6 @@ export const useDAOMember = (
   const { data: gnoData } = useQuery(
     ["gnoDAOMember", daoId, userId],
     async () => {
-      console.log("power", daoId, userId);
       const [network, packagePath] = parseUserId(daoId);
       if (network?.kind !== NetworkKind.Gno) {
         return null;
@@ -56,7 +55,6 @@ export const useDAOMember = (
           0
         )
       );
-      console.log("power for", userAddress, "is", power, "in", packagePath);
       const res: MemberResponse = {
         weight: power,
       };
