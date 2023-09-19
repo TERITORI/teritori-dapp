@@ -4,7 +4,7 @@ import { DaoCoreQueryClient } from "../../contracts-clients/dao-core/DaoCore.cli
 import { ArrayOfProposalModule } from "../../contracts-clients/dao-core/DaoCore.types";
 import { mustGetNonSigningCosmWasmClient, parseUserId } from "../../networks";
 
-export const useDAOProposalModules = (
+const useDAOProposalModules = (
   daoId: string | undefined,
   enabled?: boolean
 ) => {

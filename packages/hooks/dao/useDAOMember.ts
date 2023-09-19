@@ -11,7 +11,7 @@ import {
 } from "../../networks";
 import { extractGnoNumber } from "../../utils/gno";
 
-export const useDAOMember = (
+const useDAOMember = (
   daoId: string | undefined,
   userId: string | undefined,
   enabled?: boolean

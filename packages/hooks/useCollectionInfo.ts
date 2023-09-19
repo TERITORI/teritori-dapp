@@ -121,7 +121,7 @@ export const useCollectionInfo = (
   ]);
 };
 
-export const useTeritoriBreedingCollectionInfo = (
+const useTeritoriBreedingCollectionInfo = (
   networkId: string | undefined,
   enabled?: boolean
 ) => {

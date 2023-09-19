@@ -32,7 +32,7 @@ interface PoolAsset {
   weight: string;
 }
 
-export type SwapResult = {
+type SwapResult = {
   title: string;
   message: string;
   isError?: boolean;
@@ -446,7 +446,7 @@ export const useSwap = (
   return { swap, spotPrice, fee, loading };
 };
 
-export const amountToCurrencyMicro = (
+const amountToCurrencyMicro = (
   amount: number,
   networkId: string,
   denom: string
