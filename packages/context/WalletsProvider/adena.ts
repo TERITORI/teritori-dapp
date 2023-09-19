@@ -12,9 +12,7 @@ import {
 import { useAppDispatch } from "../../store/store";
 import { WalletProvider } from "../../utils/walletProvider";
 
-export type UseAdenaResult =
-  | [true, boolean, Wallet[]]
-  | [false, boolean, undefined];
+type UseAdenaResult = [true, boolean, Wallet[]] | [false, boolean, undefined];
 
 export const useAdena: () => UseAdenaResult = () => {
   const isAdenaConnected = useSelector(selectIsAdenaConnected);

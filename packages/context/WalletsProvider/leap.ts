@@ -12,9 +12,7 @@ import {
 import { useAppDispatch } from "../../store/store";
 import { WalletProvider } from "../../utils/walletProvider";
 
-export type UseLeapResult =
-  | [true, boolean, Wallet[]]
-  | [false, boolean, undefined];
+type UseLeapResult = [true, boolean, Wallet[]] | [false, boolean, undefined];
 
 export const useLeap: () => UseLeapResult = () => {
   const isLeapConnected = useSelector(selectIsLeapConnected);

@@ -1,8 +1,8 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useState } from "react";
 
 import { Metadata } from "../contracts-clients/teritori-name-service/TeritoriNameService.types";
 
-export interface TNSMetaDataType extends Metadata {
+interface TNSMetaDataType extends Metadata {
   tokenId: string;
 }
 
@@ -41,5 +41,3 @@ export const TNSMetaDataListContextProvider: React.FC = ({ children }) => {
     </TNSMetaDataListContext.Provider>
   );
 };
-
-export const useTNSMetaDataList = () => useContext(TNSMetaDataListContext);

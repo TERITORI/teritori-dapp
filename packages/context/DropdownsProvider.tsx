@@ -21,7 +21,7 @@ const defaultValue: DefaultValue = {
   openDropdown: () => {},
 };
 
-export const DropdownsContext = createContext(defaultValue);
+const DropdownsContext = createContext(defaultValue);
 
 export const DropdownsContextProvider: React.FC = ({ children }) => {
   const [openedDropdownRef, setOpenedDropdownRef] = useState<RefObject<any>>();
