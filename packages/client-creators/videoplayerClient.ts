@@ -1,20 +1,12 @@
-import {
-  TeritoriVideoPlayerClient,
-  TeritoriVideoPlayerQueryClient,
-} from "../contracts-clients/teritori-video-player/TeritoriVideoPlayer.client";
+import { TeritoriVideoPlayerClient } from "../contracts-clients/teritori-video-player/TeritoriVideoPlayer.client";
 import {
   getKeplrSigningCosmWasmClient,
-  mustGetNonSigningCosmWasmClient,
   mustGetCosmosNetwork,
 } from "../networks";
 
 interface SigningMusicPlayerClientParams {
   networkId: string;
   walletAddress: string;
-}
-
-interface NonSigningMusicPlayerClientParams {
-  networkId: string;
 }
 
 export const signingVideoPlayerClient = async ({
@@ -42,20 +34,4 @@ export const signingVideoPlayerClient = async ({
     cachedSigningClients[cacheKey] = client;
     return client;
   }
-};
-
-export const nonSigningVideoPlayerClient = async ({
-  networkId,
-}: NonSigningMusicPlayerClientParams) => {
-  const network = mustGetCosmosNetwork(networkId);
-  const videoContractAddress = network.videoContractAddress || "";
-
-  const nonSigningCosmWasmClient = await mustGetNonSigningCosmWasmClient(
-    networkId
-  );
-
-  return new TeritoriVideoPlayerQueryClient(
-    nonSigningCosmWasmClient,
-    videoContractAddress
-  );
 };

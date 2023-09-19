@@ -11,7 +11,7 @@ import {
 import { useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 
-import Add from "../../../assets/icons/player/add-primary.svg";
+import Add from "../../../assets/icons/add-alt.svg";
 import DefaultVideoImage from "../../../assets/icons/player/cover-img.png";
 import Img from "../../../assets/icons/player/img.svg";
 import { signingVideoPlayerClient } from "../../client-creators/videoplayerClient";
@@ -140,7 +140,6 @@ export const UploadVideoModal: React.FC<UploadAlbumModalProps> = ({
         videoMetaInfo: {
           ...videoInfo.videoMetaInfo,
           url: uploadedFile.url,
-          duration: 0, //TODO
         },
       };
     });
@@ -287,7 +286,7 @@ export const UploadVideoModal: React.FC<UploadAlbumModalProps> = ({
         >
           {({ onPress }) => (
             <TouchableOpacity style={buttonContainerStyle} onPress={onPress}>
-              <SVG source={Add} width={20} height={20} />
+              <SVG source={Add} width={20} height={20} stroke={primaryColor} />
               <SpacerRow size={1} />
               <BrandText style={buttonTextStyle}>Add video</BrandText>
             </TouchableOpacity>

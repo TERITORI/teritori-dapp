@@ -11,6 +11,7 @@ import {
 import Animated from "react-native-reanimated";
 import { v4 as uuidv4 } from "uuid";
 
+import { VideoComment } from "./VideoComment";
 import Dislike from "../../../assets/icons/player/dislike.svg";
 import Like from "../../../assets/icons/player/like.svg";
 import TipIcon from "../../../assets/icons/tip.svg";
@@ -23,9 +24,7 @@ import { signingVideoPlayerClient } from "../../client-creators/videoplayerClien
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
-import { CreatedByView } from "../../components/VideoPlayer/CreatedByView";
 import { MoreVideoPlayerCard } from "../../components/VideoPlayer/MoreVideoCard";
-import VideoPlayerSeekBar from "../../components/VideoPlayer/VideoPlayerSeekBar";
 import { VideoPlayerTab } from "../../components/VideoPlayer/VideoPlayerTab";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { UserAvatarWithFrame } from "../../components/images/AvatarWithFrame";
@@ -33,7 +32,6 @@ import { TipModal } from "../../components/socialFeed/SocialActions/TipModal";
 import { DateTime } from "../../components/socialFeed/SocialThread/DateTime";
 import { SpacerRow } from "../../components/spacer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { useVideoPlayer } from "../../context/VideoPlayerContext";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
@@ -48,7 +46,7 @@ import {
   useUserFetchVideos,
   combineFetchVideoPages,
 } from "../../hooks/video/useUserFetchVideos";
-import { parseUserId, getUserId } from "../../networks";
+import { getUserId } from "../../networks";
 import { defaultSocialFeedFee } from "../../utils/fee";
 import { ipfsURLToHTTPURL } from "../../utils/ipfs";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
@@ -57,7 +55,6 @@ import { neutral77, secondaryColor } from "../../utils/style/colors";
 import {
   fontSemibold14,
   fontMedium14,
-  fontSemibold13,
   fontSemibold16,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
@@ -68,13 +65,15 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
     params: { id },
   },
 }) => {
-  const { setVideoMeta, setVideoRef } = useVideoPlayer();
+  // TODO: use MediaPlayerContext
+  // const { setVideoMeta, setVideoRef } = useVideoPlayer();
   const navigation = useAppNavigation();
 
   const selectedNetworkId = useSelectedNetworkId();
   const wallet = useSelectedWallet();
   const userId = getUserId(selectedNetworkId, wallet?.address);
 
+  // TODO: use MediaPlayerContext
   // const [videoListForLibrary, setVideoListForLibrary] = useState<VideoInfo[]>(
   //   []
   // );
@@ -85,9 +84,9 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
     identifier: id,
     user: userId,
   });
-  const [createdBy, setCreatedBy] = useState("");
+  const [createdBy] = useState("");
   const authorNSInfo = useNSUserInfo(createdBy);
-  const [userAddress, setUserAddress] = useState("");
+  const [userAddress] = useState("");
   const [likeNum, setLikeNum] = useState(0);
   const [dislikeNum, setDislikeNum] = useState(0);
   const [comment, setComment] = useState("");
@@ -99,9 +98,10 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
 
   const [commentList, setCommentList] = useState<CommentInfo[]>([]);
 
-  useEffect(() => {
-    setVideoRef(videoRef);
-  }, [videoRef, setVideoRef]);
+  // TODO: use MediaPlayerContext
+  // useEffect(() => {
+  //   setVideoRef(videoRef);
+  // }, [videoRef, setVideoRef]);
 
   useEffect(() => {
     if (!comments) return;
@@ -118,24 +118,25 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
       : tinyAddress(userAddress);
   }, [authorNSInfo, userAddress]);
 
-  useEffect(() => {
-    if (data) {
-      setCreatedBy(data.createdBy);
-      const [, userAddr] = parseUserId(data.createdBy);
-      setUserAddress(userAddr);
-      setLikeNum(data.like);
-      setDislikeNum(data.dislike);
-      setVideoMeta((videoMeta) => {
-        return {
-          ...videoMeta,
-          title: data.videoMetaInfo.title,
-          createdBy: data.createdBy,
-          userName: username,
-          duration: data.videoMetaInfo.duration,
-        };
-      });
-    }
-  }, [data, username, setVideoMeta]);
+  // TODO: use MediaPlayerContext
+  // useEffect(() => {
+  //   if (data) {
+  //     setCreatedBy(data.createdBy);
+  //     const [, userAddr] = parseUserId(data.createdBy);
+  //     setUserAddress(userAddr);
+  //     setLikeNum(data.like);
+  //     setDislikeNum(data.dislike);
+  //     setVideoMeta((videoMeta) => {
+  //       return {
+  //         ...videoMeta,
+  //         title: data.videoMetaInfo.title,
+  //         createdBy: data.createdBy,
+  //         userName: username,
+  //         duration: data.videoMetaInfo.duration,
+  //       };
+  //     });
+  //   }
+  // }, [data, username, setVideoMeta]);
 
   const { data: userVideos } = useUserFetchVideos({
     createdBy: data?.createdBy!,
@@ -300,7 +301,9 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
                 </Pressable>
               </View>
             </View>
-            <View style={blueContentsStyle} />
+
+            {/*<View style={blueContentsStyle} />*/}
+
             <BrandText style={contentNameStyle}>
               {data?.videoMetaInfo.description}
             </BrandText>
@@ -339,36 +342,7 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
               />
             </View>
             {commentList.map((comment, index) => (
-              <View key={`commet-${index}`}>
-                <View
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    marginTop: "20px",
-                  }}
-                >
-                  <UserAvatarWithFrame
-                    style={{
-                      marginRight: layout.spacing_x2,
-                    }}
-                    userId={comment.createdBy}
-                    size="S"
-                  />
-                  <BrandText style={blueContentsStyle}>
-                    <CreatedByView user={comment.createdBy} />
-                  </BrandText>
-                  <BrandText style={contentDateStyle}>
-                    <DateTime
-                      date={new Date(comment.createdAt * 1000).toISOString()}
-                      textStyle={{ color: neutral77 }}
-                    />
-                  </BrandText>
-                </View>
-                <BrandText style={commentContentStyle}>
-                  {comment.comment}
-                </BrandText>
-              </View>
+              <VideoComment key={index} comment={comment} />
             ))}
           </View>
           <View style={pageRightPanelStyle}>
@@ -399,25 +373,12 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
         onClose={() => setTipModalVisible(false)}
         isVisible={tipModalVisible}
       />
-      <VideoPlayerSeekBar />
     </ScreenContainer>
   );
 };
 
 //TODO: Fix these styles
 
-const commentContentStyle: TextStyle = {
-  marginTop: "0.5em",
-  display: "flex",
-  flexDirection: "row",
-  marginLeft: "40px",
-  fontSize: 13,
-  // gap: "0.6em",
-};
-const blueContentsStyle: TextStyle = {
-  ...fontSemibold13,
-  color: "#16BBFF",
-};
 const flexRowItemCenterStyle: ViewStyle = {
   display: "flex",
   flexDirection: "row",
@@ -498,12 +459,6 @@ const contentNameStyle: TextStyle = { ...fontSemibold14 };
 const contentDescriptionStyle: TextStyle = {
   ...fontMedium14,
   color: neutral77,
-};
-const contentDateStyle: TextStyle = {
-  ...fontMedium14,
-
-  color: neutral77,
-  marginLeft: "0.5em",
 };
 const tipContentStyle: TextStyle = { ...fontMedium14 };
 const moreVideoGridStyle: ViewStyle = {
