@@ -1,7 +1,8 @@
 import { useScrollTo } from "@nandorojo/anchor";
 import { LinearGradient } from "expo-linear-gradient";
-import React from "react";
+import React, { useRef } from "react";
 import {
+  LayoutChangeEvent,
   ScrollView,
   StyleProp,
   StyleSheet,
@@ -62,11 +63,18 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
   noUnderline?: boolean;
 }) => {
   const { scrollTo } = useScrollTo();
-
+  const scrollViewRef = useRef<ScrollView>(null);
   const itemsKeys = objectKeys(items);
 
+  const onSelectedItemLayout = (e: LayoutChangeEvent) => {
+    scrollViewRef.current?.scrollTo({
+      x: e.nativeEvent.layout.x,
+      animated: false,
+    });
+  };
+
   return (
-    // styles are applied weirdly to scrollview so it's better to apply them to a constraining view
+    // styles are applied weirdly to ScrollView, so it's better to apply them to a constraining view
     <>
       <View
         style={[
@@ -78,6 +86,7 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
         ]}
       >
         <ScrollView
+          ref={scrollViewRef}
           showsHorizontalScrollIndicator={false}
           horizontal
           contentContainerStyle={{
@@ -89,6 +98,7 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
             const isSelected = selected === key;
             return (
               <TouchableOpacity
+                onLayout={isSelected ? onSelectedItemLayout : undefined}
                 key={key}
                 onPress={() =>
                   item.scrollTo
