@@ -8,10 +8,10 @@
     "userInterfaceStyle": "light",
     "plugins": [
       [
-        "expo-image-picker",
+        "expo-camera",
         {
-          "photosPermission": "Allow $(PRODUCT_NAME) to access your photos",
-          "cameraPermission": "Allow $(PRODUCT_NAME) to access camera."
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera.",
+          "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone"
         }
       ],
       [
@@ -21,11 +21,11 @@
         }
       ],
       [
-        "expo-media-library",
+        "expo-image-picker",
         {
-          "photosPermission": "Allow $(PRODUCT_NAME) to access your photos.",
-          "savePhotosPermission": "Allow $(PRODUCT_NAME) to save photos.",
-          "isAccessMediaLocationEnabled": true
+          "photosPermission": "The app accesses your photos to let you share them with your friends.",
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera",
+          "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone"
         }
       ]
     ],
@@ -43,7 +43,9 @@
       "bundleIdentifier": "com.teritori",
       "infoPlist": {
         "NSBluetoothAlwaysUsageDescription": "Used for Bluetooth communications",
-        "NSBluetoothPeripheralUsageDescription": "Used for Bluetooth communications"
+        "NSBluetoothPeripheralUsageDescription": "Used for Bluetooth communications",
+        "NSCameraUsageDescription": "We need access to your camera to take photos",
+        "NSPhotoLibraryUsageDescription": "We need access to your photo library to select images"
       }
     },
     "android": {
@@ -56,10 +58,6 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    },
-    "packagerOpts": {
-      "config": "metro.config.js",
-      "sourceExts": ["js", "jsx", "ts", ".native.ts", "tsx"]
     },
     "extra": {
       "eas": {

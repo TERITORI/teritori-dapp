@@ -1,6 +1,7 @@
 import React, { Dispatch, SetStateAction, useState } from "react";
 import { View, TouchableOpacity } from "react-native";
 
+import { AudioContextWebview } from "./AudioContextWebView";
 import { HandleSendParams } from "./ChatSection";
 import { FileRenderer } from "./FileRenderer";
 import sent from "../../../../assets/icons/sent.svg";
@@ -34,6 +35,10 @@ export const UploadedPreview = ({
       setMessage("");
     }
   };
+
+  if (!file) {
+    return;
+  }
   return (
     <ModalBase
       label="File upload"
@@ -42,6 +47,7 @@ export const UploadedPreview = ({
       hideMainSeparator
       width={400}
     >
+      <AudioContextWebview file={file} />
       {!!file && (
         <FileRenderer files={[file]} maxWidth={360} waveFormMaxWidth={300} />
       )}

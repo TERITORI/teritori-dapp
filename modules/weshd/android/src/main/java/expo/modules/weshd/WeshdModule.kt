@@ -1,5 +1,5 @@
 package expo.modules.weshd
-package WeshFramework
+import expo.weshframework.WeshFramework
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
 
@@ -23,7 +23,11 @@ class WeshdModule : Module() {
 
     // Defines a JavaScript synchronous function that runs the native code on the JavaScript thread.
     Function("boot") {
-      return  WeshFramework.WeshFrameworkBoot()
+      return@Function WeshFramework.boot("/wesh-dir")
+    }
+
+    function("getPort") {  
+        return@Function WeshFramework.getPort()
     }
 
     // Defines a JavaScript function that always returns a Promise and whose native code

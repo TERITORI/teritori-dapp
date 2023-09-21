@@ -4,6 +4,7 @@ import React, { useEffect } from "react";
 import { View, TouchableOpacity } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
+import { formatFile } from "../../../components/fileUploader/formatFile";
 import { imagePickerAssetToLocalFile } from "../../../utils/file";
 import {
   AUDIO_MIME_TYPES,
@@ -21,18 +22,20 @@ interface UploadImageProps {
 
 export const UploadImage = ({ onClose, setFile }: UploadImageProps) => {
   // const [hasFile, setHasFile] = useState(false);
-  // const [status, requestPermission] = ImagePicker.useMediaLibraryPermissions();
+  // const [status, requestPermission] = ImagePicker.useCameraPermissions();
 
   const handleUpload = async () => {
     try {
+      // const perms = await ImagePicker.requestMediaLibraryPermissionsAsync(true);
       console.log("trying");
-      // const permission = await requestPermission();
-      // console.log("media per", permission);
+      // await requestPermission();
+      // const permission = await MediaLibrary.requestPermissionsAsync();
+      // console.log("media per", status, permission);
       const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.All,
-        allowsEditing: true,
-        // aspect: [4, 3],
-        quality: 1,
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: false,
+        aspect: [4, 3],
+        quality: 0,
       });
       console.log("result", result);
 
@@ -58,14 +61,27 @@ export const UploadImage = ({ onClose, setFile }: UploadImageProps) => {
       title: "Attach image/video",
       mimeTypes: [...IMAGE_MIME_TYPES, ...VIDEO_MIME_TYPES],
       onPress: async () => {
-        handleUpload();
+        await handleUpload();
       },
     },
     {
       title: " Attach file",
       mimeTypes: [...AUDIO_MIME_TYPES],
       onPress: async () => {
-        await DocumentPicker.getDocumentAsync();
+        try {
+          const res = await DocumentPicker.getDocumentAsync({
+            copyToCacheDirectory: true,
+          });
+
+          if (res?.assets || res?.output) {
+            const file = res.assets?.[0] || res.output?.[0];
+            console.log(file);
+            const formattedFile = await formatFile(file);
+            setFile(formattedFile);
+          }
+        } catch (err) {
+          console.log("document upload err", err);
+        }
       },
     },
   ];

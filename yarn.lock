@@ -11303,9 +11303,9 @@ __metadata:
   linkType: hard
 
 "caniuse-lite@npm:^1.0.30001125":
-  version: 1.0.30001535
-  resolution: "caniuse-lite@npm:1.0.30001535"
-  checksum: d66f71a3b97bc24108a54fe7ecaf9133c8a9466f91199185bdf43cff94dc89905860ea15ac18e57a109dd5dc85465d8df7dffa50e19324d03682f37a203468c1
+  version: 1.0.30001538
+  resolution: "caniuse-lite@npm:1.0.30001538"
+  checksum: 94c5d55757a339c7cc175f08a024671e2b4e7c04f130b1015793303d637061347efb6ad84447c3b8137333e742d150b8ad9672716bbf2482646c2e63a56f6c55
   languageName: node
   linkType: hard
 
@@ -13644,7 +13644,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron-to-chromium@npm:^1.3.564, electron-to-chromium@npm:^1.4.477":
+"electron-to-chromium@npm:^1.3.564":
+  version: 1.4.525
+  resolution: "electron-to-chromium@npm:1.4.525"
+  checksum: b713e2a3f1f2a2a0303362e40012d548a2ba8b5edb5e2b71350afdc257d7f4e54e9c4a7f1eb331443fdd77093a4761617bfa418528baaafb7f05669ba4814f4a
+  languageName: node
+  linkType: hard
+
+"electron-to-chromium@npm:^1.4.477":
   version: 1.4.523
   resolution: "electron-to-chromium@npm:1.4.523"
   checksum: c090a958afe7849d9d1a0d3ed3a2300ded202374cd68013f9114fac33c506268b3e08a204c3f6e0ad4fe56a3ae75d23a8325cf9474e2954c6d0ddef6a018780c
@@ -14742,6 +14749,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"expo-camera@npm:~13.4.4":
+  version: 13.4.4
+  resolution: "expo-camera@npm:13.4.4"
+  dependencies:
+    invariant: ^2.2.4
+  peerDependencies:
+    expo: "*"
+  checksum: d2730038029e770de2f5106c24d6b5ec58131ac77bb06efc7892fd2dde9e813fd0141950d15ea3a2a997f0271916bc33a659341660b3ad357354630ed56adbbf
+  languageName: node
+  linkType: hard
+
 "expo-checkbox@npm:~2.4.0":
   version: 2.4.0
   resolution: "expo-checkbox@npm:2.4.0"
@@ -14899,15 +14917,6 @@ __metadata:
   dependencies:
     expo-json-utils: ~0.7.0
   checksum: 935c5422414feaed7656183d97a4987fab52103dda04d13f6f27086a7d67851e606615b9678c8e86815c3d74d248bfc543f95b2eb49b4dffb6aed6565118f026
-  languageName: node
-  linkType: hard
-
-"expo-media-library@npm:~15.4.1":
-  version: 15.4.1
-  resolution: "expo-media-library@npm:15.4.1"
-  peerDependencies:
-    expo: "*"
-  checksum: 0030578c13ecac659ddfdb202223a9c30c0598f151b6df1e2a753698cd5d1c62b1386eb63ade44dde692847d7c3ca81a886477a7f799d3693049063b15b06517
   languageName: node
   linkType: hard
 
@@ -23724,16 +23733,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-image-picker@npm:^5.3.1":
-  version: 5.7.0
-  resolution: "react-native-image-picker@npm:5.7.0"
-  peerDependencies:
-    react: "*"
-    react-native: "*"
-  checksum: 170cbda1c405b49ca8434bbe364a54406be3dbcc953ca6e4b40565556004cbddeca34a1091a1dbad60cd1dc06c8777fdd25ab2489447199902c39ec09aa169e1
-  languageName: node
-  linkType: hard
-
 "react-native-iphone-x-helper@npm:^1.3.1":
   version: 1.3.1
   resolution: "react-native-iphone-x-helper@npm:1.3.1"
@@ -26656,13 +26655,14 @@ __metadata:
     expo: ^49.0.0
     expo-av: ~13.4.1
     expo-barcode-scanner: ~12.5.3
+    expo-camera: ~13.4.4
     expo-checkbox: ~2.4.0
     expo-dev-client: ~2.4.6
     expo-document-picker: ~11.5.4
+    expo-file-system: ~15.4.4
     expo-font: ~11.4.0
     expo-image-picker: ~14.3.2
     expo-linear-gradient: ~12.3.0
-    expo-media-library: ~15.4.1
     expo-optimize: ^0.2.19
     expo-splash-screen: ~0.20.5
     expo-status-bar: ~1.6.0
@@ -26703,7 +26703,6 @@ __metadata:
     react-native-get-random-values: ~1.9.0
     react-native-heroicons: ^3.2.0
     react-native-hoverable: ^0.2.0
-    react-native-image-picker: ^5.3.1
     react-native-keyboard-aware-scrollview: ^2.1.0
     react-native-pager-view: 6.2.0
     react-native-paper: ^4.12.5

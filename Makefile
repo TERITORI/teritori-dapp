@@ -269,19 +269,43 @@ build-ios: check-weshframework
 	@npx expo prebuild --clean
 	@npx expo run:ios
 
-.PHONY: check-weshframework
-check-weshframework:
+.PHONY: check-ios-weshframework
+check-ios-weshframework:
 	@if [ ! -e ./modules/wesh/ios/WeshFramework.xcframework ]; then \
 		echo "WeshFramework does not exist. Running a command to create it."; \
 		$(MAKE) build-weshframework; \
 	fi
 
-.PHONY: build-weshframework
-build-weshframework:
+.PHONY: build-ios-weshframework
+build-ios-weshframework:
 	go env $(GOPATH)/bin
 	CGO_CPPFLAGS="-Wno-error -Wno-nullability-completeness -Wno-expansion-to-defined -DHAVE_GETHOSTUUID=0"
 	gomobile bind \
 	-o ./modules/wesh/ios/WeshFramework.xcframework \
 	-tags "fts5 sqlite sqlite_unlock_notify" -tags 'nowatchdog' -target ios -iosversion 13.0 \
 	./go/cmd/weshd-app/
+
+
+	.PHONY: build-android
+build-android: check-android-weshframework
+	@npx expo prebuild --clean
+	@npx expo run:ios
+
+.PHONY: check-android-weshframework
+check-android-weshframework:
+	@if [ ! -e ./modules/weshd/android/libs/WeshFramework.aar ]; then \
+		echo "WeshFramework does not exist. Running a command to create it."; \
+		$(MAKE) build-android-weshframework; \
+	fi
+
+.PHONY: build-android-weshframework
+build-android-weshframework:
+	mkdir "./modules/weshd/android/libs/WeshFramework.aar"
+	go env $(GOPATH)/bin
+	CGO_CPPFLAGS="-Wno-error -Wno-nullability-completeness -Wno-expansion-to-defined -DHAVE_GETHOSTUUID=0"
+	gomobile bind \
+	-o ./modules/weshd/android/libs/WeshFramework.aar \
+	-tags "fts5 sqlite sqlite_unlock_notify" -tags 'nowatchdog' -target android -androidapi 23 \
+	./go/cmd/weshd-app/
+
 
