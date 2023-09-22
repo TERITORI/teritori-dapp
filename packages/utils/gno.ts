@@ -1,6 +1,5 @@
 import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 
-import { Status } from "../contracts-clients/dao-proposal-single/DaoProposalSingle.types";
 import { mustGetGnoNetwork } from "../networks";
 
 interface AdenaDoContractMessage {

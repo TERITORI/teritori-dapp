@@ -6,7 +6,6 @@ import { Decimal } from "@cosmjs/math";
 import { Registry } from "@cosmjs/proto-signing";
 import {
   SigningStargateClient,
-  StargateClient,
   GasPrice,
   defaultRegistryTypes,
 } from "@cosmjs/stargate";
@@ -28,7 +27,6 @@ import { teritoriNetwork } from "./teritori";
 import { teritoriTestnetNetwork } from "./teritori-testnet";
 import {
   CosmosNetworkInfo,
-  CurrencyInfo,
   EthereumNetworkInfo,
   GnoNetworkInfo,
   NativeCurrencyInfo,
