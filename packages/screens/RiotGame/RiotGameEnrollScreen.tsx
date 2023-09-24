@@ -306,7 +306,7 @@ export const RiotGameEnrollScreen: React.FC = () => {
               style={{
                 flexDirection: "row",
                 alignItems: "center",
-                marginRight: layout.spacing_x2_5,
+                marginRight: layout.spacing_x3,
               }}
             >
               <SimpleButton
