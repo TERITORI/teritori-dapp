@@ -252,7 +252,11 @@ export const RiotGameBreedingScreen = () => {
 
         <FlexRow
           breakpoint={MOBILE_MAX_WIDTH}
-          style={{ marginTop: layout.spacing_x4 }}
+          style={{
+            marginTop: layout.spacing_x4,
+            height: isMobile ? 280 : "inherit",
+            justifyContent: isMobile ? "space-between" : undefined,
+          }}
         >
           <InfoBox
             size="LG"
