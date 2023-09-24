@@ -43,6 +43,9 @@ export const RiotGameInventoryScreen = () => {
             <CustomPressable>
               {({ hovered }): React.ReactElement => (
                 <PrimaryButtonOutline
+                  style={{
+                    margin: layout.spacing_x1,
+                  }}
                   disabled
                   color={yellowDefault}
                   size="SM"
@@ -83,6 +86,9 @@ export const RiotGameInventoryScreen = () => {
           >
             <BrandText style={fontMedium32}>Available Rippers</BrandText>
             <PrimaryButtonOutline
+              style={{
+                margin: layout.spacing_x1,
+              }}
               onPress={gotoBreeding}
               color={yellowDefault}
               size="SM"

@@ -287,6 +287,9 @@ export const RiotGameBreedingScreen = () => {
           onPress={doBreed}
           color={yellowDefault}
           size="M"
+          style={{
+            marginBottom: layout.spacing_x1,
+          }}
           text={isBreeding ? "Breeding..." : "Breed my Rippers"}
           iconSVG={breedSVG}
           touchableStyle={{ marginTop: layout.spacing_x2 }}
