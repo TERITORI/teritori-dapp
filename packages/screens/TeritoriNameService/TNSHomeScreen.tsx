@@ -161,7 +161,7 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
           }}
         >
           <FlowCard
-            disabled={!isKeplrConnected || !isLeapConnected}
+            disabled={!isKeplrConnected && !isLeapConnected}
             label="Register"
             description="Register and configure a new name"
             iconSVG={registerSVG}
@@ -170,7 +170,9 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
             }
           />
           <FlowCard
-            disabled={!isKeplrConnected || !isLeapConnected || !tokens?.length}
+            disabled={
+              (!isKeplrConnected && !isLeapConnected) || !tokens?.length
+            }
             label="Manage"
             description="Transfer, edit, or burn a name that you own"
             iconSVG={penSVG}
