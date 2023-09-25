@@ -1,5 +1,6 @@
+import { Decimal } from "@cosmjs/math";
 import { useQuery } from "@tanstack/react-query";
-import React from "react";
+import React, { useState } from "react";
 import { View } from "react-native";
 
 import { Coin } from "../../api/teritori/coin";
@@ -7,6 +8,7 @@ import { MsgBurnTokens } from "../../api/teritori/mint";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
+import { TextInputCustom } from "../../components/inputs/TextInputCustom";
 import { SpacerColumn } from "../../components/spacer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { TeritoriNameServiceQueryClient } from "../../contracts-clients/teritori-name-service/TeritoriNameService.client";
@@ -20,7 +22,9 @@ import { useVaultConfig } from "../../hooks/vault/useVaultConfig";
 import {
   getCosmosNetwork,
   getKeplrSigningStargateClient,
+  getStakingCurrency,
   getUserId,
+  keplrCurrencyFromNativeCurrencyInfo,
   mustGetNonSigningCosmWasmClient,
 } from "../../networks";
 import { prettyPrice } from "../../utils/coins";
@@ -47,16 +51,21 @@ export const CoreDAOScreen: ScreenFC<"CoreDAO"> = () => {
 
 const DAOManager: React.FC = () => {
   const networkId = useSelectedNetworkId();
-  const network = getCosmosNetwork(networkId);
-  const balances = useBalances(networkId, network?.coreDAOAddress);
   const selectedWallet = useSelectedWallet();
+  const network = getCosmosNetwork(networkId);
+  const daoBalances = useBalances(networkId, network?.coreDAOAddress);
+  const userBalances = useBalances(networkId, selectedWallet?.address);
   const makeProposal = useDAOMakeProposal(
     getUserId(networkId, network?.coreDAOAddress)
   );
+  const [burnAmount, setBurnAmount] = useState("0");
+  const { wrapWithFeedback } = useFeedbacks();
+  const currency = getStakingCurrency(networkId);
   return (
     <View>
-      <BrandText>Funds</BrandText>
-      {balances.map((balance) => {
+      <BrandText>Core DAO Funds</BrandText>
+      <SpacerColumn size={1} />
+      {daoBalances.map((balance) => {
         return (
           <BrandText>
             {prettyPrice(networkId, balance.amount, balance.denom)} - $
@@ -64,36 +73,7 @@ const DAOManager: React.FC = () => {
           </BrandText>
         );
       })}
-      <PrimaryButton
-        text="Burn your TORI"
-        loader
-        onPress={async () => {
-          if (!selectedWallet?.address) {
-            return;
-          }
-          const client = await getKeplrSigningStargateClient(
-            selectedWallet.networkId
-          );
-          const burnMsg: MsgBurnTokens = {
-            sender: selectedWallet?.address,
-            amount: [
-              Buffer.from(
-                Coin.encode({ amount: "1000000", denom: "utori" }).finish()
-              ).toString(),
-            ],
-          };
-          await client.signAndBroadcast(
-            selectedWallet?.address,
-            [
-              {
-                typeUrl: "/teritori.mint.v1beta1.MsgBurnTokens",
-                value: burnMsg,
-              },
-            ],
-            "auto"
-          );
-        }}
-      />
+      <SpacerColumn size={1} />
       <PrimaryButton
         text="Burn a TORI"
         loader
@@ -116,7 +96,7 @@ const DAOManager: React.FC = () => {
           };
 
           await makeProposal(selectedWallet?.address, {
-            title: "Burn a TORI",
+            title: "Propose to burn a TORI",
             description: "",
             msgs: [
               {
@@ -130,6 +110,58 @@ const DAOManager: React.FC = () => {
             ],
           });
         }}
+      />
+      <SpacerColumn size={4} />
+      <BrandText>Your Funds</BrandText>
+      {userBalances.map((balance) => {
+        return (
+          <BrandText>
+            {prettyPrice(networkId, balance.amount, balance.denom)} - $
+            {balance.usdAmount}
+          </BrandText>
+        );
+      })}
+      <SpacerColumn size={1} />
+      <TextInputCustom
+        label="Amount to burn"
+        name="burn-amount"
+        currency={keplrCurrencyFromNativeCurrencyInfo(currency)}
+        onChangeText={setBurnAmount}
+      />
+      <SpacerColumn size={1} />
+      <PrimaryButton
+        text="Burn your TORIs"
+        loader
+        onPress={wrapWithFeedback(async () => {
+          if (!selectedWallet?.address || !currency) {
+            throw new Error("no wallet or currency");
+          }
+          const client = await getKeplrSigningStargateClient(
+            selectedWallet.networkId
+          );
+          const burnMsg: MsgBurnTokens = {
+            sender: selectedWallet?.address,
+            amount: [
+              Buffer.from(
+                Coin.encode({
+                  amount: Decimal.fromUserInput(burnAmount, currency.decimals)
+                    .atomics,
+                  denom: currency.denom,
+                }).finish()
+              ).toString(),
+            ],
+          };
+          await client.signAndBroadcast(
+            selectedWallet?.address,
+            [
+              {
+                typeUrl: "/teritori.mint.v1beta1.MsgBurnTokens",
+                value: burnMsg,
+              },
+            ],
+            "auto"
+          );
+        })}
       />
     </View>
   );
