@@ -1,12 +1,5 @@
 import moment from "moment";
-import React, {
-  RefObject,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { RefObject, useMemo, useRef, useState } from "react";
 import {
   View,
   TouchableOpacity,
@@ -57,14 +50,9 @@ import {
   MessageFileData,
   ReplyTo,
 } from "../../../utils/types/message";
-import { GroupInfo_Reply } from "../../../weshnet";
-import { weshClient } from "../../../weshnet/client";
 import { getNewConversationText } from "../../../weshnet/client/messageHelpers";
 import { sendMessage } from "../../../weshnet/client/services";
-import {
-  bytesFromString,
-  stringFromBytes,
-} from "../../../weshnet/client/utils";
+import { bytesFromString } from "../../../weshnet/client/utils";
 
 interface ChatSectionProps {
   conversation: IConversation;
@@ -81,17 +69,12 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
   const [inputRef, setInputRef] = useState<RefObject<any> | null>(null);
   const [file, setFile] = useState<MessageFileData>();
 
-  const { width: windowWidth } = useWindowDimensions();
-
   const [searchInput, setSearchInput] = useState("");
 
   const flatListRef = useRef<FlatList>(null);
 
   const { setToastError } = useFeedbacks();
-  const [groupInfo, setGroupInfo] = useState<GroupInfo_Reply>();
-  const messages = useSelector(
-    selectMessageListByGroupPk(stringFromBytes(groupInfo?.group?.publicKey))
-  );
+  const messages = useSelector(selectMessageListByGroupPk(conversation.id));
 
   const searchResults = useMemo(() => {
     if (!searchInput) {
@@ -102,46 +85,13 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
     );
   }, [messages, searchInput]);
 
-  const getGroupInfo = useCallback(async () => {
-    let _group: GroupInfo_Reply;
-
-    try {
-      if (conversation.type === "group") {
-        _group = await weshClient.client.GroupInfo({
-          groupPk: bytesFromString(conversation.id),
-        });
-        await weshClient.client.ActivateGroup({
-          groupPk: _group.group?.publicKey,
-        });
-      } else {
-        _group = await weshClient.client.GroupInfo({
-          contactPk: bytesFromString(conversation.members[0].id),
-        });
-        await weshClient.client.ActivateGroup({
-          groupPk: _group.group?.publicKey,
-        });
-      }
-
-      setGroupInfo(_group);
-    } catch (err: any) {
-      setToastError({
-        title: "Failed to get group info",
-        message: err?.message,
-      });
-    }
-  }, [conversation, setToastError]);
-
-  useEffect(() => {
-    getGroupInfo();
-  }, [getGroupInfo]);
-
   const handleSend = async (data?: any) => {
     if (!message && !data?.message) {
       return;
     }
     try {
       await sendMessage({
-        groupPk: groupInfo?.group?.publicKey,
+        groupPk: bytesFromString(conversation.id),
         message: {
           type: "message",
           parentId: replyTo?.id || "",
@@ -240,7 +190,7 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
                         }}
                         conversation={conversation}
                         message={item}
-                        groupPk={groupInfo?.group?.publicKey}
+                        groupPk={bytesFromString(conversation.id)}
                       />
                     </>
                   );
@@ -298,7 +248,7 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
                       conversation={conversation}
                       onReply={setReplyTo}
                       message={item}
-                      groupPk={groupInfo?.group?.publicKey}
+                      groupPk={bytesFromString(conversation.id)}
                       isMessageChain={
                         previousMessage?.senderId === item.senderId
                       }
@@ -423,24 +373,22 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
               <TextInputCustom
                 fullWidth
                 setRef={setInputRef}
-                containerStyle={{}}
                 autoFocus={Platform.OS === "web"}
-                height={Math.max(50, inputHeight)}
+                height={Math.max(50, Math.min(inputHeight - 50, 120))}
                 name="message"
                 placeHolder={
                   replyTo?.message ? "Add reply message" : "Add a Message"
                 }
-                multiline={Platform.OS !== "web"}
+                multiline
+                numberOfLines={6}
                 value={message}
                 onChangeText={setMessage}
                 label=""
                 hideLabel
                 blurOnSubmit={false}
-                textInputStyle={
-                  {
-                    // height: Math.max(30, inputHeight - 30),
-                  }
-                }
+                textInputStyle={{
+                  height: Math.max(30, Math.min(inputHeight - 30, 100)),
+                }}
                 returnKeyType="send"
                 onSubmitEditing={() => {
                   if (message.length) {

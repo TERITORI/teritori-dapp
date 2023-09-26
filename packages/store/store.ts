@@ -1,6 +1,11 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
-import { persistStore, persistReducer, createMigrate } from "redux-persist";
+import {
+  persistStore,
+  persistReducer,
+  createMigrate,
+  REHYDRATE,
+} from "redux-persist";
 
 import { persistConfig } from "./config";
 import { dAppsReducer, dAppsReducerPersisted } from "./slices/dapps-store";
@@ -67,15 +72,21 @@ const rootReducer = combineReducers({
 
 const persistedReducer = persistReducer(_persistConfig, rootReducer);
 
+const createRehydrateRootReducer = (reducer) => (state, action) => {
+  if (action.type === REHYDRATE) {
+    console.log("rehydrated");
+    bootWeshModule();
+  }
+  return reducer(state, action);
+};
+
 export const store = configureStore({
-  reducer: persistedReducer,
+  reducer: createRehydrateRootReducer(persistedReducer),
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({ serializableCheck: false }),
 });
 
-export const persistor = persistStore(store, null, () => {
-  bootWeshModule();
-});
+export const persistor = persistStore(store, null);
 
 export type RootState = ReturnType<typeof store.getState>;
 

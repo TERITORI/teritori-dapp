@@ -159,6 +159,7 @@ export const MessageScreen: ScreenFC<"Message"> = ({ route }) => {
           <View
             style={{
               flexDirection: "row",
+              flex: 1,
             }}
           >
             <SideBarChats />

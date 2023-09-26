@@ -2,15 +2,16 @@ import { Platform } from "react-native";
 
 import { weshClient } from "./client";
 import { weshConfig } from "./config";
-import { subscribeMetadata } from "./subscribers";
+import { subscribeMessages, subscribeMetadata } from "./subscribers";
 import { bytesFromString, encodeJSON, stringFromBytes } from "./utils";
 import {
   MessageState,
+  selectConversationList,
   setContactInfo,
   setPeerList,
 } from "../../store/slices/message";
 import { store } from "../../store/store";
-import { Message } from "../../utils/types/message";
+import { CONVERSATION_TYPES, Message } from "../../utils/types/message";
 import { GroupInfo_Request } from "../protocoltypes";
 
 let getPeerListIntervalId;
@@ -69,10 +70,21 @@ export const bootWeshnet = async () => {
     }
     getPeerListIntervalId = setInterval(() => {
       getAndUpdatePeerList();
-    }, 60 * 1000);
+    }, 30 * 1000);
   } catch (err) {
     console.log("create config err", err);
   }
+  bootSubscribeMessages();
+};
+
+const bootSubscribeMessages = () => {
+  const conversations = selectConversationList(CONVERSATION_TYPES.ACTIVE)(
+    store.getState()
+  );
+
+  conversations.forEach((item) => {
+    subscribeMessages(item.id);
+  });
 };
 
 export const createSharableLink = (

@@ -110,7 +110,7 @@ export const handleMetadata = async (data: GroupMetadataEvent) => {
 
         store.dispatch(
           setContactRequestList({
-            id: parsedData.eventContext.id,
+            id: stringFromBytes(parsedData.payload.contactPk),
             contactId: stringFromBytes(parsedData.payload.contactPk),
             rdvSeed: stringFromBytes(parsedData.payload.contactRendezvousSeed),
             name: parsedData.payload.contactMetadata.name,

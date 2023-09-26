@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import {
   Platform,
+  ScrollView,
   TouchableOpacity,
   View,
   useWindowDimensions,
@@ -90,24 +91,26 @@ export const SideBarChats = () => {
         <Separator horizontal={false} color={neutral22} />
         <SpacerColumn size={1.5} />
       </>
-      <View style={{ zIndex: 1 }}>
-        {conversationList.map((item, index) => (
-          <ChatItem
-            data={item}
-            key={index}
-            isActive={item.id === activeConversation?.id}
-            onPress={() => {
-              if (Platform.OS === "web") {
-                setActiveConversation?.(item);
-                navigate("Message");
-              } else {
-                navigate("ChatSection", item);
-              }
-            }}
-            isLastItem={index === conversationList.length - 1}
-          />
-        ))}
-      </View>
+      <ScrollView style={{}}>
+        <View style={{ zIndex: 1 }}>
+          {conversationList.map((item, index) => (
+            <ChatItem
+              data={item}
+              key={index}
+              isActive={item.id === activeConversation?.id}
+              onPress={() => {
+                if (Platform.OS === "web") {
+                  setActiveConversation?.(item);
+                  navigate("Message");
+                } else {
+                  navigate("ChatSection", item);
+                }
+              }}
+              isLastItem={index === conversationList.length - 1}
+            />
+          ))}
+        </View>
+      </ScrollView>
     </View>
   );
 };

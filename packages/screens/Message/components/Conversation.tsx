@@ -63,7 +63,7 @@ export const Conversation = ({
   const [isForwarding, setIsForwarding] = useState(false);
 
   const isSender =
-    message.senderId === stringFromBytes(weshConfig.config.accountPk);
+    message.senderId === stringFromBytes(weshConfig?.config?.accountPk);
 
   const reactions = useMemo(() => {
     if (!message?.reactions?.length) {
