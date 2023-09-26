@@ -95,6 +95,7 @@ export type GnoNetworkInfo = NetworkInfoBase & {
   daoInterfacesPkgPath?: string;
   daoCorePkgPath?: string;
   groupsPkgPath?: string;
+  faucetURL?: string;
 };
 
 export type NetworkInfo =
