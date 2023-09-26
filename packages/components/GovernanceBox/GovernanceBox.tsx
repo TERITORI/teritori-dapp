@@ -6,6 +6,7 @@ import { BrandText } from "../../components/BrandText/BrandText";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import { ProposalStatus } from "../../screens/Governance/types";
 import { tulipTree } from "../../utils/style/colors";
+import { layout } from "../../utils/style/layout";
 
 // FIXME: code dedup
 
@@ -113,7 +114,13 @@ export const GovernanceBox: React.FC<{
   }
 
   return (
-    <View style={{ width: "50%", marginBottom: 20 }}>
+    <View
+      style={{
+        width: "50%",
+        marginBottom: layout.spacing_x2_5,
+        marginRight: layout.spacing_x3,
+      }}
+    >
       <TouchableOpacity
         onPress={() => {
           activePopup();
@@ -126,7 +133,6 @@ export const GovernanceBox: React.FC<{
             style={{
               flexDirection: "column",
               top: 20,
-              width: "96%",
               height: "100%",
             }}
           >
