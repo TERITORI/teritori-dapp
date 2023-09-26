@@ -389,7 +389,6 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
                 textInputStyle={{
                   height: Math.max(30, Math.min(inputHeight - 30, 100)),
                 }}
-                returnKeyType="send"
                 onSubmitEditing={() => {
                   if (message.length) {
                     handleSend();
@@ -397,6 +396,19 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
                 }}
                 onContentSizeChange={(event) => {
                   setInputHeight(event.nativeEvent.contentSize.height);
+                }}
+                onKeyPress={(e) => {
+                  //@ts-ignore
+                  if (
+                    Platform.OS === "web" &&
+                    e.nativeEvent.key === "Enter" &&
+                    !e.shiftKey
+                  ) {
+                    e.preventDefault();
+                    if (message.length) {
+                      handleSend();
+                    }
+                  }
                 }}
               >
                 <TouchableOpacity onPress={handleSend}>

@@ -107,10 +107,8 @@ const messageSlice = createSlice({
       if (!state.messageList[action.payload.groupPk]) {
         state.messageList[action.payload.groupPk] = {};
       }
-      state.messageList[action.payload.groupPk][action.payload.data.id] = {
-        ...state.messageList[action.payload.groupPk][action.payload.data.id],
-        ...action.payload.data,
-      };
+      state.messageList[action.payload.groupPk][action.payload.data.id] =
+        action.payload.data;
     },
     setPeerList: (state, action: PayloadAction<PeerItem[]>) => {
       state.peerList = action.payload;
@@ -120,30 +118,21 @@ const messageSlice = createSlice({
       action: PayloadAction<{ groupPk: string; data: Message }>
     ) => {
       if (action.payload.data.parentId) {
-        if (!state.messageList[action.payload.groupPk]) {
-          state.messageList[action.payload.groupPk] = {};
-        }
-        if (
-          !state.messageList[action.payload.groupPk][
-            action.payload?.data?.parentId
-          ]
-        ) {
-          //@ts-ignore
+        try {
           state.messageList[action.payload.groupPk][
-            action?.payload?.data?.parentId
-          ] = {};
+            action.payload.data?.parentId
+          ].reactions = uniqBy(
+            [
+              ...(state.messageList[action.payload.groupPk][
+                action.payload.data.parentId
+              ].reactions || []),
+              action.payload.data,
+            ],
+            "id"
+          );
+        } catch (err) {
+          console.log("update reaction failed", err);
         }
-        state.messageList[action.payload.groupPk][
-          action.payload.data?.parentId
-        ].reactions = uniqBy(
-          [
-            ...(state.messageList[action.payload.groupPk][
-              action.payload.data.parentId
-            ].reactions || []),
-            action.payload.data,
-          ],
-          "id"
-        );
       }
     },
     setContactRequestList: (

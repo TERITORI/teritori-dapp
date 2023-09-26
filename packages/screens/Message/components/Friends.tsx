@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { View } from "react-native";
+import { View, Platform } from "react-native";
 
 import FriendList from "./FriendsList";
 import { MessageBlankFiller } from "./MessageBlankFiller";
 import { TextInputCustomBorder } from "../../../components/inputs/TextInputCustomBorder";
 import { SpacerColumn } from "../../../components/spacer";
+import { useAppNavigation } from "../../../utils/navigation";
 import { neutral00 } from "../../../utils/style/colors";
 import { Conversation } from "../../../utils/types/message";
 interface FriendsProps {
@@ -13,6 +14,7 @@ interface FriendsProps {
 }
 export const Friends = ({ items, setActiveConversation }: FriendsProps) => {
   const [searchQuery, setSearchQuery] = useState("");
+  const { navigate } = useAppNavigation();
 
   const filteredItems = items.filter((item) =>
     item.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -35,6 +37,12 @@ export const Friends = ({ items, setActiveConversation }: FriendsProps) => {
             key={item.id}
             item={item}
             handleChatPress={() => {
+              if (Platform.OS === "web") {
+                setActiveConversation?.(item);
+                navigate("Message");
+              } else {
+                navigate("ChatSection", item);
+              }
               setActiveConversation?.(item);
             }}
           />

@@ -44,116 +44,122 @@ export const subscribeMessages = async (groupPk: string) => {
       const messages = await weshClient.client.GroupMessageList(config);
       const observer = {
         next: (data: GroupMessageEvent) => {
-          console.log("incoming message");
-          const id = stringFromBytes(data.eventContext?.id);
-          if (lastId === id) {
-            console.log("already stored; test test", id);
-            return;
-          }
-          const conversation = selectConversationById(
-            stringFromBytes(config.groupPk)
-          )(store.getState());
-          store.dispatch(
-            setLastId({
-              key: groupPk,
-              value: id,
-            })
-          );
-
-          data.message = decodeJSON(data.message);
-
-          // @ts-ignore
-          const message: Message = {
-            id: stringFromBytes(data.eventContext?.id),
-            ...data.message,
-          };
-          const isSender =
-            message.senderId === stringFromBytes(weshConfig.config.accountPk);
-
-          switch (message.type) {
-            case "reaction": {
+          try {
+            console.log("incoming message");
+            const id = stringFromBytes(data.eventContext?.id);
+            if (lastId === id) {
+              console.log("already stored; test test", id);
+              return;
+            } else {
               store.dispatch(
-                updateMessageReaction({
-                  groupPk: stringFromBytes(config.groupPk),
-                  data: message,
+                setLastId({
+                  key: groupPk,
+                  value: id,
                 })
               );
-              break;
             }
+            const conversation = selectConversationById(groupPk)(
+              store.getState()
+            );
 
-            case "group-create": {
-              store.dispatch(
-                updateConversationById({
-                  id: stringFromBytes(config.groupPk),
-                  name: message?.payload?.metadata?.groupName,
-                })
-              );
+            data.message = decodeJSON(data.message);
 
-              break;
-            }
-            case "group-invite": {
-              const formattedMessage = isSender
-                ? `You invited ${getConversationName(
-                    conversation
-                  )} to a group ${message?.payload?.metadata?.groupName}`
-                : `${getConversationName(
-                    conversation
-                  )} invited you to a group ${
-                    message?.payload?.metadata?.groupName
-                  }`;
+            // @ts-ignore
+            const message: Message = {
+              id: stringFromBytes(data.eventContext?.id),
+              ...data.message,
+            };
+            const isSender =
+              message.senderId === stringFromBytes(weshConfig.config.accountPk);
 
-              if (!message.payload) {
-                message.payload = { files: [], message: "" };
-              }
-              message.payload.message = formattedMessage;
-
-              store.dispatch(
-                setMessageList({
-                  groupPk: stringFromBytes(config.groupPk),
-                  data: message,
-                })
-              );
-
-              break;
-            }
-            case "group-join": {
-              console.log("group-join", message);
-              const newMember = [];
-
-              if (
-                message?.payload?.metadata?.contact?.id &&
-                stringFromBytes(weshConfig.config.accountPk) !==
-                  message?.payload?.metadata?.contact?.id
-              ) {
-                newMember.push(message?.payload?.metadata?.contact);
+            console.log("Message type", message.type);
+            switch (message.type) {
+              case "reaction": {
+                store.dispatch(
+                  updateMessageReaction({
+                    groupPk,
+                    data: message,
+                  })
+                );
+                break;
               }
 
-              const conversation = selectConversationById(
-                stringFromBytes(config.groupPk)
-              )(store.getState());
-              store.dispatch(
-                updateConversationById({
-                  id: stringFromBytes(config.groupPk),
-                  name: message?.payload?.metadata?.groupName,
-                  members: [...(conversation.members || []), ...newMember],
-                })
-              );
-              store.dispatch(
-                setMessageList({
-                  groupPk: stringFromBytes(config.groupPk),
-                  data: message,
-                })
-              );
-              break;
+              case "group-create": {
+                store.dispatch(
+                  updateConversationById({
+                    id: groupPk,
+                    name: message?.payload?.metadata?.groupName,
+                  })
+                );
+
+                break;
+              }
+              case "group-invite": {
+                const formattedMessage = isSender
+                  ? `You invited ${getConversationName(
+                      conversation
+                    )} to a group ${message?.payload?.metadata?.groupName}`
+                  : `${getConversationName(
+                      conversation
+                    )} invited you to a group ${
+                      message?.payload?.metadata?.groupName
+                    }`;
+
+                if (!message.payload) {
+                  message.payload = { files: [], message: "" };
+                }
+                message.payload.message = formattedMessage;
+
+                store.dispatch(
+                  setMessageList({
+                    groupPk,
+                    data: message,
+                  })
+                );
+
+                break;
+              }
+              case "group-join": {
+                console.log("group-join", message);
+                const newMember = [];
+
+                if (
+                  message?.payload?.metadata?.contact?.id &&
+                  stringFromBytes(weshConfig.config.accountPk) !==
+                    message?.payload?.metadata?.contact?.id
+                ) {
+                  newMember.push(message?.payload?.metadata?.contact);
+                }
+
+                const conversation = selectConversationById(groupPk)(
+                  store.getState()
+                );
+                store.dispatch(
+                  updateConversationById({
+                    id: groupPk,
+                    name: message?.payload?.metadata?.groupName,
+                    members: [...(conversation.members || []), ...newMember],
+                  })
+                );
+                store.dispatch(
+                  setMessageList({
+                    groupPk,
+                    data: message,
+                  })
+                );
+                break;
+              }
+              default: {
+                store.dispatch(
+                  setMessageList({
+                    groupPk,
+                    data: message,
+                  })
+                );
+              }
             }
-            default: {
-              store.dispatch(
-                setMessageList({
-                  groupPk: stringFromBytes(config.groupPk),
-                  data: message,
-                })
-              );
-            }
+          } catch (err) {
+            console.log("subscribe message next err:", err);
           }
         },
         error: (e: any) => {
@@ -196,7 +202,7 @@ export const subscribeMetadata = async (groupPk: Uint8Array) => {
 
     const myObserver = {
       next: (data: GroupMetadataEvent) => {
-        console.log("incoming metadata", data);
+        console.log("incoming metadata");
         const id = stringFromBytes(data.eventContext?.id);
         if (lastId === id) {
           return;

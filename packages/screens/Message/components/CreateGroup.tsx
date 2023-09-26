@@ -42,6 +42,7 @@ export const CreateGroup = ({ onClose }: CreateGroupProps) => {
   const contactInfo = useSelector(selectContactInfo);
   const { setToastError } = useFeedbacks();
   const [loading, setLoading] = useState(false);
+  const [searchText, setSearchText] = useState("");
   const conversations = useSelector(selectConversationList());
   const handleChange = (items: CheckboxItem[]) => {
     setCheckedContacts(
@@ -165,11 +166,15 @@ export const CreateGroup = ({ onClose }: CreateGroupProps) => {
 
       <SpacerColumn size={2} />
 
-      <SearchInput borderRadius={12} />
+      <SearchInput borderRadius={12} handleChangeText={setSearchText} />
       <SpacerColumn size={2} />
       <View style={{ maxHeight: 200 }}>
         <ScrollView showsVerticalScrollIndicator={false}>
-          <CheckboxGroup items={items} onChange={handleChange} />
+          <CheckboxGroup
+            items={items}
+            onChange={handleChange}
+            searchText={searchText}
+          />
         </ScrollView>
       </View>
 

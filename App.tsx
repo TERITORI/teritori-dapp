@@ -33,7 +33,7 @@ import {
 import { useSelectedNetworkId } from "./packages/hooks/useSelectedNetwork";
 import useSelectedWallet from "./packages/hooks/useSelectedWallet";
 import { setSelectedWalletId } from "./packages/store/slices/settings";
-import { persistor, store, useAppDispatch } from "./packages/store/store";
+import { store, useAppDispatch } from "./packages/store/store";
 import { handleAstilectronMessages } from "./packages/utils/astilectron";
 import { linking } from "./packages/utils/navigation";
 
