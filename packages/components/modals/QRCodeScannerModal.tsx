@@ -1,6 +1,11 @@
 import { BarCodeScanner } from "expo-barcode-scanner";
-import React, { useEffect } from "react";
-import { View, StyleSheet, useWindowDimensions } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  StyleSheet,
+  useWindowDimensions,
+  ActivityIndicator,
+} from "react-native";
 
 import ModalBase from "./ModalBase";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
@@ -8,9 +13,14 @@ import { useFeedbacks } from "../../context/FeedbacksProvider";
 export const QRCodeScannerModal = ({ onClose }) => {
   const { setToastError } = useFeedbacks();
   const { width, height } = useWindowDimensions();
+  const [permission, setPermission] = useState(false);
   useEffect(() => {
     const getBarCodeScannerPermissions = async () => {
-      await BarCodeScanner.requestPermissionsAsync();
+      const status = await BarCodeScanner.requestPermissionsAsync();
+
+      if (status.granted) {
+        setPermission(true);
+      }
     };
 
     getBarCodeScannerPermissions();
@@ -37,10 +47,14 @@ export const QRCodeScannerModal = ({ onClose }) => {
           width: "100%",
         }}
       >
-        <BarCodeScanner
-          onBarCodeScanned={handleBarCodeScanned}
-          style={StyleSheet.absoluteFillObject}
-        />
+        {permission ? (
+          <BarCodeScanner
+            onBarCodeScanned={handleBarCodeScanned}
+            style={StyleSheet.absoluteFillObject}
+          />
+        ) : (
+          <ActivityIndicator size="large" color="white" />
+        )}
       </View>
     </ModalBase>
   );

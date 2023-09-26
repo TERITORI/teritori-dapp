@@ -11,7 +11,7 @@
         "expo-camera",
         {
           "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera.",
-          "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone"
+          "microphonePermission": false
         }
       ],
       [
@@ -25,7 +25,7 @@
         {
           "photosPermission": "The app accesses your photos to let you share them with your friends.",
           "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera",
-          "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone"
+          "microphonePermission": false
         }
       ]
     ],
@@ -43,9 +43,7 @@
       "bundleIdentifier": "com.teritori",
       "infoPlist": {
         "NSBluetoothAlwaysUsageDescription": "Used for Bluetooth communications",
-        "NSBluetoothPeripheralUsageDescription": "Used for Bluetooth communications",
-        "NSCameraUsageDescription": "We need access to your camera to take photos",
-        "NSPhotoLibraryUsageDescription": "We need access to your photo library to select images"
+        "NSBluetoothPeripheralUsageDescription": "Used for Bluetooth communications"
       }
     },
     "android": {

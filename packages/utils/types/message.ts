@@ -43,12 +43,13 @@ export interface Message {
   isRead?: boolean;
 }
 
-interface Contact {
+export interface Contact {
   id: string;
   tokenId?: string;
   name: string;
   avatar: string;
   rdvSeed: string;
+  peerId: string;
   hasLeft?: boolean;
 }
 
@@ -85,4 +86,9 @@ export enum CONVERSATION_TYPES {
   ACTIVE = "Active Conversations",
   ALL = "All Conversations",
   ARCHIVED = "Archived Conversations",
+}
+
+export interface PeerItem {
+  id: string;
+  isActive: boolean;
 }

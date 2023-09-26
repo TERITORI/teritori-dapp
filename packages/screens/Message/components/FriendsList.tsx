@@ -3,6 +3,7 @@ import { View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Avatar, Badge } from "react-native-paper";
 
+import { MessageAvatar } from "./MessageAvatar";
 import chaticon from "../../../../assets/icons/chaticon.svg";
 import dots from "../../../../assets/icons/dots.svg";
 import { BrandText } from "../../../components/BrandText";
@@ -31,19 +32,9 @@ const FriendList = ({ item, handleChatPress }: FriendListProps) => {
       <FlexRow justifyContent="space-between">
         <View>
           <FlexRow>
-            <Avatar.Image
-              size={40}
-              source={{ uri: getConversationAvatar(item) || "" }}
-            />
-            <Badge
-              style={{
-                position: "absolute",
-                top: 30,
-                left: 30,
-
-                backgroundColor: onlineStatusBadgeColor,
-              }}
-              size={12}
+            <MessageAvatar
+              item={item.members?.[0]}
+              disableStatus={item.type === "group"}
             />
             <SpacerRow size={1.5} />
             <View>

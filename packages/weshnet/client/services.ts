@@ -1,23 +1,54 @@
+import { Platform } from "react-native";
+
 import { weshClient } from "./client";
 import { weshConfig } from "./config";
 import { subscribeMetadata } from "./subscribers";
 import { bytesFromString, encodeJSON, stringFromBytes } from "./utils";
-import { MessageState, setContactInfo } from "../../store/slices/message";
+import {
+  MessageState,
+  setContactInfo,
+  setPeerList,
+} from "../../store/slices/message";
 import { store } from "../../store/store";
 import { Message } from "../../utils/types/message";
 import { GroupInfo_Request } from "../protocoltypes";
 
+let getPeerListIntervalId;
+
 export const getAndUpdatePeerList = async () => {
   const peerList = await weshClient.client.PeerList({});
 
-  console.log("peer List", peerList);
+  store.dispatch(
+    setPeerList(
+      peerList.peers.map((item) => ({
+        id: item.id,
+        isActive: item.isActive,
+      }))
+    )
+  );
+};
+
+export const bootWeshModule = async () => {
+  if (Platform.OS === "web") {
+    return;
+  }
+  try {
+    const WeshnetModule = require("../../../modules/weshd");
+    const port = await WeshnetModule.getPort();
+    WeshnetModule.boot();
+    setTimeout(() => {
+      weshClient.createClient(port);
+    }, 15 * 1000);
+  } catch (err) {
+    console.log("bootWesh", err);
+  }
 };
 
 export const bootWeshnet = async () => {
   try {
+    console.log(weshConfig.config);
     await weshClient.client.ContactRequestEnable({});
     const contactRef = await weshClient.client.ContactRequestReference({});
-    await getAndUpdatePeerList();
 
     if (contactRef.publicRendezvousSeed.length === 0) {
       const resetRef = await weshClient.client.ContactRequestResetReference({});
@@ -31,6 +62,14 @@ export const bootWeshnet = async () => {
     );
 
     subscribeMetadata(weshConfig.config.accountGroupPk);
+
+    getAndUpdatePeerList();
+    if (getPeerListIntervalId) {
+      clearInterval(getPeerListIntervalId);
+    }
+    getPeerListIntervalId = setInterval(() => {
+      getAndUpdatePeerList();
+    }, 60 * 1000);
   } catch (err) {
     console.log("create config err", err);
   }
@@ -48,7 +87,7 @@ export const createSharableLink = (
     contactInfo.publicRendezvousSeed
   )}&name=${encodeURIComponent(contactInfo.name)}&avatar=${encodeURIComponent(
     contactInfo.avatar
-  )}`;
+  )}&peerId=${encodeURIComponent(weshConfig.config.peerId)}`;
 };
 
 export const addContact = async (
@@ -79,10 +118,12 @@ export const addContact = async (
       ownMetadata: encodeJSON({
         name: contactInfo.name,
         avatar: contactInfo.avatar,
+        peerId: weshConfig.config.peerId,
         timestamp: new Date().toISOString(),
         contact: {
           name: decodeURIComponent(url?.searchParams.get("name") || ""),
           avatar: decodeURIComponent(url?.searchParams.get("avatar") || ""),
+          peerId: decodeURIComponent(url?.searchParams.get("peerId") || ""),
         },
       }),
     });

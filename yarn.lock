@@ -14780,30 +14780,30 @@ __metadata:
   linkType: hard
 
 "expo-dev-client@npm:~2.4.6":
-  version: 2.4.10
-  resolution: "expo-dev-client@npm:2.4.10"
+  version: 2.4.11
+  resolution: "expo-dev-client@npm:2.4.11"
   dependencies:
-    expo-dev-launcher: 2.4.12
-    expo-dev-menu: 3.2.0
+    expo-dev-launcher: 2.4.13
+    expo-dev-menu: 3.2.1
     expo-dev-menu-interface: 1.3.0
     expo-manifests: ~0.7.0
     expo-updates-interface: ~0.10.0
   peerDependencies:
     expo: "*"
-  checksum: d0fbcb5574c109a895d9350f69a0db67555ec9537eb4e287418f57a91d8ea17439f2a91e5215d5bd7728051e94544b5e36fd59b14c3cd1b48a34ca2b60f92ed1
+  checksum: 21ca1cb1af75db1dea9d241629167283bddd42077d44c537649cc05c62b3805223b00218201ccb13655bba007a28d9c7d9625a0df1cef25f19c9017be891380f
   languageName: node
   linkType: hard
 
-"expo-dev-launcher@npm:2.4.12":
-  version: 2.4.12
-  resolution: "expo-dev-launcher@npm:2.4.12"
+"expo-dev-launcher@npm:2.4.13":
+  version: 2.4.13
+  resolution: "expo-dev-launcher@npm:2.4.13"
   dependencies:
-    expo-dev-menu: 3.2.0
+    expo-dev-menu: 3.2.1
     resolve-from: ^5.0.0
     semver: ^7.5.3
   peerDependencies:
     expo: "*"
-  checksum: 6ede5d40d4b3a074a7563a2f148cef421f9f1a57e5dc935a22f2ebfa88ec3eab22df9c452ffb881b7b95a6fd41cdf2e12bd96f1156d5268c143c00c092a9a11d
+  checksum: 9985306aa0b6730354ef6b08cf64f0e2619771ca23b1daab1ca51f09459465502dafa3b8aff9d6e6320609b575d6085ccc1e2f3c31431f6350b92120150f3b1d
   languageName: node
   linkType: hard
 
@@ -14816,15 +14816,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-dev-menu@npm:3.2.0":
-  version: 3.2.0
-  resolution: "expo-dev-menu@npm:3.2.0"
+"expo-dev-menu@npm:3.2.1":
+  version: 3.2.1
+  resolution: "expo-dev-menu@npm:3.2.1"
   dependencies:
     expo-dev-menu-interface: 1.3.0
     semver: ^7.5.3
   peerDependencies:
     expo: "*"
-  checksum: 2b877c8e24ed2e3ed86f849bedd0122d6f4fde84bc74927eca40e1181ac40f298fb1c230f21ca7efe988320761c6e0c3d7e24f996392a42ad2c6cc1b9f357699
+  checksum: 48c19a5fca34a861b3243e30754e2f9dde0f0c5b60e43162302218504256e8ddc8f5695e54fde328f96c8cfe344ce9386f13474dac138b1e93a07c3dd688af5a
   languageName: node
   linkType: hard
 
@@ -23639,22 +23639,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-document-picker@npm:^8.2.0":
-  version: 8.2.1
-  resolution: "react-native-document-picker@npm:8.2.1"
-  dependencies:
-    invariant: ^2.2.4
-  peerDependencies:
-    react: "*"
-    react-native: "*"
-    react-native-windows: "*"
-  peerDependenciesMeta:
-    react-native-windows:
-      optional: true
-  checksum: 575d3bec391044fdaf8d4d740a115a0b3e5cbafdb893ce19157b0c5fefb052c208b9db6d352e171d358c723612e47fe67cda4634a60d3a245a30ff103b1cb84c
-  languageName: node
-  linkType: hard
-
 "react-native-drag-sort@npm:^2.4.4":
   version: 2.4.4
   resolution: "react-native-drag-sort@npm:2.4.4"
@@ -26696,7 +26680,6 @@ __metadata:
     react-native: 0.72.4
     react-native-confetti-cannon: ^1.5.2
     react-native-countdown-component: ^2.7.1
-    react-native-document-picker: ^8.2.0
     react-native-drag-sort: ^2.4.4
     react-native-drax: ^0.10.2
     react-native-gesture-handler: ~2.12.0

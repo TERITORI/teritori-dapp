@@ -78,38 +78,38 @@ export const MessageScreen: ScreenFC<"Message"> = ({ route }) => {
     },
   ];
 
-  if (!contactInfo.publicRendezvousSeed) {
-    return (
-      <ScreenContainer
-        headerChildren={<MessageHeader />}
-        responsive
-        fullWidth
-        footerChildren={<></>}
-        noScroll
-      >
-        <View
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-            padding: layout.spacing_x1,
-          }}
-        >
-          <ActivityIndicator size="large" />
-          <BrandText
-            style={[
-              fontSemibold14,
-              { textAlign: "center", marginTop: layout.spacing_x1_5 },
-            ]}
-          >
-            We are currently in the process of setting up Weshnet, and it will
-            be ready within just a few short minutes.{"\n"} Thank you for your
-            understanding
-          </BrandText>
-        </View>
-      </ScreenContainer>
-    );
-  }
+  // if (!contactInfo.publicRendezvousSeed) {
+  //   return (
+  //     <ScreenContainer
+  //       headerChildren={<MessageHeader />}
+  //       responsive
+  //       fullWidth
+  //       footerChildren={<></>}
+  //       noScroll
+  //     >
+  //       <View
+  //         style={{
+  //           flex: 1,
+  //           justifyContent: "center",
+  //           alignItems: "center",
+  //           padding: layout.spacing_x1,
+  //         }}
+  //       >
+  //         <ActivityIndicator size="large" />
+  //         <BrandText
+  //           style={[
+  //             fontSemibold14,
+  //             { textAlign: "center", marginTop: layout.spacing_x1_5 },
+  //           ]}
+  //         >
+  //           We are currently in the process of setting up Weshnet, and it will
+  //           be ready within just a few short minutes.{"\n"} Thank you for your
+  //           understanding
+  //         </BrandText>
+  //       </View>
+  //     </ScreenContainer>
+  //   );
+  // }
   return (
     <ScreenContainer
       headerChildren={<MessageHeader />}

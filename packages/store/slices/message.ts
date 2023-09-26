@@ -8,10 +8,12 @@ import {
   MessageList,
   Message,
   CONVERSATION_TYPES,
+  PeerItem,
 } from "./../../utils/types/message";
 import { RootState } from "../store";
 
 export interface MessageState {
+  peerList: PeerItem[];
   contactInfo: {
     name: string;
     avatar: string;
@@ -39,6 +41,7 @@ const initialState: MessageState = {
   contactRequestList: [],
   conversationList: {},
   lastIds: {},
+  peerList: [],
 };
 
 export const selectContactInfo = (state: RootState) =>
@@ -46,6 +49,11 @@ export const selectContactInfo = (state: RootState) =>
 
 export const selectMessageList = (groupPk: string) => (state: RootState) =>
   state.message.messageList[groupPk] || [];
+
+export const selectPeerList = (state: RootState) => state.message.peerList;
+
+export const selectPeerListById = (id: string) => (state: RootState) =>
+  state.message.peerList.find((item) => item.id === id);
 
 export const selectLastIdByKey = (key: string) => (state: RootState) =>
   state.message.lastIds[key];
@@ -64,6 +72,7 @@ export const selectLastMessageByGroupPk =
 
 export const selectContactRequestList = (state: RootState) =>
   state.message.contactRequestList;
+
 export const selectConversationList =
   (conversationType: CONVERSATION_TYPES = CONVERSATION_TYPES.ACTIVE) =>
   (state: RootState) => {
@@ -102,6 +111,9 @@ const messageSlice = createSlice({
         ...state.messageList[action.payload.groupPk][action.payload.data.id],
         ...action.payload.data,
       };
+    },
+    setPeerList: (state, action: PayloadAction<PeerItem[]>) => {
+      state.peerList = action.payload;
     },
     updateMessageReaction: (
       state,
@@ -185,6 +197,7 @@ export const {
   setLastId,
   setContactInfo,
   updateConversationById,
+  setPeerList,
 } = messageSlice.actions;
 
 export const messageReducer = messageSlice.reducer;

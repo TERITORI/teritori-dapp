@@ -12,7 +12,7 @@ export const persistConfig = {
     "marketplaceCartItemsUI",
     "marketplaceFilters",
     "marketplaceFilterUI",
-    "messages",
+    "message",
   ],
   blacklist: ["dAppsStore, marketplaceFilterUI"],
 };

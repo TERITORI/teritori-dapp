@@ -1,4 +1,5 @@
 import * as DocumentPicker from "expo-document-picker";
+import * as FileSystem from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
 import React, { useEffect } from "react";
 import { View, TouchableOpacity } from "react-native";
@@ -31,12 +32,7 @@ export const UploadImage = ({ onClose, setFile }: UploadImageProps) => {
       // await requestPermission();
       // const permission = await MediaLibrary.requestPermissionsAsync();
       // console.log("media per", status, permission);
-      const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: false,
-        aspect: [4, 3],
-        quality: 0,
-      });
+      const result = await ImagePicker.launchImageLibraryAsync();
       console.log("result", result);
 
       if (!result.canceled) {
@@ -48,8 +44,8 @@ export const UploadImage = ({ onClose, setFile }: UploadImageProps) => {
   };
 
   const permissions = async () => {
-    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    console.log("permissions", permission);
+    // const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    // console.log("permissions", permission);
   };
 
   useEffect(() => {
@@ -72,12 +68,19 @@ export const UploadImage = ({ onClose, setFile }: UploadImageProps) => {
           const res = await DocumentPicker.getDocumentAsync({
             copyToCacheDirectory: true,
           });
-
           if (res?.assets || res?.output) {
             const file = res.assets?.[0] || res.output?.[0];
-            console.log(file);
-            const formattedFile = await formatFile(file);
-            setFile(formattedFile);
+            const base64Data = await FileSystem.readAsStringAsync(file.uri, {
+              encoding: FileSystem.EncodingType.Base64,
+            });
+
+            console.log(file, "is base", !!base64Data);
+
+            // const formattedFile = await formatFile({
+            //   ...file,
+            //   base64Data,
+            // });
+            // setFile(formattedFile);
           }
         } catch (err) {
           console.log("document upload err", err);

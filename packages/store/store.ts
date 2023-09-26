@@ -23,6 +23,7 @@ import {
 import { squadPresetsReducer } from "./slices/squadPresets";
 import { walletsReducer } from "./slices/wallets";
 import { defaultEnabledNetworks } from "../networks";
+import { bootWeshModule } from "../weshnet/client/services";
 
 const migrations = {
   0: (state: any) => {
@@ -45,7 +46,6 @@ const migrations = {
 
 const _persistConfig = {
   ...persistConfig,
-
   version: 0,
   migrate: createMigrate(migrations, { debug: false }),
 };
@@ -73,7 +73,9 @@ export const store = configureStore({
     getDefaultMiddleware({ serializableCheck: false }),
 });
 
-export const persistor = persistStore(store);
+export const persistor = persistStore(store, null, () => {
+  bootWeshModule();
+});
 
 export type RootState = ReturnType<typeof store.getState>;
 

@@ -293,15 +293,19 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
 
               return (
                 <>
-                  <Conversation
-                    conversation={conversation}
-                    onReply={setReplyTo}
-                    message={item}
-                    groupPk={groupInfo?.group?.publicKey}
-                    isMessageChain={previousMessage?.senderId === item.senderId}
-                    isNextMine={nextMessage?.senderId === item.senderId}
-                    parentMessage={parentMessage}
-                  />
+                  {item.type !== "accept-contact" && (
+                    <Conversation
+                      conversation={conversation}
+                      onReply={setReplyTo}
+                      message={item}
+                      groupPk={groupInfo?.group?.publicKey}
+                      isMessageChain={
+                        previousMessage?.senderId === item.senderId
+                      }
+                      isNextMine={nextMessage?.senderId === item.senderId}
+                      parentMessage={parentMessage}
+                    />
+                  )}
                   {item.type === "accept-contact" && (
                     <View style={{ alignItems: "center" }}>
                       <BrandText style={[fontSemibold10, { color: neutralA3 }]}>

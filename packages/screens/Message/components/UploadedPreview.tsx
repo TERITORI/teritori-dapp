@@ -47,7 +47,7 @@ export const UploadedPreview = ({
       hideMainSeparator
       width={400}
     >
-      <AudioContextWebview file={file} />
+      {/* <AudioContextWebview file={file} /> */}
       {!!file && (
         <FileRenderer files={[file]} maxWidth={360} waveFormMaxWidth={300} />
       )}

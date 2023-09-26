@@ -4,6 +4,7 @@ import { Platform, TouchableOpacity, View } from "react-native";
 import { Avatar } from "react-native-paper";
 import { useSelector } from "react-redux";
 
+import { MessageAvatar } from "./MessageAvatar";
 import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
@@ -61,10 +62,11 @@ export const ChatItem = ({
       <FlexRow justifyContent="space-between">
         <View>
           <FlexRow>
-            <Avatar.Image
+            <MessageAvatar item={contactInfo} />
+            {/* <Avatar.Image
               size={40}
               source={{ uri: contactInfo?.avatar || "" }}
-            />
+            /> */}
             <SpacerRow size={1.5} />
             <View>
               <FlexRow>

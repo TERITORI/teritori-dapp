@@ -71,6 +71,7 @@ export const handleMetadata = async (data: GroupMetadataEvent) => {
                     rdvSeed: parsedData.payload.contact.publicRendezvousSeed,
                     name: parsedData.payload.ownMetadata.contact.name,
                     avatar: parsedData.payload.ownMetadata.contact.avatar,
+                    peerId: parsedData.payload.ownMetadata.contact.peerId,
                   },
                 ],
                 status: "active",
@@ -114,6 +115,7 @@ export const handleMetadata = async (data: GroupMetadataEvent) => {
             rdvSeed: stringFromBytes(parsedData.payload.contactRendezvousSeed),
             name: parsedData.payload.contactMetadata.name,
             avatar: parsedData.payload.contactMetadata.avatar,
+            peerId: parsedData.payload.contactMetadata.peerId,
           })
         );
 
@@ -181,6 +183,7 @@ export const handleMetadata = async (data: GroupMetadataEvent) => {
                   rdvSeed: contactRequest.rdvSeed,
                   name: contactRequest.name,
                   avatar: contactRequest.avatar,
+                  peerId: contactRequest.peerId,
                 },
               ],
               name: "",
