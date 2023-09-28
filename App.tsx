@@ -25,8 +25,8 @@ import { TNSMetaDataListContextProvider } from "./packages/context/TNSMetaDataLi
 import { TNSContextProvider } from "./packages/context/TNSProvider";
 import { TransactionModalsProvider } from "./packages/context/TransactionModalsProvider";
 import {
-  useWallets,
   WalletsProvider,
+  useWallets,
 } from "./packages/context/WalletsProvider";
 import { useSelectedNetworkId } from "./packages/hooks/useSelectedNetwork";
 import useSelectedWallet from "./packages/hooks/useSelectedWallet";
