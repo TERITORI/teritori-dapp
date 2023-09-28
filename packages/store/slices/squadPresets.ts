@@ -3,7 +3,7 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 
 import { RootState } from "../store";
 
-export interface SquadPreset {
+interface SquadPreset {
   squadPresetId: string;
   ripperIds: string[];
 }
@@ -12,7 +12,7 @@ const initialState: { [key: string]: string[] } = {};
 
 export const selectSquadPresets = (state: RootState) => state.squadPresets;
 
-export const squadPresetsSlice = createSlice({
+const squadPresetsSlice = createSlice({
   name: "squadPresets",
   initialState,
   reducers: {

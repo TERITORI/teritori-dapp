@@ -48,7 +48,7 @@ import { TertiaryBox } from "../boxes/TertiaryBox";
 import { CustomPressable } from "../buttons/CustomPressable";
 import { SpacerColumn, SpacerRow } from "../spacer";
 
-export interface TextInputCustomProps<T extends FieldValues>
+interface TextInputCustomProps<T extends FieldValues>
   extends Omit<TextInputProps, "accessibilityRole" | "defaultValue"> {
   label: string;
   variant?: "regular" | "labelOutside" | "noStyle";

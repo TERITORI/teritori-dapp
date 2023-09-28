@@ -45,7 +45,7 @@ type ModalBaseProps = {
 };
 
 // The base components for modals. You can provide children (Modal's content) and childrenBottom (Optional Modal's bottom content)
-export const ModalBase: React.FC<ModalBaseProps> = ({
+const ModalBase: React.FC<ModalBaseProps> = ({
   label,
   labelComponent,
   visible,

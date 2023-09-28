@@ -8,7 +8,7 @@ import { setSelectedWalletId } from "../../store/slices/settings";
 import { useAppDispatch } from "../../store/store";
 import { WalletProvider } from "../../utils/walletProvider";
 
-export type UseMetamaskResult =
+type UseMetamaskResult =
   | [true, boolean, Wallet[]]
   | [false, boolean, undefined];
 

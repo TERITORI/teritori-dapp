@@ -1,12 +1,12 @@
 import { mustGetGnoNetwork } from "../../networks";
 import { adenaAddPkg } from "../gno";
 
-export interface GnoDAOMember {
+interface GnoDAOMember {
   address: string;
   weight: number;
 }
 
-export interface GnoDAOConfig {
+interface GnoDAOConfig {
   name: string;
   maxVotingPeriodSeconds: number;
   initialMembers: GnoDAOMember[];
@@ -17,10 +17,7 @@ export interface GnoDAOConfig {
   imageURI: string;
 }
 
-export const generateDAORealmSource = (
-  networkId: string,
-  conf: GnoDAOConfig
-) => {
+const generateDAORealmSource = (networkId: string, conf: GnoDAOConfig) => {
   const network = mustGetGnoNetwork(networkId);
   return `package ${conf.name}
 

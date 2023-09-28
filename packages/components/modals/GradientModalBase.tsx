@@ -70,7 +70,7 @@ type ModalBaseProps = {
 };
 
 // The base components for modals. You can provide children (Modal's content) and childrenBottom (Optional Modal's bottom content)
-export const GradientModalBase: React.FC<ModalBaseProps> = ({
+const GradientModalBase: React.FC<ModalBaseProps> = ({
   label,
   visible,
   width,

@@ -5,7 +5,7 @@ import { fontSemibold13 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 
-export const socialStatHeight = 28;
+const socialStatHeight = 28;
 
 export const SocialStat: React.FC<{
   label: string;

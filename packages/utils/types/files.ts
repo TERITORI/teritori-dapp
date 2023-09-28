@@ -5,7 +5,7 @@ export interface AudioFileMetadata {
   duration: number;
 }
 
-export interface BaseFileData {
+interface BaseFileData {
   file: File;
   fileName: string;
   mimeType: string;

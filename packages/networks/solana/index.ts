@@ -1,5 +1,6 @@
 import { NetworkKind, NetworkInfo } from "../types";
 
+// ts-unused-exports:disable-next-line
 export const solanaNetwork: NetworkInfo = {
   id: "solana",
   kind: NetworkKind.Solana,
