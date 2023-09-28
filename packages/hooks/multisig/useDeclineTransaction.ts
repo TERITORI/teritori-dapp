@@ -25,12 +25,15 @@ export const useDeclineTransaction = () => {
         );
 
         if (!hasAlreadyDeclined) {
+          throw new Error("not implemented");
+          /*
           await updateTransactionDecliners(transactionID, [
             ...currentDecliners,
             walletAccount.address,
           ]);
 
           addDecliner(walletAccount.address);
+          */
         }
       } catch (err: any) {
         console.error(err);

@@ -8,6 +8,7 @@ import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { mustGetGnoNetwork } from "../../../networks";
 import { adenaDoContract } from "../../../utils/gno";
+import { GnoDAOVoteRequest } from "../../../utils/gnodao/messages";
 import { neutral77 } from "../../../utils/style/colors";
 import {
   fontSemibold12,
@@ -58,17 +59,17 @@ export const FlagConfirmModal: React.FC<FlagConfirmModalProps> = ({
 
       const moduleIndex = "0";
 
+      const voteJSON: GnoDAOVoteRequest = {
+        vote: vote === "banPost" ? 0 : 1,
+        rationale: "",
+      };
+
       const vmCall = {
         caller: wallet.address,
         send: "",
         pkg_path: gnoNetwork.socialFeedsDAOPkgPath,
-        func: "Vote",
-        args: [
-          moduleIndex,
-          proposalId,
-          vote === "banPost" ? "0" : "1",
-          vote === "banPost" ? "Vote BAN" : "Vote DONT BAN",
-        ],
+        func: "VoteJSON",
+        args: [moduleIndex, proposalId, JSON.stringify(voteJSON)],
       };
 
       const txHash = await adenaDoContract(

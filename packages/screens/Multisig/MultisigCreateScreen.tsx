@@ -17,7 +17,7 @@ import { SecondaryButton } from "../../components/buttons/SecondaryButton";
 import { SearchNSInputContainer } from "../../components/inputs/SearchNSInputContainer";
 import {
   SelectInput,
-  SelectInputData,
+  SelectInputItem,
 } from "../../components/inputs/SelectInput";
 import { TextInputCustom } from "../../components/inputs/TextInputCustom";
 import { TextInputOutsideLabel } from "../../components/inputs/TextInputOutsideLabel";
@@ -80,7 +80,7 @@ export const MultisigCreateScreen = () => {
   const multisigClient = useMultisigClient();
 
   const globalSelectedNetwork = useSelectedNetworkInfo();
-  const [selectedInputData, setSelectedInputData] = useState<SelectInputData>({
+  const [selectedInputData, setSelectedInputData] = useState<SelectInputItem>({
     label: globalSelectedNetwork?.displayName || "",
     value: globalSelectedNetwork?.id || "",
     iconComponent: (
@@ -106,6 +106,10 @@ export const MultisigCreateScreen = () => {
   }: CreateMultisigWalletFormType) => {
     if (!selectedNetwork) {
       throw new Error("No network selected");
+    }
+
+    if (selectedNetwork.kind !== NetworkKind.Cosmos) {
+      throw new Error("Only Cosmos networks are supported");
     }
 
     const compressedPubkeys = addressIndexes.map(
@@ -239,8 +243,8 @@ export const MultisigCreateScreen = () => {
                 iconComponent: <NetworkIcon networkId={n?.id} size={16} />,
               };
             })}
-            selectedData={selectedInputData}
-            setData={(d: SelectInputData) => {
+            selectedItem={selectedInputData}
+            selectItem={(d: SelectInputItem) => {
               setSelectedInputData(d);
             }}
             label="Network"

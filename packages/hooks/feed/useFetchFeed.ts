@@ -12,7 +12,7 @@ import {
   parseUserId,
 } from "../../networks";
 import { mustGetFeedClient } from "../../utils/backend";
-import { extractGnoString } from "../../utils/gno";
+import { extractGnoJSONString } from "../../utils/gno";
 import { useSelectedNetworkInfo } from "../useSelectedNetwork";
 import useSelectedWallet from "../useSelectedWallet";
 
@@ -54,7 +54,6 @@ const fetchGnoFeed = async (
   pageParam: number
 ) => {
   if (!selectedNetwork.socialFeedsPkgPath) return { list: [], totalCount: 0 };
-
   callerAddress = callerAddress || "";
   const userId = req.filter?.user || "";
 
@@ -62,30 +61,30 @@ const fetchGnoFeed = async (
 
   try {
     const offset = pageParam || 0;
-    // FIXME: Hard code to 100 for testing right now, the pagination should be fixed properly on contracts side
-    // it takes a little bit of time to profit it to integration the migration using json so for now we patch the bug
-    const limit = 100;
+    const limit = req.limit;
     const categories = req.filter?.categories || []; // Default = all
     const categoriesStr = `[]uint64{${categories.join(",")}}`;
+    const parentId = 0;
 
     const provider = new GnoJSONRPCProvider(selectedNetwork.endpoint);
     const output = await provider.evaluateExpression(
       selectedNetwork.socialFeedsPkgPath,
-      `GetPostsWithCaller(${TERITORI_FEED_ID}, "${callerAddress}", "${userAddress}", ${categoriesStr}, ${offset}, ${limit})`
+      `GetPostsWithCaller(${TERITORI_FEED_ID}, ${parentId}, "${callerAddress}", "${userAddress}", ${categoriesStr}, ${offset}, ${limit})`
     );
 
     const posts: Post[] = [];
+    const gnoPosts = extractGnoJSONString(output);
 
-    const outputStr = extractGnoString(output);
-    for (const postData of outputStr.split(",")) {
-      const post = decodeGnoPost(selectedNetwork.id, postData);
+    for (const gnoPost of gnoPosts) {
+      const post = decodeGnoPost(selectedNetwork.id, gnoPost);
       posts.push(post);
     }
 
-    return {
+    const result = {
       list: posts.sort((p1, p2) => p2.createdAt - p1.createdAt),
       totalCount: posts.length,
     } as PostsList;
+    return result;
   } catch (err) {
     throw err;
   }
@@ -109,9 +108,17 @@ export const useFetchFeed = (req: PostsRequest) => {
       },
       {
         getNextPageParam: (lastPage, pages) => {
-          const postsLength = combineFetchFeedPages(pages).length;
-          if (lastPage?.totalCount && lastPage.totalCount > postsLength) {
-            return postsLength;
+          // NOTE: On gno feeds, due to list length depends on each user (due to flag, hide)
+          // so if last page contains posts = limit => try to load more content
+          if (selectedNetwork?.kind === NetworkKind.Gno) {
+            if (lastPage?.totalCount && lastPage.totalCount === req.limit) {
+              return pages.length * req.limit;
+            }
+          } else {
+            const postsLength = combineFetchFeedPages(pages).length;
+            if (lastPage?.totalCount && lastPage.totalCount > postsLength) {
+              return postsLength;
+            }
           }
         },
         staleTime: Infinity,

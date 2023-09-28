@@ -91,7 +91,12 @@ export type GnoNetworkInfo = NetworkInfoBase & {
   modboardsPkgPath?: string;
   socialFeedsPkgPath?: string;
   socialFeedsDAOPkgPath?: string;
+  votingGroupPkgPath?: string;
+  daoProposalSinglePkgPath?: string;
+  daoInterfacesPkgPath?: string;
+  daoCorePkgPath?: string;
   groupsPkgPath?: string;
+  faucetURL?: string;
 };
 
 export type NetworkInfo =

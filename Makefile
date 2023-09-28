@@ -16,9 +16,6 @@ RIOTER_FOOTER_PACKAGE=rioter-footer-nft
 VAULT_REPO=teritori-vault
 VAULT_PACKAGE=teritori-nft-vault
 
-DAO_CONTRACTS_REPO=dao-contracts
-DAO_CONTRACTS_PACKAGE=dao-contracts
-
 CONTRACTS_CLIENTS_DIR=packages/contracts-clients
 
 DOCKER_REGISTRY=rg.nl-ams.scw.cloud/teritori
@@ -72,7 +69,7 @@ docker.backend:
 	docker build . -f go/cmd/teritori-dapp-backend/Dockerfile -t teritori/teritori-dapp-backend:$(shell git rev-parse --short HEAD)
 
 .PHONY: generate.contracts-clients
-generate.contracts-clients: $(CONTRACTS_CLIENTS_DIR)/$(BUNKER_MINTER_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(NAME_SERVICE_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(RIOTER_FOOTER_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(TOKEN_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(VAULT_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(DAO_CONTRACTS_PACKAGE)
+generate.contracts-clients: $(CONTRACTS_CLIENTS_DIR)/$(BUNKER_MINTER_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(NAME_SERVICE_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(RIOTER_FOOTER_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(TOKEN_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(VAULT_PACKAGE)
 
 .PHONY: generate.go-networks
 generate.go-networks: node_modules validate-networks
@@ -202,35 +199,6 @@ $(CONTRACTS_CLIENTS_DIR)/$(VAULT_PACKAGE): node_modules
 	go fmt ./go/pkg/contracts/vault_types
 	rm -fr $(VAULT_REPO)
 
-.PHONY: $(CONTRACTS_CLIENTS_DIR)/$(DAO_CONTRACTS_PACKAGE)
-$(CONTRACTS_CLIENTS_DIR)/$(DAO_CONTRACTS_PACKAGE): node_modules
-	rm -fr dao-voting-cw4
-	git clone git@github.com:TERITORI/$(DAO_CONTRACTS_REPO).git
-	cd dao-voting-cw4 && git checkout v2.1.0
-	rm -fr $@
-	npx cosmwasm-ts-codegen generate \
-		--plugin client \
-		--schema $(DAO_CONTRACTS_REPO)/contracts/voting/dao-voting-cw4/schema \
-		--out $@ \
-		--name dao-voting-cw4 \
-		--no-bundle
-	rm -fr dao-voting-cw4
-
-.PHONY: $(CONTRACTS_CLIENTS_DIR)/$(DAO_CONTRACTS_PACKAGE)
-$(CONTRACTS_CLIENTS_DIR)/$(DAO_CONTRACTS_PACKAGE): node_modules
-	rm -fr dao-voting-cw721-staked
-	git clone git@github.com:TERITORI/$(DAO_CONTRACTS_REPO).git
-	cd dao-voting-cw721-staked && git checkout v2.1.0
-	rm -fr $@
-	npx cosmwasm-ts-codegen generate \
-		--plugin client \
-		--schema $(DAO_CONTRACTS_REPO)/contracts/voting/dao-voting-cw721-staked/schema \
-		--out $@ \
-		--name dao-voting-cw721-staked \
-		--no-bundle
-	rm -fr dao-voting-cw721-staked
-
-
 .PHONY: publish.backend
 publish.backend:
 	docker build -f go/cmd/teritori-dapp-backend/Dockerfile .  --platform linux/amd64 -t $(BACKEND_DOCKER_IMAGE)
@@ -274,3 +242,8 @@ validate-networks: node_modules
 .PHONY: networks.json
 networks.json: node_modules validate-networks
 	npx ts-node packages/scripts/generateJSONNetworks.ts > $@
+
+.PHONY: unused-exports
+unused-exports: node_modules
+	## TODO unexclude all paths except packages/api;packages/contracts-clients;packages/evm-contracts-clients
+	npx ts-unused-exports ./tsconfig.json --excludePathsFromReport="packages/api;packages/contracts-clients;packages/evm-contracts-clients;packages/components;packages/hooks;packages/context;packages/screens;packages/utils;packages/store;packages/networks;./App.tsx" --ignoreTestFiles

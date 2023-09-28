@@ -10,6 +10,7 @@ import {
 import { useSelector } from "react-redux";
 
 import { CheckLoadingModal } from "./components/CheckLoadingModal";
+import { GetStartedOption } from "./components/GetStartedOption";
 import multisigWalletSVG from "../../../assets/icons/organization/multisig-wallet.svg";
 import postJobSVG from "../../../assets/icons/organization/post-job.svg";
 import { JoinState } from "../../api/multisig/v1/multisig";
@@ -36,7 +37,6 @@ import {
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { tinyAddress } from "../../utils/text";
-import { GetStartedOption } from "../OrganizerDeployer/components/GetStartedOption";
 
 enum SelectModalKind {
   LaunchNFT,
