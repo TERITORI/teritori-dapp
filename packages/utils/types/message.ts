@@ -28,6 +28,7 @@ interface MessagePayload {
     group?: any;
     contact?: Contact;
     lastReadId?: string;
+    lastReadBy?: string;
   };
 }
 
@@ -59,8 +60,8 @@ export interface Conversation {
   members: Contact[];
   name: string;
   status: "active" | "archived" | "deleted" | "blocked";
-  lastMessageReadIdByMe?: string;
-  lastMessageReadIdByContact?: string;
+  lastReadIdByMe?: string;
+  lastReadIdByContact?: string;
 }
 
 export interface MessageList {

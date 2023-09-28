@@ -1,5 +1,12 @@
+import { useFocusEffect } from "@react-navigation/native";
 import moment from "moment";
-import React, { RefObject, useMemo, useRef, useState } from "react";
+import React, {
+  RefObject,
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   View,
   TouchableOpacity,
@@ -7,7 +14,7 @@ import {
   FlatList,
   Platform,
 } from "react-native";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { ChatHeader } from "./ChatHeader";
 import { Conversation } from "./Conversation";
@@ -26,7 +33,10 @@ import { Separator } from "../../../components/Separator";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
-import { selectMessageListByGroupPk } from "../../../store/slices/message";
+import {
+  selectMessageListByGroupPk,
+  updateConversationById,
+} from "../../../store/slices/message";
 import {
   ScreenFC,
   useAppNavigation,
@@ -50,9 +60,13 @@ import {
   MessageFileData,
   ReplyTo,
 } from "../../../utils/types/message";
+import { weshConfig } from "../../../weshnet/client";
 import { getNewConversationText } from "../../../weshnet/client/messageHelpers";
 import { sendMessage } from "../../../weshnet/client/services";
-import { bytesFromString } from "../../../weshnet/client/utils";
+import {
+  bytesFromString,
+  stringFromBytes,
+} from "../../../weshnet/client/utils";
 
 interface ChatSectionProps {
   conversation: IConversation;
@@ -68,6 +82,7 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
   const [replyTo, setReplyTo] = useState<ReplyTo>();
   const [inputRef, setInputRef] = useState<RefObject<any> | null>(null);
   const [file, setFile] = useState<MessageFileData>();
+  const dispatch = useDispatch();
 
   const [searchInput, setSearchInput] = useState("");
 
@@ -119,6 +134,45 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
     }
   };
   const { height } = useWindowDimensions();
+
+  useFocusEffect(
+    useCallback(() => {
+      return async () => {
+        const handleRead = async (lastMessageId: string) => {
+          if (!lastMessageId) {
+            return;
+          }
+          if (conversation.type === "group") {
+            dispatch(
+              updateConversationById({
+                id: conversation.id,
+                lastReadIdByMe: lastMessageId,
+              })
+            );
+          } else {
+            await sendMessage({
+              groupPk: bytesFromString(conversation.id),
+              message: {
+                type: "read",
+                payload: {
+                  message: "-",
+                  metadata: {
+                    lastReadBy: stringFromBytes(weshConfig.config.accountPk),
+                    lastReadId: lastMessageId,
+                  },
+                  files: [],
+                },
+              },
+            });
+          }
+        };
+
+        if (messages?.[0]?.id !== conversation.lastReadIdByMe) {
+          handleRead(messages?.[0]?.id);
+        }
+      };
+    }, [conversation.id])
+  );
 
   return (
     <KeyboardAvoidingView extraVerticalOffset={32}>

@@ -14,7 +14,7 @@ import {
   updateMessageReaction,
 } from "../../store/slices/message";
 import { store } from "../../store/store";
-import { Message } from "../../utils/types/message";
+import { Conversation, Message } from "../../utils/types/message";
 import {
   GroupMessageList_Request,
   GroupMessageEvent,
@@ -145,6 +145,26 @@ export const subscribeMessages = async (groupPk: string) => {
                   setMessageList({
                     groupPk,
                     data: message,
+                  })
+                );
+                break;
+              }
+              case "read": {
+                const data: Partial<Conversation> = {};
+                const lastReadId = message?.payload?.metadata?.lastReadId;
+                const lastReadBy = message?.payload?.metadata?.lastReadBy;
+                if (
+                  lastReadBy === stringFromBytes(weshConfig.config.accountPk)
+                ) {
+                  data.lastReadIdByMe = lastReadId;
+                } else {
+                  data.lastReadIdByContact = lastReadId;
+                }
+
+                store.dispatch(
+                  updateConversationById({
+                    id: groupPk,
+                    ...data,
                   })
                 );
                 break;

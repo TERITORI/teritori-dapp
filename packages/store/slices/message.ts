@@ -93,8 +93,10 @@ export const selectConversationList =
     }
   };
 
-export const selectConversationById = (id: string) => (state: RootState) =>
-  state.message.conversationList[id];
+export const selectConversationById =
+  (id: string) =>
+  (state: RootState): Conversation =>
+    state.message.conversationList[id];
 
 const messageSlice = createSlice({
   name: "message",
