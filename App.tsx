@@ -13,8 +13,8 @@ import { useForm, FormProvider } from "react-hook-form";
 import { Platform, View } from "react-native";
 import { MenuProvider } from "react-native-popup-menu";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import Toast from "react-native-toast-message";
 import { Provider as ReduxProvider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
 
 import { BrandText } from "./packages/components/BrandText";
 import { Navigator } from "./packages/components/navigation/Navigator";
@@ -26,7 +26,7 @@ import { TNSMetaDataListContextProvider } from "./packages/context/TNSMetaDataLi
 import { TNSContextProvider } from "./packages/context/TNSProvider";
 import { TransactionModalsProvider } from "./packages/context/TransactionModalsProvider";
 import { WalletsProvider } from "./packages/context/WalletsProvider";
-import { store } from "./packages/store/store";
+import { persistor, store } from "./packages/store/store";
 import { linking } from "./packages/utils/navigation";
 
 const queryClient = new QueryClient();
@@ -51,39 +51,53 @@ export default function App() {
 
   return (
     <ErrorBoundary>
-      <QueryClientProvider client={queryClient}>
-        <FormProvider<DefaultForm> {...methods}>
-          <MetaMaskProvider>
-            <NavigationContainer linking={linking}>
-              <SafeAreaProvider>
-                <ReduxProvider store={store}>
-                  <FeedbacksContextProvider>
-                    <DropdownsContextProvider>
-                      <WalletsProvider>
-                        <SearchBarContextProvider>
-                          <MultisigContextProvider>
-                            <TransactionModalsProvider>
-                              <TNSContextProvider>
-                                <TNSMetaDataListContextProvider>
-                                  <MenuProvider>
-                                    <StatusBar style="inverted" />
-                                    <Navigator />
-                                    <Toast autoHide visibilityTime={2000} />
-                                  </MenuProvider>
-                                </TNSMetaDataListContextProvider>
-                              </TNSContextProvider>
-                            </TransactionModalsProvider>
-                          </MultisigContextProvider>
-                        </SearchBarContextProvider>
-                      </WalletsProvider>
-                    </DropdownsContextProvider>
-                  </FeedbacksContextProvider>
-                </ReduxProvider>
-              </SafeAreaProvider>
-            </NavigationContainer>
-          </MetaMaskProvider>
-        </FormProvider>
-      </QueryClientProvider>
+      <ReduxProvider store={store}>
+        <PersistGate
+          loading={
+            <View
+              style={{
+                width: "100%",
+                height: "100%",
+                backgroundColor: "black",
+              }}
+            />
+          }
+          persistor={persistor}
+        >
+          <QueryClientProvider client={queryClient}>
+            <FormProvider<DefaultForm> {...methods}>
+              <MetaMaskProvider>
+                <NavigationContainer linking={linking}>
+                  <SafeAreaProvider>
+                    <ReduxProvider store={store}>
+                      <FeedbacksContextProvider>
+                        <DropdownsContextProvider>
+                          <WalletsProvider>
+                            <SearchBarContextProvider>
+                              <MultisigContextProvider>
+                                <TransactionModalsProvider>
+                                  <TNSContextProvider>
+                                    <TNSMetaDataListContextProvider>
+                                      <MenuProvider>
+                                        <StatusBar style="inverted" />
+                                        <Navigator />
+                                      </MenuProvider>
+                                    </TNSMetaDataListContextProvider>
+                                  </TNSContextProvider>
+                                </TransactionModalsProvider>
+                              </MultisigContextProvider>
+                            </SearchBarContextProvider>
+                          </WalletsProvider>
+                        </DropdownsContextProvider>
+                      </FeedbacksContextProvider>
+                    </ReduxProvider>
+                  </SafeAreaProvider>
+                </NavigationContainer>
+              </MetaMaskProvider>
+            </FormProvider>
+          </QueryClientProvider>
+        </PersistGate>
+      </ReduxProvider>
     </ErrorBoundary>
   );
 }
