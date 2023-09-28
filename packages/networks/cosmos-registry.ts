@@ -7,9 +7,11 @@ import {
   NetworkKind,
 } from "./types";
 
+const banList = ["permtestnet", "terpnetwork", "wavehashtestnet"];
+
 export const networksFromCosmosRegistry = (): CosmosNetworkInfo[] => {
   return chains
-    .filter((chain) => chain.chain_name)
+    .filter((chain) => chain.chain_name && !banList.includes(chain.chain_name))
     .map((chain) => {
       //console.log(chain);
       const chainAssets =
@@ -25,37 +27,40 @@ export const networksFromCosmosRegistry = (): CosmosNetworkInfo[] => {
           : chain.pretty_name,
         chainId: chain.chain_id,
         kind: NetworkKind.Cosmos,
-        currencies: chainAssets.map((asset) => {
-          if (asset.ibc || asset.base.startsWith("ibc/")) {
-            const ibcCurrency: IBCCurrencyInfo = {
-              kind: "ibc",
+        currencies: chainAssets
+          .filter((asset) => !(asset.ibc || asset.base.startsWith("ibc/"))) // TODO: remove ibc filter and correctly map ibc currencies
+          .map((asset) => {
+            if (asset.ibc || asset.base.startsWith("ibc/")) {
+              // TODO
+              const ibcCurrency: IBCCurrencyInfo = {
+                kind: "ibc",
+                denom: asset.base,
+                sourceNetwork: "TODO",
+                sourceDenom: "TODO",
+                sourceChannelPort: "TODO",
+                sourceChannelId: "TODO",
+                destinationChannelPort: "TODO",
+                destinationChannelId: "TODO",
+              };
+              return ibcCurrency;
+            }
+            const nativeCurrency: NativeCurrencyInfo = {
+              kind: "native",
               denom: asset.base,
-              sourceNetwork: "TODO",
-              sourceDenom: "TODO",
-              sourceChannelPort: "TODO",
-              sourceChannelId: "TODO",
-              destinationChannelPort: "TODO",
-              destinationChannelId: "TODO",
+              decimals:
+                asset.denom_units.find((du) => du.denom === asset.display)
+                  ?.exponent || 6,
+              displayName: asset.symbol,
+              coingeckoId: asset.coingecko_id || "not-found",
+              icon:
+                asset.logo_URIs?.svg ||
+                asset.logo_URIs?.png ||
+                asset.logo_URIs?.jpeg ||
+                "not-found",
+              color: "TODO",
             };
-            return ibcCurrency;
-          }
-          const nativeCurrency: NativeCurrencyInfo = {
-            kind: "native",
-            denom: asset.base,
-            decimals:
-              asset.denom_units.find((du) => du.denom === asset.display)
-                ?.exponent || 6,
-            displayName: asset.symbol,
-            coingeckoId: asset.coingecko_id || "not-found",
-            icon:
-              asset.logo_URIs?.svg ||
-              asset.logo_URIs?.png ||
-              asset.logo_URIs?.jpeg ||
-              "not-found",
-            color: "TODO",
-          };
-          return nativeCurrency;
-        }),
+            return nativeCurrency;
+          }),
         features: [],
         idPrefix: chain.chain_name,
         addressPrefix: chain.bech32_prefix,
