@@ -1,11 +1,10 @@
 import * as DocumentPicker from "expo-document-picker";
 import * as FileSystem from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
-import React, { useEffect } from "react";
+import React from "react";
 import { View, TouchableOpacity } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
-import { formatFile } from "../../../components/fileUploader/formatFile";
 import { imagePickerAssetToLocalFile } from "../../../utils/file";
 import {
   AUDIO_MIME_TYPES,
@@ -22,35 +21,18 @@ interface UploadImageProps {
 }
 
 export const UploadImage = ({ onClose, setFile }: UploadImageProps) => {
-  // const [hasFile, setHasFile] = useState(false);
-  // const [status, requestPermission] = ImagePicker.useCameraPermissions();
-
   const handleUpload = async () => {
     try {
-      // const perms = await ImagePicker.requestMediaLibraryPermissionsAsync(true);
-      console.log("trying");
-      // await requestPermission();
-      // const permission = await MediaLibrary.requestPermissionsAsync();
-      // console.log("media per", status, permission);
       const result = await ImagePicker.launchImageLibraryAsync();
-      console.log("result", result);
 
       if (!result.canceled) {
-        setFile(imagePickerAssetToLocalFile(result.assets[0]));
+        const file = await imagePickerAssetToLocalFile(result.assets[0]);
+        setFile(file);
       }
     } catch (err) {
       console.log("perm er", err);
     }
   };
-
-  const permissions = async () => {
-    // const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    // console.log("permissions", permission);
-  };
-
-  useEffect(() => {
-    permissions();
-  }, []);
 
   const LIST = [
     {

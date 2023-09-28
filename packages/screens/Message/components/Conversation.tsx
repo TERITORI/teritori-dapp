@@ -206,12 +206,6 @@ export const Conversation = ({
             <GroupInvitationAction message={message} />
           )}
 
-          {message?.payload?.files?.[0]?.type === "image" && (
-            <Image
-              source={{ uri: message?.payload.files[0].url }}
-              style={{ height: 200, width: 120, borderRadius: 10 }}
-            />
-          )}
           {!isSender && (
             <>
               {showPopup && (
