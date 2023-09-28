@@ -1,8 +1,8 @@
 import { ImagePickerAsset } from "expo-image-picker";
 
 import { AUDIO_MIME_TYPES, IMAGE_MIME_TYPES, VIDEO_MIME_TYPES } from "./mime";
-import { LocalFileData } from "./types/feed";
-import { FileType } from "./types/files";
+import { FileType, LocalFileData } from "./types/files";
+import { getAudioData } from "./waveform";
 
 export const convertFileToBase64 = (file: File): Promise<string> => {
   return new Promise((resolve, reject) => {
@@ -56,19 +56,34 @@ export const getFileTypeByMimeType = (mimeType: string): FileType => {
   return fileType;
 };
 
+const base64ToArrayBuffer = (base64: string) => {
+  const binaryString = atob(base64);
+  const bytes = new Uint8Array(binaryString.length);
+  for (let i = 0; i < binaryString.length; i++) {
+    bytes[i] = binaryString.charCodeAt(i);
+  }
+  return bytes.buffer;
+};
+
 export const imagePickerAssetToLocalFile = async (
   asset: ImagePickerAsset
 ): Promise<LocalFileData> => {
+  let audioMetadata;
   const arr = asset.uri.split(",");
   const mime = arr?.[0]?.match(/:(.*?);/)?.[1];
   const type = getFileTypeByMimeType(mime || "");
 
+  if (type === "audio") {
+    audioMetadata = await getAudioData(base64ToArrayBuffer(arr[1]));
+  }
+
   return {
     file: new File([], ""),
-    fileName: asset.fileName,
-    mimeType: mime,
-    size: asset.fileSize,
+    fileName: asset.fileName || "",
+    mimeType: mime || "",
+    size: asset.fileSize || 0,
     url: asset.uri,
     fileType: type,
+    audioMetadata,
   };
 };

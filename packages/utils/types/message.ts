@@ -59,6 +59,8 @@ export interface Conversation {
   members: Contact[];
   name: string;
   status: "active" | "archived" | "deleted" | "blocked";
+  lastMessageReadIdByMe?: string;
+  lastMessageReadIdByContact?: string;
 }
 
 export interface MessageList {

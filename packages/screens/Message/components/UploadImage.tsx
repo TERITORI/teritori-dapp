@@ -2,7 +2,7 @@ import * as DocumentPicker from "expo-document-picker";
 import * as FileSystem from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
 import React from "react";
-import { View, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity, Platform } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
 import { imagePickerAssetToLocalFile } from "../../../utils/file";
@@ -32,6 +32,7 @@ export const UploadImage = ({ onClose, setFile }: UploadImageProps) => {
     } catch (err) {
       console.log("perm er", err);
     }
+    onClose?.();
   };
 
   const LIST = [
@@ -50,23 +51,27 @@ export const UploadImage = ({ onClose, setFile }: UploadImageProps) => {
           const res = await DocumentPicker.getDocumentAsync({
             copyToCacheDirectory: true,
           });
-          if (res?.assets || res?.output) {
-            const file = res.assets?.[0] || res.output?.[0];
-            const base64Data = await FileSystem.readAsStringAsync(file.uri, {
-              encoding: FileSystem.EncodingType.Base64,
-            });
 
-            console.log(file, "is base", !!base64Data);
+          if (!res.canceled) {
+            if (res?.assets || res?.output) {
+              const file = res.assets?.[0] || res.output?.[0];
+              if (Platform.OS !== "web") {
+                const base64Data = await FileSystem.readAsStringAsync(
+                  file.uri,
+                  {
+                    encoding: FileSystem.EncodingType.Base64,
+                  }
+                );
+              }
 
-            // const formattedFile = await formatFile({
-            //   ...file,
-            //   base64Data,
-            // });
-            // setFile(formattedFile);
+              const formattedFile = await imagePickerAssetToLocalFile(file);
+              setFile(formattedFile);
+            }
           }
         } catch (err) {
           console.log("document upload err", err);
         }
+        onClose?.();
       },
     },
   ];

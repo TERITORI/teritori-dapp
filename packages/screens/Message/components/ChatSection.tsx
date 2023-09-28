@@ -89,6 +89,11 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
     if (!message && !data?.message) {
       return;
     }
+    let files = data?.files;
+
+    if (files) {
+      files = files.map(({ file, ...rest }) => rest);
+    }
     try {
       await sendMessage({
         groupPk: bytesFromString(conversation.id),

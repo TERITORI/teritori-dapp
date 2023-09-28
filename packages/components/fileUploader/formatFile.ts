@@ -8,7 +8,8 @@ export const formatFile = async (file: File): Promise<LocalFileData> => {
   const fileType = getFileTypeByMimeType(file.type);
 
   if (fileType === "audio") {
-    audioMetadata = await getAudioData(file);
+    const buffer = await file.arrayBuffer();
+    audioMetadata = await getAudioData(buffer);
   }
 
   return {

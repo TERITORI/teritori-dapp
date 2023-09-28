@@ -6,7 +6,6 @@ import { AudioCall } from "./AudioCall";
 import { Calendar } from "./Calendar";
 import { ConversationAvatar } from "./ConversationAvatar";
 import VideoCallScreen from "./VideoCall";
-import calender from "../../../../assets/icons/calendar.svg";
 import close from "../../../../assets/icons/close.svg";
 import dots from "../../../../assets/icons/dots.svg";
 import searchSVG from "../../../../assets/icons/search.svg";
@@ -154,38 +153,33 @@ export const ChatHeader = ({
         >
           {showTextInput ? (
             <>
-              {!showCalendar && (
-                <View
-                  style={{
-                    flexDirection: "row",
-                    backgroundColor: neutral33,
-                    borderRadius: 6,
-                    padding: 6,
-                  }}
-                >
-                  <SVG source={searchSVG} width={20} height={20} />
-                  <SpacerRow size={1} />
-                  <TextInput
-                    placeholder="Search..."
-                    value={searchInput}
-                    onChangeText={handleMessageSearch}
-                    placeholderTextColor={secondaryColor}
-                    style={[
-                      fontMedium14,
-                      {
-                        color: "white",
+              <View
+                style={{
+                  flexDirection: "row",
+                  backgroundColor: neutral33,
+                  borderRadius: 6,
+                  padding: 6,
+                }}
+              >
+                <SVG source={searchSVG} width={20} height={20} />
+                <SpacerRow size={1} />
+                <TextInput
+                  placeholder="Search..."
+                  value={searchInput}
+                  onChangeText={handleMessageSearch}
+                  placeholderTextColor={secondaryColor}
+                  style={[
+                    fontMedium14,
+                    {
+                      color: "white",
 
-                        minWidth: 90,
-                        maxWidth: 90,
-                      },
-                    ]}
-                  />
-                </View>
-              )}
-              <SpacerRow size={1} />
-              <TouchableOpacity onPress={() => setShowCalendar(!showCalendar)}>
-                <SVG source={calender} />
-              </TouchableOpacity>
+                      minWidth: 90,
+                      maxWidth: 90,
+                    },
+                  ]}
+                />
+              </View>
+
               <SpacerRow size={1} />
             </>
           ) : (
