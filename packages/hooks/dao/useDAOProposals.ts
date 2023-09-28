@@ -13,11 +13,7 @@ import {
   mustGetNonSigningCosmWasmClient,
   parseUserId,
 } from "../../networks";
-import {
-  extractGnoJSONString,
-  extractGnoNumber,
-  extractGnoString,
-} from "../../utils/gno";
+import { extractGnoJSONString } from "../../utils/gno";
 
 const daoProposalsQueryKey = (daoId: string | undefined) => [
   "dao-proposals",
@@ -40,6 +36,9 @@ type GnoDAOProposal = {
   description: string;
   proposer: string;
   status: "Open" | "Passed" | "Executed"; // can also be Unknown($value)
+  threshold: any; // TODO: type
+  totalPower: number;
+  startHeight: number;
   messages: unknown[]; // TODO: type
   // Ballots     *avl.Tree // dev
   votes: GnoProposalVotes;
@@ -57,7 +56,10 @@ export const useDAOProposals = (daoId: string | undefined) => {
       const provider = new GnoJSONRPCProvider(network.endpoint);
 
       const gnoProposals: GnoDAOProposal[] = extractGnoJSONString(
-        await provider.evaluateExpression(daoAddress, "GetProposalsJSON(0)")
+        await provider.evaluateExpression(
+          daoAddress,
+          `getProposalsJSON(0, 0, "", false)`
+        )
       );
 
       const proposals: AppProposalResponse[] = [];
@@ -71,40 +73,10 @@ export const useDAOProposals = (daoId: string | undefined) => {
         const yesVotes = prop.votes.yes;
         const noVotes = prop.votes.no;
         const abstainVotes = prop.votes.abstain;
-
-        // TODO: threshold should be stored in the proposal for executed proposals (maybe passed too)
         const threshold =
-          extractGnoNumber(
-            await provider.evaluateExpression(
-              daoAddress,
-              `uint64(*GetCore().ProposalModules()[0].Threshold().ThresholdQuorum.Threshold.Percent)`
-            )
-          ) / 10000;
-        const quorum =
-          extractGnoNumber(
-            await provider.evaluateExpression(
-              daoAddress,
-              `uint64(*GetCore().ProposalModules()[0].Threshold().ThresholdQuorum.Quorum.Percent)`
-            )
-          ) / 10000;
-
-        const numActions = prop.messages.length;
-        const actions: string[] = [];
-        for (let m = 0; m < numActions; m++) {
-          // TODO: don't do one request per message
-          try {
-            const action = extractGnoString(
-              await provider.evaluateExpression(
-                daoAddress,
-                `GetCore().ProposalModules()[0].Proposals()[${i}].Messages[${m}].String()`
-              )
-            );
-            actions.push(action);
-          } catch (e) {
-            console.error("failed to fetch action", e);
-            actions.push(`${e}`);
-          }
-        }
+          prop.threshold.thresholdQuorum.threshold.percent / 10000;
+        const quorum = prop.threshold.thresholdQuorum.quorum.percent / 10000;
+        const actions = prop.messages.map((m) => JSON.stringify(m));
         // TODO: render actions
         proposals.push({
           id: i,
@@ -121,7 +93,7 @@ export const useDAOProposals = (daoId: string | undefined) => {
             msgs: [],
             actions,
             proposer,
-            start_height: 42,
+            start_height: prop.startHeight,
             status,
             threshold: {
               threshold_quorum: {
@@ -129,7 +101,7 @@ export const useDAOProposals = (daoId: string | undefined) => {
                 quorum: { percent: `${quorum}` },
               },
             },
-            total_power: "0",
+            total_power: prop.totalPower.toString(),
           },
         });
       }

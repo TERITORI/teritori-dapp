@@ -31,8 +31,8 @@ export const adenaDoContract = async (
   const height = await client.getBlockNumber();
   const req: RequestDocontractMessage = {
     messages,
-    gasFee: opts?.gasFee === undefined ? 1000000 : opts.gasFee,
-    gasWanted: opts?.gasWanted === undefined ? 1000000 : opts.gasWanted,
+    gasFee: opts?.gasFee === undefined ? 1 : opts.gasFee,
+    gasWanted: opts?.gasWanted === undefined ? 10000000 : opts.gasWanted,
     memo: opts?.memo,
   };
   const res = await adena.DoContract(req);
@@ -51,6 +51,7 @@ export const adenaDoContract = async (
   }
   const err = deliverResults[index].ResponseBase.Error;
   if (err) {
+    console.error(deliverResults[index]);
     throw new Error(JSON.stringify(err));
   }
   return hash;
@@ -102,8 +103,6 @@ export const adenaAddPkg = async (
     networkId,
     [{ type: "/vm.m_addpkg", value: vmAddPackage }],
     {
-      gasFee: 1,
-      gasWanted: 5000000,
       ...opts,
     }
   );

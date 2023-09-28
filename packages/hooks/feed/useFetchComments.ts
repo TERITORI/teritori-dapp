@@ -13,7 +13,7 @@ import {
   NetworkKind,
   parseNetworkObjectId,
 } from "../../networks";
-import { extractGnoString } from "../../utils/gno";
+import { extractGnoJSONString } from "../../utils/gno";
 import { useSelectedNetworkInfo } from "../useSelectedNetwork";
 
 export type FetchCommentResponse = {
@@ -60,16 +60,20 @@ const fetchGnoComments = async (
   parentId: string
 ): Promise<FetchCommentResponse> => {
   const provider = new GnoJSONRPCProvider(selectedNetwork.endpoint);
+
+  const offset = 0;
+  const limit = 100; // For now hardcode to load max 100 comments
+
   const output = await provider.evaluateExpression(
     selectedNetwork.socialFeedsPkgPath || "",
-    `GetComments(${TERITORI_FEED_ID}, ${parentId})`
+    `GetComments(${TERITORI_FEED_ID}, ${parentId}, ${offset}, ${limit})`
   );
 
   const posts: PostResultWithCreatedAt[] = [];
 
-  const outputStr = extractGnoString(output);
-  for (const postData of outputStr.split(",")) {
-    const post = decodeGnoPost(selectedNetwork.id, postData);
+  const gnoPosts = extractGnoJSONString(output);
+  for (const gnoPost of gnoPosts) {
+    const post = decodeGnoPost(selectedNetwork.id, gnoPost);
     const [, creatorAddress] = parseNetworkObjectId(post.authorId);
 
     posts.push({

@@ -1,84 +1,41 @@
 import { Post, Reaction } from "../../api/feed/v1/feed";
 import { getUserId } from "../../networks";
 
-export const decodeGnoPost = (networkId: string, postData: string): Post => {
-  const buf = Buffer.from(postData, "base64");
+type GnoPost = {
+  id: number;
+  parentID: number;
+  feedID: number;
+  category: number;
+  metadata: string;
+  reactions: {
+    [key: string]: number;
+  };
+  commentsCount: number;
+  creator: string;
+  tipAmount: number;
+  deleted: boolean;
+  createdAt: number;
+  updatedAt: number;
+  deletedAt: number;
+};
 
-  let offset = 0;
-
-  // HACK: we don't have readBigUint64BE so we shift 4 position to read readUInt32BE
-  offset += 4;
-  const identifier = buf.readUInt32BE(offset);
-  offset += 4;
-
-  // HACK: we don't have readBigUint64BE so we shift 4 position to read readUInt32BE
-  offset += 4;
-  const parentPostIdentifier = buf.readUInt32BE(offset);
-  offset += 4;
-
-  // HACK: we don't have readBigUint64BE so we shift 4 position to read readUInt32BE
-  offset += 4;
-  //   const feedId = buf.readUInt32BE(offset);
-  offset += 4;
-
-  offset += 4;
-  const category = buf.readUInt32BE(offset);
-  offset += 4;
-
-  const metadataLen = buf.readUInt32BE(offset);
-  offset += 4;
-  const metadata = buf.slice(offset, offset + metadataLen).toString();
-  offset += metadataLen;
-
-  const addrLen = buf.readUInt16BE(offset);
-  offset += 2;
-  const authorAddress = buf.slice(offset, offset + addrLen).toString();
-  offset += addrLen;
-
-  const createdAt = buf.readUInt32BE(offset);
-  offset += 4;
-
-  const reactionsStrLen = buf.readUInt32BE(offset);
-  offset += 4;
-  const reactionsStr = buf.slice(offset, offset + reactionsStrLen).toString();
-
+export const decodeGnoPost = (networkId: string, gnoPost: GnoPost): Post => {
   const reactions: Reaction[] = [];
-  for (const reactionStr of reactionsStr.split(",")) {
-    if (!reactionStr) continue;
-    const splitted = reactionStr.split(":");
-    reactions.push({ icon: splitted[0], count: parseInt(splitted[1], 10) });
+
+  for (const [icon, count] of Object.entries(gnoPost.reactions)) {
+    reactions.push({ icon, count });
   }
-  offset += reactionsStrLen;
-
-  const subpostsStrLen = buf.readUInt32BE(offset);
-  offset += 4;
-
-  let subpostIDs: string[] = [];
-  if (subpostsStrLen === 0) {
-    subpostIDs = [];
-  } else {
-    subpostIDs = buf
-      .slice(offset, offset + subpostsStrLen)
-      .toString()
-      .split(",");
-  }
-  offset += subpostsStrLen;
-
-  // HACK: we don't have readBigUint64BE so we shift 4 position to read readUInt32BE
-  offset += 4;
-  const tipAmount = buf.readUInt32BE(offset);
-  offset += 4;
 
   const post: Post = {
-    category,
-    isDeleted: false,
-    identifier: identifier ? "" + identifier : "",
-    metadata,
-    parentPostIdentifier: parentPostIdentifier ? "" + parentPostIdentifier : "",
-    subPostLength: subpostIDs.length,
-    authorId: getUserId(networkId, authorAddress),
-    createdAt: +createdAt * 1000,
-    tipAmount,
+    category: gnoPost.category,
+    isDeleted: gnoPost.deleted,
+    identifier: gnoPost.id ? "" + gnoPost.id : "",
+    metadata: gnoPost.metadata,
+    parentPostIdentifier: gnoPost.parentID ? "" + gnoPost.parentID : "",
+    subPostLength: gnoPost.commentsCount,
+    authorId: getUserId(networkId, gnoPost.creator),
+    createdAt: gnoPost.createdAt * 1000,
+    tipAmount: gnoPost.tipAmount,
     reactions,
   };
 

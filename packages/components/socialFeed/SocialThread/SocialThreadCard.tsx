@@ -20,8 +20,11 @@ import {
   parseUserId,
 } from "../../../networks";
 import { OnPressReplyType } from "../../../screens/FeedPostView/FeedPostViewScreen";
-import { toRawURLBase64String } from "../../../utils/buffer";
 import { adenaDoContract, adenaVMCall } from "../../../utils/gno";
+import {
+  GnoBanPostMessage,
+  GnoSingleChoiceProposal,
+} from "../../../utils/gnodao/messages";
 import { useAppNavigation } from "../../../utils/navigation";
 import { getUpdatedReactions } from "../../../utils/social-feed";
 import {
@@ -61,34 +64,6 @@ import { FlagConfirmedModal } from "../modals/FlagConfirmedModal";
 import { FlagDetailsModal } from "../modals/FlagDetailsModal";
 
 const BREAKPOINT_S = 480;
-
-const encodeBanPost = (feedId: number, postId: number, reason: string) => {
-  const b = Buffer.alloc(16000); // TODO: compute size or concat
-  let offset = 0;
-
-  const t = "BanPost";
-  b.writeUInt16BE(t.length, offset);
-  offset += 2;
-  b.write(t, offset);
-  offset += t.length;
-
-  b.writeUInt32BE(0, offset);
-  offset += 4;
-  b.writeUInt32BE(feedId, offset);
-  offset += 4;
-
-  b.writeUInt32BE(0, offset);
-  offset += 4;
-  b.writeUInt32BE(postId, offset);
-  offset += 4;
-
-  b.writeUInt16BE(reason.length, offset);
-  offset += 2;
-  b.write(reason, offset);
-  offset += reason.length;
-
-  return Buffer.from(b.subarray(0, offset));
-};
 
 export const SocialThreadCard: React.FC<{
   post: Post;
@@ -152,7 +127,7 @@ export const SocialThreadCard: React.FC<{
   }, [post.identifier]);
 
   const proposal = useMemo(() => {
-    return banPostProposals.find((p: any) => p.title === banPostProposalTitle);
+    return banPostProposals.find((p: any) => p.title === banPostProposalTitle); // FIXME: this is not secure, people can create proposals with arbitrary titles
   }, [banPostProposalTitle, banPostProposals]);
 
   const proposalId = useMemo(() => {
@@ -295,22 +270,28 @@ export const SocialThreadCard: React.FC<{
 
     setIsSendingProposal(true);
 
-    const msg = toRawURLBase64String(
-      encodeBanPost(
-        +TERITORI_FEED_ID,
-        +localPost.identifier,
-        `Flag the post: ${localPost.identifier}`
-      )
-    );
     try {
+      const msg: GnoBanPostMessage = {
+        type: "gno.land/r/demo/teritori/social_feeds.BanPost",
+        payload: {
+          feedId: +TERITORI_FEED_ID,
+          postId: +localPost.identifier,
+          reason: `Flag the post: ${localPost.identifier}`,
+        },
+      };
+      const propReq: GnoSingleChoiceProposal = {
+        title: banPostProposalTitle,
+        description: "",
+        messages: [msg],
+      };
       await adenaVMCall(
         selectedNetworkInfo.id,
         {
           pkg_path: selectedNetworkInfo.socialFeedsDAOPkgPath,
-          func: "Propose",
+          func: "ProposeJSON",
           caller: wallet.address,
           send: "",
-          args: ["0", banPostProposalTitle, "", msg],
+          args: ["0", JSON.stringify(propReq)],
         },
         { gasWanted: 10000000 }
       );

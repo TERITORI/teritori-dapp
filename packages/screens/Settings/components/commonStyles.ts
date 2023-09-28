@@ -5,6 +5,7 @@ import {
   neutral17,
   neutral33,
   neutralA3,
+  secondaryColor,
 } from "../../../utils/style/colors";
 import {
   fontSemibold12,
@@ -64,6 +65,7 @@ export const useCommonStyles = () => {
     borderWidth: 1,
     backgroundColor: neutral00,
     borderRadius: layout.spacing_x1_5,
+    color: secondaryColor,
   };
 
   return {
