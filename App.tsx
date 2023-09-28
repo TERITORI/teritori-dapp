@@ -74,27 +74,25 @@ export default function App() {
               <MetaMaskProvider>
                 <NavigationContainer linking={linking}>
                   <SafeAreaProvider>
-                    <ReduxProvider store={store}>
-                      <FeedbacksContextProvider>
-                        <DropdownsContextProvider>
-                          <WalletsProvider>
-                            <WalletSyncer />
-                            <SearchBarContextProvider>
-                              <TransactionModalsProvider>
-                                <TNSContextProvider>
-                                  <TNSMetaDataListContextProvider>
-                                    <MenuProvider>
-                                      <StatusBar style="inverted" />
-                                      <Navigator />
-                                    </MenuProvider>
-                                  </TNSMetaDataListContextProvider>
-                                </TNSContextProvider>
-                              </TransactionModalsProvider>
-                            </SearchBarContextProvider>
-                          </WalletsProvider>
-                        </DropdownsContextProvider>
-                      </FeedbacksContextProvider>
-                    </ReduxProvider>
+                    <FeedbacksContextProvider>
+                      <DropdownsContextProvider>
+                        <WalletsProvider>
+                          <WalletSyncer />
+                          <SearchBarContextProvider>
+                            <TransactionModalsProvider>
+                              <TNSContextProvider>
+                                <TNSMetaDataListContextProvider>
+                                  <MenuProvider>
+                                    <StatusBar style="inverted" />
+                                    <Navigator />
+                                  </MenuProvider>
+                                </TNSMetaDataListContextProvider>
+                              </TNSContextProvider>
+                            </TransactionModalsProvider>
+                          </SearchBarContextProvider>
+                        </WalletsProvider>
+                      </DropdownsContextProvider>
+                    </FeedbacksContextProvider>
                   </SafeAreaProvider>
                 </NavigationContainer>
               </MetaMaskProvider>
