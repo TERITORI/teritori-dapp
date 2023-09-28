@@ -5,7 +5,6 @@ import { useSelector } from "react-redux";
 
 import { useMultisigClient } from "./useMultisigClient";
 import { ExecutionState, Transaction } from "../../api/multisig/v1/multisig";
-import { NetworkKind, parseUserId } from "../../networks";
 import { selectMultisigToken } from "../../store/slices/settings";
 import { RootState } from "../../store/store";
 import { tryParseJSON } from "../../utils/jsons";
@@ -89,23 +88,5 @@ export const useMultisigTransactions = (
       getNextPageParam: (lastPage) => lastPage.next,
       staleTime: Infinity,
     }
-  );
-};
-
-export const useMultisigTransactionsById = (
-  multisigId: string | undefined,
-  userAddress: string | undefined,
-  types: string[],
-  executionState: ExecutionState
-) => {
-  const [network, multisigAddress] = parseUserId(multisigId);
-  const chainId =
-    network?.kind === NetworkKind.Cosmos ? network.chainId : undefined;
-  return useMultisigTransactions(
-    chainId,
-    multisigAddress,
-    userAddress,
-    types,
-    executionState
   );
 };

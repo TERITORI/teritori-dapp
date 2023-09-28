@@ -1,4 +1,3 @@
-import { fromBech32 } from "@cosmjs/encoding";
 import { bech32 } from "bech32";
 import { ValidationRule } from "react-hook-form";
 
@@ -63,30 +62,4 @@ export const validateMaxNumber = (value: string, max: number) => {
     return "Max input value is " + max;
   }
   return true;
-};
-
-export const validateMultisigAddress = (
-  input: string,
-  chainAddressPrefix: string
-) => {
-  if (!input) return "Empty";
-
-  let data;
-  let prefix;
-  try {
-    ({ data, prefix } = fromBech32(input));
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
-    return error.toString();
-  }
-
-  if (prefix !== chainAddressPrefix) {
-    return `Expected address prefix '${chainAddressPrefix}' but got '${prefix}'`;
-  }
-
-  if (data.length !== 20) {
-    return "Invalid address length in bech32 data. Must be 20 bytes.";
-  }
-
-  return null;
 };

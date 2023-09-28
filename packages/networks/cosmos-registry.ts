@@ -1,11 +1,7 @@
 import { chains, assets } from "chain-registry";
 
-import {
-  CosmosNetworkInfo,
-  IBCCurrencyInfo,
-  NativeCurrencyInfo,
-  NetworkKind,
-} from "./types";
+import { IBCCurrencyInfo } from "./ibc";
+import { CosmosNetworkInfo, NativeCurrencyInfo, NetworkKind } from "./types";
 
 const banList = ["permtestnet", "terpnetwork", "wavehashtestnet"];
 

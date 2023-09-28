@@ -13,7 +13,7 @@ import { VotingGroupConfig } from "../../utils/gnodao/configs";
 
 // FIXME: pagination
 
-export type GnoDAOMember = {
+type GnoDAOMember = {
   address: string;
   id: number;
   metadata: string;

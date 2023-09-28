@@ -6,7 +6,7 @@ import { SVG } from "./SVG";
 import { avatarWidth } from "../utils/style/layout";
 
 // types
-export interface AvatarProps {
+interface AvatarProps {
   uri?: string;
   size?: "regular" | "medium";
   defaultIcon?: React.FC<SvgProps>;

@@ -13,9 +13,7 @@ import {
 import { useAppDispatch } from "../../store/store";
 import { WalletProvider } from "../../utils/walletProvider";
 
-export type UseKeplrResult =
-  | [true, boolean, Wallet[]]
-  | [false, boolean, undefined];
+type UseKeplrResult = [true, boolean, Wallet[]] | [false, boolean, undefined];
 
 export const useKeplr: () => UseKeplrResult = () => {
   const isKeplrConnected = useSelector(selectIsKeplrConnected);

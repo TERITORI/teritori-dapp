@@ -5,7 +5,7 @@ import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
 import { JoinState } from "../../api/multisig/v1/multisig";
 import { useWallets, Wallet } from "../../context/WalletsProvider";
-import { useUserMultisigs } from "../../hooks/multisig";
+import { useUserMultisigs } from "../../hooks/multisig/useUserMultisigs";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import {
   useSelectedNetworkId,

@@ -2,7 +2,7 @@ import React from "react";
 
 import { BrandText } from "./BrandText";
 import { SVG } from "./SVG";
-import { AnimationFadeIn } from "./animations";
+import { AnimationFadeIn } from "./animations/AnimationFadeIn";
 import { SpacerColumn } from "./spacer";
 import emptyListSVG from "../../assets/icons/empty-list.svg";
 import { neutral77 } from "../utils/style/colors";

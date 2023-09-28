@@ -10,7 +10,6 @@ import { Decimal } from "@cosmjs/math";
 import { Registry } from "@cosmjs/proto-signing";
 import {
   SigningStargateClient,
-  StargateClient,
   GasPrice,
   defaultRegistryTypes,
   AminoTypes,
@@ -23,6 +22,7 @@ import {
   createIbcAminoConverters,
   createStakingAminoConverters,
   createVestingAminoConverters,
+  StargateClient,
 } from "@cosmjs/stargate";
 import { ChainInfo, Currency as KeplrCurrency } from "@keplr-wallet/types";
 import { bech32 } from "bech32";
@@ -41,7 +41,6 @@ import { teritoriNetwork } from "./teritori";
 import { teritoriTestnetNetwork } from "./teritori-testnet";
 import {
   CosmosNetworkInfo,
-  CurrencyInfo,
   EthereumNetworkInfo,
   GnoNetworkInfo,
   NativeCurrencyInfo,
@@ -98,7 +97,7 @@ export const cosmosTypesRegistry = new Registry([
 ]);
 
 // FIXME: upgrade stargate since it exposes this function in new versions
-export function createDefaultAminoConverters(): AminoConverters {
+function createDefaultAminoConverters(): AminoConverters {
   return {
     ...createAuthzAminoConverters(),
     ...createBankAminoConverters(),
@@ -111,7 +110,7 @@ export function createDefaultAminoConverters(): AminoConverters {
   };
 }
 
-export const cosmosAminoTypes = new AminoTypes({
+const cosmosAminoTypes = new AminoTypes({
   ...createDefaultAminoConverters(),
   ...createWasmAminoConverters(),
   ...teritoriAminoConverters,
@@ -125,21 +124,6 @@ export const getCurrency = (
     return undefined;
   }
   return getNetwork(networkId)?.currencies.find((c) => c.denom === denom);
-};
-
-export const getToriNativeCurrency = (networkId: string) => {
-  const network = getNetwork(networkId);
-  if (network?.kind === NetworkKind.Cosmos)
-    return network?.currencies.find(
-      (currencyInfo: CurrencyInfo) => currencyInfo.kind === "native"
-    ) as NativeCurrencyInfo;
-  else {
-    const toriIbcCurrency = network?.currencies.find(
-      (currencyInfo: CurrencyInfo) =>
-        currencyInfo.kind === "ibc" && currencyInfo.sourceDenom === "utori"
-    );
-    return getNativeCurrency(networkId, toriIbcCurrency?.denom);
-  }
 };
 
 export const getIBCCurrency = (
@@ -467,7 +451,7 @@ export const getKeplrSigner = async (networkId: string) => {
   return keplr.getOfflineSignerAuto(network.chainId);
 };
 
-export const getKeplrOnlyAminoSigner = async (networkId: string) => {
+const getKeplrOnlyAminoSigner = async (networkId: string) => {
   const network = mustGetCosmosNetwork(networkId);
 
   const keplr = getKeplr();
@@ -527,12 +511,6 @@ export const getKeplrOnlyAminoStargateClient = async (
   );
 };
 
-export const getNonSigningStargateClient = async (networkId: string) => {
-  const network = mustGetCosmosNetwork(networkId);
-
-  return await StargateClient.connect(network.rpcEndpoint);
-};
-
 export const getKeplrSigningCosmWasmClient = async (
   networkId: string,
   gasPriceKind: "low" | "average" | "high" = "average"
@@ -554,6 +532,11 @@ export const getKeplrSigningCosmWasmClient = async (
 export const mustGetNonSigningCosmWasmClient = async (networkId: string) => {
   const network = mustGetCosmosNetwork(networkId);
   return await CosmWasmClient.connect(network.rpcEndpoint);
+};
+
+export const getNonSigningStargateClient = async (networkId: string) => {
+  const network = mustGetCosmosNetwork(networkId);
+  return await StargateClient.connect(network.rpcEndpoint);
 };
 
 export const txExplorerLink = (

@@ -40,7 +40,7 @@ import { tinyAddress } from "../../utils/text";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { Separator } from "../Separator";
-import { AnimationFadeIn } from "../animations";
+import { AnimationFadeIn } from "../animations/AnimationFadeIn";
 import { CustomPressable } from "../buttons/CustomPressable";
 import { SpacerColumn, SpacerRow } from "../spacer";
 
@@ -52,7 +52,7 @@ export interface ProposalTransactionItemProps extends ParsedTransaction {
 
 // FIXME: handle case where there is bad json in the db
 
-export const getTxInfo = (
+const getTxInfo = (
   msgs: any[],
   navigation: AppNavigationProp,
   network: NetworkInfo | undefined

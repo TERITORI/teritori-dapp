@@ -17,13 +17,13 @@ import { JoinState } from "../../api/multisig/v1/multisig";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { Separator } from "../../components/Separator";
-import { AnimationFadeIn } from "../../components/animations";
+import { AnimationFadeIn } from "../../components/animations/AnimationFadeIn";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import ModalBase from "../../components/modals/ModalBase";
 import { LoginButton } from "../../components/multisig/LoginButton";
 import { Transactions } from "../../components/multisig/Transactions";
 import { SpacerColumn } from "../../components/spacer";
-import { useUserMultisigs } from "../../hooks/multisig";
+import { useUserMultisigs } from "../../hooks/multisig/useUserMultisigs";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getCosmosNetwork, getUserId, NetworkKind } from "../../networks";
 import { selectMultisigToken } from "../../store/slices/settings";
@@ -357,9 +357,12 @@ interface MultisigWalletSelectModalProps {
   callback: (address: string) => void;
 }
 
-export const MultisigWalletSelectModal: React.FC<
-  MultisigWalletSelectModalProps
-> = ({ onClose, visible, data, callback }) => {
+const MultisigWalletSelectModal: React.FC<MultisigWalletSelectModalProps> = ({
+  onClose,
+  visible,
+  data,
+  callback,
+}) => {
   const modalWidth = 448;
   const paddingWidth = layout.spacing_x2_5;
   // FIXME: remove StyleSheet.create

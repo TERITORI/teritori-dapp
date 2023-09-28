@@ -11,11 +11,9 @@ import {
   ExecutionState,
   TransactionsCount,
 } from "../../api/multisig/v1/multisig";
-import {
-  useMultisigTransactions,
-  useMultisigTransactionsCounts,
-  useMultisigValidator,
-} from "../../hooks/multisig";
+import { useMultisigTransactions } from "../../hooks/multisig/useMultisigTransactions";
+import { useMultisigTransactionsCounts } from "../../hooks/multisig/useMultisigTransactionsCounts";
+import { useMultisigValidator } from "../../hooks/multisig/useMultisigValidator";
 import { secondaryColor } from "../../utils/style/colors";
 import { fontSemibold28 } from "../../utils/style/fonts";
 import { headerHeight, layout } from "../../utils/style/layout";

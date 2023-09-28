@@ -27,8 +27,8 @@ import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkKind, getCollectionId, getCosmosNetwork } from "../../networks";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 
-export type TNSItems = "TNSManage" | "TNSRegister" | "TNSExplore";
-export type TNSModals =
+type TNSItems = "TNSManage" | "TNSRegister" | "TNSExplore";
+type TNSModals =
   | "TNSManage"
   | "TNSRegister"
   | "TNSExplore"

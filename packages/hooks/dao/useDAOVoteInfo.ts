@@ -12,7 +12,7 @@ import {
 } from "../../networks";
 import { extractGnoNumber } from "../../utils/gno";
 
-export const daoVoteInfoQueryKey = (
+const daoVoteInfoQueryKey = (
   daoId: string | undefined,
   userId: string | undefined,
   proposalId: number | undefined

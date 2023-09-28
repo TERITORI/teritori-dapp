@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 
-export const botRequest = axios.create({
+const botRequest = axios.create({
   baseURL: "https://social-feed-backend.vercel.app/",
 });
 

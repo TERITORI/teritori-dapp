@@ -15,7 +15,7 @@ import {
 } from "../../networks";
 import { extractGnoJSONString } from "../../utils/gno";
 
-export const daoProposalsQueryKey = (daoId: string | undefined) => [
+const daoProposalsQueryKey = (daoId: string | undefined) => [
   "dao-proposals",
   daoId,
 ];
@@ -121,7 +121,7 @@ export const useDAOProposals = (daoId: string | undefined) => {
   };
 };
 
-export const useCosmWasmDAOProposals = (daoId: string | undefined) => {
+const useCosmWasmDAOProposals = (daoId: string | undefined) => {
   const [network] = parseUserId(daoId);
   const networkId = network?.id;
 

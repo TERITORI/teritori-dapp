@@ -1,9 +1,4 @@
-import { Currency } from "@keplr-wallet/types";
-
 import { Metadata } from "../contracts-clients/teritori-name-service/TeritoriNameService.types";
-
-export const toriDisplayDenom = process.env.PUBLIC_STAKING_DENOM_DISPLAY_NAME;
-const toriDenom = process.env.PUBLIC_STAKING_DENOM;
 
 export interface CosmosDelegationsResponse {
   delegation_responses: {
@@ -43,7 +38,7 @@ interface PrettyTokenData {
 }
 
 export const imageDisplayLabel = "Image URL";
-export const publicNameDisplayLabel = "Public Name";
+const publicNameDisplayLabel = "Public Name";
 
 // From a token data, returns an array with these data ordered and containing a pretty label
 // FIXME: type this properly
@@ -99,16 +94,4 @@ export const prettyTokenData = (tokenData: Metadata): PrettyTokenData[] => {
     }
   });
   return finalDatas;
-};
-
-export const toriCurrency: Currency = {
-  // Coin denomination to be displayed to the user.
-  coinDenom: toriDisplayDenom || "",
-  // Actual denom (i.e. uatom, uscrt) used by the blockchain.
-  coinMinimalDenom: toriDenom || "",
-  // # of decimal points to convert minimal denomination to user-facing denomination.
-  coinDecimals: 6,
-  // (Optional) Keplr can show the fiat value of the coin if a coingecko id is provided.
-  // You can get id from https://api.coingecko.com/api/v3/coins/list if it is listed.
-  // coinGeckoId: ""
 };

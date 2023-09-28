@@ -7,7 +7,7 @@ import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { SpacerColumn, SpacerRow } from "../spacer";
 
-export type TextInputLabelProps = {
+type TextInputLabelProps = {
   labelStyle?: TextStyle;
   isAsterickSign?: boolean;
   subtitle?: string;

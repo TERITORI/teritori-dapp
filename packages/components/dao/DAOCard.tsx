@@ -59,7 +59,7 @@ export const GnoDAOCard: React.FC<{
   );
 };
 
-export const DAOCardView: React.FC<{
+const DAOCardView: React.FC<{
   daoId: string;
   name: string | null | undefined;
   tokenId?: string | null;

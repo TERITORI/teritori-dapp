@@ -7,9 +7,3 @@ export const IMAGE_MIME_TYPES = [
   "image/x-png",
   "image/png",
 ];
-
-export const FEED_POST_SUPPORTED_MIME_TYPES = [
-  ...AUDIO_MIME_TYPES,
-  ...VIDEO_MIME_TYPES,
-  ...IMAGE_MIME_TYPES,
-];

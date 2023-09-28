@@ -3,11 +3,9 @@ import { Linking, Pressable, StyleSheet, View, ViewStyle } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 
 import { ProposalTransactionItemProps } from "./ProposalTransactionItem";
-import {
-  useApproveTransaction,
-  useBroadcastTransaction,
-  useDeclineTransaction,
-} from "../../hooks/multisig";
+import { useApproveTransaction } from "../../hooks/multisig/useApproveTransaction";
+import { useBroadcastTransaction } from "../../hooks/multisig/useBroadcastTransaction";
+import { useDeclineTransaction } from "../../hooks/multisig/useDeclineTransaction";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { txExplorerLink } from "../../networks";
@@ -23,7 +21,7 @@ import { fontMedium14, fontSemibold9 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { tinyAddress } from "../../utils/text";
 import { BrandText } from "../BrandText";
-import { AnimationFadeIn } from "../animations";
+import { AnimationFadeIn } from "../animations/AnimationFadeIn";
 import { SecondaryButton } from "../buttons/SecondaryButton";
 import { SecondaryButtonOutline } from "../buttons/SecondaryButtonOutline";
 import { MainConnectWalletButton } from "../connectWallet/MainConnectWalletButton";

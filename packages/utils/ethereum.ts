@@ -17,7 +17,7 @@ const proms: {
   [key: string]: Promise<ethers.providers.Web3Provider | null> | undefined;
 } = {};
 
-export const getMetaMaskEthereumProvider = async (
+const getMetaMaskEthereumProvider = async (
   network: ethers.providers.Networkish
 ) => {
   let provider;
@@ -159,7 +159,7 @@ export const addNftListMetadata = async (nfts: NFT[]) => {
   return await Promise.all(queries);
 };
 
-export const getCollectionMetadata = async (collectionId: string) => {
+const getCollectionMetadata = async (collectionId: string) => {
   const [network, minter] = parseNetworkObjectId(collectionId);
   if (network?.kind !== NetworkKind.Ethereum) {
     return;

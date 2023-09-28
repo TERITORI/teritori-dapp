@@ -15,7 +15,7 @@ import { feedsTabItems } from "../../../utils/social-feed";
 import { primaryColor } from "../../../utils/style/colors";
 import { fontSemibold16 } from "../../../utils/style/fonts";
 
-export type FeedHeaderProps = {
+type FeedHeaderProps = {
   selectedTab: keyof typeof feedsTabItems;
   onTabChange: (value: keyof typeof feedsTabItems) => void;
 };

@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useReducer } from "react";
 
-export interface ChainInfo {
+// FIXME: remove this
+
+interface ChainInfo {
   nodeAddress?: string;
   denom?: string;
   displayDenom?: string;
@@ -13,11 +15,11 @@ export interface ChainInfo {
   validatorPrefix?: string;
   explorerLink?: string;
 }
-export interface MultisigContextType {
+interface MultisigContextType {
   chain: ChainInfo;
 }
 
-export const initialState: MultisigContextType = {
+const initialState: MultisigContextType = {
   chain: {
     nodeAddress: process.env.PUBLIC_CHAIN_RPC_ENDPOINT,
     denom: process.env.PUBLIC_STAKING_DENOM,
@@ -41,12 +43,12 @@ const MultisigContext = createContext<{
   dispatch: React.Dispatch<ChangeChainAction>;
 }>({ state: initialState, dispatch: () => {} });
 
-export interface ChangeChainAction {
+interface ChangeChainAction {
   type: "changeChain";
   value: ChainInfo;
 }
 
-export const MultisigReducer = (
+const MultisigReducer = (
   state: MultisigContextType,
   action: ChangeChainAction
 ) => {

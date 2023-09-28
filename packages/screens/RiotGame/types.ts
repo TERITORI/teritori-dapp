@@ -56,30 +56,6 @@ export type RipperTraitType =
   | "Luck"
   | "Protection";
 
-export type RipperSkin =
-  | "Iron"
-  | "Silver"
-  | "Bronze"
-  | "Pure Gold"
-  | "Pure Oil"
-  | "Alloy"
-  | "Aurora"
-  | "Cosmos"
-  | "Supernova"
-  | "Marble"
-  | "Ice"
-  | "Lava"
-  | "Grey Ether"
-  | "Green Ether"
-  | "Blue Ether"
-  | "Purple Ether"
-  | "Red Ether";
-
-export type RipperAttribute = {
-  trait_type: string;
-  value: string;
-};
-
 export type RipperLightInfo = {
   name: string;
   imageUri: string;

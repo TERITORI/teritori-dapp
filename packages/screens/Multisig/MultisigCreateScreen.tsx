@@ -23,8 +23,8 @@ import { TextInputCustom } from "../../components/inputs/TextInputCustom";
 import { TextInputOutsideLabel } from "../../components/inputs/TextInputOutsideLabel";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { useMultisigHelpers } from "../../hooks/multisig";
 import { useMultisigClient } from "../../hooks/multisig/useMultisigClient";
+import { useMultisigHelpers } from "../../hooks/multisig/useMultisigHelpers";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
@@ -72,7 +72,7 @@ export const MultisigCreateScreen = () => {
   ]);
   const navigation = useAppNavigation();
   const signatureRequiredValue = watch("signatureRequired");
-  const { getPubkeyFromNode } = useMultisigHelpers();
+  const { getPubkeyFromNode } = useMultisigHelpers(); // FIXME: extract getPubkeyFromNode to a hook
   const defaultNbSignaturesRequired = useMemo(
     () => addressIndexes.length.toString(),
     [addressIndexes.length]

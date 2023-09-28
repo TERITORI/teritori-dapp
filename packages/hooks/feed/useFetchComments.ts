@@ -20,7 +20,7 @@ export type FetchCommentResponse = {
   list: PostResult[];
 } | null;
 
-export type PostResultWithCreatedAt = PostResult & {
+type PostResultWithCreatedAt = PostResult & {
   created_at: number;
 };
 

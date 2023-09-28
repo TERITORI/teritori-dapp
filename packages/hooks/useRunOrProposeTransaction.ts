@@ -5,8 +5,8 @@ import { useCallback } from "react";
 import { useSelector } from "react-redux";
 
 import { useDAOMakeProposal } from "./dao/useDAOMakeProposal";
-import { multisigTransactionsQueryKey } from "./multisig";
 import { useMultisigClient } from "./multisig/useMultisigClient";
+import { multisigTransactionsQueryKey } from "./multisig/useMultisigTransactions";
 import useSelectedWallet from "./useSelectedWallet";
 import { MultisigService, Token } from "../api/multisig/v1/multisig";
 import { CosmosMsgForEmpty } from "../contracts-clients/dao-core/DaoCore.types";
@@ -70,7 +70,7 @@ export const useRunOrProposeTransaction = (
   );
 };
 
-export const runOrProposeTransaction = async ({
+const runOrProposeTransaction = async ({
   userKind,
   userId,
   senderAddress,

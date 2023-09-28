@@ -1,1 +1,1 @@
-export * from "./EmbeddedWeb";
+export { EmbeddedWeb } from "./EmbeddedWeb";
