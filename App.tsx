@@ -14,6 +14,7 @@ import { Platform, View } from "react-native";
 import { MenuProvider } from "react-native-popup-menu";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider as ReduxProvider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
 
 import { BrandText } from "./packages/components/BrandText";
 import { Navigator } from "./packages/components/navigation/Navigator";
@@ -30,7 +31,7 @@ import {
 import { useSelectedNetworkId } from "./packages/hooks/useSelectedNetwork";
 import useSelectedWallet from "./packages/hooks/useSelectedWallet";
 import { setSelectedWalletId } from "./packages/store/slices/settings";
-import { store, useAppDispatch } from "./packages/store/store";
+import { persistor, store, useAppDispatch } from "./packages/store/store";
 import { linking } from "./packages/utils/navigation";
 
 const queryClient = new QueryClient();
@@ -55,37 +56,50 @@ export default function App() {
 
   return (
     <ErrorBoundary>
-      <QueryClientProvider client={queryClient}>
-        <FormProvider<DefaultForm> {...methods}>
-          <MetaMaskProvider>
-            <NavigationContainer linking={linking}>
-              <SafeAreaProvider>
-                <ReduxProvider store={store}>
-                  <FeedbacksContextProvider>
-                    <DropdownsContextProvider>
-                      <WalletsProvider>
-                        <WalletSyncer />
-                        <SearchBarContextProvider>
-                          <TransactionModalsProvider>
-                            <TNSContextProvider>
-                              <TNSMetaDataListContextProvider>
-                                <MenuProvider>
-                                  <StatusBar style="inverted" />
-                                  <Navigator />
-                                </MenuProvider>
-                              </TNSMetaDataListContextProvider>
-                            </TNSContextProvider>
-                          </TransactionModalsProvider>
-                        </SearchBarContextProvider>
-                      </WalletsProvider>
-                    </DropdownsContextProvider>
-                  </FeedbacksContextProvider>
-                </ReduxProvider>
-              </SafeAreaProvider>
-            </NavigationContainer>
-          </MetaMaskProvider>
-        </FormProvider>
-      </QueryClientProvider>
+      <ReduxProvider store={store}>
+        <PersistGate
+          loading={
+            <View
+              style={{
+                width: "100%",
+                height: "100%",
+                backgroundColor: "black",
+              }}
+            />
+          }
+          persistor={persistor}
+        >
+          <QueryClientProvider client={queryClient}>
+            <FormProvider<DefaultForm> {...methods}>
+              <MetaMaskProvider>
+                <NavigationContainer linking={linking}>
+                  <SafeAreaProvider>
+                    <FeedbacksContextProvider>
+                      <DropdownsContextProvider>
+                        <WalletsProvider>
+                          <WalletSyncer />
+                          <SearchBarContextProvider>
+                            <TransactionModalsProvider>
+                              <TNSContextProvider>
+                                <TNSMetaDataListContextProvider>
+                                  <MenuProvider>
+                                    <StatusBar style="inverted" />
+                                    <Navigator />
+                                  </MenuProvider>
+                                </TNSMetaDataListContextProvider>
+                              </TNSContextProvider>
+                            </TransactionModalsProvider>
+                          </SearchBarContextProvider>
+                        </WalletsProvider>
+                      </DropdownsContextProvider>
+                    </FeedbacksContextProvider>
+                  </SafeAreaProvider>
+                </NavigationContainer>
+              </MetaMaskProvider>
+            </FormProvider>
+          </QueryClientProvider>
+        </PersistGate>
+      </ReduxProvider>
     </ErrorBoundary>
   );
 }
