@@ -20,7 +20,6 @@ import { BrandText } from "./packages/components/BrandText";
 import { Navigator } from "./packages/components/navigation/Navigator";
 import { DropdownsContextProvider } from "./packages/context/DropdownsProvider";
 import { FeedbacksContextProvider } from "./packages/context/FeedbacksProvider";
-import { MultisigContextProvider } from "./packages/context/MultisigReducer";
 import { SearchBarContextProvider } from "./packages/context/SearchBarProvider";
 import { TNSMetaDataListContextProvider } from "./packages/context/TNSMetaDataListProvider";
 import { TNSContextProvider } from "./packages/context/TNSProvider";
@@ -74,18 +73,16 @@ export default function App() {
                         <DropdownsContextProvider>
                           <WalletsProvider>
                             <SearchBarContextProvider>
-                              <MultisigContextProvider>
-                                <TransactionModalsProvider>
-                                  <TNSContextProvider>
-                                    <TNSMetaDataListContextProvider>
-                                      <MenuProvider>
-                                        <StatusBar style="inverted" />
-                                        <Navigator />
-                                      </MenuProvider>
-                                    </TNSMetaDataListContextProvider>
-                                  </TNSContextProvider>
-                                </TransactionModalsProvider>
-                              </MultisigContextProvider>
+                              <TransactionModalsProvider>
+                                <TNSContextProvider>
+                                  <TNSMetaDataListContextProvider>
+                                    <MenuProvider>
+                                      <StatusBar style="inverted" />
+                                      <Navigator />
+                                    </MenuProvider>
+                                  </TNSMetaDataListContextProvider>
+                                </TNSContextProvider>
+                              </TransactionModalsProvider>
                             </SearchBarContextProvider>
                           </WalletsProvider>
                         </DropdownsContextProvider>

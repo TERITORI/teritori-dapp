@@ -9,7 +9,6 @@ import {
   MultisigServiceClientImpl,
   GrpcWebImpl as MultisigGrpcWebImpl,
 } from "../../api/multisig/v1/multisig";
-// import { useMultisigContext } from "../../context/MultisigReducer"; // remove this context
 import {
   NetworkKind,
   cosmosNetworkGasPrice,

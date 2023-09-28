@@ -24,7 +24,6 @@ import { TextInputOutsideLabel } from "../../components/inputs/TextInputOutsideL
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useMultisigClient } from "../../hooks/multisig/useMultisigClient";
-import { useMultisigHelpers } from "../../hooks/multisig/useMultisigHelpers";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
@@ -34,6 +33,7 @@ import {
 } from "../../networks";
 import { selectMultisigToken } from "../../store/slices/settings";
 import { RootState } from "../../store/store";
+import { getCosmosAccount } from "../../utils/cosmos";
 import {
   getNSAddress,
   patternOnlyNumbers,
@@ -72,7 +72,7 @@ export const MultisigCreateScreen = () => {
   ]);
   const navigation = useAppNavigation();
   const signatureRequiredValue = watch("signatureRequired");
-  const { getPubkeyFromNode } = useMultisigHelpers(); // FIXME: extract getPubkeyFromNode to a hook
+
   const defaultNbSignaturesRequired = useMemo(
     () => addressIndexes.length.toString(),
     [addressIndexes.length]
@@ -162,19 +162,14 @@ export const MultisigCreateScreen = () => {
     if (addressIndexes.find((a, i) => a.address === address && i !== index))
       return "This address is already used in this form.";
 
-    try {
-      const tempPubkeys = [...addressIndexes];
-      const pubkey = await getPubkeyFromNode(address);
-      tempPubkeys[index].address = address;
-      tempPubkeys[index].compressedPubkey = pubkey;
-      setAddressIndexes(tempPubkeys);
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        return error.message;
-      } else {
-        return `${error}`;
-      }
+    const tempPubkeys = [...addressIndexes];
+    const account = await getCosmosAccount(address);
+    if (!account?.pubkey) {
+      return "Account has no public key on chain, this address will need to send a transaction before it can be added to a multisig.";
     }
+    tempPubkeys[index].address = address;
+    tempPubkeys[index].compressedPubkey = account.pubkey.value;
+    setAddressIndexes(tempPubkeys);
   };
 
   // returns
