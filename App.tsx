@@ -105,31 +105,40 @@ export default function App() {
 }
 
 class ErrorBoundary extends React.Component {
-  state: { error?: unknown; info?: any };
+  state: {
+    hasError: boolean;
+    error?: unknown;
+    catchError?: unknown;
+    catchInfo?: React.ErrorInfo;
+  };
+
   constructor(props: object) {
     super(props);
-    this.state = {};
+    this.state = { hasError: false };
   }
 
   static getDerivedStateFromError(error: unknown) {
-    return { error };
+    console.log("derived state from error");
+    return { hasError: true, error };
   }
 
-  componentDidCatch(error: unknown, info: any) {
-    this.setState({ error, info });
+  componentDidCatch(error: unknown, info: React.ErrorInfo) {
+    console.log("did catch");
+    console.error(error, info);
+    this.setState({ catchError: error, catchInfo: info });
   }
 
   render() {
-    if (this.state.error) {
+    if (this.state.hasError) {
+      console.log("rendering error boundary");
       // You can render any custom fallback UI
       return (
-        <View style={{ backgroundColor: "black", height: "100%", padding: 32 }}>
-          {this.state.error instanceof Error ? (
-            <BrandText>{this.state.error.stack}</BrandText>
-          ) : (
-            <BrandText>{`${this.state.error}`}</BrandText>
+        <View style={{ backgroundColor: "black", height: "100%" }}>
+          <BrandText>{`${this.state.error}`}</BrandText>
+          {this.state.error !== this.state.catchError && (
+            <BrandText>{`${this.state.catchError}`}</BrandText>
           )}
-          <BrandText>{`${this.state.info?.componentStack}`}</BrandText>
+          <BrandText>{this.state.catchInfo?.componentStack}</BrandText>
         </View>
       );
     }
