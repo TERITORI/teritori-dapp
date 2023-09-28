@@ -33,6 +33,7 @@ import { networksFromCosmosRegistry } from "./cosmos-registry";
 import { ethereumNetwork } from "./ethereum";
 import { ethereumGoerliNetwork } from "./ethereum-goerli";
 import { gnoDevNetwork } from "./gno-dev";
+import { gnoTeritoriNetwork } from "./gno-teritori";
 import { gnoTest3Network } from "./gno-test3";
 import { osmosisNetwork } from "./osmosis";
 import { osmosisTestnetNetwork } from "./osmosis-testnet";
@@ -68,12 +69,14 @@ const packageNetworks = [
   osmosisTestnetNetwork,
   gnoTest3Network,
   gnoDevNetwork,
+  gnoTeritoriNetwork,
 ];
 
 export const defaultEnabledNetworks = [
   "teritori",
   "cosmos-hub",
   "osmosis",
+  "gno-teritori",
   "cosmos-registry:juno",
   "cosmos-registry:kujira",
   "cosmos-registry:axelar",
