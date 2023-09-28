@@ -35,7 +35,7 @@ export const useUserMultisigs = (
       });
       return multisigs;
     },
-    { initialData: [] }
+    { staleTime: Infinity }
   );
   return { multisigs: data || [], ...other };
 };

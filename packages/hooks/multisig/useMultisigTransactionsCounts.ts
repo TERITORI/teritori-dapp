@@ -37,7 +37,8 @@ export const useMultisigTransactionsCounts = (
       });
       console.log("counts", counts);
       return counts;
-    }
+    },
+    { staleTime: Infinity }
   );
 
   // returns
