@@ -89,10 +89,12 @@ web-build/
 go/electron/output
 go/electron/prod/bind*
 go/electron/prod/resources/app/
+go/electron/dev/desktop/
 
 # weshnet
 modules/wesh/ios/WeshFramework.xcframework/
 wesh-dir
+wesh-electron-dev-dir
 
 # expo prebuild
 ios/

@@ -20,6 +20,11 @@ export const handleAstilectronMessages = () => {
     document.addEventListener("astilectron-ready", function () {
       //@ts-ignore
       astilectron.onMessage(messageHandler);
+      //@ts-ignore
+      astilectron.sendMessage("send-port", function (message) {
+        console.log("send port", message);
+        weshClient.createClient(message);
+      });
     });
   } catch (err) {
     console.log("handle msg err", err);

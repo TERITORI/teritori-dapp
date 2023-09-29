@@ -50,7 +50,7 @@ const migrations = {
 };
 
 const _persistConfig = {
-  ...persistConfig,
+  ...persistConfig(),
   version: 0,
   migrate: createMigrate(migrations, { debug: false }),
 };

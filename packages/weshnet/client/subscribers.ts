@@ -24,7 +24,6 @@ import {
 
 export const subscribeMessages = async (groupPk: string) => {
   try {
-    console.log("message subscribe", groupPk);
     const lastId = selectLastIdByKey(groupPk)(store.getState());
 
     const config: Partial<GroupMessageList_Request> = {
@@ -45,7 +44,6 @@ export const subscribeMessages = async (groupPk: string) => {
       const observer = {
         next: (data: GroupMessageEvent) => {
           try {
-            console.log("incoming message");
             const id = stringFromBytes(data.eventContext?.id);
             if (lastId === id) {
               console.log("already stored; test test", id);
@@ -72,7 +70,6 @@ export const subscribeMessages = async (groupPk: string) => {
             const isSender =
               message.senderId === stringFromBytes(weshConfig.config.accountPk);
 
-            console.log("Message type", message.type);
             switch (message.type) {
               case "reaction": {
                 store.dispatch(
@@ -204,13 +201,16 @@ export const subscribeMessages = async (groupPk: string) => {
   }
 };
 
-export const subscribeMetadata = async (groupPk: Uint8Array) => {
+export const subscribeMetadata = async (
+  groupPk: Uint8Array,
+  ignoreLastId = false
+) => {
   const lastId = selectLastIdByKey("metadata")(store.getState());
   const config: Partial<GroupMetadataList_Request> = {
     groupPk,
   };
 
-  if (lastId) {
+  if (lastId && !ignoreLastId) {
     config.sinceId = bytesFromString(lastId);
   } else {
     config.untilNow = true;
@@ -229,8 +229,10 @@ export const subscribeMetadata = async (groupPk: Uint8Array) => {
         }
         handleMetadata(data);
       },
-      error(e: any) {
-        console.log("get metadata err", e);
+      error(e: Error) {
+        if (e.message.includes("since ID not found")) {
+          subscribeMetadata(groupPk, true);
+        }
       },
       complete: () => {
         console.log("metadata subscrbe complete");

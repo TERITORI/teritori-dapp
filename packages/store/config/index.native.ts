@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export const persistConfig = {
+export const persistConfig = () => ({
   key: "root",
   storage: AsyncStorage,
   whitelist: [
@@ -15,4 +15,4 @@ export const persistConfig = {
     "message",
   ],
   blacklist: ["dAppsStore, marketplaceFilterUI"],
-};
+});
