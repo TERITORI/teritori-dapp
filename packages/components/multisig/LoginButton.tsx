@@ -62,10 +62,7 @@ export const LoginButton: FC<{ userId: string | undefined }> = ({ userId }) => {
           throw new Error("Keplr not found");
         }
 
-        const key = await keplr.getKey(network.chainId);
-        console.log("key", key);
-        const { pubKey, algo } = key;
-
+        const { pubKey, algo } = await keplr.getKey(network.chainId);
         if (algo !== "secp256k1") {
           throw new Error("Unsupported key algorithm");
         }
@@ -75,8 +72,6 @@ export const LoginButton: FC<{ userId: string | undefined }> = ({ userId }) => {
         if (!challengeResponse.challenge) {
           throw new Error("No challenge returned from server");
         }
-
-        console.log("algo", algo);
 
         const info = TokenRequestInfo.toJSON({
           kind: "Login to Teritori Multisig Service",
@@ -90,38 +85,21 @@ export const LoginButton: FC<{ userId: string | undefined }> = ({ userId }) => {
         const infoJSON = JSON.stringify(info);
 
         const stdsig = await keplrSignArbitrary(userId, infoJSON);
-        console.log(stdsig);
-
-        console.log(stdsig.pub_key);
 
         const req: GetTokenRequest = {
           infoJson: infoJSON,
           userSignature: stdsig.signature,
         };
 
-        console.log("req", req);
-
         const { authToken } = await client.GetToken(req);
 
-        console.log("authToken", authToken);
+        console.log("auth token", authToken);
 
         if (!authToken) {
           throw new Error("No auth token returned from server");
         }
 
         dispatch(setMultisigToken({ userAddress, token: authToken }));
-
-        const { multisigs } = await client.Multisigs({ authToken, limit: 100 });
-        console.log("multisigs", multisigs);
-
-        const { transactions } = await client.Transactions({
-          authToken,
-          limit: 100,
-        });
-        console.log("transactions", transactions);
-
-        // TODO: send pubkey/address, signature and nonce to get auth token
-        // TODO: store token in persisted redux slice
       })}
     />
   );

@@ -106,7 +106,7 @@ func (s *multisigService) Multisigs(_ context.Context, req *multisigpb.Multisigs
 		}
 		startAfterString := req.GetStartAfter()
 		if startAfterString != "" {
-			startAfter, err := parseTime(startAfterString)
+			startAfter, err := decodeTime(startAfterString)
 			if err != nil {
 				return errors.Wrap(err, "failed to parse start after")
 			}
@@ -125,7 +125,7 @@ func (s *multisigService) Multisigs(_ context.Context, req *multisigpb.Multisigs
 			multisigs = append(multisigs, &multisigpb.Multisig{
 				ChainId:   ms.MultisigChainID,
 				Address:   ms.MultisigAddress,
-				CreatedAt: formatTime(ms.CreatedAt),
+				CreatedAt: encodeTime(ms.CreatedAt),
 				Joined:    ms.Joined,
 				Name:      ms.Name,
 			})
@@ -148,7 +148,7 @@ func (s *multisigService) MultisigInfo(_ context.Context, req *multisigpb.Multis
 	var userMultisig UserMultisig
 	if err := s.db.First(&userMultisig, "multisig_chain_id = ? AND user_address = ? AND multisig_address = ?", req.GetChainId(), userAddress, req.GetMultisigAddress()).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, ErrNotFound
+			return nil, errors.New("not found")
 		}
 		return nil, errors.Wrap(err, "failed to find user multisig")
 	}
@@ -182,7 +182,7 @@ func (s *multisigService) MultisigInfo(_ context.Context, req *multisigpb.Multis
 		Multisig: &multisigpb.Multisig{
 			ChainId:        multisig.ChainID,
 			Address:        multisig.Address,
-			CreatedAt:      formatTime(multisig.CreatedAt),
+			CreatedAt:      encodeTime(multisig.CreatedAt),
 			Joined:         userMultisig.Joined,
 			Name:           userMultisig.Name,
 			PubkeyJson:     multisig.PubKeyJSON,
@@ -204,7 +204,7 @@ func (s *multisigService) Transactions(_ context.Context, req *multisigpb.Transa
 	// handle cursor
 	startAfterString := req.GetStartAfter()
 	if startAfterString != "" {
-		startAfter, err := parseTime(startAfterString)
+		startAfter, err := decodeTime(startAfterString)
 		if err != nil {
 			return nil, errors.Wrap(err, "failed to parse start after")
 		}
@@ -246,7 +246,7 @@ func (s *multisigService) Transactions(_ context.Context, req *multisigpb.Transa
 			MsgsJson:           tx.MsgsJSON.String(),
 			FeeJson:            tx.FeeJSON,
 			FinalHash:          finalHash,
-			CreatedAt:          formatTime(tx.CreatedAt),
+			CreatedAt:          encodeTime(tx.CreatedAt),
 			CreatorAddress:     chainCreatorAddress,
 			Threshold:          tx.Multisig.Threshold,
 			MembersCount:       tx.Multisig.MembersCount,
@@ -672,7 +672,7 @@ func (s *multisigService) GetToken(_ context.Context, req *multisigpb.GetTokenRe
 	}
 
 	signatureBase64 := req.GetUserSignature()
-	signature, err := base64.StdEncoding.DecodeString(signatureBase64)
+	signature, err := base64.StdEncoding.DecodeString(signatureBase64) // we use std encoding because keplr encode with std
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to decode signature")
 	}
@@ -691,44 +691,43 @@ func (s *multisigService) GetToken(_ context.Context, req *multisigpb.GetTokenRe
 	}
 
 	token := &multisigpb.Token{
-		Nonce:       nonce,
+		Nonce:       encodeBytes(nonce),
 		UserAddress: crossChainAddress,
-		Expiration:  formatTime(time.Now().Add(s.opts.TokenDuration)),
+		Expiration:  encodeTime(time.Now().Add(s.opts.TokenDuration)),
 	}
 	tokenBytes, err := proto.Marshal(token)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to marshal token")
 	}
 
-	token.ServerSignature = ed25519.Sign(s.privateKey, tokenBytes)
+	token.ServerSignature = encodeBytes(ed25519.Sign(s.privateKey, tokenBytes))
 
 	return &multisigpb.GetTokenResponse{
 		AuthToken: token,
 	}, nil
 }
 
-var ErrBadToken = errors.New("bad token")
-var ErrTokenExpired = errors.New("token expired")
-var ErrNotFound = errors.New("not found")
-
 func (s *multisigService) authenticate(tx *gorm.DB, token *multisigpb.Token) (string, error) {
-	expiration, err := parseTime(token.Expiration)
+	expiration, err := decodeTime(token.Expiration)
 	if err != nil {
 		return "", errors.Wrap(err, "failed to parse expiration")
 	}
-
 	if !expiration.After(time.Now()) {
-		return "", ErrTokenExpired
+		return "", errors.New("expired")
 	}
 
 	copy := proto.Clone(token).(*multisigpb.Token)
-	copy.ServerSignature = nil
+	copy.ServerSignature = ""
 	tokenBytes, err := proto.Marshal(copy)
 	if err != nil {
 		return "", errors.Wrap(err, "failed to marshal token")
 	}
-	if !ed25519.Verify(s.publicKey, tokenBytes, token.ServerSignature) {
-		return "", ErrBadToken
+	signatureBytes, err := decodeBytes(token.ServerSignature)
+	if err != nil {
+		return "", errors.Wrap(err, "failed to decode signature")
+	}
+	if !ed25519.Verify(s.publicKey, tokenBytes, signatureBytes) {
+		return "", errors.New("invalid signature")
 	}
 
 	return token.UserAddress, nil

@@ -14,6 +14,8 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
+const clientMagic = "Login to Teritori Multisig Service"
+
 func parsePubKeyJSON(pubkeyJSON string) (*secp256k1.PubKey, error) {
 	pk := struct {
 		Type  string `json:"type"`
@@ -39,7 +41,7 @@ func makeChallenge(privateKey ed25519.PrivateKey, duration time.Duration) (*mult
 	}
 	chall := &multisigpb.Challenge{
 		Nonce:      nonce,
-		Expiration: formatTime(time.Now().Add(duration)),
+		Expiration: encodeTime(time.Now().Add(duration)),
 	}
 	challBytes, err := proto.Marshal(chall)
 	if err != nil {
@@ -54,7 +56,7 @@ func validateChallenge(publicKey ed25519.PublicKey, challenge *multisigpb.Challe
 	if expirationString == "" {
 		return errors.New("no expiration")
 	}
-	expiration, err := parseTime(expirationString)
+	expiration, err := decodeTime(expirationString)
 	if err != nil {
 		return errors.Wrap(err, "failed to parse expiration")
 	}

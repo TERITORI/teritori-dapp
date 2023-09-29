@@ -1,5 +1,5 @@
 import { createMultisigThresholdPubkey } from "@cosmjs/amino";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Pressable, ScrollView, View } from "react-native";
 import { useSelector } from "react-redux";
@@ -72,6 +72,14 @@ export const MultisigCreateScreen = () => {
   ]);
   const navigation = useAppNavigation();
   const signatureRequiredValue = watch("signatureRequired");
+  useEffect(() => {
+    if (!authToken) {
+      setTimeout(() => {
+        // without timeout, the navigation action is not handled
+        navigation.navigate("Multisig");
+      }, 1000);
+    }
+  }, [authToken, navigation]);
 
   const defaultNbSignaturesRequired = useMemo(
     () => addressIndexes.length.toString(),
@@ -163,7 +171,9 @@ export const MultisigCreateScreen = () => {
       return "This address is already used in this form.";
 
     const tempPubkeys = [...addressIndexes];
-    const account = await getCosmosAccount(address);
+    const account = await getCosmosAccount(
+      getUserId(selectedNetwork?.id, address)
+    );
     if (!account?.pubkey) {
       return "Account has no public key on chain, this address will need to send a transaction before it can be added to a multisig.";
     }

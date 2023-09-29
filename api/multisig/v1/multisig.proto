@@ -57,11 +57,12 @@ message Transaction {
   uint32 id = 15;
 }
 
+// we use string here because browser storage poorly supports bytes
 message Token {
-	bytes nonce = 1;
+	string nonce = 1; // base64
 	string expiration = 2;
   string user_address = 4;
-  bytes server_signature = 5; // signature by server of protobuf encoding of Token with server_signature signature field zeroed out
+  string server_signature = 5; // base64 signature by server of protobuf encoding of Token with server_signature signature field zeroed out
 }
 
 message Challenge {

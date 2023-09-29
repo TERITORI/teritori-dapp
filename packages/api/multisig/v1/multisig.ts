@@ -118,12 +118,14 @@ export interface Transaction {
   id: number;
 }
 
+/** we use string here because browser storage poorly supports bytes */
 export interface Token {
-  nonce: Uint8Array;
+  /** base64 */
+  nonce: string;
   expiration: string;
   userAddress: string;
-  /** signature by server of protobuf encoding of Token with server_signature signature field zeroed out */
-  serverSignature: Uint8Array;
+  /** base64 signature by server of protobuf encoding of Token with server_signature signature field zeroed out */
+  serverSignature: string;
 }
 
 export interface Challenge {
@@ -661,13 +663,13 @@ export const Transaction = {
 };
 
 function createBaseToken(): Token {
-  return { nonce: new Uint8Array(), expiration: "", userAddress: "", serverSignature: new Uint8Array() };
+  return { nonce: "", expiration: "", userAddress: "", serverSignature: "" };
 }
 
 export const Token = {
   encode(message: Token, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.nonce.length !== 0) {
-      writer.uint32(10).bytes(message.nonce);
+    if (message.nonce !== "") {
+      writer.uint32(10).string(message.nonce);
     }
     if (message.expiration !== "") {
       writer.uint32(18).string(message.expiration);
@@ -675,8 +677,8 @@ export const Token = {
     if (message.userAddress !== "") {
       writer.uint32(34).string(message.userAddress);
     }
-    if (message.serverSignature.length !== 0) {
-      writer.uint32(42).bytes(message.serverSignature);
+    if (message.serverSignature !== "") {
+      writer.uint32(42).string(message.serverSignature);
     }
     return writer;
   },
@@ -689,7 +691,7 @@ export const Token = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.nonce = reader.bytes();
+          message.nonce = reader.string();
           break;
         case 2:
           message.expiration = reader.string();
@@ -698,7 +700,7 @@ export const Token = {
           message.userAddress = reader.string();
           break;
         case 5:
-          message.serverSignature = reader.bytes();
+          message.serverSignature = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -710,32 +712,28 @@ export const Token = {
 
   fromJSON(object: any): Token {
     return {
-      nonce: isSet(object.nonce) ? bytesFromBase64(object.nonce) : new Uint8Array(),
+      nonce: isSet(object.nonce) ? String(object.nonce) : "",
       expiration: isSet(object.expiration) ? String(object.expiration) : "",
       userAddress: isSet(object.userAddress) ? String(object.userAddress) : "",
-      serverSignature: isSet(object.serverSignature) ? bytesFromBase64(object.serverSignature) : new Uint8Array(),
+      serverSignature: isSet(object.serverSignature) ? String(object.serverSignature) : "",
     };
   },
 
   toJSON(message: Token): unknown {
     const obj: any = {};
-    message.nonce !== undefined &&
-      (obj.nonce = base64FromBytes(message.nonce !== undefined ? message.nonce : new Uint8Array()));
+    message.nonce !== undefined && (obj.nonce = message.nonce);
     message.expiration !== undefined && (obj.expiration = message.expiration);
     message.userAddress !== undefined && (obj.userAddress = message.userAddress);
-    message.serverSignature !== undefined &&
-      (obj.serverSignature = base64FromBytes(
-        message.serverSignature !== undefined ? message.serverSignature : new Uint8Array(),
-      ));
+    message.serverSignature !== undefined && (obj.serverSignature = message.serverSignature);
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<Token>, I>>(object: I): Token {
     const message = createBaseToken();
-    message.nonce = object.nonce ?? new Uint8Array();
+    message.nonce = object.nonce ?? "";
     message.expiration = object.expiration ?? "";
     message.userAddress = object.userAddress ?? "";
-    message.serverSignature = object.serverSignature ?? new Uint8Array();
+    message.serverSignature = object.serverSignature ?? "";
     return message;
   },
 };
