@@ -3,7 +3,13 @@ import { chains, assets } from "chain-registry";
 import { IBCCurrencyInfo } from "./ibc";
 import { CosmosNetworkInfo, NativeCurrencyInfo, NetworkKind } from "./types";
 
-const banList = ["permtestnet", "terpnetwork", "wavehashtestnet"];
+const banList = [
+  "permtestnet",
+  "terpnetwork",
+  "wavehashtestnet",
+  "coreum",
+  "seitestnet2",
+];
 
 export const networksFromCosmosRegistry = (): CosmosNetworkInfo[] => {
   return chains

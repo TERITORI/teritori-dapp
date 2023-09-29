@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
 import { useSelector } from "react-redux";
 
@@ -26,6 +26,8 @@ import { WalletProvider } from "../../utils/walletProvider";
 import { BrandText } from "../BrandText";
 import { NetworkIcon } from "../NetworkIcon";
 import { TertiaryBox } from "../boxes/TertiaryBox";
+import { TertiaryButton } from "../buttons/TertiaryButton";
+import { NetworksListModal } from "../modals/NetworksListModal";
 
 export const NetworkSelectorMenu: FC<{
   forceNetworkId?: string;
@@ -40,6 +42,7 @@ export const NetworkSelectorMenu: FC<{
   const testnetsEnabled = useSelector(selectAreTestnetsEnabled);
   const selectedNetworkInfo = useSelectedNetworkInfo();
   const networksSettings = useSelector(selectNetworksSettings);
+  const [networksModalVisible, setNetworksModalVisible] = useState(false);
 
   const onPressNetwork = (networkId: string) => {
     let walletProvider: WalletProvider | null = null;
@@ -128,6 +131,22 @@ export const NetworkSelectorMenu: FC<{
             </TouchableOpacity>
           );
         })}
+      <TertiaryButton
+        text="Manage"
+        size="XS"
+        squaresBackgroundColor={neutral17}
+        style={{ marginBottom: layout.spacing_x2 }}
+        onPress={() => {
+          setNetworksModalVisible(true);
+        }}
+        fullWidth
+      />
+      <NetworksListModal
+        isVisible={networksModalVisible}
+        onClose={() => {
+          setNetworksModalVisible(false);
+        }}
+      />
     </TertiaryBox>
   );
 };
