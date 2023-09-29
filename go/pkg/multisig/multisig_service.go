@@ -708,6 +708,10 @@ func (s *multisigService) GetToken(_ context.Context, req *multisigpb.GetTokenRe
 }
 
 func (s *multisigService) authenticate(tx *gorm.DB, token *multisigpb.Token) (string, error) {
+	if token == nil {
+		return "", errors.New("missing token")
+	}
+
 	expiration, err := decodeTime(token.Expiration)
 	if err != nil {
 		return "", errors.Wrap(err, "failed to parse expiration")
