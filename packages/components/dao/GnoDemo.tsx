@@ -32,7 +32,7 @@ export const GnoDemo: React.FC<{
   daoId: string;
 }> = ({ daoId }) => {
   const [network, daoAddress] = parseUserId(daoId);
-  const { selectedWallet: wallet } = useSelectedWallet();
+  const wallet = useSelectedWallet();
   const { wrapWithFeedback } = useFeedbacks();
   if (network?.kind !== NetworkKind.Gno || !wallet) return null;
   return (
@@ -86,7 +86,7 @@ export const GnoDemo: React.FC<{
 
 const DeletePost: React.FC<{ daoId: string }> = ({ daoId }) => {
   const [network, daoAddress] = parseUserId(daoId);
-  const { selectedWallet: wallet } = useSelectedWallet();
+  const wallet = useSelectedWallet();
   const { wrapWithFeedback } = useFeedbacks();
   const addressParts = daoAddress.split("/");
   const [name, setName] = useState(
@@ -211,7 +211,7 @@ const DeletePost: React.FC<{ daoId: string }> = ({ daoId }) => {
 
 const CreateBoard: React.FC<{ daoId: string }> = ({ daoId }) => {
   const [network, daoAddress] = parseUserId(daoId);
-  const { selectedWallet: wallet } = useSelectedWallet();
+  const wallet = useSelectedWallet();
   const { wrapWithFeedback } = useFeedbacks();
   const [name, setName] = useState("");
 
@@ -262,7 +262,7 @@ const CreateBoard: React.FC<{ daoId: string }> = ({ daoId }) => {
 
 const MintTori: React.FC<{ daoId: string }> = ({ daoId }) => {
   const [network, daoAddress] = parseUserId(daoId);
-  const { selectedWallet: wallet } = useSelectedWallet();
+  const wallet = useSelectedWallet();
   const { wrapWithFeedback } = useFeedbacks();
   const [amount, setAmount] = useState("1");
   const [recipient, setRecipient] = useState("");
@@ -324,7 +324,7 @@ const GnoCreateProposal: React.FC<{ daoId: string | undefined }> = ({
   const [description, setDescription] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
   const [network, daoAddress] = parseUserId(daoId);
-  const { selectedWallet } = useSelectedWallet();
+  const selectedWallet = useSelectedWallet();
   const { wrapWithFeedback } = useFeedbacks();
   const invalidateDAOProposals = useInvalidateDAOProposals(daoId);
   if (network?.kind !== NetworkKind.Gno || !selectedWallet) {

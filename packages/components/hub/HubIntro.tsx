@@ -36,7 +36,7 @@ const ConnectedIntro: React.FC = () => {
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof walletsManagerTabItems>("overview");
 
-  const { selectedWallet } = useSelectedWallet();
+  const selectedWallet = useSelectedWallet();
 
   return (
     <View
@@ -76,7 +76,7 @@ const ConnectedIntro: React.FC = () => {
 };
 
 const FaucetButton: React.FC = () => {
-  const { selectedWallet } = useSelectedWallet();
+  const selectedWallet = useSelectedWallet();
   const network = getNetwork(selectedWallet?.networkId);
   const { wrapWithFeedback } = useFeedbacks();
   if (

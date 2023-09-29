@@ -38,7 +38,7 @@ export const MultisigWalletDashboardScreen: ScreenFC<
   const { id } = route.params;
   const [network, multisigAddress] = parseUserId(id);
   const cosmosNetwork = getCosmosNetwork(network?.id);
-  const userAddress = useSelectedWallet()?.selectedWallet?.address;
+  const userAddress = useSelectedWallet()?.address;
   const { multisig, isLoading } = useMultisigInfo(id);
   const walletName = multisig?.name;
   const membersAddress = multisig?.usersAddresses;
@@ -183,7 +183,7 @@ const MultisigMembers: React.FC<{
 const halfGap = 8;
 
 export const useMultisigInfo = (id: string | undefined) => {
-  const { selectedWallet } = useSelectedWallet();
+  const selectedWallet = useSelectedWallet();
   const authToken = useSelector((state: RootState) =>
     selectMultisigToken(state, selectedWallet?.address)
   );

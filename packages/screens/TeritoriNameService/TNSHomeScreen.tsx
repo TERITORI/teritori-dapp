@@ -72,7 +72,7 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
   const navigation = useAppNavigation();
   const selectedNetworkId = useSelectedNetworkId();
   const selectedNetwork = getCosmosNetwork(selectedNetworkId);
-  const { selectedWallet } = useSelectedWallet();
+  const selectedWallet = useSelectedWallet();
   const { tokens } = useNSTokensByOwner(selectedWallet?.userId);
   const collectionId = getCollectionId(
     selectedNetwork?.id,

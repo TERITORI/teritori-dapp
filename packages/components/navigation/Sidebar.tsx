@@ -53,7 +53,7 @@ const SidebarSeparator: React.FC = () => {
 };
 
 export const Sidebar: React.FC = () => {
-  const { selectedWallet } = useSelectedWallet();
+  const selectedWallet = useSelectedWallet();
   const userInfo = useNSUserInfo(selectedWallet?.userId);
   const selectedNetworkInfo = useSelectedNetworkInfo();
   const selectedNetworkKind = selectedNetworkInfo?.kind;

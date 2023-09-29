@@ -92,7 +92,7 @@ const fetchGnoFeed = async (
 
 export const useFetchFeed = (req: PostsRequest) => {
   const selectedNetwork = useSelectedNetworkInfo();
-  const { selectedWallet: wallet } = useSelectedWallet();
+  const wallet = useSelectedWallet();
 
   const { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading } =
     useInfiniteQuery(

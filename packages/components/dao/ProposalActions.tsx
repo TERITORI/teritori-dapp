@@ -35,7 +35,7 @@ export const ProposalActions: React.FC<{
   daoId: string | undefined;
   proposal: ProposalResponse;
 }> = ({ daoId, proposal }) => {
-  const { selectedWallet } = useSelectedWallet();
+  const selectedWallet = useSelectedWallet();
   const networkId = useSelectedNetworkId();
   const { setToastError, setToastSuccess } = useFeedbacks();
   const { isDAOMember: selectedWalletIsDAOMember } = useIsDAOMember(

@@ -39,7 +39,7 @@ const Content: React.FC<{
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof screenTabItems>("main");
   const { setToastError } = useFeedbacks();
-  const { selectedWallet: wallet } = useSelectedWallet();
+  const wallet = useSelectedWallet();
   const isMobile = useIsMobile();
   const { info, refresh, notFound } = useNFTInfo(id, wallet?.userId);
   const { width } = useMaxResolution({ responsive: true, noMargin: true });

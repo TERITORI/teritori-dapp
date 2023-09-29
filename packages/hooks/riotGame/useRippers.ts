@@ -11,7 +11,7 @@ import { useNFTs } from "../useNFTs";
 import useSelectedWallet from "../useSelectedWallet";
 
 export const useRippers = () => {
-  const { selectedWallet } = useSelectedWallet();
+  const selectedWallet = useSelectedWallet();
   const networkId = selectedWallet?.networkId;
   const network = getCosmosNetwork(networkId);
   const riotCollectionIdGen0 = getCollectionId(

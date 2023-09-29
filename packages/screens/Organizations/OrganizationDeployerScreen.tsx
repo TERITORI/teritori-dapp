@@ -43,7 +43,7 @@ export const LAUNCHING_PROCESS_STEPS: LaunchingProcessStepType[] = [
 ];
 
 export const OrganizationDeployerScreen = () => {
-  const { selectedWallet } = useSelectedWallet();
+  const selectedWallet = useSelectedWallet();
   const { setToastError } = useFeedbacks();
   const [daoAddress, setDAOAddress] = useState("");
   const [currentStep, setCurrentStep] = useState(0);

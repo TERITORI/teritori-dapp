@@ -14,7 +14,7 @@ export const useCreatePost = ({
   onSuccess?: () => void;
   onMutate?: () => void;
 }) => {
-  const { selectedWallet: wallet } = useSelectedWallet();
+  const wallet = useSelectedWallet();
   const { setToastSuccess, setToastError } = useFeedbacks();
   const queryClient = useQueryClient();
 

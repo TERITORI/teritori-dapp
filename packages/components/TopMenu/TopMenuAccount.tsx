@@ -4,7 +4,7 @@ import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
 import { JoinState } from "../../api/multisig/v1/multisig";
-import { useWallets, Wallet } from "../../context/WalletsProvider";
+import { useWallets } from "../../context/WalletsProvider";
 import { useUserMultisigs } from "../../hooks/multisig/useUserMultisigs";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import {
@@ -12,7 +12,7 @@ import {
   useSelectedNetworkInfo,
 } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getCosmosNetwork, getUserId, NetworkKind } from "../../networks";
+import { getCosmosNetwork, getUserId } from "../../networks";
 import {
   neutral00,
   neutral22,
@@ -23,7 +23,6 @@ import {
 import { fontSemibold12, fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { tinyAddress } from "../../utils/text";
-import { WalletProvider } from "../../utils/walletProvider";
 import { BrandText } from "../BrandText";
 import FlexCol from "../FlexCol";
 import FlexRow from "../FlexRow";
@@ -36,8 +35,8 @@ import { RoundedGradientImage } from "../images/RoundedGradientImage";
 const TINY_ADDRESSES_COUNT = 40;
 
 export const TopMenuAccount: React.FC = () => {
-  const { selectedWallet, selectedMultisignWallet } = useSelectedWallet();
-  const { setMultisignWallet, wallets } = useWallets();
+  const selectedWallet = useSelectedWallet();
+  const { wallets } = useWallets();
   const selectedNetworkInfo = useSelectedNetworkInfo();
   const { multisigs: multisigList } = useUserMultisigs(
     selectedWallet?.userId,
@@ -50,11 +49,7 @@ export const TopMenuAccount: React.FC = () => {
   return (
     <FlexCol>
       <UserNameInline
-        userId={
-          selectedMultisignWallet
-            ? selectedMultisignWallet.userId
-            : selectedWallet?.userId || ""
-        }
+        userId={selectedWallet?.userId}
         style={styles.userImageLine}
       />
 
@@ -106,7 +101,6 @@ export const TopMenuAccount: React.FC = () => {
               onHoverIn={() => setHoveredIndex(1)}
               onHoverOut={() => setHoveredIndex(0)}
               onPress={() => {
-                setMultisignWallet(null);
                 setAccountsListShown(false);
               }}
               style={[
@@ -134,10 +128,12 @@ export const TopMenuAccount: React.FC = () => {
               {multisigList.map((item, index: number) => (
                 <CustomPressable
                   key={index}
-                  disabled={item.address === selectedMultisignWallet?.address}
+                  disabled={item.address === selectedWallet?.address}
                   onHoverIn={() => setHoveredIndex(index + 2)}
                   onHoverOut={() => setHoveredIndex(0)}
                   onPress={() => {
+                    // TODO
+                    /*
                     setMultisignWallet({
                       id: `keplr-${item.address}`,
                       address: item.address,
@@ -147,11 +143,12 @@ export const TopMenuAccount: React.FC = () => {
                       provider: WalletProvider.Keplr,
                       connected: true,
                     } as Wallet);
+                    */
                     setAccountsListShown(false);
                   }}
                   style={[
                     (hoveredIndex === index + 2 ||
-                      item.address === selectedMultisignWallet?.address) && {
+                      item.address === selectedWallet?.address) && {
                       opacity: 0.5,
                     },
                     styles.walletLine,

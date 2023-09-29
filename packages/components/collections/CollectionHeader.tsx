@@ -43,7 +43,7 @@ export const CollectionHeader: React.FC<{
   onChangeSortDirection,
 }) => {
   const isMobile = useIsMobile();
-  const { selectedWallet: wallet } = useSelectedWallet();
+  const wallet = useSelectedWallet();
   const stats = useCollectionStats(collectionId, wallet?.userId);
   const [network, collectionMintAddress] = parseCollectionId(collectionId);
   const { setToastSuccess } = useFeedbacks();

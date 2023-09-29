@@ -42,7 +42,7 @@ export const useSwap = (
   currencyIn?: CurrencyInfo,
   currencyOut?: CurrencyInfo
 ) => {
-  const { selectedWallet } = useSelectedWallet();
+  const selectedWallet = useSelectedWallet();
   const selectedNetworkId = useSelectedNetworkId();
   const selectedNetwork = getCosmosNetwork(selectedNetworkId);
   const [isMultihop, setIsMultihop] = useState(false);

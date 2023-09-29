@@ -4,7 +4,7 @@ import { useUserMultisigs } from "./useUserMultisigs";
 import useSelectedWallet from "../useSelectedWallet";
 
 export const useMultisigValidator = (multisigAddress: string | undefined) => {
-  const { selectedWallet: wallet } = useSelectedWallet();
+  const wallet = useSelectedWallet();
   const {
     multisigs: data,
     isLoading,

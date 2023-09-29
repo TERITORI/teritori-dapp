@@ -42,7 +42,7 @@ const SelectedTabContent: React.FC<{
   selectedTab: keyof typeof screenTabItems;
   setSelectedTab: (tab: keyof typeof screenTabItems) => void;
 }> = ({ userId, selectedTab, setSelectedTab }) => {
-  const { selectedWallet } = useSelectedWallet();
+  const selectedWallet = useSelectedWallet();
   const userInfo = useNSUserInfo(userId);
   const [network, userAddress] = parseUserId(userId);
   const { isDAO } = useIsDAO(userId);

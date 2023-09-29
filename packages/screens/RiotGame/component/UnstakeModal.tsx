@@ -38,7 +38,7 @@ export const UnstakeModal: React.FC<UnstakeModalProps> = ({
   onClose,
   visible = false,
 }) => {
-  const { selectedWallet } = useSelectedWallet();
+  const selectedWallet = useSelectedWallet();
   const { claimableAmount } = useGameRewards();
   const networkId = useSelectedNetworkId();
   const userInfo = useNSUserInfo(selectedWallet?.userId);

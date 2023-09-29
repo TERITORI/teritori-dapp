@@ -3,7 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 import useSelectedWallet from "../useSelectedWallet";
 
 export const useDeclineTransaction = () => {
-  const { selectedWallet: walletAccount } = useSelectedWallet();
+  const walletAccount = useSelectedWallet();
 
   // req
   const mutation = useMutation(

@@ -15,7 +15,7 @@ import {
 import useSelectedWallet from "../useSelectedWallet";
 
 export const useGameRewards = () => {
-  const { selectedWallet } = useSelectedWallet();
+  const selectedWallet = useSelectedWallet();
   const userId = selectedWallet?.userId;
   const { setToastSuccess, setToastError } = useFeedbacks();
   const [isClaiming, setIsClaiming] = useState(false);

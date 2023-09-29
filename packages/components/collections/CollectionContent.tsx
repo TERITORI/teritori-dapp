@@ -22,7 +22,7 @@ export const CollectionContent: React.FC<{
   selectedTab: TabsListType;
   sortDirection: SortDirection;
 }> = React.memo(({ id, selectedTab, sortDirection }) => {
-  const { selectedWallet: wallet } = useSelectedWallet();
+  const wallet = useSelectedWallet();
 
   const selectedFilters = useSelector((state: RootState) =>
     selectAllSelectedAttributeDataByCollectionId(state, id)

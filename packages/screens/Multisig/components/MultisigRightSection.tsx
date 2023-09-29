@@ -59,7 +59,7 @@ export const MultisigRightSection: React.FC = () => {
   const { multisig, isInitialLoading } = useMultisigInfo(id);
   const [joinMultisigModalVisible, setJoinMultisigModalVisible] =
     useState(false);
-  const { selectedWallet } = useSelectedWallet();
+  const selectedWallet = useSelectedWallet();
   const authToken = useSelector((state: RootState) =>
     selectMultisigToken(state, selectedWallet?.address)
   );

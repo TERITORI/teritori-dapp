@@ -148,7 +148,7 @@ class ErrorBoundary extends React.Component {
 }
 
 const WalletSyncer: React.FC = memo(() => {
-  const { selectedWallet } = useSelectedWallet();
+  const selectedWallet = useSelectedWallet();
   const selectedNetworkId = useSelectedNetworkId();
   const { wallets } = useWallets();
   const dispatch = useAppDispatch();

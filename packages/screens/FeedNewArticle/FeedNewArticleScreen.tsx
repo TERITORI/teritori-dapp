@@ -53,7 +53,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
   const isMobile = useIsMobile();
   const selectNetworkInfo = useSelectedNetworkInfo();
   const selectedNetworkId = selectNetworkInfo?.id || "";
-  const { selectedWallet: wallet } = useSelectedWallet();
+  const wallet = useSelectedWallet();
   const { postFee } = useUpdatePostFee(selectedNetworkId, PostCategory.Article);
   const { freePostCount } = useUpdateAvailableFreePost(
     selectedNetworkId,

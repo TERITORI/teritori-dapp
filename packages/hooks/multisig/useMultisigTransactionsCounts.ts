@@ -11,7 +11,7 @@ export const useMultisigTransactionsCounts = (
   chainId: string | undefined,
   multisigAddress: string | undefined
 ) => {
-  const { selectedWallet: walletAccount } = useSelectedWallet();
+  const walletAccount = useSelectedWallet();
   const authToken = useSelector((state: RootState) =>
     selectMultisigToken(state, walletAccount?.address)
   );

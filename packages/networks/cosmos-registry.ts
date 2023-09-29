@@ -89,6 +89,8 @@ export const networksFromCosmosRegistry = (): CosmosNetworkInfo[] => {
           average: chain.fees?.fee_tokens?.[0]?.average_gas_price || 42,
           high: chain.fees?.fee_tokens?.[0]?.high_gas_price || 42,
         },
+        nameServiceDefaultImage:
+          chain.logo_URIs?.svg || chain.logo_URIs?.png || chain.logo_URIs?.jpeg,
         cosmosFeatures: [],
       };
       //console.log(cosmosNetwork);

@@ -65,7 +65,7 @@ export const DAOMembers: React.FC<{
   const [network] = parseUserId(daoId);
   const { members } = useDAOMembers(daoId);
   const { width: windowWidth } = useWindowDimensions();
-  const { selectedWallet } = useSelectedWallet();
+  const selectedWallet = useSelectedWallet();
   const [width, setWidth] = useState(0);
   const [showAddMemberModal, setShowAddMemberModal] = useState(false);
   const { isDAOMember } = useIsDAOMember(daoId, selectedWallet?.userId);
@@ -137,7 +137,7 @@ const AddMembersModal: React.FC<{
 }> = ({ daoId, show, onClose }) => {
   const [network] = parseUserId(daoId);
   const { wrapWithFeedback } = useFeedbacks();
-  const { selectedWallet } = useSelectedWallet();
+  const selectedWallet = useSelectedWallet();
   const [searchText, setSearchText] = useState("");
   const [ids, setIds] = useState<string[]>([]);
   const proposeToAddMembers = useProposeToAddMembers(daoId);
@@ -250,7 +250,7 @@ export const UserCard: React.FC<{
 }> = ({ userId, style, daoId }) => {
   const [, userAddress] = parseUserId(userId);
   const { metadata } = useNSUserInfo(userId);
-  const { selectedWallet } = useSelectedWallet();
+  const selectedWallet = useSelectedWallet();
   const { wrapWithFeedback } = useFeedbacks();
   const { isDAOMember: selectedWalletIsMember } = useIsDAOMember(
     daoId,

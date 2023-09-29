@@ -46,7 +46,7 @@ enum SelectModalKind {
 
 export const MultisigScreen: ScreenFC<"Multisig"> = () => {
   const navigation = useAppNavigation();
-  const { selectedWallet } = useSelectedWallet();
+  const selectedWallet = useSelectedWallet();
   // FIXME: remove StyleSheet.create
   // eslint-disable-next-line no-restricted-syntax
   const styles = StyleSheet.create({

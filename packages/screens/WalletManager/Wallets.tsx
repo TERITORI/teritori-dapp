@@ -9,7 +9,7 @@ import { UserKind, getNetwork } from "../../networks";
 import { neutral33 } from "../../utils/style/colors";
 
 export const Wallets: React.FC = () => {
-  const { selectedWallet } = useSelectedWallet();
+  const selectedWallet = useSelectedWallet();
 
   // TODO: Handle multiple wallets addresses
   const { totalsRewards } = useRewards(selectedWallet?.userId, UserKind.Single);

@@ -6,7 +6,7 @@ import { useSelectedNetworkId } from "../useSelectedNetwork";
 import useSelectedWallet from "../useSelectedWallet";
 
 export const useSeasonRank = () => {
-  const { selectedWallet } = useSelectedWallet();
+  const selectedWallet = useSelectedWallet();
   const networkId = useSelectedNetworkId();
 
   const { data: currentSeason } = useQuery(

@@ -25,7 +25,7 @@ export const useRunOrProposeTransaction = (
   userId: string | undefined,
   userKind: UserKind
 ) => {
-  const { selectedWallet: wallet } = useSelectedWallet();
+  const wallet = useSelectedWallet();
   const multisigAuthToken = useSelector((state: RootState) =>
     selectMultisigToken(state, wallet?.address)
   );

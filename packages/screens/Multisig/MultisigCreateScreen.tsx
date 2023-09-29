@@ -59,7 +59,7 @@ import { layout } from "../../utils/style/layout";
 const emptyPubKeyGroup = () => ({ address: "", compressedPubkey: "" });
 
 export const MultisigCreateScreen = () => {
-  const { selectedWallet } = useSelectedWallet();
+  const selectedWallet = useSelectedWallet();
   const authToken = useSelector((state: RootState) =>
     selectMultisigToken(state, selectedWallet?.address)
   );

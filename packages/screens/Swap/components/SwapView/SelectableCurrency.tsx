@@ -27,7 +27,7 @@ export const SelectableCurrency: React.FC<{
   currency: CurrencyInfo;
   networkId: string;
 }> = ({ onPressItem, currency, networkId }) => {
-  const { selectedWallet } = useSelectedWallet();
+  const selectedWallet = useSelectedWallet();
   const balances = useBalances(networkId, selectedWallet?.address);
 
   const currencyBalance: Balance | undefined = useMemo(

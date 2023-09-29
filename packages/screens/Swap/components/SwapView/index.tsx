@@ -156,7 +156,7 @@ export const SwapView: React.FC = () => {
   };
   // =========
 
-  const { selectedWallet } = useSelectedWallet();
+  const selectedWallet = useSelectedWallet();
   const selectedNetworkId = useSelectedNetworkId();
   const selectedNetwork = useSelectedNetworkInfo();
 

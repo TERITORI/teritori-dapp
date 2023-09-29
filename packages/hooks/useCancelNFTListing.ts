@@ -74,7 +74,7 @@ export const useCancelNFTListing = (
   nftContractAddress: string,
   tokenId: string
 ) => {
-  const { selectedWallet: wallet } = useSelectedWallet();
+  const wallet = useSelectedWallet();
   const { setToastError } = useFeedbacks();
 
   return useCallback(async () => {

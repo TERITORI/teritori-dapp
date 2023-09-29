@@ -13,7 +13,7 @@ import { neutral00 } from "../../utils/style/colors";
 export const TopMenuMobile: FC = () => {
   const { onPressDropdownButton, isDropdownOpen } = useDropdowns();
   const dropdownRef = useRef<View>(null);
-  const { selectedWallet } = useSelectedWallet();
+  const selectedWallet = useSelectedWallet();
   const userInfo = useNSUserInfo(selectedWallet?.userId);
   const selectedNetworkId = useSelectedNetworkId();
   const network = getCosmosNetwork(selectedNetworkId);

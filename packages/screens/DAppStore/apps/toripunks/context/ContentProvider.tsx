@@ -48,7 +48,7 @@ export const ContentContextProvider: React.FC<{
 }> = ({ children, screen }) => {
   const [selectedSection, setSelectedSection] = useState<string>(screen);
 
-  const { selectedWallet } = useSelectedWallet();
+  const selectedWallet = useSelectedWallet();
   const navigation = useAppNavigation();
   const [loadingGame, setLoadingGame] = useState<boolean>(false);
 

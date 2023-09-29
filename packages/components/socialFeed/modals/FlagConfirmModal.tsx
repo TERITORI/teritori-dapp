@@ -40,7 +40,7 @@ export const FlagConfirmModal: React.FC<FlagConfirmModalProps> = ({
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const { setToastError } = useFeedbacks();
-  const { selectedWallet: wallet } = useSelectedWallet();
+  const wallet = useSelectedWallet();
   const selectedNetworkId = useSelectedNetworkId();
 
   const confirmVote = async (vote: VoteValue) => {

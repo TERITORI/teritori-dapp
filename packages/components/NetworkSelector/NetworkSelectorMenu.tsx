@@ -35,7 +35,7 @@ export const NetworkSelectorMenu: FC<{
 }> = ({ forceNetworkId, forceNetworkKind, forceNetworkFeatures, style }) => {
   const { closeOpenedDropdown } = useDropdowns();
   const dispatch = useAppDispatch();
-  const { wallets, setMultisignWallet } = useWallets();
+  const { wallets } = useWallets();
   const { setToastError } = useFeedbacks();
   const testnetsEnabled = useSelector(selectAreTestnetsEnabled);
   const selectedNetworkInfo = useSelectedNetworkInfo();
@@ -70,7 +70,6 @@ export const NetworkSelectorMenu: FC<{
     );
 
     dispatch(setSelectedWalletId(selectedWallet?.id || ""));
-    setMultisignWallet(null);
 
     closeOpenedDropdown();
   };

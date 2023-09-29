@@ -17,7 +17,7 @@ import useSelectedWallet from "../useSelectedWallet";
 
 export const useApproveTransaction = () => {
   const { setToastError } = useFeedbacks();
-  const { selectedWallet: walletAccount } = useSelectedWallet();
+  const walletAccount = useSelectedWallet();
   const multisigClient = useMultisigClient();
   const authToken = useSelector((state: RootState) =>
     selectMultisigToken(state, walletAccount?.address)

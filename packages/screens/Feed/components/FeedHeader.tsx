@@ -28,7 +28,7 @@ export const FeedHeader: React.FC<FeedHeaderProps> = ({
 
   const selectedNetworkInfo = useSelectedNetworkInfo();
   const selectedNetworkKind = selectedNetworkInfo?.kind;
-  const { selectedWallet } = useSelectedWallet();
+  const selectedWallet = useSelectedWallet();
   const isModerationDAOMember = useIsModerationDAOMember(
     selectedWallet?.userId
   );

@@ -34,7 +34,7 @@ export const FightSection: React.FC<FightSectionProps> = ({
   const [isUnstaking, setIsUnstaking] = useState(false);
   const { setToastError } = useFeedbacks();
   const [isShowClaimModal, setIsShowClaimModal] = useState(false);
-  const { selectedWallet } = useSelectedWallet();
+  const selectedWallet = useSelectedWallet();
   const networkId = selectedWallet?.networkId;
 
   const { data: stakedRippers } = useQuery(

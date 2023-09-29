@@ -20,7 +20,7 @@ import useSelectedWallet from "../useSelectedWallet";
 
 export const useBroadcastTransaction = () => {
   const { setToastError, setToastSuccess } = useFeedbacks();
-  const { selectedWallet } = useSelectedWallet();
+  const selectedWallet = useSelectedWallet();
   const authToken = useSelector((state: RootState) =>
     selectMultisigToken(state, selectedWallet?.address)
   );

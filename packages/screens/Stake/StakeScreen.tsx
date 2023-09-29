@@ -21,7 +21,7 @@ import { fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 
 export const StakeScreen: ScreenFC<"Staking"> = ({ route: { params } }) => {
-  const { selectedWallet } = useSelectedWallet();
+  const selectedWallet = useSelectedWallet();
   const isMobile = useIsMobile();
   let selectedNetworkId: string | undefined = useSelectedNetworkId();
   let userId = selectedWallet?.userId;

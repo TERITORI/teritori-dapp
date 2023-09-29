@@ -50,7 +50,7 @@ const DAOManager: React.FC = () => {
   const networkId = useSelectedNetworkId();
   const network = getCosmosNetwork(networkId);
   const balances = useBalances(networkId, network?.coreDAOAddress);
-  const { selectedWallet } = useSelectedWallet();
+  const selectedWallet = useSelectedWallet();
   return (
     <View>
       <BrandText>Funds</BrandText>
@@ -138,7 +138,7 @@ const VaultManager: React.FC<{ networkId: string }> = ({ networkId }) => {
   const { vaultConfig } = useVaultConfig(networkId);
   const vaultBalances = useBalances(networkId, network?.vaultContractAddress);
   const { wrapWithFeedback } = useFeedbacks();
-  const { selectedWallet } = useSelectedWallet();
+  const selectedWallet = useSelectedWallet();
   const makeProposal = useDAOMakeProposal(
     getUserId(networkId, network?.vaultContractAddress)
   );

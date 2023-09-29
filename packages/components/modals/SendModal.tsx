@@ -47,7 +47,7 @@ export const SendModal: React.FC<SendModalProps> = ({
   userKind,
 }) => {
   const { setToastError, setToastSuccess } = useFeedbacks();
-  const { selectedWallet } = useSelectedWallet();
+  const selectedWallet = useSelectedWallet();
   const { control, setValue, handleSubmit, watch } = useForm<TransactionForm>();
   const toAddress = watch("toAddress");
   const amount = watch("amount");
