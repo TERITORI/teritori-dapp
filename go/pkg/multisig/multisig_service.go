@@ -5,7 +5,6 @@ import (
 	"context"
 	"crypto/ed25519"
 	srand "crypto/rand"
-	"encoding/base64"
 	"encoding/json"
 	"time"
 
@@ -15,8 +14,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/bech32"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
-	"google.golang.org/protobuf/encoding/protojson"
-	"google.golang.org/protobuf/proto"
 	"gorm.io/datatypes"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -371,8 +368,7 @@ func (s *multisigService) CreateOrJoinMultisig(_ context.Context, req *multisigp
 			return errors.New("user address is not a member of the multisig")
 		}
 
-		now := time.Now().UTC()
-
+		now := timeNow().UTC()
 		var multisig Multisig
 		if err := tx.First(&multisig, "chain_id = ? AND address = ?", chainID, multisigAddress).Error; err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -640,99 +636,18 @@ func (s *multisigService) GetChallenge(_ context.Context, req *multisigpb.GetCha
 }
 
 func (s *multisigService) GetToken(_ context.Context, req *multisigpb.GetTokenRequest) (*multisigpb.GetTokenResponse, error) {
-	infoBytes := []byte(req.GetInfoJson())
-	var info multisigpb.TokenRequestInfo
-	if err := protojson.Unmarshal(infoBytes, &info); err != nil {
-		return nil, errors.Wrap(err, "failed to unmarshal info")
-	}
-
-	if info.Kind != clientMagic {
-		return nil, errors.New("invalid kind")
-	}
-
-	prefix := info.UserBech32Prefix
-	if prefix == "" {
-		return nil, errors.New("missing user bech32 prefix in request")
-	}
-
-	err := validateChallenge(s.publicKey, info.Challenge)
+	token, err := makeToken(s.privateKey, s.publicKey, s.opts.TokenDuration, req.GetInfoJson(), req.GetUserSignature())
 	if err != nil {
-		return nil, errors.Wrap(err, "invalid challenge")
+		return nil, err
 	}
-
-	userPublicKey, err := parsePubKeyJSON(info.UserPubkeyJson)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to parse user pubkey json")
-	}
-	addressBytes := userPublicKey.Address()
-
-	chainUserAddress, err := bech32.ConvertAndEncode(prefix, addressBytes)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to encode bech32 address")
-	}
-
-	signatureBase64 := req.GetUserSignature()
-	signature, err := base64.StdEncoding.DecodeString(signatureBase64) // we use std encoding because keplr encode with std
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to decode signature")
-	}
-	if !userPublicKey.VerifySignature(makeADR36SignDoc(infoBytes, chainUserAddress), []byte(signature)) {
-		return nil, errors.New("invalid user signature")
-	}
-
-	crossChainAddress, err := bech32.ConvertAndEncode(universalBech32Prefix, addressBytes)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to re-encode user address, this should never happen")
-	}
-
-	nonce, err := makeNonce()
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to make nonce")
-	}
-
-	token := &multisigpb.Token{
-		Nonce:       encodeBytes(nonce),
-		UserAddress: crossChainAddress,
-		Expiration:  encodeTime(time.Now().Add(s.opts.TokenDuration)),
-	}
-	tokenBytes, err := proto.Marshal(token)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to marshal token")
-	}
-
-	token.ServerSignature = encodeBytes(ed25519.Sign(s.privateKey, tokenBytes))
-
 	return &multisigpb.GetTokenResponse{
 		AuthToken: token,
 	}, nil
 }
 
 func (s *multisigService) authenticate(tx *gorm.DB, token *multisigpb.Token) (string, error) {
-	if token == nil {
-		return "", errors.New("missing token")
+	if err := validateToken(s.publicKey, token); err != nil {
+		return "", err
 	}
-
-	expiration, err := decodeTime(token.Expiration)
-	if err != nil {
-		return "", errors.Wrap(err, "failed to parse expiration")
-	}
-	if !expiration.After(time.Now()) {
-		return "", errors.New("expired")
-	}
-
-	copy := proto.Clone(token).(*multisigpb.Token)
-	copy.ServerSignature = ""
-	tokenBytes, err := proto.Marshal(copy)
-	if err != nil {
-		return "", errors.Wrap(err, "failed to marshal token")
-	}
-	signatureBytes, err := decodeBytes(token.ServerSignature)
-	if err != nil {
-		return "", errors.Wrap(err, "failed to decode signature")
-	}
-	if !ed25519.Verify(s.publicKey, tokenBytes, signatureBytes) {
-		return "", errors.New("invalid signature")
-	}
-
 	return token.UserAddress, nil
 }
