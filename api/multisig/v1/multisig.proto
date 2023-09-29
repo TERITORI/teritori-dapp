@@ -58,10 +58,16 @@ message Transaction {
 }
 
 message Token {
-	string nonce = 1;
-	string created_at = 2;
-	uint32 duration = 3;
+	bytes nonce = 1;
+	string expiration = 2;
   string user_address = 4;
+  bytes server_signature = 5; // signature by server of protobuf encoding of Token with server_signature signature field zeroed out
+}
+
+message Challenge {
+  bytes nonce = 1;
+  string expiration = 2;
+  bytes server_signature = 3; // signature by server of protobuf encoding of Challenge with server_signature field zeroed out
 }
 
 enum JoinState {
@@ -176,14 +182,19 @@ message GetChallengeRequest {
 }
 
 message GetChallengeResponse {
-  string challenge = 1;
+  Challenge challenge = 1;
+}
+
+message TokenRequestInfo {
+  string kind = 1;
+  Challenge challenge = 2;
+  string user_bech32_prefix = 3;
+  string user_pubkey_json = 4;
 }
 
 message GetTokenRequest {
-  string challenge = 1;
-  string challenge_signature = 2;
-  string user_bech32_prefix = 4;
-  string user_pubkey_json = 5;
+  string info_json = 1; // protojson encoding of TokenRequestInfo
+  string user_signature = 2; // signature by client of info_json
 }
 
 message GetTokenResponse {

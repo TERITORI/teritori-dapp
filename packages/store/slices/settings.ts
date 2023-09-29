@@ -118,7 +118,7 @@ export const selectMultisigToken = (
     state.settings.multisigTokens,
     universalUserAddress(userAddress)
   );
-  if (!token || Date.parse(token.createdAt) + token.duration < Date.now()) {
+  if (!token || Date.parse(token.expiration) <= Date.now()) {
     return undefined;
   }
   return token;

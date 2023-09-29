@@ -1,3 +1,4 @@
+import { Keplr } from "@keplr-wallet/types";
 import { FC } from "react";
 import { useSelector } from "react-redux";
 
@@ -5,6 +6,7 @@ import {
   MultisigServiceClientImpl,
   GrpcWebImpl as MultisigGrpcWebImpl,
   GetTokenRequest,
+  TokenRequestInfo,
 } from "../../api/multisig/v1/multisig";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { parseUserId, NetworkKind } from "../../networks";
@@ -23,9 +25,7 @@ export const LoginButton: FC<{ userId: string | undefined }> = ({ userId }) => {
   );
   const dispatch = useAppDispatch();
   const hasValidToken =
-    storeAuthToken &&
-    Date.parse(storeAuthToken?.createdAt || "") + storeAuthToken.duration >
-      new Date().getTime(); // FIXME: this won't rerender when token expires
+    storeAuthToken && Date.parse(storeAuthToken.expiration) > Date.now(); // FIXME: this won't rerender when token expires
   const { wrapWithFeedback } = useFeedbacks();
 
   return (
@@ -57,17 +57,46 @@ export const LoginButton: FC<{ userId: string | undefined }> = ({ userId }) => {
         });
         const client = new MultisigServiceClientImpl(rpc);
 
-        const { challenge } = await client.GetChallenge({});
-        console.log("challenge", challenge);
+        const keplr = (window as any).keplr as Keplr | undefined;
+        if (!keplr) {
+          throw new Error("Keplr not found");
+        }
 
-        const stdsig = await keplrSignArbitrary(userId, challenge);
+        const key = await keplr.getKey(network.chainId);
+        console.log("key", key);
+        const { pubKey, algo } = key;
+
+        if (algo !== "secp256k1") {
+          throw new Error("Unsupported key algorithm");
+        }
+
+        const challengeResponse = await client.GetChallenge({});
+
+        if (!challengeResponse.challenge) {
+          throw new Error("No challenge returned from server");
+        }
+
+        console.log("algo", algo);
+
+        const info = TokenRequestInfo.toJSON({
+          kind: "Login to Teritori Multisig Service",
+          challenge: challengeResponse.challenge,
+          userBech32Prefix: network.addressPrefix,
+          userPubkeyJson: JSON.stringify({
+            type: "tendermint/PubKeySecp256k1",
+            value: Buffer.from(pubKey).toString("base64"),
+          }),
+        });
+        const infoJSON = JSON.stringify(info);
+
+        const stdsig = await keplrSignArbitrary(userId, infoJSON);
         console.log(stdsig);
 
+        console.log(stdsig.pub_key);
+
         const req: GetTokenRequest = {
-          challenge,
-          challengeSignature: stdsig.signature,
-          userBech32Prefix: network.addressPrefix,
-          userPubkeyJson: JSON.stringify(stdsig.pub_key),
+          infoJson: infoJSON,
+          userSignature: stdsig.signature,
         };
 
         console.log("req", req);

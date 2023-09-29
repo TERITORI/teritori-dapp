@@ -8,13 +8,6 @@ import (
 	"gorm.io/gorm"
 )
 
-type Token struct {
-	UserAddress string `gorm:"primaryKey"`
-	Nonce       string `gorm:"uniqueIndex"`
-	CreatedAt   time.Time
-	Duration    time.Duration
-}
-
 type UserMultisig struct {
 	MultisigChainID string `gorm:"primaryKey"`
 	UserAddress     string `gorm:"primaryKey"`

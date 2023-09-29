@@ -119,10 +119,18 @@ export interface Transaction {
 }
 
 export interface Token {
-  nonce: string;
-  createdAt: string;
-  duration: number;
+  nonce: Uint8Array;
+  expiration: string;
   userAddress: string;
+  /** signature by server of protobuf encoding of Token with server_signature signature field zeroed out */
+  serverSignature: Uint8Array;
+}
+
+export interface Challenge {
+  nonce: Uint8Array;
+  expiration: string;
+  /** signature by server of protobuf encoding of Challenge with server_signature field zeroed out */
+  serverSignature: Uint8Array;
 }
 
 export interface MultisigsRequest {
@@ -222,14 +230,21 @@ export interface GetChallengeRequest {
 }
 
 export interface GetChallengeResponse {
-  challenge: string;
+  challenge: Challenge | undefined;
+}
+
+export interface TokenRequestInfo {
+  kind: string;
+  challenge: Challenge | undefined;
+  userBech32Prefix: string;
+  userPubkeyJson: string;
 }
 
 export interface GetTokenRequest {
-  challenge: string;
-  challengeSignature: string;
-  userBech32Prefix: string;
-  userPubkeyJson: string;
+  /** protojson encoding of TokenRequestInfo */
+  infoJson: string;
+  /** signature by client of info_json */
+  userSignature: string;
 }
 
 export interface GetTokenResponse {
@@ -646,22 +661,22 @@ export const Transaction = {
 };
 
 function createBaseToken(): Token {
-  return { nonce: "", createdAt: "", duration: 0, userAddress: "" };
+  return { nonce: new Uint8Array(), expiration: "", userAddress: "", serverSignature: new Uint8Array() };
 }
 
 export const Token = {
   encode(message: Token, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.nonce !== "") {
-      writer.uint32(10).string(message.nonce);
+    if (message.nonce.length !== 0) {
+      writer.uint32(10).bytes(message.nonce);
     }
-    if (message.createdAt !== "") {
-      writer.uint32(18).string(message.createdAt);
-    }
-    if (message.duration !== 0) {
-      writer.uint32(24).uint32(message.duration);
+    if (message.expiration !== "") {
+      writer.uint32(18).string(message.expiration);
     }
     if (message.userAddress !== "") {
       writer.uint32(34).string(message.userAddress);
+    }
+    if (message.serverSignature.length !== 0) {
+      writer.uint32(42).bytes(message.serverSignature);
     }
     return writer;
   },
@@ -674,16 +689,16 @@ export const Token = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.nonce = reader.string();
+          message.nonce = reader.bytes();
           break;
         case 2:
-          message.createdAt = reader.string();
-          break;
-        case 3:
-          message.duration = reader.uint32();
+          message.expiration = reader.string();
           break;
         case 4:
           message.userAddress = reader.string();
+          break;
+        case 5:
+          message.serverSignature = reader.bytes();
           break;
         default:
           reader.skipType(tag & 7);
@@ -695,28 +710,103 @@ export const Token = {
 
   fromJSON(object: any): Token {
     return {
-      nonce: isSet(object.nonce) ? String(object.nonce) : "",
-      createdAt: isSet(object.createdAt) ? String(object.createdAt) : "",
-      duration: isSet(object.duration) ? Number(object.duration) : 0,
+      nonce: isSet(object.nonce) ? bytesFromBase64(object.nonce) : new Uint8Array(),
+      expiration: isSet(object.expiration) ? String(object.expiration) : "",
       userAddress: isSet(object.userAddress) ? String(object.userAddress) : "",
+      serverSignature: isSet(object.serverSignature) ? bytesFromBase64(object.serverSignature) : new Uint8Array(),
     };
   },
 
   toJSON(message: Token): unknown {
     const obj: any = {};
-    message.nonce !== undefined && (obj.nonce = message.nonce);
-    message.createdAt !== undefined && (obj.createdAt = message.createdAt);
-    message.duration !== undefined && (obj.duration = Math.round(message.duration));
+    message.nonce !== undefined &&
+      (obj.nonce = base64FromBytes(message.nonce !== undefined ? message.nonce : new Uint8Array()));
+    message.expiration !== undefined && (obj.expiration = message.expiration);
     message.userAddress !== undefined && (obj.userAddress = message.userAddress);
+    message.serverSignature !== undefined &&
+      (obj.serverSignature = base64FromBytes(
+        message.serverSignature !== undefined ? message.serverSignature : new Uint8Array(),
+      ));
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<Token>, I>>(object: I): Token {
     const message = createBaseToken();
-    message.nonce = object.nonce ?? "";
-    message.createdAt = object.createdAt ?? "";
-    message.duration = object.duration ?? 0;
+    message.nonce = object.nonce ?? new Uint8Array();
+    message.expiration = object.expiration ?? "";
     message.userAddress = object.userAddress ?? "";
+    message.serverSignature = object.serverSignature ?? new Uint8Array();
+    return message;
+  },
+};
+
+function createBaseChallenge(): Challenge {
+  return { nonce: new Uint8Array(), expiration: "", serverSignature: new Uint8Array() };
+}
+
+export const Challenge = {
+  encode(message: Challenge, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.nonce.length !== 0) {
+      writer.uint32(10).bytes(message.nonce);
+    }
+    if (message.expiration !== "") {
+      writer.uint32(18).string(message.expiration);
+    }
+    if (message.serverSignature.length !== 0) {
+      writer.uint32(26).bytes(message.serverSignature);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): Challenge {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseChallenge();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.nonce = reader.bytes();
+          break;
+        case 2:
+          message.expiration = reader.string();
+          break;
+        case 3:
+          message.serverSignature = reader.bytes();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Challenge {
+    return {
+      nonce: isSet(object.nonce) ? bytesFromBase64(object.nonce) : new Uint8Array(),
+      expiration: isSet(object.expiration) ? String(object.expiration) : "",
+      serverSignature: isSet(object.serverSignature) ? bytesFromBase64(object.serverSignature) : new Uint8Array(),
+    };
+  },
+
+  toJSON(message: Challenge): unknown {
+    const obj: any = {};
+    message.nonce !== undefined &&
+      (obj.nonce = base64FromBytes(message.nonce !== undefined ? message.nonce : new Uint8Array()));
+    message.expiration !== undefined && (obj.expiration = message.expiration);
+    message.serverSignature !== undefined &&
+      (obj.serverSignature = base64FromBytes(
+        message.serverSignature !== undefined ? message.serverSignature : new Uint8Array(),
+      ));
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<Challenge>, I>>(object: I): Challenge {
+    const message = createBaseChallenge();
+    message.nonce = object.nonce ?? new Uint8Array();
+    message.expiration = object.expiration ?? "";
+    message.serverSignature = object.serverSignature ?? new Uint8Array();
     return message;
   },
 };
@@ -1847,13 +1937,13 @@ export const GetChallengeRequest = {
 };
 
 function createBaseGetChallengeResponse(): GetChallengeResponse {
-  return { challenge: "" };
+  return { challenge: undefined };
 }
 
 export const GetChallengeResponse = {
   encode(message: GetChallengeResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.challenge !== "") {
-      writer.uint32(10).string(message.challenge);
+    if (message.challenge !== undefined) {
+      Challenge.encode(message.challenge, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
@@ -1866,7 +1956,7 @@ export const GetChallengeResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.challenge = reader.string();
+          message.challenge = Challenge.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -1877,39 +1967,115 @@ export const GetChallengeResponse = {
   },
 
   fromJSON(object: any): GetChallengeResponse {
-    return { challenge: isSet(object.challenge) ? String(object.challenge) : "" };
+    return { challenge: isSet(object.challenge) ? Challenge.fromJSON(object.challenge) : undefined };
   },
 
   toJSON(message: GetChallengeResponse): unknown {
     const obj: any = {};
-    message.challenge !== undefined && (obj.challenge = message.challenge);
+    message.challenge !== undefined &&
+      (obj.challenge = message.challenge ? Challenge.toJSON(message.challenge) : undefined);
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<GetChallengeResponse>, I>>(object: I): GetChallengeResponse {
     const message = createBaseGetChallengeResponse();
-    message.challenge = object.challenge ?? "";
+    message.challenge = (object.challenge !== undefined && object.challenge !== null)
+      ? Challenge.fromPartial(object.challenge)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseTokenRequestInfo(): TokenRequestInfo {
+  return { kind: "", challenge: undefined, userBech32Prefix: "", userPubkeyJson: "" };
+}
+
+export const TokenRequestInfo = {
+  encode(message: TokenRequestInfo, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.kind !== "") {
+      writer.uint32(10).string(message.kind);
+    }
+    if (message.challenge !== undefined) {
+      Challenge.encode(message.challenge, writer.uint32(18).fork()).ldelim();
+    }
+    if (message.userBech32Prefix !== "") {
+      writer.uint32(26).string(message.userBech32Prefix);
+    }
+    if (message.userPubkeyJson !== "") {
+      writer.uint32(34).string(message.userPubkeyJson);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): TokenRequestInfo {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseTokenRequestInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.kind = reader.string();
+          break;
+        case 2:
+          message.challenge = Challenge.decode(reader, reader.uint32());
+          break;
+        case 3:
+          message.userBech32Prefix = reader.string();
+          break;
+        case 4:
+          message.userPubkeyJson = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): TokenRequestInfo {
+    return {
+      kind: isSet(object.kind) ? String(object.kind) : "",
+      challenge: isSet(object.challenge) ? Challenge.fromJSON(object.challenge) : undefined,
+      userBech32Prefix: isSet(object.userBech32Prefix) ? String(object.userBech32Prefix) : "",
+      userPubkeyJson: isSet(object.userPubkeyJson) ? String(object.userPubkeyJson) : "",
+    };
+  },
+
+  toJSON(message: TokenRequestInfo): unknown {
+    const obj: any = {};
+    message.kind !== undefined && (obj.kind = message.kind);
+    message.challenge !== undefined &&
+      (obj.challenge = message.challenge ? Challenge.toJSON(message.challenge) : undefined);
+    message.userBech32Prefix !== undefined && (obj.userBech32Prefix = message.userBech32Prefix);
+    message.userPubkeyJson !== undefined && (obj.userPubkeyJson = message.userPubkeyJson);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<TokenRequestInfo>, I>>(object: I): TokenRequestInfo {
+    const message = createBaseTokenRequestInfo();
+    message.kind = object.kind ?? "";
+    message.challenge = (object.challenge !== undefined && object.challenge !== null)
+      ? Challenge.fromPartial(object.challenge)
+      : undefined;
+    message.userBech32Prefix = object.userBech32Prefix ?? "";
+    message.userPubkeyJson = object.userPubkeyJson ?? "";
     return message;
   },
 };
 
 function createBaseGetTokenRequest(): GetTokenRequest {
-  return { challenge: "", challengeSignature: "", userBech32Prefix: "", userPubkeyJson: "" };
+  return { infoJson: "", userSignature: "" };
 }
 
 export const GetTokenRequest = {
   encode(message: GetTokenRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.challenge !== "") {
-      writer.uint32(10).string(message.challenge);
+    if (message.infoJson !== "") {
+      writer.uint32(10).string(message.infoJson);
     }
-    if (message.challengeSignature !== "") {
-      writer.uint32(18).string(message.challengeSignature);
-    }
-    if (message.userBech32Prefix !== "") {
-      writer.uint32(34).string(message.userBech32Prefix);
-    }
-    if (message.userPubkeyJson !== "") {
-      writer.uint32(42).string(message.userPubkeyJson);
+    if (message.userSignature !== "") {
+      writer.uint32(18).string(message.userSignature);
     }
     return writer;
   },
@@ -1922,16 +2088,10 @@ export const GetTokenRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.challenge = reader.string();
+          message.infoJson = reader.string();
           break;
         case 2:
-          message.challengeSignature = reader.string();
-          break;
-        case 4:
-          message.userBech32Prefix = reader.string();
-          break;
-        case 5:
-          message.userPubkeyJson = reader.string();
+          message.userSignature = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -1943,28 +2103,22 @@ export const GetTokenRequest = {
 
   fromJSON(object: any): GetTokenRequest {
     return {
-      challenge: isSet(object.challenge) ? String(object.challenge) : "",
-      challengeSignature: isSet(object.challengeSignature) ? String(object.challengeSignature) : "",
-      userBech32Prefix: isSet(object.userBech32Prefix) ? String(object.userBech32Prefix) : "",
-      userPubkeyJson: isSet(object.userPubkeyJson) ? String(object.userPubkeyJson) : "",
+      infoJson: isSet(object.infoJson) ? String(object.infoJson) : "",
+      userSignature: isSet(object.userSignature) ? String(object.userSignature) : "",
     };
   },
 
   toJSON(message: GetTokenRequest): unknown {
     const obj: any = {};
-    message.challenge !== undefined && (obj.challenge = message.challenge);
-    message.challengeSignature !== undefined && (obj.challengeSignature = message.challengeSignature);
-    message.userBech32Prefix !== undefined && (obj.userBech32Prefix = message.userBech32Prefix);
-    message.userPubkeyJson !== undefined && (obj.userPubkeyJson = message.userPubkeyJson);
+    message.infoJson !== undefined && (obj.infoJson = message.infoJson);
+    message.userSignature !== undefined && (obj.userSignature = message.userSignature);
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<GetTokenRequest>, I>>(object: I): GetTokenRequest {
     const message = createBaseGetTokenRequest();
-    message.challenge = object.challenge ?? "";
-    message.challengeSignature = object.challengeSignature ?? "";
-    message.userBech32Prefix = object.userBech32Prefix ?? "";
-    message.userPubkeyJson = object.userPubkeyJson ?? "";
+    message.infoJson = object.infoJson ?? "";
+    message.userSignature = object.userSignature ?? "";
     return message;
   },
 };

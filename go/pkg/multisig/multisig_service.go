@@ -7,7 +7,6 @@ import (
 	srand "crypto/rand"
 	"encoding/base64"
 	"encoding/json"
-	"fmt"
 	"time"
 
 	"github.com/TERITORI/teritori-dapp/go/pkg/multisigpb"
@@ -16,6 +15,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/bech32"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
+	"google.golang.org/protobuf/encoding/protojson"
+	"google.golang.org/protobuf/proto"
 	"gorm.io/datatypes"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -33,20 +34,27 @@ type multisigService struct {
 }
 
 type MultisigServiceOpts struct {
-	TokensDuration time.Duration
-	DBPath         string
-	Logger         *zap.Logger
+	TokenDuration     time.Duration
+	ChallengeDuration time.Duration
+	DBPath            string
+	Logger            *zap.Logger
 }
 
 func (opts *MultisigServiceOpts) applyDefaults() {
-	if opts.TokensDuration == 0 {
-		opts.TokensDuration = time.Hour
-	}
-	if opts.DBPath == "" {
-		opts.DBPath = "multisig.db"
-	}
 	if opts.Logger == nil {
 		opts.Logger = zap.NewNop()
+	}
+
+	if opts.TokenDuration == 0 {
+		opts.TokenDuration = time.Hour
+	}
+
+	if opts.ChallengeDuration == 0 {
+		opts.ChallengeDuration = 5 * time.Minute
+	}
+
+	if opts.DBPath == "" {
+		opts.DBPath = "multisig.db"
 	}
 }
 
@@ -62,7 +70,7 @@ func NewMultisigService(opts MultisigServiceOpts) (multisigpb.MultisigServiceSer
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to open db")
 	}
-	if err := db.AutoMigrate(&Token{}, &Multisig{}, &UserMultisig{}, &Transaction{}, &Signature{}); err != nil {
+	if err := db.AutoMigrate(&Multisig{}, &UserMultisig{}, &Transaction{}, &Signature{}); err != nil {
 		return nil, errors.Wrap(err, "failed to migrate db")
 	}
 
@@ -96,8 +104,9 @@ func (s *multisigService) Multisigs(_ context.Context, req *multisigpb.Multisigs
 		if req.GetJoinState() != multisigpb.JoinState_JOIN_STATE_UNSPECIFIED {
 			query = query.Where("joined = ?", req.GetJoinState() == multisigpb.JoinState_JOIN_STATE_IN)
 		}
-		if req.GetStartAfter() != "" {
-			startAfter, err := time.Parse(time.RFC3339Nano, req.GetStartAfter())
+		startAfterString := req.GetStartAfter()
+		if startAfterString != "" {
+			startAfter, err := parseTime(startAfterString)
 			if err != nil {
 				return errors.Wrap(err, "failed to parse start after")
 			}
@@ -116,7 +125,7 @@ func (s *multisigService) Multisigs(_ context.Context, req *multisigpb.Multisigs
 			multisigs = append(multisigs, &multisigpb.Multisig{
 				ChainId:   ms.MultisigChainID,
 				Address:   ms.MultisigAddress,
-				CreatedAt: ms.CreatedAt.Format(time.RFC3339Nano),
+				CreatedAt: formatTime(ms.CreatedAt),
 				Joined:    ms.Joined,
 				Name:      ms.Name,
 			})
@@ -173,7 +182,7 @@ func (s *multisigService) MultisigInfo(_ context.Context, req *multisigpb.Multis
 		Multisig: &multisigpb.Multisig{
 			ChainId:        multisig.ChainID,
 			Address:        multisig.Address,
-			CreatedAt:      multisig.CreatedAt.Format(time.RFC3339Nano),
+			CreatedAt:      formatTime(multisig.CreatedAt),
 			Joined:         userMultisig.Joined,
 			Name:           userMultisig.Name,
 			PubkeyJson:     multisig.PubKeyJSON,
@@ -193,8 +202,9 @@ func (s *multisigService) Transactions(_ context.Context, req *multisigpb.Transa
 	query := transactionsQuery(s.db, userAddress, req.ChainId, req.MultisigAddress, req.ExecutionState, req.Types)
 
 	// handle cursor
-	if req.GetStartAfter() != "" {
-		startAfter, err := time.Parse(time.RFC3339Nano, req.GetStartAfter())
+	startAfterString := req.GetStartAfter()
+	if startAfterString != "" {
+		startAfter, err := parseTime(startAfterString)
 		if err != nil {
 			return nil, errors.Wrap(err, "failed to parse start after")
 		}
@@ -236,7 +246,7 @@ func (s *multisigService) Transactions(_ context.Context, req *multisigpb.Transa
 			MsgsJson:           tx.MsgsJSON.String(),
 			FeeJson:            tx.FeeJSON,
 			FinalHash:          finalHash,
-			CreatedAt:          tx.CreatedAt.Format(time.RFC3339Nano),
+			CreatedAt:          formatTime(tx.CreatedAt),
 			CreatorAddress:     chainCreatorAddress,
 			Threshold:          tx.Multisig.Threshold,
 			MembersCount:       tx.Multisig.MembersCount,
@@ -620,106 +630,106 @@ func (s *multisigService) CompleteTransaction(_ context.Context, req *multisigpb
 
 // Auth
 func (s *multisigService) GetChallenge(_ context.Context, req *multisigpb.GetChallengeRequest) (*multisigpb.GetChallengeResponse, error) {
-	nonce := make([]byte, 32)
-	_, err := srand.Read(nonce)
+	challenge, err := makeChallenge(s.privateKey, s.opts.ChallengeDuration)
 	if err != nil {
-		return nil, errors.New("failed to generate nonce")
+		return nil, errors.Wrap(err, "failed to make challenge")
 	}
-
-	signature := ed25519.Sign(s.privateKey, []byte(nonce))
-
-	challenge := base64.RawURLEncoding.EncodeToString(nonce) + " " + base64.RawURLEncoding.EncodeToString(signature)
-
 	return &multisigpb.GetChallengeResponse{
 		Challenge: challenge,
 	}, nil
 }
 
 func (s *multisigService) GetToken(_ context.Context, req *multisigpb.GetTokenRequest) (*multisigpb.GetTokenResponse, error) {
-	challenge := req.GetChallenge()
-	if challenge == "" {
-		return nil, errors.New("missing challenge in request")
+	infoBytes := []byte(req.GetInfoJson())
+	var info multisigpb.TokenRequestInfo
+	if err := protojson.Unmarshal(infoBytes, &info); err != nil {
+		return nil, errors.Wrap(err, "failed to unmarshal info")
 	}
 
-	prefix := req.GetUserBech32Prefix()
+	if info.Kind != clientMagic {
+		return nil, errors.New("invalid kind")
+	}
+
+	prefix := info.UserBech32Prefix
 	if prefix == "" {
 		return nil, errors.New("missing user bech32 prefix in request")
 	}
 
-	nonce, err := validateChallenge(s.publicKey, challenge)
+	err := validateChallenge(s.publicKey, info.Challenge)
 	if err != nil {
 		return nil, errors.Wrap(err, "invalid challenge")
 	}
 
-	chainUserAddress, userPublicKey, err := parsePubKeyJSON(req.GetUserPubkeyJson(), prefix)
+	userPublicKey, err := parsePubKeyJSON(info.UserPubkeyJson)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to parse user pubkey json")
 	}
+	addressBytes := userPublicKey.Address()
 
-	signatureBase64 := req.GetChallengeSignature()
+	chainUserAddress, err := bech32.ConvertAndEncode(prefix, addressBytes)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to encode bech32 address")
+	}
+
+	signatureBase64 := req.GetUserSignature()
 	signature, err := base64.StdEncoding.DecodeString(signatureBase64)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to decode signature")
 	}
-	if !userPublicKey.VerifySignature(makeADR36SignDoc([]byte(challenge), chainUserAddress), []byte(signature)) {
+	if !userPublicKey.VerifySignature(makeADR36SignDoc(infoBytes, chainUserAddress), []byte(signature)) {
 		return nil, errors.New("invalid user signature")
 	}
 
-	_, addressBytes, err := bech32.DecodeAndConvert(chainUserAddress)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to re-decode user address, this should never happen")
-	}
 	crossChainAddress, err := bech32.ConvertAndEncode(universalBech32Prefix, addressBytes)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to re-encode user address, this should never happen")
 	}
 
-	token := Token{
-		UserAddress: crossChainAddress,
+	nonce, err := makeNonce()
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to make nonce")
+	}
+
+	token := &multisigpb.Token{
 		Nonce:       nonce,
-		CreatedAt:   time.Now().UTC(),
-		Duration:    s.opts.TokensDuration,
+		UserAddress: crossChainAddress,
+		Expiration:  formatTime(time.Now().Add(s.opts.TokenDuration)),
+	}
+	tokenBytes, err := proto.Marshal(token)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to marshal token")
 	}
 
-	if err := s.db.Transaction(func(tx *gorm.DB) error {
-		if err := tx.Where("user_address = ?", crossChainAddress).Delete(&Token{}).Error; err != nil {
-			return errors.Wrap(err, "failed to delete previous token")
-		}
-
-		if err := tx.Create(&token).Error; err != nil {
-			return errors.Wrap(err, "failed to create token")
-		}
-
-		return nil
-	}); err != nil {
-		return nil, err
-	}
+	token.ServerSignature = ed25519.Sign(s.privateKey, tokenBytes)
 
 	return &multisigpb.GetTokenResponse{
-		AuthToken: &multisigpb.Token{
-			Nonce:       token.Nonce,
-			UserAddress: token.UserAddress,
-			CreatedAt:   token.CreatedAt.Format(time.RFC3339Nano),
-			Duration:    uint32(token.Duration.Milliseconds()),
-		},
+		AuthToken: token,
 	}, nil
 }
 
 var ErrBadToken = errors.New("bad token")
+var ErrTokenExpired = errors.New("token expired")
 var ErrNotFound = errors.New("not found")
 
 func (s *multisigService) authenticate(tx *gorm.DB, token *multisigpb.Token) (string, error) {
-	var dbToken Token
-	if err := tx.First(&dbToken, "nonce = ?", token.GetNonce()).Error; err != nil {
+	expiration, err := parseTime(token.Expiration)
+	if err != nil {
+		return "", errors.Wrap(err, "failed to parse expiration")
+	}
+
+	if !expiration.After(time.Now()) {
+		return "", ErrTokenExpired
+	}
+
+	copy := proto.Clone(token).(*multisigpb.Token)
+	copy.ServerSignature = nil
+	tokenBytes, err := proto.Marshal(copy)
+	if err != nil {
+		return "", errors.Wrap(err, "failed to marshal token")
+	}
+	if !ed25519.Verify(s.publicKey, tokenBytes, token.ServerSignature) {
 		return "", ErrBadToken
 	}
 
-	if time.Now().After(dbToken.CreatedAt.Add(dbToken.Duration)) {
-		if err := tx.Delete(dbToken); err != nil {
-			fmt.Println("failed to delete token:", err) // TODO: use logger
-		}
-		return "", ErrBadToken
-	}
-
-	return dbToken.UserAddress, nil
+	return token.UserAddress, nil
 }
