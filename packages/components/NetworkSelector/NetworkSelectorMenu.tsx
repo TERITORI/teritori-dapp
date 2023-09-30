@@ -1,21 +1,13 @@
 import React, { FC, useState } from "react";
 import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
-import { useSelector } from "react-redux";
 
 import { useDropdowns } from "../../context/DropdownsProvider";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useWallets } from "../../context/WalletsProvider";
 import { useEnabledNetworks } from "../../hooks/useEnabledNetworks";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
+import { getNetwork, NetworkFeature, NetworkKind } from "../../networks";
 import {
-  allNetworks,
-  getNetwork,
-  NetworkFeature,
-  NetworkKind,
-} from "../../networks";
-import {
-  selectAreTestnetsEnabled,
-  selectNetworksSettings,
   setSelectedNetworkId,
   setSelectedWalletId,
 } from "../../store/slices/settings";
@@ -40,9 +32,7 @@ export const NetworkSelectorMenu: FC<{
   const dispatch = useAppDispatch();
   const { wallets } = useWallets();
   const { setToastError } = useFeedbacks();
-  const testnetsEnabled = useSelector(selectAreTestnetsEnabled);
   const selectedNetworkInfo = useSelectedNetworkInfo();
-  const networksSettings = useSelector(selectNetworksSettings);
   const [networksModalVisible, setNetworksModalVisible] = useState(false);
   const enabledNetworks = useEnabledNetworks();
 
