@@ -13,7 +13,7 @@
     "lint": "eslint --ext .js,.jsx,.ts,.tsx . && tsc",
     "lint-fix": "eslint --ext .js,.jsx,.ts,.tsx . --fix",
     "postinstall": "patch-package",
-    "dev:electron": "cross-env isElectron=dev expo start --web"
+    "dev:electron": "cross-env isElectron=dev ELECTRON_IS_DEV=1 expo start --web"
   },
   "dependencies": {
     "@cosmjs/amino": "0.29.3",

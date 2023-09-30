@@ -32,7 +32,7 @@ import (
 func main() {
 	port := 4242;
 	fs := flag.NewFlagSet("weshd", flag.ContinueOnError)
-	path := "./wesh-dir"
+	path := "./temp/wesh-dir"
 	if err := ff.Parse(fs, os.Args[1:]); err != nil {
 		panic(errors.Wrap(err, "failed to parse flags"))
 	}

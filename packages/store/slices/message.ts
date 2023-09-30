@@ -9,6 +9,7 @@ import {
   Message,
   CONVERSATION_TYPES,
   PeerItem,
+  ConversationList,
 } from "./../../utils/types/message";
 import { RootState } from "../store";
 
@@ -75,7 +76,7 @@ export const selectContactRequestList = (state: RootState) =>
 
 export const selectConversationList =
   (conversationType: CONVERSATION_TYPES = CONVERSATION_TYPES.ACTIVE) =>
-  (state: RootState) => {
+  (state: RootState): Conversation[] => {
     switch (conversationType) {
       case CONVERSATION_TYPES.ALL: {
         return Object.values(state.message.conversationList);

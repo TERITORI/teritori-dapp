@@ -32,11 +32,13 @@ import (
 	"github.com/pkg/errors"
 )
 
-var (
-	port  = 0
-)
+var port int = 0
 
 func checkFreePort() {
+	if(port != 0) {
+		return
+	}
+
 	firstPort, err := freeport.GetFreePort()
 	if err == nil {
 		port = firstPort
@@ -45,7 +47,8 @@ func checkFreePort() {
  
 
 
-func Boot(path string) {	
+func Boot(path string) {
+	checkFreePort()	
 	fs := flag.NewFlagSet("weshd", flag.ContinueOnError)
 	if err := ff.Parse(fs, os.Args[1:]); err != nil {
 		panic(errors.Wrap(err, "failed to parse flags"))
@@ -142,7 +145,7 @@ func Boot(path string) {
 
 
 func GetPort()int {
-	checkFreePort()
+	checkFreePort();
 	return port;
 }
  

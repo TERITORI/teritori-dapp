@@ -92,6 +92,7 @@ go/electron/prod/resources/app/
 go/electron/dev/desktop/
 
 # weshnet
+temp/
 modules/wesh/ios/WeshFramework.xcframework/
 wesh-dir
 wesh-electron-dev-dir

@@ -11,10 +11,11 @@ import {
   setPeerList,
 } from "../../store/slices/message";
 import { store } from "../../store/store";
+import { isElectron } from "../../utils/isElectron";
 import { CONVERSATION_TYPES, Message } from "../../utils/types/message";
 import { GroupInfo_Request } from "../protocoltypes";
 
-let getPeerListIntervalId;
+let getPeerListIntervalId: ReturnType<typeof setInterval>;
 
 export const getAndUpdatePeerList = async () => {
   const peerList = await weshClient.client.PeerList({});
@@ -30,16 +31,21 @@ export const getAndUpdatePeerList = async () => {
 };
 
 export const bootWeshModule = async () => {
-  if (Platform.OS === "web") {
-    return;
-  }
   try {
-    const WeshnetModule = require("../../../modules/weshd");
-    const port = await WeshnetModule.getPort();
-    WeshnetModule.boot();
-    setTimeout(() => {
-      weshClient.createClient(port);
-    }, 15 * 1000);
+    if (Platform.OS === "web" && !isElectron()) {
+      return;
+    }
+
+    if (isElectron()) {
+      weshClient.watchPort();
+    } else {
+      const WeshnetModule = require("../../../modules/weshd");
+      const port = await WeshnetModule.getPort();
+      WeshnetModule.boot();
+      setTimeout(() => {
+        weshClient.createClient(port);
+      }, 15 * 1000);
+    }
   } catch (err) {
     console.log("bootWesh", err);
   }

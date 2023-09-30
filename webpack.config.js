@@ -8,6 +8,7 @@ module.exports = async function (env, argv) {
 
   if (process.env.isElectron) {
     config.target = "electron-renderer";
+  } else {
   }
   // needed to use environment variables
   config.plugins.push(

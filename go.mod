@@ -9,18 +9,20 @@ require (
 	github.com/Khan/genqlient v0.5.0
 	github.com/allegro/bigcache/v3 v3.0.2
 	github.com/asticode/go-astichartjs v0.2.0
-	github.com/asticode/go-astikit v0.40.0
+	github.com/asticode/go-astikit v0.41.0
 	github.com/asticode/go-astilectron v0.30.0
 	github.com/asticode/go-astilectron-bootstrap v0.4.14
 	github.com/bxcodec/faker/v3 v3.8.0
 	github.com/cosmos/cosmos-sdk v0.45.4
 	github.com/cosmos/gogoproto v1.4.2
 	github.com/davecgh/go-spew v1.1.1
+	github.com/dgraph-io/badger v1.6.2
 	github.com/friendsofgo/errors v0.9.2
 	github.com/go-co-op/gocron v1.18.0
 	github.com/gorilla/websocket v1.5.0
 	github.com/improbable-eng/grpc-web v0.14.1
 	github.com/ipfs/go-datastore v0.6.0
+	github.com/ipfs/go-ds-badger v0.3.0
 	github.com/jackc/pgx/v5 v5.3.0
 	github.com/mehanizm/airtable v0.2.8
 	github.com/peterbourgon/ff/v3 v3.3.0
@@ -165,7 +167,6 @@ require (
 	github.com/danieljoos/wincred v1.0.2 // indirect
 	github.com/davidlazar/go-crypto v0.0.0-20200604182044-b73af7476f6c // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.1.0 // indirect
-	github.com/dgraph-io/badger v1.6.2 // indirect
 	github.com/docker/go-units v0.5.0 // indirect
 	github.com/dvsekhvalnov/jose2go v0.0.0-20200901110807-248326c1351b // indirect
 	github.com/eclipse/paho.mqtt.golang v1.4.2 // indirect
@@ -217,7 +218,6 @@ require (
 	github.com/ipfs/go-cid v0.4.1 // indirect
 	github.com/ipfs/go-cidutil v0.1.0 // indirect
 	github.com/ipfs/go-delegated-routing v0.7.0 // indirect
-	github.com/ipfs/go-ds-badger v0.3.0 // indirect
 	github.com/ipfs/go-ds-badger2 v0.1.3 // indirect
 	github.com/ipfs/go-ds-flatfs v0.5.1 // indirect
 	github.com/ipfs/go-ds-leveldb v0.5.0 // indirect

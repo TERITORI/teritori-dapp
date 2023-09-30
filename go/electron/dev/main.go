@@ -11,6 +11,7 @@ import (
 	"os/signal"
 	"sync"
 	"syscall"
+	"time"
 
 	"berty.tech/weshnet"
 	"berty.tech/weshnet/pkg/ipfsutil"
@@ -19,6 +20,7 @@ import (
 	"berty.tech/weshnet/pkg/tinder"
 	"github.com/asticode/go-astikit"
 	"github.com/asticode/go-astilectron"
+	bootstrap "github.com/asticode/go-astilectron-bootstrap"
 	"github.com/dgraph-io/badger/options"
 	"github.com/improbable-eng/grpc-web/go/grpcweb"
 	badger "github.com/ipfs/go-ds-badger"
@@ -30,8 +32,8 @@ import (
 	"moul.io/srand"
 )
 
-var port = 4254;
-var path = "./wesh-electron-dev-dir/"
+var port = 4254
+var path = "./temp/wesh-electron-dev-dir/"
 
 func checkFreePort() {
 	firstPort, err := freeport.GetFreePort()
@@ -40,7 +42,6 @@ func checkFreePort() {
 	}
 
 }
-
 
 func wesh() {
 	fs := flag.NewFlagSet("weshd", flag.ContinueOnError)
@@ -104,7 +105,7 @@ func wesh() {
 	}
 
 	svc, err := weshnet.NewService(weshnet.Opts{
-		Logger:        logger,
+		Logger: logger,
 		// DatastoreDir:  weshnet.InMemoryDirectory,
 		TinderService: tinderDriver,
 		IpfsCoreAPI:   ipfsCoreAPI,
@@ -135,198 +136,177 @@ func wesh() {
 	}
 }
 
-
 func electron() {
-	 
-// Set logger
-l := log.New(log.Writer(), log.Prefix(), log.Flags())
+	l := log.New(log.Writer(), log.Prefix(), log.Flags())
 
+	var (
+		AppName            = "Teritori"
+		BaseDirectoryPath  = "./go/electron/dev/desktop"
+		AppIconDarwinPath  = "../resources/icon.icns"
+		AppIconDefaultPath = "../resources/icon.png"
+		VersionAstilectron = "0.57.0"
+		VersionElectron    = "26.2.4"
+	)
 
-// Initialize astilectron
-var a, err = astilectron.New(log.New(os.Stderr, "", 0), astilectron.Options{
-AppName: "Teritori",
-BaseDirectoryPath: "./go/electron/dev/desktop",
-AppIconDarwinPath:  "../resources/icon.icns",
-AppIconDefaultPath: "../resources/icon.png",
-VersionAstilectron: "0.57.0",
-VersionElectron: "26.2.4",
-})
+	var w *astilectron.Window
 
-if err != nil {
-	l.Fatal(fmt.Errorf("main: creating astilectron failed: %w", err))
-}
-defer a.Close()
+	if err := bootstrap.Run(bootstrap.Options{
 
-a.HandleSignals()
+		AstilectronOptions: astilectron.Options{
+			AppName:            AppName,
+			BaseDirectoryPath:  BaseDirectoryPath,
+			AppIconDarwinPath:  AppIconDarwinPath,
+			AppIconDefaultPath: AppIconDefaultPath,
+			SingleInstance:     true,
+			VersionAstilectron: VersionAstilectron,
+			VersionElectron:    VersionElectron,
+		},
+		Logger: l,
+		MenuOptions: []*astilectron.MenuItemOptions{{
+			Label: astikit.StrPtr("File"),
+			SubMenu: []*astilectron.MenuItemOptions{
+				{
+					Accelerator: astilectron.NewAccelerator("Alt", "CommandOrControl", "I"),
+					Role:        astilectron.MenuItemRoleToggleDevTools,
+				},
 
-// Start
-if err = a.Start(); err != nil {
-	l.Fatal(fmt.Errorf("main: starting astilectron failed: %w", err))
-}
-
-
-// Create a new window
-// New window
-var w *astilectron.Window
-if w, err = a.NewWindow("http://127.0.0.1:19006", &astilectron.WindowOptions{
-	BackgroundColor: astikit.StrPtr("#333"),
-	Center: astikit.BoolPtr(true),
-	Height: astikit.IntPtr(700),
-	Width:  astikit.IntPtr(700),	 
-}); err != nil {
-	l.Fatal(fmt.Errorf("main: new window failed: %w", err))
-}
- 
-
-// Create windows
-if err = w.Create(); err != nil {
-	l.Fatal(fmt.Errorf("main: creating window failed: %w", err))
-}
-
-w.NewMenu([]*astilectron.MenuItemOptions{
-	{
-		Label: astikit.StrPtr("Edit"),
-		SubMenu: []*astilectron.MenuItemOptions{
-			{
-				Label:       astikit.StrPtr("Undo"),
-				Role:        astilectron.MenuItemRoleUndo,
-				Accelerator: astilectron.NewAccelerator("CommandOrControl+Z"),
-			},
-			{
-				Label:       astikit.StrPtr("Redo"),
-				Role:        astilectron.MenuItemRoleRedo,
-				Accelerator: astilectron.NewAccelerator("CommandOrControl+Y"),
-			},
-			{
-				Type: astilectron.MenuItemTypeSeparator,
-			},
-			{
-				Label:       astikit.StrPtr("Cut"),
-				Role:        astilectron.MenuItemRoleCut,
-				Accelerator: astilectron.NewAccelerator("CommandOrControl+X"),
-			},
-			{
-				Label:       astikit.StrPtr("Copy"),
-				Role:        astilectron.MenuItemRoleCopy,
-				Accelerator: astilectron.NewAccelerator("CommandOrControl+C"),
-			},
-			{
-				Label:       astikit.StrPtr("Paste"),
-				Role:        astilectron.MenuItemRolePaste,
-				Accelerator: astilectron.NewAccelerator("CommandOrControl+V"),
-			},
-			{
-				Label:       astikit.StrPtr("Select All"),
-				Role:        astilectron.MenuItemRoleSelectAll,
-				Accelerator: astilectron.NewAccelerator("CommandOrControl+A"),
+				{Type: astilectron.MenuItemTypeSeparator},
+				{
+					Label: astikit.StrPtr(fmt.Sprintf("Quit %s", AppName)),
+					Role:  astilectron.MenuItemRoleQuit,
+				},
 			},
 		},
-	},
-	{
-		Label: astikit.StrPtr("View"),
-		SubMenu: []*astilectron.MenuItemOptions{
 			{
-				Label:       astikit.StrPtr("Reload"),
-				Role:        astilectron.MenuItemRoleReload,
-				Accelerator: astilectron.NewAccelerator("CommandOrControl+R"),
+				Label: astikit.StrPtr("Edit"),
+				SubMenu: []*astilectron.MenuItemOptions{
+					{
+						Label:       astikit.StrPtr("Undo"),
+						Accelerator: astilectron.NewAccelerator("CmdOrCtrl", "Z"),
+						Role:        astikit.StrPtr("undo:"),
+					},
+					{
+						Label:       astikit.StrPtr("Redo"),
+						Accelerator: astilectron.NewAccelerator("Shift", "CmdOrCtrl", "Z"),
+						Role:        astikit.StrPtr("redo"),
+					},
+					{
+						Type: astikit.StrPtr("separator"),
+					},
+					{
+						Label:       astikit.StrPtr("Cut"),
+						Accelerator: astilectron.NewAccelerator("CmdOrCtrl", "X"),
+						Role:        astikit.StrPtr("cut"),
+					},
+					{
+						Label:       astikit.StrPtr("Copy"),
+						Accelerator: astilectron.NewAccelerator("CmdOrCtrl", "C"),
+						Role:        astikit.StrPtr("copy"),
+					},
+					{
+						Label:       astikit.StrPtr("Paste"),
+						Accelerator: astilectron.NewAccelerator("CmdOrCtrl", "V"),
+						Role:        astikit.StrPtr("paste"),
+					},
+					{
+						Label:       astikit.StrPtr("Select All"),
+						Accelerator: astilectron.NewAccelerator("CmdOrCtrl", "A"),
+						Role:        astikit.StrPtr("selectAll"),
+					},
+				},
 			},
 			{
-				Label:       astikit.StrPtr("Full Screen"),
-				Role:        astilectron.MenuItemRoleToggleFullScreen,
-				Accelerator: astilectron.NewAccelerator("Control+CommandOrControl+F"),
+				Label: astikit.StrPtr("View"),
+				SubMenu: []*astilectron.MenuItemOptions{
+					{
+						Label: astikit.StrPtr("Reload"),
+						OnClick: func(e astilectron.Event) (deleteListener bool) {
+							w.Restore()
+							return
+						},
+					},
+					{
+						Label: astikit.StrPtr("Force Reload"),
+						Role:  astilectron.MenuItemRoleForceReload,
+					},
+					{
+						Label:       astikit.StrPtr("Full Screen"),
+						Role:        astilectron.MenuItemRoleToggleFullScreen,
+						Accelerator: astilectron.NewAccelerator("Control+CommandOrControl+F"),
+					},
+					{
+						Label: astikit.StrPtr("Developer Tools"),
+						Role:  astilectron.MenuItemRoleToggleDevTools,
+					},
+				},
 			},
-			{
-				Type: astilectron.MenuItemTypeSeparator,
-			},
-			 
 		},
-	},
-	{
-		Label: astikit.StrPtr("Window"),
-		SubMenu: []*astilectron.MenuItemOptions{
-			{
-				Label:       astikit.StrPtr("Hide"),
-				Role:        astilectron.MenuItemRoleReload,
-				Accelerator: astilectron.NewAccelerator("CommandOrControl+H"),
-			},
-			{
-				Label:       astikit.StrPtr("Minimize"),
-				Role:        astilectron.MenuItemRoleReload,
-				Accelerator: astilectron.NewAccelerator("CommandOrControl+M"),
-			},
-			{
-				Type: astilectron.MenuItemTypeSeparator,
-			},
-			{
-				Label:       astikit.StrPtr("Close"),
-				Role:        astilectron.MenuItemRoleReload,
-				Accelerator: astilectron.NewAccelerator("CommandOrControl+Q"),
-			},
-			{
-				Label: astikit.StrPtr("Developer Tools"),
-				Role:  astilectron.MenuItemRoleToggleDevTools,
-			},
+		OnWait: func(_ *astilectron.Astilectron, ws []*astilectron.Window, _ *astilectron.Menu, _ *astilectron.Tray, _ *astilectron.Menu) error {
+			w = ws[0]
+			go func() {
+				time.Sleep(5 * time.Second)
+				if err := bootstrap.SendMessage(w, "check.out.menu", "Don't forget to check out the menu!"); err != nil {
+					l.Println(fmt.Errorf("sending check.out.menu event failed: %w", err))
+				}
+				bootstrap.SendMessage(w, "weshnet.port", port)
+			}()
+			return nil
 		},
-	},
- 
-})
 
-w.OpenDevTools()
+		Windows: []*bootstrap.Window{{
+			Homepage: "http://127.0.0.1:19006",
+			Options: &astilectron.WindowOptions{
+				BackgroundColor: astikit.StrPtr("#333"),
+				Center:          astikit.BoolPtr(true),
+				Height:          astikit.IntPtr(700),
+				Width:           astikit.IntPtr(700),
+				WebPreferences: &astilectron.WebPreferences {
+					EnableRemoteModule: astikit.BoolPtr(true),
+					BackgroundThrottling:  astikit.BoolPtr(true),
+				},
+				Custom: &astilectron.WindowCustomOptions{Script: `
+				const electron = require("electron").remote;	
+				console.log("test from customer", electron.app);			
+				`},
 
-w.OnMessage(func(m *astilectron.EventMessage) interface{} {
-	// Unmarshal
-	var s string
-	m.Unmarshal(&s)
-
-	// Process message
-	if s == "send-port" {
-			return port
+			},
+		}},
+	}); err != nil {
+		l.Fatal(fmt.Errorf("running bootstrap failed: %w", err))
 	}
-	return nil
-})
 
- 
- 
-// Blocking pattern
-a.Wait()
 }
-
 
 func main() {
 
+	// Create a channel to receive the interrupt signal.
+	interrupt := make(chan os.Signal, 1)
+	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
 
+	// Create a WaitGroup to manage goroutines.
+	var wg sync.WaitGroup
 
-		// Create a channel to receive the interrupt signal.
-		interrupt := make(chan os.Signal, 1)
-		signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
-	
-		// Create a WaitGroup to manage goroutines.
-		var wg sync.WaitGroup
-	
-		// Function to handle cleanup.
-		cleanup := func() {
-			fmt.Println("Cleanup code here...")
-			// You can add any cleanup operations you need here.
-		}
-	
-		// Start a goroutine to wait for the interrupt signal.
-		go func() {
-			<-interrupt
-			fmt.Println("Received interrupt signal. Cleaning up...")
-			cleanup()
-			os.Exit(1)
-		}()
+	// Function to handle cleanup.
+	cleanup := func() {
+		fmt.Println("Cleanup code here...")
+		// You can add any cleanup operations you need here.
+	}
 
-		
-		
+	// Start a goroutine to wait for the interrupt signal.
+	go func() {
+		<-interrupt
+		fmt.Println("Received interrupt signal. Cleaning up...")
+		cleanup()
+		os.Exit(1)
+	}()
+
 	checkFreePort()
-	 
 
 	wg.Add(2)
-	 
-	go electron();
-	go wesh();
 
-	wg.Wait();
-	
+	go electron()
+	// go wesh()
+
+	wg.Wait()
+
 }

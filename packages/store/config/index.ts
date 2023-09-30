@@ -10,7 +10,7 @@ export const persistConfig = () => {
     storage = createElectronStorage();
   }
 
-  return {
+  const config = {
     key: "root",
     storage,
     whitelist: [
@@ -22,8 +22,13 @@ export const persistConfig = () => {
       "marketplaceCartItemsUI",
       "marketplaceFilters",
       "marketplaceFilterUI",
-      "message",
     ],
     blacklist: ["dAppsStore, marketplaceFilterUI"],
   };
+
+  if (isElectron()) {
+    config.whitelist.push("message");
+  }
+
+  return config;
 };

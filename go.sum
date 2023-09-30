@@ -209,8 +209,8 @@ github.com/asticode/go-astichartjs v0.2.0 h1:OPJHpI1Yka0uDu3FMxYzb1Gn0RY81k1DyEe
 github.com/asticode/go-astichartjs v0.2.0/go.mod h1:mAFLydbGKvV1fjZJRwl8v/7aKjC0QWyqHtSIk4TGgPo=
 github.com/asticode/go-astikit v0.15.0/go.mod h1:h4ly7idim1tNhaVkdVBeXQZEE3L0xblP7fCWbgwipF0=
 github.com/asticode/go-astikit v0.29.1/go.mod h1:h4ly7idim1tNhaVkdVBeXQZEE3L0xblP7fCWbgwipF0=
-github.com/asticode/go-astikit v0.40.0 h1:iDt/boQR0LhDeUMM24tcoqIT3Ie+oL9MzbDfIcGlDsM=
-github.com/asticode/go-astikit v0.40.0/go.mod h1:h4ly7idim1tNhaVkdVBeXQZEE3L0xblP7fCWbgwipF0=
+github.com/asticode/go-astikit v0.41.0 h1:ljBJOr9kMmdH6+cNReq32i9fSRPSIDOT0AzjKCjTq40=
+github.com/asticode/go-astikit v0.41.0/go.mod h1:h4ly7idim1tNhaVkdVBeXQZEE3L0xblP7fCWbgwipF0=
 github.com/asticode/go-astilectron v0.25.0/go.mod h1:Tx+aS0IvbV0cO4TlQbOO1NFA/lATj11vEStydyIjMjM=
 github.com/asticode/go-astilectron v0.30.0 h1:flnbc7XKzvG5pKqvQr25hHEsXj2QoJP9kM0YHpq5LnQ=
 github.com/asticode/go-astilectron v0.30.0/go.mod h1:o7wZ7KDr3XH3xcEwcxfpWzNVf63JsMKtif/6IP4mpHk=
