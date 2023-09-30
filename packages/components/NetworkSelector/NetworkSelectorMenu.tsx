@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { useDropdowns } from "../../context/DropdownsProvider";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useWallets } from "../../context/WalletsProvider";
+import { useEnabledNetworks } from "../../hooks/useEnabledNetworks";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import {
   allNetworks,
@@ -43,6 +44,7 @@ export const NetworkSelectorMenu: FC<{
   const selectedNetworkInfo = useSelectedNetworkInfo();
   const networksSettings = useSelector(selectNetworksSettings);
   const [networksModalVisible, setNetworksModalVisible] = useState(false);
+  const enabledNetworks = useEnabledNetworks();
 
   const onPressNetwork = (networkId: string) => {
     let walletProvider: WalletProvider | null = null;
@@ -93,18 +95,15 @@ export const NetworkSelectorMenu: FC<{
         borderBottomRightRadius: 0,
       }}
     >
-      {allNetworks
+      {enabledNetworks
         .filter((network) => {
           return (
-            networksSettings[network.id]?.enabled &&
-            (testnetsEnabled || !network.testnet) &&
             (!forceNetworkId || network.id === forceNetworkId) && // check that it's the forced network id if forced to
             (!forceNetworkKind || network.kind === forceNetworkKind) && // check that it's the correct network kind if forced to
             (!forceNetworkFeatures ||
               forceNetworkFeatures.every((feature) =>
                 network.features.includes(feature)
               )) &&
-            // !!selectableNetworks.find((sn) => sn.id === network.id) && // check that it's in the selectable list
             selectedNetworkInfo?.id !== network.id // check that it's not already selected
           );
         })

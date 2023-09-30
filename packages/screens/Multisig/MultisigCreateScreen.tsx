@@ -24,13 +24,10 @@ import { TextInputOutsideLabel } from "../../components/inputs/TextInputOutsideL
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useMultisigClient } from "../../hooks/multisig/useMultisigClient";
+import { useEnabledNetworks } from "../../hooks/useEnabledNetworks";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import {
-  NetworkKind,
-  getUserId,
-  selectableCosmosNetworks,
-} from "../../networks";
+import { NetworkKind, getUserId, CosmosNetworkInfo } from "../../networks";
 import { selectMultisigToken } from "../../store/slices/settings";
 import { RootState } from "../../store/store";
 import { getCosmosAccount } from "../../utils/cosmos";
@@ -63,6 +60,7 @@ export const MultisigCreateScreen = () => {
   const authToken = useSelector((state: RootState) =>
     selectMultisigToken(state, selectedWallet?.address)
   );
+  const enabledNetworks = useEnabledNetworks();
   const { wrapWithFeedback } = useFeedbacks();
   const { control, handleSubmit, watch, setValue } =
     useForm<CreateMultisigWalletFormType>();
@@ -181,6 +179,10 @@ export const MultisigCreateScreen = () => {
     tempPubkeys[index].compressedPubkey = account.pubkey.value;
     setAddressIndexes(tempPubkeys);
   };
+
+  const selectableCosmosNetworks = enabledNetworks.filter(
+    (n): n is CosmosNetworkInfo => n.kind === NetworkKind.Cosmos
+  );
 
   // returns
   return (

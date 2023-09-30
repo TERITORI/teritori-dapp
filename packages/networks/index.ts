@@ -571,16 +571,3 @@ export const contractExplorerLink = (
   }
   return network.contractExplorer.replace("$address", address);
 };
-
-export const selectableNetworks = (process.env.SELECTABLE_NETWORKS_IDS || "")
-  .split(",")
-  .map((s) => getNetwork(s.trim()))
-  .filter((n): n is NetworkInfo => !!n);
-
-export const selectableCosmosNetworks = selectableNetworks.filter(
-  (n): n is CosmosNetworkInfo => n.kind === NetworkKind.Cosmos
-);
-
-export const selectableEthereumNetworks = selectableNetworks.filter(
-  (n): n is EthereumNetworkInfo => n.kind === NetworkKind.Ethereum
-);
