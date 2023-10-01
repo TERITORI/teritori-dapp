@@ -77,13 +77,13 @@ export const SideBarChats = () => {
               >
                 <SVG source={add} color={primaryColor} />
               </TouchableOpacity>
-              {/* <SpacerRow size={2} />
+              <SpacerRow size={2} />
               <SVG
                 source={Search}
                 height={20}
                 width={20}
                 color={secondaryColor}
-              /> */}
+              />
             </FlexRow>
           </View>
         </FlexRow>

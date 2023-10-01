@@ -1,7 +1,6 @@
 import moment from "moment";
 import React, { useMemo } from "react";
 import { Platform, TouchableOpacity, View } from "react-native";
-import { Avatar } from "react-native-paper";
 import { useSelector } from "react-redux";
 
 import { MessageAvatar } from "./MessageAvatar";
@@ -75,19 +74,20 @@ export const ChatItem = ({
             width: 2,
             position: "absolute",
             left: 0,
-            top: 10,
-            bottom: 10,
+            top: 20,
+            bottom: 20,
+            borderTopRightRadius: 10,
+            borderBottomRightRadius: 10,
           }}
         />
       )}
       <FlexRow justifyContent="space-between">
         <View>
           <FlexRow>
-            <MessageAvatar item={contactInfo} />
-            {/* <Avatar.Image
-              size={40}
-              source={{ uri: contactInfo?.avatar || "" }}
-            /> */}
+            <MessageAvatar
+              item={contactInfo}
+              disableStatus={data.type === "group"}
+            />
             <SpacerRow size={1.5} />
             <View>
               <FlexRow>

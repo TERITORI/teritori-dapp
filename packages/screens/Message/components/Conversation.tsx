@@ -1,7 +1,7 @@
 import { chain } from "lodash";
 import moment from "moment";
 import React, { useMemo, useState } from "react";
-import { View, TouchableOpacity, Image } from "react-native";
+import { View, TouchableOpacity } from "react-native";
 import { Avatar } from "react-native-paper";
 
 import { FileRenderer } from "./FileRenderer";

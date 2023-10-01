@@ -5,7 +5,6 @@ import {
   selectContactRequestList,
   setContactRequestList,
   setConversationList,
-  setLastId,
 } from "../../store/slices/message";
 import { store } from "../../store/store";
 import {
@@ -126,8 +125,8 @@ export const handleMetadata = async (data: GroupMetadataEvent) => {
         store.dispatch(
           setContactRequestList(
             contactRequests.filter(
-              (item, i) =>
-                item.id === stringFromBytes(parsedData.payload.contactPk)
+              (item) =>
+                item.contactId !== stringFromBytes(parsedData.payload.contactPk)
             )
           )
         );
@@ -155,8 +154,9 @@ export const handleMetadata = async (data: GroupMetadataEvent) => {
           store.dispatch(
             setContactRequestList(
               contactRequests.filter(
-                (item, i) =>
-                  item.id === stringFromBytes(parsedData.payload.contactPk)
+                (item) =>
+                  item.contactId !==
+                  stringFromBytes(parsedData.payload.contactPk)
               )
             )
           );

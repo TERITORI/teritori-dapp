@@ -171,6 +171,7 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
           handleRead(messages?.[0]?.id);
         }
       };
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [conversation.id])
   );
 

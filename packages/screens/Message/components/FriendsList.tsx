@@ -1,7 +1,6 @@
 import React from "react";
 import { View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { Avatar, Badge } from "react-native-paper";
 
 import { MessageAvatar } from "./MessageAvatar";
 import chaticon from "../../../../assets/icons/chaticon.svg";
@@ -14,19 +13,14 @@ import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { neutral22, secondaryColor } from "../../../utils/style/colors";
 import { fontSemibold13 } from "../../../utils/style/fonts";
 import { Conversation } from "../../../utils/types/message";
-import {
-  getConversationAvatar,
-  getConversationName,
-} from "../../../weshnet/client/messageHelpers";
+import { getConversationName } from "../../../weshnet/client/messageHelpers";
 
 type FriendListProps = {
   item: Conversation;
   handleChatPress: () => void;
 };
 
-const isOnline = true;
 const FriendList = ({ item, handleChatPress }: FriendListProps) => {
-  const onlineStatusBadgeColor = isOnline ? "green" : "yellow";
   return (
     <View>
       <FlexRow justifyContent="space-between">
