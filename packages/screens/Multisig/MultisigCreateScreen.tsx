@@ -187,7 +187,6 @@ export const MultisigCreateScreen = () => {
   // returns
   return (
     <ScreenContainer
-      isHeaderSmallMargin
       headerChildren={
         <BrandText style={fontSemibold20}>Multisig Wallet</BrandText>
       }

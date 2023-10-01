@@ -53,7 +53,6 @@ export const MultisigWalletDashboardScreen: ScreenFC<
       footerChildren={<></>}
       noMargin
       fullWidth
-      isHeaderSmallMargin
       forceNetworkId={network?.id}
     >
       <View

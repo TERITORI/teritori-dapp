@@ -211,7 +211,6 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
       fullWidth
       onBackPress={() => navigation.navigate("Multisig")}
       noScroll
-      isHeaderSmallMargin
       forceNetworkKind={NetworkKind.Cosmos}
     >
       <ScrollView>

@@ -207,7 +207,6 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
 
   return (
     <ScreenContainer
-      isHeaderSmallMargin
       key={`UserPublicProfile ${id}`} // this key is to reset the screen state when the id changes
       forceNetworkId={network?.id}
       responsive
