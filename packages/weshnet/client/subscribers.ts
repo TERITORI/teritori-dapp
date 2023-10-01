@@ -34,6 +34,7 @@ export const subscribeMessages = async (groupPk: string) => {
       config.sinceId = bytesFromString(lastId);
     } else {
       config.untilNow = true;
+      config.reverseOrder = true;
     }
 
     try {
@@ -41,14 +42,28 @@ export const subscribeMessages = async (groupPk: string) => {
         groupPk: bytesFromString(groupPk),
       });
       const messages = await weshClient.client.GroupMessageList(config);
+      let isLastIdSet = false;
+
       const observer = {
         next: (data: GroupMessageEvent) => {
           try {
             const id = stringFromBytes(data.eventContext?.id);
+
             if (lastId === id) {
               console.log("already stored; test test", id);
               return;
-            } else {
+            }
+            if (!lastId && !isLastIdSet) {
+              store.dispatch(
+                setLastId({
+                  key: groupPk,
+                  value: id,
+                })
+              );
+              isLastIdSet = true;
+            }
+
+            if (lastId) {
               store.dispatch(
                 setLastId({
                   key: groupPk,
@@ -201,16 +216,13 @@ export const subscribeMessages = async (groupPk: string) => {
   }
 };
 
-export const subscribeMetadata = async (
-  groupPk: Uint8Array,
-  ignoreLastId = false
-) => {
+export const subscribeMetadata = async (groupPk: Uint8Array) => {
   const lastId = selectLastIdByKey("metadata")(store.getState());
   const config: Partial<GroupMetadataList_Request> = {
     groupPk,
   };
 
-  if (lastId && !ignoreLastId) {
+  if (lastId) {
     config.sinceId = bytesFromString(lastId);
   } else {
     config.untilNow = true;
@@ -219,19 +231,38 @@ export const subscribeMetadata = async (
 
   try {
     const metadata = await weshClient.client.GroupMetadataList(config);
+    let isLastIdSet = false;
 
     const myObserver = {
       next: (data: GroupMetadataEvent) => {
-        console.log("incoming metadata");
         const id = stringFromBytes(data.eventContext?.id);
         if (lastId === id) {
           return;
         }
+        if (!lastId && !isLastIdSet) {
+          store.dispatch(
+            setLastId({
+              key: "metadata",
+              value: id,
+            })
+          );
+          isLastIdSet = true;
+        }
+
+        if (lastId) {
+          store.dispatch(
+            setLastId({
+              key: "metadata",
+              value: id,
+            })
+          );
+        }
+
         handleMetadata(data);
       },
       error(e: Error) {
         if (e.message.includes("since ID not found")) {
-          subscribeMetadata(groupPk, true);
+          subscribeMetadata(groupPk);
         }
       },
       complete: () => {

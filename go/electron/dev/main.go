@@ -35,6 +35,15 @@ import (
 var port = 4254
 var path = "./temp/wesh-electron-dev-dir/"
 
+var (
+	AppName            = "Teritori"
+	BaseDirectoryPath  = "./go/electron/dev/desktop"
+	AppIconDarwinPath  = "../resources/icon.icns"
+	AppIconDefaultPath = "../resources/icon.png"
+	VersionAstilectron = "0.57.0"
+	VersionElectron    = "26.2.4"
+)
+
 func checkFreePort() {
 	firstPort, err := freeport.GetFreePort()
 	if err == nil {
@@ -136,17 +145,12 @@ func wesh() {
 	}
 }
 
+ 
+
 func electron() {
 	l := log.New(log.Writer(), log.Prefix(), log.Flags())
 
-	var (
-		AppName            = "Teritori"
-		BaseDirectoryPath  = "./go/electron/dev/desktop"
-		AppIconDarwinPath  = "../resources/icon.icns"
-		AppIconDefaultPath = "../resources/icon.png"
-		VersionAstilectron = "0.57.0"
-		VersionElectron    = "26.2.4"
-	)
+	
 
 	var w *astilectron.Window
 
@@ -305,7 +309,7 @@ func main() {
 	wg.Add(2)
 
 	go electron()
-	// go wesh()
+	go wesh()
 
 	wg.Wait()
 
