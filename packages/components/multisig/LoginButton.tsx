@@ -93,8 +93,6 @@ export const LoginButton: FC<{ userId: string | undefined }> = ({ userId }) => {
 
         const { authToken } = await client.GetToken(req);
 
-        console.log("auth token", authToken);
-
         if (!authToken) {
           throw new Error("No auth token returned from server");
         }
