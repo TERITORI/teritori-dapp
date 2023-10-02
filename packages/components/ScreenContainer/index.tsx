@@ -5,8 +5,6 @@ import {
   View,
   StyleSheet,
   useWindowDimensions,
-  ViewStyle,
-  StyleProp,
 } from "react-native";
 
 import { Header } from "./Header";
@@ -35,7 +33,6 @@ import { CartIconButtonBadge } from "../navigation/components/CartIconButtonBadg
 export const ScreenContainer: React.FC<{
   headerChildren?: JSX.Element;
   footerChildren?: React.ReactNode;
-  headerStyle?: StyleProp<ViewStyle>;
   mobileTitle?: string;
   hideSidebar?: boolean;
   noMargin?: boolean;
@@ -52,7 +49,6 @@ export const ScreenContainer: React.FC<{
   children,
   headerChildren,
   footerChildren,
-  headerStyle,
   mobileTitle,
   hideSidebar,
   noMargin,
@@ -126,10 +122,7 @@ export const ScreenContainer: React.FC<{
 
         <View style={{ width: "100%", flex: 1 }}>
           {/*==== Header*/}
-
-          <Header style={headerStyle} onBackPress={onBackPress}>
-            {headerChildren}
-          </Header>
+          <Header onBackPress={onBackPress}>{headerChildren}</Header>
 
           <View
             style={{ width: "100%", flexDirection: "row", flex: 1, height }}
