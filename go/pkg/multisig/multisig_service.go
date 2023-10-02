@@ -645,6 +645,13 @@ func (s *multisigService) GetToken(_ context.Context, req *multisigpb.GetTokenRe
 	}, nil
 }
 
+func (s *multisigService) ValidateToken(_ context.Context, req *multisigpb.ValidateTokenRequest) (*multisigpb.ValidateTokenResponse, error) {
+	if err := validateToken(s.publicKey, req.GetAuthToken()); err != nil {
+		return nil, err
+	}
+	return &multisigpb.ValidateTokenResponse{}, nil
+}
+
 func (s *multisigService) authenticate(tx *gorm.DB, token *multisigpb.Token) (string, error) {
 	if err := validateToken(s.publicKey, token); err != nil {
 		return "", err

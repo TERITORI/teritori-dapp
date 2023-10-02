@@ -124,7 +124,7 @@ export interface Token {
   nonce: string;
   expiration: string;
   userAddress: string;
-  /** base64 signature by server of protobuf encoding of Token with server_signature signature field zeroed out */
+  /** base64 signature by server of protobuf encoding of Token with server_signature field zeroed out */
   serverSignature: string;
 }
 
@@ -272,6 +272,14 @@ export interface TransactionsCount {
 export interface TransactionsCountsResponse {
   all: TransactionsCount | undefined;
   byType: TransactionsCount[];
+}
+
+export interface ValidateTokenRequest {
+  authToken: Token | undefined;
+}
+
+export interface ValidateTokenResponse {
+  valid: boolean;
 }
 
 function createBaseMultisig(): Multisig {
@@ -2381,6 +2389,103 @@ export const TransactionsCountsResponse = {
   },
 };
 
+function createBaseValidateTokenRequest(): ValidateTokenRequest {
+  return { authToken: undefined };
+}
+
+export const ValidateTokenRequest = {
+  encode(message: ValidateTokenRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.authToken !== undefined) {
+      Token.encode(message.authToken, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ValidateTokenRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseValidateTokenRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.authToken = Token.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ValidateTokenRequest {
+    return { authToken: isSet(object.authToken) ? Token.fromJSON(object.authToken) : undefined };
+  },
+
+  toJSON(message: ValidateTokenRequest): unknown {
+    const obj: any = {};
+    message.authToken !== undefined &&
+      (obj.authToken = message.authToken ? Token.toJSON(message.authToken) : undefined);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<ValidateTokenRequest>, I>>(object: I): ValidateTokenRequest {
+    const message = createBaseValidateTokenRequest();
+    message.authToken = (object.authToken !== undefined && object.authToken !== null)
+      ? Token.fromPartial(object.authToken)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseValidateTokenResponse(): ValidateTokenResponse {
+  return { valid: false };
+}
+
+export const ValidateTokenResponse = {
+  encode(message: ValidateTokenResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.valid === true) {
+      writer.uint32(8).bool(message.valid);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ValidateTokenResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseValidateTokenResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.valid = reader.bool();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ValidateTokenResponse {
+    return { valid: isSet(object.valid) ? Boolean(object.valid) : false };
+  },
+
+  toJSON(message: ValidateTokenResponse): unknown {
+    const obj: any = {};
+    message.valid !== undefined && (obj.valid = message.valid);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<ValidateTokenResponse>, I>>(object: I): ValidateTokenResponse {
+    const message = createBaseValidateTokenResponse();
+    message.valid = object.valid ?? false;
+    return message;
+  },
+};
+
 export interface MultisigService {
   /** Read */
   Multisigs(request: DeepPartial<MultisigsRequest>, metadata?: grpc.Metadata): Promise<MultisigsResponse>;
@@ -2411,6 +2516,7 @@ export interface MultisigService {
   /** Auth */
   GetChallenge(request: DeepPartial<GetChallengeRequest>, metadata?: grpc.Metadata): Promise<GetChallengeResponse>;
   GetToken(request: DeepPartial<GetTokenRequest>, metadata?: grpc.Metadata): Promise<GetTokenResponse>;
+  ValidateToken(request: DeepPartial<ValidateTokenRequest>, metadata?: grpc.Metadata): Promise<ValidateTokenResponse>;
 }
 
 export class MultisigServiceClientImpl implements MultisigService {
@@ -2429,6 +2535,7 @@ export class MultisigServiceClientImpl implements MultisigService {
     this.CompleteTransaction = this.CompleteTransaction.bind(this);
     this.GetChallenge = this.GetChallenge.bind(this);
     this.GetToken = this.GetToken.bind(this);
+    this.ValidateToken = this.ValidateToken.bind(this);
   }
 
   Multisigs(request: DeepPartial<MultisigsRequest>, metadata?: grpc.Metadata): Promise<MultisigsResponse> {
@@ -2504,6 +2611,10 @@ export class MultisigServiceClientImpl implements MultisigService {
 
   GetToken(request: DeepPartial<GetTokenRequest>, metadata?: grpc.Metadata): Promise<GetTokenResponse> {
     return this.rpc.unary(MultisigServiceGetTokenDesc, GetTokenRequest.fromPartial(request), metadata);
+  }
+
+  ValidateToken(request: DeepPartial<ValidateTokenRequest>, metadata?: grpc.Metadata): Promise<ValidateTokenResponse> {
+    return this.rpc.unary(MultisigServiceValidateTokenDesc, ValidateTokenRequest.fromPartial(request), metadata);
   }
 }
 
@@ -2743,6 +2854,28 @@ export const MultisigServiceGetTokenDesc: UnaryMethodDefinitionish = {
     deserializeBinary(data: Uint8Array) {
       return {
         ...GetTokenResponse.decode(data),
+        toObject() {
+          return this;
+        },
+      };
+    },
+  } as any,
+};
+
+export const MultisigServiceValidateTokenDesc: UnaryMethodDefinitionish = {
+  methodName: "ValidateToken",
+  service: MultisigServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return ValidateTokenRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      return {
+        ...ValidateTokenResponse.decode(data),
         toObject() {
           return this;
         },

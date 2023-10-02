@@ -36,6 +36,7 @@ type MultisigServiceClient interface {
 	// Auth
 	GetChallenge(ctx context.Context, in *GetChallengeRequest, opts ...grpc.CallOption) (*GetChallengeResponse, error)
 	GetToken(ctx context.Context, in *GetTokenRequest, opts ...grpc.CallOption) (*GetTokenResponse, error)
+	ValidateToken(ctx context.Context, in *ValidateTokenRequest, opts ...grpc.CallOption) (*ValidateTokenResponse, error)
 }
 
 type multisigServiceClient struct {
@@ -145,6 +146,15 @@ func (c *multisigServiceClient) GetToken(ctx context.Context, in *GetTokenReques
 	return out, nil
 }
 
+func (c *multisigServiceClient) ValidateToken(ctx context.Context, in *ValidateTokenRequest, opts ...grpc.CallOption) (*ValidateTokenResponse, error) {
+	out := new(ValidateTokenResponse)
+	err := c.cc.Invoke(ctx, "/multisig.v1.MultisigService/ValidateToken", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MultisigServiceServer is the server API for MultisigService service.
 // All implementations must embed UnimplementedMultisigServiceServer
 // for forward compatibility
@@ -163,6 +173,7 @@ type MultisigServiceServer interface {
 	// Auth
 	GetChallenge(context.Context, *GetChallengeRequest) (*GetChallengeResponse, error)
 	GetToken(context.Context, *GetTokenRequest) (*GetTokenResponse, error)
+	ValidateToken(context.Context, *ValidateTokenRequest) (*ValidateTokenResponse, error)
 	mustEmbedUnimplementedMultisigServiceServer()
 }
 
@@ -202,6 +213,9 @@ func (UnimplementedMultisigServiceServer) GetChallenge(context.Context, *GetChal
 }
 func (UnimplementedMultisigServiceServer) GetToken(context.Context, *GetTokenRequest) (*GetTokenResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetToken not implemented")
+}
+func (UnimplementedMultisigServiceServer) ValidateToken(context.Context, *ValidateTokenRequest) (*ValidateTokenResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ValidateToken not implemented")
 }
 func (UnimplementedMultisigServiceServer) mustEmbedUnimplementedMultisigServiceServer() {}
 
@@ -414,6 +428,24 @@ func _MultisigService_GetToken_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _MultisigService_ValidateToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ValidateTokenRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MultisigServiceServer).ValidateToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/multisig.v1.MultisigService/ValidateToken",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MultisigServiceServer).ValidateToken(ctx, req.(*ValidateTokenRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // MultisigService_ServiceDesc is the grpc.ServiceDesc for MultisigService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -464,6 +496,10 @@ var MultisigService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetToken",
 			Handler:    _MultisigService_GetToken_Handler,
+		},
+		{
+			MethodName: "ValidateToken",
+			Handler:    _MultisigService_ValidateToken_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

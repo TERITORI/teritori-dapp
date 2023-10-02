@@ -20,6 +20,7 @@ service MultisigService {
   // Auth
   rpc GetChallenge(GetChallengeRequest) returns (GetChallengeResponse);
   rpc GetToken(GetTokenRequest) returns (GetTokenResponse);
+  rpc ValidateToken(ValidateTokenRequest) returns (ValidateTokenResponse);
 }
 
 message Multisig {
@@ -218,4 +219,12 @@ message TransactionsCount {
 message TransactionsCountsResponse {
   TransactionsCount all = 1;
   repeated TransactionsCount by_type = 2;
+}
+
+message ValidateTokenRequest {
+  Token auth_token = 1;
+}
+
+message ValidateTokenResponse {
+  
 }
