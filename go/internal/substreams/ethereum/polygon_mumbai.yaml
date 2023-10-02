@@ -1,0 +1,19 @@
+specVersion: v0.1.0
+package:
+  name: "substreams_polygon_mumbai"
+  version: v0.1.0
+
+binaries:
+  default:
+    type: wasm/rust-v1
+    file: ./polygon_mumbai.wasm
+
+modules:
+  - name: block_out
+    kind: map
+    initialBlock: 40567872
+    inputs:
+      - source: sf.ethereum.type.v2.Block
+      - source: sf.substreams.v1.Clock
+    output:
+      type: proto:teritori.ethereum_block.v1.EthereumBlock

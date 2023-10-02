@@ -41,11 +41,12 @@ func NewHandler(handlerConfig *HandlerConfig) (*Handler, error) {
 
 func (h *Handler) HandleETHTx(tx *pb.Tx) error {
 	var metaData *bind.MetaData
-
 	// NOTE: Order of case if important because  we can have multi call in same tx
 	switch {
 	case strings.EqualFold(tx.Info.To, h.network.RiotSquadStakingContractAddress):
 		metaData = abiGo.SquadStakingV3MetaData
+	case strings.EqualFold(tx.Info.To, h.network.AxelarRiotContractAddressGen0):
+		metaData = abiGo.TeritoriNFTAxelarMetaData
 	// RiotNFT contract
 	case strings.EqualFold(tx.Info.To, "0x7a9e5dbe7d3946ce4ea2f2396549c349635ebf2f"):
 		metaData = abiGo.TeritoriNFTMetaData
@@ -94,6 +95,11 @@ func (h *Handler) HandleETHTx(tx *pb.Tx) error {
 	h.logger.Info("method", zap.String("method", method.Name))
 
 	switch method.Name {
+	// Axelar NFT
+	case "execute":
+		if err := h.handleExecute(contractABI, tx, args); err != nil {
+			return errors.Wrap(err, "failed to handle execute axelar NFT")
+		}
 	// SquadStake
 	case "stake":
 		if err := h.handleSquadStake(contractABI, tx, args); err != nil {

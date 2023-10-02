@@ -53,7 +53,7 @@ func sinkSyncE(cmd *cobra.Command, args []string) error {
 
 	// Prepare params ===============================================================================================
 	networkID := args[0]
-	if networkID != "ethereum" && networkID != "ethereum-goerli" {
+	if networkID != "ethereum" && networkID != "ethereum-goerli" && networkID != "polygon-mumbai" {
 		panic("given network is not supported")
 	}
 

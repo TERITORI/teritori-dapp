@@ -24,6 +24,7 @@ import { junoNetwork } from "./juno";
 import { osmosisNetwork } from "./osmosis";
 import { osmosisTestnetNetwork } from "./osmosis-testnet";
 // import { solanaNetwork } from "./solana";
+import { polygonMumbaiNetwork } from "./polygon-mumbai";
 import { teritoriNetwork } from "./teritori";
 import { teritoriTestnetNetwork } from "./teritori-testnet";
 import {
@@ -55,6 +56,7 @@ export const allNetworks = [
   gnoTest3Network,
   gnoDevNetwork,
   gnoTeritoriNetwork,
+  polygonMumbaiNetwork,
   // solanaNetwork,
 ];
 
