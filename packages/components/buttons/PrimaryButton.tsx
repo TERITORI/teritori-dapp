@@ -106,6 +106,7 @@ export const PrimaryButton: React.FC<{
             color={iconColor}
           />
         ) : null}
+
         {(loader && isLocalLoading) || isLoading ? (
           <ActivityIndicator color={primaryTextColor} />
         ) : (
