@@ -24,21 +24,19 @@ export const LoginButton: FC<{ userId: string | undefined }> = ({ userId }) => {
     selectMultisigToken(state, userAddress)
   );
   const dispatch = useAppDispatch();
-  const hasValidToken =
-    storeAuthToken && Date.parse(storeAuthToken.expiration) > Date.now(); // FIXME: this won't rerender when token expires
   const { wrapWithFeedback } = useFeedbacks();
 
   return (
     <PrimaryButton
       text={
-        hasValidToken
+        storeAuthToken
           ? "Logout of Multisig service"
           : "Login to Multisig service"
       }
       loader
       disabled={!userId} // TODO: replace with connect wallet button in this case
       onPress={wrapWithFeedback(async () => {
-        if (hasValidToken) {
+        if (storeAuthToken) {
           dispatch(setMultisigToken({ userAddress, token: undefined }));
           return;
         }
