@@ -221,7 +221,7 @@ export const TopMenuMyWallets: React.FC = () => {
             paddingHorizontal={layout.spacing_x2}
             text="Stake"
             size="XS"
-            onPress={() => navigation.navigate("Staking", {})}
+            onPress={() => navigation.navigate("Staking")}
           />
           <SecondaryButton
             disabled={
