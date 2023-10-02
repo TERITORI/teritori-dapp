@@ -1,12 +1,12 @@
 import React, { useRef, useState } from "react";
-import { View, TouchableOpacity, TextInput } from "react-native";
+import { View, TouchableOpacity } from "react-native";
 import { useDispatch } from "react-redux";
 
 import { AudioCall } from "./AudioCall";
 import { Calendar } from "./Calendar";
 import { ConversationAvatar } from "./ConversationAvatar";
+import { SearchInput } from "./SearchInput";
 import VideoCallScreen from "./VideoCall";
-import close from "../../../../assets/icons/close.svg";
 import dots from "../../../../assets/icons/dots.svg";
 import searchSVG from "../../../../assets/icons/search.svg";
 import { BrandText } from "../../../components/BrandText";
@@ -16,16 +16,8 @@ import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { SpacerRow } from "../../../components/spacer";
 import { useDropdowns } from "../../../context/DropdownsProvider";
 import { updateConversationById } from "../../../store/slices/message";
-import {
-  neutral17,
-  neutral33,
-  secondaryColor,
-} from "../../../utils/style/colors";
-import {
-  fontSemibold13,
-  fontMedium14,
-  fontSemibold12,
-} from "../../../utils/style/fonts";
+import { neutral17, secondaryColor } from "../../../utils/style/colors";
+import { fontSemibold13, fontSemibold12 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { Conversation } from "../../../utils/types/message";
 import { weshClient } from "../../../weshnet/client";
@@ -57,14 +49,6 @@ export const ChatHeader = ({
   const handleSearchIconPress = () => {
     setShowTextInput(true);
     setShowCalendar(false);
-  };
-  const handleCancelPress = () => {
-    setShowTextInput(false);
-    setSearchInput("");
-    setShowCalendar(false);
-  };
-  const handleMessageSearch = (text: string) => {
-    setSearchInput(text);
   };
 
   // const handleAudio = () => {
@@ -152,36 +136,11 @@ export const ChatHeader = ({
           }}
         >
           {showTextInput ? (
-            <>
-              <View
-                style={{
-                  flexDirection: "row",
-                  backgroundColor: neutral33,
-                  borderRadius: 6,
-                  padding: 6,
-                }}
-              >
-                <SVG source={searchSVG} width={20} height={20} />
-                <SpacerRow size={1} />
-                <TextInput
-                  placeholder="Search..."
-                  value={searchInput}
-                  onChangeText={handleMessageSearch}
-                  placeholderTextColor={secondaryColor}
-                  style={[
-                    fontMedium14,
-                    {
-                      color: "white",
-
-                      minWidth: 90,
-                      maxWidth: 90,
-                    },
-                  ]}
-                />
-              </View>
-
-              <SpacerRow size={1} />
-            </>
+            <SearchInput
+              value={searchInput}
+              setValue={setSearchInput}
+              onClose={() => setShowTextInput(false)}
+            />
           ) : (
             <View>
               <FlexRow>
@@ -255,12 +214,6 @@ export const ChatHeader = ({
                 <SpacerRow size={1} />
               </FlexRow>
             </View>
-          )}
-
-          {showTextInput && (
-            <TouchableOpacity onPress={handleCancelPress}>
-              <SVG source={close} style={{ marginTop: 6 }} />
-            </TouchableOpacity>
           )}
         </View>
 

@@ -37,9 +37,9 @@ var path = "./temp/wesh-electron-dev-dir/"
 
 var (
 	AppName            = "Teritori"
-	BaseDirectoryPath  = "./go/electron/dev/desktop"
-	AppIconDarwinPath  = "../resources/icon.icns"
-	AppIconDefaultPath = "../resources/icon.png"
+	BaseDirectoryPath  = "./electron/dev"
+	AppIconDarwinPath  = "../../go/electron/resources/icon.icns"
+	AppIconDefaultPath = "../../go/electron/resources/icon.png"
 	VersionAstilectron = "0.57.0"
 	VersionElectron    = "26.2.4"
 )

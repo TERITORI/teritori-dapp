@@ -62,6 +62,7 @@ export const UploadImage = ({ onClose, setFile }: UploadImageProps) => {
                     encoding: FileSystem.EncodingType.Base64,
                   }
                 );
+                console.log("base64Data", base64Data);
               }
 
               const formattedFile = await imagePickerAssetToLocalFile(file);

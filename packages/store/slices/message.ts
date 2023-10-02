@@ -9,7 +9,6 @@ import {
   Message,
   CONVERSATION_TYPES,
   PeerItem,
-  ConversationList,
 } from "./../../utils/types/message";
 import { RootState } from "../store";
 

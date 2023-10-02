@@ -1,4 +1,4 @@
-import { RemoteFileData } from "./feed";
+import { RemoteFileData } from "./files";
 
 export type MessageType =
   | "message"
