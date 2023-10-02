@@ -14,6 +14,8 @@ import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 
+// FIXME: make a BaseButton and only pass backgroun/border and text colors in this kind of components
+
 export const SecondaryButtonOutline: React.FC<{
   size: ButtonsSize;
   text: string;
