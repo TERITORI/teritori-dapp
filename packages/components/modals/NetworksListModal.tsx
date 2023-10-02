@@ -1,4 +1,4 @@
-import React, { FC, useMemo, useState } from "react";
+import React, { FC, memo, useMemo, useState } from "react";
 import {
   StyleProp,
   Switch,
@@ -77,7 +77,9 @@ const NetworksSettings: FC<{ style?: StyleProp<ViewStyle> }> = ({ style }) => {
       <SpacerColumn size={2} />
       {results.length ? (
         joinElements(
-          results.map((n) => <NetworkSettings key={n.id} networkId={n.id} />),
+          results.map((n) => (
+            <NetworkSettingsItem key={n.id} networkId={n.id} />
+          )),
           <SpacerColumn size={1.5} />
         )
       ) : (
@@ -87,7 +89,7 @@ const NetworksSettings: FC<{ style?: StyleProp<ViewStyle> }> = ({ style }) => {
   );
 };
 
-const NetworkSettings: FC<{ networkId: string }> = ({ networkId }) => {
+const NetworkSettingsItem: FC<{ networkId: string }> = memo(({ networkId }) => {
   const state = useSelector((state: RootState) =>
     selectNetworkEnabled(state, networkId)
   );
@@ -124,4 +126,4 @@ const NetworkSettings: FC<{ networkId: string }> = ({ networkId }) => {
       </TouchableOpacity>
     </TertiaryBox>
   );
-};
+});
