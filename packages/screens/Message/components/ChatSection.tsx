@@ -434,7 +434,11 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
                 fullWidth
                 setRef={setInputRef}
                 autoFocus={Platform.OS === "web"}
-                height={Math.max(50, Math.min(inputHeight - 50, 120))}
+                height={
+                  Platform.OS === "web"
+                    ? undefined
+                    : Math.max(50, Math.min(inputHeight - 50, 120))
+                }
                 name="message"
                 placeHolder={
                   replyTo?.message ? "Add reply message" : "Add a Message"
