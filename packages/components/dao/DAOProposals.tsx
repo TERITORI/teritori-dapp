@@ -1,23 +1,33 @@
 import React, { useState } from "react";
-import { StyleProp, Text, View, ViewStyle } from "react-native";
+import {
+  StyleProp,
+  Text,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+} from "react-native";
 
 import { DAOProposalModal } from "./DAOProposalModal";
 import { ProposalActions } from "./ProposalActions";
-import multisigWhiteSVG from "../../../assets/icons/multisig_white.svg";
+import orgSVG from "../../../assets/icons/multisig.svg";
 import {
   AppProposalResponse,
   useDAOProposals,
 } from "../../hooks/dao/useDAOProposals";
 import { useNSPrimaryAlias } from "../../hooks/useNSPrimaryAlias";
 import { getUserId, parseUserId } from "../../networks";
-import { neutral33, neutral77, neutral17 } from "../../utils/style/colors";
+import {
+  neutral33,
+  neutral55,
+  neutral77,
+  successColor,
+  errorColor,
+} from "../../utils/style/colors";
 import { fontSemibold13, fontSemibold14 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
 import { tinyAddress } from "../../utils/text";
 import { BrandText } from "../BrandText";
 import { OmniLink } from "../OmniLink";
 import { SVG } from "../SVG";
-import { CustomPressable } from "../buttons/CustomPressable";
 
 export const DAOProposals: React.FC<{
   daoId: string | undefined;
@@ -44,6 +54,7 @@ const ProposalRow: React.FC<{
 
   const halfGap = 24;
   const elemStyle: ViewStyle = {
+    height: 32,
     justifyContent: "space-between",
     paddingHorizontal: halfGap,
     flex: 1,
@@ -82,88 +93,77 @@ const ProposalRow: React.FC<{
   const [displayProposalModal, setDisplayProposalModal] =
     useState<boolean>(false);
 
+  const progressBarHeight = 6;
+
   const proposerId = getUserId(network?.id, proposal.proposal.proposer);
 
   const { primaryAlias: proposerAlias } = useNSPrimaryAlias(proposerId);
-  const [isHovered, setHovered] = useState(false);
 
   return (
-    <>
-      <CustomPressable
-        onHoverIn={() => setHovered(true)}
-        onHoverOut={() => setHovered(false)}
-        onPress={() => setDisplayProposalModal(true)}
-        style={[
-          {
-            flexDirection: "row",
-            height: 64,
-            alignItems: "center",
-            borderBottomColor: neutral33,
-            borderBottomWidth: 1,
-          },
-          isHovered && { backgroundColor: neutral17 },
-        ]}
+    <View
+      style={{
+        flexDirection: "row",
+        height: 64,
+        alignItems: "center",
+        borderBottomColor: neutral33,
+        borderBottomWidth: 1,
+      }}
+    >
+      <View
+        style={{
+          flexDirection: "row",
+          width: "100%",
+          alignItems: "center",
+        }}
       >
-        <View
-          style={{
-            flexDirection: "row",
-            width: "100%",
-            alignItems: "center",
-          }}
-        >
-          <View style={[elemStyle, { paddingLeft: 0 }]}>
+        <View style={[elemStyle, { paddingLeft: 0 }]}>
+          <View
+            style={{
+              flexDirection: "row",
+              flex: 1,
+              alignItems: "center",
+              height: "100%",
+            }}
+          >
+            <SVG
+              source={orgSVG}
+              width={32}
+              height={32}
+              style={{ marginRight: 12 }}
+            />
             <View
               style={{
-                flexDirection: "row",
-                flex: 1,
-                alignItems: "center",
                 height: "100%",
+                flex: 1,
+                justifyContent: "space-between",
               }}
             >
-              <SVG
-                source={multisigWhiteSVG}
-                width={32}
-                height={32}
-                style={{
-                  marginRight: layout.spacing_x2,
-                  marginLeft: layout.spacing_x2,
-                }}
-              />
-              <View
-                style={{
-                  height: "100%",
-                  flex: 1,
-                  justifyContent: "space-between",
-                }}
-              >
+              <TouchableOpacity onPress={() => setDisplayProposalModal(true)}>
                 <BrandText
-                  style={[
-                    fontSemibold14,
-                    { marginBottom: layout.spacing_x0_75 },
-                  ]}
+                  style={[fontSemibold14, { lineHeight: 14 }]}
                   numberOfLines={1}
                 >
                   #{proposal.id}: {proposal.proposal.title}
                 </BrandText>
-                <BrandText
-                  style={[fontSemibold13, { color: neutral77 }]}
-                  numberOfLines={1}
+              </TouchableOpacity>
+              <BrandText
+                style={[fontSemibold13, { lineHeight: 13, color: neutral77 }]}
+                numberOfLines={1}
+              >
+                Created by{" "}
+                <OmniLink
+                  to={{
+                    screen: "UserPublicProfile",
+                    params: { id: proposerId },
+                  }}
                 >
-                  Created by{" "}
-                  <OmniLink
-                    to={{
-                      screen: "UserPublicProfile",
-                      params: { id: proposerId },
-                    }}
-                  >
-                    <Text style={{ color: "#16BBFF" }}>
-                      {proposerAlias
-                        ? `@${proposerAlias}`
-                        : tinyAddress(proposal.proposal.proposer, 10)}
-                    </Text>
-                  </OmniLink>
-                </BrandText>
-              </View>
+                  <Text style={{ color: "#16BBFF" }}>
+                    {proposerAlias
+                      ? `@${proposerAlias}`
+                      : tinyAddress(proposal.proposal.proposer, 10)}
+                  </Text>
+                </OmniLink>
+              </BrandText>
             </View>
           </View>
         </View>
@@ -202,22 +202,74 @@ const ProposalRow: React.FC<{
           <View
             style={{
               flexDirection: "row",
-              justifyContent: "space-between",
-              width: 300,
-              marginLeft: halfGap,
+              width: "100%",
+              height: 13,
+              alignItems: "center",
             }}
           >
-            <ProposalActions daoId={daoId} proposal={proposal} />
+            <View style={{ flex: 1, flexDirection: "row" }}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  backgroundColor: successColor,
+                  height: progressBarHeight,
+                  flex: weights.approved / targetWeight,
+                }}
+              />
+              <View
+                style={{
+                  flexDirection: "row",
+                  backgroundColor: "white",
+                  height: progressBarHeight,
+                  flex: weights.abstained / targetWeight,
+                }}
+              />
+              <View
+                style={{
+                  flexDirection: "row",
+                  backgroundColor: errorColor,
+                  height: progressBarHeight,
+                  flex: weights.declined / targetWeight,
+                }}
+              />
+              <View
+                style={{
+                  flexDirection: "row",
+                  backgroundColor: neutral55,
+                  height: progressBarHeight,
+                  flex: (targetWeight - weights.voted) / targetWeight,
+                }}
+              />
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                backgroundColor: "black",
+                height: progressBarHeight,
+                position: "absolute",
+                left: `${thresholdGain * 100}%`,
+                width: 1,
+              }}
+            />
           </View>
         </View>
-      </CustomPressable>
-
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            width: 300,
+            marginLeft: halfGap,
+          }}
+        >
+          <ProposalActions daoId={daoId} proposal={proposal} />
+        </View>
+      </View>
       <DAOProposalModal
         visible={displayProposalModal}
         onClose={() => setDisplayProposalModal(false)}
         proposalInfo={proposal}
         daoId={daoId}
       />
-    </>
+    </View>
   );
 };
