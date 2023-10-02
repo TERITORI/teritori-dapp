@@ -192,11 +192,13 @@ export const SendModal: React.FC<SendModalProps> = ({
 
       <SpacerColumn size={2.5} />
 
-      <DAOSelector
-        onSelect={setSelectedDAOId}
-        userId={selectedWallet?.userId}
-        style={{ marginBottom: layout.spacing_x2_5 }}
-      />
+      {!userId && (
+        <DAOSelector
+          onSelect={setSelectedDAOId}
+          userId={selectedWallet?.userId}
+          style={{ marginBottom: layout.spacing_x2_5 }}
+        />
+      )}
 
       <TextInputCustom<TransactionForm>
         height={48}
