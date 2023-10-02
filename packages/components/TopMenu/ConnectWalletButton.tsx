@@ -29,7 +29,7 @@ export const ConnectWalletButton: FC<{ style?: StyleProp<ViewStyle> }> = ({
     <>
       <View style={style}>
         {selectedWallet ? (
-          <TopMenu selectedWallet={selectedWallet} />
+          <TopMenu />
         ) : (
           <Pressable
             onPress={ready ? toggleConnectWallet : undefined}

@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import { FC, useRef } from "react";
 import { View, TouchableOpacity, StyleSheet } from "react-native";
 
 import { TopMenuBox } from "./TopMenuBox";
@@ -6,7 +6,7 @@ import { WalletView } from "./WalletView";
 import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../assets/icons/chevron-up.svg";
 import { useDropdowns } from "../../context/DropdownsProvider";
-import { Wallet } from "../../context/WalletsProvider";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
   neutral00,
   neutral33,
@@ -19,9 +19,8 @@ import { TertiaryBox } from "../boxes/TertiaryBox";
 
 export const TOP_MENU_BUTTON_HEIGHT = 40;
 
-export const TopMenu: React.FC<{
-  selectedWallet?: Wallet;
-}> = ({ selectedWallet }) => {
+export const TopMenu: FC = () => {
+  const selectedWallet = useSelectedWallet();
   const { onPressDropdownButton, isDropdownOpen } = useDropdowns();
   const dropdownRef = useRef<View>(null);
 
