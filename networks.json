@@ -32,6 +32,7 @@
       "average": 0.025,
       "high": 0.04
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/8ball/images/8ball.svg",
     "cosmosFeatures": []
   },
   {
@@ -85,6 +86,7 @@
       "average": 25000000000,
       "high": 40000000000
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/acrechain/images/acre.svg",
     "cosmosFeatures": []
   },
   {
@@ -129,6 +131,7 @@
       "average": 0.05,
       "high": 0.07
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/agoric/images/Agoric-logo-color.svg",
     "cosmosFeatures": []
   },
   {
@@ -164,6 +167,7 @@
       "average": 1000000000,
       "high": 1500000000
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/aioz/images/aioz.svg",
     "cosmosFeatures": []
   },
   {
@@ -185,9 +189,9 @@
     "features": [],
     "idPrefix": "akash",
     "addressPrefix": "akash",
-    "txExplorer": "https://ezstaking.tools/akash/txs/$hash",
-    "accountExplorer": "https://ezstaking.tools/akash/account/$address",
-    "contractExplorer": "https://ezstaking.tools/akash/account/$address",
+    "txExplorer": "https://app.ezstaking.io/akash/txs/$hash",
+    "accountExplorer": "https://app.ezstaking.io/akash/account/$address",
+    "contractExplorer": "https://app.ezstaking.io/akash/account/$address",
     "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/akash/images/akt.svg",
     "testnet": false,
     "backendEndpoint": "TODO",
@@ -199,12 +203,13 @@
       "average": 42,
       "high": 42
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/akash/images/akt.svg",
     "cosmosFeatures": []
   },
   {
     "id": "cosmos-registry:celestiatestnet2",
     "displayName": "Arabica Testnet",
-    "chainId": "arabica-9",
+    "chainId": "arabica-10",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -220,14 +225,14 @@
     "features": [],
     "idPrefix": "celestiatestnet2",
     "addressPrefix": "celestia",
-    "txExplorer": "https://explorer-arabica-9.celestia-arabica.com/arabica-9/tx/$hash",
+    "txExplorer": "https://explorer.celestia-arabica-10.com/arabica-10/tx/$hash",
     "accountExplorer": "not-found",
     "contractExplorer": "not-found",
     "icon": "not-found",
     "testnet": true,
     "backendEndpoint": "TODO",
-    "restEndpoint": "https://api-arabica-9.consensus.celestia-arabica.com/",
-    "rpcEndpoint": "https://consensus-full-arabica-9.celestia-arabica.com/",
+    "restEndpoint": "https://api.consensus.celestia-arabica-10.com/",
+    "rpcEndpoint": "https://consensus-full.celestia-arabica-10.com/",
     "stakeCurrency": "not-found",
     "gasPriceStep": {
       "low": 42,
@@ -278,6 +283,7 @@
       "average": 1500000000000,
       "high": 2000000000000
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/archway/images/archway.svg",
     "cosmosFeatures": []
   },
   {
@@ -312,6 +318,42 @@
       "low": 42,
       "average": 0.025,
       "high": 0.05
+    },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/testnets/archwaytestnet/images/ArchwayBrandmark.svg",
+    "cosmosFeatures": []
+  },
+  {
+    "id": "cosmos-registry:arkeonetworktestnet",
+    "displayName": "Arkeo Network Testnet",
+    "chainId": "arkeo",
+    "kind": "Cosmos",
+    "currencies": [
+      {
+        "kind": "native",
+        "denom": "uarkeo",
+        "decimals": 6,
+        "displayName": "ARKEO",
+        "coingeckoId": "not-found",
+        "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/testnets/arkeonetworktestnet/images/arkeo.png",
+        "color": "TODO"
+      }
+    ],
+    "features": [],
+    "idPrefix": "arkeonetworktestnet",
+    "addressPrefix": "tarkeo",
+    "txExplorer": "https://explorer.nodexcapital.com/arkeo/tx/$hash",
+    "accountExplorer": "not-found",
+    "contractExplorer": "not-found",
+    "icon": "not-found",
+    "testnet": true,
+    "backendEndpoint": "TODO",
+    "restEndpoint": "https://arkeonetwork-testnet.nodejumper.io:1317",
+    "rpcEndpoint": "https://arkeonetwork-testnet.nodejumper.io:26657",
+    "stakeCurrency": "uarkeo",
+    "gasPriceStep": {
+      "low": 42,
+      "average": 42,
+      "high": 42
     },
     "cosmosFeatures": []
   },
@@ -348,6 +390,7 @@
       "average": 0.025,
       "high": 0.03
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/arkh/images/arkh.svg",
     "cosmosFeatures": []
   },
   {
@@ -369,9 +412,9 @@
     "features": [],
     "idPrefix": "assetmantle",
     "addressPrefix": "mantle",
-    "txExplorer": "https://ezstaking.tools/assetmantle/txs/$hash",
-    "accountExplorer": "https://ezstaking.tools/assetmantle/account/$address",
-    "contractExplorer": "https://ezstaking.tools/assetmantle/account/$address",
+    "txExplorer": "https://app.ezstaking.io/assetmantle/txs/$hash",
+    "accountExplorer": "https://app.ezstaking.io/assetmantle/account/$address",
+    "contractExplorer": "https://app.ezstaking.io/assetmantle/account/$address",
     "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/assetmantle/images/AM_Logo_Dark.svg",
     "testnet": false,
     "backendEndpoint": "TODO",
@@ -383,6 +426,7 @@
       "average": 0.025,
       "high": 0.04
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/assetmantle/images/AM_Logo_Dark.svg",
     "cosmosFeatures": []
   },
   {
@@ -418,6 +462,7 @@
       "average": 42,
       "high": 42
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/aura/images/Aura-logo-2.2.svg",
     "cosmosFeatures": []
   },
   {
@@ -722,14 +767,23 @@
         "coingeckoId": "not-found",
         "icon": "not-found",
         "color": "TODO"
+      },
+      {
+        "kind": "native",
+        "denom": "yieldeth-wei",
+        "decimals": 18,
+        "displayName": "YieldETH",
+        "coingeckoId": "not-found",
+        "icon": "not-found",
+        "color": "TODO"
       }
     ],
     "features": [],
     "idPrefix": "axelar",
     "addressPrefix": "axelar",
     "txExplorer": "https://axelarscan.io/tx/$hash",
-    "accountExplorer": "https://www.mintscan.io/axelar/account/$address",
-    "contractExplorer": "https://www.mintscan.io/axelar/account/$address",
+    "accountExplorer": "https://www.mintscan.io/axelar/accounts/$address",
+    "contractExplorer": "https://www.mintscan.io/axelar/accounts/$address",
     "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/axelar/images/axelar-chain-logo.svg",
     "testnet": false,
     "backendEndpoint": "TODO",
@@ -741,6 +795,7 @@
       "average": 0.007,
       "high": 0.01
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/axelar/images/axelar-chain-logo.svg",
     "cosmosFeatures": []
   },
   {
@@ -874,6 +929,7 @@
       "average": 42,
       "high": 42
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/babylon/images/logo.svg",
     "cosmosFeatures": []
   },
   {
@@ -896,8 +952,8 @@
     "idPrefix": "bandchain",
     "addressPrefix": "band",
     "txExplorer": "https://cosmoscan.io/tx/$hash",
-    "accountExplorer": "https://www.mintscan.io/band/account/$address",
-    "contractExplorer": "https://www.mintscan.io/band/account/$address",
+    "accountExplorer": "https://www.mintscan.io/band/accounts/$address",
+    "contractExplorer": "https://www.mintscan.io/band/accounts/$address",
     "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/bandchain/images/band.svg",
     "testnet": false,
     "backendEndpoint": "TODO",
@@ -909,6 +965,7 @@
       "average": 42,
       "high": 42
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/bandchain/images/band.svg",
     "cosmosFeatures": []
   },
   {
@@ -944,6 +1001,7 @@
       "average": 42,
       "high": 42
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/beezee/images/bze.svg",
     "cosmosFeatures": []
   },
   {
@@ -965,9 +1023,9 @@
     "features": [],
     "idPrefix": "bitcanna",
     "addressPrefix": "bcna",
-    "txExplorer": "https://ezstaking.tools/bitcanna/txs/$hash",
-    "accountExplorer": "https://ezstaking.tools/bitcanna/account/$address",
-    "contractExplorer": "https://ezstaking.tools/bitcanna/account/$address",
+    "txExplorer": "https://app.ezstaking.io/bitcanna/txs/$hash",
+    "accountExplorer": "https://app.ezstaking.io/bitcanna/account/$address",
+    "contractExplorer": "https://app.ezstaking.io/bitcanna/account/$address",
     "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/bitcanna/images/bcna.svg",
     "testnet": false,
     "backendEndpoint": "TODO",
@@ -979,6 +1037,7 @@
       "average": 0.0025,
       "high": 0.01
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/bitcanna/images/bcna.svg",
     "cosmosFeatures": []
   },
   {
@@ -1205,20 +1264,21 @@
     "features": [],
     "idPrefix": "bitsong",
     "addressPrefix": "bitsong",
-    "txExplorer": "https://ezstaking.tools/bitsong/txs/$hash",
-    "accountExplorer": "https://ezstaking.tools/bitsong/account/$address",
-    "contractExplorer": "https://ezstaking.tools/bitsong/account/$address",
+    "txExplorer": "https://app.ezstaking.io/bitsong/txs/$hash",
+    "accountExplorer": "https://app.ezstaking.io/bitsong/account/$address",
+    "contractExplorer": "https://app.ezstaking.io/bitsong/account/$address",
     "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/bitsong/images/btsg.svg",
     "testnet": false,
     "backendEndpoint": "TODO",
-    "restEndpoint": "https://lcd-bitsong.itastakers.com",
-    "rpcEndpoint": "https://rpc-bitsong.itastakers.com",
+    "restEndpoint": "https://api-bitsong-ia.cosmosia.notional.ventures/",
+    "rpcEndpoint": "https://rpc-bitsong-ia.cosmosia.notional.ventures/",
     "stakeCurrency": "ubtsg",
     "gasPriceStep": {
       "low": 3,
       "average": 10,
       "high": 20
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/bitsong/images/btsg.svg",
     "cosmosFeatures": []
   },
   {
@@ -1307,6 +1367,7 @@
       "average": 0.002,
       "high": 0.025
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/bluzelle/images/bluzelle.svg",
     "cosmosFeatures": []
   },
   {
@@ -1351,6 +1412,7 @@
       "average": 42,
       "high": 0.01
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/bostrom/images/boot.svg",
     "cosmosFeatures": []
   },
   {
@@ -1373,8 +1435,8 @@
     "idPrefix": "canto",
     "addressPrefix": "canto",
     "txExplorer": "https://cosmos.explorer.canto.io/transactions/$hash",
-    "accountExplorer": "https://www.mintscan.io/canto/account/$address",
-    "contractExplorer": "https://www.mintscan.io/canto/account/$address",
+    "accountExplorer": "https://www.mintscan.io/canto/accounts/$address",
+    "contractExplorer": "https://www.mintscan.io/canto/accounts/$address",
     "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/canto/images/canto.svg",
     "testnet": false,
     "backendEndpoint": "TODO",
@@ -1386,6 +1448,7 @@
       "average": 2000000000000,
       "high": 3000000000000
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/canto/images/canto.svg",
     "cosmosFeatures": []
   },
   {
@@ -1511,6 +1574,7 @@
       "average": 1,
       "high": 1
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/carbon/images/swth.svg",
     "cosmosFeatures": []
   },
   {
@@ -1546,6 +1610,7 @@
       "average": 10,
       "high": 15
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/testnets/cascadiatestnet/images/cascadia.png",
     "cosmosFeatures": []
   },
   {
@@ -1568,8 +1633,8 @@
     "idPrefix": "cerberus",
     "addressPrefix": "cerberus",
     "txExplorer": "https://skynetexplorers.com/cerberus/tx/$hash",
-    "accountExplorer": "https://www.mintscan.io/cerberus/account/$address",
-    "contractExplorer": "https://www.mintscan.io/cerberus/account/$address",
+    "accountExplorer": "not-found",
+    "contractExplorer": "not-found",
     "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/cerberus/images/crbrus.svg",
     "testnet": false,
     "backendEndpoint": "TODO",
@@ -1581,6 +1646,7 @@
       "average": 42,
       "high": 42
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/cerberus/images/crbrus.svg",
     "cosmosFeatures": []
   },
   {
@@ -1616,6 +1682,7 @@
       "average": 42,
       "high": 42
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/chain4energy/images/c4e.png",
     "cosmosFeatures": []
   },
   {
@@ -1651,6 +1718,7 @@
       "average": 0.03,
       "high": 0.06
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/testnets/chain4energytestnet/images/c4e.png",
     "cosmosFeatures": []
   },
   {
@@ -1686,6 +1754,7 @@
       "average": 75,
       "high": 100
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/cheqd/images/cheq.svg",
     "cosmosFeatures": []
   },
   {
@@ -1721,6 +1790,7 @@
       "average": 75,
       "high": 100
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/cheqd/images/cheq.svg",
     "cosmosFeatures": []
   },
   {
@@ -1743,8 +1813,8 @@
     "idPrefix": "chihuahua",
     "addressPrefix": "chihuahua",
     "txExplorer": "https://ping.pub/chihuahua/tx/$hash",
-    "accountExplorer": "https://www.mintscan.io/chihuahua/account/$address",
-    "contractExplorer": "https://www.mintscan.io/chihuahua/account/$address",
+    "accountExplorer": "https://www.mintscan.io/chihuahua/accounts/$address",
+    "contractExplorer": "https://www.mintscan.io/chihuahua/accounts/$address",
     "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/chihuahua/images/huahua.svg",
     "testnet": false,
     "backendEndpoint": "TODO",
@@ -1756,6 +1826,7 @@
       "average": 1250,
       "high": 2000
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/chihuahua/images/huahua.svg",
     "cosmosFeatures": []
   },
   {
@@ -1791,6 +1862,7 @@
       "average": 5,
       "high": 10
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/chimba/images/chimba-blue.svg",
     "cosmosFeatures": []
   },
   {
@@ -1909,9 +1981,9 @@
     "features": [],
     "idPrefix": "comdex",
     "addressPrefix": "comdex",
-    "txExplorer": "https://ezstaking.tools/comdex/txs/$hash",
-    "accountExplorer": "https://ezstaking.tools/comdex/account/$address",
-    "contractExplorer": "https://ezstaking.tools/comdex/account/$address",
+    "txExplorer": "https://app.ezstaking.io/comdex/txs/$hash",
+    "accountExplorer": "https://app.ezstaking.io/comdex/account/$address",
+    "contractExplorer": "https://app.ezstaking.io/comdex/account/$address",
     "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/comdex/images/cmdx.svg",
     "testnet": false,
     "backendEndpoint": "TODO",
@@ -1923,6 +1995,7 @@
       "average": 0.025,
       "high": 0.04
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/comdex/images/cmdx.svg",
     "cosmosFeatures": []
   },
   {
@@ -1967,6 +2040,7 @@
       "average": 42,
       "high": 42
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/commercionetwork/images/com.svg",
     "cosmosFeatures": []
   },
   {
@@ -2002,6 +2076,7 @@
       "average": 42,
       "high": 42
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/composable/images/composable.svg",
     "cosmosFeatures": []
   },
   {
@@ -2075,41 +2150,6 @@
     "cosmosFeatures": []
   },
   {
-    "id": "cosmos-registry:coreum",
-    "displayName": "Coreum",
-    "chainId": "coreum-mainnet-1",
-    "kind": "Cosmos",
-    "currencies": [
-      {
-        "kind": "native",
-        "denom": "ucore",
-        "decimals": 6,
-        "displayName": "CORE",
-        "coingeckoId": "coreum",
-        "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/coreum/images/coreum.svg",
-        "color": "TODO"
-      }
-    ],
-    "features": [],
-    "idPrefix": "coreum",
-    "addressPrefix": "core",
-    "txExplorer": "https://explorer.coreum.com/coreum/transactions/$hash",
-    "accountExplorer": "https://explorer.coreum.com/coreum/account/$address",
-    "contractExplorer": "https://explorer.coreum.com/coreum/account/$address",
-    "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/coreum/images/coreum.svg",
-    "testnet": false,
-    "backendEndpoint": "TODO",
-    "restEndpoint": "https://rest-coreum.ecostake.com",
-    "rpcEndpoint": "https://full-node.mainnet-1.coreum.dev:26657",
-    "stakeCurrency": "ucore",
-    "gasPriceStep": {
-      "low": 0.0625,
-      "average": 0.0625,
-      "high": 62.5
-    },
-    "cosmosFeatures": []
-  },
-  {
     "id": "cosmos-registry:coreumtestnet",
     "displayName": "Coreum Testnet",
     "chainId": "coreum-testnet-1",
@@ -2142,6 +2182,7 @@
       "average": 0.0625,
       "high": 62.5
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/coreum/images/coreum.png",
     "cosmosFeatures": []
   },
   {
@@ -2300,9 +2341,9 @@
     "features": [],
     "idPrefix": "crescent",
     "addressPrefix": "cre",
-    "txExplorer": "https://www.mintscan.io/crescent/txs/$hash",
-    "accountExplorer": "https://www.mintscan.io/crescent/account/$address",
-    "contractExplorer": "https://www.mintscan.io/crescent/account/$address",
+    "txExplorer": "https://www.mintscan.io/crescent/transactions/$hash",
+    "accountExplorer": "https://www.mintscan.io/crescent/accounts/$address",
+    "contractExplorer": "https://www.mintscan.io/crescent/accounts/$address",
     "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/crescent/images/cre.svg",
     "testnet": false,
     "backendEndpoint": "TODO",
@@ -2314,6 +2355,7 @@
       "average": 0.025,
       "high": 0.03
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/crescent/images/cre.svg",
     "cosmosFeatures": []
   },
   {
@@ -2349,6 +2391,7 @@
       "average": 42,
       "high": 42
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/cronos/images/cro.svg",
     "cosmosFeatures": []
   },
   {
@@ -2370,9 +2413,9 @@
     "features": [],
     "idPrefix": "cryptoorgchain",
     "addressPrefix": "cro",
-    "txExplorer": "https://www.mintscan.io/crypto-org/txs/$hash",
-    "accountExplorer": "https://www.mintscan.io/crypto-org/account/$address",
-    "contractExplorer": "https://www.mintscan.io/crypto-org/account/$address",
+    "txExplorer": "https://www.mintscan.io/crypto-org/transactions/$hash",
+    "accountExplorer": "https://www.mintscan.io/crypto-org/accounts/$address",
+    "contractExplorer": "https://www.mintscan.io/crypto-org/accounts/$address",
     "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/cronos/images/cro.svg",
     "testnet": false,
     "backendEndpoint": "TODO",
@@ -2384,6 +2427,7 @@
       "average": 0.03,
       "high": 0.04
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/cronos/images/cro.svg",
     "cosmosFeatures": []
   },
   {
@@ -2419,6 +2463,7 @@
       "average": 10000000000000,
       "high": 20000000000000
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/cudos/images/cudos.svg",
     "cosmosFeatures": []
   },
   {
@@ -2489,6 +2534,7 @@
       "average": 42,
       "high": 42
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/decentr/images/dec.svg",
     "cosmosFeatures": []
   },
   {
@@ -2510,9 +2556,9 @@
     "features": [],
     "idPrefix": "desmos",
     "addressPrefix": "desmos",
-    "txExplorer": "https://ezstaking.tools/desmos/txs/$hash",
-    "accountExplorer": "https://ezstaking.tools/desmos/account/$address",
-    "contractExplorer": "https://ezstaking.tools/desmos/account/$address",
+    "txExplorer": "https://app.ezstaking.io/desmos/txs/$hash",
+    "accountExplorer": "https://app.ezstaking.io/desmos/account/$address",
+    "contractExplorer": "https://app.ezstaking.io/desmos/account/$address",
     "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/desmos/images/dsm.svg",
     "testnet": false,
     "backendEndpoint": "TODO",
@@ -2524,6 +2570,7 @@
       "average": 0.03,
       "high": 0.05
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/desmos/images/dsm.svg",
     "cosmosFeatures": []
   },
   {
@@ -2559,6 +2606,7 @@
       "average": 0.03,
       "high": 0.05
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/desmos/images/dsm.svg",
     "cosmosFeatures": []
   },
   {
@@ -2593,6 +2641,77 @@
       "low": 0.025,
       "average": 0.03,
       "high": 0.035
+    },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/dig/images/dig.png",
+    "cosmosFeatures": []
+  },
+  {
+    "id": "cosmos-registry:doravota",
+    "displayName": "Dora Vota",
+    "chainId": "vota-ash",
+    "kind": "Cosmos",
+    "currencies": [
+      {
+        "kind": "native",
+        "denom": "peaka",
+        "decimals": 18,
+        "displayName": "DORA",
+        "coingeckoId": "not-found",
+        "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/doravota/images/doravota.png",
+        "color": "TODO"
+      }
+    ],
+    "features": [],
+    "idPrefix": "doravota",
+    "addressPrefix": "dora",
+    "txExplorer": "https://vota-explorer.dorafactory.org/dora/tx/$hash",
+    "accountExplorer": "not-found",
+    "contractExplorer": "not-found",
+    "icon": "not-found",
+    "testnet": false,
+    "backendEndpoint": "TODO",
+    "restEndpoint": "https://vota-rest.dorafactory.org",
+    "rpcEndpoint": "https://vota-rpc.dorafactory.org/",
+    "stakeCurrency": "peaka",
+    "gasPriceStep": {
+      "low": 42,
+      "average": 42,
+      "high": 42
+    },
+    "cosmosFeatures": []
+  },
+  {
+    "id": "cosmos-registry:doravotatestnet",
+    "displayName": "Dora Vota Testnet",
+    "chainId": "doravota-devnet",
+    "kind": "Cosmos",
+    "currencies": [
+      {
+        "kind": "native",
+        "denom": "uDORA",
+        "decimals": 6,
+        "displayName": "DORA",
+        "coingeckoId": "not-found",
+        "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/testnets/doravotatestnet/images/doravota.png",
+        "color": "TODO"
+      }
+    ],
+    "features": [],
+    "idPrefix": "doravotatestnet",
+    "addressPrefix": "dora",
+    "txExplorer": "https://maci-explorer-test.dorafactory.org/dora/tx/$hash",
+    "accountExplorer": "not-found",
+    "contractExplorer": "not-found",
+    "icon": "not-found",
+    "testnet": true,
+    "backendEndpoint": "TODO",
+    "restEndpoint": "https://vota-testnet-rest.dorafactory.org",
+    "rpcEndpoint": "https://vota-testnet-rpc.dorafactory.org/",
+    "stakeCurrency": "uDORA",
+    "gasPriceStep": {
+      "low": 42,
+      "average": 42,
+      "high": 42
     },
     "cosmosFeatures": []
   },
@@ -2629,6 +2748,7 @@
       "average": 0.0002,
       "high": 0.0003
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/dyson/images/dyson.svg",
     "cosmosFeatures": []
   },
   {
@@ -2695,9 +2815,9 @@
     "features": [],
     "idPrefix": "emoney",
     "addressPrefix": "emoney",
-    "txExplorer": "https://ezstaking.tools/emoney/txs/$hash",
-    "accountExplorer": "https://ezstaking.tools/emoney/account/$address",
-    "contractExplorer": "https://ezstaking.tools/emoney/account/$address",
+    "txExplorer": "https://app.ezstaking.io/emoney/txs/$hash",
+    "accountExplorer": "https://app.ezstaking.io/emoney/account/$address",
+    "contractExplorer": "https://app.ezstaking.io/emoney/account/$address",
     "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/emoney/images/ngm.svg",
     "testnet": false,
     "backendEndpoint": "TODO",
@@ -2709,6 +2829,7 @@
       "average": 1,
       "high": 1
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/emoney/images/ngm.svg",
     "cosmosFeatures": []
   },
   {
@@ -2744,6 +2865,7 @@
       "average": 25000000000,
       "high": 40000000000
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/echelon/images/echelon.svg",
     "cosmosFeatures": []
   },
   {
@@ -2861,6 +2983,42 @@
     "cosmosFeatures": []
   },
   {
+    "id": "cosmos-registry:entrypointtestnet",
+    "displayName": "EntryPoint Testnet",
+    "chainId": "entrypoint-pubtest-1",
+    "kind": "Cosmos",
+    "currencies": [
+      {
+        "kind": "native",
+        "denom": "uentry",
+        "decimals": 6,
+        "displayName": "ENTRY",
+        "coingeckoId": "not-found",
+        "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/testnets/entrypointtestnet/images/entry.svg",
+        "color": "TODO"
+      }
+    ],
+    "features": [],
+    "idPrefix": "entrypointtestnet",
+    "addressPrefix": "entrypoint",
+    "txExplorer": "https://explorer.entrypoint.zone/entrypoint/tx/$hash",
+    "accountExplorer": "https://explorer.entrypoint.zone/entrypoint/account/$address",
+    "contractExplorer": "https://explorer.entrypoint.zone/entrypoint/account/$address",
+    "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/testnets/entrypointtestnet/images/entrypoint-chain-logo.svg",
+    "testnet": true,
+    "backendEndpoint": "TODO",
+    "restEndpoint": "https://testnet-rpc.entrypoint.zone",
+    "rpcEndpoint": "https://testnet-rest.entrypoint.zone",
+    "stakeCurrency": "uentry",
+    "gasPriceStep": {
+      "low": 42,
+      "average": 42,
+      "high": 42
+    },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/testnets/entrypointtestnet/images/entrypoint-chain-logo.svg",
+    "cosmosFeatures": []
+  },
+  {
     "id": "ethereum",
     "kind": "Ethereum",
     "displayName": "Ethereum",
@@ -2957,6 +3115,7 @@
       "average": 42,
       "high": 42
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/ethos/images/ethos.svg",
     "cosmosFeatures": []
   },
   {
@@ -2973,14 +3132,23 @@
         "coingeckoId": "evmos",
         "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/evmos/images/evmos.svg",
         "color": "TODO"
+      },
+      {
+        "kind": "native",
+        "denom": "erc20/0x655ecB57432CC1370f65e5dc2309588b71b473A9",
+        "decimals": 18,
+        "displayName": "NEOK",
+        "coingeckoId": "not-found",
+        "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/evmos/images/neok.svg",
+        "color": "TODO"
       }
     ],
     "features": [],
     "idPrefix": "evmos",
     "addressPrefix": "evmos",
-    "txExplorer": "https://ezstaking.tools/evmos/txs/$hash",
-    "accountExplorer": "https://ezstaking.tools/evmos/account/$address",
-    "contractExplorer": "https://ezstaking.tools/evmos/account/$address",
+    "txExplorer": "https://app.ezstaking.io/evmos/txs/$hash",
+    "accountExplorer": "https://app.ezstaking.io/evmos/account/$address",
+    "contractExplorer": "https://app.ezstaking.io/evmos/account/$address",
     "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/evmos/images/evmos.svg",
     "testnet": false,
     "backendEndpoint": "TODO",
@@ -2992,6 +3160,7 @@
       "average": 25000000000,
       "high": 40000000000
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/evmos/images/evmos.svg",
     "cosmosFeatures": []
   },
   {
@@ -3058,9 +3227,9 @@
     "rpcEndpoint": "https://fx-json.functionx.io",
     "stakeCurrency": "FX",
     "gasPriceStep": {
-      "low": 400000000000,
+      "low": 4000000000000,
       "average": 4200000000000,
-      "high": 500000000000
+      "high": 5000000000000
     },
     "cosmosFeatures": []
   },
@@ -3092,9 +3261,9 @@
     "features": [],
     "idPrefix": "fetchhub",
     "addressPrefix": "fetch",
-    "txExplorer": "https://www.mintscan.io/fetchai/txs/$hash",
-    "accountExplorer": "https://www.mintscan.io/fetchai/account/$address",
-    "contractExplorer": "https://www.mintscan.io/fetchai/account/$address",
+    "txExplorer": "https://www.mintscan.io/fetchai/transactions/$hash",
+    "accountExplorer": "https://www.mintscan.io/fetchai/accounts/$address",
+    "contractExplorer": "https://www.mintscan.io/fetchai/accounts/$address",
     "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/fetchhub/images/fet.svg",
     "testnet": false,
     "backendEndpoint": "TODO",
@@ -3106,6 +3275,7 @@
       "average": 0.025,
       "high": 0.035
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/fetchhub/images/fet.svg",
     "cosmosFeatures": []
   },
   {
@@ -3162,9 +3332,9 @@
     "features": [],
     "idPrefix": "firmachain",
     "addressPrefix": "firma",
-    "txExplorer": "https://ezstaking.tools/firmachain/txs/$hash",
-    "accountExplorer": "https://ezstaking.tools/firmachain/account/$address",
-    "contractExplorer": "https://ezstaking.tools/firmachain/account/$address",
+    "txExplorer": "https://app.ezstaking.io/firmachain/txs/$hash",
+    "accountExplorer": "https://app.ezstaking.io/firmachain/account/$address",
+    "contractExplorer": "https://app.ezstaking.io/firmachain/account/$address",
     "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/firmachain/images/fct.svg",
     "testnet": false,
     "backendEndpoint": "TODO",
@@ -3176,6 +3346,7 @@
       "average": 42,
       "high": 42
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/firmachain/images/fct.svg",
     "cosmosFeatures": []
   },
   {
@@ -3211,6 +3382,7 @@
       "average": 0.025,
       "high": 0.035
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/galaxy/images/glx.svg",
     "cosmosFeatures": []
   },
   {
@@ -3246,6 +3418,7 @@
       "average": 52000000000,
       "high": 53000000000
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/genesisl1/images/l1.svg",
     "cosmosFeatures": []
   },
   {
@@ -3511,9 +3684,9 @@
     "features": [],
     "idPrefix": "gravitybridge",
     "addressPrefix": "gravity",
-    "txExplorer": "https://ezstaking.tools/gravitybridge/txs/$hash",
-    "accountExplorer": "https://ezstaking.tools/gravitybridge/account/$address",
-    "contractExplorer": "https://ezstaking.tools/gravitybridge/account/$address",
+    "txExplorer": "https://app.ezstaking.io/gravitybridge/txs/$hash",
+    "accountExplorer": "https://app.ezstaking.io/gravitybridge/account/$address",
+    "contractExplorer": "https://app.ezstaking.io/gravitybridge/account/$address",
     "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/gravitybridge/images/grav.svg",
     "testnet": false,
     "backendEndpoint": "TODO",
@@ -3525,6 +3698,7 @@
       "average": 42,
       "high": 0.035
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/gravitybridge/images/grav.svg",
     "cosmosFeatures": []
   },
   {
@@ -3560,6 +3734,97 @@
       "average": 25000000000,
       "high": 40000000000
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/haqq/images/haqq.svg",
+    "cosmosFeatures": []
+  },
+  {
+    "id": "cosmos-registry:highbury",
+    "displayName": "Highbury",
+    "chainId": "highbury_710-1",
+    "kind": "Cosmos",
+    "currencies": [
+      {
+        "kind": "native",
+        "denom": "ufury",
+        "decimals": 6,
+        "displayName": "FURY",
+        "coingeckoId": "fanfury",
+        "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/highbury/images/fury.svg",
+        "color": "TODO"
+      },
+      {
+        "kind": "native",
+        "denom": "jinx",
+        "decimals": 6,
+        "displayName": "JINX",
+        "coingeckoId": "not-found",
+        "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/highbury/images/jinx.svg",
+        "color": "TODO"
+      },
+      {
+        "kind": "native",
+        "denom": "jinxy",
+        "decimals": 6,
+        "displayName": "JINXy",
+        "coingeckoId": "not-found",
+        "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/highbury/images/jinxy.svg",
+        "color": "TODO"
+      }
+    ],
+    "features": [],
+    "idPrefix": "highbury",
+    "addressPrefix": "fury",
+    "txExplorer": "https://www.explorer.furya.wtf//txs/$hash",
+    "accountExplorer": "https://explorer.furya.wtf//account/$address",
+    "contractExplorer": "https://explorer.furya.wtf//account/$address",
+    "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/highbury/images/fury.svg",
+    "testnet": false,
+    "backendEndpoint": "TODO",
+    "restEndpoint": "https://api-mainnet.furya.io/",
+    "rpcEndpoint": "https://gridiron.furya.io",
+    "stakeCurrency": "ufury",
+    "gasPriceStep": {
+      "low": 0.05,
+      "average": 0.1,
+      "high": 0.25
+    },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/highbury/images/fury.svg",
+    "cosmosFeatures": []
+  },
+  {
+    "id": "cosmos-registry:humans",
+    "displayName": "humans",
+    "chainId": "humans_1089-1",
+    "kind": "Cosmos",
+    "currencies": [
+      {
+        "kind": "native",
+        "denom": "aheart",
+        "decimals": 18,
+        "displayName": "HEART",
+        "coingeckoId": "humans-ai",
+        "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/humans/images/humans_small_light.svg",
+        "color": "TODO"
+      }
+    ],
+    "features": [],
+    "idPrefix": "humans",
+    "addressPrefix": "humans",
+    "txExplorer": "https://bigdipper.live/humans/transactions/$hash",
+    "accountExplorer": "https://bigdipper.live/humans/accounts/$address",
+    "contractExplorer": "https://bigdipper.live/humans/accounts/$address",
+    "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/humans/images/humans_small_light.svg",
+    "testnet": false,
+    "backendEndpoint": "TODO",
+    "restEndpoint": "https://api.humans.nodestake.top",
+    "rpcEndpoint": "https://rpc.humans.nodestake.top",
+    "stakeCurrency": "aheart",
+    "gasPriceStep": {
+      "low": 20000000000,
+      "average": 25000000000,
+      "high": 40000000000
+    },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/humans/images/humans_small_light.svg",
     "cosmosFeatures": []
   },
   {
@@ -3651,9 +3916,9 @@
     "features": [],
     "idPrefix": "idep",
     "addressPrefix": "idep",
-    "txExplorer": "https://ezstaking.tools/idep/txs/$hash",
-    "accountExplorer": "https://ezstaking.tools/idep/account/$address",
-    "contractExplorer": "https://ezstaking.tools/idep/account/$address",
+    "txExplorer": "https://app.ezstaking.io/idep/txs/$hash",
+    "accountExplorer": "https://app.ezstaking.io/idep/account/$address",
+    "contractExplorer": "https://app.ezstaking.io/idep/account/$address",
     "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/idep/images/idep.svg",
     "testnet": false,
     "backendEndpoint": "TODO",
@@ -3665,6 +3930,7 @@
       "average": 42,
       "high": 42
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/idep/images/idep.svg",
     "cosmosFeatures": []
   },
   {
@@ -3700,6 +3966,7 @@
       "average": 25000000000,
       "high": 40000000000
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/imversed/images/imversed.svg",
     "cosmosFeatures": []
   },
   {
@@ -3770,6 +4037,7 @@
       "average": 700000000,
       "high": 900000000
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/injective/images/inj.svg",
     "cosmosFeatures": []
   },
   {
@@ -3826,9 +4094,9 @@
     "features": [],
     "idPrefix": "irisnet",
     "addressPrefix": "iaa",
-    "txExplorer": "https://ezstaking.tools/irisnet/txs/$hash",
-    "accountExplorer": "https://ezstaking.tools/irisnet/account/$address",
-    "contractExplorer": "https://ezstaking.tools/irisnet/account/$address",
+    "txExplorer": "https://app.ezstaking.io/irisnet/txs/$hash",
+    "accountExplorer": "https://app.ezstaking.io/irisnet/account/$address",
+    "contractExplorer": "https://app.ezstaking.io/irisnet/account/$address",
     "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/irisnet/images/iris.svg",
     "testnet": false,
     "backendEndpoint": "TODO",
@@ -3840,6 +4108,7 @@
       "average": 0.3,
       "high": 0.4
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/irisnet/images/iris.svg",
     "cosmosFeatures": []
   },
   {
@@ -3861,9 +4130,9 @@
     "features": [],
     "idPrefix": "impacthub",
     "addressPrefix": "ixo",
-    "txExplorer": "https://ezstaking.tools/ixo/txs/$hash",
-    "accountExplorer": "https://ezstaking.tools/ixo/account/$address",
-    "contractExplorer": "https://ezstaking.tools/ixo/account/$address",
+    "txExplorer": "https://app.ezstaking.io/ixo/txs/$hash",
+    "accountExplorer": "https://app.ezstaking.io/ixo/account/$address",
+    "contractExplorer": "https://app.ezstaking.io/ixo/account/$address",
     "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/impacthub/images/ixo.svg",
     "testnet": false,
     "backendEndpoint": "TODO",
@@ -3875,6 +4144,7 @@
       "average": 0.4,
       "high": 0.1
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/impacthub/images/ixo.svg",
     "cosmosFeatures": []
   },
   {
@@ -3980,6 +4250,7 @@
       "average": 0.002,
       "high": 0.02
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/jackal/images/jkl.svg",
     "cosmosFeatures": []
   },
   {
@@ -4603,9 +4874,9 @@
     "features": [],
     "idPrefix": "juno",
     "addressPrefix": "juno",
-    "txExplorer": "https://ezstaking.tools/juno/txs/$hash",
-    "accountExplorer": "https://ezstaking.tools/juno/account/$address",
-    "contractExplorer": "https://ezstaking.tools/juno/account/$address",
+    "txExplorer": "https://app.ezstaking.io/juno/txs/$hash",
+    "accountExplorer": "https://app.ezstaking.io/juno/account/$address",
+    "contractExplorer": "https://app.ezstaking.io/juno/account/$address",
     "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/juno/images/juno.svg",
     "testnet": false,
     "backendEndpoint": "TODO",
@@ -4617,6 +4888,7 @@
       "average": 0.1,
       "high": 0.125
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/juno/images/juno.svg",
     "cosmosFeatures": []
   },
   {
@@ -4633,14 +4905,23 @@
         "coingeckoId": "juno-network",
         "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/testnets/junotestnet/images/juno.svg",
         "color": "TODO"
+      },
+      {
+        "kind": "native",
+        "denom": "factory/juno12klaltyqvg2j6v034jwdxrk5n4242ttse4sdpt/NEXX",
+        "decimals": 6,
+        "displayName": "NEXX",
+        "coingeckoId": "not-found",
+        "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/testnets/junotestnet/images/nexx.png",
+        "color": "TODO"
       }
     ],
     "features": [],
     "idPrefix": "junotestnet",
     "addressPrefix": "juno",
-    "txExplorer": "https://testnet.ezstaking.tools/juno-testnet/txs/$hash",
-    "accountExplorer": "https://testnet.ezstaking.tools/juno-testnet/account/$address",
-    "contractExplorer": "https://testnet.ezstaking.tools/juno-testnet/account/$address",
+    "txExplorer": "https://testnet.app.ezstaking.io/juno-testnet/txs/$hash",
+    "accountExplorer": "https://testnet.app.ezstaking.io/juno-testnet/account/$address",
+    "contractExplorer": "https://testnet.app.ezstaking.io/juno-testnet/account/$address",
     "icon": "not-found",
     "testnet": true,
     "backendEndpoint": "TODO",
@@ -4709,9 +4990,9 @@
     "features": [],
     "idPrefix": "kava",
     "addressPrefix": "kava",
-    "txExplorer": "https://www.mintscan.io/kava/txs/$hash",
-    "accountExplorer": "https://www.mintscan.io/kava/account/$address",
-    "contractExplorer": "https://www.mintscan.io/kava/account/$address",
+    "txExplorer": "https://www.mintscan.io/kava/transactions/$hash",
+    "accountExplorer": "https://www.mintscan.io/kava/accounts/$address",
+    "contractExplorer": "https://www.mintscan.io/kava/accounts/$address",
     "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/kava/images/kava.svg",
     "testnet": false,
     "backendEndpoint": "TODO",
@@ -4723,6 +5004,7 @@
       "average": 0.1,
       "high": 0.25
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/kava/images/kava.svg",
     "cosmosFeatures": []
   },
   {
@@ -4753,9 +5035,9 @@
     "features": [],
     "idPrefix": "kichain",
     "addressPrefix": "ki",
-    "txExplorer": "https://ezstaking.tools/kichain/txs/$hash",
-    "accountExplorer": "https://ezstaking.tools/kichain/account/$address",
-    "contractExplorer": "https://ezstaking.tools/kichain/account/$address",
+    "txExplorer": "https://app.ezstaking.io/kichain/txs/$hash",
+    "accountExplorer": "https://app.ezstaking.io/kichain/account/$address",
+    "contractExplorer": "https://app.ezstaking.io/kichain/account/$address",
     "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/kichain/images/xki.svg",
     "testnet": false,
     "backendEndpoint": "TODO",
@@ -4767,6 +5049,7 @@
       "average": 0.03,
       "high": 0.05
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/kichain/images/xki.svg",
     "cosmosFeatures": []
   },
   {
@@ -4824,8 +5107,8 @@
     "idPrefix": "konstellation",
     "addressPrefix": "darc",
     "txExplorer": "https://explorer.konstellation.tech/tx/$hash",
-    "accountExplorer": "https://www.mintscan.io/konstellation/account/$address",
-    "contractExplorer": "https://www.mintscan.io/konstellation/account/$address",
+    "accountExplorer": "not-found",
+    "contractExplorer": "not-found",
     "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/konstellation/images/Konstellation-dark.png",
     "testnet": false,
     "backendEndpoint": "TODO",
@@ -4837,6 +5120,7 @@
       "average": 42,
       "high": 42
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/konstellation/images/Konstellation-dark.png",
     "cosmosFeatures": []
   },
   {
@@ -4889,6 +5173,15 @@
         "coingeckoId": "not-found",
         "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/kujira/images/wink.svg",
         "color": "TODO"
+      },
+      {
+        "kind": "native",
+        "denom": "factory/kujira1slueerjz7mx9jp45u3y0rjwtvhcf8a68wf2mjt/ublend",
+        "decimals": 6,
+        "displayName": "BLEND",
+        "coingeckoId": "not-found",
+        "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/kujira/images/blend.svg",
+        "color": "TODO"
       }
     ],
     "features": [],
@@ -4908,6 +5201,7 @@
       "average": 0.025,
       "high": 0.03
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/kujira/images/kuji.svg",
     "cosmosFeatures": []
   },
   {
@@ -4987,6 +5281,7 @@
       "average": 0.03,
       "high": 0.06
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/kyve/images/kyve.svg",
     "cosmosFeatures": []
   },
   {
@@ -5092,12 +5387,13 @@
       "average": 25000000000,
       "high": 40000000000
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/lambda/images/lambda.svg",
     "cosmosFeatures": []
   },
   {
     "id": "cosmos-registry:lavatestnet",
     "displayName": "Lava Testnet",
-    "chainId": "lava-testnet-1",
+    "chainId": "lava-testnet-2",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -5113,6 +5409,42 @@
     "features": [],
     "idPrefix": "lavatestnet",
     "addressPrefix": "lava@",
+    "txExplorer": "https://lava.explorers.guru//transaction/$hash",
+    "accountExplorer": "https://lava.explorers.guru//account/$address",
+    "contractExplorer": "https://lava.explorers.guru//account/$address",
+    "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/lava/images/lava-icon.svg",
+    "testnet": true,
+    "backendEndpoint": "TODO",
+    "restEndpoint": "https://public-rpc-testnet2.lavanet.xyz/rest/",
+    "rpcEndpoint": "https://https://public-rpc-testnet2.lavanet.xyz/",
+    "stakeCurrency": "ulava",
+    "gasPriceStep": {
+      "low": 1e-9,
+      "average": 1e-9,
+      "high": 1e-9
+    },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/lava/images/lava-icon.svg",
+    "cosmosFeatures": []
+  },
+  {
+    "id": "cosmos-registry:lavatestnet2",
+    "displayName": "Lava Testnet",
+    "chainId": "lava-testnet-1",
+    "kind": "Cosmos",
+    "currencies": [
+      {
+        "kind": "native",
+        "denom": "ulava",
+        "decimals": 6,
+        "displayName": "LAVA",
+        "coingeckoId": "not-found",
+        "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/lava/images/lava-icon.svg",
+        "color": "TODO"
+      }
+    ],
+    "features": [],
+    "idPrefix": "lavatestnet2",
+    "addressPrefix": "lava@",
     "txExplorer": "https://bd.lavanet.xyz/transactions/$hash",
     "accountExplorer": "https://bd.lavanet.xyz/accounts/$address",
     "contractExplorer": "https://bd.lavanet.xyz/accounts/$address",
@@ -5127,6 +5459,7 @@
       "average": 0.025,
       "high": 0.04
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/lava/images/lava-icon.svg",
     "cosmosFeatures": []
   },
   {
@@ -5148,9 +5481,9 @@
     "features": [],
     "idPrefix": "likecoin",
     "addressPrefix": "like",
-    "txExplorer": "https://www.mintscan.io/likecoin/txs/$hash",
-    "accountExplorer": "https://www.mintscan.io/likecoin/account/$address",
-    "contractExplorer": "https://www.mintscan.io/likecoin/account/$address",
+    "txExplorer": "https://www.mintscan.io/likecoin/transactions/$hash",
+    "accountExplorer": "https://www.mintscan.io/likecoin/accounts/$address",
+    "contractExplorer": "https://www.mintscan.io/likecoin/accounts/$address",
     "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/likecoin/images/likecoin-chain-logo.svg",
     "testnet": false,
     "backendEndpoint": "TODO",
@@ -5162,6 +5495,7 @@
       "average": 10,
       "high": 1000
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/likecoin/images/likecoin-chain-logo.svg",
     "cosmosFeatures": []
   },
   {
@@ -5197,6 +5531,7 @@
       "average": 42,
       "high": 42
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/logos/images/logos.svg",
     "cosmosFeatures": []
   },
   {
@@ -5232,6 +5567,7 @@
       "average": 42,
       "high": 42
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/loyal/images/lyl.svg",
     "cosmosFeatures": []
   },
   {
@@ -5253,9 +5589,9 @@
     "features": [],
     "idPrefix": "lumnetwork",
     "addressPrefix": "lum",
-    "txExplorer": "https://ezstaking.tools/lumnetwork/txs/$hash",
-    "accountExplorer": "https://ezstaking.tools/lumnetwork/account/$address",
-    "contractExplorer": "https://ezstaking.tools/lumnetwork/account/$address",
+    "txExplorer": "https://app.ezstaking.io/lumnetwork/txs/$hash",
+    "accountExplorer": "https://app.ezstaking.io/lumnetwork/account/$address",
+    "contractExplorer": "https://app.ezstaking.io/lumnetwork/account/$address",
     "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/lumnetwork/images/lum.svg",
     "testnet": false,
     "backendEndpoint": "TODO",
@@ -5267,6 +5603,7 @@
       "average": 0.025,
       "high": 0.04
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/lumnetwork/images/lum.svg",
     "cosmosFeatures": []
   },
   {
@@ -5302,6 +5639,7 @@
       "average": 0.025,
       "high": 0.03
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/lumenx/images/lumen.svg",
     "cosmosFeatures": []
   },
   {
@@ -5372,6 +5710,7 @@
       "average": 42,
       "high": 0.01
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/mars/images/mars-protocol.svg",
     "cosmosFeatures": []
   },
   {
@@ -5407,6 +5746,7 @@
       "average": 42,
       "high": 0.025
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/testnets/marstestnet/images/mars.png",
     "cosmosFeatures": []
   },
   {
@@ -5486,6 +5826,7 @@
       "average": 0.0001,
       "high": 0.00025
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/medasdigital/images/medas.svg",
     "cosmosFeatures": []
   },
   {
@@ -5507,9 +5848,9 @@
     "features": [],
     "idPrefix": "panacea",
     "addressPrefix": "panacea",
-    "txExplorer": "https://www.mintscan.io/medibloc/txs/$hash",
-    "accountExplorer": "not-found",
-    "contractExplorer": "not-found",
+    "txExplorer": "https://www.mintscan.io/medibloc/transactions/$hash",
+    "accountExplorer": "https://www.mintscan.io/medibloc/accounts/$address",
+    "contractExplorer": "https://www.mintscan.io/medibloc/accounts/$address",
     "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/panacea/images/med.svg",
     "testnet": false,
     "backendEndpoint": "TODO",
@@ -5521,6 +5862,7 @@
       "average": 7,
       "high": 9
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/panacea/images/med.svg",
     "cosmosFeatures": []
   },
   {
@@ -5556,6 +5898,7 @@
       "average": 0.035,
       "high": 0.045
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/meme/images/meme.svg",
     "cosmosFeatures": []
   },
   {
@@ -5591,6 +5934,7 @@
       "average": 42,
       "high": 42
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/microtick/images/tick.svg",
     "cosmosFeatures": []
   },
   {
@@ -5671,6 +6015,7 @@
       "average": 0.5,
       "high": 0.75
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/migaloo/images/migaloo-light.svg",
     "cosmosFeatures": []
   },
   {
@@ -5706,6 +6051,7 @@
       "average": 0.5,
       "high": 0.75
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/migaloo/images/migaloo-light.svg",
     "cosmosFeatures": []
   },
   {
@@ -5741,12 +6087,13 @@
       "average": 42,
       "high": 42
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/mises/images/mises.png",
     "cosmosFeatures": []
   },
   {
     "id": "cosmos-registry:celestiatestnet3",
     "displayName": "Mocha Testnet",
-    "chainId": "mocha-3",
+    "chainId": "mocha-4",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -5811,6 +6158,7 @@
       "average": 42,
       "high": 42
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/mun/images/mun.svg",
     "cosmosFeatures": []
   },
   {
@@ -5846,6 +6194,7 @@
       "average": 42,
       "high": 42
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/mythos/images/mythos.svg",
     "cosmosFeatures": []
   },
   {
@@ -5867,9 +6216,9 @@
     "features": [],
     "idPrefix": "neutron",
     "addressPrefix": "neutron",
-    "txExplorer": "https://www.mintscan.io/neutron/txs/$hash",
-    "accountExplorer": "https://www.mintscan.io/neutron/account/$address",
-    "contractExplorer": "https://www.mintscan.io/neutron/account/$address",
+    "txExplorer": "https://www.mintscan.io/neutron/transactions/$hash",
+    "accountExplorer": "https://www.mintscan.io/neutron/accounts/$address",
+    "contractExplorer": "https://www.mintscan.io/neutron/accounts/$address",
     "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/neutron/images/neutron-black-logo.svg",
     "testnet": false,
     "backendEndpoint": "TODO",
@@ -5881,6 +6230,7 @@
       "average": 0.025,
       "high": 0.05
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/neutron/images/neutron-black-logo.svg",
     "cosmosFeatures": []
   },
   {
@@ -5908,14 +6258,15 @@
     "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/testnets/neutrontestnet/images/neutron-black-logo.svg",
     "testnet": true,
     "backendEndpoint": "TODO",
-    "restEndpoint": "https://rest-palvus.pion-1.ntrn.tech",
-    "rpcEndpoint": "https://rpc-palvus.pion-1.ntrn.tech",
+    "restEndpoint": "https://rest-falcron.pion-1.ntrn.tech",
+    "rpcEndpoint": "https://rpc-falcron.pion-1.ntrn.tech",
     "stakeCurrency": "not-found",
     "gasPriceStep": {
       "low": 42,
       "average": 0.025,
       "high": 0.05
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/testnets/neutrontestnet/images/neutron-black-logo.svg",
     "cosmosFeatures": []
   },
   {
@@ -5969,6 +6320,7 @@
       "average": 0.025,
       "high": 0.03
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/noble/images/Noble-Logo.svg",
     "cosmosFeatures": []
   },
   {
@@ -6014,8 +6366,8 @@
     "icon": "not-found",
     "testnet": false,
     "backendEndpoint": "TODO",
-    "restEndpoint": "not-found",
-    "rpcEndpoint": "not-found",
+    "restEndpoint": "https://noble-testnet-api.polkachu.com",
+    "rpcEndpoint": "https://noble-testnet-rpc.polkachu.com",
     "stakeCurrency": "ustake",
     "gasPriceStep": {
       "low": 0.01,
@@ -6043,9 +6395,9 @@
     "features": [],
     "idPrefix": "nois",
     "addressPrefix": "nois",
-    "txExplorer": "https://ezstaking.tools/nois/txs/$hash",
-    "accountExplorer": "https://ezstaking.tools/nois/account/$address",
-    "contractExplorer": "https://ezstaking.tools/nois/account/$address",
+    "txExplorer": "https://app.ezstaking.io/nois/txs/$hash",
+    "accountExplorer": "https://app.ezstaking.io/nois/account/$address",
+    "contractExplorer": "https://app.ezstaking.io/nois/account/$address",
     "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/nois/images/nois.svg",
     "testnet": false,
     "backendEndpoint": "TODO",
@@ -6057,6 +6409,7 @@
       "average": 0.05,
       "high": 0.1
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/nois/images/nois.svg",
     "cosmosFeatures": []
   },
   {
@@ -6092,6 +6445,7 @@
       "average": 0.05,
       "high": 0.1
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/nois/images/nois.png",
     "cosmosFeatures": []
   },
   {
@@ -6127,6 +6481,7 @@
       "average": 0.025,
       "high": 0.05
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/nolus/images/nolus.svg",
     "cosmosFeatures": []
   },
   {
@@ -6162,6 +6517,7 @@
       "average": 0.025,
       "high": 0.05
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/testnets/nolustestnet/images/nolus.svg",
     "cosmosFeatures": []
   },
   {
@@ -6197,6 +6553,7 @@
       "average": 42,
       "high": 42
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/nomic/images/nomic.svg",
     "cosmosFeatures": []
   },
   {
@@ -6241,6 +6598,7 @@
       "average": 42,
       "high": 42
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/nyx/images/nyx.png",
     "cosmosFeatures": []
   },
   {
@@ -6276,6 +6634,7 @@
       "average": 42,
       "high": 42
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/octa/images/octa.svg",
     "cosmosFeatures": []
   },
   {
@@ -6329,6 +6688,43 @@
       "average": 0.05,
       "high": 0.06
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/odin/images/odin.svg",
+    "cosmosFeatures": []
+  },
+  {
+    "id": "cosmos-registry:ojotestnet",
+    "displayName": "Ojo Network Testnet",
+    "chainId": "ojo-devnet-1",
+    "kind": "Cosmos",
+    "currencies": [
+      {
+        "kind": "native",
+        "denom": "uojo",
+        "decimals": 6,
+        "displayName": "OJO",
+        "coingeckoId": "not-found",
+        "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/testnets/ojotestnet/images/ojo.svg",
+        "color": "TODO"
+      }
+    ],
+    "features": [],
+    "idPrefix": "ojotestnet",
+    "addressPrefix": "ojo",
+    "txExplorer": "https://sauron.ojo.network/ojo-devnet-1/tx/$hash",
+    "accountExplorer": "not-found",
+    "contractExplorer": "not-found",
+    "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/testnets/ojotestnet/images/ojo.png",
+    "testnet": true,
+    "backendEndpoint": "TODO",
+    "restEndpoint": "https://api-1.ojo.nodes.guru/",
+    "rpcEndpoint": "https://rpc-1.ojo.nodes.guru/",
+    "stakeCurrency": "uojo",
+    "gasPriceStep": {
+      "low": 42,
+      "average": 42,
+      "high": 0.025
+    },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/testnets/ojotestnet/images/ojo.png",
     "cosmosFeatures": []
   },
   {
@@ -6364,6 +6760,7 @@
       "average": 250000000,
       "high": 400000000
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/okexchain/images/okc.png",
     "cosmosFeatures": []
   },
   {
@@ -6399,6 +6796,7 @@
       "average": 0.025,
       "high": 0.03
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/testnets/okp4testnet/images/okp4.png",
     "cosmosFeatures": []
   },
   {
@@ -6420,9 +6818,9 @@
     "features": [],
     "idPrefix": "omniflixhub",
     "addressPrefix": "omniflix",
-    "txExplorer": "https://ezstaking.tools/omniflixhub/txs/$hash",
-    "accountExplorer": "https://ezstaking.tools/omniflixhub/account/$address",
-    "contractExplorer": "https://ezstaking.tools/omniflixhub/account/$address",
+    "txExplorer": "https://app.ezstaking.io/omniflixhub/txs/$hash",
+    "accountExplorer": "https://app.ezstaking.io/omniflixhub/account/$address",
+    "contractExplorer": "https://app.ezstaking.io/omniflixhub/account/$address",
     "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/omniflixhub/images/flix.svg",
     "testnet": false,
     "backendEndpoint": "TODO",
@@ -6434,6 +6832,7 @@
       "average": 0.0025,
       "high": 0.025
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/omniflixhub/images/flix.svg",
     "cosmosFeatures": []
   },
   {
@@ -6456,8 +6855,8 @@
     "idPrefix": "onomy",
     "addressPrefix": "onomy",
     "txExplorer": "https://explorer.onomy.io/transactions/$hash",
-    "accountExplorer": "https://www.mintscan.io/onomy-protocol/account/$address",
-    "contractExplorer": "https://www.mintscan.io/onomy-protocol/account/$address",
+    "accountExplorer": "https://www.mintscan.io/onomy-protocol/accounts/$address",
+    "contractExplorer": "https://www.mintscan.io/onomy-protocol/accounts/$address",
     "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/onomy/images/nom.png",
     "testnet": false,
     "backendEndpoint": "TODO",
@@ -6469,6 +6868,7 @@
       "average": 0.03,
       "high": 0.06
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/onomy/images/nom.png",
     "cosmosFeatures": []
   },
   {
@@ -6504,6 +6904,7 @@
       "average": 0.005,
       "high": 0.007
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/oraichain/images/orai.svg",
     "cosmosFeatures": []
   },
   {
@@ -6686,6 +7087,7 @@
       "average": 0.025,
       "high": 0.04
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/osmosis/images/osmosis-chain-logo.png",
     "cosmosFeatures": []
   },
   {
@@ -6717,10 +7119,11 @@
     "rpcEndpoint": "https://rpc.passage.vitwit.com",
     "stakeCurrency": "upasg",
     "gasPriceStep": {
-      "low": 42,
-      "average": 42,
-      "high": 42
+      "low": 0.001,
+      "average": 0.0025,
+      "high": 0.01
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/passage/images/pasg.png",
     "cosmosFeatures": []
   },
   {
@@ -6756,6 +7159,7 @@
       "average": 42,
       "high": 42
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/passage/images/pasg.png",
     "cosmosFeatures": []
   },
   {
@@ -6786,9 +7190,9 @@
     "features": [],
     "idPrefix": "persistence",
     "addressPrefix": "persistence",
-    "txExplorer": "https://www.mintscan.io/persistence/txs/$hash",
-    "accountExplorer": "https://www.mintscan.io/persistence/account/$address",
-    "contractExplorer": "https://www.mintscan.io/persistence/account/$address",
+    "txExplorer": "https://www.mintscan.io/persistence/transactions/$hash",
+    "accountExplorer": "https://www.mintscan.io/persistence/accounts/$address",
+    "contractExplorer": "https://www.mintscan.io/persistence/accounts/$address",
     "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/persistence/images/xprt.svg",
     "testnet": false,
     "backendEndpoint": "TODO",
@@ -6800,6 +7204,7 @@
       "average": 0.025,
       "high": 0.04
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/persistence/images/xprt.svg",
     "cosmosFeatures": []
   },
   {
@@ -6932,6 +7337,7 @@
       "average": 35000000000,
       "high": 40000000000
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/planq/images/planq.svg",
     "cosmosFeatures": []
   },
   {
@@ -6967,6 +7373,7 @@
       "average": 25000000000,
       "high": 40000000000
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/point/images/point-logo.svg",
     "cosmosFeatures": []
   },
   {
@@ -6989,8 +7396,8 @@
     "idPrefix": "provenance",
     "addressPrefix": "pb",
     "txExplorer": "https://explorer.provenance.io/tx/$hash",
-    "accountExplorer": "https://www.mintscan.io/provenance/account/$address",
-    "contractExplorer": "https://www.mintscan.io/provenance/account/$address",
+    "accountExplorer": "https://www.mintscan.io/provenance/accounts/$address",
+    "contractExplorer": "https://www.mintscan.io/provenance/accounts/$address",
     "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/provenance/images/prov.svg",
     "testnet": false,
     "backendEndpoint": "TODO",
@@ -7002,6 +7409,7 @@
       "average": 2100,
       "high": 2500
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/provenance/images/prov.svg",
     "cosmosFeatures": []
   },
   {
@@ -7023,9 +7431,9 @@
     "features": [],
     "idPrefix": "quasar",
     "addressPrefix": "quasar",
-    "txExplorer": "https://www.mintscan.io/quasar/txs/$hash",
-    "accountExplorer": "https://www.mintscan.io/quasar/account/$address",
-    "contractExplorer": "https://www.mintscan.io/quasar/account/$address",
+    "txExplorer": "https://www.mintscan.io/quasar/transactions/$hash",
+    "accountExplorer": "https://www.mintscan.io/quasar/accounts/$address",
+    "contractExplorer": "https://www.mintscan.io/quasar/accounts/$address",
     "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/quasar/images/quasar.png",
     "testnet": false,
     "backendEndpoint": "TODO",
@@ -7037,6 +7445,7 @@
       "average": 0.025,
       "high": 0.03
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/quasar/images/quasar.png",
     "cosmosFeatures": []
   },
   {
@@ -7090,6 +7499,7 @@
       "average": 42,
       "high": 42
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/quasar/images/quasar.svg",
     "cosmosFeatures": []
   },
   {
@@ -7142,14 +7552,23 @@
         "coingeckoId": "not-found",
         "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/quicksilver/images/qosmo.svg",
         "color": "TODO"
+      },
+      {
+        "kind": "native",
+        "denom": "uqsomm",
+        "decimals": 6,
+        "displayName": "qSOMM",
+        "coingeckoId": "not-found",
+        "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/quicksilver/images/qsomm.svg",
+        "color": "TODO"
       }
     ],
     "features": [],
     "idPrefix": "quicksilver",
     "addressPrefix": "quick",
-    "txExplorer": "https://www.mintscan.io/quicksilver/txs/$hash",
-    "accountExplorer": "https://www.mintscan.io/quicksilver/account/$address",
-    "contractExplorer": "https://www.mintscan.io/quicksilver/account/$address",
+    "txExplorer": "https://www.mintscan.io/quicksilver/transactions/$hash",
+    "accountExplorer": "https://www.mintscan.io/quicksilver/accounts/$address",
+    "contractExplorer": "https://www.mintscan.io/quicksilver/accounts/$address",
     "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/quicksilver/images/qck.svg",
     "testnet": false,
     "backendEndpoint": "TODO",
@@ -7161,6 +7580,7 @@
       "average": 0.0001,
       "high": 0.00025
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/quicksilver/images/qck.svg",
     "cosmosFeatures": []
   },
   {
@@ -7196,6 +7616,7 @@
       "average": 0.0001,
       "high": 0.00025
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/quicksilver/images/qck.svg",
     "cosmosFeatures": []
   },
   {
@@ -7231,6 +7652,7 @@
       "average": 42,
       "high": 42
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/qwoyn/images/qwoyn.png",
     "cosmosFeatures": []
   },
   {
@@ -7266,6 +7688,7 @@
       "average": 42,
       "high": 42
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/testnets/qwoyntestnet/images/qwoyn.png",
     "cosmosFeatures": []
   },
   {
@@ -7296,9 +7719,9 @@
     "features": [],
     "idPrefix": "realio",
     "addressPrefix": "realio",
-    "txExplorer": "https://explorer.genznodes.dev/realio/tx/$hash",
-    "accountExplorer": "https://explorer.genznodes.dev/realio/account/{$accountAddress}",
-    "contractExplorer": "https://explorer.genznodes.dev/realio/account/{$accountAddress}",
+    "txExplorer": "https://explorer.stavr.tech/realio-mainnet/tx/$hash",
+    "accountExplorer": "https://explorer.stavr.tech/realio-mainnet/account/{$accountAddress}",
+    "contractExplorer": "https://explorer.stavr.tech/realio-mainnet/account/{$accountAddress}",
     "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/realio/images/rio.png",
     "testnet": false,
     "backendEndpoint": "TODO",
@@ -7310,6 +7733,7 @@
       "average": 5000000000,
       "high": 8000000000
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/realio/images/rio.png",
     "cosmosFeatures": []
   },
   {
@@ -7345,6 +7769,7 @@
       "average": 42,
       "high": 42
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/rebus/images/rebus.svg",
     "cosmosFeatures": []
   },
   {
@@ -7375,9 +7800,9 @@
     "features": [],
     "idPrefix": "regen",
     "addressPrefix": "regen",
-    "txExplorer": "https://www.mintscan.io/regen/txs/$hash",
-    "accountExplorer": "https://www.mintscan.io/regen/account/$address",
-    "contractExplorer": "https://www.mintscan.io/regen/account/$address",
+    "txExplorer": "https://www.mintscan.io/regen/transactions/$hash",
+    "accountExplorer": "https://www.mintscan.io/regen/accounts/$address",
+    "contractExplorer": "https://www.mintscan.io/regen/accounts/$address",
     "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/regen/images/regen.svg",
     "testnet": false,
     "backendEndpoint": "TODO",
@@ -7389,6 +7814,7 @@
       "average": 0.025,
       "high": 0.04
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/regen/images/regen.svg",
     "cosmosFeatures": []
   },
   {
@@ -7410,9 +7836,9 @@
     "features": [],
     "idPrefix": "rizon",
     "addressPrefix": "rizon",
-    "txExplorer": "https://ezstaking.tools/rizon/txs/$hash",
-    "accountExplorer": "https://ezstaking.tools/rizon/account/$address",
-    "contractExplorer": "https://ezstaking.tools/rizon/account/$address",
+    "txExplorer": "https://app.ezstaking.io/rizon/txs/$hash",
+    "accountExplorer": "https://app.ezstaking.io/rizon/account/$address",
+    "contractExplorer": "https://app.ezstaking.io/rizon/account/$address",
     "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/rizon/images/atolo.svg",
     "testnet": false,
     "backendEndpoint": "TODO",
@@ -7424,6 +7850,7 @@
       "average": 0.025,
       "high": 0.035
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/rizon/images/atolo.svg",
     "cosmosFeatures": []
   },
   {
@@ -7459,6 +7886,7 @@
       "average": 0.025,
       "high": 0.04
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/akash/images/akt.svg",
     "cosmosFeatures": []
   },
   {
@@ -7552,9 +7980,9 @@
     "features": [],
     "idPrefix": "secretnetwork",
     "addressPrefix": "secret",
-    "txExplorer": "https://ezstaking.tools/secretnetwork/txs/$hash",
-    "accountExplorer": "https://ezstaking.tools/secretnetwork/account/$address",
-    "contractExplorer": "https://ezstaking.tools/secretnetwork/account/$address",
+    "txExplorer": "https://app.ezstaking.io/secretnetwork/txs/$hash",
+    "accountExplorer": "https://app.ezstaking.io/secretnetwork/account/$address",
+    "contractExplorer": "https://app.ezstaking.io/secretnetwork/account/$address",
     "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/secretnetwork/images/scrt.svg",
     "testnet": false,
     "backendEndpoint": "TODO",
@@ -7562,16 +7990,17 @@
     "rpcEndpoint": "https://rpc.secret.express",
     "stakeCurrency": "uscrt",
     "gasPriceStep": {
-      "low": 0.0125,
+      "low": 0.1,
       "average": 0.1,
       "high": 0.25
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/secretnetwork/images/scrt.svg",
     "cosmosFeatures": []
   },
   {
     "id": "cosmos-registry:secretnetworktestnet",
     "displayName": "Secret Network Testnet",
-    "chainId": "pulsar-2",
+    "chainId": "pulsar-3",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -7586,6 +8015,41 @@
     ],
     "features": [],
     "idPrefix": "secretnetworktestnet",
+    "addressPrefix": "secret",
+    "txExplorer": "https://testnet.ping.pub/secret/tx/$hash",
+    "accountExplorer": "not-found",
+    "contractExplorer": "not-found",
+    "icon": "not-found",
+    "testnet": true,
+    "backendEndpoint": "TODO",
+    "restEndpoint": "https://lcd.testnet.secretsaturn.net",
+    "rpcEndpoint": "https://rpc.testnet.secretsaturn.net",
+    "stakeCurrency": "not-found",
+    "gasPriceStep": {
+      "low": 42,
+      "average": 42,
+      "high": 42
+    },
+    "cosmosFeatures": []
+  },
+  {
+    "id": "cosmos-registry:secretnetworktestnet2",
+    "displayName": "Secret Network Testnet",
+    "chainId": "pulsar-2",
+    "kind": "Cosmos",
+    "currencies": [
+      {
+        "kind": "native",
+        "denom": "uscrt",
+        "decimals": 6,
+        "displayName": "SCRT",
+        "coingeckoId": "not-found",
+        "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/secretnetwork/images/scrt.svg",
+        "color": "TODO"
+      }
+    ],
+    "features": [],
+    "idPrefix": "secretnetworktestnet2",
     "addressPrefix": "secret",
     "txExplorer": "https://secretnodes.com/secret/chains/pulsar-2/transactions/$hash",
     "accountExplorer": "not-found",
@@ -7614,8 +8078,17 @@
         "denom": "usei",
         "decimals": 6,
         "displayName": "SEI",
-        "coingeckoId": "sei",
+        "coingeckoId": "sei-network",
         "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/sei/images/sei.svg",
+        "color": "TODO"
+      },
+      {
+        "kind": "native",
+        "denom": "factory/sei1thgp6wamxwqt7rthfkeehktmq0ujh5kspluw6w/OIN",
+        "decimals": 6,
+        "displayName": "OIN",
+        "coingeckoId": "not-found",
+        "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/sei/images/oin.png",
         "color": "TODO"
       }
     ],
@@ -7623,8 +8096,8 @@
     "idPrefix": "sei",
     "addressPrefix": "sei",
     "txExplorer": "https://ping.pub/sei/tx/$hash",
-    "accountExplorer": "https://www.mintscan.io/sei/account/$address",
-    "contractExplorer": "https://www.mintscan.io/sei/account/$address",
+    "accountExplorer": "https://ping.pub/sei/account/$address",
+    "contractExplorer": "https://ping.pub/sei/account/$address",
     "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/sei/images/sei.svg",
     "testnet": false,
     "backendEndpoint": "TODO",
@@ -7636,41 +8109,7 @@
       "average": 0.1,
       "high": 0.25
     },
-    "cosmosFeatures": []
-  },
-  {
-    "id": "cosmos-registry:seitestnet2",
-    "displayName": "Sei Atlantic 2 Testnet",
-    "chainId": "atlantic-2",
-    "kind": "Cosmos",
-    "currencies": [
-      {
-        "kind": "native",
-        "denom": "usei",
-        "decimals": 6,
-        "displayName": "SEI",
-        "coingeckoId": "not-found",
-        "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/testnets/seitestnet2/images/sei.png",
-        "color": "TODO"
-      }
-    ],
-    "features": [],
-    "idPrefix": "seitestnet2",
-    "addressPrefix": "sei",
-    "txExplorer": "https://sei.explorers.guru/transaction/$hash",
-    "accountExplorer": "not-found",
-    "contractExplorer": "not-found",
-    "icon": "not-found",
-    "testnet": true,
-    "backendEndpoint": "TODO",
-    "restEndpoint": "https://sei-testnet-2-rest.brocha.in",
-    "rpcEndpoint": "https://sei-testnet-2-rpc.brocha.in",
-    "stakeCurrency": "not-found",
-    "gasPriceStep": {
-      "low": 42,
-      "average": 42,
-      "high": 42
-    },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/sei/images/sei.svg",
     "cosmosFeatures": []
   },
   {
@@ -7762,9 +8201,9 @@
     "features": [],
     "idPrefix": "sentinel",
     "addressPrefix": "sent",
-    "txExplorer": "https://www.mintscan.io/sentinel/txs/$hash",
-    "accountExplorer": "https://www.mintscan.io/sentinel/account/$address",
-    "contractExplorer": "https://www.mintscan.io/sentinel/account/$address",
+    "txExplorer": "https://www.mintscan.io/sentinel/transactions/$hash",
+    "accountExplorer": "https://www.mintscan.io/sentinel/accounts/$address",
+    "contractExplorer": "https://www.mintscan.io/sentinel/accounts/$address",
     "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/sentinel/images/dvpn.svg",
     "testnet": false,
     "backendEndpoint": "TODO",
@@ -7776,11 +8215,48 @@
       "average": 0.25,
       "high": 0.4
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/sentinel/images/dvpn.svg",
     "cosmosFeatures": []
   },
   {
-    "id": "cosmos-registry:sgenetworktestnet",
-    "displayName": "Sge Network Testnet",
+    "id": "cosmos-registry:sge",
+    "displayName": "SGE",
+    "chainId": "sgenet-1",
+    "kind": "Cosmos",
+    "currencies": [
+      {
+        "kind": "native",
+        "denom": "usge",
+        "decimals": 6,
+        "displayName": "SGE",
+        "coingeckoId": "sge",
+        "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/sge/images/sge.svg",
+        "color": "TODO"
+      }
+    ],
+    "features": [],
+    "idPrefix": "sge",
+    "addressPrefix": "sge",
+    "txExplorer": "https://exp.nodeist.net/Sge/tx/$hash",
+    "accountExplorer": "not-found",
+    "contractExplorer": "not-found",
+    "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/sge/images/sge.svg",
+    "testnet": false,
+    "backendEndpoint": "TODO",
+    "restEndpoint": "https://sge-api.lavenderfive.com/",
+    "rpcEndpoint": "https://sge-rpc.lavenderfive.com/",
+    "stakeCurrency": "usge",
+    "gasPriceStep": {
+      "low": 42,
+      "average": 42,
+      "high": 42
+    },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/sge/images/sge.svg",
+    "cosmosFeatures": []
+  },
+  {
+    "id": "cosmos-registry:sgetestnet",
+    "displayName": "SGE Testnet",
     "chainId": "sge-network-3",
     "kind": "Cosmos",
     "currencies": [
@@ -7790,17 +8266,17 @@
         "decimals": 6,
         "displayName": "SGE",
         "coingeckoId": "not-found",
-        "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/sgenetworktestnet/images/sge-logo.png",
+        "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/sgetestnet/images/sge.png",
         "color": "TODO"
       }
     ],
     "features": [],
-    "idPrefix": "sgenetworktestnet",
+    "idPrefix": "sgetestnet",
     "addressPrefix": "sge",
     "txExplorer": "https://blockexplorer.testnet.sgenetwork.io/sge-network/tx/$hash",
     "accountExplorer": "not-found",
     "contractExplorer": "not-found",
-    "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/sgenetworktestnet/images/logo.svg",
+    "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/sgetestnet/images/sge.svg",
     "testnet": true,
     "backendEndpoint": "TODO",
     "restEndpoint": "https://api.testnet.sgenetwork.io",
@@ -7811,6 +8287,7 @@
       "average": 42,
       "high": 42
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/sgetestnet/images/sge.svg",
     "cosmosFeatures": []
   },
   {
@@ -7846,6 +8323,7 @@
       "average": 3000,
       "high": 4000
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/shareledger/images/token.svg",
     "cosmosFeatures": []
   },
   {
@@ -7867,9 +8345,9 @@
     "features": [],
     "idPrefix": "shentu",
     "addressPrefix": "certik",
-    "txExplorer": "https://ezstaking.tools/shentu/txs/$hash",
-    "accountExplorer": "https://ezstaking.tools/shentu/account/$address",
-    "contractExplorer": "https://ezstaking.tools/shentu/account/$address",
+    "txExplorer": "https://app.ezstaking.io/shentu/txs/$hash",
+    "accountExplorer": "https://app.ezstaking.io/shentu/account/$address",
+    "contractExplorer": "https://app.ezstaking.io/shentu/account/$address",
     "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/shentu/images/ctk.svg",
     "testnet": false,
     "backendEndpoint": "TODO",
@@ -7877,10 +8355,11 @@
     "rpcEndpoint": "https://shenturpc.noopsbycertik.com/",
     "stakeCurrency": "uctk",
     "gasPriceStep": {
-      "low": 42,
-      "average": 42,
-      "high": 42
+      "low": 0.01,
+      "average": 0.025,
+      "high": 0.04
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/shentu/images/ctk.svg",
     "cosmosFeatures": []
   },
   {
@@ -7902,9 +8381,9 @@
     "features": [],
     "idPrefix": "sifchain",
     "addressPrefix": "sif",
-    "txExplorer": "https://ezstaking.tools/sifchain/txs/$hash",
-    "accountExplorer": "https://ezstaking.tools/sifchain/account/$address",
-    "contractExplorer": "https://ezstaking.tools/sifchain/account/$address",
+    "txExplorer": "https://app.ezstaking.io/sifchain/txs/$hash",
+    "accountExplorer": "https://app.ezstaking.io/sifchain/account/$address",
+    "contractExplorer": "https://app.ezstaking.io/sifchain/account/$address",
     "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/sifchain/images/rowan.svg",
     "testnet": false,
     "backendEndpoint": "TODO",
@@ -7916,6 +8395,7 @@
       "average": 1500000000000,
       "high": 2000000000000
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/sifchain/images/rowan.svg",
     "cosmosFeatures": []
   },
   {
@@ -7973,8 +8453,8 @@
     "idPrefix": "sommelier",
     "addressPrefix": "somm",
     "txExplorer": "https://sommscan.io",
-    "accountExplorer": "https://www.mintscan.io/sommelier/account/$address",
-    "contractExplorer": "https://www.mintscan.io/sommelier/account/$address",
+    "accountExplorer": "https://www.mintscan.io/sommelier/accounts/$address",
+    "contractExplorer": "https://www.mintscan.io/sommelier/accounts/$address",
     "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/sommelier/images/somm.svg",
     "testnet": false,
     "backendEndpoint": "TODO",
@@ -7986,6 +8466,7 @@
       "average": 42,
       "high": 42
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/sommelier/images/somm.svg",
     "cosmosFeatures": []
   },
   {
@@ -8078,9 +8559,9 @@
     "features": [],
     "idPrefix": "stafihub",
     "addressPrefix": "stafi",
-    "txExplorer": "https://www.mintscan.io/stafi/txs/$hash",
-    "accountExplorer": "https://atomscan.com/stafihub/accounts/$address",
-    "contractExplorer": "https://atomscan.com/stafihub/accounts/$address",
+    "txExplorer": "https://www.mintscan.io/stafi/transactions/$hash",
+    "accountExplorer": "https://www.mintscan.io/stafi/accounts/$address",
+    "contractExplorer": "https://www.mintscan.io/stafi/accounts/$address",
     "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/stafihub/images/stafihub-chain-logo.png",
     "testnet": false,
     "backendEndpoint": "TODO",
@@ -8092,6 +8573,7 @@
       "average": 42,
       "high": 42
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/stafihub/images/stafihub-chain-logo.png",
     "cosmosFeatures": []
   },
   {
@@ -8149,9 +8631,9 @@
     "features": [],
     "idPrefix": "stargaze",
     "addressPrefix": "stars",
-    "txExplorer": "https://ezstaking.tools/stargaze/txs/$hash",
-    "accountExplorer": "https://ezstaking.tools/stargaze/account/$address",
-    "contractExplorer": "https://ezstaking.tools/stargaze/account/$address",
+    "txExplorer": "https://app.ezstaking.io/stargaze/txs/$hash",
+    "accountExplorer": "https://app.ezstaking.io/stargaze/account/$address",
+    "contractExplorer": "https://app.ezstaking.io/stargaze/account/$address",
     "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/stargaze/images/stars.svg",
     "testnet": false,
     "backendEndpoint": "TODO",
@@ -8163,6 +8645,7 @@
       "average": 1.1,
       "high": 1.2
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/stargaze/images/stars.svg",
     "cosmosFeatures": []
   },
   {
@@ -8219,9 +8702,9 @@
     "features": [],
     "idPrefix": "starname",
     "addressPrefix": "star",
-    "txExplorer": "https://www.mintscan.io/starname/txs/$hash",
-    "accountExplorer": "https://www.mintscan.io/starname/account/$address",
-    "contractExplorer": "https://www.mintscan.io/starname/account/$address",
+    "txExplorer": "https://www.mintscan.io/starname/transactions/$hash",
+    "accountExplorer": "https://www.mintscan.io/starname/accounts/$address",
+    "contractExplorer": "https://www.mintscan.io/starname/accounts/$address",
     "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/starname/images/iov.svg",
     "testnet": false,
     "backendEndpoint": "TODO",
@@ -8233,6 +8716,7 @@
       "average": 2,
       "high": 3
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/starname/images/iov.svg",
     "cosmosFeatures": []
   },
   {
@@ -8365,6 +8849,15 @@
         "coingeckoId": "not-found",
         "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/stride/images/stcmdx.svg",
         "color": "TODO"
+      },
+      {
+        "kind": "native",
+        "denom": "stusomm",
+        "decimals": 6,
+        "displayName": "stSOMM",
+        "coingeckoId": "not-found",
+        "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/stride/images/stsomm.svg",
+        "color": "TODO"
       }
     ],
     "features": [],
@@ -8380,10 +8873,11 @@
     "rpcEndpoint": "https://stride.rpc.bccnodes.com:443",
     "stakeCurrency": "ustrd",
     "gasPriceStep": {
-      "low": 42,
-      "average": 42,
-      "high": 0.04
+      "low": 0.0005,
+      "average": 0.001,
+      "high": 0.002
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/stride/images/strd.svg",
     "cosmosFeatures": []
   },
   {
@@ -8414,6 +8908,41 @@
     "restEndpoint": "https://stride.testnet-1.stridenet.co/api",
     "rpcEndpoint": "https://stride.testnet-1.stridenet.co",
     "stakeCurrency": "ustrd",
+    "gasPriceStep": {
+      "low": 42,
+      "average": 42,
+      "high": 42
+    },
+    "cosmosFeatures": []
+  },
+  {
+    "id": "cosmos-registry:temporaltestnet",
+    "displayName": "Temporal Testnet",
+    "chainId": "temporal-test-1",
+    "kind": "Cosmos",
+    "currencies": [
+      {
+        "kind": "native",
+        "denom": "utprl",
+        "decimals": 6,
+        "displayName": "TPRL",
+        "coingeckoId": "not-found",
+        "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/testnets/temporaltestnet/images/temporal.png",
+        "color": "TODO"
+      }
+    ],
+    "features": [],
+    "idPrefix": "temporaltestnet",
+    "addressPrefix": "temporal",
+    "txExplorer": "https://testnet.explorer.thesilverfox.pro/temporal/tx/$hash",
+    "accountExplorer": "not-found",
+    "contractExplorer": "not-found",
+    "icon": "not-found",
+    "testnet": true,
+    "backendEndpoint": "TODO",
+    "restEndpoint": "https://lcd.yieldmos.com/temporal-test-1",
+    "rpcEndpoint": "https://rpc.yieldmos.com/temporal-test-1",
+    "stakeCurrency": "utprl",
     "gasPriceStep": {
       "low": 42,
       "average": 42,
@@ -8454,6 +8983,7 @@
       "average": 25000000000,
       "high": 40000000000
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/tenet/images/tenet.svg",
     "cosmosFeatures": []
   },
   {
@@ -8648,7 +9178,7 @@
   {
     "id": "cosmos-registry:terpnettestnet",
     "displayName": "Terp-Network Testnet",
-    "chainId": "athena-4",
+    "chainId": "90u-2",
     "kind": "Cosmos",
     "currencies": [
       {
@@ -8662,9 +9192,9 @@
       },
       {
         "kind": "native",
-        "denom": "upersyx",
+        "denom": "uthiolx",
         "decimals": 6,
-        "displayName": "PERSYX",
+        "displayName": "THIOLX",
         "coingeckoId": "not-found",
         "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/terpnetwork/images/thiol.png",
         "color": "TODO"
@@ -8681,17 +9211,17 @@
     "backendEndpoint": "TODO",
     "restEndpoint": "https://api-terp.zenchainlabs.io/",
     "rpcEndpoint": "https://rpc-terp.zenchainlabs.io/",
-    "stakeCurrency": "not-found",
+    "stakeCurrency": "uterpx",
     "gasPriceStep": {
-      "low": 42,
-      "average": 42,
-      "high": 42
+      "low": 0.075,
+      "average": 0.1,
+      "high": 0.125
     },
     "cosmosFeatures": []
   },
   {
     "id": "cosmos-registry:terra2",
-    "displayName": "Terra 2.0",
+    "displayName": "Terra",
     "chainId": "phoenix-1",
     "kind": "Cosmos",
     "currencies": [
@@ -8794,6 +9324,7 @@
       "average": 0.015,
       "high": 0.04
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/terra2/images/luna.svg",
     "cosmosFeatures": []
   },
   {
@@ -10736,6 +11267,7 @@
       "average": 28.325,
       "high": 50
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/terra/images/luna.svg",
     "cosmosFeatures": []
   },
   {
@@ -10771,6 +11303,7 @@
       "average": 0.075,
       "high": 0.1
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/tgrade/images/tgrade-symbol-gradient.svg",
     "cosmosFeatures": []
   },
   {
@@ -10852,9 +11385,9 @@
     "features": [],
     "idPrefix": "umee",
     "addressPrefix": "umee",
-    "txExplorer": "https://www.mintscan.io/umee/txs/$hash",
-    "accountExplorer": "https://www.mintscan.io/umee/account/$address",
-    "contractExplorer": "https://www.mintscan.io/umee/account/$address",
+    "txExplorer": "https://www.mintscan.io/umee/transactions/$hash",
+    "accountExplorer": "https://www.mintscan.io/umee/accounts/$address",
+    "contractExplorer": "https://www.mintscan.io/umee/accounts/$address",
     "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/umee/images/umee.svg",
     "testnet": false,
     "backendEndpoint": "TODO",
@@ -10866,6 +11399,7 @@
       "average": 0.12,
       "high": 0.2
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/umee/images/umee.svg",
     "cosmosFeatures": []
   },
   {
@@ -10901,6 +11435,7 @@
       "average": 200,
       "high": 300
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/unification/images/fund.svg",
     "cosmosFeatures": []
   },
   {
@@ -10936,6 +11471,7 @@
       "average": 0.025,
       "high": 0.04
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/ununifi/images/ununifi.svg",
     "cosmosFeatures": []
   },
   {
@@ -10971,6 +11507,7 @@
       "average": 25000000000,
       "high": 40000000000
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/uptick/images/uptick.svg",
     "cosmosFeatures": []
   },
   {
@@ -11041,6 +11578,7 @@
       "average": 42,
       "high": 42
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/vidulum/images/vdl.svg",
     "cosmosFeatures": []
   },
   {
@@ -11066,6 +11604,187 @@
       "average": 25000000000,
       "high": 40000000000
     },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/vincechain/images/logo.png",
+    "cosmosFeatures": []
+  },
+  {
+    "id": "cosmos-registry:gateway",
+    "displayName": "Wormhole Gateway",
+    "chainId": "wormchain",
+    "kind": "Cosmos",
+    "currencies": [
+      {
+        "kind": "native",
+        "denom": "utest",
+        "decimals": 6,
+        "displayName": "TEST",
+        "coingeckoId": "not-found",
+        "icon": "not-found",
+        "color": "TODO"
+      },
+      {
+        "kind": "native",
+        "denom": "uworm",
+        "decimals": 6,
+        "displayName": "WORM",
+        "coingeckoId": "not-found",
+        "icon": "not-found",
+        "color": "TODO"
+      },
+      {
+        "kind": "native",
+        "denom": "factory/wormhole14ejqjyq8um4p3xfqj74yld5waqljf88fz25yxnma0cngspxe3les00fpjx/46YEtoSN1AcwgGSRoWruoS6bnVh8XpMp5aQTpKohCJYh",
+        "decimals": 8,
+        "displayName": "SUI",
+        "coingeckoId": "not-found",
+        "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/_non-cosmos/sui/images/sui.svg",
+        "color": "TODO"
+      },
+      {
+        "kind": "native",
+        "denom": "factory/wormhole14ejqjyq8um4p3xfqj74yld5waqljf88fz25yxnma0cngspxe3les00fpjx/5BWqpR48Lubd55szM5i62zK7TFkddckhbT48yy6mNbDp",
+        "decimals": 8,
+        "displayName": "WETH",
+        "coingeckoId": "not-found",
+        "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/_non-cosmos/ethereum/images/eth-white.svg",
+        "color": "TODO"
+      },
+      {
+        "kind": "native",
+        "denom": "factory/wormhole14ejqjyq8um4p3xfqj74yld5waqljf88fz25yxnma0cngspxe3les00fpjx/5TSQTEhJ5Q6r1YqCmCxTRSPiV2pGx5rZUQf6g2XH4e1b",
+        "decimals": 8,
+        "displayName": "wstETH",
+        "coingeckoId": "not-found",
+        "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/_non-cosmos/ethereum/images/wsteth.svg",
+        "color": "TODO"
+      },
+      {
+        "kind": "native",
+        "denom": "factory/wormhole14ejqjyq8um4p3xfqj74yld5waqljf88fz25yxnma0cngspxe3les00fpjx/5wS2fGojbL9RhGEAeQBdkHPUAciYDxjDTMYvdf9aDn2r",
+        "decimals": 8,
+        "displayName": "APT",
+        "coingeckoId": "not-found",
+        "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/_non-cosmos/aptos/images/aptos.svg",
+        "color": "TODO"
+      },
+      {
+        "kind": "native",
+        "denom": "factory/wormhole14ejqjyq8um4p3xfqj74yld5waqljf88fz25yxnma0cngspxe3les00fpjx/8iuAc6DSeLvi2JDUtwJxLytsZT8R19itXebZsNReLLNi",
+        "decimals": 6,
+        "displayName": "USDT",
+        "coingeckoId": "not-found",
+        "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/_non-cosmos/ethereum/images/usdt.svg",
+        "color": "TODO"
+      },
+      {
+        "kind": "native",
+        "denom": "factory/wormhole14ejqjyq8um4p3xfqj74yld5waqljf88fz25yxnma0cngspxe3les00fpjx/8sYgCzLRJC3J7qPn2bNbx6PiGcarhyx8rBhVaNnfvHCA",
+        "decimals": 8,
+        "displayName": "SOL",
+        "coingeckoId": "not-found",
+        "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/_non-cosmos/solana/images/sol.svg",
+        "color": "TODO"
+      },
+      {
+        "kind": "native",
+        "denom": "factory/wormhole14ejqjyq8um4p3xfqj74yld5waqljf88fz25yxnma0cngspxe3les00fpjx/95mnwzvJZJ3fKz77xfGN2nR5to9pZmH8YNvaxgLgw5AR",
+        "decimals": 5,
+        "displayName": "Bonk",
+        "coingeckoId": "not-found",
+        "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/_non-cosmos/solana/images/bonk.png",
+        "color": "TODO"
+      },
+      {
+        "kind": "native",
+        "denom": "factory/wormhole14ejqjyq8um4p3xfqj74yld5waqljf88fz25yxnma0cngspxe3les00fpjx/BGkuAcga2WArUghF8L6kt6uCAhAzrxmn1QcbQqi5r5bd",
+        "decimals": 8,
+        "displayName": "WBTC",
+        "coingeckoId": "not-found",
+        "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/_non-cosmos/ethereum/images/wbtc.svg",
+        "color": "TODO"
+      },
+      {
+        "kind": "native",
+        "denom": "factory/wormhole14ejqjyq8um4p3xfqj74yld5waqljf88fz25yxnma0cngspxe3les00fpjx/BhqTYfQogyt7jX7cx7x8uHEQP1x9fdtdBZtK4Swghgpw",
+        "decimals": 8,
+        "displayName": "tBTC",
+        "coingeckoId": "not-found",
+        "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/_non-cosmos/ethereum/images/tbtc.svg",
+        "color": "TODO"
+      },
+      {
+        "kind": "native",
+        "denom": "factory/wormhole14ejqjyq8um4p3xfqj74yld5waqljf88fz25yxnma0cngspxe3les00fpjx/EKiMEqDnPKokFGcSXDvGMk6Gt1BJ6BC7BDZzTmEpWLH1",
+        "decimals": 8,
+        "displayName": "DAI",
+        "coingeckoId": "not-found",
+        "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/_non-cosmos/ethereum/images/dai.svg",
+        "color": "TODO"
+      },
+      {
+        "kind": "native",
+        "denom": "factory/wormhole14ejqjyq8um4p3xfqj74yld5waqljf88fz25yxnma0cngspxe3les00fpjx/GGh9Ufn1SeDGrhzEkMyRKt5568VbbxZK2yvWNsd6PbXt",
+        "decimals": 6,
+        "displayName": "USDC",
+        "coingeckoId": "not-found",
+        "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/_non-cosmos/ethereum/images/usdc.svg",
+        "color": "TODO"
+      }
+    ],
+    "features": [],
+    "idPrefix": "gateway",
+    "addressPrefix": "wormhole",
+    "txExplorer": "https://bigdipper.live/wormhole/transactions/$hash",
+    "accountExplorer": "https://bigdipper.live/wormhole/accounts/$address",
+    "contractExplorer": "https://bigdipper.live/wormhole/accounts/$address",
+    "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/gateway/images/wormhole_logo.svg",
+    "testnet": false,
+    "backendEndpoint": "TODO",
+    "restEndpoint": "https://wormchain-lcd.quickapi.com/",
+    "rpcEndpoint": "https://wormchain-rpc.quickapi.com/",
+    "stakeCurrency": "uworm",
+    "gasPriceStep": {
+      "low": 42,
+      "average": 42,
+      "high": 42
+    },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/gateway/images/wormhole_logo.svg",
+    "cosmosFeatures": []
+  },
+  {
+    "id": "cosmos-registry:xiontestnet",
+    "displayName": "Xion Testnet",
+    "chainId": "xion-testnet-1",
+    "kind": "Cosmos",
+    "currencies": [
+      {
+        "kind": "native",
+        "denom": "uxion",
+        "decimals": 6,
+        "displayName": "XION",
+        "coingeckoId": "not-found",
+        "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/xion/images/burnt-round.png",
+        "color": "TODO"
+      }
+    ],
+    "features": [],
+    "idPrefix": "xiontestnet",
+    "addressPrefix": "xion",
+    "txExplorer": "not-found",
+    "accountExplorer": "not-found",
+    "contractExplorer": "not-found",
+    "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/xion/images/burnt.png",
+    "testnet": true,
+    "backendEndpoint": "TODO",
+    "restEndpoint": "https://api.xion-testnet-1.burnt.com",
+    "rpcEndpoint": "https://rpc.xion-testnet-1.burnt.com",
+    "stakeCurrency": "uxion",
+    "gasPriceStep": {
+      "low": 42,
+      "average": 0.025,
+      "high": 0.04
+    },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/xion/images/burnt.png",
     "cosmosFeatures": []
   },
   {
@@ -11088,8 +11807,8 @@
     "idPrefix": "xpla",
     "addressPrefix": "xpla",
     "txExplorer": "https://explorer.xpla.io/mainnet/tx/$hash",
-    "accountExplorer": "not-found",
-    "contractExplorer": "not-found",
+    "accountExplorer": "https://www.mintscan.io/xpla/accounts/$address",
+    "contractExplorer": "https://www.mintscan.io/xpla/accounts/$address",
     "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/xpla/images/xpla.svg",
     "testnet": false,
     "backendEndpoint": "TODO",
@@ -11100,6 +11819,42 @@
       "low": 850000000000,
       "average": 1147500000000,
       "high": 1487500000000
+    },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/xpla/images/xpla.svg",
+    "cosmosFeatures": []
+  },
+  {
+    "id": "cosmos-registry:zetachaintestnet",
+    "displayName": "ZetaChain Testnet",
+    "chainId": "athens_7001",
+    "kind": "Cosmos",
+    "currencies": [
+      {
+        "kind": "native",
+        "denom": "azeta",
+        "decimals": 18,
+        "displayName": "tZETA",
+        "coingeckoId": "not-found",
+        "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/testnets/zetachaintestnet/images/zetachaintestnet.svg",
+        "color": "TODO"
+      }
+    ],
+    "features": [],
+    "idPrefix": "zetachaintestnet",
+    "addressPrefix": "zeta",
+    "txExplorer": "https://explorer.zetachain.com/cc/tx/$hash",
+    "accountExplorer": "not-found",
+    "contractExplorer": "not-found",
+    "icon": "not-found",
+    "testnet": true,
+    "backendEndpoint": "TODO",
+    "restEndpoint": "https://rpc.ankr.com/http/zetachain_athens_testnet",
+    "rpcEndpoint": "https://rpc.ankr.com/zetachain_tendermint_athens_testnet",
+    "stakeCurrency": "azeta",
+    "gasPriceStep": {
+      "low": 20000000000,
+      "average": 25000000000,
+      "high": 40000000000
     },
     "cosmosFeatures": []
   }

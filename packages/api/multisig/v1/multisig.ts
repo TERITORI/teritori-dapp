@@ -279,7 +279,6 @@ export interface ValidateTokenRequest {
 }
 
 export interface ValidateTokenResponse {
-  valid: boolean;
 }
 
 function createBaseMultisig(): Multisig {
@@ -2440,14 +2439,11 @@ export const ValidateTokenRequest = {
 };
 
 function createBaseValidateTokenResponse(): ValidateTokenResponse {
-  return { valid: false };
+  return {};
 }
 
 export const ValidateTokenResponse = {
-  encode(message: ValidateTokenResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.valid === true) {
-      writer.uint32(8).bool(message.valid);
-    }
+  encode(_: ValidateTokenResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
@@ -2458,9 +2454,6 @@ export const ValidateTokenResponse = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        case 1:
-          message.valid = reader.bool();
-          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -2469,19 +2462,17 @@ export const ValidateTokenResponse = {
     return message;
   },
 
-  fromJSON(object: any): ValidateTokenResponse {
-    return { valid: isSet(object.valid) ? Boolean(object.valid) : false };
+  fromJSON(_: any): ValidateTokenResponse {
+    return {};
   },
 
-  toJSON(message: ValidateTokenResponse): unknown {
+  toJSON(_: ValidateTokenResponse): unknown {
     const obj: any = {};
-    message.valid !== undefined && (obj.valid = message.valid);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<ValidateTokenResponse>, I>>(object: I): ValidateTokenResponse {
+  fromPartial<I extends Exact<DeepPartial<ValidateTokenResponse>, I>>(_: I): ValidateTokenResponse {
     const message = createBaseValidateTokenResponse();
-    message.valid = object.valid ?? false;
     return message;
   },
 };
