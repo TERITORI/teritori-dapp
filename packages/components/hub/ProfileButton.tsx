@@ -15,7 +15,7 @@ import {
   getStakingCurrency,
   mustGetGnoNetwork,
   parseUserId,
-  getCosmosNetwork,
+  NetworkFeature,
 } from "../../networks";
 import { prettyPrice } from "../../utils/coins";
 import { VmCall, adenaVMCall } from "../../utils/gno";
@@ -40,8 +40,11 @@ export const ProfileButton: React.FC<{
   isEdit?: boolean;
 }> = ({ style, isEdit }) => {
   const selectedWallet = useSelectedWallet();
-  const network = getCosmosNetwork(selectedWallet?.networkId);
+  const network = getNetwork(selectedWallet?.networkId);
   const { metadata } = useNSUserInfo(selectedWallet?.userId);
+  if (!network?.features.includes(NetworkFeature.NameService)) {
+    return null;
+  }
 
   if (selectedWallet && metadata?.tokenId)
     return (
