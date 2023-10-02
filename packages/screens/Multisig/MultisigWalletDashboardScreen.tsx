@@ -10,9 +10,9 @@ import { MultisigSection } from "./components/MultisigSection";
 import { MultisigLegacyFormType } from "./types";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
-import { UserCard } from "../../components/dao/DAOMembers";
 import { Transactions } from "../../components/multisig/Transactions";
 import { SpacerColumn } from "../../components/spacer";
+import { UserCard } from "../../components/user/UserCard";
 import { useMultisigClient } from "../../hooks/multisig/useMultisigClient";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
