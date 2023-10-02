@@ -2,10 +2,7 @@ import React from "react";
 import { View, ViewStyle, StyleProp } from "react-native";
 
 import { neutral33 } from "../../utils/style/colors";
-import {
-  headerHeight,
-  screenContainerContentMarginHorizontal,
-} from "../../utils/style/layout";
+import { headerHeight, layout } from "../../utils/style/layout";
 import { BackButton } from "../navigation/components/BackButton";
 import { SpacerRow } from "../spacer";
 
@@ -36,7 +33,7 @@ export const Header: React.FC<{
           flex: 1,
           flexDirection: "row",
           alignItems: "center",
-          marginLeft: screenContainerContentMarginHorizontal,
+          marginLeft: layout.contentSpacing,
         }}
       >
         {onBackPress && <BackButton onPress={onBackPress} />}
