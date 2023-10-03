@@ -9,13 +9,13 @@ import {
 
 import { DAOProposalModal } from "./DAOProposalModal";
 import { ProposalActions } from "./ProposalActions";
-import orgSVG from "../../../assets/icons/multisig.svg";
 import {
   AppProposalResponse,
   useDAOProposals,
 } from "../../hooks/dao/useDAOProposals";
 import { useNSPrimaryAlias } from "../../hooks/useNSPrimaryAlias";
 import { getUserId, parseUserId } from "../../networks";
+import { useAppNavigation } from "../../utils/navigation";
 import {
   neutral33,
   neutral55,
@@ -25,6 +25,7 @@ import {
 } from "../../utils/style/colors";
 import { fontSemibold13, fontSemibold14 } from "../../utils/style/fonts";
 import { tinyAddress } from "../../utils/text";
+import { getTxInfo } from "../../utils/transactions/getTxInfo";
 import { BrandText } from "../BrandText";
 import { OmniLink } from "../OmniLink";
 import { SVG } from "../SVG";
@@ -100,6 +101,14 @@ const ProposalRow: React.FC<{
 
   const { primaryAlias: proposerAlias } = useNSPrimaryAlias(proposerId);
 
+  const navigation = useAppNavigation();
+
+  const [name, , , icon] = getTxInfo(
+    proposal.proposal.msgs,
+    navigation,
+    network
+  );
+
   return (
     <View
       style={{
@@ -127,7 +136,7 @@ const ProposalRow: React.FC<{
             }}
           >
             <SVG
-              source={orgSVG}
+              source={icon}
               width={32}
               height={32}
               style={{ marginRight: 12 }}
@@ -144,7 +153,7 @@ const ProposalRow: React.FC<{
                   style={[fontSemibold14, { lineHeight: 14 }]}
                   numberOfLines={1}
                 >
-                  #{proposal.id}: {proposal.proposal.title}
+                  #{proposal.id}: {proposal.proposal.title || name}
                 </BrandText>
               </TouchableOpacity>
               <BrandText

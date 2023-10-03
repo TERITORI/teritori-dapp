@@ -1,5 +1,5 @@
 import moment from "moment";
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import {
   ActivityIndicator,
   Pressable,
@@ -10,22 +10,11 @@ import {
 
 import { ProposalTransactionModal } from "./ProposalTransactionModal";
 import { TransactionItemButtons } from "./TransactionItemButtons";
-import feedWhiteSVG from "../../../assets/icons/feed_white.svg";
-import multisigWhiteSVG from "../../../assets/icons/multisig_white.svg";
-import stakingWhiteSVG from "../../../assets/icons/staking_white.svg";
-import tnsWhiteSVG from "../../../assets/icons/tns-service_white.svg";
-import walletWhiteSVG from "../../../assets/icons/wallet_white.svg";
 import { ParsedTransaction } from "../../hooks/multisig/useMultisigTransactions";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
-import {
-  getCosmosNetworkByChainId,
-  getUserId,
-  NetworkInfo,
-  NetworkKind,
-} from "../../networks";
-import { MultisigTransactionType } from "../../screens/Multisig/types";
+import { getCosmosNetworkByChainId, getUserId } from "../../networks";
 import { prettyPrice } from "../../utils/coins";
-import { AppNavigationProp, useAppNavigation } from "../../utils/navigation";
+import { useAppNavigation } from "../../utils/navigation";
 import {
   neutral17,
   neutral33,
@@ -37,6 +26,7 @@ import {
 import { fontSemibold13, fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { tinyAddress } from "../../utils/text";
+import { getTxInfo } from "../../utils/transactions/getTxInfo";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { Separator } from "../Separator";
@@ -49,238 +39,6 @@ export interface ProposalTransactionItemProps extends ParsedTransaction {
   isUserMultisig?: boolean;
   shouldRetch?: () => void;
 }
-
-// FIXME: handle case where there is bad json in the db
-
-const getTxInfo = (
-  msgs: any[],
-  navigation: AppNavigationProp,
-  network: NetworkInfo | undefined
-): [MultisigTransactionType, React.ReactElement, React.ReactElement] => {
-  if (msgs.length === 0) {
-    return [
-      MultisigTransactionType.EMPTY,
-      <BrandText style={brandTextNormalStyles}> </BrandText>,
-      <BrandText style={brandTextNormalStyles}> </BrandText>,
-    ];
-  }
-  if (msgs.length > 1) {
-    return [
-      MultisigTransactionType.COMPLEX,
-      <BrandText style={brandTextNormalStyles}>
-        {msgs.length} messages
-      </BrandText>,
-      <BrandText style={brandTextNormalStyles}> </BrandText>,
-    ];
-  }
-  const msg = msgs[0];
-  switch (msg.typeUrl) {
-    case "/cosmos.bank.v1beta1.MsgSend": {
-      const recipientAddress = msg.value.toAddress;
-      const amount = msg.value.amount?.[0]?.amount;
-      const denom = msg.value.amount?.[0]?.denom;
-      return [
-        MultisigTransactionType.SEND,
-        <View style={rowCenterStyles}>
-          <BrandText style={brandTextNormalStyles}>Sending to: </BrandText>
-          <Pressable
-            onPress={() => {
-              // TODO: show tns info using reusable component
-              const id = getUserId(network?.id, recipientAddress);
-              navigation.navigate("UserPublicProfile", { id });
-            }}
-          >
-            <BrandText style={StyleSheet.flatten(fontSemibold14)}>
-              {tinyAddress(recipientAddress, 14)}
-            </BrandText>
-          </Pressable>
-        </View>,
-        <View style={rowCenterStyles}>
-          <BrandText style={brandTextNormalStyles}>Will receive: </BrandText>
-          <BrandText style={StyleSheet.flatten(fontSemibold14)}>
-            {prettyPrice(network?.id, amount, denom)}
-          </BrandText>
-        </View>,
-      ];
-    }
-    case "/cosmos.staking.v1beta1.MsgDelegate": {
-      const validatorAddress = msg.value.validatorAddress;
-      const amount = msg.value.amount?.amount;
-      const denom = msg.value.amount?.denom;
-      return [
-        MultisigTransactionType.DELEGATE,
-        <View style={rowCenterStyles}>
-          <BrandText style={brandTextNormalStyles}>Delegating to: </BrandText>
-          <Pressable
-            onPress={() => {
-              // TODO: show tns info using reusable component
-              const id = getUserId(network?.id, validatorAddress);
-              navigation.navigate("UserPublicProfile", { id });
-            }}
-          >
-            <BrandText style={StyleSheet.flatten(fontSemibold14)}>
-              {tinyAddress(validatorAddress, 20)}
-            </BrandText>
-          </Pressable>
-        </View>,
-        <View style={rowCenterStyles}>
-          <BrandText style={brandTextNormalStyles}>Will delegate: </BrandText>
-          <BrandText style={StyleSheet.flatten(fontSemibold14)}>
-            {prettyPrice(network?.id, amount, denom)}
-          </BrandText>
-        </View>,
-      ];
-    }
-    case "/cosmos.staking.v1beta1.MsgUndelegate": {
-      const validatorAddress = msg.value.validatorAddress;
-      const amount = msg.value.amount?.amount;
-      const denom = msg.value.amount?.denom;
-      return [
-        MultisigTransactionType.UNDELEGATE,
-        <View style={rowCenterStyles}>
-          <BrandText style={brandTextNormalStyles}>
-            Undelegating from:{" "}
-          </BrandText>
-          <Pressable
-            onPress={() => {
-              // TODO: show tns info using reusable component
-              const id = getUserId(network?.id, validatorAddress);
-              navigation.navigate("UserPublicProfile", { id });
-            }}
-          >
-            <BrandText style={StyleSheet.flatten(fontSemibold14)}>
-              {tinyAddress(validatorAddress, 20)}
-            </BrandText>
-          </Pressable>
-        </View>,
-        <View style={rowCenterStyles}>
-          <BrandText style={brandTextNormalStyles}>Will undelegate: </BrandText>
-          <BrandText style={StyleSheet.flatten(fontSemibold14)}>
-            {prettyPrice(network?.id, amount, denom)}
-          </BrandText>
-        </View>,
-      ];
-    }
-    case "/cosmos.staking.v1beta1.MsgBeginRedelegate": {
-      const sourceValidatorAddress = msg.value.validatorSrcAddress;
-      const destinationValidatorAddress = msg.value.validatorDstAddress;
-      const amount = msg.value.amount?.amount;
-      const denom = msg.value.amount?.denom;
-      return [
-        MultisigTransactionType.REDELEGATE,
-        <View style={rowCenterStyles}>
-          <BrandText style={brandTextNormalStyles}>From: </BrandText>
-          <Pressable
-            onPress={() => {
-              // TODO: show tns info using reusable component
-              const id = getUserId(network?.id, sourceValidatorAddress);
-              navigation.navigate("UserPublicProfile", { id });
-            }}
-          >
-            <BrandText style={StyleSheet.flatten(fontSemibold14)}>
-              {tinyAddress(sourceValidatorAddress, 10)}
-            </BrandText>
-          </Pressable>
-          <BrandText style={brandTextNormalStyles}>, To: </BrandText>
-          <Pressable
-            onPress={() => {
-              // TODO: show tns info using reusable component
-              const id = getUserId(network?.id, destinationValidatorAddress);
-              navigation.navigate("UserPublicProfile", { id });
-            }}
-          >
-            <BrandText style={StyleSheet.flatten(fontSemibold14)}>
-              {tinyAddress(destinationValidatorAddress, 10)}
-            </BrandText>
-          </Pressable>
-        </View>,
-        <View style={rowCenterStyles}>
-          <BrandText style={brandTextNormalStyles}>Will redelegate: </BrandText>
-          <BrandText style={StyleSheet.flatten(fontSemibold14)}>
-            {prettyPrice(network?.id, amount, denom)}
-          </BrandText>
-        </View>,
-      ];
-    }
-    case "/cosmwasm.wasm.v1.MsgExecuteContract": {
-      const contractAddress = msg.value.contract;
-      let method;
-      let txType = MultisigTransactionType.EXECUTE;
-      try {
-        // TODO: prettify method name
-        method = Object.keys(
-          JSON.parse(
-            Buffer.from(
-              Uint8Array.from(Object.values(msg.value.msg))
-            ).toString()
-          )
-        )[0];
-      } catch (err) {
-        console.error("failed to find method name", err);
-        method = "Unknown";
-      }
-      if (
-        network?.kind === NetworkKind.Cosmos &&
-        contractAddress === network.nameServiceContractAddress &&
-        method === "mint"
-      ) {
-        txType = MultisigTransactionType.MINT_NAME;
-      }
-      // if(network?.kind === NetworkKind.Cosmos && contractAddress === network.socialFeedContractAddress && method === "post") {
-      //   txType = MultisigTransactionType.CREATE_NEW_POST
-      // }
-      return [
-        txType,
-        <View style={rowCenterStyles}>
-          <BrandText style={brandTextNormalStyles}>Contract: </BrandText>
-          <Pressable
-            onPress={() => {
-              // TODO: show tns info using reusable component
-              const id = getUserId(network?.id, contractAddress);
-              navigation.navigate("UserPublicProfile", { id });
-            }}
-          >
-            <BrandText style={StyleSheet.flatten(fontSemibold14)}>
-              {tinyAddress(contractAddress, 10)}
-            </BrandText>
-          </Pressable>
-        </View>,
-        <View style={rowCenterStyles}>
-          <BrandText style={brandTextNormalStyles}>Method: </BrandText>
-          <BrandText style={StyleSheet.flatten(fontSemibold14)}>
-            {method}
-          </BrandText>
-        </View>,
-      ];
-    }
-    case "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward": {
-      const validatorAddress = msg.value.validatorAddress;
-      return [
-        MultisigTransactionType.CLAIM_REWARD,
-        <View style={rowCenterStyles}>
-          <BrandText style={brandTextNormalStyles}>Validator: </BrandText>
-          <Pressable
-            onPress={() => {
-              // TODO: show tns info using reusable component
-              const id = getUserId(network?.id, validatorAddress);
-              navigation.navigate("UserPublicProfile", { id });
-            }}
-          >
-            <BrandText style={StyleSheet.flatten(fontSemibold14)}>
-              {tinyAddress(validatorAddress, 20)}
-            </BrandText>
-          </Pressable>
-        </View>,
-        <BrandText style={brandTextNormalStyles}> </BrandText>,
-      ];
-    }
-  }
-  return [
-    MultisigTransactionType.UNKNOWN,
-    <BrandText style={brandTextNormalStyles}>{msg.typeUrl}</BrandText>,
-    <BrandText style={brandTextNormalStyles}> </BrandText>,
-  ];
-};
 
 export const ProposalTransactionItem: React.FC<ProposalTransactionItemProps> = (
   props
@@ -309,37 +67,11 @@ export const ProposalTransactionItem: React.FC<ProposalTransactionItemProps> = (
     approvalRequiredCount - approvedByCount;
     */
 
-  const [txName, txInfo, txInfo2] = getTxInfo(msgs, navigation, network);
-
-  const getIcon = useMemo(() => {
-    //TODO: Add white icons and use them for each TX type
-    switch (txName) {
-      case MultisigTransactionType.SEND:
-        return walletWhiteSVG;
-      case MultisigTransactionType.CREATE_NEW_POST:
-        return feedWhiteSVG;
-      case MultisigTransactionType.MANAGE_PUBLIC_PROFILE:
-        return tnsWhiteSVG;
-      case MultisigTransactionType.MINT_NAME:
-        return tnsWhiteSVG;
-      case MultisigTransactionType.STAKE:
-        return stakingWhiteSVG;
-      case MultisigTransactionType.REDELEGATE:
-        return stakingWhiteSVG;
-      case MultisigTransactionType.EXECUTE:
-        return multisigWhiteSVG;
-      case MultisigTransactionType.CLAIM_REWARD:
-        return stakingWhiteSVG;
-      case MultisigTransactionType.DELEGATE:
-        return stakingWhiteSVG;
-      case MultisigTransactionType.UNDELEGATE:
-        return stakingWhiteSVG;
-      case MultisigTransactionType.UNKNOWN:
-        return multisigWhiteSVG;
-      default:
-        return multisigWhiteSVG;
-    }
-  }, [txName]);
+  const [txName, txInfo, txInfo2, txIcon] = getTxInfo(
+    msgs,
+    navigation,
+    network
+  );
 
   /*
 
@@ -385,32 +117,32 @@ export const ProposalTransactionItem: React.FC<ProposalTransactionItemProps> = (
         onHoverOut={() => setHovered(false)}
       >
         <View style={{ padding: layout.spacing_x2 }}>
-          <SVG source={getIcon} width={32} height={32} />
+          <SVG source={txIcon} width={32} height={32} />
         </View>
 
-        <View style={[sectionStyles, { flex: 0.75 }]}>
+        <View style={[sectionCStyle, { flex: 0.75 }]}>
           <BrandText style={StyleSheet.flatten(fontSemibold14)}>
             {txName}
           </BrandText>
           <SpacerColumn size={0.75} />
-          <View style={rowCenterStyles}>
-            <BrandText style={brandTextSmallStyles}>
+          <View style={rowCenterCStyle}>
+            <BrandText style={brandTextSmallCStyle}>
               {moment(createdAt).format("DD/MM/yyyy")}
             </BrandText>
             <SpacerRow size={0.5} />
             <Separator horizontal />
             <SpacerRow size={0.5} />
-            <BrandText style={brandTextSmallStyles}>
+            <BrandText style={brandTextSmallCStyle}>
               {moment(createdAt).format("h:mm")}
             </BrandText>
           </View>
         </View>
 
-        <View style={sectionStyles}>
+        <View style={sectionCStyle}>
           {txInfo}
           <SpacerColumn size={0.75} />
-          <View style={rowCenterStyles}>
-            <BrandText style={brandTextNormalStyles}>Created by:</BrandText>
+          <View style={rowCenterCStyle}>
+            <BrandText style={brandTextNormalCStyle}>Created by:</BrandText>
             <SpacerRow size={0.5} />
             {tnsMetadata.loading ? (
               <ActivityIndicator size="small" />
@@ -437,13 +169,13 @@ export const ProposalTransactionItem: React.FC<ProposalTransactionItemProps> = (
           </View>
         </View>
 
-        <View style={sectionStyles}>
+        <View style={sectionCStyle}>
           {txInfo2}
           <SpacerColumn size={0.75} />
-          <View style={rowCenterStyles}>
-            <BrandText style={brandTextNormalStyles}>Network fee:</BrandText>
+          <View style={rowCenterCStyle}>
+            <BrandText style={brandTextNormalCStyle}>Network fee:</BrandText>
             <SpacerRow size={0.5} />
-            <BrandText style={brandTextSmallStyles}>
+            <BrandText style={brandTextSmallCStyle}>
               {prettyPrice(
                 network?.id,
                 fee.amount[0]?.amount,
@@ -453,21 +185,21 @@ export const ProposalTransactionItem: React.FC<ProposalTransactionItemProps> = (
           </View>
         </View>
 
-        <View style={[sectionStyles, { flex: 1.5 }]}>
-          <View style={rowCenterStyles}>
-            <BrandText style={brandTextNormalStyles}>Approved by:</BrandText>
+        <View style={[sectionCStyle, { flex: 1.5 }]}>
+          <View style={rowCenterCStyle}>
+            <BrandText style={brandTextNormalCStyle}>Approved by:</BrandText>
             <SpacerRow size={0.5} />
             <BrandText style={StyleSheet.flatten(fontSemibold14)}>
               {approvedByCount}
             </BrandText>
             <SpacerRow size={0.5} />
-            <BrandText style={brandTextNormalStyles}>of</BrandText>
+            <BrandText style={brandTextNormalCStyle}>of</BrandText>
             <SpacerRow size={0.5} />
             <BrandText style={StyleSheet.flatten(fontSemibold14)}>
               {threshold}
             </BrandText>
             <SpacerRow size={0.5} />
-            <BrandText style={brandTextNormalStyles}>
+            <BrandText style={brandTextNormalCStyle}>
               ({threshold - approvedByCount} required)
             </BrandText>
           </View>
@@ -510,16 +242,16 @@ export const ProposalTransactionItem: React.FC<ProposalTransactionItemProps> = (
   );
 };
 
-const sectionStyles: ViewStyle = { flex: 1, paddingRight: layout.spacing_x1_5 };
-const rowCenterStyles: ViewStyle = {
+const sectionCStyle: ViewStyle = { flex: 1, paddingRight: layout.spacing_x1_5 };
+const rowCenterCStyle: ViewStyle = {
   flexDirection: "row",
   alignItems: "center",
 };
-const brandTextNormalStyles: ViewStyle = StyleSheet.flatten([
+const brandTextNormalCStyle: ViewStyle = StyleSheet.flatten([
   fontSemibold14,
   { color: neutral77 },
 ]);
-const brandTextSmallStyles: ViewStyle = StyleSheet.flatten([
+const brandTextSmallCStyle: ViewStyle = StyleSheet.flatten([
   fontSemibold13,
   { color: neutral77 },
 ]);
