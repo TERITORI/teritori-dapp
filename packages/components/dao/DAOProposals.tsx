@@ -69,6 +69,7 @@ const ProposalRow: React.FC<{
   weights.voted = weights.approved + weights.declined + weights.abstained;
 
   const totalWeight = parseFloat(proposal.proposal.total_power);
+  const totalMeaningfulWeight = totalWeight - weights.abstained;
 
   let thresholdGain = 0;
   let quorumGain = 0;
@@ -86,9 +87,9 @@ const ProposalRow: React.FC<{
     }
   }
 
-  const quorumWeight = quorumGain * totalWeight;
-  const targetWeight = Math.max(weights.voted, quorumWeight);
-  const thresholdWeight = thresholdGain * targetWeight;
+  const quorumWeight = quorumGain * totalMeaningfulWeight;
+
+  const thresholdWeight = thresholdGain * Math.max(weights.voted, quorumWeight);
 
   const [displayProposalModal, setDisplayProposalModal] =
     useState<boolean>(false);
@@ -213,7 +214,7 @@ const ProposalRow: React.FC<{
                   flexDirection: "row",
                   backgroundColor: successColor,
                   height: progressBarHeight,
-                  flex: weights.approved / targetWeight,
+                  flex: weights.approved / totalWeight,
                 }}
               />
               <View
@@ -221,7 +222,7 @@ const ProposalRow: React.FC<{
                   flexDirection: "row",
                   backgroundColor: "white",
                   height: progressBarHeight,
-                  flex: weights.abstained / targetWeight,
+                  flex: weights.abstained / totalWeight,
                 }}
               />
               <View
@@ -229,7 +230,7 @@ const ProposalRow: React.FC<{
                   flexDirection: "row",
                   backgroundColor: errorColor,
                   height: progressBarHeight,
-                  flex: weights.declined / targetWeight,
+                  flex: weights.declined / totalWeight,
                 }}
               />
               <View
@@ -237,7 +238,7 @@ const ProposalRow: React.FC<{
                   flexDirection: "row",
                   backgroundColor: neutral55,
                   height: progressBarHeight,
-                  flex: (targetWeight - weights.voted) / targetWeight,
+                  flex: (totalWeight - weights.voted) / totalWeight,
                 }}
               />
             </View>
@@ -247,7 +248,7 @@ const ProposalRow: React.FC<{
                 backgroundColor: "black",
                 height: progressBarHeight,
                 position: "absolute",
-                left: `${thresholdGain * 100}%`,
+                left: `${(thresholdWeight / totalWeight) * 100}%`,
                 width: 1,
               }}
             />
