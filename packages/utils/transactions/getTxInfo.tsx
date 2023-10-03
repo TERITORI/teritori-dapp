@@ -98,7 +98,7 @@ export const getTxInfo = (
             <BrandText style={brandTextNormalStyle}>Sending to: </BrandText>
             <Username
               userId={getUserId(network?.id, recipientAddress)}
-              textStyle={[opts.textStyle, { color: "white" }]}
+              textStyle={opts.textStyle}
             />
           </View>,
           <View style={rowCenterCStyle}>
