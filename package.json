@@ -8,12 +8,12 @@
     "ios": "expo run:ios",
     "web": "expo start --web",
     "build:web": "expo export:web",
-    "build:electron": "bash ./cmd/electron-build.sh",
     "eject": "expo eject",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx . && tsc",
     "lint-fix": "eslint --ext .js,.jsx,.ts,.tsx . --fix",
     "postinstall": "patch-package",
-    "dev:electron": "cross-env isElectron=dev ELECTRON_IS_DEV=1 expo start --web"
+    "dev:electron": "cross-env isElectron=dev expo start --web",
+    "build:electron": "bash ./cmd/electron-build.sh"
   },
   "dependencies": {
     "@cosmjs/amino": "0.29.3",
@@ -88,7 +88,6 @@
     "expo-updates": "~0.18.11",
     "grpc-web": "^1.4.2",
     "html-to-draftjs": "^1.5.0",
-    "is-electron": "^2.2.2",
     "lodash": "^4.17.21",
     "long": "^5.2.1",
     "lottie-ios": "3.4.0",

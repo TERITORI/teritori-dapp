@@ -24,7 +24,7 @@ class WeshClient {
   private _client: ProtocolServiceClientImpl = new ProtocolServiceClientImpl(
     new GrpcWebImpl("", {})
   );
-  private _port: number = 4242;
+  private _port: number = 0;
   private _intervalId: null | ReturnType<typeof setInterval> = null;
 
   get client() {
@@ -64,7 +64,6 @@ class WeshClient {
       }
       this.createClient(this._port);
     }
-    return false;
   }
 
   watchPort() {

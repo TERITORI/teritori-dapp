@@ -18052,7 +18052,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-electron@npm:^2.2.0, is-electron@npm:^2.2.2":
+"is-electron@npm:^2.2.0":
   version: 2.2.2
   resolution: "is-electron@npm:2.2.2"
   checksum: de5aa8bd8d72c96675b8d0f93fab4cc21f62be5440f65bc05c61338ca27bd851a64200f31f1bf9facbaa01b3dbfed7997b2186741d84b93b63e0aff1db6a9494
@@ -27139,7 +27139,6 @@ __metadata:
     html-to-draftjs: ^1.5.0
     html-webpack-plugin: 4
     ignore-webpack-plugin: ^0.3.0
-    is-electron: ^2.2.2
     lodash: ^4.17.21
     long: ^5.2.1
     lottie-ios: 3.4.0

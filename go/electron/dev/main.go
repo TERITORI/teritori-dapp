@@ -265,12 +265,9 @@ func electron() {
 				Height:          astikit.IntPtr(700),
 				Width:           astikit.IntPtr(700),
 				WebPreferences: &astilectron.WebPreferences {
-					EnableRemoteModule: astikit.BoolPtr(true),
-					BackgroundThrottling:  astikit.BoolPtr(true),
+					EnableRemoteModule: astikit.BoolPtr(true), 
 				},
-				Custom: &astilectron.WindowCustomOptions{Script: `
-				const electron = require("electron").remote;	
-				console.log("test from customer", electron.app);			
+				Custom: &astilectron.WindowCustomOptions{Script: `		
 				`},
 
 			},

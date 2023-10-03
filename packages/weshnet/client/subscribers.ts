@@ -216,11 +216,17 @@ export const subscribeMessages = async (groupPk: string) => {
   }
 };
 
-export const subscribeMetadata = async (groupPk: Uint8Array) => {
-  const lastId = selectLastIdByKey("metadata")(store.getState());
+export const subscribeMetadata = async (
+  groupPk: Uint8Array,
+  ignoreLastId = false
+) => {
+  let lastId = selectLastIdByKey("metadata")(store.getState());
   const config: Partial<GroupMetadataList_Request> = {
     groupPk,
   };
+  if (ignoreLastId) {
+    lastId = undefined;
+  }
 
   if (lastId) {
     config.sinceId = bytesFromString(lastId);
@@ -262,7 +268,7 @@ export const subscribeMetadata = async (groupPk: Uint8Array) => {
       },
       error(e: Error) {
         if (e.message.includes("since ID not found")) {
-          subscribeMetadata(groupPk);
+          subscribeMetadata(groupPk, true);
         }
       },
       complete: () => {

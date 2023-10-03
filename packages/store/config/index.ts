@@ -7,7 +7,11 @@ export const persistConfig = () => {
 
   if (isElectron()) {
     const createElectronStorage = require("redux-persist-electron-storage");
-    storage = createElectronStorage();
+    storage = createElectronStorage({
+      electronStoreOpts: {
+        projectName: "Teritori",
+      },
+    });
   }
 
   const config = {

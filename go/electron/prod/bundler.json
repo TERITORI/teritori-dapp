@@ -1,11 +1,14 @@
 {
   "app_name": "Teritori",
-  "icon_path_darwin": "resources/icon.icns",
-  "output_path": "../output",
+  "icon_path_darwin": "./resources/icon.icns",
+  "icon_path_linux": "./resources/icon.png",
+  "icon_path_windows": "./resources/icon.ico",
+  "version_electron": "26.2.4",
+  "version_astilectron": "0.57.0",
   "info_plist": {
     "CFBundlePackageType": "APPL",
     "CFBundleInfoDictionaryVersion": "6.0",
-    "CFBundleIconFile": "resources/icon.icns",
+    "CFBundleIconFile": "./resources/icon.icns",
     "CFBundleDisplayName": "Teritori",
     "CFBundleIdentifier": "com.teritori.app",
     "LSUIElement": "NO",

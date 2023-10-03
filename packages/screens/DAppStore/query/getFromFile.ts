@@ -1,6 +1,6 @@
-import isElectron from "is-electron";
 import { Platform } from "react-native";
 
+import { isElectron } from "./../../../utils/isElectron";
 import dao from "../../../../assets/icons/dao.svg";
 import socialFeed from "../../../../assets/icons/feed.svg";
 import freelance from "../../../../assets/icons/freelanceservice.svg";

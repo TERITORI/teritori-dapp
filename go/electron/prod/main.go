@@ -7,11 +7,16 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"os/signal"
+	"path/filepath"
 	"sync"
+	"syscall"
 	"time"
 
 	mrand "math/rand"
 
+	"github.com/dgraph-io/badger/options"
+	badger "github.com/ipfs/go-ds-badger"
 	"github.com/phayes/freeport"
 	"moul.io/srand"
 
@@ -20,8 +25,6 @@ import (
 	ipfs_mobile "berty.tech/weshnet/pkg/ipfsutil/mobile"
 	"berty.tech/weshnet/pkg/protocoltypes"
 	"berty.tech/weshnet/pkg/tinder"
-	ds "github.com/ipfs/go-datastore"
-	ds_sync "github.com/ipfs/go-datastore/sync"
 	"github.com/peterbourgon/ff/v3"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
@@ -48,10 +51,17 @@ var (
 // Application Vars
 
 var (
-	fs    = flag.NewFlagSet(os.Args[0], flag.ContinueOnError)
-	debug = fs.Bool("d", false, "enables the debug mode")
-	w     *astilectron.Window
-	port  = 0
+	fs           = flag.NewFlagSet(os.Args[0], flag.ContinueOnError)
+	debug        = fs.Bool("d", false, "enables the debug mode")
+	port         = 0
+	weshDir      = ""
+	w            *astilectron.Window
+	ds           *badger.Datastore
+	tinderDriver *tinder.Service
+	mnode        *ipfs_mobile.IpfsMobile
+	mrepo        *ipfs_mobile.RepoMobile
+	localdisc    *tinder.LocalDiscovery
+	ipfsCoreAPI  ipfsutil.ExtendedCoreAPI
 )
 
 func checkFreePort() {
@@ -62,9 +72,89 @@ func checkFreePort() {
 
 }
 
+func handleExit() {
+	fmt.Println("Handle exit")
+	// Close the Badger datastore
+	if ds != nil {
+		err := ds.Close()
+		if err != nil {
+			fmt.Println("Error while closing Badger datastore:", err)
+		}
+	}
+
+	// Close the Tinder discovery service
+	if tinderDriver != nil {
+		err := tinderDriver.Close()
+		if err != nil {
+			fmt.Println("Error while closing Tinder discovery service:", err)
+		}
+	}
+
+	// Close the IPFS node
+	if mnode != nil {
+		err := mnode.Close()
+		if err != nil {
+			fmt.Println("Error while closing IPFS node:", err)
+		}
+	}
+
+	// Close the IPFS repo
+	if mrepo != nil {
+		err := mrepo.Close()
+		if err != nil {
+			fmt.Println("Error while closing IPFS repo:", err)
+		}
+	}
+
+	// Close the local discovery service
+	if localdisc != nil {
+		err := localdisc.Close()
+		if err != nil {
+			fmt.Println("Error while closing local discovery service:", err)
+		}
+	}
+
+	// Close the local discovery service
+	if ipfsCoreAPI != nil {
+		err := ipfsCoreAPI.Close()
+		if err != nil {
+			fmt.Println("Error while ipfsCoreAPI:", err)
+		}
+	}
+
+}
+
+func checkAndCreateDir() {
+	newDirName := "wesh-electron"
+	ex, err := os.Executable() // ex is the path to where the app is being executed
+	if err == nil {
+
+	// Create the full path for the new directory
+	weshDir = filepath.Join(filepath.Dir(ex), newDirName)
+
+	// Check if the directory already exists
+	_, err = os.Stat(weshDir)
+	if err == nil {
+		fmt.Printf("Directory '%s' already exists.\n", weshDir)
+
+	} else {
+		// Create the new directory
+		err = os.Mkdir(weshDir, 0755)
+		if err != nil {
+			fmt.Println("Error:", err)
+			return
+		}
+
+		fmt.Printf("Created directory '%s'.\n", weshDir)
+	}
+}
+}
+
 func wesh() {
+	checkAndCreateDir()
+
 	fs := flag.NewFlagSet("weshd", flag.ContinueOnError)
-	 
+
 	if err := ff.Parse(fs, os.Args[1:]); err != nil {
 		panic(errors.Wrap(err, "failed to parse flags"))
 	}
@@ -82,19 +172,27 @@ func wesh() {
 	drivers := []tinder.IDriver{}
 
 	// setup ipfs node
-	dsync := ds_sync.MutexWrap(ds.NewMapDatastore())
-	repo, err := ipfsutil.CreateMockedRepo(dsync)
+	bopts := badger.DefaultOptions
+	bopts.ValueLogLoadingMode = options.FileIO
+	ds, err = badger.NewDatastore(weshDir, &bopts)
+	if err != nil {
+		panic(errors.Wrap(err, "unable to init badger datastore"))
+	}
+
+	defer ds.Close()
+
+	repo, err := ipfsutil.LoadRepoFromPath(weshDir)
 	if err != nil {
 		panic(errors.Wrap(err, "failed to create ipfs repo"))
 	}
 
-	mrepo := ipfs_mobile.NewRepoMobile("", repo)
-	mnode, err := ipfsutil.NewIPFSMobile(context.Background(), mrepo, &ipfsutil.MobileOptions{})
+	mrepo = ipfs_mobile.NewRepoMobile(weshDir, repo)
+	mnode, err = ipfsutil.NewIPFSMobile(context.Background(), mrepo, &ipfsutil.MobileOptions{})
 	if err != nil {
 		panic(errors.Wrap(err, "failed to create ipfs node"))
 	}
 
-	ipfsCoreAPI, err := ipfsutil.NewExtendedCoreAPIFromNode(mnode.IpfsNode)
+	ipfsCoreAPI, err = ipfsutil.NewExtendedCoreAPIFromNode(mnode.IpfsNode)
 	if err != nil {
 		panic(errors.Wrap(err, "failed to create ipfs core api"))
 	}
@@ -102,7 +200,7 @@ func wesh() {
 	host := mnode.PeerHost()
 
 	// setup loac disc
-	localdisc, err := tinder.NewLocalDiscovery(logger, host, rng)
+	localdisc, err = tinder.NewLocalDiscovery(logger, host, rng)
 	if err != nil {
 		panic(errors.Wrap(err, "failed to create local discovery"))
 	}
@@ -117,12 +215,12 @@ func wesh() {
 	if err != nil {
 		panic(errors.Wrap(err, "failed to create tinder driver"))
 	}
+
 	svc, err := weshnet.NewService(weshnet.Opts{
 		Logger:        logger,
-		DatastoreDir:  weshnet.InMemoryDirectory,
 		TinderService: tinderDriver,
 		IpfsCoreAPI:   ipfsCoreAPI,
-		RootDatastore: dsync,
+		RootDatastore: ds,
 	})
 	if err != nil {
 		panic(errors.Wrap(err, "failed to create weshnet server"))
@@ -131,8 +229,8 @@ func wesh() {
 
 	protocoltypes.RegisterProtocolServiceServer(grpcServer, svc)
 	wrappedServer := grpcweb.WrapServer(grpcServer,
-	grpcweb.WithOriginFunc(func(string) bool { return true }), // @FIXME: this is very insecure
-	grpcweb.WithWebsockets(true),
+		grpcweb.WithOriginFunc(func(string) bool { return true }), // @FIXME: this is very insecure
+		grpcweb.WithWebsockets(true),
 	)
 	handler := func(resp http.ResponseWriter, req *http.Request) {
 		resp.Header().Set("Access-Control-Allow-Origin", "*")
@@ -151,23 +249,42 @@ func wesh() {
 	}
 }
 
+func startListeners() {
+	w.On(astilectron.EventNameAppCmdQuit, func(e astilectron.Event) (deleteListener bool) {
+		handleExit()
+		return
+	})
+	w.On(astilectron.EventNameAppCmdStop, func(e astilectron.Event) (deleteListener bool) {
+		handleExit()
+		return
+	})
+	w.On(astilectron.EventNameAppCrash, func(e astilectron.Event) (deleteListener bool) {
+		handleExit()
+		return
+	})
+}
+
 func electron() {
 
 	// Create logger
 	l := log.New(log.Writer(), log.Prefix(), log.Flags())
-
 	// Parse flags
 	fs.Parse(os.Args[1:])
 
 	// Run bootstrap
 	l.Printf("Running app built at %s\n", BuiltAt)
+
+	defer func() {
+		handleExit()
+	}()
+
 	if err := bootstrap.Run(bootstrap.Options{
 		Asset:    Asset,
 		AssetDir: AssetDir,
 		AstilectronOptions: astilectron.Options{
 			AppName:            AppName,
-			AppIconDarwinPath:  "resources/icon.icns",
-			AppIconDefaultPath: "resources/icon.png",
+			AppIconDarwinPath:  "./resources/icon.icns",
+			AppIconDefaultPath: "./resources/icon.png",
 			SingleInstance:     true,
 			VersionAstilectron: VersionAstilectron,
 			VersionElectron:    VersionElectron,
@@ -189,55 +306,85 @@ func electron() {
 				},
 			},
 		},
-		{
-			Label: astikit.StrPtr("Edit"),
-			SubMenu: []*astilectron.MenuItemOptions{
-				{
-					Label:       astikit.StrPtr("Undo"),
-					Accelerator: astilectron.NewAccelerator("CmdOrCtrl", "Z"),
-					Role:        astikit.StrPtr("undo:"),
-				},
-				{
-					Label:       astikit.StrPtr("Redo"),
-					Accelerator: astilectron.NewAccelerator("Shift", "CmdOrCtrl", "Z"),
-					Role:        astikit.StrPtr("redo"),
-				},
-				{
-					Type: astikit.StrPtr("separator"),
-				},
-				{
-					Label:       astikit.StrPtr("Cut"),
-					Accelerator: astilectron.NewAccelerator("CmdOrCtrl", "X"),
-					Role:        astikit.StrPtr("cut"),
-				},
-				{
-					Label:       astikit.StrPtr("Copy"),
-					Accelerator: astilectron.NewAccelerator("CmdOrCtrl", "C"),
-					Role:        astikit.StrPtr("copy"),
-				},
-				{
-					Label:       astikit.StrPtr("Paste"),
-					Accelerator: astilectron.NewAccelerator("CmdOrCtrl", "V"),
-					Role:        astikit.StrPtr("paste"),
-				},
-				{
-					Label:       astikit.StrPtr("Select All"),
-					Accelerator: astilectron.NewAccelerator("CmdOrCtrl", "A"),
-					Role:        astikit.StrPtr("selectAll"),
+			{
+				Label: astikit.StrPtr("Edit"),
+				SubMenu: []*astilectron.MenuItemOptions{
+					{
+						Label:       astikit.StrPtr("Undo"),
+						Accelerator: astilectron.NewAccelerator("CmdOrCtrl", "Z"),
+						Role:        astikit.StrPtr("undo:"),
+					},
+					{
+						Label:       astikit.StrPtr("Redo"),
+						Accelerator: astilectron.NewAccelerator("Shift", "CmdOrCtrl", "Z"),
+						Role:        astikit.StrPtr("redo"),
+					},
+					{
+						Type: astikit.StrPtr("separator"),
+					},
+					{
+						Label:       astikit.StrPtr("Cut"),
+						Accelerator: astilectron.NewAccelerator("CmdOrCtrl", "X"),
+						Role:        astikit.StrPtr("cut"),
+					},
+					{
+						Label:       astikit.StrPtr("Copy"),
+						Accelerator: astilectron.NewAccelerator("CmdOrCtrl", "C"),
+						Role:        astikit.StrPtr("copy"),
+					},
+					{
+						Label:       astikit.StrPtr("Paste"),
+						Accelerator: astilectron.NewAccelerator("CmdOrCtrl", "V"),
+						Role:        astikit.StrPtr("paste"),
+					},
+					{
+						Label:       astikit.StrPtr("Select All"),
+						Accelerator: astilectron.NewAccelerator("CmdOrCtrl", "A"),
+						Role:        astikit.StrPtr("selectAll"),
+					},
 				},
 			},
-		}},
+			{
+				Label: astikit.StrPtr("View"),
+				SubMenu: []*astilectron.MenuItemOptions{
+					{
+						Label: astikit.StrPtr("Reload"),
+						OnClick: func(e astilectron.Event) (deleteListener bool) {
+							w.Restore()
+							return
+						},
+					},
+					{
+						Label: astikit.StrPtr("Force Reload"),
+						Role:  astilectron.MenuItemRoleForceReload,
+					},
+					{
+						Label:       astikit.StrPtr("Full Screen"),
+						Role:        astilectron.MenuItemRoleToggleFullScreen,
+						Accelerator: astilectron.NewAccelerator("Control+CommandOrControl+F"),
+					},
+					{
+						Label: astikit.StrPtr("Developer Tools"),
+						Role:  astilectron.MenuItemRoleToggleDevTools,
+					},
+				},
+			},
+		},
 		OnWait: func(_ *astilectron.Astilectron, ws []*astilectron.Window, _ *astilectron.Menu, _ *astilectron.Tray, _ *astilectron.Menu) error {
 			w = ws[0]
+
 			go func() {
 				time.Sleep(5 * time.Second)
 				if err := bootstrap.SendMessage(w, "check.out.menu", "Don't forget to check out the menu!"); err != nil {
 					l.Println(fmt.Errorf("sending check.out.menu event failed: %w", err))
 				}
-				bootstrap.SendMessage(w,"weshnet.port", port)
+				bootstrap.SendMessage(w, "weshnet.port", port)
+
 			}()
+			 
 			return nil
 		},
+
 		RestoreAssets: RestoreAssets,
 		Windows: []*bootstrap.Window{{
 			Homepage:       "index.html",
@@ -247,6 +394,9 @@ func electron() {
 				Center:          astikit.BoolPtr(true),
 				Height:          astikit.IntPtr(700),
 				Width:           astikit.IntPtr(700),
+				WebPreferences: &astilectron.WebPreferences{
+					EnableRemoteModule: astikit.BoolPtr(true),
+				},
 			},
 		}},
 	}); err != nil {
@@ -255,8 +405,30 @@ func electron() {
 }
 
 func main() {
-	checkFreePort()
+	// Create a channel to receive the interrupt signal.
+	interrupt := make(chan os.Signal, 1)
+	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
+
+	// Create a WaitGroup to manage goroutines.
 	var wg sync.WaitGroup
+
+	// Function to handle cleanup.
+	cleanup := func() {
+		fmt.Println("Cleanup code here...")
+		handleExit()
+		// You can add any cleanup operations you need here.
+	}
+
+	// Start a goroutine to wait for the interrupt signal.
+	go func() {
+		<-interrupt
+		fmt.Println("Received interrupt signal. Cleaning up...")
+		cleanup()
+		os.Exit(1)
+	}()
+
+	checkFreePort()
+
 	wg.Add(2)
 	go electron()
 	go wesh()
