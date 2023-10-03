@@ -61,7 +61,6 @@ export const ProposalTransactionItem: React.FC<ProposalTransactionItemProps> = (
     { textStyle: { ...brandTextNormalCStyle, color: "white" } }
   );
 
-  // returns
   return (
     <>
       <CustomPressable
@@ -194,14 +193,17 @@ const sectionCStyle: ViewStyle = {
   paddingRight: layout.spacing_x1_5,
   justifyContent: "space-between",
 };
+
 const rowCenterCStyle: ViewStyle = {
   flexDirection: "row",
   alignItems: "center",
 };
+
 const brandTextNormalCStyle: ViewStyle = StyleSheet.flatten([
   fontSemibold14,
   { color: neutral77, lineHeight: 14 },
 ]);
+
 const brandTextSmallCStyle: ViewStyle = StyleSheet.flatten([
   fontSemibold13,
   { color: neutral77, lineHeight: 13 },
