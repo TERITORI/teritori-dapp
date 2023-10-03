@@ -65,7 +65,6 @@ export const teritoriNetwork: CosmosNetworkInfo = {
     "tori1r8raaqul4j05qtn0t05603mgquxfl8e9p7kcf7smwzcv2hc5rrlq0vket0", // Teritori's pets
     "tori167xst2jy9n6u92t3n8hf762adtpe3cs6acsgn0w5n2xlz9hv3xgs4ksc6t", // Diseases of the Brain AI
     "tori1r5f97ltu4d5jdn8jv5zjhc0vz2npjhnc9zcuz29z8ua739s376dql5agt4", // The skull arts
-    "tori16504tvqjzrln0gsewpcn20863h5ftr638fxlx37a6ntd7w5tudwqs8f3ts", // Mr Crypto
   ],
   excludeFromLaunchpadList: [riotContractAddressGen1],
   socialFeedContractAddress:
