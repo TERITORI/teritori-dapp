@@ -1,3 +1,4 @@
+import Clipboard from "@react-native-clipboard/clipboard";
 import React, { useRef, useState } from "react";
 import { View, TouchableOpacity } from "react-native";
 import { useDispatch } from "react-redux";
@@ -15,6 +16,7 @@ import { SVG } from "../../../components/SVG";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { SpacerRow } from "../../../components/spacer";
 import { useDropdowns } from "../../../context/DropdownsProvider";
+import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { updateConversationById } from "../../../store/slices/message";
 import { neutral17, secondaryColor } from "../../../utils/style/colors";
 import { fontSemibold13, fontSemibold12 } from "../../../utils/style/fonts";
@@ -22,6 +24,7 @@ import { layout } from "../../../utils/style/layout";
 import { Conversation } from "../../../utils/types/message";
 import { weshClient } from "../../../weshnet/client";
 import { getConversationName } from "../../../weshnet/client/messageHelpers";
+import { createMultiMemberShareableLink } from "../../../weshnet/client/services";
 import { bytesFromString } from "../../../weshnet/client/utils";
 
 interface ChatHeaderProps {
@@ -37,6 +40,7 @@ export const ChatHeader = ({
   conversation,
 }: ChatHeaderProps) => {
   const dispatch = useDispatch();
+  const { setToastSuccess } = useFeedbacks();
 
   const [showTextInput, setShowTextInput] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
@@ -80,6 +84,28 @@ export const ChatHeader = ({
           groupPk: bytesFromString(conversation.id),
         });
         closeOpenedDropdown();
+      },
+    },
+    conversation.type === "group" && {
+      label: "Copy conversation link",
+      onPress: async () => {
+        const groupInfo = await weshClient.client.GroupInfo({
+          groupPk: bytesFromString(conversation.id),
+        });
+
+        if (!groupInfo.group) {
+          return;
+        }
+
+        const groupLink = createMultiMemberShareableLink(
+          groupInfo?.group,
+          conversation.name
+        );
+        Clipboard.setString(groupLink || "");
+        setToastSuccess({
+          title: "Group link copied!",
+          message: "",
+        });
       },
     },
     conversation.status === "active" && {

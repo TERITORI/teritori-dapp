@@ -12,6 +12,7 @@ import { ChatSection } from "./components/ChatSection";
 import { CreateConversation } from "./components/CreateConversation";
 import { CreateGroup } from "./components/CreateGroup";
 import { FriendshipManager } from "./components/FriendshipManager";
+import { JoinGroup } from "./components/JoinGroup";
 import { MessageBlankFiller } from "./components/MessageBlankFiller";
 import MessageCard from "./components/MessageCard";
 import { MessageHeader } from "./components/MessageHeader";
@@ -71,6 +72,14 @@ export const MessageScreen: ScreenFC<"Message"> = ({ route }) => {
     },
     {
       id: 4,
+      title: "Join a group",
+      icon: group,
+      onPress() {
+        navigation.navigate("Message", { view: "JoinGroup" });
+      },
+    },
+    {
+      id: 5,
       title: "Create a Teritori space",
       icon: space,
       subtitle: "coming soon",
@@ -192,6 +201,9 @@ export const MessageScreen: ScreenFC<"Message"> = ({ route }) => {
         )}
         {activeView === "CreateConversation" && (
           <CreateConversation onClose={() => navigation.navigate("Message")} />
+        )}
+        {activeView === "JoinGroup" && (
+          <JoinGroup onClose={() => navigation.navigate("Message")} />
         )}
       </View>
     </ScreenContainer>

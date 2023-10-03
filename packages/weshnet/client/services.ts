@@ -13,7 +13,7 @@ import {
 import { store } from "../../store/store";
 import { isElectron } from "../../utils/isElectron";
 import { CONVERSATION_TYPES, Message } from "../../utils/types/message";
-import { GroupInfo_Request } from "../protocoltypes";
+import { Group, GroupInfo_Request, GroupType } from "../protocoltypes";
 
 let getPeerListIntervalId: ReturnType<typeof setInterval>;
 
@@ -106,6 +106,94 @@ export const createSharableLink = (
   )}&name=${encodeURIComponent(contactInfo.name)}&avatar=${encodeURIComponent(
     contactInfo.avatar
   )}&peerId=${encodeURIComponent(weshConfig.config.peerId)}`;
+};
+
+export const createMultiMemberShareableLink = (
+  group: Group,
+  groupName: string
+) => {
+  // construct URL
+  return `https://app.teritori.com/group?publicKey=${encodeURIComponent(
+    stringFromBytes(group.publicKey)
+  )}&secret=${encodeURIComponent(
+    stringFromBytes(group.secret)
+  )}&secretSig=${encodeURIComponent(
+    stringFromBytes(group.secretSig)
+  )}&signPub=${encodeURIComponent(
+    stringFromBytes(group.signPub)
+  )}&linkKey=${encodeURIComponent(
+    stringFromBytes(group.linkKey)
+  )}&linkKeySig=${encodeURIComponent(
+    stringFromBytes(group.linkKeySig)
+  )}&groupName=${groupName}`;
+};
+
+export const multiMemberGroupJoin = async (
+  multiMemberSharedLink: string,
+  contactInfo: MessageState["contactInfo"]
+) => {
+  // create URL from string
+  const url = new URL(multiMemberSharedLink);
+
+  // get all params from URL
+  const publicKey = bytesFromString(
+    decodeURIComponent(url?.searchParams.get("publicKey") || "")
+  );
+  const secret = bytesFromString(
+    decodeURIComponent(url?.searchParams.get("secret") || "")
+  );
+  const secretSig = bytesFromString(
+    decodeURIComponent(url?.searchParams.get("secretSig") || "")
+  );
+  const signPub = bytesFromString(
+    decodeURIComponent(url?.searchParams.get("signPub") || "")
+  );
+  const linkKey = bytesFromString(
+    decodeURIComponent(url?.searchParams.get("linkKey") || "")
+  );
+  const linkKeySig = bytesFromString(
+    decodeURIComponent(url?.searchParams.get("linkKeySig") || "")
+  );
+  const groupName = url?.searchParams.get("groupName") || "";
+
+  // construct group object
+  const group: Group = {
+    publicKey,
+    secret,
+    secretSig,
+    groupType: GroupType.GroupTypeMultiMember,
+    signPub,
+    linkKey,
+    linkKeySig,
+  };
+
+  // join multiMember conversation
+  await weshClient.client.MultiMemberGroupJoin({ group });
+
+  // active conversation
+  await weshClient.client.ActivateGroup({ groupPk: publicKey });
+
+  // send group join message
+  await sendMessage({
+    groupPk: publicKey,
+    message: {
+      type: "group-join",
+      payload: {
+        message: "",
+        files: [],
+        metadata: {
+          contact: {
+            id: stringFromBytes(weshConfig.config.accountPk),
+            rdvSeed: stringFromBytes(weshConfig.metadata.rdvSeed),
+            tokenId: weshConfig.metadata.tokenId,
+            name: contactInfo.name,
+            avatar: contactInfo.avatar,
+          },
+          groupName,
+        },
+      },
+    },
+  });
 };
 
 export const addContact = async (
