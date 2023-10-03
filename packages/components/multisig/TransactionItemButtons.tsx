@@ -5,13 +5,10 @@ import { ActivityIndicator } from "react-native-paper";
 import { ProposalTransactionItemProps } from "./ProposalTransactionItem";
 import { useApproveTransaction } from "../../hooks/multisig/useApproveTransaction";
 import { useBroadcastTransaction } from "../../hooks/multisig/useBroadcastTransaction";
-import { useDeclineTransaction } from "../../hooks/multisig/useDeclineTransaction";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { txExplorerLink } from "../../networks";
 import {
-  errorColor,
-  neutral00,
   neutral77,
   primaryColor,
   secondaryColor,
@@ -25,26 +22,14 @@ import { AnimationFadeIn } from "../animations/AnimationFadeIn";
 import { SecondaryButton } from "../buttons/SecondaryButton";
 import { SecondaryButtonOutline } from "../buttons/SecondaryButtonOutline";
 import { MainConnectWalletButton } from "../connectWallet/MainConnectWalletButton";
-import { SpacerRow } from "../spacer";
 
-interface TransactionItemButtonsProps extends ProposalTransactionItemProps {
-  currentDecliners: string[];
-  addSignature: (signature: unknown) => void;
-  addDecliner: (address: string) => void;
-  isCompletelyDeclined: boolean;
-}
-
-export const TransactionItemButtons: React.FC<TransactionItemButtonsProps> = ({
+export const TransactionItemButtons: React.FC<ProposalTransactionItemProps> = ({
   btnSquaresBackgroundColor,
-  currentDecliners,
   signatures,
-  addSignature,
-  addDecliner,
   chainId,
   multisigPubkeyJson,
   id,
   finalHash: txHash,
-  isCompletelyDeclined,
   isUserMultisig,
   multisigAddress,
   threshold,
@@ -58,7 +43,6 @@ export const TransactionItemButtons: React.FC<TransactionItemButtonsProps> = ({
   const wallet = useSelectedWallet();
   const selectedNetworkId = useSelectedNetworkId();
   const { mutate: approve } = useApproveTransaction();
-  const { mutate: decline, isLoading: isDeclining } = useDeclineTransaction();
   const {
     mutate: broadcast,
     isLoading: isBroacasting,
@@ -68,13 +52,6 @@ export const TransactionItemButtons: React.FC<TransactionItemButtonsProps> = ({
   const hasSigned = useMemo(
     () => signatures?.some((sig) => sig.userAddress === wallet?.address),
     [signatures, wallet?.address]
-  );
-
-  const hasDeclined = useMemo(
-    () =>
-      currentDecliners?.some((address) => address === wallet?.address) ||
-      isCompletelyDeclined,
-    [currentDecliners, isCompletelyDeclined, wallet?.address]
   );
 
   const isCompletedSignature = signatures.length >= threshold;
@@ -103,13 +80,6 @@ export const TransactionItemButtons: React.FC<TransactionItemButtonsProps> = ({
     });
   };
 
-  const onDecline = async () =>
-    decline({
-      currentDecliners,
-      transactionID: "TODO",
-      addDecliner,
-    });
-
   const onBroadcast = () =>
     broadcast({
       tx: {
@@ -136,21 +106,14 @@ export const TransactionItemButtons: React.FC<TransactionItemButtonsProps> = ({
     );
   }
 
-  if (
-    (hasDeclined && !isCompletedSignature) ||
-    (hasSigned && !isCompletedSignature) ||
-    txHash ||
-    resTxHash
-  ) {
+  if ((hasSigned && !isCompletedSignature) || txHash || resTxHash) {
     const color = (() => {
       if (txHash || resTxHash) return successColor;
-      if (hasDeclined) return errorColor;
       if (hasSigned) return primaryColor;
     })();
 
     const resultText = (() => {
       if (txHash || resTxHash) return "EXECUTED";
-      if (hasDeclined) return "DECLINED";
       if (hasSigned) return "APPROVED";
     })();
 
@@ -230,18 +193,6 @@ export const TransactionItemButtons: React.FC<TransactionItemButtonsProps> = ({
         squaresBackgroundColor={btnSquaresBackgroundColor}
         loader
         onPress={onApprove}
-      />
-      <SpacerRow size={2} />
-      <SecondaryButtonOutline
-        text="Decline"
-        size="M"
-        squaresBackgroundColor={btnSquaresBackgroundColor}
-        color={errorColor}
-        borderColor={errorColor}
-        backgroundColor={neutral00}
-        onPress={onDecline}
-        autoLoader
-        isLoading={isDeclining}
       />
     </AnimationFadeIn>
   );

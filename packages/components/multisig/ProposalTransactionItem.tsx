@@ -53,12 +53,6 @@ export const ProposalTransactionItem: React.FC<ProposalTransactionItemProps> = (
   const [isProposalModalVisible, setProposalModalVisible] = useState(false);
   const approvedByCount = signatures.length || 0;
   const completedPercent = (approvedByCount / threshold) * 100;
-  const isCompletelyDeclined = false; /*
-    (multisig.userAddresses?.length || 0) -
-      approvedByCount -
-      currentDecliners.length <
-    approvalRequiredCount - approvedByCount;
-    */
 
   const [txName, txInfo, txInfo2, txIcon] = getTxInfo(
     msgs,
@@ -66,29 +60,6 @@ export const ProposalTransactionItem: React.FC<ProposalTransactionItemProps> = (
     network,
     { textStyle: { ...brandTextNormalCStyle, color: "white" } }
   );
-
-  /*
-
-  // hooks
-  useEffect(() => {
-    setCurrentSignatures(signatures?.data || []);
-  }, [signatures?.data]);
-
-  */
-
-  // functions
-  const addSignature = (signature: unknown) => {
-    /*
-    setCurrentSignatures((prevState: DbSignature[]) => [
-      ...prevState,
-      signature,
-    ]);
-    */
-  };
-
-  const addDecliner = (address: string) => {
-    //setCurrentDecliners((prevState) => [...prevState, address]);
-  };
 
   // returns
   return (
@@ -202,10 +173,6 @@ export const ProposalTransactionItem: React.FC<ProposalTransactionItemProps> = (
 
         <TransactionItemButtons
           {...props}
-          currentDecliners={/*currentDecliners*/ []}
-          addSignature={addSignature}
-          addDecliner={addDecliner}
-          isCompletelyDeclined={isCompletelyDeclined}
           btnSquaresBackgroundColor={
             isHovered ? neutral17 : props.btnSquaresBackgroundColor
           }
