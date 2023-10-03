@@ -1,12 +1,6 @@
 import moment from "moment";
 import React, { useState } from "react";
-import {
-  ActivityIndicator,
-  Pressable,
-  StyleSheet,
-  View,
-  ViewStyle,
-} from "react-native";
+import { ActivityIndicator, StyleSheet, View, ViewStyle } from "react-native";
 
 import { ProposalTransactionModal } from "./ProposalTransactionModal";
 import { TransactionItemButtons } from "./TransactionItemButtons";
@@ -20,19 +14,18 @@ import {
   neutral33,
   neutral55,
   neutral77,
-  primaryColor,
   secondaryColor,
 } from "../../utils/style/colors";
 import { fontSemibold13, fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { tinyAddress } from "../../utils/text";
 import { getTxInfo } from "../../utils/transactions/getTxInfo";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { Separator } from "../Separator";
 import { AnimationFadeIn } from "../animations/AnimationFadeIn";
 import { CustomPressable } from "../buttons/CustomPressable";
-import { SpacerColumn, SpacerRow } from "../spacer";
+import { SpacerRow } from "../spacer";
+import { Username } from "../user/Username";
 
 export interface ProposalTransactionItemProps extends ParsedTransaction {
   btnSquaresBackgroundColor?: string;
@@ -70,7 +63,8 @@ export const ProposalTransactionItem: React.FC<ProposalTransactionItemProps> = (
   const [txName, txInfo, txInfo2, txIcon] = getTxInfo(
     msgs,
     navigation,
-    network
+    network,
+    { textStyle: { ...brandTextNormalCStyle, color: "white" } }
   );
 
   /*
@@ -120,11 +114,10 @@ export const ProposalTransactionItem: React.FC<ProposalTransactionItemProps> = (
           <SVG source={txIcon} width={32} height={32} />
         </View>
 
-        <View style={[sectionCStyle, { flex: 0.75 }]}>
-          <BrandText style={StyleSheet.flatten(fontSemibold14)}>
+        <View style={sectionCStyle}>
+          <BrandText style={[brandTextNormalCStyle, { color: "white" }]}>
             {txName}
           </BrandText>
-          <SpacerColumn size={0.75} />
           <View style={rowCenterCStyle}>
             <BrandText style={brandTextSmallCStyle}>
               {moment(createdAt).format("DD/MM/yyyy")}
@@ -140,30 +133,17 @@ export const ProposalTransactionItem: React.FC<ProposalTransactionItemProps> = (
 
         <View style={sectionCStyle}>
           {txInfo}
-          <SpacerColumn size={0.75} />
           <View style={rowCenterCStyle}>
-            <BrandText style={brandTextNormalCStyle}>Created by:</BrandText>
+            <BrandText style={brandTextSmallCStyle}>Created by:</BrandText>
             <SpacerRow size={0.5} />
             {tnsMetadata.loading ? (
               <ActivityIndicator size="small" />
             ) : (
               <AnimationFadeIn>
-                <Pressable
-                  onPress={() =>
-                    navigation.navigate("UserPublicProfile", { id: creatorId })
-                  }
-                >
-                  <BrandText
-                    style={StyleSheet.flatten([
-                      fontSemibold13,
-                      { color: primaryColor },
-                    ])}
-                  >
-                    {tnsMetadata?.metadata?.tokenId
-                      ? `@${tnsMetadata?.metadata?.tokenId}`
-                      : tinyAddress(creatorAddress, 14)}
-                  </BrandText>
-                </Pressable>
+                <Username
+                  userId={creatorId}
+                  textStyle={[brandTextSmallCStyle, { color: undefined }]}
+                />
               </AnimationFadeIn>
             )}
           </View>
@@ -171,10 +151,8 @@ export const ProposalTransactionItem: React.FC<ProposalTransactionItemProps> = (
 
         <View style={sectionCStyle}>
           {txInfo2}
-          <SpacerColumn size={0.75} />
           <View style={rowCenterCStyle}>
-            <BrandText style={brandTextNormalCStyle}>Network fee:</BrandText>
-            <SpacerRow size={0.5} />
+            <BrandText style={brandTextSmallCStyle}>Network fee: </BrandText>
             <BrandText style={brandTextSmallCStyle}>
               {prettyPrice(
                 network?.id,
@@ -185,17 +163,17 @@ export const ProposalTransactionItem: React.FC<ProposalTransactionItemProps> = (
           </View>
         </View>
 
-        <View style={[sectionCStyle, { flex: 1.5 }]}>
+        <View style={sectionCStyle}>
           <View style={rowCenterCStyle}>
             <BrandText style={brandTextNormalCStyle}>Approved by:</BrandText>
             <SpacerRow size={0.5} />
-            <BrandText style={StyleSheet.flatten(fontSemibold14)}>
+            <BrandText style={[brandTextNormalCStyle, { color: "white" }]}>
               {approvedByCount}
             </BrandText>
             <SpacerRow size={0.5} />
             <BrandText style={brandTextNormalCStyle}>of</BrandText>
             <SpacerRow size={0.5} />
-            <BrandText style={StyleSheet.flatten(fontSemibold14)}>
+            <BrandText style={[brandTextNormalCStyle, { color: "white" }]}>
               {threshold}
             </BrandText>
             <SpacerRow size={0.5} />
@@ -203,21 +181,22 @@ export const ProposalTransactionItem: React.FC<ProposalTransactionItemProps> = (
               ({threshold - approvedByCount} required)
             </BrandText>
           </View>
-          <SpacerColumn size={1.5} />
-          <View
-            style={{
-              height: 6,
-              width: 207,
-              backgroundColor: neutral55,
-            }}
-          >
+          <View style={{ height: 13, justifyContent: "center" }}>
             <View
               style={{
                 height: 6,
-                backgroundColor: secondaryColor,
-                width: `${completedPercent}%`,
+                width: 207,
+                backgroundColor: neutral55,
               }}
-            />
+            >
+              <View
+                style={{
+                  height: 6,
+                  backgroundColor: secondaryColor,
+                  width: `${completedPercent}%`,
+                }}
+              />
+            </View>
           </View>
         </View>
 
@@ -242,16 +221,21 @@ export const ProposalTransactionItem: React.FC<ProposalTransactionItemProps> = (
   );
 };
 
-const sectionCStyle: ViewStyle = { flex: 1, paddingRight: layout.spacing_x1_5 };
+const sectionCStyle: ViewStyle = {
+  flex: 1,
+  height: 36,
+  paddingRight: layout.spacing_x1_5,
+  justifyContent: "space-between",
+};
 const rowCenterCStyle: ViewStyle = {
   flexDirection: "row",
   alignItems: "center",
 };
 const brandTextNormalCStyle: ViewStyle = StyleSheet.flatten([
   fontSemibold14,
-  { color: neutral77 },
+  { color: neutral77, lineHeight: 14 },
 ]);
 const brandTextSmallCStyle: ViewStyle = StyleSheet.flatten([
   fontSemibold13,
-  { color: neutral77 },
+  { color: neutral77, lineHeight: 13 },
 ]);

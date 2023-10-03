@@ -11,9 +11,9 @@ import {
   ExecutionState,
   TransactionsCount,
 } from "../../api/multisig/v1/multisig";
+import { useIsUserMultisig } from "../../hooks/multisig/useIsUserMultisig";
 import { useMultisigTransactions } from "../../hooks/multisig/useMultisigTransactions";
 import { useMultisigTransactionsCounts } from "../../hooks/multisig/useMultisigTransactionsCounts";
-import { useMultisigValidator } from "../../hooks/multisig/useMultisigValidator";
 import { secondaryColor } from "../../utils/style/colors";
 import { fontSemibold28 } from "../../utils/style/fonts";
 import { headerHeight, layout } from "../../utils/style/layout";
@@ -37,7 +37,7 @@ export const Transactions: FC<{
     chainId,
     multisigAddress
   );
-  const { isUserMultisig } = useMultisigValidator(multisigAddress);
+  const { isUserMultisig } = useIsUserMultisig(multisigAddress);
   const tabs = useMemo(
     () => ({
       currentProposals: {
@@ -49,14 +49,6 @@ export const Transactions: FC<{
       all: {
         name: "All",
         badgeCount: counts?.all?.total || 0,
-        types: [],
-        state: ExecutionState.EXECUTION_STATE_UNSPECIFIED,
-      },
-      // TODO: transferReceived must be the transfers sent to the multisig wallet
-      transferReceived: {
-        name: "Transfer received",
-        badgeCount: 0,
-        disabled: true,
         types: [],
         state: ExecutionState.EXECUTION_STATE_UNSPECIFIED,
       },
@@ -81,11 +73,6 @@ export const Transactions: FC<{
           ]
         ),
       },
-      // collectionLaunch: {
-      //   name: "Collection launch",
-      //   badgeCount: countList ? countList[5] : 0,
-      //   value: MultisigTransactionType.LAUNCH_NFT_COLLECTION,
-      // },
       contracts: {
         name: "Contracts",
         ...filteredTabValues(

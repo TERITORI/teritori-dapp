@@ -13,7 +13,6 @@ import {
   AppProposalResponse,
   useDAOProposals,
 } from "../../hooks/dao/useDAOProposals";
-import { useNSPrimaryAlias } from "../../hooks/useNSPrimaryAlias";
 import { getUserId, parseUserId } from "../../networks";
 import { useAppNavigation } from "../../utils/navigation";
 import {
@@ -24,11 +23,10 @@ import {
   errorColor,
 } from "../../utils/style/colors";
 import { fontSemibold13, fontSemibold14 } from "../../utils/style/fonts";
-import { tinyAddress } from "../../utils/text";
 import { getTxInfo } from "../../utils/transactions/getTxInfo";
 import { BrandText } from "../BrandText";
-import { OmniLink } from "../OmniLink";
 import { SVG } from "../SVG";
+import { Username } from "../user/Username";
 
 export const DAOProposals: React.FC<{
   daoId: string | undefined;
@@ -99,14 +97,13 @@ const ProposalRow: React.FC<{
 
   const proposerId = getUserId(network?.id, proposal.proposal.proposer);
 
-  const { primaryAlias: proposerAlias } = useNSPrimaryAlias(proposerId);
-
   const navigation = useAppNavigation();
 
   const [name, , , icon] = getTxInfo(
     proposal.proposal.msgs,
     navigation,
-    network
+    network,
+    { textStyle: [fontSemibold13, { lineHeight: 13 }] }
   );
 
   return (
@@ -156,24 +153,18 @@ const ProposalRow: React.FC<{
                   #{proposal.id}: {proposal.proposal.title || name}
                 </BrandText>
               </TouchableOpacity>
-              <BrandText
-                style={[fontSemibold13, { lineHeight: 13, color: neutral77 }]}
-                numberOfLines={1}
-              >
-                Created by{" "}
-                <OmniLink
-                  to={{
-                    screen: "UserPublicProfile",
-                    params: { id: proposerId },
-                  }}
+              <View>
+                <BrandText
+                  style={[fontSemibold13, { lineHeight: 13, color: neutral77 }]}
+                  numberOfLines={1}
                 >
-                  <Text style={{ color: "#16BBFF" }}>
-                    {proposerAlias
-                      ? `@${proposerAlias}`
-                      : tinyAddress(proposal.proposal.proposer, 10)}
-                  </Text>
-                </OmniLink>
-              </BrandText>
+                  Created by{" "}
+                  <Username
+                    userId={proposerId}
+                    textStyle={[fontSemibold13, { lineHeight: 13 }]}
+                  />
+                </BrandText>
+              </View>
             </View>
           </View>
         </View>

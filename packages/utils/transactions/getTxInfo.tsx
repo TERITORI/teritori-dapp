@@ -2,7 +2,7 @@
 
 import { MsgExecuteContractEncodeObject } from "@cosmjs/cosmwasm-stargate";
 import React from "react";
-import { View, Pressable, ViewStyle, StyleSheet } from "react-native";
+import { View, Pressable, ViewStyle, TextStyle, StyleProp } from "react-native";
 import { SvgProps } from "react-native-svg";
 
 import feedWhiteSVG from "../../../assets/icons/feed_white.svg";
@@ -11,6 +11,7 @@ import stakingWhiteSVG from "../../../assets/icons/staking_white.svg";
 import tnsWhiteSVG from "../../../assets/icons/tns-service_white.svg";
 import walletWhiteSVG from "../../../assets/icons/wallet_white.svg";
 import { BrandText } from "../../components/BrandText";
+import { Username } from "../../components/user/Username";
 import {
   NetworkInfo,
   getUserId,
@@ -23,26 +24,40 @@ import { neutral77 } from "../style/colors";
 import { fontSemibold14 } from "../style/fonts";
 import { tinyAddress } from "../text";
 
+// once we gather enough different messages here, we should try to establish meaningful abstractions and split this func
+
 export const getTxInfo = (
   msgs: any[],
   navigation: AppNavigationProp,
-  network: NetworkInfo | undefined
+  network: NetworkInfo | undefined,
+  opts?: { textStyle?: StyleProp<TextStyle> }
 ): [string, React.ReactElement, React.ReactElement, React.FC<SvgProps>] => {
+  if (!opts) {
+    opts = {};
+  }
+  if (!opts.textStyle) {
+    opts.textStyle = fontSemibold14;
+    opts.textStyle.lineHeight = 14;
+  }
+  const brandTextNormalStyle: StyleProp<TextStyle> = [
+    opts.textStyle,
+    { color: neutral77 },
+  ];
   if (msgs.length === 0) {
     return [
       "Sentiment",
-      <BrandText style={brandTextNormalCStyle}> </BrandText>,
-      <BrandText style={brandTextNormalCStyle}> </BrandText>,
+      <BrandText style={brandTextNormalStyle}> </BrandText>,
+      <BrandText style={brandTextNormalStyle}> </BrandText>,
       multisigWhiteSVG,
     ];
   }
   if (msgs.length > 1) {
     return [
       "Complex",
-      <BrandText style={brandTextNormalCStyle}>
+      <BrandText style={brandTextNormalStyle}>
         {msgs.length} messages
       </BrandText>,
-      <BrandText style={brandTextNormalCStyle}> </BrandText>,
+      <BrandText style={brandTextNormalStyle}> </BrandText>,
       multisigWhiteSVG,
     ];
   }
@@ -65,13 +80,11 @@ export const getTxInfo = (
           value: {
             contract: msg.wasm.execute.contract_addr,
             funds: msg.wasm.execute.funds,
-            sender: "",
+            sender: "TODO",
             msg: Buffer.from(msg.wasm.execute.msg, "base64"),
           },
         };
-        console.log("olol", msg);
         msg = execMsg;
-        console.log("olol2", execMsg);
       }
     }
     switch (msg.typeUrl) {
@@ -82,22 +95,15 @@ export const getTxInfo = (
         return [
           "Send",
           <View style={rowCenterCStyle}>
-            <BrandText style={brandTextNormalCStyle}>Sending to: </BrandText>
-            <Pressable
-              onPress={() => {
-                // TODO: show tns info using reusable component
-                const id = getUserId(network?.id, recipientAddress);
-                navigation.navigate("UserPublicProfile", { id });
-              }}
-            >
-              <BrandText style={StyleSheet.flatten(fontSemibold14)}>
-                {tinyAddress(recipientAddress, 14)}
-              </BrandText>
-            </Pressable>
+            <BrandText style={brandTextNormalStyle}>Sending to: </BrandText>
+            <Username
+              userId={getUserId(network?.id, recipientAddress)}
+              textStyle={[opts.textStyle, { color: "white" }]}
+            />
           </View>,
           <View style={rowCenterCStyle}>
-            <BrandText style={brandTextNormalCStyle}>Will receive: </BrandText>
-            <BrandText style={StyleSheet.flatten(fontSemibold14)}>
+            <BrandText style={brandTextNormalStyle}>Will receive: </BrandText>
+            <BrandText style={opts.textStyle}>
               {prettyPrice(network?.id, amount, denom)}
             </BrandText>
           </View>,
@@ -111,7 +117,7 @@ export const getTxInfo = (
         return [
           "Delegate",
           <View style={rowCenterCStyle}>
-            <BrandText style={brandTextNormalCStyle}>Delegating to: </BrandText>
+            <BrandText style={brandTextNormalStyle}>Delegating to: </BrandText>
             <Pressable
               onPress={() => {
                 // TODO: show tns info using reusable component
@@ -119,14 +125,14 @@ export const getTxInfo = (
                 navigation.navigate("UserPublicProfile", { id });
               }}
             >
-              <BrandText style={StyleSheet.flatten(fontSemibold14)}>
+              <BrandText style={opts.textStyle}>
                 {tinyAddress(validatorAddress, 20)}
               </BrandText>
             </Pressable>
           </View>,
           <View style={rowCenterCStyle}>
-            <BrandText style={brandTextNormalCStyle}>Will delegate: </BrandText>
-            <BrandText style={StyleSheet.flatten(fontSemibold14)}>
+            <BrandText style={brandTextNormalStyle}>Will delegate: </BrandText>
+            <BrandText style={opts.textStyle}>
               {prettyPrice(network?.id, amount, denom)}
             </BrandText>
           </View>,
@@ -140,7 +146,7 @@ export const getTxInfo = (
         return [
           "Undelegate",
           <View style={rowCenterCStyle}>
-            <BrandText style={brandTextNormalCStyle}>
+            <BrandText style={brandTextNormalStyle}>
               Undelegating from:{" "}
             </BrandText>
             <Pressable
@@ -150,16 +156,16 @@ export const getTxInfo = (
                 navigation.navigate("UserPublicProfile", { id });
               }}
             >
-              <BrandText style={StyleSheet.flatten(fontSemibold14)}>
+              <BrandText style={opts.textStyle}>
                 {tinyAddress(validatorAddress, 20)}
               </BrandText>
             </Pressable>
           </View>,
           <View style={rowCenterCStyle}>
-            <BrandText style={brandTextNormalCStyle}>
+            <BrandText style={brandTextNormalStyle}>
               Will undelegate:{" "}
             </BrandText>
-            <BrandText style={StyleSheet.flatten(fontSemibold14)}>
+            <BrandText style={opts.textStyle}>
               {prettyPrice(network?.id, amount, denom)}
             </BrandText>
           </View>,
@@ -174,7 +180,7 @@ export const getTxInfo = (
         return [
           "Redelegate",
           <View style={rowCenterCStyle}>
-            <BrandText style={brandTextNormalCStyle}>From: </BrandText>
+            <BrandText style={brandTextNormalStyle}>From: </BrandText>
             <Pressable
               onPress={() => {
                 // TODO: show tns info using reusable component
@@ -182,11 +188,11 @@ export const getTxInfo = (
                 navigation.navigate("UserPublicProfile", { id });
               }}
             >
-              <BrandText style={StyleSheet.flatten(fontSemibold14)}>
+              <BrandText style={opts.textStyle}>
                 {tinyAddress(sourceValidatorAddress, 10)}
               </BrandText>
             </Pressable>
-            <BrandText style={brandTextNormalCStyle}>, To: </BrandText>
+            <BrandText style={brandTextNormalStyle}>, To: </BrandText>
             <Pressable
               onPress={() => {
                 // TODO: show tns info using reusable component
@@ -194,16 +200,16 @@ export const getTxInfo = (
                 navigation.navigate("UserPublicProfile", { id });
               }}
             >
-              <BrandText style={StyleSheet.flatten(fontSemibold14)}>
+              <BrandText style={opts.textStyle}>
                 {tinyAddress(destinationValidatorAddress, 10)}
               </BrandText>
             </Pressable>
           </View>,
           <View style={rowCenterCStyle}>
-            <BrandText style={brandTextNormalCStyle}>
+            <BrandText style={brandTextNormalStyle}>
               Will redelegate:{" "}
             </BrandText>
-            <BrandText style={StyleSheet.flatten(fontSemibold14)}>
+            <BrandText style={opts.textStyle}>
               {prettyPrice(network?.id, amount, denom)}
             </BrandText>
           </View>,
@@ -228,7 +234,6 @@ export const getTxInfo = (
         }
         let icon = multisigWhiteSVG;
         let name = "Execute";
-        console.log("olol3", network?.kind, contractAddress, method);
         if (
           network?.kind === NetworkKind.Cosmos &&
           contractAddress === network.nameServiceContractAddress &&
@@ -244,13 +249,10 @@ export const getTxInfo = (
           icon = feedWhiteSVG;
           name = "Post on feed";
         }
-        // if(network?.kind === NetworkKind.Cosmos && contractAddress === network.socialFeedContractAddress && method === "post") {
-        //   txType = MultisigTransactionType.CREATE_NEW_POST
-        // }
         return [
           name,
           <View style={rowCenterCStyle}>
-            <BrandText style={brandTextNormalCStyle}>Contract: </BrandText>
+            <BrandText style={brandTextNormalStyle}>Contract: </BrandText>
             <Pressable
               onPress={() => {
                 // TODO: show tns info using reusable component
@@ -258,16 +260,14 @@ export const getTxInfo = (
                 navigation.navigate("UserPublicProfile", { id });
               }}
             >
-              <BrandText style={StyleSheet.flatten(fontSemibold14)}>
+              <BrandText style={opts.textStyle}>
                 {tinyAddress(contractAddress, 10)}
               </BrandText>
             </Pressable>
           </View>,
           <View style={rowCenterCStyle}>
-            <BrandText style={brandTextNormalCStyle}>Method: </BrandText>
-            <BrandText style={StyleSheet.flatten(fontSemibold14)}>
-              {method}
-            </BrandText>
+            <BrandText style={brandTextNormalStyle}>Method: </BrandText>
+            <BrandText style={opts.textStyle}>{method}</BrandText>
           </View>,
           icon,
         ];
@@ -277,7 +277,7 @@ export const getTxInfo = (
         return [
           "Withdraw staking rewards",
           <View style={rowCenterCStyle}>
-            <BrandText style={brandTextNormalCStyle}>Validator: </BrandText>
+            <BrandText style={opts.textStyle}>Validator: </BrandText>
             <Pressable
               onPress={() => {
                 // TODO: show tns info using reusable component
@@ -285,12 +285,12 @@ export const getTxInfo = (
                 navigation.navigate("UserPublicProfile", { id });
               }}
             >
-              <BrandText style={StyleSheet.flatten(fontSemibold14)}>
+              <BrandText style={opts.textStyle}>
                 {tinyAddress(validatorAddress, 20)}
               </BrandText>
             </Pressable>
           </View>,
-          <BrandText style={brandTextNormalCStyle}> </BrandText>,
+          <BrandText style={brandTextNormalStyle}> </BrandText>,
           stakingWhiteSVG,
         ];
       }
@@ -300,8 +300,8 @@ export const getTxInfo = (
   }
   return [
     "Unknown",
-    <BrandText style={brandTextNormalCStyle}>{msg.typeUrl}</BrandText>,
-    <BrandText style={brandTextNormalCStyle}> </BrandText>,
+    <BrandText style={brandTextNormalStyle}>{msg.typeUrl}</BrandText>,
+    <BrandText style={brandTextNormalStyle}> </BrandText>,
     multisigWhiteSVG,
   ];
 };
@@ -310,7 +310,3 @@ const rowCenterCStyle: ViewStyle = {
   flexDirection: "row",
   alignItems: "center",
 };
-const brandTextNormalCStyle: ViewStyle = StyleSheet.flatten([
-  fontSemibold14,
-  { color: neutral77 },
-]);
