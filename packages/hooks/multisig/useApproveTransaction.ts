@@ -103,8 +103,6 @@ export const useApproveTransaction = () => {
           bodyBytes,
         });
 
-        // FIXME: should I do that? addSignature(signature);
-
         queryClient.invalidateQueries(
           multisigTransactionsQueryKey(tx.chainId, tx.multisigAddress)
         );
