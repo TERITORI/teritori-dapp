@@ -2,8 +2,8 @@ import moment from "moment";
 import React, { useState } from "react";
 import { ActivityIndicator, StyleSheet, View, ViewStyle } from "react-native";
 
-import { ProposalTransactionModal } from "./ProposalTransactionModal";
-import { TransactionItemButtons } from "./TransactionItemButtons";
+import { MultisigTransactionActions } from "./MultisigTransactionActions";
+import { MultisigTransactionModal } from "./MultisigTransactionModal";
 import { ParsedTransaction } from "../../hooks/multisig/useMultisigTransactions";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { getCosmosNetworkByChainId, getUserId } from "../../networks";
@@ -27,13 +27,13 @@ import { CustomPressable } from "../buttons/CustomPressable";
 import { SpacerRow } from "../spacer";
 import { Username } from "../user/Username";
 
-export interface ProposalTransactionItemProps extends ParsedTransaction {
+export interface MultisigTransactionItemProps extends ParsedTransaction {
   btnSquaresBackgroundColor?: string;
   isUserMultisig?: boolean;
   shouldRetch?: () => void;
 }
 
-export const ProposalTransactionItem: React.FC<ProposalTransactionItemProps> = (
+export const MultisigTransactionItem: React.FC<MultisigTransactionItemProps> = (
   props
 ) => {
   const {
@@ -172,7 +172,7 @@ export const ProposalTransactionItem: React.FC<ProposalTransactionItemProps> = (
           </View>
         </View>
 
-        <TransactionItemButtons
+        <MultisigTransactionActions
           {...props}
           btnSquaresBackgroundColor={
             isHovered ? neutral17 : props.btnSquaresBackgroundColor
@@ -180,7 +180,7 @@ export const ProposalTransactionItem: React.FC<ProposalTransactionItemProps> = (
         />
       </CustomPressable>
 
-      <ProposalTransactionModal
+      <MultisigTransactionModal
         visible={isProposalModalVisible}
         onClose={() => setProposalModalVisible(false)}
         transaction={props}

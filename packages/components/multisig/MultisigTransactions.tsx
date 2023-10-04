@@ -6,7 +6,7 @@ import {
   useWindowDimensions,
 } from "react-native";
 
-import { ProposalTransactionItem } from "./ProposalTransactionItem";
+import { MultisigTransactionItem } from "./MultisigTransactionItem";
 import {
   ExecutionState,
   TransactionsCount,
@@ -24,7 +24,7 @@ import { Tabs } from "../tabs/Tabs";
 
 const MIN_ITEMS_PER_PAGE = 50;
 
-export const Transactions: FC<{
+export const MultisigTransactions: FC<{
   chainId: string | undefined;
   multisigAddress?: string;
   userAddress?: string;
@@ -132,7 +132,7 @@ export const Transactions: FC<{
       <FlatList
         data={list}
         renderItem={({ item }) => (
-          <ProposalTransactionItem {...item} isUserMultisig={isUserMultisig} />
+          <MultisigTransactionItem {...item} isUserMultisig={isUserMultisig} />
         )}
         initialNumToRender={MIN_ITEMS_PER_PAGE}
         keyExtractor={(item) => item.id.toString()}

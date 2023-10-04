@@ -10,7 +10,7 @@ import { MultisigSection } from "./components/MultisigSection";
 import { MultisigLegacyFormType } from "./types";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
-import { Transactions } from "../../components/multisig/Transactions";
+import { MultisigTransactions } from "../../components/multisig/MultisigTransactions";
 import { SpacerColumn } from "../../components/spacer";
 import { UserCard } from "../../components/user/UserCard";
 import { useMultisigClient } from "../../hooks/multisig/useMultisigClient";
@@ -113,7 +113,7 @@ export const MultisigWalletDashboardScreen: ScreenFC<
           marginTop: layout.topContentSpacingWithHeading,
         }}
       >
-        <Transactions
+        <MultisigTransactions
           chainId={cosmosNetwork?.chainId}
           multisigAddress={multisigAddress}
           title="Transactions"

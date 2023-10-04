@@ -2,7 +2,7 @@ import React, { FC, useEffect, useMemo } from "react";
 import { Linking, Pressable, StyleSheet, View, ViewStyle } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 
-import { ProposalTransactionItemProps } from "./ProposalTransactionItem";
+import { MultisigTransactionItemProps } from "./MultisigTransactionItem";
 import { useApproveTransaction } from "../../hooks/multisig/useApproveTransaction";
 import { useBroadcastTransaction } from "../../hooks/multisig/useBroadcastTransaction";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
@@ -23,7 +23,9 @@ import { SecondaryButton } from "../buttons/SecondaryButton";
 import { SecondaryButtonOutline } from "../buttons/SecondaryButtonOutline";
 import { MainConnectWalletButton } from "../connectWallet/MainConnectWalletButton";
 
-export const TransactionItemButtons: React.FC<ProposalTransactionItemProps> = ({
+export const MultisigTransactionActions: React.FC<
+  MultisigTransactionItemProps
+> = ({
   btnSquaresBackgroundColor,
   signatures,
   chainId,

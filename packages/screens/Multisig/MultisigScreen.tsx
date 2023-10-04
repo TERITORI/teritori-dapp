@@ -21,7 +21,7 @@ import { AnimationFadeIn } from "../../components/animations/AnimationFadeIn";
 import { TertiaryBox } from "../../components/boxes/TertiaryBox";
 import ModalBase from "../../components/modals/ModalBase";
 import { LoginButton } from "../../components/multisig/LoginButton";
-import { Transactions } from "../../components/multisig/Transactions";
+import { MultisigTransactions } from "../../components/multisig/MultisigTransactions";
 import { SpacerColumn } from "../../components/spacer";
 import { useUserMultisigs } from "../../hooks/multisig/useUserMultisigs";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
@@ -326,7 +326,7 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
             <View style={styles.horizontalContentPadding}>
               <Separator color={neutral33} />
               <SpacerColumn size={3} />
-              <Transactions
+              <MultisigTransactions
                 userAddress={selectedWallet?.address}
                 chainId={cosmosNetwork?.chainId}
                 title="Multisig Transactions Overview"
