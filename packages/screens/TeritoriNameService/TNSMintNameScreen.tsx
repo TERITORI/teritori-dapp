@@ -146,7 +146,7 @@ export const TNSMintNameScreen: React.FC<TNSMintNameScreenProps> = ({
   // ==== Init
   useFocusEffect(() => {
     // ===== Controls many things, be careful
-    if (!userHasCoWallet || !isKeplrConnected || !isLeapConnected)
+    if (!userHasCoWallet || (!isKeplrConnected && !isLeapConnected))
       navigation.navigate("TNSHome");
     if (name && userHasCoWallet && tokens.includes(normalizedTokenId))
       onClose();
@@ -194,7 +194,8 @@ export const TNSMintNameModal: React.FC<
   const queryClient = useQueryClient();
 
   const handleSubmit = async (data: Metadata) => {
-    if (!isKeplrConnected || !isLeapConnected || !price) {
+    if ((!isKeplrConnected && !isLeapConnected) || !price) {
+      // FIXME: define some central "areCosmosWalletsConnected"
       return;
     }
 
