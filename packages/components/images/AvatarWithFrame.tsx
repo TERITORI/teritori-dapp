@@ -58,6 +58,7 @@ export const AvatarWithFrame: React.FC<{
         source={emptyCircleFrameSVG}
         width={sizedStyles.frame.width}
         height={sizedStyles.frame.height}
+        style={{ position: "relative", left: -1, top: 1 }} // we need this adjustments to properly center the frame around the avatar, FIXME: this should be done in the avatar image
       />
 
       <AnimationFadeIn style={styles.absolute}>

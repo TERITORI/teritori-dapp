@@ -1,5 +1,7 @@
 import React from "react";
-import { Image, ImageProps } from "react-native";
+import { Image, ImageProps, View, StyleSheet } from "react-native";
+
+import { neutral33, neutral77 } from "../utils/style/colors";
 
 // This only supports uri images since the proxy is only for external images
 
@@ -12,11 +14,29 @@ export const OptimizedImage: React.FC<
   }
 > = ({ sourceURI: baseSourceURI, width, height, fallbackURI, ...other }) => {
   const [isError, setIsError] = React.useState(false);
-  const shouldUseFallback = (!baseSourceURI || isError) && !!fallbackURI;
+  const [isFallbackError, setIsFallbackError] = React.useState(false);
+  const shouldUseFallback = !baseSourceURI || isError;
   const sourceURI = shouldUseFallback ? fallbackURI : baseSourceURI;
+
+  if ((shouldUseFallback && !fallbackURI) || isFallbackError) {
+    return (
+      <View
+        style={{
+          width,
+          height,
+          borderRadius: StyleSheet.flatten(other.style).borderRadius,
+          backgroundColor: neutral33,
+        }}
+      />
+    );
+  }
   return (
     <Image
       onError={() => {
+        if (shouldUseFallback) {
+          setIsFallbackError(true);
+          return;
+        }
         setIsError(true);
       }}
       source={{

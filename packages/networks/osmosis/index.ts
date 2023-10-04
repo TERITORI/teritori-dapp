@@ -25,6 +25,8 @@ export const osmosisNetwork: NetworkInfo = {
     average: 0.025,
     high: 0.04,
   },
+  nameServiceDefaultImage:
+    "https://raw.githubusercontent.com/cosmos/chain-registry/master/osmosis/images/osmo.svg",
   cosmosFeatures: [
     "stargate",
     "ibc-transfer",
