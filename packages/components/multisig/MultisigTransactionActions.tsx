@@ -58,14 +58,12 @@ export const MultisigTransactionActions: React.FC<
 
   const isCompletedSignature = signatures.length >= threshold;
 
-  // hooks
   useEffect(() => {
     if (resTxHash) {
       shouldRetch && shouldRetch();
     }
   }, [resTxHash, shouldRetch]);
 
-  // functions
   const onApprove = async () => {
     approve({
       tx: {
@@ -95,7 +93,6 @@ export const MultisigTransactionActions: React.FC<
       transactionId: id,
     });
 
-  // returns
   if (wallet?.address === undefined) {
     return <MainConnectWalletButton size="M" />;
   }
