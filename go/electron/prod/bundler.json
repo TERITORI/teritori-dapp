@@ -17,5 +17,23 @@
     "NSAppTransportSecurity": {
       "NSAllowsArbitraryLoads": true
     }
-  }
+  },
+  "environments": [
+    {
+      "arch": "amd64",
+      "os": "darwin"
+    },
+    {
+      "arch": "amd64",
+      "os": "linux"
+    },
+    {
+      "arch": "amd64",
+      "os": "windows",
+      "env": {
+        "CC": "/usr/local/opt/mingw-w64/bin/x86_64-w64-mingw32-gcc",
+        "CGO_ENABLED": "1"
+      }
+    }
+  ]
 }

@@ -17,6 +17,7 @@ import (
 
 	"github.com/dgraph-io/badger/options"
 	badger "github.com/ipfs/go-ds-badger"
+	"github.com/mitchellh/go-homedir"
 	"github.com/phayes/freeport"
 	"moul.io/srand"
 
@@ -125,29 +126,32 @@ func handleExit() {
 }
 
 func checkAndCreateDir() {
-	newDirName := "wesh-electron"
-	ex, err := os.Executable() // ex is the path to where the app is being executed
-	if err == nil {
 
-	// Create the full path for the new directory
-	weshDir = filepath.Join(filepath.Dir(ex), newDirName)
+	homeDir, err := homedir.Dir()
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
+	}
+
+	dir := "teritori-electron-wesh"
+
+	weshDir = filepath.Join(homeDir, dir)
 
 	// Check if the directory already exists
 	_, err = os.Stat(weshDir)
 	if err == nil {
 		fmt.Printf("Directory '%s' already exists.\n", weshDir)
-
-	} else {
+	} else if os.IsNotExist(err) {
 		// Create the new directory
 		err = os.Mkdir(weshDir, 0755)
 		if err != nil {
 			fmt.Println("Error:", err)
 			return
 		}
-
 		fmt.Printf("Created directory '%s'.\n", weshDir)
+	} else {
+		fmt.Println("Error:", err)
 	}
-}
 }
 
 func wesh() {
@@ -372,6 +376,7 @@ func electron() {
 		},
 		OnWait: func(_ *astilectron.Astilectron, ws []*astilectron.Window, _ *astilectron.Menu, _ *astilectron.Tray, _ *astilectron.Menu) error {
 			w = ws[0]
+			startListeners()
 
 			go func() {
 				time.Sleep(5 * time.Second)
@@ -381,7 +386,6 @@ func electron() {
 				bootstrap.SendMessage(w, "weshnet.port", port)
 
 			}()
-			 
 			return nil
 		},
 
