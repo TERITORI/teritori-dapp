@@ -1,6 +1,7 @@
 import { Platform } from "react-native";
 
 import { weshConfig } from "./config";
+import { fixWeshPortURLParams } from "./devWeshPortFix";
 import { bootWeshnet } from "./services";
 import { isElectron } from "../../utils/isElectron";
 import {
@@ -79,7 +80,10 @@ if (Platform.OS === "web" && !isElectron()) {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
   const port = urlParams.get("weshPort");
-  console.log("weshport", port);
+
+  if (port) {
+    fixWeshPortURLParams();
+  }
   setTimeout(() => {
     weshClient.createClient(Number(port) || 4242);
   }, 5 * 1000);
