@@ -106,12 +106,11 @@ export const SocialThreadCard: React.FC<{
     });
 
   const { setToastError, setToastSuccess } = useFeedbacks();
-
+  const wallet = useSelectedWallet();
   const selectedNetworkInfo = useSelectedNetworkInfo();
   const selectedNetworkId = selectedNetworkInfo?.id || "";
   const authorNSInfo = useNSUserInfo(localPost.authorId);
   const [, authorAddress] = parseUserId(localPost.authorId);
-  const wallet = useSelectedWallet();
   const navigation = useAppNavigation();
   const metadata: SocialFeedMetadata = JSON.parse(localPost.metadata);
   const username = authorNSInfo?.metadata?.tokenId || authorAddress;
