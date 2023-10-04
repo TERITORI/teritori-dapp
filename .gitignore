@@ -86,10 +86,6 @@ web-build/
 
 
 # electron
-go/electron/output
-go/electron/prod/bind*
-go/electron/prod/resources/app/
-go/electron/dev/desktop/
 electron/
 
 # weshnet

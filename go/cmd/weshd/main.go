@@ -4,6 +4,9 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"os/signal"
+	"strconv"
+	"syscall"
 
 	mrand "math/rand"
 	"net/http"
@@ -29,10 +32,44 @@ import (
 	"github.com/pkg/errors"
 )
 
-func main() {
-	port := 4242;
+var port = 4242
+var weshDir = "./temp/wesh-dir/4242"
+
+func checkAndUpdatePortFromArgs() {
+	args := os.Args[1:]
+
+	if len(args) != 0 {
+		// Attempt to parse the first argument as an integer
+		parsedPort, err := strconv.Atoi(args[0])
+		if err != nil {
+			fmt.Println("Invalid port number:", args[0])
+			return
+		}
+		port = parsedPort
+	}
+}
+
+func checkAndProcessDir() {
+	// Define the directory path
+	basePath := "./temp/wesh-dir"
+	weshDir = basePath + "/" + strconv.Itoa(port)
+	// Attempt to create the directory and its parent directories if they don't exist
+	err := os.MkdirAll(weshDir, 0755)
+
+	if err != nil {
+		fmt.Println("Error creating directory:", err)
+		return
+	}
+
+	fmt.Printf("Directory '%s' and its parent directories have been created.\n", weshDir)
+}
+
+func startHTTPServer() {
+	// Use the 'port' variable in your code
+	fmt.Printf("Using port: %d\n", port)
+
 	fs := flag.NewFlagSet("weshd", flag.ContinueOnError)
-	path := "./temp/wesh-dir"
+
 	if err := ff.Parse(fs, os.Args[1:]); err != nil {
 		panic(errors.Wrap(err, "failed to parse flags"))
 	}
@@ -52,17 +89,17 @@ func main() {
 	// setup ipfs node
 	bopts := badger.DefaultOptions
 	bopts.ValueLogLoadingMode = options.FileIO
-	ds, err := badger.NewDatastore(path, &bopts)
+	ds, err := badger.NewDatastore(weshDir, &bopts)
 	if err != nil {
 		panic(errors.Wrap(err, "unable to init badger datastore"))
 	}
 
-	repo, err := ipfsutil.LoadRepoFromPath(path)
+	repo, err := ipfsutil.LoadRepoFromPath(weshDir)
 	if err != nil {
 		panic(errors.Wrap(err, "failed to create ipfs repo"))
 	}
 
-	mrepo := ipfs_mobile.NewRepoMobile(path, repo)
+	mrepo := ipfs_mobile.NewRepoMobile(weshDir, repo)
 	mnode, err := ipfsutil.NewIPFSMobile(context.Background(), mrepo, &ipfsutil.MobileOptions{})
 	if err != nil {
 		panic(errors.Wrap(err, "failed to create ipfs node"))
@@ -92,10 +129,8 @@ func main() {
 		panic(errors.Wrap(err, "failed to create tinder driver"))
 	}
 
-
-	
 	svc, err := weshnet.NewService(weshnet.Opts{
-		Logger:        logger,
+		Logger: logger,
 		// DatastoreDir:  weshnet.InMemoryDirectory,
 		TinderService: tinderDriver,
 		IpfsCoreAPI:   ipfsCoreAPI,
@@ -108,8 +143,8 @@ func main() {
 
 	protocoltypes.RegisterProtocolServiceServer(grpcServer, svc)
 	wrappedServer := grpcweb.WrapServer(grpcServer,
-	grpcweb.WithOriginFunc(func(string) bool { return true }), // @FIXME: this is very insecure
-	grpcweb.WithWebsockets(true),
+		grpcweb.WithOriginFunc(func(string) bool { return true }), // @FIXME: this is very insecure
+		grpcweb.WithWebsockets(true),
 	)
 	handler := func(resp http.ResponseWriter, req *http.Request) {
 		resp.Header().Set("Access-Control-Allow-Origin", "*")
@@ -126,4 +161,36 @@ func main() {
 	if err := httpServer.ListenAndServe(); err != nil {
 		panic(errors.Wrap(err, "failed to start http server"))
 	}
+
+}
+
+func main() {
+
+	checkAndUpdatePortFromArgs()
+	checkAndProcessDir()
+
+	   // Create a channel to signal when the HTTP server should stop
+	   stopHTTPServer := make(chan struct{})
+
+	   // Start the HTTP server in a goroutine
+	   go func() {
+		   startHTTPServer()
+		   close(stopHTTPServer) // Signal that the HTTP server has stopped
+	   }()
+   
+	   // Create a channel to listen for interrupt signals (Ctrl+C)
+	   interruptChannel := make(chan os.Signal, 1)
+	   signal.Notify(interruptChannel, os.Interrupt, syscall.SIGTERM)
+   
+	   // Block until a signal is received
+	   <-interruptChannel
+   
+	   fmt.Println("Ctrl+C received. Stopping the program.")
+   
+	   // Signal the HTTP server to stop
+	   close(stopHTTPServer)
+   
+	   // Perform any cleanup or finalization here
+   
+	   fmt.Println("Program has exited.")
 }

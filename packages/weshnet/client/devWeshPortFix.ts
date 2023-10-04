@@ -28,7 +28,7 @@ export const fixWeshPortURLParams = () => {
     const url = window.location.href;
     let newURL = url;
     if (url.includes("?")) {
-      if (!url.includes("?weshPort")) {
+      if (!url.includes("weshPort")) {
         newURL = `${url}&${queryString.replace("?", "")}`;
       }
     } else {
