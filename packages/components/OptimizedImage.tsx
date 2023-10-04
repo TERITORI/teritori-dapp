@@ -1,7 +1,7 @@
 import React from "react";
 import { Image, ImageProps, View, StyleSheet } from "react-native";
 
-import { neutral33, neutral77 } from "../utils/style/colors";
+import { neutral33 } from "../utils/style/colors";
 
 // This only supports uri images since the proxy is only for external images
 
