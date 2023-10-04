@@ -206,7 +206,7 @@ export const Navigator: React.FC = () => {
         component={MultisigCreateScreen}
         options={{
           header: () => null,
-          title: screenTitle("Multisig Wallet Create"),
+          title: screenTitle("Create Multisig Wallet"),
         }}
       />
       <Stack.Screen
@@ -214,7 +214,7 @@ export const Navigator: React.FC = () => {
         component={MultisigWalletDashboardScreen}
         options={{
           header: () => null,
-          title: screenTitle("Multisig Legacy"),
+          title: screenTitle("Multisig Wallet Dashboard"),
         }}
       />
 
