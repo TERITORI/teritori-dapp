@@ -77,7 +77,6 @@ export const useKeplr: () => UseKeplrResult = () => {
           console.error("no keplr");
           return;
         }
-
         if (selectedNetworkInfo?.kind !== NetworkKind.Cosmos) {
           setReady(true);
           return;
@@ -89,14 +88,6 @@ export const useKeplr: () => UseKeplrResult = () => {
           return;
         }
         await keplr.enable(chainId);
-
-        keplr.defaultOptions = {
-          sign: {
-            preferNoSetFee: true,
-            preferNoSetMemo: true,
-            disableBalanceCheck: true,
-          },
-        };
         const offlineSigner = await keplr.getOfflineSignerAuto(chainId);
         const accounts = await offlineSigner.getAccounts();
         setAddresses(accounts.map((account) => account.address));
