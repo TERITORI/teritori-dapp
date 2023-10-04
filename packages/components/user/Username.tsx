@@ -21,10 +21,12 @@ export const Username: FC<{
         params: { id: userId },
       }}
     >
-      <BrandText style={[textStyle, { color: "#16BBFF" }]}>
+      <BrandText
+        style={[textStyle, { color: primaryAlias ? "#16BBFF" : "white" }]}
+      >
         {primaryAlias
           ? `@${primaryAlias}`
-          : tinyAddress(userAddress, addressLength || 10)}
+          : tinyAddress(userAddress, addressLength || 14)}
       </BrandText>
     </OmniLink>
   );

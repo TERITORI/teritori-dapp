@@ -54,12 +54,14 @@ export const ProposalTransactionItem: React.FC<ProposalTransactionItemProps> = (
   const approvedByCount = signatures.length || 0;
   const completedPercent = (approvedByCount / threshold) * 100;
 
-  const [txName, txInfo, txInfo2, txIcon] = getTxInfo(
-    msgs,
-    navigation,
-    network,
-    { textStyle: { ...brandTextNormalCStyle, color: "white" } }
-  );
+  const {
+    name: txName,
+    small1: txInfo,
+    small2: txInfo2,
+    icon: txIcon,
+  } = getTxInfo(msgs, navigation, network, {
+    textStyle: { ...brandTextNormalCStyle, color: "white" },
+  });
 
   return (
     <>

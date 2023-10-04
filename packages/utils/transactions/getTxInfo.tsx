@@ -11,6 +11,8 @@ import stakingWhiteSVG from "../../../assets/icons/staking_white.svg";
 import tnsWhiteSVG from "../../../assets/icons/tns-service_white.svg";
 import walletWhiteSVG from "../../../assets/icons/wallet_white.svg";
 import { BrandText } from "../../components/BrandText";
+import { SocialMessageContent } from "../../components/socialFeed/SocialThread/SocialMessageContent";
+import { SpacerColumn } from "../../components/spacer";
 import { Username } from "../../components/user/Username";
 import {
   NetworkInfo,
@@ -31,7 +33,13 @@ export const getTxInfo = (
   navigation: AppNavigationProp,
   network: NetworkInfo | undefined,
   opts?: { textStyle?: StyleProp<TextStyle> }
-): [string, React.ReactElement, React.ReactElement, React.FC<SvgProps>] => {
+): {
+  name: string;
+  small1: React.ReactElement;
+  small2: React.ReactElement;
+  icon: React.FC<SvgProps>;
+  MessagePreview: React.FC;
+} => {
   if (!opts) {
     opts = {};
   }
@@ -44,22 +52,26 @@ export const getTxInfo = (
     { color: neutral77 },
   ];
   if (msgs.length === 0) {
-    return [
-      "Sentiment",
-      <BrandText style={brandTextNormalStyle}> </BrandText>,
-      <BrandText style={brandTextNormalStyle}> </BrandText>,
-      multisigWhiteSVG,
-    ];
+    return {
+      name: "Sentiment",
+      small1: <BrandText style={brandTextNormalStyle}> </BrandText>,
+      small2: <BrandText style={brandTextNormalStyle}> </BrandText>,
+      icon: multisigWhiteSVG,
+      MessagePreview: () => null,
+    };
   }
   if (msgs.length > 1) {
-    return [
-      "Complex",
-      <BrandText style={brandTextNormalStyle}>
-        {msgs.length} messages
-      </BrandText>,
-      <BrandText style={brandTextNormalStyle}> </BrandText>,
-      multisigWhiteSVG,
-    ];
+    return {
+      name: "Complex",
+      small1: (
+        <BrandText style={brandTextNormalStyle}>
+          {msgs.length} actions
+        </BrandText>
+      ),
+      small2: <BrandText style={brandTextNormalStyle}> </BrandText>,
+      icon: multisigWhiteSVG,
+      MessagePreview: () => null,
+    };
   }
   let msg = msgs[0];
   try {
@@ -92,148 +104,185 @@ export const getTxInfo = (
         const recipientAddress = msg.value.toAddress;
         const amount = msg.value.amount?.[0]?.amount;
         const denom = msg.value.amount?.[0]?.denom;
-        return [
-          "Send",
-          <View style={rowCenterCStyle}>
-            <BrandText style={brandTextNormalStyle}>Sending to: </BrandText>
-            <Username
-              userId={getUserId(network?.id, recipientAddress)}
-              textStyle={opts.textStyle}
-            />
-          </View>,
-          <View style={rowCenterCStyle}>
-            <BrandText style={brandTextNormalStyle}>Will receive: </BrandText>
-            <BrandText style={opts.textStyle}>
-              {prettyPrice(network?.id, amount, denom)}
-            </BrandText>
-          </View>,
-          walletWhiteSVG,
-        ];
+        return {
+          name: "Send",
+          small1: (
+            <View style={rowCenterCStyle}>
+              <BrandText style={brandTextNormalStyle}>Sending to: </BrandText>
+              <Username
+                userId={getUserId(network?.id, recipientAddress)}
+                textStyle={opts.textStyle}
+              />
+            </View>
+          ),
+          small2: (
+            <View style={rowCenterCStyle}>
+              <BrandText style={brandTextNormalStyle}>Will receive: </BrandText>
+              <BrandText style={opts.textStyle}>
+                {prettyPrice(network?.id, amount, denom)}
+              </BrandText>
+            </View>
+          ),
+          icon: walletWhiteSVG,
+          MessagePreview: () => {
+            return (
+              <View>
+                <BrandText>
+                  Send {prettyPrice(network?.id, amount, denom)} to{" "}
+                  <Username userId={getUserId(network?.id, recipientAddress)} />
+                </BrandText>
+              </View>
+            );
+          },
+        };
       }
       case "/cosmos.staking.v1beta1.MsgDelegate": {
         const validatorAddress = msg.value.validatorAddress;
         const amount = msg.value.amount?.amount;
         const denom = msg.value.amount?.denom;
-        return [
-          "Delegate",
-          <View style={rowCenterCStyle}>
-            <BrandText style={brandTextNormalStyle}>Delegating to: </BrandText>
-            <Pressable
-              onPress={() => {
-                // TODO: show tns info using reusable component
-                const id = getUserId(network?.id, validatorAddress);
-                navigation.navigate("UserPublicProfile", { id });
-              }}
-            >
-              <BrandText style={opts.textStyle}>
-                {tinyAddress(validatorAddress, 20)}
+        return {
+          name: "Delegate",
+          small1: (
+            <View style={rowCenterCStyle}>
+              <BrandText style={brandTextNormalStyle}>
+                Delegating to:{" "}
               </BrandText>
-            </Pressable>
-          </View>,
-          <View style={rowCenterCStyle}>
-            <BrandText style={brandTextNormalStyle}>Will delegate: </BrandText>
-            <BrandText style={opts.textStyle}>
-              {prettyPrice(network?.id, amount, denom)}
-            </BrandText>
-          </View>,
-          stakingWhiteSVG,
-        ];
+              <Pressable
+                onPress={() => {
+                  // TODO: show tns info using reusable component
+                  const id = getUserId(network?.id, validatorAddress);
+                  navigation.navigate("UserPublicProfile", { id });
+                }}
+              >
+                <BrandText style={opts.textStyle}>
+                  {tinyAddress(validatorAddress, 20)}
+                </BrandText>
+              </Pressable>
+            </View>
+          ),
+          small2: (
+            <View style={rowCenterCStyle}>
+              <BrandText style={brandTextNormalStyle}>
+                Will delegate:{" "}
+              </BrandText>
+              <BrandText style={opts.textStyle}>
+                {prettyPrice(network?.id, amount, denom)}
+              </BrandText>
+            </View>
+          ),
+          icon: stakingWhiteSVG,
+          MessagePreview: () => null,
+        };
       }
       case "/cosmos.staking.v1beta1.MsgUndelegate": {
         const validatorAddress = msg.value.validatorAddress;
         const amount = msg.value.amount?.amount;
         const denom = msg.value.amount?.denom;
-        return [
-          "Undelegate",
-          <View style={rowCenterCStyle}>
-            <BrandText style={brandTextNormalStyle}>
-              Undelegating from:{" "}
-            </BrandText>
-            <Pressable
-              onPress={() => {
-                // TODO: show tns info using reusable component
-                const id = getUserId(network?.id, validatorAddress);
-                navigation.navigate("UserPublicProfile", { id });
-              }}
-            >
-              <BrandText style={opts.textStyle}>
-                {tinyAddress(validatorAddress, 20)}
+        return {
+          name: "Undelegate",
+          small1: (
+            <View style={rowCenterCStyle}>
+              <BrandText style={brandTextNormalStyle}>
+                Undelegating from:{" "}
               </BrandText>
-            </Pressable>
-          </View>,
-          <View style={rowCenterCStyle}>
-            <BrandText style={brandTextNormalStyle}>
-              Will undelegate:{" "}
-            </BrandText>
-            <BrandText style={opts.textStyle}>
-              {prettyPrice(network?.id, amount, denom)}
-            </BrandText>
-          </View>,
-          stakingWhiteSVG,
-        ];
+              <Pressable
+                onPress={() => {
+                  // TODO: show tns info using reusable component
+                  const id = getUserId(network?.id, validatorAddress);
+                  navigation.navigate("UserPublicProfile", { id });
+                }}
+              >
+                <BrandText style={opts.textStyle}>
+                  {tinyAddress(validatorAddress, 20)}
+                </BrandText>
+              </Pressable>
+            </View>
+          ),
+          small2: (
+            <View style={rowCenterCStyle}>
+              <BrandText style={brandTextNormalStyle}>
+                Will undelegate:{" "}
+              </BrandText>
+              <BrandText style={opts.textStyle}>
+                {prettyPrice(network?.id, amount, denom)}
+              </BrandText>
+            </View>
+          ),
+          icon: stakingWhiteSVG,
+          MessagePreview: () => null,
+        };
       }
       case "/cosmos.staking.v1beta1.MsgBeginRedelegate": {
         const sourceValidatorAddress = msg.value.validatorSrcAddress;
         const destinationValidatorAddress = msg.value.validatorDstAddress;
         const amount = msg.value.amount?.amount;
         const denom = msg.value.amount?.denom;
-        return [
-          "Redelegate",
-          <View style={rowCenterCStyle}>
-            <BrandText style={brandTextNormalStyle}>From: </BrandText>
-            <Pressable
-              onPress={() => {
-                // TODO: show tns info using reusable component
-                const id = getUserId(network?.id, sourceValidatorAddress);
-                navigation.navigate("UserPublicProfile", { id });
-              }}
-            >
-              <BrandText style={opts.textStyle}>
-                {tinyAddress(sourceValidatorAddress, 10)}
+        return {
+          name: "Redelegate",
+          small1: (
+            <View style={rowCenterCStyle}>
+              <BrandText style={brandTextNormalStyle}>From: </BrandText>
+              <Pressable
+                onPress={() => {
+                  // TODO: show tns info using reusable component
+                  const id = getUserId(network?.id, sourceValidatorAddress);
+                  navigation.navigate("UserPublicProfile", { id });
+                }}
+              >
+                <BrandText style={opts.textStyle}>
+                  {tinyAddress(sourceValidatorAddress, 10)}
+                </BrandText>
+              </Pressable>
+              <BrandText style={brandTextNormalStyle}>, To: </BrandText>
+              <Pressable
+                onPress={() => {
+                  // TODO: show tns info using reusable component
+                  const id = getUserId(
+                    network?.id,
+                    destinationValidatorAddress
+                  );
+                  navigation.navigate("UserPublicProfile", { id });
+                }}
+              >
+                <BrandText style={opts.textStyle}>
+                  {tinyAddress(destinationValidatorAddress, 10)}
+                </BrandText>
+              </Pressable>
+            </View>
+          ),
+          small2: (
+            <View style={rowCenterCStyle}>
+              <BrandText style={brandTextNormalStyle}>
+                Will redelegate:{" "}
               </BrandText>
-            </Pressable>
-            <BrandText style={brandTextNormalStyle}>, To: </BrandText>
-            <Pressable
-              onPress={() => {
-                // TODO: show tns info using reusable component
-                const id = getUserId(network?.id, destinationValidatorAddress);
-                navigation.navigate("UserPublicProfile", { id });
-              }}
-            >
               <BrandText style={opts.textStyle}>
-                {tinyAddress(destinationValidatorAddress, 10)}
+                {prettyPrice(network?.id, amount, denom)}
               </BrandText>
-            </Pressable>
-          </View>,
-          <View style={rowCenterCStyle}>
-            <BrandText style={brandTextNormalStyle}>
-              Will redelegate:{" "}
-            </BrandText>
-            <BrandText style={opts.textStyle}>
-              {prettyPrice(network?.id, amount, denom)}
-            </BrandText>
-          </View>,
-          stakingWhiteSVG,
-        ];
+            </View>
+          ),
+          icon: stakingWhiteSVG,
+          MessagePreview: () => null,
+        };
       }
       case "/cosmwasm.wasm.v1.MsgExecuteContract": {
         const contractAddress = msg.value.contract;
+        let execMsg = {};
+        try {
+          execMsg = JSON.parse(Buffer.from(msg.value.msg).toString());
+        } catch (err) {
+          console.error("failed to parse msg", err, msg);
+        }
         let method;
         try {
           // TODO: prettify method name
-          method = Object.keys(
-            JSON.parse(
-              Buffer.from(
-                Uint8Array.from(Object.values(msg.value.msg))
-              ).toString()
-            )
-          )[0];
+          method = Object.keys(execMsg)[0];
         } catch (err) {
           console.error("failed to find method name", err);
           method = "Unknown";
         }
         let icon = multisigWhiteSVG;
         let name = "Execute";
+        let preview: React.FC = () => null;
         if (
           network?.kind === NetworkKind.Cosmos &&
           contractAddress === network.nameServiceContractAddress &&
@@ -248,62 +297,85 @@ export const getTxInfo = (
         ) {
           icon = feedWhiteSVG;
           name = "Post on feed";
+          const execMsg = JSON.parse(Buffer.from(msg.value.msg).toString());
+          preview = () => {
+            return (
+              <View>
+                <BrandText>Post on social feed</BrandText>
+                <SpacerColumn size={2.5} />
+                <SocialMessageContent
+                  postCategory={execMsg.create_post.category}
+                  metadata={JSON.parse(execMsg.create_post.metadata)}
+                  isPreview
+                />
+              </View>
+            );
+          };
         }
-        return [
+        return {
           name,
-          <View style={rowCenterCStyle}>
-            <BrandText style={brandTextNormalStyle}>Contract: </BrandText>
-            <Pressable
-              onPress={() => {
-                // TODO: show tns info using reusable component
-                const id = getUserId(network?.id, contractAddress);
-                navigation.navigate("UserPublicProfile", { id });
-              }}
-            >
-              <BrandText style={opts.textStyle}>
-                {tinyAddress(contractAddress, 10)}
-              </BrandText>
-            </Pressable>
-          </View>,
-          <View style={rowCenterCStyle}>
-            <BrandText style={brandTextNormalStyle}>Method: </BrandText>
-            <BrandText style={opts.textStyle}>{method}</BrandText>
-          </View>,
+          small1: (
+            <View style={rowCenterCStyle}>
+              <BrandText style={brandTextNormalStyle}>Contract: </BrandText>
+              <Pressable
+                onPress={() => {
+                  // TODO: show tns info using reusable component
+                  const id = getUserId(network?.id, contractAddress);
+                  navigation.navigate("UserPublicProfile", { id });
+                }}
+              >
+                <BrandText style={opts.textStyle}>
+                  {tinyAddress(contractAddress, 10)}
+                </BrandText>
+              </Pressable>
+            </View>
+          ),
+          small2: (
+            <View style={rowCenterCStyle}>
+              <BrandText style={brandTextNormalStyle}>Method: </BrandText>
+              <BrandText style={opts.textStyle}>{method}</BrandText>
+            </View>
+          ),
           icon,
-        ];
+          MessagePreview: preview,
+        };
       }
       case "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward": {
         const validatorAddress = msg.value.validatorAddress;
-        return [
-          "Withdraw staking rewards",
-          <View style={rowCenterCStyle}>
-            <BrandText style={opts.textStyle}>Validator: </BrandText>
-            <Pressable
-              onPress={() => {
-                // TODO: show tns info using reusable component
-                const id = getUserId(network?.id, validatorAddress);
-                navigation.navigate("UserPublicProfile", { id });
-              }}
-            >
-              <BrandText style={opts.textStyle}>
-                {tinyAddress(validatorAddress, 20)}
-              </BrandText>
-            </Pressable>
-          </View>,
-          <BrandText style={brandTextNormalStyle}> </BrandText>,
-          stakingWhiteSVG,
-        ];
+        return {
+          name: "Withdraw staking rewards",
+          small1: (
+            <View style={rowCenterCStyle}>
+              <BrandText style={opts.textStyle}>Validator: </BrandText>
+              <Pressable
+                onPress={() => {
+                  // TODO: show tns info using reusable component
+                  const id = getUserId(network?.id, validatorAddress);
+                  navigation.navigate("UserPublicProfile", { id });
+                }}
+              >
+                <BrandText style={opts.textStyle}>
+                  {tinyAddress(validatorAddress, 20)}
+                </BrandText>
+              </Pressable>
+            </View>
+          ),
+          small2: <BrandText style={brandTextNormalStyle}> </BrandText>,
+          icon: stakingWhiteSVG,
+          MessagePreview: () => null,
+        };
       }
     }
   } catch (err) {
     console.error(err);
   }
-  return [
-    "Unknown",
-    <BrandText style={brandTextNormalStyle}>{msg.typeUrl}</BrandText>,
-    <BrandText style={brandTextNormalStyle}> </BrandText>,
-    multisigWhiteSVG,
-  ];
+  return {
+    name: "Unknown",
+    small1: <BrandText style={brandTextNormalStyle}>{msg.typeUrl}</BrandText>,
+    small2: <BrandText style={brandTextNormalStyle}> </BrandText>,
+    icon: multisigWhiteSVG,
+    MessagePreview: () => null,
+  };
 };
 
 const rowCenterCStyle: ViewStyle = {

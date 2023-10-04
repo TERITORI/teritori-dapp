@@ -99,7 +99,7 @@ const ProposalRow: React.FC<{
 
   const navigation = useAppNavigation();
 
-  const [name, , , icon] = getTxInfo(
+  const { name, icon } = getTxInfo(
     proposal.proposal.msgs,
     navigation,
     network,
