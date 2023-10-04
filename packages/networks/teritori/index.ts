@@ -62,6 +62,7 @@ export const teritoriNetwork: CosmosNetworkInfo = {
   secondaryDuringMintList: [
     nameServiceContractAddress,
     riotContractAddressGen1,
+    "tori1lnx4r7styl209e9lfce8tdd7hyclq98upx25ax3t2qkmcl3jlgvsh787qa", // Glitch Candies
     "tori167xst2jy9n6u92t3n8hf762adtpe3cs6acsgn0w5n2xlz9hv3xgs4ksc6t", // Diseases of the Brain AI
   ],
   excludeFromLaunchpadList: [riotContractAddressGen1],
