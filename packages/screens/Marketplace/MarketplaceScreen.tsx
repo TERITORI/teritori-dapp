@@ -16,7 +16,7 @@ import { ScreenContainer } from "../../components/ScreenContainer";
 import { RoundedGradientImage } from "../../components/images/RoundedGradientImage";
 import { SearchInput } from "../../components/sorts/SearchInput";
 import { SpacerColumn } from "../../components/spacer";
-import { TableRow } from "../../components/table";
+import { TableRow } from "../../components/table/TableRow";
 import { Tabs } from "../../components/tabs/Tabs";
 import { useCollections } from "../../hooks/useCollections";
 import { useEnabledNetworks } from "../../hooks/useEnabledNetworks";

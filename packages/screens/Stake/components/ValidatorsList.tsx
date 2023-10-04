@@ -6,7 +6,7 @@ import { PrimaryButtonOutline } from "../../../components/buttons/PrimaryButtonO
 import { SecondaryButtonOutline } from "../../../components/buttons/SecondaryButtonOutline";
 import { RoundedGradientImage } from "../../../components/images/RoundedGradientImage";
 import { SpacerRow } from "../../../components/spacer";
-import { TableRow, TableRowHeading } from "../../../components/table";
+import { TableRow, TableRowHeading } from "../../../components/table/TableRow";
 import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useKeybaseAvatarURL } from "../../../hooks/useKeybaseAvatarURL";
 import { Reward, rewardsPrice, useRewards } from "../../../hooks/useRewards";
