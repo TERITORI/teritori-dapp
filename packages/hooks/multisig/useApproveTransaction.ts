@@ -81,7 +81,6 @@ export const useApproveTransaction = () => {
                 msg: Uint8Array.from(Object.values(msg.value.msg)),
               },
             };
-            console.log("modified", modified);
             return modified;
           }
           return msg;
