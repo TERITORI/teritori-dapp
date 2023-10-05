@@ -192,7 +192,6 @@ export const processMetadata = async (data: GroupMetadataEvent) => {
       }
       case EventType.EventTypeAccountGroupJoined: {
         const parsedData: any = GroupMetadataEvent.toJSON(data);
-        console.log("group joined", data, parsedData);
 
         parsedData.payload = AccountGroupJoined.decode(data.metadata.payload);
         store.dispatch(

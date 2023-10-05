@@ -30,7 +30,11 @@ import {
   getConversationName,
 } from "../../../weshnet/client/messageHelpers";
 import { sendMessage } from "../../../weshnet/client/services";
-import { bytesFromString } from "../../../weshnet/client/utils";
+import { subscribeMessages } from "../../../weshnet/client/subscribers";
+import {
+  bytesFromString,
+  stringFromBytes,
+} from "../../../weshnet/client/utils";
 
 interface CreateGroupProps {
   onClose: () => void;
@@ -119,6 +123,8 @@ export const CreateGroup = ({ onClose }: CreateGroupProps) => {
             });
           })
       );
+
+      subscribeMessages(stringFromBytes(groupInfo.group?.publicKey));
 
       onClose();
     } catch (err: any) {

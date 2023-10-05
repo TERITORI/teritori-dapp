@@ -76,6 +76,7 @@ export const GroupInvitationAction = ({
                 tokenId: weshConfig.metadata.tokenId,
                 name: contactInfo.name,
                 avatar: contactInfo.avatar,
+                peerId: weshConfig.config.peerId,
               },
               groupName: message?.payload?.metadata?.groupName,
             },

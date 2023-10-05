@@ -72,7 +72,6 @@ export const subscribeMessages = async (groupPk: string) => {
           console.log("get message error...", e);
         },
         complete: async () => {
-          console.log("get message complete");
           const lastId = selectLastIdByKey(groupPk)(store.getState());
           if (Platform.OS === "web" && lastId) {
             subscribeMessages(groupPk);
