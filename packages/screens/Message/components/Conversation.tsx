@@ -7,7 +7,8 @@ import { Avatar } from "react-native-paper";
 import { FileRenderer } from "./FileRenderer";
 import { GroupInvitationAction } from "./GroupInvitationAction";
 import { MessagePopup } from "./MessagePopup";
-import reply from "../../../../assets/icons/reply.svg";
+import doubleCheckSVG from "../../../../assets/icons/doublecheck.svg";
+import replySVG from "../../../../assets/icons/reply.svg";
 import { BrandText } from "../../../components/BrandText";
 import { Dropdown } from "../../../components/Dropdown";
 import FlexCol from "../../../components/FlexCol";
@@ -47,6 +48,7 @@ interface ConversationProps {
   isNextMine: boolean;
   onReply: (params: ReplyTo) => void;
   parentMessage?: Message;
+  isReadByContact?: boolean;
 }
 
 export const Conversation = ({
@@ -57,6 +59,7 @@ export const Conversation = ({
   isNextMine,
   onReply,
   parentMessage,
+  isReadByContact,
 }: ConversationProps) => {
   const [showPopup, setShowPopup] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
@@ -131,30 +134,48 @@ export const Conversation = ({
         }}
         alignItems={isSender ? "flex-end" : "flex-start"}
       >
-        {!isMessageChain && (
+        {(!isMessageChain || isSender) && (
           <FlexRow
             style={{
               marginBottom: layout.spacing_x0_25,
+              justifyContent: "space-between",
             }}
           >
-            <BrandText
-              style={[
-                fontBold10,
-                {
-                  color: secondaryColor,
-                },
-              ]}
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+              }}
             >
-              {isSender ? "me" : receiverName}
-            </BrandText>
-            <BrandText
-              style={[
-                fontMedium10,
-                { color: neutral77, marginLeft: layout.spacing_x0_5 },
-              ]}
-            >
-              {moment(message.timestamp).local().format("HH:mm")}
-            </BrandText>
+              <BrandText
+                style={[
+                  fontBold10,
+                  {
+                    color: secondaryColor,
+                  },
+                ]}
+              >
+                {isSender ? "Me" : receiverName}
+              </BrandText>
+              <BrandText
+                style={[
+                  fontMedium10,
+                  { color: neutral77, marginLeft: layout.spacing_x0_5 },
+                ]}
+              >
+                {moment(message.timestamp).local().format("HH:mm")}
+              </BrandText>
+            </View>
+            {isSender && !!isReadByContact && (
+              <SVG
+                source={doubleCheckSVG}
+                height={16}
+                width={16}
+                style={{
+                  marginLeft: layout.spacing_x0_5,
+                }}
+              />
+            )}
           </FlexRow>
         )}
         <TouchableOpacity
@@ -235,7 +256,7 @@ export const Conversation = ({
                       <SpacerRow size={1} />
                       <TouchableOpacity onPress={() => setShowMenu(true)}>
                         <SVG
-                          source={reply}
+                          source={replySVG}
                           height={16}
                           width={16}
                           color={neutralA3}

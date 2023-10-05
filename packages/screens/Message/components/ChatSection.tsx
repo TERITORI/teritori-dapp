@@ -1,13 +1,5 @@
-import { useFocusEffect } from "@react-navigation/native";
 import moment from "moment";
-import React, {
-  RefObject,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { RefObject, useEffect, useMemo, useRef, useState } from "react";
 import {
   View,
   TouchableOpacity,
@@ -106,6 +98,21 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
     [messages]
   );
 
+  const lastContactReadMessageIndex = useMemo(() => {
+    const message = messages.find(
+      (item) => item.id === conversationItem.lastReadIdByContact
+    );
+    if (!message) {
+      return null;
+    }
+
+    const index = messages.findIndex((msg) => msg.id === message?.id);
+    if (index === -1) {
+      return null;
+    }
+    return index;
+  }, [conversationItem, messages]);
+
   const searchResults = useMemo(() => {
     if (!searchInput) {
       return [];
@@ -157,7 +164,6 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
 
     setLastReadProcessedId(lastMessageId);
     try {
-      console.log("handle read");
       if (!lastMessageId) {
         return;
       }
@@ -187,16 +193,32 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
     } catch {}
   };
 
-  useFocusEffect(
-    useCallback(() => {
-      console.log("called foucs effect");
-      setLastReadMessage(
-        messages.find((item) => item.id === conversation.lastReadIdByMe)
-      );
+  useEffect(() => {
+    const lastReadMessageIndex = messages.findIndex(
+      (item) => item?.id === conversation?.lastReadIdByMe
+    );
+    if (lastReadMessageIndex === -1) {
+      return;
+    }
 
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [conversation.id])
-  );
+    const nextContactMessages = messages.filter(
+      (item, index) =>
+        index < lastReadMessageIndex &&
+        item.senderId !== stringFromBytes(weshConfig.config.accountPk)
+    );
+
+    const nextMessage = nextContactMessages[nextContactMessages.length - 1];
+
+    if (
+      nextMessage &&
+      nextMessage.id !== conversation.lastReadIdByMe &&
+      lastReadMessage?.id !== nextMessage.id
+    ) {
+      setLastReadMessage(nextMessage);
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [conversation, messages]);
 
   useEffect(() => {
     if (!conversationItem?.id || !contactMessages?.length) {
@@ -204,7 +226,6 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
     }
 
     if (contactMessages?.[0]?.id !== conversationItem.lastReadIdByMe) {
-      console.log("test message", contactMessages?.[0]);
       handleRead(contactMessages?.[0]?.id);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -332,12 +353,14 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
               if (lastReadMessage?.id) {
                 if (lastReadMessage.id === contactMessages?.[0]?.id) {
                   isNewSeparator = false;
-                } else if (lastReadMessage.id === previousMessage?.id) {
+                } else if (lastReadMessage.id === item?.id) {
                   isNewSeparator = true;
                 }
-              } else {
-                isNewSeparator = index === messages.length - 1;
               }
+              const isReadByContact =
+                lastContactReadMessageIndex === null
+                  ? false
+                  : index >= lastContactReadMessageIndex;
 
               const parentMessage = item?.parentId
                 ? messages.find((msg) => msg.id === item.parentId)
@@ -360,6 +383,7 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
                       }
                       isNextMine={nextMessage?.senderId === item.senderId}
                       parentMessage={parentMessage}
+                      isReadByContact={isReadByContact}
                     />
                   )}
                   {item.type === "accept-contact" && (
