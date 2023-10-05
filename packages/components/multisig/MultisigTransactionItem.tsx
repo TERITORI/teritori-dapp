@@ -1,11 +1,10 @@
 import moment from "moment";
 import React, { useState } from "react";
-import { ActivityIndicator, StyleSheet, View, ViewStyle } from "react-native";
+import { StyleSheet, View, ViewStyle } from "react-native";
 
 import { MultisigTransactionActions } from "./MultisigTransactionActions";
 import { MultisigTransactionModal } from "./MultisigTransactionModal";
 import { ParsedTransaction } from "../../hooks/multisig/useMultisigTransactions";
-import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { getCosmosNetworkByChainId, getUserId } from "../../networks";
 import { prettyPrice } from "../../utils/coins";
 import { useAppNavigation } from "../../utils/navigation";
@@ -22,7 +21,6 @@ import { getTxInfo } from "../../utils/transactions/getTxInfo";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { Separator } from "../Separator";
-import { AnimationFadeIn } from "../animations/AnimationFadeIn";
 import { CustomPressable } from "../buttons/CustomPressable";
 import { SpacerRow } from "../spacer";
 import { Username } from "../user/Username";
@@ -47,7 +45,6 @@ export const MultisigTransactionItem: React.FC<MultisigTransactionItemProps> = (
   const navigation = useAppNavigation();
   const network = getCosmosNetworkByChainId(chainId);
   const creatorId = getUserId(network?.id, creatorAddress);
-  const tnsMetadata = useNSUserInfo(creatorId);
   const [isHovered, setHovered] = useState(false);
   const [isProposalModalVisible, setProposalModalVisible] = useState(false);
   const approvedByCount = signatures.length || 0;
@@ -107,16 +104,10 @@ export const MultisigTransactionItem: React.FC<MultisigTransactionItemProps> = (
           <View style={rowCenterCStyle}>
             <BrandText style={brandTextSmallCStyle}>Created by:</BrandText>
             <SpacerRow size={0.5} />
-            {tnsMetadata.loading ? (
-              <ActivityIndicator size="small" />
-            ) : (
-              <AnimationFadeIn>
-                <Username
-                  userId={creatorId}
-                  textStyle={[brandTextSmallCStyle, { color: undefined }]}
-                />
-              </AnimationFadeIn>
-            )}
+            <Username
+              userId={creatorId}
+              textStyle={[brandTextSmallCStyle, { color: undefined }]}
+            />
           </View>
         </View>
 
