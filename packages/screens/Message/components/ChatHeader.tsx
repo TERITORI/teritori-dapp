@@ -25,6 +25,7 @@ import { Conversation } from "../../../utils/types/message";
 import { weshClient } from "../../../weshnet/client";
 import { getConversationName } from "../../../weshnet/client/messageHelpers";
 import { createMultiMemberShareableLink } from "../../../weshnet/client/services";
+import { subscribeMessages } from "../../../weshnet/client/subscribers";
 import { bytesFromString } from "../../../weshnet/client/utils";
 
 interface ChatHeaderProps {
@@ -65,18 +66,6 @@ export const ChatHeader = ({
   // };
 
   const LIST_ITEMS = [
-    conversation.type === "contact" && {
-      label: "Block Contact",
-      onPress: () => {
-        closeOpenedDropdown();
-        dispatch(
-          updateConversationById({
-            id: conversation.id,
-            status: "blocked",
-          })
-        );
-      },
-    },
     conversation.type === "group" && {
       label: "Leave Group",
       onPress: async () => {
@@ -106,6 +95,19 @@ export const ChatHeader = ({
           title: "Group link copied!",
           message: "",
         });
+      },
+    },
+    conversation.status === "archived" && {
+      label: "Unarchive Chat",
+      onPress: () => {
+        dispatch(
+          updateConversationById({
+            id: conversation.id,
+            status: "active",
+          })
+        );
+        subscribeMessages(conversation.id);
+        closeOpenedDropdown();
       },
     },
     conversation.status === "active" && {

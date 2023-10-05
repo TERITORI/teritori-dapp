@@ -84,9 +84,8 @@ if (Platform.OS === "web" && !isElectron()) {
   if (port) {
     fixWeshPortURLParams();
   }
-  setTimeout(() => {
-    weshClient.createClient(Number(port) || 4242);
-  }, 5 * 1000);
+
+  weshClient.createClient(Number(port) || 4242);
 }
 
 export { weshClient };

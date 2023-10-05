@@ -3,6 +3,7 @@ import moment from "moment";
 import React, {
   RefObject,
   useCallback,
+  useEffect,
   useMemo,
   useRef,
   useState,
@@ -34,6 +35,7 @@ import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import {
+  selectConversationById,
   selectMessageListByGroupPk,
   updateConversationById,
 } from "../../../store/slices/message";
@@ -57,6 +59,7 @@ import {
 import { layout } from "../../../utils/style/layout";
 import {
   Conversation as IConversation,
+  Message,
   MessageFileData,
   ReplyTo,
 } from "../../../utils/types/message";
@@ -84,12 +87,24 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
   const [file, setFile] = useState<MessageFileData>();
   const dispatch = useDispatch();
 
+  const [lastReadProcessedId, setLastReadProcessedId] = useState("");
+  const conversationItem = useSelector(selectConversationById(conversation.id));
+  const [lastReadMessage, setLastReadMessage] = useState<Message | undefined>();
+
   const [searchInput, setSearchInput] = useState("");
 
   const flatListRef = useRef<FlatList>(null);
 
   const { setToastError } = useFeedbacks();
   const messages = useSelector(selectMessageListByGroupPk(conversation.id));
+
+  const contactMessages = useMemo(
+    () =>
+      messages.filter(
+        (item) => item.senderId !== stringFromBytes(weshConfig.config.accountPk)
+      ),
+    [messages]
+  );
 
   const searchResults = useMemo(() => {
     if (!searchInput) {
@@ -135,45 +150,65 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
   };
   const { height } = useWindowDimensions();
 
+  const handleRead = async (lastMessageId: string) => {
+    if (lastReadProcessedId === lastMessageId) {
+      return;
+    }
+
+    setLastReadProcessedId(lastMessageId);
+    try {
+      console.log("handle read");
+      if (!lastMessageId) {
+        return;
+      }
+      if (conversation.type === "group") {
+        dispatch(
+          updateConversationById({
+            id: conversation.id,
+            lastReadIdByMe: lastMessageId,
+          })
+        );
+      } else {
+        await sendMessage({
+          groupPk: bytesFromString(conversation.id),
+          message: {
+            type: "read",
+            payload: {
+              message: "-",
+              metadata: {
+                lastReadBy: stringFromBytes(weshConfig.config.accountPk),
+                lastReadId: lastMessageId,
+              },
+              files: [],
+            },
+          },
+        });
+      }
+    } catch {}
+  };
+
   useFocusEffect(
     useCallback(() => {
-      return async () => {
-        const handleRead = async (lastMessageId: string) => {
-          if (!lastMessageId) {
-            return;
-          }
-          if (conversation.type === "group") {
-            dispatch(
-              updateConversationById({
-                id: conversation.id,
-                lastReadIdByMe: lastMessageId,
-              })
-            );
-          } else {
-            await sendMessage({
-              groupPk: bytesFromString(conversation.id),
-              message: {
-                type: "read",
-                payload: {
-                  message: "-",
-                  metadata: {
-                    lastReadBy: stringFromBytes(weshConfig.config.accountPk),
-                    lastReadId: lastMessageId,
-                  },
-                  files: [],
-                },
-              },
-            });
-          }
-        };
+      console.log("called foucs effect");
+      setLastReadMessage(
+        messages.find((item) => item.id === conversation.lastReadIdByMe)
+      );
 
-        if (messages?.[0]?.id !== conversation.lastReadIdByMe) {
-          handleRead(messages?.[0]?.id);
-        }
-      };
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [conversation.id])
   );
+
+  useEffect(() => {
+    if (!conversationItem?.id || !contactMessages?.length) {
+      return;
+    }
+
+    if (contactMessages?.[0]?.id !== conversationItem.lastReadIdByMe) {
+      console.log("test message", contactMessages?.[0]);
+      handleRead(contactMessages?.[0]?.id);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [conversationItem, contactMessages]);
 
   return (
     <KeyboardAvoidingView extraVerticalOffset={32}>
@@ -292,7 +327,18 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
                   item.timestamp
                 : item.timestamp;
 
-              const isNewSeparator = !previousMessage?.isRead && item.isRead;
+              let isNewSeparator = false;
+
+              if (lastReadMessage?.id) {
+                if (lastReadMessage.id === contactMessages?.[0]?.id) {
+                  isNewSeparator = false;
+                } else if (lastReadMessage.id === previousMessage?.id) {
+                  isNewSeparator = true;
+                }
+              } else {
+                isNewSeparator = index === messages.length - 1;
+              }
+
               const parentMessage = item?.parentId
                 ? messages.find((msg) => msg.id === item.parentId)
                 : undefined;

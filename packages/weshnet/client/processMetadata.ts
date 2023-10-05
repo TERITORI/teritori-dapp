@@ -18,7 +18,7 @@ import {
 
 const processedMetadataIds: string[] = [];
 
-export const handleMetadata = async (data: GroupMetadataEvent) => {
+export const processMetadata = async (data: GroupMetadataEvent) => {
   const id = stringFromBytes(data.eventContext?.id);
 
   if (processedMetadataIds.includes(id)) {

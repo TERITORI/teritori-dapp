@@ -10,6 +10,8 @@ import {
   CONVERSATION_TYPES,
   PeerItem,
 } from "./../../utils/types/message";
+import { weshConfig } from "../../weshnet/client";
+import { stringFromBytes } from "../../weshnet/client/utils";
 import { RootState } from "../store";
 
 export interface MessageState {
@@ -59,16 +61,24 @@ export const selectLastIdByKey = (key: string) => (state: RootState) =>
   state.message.lastIds[key];
 
 export const selectMessageListByGroupPk =
-  (groupPk: string) => (state: RootState) =>
+  (groupPk: string) =>
+  (state: RootState): Message[] =>
     Object.values(state.message.messageList[groupPk] || {})
       .filter((item) => item.id)
       .sort(
-        (a, b) => moment(b.timestamp).valueOf() - moment(a.timestamp).valueOf()
+        (a: Message, b: Message) =>
+          moment(b.timestamp).valueOf() - moment(a.timestamp).valueOf()
       );
 
 export const selectLastMessageByGroupPk =
   (groupPk: string) => (state: RootState) =>
     selectMessageListByGroupPk(groupPk)(state)[0];
+
+export const selectLastContactMessageByGroupPk =
+  (groupPk: string) => (state: RootState) =>
+    selectMessageListByGroupPk(groupPk)(state).filter(
+      (item) => item.senderId !== stringFromBytes(weshConfig.config.accountPk)
+    )[0];
 
 export const selectContactRequestList = (state: RootState) =>
   state.message.contactRequestList;

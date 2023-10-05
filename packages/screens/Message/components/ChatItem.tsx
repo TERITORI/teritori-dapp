@@ -9,6 +9,7 @@ import FlexRow from "../../../components/FlexRow";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import {
   selectConversationById,
+  selectLastContactMessageByGroupPk,
   selectLastMessageByGroupPk,
 } from "../../../store/slices/message";
 import { useAppNavigation } from "../../../utils/navigation";
@@ -41,12 +42,15 @@ export const ChatItem = ({
 }: ChatItemProps) => {
   const navigation = useAppNavigation();
   const lastMessage = useSelector(selectLastMessageByGroupPk(data.id));
+  const lastContactMessage = useSelector(
+    selectLastContactMessageByGroupPk(data.id)
+  );
   const contactInfo = data.members?.[0];
   const conversation = useSelector(selectConversationById(data.id));
 
   const isAllMessageRead = useMemo(() => {
-    return lastMessage?.id === conversation.lastReadIdByMe;
-  }, [conversation.lastReadIdByMe, lastMessage?.id]);
+    return lastContactMessage?.id === conversation.lastReadIdByMe;
+  }, [conversation.lastReadIdByMe, lastContactMessage?.id]);
 
   return (
     <TouchableOpacity
