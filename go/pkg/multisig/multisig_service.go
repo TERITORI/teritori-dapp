@@ -506,10 +506,6 @@ func (s *multisigService) LeaveMultisig(_ context.Context, req *multisigpb.Leave
 	return &multisigpb.LeaveMultisigResponse{Left: left}, nil
 }
 
-type CosmosMessage struct {
-	TypeURL string `json:"typeUrl"`
-}
-
 func (s *multisigService) CreateTransaction(_ context.Context, req *multisigpb.CreateTransactionRequest) (*multisigpb.CreateTransactionResponse, error) {
 	userAddress, err := s.authenticate(s.db, req.GetAuthToken())
 	if err != nil {
