@@ -86,7 +86,7 @@ export const networksFromCosmosRegistry = (): CosmosNetworkInfo[] => {
           chain.logo_URIs?.jpeg ||
           "not-found",
         testnet,
-        backendEndpoint: "TODO",
+        backendEndpoint: "",
         restEndpoint: chain.apis?.rest?.[0]?.address || "not-found",
         rpcEndpoint: chain.apis?.rpc?.[0]?.address || "not-found",
         stakeCurrency: chain.staking?.staking_tokens?.[0]?.denom || "not-found",

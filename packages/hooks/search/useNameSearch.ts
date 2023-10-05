@@ -9,7 +9,7 @@ export const useNameSearch = (req: Partial<SearchNamesRequest>) => {
     ["searchNames", req],
     async () => {
       const network = getNetwork(req.networkId);
-      if (!network?.backendEndpoint || network?.backendEndpoint === "TODO") {
+      if (!network?.backendEndpoint) {
         return [];
       }
       if (!req.input) {

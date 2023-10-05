@@ -8,7 +8,7 @@ export const useBanners = (networkId: string) => {
     ["banners", networkId],
     async () => {
       const network = getNetwork(networkId);
-      if (!network?.backendEndpoint || network?.backendEndpoint === "TODO") {
+      if (!network?.backendEndpoint) {
         return [];
       }
       const backendClient = mustGetMarketplaceClient(networkId);
