@@ -146,8 +146,6 @@ const runOrProposeTransaction = async ({
 
       const encodedMsgs = msgs.map((m) => cosmosTypesRegistry.encodeAsAny(m));
 
-      console.log("encodedMsgs", encodedMsgs);
-
       await multisigClient.CreateTransaction({
         authToken: multisigAuthToken,
         multisigAddress: userAddress,
