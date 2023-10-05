@@ -1,8 +1,8 @@
 import { MultisigThresholdPubkey } from "@cosmjs/amino";
 import { makeMultisignedTxBytes } from "@cosmjs/stargate";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useSelector } from "react-redux";
 
+import { useMultisigAuthToken } from "./useMultisigAuthToken";
 import { useMultisigClient } from "./useMultisigClient";
 import {
   ParsedTransaction,
@@ -14,16 +14,12 @@ import {
   getCosmosNetworkByChainId,
   getNonSigningStargateClient,
 } from "../../networks";
-import { selectMultisigToken } from "../../store/slices/settings";
-import { RootState } from "../../store/store";
 import useSelectedWallet from "../useSelectedWallet";
 
 export const useBroadcastTransaction = () => {
   const { setToastError, setToastSuccess } = useFeedbacks();
   const selectedWallet = useSelectedWallet();
-  const authToken = useSelector((state: RootState) =>
-    selectMultisigToken(state, selectedWallet?.address)
-  );
+  const authToken = useMultisigAuthToken(selectedWallet?.userId);
   const multisigClient = useMultisigClient();
   const queryClient = useQueryClient();
 

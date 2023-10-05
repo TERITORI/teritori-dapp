@@ -1,10 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import { useSelector } from "react-redux";
 
+import { useMultisigAuthToken } from "./useMultisigAuthToken";
 import { useMultisigClient } from "./useMultisigClient";
 import { getCosmosNetworkByChainId } from "../../networks";
-import { selectMultisigToken } from "../../store/slices/settings";
-import { RootState } from "../../store/store";
 import useSelectedWallet from "../useSelectedWallet";
 
 export const useMultisigTransactionsCounts = (
@@ -12,9 +10,7 @@ export const useMultisigTransactionsCounts = (
   multisigAddress: string | undefined
 ) => {
   const walletAccount = useSelectedWallet();
-  const authToken = useSelector((state: RootState) =>
-    selectMultisigToken(state, walletAccount?.address)
-  );
+  const authToken = useMultisigAuthToken(walletAccount?.userId);
   const multisigClient = useMultisigClient();
 
   const { data: transactionsCounts, ...others } = useQuery(

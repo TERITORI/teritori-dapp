@@ -2,7 +2,6 @@ import { Decimal } from "@cosmjs/math";
 import { useRoute } from "@react-navigation/native";
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
-import { useSelector } from "react-redux";
 
 import { Coin } from "../../../api/teritori-chain/cosmos/base/v1beta1/coin";
 import { MsgBurnTokens } from "../../../api/teritori-chain/teritori/mint/v1beta1/tx";
@@ -30,8 +29,6 @@ import {
   keplrCurrencyFromNativeCurrencyInfo,
   parseUserId,
 } from "../../../networks";
-import { selectMultisigToken } from "../../../store/slices/settings";
-import { RootState } from "../../../store/store";
 import { AppRouteType, useAppNavigation } from "../../../utils/navigation";
 import {
   neutral33,
@@ -60,9 +57,7 @@ export const MultisigRightSection: React.FC = () => {
   const [joinMultisigModalVisible, setJoinMultisigModalVisible] =
     useState(false);
   const selectedWallet = useSelectedWallet();
-  const authToken = useSelector((state: RootState) =>
-    selectMultisigToken(state, selectedWallet?.address)
-  );
+  const authToken = useMultisigAuthToken(selectedWallet?.userId);
 
   const [modalNameFinderVisible, setModalNameFinderVisible] = useState(false);
   const [burnModalVisible, setBurnModalVisible] = useState(false);

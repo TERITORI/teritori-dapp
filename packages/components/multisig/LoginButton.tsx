@@ -1,6 +1,5 @@
 import { Keplr } from "@keplr-wallet/types";
 import { FC } from "react";
-import { useSelector } from "react-redux";
 
 import {
   MultisigServiceClientImpl,
@@ -9,20 +8,16 @@ import {
   TokenRequestInfo,
 } from "../../api/multisig/v1/multisig";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { useMultisigAuthToken } from "../../hooks/multisig/useMultisigAuthToken";
 import { parseUserId, NetworkKind } from "../../networks";
-import {
-  selectMultisigToken,
-  setMultisigToken,
-} from "../../store/slices/settings";
-import { RootState, useAppDispatch } from "../../store/store";
+import { setMultisigToken } from "../../store/slices/settings";
+import { useAppDispatch } from "../../store/store";
 import { keplrSignArbitrary } from "../../utils/keplr";
 import { PrimaryButton } from "../buttons/PrimaryButton";
 
 export const LoginButton: FC<{ userId: string | undefined }> = ({ userId }) => {
   const [, userAddress] = parseUserId(userId);
-  const storeAuthToken = useSelector((state: RootState) =>
-    selectMultisigToken(state, userAddress)
-  );
+  const storeAuthToken = useMultisigAuthToken(userId);
   const dispatch = useAppDispatch();
   const { wrapWithFeedback } = useFeedbacks();
 

@@ -2,7 +2,6 @@ import { createMultisigThresholdPubkey } from "@cosmjs/amino";
 import React, { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Pressable, ScrollView, View } from "react-native";
-import { useSelector } from "react-redux";
 
 import { MultisigSection } from "./components/MultisigSection";
 import { CreateMultisigWalletFormType } from "./types";
@@ -23,13 +22,12 @@ import { TextInputCustom } from "../../components/inputs/TextInputCustom";
 import { TextInputOutsideLabel } from "../../components/inputs/TextInputOutsideLabel";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { useMultisigAuthToken } from "../../hooks/multisig/useMultisigAuthToken";
 import { useMultisigClient } from "../../hooks/multisig/useMultisigClient";
 import { useEnabledNetworks } from "../../hooks/useEnabledNetworks";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkKind, getUserId, CosmosNetworkInfo } from "../../networks";
-import { selectMultisigToken } from "../../store/slices/settings";
-import { RootState } from "../../store/store";
 import { getCosmosAccount } from "../../utils/cosmos";
 import {
   getNSAddress,
@@ -57,9 +55,7 @@ const emptyPubKeyGroup = () => ({ address: "", compressedPubkey: "" });
 
 export const MultisigCreateScreen = () => {
   const selectedWallet = useSelectedWallet();
-  const authToken = useSelector((state: RootState) =>
-    selectMultisigToken(state, selectedWallet?.address)
-  );
+  const authToken = useMultisigAuthToken(selectedWallet?.userId);
   const enabledNetworks = useEnabledNetworks();
   const { wrapWithFeedback } = useFeedbacks();
   const { control, handleSubmit, watch, setValue } =

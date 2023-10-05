@@ -1,11 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-import { useSelector } from "react-redux";
 
+import { useMultisigAuthToken } from "./useMultisigAuthToken";
 import { useMultisigClient } from "./useMultisigClient";
 import { JoinState } from "../../api/multisig/v1/multisig";
 import { NetworkKind, parseUserId } from "../../networks";
-import { selectMultisigToken } from "../../store/slices/settings";
-import { RootState } from "../../store/store";
 
 const batchSize = 100;
 
@@ -13,10 +11,8 @@ export const useUserMultisigs = (
   userId: string | undefined,
   joinState?: JoinState
 ) => {
-  const [network, userAddress] = parseUserId(userId);
-  const authToken = useSelector((state: RootState) =>
-    selectMultisigToken(state, userAddress)
-  );
+  const [network] = parseUserId(userId);
+  const authToken = useMultisigAuthToken(userId);
   const multisigClient = useMultisigClient();
   const { data, ...other } = useQuery(
     ["userMultisigs", userId, authToken, multisigClient, joinState],

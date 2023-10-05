@@ -2,7 +2,6 @@ import { useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { StyleProp, View, ViewStyle } from "react-native";
-import { useSelector } from "react-redux";
 
 import { MultisigFormInput } from "./components/MultisigFormInput";
 import { MultisigRightSection } from "./components/MultisigRightSection";
@@ -13,6 +12,7 @@ import { ScreenContainer } from "../../components/ScreenContainer";
 import { MultisigTransactions } from "../../components/multisig/MultisigTransactions";
 import { SpacerColumn } from "../../components/spacer";
 import { UserCard } from "../../components/user/UserCard";
+import { useMultisigAuthToken } from "../../hooks/multisig/useMultisigAuthToken";
 import { useMultisigClient } from "../../hooks/multisig/useMultisigClient";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {
@@ -21,8 +21,6 @@ import {
   getUserId,
   parseUserId,
 } from "../../networks";
-import { selectMultisigToken } from "../../store/slices/settings";
-import { RootState } from "../../store/store";
 import { validateAddress } from "../../utils/formRules";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { neutral33 } from "../../utils/style/colors";
@@ -38,7 +36,7 @@ export const MultisigWalletDashboardScreen: ScreenFC<
   const { id } = route.params;
   const [network, multisigAddress] = parseUserId(id);
   const cosmosNetwork = getCosmosNetwork(network?.id);
-  const userAddress = useSelectedWallet()?.address;
+  const userId = useSelectedWallet()?.userId;
   const { multisig, isLoading } = useMultisigInfo(id);
   const walletName = multisig?.name;
   const membersAddress = multisig?.usersAddresses;
@@ -117,7 +115,7 @@ export const MultisigWalletDashboardScreen: ScreenFC<
           chainId={cosmosNetwork?.chainId}
           multisigAddress={multisigAddress}
           title="Transactions"
-          userAddress={userAddress}
+          userId={userId}
         />
       </View>
     </ScreenContainer>
@@ -183,9 +181,7 @@ const halfGap = 8;
 
 export const useMultisigInfo = (id: string | undefined) => {
   const selectedWallet = useSelectedWallet();
-  const authToken = useSelector((state: RootState) =>
-    selectMultisigToken(state, selectedWallet?.address)
-  );
+  const authToken = useMultisigAuthToken(selectedWallet?.userId);
   const client = useMultisigClient();
   const { data, ...other } = useQuery(
     ["multisig-info", id, authToken, client],

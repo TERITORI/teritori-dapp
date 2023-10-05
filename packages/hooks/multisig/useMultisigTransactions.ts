@@ -1,13 +1,11 @@
 import { EncodeObject } from "@cosmjs/proto-signing";
 import { StdFee } from "@cosmjs/stargate";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { useSelector } from "react-redux";
 
+import { useMultisigAuthToken } from "./useMultisigAuthToken";
 import { useMultisigClient } from "./useMultisigClient";
 import { ExecutionState, Transaction } from "../../api/multisig/v1/multisig";
 import { cosmosTypesRegistry } from "../../networks";
-import { selectMultisigToken } from "../../store/slices/settings";
-import { RootState } from "../../store/store";
 import { tryParseJSON } from "../../utils/jsons";
 
 const batchSize = 16;
@@ -29,13 +27,11 @@ export const multisigTransactionsQueryKey = (
 export const useMultisigTransactions = (
   chainId: string | undefined,
   multisigAddress: string | undefined,
-  userAddress: string | undefined,
+  userId: string | undefined,
   types: string[],
   executionState: ExecutionState
 ) => {
-  const authToken = useSelector((state: RootState) =>
-    selectMultisigToken(state, userAddress)
-  );
+  const authToken = useMultisigAuthToken(userId);
   const client = useMultisigClient();
 
   //  request

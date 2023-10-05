@@ -7,7 +7,6 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-import { useSelector } from "react-redux";
 
 import { CheckLoadingModal } from "./components/CheckLoadingModal";
 import { GetStartedOption } from "./components/GetStartedOption";
@@ -23,11 +22,10 @@ import ModalBase from "../../components/modals/ModalBase";
 import { LoginButton } from "../../components/multisig/LoginButton";
 import { MultisigTransactions } from "../../components/multisig/MultisigTransactions";
 import { SpacerColumn } from "../../components/spacer";
+import { useMultisigAuthToken } from "../../hooks/multisig/useMultisigAuthToken";
 import { useUserMultisigs } from "../../hooks/multisig/useUserMultisigs";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getCosmosNetwork, getUserId, NetworkKind } from "../../networks";
-import { selectMultisigToken } from "../../store/slices/settings";
-import { RootState } from "../../store/store";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { neutral33, neutral77, secondaryColor } from "../../utils/style/colors";
 import {
@@ -77,9 +75,7 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
       marginTop: layout.spacing_x2_5,
     },
   });
-  const authToken = useSelector((state: RootState) =>
-    selectMultisigToken(state, selectedWallet?.address)
-  );
+  const authToken = useMultisigAuthToken(selectedWallet?.userId);
 
   const {
     multisigs: data,
@@ -327,7 +323,7 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
               <Separator color={neutral33} />
               <SpacerColumn size={3} />
               <MultisigTransactions
-                userAddress={selectedWallet?.address}
+                userId={selectedWallet?.id}
                 chainId={cosmosNetwork?.chainId}
                 title="Multisig Transactions Overview"
               />

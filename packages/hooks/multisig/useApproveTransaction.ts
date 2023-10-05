@@ -1,8 +1,8 @@
 import { toBase64 } from "@cosmjs/encoding";
 import { Window as KeplrWindow } from "@keplr-wallet/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useSelector } from "react-redux";
 
+import { useMultisigAuthToken } from "./useMultisigAuthToken";
 import { useMultisigClient } from "./useMultisigClient";
 import {
   ParsedTransaction,
@@ -11,17 +11,13 @@ import {
 import { Signature } from "../../api/multisig/v1/multisig";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { getKeplrOnlyAminoStargateClient } from "../../networks";
-import { selectMultisigToken } from "../../store/slices/settings";
-import { RootState } from "../../store/store";
 import useSelectedWallet from "../useSelectedWallet";
 
 export const useApproveTransaction = () => {
   const { setToastError } = useFeedbacks();
   const walletAccount = useSelectedWallet();
   const multisigClient = useMultisigClient();
-  const authToken = useSelector((state: RootState) =>
-    selectMultisigToken(state, walletAccount?.address)
-  );
+  const authToken = useMultisigAuthToken(walletAccount?.userId);
   const queryClient = useQueryClient();
 
   return useMutation(

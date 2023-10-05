@@ -2,9 +2,9 @@ import { EncodeObject } from "@cosmjs/proto-signing";
 import { isDeliverTxFailure, StdFee } from "@cosmjs/stargate";
 import { QueryClient, useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";
-import { useSelector } from "react-redux";
 
 import { useDAOMakeProposal } from "./dao/useDAOMakeProposal";
+import { useMultisigAuthToken } from "./multisig/useMultisigAuthToken";
 import { useMultisigClient } from "./multisig/useMultisigClient";
 import { multisigTransactionsQueryKey } from "./multisig/useMultisigTransactions";
 import useSelectedWallet from "./useSelectedWallet";
@@ -18,17 +18,13 @@ import {
   getKeplrSigningStargateClient,
   cosmosTypesRegistry,
 } from "../networks";
-import { selectMultisigToken } from "../store/slices/settings";
-import { RootState } from "../store/store";
 
 export const useRunOrProposeTransaction = (
   userId: string | undefined,
   userKind: UserKind
 ) => {
   const wallet = useSelectedWallet();
-  const multisigAuthToken = useSelector((state: RootState) =>
-    selectMultisigToken(state, wallet?.address)
-  );
+  const multisigAuthToken = useMultisigAuthToken(wallet?.userId);
   const multisigClient = useMultisigClient();
   const makeDAOProposal = useDAOMakeProposal(
     userId,

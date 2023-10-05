@@ -26,9 +26,9 @@ const MIN_ITEMS_PER_PAGE = 50;
 export const MultisigTransactions: FC<{
   chainId: string | undefined;
   multisigAddress?: string;
-  userAddress?: string;
+  userId?: string;
   title?: string;
-}> = ({ chainId, multisigAddress, title, userAddress }) => {
+}> = ({ chainId, multisigAddress, title, userId }) => {
   const { height: windowHeight } = useWindowDimensions();
   const [selectedTab, setSelectedTab] = useState<keyof typeof tabs>("all");
 
@@ -94,7 +94,7 @@ export const MultisigTransactions: FC<{
   } = useMultisigTransactions(
     chainId,
     multisigAddress,
-    userAddress,
+    userId,
     tabs[selectedTab].types,
     tabs[selectedTab].state
   );
