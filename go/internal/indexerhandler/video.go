@@ -26,6 +26,7 @@ func (h *Handler) handleExecuteCreateVideo(e *Message, execMsg *wasmtypes.MsgExe
 	var metadataJSON map[string]interface{}
 	if err := json.Unmarshal([]byte(createVideo.Metadata), &metadataJSON); err != nil {
 		return errors.Wrap(err, "failed to unmarshal metadata")
+		return nil
 	}
 
 	createdAt, err := e.GetBlockTime()
