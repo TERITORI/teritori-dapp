@@ -26,7 +26,6 @@ import { SearchBarContextProvider } from "./packages/context/SearchBarProvider";
 import { TNSMetaDataListContextProvider } from "./packages/context/TNSMetaDataListProvider";
 import { TNSContextProvider } from "./packages/context/TNSProvider";
 import { TransactionModalsProvider } from "./packages/context/TransactionModalsProvider";
-import { VideoPlayerContextProvider } from "./packages/context/VideoPlayerContext";
 import {
   WalletsProvider,
   useWallets,
@@ -88,8 +87,8 @@ export default function App() {
                                 <TNSMetaDataListContextProvider>
                                   <MenuProvider>
                                     <MediaPlayerContextProvider>
-                                    <StatusBar style="inverted" />
-                                    <Navigator />
+                                      <StatusBar style="inverted" />
+                                      <Navigator />
                                     </MediaPlayerContextProvider>
                                   </MenuProvider>
                                 </TNSMetaDataListContextProvider>
