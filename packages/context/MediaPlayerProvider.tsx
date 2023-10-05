@@ -236,11 +236,11 @@ export const MediaPlayerContextProvider: React.FC = ({ children }) => {
     await av.unloadAsync();
   };
 
-  const onChangeTimerPosition = (value: number) => av?.setPositionAsync(value);
+  const onChangeTimerPosition = (value: number) =>
+    av?.setPositionAsync(value);
 
-  const onChangeVolume = async (value: number) => {
-    await av?.setVolumeAsync(value);
-  };
+  const onChangeVolume = async (value: number) =>
+    av?.setVolumeAsync(isNaN(value) ? 0 : value); // value is NaN in local dev env sometimes
 
   const onToggleLoop = () => {
     av?.setIsLoopingAsync(!playbackStatus?.isLooping);
