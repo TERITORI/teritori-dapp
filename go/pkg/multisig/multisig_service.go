@@ -532,17 +532,6 @@ func (s *multisigService) CreateTransaction(_ context.Context, req *multisigpb.C
 			return errors.Wrap(err, "failed to find user multisig")
 		}
 
-		sequence := req.GetSequence()
-		var lastSequenceTx Transaction
-		if err := tx.Model(&Transaction{}).Order("sequence DESC").First(&lastSequenceTx, "multisig_chain_id = ? AND multisig_address = ?", req.ChainId, req.MultisigAddress).Error; err != nil {
-			if !errors.Is(err, gorm.ErrRecordNotFound) {
-				return errors.Wrap(err, "failed to find last tx")
-			}
-		}
-		if lastSequenceTx.Sequence >= sequence {
-			sequence = lastSequenceTx.Sequence + 1
-		}
-
 		var msgsJSON []json.RawMessage
 		for _, msg := range msgs {
 			msgJSON, err := json.Marshal(msg) // we don't use protojson so it marshals the value as bytes
@@ -560,7 +549,7 @@ func (s *multisigService) CreateTransaction(_ context.Context, req *multisigpb.C
 			MultisigChainID: req.GetChainId(),
 			MultisigAddress: req.GetMultisigAddress(),
 			AccountNumber:   req.GetAccountNumber(),
-			Sequence:        sequence,
+			Sequence:        req.GetSequence(),
 			MsgsJSON:        datatypes.JSON(j),
 			FeeJSON:         req.GetFeeJson(),
 			CreatorAddress:  userAddress,
@@ -639,6 +628,20 @@ func (s *multisigService) CompleteTransaction(_ context.Context, req *multisigpb
 
 		if err := tx.Model(&Transaction{ID: uint(req.GetTransactionId())}).UpdateColumn("final_hash", req.GetFinalHash()).Error; err != nil {
 			return errors.Wrap(err, "failed to write final hash")
+		}
+
+		if err := tx.Exec(`
+      DELETE FROM signatures AS s
+      WHERE s.transaction_id  IN (
+        SELECT s.transaction_id FROM signatures s
+        JOIN transactions t ON s.transaction_id = t.id AND t.final_hash IS NULL
+      )
+    `).Error; err != nil {
+			return errors.Wrap(err, "failed to delete signatures")
+		}
+
+		if err := tx.Model(&Transaction{}).Where("final_hash IS NULL").UpdateColumn("sequence", transaction.Sequence+1).Error; err != nil {
+			return errors.Wrap(err, "failed to update sequence")
 		}
 
 		return nil
