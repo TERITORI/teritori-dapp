@@ -29,7 +29,6 @@ import { Username } from "../user/Username";
 
 export interface MultisigTransactionItemProps extends ParsedTransaction {
   btnSquaresBackgroundColor?: string;
-  isUserMultisig?: boolean;
   shouldRetch?: () => void;
 }
 

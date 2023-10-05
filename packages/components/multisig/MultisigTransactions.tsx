@@ -11,7 +11,6 @@ import {
   ExecutionState,
   TransactionsCount,
 } from "../../api/multisig/v1/multisig";
-import { useIsUserMultisig } from "../../hooks/multisig/useIsUserMultisig";
 import { useMultisigTransactions } from "../../hooks/multisig/useMultisigTransactions";
 import { useMultisigTransactionsCounts } from "../../hooks/multisig/useMultisigTransactionsCounts";
 import { secondaryColor } from "../../utils/style/colors";
@@ -37,7 +36,7 @@ export const MultisigTransactions: FC<{
     chainId,
     multisigAddress
   );
-  const { isUserMultisig } = useIsUserMultisig(multisigAddress);
+
   const tabs = useMemo(
     () => ({
       currentProposals: {
@@ -131,9 +130,7 @@ export const MultisigTransactions: FC<{
 
       <FlatList
         data={list}
-        renderItem={({ item }) => (
-          <MultisigTransactionItem {...item} isUserMultisig={isUserMultisig} />
-        )}
+        renderItem={({ item }) => <MultisigTransactionItem {...item} />}
         initialNumToRender={MIN_ITEMS_PER_PAGE}
         keyExtractor={(item) => item.id.toString()}
         onEndReached={() => fetchNextTransactionsPage()}

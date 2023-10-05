@@ -1,6 +1,5 @@
 import React, { FC, useEffect, useMemo } from "react";
 import { Linking, Pressable, StyleSheet, View, ViewStyle } from "react-native";
-import { ActivityIndicator } from "react-native-paper";
 
 import { MultisigTransactionItemProps } from "./MultisigTransactionItem";
 import { useApproveTransaction } from "../../hooks/multisig/useApproveTransaction";
@@ -11,7 +10,6 @@ import { txExplorerLink } from "../../networks";
 import {
   neutral77,
   primaryColor,
-  secondaryColor,
   successColor,
 } from "../../utils/style/colors";
 import { fontMedium14, fontSemibold9 } from "../../utils/style/fonts";
@@ -32,7 +30,6 @@ export const MultisigTransactionActions: React.FC<
   multisigPubkeyJson,
   id,
   finalHash: txHash,
-  isUserMultisig,
   multisigAddress,
   threshold,
   fee,
@@ -95,14 +92,6 @@ export const MultisigTransactionActions: React.FC<
 
   if (wallet?.address === undefined) {
     return <MainConnectWalletButton size="M" />;
-  }
-
-  if (isUserMultisig === undefined) {
-    return (
-      <AnimationFadeIn style={containerStyles}>
-        <ActivityIndicator color={secondaryColor} />
-      </AnimationFadeIn>
-    );
   }
 
   if ((hasSigned && !isCompletedSignature) || txHash || resTxHash) {
