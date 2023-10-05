@@ -14,6 +14,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/bech32"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
+	"google.golang.org/protobuf/types/known/anypb"
 	"gorm.io/datatypes"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -235,12 +236,26 @@ func (s *multisigService) Transactions(_ context.Context, req *multisigpb.Transa
 		if tx.FinalHash != nil {
 			finalHash = *tx.FinalHash
 		}
+
+		var msgsJSON []json.RawMessage
+		if err := json.Unmarshal(tx.MsgsJSON, &msgsJSON); err != nil {
+			return nil, errors.Wrap(err, "failed to unmarshal msgs")
+		}
+		var msgs []*anypb.Any
+		for _, msgJSON := range msgsJSON {
+			var msg anypb.Any
+			if err := json.Unmarshal(msgJSON, &msg); err != nil { // we don't use protojson so it unmarshals the value as bytes
+				return nil, errors.Wrap(err, "failed to unmarshal msg")
+			}
+			msgs = append(msgs, &msg)
+		}
+
 		transactions[i] = &multisigpb.Transaction{
 			ChainId:            tx.MultisigChainID,
 			MultisigAddress:    tx.MultisigAddress,
 			AccountNumber:      tx.AccountNumber,
 			Sequence:           tx.Sequence,
-			MsgsJson:           tx.MsgsJSON.String(),
+			Msgs:               msgs,
 			FeeJson:            tx.FeeJSON,
 			FinalHash:          finalHash,
 			CreatedAt:          encodeTime(tx.CreatedAt),
@@ -501,15 +516,12 @@ func (s *multisigService) CreateTransaction(_ context.Context, req *multisigpb.C
 		return nil, errors.Wrap(err, "failed to authenticate")
 	}
 
-	var msgs []CosmosMessage
-	if err := json.Unmarshal([]byte(req.GetMsgsJson()), &msgs); err != nil {
-		return nil, errors.Wrap(err, "failed to unmarshal msgs json")
-	}
+	msgs := req.GetMsgs()
 	kind := "multiple"
 	if len(msgs) == 0 {
 		kind = "empty"
 	} else if len(msgs) == 1 {
-		kind = msgs[0].TypeURL
+		kind = msgs[0].GetTypeUrl()
 	}
 
 	if err := s.db.Transaction(func(tx *gorm.DB) error {
@@ -531,12 +543,25 @@ func (s *multisigService) CreateTransaction(_ context.Context, req *multisigpb.C
 			sequence = lastSequenceTx.Sequence + 1
 		}
 
+		var msgsJSON []json.RawMessage
+		for _, msg := range msgs {
+			msgJSON, err := json.Marshal(msg) // we don't use protojson so it marshals the value as bytes
+			if err != nil {
+				return errors.Wrap(err, "failed to marshal msg")
+			}
+			msgsJSON = append(msgsJSON, msgJSON)
+		}
+		j, err := json.Marshal(msgsJSON)
+		if err != nil {
+			return errors.Wrap(err, "failed to marshal msgs")
+		}
+
 		if err := tx.Create(&Transaction{
 			MultisigChainID: req.GetChainId(),
 			MultisigAddress: req.GetMultisigAddress(),
 			AccountNumber:   req.GetAccountNumber(),
 			Sequence:        sequence,
-			MsgsJSON:        datatypes.JSON(req.GetMsgsJson()),
+			MsgsJSON:        datatypes.JSON(j),
 			FeeJSON:         req.GetFeeJson(),
 			CreatorAddress:  userAddress,
 			Type:            kind,

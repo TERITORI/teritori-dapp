@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 
 import { useMultisigClient } from "./useMultisigClient";
 import { ExecutionState, Transaction } from "../../api/multisig/v1/multisig";
+import { cosmosTypesRegistry } from "../../networks";
 import { selectMultisigToken } from "../../store/slices/settings";
 import { RootState } from "../../store/store";
 import { tryParseJSON } from "../../utils/jsons";
@@ -71,16 +72,27 @@ export const useMultisigTransactions = (
 
       const { transactions: txs } = await client.Transactions(req);
 
-      return {
-        data: txs.map((s) => {
+      const parsedTxs: ParsedTransaction[] = [];
+      for (const tx of txs) {
+        try {
+          const msgs: EncodeObject[] = tx.msgs.map((m) => ({
+            typeUrl: m.typeUrl,
+            value: cosmosTypesRegistry.decode(m),
+          }));
           const t: ParsedTransaction = {
-            ...s,
-            msgs: tryParseJSON(s.msgsJson || "[]"),
-            fee: tryParseJSON(s.feeJson || "{}"),
-            createdAt: new Date(s.createdAt),
+            ...tx,
+            msgs,
+            fee: tryParseJSON(tx.feeJson || "{}"),
+            createdAt: new Date(tx.createdAt),
           };
-          return t;
-        }),
+          parsedTxs.push(t);
+        } catch {
+          continue;
+        }
+      }
+
+      return {
+        data: parsedTxs,
         next: txs.length > 0 ? txs[txs.length - 1]?.createdAt : pageParam,
       };
     },

@@ -423,7 +423,7 @@ export const keplrChainInfoFromNetworkInfo = (
   };
 };
 
-export const cosmosNetworkGasPrice = (
+const cosmosNetworkGasPrice = (
   network: CosmosNetworkInfo,
   kind: "low" | "average" | "high"
 ) => {

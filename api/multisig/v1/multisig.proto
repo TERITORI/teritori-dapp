@@ -3,6 +3,8 @@ syntax = "proto3";
 package multisig.v1;
 option go_package = "./multisigpb";
 
+import "google/protobuf/any.proto";
+
 service MultisigService {
   // Read
   rpc Multisigs(MultisigsRequest) returns (MultisigsResponse);
@@ -45,7 +47,7 @@ message Transaction {
   string final_hash = 2;
   string multisig_address = 3;
   string chain_id = 4;
-  string msgs_json = 5;
+  repeated google.protobuf.Any msgs = 5;
   string fee_json = 6;
   uint32 account_number = 7;
   uint32 sequence = 8;
@@ -149,7 +151,7 @@ message CreateTransactionRequest {
 	string multisig_address= 3;
   uint32 account_number = 4;
   uint32 sequence = 5;
-  string msgs_json = 6;
+  repeated google.protobuf.Any msgs = 6;
   string fee_json = 7;
   string chain_id = 8;
 }

@@ -266,11 +266,13 @@ export const getTxInfo = (
       }
       case "/cosmwasm.wasm.v1.MsgExecuteContract": {
         const contractAddress = msg.value.contract;
-        let execMsg = {};
+        let execMsg: any = {};
         try {
-          execMsg = JSON.parse(Buffer.from(msg.value.msg).toString());
+          execMsg = JSON.parse(
+            Buffer.from(new Uint8Array(Object.values(msg.value.msg))).toString()
+          );
         } catch (err) {
-          console.error("failed to parse msg", err, msg);
+          console.error("olol failed to parse msg", err, msg);
         }
         let method;
         try {
@@ -282,7 +284,7 @@ export const getTxInfo = (
         }
         let icon = multisigWhiteSVG;
         let name = "Execute";
-        let preview: React.FC = () => null;
+        let preview: React.FC | undefined;
         if (
           network?.kind === NetworkKind.Cosmos &&
           contractAddress === network.nameServiceContractAddress &&
@@ -297,7 +299,6 @@ export const getTxInfo = (
         ) {
           icon = feedWhiteSVG;
           name = "Post on feed";
-          const execMsg = JSON.parse(Buffer.from(msg.value.msg).toString());
           preview = () => {
             return (
               <View>
@@ -308,6 +309,15 @@ export const getTxInfo = (
                   metadata={JSON.parse(execMsg.create_post.metadata)}
                   isPreview
                 />
+              </View>
+            );
+          };
+        }
+        if (!preview) {
+          preview = () => {
+            return (
+              <View>
+                <BrandText>{JSON.stringify(execMsg, null, 2)}</BrandText>
               </View>
             );
           };

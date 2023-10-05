@@ -71,24 +71,9 @@ export const useApproveTransaction = () => {
           chainId: tx.chainId,
         };
 
-        // FIXME: remove this hack
-        const parsedMessages = tx.msgs.map((msg) => {
-          if (msg.typeUrl === "/cosmwasm.wasm.v1.MsgExecuteContract") {
-            const modified = {
-              ...msg,
-              value: {
-                ...msg.value,
-                msg: Uint8Array.from(Object.values(msg.value.msg)),
-              },
-            };
-            return modified;
-          }
-          return msg;
-        });
-
         const { bodyBytes, signatures } = await client.sign(
           signerAddress,
-          parsedMessages,
+          tx.msgs,
           tx.fee,
           tx.memo,
           signerData
@@ -111,6 +96,10 @@ export const useApproveTransaction = () => {
         );
       } catch (err: any) {
         console.error(err);
+        setToastError({
+          title: "Transaction signature failed!",
+          message: err.message,
+        });
       }
     }
   );

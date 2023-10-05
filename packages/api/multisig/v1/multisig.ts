@@ -2,6 +2,7 @@
 import { grpc } from "@improbable-eng/grpc-web";
 import { BrowserHeaders } from "browser-headers";
 import _m0 from "protobufjs/minimal";
+import { Any } from "../../google/protobuf/any";
 
 export const protobufPackage = "multisig.v1";
 
@@ -105,7 +106,7 @@ export interface Transaction {
   finalHash: string;
   multisigAddress: string;
   chainId: string;
-  msgsJson: string;
+  msgs: Any[];
   feeJson: string;
   accountNumber: number;
   sequence: number;
@@ -201,7 +202,7 @@ export interface CreateTransactionRequest {
   multisigAddress: string;
   accountNumber: number;
   sequence: number;
-  msgsJson: string;
+  msgs: Any[];
   feeJson: string;
   chainId: string;
 }
@@ -480,7 +481,7 @@ function createBaseTransaction(): Transaction {
     finalHash: "",
     multisigAddress: "",
     chainId: "",
-    msgsJson: "",
+    msgs: [],
     feeJson: "",
     accountNumber: 0,
     sequence: 0,
@@ -508,8 +509,8 @@ export const Transaction = {
     if (message.chainId !== "") {
       writer.uint32(34).string(message.chainId);
     }
-    if (message.msgsJson !== "") {
-      writer.uint32(42).string(message.msgsJson);
+    for (const v of message.msgs) {
+      Any.encode(v!, writer.uint32(42).fork()).ldelim();
     }
     if (message.feeJson !== "") {
       writer.uint32(50).string(message.feeJson);
@@ -564,7 +565,7 @@ export const Transaction = {
           message.chainId = reader.string();
           break;
         case 5:
-          message.msgsJson = reader.string();
+          message.msgs.push(Any.decode(reader, reader.uint32()));
           break;
         case 6:
           message.feeJson = reader.string();
@@ -610,7 +611,7 @@ export const Transaction = {
       finalHash: isSet(object.finalHash) ? String(object.finalHash) : "",
       multisigAddress: isSet(object.multisigAddress) ? String(object.multisigAddress) : "",
       chainId: isSet(object.chainId) ? String(object.chainId) : "",
-      msgsJson: isSet(object.msgsJson) ? String(object.msgsJson) : "",
+      msgs: Array.isArray(object?.msgs) ? object.msgs.map((e: any) => Any.fromJSON(e)) : [],
       feeJson: isSet(object.feeJson) ? String(object.feeJson) : "",
       accountNumber: isSet(object.accountNumber) ? Number(object.accountNumber) : 0,
       sequence: isSet(object.sequence) ? Number(object.sequence) : 0,
@@ -630,7 +631,11 @@ export const Transaction = {
     message.finalHash !== undefined && (obj.finalHash = message.finalHash);
     message.multisigAddress !== undefined && (obj.multisigAddress = message.multisigAddress);
     message.chainId !== undefined && (obj.chainId = message.chainId);
-    message.msgsJson !== undefined && (obj.msgsJson = message.msgsJson);
+    if (message.msgs) {
+      obj.msgs = message.msgs.map((e) => e ? Any.toJSON(e) : undefined);
+    } else {
+      obj.msgs = [];
+    }
     message.feeJson !== undefined && (obj.feeJson = message.feeJson);
     message.accountNumber !== undefined && (obj.accountNumber = Math.round(message.accountNumber));
     message.sequence !== undefined && (obj.sequence = Math.round(message.sequence));
@@ -654,7 +659,7 @@ export const Transaction = {
     message.finalHash = object.finalHash ?? "";
     message.multisigAddress = object.multisigAddress ?? "";
     message.chainId = object.chainId ?? "";
-    message.msgsJson = object.msgsJson ?? "";
+    message.msgs = object.msgs?.map((e) => Any.fromPartial(e)) || [];
     message.feeJson = object.feeJson ?? "";
     message.accountNumber = object.accountNumber ?? 0;
     message.sequence = object.sequence ?? 0;
@@ -1527,7 +1532,7 @@ function createBaseCreateTransactionRequest(): CreateTransactionRequest {
     multisigAddress: "",
     accountNumber: 0,
     sequence: 0,
-    msgsJson: "",
+    msgs: [],
     feeJson: "",
     chainId: "",
   };
@@ -1547,8 +1552,8 @@ export const CreateTransactionRequest = {
     if (message.sequence !== 0) {
       writer.uint32(40).uint32(message.sequence);
     }
-    if (message.msgsJson !== "") {
-      writer.uint32(50).string(message.msgsJson);
+    for (const v of message.msgs) {
+      Any.encode(v!, writer.uint32(50).fork()).ldelim();
     }
     if (message.feeJson !== "") {
       writer.uint32(58).string(message.feeJson);
@@ -1579,7 +1584,7 @@ export const CreateTransactionRequest = {
           message.sequence = reader.uint32();
           break;
         case 6:
-          message.msgsJson = reader.string();
+          message.msgs.push(Any.decode(reader, reader.uint32()));
           break;
         case 7:
           message.feeJson = reader.string();
@@ -1601,7 +1606,7 @@ export const CreateTransactionRequest = {
       multisigAddress: isSet(object.multisigAddress) ? String(object.multisigAddress) : "",
       accountNumber: isSet(object.accountNumber) ? Number(object.accountNumber) : 0,
       sequence: isSet(object.sequence) ? Number(object.sequence) : 0,
-      msgsJson: isSet(object.msgsJson) ? String(object.msgsJson) : "",
+      msgs: Array.isArray(object?.msgs) ? object.msgs.map((e: any) => Any.fromJSON(e)) : [],
       feeJson: isSet(object.feeJson) ? String(object.feeJson) : "",
       chainId: isSet(object.chainId) ? String(object.chainId) : "",
     };
@@ -1614,7 +1619,11 @@ export const CreateTransactionRequest = {
     message.multisigAddress !== undefined && (obj.multisigAddress = message.multisigAddress);
     message.accountNumber !== undefined && (obj.accountNumber = Math.round(message.accountNumber));
     message.sequence !== undefined && (obj.sequence = Math.round(message.sequence));
-    message.msgsJson !== undefined && (obj.msgsJson = message.msgsJson);
+    if (message.msgs) {
+      obj.msgs = message.msgs.map((e) => e ? Any.toJSON(e) : undefined);
+    } else {
+      obj.msgs = [];
+    }
     message.feeJson !== undefined && (obj.feeJson = message.feeJson);
     message.chainId !== undefined && (obj.chainId = message.chainId);
     return obj;
@@ -1628,7 +1637,7 @@ export const CreateTransactionRequest = {
     message.multisigAddress = object.multisigAddress ?? "";
     message.accountNumber = object.accountNumber ?? 0;
     message.sequence = object.sequence ?? 0;
-    message.msgsJson = object.msgsJson ?? "";
+    message.msgs = object.msgs?.map((e) => Any.fromPartial(e)) || [];
     message.feeJson = object.feeJson ?? "";
     message.chainId = object.chainId ?? "";
     return message;

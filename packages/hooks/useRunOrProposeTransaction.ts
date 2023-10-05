@@ -143,12 +143,17 @@ const runOrProposeTransaction = async ({
       if (!account) {
         throw new Error("Multisig account not found on chain");
       }
+
+      const encodedMsgs = msgs.map((m) => cosmosTypesRegistry.encodeAsAny(m));
+
+      console.log("encodedMsgs", encodedMsgs);
+
       await multisigClient.CreateTransaction({
         authToken: multisigAuthToken,
         multisigAddress: userAddress,
         chainId: cosmosNetwork.chainId,
         feeJson: JSON.stringify(fee),
-        msgsJson: JSON.stringify(msgs),
+        msgs: encodedMsgs,
         sequence: account.sequence,
         accountNumber: account.accountNumber,
       });

@@ -50,7 +50,7 @@ type Signature struct {
 	Signature     string
 	TransactionID uint `gorm:"primaryKey"`
 	Transaction   Transaction
-	BodyBytes     []byte
+	BodyBytes     []byte // it's weird to store this here, but it did not find another way to generate the correct body bytes in client yet
 	CreatedAt     time.Time
 	UserAddress   string `gorm:"primaryKey"`
 }
