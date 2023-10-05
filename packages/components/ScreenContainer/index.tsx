@@ -135,9 +135,7 @@ export const ScreenContainer: React.FC<{
 
         <View style={{ width: "100%", flex: 1 }}>
           {/*==== Header*/}
-          {headerChildren && (
-            <Header onBackPress={onBackPress}>{headerChildren}</Header>
-          )}
+          <Header onBackPress={onBackPress}>{headerChildren}</Header>
 
           <View
             style={{ width: "100%", flexDirection: "row", flex: 1, height }}
