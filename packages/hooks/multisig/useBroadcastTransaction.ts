@@ -27,7 +27,6 @@ export const useBroadcastTransaction = () => {
   const multisigClient = useMultisigClient();
   const queryClient = useQueryClient();
 
-  // req
   return useMutation(
     async ({
       tx,
@@ -60,7 +59,7 @@ export const useBroadcastTransaction = () => {
             ])
           )
         );
-        console.log("signedTx", Buffer.from(signedTx).toString());
+
         const network = getCosmosNetworkByChainId(tx.chainId);
         if (!network) {
           throw new Error("Network not found");
@@ -76,7 +75,6 @@ export const useBroadcastTransaction = () => {
           });
         }
 
-        // FIXME: store result in db
         await multisigClient.CompleteTransaction({
           authToken,
           transactionId,

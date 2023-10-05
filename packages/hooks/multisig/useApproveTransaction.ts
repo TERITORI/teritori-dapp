@@ -23,7 +23,7 @@ export const useApproveTransaction = () => {
     selectMultisigToken(state, walletAccount?.address)
   );
   const queryClient = useQueryClient();
-  // req
+
   return useMutation(
     async ({
       tx,
