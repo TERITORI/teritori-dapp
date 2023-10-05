@@ -2,13 +2,12 @@ import { Keplr } from "@keplr-wallet/types";
 import { FC } from "react";
 
 import {
-  MultisigServiceClientImpl,
-  GrpcWebImpl as MultisigGrpcWebImpl,
   GetTokenRequest,
   TokenRequestInfo,
 } from "../../api/multisig/v1/multisig";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useMultisigAuthToken } from "../../hooks/multisig/useMultisigAuthToken";
+import { useMultisigClient } from "../../hooks/multisig/useMultisigClient";
 import { parseUserId, NetworkKind } from "../../networks";
 import { setMultisigToken } from "../../store/slices/settings";
 import { useAppDispatch } from "../../store/store";
@@ -20,6 +19,7 @@ export const LoginButton: FC<{ userId: string | undefined }> = ({ userId }) => {
   const storeAuthToken = useMultisigAuthToken(userId);
   const dispatch = useAppDispatch();
   const { wrapWithFeedback } = useFeedbacks();
+  const client = useMultisigClient();
 
   return (
     <PrimaryButton
@@ -44,11 +44,6 @@ export const LoginButton: FC<{ userId: string | undefined }> = ({ userId }) => {
         if (network?.kind !== NetworkKind.Cosmos) {
           throw new Error("Invalid network");
         }
-
-        const rpc = new MultisigGrpcWebImpl("http://localhost:9091", {
-          debug: false,
-        });
-        const client = new MultisigServiceClientImpl(rpc);
 
         const keplr = (window as any).keplr as Keplr | undefined;
         if (!keplr) {
