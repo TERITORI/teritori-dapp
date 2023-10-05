@@ -12,7 +12,7 @@ import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
 import { VideoPlayerCard } from "../../components/VideoPlayer/VideoPlayerCard";
 import { SpacerRow } from "../../components/spacer";
-import { UploadVideoModal } from "../../components/videoPlayer/UploadVideoModal";
+import { CreateVideoModal } from "../../components/videoPlayer/CreateVideoModal";
 import {
   combineFetchVideoPages,
   useFetchVideos,
@@ -120,7 +120,7 @@ export const VideoPlayerHomeContent: React.FC<VideoPlayerProps> = ({
           onEndReached={onEndReached}
         />
       </View>
-      <UploadVideoModal
+      <CreateVideoModal
         isVisible={openUploadModal}
         onClose={() => setOpenUploadModal(false)}
       />

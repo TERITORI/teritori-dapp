@@ -8,7 +8,7 @@ import Animated, {
 import Logo from "../../../assets/logos/logo.svg";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
-import { UploadVideoModal } from "../../components/VideoPlayer/UploadVideoModal";
+import { CreateVideoModal } from "../../components/videoPlayer/CreateVideoModal";
 import { VideoPlayerCard } from "../../components/VideoPlayer/VideoPlayerCard";
 import { SpacerRow } from "../../components/spacer";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
@@ -143,7 +143,7 @@ export const VideoPlayerMyLibraryContent: React.FC<{
           onEndReached={onEndReachedOther}
         />
       </View>
-      <UploadVideoModal
+      <CreateVideoModal
         isVisible={openUploadModal}
         onClose={() => setOpenUploadModal(false)}
       />
