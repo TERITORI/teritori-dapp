@@ -190,20 +190,28 @@ export const useMultisigInfo = (id: string | undefined) => {
   const { data, ...other } = useQuery(
     ["multisig-info", id, authToken, client],
     async () => {
-      if (!authToken) {
+      if (!authToken || !client) {
         return null;
       }
       const [network, multisigAddress] = parseUserId(id);
       if (network?.kind !== NetworkKind.Cosmos) {
         return null;
       }
-      const { multisig } = await client?.MultisigInfo({
-        authToken,
-        multisigAddress,
-        chainId: network.chainId,
-      });
-      return multisig;
-    }
+      try {
+        const { multisig } = await client.MultisigInfo({
+          authToken,
+          multisigAddress,
+          chainId: network.chainId,
+        });
+        return multisig;
+      } catch (err) {
+        if (err instanceof Error && err.message === "not found") {
+          return null;
+        }
+        throw err;
+      }
+    },
+    { staleTime: Infinity }
   );
   return { multisig: data, ...other };
 };
