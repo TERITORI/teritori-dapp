@@ -21,7 +21,7 @@ export const initialToastError: ToastMessage = {
   message: "",
   duration: 8000,
 };
-export const initialToastSuccess: ToastMessage = {
+const initialToastSuccess: ToastMessage = {
   title: "",
   message: "",
   duration: 8000,
@@ -50,7 +50,7 @@ const defaultValue: FeedbacksProviderValue = {
   wrapWithFeedback: () => async () => {},
 };
 
-export const FeedbacksContext = createContext(defaultValue);
+const FeedbacksContext = createContext(defaultValue);
 
 export const FeedbacksContextProvider: React.FC = ({ children }) => {
   const [loadingFullScreen, setLoadingFullScreen] = useState(false);

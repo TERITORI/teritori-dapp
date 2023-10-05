@@ -317,7 +317,7 @@ const MintTori: React.FC<{ daoId: string }> = ({ daoId }) => {
   );
 };
 
-export const GnoCreateProposal: React.FC<{ daoId: string | undefined }> = ({
+const GnoCreateProposal: React.FC<{ daoId: string | undefined }> = ({
   daoId,
 }) => {
   const [title, setTitle] = useState("");

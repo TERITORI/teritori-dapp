@@ -59,28 +59,6 @@ export const generateIpfsKey = async (networkId: string, userId: string) => {
   }
 };
 
-// Get IPFS Key and upload files.
-// But you can do separately generateIpfsKey then uploadFilesToPinata (Ex in NewsFeedInput.tsx)
-export const uploadFileToIPFS = async (
-  file: LocalFileData,
-  networkId: string,
-  userId: string,
-  userKey?: string
-) => {
-  let uploadedFiles: RemoteFileData[] = [];
-  const pinataJWTKey = userKey || (await generateIpfsKey(networkId, userId));
-
-  if (pinataJWTKey) {
-    uploadedFiles = await uploadFilesToPinata({
-      files: [file],
-      pinataJWTKey,
-    });
-  }
-  if (!uploadedFiles.find((file) => file.url)) {
-    console.error("upload file err : Fail to pin to IPFS");
-  } else return uploadedFiles[0];
-};
-
 // Used to get a correct image URL for displaying or storing
 export const ipfsURLToHTTPURL = (ipfsURL: string | undefined) => {
   if (!ipfsURL) {

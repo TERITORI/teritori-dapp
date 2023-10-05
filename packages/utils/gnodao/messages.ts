@@ -1,4 +1,4 @@
-export type GnoExecutableMessage = object;
+type GnoExecutableMessage = object;
 
 export interface GnoSingleChoiceProposal {
   title: string;

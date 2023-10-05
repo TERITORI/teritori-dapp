@@ -10,11 +10,6 @@ import {
 import { getCosmosNameServiceQueryClient } from "../utils/contracts";
 import { extractGnoString } from "../utils/gno";
 
-export interface AliasUserId {
-  alias: string | null;
-  userId: string;
-}
-
 export const nsPrimaryAliasQueryKey = (userId: string | undefined) => [
   "nsPrimaryAlias",
   userId,

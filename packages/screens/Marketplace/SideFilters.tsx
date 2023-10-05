@@ -575,10 +575,10 @@ export const SideFilters: React.FC<{
   ) : null;
 };
 
-export const useShowFilters = () => {
+const useShowFilters = () => {
   return useSelector(selectShowFilters);
 };
-export const useAttributeIsSelected = (attribute: AttributeRarityFloor) => {
+const useAttributeIsSelected = (attribute: AttributeRarityFloor) => {
   const selected = new Set(useSelector(selectSelectedAttributeIds));
   return selected.has(
     `${attribute.collectionId}-${attribute.traitType}-${attribute.value}`

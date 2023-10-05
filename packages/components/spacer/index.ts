@@ -1,2 +1,2 @@
-export * from "./SpacerColumn";
-export * from "./SpacerRow";
+export { SpacerColumn } from "./SpacerColumn";
+export { SpacerRow } from "./SpacerRow";
