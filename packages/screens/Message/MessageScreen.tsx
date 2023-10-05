@@ -27,7 +27,10 @@ import { ScreenContainer } from "../../components/ScreenContainer";
 import { Separator } from "../../components/Separator";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
 import { useMessage } from "../../context/MessageProvider";
-import { selectContactInfo } from "../../store/slices/message";
+import {
+  selectContactInfo,
+  selectIsWeshConnected,
+} from "../../store/slices/message";
 import { useAppNavigation, ScreenFC } from "../../utils/navigation";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
@@ -35,6 +38,7 @@ import { layout } from "../../utils/style/layout";
 export const MessageScreen: ScreenFC<"Message"> = ({ route }) => {
   const activeView = route?.params?.view;
   const activeTab = route?.params?.tab;
+  const isWeshConnected = useSelector(selectIsWeshConnected);
 
   const { activeConversation, setActiveConversation } = useMessage();
 
@@ -87,7 +91,7 @@ export const MessageScreen: ScreenFC<"Message"> = ({ route }) => {
     },
   ];
 
-  if (!contactInfo.publicRendezvousSeed) {
+  if (!isWeshConnected) {
     return (
       <ScreenContainer
         headerChildren={<MessageHeader />}

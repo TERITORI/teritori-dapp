@@ -15,6 +15,7 @@ import { stringFromBytes } from "../../weshnet/client/utils";
 import { RootState } from "../store";
 
 export interface MessageState {
+  isWeshConnected: boolean;
   peerList: PeerItem[];
   contactInfo: {
     name: string;
@@ -33,6 +34,7 @@ export interface MessageState {
 }
 
 const initialState: MessageState = {
+  isWeshConnected: false,
   contactInfo: {
     name: "Anon",
     avatar: "",
@@ -45,6 +47,9 @@ const initialState: MessageState = {
   lastIds: {},
   peerList: [],
 };
+
+export const selectIsWeshConnected = (state: RootState) =>
+  state.message.isWeshConnected;
 
 export const selectContactInfo = (state: RootState) =>
   state.message.contactInfo;
@@ -77,7 +82,7 @@ export const selectLastMessageByGroupPk =
 export const selectLastContactMessageByGroupPk =
   (groupPk: string) => (state: RootState) =>
     selectMessageListByGroupPk(groupPk)(state).filter(
-      (item) => item.senderId !== stringFromBytes(weshConfig.config.accountPk)
+      (item) => item.senderId !== stringFromBytes(weshConfig?.config?.accountPk)
     )[0];
 
 export const selectContactRequestList = (state: RootState) =>
@@ -112,6 +117,9 @@ const messageSlice = createSlice({
   name: "message",
   initialState,
   reducers: {
+    setIsWeshConnected: (state, action: PayloadAction<boolean>) => {
+      state.isWeshConnected = action.payload;
+    },
     setMessageList: (
       state,
       action: PayloadAction<{ groupPk: string; data: Message }>
@@ -199,6 +207,7 @@ export const {
   setContactInfo,
   updateConversationById,
   setPeerList,
+  setIsWeshConnected,
 } = messageSlice.actions;
 
 export const messageReducer = messageSlice.reducer;

@@ -7,6 +7,7 @@ import { bytesFromString, encodeJSON, stringFromBytes } from "./utils";
 import {
   MessageState,
   selectConversationList,
+  setIsWeshConnected,
   setContactInfo,
   setPeerList,
 } from "../../store/slices/message";
@@ -53,7 +54,7 @@ export const bootWeshModule = async () => {
 
 export const bootWeshnet = async () => {
   try {
-    console.log(weshConfig.config);
+    store.dispatch(setIsWeshConnected(true));
     await weshClient.client.ContactRequestEnable({});
     const contactRef = await weshClient.client.ContactRequestReference({});
 

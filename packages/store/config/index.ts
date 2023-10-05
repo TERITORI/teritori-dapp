@@ -32,6 +32,7 @@ export const persistConfig = () => {
 
   if (isElectron()) {
     config.whitelist.push("message");
+    config.blacklist.push("message.isWeshConnected");
   }
 
   return config;
