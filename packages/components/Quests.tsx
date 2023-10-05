@@ -4,8 +4,8 @@ import { View } from "react-native";
 
 import { QuestCard } from "./cards/QuestCard";
 import { Quest } from "../api/marketplace/v1/marketplace";
-import { parseNetworkObjectId } from "../networks";
-import { mustGetMarketplaceClient } from "../utils/backend";
+import { parseUserId } from "../networks";
+import { getMarketplaceClient } from "../utils/backend";
 
 export const Quests: React.FC<{
   userId: string | undefined;
@@ -42,11 +42,11 @@ const useQuests = (userId: string | undefined) => {
   return useQuery(
     ["quests", userId],
     async () => {
-      const [network] = parseNetworkObjectId(userId);
-      if (!network) {
-        return;
+      const [network] = parseUserId(userId);
+      const backendClient = getMarketplaceClient(network?.id);
+      if (!backendClient) {
+        return [];
       }
-      const backendClient = mustGetMarketplaceClient(network?.id);
       const stream = backendClient.Quests({
         limit: 100,
         offset: 0,

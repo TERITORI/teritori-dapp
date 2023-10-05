@@ -9,7 +9,7 @@ import { News } from "../../api/marketplace/v1/marketplace";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { getNetwork } from "../../networks";
-import { mustGetMarketplaceClient } from "../../utils/backend";
+import { getMarketplaceClient } from "../../utils/backend";
 import { FullWidthSeparator } from "../FullWidthSeparator";
 import { SVG } from "../SVG";
 import { Section } from "../Section";
@@ -67,7 +67,10 @@ const useNews = (networkId: string) => {
   const { data } = useQuery(
     ["news", networkId],
     async () => {
-      const backendClient = mustGetMarketplaceClient(networkId);
+      const backendClient = getMarketplaceClient(networkId);
+      if (!backendClient) {
+        return [];
+      }
       const network = getNetwork(networkId);
       const { news } = await backendClient.News({ testnet: network?.testnet });
       return news;

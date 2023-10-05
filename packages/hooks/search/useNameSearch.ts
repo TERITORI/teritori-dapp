@@ -7,7 +7,7 @@ export const useNameSearch = (req: Partial<SearchNamesRequest>) => {
   const { data: names = [], ...other } = useQuery(
     ["searchNames", req],
     async () => {
-      if (!req.input) {
+      if (!req.networkId || !req.input) {
         return [];
       }
       const client = getMarketplaceClient(req.networkId);
