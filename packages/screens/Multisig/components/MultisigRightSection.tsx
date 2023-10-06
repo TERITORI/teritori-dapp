@@ -1,5 +1,6 @@
 import { Decimal } from "@cosmjs/math";
 import { useRoute } from "@react-navigation/native";
+import { useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { View, ViewStyle } from "react-native";
 
@@ -40,7 +41,10 @@ import { fontSemibold12, fontSemibold13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { TNSMintNameModal } from "../../TeritoriNameService/TNSMintNameScreen";
 import { TNSRegisterScreen } from "../../TeritoriNameService/TNSRegisterScreen";
-import { useMultisigInfo } from "../MultisigWalletDashboardScreen";
+import {
+  multisigInfoQueryKey,
+  useMultisigInfo,
+} from "../MultisigWalletDashboardScreen";
 
 export const MultisigRightSection: React.FC = () => {
   const navigation = useAppNavigation();
@@ -270,7 +274,7 @@ const BurnModal: React.FC<{
         height={48}
         variant="labelOutside"
         label="Amount"
-        name="amount"
+        name="local-name"
         currency={keplrCurrencyFromNativeCurrencyInfo(nativeCurrency)}
         rules={{ required: true, max }}
         placeHolder="0"
@@ -321,16 +325,22 @@ const JoinMultisigModal: React.FC<{
   const { multisig } = useMultisigInfo(multisigId);
   const multisigClient = useMultisigClient();
   const { wrapWithFeedback } = useFeedbacks();
+  const queryClient = useQueryClient();
 
   return (
-    <ModalBase visible={visible} onClose={onClose} label="Join multisig">
+    <ModalBase
+      visible={visible}
+      onClose={onClose}
+      label="Join multisig"
+      contentStyle={{ minWidth: 400 }}
+    >
       <TextInputCustom
         value={name}
         onChangeText={setName}
         height={48}
         variant="labelOutside"
-        label="Amount"
-        name="amount"
+        label="Local name"
+        name="local-name"
         rules={{ required: true }}
         placeHolder="Type the local name for this multisig..."
         defaultValue=""
@@ -338,25 +348,36 @@ const JoinMultisigModal: React.FC<{
       <SpacerColumn size={2.5} />
       <PrimaryButton
         text="Join"
-        onPress={wrapWithFeedback(async () => {
-          if (!multisig) {
-            throw new Error("multisig not found");
-          }
-          if (!authToken) {
-            throw new Error("need an auth token");
-          }
-          const cosmosNetwork = getCosmosNetworkByChainId(multisig.chainId);
-          if (!cosmosNetwork) {
-            throw new Error("invalid multisig network");
-          }
-          await multisigClient.CreateOrJoinMultisig({
-            chainId: multisig.chainId,
-            multisigPubkeyJson: multisig.pubkeyJson,
-            authToken,
-            name,
-            bech32Prefix: cosmosNetwork.addressPrefix,
-          });
-        })}
+        disabled={!name}
+        onPress={wrapWithFeedback(
+          async () => {
+            if (!name) {
+              throw new Error("Need a name");
+            }
+            if (!multisig) {
+              throw new Error("Multisig not found");
+            }
+            if (!authToken) {
+              throw new Error("Need an auth token");
+            }
+            const cosmosNetwork = getCosmosNetworkByChainId(multisig.chainId);
+            if (!cosmosNetwork) {
+              throw new Error("Invalid multisig network");
+            }
+            await multisigClient.CreateOrJoinMultisig({
+              chainId: multisig.chainId,
+              multisigPubkeyJson: multisig.pubkeyJson,
+              authToken,
+              name,
+              bech32Prefix: cosmosNetwork.addressPrefix,
+            });
+            await queryClient.invalidateQueries(
+              multisigInfoQueryKey(multisigId)
+            );
+            onClose?.();
+          },
+          { title: "Joined multisig!" }
+        )}
       />
       <SpacerColumn size={2.5} />
     </ModalBase>

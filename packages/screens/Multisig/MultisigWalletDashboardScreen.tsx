@@ -176,12 +176,17 @@ const MultisigMembers: React.FC<{
 
 const halfGap = 8;
 
+export const multisigInfoQueryKey = (multisigId: string | undefined) => [
+  "multisig-info",
+  multisigId,
+];
+
 export const useMultisigInfo = (id: string | undefined) => {
   const selectedWallet = useSelectedWallet();
   const authToken = useMultisigAuthToken(selectedWallet?.userId);
   const client = useMultisigClient();
   const { data, ...other } = useQuery(
-    ["multisig-info", id, authToken, client],
+    [...multisigInfoQueryKey(id), authToken, client],
     async () => {
       if (!authToken || !client) {
         return null;
