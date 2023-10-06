@@ -17,7 +17,8 @@ import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getKeplrSigningStargateClient } from "../../networks";
-import { neutral44, tulipTree } from "../../utils/style/colors";
+import { neutral33, neutral44, tulipTree } from "../../utils/style/colors";
+import { fontSemibold14, fontSemibold20 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 
 const Separator: React.FC<{ style?: StyleProp<ViewStyle> }> = ({ style }) => (
@@ -383,22 +384,18 @@ export const GovernanceDetails: React.FC<{
       >
         <View>
           <BrandText
-            style={{
-              fontSize: 20,
-              color: "#808080",
-            }}
+            style={[
+              fontSemibold20,
+              {
+                color: "#808080",
+              },
+            ]}
           >
             Total
           </BrandText>
         </View>
         <View>
-          <BrandText
-            style={{
-              fontSize: 20,
-            }}
-          >
-            {totalParticipant}
-          </BrandText>
+          <BrandText style={fontSemibold20}>{totalParticipant}</BrandText>
         </View>
 
         <VictoryPie
@@ -464,10 +461,12 @@ export const GovernanceDetails: React.FC<{
               }}
             />
             <BrandText
-              style={{
-                marginLeft: layout.spacing_x1,
-                fontSize: 14,
-              }}
+              style={[
+                fontSemibold14,
+                {
+                  marginLeft: layout.spacing_x1,
+                },
+              ]}
             >
               Yes {percentageYes}
             </BrandText>
@@ -486,11 +485,12 @@ export const GovernanceDetails: React.FC<{
               }}
             />
             <BrandText
-              style={{
-                marginLeft: layout.spacing_x1,
-
-                fontSize: 14,
-              }}
+              style={[
+                fontSemibold14,
+                {
+                  marginLeft: layout.spacing_x1,
+                },
+              ]}
             >
               Abstain {percentageNo}
             </BrandText>
@@ -509,11 +509,12 @@ export const GovernanceDetails: React.FC<{
               }}
             />
             <BrandText
-              style={{
-                marginLeft: layout.spacing_x1,
-
-                fontSize: 14,
-              }}
+              style={[
+                fontSemibold14,
+                {
+                  marginLeft: layout.spacing_x1,
+                },
+              ]}
             >
               No {percentageNo}
             </BrandText>
@@ -528,16 +529,17 @@ export const GovernanceDetails: React.FC<{
               style={{
                 width: 12,
                 height: 12,
-                backgroundColor: "#333333",
+                backgroundColor: neutral33,
                 borderRadius: 12,
               }}
             />
             <BrandText
-              style={{
-                marginLeft: layout.spacing_x1,
-
-                fontSize: 14,
-              }}
+              style={[
+                fontSemibold14,
+                {
+                  marginLeft: layout.spacing_x1,
+                },
+              ]}
             >
               NoWithVeto {percentageNoWithVeto}
             </BrandText>
@@ -602,10 +604,12 @@ export const GovernanceDetails: React.FC<{
         }
       >
         <BrandText
-          style={{
-            fontSize: 14,
-            color: "#777777",
-          }}
+          style={[
+            fontSemibold14,
+            {
+              color: "#777777",
+            },
+          ]}
         >
           {numberProposal}
         </BrandText>
