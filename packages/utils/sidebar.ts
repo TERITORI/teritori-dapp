@@ -1,5 +1,4 @@
 import dappStoreSVG from "../../assets/icons/dapp-store.svg";
-import deployerSVG from "../../assets/icons/deployer.svg";
 import feedSVG from "../../assets/icons/feed.svg";
 import rioterFooterSVG from "../../assets/icons/footer-rioters.svg";
 import governanceSVG from "../../assets/icons/governance.svg";
@@ -52,7 +51,7 @@ export const SIDEBAR_LIST: SidebarRecordType = {
       },
     },
   },
-  "multisig-wallet": {
+  multisig: {
     id: "Multisig",
     title: "Multisig",
     route: "Multisig",
@@ -97,12 +96,6 @@ export const SIDEBAR_LIST: SidebarRecordType = {
     id: "Organizations",
     route: "Organizations",
     icon: multisigSVG,
-  },
-  deployer: {
-    id: "Deployer",
-    title: "Deployer",
-    route: "OrganizationDeployer",
-    icon: deployerSVG,
   },
   governance: {
     title: "Governance",
