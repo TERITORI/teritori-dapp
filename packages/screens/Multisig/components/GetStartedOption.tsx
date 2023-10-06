@@ -1,5 +1,5 @@
 import React from "react";
-import { Pressable, StyleSheet, TextStyle, View } from "react-native";
+import { Pressable, TextStyle, View, ViewStyle } from "react-native";
 import { SvgProps } from "react-native-svg";
 
 import { BrandText } from "../../../components/BrandText";
@@ -46,13 +46,13 @@ export const GetStartedOption: React.FC<GetStartedOptionProps> = ({
       onPress={onPress}
       disabled={disabled}
       style={[
-        styles.container,
+        containerCStyle,
         { borderColor: styleDarker ? neutral17 : neutral33 },
-        variant === "small" && styles.smallContainer,
+        variant === "small" && smallContainerCStyle,
       ]}
     >
       {styleDarker && (
-        <BrandText style={styles.topText}>
+        <BrandText style={topTextCStyle}>
           {isBetaVersion ? "Beta Version" : "coming soon"}
         </BrandText>
       )}
@@ -63,7 +63,7 @@ export const GetStartedOption: React.FC<GetStartedOptionProps> = ({
           style={[
             fontSemibold14,
             { color: styleDarker ? neutral55 : secondaryColor },
-            variant === "small" && styles.smallText,
+            variant === "small" && smallTextCStyle,
             titleStyle,
           ]}
         >
@@ -75,7 +75,7 @@ export const GetStartedOption: React.FC<GetStartedOptionProps> = ({
             style={[
               fontSemibold9,
               { color: neutral55 },
-              variant === "small" && styles.smallText,
+              variant === "small" && smallTextCStyle,
             ]}
           >
             {subtitle}
@@ -85,41 +85,39 @@ export const GetStartedOption: React.FC<GetStartedOptionProps> = ({
     </Pressable>
   );
 };
-// FIXME: remove StyleSheet.create
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  container: {
-    width: 300,
-    height: 200,
-    paddingTop: layout.spacing_x2_5,
-    paddingBottom: layout.spacing_x4,
-    justifyContent: "space-between",
-    alignItems: "center",
-    borderWidth: 1,
-    borderColor: neutral33,
-    position: "relative",
-    borderRadius: 12,
-    marginHorizontal: layout.spacing_x2,
-    marginVertical: layout.spacing_x2,
-  },
-  smallContainer: {
-    width: 135,
-    height: 160,
-    paddingBottom: layout.spacing_x1_5,
-    marginVertical: 0,
-  },
-  smallText: { textAlign: "center" },
-  topText: StyleSheet.flatten([
-    fontSemibold12,
-    {
-      position: "absolute",
-      top: 0,
-      right: 0,
-      padding: layout.spacing_x0_5,
-      paddingHorizontal: layout.spacing_x1,
-      borderBottomLeftRadius: 12,
-      borderTopRightRadius: 12,
-      backgroundColor: neutral17,
-    },
-  ]),
-});
+
+const containerCStyle: ViewStyle = {
+  width: 300,
+  height: 200,
+  paddingTop: layout.spacing_x2_5,
+  paddingBottom: layout.spacing_x4,
+  justifyContent: "space-between",
+  alignItems: "center",
+  borderWidth: 1,
+  borderColor: neutral33,
+  position: "relative",
+  borderRadius: 12,
+  marginHorizontal: layout.spacing_x2,
+  marginVertical: layout.spacing_x2,
+};
+
+const smallContainerCStyle: ViewStyle = {
+  width: 135,
+  height: 160,
+  paddingBottom: layout.spacing_x1_5,
+  marginVertical: 0,
+};
+
+const smallTextCStyle: TextStyle = { textAlign: "center" };
+
+const topTextCStyle: TextStyle = {
+  ...fontSemibold12,
+  position: "absolute",
+  top: 0,
+  right: 0,
+  padding: layout.spacing_x0_5,
+  paddingHorizontal: layout.spacing_x1,
+  borderBottomLeftRadius: 12,
+  borderTopRightRadius: 12,
+  backgroundColor: neutral17,
+};
