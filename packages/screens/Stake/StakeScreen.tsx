@@ -144,8 +144,8 @@ export const StakeScreen: ScreenFC<"Staking"> = ({ route: { params } }) => {
         visible={isStakeFormVisible}
         onClose={toggleStakeForm}
         validator={selectedStake}
-        userKind={userKind}
         userId={userId}
+        userKind={userKind}
       />
     </ScreenContainer>
   );
