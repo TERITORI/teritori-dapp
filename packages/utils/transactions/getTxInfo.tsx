@@ -8,6 +8,7 @@ import multisigWhiteSVG from "../../../assets/icons/multisig_white.svg";
 import stakingWhiteSVG from "../../../assets/icons/staking_white.svg";
 import tnsWhiteSVG from "../../../assets/icons/tns-service_white.svg";
 import walletWhiteSVG from "../../../assets/icons/wallet_white.svg";
+import { Coin } from "../../api/teritori-chain/cosmos/base/v1beta1/coin";
 import { BrandText } from "../../components/BrandText";
 import { SocialMessageContent } from "../../components/socialFeed/SocialThread/SocialMessageContent";
 import { SpacerColumn } from "../../components/spacer";
@@ -145,17 +146,10 @@ export const getTxInfo = (
               <BrandText style={brandTextNormalStyle}>
                 Delegating to:{" "}
               </BrandText>
-              <Pressable
-                onPress={() => {
-                  // TODO: show tns info using reusable component
-                  const id = getUserId(network?.id, validatorAddress);
-                  navigation.navigate("UserPublicProfile", { id });
-                }}
-              >
-                <BrandText style={opts.textStyle}>
-                  {tinyAddress(validatorAddress, 20)}
-                </BrandText>
-              </Pressable>
+              <Username
+                textStyle={[brandTextNormalStyle, { color: "white" }]}
+                userId={getUserId(network?.id, validatorAddress)}
+              />
             </View>
           ),
           small2: (
@@ -183,17 +177,10 @@ export const getTxInfo = (
               <BrandText style={brandTextNormalStyle}>
                 Undelegating from:{" "}
               </BrandText>
-              <Pressable
-                onPress={() => {
-                  // TODO: show tns info using reusable component
-                  const id = getUserId(network?.id, validatorAddress);
-                  navigation.navigate("UserPublicProfile", { id });
-                }}
-              >
-                <BrandText style={opts.textStyle}>
-                  {tinyAddress(validatorAddress, 20)}
-                </BrandText>
-              </Pressable>
+              <Username
+                textStyle={[brandTextNormalStyle, { color: "white" }]}
+                userId={getUserId(network?.id, validatorAddress)}
+              />
             </View>
           ),
           small2: (
@@ -220,32 +207,15 @@ export const getTxInfo = (
           small1: (
             <View style={rowCenterCStyle}>
               <BrandText style={brandTextNormalStyle}>From: </BrandText>
-              <Pressable
-                onPress={() => {
-                  // TODO: show tns info using reusable component
-                  const id = getUserId(network?.id, sourceValidatorAddress);
-                  navigation.navigate("UserPublicProfile", { id });
-                }}
-              >
-                <BrandText style={opts.textStyle}>
-                  {tinyAddress(sourceValidatorAddress, 10)}
-                </BrandText>
-              </Pressable>
+              <Username
+                textStyle={[brandTextNormalStyle, { color: "white" }]}
+                userId={getUserId(network?.id, sourceValidatorAddress)}
+              />
               <BrandText style={brandTextNormalStyle}>, To: </BrandText>
-              <Pressable
-                onPress={() => {
-                  // TODO: show tns info using reusable component
-                  const id = getUserId(
-                    network?.id,
-                    destinationValidatorAddress
-                  );
-                  navigation.navigate("UserPublicProfile", { id });
-                }}
-              >
-                <BrandText style={opts.textStyle}>
-                  {tinyAddress(destinationValidatorAddress, 10)}
-                </BrandText>
-              </Pressable>
+              <Username
+                textStyle={[brandTextNormalStyle, { color: "white" }]}
+                userId={getUserId(network?.id, destinationValidatorAddress)}
+              />
             </View>
           ),
           small2: (
@@ -283,13 +253,33 @@ export const getTxInfo = (
         let icon = multisigWhiteSVG;
         let name = "Execute";
         let preview: React.FC | undefined;
+        let small1: React.ReactElement | undefined;
+        let small2: React.ReactElement | undefined;
         if (
           network?.kind === NetworkKind.Cosmos &&
           contractAddress === network.nameServiceContractAddress &&
           method === "mint"
         ) {
+          const nsName = execMsg.mint.token_id;
           icon = tnsWhiteSVG;
           name = "Book name";
+          small1 = (
+            <BrandText style={brandTextNormalStyle}>
+              Name:{" "}
+              <BrandText style={[brandTextNormalStyle, { color: "white" }]}>
+                {nsName}
+              </BrandText>
+            </BrandText>
+          );
+          const price = msg.value.funds[0];
+          small2 = (
+            <BrandText style={brandTextNormalStyle}>
+              Price:{" "}
+              <BrandText style={[brandTextNormalStyle, { color: "white" }]}>
+                {prettyPrice(network?.id, price.amount, price.denom)}
+              </BrandText>
+            </BrandText>
+          );
         } else if (
           network?.kind === NetworkKind.Cosmos &&
           contractAddress === network.socialFeedContractAddress &&
@@ -320,9 +310,8 @@ export const getTxInfo = (
             );
           };
         }
-        return {
-          name,
-          small1: (
+        if (!small1) {
+          small1 = (
             <View style={rowCenterCStyle}>
               <BrandText style={brandTextNormalStyle}>Contract: </BrandText>
               <Pressable
@@ -337,38 +326,73 @@ export const getTxInfo = (
                 </BrandText>
               </Pressable>
             </View>
-          ),
-          small2: (
+          );
+        }
+        if (!small2) {
+          small2 = (
             <View style={rowCenterCStyle}>
               <BrandText style={brandTextNormalStyle}>Method: </BrandText>
               <BrandText style={opts.textStyle}>{method}</BrandText>
             </View>
-          ),
+          );
+        }
+        return {
+          name,
+          small1,
+          small2,
           icon,
           MessagePreview: preview,
         };
       }
       case "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward": {
         const validatorAddress = msg.value.validatorAddress;
+        const delegatorAddress = msg.value.delegatorAddress;
         return {
           name: "Withdraw staking rewards",
           small1: (
             <View style={rowCenterCStyle}>
-              <BrandText style={opts.textStyle}>Validator: </BrandText>
-              <Pressable
-                onPress={() => {
-                  // TODO: show tns info using reusable component
-                  const id = getUserId(network?.id, validatorAddress);
-                  navigation.navigate("UserPublicProfile", { id });
-                }}
-              >
-                <BrandText style={opts.textStyle}>
-                  {tinyAddress(validatorAddress, 20)}
-                </BrandText>
-              </Pressable>
+              <BrandText style={brandTextNormalStyle}>From: </BrandText>
+              <Username
+                textStyle={[brandTextNormalStyle, { color: "white" }]}
+                userId={getUserId(network?.id, validatorAddress)}
+              />
             </View>
           ),
-          small2: <BrandText style={brandTextNormalStyle}> </BrandText>,
+          small2: (
+            <BrandText style={brandTextNormalStyle}>
+              To:{" "}
+              <Username
+                textStyle={[brandTextNormalStyle, { color: "white" }]}
+                userId={getUserId(network?.id, delegatorAddress)}
+              />
+            </BrandText>
+          ),
+          icon: stakingWhiteSVG,
+          MessagePreview: () => null,
+        };
+      }
+      case "/teritori.mint.v1beta1.MsgBurnTokens": {
+        const burnerAddress = msg.value.sender;
+        const amount = Coin.decode(Buffer.from(msg.value.amount[0], "utf-8"));
+        return {
+          name: "Burn tokens",
+          small1: (
+            <View style={rowCenterCStyle}>
+              <BrandText style={brandTextNormalStyle}>Will burn: </BrandText>
+              <BrandText style={[brandTextNormalStyle, { color: "white" }]}>
+                {prettyPrice(network?.id, amount.amount, amount.denom)}
+              </BrandText>
+            </View>
+          ),
+          small2: (
+            <BrandText style={brandTextNormalStyle}>
+              From:{" "}
+              <Username
+                textStyle={[opts.textStyle, { color: "white" }]}
+                userId={getUserId(network?.id, burnerAddress)}
+              />
+            </BrandText>
+          ),
           icon: stakingWhiteSVG,
           MessagePreview: () => null,
         };
