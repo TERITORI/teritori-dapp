@@ -6,7 +6,6 @@ import { StyleProp, View, ViewStyle } from "react-native";
 import { MultisigFormInput } from "./components/MultisigFormInput";
 import { MultisigRightSection } from "./components/MultisigRightSection";
 import { MultisigSection } from "./components/MultisigSection";
-import { MultisigLegacyFormType } from "./types";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { MultisigTransactions } from "../../components/multisig/MultisigTransactions";
@@ -23,11 +22,17 @@ import { fontSemibold20, fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { Assets } from "../WalletManager/Assets";
 
+type MultisigFormType = {
+  multisigAddress: string;
+  membersAddress: { address: string }[];
+  assets: string;
+};
+
 export const MultisigWalletDashboardScreen: ScreenFC<
   "MultisigWalletDashboard"
 > = ({ route }) => {
   const navigation = useAppNavigation();
-  const { control } = useForm<MultisigLegacyFormType>();
+  const { control } = useForm<MultisigFormType>();
   const { id: multisigUserId } = route.params;
   const [network, multisigAddress] = parseUserId(multisigUserId);
   const userId = useSelectedWallet()?.userId;
@@ -66,7 +71,7 @@ export const MultisigWalletDashboardScreen: ScreenFC<
           <BrandText style={fontSemibold28}>General information</BrandText>
           <SpacerColumn size={2.5} />
           <MultisigSection title="Multisig Address">
-            <MultisigFormInput<MultisigLegacyFormType>
+            <MultisigFormInput<MultisigFormType>
               control={control}
               label=""
               hideLabel

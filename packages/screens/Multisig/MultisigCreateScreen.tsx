@@ -4,7 +4,6 @@ import { useForm } from "react-hook-form";
 import { Pressable, ScrollView, View } from "react-native";
 
 import { MultisigSection } from "./components/MultisigSection";
-import { CreateMultisigWalletFormType } from "./types";
 import trashSVG from "../../../assets/icons/trash.svg";
 import walletInputSVG from "../../../assets/icons/wallet-input.svg";
 import { BrandText } from "../../components/BrandText";
@@ -50,6 +49,13 @@ import {
   fontSemibold28,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
+
+type CreateMultisigWalletFormType = {
+  addresses: { address: string }[];
+  signatureRequired: string;
+  maxSignature: string;
+  name: string;
+};
 
 const emptyPubKeyGroup = () => ({ address: "", compressedPubkey: "" });
 
