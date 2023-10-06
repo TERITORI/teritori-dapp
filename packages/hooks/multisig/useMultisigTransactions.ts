@@ -53,10 +53,6 @@ export const useMultisigTransactions = (
 
       const [, multisigAddress] = parseUserId(multisigUserId);
 
-      if (!multisigAddress) {
-        return { data: [], next: null };
-      }
-
       const req = {
         authToken,
         chainId,
