@@ -25,12 +25,12 @@ import { useAreThereWallets } from "../../hooks/useAreThereWallets";
 import { useBalances } from "../../hooks/useBalances";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
 import { useIsLeapConnected } from "../../hooks/useIsLeapConnected";
+import { useNSMintPrice } from "../../hooks/useNSMintPrice";
 import { nsNameInfoQueryKey } from "../../hooks/useNSNameInfo";
 import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
 import { useRunOrProposeTransaction } from "../../hooks/useRunOrProposeTransaction";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { useTNSMintPrice } from "../../hooks/useTNSMintPrice";
 import {
   mustGetNonSigningCosmWasmClient,
   mustGetCosmosNetwork,
@@ -187,7 +187,7 @@ export const TNSMintNameModal: React.FC<
   const isLeapConnected = useIsLeapConnected();
 
   const { setToastError, setToastSuccess } = useFeedbacks();
-  const price = useTNSMintPrice(networkId, normalizedTokenId);
+  const price = useNSMintPrice(networkId, normalizedTokenId);
   const balance = balances.find((bal) => bal.denom === price?.denom);
 
   const runOrProposeTransaction = useRunOrProposeTransaction(userId, userKind);

@@ -81,7 +81,7 @@ export const useRewards = (userId: string | undefined, userKind: UserKind) => {
           validatorAddress,
         },
       };
-      await runOrProposeTransaction({ msgs: [msg] });
+      await runOrProposeTransaction({ msgs: [msg], navigateToProposals: true });
       const toastTitle =
         userKind === UserKind.Single
           ? "Claim success"

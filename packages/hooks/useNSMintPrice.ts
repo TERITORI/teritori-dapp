@@ -1,23 +1,22 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { TeritoriNameServiceQueryClient } from "../contracts-clients/teritori-name-service/TeritoriNameService.client";
-import {
-  mustGetCosmosNetwork,
-  mustGetNonSigningCosmWasmClient,
-} from "../networks";
+import { getCosmosNetwork, mustGetNonSigningCosmWasmClient } from "../networks";
 
-export const useTNSMintPrice = (
+// TODO: move all ns hooks to a hooks/ns directory
+
+export const useNSMintPrice = (
   networkId: string | undefined,
   tokenId: string
 ) => {
   const { data } = useQuery(
-    ["tnsMintPrice", networkId, tokenId],
+    ["nsMintPrice", networkId, tokenId],
     async () => {
       if (!networkId) {
         return null;
       }
-      const network = mustGetCosmosNetwork(networkId);
-      if (!network.nameServiceContractAddress) {
+      const network = getCosmosNetwork(networkId);
+      if (!network?.nameServiceContractAddress) {
         return null;
       }
 
@@ -27,7 +26,6 @@ export const useTNSMintPrice = (
         client,
         network.nameServiceContractAddress
       );
-      console.log("fetching price for", tokenId);
 
       const info = await tnsClient.contractInfo();
 
