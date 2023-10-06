@@ -78,22 +78,20 @@ export const TopMenuMyTeritories: React.FC = () => {
   return (
     <TopMenuSection title="All DAOs" isCarousel>
       {daos && (
-        <>
-          <SmallCarousel
-            style={{
-              width: topMenuWidth - 2,
-            }}
-            width={ORG_CARD_WIDTH + layout.spacing_x1_5}
-            data={daos}
-            height={48}
-            loop={false}
-            renderItem={({ item }) => (
-              <View style={{ alignItems: "flex-end" }}>
-                <OrgCard organization={item} />
-              </View>
-            )}
-          />
-        </>
+        <SmallCarousel
+          style={{
+            width: topMenuWidth - 2,
+          }}
+          width={ORG_CARD_WIDTH + layout.spacing_x1_5}
+          data={daos}
+          height={48}
+          loop={false}
+          renderItem={({ item }) => (
+            <View style={{ alignItems: "flex-end" }}>
+              <OrgCard organization={item} />
+            </View>
+          )}
+        />
       )}
     </TopMenuSection>
   );
