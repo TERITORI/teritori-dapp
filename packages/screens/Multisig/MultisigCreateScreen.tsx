@@ -26,14 +26,17 @@ import { useMultisigClient } from "../../hooks/multisig/useMultisigClient";
 import { useEnabledNetworks } from "../../hooks/useEnabledNetworks";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { NetworkKind, getUserId, CosmosNetworkInfo } from "../../networks";
+import {
+  NetworkKind,
+  getUserId,
+  CosmosNetworkInfo,
+  parseUserId,
+} from "../../networks";
 import { getCosmosAccount } from "../../utils/cosmos";
 import {
-  getNSAddress,
   patternOnlyNumbers,
   validateAddress,
   validateMaxNumber,
-  validateNS,
 } from "../../utils/formRules";
 import { useAppNavigation } from "../../utils/navigation";
 import {
@@ -150,21 +153,10 @@ export const MultisigCreateScreen = () => {
 
   const onAddressChange = async (index: number, value: string) => {
     const resValAddress = validateAddress(value);
-    const resNsAddress = validateNS(value);
 
-    if (resValAddress !== true && resNsAddress !== true)
-      return "Invalid address";
+    if (resValAddress !== true) return "Invalid address";
 
-    let address = "";
-    if (resValAddress === true) {
-      address = value;
-    } else {
-      const nsAddrInfo = await getNSAddress(value, selectedNetwork?.id || "");
-      if (!nsAddrInfo.status) {
-        return nsAddrInfo.msg;
-      }
-      address = nsAddrInfo.address!;
-    }
+    const address = value;
 
     if (addressIndexes.find((a, i) => a.address === address && i !== index))
       return "This address is already used in this form.";
@@ -262,9 +254,13 @@ export const MultisigCreateScreen = () => {
               <View key={index.toString()}>
                 <SearchNSInputContainer
                   searchText={watch(`addresses.${index}.address`)}
-                  onPressName={(address) =>
-                    setValue(`addresses.${index}.address`, address)
-                  }
+                  onPressName={(userId) => {
+                    const [, address] = parseUserId(userId);
+                    if (!address) {
+                      return;
+                    }
+                    setValue(`addresses.${index}.address`, address);
+                  }}
                 >
                   <TextInputCustom<CreateMultisigWalletFormType>
                     defaultValue={index === 0 ? selectedWallet?.address : ""}
