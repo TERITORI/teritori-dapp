@@ -1,5 +1,3 @@
-// FIXME: handle case where there is bad json in the db
-
 import { MsgExecuteContractEncodeObject } from "@cosmjs/cosmwasm-stargate";
 import React from "react";
 import { View, Pressable, ViewStyle, TextStyle, StyleProp } from "react-native";
