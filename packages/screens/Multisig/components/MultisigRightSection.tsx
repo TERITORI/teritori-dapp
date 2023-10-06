@@ -18,6 +18,10 @@ import { SpacerColumn } from "../../../components/spacer";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useMultisigAuthToken } from "../../../hooks/multisig/useMultisigAuthToken";
 import { useMultisigClient } from "../../../hooks/multisig/useMultisigClient";
+import {
+  multisigInfoQueryKey,
+  useMultisigInfo,
+} from "../../../hooks/multisig/useMultisigInfo";
 import { useBalances } from "../../../hooks/useBalances";
 import { useRunOrProposeTransaction } from "../../../hooks/useRunOrProposeTransaction";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
@@ -41,10 +45,6 @@ import { fontSemibold12, fontSemibold13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { TNSMintNameModal } from "../../TeritoriNameService/TNSMintNameScreen";
 import { TNSRegisterScreen } from "../../TeritoriNameService/TNSRegisterScreen";
-import {
-  multisigInfoQueryKey,
-  useMultisigInfo,
-} from "../MultisigWalletDashboardScreen";
 
 export const MultisigRightSection: React.FC = () => {
   const navigation = useAppNavigation();

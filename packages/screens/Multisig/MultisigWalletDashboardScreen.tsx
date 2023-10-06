@@ -1,4 +1,3 @@
-import { useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { StyleProp, View, ViewStyle } from "react-native";
@@ -11,10 +10,9 @@ import { ScreenContainer } from "../../components/ScreenContainer";
 import { MultisigTransactions } from "../../components/multisig/MultisigTransactions";
 import { SpacerColumn } from "../../components/spacer";
 import { UserCard } from "../../components/user/UserCard";
-import { useMultisigAuthToken } from "../../hooks/multisig/useMultisigAuthToken";
-import { useMultisigClient } from "../../hooks/multisig/useMultisigClient";
+import { useMultisigInfo } from "../../hooks/multisig/useMultisigInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { NetworkKind, getUserId, parseUserId } from "../../networks";
+import { getUserId, parseUserId } from "../../networks";
 import { validateAddress } from "../../utils/formRules";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { neutral33 } from "../../utils/style/colors";
@@ -175,41 +173,3 @@ const MultisigMembers: React.FC<{
 };
 
 const halfGap = 8;
-
-export const multisigInfoQueryKey = (multisigId: string | undefined) => [
-  "multisig-info",
-  multisigId,
-];
-
-export const useMultisigInfo = (id: string | undefined) => {
-  const selectedWallet = useSelectedWallet();
-  const authToken = useMultisigAuthToken(selectedWallet?.userId);
-  const client = useMultisigClient();
-  const { data, ...other } = useQuery(
-    [...multisigInfoQueryKey(id), authToken, client],
-    async () => {
-      if (!authToken || !client) {
-        return null;
-      }
-      const [network, multisigAddress] = parseUserId(id);
-      if (network?.kind !== NetworkKind.Cosmos) {
-        return null;
-      }
-      try {
-        const { multisig } = await client.MultisigInfo({
-          authToken,
-          multisigAddress,
-          chainId: network.chainId,
-        });
-        return multisig;
-      } catch (err) {
-        if (err instanceof Error && err.message === "not found") {
-          return null;
-        }
-        throw err;
-      }
-    },
-    { staleTime: Infinity }
-  );
-  return { multisig: data, ...other };
-};
