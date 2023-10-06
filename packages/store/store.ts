@@ -29,23 +29,6 @@ const migrations = {
       settings: {
         ...state.settings,
         multisigTokens: multisigTokensAdapter.getInitialState(),
-      },
-    };
-  },
-  1: (state: any) => {
-    return {
-      ...state,
-      settings: {
-        ...state.settings,
-        networkSettings: networkSettingsAdapter.getInitialState(),
-      },
-    };
-  },
-  2: (state: any) => {
-    return {
-      ...state,
-      settings: {
-        ...state.settings,
         networkSettings: networkSettingsAdapter.upsertMany(
           state.settings.networkSettings,
           defaultEnabledNetworks.map((nid) => ({
@@ -61,7 +44,7 @@ const migrations = {
 const persistConfig = {
   key: "root",
   storage: AsyncStorage,
-  version: 2,
+  version: 0,
   migrate: createMigrate(migrations, { debug: false }),
   whitelist: [
     "wallets",
