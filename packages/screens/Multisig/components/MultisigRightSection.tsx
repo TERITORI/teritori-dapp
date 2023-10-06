@@ -85,113 +85,115 @@ export const MultisigRightSection: React.FC = () => {
   if (!authToken) {
     actions.push(<LoginButton userId={selectedWallet?.userId} />);
   } else {
-    if (!multisig?.joined) {
+    if (multisig) {
+      if (!multisig.joined) {
+        actions.push(
+          <>
+            <PrimaryButton
+              size="M"
+              text="Join this multisig"
+              loader
+              fullWidth
+              onPress={() => setJoinMultisigModalVisible(true)}
+            />
+            <JoinMultisigModal
+              visible={joinMultisigModalVisible}
+              onClose={() => setJoinMultisigModalVisible(false)}
+              multisigId={id}
+              userId={selectedWallet?.userId}
+            />
+          </>
+        );
+      }
+
       actions.push(
         <>
           <PrimaryButton
             size="M"
-            text="Join this multisig"
-            loader
+            text="Send"
             fullWidth
-            onPress={() => setJoinMultisigModalVisible(true)}
+            onPress={() => setShowSendModal(true)}
           />
-          <JoinMultisigModal
-            visible={joinMultisigModalVisible}
-            onClose={() => setJoinMultisigModalVisible(false)}
-            multisigId={id}
-            userId={selectedWallet?.userId}
-          />
-        </>
-      );
-    }
-
-    actions.push(
-      <>
-        <PrimaryButton
-          size="M"
-          text="Send"
-          fullWidth
-          onPress={() => setShowSendModal(true)}
-        />
-        {!!network && (
-          <SendModal
-            isVisible={showSendModal}
-            userId={id}
-            userKind={UserKind.Multisig}
-            onClose={() => setShowSendModal(false)}
-            nativeCurrency={getStakingCurrency(network.id)}
-          />
-        )}
-      </>
-    );
-
-    actions.push(
-      <PrimaryButton
-        size="M"
-        text="Delegate"
-        fullWidth
-        onPress={() => navigation.navigate("Staking", { multisigId: id })}
-      />
-    );
-
-    if (network?.features.includes(NetworkFeature.NameService)) {
-      actions.push(
-        <>
-          <PrimaryButton
-            size="M"
-            text="Buy a name"
-            fullWidth
-            onPress={() => {
-              setModalNameFinderVisible(true);
-            }}
-          />
-          <TNSNameFinderModal
-            visible={modalNameFinderVisible}
-            onClose={() => {
-              setModalNameFinderVisible(false);
-            }}
-            onEnter={() => {
-              setModalNameFinderVisible(false);
-              setVisibleRegisterForm(true);
-            }}
-          />
-          {visibleRegisterForm && (
-            <TNSRegisterScreen onClose={handleRegisterTnsModalClose} />
-          )}
-          {visibleMintForm && (
-            <TNSMintNameModal
-              initialData={{}}
+          {!!network && (
+            <SendModal
+              isVisible={showSendModal}
               userId={id}
               userKind={UserKind.Multisig}
-              onClose={handleMintTnsModalClose}
-              navigateBackTo="TNSManage" // FIXME: this is weird
+              onClose={() => setShowSendModal(false)}
+              nativeCurrency={getStakingCurrency(network.id)}
             />
           )}
         </>
       );
-    }
 
-    if (network?.features.includes(NetworkFeature.BurnTokens)) {
       actions.push(
-        <>
-          <PrimaryButton
-            size="M"
-            text={`Burn ${stakingCurrency?.displayName}s`}
-            fullWidth
-            onPress={() => {
-              setBurnModalVisible(true);
-            }}
-          />
-          <BurnModal
-            visible={burnModalVisible}
-            onClose={() => setBurnModalVisible(false)}
-            networkId={network?.id}
-            userId={id}
-            userKind={UserKind.Multisig}
-            denom={stakingCurrency?.denom}
-          />
-        </>
+        <PrimaryButton
+          size="M"
+          text="Delegate"
+          fullWidth
+          onPress={() => navigation.navigate("Staking", { multisigId: id })}
+        />
       );
+
+      if (network?.features.includes(NetworkFeature.NameService)) {
+        actions.push(
+          <>
+            <PrimaryButton
+              size="M"
+              text="Buy a name"
+              fullWidth
+              onPress={() => {
+                setModalNameFinderVisible(true);
+              }}
+            />
+            <TNSNameFinderModal
+              visible={modalNameFinderVisible}
+              onClose={() => {
+                setModalNameFinderVisible(false);
+              }}
+              onEnter={() => {
+                setModalNameFinderVisible(false);
+                setVisibleRegisterForm(true);
+              }}
+            />
+            {visibleRegisterForm && (
+              <TNSRegisterScreen onClose={handleRegisterTnsModalClose} />
+            )}
+            {visibleMintForm && (
+              <TNSMintNameModal
+                initialData={{}}
+                userId={id}
+                userKind={UserKind.Multisig}
+                onClose={handleMintTnsModalClose}
+                navigateBackTo="TNSManage" // FIXME: this is weird
+              />
+            )}
+          </>
+        );
+      }
+
+      if (network?.features.includes(NetworkFeature.BurnTokens)) {
+        actions.push(
+          <>
+            <PrimaryButton
+              size="M"
+              text={`Burn ${stakingCurrency?.displayName}s`}
+              fullWidth
+              onPress={() => {
+                setBurnModalVisible(true);
+              }}
+            />
+            <BurnModal
+              visible={burnModalVisible}
+              onClose={() => setBurnModalVisible(false)}
+              networkId={network?.id}
+              userId={id}
+              userKind={UserKind.Multisig}
+              denom={stakingCurrency?.denom}
+            />
+          </>
+        );
+      }
     }
   }
 
