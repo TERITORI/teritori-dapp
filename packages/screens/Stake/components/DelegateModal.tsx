@@ -14,7 +14,6 @@ import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import ModalBase from "../../../components/modals/ModalBase";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
-import { useMultisigProposePostActions } from "../../../hooks/multisig/useMultisigProposePostActions";
 import { useBalances } from "../../../hooks/useBalances";
 import { useErrorHandler } from "../../../hooks/useErrorHandler";
 import { useRunOrProposeTransaction } from "../../../hooks/useRunOrProposeTransaction";
@@ -67,8 +66,6 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
   const { control, setValue, handleSubmit, reset } =
     useForm<StakeFormValuesType>();
 
-  const multisigPostActions = useMultisigProposePostActions(userId);
-
   useEffect(() => {
     reset();
   }, [reset, visible]);
@@ -95,34 +92,44 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
           });
           return;
         }
+        const amount = Decimal.fromUserInput(
+          formData.amount,
+          stakingCurrency.decimals
+        ).atomics;
         const msg: MsgDelegateEncodeObject = {
           typeUrl: "/cosmos.staking.v1beta1.MsgDelegate",
           value: {
             amount: {
-              amount: Decimal.fromUserInput(
-                formData.amount,
-                stakingCurrency.decimals
-              ).atomics,
+              amount,
               denom: stakingCurrency.denom,
             },
             delegatorAddress: userAddress,
             validatorAddress: validator.address,
           },
         };
-        await runOrProposeTransaction({ msgs: [msg] });
-        if (userKind === UserKind.Multisig) {
-          await multisigPostActions();
-          setToastSuccess({ title: "Proposed to delegate", message: "" });
-        } else {
-          setToastSuccess({ title: "Delegation success", message: "" });
-        }
+        await runOrProposeTransaction({
+          msgs: [msg],
+          navigateToProposals: true,
+        });
+        const toastTitle =
+          userKind === UserKind.Single
+            ? "Delegation success"
+            : "Proposed to delegate";
+        setToastSuccess({
+          title: toastTitle,
+          message: `${prettyPrice(
+            networkId,
+            amount,
+            stakingCurrency.denom
+          )} to ${validator.moniker}`,
+        });
         onClose && onClose();
       } catch (error) {
         triggerError({ title: "Delegation failed!", error, callback: onClose });
       }
     },
     [
-      multisigPostActions,
+      networkId,
       onClose,
       runOrProposeTransaction,
       setToastError,

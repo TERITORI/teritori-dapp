@@ -13,7 +13,6 @@ import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import ModalBase from "../../../components/modals/ModalBase";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
-import { useMultisigProposePostActions } from "../../../hooks/multisig/useMultisigProposePostActions";
 import { useCosmosValidatorBondedAmount } from "../../../hooks/useCosmosValidatorBondedAmount";
 import { useErrorHandler } from "../../../hooks/useErrorHandler";
 import { useRunOrProposeTransaction } from "../../../hooks/useRunOrProposeTransaction";
@@ -76,8 +75,6 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
     setValue("validatorName", validator?.moniker || "");
   }, [validator?.moniker, setValue]);
 
-  const multisigPostActions = useMultisigProposePostActions(userId);
-
   const onSubmit = useCallback(
     async (formData: StakeFormValuesType) => {
       try {
@@ -111,26 +108,41 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
           });
           return;
         }
+
+        const amount = Decimal.fromUserInput(
+          formData.amount,
+          stakingCurrency.decimals
+        ).atomics;
         const msg: MsgUndelegateEncodeObject = {
           typeUrl: "/cosmos.staking.v1beta1.MsgUndelegate",
           value: {
             amount: {
-              amount: Decimal.fromUserInput(
-                formData.amount,
-                stakingCurrency.decimals
-              ).atomics,
+              amount,
               denom: stakingCurrency.denom,
             },
             delegatorAddress: userAddress,
             validatorAddress: validator.address,
           },
         };
-        await runOrProposeTransaction({ msgs: [msg] });
-        if (userKind === UserKind.Multisig) {
-          await multisigPostActions();
-          setToastSuccess({ title: "Proposed to undelegate", message: "" });
-        } else {
-          setToastSuccess({ title: "Undelegation success", message: "" });
+        await runOrProposeTransaction({
+          msgs: [msg],
+          navigateToProposals: true,
+        });
+
+        const toastTitle =
+          userKind === UserKind.Single
+            ? "Undelegation success"
+            : "Proposed to undelegate";
+        setToastSuccess({
+          title: toastTitle,
+          message: `${prettyPrice(
+            networkId,
+            amount,
+            stakingCurrency.denom
+          )} from ${validator.moniker}`,
+        });
+
+        if (userKind === UserKind.Single) {
           refreshBondedTokens();
         }
         onClose?.();
@@ -143,8 +155,8 @@ export const UndelegateModal: React.FC<UndelegateModalProps> = ({
       }
     },
     [
-      multisigPostActions,
       network,
+      networkId,
       onClose,
       refreshBondedTokens,
       runOrProposeTransaction,

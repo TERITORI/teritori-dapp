@@ -21,7 +21,6 @@ import {
   ExecuteMsg as TNSExecuteMsg,
   Metadata,
 } from "../../contracts-clients/teritori-name-service/TeritoriNameService.types";
-import { useMultisigProposePostActions } from "../../hooks/multisig/useMultisigProposePostActions";
 import { useAreThereWallets } from "../../hooks/useAreThereWallets";
 import { useBalances } from "../../hooks/useBalances";
 import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
@@ -193,7 +192,6 @@ export const TNSMintNameModal: React.FC<
 
   const runOrProposeTransaction = useRunOrProposeTransaction(userId, userKind);
   const queryClient = useQueryClient();
-  const multisigPostActions = useMultisigProposePostActions(userId);
 
   const handleSubmit = async (data: Metadata) => {
     if ((!isKeplrConnected && !isLeapConnected) || !price) {
@@ -227,22 +225,20 @@ export const TNSMintNameModal: React.FC<
         },
       };
 
-      await runOrProposeTransaction({ msgs: [msg] });
+      await runOrProposeTransaction({ msgs: [msg], navigateToProposals: true });
 
-      if (userKind === UserKind.Multisig) {
-        await multisigPostActions();
-        setToastSuccess({
-          title: "Proposed to book " + normalizedTokenId,
-          message: "",
-        });
-        onClose?.();
-      } else {
-        console.log(normalizedTokenId + " successfully minted");
-        setToastSuccess({
-          title: normalizedTokenId + " successfully minted",
-          message: "",
-        });
+      const toastTitle =
+        userKind === UserKind.Single
+          ? normalizedTokenId + " successfully booked"
+          : "Proposed to book " + normalizedTokenId;
+      setToastSuccess({
+        title: toastTitle,
+        message: "",
+      });
+      if (userKind === UserKind.Single) {
         setSuccessModal(true);
+      } else {
+        onClose?.();
       }
     } catch (err) {
       console.warn(err);

@@ -2,7 +2,6 @@ import { MsgWithdrawDelegatorRewardEncodeObject } from "@cosmjs/stargate";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 
-import { useMultisigProposePostActions } from "./multisig/useMultisigProposePostActions";
 import { useCoingeckoPrices } from "./useCoingeckoPrices";
 import { useErrorHandler } from "./useErrorHandler";
 import { useRunOrProposeTransaction } from "./useRunOrProposeTransaction";
@@ -34,7 +33,6 @@ export const useRewards = (userId: string | undefined, userKind: UserKind) => {
   const { setToastSuccess } = useFeedbacks();
   const { triggerError } = useErrorHandler();
   const runOrProposeTransaction = useRunOrProposeTransaction(userId, userKind);
-  const multisigPostActions = useMultisigProposePostActions(userId);
 
   const claimAllRewards = async (callback?: () => void) => {
     try {
@@ -59,16 +57,12 @@ export const useRewards = (userId: string | undefined, userKind: UserKind) => {
         });
       });
       if (!msgs.length) return;
-      await runOrProposeTransaction({ msgs });
-      if (userKind === UserKind.Multisig) {
-        await multisigPostActions();
-        setToastSuccess({
-          title: "Proposed to claim all rewards",
-          message: "",
-        });
-      } else {
-        setToastSuccess({ title: "Claim success", message: "" });
-      }
+      await runOrProposeTransaction({ msgs, navigateToProposals: true });
+      const toastTitle =
+        userKind === UserKind.Single
+          ? "Claim success"
+          : "Proposed to claim all rewards";
+      setToastSuccess({ title: toastTitle, message: "" });
     } catch (error) {
       triggerError({ title: "Claim failed!", error, callback });
     }
@@ -88,12 +82,11 @@ export const useRewards = (userId: string | undefined, userKind: UserKind) => {
         },
       };
       await runOrProposeTransaction({ msgs: [msg] });
-      if (userKind === UserKind.Multisig) {
-        await multisigPostActions();
-        setToastSuccess({ title: "Proposed to claim rewards", message: "" });
-      } else {
-        setToastSuccess({ title: "Claim success", message: "" });
-      }
+      const toastTitle =
+        userKind === UserKind.Single
+          ? "Claim success"
+          : "Proposed to claim rewards";
+      setToastSuccess({ title: toastTitle, message: "" });
     } catch (error) {
       triggerError({ title: "Claim failed!", error, callback });
     }

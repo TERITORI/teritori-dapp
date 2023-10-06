@@ -15,7 +15,6 @@ import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import ModalBase from "../../../components/modals/ModalBase";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
-import { useMultisigProposePostActions } from "../../../hooks/multisig/useMultisigProposePostActions";
 import { useCosmosValidatorBondedAmount } from "../../../hooks/useCosmosValidatorBondedAmount";
 import { useErrorHandler } from "../../../hooks/useErrorHandler";
 import { useRunOrProposeTransaction } from "../../../hooks/useRunOrProposeTransaction";
@@ -96,8 +95,6 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
     return currentValidators;
   }, [allValidators, bondedTokens.atomics, validator?.moniker]);
 
-  const multisigPostActions = useMultisigProposePostActions(userId);
-
   const onSubmit = useCallback(
     async (formData: StakeFormValuesType) => {
       try {
@@ -123,6 +120,11 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
           });
           return;
         }
+
+        const amount = Decimal.fromUserInput(
+          formData.amount,
+          stakingCurrency.decimals
+        ).atomics;
         const msg: MsgBeginRedelegateEncodeObject = {
           typeUrl: "/cosmos.staking.v1beta1.MsgBeginRedelegate",
           value: {
@@ -130,23 +132,34 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
             validatorSrcAddress: validator.address,
             validatorDstAddress: selectedValidator.address,
             amount: {
-              amount: Decimal.fromUserInput(
-                formData.amount,
-                stakingCurrency.decimals
-              ).atomics,
+              amount,
               denom: stakingCurrency.denom,
             },
           },
         };
-        await runOrProposeTransaction({ msgs: [msg] });
-        if (userKind === UserKind.Multisig) {
-          await multisigPostActions();
-          setToastSuccess({ title: "Proposed to redelegate", message: "" });
-        } else {
-          setToastSuccess({ title: "Redelegation success", message: "" });
+
+        await runOrProposeTransaction({
+          msgs: [msg],
+          navigateToProposals: true,
+        });
+
+        const toastTitle =
+          userKind === UserKind.Single
+            ? "Redelegation success"
+            : "Proposed to redelegate";
+        setToastSuccess({
+          title: toastTitle,
+          message: `${prettyPrice(
+            networkId,
+            amount,
+            stakingCurrency.denom
+          )} from ${validator.moniker} to ${selectedValidator.moniker}`,
+        });
+
+        if (userKind === UserKind.Single) {
           refreshBondedTokens();
         }
-        onClose && onClose();
+        onClose?.();
       } catch (error) {
         triggerError({
           title: "Redelegation failed!",
@@ -156,7 +169,7 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
       }
     },
     [
-      multisigPostActions,
+      networkId,
       onClose,
       refreshBondedTokens,
       runOrProposeTransaction,

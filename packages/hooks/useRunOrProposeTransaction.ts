@@ -18,6 +18,7 @@ import {
   getKeplrSigningStargateClient,
   cosmosTypesRegistry,
 } from "../networks";
+import { AppNavigationProp, useAppNavigation } from "../utils/navigation";
 
 export const useRunOrProposeTransaction = (
   userId: string | undefined,
@@ -31,15 +32,18 @@ export const useRunOrProposeTransaction = (
     userKind === UserKind.Organization
   );
   const queryClient = useQueryClient();
+  const navigation = useAppNavigation();
   return useCallback(
     async ({
       msgs,
       memo,
       title,
+      navigateToProposals,
     }: {
       msgs: readonly EncodeObject[];
       memo?: string;
       title?: string;
+      navigateToProposals?: boolean;
     }) => {
       await runOrProposeTransaction({
         userKind,
@@ -52,16 +56,19 @@ export const useRunOrProposeTransaction = (
         title,
         makeDAOProposal,
         queryClient,
+        navigateToProposals,
+        navigation,
       });
     },
     [
-      multisigAuthToken,
       makeDAOProposal,
+      multisigAuthToken,
       multisigClient,
+      navigation,
+      queryClient,
       userId,
       userKind,
       wallet?.address,
-      queryClient,
     ]
   );
 };
@@ -77,6 +84,8 @@ const runOrProposeTransaction = async ({
   title,
   makeDAOProposal,
   queryClient,
+  navigateToProposals,
+  navigation,
 }: {
   userKind: UserKind;
   userId: string | undefined;
@@ -88,6 +97,8 @@ const runOrProposeTransaction = async ({
   title?: string;
   makeDAOProposal: ReturnType<typeof useDAOMakeProposal>;
   queryClient: QueryClient;
+  navigateToProposals?: boolean;
+  navigation: AppNavigationProp;
 }) => {
   const [network, userAddress] = parseUserId(userId);
   if (!network) {
@@ -151,12 +162,15 @@ const runOrProposeTransaction = async ({
         sequence: account.sequence,
         accountNumber: account.accountNumber,
       });
-      queryClient.invalidateQueries([
+      await queryClient.invalidateQueries([
         ...multisigTransactionsQueryKey(cosmosNetwork.chainId, userAddress),
       ]);
-      queryClient.invalidateQueries([
+      await queryClient.invalidateQueries([
         ...multisigTransactionsQueryKey(cosmosNetwork.chainId, undefined),
       ]);
+      if (navigateToProposals && userId) {
+        navigation.navigate("MultisigWalletDashboard", { id: userId });
+      }
       break;
     }
     case UserKind.Organization: {
