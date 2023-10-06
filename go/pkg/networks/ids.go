@@ -17,6 +17,10 @@ func (n *NetworkBase) CollectionID(mintContractAddress string) CollectionID {
 	return CollectionID(fmt.Sprintf("%s-%s", n.IDPrefix, mintContractAddress))
 }
 
+func (n *NetworkBase) NftID(mintContractAddress string, tokenID int64) NFTID {
+	return NFTID(fmt.Sprintf("%s-%s-%d", n.IDPrefix, mintContractAddress, tokenID))
+}
+
 // returns <network_id>-<root_contract_address>
 func (netstore NetworkStore) ParseCollectionID(userId string) (Network, string, error) {
 	parts := strings.Split(userId, "-")

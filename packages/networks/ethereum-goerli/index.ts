@@ -25,13 +25,15 @@ export const ethereumGoerliNetwork: NetworkInfo = {
   riotContractAddressGen0: "0x43cc70bf324d716782628bed38af97e4afe92f69",
   riotContractAddressGen1,
   excludeFromLaunchpadList: [riotContractAddressGen1],
-  riotSquadStakingContractAddress: "0xdfA5cbcD0Db5d966E68dd143c6441eC47e2777bE",
+  riotSquadStakingContractAddress: "0xdfa5cbcd0db5d966e68dd143c6441ec47e2777be",
   // Substreams
   firehoseEndpoint: "goerli.eth.streamingfast.io:443",
-  indexStartBlock: "8218450", //  Stake: "8694034",
-  indexStopBlock: "-1",
+  indexStartBlock: "9817776", //  Stake: "8694034", Mint: "8218450", Bridge: "9817776"
+  indexStopBlock: "+1",
   indexBlockProgress: 1000,
   indexLiveBlockProgress: 1,
   substreamsManifest: "go/internal/substreams/ethereum/ethereum_goerli.yaml",
-  distributorContractAddress: "0x750070a76A3444F27E3fccabe4D423105cfa3e72",
+  distributorContractAddress: "0x750070a76a3444f27e3fccabe4d423105cfa3e72",
+  riotBridgeAddressGen0: "0x3dd675fb4cbea98cf1abf2540b79f12626581324",
+  riotNFTAddressGen0: "0x7a9e5dbe7d3946ce4ea2f2396549c349635ebf2f",
 };

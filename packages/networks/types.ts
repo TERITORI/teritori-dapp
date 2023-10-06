@@ -77,7 +77,12 @@ export type EthereumNetworkInfo = NetworkInfoBase & {
   indexBlockProgress: number;
   indexLiveBlockProgress: number;
   substreamsManifest: string;
-  axelarRiotContractAddressGen0?: string;
+  riotBridgeAddressGen0?: string;
+  riotBridgeAddressGen1?: string;
+  riotNFTAddressGen0?: string;
+  riotNFTAddressGen1?: string;
+  riotBridgedNFTAddressGen0?: string;
+  riotBridgedNFTAddressGen1?: string;
 };
 
 export type SolanaNetworkInfo = NetworkInfoBase & {

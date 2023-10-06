@@ -157,7 +157,7 @@ var THE_RIOT_COSMOS_SEASONS = []Season{
 		EndsAt:    "2023-08-09T00:00:00",
 		IsPre:     true,
 	},
-  // Season 6
+	// Season 6
 	{
 		ID:         "Season 6",
 		GameID:     THE_RIOT_GAME_ID,
@@ -170,16 +170,16 @@ var THE_RIOT_COSMOS_SEASONS = []Season{
 		StartsAt:   "2023-08-09T00:00:00",
 		EndsAt:     "2023-09-08T00:00:00",
 	},
-  // Pre-Season 7
-  {
-    ID:        "Pre-Season 7",
-    GameID:    THE_RIOT_GAME_ID,
-    BossName:  `== $*=|'¤?")à-£_%`,
-    BossImage: "https://bafybeiacz7z2kqoskbtixovgzzdwiuhpfc7z4tac37qpxhjxyyljbp7v6i.ipfs.nftstorage.link/",
-    StartsAt:  "2023-09-08T00:00:00",
-    EndsAt:    "2023-12-10T00:00:00",
-    IsPre:     true,
-  },
+	// Pre-Season 7
+	{
+		ID:        "Pre-Season 7",
+		GameID:    THE_RIOT_GAME_ID,
+		BossName:  `== $*=|'¤?")à-£_%`,
+		BossImage: "https://bafybeiacz7z2kqoskbtixovgzzdwiuhpfc7z4tac37qpxhjxyyljbp7v6i.ipfs.nftstorage.link/",
+		StartsAt:  "2023-09-08T00:00:00",
+		EndsAt:    "2023-12-10T00:00:00",
+		IsPre:     true,
+	},
 }
 
 var THE_RIOT_ETHEREUM_SEASONS = []Season{
@@ -194,6 +194,6 @@ var THE_RIOT_ETHEREUM_SEASONS = []Season{
 		BossImage:  "",
 		TopN:       500,
 		StartsAt:   "2023-01-15T00:00:00",
-		EndsAt:     "2023-08-14T00:00:00",
+		EndsAt:     "2023-12-14T00:00:00",
 	},
 }

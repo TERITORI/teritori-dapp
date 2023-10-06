@@ -301,14 +301,16 @@
     "excludeFromLaunchpadList": [
       "0xdfff431d4c2275201dEd83dAd613A3DbDA1D11A7"
     ],
-    "riotSquadStakingContractAddress": "0xdfA5cbcD0Db5d966E68dd143c6441eC47e2777bE",
+    "riotSquadStakingContractAddress": "0xdfa5cbcd0db5d966e68dd143c6441ec47e2777be",
     "firehoseEndpoint": "goerli.eth.streamingfast.io:443",
-    "indexStartBlock": "8218450",
-    "indexStopBlock": "-1",
+    "indexStartBlock": "9817776",
+    "indexStopBlock": "+1",
     "indexBlockProgress": 1000,
     "indexLiveBlockProgress": 1,
     "substreamsManifest": "go/internal/substreams/ethereum/ethereum_goerli.yaml",
-    "distributorContractAddress": "0x750070a76A3444F27E3fccabe4D423105cfa3e72"
+    "distributorContractAddress": "0x750070a76a3444f27e3fccabe4d423105cfa3e72",
+    "riotBridgeAddressGen0": "0x3dd675fb4cbea98cf1abf2540b79f12626581324",
+    "riotNFTAddressGen0": "0x7a9e5dbe7d3946ce4ea2f2396549c349635ebf2f"
   },
   {
     "id": "ethereum",
@@ -685,12 +687,54 @@
     "accountExplorer": "https://mumbai.polygonscan.com/address/$address",
     "contractExplorer": "https://mumbai.polygonscan.com/address/$address",
     "testnet": true,
-    "backendEndpoint": "https://dapp-backend.testnet.teritori.com",
+    "backendEndpoint": "http://localhost:9090",
     "chainId": 80001,
     "alchemyApiKey": "TCahW5rzmCaegxHVyhXh3vmCG2sS9Yu3",
     "theGraphEndpoint": "https://api.studio.thegraph.com/query/40379/teritori-goerli-indexer/v-test-01",
     "vaultContractAddress": "0xab30d7379ebfd146b77b0b4d6f3eb09bd725e4ef",
-    "riotContractAddressGen0": "0xda2e0db1772e5635999f83a3d6e777b45980863b",
+    "riotContractAddressGen0": "0x43cc70bf324d716782628bed38af97e4afe92f69:testeth",
+    "excludeFromLaunchpadList": [],
+    "riotSquadStakingContractAddress": "0x7089a8c0c9d7aca09e449697f4b494978d171892",
+    "firehoseEndpoint": "mumbai.streamingfast.io:443",
+    "indexStartBlock": "40891584",
+    "indexStopBlock": "+1",
+    "indexBlockProgress": 1000,
+    "indexLiveBlockProgress": 1,
+    "substreamsManifest": "go/internal/substreams/ethereum/polygon_mumbai.yaml",
+    "distributorContractAddress": "0x750070a76A3444F27E3fccabe4D423105cfa3e72",
+    "riotBridgedNFTAddressGen0": "0xda2e0db1772e5635999f83a3d6e777b45980863b"
+  },
+  {
+    "id": "polygon",
+    "kind": "Ethereum",
+    "displayName": "Polygon",
+    "icon": "icons/networks/polygon.svg",
+    "features": [
+      "P2E"
+    ],
+    "currencies": [
+      {
+        "denom": "0x0000000000000000000000000000000000000000",
+        "displayName": "MATIC",
+        "decimals": 18,
+        "coingeckoId": "matic",
+        "icon": "icons/networks/polygon.svg",
+        "kind": "native",
+        "color": "#232731"
+      }
+    ],
+    "idPrefix": "polygon",
+    "endpoint": "https://polygon-mumbai.blockpi.network/v1/rpc/public\t",
+    "txExplorer": "https://mumbai.polygonscan.com/tx/$hash",
+    "accountExplorer": "https://mumbai.polygonscan.com/address/$address",
+    "contractExplorer": "https://mumbai.polygonscan.com/address/$address",
+    "testnet": false,
+    "backendEndpoint": "https://dapp-backend.testnet.teritori.com",
+    "chainId": 137,
+    "alchemyApiKey": "TCahW5rzmCaegxHVyhXh3vmCG2sS9Yu3",
+    "theGraphEndpoint": "https://api.studio.thegraph.com/query/40379/teritori-goerli-indexer/v-test-01",
+    "vaultContractAddress": "0xab30d7379ebfd146b77b0b4d6f3eb09bd725e4ef",
+    "riotContractAddressGen0": "0x40d2ed8611f7b4633adf162f788b67cae1811f24",
     "riotContractAddressGen1": "",
     "excludeFromLaunchpadList": [],
     "riotSquadStakingContractAddress": "0x9083986a7c842b6c733c2f9bd25d67cc27119025",
@@ -700,7 +744,6 @@
     "indexBlockProgress": 1000,
     "indexLiveBlockProgress": 1,
     "substreamsManifest": "go/internal/substreams/ethereum/polygon_mumbai.yaml",
-    "distributorContractAddress": "0x750070a76A3444F27E3fccabe4D423105cfa3e72",
-    "axelarRiotContractAddressGen0": "0xda2e0db1772e5635999f83a3d6e777b45980863b"
+    "distributorContractAddress": "0x750070a76A3444F27E3fccabe4D423105cfa3e72"
   }
 ]
