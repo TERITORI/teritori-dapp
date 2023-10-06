@@ -39,14 +39,6 @@ export const useMultisigTransactions = (
   const [network] = parseUserId(userId);
   const [, multisigAddress] = parseUserId(multisigUserId);
 
-  console.log(
-    "useMultisigTransactions",
-    userId,
-    multisigUserId,
-    types,
-    executionState
-  );
-
   return useInfiniteQuery(
     [
       ...multisigTransactionsQueryKey(

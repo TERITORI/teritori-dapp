@@ -10,7 +10,7 @@ import {
 } from "./useMultisigTransactions";
 import { Signature } from "../../api/multisig/v1/multisig";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { getKeplrOnlyAminoStargateClient } from "../../networks";
+import { getKeplrOnlyAminoStargateClient, getUserId } from "../../networks";
 import useSelectedWallet from "../useSelectedWallet";
 
 export const useApproveTransaction = () => {
@@ -85,10 +85,13 @@ export const useApproveTransaction = () => {
         });
 
         queryClient.invalidateQueries(
-          multisigTransactionsQueryKey(tx.chainId, tx.multisigAddress)
+          multisigTransactionsQueryKey(
+            selectedNetworkId,
+            getUserId(selectedNetworkId, tx.multisigAddress)
+          )
         );
         queryClient.invalidateQueries(
-          multisigTransactionsQueryKey(tx.chainId, undefined)
+          multisigTransactionsQueryKey(selectedNetworkId, undefined)
         );
       } catch (err: any) {
         console.error(err);

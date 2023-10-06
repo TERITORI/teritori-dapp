@@ -163,10 +163,10 @@ const runOrProposeTransaction = async ({
         accountNumber: account.accountNumber,
       });
       await queryClient.invalidateQueries([
-        ...multisigTransactionsQueryKey(cosmosNetwork.chainId, userAddress),
+        ...multisigTransactionsQueryKey(cosmosNetwork.id, userId),
       ]);
       await queryClient.invalidateQueries([
-        ...multisigTransactionsQueryKey(cosmosNetwork.chainId, undefined),
+        ...multisigTransactionsQueryKey(cosmosNetwork.id, undefined),
       ]);
       if (navigateToProposals && userId) {
         navigation.navigate("MultisigWalletDashboard", { id: userId });

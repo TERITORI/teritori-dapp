@@ -13,6 +13,7 @@ import { useFeedbacks } from "../../context/FeedbacksProvider";
 import {
   getCosmosNetworkByChainId,
   getNonSigningStargateClient,
+  getUserId,
 } from "../../networks";
 import useSelectedWallet from "../useSelectedWallet";
 
@@ -85,10 +86,13 @@ export const useBroadcastTransaction = () => {
         });
 
         queryClient.invalidateQueries(
-          multisigTransactionsQueryKey(tx.chainId, tx.multisigAddress)
+          multisigTransactionsQueryKey(
+            network.id,
+            getUserId(network.id, tx.multisigAddress)
+          )
         );
         queryClient.invalidateQueries(
-          multisigTransactionsQueryKey(tx.chainId, undefined)
+          multisigTransactionsQueryKey(network.id, undefined)
         );
 
         return result.transactionHash;

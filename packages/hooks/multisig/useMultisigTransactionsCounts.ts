@@ -2,11 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import { useMultisigAuthToken } from "./useMultisigAuthToken";
 import { useMultisigClient } from "./useMultisigClient";
-import {
-  getCosmosNetwork,
-  getCosmosNetworkByChainId,
-  parseUserId,
-} from "../../networks";
+import { getCosmosNetwork, parseUserId } from "../../networks";
 import useSelectedWallet from "../useSelectedWallet";
 
 export const useMultisigTransactionsCounts = (
@@ -14,31 +10,29 @@ export const useMultisigTransactionsCounts = (
   multisigUserId: string | undefined
 ) => {
   const walletAccount = useSelectedWallet();
-  const [network] = parseUserId(userId);
-  const chainId = getCosmosNetwork(network?.id)?.chainId;
-  const [, multisigAddress] = parseUserId(multisigUserId);
   const authToken = useMultisigAuthToken(walletAccount?.userId);
   const multisigClient = useMultisigClient();
+  const [network] = parseUserId(userId);
 
   const { data: transactionsCounts, ...others } = useQuery(
     [
       "multisig-transactions-counts",
-      chainId,
-      multisigAddress,
+      network?.id,
+      multisigUserId,
       authToken,
       multisigClient,
     ],
     async () => {
-      const cosmosNetwork = getCosmosNetworkByChainId(chainId);
+      const cosmosNetwork = getCosmosNetwork(network?.id);
       if (!cosmosNetwork) {
         return null;
       }
+      const [, multisigAddress] = parseUserId(multisigUserId);
       const counts = await multisigClient?.TransactionsCounts({
         authToken,
-        chainId,
+        chainId: cosmosNetwork.chainId,
         multisigAddress,
       });
-      console.log("counts", counts);
       return counts;
     },
     { staleTime: Infinity }
