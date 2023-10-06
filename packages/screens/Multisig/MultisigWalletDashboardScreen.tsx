@@ -15,12 +15,7 @@ import { UserCard } from "../../components/user/UserCard";
 import { useMultisigAuthToken } from "../../hooks/multisig/useMultisigAuthToken";
 import { useMultisigClient } from "../../hooks/multisig/useMultisigClient";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import {
-  NetworkKind,
-  getCosmosNetwork,
-  getUserId,
-  parseUserId,
-} from "../../networks";
+import { NetworkKind, getUserId, parseUserId } from "../../networks";
 import { validateAddress } from "../../utils/formRules";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { neutral33 } from "../../utils/style/colors";
@@ -33,15 +28,13 @@ export const MultisigWalletDashboardScreen: ScreenFC<
 > = ({ route }) => {
   const navigation = useAppNavigation();
   const { control } = useForm<MultisigLegacyFormType>();
-  const { id } = route.params;
-  const [network, multisigAddress] = parseUserId(id);
-  const cosmosNetwork = getCosmosNetwork(network?.id);
+  const { id: multisigUserId } = route.params;
+  const [network, multisigAddress] = parseUserId(multisigUserId);
   const userId = useSelectedWallet()?.userId;
-  const { multisig, isLoading } = useMultisigInfo(id);
+  const { multisig, isLoading } = useMultisigInfo(multisigUserId);
   const walletName = multisig?.name;
   const membersAddress = multisig?.usersAddresses;
 
-  // returns
   return (
     <ScreenContainer
       headerChildren={
@@ -61,7 +54,7 @@ export const MultisigWalletDashboardScreen: ScreenFC<
           borderColor: neutral33,
           minHeight: 490,
         }}
-        key={id}
+        key={multisigUserId}
       >
         <View
           style={{
@@ -95,11 +88,11 @@ export const MultisigWalletDashboardScreen: ScreenFC<
             tresholdMax={membersAddress ? membersAddress.length : undefined}
             isLoading={isLoading}
           >
-            <MultisigMembers multisigId={id} />
+            <MultisigMembers multisigId={multisigUserId} />
           </MultisigSection>
 
           <MultisigSection title="Holdings & Assets" isCollapsable>
-            <Assets userId={id} readOnly />
+            <Assets userId={multisigUserId} readOnly />
           </MultisigSection>
         </View>
         <MultisigRightSection />
@@ -112,10 +105,9 @@ export const MultisigWalletDashboardScreen: ScreenFC<
         }}
       >
         <MultisigTransactions
-          chainId={cosmosNetwork?.chainId}
-          multisigAddress={multisigAddress}
           title="Transactions"
           userId={userId}
+          multisigUserId={multisigUserId}
         />
       </View>
     </ScreenContainer>

@@ -5,7 +5,11 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { useMultisigAuthToken } from "./useMultisigAuthToken";
 import { useMultisigClient } from "./useMultisigClient";
 import { ExecutionState, Transaction } from "../../api/multisig/v1/multisig";
-import { cosmosTypesRegistry } from "../../networks";
+import {
+  cosmosTypesRegistry,
+  getCosmosNetwork,
+  parseUserId,
+} from "../../networks";
 import { tryParseJSON } from "../../utils/jsons";
 
 const batchSize = 16;
@@ -20,37 +24,41 @@ export type ParsedTransaction = Omit<
 };
 
 export const multisigTransactionsQueryKey = (
-  chainId: string | undefined,
+  networkId: string | undefined,
   multisigAddress: string | undefined
-) => ["multisig-transactions", chainId, multisigAddress];
+) => ["multisig-transactions", networkId, multisigAddress];
 
 export const useMultisigTransactions = (
-  chainId: string | undefined,
-  multisigAddress: string | undefined,
   userId: string | undefined,
+  multisigUserId: string | undefined,
   types: string[],
   executionState: ExecutionState
 ) => {
   const authToken = useMultisigAuthToken(userId);
   const client = useMultisigClient();
+  const [network] = parseUserId(userId);
+  const [, multisigAddress] = parseUserId(multisigUserId);
 
-  //  request
+  console.log(
+    "useMultisigTransactions",
+    userId,
+    multisigUserId,
+    types,
+    executionState
+  );
+
   return useInfiniteQuery(
     [
-      ...multisigTransactionsQueryKey(chainId, multisigAddress),
+      ...multisigTransactionsQueryKey(
+        network?.id,
+        multisigAddress || undefined
+      ),
       types,
       executionState,
       authToken,
     ],
     async ({ pageParam }) => {
-      console.log(
-        "fetching",
-        pageParam,
-        chainId,
-        multisigAddress,
-        authToken,
-        types
-      );
+      const chainId = getCosmosNetwork(network?.id)?.chainId;
 
       if (!chainId || !authToken) {
         return { data: [], next: null };
@@ -59,7 +67,7 @@ export const useMultisigTransactions = (
       const req = {
         authToken,
         chainId,
-        multisigAddress,
+        multisigAddress: multisigAddress || undefined,
         limit: batchSize,
         startAfter: pageParam,
         types,

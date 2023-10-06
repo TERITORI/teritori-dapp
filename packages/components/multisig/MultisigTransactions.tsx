@@ -24,17 +24,16 @@ import { Tabs } from "../tabs/Tabs";
 const MIN_ITEMS_PER_PAGE = 50;
 
 export const MultisigTransactions: FC<{
-  chainId: string | undefined;
-  multisigAddress?: string;
-  userId?: string;
   title?: string;
-}> = ({ chainId, multisigAddress, title, userId }) => {
+  userId: string | undefined;
+  multisigUserId?: string;
+}> = ({ title, userId, multisigUserId }) => {
   const { height: windowHeight } = useWindowDimensions();
   const [selectedTab, setSelectedTab] = useState<keyof typeof tabs>("all");
 
   const { transactionsCounts: counts } = useMultisigTransactionsCounts(
-    chainId,
-    multisigAddress
+    userId,
+    multisigUserId
   );
 
   const tabs = useMemo(
@@ -92,9 +91,8 @@ export const MultisigTransactions: FC<{
     isLoading: txLoading,
     fetchNextPage: fetchNextTransactionsPage,
   } = useMultisigTransactions(
-    chainId,
-    multisigAddress,
     userId,
+    multisigUserId,
     tabs[selectedTab].types,
     tabs[selectedTab].state
   );

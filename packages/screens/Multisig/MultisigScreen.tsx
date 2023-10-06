@@ -1,14 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   ActivityIndicator,
   FlatList,
-  Pressable,
   ScrollView,
   StyleSheet,
   View,
 } from "react-native";
 
-import { CheckLoadingModal } from "./components/CheckLoadingModal";
 import { GetStartedOption } from "./components/GetStartedOption";
 import multisigWalletSVG from "../../../assets/icons/organization/multisig-wallet.svg";
 import postJobSVG from "../../../assets/icons/organization/post-job.svg";
@@ -17,64 +15,22 @@ import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { Separator } from "../../components/Separator";
 import { AnimationFadeIn } from "../../components/animations/AnimationFadeIn";
-import { TertiaryBox } from "../../components/boxes/TertiaryBox";
-import ModalBase from "../../components/modals/ModalBase";
 import { LoginButton } from "../../components/multisig/LoginButton";
 import { MultisigTransactions } from "../../components/multisig/MultisigTransactions";
 import { SpacerColumn } from "../../components/spacer";
 import { useMultisigAuthToken } from "../../hooks/multisig/useMultisigAuthToken";
 import { useUserMultisigs } from "../../hooks/multisig/useUserMultisigs";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getCosmosNetwork, getUserId, NetworkKind } from "../../networks";
+import { getUserId, NetworkKind } from "../../networks";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { neutral33, neutral77, secondaryColor } from "../../utils/style/colors";
-import {
-  fontSemibold14,
-  fontSemibold16,
-  fontSemibold28,
-} from "../../utils/style/fonts";
+import { fontSemibold16, fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { tinyAddress } from "../../utils/text";
-
-enum SelectModalKind {
-  LaunchNFT,
-  CreatePost,
-  ManagePublicProfile,
-}
 
 export const MultisigScreen: ScreenFC<"Multisig"> = () => {
   const navigation = useAppNavigation();
   const selectedWallet = useSelectedWallet();
-  // FIXME: remove StyleSheet.create
-  // eslint-disable-next-line no-restricted-syntax
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      paddingTop: layout.topContentSpacingWithHeading,
-    },
-    horizontalContentPadding: {
-      paddingHorizontal: layout.contentSpacing,
-    },
-    optionsScrollContent: {
-      paddingHorizontal: layout.contentSpacing - layout.spacing_x2,
-    },
-    row: {
-      flex: 1,
-      flexDirection: "row",
-      flexWrap: "wrap",
-      marginHorizontal: -layout.spacing_x2,
-      marginVertical: -layout.spacing_x2,
-    },
-    contentCenter: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-      width: 135,
-    },
-    transactionListContent: {
-      marginTop: layout.spacing_x2_5,
-    },
-  });
   const authToken = useMultisigAuthToken(selectedWallet?.userId);
 
   const {
@@ -87,117 +43,6 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
     selectedWallet?.userId,
     JoinState.JOIN_STATE_OUT
   );
-
-  const cosmosNetwork = getCosmosNetwork(selectedWallet?.networkId);
-
-  const [openSelectMultiSignModal, setOpenSelectMultiSignModal] =
-    useState<boolean>(false);
-  const [kind] = useState<SelectModalKind>(SelectModalKind.LaunchNFT);
-
-  /*
-  const {
-    isLoading,
-    mutate,
-    data: transactionId,
-  } = useCreateMultisigTransactionForExecuteContract();
-  */
-
-  const createProposal = (address: string) => {
-    if (kind === SelectModalKind.LaunchNFT) {
-      // createProposalForLaunchNFT(address);
-    } else if (kind === SelectModalKind.CreatePost) {
-      // createProposalForCreatePost(address);
-    } else if (kind === SelectModalKind.ManagePublicProfile) {
-      // createProposalForManagePublicProfile(address);
-    }
-  };
-
-  // const createProposalForLaunchNFT = async (address: string) => {
-  //   const contractAddress = "CONTRACT_ADDR1";
-  //   const mltisignAccountInfo = await getMultisigAccount(
-  //     address,
-  //     selectedWallet?.networkId!
-  //   );
-  //   if (mltisignAccountInfo?.accountData && mltisignAccountInfo.dbData._id) {
-  //     mutate({
-  //       formData: {
-  //         contractAddress,
-  //         multisigAddress: address,
-  //         msg: { Execute: "CreateCollection" },
-  //         funds: [], //TODO: How much funds ?
-  //         multisigId: mltisignAccountInfo.dbData._id,
-  //         type: MultisigTransactionType.LAUNCH_NFT_COLLECTION,
-  //       },
-  //       accountOnChain: mltisignAccountInfo?.accountData,
-  //     });
-  //   }
-  // };
-
-  /*
-  const createProposalForCreatePost = async (
-    queryClient: QueryClient,
-    address: string
-  ) => {
-    const contractAddress = "CONTRACT_ADDR1";
-    const mltisignAccountInfo = await getMultisigAccount(
-      queryClient,
-      address,
-      selectedWallet?.networkId!
-    );
-    if (mltisignAccountInfo?.accountData && mltisignAccountInfo.dbData._id) {
-      mutate({
-        formData: {
-          contractAddress,
-          multisigAddress: address,
-          msg: { Execute: "CreateCollection" },
-          funds: [], //TODO: How much funds ?
-          multisigId: mltisignAccountInfo.dbData._id,
-          type: MultisigTransactionType.CREATE_NEW_POST,
-        },
-        accountOnChain: mltisignAccountInfo?.accountData,
-      });
-    }
-  };
-  */
-
-  //address: multisign address
-  /*
-  const createProposalForManagePublicProfile = async (
-    queryClient: QueryClient,
-    address: string
-  ) => {
-    const contractAddress = "CONTRACT_ADDR1";
-    const mltisignAccountInfo = await getMultisigAccount(
-      queryClient,
-      address,
-      selectedWallet?.networkId!
-    );
-    if (mltisignAccountInfo?.accountData && mltisignAccountInfo.dbData._id) {
-      mutate({
-        formData: {
-          contractAddress,
-          multisigAddress: address,
-          msg: { Execute: "CreateCollection" },
-          funds: [], //TODO: How much funds ?
-          multisigId: mltisignAccountInfo.dbData._id,
-          type: MultisigTransactionType.MANAGE_PUBLIC_PROFILE,
-        },
-        accountOnChain: mltisignAccountInfo?.accountData,
-      });
-    }
-  };
-  */
-
-  const onCompleteTransactionCreation = () => {
-    /*
-    if (transactionId) {
-      navigation.reset({
-        index: 1,
-        routes: [{ name: "Multisig" }],
-      });
-    }
-    */
-  };
 
   return (
     <ScreenContainer
@@ -323,98 +168,44 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
               <Separator color={neutral33} />
               <SpacerColumn size={3} />
               <MultisigTransactions
-                userId={selectedWallet?.id}
-                chainId={cosmosNetwork?.chainId}
                 title="Multisig Transactions Overview"
+                userId={selectedWallet?.userId}
               />
             </View>
           )}
         </View>
       </ScrollView>
-      <MultisigWalletSelectModal
-        onClose={() => setOpenSelectMultiSignModal((value) => !value)}
-        visible={openSelectMultiSignModal}
-        data={data}
-        callback={createProposal}
-      />
-      <CheckLoadingModal
-        isVisible={/*isLoading*/ false}
-        onComplete={onCompleteTransactionCreation}
-      />
     </ScreenContainer>
   );
 };
 
-interface MultisigWalletSelectModalProps {
-  visible: boolean;
-  onClose: () => void;
-  data: any;
-  callback: (address: string) => void;
-}
-
-const MultisigWalletSelectModal: React.FC<MultisigWalletSelectModalProps> = ({
-  onClose,
-  visible,
-  data,
-  callback,
-}) => {
-  const modalWidth = 448;
-  const paddingWidth = layout.spacing_x2_5;
-  // FIXME: remove StyleSheet.create
-  // eslint-disable-next-line no-restricted-syntax
-  const styles = StyleSheet.create({
-    itemBox: {
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
-      padding: layout.spacing_x2,
-      marginHorizontal: "auto",
-    },
-    walletName: StyleSheet.flatten([fontSemibold14, {}]),
-    footer: {
-      width: "100%",
-      height: 20,
-    },
-    walletPress: {
-      paddingTop: layout.spacing_x2,
-    },
-  });
-
-  return (
-    <ModalBase
-      visible={visible}
-      onClose={() => onClose()}
-      label="Select MultisigWallet"
-      width={modalWidth}
-      containerStyle={{ flexDirection: "column" }}
-      childrenBottom={<View style={styles.footer} />}
-    >
-      {data?.map((item: any, index: number) => (
-        <Pressable
-          key={`pressable-${index}`}
-          style={[
-            styles.walletPress,
-            { paddingTop: index === 0 ? 0 : layout.spacing_x2 },
-          ]}
-          onPress={() => {
-            callback(item.address);
-            onClose();
-          }}
-        >
-          <TertiaryBox
-            mainContainerStyle={styles.itemBox}
-            width={modalWidth - 2 * paddingWidth}
-            key={index}
-          >
-            <BrandText style={styles.walletName}>
-              Multisig #{index + 1}
-            </BrandText>
-            <BrandText style={styles.walletName}>
-              {tinyAddress(item.address)}
-            </BrandText>
-          </TertiaryBox>
-        </Pressable>
-      ))}
-    </ModalBase>
-  );
-};
+// FIXME: remove StyleSheet.create
+// eslint-disable-next-line no-restricted-syntax
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingTop: layout.topContentSpacingWithHeading,
+  },
+  horizontalContentPadding: {
+    paddingHorizontal: layout.contentSpacing,
+  },
+  optionsScrollContent: {
+    paddingHorizontal: layout.contentSpacing - layout.spacing_x2,
+  },
+  row: {
+    flex: 1,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    marginHorizontal: -layout.spacing_x2,
+    marginVertical: -layout.spacing_x2,
+  },
+  contentCenter: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    width: 135,
+  },
+  transactionListContent: {
+    marginTop: layout.spacing_x2_5,
+  },
+});
