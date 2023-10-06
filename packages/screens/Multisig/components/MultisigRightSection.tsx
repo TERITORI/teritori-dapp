@@ -1,7 +1,7 @@
 import { Decimal } from "@cosmjs/math";
 import { useRoute } from "@react-navigation/native";
 import React, { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { View, ViewStyle } from "react-native";
 
 import { Coin } from "../../../api/teritori-chain/cosmos/base/v1beta1/coin";
 import { MsgBurnTokens } from "../../../api/teritori-chain/teritori/mint/v1beta1/tx";
@@ -195,9 +195,8 @@ export const MultisigRightSection: React.FC = () => {
     }
   }
 
-  // returns
   return (
-    <View style={styles.container}>
+    <View style={containerCStyle}>
       <SpacerColumn size={5} />
       <BrandText style={[fontSemibold12, { color: neutral55 }]}>
         ACTIONS
@@ -207,17 +206,14 @@ export const MultisigRightSection: React.FC = () => {
     </View>
   );
 };
-// FIXME: remove StyleSheet.create
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  container: {
-    width: 300,
-    height: "100%",
-    borderLeftWidth: 1,
-    borderColor: neutral33,
-    padding: layout.spacing_x2_5,
-  },
-});
+
+const containerCStyle: ViewStyle = {
+  width: 300,
+  height: "100%",
+  borderLeftWidth: 1,
+  borderColor: neutral33,
+  padding: layout.spacing_x2_5,
+};
 
 const BurnModal: React.FC<{
   networkId: string | undefined;

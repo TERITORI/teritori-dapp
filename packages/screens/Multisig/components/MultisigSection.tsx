@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, View, ViewStyle } from "react-native";
+import { View, ViewStyle } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 
 import chevronDownSVG from "../../../../assets/icons/chevron-down.svg";
@@ -41,13 +41,13 @@ export const MultisigSection: React.FC<MultisigSectionProps> = ({
   const [isOpen, setOpen] = useState(false);
 
   return (
-    <View style={[styles.container, containerStyle]}>
+    <View style={[containerCStyle, containerStyle]}>
       <CustomPressable
-        style={styles.header}
+        style={headerCStyle}
         disabled={!isCollapsable}
         onPress={() => setOpen((isOpen) => !isOpen)}
       >
-        <View style={styles.rowCenter}>
+        <View style={rowCenterCStyle}>
           <SVG source={walletSVG} height={28} width={28} />
           <SpacerRow size={2} />
           <BrandText style={[fontSemibold16, { color: neutralA3 }]}>
@@ -55,10 +55,10 @@ export const MultisigSection: React.FC<MultisigSectionProps> = ({
           </BrandText>
         </View>
 
-        <View style={styles.rowCenter}>
+        <View style={rowCenterCStyle}>
           {!isLoading && tresholdMax && (
             <>
-              <View style={styles.badge}>
+              <View style={badgeCStyle}>
                 <BrandText style={[fontSemibold14, { color: neutral77 }]}>
                   Threshold: {tresholdCurrentCount}/{tresholdMax}
                 </BrandText>
@@ -69,7 +69,7 @@ export const MultisigSection: React.FC<MultisigSectionProps> = ({
 
           {!isLoading && toriText && (
             <>
-              <View style={styles.badge}>
+              <View style={badgeCStyle}>
                 <BrandText style={[fontSemibold14, { color: neutral77 }]}>
                   TORI
                 </BrandText>
@@ -96,43 +96,43 @@ export const MultisigSection: React.FC<MultisigSectionProps> = ({
       </CustomPressable>
 
       {(isOpen || !isCollapsable) && (
-        <View style={styles.childrenContainer}>{children}</View>
+        <View style={childrenContainerCStyle}>{children}</View>
       )}
     </View>
   );
 };
-// FIXME: remove StyleSheet.create
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  container: {
-    borderColor: neutral33,
-    borderWidth: 1,
-    borderRadius: 12,
-    marginBottom: layout.spacing_x3,
-  },
-  header: {
-    margin: layout.spacing_x2,
-    marginTop: layout.spacing_x1_5,
-    position: "relative",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    minHeight: 40,
-    flexWrap: "wrap",
-  },
-  childrenContainer: {
-    padding: layout.spacing_x2_5,
-    paddingTop: 0,
-  },
-  rowCenter: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  badge: {
-    padding: layout.spacing_x1,
-    borderWidth: 1,
-    borderColor: neutral33,
-    borderRadius: 10,
-  },
-  activityIndicator: { marginBottom: 10 },
-});
+
+const containerCStyle: ViewStyle = {
+  borderColor: neutral33,
+  borderWidth: 1,
+  borderRadius: 12,
+  marginBottom: layout.spacing_x3,
+};
+
+const headerCStyle: ViewStyle = {
+  margin: layout.spacing_x2,
+  marginTop: layout.spacing_x1_5,
+  position: "relative",
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between",
+  minHeight: 40,
+  flexWrap: "wrap",
+};
+
+const childrenContainerCStyle: ViewStyle = {
+  padding: layout.spacing_x2_5,
+  paddingTop: 0,
+};
+
+const rowCenterCStyle: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+};
+
+const badgeCStyle: ViewStyle = {
+  padding: layout.spacing_x1,
+  borderWidth: 1,
+  borderColor: neutral33,
+  borderRadius: 10,
+};
