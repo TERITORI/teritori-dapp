@@ -1,9 +1,4 @@
-import {
-  allNetworks,
-  getNativeCurrency,
-  getNetwork,
-  NetworkKind,
-} from "../networks";
+import { allNetworks, getNativeCurrency, NetworkKind } from "../networks";
 
 const ids: { [key: string]: boolean } = {};
 const idPrefixes: { [key: string]: boolean } = {};
@@ -70,8 +65,6 @@ for (const net of allNetworks) {
     if (currency.kind === "ibc") {
       const nc = getNativeCurrency(net.id, currency.denom);
       if (!nc) {
-        console.log(currency);
-        console.log(getNetwork(currency.sourceNetwork)?.currencies);
         throw new Error(
           `invalid ibc currency '${currency.denom}' of network '${net.id}': currency '${currency.sourceDenom}' does not exists in network '${currency.sourceNetwork}'`
         );
