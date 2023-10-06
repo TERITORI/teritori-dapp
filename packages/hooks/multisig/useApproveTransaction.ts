@@ -1,6 +1,7 @@
 import { toBase64 } from "@cosmjs/encoding";
 import { Window as KeplrWindow } from "@keplr-wallet/types";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
+import { useCallback } from "react";
 
 import { useMultisigAuthToken } from "./useMultisigAuthToken";
 import { useMultisigClient } from "./useMultisigClient";
@@ -20,7 +21,7 @@ export const useApproveTransaction = () => {
   const authToken = useMultisigAuthToken(walletAccount?.userId);
   const queryClient = useQueryClient();
 
-  return useMutation(
+  return useCallback(
     async ({
       tx,
       currentSignatures,
@@ -38,7 +39,7 @@ export const useApproveTransaction = () => {
       >;
       currentSignatures: Signature[];
       transactionId: number;
-    }): Promise<void> => {
+    }) => {
       try {
         const prevSigMatch = currentSignatures.findIndex(
           (signature) => signature.userAddress === walletAccount?.address
@@ -100,6 +101,7 @@ export const useApproveTransaction = () => {
           message: err.message,
         });
       }
-    }
+    },
+    [authToken, multisigClient, queryClient, setToastError, walletAccount]
   );
 };

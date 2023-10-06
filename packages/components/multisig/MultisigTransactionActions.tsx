@@ -41,7 +41,7 @@ export const MultisigTransactionActions: React.FC<
 }) => {
   const wallet = useSelectedWallet();
   const selectedNetworkId = useSelectedNetworkId();
-  const { mutate: approve } = useApproveTransaction();
+  const approve = useApproveTransaction();
   const {
     mutate: broadcast,
     isLoading: isBroacasting,
@@ -61,7 +61,7 @@ export const MultisigTransactionActions: React.FC<
     }
   }, [resTxHash, shouldRetch]);
 
-  const onApprove = async () => {
+  const onApprove = () =>
     approve({
       tx: {
         chainId,
@@ -75,7 +75,6 @@ export const MultisigTransactionActions: React.FC<
       currentSignatures: signatures,
       transactionId: id,
     });
-  };
 
   const onBroadcast = () =>
     broadcast({

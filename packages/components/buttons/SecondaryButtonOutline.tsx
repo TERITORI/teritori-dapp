@@ -115,8 +115,10 @@ export const SecondaryButtonOutline: React.FC<{
                 justifyContent: "center",
                 alignItems: "center",
                 position: "absolute",
-                width: "100%",
-                height: "100%",
+                left: "2.5%",
+                top: "2.5%",
+                width: "95%",
+                height: "95%",
                 backgroundColor,
               }}
             >
