@@ -53,7 +53,7 @@ export const SIDEBAR_LIST: SidebarRecordType = {
   },
   "multisig-wallet": {
     id: "Multisig",
-    title: "Multisig",
+    title: "Multisigs",
     route: "Multisig",
     icon: multisigSVG,
   },
