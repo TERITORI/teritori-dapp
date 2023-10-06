@@ -73,7 +73,6 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
     useForm<StakeFormValuesType>();
   const stakingCurrency = getStakingCurrency(networkId);
 
-  // hooks
   useEffect(() => {
     reset();
   }, [reset, visible]);
