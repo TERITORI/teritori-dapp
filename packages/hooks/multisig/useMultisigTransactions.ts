@@ -10,7 +10,6 @@ import {
   getCosmosNetwork,
   parseUserId,
 } from "../../networks";
-import { tryParseJSON } from "../../utils/jsons";
 
 const batchSize = 16;
 
@@ -78,7 +77,7 @@ export const useMultisigTransactions = (
           const t: ParsedTransaction = {
             ...tx,
             msgs,
-            fee: tryParseJSON(tx.feeJson || "{}"),
+            fee: JSON.parse(tx.feeJson),
             createdAt: new Date(tx.createdAt),
           };
           parsedTxs.push(t);
