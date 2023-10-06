@@ -189,7 +189,7 @@ export const TNSMintNameModal: React.FC<
   const { setToastError, setToastSuccess } = useFeedbacks();
   const price = useTNSMintPrice(networkId, normalizedTokenId);
   const balance = balances.find((bal) => bal.denom === price?.denom);
-  console.log("price", price, "balances", balances);
+
   const runOrProposeTransaction = useRunOrProposeTransaction(userId, userKind);
   const queryClient = useQueryClient();
 
