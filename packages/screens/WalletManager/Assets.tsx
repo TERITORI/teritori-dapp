@@ -163,7 +163,7 @@ export const Assets: React.FC<{
                   }}
                 >
                   {balance?.usdAmount
-                    ? `≈ ${balance.usdAmount.toFixed(2)}`
+                    ? `≈ $${balance.usdAmount.toFixed(2)}`
                     : " "}
                 </BrandText>
               </View>
