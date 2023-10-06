@@ -74,7 +74,6 @@ export const MemberSettingsSection: React.FC<MemberSettingsSectionProps> = ({
                 name={`members.${index}.weight`}
                 noBrokenCorners
                 label="Weight"
-                variant="labelOutside"
                 hideLabel={index > 0}
                 control={control}
                 rules={{ required: true, pattern: patternOnlyNumbers }}
