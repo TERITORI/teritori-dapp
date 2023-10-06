@@ -3,8 +3,8 @@ import {
   ActivityIndicator,
   FlatList,
   ScrollView,
-  StyleSheet,
   View,
+  ViewStyle,
 } from "react-native";
 
 import { GetStartedOption } from "./components/GetStartedOption";
@@ -55,8 +55,8 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
       forceNetworkKind={NetworkKind.Cosmos}
     >
       <ScrollView>
-        <View style={styles.container}>
-          <View style={styles.horizontalContentPadding}>
+        <View style={containerCStyle}>
+          <View style={horizontalContentPaddingCStyle}>
             <View
               style={{
                 flexDirection: "row",
@@ -107,7 +107,7 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
               )}
               ListFooterComponent={() =>
                 isMultisigLoading && isMultisigFetching ? (
-                  <View style={styles.contentCenter}>
+                  <View style={contentCenterCStyle}>
                     <ActivityIndicator color={secondaryColor} />
                   </View>
                 ) : null
@@ -117,7 +117,7 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
           <SpacerColumn size={3} />
           {!!invitations?.length && (
             <>
-              <View style={styles.horizontalContentPadding}>
+              <View style={horizontalContentPaddingCStyle}>
                 <BrandText style={fontSemibold28}>Invitations</BrandText>
                 <SpacerColumn size={1.5} />
                 <BrandText style={[fontSemibold16, { color: neutral77 }]}>
@@ -153,7 +153,7 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
                   )}
                   ListFooterComponent={() =>
                     isMultisigLoading && isMultisigFetching ? (
-                      <View style={styles.contentCenter}>
+                      <View style={contentCenterCStyle}>
                         <ActivityIndicator color={secondaryColor} />
                       </View>
                     ) : null
@@ -164,7 +164,7 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
             </>
           )}
           {!!authToken && (
-            <View style={styles.horizontalContentPadding}>
+            <View style={horizontalContentPaddingCStyle}>
               <Separator color={neutral33} />
               <SpacerColumn size={3} />
               <MultisigTransactions
@@ -179,33 +179,18 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
   );
 };
 
-// FIXME: remove StyleSheet.create
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: layout.topContentSpacingWithHeading,
-  },
-  horizontalContentPadding: {
-    paddingHorizontal: layout.contentSpacing,
-  },
-  optionsScrollContent: {
-    paddingHorizontal: layout.contentSpacing - layout.spacing_x2,
-  },
-  row: {
-    flex: 1,
-    flexDirection: "row",
-    flexWrap: "wrap",
-    marginHorizontal: -layout.spacing_x2,
-    marginVertical: -layout.spacing_x2,
-  },
-  contentCenter: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    width: 135,
-  },
-  transactionListContent: {
-    marginTop: layout.spacing_x2_5,
-  },
-});
+const containerCStyle: ViewStyle = {
+  flex: 1,
+  paddingTop: layout.topContentSpacingWithHeading,
+};
+
+const horizontalContentPaddingCStyle: ViewStyle = {
+  paddingHorizontal: layout.contentSpacing,
+};
+
+const contentCenterCStyle: ViewStyle = {
+  flex: 1,
+  justifyContent: "center",
+  alignItems: "center",
+  width: 135,
+};
