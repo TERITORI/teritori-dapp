@@ -91,7 +91,6 @@ export const MultisigCreateScreen = () => {
   });
   const selectedNetwork = useSelectedNetworkInfo();
 
-  // functions
   const removeAddressField = (index: number) => {
     const copyIndexes = [...addressIndexes];
     copyIndexes.splice(index, 1);
@@ -180,7 +179,6 @@ export const MultisigCreateScreen = () => {
     (n): n is CosmosNetworkInfo => n.kind === NetworkKind.Cosmos
   );
 
-  // returns
   return (
     <ScreenContainer
       headerChildren={
