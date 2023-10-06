@@ -24,8 +24,8 @@ export type ParsedTransaction = Omit<
 
 export const multisigTransactionsQueryKey = (
   networkId: string | undefined,
-  multisigAddress: string | undefined
-) => ["multisig-transactions", networkId, multisigAddress];
+  multisigUserId: string | undefined
+) => ["multisig-transactions", networkId, multisigUserId];
 
 export const useMultisigTransactions = (
   userId: string | undefined,
