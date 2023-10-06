@@ -67,13 +67,9 @@ export const ScreenContainer: React.FC<{
   const { height } = useWindowDimensions();
   const navigation = useAppNavigation();
 
-  if (!onBackPress) {
-    onBackPress = navigation.canGoBack()
-      ? () => {
-          navigation.goBack();
-        }
-      : undefined;
-  }
+  const doBackPress = () => {
+    onBackPress && navigation.canGoBack() && navigation.goBack();
+  };
 
   const hasMargin = !noMargin;
   const hasScroll = !noScroll;
@@ -115,7 +111,7 @@ export const ScreenContainer: React.FC<{
   if (isMobile)
     return (
       <ScreenContainerMobile
-        onBackPress={onBackPress}
+        onBackPress={doBackPress}
         children={children}
         networkFilter={networkFilter}
         hasScroll={hasScroll}
@@ -136,7 +132,7 @@ export const ScreenContainer: React.FC<{
         <View style={{ width: "100%", flex: 1 }}>
           {/*==== Header*/}
           {headerChildren && (
-            <Header onBackPress={onBackPress}>{headerChildren}</Header>
+            <Header onBackPress={doBackPress}>{headerChildren}</Header>
           )}
 
           <View
