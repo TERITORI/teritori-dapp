@@ -2,8 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import { View } from "react-native";
 
-import { Coin } from "../../api/teritori/coin";
-import { MsgBurnTokens } from "../../api/teritori/mint";
+import { Coin } from "../../api/teritori-chain/cosmos/base/v1beta1/coin";
+import { MsgBurnTokens } from "../../api/teritori-chain/teritori/mint/v1beta1/tx";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
