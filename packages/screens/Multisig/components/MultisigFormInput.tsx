@@ -37,11 +37,9 @@ export const MultisigFormInput = <T extends FieldValues>({
     name: restProps.name,
   });
 
-  // functions
   const onPressCopy = () =>
     copyToClipboard(value || restProps.defaultValue || "");
 
-  // returns
   return (
     <TextInputCustom<T>
       variant="labelOutside"
