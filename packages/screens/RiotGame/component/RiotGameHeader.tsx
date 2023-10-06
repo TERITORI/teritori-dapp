@@ -20,6 +20,7 @@ import { ConnectWalletButton } from "../../../components/TopMenu/ConnectWalletBu
 import { TopLogo } from "../../../components/navigation/components/TopLogo";
 import { SpacerRow } from "../../../components/spacer";
 import { useForceNetworkKind } from "../../../hooks/useForceNetworkKind";
+import { useIsMobile } from "../../../hooks/useIsMobile";
 import { NetworkKind } from "../../../networks";
 import {
   RootStackParamList,
@@ -99,6 +100,7 @@ export const RiotGameHeader: React.FC<RiotGameHeaderProps> = ({
   const navigation = useAppNavigation();
   const { name: routeName } = useRoute();
   useForceNetworkKind(NetworkKind.Cosmos);
+  const isMobile = useIsMobile();
 
   const onMenuItemClick = (item: MenuItem) => {
     if (item.externalRoute) {
@@ -156,17 +158,18 @@ export const RiotGameHeader: React.FC<RiotGameHeaderProps> = ({
             </FlexRow>
           )}
         </ScrollView>
-
-        <View style={styles.section}>
-          <SpacerRow size={1.5} />
-          <Separator horizontal color={neutral33} />
-          <SpacerRow size={1.5} />
-          <NetworkSelector forceNetworkKind={NetworkKind.Cosmos} />
-          <SpacerRow size={1.5} />
-          <ConnectWalletButton
-            style={{ marginRight: headerMarginHorizontal }}
-          />
-        </View>
+        {!isMobile && (
+          <View style={styles.section}>
+            <SpacerRow size={1.5} />
+            <Separator horizontal color={neutral33} />
+            <SpacerRow size={1.5} />
+            <NetworkSelector forceNetworkKind={NetworkKind.Cosmos} />
+            <SpacerRow size={1.5} />
+            <ConnectWalletButton
+              style={{ marginRight: headerMarginHorizontal }}
+            />
+          </View>
+        )}
       </View>
     </View>
   );
