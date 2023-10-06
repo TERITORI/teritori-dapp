@@ -14,6 +14,7 @@ import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import ModalBase from "../../../components/modals/ModalBase";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
+import { useMultisigProposePostActions } from "../../../hooks/multisig/useMultisigProposePostActions";
 import { useBalances } from "../../../hooks/useBalances";
 import { useErrorHandler } from "../../../hooks/useErrorHandler";
 import { useRunOrProposeTransaction } from "../../../hooks/useRunOrProposeTransaction";
@@ -66,7 +67,8 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
   const { control, setValue, handleSubmit, reset } =
     useForm<StakeFormValuesType>();
 
-  // hooks
+  const multisigPostActions = useMultisigProposePostActions(userId);
+
   useEffect(() => {
     reset();
   }, [reset, visible]);
@@ -75,7 +77,6 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
     setValue("validatorName", validator?.moniker || "");
   }, [validator?.moniker, setValue]);
 
-  // functions
   const onSubmit = useCallback(
     async (formData: StakeFormValuesType) => {
       try {
@@ -109,13 +110,19 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
           },
         };
         await runOrProposeTransaction({ msgs: [msg] });
-        setToastSuccess({ title: "Delegation success", message: "" });
+        if (userKind === UserKind.Multisig) {
+          await multisigPostActions();
+          setToastSuccess({ title: "Proposed to delegate", message: "" });
+        } else {
+          setToastSuccess({ title: "Delegation success", message: "" });
+        }
         onClose && onClose();
       } catch (error) {
         triggerError({ title: "Delegation failed!", error, callback: onClose });
       }
     },
     [
+      multisigPostActions,
       onClose,
       runOrProposeTransaction,
       setToastError,
@@ -123,6 +130,7 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
       stakingCurrency,
       triggerError,
       userAddress,
+      userKind,
       validator,
     ]
   );

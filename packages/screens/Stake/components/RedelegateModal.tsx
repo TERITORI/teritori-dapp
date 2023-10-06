@@ -15,6 +15,7 @@ import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import ModalBase from "../../../components/modals/ModalBase";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
+import { useMultisigProposePostActions } from "../../../hooks/multisig/useMultisigProposePostActions";
 import { useCosmosValidatorBondedAmount } from "../../../hooks/useCosmosValidatorBondedAmount";
 import { useErrorHandler } from "../../../hooks/useErrorHandler";
 import { useRunOrProposeTransaction } from "../../../hooks/useRunOrProposeTransaction";
@@ -95,7 +96,8 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
     return currentValidators;
   }, [allValidators, bondedTokens.atomics, validator?.moniker]);
 
-  // functions
+  const multisigPostActions = useMultisigProposePostActions(userId);
+
   const onSubmit = useCallback(
     async (formData: StakeFormValuesType) => {
       try {
@@ -137,8 +139,13 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
           },
         };
         await runOrProposeTransaction({ msgs: [msg] });
-        setToastSuccess({ title: "Redelegation success", message: "" });
-        refreshBondedTokens();
+        if (userKind === UserKind.Multisig) {
+          await multisigPostActions();
+          setToastSuccess({ title: "Proposed to redelegate", message: "" });
+        } else {
+          setToastSuccess({ title: "Redelegation success", message: "" });
+          refreshBondedTokens();
+        }
         onClose && onClose();
       } catch (error) {
         triggerError({
@@ -149,6 +156,7 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
       }
     },
     [
+      multisigPostActions,
       onClose,
       refreshBondedTokens,
       runOrProposeTransaction,
@@ -158,6 +166,7 @@ export const RedelegateModal: React.FC<RedelegateModalProps> = ({
       stakingCurrency,
       triggerError,
       userAddress,
+      userKind,
       validator,
     ]
   );

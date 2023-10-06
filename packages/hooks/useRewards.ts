@@ -2,16 +2,12 @@ import { MsgWithdrawDelegatorRewardEncodeObject } from "@cosmjs/stargate";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 
+import { useMultisigProposePostActions } from "./multisig/useMultisigProposePostActions";
 import { useCoingeckoPrices } from "./useCoingeckoPrices";
 import { useErrorHandler } from "./useErrorHandler";
 import { useRunOrProposeTransaction } from "./useRunOrProposeTransaction";
 import { useFeedbacks } from "../context/FeedbacksProvider";
-import {
-  getNetwork,
-  parseNetworkObjectId,
-  NetworkKind,
-  UserKind,
-} from "../networks";
+import { getNetwork, NetworkKind, UserKind, parseUserId } from "../networks";
 import { CoingeckoCoin, getCoingeckoPrice } from "../utils/coingecko";
 import { CosmosRewardsResponse } from "../utils/teritori";
 
@@ -33,11 +29,12 @@ const initialData = { rewards: [], total: [] };
 
 // Getting the rewards, by user's wallet address, and by network.
 export const useRewards = (userId: string | undefined, userKind: UserKind) => {
-  const [network, userAddress] = parseNetworkObjectId(userId);
+  const [network, userAddress] = parseUserId(userId);
   const networkId = network?.id || "";
   const { setToastSuccess } = useFeedbacks();
   const { triggerError } = useErrorHandler();
   const runOrProposeTransaction = useRunOrProposeTransaction(userId, userKind);
+  const multisigPostActions = useMultisigProposePostActions(userId);
 
   const claimAllRewards = async (callback?: () => void) => {
     try {
@@ -63,7 +60,15 @@ export const useRewards = (userId: string | undefined, userKind: UserKind) => {
       });
       if (!msgs.length) return;
       await runOrProposeTransaction({ msgs });
-      setToastSuccess({ title: "Claim success", message: "" });
+      if (userKind === UserKind.Multisig) {
+        await multisigPostActions();
+        setToastSuccess({
+          title: "Proposed to claim all rewards",
+          message: "",
+        });
+      } else {
+        setToastSuccess({ title: "Claim success", message: "" });
+      }
     } catch (error) {
       triggerError({ title: "Claim failed!", error, callback });
     }
@@ -83,7 +88,12 @@ export const useRewards = (userId: string | undefined, userKind: UserKind) => {
         },
       };
       await runOrProposeTransaction({ msgs: [msg] });
-      setToastSuccess({ title: "Claim success", message: "" });
+      if (userKind === UserKind.Multisig) {
+        await multisigPostActions();
+        setToastSuccess({ title: "Proposed to claim rewards", message: "" });
+      } else {
+        setToastSuccess({ title: "Claim success", message: "" });
+      }
     } catch (error) {
       triggerError({ title: "Claim failed!", error, callback });
     }
