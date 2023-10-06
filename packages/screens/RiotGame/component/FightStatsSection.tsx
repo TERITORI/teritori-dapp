@@ -1,9 +1,10 @@
-import { StyleSheet, View, ViewStyle } from "react-native";
+import { View, ViewStyle } from "react-native";
 
 import { InfoBox } from "./InfoBox";
 import { PrimaryButtonOutline } from "../../../components/buttons/PrimaryButtonOutline";
 import { useGameRewards } from "../../../hooks/riotGame/useGameRewards";
 import { useSeasonRank } from "../../../hooks/riotGame/useSeasonRank";
+import { useIsMobile } from "../../../hooks/useIsMobile";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { decimalFromAtomics } from "../../../utils/coins";
 import { yellowDefault } from "../../../utils/style/colors";
@@ -16,17 +17,29 @@ type FightStatsSectionProps = {
 export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
   containerStyle,
 }) => {
+  const isMobile = useIsMobile();
   const selectedWallet = useSelectedWallet();
   const { userRank, prettyUserRank, currentSeason } = useSeasonRank();
   const { isClaiming, claimableAmount, claimRewards } = useGameRewards();
 
   return (
-    <View style={[containerStyle, styles.container]}>
+    <View
+      style={[
+        containerStyle,
+        {
+          flexDirection: isMobile ? "column" : "row",
+          margin: layout.spacing_x1_5,
+          alignItems: "center",
+          height: isMobile ? 200 : "inherit",
+          justifyContent: isMobile ? "space-between" : undefined,
+        },
+      ]}
+    >
       <InfoBox
         size="SM"
         title="Number of Fighters"
         content={`${userRank?.totalUsers || 0} Rippers`}
-        width={120}
+        width={isMobile ? 150 : 120}
       />
       <InfoBox
         size="SM"
@@ -36,7 +49,12 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
         }`}
         width={150}
       />
-      <InfoBox size="SM" title="Rank" content={prettyUserRank} width={120} />
+      <InfoBox
+        size="SM"
+        title="Rank"
+        content={prettyUserRank}
+        width={isMobile ? 150 : 120}
+      />
 
       {+claimableAmount !== 0 && selectedWallet?.address && (
         <PrimaryButtonOutline
@@ -60,13 +78,3 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
     </View>
   );
 };
-
-// FIXME: remove StyleSheet.create
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: "row",
-    margin: layout.spacing_x1_5,
-    alignItems: "center",
-  },
-});
