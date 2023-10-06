@@ -6,19 +6,19 @@ import {
 } from "../networks";
 
 const main = async () => {
-  program.argument("<contract-id>");
-  program.parse();
-  // FIXME: use typesafe commander
-
-  const [contractId, ...additionalQueries] = program.args;
-  const [network, contractAddress] = parseNetworkObjectId(contractId);
-  if (!network || !contractAddress) {
-    throw new Error("Invalid contract id");
-  }
-  const client = await mustGetNonSigningCosmWasmClient(network?.id);
-
   const all: { [key: string]: any } = {};
   try {
+    program.argument("<contract-id>");
+    program.parse();
+    // FIXME: use typesafe commander
+
+    const [contractId, ...additionalQueries] = program.args;
+    const [network, contractAddress] = parseNetworkObjectId(contractId);
+    if (!network || !contractAddress) {
+      throw new Error("Invalid contract id");
+    }
+    const client = await mustGetNonSigningCosmWasmClient(network?.id);
+
     const contract = await client.getContract(contractAddress);
     all["contract"] = contract;
     const { data, ...wasm } = await client.getCodeDetails(contract.codeId);
@@ -48,7 +48,7 @@ const main = async () => {
           queries.push(...(parts || []).map((s) => s.slice(1, s.length - 1)));
         } else {
           all["interfaceQueryError"] = new Error(
-            "unexpected message shape"
+            "unexpected message shape: `" + message + "`"
           ).toString();
         }
       } else {
