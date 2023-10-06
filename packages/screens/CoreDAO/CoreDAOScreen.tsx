@@ -2,8 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import { View } from "react-native";
 
-import { Coin } from "../../api/teritori-chain/cosmos/base/v1beta1/coin";
-import { MsgBurnTokens } from "../../api/teritori-chain/teritori/mint/v1beta1/tx";
+import { Coin } from "../../api/teritori/coin";
+import { MsgBurnTokens } from "../../api/teritori/mint";
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
@@ -19,7 +19,6 @@ import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { useVaultConfig } from "../../hooks/vault/useVaultConfig";
 import {
   getCosmosNetwork,
-  getKeplrOnlyAminoStargateClient,
   getKeplrSigningStargateClient,
   getUserId,
   mustGetNonSigningCosmWasmClient,
@@ -51,6 +50,9 @@ const DAOManager: React.FC = () => {
   const network = getCosmosNetwork(networkId);
   const balances = useBalances(networkId, network?.coreDAOAddress);
   const selectedWallet = useSelectedWallet();
+  const makeProposal = useDAOMakeProposal(
+    getUserId(networkId, network?.coreDAOAddress)
+  );
   return (
     <View>
       <BrandText>Funds</BrandText>
@@ -105,7 +107,7 @@ const DAOManager: React.FC = () => {
           }
 
           const burnMsg: MsgBurnTokens = {
-            sender: selectedWallet.address,
+            sender: network.coreDAOAddress,
             amount: [
               Buffer.from(
                 Coin.encode({ amount: "1000000", denom: "utori" }).finish()
@@ -113,20 +115,20 @@ const DAOManager: React.FC = () => {
             ],
           };
 
-          const client = await getKeplrOnlyAminoStargateClient(
-            selectedWallet.networkId
-          );
-
-          await client.signAndBroadcast(
-            selectedWallet.address,
-            [
+          await makeProposal(selectedWallet?.address, {
+            title: "Burn a TORI",
+            description: "",
+            msgs: [
               {
-                typeUrl: "/teritori.mint.v1beta1.MsgBurnTokens",
-                value: burnMsg,
+                stargate: {
+                  type_url: "/teritori.mint.v1beta1.MsgBurnTokens",
+                  value: Buffer.from(
+                    MsgBurnTokens.encode(burnMsg).finish()
+                  ).toString("base64"),
+                },
               },
             ],
-            "auto"
-          );
+          });
         }}
       />
     </View>
