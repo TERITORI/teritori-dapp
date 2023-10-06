@@ -84,13 +84,13 @@ export const useApproveTransaction = () => {
           bodyBytes,
         });
 
-        queryClient.invalidateQueries(
+        await queryClient.invalidateQueries(
           multisigTransactionsQueryKey(
             selectedNetworkId,
             getUserId(selectedNetworkId, tx.multisigAddress)
           )
         );
-        queryClient.invalidateQueries(
+        await queryClient.invalidateQueries(
           multisigTransactionsQueryKey(selectedNetworkId, undefined)
         );
       } catch (err: any) {

@@ -85,13 +85,13 @@ export const useBroadcastTransaction = () => {
           duration: 10000,
         });
 
-        queryClient.invalidateQueries(
+        await queryClient.invalidateQueries(
           multisigTransactionsQueryKey(
             network.id,
             getUserId(network.id, tx.multisigAddress)
           )
         );
-        queryClient.invalidateQueries(
+        await queryClient.invalidateQueries(
           multisigTransactionsQueryKey(network.id, undefined)
         );
 

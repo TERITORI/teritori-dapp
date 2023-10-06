@@ -36,14 +36,10 @@ export const useMultisigTransactions = (
   const authToken = useMultisigAuthToken(userId);
   const client = useMultisigClient();
   const [network] = parseUserId(userId);
-  const [, multisigAddress] = parseUserId(multisigUserId);
 
   return useInfiniteQuery(
     [
-      ...multisigTransactionsQueryKey(
-        network?.id,
-        multisigAddress || undefined
-      ),
+      ...multisigTransactionsQueryKey(network?.id, multisigUserId),
       types,
       executionState,
       authToken,
@@ -52,6 +48,12 @@ export const useMultisigTransactions = (
       const chainId = getCosmosNetwork(network?.id)?.chainId;
 
       if (!chainId || !authToken) {
+        return { data: [], next: null };
+      }
+
+      const [, multisigAddress] = parseUserId(multisigUserId);
+
+      if (!multisigAddress) {
         return { data: [], next: null };
       }
 
