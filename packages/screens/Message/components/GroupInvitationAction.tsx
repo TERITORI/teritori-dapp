@@ -71,12 +71,12 @@ export const GroupInvitationAction = ({
             files: [],
             metadata: {
               contact: {
-                id: stringFromBytes(weshConfig.config.accountPk),
+                id: stringFromBytes(weshConfig.config?.accountPk),
                 rdvSeed: stringFromBytes(weshConfig.metadata.rdvSeed),
                 tokenId: weshConfig.metadata.tokenId,
                 name: contactInfo.name,
                 avatar: contactInfo.avatar,
-                peerId: weshConfig.config.peerId,
+                peerId: weshConfig.config?.peerId,
               },
               groupName: message?.payload?.metadata?.groupName,
             },

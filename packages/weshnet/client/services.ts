@@ -69,7 +69,7 @@ export const bootWeshnet = async () => {
       })
     );
 
-    subscribeMetadata(weshConfig.config.accountGroupPk);
+    subscribeMetadata(weshConfig.config?.accountGroupPk);
 
     getAndUpdatePeerList();
     if (getPeerListIntervalId) {
@@ -101,12 +101,12 @@ export const createSharableLink = (
     return "";
   }
   return `https://app.teritori.com/contact?accountPk=${encodeURIComponent(
-    stringFromBytes(weshConfig.config.accountPk)
+    stringFromBytes(weshConfig.config?.accountPk)
   )}&rdvSeed=${encodeURIComponent(
     contactInfo.publicRendezvousSeed
   )}&name=${encodeURIComponent(contactInfo.name)}&avatar=${encodeURIComponent(
     contactInfo.avatar
-  )}&peerId=${encodeURIComponent(weshConfig.config.peerId)}`;
+  )}&peerId=${encodeURIComponent(weshConfig.config?.peerId)}`;
 };
 
 export const createMultiMemberShareableLink = (
@@ -184,7 +184,7 @@ export const multiMemberGroupJoin = async (
         files: [],
         metadata: {
           contact: {
-            id: stringFromBytes(weshConfig.config.accountPk),
+            id: stringFromBytes(weshConfig.config?.accountPk),
             rdvSeed: stringFromBytes(weshConfig.metadata.rdvSeed),
             tokenId: weshConfig.metadata.tokenId,
             name: contactInfo.name,
@@ -225,7 +225,7 @@ export const addContact = async (
       ownMetadata: encodeJSON({
         name: contactInfo.name,
         avatar: contactInfo.avatar,
-        peerId: weshConfig.config.peerId,
+        peerId: weshConfig.config?.peerId,
         timestamp: new Date().toISOString(),
         contact: {
           name: decodeURIComponent(url?.searchParams.get("name") || ""),
@@ -277,7 +277,7 @@ export const sendMessage = async ({
       payload: encodeJSON({
         ...message,
         timestamp: new Date().toISOString(),
-        senderId: stringFromBytes(weshConfig.config.accountPk),
+        senderId: stringFromBytes(weshConfig.config?.accountPk),
       }),
     });
   } catch (err) {

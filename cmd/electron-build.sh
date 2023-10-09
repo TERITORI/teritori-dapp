@@ -6,4 +6,4 @@ cp -r ./go/electron/prod/ ./electron/prod
 cp -r ./go/electron/resources/* ./electron/prod/resources
 cp -r ./web-build/* ./electron/prod/resources/app
 cd ./electron/prod
-astilectron-bundler
+astilectron-bundler 

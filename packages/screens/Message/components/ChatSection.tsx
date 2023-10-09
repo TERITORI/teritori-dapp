@@ -93,7 +93,8 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
   const contactMessages = useMemo(
     () =>
       messages.filter(
-        (item) => item.senderId !== stringFromBytes(weshConfig.config.accountPk)
+        (item) =>
+          item.senderId !== stringFromBytes(weshConfig.config?.accountPk)
       ),
     [messages]
   );
@@ -182,7 +183,7 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
             payload: {
               message: "-",
               metadata: {
-                lastReadBy: stringFromBytes(weshConfig.config.accountPk),
+                lastReadBy: stringFromBytes(weshConfig.config?.accountPk),
                 lastReadId: lastMessageId,
               },
               files: [],
@@ -204,7 +205,7 @@ export const ChatSection = ({ conversation }: ChatSectionProps) => {
     const nextContactMessages = messages.filter(
       (item, index) =>
         index < lastReadMessageIndex &&
-        item.senderId !== stringFromBytes(weshConfig.config.accountPk)
+        item.senderId !== stringFromBytes(weshConfig.config?.accountPk)
     );
 
     const nextMessage = nextContactMessages[nextContactMessages.length - 1];

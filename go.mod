@@ -9,7 +9,7 @@ require (
 	github.com/Khan/genqlient v0.5.0
 	github.com/allegro/bigcache/v3 v3.0.2
 	github.com/asticode/go-astichartjs v0.2.0
-	github.com/asticode/go-astikit v0.41.0
+	github.com/asticode/go-astikit v0.42.0
 	github.com/asticode/go-astilectron v0.30.0
 	github.com/asticode/go-astilectron-bootstrap v0.4.14
 	github.com/bxcodec/faker/v3 v3.8.0

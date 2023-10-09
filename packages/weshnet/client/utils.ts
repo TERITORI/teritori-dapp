@@ -10,6 +10,9 @@ export const bytesFromString = (str: string = ""): Uint8Array => {
 export const stringFromBytes = (
   arr: Uint8Array = new Uint8Array([])
 ): string => {
+  if (!arr) {
+    return "";
+  }
   const bin: string[] = [];
   arr.forEach((byte) => {
     bin.push(String.fromCharCode(byte));

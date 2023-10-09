@@ -26,7 +26,7 @@ export const processMessage = async (
       ...data.message,
     };
     const isSender =
-      message.senderId === stringFromBytes(weshConfig.config.accountPk);
+      message.senderId === stringFromBytes(weshConfig.config?.accountPk);
 
     switch (message.type) {
       case "reaction": {
@@ -78,7 +78,7 @@ export const processMessage = async (
 
         if (
           message?.payload?.metadata?.contact?.id &&
-          stringFromBytes(weshConfig.config.accountPk) !==
+          stringFromBytes(weshConfig.config?.accountPk) !==
             message?.payload?.metadata?.contact?.id
         ) {
           newMember.push(message?.payload?.metadata?.contact);
@@ -104,7 +104,7 @@ export const processMessage = async (
         const data: Partial<Conversation> = {};
         const lastReadId = message?.payload?.metadata?.lastReadId;
         const lastReadBy = message?.payload?.metadata?.lastReadBy;
-        if (lastReadBy === stringFromBytes(weshConfig.config.accountPk)) {
+        if (lastReadBy === stringFromBytes(weshConfig.config?.accountPk)) {
           data.lastReadIdByMe = lastReadId;
         } else {
           data.lastReadIdByContact = lastReadId;

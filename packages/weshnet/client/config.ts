@@ -2,7 +2,7 @@ import { ServiceGetConfiguration_Reply } from "../protocoltypes";
 
 class WeshConfig {
   //@ts-ignore
-  private _config: ServiceGetConfiguration_Reply;
+  private _config: ServiceGetConfiguration_Reply | undefined;
   private _shareLink: string = "";
   private _metadata = {
     rdvSeed: new Uint8Array(),
@@ -16,7 +16,7 @@ class WeshConfig {
     this._metadata = data;
   }
 
-  get config(): ServiceGetConfiguration_Reply {
+  get config(): ServiceGetConfiguration_Reply | undefined {
     return this._config;
   }
   set config(config) {
