@@ -9,7 +9,6 @@ import {
   ImageStyle,
 } from "react-native";
 import Animated from "react-native-reanimated";
-import { v4 as uuidv4 } from "uuid";
 
 import { VideoComment } from "./VideoComment";
 import Dislike from "../../../assets/icons/player/dislike.svg";
@@ -24,13 +23,13 @@ import { signingVideoPlayerClient } from "../../client-creators/videoplayerClien
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
 import { ScreenContainer } from "../../components/ScreenContainer";
-import { MoreVideoPlayerCard } from "../../components/VideoPlayer/MoreVideoCard";
-import { VideoPlayerTab } from "../../components/VideoPlayer/VideoPlayerTab";
 import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import { UserAvatarWithFrame } from "../../components/images/AvatarWithFrame";
 import { TipModal } from "../../components/socialFeed/SocialActions/TipModal";
 import { DateTime } from "../../components/socialFeed/SocialThread/DateTime";
 import { SpacerRow } from "../../components/spacer";
+import { MoreVideoPlayerCard } from "../../components/videoPlayer/MoreVideoCard";
+import { VideoPlayerTab } from "../../components/videoPlayer/VideoPlayerTab";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
@@ -194,7 +193,6 @@ export const VideoShowScreen: ScreenFC<"VideoShow"> = ({
     try {
       const res = await client.createVideoComment(
         {
-          identifier: uuidv4(),
           videoIdentifier: data.identifier,
           comment,
         },

@@ -9,7 +9,6 @@ import {
   ViewStyle,
 } from "react-native";
 import { useSelector } from "react-redux";
-import { v4 as uuidv4 } from "uuid";
 
 import Add from "../../../assets/icons/add-alt.svg";
 import DefaultVideoImage from "../../../assets/icons/player/cover-img.png";
@@ -183,7 +182,6 @@ export const CreateVideoModal: React.FC<UploadAlbumModalProps> = ({
     try {
       const res = await client.createVideo(
         {
-          identifier: uuidv4(),
           metadata: JSON.stringify(videoInfo.videoMetaInfo),
         },
         defaultSocialFeedFee,
