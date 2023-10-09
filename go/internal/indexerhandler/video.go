@@ -12,7 +12,6 @@ type ExecCreateVideoMsg struct {
 	CreateVideo CreateVideoMsg `json:"create_video"`
 }
 type CreateVideoMsg struct {
-	Identifier string `json:"identifier"`
 	Metadata   string `json:"metadata"`
 }
 
@@ -35,7 +34,6 @@ func (h *Handler) handleExecuteCreateVideo(e *Message, execMsg *wasmtypes.MsgExe
 	}
 
 	video := indexerdb.Video{
-		Identifier: createVideo.Identifier,
 		Metadata:   metadataJSON,
 		CreatedBy:  h.config.Network.UserID(execMsg.Sender),
 		CreatedAt:  createdAt.Unix(),
@@ -53,7 +51,6 @@ type ExecCreateCommentMsg struct {
 	CreateComment CreateCommentMsg `json:"create_comment"`
 }
 type CreateCommentMsg struct {
-	Identifier      string `json:"identifier"`
 	VideoIdentifier string `json:"video_identifier"`
 	Comment         string `json:"comment"`
 }
@@ -71,7 +68,6 @@ func (h *Handler) handleExecuteCreateComment(e *Message, execMsg *wasmtypes.MsgE
 	}
 
 	comment := indexerdb.VideoComment{
-		Identifier:      createComment.Identifier,
 		VideoIdentifier: createComment.VideoIdentifier,
 		Comment:         createComment.Comment,
 		CreatedBy:       h.config.Network.UserID(execMsg.Sender),
