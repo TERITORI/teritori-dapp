@@ -9,7 +9,7 @@ import { ScreenFC } from "../../utils/navigation";
 export const HomeScreen: ScreenFC<"Home"> = ({ route: { params } }) => {
   useForceNetworkSelection(params?.network);
   return (
-    <ScreenContainer mobileTitle="HOME">
+    <ScreenContainer mobileTitle="HOME" headerChildren={<></>} responsive>
       <HubIntro />
       <HubLanding />
     </ScreenContainer>
