@@ -26,7 +26,6 @@ export const useFetchVideo = (req: GetVideoRequest) => {
           createdAt: videoInfo.createdAt,
           like: videoInfo.like,
           dislike: videoInfo.dislike,
-          viewLastTimestamp: videoInfo.lastView,
         } as VideoInfoWithMeta;
       } catch {
         //TODO: error handling/feedback
