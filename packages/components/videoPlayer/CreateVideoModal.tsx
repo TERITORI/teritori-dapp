@@ -67,7 +67,7 @@ const DEFAULT_VIDEO_INFO = {
   },
 };
 
-export const MODAL_WIDTH = 564;
+const MODAL_WIDTH = 564;
 export const CreateVideoModal: React.FC<UploadAlbumModalProps> = ({
   onClose,
   isVisible,
