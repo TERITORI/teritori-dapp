@@ -48,7 +48,6 @@ export interface VideoInfo {
   viewCount: number;
   like: number;
   dislike: number;
-  lastView: number;
 }
 
 export interface CommentInfo {
@@ -525,7 +524,7 @@ export const GetVideoListForLibraryResponse = {
 };
 
 function createBaseVideoInfo(): VideoInfo {
-  return { identifier: "", metadata: "", createdBy: "", createdAt: 0, viewCount: 0, like: 0, dislike: 0, lastView: 0 };
+  return { identifier: "", metadata: "", createdBy: "", createdAt: 0, viewCount: 0, like: 0, dislike: 0 };
 }
 
 export const VideoInfo = {
@@ -545,14 +544,11 @@ export const VideoInfo = {
     if (message.viewCount !== 0) {
       writer.uint32(40).uint32(message.viewCount);
     }
-    if (message.lastView !== 0) {
-      writer.uint32(48).uint32(message.lastView);
-    }
     if (message.like !== 0) {
-      writer.uint32(56).uint32(message.like);
+      writer.uint32(48).uint32(message.like);
     }
     if (message.dislike !== 0) {
-      writer.uint32(64).uint32(message.dislike);
+      writer.uint32(56).uint32(message.dislike);
     }
     return writer;
   },
@@ -580,12 +576,9 @@ export const VideoInfo = {
           message.viewCount = reader.uint32();
           break;
         case 6:
-          message.lastView = reader.uint32();
-          break;
-        case 7:
           message.like = reader.uint32();
           break;
-        case 8:
+        case 7:
           message.dislike = reader.uint32();
           break;
         default:
@@ -601,9 +594,8 @@ export const VideoInfo = {
       identifier: isSet(object.identifier) ? String(object.identifier) : "",
       metadata: isSet(object.metadata) ? String(object.metadata) : "",
       createdBy: isSet(object.createdBy) ? String(object.createdBy) : "",
-      createdAt: isSet(object.createdAt) ? Number(object.createdBy) : 0,
+      createdAt: isSet(object.createdAt) ? Number(object.createdAt) : 0,
       viewCount: isSet(object.viewCount) ? Number(object.viewCount) : 0,
-      lastView: isSet(object.lastView) ? Number(object.lastView) : 0,
       like: isSet(object.like) ? Number(object.like) : 0,
       dislike: isSet(object.dislike) ? Number(object.dislike) : 0,
     };
@@ -614,9 +606,8 @@ export const VideoInfo = {
     message.identifier !== undefined && (obj.identifier = message.identifier);
     message.metadata !== undefined && (obj.metadata = message.metadata);
     message.createdBy !== undefined && (obj.createdBy = message.createdBy);
-    message.createdAt !== undefined && (obj.createdBy = Math.round(message.createdAt));
+    message.createdAt !== undefined && (obj.createdAt = Math.round(message.createdAt));
     message.viewCount !== undefined && (obj.viewCount = Math.round(message.viewCount));
-    message.lastView !== undefined && (obj.lastView = message.lastView);
     message.like !== undefined && (obj.like = Math.round(message.like));
     message.dislike !== undefined && (obj.dislike = Math.round(message.dislike));
     return obj;
@@ -629,7 +620,6 @@ export const VideoInfo = {
     message.createdBy = object.createdBy ?? "";
     message.createdAt = object.createdAt ?? 0;
     message.viewCount = object.viewCount ?? 0;
-    message.lastView = object.lastView ?? 0;
     message.like = object.like ?? 0;
     message.dislike = object.dislike ?? 0;
     return message;
