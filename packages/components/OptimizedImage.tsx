@@ -1,5 +1,5 @@
 import React from "react";
-import { Image, ImageProps, View, StyleSheet } from "react-native";
+import { Image, ImageProps, View, StyleSheet, PixelRatio } from "react-native";
 
 import { neutral33 } from "../utils/style/colors";
 
@@ -17,6 +17,8 @@ export const OptimizedImage: React.FC<
   const [isFallbackError, setIsFallbackError] = React.useState(false);
   const shouldUseFallback = !baseSourceURI || isError;
   const sourceURI = shouldUseFallback ? fallbackURI : baseSourceURI;
+  const sourceWidth = PixelRatio.getPixelSizeForLayoutSize(width);
+  const sourceHeight = PixelRatio.getPixelSizeForLayoutSize(height);
 
   if ((shouldUseFallback && !fallbackURI) || isFallbackError) {
     return (
@@ -40,7 +42,7 @@ export const OptimizedImage: React.FC<
         setIsError(true);
       }}
       source={{
-        uri: transformURI(sourceURI || undefined, width, height),
+        uri: transformURI(sourceURI || undefined, sourceWidth, sourceHeight),
       }}
       {...other}
     />
