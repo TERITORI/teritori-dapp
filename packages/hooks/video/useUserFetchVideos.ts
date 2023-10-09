@@ -1,13 +1,10 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 
+import { VideosList } from "./useFetchVideos";
 import { VideoInfo, GetUserVideoListRequest } from "../../api/video/v1/video";
 import { mustGetVideoClient } from "../../utils/backend";
 import { VideoMetaInfo, VideoInfoWithMeta } from "../../utils/types/video";
 import { useSelectedNetworkId } from "../useSelectedNetwork";
-export type VideosList = {
-  list: VideoInfoWithMeta[];
-  totalCount: number;
-} | null; //TODO: Really need |null ?
 
 export const combineFetchVideoPages = (pages: VideosList[]) =>
   pages.reduce(
