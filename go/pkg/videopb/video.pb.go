@@ -432,7 +432,6 @@ type VideoInfo struct {
 	ViewCount  uint32 `protobuf:"varint,5,opt,name=view_count,json=viewCount,proto3" json:"view_count,omitempty"`
 	Like       uint32 `protobuf:"varint,6,opt,name=like,proto3" json:"like,omitempty"`
 	Dislike    uint32 `protobuf:"varint,7,opt,name=dislike,proto3" json:"dislike,omitempty"`
-	LastView   uint32 `protobuf:"varint,5,opt,name=last_view,json=lastView,proto3" json:"last_view,omitempty"`
 }
 
 func (x *VideoInfo) Reset() {
@@ -488,16 +487,16 @@ func (x *VideoInfo) GetCreatedBy() string {
 	return ""
 }
 
-func (x *VideoInfo) GetViewCount() uint32 {
+func (x *VideoInfo) GetCreatedAt() uint32 {
 	if x != nil {
-		return x.ViewCount
+		return x.CreatedAt
 	}
 	return 0
 }
 
-func (x *VideoInfo) GetLastView() uint32 {
+func (x *VideoInfo) GetViewCount() uint32 {
 	if x != nil {
-		return x.LastView
+		return x.ViewCount
 	}
 	return 0
 }
