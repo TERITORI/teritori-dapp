@@ -8,9 +8,9 @@ import Animated, {
 import Logo from "../../../assets/logos/logo.svg";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
-import { VideoPlayerCard } from "../../components/VideoPlayer/VideoPlayerCard";
 import { SpacerRow } from "../../components/spacer";
 import { CreateVideoModal } from "../../components/videoPlayer/CreateVideoModal";
+import { VideoPlayerCard } from "../../components/videoPlayer/VideoPlayerCard";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import {

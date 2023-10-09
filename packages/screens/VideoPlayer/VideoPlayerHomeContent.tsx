@@ -10,9 +10,9 @@ import Logo from "../../../assets/logos/logo.svg";
 import { GetVideoListRequest } from "../../api/video/v1/video";
 import { BrandText } from "../../components/BrandText";
 import { SVG } from "../../components/SVG";
-import { VideoPlayerCard } from "../../components/VideoPlayer/VideoPlayerCard";
 import { SpacerRow } from "../../components/spacer";
 import { CreateVideoModal } from "../../components/videoPlayer/CreateVideoModal";
+import { VideoPlayerCard } from "../../components/videoPlayer/VideoPlayerCard";
 import {
   combineFetchVideoPages,
   useFetchVideos,
