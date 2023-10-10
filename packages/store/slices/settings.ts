@@ -39,6 +39,7 @@ interface Settings {
   sideBarExpanded: boolean;
   multisigTokens: EntityState<MultisigToken>;
   networkSettings: EntityState<NetworkSettings>;
+  isLightTheme: boolean;
 }
 
 const initialState: Settings = {
@@ -59,6 +60,7 @@ const initialState: Settings = {
       enabled: true,
     }))
   ),
+  isLightTheme: false,
 };
 
 export const selectSelectedNetworkId = (state: RootState) =>
@@ -130,6 +132,8 @@ export const selectMultisigToken = (
   }
   return token;
 };
+export const selectIsLightTheme = (state: RootState) =>
+  state.settings.isLightTheme;
 
 const settingsSlice = createSlice({
   name: "settings",
@@ -201,6 +205,9 @@ const settingsSlice = createSlice({
         },
       });
     },
+    setIsLightTheme: (state, action: PayloadAction<boolean>) => {
+      state.isLightTheme = action.payload;
+    },
   },
 });
 
@@ -215,6 +222,7 @@ export const {
   setNFTStorageAPI,
   setMultisigToken,
   toggleNetwork,
+  setIsLightTheme,
 } = settingsSlice.actions;
 
 export const settingsReducer = settingsSlice.reducer;
