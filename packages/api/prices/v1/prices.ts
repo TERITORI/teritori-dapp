@@ -39,38 +39,25 @@ export const PricesRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): PricesRequest {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBasePricesRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.id = reader.string();
-          continue;
+          break;
         case 2:
-          if (tag !== 18) {
-            break;
-          }
-
           message.time = reader.string();
-          continue;
+          break;
         case 3:
-          if (tag !== 26) {
-            break;
-          }
-
           message.vsIds.push(reader.string());
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -85,21 +72,16 @@ export const PricesRequest = {
 
   toJSON(message: PricesRequest): unknown {
     const obj: any = {};
-    if (message.id !== "") {
-      obj.id = message.id;
-    }
-    if (message.time !== "") {
-      obj.time = message.time;
-    }
-    if (message.vsIds?.length) {
-      obj.vsIds = message.vsIds;
+    message.id !== undefined && (obj.id = message.id);
+    message.time !== undefined && (obj.time = message.time);
+    if (message.vsIds) {
+      obj.vsIds = message.vsIds.map((e) => e);
+    } else {
+      obj.vsIds = [];
     }
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<PricesRequest>, I>>(base?: I): PricesRequest {
-    return PricesRequest.fromPartial(base ?? ({} as any));
-  },
   fromPartial<I extends Exact<DeepPartial<PricesRequest>, I>>(object: I): PricesRequest {
     const message = createBasePricesRequest();
     message.id = object.id ?? "";
@@ -125,31 +107,22 @@ export const Price = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Price {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBasePrice();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.id = reader.string();
-          continue;
+          break;
         case 2:
-          if (tag !== 17) {
-            break;
-          }
-
           message.value = reader.double();
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -160,18 +133,11 @@ export const Price = {
 
   toJSON(message: Price): unknown {
     const obj: any = {};
-    if (message.id !== "") {
-      obj.id = message.id;
-    }
-    if (message.value !== 0) {
-      obj.value = message.value;
-    }
+    message.id !== undefined && (obj.id = message.id);
+    message.value !== undefined && (obj.value = message.value);
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<Price>, I>>(base?: I): Price {
-    return Price.fromPartial(base ?? ({} as any));
-  },
   fromPartial<I extends Exact<DeepPartial<Price>, I>>(object: I): Price {
     const message = createBasePrice();
     message.id = object.id ?? "";
@@ -193,24 +159,19 @@ export const PricesResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): PricesResponse {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBasePricesResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
-            break;
-          }
-
           message.prices.push(Price.decode(reader, reader.uint32()));
-          continue;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
     }
     return message;
   },
@@ -221,15 +182,14 @@ export const PricesResponse = {
 
   toJSON(message: PricesResponse): unknown {
     const obj: any = {};
-    if (message.prices?.length) {
-      obj.prices = message.prices.map((e) => Price.toJSON(e));
+    if (message.prices) {
+      obj.prices = message.prices.map((e) => e ? Price.toJSON(e) : undefined);
+    } else {
+      obj.prices = [];
     }
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<PricesResponse>, I>>(base?: I): PricesResponse {
-    return PricesResponse.fromPartial(base ?? ({} as any));
-  },
   fromPartial<I extends Exact<DeepPartial<PricesResponse>, I>>(object: I): PricesResponse {
     const message = createBasePricesResponse();
     message.prices = object.prices?.map((e) => Price.fromPartial(e)) || [];
@@ -268,11 +228,10 @@ export const PricesServicePricesDesc: UnaryMethodDefinitionish = {
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
-      const value = PricesResponse.decode(data);
       return {
-        ...value,
+        ...PricesResponse.decode(data),
         toObject() {
-          return value;
+          return this;
         },
       };
     },
@@ -326,17 +285,17 @@ export class GrpcWebImpl {
     const request = { ..._request, ...methodDesc.requestType };
     const maybeCombinedMetadata = metadata && this.options.metadata
       ? new BrowserHeaders({ ...this.options?.metadata.headersMap, ...metadata?.headersMap })
-      : metadata ?? this.options.metadata;
+      : metadata || this.options.metadata;
     return new Promise((resolve, reject) => {
       grpc.unary(methodDesc, {
         request,
         host: this.host,
-        metadata: maybeCombinedMetadata ?? {},
-        ...(this.options.transport !== undefined ? { transport: this.options.transport } : {}),
-        debug: this.options.debug ?? false,
+        metadata: maybeCombinedMetadata,
+        transport: this.options.transport,
+        debug: this.options.debug,
         onEnd: function (response) {
           if (response.status === grpc.Code.OK) {
-            resolve(response.message!.toObject());
+            resolve(response.message);
           } else {
             const err = new GrpcWebError(response.statusMessage, response.status, response.trailers);
             reject(err);
@@ -346,25 +305,6 @@ export class GrpcWebImpl {
     });
   }
 }
-
-declare const self: any | undefined;
-declare const window: any | undefined;
-declare const global: any | undefined;
-const tsProtoGlobalThis: any = (() => {
-  if (typeof globalThis !== "undefined") {
-    return globalThis;
-  }
-  if (typeof self !== "undefined") {
-    return self;
-  }
-  if (typeof window !== "undefined") {
-    return window;
-  }
-  if (typeof global !== "undefined") {
-    return global;
-  }
-  throw "Unable to locate global object";
-})();
 
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
@@ -381,7 +321,7 @@ function isSet(value: any): boolean {
   return value !== null && value !== undefined;
 }
 
-export class GrpcWebError extends tsProtoGlobalThis.Error {
+export class GrpcWebError extends Error {
   constructor(message: string, public code: grpc.Code, public metadata: grpc.Metadata) {
     super(message);
   }
