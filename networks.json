@@ -694,7 +694,7 @@
     "vaultContractAddress": "0xab30d7379ebfd146b77b0b4d6f3eb09bd725e4ef",
     "riotContractAddressGen0": "0x43cc70bf324d716782628bed38af97e4afe92f69:testeth",
     "excludeFromLaunchpadList": [],
-    "riotSquadStakingContractAddress": "0x7089a8c0c9d7aca09e449697f4b494978d171892",
+    "riotSquadStakingContractAddress": "0xb080380ccb801d4a4c2e75d3aee7728f97cf4608",
     "firehoseEndpoint": "mumbai.streamingfast.io:443",
     "indexStartBlock": "40891584",
     "indexStopBlock": "+1",

@@ -40,6 +40,7 @@ import {
   RipperTraitType,
   SquadConfig,
 } from "../screens/RiotGame/types";
+import { AxelarTeritoriNft__factory } from "../evm-contracts-clients/axelar-teritori-nft/AxelarTeritoriNft__factory";
 
 const round = (input: number) => {
   return Math.floor(100 * input) / 100;
@@ -506,23 +507,35 @@ export const ethereumSquadStake = async (
   for (const selectedRipper of selectedRippers) {
     const tokenId = getRipperTokenId(selectedRipper);
 
+    let nftFactory;
+    let nftContractAddress;
     // Set approveForAll for each NFT contract
-    const nftClient = TeritoriNft__factory.connect(
-      selectedRipper.nftContractAddress,
-      signer
-    );
+
+    if (
+      ethereumNetwork.id === "polygon-mumbai" ||
+      ethereumNetwork.id === "polygon"
+    ) {
+      nftFactory = AxelarTeritoriNft__factory;
+      nftContractAddress = selectedRipper.nftContractAddress.split(":")[0];
+    } else {
+      nftFactory = TeritoriNft__factory;
+      nftContractAddress = selectedRipper.nftContractAddress;
+    }
+
+    const nftClient = nftFactory.connect(nftContractAddress, signer);
 
     const isApprovedForAll = await nftClient.isApprovedForAll(
       sender,
       squadContract
     );
+
     if (!isApprovedForAll) {
       const approveTx = await nftClient.setApprovalForAll(squadContract, true);
       await approveTx.wait();
     }
 
     selectedNfts.push({
-      collection: selectedRipper.nftContractAddress,
+      collection: nftContractAddress,
       tokenId,
     });
   }

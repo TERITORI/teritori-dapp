@@ -18,7 +18,10 @@ import {
   NetworkInfo,
   NetworkKind,
 } from "../../../networks";
-import { getMetaMaskEthereumProvider } from "../../../utils/ethereum";
+import {
+  getEthereumProvider,
+  getMetaMaskEthereumProvider,
+} from "../../../utils/ethereum";
 import { squadWithdraw } from "../../../utils/game";
 import { ipfsURLToHTTPURL } from "../../../utils/ipfs";
 import { fontMedium48 } from "../../../utils/style/fonts";
@@ -63,10 +66,28 @@ const ethereumNFTInfos = async (
 
   const nftInfos = await Promise.all(
     squad.nfts.map(async (nft) => {
-      const nftClient = TeritoriNft__factory.connect(
-        nft.contract,
-        metamaskProvider
-      );
+      // If nft is bridged then use the original contract to query info
+      let nftContract = nft.contract;
+      let ethProvider: any = metamaskProvider;
+
+      if (
+        nft.contract.toLowerCase() === ethereumNetwork.riotBridgedNFTAddressGen0
+      ) {
+        let originalNetwork;
+
+        if (network.id === "polygon") {
+          originalNetwork = mustGetEthereumNetwork("ethereum");
+        } else if (network.id === "polygon-mumbai") {
+          originalNetwork = mustGetEthereumNetwork("ethereum-goerli");
+        } else {
+          throw Error(`unsupported networkId: ${network.id}`);
+        }
+
+        nftContract = originalNetwork.riotNFTAddressGen0 || "";
+        ethProvider = await getEthereumProvider(originalNetwork, true);
+      }
+
+      const nftClient = TeritoriNft__factory.connect(nftContract, ethProvider);
       return await nftClient.nftInfo(nft.tokenId);
     })
   );
