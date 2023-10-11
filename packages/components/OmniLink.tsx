@@ -28,10 +28,14 @@ export const OmniLink: React.FC<{
 
   const handlePress = (e: any) => {
     if (Platform.OS === "web") {
-      e.preventDefault();
       e.stopPropagation();
+      // we prevent default action only if it's not a middle click, a right click, or a ctrl/cmd click
+      if (!(e.which === 2 || e.metaKey || e.ctrlKey)) {
+        // see https://stackoverflow.com/q/20087368
+        e.preventDefault();
+        return onPress();
+      }
     }
-    return onPress();
   };
 
   if (Platform.OS === "web") {
