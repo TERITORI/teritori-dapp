@@ -236,7 +236,7 @@ publish.feed-clean-pinata-keys:
 	docker build -f go/cmd/feed-clean-pinata-keys/Dockerfile . --platform linux/amd64 -t $(FEED_DOCKER_IMAGE)
 	docker push $(FEED_DOCKER_IMAGE)
 
-.PHONY: publish.feed-clean-pinata-keys
+.PHONY: publish.multisig-backend
 publish.multisig-backend:
 	docker build -f go/cmd/multisig-backend/Dockerfile . --platform linux/amd64 -t $(MULTISIG_DOCKER_IMAGE)
 	docker push $(MULTISIG_DOCKER_IMAGE)
