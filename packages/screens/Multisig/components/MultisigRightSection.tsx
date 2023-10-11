@@ -22,6 +22,8 @@ import {
   multisigInfoQueryKey,
   useMultisigInfo,
 } from "../../../hooks/multisig/useMultisigInfo";
+import { multisigTransactionsQueryKey } from "../../../hooks/multisig/useMultisigTransactions";
+import { userMultisigsQueryKey } from "../../../hooks/multisig/useUserMultisigs";
 import { useBalances } from "../../../hooks/useBalances";
 import { useRunOrProposeTransaction } from "../../../hooks/useRunOrProposeTransaction";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
@@ -374,6 +376,10 @@ const JoinMultisigModal: React.FC<{
             await queryClient.invalidateQueries(
               multisigInfoQueryKey(multisigId)
             );
+            await queryClient.invalidateQueries(
+              multisigTransactionsQueryKey(cosmosNetwork.id, undefined)
+            );
+            await queryClient.invalidateQueries(userMultisigsQueryKey(userId));
             onClose?.();
           },
           { title: "Joined multisig!" }

@@ -7,6 +7,10 @@ import { NetworkKind, parseUserId } from "../../networks";
 
 const batchSize = 100;
 
+export const userMultisigsQueryKey = (userId: string | undefined) => {
+  return ["userMultisigs", userId];
+};
+
 export const useUserMultisigs = (
   userId: string | undefined,
   joinState?: JoinState
@@ -15,7 +19,7 @@ export const useUserMultisigs = (
   const authToken = useMultisigAuthToken(userId);
   const multisigClient = useMultisigClient();
   const { data, ...other } = useQuery(
-    ["userMultisigs", userId, authToken, multisigClient, joinState],
+    [...userMultisigsQueryKey(userId), joinState, authToken, multisigClient],
     async () => {
       if (network?.kind !== NetworkKind.Cosmos) {
         return [];
