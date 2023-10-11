@@ -1,3 +1,4 @@
+import dao from "../../../../assets/icons/dao.svg";
 import socialFeed from "../../../../assets/icons/feed.svg";
 import freelance from "../../../../assets/icons/freelanceservice.svg";
 import governance from "../../../../assets/icons/governance.svg";
@@ -103,7 +104,7 @@ export function getAvailableApps(): dAppGroup {
           id: "organizations",
           title: "Organizations",
           description: "Decentralized Autonomous Organizations",
-          icon: multisig,
+          icon: dao,
           route: "Organizations",
           groupKey: "teritori-core-apps",
           selectedByDefault: false,
