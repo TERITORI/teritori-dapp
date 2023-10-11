@@ -25,6 +25,7 @@ export const MultisigTransactionModal: FC<{
       visible={visible}
       width={800}
       scrollable
+      closeOnBlur
     >
       <View
         style={{

@@ -31,6 +31,7 @@ export const DAOProposalModal: React.FC<{
       visible={visible}
       scrollable
       width={800}
+      closeOnBlur
     >
       <View style={containerCStyle}>
         <View style={bodyCStyle}>

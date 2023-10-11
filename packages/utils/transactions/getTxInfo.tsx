@@ -1,6 +1,13 @@
 import { MsgExecuteContractEncodeObject } from "@cosmjs/cosmwasm-stargate";
 import React from "react";
-import { View, Pressable, ViewStyle, TextStyle, StyleProp } from "react-native";
+import {
+  Text,
+  View,
+  Pressable,
+  ViewStyle,
+  TextStyle,
+  StyleProp,
+} from "react-native";
 import { SvgProps } from "react-native-svg";
 
 import feedWhiteSVG from "../../../assets/icons/feed_white.svg";
@@ -126,9 +133,21 @@ export const getTxInfo = (
           MessagePreview: () => {
             return (
               <View>
-                <BrandText>
-                  Send {prettyPrice(network?.id, amount, denom)} to{" "}
-                  <Username userId={getUserId(network?.id, recipientAddress)} />
+                <BrandText style={brandTextNormalStyle}>
+                  Send{" "}
+                  <Text style={{ color: "white" }}>
+                    {prettyPrice(network?.id, amount, denom)}
+                  </Text>{" "}
+                  to{" "}
+                  <Username
+                    textStyle={[brandTextNormalStyle, { color: "white" }]}
+                    userId={getUserId(network?.id, recipientAddress)}
+                  />
+                </BrandText>
+                <SpacerColumn size={1} />
+                <BrandText style={brandTextNormalStyle}>
+                  Recipient address:{" "}
+                  <Text style={{ color: "white" }}>{recipientAddress}</Text>
                 </BrandText>
               </View>
             );
@@ -139,6 +158,7 @@ export const getTxInfo = (
         const validatorAddress = msg.value.validatorAddress;
         const amount = msg.value.amount?.amount;
         const denom = msg.value.amount?.denom;
+        const textStyle = opts.textStyle;
         return {
           name: "Delegate",
           small1: (
@@ -163,7 +183,30 @@ export const getTxInfo = (
             </View>
           ),
           icon: stakingWhiteSVG,
-          MessagePreview: () => null,
+          MessagePreview: () => {
+            return (
+              <View>
+                <BrandText style={brandTextNormalStyle}>
+                  Delegate:{" "}
+                  <BrandText style={textStyle}>
+                    {prettyPrice(network?.id, amount, denom)}
+                  </BrandText>{" "}
+                  to{" "}
+                  <Username
+                    textStyle={[brandTextNormalStyle, { color: "white" }]}
+                    userId={getUserId(network?.id, validatorAddress)}
+                  />
+                </BrandText>
+                <SpacerColumn size={1} />
+                <BrandText style={brandTextNormalStyle}>
+                  Validator address:{" "}
+                  <BrandText style={[brandTextNormalStyle, { color: "white" }]}>
+                    {validatorAddress}
+                  </BrandText>
+                </BrandText>
+              </View>
+            );
+          },
         };
       }
       case "/cosmos.staking.v1beta1.MsgUndelegate": {
@@ -194,7 +237,28 @@ export const getTxInfo = (
             </View>
           ),
           icon: stakingWhiteSVG,
-          MessagePreview: () => null,
+          MessagePreview: () => {
+            return (
+              <View>
+                <BrandText style={brandTextNormalStyle}>
+                  Undelegate:{" "}
+                  <Text style={{ color: "white" }}>
+                    {prettyPrice(network?.id, amount, denom)}
+                  </Text>{" "}
+                  from{" "}
+                  <Username
+                    textStyle={[brandTextNormalStyle, { color: "white" }]}
+                    userId={getUserId(network?.id, validatorAddress)}
+                  />
+                </BrandText>
+                <SpacerColumn size={1} />
+                <BrandText style={brandTextNormalStyle}>
+                  Validator address:{" "}
+                  <Text style={{ color: "white" }}>{validatorAddress}</Text>
+                </BrandText>
+              </View>
+            );
+          },
         };
       }
       case "/cosmos.staking.v1beta1.MsgBeginRedelegate": {
@@ -229,7 +293,42 @@ export const getTxInfo = (
             </View>
           ),
           icon: stakingWhiteSVG,
-          MessagePreview: () => null,
+          MessagePreview: () => {
+            return (
+              <View>
+                <BrandText style={brandTextNormalStyle}>
+                  Redelegate:{" "}
+                  <Text style={{ color: "white" }}>
+                    {prettyPrice(network?.id, amount, denom)}
+                  </Text>{" "}
+                  from{" "}
+                  <Username
+                    textStyle={[brandTextNormalStyle, { color: "white" }]}
+                    userId={getUserId(network?.id, sourceValidatorAddress)}
+                  />{" "}
+                  to{" "}
+                  <Username
+                    textStyle={[brandTextNormalStyle, { color: "white" }]}
+                    userId={getUserId(network?.id, destinationValidatorAddress)}
+                  />
+                </BrandText>
+                <SpacerColumn size={1} />
+                <BrandText style={brandTextNormalStyle}>
+                  Source address:{" "}
+                  <Text style={{ color: "white" }}>
+                    {sourceValidatorAddress}
+                  </Text>
+                </BrandText>
+                <SpacerColumn size={1} />
+                <BrandText style={brandTextNormalStyle}>
+                  Destination address:{" "}
+                  <Text style={{ color: "white" }}>
+                    {destinationValidatorAddress}
+                  </Text>
+                </BrandText>
+              </View>
+            );
+          },
         };
       }
       case "/cosmwasm.wasm.v1.MsgExecuteContract": {
@@ -368,7 +467,24 @@ export const getTxInfo = (
             </BrandText>
           ),
           icon: stakingWhiteSVG,
-          MessagePreview: () => null,
+          MessagePreview: () => {
+            return (
+              <View>
+                <BrandText style={brandTextNormalStyle}>
+                  Withdraw staking rewards from{" "}
+                  <Username
+                    textStyle={[brandTextNormalStyle, { color: "white" }]}
+                    userId={getUserId(network?.id, validatorAddress)}
+                  />
+                </BrandText>
+                <SpacerColumn size={1} />
+                <BrandText style={brandTextNormalStyle}>
+                  Validator address:{" "}
+                  <Text style={{ color: "white" }}>{validatorAddress}</Text>
+                </BrandText>
+              </View>
+            );
+          },
         };
       }
       case "/teritori.mint.v1beta1.MsgBurnTokens": {
@@ -394,7 +510,23 @@ export const getTxInfo = (
             </BrandText>
           ),
           icon: stakingWhiteSVG,
-          MessagePreview: () => null,
+          MessagePreview: () => {
+            return (
+              <View>
+                <BrandText style={brandTextNormalStyle}>
+                  Burn{" "}
+                  <Text style={{ color: "white" }}>
+                    {prettyPrice(network?.id, amount.amount, amount.denom)}
+                  </Text>{" "}
+                  from{" "}
+                  <Username
+                    textStyle={[brandTextNormalStyle, { color: "white" }]}
+                    userId={getUserId(network?.id, burnerAddress)}
+                  />
+                </BrandText>
+              </View>
+            );
+          },
         };
       }
     }
